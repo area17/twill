@@ -1,0 +1,49 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+
+class Create{{tableClassName}}Tables extends Migration
+{
+    public function up()
+    {
+        Schema::create('{{table}}', function (Blueprint $table) {
+            createDefaultTableFields($table);
+
+            // add some fields
+
+            // use this if you want to control published state
+            $table->boolean('published');
+
+            // use a json field to store block editor fields
+            $table->json('content')->nullable();
+
+            // use this with the Sortable trait
+            $table->integer('position')->unsigned()->nullable();
+        });
+
+        // remove this if you're not going to use any translated field
+        Schema::create('{{translationTable}}_translations', function (Blueprint $table) {
+            createDefaultTranslationsTableFields($table, {{translationTable}}, {{table}});
+
+            // add some translated fields
+            // $table->string('title', 200)->nullable();
+            // $table->text('description')->nullable();
+
+        });
+
+        // remove this if you're not going to use slugs
+        Schema::create('{{translationTable}}_slugs', function (Blueprint $table) {
+            createDefaultSlugsTableFields($table, {{translationTable}}, {{table}});
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('{{translationTable}}_translations');
+
+        Schema::dropIfExists('{{translationTable}}_slugs');
+
+        Schema::dropIfExists('{{table}}');
+    }
+}

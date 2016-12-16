@@ -1,0 +1,77 @@
+{{--
+
+@extends('cms-behavios::layouts.resources.form')
+
+@section('form')
+    {{ Form::model($form_fields, $form_options) }}
+
+    <div class="columns with_right_sidebar">
+        <div class="col">
+            @include('admin.layouts.form_partials._publish_status')
+        </div>
+        <div class="col">
+            @include('admin.layouts.form_partials._lang_switcher')
+
+            <section class="box">
+                <header class="header_small">
+                    <h3><b>{{ $form_fields['title'] or 'New item' }}</b></h3>
+                </header>
+                @include('admin.layouts.form_partials._input', [
+                    'field' => 'title',
+                    'field_name' => 'Title',
+                ])
+                @include('admin.layouts.form_partials._input_locale', [
+                    'field' => 'title',
+                    'field_name' => 'Title',
+                    'required' => 'required'
+                ])
+                @include('admin.layouts.form_partials._textarea', [
+                    'field' => 'embed_video',
+                    'field_name' => 'Code'
+                ])
+                @include('admin.layouts.form_partials._textarea_locale', [
+                    'field' => 'description',
+                    'field_name' => 'Description',
+                    'textLimit' => 100,
+                    'required' => 'required'
+                ])
+                @include('admin.layouts.form_partials._rich_textarea', [
+                    'field' => 'description',
+                    'field_name' => 'Description'
+                ])
+                @include('admin.layouts.form_partials._rich_textarea_locale', [
+                    'field' => 'description',
+                    'field_name' => 'Description'
+                ])
+                @include('admin.layouts.form_partials._date_picker', [
+                    'fieldname' => "Publish start date",
+                    'field' => "publish_start_date",
+                ])
+                @include('admin.layouts.form_partials._select', [
+                    'field' => "relationship_id",
+                    'field_name' => "Relationship",
+                    'list' => $relationshipList,
+                    'data_behavior' => 'selector',
+                    'placeholder' => 'Select a relationship'
+                ])
+                @include('admin.layouts.form_partials._multi_select', [
+                    'field' => "relationship",
+                    'field_name' => 'Related relationship',
+                    'list' => $relationshipList,
+                    'placeholder' => 'Add some relationship',
+                    'maximumSelectionLength' => 5
+                ])
+                <div class="input boolean">
+                    <label class="boolean"> {!! Form::checkbox('boolean', 1) !!}&nbsp;Boolean?</label>
+                </div>
+            </section>
+        </div>
+    </div>
+    @include('admin.layouts.form_partials._medias', ['media_role' => 'media_role'])
+
+    @include('admin.layouts.form_partials._files', ['file_role' => 'file role', 'file_role_name' => 'Role name'])
+
+    @include('admin.layouts.form_partials._block_editor', ['field_name' => 'content'])
+@stop
+
+--}}

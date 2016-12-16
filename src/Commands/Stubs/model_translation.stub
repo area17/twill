@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Models\Translations;
+
+use A17\CmsToolkit\Models\Model;
+
+class {{modelTranslationClassName}} extends Model
+{
+    public $timestamps = true;
+
+    protected $fillable = [
+        // 'title',
+        // 'description',
+        'active',
+        'locale',
+    ];
+
+}

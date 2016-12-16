@@ -1,0 +1,108 @@
+<?php
+
+namespace App\Repositories;
+
+// use A17\CmsToolkit\Repositories\Behaviors\HandleTranslations;
+// use A17\CmsToolkit\Repositories\Behaviors\HandleSlugs;
+// use A17\CmsToolkit\Repositories\Behaviors\HandleMedias;
+// use A17\CmsToolkit\Repositories\Behaviors\HandleFiles;
+use A17\CmsToolkit\Repositories\ModuleRepository;
+use App\Models\{{modelName}};
+
+class {{repositoryClassName}} extends ModuleRepository
+{
+    // use HandleTranslations, HandleSlugs, HandleMedias, HandleFiles;
+
+    public function __construct({{modelName}} $model)
+    {
+        $this->model = $model;
+    }
+
+    /**
+     *
+     * Custom filtering with helpers
+     *
+     * public function filter($query, array $scopes = [])
+     * {
+     *     // add a where like clause
+     *     $this->addLikeFilterScope($query, $scopes, 'field_in_scope');
+     *
+     *     // add a whereHas clause
+     *     $this->addRelationFilterScope($query, $scopes, 'field_in_scope', 'relationName');
+     *
+     *     // add orWhereHas clauses
+     *     $this->searchIn($query, $scopes, 'field_in_scope', ['field1', 'field2', 'field3']);
+     *
+     *     // manually
+     *     if (isset($scopes['search'])) {
+     *         $query->orWhereHas('tags', function ($query) use ($scopes) {
+     *             $query->where('slug', 'like', '%' . $scopes['search'] . '%');
+     *         });
+     *     }
+     *
+     *     return parent::filter($query, $scopes);
+     * }
+     *
+     */
+
+    /**
+     *
+     * Custom ordering
+     *
+     * public function order($query, array $orders = [])
+     * {
+     *     return parent::order($query, $orders);
+     * }
+     *
+     */
+
+    /**
+     *
+     * Custom form fields
+     *
+     * public function getFormFields($object)
+     * {
+     *     $fields = parent::getFormFields($object);
+     *
+     *     // format oneToMany for select multiple input
+     *     $fields = $this->getFormFieldsForMultiSelect($fields, 'relationName');
+     *
+     *     return $fields;
+     * }
+     *
+     */
+
+    /**
+     *
+     * Before create hook
+     *
+     * public function prepareFieldsBeforeCreate($fields)
+     * {
+     *     return parent::prepareFieldsBeforeCreate($fields);
+     * }
+     *
+     */
+
+    /**
+     *
+     * Before save hook
+     *
+     * public function prepareFieldsBeforeSave($object, $fields)
+     * {
+     *     return parent::prepareFieldsBeforeSave($object, $fields);
+     * }
+     *
+     */
+
+    /**
+     *
+     * After save hook
+     *
+     * public function afterSave($object, $fields)
+     * {
+     *     $object->relationName()->sync($fields['relationName'] ?? []);
+     *     parent::afterSave($object, $fields);
+     * }
+     *
+     */
+}

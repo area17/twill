@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Models;
+
+// use A17\CmsToolkit\Models\Behaviors\HasTranslation;
+// use A17\CmsToolkit\Models\Behaviors\HasSlug;
+// use A17\CmsToolkit\Models\Behaviors\HasMedias;
+// use A17\CmsToolkit\Models\Behaviors\HasFiles;
+// use A17\CmsToolkit\Models\Behaviors\Sortable;
+// use A17\CmsToolkit\Models\Behaviors\Sorts;
+use A17\CmsToolkit\Models\Model;
+
+class {{modelClassName}} extends Model //implements Sortable
+{
+    // use HasTranslation, HasSlug, HasMedias, HasFiles, Sorts;
+
+    public $timestamps = true;
+
+    protected $fillable = [
+        // 'published',
+        // 'content',
+        // 'position',
+    ];
+
+    // public $translatedAttributes = [
+    //     'title',
+    //     'description',
+    //     'active',
+    // ];
+
+    // public $slugAttributes = [
+    //     'title',
+    // ];
+
+    // those fields get auto set to null if not submited
+    protected $nullable = [];
+
+    // those fields get auto set to false if not submited
+    protected $checkboxes = [];
+
+    // public $mediasParams = [];
+
+    // public $filesParams = [];
+}
