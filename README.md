@@ -18,7 +18,7 @@ Next, you must install the service provider:
     ...
     A17\CmsToolkit\CmsToolkitServiceProvider::class,
 ];
-``
+```
 
 ## Usage
 
