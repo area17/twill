@@ -21,7 +21,7 @@ class CreateSuperAdmin extends Command
                 return User::create([
                     'name' => "Admin",
                     'email' => $email,
-                    'password' => $password,
+                    'password' => bcrypt($password),
                     'role' => 'SUPERADMIN',
                     'published' => true,
                 ]);
