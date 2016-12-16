@@ -41,15 +41,8 @@
     },
     "autoload": {
         "psr-4": {
-            "A17\\CmsToolkit\\": "src"
+            "A17\\CmsToolkit\\": "src/"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "A17\\CmsToolkit\\": "tests"
-        }
-    },
-    "scripts": {
-        "test": "phpunit"
-    }
+    "minimum-stability": "dev"
 }
