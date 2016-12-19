@@ -1,39 +1,132 @@
 <?php
 
 return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Namespace
+    |--------------------------------------------------------------------------
+    |
+    | This value is the namespace of your application.
+    |
+     */
     'namespace' => 'App',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Application Admin URL
+    |--------------------------------------------------------------------------
+    |
+    | This value is the URL where your admin will be served from.
+    |
+     */
     'admin_app_url' => env('ADMIN_APP_URL', 'admin.' . env('APP_URL')),
 
-    'auth' => [
-        'login_redirect_path' => '/',
-    ],
-
+    /*
+    |--------------------------------------------------------------------------
+    | CMS Toolkit Enabled Features
+    |--------------------------------------------------------------------------
+    |
+    | This array allows you to enable/disable the CMS Toolkit default features.
+    |
+     */
     'enabled' => [
+        'users-management' => true,
         'media-library' => true,
         'file-library' => true,
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | CMS Toolkit Auth configuration
+    |--------------------------------------------------------------------------
+    |
+    | Right now this array only allows you to redefine the
+    | default login redirect path.
+    |
+     */
+    'auth' => [
+        'login_redirect_path' => '/',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | CMS Toolkit Media Library configuration
+    |--------------------------------------------------------------------------
+    |
+    | This array allows you to provide the package with your configuration
+    | for the media library disk, endpoint type and others options depending
+    | on your endpoint type.
+    |
+    | Supported endpoint types: 'local' and 's3'.
+    | Set cascade_delete to true to delete files on the storage too when
+    | deleting from the media library.
+    | If using the 'local' endpoint type, define a 'local_path' to store files.
+    | Supported image service: 'A17\CmsToolkit\Services\MediaLibrary\Imgix'
+    |
+     */
     'media_library' => [
         'disk' => 's3',
         'endpoint_type' => env('MEDIA_LIBRARY_ENDPOINT_TYPE', 's3'),
         'cascade_delete' => env('MEDIA_LIBRARY_CASCADE_DELETE', false),
         'local_path' => env('MEDIA_LIBRARY_LOCAL_PATH'),
-        'image_service' => "A17\CmsToolkit\Services\MediaLibrary\Imgix",
+        'image_service' => 'A17\CmsToolkit\Services\MediaLibrary\Imgix',
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | CMS Toolkit Imgix configuration
+    |--------------------------------------------------------------------------
+    |
+    | This array allows you to provide the package with your configuration
+    | for the Imgix image service.
+    |
+     */
     'imgix' => [
         'source_host' => env('IMGIX_SOURCE_HOST'),
         'use_https' => env('IMGIX_USE_HTTPS', true),
         'use_signed_urls' => env('IMGIX_USE_SIGNED_URLS', false),
         'sign_key' => env('IMGIX_SIGN_KEY'),
-
-        'default_params' => ['fm' => 'jpg', 'q' => '80', 'auto' => 'compress,format', 'fit' => 'min'],
-        'lqip_default_params' => ['fm' => 'gif', 'auto' => 'compress', 'blur' => 100, 'dpr' => 1],
-        'social_default_params' => ['fm' => 'jpg', 'w' => 900, 'h' => 470, 'fit' => 'crop', 'crop' => 'entropy'],
-        'cms_default_params' => ['q' => 60, 'dpr' => 1],
+        'default_params' => [
+            'fm' => 'jpg',
+            'q' => '80',
+            'auto' => 'compress,format',
+            'fit' => 'min',
+        ],
+        'lqip_default_params' => [
+            'fm' => 'gif',
+            'auto' => 'compress',
+            'blur' => 100,
+            'dpr' => 1,
+        ],
+        'social_default_params' => [
+            'fm' => 'jpg',
+            'w' => 900,
+            'h' => 470,
+            'fit' => 'crop',
+            'crop' => 'entropy',
+        ],
+        'cms_default_params' => [
+            'q' => 60,
+            'dpr' => 1,
+        ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | CMS Toolkit File Library configuration
+    |--------------------------------------------------------------------------
+    |
+    | This array allows you to provide the package with your configuration
+    | for the file library disk, endpoint type and others options depending
+    | on your endpoint type.
+    |
+    | Supported endpoint types: 'local' and 's3'.
+    | Set cascade_delete to true to delete files on the storage too when
+    | deleting from the file library.
+    | If using the 'local' endpoint type, define a 'local_path' to store files.
+    |
+     */
     'file_library' => [
         'disk' => 's3',
         'endpoint_type' => env('FILE_LIBRARY_ENDPOINT_TYPE', 's3'),
@@ -41,6 +134,16 @@ return [
         'local_path' => env('FILE_LIBRARY_LOCAL_PATH'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | CMS Toolkit Block Editor configuration
+    |--------------------------------------------------------------------------
+    |
+    | This array allows you to provide the package with your configuration
+    | for the Block renderer service.
+    | More to come here...
+    |
+     */
     'block_editor' => [
         'blocks' => [
             "blocktext" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",
@@ -58,6 +161,15 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | CMS Toolkit SEO configuration
+    |--------------------------------------------------------------------------
+    |
+    | This array allows you to provide the package with some SEO configuration
+    | for the frontend site controller helper and image service.
+    |
+     */
     'seo' => [
         'site_title' => config('app.name'),
         'site_title' => config('app.name'),
@@ -65,6 +177,14 @@ return [
         'image_local_fallback' => env('SEO_IMAGE_LOCAL_FALLBACK'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | CMS Toolkit Developer configuration
+    |--------------------------------------------------------------------------
+    |
+    | This array allows you to enable/disable debug tool and configurations.
+    |
+     */
     'debug' => [
         'use_whoops' => env('DEBUG_USE_WHOOPS', true),
         'whoops_path_guest' => env('WHOOPS_GUEST_PATH'),

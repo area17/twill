@@ -24,7 +24,7 @@ class Create{{tableClassName}}Tables extends Migration
 
         // remove this if you're not going to use any translated field
         Schema::create('{{translationTable}}_translations', function (Blueprint $table) {
-            createDefaultTranslationsTableFields($table, {{translationTable}}, {{table}});
+            createDefaultTranslationsTableFields({{table}}, {{translationTable}});
 
             // add some translated fields
             // $table->string('title', 200)->nullable();
@@ -34,7 +34,7 @@ class Create{{tableClassName}}Tables extends Migration
 
         // remove this if you're not going to use slugs
         Schema::create('{{translationTable}}_slugs', function (Blueprint $table) {
-            createDefaultSlugsTableFields($table, {{translationTable}}, {{table}});
+            createDefaultSlugsTableFields({{table}}, {{translationTable}});
         });
     }
 

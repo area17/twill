@@ -8,7 +8,7 @@ use Validator;
 
 class CreateSuperAdmin extends Command
 {
-    protected $signature = 'user:superadmin';
+    protected $signature = 'cms-toolkit:superadmin';
 
     protected $description = "Create the superadmin account";
 

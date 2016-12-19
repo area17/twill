@@ -9,4 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Model extends BaseModel
 {
     use HasPresenter, SoftDeletes;
+
+    public $timestamps = true;
 }

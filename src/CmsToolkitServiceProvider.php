@@ -3,6 +3,7 @@
 namespace A17\CmsToolkit;
 
 use A17\CmsToolkit\Commands\CreateSuperAdmin;
+use A17\CmsToolkit\Commands\Install;
 use A17\CmsToolkit\Commands\ModuleMake;
 use A17\CmsToolkit\Commands\RefreshLQIP;
 use A17\CmsToolkit\Commands\UpdateCmsAssets;
@@ -47,17 +48,8 @@ class CmsToolkitServiceProvider extends ServiceProvider
     protected $aliases = [
         'Form' => FormFacade::class,
         'Html' => HtmlFacade::class,
-        'ImageService' => ImageService::class,
-        'FileService' => FileService::class,
-        'Inspector' => Inspector::class,
         'Input' => Input::class,
-    ];
-
-    protected $migrations = [
-        'CreateUsersTables',
-        'CreateTagsTables',
-        'CreateFilesTables',
-        'CreateMediasTables',
+        'Inspector' => Inspector::class,
     ];
 
     public function boot()
@@ -114,13 +106,17 @@ class CmsToolkitServiceProvider extends ServiceProvider
             return $this->app->make(FlashNotifier::class);
         });
 
-        $this->app->singleton('imageService', function () {
-            return $this->app->make(config('cms-toolkit.media_library.image_service'));
-        });
+        if (config('cms-toolkit.enabled.media-library')) {
+            $this->app->singleton('imageService', function () {
+                return $this->app->make(config('cms-toolkit.media_library.image_service'));
+            });
+        }
 
-        $this->app->singleton('fileService', function () {
-            return $this->app->make(Disk::class);
-        });
+        if (config('cms-toolkit.enabled.file-library')) {
+            $this->app->singleton('fileService', function () {
+                return $this->app->make(Disk::class);
+            });
+        }
     }
 
     private function registerAliases()
@@ -129,6 +125,15 @@ class CmsToolkitServiceProvider extends ServiceProvider
         foreach ($this->aliases as $alias => $facade) {
             $loader->alias($alias, $facade);
         }
+
+        if (config('cms-toolkit.enabled.media-library')) {
+            $loader->alias('ImageService', ImageService::class);
+        }
+
+        if (config('cms-toolkit.enabled.media-library')) {
+            $loader->alias('FileService', FileService::class);
+        }
+
     }
 
     private function publishConfigs()
@@ -139,22 +144,48 @@ class CmsToolkitServiceProvider extends ServiceProvider
 
     private function mergeConfigs()
     {
+        config(['filesystems.disks.s3' => require __DIR__ . '/../config/s3.php']);
+
+        if (config('cms-toolkit.enabled.users-management')) {
+            config(['auth.providers.users' => require __DIR__ . '/../config/auth.php']);
+        }
+
         $this->mergeConfigFrom(__DIR__ . '/../config/cms-toolkit.php', 'cms-toolkit');
         $this->mergeConfigFrom(__DIR__ . '/../config/services.php', 'services');
         $this->mergeConfigFrom(__DIR__ . '/../config/laravel-env-validator.php', 'laravel-env-validator');
+
     }
 
     private function publishMigrations()
     {
+        $migrations = ['CreateTagsTables'];
+
+        $optionalMigrations = [
+            'CreateUsersTables' => 'users-management',
+            'CreateFilesTables' => 'file-library',
+            'CreateMediasTables' => 'media-library',
+        ];
+
         if ($this->app->runningInConsole()) {
             foreach ($this->migrations as $migration) {
-                if (!class_exists($migration)) {
-                    $timestamp = date('Y_m_d_His', time());
-                    $this->publishes([
-                        __DIR__ . '/../migrations/' . snake_case($migration) . '.php' => database_path('migrations/' . $timestamp . '_' . snake_case($migration) . '.php'),
-                    ], 'migrations');
+                $this->publishMigration($migration);
+            }
+
+            foreach ($this->optionalMigrations as $migration => $feature) {
+                if (config('cms-toolkit.enabled.' . $feature)) {
+                    $this->publishMigration($migration);
                 }
             }
+        }
+    }
+
+    private function publishMigration($migration)
+    {
+        if (!class_exists($migration)) {
+            $timestamp = date('Y_m_d_His', time());
+            $this->publishes([
+                __DIR__ . '/../migrations/' . snake_case($migration) . '.php' => database_path('migrations/' . $timestamp . '_' . snake_case($migration) . '.php'),
+            ], 'migrations');
         }
     }
 
@@ -170,6 +201,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
+                Install::class,
                 UpdateCmsAssets::class,
                 ModuleMake::class,
                 CreateSuperAdmin::class,
@@ -254,8 +286,11 @@ class CmsToolkitServiceProvider extends ServiceProvider
 
     private function addViewComposers()
     {
-        View::composer('admin.*', CurrentUser::class);
-        View::composer('cms-toolkit::*', CurrentUser::class);
+        if (config('cms-toolkit.enabled.users-management')) {
+            View::composer('admin.*', CurrentUser::class);
+            View::composer('cms-toolkit::*', CurrentUser::class);
+        }
+
         View::composer('cms-toolkit::layouts.navigation.*', ActiveNavigation::class);
     }
 

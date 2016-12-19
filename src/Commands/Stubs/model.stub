@@ -14,8 +14,6 @@ class {{modelClassName}} extends Model //implements Sortable
 {
     // use HasTranslation, HasSlug, HasMedias, HasFiles, Sorts;
 
-    public $timestamps = true;
-
     protected $fillable = [
         // 'published',
         // 'content',

@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class ModuleMake extends Command
 {
-    protected $signature = 'make:module {moduleName} {--T|translatable}';
+    protected $signature = 'cms-toolkit:module {moduleName} {--T|translatable}';
 
     protected $description = 'Create a new CMS Module';
 

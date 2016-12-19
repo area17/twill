@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 
 class UpdateCmsAssets extends Command
 {
-    protected $signature = 'cms:update-assets';
+    protected $signature = 'cms-toolkit:update-assets';
 
     protected $description = 'Update CMS assets using latest release found on cms3.dev.area17.com';
 

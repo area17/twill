@@ -10,25 +10,25 @@ if (!function_exists('createDefaultFields')) {
 }
 
 if (!function_exists('createDefaultTranslationsTableFields')) {
-    function createDefaultTranslationsTableFields($table, $tableNameSingular, $tableNamePlural)
+    function createDefaultTranslationsTableFields($table, $tableNameSingular)
     {
         createDefaultTableFields($table);
         $table->string('locale', 6)->index();
         $table->boolean('active');
         $table->integer("$tableNameSingular_id")->unsigned();
-        $table->foreign("$tableNameSingular_id", "fk_$tableNameSingular_translations_$tableNameSingular_id")->references('id')->on($tableNamePlural)->onDelete('CASCADE');
+        $table->foreign("$tableNameSingular_id", "fk_$tableNameSingular_translations_$tableNameSingular_id")->references('id')->on($table)->onDelete('CASCADE');
         $table->unique(["$tableNameSingular_id", 'locale']);
     }
 }
 
 if (!function_exists('createDefaultSlugsTableFields')) {
-    function createDefaultSlugsTableFields($table, $tableNameSingular, $tableNamePlural)
+    function createDefaultSlugsTableFields($table, $tableNameSingular)
     {
         createDefaultTableFields($table);
         $table->string('slug');
         $table->string('locale', 6)->index();
         $table->boolean('active');
         $table->integer("$tableNameSingular_id")->unsigned();
-        $table->foreign("$tableNameSingular_id", "fk_$tableNameSingular_translations_$tableNameSingular_id")->references('id')->on($tableNamePlural)->onDelete('CASCADE')->onUpdate('NO ACTION');
+        $table->foreign("$tableNameSingular_id", "fk_$tableNameSingular_translations_$tableNameSingular_id")->references('id')->on($table)->onDelete('CASCADE')->onUpdate('NO ACTION');
     }
 }
