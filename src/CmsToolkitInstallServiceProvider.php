@@ -3,6 +3,7 @@
 namespace A17\CmsToolkit;
 
 use A17\CmsToolkit\Commands\Install;
+use A17\CmsToolkit\Commands\Setup;
 use Illuminate\Support\ServiceProvider;
 
 class CmsToolkitInstallServiceProvider extends ServiceProvider
@@ -10,7 +11,10 @@ class CmsToolkitInstallServiceProvider extends ServiceProvider
     public function boot()
     {
         if ($this->app->runningInConsole()) {
-            $this->commands([Install::class]);
+            $this->commands([
+                Install::class,
+                Setup::class,
+            ]);
         }
     }
 }

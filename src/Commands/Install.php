@@ -4,7 +4,6 @@ namespace A17\CmsToolkit\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Composer;
 
 class Install extends Command
 {
@@ -14,23 +13,19 @@ class Install extends Command
 
     protected $files;
 
-    public function __construct(Filesystem $files, Composer $composer)
+    public function __construct(Filesystem $files)
     {
         parent::__construct();
 
         $this->files = $files;
-        $this->composer = $composer;
     }
 
     public function fire()
     {
         $this->addRoutesFile();
         $this->addServiceProvider();
-        $this->composer->dumpAutoloads();
         $this->replaceExceptionsHandler();
-        $this->createSuperAdmin();
-        $this->publishAssets();
-        $this->publishConfigs();
+        $this->call('cms-toolkit:setup');
     }
 
     private function addRoutesFile()
@@ -74,26 +69,5 @@ class Install extends Command
         $stub = $this->files->get(__DIR__ . '/stubs/Handler.stub');
 
         $this->files->put($exceptionsPath . 'Handler.php', $stub);
-    }
-
-    private function createSuperAdmin()
-    {
-        $this->call('cms-toolkit:superadmin');
-    }
-
-    private function publishAssets()
-    {
-        $this->call('vendor:publish', [
-            '--provider' => 'A17\CmsToolkit\CmsToolkitServiceProvider',
-            '--tag' => 'assets',
-        ]);
-    }
-
-    private function publishConfig()
-    {
-        $this->call('vendor:publish', [
-            '--provider' => 'A17\CmsToolkit\CmsToolkitServiceProvider',
-            '--tag' => 'config',
-        ]);
     }
 }
