@@ -14,9 +14,9 @@ class CreateSuperAdmin extends Command
 
     public function handle()
     {
-        $email = $this->ask('Enter an email :');
+        $email = $this->ask('Enter an email');
         if ($this->validateEmail($email)) {
-            $password = $this->ask('Enter a password :');
+            $password = $this->ask('Enter a password');
             if ($this->validatePassword($password)) {
                 return User::create([
                     'name' => "Admin",

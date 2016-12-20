@@ -23,6 +23,7 @@ class Install extends Command
     public function fire()
     {
         $this->addRoutesFile();
+        $this->addServiceProvider();
         $this->replaceExceptionsHandler();
         $this->createSuperAdmin();
         $this->publishAssets();
@@ -41,6 +42,22 @@ class Install extends Command
 
         $this->files->put($routesPath . '/admin.php', $stub);
 
+    }
+
+    private function addServiceProvider()
+    {
+        $fileToReplace = base_path('config/app.php');
+        $lineToReplace = 'App\Providers\RouteServiceProvider::class,';
+        $newLine = 'App\Providers\RouteServiceProvider::class, A17\CmsToolkit\CmsToolkitServiceProvider::class,';
+        $this->replaceAndSave($fileToReplace, $lineToReplace, $newLine);
+    }
+
+    private function replaceAndSave($oldFile, $search, $replace, $newFile = null)
+    {
+        $newFile = ($newFile == null) ? $oldFile : $newFile;
+        $file = $this->files->get($oldFile);
+        $replacing = str_replace($search, $replace, $file);
+        $this->files->put($newFile, $replacing);
     }
 
     private function replaceExceptionsHandler()
