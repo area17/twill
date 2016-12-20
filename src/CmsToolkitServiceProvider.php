@@ -200,7 +200,6 @@ class CmsToolkitServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                Install::class,
                 UpdateCmsAssets::class,
                 ModuleMake::class,
                 CreateSuperAdmin::class,

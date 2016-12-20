@@ -47,8 +47,8 @@ class Install extends Command
     private function addServiceProvider()
     {
         $fileToReplace = base_path('config/app.php');
-        $lineToReplace = 'App\Providers\RouteServiceProvider::class,';
-        $newLine = 'App\Providers\RouteServiceProvider::class, A17\CmsToolkit\CmsToolkitServiceProvider::class,';
+        $lineToReplace = 'A17\CmsToolkit\CmsToolkitInstallServiceProvider::class,';
+        $newLine = 'A17\CmsToolkit\CmsToolkitServiceProvider::class,';
         $this->replaceAndSave($fileToReplace, $lineToReplace, $newLine);
     }
 
