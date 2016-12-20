@@ -58,16 +58,6 @@ Then you should be able to run:
 ```bash
 composer require a17/laravel-cms-toolkit
 ```
-Add the CMS Toolkit service provider in `config/app.php`:
-
-```php
-<?php
-
-'providers' => [
-    ...
-    A17\CmsToolkit\CmsToolkitServiceProvider::class,
-];
-```
 
 Setup your `.env` file (or let the [Laravel Env Validator](https://github.com/mathiasgrimm/laravel-env-validator) yell at you if you don't).
 
@@ -78,7 +68,6 @@ php artisan cms-toolkit:install
 ```
 
 That's about it!
-
 
 ## Usage
 
