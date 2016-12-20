@@ -28,7 +28,7 @@ class Setup extends Command
         ];
 
         foreach ($defaultMigrations as $migration) {
-            $fullPath = database('migrations/' . $migration);
+            $fullPath = database_path('migrations/' . $migration);
             if (File::has($fullPath)) {
                 File::delete($fullPath);
             }
