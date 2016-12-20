@@ -5,6 +5,6 @@ return [
         'can' => 'edit',
         'title' => 'Users',
         'module' => true,
-        'route' => 'users.index',
+        'route' => 'index',
     ],
 ];
