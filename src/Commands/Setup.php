@@ -29,7 +29,7 @@ class Setup extends Command
 
         foreach ($defaultMigrations as $migration) {
             $fullPath = database_path('migrations/' . $migration);
-            if (File::has($fullPath)) {
+            if (File::exists($fullPath)) {
                 File::delete($fullPath);
             }
         }
