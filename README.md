@@ -410,6 +410,8 @@ It will generate a migration file, a model, a repository, a controller, a form r
 Migrations are regular Laravel migrations. A few helpers are available to create the default fields any CRUD module will use:
 
 ```php
+<?php
+
 Schema::create('table_name_plural', function (Blueprint $table) {
     createDefaultTableFields($tableName)
     // will add the following inscructions to your migration file
