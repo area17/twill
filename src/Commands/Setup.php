@@ -12,10 +12,10 @@ class Setup extends Command
 
     public function fire()
     {
+        $this->call('migrate');
         $this->createSuperAdmin();
         $this->publishAssets();
         $this->publishConfigs();
-        $this->call('migrate');
     }
 
     private function createSuperAdmin()
