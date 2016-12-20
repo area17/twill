@@ -3,12 +3,22 @@
 namespace A17\CmsToolkit\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
 
 class Install extends Command
 {
     protected $signature = 'cms-toolkit:install';
 
     protected $description = 'Install the CMS Toolkit into a default Laravel application';
+
+    protected $files;
+
+    public function __construct(Filesystem $files)
+    {
+        parent::__construct();
+
+        $this->files = $files;
+    }
 
     public function fire()
     {
