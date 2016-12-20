@@ -4,6 +4,7 @@ namespace A17\CmsToolkit\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Composer;
 
 class Install extends Command
 {
@@ -13,17 +14,19 @@ class Install extends Command
 
     protected $files;
 
-    public function __construct(Filesystem $files)
+    public function __construct(Filesystem $files, Composer $composer)
     {
         parent::__construct();
 
         $this->files = $files;
+        $this->composer = $composer;
     }
 
     public function fire()
     {
         $this->addRoutesFile();
         $this->addServiceProvider();
+        $this->composer->dumpAutoloads();
         $this->replaceExceptionsHandler();
         $this->createSuperAdmin();
         $this->publishAssets();
