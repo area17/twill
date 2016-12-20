@@ -33,6 +33,8 @@ composer require a17/laravel-cms-toolkit
 Add the CMS Toolkit service provider in `config/app.php`:
 
 ```php
+<?php
+
 'providers' => [
     ...
     A17\CmsToolkit\CmsToolkitServiceProvider::class,
@@ -330,6 +332,8 @@ return [
 To make it work properly and to get active states automatically, you should structure your routes in the same way using for example here: 
 
 ```php
+<?php
+
 Route::get('/dashboard')->...->name('admin.dashboard');
 Route::group(['prefix' => 'work'], function ({
     Route::module('projects');
@@ -419,7 +423,7 @@ Schema::create('table_name_singular_slugs', function (Blueprint $table) {
 });
 ```
 
-A few CRUD controllers require that your model to have a field in the database with a specific name: `published` and `position`, so stick with those column names if you are going to use publication status and sortable listings. When using the block editor, you can name the field that will content the blocks json whatever you want but it's type should be `json`.
+A few CRUD controllers require that your model to have a field in the database with a specific name: `published` and `position`, so stick with those column names if you are going to use publication status and sortable listings. When using the block editor, you can name the field that will contains the blocks json whatever you want but it's type should be `json`.
 
 
 #### Models
@@ -440,6 +444,8 @@ Depending on the features you need on your model, include the availables traits 
 - HasMedias: add the `mediasParams` configuration array:
 
 ```php
+<?php
+
 public $mediasParams = [
     'hero' => [ // role name
         'default' => '16/9', //crop name => ratio as a fraction or number
@@ -460,6 +466,8 @@ public $mediasParams = [
 - HasFiles: add the `filesParams` configuration array
 
 ```php
+<?php
+
 public $filesParams = ['finishe', 'caring', 'warranty']; // a list of file roles
 ```
 
@@ -492,6 +500,8 @@ Repositories allows you to modify the default behavior of your models by providi
 - for filtering:
 
 ```php
+<?php
+
 // implement the filter method
 public function filter($query, array $scopes = []) {
 
@@ -521,6 +531,8 @@ public function filter($query, array $scopes = []) {
 - for custom ordering:
 
 ```php
+<?php
+
 // implement the order method
 public function order($query, array $orders = []) {
     // don't forget to call the parent order function
@@ -531,6 +543,8 @@ public function order($query, array $orders = []) {
 - for custom form fieds
 
 ```php
+<?php
+
 // implement the getFormFields method
 public function getFormFields($object) {
     // don't forget to call the parent getFormFields function
@@ -549,6 +563,8 @@ public function getFormFields($object) {
 
 
 ```php
+<?php
+
 // implement the prepareFieldsBeforeCreate method
 public function prepareFieldsBeforeCreate($fields) {
     // don't forget to call the parent prepareFieldsBeforeCreate function
@@ -561,6 +577,8 @@ public function prepareFieldsBeforeCreate($fields) {
 
 
 ```php
+<?php
+
 // implement the prepareFieldsBeforeSave method
 public function prepareFieldsBeforeSave($object, $fields) {
     // don't forget to call the parent prepareFieldsBeforeSave function
@@ -572,6 +590,8 @@ public function prepareFieldsBeforeSave($object, $fields) {
 - for after save actions (like attaching a relationship)
 
 ```php
+<?php
+
 // implement the afterSave method
 public function afterSave($object, $fields) {
     // for exemple, to sync a many to many relationship
@@ -593,6 +613,8 @@ Classic Laravel 5 [form request validation](https://laravel.com/docs/5.3/validat
 There is an helper to define rules for translated fields without having to deal with each locales:
 
 ```php
+<?php
+
 $this->rulesForTranslatedFields([
  // regular rules
 ], [
@@ -603,6 +625,8 @@ $this->rulesForTranslatedFields([
 There is also an helper to define validation messages for translated fields:
 
 ```php
+<?php
+
 $this->messagesForTranslatedFields([
  // regular messages
 ], [
@@ -800,6 +824,8 @@ You would have to implement the `ImageServiceInterface` and modify your `cms-too
 Here are the methods you would have to implement:
 
 ```php
+<?php
+
 public function getUrl($id, array $params = []);
 public function getLQIPUrl($id, array $params = []);
 public function getSocialUrl($id, array $params = []);
@@ -824,6 +850,8 @@ The only thing you have to do to make it work is to compose your model and repos
 When it comes to using those data model images in the frontend site, there are a few methods on the `HasMedias` trait that will help you to retrieve them for each of your layouts:
 
 ```php
+<?php
+
 /**
  * Returns the url of the associated image for $roleName and $cropName.
  * Optionally add params compatible with the current image service in use like w or h.
@@ -885,6 +913,8 @@ The file library is much simpler but also work with S3 and local storage. To ass
 When it comes to using those data model files in the frontend site, there are a few methods on the `HasFiles` trait that will help you to retrieve direct URLs:
 
 ```php
+<?php
+
 /**
  * Returns the url of the associated file for $roleName.
  * Optionally indicate which locale of the file if your site has multiple languages.
