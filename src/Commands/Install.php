@@ -33,8 +33,8 @@ class Install extends Command
     {
         $routesPath = base_path('routes');
 
-        if (!File::exists($routesPath)) {
-            File::makeDirectory($routesPath, 0755, true);
+        if (!$this->files->exists($routesPath)) {
+            $this->files->makeDirectory($routesPath, 0755, true);
         }
 
         $stub = $this->files->get(__DIR__ . '/stubs/admin.stub');
@@ -47,8 +47,8 @@ class Install extends Command
     {
         $exceptionsPath = app_path('Exceptions');
 
-        if (!File::exists($exceptionsPath)) {
-            File::makeDirectory($exceptionsPath, 0755, true);
+        if (!$this->files->exists($exceptionsPath)) {
+            $this->files->makeDirectory($exceptionsPath, 0755, true);
         }
 
         $stub = $this->files->get(__DIR__ . '/stubs/Handler.stub');
