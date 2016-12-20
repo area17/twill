@@ -166,11 +166,11 @@ class CmsToolkitServiceProvider extends ServiceProvider
         ];
 
         if ($this->app->runningInConsole()) {
-            foreach ($this->migrations as $migration) {
+            foreach ($migrations as $migration) {
                 $this->publishMigration($migration);
             }
 
-            foreach ($this->optionalMigrations as $migration => $feature) {
+            foreach ($optionalMigrations as $migration => $feature) {
                 if (config('cms-toolkit.enabled.' . $feature)) {
                     $this->publishMigration($migration);
                 }
