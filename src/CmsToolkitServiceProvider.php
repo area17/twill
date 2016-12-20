@@ -3,9 +3,9 @@
 namespace A17\CmsToolkit;
 
 use A17\CmsToolkit\Commands\CreateSuperAdmin;
-use A17\CmsToolkit\Commands\Install;
 use A17\CmsToolkit\Commands\ModuleMake;
 use A17\CmsToolkit\Commands\RefreshLQIP;
+use A17\CmsToolkit\Commands\Setup;
 use A17\CmsToolkit\Commands\UpdateCmsAssets;
 use A17\CmsToolkit\Helpers\FlashNotifier;
 use A17\CmsToolkit\Http\ViewComposers\ActiveNavigation;
@@ -200,6 +200,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
+                Setup::class,
                 UpdateCmsAssets::class,
                 ModuleMake::class,
                 CreateSuperAdmin::class,

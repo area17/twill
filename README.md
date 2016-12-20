@@ -77,6 +77,12 @@ Run the install command
 php artisan cms-toolkit:install
 ```
 
+Run the setup command
+
+```bash
+php artisan cms-toolkit:setup
+```
+
 That's about it!
 
 

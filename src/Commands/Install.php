@@ -25,7 +25,6 @@ class Install extends Command
         $this->addRoutesFile();
         $this->addServiceProvider();
         $this->replaceExceptionsHandler();
-        $this->call('cms-toolkit:setup');
     }
 
     private function addRoutesFile()
