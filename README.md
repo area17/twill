@@ -42,7 +42,18 @@ This package is in very early stage as of December '16. Most of the code it prov
 
 ## Install
 
-Via Composer
+This is a private package hosted on [code.area17.com](https://code.area17.com) for now, so you need to add the following to your `composer.json` file before installing:
+
+```json
+"repositories": [
+    {
+        "type": "git",
+        "url": "git@code.area17.com:a17/laravel-cms-toolkit.git"
+    }
+],
+```
+
+Then you should be able to run:
 
 ```bash
 composer require a17/laravel-cms-toolkit
