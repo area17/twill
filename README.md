@@ -22,6 +22,23 @@ In development, you can use it in any Laravel environment like [Valet](https://l
 
 This package is in very early stage as of December '16. Most of the code it provides has been battle tested over the last 2 years through thousands of Unfuddle tickets but you know how it is... I'm pretty sure most of the bugs you'll encounter will be related to the creation of this package and how it hooks into your application. Feel free to ping on HipChat anytime :)
 
+## Table of content
+
+* [Introduction](#introduction)
+* [Install](#install)
+* [Usage](#usage)
+ * [Static templates](#static-templates)
+ * [Configuration](#configuration)
+ * [Users management](#users-management)
+ * [CRUD Modules](#crud-modules)
+ * [Media Library](#media-library)
+ * [File library](#file-library)
+ * [S3 direct upload](#s3-direct-upload)
+ * [Block editor](#block-editor)
+ * [Frontend controllers](#frontend-controllers)
+ * [Roadmap](#roadmap)
+ * [Other useful packages](#other-useful-packages)
+* [Changelog](#changelog)
 
 ## Install
 
@@ -1036,6 +1053,6 @@ TODO
 - [ufirst/lang-import-export](https://github.com/ufirstgroup/laravel-lang-import-export)  provides artisan commands to import and export language files from and to CSV
 - [nikaia/translation-sheet](https://github.com/nikaia/translation-sheet) allows translating Laravel languages files using a Google Spreadsheet.
 
-## Change log
+## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
