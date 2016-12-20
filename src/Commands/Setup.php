@@ -17,7 +17,7 @@ class Setup extends Command
         $this->call('migrate');
         $this->createSuperAdmin();
         $this->publishAssets();
-        $this->publishConfigs();
+        $this->publishConfig();
     }
 
     private function publishMigrations()
