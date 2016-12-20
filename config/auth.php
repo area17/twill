@@ -2,5 +2,5 @@
 
 return [
     'driver' => 'eloquent',
-    'model' => A17\CmToolkit\Model\User::class,
+    'model' => A17\CmsToolkit\Models\User::class,
 ];

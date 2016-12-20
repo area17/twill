@@ -138,22 +138,21 @@ class CmsToolkitServiceProvider extends ServiceProvider
 
     private function publishConfigs()
     {
-        $this->publishes([__DIR__ . '/../config/cms-toolkit-publish.php' => config_path('cms-toolkit.php')], 'config');
-        $this->publishes([__DIR__ . '/../config/cms-navigation.php' => config_path('cms-navigation.php')], 'config');
-    }
-
-    private function mergeConfigs()
-    {
         config(['filesystems.disks.s3' => require __DIR__ . '/../config/s3.php']);
 
         if (config('cms-toolkit.enabled.users-management')) {
             config(['auth.providers.users' => require __DIR__ . '/../config/auth.php']);
         }
 
+        $this->publishes([__DIR__ . '/../config/cms-toolkit-publish.php' => config_path('cms-toolkit.php')], 'config');
+        $this->publishes([__DIR__ . '/../config/cms-navigation.php' => config_path('cms-navigation.php')], 'config');
+    }
+
+    private function mergeConfigs()
+    {
         $this->mergeConfigFrom(__DIR__ . '/../config/cms-toolkit.php', 'cms-toolkit');
         $this->mergeConfigFrom(__DIR__ . '/../config/services.php', 'services');
         $this->mergeConfigFrom(__DIR__ . '/../config/laravel-env-validator.php', 'laravel-env-validator');
-
     }
 
     private function publishMigrations()

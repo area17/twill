@@ -94,7 +94,10 @@ class RouteServiceProvider extends ServiceProvider
             }
 
             if ($resource) {
-                Route::resource($slug, "{$className}Controller", $resource_options);
+                $customRoutePrefix = !empty($groupPrefix) ? "{$groupPrefix}." : "";
+                Route::group(['as' => $customRoutePrefix], function () use ($slug, $className, $resource_options) {
+                    Route::resource($slug, "{$className}Controller", $resource_options);
+                });
             }
         });
     }

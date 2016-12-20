@@ -17,7 +17,7 @@ return [
     | Application Admin URL
     |--------------------------------------------------------------------------
     |
-    | This value is the URL where your admin will be served from.
+    | This value is the URL of your admin application.
     |
      */
     'admin_app_url' => env('ADMIN_APP_URL', 'admin.' . env('APP_URL')),

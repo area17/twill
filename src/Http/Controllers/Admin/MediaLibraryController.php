@@ -32,7 +32,8 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     public function __construct(Application $app, Request $request)
     {
         parent::__construct($app, $request);
-        $this->middleware('can:edit', ['only' => ['signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
+        $this->removeMiddleware('can:edit');
+        $this->middleware('can:edit', ['only' => ['create', 'signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = config('cms-toolkit.media_library.endpoint_type');
     }
 

@@ -13,9 +13,9 @@
                     @endphp
                     @if ($isModule)
                         @php
-                            $module = substr($global_navigation_element['route'], 0, strpos($global_navigation_element['route'], '.'));
-                            $action = substr($global_navigation_element['route'], strpos($global_navigation_element['route'], '.') + strlen('.'));
-                            $href = !empty($global_navigation_element['route']) ? ($isModule ? moduleRoute($module, $global_navigation_key == $module ? null : $global_navigation_key, $action) : route($primary_navigation_element['route'])) : '#';
+                            $module = $global_navigation_key;
+                            $action = $global_navigation_element['route'] ?? 'index';
+                            $href = moduleRoute($module, null, $action);
                         @endphp
                     @elseif ($global_navigation_element['page'] ?? false)
                         @php
@@ -23,7 +23,7 @@
                         @endphp
                     @else
                         @php
-                            $href = !empty($global_navigation_element['route']) ? ($isModule ? moduleRoute($module, $global_navigation_key == $module ? null : $global_navigation_key, $action) : route($global_navigation_element['route'], $global_navigation_element['params'] ?? [])) : '#';
+                            $href = !empty($global_navigation_element['route']) ? route($global_navigation_element['route'], $global_navigation_element['params'] ?? []) : '#';
                         @endphp
                     @endif
                     <a href="{{ $href }}">{{ $global_navigation_element['title'] }}</a>

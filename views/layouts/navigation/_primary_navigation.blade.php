@@ -14,8 +14,8 @@
                     @if ($isModule)
                         @php
                             $module = $primary_navigation_key;
-                            $action = $primary_navigation_element['route'];
-                            $href = !empty($primary_navigation_element['route']) ? ($isModule ? moduleRoute($module, $_global_active_navigation, $action) : route($primary_navigation_element['route'])) : '#';
+                            $action = $primary_navigation_element['route'] ?? 'index';
+                            $href = moduleRoute($module, null, $action);
                         @endphp
                     @elseif($primary_navigation_element['page'] ?? false)
                         @php
