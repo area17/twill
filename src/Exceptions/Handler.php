@@ -31,7 +31,7 @@ class Handler extends ExceptionHandler
     {
         $e = $this->prepareException($e);
 
-        if ($e instanceof HttpResponseException) {
+        if ($e instanceof HttpResponseException || $e instanceof ValidationException) {
             return $e->getResponse();
         } elseif ($e instanceof AuthenticationException) {
             return $this->handleUnauthenticated($request, $e);
@@ -107,8 +107,8 @@ class Handler extends ExceptionHandler
 
         return response(
             $whoops->handleException($e),
-            $e->getStatusCode(),
-            $e->getHeaders()
+            method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500,
+            method_exists($e, 'getHeaders') ? $e->getHeaders() : []
         );
     }
 
