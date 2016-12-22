@@ -18,6 +18,8 @@ class UserRepository extends ModuleRepository
     {
         $this->addLikeFilterScope($query, $scopes, 'name');
 
+        $query->where('role', '<>', 'SUPERADMIN');
+
         return parent::filter($query, $scopes);
     }
 }
