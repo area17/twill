@@ -67,6 +67,6 @@ class Install extends Command
 
         $stub = $this->files->get(__DIR__ . '/stubs/Handler.stub');
 
-        $this->files->put($exceptionsPath . 'Handler.php', $stub);
+        $this->files->put($exceptionsPath . '/Handler.php', $stub);
     }
 }
