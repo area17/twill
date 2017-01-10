@@ -93,11 +93,11 @@
                                         @resourceView($moduleName, 'column_with_show_link')
                                     @elseif (isset($column['edit_link']) && $column['edit_link'] && $currentUser->can('edit'))
                                         @resourceView($moduleName, 'column_with_edit_link')
-                                    @elseif(isset($column['thumb']) && $column['thumb'] && isset($column['variant']))
+                                    @elseif(isset($column['thumb']) && $column['thumb'])
                                         <img src="{{ $item->cmsImage(
-                                                $column['variant']['role'],
-                                                $column['variant']['crop'] ?? 'default',
-                                                $column['variant']['params'] ?? ['w' => 80, 'h' => 80, 'fit' => 'crop']
+                                                isset($column['variant']) ? $column['variant']['role'] : head(array_keys($item->mediasParams)),
+                                                isset($column['variant']) ? $column['variant']['crop'] : head(array_keys(head($item->mediasParams))),
+                                                isset($column['variant']) && isset($column['variant']['params']) ? $column['variant']['params'] : ['w' => 80, 'h' => 80, 'fit' => 'crop']
                                             ) }}" width="80" height="80">
                                     @else
                                         @resourceView($moduleName, 'column')
