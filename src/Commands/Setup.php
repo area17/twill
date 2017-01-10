@@ -59,5 +59,9 @@ class Setup extends Command
             '--provider' => 'A17\CmsToolkit\CmsToolkitServiceProvider',
             '--tag' => 'config',
         ]);
+
+        $this->call('vendor:publish', [
+            '--provider' => "Dimsav\Translatable\TranslatableServiceProvider",
+        ]);
     }
 }
