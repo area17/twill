@@ -15,7 +15,7 @@
                         @php
                             $module = $secondary_navigation_key;
                             $action = $secondary_navigation_element['route'] ?? 'index';
-                            $href = moduleRoute($module, null, $action);
+                            $href = moduleRoute($module, $_primary_active_navigation, $action);
                         @endphp
                     @elseif ($secondary_navigation_element['page'] ?? false)
                         @php
