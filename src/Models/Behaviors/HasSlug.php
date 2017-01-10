@@ -131,7 +131,7 @@ trait HasSlug
 
     public function getActiveSlug($locale = null)
     {
-        return $this->slugs->first(function ($key, $slug) use ($locale) {
+        return $this->slugs->first(function ($slug) use ($locale) {
             return ($slug->locale === ($locale ?? app()->getLocale())) && $slug->active;
         }) ?? null;
     }

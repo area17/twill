@@ -17,7 +17,7 @@ trait HasFiles
         $locale = $locale ?? app()->getLocale();
 
         if (!$file) {
-            $file = $this->files->first(function ($key, $file) use ($role, $locale) {
+            $file = $this->files->first(function ($file) use ($role, $locale) {
                 $localeScope = ($locale === 'fallback') ? true : ($file->pivot->locale === $locale);
                 return $file->pivot->role === $role && $localeScope;
             });
@@ -34,7 +34,7 @@ trait HasFiles
     {
         $locale = $locale ?? app()->getLocale();
 
-        $files = $this->files->filter(function ($file, $key) use ($role, $locale) {
+        $files = $this->files->filter(function ($file) use ($role, $locale) {
             return $file->pivot->role === $role && $file->pivot->locale === $locale;
         });
 

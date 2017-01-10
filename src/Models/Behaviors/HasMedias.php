@@ -119,7 +119,7 @@ trait HasMedias
 
     public function socialImage($role, $crop = "default", $params = [], $has_fallback = false)
     {
-        $media = $this->medias->first(function ($key, $media) use ($role, $crop) {
+        $media = $this->medias->first(function ($media) use ($role, $crop) {
             return $media->pivot->role === $role && $media->pivot->crop === $crop;
         });
 
