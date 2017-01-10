@@ -369,7 +369,7 @@ To make it work properly and to get active states automatically, you should stru
 <?php
 
 Route::get('/dashboard')->...->name('admin.dashboard');
-Route::group(['prefix' => 'work'], function ({
+Route::group(['prefix' => 'work'], function () {
     Route::module('projects');
     Route::module('clients');
     Route::module('industries');
