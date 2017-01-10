@@ -20,5 +20,7 @@ class {{requestClassName}} extends Request
          * ]);
          *
          */
+
+        return [];
     }
 }
