@@ -17,7 +17,7 @@
                         <label class="email required control-label" for="email">
                             Email<abbr title="required">*</abbr>
                         </label>
-                        <input class="string email required" id="credentials_email" name="email" type="email"/>
+                        <input class="string email required" id="credentials_email" name="email" type="email" value="{{ $email }}" />
                     </div>
                     <div class="input password required credentials_password field_with_hint">
                         <label class="password required control-label" for="password">
