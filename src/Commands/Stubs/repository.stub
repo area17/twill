@@ -2,16 +2,13 @@
 
 namespace App\Repositories;
 
-// use A17\CmsToolkit\Repositories\Behaviors\HandleTranslations;
-// use A17\CmsToolkit\Repositories\Behaviors\HandleSlugs;
-// use A17\CmsToolkit\Repositories\Behaviors\HandleMedias;
-// use A17\CmsToolkit\Repositories\Behaviors\HandleFiles;
+{{repositoryImports}}
 use A17\CmsToolkit\Repositories\ModuleRepository;
 use App\Models\{{modelName}};
 
 class {{repositoryClassName}} extends ModuleRepository
 {
-    // use HandleTranslations, HandleSlugs, HandleMedias, HandleFiles;
+    {{repositoryTraits}}
 
     public function __construct({{modelName}} $model)
     {

@@ -1,0 +1,10 @@
+<?php
+
+namespace App\Models\Slugs;
+
+use A17\CmsToolkit\Models\Model;
+
+class {{modelSlugClassName}} extends Model
+{
+    protected $table = "{{modelName}}_slugs";
+}

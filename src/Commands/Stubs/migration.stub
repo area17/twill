@@ -12,19 +12,16 @@ class Create{{tableClassName}}Tables extends Migration
 
             // add some fields
 
-            // use this if you want to control published state
-            $table->boolean('published');
-
             // use a json field to store block editor fields
-            $table->json('content')->nullable();
+            // $table->json('content')->nullable();
 
-            // use this with the Sortable trait
-            $table->integer('position')->unsigned()->nullable();
+            // use this with the HasPosition trait
+            // $table->integer('position')->unsigned()->nullable();
         });
 
         // remove this if you're not going to use any translated field
         Schema::create('{{translationTable}}_translations', function (Blueprint $table) {
-            createDefaultTranslationsTableFields({{table}}, {{translationTable}});
+            createDefaultTranslationsTableFields($table, '{{translationTable}}');
 
             // add some translated fields
             // $table->string('title', 200)->nullable();
@@ -34,7 +31,7 @@ class Create{{tableClassName}}Tables extends Migration
 
         // remove this if you're not going to use slugs
         Schema::create('{{translationTable}}_slugs', function (Blueprint $table) {
-            createDefaultSlugsTableFields({{table}}, {{translationTable}});
+            createDefaultSlugsTableFields($table, '{{translationTable}}');
         });
     }
 

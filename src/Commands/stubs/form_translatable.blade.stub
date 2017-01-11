@@ -5,19 +5,23 @@
 @section('form')
     {{ Form::model($form_fields, $form_options) }}
     @formField('publish_status')
+    @formField('lang_switcher')
     <section class="box">
         <header class="header_small">
             <h3><b>{{ $form_fields['title'] or 'New item' }}</b></h3>
         </header>
-        @formField('input', [
+        @formField('input_locale', [
             'field' => 'title',
             'field_name' => 'Title',
+            'required' => 'required'
         ])
-        @formField('textarea', [
-            'field' => 'embed_video',
-            'field_name' => 'Code'
+        @formField('textarea_locale', [
+            'field' => 'description',
+            'field_name' => 'Description',
+            'textLimit' => 100,
+            'required' => 'required'
         ])
-        @formField('rich_textarea', [
+        @formField('rich_textarea_locale', [
             'field' => 'description',
             'field_name' => 'Description'
         ])

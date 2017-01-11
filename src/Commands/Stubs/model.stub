@@ -2,17 +2,12 @@
 
 namespace App\Models;
 
-// use A17\CmsToolkit\Models\Behaviors\HasTranslation;
-// use A17\CmsToolkit\Models\Behaviors\HasSlug;
-// use A17\CmsToolkit\Models\Behaviors\HasMedias;
-// use A17\CmsToolkit\Models\Behaviors\HasFiles;
-// use A17\CmsToolkit\Models\Behaviors\Sortable;
-// use A17\CmsToolkit\Models\Behaviors\Sorts;
+{{modelImports}}
 use A17\CmsToolkit\Models\Model;
 
-class {{modelClassName}} extends Model //implements Sortable
+class {{modelClassName}} extends Model {{modelImplements}}
 {
-    // use HasTranslation, HasSlug, HasMedias, HasFiles, Sorts;
+    {{modelTraits}}
 
     protected $fillable = [
         // 'published',
@@ -31,12 +26,14 @@ class {{modelClassName}} extends Model //implements Sortable
     // ];
 
     // those fields get auto set to null if not submited
-    protected $nullable = [];
+    public $nullable = [];
 
     // those fields get auto set to false if not submited
-    protected $checkboxes = [];
+    public $checkboxes = [];
 
+    // fill this in if you use the HasMedias traits
     // public $mediasParams = [];
 
+    // fill this in if you use the HasFiles traits
     // public $filesParams = [];
 }
