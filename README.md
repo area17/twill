@@ -418,10 +418,27 @@ You should follow the Laravel documentation regarding [authorization](https://la
 You can generate all the files needed for a new CRUD using the generator:
 
 ```bash
-php artisan cms-toolkit:module YourPluralModuleName
+php artisan cms-toolkit:module yourPluralModuleName
 ```
 
+The command has a couple of options : 
+- `--hasTranslation (-T)`, 
+- `--hasSlug (-S)`, 
+- `--hasMedias (-M)`,
+- `--hasFiles (-F)`,
+- `--hasPosition (-P)`.
+
 It will generate a migration file, a model, a repository, a controller, a form request object and an index and form views.
+
+Start by filling in the migration and models.
+
+Add `Route::module('yourPluralModuleName}');` to your admin routes file.
+
+Setup a new CMS menu item in `config/cms-navigation.php`.
+
+Setup your `index` and form `views`.
+
+Enjoy.
 
 #### Migrations
 Migrations are regular Laravel migrations. A few helpers are available to create the default fields any CRUD module will use:
@@ -435,6 +452,7 @@ Schema::create('table_name_plural', function (Blueprint $table) {
     // $table->increments('id');
     // $table->softDeletes();
     // $table->timestamps();
+    // $table->boolean('published');
 });
 
 Schema::create('table_name_singular_translations', function (Blueprint $table) {
@@ -443,9 +461,9 @@ Schema::create('table_name_singular_translations', function (Blueprint $table) {
     // createDefaultTableFields($table);
     // $table->string('locale', 6)->index();
     // $table->boolean('active');
-    // $table->integer("$tableNameSingular_id")->unsigned();
-    // $table->foreign("$tableNameSingular_id", "fk_$tableNameSingular_translations_$tableNameSingular_id")->references('id')->on($table)->onDelete('CASCADE');
-    // $table->unique(["$tableNameSingular_id", 'locale']);
+    // $table->integer("{$tableNameSingular}_id")->unsigned();
+    // $table->foreign("{$tableNameSingular}_id", "fk_{$tableNameSingular}_translations_{$tableNameSingular}_id")->references('id')->on($table)->onDelete('CASCADE');
+    // $table->unique(["{$tableNameSingular}_id", 'locale']);
 });
 
 Schema::create('table_name_singular_slugs', function (Blueprint $table) {
@@ -454,8 +472,8 @@ Schema::create('table_name_singular_slugs', function (Blueprint $table) {
     // $table->string('slug');
     // $table->string('locale', 6)->index();
     // $table->boolean('active');
-    // $table->integer("$tableNameSingular_id")->unsigned();
-    // $table->foreign("$tableNameSingular_id", "fk_$tableNameSingular_translations_$tableNameSingular_id")->references('id')->on($table)->onDelete('CASCADE')->onUpdate('NO ACTION');
+    // $table->integer("{$tableNameSingular}_id")->unsigned();
+    // $table->foreign("{$tableNameSingular}_id", "fk_{$tableNameSingular}_translations_{$tableNameSingular}_id")->references('id')->on($table)->onDelete('CASCADE')->onUpdate('NO ACTION');
 });
 ```
 
@@ -473,7 +491,7 @@ For fields that should always be saved to false in the database when not sent by
 
 Depending on the features you need on your model, include the availables traits and configure their respective options:
 
-- Sorts: implement the `A17\CmsToolkit\Models\Behaviors\Sortable` interface and add a position field to your fillables.
+- HasPosition: implement the `A17\CmsToolkit\Models\Behaviors\Sortable` interface and add a position field to your fillables.
 
 - HasTranslation: add translated fields in the `translatedAttributes` array and in the `fillable` array of the generated translatable model in `App/Models/Translations` (always keep the active and locale fields).
 
@@ -508,23 +526,8 @@ public $filesParams = ['finishe', 'caring', 'warranty']; // a list of file roles
 ```
 
 
-- HasSlug: specify the field(s) that is going to be used to create the slug in the `slugAttributes` array and create a Slug model in the `App/Models/Slugs` directory with the following content:
+- HasSlug: specify the field(s) that is going to be used to create the slug in the `slugAttributes` array
 
-```php
-<?php
-
-namespace App\Models\Slugs;
-
-use A17\CmsToolkit\Models\Model;
-
-class ModelSlug extends Model
-{
-
-    protected $table = 'model_slugs';
-
-}
-
-```
 
 #### Repositories
 Nothing to do by default after generation.
@@ -750,14 +753,13 @@ You can also add columns after the publication state and before the edit action 
 ##### rich textarea (and rich_textarea_locale)
 
 ```php
-@include('admin.layouts.form_partials._rich_textarea', [
+@formField('rich_textarea', [
     'field' => 'name',
     'field_name' => 'Name',
     'data_medium_editor_options' => "editorOptions", // optional
     'hint' => 'Hint',
     'textLimit' => 100,
     'required' => 'required'
-
 ])
 
 <script>
@@ -807,7 +809,7 @@ You can also add columns after the publication state and before the edit action 
 ##### medias
 
 ```php
-@ formField('medias', [
+@formField('medias', [
     'media_role' => 'media_role', 
     'media_role_name' => 'Media role name',
     'with_multiple' => true/false, 
@@ -819,7 +821,7 @@ You can also add columns after the publication state and before the edit action 
 ##### files
 
 ```php
-@ formField('files', [
+@formField('files', [
     'file_role' => 'media_role', 
     'file_role_name' => 'Media role name',
     'with_multiple' => true/false, 
