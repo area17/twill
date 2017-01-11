@@ -212,6 +212,8 @@ abstract class ModuleRepository
         foreach ($scopes as $column => $value) {
             if (is_array($value)) {
                 $query->whereIn($column, $value);
+            } elseif ($column[0] == '%') {
+                $value[0] == '!' ? $query->where(substr($column, 1), 'not like', '%' . substr($value, 1) . '%') : $query->where(substr($column, 1), 'like', '%' . $value . '%');
             } elseif ($value[0] == '!') {
                 $query->where($column, '<>', substr($value, 1));
             } else {
