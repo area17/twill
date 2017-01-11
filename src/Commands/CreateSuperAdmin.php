@@ -14,6 +14,7 @@ class CreateSuperAdmin extends Command
 
     public function handle()
     {
+        $this->info("Let's create a superadmin account!");
         $email = $this->ask('Enter an email');
         if ($this->validateEmail($email)) {
             $password = $this->ask('Enter a password');
