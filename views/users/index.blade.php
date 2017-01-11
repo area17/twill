@@ -1,6 +1,5 @@
 @extends('cms-toolkit::layouts.resources.index', [
-    'delete' => false,
-    'sort' => false,
+    'delete' => $currentUser->can('edit-user-role'),
     'create' => $currentUser->can('edit-user-role'),
     'publish' => $currentUser->can('edit-user-role'),
     'columns' => [

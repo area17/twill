@@ -4,6 +4,7 @@ namespace A17\CmsToolkit\Models;
 
 use A17\CmsToolkit\Models\Behaviors\HasMedias;
 use A17\CmsToolkit\Models\Enums\UserRole;
+use A17\CmsToolkit\Notifications\Welcome as WelcomeNotification;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Foundation\Auth\User as AuthenticatableContract;
@@ -61,6 +62,11 @@ class User extends AuthenticatableContract
     public function isImpersonating()
     {
         return Session::has('impersonate');
+    }
+
+    public function sendWelcomeNotification($token)
+    {
+        $this->notify(new WelcomeNotification($token));
     }
 
 }

@@ -1,3 +1,9 @@
+@php
+
+$passwordText = isset($welcome) && $welcome ? 'Choose Password' : 'Reset Password';
+
+@endphp
+
 <!DOCTYPE html>
 <html dir="ltr" lang="en-US">
     <head>
@@ -10,7 +16,7 @@
                 <input type="hidden" name="token" value="{{ $token }}">
                 <section class="box box-login">
                     <header>
-                        <h3><b>{{ config('app.name') }} - Reset Password</b></h3>
+                        <h3><b>{{ config('app.name') }} - {{ $passwordText }}</b></h3>
                     </header>
                     @include('cms-toolkit::layouts._flash')
                     <div class="input email required credentials_email field_with_hint">
@@ -32,7 +38,7 @@
                         <input class="password required" id="credentials_password_confirmation" name="password_confirmation" type="password"/>
                     </div>
                     <footer>
-                        <input class="btn btn-small" type="submit" value="Reset Password"/>
+                        <input class="btn btn-small" type="submit" value="{{ $passwordText }}"/>
                     </footer>
                 </section>
             </form>

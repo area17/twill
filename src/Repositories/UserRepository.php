@@ -4,6 +4,7 @@ namespace A17\CmsToolkit\Repositories;
 
 use A17\CmsToolkit\Models\User;
 use A17\CmsToolkit\Repositories\Behaviors\HandleMedias;
+use Password;
 
 class UserRepository extends ModuleRepository
 {
@@ -21,5 +22,14 @@ class UserRepository extends ModuleRepository
         $query->where('role', '<>', 'SUPERADMIN');
 
         return parent::filter($query, $scopes);
+    }
+
+    public function afterSave($user, $fields)
+    {
+        if (empty($user->password)) {
+            $user->sendWelcomeNotification(
+                Password::getRepository()->create($user)
+            );
+        }
     }
 }

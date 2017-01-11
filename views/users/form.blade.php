@@ -6,7 +6,9 @@
 
 @section('form')
     {{ Form::model($form_fields, $form_options) }}
-        @formField('publish_status')
+        @can('edit-user-role')
+            @formField('publish_status')
+        @endcan
         <section class="box">
             <header class="header_small">
                 <h3><b>{{ isset($form_fields['name']) ? $form_fields['name'] . ($isSuperAdmin ? ' (SuperAdmin)' : '') : 'New user' }}</b></h3>

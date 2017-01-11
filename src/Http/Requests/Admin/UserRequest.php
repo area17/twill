@@ -11,10 +11,26 @@ class UserRequest extends Request
 
     public function rules()
     {
-        return [
-            'name' => 'required',
-            // 'email' => 'required|email|max:255',
-        ];
+        switch ($this->method()) {
+            case 'POST':
+                {
+                    return [
+                        'name' => 'required',
+                        'email' => 'required|email|unique:users,email',
+                        'role' => 'required',
+                    ];
+                }
+            case 'PATCH':
+                {
+                    return [
+                        'name' => 'required',
+                    ];
+                }
+            default:break;
+        }
+
+        return [];
+
     }
 
 }

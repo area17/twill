@@ -2,9 +2,9 @@
 
 namespace A17\CmsToolkit\Http\Controllers\Admin;
 
+use DB;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
-use DB;
 
 class ResetPasswordController extends Controller
 {
@@ -25,7 +25,16 @@ class ResetPasswordController extends Controller
     {
         return view('cms-toolkit::auth.passwords.reset')->with([
             'token' => $token,
-            'email' => DB::table('password_resets')->where('token', $token)->first()->email
+            'email' => DB::table('password_resets')->where('token', $token)->first()->email,
+        ]);
+    }
+
+    public function showWelcomeForm(Request $request, $token = null)
+    {
+        return view('cms-toolkit::auth.passwords.reset')->with([
+            'token' => $token,
+            'email' => DB::table('password_resets')->where('token', $token)->first()->email,
+            'welcome' => true,
         ]);
     }
     /**
