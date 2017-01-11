@@ -48,7 +48,7 @@
                             @if ($sort && $currentUser->can('sort'))
                                 <th class="tool">—</th>
                             @endif
-                            @if ($publish && $currentUser->can('publish'))
+                            @if ($publish)
                                 <th class="tool">{{ $publish_title or '—'}}</th>
                             @endif
                             @if (view()->exists('admin.' . $moduleName . '._before_index_headers'))
@@ -78,7 +78,7 @@
                             @if ($sort && $currentUser->can('sort'))
                                 @resourceView($moduleName, 'sort_action')
                             @endif
-                            @if ($publish && $currentUser->can('publish'))
+                            @if ($publish)
                                 @resourceView($moduleName, 'publish_action')
                             @endif
                             @if (view()->exists('admin.' . $moduleName . '._before_index_columns'))
