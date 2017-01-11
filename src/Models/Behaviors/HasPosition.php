@@ -2,10 +2,10 @@
 
 namespace A17\CmsToolkit\Models\Behaviors;
 
-trait Sorts
+trait HasPosition
 {
 
-    protected static function bootSorts()
+    protected static function bootHasPosition()
     {
         static::creating(function ($model) {
             $model->setToLastPosition();
