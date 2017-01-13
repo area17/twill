@@ -31,5 +31,7 @@ class UserRepository extends ModuleRepository
                 Password::getRepository()->create($user)
             );
         }
+
+        parent::afterSave($user, $fields);
     }
 }
