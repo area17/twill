@@ -13,7 +13,9 @@ if (!function_exists('createDefaultFields')) {
 if (!function_exists('createDefaultTranslationsTableFields')) {
     function createDefaultTranslationsTableFields($table, $tableNameSingular)
     {
-        createDefaultTableFields($table);
+        $table->increments('id');
+        $table->softDeletes();
+        $table->timestamps();
         $table->string('locale', 6)->index();
         $table->boolean('active');
         $table->integer("{$tableNameSingular}_id")->unsigned();
@@ -25,7 +27,9 @@ if (!function_exists('createDefaultTranslationsTableFields')) {
 if (!function_exists('createDefaultSlugsTableFields')) {
     function createDefaultSlugsTableFields($table, $tableNameSingular)
     {
-        createDefaultTableFields($table);
+        $table->increments('id');
+        $table->softDeletes();
+        $table->timestamps();
         $table->string('slug');
         $table->string('locale', 6)->index();
         $table->boolean('active');
