@@ -34,6 +34,6 @@ if (!function_exists('createDefaultSlugsTableFields')) {
         $table->string('locale', 6)->index();
         $table->boolean('active');
         $table->integer("{$tableNameSingular}_id")->unsigned();
-        $table->foreign("{$tableNameSingular}_id", "fk_{$tableNameSingular}_translations_{$tableNameSingular}_id")->references('id')->on($table)->onDelete('CASCADE')->onUpdate('NO ACTION');
+        $table->foreign("{$tableNameSingular}_id", "fk_{$tableNameSingular}_slugs_{$tableNameSingular}_id")->references('id')->on($table)->onDelete('CASCADE')->onUpdate('NO ACTION');
     }
 }
