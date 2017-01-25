@@ -62,7 +62,7 @@
                                     {{ $column['title'] }}</th>
                                 @endif
                             @endforeach
-                            @resourceView($moduleName, 'after_index_headers', true)
+                            @resourceView($moduleName, 'after_index_headers')
                             @if ($edit && $currentUser->can('edit'))
                                 <th class="tool">—</th>
                             @endif
@@ -104,7 +104,7 @@
                                     @endif
                                 </td>
                             @endforeach
-                            @resourceView($moduleName, 'after_index_columns', true)
+                            @resourceView($moduleName, 'after_index_columns')
                             @if ($edit && $currentUser->can('edit'))
                                 @resourceView($moduleName, 'edit_action')
                             @endif
