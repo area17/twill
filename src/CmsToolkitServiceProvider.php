@@ -248,38 +248,27 @@ class CmsToolkitServiceProvider extends ServiceProvider
             return "<?php echo \$__env->make('{$view}', array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render(); ?>";
         });
 
-        // FIXME: module name is not resolved, push the view exists stuff to the echoed view
         $blade->directive('resourceView', function ($expression) use ($blade) {
 
             $expressionAsArray = str_getcsv($expression, ',', '\'');
 
             list($moduleName, $viewName) = $expressionAsArray;
 
-            $additional = $expressionAsArray[2] ?? false;
+            $partialNamespace = 'cms-toolkit::layouts.resources';
 
-            $moduleNamespace = $moduleName . '._' . $viewName;
-
-            $partialNamespace = view()->exists('admin.' . $moduleNamespace . '._' . $viewName)
-            ? ('admin.' . $moduleNamespace)
-            : view()->exists('admin.layouts.resources._' . $viewName)
-            ? 'admin.layouts.resources'
-            : 'cms-toolkit::layouts.resources';
-
-            if ($additional && $partialNamespace === 'cms-toolkit::layouts.resources') {
-                return "";
-            }
-
+            $viewModule = "'admin.'.$moduleName.'._{$viewName}'";
+            $viewApplication = "'admin.layouts.resources._{$viewName}'";
             $view = $partialNamespace . "._" . $viewName;
 
-            $expression = explode(',', $expression);
-            array_shift($expression);
-            $expression = "(" . implode(',', $expression) . ")";
-            if ($expression === "()") {
-                $expression = '([])';
+            return "<?php 
+            if( view()->exists($viewModule)) {
+                echo \$__env->make($viewModule, array_except(get_defined_vars(), ['__data', '__path']))->render(); 
+            } elseif( view()->exists($viewApplication)) {
+                echo \$__env->make($viewApplication, array_except(get_defined_vars(), ['__data', '__path']))->render(); 
+            } elseif( view()->exists('$view')) {
+                echo \$__env->make('$view', array_except(get_defined_vars(), ['__data', '__path']))->render(); 
             }
-
-            return "<?php echo \$__env->make('{$view}', array_except(
-            get_defined_vars(), ['__data', '__path']))->with{$expression}->render(); ?>";
+            ?>";            
         });
     }
 
