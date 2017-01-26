@@ -147,6 +147,10 @@ trait HasSlug
 
     public function getSlugParams($locale = null)
     {
+        $slugParams = $this->getSingleSlugParams($locale);
+        if ( $slugParams != null && !empty($slugParams))
+            return $slugParams;
+
         $slugParams = [];
         foreach ($this->translations as $translation) {
             if ($translation->locale == $locale || $locale == null) {
@@ -156,13 +160,55 @@ trait HasSlug
 
                 $slugDependenciesAttributes = [];
                 foreach ($attributes as $attribute) {
+                    if ( !isset($this->$attribute))
+                        throw new \Exception("Are you wake-up ? You must define the field {$attribute} in your model");
                     $slugDependenciesAttributes[$attribute] = $this->$attribute;
                 }
+
+                if ( !isset($translation->$slugAttribute))
+                    throw new \Exception("You must define the field {$slugAttribute} in your model");
 
                 $slugParam = [
                     'active' => $translation->active,
                     'slug' => $translation->$slugAttribute,
                     'locale' => $translation->locale,
+                ] + $slugDependenciesAttributes;
+
+                if ($locale != null) {
+                    return $slugParam;
+                }
+
+                $slugParams[] = $slugParam;
+            }
+        }
+
+        return $locale == null ? $slugParams : null;
+    }
+
+    public function getSingleSlugParams($locale = null)
+    {
+        $slugParams = [];
+        foreach(getLocales() as $appLocale) {
+            if ($appLocale == $locale || $locale == null) {
+                $attributes = $this->slugAttributes;
+
+                $slugAttribute = array_shift($attributes);
+
+                $slugDependenciesAttributes = [];
+                foreach ($attributes as $attribute) {
+                    if ( !isset($this->$attribute))
+                        throw new \Exception("Are you wake-up ? You must define the field {$attribute} in your model");
+
+                    $slugDependenciesAttributes[$attribute] = $this->$attribute;
+                }
+
+                if ( !isset($this->$slugAttribute))
+                    throw new \Exception("You must define the field {$slugAttribute} in your model");
+
+                $slugParam = [
+                    'active' => 1,
+                    'slug' => $this->$slugAttribute,
+                    'locale' => $appLocale,
                 ] + $slugDependenciesAttributes;
 
                 if ($locale != null) {
