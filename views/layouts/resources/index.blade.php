@@ -138,6 +138,11 @@
             <li>
                 @resourceView($moduleName, 'create_action')
             </li>
+            @if(isset($parent_id) && isset($back_link))
+                <li>
+                    <a href="{{$back_link}}" class="btn" title="Back">Back</a>
+                </li>            
+            @endif
         @endif
     </ul>
     </footer>
