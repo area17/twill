@@ -270,6 +270,21 @@ abstract class ModuleController extends Controller
         return view($view, $this->getIndexData() + $this->request->all());
     }
 
+    public function generic_resources()
+    {
+        $elements = [];
+        foreach ($this->request->input('data') as $element) {
+            $elements[$element['id']] = $this->repository->getById($element['id']);
+        }
+
+        $view = view()->exists('admin.' . $this->moduleName . '.insert_resources_list') ? 'admin.' . $this->moduleName . '.insert_resources_list' : "cms-toolkit::layouts.resources.insert_resources_list";
+
+        return view($view)->withItems($elements)
+            ->withElementRole($this->request->input('role'))
+            ->withNewRow(true)
+            ->withWithMultiple($this->request->input('with_multiple'));
+    }
+
     public function bucket()
     {
         $moduleName = snake_case($this->moduleName);
