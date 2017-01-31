@@ -20,7 +20,7 @@ if (!function_exists('routeLocalized')) {
 if (!function_exists('moduleRoute')) {
     function moduleRoute($moduleName, $prefix, $action, $parameters = [])
     {
-        $routeName = 'admin.' . ($prefix ? $prefix . '.' : '') . $moduleName . '.' . $action;
+        $routeName = 'admin.' . ($prefix ? $prefix . '.' : '') . camel_case($moduleName) . '.' . $action;
         return route($routeName, $parameters);
     }
 }
