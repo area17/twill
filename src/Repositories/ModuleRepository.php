@@ -52,7 +52,7 @@ abstract class ModuleRepository
             $query = $query->withTranslation();
         }
 
-        return $query->get()->lists($column, 'id');
+        return $query->get()->pluck($column, 'id');
     }
 
     public function create($fields)
