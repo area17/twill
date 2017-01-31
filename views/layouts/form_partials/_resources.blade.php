@@ -7,7 +7,7 @@
     var resources_options_{{$role_relationship}} = {
       "role": "{{ $role_relationship }}",
       "type": "{{ $with_multiple ? 'generic_multiple' : 'generic_single' }}",
-      "url": "{{ route('admin.' . $role_relationship . '.browser') }}",
+      "url": "{{ moduleRoute($role_relationship, $routePrefix, 'browser')}}",
       "title": "Attach {{ $role_relationship_name or $role_relationship }}",
       "max": {{ $media_max }}
     }
@@ -40,7 +40,7 @@
       </tr>
     </thead>
 
-    <tbody data-media-bucket="case_studies" data-media-template="{{ moduleRoute($role_relationship, $routePrefix, 'generic_resources', ['with_multiple' => $with_multiple]) }}" data-media-item=".media-row">
+    <tbody data-media-bucket="case_studies" data-media-template="{{ moduleRoute($role_relationship, $routePrefix, 'genericResources', ['with_multiple' => $with_multiple]) }}" data-media-item=".media-row">
 
     @if(isset($item))
         @foreach($item->case_studies as $single_resource)
