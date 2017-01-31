@@ -17,7 +17,7 @@ if (!function_exists('revAsset')) {
 
         }
 
-        return '/dist/' . $file;
+        return '/dev/' . $file;
     }
 }
 
