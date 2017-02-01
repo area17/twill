@@ -7,7 +7,6 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Http\Exception\HttpResponseException;
 use Illuminate\Validation\ValidationException;
 use Inspector;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +30,17 @@ class Handler extends ExceptionHandler
     {
         $e = $this->prepareException($e);
 
-        if ($e instanceof HttpResponseException || $e instanceof ValidationException) {
+        /*
+         * See Laravel 5.4 Changelog https://laravel.com/docs/5.4/upgrade
+         * The Illuminate\Http\Exception\HttpResponseException has been renamed to Illuminate\Http\Exceptions\HttpResponseException.
+         * Note that Exceptions is now plural.
+         */
+        $laravel53HttpResponseException = 'Illuminate\Http\Exception\HttpResponseException';
+        $laravel54HttpResponseException = 'Illuminate\Http\Exceptions\HttpResponseException';
+
+        $httpResponseExceptionClass = class_exists($laravel54HttpResponseException) ? $laravel54HttpResponseException : $laravel53HttpResponseException;
+
+        if ($e instanceof $httpResponseExceptionClass || $e instanceof ValidationException) {
             return $e->getResponse();
         } elseif ($e instanceof AuthenticationException) {
             return $this->handleUnauthenticated($request, $e);

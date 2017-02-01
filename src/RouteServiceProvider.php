@@ -54,9 +54,14 @@ class RouteServiceProvider extends ServiceProvider
 
     private function registerRouteMiddlewares()
     {
-        Route::middleware('noDebugBar', NoDebugBar::class);
-        Route::middleware('impersonate', Impersonate::class);
-        Route::middleware('guest', RedirectIfAuthenticated::class);
+        /*
+         * See Laravel 5.4 Changelog https://laravel.com/docs/5.4/upgrade
+         * The middleware method of the Illuminate\Routing\Router class has been renamed to aliasMiddleware().
+         */
+        $middlewareRegisterMethod = method_exists(Route::class, 'aliasMiddleware') ? 'aliasMiddleware' : 'middleware';
+        Route::$middlewareRegisterMethod('noDebugBar', NoDebugBar::class);
+        Route::$middlewareRegisterMethod('impersonate', Impersonate::class);
+        Route::$middlewareRegisterMethod('guest', RedirectIfAuthenticated::class);
     }
 
     protected function registerMacros()
