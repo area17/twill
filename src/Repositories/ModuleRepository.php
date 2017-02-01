@@ -18,7 +18,7 @@ abstract class ModuleRepository
         $query = $this->filter($query, $scopes);
         $query = $this->order($query, $orders);
 
-        if ($this->model instanceof Sortable && $perPage == -1) {
+        if ($this->model instanceof Sortable) {
             return $query->ordered()->get();
         }
 
