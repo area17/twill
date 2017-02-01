@@ -64,6 +64,8 @@ abstract class ModuleController extends Controller
         $this->modelName = $this->modelName ?? ucfirst(str_singular($this->moduleName));
         $this->routePrefix = ($request->route() != null ? ltrim($request->route()->getPrefix(), "/") : '');
 
+        $this->routePrefix = str_replace("/", ".", $this->routePrefix);
+
         $this->namespace = $this->namespace ?? config('cms-toolkit.namespace');
         $this->repository = $this->app->make("$this->namespace\Repositories\\" . $this->modelName . "Repository");
     }
