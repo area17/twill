@@ -97,7 +97,7 @@ abstract class ModuleController extends Controller
             'modelName' => $this->modelName,
             'routePrefix' => $this->routePrefix,
             'filters' => array_keys(array_except($this->filters, array_keys($this->defaultFilters))),
-            'filtersOn' => !empty($scopes),
+            'filtersOn' => !empty(array_except($scopes,array_keys($prependScope))),
         ];
 
         return array_replace_recursive($data, $this->indexData($this->request));
