@@ -22,7 +22,6 @@
             'edit_link' => true,
             'sort' => true,
             'field' => 'fieldName',
-            'col' => 1
         ],
         'relationName' => [
             'title' => 'Relation name',

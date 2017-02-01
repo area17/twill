@@ -16,6 +16,18 @@
             "email": "quentin@area17.com",
             "homepage": "https://area17.com/about/quentin-renard",
             "role": "Developer"
+        },
+        {
+            "name": "Fernando Petrelli",
+            "email": "fernando@area17.com",
+            "homepage": "https://area17.com/about/fernando-petrelli",
+            "role": "Developer"
+        },
+        {
+            "name": "Gilbert Moufflet",
+            "email": "gilbert@area17.com",
+            "homepage": "https://area17.com/about/gilbert-moufflet",
+            "role": "Developer"
         }
     ],
     "require": {

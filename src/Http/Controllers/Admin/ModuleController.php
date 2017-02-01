@@ -52,6 +52,8 @@ abstract class ModuleController extends Controller
      */
     protected $featureField;
 
+    protected $perPage = 50;
+
     protected $breadcrumb = false;
 
     public function __construct(Application $app, Request $request)
