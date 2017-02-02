@@ -172,7 +172,7 @@ return [
      */
     'seo' => [
         'site_title' => config('app.name'),
-        'site_title' => config('app.name'),
+        'site_desc' => config('app.name'),
         'image_default_id' => env('SEO_IMAGE_DEFAULT_ID'),
         'image_local_fallback' => env('SEO_IMAGE_LOCAL_FALLBACK'),
     ],
@@ -191,5 +191,21 @@ return [
         'whoops_path_host' => env('WHOOPS_HOST_PATH'),
         'debug_use_inspector' => env('DEBUG_USE_INSPECTOR', false),
         'debug_bar_in_fe' => env('DEBUG_BAR_IN_FE', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | CMS Toolkit Frontend assets configuration
+    |--------------------------------------------------------------------------
+    |
+    | This array allows you to setup frontend helpers related settings.
+    |
+     */
+    'frontend' => [
+        'rev_manifest_path' => public_path('dist/rev-manifest.json'),
+        'dev_assets_path' => public_path('dev'),
+        'dist_assets_path' => public_path('dist'),
+        'svg_sprites_path' => 'sprites.svg', // relative to dev/dist assets paths
+        'svg_sprites_use_hash_only' => true,
     ],
 ];
