@@ -158,13 +158,11 @@ return [
     | CMS Toolkit Auth configuration
     |--------------------------------------------------------------------------
     |
-    | Right now this array only allows you to redefine the
+    | Right now this only allows you to redefine the
     | default login redirect path.
     |
      */
-    'auth' => [
-        'login_redirect_path' => '/',
-    ],
+    'auth_login_redirect_path' => '/',
 
     /*
     |--------------------------------------------------------------------------
@@ -309,6 +307,23 @@ return [
         'debug_use_inspector' => env('DEBUG_USE_INSPECTOR', false),
         'debug_bar_in_fe' => env('DEBUG_BAR_IN_FE', false),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | CMS Toolkit Frontend assets configuration
+    |--------------------------------------------------------------------------
+    |
+    | This allows you to setup frontend helpers related settings.
+    |
+    |
+     */
+    'frontend' => [
+        'rev_manifest_path' => public_path('dist/rev-manifest.json'),
+        'dev_assets_path' => url('dev'),
+        'dist_assets_path' => url('dist'),
+        'svg_sprites_path' => 'sprites.svg', // relative to dev/dist assets paths
+        'svg_sprites_use_hash_only' => true,
+    ],
 ];
 
 ```
@@ -379,7 +394,7 @@ Route::group(['prefix' => 'work'], function () {
 
 ### Users management
 
-Authentication and authorization are provided by default in Laravel. This package simply leverages it and configure the views with the A17 CMS UI Toolkit for you. By default, users can login at `/login` and also reset their password through that screen. New users have to start by resetting their password before initial access to the admin application. You should redirect users to anywhere you want in your application after they login. The cms-toolkit configuration file has an option for you to change the default redirect path (`auth.login_redirect_path`).
+Authentication and authorization are provided by default in Laravel. This package simply leverages it and configure the views with the A17 CMS UI Toolkit for you. By default, users can login at `/login` and also reset their password through that screen. New users have to start by resetting their password before initial access to the admin application. You should redirect users to anywhere you want in your application after they login. The cms-toolkit configuration file has an option for you to change the default redirect path (`auth_login_redirect_path`).
 
 #### Roles
 The package currently only provides 3 different roles:

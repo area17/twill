@@ -10,7 +10,7 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
-            return redirect(config('cms-toolkit.auth.login_redirect_path', '/home'));
+            return redirect(config('cms-toolkit.auth_login_redirect_path', '/home'));
         }
 
         return $next($request);
