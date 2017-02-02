@@ -34,7 +34,16 @@
 
     <section class="box">
         <header class="header_small">
-            <h3><b>@if (isset($title)) {{ (!$sort ? (method_exists($items, 'total') ? $items->total() : count($items))  : count($items)) . ' ' . $title }}@endif</b></h3>
+            <h3>
+                <b>
+                    @if (isset($title))
+                        @php
+                            $countItems = (!$sort ? (method_exists($items, 'total') ? $items->total() : count($items))  : count($items));
+                        @endphp
+                        {{  $countItems . ' ' . ($countItems > 1 ? str_plural($title) : $title) }}
+                    @endif
+                </b>
+            </h3>
         </header>
         <div class="table_container">
             @if ($sort && $currentUser->can('sort'))
@@ -141,7 +150,7 @@
             @if(isset($parent_id) && isset($back_link))
                 <li>
                     <a href="{{$back_link}}" class="btn" title="Back">Back</a>
-                </li>            
+                </li>
             @endif
         @endif
     </ul>
