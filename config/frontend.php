@@ -12,8 +12,8 @@ return [
     |
      */
     'rev_manifest_path' => public_path('dist/rev-manifest.json'),
-    'dev_assets_path' => url('dev'),
-    'dist_assets_path' => url('dist'),
+    'dev_assets_path' => '/dev',
+    'dist_assets_path' => '/dist',
     'svg_sprites_path' => 'sprites.svg', // relative to dev/dist assets paths
     'svg_sprites_use_hash_only' => true,
 
