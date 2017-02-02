@@ -2,12 +2,8 @@
 
 namespace A17\CmsToolkit\Http\Controllers\Admin;
 
-use A17\CmsToolkit\Helpers\FlashLevel;
-use A17\CmsToolkit\Repositories\FileRepository;
-use A17\CmsToolkit\Repositories\MediaRepository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
-use Session;
 
 abstract class SubModuleController extends ModuleController
 {
@@ -15,10 +11,6 @@ abstract class SubModuleController extends ModuleController
     protected $parentRepository;
 
     protected $parentBreadcrumbField = 'title';
-
-    protected $defaultFilters = [
-        'fSearch' => 'title',
-    ];
 
     protected $breadcrumb = true;
 
@@ -29,21 +21,17 @@ abstract class SubModuleController extends ModuleController
 
         $this->setMiddlewarePermission();
 
-        $this->modelName = $this->modelName ?? implode("", array_map(function($s) {
-            return ucfirst(str_singular($s));
-        }, explode('.', $this->moduleName)) );
-
-        $this->routePrefix = ($request->route() != null ? ltrim($request->route()->getPrefix(), "/") : '');
-
-        $this->namespace = $this->namespace ?? config('cms-toolkit.namespace');
-        $this->repository = $this->app->make("$this->namespace\Repositories\\" . $this->modelName . "Repository");
+        $this->modelName = $this->getModelName();
+        $this->routePrefix = $this->getRoutePrefix();
+        $this->namespace = $this->getNamespace();
+        $this->repository = $this->getRepository();
 
         $parentModelName = ucfirst(str_singular(explode('.', $this->moduleName)[0]));
 
         $this->parentRepository = $this->app->make("$this->namespace\Repositories\\" . $parentModelName . "Repository");
     }
 
-    public function index($parent_id =null)
+    public function index($parent_id = null)
     {
         $view = view()->exists("admin.{$this->moduleName}.index") ? "admin.{$this->moduleName}.index" : "cms-toolkit::{$this->moduleName}.index";
 
@@ -61,24 +49,24 @@ abstract class SubModuleController extends ModuleController
 
     protected function getParentNameField()
     {
-        return str_singular(explode('.', $this->moduleName)[0]).'_id';
+        return str_singular(explode('.', $this->moduleName)[0]) . '_id';
     }
 
-    public function create($parent_id =null)
+    public function create($parent_id = null)
     {
         $this->setBackLink();
 
         $data = [
             'form_options' => [
                 'method' => 'POST',
-                'url' => moduleRoute($this->moduleName, $this->routePrefix, 'store',[$parent_id]),
+                'url' => moduleRoute($this->moduleName, $this->routePrefix, 'store', [$parent_id]),
             ] + $this->defaultFormOptions(),
             'form_fields' => $this->repository->getOldFormFieldsOnCreate(),
             'back_link' => $this->getBackLink(),
             'moduleName' => $this->moduleName,
             'modelName' => $this->modelName,
             'routePrefix' => $this->routePrefix,
-            'parent_id' => $parent_id
+            'parent_id' => $parent_id,
         ];
 
         $view = view()->exists("admin.{$this->moduleName}.form") ? "admin.{$this->moduleName}.form" : "cms-toolkit::{$this->moduleName}.form";
@@ -86,19 +74,19 @@ abstract class SubModuleController extends ModuleController
         return view($view, array_replace_recursive($data, $this->formData($this->request, $parent_id)));
     }
 
-    public function store($parent_id =null)
+    public function store($parent_id = null)
     {
         $formRequest = $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
-        $item = $this->repository->create($formRequest->all()+[$this->getParentNameField() => $parent_id]);
-        return $this->redirectToForm($item->id,[$parent_id]);
+        $item = $this->repository->create($formRequest->all() + [$this->getParentNameField() => $parent_id]);
+        return $this->redirectToForm($item->id, [$parent_id]);
     }
 
-    public function show($parent_id =null, $id =null)
+    public function show($parent_id = null, $id = null)
     {
         return $this->redirectToForm($id);
     }
 
-    public function edit($parent_id =null, $id =null)
+    public function edit($parent_id = null, $id = null)
     {
         $this->setBackLink();
         $view = view()->exists("admin.{$this->moduleName}.form") ? "admin.{$this->moduleName}.form" : "cms-toolkit::{$this->moduleName}.form";
@@ -106,13 +94,13 @@ abstract class SubModuleController extends ModuleController
         return view($view, $this->form($id, $parent_id));
     }
 
-    private function form($id, $parent_id =null)
+    private function form($id, $parent_id = null)
     {
         $item = $this->repository->getById($id, $this->formWith);
         $data = [
             'form_options' => [
                 'method' => 'PUT',
-                'url' => moduleRoute($this->moduleName, $this->routePrefix, 'update', array_merge (isset($parent_id) ? [$parent_id] : [], [$id])),
+                'url' => moduleRoute($this->moduleName, $this->routePrefix, 'update', array_merge(isset($parent_id) ? [$parent_id] : [], [$id])),
             ] + $this->defaultFormOptions(),
             'item' => $item,
             'form_fields' => $this->repository->getFormFields($item),
@@ -126,11 +114,11 @@ abstract class SubModuleController extends ModuleController
         return array_replace_recursive($data, $this->formData($this->request, $parent_id));
     }
 
-    public function update($parent_id =null, $id =null)
+    public function update($parent_id = null, $id = null)
     {
         $formRequest = $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
         $this->repository->update($id, $formRequest->all());
-        return $this->redirectToForm($id,[$parent_id]);
+        return $this->redirectToForm($id, [$parent_id]);
     }
 
     protected function getBreadcrumbParent($parent_id, $item_id, $append = [])
@@ -143,18 +131,29 @@ abstract class SubModuleController extends ModuleController
 
         $nameModules = explode('.', $this->moduleName);
 
-        $breadcrumb["All ".ucfirst($nameModules[0])] = moduleRoute($nameModules[0], $this->routePrefix, "index");
+        $breadcrumb["All " . ucfirst($nameModules[0])] = moduleRoute($nameModules[0], $this->routePrefix, "index");
 
         if (($obj = $this->parentRepository->getById($parent_id)) !== null && isset($obj->{$this->parentBreadcrumbField})) {
             $breadcrumb[$obj->{$this->parentBreadcrumbField}] = null;
         }
 
-        if ( $item_id )
-            $breadcrumb["All ".ucfirst($nameModules[1])] = moduleRoute($this->moduleName, $this->routePrefix, "index",[$parent_id]);
+        if ($item_id) {
+            $breadcrumb["All " . ucfirst($nameModules[1])] = moduleRoute($this->moduleName, $this->routePrefix, "index", [$parent_id]);
+        }
 
         return $breadcrumb + $append;
     }
 
+    protected function getRoutePrefix()
+    {
+        return ($this->request->route() != null ? ltrim($this->request->route()->getPrefix(), "/") : '');
+    }
 
+    protected function getModelName()
+    {
+        return $this->modelName ?? implode("", array_map(function ($s) {
+            return ucfirst(str_singular($s));
+        }, explode('.', $this->moduleName)));
+    }
 
 }
