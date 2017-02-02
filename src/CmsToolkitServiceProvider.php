@@ -138,8 +138,6 @@ class CmsToolkitServiceProvider extends ServiceProvider
 
     private function publishConfigs()
     {
-        config(['filesystems.disks.s3' => require __DIR__ . '/../config/s3.php']);
-
         if (config('cms-toolkit.enabled.users-management')) {
             config(['auth.providers.users' => require __DIR__ . '/../config/auth.php']);
         }
@@ -153,6 +151,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/cms-toolkit.php', 'cms-toolkit');
         $this->mergeConfigFrom(__DIR__ . '/../config/services.php', 'services');
         $this->mergeConfigFrom(__DIR__ . '/../config/laravel-env-validator.php', 'laravel-env-validator');
+        $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
     }
 
     private function publishMigrations()
