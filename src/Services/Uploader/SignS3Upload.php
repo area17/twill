@@ -12,18 +12,15 @@ class SignS3Upload
 
     private $endpoint;
 
-    public function __construct()
-    {
-        $this->bucket = config('filesystems.disks.s3.bucket');
-        $this->secret = config('filesystems.disks.s3.secret');
-        $this->endpoint = s3Endpoint();
-    }
-
-    public function fromPolicy($policy, SignS3UploadListener $listener)
+    public function fromPolicy($policy, SignS3UploadListener $listener, $disk = 'libraries')
     {
         $policyObject = json_decode($policy, true);
         $policyJson = json_encode($policyObject);
         $policyHeaders = $policyObject["headers"] ?? null;
+
+        $this->bucket = config('filesystems.disks.'. $disk .'.bucket');
+        $this->secret = config('filesystems.disks.'. $disk .'.secret');
+        $this->endpoint = s3Endpoint($disk);
 
         if ($policyHeaders) {
             $signedPolicy = $this->signChunkedRequest($policyHeaders, $listener);

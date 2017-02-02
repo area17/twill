@@ -66,7 +66,7 @@ return [
     |
      */
     'media_library' => [
-        'disk' => 's3',
+        'disk' => 'libraries',
         'endpoint_type' => env('MEDIA_LIBRARY_ENDPOINT_TYPE', 's3'),
         'cascade_delete' => env('MEDIA_LIBRARY_CASCADE_DELETE', false),
         'local_path' => env('MEDIA_LIBRARY_LOCAL_PATH'),
@@ -128,7 +128,7 @@ return [
     |
      */
     'file_library' => [
-        'disk' => 's3',
+        'disk' => 'libraries',
         'endpoint_type' => env('FILE_LIBRARY_ENDPOINT_TYPE', 's3'),
         'cascade_delete' => env('FILE_LIBRARY_CASCADE_DELETE', false),
         'local_path' => env('FILE_LIBRARY_LOCAL_PATH'),

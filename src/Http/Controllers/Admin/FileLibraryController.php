@@ -37,14 +37,16 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
 
     public function index()
     {
+        $libraryDisk = config('cms-toolkit.file_library.disk');
+
         $uploaderConfig = [
             'endpointType' => $this->endpointType,
-            'endpoint' => $this->endpointType === 'local' ? route('admin.file-library.files.store') : s3Endpoint(),
+            'endpoint' => $this->endpointType === 'local' ? route('admin.file-library.files.store') : s3Endpoint($libraryDisk),
             'successEndpoint' => route('admin.file-library.files.store'),
             'completeEndpoint' => route('admin.file-library.files.index') . "?new_uploads_ids=",
             'signatureEndpoint' => route('admin.file-library.sign-s3-upload'),
-            'endpointRegion' => config('filesystems.disks.s3.region', 'none'),
-            'accessKey' => config('filesystems.disks.s3.key', 'none'),
+            'endpointRegion' => config('filesystems.disks.'. $libraryDisk .'.region', 'none'),
+            'accessKey' => config('filesystems.disks.'. $libraryDisk .'.key', 'none'),
             'csrfToken' => csrf_token(),
         ];
 
@@ -162,7 +164,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
 
     public function signS3Upload(Request $request, SignS3Upload $signS3Upload)
     {
-        return $signS3Upload->fromPolicy($request->getContent(), $this);
+        return $signS3Upload->fromPolicy($request->getContent(), $this, config('cms-toolkit.file_library.disk'));
     }
 
     public function policyIsSigned($signedPolicy)
