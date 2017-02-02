@@ -71,7 +71,7 @@ abstract class SubModuleController extends ModuleController
 
         $view = view()->exists("admin.{$this->moduleName}.form") ? "admin.{$this->moduleName}.form" : "cms-toolkit::{$this->moduleName}.form";
 
-        return view($view, array_replace_recursive($data, $this->formData($this->request) + ['parent_id' => $parent_id]));
+        return view($view, array_replace_recursive($data, $this->formData($this->request, $parent_id)));
     }
 
     public function store($parent_id = null)
@@ -111,7 +111,7 @@ abstract class SubModuleController extends ModuleController
             'breadcrumb' => $this->getBreadcrumbParent($parent_id, $id),
         ];
 
-        return array_replace_recursive($data, $this->formData($this->request));
+        return array_replace_recursive($data, $this->formData($this->request, $parent_id));
     }
 
     public function update($parent_id = null, $id = null)
