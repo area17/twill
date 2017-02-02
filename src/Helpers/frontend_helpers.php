@@ -4,17 +4,18 @@ if (!function_exists('revAsset')) {
     function revAsset($file)
     {
         if (!app()->environment('local', 'development')) {
+            try {
+                $manifest = Cache::rememberForever('rev-manifest', function () {
+                    return json_decode(file_get_contents(config('cms-toolkit.frontend.rev_manifest_path')), true);
+                });
 
-            $manifest = Cache::rememberForever('rev-manifest', function () {
-                return json_decode(file_get_contents(config('cms-toolkit.frontend.rev_manifest_path')), true);
-            });
+                if (isset($manifest[$file])) {
+                    return (rtrim(config('cms-toolkit.frontend.dist_assets_path'), '/') . '/') . $manifest[$file];
+                }
 
-            if (isset($manifest[$file])) {
-                return (rtrim(config('cms-toolkit.frontend.dist_assets_path'), '/') . '/') . $manifest[$file];
+            } catch (\Exception $e) {
+                return '/' . $file;
             }
-
-            throw new InvalidArgumentException("File {$file} not defined in assets manifest.");
-
         }
 
         return (rtrim(config('cms-toolkit.frontend.dev_assets_path'), '/') . '/') . $file;
