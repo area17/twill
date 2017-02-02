@@ -5,6 +5,7 @@ namespace A17\CmsToolkit;
 use A17\CmsToolkit\Http\Middleware\Impersonate;
 use A17\CmsToolkit\Http\Middleware\NoDebugBar;
 use A17\CmsToolkit\Http\Middleware\RedirectIfAuthenticated;
+use A17\CmsToolkit\Http\Middleware\ValidateBackHistory;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
@@ -41,7 +42,7 @@ class RouteServiceProvider extends ServiceProvider
             'middleware' => [config('cms-toolkit.admin_middleware_group', 'web')],
         ],
             function ($router) {
-                $router->group(['middleware' => ['auth', 'impersonate']], function ($router) {
+                $router->group(['middleware' => ['auth', 'impersonate', 'validateBackHistory']], function ($router) {
                     require __DIR__ . '/../routes/admin.php';
                 });
 
@@ -63,6 +64,7 @@ class RouteServiceProvider extends ServiceProvider
         Route::$middlewareRegisterMethod('noDebugBar', NoDebugBar::class);
         Route::$middlewareRegisterMethod('impersonate', Impersonate::class);
         Route::$middlewareRegisterMethod('guest', RedirectIfAuthenticated::class);
+        Route::$middlewareRegisterMethod('validateBackHistory', ValidateBackHistory::class);
     }
 
     protected function registerMacros()
