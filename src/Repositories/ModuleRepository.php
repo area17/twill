@@ -18,7 +18,7 @@ abstract class ModuleRepository
         $query = $this->filter($query, $scopes);
         $query = $this->order($query, $orders);
 
-        if ($this->model instanceof Sortable && $perPage == -1) {
+        if ($this->model instanceof Sortable) {
             return $query->ordered()->get();
         }
 
@@ -52,7 +52,7 @@ abstract class ModuleRepository
             $query = $query->withTranslation();
         }
 
-        return $query->get()->lists($column, 'id');
+        return $query->get()->pluck($column, 'id');
     }
 
     public function create($fields)
@@ -239,18 +239,35 @@ abstract class ModuleRepository
         return $query;
     }
 
-    public function getFormFieldsForMultiSelect($fields, $relation)
+    public function getFormFieldsForMultiSelect($fields, $relation, $attribute = 'id')
     {
         if (isset($fields[$relation])) {
             $list = [];
             foreach ($fields[$relation] as $value) {
-                $list[$value['id']] = $value['id'];
+                $list[$value['id']] = $value[$attribute];
             }
 
             $fields[$relation] = $list;
         }
 
         return $fields;
+    }
+
+    public function updateOneToMany($object, $fields, $relationship, $formField, $attribute)
+    {
+        if (isset($fields[$formField])) {
+            foreach ($fields[$formField] as $id) {
+                $object->$relationship()->updateOrCreate([$attribute => $id]);
+            }
+
+            foreach ($object->$relationship as $relationshipObject) {
+                if (!in_array($relationshipObject->$attribute, $fields[$formField])) {
+                    $relationshipObject->delete();
+                }
+            }
+        } else {
+            $object->$relationship()->delete();
+        }
     }
 
     public function addRelationFilterScope($query, &$scopes, $scopeField, $scopeRelation)

@@ -2,9 +2,13 @@
 
 namespace A17\CmsToolkit\Http\Controllers\Admin;
 
+use A17\CmsToolkit\Helpers\FlashLevel;
+use A17\CmsToolkit\Models\User;
 use DB;
+use Hash;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
+use Password;
 
 class ResetPasswordController extends Controller
 {
@@ -23,20 +27,59 @@ class ResetPasswordController extends Controller
 
     public function showResetForm(Request $request, $token = null)
     {
-        return view('cms-toolkit::auth.passwords.reset')->with([
-            'token' => $token,
-            'email' => DB::table('password_resets')->where('token', $token)->first()->email,
-        ]);
+        $user = $this->getUserFromToken($token);
+
+        // call exists on the Password repository to check for token expiration (default 1 hour)
+        // otherwise redirect to the ask reset link form with error message
+        if ($user && Password::getRepository()->exists($user, $token)) {
+            return view('cms-toolkit::auth.passwords.reset')->with([
+                'token' => $token,
+                'email' => $user->email,
+            ]);
+        }
+
+        flash()->message('Your password reset token has expired or could not be found, please retry.', FlashLevel::ERROR);
+        return redirect(route('admin.password.reset.link'));
     }
 
     public function showWelcomeForm(Request $request, $token = null)
     {
-        return view('cms-toolkit::auth.passwords.reset')->with([
-            'token' => $token,
-            'email' => DB::table('password_resets')->where('token', $token)->first()->email,
-            'welcome' => true,
-        ]);
+        $user = $this->getUserFromToken($token);
+
+        // we don't call exists on the Password repository here because we don't want to expire the token for welcome emails
+        if ($user) {
+            return view('cms-toolkit::auth.passwords.reset')->with([
+                'token' => $token,
+                'email' => $user->email,
+                'welcome' => true,
+            ]);
+        }
+
+        flash()->message('Your set password token has expired or could not be found, please retry.', FlashLevel::ERROR);
+        return redirect(route('admin.password.reset.link'));
     }
+
+    /*
+     * Since Laravel 5.4, reset tokens are encrypted, but we support both cases here
+     * https://github.com/laravel/framework/pull/16850
+     */
+    private function getUserFromToken($token)
+    {
+        $clearToken = DB::table('password_resets')->where('token', $token)->first();
+
+        if ($clearToken) {
+            return User::where('email', $clearToken->email)->first();
+        }
+
+        foreach (DB::table('password_resets')->get() as $passwordReset) {
+            if (Hash::check($token, $passwordReset->token)) {
+                return User::where('email', $passwordReset->email)->first();
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Create a new controller instance.
      *
@@ -44,7 +87,7 @@ class ResetPasswordController extends Controller
      */
     public function __construct()
     {
-        $this->redirectTo = config('cms-toolkit.auth.login_redirect_path', '/home');
+        $this->redirectTo = config('cms-toolkit.auth_login_redirect_path', '/home');
         $this->middleware('guest');
     }
 }

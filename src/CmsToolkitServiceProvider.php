@@ -138,8 +138,6 @@ class CmsToolkitServiceProvider extends ServiceProvider
 
     private function publishConfigs()
     {
-        config(['filesystems.disks.s3' => require __DIR__ . '/../config/s3.php']);
-
         if (config('cms-toolkit.enabled.users-management')) {
             config(['auth.providers.users' => require __DIR__ . '/../config/auth.php']);
         }
@@ -153,6 +151,16 @@ class CmsToolkitServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/cms-toolkit.php', 'cms-toolkit');
         $this->mergeConfigFrom(__DIR__ . '/../config/services.php', 'services');
         $this->mergeConfigFrom(__DIR__ . '/../config/laravel-env-validator.php', 'laravel-env-validator');
+        $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
+        $this->mergeConfigFrom(__DIR__ . '/../config/frontend.php', 'cms-toolkit.frontend');
+        $this->mergeConfigFrom(__DIR__ . '/../config/debug.php', 'cms-toolkit.debug');
+        $this->mergeConfigFrom(__DIR__ . '/../config/seo.php', 'cms-toolkit.seo');
+        $this->mergeConfigFrom(__DIR__ . '/../config/blocks.php', 'cms-toolkit.blocks');
+        $this->mergeConfigFrom(__DIR__ . '/../config/enabled.php', 'cms-toolkit.enabled');
+        $this->mergeConfigFrom(__DIR__ . '/../config/imgix.php', 'cms-toolkit.imgix');
+        $this->mergeConfigFrom(__DIR__ . '/../config/media-library.php', 'cms-toolkit.media_library');
+        $this->mergeConfigFrom(__DIR__ . '/../config/file-library.php', 'cms-toolkit.file_library');
+        $this->mergeConfigFrom(__DIR__ . '/../config/imgix.php', 'cms-toolkit.imgix');
     }
 
     private function publishMigrations()
@@ -260,15 +268,15 @@ class CmsToolkitServiceProvider extends ServiceProvider
             $viewApplication = "'admin.layouts.resources._{$viewName}'";
             $view = $partialNamespace . "._" . $viewName;
 
-            return "<?php 
+            return "<?php
             if( view()->exists($viewModule)) {
-                echo \$__env->make($viewModule, array_except(get_defined_vars(), ['__data', '__path']))->render(); 
+                echo \$__env->make($viewModule, array_except(get_defined_vars(), ['__data', '__path']))->render();
             } elseif( view()->exists($viewApplication)) {
-                echo \$__env->make($viewApplication, array_except(get_defined_vars(), ['__data', '__path']))->render(); 
+                echo \$__env->make($viewApplication, array_except(get_defined_vars(), ['__data', '__path']))->render();
             } elseif( view()->exists('$view')) {
-                echo \$__env->make('$view', array_except(get_defined_vars(), ['__data', '__path']))->render(); 
+                echo \$__env->make('$view', array_except(get_defined_vars(), ['__data', '__path']))->render();
             }
-            ?>";            
+            ?>";
         });
     }
 

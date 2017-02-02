@@ -158,13 +158,11 @@ return [
     | CMS Toolkit Auth configuration
     |--------------------------------------------------------------------------
     |
-    | Right now this array only allows you to redefine the
+    | Right now this only allows you to redefine the
     | default login redirect path.
     |
      */
-    'auth' => [
-        'login_redirect_path' => '/',
-    ],
+    'auth_login_redirect_path' => '/',
 
     /*
     |--------------------------------------------------------------------------
@@ -309,6 +307,23 @@ return [
         'debug_use_inspector' => env('DEBUG_USE_INSPECTOR', false),
         'debug_bar_in_fe' => env('DEBUG_BAR_IN_FE', false),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | CMS Toolkit Frontend assets configuration
+    |--------------------------------------------------------------------------
+    |
+    | This allows you to setup frontend helpers related settings.
+    |
+    |
+     */
+    'frontend' => [
+        'rev_manifest_path' => public_path('dist/rev-manifest.json'),
+        'dev_assets_path' => url('dev'),
+        'dist_assets_path' => url('dist'),
+        'svg_sprites_path' => 'sprites.svg', // relative to dev/dist assets paths
+        'svg_sprites_use_hash_only' => true,
+    ],
 ];
 
 ```
@@ -379,7 +394,7 @@ Route::group(['prefix' => 'work'], function () {
 
 ### Users management
 
-Authentication and authorization are provided by default in Laravel. This package simply leverages it and configure the views with the A17 CMS UI Toolkit for you. By default, users can login at `/login` and also reset their password through that screen. New users have to start by resetting their password before initial access to the admin application. You should redirect users to anywhere you want in your application after they login. The cms-toolkit configuration file has an option for you to change the default redirect path (`auth.login_redirect_path`).
+Authentication and authorization are provided by default in Laravel. This package simply leverages it and configure the views with the A17 CMS UI Toolkit for you. By default, users can login at `/login` and also reset their password through that screen. New users have to start by resetting their password before initial access to the admin application. You should redirect users to anywhere you want in your application after they login. The cms-toolkit configuration file has an option for you to change the default redirect path (`auth_login_redirect_path`).
 
 #### Roles
 The package currently only provides 3 different roles:
@@ -530,7 +545,6 @@ public $filesParams = ['finishe', 'caring', 'warranty']; // a list of file roles
 
 
 #### Repositories
-Nothing to do by default after generation.
 
 Depending on the model feature, include one or multiple of those traits: `HandleTranslations`, `HandleSlugs`, `HandleMedias`, `HandleFiles`.
 
@@ -635,16 +649,101 @@ public function prepareFieldsBeforeSave($object, $fields) {
 public function afterSave($object, $fields) {
     // for exemple, to sync a many to many relationship
     // $object->relationName()->sync($fields['relationName'] ?? []);
+    // or, to save a oneToMany relationship
+    // $this->updateOneToMany($object, $fields, 'relationName', 'formFieldName', 'relationAttribute')
     parent::afterSave($object, $fields);}
 
 ```
 
 #### Controllers
-Nothing to do by default after generation.
 
-TODO more docs here on filters, form inputs data, default ordering, per page settings.
+```php
+<?php
 
-If your model is sortable set `perPage` to -1 to prevent pagination.
+    protected $moduleName = 'yourModuleName';
+
+    /*
+     * Relations to eager load for the index view
+     */
+    protected $indexWith = [];
+
+    /*
+     * Relations to eager load for the form view
+     * Add relationship used in multiselect and resource form fields
+     */
+    protected $formWith = [];
+
+    /*
+     * Filters mapping ('fFilterName' => 'filterColumn')
+     * You can associate items list to filters by having a fFilterNameList key in the indexData array 
+     * For example, 'fCategory' => 'category_id' and 'fCategoryList' => app(CategoryRepository::class)->listAll()
+     */
+    protected $filters = [];
+
+    /*
+     * Add anything you would like to have available in your module's index view
+     */
+    protected function indexData($request)
+    {
+        return [];
+    }
+
+    /*
+     * Add anything you would like to have available in your module's form view
+     * For example, relationship lists for multiselect form fields 
+     */
+    protected function formData($request)
+    {
+        return [];
+    }
+
+    // Optional, if the automatic way is not working for you (default is ucfirst(str_singular($moduleName)))
+    protected $modelName = 'model';
+
+    // Optional, to specify a different feature field name than the default 'featured'
+    protected $featureField = 'featured';
+
+    // Optional, ativate breadcrumb
+    protected $breadcrumb = true;
+
+    // Optional, specify number of items per page in the listing view (-1 to disable pagination)
+    protected $perPage = 50;
+
+    // Optional, change default form options
+    protected function defaultFormOptions()
+    {
+        return [
+            'class' => "simple_form",
+            'accept-charset' => "UTF-8",
+            'novalidate' => "novalidate",
+        ] + (app()->isLocal() ? [] : [
+            'data-behavior' => 'navigate_away',
+            'data-navigate-away-confirm' => 'Any changes will be lost.',
+        ]);
+    }
+```
+
+You can also override all actions and internal functions, checkout the ModuleController source in `A17\CmsToolkit\Http\Controllers\Admin\ModuleController`.
+
+#### Routes
+
+A router macro is available to create module routes quicker:
+```php
+<?php
+
+Route::module('yourModulePluralName');
+
+// You can add an array of only/except action names as a second parameter
+// By default, the following routes are created : 'sort', 'publish', 'browser', 'bucket', 'media', 'feature', 'file'
+Route::module('yourModulePluralName', ['except' => ['sort', 'feature', 'bucket', 'browser', 'file']])
+
+// You can add an array of only/except action names for the resource controller as a third parameter
+// By default, the following routes are created : 'index', 'create', 'store', 'show', 'edit', 'update', 'destroy'
+Route::module('yourModulePluralName', [], ['only' => ['index', 'edit', 'store', 'destroy']])
+
+// The last optional parameter disable the resource controller actions on the module
+Route::module('yourPluralModuleName', [], [], false)
+```
 
 #### Form Requests
 Classic Laravel 5 [form request validation](https://laravel.com/docs/5.3/validation#form-request-validation).
@@ -698,7 +797,6 @@ $this->messagesForTranslatedFields([
             'edit_link' => true, // column content is wrapped in a link to the edit action
             'sort' => true, // column is sortable
             'field' => 'fieldName', // column field
-            'col' => 1 // column display width
         ],
         'relationName' => [ // relation column
             'title' => 'Relation name',
@@ -716,7 +814,7 @@ $this->messagesForTranslatedFields([
 ])
 ```
 
-You can override each components of the listing :
+You can override each components of the listing in your module views folder:
 - _column.blade.php
 - _column_with_edit_link.blade.php
 - _create_action.blade.php
@@ -727,9 +825,11 @@ You can override each components of the listing :
 - _sort_action.blade.php
 - _sort_link.blade.php
 
-Or the whole view in admin/layouts/resources.
+Or globally for all your modules by creating a blade view in `admin/layouts/resources with the same filename.
 
 You can also add columns after the publication state and before the edit action by creating `_before_index_headers.blade.php/_after_index_header.blade.php` and `_before_index_columns.blade.php/_after_index_columns.blade.php` in your admin module views directory.
+
+You can add more filters than the automatically added ones (using the fFilterList convention in your controller) by adding an `extra_filters` section to your index view.
 
 #### Form view
 
@@ -1076,4 +1176,4 @@ TODO
 
 ## Changelog
 
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
+Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
