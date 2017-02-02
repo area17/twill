@@ -26,9 +26,9 @@
 </h3>
 </header>
 
-<input type="hidden" name="case_studies" value="1,2">
+<input type="hidden" name="{{$role_relationship}}" value="1,2">
 <div class="table_container">
-  <table data-behavior="sortable" data-hidden-field="case_studies">
+  <table data-behavior="sortable" data-hidden-field="{{$role_relationship}}">
     <thead>
       <tr>
         @if($with_multiple)
@@ -40,10 +40,10 @@
       </tr>
     </thead>
 
-    <tbody data-media-bucket="case_studies" data-media-template="{{ moduleRoute($role_relationship, $routePrefix, 'genericResources', ['with_multiple' => $with_multiple]) }}" data-media-item=".media-row">
+    <tbody data-media-bucket="{{$role_relationship}}" data-media-template="{{ moduleRoute($role_relationship, $routePrefix, 'genericResources', ['with_multiple' => $with_multiple]) }}" data-media-item=".media-row">
 
     @if(isset($item))
-        @foreach($item->case_studies as $single_resource)
+        @foreach($item->$role_relationship as $single_resource)
             <tr class="media-row media-row-new" id="media-box-{{ $single_resource->id }}" data-id="{{ $single_resource->id }}">
                 @if($with_multiple)
                     <td><span class="icon icon-handle"></span></td>
