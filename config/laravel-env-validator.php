@@ -1,10 +1,10 @@
 <?php
 
 return [
-    'APP_ENV' => 'required|in:local,development,staging,production',
-    'APP_KEY' => 'required',
-    'DB_DATABASE' => 'required',
-    'DB_USERNAME' => 'required',
+    // 'APP_ENV' => 'required|in:local,development,staging,production',
+    // 'APP_KEY' => 'required',
+    // 'DB_DATABASE' => 'required',
+    // 'DB_USERNAME' => 'required',
     // 'S3_KEY' => 'required',
     // 'S3_SECRET' => 'required',
     // 'S3_BUCKET' => 'required',

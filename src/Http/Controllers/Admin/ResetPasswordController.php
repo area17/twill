@@ -87,7 +87,7 @@ class ResetPasswordController extends Controller
      */
     public function __construct()
     {
-        $this->redirectTo = config('cms-toolkit.auth.login_redirect_path', '/home');
+        $this->redirectTo = config('cms-toolkit.auth_login_redirect_path', '/home');
         $this->middleware('guest');
     }
 }
