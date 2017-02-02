@@ -3,9 +3,12 @@
 @elseif (isset($columnOptions['count']) && $columnOptions['count'])
     {{ $item->{$columnOptions['field']}->count() }}
 @elseif (isset($columnOptions['nested']) && $columnOptions['nested'])
-    <a class="main" href="{{ moduleRoute("{$columnOptions['nested']['parent']}.{$columnOptions['nested']['field']}", $routePrefix, 'index', [$item->id]) }}">
-    @if(($nb = $item->{$columnOptions['nested']['field']}->count()) > 0)
-        {{ $nb }} {{ $nb > 1 ? $columnOptions['title'] : $columnOptions['title'] }}
+    @php
+        $nestedCount = $item->{$columnOptions['nested']['field']}->count();
+    @endphp
+    <a class="main" href="{{ moduleRoute("{$columnOptions['nested']['parent']}.{$columnOptions['nested']['field']}", $routePrefix, $nestedCount > 0 ? 'index' : 'create', [$item->id]) }}">
+    @if(($nestedCount) > 0)
+        {{ $nestedCount }} {{ $nestedCount > 1 ? $columnOptions['title'] : $columnOptions['title'] }}
     @else
         Create {{$columnOptions['title']}}
     @endif
