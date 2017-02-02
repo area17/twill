@@ -1,11 +1,12 @@
 @php
     $required = $required ?? "";
     $disabled = isset($disabled) && $disabled == 'disabled' ? ['disabled' => 'disabled'] : [];
+    $field_name = $field_name ?? $fieldname;
 @endphp
 
 <div class="input text {{ $required }}">
     <label class="text {{ $required }} control-label" for="{{ $field }}_var">
-        {{ $fieldname }} {!! !empty($required) ? '<abbr title="required">*</abbr>' : '' !!}
+        {{ $field_name }} {!! !empty($required) ? '<abbr title="required">*</abbr>' : '' !!}
     </label>
     {!! Form::text($field, null, [
         'class' => "string text {$required}",

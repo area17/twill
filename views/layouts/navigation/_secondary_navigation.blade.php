@@ -15,11 +15,11 @@
                         @php
                             $module = $secondary_navigation_key;
                             $action = $secondary_navigation_element['route'] ?? 'index';
-                            $href = moduleRoute($module, $_primary_active_navigation, $action);
+                            $href = moduleRoute($module, $_global_active_navigation . '.' . $_primary_active_navigation, $action);
                         @endphp
                     @elseif ($secondary_navigation_element['page'] ?? false)
                         @php
-                            $href = pageRoute($secondary_navigation_key, $_primary_active_navigation);
+                            $href = pageRoute($secondary_navigation_key, $_global_active_navigation . '.' . $_primary_active_navigation);
                         @endphp
                     @else
                         @php

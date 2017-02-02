@@ -61,17 +61,24 @@ abstract class ModuleController extends Controller
         $this->app = $app;
         $this->request = $request;
 
+        $this->setMiddlewarePermission();
+
+        $this->modelName = $this->modelName ?? ucfirst(str_singular($this->moduleName));
+        $this->routePrefix = ($request->route() != null ? ltrim($request->route()->getPrefix(), "/") : '');
+
+        $this->routePrefix = str_replace("/", ".", $this->routePrefix);
+
+        $this->namespace = $this->namespace ?? config('cms-toolkit.namespace');
+        $this->repository = $this->app->make("$this->namespace\Repositories\\" . $this->modelName . "Repository");
+    }
+
+    protected function setMiddlewarePermission()
+    {
         $this->middleware('can:list', ['only' => ['index', 'show']]);
         $this->middleware('can:edit', ['only' => ['create', 'store', 'edit', 'update', 'media', 'file']]);
         $this->middleware('can:publish', ['only' => ['publish', 'bucket', 'feature']]);
         $this->middleware('can:sort', ['only' => ['sort']]);
         $this->middleware('can:delete', ['only' => ['destroy']]);
-
-        $this->modelName = $this->modelName ?? ucfirst(str_singular($this->moduleName));
-        $this->routePrefix = ($request->route() != null ? ltrim($request->route()->getPrefix(), "/") : '');
-
-        $this->namespace = $this->namespace ?? config('cms-toolkit.namespace');
-        $this->repository = $this->app->make("$this->namespace\Repositories\\" . $this->modelName . "Repository");
     }
 
     public function index()
@@ -92,7 +99,7 @@ abstract class ModuleController extends Controller
             'modelName' => $this->modelName,
             'routePrefix' => $this->routePrefix,
             'filters' => array_keys(array_except($this->filters, array_keys($this->defaultFilters))),
-            'filtersOn' => !empty($scopes),
+            'filtersOn' => !empty(array_except($scopes,array_keys($prependScope))),
         ];
 
         return array_replace_recursive($data, $this->indexData($this->request));

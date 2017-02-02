@@ -8,6 +8,7 @@ use A17\CmsToolkit\Http\Middleware\RedirectIfAuthenticated;
 use A17\CmsToolkit\Http\Middleware\ValidateBackHistory;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Arr;
 use Route;
 
 class RouteServiceProvider extends ServiceProvider
@@ -70,7 +71,12 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::macro('module', function ($slug, $options = [], $resource_options = [], $resource = true) {
 
-            $className = ucfirst(str_singular($slug));
+            $slugs = explode('.', $slug);
+            $prefixSlug = str_replace('.',"/",$slug);
+            $_slug = Arr::last($slugs);
+            $className = implode("", array_map(function($s) {
+                return ucfirst(str_singular($s));
+            }, $slugs));
 
             $customRoutes = $defaults = ['sort', 'publish', 'browser', 'bucket', 'media', 'feature', 'file'];
 
@@ -84,7 +90,7 @@ class RouteServiceProvider extends ServiceProvider
             $customRoutePrefix = !empty($groupPrefix) ? "{$groupPrefix}.{$slug}" : "{$slug}";
 
             foreach ($customRoutes as $route) {
-                $routeSlug = "{$slug}/{$route}";
+                $routeSlug = "{$prefixSlug}/{$route}";
                 $mapping = ['as' => $customRoutePrefix . ".{$route}", 'uses' => "{$className}Controller@{$route}"];
 
                 if (in_array($route, ['browser', 'bucket', 'media', 'file'])) {
