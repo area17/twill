@@ -33,8 +33,6 @@ abstract class SubModuleController extends ModuleController
 
     public function index($parent_id = null)
     {
-        $view = view()->exists("admin.{$this->moduleName}.index") ? "admin.{$this->moduleName}.index" : "cms-toolkit::{$this->moduleName}.index";
-
         $params = [];
         if ($parent_id != null) {
             $params['parent_id'] = $parent_id;
@@ -44,7 +42,7 @@ abstract class SubModuleController extends ModuleController
         }
         $params['breadcrumb'] = $this->getBreadcrumbParent($parent_id, null);
 
-        return view($view, $this->getIndexData(isset($parent_id) ? [$this->getParentNameField() => $parent_id] : []) + $this->request->all() + $params);
+        return view("admin.{$this->moduleName}.index", $this->getIndexData(isset($parent_id) ? [$this->getParentNameField() => $parent_id] : []) + $this->request->all() + $params);
     }
 
     protected function getParentNameField()
@@ -69,9 +67,7 @@ abstract class SubModuleController extends ModuleController
             'parent_id' => $parent_id,
         ];
 
-        $view = view()->exists("admin.{$this->moduleName}.form") ? "admin.{$this->moduleName}.form" : "cms-toolkit::{$this->moduleName}.form";
-
-        return view($view, array_replace_recursive($data, $this->formData($this->request, $parent_id)));
+        return view("admin.{$this->moduleName}.form", array_replace_recursive($data, $this->formData($this->request, $parent_id)));
     }
 
     public function store($parent_id = null)
@@ -89,9 +85,7 @@ abstract class SubModuleController extends ModuleController
     public function edit($parent_id = null, $id = null)
     {
         $this->setBackLink();
-        $view = view()->exists("admin.{$this->moduleName}.form") ? "admin.{$this->moduleName}.form" : "cms-toolkit::{$this->moduleName}.form";
-
-        return view($view, $this->form($id, $parent_id));
+        return view("admin.{$this->moduleName}.form", $this->form($id, $parent_id));
     }
 
     private function form($id, $parent_id = null)

@@ -71,15 +71,22 @@ abstract class ModuleController extends Controller
 
     public function index()
     {
-        $view = view()->exists("admin.{$this->moduleName}.index") ? "admin.{$this->moduleName}.index" : "cms-toolkit::{$this->moduleName}.index";
-
-        return view($view, $this->getIndexData() + $this->request->all());
+        return view("admin.{$this->moduleName}.index", $this->getIndexData() + $this->request->all());
     }
 
     public function getIndexData($prependScope = [])
     {
-        $items = $this->repository->get($this->indexWith, $scopes = $this->filterScope($prependScope), $this->orderScope(), $this->perPage ?? 50);
+        $scopes = $this->filterScope($prependScope);
+        return $this->getViewData($this->getIndexItems($scopes), $scopes, $prependScope);
+    }
 
+    public function getIndexItems($scopes = [])
+    {
+        return $this->repository->get($this->indexWith, $scopes, $this->orderScope(), $this->perPage ?? 50);
+    }
+
+    public function getViewData($items, $scopes, $prependScope = [])
+    {
         $data = [
             'items' => $items,
             'title' => (count($items) > 1 ? $this->moduleName : str_singular($this->moduleName)),
@@ -109,9 +116,7 @@ abstract class ModuleController extends Controller
             'routePrefix' => $this->routePrefix,
         ];
 
-        $view = view()->exists("admin.{$this->moduleName}.form") ? "admin.{$this->moduleName}.form" : "cms-toolkit::{$this->moduleName}.form";
-
-        return view($view, array_replace_recursive($data, $this->formData($this->request)));
+        return view("admin.{$this->moduleName}.form", array_replace_recursive($data, $this->formData($this->request)));
     }
 
     public function store()
@@ -129,9 +134,7 @@ abstract class ModuleController extends Controller
     public function edit($id)
     {
         $this->setBackLink();
-        $view = view()->exists("admin.{$this->moduleName}.form") ? "admin.{$this->moduleName}.form" : "cms-toolkit::{$this->moduleName}.form";
-
-        return view($view, $this->form($id));
+        return view("admin.{$this->moduleName}.form", $this->form($id));
     }
 
     private function form($id)
@@ -196,7 +199,6 @@ abstract class ModuleController extends Controller
 
             return response($featured ? "Item featured!" : "Item unfeatured!");
         }
-
     }
 
     public function sort()
@@ -247,37 +249,52 @@ abstract class ModuleController extends Controller
     public function browser()
     {
         if (!is_null($this->request->input('page'))) {
-            $view = view()->exists('admin.' . $this->moduleName . '.browser_list')
-            ? 'admin.' . $this->moduleName . '.browser_list'
-            : view()->exists('admin.layouts.resources.browser_list')
-            ? 'admin.layouts.resources.browser_list'
-            : 'cms-toolkit::layouts.resources.browser_list';
+            $view = view()->exists('admin.' . $this->moduleName . '._browser_list')
+            ? 'admin.' . $this->moduleName . '._browser_list'
+            : (view()->exists('admin.layouts.resources._browser_list')
+                ? 'admin.layouts.resources._browser_list'
+                : 'cms-toolkit::layouts.resources._browser_list');
 
-            return view($view, $this->getIndexData() + $this->request->all());
+            return view($view, $this->getBrowserData() + $this->request->all());
         }
 
         $view = view()->exists('admin.' . $this->moduleName . '.browser')
         ? 'admin.' . $this->moduleName . '.browser'
-        : view()->exists('admin.layouts.resources.browser')
-        ? 'admin.layouts.resources.browser'
-        : 'cms-toolkit::layouts.resources.browser';
+        : (view()->exists('admin.layouts.resources.browser')
+            ? 'admin.layouts.resources.browser'
+            : 'cms-toolkit::layouts.resources.browser');
 
-        return view($view, $this->getIndexData() + $this->request->all());
+        return view($view, $this->getBrowserData() + $this->request->all());
     }
 
-    public function generic_resources()
+    public function insert()
     {
         $elements = [];
         foreach ($this->request->input('data') as $element) {
             $elements[$element['id']] = $this->repository->getById($element['id']);
         }
 
-        $view = view()->exists('admin.' . $this->moduleName . '.insert_resources_list') ? 'admin.' . $this->moduleName . '.insert_resources_list' : "cms-toolkit::layouts.resources.insert_resources_list";
+        $view = view()->exists('admin.' . $this->moduleName . '._browser_insert')
+        ? 'admin.' . $this->moduleName . '._browser_insert'
+        : (view()->exists('admin.layouts.resources._browser_insert')
+            ? 'admin.layouts.resources._browser_insert'
+            : 'cms-toolkit::layouts.resources._browser_insert');
 
         return view($view)->withItems($elements)
             ->withElementRole($this->request->input('role'))
             ->withNewRow(true)
             ->withWithMultiple($this->request->input('with_multiple'));
+    }
+
+    public function getBrowserData($prependScope = [])
+    {
+        $scopes = $this->filterScope($prependScope);
+        return $this->getViewData($this->getBrowserItems($scopes), $scopes, $prependScope);
+    }
+
+    public function getBrowserItems($scopes = [])
+    {
+        return $this->getIndexItems($scopes);
     }
 
     public function bucket()

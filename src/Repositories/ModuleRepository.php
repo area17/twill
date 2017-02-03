@@ -270,6 +270,18 @@ abstract class ModuleRepository
         }
     }
 
+    public function updateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute = 'position')
+    {
+        $relatedElements = isset($fields[$relationship]) && !empty($fields[$relationship]) ? explode(',', $fields[$relationship]) : [];
+        $relatedElementsWithPosition = [];
+        $position = 1;
+        foreach ($relatedElements as $relatedElement) {
+            $relatedElementsWithPosition[$relatedElement] = [$positionAttribute => $position++];
+        }
+
+        $object->$relationship()->sync($relatedElementsWithPosition);
+    }
+
     public function addRelationFilterScope($query, &$scopes, $scopeField, $scopeRelation)
     {
         if (isset($scopes[$scopeField])) {
