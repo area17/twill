@@ -71,7 +71,8 @@ abstract class ModuleController extends Controller
 
     public function index()
     {
-        return view("admin.{$this->moduleName}.index", $this->getIndexData() + $this->request->all());
+        $view = view()->exists("admin.{$this->moduleName}.index") ? "admin.{$this->moduleName}.index" : "cms-toolkit::{$this->moduleName}.index"; 
+        return view($view, $this->getIndexData() + $this->request->all());
     }
 
     public function getIndexData($prependScope = [])
@@ -115,8 +116,8 @@ abstract class ModuleController extends Controller
             'modelName' => $this->modelName,
             'routePrefix' => $this->routePrefix,
         ];
-
-        return view("admin.{$this->moduleName}.form", array_replace_recursive($data, $this->formData($this->request)));
+        $view = view()->exists("admin.{$this->moduleName}.form") ? "admin.{$this->moduleName}.form" : "cms-toolkit::{$this->moduleName}.form";
+        return view($view, array_replace_recursive($data, $this->formData($this->request)));
     }
 
     public function store()
@@ -134,7 +135,8 @@ abstract class ModuleController extends Controller
     public function edit($id)
     {
         $this->setBackLink();
-        return view("admin.{$this->moduleName}.form", $this->form($id));
+        $view = view()->exists("admin.{$this->moduleName}.form") ? "admin.{$this->moduleName}.form" : "cms-toolkit::{$this->moduleName}.form";
+        return view($view, $this->form($id));
     }
 
     private function form($id)
