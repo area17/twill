@@ -2,6 +2,7 @@
     $required = $required ?? "";
     $disabled = isset($disabled) && $disabled == 'disabled' ? ['disabled' => 'disabled'] : [];
     $field_name = $field_name ?? $fieldname;
+    $date_settings = $date_settings ?? 'default_date_settings';
 @endphp
 
 <div class="input text {{ $required }}">
@@ -12,11 +13,11 @@
         'class' => "string text {$required}",
         'id'=> $field."_var",
         'data-behavior' => 'datetimepicker',
-        'data-datetime-settings'=>"date_settings"
+        'data-datetime-settings'=>"{$date_settings}"
     ] + $disabled) !!}
 
     <script>
-        var date_settings = {
+        var default_date_settings = {
             lang:'en',
             format: 'm/d/Y H:i',
             datepicker: true,
