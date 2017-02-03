@@ -268,13 +268,20 @@ class CmsToolkitServiceProvider extends ServiceProvider
             $viewApplication = "'admin.layouts.resources._{$viewName}'";
             $view = $partialNamespace . "._" . $viewName;
 
+            $expression = explode(',', $expression);
+            $expression = array_slice($expression, 2);
+            $expression = "(" . implode(',', $expression) . ")";
+            if ($expression === "()") {
+                $expression = '([])';
+            }
+
             return "<?php
             if( view()->exists($viewModule)) {
-                echo \$__env->make($viewModule, array_except(get_defined_vars(), ['__data', '__path']))->render();
+                echo \$__env->make($viewModule, array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             } elseif( view()->exists($viewApplication)) {
-                echo \$__env->make($viewApplication, array_except(get_defined_vars(), ['__data', '__path']))->render();
+                echo \$__env->make($viewApplication, array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             } elseif( view()->exists('$view')) {
-                echo \$__env->make('$view', array_except(get_defined_vars(), ['__data', '__path']))->render();
+                echo \$__env->make('$view', array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             }
             ?>";
         });

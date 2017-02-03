@@ -72,13 +72,13 @@ class RouteServiceProvider extends ServiceProvider
         Route::macro('module', function ($slug, $options = [], $resource_options = [], $resource = true) {
 
             $slugs = explode('.', $slug);
-            $prefixSlug = str_replace('.',"/",$slug);
+            $prefixSlug = str_replace('.', "/", $slug);
             $_slug = Arr::last($slugs);
-            $className = implode("", array_map(function($s) {
+            $className = implode("", array_map(function ($s) {
                 return ucfirst(str_singular($s));
             }, $slugs));
 
-            $customRoutes = $defaults = ['sort', 'publish', 'browser', 'bucket', 'media', 'feature', 'file'];
+            $customRoutes = $defaults = ['sort', 'publish', 'browser', 'bucket', 'media', 'feature', 'file', 'insert'];
 
             if (isset($options['only'])) {
                 $customRoutes = array_intersect($defaults, (array) $options['only']);
@@ -93,7 +93,7 @@ class RouteServiceProvider extends ServiceProvider
                 $routeSlug = "{$prefixSlug}/{$route}";
                 $mapping = ['as' => $customRoutePrefix . ".{$route}", 'uses' => "{$className}Controller@{$route}"];
 
-                if (in_array($route, ['browser', 'bucket', 'media', 'file'])) {
+                if (in_array($route, ['browser', 'bucket', 'media', 'file', 'insert'])) {
                     Route::get($routeSlug, $mapping);
                 }
 

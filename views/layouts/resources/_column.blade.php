@@ -8,7 +8,7 @@
     @endphp
     <a class="main" href="{{ moduleRoute("{$columnOptions['nested']['parent']}.{$columnOptions['nested']['field']}", $routePrefix, $nestedCount > 0 ? 'index' : 'create', [$item->id]) }}">
     @if(($nestedCount) > 0)
-        {{ $nestedCount }} {{ $nestedCount > 1 ? str_plural($columnOptions['title']) : $columnOptions['title'] }}
+        {{ $nestedCount }} {{ $nestedCount > 1 ? str_plural($columnOptions['title']) : str_singular($columnOptions['title']) }}
     @else
         Create {{$columnOptions['title']}}
     @endif
