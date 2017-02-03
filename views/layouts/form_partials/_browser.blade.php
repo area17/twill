@@ -28,7 +28,7 @@
     </h3>
     </header>
 
-    <input type="hidden" name="{{ $role_relationship }}" value="@if(isset($item)) {{ implode (',', array_pluck($item->$role_relationship, 'id')) }} @endif">
+    <input type="hidden" name="{{ $role_relationship }}" value="@if(isset($item)){{ implode (',', array_pluck($item->$role_relationship, 'id')) }}@endif">
     <div class="table_container">
         <table data-behavior="sortable" data-hidden-field="{{ $role_relationship }}">
             <thead>
