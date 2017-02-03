@@ -69,7 +69,8 @@ trait HandleTranslations
             $attributes = $this->model->translatedAttributes;
             $table = $this->model->getTable();
             $tableTranslation = $this->model->translations()->getRelated()->getTable();
-            $foreignKey = $this->model->translations()->getForeignKey();
+            $foreignKeyMethod = method_exists($this->model->translations(), 'getQualifiedForeignKeyName') ? 'getQualifiedForeignKeyName' : 'getForeignKey';
+            $foreignKey = $this->model->translations()->$foreignKeyMethod();
 
             $isOrdered = false;
             foreach ($attributes as $attribute) {
