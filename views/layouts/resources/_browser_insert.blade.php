@@ -19,7 +19,7 @@
     @endforeach
     <th class="tool"></th>
 @else
-    @forelse($items as $id => $item)
+    @foreach($items as $id => $item)
         <tr class="media-row media-row-new" id="media-box-{{ $item->id }}" data-id="{{ $item->id }}">
             @if($with_multiple)
                 <td><span class="icon icon-handle"></span></td>
@@ -43,13 +43,5 @@
             @endforeach
             <td><a class="icon icon-trash" href="#" data-media-remove-trigger rel="nofollow">Destroy</a></td>
         </tr>
-    @empty
-        <table style="height: 100%">
-            <tbody>
-              <tr class="empty_table">
-                <td><h2>No {{ $title }} attached</h2></td>
-              </tr>
-            </tbody>
-        </table>
-    @endforelse
+    @endforeach
 @endif
