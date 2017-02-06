@@ -3,13 +3,14 @@
     $media_max = $with_multiple ? ($max ?? 1) :1;
     $role_relationship = $relationship ?? $role_relationship;
     $role_relationship_name = $relationship_name ?? $role_relationship_name;
+    $module_name = $module_name ?? $role_relationship;
 @endphp
 
 <script>
     var resources_options_{{$role_relationship}} = {
       "role": "{{ $role_relationship }}",
       "type": "{{ $with_multiple ? 'generic_multiple' : 'generic_single' }}",
-      "url": "{{ moduleRoute($role_relationship, $routePrefix, 'browser')}}",
+      "url": "{{ moduleRoute($module_name, $routePrefix, 'browser')}}",
       "title": "Attach {{ $role_relationship_name or $role_relationship }}",
       "max": {{ $media_max }}
     }
@@ -37,7 +38,7 @@
                 </tr>
             </thead>
 
-            <tbody data-media-bucket="{{ $role_relationship }}" data-media-template="{{ moduleRoute($role_relationship, $routePrefix, 'insert', ['with_multiple' => $with_multiple]) }}" data-media-item=".media-row">
+            <tbody data-media-bucket="{{ $role_relationship }}" data-media-template="{{ moduleRoute($module_name, $routePrefix, 'insert', ['with_multiple' => $with_multiple]) }}" data-media-item=".media-row">
 
                 @if(isset($item))
                     @resourceView(camel_case($role_relationship), 'browser_insert', ['items' => $item->$role_relationship, 'element_role' => $role_relationship])
