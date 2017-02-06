@@ -12,5 +12,6 @@ return [
     'users-management' => true,
     'media-library' => true,
     'file-library' => true,
+    'block-editor' => true,
 
 ];

@@ -1,27 +1,15 @@
-@set('blocks_css', ltrim(rev_asset('blocks.css'), '/'))
-@set('blocks_js', ltrim(rev_asset('blocks.js'), '/'))
+@php
+    $original_field_name = $field_name ?? 'content';
 
-@set('original_field_name', $field_name ?? 'content')
+    $blocks_css = revAsset('blocks.css');
+    $blocks_js = revAsset('blocks.js');
 
-@set('media_library_route', route('admin.media-library.medias.index'))
-@set('media_crop_route', route('admin.media-library.medias.crop'))
-@set('media_thumbnail_route', route('admin.media-library.medias.thumbnail'))
-@set('file_library_route', route('admin.file-library.files.index'))
-@set('block_preview_route', route('admin.blocks.preview'))
-
-@section('extra_js')
-    <!--  Start async webfont loading -->
-    <link rel="preload" href="https://cloud.typography.com/6162114/6171952/css/fonts.css" as="style" onload="this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cloud.typography.com/6162114/6171952/css/fonts.css"></noscript>
-    <script>
-        var THG_webfonts_stylesheet_url = 'https://cloud.typography.com/6162114/6171952/css/fonts.css';
-        /*! https://github.com/filamentgroup/loadCSS ©2016 Scott Jehl, Zach Leat, Filament Group, Inc. Licensed MIT */
-        (function(w){var loadCSS=function(href,before,media){var doc=w.document;var ss=doc.createElement("link");var ref;if(before)ref=before;else{var refs=(doc.body||doc.getElementsByTagName("head")[0]).childNodes;ref=refs[refs.length-1]}var sheets=doc.styleSheets;ss.rel="stylesheet";ss.href=href;ss.media="only x";function ready(cb){if(doc.body)return cb();setTimeout(function(){ready(cb)})}ready(function(){ref.parentNode.insertBefore(ss,before?ref:ref.nextSibling)});var onloadcssdefined=function(cb){var resolvedHref=ss.href;var i=sheets.length;while(i--)if(sheets[i].href===resolvedHref)return cb();setTimeout(function(){onloadcssdefined(cb)})};function loadCB(){if(ss.addEventListener)ss.removeEventListener("load",loadCB);ss.media=media||"all"}if(ss.addEventListener)ss.addEventListener("load",loadCB);ss.onloadcssdefined=onloadcssdefined;onloadcssdefined(loadCB);return ss};if(typeof exports!=="undefined")exports.loadCSS=loadCSS;else w.loadCSS=loadCSS})(typeof global!=="undefined"?global:this);
-        (function(w){if(!w.loadCSS)return;var rp=loadCSS.relpreload={};rp.support=function(){try{return w.document.createElement("link").relList.supports("preload")}catch(e){return false}};rp.poly=function(){var links=w.document.getElementsByTagName("link");for(var i=0;i<links.length;i++){var link=links[i];if(link.rel==="preload"&&link.getAttribute("as")==="style"){w.loadCSS(link.href,link);link.rel=null}}};if(!rp.support()){rp.poly();var run=w.setInterval(rp.poly,300);if(w.addEventListener)w.addEventListener("load",function(){w.clearInterval(run)});if(w.attachEvent)w.attachEvent("onload",function(){w.clearInterval(run)})}})(this);
-        function onloadCSS(ss,callback){var called;function newcb(){if(!called&&callback){called=true;callback.call(ss)}}if(ss.addEventListener)ss.addEventListener("load",newcb);if(ss.attachEvent)ss.attachEvent("onload",newcb);if("isApplicationInstalled"in navigator&&"onloadcssdefined"in ss)ss.onloadcssdefined(newcb)};
-    </script>
-    <!--  End async webfont loading -->
-@stop
+    $media_library_route = route('admin.media-library.medias.index');
+    $media_crop_route = route('admin.media-library.medias.crop');
+    $media_thumbnail_route = route('admin.media-library.medias.thumbnail');
+    $file_library_route = route('admin.file-library.files.index');
+    $block_preview_route = route('admin.blocks.preview');
+@endphp
 
 @section('extra_css')
     <style>
@@ -48,7 +36,9 @@
     <header class="header_small">
         <h3><b>{{ $field_title or 'Block Editor' }}</b></h3>
     </header>
-    @set('field_name', isset($field_wrapper) ? $field_wrapper . '[' . $original_field_name . ']' : $original_field_name)
+    @php
+        $field_name = isset($field_wrapper) ? $field_wrapper . '[' . $original_field_name . ']' : $original_field_name;
+    @endphp
     <div class="input text optional">
         <textarea
             class="text optional"
@@ -57,8 +47,8 @@
             data-behavior="sir_trevor"
             data-sir-trevor-defaults="sir_trevor_defaults"
             data-sir-trevor-settings="sir_trevor_settings"
-            data-sir-trevor-js="assets/admin/vendor/sir-trevor/sir-trevor-with-eventable.min.js, assets/admin/vendor/medium-editor/medium-editor.min.js, {{ $blocks_js }}"
-            data-sir-trevor-css="assets/admin/vendor/sir-trevor/sir-trevor.css, assets/admin/vendor/sir-trevor/sir-trevor-icons.css, assets/admin/vendor/medium-editor/medium-editor.css, assets/admin/vendor/medium-editor/themes/flat.min.css, {{ $blocks_css }}">
+            data-sir-trevor-js="assets/admin/vendor/sir-trevor/sir-trevor-with-eventable.min.js, assets/admin/vendor/medium-editor/medium-editor.min.js, {{ ltrim($blocks_js, '/') }}"
+            data-sir-trevor-css="assets/admin/vendor/sir-trevor/sir-trevor.css, assets/admin/vendor/sir-trevor/sir-trevor-icons.css, assets/admin/vendor/medium-editor/medium-editor.css, assets/admin/vendor/medium-editor/themes/flat.min.css, {{ ltrim($blocks_css, '/') }}">
             @if ((Form::old($field_name)) !== null)
                 {{ Form::old($field_name) }}
             @elseif (isset($item))
@@ -116,50 +106,46 @@
 
       sir_trevor_defaults = function() {
         SirTrevor.setBlockOptions("Blocktext", DEFAULT_OPTIONS);
-        SirTrevor.setBlockOptions("Blocktextsimple", DEFAULT_OPTIONS);
         SirTrevor.setBlockOptions("Blockquote", DEFAULT_OPTIONS);
-        SirTrevor.setBlockOptions("Blockintro", DEFAULT_OPTIONS);
-        SirTrevor.setBlockOptions("Blocktitle", DEFAULT_OPTIONS);
-        SirTrevor.setBlockOptions("Stats", DEFAULT_OPTIONS);
-        SirTrevor.setBlockOptions("Button", DEFAULT_OPTIONS);
-        SirTrevor.setBlockOptions("Download", DEFAULT_OPTIONS);
+        SirTrevor.setBlockOptions("Blockseparator", DEFAULT_OPTIONS);
+        SirTrevor.setBlockOptions("Imagesimple", DEFAULT_OPTIONS);
+        SirTrevor.setBlockOptions("Imagefull", DEFAULT_OPTIONS);
         SirTrevor.setBlockOptions("Imagegrid", DEFAULT_OPTIONS);
         SirTrevor.setBlockOptions("Imagetext", DEFAULT_OPTIONS);
-        SirTrevor.setBlockOptions("List", DEFAULT_OPTIONS);
-        SirTrevor.setBlockOptions("Blockseparator", DEFAULT_OPTIONS);
+        SirTrevor.setBlockOptions("Button", DEFAULT_OPTIONS);
+        SirTrevor.setBlockOptions("Download", DEFAULT_OPTIONS);
 
-        var IMAGE_OPTIONS = $.extend({}, DEFAULT_OPTIONS);
-        IMAGE_OPTIONS.option_crop_ratio = "2.4";
-        SirTrevor.setBlockOptions("Imagesimple", IMAGE_OPTIONS);
-        SirTrevor.setBlockOptions("Imagefull", IMAGE_OPTIONS);
-        SirTrevor.setBlockOptions("Diaporama", IMAGE_OPTIONS);
+        // SirTrevor.setBlockOptions("Blocktextsimple", DEFAULT_OPTIONS);
+        // SirTrevor.setBlockOptions("Diaporama", DEFAULT_OPTIONS);
+        // SirTrevor.setBlockOptions("List", DEFAULT_OPTIONS);
+        // SirTrevor.setBlockOptions("Stats", DEFAULT_OPTIONS);
 
-        var COLLECTION_OPTIONS = $.extend({}, DEFAULT_OPTIONS);
-        COLLECTION_OPTIONS.option_browser = "{{ route('admin.catalog.collections.browser') }}";
-        SirTrevor.setBlockOptions("Collection", COLLECTION_OPTIONS);
+        // var IMAGE_OPTIONS = $.extend({}, DEFAULT_OPTIONS);
+        // IMAGE_OPTIONS.option_crop_ratio = "2.4";
 
+        // var COLLECTION_OPTIONS = $.extend({}, DEFAULT_OPTIONS);
+        // COLLECTION_OPTIONS.option_browser = "route('admin.catalog.collections.browser')";
+        // SirTrevor.setBlockOptions("Collection", COLLECTION_OPTIONS);
       }
 
       @if(isset($blockList))
         var blockTypes = {!! json_encode($blockList) !!}
       @else
         var blockTypes = [
-            "Blockintro",
             "Blocktext",
-            "Blocktextsimple",
             "Blockquote",
-            // "Blocktitle",
+            "Blockseparator",
             "Imagesimple",
             "Imagefull",
             "Imagegrid",
             "Imagetext",
-            "Diaporama",
-            "Collection",
-            "List",
-            "Stats",
-            "Blockseparator",
             "Button",
             "Download"
+            // "Blocktextsimple",
+            // "Diaporama"
+            // "Collection",
+            // "List",
+            // "Stats",
         ];
       @endif
 

@@ -2,7 +2,7 @@
 
 namespace A17\CmsToolkit\Services\BlockEditor\Blocks;
 
-class SeparatorBlock extends BaseBlock
+class Separator extends BaseBlock
 {
     protected $types = [
         'blockseparator',

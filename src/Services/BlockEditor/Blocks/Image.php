@@ -5,7 +5,7 @@ namespace A17\CmsToolkit\Services\BlockEditor\Blocks;
 use A17\CmsToolkit\Repositories\MediaRepository;
 use ImageService;
 
-class ImageBlock extends BaseBlock
+class Image extends BaseBlock
 {
     protected $types = [
         'imagesimple',

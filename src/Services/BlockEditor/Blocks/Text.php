@@ -2,7 +2,7 @@
 
 namespace A17\CmsToolkit\Services\BlockEditor\Blocks;
 
-class TextBlock extends BaseBlock
+class Text extends BaseBlock
 {
     protected $types = [
         'blocktext',
