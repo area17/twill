@@ -20,7 +20,9 @@
     <div class="input text {{ $required }} {{ $fullField }} field_with_lang" data-lang="{{$locale}}" >
         <label class="string {{ $required }} control-label" for="{{ $fullField }}">
             {{ $field_name }}  {!! !empty($required) ? '<abbr title="required">*</abbr>' : '' !!}
-            <span class="lang_tag" data-behavior="lang_toggle">{{strtoupper($locale)}}</span>
+            @unless($loop->first && $loop->last)
+                <span class="lang_tag" data-behavior="lang_toggle">{{ strtoupper($locale) }}</span>
+            @endunless
             {!! isset($hint) ? '<div class="/hint"> '.$hint.'</div>' : '' !!}
         </label>
         {!! Form::textarea($fullField, $fieldValue ?? null,[
@@ -30,10 +32,18 @@
             'data-behavior' => "medium_editor",
             'data-medium-editor-js' => "assets/admin/vendor/medium-editor/medium-editor.min.js",
             'data-medium-editor-css' => "assets/admin/vendor/medium-editor/medium-editor.css, assets/admin/vendor/medium-editor/themes/flat.min.css",
-            'data-medium-editor-options' => $data_medium_editor_options ?? '',
+            'data-medium-editor-options' => $data_medium_editor_options ?? 'default_medium_editor_options',
         ] + $options) !!}
         @if (isset($textLimit))
             <span class="hint"><span class="textlimit-remaining">0</span> / {{ $textLimit }} characters maximum</span>
         @endif
     </div>
 @endforeach
+
+<script>
+       var default_medium_editor_options = {
+            toolbar : {
+                buttons: ['bold', 'italic',  'unorderedlist', 'orderedlist']
+            }
+        };
+</script>

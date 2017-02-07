@@ -21,7 +21,12 @@
         <section class="box {{ $bucket_full_class }}" data-behavior="media_library" data-options="file_library_options_{{ $file_bucket_identifier }}">
             <header class="header_small">
                 <h3>
-                    <b>{{ isset($file_role_name) ? ucfirst($file_role_name) : ucfirst($file_role) }} {{ $with_multiple ? 'files' : 'file' }}</b><span class="lang_tag" data-behavior="lang_toggle" style="font-family: Arial,sans-serif; padding: 0 6px 0 6px; color: #fff; font-size: 9px; letter-spacing: 0.05em; border-radius: 2px; background: #b2b2b2; display: inline-block; vertical-align: text-bottom; height: 18px; line-height: 18px; white-space: nowrap; margin-left: 5px; cursor: pointer; text-transform: uppercase;">{{ strtoupper($locale) }}</span>
+                    <b>{{ isset($file_role_name) ? ucfirst($file_role_name) : ucfirst($file_role) }} {{ $with_multiple ? 'files' : 'file' }}</b>
+                    @unless($loop->first && $loop->last)
+                        <span class="lang_tag" data-behavior="lang_toggle" style="font-family: Arial,sans-serif; padding: 0 6px 0 6px; color: #fff; font-size: 9px; letter-spacing: 0.05em; border-radius: 2px; background: #b2b2b2; display: inline-block; vertical-align: text-bottom; height: 18px; line-height: 18px; white-space: nowrap; margin-left: 5px; cursor: pointer; text-transform: uppercase;">
+                            {{ strtoupper($locale) }}
+                        </span>
+                    @endunless
                     @if (isset($hint))
                         <ul>
                             <li><span class="icon icon-label icon-bang">{{ $hint }}</span></li>

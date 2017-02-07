@@ -20,7 +20,9 @@
     <div class="input text {{ $required }} {{ $fullField }} field_with_lang" data-lang="{{$locale}}" >
         <label class="string {{ $required }} control-label" for="{{ $fullField }}">
             {{ $field_name }}  {!! !empty($required) ? '<abbr title="required">*</abbr>' : '' !!}
-            <span class="lang_tag" data-behavior="lang_toggle">{{strtoupper($locale)}}</span>
+            @unless($loop->first && $loop->last)
+                <span class="lang_tag" data-behavior="lang_toggle">{{ strtoupper($locale) }}</span>
+            @endunless
             {!! isset($hint) ? '<div class="/hint"> '.$hint.'</div>' : '' !!}
         </label>
         {!! Form::textarea($fullField, $fieldValue ?? null,[

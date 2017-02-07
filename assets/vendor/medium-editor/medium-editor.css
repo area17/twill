@@ -205,5 +205,10 @@
 [data-medium-editor-element] sup {
   vertical-align: super; }
 
+[data-medium-editor-element] ul,
+[data-medium-editor-element] ol {
+  padding-left: 1em;
+}
+
 .medium-editor-hidden {
   display: none !important; }

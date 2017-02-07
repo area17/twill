@@ -35,7 +35,9 @@
     <div class="input string {{ $required }} {{ $fullField }} field_with_hint field_with_lang" data-lang="{{ $locale }}">
         <label class="string {{ $required }} control-label" for="{{ $fullField }}" data-behavior="{{ $behavior }}">
             {!! $field_name !!} {!! !empty($required) ? '<abbr title="required">*</abbr>' : '' !!}
-            <span class="lang_tag" data-behavior="lang_toggle">{{ strtoupper($locale) }}</span>
+            @unless($loop->first && $loop->last)
+                <span class="lang_tag" data-behavior="lang_toggle">{{ strtoupper($locale) }}</span>
+            @endunless
         </label>
         {!! Form::text($fullField, $fieldValue ?? null, ['class' => "string {$fullField} {$required}", 'id'=> $fullField] + $options) !!}
         {!! isset($hint) ? '<span class="hint">'.$hint.'</span>' : '' !!}
