@@ -15,7 +15,6 @@ return [
     'blocks_js_rev' => false,
 
     'blocks' => [
-
         "blocktitle" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",
         "blocktext" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",
         "blockquote" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",

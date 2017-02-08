@@ -8,7 +8,7 @@
     $block_preview_route = route('admin.blocks.preview');
 
     $blocks_css = revAsset('blocks.css');
-    $blocks_js = config('cms-toolkit.blocks.blocks_js_rev') ? revAsset(config('cms-toolkit.blocks.blocks_js_path')) : config('cms-toolkit.blocks.blocks_js_path');
+    $blocks_js = config('cms-toolkit.block-editor.blocks_js_rev') ? revAsset(config('cms-toolkit.block-editor.blocks_js_path')) : config('cms-toolkit.block-editor.blocks_js_path');
 @endphp
 
 @include('cms-toolkit::layouts.form_partials.block_settings')

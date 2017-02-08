@@ -51,8 +51,8 @@
     SirTrevor.setBlockOptions("Blockseparator", DEFAULT_OPTIONS);
   }
 
-  @if(isset($blockList))
-    var blockTypes = {!! json_encode($blockList) !!}
+  @if(isset($block_list))
+    var blockTypes = {!! json_encode($block_list) !!}
   @else
     var blockTypes = [
         "Blocktitle",
