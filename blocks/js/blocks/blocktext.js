@@ -15,24 +15,6 @@ SirTrevor.Blocks.Blocktext = (function(){
 
     icon_name: 'text',
 
-    editorHTML: a17cms.Helpers.sirTrevorBaseEditor("", text_fields),
-
-    afterBlockRender: function(){
-      var self = this;
-
-      var $textareas = this.getInputBlock();
-      var $textarea = $textareas.filter('textarea');
-
-      if(this.option_class) {
-        var custom_class = this.option_class;
-        $textarea.addClass(custom_class);
-      }
-
-      if($textarea.length) {
-        $textarea.each(function() {
-          self.setMediumEditor($(this), self.option_settings);
-        });
-      }
-    },
+    editorHTML: a17cms.Helpers.sirTrevorBaseEditor("", text_fields)
   });
 })();

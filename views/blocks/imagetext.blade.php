@@ -11,7 +11,7 @@
             @if (is_object($image))
                 <img src="{{ ImageService::getUrl($image['uuid'], ['w' => 800, 'h' => 800] + $crop_params )}}" alt="{{ $image['alt_text'] }}" />
             @else
-                <img src="{!! ImageService::getFallbackUrl(['w' => 800, 'h' => 800]) !!}" />
+                <img src="{!! ImageService::getTransparentFallbackUrl(['w' => 800, 'h' => 800]) !!}" />
             @endif
         </div>
 

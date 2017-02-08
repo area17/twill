@@ -348,6 +348,26 @@ SirTrevor.Blocks.Base = (function(){
     $input.css('height', h);
   },
 
+  afterBlockRender: function() {
+    var self = this;
+
+    var $textareas = this.getInputBlock();
+    var $textarea = $textareas.filter('textarea');
+
+    if(this.option_class) {
+      var custom_class = this.option_class;
+      $textarea.addClass(custom_class);
+    }
+
+    if($textarea.length) {
+      $textarea.each(function() {
+        if ($(this).hasClass('textarea-medium-editor')) {
+          self.setMediumEditor($(this), self.option_settings);
+        }
+      });
+    }
+  },
+
   /* setMediumEditor
    * Create new medium based on settings
    */

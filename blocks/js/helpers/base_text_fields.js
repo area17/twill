@@ -7,7 +7,6 @@ a17cms.Helpers.sirTrevorBaseTextFields = function(fields) {
   for (i = 0; i < fields.length; i++) {
 
     var field = fields[i];
-    console.log(field);
     if (!field.html) {
       field.html = "<div class='input field_with_lang' data-lang='{{lang}}'>"
 
@@ -17,7 +16,6 @@ a17cms.Helpers.sirTrevorBaseTextFields = function(fields) {
       field.placeholder = (field.placeholder === undefined) ? '' : field.placeholder;
       field.maxlength = (field.maxlength === undefined) ? '500' : field.maxlength;
       field.type = (field.type === undefined) ? 'input' : field.type;
-      console.log(field.type);
 
       switch (field.type) {
         case 'input':

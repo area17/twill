@@ -141,6 +141,8 @@ SirTrevor.Blocks.Masterdiaporama = (function(){
     // repeater that we just added.
     $(window).trigger('a17cms.lang_switcher.refresh');
 
+    //after block render
+    self.afterBlockRender();
   },
 
   bindItemsContainer: function($items_container, uniq_id) {

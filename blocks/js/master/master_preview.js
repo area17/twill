@@ -159,9 +159,6 @@ SirTrevor.Blocks.Masterpreview = (function(){
     self.afterBlockRender();
   },
 
-  afterBlockRender: function() {
-  },
-
   bindMediaContainer: function($items_container, uniq_id) {
     var self = this;
     var url = self.optionLibrary();
