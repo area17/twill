@@ -10,6 +10,6 @@ class Separator extends BaseBlock
 
     public function blockseparatorToHtml()
     {
-        return view('front.blocks.separator');
+        return view('cms-toolkit::blocks.separator');
     }
 }

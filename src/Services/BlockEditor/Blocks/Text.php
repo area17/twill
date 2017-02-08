@@ -5,29 +5,29 @@ namespace A17\CmsToolkit\Services\BlockEditor\Blocks;
 class Text extends BaseBlock
 {
     protected $types = [
+        'blocktitle',
         'blocktext',
         'blockquote',
-        'blocktitle',
     ];
+
+    public function blocktitleToHtml()
+    {
+        return view('cms-toolkit::blocks.title', [
+            'title' => $this->getInput('title'),
+        ]);
+    }
 
     public function blocktextToHtml()
     {
-        return view('front.blocks.text', [
-            'text' => $this->data['html_' . $this->locale] ?? '',
+        return view('cms-toolkit::blocks.text', [
+            'text' => $this->getInput('html'),
         ]);
     }
 
     public function blockquoteToHtml()
     {
-        return view('front.blocks.quote', [
-            'text' => $this->data['text_' . $this->locale] ?? '',
-        ]);
-    }
-
-    public function blocktitleToHtml()
-    {
-        return view('front.blocks.title', [
-            'title' => $this->data['title_' . $this->locale] ?? '',
+        return view('cms-toolkit::blocks.quote', [
+            'text' => $this->getInput('text'),
         ]);
     }
 }

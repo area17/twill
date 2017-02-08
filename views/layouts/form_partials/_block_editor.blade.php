@@ -1,36 +1,17 @@
 @php
     $original_field_name = $field_name ?? 'content';
 
-    $blocks_css = revAsset('blocks.css');
-    $blocks_js = revAsset('blocks.js');
-
     $media_library_route = route('admin.media-library.medias.index');
     $media_crop_route = route('admin.media-library.medias.crop');
     $media_thumbnail_route = route('admin.media-library.medias.thumbnail');
     $file_library_route = route('admin.file-library.files.index');
     $block_preview_route = route('admin.blocks.preview');
+
+    $blocks_css = revAsset('blocks.css');
+    $blocks_js = config('cms-toolkit.blocks.blocks_js_rev') ? revAsset(config('cms-toolkit.blocks.blocks_js_path')) : config('cms-toolkit.blocks.blocks_js_path');
 @endphp
 
-@section('extra_css')
-    <style>
-        .simple_form .a17cms-editor {
-            max-width: none;
-        }
-
-        .simple_form .a17cms-editor .a17cms-editor-mode {
-            max-width: 1000px;
-            margin: 0px auto;
-        }
-
-        .simple_form .a17cms-editor .a17cms-preview-mode a {
-            pointer-events: none;
-        }
-
-        .simple_form .a17cms-editor .a17cms-preview-mode {
-            min-height: 60px;
-        }
-    </style>
-@stop
+@include('cms-toolkit::layouts.form_partials.block_settings')
 
 <section class="box box-sir-trevor">
     <header class="header_small">
@@ -62,109 +43,37 @@
             @endif
         </textarea>
     </div>
-
-    <script>
-      var medium_editor_paste_options = {
-        forcePlainText: true,
-        cleanPastedHTML: true,
-        cleanAttrs: ['class', 'style', 'dir', 'content', 'itemscope', 'itemprop', 'itemtype', 'property', 'data-behavior', 'data-url', 'font'],
-        cleanTags: ['xml', 'body', 'section', 'aside', 'article', 'meta', 'input', 'h1', 'h2', 'font', 'iframe', 'object', 'script', 'style', 'img'],
-        cleanReplacements: [
-          [new RegExp(/<!--[\s\S]*?-->/g), '']
-        ]
-      };
-
-      var medium_editor_anchor_options = {
-        placeholderText: 'Insert a complete link',
-        targetCheckbox: true,
-        targetCheckboxText: 'Open in new window'
-      };
-
-      var medium_editor_buttons_blocktext = ['anchor', 'h3'];
-      var medium_editor_buttons = ['bold', 'italic', 'strikethrough', 'superscript', 'unorderedlist', 'orderedlist', 'anchor', 'removeFormat'];
-
-      var BLOCK_LANGUAGES = {!! json_encode(getLocales()) !!};
-
-      var DEFAULT_OPTIONS = {
-        option_library: "{{ $media_library_route }}",
-        option_crop: "{{ $media_crop_route }}",
-        option_crop_ratio: '1',
-        option_library_thumbnail: "{{ $media_thumbnail_route }}",
-        option_browser: "{{ $file_library_route }}",
-        option_template: "{{ $block_preview_route }}",
-        option_settings: {
-          placeholder: {
-            text: 'Enter text here.'
-          },
-          toolbar: {
-            buttons: medium_editor_buttons_blocktext
-          },
-          anchor: medium_editor_anchor_options,
-          paste: medium_editor_paste_options
-        }
-      }
-
-      sir_trevor_defaults = function() {
-        SirTrevor.setBlockOptions("Blocktext", DEFAULT_OPTIONS);
-        SirTrevor.setBlockOptions("Blockquote", DEFAULT_OPTIONS);
-        SirTrevor.setBlockOptions("Blockseparator", DEFAULT_OPTIONS);
-        SirTrevor.setBlockOptions("Imagesimple", DEFAULT_OPTIONS);
-        SirTrevor.setBlockOptions("Imagefull", DEFAULT_OPTIONS);
-        SirTrevor.setBlockOptions("Imagegrid", DEFAULT_OPTIONS);
-        SirTrevor.setBlockOptions("Imagetext", DEFAULT_OPTIONS);
-        SirTrevor.setBlockOptions("Button", DEFAULT_OPTIONS);
-        SirTrevor.setBlockOptions("Download", DEFAULT_OPTIONS);
-
-        // SirTrevor.setBlockOptions("Blocktextsimple", DEFAULT_OPTIONS);
-        // SirTrevor.setBlockOptions("Diaporama", DEFAULT_OPTIONS);
-        // SirTrevor.setBlockOptions("List", DEFAULT_OPTIONS);
-        // SirTrevor.setBlockOptions("Stats", DEFAULT_OPTIONS);
-
-        // var IMAGE_OPTIONS = $.extend({}, DEFAULT_OPTIONS);
-        // IMAGE_OPTIONS.option_crop_ratio = "2.4";
-
-        // var COLLECTION_OPTIONS = $.extend({}, DEFAULT_OPTIONS);
-        // COLLECTION_OPTIONS.option_browser = "route('admin.catalog.collections.browser')";
-        // SirTrevor.setBlockOptions("Collection", COLLECTION_OPTIONS);
-      }
-
-      @if(isset($blockList))
-        var blockTypes = {!! json_encode($blockList) !!}
-      @else
-        var blockTypes = [
-            "Blocktext",
-            "Blockquote",
-            "Blockseparator",
-            "Imagesimple",
-            "Imagefull",
-            "Imagegrid",
-            "Imagetext",
-            "Button",
-            "Download"
-            // "Blocktextsimple",
-            // "Diaporama"
-            // "Collection",
-            // "List",
-            // "Stats",
-        ];
-      @endif
-
-      var sir_trevor_settings = {
-        blockTypes: blockTypes,
-        blockLimit: {{ $blockLimit or 100 }},
-        @if (isset($blockLimit) && $blockLimit === 1)
-        defaultType: blockTypes[0],
-        @endif
-      }
-
-    </script>
-
-    @if (isset($blockLimit) && $blockLimit === 1)
-    <style>
-        .st-block__ui {
-            display: none !important;
-        }
-    </style>
-    @endif
-
 </section>
+
+@section('extra_css')
+    <style>
+        .simple_form .a17cms-editor {
+            max-width: none;
+        }
+
+        .simple_form .a17cms-editor .a17cms-editor-mode {
+            max-width: 1000px;
+            margin: 0px auto;
+        }
+
+        .simple_form .a17cms-editor .a17cms-preview-mode a {
+            pointer-events: none;
+        }
+
+        .simple_form .a17cms-editor .a17cms-preview-mode {
+            min-height: 63px;
+        }
+
+        @if(count(getLocales()) === 1)
+            .simple_form .a17cms-editor .a17cms-editor-mode .lang_tag {
+                display: none;
+            }
+        @endif
+
+        @if (isset($blockLimit) && $blockLimit === 1)
+            .st-block__ui {
+                display: none !important;
+            }
+        @endif
+    </style>
+@stop

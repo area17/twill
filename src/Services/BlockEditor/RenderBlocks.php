@@ -56,8 +56,6 @@ class RenderBlocks
 
     private function getRenderer($block, $options = [])
     {
-        // dd($block['type'], array_keys(config('cms-toolkit.blocks.blocks')));
-
         if (!isset($block['data']) || !array_key_exists($block['type'], config('cms-toolkit.blocks.blocks'))) {
             return null;
         }

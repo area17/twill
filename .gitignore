@@ -1,2 +1,3 @@
 vendor/
 !assets/vendor
+/node_modules

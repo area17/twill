@@ -1,0 +1,11 @@
+---
+default:
+  - 'build'
+
+build:
+  - 'clean'
+  - 'triggerBuild'
+
+buildComponents:
+  - 'scripts'
+  - 'rev'

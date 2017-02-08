@@ -1,0 +1,9 @@
+{
+  "name": "A17-CMS-Toolkit",
+  "author": "A17 <dev@area17.com>",
+  "private": true,
+  "dependencies": {},
+  "overrides": {},
+  "devDependencies": {
+  }
+}

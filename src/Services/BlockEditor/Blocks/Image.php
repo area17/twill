@@ -8,33 +8,27 @@ use ImageService;
 class Image extends BaseBlock
 {
     protected $types = [
-        'imagesimple',
-        'imagefull',
+        'image',
         'imagegrid',
         'imagetext',
         'diaporama',
     ];
 
-    public function imagesimpleToHtml()
+    public function imageToHtml()
     {
-        return view('front.blocks.imagesimple', $this->getBlockData());
-    }
-
-    public function imagefullToHtml()
-    {
-        return view('front.blocks.imagefull', $this->getBlockData());
+        return view('cms-toolkit::blocks.image', $this->getBlockData());
     }
 
     public function imagegridToHtml()
     {
-        return view('front.blocks.imagegrid', $this->getBlockData('grid'));
+        return view('cms-toolkit::blocks.imagegrid', $this->getBlockData('grid'));
     }
 
     public function imagetextToHtml()
     {
-        return view('front.blocks.imagetext', [
-            'title' => $this->data['title_' . $this->locale] ?? '',
-            'text' => $this->data['text_' . $this->locale] ?? '',
+        return view('cms-toolkit::blocks.imagetext', [
+            'title' => $this->getInput('title'),
+            'text' => $this->getInput('text'),
             'image' => $this->getImage($this->data['image_id']),
             'crop_params' => $this->getCrop($this->data['image_id_crop']),
             'image_first' => $this->data['image_position'],
@@ -43,8 +37,8 @@ class Image extends BaseBlock
 
     public function diaporamaToHtml()
     {
-        return view('front.blocks.diaporama', [
-            'title' => $this->data['title_' . $this->locale] ?? '',
+        return view('cms-toolkit::blocks.diaporama', [
+            'title' => $this->getInput('title'),
         ] + $this->getBlockData() + $this->options);
     }
 
@@ -53,7 +47,7 @@ class Image extends BaseBlock
         return ['image_count' => count($this->getBlockData()['images'])];
     }
 
-    private function getBlockData($type = 'full', $max_ratio = null)
+    protected function getBlockData($type = 'full', $max_ratio = null)
     {
         if ($type == 'full') {
             return $this->getImagesParams('images', 'crop_params', 'image_id', 'image_id_crop');
@@ -69,7 +63,7 @@ class Image extends BaseBlock
         return [];
     }
 
-    private function getImagesParams($params_images_key, $params_crop_key, $data_image_id_key, $data_image_crop_key)
+    protected function getImagesParams($params_images_key, $params_crop_key, $data_image_id_key, $data_image_crop_key)
     {
         $params = [];
 
@@ -114,7 +108,7 @@ class Image extends BaseBlock
         return [];
     }
 
-    private function getMedias($ids_list)
+    protected function getMedias($ids_list)
     {
         $ids_array = explode(',', $ids_list);
 

@@ -18,7 +18,7 @@ class BaseBlock
     {
         $this->type = $block['type'];
         $this->data = $block['data'];
-        $this->locale = app()->getLocale();
+        $this->locale = $block['locale'] ?? app()->getLocale();
         $this->options = $options;
     }
 
@@ -44,6 +44,11 @@ class BaseBlock
         }
 
         return [];
+    }
+
+    protected function getInput($name)
+    {
+        return $this->data[$name . '_' . $this->locale] ?? '';
     }
 
     protected function getImage($id)

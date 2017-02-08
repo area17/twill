@@ -33,7 +33,7 @@
                     </div>
                 </div>
             @endif
-            <div class="grid_list grid_list_rows" data-behavior="media_paginator" data-paginator-current="{{ $items->currentPage() }}" data-paginator-total="{{ $items->lastPage() }}" data-paginator-url="{{ Request::url() }}">
+            <div class="grid_list grid_list_rows" data-behavior="media_paginator" data-paginator-current="{{ method_exists($items, 'total') ? $items->currentPage() : 1 }}" data-paginator-total="{{ method_exists($items, 'total') ? $items->lastPage() : 1 }}" data-paginator-url="{{ Request::url() }}">
                 <div class="grid_list_rows_table" data-feed @if(count($items) === 0) style="height: 100%" @endif>
                     @resourceView($moduleName, 'browser_list')
                 </div>
