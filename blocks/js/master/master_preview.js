@@ -299,6 +299,7 @@ SirTrevor.Blocks.Masterpreview = (function(){
     // Init display of the Remove Resource Button
     function displayResourceButton() {
       var $resource_title = $resources_container.find("[data-resource-title]");
+      var $resource_title_input = $resources_container.find("[data-resource-title-input]");
 
       if($resources_id.val() == "") {
         $bt_add_resource.show();
@@ -311,7 +312,7 @@ SirTrevor.Blocks.Masterpreview = (function(){
         $bt_add_resource.hide();
         $bt_remove_resource.show();
 
-        $resource_title.text($resources_id.val()).show();
+        $resource_title.text($resource_title_input.val()).show();
         $resource_title.next('small').hide();
       }
     }

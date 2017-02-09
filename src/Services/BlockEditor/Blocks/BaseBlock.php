@@ -80,4 +80,13 @@ class BaseBlock
         return [];
     }
 
+    protected function getResourceId($name = 'resource_id')
+    {
+        $locale = $this->data['resource_locale'] ?? $this->locale;
+
+        $locale = ($locale === "1" ? $this->locale : $locale);
+
+        return $this->data[$name . '_' . $locale];
+    }
+
 }
