@@ -25,9 +25,24 @@ class BaseBlock
     public function renderToHtml()
     {
         if (in_array($this->type, $this->types)) {
+
             $method = $this->type . 'ToHtml';
+
             if (method_exists($this, $method)) {
-                return $this->$method();
+                try {
+
+                    $viewAsString = $this->$method()->render();
+
+                } catch (\Exception $e) {
+
+                    if (config('cms-toolkit.block-editor.show_render_errors')) {
+                        return $e->getMessage();
+                    }
+
+                    return $this->$method();
+                }
+
+                return $viewAsString;
             }
         }
 

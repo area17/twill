@@ -14,6 +14,8 @@ return [
     'blocks_js_path' => '/assets/admin/blocks/blocks.js',
     'blocks_js_rev' => false,
 
+    'show_render_errors' => env('BLOCK_EDITOR_SHOW_ERRORS', false),
+
     'blocks' => [
         "blocktitle" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",
         "blocktext" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",

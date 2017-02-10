@@ -121,6 +121,7 @@ SirTrevor.Blocks.Base = (function(){
       updatePreviewHTML(edit_button_fail);
     }).always(function() {
       self.bindPreviewButton();
+      self.performValidations();
     });
 
     function updatePreviewHTML(html) {
@@ -244,7 +245,6 @@ SirTrevor.Blocks.Base = (function(){
     $editor_mode.hide();
     $preview_mode.html(output(data));
     $preview_mode.append("<button type='button' class='btn btn-primary a17-edit-button'>Edit</button>");
-
     self.bindPreviewButton();
   },
 
