@@ -10,7 +10,7 @@
     var resources_options_{{$role_relationship}} = {
       "role": "{{ $role_relationship }}",
       "type": "{{ $with_multiple ? 'generic_multiple' : 'generic_single' }}",
-      "url": "{{ moduleRoute($module_name, $routePrefix, 'browser')}}",
+      "url": "{{ moduleRoute($module_name, $routePrefix, 'browser', $params ?? [])}}",
       "title": "Attach {{ $role_relationship_name or $role_relationship }}",
       "max": {{ $media_max }}
     }
