@@ -11,14 +11,14 @@ abstract class ModuleRepository
 
     protected $model;
 
-    public function get($with = [], $scopes = [], $orders = [], $perPage = 15)
+    public function get($with = [], $scopes = [], $orders = [], $perPage = 15, $forcePagination =false)
     {
         $query = $this->model->with($with);
 
         $query = $this->filter($query, $scopes);
         $query = $this->order($query, $orders);
 
-        if ($this->model instanceof Sortable) {
+        if (!$forcePagination && $this->model instanceof Sortable) {
             return $query->ordered()->get();
         }
 

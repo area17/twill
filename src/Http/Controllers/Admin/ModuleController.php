@@ -83,7 +83,7 @@ abstract class ModuleController extends Controller
 
     public function getIndexItems($scopes = [])
     {
-        return $this->repository->get($this->indexWith, $scopes, $this->orderScope(), $this->perPage ?? 50);
+        return $this->repository->get($this->indexWith, $scopes, $this->orderScope(), $this->perPage ?? 50, true);
     }
 
     public function getViewData($items, $scopes, $prependScope = [])
