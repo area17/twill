@@ -3,7 +3,7 @@
 ## Introduction
 
 The CMS Toolkit is a Laravel Composer package to rapidly create and deploy a completely custom admin area for our clients websites that is highly functional, beautiful and easy to use.
-It's a curation of all the features that were developed on custom admin areas since our switch to Laravel. The architecture, conventions and helpers it provides currently powers the [Opéra National de Paris 2015 website redesign](https://www.operadeparis.fr/) ([codebase](https://code.area17.com/opera/onp)), the [AREA 17 2016 website redesign](https://area17.com) ([codebase](https://code.area17.com/a17/site)) and the [THG 2016 redesign website](https://www.thg-paris.com/) ([codebase](https://code.area17.com/THG/site)). 
+It's a curation of all the features that were developed on custom admin areas since our switch to Laravel. The architecture, conventions and helpers it provides currently powers the [Opéra National de Paris 2015 website redesign](https://www.operadeparis.fr/) ([codebase](https://code.area17.com/opera/onp)), the [AREA 17 2016 website redesign](https://area17.com) ([codebase](https://code.area17.com/a17/site)) and the [THG 2016 redesign website](https://www.thg-paris.com/) ([codebase](https://code.area17.com/THG/site)).
 
 By default, with very little developer actions, it provides:
 - a beautiful admin interface that really focuses on the editors needs, using the [A17 CMS UI Toolkit](http://cms3.dev.area17.com)
@@ -91,11 +91,11 @@ That's about it!
 ### Static templates
 Frontenders, you might often be the first users of this package in new Laravel apps when starting to work on static templates.
 
-Creating Blade files in `views/templates` will make them directly accessible at `admin.domain.dev/templates/file-name`. 
+Creating Blade files in `views/templates` will make them directly accessible at `admin.domain.dev/templates/file-name`.
 
 Feel free to use all [Blade](https://laravel.com/docs/5.3/blade) features, extend a parent layout and cut out your views in partials, this will help a lot during integration.
 
-Frontend assets should live in the `public/dist` folder along with a `rev-manifest.json` for compiled assets in production. Using the [A17 FE Boilerplate](https://code.area17.com/a17/fe-boilerplate) should handle that for you. 
+Frontend assets should live in the `public/dist` folder along with a `rev-manifest.json` for compiled assets in production. Using the [A17 FE Boilerplate](https://code.area17.com/a17/fe-boilerplate) should handle that for you.
 
 Use the `revAsset('asset.{css|js})` helper in your templates to get assets URLs in any environment.
 
@@ -331,10 +331,10 @@ return [
 
 #### The cms-navigation configuration file
 
-This file manages the navigation of your admin area. Using the CMS UI Toolkit, the package provides 3 levels of navigation: global, primary and secondary. This file simply contains a nested array description of your navigation. 
+This file manages the navigation of your admin area. Using the CMS UI Toolkit, the package provides 3 levels of navigation: global, primary and secondary. This file simply contains a nested array description of your navigation.
 
 Each entry is defined by multiple options.
-The simplest entry has a `title` and a `route` option which is a Laravel route name. A global entry can define a `primary_navigation` array that will contains more entries. Same thing for the `primary_navigation` entries but with `secondary_navigation`. 
+The simplest entry has a `title` and a `route` option which is a Laravel route name. A global entry can define a `primary_navigation` array that will contains more entries. Same thing for the `primary_navigation` entries but with `secondary_navigation`.
 
 Two other options are provided that are really useful in conjunction with the CRUD modules you'll create in your application: `module` and `can`. `module` is a boolean to indicate if the entry is routing to a module route. By default it will link to the index route of the module you used as your entry key. `can` allows you to display/hide navigation links depending on the current user and permission name you specify.
 
@@ -378,7 +378,7 @@ return [
 ];
 ```
 
-To make it work properly and to get active states automatically, you should structure your routes in the same way using for example here: 
+To make it work properly and to get active states automatically, you should structure your routes in the same way using for example here:
 
 ```php
 <?php
@@ -436,9 +436,9 @@ You can generate all the files needed for a new CRUD using the generator:
 php artisan cms-toolkit:module yourPluralModuleName
 ```
 
-The command has a couple of options : 
-- `--hasTranslation (-T)`, 
-- `--hasSlug (-S)`, 
+The command has a couple of options :
+- `--hasTranslation (-T)`,
+- `--hasSlug (-S)`,
 - `--hasMedias (-M)`,
 - `--hasFiles (-F)`,
 - `--hasPosition (-P)`.
@@ -559,23 +559,23 @@ Repositories allows you to modify the default behavior of your models by providi
 public function filter($query, array $scopes = []) {
 
     // and use the following helpers
-    
+
     // add a where like clause
     $this->addLikeFilterScope($query, $scopes, 'field_in_scope');
-    
+
     // add orWhereHas clauses
     $this->searchIn($query, $scopes, 'field_in_scope', ['field1', 'field2', 'field3']);
-    
+
     // add a whereHas clause
     $this->addRelationFilterScope($query, $scopes, 'field_in_scope', 'relationName');
-    
+
     // or just go manually with the $query object
     if (isset($scopes['field_in_scope'])) {
       $query->orWhereHas('relationName', function ($query) use ($scopes) {
           $query->where('field', 'like', '%' . $scopes['field_in_scope'] . '%');
       });
     }
-    
+
     // don't forget to call the parent filter function
     return parent::filter($query, $scopes);
 }
@@ -602,10 +602,10 @@ public function order($query, array $orders = []) {
 public function getFormFields($object) {
     // don't forget to call the parent getFormFields function
     $fields = parent::getFormFields($object);
-    
+
     // get oneToMany relationship for select multiple input
     $fields = $this->getFormFieldsForMultiSelect($fields, 'relationName');
-    
+
     // return fields
     return $fields
 }
@@ -675,7 +675,7 @@ public function afterSave($object, $fields) {
 
     /*
      * Filters mapping ('fFilterName' => 'filterColumn')
-     * You can associate items list to filters by having a fFilterNameList key in the indexData array 
+     * You can associate items list to filters by having a fFilterNameList key in the indexData array
      * For example, 'fCategory' => 'category_id' and 'fCategoryList' => app(CategoryRepository::class)->listAll()
      */
     protected $filters = [];
@@ -690,7 +690,7 @@ public function afterSave($object, $fields) {
 
     /*
      * Add anything you would like to have available in your module's form view
-     * For example, relationship lists for multiselect form fields 
+     * For example, relationship lists for multiselect form fields
      */
     protected function formData($request)
     {
@@ -783,8 +783,19 @@ $this->messagesForTranslatedFields([
     'search' => true, // enable/disable the search field
     'publish' => true, // enable/disable the publish action
     'title' => 'defaults to module name',
+    'toggle_columns' => [ // Quick columns for featuring capabilities
+        [
+            'toggle_field' => 'featured',
+            'icon_class'   => 'icon-feature'
+        ],
+        [
+            'toggle_title' => 'Feature at the homepage',
+            'toggle_field' => 'homepage_featured',
+            'icon_class'   => 'icon-feature'
+        ]
+    ],
     'columns' => [
-        'image' => [ 
+        'image' => [
             'title' => 'Image',
             'thumb' => true, // image column
             'variant' => [
@@ -910,10 +921,10 @@ You can add more filters than the automatically added ones (using the fFilterLis
 
 ```php
 @formField('medias', [
-    'media_role' => 'media_role', 
+    'media_role' => 'media_role',
     'media_role_name' => 'Media role name',
-    'with_multiple' => true/false, 
-    'max' => 5, 
+    'with_multiple' => true/false,
+    'max' => 5,
     'no_crop' => true/false
 ])
 ```
@@ -922,10 +933,10 @@ You can add more filters than the automatically added ones (using the fFilterLis
 
 ```php
 @formField('files', [
-    'file_role' => 'media_role', 
+    'file_role' => 'media_role',
     'file_role_name' => 'Media role name',
-    'with_multiple' => true/false, 
-    'max' => 5, 
+    'with_multiple' => true/false,
+    'max' => 5,
 ])
 ```
 
@@ -975,13 +986,13 @@ public function getTransparentFallbackUrl();
 ```
 
 #### Role & Crop params
-Each of the data models in your application can have different images roles and crop. 
+Each of the data models in your application can have different images roles and crop.
 
-For exemple, roles for a People model could be `profile` and `cover`. This allow you display different images for your data modal in the design, depending on the current screen. 
+For exemple, roles for a People model could be `profile` and `cover`. This allow you display different images for your data modal in the design, depending on the current screen.
 
-Crops are complementary or can be used on their own with a single role to define multiple cropping ratios on the same image. 
+Crops are complementary or can be used on their own with a single role to define multiple cropping ratios on the same image.
 
-For example, your Person `cover` image could have a `square` crop for mobile screen, but could use a `16/9` crop on larger screen. Those values are editable at your convenience for each model, even if there are already some crop created in the CMS. 
+For example, your Person `cover` image could have a `square` crop for mobile screen, but could use a `16/9` crop on larger screen. Those values are editable at your convenience for each model, even if there are already some crop created in the CMS.
 
 The only thing you have to do to make it work is to compose your model and repository with the appropriate traits, respectively `HasMedias` and `HandleMedias`, setup your `$mediaParams` configuration and use the `medias` form partial in your form view (more info in the CRUD section).
 
@@ -1026,7 +1037,7 @@ $model->cmsImage($roleName, $cropName[, array $params, $has_fallback])
  * Returns the alt text of the image associated with $roleName.
  */
 $model->imageAltText($roleName)
- 
+
 /**
  * Returns the caption of the image associated with $roleName.
  */
