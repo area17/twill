@@ -71,7 +71,7 @@ abstract class ModuleController extends Controller
 
     public function index()
     {
-        $view = view()->exists("admin.{$this->moduleName}.index") ? "admin.{$this->moduleName}.index" : "cms-toolkit::{$this->moduleName}.index"; 
+        $view = view()->exists("admin.{$this->moduleName}.index") ? "admin.{$this->moduleName}.index" : "cms-toolkit::{$this->moduleName}.index";
         return view($view, $this->getIndexData() + $this->request->all());
     }
 
@@ -189,14 +189,15 @@ abstract class ModuleController extends Controller
     {
         if (($id = $this->request->input('id')) && ($previousActiveState = $this->request->input('active'))) {
             $featured = ($previousActiveState == 'true' ? false : true);
+            $featuredField = $this->request->input('featureField') ?? ($this->featureField ?? 'featured');
 
             if ($this->repository->isUniqueFeature()) {
                 if ($featured) {
-                    $this->repository->updateBasic(null, [$this->featureField ?? 'featured' => false]);
-                    $this->repository->updateBasic($id, [$this->featureField ?? 'featured' => $featured]);
+                    $this->repository->updateBasic(null, [$featuredField => false]);
+                    $this->repository->updateBasic($id, [$featuredField => $featured]);
                 }
             } else {
-                $this->repository->updateBasic($id, [$this->featureField ?? 'featured' => $featured]);
+                $this->repository->updateBasic($id, [$featuredField => $featured]);
             }
 
             return response($featured ? "Item featured!" : "Item unfeatured!");
