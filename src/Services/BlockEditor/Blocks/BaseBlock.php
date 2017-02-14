@@ -18,16 +18,31 @@ class BaseBlock
     {
         $this->type = $block['type'];
         $this->data = $block['data'];
-        $this->locale = app()->getLocale();
+        $this->locale = $block['locale'] ?? app()->getLocale();
         $this->options = $options;
     }
 
     public function renderToHtml()
     {
         if (in_array($this->type, $this->types)) {
+
             $method = $this->type . 'ToHtml';
+
             if (method_exists($this, $method)) {
-                return $this->$method();
+                try {
+
+                    $viewAsString = $this->$method()->render();
+
+                } catch (\Exception $e) {
+
+                    if (config('cms-toolkit.block-editor.show_render_errors')) {
+                        return $e->getMessage();
+                    }
+
+                    return $this->$method();
+                }
+
+                return $viewAsString;
             }
         }
 
@@ -44,6 +59,11 @@ class BaseBlock
         }
 
         return [];
+    }
+
+    protected function getInput($name)
+    {
+        return $this->data[$name . '_' . $this->locale] ?? '';
     }
 
     protected function getImage($id)
@@ -73,6 +93,15 @@ class BaseBlock
         }
 
         return [];
+    }
+
+    protected function getResourceId($name = 'resource_id')
+    {
+        $locale = $this->data['resource_locale'] ?? $this->locale;
+
+        $locale = ($locale === "1" ? $this->locale : $locale);
+
+        return $this->data[$name . '_' . $locale];
     }
 
 }

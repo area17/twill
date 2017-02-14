@@ -2,7 +2,7 @@
 
 namespace A17\CmsToolkit\Services\BlockEditor\Blocks;
 
-class SeparatorBlock extends BaseBlock
+class Separator extends BaseBlock
 {
     protected $types = [
         'blockseparator',
@@ -10,6 +10,6 @@ class SeparatorBlock extends BaseBlock
 
     public function blockseparatorToHtml()
     {
-        return view('front.blocks.separator');
+        return view('cms-toolkit::blocks.separator');
     }
 }

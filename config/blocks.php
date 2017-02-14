@@ -11,15 +11,20 @@ return [
     | More to come here...
     |
      */
+    'blocks_js_path' => '/assets/admin/blocks/blocks.js',
+    'blocks_js_rev' => false,
+
+    'show_render_errors' => env('BLOCK_EDITOR_SHOW_ERRORS', false),
+
     'blocks' => [
+        "blocktitle" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",
         "blocktext" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",
         "blockquote" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",
-        "blocktitle" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",
-        "imagefull" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
-        "imagesimple" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
+        "image" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
         "imagegrid" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
         "imagetext" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
         "diaporama" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
+        "button" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Link",
         "blockseparator" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Separator",
     ],
     'sitemap_blocks' => [

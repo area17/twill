@@ -4,6 +4,7 @@
     </div>
 @else
     <input type="hidden" name="id" value="{{ $file->id }}">
+    <input type="hidden" name="resourceName" value="{{ $file->filename }}">
     <div class="input">
         <p>{{ $file->filename }} ({{ $file->size }})</p>
         <br>

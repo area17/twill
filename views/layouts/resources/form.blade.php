@@ -1,6 +1,11 @@
 @extends('cms-toolkit::layouts.main')
 
+@php
+    $hide_lang_switcher = $hide_lang_switcher ?? true;
+@endphp
+
 @section('content')
+    @formField('lang_switcher', ['hidden' => $hide_lang_switcher])
     @yield('form')
 @stop
 

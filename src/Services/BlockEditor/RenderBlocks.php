@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\BlockEditor;
+namespace A17\CmsToolkit\Services\BlockEditor;
 
 class RenderBlocks
 {
@@ -44,12 +44,9 @@ class RenderBlocks
 
     public function fromSingleJsonToHtml($blockJson, $options = [])
     {
-
         $block = json_decode($blockJson, true);
         $html = null;
-
         $renderer = $this->getRenderer($block, $options);
-
         if ($renderer) {
             $html .= $renderer->renderToHtml();
         }
@@ -59,11 +56,11 @@ class RenderBlocks
 
     private function getRenderer($block, $options = [])
     {
-        if (!isset($block['data']) || !array_key_exists($block['type'], config('cms-toolkit.block_editor.blocks'))) {
+        if (!isset($block['data']) || !array_key_exists($block['type'], config('cms-toolkit.block-editor.blocks'))) {
             return null;
         }
 
-        $class = config('cms-toolkit.block_editor.blocks')[$block['type']];
+        $class = config('cms-toolkit.block-editor.blocks')[$block['type']];
 
         return new $class($block, $options);
     }

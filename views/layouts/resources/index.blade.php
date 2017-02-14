@@ -4,6 +4,7 @@
     $sort = $sort ?? false;
     $publish = $publish ?? true;
     $edit = $edit ?? true;
+    $show_locale_edit_links = $show_locale_edit_links ?? false;
     $delete = $delete ?? true;
 @endphp
 

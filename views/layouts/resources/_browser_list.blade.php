@@ -7,7 +7,7 @@
     ];
 @endphp
 
-@if ($items->currentPage() === 1 && count($items) > 0)
+@if ((method_exists($items, 'total') && $items->currentPage() === 1 && count($items) > 0) || !method_exists($items, 'total'))
     <div class="row_item" style="background-color: #eee;">
         @foreach($columns as $column)
             <div class="row_item_col">
@@ -18,7 +18,7 @@
 @endif
 
 @forelse($items as $item)
-    <a class="row_item" data-id="{{ $item->id }}" data-name="{{ $item->title or $item->id }}" href="#">
+    <a class="row_item" data-id="{{ $item->id }}" data-resource-name="{{ $item->attached_resource_name or $item->title }}" href="#">
         @foreach ($columns as $column)
             @php
                 $columnOptions = $column;
