@@ -6,6 +6,7 @@
     $edit = $edit ?? true;
     $show_locale_edit_links = $show_locale_edit_links ?? false;
     $delete = $delete ?? true;
+    $toggle_columns = $toggle_columns ?? [];
 @endphp
 
 @extends('cms-toolkit::layouts.main')
@@ -64,6 +65,9 @@
                             @if (view()->exists('admin.' . $moduleName . '._before_index_headers'))
                                 @include('admin.' . $moduleName . '._before_index_headers')
                             @endif
+                            @foreach ($toggle_columns as $toggle_column)
+                                <th class="tool">{{ $toggle_column['toggle_title'] or '—'}}</th>
+                            @endforeach
                             @foreach ($columns as $column)
                                 <th class="{{ isset($column['col']) ? 'colw-' . $column['col'] : '' }}">
                                 @if(isset($column['sort']) && $column['sort'])
@@ -94,6 +98,9 @@
                             @if (view()->exists('admin.' . $moduleName . '._before_index_columns'))
                                 @include('admin.' . $moduleName . '._before_index_columns')
                             @endif
+                            @foreach ($toggle_columns as $toggle_column_data)
+                                @resourceView($moduleName, 'feature_action', $toggle_column_data)
+                            @endforeach
                             @foreach ($columns as $column)
                                 @php
                                     $columnOptions = $column;
