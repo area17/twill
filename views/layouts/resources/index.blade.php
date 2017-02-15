@@ -62,9 +62,7 @@
                             @if ($publish)
                                 <th class="tool">{{ $publish_title or '—'}}</th>
                             @endif
-                            @if (view()->exists('admin.' . $moduleName . '._before_index_headers'))
-                                @include('admin.' . $moduleName . '._before_index_headers')
-                            @endif
+                            @resourceView($moduleName, 'before_index_headers')
                             @foreach ($toggle_columns as $toggle_column)
                                 <th class="tool">{{ $toggle_column['toggle_title'] or '—'}}</th>
                             @endforeach
@@ -95,9 +93,7 @@
                             @if ($publish)
                                 @resourceView($moduleName, 'publish_action')
                             @endif
-                            @if (view()->exists('admin.' . $moduleName . '._before_index_columns'))
-                                @include('admin.' . $moduleName . '._before_index_columns')
-                            @endif
+                            @resourceView($moduleName, 'before_index_columns')
                             @foreach ($toggle_columns as $toggle_column_data)
                                 @resourceView($moduleName, 'feature_action', $toggle_column_data)
                             @endforeach
