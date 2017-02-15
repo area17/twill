@@ -31,6 +31,10 @@
             $fullField = $field . '.' . $locale;
             $fieldValue = $form_fields[$fullField] ?? null;
         }
+
+        if (isset($repeater) && $repeater) {
+            $fullField = $moduleName . '[' . $repeaterIndex . '][' . $fullField . ']';
+        }
     @endphp
     <div class="input string {{ $required }} {{ $fullField }} field_with_hint field_with_lang" data-lang="{{ $locale }}">
         <label class="string {{ $required }} control-label" for="{{ $fullField }}" data-behavior="{{ $behavior }}">

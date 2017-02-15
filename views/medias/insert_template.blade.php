@@ -21,9 +21,13 @@
         @foreach($crops as $crop_name => $crop_ratio)
             @php
                 $image = isset($new_row) && $new_row ? $imageByCrop : ($imageByCrop[$crop_name] ?? null);
+                $input_prefix_medias = "medias[{$backend_role}][{$crop_name}]";
+                if (isset($repeater) && $repeater) {
+                    $input_prefix_medias = "{$moduleName}[{$repeaterIndex}][medias][{$backend_role}][{$crop_name}]";
+                }
             @endphp
             @if($image)
-            <input id="medias[{{$media_role}}][{{$crop_name}}][id][]" name="medias[{{$media_role}}][{{$crop_name}}][id][]" type="hidden" value="{{ $id }}" />
+            <input id="{{ $input_prefix_medias }}[id][]" name="{{ $input_prefix_medias }}[id][]" type="hidden" value="{{ $id }}" />
             <div class="input" @if($with_crop) data-behavior="jcrop"
                                 data-jcrop-js="assets/admin/vendor/jcrop/jquery.Jcrop.min"
                                 data-jcrop-css="assets/admin/vendor/jcrop/jquery.Jcrop.min"
@@ -37,19 +41,18 @@
                 @endif
 
                 <img src="{{ ImageService::getCmsUrl($image->uuid, ['w' => 400]) }}" />
-
                 @if($with_crop)
-                    <input type="hidden" value="{{ $image->pivot->crop_w or '' }}" name="medias[{{$media_role}}][{{$crop_name}}][crop_w][]" id="medias[{{$media_role}}][{{$crop_name}}][crop_w][]" data-jcrop-role="w" />
-                    <input type="hidden" value="{{ $image->pivot->crop_h or '' }}" name="medias[{{$media_role}}][{{$crop_name}}][crop_h][]" id="medias[{{$media_role}}][{{$crop_name}}][crop_h][]" data-jcrop-role="h" />
-                    <input type="hidden" value="{{ $image->pivot->crop_x or '' }}" name="medias[{{$media_role}}][{{$crop_name}}][crop_x][]" id="medias[{{$media_role}}][{{$crop_name}}][crop_x][]" data-jcrop-role="x" />
-                    <input type="hidden" value="{{ $image->pivot->crop_y or '' }}" name="medias[{{$media_role}}][{{$crop_name}}][crop_y][]" id="medias[{{$media_role}}][{{$crop_name}}][crop_y][]" data-jcrop-role="y" />
-                    <input type="hidden" value="{{ $image->pivot->crop_x2 or '' }}" name="medias[{{$media_role}}][{{$crop_name}}][crop_x2][]" id="medias[{{$media_role}}][{{$crop_name}}][crop_x2][]" data-jcrop-role="x2" />
-                    <input type="hidden" value="{{ $image->pivot->crop_y2 or '' }}" name="medias[{{$media_role}}][{{$crop_name}}][crop_y2][]" id="medias[{{$media_role}}][{{$crop_name}}][crop_y2][]" data-jcrop-role="y2" />
+                    <input type="hidden" value="{{ $image->pivot->crop_w or '' }}" name="{{ $input_prefix_medias }}[crop_w][]" id="{{ $input_prefix_medias }}[crop_w][]" data-jcrop-role="w" />
+                    <input type="hidden" value="{{ $image->pivot->crop_h or '' }}" name="{{ $input_prefix_medias }}[crop_h][]" id="{{ $input_prefix_medias }}[crop_h][]" data-jcrop-role="h" />
+                    <input type="hidden" value="{{ $image->pivot->crop_x or '' }}" name="{{ $input_prefix_medias }}[crop_x][]" id="{{ $input_prefix_medias }}[crop_x][]" data-jcrop-role="x" />
+                    <input type="hidden" value="{{ $image->pivot->crop_y or '' }}" name="{{ $input_prefix_medias }}[crop_y][]" id="{{ $input_prefix_medias }}[crop_y][]" data-jcrop-role="y" />
+                    <input type="hidden" value="{{ $image->pivot->crop_x2 or '' }}" name="{{ $input_prefix_medias }}[crop_x2][]" id="{{ $input_prefix_medias }}[crop_x2][]" data-jcrop-role="x2" />
+                    <input type="hidden" value="{{ $image->pivot->crop_y2 or '' }}" name="{{ $input_prefix_medias }}[crop_y2][]" id="{{ $input_prefix_medias }}[crop_y2][]" data-jcrop-role="y2" />
                 @endif
             </div>
             @if($with_background_position)
                 <div class="input text">
-                    <select id="medias[{{$media_role}}][{{$crop_name}}][background_position][]" name="medias[{{$media_role}}][{{$crop_name}}][background_position][]" data-placeholder="Select a background position" data-behavior="selector" data-minimum-results-for-search=10>
+                    <select id="{{ $input_prefix_medias }}[background_position][]" name="{{ $input_prefix_medias }}[background_position][]" data-placeholder="Select a background position" data-behavior="selector" data-minimum-results-for-search=10>
                         @php
                             $available_positions = ['top', 'center', 'bottom'];
                         @endphp

@@ -7,6 +7,11 @@
     } else {
         $field_value = [];
     }
+
+    if (isset($repeater) && $repeater) {
+        $field = $moduleName . '[' . $repeaterIndex . '][' . $field . ']';
+        $field_value = $form_fields[$field] ?? null;
+    }
 @endphp
 
 <div class="input select {{ $required }}" id="input_{{ $id or $field }}">

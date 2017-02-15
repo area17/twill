@@ -40,12 +40,6 @@ trait HandleMedias
 
     public function getFormFieldsHandleMedias($object, $fields)
     {
-
-        if (old('medias')) {
-            $currentMedias = $object->medias()->get();
-            $this->afterSaveHandleMedias($object, ['medias' => old('medias')]);
-        }
-
         if ($object->has('medias')) {
 
             foreach ($object->medias->groupBy('pivot.role') as $role => $mediasByRole) {
@@ -60,13 +54,6 @@ trait HandleMedias
                 foreach ($crops as $crop_name => $ratio) {
                     $fields['medias'][$role]['crops'][$crop_name] = $ratio;
                 }
-            }
-        }
-
-        if (old('medias')) {
-            $object->medias()->sync([]);
-            foreach ($currentMedias as $media) {
-                $object->medias()->attach($media->id, $media->pivot->toArray());
             }
         }
 

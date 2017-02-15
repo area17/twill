@@ -120,6 +120,19 @@ abstract class ModuleController extends Controller
         return view($view, array_replace_recursive($data, $this->formData($this->request)));
     }
 
+    public function repeater()
+    {
+        $data = [
+            'form_fields' => $this->repository->getOldFormFieldsOnCreate(),
+            'repeaterIndex' => request('index'),
+            'moduleName' => $this->moduleName,
+            'modelName' => $this->modelName,
+            'routePrefix' => $this->routePrefix,
+        ];
+
+        return view("admin.{$this->moduleName}.repeater", array_replace_recursive($data, $this->formData($this->request)));
+    }
+
     public function store()
     {
         $formRequest = $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
@@ -218,18 +231,25 @@ abstract class ModuleController extends Controller
             $mediaModels[$media['id']] = app(MediaRepository::class)->getById($media['id']);
         }
 
-        $crops = $this->repository->getCrops($role = $this->request->input('role'));
+        $role = ($this->request->input('backend_role') ?? $this->request->input('role'));
+
+        $crops = $this->repository->getCrops($role);
 
         $view = view()->exists('admin.medias.insert_template') ? 'admin.medias.insert_template' : 'cms-toolkit::medias.insert_template';
 
-        return view($view)
-            ->withImages($mediaModels)
-            ->withCrops($crops)
-            ->withMediaRole($role)
-            ->withNewRow(true)
-            ->withWithCrop($this->request->input('with_crop'))
-            ->withWithMultiple($this->request->input('with_multiple'))
-            ->withWithBackgroundPosition($this->request->input('with_background_position'));
+        return view($view)->with([
+            'images' => $mediaModels,
+            'crops' => $crops,
+            'backend_role' => $role,
+            'media_role' => $this->request->input('role'),
+            'new_row' => true,
+            'with_crop' => $this->request->input('with_crop'),
+            'with_multiple' => $this->request->input('with_multiple'),
+            'with_background_position' => $this->request->input('with_background_position'),
+            'repeater' => $this->request->input('repeater'),
+            'repeaterIndex' => $this->request->input('repeater_index'),
+            'moduleName' => $this->moduleName,
+        ]);
     }
 
     public function file()
@@ -241,12 +261,16 @@ abstract class ModuleController extends Controller
 
         $view = view()->exists('admin.files.insert_template') ? 'admin.files.insert_template' : 'cms-toolkit::files.insert_template';
 
-        return view($view)
-            ->withFiles($fileModels)
-            ->withFileRole($this->request->input('file_role'))
-            ->withNewRow(true)
-            ->withWithMultiple($this->request->input('with_multiple'))
-            ->withLocale($this->request->input('locale'));
+        return view($view)->with([
+            'files' => $fileModels,
+            'file_role' => $this->request->input('file_role'),
+            'new_row' => true,
+            'with_multiple' => $this->request->input('with_multiple'),
+            'locale' => $this->request->input('locale'),
+            'repeater' => $this->request->input('repeater'),
+            'repeaterIndex' => $this->request->input('repeater_index'),
+            'moduleName' => $this->moduleName,
+        ]);
     }
 
     public function browser()

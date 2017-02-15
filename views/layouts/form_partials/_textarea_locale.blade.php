@@ -21,6 +21,10 @@
         } else {
             $fullField = $field . '.' . $locale;
         }
+
+        if (isset($repeater) && $repeater) {
+            $fullField = $moduleName . '[' . $repeaterIndex . '][' . $fullField . ']';
+        }
     @endphp
     <div class="input text {{ $required }} {{ $fullField }} field_with_lang" data-lang="{{ $locale }}" >
         <label class="string {{ $required }} control-label" for="{{ $fullField }}" data-behavior="{{ $behavior }}">

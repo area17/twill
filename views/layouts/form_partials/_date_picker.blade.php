@@ -3,6 +3,9 @@
     $disabled = isset($disabled) && $disabled == 'disabled' ? ['disabled' => 'disabled'] : [];
     $field_name = $field_name ?? $fieldname;
     $date_settings = $date_settings ?? 'default_date_settings';
+    if (isset($repeater) && $repeater) {
+        $field = $moduleName . '[' . $repeaterIndex . '][' . $field . ']';
+    }
 @endphp
 
 <div class="input text {{ $required }}">
