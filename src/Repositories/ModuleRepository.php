@@ -11,7 +11,7 @@ abstract class ModuleRepository
 
     protected $model;
 
-    public function get($with = [], $scopes = [], $orders = [], $perPage = 15, $forcePagination =false)
+    public function get($with = [], $scopes = [], $orders = [], $perPage = 15, $forcePagination = false)
     {
         $query = $this->model->with($with);
 
