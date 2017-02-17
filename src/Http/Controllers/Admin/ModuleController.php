@@ -81,9 +81,9 @@ abstract class ModuleController extends Controller
         return $this->getViewData($this->getIndexItems($scopes), $scopes, $prependScope);
     }
 
-    public function getIndexItems($scopes = [])
+    public function getIndexItems($scopes = [], $forcePagination = false)
     {
-        return $this->repository->get($this->indexWith, $scopes, $this->orderScope(), $this->perPage ?? 50, true);
+        return $this->repository->get($this->indexWith, $scopes, $this->orderScope(), $this->perPage ?? 50, $forcePagination);
     }
 
     public function getViewData($items, $scopes, $prependScope = [])
@@ -321,7 +321,7 @@ abstract class ModuleController extends Controller
 
     public function getBrowserItems($scopes = [])
     {
-        return $this->getIndexItems($scopes);
+        return $this->getIndexItems($scopes, true);
     }
 
     public function bucket()
