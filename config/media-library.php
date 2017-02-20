@@ -22,5 +22,6 @@ return [
     'cascade_delete' => env('MEDIA_LIBRARY_CASCADE_DELETE', false),
     'local_path' => env('MEDIA_LIBRARY_LOCAL_PATH'),
     'image_service' => 'A17\CmsToolkit\Services\MediaLibrary\Imgix',
-
+    'acl' => env('MEDIA_LIBRARY_ACL', 'private'),
+    'filesize_limit' => env('MEDIA_LIBRARY_FILESIZE_LIMIT', 50),
 ];

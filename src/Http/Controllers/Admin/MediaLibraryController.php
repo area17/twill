@@ -47,9 +47,11 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
             'successEndpoint' => route('admin.media-library.medias.store'),
             'completeEndpoint' => route('admin.media-library.medias.index') . "?new_uploads_ids=",
             'signatureEndpoint' => route('admin.media-library.sign-s3-upload'),
-            'endpointRegion' => config('filesystems.disks.'. $libraryDisk .'.region', 'none'),
-            'accessKey' => config('filesystems.disks.'. $libraryDisk .'.key', 'none'),
+            'endpointRegion' => config('filesystems.disks.' . $libraryDisk . '.region', 'none'),
+            'accessKey' => config('filesystems.disks.' . $libraryDisk . '.key', 'none'),
             'csrfToken' => csrf_token(),
+            'acl' => config('cms-toolkit.media_library.acl'),
+            'filesizeLimit' => config('cms-toolkit.media_library.filesize_limit'),
         ];
 
         if ($this->request->ajax()) {
