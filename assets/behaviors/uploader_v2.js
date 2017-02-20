@@ -49,7 +49,7 @@ a17cms.Behaviors.uploader = function(element){
                 onComplete: onCompleteCallback,
             },
             validation: {
-                sizeLimit: 50000000
+                sizeLimit: datas.uploadFilesizeLimit * 1048576 // mb to bytes
             },
         });
     }
@@ -62,7 +62,8 @@ a17cms.Behaviors.uploader = function(element){
                 key: function (id) {
                     return this.unique_folder_name + '/' + this.getName(id).noAccents(true).toFileName(true).toLowerCase();
                 },
-                region: datas.uploadEndpointRegion
+                region: datas.uploadEndpointRegion,
+                acl: datas.uploadAcl,
             },
             request: {
                 endpoint: datas.uploadEndpoint,

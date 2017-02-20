@@ -45,9 +45,11 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
             'successEndpoint' => route('admin.file-library.files.store'),
             'completeEndpoint' => route('admin.file-library.files.index') . "?new_uploads_ids=",
             'signatureEndpoint' => route('admin.file-library.sign-s3-upload'),
-            'endpointRegion' => config('filesystems.disks.'. $libraryDisk .'.region', 'none'),
-            'accessKey' => config('filesystems.disks.'. $libraryDisk .'.key', 'none'),
+            'endpointRegion' => config('filesystems.disks.' . $libraryDisk . '.region', 'none'),
+            'accessKey' => config('filesystems.disks.' . $libraryDisk . '.key', 'none'),
             'csrfToken' => csrf_token(),
+            'acl' => config('cms-toolkit.file_library.acl'),
+            'filesizeLimit' => config('cms-toolkit.file_library.filesize_limit'),
         ];
 
         if ($this->request->ajax()) {

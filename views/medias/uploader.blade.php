@@ -35,7 +35,7 @@
 @section('extra_js')
     <script src="/assets/admin/vendor/fine-uploader/all.fine-uploader.min.js"></script>
     <script src="/assets/admin/vendor/stringops/stringops.js"></script>
-    <script src="/assets/admin/behaviors/uploader.js"></script>
+    <script src="/assets/admin/behaviors/uploader_v2.js"></script>
 @stop
 
 <!-- The element where Fine Uploader will exist. -->
@@ -48,7 +48,9 @@
     data-upload-complete-endpoint="{{ $completeEndpoint }}"
     data-upload-signature-endpoint="{{ $signatureEndpoint }}"
     data-upload-endpoint-region="{{ $endpointRegion }}"
-    data-upload-csrf-token="{{ $csrfToken }}">
+    data-upload-csrf-token="{{ $csrfToken }}"
+    data-upload-acl="{{ $acl }}"
+    data-upload-filesize-limit="{{ $filesizeLimit }}">
 </div>
 
 <!-- Fine Uploader template -->
