@@ -4,6 +4,7 @@ namespace A17\CmsToolkit\Models;
 
 use A17\CmsToolkit\Models\Behaviors\HasMedias;
 use A17\CmsToolkit\Models\Enums\UserRole;
+use A17\CmsToolkit\Notifications\Reset as ResetNotification;
 use A17\CmsToolkit\Notifications\Welcome as WelcomeNotification;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -67,6 +68,11 @@ class User extends AuthenticatableContract
     public function sendWelcomeNotification($token)
     {
         $this->notify(new WelcomeNotification($token));
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetNotification($token));
     }
 
 }
