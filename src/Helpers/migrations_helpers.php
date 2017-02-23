@@ -45,3 +45,21 @@ if (!function_exists('createDefaultSlugsTableFields')) {
         $table->foreign("{$tableNameSingular}_id", "fk_{$tableNameSingular}_slugs_{$tableNameSingular}_id")->references('id')->on($tableNamePlural)->onDelete('CASCADE')->onUpdate('NO ACTION');
     }
 }
+if (!function_exists('createDefaultTableForBrowser')) {
+    function createDefaultTableForBrowser($table, $table1NameSingular, $table2NameSingular, $table1NamePlural = null, $table2NamePlural = null)
+    {
+        if (!$table1NamePlural) {
+            $table1NamePlural = str_plural($table1NameSingular);
+        }
+        if (!$table2NamePlural) {
+            $table2NamePlural = str_plural($table2NameSingular);
+        }
+
+        $table->integer("{$table1NameSingular}_id")->unsigned();
+        $table->foreign("{$table1NameSingular}_id")->references('id')->on($table1NamePlural)->onDelete('cascade');
+        $table->integer("{$table2NameSingular}_id")->unsigned();
+        $table->foreign("{$table2NameSingular}_id")->references('id')->on($table2NamePlural)->onDelete('cascade');
+        $table->integer('position')->unsigned()->index();
+        $table->index(["{$table2NameSingular}_id", "{$table1NameSingular}_id"]);
+    }
+}
