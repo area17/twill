@@ -7,7 +7,6 @@
     'sort' => false,
     'search' => true,
     'publish' => true,
-    'title' => 'defaults to module name',
     'columns' => [
         'image' => [
             'title' => 'Image',

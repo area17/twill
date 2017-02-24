@@ -8,19 +8,6 @@ class {{requestClassName}} extends Request
 {
     public function rules()
     {
-        /**
-         * You can define rules like defined in the FormRequest Laravel documentation
-         * or use the helper to define rules for translated fields without having
-         * to deal with locales here.
-         *
-         * return $this->rulesForTranslatedFields([
-         *     // regular rules
-         * ], [
-         *     // translated fields rules
-         * ]);
-         *
-         */
-
         return [];
     }
 }
