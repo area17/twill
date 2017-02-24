@@ -21,22 +21,6 @@ class {{repositoryClassName}} extends ModuleRepository
      *
      * public function filter($query, array $scopes = [])
      * {
-     *     // add a where like clause
-     *     $this->addLikeFilterScope($query, $scopes, 'field_in_scope');
-     *
-     *     // add a whereHas clause
-     *     $this->addRelationFilterScope($query, $scopes, 'field_in_scope', 'relationName');
-     *
-     *     // add orWhereHas clauses
-     *     $this->searchIn($query, $scopes, 'field_in_scope', ['field1', 'field2', 'field3']);
-     *
-     *     // manually
-     *     if (isset($scopes['search'])) {
-     *         $query->orWhereHas('tags', function ($query) use ($scopes) {
-     *             $query->where('slug', 'like', '%' . $scopes['search'] . '%');
-     *         });
-     *     }
-     *
      *     return parent::filter($query, $scopes);
      * }
      *
@@ -60,9 +44,6 @@ class {{repositoryClassName}} extends ModuleRepository
      * public function getFormFields($object)
      * {
      *     $fields = parent::getFormFields($object);
-     *
-     *     // format oneToMany for select multiple input
-     *     $fields = $this->getFormFieldsForMultiSelect($fields, 'relationName');
      *
      *     return $fields;
      * }
@@ -97,7 +78,6 @@ class {{repositoryClassName}} extends ModuleRepository
      *
      * public function afterSave($object, $fields)
      * {
-     *     $object->relationName()->sync($fields['relationName'] ?? []);
      *     parent::afterSave($object, $fields);
      * }
      *
