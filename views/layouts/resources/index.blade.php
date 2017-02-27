@@ -16,13 +16,14 @@
         <div class="filter">
             <form method="GET" accept-charset="UTF-8" novalidate="novalidate" class="{{ $filtersOn ? 'on' : '' }}">
                 @if ($search)
-                    <input type="text" name="fSearch" placeholder="Search" autocomplete="off" size="20" value="{{ $fSearch or '' }}">
+                    <input type="text" name="fSearch" placeholder="Search" autocomplete="off" size="20" value="{{ $fSearch or '' }}" style="padding: 3px 10px 5px 10px;">
                 @endif
                 {{-- TODO: get rid of those inline styles --}}
                 <style>
                     .filter .select2-container--default .select2-selection--single {
                         background-color: #fcfcfc;
                         border: 1px solid #d9d9d9;
+                        border-radius: 2px;
                     }
                     .filter .select2-container {
                         margin-right: 10px;
@@ -32,7 +33,7 @@
                     @if (isset(${$filter.'List'}))
                         {!! Form::select($filter, ${$filter.'List'} , ${$filter} ?? null, [
                             'data-behavior' => 'selector',
-                            'data-selector-width' => 'auto',
+                            'data-selector-width' => '168px',
                             'data-minimum-results-for-search' => 16,
                             'class' => 'select',
                         ]) !!}
