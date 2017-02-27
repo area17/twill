@@ -18,14 +18,7 @@ class MediaRepository extends ModuleRepository
 
     public function filter($query, array $scopes = [])
     {
-        if (isset($scopes['search'])) {
-            $query->orWhereHas('tags', function ($query) use ($scopes) {
-                $query->where('slug', 'like', '%' . $scopes['search'] . '%');
-            });
-        }
-
         $this->searchIn($query, $scopes, 'search', ['alt_text', 'filename', 'caption']);
-
         return parent::filter($query, $scopes);
     }
 

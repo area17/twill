@@ -2,14 +2,10 @@
 
 namespace A17\CmsToolkit\Models;
 
-use Cartalyst\Tags\TaggableInterface;
-use Cartalyst\Tags\TaggableTrait;
 use DB;
 
-class File extends Model implements TaggableInterface
+class File extends Model
 {
-    use TaggableTrait;
-
     public $timestamps = true;
 
     public $table = 'files';
@@ -19,12 +15,6 @@ class File extends Model implements TaggableInterface
         'filename',
         'size',
     ];
-
-    protected static function boot()
-    {
-        parent::boot();
-        static::setTagsModel(Tag::class);
-    }
 
     public function getSizeAttribute($value)
     {

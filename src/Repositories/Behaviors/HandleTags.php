@@ -4,7 +4,6 @@ namespace A17\CmsToolkit\Repositories\Behaviors;
 
 trait HandleTags
 {
-
     public function afterSaveHandleTags($object, $fields)
     {
         if (!isset($fields['bulk_tags']) && !isset($fields['previous_common_tags'])) {
@@ -24,6 +23,12 @@ trait HandleTags
 
     protected function filterHandleTags($query, &$scopes)
     {
+        if (isset($scopes['search'])) {
+            $query->orWhereHas('tags', function ($query) use ($scopes) {
+                $query->where('slug', 'like', '%' . $scopes['search'] . '%');
+            });
+        }
+
         $this->addRelationFilterScope($query, $scopes, 'tag_id', 'tags');
     }
 

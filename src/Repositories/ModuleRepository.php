@@ -209,6 +209,8 @@ abstract class ModuleRepository
             }
         }
 
+        unset($scopes['search']);
+
         foreach ($scopes as $column => $value) {
             if (is_array($value)) {
                 $query->whereIn($column, $value);
@@ -307,7 +309,6 @@ abstract class ModuleRepository
             foreach ($orFields as $field) {
                 $query->orWhere($field, 'like', '%' . $scopes[$scopeField] . '%');
             }
-            unset($scopes[$scopeField]);
         }
     }
 

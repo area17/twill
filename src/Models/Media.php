@@ -2,14 +2,10 @@
 
 namespace A17\CmsToolkit\Models;
 
-use Cartalyst\Tags\TaggableInterface;
-use Cartalyst\Tags\TaggableTrait;
 use DB;
 
-class Media extends Model implements TaggableInterface
+class Media extends Model
 {
-    use TaggableTrait;
-
     public $timestamps = true;
 
     public $table = 'medias';
@@ -22,12 +18,6 @@ class Media extends Model implements TaggableInterface
         'width',
         'height',
     ];
-
-    protected static function boot()
-    {
-        parent::boot();
-        static::setTagsModel(Tag::class);
-    }
 
     public function getDimensionsAttribute()
     {

@@ -16,14 +16,14 @@
 @endif
 
 @if ($currentUser->can('edit'))
-<div class="input">
-    <label for="tags">Tags</label>
-    <select id="tags" data-behavior="selector" name="tags[]" multiple="multiple" data-selector-ajax-url="{{ route('admin.file-library.files.tags') }}" data-placeholder="Add tags">
-        @foreach($tags as $tag)
-            <option value="{{ $tag->name }}" selected>{{ $tag->name }}</option>
-        @endforeach
-    </select>
-</div>
+    <div class="input">
+        <label for="tags">Tags</label>
+        <select id="tags" data-behavior="selector" name="tags[]" multiple="multiple" data-selector-ajax-url="{{ route('admin.file-library.files.tags') }}" data-placeholder="Add tags">
+            @foreach($tags as $tag)
+                <option value="{{ $tag->name }}" selected>{{ $tag->name }}</option>
+            @endforeach
+        </select>
+    </div>
 @endif
 
 @unless (!$currentUser->can('edit'))
