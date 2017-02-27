@@ -25,6 +25,7 @@ class Install extends Command
         $this->addRoutesFile();
         $this->addServiceProvider();
         $this->replaceExceptionsHandler();
+        $this->info('All good!');
     }
 
     private function addRoutesFile()
