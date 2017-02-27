@@ -18,9 +18,25 @@
                 @if ($search)
                     <input type="text" name="fSearch" placeholder="Search" autocomplete="off" size="20" value="{{ $fSearch or '' }}">
                 @endif
+                {{-- TODO: get rid of those inline styles --}}
+                <style>
+                    .filter .select2-container--default .select2-selection--single {
+                        background-color: #fcfcfc;
+                        border: 1px solid #d9d9d9;
+                    }
+                    .filter .select2-container {
+                        margin-right: 10px;
+                    }
+                </style>
                 @foreach($filters as $filter)
                     @if (isset(${$filter.'List'}))
-                        {!! Form::select($filter, ${$filter.'List'} , ${$filter} ?? null) !!}
+                        {!! Form::select($filter, ${$filter.'List'} , ${$filter} ?? null, [
+                            'data-behavior' => 'selector',
+                            'data-selector-width' => 'auto',
+                            'data-minimum-results-for-search' => 16,
+                            'class' => 'select',
+                            "data-placeholder" => (${$filter.'ListPlaceholder'} ?? ''),
+                        ]) !!}
                     @endif
                 @endforeach
                 @yield('extra_filters')
