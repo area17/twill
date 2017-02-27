@@ -1,5 +1,4 @@
 @php
-    $required = $required ?? "";
     $disabled = $disabled ?? null;
     if (isset($value_field_id) && !is_null($value_field_id)) {
         $field_value = $value_field_id;
@@ -10,8 +9,8 @@
     }
 @endphp
 
-<div class="input select {{ $required }}" id="input_{{$id or $field}}">
-    <label class="select {{ $required }} control-label" for="{{$field}}">
+<div class="input select" id="input_{{$id or $field}}">
+    <label class="select control-label" for="{{$field}}">
         {{$field_name}} {!! !empty($required) ? '<abbr title="required">*</abbr>' : '' !!}
         {!! (!empty($hint) ? "<span class='hint'>{$hint}</span>" : '') !!}
     </label>

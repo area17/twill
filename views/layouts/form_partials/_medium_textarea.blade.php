@@ -1,17 +1,16 @@
 @php
-    $required = $required ?? "";
     $options = [];
     if (isset($textLimit)) {
         $options['maxlength'] = "{$textLimit}";
     }
 @endphp
 
-<div class="input text {{ $required or 'optional' }} {{$field}}">
-    <label class="string {{ $required or '' }} control-label" for="{{$field}}">
+<div class="input text {{$field}}">
+    <label class="string control-label" for="{{$field}}">
         {!!$field_name!!} {!! !empty($required) ? '<abbr title="required">*</abbr>' : '' !!}
     </label>
     {!! Form::textarea($field, null,[
-        'class' => "textarea-medium-editor string {$required}",
+        'class' => "textarea-medium-editor string",
         'id' => $field,
         'data-behavior' => "medium_editor",
         'data-medium-editor-js' => "assets/admin/vendor/medium-editor/medium-editor.min.js",

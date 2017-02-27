@@ -1,5 +1,4 @@
 @php
-    $required = $required ?? "";
     if (isset($value_field_id) && !is_null($value_field_id)) {
         $field_value = $value_field_id;
     } elseif (isset($form_fields[$field])) {
@@ -9,12 +8,12 @@
     }
 @endphp
 
-<div class="input select {{ $required }}" id="input_{{ $id or $field }}">
-    <label class="select {{ $required }} control-label" for="{{ $id or $field }}">
+<div class="input select" id="input_{{ $id or $field }}">
+    <label class="select control-label" for="{{ $id or $field }}">
         {{ $field_name }} {!! !empty($required) ? '<abbr title="required">*</abbr>' : '' !!}
     </label>
     {!!	Form::select("{$field}", $list, $field_value, [
-        "class" => "select " . $required,
+        "class" => "select",
         "id" => $id ?? $field,
         "data-placeholder" => ($placeholder ?? ''),
         "data-allow-clear" => ($allowclear ?? false),
