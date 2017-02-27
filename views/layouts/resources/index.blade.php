@@ -35,7 +35,6 @@
                             'data-selector-width' => 'auto',
                             'data-minimum-results-for-search' => 16,
                             'class' => 'select',
-                            "data-placeholder" => (${$filter.'ListPlaceholder'} ?? ''),
                         ]) !!}
                     @endif
                 @endforeach
