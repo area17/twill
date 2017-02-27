@@ -58,7 +58,7 @@ Then you should be able to run:
 ```bash
 composer require a17/laravel-cms-toolkit
 ```
-Add the CMS Toolkit Install service provider in `config/app.php`:
+Add the CMS Toolkit Install service provider in `config/app.php` (before Application Service Providers):
 
 ```php
 <?php
@@ -69,7 +69,33 @@ Add the CMS Toolkit Install service provider in `config/app.php`:
 ];
 ```
 
-Setup your `.env` file (or let the [Laravel Env Validator](https://github.com/mathiasgrimm/laravel-env-validator) yell at you if you don't).
+Setup your `.env` file:
+
+```bash
+# APP_URL without scheme so that the package can resolve admin.APP_URL automatically
+# Your computer should be able to resolve both APP_URL and admin.APP_URL
+# For example, with a vagrant vm you should add to your /etc/hosts file:
+# 192.168.10.10 APP_URL
+# 192.168.10.10 admin.APP_URL
+APP_URL=client.dev.a17.io 
+
+MAIL_DRIVER=log # so that until you configure it, welcome and reset emails will go to your logs
+
+# if you use S3 uploads, you'll need those credentials
+#AWS_KEY=client_aws_key
+#AWS_SECRET=client_aws_secret
+#AWS_BUCKET=client_bucket
+
+FILE_LIBRARY_CASCADE_DELETE=true
+MEDIA_LIBRARY_CASCADE_DELETE=true
+
+# if you use Imgix, you'll need the source url
+#IMGIX_SOURCE_HOST=client.imgix.net
+IMGIX_USE_SIGNED_URLS=false
+IMGIX_USE_HTTPS=true
+
+BLOCK_EDITOR_SHOW_ERRORS=true
+```
 
 Run the install command
 
@@ -77,7 +103,7 @@ Run the install command
 php artisan cms-toolkit:install
 ```
 
-Run the setup command
+Run the setup command (it will migrate your database schema so run it where your database is accessible, ie. in vagrant)
 
 ```bash
 php artisan cms-toolkit:setup
@@ -857,20 +883,20 @@ You can add more filters than the automatically added ones (using the fFilterLis
     'field' => 'name',
     'field_name' => 'Name',
     'textLimit' => 100,
-    'required' => 'required'
+    'required' => true/false
 ])
 ```
 
-##### rich textarea (and rich_textarea_locale)
+##### medium style textarea (and medium_textarea_locale)
 
 ```php
-@formField('rich_textarea', [
+@formField('medium_textarea', [
     'field' => 'name',
     'field_name' => 'Name',
     'data_medium_editor_options' => "editorOptions", // optional
     'hint' => 'Hint',
     'textLimit' => 100,
-    'required' => 'required'
+    'required' => true/false
 ])
 
 <script>
@@ -880,6 +906,15 @@ You can add more filters than the automatically added ones (using the fFilterLis
             }
         };
 </script>
+```
+
+##### checkbox
+
+```php
+@formField('checkbox', [
+    'field' => 'boolean_field',
+    'field_name' => 'Featured on homepage?',
+])
 ```
 
 ##### select
@@ -911,7 +946,7 @@ You can add more filters than the automatically added ones (using the fFilterLis
 
 ```php
 @formField('date_picker', [
-    'fieldname' => "Date",
+    'field_name' => "Date",
     'field' => "date",
 ])
 
@@ -940,6 +975,26 @@ You can add more filters than the automatically added ones (using the fFilterLis
 ])
 ```
 
+##### tags
+
+```php
+@formField('tags')
+```
+
+##### browser
+
+```php
+@formField('browser', [
+    'routePrefix' => '', // where your related module lives in the cms
+    'relationship' => 'relationName',
+    'relationship_name' => 'Relationships',
+    'with_multiple' => true,
+    'max' => 10,
+    'hint' => 'Select up to 10 relationships'
+])
+```
+
+
 ##### publication state
 
 ```php
@@ -955,12 +1010,6 @@ You can add more filters than the automatically added ones (using the fFilterLis
     'currentSlug' => isset($item) ? $item->getActiveSlug() : '',
     'currentName' => isset($item) ? $item->name : '',
 ])
-```
-
-##### lang switcher
-
-```php
-@formField('lang_switcher')
 ```
 
 ### Media Library
