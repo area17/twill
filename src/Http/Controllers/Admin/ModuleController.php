@@ -23,7 +23,7 @@ abstract class ModuleController extends Controller
     protected $routePrefix;
 
     protected $defaultFilters = [
-        'fSearch' => 'title',
+        'fSearch' => 'title|search',
     ];
 
     /*
@@ -224,6 +224,13 @@ abstract class ModuleController extends Controller
         }
     }
 
+    public function tags()
+    {
+        $query = $this->request->input('query');
+        $tags = $this->repository->getTags($query);
+        return response()->json($tags, 200);
+    }
+
     public function media()
     {
         $mediaModels = [];
@@ -349,7 +356,16 @@ abstract class ModuleController extends Controller
             if ($this->request->has($key)) {
                 $value = $this->request->$key;
                 if ($value == 0 || !empty($value)) {
-                    $scope[$field] = $this->request->$key;
+                    // add some syntaxic sugar to scope the same filter on multiple columns
+                    $fieldSplitted = explode('|', $field);
+                    if (count($fieldSplitted) > 1) {
+                        $requestValue = $this->request->$key;
+                        collect($fieldSplitted)->each(function ($scopeKey) use (&$scope, $requestValue) {
+                            $scope[$scopeKey] = $requestValue;
+                        });
+                    } else {
+                        $scope[$field] = $this->request->$key;
+                    }
                 }
             }
         }

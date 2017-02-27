@@ -3,12 +3,20 @@
 namespace A17\CmsToolkit\Models;
 
 use A17\CmsToolkit\Models\Behaviors\HasPresenter;
+use Cartalyst\Tags\TaggableInterface;
+use Cartalyst\Tags\TaggableTrait;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Model extends BaseModel
+class Model extends BaseModel implements TaggableInterface
 {
-    use HasPresenter, SoftDeletes;
+    use HasPresenter, SoftDeletes, TaggableTrait;
 
     public $timestamps = true;
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::setTagsModel(Tag::class);
+    }
 }

@@ -29,26 +29,26 @@
 @endif
 
 @if ($currentUser->can('edit'))
-<div class="input">
-    <label for="tags">Tags</label>
-    <select id="tags" data-behavior="selector" name="tags[]" multiple="multiple" data-selector-ajax-url="{{ route('admin.media-library.medias.tags') }}" data-placeholder="Add tags">
-        @foreach($tags as $tag)
-            <option value="{{ $tag->name }}" selected>{{ $tag->name }}</option>
-        @endforeach
-    </select>
-</div>
+    <div class="input">
+        <label for="tags">Tags</label>
+        <select id="tags" data-behavior="selector" name="tags[]" multiple="multiple" data-selector-ajax-url="{{ route('admin.media-library.medias.tags') }}" data-placeholder="Add tags">
+            @foreach($tags as $tag)
+                <option value="{{ $tag->name }}" selected>{{ $tag->name }}</option>
+            @endforeach
+        </select>
+    </div>
 
-@unless ($isBulkUpdate)
-<div class="input">
-    <label for="media_filename">Filename</label>
-    <input id="media_filename" name="filename" type="text" readonly value="{{ $media->filename }}">
-</div>
+    @unless ($isBulkUpdate)
+    <div class="input">
+        <label for="media_filename">Filename</label>
+        <input id="media_filename" name="filename" type="text" readonly value="{{ $media->filename }}">
+    </div>
 
-<div class="input">
-    <label for="media_dimensions">Dimensions</label>
-    <input id="media_dimensions" name="dimensions" type="text" readonly value="{{ $media->dimensions }}">
-</div>
-@endunless
+    <div class="input">
+        <label for="media_dimensions">Dimensions</label>
+        <input id="media_dimensions" name="dimensions" type="text" readonly value="{{ $media->dimensions }}">
+    </div>
+    @endunless
 @endif
 
 @unless (!$currentUser->can('edit'))
