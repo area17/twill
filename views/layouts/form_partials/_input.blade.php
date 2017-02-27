@@ -33,10 +33,10 @@
     }
 @endphp
 
-<div class="input string {{ $required }} {{ $fullField }}">
-    <label class="string {{ $required }} control-label" for="{{ $fullField }}">
+<div class="input string {{ $fullField }}">
+    <label class="string control-label" for="{{ $fullField }}">
         {!! $field_name !!} {!! !empty($required) ? '<abbr title="required">*</abbr>' : '' !!}
         {!! isset($hint) ? '<span class="hint">'.$hint.'</span>' : '' !!}
     </label>
-    {!! Form::text($fullField, $fieldValue, ['class' => "string {$required}", 'id' => $fullField] + $options) !!}
+    {!! Form::text($fullField, $fieldValue, ['class' => "string", 'id' => $fullField] + $options) !!}
 </div>

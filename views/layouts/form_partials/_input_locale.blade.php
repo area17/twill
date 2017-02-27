@@ -36,14 +36,14 @@
             $fullField = $moduleName . '[' . $repeaterIndex . '][' . $fullField . ']';
         }
     @endphp
-    <div class="input string {{ $required }} {{ $fullField }} field_with_hint field_with_lang" data-lang="{{ $locale }}">
-        <label class="string {{ $required }} control-label" for="{{ $fullField }}" data-behavior="{{ $behavior }}">
+    <div class="input string {{ $fullField }} field_with_hint field_with_lang" data-lang="{{ $locale }}">
+        <label class="string control-label" for="{{ $fullField }}" data-behavior="{{ $behavior }}">
             {!! $field_name !!} {!! !empty($required) ? '<abbr title="required">*</abbr>' : '' !!}
             @unless($loop->first && $loop->last)
                 <span class="lang_tag" data-behavior="lang_toggle">{{ strtoupper($locale) }}</span>
             @endunless
         </label>
-        {!! Form::text($fullField, $fieldValue ?? null, ['class' => "string {$fullField} {$required}", 'id'=> $fullField] + $options) !!}
+        {!! Form::text($fullField, $fieldValue ?? null, ['class' => "string {$fullField}", 'id'=> $fullField] + $options) !!}
         {!! isset($hint) ? '<span class="hint">'.$hint.'</span>' : '' !!}
         @if (isset($textLimit))
             <span class="hint"><span class="textlimit-remaining">0</span> / {{ $textLimit }} characters maximum</span>

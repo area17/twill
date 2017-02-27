@@ -1,6 +1,5 @@
 @php
     $disabled = $disabled ?? null;
-    $required = $required ?? "";
     $rows = $rows ?? 3;
     $options = [];
     $behavior = "";
@@ -26,8 +25,8 @@
             $fullField = $moduleName . '[' . $repeaterIndex . '][' . $fullField . ']';
         }
     @endphp
-    <div class="input text {{ $required }} {{ $fullField }} field_with_lang" data-lang="{{ $locale }}" >
-        <label class="string {{ $required }} control-label" for="{{ $fullField }}" data-behavior="{{ $behavior }}">
+    <div class="input text {{ $fullField }} field_with_lang" data-lang="{{ $locale }}" >
+        <label class="string control-label" for="{{ $fullField }}" data-behavior="{{ $behavior }}">
             {{ $field_name }}  {!! !empty($required) ? '<abbr title="required">*</abbr>' : '' !!}
             @unless($loop->first && $loop->last)
                 <span class="lang_tag" data-behavior="lang_toggle">{{ strtoupper($locale) }}</span>
@@ -36,7 +35,7 @@
         </label>
     {!! Form::textarea($fullField, $fieldValue ?? null,[
         'disabled' => $disabled,
-        'class' => "string {$required}",
+        'class' => "string",
         'id'=> $fullField,
         'rows' => $rows] + $options)
     !!}
