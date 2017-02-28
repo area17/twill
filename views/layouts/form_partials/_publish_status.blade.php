@@ -5,7 +5,7 @@
         $publishedField = 'published';
     }
 
-    $fieldValue = $form_fields[$publishedField];
+    $fieldValue = $form_fields[$publishedField] ?? null;
 
     if (isset($repeater) && $repeater) {
         $fullField  = $moduleName . '[' . $repeaterIndex . '][published]';
