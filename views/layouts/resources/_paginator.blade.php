@@ -1,5 +1,5 @@
 @if($items->lastPage()>1)
     <footer>
-        {!! $items->render(new A17\CmsToolkit\Presenters\Admin\PaginatorPresenter($items)) !!}
+        {{ $items->links('cms-toolkit::layouts.resources._paginator_view') }}
     </footer>
 @endif
