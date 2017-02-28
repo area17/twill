@@ -147,9 +147,11 @@ trait HasSlug
 
     public function getSlugParams($locale = null)
     {
-        $slugParams = $this->getSingleSlugParams($locale);
-        if ( $slugParams != null && !empty($slugParams))
-            return $slugParams;
+        if (count(getLocales()) === 1) {
+            $slugParams = $this->getSingleSlugParams($locale);
+            if ( $slugParams != null && !empty($slugParams))
+                return $slugParams;
+        }
 
         $slugParams = [];
         foreach ($this->translations as $translation) {
