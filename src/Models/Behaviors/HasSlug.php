@@ -167,12 +167,12 @@ trait HasSlug
                     $slugDependenciesAttributes[$attribute] = $this->$attribute;
                 }
 
-                if ( !isset($translation->$slugAttribute))
+                if ( !isset($translation->$slugAttribute) && !isset($this->$slugAttribute))
                     throw new \Exception("You must define the field {$slugAttribute} in your model");
 
                 $slugParam = [
                     'active' => $translation->active,
-                    'slug' => $translation->$slugAttribute,
+                    'slug' => $translation->$slugAttribute ?? $this->$slugAttribute,
                     'locale' => $translation->locale,
                 ] + $slugDependenciesAttributes;
 
@@ -195,7 +195,6 @@ trait HasSlug
                 $attributes = $this->slugAttributes;
 
                 $slugAttribute = array_shift($attributes);
-
                 $slugDependenciesAttributes = [];
                 foreach ($attributes as $attribute) {
                     if ( !isset($this->$attribute))
