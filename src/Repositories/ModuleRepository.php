@@ -247,7 +247,7 @@ abstract class ModuleRepository
         return $query;
     }
 
-    public function getFormFieldsForMultiSelect($fields, $relation, $attribute = 'id')
+    public function getFormFieldsForMultiSelect($fields, $relation, $attribute = 'id', $form_field_name = null)
     {
         if (isset($fields[$relation])) {
             $list = [];
@@ -255,7 +255,10 @@ abstract class ModuleRepository
                 $list[$value['id']] = $value[$attribute];
             }
 
-            $fields[$relation] = $list;
+            $fields[$form_field_name ?? $relation] = $list;
+            if ($form_field_name) {
+                unset($fields[$relation]);
+            }
         }
 
         return $fields;
@@ -290,11 +293,9 @@ abstract class ModuleRepository
         $object->$relationship()->sync($relatedElementsWithPosition);
     }
 
-    public function updateRepeaterMany($object, $fields, $relation, $model, $customFormFieldName = null)
+    public function updateRepeaterMany($object, $fields, $relation, $model)
     {
-        $formField = $customFormFieldName ?: $relation;
-
-        $relationFields = $fields[$formField] ?? [];
+        $relationFields = $fields[$relation] ?? [];
         $relationRepository = app(config('cms-toolkit.namespace') . "\\Repositories\\" . $model . "Repository");
 
         foreach ($relationFields as $relationField) {

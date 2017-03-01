@@ -124,9 +124,8 @@ abstract class ModuleController extends Controller
     {
         $data = [
             'form_fields' => $this->repository->getOldFormFieldsOnCreate(),
-            'form_field_name' => request('form_field_name') ?? $this->moduleName,
             'repeaterIndex' => request('index'),
-            'moduleName' => request('form_field_name') ?? $this->moduleName,
+            'moduleName' => $this->moduleName,
             'modelName' => $this->modelName,
             'repeater' => true,
             'routePrefix' => $this->routePrefix,
