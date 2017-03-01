@@ -18,12 +18,25 @@
     if (isset($readonly)) {
         $options['readonly'] = $readonly;
     }
+
+    if (isset($field_wrapper)) {
+        $fullField = $field_wrapper . '[' . $field . ']';
+        $fieldValue = $form_fields[$fullField] ?? (isset($item) && $item->$field_wrapper ? $item->$field_wrapper->$field : null);
+    } else {
+        $fullField = $field;
+        $fieldValue = $form_fields[$fullField] ?? null;
+    }
+
+    if (isset($repeater) && $repeater) {
+        $fullField = $moduleName . '[' . $repeaterIndex . '][' . $field . ']';
+        $fieldValue = $form_fields[$fullField] ?? null;
+    }
 @endphp
 
-<div class="input string {{ $field }}">
-    <label class="string control-label" for="{{ $field }}">
+<div class="input string {{ $fullField }}">
+    <label class="string control-label" for="{{ $fullField }}">
         {!! $field_name !!} {!! !empty($required) ? '<abbr title="required">*</abbr>' : '' !!}
         {!! isset($hint) ? '<span class="hint">'.$hint.'</span>' : '' !!}
     </label>
-    {!! Form::text($field, $value_field, ['class' => "string", 'id'=> $field] + $options) !!}
+    {!! Form::text($fullField, $fieldValue, ['class' => "string", 'id' => $fullField] + $options) !!}
 </div>

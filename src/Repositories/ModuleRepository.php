@@ -4,6 +4,7 @@ namespace A17\CmsToolkit\Repositories;
 
 use A17\CmsToolkit\Models\Behaviors\Sortable;
 use A17\CmsToolkit\Repositories\Behaviors\HandleDates;
+use Carbon\Carbon;
 
 abstract class ModuleRepository
 {
@@ -83,15 +84,20 @@ abstract class ModuleRepository
         $this->afterSave($object, $fields);
     }
 
-    public function updateBasic($id, $values)
+    public function updateBasic($id, $values, $scopes = [])
     {
         if (is_null($id)) {
-            $this->model->query()->update($values);
+            $query = $this->model->query();
+
+            foreach ($scopes as $column => $value) {
+                $query->where($column, $value);
+            }
+
+            $query->update($values);
         }
 
         if (($object = $this->model->find($id)) != null) {
             $object->update($values);
-
             $this->afterUpdateBasic($object, $values);
         }
     }
@@ -282,6 +288,74 @@ abstract class ModuleRepository
         }
 
         $object->$relationship()->sync($relatedElementsWithPosition);
+    }
+
+    public function updateRepeaterMany($object, $fields, $relation, $model, $customFormFieldName = null)
+    {
+        $formField = $customFormFieldName ?: $relation;
+
+        $relationFields = $fields[$formField] ?? [];
+        $relationRepository = app(config('cms-toolkit.namespace') . "\\Repositories\\" . $model . "Repository");
+
+        foreach ($relationFields as $relationField) {
+            $newRelation = $relationRepository->create($relationField);
+            $object->$relation()->attach($newRelation->id);
+        }
+    }
+
+    public function updateRepeater($object, $fields, $relation, $model)
+    {
+        $relationFields = $fields[$relation] ?? [];
+
+        $relationRepository = app(config('cms-toolkit.namespace') . "\\Repositories\\" . $model . "Repository");
+
+        // if no relation field submitted, soft deletes all associated rows
+        if (!$relationFields) {
+            $relationRepository->updateBasic(null, [
+                'deleted_at' => Carbon::now(),
+            ], [
+                $this->model->getForeignKey() => $object->id,
+            ]);
+        }
+
+        // keep a list of updated and new rows to delete (soft delete?) old rows that were deleted from the frontend
+        $currentIdList = [];
+
+        foreach ($relationFields as $relationField) {
+            if (isset($relationField['id'])) {
+                // row already exists, let's update
+                $relationRepository->update($relationField['id'], $relationField);
+                $currentIdList[] = $relationField['id'];
+            } else {
+                // new row, let's attach to our object and create
+                $relationField[$this->model->getForeignKey()] = $object->id;
+                $newRelation = $relationRepository->create($relationField);
+                $currentIdList[] = $newRelation['id'];
+            }
+        }
+
+        foreach ($object->$relation->pluck('id') as $id) {
+            if (!in_array($id, $currentIdList)) {
+                $relationRepository->updateBasic(null, [
+                    'deleted_at' => Carbon::now(),
+                ], [
+                    'id' => $id,
+                ]);
+            }
+        }
+    }
+
+    public function getFormFieldsForRepeater($object, $relation, $model)
+    {
+        $relationRepository = app(config('cms-toolkit.namespace') . "\\Repositories\\" . $model . "Repository");
+
+        $relationFormFields = [];
+
+        foreach ($object->$relation as $index => $relationItem) {
+            $relationFormFields[$index] = $relationRepository->getFormFields($relationItem);
+        }
+
+        return $relationFormFields;
     }
 
     public function addRelationFilterScope($query, &$scopes, $scopeField, $scopeRelation)

@@ -1,6 +1,11 @@
 @foreach($files as $id => $file)
     @php
         $inputName = "files[" . $file_role . "][" . $locale . "][id][]";
+
+        if (isset($repeater) && $repeater) {
+            $inputName = "{$moduleName}[{$repeaterIndex}][files][" . $file_role . "][" . $locale . "][id][]";
+        }
+
         $new_row_class = isset($new_row) && $new_row ? 'media-row-new' : '';
     @endphp
     <section class="box media-row {{ $new_row_class }}" id="media-box-{{ $id }}" data-id="{{ $id }}">

@@ -19,6 +19,10 @@
     </header>
     @php
         $field_name = isset($field_wrapper) ? $field_wrapper . '[' . $original_field_name . ']' : $original_field_name;
+
+        if (isset($repeater) && $repeater) {
+            $field_name = $moduleName . '[' . $repeaterIndex . '][' . $field_name . ']';
+        }
     @endphp
     <div class="input text optional">
         <textarea

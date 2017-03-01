@@ -78,7 +78,7 @@ class RouteServiceProvider extends ServiceProvider
                 return ucfirst(str_singular($s));
             }, $slugs));
 
-            $customRoutes = $defaults = ['sort', 'publish', 'browser', 'bucket', 'media', 'feature', 'file', 'insert', 'tags'];
+            $customRoutes = $defaults = ['sort', 'publish', 'browser', 'bucket', 'media', 'feature', 'file', 'insert', 'repeater', 'tags'];
 
             if (isset($options['only'])) {
                 $customRoutes = array_intersect($defaults, (array) $options['only']);
@@ -93,7 +93,7 @@ class RouteServiceProvider extends ServiceProvider
                 $routeSlug = "{$prefixSlug}/{$route}";
                 $mapping = ['as' => $customRoutePrefix . ".{$route}", 'uses' => "{$className}Controller@{$route}"];
 
-                if (in_array($route, ['browser', 'bucket', 'media', 'file', 'insert', 'tags'])) {
+                if (in_array($route, ['browser', 'bucket', 'media', 'file', 'insert', 'repeater', 'tags'])) {
                     Route::get($routeSlug, $mapping);
                 }
 

@@ -13,6 +13,14 @@ trait HandleTranslations
             foreach ($locales as $locale) {
                 $translate = $object->translateOrNew($locale);
                 $translate->active = $fields['active_' . $locale] ?? 0;
+
+                // in the case of repeater modules, the $_POST variables
+                // names are only replaced (dots by underscores) on the first level
+                // let's do it ourselves for now but let's get rid of that asap
+                $fields = array_combine(array_map(function ($key) {
+                    return str_replace('.', '_', $key);
+                }, array_keys($fields)), array_values($fields));
+
                 foreach ($object->translatedAttributes as $field) {
                     if (array_key_exists("{$field}_{$locale}", $fields)) {
                         if (empty($fields["{$field}_{$locale}"])) {

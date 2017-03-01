@@ -3,6 +3,10 @@
     if (isset($textLimit)) {
         $options['maxlength'] = "{$textLimit}";
     }
+
+    if (isset($repeater) && $repeater) {
+        $field = $moduleName . '[' . $repeaterIndex . '][' . $field . ']';
+    }
 @endphp
 
 <div class="input text {{$field}}">

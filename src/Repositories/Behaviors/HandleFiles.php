@@ -7,7 +7,6 @@ trait HandleFiles
     public function afterSaveHandleFiles($object, $fields)
     {
         $object->files()->sync([]);
-
         if (isset($fields['files'])) {
             foreach ($fields['files'] as $role => $locale) {
                 foreach ($locale as $localeName => $localizedFiles) {
@@ -28,26 +27,13 @@ trait HandleFiles
     public function getFormFieldsHandleFiles($object, $fields)
     {
 
-        if (old('files')) {
-            $currentFiles = $object->files()->get();
-            $this->afterSaveHandleFiles($object, ['files ' => old('files')]);
-        }
-
         if ($object->has('files')) {
-
             foreach ($object->files->groupBy('pivot.role') as $role => $filesByRole) {
                 foreach ($filesByRole->groupBy('pivot.locale') as $locale => $filesByLocale) {
                     foreach ($filesByLocale->groupBy('id') as $id => $filesById) {
                         $fields['files'][$role][$locale][$id] = $filesById->first();
                     }
                 }
-            }
-        }
-
-        if (old('files')) {
-            $object->files()->sync([]);
-            foreach ($currentFiles as $file) {
-                $object->files()->attach($file->id, $file->pivot->toArray());
             }
         }
 
