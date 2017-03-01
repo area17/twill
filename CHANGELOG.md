@@ -1,6 +1,43 @@
 # Changelog
 
-All Notable changes to `laravel-cms-toolkit` will be documented in this file.
+All notable changes to `laravel-cms-toolkit` will be documented in this file.
+
+## 0.4 - 2017-03-01
+
+### Added
+
+- Functional block editor with default blocks (b53da8fe, 6bae67a, 1ad7cfc, 24f144ad, e884f14c, d838d04, 3714396e)
+- Repeater form field (105c3f22a)
+- Toggle columns in module listings (6f29f20)
+- Tagging support for all models (e001d5e)
+
+### Fixed
+
+- Toolkit module views resolution (7afcf044)
+- Browser insert partial (fea42b7, 84db3a6b, e7c220f)
+- Translations and slugs migration helpers (786fb06)
+- Password reset routes and welcome email sending policy (f04abe21)
+- Slugs params for single locale setup and custom model accessor (ecfba9924, 9788a23a)
+- Paginator (custom view based since L5.3) (3d8ec24)
+
+
+### Improved
+
+- Laravel 5.4 support (2c5634cb, 4a129364)
+- Date picker, allow custom options (f18bbf18)
+- Resource browser: Add an option to allow a module name independent from the relationship (26368c7)
+- Resource browser: Add option to pass parameters to browser from the view calling the browser (af3e06ab)
+- Filters style on index view (now uses custom select style) (948df42, adcbd628, d4af4b89)
+- Install/setup/module commands (dd19da3, f2ec13dc, acc2a662, b38a5f07)
+- Documentation (using @joyce's feedback, thanks a lot!) (ac41d07ec)
+
+
+### Changed
+
+- Differentiate Medium editor and rich text area (3125e5e)
+- Form lang switcher is now included and hidden by default (892a1da9b)
+- Added an ACL param to the uploader (2298ff40)
+- Update assets command now call vendor:publish on the CMS Toolkit (f75eb38)
 
 ## 0.3 - 2017-02-03
 
@@ -34,6 +71,11 @@ All Notable changes to `laravel-cms-toolkit` will be documented in this file.
 
 ## 0.2 - 2017-01-11
 
+### Added
+
+- Syntaxic sugar to add like where clause in controllers filters (c032539)
+- Checkbox form partial (d8e98f3)
+
 ### Improved
 
 - Documentation (d4ef4e3, 2d289bf, 067d036, a732c4d, 21b5dfe, fa1d26a, 632ebb0, f981056, b2f38b4, a5466d2, 888897d)
@@ -41,11 +83,6 @@ All Notable changes to `laravel-cms-toolkit` will be documented in this file.
 - Module generator (7870d02, 868bb26, 380e214)
 - User management (a43edfd, 315e95b, 8932206, 7abf5ef)
 - Module views (7ea66d6, f866e19, e03aab6, 4841087)
-
-### Added
-
-- Syntaxic sugar to add like where clause in controllers filters (c032539)
-- Checkbox form partial (d8e98f3)
 
 ### Changed
 
