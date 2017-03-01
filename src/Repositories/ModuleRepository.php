@@ -290,6 +290,19 @@ abstract class ModuleRepository
         $object->$relationship()->sync($relatedElementsWithPosition);
     }
 
+    public function updateRepeaterMany($object, $fields, $relation, $model, $customFormFieldName = null)
+    {
+        $formField = $customFormFieldName ?: $relation;
+
+        $relationFields = $fields[$formField] ?? [];
+        $relationRepository = app(config('cms-toolkit.namespace') . "\\Repositories\\" . $model . "Repository");
+
+        foreach ($relationFields as $relationField) {
+            $newRelation = $relationRepository->create($relationField);
+            $object->$relation()->attach($newRelation->id);
+        }
+    }
+
     public function updateRepeater($object, $fields, $relation, $model)
     {
         $relationFields = $fields[$relation] ?? [];
