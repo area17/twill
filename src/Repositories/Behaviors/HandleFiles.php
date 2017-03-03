@@ -6,6 +6,9 @@ trait HandleFiles
 {
     public function afterSaveHandleFiles($object, $fields)
     {
+        if ( $this->shouldIgnoreFieldBeforeSave('files'))
+            return;
+
         $object->files()->sync([]);
         if (isset($fields['files'])) {
             foreach ($fields['files'] as $role => $locale) {

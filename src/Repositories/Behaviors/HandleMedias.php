@@ -6,6 +6,9 @@ trait HandleMedias
 {
     public function afterSaveHandleMedias($object, $fields)
     {
+        if ( $this->shouldIgnoreFieldBeforeSave('medias'))
+            return;
+
         $object->medias()->sync([]);
 
         if (isset($fields['medias'])) {

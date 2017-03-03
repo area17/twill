@@ -7,17 +7,20 @@ trait HandleTags
     public function afterSaveHandleTags($object, $fields)
     {
         if (!isset($fields['bulk_tags']) && !isset($fields['previous_common_tags'])) {
-            $object->setTags($fields['tags'] ?? []);
+            if ( !$this->shouldIgnoreFieldBeforeSave('tags'))
+                $object->setTags($fields['tags'] ?? []);
         } else {
-            $previousCommonTags = $fields['previous_common_tags']->pluck('name')->toArray();
+            if ( !$this->shouldIgnoreFieldBeforeSave('bulk_tags')) {
+                $previousCommonTags = $fields['previous_common_tags']->pluck('name')->toArray();
 
-            if (!empty($previousCommonTags)) {
-                if (!empty($difference = array_diff($previousCommonTags, $fields['bulk_tags'] ?? []))) {
-                    $object->untag($difference);
+                if (!empty($previousCommonTags)) {
+                    if (!empty($difference = array_diff($previousCommonTags, $fields['bulk_tags'] ?? []))) {
+                        $object->untag($difference);
+                    }
                 }
-            }
 
-            $object->tag($fields['bulk_tags'] ?? []);
+                $object->tag($fields['bulk_tags'] ?? []);
+            }
         }
     }
 

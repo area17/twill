@@ -12,6 +12,8 @@ abstract class ModuleRepository
 
     protected $model;
 
+    protected $ignoreFieldsBeforeSave = [];
+
     public function get($with = [], $scopes = [], $orders = [], $perPage = 15, $forcePagination = false)
     {
         $query = $this->model->with($with);
@@ -118,7 +120,7 @@ abstract class ModuleRepository
     {
         if (property_exists($this->model, 'checkboxes')) {
             foreach ($this->model->checkboxes as $field) {
-                if (!isset($fields[$field])) {
+                if (!isset($fields[$field]) && !$this->shouldIgnoreFieldBeforeSave($field)) {
                     $fields[$field] = false;
                 }
             }
@@ -126,18 +128,20 @@ abstract class ModuleRepository
 
         if (property_exists($this->model, 'nullable')) {
             foreach ($this->model->nullable as $field) {
-                if (!isset($fields[$field])) {
+                if (!isset($fields[$field]) && !$this->shouldIgnoreFieldBeforeSave($field)) {
                     $fields[$field] = null;
                 }
             }
         }
 
         foreach ($fields as $key => $value) {
-            if (is_array($value) && empty($value)) {
-                $fields[$key] = null;
-            }
-            if ($value === '') {
-                $fields[$key] = null;
+            if ( !$this->shouldIgnoreFieldBeforeSave($key)) {
+                if (is_array($value) && empty($value)) {
+                    $fields[$key] = null;
+                }
+                if ($value === '') {
+                    $fields[$key] = null;
+                }                
             }
         }
 
@@ -392,4 +396,17 @@ abstract class ModuleRepository
         return false;
     }
 
+    public function addIgnoreFieldsBeforeSave($ignore =[])
+    {
+        $this->ignoreFieldsBeforeSave = is_array($ignore) ? 
+            array_merge($this->ignoreFieldsBeforeSave, $ignore)
+            : array_merge($this->ignoreFieldsBeforeSave,[$ignore])
+        ;
+    }
+
+    public function shouldIgnoreFieldBeforeSave($ignore)
+    {
+        return in_array($ignore, $this->ignoreFieldsBeforeSave);
+    }
 }
+
