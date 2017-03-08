@@ -4,7 +4,8 @@
     $role_relationship = $relationship ?? $role_relationship;
     $role_relationship_name = $relationship_name ?? $role_relationship_name;
     $module_name = $module_name ?? $role_relationship;
-    $input_name = $role_relationship;
+    $belongs_to = $belongs_to ?? null;
+    $input_name = $belongs_to ?? $role_relationship;
 
     if (isset($repeater) && $repeater) {
         if (isset($item)) {
@@ -38,9 +39,19 @@
     </h3>
     </header>
 
-    <input type="hidden" name="{{ $input_name }}" value="@if(isset($item)){{ implode (',', array_pluck($item->$relationship, 'id')) }}@endif">
+    @php
+        $browser_items = collect();
+        if (isset($item)) {
+            $input_value = $belongs_to ? $item->$belongs_to : implode (',', array_pluck($item->$relationship, 'id'));
+            $belongs_to_relationship = $belong_to_field ?? str_singular($role_relationship);
+            $belongs_to_items = $belongs_to && $item->$belongs_to_relationship !== null ? [$item->$belongs_to_relationship] : [];
+            $browser_items = $belongs_to ? collect($belongs_to_items) : $item->$role_relationship;
+        }
+    @endphp
+
+    <input type="hidden" name="{{ $input_name }}" value="{{ $input_value or ''}}">
     <div class="table_container">
-        <table data-behavior="sortable" data-hidden-field="{{ $input_name }}">
+        <table @unless($belongs_to) data-behavior="sortable" @endunless data-hidden-field="{{ $input_name }}">
             <thead>
                 <tr>
                     @resourceView(camel_case($role_relationship), 'browser_insert', ['headers_only' => true, 'element_role' => $role_relationship])
@@ -50,7 +61,7 @@
             <tbody data-media-bucket="{{ $role_relationship_repeater or $role_relationship }}" data-media-template="{{ moduleRoute($module_name, $routePrefix, 'insert', ['with_multiple' => $with_multiple]) }}" data-media-item=".media-row">
 
                 @if(isset($item))
-                    @resourceView(camel_case($role_relationship), 'browser_insert', ['items' => $item->$role_relationship, 'element_role' => $role_relationship])
+                    @resourceView(camel_case($role_relationship), 'browser_insert', ['items' => $browser_items, 'element_role' => $role_relationship])
                 @endif
 
             </tbody>
