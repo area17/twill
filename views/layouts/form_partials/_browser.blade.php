@@ -26,7 +26,7 @@
     }
 </script>
 
-<section class="box bucket-medias @if (isset($item) && count($item->$role_relationship) >= $media_max) full @endif" id="generic_library_multiple" data-behavior="media_library" data-options="resources_options_{{$role_relationship_repeater or $role_relationship}}">
+<section class="box bucket-medias @if (isset($item) && (count($item->$role_relationship) >= $media_max || ($belongs_to && $item->$belongs_to))) full @endif" id="generic_library_multiple" data-behavior="media_library" data-options="resources_options_{{$role_relationship_repeater or $role_relationship}}">
     <header class="header_small">
     <h3>
         <b>{{ isset($role_relationship_name) ? ucfirst($role_relationship_name) : ucfirst($role_relationship) }}
