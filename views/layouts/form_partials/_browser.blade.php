@@ -54,14 +54,14 @@
         <table @unless($belongs_to) data-behavior="sortable" @endunless data-hidden-field="{{ $input_name }}">
             <thead>
                 <tr>
-                    @resourceView(camel_case($role_relationship), 'browser_insert', ['headers_only' => true, 'element_role' => $role_relationship])
+                    @resourceView(camel_case($module_name), 'browser_insert', ['headers_only' => true, 'element_role' => $role_relationship])
                 </tr>
             </thead>
 
             <tbody data-media-bucket="{{ $role_relationship_repeater or $role_relationship }}" data-media-template="{{ moduleRoute($module_name, $routePrefix, 'insert', ['with_multiple' => $with_multiple]) }}" data-media-item=".media-row">
 
                 @if(isset($item))
-                    @resourceView(camel_case($role_relationship), 'browser_insert', ['items' => $browser_items, 'element_role' => $role_relationship])
+                    @resourceView(camel_case($module_name), 'browser_insert', ['items' => $browser_items, 'element_role' => $role_relationship])
                 @endif
 
             </tbody>
