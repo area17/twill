@@ -1,12 +1,9 @@
 @if (session()->has('flash_notification.message'))
-    <div class="message message-{{ session('flash_notification.level') }}">
-        <p>
-            {{ session('flash_notification.message') }}
-        </p>
-        @if (session('flash_notification.close'))
-            <a href="#" class="close" data-behavior="close_message">Close</a>
-        @endif
-    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            $.event.trigger({ type: "notification_open", message: "{{ session('flash_notification.message') }}", style: "{{ session('flash_notification.level') }}" });
+        });
+    </script>
 @elseif (isset($errors) && count($errors) > 0)
     <div class="message message-error">
         <ul>
