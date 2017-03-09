@@ -27,6 +27,9 @@
     <header class="header_small">
         <h3>
         <b>{{ isset($media_role_name) ? ucfirst($media_role_name) : ucfirst($media_role) }} {{ $with_multiple ? 'images' : 'image' }}</b>
+        @if (!empty($required))
+            <label style="display: inline;"><abbr title="required">*</abbr></label>
+        @endif
         @if (isset($hint))
             <ul>
                 <li><span class="icon icon-label icon-bang">{{ $hint }}</span></li>

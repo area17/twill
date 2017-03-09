@@ -31,6 +31,9 @@
             <header class="header_small">
                 <h3>
                     <b>{{ isset($file_role_name) ? ucfirst($file_role_name) : ucfirst($file_role) }} {{ $with_multiple ? 'files' : 'file' }}</b>
+                    @if (!empty($required))
+                        <label style="display: inline;"><abbr title="required">*</abbr></label>
+                    @endif
                     @unless($loop->first && $loop->last)
                         <span class="lang_tag" data-behavior="lang_toggle" style="font-family: Arial,sans-serif; padding: 0 6px 0 6px; color: #fff; font-size: 9px; letter-spacing: 0.05em; border-radius: 2px; background: #b2b2b2; display: inline-block; vertical-align: text-bottom; height: 18px; line-height: 18px; white-space: nowrap; margin-left: 5px; cursor: pointer; text-transform: uppercase;">
                             {{ strtoupper($locale) }}
