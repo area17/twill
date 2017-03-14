@@ -42,6 +42,11 @@ abstract class ModuleController extends Controller
     protected $formWith = [];
 
     /*
+     * Relation count to eager load for the form view
+     */
+    protected $formWithCount = [];
+
+    /*
      * Filters mapping ('fFilterName' => 'filterColumn')
      * In the indexData function, name your lists with the filter name + List (fClientList for example)
      */
@@ -155,7 +160,7 @@ abstract class ModuleController extends Controller
 
     private function form($id)
     {
-        $item = $this->repository->getById($id, $this->formWith);
+        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
         $data = [
             'form_options' => [
@@ -177,6 +182,11 @@ abstract class ModuleController extends Controller
     public function update($id)
     {
         $formRequest = $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
+        if ($formRequest->has('_preview') && $formRequest->input('_preview')) {
+            $object = $this->repository->preview($id, $formRequest->all());
+            session()->flash('_preview_' . $this->moduleName . '_' . $id, $object);
+            return response()->json('ok', 200);
+        }
         $this->repository->update($id, $formRequest->all());
         return $this->redirectToForm($id);
     }
@@ -408,6 +418,7 @@ abstract class ModuleController extends Controller
     protected function defaultFormOptions()
     {
         return [
+            'id' => str_random(15),
             'class' => "simple_form",
             'accept-charset' => "UTF-8",
             'novalidate' => "novalidate",

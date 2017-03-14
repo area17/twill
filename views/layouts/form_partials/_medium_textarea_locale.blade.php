@@ -46,7 +46,13 @@
 <script>
        var default_medium_editor_options = {
             toolbar : {
-                buttons: ['bold', 'italic',  'unorderedlist', 'orderedlist']
+                buttons: ['bold', 'italic', 'unorderedlist', 'orderedlist']
+            }
+        };
+
+        var link_only_medium_editor_options = {
+            toolbar : {
+                buttons: ['anchor', 'removeFormat']
             }
         };
 </script>

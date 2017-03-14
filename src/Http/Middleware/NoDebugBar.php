@@ -18,7 +18,7 @@ class NoDebugBar
     public function handle($request, Closure $next)
     {
         if ($this->app->environment('development', 'local', 'staging')) {
-            if (config('cms-toolkit.debug.debug_bar_in_fe')) {
+            if (!config('cms-toolkit.debug.debug_bar_in_fe')) {
                 if (config('cms-toolkit.debug.use_inspector', false)) {
                     li()->turnOff();
                 } else {

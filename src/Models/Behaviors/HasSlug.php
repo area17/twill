@@ -35,6 +35,25 @@ trait HasSlug
         return class_basename($this) . "Slug";
     }
 
+    public function scopeForSlug($query, $slug)
+    {
+        $query->whereHas('slugs', function ($query) use ($slug) {
+            $query->whereSlug($slug);
+            $query->whereActive(true);
+            $query->whereLocale(app()->getLocale());
+        })->withActiveTranslations()
+            ->with(['slugs']);
+    }
+
+    public function scopeForInactiveSlug($query, $slug)
+    {
+        $query->whereHas('slugs', function ($query) use ($slug) {
+            $query->whereSlug($slug);
+            $query->whereLocale(app()->getLocale());
+        })->withActiveTranslations()
+            ->with(['slugs']);
+    }
+
     public function setSlugs()
     {
         foreach ($this->getSlugParams() as $slugParams) {
@@ -149,8 +168,10 @@ trait HasSlug
     {
         if (count(getLocales()) === 1) {
             $slugParams = $this->getSingleSlugParams($locale);
-            if ( $slugParams != null && !empty($slugParams))
+            if ($slugParams != null && !empty($slugParams)) {
                 return $slugParams;
+            }
+
         }
 
         $slugParams = [];
@@ -162,13 +183,16 @@ trait HasSlug
 
                 $slugDependenciesAttributes = [];
                 foreach ($attributes as $attribute) {
-                    if ( !isset($this->$attribute))
+                    if (!isset($this->$attribute)) {
                         throw new \Exception("Are you wake-up ? You must define the field {$attribute} in your model");
+                    }
+
                     $slugDependenciesAttributes[$attribute] = $this->$attribute;
                 }
 
-                if ( !isset($translation->$slugAttribute) && !isset($this->$slugAttribute))
+                if (!isset($translation->$slugAttribute) && !isset($this->$slugAttribute)) {
                     throw new \Exception("You must define the field {$slugAttribute} in your model");
+                }
 
                 $slugParam = [
                     'active' => $translation->active,
@@ -190,21 +214,23 @@ trait HasSlug
     public function getSingleSlugParams($locale = null)
     {
         $slugParams = [];
-        foreach(getLocales() as $appLocale) {
+        foreach (getLocales() as $appLocale) {
             if ($appLocale == $locale || $locale == null) {
                 $attributes = $this->slugAttributes;
 
                 $slugAttribute = array_shift($attributes);
                 $slugDependenciesAttributes = [];
                 foreach ($attributes as $attribute) {
-                    if ( !isset($this->$attribute))
+                    if (!isset($this->$attribute)) {
                         throw new \Exception("Are you wake-up ? You must define the field {$attribute} in your model");
+                    }
 
                     $slugDependenciesAttributes[$attribute] = $this->$attribute;
                 }
 
-                if ( !isset($this->$slugAttribute))
+                if (!isset($this->$slugAttribute)) {
                     throw new \Exception("You must define the field {$slugAttribute} in your model");
+                }
 
                 $slugParam = [
                     'active' => 1,

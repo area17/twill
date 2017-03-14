@@ -1,12 +1,19 @@
 <?php
 
 if (!function_exists('createDefaultFields')) {
-    function createDefaultTableFields($table)
+    function createDefaultTableFields($table, $softDeletes = true, $published = true)
     {
         $table->increments('id');
-        $table->softDeletes();
+
+        if ($softDeletes) {
+            $table->softDeletes();
+        }
+
         $table->timestamps();
-        $table->boolean('published');
+
+        if ($published) {
+            $table->boolean('published');
+        }
     }
 }
 

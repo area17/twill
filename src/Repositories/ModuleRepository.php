@@ -34,9 +34,9 @@ abstract class ModuleRepository
         return $query->paginate($perPage);
     }
 
-    public function getById($id, $with = [])
+    public function getById($id, $with = [], $withCount = [])
     {
-        return $this->model->with($with)->findOrFail($id);
+        return $this->model->with($with)->withCount($withCount)->findOrFail($id);
     }
 
     public function listAll($column = 'name', $orders = [], $exceptId = null)
@@ -77,6 +77,8 @@ abstract class ModuleRepository
 
     public function update($id, $fields)
     {
+        $original_fields = $fields;
+
         $object = $this->model->findOrFail($id);
 
         $fields = $this->prepareFieldsBeforeSave($object, $fields);
@@ -85,7 +87,20 @@ abstract class ModuleRepository
 
         $object->push();
 
-        $this->afterSave($object, $fields);
+        $this->afterSave($object, $fields, $original_fields);
+    }
+
+    public function preview($id, $fields)
+    {
+        $object = $this->model->findOrFail($id);
+
+        $fields = $this->prepareFieldsBeforeSave($object, $fields);
+
+        $object->fill($fields);
+
+        $object = $this->hydrateForPreview($object, $fields);
+
+        return $object;
     }
 
     public function updateBasic($id, $values, $scopes = [])
@@ -137,13 +152,13 @@ abstract class ModuleRepository
         }
 
         foreach ($fields as $key => $value) {
-            if ( !$this->shouldIgnoreFieldBeforeSave($key)) {
+            if (!$this->shouldIgnoreFieldBeforeSave($key)) {
                 if (is_array($value) && empty($value)) {
                     $fields[$key] = null;
                 }
                 if ($value === '') {
                     $fields[$key] = null;
-                }                
+                }
             }
         }
 
@@ -185,13 +200,24 @@ abstract class ModuleRepository
         }
     }
 
-    public function afterSave($object, $fields)
+    public function afterSave($object, $fields, $original_fields = [])
     {
         foreach (class_uses_recursive(get_called_class()) as $trait) {
             if (method_exists(get_called_class(), $method = 'afterSave' . class_basename($trait))) {
-                $this->$method($object, $fields);
+                $this->$method($object, $fields, $original_fields);
             }
         }
+    }
+
+    public function hydrateForPreview($object, $fields)
+    {
+        foreach (class_uses_recursive(get_called_class()) as $trait) {
+            if (method_exists(get_called_class(), $method = 'hydrateForPreview' . class_basename($trait))) {
+                $object = $this->$method($object, $fields);
+            }
+        }
+
+        return $object;
     }
 
     public function getFormFields($object)
@@ -398,11 +424,11 @@ abstract class ModuleRepository
         return false;
     }
 
-    public function addIgnoreFieldsBeforeSave($ignore =[])
+    public function addIgnoreFieldsBeforeSave($ignore = [])
     {
-        $this->ignoreFieldsBeforeSave = is_array($ignore) ? 
-            array_merge($this->ignoreFieldsBeforeSave, $ignore)
-            : array_merge($this->ignoreFieldsBeforeSave,[$ignore])
+        $this->ignoreFieldsBeforeSave = is_array($ignore) ?
+        array_merge($this->ignoreFieldsBeforeSave, $ignore)
+        : array_merge($this->ignoreFieldsBeforeSave, [$ignore])
         ;
     }
 
@@ -455,4 +481,3 @@ abstract class ModuleRepository
         return $object != null ? $this->getById($object->id, $with) : null;
     }
 }
-

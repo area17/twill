@@ -16,6 +16,7 @@ use A17\CmsToolkit\Models\User;
 use A17\CmsToolkit\Services\FileLibrary\Disk;
 use A17\CmsToolkit\Services\FileLibrary\FileService;
 use A17\CmsToolkit\Services\MediaLibrary\ImageService;
+use Barryvdh\Debugbar\Facade as Debugbar;
 use Barryvdh\Debugbar\ServiceProvider as DebugbarServiceProvider;
 use Cartalyst\Tags\TagsServiceProvider;
 use Collective\Html\FormFacade;
@@ -50,6 +51,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
         'Html' => HtmlFacade::class,
         'Input' => Input::class,
         'Inspector' => Inspector::class,
+        'Debugbar' => Debugbar::class,
     ];
 
     public function boot()

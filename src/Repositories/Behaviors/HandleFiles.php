@@ -4,10 +4,11 @@ namespace A17\CmsToolkit\Repositories\Behaviors;
 
 trait HandleFiles
 {
-    public function afterSaveHandleFiles($object, $fields)
+    public function afterSaveHandleFiles($object, $fields, $original_fields = [])
     {
-        if ( $this->shouldIgnoreFieldBeforeSave('files'))
+        if ($this->shouldIgnoreFieldBeforeSave('files')) {
             return;
+        }
 
         $object->files()->sync([]);
         if (isset($fields['files'])) {

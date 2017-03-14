@@ -4,10 +4,11 @@ namespace A17\CmsToolkit\Repositories\Behaviors;
 
 trait HandleMedias
 {
-    public function afterSaveHandleMedias($object, $fields)
+    public function afterSaveHandleMedias($object, $fields, $original_fields = [])
     {
-        if ( $this->shouldIgnoreFieldBeforeSave('medias'))
+        if ($this->shouldIgnoreFieldBeforeSave('medias')) {
             return;
+        }
 
         $object->medias()->sync([]);
 

@@ -25,3 +25,11 @@
         <span class="hint"><span class="textlimit-remaining">0</span> / {{ $textLimit }} characters maximum</span>
     @endif
 </div>
+
+<script>
+    var link_only_medium_editor_options = {
+        toolbar : {
+            buttons: ['anchor', 'removeFormat']
+        }
+    };
+</script>
