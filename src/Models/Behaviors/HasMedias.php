@@ -141,4 +141,10 @@ trait HasMedias
         return $this->image($role, $crop, $params, false, true, false) ?? ImageService::getTransparentFallbackUrl($params);
     }
 
+    public function imageObjects($role, $crop)
+    {
+        return $this->medias->filter(function ($media) use ($role, $crop) {
+            return $media->pivot->role === $role && $media->pivot->crop === $crop;
+        });
+    }
 }
