@@ -5,6 +5,8 @@ namespace A17\CmsToolkit\Repositories;
 use A17\CmsToolkit\Models\Behaviors\Sortable;
 use A17\CmsToolkit\Repositories\Behaviors\HandleDates;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
+use DB;
 
 abstract class ModuleRepository
 {
@@ -407,6 +409,50 @@ abstract class ModuleRepository
     public function shouldIgnoreFieldBeforeSave($ignore)
     {
         return in_array($ignore, $this->ignoreFieldsBeforeSave);
+    }
+
+    public function getItemBySlug($params, $with = [])
+    {
+        if ( !isset($params['slug'])) {
+            return null;
+        }
+
+        if ( !isset($params['locale'])) {
+            $params['locale'] = app()->getLocale();
+        }
+
+        $tableName = $this->model->getTable();
+        $tableSlugName = Str::singular($tableName).'_slugs';
+        $tableId = Str::singular($tableName).'_id';
+
+        $object = DB::table($tableName)
+            ->select("{$tableName}.id", "{$tableSlugName}.active")
+            ->join($tableSlugName, "{$tableSlugName}.{$tableId}", '=', "{$tableName}.id")
+            ->where("{$tableSlugName}.locale", $params['locale'])
+            ->where("{$tableSlugName}.slug", $params['slug'])
+            ->where("{$tableName}.published", 1)
+            ->first()
+        ;
+
+        //Test if it"s an old link
+        if ($object != null && !$object->active) {
+            $object = DB::table($tableName)
+                ->select("{$tableName}.id")
+                ->join($tableSlugName, "{$tableSlugName}.{$tableId}", '=', "{$tableName}.id")
+                ->where("{$tableSlugName}.locale", $params['locale'])
+                ->where("{$tableSlugName}.{$tableId}", $object->id)
+                ->where("{$tableSlugName}.active", 1)
+                ->where("{$tableName}.published", 1)
+                ->first()
+            ;
+            if ($object != null) {
+                $object->is_redirect = 1;
+            }
+
+            return $object;
+        }
+
+        return $object != null ? $this->getById($object->id, $with) : null;
     }
 }
 
