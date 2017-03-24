@@ -17,14 +17,7 @@
             <li><input type="submit" name="finish" value="Save and close" class="btn"></li>
             <li><a href="{{ $back_link }}" class="btn">Cancel</a></li>
             @if ($with_view_link)
-                <li class="float-right"><a data-behavior="modal" class="btn" data-options="modal_option_view_fe" href="#">View in frontend</a></li>
-                <script>
-                    var modal_option_view_fe = {
-                        "type": "iframe",
-                        "url": "{{ $item->previewUrl }}",
-                        "title": "{{ $item->fullName }}"
-                    }
-                </script>
+                <li class="float-right"><a class="btn" target="_blank" href="{{ $item->url }}">Open live site</a></li>
             @endif
         </ul>
     @endcan
