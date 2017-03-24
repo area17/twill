@@ -37,6 +37,10 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->role_value, [UserRole::PUBLISHER, UserRole::ADMIN]);
         });
 
+        Gate::define('feature', function ($user) {
+            return in_array($user->role_value, [UserRole::PUBLISHER, UserRole::ADMIN]);
+        });
+
         Gate::define('delete', function ($user) {
             return in_array($user->role_value, [UserRole::PUBLISHER, UserRole::ADMIN]);
         });
