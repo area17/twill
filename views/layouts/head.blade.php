@@ -4,5 +4,5 @@
 <title>{{ config('app.name') }}</title>
 <link href="/assets/admin/a17cms.css" rel="stylesheet" />
 <script src="/assets/admin/a17cms.js"></script>
-@yield('extra_css')
-@yield('extra_js')
+@stack('extra_css')
+@stack('extra_js')

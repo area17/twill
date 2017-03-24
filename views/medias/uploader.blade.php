@@ -1,4 +1,4 @@
-@section('extra_css')
+@push('extra_css')
     <link href="/assets/admin/vendor/fine-uploader/fine-uploader-gallery.min.css" rel="stylesheet" type="text/css"/>
     <style>
         .qq-gallery .qq-upload-button {
@@ -30,13 +30,13 @@
             text-align: left;
         }
     </style>
-@stop
+@endpush
 
-@section('extra_js')
+@push('extra_js')
     <script src="/assets/admin/vendor/fine-uploader/all.fine-uploader.min.js"></script>
     <script src="/assets/admin/vendor/stringops/stringops.js"></script>
     <script src="/assets/admin/behaviors/uploader_v2.js"></script>
-@stop
+@endpush
 
 <!-- The element where Fine Uploader will exist. -->
 <div id="uploader"

@@ -133,7 +133,7 @@
 </script>
 
 
-@section('extra_css')
+@push('extra_css')
     <style>
         .simple_form .a17cms-editor {
             max-width: none;
@@ -164,4 +164,4 @@
             }
         @endif
     </style>
-@stop
+@endpush
