@@ -8,7 +8,7 @@ use Cartalyst\Tags\TaggableTrait;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Model extends BaseModel implements TaggableInterface
+abstract class Model extends BaseModel implements TaggableInterface
 {
     use HasPresenter, SoftDeletes, TaggableTrait;
 
