@@ -1,4 +1,4 @@
-@if ($with_revisions)
+@if ($with_revisions ?? false)
     <section class="box @if(isset($item)) box-collapse @endif">
         <header class="header_small">
             <h3 data-behavior="collapse_box"><i class="icon-collapse-box"></i>
