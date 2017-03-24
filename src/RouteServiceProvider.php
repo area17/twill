@@ -30,7 +30,7 @@ class RouteServiceProvider extends ServiceProvider
             'as' => 'admin.',
             'middleware' => [config('cms-toolkit.admin_middleware_group', 'web')],
         ], function ($router) {
-            $router->group(['middleware' => ['auth', 'impersonate']], function ($router) {
+            $router->group(['middleware' => ['auth', 'impersonate', 'validateBackHistory']], function ($router) {
                 require base_path('routes/admin.php');
             });
         });
@@ -78,7 +78,7 @@ class RouteServiceProvider extends ServiceProvider
                 return ucfirst(str_singular($s));
             }, $slugs));
 
-            $customRoutes = $defaults = ['sort', 'publish', 'browser', 'bucket', 'media', 'feature', 'file', 'insert', 'repeater', 'tags'];
+            $customRoutes = $defaults = ['sort', 'publish', 'browser', 'bucket', 'media', 'feature', 'file', 'insert', 'repeater', 'tags', 'preview', 'restore'];
 
             if (isset($options['only'])) {
                 $customRoutes = array_intersect($defaults, (array) $options['only']);
@@ -99,6 +99,10 @@ class RouteServiceProvider extends ServiceProvider
 
                 if (in_array($route, ['publish', 'feature'])) {
                     Route::put($routeSlug, $mapping);
+                }
+
+                if (in_array($route, ['preview', 'restore'])) {
+                    Route::put($routeSlug . "/{id}", $mapping);
                 }
 
                 if (in_array($route, ['sort'])) {

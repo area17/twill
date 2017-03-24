@@ -7,6 +7,7 @@ use A17\CmsToolkit\Repositories\FileRepository;
 use A17\CmsToolkit\Repositories\MediaRepository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
+use Route;
 use Session;
 
 abstract class ModuleController extends Controller
@@ -153,6 +154,10 @@ abstract class ModuleController extends Controller
 
     public function edit($id)
     {
+        if ($this->request->ajax() && $this->request->has('rev_page')) {
+            return $this->revisions($id);
+        }
+
         $this->setBackLink();
         $view = view()->exists("admin.{$this->moduleName}.form") ? "admin.{$this->moduleName}.form" : "cms-toolkit::{$this->moduleName}.form";
         return view($view, $this->form($id));
@@ -162,11 +167,19 @@ abstract class ModuleController extends Controller
     {
         $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
+        $fullRoutePrefix = 'admin.' . (isset($this->routePrefix) ? $this->routePrefix . '.' : '') . $this->moduleName . '.';
+        $previewRouteName = $fullRoutePrefix . 'preview';
+        $restoreRouteName = $fullRoutePrefix . 'restore';
+
         $data = [
             'form_options' => [
                 'method' => 'PUT',
                 'url' => moduleRoute($this->moduleName, $this->routePrefix, 'update', $id),
-            ] + $this->defaultFormOptions(),
+            ] + (Route::has($previewRouteName) ? [
+                'data-preview-url' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $id),
+            ] : []) + (Route::has($restoreRouteName) ? [
+                'data-restore-url' => moduleRoute($this->moduleName, $this->routePrefix, 'restore', $id),
+            ] : []) + $this->defaultFormOptions(),
             'item' => $item,
             'form_fields' => $this->repository->getFormFields($item),
             'back_link' => $this->getBackLink(),
@@ -174,21 +187,54 @@ abstract class ModuleController extends Controller
             'modelName' => $this->modelName,
             'routePrefix' => $this->routePrefix,
             'breadcrumb' => $this->getBreadcrumb($id),
+            'with_revisions' => Route::has($previewRouteName) && Route::has($restoreRouteName)
         ];
 
         return array_replace_recursive($data, $this->formData($this->request));
     }
 
+    private function revisions($id)
+    {
+        $view = view()->exists("admin.{$this->moduleName}._versions_lines") ? "admin.{$this->moduleName}._versions_lines" : "cms-toolkit::layouts.form_partials._versions_lines";
+        return view($view, ['with_preview' => $this->withPreview ?? true] + $this->form($id));
+    }
+
     public function update($id)
     {
         $formRequest = $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
-        if ($formRequest->has('_preview') && $formRequest->input('_preview')) {
-            $object = $this->repository->preview($id, $formRequest->all());
-            session()->flash('_preview_' . $this->moduleName . '_' . $id, $object);
-            return response()->json('ok', 200);
-        }
         $this->repository->update($id, $formRequest->all());
         return $this->redirectToForm($id);
+    }
+
+    public function preview($id)
+    {
+        $formRequest = $this->request;
+
+        $comparing = $formRequest->has('_compare') && $formRequest->input('_compare');
+        $revision = $formRequest->has('_revision') && $formRequest->input('_revision');
+
+        // trigger FormRequest validation unless previewing a revision
+        if ($comparing || !$revision) {
+            $formRequest = $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
+        }
+
+        if ($revision) {
+            $object = $this->repository->previewForRevision($id, $formRequest->input('_revision'));
+        } elseif ($comparing) {
+            $object = $this->repository->previewForCompare($id);
+        } else {
+            $object = $this->repository->preview($id, $formRequest->all());
+        }
+
+        if ($comparing) {
+            $objectToCompare = $this->repository->preview($id, $formRequest->all());
+            session()->flash('_preview_' . $this->moduleName . '_' . $id, $objectToCompare);
+            session()->flash('_compare_' . $this->moduleName . '_' . $id, $object);
+        } else {
+            session()->flash('_preview_' . $this->moduleName . '_' . $id, $object);
+        }
+
+        return response()->json('ok', 200);
     }
 
     public function destroy($id)
@@ -418,7 +464,7 @@ abstract class ModuleController extends Controller
     protected function defaultFormOptions()
     {
         return [
-            'id' => str_random(15),
+            'id' => $this->moduleName . '_form',
             'class' => "simple_form",
             'accept-charset' => "UTF-8",
             'novalidate' => "novalidate",

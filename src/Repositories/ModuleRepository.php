@@ -62,9 +62,13 @@ abstract class ModuleRepository
 
     public function create($fields)
     {
+        $original_fields = $fields;
+
         $fields = $this->prepareFieldsBeforeCreate($fields);
 
         $object = $this->model->create($fields);
+
+        $this->beforeSave($object, $original_fields);
 
         $fields = $this->prepareFieldsBeforeSave($object, $fields);
 
@@ -77,9 +81,9 @@ abstract class ModuleRepository
 
     public function update($id, $fields)
     {
-        $original_fields = $fields;
-
         $object = $this->model->findOrFail($id);
+
+        $this->beforeSave($object, $fields);
 
         $fields = $this->prepareFieldsBeforeSave($object, $fields);
 
@@ -87,18 +91,23 @@ abstract class ModuleRepository
 
         $object->push();
 
-        $this->afterSave($object, $fields, $original_fields);
+        $this->afterSave($object, $fields);
     }
 
     public function preview($id, $fields)
     {
         $object = $this->model->findOrFail($id);
 
+        return $this->hydrateObject($object, $fields);
+    }
+
+    protected function hydrateObject($object, $fields)
+    {
         $fields = $this->prepareFieldsBeforeSave($object, $fields);
 
         $object->fill($fields);
 
-        $object = $this->hydrateForPreview($object, $fields);
+        $object = $this->hydrate($object, $fields);
 
         return $object;
     }
@@ -130,6 +139,7 @@ abstract class ModuleRepository
     {
         if (($object = $this->model->find($id)) != null) {
             $object->delete();
+            $this->afterDelete($object);
         }
     }
 
@@ -200,19 +210,37 @@ abstract class ModuleRepository
         }
     }
 
-    public function afterSave($object, $fields, $original_fields = [])
+    public function beforeSave($object, $fields)
     {
         foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'afterSave' . class_basename($trait))) {
-                $this->$method($object, $fields, $original_fields);
+            if (method_exists(get_called_class(), $method = 'beforeSave' . class_basename($trait))) {
+                $this->$method($object, $fields);
             }
         }
     }
 
-    public function hydrateForPreview($object, $fields)
+    public function afterSave($object, $fields)
     {
         foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'hydrateForPreview' . class_basename($trait))) {
+            if (method_exists(get_called_class(), $method = 'afterSave' . class_basename($trait))) {
+                $this->$method($object, $fields);
+            }
+        }
+    }
+
+    public function afterDelete($object)
+    {
+        foreach (class_uses_recursive(get_called_class()) as $trait) {
+            if (method_exists(get_called_class(), $method = 'afterDelete' . class_basename($trait))) {
+                $this->$method($object);
+            }
+        }
+    }
+
+    public function hydrate($object, $fields)
+    {
+        foreach (class_uses_recursive(get_called_class()) as $trait) {
+            if (method_exists(get_called_class(), $method = 'hydrate' . class_basename($trait))) {
                 $object = $this->$method($object, $fields);
             }
         }
@@ -325,10 +353,28 @@ abstract class ModuleRepository
         $object->$relationship()->sync($relatedElementsWithPosition);
     }
 
-    public function updateRepeaterMany($object, $fields, $relation, $model)
+    public function hydrateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute = 'position', $model = null)
+    {
+        $relatedElements = isset($fields[$relationship]) && !empty($fields[$relationship]) ? explode(',', $fields[$relationship]) : [];
+
+        $relationRepository = $this->getModelRepository($relationship, $model);
+        $relatedElementsCollection = collect();
+        $position = 1;
+
+        foreach ($relatedElements as $relatedElement) {
+            $newRelatedElement = $relationRepository->getById($relatedElement);
+            $pivot = $newRelatedElement->newPivot($object, [$positionAttribute => $position++], $object->$relationship()->getTable(), true);
+            $newRelatedElement->setRelation('pivot', $pivot);
+            $relatedElementsCollection->push($newRelatedElement);
+        }
+
+        $object->setRelation($relationship, $relatedElementsCollection);
+    }
+
+    public function updateRepeaterMany($object, $fields, $relation, $model = null)
     {
         $relationFields = $fields[$relation] ?? [];
-        $relationRepository = app(config('cms-toolkit.namespace') . "\\Repositories\\" . $model . "Repository");
+        $relationRepository = $this->getModelRepository($relation, $model);
 
         foreach ($relationFields as $relationField) {
             $newRelation = $relationRepository->create($relationField);
@@ -336,11 +382,11 @@ abstract class ModuleRepository
         }
     }
 
-    public function updateRepeater($object, $fields, $relation, $model)
+    public function updateRepeater($object, $fields, $relation, $model = null)
     {
         $relationFields = $fields[$relation] ?? [];
 
-        $relationRepository = app(config('cms-toolkit.namespace') . "\\Repositories\\" . $model . "Repository");
+        $relationRepository = $this->getModelRepository($relation, $model);
 
         // if no relation field submitted, soft deletes all associated rows
         if (!$relationFields) {
@@ -378,17 +424,25 @@ abstract class ModuleRepository
         }
     }
 
-    public function getFormFieldsForRepeater($object, $relation, $model)
+    public function getFormFieldsForRepeater($object, $relation, $model = null)
     {
-        $relationRepository = app(config('cms-toolkit.namespace') . "\\Repositories\\" . $model . "Repository");
-
         $relationFormFields = [];
+        $relationRepository = $this->getModelRepository($relation, $model);
 
         foreach ($object->$relation as $index => $relationItem) {
             $relationFormFields[$index] = $relationRepository->getFormFields($relationItem);
         }
 
         return $relationFormFields;
+    }
+
+    private function getModelRepository($relation, $model = null)
+    {
+        if (!$model) {
+            $model = ucfirst(str_singular($relation));
+        }
+
+        return app(config('cms-toolkit.namespace') . "\\Repositories\\" . $model . "Repository");
     }
 
     public function addRelationFilterScope($query, &$scopes, $scopeField, $scopeRelation)

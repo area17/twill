@@ -4,7 +4,7 @@ namespace A17\CmsToolkit\Repositories\Behaviors;
 
 trait HandleSlugs
 {
-    public function afterSaveHandleSlugs($object, $fields, $original_fields = [])
+    public function afterSaveHandleSlugs($object, $fields)
     {
         if (property_exists($this->model, 'slugAttributes')) {
             foreach (getLocales() as $locale) {

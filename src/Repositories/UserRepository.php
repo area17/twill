@@ -31,7 +31,7 @@ class UserRepository extends ModuleRepository
         parent::afterUpdateBasic($user, $fields);
     }
 
-    public function afterSave($user, $fields, $original_fields = [])
+    public function afterSave($user, $fields)
     {
         $this->sendWelcomeEmail($user);
         parent::afterSave($user, $fields);

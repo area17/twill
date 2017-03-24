@@ -18,3 +18,5 @@
         <p>{{ session('status') }}</p>
     </div>
 @endif
+
+<div data-ajax-errors-container></div>

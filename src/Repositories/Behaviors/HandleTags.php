@@ -4,7 +4,7 @@ namespace A17\CmsToolkit\Repositories\Behaviors;
 
 trait HandleTags
 {
-    public function afterSaveHandleTags($object, $fields, $original_fields = [])
+    public function afterSaveHandleTags($object, $fields)
     {
         if (!isset($fields['bulk_tags']) && !isset($fields['previous_common_tags'])) {
             if (!$this->shouldIgnoreFieldBeforeSave('tags')) {
