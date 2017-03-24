@@ -48,10 +48,27 @@ class RouteServiceProvider extends ServiceProvider
 
                 $router->group(['middleware' => ['noDebugBar']], function ($router) {
                     require __DIR__ . '/../routes/auth.php';
+                });
+
+                $router->group(['middleware' => array_merge(['noDebugBar'], (app()->environment('production') ? ['auth'] : []))], function ($router) {
                     require __DIR__ . '/../routes/templates.php';
                 });
             }
         );
+
+        if (config('cms-toolkit.templates_on_frontend_domain')) {
+            $router->group([
+                'namespace' => $this->namespace . '\Admin',
+                'domain' => config('app.url'),
+                'middleware' => [config('cms-toolkit.admin_middleware_group', 'web')],
+            ],
+                function ($router) {
+                    $router->group(['middleware' => array_merge(['noDebugBar'], (app()->environment('production') ? ['auth'] : []))], function ($router) {
+                        require __DIR__ . '/../routes/templates.php';
+                    });
+                }
+            );
+        }
     }
 
     private function registerRouteMiddlewares()
