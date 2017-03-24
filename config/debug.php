@@ -13,7 +13,7 @@ return [
     'use_whoops' => env('DEBUG_USE_WHOOPS', true),
     'whoops_path_guest' => env('WHOOPS_GUEST_PATH'),
     'whoops_path_host' => env('WHOOPS_HOST_PATH'),
-    'debug_use_inspector' => env('DEBUG_USE_INSPECTOR', false),
+    'use_inspector' => env('DEBUG_USE_INSPECTOR', false),
     'debug_bar_in_fe' => env('DEBUG_BAR_IN_FE', false),
 
 ];
