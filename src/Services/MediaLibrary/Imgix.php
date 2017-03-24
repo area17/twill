@@ -28,6 +28,16 @@ class Imgix implements ImageServiceInterface
         return $this->urlBuilder->createURL($id, ends_with($id, '.svg') ? [] : array_replace($defaultParams, $params));
     }
 
+    public function getUrlWithCrop($id, array $cropParams, array $params = [])
+    {
+        return $this->getUrl($id, $this->getCrop($cropParams) + $params);
+    }
+
+    public function getUrlWithCropWithFocal($id, array $cropParams, $width, $height, array $params = [])
+    {
+        return $this->getUrl($id, $this->getFocalCrop($cropParams, $width, $height) + $params);
+    }
+
     public function getLQIPUrl($id, array $params = [])
     {
         $defaultParams = config('cms-toolkit.imgix.lqip_default_params');
@@ -61,5 +71,38 @@ class Imgix implements ImageServiceInterface
             'width' => $imageMetadata['PixelWidth'],
             'height' => $imageMetadata['PixelHeight'],
         ];
+    }
+
+    protected function getCrop($crop_params)
+    {
+        if (!empty($crop_params)) {
+            return ['rect' => $crop_params['crop_x'] . ',' . $crop_params['crop_y'] . ',' . $crop_params['crop_w'] . ',' . $crop_params['crop_h']];
+        }
+
+        return [];
+    }
+
+    protected function getFocalPointCrop($crop_params, $width, $height)
+    {
+        if (!empty($crop_params)) {
+            // determine center coordinates of user crop and express it in term of original image width and height percentage
+            $fpX = ($crop_params['crop_w'] / 2 + $crop_params['crop_x']) / $width;
+            $fpY = ($crop_params['crop_h'] / 2 + $crop_params['crop_y']) / $height;
+
+            // determine focal zoom
+            if ($crop_params['crop_w'] > $crop_params['crop_h']) {
+                $fpZ = $width / $crop_params['crop_w'];
+            } else {
+                $fpZ = $height / $crop_params['crop_h'];
+            }
+
+            $params = ['fp-x' => $fpX, 'fp-y' => $fpY, 'fp-z' => $fpZ];
+
+            return array_map(function ($param) {
+                return number_format($param, 4, ".", "");
+            }, $params) + ['crop' => 'focalpoint', 'fit' => 'crop'];
+        }
+
+        return [];
     }
 }

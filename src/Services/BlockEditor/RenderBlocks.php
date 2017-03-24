@@ -6,7 +6,6 @@ class RenderBlocks
 {
     public function fromFullJsonToHtmlAndMetadatas($blocksJson, $options = [])
     {
-
         $input = json_decode($blocksJson, true);
         $html = null;
         $blocks_metadatas = [];
@@ -26,7 +25,6 @@ class RenderBlocks
 
     public function fromFullJsonToHtml($blocksJson, $options = [])
     {
-
         $input = json_decode($blocksJson, true);
         $html = null;
 

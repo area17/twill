@@ -78,36 +78,6 @@ class Image extends BaseBlock
         return $params;
     }
 
-    // this is very dependant on using Imgix, let's try to abstract it using the ImageService sooner or later
-    protected function getFocalPointCropParams($crop_data, $media)
-    {
-        $crop = json_decode($crop_data, true);
-        if (!empty($crop)) {
-            $crop_params = array_map(function ($crop_coord) {
-                return max(0, intval($crop_coord));
-            }, $crop);
-
-            // determine center coordinates of user crop and express it in term of original image width and height percentage
-            $fpX = ($crop_params['crop_w'] / 2 + $crop_params['crop_x']) / $media->width;
-            $fpY = ($crop_params['crop_h'] / 2 + $crop_params['crop_y']) / $media->height;
-
-            // determine focal zoom
-            if ($crop_params['crop_w'] > $crop_params['crop_h']) {
-                $fpZ = $media->width / $crop_params['crop_w'];
-            } else {
-                $fpZ = $media->height / $crop_params['crop_h'];
-            }
-
-            $params = ['fp-x' => $fpX, 'fp-y' => $fpY, 'fp-z' => $fpZ];
-
-            return array_map(function ($param) {
-                return number_format($param, 4, ".", "");
-            }, $params) + ['crop' => 'focalpoint', 'fit' => 'crop'];
-        }
-
-        return [];
-    }
-
     protected function getMedias($ids_list)
     {
         $ids_array = explode(',', $ids_list);
