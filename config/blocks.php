@@ -14,6 +14,9 @@ return [
     'blocks_js_path' => '/assets/admin/blocks/blocks.js',
     'blocks_js_rev' => false,
 
+    'blocks_css_path' => '/assets/admin/blocks/blocks.css',
+    'blocks_css_rev' => false,
+
     'show_render_errors' => env('BLOCK_EDITOR_SHOW_ERRORS', false),
 
     'blocks' => [
