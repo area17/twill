@@ -52,7 +52,7 @@
 
         var link_only_medium_editor_options = {
             toolbar : {
-                buttons: ['anchor', 'removeFormat']
+                buttons: ['anchor', 'anchor']
             }
         };
 </script>
