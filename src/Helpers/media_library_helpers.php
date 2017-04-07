@@ -3,9 +3,9 @@
 if (!function_exists('s3Enpoint')) {
     function s3Endpoint($disk = 'libraries')
     {
-        $protocol = config('cms-toolkit.file_library.endpoint_enable_https', false) ? 'https://' : '';
+        $scheme = config("filesystems.disks.{$disk}.use_https") ? 'https://' : '';
 
-        return $protocol . config("filesystems.disks.{$disk}.bucket") . '.' . Storage::disk($disk)->getAdapter()->getClient()->getEndpoint()->getHost();
+        return $scheme . config("filesystems.disks.{$disk}.bucket") . '.' . Storage::disk($disk)->getAdapter()->getClient()->getEndpoint()->getHost();
     }
 }
 

@@ -85,6 +85,7 @@ MAIL_DRIVER=log # so that until you configure it, welcome and reset emails will 
 #AWS_KEY=client_aws_key
 #AWS_SECRET=client_aws_secret
 #AWS_BUCKET=client_bucket
+AWS_USE_HTTPS=true
 
 FILE_LIBRARY_CASCADE_DELETE=true
 MEDIA_LIBRARY_CASCADE_DELETE=true
