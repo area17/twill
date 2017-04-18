@@ -107,10 +107,10 @@ class Handler extends ExceptionHandler
                     );
                 });
             }
-        }
 
-        $handler->addResourcePath(base_path('public/assets/admin/vendor'));
-        $handler->addCustomCss('whoops.base.css');
+            $handler->addResourcePath(base_path('public/assets/admin/vendor'));
+            $handler->addCustomCss('whoops.base.css');
+        }
 
         $whoops->pushHandler($handler);
 

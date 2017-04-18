@@ -13,10 +13,12 @@
         Create {{$columnOptions['title']}}
     @endif
     </a>
+@elseif (isset($columnOptions['value']))
+        {{ $columnOptions['value'] }}
 @else
     @if(isset($columnOptions['present']) && $columnOptions['present'])
         {!! $item->presentAdmin()->{$columnOptions['field']} !!}
     @else
-        {{ $item->{$columnOptions['field']} }}
+        {{ $item->{$columnOptions['field']} or 'Empty field' }}
     @endif
 @endif
