@@ -129,7 +129,7 @@
           var datas = container.data();
           var data_target = datas.bucketTarget;
           var messageNoTarget = (datas.bucketMessageNoTarget === undefined) ? "No target selected for bucket select." : datas.bucketMessageNoTarget;
-          var messageLimit = (datas.bucketMessageLimit === undefined) ? "{{name}} has a limit of {{limit}} items" : datas.bucketMessageLimit;
+          var messageLimit = (datas.bucketMessageLimit === undefined) ? "{{name}} is limited to {{limit}} item" : datas.bucketMessageLimit;
 
           var targets = [];
           var add_to_bucket_classes = [];
@@ -150,7 +150,7 @@
                 el: $target_el,
                 btn_class: target[1] || "icon-add",
                 limit: $target_el.data("bucket-limit") * 1 || false,
-                name: target[0],
+                name: $target_el.data("bucket-name") || target[0],
                 add_url: $target_el.data("bucket-add-url"),
                 remove_url: $target_el.data("bucket-remove-url")
               });
@@ -281,7 +281,12 @@
             target = targets[target_index_array];
             // is there a limit set?
             if (target.limit && $("tbody tr:not("+empty_tr+")",target.el).length >= target.limit) {
-              alert(messageLimit.replace('{{name}}', target.name).replace('{{limit}}', target.limit));
+              $.event.trigger({
+                type: "notification_open",
+                message: messageLimit.replace('{{name}}', target.name).replace('{{limit}}', target.limit) + (target.limit > 1 ? 's' : ''),
+                style: "error",
+                is_centered: true
+              });
             } else {
               // get data from html and generate new html
               var this_row_data = serializeRow($this.parents("tr"));

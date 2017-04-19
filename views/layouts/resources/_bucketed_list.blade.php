@@ -10,13 +10,16 @@
 <div class="table_container">
     <table data-bucket="{{ $bucketKey }}"
             data-behavior="sortable"
+            data-bucket-name="{{ $bucket['name'] }}"
             data-bucket-limit="{{ $bucket['max_items'] }}"
             data-bucket-add-url="{{ route("admin.featured.$sectionKey.add", ['bucket' => $bucketKey]) }}"
             data-bucket-remove-url="{{ route("admin.featured.$sectionKey.remove", ['bucket' => $bucketKey]) }}"
             data-sortable-update-url="{{ route("admin.featured.$sectionKey.sortable", ['bucket' => $bucketKey]) }}">
         <thead>
             <tr>
-                <th class="tool" data-content="span.icon.icon-handle"><span class="icon icon-bucket{{ $loop->index + 1 }}"></th>
+                @if ($bucket['max_items'] > 1)
+                    <th class="tool" data-content="span.icon.icon-handle"><span class="icon icon-bucket{{ $loop->index + 1 }}"></th>
+                @endif
                 @foreach($columns as $column)
                     <th>{{ $column['title'] }}</th>
                 @endforeach
@@ -25,13 +28,15 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($items as $item)
+            @foreach($items as $item)
                 @php
                     $feature = $item;
                     $item = $item->featured;
                 @endphp
                 <tr data-id="{{ $item->id }}" data-type="{{ $feature->featured_type }}">
-                    <td><span class="icon icon-handle"></span></td>
+                    @if ($bucket['max_items'] > 1)
+                        <td><span class="icon icon-handle"></span></td>
+                    @endif
                     @foreach($columns as $columnOptions)
                         <td>
                             @resourceView($feature->featured_type, 'column')
@@ -42,11 +47,10 @@
                         </td>
                     <td><a href="#" class="icon icon-remove">Delete</a></td>
                 </tr>
-            @empty
-            <tr class="empty_table">
+            @endforeach
+            <tr class="empty_table" @if(count($items) > 0) style="display: none;" @endif>
                 <td colspan="7"><h2>Nothing featured yet.</h2></td>
             </tr>
-            @endforelse
         </tbody>
     </table>
 </div>
