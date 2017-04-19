@@ -2,8 +2,9 @@
     $columns = $columns ?? [
         'title' => [
             'title' => 'Title',
-            'field' => 'title',
-        ]
+            'present' => true,
+            'field' => 'titleInBucket',
+        ],
     ];
 @endphp
 <div class="table_container">

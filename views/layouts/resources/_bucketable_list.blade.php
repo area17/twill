@@ -2,7 +2,8 @@
     $columns = $columns ?? [
         'title' => [
             'title' => 'Title',
-            'field' => 'title',
+            'present' => true,
+            'field' => 'titleInBucket',
         ],
         'type' => [
             'title' => 'Type',
@@ -41,7 +42,7 @@
             @forelse($items as $item)
                 <tr data-id="{{ $item->id }}" data-type="{{ $bucketable }}">
                     @foreach($columns as $columnOptions)
-                        <td @if(isset($columnOptions['hidden']) && $columnOptions['hidden'])class="hide"@endif>
+                        <td class="{{ isset($columnOptions['hidden']) && $columnOptions['hidden'] ? 'hide' : (isset($columnOptions['thumb']) && $columnOptions['thumb'] ? 'thumb' : '') }}">
                             @resourceView($bucketable, 'column')
                         </td>
                     @endforeach

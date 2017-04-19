@@ -14,7 +14,9 @@
     @endif
     </a>
 @elseif (isset($columnOptions['value']))
-        {{ $columnOptions['value'] }}
+    {{ $columnOptions['value'] }}
+@elseif(isset($columnOptions['thumb']) && $columnOptions['thumb'])
+    <img src="{{ $item->cmsImage(isset($columnOptions['variant']) ? $columnOptions['variant']['role'] : head(array_keys($item->mediasParams)), isset($columnOptions['variant']) ? $columnOptions['variant']['crop'] : head(array_keys(head($item->mediasParams))), isset($columnOptions['variant']) && isset($columnOptions['variant']['params']) ? $columnOptions['variant']['params'] : ['w' => 80, 'h' => 80, 'fit' => 'crop']) }}" width="80" height="80">
 @else
     @if(isset($columnOptions['present']) && $columnOptions['present'])
         {!! $item->presentAdmin()->{$columnOptions['field']} !!}
