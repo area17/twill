@@ -7,7 +7,7 @@
     $file_library_route = route('admin.file-library.files.index');
     $block_preview_route = route('admin.blocks.preview');
 
-    $blocks_css = revAsset('blocks.css');
+    $blocks_css = config('cms-toolkit.block-editor.blocks_css_rev') ? revAsset(config('cms-toolkit.block-editor.blocks_css_path')) : config('cms-toolkit.block-editor.blocks_css_path');
     $blocks_js = config('cms-toolkit.block-editor.blocks_js_rev') ? revAsset(config('cms-toolkit.block-editor.blocks_js_path')) : config('cms-toolkit.block-editor.blocks_js_path');
 
     $sir_trevor_defaults = $sir_trevor_defaults ?? 'sir_trevor_defaults';
@@ -132,6 +132,13 @@
 
 </script>
 
+<script>
+    $(document).on('resized', function (){
+        $('.blockFrame').each(function () {
+            this.style.height = this.contentWindow.document.body.offsetHeight + 'px';
+        });
+    });
+</script>
 
 @section('extra_css')
     <style>
