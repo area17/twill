@@ -76,6 +76,16 @@ abstract class ModuleController extends Controller
         $this->viewPrefix = $this->getViewPrefix();
     }
 
+    public function indexData($request)
+    {
+        return [];
+    }
+
+    public function formData($request)
+    {
+        return [];
+    }
+
     public function index()
     {
         $view = view()->exists("$this->viewPrefix.index") ? "$this->viewPrefix.index" : "cms-toolkit::{$this->moduleName}.index";
@@ -433,8 +443,10 @@ abstract class ModuleController extends Controller
     protected function setBackLink($back_link = null, $params = [])
     {
         if (!isset($back_link)) {
-            if( ($back_link = Session::get($this->moduleName . "_back_link")) == null)
+            if (($back_link = Session::get($this->moduleName . "_back_link")) == null) {
                 $back_link = $this->request->headers->get('referer') ?? moduleRoute($this->moduleName, $this->routePrefix, "index", $params);
+            }
+
         }
 
         if (!$this->request->has('retain')) {
