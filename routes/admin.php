@@ -31,3 +31,18 @@ if (config('cms-toolkit.enabled.file-library')) {
 if (config('cms-toolkit.enabled.block-editor')) {
     Route::post('blocks/preview', ['as' => 'blocks.preview', 'uses' => 'BlocksController@preview']);
 }
+
+if (config('cms-toolkit.enabled.buckets')) {
+    Route::group(['prefix' => 'featured', 'as' => 'featured.'], function () {
+        collect(config('cms-toolkit.buckets'))->each(function ($bucketSection, $bucketSectionKey) {
+            Route::get($bucketSectionKey, ['as' => $bucketSectionKey, 'uses' => 'FeaturedController@index']);
+            Route::group(['prefix' => $bucketSectionKey, 'as' => $bucketSectionKey . '.'], function () {
+                Route::post('{bucket}', ['as' => 'add', 'uses' => 'FeaturedController@add']);
+                Route::delete('{bucket}', ['as' => 'remove', 'uses' => 'FeaturedController@remove']);
+                Route::post('{bucket}/sortable', ['as' => 'sortable', 'uses' => 'FeaturedController@sortable']);
+                Route::get('save', ['as' => 'save', 'uses' => 'FeaturedController@save']);
+                Route::get('cancel', ['as' => 'cancel', 'uses' => 'FeaturedController@cancel']);
+            });
+        });
+    });
+}
