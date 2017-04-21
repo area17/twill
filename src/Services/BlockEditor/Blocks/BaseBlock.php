@@ -61,9 +61,14 @@ class BaseBlock
         return [];
     }
 
-    protected function getInput($name)
+    protected function getInput($name, $value = '')
     {
-        return $this->data[$name . '_' . $this->locale] ?? '';
+        return $this->data[$name . '_' . $this->locale] ?? $value;
+    }
+
+    protected function getValue($name, $value = null)
+    {
+        return $this->data[$name] ?? $value;
     }
 
     protected function getImage($id)
@@ -79,22 +84,61 @@ class BaseBlock
         }
     }
 
-    // this is very dependant on using Imgix, let's try to abstract it using the ImageService sooner or later
+    // This function will be deprecated in a future release
     protected function getCrop($crop_data)
     {
-        $crop = json_decode($crop_data, true);
+        $crop_params = $this->getCropParams($crop_data);
 
-        if (!empty($crop)) {
-            $crop_params = array_map(function ($crop_coord) {
-                return max(0, intval($crop_coord));
-            }, $crop);
-
+        if (!empty($crop_params)) {
             return ['rect' => $crop_params['crop_x'] . ',' . $crop_params['crop_y'] . ',' . $crop_params['crop_w'] . ',' . $crop_params['crop_h']];
         }
 
         return [];
     }
 
+    // This function will be deprecated in a future release
+    protected function getFocalPointCropParams($crop_data, $media)
+    {
+        $crop = json_decode($crop_data, true);
+        if (!empty($crop)) {
+            $crop_params = array_map(function ($crop_coord) {
+                return max(0, intval($crop_coord));
+            }, $crop);
+
+            // determine center coordinates of user crop and express it in term of original image width and height percentage
+            $fpX = ($crop_params['crop_w'] / 2 + $crop_params['crop_x']) / $media->width;
+            $fpY = ($crop_params['crop_h'] / 2 + $crop_params['crop_y']) / $media->height;
+
+            // determine focal zoom
+            if ($crop_params['crop_w'] > $crop_params['crop_h']) {
+                $fpZ = $media->width / $crop_params['crop_w'];
+            } else {
+                $fpZ = $media->height / $crop_params['crop_h'];
+            }
+
+            $params = ['fp-x' => $fpX, 'fp-y' => $fpY, 'fp-z' => $fpZ];
+
+            return array_map(function ($param) {
+                return number_format($param, 4, ".", "");
+            }, $params) + ['crop' => 'focalpoint', 'fit' => 'crop'];
+        }
+
+        return [];
+    }
+    
+    protected function getCropParams($crop_data)
+    {
+        $crop = json_decode($crop_data, true);
+
+        if (!empty($crop)) {
+            return array_map(function ($crop_coord) {
+                return max(0, intval($crop_coord));
+            }, $crop);
+        }
+
+        return [];
+    }
+    
     protected function getResourceId($name = 'resource_id')
     {
         $locale = $this->data['resource_locale'] ?? $this->locale;

@@ -3,7 +3,9 @@
 if (!function_exists('s3Enpoint')) {
     function s3Endpoint($disk = 'libraries')
     {
-        return config("filesystems.disks.{$disk}.bucket") . '.' . Storage::disk($disk)->getAdapter()->getClient()->getEndpoint()->getHost();
+        $scheme = config("filesystems.disks.{$disk}.use_https") ? 'https://' : '';
+
+        return $scheme . config("filesystems.disks.{$disk}.bucket") . '.' . Storage::disk($disk)->getAdapter()->getClient()->getEndpoint()->getHost();
     }
 }
 
