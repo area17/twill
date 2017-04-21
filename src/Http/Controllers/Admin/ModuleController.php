@@ -73,11 +73,12 @@ abstract class ModuleController extends Controller
         $this->routePrefix = $this->getRoutePrefix();
         $this->namespace = $this->getNamespace();
         $this->repository = $this->getRepository();
+        $this->viewPrefix = $this->getViewPrefix();
     }
 
     public function index()
     {
-        $view = view()->exists("admin.{$this->moduleName}.index") ? "admin.{$this->moduleName}.index" : "cms-toolkit::{$this->moduleName}.index";
+        $view = view()->exists("$this->viewPrefix.index") ? "$this->viewPrefix.index" : "cms-toolkit::{$this->moduleName}.index";
         return view($view, $this->getIndexData() + $this->request->all());
     }
 
@@ -122,7 +123,7 @@ abstract class ModuleController extends Controller
             'modelName' => $this->modelName,
             'routePrefix' => $this->routePrefix,
         ];
-        $view = view()->exists("admin.{$this->moduleName}.form") ? "admin.{$this->moduleName}.form" : "cms-toolkit::{$this->moduleName}.form";
+        $view = view()->exists("$this->viewPrefix.form") ? "$this->viewPrefix.form" : "cms-toolkit::{$this->moduleName}.form";
         return view($view, array_replace_recursive($data, $this->formData($this->request)));
     }
 
@@ -137,12 +138,12 @@ abstract class ModuleController extends Controller
             'routePrefix' => $this->routePrefix,
         ];
 
-        return view("admin.{$this->moduleName}.repeater", array_replace_recursive($data, $this->formData($this->request)));
+        return view("$this->viewPrefix.repeater", array_replace_recursive($data, $this->formData($this->request)));
     }
 
     public function store()
     {
-        $formRequest = $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
+        $formRequest = $this->validateFormRequest();
         $item = $this->repository->create($formRequest->all());
         return $this->redirectToForm($item->id);
     }
@@ -159,7 +160,7 @@ abstract class ModuleController extends Controller
         }
 
         $this->setBackLink();
-        $view = view()->exists("admin.{$this->moduleName}.form") ? "admin.{$this->moduleName}.form" : "cms-toolkit::{$this->moduleName}.form";
+        $view = view()->exists("$this->viewPrefix.form") ? "$this->viewPrefix.form" : "cms-toolkit::{$this->moduleName}.form";
         return view($view, $this->form($id));
     }
 
@@ -195,13 +196,13 @@ abstract class ModuleController extends Controller
 
     private function revisions($id)
     {
-        $view = view()->exists("admin.{$this->moduleName}._versions_lines") ? "admin.{$this->moduleName}._versions_lines" : "cms-toolkit::layouts.form_partials._versions_lines";
+        $view = view()->exists("$this->viewPrefix._versions_lines") ? "$this->viewPrefix._versions_lines" : "cms-toolkit::layouts.form_partials._versions_lines";
         return view($view, ['with_preview' => $this->withPreview ?? true] + $this->form($id));
     }
 
     public function update($id)
     {
-        $formRequest = $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
+        $formRequest = $this->validateFormRequest();
         $this->repository->update($id, $formRequest->all());
         return $this->redirectToForm($id);
     }
@@ -215,7 +216,7 @@ abstract class ModuleController extends Controller
 
         // trigger FormRequest validation unless previewing a revision
         if ($comparing || !$revision) {
-            $formRequest = $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
+            $formRequest = $this->validateFormRequest();
         }
 
         if ($revision) {
@@ -235,6 +236,11 @@ abstract class ModuleController extends Controller
         }
 
         return response()->json('ok', 200);
+    }
+
+    protected function validateFormRequest()
+    {
+        return $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
     }
 
     public function destroy($id)
@@ -512,6 +518,11 @@ abstract class ModuleController extends Controller
     protected function getRepository()
     {
         return $this->app->make("$this->namespace\Repositories\\" . $this->modelName . "Repository");
+    }
+
+    protected function getViewPrefix()
+    {
+        return "admin.$this->moduleName";
     }
 
     protected function setMiddlewarePermission()

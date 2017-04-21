@@ -2,6 +2,8 @@
 
 namespace A17\CmsToolkit\Repositories\Behaviors;
 
+use A17\CmsToolkit\Models\File;
+
 trait HandleFiles
 {
     public function hydrateHandleFiles($object, $fields)
@@ -14,7 +16,7 @@ trait HandleFiles
         $filesFromFields = $this->getFiles($fields);
 
         $filesFromFields->each(function ($file) use ($object, $filesCollection) {
-            $newFile = app(FileRepository::class)->getById($file['id']);
+            $newFile = File::withTrashed()->find($file['id']);
             $pivot = $newFile->newPivot($object, array_except($file, ['id']), 'fileables', true);
             $newFile->setRelation('pivot', $pivot);
             $filesCollection->push($newFile);

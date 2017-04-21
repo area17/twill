@@ -5,8 +5,8 @@ namespace A17\CmsToolkit\Repositories;
 use A17\CmsToolkit\Models\Behaviors\Sortable;
 use A17\CmsToolkit\Repositories\Behaviors\HandleDates;
 use Carbon\Carbon;
-use Illuminate\Support\Str;
 use DB;
+use Illuminate\Support\Str;
 
 abstract class ModuleRepository
 {
@@ -493,17 +493,17 @@ abstract class ModuleRepository
 
     public function getItemBySlug($params, $with = [])
     {
-        if ( !isset($params['slug'])) {
+        if (!isset($params['slug'])) {
             return null;
         }
 
-        if ( !isset($params['locale'])) {
+        if (!isset($params['locale'])) {
             $params['locale'] = app()->getLocale();
         }
 
         $tableName = $this->model->getTable();
-        $tableSlugName = Str::singular($tableName).'_slugs';
-        $tableId = Str::singular($tableName).'_id';
+        $tableSlugName = Str::singular($tableName) . '_slugs';
+        $tableId = Str::singular($tableName) . '_id';
 
         $object = DB::table($tableName)
             ->select("{$tableName}.id", "{$tableSlugName}.active")

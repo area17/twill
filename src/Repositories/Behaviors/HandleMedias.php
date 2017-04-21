@@ -2,7 +2,7 @@
 
 namespace A17\CmsToolkit\Repositories\Behaviors;
 
-use A17\CmsToolkit\Repositories\MediaRepository;
+use A17\CmsToolkit\Models\Media;
 
 trait HandleMedias
 {
@@ -16,7 +16,7 @@ trait HandleMedias
         $mediasFromFields = $this->getMedias($fields);
 
         $mediasFromFields->each(function ($media) use ($object, $mediasCollection) {
-            $newMedia = app(MediaRepository::class)->getById($media['id']);
+            $newMedia = Media::withTrashed()->find($media['id']);
             $pivot = $newMedia->newPivot($object, array_except($media, ['id']), 'mediables', true);
             $newMedia->setRelation('pivot', $pivot);
             $mediasCollection->push($newMedia);
