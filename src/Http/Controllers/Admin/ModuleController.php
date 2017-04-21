@@ -332,12 +332,6 @@ abstract class ModuleController extends Controller
         return $this->getIndexItems($scopes, true);
     }
 
-    public function bucket()
-    {
-        $moduleName = snake_case($this->moduleName);
-        return view("admin.{$moduleName}.list", $this->getIndexData($this->bucketScopes ?? []) + $this->request->all());
-    }
-
     protected function orderScope()
     {
         $orders = [];
@@ -462,7 +456,7 @@ abstract class ModuleController extends Controller
     {
         $this->middleware('can:list', ['only' => ['index', 'show']]);
         $this->middleware('can:edit', ['only' => ['create', 'store', 'edit', 'update', 'media', 'file']]);
-        $this->middleware('can:publish', ['only' => ['publish', 'bucket', 'feature']]);
+        $this->middleware('can:publish', ['only' => ['publish', 'feature']]);
         $this->middleware('can:sort', ['only' => ['sort']]);
         $this->middleware('can:delete', ['only' => ['destroy']]);
     }
