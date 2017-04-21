@@ -132,6 +132,13 @@
 
 </script>
 
+<script>
+    $(document).on('resized', function (){
+        $('.blockFrame').each(function () {
+            this.style.height = this.contentWindow.document.body.offsetHeight + 'px';
+        });
+    });
+</script>
 
 @push('extra_css')
     <style>
