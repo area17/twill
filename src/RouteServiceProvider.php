@@ -86,6 +86,19 @@ class RouteServiceProvider extends ServiceProvider
 
     protected function registerMacros()
     {
+        Route::macro('moduleShowWithPreview', function ($moduleName, $routePrefix = null, $controllerName = null) {
+            if ($routePrefix === null) {
+                $routePrefix = $moduleName;
+            }
+
+            if ($controllerName === null) {
+                $controllerName = ucfirst(str_plural($moduleName));
+            }
+
+            Route::name($moduleName . '.show')->get('/' . $routePrefix . '/{slug}', $controllerName . 'Controller@show');
+            Route::name($moduleName . '.preview')->get('/' . $routePrefix . '/preview/{slug}', $controllerName . 'Controller@show')->middleware('auth');
+        });
+
         Route::macro('module', function ($slug, $options = [], $resource_options = [], $resource = true) {
 
             $slugs = explode('.', $slug);
