@@ -19,4 +19,9 @@ abstract class Model extends BaseModel implements TaggableInterface
         parent::boot();
         static::setTagsModel(Tag::class);
     }
+
+    public function scopePublished($query)
+    {
+        return $query->wherePublished(true);
+    }
 }
