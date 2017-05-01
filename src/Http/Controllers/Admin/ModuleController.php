@@ -76,12 +76,12 @@ abstract class ModuleController extends Controller
         $this->viewPrefix = $this->getViewPrefix();
     }
 
-    public function indexData($request)
+    protected function indexData($request)
     {
         return [];
     }
 
-    public function formData($request)
+    protected function formData($request)
     {
         return [];
     }
@@ -178,7 +178,7 @@ abstract class ModuleController extends Controller
     {
         $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
-        $fullRoutePrefix = 'admin.' . (isset($this->routePrefix) ? $this->routePrefix . '.' : '') . $this->moduleName . '.';
+        $fullRoutePrefix = 'admin.' . ($this->routePrefix ? $this->routePrefix . '.' : '') . $this->moduleName . '.';
         $previewRouteName = $fullRoutePrefix . 'preview';
         $restoreRouteName = $fullRoutePrefix . 'restore';
 
@@ -198,7 +198,6 @@ abstract class ModuleController extends Controller
             'modelName' => $this->modelName,
             'routePrefix' => $this->routePrefix,
             'breadcrumb' => $this->getBreadcrumb($id),
-            'with_revisions' => Route::has($previewRouteName) && Route::has($restoreRouteName)
         ];
 
         return array_replace_recursive($data, $this->formData($this->request));
