@@ -20,6 +20,6 @@
     @endif
 
     <footer data-repeater-footer>
-        <a href="#" class="btn btn-small btn-border" data-trigger="">Create new {{ $title_singular or str_singular($moduleName) }}</a>
+        <a href="#" class="btn btn-tiny btn-border" data-trigger="">Create new {{ $title_singular or str_singular($moduleName) }}</a>
     </footer>
 </section>
