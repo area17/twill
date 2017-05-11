@@ -16,17 +16,17 @@ class Image extends BaseBlock
 
     public function imageToHtml()
     {
-        return view('cms-toolkit::blocks.image', $this->getBlockData());
+        return view($this->view('image'), $this->getBlockData());
     }
 
     public function imagegridToHtml()
     {
-        return view('cms-toolkit::blocks.imagegrid', $this->getBlockData('grid'));
+        return view($this->view('imagegrid'), $this->getBlockData('grid'));
     }
 
     public function imagetextToHtml()
     {
-        return view('cms-toolkit::blocks.imagetext', [
+        return view($this->view('imagetext'), [
             'title' => $this->getInput('title'),
             'text' => $this->getInput('text'),
             'image' => $this->getImage($this->data['image_id']),
@@ -37,7 +37,7 @@ class Image extends BaseBlock
 
     public function diaporamaToHtml()
     {
-        return view('cms-toolkit::blocks.diaporama', [
+        return view($this->view('diaporama'), [
             'title' => $this->getInput('title'),
         ] + $this->getBlockData() + $this->options);
     }

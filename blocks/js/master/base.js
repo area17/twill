@@ -382,7 +382,7 @@ SirTrevor.Blocks.Base = (function(){
     //workaround to remove inline styles (contenteditable issue)
     var medium_editor = window[name].elements[0];
     $(medium_editor).on("input", function() {
-    $(medium_editor).find("[style]").contents().unwrap();
+        $(medium_editor).find("[style]").contents().unwrap();
     });
 
     if($field.is('[data-medium-editor-show-button]')) a17cms.Helpers.show_medium_editor_source($field);

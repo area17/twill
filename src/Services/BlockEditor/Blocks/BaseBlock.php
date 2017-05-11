@@ -11,6 +11,7 @@ class BaseBlock
     protected $data;
     protected $locale;
     protected $options;
+    protected $customViewsNamespace;
 
     protected $types = [];
 
@@ -20,6 +21,7 @@ class BaseBlock
         $this->data = $block['data'];
         $this->locale = $block['locale'] ?? app()->getLocale();
         $this->options = $options;
+        $this->customViewsNamespace = config('cms-toolkit.block-editor.custom_views_namespace', 'blocks');
     }
 
     public function renderToHtml()
@@ -125,7 +127,7 @@ class BaseBlock
 
         return [];
     }
-    
+
     protected function getCropParams($crop_data)
     {
         $crop = json_decode($crop_data, true);
@@ -138,7 +140,7 @@ class BaseBlock
 
         return [];
     }
-    
+
     protected function getResourceId($name = 'resource_id')
     {
         $locale = $this->data['resource_locale'] ?? $this->locale;
@@ -146,6 +148,11 @@ class BaseBlock
         $locale = ($locale === "1" ? $this->locale : $locale);
 
         return $this->data[$name . '_' . $locale];
+    }
+
+    protected function view($block)
+    {
+        return view()->exists($this->customViewsNamespace . '.' . $block) ? $this->customViewsNamespace . '.' . $block : 'cms-toolkit::blocks.' . $block;
     }
 
 }
