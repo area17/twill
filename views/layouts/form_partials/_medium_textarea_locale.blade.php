@@ -50,6 +50,12 @@
             }
         };
 
+        var default_with_link_medium_editor_options = {
+            toolbar : {
+                buttons: ['anchor', 'bold', 'italic', 'unorderedlist', 'orderedlist']
+            }
+        };
+
         var link_only_medium_editor_options = {
             toolbar : {
                 buttons: ['anchor', 'anchor']
