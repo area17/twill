@@ -33,7 +33,7 @@
             data-sir-trevor-defaults="{{ $sir_trevor_defaults }}"
             data-sir-trevor-settings="sir_trevor_settings"
             data-sir-trevor-js="assets/admin/vendor/sir-trevor/sir-trevor-with-eventable.min.js, assets/admin/vendor/medium-editor/medium-editor.min.js, {{ ltrim($blocks_js, '/') }}"
-            data-sir-trevor-css="assets/admin/vendor/sir-trevor/sir-trevor.css, assets/admin/vendor/sir-trevor/sir-trevor-icons.css, assets/admin/vendor/medium-editor/medium-editor.css, assets/admin/vendor/medium-editor/themes/flat.min.css, {{ ltrim($blocks_css, '/') }}">
+            data-sir-trevor-css="assets/admin/vendor/sir-trevor/sir-trevor.css, assets/admin/vendor/sir-trevor/sir-trevor-icons.css, assets/admin/vendor/medium-editor/medium-editor.css, assets/admin/vendor/medium-editor/themes/flat.min.css @unless(config('cms-toolkit.block-editor.use_iframes')), {{ ltrim($blocks_css, '/') }} @endunless">
             @if ((Form::old($field_name)) !== null)
                 {{ Form::old($field_name) }}
             @elseif (isset($item))
