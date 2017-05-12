@@ -1,8 +1,8 @@
 a17cms.Behaviors.preview = function(element){
-  
+
   var $mask = null;
   var loading_klass = "js-loading";
-  
+
   var $form = $("#" + element.data("submit-form"));
   var revision = element.data("preview-revision");
   var compare = element.data("compare");
@@ -39,7 +39,7 @@ a17cms.Behaviors.preview = function(element){
     } else if (jqXHR.status == 422) {
       var html_error = '<div class="message message-error"><p>A validation error occured</p><ul>{{error}}</ul><a href="#" class="close" data-behavior="close_message">Close</a></div>';
       var errors_markup = "";
-      
+
       $.each(jQuery.parseJSON(jqXHR.responseText), function(key, value) {
         $form.find("div.input." + key).addClass('field_with_errors');
         errors_markup += "<li>" + value + "</li>";
@@ -52,12 +52,12 @@ a17cms.Behaviors.preview = function(element){
       text_message = "Something went wrong, please retry";
       console.log(errorThrown);
     }
-    
-    $.event.trigger({ 
-      type: "notification_open", 
-      message: text_message, 
-      style: "error", 
-      is_centered: true 
+
+    $.event.trigger({
+      type: "notification_open",
+      message: text_message,
+      style: "error",
+      is_centered: true
     });
   }
 
@@ -68,8 +68,17 @@ a17cms.Behaviors.preview = function(element){
 
     var method = $form.attr('method') || "POST";
     var url = $form.attr('data-preview-url');
+
+    if (typeof SirTrevor !== "undefined") {
+        var st = SirTrevor.getInstance();
+        st.onFormSubmit(true);
+        $('.a17cms-editor', $form).find('input, select, textarea').prop("disabled", true);
+    }
+
     var params = $form.serializeArray();
-    
+
+    $('.a17cms-editor', $form).find('input, select, textarea').prop("disabled", false);
+
     params.push({name: "_preview", value: 1});
     if (revision !== undefined) {
       params.push({name: "_revision", value: revision});
@@ -77,7 +86,7 @@ a17cms.Behaviors.preview = function(element){
     if (compare !== undefined) {
       params.push({name: "_compare", value: 1});
     }
-    
+
     $.ajax({
       type: method,
       url: url,
@@ -93,7 +102,7 @@ a17cms.Behaviors.preview = function(element){
 
   function _handlePreview(event) {
     event.preventDefault();
-    
+
     if ($form.length > 0) {
       _submit_form();
     } else {
@@ -102,4 +111,4 @@ a17cms.Behaviors.preview = function(element){
   }
 
 };
-    
+
