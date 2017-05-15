@@ -27,5 +27,7 @@
                 @endif
             @endcan
         </section>
-        @formField('medias', ['media_role' => 'profile'])
+        @if(config('cms-toolkit.enabled.users-image'))
+            @formField('medias', ['media_role' => 'profile'])
+        @endif
 @stop

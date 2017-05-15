@@ -14,5 +14,6 @@ return [
     'file-library' => true,
     'block-editor' => true,
     'buckets' => false,
+    'users-image' => false,
 
 ];
