@@ -21,7 +21,7 @@ trait HandleRevisions
         if ($this->payloadChanged($requestPayload, $lastRevisionPayload)) {
             $object->revisions()->create([
                 'payload' => json_encode($requestPayload),
-                'user_id' => Auth::user()->id,
+                'user_id' => Auth::user()->id ?? null,
             ]);
         }
 
