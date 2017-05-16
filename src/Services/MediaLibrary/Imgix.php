@@ -65,12 +65,27 @@ class Imgix implements ImageServiceInterface
     {
         $url = $this->urlBuilder->createURL($id, ['fm' => 'json']);
 
-        $imageMetadata = json_decode(file_get_contents($url), true);
+        try {
+            $imageMetadata = json_decode(file_get_contents($url), true);
 
-        return [
-            'width' => $imageMetadata['PixelWidth'],
-            'height' => $imageMetadata['PixelHeight'],
-        ];
+            return [
+                'width' => $imageMetadata['PixelWidth'],
+                'height' => $imageMetadata['PixelHeight'],
+            ];
+        } catch (\Exception $e) {
+            try {
+                list($width, $height) = getimagesize($url);
+                return [
+                    'width' => $width,
+                    'height' => $height,
+                ];
+            } catch (\Exception $e) {
+                return [
+                    'width' => 0,
+                    'height' => 0,
+                ];
+            }
+        }
     }
 
     protected function getCrop($crop_params)
