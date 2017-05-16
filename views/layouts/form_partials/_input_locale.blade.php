@@ -34,6 +34,7 @@
 
         if (isset($repeater) && $repeater) {
             $fullField = $moduleName . '[' . $repeaterIndex . '][' . $fullField . ']';
+            $fieldValue = $form_fields[$moduleName][$repeaterIndex][$field . '_' . $locale] ?? null;
         }
     @endphp
     <div class="input string {{ $fullField }} field_with_hint field_with_lang" data-lang="{{ $locale }}">
