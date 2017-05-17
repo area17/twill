@@ -98,6 +98,7 @@ class FeaturedController extends Controller
                 }
             });
         });
+        \Event::fire('buckets.saved');
 
         return redirect()->back();
     }
