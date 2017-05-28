@@ -15,7 +15,7 @@
     {!! Form::text($field, $fieldValue ?? null, [
         'class' => "string text",
         'id'=> $field."_var",
-        'data-behavior' => 'datetimepicker',
+        'data-behavior' => 'datepicker',
         'data-datetime-settings'=>"{$date_settings}"
     ] + $disabled) !!}
 
