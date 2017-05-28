@@ -60,6 +60,11 @@ abstract class ModuleRepository
         return $query->get()->pluck($column, 'id');
     }
 
+    public function firstOrCreate($attributes, $fields)
+    {
+        return $this->model->where($attributes)->first() ?? $this->create($fields);
+    }
+
     public function create($fields)
     {
         $original_fields = $fields;
