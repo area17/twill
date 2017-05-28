@@ -376,10 +376,16 @@ abstract class ModuleRepository
         $object->setRelation($relationship, $relatedElementsCollection);
     }
 
-    public function updateRepeaterMany($object, $fields, $relation, $model = null)
+    public function updateRepeaterMany($object, $fields, $relation, $keepExisting = true, $model = null)
     {
         $relationFields = $fields[$relation] ?? [];
         $relationRepository = $this->getModelRepository($relation, $model);
+
+        if (!$keepExisting) {
+            $object->$relation()->each(function ($repeaterElement) {
+                $repeaterElement->forceDelete();
+            });
+        }
 
         foreach ($relationFields as $relationField) {
             $newRelation = $relationRepository->create($relationField);
