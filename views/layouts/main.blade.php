@@ -2,6 +2,12 @@
 <html dir="ltr" lang="en-US">
     <head>
         @include('cms-toolkit::layouts.head')
+        <style>
+            #user-tools .on a {
+                color: #fff;
+                -webkit-font-smoothing: antialiased;
+            }
+        </style>
     </head>
     <body>
         <div id="a17">
@@ -16,6 +22,11 @@
                     <nav id="user-tools">
                         <ul>
                             <li><a href="{{ route('admin.logout') }}">Logout</a></li>
+                            @if (config('cms-toolkit.enabled.users-in-top-right-nav'))
+                                <li @if(Route::is('admin.users.index')) class="on" @endif>
+                                    <a href="{{ route('admin.users.index') }}">CMS Users</a>
+                                </li>
+                            @endif
                             <li>
                                 <a href="{{ route('admin.users.edit', $currentUser->id) }}">
                                     {{ $currentUser->name }}

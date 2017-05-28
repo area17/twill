@@ -15,5 +15,6 @@ return [
     'block-editor' => true,
     'buckets' => false,
     'users-image' => false,
+    'users-in-top-right-nav' => false,
 
 ];
