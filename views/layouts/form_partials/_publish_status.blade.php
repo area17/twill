@@ -30,7 +30,7 @@
     </header>
     @if (isset($with_languages) && $with_languages)
         <div class="input boolean optional">
-            <p>Translations</p>
+            <p>Live languages</p>
             @foreach (getLocales() as $locale)
                 @php
                     if (isset($field_wrapper)) {

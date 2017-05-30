@@ -15,7 +15,7 @@
 
 <section class="box box-sir-trevor">
     <header class="header_small">
-        <h3><b>{{ $field_title or 'Block Editor' }}</b></h3>
+        <h3><b>{{ $field_title or 'Block editor' }}</b></h3>
     </header>
     @php
         $field_name = isset($field_wrapper) ? $field_wrapper . '[' . $original_field_name . ']' : $original_field_name;
