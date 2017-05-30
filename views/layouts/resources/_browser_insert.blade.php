@@ -41,7 +41,9 @@
                     @endif
                 </td>
             @endforeach
-            <td><a class="icon icon-trash" href="#" data-media-remove-trigger rel="nofollow">Destroy</a></td>
+            @if($with_delete ?? true)
+                <td><a class="icon icon-trash" href="#" data-media-remove-trigger rel="nofollow">Destroy</a></td>
+            @endif
         </tr>
     @endforeach
 @endif
