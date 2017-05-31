@@ -1,5 +1,6 @@
 @php
     $headers_only = $headers_only ?? false;
+    $with_sort = $with_sort ?? true;
     $columns = $columns ?? [
         'title' => [
             'title' => 'Title',
@@ -9,7 +10,7 @@
 @endphp
 
 @if($headers_only)
-    @if($with_multiple)
+    @if($with_multiple && $with_sort)
         <th class="tool"></th>
     @endif
     @foreach($columns as $column)
@@ -21,7 +22,7 @@
 @else
     @foreach($items as $id => $item)
         <tr class="media-row media-row-new" id="media-box-{{ $item->id }}" data-id="{{ $item->id }}">
-            @if($with_multiple)
+            @if($with_multiple && $with_sort)
                 <td><span class="icon icon-handle"></span></td>
             @endif
             @foreach ($columns as $column)

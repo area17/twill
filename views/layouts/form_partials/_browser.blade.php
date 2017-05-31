@@ -1,5 +1,6 @@
 @php
     $with_multiple = $with_multiple ?? false;
+    $with_sort = $with_sort ?? true;
     $media_max = $with_multiple ? ($max ?? 1) :1;
     $role_relationship = $relationship ?? $role_relationship;
     $role_relationship_name = $relationship_name ?? $role_relationship_name;
@@ -21,7 +22,7 @@
       "role": "{{ $role_relationship_repeater or $role_relationship }}",
       "type": "{{ $with_multiple ? 'generic_multiple' : 'generic_single' }}",
       "url": "{{ moduleRoute($module_name, $routePrefix, 'browser', $params ?? [])}}",
-      "title": "Attach {{ $role_relationship_name or $role_relationship }}",
+      "title": "{{ $custom_title_prefix or 'Attach' }} {{ $role_relationship_name or $role_relationship }}",
       "max": {{ $media_max }}
     }
 </script>
@@ -58,7 +59,7 @@
                 </tr>
             </thead>
 
-            <tbody data-media-bucket="{{ $role_relationship_repeater or $role_relationship }}" data-media-template="{{ moduleRoute($module_name, $routePrefix, 'insert', ['with_multiple' => $with_multiple]) }}" data-media-item=".media-row">
+            <tbody data-media-bucket="{{ $role_relationship_repeater or $role_relationship }}" data-media-template="{{ moduleRoute($module_name, $routePrefix, 'insert', ['with_multiple' => $with_multiple, 'with_sort' => $with_sort]) }}" data-media-item=".media-row">
 
                 @if(isset($item))
                     @resourceView(camel_case($module_name), 'browser_insert', ['items' => $browser_items, 'element_role' => $role_relationship])
@@ -69,6 +70,6 @@
     </div>
 
     <footer data-media-bt>
-        <button type="button" class="btn btn-small btn-border" data-media-bt-trigger>Attach {{ $role_relationship_name or $role_relationship }}</button>
+        <button type="button" class="btn btn-small btn-border" data-media-bt-trigger>{{ $custom_title_prefix or 'Attach' }} {{ $role_relationship_name or $role_relationship }}</button>
     </footer>
 </section>

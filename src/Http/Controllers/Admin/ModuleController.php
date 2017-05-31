@@ -389,7 +389,8 @@ abstract class ModuleController extends Controller
         return view($view)->withItems($elements)
             ->withElementRole($this->request->input('role'))
             ->withNewRow(true)
-            ->withWithMultiple($this->request->input('with_multiple'));
+            ->withWithMultiple($this->request->input('with_multiple'))
+            ->withWithSort($this->request->input('with_sort'));
     }
 
     public function getBrowserData($prependScope = [])
