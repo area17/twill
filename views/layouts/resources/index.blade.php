@@ -56,6 +56,7 @@
                 <b>
                     @if (isset($title))
                         @php
+                            $title = ucfirst($title);
                             $countItems = (!$sort ? (method_exists($items, 'total') ? $items->total() : count($items))  : count($items));
                         @endphp
                         {{  $countItems . ' ' . ($countItems > 1 ? str_plural($title) : $title) }}
