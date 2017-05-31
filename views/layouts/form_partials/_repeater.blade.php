@@ -5,7 +5,14 @@
 <section class="box" @if($with_multiselect) style="border: none; margin: -15px 0 0 0;" @endif data-behavior="repeater_ajax sortable_box" data-repeater-url="{{ moduleRoute($moduleName, $routePrefix ?? null, 'repeater') }}">
     @unless ($with_multiselect)
         <header class="header_small">
-            <h3>{{ $title or ucfirst($moduleName) }}</h3>
+            <h3>
+                {{ $title or ucfirst($moduleName) }}
+                @if (isset($hint))
+                    <ul>
+                        <li>{{ $hint }}</li>
+                    </ul>
+                @endif
+            </h3>
         </header>
     @endunless
     @if (isset($form_fields[$moduleName]))

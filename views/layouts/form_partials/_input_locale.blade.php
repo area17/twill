@@ -43,9 +43,9 @@
             @unless($loop->first && $loop->last)
                 <span class="lang_tag" data-behavior="lang_toggle">{{ strtoupper($locale) }}</span>
             @endunless
+            {!! isset($hint) ? '<span class="hint">'.$hint.'</span>' : '' !!}
         </label>
         {!! Form::text($fullField, $fieldValue ?? null, ['class' => "string {$fullField}", 'id'=> $fullField] + $options) !!}
-        {!! isset($hint) ? '<span class="hint">'.$hint.'</span>' : '' !!}
         @if (isset($textLimit))
             <span class="hint"><span class="textlimit-remaining">0</span> / {{ $textLimit }} characters maximum</span>
         @endif

@@ -32,7 +32,15 @@
         @endif
         @if (isset($hint))
             <ul>
-                <li><span class="icon icon-label icon-bang">{{ $hint }}</span></li>
+                <li>
+                    @if ($hint_icon ?? true)
+                        <span class="icon icon-label icon-bang">
+                            {{ $hint }}
+                        </span>
+                    @else
+                        {{ $hint }}
+                    @endif
+                </li>
             </ul>
         @endif
         </h3>
