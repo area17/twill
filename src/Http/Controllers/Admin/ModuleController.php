@@ -174,7 +174,7 @@ abstract class ModuleController extends Controller
         return view($view, $this->form($id));
     }
 
-    private function form($id)
+    protected function form($id)
     {
         $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
