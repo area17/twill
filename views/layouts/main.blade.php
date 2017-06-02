@@ -13,7 +13,7 @@
         <div id="a17">
             <header id="header">
                 <h1>
-                    <a href="/">{{ config('app.name') }}</a>
+                    <a href="/">@if(config('cms-toolkit.custom_cms_logo', false)) @include(config('cms-toolkit.custom_cms_logo_partial')) @else {{ config('app.name') }} @endif</a>
                     <span class="env-label {{ app()->environment() }}">{{ app()->environment() }}</span>
                 </h1>
                 <span class="env {{ app()->environment() }}" data-behavior="env">{{ app()->environment() }}</span>
