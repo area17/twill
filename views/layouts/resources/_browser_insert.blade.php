@@ -18,7 +18,9 @@
             {{ $column['title'] }}
         </th>
     @endforeach
-    <th class="tool"></th>
+    @if($with_delete ?? true)
+        <th class="tool"></th>
+    @endif
 @else
     @foreach($items as $id => $item)
         <tr class="media-row media-row-new" id="media-box-{{ $item->id }}" data-id="{{ $item->id }}">
