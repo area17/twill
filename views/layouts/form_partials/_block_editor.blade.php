@@ -133,9 +133,11 @@
 </script>
 
 <script>
-    $(document).on('resized', function (){
-        $('.blockFrame').each(function () {
-            this.style.height = this.contentWindow.document.body.offsetHeight + 'px';
+    $( document ).ready(function() {
+        $(window).on('resize', function (){
+            $('.blockFrame').each(function () {
+                this.style.height = this.contentWindow.document.body.offsetHeight + 'px';
+            });
         });
     });
 </script>
