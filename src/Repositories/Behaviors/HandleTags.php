@@ -28,12 +28,6 @@ trait HandleTags
 
     protected function filterHandleTags($query, &$scopes)
     {
-        if (isset($scopes['search'])) {
-            $query->orWhereHas('tags', function ($query) use ($scopes) {
-                $query->where('slug', 'like', '%' . $scopes['search'] . '%');
-            });
-        }
-
         $this->addRelationFilterScope($query, $scopes, 'tag_id', 'tags');
     }
 
