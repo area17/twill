@@ -437,7 +437,7 @@ abstract class ModuleController extends Controller
             }
         }
 
-        return $scope + $prepend;
+        return $prepend + $scope;
     }
 
     protected function setBackLink($back_link = null, $params = [])
