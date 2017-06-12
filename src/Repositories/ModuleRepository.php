@@ -478,9 +478,11 @@ abstract class ModuleRepository
     public function searchIn($query, &$scopes, $scopeField, $orFields = [])
     {
         if (isset($scopes[$scopeField]) && is_string($scopes[$scopeField])) {
-            foreach ($orFields as $field) {
-                $query->orWhere($field, 'like', '%' . $scopes[$scopeField] . '%');
-            }
+            $query->where(function ($query) use ($scopes, $scopeField, $orFields) {
+                foreach ($orFields as $field) {
+                    $query->orWhere($field, 'like', '%' . $scopes[$scopeField] . '%');
+                }
+            });
         }
     }
 
