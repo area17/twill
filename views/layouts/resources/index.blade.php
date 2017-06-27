@@ -12,6 +12,11 @@
 @extends('cms-toolkit::layouts.main')
 
 @section('content')
+    @if($help_message && !empty($help_message))
+        <div class="message message-help">
+            <p>{!! $help_message !!}</p>
+        </div>
+    @endif
     @if($search || !empty($filters))
         <div class="filter">
             <form method="GET" accept-charset="UTF-8" novalidate="novalidate" class="{{ $filtersOn ? 'on' : '' }}">
