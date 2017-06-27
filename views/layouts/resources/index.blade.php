@@ -12,7 +12,7 @@
 @extends('cms-toolkit::layouts.main')
 
 @section('content')
-    @if($help_message && !empty($help_message))
+    @if($help_message ?? null && !empty($help_message))
         <div class="message message-help">
             <p>{!! $help_message !!}</p>
         </div>
