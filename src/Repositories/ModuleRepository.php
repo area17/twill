@@ -453,7 +453,7 @@ abstract class ModuleRepository
             $model = ucfirst(str_singular($relation));
         }
 
-        return app(config('cms-toolkit.namespace') . "\\Repositories\\" . $model . "Repository");
+        return app(config('cms-toolkit.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
     }
 
     public function addRelationFilterScope($query, &$scopes, $scopeField, $scopeRelation)
