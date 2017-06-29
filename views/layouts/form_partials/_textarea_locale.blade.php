@@ -41,7 +41,7 @@
     !!}
     @if(isset($textLimit))
         <span class="hint">
-            <span class="textlimit-remaining">0</span>/ {{$textLimit}} characters maximum
+            <span class="textlimit-remaining">0</span> / {{$textLimit}} characters maximum
         </span>
     @endif
 </div>
