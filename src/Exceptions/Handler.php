@@ -71,8 +71,8 @@ class Handler extends ExceptionHandler
             return $this->convertExceptionToResponse($e);
         }
 
-        if ($request->getHost() == config('cms-toolkit.admin_url')) {
-            $view = "admin.errors.{$statusCode}";
+        if ($request->getHost() == config('cms-toolkit.admin_app_url')) {
+            $view = view()->exists("admin.errors.$statusCode") ? "admin.errors.$statusCode" : "cms-toolkit::errors.$statusCode";
         } else {
             $view = config('cms-toolkit.frontend.views_path') . ".errors.{$statusCode}";
         }
