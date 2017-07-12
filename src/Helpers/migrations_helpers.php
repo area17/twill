@@ -31,7 +31,7 @@ if (!function_exists('createDefaultTranslationsTableFields')) {
         $table->boolean('active');
         $table->integer("{$tableNameSingular}_id")->unsigned();
         $table->foreign("{$tableNameSingular}_id", "fk_{$tableNameSingular}_translations_{$tableNameSingular}_id")->references('id')->on($tableNamePlural)->onDelete('CASCADE');
-        $table->unique(["{$tableNameSingular}_id", 'locale']);
+        $table->unique(["{$tableNameSingular}_id", 'locale'], "{$tableNameSingular}_local_id_unique");
     }
 }
 
