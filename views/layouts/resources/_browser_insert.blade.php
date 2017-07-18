@@ -40,7 +40,7 @@
                                 isset($column['variant']) && isset($column['variant']['params']) ? $column['variant']['params'] : ['w' => 80, 'h' => 80, 'fit' => 'crop']) }}" width="80" height="80">
                         @endif
                     @elseif (isset($column['edit_link_url_segment']))
-                        <a href="//admin.{{ config('app.url') }}/{{ $column['edit_link_url_segment'] }}/{{ $item->id }}/edit" class="main">
+                        <a href="//{{ config('cms-toolkit.admin_app_url') }}/{{ $column['edit_link_url_segment'] }}/{{ $item->id }}/edit" class="main">
                             @resourceView((isset($element_role) ? camel_case($element_role) : $moduleName), 'column')
                         </a>
                     @else
