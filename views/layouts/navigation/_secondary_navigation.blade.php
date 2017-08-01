@@ -1,4 +1,4 @@
-@if (isset($_primary_active_navigation) && isset(config('cms-navigation.' . $_global_active_navigation . '.primary_navigation.' . $_primary_active_navigation)['secondary_navigation']))
+@if (!($disable_secondary_navigation ?? false) && isset($_primary_active_navigation) && isset(config('cms-navigation.' . $_global_active_navigation . '.primary_navigation.' . $_primary_active_navigation)['secondary_navigation']))
     <nav id="secondary-navigation">
         <ul>
             @foreach(config('cms-navigation.'. $_global_active_navigation . '.primary_navigation.' . $_primary_active_navigation)['secondary_navigation'] as $secondary_navigation_key => $secondary_navigation_element)
