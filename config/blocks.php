@@ -30,7 +30,6 @@ return [
         "imagegrid" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
         "imagetext" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
         "diaporama" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
-        "button" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Link",
         "blockseparator" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Separator",
     ],
     'sitemap_blocks' => [

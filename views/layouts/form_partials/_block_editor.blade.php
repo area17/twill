@@ -98,7 +98,6 @@
     SirTrevor.setBlockOptions("Imagetext", DEFAULT_OPTIONS);
     SirTrevor.setBlockOptions("Imagegrid", DEFAULT_OPTIONS);
     SirTrevor.setBlockOptions("Diaporama", DEFAULT_OPTIONS);
-    SirTrevor.setBlockOptions("Button", DEFAULT_OPTIONS);
     SirTrevor.setBlockOptions("Blockseparator", DEFAULT_OPTIONS);
     SirTrevor.setBlockOptions("Blocktest", DEFAULT_OPTIONS);
     @if (isset($blocks_config))
@@ -117,7 +116,6 @@
         "Imagegrid",
         "Imagetext",
         "Diaporama",
-        "Button",
         "Blockseparator"
     ];
   @endif
