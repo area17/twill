@@ -170,5 +170,37 @@
                 display: none !important;
             }
         @endif
+        /* Fix block editor CSS */
+        .th span:not(.btn).icon-handle,
+        td span:not(.btn).icon-handle,
+        th a:not(.btn).icon-handle,
+        td a:not(.btn).icon-handle,
+        td img.icon-handle {
+            margin-bottom: -300px;
+            padding-bottom: 300px;
+        }
+
+        tbody .thumb img {
+            min-height:50px;
+            width:100%;
+            background:#EEE;
+        }
+
+        tr.tr-placeholder,
+        tr.tr-placeholder td {
+            height:230px;
+            background:#EFEFEF;
+        }
+
+        .a17cms-container-list,
+        .a17cms-container-list tbody {
+            position:relative;
+        }
+
+        .btn.btn-light-border {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     </style>
 @endpush
