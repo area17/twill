@@ -166,7 +166,7 @@ trait HasSlug
 
     public function getSlugParams($locale = null)
     {
-        if (count(getLocales()) === 1) {
+        if (count(getLocales()) === 1 && !isset($this->translations)) {
             $slugParams = $this->getSingleSlugParams($locale);
             if ($slugParams != null && !empty($slugParams)) {
                 return $slugParams;
@@ -184,7 +184,7 @@ trait HasSlug
                 $slugDependenciesAttributes = [];
                 foreach ($attributes as $attribute) {
                     if (!isset($this->$attribute)) {
-                        throw new \Exception("Are you wake-up ? You must define the field {$attribute} in your model");
+                        throw new \Exception("You must define the field {$attribute} in your model");
                     }
 
                     $slugDependenciesAttributes[$attribute] = $this->$attribute;
@@ -217,12 +217,11 @@ trait HasSlug
         foreach (getLocales() as $appLocale) {
             if ($appLocale == $locale || $locale == null) {
                 $attributes = $this->slugAttributes;
-
                 $slugAttribute = array_shift($attributes);
                 $slugDependenciesAttributes = [];
                 foreach ($attributes as $attribute) {
                     if (!isset($this->$attribute)) {
-                        throw new \Exception("Are you wake-up ? You must define the field {$attribute} in your model");
+                        throw new \Exception("You must define the field {$attribute} in your model");
                     }
 
                     $slugDependenciesAttributes[$attribute] = $this->$attribute;
