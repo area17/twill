@@ -10,7 +10,13 @@ a17cms.Helpers.sirTrevorBaseTextFields = function(fields) {
     if (!field.html) {
       field.html = "<div class='input field_with_lang' data-lang='{{lang}}'>"
 
-      field.html += "<label>" + field.label + "<span class='lang_tag' data-behavior='lang_toggle'>{{lang}}</span></label>";
+      field.html += "<label>" + field.label + "<span class='lang_tag' data-behavior='lang_toggle'>{{lang}}</span>";
+
+      if (field.hint !== undefined) {
+        field.html += "<span class='hint'>"+ field.hint +"</span>";
+      }
+
+      field.html += "</label>";
 
       field.label = (field.label === undefined) ? 'text' : field.label;
       field.placeholder = (field.placeholder === undefined) ? '' : field.placeholder;
@@ -18,7 +24,6 @@ a17cms.Helpers.sirTrevorBaseTextFields = function(fields) {
       field.type = (field.type === undefined) ? 'input' : field.type;
       field.attr = (field.attr === undefined) ? '' : field.attr;
       field.class = (field.class === undefined) ? "a17-input-block" : field.class;
-
       switch (field.type) {
         case 'input':
           field.html += "<input type='text' class='" + field.class + "' name='" + field.name + "_{{lang}}' maxlength='" + field.maxlength + "' placeholder='" + field.placeholder + "' autocomplete='false' " + field.attr + " />";
