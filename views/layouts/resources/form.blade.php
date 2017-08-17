@@ -20,7 +20,7 @@
                 <li class="float-right"><a class="btn" target="_blank" href="{{ $item->url }}">Open on site &#8599;</a></li>
             @endif
             @if ($with_preview_link ?? false)
-                <li class="float-right"><a class="btn" href="{{ $item->previewUrl }}">Open preview &#8599;</a></li>
+                <li class="float-right"><a class="btn" target="_blank" href="{{ $item->previewUrl }}">Open preview &#8599;</a></li>
                 <li class="float-right"><a class="btn btn-copy-preview" data-clipboard-text="{{ $item->previewUrl }}">Copy preview link</a></li>
                 <script src="/assets/admin/vendor/clipboard.min.js"></script>
                 <script>
