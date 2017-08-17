@@ -8,13 +8,13 @@
                 <ul>
                     <li>
                         <a data-behavior="preview" data-submit-form="{{ $form_options['id'] }}" data-options="modal_option_preview" href="#" title="Preview changes">
-                            <span class="icon" style="background-repeat: no-repeat; background-image: url('https://icon.now.sh/open_in_browser/25/666'); background-position: 50%;"></span><span class="Versions__tool">Preview</span>
+                            <span class="icon" style="background-repeat: no-repeat; background-image: url('https://icon.now.sh/open_in_browser/25/666'); background-position: 50%;"></span><span class="Versions__tool">Preview changes</span>
                         </a>
                     </li>
                     @if (isset($item) && isset($item->revisions_count) && $item->revisions_count > 0)
                         <li>
                             <a data-behavior="preview" data-compare data-submit-form="{{ $form_options['id'] }}" data-options="modal_option_compare" href="#" title="Compare changes">
-                                <span class="icon" style="background-repeat: no-repeat; background-image: url('https://icon.now.sh/compare/25/666'); background-position: 50%;"></span><span class="Versions__tool">Diff</span>
+                                <span class="icon" style="background-repeat: no-repeat; background-image: url('https://icon.now.sh/compare/25/666'); background-position: 50%;"></span><span class="Versions__tool">Compare</span>
                             </a>
                         </li>
                     @endif
