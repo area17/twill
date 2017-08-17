@@ -7,6 +7,7 @@
     $show_locale_edit_links = $show_locale_edit_links ?? false;
     $delete = $delete ?? true;
     $toggle_columns = $toggle_columns ?? [];
+    $preview = $preview ?? false;
 @endphp
 
 @extends('cms-toolkit::layouts.main')
@@ -79,14 +80,14 @@
                     <thead>
                         <tr>
                             @if ($sort && $currentUser->can('sort'))
-                                <th class="tool">—</th>
+                                <th class="tool"></th>
                             @endif
                             @if ($publish)
-                                <th class="tool">{{ $publish_title or '—'}}</th>
+                                <th class="tool">{{ $publish_title or ''}}</th>
                             @endif
                             @resourceView($moduleName, 'before_index_headers')
                             @foreach ($toggle_columns as $toggle_column)
-                                <th class="tool">{{ $toggle_column['toggle_title'] or '—'}}</th>
+                                <th class="tool">{{ $toggle_column['toggle_title'] or ''}}</th>
                             @endforeach
                             @foreach ($columns as $column)
                                 <th class="{{ isset($column['col']) ? 'colw-' . $column['col'] : '' }}">
@@ -98,10 +99,13 @@
                             @endforeach
                             @resourceView($moduleName, 'after_index_headers')
                             @if ($edit && $currentUser->can('edit'))
-                                <th class="tool">—</th>
+                                <th class="tool"></th>
+                            @endif
+                            @if ($preview && $currentUser->can('list'))
+                                <th class="tool"></th>
                             @endif
                             @if ($delete && $currentUser->can('delete'))
-                                <th class="tool">—</th>
+                                <th class="tool"></th>
                             @endif
                         </tr>
                     </thead>
@@ -136,6 +140,9 @@
                             @resourceView($moduleName, 'after_index_columns')
                             @if ($edit && $currentUser->can('edit'))
                                 @resourceView($moduleName, 'edit_action')
+                            @endif
+                            @if ($preview && $currentUser->can('list'))
+                                @resourceView($moduleName, 'preview_action')
                             @endif
                             @if ($delete && $currentUser->can('delete'))
                                 @resourceView($moduleName, 'delete_action')
