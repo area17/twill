@@ -8,6 +8,7 @@
     $delete = $delete ?? true;
     $toggle_columns = $toggle_columns ?? [];
     $preview = $preview ?? false;
+    $previewLandingUrl = $previewLandingUrl ?? false;
 @endphp
 
 @extends('cms-toolkit::layouts.main')
@@ -176,9 +177,15 @@
             </li>
             @if(isset($parent_id) && isset($back_link))
                 <li>
-                    <a href="{{$back_link}}" class="btn" title="Back">Back</a>
+                    <a href="{{ $back_link }}" class="btn" title="Back">Back</a>
                 </li>
             @endif
+        @endif
+
+        @if ($previewLandingUrl && $currentUser->can('list'))
+            <li class="float-right">
+                <a href="{{ $previewLandingUrl }}" class="btn" target="_blank" title="Back">Preview with drafts &#8599;</a>
+            </li>
         @endif
     </ul>
     </footer>
