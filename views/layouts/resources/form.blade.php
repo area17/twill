@@ -16,10 +16,10 @@
             <li><input type="submit" name="continue" value="Save" class="btn btn-primary"></li>
             <li><input type="submit" name="finish" value="Save and close" class="btn"></li>
             <li><a href="{{ $back_link }}" class="btn">Cancel</a></li>
-            @if ($with_view_link)
+            @if ($with_view_link ?? false)
                 <li class="float-right"><a class="btn" target="_blank" href="{{ $item->url }}">Open on site &#8599;</a></li>
             @endif
-            @if ($with_preview_link)
+            @if ($with_preview_link ?? false)
                 <li class="float-right"><a class="btn" href="{{ $item->previewUrl }}">Open preview &#8599;</a></li>
                 <li class="float-right"><a class="btn btn-copy-preview" data-clipboard-text="{{ $item->previewUrl }}">Copy preview link</a></li>
                 <script src="/assets/admin/vendor/clipboard.min.js"></script>
