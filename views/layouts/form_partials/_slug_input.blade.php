@@ -6,7 +6,7 @@
     <div class="col">
         <div class="input boolean" style="margin-top:45px;">
             <label class="boolean" for="override_slug_checkbox">
-                <input class="boolean" id="override_slug_checkbox" name="override_slug_checkbox" type="checkbox" value="0" {{ str_slug($currentName) !== $currentSlug ? 'checked' : '' }} data-behavior="connected_checkbox" data-connected-actions="connected_actions">Manual input
+                <input class="boolean" id="override_slug_checkbox" name="override_slug_checkbox" type="checkbox" value="0" {{ str_slug($currentName) !== $currentSlug ? 'checked' : '' }} data-behavior="connected_checkbox" data-connected-actions="connected_actions">Custom
             </label>
             <script>
                 var connected_actions = [
@@ -15,7 +15,7 @@
                             if (isset($field_wrapper)) {
                                 $fieldId = '#' . $field_wrapper . '\\\[' . $field . '_' . $locale . '\\\]';
                             } else {
-                                $fieldId = '#' . $field . '.' . $locale;
+                                $fieldId = '#' . $field . '_' . $locale;
                             }
                         @endphp
                         {
@@ -34,7 +34,7 @@
         </div>
     </div>
     <div class="col">
-        @include('admin.layouts.form_partials._input_locale', [
+        @formField('input_locale', [
             'field' => $field,
             'field_name' => $field_name ?? 'Slug',
             'field_wrapper' => $field_wrapper ?? null
