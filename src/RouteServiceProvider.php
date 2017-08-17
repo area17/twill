@@ -98,7 +98,7 @@ class RouteServiceProvider extends ServiceProvider
             $routePrefix = empty($routePrefix) ? $routePrefix : (starts_with($routePrefix, '/') ? $routePrefix : '/' . $routePrefix);
 
             Route::name($moduleName . '.show')->get($routePrefix . '/{slug}', $controllerName . 'Controller@show');
-            Route::name($moduleName . '.preview')->get('/admin-preview' . $routePrefix . '/{slug}', $controllerName . 'Controller@show')->middleware(['web', 'auth']);
+            Route::name($moduleName . '.preview')->get('/admin-preview' . $routePrefix . '/{slug}', $controllerName . 'Controller@show')->middleware(['web', 'auth', 'can:list']);
         });
 
         Route::macro('module', function ($slug, $options = [], $resource_options = [], $resource = true) {
