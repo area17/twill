@@ -112,7 +112,7 @@ SirTrevor.Blocks.Base = (function(){
     console.log(complete_data);
 
     // display loader
-    updatePreviewHTML("<div class='a17cms-preview-mode-loader'>Loading " + self.type + "...</div>");
+    updatePreviewHTML("<div class='a17cms-preview-mode-loader'>Loading " + self.title + "...</div>");
 
     if (selected_locale) {
       url += '?locale=' + selected_locale;
@@ -130,7 +130,9 @@ SirTrevor.Blocks.Base = (function(){
       updatePreviewHTML(edit_button_fail);
     }).always(function() {
       self.bindPreviewButton();
-      self.performValidations();
+      if (!self.valid()) {
+        self.backToEdit();
+      }
     });
 
     function updatePreviewHTML(html) {
