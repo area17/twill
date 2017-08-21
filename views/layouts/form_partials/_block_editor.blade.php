@@ -27,6 +27,7 @@
     <div class="input text optional">
         <textarea
             class="text optional"
+            style="display:none;"
             name="{{ $field_name }}"
             id="{{ $field_name }}"
             data-behavior="sir_trevor"
