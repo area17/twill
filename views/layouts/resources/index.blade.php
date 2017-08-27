@@ -43,6 +43,7 @@
                             'data-selector-width' => '168px',
                             'data-minimum-results-for-search' => 16,
                             'class' => 'select',
+                            'style' => 'display: none;'
                         ]) !!}
                     @endif
                 @endforeach
