@@ -18,7 +18,7 @@
       "backend_role" : "{{ $media_role }}",
       "type": "{{ $with_multiple ? 'media_multiple' : 'media_single' }}",
       "url": "{{ route('admin.media-library.medias.index') }}",
-      "title": "Attach {{ $media_role_name or $media_role }} {{ $with_multiple ? 'images' : 'image' }}",
+      "title": "Add {{ $media_role_name or $media_role }} {{ $with_multiple ? 'images' : 'image' }}",
       "max": {{ $media_max }}
     }
 </script>
@@ -67,6 +67,6 @@
         @endif
     </div>
     <footer data-media-bt>
-        <button type="button" class="btn btn-small btn-border" data-media-bt-trigger>Attach {{ $media_role_name or $media_role }} {{ $with_multiple ? 'images' : 'image' }}</button>
+        <button type="button" class="btn btn-small btn-border" data-media-bt-trigger>Add {{ $media_role_name or $media_role }} {{ $with_multiple ? 'images' : 'image' }}</button>
     </footer>
 </section>
