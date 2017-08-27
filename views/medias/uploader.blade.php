@@ -14,6 +14,9 @@
             border-radius: 0px;
             border: 1px dashed #d9d9d9;
             background-color: #f3f3f3;
+            margin-left: 10px;
+            margin-right: 10px;
+            margin-bottom: 10px;
         }
 
        .qq-gallery .qq-progress-bar {
