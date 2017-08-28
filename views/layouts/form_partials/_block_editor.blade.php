@@ -52,7 +52,7 @@
 
 <script>
   var medium_editor_paste_options = {
-    forcePlainText: true,
+    forcePlainText: false,
     cleanPastedHTML: true,
     cleanAttrs: ['class', 'style', 'dir', 'content', 'itemscope', 'itemprop', 'itemtype', 'property', 'data-behavior', 'data-url', 'font'],
     cleanTags: ['xml', 'body', 'section', 'aside', 'article', 'meta', 'input', 'h1', 'h2', 'font', 'iframe', 'object', 'script', 'style', 'img'],
