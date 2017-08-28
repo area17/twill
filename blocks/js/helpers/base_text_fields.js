@@ -32,7 +32,7 @@ a17cms.Helpers.sirTrevorBaseTextFields = function(fields) {
           field.html += "<textarea class='" + field.class + "' name='" + field.name + (field.repeater ? "{{repeaterIndex}}" : "") + "_{{lang}}" + "' maxlength='" + field.maxlength + "' placeholder='" + field.placeholder + "' " + field.attr + " />";
           break;
         case 'medium_textarea':
-          field.html += "<textarea class='" + field.class + " a17-input-medium-editor textarea-medium-editor' name='" + field.name + (field.repeater ? "{{repeaterIndex}}" : "") + "_{{lang}}" + "' rows='20' data-medium-editor-show-button='Display source code' data-medium-editor-hide-button='Hide source code' " + field.attr + " />";
+          field.html += "<textarea class='" + field.class + (field.links_only ? " textarea-medium-editor--link-only" : "") + " a17-input-medium-editor textarea-medium-editor' name='" + field.name + (field.repeater ? "{{repeaterIndex}}" : "") + "_{{lang}}" + "' rows='20' " + (field.links_only ? "" : "data-medium-editor-show-button='Display source code' data-medium-editor-hide-button='Hide source code' ") + field.attr + " />";
           break;
       }
 

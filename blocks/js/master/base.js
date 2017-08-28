@@ -385,7 +385,11 @@ SirTrevor.Blocks.Base = (function(){
     if($textarea.length) {
       $textarea.each(function() {
         if ($(this).hasClass('textarea-medium-editor')) {
-          self.setMediumEditor($(this), self.option_settings);
+          if ($(this).hasClass('textarea-medium-editor--link-only')) {
+            self.setMediumEditor($(this), self.option_settings_link_only);
+          } else {
+            self.setMediumEditor($(this), self.option_settings);
+          }
         }
       });
     }

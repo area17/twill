@@ -88,6 +88,16 @@
       },
       anchor: medium_editor_anchor_options,
       paste: medium_editor_paste_options
+    },
+    option_settings_link_only: {
+      placeholder: {
+        text: 'Enter text here.'
+      },
+      toolbar: {
+        buttons: ['anchor']
+      },
+      anchor: medium_editor_anchor_options,
+      paste: medium_editor_paste_options
     }
   }
 
