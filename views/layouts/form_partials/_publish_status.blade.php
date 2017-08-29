@@ -2,7 +2,7 @@
     if (isset($field_wrapper)) {
         $publishedField = $field_wrapper . '[published]';
     } else {
-        $publishedField = 'published';
+        $publishedField = $field ?? 'published';
     }
 
     $fieldValue = $form_fields[$publishedField] ?? null;
