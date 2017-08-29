@@ -16,7 +16,7 @@
                 </h3>
                 <ul>
                     <li><a href="{{ ImageService::getRawUrl($image->uuid) }}" download><span class="icon icon-download"></span>Download original</a></li>
-                    <li><a href="#" data-media-remove-trigger><span class="icon icon-remove"></span>Detach</a></li>
+                    <li><a href="#" data-media-remove-trigger><span class="icon icon-remove"></span>Remove</a></li>
                 </ul>
             </header>
             @foreach($crops as $crop_name => $crop_ratio)
