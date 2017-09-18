@@ -375,7 +375,7 @@ SirTrevor.Blocks.Base = (function(){
     var self = this;
 
     var $textareas = this.getInputBlock();
-    var $textarea = $textareas.filter('textarea');
+    var $textarea = $textareas.filter('textarea:not(.medium-editor-hidden)');
 
     if(this.option_class) {
       var custom_class = this.option_class;
