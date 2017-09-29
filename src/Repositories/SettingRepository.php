@@ -12,7 +12,7 @@ class SettingRepository
         $this->model = $model;
     }
 
-    public function byKey($key, $section = 'null')
+    public function byKey($key, $section = null)
     {
         return $this->model->when($section, function ($query) use ($section) {
             $query->where('section', $section);
