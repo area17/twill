@@ -2,9 +2,60 @@
 
 All notable changes to `laravel-cms-toolkit` will be documented in this file.
 
+## 0.7 - 2017-10-03
+
+### Added
+
+- Settings feature (831c3de, d2f76dd)
+- Add a ratio selector on image fields (64edd52)
+- Add optional open live site link to global nav (4ede5a2)
+- Add a preview/open action to listings (a9a2821)
+- Allow disabling delete in module listing (df7cf5b)
+- Add a copy preview link to clipboard feature (dirty js, will clean up during redesign) (f50c03a)
+- Add a way to prevent publication in listing by checking a canPublish property on the model item (347cc6a)
+- Add new setting to block editor config: iframe width (defaults to 66) (5dc0461)
+- Add a new links only config for medium editor fields in blocks (2eb64b5)
+- Allow hints in blocks input fields (21b677f)
+- Add placeholder in block text fields for simple repeater blocks based on numbers (e5042fd)
+- Add a button to preview module landing with drafts (2957584)
+- Add a scopes parameters to apply where conditions on forSlug helper (d6d10bb)
+- Add 403 error page (9aa40d5)
+- Log block errors (f9d8778)
+
+### Fixed
+
+- Prevent initializing already initialiazed medium editor in blocks (1742a17)
+- Fix module show and preview routes (extra /) (b01c1f6)
+- Fix preview links (0618bc6)
+- Make sure module previews are only accessible to read only users, not disabled ones. (d92d07b)
+- Fix slug input (3b25ef0)
+
+### Improved
+
+- Allow custom publish field name in forms (043107c)
+- Improve uploader drop-zone style to align with images grid (cfd32a9)
+- Wording on image attachment button: use add everywhere for consistency with blocks (e6d6918)
+- Hide filters dropdowns while loading select2 styles (f2eeabe)
+- Hide block editor ugly json showing in textarea before Sir Trevor loads (df2193e, adf651d)
+- Improve block editor UX (show title while loading, stay on edit view if validation errors) (98b8af0)
+- Change cms user publish status wording (d8177be)
+- Allow raw html string as index column (useful for classic model accessor instead of presenter usage) (2c057af)
+
+### Changed
+
+- Soft delete slugs on delete and allow reusing deleted ones (b48b563)
+- Do not force plain text pasting in block editor medium fields (a01e42f)
+- Allow empty or "/" module preview route prefix for catch-all route (1dda40d)
+- Wording on attachment: replace detach by remove (769d18d)
+- Update CMS builds from UI Toolkit (c61fd17)
+- Update composer.lock (6a567c9)
+- Open preview in a new tab (f48fa99)
+- Revisions and links wording (4bd3e29)
+
 ## 0.6 - 2017-10-03
 
 ### Added
+
 - Implement revisions with preview and side by side comparison (55ebdae, e35e824, 805e6b2, c51c99c, 04d1910, 303875d, e3fb70c, 28daed4, 21dd9dd, b18276c, a31b889)
 - Add feature permission for publishers and admins (84e2ae0)
 - Allow custom logo partial for the CMS header (435e65e)
