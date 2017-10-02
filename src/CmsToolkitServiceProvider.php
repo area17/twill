@@ -171,6 +171,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
             'CreateUsersTables' => 'users-management',
             'CreateFilesTables' => 'file-library',
             'CreateMediasTables' => 'media-library',
+            'CreateFeaturesTable' => 'buckets',
         ];
 
         if ($this->app->runningInConsole()) {
@@ -231,6 +232,23 @@ class CmsToolkitServiceProvider extends ServiceProvider
         $this->publishes([__DIR__ . '/../assets' => public_path('assets/admin')], 'assets');
     }
 
+    private function includeView($view, $expression)
+    {
+        list($name) = str_getcsv($expression, ',', '\'');
+
+        $partialNamespace = view()->exists('admin.' . $view . $name) ? 'admin.' : 'cms-toolkit::';
+
+        $view = $partialNamespace . $view . $name;
+
+        $expression = explode(',', $expression);
+        array_shift($expression);
+        $expression = "(" . implode(',', $expression) . ")";
+        if ($expression === "()") {
+            $expression = '([])';
+        }
+        return "<?php echo \$__env->make('{$view}', array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render(); ?>";
+    }
+
     private function extendBlade()
     {
         $blade = $this->app['view']->getEngineResolver()->resolve('blade')->getCompiler();
@@ -240,20 +258,11 @@ class CmsToolkitServiceProvider extends ServiceProvider
         });
 
         $blade->directive('formField', function ($expression) use ($blade) {
+            return $this->includeView('layouts.form_partials._', $expression);
+        });
 
-            list($name) = str_getcsv($expression, ',', '\'');
-
-            $partialNamespace = view()->exists('admin.layouts.form_partials._' . $name) ? 'admin.' : 'cms-toolkit::';
-
-            $view = $partialNamespace . 'layouts.form_partials._' . $name;
-
-            $expression = explode(',', $expression);
-            array_shift($expression);
-            $expression = "(" . implode(',', $expression) . ")";
-            if ($expression === "()") {
-                $expression = '([])';
-            }
-            return "<?php echo \$__env->make('{$view}', array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render(); ?>";
+        $blade->directive('extendableView', function ($expression) use ($blade) {
+            return $this->includeView('layouts.resources._', $expression);
         });
 
         $blade->directive('resourceView', function ($expression) use ($blade) {
