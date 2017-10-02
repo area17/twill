@@ -2,6 +2,81 @@
 
 All notable changes to `laravel-cms-toolkit` will be documented in this file.
 
+## 0.6 - 2017-10-03
+
+### Added
+- Implement revisions with preview and side by side comparison (55ebdae, e35e824, 805e6b2, c51c99c, 04d1910, 303875d, e3fb70c, 28daed4, 21dd9dd, b18276c, a31b889)
+- Add feature permission for publishers and admins (84e2ae0)
+- Allow custom logo partial for the CMS header (435e65e)
+- Add a way to add a message on top of CRUD listings (4afefe0, c9ad242)
+- Add a variable to disable secondary navigation in views (a5ee316)
+- Add options to the checkbox form field to enable connected actions (5dbf3c1)
+- Add a way to disable feature using a canFeature attribute in models. Defaults to true. (a63aeb1)
+- Add setters to the SEO object to keep defaults if passed is empty (79f9747)
+- Easy way to add links in browser fields (c0d66b3, 33540d3)
+- Allow raw url in CMS navigation (6e6ac31)
+- Add an option to prevent related content deletion (b3016ab)
+- Add an option to show the CMS users links in the top right navbar (febd212)
+- Add a repository method to find first or create (0799840)
+- Add a new default config with anchor for the medium editor form field (0eea90b)
+- Add a scope to order with a raw string on translations (6281f1d)
+- Add a scope to order by a translated field (694d8c9)
+- Let's share a published scope in the parent model (c5e83e5)
+- Add a way to delete existing belongsToMany repeater elements (when not used along with a multiselect) (422a924)
+- Add an option to show templates on the frontend domain and protect templates from unauthenticated eyes in production (1bf3fc7)
+- Add a simple way to reuse the default blocks with custom views (36ea67f)
+- Add blocks css to block editor configuration (0aa829f)
+- Add a new default quote block with rich editing capabilities (4f3ecad)
+
+### Fixed
+
+- Fix has slug behavior when using translations with a single locale (d574b33)
+- Add global css fixes to the block editor form field (4f50df9)
+- Force translations index name to be shorter (76bd481)
+- Fix admin host lookup in exception handler and allow view override (b49c081)
+- Fix characters limits display (missing space) (642129a)
+- Don't show delete column header in browsers module if delete is not allowed (5fd4830)
+- Fix fields in repeater (TODO: test on other projects) (c0277a7)
+- Quickly fix the Laravel 5.4.22 security fix to accomodate for our convention of not specifying the scheme in APP_URL (d541983)
+- Security update: force admin url on password reset routes. (271b4bb)
+- Don't load blocks css if config say we use iframes (5ce6f1a)
+- Fix medium editor link only button (ce368a7)
+- Fix debug config (2728b7e)
+
+### Improved
+
+- Improve hints display on medium textarea fields (e619967)
+- Improve search and filters in browser (7380e6c)
+- Retain params on listing pagination (bb41603)
+- Allow custom frontend view path for errors views (e8f3822)
+- CMS listing titles first letter uppercase (0f2893b)
+- Fields hints improvements (238f65f)
+- Browser field improvements (1be5a0d)
+- Support custom button title prefix on repeaters (3debd56)
+- Prevent errors and provide more ways to grab images dimensions in the Imgix service (5d9e0ca)
+- Disable scrollbars on the modal frame (24e325e)
+- Hide scrollbars in blocks previews (a35c919)
+- Use a tinier button for repeaters (2715efb)
+- Cleanup (c2875df, 6a118c2)
+- Cleanup module controllers by adding default empty arrays for index and form datas (09d31eb)
+- Open live site in new tab (c8543b1)
+
+### Changed
+
+- Switch extra_css and extra_js to Blade stacks (4741806)
+- Prepended scope better be prepended (83f45c6)
+- Disable CMS users image by default (143f41b)
+- Make parent model abstract (eed6d21)
+- Remove default button block (had no renderer) (fd7b537)
+- Force capitalize model first letter in getModelRepository internal helper (f7901ac)
+- Don't search for tags in search, we have a filter for it (efc05ad)
+- Repository searchIn helper now bundle or where queries together to avoid conflicts with other scopes (df0973b)
+- Update style of the iframe for previewing the block editor (180c69d)
+- Allow calling module controller form method from child controllers (ba95fba)
+- Small wording updates (ed03107)
+- Use the new date picker (a15830b)
+- Update base blocks and text field builder (cf8fc7b)
+
 ## 0.5 - 2017-10-02
 
 ### Added
