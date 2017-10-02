@@ -17,7 +17,9 @@
 
 <section class="box status-box {{ (isset($fieldValue) && $fieldValue == 1) ? 'on' : '' }}" data-behavior="status_box">
     <header>
-        <h3><b>{{ $field_name or 'Status'}}</b></h3>
+        @unless (isset($with_label) && !$with_label)
+            <h3><b>{{ $field_name or 'Status'}}</b></h3>
+        @endunless
         <div class="select">
             <select name='{{ $publishedField }}' class='select' id="status" {!! $currentUser->can('publish') ? '' : "disabled" !!}>
                 @foreach(['0' => 'Hidden', '1' => 'Live'] as $key => $value)
@@ -27,8 +29,8 @@
         </div>
     </header>
     @if (isset($with_languages) && $with_languages)
-        <div class="input boolean optional" style="margin-top: 20px;">
-            <h3 style="padding-top: 10px;"><strong>Languages</strong></h3><br><br>
+        <div class="input boolean optional">
+            <p>Live languages</p>
             @foreach (getLocales() as $locale)
                 @php
                     if (isset($field_wrapper)) {
@@ -37,7 +39,7 @@
                         $activeField = 'active.' . $locale;
                     }
                 @endphp
-                <label class="boolean" style="line-height: 35px;">
+                <label class="boolean">
                     {!! Form::checkbox($activeField, 1, $form_fields[$activeField] ?? null, ['data-lang' => $locale] + ($currentUser->can('publish') ? [] : ['disabled' => 'disabled'])) !!} {{strtoupper($locale) }}
                 </label>
             @endforeach

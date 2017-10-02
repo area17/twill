@@ -1,8 +1,8 @@
 @extends('cms-toolkit::layouts.modal')
 
-@section('extra_js')
+@push('extra_js')
     <script src="/assets/admin/behaviors/crop_media_modal.js"></script>
-@stop
+@endpush
 
 @section('content')
     <div class="grid-frame">

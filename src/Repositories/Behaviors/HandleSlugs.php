@@ -70,4 +70,20 @@ trait HandleSlugs
         return $slug;
     }
 
+    public function forSlug($slug, $with = [], $withCount = [])
+    {
+        $item = $this->model->forSlug($slug)->with($with)->withCount($withCount)->published()->first();
+
+        if (!$item && $item = $this->model->forInactiveSlug($slug)->published()->first()) {
+            $item->redirect = true;
+        }
+
+        return $item;
+    }
+
+    public function forSlugPreview($slug, $with = [], $withCount = [])
+    {
+        return $this->model->forInactiveSlug($slug)->with($with)->withCount($withCount)->first();
+    }
+
 }

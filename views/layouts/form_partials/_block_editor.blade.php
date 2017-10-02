@@ -15,7 +15,7 @@
 
 <section class="box box-sir-trevor">
     <header class="header_small">
-        <h3><b>{{ $field_title or 'Block Editor' }}</b></h3>
+        <h3><b>{{ $field_title or 'Block editor' }}</b></h3>
     </header>
     @php
         $field_name = isset($field_wrapper) ? $field_wrapper . '[' . $original_field_name . ']' : $original_field_name;
@@ -33,7 +33,7 @@
             data-sir-trevor-defaults="{{ $sir_trevor_defaults }}"
             data-sir-trevor-settings="sir_trevor_settings"
             data-sir-trevor-js="assets/admin/vendor/sir-trevor/sir-trevor-with-eventable.min.js, assets/admin/vendor/medium-editor/medium-editor.min.js, {{ ltrim($blocks_js, '/') }}"
-            data-sir-trevor-css="assets/admin/vendor/sir-trevor/sir-trevor.css, assets/admin/vendor/sir-trevor/sir-trevor-icons.css, assets/admin/vendor/medium-editor/medium-editor.css, assets/admin/vendor/medium-editor/themes/flat.min.css, {{ ltrim($blocks_css, '/') }}">
+            data-sir-trevor-css="assets/admin/vendor/sir-trevor/sir-trevor.css, assets/admin/vendor/sir-trevor/sir-trevor-icons.css, assets/admin/vendor/medium-editor/medium-editor.css, assets/admin/vendor/medium-editor/themes/flat.min.css @unless(config('cms-toolkit.block-editor.use_iframes')), {{ ltrim($blocks_css, '/') }} @endunless">
             @if ((Form::old($field_name)) !== null)
                 {{ Form::old($field_name) }}
             @elseif (isset($item))
@@ -98,7 +98,6 @@
     SirTrevor.setBlockOptions("Imagetext", DEFAULT_OPTIONS);
     SirTrevor.setBlockOptions("Imagegrid", DEFAULT_OPTIONS);
     SirTrevor.setBlockOptions("Diaporama", DEFAULT_OPTIONS);
-    SirTrevor.setBlockOptions("Button", DEFAULT_OPTIONS);
     SirTrevor.setBlockOptions("Blockseparator", DEFAULT_OPTIONS);
     SirTrevor.setBlockOptions("Blocktest", DEFAULT_OPTIONS);
     @if (isset($blocks_config))
@@ -117,7 +116,6 @@
         "Imagegrid",
         "Imagetext",
         "Diaporama",
-        "Button",
         "Blockseparator"
     ];
   @endif
@@ -133,14 +131,16 @@
 </script>
 
 <script>
-    $(document).on('resized', function (){
-        $('.blockFrame').each(function () {
-            this.style.height = this.contentWindow.document.body.offsetHeight + 'px';
+    $( document ).ready(function() {
+        $(window).on('resize', function (){
+            $('.blockFrame').each(function () {
+                this.style.height = this.contentWindow.document.body.offsetHeight + 'px';
+            });
         });
     });
 </script>
 
-@section('extra_css')
+@push('extra_css')
     <style>
         .simple_form .a17cms-editor {
             max-width: none;
@@ -170,5 +170,37 @@
                 display: none !important;
             }
         @endif
+        /* Fix block editor CSS */
+        .th span:not(.btn).icon-handle,
+        td span:not(.btn).icon-handle,
+        th a:not(.btn).icon-handle,
+        td a:not(.btn).icon-handle,
+        td img.icon-handle {
+            margin-bottom: -300px;
+            padding-bottom: 300px;
+        }
+
+        tbody .thumb img {
+            min-height:50px;
+            width:100%;
+            background:#EEE;
+        }
+
+        tr.tr-placeholder,
+        tr.tr-placeholder td {
+            height:230px;
+            background:#EFEFEF;
+        }
+
+        .a17cms-container-list,
+        .a17cms-container-list tbody {
+            position:relative;
+        }
+
+        .btn.btn-light-border {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     </style>
-@stop
+@endpush

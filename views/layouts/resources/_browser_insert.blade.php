@@ -1,5 +1,6 @@
 @php
     $headers_only = $headers_only ?? false;
+    $with_sort = $with_sort ?? true;
     $columns = $columns ?? [
         'title' => [
             'title' => 'Title',
@@ -9,7 +10,7 @@
 @endphp
 
 @if($headers_only)
-    @if($with_multiple)
+    @if($with_multiple && $with_sort)
         <th class="tool"></th>
     @endif
     @foreach($columns as $column)
@@ -17,11 +18,13 @@
             {{ $column['title'] }}
         </th>
     @endforeach
-    <th class="tool"></th>
+    @if($with_delete ?? true)
+        <th class="tool"></th>
+    @endif
 @else
     @foreach($items as $id => $item)
         <tr class="media-row media-row-new" id="media-box-{{ $item->id }}" data-id="{{ $item->id }}">
-            @if($with_multiple)
+            @if($with_multiple && $with_sort)
                 <td><span class="icon icon-handle"></span></td>
             @endif
             @foreach ($columns as $column)
@@ -36,12 +39,18 @@
                                 isset($column['variant']) ? $column['variant']['crop'] : head(array_keys(head($item->mediasParams))),
                                 isset($column['variant']) && isset($column['variant']['params']) ? $column['variant']['params'] : ['w' => 80, 'h' => 80, 'fit' => 'crop']) }}" width="80" height="80">
                         @endif
+                    @elseif (isset($column['edit_link_url_segment']))
+                        <a href="//{{ config('cms-toolkit.admin_app_url') }}/{{ $column['edit_link_url_segment'] }}/{{ $item->id }}/edit" class="main">
+                            @resourceView((isset($element_role) ? camel_case($element_role) : $moduleName), 'column')
+                        </a>
                     @else
                         @resourceView((isset($element_role) ? camel_case($element_role) : $moduleName), 'column')
                     @endif
                 </td>
             @endforeach
-            <td><a class="icon icon-trash" href="#" data-media-remove-trigger rel="nofollow">Destroy</a></td>
+            @if($with_delete ?? true)
+                <td><a class="icon icon-trash" href="#" data-media-remove-trigger rel="nofollow">Destroy</a></td>
+            @endif
         </tr>
     @endforeach
 @endif

@@ -30,7 +30,7 @@ class RouteServiceProvider extends ServiceProvider
             'as' => 'admin.',
             'middleware' => [config('cms-toolkit.admin_middleware_group', 'web')],
         ], function ($router) {
-            $router->group(['middleware' => ['auth', 'impersonate']], function ($router) {
+            $router->group(['middleware' => ['auth', 'impersonate', 'validateBackHistory']], function ($router) {
                 require base_path('routes/admin.php');
             });
         });
@@ -48,10 +48,27 @@ class RouteServiceProvider extends ServiceProvider
 
                 $router->group(['middleware' => ['noDebugBar']], function ($router) {
                     require __DIR__ . '/../routes/auth.php';
+                });
+
+                $router->group(['middleware' => array_merge(['noDebugBar'], (app()->environment('production') ? ['auth'] : []))], function ($router) {
                     require __DIR__ . '/../routes/templates.php';
                 });
             }
         );
+
+        if (config('cms-toolkit.templates_on_frontend_domain')) {
+            $router->group([
+                'namespace' => $this->namespace . '\Admin',
+                'domain' => config('app.url'),
+                'middleware' => [config('cms-toolkit.admin_middleware_group', 'web')],
+            ],
+                function ($router) {
+                    $router->group(['middleware' => array_merge(['noDebugBar'], (app()->environment('production') ? ['auth'] : []))], function ($router) {
+                        require __DIR__ . '/../routes/templates.php';
+                    });
+                }
+            );
+        }
     }
 
     private function registerRouteMiddlewares()
@@ -69,6 +86,19 @@ class RouteServiceProvider extends ServiceProvider
 
     protected function registerMacros()
     {
+        Route::macro('moduleShowWithPreview', function ($moduleName, $routePrefix = null, $controllerName = null) {
+            if ($routePrefix === null) {
+                $routePrefix = $moduleName;
+            }
+
+            if ($controllerName === null) {
+                $controllerName = ucfirst(str_plural($moduleName));
+            }
+
+            Route::name($moduleName . '.show')->get('/' . $routePrefix . '/{slug}', $controllerName . 'Controller@show');
+            Route::name($moduleName . '.preview')->get('/admin-preview/' . $routePrefix . '/{slug}', $controllerName . 'Controller@show')->middleware(['web', 'auth']);
+        });
+
         Route::macro('module', function ($slug, $options = [], $resource_options = [], $resource = true) {
 
             $slugs = explode('.', $slug);
@@ -78,7 +108,7 @@ class RouteServiceProvider extends ServiceProvider
                 return ucfirst(str_singular($s));
             }, $slugs));
 
-            $customRoutes = $defaults = ['sort', 'publish', 'browser', 'bucket', 'media', 'feature', 'file', 'insert', 'repeater', 'tags'];
+            $customRoutes = $defaults = ['sort', 'publish', 'browser', 'media', 'feature', 'file', 'insert', 'repeater', 'tags', 'preview', 'restore'];
 
             if (isset($options['only'])) {
                 $customRoutes = array_intersect($defaults, (array) $options['only']);
@@ -93,12 +123,16 @@ class RouteServiceProvider extends ServiceProvider
                 $routeSlug = "{$prefixSlug}/{$route}";
                 $mapping = ['as' => $customRoutePrefix . ".{$route}", 'uses' => "{$className}Controller@{$route}"];
 
-                if (in_array($route, ['browser', 'bucket', 'media', 'file', 'insert', 'repeater', 'tags'])) {
+                if (in_array($route, ['browser', 'media', 'file', 'insert', 'repeater', 'tags'])) {
                     Route::get($routeSlug, $mapping);
                 }
 
                 if (in_array($route, ['publish', 'feature'])) {
                     Route::put($routeSlug, $mapping);
+                }
+
+                if (in_array($route, ['preview', 'restore'])) {
+                    Route::put($routeSlug . "/{id}", $mapping);
                 }
 
                 if (in_array($route, ['sort'])) {

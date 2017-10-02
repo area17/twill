@@ -26,7 +26,7 @@
             @unless($loop->first && $loop->last)
                 <span class="lang_tag" data-behavior="lang_toggle">{{ strtoupper($locale) }}</span>
             @endunless
-            {!! isset($hint) ? '<div class="/hint"> '.$hint.'</div>' : '' !!}
+            {!! isset($hint) ? '<span class="hint">'.$hint.'</span>' : '' !!}
         </label>
         {!! Form::textarea($fullField, $fieldValue ?? null,[
             'class' => "textarea-medium-editor string",
@@ -38,7 +38,7 @@
             'data-medium-editor-options' => $data_medium_editor_options ?? 'default_medium_editor_options',
         ] + $options) !!}
         @if (isset($textLimit))
-            <span class="hint"><span class="textlimit-remaining">0</span> / {{ $textLimit }} characters maximum</span>
+            <span class="hint" style="display: inline;"><span class="textlimit-remaining">0</span> / {{ $textLimit }} characters maximum</span>
         @endif
     </div>
 @endforeach
@@ -46,7 +46,19 @@
 <script>
        var default_medium_editor_options = {
             toolbar : {
-                buttons: ['bold', 'italic',  'unorderedlist', 'orderedlist']
+                buttons: ['bold', 'italic', 'unorderedlist', 'orderedlist']
+            }
+        };
+
+        var default_with_link_medium_editor_options = {
+            toolbar : {
+                buttons: ['anchor', 'bold', 'italic', 'unorderedlist', 'orderedlist']
+            }
+        };
+
+        var link_only_medium_editor_options = {
+            toolbar : {
+                buttons: ['anchor', 'anchor']
             }
         };
 </script>

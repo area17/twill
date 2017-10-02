@@ -46,6 +46,14 @@ SirTrevor.Blocks.Base = (function(){
     return $container.find('[data-image-id]');
   },
 
+  getImageMetasContainer: function($container) {
+    return $container.find('[data-image-metas-container]');
+  },
+
+  getImageMetasFields: function($container) {
+    return $container.find('[data-image-metas]');
+  },
+
   getMediaLibraryOptions: function(url, uniq_id, callback, title) {
     return {
       "type" : "iframe",
@@ -91,6 +99,7 @@ SirTrevor.Blocks.Base = (function(){
     var self = this;
     var $editor = self.$editor;
     var $texts = self.getInputBlock();
+
     var data = $texts.serializeJSON();
     var complete_data = { "type": self.type, "data": data };
     var selected_locale = $editor.find('.field_with_lang.selected').first().data('lang');
@@ -161,8 +170,8 @@ SirTrevor.Blocks.Base = (function(){
     }
 
     // Add any inputs to the data attr
-    if (this.$(':input').not('.st-paste-block').length > 0) {
-    data = this.$(':input').not('.st-paste-block').serializeJSON();
+    if (this.$(':input').not('.st-paste-block, .' + this.getExcludedClass()).length > 0) {
+    data = this.$(':input').not('.st-paste-block, .' + this.getExcludedClass()).serializeJSON();
     }
 
     return data;
@@ -284,13 +293,25 @@ SirTrevor.Blocks.Base = (function(){
     return 'a17-input-block';
   },
 
+  /* getExcludedClass
+   * Class for text field NOT to be considered as field to retrieve and save
+   */
+  getExcludedClass: function() {
+    return 'a17-input-disabled';
+  },
+
   /* getInputBlock
    * Get all the fields to save/edit
    */
   getInputBlock: function() {
-    if (_.isUndefined(this.input_block)) {
-    this.input_block = this.$('.' + this.getInputClass());
-    }
+    var self = this;
+    var $editor = self.$editor;
+
+    this.input_block = self.$editor.find('.' + this.getInputClass());
+
+    //if (_.isUndefined(this.input_block)) {
+    //this.input_block = this.$('.' + this.getInputClass());
+    //}
 
     return this.input_block;
   },
@@ -382,7 +403,7 @@ SirTrevor.Blocks.Base = (function(){
     //workaround to remove inline styles (contenteditable issue)
     var medium_editor = window[name].elements[0];
     $(medium_editor).on("input", function() {
-    $(medium_editor).find("[style]").contents().unwrap();
+        $(medium_editor).find("[style]").contents().unwrap();
     });
 
     if($field.is('[data-medium-editor-show-button]')) a17cms.Helpers.show_medium_editor_source($field);

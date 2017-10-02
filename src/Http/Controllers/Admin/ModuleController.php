@@ -7,6 +7,7 @@ use A17\CmsToolkit\Repositories\FileRepository;
 use A17\CmsToolkit\Repositories\MediaRepository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
+use Route;
 use Session;
 
 abstract class ModuleController extends Controller
@@ -42,6 +43,11 @@ abstract class ModuleController extends Controller
     protected $formWith = [];
 
     /*
+     * Relation count to eager load for the form view
+     */
+    protected $formWithCount = [];
+
+    /*
      * Filters mapping ('fFilterName' => 'filterColumn')
      * In the indexData function, name your lists with the filter name + List (fClientList for example)
      */
@@ -67,11 +73,22 @@ abstract class ModuleController extends Controller
         $this->routePrefix = $this->getRoutePrefix();
         $this->namespace = $this->getNamespace();
         $this->repository = $this->getRepository();
+        $this->viewPrefix = $this->getViewPrefix();
+    }
+
+    protected function indexData($request)
+    {
+        return [];
+    }
+
+    protected function formData($request)
+    {
+        return [];
     }
 
     public function index()
     {
-        $view = view()->exists("admin.{$this->moduleName}.index") ? "admin.{$this->moduleName}.index" : "cms-toolkit::{$this->moduleName}.index";
+        $view = view()->exists("$this->viewPrefix.index") ? "$this->viewPrefix.index" : "cms-toolkit::{$this->moduleName}.index";
         return view($view, $this->getIndexData() + $this->request->all());
     }
 
@@ -116,7 +133,7 @@ abstract class ModuleController extends Controller
             'modelName' => $this->modelName,
             'routePrefix' => $this->routePrefix,
         ];
-        $view = view()->exists("admin.{$this->moduleName}.form") ? "admin.{$this->moduleName}.form" : "cms-toolkit::{$this->moduleName}.form";
+        $view = view()->exists("$this->viewPrefix.form") ? "$this->viewPrefix.form" : "cms-toolkit::{$this->moduleName}.form";
         return view($view, array_replace_recursive($data, $this->formData($this->request)));
     }
 
@@ -131,12 +148,12 @@ abstract class ModuleController extends Controller
             'routePrefix' => $this->routePrefix,
         ];
 
-        return view("admin.{$this->moduleName}.repeater", array_replace_recursive($data, $this->formData($this->request)));
+        return view("$this->viewPrefix.repeater", array_replace_recursive($data, $this->formData($this->request)));
     }
 
     public function store()
     {
-        $formRequest = $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
+        $formRequest = $this->validateFormRequest();
         $item = $this->repository->create($formRequest->all());
         return $this->redirectToForm($item->id);
     }
@@ -148,20 +165,32 @@ abstract class ModuleController extends Controller
 
     public function edit($id)
     {
+        if ($this->request->ajax() && $this->request->has('rev_page')) {
+            return $this->revisions($id);
+        }
+
         $this->setBackLink();
-        $view = view()->exists("admin.{$this->moduleName}.form") ? "admin.{$this->moduleName}.form" : "cms-toolkit::{$this->moduleName}.form";
+        $view = view()->exists("$this->viewPrefix.form") ? "$this->viewPrefix.form" : "cms-toolkit::{$this->moduleName}.form";
         return view($view, $this->form($id));
     }
 
-    private function form($id)
+    protected function form($id)
     {
-        $item = $this->repository->getById($id, $this->formWith);
+        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
+
+        $fullRoutePrefix = 'admin.' . ($this->routePrefix ? $this->routePrefix . '.' : '') . $this->moduleName . '.';
+        $previewRouteName = $fullRoutePrefix . 'preview';
+        $restoreRouteName = $fullRoutePrefix . 'restore';
 
         $data = [
             'form_options' => [
                 'method' => 'PUT',
                 'url' => moduleRoute($this->moduleName, $this->routePrefix, 'update', $id),
-            ] + $this->defaultFormOptions(),
+            ] + (Route::has($previewRouteName) ? [
+                'data-preview-url' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $id),
+            ] : []) + (Route::has($restoreRouteName) ? [
+                'data-restore-url' => moduleRoute($this->moduleName, $this->routePrefix, 'restore', $id),
+            ] : []) + $this->defaultFormOptions(),
             'item' => $item,
             'form_fields' => $this->repository->getFormFields($item),
             'back_link' => $this->getBackLink(),
@@ -174,11 +203,53 @@ abstract class ModuleController extends Controller
         return array_replace_recursive($data, $this->formData($this->request));
     }
 
+    private function revisions($id)
+    {
+        $view = view()->exists("$this->viewPrefix._versions_lines") ? "$this->viewPrefix._versions_lines" : "cms-toolkit::layouts.form_partials._versions_lines";
+        return view($view, ['with_preview' => $this->withPreview ?? true] + $this->form($id));
+    }
+
     public function update($id)
     {
-        $formRequest = $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
+        $formRequest = $this->validateFormRequest();
         $this->repository->update($id, $formRequest->all());
         return $this->redirectToForm($id);
+    }
+
+    public function preview($id)
+    {
+        $formRequest = $this->request;
+
+        $comparing = $formRequest->has('_compare') && $formRequest->input('_compare');
+        $revision = $formRequest->has('_revision') && $formRequest->input('_revision');
+
+        // trigger FormRequest validation unless previewing a revision
+        if ($comparing || !$revision) {
+            $formRequest = $this->validateFormRequest();
+        }
+
+        if ($revision) {
+            $object = $this->repository->previewForRevision($id, $formRequest->input('_revision'));
+        } elseif ($comparing) {
+            $object = $this->repository->previewForCompare($id);
+        } else {
+            $object = $this->repository->preview($id, $formRequest->all());
+        }
+
+        if ($comparing) {
+            $objectToCompare = $this->repository->preview($id, $formRequest->all());
+            session()->flash('_preview_' . $this->moduleName . '_' . $id, $objectToCompare);
+            session()->flash('_compare_' . $this->moduleName . '_' . $id, $object);
+        } else {
+            session()->flash('_preview_' . $this->moduleName . '_' . $id, $object);
+        }
+
+        return response()->json('ok', 200);
+    }
+
+    protected function validateFormRequest()
+    {
+        return $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
     }
 
     public function destroy($id)
@@ -318,7 +389,8 @@ abstract class ModuleController extends Controller
         return view($view)->withItems($elements)
             ->withElementRole($this->request->input('role'))
             ->withNewRow(true)
-            ->withWithMultiple($this->request->input('with_multiple'));
+            ->withWithMultiple($this->request->input('with_multiple'))
+            ->withWithSort($this->request->input('with_sort'));
     }
 
     public function getBrowserData($prependScope = [])
@@ -330,12 +402,6 @@ abstract class ModuleController extends Controller
     public function getBrowserItems($scopes = [])
     {
         return $this->getIndexItems($scopes, true);
-    }
-
-    public function bucket()
-    {
-        $moduleName = snake_case($this->moduleName);
-        return view("admin.{$moduleName}.list", $this->getIndexData($this->bucketScopes ?? []) + $this->request->all());
     }
 
     protected function orderScope()
@@ -371,14 +437,16 @@ abstract class ModuleController extends Controller
             }
         }
 
-        return $scope + $prepend;
+        return $prepend + $scope;
     }
 
     protected function setBackLink($back_link = null, $params = [])
     {
         if (!isset($back_link)) {
-            if( ($back_link = Session::get($this->moduleName . "_back_link")) == null)
+            if (($back_link = Session::get($this->moduleName . "_back_link")) == null) {
                 $back_link = $this->request->headers->get('referer') ?? moduleRoute($this->moduleName, $this->routePrefix, "index", $params);
+            }
+
         }
 
         if (!$this->request->has('retain')) {
@@ -409,6 +477,7 @@ abstract class ModuleController extends Controller
     protected function defaultFormOptions()
     {
         return [
+            'id' => $this->moduleName . '_form',
             'class' => "simple_form",
             'accept-charset' => "UTF-8",
             'novalidate' => "novalidate",
@@ -458,11 +527,16 @@ abstract class ModuleController extends Controller
         return $this->app->make("$this->namespace\Repositories\\" . $this->modelName . "Repository");
     }
 
+    protected function getViewPrefix()
+    {
+        return "admin.$this->moduleName";
+    }
+
     protected function setMiddlewarePermission()
     {
         $this->middleware('can:list', ['only' => ['index', 'show']]);
         $this->middleware('can:edit', ['only' => ['create', 'store', 'edit', 'update', 'media', 'file']]);
-        $this->middleware('can:publish', ['only' => ['publish', 'bucket', 'feature']]);
+        $this->middleware('can:publish', ['only' => ['publish', 'feature']]);
         $this->middleware('can:sort', ['only' => ['sort']]);
         $this->middleware('can:delete', ['only' => ['destroy']]);
     }

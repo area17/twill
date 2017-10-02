@@ -1,7 +1,7 @@
 <?php
 
 if (config('cms-toolkit.enabled.users-management')) {
-    Route::module('users', ['except' => ['sort', 'feature', 'bucket', 'browser', 'file']]);
+    Route::module('users', ['except' => ['sort', 'feature', 'browser', 'file']]);
 }
 
 if (config('cms-toolkit.enabled.media-library')) {

@@ -12,21 +12,21 @@ class Text extends BaseBlock
 
     public function blocktitleToHtml()
     {
-        return view('cms-toolkit::blocks.title', [
+        return view($this->view('title'), [
             'title' => $this->getInput('title'),
         ]);
     }
 
     public function blocktextToHtml()
     {
-        return view('cms-toolkit::blocks.text', [
+        return view($this->view('text'), [
             'text' => $this->getInput('html'),
         ]);
     }
 
     public function blockquoteToHtml()
     {
-        return view('cms-toolkit::blocks.quote', [
+        return view($this->view('quote'), [
             'text' => $this->getInput('text'),
         ]);
     }

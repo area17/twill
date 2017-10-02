@@ -3,7 +3,7 @@
         <ul>
             @foreach(config('cms-navigation') as $global_navigation_key => $global_navigation_element)
                 @can($global_navigation_element['can'] ?? 'list')
-                    @if(isset($_global_active_navigation) && $global_navigation_key === $_global_active_navigation)
+                    @if(isset($_global_active_navigation) && $global_navigation_key === $_global_active_navigation || (($global_navigation_element['raw'] ?? false) && Request::url() == $global_navigation_element['route']))
                         <li class="on">
                     @else
                         <li>
@@ -20,6 +20,10 @@
                     @elseif ($global_navigation_element['page'] ?? false)
                         @php
                             $href = pageRoute($global_navigation_element['key'], $global_navigation_key);
+                        @endphp
+                    @elseif ($global_navigation_element['raw'] ?? false)
+                        @php
+                            $href = !empty($global_navigation_element['route']) ? $global_navigation_element['route'] : '#';
                         @endphp
                     @else
                         @php

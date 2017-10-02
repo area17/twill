@@ -10,4 +10,18 @@ class Seo
     public $image;
     public $width;
     public $height;
+
+    public function setTitle($title)
+    {
+        if (!empty($title)) {
+            $this->title = $title;
+        }
+    }
+
+    public function setDescription($description)
+    {
+        if (!empty($description)) {
+            $this->description = $description;
+        }
+    }
 }

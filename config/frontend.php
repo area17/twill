@@ -16,5 +16,5 @@ return [
     'dist_assets_path' => '/dist',
     'svg_sprites_path' => 'sprites.svg', // relative to dev/dist assets paths
     'svg_sprites_use_hash_only' => true,
-
+    'views_path' => 'front',
 ];

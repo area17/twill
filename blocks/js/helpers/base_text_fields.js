@@ -16,16 +16,18 @@ a17cms.Helpers.sirTrevorBaseTextFields = function(fields) {
       field.placeholder = (field.placeholder === undefined) ? '' : field.placeholder;
       field.maxlength = (field.maxlength === undefined) ? '500' : field.maxlength;
       field.type = (field.type === undefined) ? 'input' : field.type;
+      field.attr = (field.attr === undefined) ? '' : field.attr;
+      field.class = (field.class === undefined) ? "a17-input-block" : field.class;
 
       switch (field.type) {
         case 'input':
-          field.html += "<input type='text' class='a17-input-block' name='" + field.name + "_{{lang}}' maxlength='" + field.maxlength + "' placeholder='" + field.placeholder + "' autocomplete='false' />";
+          field.html += "<input type='text' class='" + field.class + "' name='" + field.name + "_{{lang}}' maxlength='" + field.maxlength + "' placeholder='" + field.placeholder + "' autocomplete='false' " + field.attr + " />";
           break;
         case 'textarea':
-          field.html += "<textarea class='a17-input-block' name='" + field.name + "_{{lang}}' maxlength='" + field.maxlength + "' placeholder='" + field.placeholder + "' />";
+          field.html += "<textarea class='" + field.class + "' name='" + field.name + "_{{lang}}' maxlength='" + field.maxlength + "' placeholder='" + field.placeholder + "' " + field.attr + " />";
           break;
         case 'medium_textarea':
-          field.html += "<textarea class='a17-input-block a17-input-medium-editor textarea-medium-editor' name='" + field.name + "_{{lang}}' rows='20' data-medium-editor-show-button='Display source code' data-medium-editor-hide-button='Hide source code' />";
+          field.html += "<textarea class='" + field.class + " a17-input-medium-editor textarea-medium-editor' name='" + field.name + "_{{lang}}' rows='20' data-medium-editor-show-button='Display source code' data-medium-editor-hide-button='Hide source code' " + field.attr + " />";
           break;
       }
 

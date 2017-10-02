@@ -12,6 +12,11 @@
 @extends('cms-toolkit::layouts.main')
 
 @section('content')
+    @if($help_message ?? null && !empty($help_message))
+        <div class="message message-help">
+            <p>{!! $help_message !!}</p>
+        </div>
+    @endif
     @if($search || !empty($filters))
         <div class="filter">
             <form method="GET" accept-charset="UTF-8" novalidate="novalidate" class="{{ $filtersOn ? 'on' : '' }}">
@@ -56,6 +61,7 @@
                 <b>
                     @if (isset($title))
                         @php
+                            $title = ucfirst($title);
                             $countItems = (!$sort ? (method_exists($items, 'total') ? $items->total() : count($items))  : count($items));
                         @endphp
                         {{  $countItems . ' ' . ($countItems > 1 ? str_plural($title) : $title) }}
