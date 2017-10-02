@@ -2,6 +2,34 @@
 
 All notable changes to `laravel-cms-toolkit` will be documented in this file.
 
+## 0.5 - 2017-10-02
+
+### Added
+
+- Implement block editor previews using iframe to prevent styles conflicts (5303259)
+- Add automatic buckets from configuration (ece23a9, 72b7c6c, 98118cd, 32b011f)
+- Add getItemBySlug helper function to retrieve a resource from a repository (a663cd4)
+- Add required label to media and file form field (737585c)
+- Add belongs_to param to the browser form field to enable single selection on browser fields (b59e129)
+- Add an option to ignore fields when saving, to enable partial forms for a module (51917ac)
+- Add an imageObjects method to the HasMedias trait to retrieve a collection of Image associated (06a6899)
+
+### Fixed
+
+- Allow https on S3 library (81982b3, 2b6b2de)
+- Fix the URL of the back link when a validation error occurred (9f6d568)
+- Fix browser module view resolution when using a custom module name (882bd8b)
+- Force mediables ordering by id for medias form field with multiple images (8d0a3b7)
+
+### Improved
+
+- Turn flash message into a js notification (e2ecb13 )
+- Media form field failover in case of media params changes (new crop name for example) (8a074cd)
+
+### Changed
+
+- Move Imgix specific params to Imgix image service implementation (b4c1aed )
+
 ## 0.4 - 2017-03-01
 
 ### Added
