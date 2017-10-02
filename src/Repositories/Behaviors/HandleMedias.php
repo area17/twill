@@ -85,8 +85,11 @@ trait HandleMedias
                     foreach ($transposedMediaCollection as $media) {
                         $id = $media['id'];
                         $background_position = empty($media['background_position']) ? 'top' : $media['background_position'];
+                        $ratio = empty($media['ratio']) ? null : $media['ratio'];
+
                         unset($media['id']);
                         unset($media['backgroup_position']);
+                        unset($media['ratio']);
 
                         // fix square crops from jcrop
                         if ($this->getCrops($role)[$cropName] == 1) {
@@ -94,7 +97,13 @@ trait HandleMedias
                             $media['crop_w'] = $media['crop_h'] = $size;
                         }
 
-                        $medias->push(['id' => $id, 'crop' => $cropName, 'role' => $role, 'background_position' => $background_position] + array_map(function ($crop_coord) {
+                        $medias->push([
+                            'id' => $id,
+                            'crop' => $cropName,
+                            'role' => $role,
+                            'background_position' => $background_position,
+                            'ratio' => $ratio,
+                        ] + array_map(function ($crop_coord) {
                             return max(0, intval($crop_coord));
                         }, $media));
                     }

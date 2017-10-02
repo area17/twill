@@ -27,7 +27,7 @@
 
                     <button class="Versions__button" data-behavior="preview" data-preview-revision="{{ $revision->id }}" data-submit-form="{{ $form_options['id'] }}" data-options="modal_options_revision_preview_{{ $loop->index }}" type="button">{{-- <span class="icon" style="background-repeat: no-repeat; background-image: url('https://icon.now.sh/open_in_browser/14/666'); background-position: 25% 25%;"></span> --}}Preview</button>
 
-                    <button class="Versions__button" data-behavior="preview" data-compare data-preview-revision="{{ $revision->id }}" data-submit-form="{{ $form_options['id'] }}" data-options="modal_options_revision_compare_{{ $loop->index }}" type="button">{{-- <span class="icon" style="background-repeat: no-repeat; background-image: url('https://icon.now.sh/compare/14/666'); background-position: 25% 25%;"></span> --}}Diff</button>
+                    <button class="Versions__button" data-behavior="preview" data-compare data-preview-revision="{{ $revision->id }}" data-submit-form="{{ $form_options['id'] }}" data-options="modal_options_revision_compare_{{ $loop->index }}" type="button">{{-- <span class="icon" style="background-repeat: no-repeat; background-image: url('https://icon.now.sh/compare/14/666'); background-position: 25% 25%;"></span> --}}Compare</button>
 
                 @endif
                 @unless($loop->first && $revisions->onFirstPage())

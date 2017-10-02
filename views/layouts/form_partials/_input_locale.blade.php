@@ -27,14 +27,18 @@
         if (isset($field_wrapper)) {
             $fullField = $field_wrapper . '[' . $field . '_' . $locale . ']';
             $fieldValue = $form_fields[$fullField] ?? (isset($item) && $item->$field_wrapper ? $item->$field_wrapper->getTranslation($locale)[$field] : null);
+            $fieldId = $fullField;
         } else {
             $fullField = $field . '.' . $locale;
             $fieldValue = $form_fields[$fullField] ?? null;
+            $fieldId = $field . '_' . $locale;
         }
 
         if (isset($repeater) && $repeater) {
             $fullField = $moduleName . '[' . $repeaterIndex . '][' . $fullField . ']';
             $fieldValue = $form_fields[$moduleName][$repeaterIndex][$field . '_' . $locale] ?? null;
+            $fieldId = $moduleName . '[' . $repeaterIndex . '][' . $fieldId . ']';
+
         }
     @endphp
     <div class="input string {{ $fullField }} field_with_hint field_with_lang" data-lang="{{ $locale }}">
@@ -45,7 +49,7 @@
             @endunless
             {!! isset($hint) ? '<span class="hint">'.$hint.'</span>' : '' !!}
         </label>
-        {!! Form::text($fullField, $fieldValue ?? null, ['class' => "string {$fullField}", 'id'=> $fullField] + $options) !!}
+        {!! Form::text($fullField, $fieldValue ?? null, ['class' => "string {$fullField}", 'id' => $fieldId] + $options) !!}
         @if (isset($textLimit))
             <span class="hint"><span class="textlimit-remaining">0</span> / {{ $textLimit }} characters maximum</span>
         @endif

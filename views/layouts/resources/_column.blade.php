@@ -20,6 +20,8 @@
 @else
     @if(isset($columnOptions['present']) && $columnOptions['present'])
         {!! $item->presentAdmin()->{$columnOptions['field']} !!}
+    @elseif (isset($columnOptions['noEscape']) && $columnOptions['noEscape'])
+        {!! $item->{$columnOptions['field']} or 'Empty field' !!}
     @else
         {{ $item->{$columnOptions['field']} or 'Empty field' }}
     @endif

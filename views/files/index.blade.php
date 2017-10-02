@@ -38,7 +38,7 @@
                 <a href="{{ route('admin.file-library.files.index', Input::except('new_uploads_ids')) }}" class="btn btn-primary" data-media-save-and-redirect >Save</a>
                 <a href="{{ route('admin.file-library.files.index', Input::except('new_uploads_ids')) }}" class="btn">Skip</a>
             @else
-                <button type="button" class="btn btn-primary" data-media-insert >Attach file</button>
+                <button type="button" class="btn btn-primary" data-media-insert >Add file</button>
                 <button type="button" class="btn" data-behavior="close_parent_modal">Close</button>
             @endif
             <span class="btn"><span data-media-nb-items >0</span> file(s) selected

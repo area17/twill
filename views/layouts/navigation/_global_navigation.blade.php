@@ -46,6 +46,9 @@
                     </li>
                 @endif
             @endcan
+            @if (config('cms-toolkit.enabled.site-link'))
+                <li><a href="{{ route(config('cms-toolkit.frontend.home_route_name')) }}" target="_blank">Open live site &#8599;</a></li>
+            @endif
         </ul>
     </nav>
 @endif

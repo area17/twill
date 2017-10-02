@@ -2,7 +2,7 @@
     if (isset($field_wrapper)) {
         $publishedField = $field_wrapper . '[published]';
     } else {
-        $publishedField = 'published';
+        $publishedField = $field ?? 'published';
     }
 
     $fieldValue = $form_fields[$publishedField] ?? null;
@@ -22,7 +22,7 @@
         @endunless
         <div class="select">
             <select name='{{ $publishedField }}' class='select' id="status" {!! $currentUser->can('publish') ? '' : "disabled" !!}>
-                @foreach(['0' => 'Hidden', '1' => 'Live'] as $key => $value)
+                @foreach(['0' => $hiddenTitle ?? 'Hidden', '1' => $publishedTitle ?? 'Live'] as $key => $value)
                     <option {!! (isset($fieldValue) && $fieldValue == $key) ? 'selected="selected"' : '' !!} value="{{ $key }}">{{ $value }}</option>
                 @endforeach
             </select>

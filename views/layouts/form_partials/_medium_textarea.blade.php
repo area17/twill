@@ -30,6 +30,11 @@
     var link_only_medium_editor_options = {
         toolbar : {
             buttons: ['anchor', 'anchor']
+        },
+        anchor: {
+            placeholderText: 'Insert a complete link',
+            targetCheckbox: true,
+            targetCheckboxText: 'Open in new window'
         }
     };
 </script>

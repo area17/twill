@@ -46,3 +46,8 @@ if (config('cms-toolkit.enabled.buckets')) {
         });
     });
 }
+
+if (config('cms-toolkit.enabled.settings')) {
+    Route::name('settings')->get('/settings/{section}', 'SettingController@index');
+    Route::name('settings.update')->post('/settings/{section}', 'SettingController@update');
+}

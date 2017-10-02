@@ -4,6 +4,7 @@ namespace A17\CmsToolkit\Services\BlockEditor\Blocks;
 
 use A17\CmsToolkit\Repositories\MediaRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Log;
 
 class BaseBlock
 {
@@ -38,6 +39,7 @@ class BaseBlock
                 } catch (\Exception $e) {
 
                     if (config('cms-toolkit.block-editor.show_render_errors')) {
+                        Log::debug($e);
                         return $e->getMessage();
                     }
 

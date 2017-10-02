@@ -7,7 +7,10 @@
 @section('form')
     {{ Form::model($form_fields, $form_options) }}
         @can('edit-user-role')
-            @formField('publish_status')
+            @formField('publish_status', [
+                'hiddenTitle' => 'Disabled',
+                'publishedTitle' => 'Enabled'
+            ])
         @endcan
         <section class="box">
             <header class="header_small">

@@ -27,6 +27,7 @@
     <div class="input text optional">
         <textarea
             class="text optional"
+            style="visibility:hidden;"
             name="{{ $field_name }}"
             id="{{ $field_name }}"
             data-behavior="sir_trevor"
@@ -51,7 +52,7 @@
 
 <script>
   var medium_editor_paste_options = {
-    forcePlainText: true,
+    forcePlainText: false,
     cleanPastedHTML: true,
     cleanAttrs: ['class', 'style', 'dir', 'content', 'itemscope', 'itemprop', 'itemtype', 'property', 'data-behavior', 'data-url', 'font'],
     cleanTags: ['xml', 'body', 'section', 'aside', 'article', 'meta', 'input', 'h1', 'h2', 'font', 'iframe', 'object', 'script', 'style', 'img'],
@@ -84,6 +85,16 @@
       },
       toolbar: {
         buttons: medium_editor_buttons
+      },
+      anchor: medium_editor_anchor_options,
+      paste: medium_editor_paste_options
+    },
+    option_settings_link_only: {
+      placeholder: {
+        text: 'Enter text here.'
+      },
+      toolbar: {
+        buttons: ['anchor']
       },
       anchor: medium_editor_anchor_options,
       paste: medium_editor_paste_options

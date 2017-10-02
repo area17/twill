@@ -16,7 +16,7 @@
                 </h3>
                 <ul>
                     <li><a href="{{ ImageService::getRawUrl($image->uuid) }}" download><span class="icon icon-download"></span>Download original</a></li>
-                    <li><a href="#" data-media-remove-trigger><span class="icon icon-remove"></span>Detach</a></li>
+                    <li><a href="#" data-media-remove-trigger><span class="icon icon-remove"></span>Remove</a></li>
                 </ul>
             </header>
             @foreach($crops as $crop_name => $crop_ratio)
@@ -26,8 +26,24 @@
                     if (isset($repeater) && $repeater) {
                         $input_prefix_medias = "{$moduleName}[{$repeaterIndex}][medias][{$backend_role}][{$crop_name}]";
                     }
+                    if (is_array($crop_ratio)) {
+                        $crop_ratios = $crop_ratio;
+                        $crop_ratio = isset($image->pivot) && $image->pivot->ratio ? $crop_ratios[$image->pivot->ratio] : array_first($crop_ratios);
+                    }
                 @endphp
                 @if($image)
+                    @if (isset($crop_ratios))
+                        <div class="input text">
+                            @php($jcropId = uniqid())
+                            <span>Crop ratio:</span>
+                            <select id="{{ $input_prefix_medias }}[ratio][]" name="{{ $input_prefix_medias }}[ratio][]"  data-behavior="selector change_jcrop_ratio" data-minimum-results-for-search=10 data-selector-width="25%">
+                                @foreach($crop_ratios as $name => $ratio)
+                                    <option value="{{ $name }}" @if($image->pivot && $image->pivot->ratio === $name) selected @endif data-ratio="{{ $ratio }}" data-jcrop-img-id="{{ $jcropId }}">{{ ucfirst($name) }}</option>
+                                @endforeach
+                                @php($crop_ratios = null)
+                            </select>
+                        </div>
+                    @endif
                     <input id="{{ $input_prefix_medias }}[id][]" name="{{ $input_prefix_medias }}[id][]" type="hidden" value="{{ $id }}" />
                     <div class="input" @if($with_crop) data-behavior="jcrop"
                                         data-jcrop-js="assets/admin/vendor/jcrop/jquery.Jcrop.min"
@@ -41,7 +57,7 @@
                             <label>Cropping {{ $crop_name }}</label>
                         @endif
 
-                        <img src="{{ ImageService::getCmsUrl($image->uuid, ['w' => 400]) }}" />
+                        <img data-jcrop-id="{{ $jcropId ?? '' }}" src="{{ ImageService::getCmsUrl($image->uuid, ['w' => 400]) }}" />
                         @if($with_crop)
                             <input type="hidden" value="{{ $image->pivot->crop_w or '' }}" name="{{ $input_prefix_medias }}[crop_w][]" id="{{ $input_prefix_medias }}[crop_w][]" data-jcrop-role="w" />
                             <input type="hidden" value="{{ $image->pivot->crop_h or '' }}" name="{{ $input_prefix_medias }}[crop_h][]" id="{{ $input_prefix_medias }}[crop_h][]" data-jcrop-role="h" />
@@ -81,3 +97,6 @@
             </style>
         @endif
 @endforeach
+
+{{-- TODO: move this to UI repo --}}
+<script src="/assets/admin/behaviors/change_jcrop_ratio.js"></script>

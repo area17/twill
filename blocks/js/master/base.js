@@ -112,7 +112,7 @@ SirTrevor.Blocks.Base = (function(){
     console.log(complete_data);
 
     // display loader
-    updatePreviewHTML("<div class='a17cms-preview-mode-loader'>Loading " + self.type + "...</div>");
+    updatePreviewHTML("<div class='a17cms-preview-mode-loader'>Loading " + self.title + "...</div>");
 
     if (selected_locale) {
       url += '?locale=' + selected_locale;
@@ -130,7 +130,9 @@ SirTrevor.Blocks.Base = (function(){
       updatePreviewHTML(edit_button_fail);
     }).always(function() {
       self.bindPreviewButton();
-      self.performValidations();
+      if (!self.valid()) {
+        self.backToEdit();
+      }
     });
 
     function updatePreviewHTML(html) {
@@ -373,7 +375,7 @@ SirTrevor.Blocks.Base = (function(){
     var self = this;
 
     var $textareas = this.getInputBlock();
-    var $textarea = $textareas.filter('textarea');
+    var $textarea = $textareas.filter('textarea:not(.medium-editor-hidden)');
 
     if(this.option_class) {
       var custom_class = this.option_class;
@@ -383,7 +385,11 @@ SirTrevor.Blocks.Base = (function(){
     if($textarea.length) {
       $textarea.each(function() {
         if ($(this).hasClass('textarea-medium-editor')) {
-          self.setMediumEditor($(this), self.option_settings);
+          if ($(this).hasClass('textarea-medium-editor--link-only')) {
+            self.setMediumEditor($(this), self.option_settings_link_only);
+          } else {
+            self.setMediumEditor($(this), self.option_settings);
+          }
         }
       });
     }

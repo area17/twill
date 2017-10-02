@@ -26,6 +26,11 @@ trait HandleSlugs
         }
     }
 
+    public function afterDeleteHandleSlugs($object)
+    {
+        $object->slugs()->delete();
+    }
+
     public function getFormFieldsHandleSlugs($object, $fields)
     {
         if ($object->slugs != null) {
@@ -70,11 +75,11 @@ trait HandleSlugs
         return $slug;
     }
 
-    public function forSlug($slug, $with = [], $withCount = [])
+    public function forSlug($slug, $with = [], $withCount = [], $scopes = [])
     {
-        $item = $this->model->forSlug($slug)->with($with)->withCount($withCount)->published()->first();
+        $item = $this->model->forSlug($slug)->with($with)->withCount($withCount)->where($scopes)->published()->first();
 
-        if (!$item && $item = $this->model->forInactiveSlug($slug)->published()->first()) {
+        if (!$item && $item = $this->model->forInactiveSlug($slug)->where($scopes)->published()->first()) {
             $item->redirect = true;
         }
 

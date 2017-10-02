@@ -7,6 +7,8 @@
     $show_locale_edit_links = $show_locale_edit_links ?? false;
     $delete = $delete ?? true;
     $toggle_columns = $toggle_columns ?? [];
+    $preview = $preview ?? false;
+    $previewLandingUrl = $previewLandingUrl ?? false;
 @endphp
 
 @extends('cms-toolkit::layouts.main')
@@ -41,6 +43,7 @@
                             'data-selector-width' => '168px',
                             'data-minimum-results-for-search' => 16,
                             'class' => 'select',
+                            'style' => 'display: none;'
                         ]) !!}
                     @endif
                 @endforeach
@@ -79,14 +82,14 @@
                     <thead>
                         <tr>
                             @if ($sort && $currentUser->can('sort'))
-                                <th class="tool">—</th>
+                                <th class="tool"></th>
                             @endif
                             @if ($publish)
-                                <th class="tool">{{ $publish_title or '—'}}</th>
+                                <th class="tool">{{ $publish_title or ''}}</th>
                             @endif
                             @resourceView($moduleName, 'before_index_headers')
                             @foreach ($toggle_columns as $toggle_column)
-                                <th class="tool">{{ $toggle_column['toggle_title'] or '—'}}</th>
+                                <th class="tool">{{ $toggle_column['toggle_title'] or ''}}</th>
                             @endforeach
                             @foreach ($columns as $column)
                                 <th class="{{ isset($column['col']) ? 'colw-' . $column['col'] : '' }}">
@@ -98,10 +101,13 @@
                             @endforeach
                             @resourceView($moduleName, 'after_index_headers')
                             @if ($edit && $currentUser->can('edit'))
-                                <th class="tool">—</th>
+                                <th class="tool"></th>
+                            @endif
+                            @if ($preview && $currentUser->can('list'))
+                                <th class="tool"></th>
                             @endif
                             @if ($delete && $currentUser->can('delete'))
-                                <th class="tool">—</th>
+                                <th class="tool"></th>
                             @endif
                         </tr>
                     </thead>
@@ -137,6 +143,9 @@
                             @if ($edit && $currentUser->can('edit'))
                                 @resourceView($moduleName, 'edit_action')
                             @endif
+                            @if ($preview && $currentUser->can('list'))
+                                @resourceView($moduleName, 'preview_action')
+                            @endif
                             @if ($delete && $currentUser->can('delete'))
                                 @resourceView($moduleName, 'delete_action')
                             @endif
@@ -169,9 +178,15 @@
             </li>
             @if(isset($parent_id) && isset($back_link))
                 <li>
-                    <a href="{{$back_link}}" class="btn" title="Back">Back</a>
+                    <a href="{{ $back_link }}" class="btn" title="Back">Back</a>
                 </li>
             @endif
+        @endif
+
+        @if ($previewLandingUrl && $currentUser->can('list'))
+            <li class="float-right">
+                <a href="{{ $previewLandingUrl }}" class="btn" target="_blank" title="Back">Preview with drafts &#8599;</a>
+            </li>
         @endif
     </ul>
     </footer>

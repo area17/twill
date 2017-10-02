@@ -23,7 +23,7 @@
               "role": "{{ $file_bucket_identifier_repeater or $file_bucket_identifier }}",
               "type": "{{ $with_multiple ? 'media_multiple' : 'media_single' }}",
               "url": "{{ route('admin.file-library.files.index') }}",
-              "title": "Attach {{ $file_role_name or $file_role }} {{ $with_multiple ? 'files' : 'file' }}",
+              "title": "Add {{ $file_role_name or $file_role }} {{ $with_multiple ? 'files' : 'file' }}",
               "max": {{ $files_max }}
             }
         </script>
@@ -64,7 +64,7 @@
                 @endif
             </div>
             <footer data-media-bt>
-                <button type="button" class="btn btn-small btn-border" data-media-bt-trigger>Attach {{ $file_role_name or $file_role }} {{ $with_multiple ? 'files' : 'file' }}</button>
+                <button type="button" class="btn btn-small btn-border" data-media-bt-trigger>Add {{ $file_role_name or $file_role }} {{ $with_multiple ? 'files' : 'file' }}</button>
             </footer>
         </section>
     </div>

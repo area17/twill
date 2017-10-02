@@ -131,6 +131,7 @@ trait HasSlug
         $table = $this->getSlugsTable();
         for ($i = 1; $i <= $this->nb_variation_slug; $i++) {
             $qCheck = DB::table($table);
+            $qCheck->whereNull($this->getDeletedAtColumn());
 
             foreach ($slugParams as $key => $value) {
                 $qCheck->where($key, '=', $value);
