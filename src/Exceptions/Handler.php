@@ -21,6 +21,9 @@ class Handler extends ExceptionHandler
         ValidationException::class,
     ];
 
+    protected $isJsonOutputFormat = false;
+
+
     public function report(Exception $e)
     {
         return parent::report($e);
@@ -29,6 +32,8 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $e)
     {
         $e = $this->prepareException($e);
+
+        $this->isJsonOutputFormat = $request->ajax() || $request->wantsJson();
 
         /*
          * See Laravel 5.4 Changelog https://laravel.com/docs/5.4/upgrade
@@ -51,7 +56,7 @@ class Handler extends ExceptionHandler
         }
 
         if (config('app.debug', false) && config('cms-toolkit.debug.use_whoops', false)) {
-            return $this->renderExceptionWithWhoops($request, $e);
+            return $this->renderExceptionWithWhoops($e);
         }
 
         if ($this->isHttpException($e)) {
@@ -84,13 +89,13 @@ class Handler extends ExceptionHandler
         return $this->renderHttpException($e);
     }
 
-    protected function renderExceptionWithWhoops($request, Exception $e)
+    protected function renderExceptionWithWhoops(Exception $e)
     {
         $this->unsetSensitiveData();
 
         $whoops = new \Whoops\Run();
 
-        if ($request->ajax() || $request->wantsJson()) {
+        if ($this->isJsonOutputFormat) {
             $handler = new \Whoops\Handler\JsonResponseHandler();
         } else {
             $handler = new \Whoops\Handler\PrettyPageHandler();
@@ -140,5 +145,10 @@ class Handler extends ExceptionHandler
         }
 
         return redirect()->guest(route('admin.login'));
+    }
+
+    protected function invalidJson($request, ValidationException $exception)
+    {
+        return response()->json($exception->errors(), $exception->status);
     }
 }
