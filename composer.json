@@ -54,5 +54,13 @@
             "A17\\CmsToolkit\\": "src/"
         }
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "A17\\CmsToolkit\\CmsToolkitInstallServiceProvider::class"
+            ]
+        }
+    },
+
     "minimum-stability": "stable"
 }
