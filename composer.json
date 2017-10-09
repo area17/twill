@@ -57,10 +57,9 @@
     "extra": {
         "laravel": {
             "providers": [
-                "A17\\CmsToolkit\\CmsToolkitInstallServiceProvider::class"
+                "A17\\CmsToolkit\\CmsToolkitInstallServiceProvider"
             ]
         }
     },
-
     "minimum-stability": "stable"
 }
