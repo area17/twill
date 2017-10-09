@@ -100,9 +100,11 @@ class Handler extends ExceptionHandler
         } else {
             $handler = new \Whoops\Handler\PrettyPageHandler();
 
-            if (app()->environment('local')) {
+            if (app()->environment('local', 'development')) {
                 $handler->setEditor(function ($file, $line) {
-                    $translations = array('^' . config('cms-toolkit.debug.whoops_path_guest') => config('cms-toolkit.debug.whoops_path_host'));
+                    $translations = array('^' .
+                        config('cms-toolkit.debug.whoops_path_guest') => config('cms-toolkit.debug.whoops_path_host')
+                    );
                     foreach ($translations as $from => $to) {
                         $file = rawurlencode(preg_replace('#' . $from . '#', $to, $file, 1));
                     }
