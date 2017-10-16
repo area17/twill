@@ -45,10 +45,12 @@ class Handler extends ExceptionHandler
 
         $httpResponseExceptionClass = class_exists($laravel54HttpResponseException) ? $laravel54HttpResponseException : $laravel53HttpResponseException;
 
-        if ($e instanceof $httpResponseExceptionClass || $e instanceof ValidationException) {
+        if ($e instanceof $httpResponseExceptionClass) {
             return $e->getResponse();
         } elseif ($e instanceof AuthenticationException) {
             return $this->handleUnauthenticated($request, $e);
+        } elseif ($e instanceof ValidationException) {
+            return $this->convertValidationExceptionToResponse($e, $request);
         }
 
         if (config('app.debug', false) && config('cms-toolkit.debug.use_inspector', false)) {
