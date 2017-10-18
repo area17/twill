@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "1849bb0228a39eaff890f48e03215908",
+    "content-hash": "13a07ee0f73410f90b2223b0540819df",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1652,6 +1652,58 @@
                 "uuid"
             ],
             "time": "2017-08-04T13:39:04+00:00"
+        },
+        {
+            "name": "sofa/model-locking",
+            "version": "v5.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jarektkaczyk/model-locking.git",
+                "reference": "1b44e353a981c2a116f77e2910aa25bbe338d30b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jarektkaczyk/model-locking/zipball/1b44e353a981c2a116f77e2910aa25bbe338d30b",
+                "reference": "1b44e353a981c2a116f77e2910aa25bbe338d30b",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "5.4.*",
+                "illuminate/queue": "5.4.*",
+                "php": ">=5.6.4"
+            },
+            "require-dev": {
+                "kahlan/kahlan": "~2.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sofa\\ModelLocking\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jarek Tkaczyk",
+                    "email": "jarek@softonsofa.com",
+                    "homepage": "https://softonsofa.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Pseudo pessimistic model locking with broadcasted events for Laravel Eloquent ORM.",
+            "keywords": [
+                "Active Record",
+                "eloquent",
+                "laravel",
+                "locking",
+                "model lock",
+                "orm",
+                "pessimistic lock"
+            ],
+            "time": "2017-03-08T00:01:52+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

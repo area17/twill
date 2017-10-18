@@ -26,3 +26,10 @@
         {{ $item->{$columnOptions['field']} or 'Empty field' }}
     @endif
 @endif
+
+@if ($item->isLockable() && isset($columnOptions['show_locked_by']))
+    @if($item->isLocked())
+        <p>Edit lock: <small>{{ $item->lockedBy()->name }}</small></p>
+    @endif
+@endif
+

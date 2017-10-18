@@ -31,6 +31,8 @@ use Laracasts\Flash\FlashServiceProvider;
 use Lsrur\Inspector\Facade\Inspector;
 use Lsrur\Inspector\InspectorServiceProvider;
 use MathiasGrimm\LaravelEnvValidator\ServiceProvider as EnvValidatorServiceProvider;
+use Sofa\ModelLocking\ServiceProvider as ModelLockingServiceProvider;
+
 use View;
 
 class CmsToolkitServiceProvider extends ServiceProvider
@@ -44,6 +46,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
         FlashServiceProvider::class,
         TagsServiceProvider::class,
         EnvValidatorServiceProvider::class,
+        ModelLockingServiceProvider::class
     ];
 
     protected $aliases = [
@@ -167,13 +170,13 @@ class CmsToolkitServiceProvider extends ServiceProvider
 
     private function publishMigrations()
     {
-        $migrations = ['CreateTagsTables'];
+        $migrations = ['CreateTagsTables', 'CreateModelLocksTable'];
 
         $optionalMigrations = [
             'CreateUsersTables' => 'users-management',
             'CreateFilesTables' => 'file-library',
             'CreateMediasTables' => 'media-library',
-            'CreateFeaturesTable' => 'buckets',
+            'CreateFeaturesTable' => 'buckets'
         ];
 
         if ($this->app->runningInConsole()) {
@@ -227,6 +230,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
         require_once __DIR__ . '/Helpers/media_library_helpers.php';
         require_once __DIR__ . '/Helpers/frontend_helpers.php';
         require_once __DIR__ . '/Helpers/migrations_helpers.php';
+        require_once __DIR__ . '/Helpers/model_helpers.php';
     }
 
     private function publishPublicAssets()
