@@ -200,6 +200,10 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         $media = $this->repository->getById($this->request->input('id'));
         $crop = json_decode($this->request->input('crop'), true);
 
-        return view('cms-toolkit::medias.crop_template')->withMedia($media)->withCrop($crop)->withBlockRatio($this->request->input('ratio'));
+        return view('cms-toolkit::medias.crop_template')->with([
+            'media' => $media,
+            'crop' => $crop,
+            'blockRatio' => $this->request->input('ratio'),
+        ]);
     }
 }
