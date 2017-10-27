@@ -14,7 +14,7 @@
                                 data-jcrop-js="assets/admin/vendor/jcrop/jquery.Jcrop.min"
                                 data-jcrop-css="assets/admin/vendor/jcrop/jquery.Jcrop.min"
                                 data-jcrop-options='{
-                                    "aspectRatio":"{{ $block_ratio or '16/9' }}",
+                                    "aspectRatio":"{{ $blockRatio or '16/9' }}",
                                     "trueSize":[{{ $media->width }}, {{ $media->height}}],
                                     "setSelect":[{{ $crop['crop_x'] or 0 }},{{ $crop['crop_y'] or 0 }},{{ $crop['crop_x2'] or $media->width }}, {{ $crop['crop_y2'] or $media->height }}]
                                 }' style="display:inline-block; margin:0 auto; text-align: center;">

@@ -11,7 +11,7 @@ class Setup extends Command
 
     protected $description = 'Setup the CMS Toolkit superadmin and publish assets/configs';
 
-    public function fire()
+    public function handle()
     {
         $this->publishMigrations();
         $this->call('migrate');

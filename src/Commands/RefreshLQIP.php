@@ -9,7 +9,6 @@ use ImageService;
 
 class RefreshLQIP extends Command
 {
-
     protected $signature = 'cms-toolkit:lqip {--all=0}';
 
     protected $description = 'Refresh Low Quality Image Placeholders.';
@@ -35,7 +34,5 @@ class RefreshLQIP extends Command
                 }
             }
         });
-
     }
-
 }

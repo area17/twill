@@ -34,13 +34,17 @@
                 @if($image)
                     @if (isset($crop_ratios))
                         <div class="input text">
-                            @php($jcropId = uniqid())
+                            @php
+                                $jcropId = uniqid();
+                            @endphp
                             <span>Crop ratio:</span>
                             <select id="{{ $input_prefix_medias }}[ratio][]" name="{{ $input_prefix_medias }}[ratio][]"  data-behavior="selector change_jcrop_ratio" data-minimum-results-for-search=10 data-selector-width="25%">
                                 @foreach($crop_ratios as $name => $ratio)
                                     <option value="{{ $name }}" @if($image->pivot && $image->pivot->ratio === $name) selected @endif data-ratio="{{ $ratio }}" data-jcrop-img-id="{{ $jcropId }}">{{ ucfirst($name) }}</option>
                                 @endforeach
-                                @php($crop_ratios = null)
+                                @php
+                                    $crop_ratios = null;
+                                @endphp
                             </select>
                         </div>
                     @endif

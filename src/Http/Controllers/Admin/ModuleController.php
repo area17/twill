@@ -433,11 +433,13 @@ abstract class ModuleController extends Controller
             ? 'admin.layouts.resources._browser_insert'
             : 'cms-toolkit::layouts.resources._browser_insert');
 
-        return view($view)->withItems($elements)
-            ->withElementRole($this->request->input('role'))
-            ->withNewRow(true)
-            ->withWithMultiple($this->request->input('with_multiple'))
-            ->withWithSort($this->request->input('with_sort'));
+        return view($view)->with([
+            'items' => $elements,
+            'element_role' => $this->request->input('role'),
+            'new_row' => true,
+            'with_multiple' => $this->request->input('with_multiple'),
+            'with_sort' => $this->request->input('with_sort')
+        ]);
     }
 
     public function getBrowserData($prependScope = [])

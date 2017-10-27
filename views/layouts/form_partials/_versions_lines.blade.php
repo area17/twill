@@ -37,7 +37,9 @@
             @unless($loop->last)
                 <hr>
             @endunless
-            @php($indexForPage = $indexForPage - 1)
+            @php
+                $indexForPage = $indexForPage - 1;
+            @endphp
         @empty
             <div class="message">
                 <p>No revisions yet.</p>
