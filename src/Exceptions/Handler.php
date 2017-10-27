@@ -21,6 +21,9 @@ class Handler extends ExceptionHandler
         ValidationException::class,
     ];
 
+    protected $isJsonOutputFormat = false;
+
+
     public function report(Exception $e)
     {
         return parent::report($e);
@@ -29,6 +32,8 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $e)
     {
         $e = $this->prepareException($e);
+
+        $this->isJsonOutputFormat = $request->ajax() || $request->wantsJson();
 
         /*
          * See Laravel 5.4 Changelog https://laravel.com/docs/5.4/upgrade
@@ -40,10 +45,12 @@ class Handler extends ExceptionHandler
 
         $httpResponseExceptionClass = class_exists($laravel54HttpResponseException) ? $laravel54HttpResponseException : $laravel53HttpResponseException;
 
-        if ($e instanceof $httpResponseExceptionClass || $e instanceof ValidationException) {
+        if ($e instanceof $httpResponseExceptionClass) {
             return $e->getResponse();
         } elseif ($e instanceof AuthenticationException) {
             return $this->handleUnauthenticated($request, $e);
+        } elseif ($e instanceof ValidationException) {
+            return $this->convertValidationExceptionToResponse($e, $request);
         }
 
         if (config('app.debug', false) && config('cms-toolkit.debug.use_inspector', false)) {
@@ -51,7 +58,7 @@ class Handler extends ExceptionHandler
         }
 
         if (config('app.debug', false) && config('cms-toolkit.debug.use_whoops', false)) {
-            return $this->renderExceptionWithWhoops($request, $e);
+            return $this->renderExceptionWithWhoops($e);
         }
 
         if ($this->isHttpException($e)) {
@@ -84,20 +91,22 @@ class Handler extends ExceptionHandler
         return $this->renderHttpException($e);
     }
 
-    protected function renderExceptionWithWhoops($request, Exception $e)
+    protected function renderExceptionWithWhoops(Exception $e)
     {
         $this->unsetSensitiveData();
 
         $whoops = new \Whoops\Run();
 
-        if ($request->ajax() || $request->wantsJson()) {
+        if ($this->isJsonOutputFormat) {
             $handler = new \Whoops\Handler\JsonResponseHandler();
         } else {
             $handler = new \Whoops\Handler\PrettyPageHandler();
 
-            if (app()->environment('local')) {
+            if (app()->environment('local', 'development')) {
                 $handler->setEditor(function ($file, $line) {
-                    $translations = array('^' . config('cms-toolkit.debug.whoops_path_guest') => config('cms-toolkit.debug.whoops_path_host'));
+                    $translations = array('^' .
+                        config('cms-toolkit.debug.whoops_path_guest') => config('cms-toolkit.debug.whoops_path_host')
+                    );
                     foreach ($translations as $from => $to) {
                         $file = rawurlencode(preg_replace('#' . $from . '#', $to, $file, 1));
                     }
@@ -140,5 +149,10 @@ class Handler extends ExceptionHandler
         }
 
         return redirect()->guest(route('admin.login'));
+    }
+
+    protected function invalidJson($request, ValidationException $exception)
+    {
+        return response()->json($exception->errors(), $exception->status);
     }
 }

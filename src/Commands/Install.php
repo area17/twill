@@ -20,7 +20,7 @@ class Install extends Command
         $this->files = $files;
     }
 
-    public function fire()
+    public function handle()
     {
         $this->addRoutesFile();
         $this->addServiceProvider();

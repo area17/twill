@@ -37,7 +37,7 @@ class ModuleMake extends Command
         $this->repositoryTraits = ['HandleTranslations', 'HandleSlugs', 'HandleMedias', 'HandleFiles'];
     }
 
-    public function fire()
+    public function handle()
     {
         $moduleName = $this->argument('moduleName');
 
@@ -83,7 +83,9 @@ class ModuleMake extends Command
             $fullPath = $this->laravel['migration.creator']->create($migrationName, $migrationPath);
 
             $stub = str_replace(
-                ['{{table}}', '{{translationTable}}', '{{tableClassName}}'], [$table, Str::singular($table), $tableClassName], $this->files->get(__DIR__ . '/stubs/migration.stub')
+                ['{{table}}', '{{translationTable}}', '{{tableClassName}}'],
+                [$table, Str::singular($table), $tableClassName],
+                $this->files->get(__DIR__ . '/stubs/migration.stub')
             );
 
             $this->files->put($fullPath, $stub);
@@ -185,7 +187,9 @@ class ModuleMake extends Command
         $controllerClassName = $modelName . 'Controller';
 
         $stub = str_replace(
-            ['{{moduleName}}', '{{controllerClassName}}'], [$moduleName, $controllerClassName], $this->files->get(__DIR__ . '/stubs/controller.stub')
+            ['{{moduleName}}', '{{controllerClassName}}'],
+            [$moduleName, $controllerClassName],
+            $this->files->get(__DIR__ . '/stubs/controller.stub')
         );
 
         $this->files->put(app_path('Http/Controllers/Admin/' . $controllerClassName . '.php'), $stub);

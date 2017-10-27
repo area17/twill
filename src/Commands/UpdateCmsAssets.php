@@ -11,7 +11,7 @@ class UpdateCmsAssets extends Command
 
     protected $description = 'Update CMS assets';
 
-    public function fire()
+    public function handle()
     {
         $this->call('vendor:publish', [
             '--provider' => "A17\CmsToolkit\CmsToolkitServiceProvider",
