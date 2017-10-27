@@ -111,7 +111,7 @@ class RouteServiceProvider extends ServiceProvider
                 return ucfirst(str_singular($s));
             }, $slugs));
 
-            $customRoutes = $defaults = ['sort', 'publish', 'browser', 'media', 'feature', 'file', 'insert', 'repeater', 'tags', 'preview', 'restore'];
+            $customRoutes = $defaults = ['sort', 'publish', 'browser', 'media', 'feature', 'file', 'insert', 'repeater', 'tags', 'preview', 'restore', 'status'];
 
             if (isset($options['only'])) {
                 $customRoutes = array_intersect($defaults, (array) $options['only']);
@@ -128,6 +128,10 @@ class RouteServiceProvider extends ServiceProvider
 
                 if (in_array($route, ['browser', 'media', 'file', 'insert', 'repeater', 'tags'])) {
                     Route::get($routeSlug, $mapping);
+                }
+
+                if (in_array($route, ['status'])) {
+                    Route::get($routeSlug . "/{id}", $mapping);
                 }
 
                 if (in_array($route, ['publish', 'feature'])) {

@@ -3,6 +3,7 @@
     $search = $search ?? true;
     $sort = $sort ?? false;
     $publish = $publish ?? true;
+    $show_locked_by = $show_locked_by ?? false;
     $edit = $edit ?? true;
     $show_locale_edit_links = $show_locale_edit_links ?? false;
     $delete = $delete ?? true;

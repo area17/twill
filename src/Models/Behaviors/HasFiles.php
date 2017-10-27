@@ -5,6 +5,8 @@ namespace A17\CmsToolkit\Models\Behaviors;
 use A17\CmsToolkit\Models\File;
 use A17\CmsToolkit\Services\FileLibrary\FileService;
 
+use ModelLockingServiceProvider;
+
 trait HasFiles
 {
     public function files()

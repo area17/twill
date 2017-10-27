@@ -7,6 +7,7 @@ use A17\CmsToolkit\Repositories\FileRepository;
 use A17\CmsToolkit\Repositories\MediaRepository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
+use Auth;
 use Route;
 use Session;
 
@@ -153,6 +154,12 @@ abstract class ModuleController extends Controller
 
     public function store()
     {
+
+        $input = $this->request->all();
+        if (isset($input['cancel'])) {
+            return redirect($this->getBackLink(null));
+        }
+
         $formRequest = $this->validateFormRequest();
         $item = $this->repository->create($formRequest->all());
         return $this->redirectToForm($item->id);
@@ -170,6 +177,7 @@ abstract class ModuleController extends Controller
         }
 
         $this->setBackLink();
+        $this->addLock($id);
         $view = view()->exists("$this->viewPrefix.form") ? "$this->viewPrefix.form" : "cms-toolkit::{$this->moduleName}.form";
         return view($view, $this->form($id));
     }
@@ -211,9 +219,25 @@ abstract class ModuleController extends Controller
 
     public function update($id)
     {
-        $formRequest = $this->validateFormRequest();
-        $this->repository->update($id, $formRequest->all());
-        return $this->redirectToForm($id);
+        $item = $this->repository->getById($id);
+        $input = $this->request->all();
+        if (isset($input['cancel'])) {
+            if ($item->isLockable() && $item->isLocked() && $item->isLockedByCurrentUser()) {
+                $this->removeLock($id);
+            }
+            return redirect($this->getBackLink(null));
+        } else {
+
+            $formRequest = $this->validateFormRequest();
+
+            if (($item->isLockable() == false) || ($item->isLocked() && $item->isLockedByCurrentUser())) {
+                // check the lock?
+                $this->repository->update($id, $formRequest->all());
+                return $this->redirectToForm($id);
+            } else {
+                abort(403);
+            }
+        }
     }
 
     public function preview($id)
@@ -245,6 +269,29 @@ abstract class ModuleController extends Controller
         }
 
         return response()->json('ok', 200);
+    }
+
+
+    public function status($id)
+    {
+        $item = $this->repository->getById($id);
+
+        $response_data = [
+            'status' => 'ok'
+        ];
+
+        // include other information, revisions count, etc.
+        $lockStatus = ['locked' => false];
+        if ($item->isLockable()) {
+            if ($item->isLocked()) {
+                $lockStatus['locked'] = true;
+                $lockStatus['locked_by']['id'] = $item->lockedBy()->id;
+                $lockStatus['locked_by']['name'] = $item->lockedBy()->name;
+            }
+        }
+        $response_data['lock'] = $lockStatus;
+
+        return response()->json($response_data, 200);
     }
 
     protected function validateFormRequest()
@@ -440,6 +487,39 @@ abstract class ModuleController extends Controller
         }
 
         return $prepend + $scope;
+    }
+
+    protected function addLock($id)
+    {
+        $item = $this->repository->getById($id);
+
+        if ($item->isLockable()) {
+            if (!$item->isLocked()) {
+                $item->lock(null, Auth::user());
+                return true;
+            } else {
+                // was this lock held by the current user?
+                if ($item->lockedBy()->id == Auth::user()->id) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    protected function removeLock($id, $forceUnlock=false)
+    {
+        $item = $this->repository->getById($id);
+
+        if ($item->isLockable()) {
+            if ($forceUnlock || ($item->lockedBy()->id == Auth::user()->id)) {
+                $item->unlock();
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected function setBackLink($back_link = null, $params = [])

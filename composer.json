@@ -23,6 +23,12 @@
       "role": "Lead frontend developer"
     },
     {
+      "name": "Antonin Caudron",
+      "email": "antonin@area17.com",
+      "homepage": "http://antonincaudron.fr",
+      "role": "Frontend developer"
+    },
+    {
       "name": "Fernando Petrelli",
       "email": "fernando@area17.com",
       "homepage": "https://area17.com/about/fernando-petrelli",
@@ -32,6 +38,12 @@
       "name": "Gilbert Moufflet",
       "email": "gilbert@area17.com",
       "homepage": "https://area17.com/about/gilbert-moufflet",
+      "role": "Backend developer"
+    },
+    {
+      "name": "Mubashar Iqbal",
+      "email": "me@mubs.me",
+      "homepage": "http://mubs.me/",
       "role": "Backend developer"
     }
   ],
@@ -49,7 +61,8 @@
     "lsrur/inspector": "^1.0",
     "barryvdh/laravel-debugbar": "^3.0.1",
     "guzzlehttp/guzzle": "^6.2",
-    "filp/whoops": "^2.0"
+    "filp/whoops": "^2.0",
+    "sofa/model-locking": "5.4|5.5"
   },
   "require-dev": {
     "phpunit/phpunit": "~5.0|~6.0"

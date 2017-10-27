@@ -25,6 +25,7 @@ class Setup extends Command
         $defaultMigrations = [
             '2014_10_12_000000_create_users_table.php',
             '2014_10_12_100000_create_password_resets_table.php',
+            '2014_10_12_200000_create_model_locks_table.php',
         ];
 
         foreach ($defaultMigrations as $migration) {
