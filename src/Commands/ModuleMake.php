@@ -14,7 +14,8 @@ class ModuleMake extends Command
         {--S|hasSlug}
         {--M|hasMedias}
         {--F|hasFiles}
-        {--P|hasPosition}';
+        {--P|hasPosition}
+        {--R|hasRevisions}';
 
     protected $description = 'Create a new CMS Module';
 
@@ -33,8 +34,8 @@ class ModuleMake extends Command
         $this->files = $files;
         $this->composer = $composer;
 
-        $this->modelTraits = ['HasTranslation', 'HasSlug', 'HasMedias', 'HasFiles', 'HasPosition'];
-        $this->repositoryTraits = ['HandleTranslations', 'HandleSlugs', 'HandleMedias', 'HandleFiles'];
+        $this->modelTraits = ['HasTranslation', 'HasSlug', 'HasMedias', 'HasFiles', 'HasPosition', 'HasRevision'];
+        $this->repositoryTraits = ['HandleTranslations', 'HandleSlugs', 'HandleMedias', 'HandleFiles', 'HandleRevisions'];
     }
 
     public function handle()
@@ -46,13 +47,14 @@ class ModuleMake extends Command
         $mediable = $this->option('hasMedias') ?? false;
         $fileable = $this->option('hasFiles') ?? false;
         $sortable = $this->option('hasPosition') ?? false;
+        $revisionable = $this->option('hasRevisions') ?? false;
 
-        $activeTraits = [$translatable, $sluggable, $mediable, $fileable, $sortable];
+        $activeTraits = [$translatable, $sluggable, $mediable, $fileable, $sortable, $revisionable];
 
         $modelName = Str::studly(Str::singular($moduleName));
 
         $this->createMigration($moduleName);
-        $this->createModels($modelName, $translatable, $sluggable, $sortable, $activeTraits);
+        $this->createModels($modelName, $translatable, $sluggable, $sortable, $revisionable, $activeTraits);
         $this->createRepository($modelName, $activeTraits);
         $this->createController($moduleName, $modelName);
         $this->createRequest($modelName);
@@ -83,7 +85,7 @@ class ModuleMake extends Command
             $fullPath = $this->laravel['migration.creator']->create($migrationName, $migrationPath);
 
             $stub = str_replace(
-                ['{{table}}', '{{translationTable}}', '{{tableClassName}}'],
+                ['{{table}}', '{{singularTableName}}', '{{tableClassName}}'],
                 [$table, Str::singular($table), $tableClassName],
                 $this->files->get(__DIR__ . '/stubs/migration.stub')
             );
@@ -94,7 +96,7 @@ class ModuleMake extends Command
         }
     }
 
-    private function createModels($modelName = 'Item', $translatable = false, $sluggable = false, $sortable = false, $activeTraits = [])
+    private function createModels($modelName = 'Item', $translatable = false, $sluggable = false, $sortable = false, $revisionable = false, $activeTraits = [])
     {
         if (!$this->files->isDirectory(app_path('Models'))) {
             $this->files->makeDirectory(app_path('Models'));
@@ -122,6 +124,18 @@ class ModuleMake extends Command
             $stub = str_replace(['{{modelSlugClassName}}', '{{modelName}}'], [$modelSlugClassName, Str::snake($modelName)], $this->files->get(__DIR__ . '/stubs/model_slug.stub'));
 
             $this->files->put(app_path('Models/Slugs/' . $modelSlugClassName . '.php'), $stub);
+        }
+
+        if ($revisionable) {
+            if (!$this->files->isDirectory(app_path('Models/Revisions'))) {
+                $this->files->makeDirectory(app_path('Models/Revisions'));
+            }
+
+            $modelRevisionClassName = $modelName . 'Revision';
+
+            $stub = str_replace(['{{modelRevisionClassName}}', '{{modelName}}'], [$modelRevisionClassName, Str::snake($modelName)], $this->files->get(__DIR__ . '/stubs/model_revision.stub'));
+
+            $this->files->put(app_path('Models/Revisions/' . $modelRevisionClassName . '.php'), $stub);
         }
 
         $modelClassName = $modelName;

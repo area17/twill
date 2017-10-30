@@ -9,38 +9,35 @@ class Create{{tableClassName}}Tables extends Migration
     {
         Schema::create('{{table}}', function (Blueprint $table) {
             createDefaultTableFields($table);
-
             // add some fields
-
-            // use a json field to store block editor fields
-            // $table->json('content')->nullable();
-
-            // use this with the HasPosition trait
+            // use this one with the HasPosition trait
             // $table->integer('position')->unsigned()->nullable();
         });
 
         // remove this if you're not going to use any translated field
-        Schema::create('{{translationTable}}_translations', function (Blueprint $table) {
-            createDefaultTranslationsTableFields($table, '{{translationTable}}');
-
+        Schema::create('{{singularTableName}}_translations', function (Blueprint $table) {
+            createDefaultTranslationsTableFields($table, '{{singularTableName}}');
             // add some translated fields
             // $table->string('title', 200)->nullable();
             // $table->text('description')->nullable();
-
         });
 
         // remove this if you're not going to use slugs
-        Schema::create('{{translationTable}}_slugs', function (Blueprint $table) {
-            createDefaultSlugsTableFields($table, '{{translationTable}}');
+        Schema::create('{{singularTableName}}_slugs', function (Blueprint $table) {
+            createDefaultSlugsTableFields($table, '{{singularTableName}}');
+        });
+
+        // remove this if you're not going to use revisions
+        Schema::create('{{singularTableName}}_revisions', function (Blueprint $table) {
+            createDefaultRevisionsTableFields($table, '{{singularTableName}}');
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('{{translationTable}}_translations');
-
-        Schema::dropIfExists('{{translationTable}}_slugs');
-
+        Schema::dropIfExists('{{singularTableName}}_revisions');
+        Schema::dropIfExists('{{singularTableName}}_translations');
+        Schema::dropIfExists('{{singularTableName}}_slugs');
         Schema::dropIfExists('{{table}}');
     }
 }
