@@ -3,24 +3,41 @@
 ## Introduction
 
 The CMS Toolkit is a Laravel Composer package to rapidly create and deploy a completely custom admin area for our clients websites that is highly functional, beautiful and easy to use.
-It's a curation of all the features that were developed on custom admin areas since our switch to Laravel. The architecture, conventions and helpers it provides currently powers the [Opéra National de Paris 2015 website redesign](https://www.operadeparis.fr/) ([codebase](https://code.area17.com/opera/onp)), the [AREA 17 2016 website redesign](https://area17.com) ([codebase](https://code.area17.com/a17/site)) and the [THG 2016 redesign website](https://www.thg-paris.com/) ([codebase](https://code.area17.com/THG/site)).
+It's a curation of all the features that were developed on custom admin areas since our switch to Laravel in 2014. The architecture, conventions and helpers it provides currently powers the [Opéra National de Paris 2015 website redesign](https://www.operadeparis.fr/), the [AREA 17 2016 website redesign](https://area17.com) and the [THG 2016 redesign website](https://www.thg-paris.com/). Initially released in December 2016, this Laravel package is powering the [Roto](https://roto.com), [Mai 36](https://mai36.com) and [Pentagram](https://www.pentagram.com) 2017 redesigns, as well as the [Artists at Risk Connection](https://artistsatriskconnection.org) platform.
 
 By default, with very little developer actions, it provides:
-- a beautiful admin interface that really focuses on the editors needs, using the [A17 CMS UI Toolkit](http://cms3.dev.area17.com)
+- a beautiful admin interface that really focuses on the editors needs, using AREA 17's custom built Vue.js components
 - user authentication, authorization and management
-- a media library (powered by S3 or local storage and [Imgix](https://imgix.com) rendering)
-- a file library (powered by S3 or local storage)
-- a block editor renderer and default blocks
-- the ability to art direct responsive images
-- static templates automatic routing
-- rapid new content types creation/edition/maintenance for developers
-- content types translations and slugs management
-- a production ready exceptions handler
-- frontend site controller helpers for SEO and SPF/PJAX sites
+- rapid searching and editing of content for editors with various tools:
+  - search / multi-filtering / sort
+  - quick publish / feature / reorder / edit / delete
+  - input, textarea, rich textarea form fields with optional SEO optimized limits
+  - date pickers for publication timeframe
+  - select, multi-select, content type browser for related content and tags
+  - image selector with cropping
+  - form repeaters
+  - flexible content block editor (composable blocks from Vue components)
+  - translated fields with independent publication status
+  - slugs management with automatic redirect of old urls
+  - content versioning with preview and side by side comparison of fully rendered frontend site
+- intuitive content featuring using a bucket UI
+- a media library:
+  - with S3 or local storage
+  - powered by Imgix rendering for on the fly resizing, cropping and compression of responsive images
+  - easily extendable to support other storage and/or rendering providers (ie. Cloudinary, IIIF, ...)
+- a file library:
+  - with S3 or local storage
+  - easily extendable to support other storage providers
+  - can be used to attach and serve pdfs or videos in any content type
+- the ability to art direct responsive images through:
+  - different manual cropping ratio for each breakpoints
+  - automatic focal point cropping with only one manual user input
+  - automatic entropy or faces cropping with no manual input
+- rapid new content types creation/edition/maintenance for developers (generators and conventions for unified CRUD features)
+- development and production ready toolset (debug bar, inspector, exceptions handler)
+- static templates automatic routing (ie: adding a blade file at a certain location will be automatically available at the same url of its filename, no need to deal with application code, nice for frontend devs or simple page needs)
 
-In development, you can use it in any Laravel environment like [Valet](https://laravel.com/docs/5.3/valet) or [Homestead](https://laravel.com/docs/5.3/homestead), though in a client's project context, you would ideally run your application in a custom virtual machine or Docker environment that is as close as possible as your production environment (either through a custom `after.sh` config for Homestead or through an Ansible provisionned Vagrant box). For provisionning and deployments, check out the Ansible playbooks, Capistrano and Envoy recipes in the A17 and THG codebases.
-
-This package is in very early stage as of December '16. Most of the code it provides has been battle tested over the last 2 years through thousands of Unfuddle tickets but you know how it is... I'm pretty sure most of the bugs you'll encounter will be related to the creation of this package and how it hooks into your application. Feel free to ping on HipChat anytime :)
+In development, you can use it in any Laravel environment like [Valet](https://laravel.com/docs/5.3/valet) or [Homestead](https://laravel.com/docs/5.3/homestead), though in a client's project context, you would ideally run your application in a custom virtual machine or Docker environment that is as close as possible as your production environment (either through a custom `after.sh` config for Homestead, an Ansible provisionned Vagrant box or a Docker Compose project).
 
 ## Table of content
 
@@ -178,6 +195,12 @@ return [
         'users-management' => true,
         'media-library' => true,
         'file-library' => true,
+        'block-editor' => true,
+        'buckets' => false,
+        'users-image' => false,
+        'users-in-top-right-nav' => false,
+        'site-link' => false,
+        'settings' => false,
     ],
 
     /*
@@ -208,11 +231,13 @@ return [
     |
      */
     'media_library' => [
-        'disk' => 's3',
+        'disk' => 'libraries',
         'endpoint_type' => env('MEDIA_LIBRARY_ENDPOINT_TYPE', 's3'),
         'cascade_delete' => env('MEDIA_LIBRARY_CASCADE_DELETE', false),
         'local_path' => env('MEDIA_LIBRARY_LOCAL_PATH'),
         'image_service' => 'A17\CmsToolkit\Services\MediaLibrary\Imgix',
+        'acl' => env('MEDIA_LIBRARY_ACL', 'private'),
+        'filesize_limit' => env('MEDIA_LIBRARY_FILESIZE_LIMIT', 50),
     ],
 
     /*
@@ -270,10 +295,12 @@ return [
     |
      */
     'file_library' => [
-        'disk' => 's3',
-        'endpoint_type' => env('FILE_LIBRARY_ENDPOINT_TYPE', 's3'),
-        'cascade_delete' => env('FILE_LIBRARY_CASCADE_DELETE', false),
-        'local_path' => env('FILE_LIBRARY_LOCAL_PATH'),
+      'disk' => 'libraries',
+      'endpoint_type' => env('FILE_LIBRARY_ENDPOINT_TYPE', 's3'),
+      'cascade_delete' => env('FILE_LIBRARY_CASCADE_DELETE', false),
+      'local_path' => env('FILE_LIBRARY_LOCAL_PATH'),
+      'acl' => env('FILE_LIBRARY_ACL', 'public-read'),
+      'filesize_limit' => env('FILE_LIBRARY_FILESIZE_LIMIT', 50),
     ],
 
     /*
@@ -287,12 +314,22 @@ return [
     |
      */
     'block_editor' => [
+        'blocks_js_path' => '/assets/admin/blocks/blocks.js',
+        'blocks_js_rev' => false,
+
+        'blocks_css_path' => 'blocks.css',
+        'blocks_css_rev' => true,
+
+        'use_iframes' => false,
+        'iframe_wrapper_view' => '',
+
+        'show_render_errors' => env('BLOCK_EDITOR_SHOW_ERRORS', false),
+
         'blocks' => [
+            "blocktitle" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",
             "blocktext" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",
             "blockquote" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",
-            "blocktitle" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",
-            "imagefull" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
-            "imagesimple" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
+            "image" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
             "imagegrid" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
             "imagetext" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
             "diaporama" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
@@ -314,7 +351,7 @@ return [
      */
     'seo' => [
         'site_title' => config('app.name'),
-        'site_title' => config('app.name'),
+        'site_desc' => config('app.name'),
         'image_default_id' => env('SEO_IMAGE_DEFAULT_ID'),
         'image_local_fallback' => env('SEO_IMAGE_LOCAL_FALLBACK'),
     ],
@@ -331,7 +368,7 @@ return [
         'use_whoops' => env('DEBUG_USE_WHOOPS', true),
         'whoops_path_guest' => env('WHOOPS_GUEST_PATH'),
         'whoops_path_host' => env('WHOOPS_HOST_PATH'),
-        'debug_use_inspector' => env('DEBUG_USE_INSPECTOR', false),
+        'use_inspector' => env('DEBUG_USE_INSPECTOR', false),
         'debug_bar_in_fe' => env('DEBUG_BAR_IN_FE', false),
     ],
 
@@ -346,10 +383,12 @@ return [
      */
     'frontend' => [
         'rev_manifest_path' => public_path('dist/rev-manifest.json'),
-        'dev_assets_path' => url('dev'),
-        'dist_assets_path' => url('dist'),
+        'dev_assets_path' => '/dev',
+        'dist_assets_path' => '/dist',
         'svg_sprites_path' => 'sprites.svg', // relative to dev/dist assets paths
         'svg_sprites_use_hash_only' => true,
+        'views_path' => 'front',
+        'home_route_name' => 'home',
     ],
 ];
 
@@ -468,7 +507,8 @@ The command has a couple of options :
 - `--hasSlug (-S)`,
 - `--hasMedias (-M)`,
 - `--hasFiles (-F)`,
-- `--hasPosition (-P)`.
+- `--hasPosition (-P)`
+- `--hasRevisions(-R).
 
 It will generate a migration file, a model, a repository, a controller, a form request object and an index and form views.
 
@@ -488,8 +528,9 @@ Migrations are regular Laravel migrations. A few helpers are available to create
 ```php
 <?php
 
+// main table, holds all non translated fields
 Schema::create('table_name_plural', function (Blueprint $table) {
-    createDefaultTableFields($tableName)
+    createDefaultTableFields($table)
     // will add the following inscructions to your migration file
     // $table->increments('id');
     // $table->softDeletes();
@@ -497,8 +538,9 @@ Schema::create('table_name_plural', function (Blueprint $table) {
     // $table->boolean('published');
 });
 
+// translation table, holds translated fields
 Schema::create('table_name_singular_translations', function (Blueprint $table) {
-    createDefaultTranslationsTableFields($table, $tableNameSingular)
+    createDefaultTranslationsTableFields($table, 'tableNameSingular')
     // will add the following inscructions to your migration file
     // createDefaultTableFields($table);
     // $table->string('locale', 6)->index();
@@ -508,18 +550,44 @@ Schema::create('table_name_singular_translations', function (Blueprint $table) {
     // $table->unique(["{$tableNameSingular}_id", 'locale']);
 });
 
+// slugs table, holds slugs history
 Schema::create('table_name_singular_slugs', function (Blueprint $table) {
-    createDefaultSlugsTableFields($table, $tableNameSingular)
-    // createDefaultTableFields($table);        // will add the following inscructions to your migration file
+    createDefaultSlugsTableFields($table, 'tableNameSingular')
+    // will add the following inscructions to your migration file
+    // createDefaultTableFields($table);
     // $table->string('slug');
     // $table->string('locale', 6)->index();
     // $table->boolean('active');
     // $table->integer("{$tableNameSingular}_id")->unsigned();
     // $table->foreign("{$tableNameSingular}_id", "fk_{$tableNameSingular}_translations_{$tableNameSingular}_id")->references('id')->on($table)->onDelete('CASCADE')->onUpdate('NO ACTION');
 });
+
+// revisions table, holds revision history
+Schema::create('table_name_singular_revisions', function (Blueprint $table) {
+    createDefaultRevisionTableFields($table, 'tableNameSingular');
+    // will add the following inscructions to your migration file
+    // $table->increments('id');
+    // $table->timestamps();
+    // $table->json('payload');
+    // $table->integer("{$tableNameSingular}_id")->unsigned()->index();
+    // $table->integer('user_id')->unsigned()->nullable();
+    // $table->foreign("{$tableNameSingular}_id")->references('id')->on("{$tableNamePlural}")->onDelete('cascade');
+    // $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+});
+
+// related content table, holds many to many association between 2 tables
+Schema::create('table_name_singular1_table_name_singular2', function (Blueprint $table) {
+    createDefaultRelationshipTableFields($table, $table1NameSingular, $table2NameSingular)
+    // will add the following inscructions to your migration file 
+    // $table->integer("{$table1NameSingular}_id")->unsigned();
+    // $table->foreign("{$table1NameSingular}_id")->references('id')->on($table1NamePlural)->onDelete('cascade');
+    // $table->integer("{$table2NameSingular}_id")->unsigned();
+    // $table->foreign("{$table2NameSingular}_id")->references('id')->on($table2NamePlural)->onDelete('cascade');
+    // $table->index(["{$table2NameSingular}_id", "{$table1NameSingular}_id"]);
+});
 ```
 
-A few CRUD controllers require that your model to have a field in the database with a specific name: `published` and `position`, so stick with those column names if you are going to use publication status and sortable listings. When using the block editor, you can name the field that will contains the blocks json whatever you want but it's type should be `json`.
+A few CRUD controllers require that your model have a field in the database with a specific name: `published` and `position`, so stick with those column names if you are going to use publication status and sortable listings. When using the block editor, you can name the field that will contains the blocks json whatever you want but it's type should be `json`.
 
 
 #### Models
@@ -701,6 +769,11 @@ public function afterSave($object, $fields) {
     protected $formWith = [];
 
     /*
+     * Relation count to eager load for the form view
+     */
+    protected $formWithCount = [];
+
+    /*
      * Filters mapping ('fFilterName' => 'filterColumn')
      * You can associate items list to filters by having a fFilterNameList key in the indexData array
      * For example, 'fCategory' => 'category_id' and 'fCategoryList' => app(CategoryRepository::class)->listAll()
@@ -735,6 +808,12 @@ public function afterSave($object, $fields) {
 
     // Optional, specify number of items per page in the listing view (-1 to disable pagination)
     protected $perPage = 50;
+
+    // Optional, specify the default listing order
+    protected $defaultOrders = ['title' => 'asc'];
+
+    // Optional, specify the default listing filters
+    protected $defaultFilters = ['fSearch' => 'search'];
 
     // Optional, change default form options
     protected function defaultFormOptions()
@@ -851,21 +930,6 @@ $this->messagesForTranslatedFields([
     ]
 ])
 ```
-
-You can override each components of the listing in your module views folder:
-- _column.blade.php
-- _column_with_edit_link.blade.php
-- _create_action.blade.php
-- _delete_action.blade.php
-- _edit_action.blade.php
-- _paginator.blade.php
-- _publish_action.blade.php
-- _sort_action.blade.php
-- _sort_link.blade.php
-
-Or globally for all your modules by creating a blade view in `admin/layouts/resources with the same filename.
-
-You can also add columns after the publication state and before the edit action by creating `_before_index_headers.blade.php/_after_index_header.blade.php` and `_before_index_columns.blade.php/_after_index_columns.blade.php` in your admin module views directory.
 
 You can add more filters than the automatically added ones (using the fFilterList convention in your controller) by adding an `extra_filters` section to your index view.
 
@@ -1026,6 +1090,8 @@ Here are the methods you would have to implement:
 <?php
 
 public function getUrl($id, array $params = []);
+public function getUrlWithCrop($id, array $crop_params, array $params = []);
+public function getUrlWithFocalCrop($id, array $cropParams, $width, $height, array $params = []);
 public function getLQIPUrl($id, array $params = []);
 public function getSocialUrl($id, array $params = []);
 public function getCmsUrl($id, array $params = []);
@@ -1034,6 +1100,8 @@ public function getDimensions($id);
 public function getSocialFallbackUrl();
 public function getTransparentFallbackUrl();
 ```
+
+$crop_params will be an array with the following keys: crop_x, crop_y, crop_w and crop_y. If the service you are implementing doesn't support focal point cropping, you can call the getUrlWithCrop from your implementation.
 
 #### Role & Crop params
 Each of the data models in your application can have different images roles and crop.
@@ -1191,33 +1259,14 @@ For improved security, modify the bucket CORS configuration to accept uploads re
 </CORSConfiguration>
 ```
 
-### Block editor
-#### Blocks assets
-TODO
-#### Default blocks
-TODO
-#### Adding blocks
-TODO
-
-### Frontend controllers
-#### SPF requests/responses helper
-TODO
-#### SEO helper
-TODO
-#### Examples
-TODO
-
 ### Roadmap
-- [ ] Content versionning
-- [ ] Preview changes without saving
-- [ ] Auto saving
-- [ ] Concurrent editing/locking
-- [ ] Content review/approval worflow
-- [ ] Media library improvments
-- [ ] Admin assets compilation
-- [ ] Generator improvments
-- [ ] Block editor view helpers
-- [ ] More form fields
+- [x] Content versionning
+- [x] Preview/compare changes without saving
+- [in progress] Redesign (Vue.js components integration and new block editor)
+- [in progress] Concurrent editing/locking
+- [in backlog] Content review/approval worflow
+- [in backlog] Auto saving
+- [in backlog] Dashboard
 
 ### Other useful packages
 
