@@ -6,7 +6,6 @@ use A17\CmsToolkit\Commands\CreateSuperAdmin;
 use A17\CmsToolkit\Commands\ModuleMake;
 use A17\CmsToolkit\Commands\RefreshLQIP;
 use A17\CmsToolkit\Commands\Setup;
-use A17\CmsToolkit\Commands\UpdateCmsAssets;
 use A17\CmsToolkit\Helpers\FlashNotifier;
 use A17\CmsToolkit\Http\ViewComposers\ActiveNavigation;
 use A17\CmsToolkit\Http\ViewComposers\CurrentUser;
@@ -32,7 +31,6 @@ use Lsrur\Inspector\Facade\Inspector;
 use Lsrur\Inspector\InspectorServiceProvider;
 use MathiasGrimm\LaravelEnvValidator\ServiceProvider as EnvValidatorServiceProvider;
 use Sofa\ModelLocking\ServiceProvider as ModelLockingServiceProvider;
-
 use View;
 
 class CmsToolkitServiceProvider extends ServiceProvider
@@ -46,7 +44,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
         FlashServiceProvider::class,
         TagsServiceProvider::class,
         EnvValidatorServiceProvider::class,
-        ModelLockingServiceProvider::class
+        ModelLockingServiceProvider::class,
     ];
 
     protected $aliases = [
@@ -154,8 +152,6 @@ class CmsToolkitServiceProvider extends ServiceProvider
     private function mergeConfigs()
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/cms-toolkit.php', 'cms-toolkit');
-        $this->mergeConfigFrom(__DIR__ . '/../config/services.php', 'services');
-        $this->mergeConfigFrom(__DIR__ . '/../config/laravel-env-validator.php', 'laravel-env-validator');
         $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
         $this->mergeConfigFrom(__DIR__ . '/../config/frontend.php', 'cms-toolkit.frontend');
         $this->mergeConfigFrom(__DIR__ . '/../config/debug.php', 'cms-toolkit.debug');
@@ -165,7 +161,6 @@ class CmsToolkitServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/imgix.php', 'cms-toolkit.imgix');
         $this->mergeConfigFrom(__DIR__ . '/../config/media-library.php', 'cms-toolkit.media_library');
         $this->mergeConfigFrom(__DIR__ . '/../config/file-library.php', 'cms-toolkit.file_library');
-        $this->mergeConfigFrom(__DIR__ . '/../config/imgix.php', 'cms-toolkit.imgix');
     }
 
     private function publishMigrations()
@@ -176,7 +171,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
             'CreateUsersTables' => 'users-management',
             'CreateFilesTables' => 'file-library',
             'CreateMediasTables' => 'media-library',
-            'CreateFeaturesTable' => 'buckets'
+            'CreateFeaturesTable' => 'buckets',
         ];
 
         if ($this->app->runningInConsole()) {
@@ -215,7 +210,6 @@ class CmsToolkitServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 Setup::class,
-                UpdateCmsAssets::class,
                 ModuleMake::class,
                 CreateSuperAdmin::class,
                 RefreshLQIP::class,

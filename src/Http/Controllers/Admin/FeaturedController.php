@@ -162,7 +162,6 @@ class FeaturedController extends Controller
 
     private function getRepository($bucketable)
     {
-
         return app(config('cms-toolkit.namespace') . "\Repositories\\" . ucfirst(str_singular($bucketable)) . "Repository");
     }
 

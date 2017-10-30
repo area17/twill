@@ -19,3 +19,6 @@ indent_size = 4
 
 [*.blade.php]
 indent_size = 4
+
+[*.stub]
+indent_size = 4
