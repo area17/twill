@@ -3,11 +3,9 @@
 namespace A17\CmsToolkit\Http\Controllers\Admin;
 
 use A17\CmsToolkit\Helpers\FlashLevel;
-use A17\CmsToolkit\Repositories\FileRepository;
-use A17\CmsToolkit\Repositories\MediaRepository;
+use Auth;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
-use Auth;
 use Route;
 use Session;
 
@@ -89,6 +87,10 @@ abstract class ModuleController extends Controller
 
     public function index()
     {
+        if ($this->request->ajax()) {
+            return $this->getIndexData() + $this->request->all();
+        }
+
         $view = view()->exists("$this->viewPrefix.index") ? "$this->viewPrefix.index" : "cms-toolkit::{$this->moduleName}.index";
         return view($view, $this->getIndexData() + $this->request->all());
     }
@@ -119,42 +121,8 @@ abstract class ModuleController extends Controller
         return array_replace_recursive($data, $this->indexData($this->request));
     }
 
-    public function create()
-    {
-        $this->setBackLink();
-
-        $data = [
-            'form_options' => [
-                'method' => 'POST',
-                'url' => moduleRoute($this->moduleName, $this->routePrefix, 'store'),
-            ] + $this->defaultFormOptions(),
-            'form_fields' => $this->repository->getOldFormFieldsOnCreate(),
-            'back_link' => $this->getBackLink(),
-            'moduleName' => $this->moduleName,
-            'modelName' => $this->modelName,
-            'routePrefix' => $this->routePrefix,
-        ];
-        $view = view()->exists("$this->viewPrefix.form") ? "$this->viewPrefix.form" : "cms-toolkit::{$this->moduleName}.form";
-        return view($view, array_replace_recursive($data, $this->formData($this->request)));
-    }
-
-    public function repeater()
-    {
-        $data = [
-            'form_fields' => $this->repository->getOldFormFieldsOnCreate(),
-            'repeaterIndex' => request('index'),
-            'moduleName' => $this->moduleName,
-            'modelName' => $this->modelName,
-            'repeater' => true,
-            'routePrefix' => $this->routePrefix,
-        ];
-
-        return view("$this->viewPrefix.repeater", array_replace_recursive($data, $this->formData($this->request)));
-    }
-
     public function store()
     {
-
         $input = $this->request->all();
         if (isset($input['cancel'])) {
             return redirect($this->getBackLink(null));
@@ -170,12 +138,10 @@ abstract class ModuleController extends Controller
         return $this->redirectToForm($id);
     }
 
+    // TODO revisions paginated endpoint
+
     public function edit($id)
     {
-        if ($this->request->ajax() && $this->request->has('rev_page')) {
-            return $this->revisions($id);
-        }
-
         $this->setBackLink();
         $this->addLock($id);
         $view = view()->exists("$this->viewPrefix.form") ? "$this->viewPrefix.form" : "cms-toolkit::{$this->moduleName}.form";
@@ -209,12 +175,6 @@ abstract class ModuleController extends Controller
         ];
 
         return array_replace_recursive($data, $this->formData($this->request));
-    }
-
-    private function revisions($id)
-    {
-        $view = view()->exists("$this->viewPrefix._versions_lines") ? "$this->viewPrefix._versions_lines" : "cms-toolkit::layouts.form_partials._versions_lines";
-        return view($view, ['with_preview' => $this->withPreview ?? true] + $this->form($id));
     }
 
     public function update($id)
@@ -271,13 +231,12 @@ abstract class ModuleController extends Controller
         return response()->json('ok', 200);
     }
 
-
     public function status($id)
     {
         $item = $this->repository->getById($id);
 
         $response_data = [
-            'status' => 'ok'
+            'status' => 'ok',
         ];
 
         // include other information, revisions count, etc.
@@ -350,96 +309,9 @@ abstract class ModuleController extends Controller
         return response()->json($tags, 200);
     }
 
-    public function media()
-    {
-        $mediaModels = [];
-        foreach ($this->request->input('data') as $media) {
-            $mediaModels[$media['id']] = app(MediaRepository::class)->getById($media['id']);
-        }
-
-        $role = ($this->request->input('backend_role') ?? $this->request->input('role'));
-
-        $crops = $this->repository->getCrops($role);
-
-        $view = view()->exists('admin.medias.insert_template') ? 'admin.medias.insert_template' : 'cms-toolkit::medias.insert_template';
-
-        return view($view)->with([
-            'images' => $mediaModels,
-            'crops' => $crops,
-            'backend_role' => $role,
-            'media_role' => $this->request->input('role'),
-            'new_row' => true,
-            'with_crop' => $this->request->input('with_crop'),
-            'with_multiple' => $this->request->input('with_multiple'),
-            'with_background_position' => $this->request->input('with_background_position'),
-            'repeater' => $this->request->input('repeater'),
-            'repeaterIndex' => $this->request->input('repeater_index'),
-            'moduleName' => $this->moduleName,
-        ]);
-    }
-
-    public function file()
-    {
-        $fileModels = [];
-        foreach ($this->request->input('data') as $file) {
-            $fileModels[$file['id']] = app(FileRepository::class)->getById($file['id']);
-        }
-
-        $view = view()->exists('admin.files.insert_template') ? 'admin.files.insert_template' : 'cms-toolkit::files.insert_template';
-
-        return view($view)->with([
-            'files' => $fileModels,
-            'file_role' => $this->request->input('file_role'),
-            'new_row' => true,
-            'with_multiple' => $this->request->input('with_multiple'),
-            'locale' => $this->request->input('locale'),
-            'repeater' => $this->request->input('repeater'),
-            'repeaterIndex' => $this->request->input('repeater_index'),
-            'moduleName' => $this->moduleName,
-        ]);
-    }
-
     public function browser()
     {
-        if (!is_null($this->request->input('page'))) {
-            $view = view()->exists('admin.' . $this->moduleName . '._browser_list')
-            ? 'admin.' . $this->moduleName . '._browser_list'
-            : (view()->exists('admin.layouts.resources._browser_list')
-                ? 'admin.layouts.resources._browser_list'
-                : 'cms-toolkit::layouts.resources._browser_list');
-
-            return view($view, $this->getBrowserData() + $this->request->all());
-        }
-
-        $view = view()->exists('admin.' . $this->moduleName . '.browser')
-        ? 'admin.' . $this->moduleName . '.browser'
-        : (view()->exists('admin.layouts.resources.browser')
-            ? 'admin.layouts.resources.browser'
-            : 'cms-toolkit::layouts.resources.browser');
-
-        return view($view, $this->getBrowserData() + $this->request->all());
-    }
-
-    public function insert()
-    {
-        $elements = [];
-        foreach ($this->request->input('data') as $element) {
-            $elements[$element['id']] = $this->repository->getById($element['id']);
-        }
-
-        $view = view()->exists('admin.' . $this->moduleName . '._browser_insert')
-        ? 'admin.' . $this->moduleName . '._browser_insert'
-        : (view()->exists('admin.layouts.resources._browser_insert')
-            ? 'admin.layouts.resources._browser_insert'
-            : 'cms-toolkit::layouts.resources._browser_insert');
-
-        return view($view)->with([
-            'items' => $elements,
-            'element_role' => $this->request->input('role'),
-            'new_row' => true,
-            'with_multiple' => $this->request->input('with_multiple'),
-            'with_sort' => $this->request->input('with_sort')
-        ]);
+        return $this->getBrowserData() + $this->request->all();
     }
 
     public function getBrowserData($prependScope = [])
@@ -508,7 +380,7 @@ abstract class ModuleController extends Controller
         return false;
     }
 
-    protected function removeLock($id, $forceUnlock=false)
+    protected function removeLock($id, $forceUnlock = false)
     {
         $item = $this->repository->getById($id);
 
@@ -528,7 +400,6 @@ abstract class ModuleController extends Controller
             if (($back_link = Session::get($this->moduleName . "_back_link")) == null) {
                 $back_link = $this->request->headers->get('referer') ?? moduleRoute($this->moduleName, $this->routePrefix, "index", $params);
             }
-
         }
 
         if (!$this->request->has('retain')) {

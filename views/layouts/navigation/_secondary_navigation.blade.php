@@ -17,10 +17,6 @@
                             $action = $secondary_navigation_element['route'] ?? 'index';
                             $href = moduleRoute($module, $_global_active_navigation . '.' . $_primary_active_navigation, $action);
                         @endphp
-                    @elseif ($secondary_navigation_element['page'] ?? false)
-                        @php
-                            $href = pageRoute($secondary_navigation_key, $_global_active_navigation . '.' . $_primary_active_navigation);
-                        @endphp
                     @elseif ($primary_navigation_element['raw'] ?? false)
                         @php
                             $href = !empty($primary_navigation_element['route']) ? $primary_navigation_element['route'] : '#';

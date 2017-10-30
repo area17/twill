@@ -3,9 +3,6 @@
 @section('content')
     @formField('lang_switcher')
     <section class="box box-background">
-        {{-- <header class="header_small">
-            <h3><b>{{ ucfirst(str_replace('_', ' ', $section)) }} settings</b></h3>
-        </header> --}}
         @yield('form')
     </section>
 @stop

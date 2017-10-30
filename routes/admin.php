@@ -11,8 +11,6 @@ if (config('cms-toolkit.enabled.media-library')) {
         Route::put('medias/single-update', ['as' => 'medias.single-update', 'uses' => 'MediaLibraryController@singleUpdate']);
         Route::put('medias/bulk-update', ['as' => 'medias.bulk-update', 'uses' => 'MediaLibraryController@bulkUpdate']);
         Route::get('medias/tags', ['as' => 'medias.tags', 'uses' => 'MediaLibraryController@tags']);
-        Route::get('medias/thumbnail', ['as' => 'medias.thumbnail', 'uses' => 'MediaLibraryController@thumbnail']);
-        Route::get('medias/crop', ['as' => 'medias.crop', 'uses' => 'MediaLibraryController@crop']);
         Route::resource('medias', 'MediaLibraryController', ['only' => ['index', 'edit', 'store', 'destroy']]);
     });
 }
@@ -40,6 +38,7 @@ if (config('cms-toolkit.enabled.buckets')) {
                 Route::post('{bucket}', ['as' => 'add', 'uses' => 'FeaturedController@add']);
                 Route::delete('{bucket}', ['as' => 'remove', 'uses' => 'FeaturedController@remove']);
                 Route::post('{bucket}/sortable', ['as' => 'sortable', 'uses' => 'FeaturedController@sortable']);
+                //TODO this is going to happen on add/remove/sort now that we don't have a save button anymore, or should we have one?
                 Route::get('save', ['as' => 'save', 'uses' => 'FeaturedController@save']);
                 Route::get('cancel', ['as' => 'cancel', 'uses' => 'FeaturedController@cancel']);
             });

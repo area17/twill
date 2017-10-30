@@ -7,7 +7,6 @@ use A17\CmsToolkit\Services\Uploader\SignS3Upload;
 use A17\CmsToolkit\Services\Uploader\SignS3UploadListener;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
-use ImageService;
 use Input;
 
 class MediaLibraryController extends ModuleController implements SignS3UploadListener
@@ -45,7 +44,6 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
             'endpointType' => $this->endpointType,
             'endpoint' => $this->endpointType === 'local' ? route('admin.media-library.medias.store') : s3Endpoint($libraryDisk),
             'successEndpoint' => route('admin.media-library.medias.store'),
-            'completeEndpoint' => route('admin.media-library.medias.index') . "?new_uploads_ids=",
             'signatureEndpoint' => route('admin.media-library.sign-s3-upload'),
             'endpointRegion' => config('filesystems.disks.' . $libraryDisk . '.region', 'none'),
             'accessKey' => config('filesystems.disks.' . $libraryDisk . '.key', 'none'),
@@ -54,17 +52,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
             'filesizeLimit' => config('cms-toolkit.media_library.filesize_limit'),
         ];
 
-        if ($this->request->ajax()) {
-            return view("cms-toolkit::medias.list", $this->getIndexData());
-        }
-
-        // if we are currently uploading new medias, display the media library with those medias only and disable pagination
-        if ($newUploads = $this->request->input('new_uploads_ids')) {
-            $prependScope = ['id' => explode(',', $newUploads)];
-            $this->perPage = -1;
-        }
-
-        return view("cms-toolkit::medias.index", $this->getIndexData($prependScope ?? []) + $uploaderConfig + $this->request->all());
+        return $this->getIndexData($prependScope ?? []) + $uploaderConfig + $this->request->all();
     }
 
     public function indexData($request)
@@ -124,25 +112,25 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     public function edit($id)
     {
         $media = $this->repository->getById($id);
-        return view('cms-toolkit::medias.form', [
+        return [
             'isBulkUpdate' => false,
             'media' => $media,
             'tags' => $media->tags,
             'moduleName' => $this->moduleName,
             'modelName' => $this->modelName,
             'routePrefix' => $this->routePrefix,
-        ]);
+        ];
     }
 
     public function bulkEdit()
     {
         $ids = $this->request->input('ids');
         $tags = $this->repository->getTags(null, $ids);
-        return view('cms-toolkit::medias.form', [
+        return [
             'isBulkUpdate' => true,
             'tags' => $tags,
             'media' => $this->repository->getById(last($ids)),
-        ]);
+        ];
     }
 
     public function tags()
@@ -186,24 +174,5 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     public function policyIsNotValid()
     {
         return response()->json(["invalid" => true], 500);
-    }
-
-    public function thumbnail()
-    {
-        $id = $this->request->input('id');
-        $media = $this->repository->getById($id);
-        return ImageService::getCmsUrl($media->uuid, ["w" => "150", "h" => "150"]);
-    }
-
-    public function crop()
-    {
-        $media = $this->repository->getById($this->request->input('id'));
-        $crop = json_decode($this->request->input('crop'), true);
-
-        return view('cms-toolkit::medias.crop_template')->with([
-            'media' => $media,
-            'crop' => $crop,
-            'blockRatio' => $this->request->input('ratio'),
-        ]);
     }
 }

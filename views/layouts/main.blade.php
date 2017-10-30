@@ -2,12 +2,6 @@
 <html dir="ltr" lang="en-US">
     <head>
         @include('cms-toolkit::layouts.head')
-        <style>
-            #user-tools .on a {
-                color: #fff;
-                -webkit-font-smoothing: antialiased;
-            }
-        </style>
     </head>
     <body>
         <div id="a17">
