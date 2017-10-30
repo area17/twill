@@ -10,7 +10,7 @@ class Welcome extends ResetPassword
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->line('You are receiving this email because we an account was created for you on ' . config('app.name') . '.')
+            ->line('You are receiving this email because an account was created for you on ' . config('app.name') . '.')
             ->action('Choose your own password', url('http://' . config('cms-toolkit.admin_app_url') . route('admin.password.reset.welcome.form', $this->token, false)));
 
     }

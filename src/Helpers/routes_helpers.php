@@ -24,16 +24,3 @@ if (!function_exists('moduleRoute')) {
         return route($routeName, $parameters);
     }
 }
-
-if (!function_exists('pageRoute')) {
-    function pageRoute($key, $prefix, $update = false)
-    {
-        $routeName = 'admin.' . ($prefix ? $prefix . '.' : '') . $key;
-
-        if ($update) {
-            $routeName .= '.update';
-        }
-
-        return route($routeName);
-    }
-}
