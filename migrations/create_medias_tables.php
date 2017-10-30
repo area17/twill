@@ -28,8 +28,6 @@ class CreateMediasTables extends Migration
             $table->integer('media_id')->unsigned();
             $table->integer('crop_x')->nullable();
             $table->integer('crop_y')->nullable();
-            $table->integer('crop_x2')->nullable();
-            $table->integer('crop_y2')->nullable();
             $table->integer('crop_w')->nullable();
             $table->integer('crop_h')->nullable();
             $table->string('role')->nullable();

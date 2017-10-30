@@ -17,8 +17,6 @@ trait HasMedias
             'crop_h',
             'crop_x',
             'crop_y',
-            'crop_x2',
-            'crop_y2',
             'background_position',
             'lqip_data',
             'ratio',
