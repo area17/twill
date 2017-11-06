@@ -508,7 +508,7 @@ The command has a couple of options :
 - `--hasMedias (-M)`,
 - `--hasFiles (-F)`,
 - `--hasPosition (-P)`
-- `--hasRevisions(-R).
+- `--hasRevisions(-R)`.
 
 It will generate a migration file, a model, a repository, a controller, a form request object and an index and form views.
 
