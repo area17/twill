@@ -68,7 +68,6 @@ class CmsToolkitServiceProvider extends ServiceProvider
         $this->registerAndPublishViews();
 
         $this->extendBlade();
-
         $this->addViewComposers();
     }
 
@@ -257,25 +256,29 @@ class CmsToolkitServiceProvider extends ServiceProvider
             return "<?php dd({$param}); ?>";
         });
 
+        $blade->directive('dumpData', function ($data) {
+            return sprintf("<?php (new Illuminate\Support\Debug\Dumper)->dump(%s); exit; ?>",
+                null != $data ? $data : "get_defined_vars()");
+        });
+
         $blade->directive('formField', function ($expression) use ($blade) {
-            return $this->includeView('layouts.form_partials._', $expression);
+            return $this->includeView('partials.form._', $expression);
         });
 
-        $blade->directive('extendableView', function ($expression) use ($blade) {
-            return $this->includeView('layouts.resources._', $expression);
-        });
-
-        $blade->directive('resourceView', function ($expression) use ($blade) {
+        $blade->directive('partialView', function ($expression) use ($blade) {
 
             $expressionAsArray = str_getcsv($expression, ',', '\'');
 
             list($moduleName, $viewName) = $expressionAsArray;
+            $partialNamespace = 'cms-toolkit::partials';
 
-            $partialNamespace = 'cms-toolkit::layouts.resources';
+            $viewModule = "'admin.'.$moduleName.'.{$viewName}'";
+            $viewApplication = "'admin.partials.{$viewName}'";
+            $view = $partialNamespace . "." . $viewName;
 
-            $viewModule = "'admin.'.$moduleName.'._{$viewName}'";
-            $viewApplication = "'admin.layouts.resources._{$viewName}'";
-            $view = $partialNamespace . "._" . $viewName;
+            if (!isset($moduleName) || is_null($moduleName)) {
+                $viewModule = $viewApplication;
+            }
 
             $expression = explode(',', $expression);
             $expression = array_slice($expression, 2);
