@@ -24,3 +24,27 @@ if (!function_exists('moduleRoute')) {
         return route($routeName, $parameters);
     }
 }
+
+if (!function_exists('getNavigationUrl')) {
+    function getNavigationUrl($element, $key, $prefix = null)
+    {
+        $isModule = $element['module'] ?? false;
+
+        if ($isModule) {
+            $action = $element['route'] ?? 'index';
+            return moduleRoute($key, $prefix, $action);
+        } elseif ($element['raw'] ?? false) {
+            return !empty($element['route']) ? $element['route'] : '#';
+        }
+
+        return !empty($element['route']) ? route($element['route'], $element['params'] ?? []) : '#';
+    }
+
+}
+
+if (!function_exists('isActiveNavigation')) {
+    function isActiveNavigation($element, $key, $activeNavigation)
+    {
+        return (isset($activeNavigation) && $key === $activeNavigation) || (($element['raw'] ?? false) && Request::url() == $element['route']);
+    }
+}
