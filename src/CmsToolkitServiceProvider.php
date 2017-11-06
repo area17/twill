@@ -306,7 +306,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
             View::composer('cms-toolkit::*', CurrentUser::class);
         }
 
-        View::composer('cms-toolkit::layouts.navigation.*', ActiveNavigation::class);
+        View::composer('cms-toolkit::partials.navigation.*', ActiveNavigation::class);
     }
 
     private function registerAndPublishTranslations()
