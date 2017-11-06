@@ -1,4 +1,4 @@
-@extends('cms-toolkit::layouts.main')
+{{-- @extends('cms-toolkit::layouts.main')
 
 @section('content')
     <div class="columns">
@@ -81,3 +81,4 @@
         </ul>
     </footer>
 @stop
+ --}}

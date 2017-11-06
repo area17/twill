@@ -1,4 +1,4 @@
-@extends('cms-toolkit::layouts.resources.form')
+@extends('cms-toolkit::layouts.form')
 
 @php
     $isSuperAdmin = isset($form_fields['role']) ? $form_fields['role'] === 'SUPERADMIN' : false;

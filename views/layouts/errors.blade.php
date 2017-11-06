@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html dir="ltr" lang="en-US">
     <head>
-        @include('cms-toolkit::layouts.head')
+        @include('cms-toolkit::partials.head')
     </head>
-    <body>
-        <div id="a17">
-            <header id="header">
-                <h1>
-                    <a href="/">{{ config('app.name') }}</a>
-                    <span class="env-label {{ app()->environment() }}">{{ app()->environment() }}</span>
-                </h1>
-                <span class="env {{ app()->environment() }}" data-behavior="env">{{ app()->environment() }}</span>
+    <body class="env env--{{ app()->environment() }} s--app">
+        <div class="a17">
+            <header class="header">
+                <div class="container">
+                    @include('cms-toolkit::partials.navigation._title')
+                </div>
             </header>
-            <div id="content">
+            <section class="main">
                 @yield('content')
-            </div>
+                @include('cms-toolkit::partials.footer')
+            </section>
         </div>
     </body>
 </html>

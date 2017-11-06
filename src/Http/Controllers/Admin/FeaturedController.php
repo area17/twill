@@ -13,21 +13,18 @@ class FeaturedController extends Controller
         $featuredSectionKey = request()->segment(count(request()->segments()));
         $featuredSection = config("cms-toolkit.buckets.$featuredSectionKey");
 
-        if (request()->ajax()) {
+        if (request()->has("search_" . request('bucketable'))) {
             $bucketable = request('bucketable');
             $featurableItemsByBucketable = $this->getFeaturableItemsByBucketable($featuredSection, request("search_{$bucketable}"));
 
-            $view = view()->exists('admin.' . $bucketable . '._bucketable_list') ? 'admin.' . $bucketable . '._bucketable_list' :
-            (view()->exists('admin.layouts.resources._bucketable_list') ? 'admin.layouts.resources._bucketable_list' : 'cms-toolkit::layouts.resources._bucketable_list');
-
-            return view($view, [
+            return [
                 'bucketableName' => $featurableItemsByBucketable[$bucketable]['name'] ?? [],
                 'items' => $featurableItemsByBucketable[$bucketable]['items'] ?? [],
                 'buckets' => $featurableItemsByBucketable[$bucketable]['buckets'] ?? [],
                 'bucketable' => $bucketable,
                 'all_buckets' => collect($featuredSection['buckets']),
                 'search' => request("search_{$bucketable}") ?? null,
-            ]);
+            ];
         }
 
         $featurableItemsByBucketable = $this->getFeaturableItemsByBucketable($featuredSection);
@@ -35,12 +32,12 @@ class FeaturedController extends Controller
 
         $this->prepareSessionWithCurrentFeatures($featuredItemsByBucket);
 
-        return view('cms-toolkit::featured.index', [
+        return [
             'featurableItemsByBucketable' => $featurableItemsByBucketable,
             'featuredItemsByBucket' => $featuredItemsByBucket,
             'buckets' => collect($featuredSection['buckets']),
             'sectionKey' => $featuredSectionKey,
-        ]);
+        ];
     }
 
     private function prepareSessionWithCurrentFeatures($featuredItemsByBucket)
@@ -59,6 +56,7 @@ class FeaturedController extends Controller
     public function add($bucket)
     {
         session()->push("buckets.$bucket", request()->all());
+        $this->save();
         return response()->json();
     }
 
@@ -73,6 +71,7 @@ class FeaturedController extends Controller
         });
 
         session()->put("buckets.$bucket", $currentBucket);
+        $this->save();
         return response()->json();
     }
 
@@ -80,6 +79,7 @@ class FeaturedController extends Controller
     {
         if ($bucket != null && ($values = json_decode(request()->getContent(), true)) && !empty($values)) {
             session()->put("buckets.$bucket", $values);
+            $this->save();
         }
     }
 

@@ -1,4 +1,4 @@
-@extends('cms-toolkit::layouts.resources.index', [
+@extends('cms-toolkit::layouts.listing', [
     'delete' => $currentUser->can('edit-user-role'),
     'create' => $currentUser->can('edit-user-role'),
     'publish' => $currentUser->can('edit-user-role'),
