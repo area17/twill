@@ -1,0 +1,68 @@
+/*
+  Flatpickrr specific style when the component is set static: true
+  Flatpickr is creating form elements itself so style can't be scopped
+*/
+body .flatpickr-wrapper {
+  display:block;
+
+  .flatpickr-input {
+    @include regular-field;
+  }
+}
+
+/* overwrite default style */
+
+body {
+  .flatpickr-calendar {
+    border-radius: 2px;
+    box-shadow: 0 0px 8px rgba(0,0,0,0.3);
+  }
+
+  .flatpickr-month {
+    height:50px;
+
+    .flatpickr-prev-month, .flatpickr-next-month {
+      height:50px;
+      line-height:50px;
+      padding-top:0;
+      padding-bottom:0;
+    }
+  }
+
+  .flatpickr-current-month {
+    font-size:1em;
+    height: 50px;
+    padding-top:16px;
+
+    input.cur-year {
+      font-weight: 700;
+    }
+  }
+
+  .flatpickr-day {
+    border-radius: 2px;
+
+    &.selected,
+    &.startRange,
+    &.endRange,
+    &.selected.inRange,
+    &.startRange.inRange,
+    &.endRange.inRange,
+    &.selected:focus,
+    &.startRange:focus,
+    &.endRange:focus,
+    &.selected:hover,
+    &.startRange:hover,
+    &.endRange:hover,
+    &.selected.prevMonthDay,
+    &.startRange.prevMonthDay,
+    &.endRange.prevMonthDay,
+    &.selected.nextMonthDay,
+    &.startRange.nextMonthDay,
+    &.endRange.nextMonthDay {
+      background:$color__link;
+      border-color:$color__link;
+    }
+  }
+}
+
