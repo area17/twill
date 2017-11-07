@@ -1,0 +1,10 @@
+// @mixin link-color
+@mixin link-color($name, $default: inherit, $hover: inherit) {
+  .link--#{$name} {
+    color: $default;
+
+    &:hover {
+      color: $hover;
+    }
+  }
+}

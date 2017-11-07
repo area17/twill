@@ -1,0 +1,152 @@
+/***
+
+Header
+======
+
+Every decent CMS need one header
+
+```
+<div class="styleguide--demo">
+    <header class="header">
+        <div class="container">
+            <h1 class="header__title"><a href="/">A17 <span class="envlabel">STAGE</span></a></h1>
+            <nav class="header__nav">
+                <ul class="header__items">
+                    <li class="header__item s--on"><a href="#">Home</a></li>
+                    <li>...</li>
+                </ul>
+            </nav>
+
+            <div class="header__user">
+                <a href="#">John Doe</a>
+            </div>
+        </div>
+    </header>
+</div>
+```
+
+***/
+
+$height__nav: 60px;
+
+.header {
+  background:$color__header;
+  color:$color__text--light;
+  padding-bottom:50px;
+  @include monospaced-figures('off'); // dont use monospaced figures here
+}
+
+.header .container {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.header__title {
+  margin-right:33px;
+  margin-left:-17px;
+  color:$color__background;
+  flex-grow:1;
+
+  a {
+    height:$height__nav;
+    line-height:$height__nav;
+    display:block;
+    color:inherit;
+  }
+
+  @include breakpoint('large+') {
+    flex-grow:0;
+  }
+}
+
+.header__title,
+.header__nav,
+.header__user {
+  height:$height__nav;
+  line-height:$height__nav;
+
+  a {
+    text-decoration:none;
+    color:inherit;
+    padding:0 17px;
+  }
+}
+
+.header__nav {
+  display: none;
+
+  flex-grow: 1;
+  overflow:hidden;
+  overflow-x:auto;
+
+  ul {
+    white-space:nowrap;
+  }
+
+  @include breakpoint('large+') {
+    display:flex;
+    flex-direction: row;
+    flex-wrap: no-wrap;
+  }
+}
+
+.header__user {
+  display: none;
+
+  @include breakpoint('large+') {
+    display:block;
+  }
+}
+
+.header__nav::-webkit-scrollbar-track-piece{
+  background:$color__header;
+}
+
+.header__nav::-webkit-scrollbar-thumb:horizontal,
+.header__nav::-webkit-scrollbar-thumb:vertical{
+  background:lighten($color__header, 20%);
+}
+
+.header__items {
+  position:relative;
+}
+
+.header__items + .header__items {
+  margin-left:0;
+
+  &::before {
+    content:"•";
+    display:inline-block;
+    padding:0 17px;
+    height:$height__nav;
+    line-height:$height__nav;
+  }
+}
+
+.header__item {
+  color:$color__text--light;
+  display:inline-block;
+
+  &.s--on,
+  &:hover {
+    color:$color__background;
+  }
+
+  a {
+    height:$height__nav;
+    line-height:$height__nav;
+    display:inherit;
+    padding:0 17px;
+  }
+}
+
+.header__user a {
+  text-decoration:none;
+  color:$color__text--light;
+  height:$height__nav;
+  line-height:$height__nav;
+
+  &:hover {
+    color:$color__background;
+  }
+}

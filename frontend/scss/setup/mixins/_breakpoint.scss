@@ -1,0 +1,108 @@
+/*
+  @function get-breakpoint-directions
+
+  Sorts through breakpoints SASS map,
+  generates a full SASS map containing all the breakpoint
+  variations we'll require
+
+  Parameters:
+  none
+*/
+@function get-breakpoint-directions() {
+  $_bps: ();
+  @each $k, $bp in $breakpoints {
+    $_bps: map-merge($_bps, ($k: $bp));
+    $start: map-get($bp, start);
+    $end: map-get($bp, end);
+
+    @if $end != null and $start != null {
+      $down-key: unquote($k + '-');
+      $_bps: map-merge($_bps, ($down-key: (
+        start: null,
+        end: $end
+      )));
+    }
+
+    @if $start != null and $end != null {
+      $up-key: unquote($k) + '+';
+      $_bps: map-merge($_bps, ($up-key: (
+        start: $start,
+        end: null
+      )));
+    }
+  }
+
+  @return $_bps;
+}
+
+$breakpoints-with-directions: get-breakpoint-directions();
+
+/*
+  @mixin breakpoint
+
+  Inserts a media query
+
+  Parameters:
+  $name - name of breakpoint, choose from:
+
+  xsmall, small, medium, large, xlarge, xxlarge  - *just* that breakpoint
+  small-, medium-, large-, xlarge-, xxlarge-  - that breakpoint *and* below
+  xsmall+, small+, medium+, large+, xlarge+  - that breakpoint *and* up
+
+  NB: the we're mobile up, so the minus values should be avoided..
+*/
+
+@mixin breakpoint($name) {
+  $points: map-get($breakpoints-with-directions, $name);
+  @if $points {
+    $media: get-media($points);
+    $start: map-get($media, 'start');
+    $end: map-get($media, 'end');
+    $str: 'screen and (';
+    @if($start != null) {
+      $str: $str + 'min-width: ' + ($start * 1px);
+    }
+    @if($start != null and $end != null) {
+      $str: $str + ') and ('
+    }
+    @if($end != null) {
+      $str: $str + 'max-width: ' + ($end * 1px);
+    }
+    $str: $str + ')';
+
+    @media #{$str} {
+      @content;
+    }
+  } @else {
+    @warn "Unknown breakpoint `#{$name}` in $breakpoints.";
+  }
+}
+
+
+/*
+  @function get-media
+
+  Returns start and stop points of a given media query
+
+  Parameters:
+  $bp - the breakpoint you want the stop and stop points of
+*/
+
+@function get-media($bp) {
+  $start: null;
+  $end: null;
+
+  $bp-start: map-get($bp, 'start');
+  $bp-end: map-get($bp, 'end');
+  @if($bp-start != null and ($start == null or $bp-start < $start)) {
+    $start: $bp-start;
+  }
+  @if($bp-end != null and ($end == null or $bp-end > $end)) {
+    $end: $bp-end;
+  }
+
+  @return (
+    start: $start,
+    end: $end
+  );
+}

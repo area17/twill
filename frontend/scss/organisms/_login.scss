@@ -1,0 +1,136 @@
+.a17--login {
+  background:black;
+  display:flex;
+  flex-flow: column nowrap;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login {
+  margin:0 auto;
+  color:$color__text--forms;
+  width:400px;
+  max-width:calc(100vw - 60px);
+  padding-top:30px;
+  padding-bottom:50px;
+}
+
+.login__heading {
+  line-height:50px;
+  @include monospaced-figures('off'); // dont use monospaced figures here
+}
+
+.login__heading--title {
+  color:$color__background;
+}
+
+.login__label,
+.login__help {
+  display:block;
+  margin-top:35px;
+  margin-bottom:10px;
+  color:$color__text--forms;
+}
+
+.login__fieldset {
+  position:relative;
+}
+
+.login__heading + .login__fieldset {
+  margin-top:38px;
+}
+
+.login__input {
+  @include resetfield;
+  display:block;
+  width:100%;
+  height:45px;
+  line-height:45px;
+  border-radius:2px;
+  background:black;
+  border:1px solid $color__text--light;
+  color:$color__text--light;
+  box-sizing:border-box;
+  font-size:15px;
+  caret-color: $color__action;
+  padding:0 10px;
+
+  &:focus {
+    border-color:$color__background;
+    outline:0;
+  }
+}
+
+.login__help {
+  position:absolute;
+  right:0;
+  top:0;
+  padding-top:2px;
+  text-decoration:none;
+
+  span {
+    @include bordered($color__text--forms, false);
+  }
+}
+
+.login__button {
+  @include btn-reset;
+  padding:0;
+  display:block;
+  text-align:center;
+  height:40px;
+  line-height:40px;
+  color:$color__background;
+  background-color:$color__login--btn;
+  width:100%;
+  border-radius:2px;
+  margin-top:44px;
+  transition: color .25s linear, border-color .25s linear, background-color .25s linear;
+
+  &:hover,
+  &:focus {
+    background-color:$color__background;
+    color:black;
+  }
+}
+
+.login__google {
+  display:block;
+  text-align:center;
+  text-decoration:none;
+  margin-top:35px;
+  color:$color__text--forms;
+
+  .icon {
+    color:$color__text--forms;
+    margin-right:10px;
+    position: relative;
+    top: 6px;
+/*    -webkit-filter: grayscale(1);
+    filter: grayscale(1);*/
+  }
+
+  &:hover {
+/*    .icon {
+      -webkit-filter: grayscale(0);
+      filter: grayscale(0);
+    }*/
+
+    .icon + span {
+      @include bordered($color__text--forms, false);
+    }
+  }
+}
+
+.login .footer {
+  position:fixed;
+  bottom:0;
+  width:100%;
+  left:0;
+  right:0;
+
+  .container {
+    color:$color__text--forms;
+  }
+}

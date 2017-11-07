@@ -1,0 +1,125 @@
+// Main Color List - try not to use
+$color__red: #e61414;
+$color__yellow: #f2f034;
+$color__orange: #fffcb1;
+$color__green: #1d9f3c;
+$color__lightGreen: #D3ECD9;
+$color__green--hover: #1A8F36;
+$color__lightBlue: #E7F4FB;
+$color__blue: #148DDB;
+$color__darkBlue: #3278B8;
+$color__darkBlue--hover: #2D6CA6;
+
+// Colors - Grayscale
+$color__black: #000;
+$color__black--93: #121212;
+$color__black--91: #171717;
+$color__black--90: #1a1a1a;
+$color__black--89: #1c1c1c;
+$color__black--85: #262626;
+$color__black--80: #333;
+$color__black--72: #474747;
+$color__black--70: #4D4D4D;
+$color__black--61: #636363;
+$color__black--60: #666;
+$color__black--50: #808080;
+$color__black--49: #828282;
+$color__black--45: #8c8c8c;
+$color__black--40: #999;
+$color__black--35: #a6a6a6;
+$color__black--30: #b3b3b3;
+$color__black--25: #bfbfbf;
+$color__black--22: #c7c7c7;
+$color__black--20: #ccc;
+$color__black--15: #d9d9d9;
+$color__black--10: #e5e5e5;
+$color__black--5: #f2f2f2;
+$color__black--3-5: #f6f5f4;
+$color__black--3: #f7f7f7;
+$color__black--2: #fbfbfb;
+$color__white: #fff;
+
+// Colors by usage - use these!
+$color__background: $color__white;
+
+/**** Text Colors ****/
+$color__text: $color__black--85;
+$color__text--forms: $color__black--60;
+$color__text--light: $color__black--45;
+$color__icons: $color__black--35;
+
+$color__light: $color__black--5;
+$color__ultralight: $color__black--2;
+
+$color__link: $color__darkBlue;
+$color__link-light: $color__black--45;
+
+$color__tag: $color__black--25;
+
+$color__border: $color__black--10;
+$color__border--hover: $color__black--15;
+$color__border--focus: $color__black--20;
+$color__border--light: $color__black--5;
+
+/**** Forms Colors ****/
+$color__f--bg: $color__black--2;
+$color__f--text: $color__black--45;
+$color__f--placeholder: $color__black--20;
+$color__fborder: $color__black--15;
+$color__fborder--hover: $color__black--35;
+$color__fborder--active: $color__black--45;
+
+/**** Drag Colors ****/
+$color__drag: $color__black--25;
+$color__drag--hover: $color__black--35;
+$color__drag_bg: $color__black--2;
+$color__drag_bg--hover: $color__black--5;
+
+/**** Main Button Colors ****/
+$color__error: $color__red;
+$color__error--hover: darken($color__red, 10%);
+$color__warning: $color__orange;
+$color__action: $color__darkBlue;
+$color__action--hover: color__darkBlue--hover;
+$color__ok: $color__green;
+$color__ok--hover: $color__green--hover;
+$color__publish: $color__green;
+$color__publish--hover: $color__green--hover;
+
+$color__button_greyed: $color__white;
+$color__button_greyed--bcg: $color__black--20;
+
+$color__button_disabled-bcg: $color__black--10;
+$color__button_disabled-txt: $color__black--35;
+
+/**** UI Colors ****/
+$color__modal--wide: $color__black--80;
+$color__modal--header: $color__black--15;
+
+$color__overlay--header: $color__black;
+$color__overlay--background: $color__black--80;
+
+$color__header: $color__black;
+$color__nav: $color__black--85;
+
+$color__login--btn:$color__black--80;
+
+$color__bulk--background:$color__lightBlue;
+
+$color__stats:#853bb7;
+
+/**** Env Colors ****/
+$color__env--staging: #3679B6;
+$color__env--dev: #269E41;
+$color__env--prod: #E31A22;
+
+/**** Notif Colors ****/
+$color__notif--default: $color__black--20;
+$color__notif--success: $color__yellow;
+$color__notif--error: $color__red;
+
+/**** Buckets Colors ****/
+$color__bucket--1: #7ca4a2;
+$color__bucket--2: #70769f;
+$color__bucket--3: #E37A75;
+$colors__bucket--list: $color__bucket--1 $color__bucket--2 $color__bucket--3;

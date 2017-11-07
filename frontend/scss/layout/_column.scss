@@ -1,0 +1,47 @@
+$column-spans__primary: (
+    xsmall: 2,
+    small: 2,
+    medium: 3,
+    large: 4,
+    xlarge: 4
+);
+
+$column-spans__aside: (
+    xsmall: 2,
+    small: 2,
+    medium: 3,
+    large: 2,
+    xlarge: 2
+);
+
+$column-spans__even: (
+    xsmall: 2,
+    small: 2,
+    medium: 3,
+    large: 3,
+    xlarge: 3
+);
+
+.wrapper {
+  @include columns-container-flex;
+}
+
+.wrapper--reverse {
+  flex-direction: row-reverse;
+}
+
+.col {
+
+}
+
+.col--even {
+  @include column-flex($column-spans__even);
+}
+
+.col--primary {
+  @include column-flex($column-spans__primary);
+}
+
+.col--aside {
+  @include column-flex($column-spans__aside);
+}

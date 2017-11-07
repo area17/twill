@@ -1,0 +1,20 @@
+.box {
+  background:$color__background;
+  border-radius:2px;
+  border:1px solid $color__border;
+  margin-top:20px;
+}
+
+.box__header {
+  height:60px;
+  line-height:60px;
+  border-bottom:1px solid $color__border;
+  padding:0 20px;
+}
+
+.box__footer {
+  height:60px;
+  line-height:60px;
+  border-top:1px solid $color__border;
+  padding:0 20px;
+}

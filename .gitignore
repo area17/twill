@@ -1,3 +1,5 @@
 vendor/
 !assets/vendor
 /node_modules
+assets/dist/*
+mix-manifest.json

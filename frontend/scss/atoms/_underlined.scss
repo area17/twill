@@ -1,0 +1,52 @@
+/***
+
+Underlined text
+===============
+
+Underlined texts for links or hover states :
+
+```
+<div class="styleguide--demo">
+    <p class="f--underlined">Underlined text</p>
+    <p class="f--underlined--o">Underlined text on hover</p>
+</div>
+```
+
+***/
+
+.f--underlined,
+.f--light-underlined,
+.f--underlined--o,
+.f--light-underlined--o {
+  text-decoration:none;
+}
+
+.f--underlined {
+  @include bordered;
+}
+
+.f--light-underlined {
+  @include bordered($color__text--light, $color__text--light);
+}
+
+.f--note.f--underlined {
+  @include bordered($color__text--light, $color__text--light);
+}
+
+a:hover .f--underlined--o,
+button:hover .f--underlined--o,
+.f--underlined--o:hover {
+  @include bordered($color__text, false);
+}
+
+a:hover .f--light-underlined--o,
+button:hover .f--light-underlined--o,
+.f--light-underlined--o:hover {
+  @include bordered($color__text--light, false);
+}
+
+a:hover .f--note.f--underlined--o,
+button:hover .f--note.f--underlined--o,
+.f--note.f--underlined--o:hover {
+  @include bordered($color__text--light, false);
+}

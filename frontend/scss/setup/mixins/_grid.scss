@@ -1,0 +1,343 @@
+/*
+  @function colspan
+
+  Returns a calc() that represents a column span
+
+  Parameters:
+  $number-of-columns - the number of columns you want to span
+  $breakpoint - at which breakpoint
+  $bump - if you want the colspan + an arbitrary number
+  $inverse - if you want to return a negative number (to move things backwards)
+
+  NB: only works with breakpoint names, not the +/- variants
+*/
+@function colspan($number-of-columns:1, $breakpoint:'xsmall', $bump:0px, $inverse:false) {
+  @if map-has-key($breakpoints-with-directions, $breakpoint) {
+    $this-bp-main-col-width: map-get($main-col-widths, $breakpoint);
+    $this-bp-inner-gutter: map-get($inner-gutters, $breakpoint);
+    $this-bp-outer-gutter: map-get($outer-gutters, $breakpoint);
+    $this-bp-total-cols: map-get($column-count, $breakpoint);
+
+    @if ($number-of-columns >= $this-bp-total-cols) {
+      @if ($this-bp-main-col-width == 'fluid') {
+        @return calc(100vw - #{2 * $this-bp-outer-gutter});
+      } @else {
+        @return $this-bp-main-col-width;
+      }
+    } @else {
+
+      @if ($this-bp-main-col-width == 'fluid') {
+        $this-calc: '((100vw - #{(($this-bp-total-cols - 1) * $this-bp-inner-gutter) + (2 * $this-bp-outer-gutter)}) / #{$this-bp-total-cols}) * #{$number-of-columns}';
+
+        @if ($number-of-columns >= 1) {
+          $this-calc: '(#{$this-calc}) + #{($number-of-columns - 1) * $this-bp-inner-gutter}';
+        }
+
+        @if($bump != 0px) {
+          $this-calc: '(#{$this-calc}) + #{$bump}';
+        }
+
+        @if($inverse) {
+          $this-calc: '(#{$this-calc}) * -1';
+        }
+
+        @return calc(#{$this-calc});
+
+      } @else {
+        $this-multiplier: 1;
+        @if($inverse) {
+          $this-multiplier: -1;
+        }
+
+        @return #{((((($this-bp-main-col-width - ($this-bp-total-cols - 1) * $this-bp-inner-gutter) / $this-bp-total-cols) * $number-of-columns) + ($number-of-columns - 1) * $this-bp-inner-gutter) + $bump) * $this-multiplier};
+      }
+
+    }
+  }
+}
+
+/*
+  @mixin width
+
+  Returns a width and a calc() to correctly span columns
+  with breakpoint selection and optional bump value
+
+  Parameters:
+  $number-of-columns - the number of columns you want to span
+  $breakpoint - at which breakpoint
+  $bump - if you want the colspan + an arbitrary number
+
+  NB: only works with breakpoint names, not the +/- variants
+*/
+
+@mixin width($number-of-columns:1, $breakpoint:'xsmall', $bump:0px) {
+  width: colspan($number-of-columns, $breakpoint, $bump);
+}
+
+/*
+  @mixin width-multi
+
+  A mix of @mixin width and @mixin column. Pass a map of the number
+  of columns to span at each breakpoint. Use when you don't need to
+  float on the grid.
+
+  Parameters:
+  $colspans - scss map detailing how many design columns this column
+  needs to span on each breakpoint. Omitting a breakpoint from the
+  map will not set a width at that breakpoint.
+  $bump - if you want the colspan + an arbitrary number
+
+  ```scss
+  $column-spans__list-articles: (
+    xsmall: 3,
+    small: 3,
+    medium: 4,
+    large: 4,
+    xlarge: 3,
+    xxlarge: 3
+  );
+
+  .list-articles__item {
+    @include width-multi($column-spans__list-articles);
+  }
+  ```
+
+  NB: only works with breakpoint names, not the +/- variants
+*/
+
+@mixin width-multi($colspans:false, $bump:0px) {
+  @if $colspans {
+    @each $name, $point in $breakpoints {
+      $colspan: map-get($colspans, #{$name});
+
+      @if $colspan {
+        @include breakpoint('#{$name}') {
+          @include width($colspan, #{$name}, $bump);
+        }
+      }
+    }
+  }
+}
+
+/*
+  @mixin push
+
+  Returns a margin-left and a calc() to correctly push
+  a block a number of columns with breakpoint selection
+  and optional bump value
+
+  Parameters:
+  $number-of-columns - the number of columns you want to push
+  $breakpoint - at which breakpoint
+  $bump - if you want the colspan + an arbitrary number
+
+  NB: only works with breakpoint names, not the +/- variants
+*/
+@mixin push($number-of-columns:1, $breakpoint:'xsmall', $bump:0px, $in-container:false) {
+  @if map-has-key($breakpoints-with-directions, $breakpoint){
+    @if($in-container){
+      $bump: $bump + (map-get($inner-gutters, $breakpoint) * 2);
+    } @else {
+      $bump: $bump + map-get($inner-gutters, $breakpoint);
+    }
+  }
+  margin-left: colspan($number-of-columns, $breakpoint, $bump);
+}
+
+/*
+  @mixin push-multi
+
+  A mix of @mixin push and @mixin column. Pass a map of the number
+  of columns to push at each breakpoint.
+
+  Parameters:
+  $colspans - scss map detailing how many design columns this column
+  needs to push on each breakpoint. Omitting a breakpoint from the
+  map will not set a width at that breakpoint.
+  $bump - if you want the colspan + an arbitrary number
+
+  ```scss
+  $column-spans__list-articles: (
+    xsmall: 3,
+    small: 3,
+    medium: 4,
+    large: 4,
+    xlarge: 3,
+    xxlarge: 3
+  );
+
+  .list-articles__item {
+    @include push-multi($column-spans__list-articles);
+  }
+  ```
+
+  NB: only works with breakpoint names, not the +/- variants
+*/
+
+@mixin push-multi($colspans:false, $bump:0px) {
+  @if $colspans {
+    @each $name, $point in $breakpoints {
+      $colspan: map-get($colspans, #{$name});
+
+      @if $colspan {
+        @include breakpoint('#{$name}') {
+          @include push($colspan, #{$name}, $bump);
+        }
+      }
+    }
+  }
+}
+
+/*
+  @mixin push-gutter
+
+  Adds gutter margin to the sides passed to the set breakpoints.
+  Defaults to left margin across all breakpoints.
+
+  Parameters:
+  $sides - the sides you'd like to apply margin to
+  $bps - at which breakpoints
+
+  NB: only works with breakpoint names, not the +/- variants
+*/
+@mixin push-gutter($sides:(left), $bps: $breakpoints) {
+  @each $name, $point in $bps {
+    @include breakpoint('#{$name}') {
+      @each $dir in $sides {
+        margin-#{$dir}: map-get($inner-gutters, $name);
+      }
+    }
+  }
+}
+
+/*
+  @mixin columns-container
+
+  Sets up columns container
+
+  Parameters:
+  none
+
+  ```scss
+    .list-articles {
+    @include columns-container;
+  }
+  ```
+*/
+@mixin columns-container() {
+  @include float-clear();
+
+  @each $name, $point in $breakpoints {
+    @include breakpoint('#{$name}') {
+      margin-left: - map-get($inner-gutters, $name);
+    }
+  }
+}
+
+/*
+  @mixin column
+
+  Sets up single column
+
+  Parameters:
+  $colspans - scss map detailing how many design columns this column needs to span on each breakpoint
+
+  ```scss
+  $column-spans__list-articles: (
+    xsmall: 3,
+    small: 3,
+    medium: 4,
+    large: 4,
+    xlarge: 3,
+    xxlarge: 3
+  );
+
+  .list-articles__item {
+    @include column($column-spans__list-articles);
+  }
+  ```
+
+  NB: only works with breakpoint names, not the +/- variants
+*/
+@mixin column($colspans:false) {
+  float: left;
+
+  @each $name, $point in $breakpoints {
+    @include breakpoint('#{$name}') {
+      @if $colspans {
+        $colspan: map-get($colspans, #{$name});
+        @if $colspan {
+          width: colspan($colspan, #{$name});
+        }
+      }
+      margin-left: (map-get($inner-gutters, #{$name}));
+    }
+  }
+}
+
+/*
+  @mixin columns-container-flex
+
+  Sets up columns container - flex version
+
+  Parameters:
+  none
+
+  ```scss
+  .list-articles {
+    @include columns-container-flex;
+  }
+  ```
+*/
+
+@mixin columns-container-flex() {
+  display: flex;
+  flex-flow: row wrap;
+
+  @each $name, $point in $breakpoints {
+    @include breakpoint('#{$name}') {
+      margin-left: (map-get($inner-gutters, $name)/-1);
+    }
+  }
+}
+
+/*
+  @mixin column-flex
+
+  Sets up single column
+
+  Parameters:
+  $colspans - scss map detailing how many design columns this column needs to span on each breakpoint
+
+  ```scss
+  $column-spans__list-articles: (
+    xsmall: 3,
+    small: 3,
+    medium: 4,
+    large: 4,
+    xlarge: 3,
+    xxlarge: 3
+  );
+
+  .list-articles__item {
+    @include column-flex($column-spans__list-articles);
+  }
+  ```
+
+  NB: only works with breakpoint names, not the +/- variants
+*/
+
+@mixin column-flex($colspans:false) {
+  flex: 0 0 auto;
+  @each $name, $point in $breakpoints {
+    @include breakpoint('#{$name}') {
+      @if $colspans {
+        $colspan: map-get($colspans, #{$name});
+        @if $colspan {
+          width: colspan($colspan, #{$name});
+        }
+      }
+      margin-left: map-get($inner-gutters, $name);
+    }
+  }
+}

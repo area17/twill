@@ -1,0 +1,246 @@
+<template>
+  <div class="stickyNav">
+    <div class="container">
+      <div class="stickyNav__nav">
+        <div class="stickyNav__links">
+          <a href="#" v-for="(item, index) in navItems" :key="item.fieldset" @click.prevent="scrollToFieldset(index)" :class="{ 's--on' : item.active }">{{ item.label }}</a>
+        </div>
+        <a17-title-editor></a17-title-editor>
+      </div>
+
+      <div class="stickyNav__actions">
+        <a17-langswitcher></a17-langswitcher>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import Vue from 'vue'
+  import debounce from 'lodash/debounce'
+
+  import scrollToY from '@/utils/scrollToY.js'
+  import a17TitleEditor from '@/components/TitleEditor.vue'
+  import a17Langswitcher from '@/components/LangSwitcher.vue'
+
+  export default {
+    name: 'A17StickyNav',
+    components: {
+      'a17-title-editor': a17TitleEditor,
+      'a17-langswitcher': a17Langswitcher
+    },
+    props: {
+      items: {
+        type: Array,
+        default: function () {
+          return []
+        }
+      }
+    },
+    data: function () {
+      return {
+        lastScrollPos: 0,
+        topOffset: 70,
+        ticking: false,
+        navItems: this.items,
+        fieldset: []
+      }
+    },
+    methods: {
+      getFieldsetPosition: function () {
+        let self = this
+
+        this.navItems.forEach(function (item, index) {
+          const fieldset = self.fieldset[index]
+          let pos = fieldset ? (fieldset.getBoundingClientRect().top + self.lastScrollPos) : 0
+
+          Vue.set(item, 'position', pos)
+        })
+      },
+      setActiveItems: function () {
+        let self = this
+        let itemToActivate = 0
+
+        this.navItems.forEach(function (item, index) {
+          const isActive = ((item.position - self.topOffset) < self.lastScrollPos)
+
+          Vue.set(item, 'active', false)
+          if (isActive && index > 0) itemToActivate = index
+        })
+
+        // no active, let fallback on the first one
+        Vue.set(self.navItems[itemToActivate], 'active', true)
+      },
+      refresh: function () {
+        let self = this
+
+        this.getFieldsetPosition()
+        this.setActiveItems()
+
+        self.ticking = false
+      },
+      resize: debounce(function () {
+        this.lastScrollPos = window.pageYOffset
+        this.refresh()
+      }, 200),
+      scroll: function () {
+        let self = this
+
+        self.lastScrollPos = window.pageYOffset
+
+        if (!self.ticking) {
+          window.requestAnimationFrame(function () {
+            self.refresh()
+            self.ticking = false
+          })
+        }
+
+        self.ticking = true
+      },
+      scrollToFieldset: function (index) {
+        let self = this
+        const ypos = this.navItems[index].position - this.topOffset + 1
+
+        this.getFieldsetPosition()
+        this.dispose()
+
+        scrollToY({
+          offset: ypos,
+          easing: 'easeOut',
+          onComplete: function () {
+            self.init()
+            self.setActiveItems()
+          }
+        })
+      },
+      init: function () {
+        let self = this
+
+        window.addEventListener('scroll', () => self.scroll())
+        window.addEventListener('resize', () => self.resize())
+      },
+      dispose: function () {
+        let self = this
+
+        window.removeEventListener('scroll', () => self.scroll())
+        window.removeEventListener('resize', () => self.resize())
+      }
+    },
+    mounted: function () {
+      let self = this
+
+      this.navItems.forEach(function (item, index) {
+        const target = document.querySelector('#' + item.fieldset)
+
+        if (target) self.fieldset.push(target)
+        else self.fieldset.push(null)
+      })
+
+      this.refresh()
+      this.init()
+    },
+    beforeDestroy: function () {
+      this.dispose()
+    }
+  }
+</script>
+
+<style lang="scss" scoped>
+  @import "../../scss/setup/variables.scss";
+  @import "../../scss/setup/colors.scss";
+  @import "../../scss/setup/mixins.scss";
+
+  .stickyNav {
+    background-color:rgba($color__border--light, 0.95);
+    border-bottom:1px solid rgba($color__black, 0.05);
+    background-clip: padding-box;
+  }
+
+  @include breakpoint('medium+') {
+    .stickyNav {
+      height:90px;
+      z-index:$zindex__stickyNav;
+      overflow:hidden;
+
+      &.sticky__fixed,
+      &.sticky__fixedTop,
+      &.sticky__fixedBottom {
+        height:60px;
+
+        .container {
+          padding-top:14px;
+        }
+
+        .stickyNav__links {
+          opacity:1;
+          visibility: visible;
+          transition: opacity 0.25s;
+        }
+
+        .titleEditor {
+          opacity:0;
+          visibility: hidden;
+          transition: opacity 0.25s ease, visibility 0s 0.25s;
+        }
+      }
+    }
+  }
+
+  .titleEditor {
+    opacity:1;
+    visibility: visible;
+    transition: opacity 0.25s;
+  }
+
+  .stickyNav__links {
+    opacity:0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0s 0.25s;
+    display:flex;
+
+    a {
+      display:block;
+      height:35px;
+      line-height:35px;
+      border-radius:17px;
+      padding:0 17px;
+      text-decoration:none;
+      color: $color__text--light;
+      background-color:rgba(white, 0);
+      transition: background-color 0.25s linear;
+
+      &:hover {
+        color:$color__text;
+      }
+
+      &.s--on {
+        background-color:white;
+        color:$color__text;
+      }
+    }
+  }
+
+  .stickyNav__nav {
+    position:relative;
+
+    .stickyNav__links {
+      position:absolute;
+    }
+  }
+
+  .stickyNav .container {
+    display: block;
+    padding-top:26px;
+    padding-bottom:26px;
+
+    @include breakpoint('medium+') {
+      display: flex;
+    }
+  }
+
+  .stickyNav__nav {
+    @include breakpoint('medium+') {
+      flex-grow: 1;
+    }
+  }
+</style>

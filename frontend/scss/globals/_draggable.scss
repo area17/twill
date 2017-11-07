@@ -1,0 +1,34 @@
+/* General styles for the draggable elements : can be used to style general thing that will live outside of the component scope */
+
+/* Draggable options */
+.sortable-ghost {
+}
+
+.sortable-chosen {
+  opacity: 0.25;
+}
+
+.sortable-drag {
+  opacity: 0.95;
+}
+
+/* Draggable transitions */
+
+.draggable_list-enter-active, .draggable_list-leave-active {
+  transition: opacity 250ms ease, transform 300ms linear;
+}
+
+.draggable_list-enter {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.draggable_list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/*.draggable_list-move {
+  transition: transform 1000ms ease-in-out;
+  transition: opacity 250ms ease, transform 300ms ease-in-out;
+}*/

@@ -1,0 +1,64 @@
+/***
+
+Vue.js Transition
+=================
+
+Define awesome transition using the Vue.js transition wrapper component
+https://vuejs.org/v2/guide/transitions.html
+
+***/
+
+/**** Fade Scale List transition : used in buckets ****/
+
+.fade_scale_list-enter-active,
+.fade_scale_list-leave-active {
+  transition: max-height 0.25s ease;
+  overflow:hidden;
+}
+
+.fade_scale_list-enter-to,
+.fade_scale_list-leave {
+  max-height:80px;
+}
+
+.fade_scale_list-enter,
+.fade_scale_list-leave-to {
+  max-height:0;
+}
+
+/*.fade_scale_list-move {
+  transition: transform 100ms ease-in-out;
+  transition: opacity 250ms ease, transform 300ms ease-in-out;
+}*/
+
+/**** Fade & Scale Modal transition ****/
+.fade_scale_modal-enter-active,
+.fade_scale_modal-leave-active {
+  transition: transform .25s linear;
+}
+
+.fade_scale_modal-enter,
+.fade_scale_modal-leave-to {
+  transform: scale(.975);
+}
+
+/**** Fade & Move Dropdown transition ****/
+.fade_move_dropdown-enter-active, .fade_move_dropdown-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s linear;
+}
+
+.fade_move_dropdown-enter,
+.fade_move_dropdown-leave-to {
+  opacity: 0;
+}
+
+/*.fade_move_dropdown-enter,
+.fade_move_dropdown-leave-to {
+  transform: translateY(-10px);
+}
+
+.dropdown--top .fade_move_dropdown-enter,
+.dropdown--top .fade_move_dropdown-leave-to {
+  transform: translateY(10px);
+}*/
+

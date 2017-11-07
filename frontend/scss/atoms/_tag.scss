@@ -1,0 +1,33 @@
+/***
+
+Tag
+===
+
+The little tag
+
+```
+<div class="styleguide--demo">
+    Some text <span class="tag">Past</span>
+</div>
+```
+
+***/
+
+
+.tag {
+  text-transform:uppercase;
+  height: 15px;
+  line-height: 15px;
+  padding: 0 5px;
+  display: inline-block;
+  position: relative;
+  border-radius:2px;
+  background:black;
+  font-size:10px;
+  color:$color__background;
+  background:$color__tag;
+  letter-spacing: 0.05em;
+  top: -2px;
+  margin:0 5px;
+  /*font-weight:700;*/
+}

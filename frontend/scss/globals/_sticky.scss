@@ -1,0 +1,54 @@
+/***
+
+Sticky
+======
+
+Sticky elements default style
+
+***/
+
+
+@include breakpoint('medium+') {
+
+  .sticky {
+    position:relative;
+  }
+
+  .sticky__fixed,
+  .sticky__fixedTop {
+    width:inherit;
+    position:fixed;
+    top:20px; /* see sticky.js : default offset value */
+  }
+
+  .sticky__fixedBottom {
+    width:inherit;
+    position:fixed;
+    bottom:0; /* see sticky.js : default topMargin value */
+  }
+
+  .sticky__abs {
+    width:inherit;
+    position:absolute;
+    bottom:0;
+  }
+
+  .sticky__scrolled {
+  }
+
+  /* publisher.vue */
+  .publisher {
+    &.sticky__fixed,
+    &.sticky__fixedTop {
+      top:80px; /* see sticky.js : topMargin value */
+    }
+  }
+
+  /* stickyNav.vue */
+  .stickyNav {
+    &.sticky__fixed,
+    &.sticky__fixedTop {
+      top:0; /* see sticky.js : topMargin value */
+    }
+  }
+}

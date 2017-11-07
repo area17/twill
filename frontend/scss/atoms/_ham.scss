@@ -1,0 +1,81 @@
+/***
+
+Hamburger button
+================
+
+Hamburger button showing in the header on smaller devices
+
+```
+<div class="styleguide--demo">
+    <div class="ham"><span class="ham__label">Home</span> <button type="button" class="btn ham__btn" data-ham-btn><span class="ham__icon"><span class="ham__line"></span></span></button>
+</div>
+```
+
+***/
+
+
+.ham {
+  @include breakpoint('large+') {
+    display:none;
+  }
+}
+
+.ham__label {
+  color:$color__background;
+  /*@include font-smoothing;*/
+
+  @include breakpoint('xsmall') {
+    display:none;
+  }
+}
+
+.ham__btn {
+  @include btn-reset;
+  overflow: hidden;
+  box-sizing: content-box;
+  font-size:0px;
+}
+
+.ham__label,
+.ham__btn {
+  height:20px;
+  padding: 19px 0 20px 20px;
+}
+
+.ham__icon {
+  width:20px;
+  height:13px;
+  display: inline-block;
+  position: relative;
+
+  &:after,
+  &:before {
+    content:'';
+    height:1px;
+    position:absolute;
+    display:block;
+    left:0;
+    right:0;
+    width:100%;
+    background:$color__text--light;
+    transition: transform .3s ease;
+  }
+
+  &:before {
+    top:0;
+  }
+
+  &:after {
+    bottom:0;
+  }
+}
+
+.ham__line {
+  height:1px;
+  background:$color__text--light;
+  width:100%;
+  left:0;
+  right:0;
+  position:absolute;
+  top:6px;
+}

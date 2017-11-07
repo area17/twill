@@ -1,0 +1,105 @@
+html,
+body {
+  min-width: 320px;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+body {
+  @include sans-serif();
+  background: $color__background;
+  color: $color__text;
+  @include monospaced-figures();
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+  font-variant-ligatures: common-ligatures;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  padding:0;
+  height:100%;
+
+  &::after {
+    position: absolute;
+    left: -1px;
+    top: -1px;
+    width: 1px;
+    height: 1px;
+    margin: -1px 0 0 -1px;
+    color: transparent;
+    font: 0/0 a;
+    text-shadow: none;
+  }
+}
+
+/*
+::-webkit-scrollbar {
+  background-color:inherit;
+}
+::-webkit-scrollbar{
+  height:9px;
+  width:9px
+}
+::-webkit-scrollbar-button:end:increment,
+::-webkit-scrollbar-button:start:decrement{
+  background:0 0;
+  display:none
+}
+::-webkit-scrollbar-track-piece{
+  background:$color__border
+}
+::-webkit-scrollbar-track-piece:vertical:start{
+  border-radius:5px 5px 0 0
+}
+::-webkit-scrollbar-track-piece:vertical:end{
+  border-radius:0 0 5px 5px
+}
+::-webkit-scrollbar-track-piece:horizontal:start{
+  border-radius:5px 0 0 5px
+}
+::-webkit-scrollbar-track-piece:horizontal:end{
+  border-radius:0 5px 5px 0
+}
+::-webkit-scrollbar-thumb:horizontal,
+::-webkit-scrollbar-thumb:vertical{
+  background:$color__border--focus;
+  border-radius:5px;
+  display:block;
+  height:50px;
+}
+*/
+
+.a17 {
+  width:100vw;
+  overflow:hidden;
+  min-height:100vh;
+}
+
+
+.app {
+  min-height:calc(100vh - 230px);
+}
+
+.app--form,
+.app--dashboard,
+.app--buckets {
+  background-color:$color__border--light;
+}
+
+@each $name, $point in $breakpoints {
+  @include breakpoint('#{$name}') {
+    head {
+      font-family: '#{$name}';
+    }
+
+    body::after {
+      content: '#{$name}';
+    }
+  }
+}

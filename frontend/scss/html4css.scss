@@ -1,0 +1,350 @@
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+html4.css
+v.1.0.0
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var,
+b, i,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, dialog, figure, figcaption, picture,
+hgroup, menu, nav, section, footer, header
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+  outline: 0;
+}
+
+article, aside, dialog, figure, figcaption, footer,
+header, hgroup, nav, section, main {
+  display: block;
+}
+
+template {
+  display: none;
+}
+
+html {
+  text-align: center;
+  overflow-y: scroll;
+  overflow: -moz-scrollbars-vertical;
+  touch-action: manipulation;
+}
+
+@-ms-viewport {
+  width: device-width;
+}
+
+/* Body ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+body {
+  font: 18px/27px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #111;
+  text-align: left;
+  margin: 0 auto;
+  padding: 0 20px;
+  max-width: 1200px;
+  _width:expression(this.scrollWidth > 1200 ? "1200px" : "auto");
+}
+
+/* Layout ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+header,
+footer,
+nav,
+aside {
+  background-color: #f2f2f2;
+  padding: 10px 20px 30px;
+  margin: 20px -20px 0;
+}
+
+nav {
+  background-color: #e6e6e6;
+}
+
+aside {
+  background-color: #f7f7f7;
+}
+
+header,
+header + nav {
+  margin-top: 0;
+}
+
+section {
+  margin-top: 20px;
+}
+
+footer {
+  margin-top: 40px;
+}
+
+/* Text ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+h1, h2, h3, h4, h5, h6, p, ul, ol, dl, label, small {
+  margin-top: 20px;
+  font-size: 18px;
+  line-height: 27px;
+}
+
+h1 {
+  font-size: 90px;
+  line-height: 90px;
+  letter-spacing: -2px;
+}
+
+h2 {
+  font-size: 29px;
+  line-height: 42px;
+}
+
+h3 {
+  font-size: 29px;
+  line-height: 42px;
+  color: #9e9e9e;
+}
+
+h4,
+h5,
+h6 {}
+
+b,
+strong,
+dfn {
+  font-weight: bold;
+}
+
+i,
+em,
+dfn {
+  font-style: italic;
+}
+
+small {
+  display: block;
+}
+
+a {
+  text-decoration: underline;
+  color: #111;
+}
+
+a:hover,
+a:active,
+a:focus {
+  color: #9e9e9e;
+}
+
+/* Image/Figure/SVG ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+img,
+figure,
+picture {
+  display: block;
+  border: 0 none;
+  margin-top: 20px;
+  max-width: 500px;
+  width: expression(this.width > 500 ? 500: true);
+  height: auto;
+}
+
+li img {
+  margin-top: 0;
+}
+
+svg {
+  display: none;
+}
+
+/* Lists ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+ul,
+ol {
+  padding: 0 2em;
+}
+
+ul ul,
+ul ol,
+ol ul,
+ol ol {
+  margin-top: 0;
+  padding-bottom: 10px;
+}
+
+ul {
+  list-style-type : disc;
+}
+
+ol {
+  list-style-type : decimal;
+}
+
+dt {
+  font-weight: bold;
+}
+
+dd {
+  padding-left: 2em;
+}
+
+/* Tables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+table {
+  border-collapse : separate;
+  border-spacing : 0;
+  width : 100%;
+}
+
+table,
+td,
+th {
+  vertical-align : top;
+  border: 1px solid #f2f2f2;
+}
+
+td,
+th,
+caption {
+  padding: 5px 8px;
+}
+
+thead td,
+thead th,
+th {
+  font-weight: bold;
+}
+
+caption {
+  font-style: italic;
+}
+
+/* Forms ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+form {
+  background-color: #fff;
+  border: 1px solid #f2f2f2;
+  padding: 10px 20px 30px;
+  margin-top: 20px;
+}
+
+fieldset {
+  min-width: -webkit-min-content;
+  border: 1px solid #f2f2f2;
+  padding: 10px 20px 30px;
+  margin-top: 20px;
+}
+
+legend {
+  background-color: #fff;
+  font: bold 18px/27px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  padding: 0 8px;
+  margin-left: -8px;
+}
+
+label {
+  display: block;
+}
+
+input,
+textarea {
+  display: block;
+  margin-top: 5px;
+  font: 18px/27px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.btn,
+input[type=submit],
+button {
+  font: bold 18px/27px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  padding: 5px 8px;
+}
+
+input + .btn,
+input + input[type=submit],
+input + button {
+  margin-top: 20px;
+}
+
+form ol {
+  list-style-type: none;
+  padding: 0;
+}
+
+/* Less common ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+hr {
+  border: 0;
+  height: 1px;
+  background: #ccc;
+  margin-top: 20px;
+}
+
+blockquote {
+  color: #666;
+  border-left: 1px solid #666;
+  padding: 0 20px;
+  margin-top: 20px;
+  font-style: italic;
+}
+
+abbr,
+acronym {
+  border-bottom : 1px dotted #111;
+  cursor : help;
+}
+
+s,
+strike,
+del {
+  color: #9e9e9e;
+  text-decoration: line-through;
+}
+
+ins, mark {
+  background-color: #ffc;
+  text-decoration: none;
+}
+
+pre,
+code {
+  font : 15px/20px 'lucida console', monospace;
+  background-color: #f2f2f2;
+  padding: 5px 8px;
+}
+
+pre {
+  white-space: pre;
+}
+
+figcaption {
+  display: block;
+  font-size: 15px;
+  line-height: 18px;
+  margin-top: 10px;
+}
+
+sup {
+  position: relative;
+  top: -8px;
+  vertical-align: top;
+  font-size: 10px;
+}
+
+sub {
+  position: relative;
+  top: 6px;
+  vertical-align: top;
+  font-size: 10px;
+}

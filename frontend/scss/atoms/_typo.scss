@@ -1,0 +1,57 @@
+/***
+
+Typographic default styles
+==========================
+
+Text can be set as heading, regular (default), small or tiny
+
+
+```
+<div class="styleguide--demo">
+    <p class="f--heading">Heading</p>
+    <p class="f--regular">Heading</p>
+    <p class="f--small">Heading</p>
+    <p class="f--tiny">Heading</p>
+    <p class="f--note">I am note</p>
+</div>
+```
+
+***/
+
+
+@mixin font-heading() {
+  font-size:40px;
+}
+
+.f--heading {
+  @include font-heading;
+}
+
+
+@mixin font-regular() {
+  font-size:15px;
+}
+
+.f--regular {
+  @include font-regular;
+}
+
+@mixin font-small() {
+  font-size:13px;
+}
+
+.f--small {
+  @include font-small;
+}
+
+@mixin font-tiny() {
+  font-size:11px;
+}
+
+.f--tiny {
+  @include font-tiny;
+}
+
+.f--note {
+  color:$color__text--light
+}

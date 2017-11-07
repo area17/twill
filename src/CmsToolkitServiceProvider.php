@@ -228,7 +228,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
 
     private function publishPublicAssets()
     {
-        $this->publishes([__DIR__ . '/../assets' => public_path('assets/admin')], 'assets');
+        $this->publishes([__DIR__ . '/../assets' => public_path('assets')], 'assets');
     }
 
     private function includeView($view, $expression)

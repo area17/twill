@@ -1,0 +1,90 @@
+/***
+
+HeaderMobile
+============
+
+Header overlay that is showing on smaller devices
+
+```
+<div class="styleguide--demo">
+    <header class="headerMobile" data-header-mobile>
+      <nav class="headerMobile__nav">
+        <div class="container">
+          <ul class="headerMobile__list">
+            <li class="headerMobile__item s--on"><a href="#">Home</a></li>
+            <li class="headerMobile__item"><a href="#">Work</a></li>
+            <li class="headerMobile__item">...</li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+</div>
+```
+
+***/
+
+.headerMobile {
+  width:100%;
+  min-height:100%;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  overflow:hidden;
+  position:fixed;
+  visibility: hidden;
+  transition: all .3s ease;
+  z-index:$zindex__headermobile;
+  opacity: 0;
+  color:$color__background;
+  @include font-smoothing;
+  transform: translateZ(0);
+  background:rgba($color__black,0.9);
+  @include monospaced-figures('off'); // dont use monospaced figures here
+
+  .container {
+    padding-top:30px;
+  }
+}
+
+.headerMobile__nav {
+  pointer-events: auto;
+  min-height:100%;
+  position:relative;
+  z-index:$zindex__headermobile + 1;
+  transform: translateZ(0);
+}
+
+.headerMobile__item {
+  line-height:40px;
+
+  &:focus {
+    outline:0;
+  }
+}
+
+@include breakpoint('xsmall') {
+  .js--nav {
+    overflow: visible;
+    height: 100%;
+  }
+
+  .js--nav body {
+    .main {
+      position:fixed;
+      width: 100%;
+      overflow: hidden;
+    }
+  }
+
+  .js--nav {
+    .headerMobile {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+  }
+}
+
+.headerMobile__list {
+    padding-bottom: 140px;
+}

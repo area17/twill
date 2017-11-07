@@ -1,0 +1,72 @@
+/***
+
+Secondary Nav
+=============
+
+Secondary navigation used in the components (media library or in listings)
+
+***/
+
+$height__nav: 35px;
+
+.secondarynav {
+  padding:20px 0;
+}
+
+.secondarynav__item {
+  height: $height__nav;
+  display: inline-block;
+  color: $color__link;
+
+  a {
+    height: $height__nav;
+    line-height: $height__nav;
+    display: inherit;
+    color:inherit;
+    text-decoration: inherit;
+    position: relative;
+    padding: 0 17px;
+    border-radius:17px;
+  }
+
+  &.s--on {
+    color: $color__text;
+
+    a {
+      background:$color__background;
+    }
+  }
+
+  &.s--disabled {
+    color: $color__text;
+
+    a {
+      opacity: .5;
+      pointer-events: none;
+    }
+
+    &:hover {
+      .secondarynav__link {
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+.secondarynav__link {
+  text-decoration: none;
+}
+
+.secondarynav__item:hover .secondarynav__link {
+  text-decoration: underline;
+}
+
+.secondarynav__item.s--on .secondarynav__link {
+  text-decoration: none;
+}
+
+.secondarynav__number {
+  color: $color__icons;
+  @include font-small;
+  margin-left:6px;
+}

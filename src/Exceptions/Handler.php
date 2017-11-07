@@ -23,7 +23,6 @@ class Handler extends ExceptionHandler
 
     protected $isJsonOutputFormat = false;
 
-
     public function report(Exception $e)
     {
         return parent::report($e);
@@ -105,7 +104,7 @@ class Handler extends ExceptionHandler
             if (app()->environment('local', 'development')) {
                 $handler->setEditor(function ($file, $line) {
                     $translations = array('^' .
-                        config('cms-toolkit.debug.whoops_path_guest') => config('cms-toolkit.debug.whoops_path_host')
+                        config('cms-toolkit.debug.whoops_path_guest') => config('cms-toolkit.debug.whoops_path_host'),
                     );
                     foreach ($translations as $from => $to) {
                         $file = rawurlencode(preg_replace('#' . $from . '#', $to, $file, 1));
@@ -117,7 +116,7 @@ class Handler extends ExceptionHandler
                 });
             }
 
-            $handler->addResourcePath(base_path('public/assets/admin/vendor'));
+            $handler->addResourcePath(base_path('public/assets/vendor'));
             $handler->addCustomCss('whoops.base.css');
         }
 

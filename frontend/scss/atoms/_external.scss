@@ -1,0 +1,28 @@
+/***
+
+External links text
+===================
+
+Showing an arrow close to the text :
+
+```
+<div class="styleguide--demo">
+    <a class="f--external" href="#" target="_blank">Permalink</a>
+</div>
+```
+
+***/
+
+.f--external {
+  position:relative;
+  &:after {
+    content: "\2197";
+    font-size:em(12px);
+    color:inherit;
+    position:absolute;
+    bottom:-0.1em;
+    vertical-align:baseline;
+    transform: translateX(50%);
+    font-weight:400;
+  }
+}

@@ -1,0 +1,70 @@
+// Max widths the main column can run to over the breakpoints
+// values can either be 'fluid' or a pixel value
+// recommended xxlarge is a px value and xsmall is fluid
+$max-width:1440px;
+
+$main-col-widths: (
+  xlarge: $max-width,
+  large: 'fluid',
+  medium: 'fluid',
+  small: 'fluid',
+  xsmall: 'fluid'
+);
+
+// Inner gutters, in px or vw, of each breakpoint
+$inner-gutters: (
+  xlarge: 20px,
+  large: 20px,
+  medium: 20px,
+  small: 15px,
+  xsmall: 15px
+);
+
+// Outer gutters, in px or vw, of each breakpoint
+$outer-gutters: (
+  xlarge: 50px,
+  large: 50px,
+  medium: 40px,
+  small: 30px,
+  xsmall: 20px
+);
+
+// How many columns are in each breakpoint
+$column-count: (
+  xlarge: 6,
+  large: 6,
+  medium: 6,
+  small: 2,
+  xsmall: 2
+);
+
+// Breakpoint information, where each starts and stops
+// if a breakpoint is not fluid, then the start value is equal to the main col value plus 2x the gutter at this breakpoint
+/* 1540 = $max-width + 50 + 50 */
+$breakpoints: (
+  xsmall: (start: null, end: 599),
+  small: (start: 600, end: 849),
+  medium: (start: 850, end: 1039),
+  large: (start: 1040, end: 1539),
+  xlarge: (start: 1540, end: null),
+);
+
+// Uniform border radius
+$border-radius: 2px;
+
+// Some easing functions
+$bezier__bounce: cubic-bezier(.5, -.6, .5, 1.6);
+$bezier__ease-in-out: cubic-bezier(.5, 0, .5, 0);
+
+// z-index war
+
+$zindex__headermobile:10000;
+
+$zindex__tooltip:6000;
+$zindex__notif:5500;
+$zindex__modal:5000;
+$zindex__overlay:2000;
+$zindex__env:1500;
+$zindex__stickyNav:1200;
+$zindex__dropdown:1000;
+$zindex__stickyTableHead:5;

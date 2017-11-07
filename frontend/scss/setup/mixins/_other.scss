@@ -1,0 +1,94 @@
+// @mixin float-clear
+@mixin float-clear() {
+  &::after {
+    content: '.';
+    display: block;
+    clear: both;
+    height: 0;
+    line-height: 0;
+    overflow: hidden;
+    visibility: hidden;
+  }
+}
+
+// @mixin background-fill
+@mixin background-fill {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    left: -(map-get($inner-gutters, xsmall));
+    right: -(map-get($inner-gutters, xsmall));
+    top: 0;
+    bottom: 0;
+    background-color: inherit;
+    pointer-events: none;
+
+    @include breakpoint(small) {
+      left: -(map-get($inner-gutters, small));
+      right: -(map-get($inner-gutters, small));
+    }
+
+    @include breakpoint(medium) {
+      left: -(map-get($inner-gutters, medium));
+      right: -(map-get($inner-gutters, medium));
+    }
+
+    @include breakpoint(large) {
+      left: -(map-get($inner-gutters, large));
+      right: -(map-get($inner-gutters, large));
+    }
+
+    @include breakpoint(xlarge) {
+      left: -99em;
+      right: -99em;
+    }
+  }
+}
+
+
+// @mixin keyline-fill
+@mixin keyline-full($position:top, $color:$color__black) {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    left: -(map-get($inner-gutters, xsmall));
+    right: -(map-get($inner-gutters, xsmall));
+    @if $position == top {
+      bottom: 100%;
+    } @else {
+      top: 100%;
+    }
+    border-top: 1px solid $color;
+    pointer-events: none;
+
+    @include breakpoint(small) {
+      left: -(map-get($inner-gutters, small));
+      right: -(map-get($inner-gutters, small));
+    }
+
+    @include breakpoint(medium) {
+      left: -(map-get($inner-gutters, medium));
+      right: -(map-get($inner-gutters, medium));
+    }
+
+    @include breakpoint(large) {
+      left: -(map-get($inner-gutters, large));
+      right: -(map-get($inner-gutters, large));
+    }
+
+    @include breakpoint(xlarge) {
+      left: -99em;
+      right: -99em;
+    }
+  }
+}
+
+@function strip-units($number) {
+  @return $number / ($number * 0 + 1);
+}

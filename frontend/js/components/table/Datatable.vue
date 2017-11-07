@@ -1,0 +1,320 @@
+<template>
+  <div class="datatable" v-sticky data-sticky-id="thead" data-sticky-offset="0">
+
+    <!-- Sticky table head -->
+    <div class="datatable__sticky" data-sticky-top="thead">
+      <div class="datatable__stickyHead" data-sticky-target="thead">
+        <div class="container">
+          <div class="datatable__stickyInner">
+            <div class="datatable__setup">
+              <a17-dropdown class="datatable__setupDropdown" ref="setupDropdown" position="bottom-right" title="Show" :clickable="true" :offset="-10">
+                <button class="datatable__setupButton" @click="$refs.setupDropdown.toggle()"><span v-svg symbol="preferences"></span></button>
+                <div slot="dropdown__content">
+                  <a17-checkboxgroup name="visibleColumns" :options="checkboxesColumns" :selected="visibleColumnsNames" @change="updateActiveColumns" :min="2"></a17-checkboxgroup>
+                </div>
+              </a17-dropdown>
+            </div>
+
+            <div class="datatable__stickyTable">
+              <a17-table :columnsWidth="columnsWidth" :xScroll="xScroll"  @scroll="updateScroll">
+                <thead>
+                  <a17-tablehead :columns="visibleColumns" @sortColumn="updateSort"></a17-tablehead>
+                </thead>
+              </a17-table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actual table content -->
+    <div class="container">
+      <div class="datatable__table">
+        <a17-table :xScroll="xScroll" @scroll="updateScroll">
+          <thead>
+            <a17-tablehead :columns="visibleColumns" ref="thead"></a17-tablehead>
+          </thead>
+          <template v-if="draggable" >
+            <draggable :element="'tbody'" v-model='rows' :options="{ handle:'.tablecell__handle' }">
+              <template v-for="(row, index) in rows">
+                <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :key="row.id"></a17-tablerow>
+              </template>
+            </draggable>
+          </template>
+          <tbody v-else>
+            <template v-for="(row, index) in rows">
+              <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :key="row.id"></a17-tablerow>
+            </template>
+          </tbody>
+        </a17-table>
+        <a17-paginate :max="maxPage" :value="page" :offset="offset" :availableOffsets="[30,60,90]" @changePage="updatePage" @changeOffset="updateOffset"></a17-paginate>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import { mapState, mapGetters } from 'vuex'
+
+  import draggableMixin from '@/mixins/draggable'
+  import draggable from 'vuedraggable'
+  import debounce from 'lodash/debounce'
+
+  import a17Table from './Table.vue'
+  import a17Tablehead from './TableHead.vue'
+  import a17Tablerow from './TableRow.vue'
+  import a17Paginate from './Paginate.vue'
+
+  export default {
+    name: 'A17Datatable',
+    components: {
+      'a17-table': a17Table,
+      'a17-tablehead': a17Tablehead,
+      'a17-tablerow': a17Tablerow,
+      'a17-paginate': a17Paginate,
+      draggable
+    },
+    mixins: [draggableMixin],
+    props: {
+      draggable: {
+        type: Boolean,
+        default: false
+      },
+      bulkeditable: {
+        type: Boolean,
+        default: true
+      }
+    },
+    data: function () {
+      return {
+        xScroll: 0,
+        columnsWidth: []
+      }
+    },
+    computed: {
+      rows: {
+        get () {
+          return this.$store.state.datatable.data
+        },
+        set (value) {
+          // reorder rows
+          this.$store.commit('updateDatableData', value)
+        }
+      },
+      checkboxesColumns: function () {
+        let checkboxes = []
+
+        if (this.hideableColumns.length) {
+          this.hideableColumns.forEach(function (column) {
+            checkboxes.push({
+              value: column.name,
+              label: column.label
+            })
+          })
+        }
+
+        return checkboxes
+      },
+      ...mapState({
+        page: state => state.datatable.page,
+        offset: state => state.datatable.offset,
+        maxPage: state => state.datatable.maxPage,
+        columns: state => state.datatable.columns
+      }),
+      ...mapGetters([
+        'visibleColumns',
+        'hideableColumns',
+        'visibleColumnsNames'
+      ])
+    },
+    methods: {
+      getColumnWidth: function () {
+        let self = this
+        let newColumnsWidth = []
+
+        if (self.$refs.thead) {
+          // Get all the tds width (there must be a better way to do this) :
+          const tds = self.$refs.thead.$el.children
+
+          for (let index = 0; index < tds.length; index++) {
+            newColumnsWidth.push(tds[index].offsetWidth)
+          }
+        }
+
+        self.columnsWidth = newColumnsWidth
+      },
+      updateScroll: function (newValue) {
+        this.xScroll = newValue
+      },
+      resize: debounce(function () {
+        this.getColumnWidth()
+      }, 200),
+      initEvents: function () {
+        let self = this
+        window.addEventListener('resize', () => self.resize())
+        self.resize()
+      },
+      disposeEvents: function () {
+        let self = this
+        window.removeEventListener('resize', self.resize())
+      },
+      updateSort: function (column) {
+        if (!column.sortable) return
+
+        this.$store.commit('updateDatablePage', 1)
+        this.$store.commit('updateDatableSort', column)
+
+        // reload datas
+        this.$store.dispatch('getDatatableDatas')
+      },
+      updateOffset: function (value) {
+        this.$store.commit('updateDatablePage', 1)
+        this.$store.commit('updateDatableOffset', value)
+
+        // reload datas
+        this.$store.dispatch('getDatatableDatas')
+      },
+      updatePage: function (value) {
+        this.$store.commit('updateDatablePage', value)
+
+        // reload datas
+        this.$store.dispatch('getDatatableDatas')
+      },
+      updateActiveColumns: function (values) {
+        this.$store.commit('updateDatableVisibility', values)
+
+        this.$nextTick(function () {
+          this.getColumnWidth()
+        })
+
+        // reload datas
+        this.$store.dispatch('getDatatableDatas')
+      }
+    },
+    beforeMount: function () {
+      // bulk edit colmun
+      const bulkColumn = {
+        name: 'bulk',
+        label: '',
+        visible: true,
+        optional: false,
+        sortable: false
+      }
+
+      if (this.bulkeditable) {
+        this.$store.commit('addDatableColumn', {
+          index: 0,
+          data: bulkColumn
+        })
+      }
+
+      // draggable column
+      const draggableColumn = {
+        name: 'draggable',
+        label: '',
+        visible: true,
+        optional: false,
+        sortable: false
+      }
+
+      if (this.draggable) {
+        this.$store.commit('addDatableColumn', {
+          index: 0,
+          data: draggableColumn
+        })
+      }
+    },
+    mounted: function () {
+      this.initEvents()
+    },
+    beforeDestroy: function () {
+      this.disposeEvents()
+    }
+  }
+</script>
+
+<style lang="scss" scoped>
+  @import "../../../scss/setup/variables.scss";
+  @import "../../../scss/setup/colors.scss";
+  @import "../../../scss/setup/mixins.scss";
+
+  .datatable {
+
+  }
+
+  .datatable__table {
+    border:1px solid $color__border--light;
+    border-radius:2px;
+    position:relative;
+
+    /deep/ table {
+       margin-top: -60px; // hide the other thead
+    }
+  }
+
+  .datatable__setupDropdown {
+    float:right;
+    padding:18px 10px 16px;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 25%);
+  }
+
+  .datatable__setupButton {
+    @include btn-reset;
+    color:$color--icons;
+
+    &:focus,
+    &:hover {
+      color:$color--text;
+    }
+  }
+
+  .datatable__setup {
+    position:absolute;
+    right:0;
+    width:50px;
+    top:0;
+    z-index:1;
+  }
+
+  /* Sticky table head */
+
+  .datatable__sticky {
+    height:60px;
+  }
+
+  @include breakpoint('medium+') {
+    .datatable__stickyHead {
+      background-clip: padding-box;
+
+      &.sticky__fixedTop {
+        display:block;
+        top:0;
+
+        background-color:rgba($color__border--light, 0.95);
+        border-bottom:1px solid rgba($color__black, 0.05);
+
+        .datatable__setupDropdown {
+          background: linear-gradient(to right, rgba($color__border--light, 0) 0%, $color__border--light 25%);
+        }
+      }
+    }
+  }
+
+  .datatable__stickyHead {
+    width:100%;
+    z-index:$zindex__stickyTableHead;
+  }
+
+  .datatable__stickyInner {
+    position:relative;
+  }
+
+  .datatable__stickyTable {
+    max-height:60px;
+    overflow: hidden;
+
+    .table__scroller {
+      padding-bottom:50px;
+    }
+  }
+</style>
