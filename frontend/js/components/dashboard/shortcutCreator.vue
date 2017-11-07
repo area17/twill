@@ -5,7 +5,7 @@
         <div class="shortcutCreator__create">
           <a17-dropdown class="shortcutCreator__dropdown" ref="createNewDropdown" position="bottom-right" width="full" :offset="0">
             <a17-button type="button" variant="action" @click="$refs.createNewDropdown.toggle()">Create New</a17-button>
-            <button type="button" @click="$refs.createNewDropdown.toggle()"><span v-svg symbol="dropdown_module"></span></button>
+            <button type="button" class="shortcutCreator__trigger" @click="$refs.createNewDropdown.toggle()"><span v-svg symbol="dropdown_module"></span></button>
 
             <div slot="dropdown__content">
               <ul>
@@ -49,16 +49,18 @@
   @import "../../../scss/setup/colors.scss";
   @import "../../../scss/setup/mixins.scss";
 
+  $height_btn: 40px;
+
   $column-spans__listing: (
-    xsmall: 2,
-    small: 2,
+    xsmall: 6,
+    small: 6,
     medium: 3,
     large: 4,
     xlarge: 5
   );
 
   $column-spans__item: (
-    xsmall: 2,
+    xsmall: 6,
     small: 2,
     medium: 1,
     large: 1,
@@ -66,8 +68,8 @@
   );
 
   $column-spans__button: (
-    xsmall: 2,
-    small: 2,
+    xsmall: 6,
+    small: 6,
     medium: 3,
     large: 1,
     xlarge: 1
@@ -83,11 +85,21 @@
   .shortcutCreator__listing {
     display:flex;
     flex-grow:1;
+    flex-flow: column nowrap;
+
+    @include breakpoint('small+') {
+      flex-flow: row nowrap;
+    }
   }
 
   .shortcutCreator__listingItem {
     text-decoration:none;
+    padding:20px 0 0;
     @include column-flex($column-spans__item);
+
+    @include breakpoint('small+') {
+      padding:5px 0 7px;
+    }
 
     &:hover {
       color:$color__link;
@@ -95,7 +107,7 @@
   }
 
   .shortcutCreator__label {
-    padding-bottom:10px;
+    padding-bottom:7px;
     display:block;
   }
 
@@ -120,8 +132,11 @@
 
     .dropdown {
       width: 100%;
-      height: calc(100% - 30px);
-      margin: 15px 0;
+      height: $height_btn; // calc(100% - 40px);
+
+      @include breakpoint('small+') {
+        margin: 20px 0;
+      }
 
       > button:first-child {
         flex-grow:1;
@@ -129,5 +144,34 @@
         padding-right:0;
       }
     }
+  }
+
+  .shortcutCreator__trigger {
+    @include btn-reset;
+    height:$height_btn;
+    line-height:$height_btn;
+    text-align:center;
+    border-top-right-radius:2px;
+    border-bottom-right-radius:2px;
+    background:$color__action;
+    color: $color__background;
+    margin-left: -2px;
+    border-left:1px solid $color__action--hover;
+    padding:0 10px;
+    transition: color .2s linear, border-color .2s linear, background-color .2s linear;
+
+    &:hover,
+    &:focus {
+      background:$color__action--hover;
+    }
+
+    .icon {
+      color: $color__background;
+    }
+  }
+
+  button:focus + .shortcutCreator__trigger,
+  button:hover + .shortcutCreator__trigger {
+    background:$color__action--hover;
   }
 </style>

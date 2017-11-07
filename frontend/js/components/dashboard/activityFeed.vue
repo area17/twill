@@ -13,6 +13,7 @@
           </td>
           <td class="activityCell">
             <a class="activityFeed__link" href="#">Garden Museum</a>
+            <p class="activityFeed__meta f--note">Published <timeago :auto-update="1" :since="new Date()"></timeago> by George • Projects</p>
           </td>
         </tr>
         <tr class="activityRow">
@@ -23,6 +24,7 @@
           </td>
           <td class="activityCell">
             <a class="activityFeed__link" href="#">'Red Trees'</a>
+            <p class="activityFeed__meta f--note">Published <timeago :auto-update="1" :since="new Date()"></timeago> by George • Projects</p>
           </td>
         </tr>
         <tr class="activityRow">
@@ -33,6 +35,7 @@
           </td>
           <td class="activityCell">
             <a class="activityFeed__link" href="#">Garden Museum</a>
+            <p class="activityFeed__meta f--note">Published <timeago :auto-update="1" :since="new Date()"></timeago> by George • Projects</p>
           </td>
         </tr>
         <tr class="activityRow">
@@ -43,6 +46,7 @@
           </td>
           <td class="activityCell">
             <a class="activityFeed__link" href="#">Garden Museum</a>
+            <p class="activityFeed__meta f--note">Published <timeago :auto-update="1" :since="new Date()"></timeago> by George • Projects</p>
           </td>
         </tr>
         <tr class="activityRow">
@@ -53,6 +57,7 @@
           </td>
           <td class="activityCell">
             <a class="activityFeed__link" href="#">Garden Museum</a>
+            <p class="activityFeed__meta f--note">Published <timeago :auto-update="1" :since="new Date()"></timeago> by George • Projects</p>
           </td>
         </tr>
         <tr class="activityRow">
@@ -63,6 +68,7 @@
           </td>
           <td class="activityCell">
             <a class="activityFeed__link" href="#">Garden Museum</a>
+            <p class="activityFeed__meta f--note">Published <timeago :auto-update="1" :since="new Date()"></timeago> by George • Projects</p>
           </td>
         </tr>
         <tr class="activityRow">
@@ -73,6 +79,7 @@
           </td>
           <td class="activityCell">
             <a class="activityFeed__link" href="#">Garden Museum</a>
+            <p class="activityFeed__meta f--note">Published <timeago :auto-update="1" :since="new Date()"></timeago> by George • Projects</p>
           </td>
         </tr>
       </table>
@@ -146,4 +153,8 @@
       @include bordered($color__link, false);
     }
   }
+
+  .activityFeed__meta {
+      margin-top: 5px;
+    }
 </style>

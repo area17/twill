@@ -77,6 +77,7 @@
     margin-left: -2px;
     border-left:1px solid $color__ok--hover;
     padding:0 10px;
+    transition: color .2s linear, border-color .2s linear, background-color .2s linear;
 
     &:hover {
       background:$color__ok--hover;
@@ -86,51 +87,4 @@
       color: $color__background;
     }
   }
-
-  // .multibutton__options {
-  //   display:none;
-  //   position:absolute;
-  //   top:$height_btn;
-  //   background:rgba($color__background,0.9);
-  //   border-radius:2px;
-  //   box-shadow:0 0px 8px rgba(0,0,0,0.3);
-  //   padding:10px 0;
-  //   left:0;
-  //   right:0;
-
-  //   button {
-  //     width:100%;
-  //     height:40px;
-  //     line-height: 40px;
-  //     background:transparent;
-  //     outline: none;
-  //     text-align:left;
-  //     -webkit-appearance: none;
-  //     cursor: pointer;
-  //     border:0 none;
-  //     color:$color__text--light;
-  //     font-size:1em;
-  //     display:block;
-  //     width:100%;
-  //     padding:0 15px;
-  //     white-space: nowrap;
-  //     text-overflow: ellipsis;
-  //     overflow:hidden;
-
-  //     &:hover {
-  //       color:$color__text;
-  //       background:$color__light;
-  //     }
-  //   }
-  // }
-
-  // .multibutton__dropdown:hover {
-  //   .multibutton__trigger {
-  //     background:$color__ok--hover;
-  //   }
-
-  //   .multibutton__options {
-  //     display:block;
-  //   }
-  // }
 </style>
