@@ -41,9 +41,3 @@ mix.js(
   'frontend/scss/app.scss',
   'assets/dist/css'
 );
-
-if (mix.inProduction()) {
-  mix.version();
-} else {
-  mix.sourceMaps();
-}
