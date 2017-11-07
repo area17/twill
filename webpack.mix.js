@@ -12,10 +12,12 @@ let mix = require('laravel-mix');
 
 mix.options({
   processCssUrls: false,
+  purifyCss: false, // Remove unused CSS selectors.
 }).webpackConfig({
   resolve: {
     alias: {
-      '@': path.resolve('frontend/js')
+      '@': path.resolve('frontend/js'),
+      'styles': path.resolve('frontend/scss')
     }
   }
 });

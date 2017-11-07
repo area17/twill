@@ -6,7 +6,6 @@
           <a17-dropdown class="shortcutCreator__dropdown" ref="createNewDropdown" position="bottom-right" width="full" :offset="0">
             <a17-button type="button" variant="action" @click="$refs.createNewDropdown.toggle()">Create New</a17-button>
             <button type="button" class="shortcutCreator__trigger" @click="$refs.createNewDropdown.toggle()"><span v-svg symbol="dropdown_module"></span></button>
-
             <div slot="dropdown__content">
               <ul>
                 <li v-for="entity in entities"><a href="#">{{ entity.singular }}</a></li>
@@ -45,9 +44,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import "../../../scss/setup/variables.scss";
-  @import "../../../scss/setup/colors.scss";
-  @import "../../../scss/setup/mixins.scss";
+  @import '~styles/setup/_mixins-colors-vars.scss';
 
   $height_btn: 40px;
 

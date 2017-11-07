@@ -98,9 +98,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import "../../scss/setup/variables.scss";
-  @import "../../scss/setup/colors.scss";
-  @import "../../scss/setup/mixins.scss";
+  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .overlay {
     position:fixed;

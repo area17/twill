@@ -230,9 +230,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import "../../../scss/setup/variables.scss";
-  @import "../../../scss/setup/colors.scss";
-  @import "../../../scss/setup/mixins.scss";
+  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .buckets {
     padding-bottom: 80px;
@@ -336,9 +334,7 @@
 </style>
 
 <style lang="scss">
-  @import "../../../scss/setup/variables.scss";
-  @import "../../../scss/setup/colors.scss";
-  @import "../../../scss/setup/mixins.scss";
+  @import '~styles/setup/_mixins-colors-vars.scss';
 
   /*Child component style*/
   .buckets__item {

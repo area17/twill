@@ -157,10 +157,9 @@
   }
 </script>
 
-<style lang="scss"> /* Not scoped style here because we want to overwrite default style of the wysiwig */
-  @import "../../scss/setup/variables.scss";
-  @import "../../scss/setup/colors.scss";
-  @import "../../scss/setup/mixins.scss";
+<style lang="scss">
+  /* Not scoped style here because we want to overwrite default style of the wysiwig */
+  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .a17 {
     .ql-toolbar.ql-snow {
