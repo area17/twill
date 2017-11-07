@@ -5,7 +5,7 @@
     <a17-datepicker :name="fieldName('date')" label="Video Date" place-holder="Video Date" :enableTime="false" :allowInput="true" :clear="true" inStore="date" ></a17-datepicker>
     <a17-inputframe label="Thumbnail"><a17-mediafield :name="fieldName('thumbnail')" cropContext="cover" ref="thumbnail">Minimum image width 1300px</a17-mediafield></a17-inputframe>
     <a17-inputframe label="Slideshow"><a17-slideshow :name="fieldName('slideshow')" :max="4" cropContext="slideshow" ref="slideshow">Minimum image width / height: 1500px</a17-slideshow></a17-inputframe>
-    <a17-inputframe label="News"><a17-browserfield :name="fieldName('news')" :max="6" itemLabel="News" endpoint="http://www.mocky.io/v2/59d77e61120000ce04cb1c5b" modalTitle="Attach news" ref="news">Add up to 6 news</a17-browserfield></a17-inputframe>
+    <a17-inputframe label="News"><a17-browserfield :name="fieldName('news')" :max="6" itemLabel="News" endpoint="https://www.mocky.io/v2/59d77e61120000ce04cb1c5b" modalTitle="Attach news" ref="news">Add up to 6 news</a17-browserfield></a17-inputframe>
   </div>
 </template>
 

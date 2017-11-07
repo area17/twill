@@ -21,7 +21,7 @@ export default {
     // media : full media datas
 
     // Set endpoint in global config
-    axios.put('http://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { media: media }).then(function (resp) {
+    axios.put('https://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { media: media }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(media)
     }, function (resp) {
       // error callback

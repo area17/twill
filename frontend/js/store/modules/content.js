@@ -35,7 +35,7 @@ const state = {
       attributes: {
         max: 4,
         itemLabel: 'Publications',
-        endpoint: 'http://www.mocky.io/v2/59d77e61120000ce04cb1c5b',
+        endpoint: 'https://www.mocky.io/v2/59d77e61120000ce04cb1c5b',
         modalTitle: 'Attach publications'
       }
     }

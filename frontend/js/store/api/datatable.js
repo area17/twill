@@ -139,7 +139,7 @@ export default {
     // filter: the current navigation ("all", "mine", "published", "draft", "trash")
 
     // Set endpoint in global config
-    axios.get('http://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { params: params }).then(function (resp) {
+    axios.get('https://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { params: params }).then(function (resp) {
       // update data and max page
       const _newData = shuffle(_data)
 
@@ -165,7 +165,7 @@ export default {
     // id : id of the item to toggle
 
     // Set endpoint in global config  https://github.com/axios/axios#axiosposturl-data-config-1
-    axios.put('http://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { id: id }).then(function (resp) {
+    axios.put('https://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { id: id }).then(function (resp) {
       // todo : this need to be in the resp
       const navigation = [
         {
@@ -191,7 +191,7 @@ export default {
     // status : boolean (publish or unpublish)
 
     // Set endpoint in global config https://github.com/axios/axios#axiosposturl-data-config-1
-    axios.put('http://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { ids: params.ids, status: params.toPublish }).then(function (resp) {
+    axios.put('https://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { ids: params.ids, status: params.toPublish }).then(function (resp) {
       // todo : this need to be in the resp
       const navigation = [
         {
@@ -216,7 +216,7 @@ export default {
     // id : id of the item to toggle
 
     // Set endpoint in global config https://github.com/axios/axios#axiosposturl-data-config-1
-    axios.put('http://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { id: id }).then(function (resp) {
+    axios.put('https://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { id: id }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(id)
     }, function (resp) {
       // error callback
@@ -225,7 +225,7 @@ export default {
 
   bulkFeature (ids, callback) {
     // Set endpoint in global config https://github.com/axios/axios#axiosposturl-data-config-1
-    axios.put('http://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { ids: ids }).then(function (resp) {
+    axios.put('https://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { ids: ids }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(ids)
     }, function (resp) {
       // error callback
@@ -246,7 +246,7 @@ export default {
     // id : id of the item to delete
 
     // Set endpoint in global config and adjust setting using axios DELETE https://github.com/axios/axios#axiosdeleteurl-config-1
-    axios.get('http://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { params: params }).then(function (resp) {
+    axios.get('https://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { params: params }).then(function (resp) {
       // update data and max page
       const _newData = shuffle(_data)
 
@@ -275,7 +275,7 @@ export default {
     // ids : comma separated list of ids to delete
 
     // Set endpoint in global config https://github.com/axios/axios#axiosposturl-data-config-1
-    axios.get('http://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { params: params }).then(function (resp) {
+    axios.get('https://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { params: params }).then(function (resp) {
       // update data and max page
       const _newData = shuffle(_data)
 
