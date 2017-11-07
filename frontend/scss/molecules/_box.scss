@@ -3,18 +3,23 @@
   border-radius:2px;
   border:1px solid $color__border;
   margin-top:20px;
+  overflow:hidden;
+}
+
+.box__body {
+  margin:0 -1px;
 }
 
 .box__header {
   height:60px;
   line-height:60px;
-  border-bottom:1px solid $color__border;
+  border-bottom:1px solid $color__border--light;
   padding:0 20px;
 }
 
 .box__footer {
   height:60px;
-  line-height:60px;
-  border-top:1px solid $color__border;
-  padding:0 20px;
+  /*line-height:60px;*/
+  border-top:1px solid $color__border--light;
+  padding:20px;
 }

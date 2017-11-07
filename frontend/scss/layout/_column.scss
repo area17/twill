@@ -1,22 +1,22 @@
 $column-spans__primary: (
-    xsmall: 2,
-    small: 2,
+    xsmall: 6,
+    small: 6,
     medium: 3,
     large: 4,
     xlarge: 4
 );
 
 $column-spans__aside: (
-    xsmall: 2,
-    small: 2,
+    xsmall: 6,
+    small: 6,
     medium: 3,
     large: 2,
     xlarge: 2
 );
 
 $column-spans__even: (
-    xsmall: 2,
-    small: 2,
+    xsmall: 6,
+    small: 6,
     medium: 3,
     large: 3,
     xlarge: 3
@@ -28,6 +28,10 @@ $column-spans__even: (
 
 .wrapper--reverse {
   flex-direction: row-reverse;
+}
+
+.wrapper--oneline {
+  flex-wrap: no-wrap;
 }
 
 .col {

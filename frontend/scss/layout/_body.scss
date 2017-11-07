@@ -1,8 +1,12 @@
 html,
 body {
-  min-width: 320px;
-  min-height: 100%;
-  overflow-x: hidden;
+    min-width: 320px;
+    min-height: 100%;
+    overflow-x: hidden;
+
+/*    @include breakpoint('xsmall') {
+        overflow-x: auto;
+    }*/
 }
 
 html {
@@ -10,6 +14,13 @@ html {
   min-height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
+  /* juggling left/right and margin left/right as 100vw includes scroll bars so forcing 100vw width to make grid colspan calcs work */
+/*
+  left: 50%;
+  right: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  margin-right: -50vw;*/
 }
 
 body {

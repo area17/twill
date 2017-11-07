@@ -80,7 +80,7 @@ $color__error: $color__red;
 $color__error--hover: darken($color__red, 10%);
 $color__warning: $color__orange;
 $color__action: $color__darkBlue;
-$color__action--hover: color__darkBlue--hover;
+$color__action--hover: $color__darkBlue--hover;
 $color__ok: $color__green;
 $color__ok--hover: $color__green--hover;
 $color__publish: $color__green;
@@ -100,6 +100,7 @@ $color__overlay--header: $color__black;
 $color__overlay--background: $color__black--80;
 
 $color__header: $color__black;
+$color__header--sep:$color__black--80;
 $color__nav: $color__black--85;
 
 $color__login--btn:$color__black--80;

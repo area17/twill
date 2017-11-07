@@ -116,6 +116,7 @@ $height__nav: 60px;
 
   &::before {
     content:"•";
+    color:$color__header--sep;
     display:inline-block;
     padding:0 17px;
     height:$height__nav;
