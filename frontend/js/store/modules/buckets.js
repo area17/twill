@@ -32,7 +32,7 @@ const state = {
       {
         id: 1,
         name: 'The New School Website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=1',
         content_type: {
           label: 'Projects',
@@ -42,7 +42,7 @@ const state = {
       {
         id: 2,
         name: 'Barnes Foundation website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=2',
         content_type: {
           label: 'Projects',
@@ -52,7 +52,7 @@ const state = {
       {
         id: 3,
         name: 'Pentagram website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=3',
         content_type: {
           label: 'Projects',
@@ -62,7 +62,7 @@ const state = {
       {
         id: 4,
         name: 'Mai 36 Galerie website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=4',
         content_type: {
           label: 'Projects',
@@ -72,7 +72,7 @@ const state = {
       {
         id: 5,
         name: 'Mai 36 Galerie website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=5',
         content_type: {
           label: 'Projects',
@@ -82,7 +82,7 @@ const state = {
       {
         id: 6,
         name: 'Roto website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=6',
         content_type: {
           label: 'Projects',
@@ -92,7 +92,7 @@ const state = {
       {
         id: 7,
         name: 'THG Paris website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=7',
         content_type: {
           label: 'Projects',
@@ -102,7 +102,7 @@ const state = {
       {
         id: 8,
         name: 'La Parqueterie Nouvelle strategie',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=8',
         content_type: {
           label: 'Projects',
@@ -135,7 +135,7 @@ const state = {
         {
           id: 2,
           name: 'Barnes Foundation website',
-          edit: 'http://pentagram.com',
+          edit: '/templates/form',
           thumbnail: 'https://source.unsplash.com/random/80x80?sig=2',
           content_type: {
             label: 'Projects',

@@ -10,7 +10,7 @@ const _data = [
       {
         id: 1,
         name: 'The New School Website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=1',
         publication: '20/02/2017',
         content_type: {
@@ -21,7 +21,7 @@ const _data = [
       {
         id: 2,
         name: 'Barnes Foundation website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=2',
         publication: '20/02/2017',
         content_type: {
@@ -32,7 +32,7 @@ const _data = [
       {
         id: 3,
         name: 'Pentagram website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=3',
         publication: '20/02/2017',
         content_type: {
@@ -43,7 +43,7 @@ const _data = [
       {
         id: 4,
         name: 'Mai 36 Galerie website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=4',
         publication: '20/02/2017',
         content_type: {
@@ -54,7 +54,7 @@ const _data = [
       {
         id: 5,
         name: 'Mai 36 Galerie website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=5',
         publication: '20/02/2017',
         content_type: {
@@ -65,7 +65,7 @@ const _data = [
       {
         id: 6,
         name: 'Roto website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=6',
         publication: '20/02/2017',
         content_type: {
@@ -76,7 +76,7 @@ const _data = [
       {
         id: 7,
         name: 'THG Paris website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=7',
         publication: '20/02/2017',
         content_type: {
@@ -87,7 +87,7 @@ const _data = [
       {
         id: 8,
         name: 'La Parqueterie Nouvelle strategie',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=8',
         publication: '20/02/2017',
         content_type: {
@@ -106,7 +106,7 @@ const _data = [
       {
         id: 4,
         name: 'Mai 36 Galerie website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=4',
         publication: '20/02/2017',
         content_type: {
@@ -117,7 +117,7 @@ const _data = [
       {
         id: 5,
         name: 'Mai 36 Galerie website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=5',
         publication: '20/02/2017',
         content_type: {
@@ -128,7 +128,7 @@ const _data = [
       {
         id: 6,
         name: 'Roto website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=6',
         publication: '20/02/2017',
         content_type: {
@@ -139,7 +139,7 @@ const _data = [
       {
         id: 1,
         name: 'The New School Website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=1',
         publication: '20/02/2017',
         content_type: {
@@ -150,7 +150,7 @@ const _data = [
       {
         id: 2,
         name: 'Barnes Foundation website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=2',
         publication: '20/02/2017',
         content_type: {
@@ -161,7 +161,7 @@ const _data = [
       {
         id: 3,
         name: 'Pentagram website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=3',
         publication: '20/02/2017',
         content_type: {
@@ -172,7 +172,7 @@ const _data = [
       {
         id: 7,
         name: 'THG Paris website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=7',
         publication: '20/02/2017',
         content_type: {
@@ -183,7 +183,7 @@ const _data = [
       {
         id: 8,
         name: 'La Parqueterie Nouvelle strategie',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=8',
         publication: '20/02/2017',
         content_type: {
@@ -202,7 +202,7 @@ const _data = [
       {
         id: 5,
         name: 'Mai 36 Galerie website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=5',
         publication: '20/02/2017',
         content_type: {
@@ -213,7 +213,7 @@ const _data = [
       {
         id: 6,
         name: 'Roto website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=6',
         publication: '20/02/2017',
         content_type: {
@@ -224,7 +224,7 @@ const _data = [
       {
         id: 7,
         name: 'THG Paris website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=7',
         publication: '20/02/2017',
         content_type: {
@@ -235,7 +235,7 @@ const _data = [
       {
         id: 8,
         name: 'La Parqueterie Nouvelle strategie',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=8',
         publication: '20/02/2017',
         content_type: {
@@ -246,7 +246,7 @@ const _data = [
       {
         id: 1,
         name: 'The New School Website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=1',
         publication: '20/02/2017',
         content_type: {
@@ -257,7 +257,7 @@ const _data = [
       {
         id: 2,
         name: 'Barnes Foundation website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=2',
         publication: '20/02/2017',
         content_type: {
@@ -268,7 +268,7 @@ const _data = [
       {
         id: 3,
         name: 'Pentagram website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=3',
         publication: '20/02/2017',
         content_type: {
@@ -279,7 +279,7 @@ const _data = [
       {
         id: 4,
         name: 'Mai 36 Galerie website',
-        edit: 'http://pentagram.com',
+        edit: '/templates/form',
         thumbnail: 'https://source.unsplash.com/random/80x80?sig=4',
         publication: '20/02/2017',
         content_type: {
