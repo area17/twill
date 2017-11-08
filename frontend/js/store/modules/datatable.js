@@ -7,33 +7,7 @@ const state = {
   filter: {
     status: 'all'
   },
-  filtersNav: [
-    {
-      name: 'All items',
-      slug: 'all',
-      number: 1253
-    },
-    {
-      name: 'Mine',
-      slug: 'mine',
-      number: 3
-    },
-    {
-      name: 'Published',
-      slug: 'published',
-      number: 6
-    },
-    {
-      name: 'Draft',
-      slug: 'draft',
-      number: 1
-    },
-    {
-      name: 'Trash',
-      slug: 'trash',
-      number: 1
-    }
-  ],
+  filtersNav: window.STORE.datatable.navigation || '[]',
   page: 1,
   maxPage: 10,
   offset: 60,

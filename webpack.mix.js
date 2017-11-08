@@ -19,6 +19,19 @@ mix.options({
       '@': path.resolve('frontend/js'),
       'styles': path.resolve('frontend/scss')
     }
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(js|vue)$/,
+        loader: 'eslint-loader',
+        enforce: 'pre',
+        include: [path.resolve('frontend/js')],
+        options: {
+          formatter: require('eslint-friendly-formatter')
+        }
+      }
+    ]
   }
 });
 

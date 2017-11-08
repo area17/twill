@@ -22,6 +22,12 @@
                 @include('cms-toolkit::partials.footer')
             </section>
         </div>
+
+        <script>
+            window.STORE = {}
+            window.STORE.datatable = {}
+            @yield('initialStore')
+        </script>
         @stack('extra_js')
     </body>
 </html>

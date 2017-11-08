@@ -26,11 +26,6 @@
             </a17-modal>
         </div>
     </div>
-
-    <script>
-        window.STORE = {}
-        @yield('initialStore')
-    </script>
 @stop
 
 

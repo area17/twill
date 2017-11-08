@@ -14,13 +14,13 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
+  import { mapState } from 'vuex'
   import A17ActivityRow from '@/components/dashboard/activityRow.vue'
 
   export default {
     name: 'A17ActivityFeed',
     components: {
-      'a17-activity-row': A17ActivityRow,
+      'a17-activity-row': A17ActivityRow
     },
     computed: {
       ...mapState({

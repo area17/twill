@@ -19,9 +19,9 @@
       <a17-dropdown ref="rowSetupDropdown" position="bottom-right">
         <a17-button variant="icon" @click="$refs.rowSetupDropdown.toggle()"><span v-svg symbol="more-dots"></span></a17-button>
         <div slot="dropdown__content">
-          <a :href="row['permalink']" target="_blank">View Permalink</a>
-          <a :href="row['edit']">Edit</a>
-          <a href="#" v-if="row.hasOwnProperty('published')" @click.prevent="togglePublish">{{ row['published'] ? 'Unpublish' : 'Publish' }}</a>
+          <a v-if="row.hasOwnProperty('permalink')" :href="row['permalink']" target="_blank">View Permalink</a>
+          <a v-if="row.hasOwnProperty('edit')" :href="row['edit']">Edit</a>
+          <a v-if="row.hasOwnProperty('published')" href="#" @click.prevent="togglePublish">{{ row['published'] ? 'Unpublish' : 'Publish' }}</a>
           <a href="#" @click.prevent="deleteRow">Delete</a>
         </div>
       </a17-dropdown>

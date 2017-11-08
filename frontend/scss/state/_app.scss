@@ -11,8 +11,11 @@ Show a loading mention at page load
 
 [v-cloak] {
   position:relative;
-  visibility:hidden;
   min-height:calc(100vh - 230px);
+
+  > * {
+    visibility:hidden;
+  }
 
   &::after {
     content:'Loading...';

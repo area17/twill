@@ -25,11 +25,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        window.STORE = {}
-        @yield('initialStore')
-    </script>
 @stop
 
 
