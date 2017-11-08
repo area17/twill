@@ -11,13 +11,10 @@ import a17Radio from '@/components/Radio.vue'
 import a17RadioGroup from '@/components/RadioGroup.vue'
 import a17Checkbox from '@/components/Checkbox.vue'
 import a17CheckboxGroup from '@/components/CheckboxGroup.vue'
-import a17Multiselect from '@/components/MultiSelect.vue'
-import a17Singleselect from '@/components/SingleSelect.vue'
 import a17Dropdown from '@/components/Dropdown.vue'
 import a17Buttonbar from '@/components/ButtonBar.vue'
 import a17Locale from '@/components/LocaleField.vue'
 import a17Modal from '@/components/Modal.vue'
-import a17Overlay from '@/components/Overlay.vue'
 import a17Slideshow from '@/components/Slideshow.vue'
 import a17BrowserField from '@/components/BrowserField.vue'
 import a17DatePicker from '@/components/DatePicker.vue'
@@ -48,13 +45,10 @@ const A17Config = {
     Vue.component('a17-checkboxgroup', a17CheckboxGroup)
     Vue.component('a17-select', a17Select)
     Vue.component('a17-vselect', a17VSelect)
-    Vue.component('a17-multiselect', a17Multiselect)
-    Vue.component('a17-singleselect', a17Singleselect)
     Vue.component('a17-locale', a17Locale)
     Vue.component('a17-dropdown', a17Dropdown)
     Vue.component('a17-buttonbar', a17Buttonbar)
     Vue.component('a17-modal', a17Modal)
-    Vue.component('a17-overlay', a17Overlay)
     Vue.component('a17-datepicker', a17DatePicker)
 
     // Configurations

@@ -14,6 +14,8 @@ import a17Content from '@/components/Content.vue'
 import a17Repeater from '@/components/Repeater.vue'
 import a17LocationField from '@/components/LocationField.vue'
 import a17Slideshow from '@/components/Slideshow.vue'
+import a17Multiselect from '@/components/MultiSelect.vue'
+import a17Singleselect from '@/components/SingleSelect.vue'
 
 // Specific children components for page
 // Blocks Components
@@ -27,7 +29,8 @@ import a17MediaLibrary from '@/components/media-library/MediaLibrary.vue'
 // Browser
 import a17Browser from '@/components/Browser.vue'
 
-// Previewer
+// Overlay Previewer
+import a17Overlay from '@/components/Overlay.vue'
 import a17Previewer from '@/components/Previewer.vue'
 
 // configuration
@@ -44,7 +47,12 @@ Vue.component('a17-medialibrary', a17MediaLibrary)
 // Browser
 Vue.component('a17-browser', a17Browser)
 
+// Form : radios and checkboxes
+Vue.component('a17-multiselect', a17Multiselect)
+Vue.component('a17-singleselect', a17Singleselect)
+
 // Preview
+Vue.component('a17-overlay', a17Overlay)
 Vue.component('a17-previewer', a17Previewer)
 
 /* eslint-disable no-new */

@@ -24,6 +24,7 @@ mix.options({
     rules: [
       {
         test: /\.(js|vue)$/,
+        exclude: /node_modules/,
         loader: 'eslint-loader',
         enforce: 'pre',
         include: [path.resolve('frontend/js')],
