@@ -5,92 +5,30 @@
     </header>
     <div class="box__body">
       <table class="activityFeed__list">
-        <tr class="activityRow">
-          <td class="activityCell activityCell--thumb">
-            <img src="https://source.unsplash.com/random/50x50?sig=15" />
-          </td>
-          <td class="activityCell activityCell--icon">
-          </td>
-          <td class="activityCell">
-            <a class="activityFeed__link" href="#">Garden Museum</a>
-            <p class="activityFeed__meta f--note">Published <timeago :auto-update="1" :since="new Date()"></timeago> by George • Projects</p>
-          </td>
-        </tr>
-        <tr class="activityRow">
-          <td class="activityCell activityCell--thumb">
-            <img src="https://source.unsplash.com/random/50x50?sig=7" />
-          </td>
-          <td class="activityCell activityCell--icon">
-          </td>
-          <td class="activityCell">
-            <a class="activityFeed__link" href="#">'Red Trees'</a>
-            <p class="activityFeed__meta f--note">Published <timeago :auto-update="1" :since="new Date()"></timeago> by George • Projects</p>
-          </td>
-        </tr>
-        <tr class="activityRow">
-          <td class="activityCell activityCell--thumb">
-            <img src="https://source.unsplash.com/random/50x50?sig=9" />
-          </td>
-          <td class="activityCell activityCell--icon">
-          </td>
-          <td class="activityCell">
-            <a class="activityFeed__link" href="#">Garden Museum</a>
-            <p class="activityFeed__meta f--note">Published <timeago :auto-update="1" :since="new Date()"></timeago> by George • Projects</p>
-          </td>
-        </tr>
-        <tr class="activityRow">
-          <td class="activityCell activityCell--thumb">
-            <img src="https://source.unsplash.com/random/50x50?sig=8" />
-          </td>
-          <td class="activityCell activityCell--icon">
-          </td>
-          <td class="activityCell">
-            <a class="activityFeed__link" href="#">Garden Museum</a>
-            <p class="activityFeed__meta f--note">Published <timeago :auto-update="1" :since="new Date()"></timeago> by George • Projects</p>
-          </td>
-        </tr>
-        <tr class="activityRow">
-          <td class="activityCell activityCell--thumb">
-            <img src="https://source.unsplash.com/random/50x50?sig=5" />
-          </td>
-          <td class="activityCell activityCell--icon">
-          </td>
-          <td class="activityCell">
-            <a class="activityFeed__link" href="#">Garden Museum</a>
-            <p class="activityFeed__meta f--note">Published <timeago :auto-update="1" :since="new Date()"></timeago> by George • Projects</p>
-          </td>
-        </tr>
-        <tr class="activityRow">
-          <td class="activityCell activityCell--thumb">
-            <img src="https://source.unsplash.com/random/50x50?sig=3" />
-          </td>
-          <td class="activityCell activityCell--icon">
-          </td>
-          <td class="activityCell">
-            <a class="activityFeed__link" href="#">Garden Museum</a>
-            <p class="activityFeed__meta f--note">Published <timeago :auto-update="1" :since="new Date()"></timeago> by George • Projects</p>
-          </td>
-        </tr>
-        <tr class="activityRow">
-          <td class="activityCell activityCell--thumb">
-            <img src="https://source.unsplash.com/random/50x50?sig=4" />
-          </td>
-          <td class="activityCell activityCell--icon">
-          </td>
-          <td class="activityCell">
-            <a class="activityFeed__link" href="#">Garden Museum</a>
-            <p class="activityFeed__meta f--note">Published <timeago :auto-update="1" :since="new Date()"></timeago> by George • Projects</p>
-          </td>
-        </tr>
+        <template v-for="(row, index) in rows">
+          <a17-activity-row :row="row" :index="index" :columns="columns" :key="row.id"></a17-activity-row>
+        </template>
       </table>
     </div>
   </div>
 </template>
 
 <script>
+  import { mapState, mapGetters } from 'vuex'
+  import A17ActivityRow from '@/components/dashboard/activityRow.vue'
+
   export default {
     name: 'A17ActivityFeed',
+    components: {
+      'a17-activity-row': A17ActivityRow,
+    },
     computed: {
+      ...mapState({
+        page: state => state.datatable.page,
+        rows: state => state.datatable.data,
+        maxPage: state => state.datatable.maxPage,
+        columns: state => state.datatable.columns
+      })
     },
     methods: {
     }
@@ -109,50 +47,4 @@
     border-collapse: collapse;
     border-spacing: 0;
   }
-
-  .activityRow {
-    border-bottom:1px solid $color__border--light;
-
-    &:hover {
-      td {
-        background-color: $color__f--bg;
-      }
-    }
-  }
-
-  .activityCell {
-    overflow: hidden;
-    vertical-align: top;
-    padding:15px 15px;
-    background-color: $color__background;
-  }
-
-  .activityCell--thumb {
-    width:1px;
-
-    img {
-      display:block;
-      width:50px;
-      min-height:50px;
-      background:$color__border--light;
-      height:auto;
-    }
-  }
-
-  .activityCell--icon {
-    width:1px;
-  }
-
-  .activityFeed__link {
-    color:$color__link;
-    text-decoration:none;
-
-    &:hover {
-      @include bordered($color__link, false);
-    }
-  }
-
-  .activityFeed__meta {
-      margin-top: 5px;
-    }
 </style>

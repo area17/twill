@@ -26,7 +26,13 @@
             </a17-modal>
         </div>
     </div>
+
+    <script>
+        @yield('initialStore')
+    </script>
 @stop
+
+
 
 @push('extra_js')
     <script src="{{ mix('/assets/admin/js/manifest.js') }}"></script>
