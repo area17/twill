@@ -14,7 +14,7 @@
           </a17-dropdown>
         </div>
         <div class="shortcutCreator__listing">
-          <a class="shortcutCreator__listingItem" href="#" v-for="entity in entities">
+          <a class="shortcutCreator__listingItem" :href="entity.url" v-for="entity in entities">
 
             <span class="shortcutCreator__label">{{ entity.label }}</span>
             <h3 class="shortcutCreator__sum f--heading">{{ entity.number }}</h3>
