@@ -6,53 +6,7 @@ const state = {
   active: {},
   activeContent: '',
   currentContent: '',
-  all: [
-    {
-      id: 1,
-      author: 'George',
-      datetime: '2017-09-11 16:30:10'
-    },
-    {
-      id: 2,
-      author: 'Martin',
-      datetime: '2017-09-11 15:41:01'
-    },
-    {
-      id: 3,
-      author: 'George',
-      datetime: '2017-09-11 11:16:45'
-    },
-    {
-      id: 4,
-      author: 'Admin',
-      datetime: '2017-09-11 10:22:10'
-    },
-    {
-      id: 5,
-      author: 'Martin',
-      datetime: '2017-09-11 09:30:53'
-    },
-    {
-      id: 6,
-      author: 'Martin',
-      datetime: '2017-09-10 15:41:01'
-    },
-    {
-      id: 7,
-      author: 'George',
-      datetime: '2017-09-09 11:16:45'
-    },
-    {
-      id: 8,
-      author: 'Admin',
-      datetime: '2017-09-08 10:22:10'
-    },
-    {
-      id: 9,
-      author: 'Martin',
-      datetime: '2017-09-07 09:30:53'
-    }
-  ]
+  all: window.STORE.revisions || []
 }
 
 // getters
