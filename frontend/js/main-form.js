@@ -19,6 +19,8 @@ import a17Singleselect from '@/components/SingleSelect.vue'
 
 // Specific children components for page
 // Blocks Components
+import a17BlockImage from '@/components/blocks/BlockImage.vue'
+import a17BlockTitle from '@/components/blocks/BlockTitle.vue'
 import a17BlockQuote from '@/components/blocks/BlockQuote.vue'
 import a17BlockVideo from '@/components/blocks/BlockVideo.vue'
 import a17BlockWysiwyg from '@/components/blocks/BlockWysiwyg.vue'
@@ -37,9 +39,11 @@ import a17Previewer from '@/components/Previewer.vue'
 Vue.use(A17Config)
 
 // Blocks
+Vue.component('a17-block-title', a17BlockTitle)
 Vue.component('a17-block-quote', a17BlockQuote)
 Vue.component('a17-block-video', a17BlockVideo)
 Vue.component('a17-block-wysiwyg', a17BlockWysiwyg)
+Vue.component('a17-block-image', a17BlockImage)
 
 // Media Library
 Vue.component('a17-medialibrary', a17MediaLibrary)

@@ -1,9 +1,9 @@
 import * as types from '../mutation-types'
 
 const state = {
-  title: window.STORE.form.title,
-  permalink: window.STORE.form.permalink,
-  baseUrl: window.STORE.form.baseUrl,
+  title: window.STORE.form.title || '',
+  permalink: window.STORE.form.permalink || '',
+  baseUrl: window.STORE.form.baseUrl || '',
   fields: window.STORE.form.fields || [],
   repeaters: {},
   availableRepeaters: window.STORE.form.repeaters || {}

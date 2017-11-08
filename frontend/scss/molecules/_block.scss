@@ -3,7 +3,7 @@
 Block
 =====
 
-A block is wrapping is each block fields in the content editor
+A block is wrapping is each block fields in the content editor. There are some handy classes to changes the spacing depending on the needs
 
 ```
 <div class="styleguide--demo">
@@ -16,9 +16,9 @@ A block is wrapping is each block fields in the content editor
 ***/
 
 .block__body {
-  margin-top:-15px
+  margin-top:-15px;
 }
 
 .block__body--nolabel {
-  margin-top:-30px
+  margin-top:-30px;
 }

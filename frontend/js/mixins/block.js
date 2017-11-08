@@ -1,8 +1,8 @@
 export default {
   props: {
     name: {
-       type: String,
-       required: true
+      type: String,
+      required: true
     }
   },
   methods: {
