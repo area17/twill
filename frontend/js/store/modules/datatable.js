@@ -2,12 +2,10 @@ import api from '../api/datatable'
 import * as types from '../mutation-types'
 
 const state = {
-  data: window.STORE.datatable.data || '[]',
-  columns: window.STORE.datatable.columns || '[]',
-  filter: {
-    status: 'all'
-  },
-  filtersNav: window.STORE.datatable.navigation || '[]',
+  data: window.STORE.datatable.data || [],
+  columns: window.STORE.datatable.columns || [],
+  filter: window.STORE.datatable.filter || {},
+  filtersNav: window.STORE.datatable.navigation || [],
   page: window.STORE.datatable.page || 1,
   maxPage: window.STORE.datatable.maxPage || 1,
   offset: window.STORE.datatable.offset || 60,
