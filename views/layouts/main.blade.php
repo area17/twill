@@ -60,6 +60,7 @@
 
             // form
             window.STORE.publication = {}
+            window.STORE.form = {}
 
             // media library
             window.STORE.medias = {}

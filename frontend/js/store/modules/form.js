@@ -1,59 +1,10 @@
 import * as types from '../mutation-types'
 
 const state = {
-  title: 'The Old Vic',
-  permalink: 'the-old-vic',
-  baseUrl: 'http://pentagram.com/work/',
-  fields: [
-    {
-      name: 'event_date', // datepicker
-      value: '2017-10-03 12:00'
-    },
-    {
-      name: 'subtitle', // text-field with language
-      value: {
-        'fr-FR': 'FR Subtitle',
-        'en-UK': 'UK Subtitle',
-        'en-US': 'US subtitle',
-        'de': 'de subtitle'
-      }
-    },
-    {
-      name: 'description', // text-field with language
-      value: {
-        'fr-FR': 'FR description',
-        'en-UK': 'UK description',
-        'en-US': 'US description',
-        'de': 'DE description'
-      }
-    },
-    {
-      name: 'location', // location field
-      value: '40.730610|-73.935242'
-    },
-    {
-      name: 'sectors', // vselect multiple
-      value: [
-        {
-          value: 'finance',
-          label: 'Banking & Finance'
-        }
-      ]
-    },
-    {
-      name: 'disciplines', // radiogroup or singleselect
-      value: 'design'
-    },
-    {
-      name: 'case_study', // wysiwyg
-      value: {
-        'fr-FR': '<p>FR Some html here <br /> Why not it\'s possible too.</p>',
-        'en-UK': '<p>UK Some html here <br /> Why not it\'s possible too.</p>',
-        'en-US': '<p>US Some html here <br /> Why not it\'s possible too.</p>',
-        'de': '<p>DE Some html here <br /> Why not it\'s possible too.</p>'
-      }
-    }
-  ],
+  title: window.STORE.form.title,
+  permalink: window.STORE.form.permalink,
+  baseUrl: window.STORE.form.baseUrl,
+  fields: window.STORE.form.fields || [],
   repeaters: {},
   availableRepeaters: {
     video: {

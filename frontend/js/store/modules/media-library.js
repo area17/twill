@@ -8,7 +8,7 @@ const state = {
   connector: null,
   max: 0,
   strict: true,
-  selected: {},
+  selected: window.STORE.medias.selected || {},
   loading: []
 }
 
