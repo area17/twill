@@ -2,7 +2,7 @@
   <div class="buckets">
     <div class="buckets__page-title">
       <div class="container">
-        <h2>What would you like to feature today?</h2>
+        <h2><slot></slot></h2>
       </div>
     </div>
     <div class="container">
@@ -130,7 +130,7 @@
           bucketName = bucket.name
           bucketSize = bucket.max
         }
-        return 'Bucket <em>"' + bucketName + '"</em> has a strict limit of ' + bucketSize + ' items. Do you want to override the first itemn of this bucket ?'
+        return 'Bucket <em>"' + bucketName + '"</em> has a strict limit of ' + bucketSize + ' items. Do you want to override the first item of this bucket ?'
       }
     },
     methods: {

@@ -31,7 +31,6 @@
 
             // languages
             window.STORE.languages = {}
-
             window.STORE.languages.all = [
               {
                 shortlabel: 'FR',
@@ -56,6 +55,29 @@
                 label: 'German',
                 value: 'de',
                 published: false
+              }
+            ]
+
+            // form
+            window.STORE.publication = {}
+
+            // media library
+            window.STORE.medias = {}
+            window.STORE.medias.types = [
+              {
+                value: 'image',
+                text: 'Images',
+                total: 1321
+              },
+              {
+                value: 'video',
+                text: 'Vidéos',
+                total: 152
+              },
+              {
+                value: 'file',
+                text: 'Files',
+                total: 81
               }
             ]
 

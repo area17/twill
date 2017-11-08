@@ -1,9 +1,9 @@
 import * as types from '../mutation-types'
 
 const state = {
-  published: true,
-  startDate: null,
-  endDate: null,
+  published: window.STORE.publication.published || false,
+  startDate: window.STORE.publication.startDate || null,
+  endDate: window.STORE.publication.endDate || null,
   visibility: 'public',
   visibilityOptions: [
     {

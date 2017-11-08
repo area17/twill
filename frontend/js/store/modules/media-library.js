@@ -2,101 +2,10 @@ import Vue from 'vue'
 import * as types from '../mutation-types'
 
 const state = {
-  crops: {
-    cover: {
-      default: [
-        {
-          name: 'landscape',
-          ratio: 16 / 9,
-          minValues: {
-            width: 1600,
-            height: 900
-          }
-        },
-        {
-          name: 'portrait',
-          ratio: 3 / 4,
-          minValues: {
-            width: 1000,
-            height: 750
-          }
-        }
-      ],
-      mobile: [
-        {
-          name: 'mobile',
-          ratio: 1,
-          minValues: {
-            width: 500,
-            height: 500
-          }
-        }
-      ]
-    },
-    listing: {
-      default: [
-        {
-          name: 'default',
-          ratio: 16 / 9,
-          minValues: {
-            width: 600,
-            height: 284
-          }
-        }
-      ],
-      mobile: [
-        {
-          name: 'mobile',
-          ratio: 1,
-          minValues: {
-            width: 300,
-            height: 300
-          }
-        }
-      ]
-    },
-    slideshow: {
-      default: [
-        {
-          name: 'default',
-          ratio: 16 / 9,
-          minValues: {
-            width: 600,
-            height: 284
-          }
-        }
-      ],
-      mobile: [
-        {
-          name: 'mobile',
-          ratio: 1,
-          minValues: {
-            width: 300,
-            height: 300
-          }
-        }
-      ]
-    }
-  },
-  connector: null,
+  crops: window.STORE.medias.crops || {},
+  types: window.STORE.medias.types || [],
   type: 'image',
-  types: [
-    {
-      value: 'image',
-      text: 'Images',
-      total: 1321
-    },
-    {
-      value: 'video',
-      text: 'Vidéos',
-      total: 152
-    },
-    {
-      value: 'file',
-      text: 'Files',
-      total: 81
-    }
-  ],
+  connector: null,
   max: 0,
   strict: true,
   selected: {},
