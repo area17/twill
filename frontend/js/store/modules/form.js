@@ -6,14 +6,7 @@ const state = {
   baseUrl: window.STORE.form.baseUrl,
   fields: window.STORE.form.fields || [],
   repeaters: {},
-  availableRepeaters: {
-    video: {
-      title: 'Video',
-      trigger: 'Add Videos',
-      component: 'a17-video', // This will be project specific
-      max: 4
-    }
-  }
+  availableRepeaters: window.STORE.form.repeaters || {}
 }
 
 // getters

@@ -1,3 +1,22 @@
+/***
+
+Box
+===
+
+A simple box with an header, a body and a footer where you can put listings into
+
+```
+<div class="styleguide--demo">
+    <div class="box">
+      <header class="box__header"><b>Box title</b></header>
+      <div class="box__body">Content goes here</div>
+      <footer class="box__footer">After content</footer>
+    </div>
+</div>
+```
+
+***/
+
 .box {
   background:$color__background;
   border-radius:2px;

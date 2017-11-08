@@ -1,0 +1,24 @@
+/***
+
+Block
+=====
+
+A block is wrapping is each block fields in the content editor
+
+```
+<div class="styleguide--demo">
+    <div class="block__body">
+      Form fields goes here
+    </div>
+</div>
+```
+
+***/
+
+.block__body {
+  margin-top:-15px
+}
+
+.block__body--nolabel {
+  margin-top:-30px
+}

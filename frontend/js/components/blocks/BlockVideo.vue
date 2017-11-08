@@ -1,5 +1,5 @@
 <template>
-  <div class="video">
+  <div class="block__body">
     <a17-locale type="a17-textfield" :attributes="{ label: 'Title', name: fieldName('title'), type: 'text', maxlength: 250, inStore: 'value' }"></a17-locale>
     <a17-locale type="a17-textfield" :attributes="{ label: 'Video URL', name: fieldName('url'), type: 'text', maxlength: 250, inStore: 'value' }"></a17-locale>
     <a17-datepicker :name="fieldName('date')" label="Video Date" place-holder="Video Date" :enableTime="false" :allowInput="true" :clear="true" inStore="date" ></a17-datepicker>
@@ -14,20 +14,11 @@
 
   // This block can used to create other blocks in your Application
   // This show how you can easily create complex blocks that are connected with the media library or any related content
+  import BlockMixin from '@/mixins/block'
 
   export default {
     name: 'A17Video',
-    props: {
-      name: {
-        type: String,
-        required: true
-      }
-    },
-    methods: {
-      fieldName: function (id) {
-        return this.name + '[' + id + ']'
-      }
-    },
+    mixins: [BlockMixin],
     beforeDestroy: function () {
       // Demo :
       // Delete a video block : we need to remove the media / slideshow / news contents from the global store
@@ -39,11 +30,3 @@
     }
   }
 </script>
-
-<style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
-
-  .video {
-    margin-top:-15px;
-  }
-</style>

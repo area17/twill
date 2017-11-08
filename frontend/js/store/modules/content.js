@@ -1,45 +1,7 @@
 import * as types from '../mutation-types'
 
 const state = {
-  available: [
-    {
-      title: 'Quote',
-      icon: 'quote',
-      component: 'a17-quote'
-    },
-    {
-      title: 'Body text',
-      icon: 'text',
-      component: 'a17-bodytext'
-    },
-    {
-      title: 'Full width Image',
-      icon: 'image',
-      component: 'a17-mediafield', // example of a basic image block
-      attributes: {
-        crop: 'cover'
-      }
-    },
-    {
-      title: 'Image Grid',
-      icon: 'image',
-      component: 'a17-slideshow', // example of a basic slideshow block
-      attributes: {
-        max: 6
-      }
-    },
-    {
-      title: 'Publication Grid',
-      icon: 'text',
-      component: 'a17-browserfield', // example of a basic browser block
-      attributes: {
-        max: 4,
-        itemLabel: 'Publications',
-        endpoint: 'https://www.mocky.io/v2/59d77e61120000ce04cb1c5b',
-        modalTitle: 'Attach publications'
-      }
-    }
-  ],
+  available: window.STORE.form.content,
   blocks: []
 }
 
