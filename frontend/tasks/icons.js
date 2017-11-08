@@ -6,16 +6,42 @@ const createLogger = require('logging').default
 const logger = createLogger('Icons')
 
 const iconPath = path.resolve('frontend/icons')
-const svgo = new SVGO()
+const svgo = new SVGO({
+      plugins: [{
+        inlineStyles: {
+          onlyMatchedOnce: true,
+          removeMatchedSelectors: true
+        },
+        cleanupIDs: {
+          remove: true,
+          minify: true
+      }
+  }]
+})
+
 let files = fs.readdirSync(iconPath)
 let sprite = svgstore()
 let icons = []
 let scss = ''
 
-files.forEach(buildIcon)
-storeSprite()
-makeScssFile()
+/**
+ *
+ * @param items An array of items.
+ * @param fn A function that accepts an item from the array and returns a promise.
+ * @returns {Promise}
+ */
+function forEachPromise(items, fn) {
+    return items.reduce(function (promise, item) {
+        return promise.then(function () {
+            return fn(item);
+        });
+    }, Promise.resolve());
+}
 
+forEachPromise(files, buildIcon).then(() => {
+    storeSprite()
+    makeScssFile()
+});
 
 function buildIcon(fileName) {
   if (fileName === '.keep') { return false }
@@ -23,7 +49,7 @@ function buildIcon(fileName) {
   const title = path.basename(fileName, '.svg')
 
   let file = fs.readFileSync(path.resolve(iconPath, fileName))
-  svgo.optimize(file, result => {
+  return svgo.optimize(file).then(function(result) {
     if(result.error) logger.info('Icon error '+ fileName +'.svg : ', result.error)
     else {
       icons.push(Object.assign({title}, result.info))

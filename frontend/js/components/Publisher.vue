@@ -7,7 +7,7 @@
       <a17-pubaccordion :open="openStates['A17Pubaccordion']" @open="openCloseAccordion">Published on</a17-pubaccordion>
       <a17-revaccordion v-if="revisions.length" :open="openStates['A17Revisions']" @open="openCloseAccordion" :revisions="revisions">Revisions</a17-revaccordion>
       <div class="publisher__item">
-        <a href="#" class="publisher__link" @click.prevent="openPreview"><span v-svg symbol="preview"></span>Preview changes</a>
+        <a href="#" class="publisher__link" @click.prevent="openPreview"><span v-svg symbol="preview"></span><span class="f--link-underlined--o">Preview changes</span></a>
       </div>
       <div class="publisher__item publisher__item--btns">
         <a17-multibutton :options="submitOptions" type="submit"></a17-multibutton>
@@ -148,9 +148,9 @@
       color:$color__link;
       text-decoration: none;
 
-      &:hover {
-        text-decoration: underline;
-      }
+      // &:hover {
+      //   text-decoration: underline;
+      // }
     }
   }
 

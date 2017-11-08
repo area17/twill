@@ -1,0 +1,22 @@
+<svg id="all_icons" data-name="all icons" xmlns="http://www.w3.org/2000/svg" width="21" height="10" viewBox="0 0 21 10">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        fill: #a6a6a6;
+      }
+    </style>
+  </defs>
+  <title>wysiwyg_link</title>
+  <g>
+    <path class="cls-1" d="M21,5a5.015,5.015,0,0,1-5,5H5A5.015,5.015,0,0,1,0,5H0A5.015,5.015,0,0,1,5,0H16a5.015,5.015,0,0,1,5,5Z"/>
+    <g>
+      <path class="cls-2" d="M16,0H12V2h4a3,3,0,0,1,0,6H12v2h4A5,5,0,0,0,16,0Z"/>
+      <path class="cls-2" d="M2,5A3,3,0,0,1,5,2H9V0H5A5,5,0,0,0,5,10H9V8H5A3,3,0,0,1,2,5Z"/>
+      <rect class="cls-2" x="6" y="4" width="9" height="2"/>
+    </g>
+  </g>
+</svg>
