@@ -6,18 +6,7 @@ const createLogger = require('logging').default
 const logger = createLogger('Icons')
 
 const iconPath = path.resolve('frontend/icons')
-const svgo = new SVGO({
-      plugins: [{
-        inlineStyles: {
-          onlyMatchedOnce: true,
-          removeMatchedSelectors: true
-        },
-        cleanupIDs: {
-          remove: true,
-          minify: true
-      }
-  }]
-})
+const svgo = new SVGO()
 
 let files = fs.readdirSync(iconPath)
 let sprite = svgstore()

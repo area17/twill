@@ -35,6 +35,9 @@
       font-size:15px;
       text-decoration:none;
       border-right:1px solid $color__border--light;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
       &:first-child {
         border-top-left-radius: $border__radius;
@@ -49,9 +52,9 @@
 
       .icon {
         color:$color__icons;
-        vertical-align: top;
-        display: inline-block;
-        height: 100%;
+        // vertical-align: top;
+        display: block;
+        // height: 100%;
       }
 
       &:hover {

@@ -252,6 +252,9 @@
     padding: 0;
     background: $color__background;
     color: $color__icons;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     @include monospaced-figures('off'); // dont use monospaced figures here
 
     .icon {
@@ -277,8 +280,10 @@
     }
 
     .icon {
-      vertical-align: top;
-      height: 100%;
+      // vertical-align: top;
+      // height: 100%;
+      display: block;
+      margin: 0 auto;
       color: $color__icons;
     }
   }
