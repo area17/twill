@@ -8,11 +8,11 @@ const state = {
     status: 'all'
   },
   filtersNav: window.STORE.datatable.navigation || '[]',
-  page: 1,
-  maxPage: 10,
-  offset: 60,
-  sortKey: 'name',
-  sortDir: 'desc',
+  page: window.STORE.datatable.page || 1,
+  maxPage: window.STORE.datatable.maxPage || 1,
+  offset: window.STORE.datatable.offset || 60,
+  sortKey: window.STORE.datatable.sortKey || '',
+  sortDir: window.STORE.datatable.sortDir || 'desc',
   bulk: []
 }
 
