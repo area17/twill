@@ -47,7 +47,7 @@
             </template>
           </tbody>
         </a17-table>
-        <a17-paginate :max="maxPage" :value="page" :offset="offset" :availableOffsets="[30,60,90]" @changePage="updatePage" @changeOffset="updateOffset"></a17-paginate>
+        <a17-paginate :max="maxPage" :value="page" :offset="offset" :availableOffsets="[initialOffset,initialOffset*3,initialOffset*6]" @changePage="updatePage" @changeOffset="updateOffset"></a17-paginate>
       </div>
     </div>
   </div>
@@ -88,7 +88,8 @@
     data: function () {
       return {
         xScroll: 0,
-        columnsWidth: []
+        columnsWidth: [],
+        initialOffset: 50
       }
     },
     computed: {
@@ -226,6 +227,7 @@
     },
     mounted: function () {
       this.initEvents()
+      this.initialOffset = this.$store.state.datatable.offset
     },
     beforeDestroy: function () {
       this.disposeEvents()
