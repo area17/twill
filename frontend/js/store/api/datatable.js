@@ -1,120 +1,6 @@
 import axios from 'axios'
 
-const _data = [
-  {
-    id: 1,
-    featured: true,
-    published: true,
-    name: 'The New School Website',
-    client: 'The New School',
-    studio: 'New York',
-    status: 'In use',
-    capabilities: 'Optimization',
-    industry: 'Service',
-    edit: 'http://pentagram.com',
-    thumbnail: 'https://source.unsplash.com/random/80x80?sig=1',
-    permalink: 'https://pentagram.com'
-  },
-  {
-    id: 2,
-    featured: true,
-    published: true,
-    name: 'Barnes Foundation website',
-    client: 'Barnes Foundation',
-    studio: 'Philadephia',
-    status: 'In use',
-    capabilities: 'Strategy',
-    industry: 'Service',
-    edit: 'http://pentagram.com',
-    thumbnail: 'https://source.unsplash.com/random/80x80?sig=2',
-    permalink: 'https://pentagram.com'
-  },
-  {
-    id: 3,
-    featured: false,
-    published: false,
-    name: 'Pentagram website',
-    client: 'Pentagram',
-    studio: 'New York',
-    status: 'In use',
-    capabilities: 'Enginering',
-    industry: 'Service',
-    edit: 'http://pentagram.com',
-    thumbnail: 'https://source.unsplash.com/random/80x80?sig=3',
-    permalink: 'https://pentagram.com'
-  },
-  {
-    id: 4,
-    featured: false,
-    published: false,
-    name: 'Mai 36 Galerie website',
-    client: 'Mai 36 Galerie',
-    studio: 'Paris',
-    status: 'In use',
-    capabilities: 'Experience',
-    industry: 'Service',
-    edit: 'http://pentagram.com',
-    thumbnail: 'https://source.unsplash.com/random/80x80?sig=4',
-    permalink: 'https://pentagram.com'
-  },
-  {
-    id: 5,
-    featured: false,
-    published: false,
-    name: 'Mai 36 Galerie website',
-    client: 'Mai 36 Galerie',
-    studio: 'Paris',
-    status: 'In use',
-    capabilities: 'Experience',
-    industry: 'Service',
-    edit: 'http://pentagram.com',
-    thumbnail: 'https://source.unsplash.com/random/80x80?sig=5',
-    permalink: 'https://pentagram.com'
-  },
-  {
-    id: 6,
-    featured: false,
-    published: false,
-    name: 'Roto website',
-    client: 'Roto',
-    studio: 'New York',
-    status: 'In use',
-    capabilities: 'Experience',
-    industry: 'Service',
-    edit: 'http://pentagram.com',
-    thumbnail: 'https://source.unsplash.com/random/80x80?sig=6',
-    permalink: 'https://pentagram.com'
-  },
-  {
-    id: 7,
-    featured: false,
-    published: true,
-    name: 'THG Paris website',
-    client: 'THG',
-    studio: 'Paris',
-    status: 'In use',
-    capabilities: 'Strategy',
-    industry: 'Service',
-    edit: 'http://pentagram.com',
-    thumbnail: 'https://source.unsplash.com/random/80x80?sig=7',
-    permalink: 'https://pentagram.com'
-  },
-  {
-    id: 8,
-    featured: false,
-    published: true,
-    name: 'La Parqueterie Nouvelle strategie',
-    client: 'La Parqueterie Nouvelle',
-    studio: 'Paris',
-    status: 'In use',
-    capabilities: 'Strategy',
-    industry: 'Service',
-    edit: 'http://pentagram.com',
-    thumbnail: 'https://source.unsplash.com/random/80x80?sig=8',
-    permalink: 'https://pentagram.com'
-  }
-]
-
+// Shuffle : for demo purpose only
 function shuffle (a) {
   var j, x, i
   for (i = a.length - 1; i > 0; i--) {
@@ -141,6 +27,7 @@ export default {
     // Set endpoint in global config
     axios.get('https://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { params: params }).then(function (resp) {
       // update data and max page
+      const _data = window.STORE.datatable.data || []
       const _newData = shuffle(_data)
 
       if (callback && typeof callback === 'function') {
@@ -248,6 +135,7 @@ export default {
     // Set endpoint in global config and adjust setting using axios DELETE https://github.com/axios/axios#axiosdeleteurl-config-1
     axios.get('https://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { params: params }).then(function (resp) {
       // update data and max page
+      const _data = window.STORE.datatable.data || []
       const _newData = shuffle(_data)
 
       if (callback && typeof callback === 'function') {
@@ -277,6 +165,7 @@ export default {
     // Set endpoint in global config https://github.com/axios/axios#axiosposturl-data-config-1
     axios.get('https://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { params: params }).then(function (resp) {
       // update data and max page
+      const _data = window.STORE.datatable.data || []
       const _newData = shuffle(_data)
 
       if (callback && typeof callback === 'function') {
