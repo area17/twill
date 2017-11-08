@@ -1,38 +1,8 @@
 import * as types from '../mutation-types'
 
 const state = {
-  active: {
-    shortlabel: 'EN',
-    label: 'English - UK',
-    value: 'en-UK',
-    published: false
-  },
-  all: [
-    {
-      shortlabel: 'FR',
-      label: 'French (Default)',
-      value: 'fr-FR',
-      published: true
-    },
-    {
-      shortlabel: 'EN',
-      label: 'English - UK',
-      value: 'en-UK',
-      published: false
-    },
-    {
-      shortlabel: 'US',
-      label: 'English - US',
-      value: 'en-US',
-      published: true
-    },
-    {
-      shortlabel: 'DE',
-      label: 'German',
-      value: 'de',
-      published: false
-    }
-  ]
+  all: window.STORE.languages.all || [],
+  active: window.STORE.languages.all[0] || {}
 }
 
 // getters

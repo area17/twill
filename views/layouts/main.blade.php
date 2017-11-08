@@ -25,7 +25,40 @@
 
         <script>
             window.STORE = {}
+
+            // datatable
             window.STORE.datatable = {}
+
+            // languages
+            window.STORE.languages = {}
+
+            window.STORE.languages.all = [
+              {
+                shortlabel: 'FR',
+                label: 'French (Default)',
+                value: 'fr-FR',
+                published: true
+              },
+              {
+                shortlabel: 'EN',
+                label: 'English - UK',
+                value: 'en-UK',
+                published: false
+              },
+              {
+                shortlabel: 'US',
+                label: 'English - US',
+                value: 'en-US',
+                published: true
+              },
+              {
+                shortlabel: 'DE',
+                label: 'German',
+                value: 'de',
+                published: false
+              }
+            ]
+
             @yield('initialStore')
         </script>
         @stack('extra_js')
