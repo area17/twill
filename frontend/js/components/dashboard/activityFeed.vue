@@ -4,7 +4,7 @@
       <slot></slot>
     </header>
     <div class="box__body">
-      <table class="activityFeed__table">
+      <table class="activityFeed__list">
         <template v-for="(row, index) in rows">
           <a17-activity-row :row="row" :index="index" :columns="columns" :key="row.id"></a17-activity-row>
         </template>
@@ -41,7 +41,7 @@
   .activityFeed {
   }
 
-  .activityFeed__table {
+  .activityFeed__list {
     overflow: hidden;
     width: 100%;
     border-collapse: collapse;

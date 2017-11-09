@@ -27,19 +27,10 @@
     </div>
 @stop
 
-@section('initialStore')
-    window.CMS_URLS = {
-        publish: '{{ $publishUrl }}'
-    }
 
-    window.STORE.datatable = {}
-
-    window.STORE.datatable.data = {!! json_encode($mappedData) !!}
-    window.STORE.datatable.columns = {!! json_encode($mappedColumns) !!}
-@stop
 
 @push('extra_js')
     <script src="{{ mix('/assets/admin/js/manifest.js') }}"></script>
     <script src="{{ mix('/assets/admin/js/vendor.js') }}"></script>
-    <script src="{{ mix('/assets/admin/js/main-dashboard.js') }}"></script>
+    <script src="{{ mix('/assets/admin/js/main-listing.js') }}"></script>
 @endpush
