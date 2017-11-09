@@ -2,21 +2,19 @@
   <tr class="activityRow">
     <td v-for="col in columns" :key="col.name" class="activityCell" :class="cellClasses(col)">
       <template v-if="isSpecificColumn(col)">
-        <span v-if="col.name === 'featured'" class="activityCell__feature" :class="{'activityCell__feature--active': row[col.name] }" @click.prevent="toggleFeatured" data-tooltip-title="Feature" v-tooltip><span v-svg symbol="star-feature_active"></span><span v-svg symbol="star-feature"></span></span> <!-- Featured star button -->
         <span v-if="col.name === 'published'" class="activityCell__pubstate" :class="{'activityCell__pubstate--live': row[col.name] }"  @click.prevent="togglePublish" data-tooltip-title="Publish" v-tooltip ></span> <!-- Published circle icon -->
-        <a class="activityCell__thumb" :href="row['edit']" v-if="col.name === 'thumbnail'"><img :src="row[col.name]" /></a> <!-- Thumbnail -->
+        <a v-if="col.name === 'thumbnail'" class="activityCell__thumb" :href="row['edit']" ><img :src="row[col.name]" /></a> <!-- Thumbnail -->
       </template>
       <template v-else>
         <template v-if="col.name === 'name'">
           <a :href="row['edit']" class="activityCell__link">{{ row[col.name] }}</a>
-          <p class="activityCell__meta f--note">{{ row['published'] ? 'Unpublished' : 'Published' }} <timeago :auto-update="1" :since="new Date()"></timeago> by George • Projects</p>
+          <p class="activityCell__meta f--note">{{ row['activity'] }} <timeago :auto-update="1" :since="new Date(row['date'])"></timeago> by {{ row['author'] }} • {{ row['type'] }}</p>
         </template>
-        <template v-else>{{ row[col.name] }}</template>
       </template>
     </td>
-    <td class="activityCell">
-      <a17-dropdown ref="rowSetupDropdown" position="bottom-right">
-        <a17-button variant="icon" @click="$refs.rowSetupDropdown.toggle()"><span v-svg symbol="more-dots"></span></a17-button>
+    <td class="activityCell activityCell--icon">
+      <a17-dropdown ref="activityRowSetupDropdown" position="bottom-right">
+        <a17-button variant="icon" @click="$refs.activityRowSetupDropdown.toggle()"><span v-svg symbol="more-dots"></span></a17-button>
         <div slot="dropdown__content">
           <a v-if="row.hasOwnProperty('permalink')" :href="row['permalink']" target="_blank">View Permalink</a>
           <a v-if="row.hasOwnProperty('edit')" :href="row['edit']">Edit</a>
@@ -30,7 +28,7 @@
 
 <script>
   export default {
-    name: 'A17ActivityFeed',
+    name: 'A17ActivityRow',
     props: {
       index: {
         type: Number,
@@ -62,10 +60,12 @@
                col.name === 'thumbnail'
       },
       toggleFeatured: function () {
+        console.log('toggleFeaturedData')
         this.$store.dispatch('toggleFeaturedData', this.row.id)
       },
       togglePublish: function () {
-        this.$store.dispatch('togglePublishedData', this.row.id)
+        console.log('togglePublishedData')
+        this.$store.dispatch('togglePublishedData', this.row)
       },
       deleteRow: function () {
         this.$store.dispatch('deleteData', this.row.id)
