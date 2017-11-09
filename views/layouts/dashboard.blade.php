@@ -12,7 +12,7 @@
                             Statistics
                         </a17-stat-feed>
 
-                        <a17-popular-feed>
+                        <a17-popular-feed :entities="[ { name: 'Garden Museum', number: 2257, url: '/templates/listing' }, { name: 'Garden Museum', number: 2257, url: '/templates/listing' }, { name: 'Garden Museum', number: 2257, url: '/templates/listing' } ]">
                             Most Viewed
                         </a17-popular-feed>
                     </aside>

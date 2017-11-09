@@ -5,64 +5,10 @@
     </header>
     <div class="box__body">
       <ol class="popularFeed__list">
-        <li>
-          <a href="#" class="popularFeed__item" target="_blank">
-            <span class="popularFeed__label"><span>Garden Museum</span></span>
-            <span class="popularFeed__views f--tiny">852</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="popularFeed__item" target="_blank">
-            <span class="popularFeed__label"><span>'Red Trees'</span></span>
-            <span class="popularFeed__views f--tiny">420</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="popularFeed__item" target="_blank">
-            <span class="popularFeed__label"><span>London Desing Festival 2017</span></span>
-            <span class="popularFeed__views f--tiny">321</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="popularFeed__item" target="_blank">
-            <span class="popularFeed__label"><span>The Hollow Woods Storytelling</span></span>
-            <span class="popularFeed__views f--tiny">214</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="popularFeed__item" target="_blank">
-            <span class="popularFeed__label"><span>Garden Museum</span></span>
-            <span class="popularFeed__views f--tiny">150</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="popularFeed__item" target="_blank">
-            <span class="popularFeed__label"><span>Garden Museum</span></span>
-            <span class="popularFeed__views f--tiny">90</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="popularFeed__item" target="_blank">
-            <span class="popularFeed__label"><span>Garden Museum</span></span>
-            <span class="popularFeed__views f--tiny">88</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="popularFeed__item" target="_blank">
-            <span class="popularFeed__label"><span>Garden Museum</span></span>
-            <span class="popularFeed__views f--tiny">88</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="popularFeed__item" target="_blank">
-            <span class="popularFeed__label"><span>Garden Museum</span></span>
-            <span class="popularFeed__views f--tiny">88</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="popularFeed__item" target="_blank">
-            <span class="popularFeed__label"><span>Garden Museum</span></span>
-            <span class="popularFeed__views f--tiny">88</span>
+        <li v-for="entity in entities">
+          <a :href="entity.url" class="popularFeed__item" target="_blank">
+            <span class="popularFeed__label"><span>{{ entity.name }}</span></span>
+            <span class="popularFeed__views f--tiny">{{ entity.number }}</span>
           </a>
         </li>
       </ol>
@@ -73,6 +19,14 @@
 <script>
   export default {
     name: 'A17PopularFeed',
+    props: {
+      entities: {
+        type: Array,
+        default: function () {
+          return []
+        }
+      }
+    },
     computed: {
     },
     methods: {
