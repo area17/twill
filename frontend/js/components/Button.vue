@@ -283,6 +283,8 @@
       // vertical-align: top;
       // height: 100%;
       display: block;
+      margin-left:auto;
+      margin-right:auto;
       // margin: 0 auto;
       color: $color__icons;
     }

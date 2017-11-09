@@ -20,6 +20,8 @@
     name: 'A17Video',
     mixins: [BlockMixin],
     beforeDestroy: function () {
+      console.log(this)
+
       // Demo :
       // Delete a video block : we need to remove the media / slideshow / news contents from the global store
       // Other form fields (like text, datepicker will take care of this by themselves)

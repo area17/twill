@@ -70,19 +70,19 @@
         breakpoints: [
           {
             size: 320,
-            name: 'Mobile'
+            name: 'mobile'
           },
           {
             size: 768,
-            name: 'Tablet'
+            name: 'tablet'
           },
           {
             size: 1024,
-            name: 'Desktop'
+            name: 'desktop'
           },
           {
             size: 1280,
-            name: 'Wide'
+            name: 'wide'
           }
         ]
       }

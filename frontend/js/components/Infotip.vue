@@ -26,10 +26,11 @@
     display: inline-block;
     margin-left: 7px;
     margin-right: 7px;
+
+    .icon {
+      display:block;
+      margin:-1px;
+    }
   }
 
-  .icon {
-    display:block;
-    margin:-1px;
-  }
 </style>

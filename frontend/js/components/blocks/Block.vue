@@ -7,7 +7,7 @@
 
       <div class="block__actions">
         <slot name="block-actions"></slot>
-        <a17-dropdown :ref="addDropdown" position="bottom-right" @open="hover = true" @close="hover = false" :offset="-3" v-if="withAddDropdown">
+        <a17-dropdown :ref="addDropdown" position="bottom-right" @open="hover = true" @close="hover = false" v-if="withAddDropdown">
           <a17-button variant="icon" data-action @click="$refs[addDropdown].toggle()"><span v-svg symbol="add"></span></a17-button>
           <div slot="dropdown__content">
             <slot name="dropdown-add"></slot>
@@ -16,7 +16,7 @@
 
         <a17-button variant="icon" data-action @click="visible = !visible" :aria-expanded="visible ?  'true' : 'false'"><span v-svg symbol="expand"></span></a17-button>
 
-        <a17-dropdown :ref="actionsDropdown" position="bottom-right" @open="hover = true" @close="hover = false" :offset="-3">
+        <a17-dropdown :ref="actionsDropdown" position="bottom-right" @open="hover = true" @close="hover = false">
           <a17-button variant="icon" @click="$refs[actionsDropdown].toggle()"><span v-svg symbol="more-dots"></span></a17-button>
           <div slot="dropdown__content">
             <slot name="dropdown-action"></slot>
@@ -130,11 +130,20 @@
     flex-grow:1;
     text-align:right;
     font-size:0px;
+    padding-top:(50px - 26px) / 2;
+    padding-bottom:(50px - 26px) / 2;
 
     > * {
-      display:inline-block;
       margin-left: 10px;
       @include font-regular();
+    }
+
+    > button,
+    .dropdown,
+    .dropdown > button {
+      display:inline-block;
+      vertical-align: top;
+      height:26px;
     }
   }
 

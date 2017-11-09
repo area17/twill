@@ -56,7 +56,7 @@ function storeSprite () {
 function makeScssFile() {
   const destination = path.resolve('frontend/scss', 'setup', '_icons.scss')
   icons.forEach(icon => {
-    scss = scss.concat(`.icon--${icon.title} { width: ${icon.width}px; height: ${icon.height}px }\n`)
+    scss = scss.concat(`.icon--${icon.title}, .icon--${icon.title} svg { width: ${icon.width}px; height: ${icon.height}px }\n`)
   })
   fs.writeFileSync(destination, scss)
   logger.info('Icons SCSS file written at: ', destination)
