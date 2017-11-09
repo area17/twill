@@ -55,6 +55,8 @@ const A17Config = {
     Vue.config.productionTip = false
     Vue.prototype.$http = axios
 
+    axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+
     // Plugins
     Vue.use(VueTimeago, {
       name: 'timeago', // component name
