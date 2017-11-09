@@ -75,7 +75,7 @@
         this.$store.dispatch('toggleFeaturedData', this.row.id)
       },
       togglePublish: function () {
-        this.$store.dispatch('togglePublishedData', this.row.id)
+        this.$store.dispatch('togglePublishedData', this.row)
       },
       deleteRow: function () {
         this.$store.dispatch('deleteData', this.row.id)

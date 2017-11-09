@@ -24,16 +24,14 @@ export default {
     // columns: the set of visible columns
     // filter: the current navigation ("all", "mine", "published", "draft", "trash")
 
-    // Set endpoint in global config
-    axios.get('https://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { params: params }).then(function (resp) {
+    axios.get(window.location.href, { params: params }).then(function (resp) {
       // update data and max page
-      const _data = window.STORE.datatable.data || []
-      const _newData = shuffle(_data)
+      const _data = resp.data.mappedData ? resp.data.mappedData : shuffle(window.STORE.datatable.data)
 
       if (callback && typeof callback === 'function') {
         callback({
-          data: _newData,
-          maxPage: 10 // maxPage need to be updated if needed
+          data: _data,
+          maxPage: (resp.data.maxPage ? resp.data.maxPage : 10)
         })
       }
     }, function (resp) {
@@ -46,13 +44,13 @@ export default {
     // Should only send ids of position ?
   },
 
-  togglePublished (id, callback) {
+  togglePublished (id, published, callback) {
     // Params
     //
     // id : id of the item to toggle
-
+    console.log({ id: id, active: published })
     // Set endpoint in global config  https://github.com/axios/axios#axiosposturl-data-config-1
-    axios.put('https://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { id: id }).then(function (resp) {
+    axios.put(window.CMS_URLS.publish, { id: id, active: published }).then(function (resp) {
       // todo : this need to be in the resp
       const navigation = [
         {

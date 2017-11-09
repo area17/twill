@@ -32,6 +32,16 @@ abstract class ModuleController extends Controller
     protected $moduleName;
 
     /*
+     * Available columns of the index view
+     */
+    protected $indexColumns = [];
+
+    /*
+     * Options of the index view
+     */
+    protected $indexOptions = [];
+
+    /*
      * Relations to eager load for the index view
      */
     protected $indexWith = [];
@@ -60,6 +70,8 @@ abstract class ModuleController extends Controller
     protected $perPage = 50;
 
     protected $breadcrumb = false;
+
+    protected $nameColumnKey = 'title';
 
     public function __construct(Application $app, Request $request)
     {
@@ -110,15 +122,102 @@ abstract class ModuleController extends Controller
     {
         $data = [
             'items' => $items,
-            'title' => (count($items) > 1 ? $this->moduleName : str_singular($this->moduleName)),
-            'moduleName' => $this->moduleName,
-            'modelName' => $this->modelName,
-            'routePrefix' => $this->routePrefix,
             'filters' => array_keys(array_except($this->filters, array_keys($this->defaultFilters))),
             'filtersOn' => !empty(array_except($scopes, array_keys($prependScope))),
+            'mappedData' => $this->getIndexMappedData($items),
+            'mappedColumns' => $this->getIndexMappedColumns($items),
+            'maxPage' => $items->lastPage(),
+            'offset' => $items->perPage(),
+            'nameColumnKey' => $this->nameColumnKey,
+            'publishUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'publish'),
         ];
 
         return array_replace_recursive($data, $this->indexData($this->request));
+    }
+
+    public function getIndexMappedData($items)
+    {
+        return $items->map(function ($item) {
+            $columnsData = collect($this->indexColumns)->mapWithKeys(function ($column, $key) use ($item) {
+                if (isset($column['thumb']) && $column['thumb']) {
+                    return [
+                        'thumbnail' => $item->cmsImage(isset($column['variant']) ? $column['variant']['role'] : head(array_keys($item->mediasParams)), isset($column['variant']) ? $column['variant']['crop'] : head(array_keys(head($item->mediasParams))), isset($column['variant']) && isset($column['variant']['params']) ? $column['variant']['params'] : ['w' => 80, 'h' => 80, 'fit' => 'crop']),
+                    ];
+                }
+                $field = $column['field'];
+                return [
+                    "$field" => $item->$field,
+                ];
+            })->toArray();
+
+            $name = $columnsData[$this->nameColumnKey];
+            unset($columnsData[$this->nameColumnKey]);
+
+            return [
+                'id' => $item->id,
+                'name' => $name,
+                'edit' => moduleRoute($this->moduleName, $this->routePrefix, 'edit', $item->id),
+            ] + $columnsData
+                 + (($this->indexOptions['publish'] ?? true) ? ['published' => $item->published] : [])
+                 + (($this->indexOptions['feature'] ?? false) ? ['featured' => $item->featured] : []);
+        })->toArray();
+    }
+
+    public function getIndexMappedColumns($items)
+    {
+        $mappedColumns = [];
+        if (isset(array_first($this->indexColumns)['thumb']) && array_first($this->indexColumns)['thumb']) {
+            array_push($mappedColumns, [
+                'name' => 'thumbnail',
+                'label' => 'Thumbnail',
+                'visible' => true,
+                'optional' => true,
+                'sortable' => false,
+            ]);
+            array_shift($this->indexColumns);
+        }
+
+        if ($this->indexOptions['feature'] ?? false) {
+            array_push($mappedColumns, [
+                'name' => 'featured',
+                'label' => 'Featured',
+                'visible' => true,
+                'optional' => false,
+                'sortable' => false,
+            ]);
+        }
+
+        if ($this->indexOptions['published'] ?? true) {
+            array_push($mappedColumns, [
+                'name' => 'published',
+                'label' => 'Published',
+                'visible' => true,
+                'optional' => false,
+                'sortable' => false,
+            ]);
+        }
+
+        array_push($mappedColumns, [
+            'name' => 'name',
+            'label' => 'Name',
+            'visible' => true,
+            'optional' => false,
+            'sortable' => true,
+        ]);
+
+        unset($this->indexColumns[$this->nameColumnKey]);
+
+        foreach ($this->indexColumns as $column) {
+            array_push($mappedColumns, [
+                'name' => $column['field'],
+                'label' => $column['title'],
+                'visible' => $column['optional'] ?? true,
+                'optional' => $column['optional'] ?? true,
+                'sortable' => $column['sort'] ?? false,
+            ]);
+        }
+
+        return $mappedColumns;
     }
 
     public function store()
@@ -270,10 +369,8 @@ abstract class ModuleController extends Controller
 
     public function publish()
     {
-        if (($id = $this->request->input('id')) && ($active = $this->request->input('active'))) {
-            $this->repository->updateBasic($id, ['published' => $active == 'true' ? 0 : 1]);
-            return response("Done!");
-        }
+        $this->repository->updateBasic(request('id'), ['published' => !request('active')]);
+        return response("Done!");
     }
 
     public function feature()
@@ -328,8 +425,12 @@ abstract class ModuleController extends Controller
     protected function orderScope()
     {
         $orders = [];
-        if ($this->request->has("sortField") && $this->request->has("sortOrder")) {
-            $orders[$this->request->get("sortField")] = $this->request->get("sortOrder");
+        if ($this->request->has("sortKey") && $this->request->has("sortDir")) {
+            if (($key = $this->request->has("sortKey")) == 'name') {
+                $orders[$this->nameColumnKey] = $this->request->get("sortDir");
+            } else {
+                $orders[$key] = $this->request->get("sortDir");
+            }
         }
         return $orders + ($this->defaultOrders ?? []);
     }

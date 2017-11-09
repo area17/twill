@@ -186,9 +186,10 @@ const actions = {
       }
     )
   },
-  togglePublishedData ({ commit, state, dispatch }, id) {
+  togglePublishedData ({ commit, state, dispatch }, row) {
     api.togglePublished(
-      id,
+      row.id,
+      row.published,
       function (id, navigation) {
         // success callback
 
@@ -197,7 +198,7 @@ const actions = {
         } else {
           // here we can simply update the store
           commit(types.PUBLISH_DATATABLE, {
-            id: id,
+            id: row.id,
             value: 'toggle'
           })
           commit(types.UPDATE_DATATABLE_NAV, navigation)

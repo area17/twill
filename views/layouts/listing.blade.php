@@ -1,5 +1,9 @@
 @extends('cms-toolkit::layouts.main')
 
+@php
+    $sort = $sort ?? true;
+@endphp
+
 @section('content')
     <div class="app app--listing" id="app" v-cloak>
         <div class="listing">
@@ -17,7 +21,7 @@
                 </div>
                 <a17-bulk></a17-bulk>
             </div>
-            <a17-datatable :draggable="true"></a17-datatable>
+            <a17-datatable :draggable="{{ $sort ? 'true' : 'false' }}"></a17-datatable>
             <a17-modal class="modal--form" ref="addNewModal" title="Add New">
                 <form action="#">
                     <a17-modal-title-editor v-bind:base-url="baseUrl"></a17-modal-title-editor>
@@ -28,7 +32,54 @@
     </div>
 @stop
 
+@section('initialStore')
+    window.CMS_URLS = {
+        publish: '{{ $publishUrl }}'
+    }
 
+    window.STORE.datatable = {
+      page: 1,
+      maxPage: {{ $maxPage }},
+      offset: {{ $offset }},
+      sortKey: 'name',
+      sortDir: 'desc'
+    }
+
+    window.STORE.datatable.data = {!! json_encode($mappedData) !!}
+    window.STORE.datatable.columns = {!! json_encode($mappedColumns) !!}
+
+    window.STORE.datatable.navigation = [
+      {
+        name: 'All items',
+        slug: 'all',
+        number: 1253
+      },
+      {
+        name: 'Mine',
+        slug: 'mine',
+        number: 3
+      },
+      {
+        name: 'Published',
+        slug: 'published',
+        number: 6
+      },
+      {
+        name: 'Draft',
+        slug: 'draft',
+        number: 1
+      },
+      {
+        name: 'Trash',
+        slug: 'trash',
+        number: 1
+      }
+    ]
+
+    window.STORE.datatable.filter = {
+        status: 'all'
+    }
+@stop
 
 @push('extra_js')
     <script src="{{ mix('/assets/admin/js/manifest.js') }}"></script>
