@@ -1,1 +1,7 @@
-<svg id="svg" xmlns="http://www.w3.org/2000/svg" width="20" height="15" viewBox="0 0 20 15"><title>icon_image</title><path d="M12.913,6.259a4.327,4.327,0,0,0-.872-.984c-.165-.09-.786.533-1.1.984l-3.552,5.1a.664.664,0,0,1-1.155.009L5.679,10.6a4.333,4.333,0,0,0-.891-.974c-.169-.089-.8.527-1.123.974L1.084,14.188C.763,14.635.95,15,1.5,15H18c.55,0,.743-.369.429-.821Z" fill="currentColor"/><circle cx="5" cy="3" r="2.85" fill="currentColor"/></svg>
+<svg id="a55562e6-6375-4e15-aaf7-70183a54c251" data-name="all icons" xmlns="http://www.w3.org/2000/svg" width="19" height="15" viewBox="0 0 19 15">
+  <title>image</title>
+  <g>
+    <path d="M11.512,5.282,6.817,12.024,5.1,9.628a.491.491,0,0,0-.847,0L.5,14.843H19L12.341,5.282A.472.472,0,0,0,11.512,5.282Z" fill="currentColor" />
+    <circle cx="5" cy="3" r="2.85" fill="currentColor" />
+  </g>
+</svg>

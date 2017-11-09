@@ -3,9 +3,9 @@
   <g>
     <path d="M21,5a5.015,5.015,0,0,1-5,5H5A5.015,5.015,0,0,1,0,5H0A5.015,5.015,0,0,1,5,0H16a5.015,5.015,0,0,1,5,5Z" style="fill: #fff"/>
     <g>
-      <path d="M16,0H12V2h4a3,3,0,0,1,0,6H12v2h4A5,5,0,0,0,16,0Z" style="fill: #a6a6a6"/>
-      <path d="M2,5A3,3,0,0,1,5,2H9V0H5A5,5,0,0,0,5,10H9V8H5A3,3,0,0,1,2,5Z" style="fill: #a6a6a6"/>
-      <rect x="6" y="4" width="9" height="2" style="fill: #a6a6a6"/>
+      <path d="M16,0H12V2h4a3,3,0,0,1,0,6H12v2h4A5,5,0,0,0,16,0Z" fill="currentColor" />
+      <path d="M2,5A3,3,0,0,1,5,2H9V0H5A5,5,0,0,0,5,10H9V8H5A3,3,0,0,1,2,5Z" fill="currentColor" />
+      <rect x="6" y="4" width="9" height="2" fill="currentColor" />
     </g>
   </g>
 </svg>

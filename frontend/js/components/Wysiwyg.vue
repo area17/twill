@@ -104,11 +104,11 @@
       self.options.placeholder = self.options.placeholder || self.placeholder
       self.options.readOnly = self.options.readOnly !== undefined ? self.options.readOnly : self.readonly
 
-      const icons = Quill.import('ui/icons'); // custom icons
-      icons['bold'] = '<span class="icon icon--wysiwyg_bold" aria-hidden="true"><svg><title>Bold</title><use xlink:href="#wysiwyg_bold"></use></svg></span>';
-      icons['italic'] = '<span class="icon icon--wysiwyg_italic" aria-hidden="true"><svg><title>Italic</title><use xlink:href="#wysiwyg_italic"></use></svg></span>';
-      icons['underline'] = '<span class="icon icon--wysiwyg_underline" aria-hidden="true"><svg><title>Underline</title><use xlink:href="#wysiwyg_underline"></use></svg></span>';
-      icons['link'] = '<span class="icon icon--wysiwyg_link" aria-hidden="true"><svg><title>Link</title><use xlink:href="#wysiwyg_link"></use></svg></span>';
+      const icons = Quill.import('ui/icons') // custom icons
+      icons['bold'] = '<span class="icon icon--wysiwyg_bold" aria-hidden="true"><svg><title>Bold</title><use xlink:href="#wysiwyg_bold"></use></svg></span>'
+      icons['italic'] = '<span class="icon icon--wysiwyg_italic" aria-hidden="true"><svg><title>Italic</title><use xlink:href="#wysiwyg_italic"></use></svg></span>'
+      icons['underline'] = '<span class="icon icon--wysiwyg_underline" aria-hidden="true"><svg><title>Underline</title><use xlink:href="#wysiwyg_underline"></use></svg></span>'
+      icons['link'] = '<span class="icon icon--wysiwyg_link" aria-hidden="true"><svg><title>Link</title><use xlink:href="#wysiwyg_link"></use></svg></span>'
 
       // init Quill
       this.quill = new Quill(self.$refs.editor, self.options)
