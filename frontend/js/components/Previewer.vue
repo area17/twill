@@ -25,7 +25,9 @@
           </div>
 
           <ul class="previewer__breakpoints" v-if="!slipScreen">
-            <li v-for="(breakpoint, index) in breakpoints" :key="breakpoint.size" class="previewer__breakpoint" :class="{ 's--active' : activeBreakpoint === breakpoint.size }" @click="resizePreview(breakpoint.size)">{{ breakpoint.name }}</li>
+            <li v-for="(breakpoint, index) in breakpoints" :key="breakpoint.size" class="previewer__breakpoint" :class="{ 's--active' : activeBreakpoint === breakpoint.size }" @click="resizePreview(breakpoint.size)">
+              <span v-svg :symbol="breakpoint.name"></span>
+            </li>
           </ul>
 
           <div class="previewer__compare" v-if="activeRevision">
@@ -69,20 +71,20 @@
         scrollPosition: 0,
         breakpoints: [
           {
-            size: 320,
-            name: 'mobile'
-          },
-          {
-            size: 768,
-            name: 'tablet'
+            size: 1280,
+            name: 'preview-desktop'
           },
           {
             size: 1024,
-            name: 'desktop'
+            name: 'preview-tablet-h'
           },
           {
-            size: 1280,
-            name: 'wide'
+            size: 768,
+            name: 'preview-tablet-v'
+          },
+          {
+            size: 320,
+            name: 'preview-mobile'
           }
         ]
       }
@@ -242,6 +244,7 @@
     position:absolute;
     top: 0;
     left: 50%;
+    font-size:0;
     transform:translateX(-50%);
     height:$height__nav;
     line-height:$height__nav;
@@ -249,9 +252,14 @@
 
   .previewer__breakpoint {
     cursor:pointer;
-    display: inline;
+    display:inline-block;
     color:$color__text--light;
-    padding:0 20px;
+    padding:25px 15px;
+    vertical-align: bottom;
+
+    .icon {
+      display:block;
+    }
 
     &.s--active {
       color:$color__background;
