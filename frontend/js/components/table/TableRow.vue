@@ -9,7 +9,7 @@
         <a class="tablerow__thumb" :href="row['edit']" v-if="col.name === 'thumbnail'"><img :src="row[col.name]" /></a> <!-- Thumbnail -->
       </template>
       <template v-else>
-        <a :href="row['edit']" v-if="col.name === 'name'" class="f--link-underlined--o">{{ row[col.name] }}</a>
+        <a :href="row['edit']" v-if="col.name === 'name'"><span class="f--link-underlined--o">{{ row[col.name] }}</span></a>
         <template v-else>{{ row[col.name] }}</template>
       </template>
     </td>
