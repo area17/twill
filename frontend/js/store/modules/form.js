@@ -5,8 +5,8 @@ const state = {
   permalink: window.STORE.form.permalink || '',
   baseUrl: window.STORE.form.baseUrl || '',
   fields: window.STORE.form.fields || [],
-  repeaters: {},
-  availableRepeaters: window.STORE.form.repeaters || {}
+  repeaters: window.STORE.form.repeaters || {},
+  availableRepeaters: window.STORE.form.availableRepeaters || {}
 }
 
 // getters

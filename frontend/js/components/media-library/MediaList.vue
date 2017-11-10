@@ -3,9 +3,10 @@
     <div class="itemlist__item" v-for="(item, index) in listItems" :key="item.id" :class="{ 's--picked': isSelected(item.id) }" @click.prevent="toggleSelection(item.id)">
       <span class="itemlist__button">
         <a17-checkbox name="item_list" :value="item.id" :initialValue="checkedItems" theme="bold"></a17-checkbox>
+        <span v-if="item.hasOwnProperty('thumbnail')"><img :src="item.thumbnail" /></span>
         {{ item.name }}
       </span>
-      <!-- <span>{{ item.size }}</span> -->
+      <span v-if="item.hasOwnProperty('size')">{{ item.size }}</span>
     </div>
   </div>
 </template>

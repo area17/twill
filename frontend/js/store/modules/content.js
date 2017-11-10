@@ -1,8 +1,8 @@
 import * as types from '../mutation-types'
 
 const state = {
-  available: window.STORE.form.content,
-  blocks: []
+  available: window.STORE.form.content || {},
+  blocks: window.STORE.form.blocks || []
 }
 
 // getters
