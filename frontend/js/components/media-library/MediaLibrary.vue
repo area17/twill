@@ -26,7 +26,7 @@
           </footer>
           <div class="medialibrary__list" ref="list">
             <a17-uploader @loaded="addMedia" @clear="clearSelectedMedias"></a17-uploader>
-            <a17-medialist :items="fullMedias" :selectedItems="selectedMedias" @change="updateSelectedMedias" v-if="type === 'file'"></a17-medialist>
+            <a17-itemlist :items="fullMedias" :selectedItems="selectedMedias" @change="updateSelectedMedias" v-if="type === 'file'"></a17-itemlist>
             <a17-mediagrid :medias="fullMedias" :selectedMedias="selectedMedias" @change="updateSelectedMedias" v-else></a17-mediagrid>
           </div>
         </div>
@@ -43,7 +43,7 @@
   import a17Filter from '../Filter.vue'
   import a17Uploader from './Uploader.vue'
   import a17MediaGrid from './MediaGrid.vue'
-  import a17MediaList from './MediaList.vue'
+  import a17ItemList from '../ItemList.vue'
   import FormDataAsObj from '@/utils/formDataAsObj.js'
 
   export default {
@@ -53,7 +53,7 @@
       'a17-mediasidebar': a17MediaSidebar,
       'a17-uploader': a17Uploader,
       'a17-mediagrid': a17MediaGrid,
-      'a17-medialist': a17MediaList
+      'a17-itemlist': a17ItemList
     },
     props: {
       btnLabel: {

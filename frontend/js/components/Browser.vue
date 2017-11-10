@@ -7,7 +7,7 @@
 
       <div class="browser__inner">
         <div class="browser__list" ref="list">
-          <a17-medialist :items="fullItems" :selectedItems="selectedItems" @change="updateSelectedItems"></a17-medialist>
+          <a17-itemlist :items="fullItems" :selectedItems="selectedItems" @change="updateSelectedItems"></a17-itemlist>
         </div>
       </div>
       <div class="browser__footer">
@@ -21,14 +21,14 @@
   import { mapState } from 'vuex'
 
   import a17Filter from './Filter.vue'
-  import a17MediaList from './media-library/MediaList.vue'
+  import a17ItemList from './ItemList.vue'
   import FormDataAsObj from '@/utils/formDataAsObj.js'
 
   export default {
-    name: 'A17browser',
+    name: 'A17Browser',
     components: {
       'a17-filter': a17Filter,
-      'a17-medialist': a17MediaList
+      'a17-itemlist': a17ItemList
     },
     props: {
       btnLabel: {
