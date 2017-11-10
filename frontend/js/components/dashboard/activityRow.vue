@@ -60,11 +60,9 @@
                col.name === 'thumbnail'
       },
       toggleFeatured: function () {
-        console.log('toggleFeaturedData')
         this.$store.dispatch('toggleFeaturedData', this.row.id)
       },
       togglePublish: function () {
-        console.log('togglePublishedData')
         this.$store.dispatch('togglePublishedData', this.row)
       },
       deleteRow: function () {
