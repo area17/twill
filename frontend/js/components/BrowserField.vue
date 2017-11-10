@@ -116,6 +116,9 @@
         this.$store.commit('updateBrowserTitle', this.browserTitle)
         this.$root.$refs.browser.open()
       }
+    },
+    beforeDestroy: function () {
+      this.deleteAll()
     }
   }
 </script>

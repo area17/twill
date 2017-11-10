@@ -21,6 +21,7 @@ import a17Singleselect from '@/components/SingleSelect.vue'
 // Blocks Components
 import a17BlockImage from '@/components/blocks/BlockImage.vue'
 import a17BlockTitle from '@/components/blocks/BlockTitle.vue'
+import a17BlockGrid from '@/components/blocks/BlockGrid.vue'
 import a17BlockQuote from '@/components/blocks/BlockQuote.vue'
 import a17BlockVideo from '@/components/blocks/BlockVideo.vue'
 import a17BlockWysiwyg from '@/components/blocks/BlockWysiwyg.vue'
@@ -44,11 +45,13 @@ Vue.component('a17-block-quote', a17BlockQuote)
 Vue.component('a17-block-video', a17BlockVideo)
 Vue.component('a17-block-wysiwyg', a17BlockWysiwyg)
 Vue.component('a17-block-image', a17BlockImage)
+Vue.component('a17-block-grid', a17BlockGrid)
 
 // Media Library
 Vue.component('a17-medialibrary', a17MediaLibrary)
 
 // Browser
+Vue.component('a17-repeater', a17Repeater)
 Vue.component('a17-browser', a17Browser)
 
 // Form : radios and checkboxes
@@ -68,7 +71,6 @@ Window.vm = new Vue({
     'a17-sticky-nav': a17StickyNav,
     'a17-fieldset': a17Fieldset,
     'a17-content': a17Content,
-    'a17-repeater': a17Repeater,
     'a17-publisher': a17Publisher,
     'a17-locationfield': a17LocationField,
     'a17-slideshow': a17Slideshow

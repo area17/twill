@@ -265,6 +265,9 @@
         this.$store.commit('updateMediaMax', 1)
         this.$root.$refs.mediaLibrary.open()
       }
+    },
+    beforeDestroy: function () {
+      this.deleteMedia()
     }
   }
 </script>

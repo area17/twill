@@ -36,6 +36,10 @@
       id: {
         type: String,
         required: true
+      },
+      name: {
+        type: String,
+        required: true
       }
     },
     data: function () {
@@ -52,15 +56,16 @@
       },
       blocks: {
         get () {
-          if (this.savedBlocks.hasOwnProperty(this.id)) {
-            return this.savedBlocks[this.id] || []
+          if (this.savedBlocks.hasOwnProperty(this.name)) {
+            return this.savedBlocks[this.name] || []
           } else {
             return []
           }
         },
         set (value) {
           this.$store.commit('reorderFormBlocks', {
-            id: this.id,
+            type: this.id,
+            name: this.name,
             blocks: value
           })
         }
@@ -72,17 +77,19 @@
     },
     methods: {
       addBlock: function () {
-        this.$store.commit('addFormBlock', { id: this.id })
+        this.$store.commit('addFormBlock', { type: this.id, name: this.name })
       },
       duplicateBlock: function (index) {
         this.$store.commit('duplicateFormBlock', {
-          id: this.id,
+          type: this.id,
+          name: this.name,
           index: index
         })
       },
       deleteBlock: function (index) {
         this.$store.commit('deleteFormBlock', {
-          id: this.id,
+          type: this.id,
+          name: this.name,
           index: index
         })
       }

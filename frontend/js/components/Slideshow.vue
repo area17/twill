@@ -95,6 +95,9 @@
         this.$store.commit('updateMediaMax', this.remainingSlides)
         this.$root.$refs.mediaLibrary.open()
       }
+    },
+    beforeDestroy: function () {
+      this.deleteSlideshow()
     }
   }
 </script>

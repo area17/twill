@@ -63,10 +63,14 @@ const mutations = {
     })
   },
   [types.ADD_FORM_BLOCK] (state, blockInfos) {
-    const blockId = blockInfos.id
+    console.log('ADD_FORM_BLOCK')
+    console.log(blockInfos)
+
+    const blockName = blockInfos.name
+    const blockType = blockInfos.type
     const block = {}
-    const blockModel = state.availableRepeaters[blockId]
-    const isNew = (!state.repeaters[blockId])
+    const blockModel = state.availableRepeaters[blockType]
+    const isNew = (!state.repeaters[blockName])
 
     if (!blockModel) return
 
@@ -77,25 +81,25 @@ const mutations = {
     // create new repeater object if required
     if (isNew) {
       const newBlocks = {}
-      newBlocks[blockId] = []
-      newBlocks[blockId].push(block)
+      newBlocks[blockName] = []
+      newBlocks[blockName].push(block)
 
       state.repeaters = Object.assign({}, state.repeaters, newBlocks)
     } else {
-      state.repeaters[blockId].push(block) // or add a new block at the end of the list
+      state.repeaters[blockName].push(block) // or add a new block at the end of the list
     }
   },
   [types.DELETE_FORM_BLOCK] (state, blockInfos) {
-    state.repeaters[blockInfos.id].splice(blockInfos.index, 1)
+    state.repeaters[blockInfos.name].splice(blockInfos.index, 1)
   },
   [types.DUPLICATE_FORM_BLOCK] (state, blockInfos) {
-    let clone = Object.assign({}, state.repeaters[blockInfos.id][blockInfos.index])
+    let clone = Object.assign({}, state.repeaters[blockInfos.name][blockInfos.index])
     clone.id = setBlockID()
-    state.repeaters[blockInfos.id].splice(blockInfos.index + 1, 0, clone)
+    state.repeaters[blockInfos.name].splice(blockInfos.index + 1, 0, clone)
   },
   [types.REORDER_FORM_BLOCKS] (state, newValues) {
     const newBlocks = {}
-    newBlocks[newValues.id] = newValues.blocks
+    newBlocks[newValues.name] = newValues.blocks
     state.repeaters = Object.assign({}, state.repeaters, newBlocks)
   }
 }
