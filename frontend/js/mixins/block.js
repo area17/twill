@@ -12,10 +12,5 @@ export default {
     repeaterName: function (id) {
       return this.name.replace('[', '-').replace(']', '') + '_' + id // nameOfBlock-UniqID_name
     }
-  },
-  mounted: function () {
-    console.log('----- BLOCK MOUNTED -----')
-    console.log(this.name)
-    console.log('----- end BLOCK MOUNTED -----')
   }
 }

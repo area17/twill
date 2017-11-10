@@ -1,5 +1,5 @@
 <template>
-  <div class="block" :class="{ 'block--open': visible, 'block--focus' : hover }">
+  <div class="block" :class="blockClasses">
     <div class="block__header">
       <span class="block__counter f--tiny">{{ index + 1 }}</span>
       <span class="block__title">{{ block.title }}</span>
@@ -14,7 +14,7 @@
           </div>
         </a17-dropdown>
 
-        <a17-button variant="icon" data-action @click="visible = !visible" :aria-expanded="visible ?  'true' : 'false'"><span v-svg symbol="expand"></span></a17-button>
+        <a17-button variant="icon" data-action @click="toggleExpand()" :aria-expanded="visible ? 'true' : 'false'"><span v-svg symbol="expand"></span></a17-button>
 
         <a17-dropdown :ref="actionsDropdown" position="bottom-right" @open="hover = true" @close="hover = false">
           <a17-button variant="icon" @click="$refs[actionsDropdown].toggle()"><span v-svg symbol="more-dots"></span></a17-button>
@@ -56,6 +56,9 @@
     },
     filters: a17VueFilters,
     computed: {
+      blockClasses: function () {
+        return { 'block--open': this.visible, 'block--focus': this.hover }
+      },
       actionsDropdown: function () {
         return `action${this.block.id}Dropdown`
       },
@@ -64,6 +67,12 @@
       }
     },
     methods: {
+      toggleExpand: function () {
+        console.log('toggleExpand')
+        this.visible = !this.visible
+
+        console.log(this.visible)
+      },
       componentName: function (id) {
         const slug = this.$options.filters.slugify(this.block.title)
         return slug + '[' + id + ']' // [' + type + ']' // [" + name + "]";
@@ -85,11 +94,11 @@
   }
 
   .block--open {
-    .block__content {
+    > .block__content {
       display:block;
     }
 
-    .block__header {
+    > .block__header {
       border-bottom:1px solid $color__border--light;
     }
   }
