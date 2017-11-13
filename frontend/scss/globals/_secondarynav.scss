@@ -58,11 +58,11 @@ $height__nav: 35px;
 }
 
 .secondarynav__item:hover .secondarynav__link {
-  text-decoration: underline;
+  @include bordered($color__link, false);
 }
 
-.secondarynav__item.s--on .secondarynav__link {
-  text-decoration: none;
+.secondarynav__item.s--on:hover .secondarynav__link {
+  background-image:none;
 }
 
 .secondarynav__number {
