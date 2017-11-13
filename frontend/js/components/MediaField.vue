@@ -77,12 +77,14 @@
   import { mapState } from 'vuex'
 
   import a17Cropper from '@/components/Cropper.vue'
+  import mediaLibrayMixin from '@/mixins/mediaLibrary.js'
 
   export default {
     name: 'A17Mediafield',
     components: {
       'a17-cropper': a17Cropper
     },
+    mixins: [mediaLibrayMixin],
     props: {
       name: {
         type: String,
@@ -259,11 +261,6 @@
         let self = this
         self.metadatas.active = !self.metadatas.active
         self.metadatas.text = self.metadatas.active ? 'Close info' : 'Add info'
-      },
-      openMediaLibrary: function () {
-        this.$store.commit('updateMediaConnector', this.name)
-        this.$store.commit('updateMediaMax', 1)
-        this.$root.$refs.mediaLibrary.open()
       }
     },
     beforeDestroy: function () {

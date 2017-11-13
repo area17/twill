@@ -11,7 +11,7 @@
       </transition-group>
     </draggable>
     <div class="slideshow__trigger">
-      <a17-button type="button" variant="ghost" @click="openMediaLibrary" :disabled="!remainingSlides">{{ addLabel }}</a17-button>
+      <a17-button type="button" variant="ghost" @click="openMediaLibrary(remainingSlides)" :disabled="!remainingSlides">{{ addLabel }}</a17-button>
       <span class="slideshow__note f--small"><slot></slot></span>
     </div>
   </div>
@@ -21,6 +21,8 @@
   import { mapState } from 'vuex'
 
   import draggableMixin from '@/mixins/draggable'
+  import mediaLibrayMixin from '@/mixins/mediaLibrary.js'
+
   import draggable from 'vuedraggable'
 
   export default {
@@ -28,7 +30,7 @@
     components: {
       draggable
     },
-    mixins: [draggableMixin],
+    mixins: [draggableMixin, mediaLibrayMixin],
     props: {
       name: {
         type: String,
@@ -37,10 +39,6 @@
       cropContext: {
         type: String,
         default: ''
-      },
-      type: {
-        type: String,
-        default: 'image'
       },
       itemLabel: {
         type: String,
@@ -88,12 +86,6 @@
       deleteSlideshow: function () {
         // destroy all the medias of the slideshow
         this.$store.commit('destroySelectedMedias', this.name)
-      },
-      openMediaLibrary: function () {
-        this.$store.commit('updateMediaConnector', this.name)
-        this.$store.commit('updateMediaType', this.type)
-        this.$store.commit('updateMediaMax', this.remainingSlides)
-        this.$root.$refs.mediaLibrary.open()
       }
     },
     beforeDestroy: function () {
