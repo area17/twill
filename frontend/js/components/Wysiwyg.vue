@@ -85,6 +85,9 @@
       }
     },
     methods: {
+      getIcon: function (shape) {
+        return '<span class="icon icon--wysiwyg_' + shape + '" aria-hidden="true"><svg><title>' + shape + '</title><use xlink:href="#wysiwyg_' + shape + '"></use></svg></span>'
+      },
       updateInput: function () {
         this.$refs.input.value = this.value
 
@@ -105,10 +108,10 @@
       self.options.readOnly = self.options.readOnly !== undefined ? self.options.readOnly : self.readonly
 
       const icons = Quill.import('ui/icons') // custom icons
-      icons['bold'] = '<span class="icon icon--wysiwyg_bold" aria-hidden="true"><svg><title>Bold</title><use xlink:href="#wysiwyg_bold"></use></svg></span>'
-      icons['italic'] = '<span class="icon icon--wysiwyg_italic" aria-hidden="true"><svg><title>Italic</title><use xlink:href="#wysiwyg_italic"></use></svg></span>'
-      icons['underline'] = '<span class="icon icon--wysiwyg_underline" aria-hidden="true"><svg><title>Underline</title><use xlink:href="#wysiwyg_underline"></use></svg></span>'
-      icons['link'] = '<span class="icon icon--wysiwyg_link" aria-hidden="true"><svg><title>Link</title><use xlink:href="#wysiwyg_link"></use></svg></span>'
+      icons['bold'] = self.getIcon('bold')
+      icons['italic'] = self.getIcon('italic')
+      icons['underline'] = self.getIcon('underline')
+      icons['link'] = self.getIcon('link')
 
       // init Quill
       this.quill = new Quill(self.$refs.editor, self.options)
@@ -211,6 +214,26 @@
 
     .ql-snow a {
       color:$color__link;
+    }
+
+    .ql-snow.ql-toolbar {
+      button {
+        width: 24px;
+        margin-right: 35px - 6px - 6px - 6px - 6px;
+        text-align:center;
+      }
+
+      button.ql-underline {
+        top:1px;
+      }
+
+      button.ql-link {
+        width:24px + 9px;
+      }
+
+      .icon {
+        position:relative;
+      }
     }
 
     .ql-snow.ql-toolbar,

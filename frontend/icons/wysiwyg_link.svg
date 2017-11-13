@@ -1,11 +1,7 @@
-<svg id="a7b95df4-e22e-4f7b-a0d5-4e62d8cc939f" data-name="all icons" xmlns="http://www.w3.org/2000/svg" width="21" height="10" viewBox="0 0 21 10">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="21px"
+   height="10px" viewBox="0 0 21 10" enable-background="new 0 0 21 10" xml:space="preserve">
   <title>wysiwyg_link</title>
-  <g>
-    <path d="M21,5a5.015,5.015,0,0,1-5,5H5A5.015,5.015,0,0,1,0,5H0A5.015,5.015,0,0,1,5,0H16a5.015,5.015,0,0,1,5,5Z" style="fill: #fff"/>
-    <g>
-      <path d="M16,0H12V2h4a3,3,0,0,1,0,6H12v2h4A5,5,0,0,0,16,0Z" fill="currentColor" />
-      <path d="M2,5A3,3,0,0,1,5,2H9V0H5A5,5,0,0,0,5,10H9V8H5A3,3,0,0,1,2,5Z" fill="currentColor" />
-      <rect x="6" y="4" width="9" height="2" fill="currentColor" />
-    </g>
-  </g>
+  <path fill="currentColor" d="M16,0h-4v2h4c1.65424,0,3,1.3457,3,3s-1.34576,3-3,3h-4v2h4c2.75,0,5-2.25,5-5S18.75,0,16,0z"/>
+  <path fill="currentColor" d="M2,5c0-1.6543,1.34576-3,3-3h4V0H5C2.25,0,0,2.25,0,5s2.25,5,5,5h4V8H5C3.34576,8,2,6.6543,2,5z"/>
+  <rect x="6" y="4" fill="currentColor" width="9" height="2"/>
 </svg>
