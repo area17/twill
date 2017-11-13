@@ -42,7 +42,7 @@
   }
 
   .activityFeed__table {
-    overflow: hidden;
+    // overflow: hidden;
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;

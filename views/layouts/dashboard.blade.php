@@ -12,7 +12,7 @@
                             Statistics
                         </a17-stat-feed>
 
-                        <a17-popular-feed :entities="[ { name: 'Garden Museum', number: 2257, url: '/templates/listing' }, { name: 'Garden Museum', number: 2257, url: '/templates/listing' }, { name: 'Garden Museum', number: 2257, url: '/templates/listing' } ]">
+                        <a17-popular-feed :entities="[ { name: 'Garden Museum', number: 2546, url: '/templates/listing' }, { name: 'London Design Festival 2017', number: 1345, url: '/templates/listing' }, { name: 'The National', number: 1344, url: '/templates/listing' }, { name: 'The Hollow Woods: Storytelling', number: 1125, url: '/templates/listing' }, { name: 'William Russell: A Collection', number: 852, url: '/templates/listing' }, { name: 'Red Trees', number: 340, url: '/templates/listing' }, { name: 'Musuem für Film umd Fernsehen', number: 178, url: '/templates/listing' }, { name: 'Shakespeare in the Park 2017', number: 152, url: '/templates/listing' }, { name: 'Artifact', number: 150, url: '/templates/listing' }, { name: 'Dance Ink (Vol. 8, No. 2)', number: 150, url: '/templates/listing' } ]">
                             Most Viewed
                         </a17-popular-feed>
                     </aside>

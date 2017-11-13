@@ -22,11 +22,10 @@ A simple box with an header, a body and a footer where you can put listings into
   border-radius:2px;
   border:1px solid $color__border;
   margin-top:20px;
-  overflow:hidden;
 }
 
 .box__body {
-  margin:0 -1px;
+  /*margin:0 -1px;*/
 }
 
 .box__header {

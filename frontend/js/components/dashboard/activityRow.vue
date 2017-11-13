@@ -51,6 +51,7 @@
       cellClasses: function (col) {
         return {
           'activityCell--icon': col.name === 'featured' || col.name === 'published',
+          'activityCell--pub': col.name === 'published',
           'activityCell--thumb': col.name === 'thumbnail'
         }
       },
@@ -82,6 +83,10 @@
       td {
         background-color: $color__f--bg;
       }
+    }
+
+    &:last-child {
+      border-bottom:0 none;
     }
   }
 
@@ -185,5 +190,10 @@
 
   .activityCell--icon {
     width:1px;
+  }
+
+  .activityCell--pub {
+    padding-left:0;
+    padding-right:0;
   }
 </style>
