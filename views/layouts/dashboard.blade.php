@@ -8,7 +8,7 @@
             <div class="container">
                 <div class="wrapper wrapper--reverse">
                     <aside class="col col--aside">
-                        <a17-stat-feed>
+                        <a17-stat-feed :facts="[ { label: 'Users', figure: '7K', insight: '53% Bounce rate', url: '/analytics' }, { label: 'Pageviews', figure: '8,4K', insight: '3,8 Pages / Session', url: '/analytics' }, { label: 'Contact requests', figure: '534', insight: '5 Abandoned', url: '/analytics' }, { label: 'Newsletters sign up', figure: '15', insight: '3 Unverified', url: '/analytics' } ]">
                             Statistics
                         </a17-stat-feed>
 

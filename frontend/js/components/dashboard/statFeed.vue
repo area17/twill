@@ -4,27 +4,15 @@
       <b><slot></slot></b>
     </header>
     <div class="box__body">
-      <a href="#" class="statFeed__item" target="_blank">
-        <h3 class="statFeed__numb f--heading">7K</h3>
+      <template  v-for="fact in facts">
+      <a :href="fact.url" class="statFeed__item" target="_blank">
+        <h3 class="statFeed__numb f--heading">{{ fact.figure }}</h3>
         <div class="statFeed__info">
-          <h4 class="statFeed__label">Users</h4>
-          <p class="statFeed__meta f--note f--small">53% Bounce rate</p>
+          <h4 class="statFeed__label">{{ fact.label }}</h4>
+          <p class="statFeed__meta f--note f--small">{{ fact.insight }}</p>
         </div>
       </a>
-      <a href="#" class="statFeed__item" target="_blank">
-        <h3 class="statFeed__numb f--heading">8,4K</h3>
-        <div class="statFeed__info">
-          <h4 class="statFeed__label">Pageviews</h4>
-          <p class="statFeed__meta f--note f--small">3,8 Pages / Session</p>
-        </div>
-      </a>
-      <a href="#" class="statFeed__item" target="_blank">
-        <h3 class="statFeed__numb f--heading">15</h3>
-        <div class="statFeed__info">
-          <h4 class="statFeed__label">Contact requests</h4>
-          <p class="statFeed__meta f--note f--small">5 Abandoned</p>
-        </div>
-      </a>
+      </template>
     </div>
     <footer class="box__footer statFeed__footer">
       <a href="#" class="f--external" target="_blank">Google Analytics</a>
@@ -35,6 +23,14 @@
 <script>
   export default {
     name: 'A17StatFeed',
+    props: {
+      facts: {
+        type: Array,
+        default: function () {
+          return []
+        }
+      }
+    },
     computed: {
     },
     methods: {

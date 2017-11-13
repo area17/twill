@@ -4,7 +4,8 @@
       <div class="drag__handle--drag"></div>
     </td>
     <td class="browserItem__cell browserItem__cell--name">
-      <a href="#" target="_blank">{{ currentItem.name }}</a>
+      <span v-if="currentItem.hasOwnProperty('thumbnail')"><img :src="currentItem.thumbnail" /></span>
+      <a href="#" target="_blank"><span class="f--link-underlined--o">{{ currentItem.name }}</span></a>
       <input type="hidden" :name="name" :value="currentItem.id"/>
     </td>
     <td class="browserItem__cell">
@@ -99,9 +100,9 @@
       margin:-15px;
       padding:15px;
 
-      &:hover {
-        text-decoration: underline;
-      }
+      // &:hover {
+      //   text-decoration: underline;
+      // }
     }
   }
 

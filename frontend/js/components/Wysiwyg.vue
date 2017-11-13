@@ -186,6 +186,7 @@
       background-color: $color__f--bg;
       min-height:15px * 5;
       caret-color: $color__action;
+      color:$color__text--forms;
 
       &:hover,
       &:focus {
