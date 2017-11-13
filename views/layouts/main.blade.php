@@ -10,7 +10,7 @@
                     @partialView(($moduleName ?? null), 'navigation._title')
                     @partialView(($moduleName ?? null), 'navigation._global_navigation')
                     @partialView(($moduleName ?? null), 'navigation._user')
-                    <div class="ham"><span class="ham__label">Home</span> <button type="button" class="btn ham__btn" data-ham-btn><span class="ham__icon"><span class="ham__line"></span></span></button>
+                    <div class="ham"><span class="ham__label">Home</span> <button type="button" class="btn ham__btn" data-ham-btn><span class="ham__icon"><span class="ham__line"></span></span></button></div>
                 </div>
             </header>
             @partialView(($moduleName ?? null), 'navigation._global_navigation', [
