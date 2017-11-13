@@ -72,6 +72,11 @@
     max-width:calc(100% - 20px);
     display: block;
     box-shadow:0 0px 10px rgba(0,0,0,0.8);
+    transform:translateX(-50%);
     transition: width .3s ease;
+    position: absolute;
+    top:0;
+    bottom:0;
+    left:50%;
   }
 </style>

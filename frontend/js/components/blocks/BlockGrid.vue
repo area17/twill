@@ -1,6 +1,5 @@
 <template>
   <div class="block__body">
-    <p>Demo BLOCK : A list of items inside a content editor block</p>
     <a17-repeater id="gridItem" :name="repeaterName('item')"></a17-repeater>
   </div>
 </template>

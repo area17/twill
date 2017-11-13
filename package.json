@@ -18,7 +18,7 @@
     "vue-select": "2.3.0",
     "vue-timeago": "3.4.0",
     "vuedraggable": "2.15.0",
-    "axios": "0.17.0",
+    "axios": "0.17.1",
     "cropperjs": "1.1.3",
     "date-fns": "1.29.0",
     "flatpickr": "3.0.7",

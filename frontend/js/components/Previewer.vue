@@ -66,8 +66,8 @@
       return {
         loadedCurrent: false,
         slipScreen: false,
-        activeBreakpoint: 1024,
-        lastActiveBreakpoint: 1024,
+        activeBreakpoint: 1280,
+        lastActiveBreakpoint: 1280,
         scrollPosition: 0,
         breakpoints: [
           {
