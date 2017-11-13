@@ -8,7 +8,7 @@
     "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
     "watch": "concurrently \"npm run watch:icons\"  \"cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js\"",
     "watch-poll": "npm run watch -- --watch-poll",
-    "preicons": "rimraf assets/dist/icons/icons.svg && rimraf frontend/scss/setup/_icons.scss && mkdirp assets/dist/icons",
+    "preicons": "rimraf public/assets/admin/icons/icons.svg && rimraf frontend/scss/setup/_icons.scss && mkdirp public/assets/admin/icons",
     "icons": "node frontend/tasks/icons.js",
     "watch:icons": "watch 'npm run icons' frontend/icons --wait=2 --interval=0.1"
   },

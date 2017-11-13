@@ -4,3 +4,4 @@ vendor/
 /node_modules
 assets/dist/*
 mix-manifest.json
+public/

@@ -48,7 +48,7 @@ function buildIcon(fileName) {
 }
 
 function storeSprite () {
-  const destination = path.resolve('assets/dist/icons', 'icons.svg')
+  const destination = path.resolve('public/assets/admin/icons', 'icons.svg')
   fs.writeFileSync(destination, sprite.toString())
   logger.info('Icons compiled to: ', destination)
 }

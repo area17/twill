@@ -10,10 +10,14 @@ let mix = require('laravel-mix');
  |
  */
 
+mix.setPublicPath('public');
+
 mix.options({
   processCssUrls: false,
   purifyCss: false, // Remove unused CSS selectors.
-}).webpackConfig({
+})
+
+mix.webpackConfig({
   resolve: {
     alias: {
       '@': path.resolve('frontend/js'),
@@ -36,18 +40,23 @@ mix.options({
   }
 });
 
+mix.disableNotifications();
+
+mix.copyDirectory('frontend/fonts', 'public/assets/admin/fonts');
+mix.copyDirectory('assets/vendor', 'public/assets/vendor');
+
 mix.js(
   'frontend/js/main-listing.js',
-  'assets/dist/js'
+  'public/assets/admin/js'
 ).js(
   'frontend/js/main-form.js',
-  'assets/dist/js'
+  'public/assets/admin/js'
 ).js(
   'frontend/js/main-buckets.js',
-  'assets/dist/js'
+  'public/assets/admin/js'
 ).js(
   'frontend/js/main-dashboard.js',
-  'assets/dist/js'
+  'public/assets/admin/js'
 ).extract([
   'vue', 'vuex', 'axios',
   'quill', 'vuedraggable', 'cropperjs',
@@ -55,5 +64,5 @@ mix.js(
   'date-fns', 'lodash/debounce'
 ]).sass(
   'frontend/scss/app.scss',
-  'assets/dist/css'
-);
+  'public/assets/admin/css'
+).sourceMaps();
