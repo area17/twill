@@ -311,10 +311,14 @@ function shuffle (a) {
 export default {
 
   get: function (params, callback) {
-    // DO REAL AJAX
-    axios.get('#', {params: params}).then(function (resp) {
-      const _newData = getDataByContentType(params.content_type)[0]
-      _newData.items = shuffle(_newData.items)
+    // Params
+    //
+    // page : current page number
+    // offset : number of items per page
+    // content_type : the current data source
+    axios.get(window.location.href, {params: params}).then(function (resp) {
+      const _newData = resp.data.source ? resp.data.source : getDataByContentType(params.content_type)[0]
+      _newData.items = resp.data.source ? _newData.items : shuffle(_newData.items)
       callback(_newData)
     }, function (resp) {
       // error callback

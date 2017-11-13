@@ -29,6 +29,9 @@
             // datatable
             window.STORE.datatable = {}
 
+            // buckets
+            window.STORE.buckets = {}
+
             // languages
             window.STORE.languages = {}
             window.STORE.languages.all = [

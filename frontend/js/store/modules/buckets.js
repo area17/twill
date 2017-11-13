@@ -2,156 +2,19 @@ import bucketsAPI from '../api/buckets'
 import * as types from '../mutation-types'
 
 const state = {
-  dataSources: {
-    selected: {
-      label: 'Projects',
-      value: 'projects'
-    },
-    content_types: [
-      // based on v-select options
-      {
-        label: 'Projects',
-        value: 'projects'
-      },
-      {
-        label: 'Users',
-        value: 'users'
-      },
-      {
-        label: 'Teams Members',
-        value: 'teams-members'
-      }
-    ]
-  },
-  source: {
-    content_type: {
-      label: 'Projects',
-      value: 'projects'
-    },
-    items: [
-      {
-        id: 1,
-        name: 'The New School Website',
-        edit: '/templates/form',
-        thumbnail: 'https://source.unsplash.com/random/80x80?sig=1',
-        content_type: {
-          label: 'Projects',
-          value: 'projects'
-        }
-      },
-      {
-        id: 2,
-        name: 'Barnes Foundation website',
-        edit: '/templates/form',
-        thumbnail: 'https://source.unsplash.com/random/80x80?sig=2',
-        content_type: {
-          label: 'Projects',
-          value: 'projects'
-        }
-      },
-      {
-        id: 3,
-        name: 'Pentagram website',
-        edit: '/templates/form',
-        thumbnail: 'https://source.unsplash.com/random/80x80?sig=3',
-        content_type: {
-          label: 'Projects',
-          value: 'projects'
-        }
-      },
-      {
-        id: 4,
-        name: 'Mai 36 Galerie website',
-        edit: '/templates/form',
-        thumbnail: 'https://source.unsplash.com/random/80x80?sig=4',
-        content_type: {
-          label: 'Projects',
-          value: 'projects'
-        }
-      },
-      {
-        id: 5,
-        name: 'Mai 36 Galerie website',
-        edit: '/templates/form',
-        thumbnail: 'https://source.unsplash.com/random/80x80?sig=5',
-        content_type: {
-          label: 'Projects',
-          value: 'projects'
-        }
-      },
-      {
-        id: 6,
-        name: 'Roto website',
-        edit: '/templates/form',
-        thumbnail: 'https://source.unsplash.com/random/80x80?sig=6',
-        content_type: {
-          label: 'Projects',
-          value: 'projects'
-        }
-      },
-      {
-        id: 7,
-        name: 'THG Paris website',
-        edit: '/templates/form',
-        thumbnail: 'https://source.unsplash.com/random/80x80?sig=7',
-        content_type: {
-          label: 'Projects',
-          value: 'projects'
-        }
-      },
-      {
-        id: 8,
-        name: 'La Parqueterie Nouvelle strategie',
-        edit: '/templates/form',
-        thumbnail: 'https://source.unsplash.com/random/80x80?sig=8',
-        content_type: {
-          label: 'Projects',
-          value: 'projects'
-        }
-      }
-    ]
-  },
+  dataSources: window.STORE.buckets.dataSources || {},
+  source: window.STORE.buckets.source || {},
   /**
    * Buckets action ui is based on buckets length.
    * If buckets.length === 1 an 'add' icon instead of buckets number
    */
-  buckets: [
-    {
-      id: 1,
-      name: 'Main features',
-      children: [],
-      max: 1
-    },
-    {
-      id: 2,
-      name: 'Secondary features',
-      children: [],
-      max: 3
-    },
-    {
-      id: 3,
-      name: 'Tertiary features',
-      children: [
-        {
-          id: 2,
-          name: 'Barnes Foundation website',
-          edit: '/templates/form',
-          thumbnail: 'https://source.unsplash.com/random/80x80?sig=2',
-          content_type: {
-            label: 'Projects',
-            value: 'projects'
-          }
-        }
-      ],
-      max: 5
-    }
-  ],
+  buckets: window.STORE.buckets.items || [],
   // TBD: this properties are same as datable.js. maybe, they could be refactored and use only one datable global store
-  filter: {},
-  page: 1,
-  maxPage: 10,
-  offset: 10,
-  availableOffsets: [10, 20, 30]
+  filter: window.STORE.buckets.filter || {},
+  page: window.STORE.buckets.page || 1,
+  maxPage: window.STORE.buckets.maxPage || 10,
+  offset: window.STORE.buckets.offset || 10,
+  availableOffsets: window.STORE.buckets.availableOffsets || [10, 20, 30]
 }
 
 const getters = {
