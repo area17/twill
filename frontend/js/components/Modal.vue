@@ -142,7 +142,7 @@
     overflow:hidden;
     overflow-y: auto;
     flex-grow: 1;
-    height:100%;
+    max-height:100%;
   }
 
   .modal__header {

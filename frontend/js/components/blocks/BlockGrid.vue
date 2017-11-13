@@ -1,6 +1,6 @@
 <template>
   <div class="block__body">
-    <a17-repeater id="gridItem" :name="repeaterName('item')"></a17-repeater>
+    <a17-repeater id="gridItem" :name="repeaterName('item')">Add up to 4 items</a17-repeater>
   </div>
 </template>
 

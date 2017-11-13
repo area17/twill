@@ -40,6 +40,10 @@
         type: Number,
         default: 0
       },
+      size: {
+        type: String,
+        default: '' // small
+      },
       block: {
         type: Object,
         default: function () {
@@ -57,7 +61,11 @@
     filters: a17VueFilters,
     computed: {
       blockClasses: function () {
-        return { 'block--open': this.visible, 'block--focus': this.hover }
+        return [
+          this.visible ? `block--open` : '',
+          this.hover ? `block--focus` : '',
+          this.size ? `block--${this.size}` : ''
+        ]
       },
       actionsDropdown: function () {
         return `action${this.block.id}Dropdown`
@@ -230,4 +238,16 @@
   //     margin-top:15px;
   //   }
   // }
+
+  // Small blocks (for repeater inside the block editor)
+  .block--small {
+    .block__title {
+      font-weight:normal;
+    }
+
+    .block__counter {
+      display:none;
+    }
+  }
+
 </style>

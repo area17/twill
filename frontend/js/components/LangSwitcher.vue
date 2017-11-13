@@ -73,6 +73,8 @@
     background: $color__background;
     white-space: nowrap;
     transition: background-color .25s linear, border-color .25s linear;
+    margin-left:0;
+    margin-right:0;
 
     &:hover,
     &:focus {

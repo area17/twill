@@ -3,7 +3,7 @@
     <draggable class="content__content" v-model="blocks" :options="dragOptions">
       <transition-group name="draggable_list" tag='div'>
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
-          <a17-block :block="block" :index="index">
+          <a17-block :block="block" :index="index" :size="blockSize">
             <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)"  v-if="hasRemainingBlocks"><span v-svg symbol="add"></span></a17-button>
             <div slot="dropdown-action">
               <button type="button" @click="deleteBlock(index)">Delete</button>
@@ -13,8 +13,10 @@
         </div>
       </transition-group>
     </draggable>
-
-    <a17-button size="small" variant="action" @click="addBlock()" v-if="hasRemainingBlocks">{{ blockType.trigger }}</a17-button>
+    <div class="content__trigger">
+      <a17-button size="small" :variant="triggerVariant" :size="triggerSize" @click="addBlock()" v-if="hasRemainingBlocks">{{ blockType.trigger }}</a17-button>
+      <div class="content__note f--note f--small"><slot></slot></div>
+    </div>
   </div>
 </template>
 
@@ -48,6 +50,18 @@
       }
     },
     computed: {
+      triggerVariant: function () {
+        return this.inContentEditor ? 'secondary' : 'action'
+      },
+      triggerSize: function () {
+        return this.inContentEditor ? 'small' : ''
+      },
+      blockSize: function () {
+        return this.inContentEditor ? 'small' : ''
+      },
+      inContentEditor: function () {
+        return typeof this.$parent.repeaterName !== 'undefined'
+      },
       hasRemainingBlocks: function () {
         return this.blockType.max > this.blocks.length
       },
@@ -123,5 +137,14 @@
 
   .content__item:first-child {
     border-top:1px solid $color__border;
+  }
+
+  .content__trigger {
+    display:flex;
+  }
+
+  .content__note {
+    flex-grow:1;
+    text-align:right;
   }
 </style>

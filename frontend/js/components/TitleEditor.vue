@@ -86,5 +86,6 @@
   .titleEditor__permalink {
     text-decoration: none;
     display: inline-block;
+    white-space: nowrap;
   }
 </style>
