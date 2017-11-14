@@ -17,6 +17,7 @@ import a17Locale from '@/components/LocaleField.vue'
 import a17Modal from '@/components/Modal.vue'
 import a17Slideshow from '@/components/Slideshow.vue'
 import a17BrowserField from '@/components/BrowserField.vue'
+import a17FileField from '@/components/files/FileField.vue'
 import a17DatePicker from '@/components/DatePicker.vue'
 
 // Media Library
@@ -53,6 +54,7 @@ const A17Config = {
     Vue.component('a17-buttonbar', a17Buttonbar)
     Vue.component('a17-modal', a17Modal)
     Vue.component('a17-datepicker', a17DatePicker)
+    Vue.component('a17-filefield', a17FileField)
 
     // Media Library
     Vue.component('a17-medialibrary', a17MediaLibrary)
