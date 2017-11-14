@@ -31,8 +31,8 @@
           </ul>
 
           <div class="previewer__compare" v-if="activeRevision">
-            <a href="#" v-if="!slipScreen" @click.prevent="compareView">Compare view</a>
-            <a href="#" v-if="slipScreen" @click.prevent="singleView">Single view</a>
+            <a href="#" v-if="!slipScreen" @click.prevent="compareView">Compare view <span v-svg symbol="revision-compare"></span></a>
+            <a href="#" v-if="slipScreen" @click.prevent="singleView">Single view <span v-svg symbol="revision-single"></span></a>
           </div>
         </div>
 
@@ -155,7 +155,7 @@
     padding: 0;
     position:relative;
     flex-grow:1;
-    background-color:$color__text;
+    background-color:$color__overlay--background;
   }
 
   .previewer__restore {
@@ -204,6 +204,10 @@
   .previewer__trigger {
     height:auto;
     line-height: inherit;
+
+    .icon {
+      margin-left:6px;
+    }
   }
 
   .previewer__trigger,
@@ -220,10 +224,12 @@
     a {
       text-decoration:none;
     }
+  }
 
-    .icon {
-      margin-left:6px;
-    }
+  .previewer__compare .icon {
+    position:relative;
+    margin-left:9px;
+    top:2px;
   }
 
   .previewer__revisions,

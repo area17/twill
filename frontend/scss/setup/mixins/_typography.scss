@@ -104,7 +104,7 @@
     @mixin bordered
 */
 
-@mixin bordered($bordered__color: $color__text , $bordered__color--hover: $color__text, $vertical__position: 92%) {
+@mixin bordered($bordered__color: $color__text , $bordered__color--hover: $color__text, $vertical__position: 95%) {
 
   $bordered__color--opacity: rgba($bordered__color, 0.75);
 
