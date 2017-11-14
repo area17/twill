@@ -81,7 +81,7 @@
 
         this.$emit('close')
       },
-      keyPressed: function (onKey) {
+      keyPressed: function (event) {
         if (event.which === 27 || event.keyCode === 27) {
           this.close()
           this.$emit('esc-key')

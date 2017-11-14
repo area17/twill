@@ -24,19 +24,19 @@
       }
     },
     methods: {
-      disabled: function () {
+      disable: function () {
         if (!this.fields) {
           this.isDisabled = true
           return
         }
 
-        // There are not required fields, so button are enabled
+        // There are no required fields, so buttons are enabled
         if (this.fields.length === 0) {
           this.isDisabled = false
           return
         }
 
-        // If all required items have a value
+        // If all required fields have a value
         const filtered = this.fields.filter(function (field) {
           return field.value.length > 0
         })
@@ -52,21 +52,25 @@
     mounted: function () {
       let self = this
 
-      self.fields = [...this.$parent.$el.querySelectorAll('input[required], textarea[required], select[required]')]
+      this.fields = [...this.$parent.$el.querySelectorAll('input[required], textarea[required], select[required]')]
 
-      self.fields.forEach(function (field) {
-        field.addEventListener('input', self.disabled)
+      // check disable state on init
+      self.disable()
+
+      if (!this.fields.length) return
+
+      this.fields.forEach(function (field) {
+        field.addEventListener('input', self.disable)
       })
     },
     beforeDestroy: function () {
       let self = this
-      self.fields.forEach(function (field) {
-        field.removeEventListener('input', self.disabled)
+
+      if (!this.fields.length) return
+
+      this.fields.forEach(function (field) {
+        field.removeEventListener('input', self.disable)
       })
     }
   }
 </script>
-
-<style lang="scss">
-
-</style>
