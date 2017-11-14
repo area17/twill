@@ -17,9 +17,7 @@
                         </a17-popular-feed>
                     </aside>
                     <div class="col col--primary">
-                        <a17-activity-feed>
-                            Activity feed
-                        </a17-activity-feed>
+                        <a17-activity-feed></a17-activity-feed>
                     </div>
                 </div>
             </div>

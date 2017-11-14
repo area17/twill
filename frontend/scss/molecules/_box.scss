@@ -29,15 +29,44 @@ A simple box with an header, a body and a footer where you can put listings into
 }
 
 .box__header {
-  height:60px;
-  line-height:60px;
+  height:55px;
+  line-height:55px;
   border-bottom:1px solid $color__border--light;
   padding:0 20px;
 }
 
+.box__filter {
+  padding:10px 0;
+  margin-left:-5px;
+
+  li {
+    display:inline;
+  }
+
+  a {
+    display:inline-block;
+    height:35px;
+    line-height:35px;
+    text-decoration:none;
+    padding:0 20px;
+    border-radius:17px;
+    color:$color__link;
+    background:$color__background;
+
+    &.s--on {
+      background:$color__border;
+      color:$color__text;
+    }
+
+    &:hover {
+      color:$color__text;
+    }
+  }
+}
+
 .box__footer {
-  height:60px;
-  /*line-height:60px;*/
+  height:55px;
+  /*line-height:55px;*/
   border-top:1px solid $color__border--light;
   padding:20px;
 }

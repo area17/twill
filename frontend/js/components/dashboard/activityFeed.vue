@@ -2,6 +2,10 @@
   <div class="box activityFeed">
     <header class="box__header">
       <slot></slot>
+
+      <ul class="box__filter">
+        <li v-for="(navItem, index) in navFilters"><a href="#" :class="{ 's--on' : navActive === index }" @click.prevent="filterStatus(index, navItem.slug)">{{ navItem.name }}</a></li>
+      </ul>
     </header>
     <div class="box__body">
       <table class="activityFeed__table">
@@ -22,6 +26,21 @@
     components: {
       'a17-activity-row': A17ActivityRow
     },
+    data: function () {
+      return {
+        navFilters: [
+          {
+            name: 'All activity',
+            slug: 'all'
+          },
+          {
+            name: 'My activity',
+            slug: 'mine'
+          }
+        ],
+        navActive: 0
+      }
+    },
     computed: {
       ...mapState({
         page: state => state.datatable.page,
@@ -31,6 +50,17 @@
       })
     },
     methods: {
+      filterStatus: function (index, slug) {
+        if (this.navActive === index) return
+        this.navActive = index
+        this.$store.commit('updateDatablePage', 1)
+        this.$store.commit('updateDatableFilterStatus', slug)
+        this.reloadDatas()
+      },
+      reloadDatas: function () {
+        // reload datas
+        this.$store.dispatch('getDatatableDatas')
+      }
     }
   }
 </script>

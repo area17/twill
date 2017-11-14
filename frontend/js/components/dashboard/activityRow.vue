@@ -8,7 +8,10 @@
       <template v-else>
         <template v-if="col.name === 'name'">
           <a :href="row['edit']" class="activityCell__link">{{ row[col.name] }}</a>
-          <p class="activityCell__meta f--note">{{ row['activity'] }} <timeago :auto-update="1" :since="new Date(row['date'])"></timeago> by {{ row['author'] }} • {{ row['type'] }}</p>
+          <p class="activityCell__meta f--note">
+            {{ row['activity'] }} <timeago :auto-update="1" :since="new Date(row['date'])"></timeago> by {{ row['author'] }}
+            <span class="activityCell__type">{{ row['type'] }}</span>
+          </p>
         </template>
       </template>
     </td>
@@ -92,7 +95,7 @@
 
   .activityCell {
     vertical-align: top;
-    padding:15px 15px;
+    padding:20px 15px;
     background-color: $color__background;
   }
 
@@ -107,6 +110,18 @@
 
   .activityCell__meta {
     margin-top: 5px;
+  }
+
+  .activityCell__type {
+    &::before {
+      content:"•";
+      color:$color__text--light;
+      display:inline;
+      padding:0 8px 0 5px;
+      font-size:11px;
+      position:relative;
+      top:-2px;
+    }
   }
 
   .activityCell--thumb {
