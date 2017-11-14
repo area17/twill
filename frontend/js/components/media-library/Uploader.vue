@@ -43,7 +43,7 @@
         let media
         switch (this.type) {
           case 'file':
-            const _ext = ['pdf', 'ppt', 'xls', 'txt', 'zip', 'dmg']
+            const _ext = ['pdf', 'ppt', 'xls', 'txt', 'zip', 'dmg', 'fsfsfs']
             const extension = _ext[Math.floor(_ext.length * Math.random())]
             name = 'file_' + randId + '.' + extension
             media = {

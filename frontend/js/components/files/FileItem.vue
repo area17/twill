@@ -3,15 +3,15 @@
     <td v-if="draggable" class="fileItem__cell fileItem__cell--drag">
       <div class="drag__handle--drag"></div>
     </td>
+    <td class="fileItem__cell fileItem__cell--extension" v-if="currentItem.hasOwnProperty('extension')">
+      <span v-svg :symbol="getSvgIconName()"></span>
+    </td>
     <td class="fileItem__cell fileItem__cell--name">
       <span v-if="currentItem.hasOwnProperty('thumbnail')"><img :src="currentItem.thumbnail"/></span>
-      <span v-else-if="currentItem.hasOwnProperty('extension')">
-
-      </span>
       <a href="#" target="_blank"><span class="f--link-underlined--o">{{ currentItem.name }}</span></a>
       <input type="hidden" :name="name" :value="currentItem.id"/>
     </td>
-    <td class=" fileItem__cell" v-if="currentItem.hasOwnProperty('size')">{{ currentItem.size }}</td>
+    <td class=" fileItem__cell fileItem__cell--size" v-if="currentItem.hasOwnProperty('size')">{{ currentItem.size }}</td>
     <td class="fileItem__cell">
       <a17-button class="bucket__action" icon="close" @click="deleteItem()"><span v-svg symbol="close_icon"></span>
       </a17-button>
@@ -20,6 +20,8 @@
 </template>
 
 <script>
+  import Extensions from './Extensions'
+
   export default {
     name: 'a17FileItem',
     props: {
@@ -63,6 +65,25 @@
     methods: {
       deleteItem: function () {
         this.$emit('delete')
+      },
+      getSvgIconName: function () {
+        const itemExt = this.currentItem.extension
+
+        // Look on extensions key
+        if (Extensions.hasOwnProperty(itemExt)) {
+          return Extensions[itemExt].icon
+        }
+
+        // Look into second extensions level by key
+        for (let ext in Extensions) {
+          const index = Extensions[ext].extensions.findIndex((e) => e === itemExt)
+          if (index > -1) {
+            return Extensions[ext].icon
+          }
+        }
+
+        // Default
+        return 'gen'
       }
     }
   }
@@ -85,12 +106,21 @@
   }
 
   .fileItem__cell {
+    display: flex;
+    align-items: center;
     padding: 15px;
+
+    &:nth-child(2) {
+      padding-left: 15px + 25px;
+    }
+  }
+
+  .fileItem__cell--extension {
+    padding-right: 5px;
   }
 
   .fileItem__cell--name {
     flex-grow: 1;
-    padding-left: 15px + 12px;
 
     a {
       color: $color__link;
@@ -103,6 +133,11 @@
       //   text-decoration: underline;
       // }
     }
+  }
+
+  .fileItem__cell--size {
+    color: $color__text--light;
+    text-transform: uppercase;
   }
 
   .fileItem__cell--drag {
