@@ -25,7 +25,7 @@
             <a17-button variant="action" @click="saveAndClose">{{ selectedMedias.length > 1 ? btnMultiLabel : btnLabel }}</a17-button>
           </footer>
           <div class="medialibrary__list" ref="list">
-            <a17-uploader @loaded="addMedia" @clear="clearSelectedMedias"></a17-uploader>
+            <a17-uploader @loaded="addMedia" @clear="clearSelectedMedias" :type="type"></a17-uploader>
             <a17-itemlist :items="fullMedias" :selectedItems="selectedMedias" @change="updateSelectedMedias" v-if="type === 'file'"></a17-itemlist>
             <a17-mediagrid :medias="fullMedias" :selectedMedias="selectedMedias" @change="updateSelectedMedias" v-else></a17-mediagrid>
           </div>

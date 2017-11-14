@@ -8,6 +8,10 @@
   export default {
     name: 'A17Uploader',
     props: {
+      type: {
+        type: String,
+        required: true
+      }
     },
     data: function () {
       return {
@@ -35,30 +39,56 @@
 
         // Fake download here
         const randId = Math.round(Math.random() * 99999)
-        const name = 'image_' + randId + '.jpg'
-        const media = {
-          id: randId,
-          name: name,
-          src: 'https://source.unsplash.com/random/300x200?sig=' + randId,
-          original: 'https://source.unsplash.com/random/300x200?sig=' + randId,
-          size: '227kb',
-          width: 1280,
-          height: 800,
-          progress: 0,
-          error: false,
-          interval: null, // demos : to track progress of the image fake loading
-          metadatas: {
-            default: {
-              caption: '',
-              video: '',
-              altText: name
-            },
-            custom: {
-              caption: null,
-              video: null,
-              altText: null
+        let name
+        let media
+        switch (this.type) {
+          case 'file':
+            const _ext = ['pdf', 'ppt', 'xls', 'txt', 'zip', 'dmg']
+            const extension = _ext[Math.floor(_ext.length * Math.random())]
+            name = 'file_' + randId + '.' + extension
+            media = {
+              id: randId,
+              name: name,
+              size: '2mb',
+              extension: extension,
+              progress: 0,
+              error: false,
+              interval: null, // demos : to track progress of the image fake loading
+              metadatas: {
+                default: {
+                  caption: '',
+                  video: '',
+                  altText: name
+                }
+              }
             }
-          }
+            break
+          default:
+            name = 'image_' + randId + '.jpg'
+            media = {
+              id: randId,
+              name: name,
+              src: 'https://source.unsplash.com/random/300x200?sig=' + randId,
+              original: 'https://source.unsplash.com/random/300x200?sig=' + randId,
+              size: '227kb',
+              width: 1280,
+              height: 800,
+              progress: 0,
+              error: false,
+              interval: null, // demos : to track progress of the image fake loading
+              metadatas: {
+                default: {
+                  caption: '',
+                  video: '',
+                  altText: name
+                },
+                custom: {
+                  caption: null,
+                  video: null,
+                  altText: null
+                }
+              }
+            }
         }
 
         this.loadingMedias.push(media)
@@ -81,7 +111,7 @@
             }
 
             // Simulate random error
-            if (Math.round(Math.random() * 100) < 5) {
+            if (Math.round(Math.random() * 100) < 2) {
               media.progress = 0
               clearInterval(media.interval)
               media.interval = null
