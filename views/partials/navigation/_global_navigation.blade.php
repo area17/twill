@@ -3,22 +3,39 @@
         <header class="headerMobile" data-header-mobile>
             <nav class="headerMobile__nav">
                 <div class="container">
-                    <ul class="headerMobile__list">
+                    @partialView(($moduleName ?? null), 'navigation._title')
+
+                    <div class="headerMobile__list">
                         @foreach(config('cms-navigation') as $global_navigation_key => $global_navigation_element)
                             @can($global_navigation_element['can'] ?? 'list')
                                 @if(isActiveNavigation($global_navigation_element, $global_navigation_key, $_global_active_navigation))
-                                    <li class="headerMobile__item s--on">
+                                    <a class="headerMobile__item s--on" href="{{ getNavigationUrl($global_navigation_element, $global_navigation_key) }}">{{ $global_navigation_element['title'] }}</a><br />
                                 @else
-                                    <li class="headerMobile__item">
+                                    <a class="headerMobile__item" href="{{ getNavigationUrl($global_navigation_element, $global_navigation_key) }}">{{ $global_navigation_element['title'] }}</a><br />
                                 @endif
-                                        <a href="{{ getNavigationUrl($global_navigation_element, $global_navigation_key) }}">{{ $global_navigation_element['title'] }}</a>
-                                    </li>
                             @endcan
                         @endforeach
-                    </ul>
+                    </div>
+                    •
+                    <div>
+                        <a class="headerMobile__item" href="#">Media Library</a><br />
+                    </div>
                 </div>
             </nav>
         </header>
+
+        <button class="ham" data-ham-btn>
+            @foreach(config('cms-navigation') as $global_navigation_key => $global_navigation_element)
+                @can($global_navigation_element['can'] ?? 'list')
+                    @if(isActiveNavigation($global_navigation_element, $global_navigation_key, $_global_active_navigation))
+                        <span class="ham__label">{{ $global_navigation_element['title'] }}</span>
+                    @endif
+                @endcan
+            @endforeach
+            <span type="button" class="btn ham__btn">
+                <span class="ham__icon"><span class="ham__line"></span></span>
+            </span>
+        </button>
     @else
         <nav class="header__nav">
             <ul class="header__items">

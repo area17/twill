@@ -3,6 +3,9 @@
 import Vue from 'vue'
 import store from '@/store'
 
+// General behaviors
+import main from '@/main'
+
 // Plugins
 import A17Config from '@/plugins/A17Config'
 
@@ -109,3 +112,6 @@ Window.vm = new Vue({
     this.unSubscribe()
   }
 })
+
+// DOM Ready general actions
+document.addEventListener('DOMContentLoaded', main)

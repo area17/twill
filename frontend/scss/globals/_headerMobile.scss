@@ -37,14 +37,10 @@ Header overlay that is showing on smaller devices
   z-index:$zindex__headermobile;
   opacity: 0;
   color:$color__background;
-  @include font-smoothing;
+  /*@include font-smoothing;*/
   transform: translateZ(0);
   background:rgba($color__black,0.9);
   @include monospaced-figures('off'); // dont use monospaced figures here
-
-  .container {
-    padding-top:30px;
-  }
 }
 
 .headerMobile__nav {
@@ -56,35 +52,26 @@ Header overlay that is showing on smaller devices
 }
 
 .headerMobile__item {
-  line-height:40px;
+  line-height:30px;
+  height:30px;
+  white-space:nowrap;
+  display:inline-block;
+  text-decoration:none;
+  color:$color__text--light;
 
   &:focus {
     outline:0;
   }
-}
 
-@include breakpoint('xsmall') {
-  .js--nav {
-    overflow: visible;
-    height: 100%;
+  &.s--on {
+    color:$color__background;
   }
 
-  .js--nav body {
-    .main {
-      position:fixed;
-      width: 100%;
-      overflow: hidden;
-    }
-  }
-
-  .js--nav {
-    .headerMobile {
-      opacity: 1 !important;
-      visibility: visible !important;
-    }
+  &:hover {
+    color:$color__background;
   }
 }
 
 .headerMobile__list {
-    padding-bottom: 140px;
+  padding-top:35px;
 }

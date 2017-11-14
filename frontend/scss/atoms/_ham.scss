@@ -14,10 +14,27 @@ Hamburger button showing in the header on smaller devices
 
 ***/
 
+$height__nav: 60px;
 
 .ham {
+  @include btn-reset;
+  cursor:pointer;
+  position: relative;
+  z-index:1;
+  position:absolute;
+  top:0;
+  right:0;
+  height:$height__nav;
+
   @include breakpoint('large+') {
     display:none;
+  }
+
+  @each $name, $point in $breakpoints {
+    @include breakpoint('#{$name}') {
+      margin-right: map-get($outer-gutters, $name);
+      margin-left: map-get($outer-gutters, $name);
+    }
   }
 }
 
@@ -31,10 +48,15 @@ Hamburger button showing in the header on smaller devices
 }
 
 .ham__btn {
-  @include btn-reset;
   overflow: hidden;
   box-sizing: content-box;
   font-size:0px;
+}
+
+.ham__label,
+.ham__line {
+  opacity:1;
+  transition: opacity .3s ease;
 }
 
 .ham__label,
@@ -79,4 +101,18 @@ Hamburger button showing in the header on smaller devices
   right:0;
   position:absolute;
   top:6px;
+}
+
+.ham:hover,
+.ham:focus {
+  .ham__icon {
+    &:after,
+    &:before {
+      background:$color__background;
+    }
+  }
+
+  .ham__line {
+    background:$color__background;
+  }
 }
