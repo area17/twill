@@ -45,10 +45,12 @@ Header overlay that is showing on smaller devices
 
 .headerMobile__nav {
   pointer-events: auto;
+  max-height:100%;
   min-height:100%;
   position:relative;
   z-index:$zindex__headermobile + 1;
   transform: translateZ(0);
+  overflow-y:scroll;
 }
 
 .headerMobile__list {
@@ -86,4 +88,7 @@ Header overlay that is showing on smaller devices
     line-height:30px;
     height:30px;
   }
+}
+.headerMobile__list:last-child {
+  padding-bottom:35px;
 }
