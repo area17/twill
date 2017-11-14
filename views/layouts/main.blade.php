@@ -12,7 +12,9 @@
                 <div class="container">
                     @partialView(($moduleName ?? null), 'navigation._title')
                     @partialView(($moduleName ?? null), 'navigation._global_navigation')
-                    @partialView(($moduleName ?? null), 'navigation._user')
+                    <div class="header__user">
+                        @partialView(($moduleName ?? null), 'navigation._user')
+                    </div>
                 </div>
             </header>
             @partialView(($moduleName ?? null), 'navigation._primary_navigation')

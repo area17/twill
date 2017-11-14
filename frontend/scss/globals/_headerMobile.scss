@@ -51,27 +51,39 @@ Header overlay that is showing on smaller devices
   transform: translateZ(0);
 }
 
-.headerMobile__item {
-  line-height:30px;
-  height:30px;
-  white-space:nowrap;
-  display:inline-block;
-  text-decoration:none;
-  color:$color__text--light;
+.headerMobile__list {
+  padding-top:35px;
 
-  &:focus {
-    outline:0;
-  }
+  > a {
+    line-height:30px;
+    height:30px;
+    white-space:nowrap;
+    display:inline-block;
+    text-decoration:none;
+    color:$color__text--light;
 
-  &.s--on {
-    color:$color__background;
-  }
+    &:focus {
+      outline:0;
+    }
 
-  &:hover {
-    color:$color__background;
+    &.s--on {
+      color:$color__background;
+    }
+
+    &:hover {
+      color:$color__background;
+    }
   }
 }
 
-.headerMobile__list {
-  padding-top:35px;
+.headerMobile__list + .headerMobile__list {
+  padding-top:0;
+
+  &::before {
+    content:"•";
+    color:$color__header--sep;
+    display:block;
+    line-height:30px;
+    height:30px;
+  }
 }

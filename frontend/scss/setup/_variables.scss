@@ -58,13 +58,12 @@ $bezier__ease-in-out: cubic-bezier(.5, 0, .5, 0);
 
 // z-index war
 
-$zindex__headermobile:10000;
-
 $zindex__tooltip:6000;
 $zindex__notif:5500;
 $zindex__modal:5000;
 $zindex__overlay:2000;
 $zindex__env:1500;
+$zindex__headermobile:1200;
 $zindex__dropdown:1000;
 $zindex__stickyNav:10;
 $zindex__stickyTableHead:5;

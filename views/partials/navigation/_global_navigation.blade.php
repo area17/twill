@@ -9,16 +9,16 @@
                         @foreach(config('cms-navigation') as $global_navigation_key => $global_navigation_element)
                             @can($global_navigation_element['can'] ?? 'list')
                                 @if(isActiveNavigation($global_navigation_element, $global_navigation_key, $_global_active_navigation))
-                                    <a class="headerMobile__item s--on" href="{{ getNavigationUrl($global_navigation_element, $global_navigation_key) }}">{{ $global_navigation_element['title'] }}</a><br />
+                                    <a class="s--on" href="{{ getNavigationUrl($global_navigation_element, $global_navigation_key) }}">{{ $global_navigation_element['title'] }}</a><br />
                                 @else
-                                    <a class="headerMobile__item" href="{{ getNavigationUrl($global_navigation_element, $global_navigation_key) }}">{{ $global_navigation_element['title'] }}</a><br />
+                                    <a href="{{ getNavigationUrl($global_navigation_element, $global_navigation_key) }}">{{ $global_navigation_element['title'] }}</a><br />
                                 @endif
                             @endcan
                         @endforeach
                     </div>
-                    •
-                    <div>
-                        <a class="headerMobile__item" href="#">Media Library</a><br />
+                    <div class="headerMobile__list">
+                        <a href="#">Media Library</a><br />
+                        @partialView(($moduleName ?? null), 'navigation._user')
                     </div>
                 </div>
             </nav>
