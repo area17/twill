@@ -200,9 +200,7 @@
       }
     },
     mounted: function () {
-      this.updateCounter(this.initialValue)
-
-    // this.debouncedResizeTextarea = _.debounce(this.resizeTextarea, 50)
+      this.updateCounter(this.value)
 
       if (this.type === 'textarea') {
         this.resizeTextarea()
