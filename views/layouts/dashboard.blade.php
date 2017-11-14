@@ -24,6 +24,9 @@
                 </div>
             </div>
         </div>
+        <a17-modal ref="mediaLibrary" title="Media Library" mode="wide">
+            <a17-medialibrary endpoint="https://www.mocky.io/v2/59edf8273300000e00b5c7d6" />
+        </a17-modal>
     </div>
 @stop
 

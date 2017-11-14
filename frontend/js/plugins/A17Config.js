@@ -19,6 +19,9 @@ import a17Slideshow from '@/components/Slideshow.vue'
 import a17BrowserField from '@/components/BrowserField.vue'
 import a17DatePicker from '@/components/DatePicker.vue'
 
+// Media Library
+import a17MediaLibrary from '@/components/media-library/MediaLibrary.vue'
+
 // Plugins
 import VueTimeago from 'vue-timeago'
 import axios from 'axios'
@@ -50,6 +53,9 @@ const A17Config = {
     Vue.component('a17-buttonbar', a17Buttonbar)
     Vue.component('a17-modal', a17Modal)
     Vue.component('a17-datepicker', a17DatePicker)
+
+    // Media Library
+    Vue.component('a17-medialibrary', a17MediaLibrary)
 
     // Configurations
     Vue.config.productionTip = false

@@ -5,6 +5,7 @@ import store from '@/store'
 
 // General behaviors
 import main from '@/main'
+import openMediaLibrary from '@/behaviors/openMediaLibrary'
 
 // Plugins
 import A17Config from '@/plugins/A17Config'
@@ -29,9 +30,6 @@ import a17BlockQuote from '@/components/blocks/BlockQuote.vue'
 import a17BlockVideo from '@/components/blocks/BlockVideo.vue'
 import a17BlockWysiwyg from '@/components/blocks/BlockWysiwyg.vue'
 
-// Media Library
-import a17MediaLibrary from '@/components/media-library/MediaLibrary.vue'
-
 // Browser
 import a17Browser from '@/components/Browser.vue'
 
@@ -49,9 +47,6 @@ Vue.component('a17-block-video', a17BlockVideo)
 Vue.component('a17-block-wysiwyg', a17BlockWysiwyg)
 Vue.component('a17-block-image', a17BlockImage)
 Vue.component('a17-block-grid', a17BlockGrid)
-
-// Media Library
-Vue.component('a17-medialibrary', a17MediaLibrary)
 
 // Browser
 Vue.component('a17-repeater', a17Repeater)
@@ -110,6 +105,9 @@ Window.vm = new Vue({
   },
   beforeDestroy: function () {
     this.unSubscribe()
+  },
+  created: function () {
+    openMediaLibrary()
   }
 })
 

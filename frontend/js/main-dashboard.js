@@ -3,6 +3,7 @@ import store from '@/store'
 
 // General behaviors
 import main from '@/main'
+import openMediaLibrary from '@/behaviors/openMediaLibrary'
 
 // Plugins
 import A17Config from '@/plugins/A17Config'
@@ -26,6 +27,9 @@ Window.vm = new Vue({
     'a17-activity-feed': A17ActivityFeed,
     'a17-stat-feed': A17StatFeed,
     'a17-popular-feed': A17PopularFeed
+  },
+  created: function () {
+    openMediaLibrary()
   }
 })
 

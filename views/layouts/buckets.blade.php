@@ -8,6 +8,9 @@
 @section('content')
     <div class="app app--buckets" id="app" v-cloak>
         <a17-buckets title="{{__($title)}}">{{__($message)}}</a17-buckets>
+        <a17-modal ref="mediaLibrary" title="Media Library" mode="wide">
+            <a17-medialibrary endpoint="https://www.mocky.io/v2/59edf8273300000e00b5c7d6" />
+        </a17-modal>
     </div>
 @stop
 

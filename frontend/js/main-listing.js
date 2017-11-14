@@ -3,6 +3,7 @@ import store from '@/store'
 
 // General behaviors
 import main from '@/main'
+import openMediaLibrary from '@/behaviors/openMediaLibrary'
 
 // Plugins
 import A17Config from '@/plugins/A17Config'
@@ -80,6 +81,9 @@ Window.vm = new Vue({
         this.$refs.addNewModal.close()
       }
     }
+  },
+  created: function () {
+    openMediaLibrary()
   }
 })
 

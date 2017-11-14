@@ -17,7 +17,7 @@
                         @endforeach
                     </div>
                     <div class="headerMobile__list">
-                        <a href="#">Media Library</a><br />
+                        <a href="#" data-closenav-btn data-medialib-btn>Media Library</a><br />
                         @partialView(($moduleName ?? null), 'navigation._user')
                     </div>
                 </div>
@@ -54,7 +54,7 @@
             <ul class="header__items">
                 @can('list')
                     @if (config('cms-toolkit.enabled.media-library'))
-                        <li class="header__item"><a href="#">Media Library</a></li>
+                        <li class="header__item"><a href="#" data-medialib-btn>Media Library</a></li>
                     @endif
                 @endcan
                 @if (config('cms-toolkit.enabled.site-link'))

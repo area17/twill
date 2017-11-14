@@ -6,6 +6,7 @@ const navToggle = function () {
   let lastScrollPos = 0
   const htmlElement = document.documentElement
   const bts = document.querySelectorAll('[data-ham-btn]')
+  const btsClose = document.querySelectorAll('[data-closenav-btn]')
   const wrapper = document.querySelector('.a17')
 
   const klass = 's--nav'
@@ -56,6 +57,16 @@ const navToggle = function () {
         if (!isActive) _triggerOpenNav()
         else _triggerCloseNav()
 
+        bt.blur()
+      })
+    })
+  }
+
+  // close the navigation
+  if (btsClose.length) {
+    btsClose.forEach(function (bt) {
+      bt.addEventListener('click', function (e) {
+        if (isActive) _triggerCloseNav()
         bt.blur()
       })
     })
