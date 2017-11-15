@@ -36,10 +36,6 @@
         type: String,
         required: true
       },
-      modalTitle: {
-        type: String,
-        default: ''
-      },
       itemLabel: {
         type: String,
         default: 'Item'
