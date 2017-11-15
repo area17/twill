@@ -2,7 +2,7 @@
   <div class="fileField">
     <table class="fileField__list ">
       <draggable :element="'tbody'" v-model="items">
-        <a17-fileitem v-for="(item, index) in items" :key="item.id" class="item__content" :name="`${name}_${item.id}`" :draggable="draggable" :item="item" @delete="deleteItem(index)"></a17-fileitem>
+        <a17-fileitem v-for="(item, index) in items" :key="item.id" class="item__content" :name="`${name}_${item.id}`" :draggable="isDraggable" :item="item" @delete="deleteItem(index)"></a17-fileitem>
       </draggable>
     </table>
     <div class="fileField__trigger">
@@ -76,6 +76,9 @@
             medias: value
           })
         }
+      },
+      isDraggable: function () {
+        return this.draggable && this.items.length > 1
       },
       itemsIds: function () {
         if (this.selectedItemsByIds[this.name]) {
