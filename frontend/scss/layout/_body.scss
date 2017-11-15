@@ -3,10 +3,11 @@ body {
     min-width: 320px;
     min-height: 100%;
     overflow-x: hidden;
-
-/*    @include breakpoint('xsmall') {
+    /*
+    @include breakpoint('xsmall') {
         overflow-x: auto;
-    }*/
+    }
+    */
 }
 
 html {
@@ -15,12 +16,13 @@ html {
   overflow-x: hidden;
   overflow-y: auto;
   /* juggling left/right and margin left/right as 100vw includes scroll bars so forcing 100vw width to make grid colspan calcs work */
-/*
+  /*
   left: 50%;
   right: 50%;
   width: 100vw;
   margin-left: -50vw;
-  margin-right: -50vw;*/
+  margin-right: -50vw;
+  */
 }
 
 body {
@@ -35,6 +37,7 @@ body {
   text-size-adjust: 100%;
   padding:0;
   height:100%;
+  letter-spacing:-0.022em; /* similar to apple.com */
 
   &::after {
     position: absolute;
@@ -48,43 +51,6 @@ body {
     text-shadow: none;
   }
 }
-
-/*
-::-webkit-scrollbar {
-  background-color:inherit;
-}
-::-webkit-scrollbar{
-  height:9px;
-  width:9px
-}
-::-webkit-scrollbar-button:end:increment,
-::-webkit-scrollbar-button:start:decrement{
-  background:0 0;
-  display:none
-}
-::-webkit-scrollbar-track-piece{
-  background:$color__border
-}
-::-webkit-scrollbar-track-piece:vertical:start{
-  border-radius:5px 5px 0 0
-}
-::-webkit-scrollbar-track-piece:vertical:end{
-  border-radius:0 0 5px 5px
-}
-::-webkit-scrollbar-track-piece:horizontal:start{
-  border-radius:5px 0 0 5px
-}
-::-webkit-scrollbar-track-piece:horizontal:end{
-  border-radius:0 5px 5px 0
-}
-::-webkit-scrollbar-thumb:horizontal,
-::-webkit-scrollbar-thumb:vertical{
-  background:$color__border--focus;
-  border-radius:5px;
-  display:block;
-  height:50px;
-}
-*/
 
 .a17 {
   width:100vw;

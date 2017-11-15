@@ -32,7 +32,7 @@
 
           <div class="previewer__compare" v-if="activeRevision">
             <a href="#" v-if="!slipScreen" @click.prevent="compareView">Compare view <span v-svg symbol="revision-compare"></span></a>
-            <a href="#" v-if="slipScreen" @click.prevent="singleView">Single view <span v-svg symbol="revision-single"></span></a>
+            <a href="#" v-else @click.prevent="singleView">Single view <span v-svg symbol="revision-single"></span></a>
           </div>
         </div>
 

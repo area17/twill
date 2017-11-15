@@ -64,7 +64,7 @@
       line-height: 50px;
       padding: 1px 21px 0 21px;
       margin: 0;
-      font-weight: 700;
+      font-weight: 600;
       border-radius: 2px;
     }
 
@@ -96,7 +96,7 @@
     > h3,
     > h4 {
       font-size: 1em;
-      font-weight: 700;
+      font-weight: 600;
       margin-top: 35px;
     }
 

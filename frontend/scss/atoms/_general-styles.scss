@@ -21,9 +21,14 @@ p em {
   font-style:italic;
 }
 
+strong,
+b {
+  font-weight: 600;
+}
+
 p strong,
 p b {
-  font-weight: bold;
+  font-weight: 600;
 }
 
 ul li {
@@ -38,11 +43,11 @@ a {
   color: inherit;
 }
 
-.js-hide {
+.js--hide {
   display: none;
 }
 
-.js-show {
+.js--show {
   display: block;
 }
 

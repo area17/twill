@@ -109,7 +109,7 @@
 
   .switcher__title {
     display:inline;
-    font-weight:700;
+    font-weight:600;
     @include font-smoothing();
   }
 

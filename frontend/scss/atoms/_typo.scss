@@ -38,6 +38,7 @@ Text can be set as heading, regular (default), small or tiny
 
 @mixin font-small() {
   font-size:13px;
+  letter-spacing:-0.01em;
 }
 
 .f--small {
@@ -46,6 +47,7 @@ Text can be set as heading, regular (default), small or tiny
 
 @mixin font-tiny() {
   font-size:11px;
+  letter-spacing:0;
 }
 
 .f--tiny {

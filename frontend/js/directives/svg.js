@@ -33,6 +33,18 @@ export default {
 
         use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', href)
         svg.appendChild(use)
+      },
+      inserted: function (el, binding, vnode) {
+      },
+      unbind: function (el, binding, vnode) {
+        console.log('Unbind SVG')
+        console.log(el)
+        console.log(vnode)
+
+        const svg = el.querySelector('svg')
+        if (svg) svg.parentNode.removeChild(svg)
+
+        el.className.remove('icon')
       }
     }
 
