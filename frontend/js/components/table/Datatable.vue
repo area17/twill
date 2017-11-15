@@ -99,7 +99,7 @@
         },
         set (value) {
           // reorder rows
-          this.$store.commit('updateDatableData', value)
+          this.$store.dispatch('setDatatableDatas', value)
         }
       },
       checkboxesColumns: function () {

@@ -21,11 +21,14 @@ import a17BulkEdit from '@/components/table/BulkEdit.vue'
 import a17ModalTitleEditor from '@/components/Modals/ModalTitleEditor.vue'
 import ModalValidationButtons from '@/components/Modals/ModalValidationButtons.vue'
 
+import NotifMixin from '@/mixins/notif'
+
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
 Window.vm = new Vue({
   store, // inject store to all children
   el: '#app',
+  mixins: [NotifMixin],
   props: {
     pageType: {
       type: String,
@@ -61,6 +64,10 @@ Window.vm = new Vue({
     reloadDatas: function () {
       // reload datas
       this.$store.dispatch('getDatatableDatas')
+
+      console.log(this.$root.$refs)
+      console.log(this.$root.$refs.notification)
+      this.showNotification('success', 'Yes!')
     },
     filterListing: function (formData) {
       this.$store.commit('updateDatablePage', 1)

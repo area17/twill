@@ -32,7 +32,7 @@ https://vuejs.org/v2/guide/transitions.html
 }*/
 
 /**** Fade & Scale Modal transition ****/
-.fade_scale_modal-enter-active,
+.move_down_notif-enter-active,
 .fade_scale_modal-leave-active {
   transition: transform .25s linear;
 }
@@ -61,4 +61,22 @@ https://vuejs.org/v2/guide/transitions.html
 .dropdown--top .fade_move_dropdown-leave-to {
   transform: translateY(10px);
 }*/
+
+/**** Move Down Notification transition ****/
+.move_down_notif-enter-active,
+.move_down_notif-leave-active {
+  transition: transform .25s linear, opacity .25s linear;
+}
+
+.move_down_notif-enter-to,
+.move_down_notif-leave {
+  transform: translateY(0);
+  opacity:1;
+}
+
+.move_down_notif-enter,
+.move_down_notif-leave-to {
+  transform: translateY(100%);
+  opacity:0;
+}
 

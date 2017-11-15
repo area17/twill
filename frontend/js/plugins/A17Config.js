@@ -19,6 +19,7 @@ import a17Slideshow from '@/components/Slideshow.vue'
 import a17BrowserField from '@/components/BrowserField.vue'
 import a17FileField from '@/components/files/FileField.vue'
 import a17DatePicker from '@/components/DatePicker.vue'
+import a17Notif from '@/components/Notification.vue'
 
 // Media Library
 import a17MediaLibrary from '@/components/media-library/MediaLibrary.vue'
@@ -61,6 +62,9 @@ const A17Config = {
 
     // Media Library
     Vue.component('a17-medialibrary', a17MediaLibrary)
+
+    // Global Notification
+    Vue.component('a17-notif', a17Notif)
 
     // Configurations
     Vue.config.productionTip = false

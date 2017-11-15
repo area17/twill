@@ -13,6 +13,21 @@ Self destructing notification showing at the bottom of the page
 
 ***/
 
+.notif {
+  position:fixed;
+  bottom:0;
+  height:60px;
+  line-height:60px;
+  width:100%;
+  left:0;
+  right:0;
+  white-space:nowrap;
+  overflow:hidden;
+  z-index:$zindex__notif;
+  background:$color__notif--default;
+  text-align:center;
+}
+
 @keyframes godown {
   0% {
     transform: translateY(0);
@@ -27,19 +42,7 @@ Self destructing notification showing at the bottom of the page
   }
 }
 
-.notif {
-  position:fixed;
-  bottom:0;
-  height:60px;
-  line-height:60px;
-  width:100%;
-  left:0;
-  right:0;
-  white-space:nowrap;
-  overflow:hidden;
-  z-index:$zindex__notif;
-  background:$color__notif--default;
-  text-align:center;
+.notif--destroy {
   animation: godown 0.3s 3s normal forwards;
 }
 

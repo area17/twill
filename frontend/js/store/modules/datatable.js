@@ -186,6 +186,15 @@ const actions = {
       }
     )
   },
+  setDatatableDatas ({ commit, state, dispatch }, data) {
+    api.reorder(
+      data,
+      function (resp) {
+        // success callback
+        commit(types.UPDATE_DATATABLE_DATA, data)
+      }
+    )
+  },
   togglePublishedData ({ commit, state, dispatch }, row) {
     api.togglePublished(
       row.id,

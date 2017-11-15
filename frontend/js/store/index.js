@@ -9,6 +9,7 @@ import mediaLibrary from './modules/media-library'
 import browser from './modules/browser'
 import revision from './modules/revision'
 import buckets from './modules/buckets'
+import notif from './modules/notif'
 
 Vue.use(Vuex)
 
@@ -24,7 +25,8 @@ export default new Vuex.Store({
     mediaLibrary,
     browser,
     revision,
-    buckets
+    buckets,
+    notif
   },
   strict: debug
 })

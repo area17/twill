@@ -43,6 +43,7 @@ export default {
   reorder (params) {
     // Todo : Do ajax here for reorder
     // Should only send ids of position ?
+    console.log('Reorder', params)
   },
 
   togglePublished (id, published, callback) {
