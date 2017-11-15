@@ -68,7 +68,6 @@ Window.vm = new Vue({
     reloadDatas: function () {
       // reload datas
       this.$store.dispatch('getDatatableDatas')
-      this.notif({ message: 'Listing refreshed', variant: 'success' })
     },
     filterListing: function (formData) {
       this.$store.commit('updateDatablePage', 1)

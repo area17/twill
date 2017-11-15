@@ -184,6 +184,8 @@ const actions = {
         // success callback
         commit(types.UPDATE_DATATABLE_DATA, resp.data)
         commit(types.UPDATE_DATATABLE_MAXPAGE, resp.maxPage)
+
+        commit('setNotification', { message: 'getDatatableDatas message', variant: 'success' })
       }
     )
   },
@@ -193,6 +195,8 @@ const actions = {
       function (resp) {
         // success callback
         commit(types.UPDATE_DATATABLE_DATA, data)
+
+        commit('setNotification', { message: 'setDatatableDatas message', variant: 'success' })
       }
     )
   },

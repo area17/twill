@@ -5,7 +5,6 @@ const A17Notif = {
     Vue.mixin({
       methods: {
         notif: function (notifObj) {
-          console.log(notifObj)
           this.$store.commit('setNotification', notifObj)
         }
       }
