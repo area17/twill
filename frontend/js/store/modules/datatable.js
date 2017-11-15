@@ -2,6 +2,7 @@ import api from '../api/datatable'
 import * as types from '../mutation-types'
 
 const state = {
+  baseUrl: window.STORE.datatable.baseUrl || '',
   data: window.STORE.datatable.data || [],
   columns: window.STORE.datatable.columns || [],
   filter: window.STORE.datatable.filter || {},

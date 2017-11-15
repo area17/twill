@@ -23,6 +23,11 @@ import ModalValidationButtons from '@/components/Modals/ModalValidationButtons.v
 
 import NotifMixin from '@/mixins/notif'
 
+// Store modules
+import datatable from '@/store/modules/datatable'
+
+store.registerModule('datatable', datatable)
+
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
 Window.vm = new Vue({
@@ -52,7 +57,7 @@ Window.vm = new Vue({
   },
   computed: {
     ...mapState({
-      baseUrl: state => state.form.baseUrl,
+      baseUrl: state => state.datatable.baseUrl,
       bulkIds: state => state.datatable.bulk
     })
   },

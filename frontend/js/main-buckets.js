@@ -16,6 +16,10 @@ import a17Buckets from '@/components/buckets/Bucket.vue'
 // configuration
 Vue.use(A17Config)
 
+// Store modules
+import buckets from '@/store/modules/buckets'
+store.registerModule('buckets', buckets)
+
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
 Window.vm = new Vue({

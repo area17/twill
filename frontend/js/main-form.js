@@ -40,6 +40,19 @@ import a17Previewer from '@/components/Previewer.vue'
 // configuration
 Vue.use(A17Config)
 
+// Store Modules
+import form from '@/store/modules/form'
+import publication from '@/store/modules/publication'
+import content from '@/store/modules/content'
+import language from '@/store/modules/language'
+import revision from '@/store/modules/revision'
+
+store.registerModule('form', form)
+store.registerModule('publication', publication)
+store.registerModule('content', content)
+store.registerModule('language', language)
+store.registerModule('revision', revision)
+
 // Blocks
 Vue.component('a17-block-title', a17BlockTitle)
 Vue.component('a17-block-quote', a17BlockQuote)

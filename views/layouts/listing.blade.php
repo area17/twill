@@ -41,6 +41,8 @@
         publish: '{{ $publishUrl }}'
     }
 
+    window.STORE.datatable.baseUrl = 'http://pentagram.com/work/'
+
     window.STORE.datatable = {
       page: 1,
       maxPage: {{ $maxPage }},
