@@ -107,7 +107,7 @@
 
   .checkbox__icon .icon {
     color:$color__background;
-    top: 2px;
+    top: 1px;
     position: relative;
   }
 
