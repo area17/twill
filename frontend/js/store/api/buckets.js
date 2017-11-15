@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getURLWithoutQuery } from '@/utils/pushState.js'
 
 const _data = [
   {
@@ -316,7 +317,8 @@ export default {
     // page : current page number
     // offset : number of items per page
     // content_type : the current data source
-    axios.get(window.location.href, {params: params}).then(function (resp) {
+    const _url = getURLWithoutQuery()
+    axios.get(_url, {params: params}).then(function (resp) {
       const _newData = resp.data.source ? resp.data.source : getDataByContentType(params.content_type)[0]
       _newData.items = resp.data.source ? _newData.items : shuffle(_newData.items)
       callback(_newData)

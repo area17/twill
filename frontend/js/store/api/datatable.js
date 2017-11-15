@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getURLWithoutQuery } from '@/utils/pushState.js'
 
 // Shuffle : for demo purpose only
 function shuffle (a) {
@@ -23,8 +24,8 @@ export default {
     // offset : number of items per page
     // columns: the set of visible columns
     // filter: the current navigation ("all", "mine", "published", "draft", "trash")
-
-    axios.get(window.location.href, { params: params }).then(function (resp) {
+    const _url = getURLWithoutQuery()
+    axios.get(_url, { params: params }).then(function (resp) {
       // update data and max page
       const _data = resp.data.mappedData ? resp.data.mappedData : shuffle(window.STORE.datatable.data)
 
