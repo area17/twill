@@ -13,7 +13,7 @@
                   <button @click="bulkPublish">Publish</button>
                   <button @click="bulkUnpublish">Unpublish</button>
                   <button @click="bulkFeature">Feature</button>
-                  <button @click="bulkExport">Export</button>
+                  <!-- <button @click="bulkExport">Export</button> -->
                   <button @click="bulkDelete">Delete</button>
                 </li>
               </ul>

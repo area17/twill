@@ -61,6 +61,7 @@
     margin-left:5px;
     cursor:pointer;
     user-select: none;
+    letter-spacing:0;
 
     &:hover {
       background:$color__f--text;

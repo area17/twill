@@ -1,1 +1,5 @@
-<svg id="svg" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 13 13"><title>icon_edit</title><polygon points="0 13 2.5 13 0 10.5 0 13" fill="currentColor" /><rect x="0.911" y="4.311" width="12.178" height="3.379" transform="translate(-2.192 6.707) rotate(-45)" fill="currentColor" /></svg>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="13px"
+   height="13px" viewBox="0 0 13 13" enable-background="new 0 0 13 13" xml:space="preserve">
+<polygon fill="currentColor" points="0.17219,10.44444 0.17219,13 2.72775,13     "/>
+<rect x="0.9845" y="4.47162" transform="matrix(0.70711 -0.70711 0.70711 0.70711 -2.27966 6.84705)" fill="currentColor" width="12.28159" height="3.40741"/>
+</svg>

@@ -44,12 +44,6 @@ $height__nav: 35px;
       opacity: .5;
       pointer-events: none;
     }
-
-    &:hover {
-      .secondarynav__link {
-        text-decoration: none;
-      }
-    }
   }
 }
 
@@ -62,6 +56,10 @@ $height__nav: 35px;
 }
 
 .secondarynav__item.s--on:hover .secondarynav__link {
+  background-image:none;
+}
+
+.secondarynav__item.s--disabled:hover .secondarynav__link {
   background-image:none;
 }
 
