@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { getURLWithoutQuery } from '@/utils/pushState.js'
+import { getURLWithoutQuery, replaceState } from '@/utils/pushState.js'
 
 // Shuffle : for demo purpose only
 function shuffle (a) {
@@ -25,6 +25,19 @@ export default {
     // columns: the set of visible columns
     // filter: the current navigation ("all", "mine", "published", "draft", "trash")
     const _url = getURLWithoutQuery()
+
+    axios.interceptors.response.use(function (response) {
+      if (response.config.method === 'get') {
+        const url = response.request.responseURL
+        replaceState(url)
+      }
+      // Do something with response data
+      return response
+    }, function (error) {
+      // Do something with response error
+      return Promise.reject(error)
+    })
+
     axios.get(_url, { params: params }).then(function (resp) {
       // update data and max page
       const _data = resp.data.mappedData ? resp.data.mappedData : shuffle(window.STORE.datatable.data)

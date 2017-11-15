@@ -33,9 +33,6 @@ import SvgSprite from '@/directives/svg'
 import Tooltip from '@/directives/tooltip'
 import Sticky from '@/directives/sticky'
 
-// A17 Helpers
-import { replaceState } from '@/utils/pushState.js'
-
 const A17Config = {
   install (Vue, opts) {
     // Globals components
@@ -71,17 +68,6 @@ const A17Config = {
     Vue.prototype.$http = axios
 
     axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
-    axios.interceptors.response.use(function (response) {
-      if (response.config.method === 'get') {
-        const _url = response.request.responseURL
-        replaceState(_url)
-      }
-      // Do something with response data
-      return response
-    }, function (error) {
-      // Do something with response error
-      return Promise.reject(error)
-    })
 
     // Plugins
     Vue.use(VueTimeago, {
