@@ -7,9 +7,11 @@ import openMediaLibrary from '@/behaviors/openMediaLibrary'
 
 // Plugins
 import A17Config from '@/plugins/A17Config'
+import A17Notif from '@/plugins/A17Notif'
 
 // configuration
 Vue.use(A17Config)
+Vue.use(A17Notif)
 
 import { mapState } from 'vuex'
 import a17VueFilters from '@/utils/filters.js'
@@ -21,8 +23,6 @@ import a17BulkEdit from '@/components/table/BulkEdit.vue'
 import a17ModalTitleEditor from '@/components/Modals/ModalTitleEditor.vue'
 import ModalValidationButtons from '@/components/Modals/ModalValidationButtons.vue'
 
-import NotifMixin from '@/mixins/notif'
-
 // Store modules
 import datatable from '@/store/modules/datatable'
 
@@ -33,7 +33,6 @@ store.registerModule('datatable', datatable)
 Window.vm = new Vue({
   store, // inject store to all children
   el: '#app',
-  mixins: [NotifMixin],
   props: {
     pageType: {
       type: String,
@@ -69,10 +68,7 @@ Window.vm = new Vue({
     reloadDatas: function () {
       // reload datas
       this.$store.dispatch('getDatatableDatas')
-
-      console.log(this.$root.$refs)
-      console.log(this.$root.$refs.notification)
-      this.showNotification('success', 'Yes!')
+      this.notif({ message: 'Listing refreshed', variant: 'success' })
     },
     filterListing: function (formData) {
       this.$store.commit('updateDatablePage', 1)

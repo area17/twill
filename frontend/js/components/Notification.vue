@@ -26,6 +26,10 @@
   export default {
     name: 'A17Notification',
     props: {
+      variant: {
+        type: String,
+        default: 'success'
+      },
       important: {
         type: Boolean,
         default: true
@@ -37,18 +41,19 @@
     },
     data: function () {
       return {
-        message: null,
-        closed: true,
+        closed: false,
         timer: null,
         duration: 3000,
         css: 'notif',
         keep: true,
         storage: null,
-        key: '__vuexNotif',
-        variant: ''
+        key: '__vuexNotif'
       }
     },
     computed: {
+      message: function () {
+        return this.$store.getters['notifByVariant'](this.variant)
+      },
       variantClass: function () {
         return `notif--${this.variant}`
       },
@@ -62,12 +67,9 @@
       }
     },
     methods: {
-      clearPersisted: function () {
-        this.storage.removeItem(this.key)
-      },
-      getNotif: function () {
-        return this.$store.getters['getNotifMessage'](this.variant)
-      },
+      // getNotif: function () {
+      //   return this.$store.getters['getNotifMessage'](this.variant)
+      // },
       closeNotif: function () {
         this.closed = true
         this.clearNotification()
@@ -77,17 +79,8 @@
           this.timer = null
         }
       },
-      // check if all notification messages have been notified when use persist data and keep = false
-      // usefull when there are multiple notifications and have to clear persist storage every time
-      notified: function () {
-        return this.$store.getters['notified']
-      },
       clearNotification: function () {
         this.$store.commit('clearNotification', this.variant)
-
-        if (!this.keep && this.notified()) {
-          this.clearPersisted()
-        }
       },
       autoClose: function () {
         if (this.timer === null) {
@@ -95,24 +88,21 @@
             this.closeNotif()
           }, this.duration)
         }
-      },
-      open: function (variant) {
-        console.log('OPEN notification')
-
-        this.message = ''
-        this.variant = variant
-
-        let notifMessage = this.getNotif()
-
-        if (this.closed && notifMessage) {
+      }
+    },
+    watch: {
+      message: function () {
+        if (this.message) {
           this.closed = false
-          this.message = notifMessage
 
           if (this.autoHide) {
             this.autoClose()
           }
         }
       }
+    },
+    mounted: function () {
+      console.log('notification')
     }
   }
 </script>

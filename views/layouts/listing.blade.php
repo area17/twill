@@ -32,7 +32,8 @@
                 <a17-medialibrary endpoint="https://www.mocky.io/v2/59edf8273300000e00b5c7d6" />
             </a17-modal>
         </div>
-        <a17-notif ref="notification"></a17-notif>
+        <a17-notif variant="success"></a17-notif>
+        <a17-notif variant="error"></a17-notif>
     </div>
 @stop
 

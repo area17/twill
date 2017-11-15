@@ -9,7 +9,7 @@ const state = {
 
 // getters
 const getters = {
-  getNotifMessage: state => {
+  notifByVariant: state => {
     return variant => state[variant]
   },
   notified: state => {
