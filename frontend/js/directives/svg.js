@@ -37,14 +37,16 @@ export default {
       inserted: function (el, binding, vnode) {
       },
       unbind: function (el, binding, vnode) {
-        console.log('Unbind SVG')
-        console.log(el)
-        console.log(vnode)
-
         const svg = el.querySelector('svg')
         if (svg) svg.parentNode.removeChild(svg)
 
-        el.className.remove('icon')
+        const classNames = el.className.split(' ').filter(function (c) {
+          return c.indexOf('icon') === 0
+        })
+
+        classNames.forEach(function (className) {
+          el.classList.remove(className)
+        })
       }
     }
 
