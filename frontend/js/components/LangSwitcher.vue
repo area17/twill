@@ -56,8 +56,8 @@
   .language__button {
     text-transform: uppercase;
     display:inline-block;
-    height:$toolbar__height;
-    line-height:$toolbar__height;
+    height:$toolbar__height - 2px;
+    line-height:$toolbar__height - 2px;
     border:0 none;
     border-radius:0;
     // border:1px solid $color__fborder;
