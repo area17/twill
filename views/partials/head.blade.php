@@ -4,11 +4,6 @@
 
 <title>{{ config('app.name') }}</title>
 
-<!-- Fonts -->
-<link href="/assets/admin/fonts/SuisseIntl-Regular-WebXL.woff2" rel="preload" as="font" type="font/woff2" crossorigin>
-<link href="/assets/admin/fonts/SuisseIntl-Book-WebS.woff2" rel="preload" as="font" type="font/woff2" crossorigin>
-<link href="/assets/admin/fonts/SuisseIntl-Medium-WebXL.woff2" rel="preload" as="font" type="font/woff2" crossorigin>
-
 {{-- Global styles --}}
 <link href="{{ mix('/assets/admin/css/app.css')}}" rel="stylesheet" />
 
