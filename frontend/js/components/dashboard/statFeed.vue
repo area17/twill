@@ -4,9 +4,9 @@
       <b><slot></slot></b>
     </header>
     <div class="box__body">
-      <template  v-for="fact in facts">
+      <template  v-for="(fact, index) in facts">
       <a :href="fact.url" class="statFeed__item" target="_blank">
-        <h3 class="statFeed__numb f--heading">{{ fact.figure }}</h3>
+        <h3 class="statFeed__numb f--heading" :class="trending(index)">{{ fact.figure }}</h3>
         <div class="statFeed__info">
           <h4 class="statFeed__label">{{ fact.label }}</h4>
           <p class="statFeed__meta f--note f--small">{{ fact.insight }}</p>
@@ -34,6 +34,9 @@
     computed: {
     },
     methods: {
+      trending: function (index) {
+        return 'statFeed__numb--' + this.facts[index].trend
+      }
     }
   }
 </script>
@@ -60,6 +63,8 @@
   .statFeed__numb {
     line-height:1em;
     min-width:33.333%;
+    position:relative;
+    padding:10px 35px 10px 20px;
   }
 
   .statFeed__item:first-child {
@@ -71,7 +76,26 @@
     color:$color__stats;
   }
 
-  .statFeed__numb,
+  .statFeed__numb--up::after,
+  .statFeed__numb--down::after {
+    font-size:15px;
+    color:inherit;
+    position:absolute;
+    top:0;
+    /*bottom:0em;*/
+    vertical-align:baseline;
+    transform: translateX(50%);
+    font-weight:400;
+  }
+
+  .statFeed__numb--up::after {
+    content: "\2197";
+  }
+
+  .statFeed__numb--down::after {
+    content: "\2198";
+  }
+
   .statFeed__info {
     padding:10px 20px;
   }
