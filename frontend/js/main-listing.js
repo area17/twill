@@ -55,6 +55,9 @@ Window.vm = new Vue({
     }
   },
   computed: {
+    hasBulkIds: function () {
+      return this.bulkIds.length > 0
+    },
     ...mapState({
       baseUrl: state => state.datatable.baseUrl,
       bulkIds: state => state.datatable.bulk

@@ -86,7 +86,7 @@
     left:0;
     bottom:0;
     width:100%;
-    z-index:1;
+    z-index:2;
     padding:20px 0;
     background:$color__bulk--background;
   }

@@ -29,13 +29,28 @@
       placeholder: {
         type: String,
         default: 'Search'
+      },
+      closed: {
+        type: Boolean,
+        default: false
       }
     },
     data: function () {
       return {
-        opened: false,
+        openable: !this.closed,
+        open: false,
         withHiddenFilters: true,
         withNavigation: true
+      }
+    },
+    computed: {
+      opened: function () {
+        return this.open && this.openable
+      }
+    },
+    watch: {
+      closed: function () {
+        this.openable = !this.closed
       }
     },
     methods: {
@@ -46,7 +61,8 @@
         el.style.overflow = 'visible'
       },
       toggleFilter: function () {
-        this.opened = !this.opened
+        this.openable = true
+        this.open = !this.open
       },
       submitFilter: function () {
         let formData = FormDataAsObj(this.$refs.form)
