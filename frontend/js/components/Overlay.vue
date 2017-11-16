@@ -147,7 +147,7 @@
     height:60px;
     line-height:60px;
     position:relative;
-    font-weight:bold;
+    font-weight:600;
     text-align:center;
     @include font-smoothing();
   }

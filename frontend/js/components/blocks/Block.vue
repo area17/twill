@@ -135,7 +135,7 @@
   }
 
   .block__title {
-    font-weight:bold;
+    font-weight:600;
     height:50px;
     line-height:50px;
   }

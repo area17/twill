@@ -89,8 +89,8 @@ $height_input: 45px;
   input[type="search"] {
     @include resetfield;
     width: 100%;
-    height: $height_input;
-    line-height: $height_input;
+    height: $height_input - 2px;
+    line-height: $height_input - 2px;
     padding: 0 15px;
     color:inherit;
 

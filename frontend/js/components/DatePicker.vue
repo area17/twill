@@ -3,7 +3,7 @@
     <div class="datePicker__group" :ref="refs.flatPicker">
       <div class="form__field datePicker__field">
         <input type="text" :name="name" :placeholder="placeHolder" data-input @blur="onBlur" v-model="date" :value="date">
-        <button v-if="clear" class="datePicker__reset" :class="{ 'datePicker__reset--cleared' : !date }" type="button" @click="onClear"><span v-svg symbol="close_icon"></span></button>
+        <a href="#" v-if="clear" class="datePicker__reset" :class="{ 'datePicker__reset--cleared' : !date }" @click.prevent="onClear"><span v-svg symbol="close_icon"></span></a>
       </div>
     </div>
   </a17-inputframe>
@@ -170,16 +170,16 @@
   }
 
   .datePicker__reset {
-    @include btn-reset;
+    display:block;
     width: 45px - 13px - 14px;
     height: 45px - 13px - 14px;
+    overflow:hidden;
     color: $color__background;
     background:$color__icons;
     border-radius:50%;
     margin-top:13px;
     margin-right:13px;
     line-height:45px - 13px - 13px;
-    padding:0;
     text-align:center;
     transition: opacity 0.2ms ease;
 

@@ -253,8 +253,8 @@
     input[type="email"],
     input[type="password"] {
       @include resetfield;
-      height:$height_input;
-      line-height:$height_input;
+      height:$height_input - 2px;
+      line-height:$height_input - 2px;
       flex-grow: 1;
       color:inherit;
 
@@ -287,16 +287,16 @@
   }
 
   .input__prefix {
-    height:$height_input;
-    line-height:$height_input;
+    height:$height_input - 2px;
+    line-height:$height_input - 2px;
     user-select:none;
     color:$color__icons;
     pointer-events: none;
   }
 
   .input__limit {
-    height:$height_input;
-    line-height:$height_input;
+    height:$height_input - 2px;
+    line-height:$height_input - 2px;
     color:$color__text--light;
     user-select: none;
     pointer-events:none;

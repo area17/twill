@@ -153,7 +153,7 @@
     height:50px;
     line-height:50px;
     position:relative;
-    font-weight:bold;
+    font-weight:600;
   }
 
   .modal__close {

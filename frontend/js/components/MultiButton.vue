@@ -70,6 +70,8 @@
     text-align:center;
     border-top-right-radius:2px;
     border-bottom-right-radius:2px;
+    border-top-left-radius:0;
+    border-bottom-left-radius:0;
     background:$color__ok;
     color: $color__background;
     margin-left: -2px;
