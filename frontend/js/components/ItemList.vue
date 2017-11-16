@@ -1,5 +1,11 @@
 <template>
   <div class="itemlist">
+    <div class="itemlist__item" v-for="(item, index) in listItemsLoading" :key="item.id">
+      <span class="itemlist__button s--loading">
+        <span class="itemlist__progress" v-if="!item.error"><span class="itemlist__progressBar" :style="loadingProgress(index)"></span></span>
+        <span class="itemlist__progressError" v-else>Upload Error</span>
+      </span>
+    </div>
     <div class="itemlist__item" v-for="(item, index) in listItems" :key="item.id" :class="{ 's--picked': isSelected(item.id) }" @click.prevent="toggleSelection(item.id)">
       <span class="itemlist__button">
         <a17-checkbox name="item_list" :value="item.id" :initialValue="checkedItems" theme="bold"></a17-checkbox>
@@ -12,6 +18,8 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
+
   export default {
     name: 'A17Itemlist',
     props: {
@@ -44,9 +52,17 @@
         }
 
         return checkItemsIds
-      }
+      },
+      ...mapState({
+        listItemsLoading: state => state.mediaLibrary.loading
+      })
     },
     methods: {
+      loadingProgress: function (index) {
+        return {
+          'width': this.listItemsLoading[index].progress ? this.listItemsLoading[index].progress + '%' : '0%'
+        }
+      },
       isSelected: function (id) {
         const result = this.selectedItems.filter(function (item) {
           return item.id === id

@@ -21,8 +21,6 @@
 </template>
 
 <script>
-  // storage = window && window.sessionStorage
-
   export default {
     name: 'A17Notification',
     props: {
@@ -47,10 +45,7 @@
       return {
         closed: false,
         timer: null,
-        css: 'notif',
-        keep: true,
-        storage: null,
-        key: '__vuexNotif'
+        css: 'notif'
       }
     },
     computed: {

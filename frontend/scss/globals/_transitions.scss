@@ -80,3 +80,20 @@ https://vuejs.org/v2/guide/transitions.html
   opacity:0;
 }
 
+/**** Filter transition ****/
+.scale_filter-enter-active,
+.scale_filter-leave-active {
+  transition: max-height .5s ease;
+  overflow:hidden;
+}
+
+.scale_filter-enter-to,
+.scale_filter-leave {
+  max-height:100px;
+}
+
+.scale_filter-enter,
+.scale_filter-leave-to {
+  max-height:0;
+}
+

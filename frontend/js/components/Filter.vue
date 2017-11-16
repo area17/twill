@@ -1,20 +1,22 @@
 <template>
-  <form class="filter" :class="{ 'filter--opened' : openedFilter, 'filter--single' : !withNavigation }" @submit.prevent="submitFilter" ref="form">
+  <form class="filter" :class="{ 'filter--opened' : opened, 'filter--single' : !withNavigation }" @submit.prevent="submitFilter" ref="form">
     <div class="filter__inner">
       <div class="filter__navigation"><slot name="navigation"></slot></div>
 
       <div class="filter__search">
         <input type="search" class="form__input form__input--small" name="query" value="" :placeholder="placeholder" />
-        <a17-button class="filter__toggle" variant="ghost" @click="toggleFilter" v-if="withHiddenFilters" :aria-expanded="openedFilter ?  'true' : 'false'" >Filter <span v-svg symbol="dropdown_module"></span></a17-button>
+        <a17-button class="filter__toggle" variant="ghost" @click="toggleFilter" v-if="withHiddenFilters" :aria-expanded="opened ?  'true' : 'false'" >Filter <span v-svg symbol="dropdown_module"></span></a17-button>
         <slot name="additional-actions"></slot>
       </div>
     </div>
-    <div class="filter__more" v-if="withHiddenFilters" :aria-hidden="!openedFilter ?  true : null">
-      <div class="filter__moreInner">
-        <slot name="hidden-filters"></slot>
-        <a17-button variant="ghost" type="submit">Apply</a17-button>
+    <transition name="scale_filter" @before-enter="beforeAnimate" @after-enter="afterAnimate" @before-leave="beforeAnimate" @after-leave="afterAnimate">
+      <div class="filter__more" v-if="withHiddenFilters" :aria-hidden="!opened ?  true : null" v-show="opened">
+        <div class="filter__moreInner" >
+          <slot name="hidden-filters"></slot>
+          <a17-button variant="ghost" type="submit">Apply</a17-button>
+        </div>
       </div>
-    </div>
+    </transition>
   </form>
 </template>
 
@@ -31,14 +33,20 @@
     },
     data: function () {
       return {
-        openedFilter: false,
+        opened: false,
         withHiddenFilters: true,
         withNavigation: true
       }
     },
     methods: {
+      beforeAnimate: function (el) {
+        el.style.overflow = 'hidden'
+      },
+      afterAnimate: function (el) {
+        el.style.overflow = 'visible'
+      },
       toggleFilter: function () {
-        this.openedFilter = !this.openedFilter
+        this.opened = !this.opened
       },
       submitFilter: function () {
         let formData = FormDataAsObj(this.$refs.form)
@@ -92,14 +100,6 @@
     }
   }
 
-  .filter__more {
-    max-height:0;
-    height:auto;
-    overflow:hidden;
-    visibility: hidden;
-    transition: max-height 0.3s linear, visibility 0s 0.3s;
-  }
-
   .filter__moreInner {
     padding:20px 0;
     border-top:1px solid $color__border;
@@ -115,18 +115,17 @@
     .filter__moreInner {
       display:flex;
 
-      .input {
-        margin-bottom:0;
+      /deep/ .input {
+        margin-top:0;
       }
 
-      > div {
+      /deep/ > div {
         flex-grow:1;
         display:flex;
+      }
 
-        > * {
-          flex-grow: 1;
-          flex-basis: 0;
-        }
+      /deep/ > div > * {
+        margin-right:20px;
       }
     }
   }
@@ -147,13 +146,6 @@
 
   /* Opened filters */
   .filter--opened {
-    .filter__more {
-      visibility: visible;
-      transition: max-height 0.3s linear;
-      max-height:250px;
-      overflow:visible;
-    }
-
     .filter__toggle .icon {
       transform:rotate(180deg);
     }
