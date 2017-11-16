@@ -4,18 +4,27 @@
 // Use the serif/sans-serif mixins directly in the SCSS do any responsive overwrites
 // with within the breakpoint mixin e.g.
 
+@mixin font-heading() {
+  font-size: 40px;
+}
+
+@mixin font-medium() {
+  font-size: 18px;
+}
+
 @mixin font-regular() {
   font-size:15px;
 }
 
 @mixin font-small() {
   font-size:13px;
+  letter-spacing: -0.01em;
 }
 
 @mixin font-tiny() {
   font-size:11px;
+  letter-spacing: 0;
 }
-
 
 @mixin sans-serif($font-size:15, $line-height:20, $weight:normal, $style:normal) {
   font-family: $sans-serif;

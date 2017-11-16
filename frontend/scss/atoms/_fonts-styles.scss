@@ -19,43 +19,20 @@ Text can be set as heading, regular (default), small or tiny
 
 ***/
 
-
-@mixin font-heading() {
-  font-size:40px;
-}
-
 .f--heading {
   @include font-heading;
-}
-
-@mixin font-medium() {
-  font-size:18px;
 }
 
 .f--medium {
   @include font-medium;
 }
 
-@mixin font-regular() {
-  font-size:15px;
-}
-
 .f--regular {
   @include font-regular;
 }
 
-@mixin font-small() {
-  font-size:13px;
-  letter-spacing:-0.01em;
-}
-
 .f--small {
   @include font-small;
-}
-
-@mixin font-tiny() {
-  font-size:11px;
-  letter-spacing:0;
 }
 
 .f--tiny {
