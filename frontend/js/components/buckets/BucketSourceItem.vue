@@ -4,7 +4,7 @@
       <img :src="item.thumbnail" :alt="item.name">
     </td>
     <td class="buckets__itemTitle">
-      <h4><a :href="item.edit" target="_blank">{{ item.name }}</a></h4>
+      <h4><span class="f--link-underlined--o"><a :href="item.edit" target="_blank">{{ item.name }}</a></span></h4>
     </td>
     <td class="buckets__itemDate" v-if="item.publication">
       {{ item.publication }}

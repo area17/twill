@@ -28,7 +28,7 @@
         <div class="buckets__container col--even">
           <a17-fieldset v-for="(bucket, index) in buckets" :class="'buckets__fieldset buckets__fieldset--'+(index+1)" :key="bucket.id" :name="'bucket_'+bucket.id" :activeToggle="false">
             <h3 slot="header" class="buckets__fieldset__header">
-              <span class="buckets__number">{{ (index + 1) }}</span> {{ bucket.name }} <span class="buckets__size-infos">{{ bucket.children.length }} / {{ bucket.max }}</span>
+              <span><span class="buckets__number">{{ (index + 1) }}</span> {{ bucket.name }}</span> <span class="buckets__size-infos">{{ bucket.children.length }} / {{ bucket.max }}</span>
             </h3>
             <draggable class="buckets__list buckets__draggable" :options="dragOptions" @change="sortBucket($event, index)" :value="bucket.children" :element="'table'" v-if="bucket.children.length > 0">
               <transition-group name="fade_scale_list" tag='tbody'>
@@ -265,6 +265,10 @@
   }
 
   .buckets__fieldset__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
     @include font-smoothing();
 
     .buckets__number {
@@ -273,12 +277,13 @@
 
     .buckets__size-infos {
       @include font-tiny();
-
+      text-align: right;
       float: right;
     }
   }
 
   .buckets__header {
+
     display: flex;
     align-items: center;
 
@@ -329,114 +334,6 @@
     h4 {
       font-weight: 400;
       color: $color__f--text;
-    }
-  }
-</style>
-
-<style lang="scss">
-  @import '~styles/setup/_mixins-colors-vars.scss';
-
-  /*Child component style*/
-  .buckets__item {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 80px;
-    padding: 0 15px;
-    border-top: 1px solid $color__border--light;
-
-    td {
-      padding-top: 15px;
-      padding-bottom:15px;
-      // height: 80px;
-    }
-
-    &:hover {
-      background-color: $color__f--bg;
-    }
-
-    &:first-child {
-      border-top: 0 none;
-    }
-
-    .buckets__itemThumbnail {
-      img {
-        display:block;
-        width: 50px;
-        min-width: 50px;
-        height: 50px;
-        // width: 100%;
-        // height: 100%;
-      }
-    }
-
-    .buckets__itemTitle {
-      flex-grow: 1;
-      margin-left: 15px;
-      overflow: hidden;
-
-      a {
-        color: $color__link;
-        text-decoration: none;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
-
-    .buckets__itemDate {
-      margin: 0 80px;
-      color: $color__text--light;
-    }
-
-    .buckets__itemContentType {
-      margin: 0 80px;
-      color: $color__text--light;
-    }
-
-    .buckets__itemOptions {
-      display: flex;
-
-      .item__dropdown {
-
-        .item__dropdown__content {
-          min-width: 250px;
-
-          /deep/ .radioGroup__item {
-            &:hover {
-              background-color: $color__border--light;
-            }
-          }
-        }
-      }
-
-      .bucket__action {
-        @include font-tiny();
-
-        line-height: 20px;
-
-        margin-right: 15px;
-
-        &:last-child {
-          margin-right: 0;
-        }
-
-        &.selected {
-          opacity: 0.4;
-        }
-
-      }
-
-    }
-
-    &.single.selected > * {
-      opacity: 0.4;
-    }
-
-    &.draggable {
-      padding-left: 27px;
     }
   }
 </style>

@@ -252,9 +252,6 @@
     padding: 0;
     background: $color__background;
     color: $color__icons;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     @include monospaced-figures('off'); // dont use monospaced figures here
 
     .icon {
