@@ -122,6 +122,8 @@
   .tablecell__feature {
     display:block;
     cursor:pointer;
+    position:relative;
+    top:2px;
 
     .icon {
       color:$color__icons;
@@ -177,7 +179,7 @@
     display:block;
     background:$color__fborder;
     position:relative;
-    top:3px;
+    top:6px;
     transition: background-color 0.3s ease, border-color 0.3s ease;
   }
 
