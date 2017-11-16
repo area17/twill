@@ -32,7 +32,7 @@
                     @endif
                 @endcan
             @endforeach
-            <span type="button" class="btn ham__btn">
+            <span class="btn ham__btn">
                 <span class="ham__icon"><span class="ham__line"></span></span>
             </span>
         </button>

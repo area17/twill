@@ -19,12 +19,11 @@ $height__nav: 60px;
 .ham {
   @include btn-reset;
   cursor:pointer;
-  position: relative;
-  z-index:1;
   position:absolute;
   top:0;
   right:0;
   height:$height__nav;
+  z-index:1;
 
   @include breakpoint('large+') {
     display:none;
@@ -59,16 +58,21 @@ $height__nav: 60px;
   transition: opacity .3s ease;
 }
 
+.ham__label {
+  margin-right: 20px;
+}
+
 .ham__label,
 .ham__btn {
-  height:20px;
-  padding: 19px 0 20px 20px;
+  //height:20px;
+  //padding: 19px 0 20px 20px;
+  display: inline-block;
 }
 
 .ham__icon {
   width:20px;
   height:13px;
-  display: inline-block;
+  display: block;
   position: relative;
 
   &:after,
