@@ -7,15 +7,22 @@ import openMediaLibrary from '@/behaviors/openMediaLibrary'
 
 // Plugins
 import A17Config from '@/plugins/A17Config'
+import A17Notif from '@/plugins/A17Notif'
 
 // configuration
 Vue.use(A17Config)
+Vue.use(A17Notif)
 
 // Dashboard
 import a17ShortcutCreator from '@/components/dashboard/shortcutCreator.vue'
 import A17ActivityFeed from '@/components/dashboard/activityFeed.vue'
 import A17StatFeed from '@/components/dashboard/statFeed.vue'
 import A17PopularFeed from '@/components/dashboard/popularFeed.vue'
+
+// Store modules
+import datatable from '@/store/modules/datatable'
+
+store.registerModule('datatable', datatable)
 
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */

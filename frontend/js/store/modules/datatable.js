@@ -12,6 +12,7 @@ const state = {
   offset: window.STORE.datatable.offset || 60,
   sortKey: window.STORE.datatable.sortKey || '',
   sortDir: window.STORE.datatable.sortDir || 'desc',
+  message: '',
   bulk: []
 }
 
@@ -164,6 +165,10 @@ const mutations = {
       const index = getIndex(id)
       updateState(index)
     }
+  },
+  [types.UPDATE_DATATABLE_MESSAGE] (state, message) {
+    if (message) state.message = message
+    else state.message = ''
   }
 }
 
@@ -185,7 +190,10 @@ const actions = {
         commit(types.UPDATE_DATATABLE_DATA, resp.data)
         commit(types.UPDATE_DATATABLE_MAXPAGE, resp.maxPage)
 
-        commit('setNotification', { message: 'getDatatableDatas message', variant: 'success' })
+        if (state.message) commit('setNotification', { message: state.message, variant: 'success' })
+
+        // reset message
+        commit(types.UPDATE_DATATABLE_MESSAGE, '')
       }
     )
   },
@@ -206,17 +214,8 @@ const actions = {
       row.published,
       function (id, navigation) {
         // success callback
-
-        if (state.filter.status !== 'all' && state.filter.status !== 'mine') {
-          dispatch('getDatatableDatas') // we need to get the new datas from the api
-        } else {
-          // here we can simply update the store
-          commit(types.PUBLISH_DATATABLE, {
-            id: row.id,
-            value: 'toggle'
-          })
-          commit(types.UPDATE_DATATABLE_NAV, navigation)
-        }
+        commit(types.UPDATE_DATATABLE_MESSAGE, 'Item Published') // todo : will use resp message
+        dispatch('getDatatableDatas') // we need to get the new datas from the api
       }
     )
   },
@@ -228,17 +227,8 @@ const actions = {
       },
       function (ids, navigation) {
         // success callback
-
-        if (state.filter.status !== 'all' && state.filter.status !== 'mine') {
-          dispatch('getDatatableDatas') // we need to get the new datas from the api
-        } else {
-          // here we can simply update the store
-          commit(types.PUBLISH_DATATABLE, {
-            id: state.bulk,
-            value: payload.toPublish
-          })
-          commit(types.UPDATE_DATATABLE_NAV, navigation)
-        }
+        commit(types.UPDATE_DATATABLE_MESSAGE, 'All Selected Items Published') // todo : will use resp message
+        dispatch('getDatatableDatas') // we need to get the new datas from the api
       }
     )
   },
@@ -280,6 +270,9 @@ const actions = {
       params,
       function (resp) {
         // success callback
+        commit(types.UPDATE_DATATABLE_MESSAGE, 'Item Deleted') // todo : will use resp message
+
+        // Refresh the UI
         commit(types.UPDATE_DATATABLE_DATA, resp.data)
         commit(types.UPDATE_DATATABLE_MAXPAGE, resp.maxPage)
       }
@@ -301,6 +294,8 @@ const actions = {
       params,
       function (resp) {
         // success callback
+        commit(types.UPDATE_DATATABLE_MESSAGE, 'All Selected Items Deleted') // todo : will use resp message
+
         commit(types.UPDATE_DATATABLE_DATA, resp.data)
         commit(types.UPDATE_DATATABLE_MAXPAGE, resp.maxPage)
       }

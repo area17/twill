@@ -2,9 +2,9 @@ import * as types from '../mutation-types'
 
 const state = {
   success: null,
-  danger: null,
   info: null,
-  warning: null
+  warning: null,
+  error: null
 }
 
 // getters

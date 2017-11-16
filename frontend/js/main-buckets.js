@@ -7,14 +7,16 @@ import store from '@/store'
 import main from '@/main'
 import openMediaLibrary from '@/behaviors/openMediaLibrary'
 
-// Plugins
-import A17Config from '@/plugins/A17Config'
-
 // Buckets
 import a17Buckets from '@/components/buckets/Bucket.vue'
 
+// Plugins
+import A17Config from '@/plugins/A17Config'
+import A17Notif from '@/plugins/A17Notif'
+
 // configuration
 Vue.use(A17Config)
+Vue.use(A17Notif)
 
 // Store modules
 import buckets from '@/store/modules/buckets'

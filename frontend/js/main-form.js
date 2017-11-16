@@ -7,9 +7,6 @@ import store from '@/store'
 import main from '@/main'
 import openMediaLibrary from '@/behaviors/openMediaLibrary'
 
-// Plugins
-import A17Config from '@/plugins/A17Config'
-
 // Page Components
 import a17StickyNav from '@/components/StickyNav.vue'
 import a17Fieldset from '@/components/Fieldset.vue'
@@ -37,8 +34,13 @@ import a17Browser from '@/components/Browser.vue'
 import a17Overlay from '@/components/Overlay.vue'
 import a17Previewer from '@/components/Previewer.vue'
 
+// Plugins
+import A17Config from '@/plugins/A17Config'
+import A17Notif from '@/plugins/A17Notif'
+
 // configuration
 Vue.use(A17Config)
+Vue.use(A17Notif)
 
 // Store Modules
 import form from '@/store/modules/form'

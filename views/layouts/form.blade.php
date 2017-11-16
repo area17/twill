@@ -47,6 +47,8 @@
         <a17-overlay ref="preview" title="Preview changes">
             <a17-previewer />
         </a17-overlay>
+        <a17-notif variant="success"></a17-notif>
+        <a17-notif variant="error"></a17-notif>
     </div>
 @stop
 

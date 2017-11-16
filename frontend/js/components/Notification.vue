@@ -30,6 +30,10 @@
         type: String,
         default: 'success'
       },
+      duration: {
+        type: Number,
+        default: 3000
+      },
       important: {
         type: Boolean,
         default: true
@@ -43,7 +47,6 @@
       return {
         closed: false,
         timer: null,
-        duration: 3000,
         css: 'notif',
         keep: true,
         storage: null,
@@ -67,9 +70,6 @@
       }
     },
     methods: {
-      // getNotif: function () {
-      //   return this.$store.getters['getNotifMessage'](this.variant)
-      // },
       closeNotif: function () {
         this.closed = true
         this.clearNotification()
@@ -93,16 +93,12 @@
     watch: {
       message: function () {
         if (this.message) {
+          // if we have a message, let's show it
           this.closed = false
 
-          if (this.autoHide) {
-            this.autoClose()
-          }
+          if (this.autoHide) this.autoClose()
         }
       }
-    },
-    mounted: function () {
-      console.log('notification')
     }
   }
 </script>
