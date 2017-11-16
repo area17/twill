@@ -3,11 +3,13 @@
 @php
     $title = $title ?? "All Projects";
     $message = $message ?? "What would you like to feature today?";
+    $emptyBucketMessage =  $emptyBucketMessage ?? "No files selected.";
+    $emptySourceMessage =  $emptySourceMessage ?? "No items found.";
 @endphp
 
 @section('content')
     <div class="app app--buckets" id="app" v-cloak>
-        <a17-buckets title="{{__($title)}}">{{__($message)}}</a17-buckets>
+        <a17-buckets title="{{__($title)}}" empty-buckets="{{__($emptyBucketMessage)}}" empty-source="{{__($emptySourceMessage)}}">{{__($message)}}</a17-buckets>
         <a17-modal ref="mediaLibrary" title="Media Library" mode="wide">
             <a17-medialibrary endpoint="https://www.mocky.io/v2/59edf8273300000e00b5c7d6" />
         </a17-modal>

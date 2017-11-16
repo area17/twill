@@ -17,11 +17,14 @@
                 <a17-filter @submit="filterBucketsData"></a17-filter>
               </div>
             </div>
-            <table class="buckets__list ">
+            <table v-if="source.items.length > 0" class="buckets__list">
               <tbody>
                 <a17-bucket-item-source v-for="item in source.items" :key="item.id" :item="item" :singleBucket="singleBucket" :buckets="buckets" v-on:add-to-bucket="addToBucket"></a17-bucket-item-source>
               </tbody>
             </table>
+            <div v-else="" class="buckets__empty">
+              <h4>{{ emptySource }}</h4>
+            </div>
             <a17-paginate :max="max" :value="page" :offset="offset" :availableOffsets="availableOffsets" @changePage="updatePage" @changeOffset="updateOffset"></a17-paginate>
           </a17-fieldset>
         </div>
@@ -30,13 +33,13 @@
             <h3 slot="header" class="buckets__fieldset__header">
               <span><span class="buckets__number">{{ (index + 1) }}</span> {{ bucket.name }}</span> <span class="buckets__size-infos">{{ bucket.children.length }} / {{ bucket.max }}</span>
             </h3>
-            <draggable class="buckets__list buckets__draggable" :options="dragOptions" @change="sortBucket($event, index)" :value="bucket.children" :element="'table'" v-if="bucket.children.length > 0">
+            <draggable v-if="bucket.children.length > 0" class="buckets__list buckets__draggable" :options="dragOptions" @change="sortBucket($event, index)" :value="bucket.children" :element="'table'" >
               <transition-group name="fade_scale_list" tag='tbody'>
                 <a17-bucket-item v-for="(child, index) in bucket.children" :key="index" :item="child" :restricted="restricted" :draggable="bucket.children.length > 1" :singleBucket="singleBucket" :bucket="bucket.id" :buckets="buckets" v-on:add-to-bucket="addToBucket" v-on:remove-from-bucket="deleteFromBucket"></a17-bucket-item>
               </transition-group>
             </draggable>
             <div v-else="" class="buckets__empty">
-              <h4>{{ textEmpty }}</h4>
+              <h4>{{ emptyBuckets }}</h4>
             </div>
           </a17-fieldset>
         </div>
@@ -74,9 +77,13 @@
         type: String,
         default: 'Features'
       },
-      textEmpty: {
+      emptyBuckets: {
         type: String,
         default: 'No files selected.'
+      },
+      emptySource: {
+        type: String,
+        default: 'No items found.'
       },
       // If disabled, this option will block don't delete first element of an bucket and will send and alert message
       overridableMax: {
@@ -332,7 +339,7 @@
     padding: 15px 20px;
 
     h4 {
-      font-weight: 400;
+      @include font-medium();
       color: $color__f--text;
     }
   }
