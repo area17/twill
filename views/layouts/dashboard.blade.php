@@ -1,5 +1,9 @@
 @extends('cms-toolkit::layouts.main')
 
+@php
+    $emptyMessage = $emptyMessage ?? "You don't have any activity yet.";
+@endphp
+
 @section('content')
     <div class="app app--dashboard" id="app" v-cloak>
         <div class="dashboard">
@@ -17,7 +21,7 @@
                         </a17-popular-feed>
                     </aside>
                     <div class="col col--primary">
-                        <a17-activity-feed></a17-activity-feed>
+                        <a17-activity-feed empty-message="{{ __($emptyMessage)  }}"></a17-activity-feed>
                     </div>
                 </div>
             </div>

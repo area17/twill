@@ -8,11 +8,16 @@
       </ul>
     </header>
     <div class="box__body">
-      <table class="activityFeed__table">
+      <table class="activityFeed__table" v-if="rows.length > 0">
         <template v-for="(row, index) in rows">
           <a17-activity-row :row="row" :index="index" :columns="columns" :key="row.id"></a17-activity-row>
         </template>
       </table>
+      <template v-else="">
+        <div class="activityFeed__empty">
+          <h4>{{ emptyMessage }}</h4>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -25,6 +30,12 @@
     name: 'A17ActivityFeed',
     components: {
       'a17-activity-row': A17ActivityRow
+    },
+    props: {
+      emptyMessage: {
+        type: String,
+        default: 'You don\'t have any activity yet.'
+      }
     },
     data: function () {
       return {
@@ -76,5 +87,18 @@
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
+  }
+
+  .activityFeed__empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    padding: 15px 20px;
+
+    h4 {
+      @include font-medium();
+      color: $color__f--text;
+    }
   }
 </style>
