@@ -4,7 +4,7 @@
       <div class="wrapper wrapper--reverse">
         <div class="shortcutCreator__create">
           <a17-dropdown class="shortcutCreator__dropdown" ref="createNewDropdown" position="bottom-right" width="full" :offset="0">
-            <a17-button type="button" variant="action" @click="$refs.createNewDropdown.toggle()">Create New</a17-button>
+            <a17-button type="button" class="shortcutCreator__btn" variant="action" @click="$refs.createNewDropdown.toggle()">Create New</a17-button>
             <button type="button" class="shortcutCreator__trigger" @click="$refs.createNewDropdown.toggle()"><span v-svg symbol="dropdown_module"></span></button>
             <div slot="dropdown__content">
               <ul>
@@ -143,11 +143,18 @@
     }
   }
 
+  /deep/ .shortcutCreator__btn {
+    border-top-right-radius:0;
+    border-bottom-right-radius:0;
+  }
+
   .shortcutCreator__trigger {
     @include btn-reset;
     height:$height_btn;
     line-height:$height_btn;
     text-align:center;
+    border-top-left-radius:0;
+    border-bottom-left-radius:0;
     border-top-right-radius:2px;
     border-bottom-right-radius:2px;
     background:$color__action;
@@ -164,6 +171,8 @@
 
     .icon {
       color: $color__background;
+      position:relative;
+      top:-3px;
     }
   }
 

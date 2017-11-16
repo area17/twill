@@ -85,6 +85,8 @@
 
     .icon {
       color: $color__background;
+      position:relative;
+      top:-3px;
     }
   }
 </style>
