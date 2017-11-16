@@ -2,7 +2,7 @@ export default {
   props: {
     type: {
       type: String,
-      default: 'Image'
+      default: 'image'
     }
   },
   methods: {
