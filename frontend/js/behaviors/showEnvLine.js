@@ -5,7 +5,7 @@ import debounce from 'lodash/debounce'
 const showEnvLine = function () {
   let lastScrollPos = 0
   let ticking = false
-  const offset = 110
+  const offset = 170 - 3
   const htmlElement = document.documentElement
 
   const klass = 's--env'
