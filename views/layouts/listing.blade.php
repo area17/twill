@@ -2,6 +2,7 @@
 
 @php
     $sort = $sort ?? true;
+    $emptyDataTable = $emptyMessage ?? "There is not yet items here."
 @endphp
 
 @section('content')
@@ -21,7 +22,7 @@
                 </div>
                 <a17-bulk></a17-bulk>
             </div>
-            <a17-datatable :draggable="{{ $sort ? 'true' : 'false' }}"></a17-datatable>
+            <a17-datatable :draggable="{{ $sort ? 'true' : 'false' }}" empty-message="{{ __($emptyDataTable) }}"></a17-datatable>
             <a17-modal class="modal--form" ref="addNewModal" title="Add New">
                 <form action="#">
                     <a17-modal-title-editor v-bind:base-url="baseUrl"></a17-modal-title-editor>
@@ -52,6 +53,7 @@
     }
 
     window.STORE.datatable.data = {!! json_encode($mappedData) !!}
+
     window.STORE.datatable.columns = {!! json_encode($mappedColumns) !!}
 
     window.STORE.datatable.navigation = [

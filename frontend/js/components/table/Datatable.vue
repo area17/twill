@@ -16,7 +16,7 @@
             </div>
 
             <div class="datatable__stickyTable">
-              <a17-table :columnsWidth="columnsWidth" :xScroll="xScroll"  @scroll="updateScroll">
+              <a17-table :columnsWidth="columnsWidth" :xScroll="xScroll" @scroll="updateScroll">
                 <thead>
                   <a17-tablehead :columns="visibleColumns" @sortColumn="updateSort"></a17-tablehead>
                 </thead>
@@ -34,7 +34,7 @@
           <thead>
             <a17-tablehead :columns="visibleColumns" ref="thead"></a17-tablehead>
           </thead>
-          <template v-if="draggable" >
+          <template v-if="draggable">
             <draggable :element="'tbody'" v-model='rows' :options="{ handle:'.tablecell__handle' }">
               <template v-for="(row, index) in rows">
                 <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :key="row.id"></a17-tablerow>
@@ -47,6 +47,11 @@
             </template>
           </tbody>
         </a17-table>
+        <template v-if="rows.length <= 0">
+          <div class="datatable__empty">
+            <h4>{{ emptyMessage }}</h4>
+          </div>
+        </template>
         <a17-paginate :max="maxPage" :value="page" :offset="offset" :availableOffsets="[initialOffset,initialOffset*3,initialOffset*6]" @changePage="updatePage" @changeOffset="updateOffset"></a17-paginate>
       </div>
     </div>
@@ -83,6 +88,10 @@
       bulkeditable: {
         type: Boolean,
         default: true
+      },
+      emptyMessage: {
+        type: String,
+        default: 'There is not yet items here.'
       }
     },
     data: function () {
@@ -243,43 +252,56 @@
   }
 
   .datatable__table {
-    border:1px solid $color__border--light;
-    border-radius:2px;
-    position:relative;
+    border: 1px solid $color__border--light;
+    border-radius: 2px;
+    position: relative;
 
     /deep/ table {
-       margin-top: -60px; // hide the other thead
+      margin-top: -60px; // hide the other thead
     }
   }
 
   .datatable__setupDropdown {
-    float:right;
-    padding:18px 10px 16px;
-    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 25%);
+    float: right;
+    padding: 18px 10px 16px;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 25%);
   }
 
   .datatable__setupButton {
     @include btn-reset;
-    color:$color--icons;
+    color: $color--icons;
 
     &:focus,
     &:hover {
-      color:$color--text;
+      color: $color--text;
     }
   }
 
   .datatable__setup {
-    position:absolute;
-    right:0;
-    width:50px;
-    top:0;
-    z-index:1;
+    position: absolute;
+    right: 0;
+    width: 50px;
+    top: 0;
+    z-index: 1;
+  }
+
+  /* Empty datable */
+  .datatable__empty {
+    display: flex;
+    align-items: center;
+    height: 80px;
+    padding: 15px 20px;
+
+    h4 {
+      font-weight: 400;
+      color: $color__f--text;
+    }
   }
 
   /* Sticky table head */
 
   .datatable__sticky {
-    height:60px;
+    height: 60px;
   }
 
   @include breakpoint('medium+') {
@@ -287,11 +309,11 @@
       background-clip: padding-box;
 
       &.sticky__fixedTop {
-        display:block;
-        top:0;
+        display: block;
+        top: 0;
 
-        background-color:rgba($color__border--light, 0.95);
-        border-bottom:1px solid rgba($color__black, 0.05);
+        background-color: rgba($color__border--light, 0.95);
+        border-bottom: 1px solid rgba($color__black, 0.05);
 
         .datatable__setupDropdown {
           background: linear-gradient(to right, rgba($color__border--light, 0) 0%, $color__border--light 25%);
@@ -301,20 +323,20 @@
   }
 
   .datatable__stickyHead {
-    width:100%;
-    z-index:$zindex__stickyTableHead;
+    width: 100%;
+    z-index: $zindex__stickyTableHead;
   }
 
   .datatable__stickyInner {
-    position:relative;
+    position: relative;
   }
 
   .datatable__stickyTable {
-    max-height:60px;
+    max-height: 60px;
     overflow: hidden;
 
     .table__scroller {
-      padding-bottom:50px;
+      padding-bottom: 50px;
     }
   }
 </style>
