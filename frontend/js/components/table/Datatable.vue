@@ -29,7 +29,7 @@
 
     <!-- Actual table content -->
     <div class="container">
-      <div class="datatable__table">
+      <div class="datatable__table" :class="isEmptyDatable">
         <a17-table :xScroll="xScroll" @scroll="updateScroll">
           <thead>
             <a17-tablehead :columns="visibleColumns" ref="thead"></a17-tablehead>
@@ -91,7 +91,7 @@
       },
       emptyMessage: {
         type: String,
-        default: 'There is not yet items here.'
+        default: 'No drafts baby.'
       }
     },
     data: function () {
@@ -102,6 +102,9 @@
       }
     },
     computed: {
+      isEmptyDatable: function () {
+        return { 'datatable__table--empty': this.rows.length <= 0 }
+      },
       rows: {
         get () {
           return this.$store.state.datatable.data
@@ -286,13 +289,20 @@
   }
 
   /* Empty datable */
+  .datatable__table--empty {
+    border: none;
+    border-top: 1px solid $color__border--light;
+  }
+
   .datatable__empty {
     display: flex;
+    justify-content: center;
     align-items: center;
-    height: 80px;
+    height: 300px;
     padding: 15px 20px;
 
     h4 {
+      @include font-medium();
       font-weight: 400;
       color: $color__f--text;
     }
