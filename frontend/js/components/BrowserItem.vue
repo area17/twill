@@ -116,7 +116,11 @@
 
   .browserItem__cell--name:first-child,
   .browserItem__cell--drag + .browserItem__cell--name {
-    padding-left:29px;
+    padding-left: 15px;
+
+    @include breakpoint('small+') {
+      padding-left:29px;
+    }
   }
 
   .browserItem__cell--drag {

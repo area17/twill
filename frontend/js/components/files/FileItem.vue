@@ -4,7 +4,7 @@
       <div class="drag__handle--drag"></div>
     </td>
     <td class="fileItem__cell fileItem__cell--extension" v-if="currentItem.hasOwnProperty('extension')">
-      <span v-svg :symbol="getSvgIconName()"></span>
+      <a href="#" target="_blank"><span v-svg :symbol="getSvgIconName()"></span></a>
     </td>
     <td class="fileItem__cell fileItem__cell--name">
       <span v-if="currentItem.hasOwnProperty('thumbnail')"><img :src="currentItem.thumbnail"/></span>
@@ -113,7 +113,15 @@
 
   .fileItem__cell--extension {
     padding-right: 5px;
-    padding-left:29px;
+
+    @include breakpoint('small+') {
+      padding-left:29px;
+    }
+
+    a {
+      display:block;
+      height:26px;
+    }
   }
 
   .fileItem__cell--name {

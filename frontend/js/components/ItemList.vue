@@ -1,7 +1,7 @@
 <template>
   <div class="itemlist">
     <div class="itemlist__row" v-for="(item, index) in listItemsLoading" :key="item.id" >
-      <span class="itemlist__cell itemlist__cell--loading">
+      <span class="itemlist__cell itemlist__cell--loading" :class="{ 'itemlist__cell--error' : item.error }">
         <span class="itemlist__progress" v-if="!item.error" ><span class="itemlist__progressBar" :style="loadingProgress(index)"></span></span>
         <span class="itemlist__progressError" v-else>Upload Error</span>
       </span>
@@ -140,6 +140,10 @@
   .itemlist__cell--loading {
     flex-grow: 1;
     height: 4px;
+  }
+
+  .itemlist__cell--error {
+    height:auto;
   }
 
   .itemlist__progress {
