@@ -65,17 +65,18 @@
   @import '~styles/setup/_mixins-colors-vars.scss';
 
   .mediagrid {
-    display:flex;
-    flex-wrap: wrap;
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
   .mediagrid__item {
-    display:block;
+    position:relative;
+    display:inline-block;
     width: 16.66666665%;
     padding-bottom: 16.66666665%;
     overflow: hidden;
     background:white;
-    position:relative;
 
     @media (max-width: 400px) {
       width: 100%;
