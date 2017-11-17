@@ -136,7 +136,7 @@
       }
 
       /deep/ > div {
-        flex-grow:1;
+        // flex-grow:1;
         display:flex;
       }
 

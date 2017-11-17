@@ -299,6 +299,7 @@
     justify-content: center;
     align-items: center;
     height: 300px;
+    min-height:calc(100vh - #{170px + 60px + 100px + 100px + 100px});
     padding: 15px 20px;
 
     h4 {
