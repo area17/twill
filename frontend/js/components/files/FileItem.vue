@@ -140,6 +140,14 @@
     }
   }
 
+  @include breakpoint('small+') {
+    .fileItem__cell--name:first-child,
+    .fileItem__cell--extension:first-child,
+    .fileItem__cell--drag + .fileItem__cell {
+      padding-left:29px;
+    }
+  }
+
   .fileItem__cell--size {
     color: $color__text--light;
     text-transform: uppercase;
