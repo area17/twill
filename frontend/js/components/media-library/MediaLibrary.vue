@@ -227,7 +227,7 @@
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
 
-  $width_sidebar:290px;
+  $width_sidebar: (default: 290px, small: 250px, xsmall: 200px);
 
   .medialibrary {
     display: block;
@@ -241,6 +241,21 @@
     background:$color__border--light;
     border-bottom:1px solid $color__border;
     padding:0 20px;
+
+    @include breakpoint(small-) {
+      /deep/ .filter__inner {
+        flex-direction: column;
+      }
+
+      /deep/ .filter__search {
+        padding-top: 10px;
+      }
+
+      .secondarynav {
+        padding-bottom: 10px;
+      }
+
+    }
   }
 
   .medialibrary__frame {
@@ -265,7 +280,7 @@
     right: 0;
     z-index: 76;
     bottom: 0;
-    width: $width_sidebar; // fixed arbitrary width
+    width: map-get($width_sidebar, default); // fixed arbitrary width
     color: $color__text--light;
     padding:10px;
     overflow:hidden;
@@ -276,6 +291,18 @@
       display: block;
       width: 100%;
     }
+
+    @include breakpoint(small) {
+      width: map-get($width_sidebar, small);
+    }
+
+    @include breakpoint(xsmall) {
+      width: map-get($width_sidebar, xsmall);
+    }
+
+    @media screen and (max-width: 550px) {
+      width: 100%;
+    }
   }
 
   .medialibrary__sidebar {
@@ -283,11 +310,23 @@
     top: 0;
     right: 0;
     bottom: 0;
-    width: $width_sidebar; // fixed arbitrary width
+    width: map-get($width_sidebar, default); // fixed arbitrary width
     padding: 0 0 90px 0;
     z-index: 75;
     background:$color__border--light;
     overflow: auto;
+
+    @include breakpoint(small) {
+      width: map-get($width_sidebar, small);
+    }
+
+    @include breakpoint(xsmall) {
+      width: map-get($width_sidebar, xsmall);
+    }
+
+    @media screen and (max-width: 550px) {
+      display: none;
+    }
   }
 
   .medialibrary__list {
@@ -303,7 +342,19 @@
 
   /* with a sidebar visible */
   .medialibrary__list {
-    right:$width_sidebar;
+    right:map-get($width_sidebar, default);
+
+    @include breakpoint(small) {
+      right: map-get($width_sidebar, small);
+    }
+
+    @include breakpoint(xsmall) {
+      right: map-get($width_sidebar, xsmall);
+    }
+
+    @media screen and (max-width: 550px) {
+      right: 0;
+    }
   }
 
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="uploader">
-    <div class="uploader__dropzone"><a17-button type="button" variant="ghost" @click="downloadMedias">Add new</a17-button> or drop new files here</div>
+    <div class="uploader__dropzone"><a17-button type="button" variant="ghost" @click="downloadMedias">Add new</a17-button><span class="uploader__dropzone--desktop">  or drop new files here</span></div>
   </div>
 </template>
 
@@ -139,6 +139,12 @@
 
     button {
       margin-right:10px;
+    }
+  }
+
+  .uploader__dropzone--desktop {
+    @include breakpoint(small-) {
+      display: none;
     }
   }
 </style>
