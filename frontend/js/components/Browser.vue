@@ -186,6 +186,16 @@
     width: 100%;
     overflow: hidden;
     flex-grow: 1;
+
+    &::after {
+      content:'';
+      position:absolute;
+      height:1px;
+      bottom:0;
+      background-color:$color__border--light;
+      left:20px;
+      right:20px;
+    }
   }
 
   .browser__header {
@@ -211,7 +221,11 @@
     right:0;
     bottom: 0;
     overflow: auto;
-    padding:10px;
+    padding:10px 10px 0 10px;
+
+    .itemlist {
+      padding-bottom:0;
+    }
   }
 
 </style>
