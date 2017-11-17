@@ -3,12 +3,14 @@
     <td v-if="draggable" class="browserItem__cell browserItem__cell--drag">
       <div class="drag__handle--drag"></div>
     </td>
+    <td class="browserItem__cell browserItem__cell--thumb" v-if="currentItem.hasOwnProperty('thumbnail')">
+      <a href="#" target="_blank"><img :src="currentItem.thumbnail" /></a>
+    </td>
     <td class="browserItem__cell browserItem__cell--name">
-      <span v-if="currentItem.hasOwnProperty('thumbnail')"><img :src="currentItem.thumbnail" /></span>
       <a href="#" target="_blank"><span class="f--link-underlined--o">{{ currentItem.name }}</span></a>
       <input type="hidden" :name="name" :value="currentItem.id"/>
     </td>
-    <td class="browserItem__cell">
+    <td class="browserItem__cell browserItem__cell--icon">
       <a17-button class="bucket__action" icon="close" @click="deleteItem()"><span v-svg symbol="close_icon"></span></a17-button>
     </td>
   </tr>
@@ -73,8 +75,6 @@
   @import '~styles/setup/_mixins-colors-vars.scss';
 
   .browserItem {
-    position:relative;
-    display:flex;
     width:100%;
     border-bottom: 1px solid $color__border--light;
 
@@ -86,34 +86,41 @@
   }
 
   .browserItem__cell {
-    padding:15px;
+    padding: 26px 15px 26px 0;
+    vertical-align: middle;
   }
 
   .browserItem__cell--name {
-    flex-grow: 1;
-    padding-left:15px + 12px;
+    a {
+      color:$color__link;
+      text-decoration: none;
+    }
+  }
+
+  .browserItem__cell--thumb {
+    padding-top: 16px;
+    padding-bottom: 16px;
+    padding-left:15px;
+    width:50px;
 
     a {
       color:$color__link;
       text-decoration: none;
       display:block;
-      margin:-15px;
-      padding:15px;
+    }
 
-      // &:hover {
-      //   text-decoration: underline;
-      // }
+    img {
+      display:block;
     }
   }
 
+  .browserItem__cell--name:first-child,
+  .browserItem__cell--drag + .browserItem__cell--name {
+    padding-left:29px;
+  }
+
   .browserItem__cell--drag {
-    position: absolute;
-    top: 0;
     padding:0;
-    height:100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     width: 12px;
     min-width: 12px;
     background-color: $color__drag_bg;
@@ -129,10 +136,16 @@
     background: repeating-linear-gradient(180deg, $color__drag_bg--hover 0, $color__drag_bg--hover 2px, transparent 2px, transparent 4px);
   }
 
+  .browserItem__cell--icon {
+    width:1px;
+  }
+
   .drag__handle--drag {
     position: relative;
     width: 6px;
     height: 42px;
+    margin-left:auto;
+    margin-right:auto;
     background: repeating-linear-gradient(90deg, $color__drag 0, $color__drag 2px, transparent 2px, transparent 4px);
     transition: background 250ms ease;
 

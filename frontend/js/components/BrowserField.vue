@@ -1,6 +1,6 @@
 <template>
   <div class="browserField">
-    <table class="browserField__list ">
+    <table class="browserField__table">
       <draggable :element="'tbody'" v-model="items">
         <a17-browseritem v-for="(item, index) in items" :key="item.id" class="item__content" :name="`${name}_${item.id}`" :draggable="draggable" :item="item" @delete="deleteItem(index)"></a17-browseritem>
       </draggable>
@@ -156,8 +156,8 @@
     }
   }
 
-  .browserField__list {
-    overflow: hidden;
+  .browserField__table {
+    // overflow: hidden;
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
