@@ -49,6 +49,7 @@
         maxPage: 20,
         fullItems: [],
         selectedItems: [],
+        listHeight: 0,
         page: this.initialPage
       }
     },
@@ -87,6 +88,7 @@
         let data = FormDataAsObj(form)
 
         if (data) data.page = this.page
+        else data = { page: this.page }
 
         return data
       },
@@ -114,13 +116,15 @@
           // add items here
           self.fullItems.push(...resp.data)
 
-          // re-listen for scroll position
+          // re-listen for scroll position if height changed
           self.$nextTick(function () {
-            list.addEventListener('scroll', () => self.scrollToPaginate())
+            if (self.listHeight !== list.scrollHeight) {
+              self.listHeight = list.scrollHeight
+              list.addEventListener('scroll', self.scrollToPaginate)
+            }
           })
         }, function (resp) {
           // error callback
-
         })
       },
       submitFilter: function (formData) {
@@ -134,9 +138,8 @@
       scrollToPaginate: function () {
         const list = this.$refs.list
 
-
-        if (list.scrollTop + list.offsetHeight > list.scrollHeight - 50) {
-          list.removeEventListener('scroll', () => self.scrollToPaginate())
+        if (list.scrollTop + list.clientHeight > this.listHeight - 10) {
+          list.removeEventListener('scroll', this.scrollToPaginate)
 
           if (this.maxPage > this.page) {
             this.page = this.page + 1
