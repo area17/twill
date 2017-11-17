@@ -59,6 +59,19 @@ const A17Config = {
     // Media Library
     Vue.component('a17-medialibrary', a17MediaLibrary)
 
+    Vue.mixin({
+      methods: {
+        openFreeMediaLibrary: function () {
+          this.$store.commit('updateMediaConnector', null)
+          this.$store.commit('updateMediaType', 'image')
+          this.$store.commit('updateMediaMax', 0)
+          this.$store.commit('updateMediaMode', false)
+
+          if (this.$root.$refs.mediaLibrary) this.$root.$refs.mediaLibrary.open()
+        }
+      }
+    })
+
     // Configurations
     Vue.config.productionTip = false
     Vue.prototype.$http = axios

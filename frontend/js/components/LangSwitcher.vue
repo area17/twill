@@ -38,10 +38,16 @@
 
   .language__label {
     line-height:$toolbar__height;
+    height:$toolbar__height;
     margin-right:10px;
+    display:none;
+    overflow:hidden;
+
+    @include breakpoint('medium+') {
+      display:inline-block;
+    }
   }
 
-  .language__label,
   .language__toolbar {
     display:inline-block;
     height:$toolbar__height;

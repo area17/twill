@@ -5,9 +5,7 @@ const openMediaLibrary = function () {
 
   function _triggerOpenMediaLibrary () {
     if (Window.vm) {
-      if (Window.vm.$refs.mediaLibrary) {
-        Window.vm.$refs.mediaLibrary.open()
-      }
+      Window.vm.openFreeMediaLibrary()
     }
   }
 

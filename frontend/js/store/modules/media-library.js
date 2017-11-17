@@ -80,6 +80,9 @@ const mutations = {
   [types.UPDATE_MEDIA_CONNECTOR] (state, newValue) {
     if (newValue && newValue !== '') state.connector = newValue
   },
+  [types.UPDATE_MEDIA_MODE] (state, newValue) {
+    state.strict = newValue
+  },
   [types.UPDATE_MEDIA_TYPE] (state, newValue) {
     if (newValue && newValue !== '') state.type = newValue
   },

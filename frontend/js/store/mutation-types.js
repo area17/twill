@@ -26,6 +26,7 @@ export const UPDATE_MEDIA_TYPE = 'updateMediaType'
 export const SET_MEDIA_CROP = 'setMediaCrop'
 export const SET_MEDIA_METADATAS = 'setMediaMetadatas'
 export const UPDATE_MEDIA_CONNECTOR = 'updateMediaConnector'
+export const UPDATE_MEDIA_MODE = 'updateMediaMode'
 export const DESTROY_MEDIA_CONNECTOR = 'destroyMediaConnector'
 
 /* browser */

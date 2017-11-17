@@ -79,10 +79,6 @@
         type: String,
         default: 'Insert files'
       },
-      showInsert: {
-        type: Boolean,
-        default: true
-      },
       endpoint: {
         type: String,
         default: ''
@@ -94,6 +90,7 @@
     },
     data: function () {
       return {
+        showInsert: true,
         maxPage: 20,
         fullMedias: [],
         selectedMedias: [],
