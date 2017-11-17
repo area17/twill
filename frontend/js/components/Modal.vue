@@ -224,6 +224,21 @@
       width: 100%;
       height: 100%;
       max-width: inherit;
+
+      @include breakpoint(xsmall) {
+        border-radius: 0;
+      }
+
+    }
+
+    @include breakpoint(small) {
+      padding: 10px;
+    }
+
+    @include breakpoint(xsmall) {
+      width: 100%;
+      min-height: 100%;
+      padding: 0px;
     }
   }
 
