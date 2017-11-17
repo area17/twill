@@ -100,12 +100,25 @@
 
     &:hover {
       color:$color__link;
+
+      .shortcutCreator__label::after {
+        content: "\2192";
+        font-size:15px;
+        color:inherit;
+        position:absolute;
+        top:0;
+        /*bottom:0em;*/
+        vertical-align:baseline;
+        transform: translateX(50%);
+        font-weight:400;
+      }
     }
   }
 
   .shortcutCreator__label {
     padding-bottom:7px;
     display:block;
+    position:relative;
   }
 
   .shortcutCreator__sum {
