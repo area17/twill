@@ -82,6 +82,7 @@
         maxPage: 20,
         fullMedias: [],
         selectedMedias: [],
+        gridHeight: 0,
         page: this.initialPage
       }
     },
@@ -181,7 +182,10 @@
 
           // re-listen for scroll position
           self.$nextTick(function () {
-            list.addEventListener('scroll', () => self.scrollToPaginate())
+            if (self.gridHeight !== list.scrollHeight) {
+              self.gridHeight = list.scrollHeight
+              list.addEventListener('scroll', self.scrollToPaginate)
+            }
           })
         })
       },
@@ -197,8 +201,8 @@
       scrollToPaginate: function () {
         const list = this.$refs.list
 
-        if (list.scrollTop + list.offsetHeight > list.scrollHeight - 50) {
-          list.removeEventListener('scroll', () => self.scrollToPaginate())
+        if (list.scrollTop + list.offsetHeight > this.gridHeight - 10) {
+          list.removeEventListener('scroll', this.scrollToPaginate)
 
           if (this.maxPage > this.page) {
             this.page = this.page + 1
