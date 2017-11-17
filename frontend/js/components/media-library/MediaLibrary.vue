@@ -36,7 +36,7 @@
           <aside class="medialibrary__sidebar">
             <a17-mediasidebar :selectedMedias="selectedMedias" @clear="clearSelectedMedias"></a17-mediasidebar>
           </aside>
-          <footer class="medialibrary__footer" v-if="selectedMedias.length && showInsert">
+          <footer class="medialibrary__footer" v-if="selectedMedias.length && showInsert && connector">
             <a17-button variant="action" @click="saveAndClose">{{ selectedMedias.length > 1 ? btnMultiLabel : btnLabel }}</a17-button>
           </footer>
           <div class="medialibrary__list" ref="list">
@@ -107,6 +107,7 @@
         return navItem[0]
       },
       ...mapState({
+        connector: state => state.mediaLibrary.connector,
         max: state => state.mediaLibrary.max,
         type: state => state.mediaLibrary.type, // image, video, audio or pdf
         types: state => state.mediaLibrary.types,
