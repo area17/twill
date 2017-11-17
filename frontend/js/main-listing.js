@@ -50,15 +50,22 @@ Window.vm = new Vue({
   data: function () {
     return {
       inputPermalink: '',
-      navFilters: this.$store.state.datatable.filtersNav,
-      navActive: 0
+      navFilters: this.$store.state.datatable.filtersNav
     }
   },
   computed: {
     hasBulkIds: function () {
       return this.bulkIds.length > 0
     },
+    selectedNav: function () {
+      let self = this
+      const navItem = self.navFilters.filter(function (n) {
+        return n.slug === self.navActive
+      })
+      return navItem[0]
+    },
     ...mapState({
+      navActive: state => state.datatable.filter.status,
       baseUrl: state => state.datatable.baseUrl,
       bulkIds: state => state.datatable.bulk
     })
@@ -77,9 +84,8 @@ Window.vm = new Vue({
       this.$store.commit('updateDatableFilter', formData)
       this.reloadDatas()
     },
-    filterStatus: function (index, slug) {
-      if (this.navActive === index) return
-      this.navActive = index
+    filterStatus: function (slug) {
+      if (this.navActive === slug) return
       this.$store.commit('updateDatablePage', 1)
       this.$store.commit('updateDatableFilterStatus', slug)
       this.reloadDatas()

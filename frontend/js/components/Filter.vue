@@ -84,10 +84,11 @@
 
   .filter__inner {
     display:flex;
+    justify-content: space-between;
   }
 
   .filter__navigation {
-    flex-grow:1;
+    /*flex-grow:1;*/
   }
 
   .filter__search {

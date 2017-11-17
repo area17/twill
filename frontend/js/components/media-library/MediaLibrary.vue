@@ -3,11 +3,26 @@
     <div class="medialibrary__frame">
       <div class="medialibrary__header" ref="form">
         <a17-filter @submit="submitFilter">
-          <ul class="secondarynav" slot="navigation">
+          <ul class="secondarynav secondarynav--desktop" slot="navigation">
             <li class="secondarynav__item" v-for="navType in types" :class="{ 's--on': type === navType.value, 's--disabled' : type !== navType.value && strict }">
               <a href="#" @click.prevent="updateType(navType.value)"><span class="secondarynav__link">{{ navType.text }}</span> <span class="secondarynav__number">({{ navType.total }})</span></a>
             </li>
           </ul>
+
+          <div class="secondarynav secondarynav--mobile secondarynav--dropdown" slot="navigation">
+            <a17-dropdown ref="secondaryNavDropdown" position="bottom-left" width="full" :offset="0">
+              <a17-button variant="dropdown" size="small" @click="$refs.secondaryNavDropdown.toggle()">
+                <span class="secondarynav__link">{{ selectedType.text }}</span><span class="secondarynav__number">{{ selectedType.total }}</span>
+              </a17-button>
+              <div slot="dropdown__content">
+                <ul>
+                  <li v-for="navType in types" class="secondarynav__item">
+                    <a href="#" v-on:click.prevent="updateType(navType.value)"><span class="secondarynav__link">{{ navType.text }}</span><span class="secondarynav__number">{{ navType.total }}</span></a>
+                  </li>
+                </ul>
+              </div>
+            </a17-dropdown>
+          </div>
 
           <div slot="hidden-filters">
             <input type="hidden" name="type" :value="type" />
@@ -87,6 +102,13 @@
       }
     },
     computed: {
+      selectedType: function () {
+        let self = this
+        const navItem = self.types.filter(function (t) {
+          return t.value === self.type
+        })
+        return navItem[0]
+      },
       ...mapState({
         max: state => state.mediaLibrary.max,
         type: state => state.mediaLibrary.type, // image, video, audio or pdf
