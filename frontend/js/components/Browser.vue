@@ -46,6 +46,7 @@
     },
     data: function () {
       return {
+        maxPage: 20,
         fullItems: [],
         selectedItems: [],
         page: this.initialPage
@@ -132,12 +133,12 @@
       },
       scrollToPaginate: function () {
         const list = this.$refs.list
-        const maxPage = 20
+
 
         if (list.scrollTop + list.offsetHeight > list.scrollHeight - 50) {
           list.removeEventListener('scroll', () => self.scrollToPaginate())
 
-          if (maxPage > this.page) {
+          if (this.maxPage > this.page) {
             this.page = this.page + 1
 
             this.reloadList()
