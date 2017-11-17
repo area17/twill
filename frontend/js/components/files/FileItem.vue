@@ -108,15 +108,12 @@
   .fileItem__cell {
     display: flex;
     align-items: center;
-    padding: 15px;
-
-    &:nth-child(2) {
-      padding-left: 15px + 25px;
-    }
+    padding: 26px 15px;
   }
 
   .fileItem__cell--extension {
     padding-right: 5px;
+    padding-left:29px;
   }
 
   .fileItem__cell--name {
@@ -141,10 +138,7 @@
   }
 
   .fileItem__cell--drag {
-    position: absolute;
-    top: 0;
     padding: 0;
-    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
