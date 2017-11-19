@@ -46,7 +46,7 @@
         </div>
         <a17-datatable :draggable="{{ $reorder ? 'true' : 'false' }}" empty-message="{{ __($emptyDataTable) }}"></a17-datatable>
         <a17-modal class="modal--form" ref="addNewModal" title="Add New">
-            <form action="{{ $createUrl }}" method="post">
+            <form action="{{ $storeUrl }}" method="post">
                 <a17-modal-title-editor v-bind:base-url="baseUrl" @unless($permalink ?? true) :with-permalink="false" @endunless></a17-modal-title-editor>
                 <a17-modal-validation v-bind:mode="'create'"></a17-modal-validation>
             </form>
@@ -68,22 +68,19 @@
     }
 
     window.STORE.datatable = {
-      baseUrl: 'http://pentagram.com/work/',
+      data: {!! json_encode($tableData) !!},
+      columns: {!! json_encode($tableColumns) !!},
+      navigation: {!! json_encode($tableMainFilters) !!},
+      filter: { status: '{{ $filters['status'] ?? 'all' }}' },
       page: {{ request('page') ?? 1 }},
       maxPage: {{ $maxPage ?? 1 }},
       defaultMaxPage: {{ $defaultMaxPage ?? 1 }},
       offset: {{ request('offset') ?? $offset ?? 60 }},
       defaultOffset: {{ $defaultOffset ?? 60 }},
       sortKey: '{{ $reorder ? (request('sortKey') ?? '') : (request('sortKey') ?? 'name') }}',
-      sortDir: '{{ request('sortDir') ?? 'asc' }}'
+      sortDir: '{{ request('sortDir') ?? 'asc' }}',
+      baseUrl: 'https://cms-sandbox.a17.io/',
     }
-
-    window.STORE.datatable.data = {!! json_encode($tableData) !!}
-    window.STORE.datatable.columns = {!! json_encode($tableColumns) !!}
-
-    window.STORE.datatable.navigation = {!! json_encode($tableMainFilters) !!}
-
-    window.STORE.datatable.filter = { status: '{{ $filters['status'] ?? 'all' }}' }
 @stop
 
 @push('extra_js')

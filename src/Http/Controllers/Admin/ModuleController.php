@@ -153,7 +153,7 @@ abstract class ModuleController extends Controller
 
     public function index()
     {
-        $indexData = $this->getIndexData() + $this->request->all();
+        $indexData = $this->getIndexData();
 
         if ($this->request->ajax()) {
             return $indexData + ['replaceUrl' => true];
@@ -175,13 +175,6 @@ abstract class ModuleController extends Controller
         $scopes = $this->filterScope($prependScope);
         $items = $this->getIndexItems($scopes);
 
-        // $filtersOn = !empty(array_except($scopes, array_keys($prependScope)));
-
-        // $filters = array_keys(array_except(
-        //     $this->filters,
-        //     array_keys($this->defaultFilters)
-        // ));
-
         $data = [
             'moduleName' => $this->moduleName,
             'nameColumnKey' => $this->nameColumnKey,
@@ -193,7 +186,7 @@ abstract class ModuleController extends Controller
             'offset' => method_exists($items, 'perPage') ? $items->perPage() : count($items),
             'defaultOffset' => $this->perPage,
             'reorder' => $this->getIndexOption('reorder'),
-            'permalink' => $this->indexOptions['permalink'] ?? true,
+            'permalink' => $this->getIndexOption('permalink'),
             'filters' => json_decode($this->request->get('filter'), true) ?? [],
         ] + $this->getIndexUrls($this->moduleName, $this->routePrefix);
 
@@ -356,7 +349,7 @@ abstract class ModuleController extends Controller
     public function getIndexUrls($moduleName, $routePrefix)
     {
         return collect([
-            'create',
+            'store',
             'publish',
             'bulkPublish',
             'restore',
@@ -368,6 +361,16 @@ abstract class ModuleController extends Controller
         ])->mapWithKeys(function ($endpoint) use ($moduleName, $routePrefix) {
             return [$endpoint . 'Url' => $this->getIndexOption($endpoint) ? moduleRoute($this->moduleName, $this->routePrefix, $endpoint) : null];
         })->toArray();
+    }
+
+    protected function getIndexOption($option)
+    {
+        $customOptionNamesMapping = [
+            'store' => 'create',
+        ];
+
+        $option = array_key_exists($option, $customOptionNamesMapping) ? $customOptionNamesMapping[$option] : $option;
+        return $this->indexOptions[$option] ?? $this->defaultIndexOptions[$option] ?? false;
     }
 
     public function browser()
@@ -846,10 +849,5 @@ abstract class ModuleController extends Controller
     protected function getModelTitle()
     {
         return camelCaseToWords($this->modelName);
-    }
-
-    protected function getIndexOption($option)
-    {
-        return $this->indexOptions[$option] ?? $this->defaultIndexOptions[$option] ?? false;
     }
 }
