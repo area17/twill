@@ -90,6 +90,9 @@ $breakpointCustom: 1200px;
 }
 
 /* Secondary nav dropdown */
+// [Deprecation] /deep/ combinator in CSS is deprecated and will be removed in M63, around December 2017.
+// See https://www.chromestatus.com/features/4964279606312960
+// It's fine to use in Vue components but not in external scss.
 .secondarynav--dropdown {
   /deep/ .dropdown {
     width: 100%;
