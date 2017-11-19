@@ -17,7 +17,9 @@
                         @endforeach
                     </div>
                     <div class="headerMobile__list">
-                        <a href="#" data-closenav-btn data-medialib-btn>Media Library</a><br />
+                        @if (config('cms-toolkit.enabled.media-library'))
+                            <a href="#" data-closenav-btn data-medialib-btn>Media Library</a><br />
+                        @endif
                         @partialView(($moduleName ?? null), 'navigation._user')
                     </div>
                 </div>
