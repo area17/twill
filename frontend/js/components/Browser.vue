@@ -107,12 +107,6 @@
         const formdata = this.getFormData(form)
 
         this.$http.get(this.endpoint, { params: formdata }).then(function (resp) {
-          // TEMP : randomize ID, name and SRC for demo purpose
-          resp.data.forEach(function (item) {
-            item.id = Math.round(Math.random() * 999999)
-            item.name = 'image_' + Math.round(Math.random() * 999999) + '.jpg'
-          })
-
           // add items here
           self.fullItems.push(...resp.data)
 

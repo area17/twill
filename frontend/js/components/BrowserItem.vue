@@ -7,7 +7,7 @@
       <a href="#" target="_blank"><img :src="currentItem.thumbnail" /></a>
     </td>
     <td class="browserItem__cell browserItem__cell--name">
-      <a href="#" target="_blank"><span class="f--link-underlined--o">{{ currentItem.name }}</span></a>
+      <a :href="currentItem.edit" target="_blank"><span class="f--link-underlined--o">{{ currentItem.name }}</span></a>
       <input type="hidden" :name="name" :value="currentItem.id"/>
     </td>
     <td class="browserItem__cell browserItem__cell--icon">
