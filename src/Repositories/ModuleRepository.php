@@ -135,6 +135,7 @@ abstract class ModuleRepository
 
     public function updateBasic($id, $values, $scopes = [])
     {
+        // apply scopes if no id provided
         if (is_null($id)) {
             $query = $this->model->query();
 
@@ -143,12 +144,34 @@ abstract class ModuleRepository
             }
 
             $query->update($values);
+
+            $query->get()->each(function ($object) use ($values) {
+                $this->afterUpdateBasic($object, $values);
+            });
+
+            return true;
+        }
+
+        // apply to all ids if array of ids provided
+        if (is_array($id)) {
+            $query = $this->model->whereIn('id', $id);
+            $query->update($values);
+
+            $query->get()->each(function ($object) use ($values) {
+                $this->afterUpdateBasic($object, $values);
+            });
+
+            return true;
         }
 
         if (($object = $this->model->find($id)) != null) {
             $object->update($values);
             $this->afterUpdateBasic($object, $values);
+
+            return true;
         }
+
+        return false;
     }
 
     public function setNewOrder($ids)
@@ -167,6 +190,25 @@ abstract class ModuleRepository
         return false;
     }
 
+    public function bulkDelete($ids)
+    {
+        try {
+            $query = $this->model->whereIn('id', $ids);
+            $objects = $query->get();
+
+            $query->delete();
+
+            $objects->each(function ($object) {
+                $this->afterDelete($object);
+            });
+        } catch (\Exception $e) {
+            \Log::error($e);
+            return false;
+        }
+
+        return true;
+    }
+
     public function restore($id)
     {
         if (($object = $this->model->withTrashed()->find($id)) != null) {
@@ -176,6 +218,25 @@ abstract class ModuleRepository
         }
 
         return false;
+    }
+
+    public function bulkRestore($ids)
+    {
+        try {
+            $query = $this->model->whereIn('id', $ids);
+            $objects = $query->get();
+
+            $query->restore();
+
+            $objects->each(function ($object) {
+                $this->afterRestore($object);
+            });
+        } catch (\Exception $e) {
+            \Log::error($e);
+            return false;
+        }
+
+        return true;
     }
 
     public function cleanupFields($object, $fields)

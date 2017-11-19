@@ -14,7 +14,6 @@ const state = {
   defaultOffset: window.STORE.datatable.defaultOffset || 60,
   sortKey: window.STORE.datatable.sortKey || '',
   sortDir: window.STORE.datatable.sortDir || 'asc',
-  message: '',
   bulk: []
 }
 
@@ -167,10 +166,6 @@ const mutations = {
       const index = getIndex(id)
       updateState(index)
     }
-  },
-  [types.UPDATE_DATATABLE_MESSAGE] (state, message) {
-    if (message) state.message = message
-    else state.message = ''
   }
 }
 
@@ -185,48 +180,37 @@ const actions = {
       filter: state.filter
     }
 
-    api.get(
-      params,
-      function (resp) {
-        // success callback
-        commit(types.UPDATE_DATATABLE_DATA, resp.data)
-        commit(types.UPDATE_DATATABLE_MAXPAGE, resp.maxPage)
-        commit(types.UPDATE_DATATABLE_NAV, resp.nav)
-
-        if (state.message) commit('setNotification', { message: state.message, variant: 'success' })
-
-        // reset message
-        commit(types.UPDATE_DATATABLE_MESSAGE, '')
-      }
-    )
+    api.get(params, function (resp) {
+      commit(types.UPDATE_DATATABLE_DATA, resp.data)
+      commit(types.UPDATE_DATATABLE_MAXPAGE, resp.maxPage)
+      commit(types.UPDATE_DATATABLE_NAV, resp.nav)
+    })
   },
   setDatatableDatas ({ commit, state, dispatch }, data) {
-    const ids = data.map((row) => row.id)
-
+    // reorder in store first
     commit(types.UPDATE_DATATABLE_DATA, data)
 
-    api.reorder(
-      ids,
-      function (resp) {
-        // success callback
-        commit('setNotification', { message: 'setDatatableDatas message', variant: 'success' })
-      }
-    )
+    const ids = data.map((row) => row.id)
+
+    api.reorder(ids, function (resp) {
+      commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
+    })
   },
   togglePublishedData ({ commit, state, dispatch }, row) {
-    api.togglePublished(row, function () {
-      commit(types.UPDATE_DATATABLE_MESSAGE, 'Item Published') // todo : will use resp message
+    api.togglePublished(row, function (resp) {
+      commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
       dispatch('getDatatableDatas')
     })
   },
   deleteData ({ commit, state, dispatch }, row) {
-    api.delete(row, function () {
-      commit(types.UPDATE_DATATABLE_MESSAGE, 'Item Deleted') // todo : will use resp message
+    api.delete(row, function (resp) {
+      commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
       dispatch('getDatatableDatas')
     })
   },
   restoreData ({ commit, state, dispatch }, row) {
-    api.restore(row, function () {
+    api.restore(row, function (resp) {
+      commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
       dispatch('getDatatableDatas')
     })
   },
@@ -236,54 +220,47 @@ const actions = {
         ids: state.bulk.join(),
         toPublish: payload.toPublish
       },
-      function (ids, navigation) {
-        // success callback
-        commit(types.UPDATE_DATATABLE_MESSAGE, 'All Selected Items Published') // todo : will use resp message
-        dispatch('getDatatableDatas') // we need to get the new datas from the api
+      function (resp) {
+        commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
+        dispatch('getDatatableDatas')
       }
     )
   },
   toggleFeaturedData ({ commit, state }, row) {
-    api.toggleFeatured(row, id => {
+    api.toggleFeatured(row, resp => {
       commit(types.FEATURE_DATATABLE, {
-        id: id,
+        id: row.id,
         value: 'toggle'
       })
+      commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
     })
   },
-  bulkFeatureData ({ commit, state }) {
+  bulkFeatureData ({ commit, state }, payload) {
     api.bulkFeature(
-      state.bulk.join(),
-      ids => {
+      {
+        ids: state.bulk.join(),
+        toFeature: payload.toFeature
+      },
+      function (resp) {
         commit(types.FEATURE_DATATABLE, {
           id: state.bulk,
           value: true
         })
+        commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
       }
     )
   },
-  bulkDeleteData ({ commit, state }) {
-    const params = {
-      sortKey: state.sortKey,
-      sortDir: state.sortDir,
-      page: state.page,
-      offset: state.offset,
-      columns: getters.visibleColumnsNames,
-      filter: state.filter
-    }
-
-    params.ids = state.bulk.join()
-
-    api.bulkDelete(
-      params,
-      function (resp) {
-        // success callback
-        commit(types.UPDATE_DATATABLE_MESSAGE, 'All Selected Items Deleted') // todo : will use resp message
-
-        commit(types.UPDATE_DATATABLE_DATA, resp.data)
-        commit(types.UPDATE_DATATABLE_MAXPAGE, resp.maxPage)
-      }
-    )
+  bulkDeleteData ({ commit, state, dispatch }) {
+    api.bulkDelete(state.bulk.join(), function (resp) {
+      commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
+      dispatch('getDatatableDatas')
+    })
+  },
+  bulkRestoreData ({ commit, state, dispatch }) {
+    api.bulkRestore(state.bulk.join(), function (resp) {
+      commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
+      dispatch('getDatatableDatas')
+    })
   }
 }
 

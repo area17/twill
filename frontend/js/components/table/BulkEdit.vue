@@ -10,11 +10,13 @@
             <div slot="dropdown__content">
               <ul>
                 <li>
-                  <button @click="bulkPublish">Publish</button>
-                  <button @click="bulkUnpublish">Unpublish</button>
-                  <button @click="bulkFeature">Feature</button>
+                  <button v-if="!bulkStatus.publish && !bulkStatus.delete" @click="bulkPublish">Publish</button>
+                  <button v-if="bulkStatus.publish && !bulkStatus.delete" @click="bulkUnpublish">Unpublish</button>
+                  <button v-if="!bulkStatus.feature && !bulkStatus.delete" @click="bulkFeature">Feature</button>
+                  <button v-if="bulkStatus.feature && !bulkStatus.delete" @click="bulkUnFeature">Unfeature</button>
                   <!-- <button @click="bulkExport">Export</button> -->
-                  <button @click="bulkDelete">Delete</button>
+                  <button v-if="!bulkStatus.delete" @click="bulkDelete">Delete</button>
+                  <button v-if="bulkStatus.delete" @click="bulkRestore">Restore</button>
                 </li>
               </ul>
             </div>
@@ -33,7 +35,20 @@
     name: 'A17BulkEditor',
     computed: {
       ...mapState({
-        bulkIds: state => state.datatable.bulk
+        bulkIds: state => state.datatable.bulk,
+        bulkStatus: state => state.datatable.data.filter((row) => {
+          return state.datatable.bulk.includes(row.id)
+        }).reduce((status, row) => {
+          return {
+            feature: status.feature && (row.featured || false),
+            publish: status.publish && (row.published || false),
+            delete: status.delete && (row.deleted || false)
+          }
+        }, {
+          feature: true,
+          publish: true,
+          delete: true
+        })
       })
     },
     methods: {
@@ -47,7 +62,10 @@
         this.$store.dispatch('bulkPublishData', { toPublish: false })
       },
       bulkFeature: function () {
-        this.$store.dispatch('bulkFeatureData')
+        this.$store.dispatch('bulkFeatureData', { toFeature: true })
+      },
+      bulkUnFeature: function () {
+        this.$store.dispatch('bulkFeatureData', { toFeature: false })
       },
       bulkExport: function () {
         // Todo : not sure what should be done here
@@ -55,6 +73,9 @@
       },
       bulkDelete: function () {
         this.$store.dispatch('bulkDeleteData')
+      },
+      bulkRestore: function () {
+        this.$store.dispatch('bulkRestoreData')
       }
     }
   }

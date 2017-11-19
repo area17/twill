@@ -58,9 +58,13 @@
     window.CMS_URLS = {
         index: @if(isset($indexUrl)) '{{ $indexUrl }}' @else window.location.href.split('?')[0] @endif,
         publish: '{{ $publishUrl }}',
+        bulkPublish: '{{ $bulkPublishUrl }}',
         restore: '{{ $restoreUrl }}',
+        bulkRestore: '{{ $bulkRestoreUrl }}',
         reorder: '{{ $reorderUrl }}',
-        feature: '{{ $featureUrl }}'
+        feature: '{{ $featureUrl }}',
+        bulkFeature: '{{ $bulkFeatureUrl }}',
+        bulkDelete: '{{ $bulkDeleteUrl }}'
     }
 
     window.STORE.datatable = {
@@ -70,7 +74,7 @@
       defaultMaxPage: {{ $defaultMaxPage ?? 1 }},
       offset: {{ request('offset') ?? $offset ?? 60 }},
       defaultOffset: {{ $defaultOffset ?? 60 }},
-      sortKey: '{{ $sort ? '' : 'name' }}',
+      sortKey: '{{ $sort ? (request('sortKey') ?? '') : (request('sortKey') ?? 'name') }}',
       sortDir: '{{ request('sortDir') ?? 'asc' }}'
     }
 

@@ -50,8 +50,12 @@ abstract class ModuleController extends Controller
      */
     protected $indexOptions = [
         'publish' => true,
+        'bulkPublish' => true,
         'feature' => false,
+        'bulkFeature' => false,
         'restore' => true,
+        'bulkRestore' => true,
+        'bulkDelete' => true,
         'sort' => false,
         'permalink' => true,
     ];
@@ -124,6 +128,7 @@ abstract class ModuleController extends Controller
         $this->namespace = $this->getNamespace();
         $this->repository = $this->getRepository();
         $this->viewPrefix = $this->getViewPrefix();
+        $this->modelTitle = $this->getModelTitle();
     }
 
     protected function setMiddlewarePermission()
@@ -255,12 +260,13 @@ abstract class ModuleController extends Controller
     public function getIndexTableColumns($items)
     {
         $tableColumns = [];
+        $visibleColumns = request('columns') ?? false;
 
         if (isset(array_first($this->indexColumns)['thumb']) && array_first($this->indexColumns)['thumb']) {
             array_push($tableColumns, [
                 'name' => 'thumbnail',
                 'label' => 'Thumbnail',
-                'visible' => true,
+                'visible' => $visibleColumns ? in_array('thumbnail', $visibleColumns) : true,
                 'optional' => true,
                 'sortable' => false,
             ]);
@@ -289,7 +295,7 @@ abstract class ModuleController extends Controller
 
         array_push($tableColumns, [
             'name' => 'name',
-            'label' => 'Name',
+            'label' => $this->indexColumns[$this->nameColumnKey]['title'],
             'visible' => true,
             'optional' => false,
             'sortable' => true,
@@ -298,10 +304,11 @@ abstract class ModuleController extends Controller
         unset($this->indexColumns[$this->nameColumnKey]);
 
         foreach ($this->indexColumns as $column) {
+            $columnName = isset($column['relationship']) ? $column['relationship'] . ucfirst($column['field']) : $column['field'];
             array_push($tableColumns, [
-                'name' => isset($column['relationship']) ? $column['relationship'] . ucfirst($column['field']) : $column['field'],
+                'name' => $columnName,
                 'label' => $column['title'],
-                'visible' => $column['optional'] ?? true,
+                'visible' => $visibleColumns ? in_array($columnName, $visibleColumns) : ($column['visible'] ?? true),
                 'optional' => $column['optional'] ?? true,
                 'sortable' => $column['sort'] ?? false, // TODO: support a different sort field
             ]);
@@ -349,9 +356,13 @@ abstract class ModuleController extends Controller
     {
         return [
             'publishUrl' => ($this->indexOptions['publish'] ?? true) ? moduleRoute($this->moduleName, $this->routePrefix, 'publish') : null,
+            'bulkPublishUrl' => ($this->indexOptions['bulkPublish'] ?? true) ? moduleRoute($this->moduleName, $this->routePrefix, 'bulkPublish') : null,
             'restoreUrl' => ($this->indexOptions['restore'] ?? true) ? moduleRoute($this->moduleName, $this->routePrefix, 'restore') : null,
+            'bulkRestoreUrl' => ($this->indexOptions['bulkRestore'] ?? true) ? moduleRoute($this->moduleName, $this->routePrefix, 'bulkRestore') : null,
             'reorderUrl' => ($this->indexOptions['sort'] ?? false) ? moduleRoute($this->moduleName, $this->routePrefix, 'sort') : null,
             'featureUrl' => ($this->indexOptions['feature'] ?? false) ? moduleRoute($this->moduleName, $this->routePrefix, 'feature') : null,
+            'bulkFeatureUrl' => ($this->indexOptions['bulkFeature'] ?? false) ? moduleRoute($this->moduleName, $this->routePrefix, 'bulkFeature') : null,
+            'bulkDeleteUrl' => ($this->indexOptions['bulkDelete'] ?? true) ? moduleRoute($this->moduleName, $this->routePrefix, 'bulkDelete') : null,
         ];
     }
 
@@ -399,28 +410,59 @@ abstract class ModuleController extends Controller
             $this->repository->updateBasic(request('id'), ['published' => !request('active')]);
         } catch (\Exception $e) {
             \Log::error($e);
-            return $this->respondWithError($this->modelName . ' was not published. Something wrong happened!');
+            return $this->respondWithError($this->modelTitle . ' was not published. Something wrong happened!');
         }
 
-        return $this->respondWithSuccess($this->modelName . ' ' . (request('active') ? 'un' : '') . 'published!');
+        return $this->respondWithSuccess($this->modelTitle . ' ' . (request('active') ? 'un' : '') . 'published!');
+    }
+
+    public function bulkPublish()
+    {
+        try {
+            // TODO: validate publish is allowed based on model state
+            $this->repository->updateBasic(explode(',', request('ids')), ['published' => request('publish')]);
+        } catch (\Exception $e) {
+            \Log::error($e);
+            return $this->respondWithError($this->modelTitle . ' items were not published. Something wrong happened!');
+        }
+
+        return $this->respondWithSuccess($this->modelTitle . ' items ' . (request('publish') ? '' : 'un') . 'published!');
     }
 
     public function destroy($id)
     {
         if ($this->repository->delete($id)) {
-            return $this->respondWithSuccess($this->modelName . ' deleted!');
+            return $this->respondWithSuccess($this->modelTitle . ' deleted!');
         }
 
-        return $this->respondWithError($this->modelName . ' was not deleted. Something wrong happened!');
+        return $this->respondWithError($this->modelTitle . ' was not deleted. Something wrong happened!');
+    }
+
+    public function bulkDelete()
+    {
+        if ($this->repository->bulkDelete(explode(',', request('ids')))) {
+            return $this->respondWithSuccess($this->modelTitle . ' items deleted!');
+        }
+
+        return $this->respondWithError($this->modelTitle . ' items were not deleted. Something wrong happened!');
     }
 
     public function restore()
     {
         if ($this->repository->restore(request('id'))) {
-            return $this->respondWithSuccess($this->modelName . ' restored!');
+            return $this->respondWithSuccess($this->modelTitle . ' restored!');
         }
 
-        return $this->respondWithError($this->modelName . ' was not restored. Something wrong happened!');
+        return $this->respondWithError($this->modelTitle . ' was not restored. Something wrong happened!');
+    }
+
+    public function bulkRestore()
+    {
+        if ($this->repository->bulkRestore(explode(',', request('ids')))) {
+            return $this->respondWithSuccess($this->modelTitle . ' items restored!');
+        }
+
+        return $this->respondWithError($this->modelTitle . ' items were not restored. Something wrong happened!');
     }
 
     public function feature()
@@ -438,20 +480,34 @@ abstract class ModuleController extends Controller
                 $this->repository->updateBasic($id, [$featuredField => $featured]);
             }
 
-            return $this->respondWithSuccess($this->modelName . ' ' . (request('active') ? 'un' : '') . 'featured!');
+            return $this->respondWithSuccess($this->modelTitle . ' ' . (request('active') ? 'un' : '') . 'featured!');
         }
 
-        return $this->respondWithError($this->modelName . ' was not featured. Something wrong happened!');
+        return $this->respondWithError($this->modelTitle . ' was not featured. Something wrong happened!');
+    }
+
+    public function bulkFeature()
+    {
+        if (($ids = explode(',', request('ids')))) {
+            $featuredField = request('featureField') ?? ($this->featureField ?? 'featured');
+            $featured = request('feature') ?? true;
+            // we don't need to check if unique feature since bulk operation shouldn't be allowed in this case
+            $this->repository->updateBasic($ids, [$featuredField => $featured]);
+
+            return $this->respondWithSuccess($this->modelTitle . ' items ' . (request('feature') ? '' : 'un') . 'featured!');
+        }
+
+        return $this->respondWithError($this->modelTitle . ' items were not featured. Something wrong happened!');
     }
 
     public function sort()
     {
         if (($values = request('ids')) && !empty($values)) {
             $this->repository->setNewOrder($values);
-            return $this->respondWithSuccess($this->modelName . ' order changed!');
+            return $this->respondWithSuccess(camelCaseToWords($this->modelTitle) . ' order changed!');
         }
 
-        return $this->respondWithError($this->modelName . ' order was not changed. Something wrong happened!');
+        return $this->respondWithError($this->modelTitle . ' order was not changed. Something wrong happened!');
     }
 
     public function store()
@@ -607,11 +663,11 @@ abstract class ModuleController extends Controller
         return $this->respondWithJson($message, FlashLevel::ERROR);
     }
 
-    private function respondWithJson($message, $type)
+    private function respondWithJson($message, $variant)
     {
         return response()->json([
-            'flashMessage' => $message,
-            'flashType' => $type,
+            'message' => $message,
+            'variant' => $variant,
         ]);
     }
 
@@ -780,5 +836,10 @@ abstract class ModuleController extends Controller
     protected function getViewPrefix()
     {
         return "admin.$this->moduleName";
+    }
+
+    protected function getModelTitle()
+    {
+        return camelCaseToWords($this->modelName);
     }
 }

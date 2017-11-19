@@ -1,30 +1,20 @@
 import axios from 'axios'
 import { replaceState } from '@/utils/pushState.js'
 
-// Shuffle : for demo purpose only
-function shuffle (a) {
-  var j, x, i
-  for (i = a.length - 1; i > 0; i--) {
-    j = Math.floor(Math.random() * (i + 1))
-    x = a[i]
-    a[i] = a[j]
-    a[j] = x
-  }
-
-  return a
-}
-
 export default {
+  /*
+  *
+  * Main listing request with muliple params
+  *
+  * sortKey : colmun used for sorting content
+  * sortDir : desc or asc
+  * page : current page number
+  * offset : number of items per page
+  * columns: the set of visible columns
+  * filter: the current navigation ("all", "mine", "published", "draft", "trash")
+  *
+  */
   get (params, callback) {
-    // Params
-    //
-    // sortKey : colmun used for sorting content
-    // sortDir : desc or asc
-    // page : current page number
-    // offset : number of items per page
-    // columns: the set of visible columns
-    // filter: the current navigation ("all", "mine", "published", "draft", "trash")
-
     axios.get(window.CMS_URLS.index, { params: params }).then(function (resp) {
       if (resp.data.replaceUrl) {
         const url = resp.request.responseURL
@@ -32,7 +22,6 @@ export default {
       }
 
       if (callback && typeof callback === 'function') {
-      // update data, nav and max page
         callback({
           data: resp.data.tableData ? resp.data.tableData : [],
           nav: resp.data.tableMainFilters ? resp.data.tableMainFilters : [],
@@ -40,115 +29,79 @@ export default {
         })
       }
     }, function (resp) {
-      // error callback
+      console.log('get request error.')
     })
   },
 
   togglePublished (row, callback) {
     axios.put(window.CMS_URLS.publish, { id: row.id, active: row.published }).then(function (resp) {
-      if (callback && typeof callback === 'function') callback()
+      if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      // error callback
+      console.log('publish request error.')
+    })
+  },
+
+  toggleFeatured (row, callback) {
+    axios.put(window.CMS_URLS.feature, { id: row.id, active: row.featured }).then(function (resp) {
+      if (callback && typeof callback === 'function') callback(resp)
+    }, function (resp) {
+      console.log('feature request error.')
     })
   },
 
   delete (row, callback) {
     axios.delete(row.delete).then(function (resp) {
-      if (callback && typeof callback === 'function') callback()
+      if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      // error callback
+      console.log('delete request error.')
     })
   },
+
   restore (row, callback) {
     axios.put(window.CMS_URLS.restore, { id: row.id }).then(function (resp) {
-      if (callback && typeof callback === 'function') callback()
+      if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      // error callback
+      console.log('restore request error.')
     })
   },
 
   reorder (ids, callback) {
     axios.post(window.CMS_URLS.reorder, { ids: ids }).then(function (resp) {
-      if (callback && typeof callback === 'function') callback()
+      if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       console.log('reorder request error.')
     })
   },
 
   bulkPublish (params, callback) {
-    // Params
-    //
-    // ids : comma separated list of ids to publish/unpublish
-    // status : boolean (publish or unpublish)
-
-    // Set endpoint in global config https://github.com/axios/axios#axiosposturl-data-config-1
-    axios.put('https://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { ids: params.ids, status: params.toPublish }).then(function (resp) {
-      // todo : this need to be in the resp
-      const navigation = [
-        {
-          name: 'Published',
-          number: Math.round(Math.random() * 10)
-        },
-        {
-          name: 'Draft',
-          number: Math.round(Math.random() * 10)
-        }
-      ]
-
-      if (callback && typeof callback === 'function') callback(params.ids, navigation)
+    axios.post(window.CMS_URLS.bulkPublish, { ids: params.ids, publish: params.toPublish }).then(function (resp) {
+      if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      // error callback
+      console.log('bulk publish request error.')
     })
   },
 
-  toggleFeatured (row, callback) {
-    // Params
-    //
-    // id : id of the item to toggle
-
-    axios.put(window.CMS_URLS.feature, { id: row.id, active: row.featured }).then(function (resp) {
-      if (callback && typeof callback === 'function') callback(row.id)
+  bulkFeature (params, callback) {
+    axios.post(window.CMS_URLS.bulkFeature, { ids: params.ids, feature: params.toFeature }).then(function (resp) {
+      if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      // error callback
+      console.log('bulk feature request error.')
     })
   },
 
-  bulkFeature (ids, callback) {
-    // Set endpoint in global config https://github.com/axios/axios#axiosposturl-data-config-1
-    axios.put('https://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { ids: ids }).then(function (resp) {
-      if (callback && typeof callback === 'function') callback(ids)
+  bulkDelete (ids, callback) {
+    axios.post(window.CMS_URLS.bulkDelete, { ids: ids }).then(function (resp) {
+      if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      // error callback
+      console.log('bulk delete request error.')
     })
   },
 
-  bulkDelete (params, callback) {
-    // Params (same as get)
-    //
-    // sortKey : colmun used for sorting content
-    // sortDir : desc or asc
-    // page : current page number
-    // offset : number of items per page
-    // columns: the set of visible columns
-    // filter: the current navigation ("all", "mine", "published", "draft", "trash")
-
-    // + the following :
-    // ids : comma separated list of ids to delete
-
-    // Set endpoint in global config https://github.com/axios/axios#axiosposturl-data-config-1
-    axios.get('https://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { params: params }).then(function (resp) {
-      // update data and max page
-      const _data = window.STORE.datatable.data || []
-      const _newData = shuffle(_data)
-
-      if (callback && typeof callback === 'function') {
-        callback({
-          data: _newData,
-          maxPage: 10 // maxPage need to be updated if needed
-        })
-      }
+  bulkRestore (ids, callback) {
+    axios.post(window.CMS_URLS.bulkRestore, { ids: ids }).then(function (resp) {
+      if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      // error callback
+      console.log('bulk restore request error.')
     })
   }
 }
