@@ -40,8 +40,6 @@ mix.webpackConfig({
   }
 });
 
-mix.disableNotifications();
-
 mix.copyDirectory('frontend/fonts', 'public/assets/admin/fonts');
 mix.copyDirectory('assets/vendor', 'public/assets/vendor');
 
