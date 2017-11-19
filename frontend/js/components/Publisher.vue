@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class="publisher__trash">
-      <a href="#" @click.prevent="opentMoveToTrashModal" class="f--small f--note f--underlined">Move to Trash</a>
+      <a href="#" @click.prevent="openMoveToTrashModal" class="f--small f--note f--underlined">Move to Trash</a>
     </div>
   </div>
 
@@ -100,7 +100,7 @@
       updateVisibility: function (newValue) {
         this.$store.commit('updatePublishVisibility', newValue)
       },
-      opentMoveToTrashModal: function () {
+      openMoveToTrashModal: function () {
         this.$parent.$refs.moveToTrashModal.open() // Goes back to parent Form.vue componenent
       }
     },
