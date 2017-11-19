@@ -41,8 +41,8 @@
 
     window.STORE.datatable = {}
 
-    window.STORE.datatable.data = {!! json_encode($mappedData) !!}
-    window.STORE.datatable.columns = {!! json_encode($mappedColumns) !!}
+    window.STORE.datatable.data = {!! json_encode($tableData) !!}
+    window.STORE.datatable.columns = {!! json_encode($tableColumns) !!}
 @stop
 
 @push('extra_js')

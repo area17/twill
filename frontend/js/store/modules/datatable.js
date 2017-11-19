@@ -11,7 +11,7 @@ const state = {
   maxPage: window.STORE.datatable.maxPage || 1,
   offset: window.STORE.datatable.offset || 60,
   sortKey: window.STORE.datatable.sortKey || '',
-  sortDir: window.STORE.datatable.sortDir || 'desc',
+  sortDir: window.STORE.datatable.sortDir || 'asc',
   message: '',
   bulk: []
 }
@@ -45,7 +45,7 @@ const mutations = {
     // Each time the data is changing, we reset the bulk ids
     state.bulk = []
 
-    state.data = Object.assign([], state.data, data)
+    state.data = data
   },
   [types.UPDATE_DATATABLE_BULK] (state, id) {
     if (state.bulk.indexOf(id) > -1) {
@@ -93,10 +93,10 @@ const mutations = {
     })
   },
   [types.UPDATE_DATATABLE_SORT] (state, column) {
-    const defaultSortDirection = 'desc'
+    const defaultSortDirection = 'asc'
 
     if (state.sortKey === column.name) {
-      state.sortDir = state.sortDir === defaultSortDirection ? 'asc' : defaultSortDirection
+      state.sortDir = state.sortDir === defaultSortDirection ? 'desc' : defaultSortDirection
     } else {
       state.sortDir = defaultSortDirection
     }
@@ -189,6 +189,7 @@ const actions = {
         // success callback
         commit(types.UPDATE_DATATABLE_DATA, resp.data)
         commit(types.UPDATE_DATATABLE_MAXPAGE, resp.maxPage)
+        commit(types.UPDATE_DATATABLE_NAV, resp.nav)
 
         if (state.message) commit('setNotification', { message: state.message, variant: 'success' })
 
@@ -198,8 +199,10 @@ const actions = {
     )
   },
   setDatatableDatas ({ commit, state, dispatch }, data) {
+    const ids = data.map((row) => row.id)
+
     api.reorder(
-      data,
+      ids,
       function (resp) {
         // success callback
         commit(types.UPDATE_DATATABLE_DATA, data)
@@ -209,15 +212,21 @@ const actions = {
     )
   },
   togglePublishedData ({ commit, state, dispatch }, row) {
-    api.togglePublished(
-      row.id,
-      row.published,
-      function (id, navigation) {
-        // success callback
-        commit(types.UPDATE_DATATABLE_MESSAGE, 'Item Published') // todo : will use resp message
-        dispatch('getDatatableDatas') // we need to get the new datas from the api
-      }
-    )
+    api.togglePublished(row, function () {
+      commit(types.UPDATE_DATATABLE_MESSAGE, 'Item Published') // todo : will use resp message
+      dispatch('getDatatableDatas')
+    })
+  },
+  deleteData ({ commit, state, dispatch }, row) {
+    api.delete(row, function () {
+      commit(types.UPDATE_DATATABLE_MESSAGE, 'Item Deleted') // todo : will use resp message
+      dispatch('getDatatableDatas')
+    })
+  },
+  restoreData ({ commit, state, dispatch }, row) {
+    api.restore(row, function () {
+      dispatch('getDatatableDatas')
+    })
   },
   bulkPublishData ({ commit, state, dispatch }, payload) {
     api.bulkPublish(
@@ -232,16 +241,13 @@ const actions = {
       }
     )
   },
-  toggleFeaturedData ({ commit, state }, id) {
-    api.toggleFeatured(
-      id,
-      id => {
-        commit(types.FEATURE_DATATABLE, {
-          id: id,
-          value: 'toggle'
-        })
-      }
-    )
+  toggleFeaturedData ({ commit, state }, row) {
+    api.toggleFeatured(row, id => {
+      commit(types.FEATURE_DATATABLE, {
+        id: id,
+        value: 'toggle'
+      })
+    })
   },
   bulkFeatureData ({ commit, state }) {
     api.bulkFeature(
@@ -251,30 +257,6 @@ const actions = {
           id: state.bulk,
           value: true
         })
-      }
-    )
-  },
-  deleteData ({ commit, state }, id) {
-    const params = {
-      sortKey: state.sortKey,
-      sortDir: state.sortDir,
-      page: state.page,
-      offset: state.offset,
-      columns: getters.visibleColumnsNames,
-      filter: state.filter
-    }
-
-    params.id = id
-
-    api.delete(
-      params,
-      function (resp) {
-        // success callback
-        commit(types.UPDATE_DATATABLE_MESSAGE, 'Item Deleted') // todo : will use resp message
-
-        // Refresh the UI
-        commit(types.UPDATE_DATATABLE_DATA, resp.data)
-        commit(types.UPDATE_DATATABLE_MAXPAGE, resp.maxPage)
       }
     )
   },

@@ -16,30 +16,45 @@ abstract class ModuleController extends Controller
 
     protected $request;
 
+    protected $routePrefix;
+
+    protected $moduleName;
+
     protected $modelName;
 
     protected $repository;
 
-    protected $routePrefix;
-
-    protected $defaultFilters = [
-        'fSearch' => 'title|search',
-    ];
-
-    /*
-     * Define this in your controller implementation
-     */
-    protected $moduleName;
-
     /*
      * Available columns of the index view
      */
-    protected $indexColumns = [];
+    protected $indexColumns = [
+        'title' => [
+            'title' => 'Title',
+            'field' => 'title',
+            'sort' => true,
+        ],
+    ];
+
+    /*
+     * Available columns of the browser view
+     */
+    protected $browserColumns = [
+        'title' => [
+            'title' => 'Title',
+            'field' => 'title',
+        ],
+    ];
 
     /*
      * Options of the index view
      */
-    protected $indexOptions = [];
+    protected $indexOptions = [
+        'publish' => true,
+        'feature' => false,
+        'restore' => true,
+        'sort' => false,
+        'permalink' => true,
+    ];
 
     /*
      * Relations to eager load for the index view
@@ -57,20 +72,44 @@ abstract class ModuleController extends Controller
     protected $formWithCount = [];
 
     /*
-     * Filters mapping ('fFilterName' => 'filterColumn')
-     * In the indexData function, name your lists with the filter name + List (fClientList for example)
+     * Additional filters for the index view
+     * To automatically have your filter added to the index view use the following convention:
+     * suffix the key containing the list of items to show in the filter by 'List' and
+     * name it the same as the filter you defined in this array.
+     * Example: 'fCategory' => 'category_id' here and 'fCategoryList' in indexData()
+     * By default, this will run a where query on the category_id column with the value
+     * of fCategory if found in current request parameters. You can intercept this behavior
+     * from your repository in the filter() function.
      */
     protected $filters = [];
+
+    /*
+     * Default filters for the index view
+     * By default, the search field will run a like query on the title field
+     * and is giving you the ability to specify more column to search in
+     * using the searchIn function in your repository filter() function.
+     */
+    protected $defaultFilters = [
+        'search' => 'title|search',
+    ];
+
+    /*
+     * Default orders for the index view
+     */
+    protected $defaultOrders = [
+        'title' => 'asc',
+    ];
 
     /*
      * Feature field name if the controller is using the feature route (defaults to "featured")
      */
     protected $featureField;
 
-    protected $perPage = 50;
+    protected $perPage = 20;
 
-    protected $breadcrumb = false;
-
+    /*
+     * Name of the index column to use as name column
+     */
     protected $nameColumnKey = 'title';
 
     public function __construct(Application $app, Request $request)
@@ -87,6 +126,15 @@ abstract class ModuleController extends Controller
         $this->viewPrefix = $this->getViewPrefix();
     }
 
+    protected function setMiddlewarePermission()
+    {
+        $this->middleware('can:list', ['only' => ['index', 'show']]);
+        $this->middleware('can:edit', ['only' => ['create', 'store', 'edit', 'update']]);
+        $this->middleware('can:publish', ['only' => ['publish', 'feature']]);
+        $this->middleware('can:sort', ['only' => ['sort']]);
+        $this->middleware('can:delete', ['only' => ['destroy']]);
+    }
+
     protected function indexData($request)
     {
         return [];
@@ -99,75 +147,114 @@ abstract class ModuleController extends Controller
 
     public function index()
     {
+        $indexData = $this->getIndexData() + $this->request->all();
+
         if ($this->request->ajax()) {
-            return $this->getIndexData() + $this->request->all();
+            return $indexData;
         }
 
-        $view = view()->exists("$this->viewPrefix.index") ? "$this->viewPrefix.index" : "cms-toolkit::{$this->moduleName}.index";
-        return view($view, $this->getIndexData() + $this->request->all());
+        $view = collect([
+            "$this->viewPrefix.index",
+            "cms-toolkit::$this->moduleName.index",
+            "cms-toolkit::layouts.listing",
+        ])->first(function ($view) {
+            return view()->exists($view);
+        });
+
+        return view($view, $indexData);
     }
 
     public function getIndexData($prependScope = [])
     {
         $scopes = $this->filterScope($prependScope);
-        return $this->getViewData($this->getIndexItems($scopes), $scopes, $prependScope);
-    }
+        $items = $this->getIndexItems($scopes);
 
-    public function getIndexItems($scopes = [], $forcePagination = false)
-    {
-        return $this->repository->get($this->indexWith, $scopes, $this->orderScope(), $this->perPage ?? 50, $forcePagination);
-    }
+        // $filtersOn = !empty(array_except($scopes, array_keys($prependScope)));
 
-    public function getViewData($items, $scopes, $prependScope = [])
-    {
+        // $filters = array_keys(array_except(
+        //     $this->filters,
+        //     array_keys($this->defaultFilters)
+        // ));
+
         $data = [
-            'items' => $items,
-            'filters' => array_keys(array_except($this->filters, array_keys($this->defaultFilters))),
-            'filtersOn' => !empty(array_except($scopes, array_keys($prependScope))),
-            'mappedData' => $this->getIndexMappedData($items),
-            'mappedColumns' => $this->getIndexMappedColumns($items),
-            'maxPage' => $items->lastPage(),
-            'offset' => $items->perPage(),
+            'moduleName' => $this->moduleName,
             'nameColumnKey' => $this->nameColumnKey,
-            'publishUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'publish'),
-        ];
+            'tableData' => $this->getIndexTableData($items),
+            'tableColumns' => $this->getIndexTableColumns($items),
+            'tableMainFilters' => $this->getIndexTableMainFilters($items),
+            'maxPage' => method_exists($items, 'lastPage') ? $items->lastPage() : 1,
+            'offset' => method_exists($items, 'perPage') ? $items->perPage() : count($items),
+            'sort' => $this->indexOptions['sort'] ?? false,
+            'permalink' => $this->indexOptions['permalink'] ?? true,
+        ] + $this->getIndexUrls($this->moduleName, $this->routePrefix);
 
         return array_replace_recursive($data, $this->indexData($this->request));
     }
 
-    public function getIndexMappedData($items)
+    public function getIndexItems($scopes = [], $forcePagination = false)
+    {
+        $perPage = request('offset') ?? $this->perPage ?? 50;
+        return $this->repository->get($this->indexWith, $scopes, $this->orderScope(), $perPage, $forcePagination);
+    }
+
+    public function getIndexTableData($items)
     {
         return $items->map(function ($item) {
-            $columnsData = collect($this->indexColumns)->mapWithKeys(function ($column, $key) use ($item) {
-                if (isset($column['thumb']) && $column['thumb']) {
-                    return [
-                        'thumbnail' => $item->cmsImage(isset($column['variant']) ? $column['variant']['role'] : head(array_keys($item->mediasParams)), isset($column['variant']) ? $column['variant']['crop'] : head(array_keys(head($item->mediasParams))), isset($column['variant']) && isset($column['variant']['params']) ? $column['variant']['params'] : ['w' => 80, 'h' => 80, 'fit' => 'crop']),
-                    ];
-                }
-                $field = $column['field'];
-                return [
-                    "$field" => $item->$field,
-                ];
+            $columnsData = collect($this->indexColumns)->mapWithKeys(function ($column) use ($item) {
+                return $this->getItemColumnData($item, $column);
             })->toArray();
 
             $name = $columnsData[$this->nameColumnKey];
             unset($columnsData[$this->nameColumnKey]);
 
+            $featuredField = $this->featureField ?? 'featured';
+
             return [
                 'id' => $item->id,
                 'name' => $name,
                 'edit' => moduleRoute($this->moduleName, $this->routePrefix, 'edit', $item->id),
+                'delete' => moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id),
             ] + $columnsData
                  + (($this->indexOptions['publish'] ?? true) ? ['published' => $item->published] : [])
-                 + (($this->indexOptions['feature'] ?? false) ? ['featured' => $item->featured] : []);
+                 + (($this->indexOptions['feature'] ?? false) ? ['featured' => $item->$featuredField] : [])
+                 + (($this->indexOptions['restore'] ?? true && $item->trashed()) ? ['deleted' => true] : []);
         })->toArray();
     }
 
-    public function getIndexMappedColumns($items)
+    public function getItemColumnData($item, $column)
     {
-        $mappedColumns = [];
+        if (isset($column['thumb']) && $column['thumb']) {
+            $variant = isset($column['variant']);
+            $role = $variant ? $column['variant']['role'] : head(array_keys($item->mediasParams));
+            $crop = $variant ? $column['variant']['crop'] : head(array_keys(head($item->mediasParams)));
+            $params = $variant && isset($column['variant']['params']) ? $column['variant']['params'] : ['w' => 80, 'h' => 80, 'fit' => 'crop'];
+
+            return [
+                'thumbnail' => $item->cmsImage($role, $crop, $params),
+            ];
+        }
+
+        $field = $column['field'];
+        $value = $item->$field;
+
+        if (isset($column['relationship'])) {
+            $field = $column['relationship'] . ucfirst($column['field']);
+            $value = e(array_get($item, "{$column['relationship']}.{$column['field']}"));
+        } elseif (isset($column['present']) && $column['present']) {
+            $value = $item->presentAdmin()->{$column['field']};
+        }
+
+        return [
+            "$field" => $value,
+        ];
+    }
+
+    public function getIndexTableColumns($items)
+    {
+        $tableColumns = [];
+
         if (isset(array_first($this->indexColumns)['thumb']) && array_first($this->indexColumns)['thumb']) {
-            array_push($mappedColumns, [
+            array_push($tableColumns, [
                 'name' => 'thumbnail',
                 'label' => 'Thumbnail',
                 'visible' => true,
@@ -178,7 +265,7 @@ abstract class ModuleController extends Controller
         }
 
         if ($this->indexOptions['feature'] ?? false) {
-            array_push($mappedColumns, [
+            array_push($tableColumns, [
                 'name' => 'featured',
                 'label' => 'Featured',
                 'visible' => true,
@@ -188,7 +275,7 @@ abstract class ModuleController extends Controller
         }
 
         if ($this->indexOptions['published'] ?? true) {
-            array_push($mappedColumns, [
+            array_push($tableColumns, [
                 'name' => 'published',
                 'label' => 'Published',
                 'visible' => true,
@@ -197,7 +284,7 @@ abstract class ModuleController extends Controller
             ]);
         }
 
-        array_push($mappedColumns, [
+        array_push($tableColumns, [
             'name' => 'name',
             'label' => 'Name',
             'visible' => true,
@@ -208,16 +295,160 @@ abstract class ModuleController extends Controller
         unset($this->indexColumns[$this->nameColumnKey]);
 
         foreach ($this->indexColumns as $column) {
-            array_push($mappedColumns, [
-                'name' => $column['field'],
+            array_push($tableColumns, [
+                'name' => isset($column['relationship']) ? $column['relationship'] . ucfirst($column['field']) : $column['field'],
                 'label' => $column['title'],
                 'visible' => $column['optional'] ?? true,
                 'optional' => $column['optional'] ?? true,
-                'sortable' => $column['sort'] ?? false,
+                'sortable' => $column['sort'] ?? false, // TODO: support a different sort field
             ]);
         }
 
-        return $mappedColumns;
+        return $tableColumns;
+    }
+
+    public function getIndexTableMainFilters($items)
+    {
+        $statusFilters = [];
+
+        array_push($statusFilters, [
+            'name' => 'All items',
+            'slug' => 'all',
+            'number' => $this->repository->getCountByStatusSlug('all'),
+        ]);
+
+        if (method_exists($this->repository, 'beforeSaveHandleRevisions')) {
+            array_push($statusFilters, [
+                'name' => 'Mine',
+                'slug' => 'mine',
+                'number' => $this->repository->getCountByStatusSlug('mine'),
+            ]);
+        }
+
+        array_push($statusFilters, [
+            'name' => 'Published',
+            'slug' => 'published',
+            'number' => $this->repository->getCountByStatusSlug('published'),
+        ], [
+            'name' => 'Draft',
+            'slug' => 'draft',
+            'number' => $this->repository->getCountByStatusSlug('draft'),
+        ], [
+            'name' => 'Trash',
+            'slug' => 'trash',
+            'number' => $this->repository->getCountByStatusSlug('trash'),
+        ]);
+
+        return $statusFilters;
+    }
+
+    public function getIndexUrls($moduleName, $routePrefix)
+    {
+        return [
+            'publishUrl' => ($this->indexOptions['publish'] ?? true) ? moduleRoute($this->moduleName, $this->routePrefix, 'publish') : null,
+            'restoreUrl' => ($this->indexOptions['restore'] ?? true) ? moduleRoute($this->moduleName, $this->routePrefix, 'restore') : null,
+            'reorderUrl' => ($this->indexOptions['sort'] ?? false) ? moduleRoute($this->moduleName, $this->routePrefix, 'sort') : null,
+            'featureUrl' => ($this->indexOptions['feature'] ?? false) ? moduleRoute($this->moduleName, $this->routePrefix, 'feature') : null,
+        ];
+    }
+
+    public function browser()
+    {
+        return response()->json($this->getBrowserData());
+    }
+
+    public function getBrowserData($prependScope = [])
+    {
+        $scopes = $this->filterScope($prependScope);
+        $items = $this->getBrowserItems($scopes);
+        $data = $this->getBrowserTableData($items);
+
+        return array_replace_recursive($data, $this->indexData($this->request));
+    }
+
+    public function getBrowserTableData($items)
+    {
+        return $items->map(function ($item) {
+            $columnsData = collect($this->browserColumns)->mapWithKeys(function ($column) use ($item) {
+                return $this->getItemColumnData($item, $column);
+            })->toArray();
+
+            $name = $columnsData[$this->nameColumnKey];
+            unset($columnsData[$this->nameColumnKey]);
+
+            return [
+                'id' => $item->id,
+                'name' => $name,
+                'edit' => moduleRoute($this->moduleName, $this->routePrefix, 'edit', $item->id),
+            ] + $columnsData;
+        })->toArray();
+    }
+
+    public function getBrowserItems($scopes = [])
+    {
+        return $this->getIndexItems($scopes, true);
+    }
+
+    public function publish()
+    {
+        try {
+            // TODO: validate publish is allowed based on model state
+            $this->repository->updateBasic(request('id'), ['published' => !request('active')]);
+        } catch (\Exception $e) {
+            \Log::error($e);
+            return $this->respondWithError($this->modelName . ' was not published. Something wrong happened!');
+        }
+
+        return $this->respondWithSuccess($this->modelName . ' ' . (request('active') ? 'un' : '') . 'published!');
+    }
+
+    public function destroy($id)
+    {
+        if ($this->repository->delete($id)) {
+            return $this->respondWithSuccess($this->modelName . ' deleted!');
+        }
+
+        return $this->respondWithError($this->modelName . ' was not deleted. Something wrong happened!');
+    }
+
+    public function restore()
+    {
+        if ($this->repository->restore(request('id'))) {
+            return $this->respondWithSuccess($this->modelName . ' restored!');
+        }
+
+        return $this->respondWithError($this->modelName . ' was not restored. Something wrong happened!');
+    }
+
+    public function feature()
+    {
+        if (($id = request('id'))) {
+            $featuredField = request('featureField') ?? ($this->featureField ?? 'featured');
+            $featured = !request('active');
+
+            if ($this->repository->isUniqueFeature()) {
+                if ($featured) {
+                    $this->repository->updateBasic(null, [$featuredField => false]);
+                    $this->repository->updateBasic($id, [$featuredField => $featured]);
+                }
+            } else {
+                $this->repository->updateBasic($id, [$featuredField => $featured]);
+            }
+
+            return $this->respondWithSuccess($this->modelName . ' ' . (request('active') ? 'un' : '') . 'featured!');
+        }
+
+        return $this->respondWithError($this->modelName . ' was not featured. Something wrong happened!');
+    }
+
+    public function sort()
+    {
+        if (($values = request('ids')) && !empty($values)) {
+            $this->repository->setNewOrder($values);
+            return $this->respondWithSuccess($this->modelName . ' order changed!');
+        }
+
+        return $this->respondWithError($this->modelName . ' order was not changed. Something wrong happened!');
     }
 
     public function store()
@@ -236,8 +467,6 @@ abstract class ModuleController extends Controller
     {
         return $this->redirectToForm($id);
     }
-
-    // TODO revisions paginated endpoint
 
     public function edit($id)
     {
@@ -263,14 +492,14 @@ abstract class ModuleController extends Controller
                 'data-preview-url' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $id),
             ] : []) + (Route::has($restoreRouteName) ? [
                 'data-restore-url' => moduleRoute($this->moduleName, $this->routePrefix, 'restore', $id),
-            ] : []) + $this->defaultFormOptions(),
+            ] : []),
             'item' => $item,
             'form_fields' => $this->repository->getFormFields($item),
             'back_link' => $this->getBackLink(),
             'moduleName' => $this->moduleName,
             'modelName' => $this->modelName,
             'routePrefix' => $this->routePrefix,
-            'breadcrumb' => $this->getBreadcrumb($id),
+            'baseUrl' => $item->urlWithoutSlug ?? config('app.url') . '/'
         ];
 
         return array_replace_recursive($data, $this->formData($this->request));
@@ -357,103 +586,87 @@ abstract class ModuleController extends Controller
         return $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
     }
 
-    public function destroy($id)
+    private function respondWithSuccess($message)
     {
-        if (($id = $this->request->input('id'))) {
-            $this->repository->delete($id);
-            flash()->message($this->modelName . ' deleted!', FlashLevel::SUCCESS);
-        } else {
-            flash()->message($this->modelName . ' was not deleted. Something wrong happened!', FlashLevel::ERROR);
-        }
+        return $this->respondWithJson($message, FlashLevel::SUCCESS);
     }
 
-    public function publish()
+    private function respondWithError($message)
     {
-        $this->repository->updateBasic(request('id'), ['published' => !request('active')]);
-        return response("Done!");
+        return $this->respondWithJson($message, FlashLevel::ERROR);
     }
 
-    public function feature()
+    private function respondWithJson($message, $type)
     {
-        if (($id = $this->request->input('id')) && ($previousActiveState = $this->request->input('active'))) {
-            $featured = ($previousActiveState == 'true' ? false : true);
-            $featuredField = $this->request->input('featureField') ?? ($this->featureField ?? 'featured');
-
-            if ($this->repository->isUniqueFeature()) {
-                if ($featured) {
-                    $this->repository->updateBasic(null, [$featuredField => false]);
-                    $this->repository->updateBasic($id, [$featuredField => $featured]);
-                }
-            } else {
-                $this->repository->updateBasic($id, [$featuredField => $featured]);
-            }
-
-            return response($featured ? "Item featured!" : "Item unfeatured!");
-        }
-    }
-
-    public function sort()
-    {
-        if (($values = $this->request->getContent()) && !empty($values)) {
-            $this->repository->setNewOrder(explode(',', $values));
-        }
+        return response()->json([
+            'flashMessage' => $message,
+            'flashType' => $type,
+        ]);
     }
 
     public function tags()
     {
-        $query = $this->request->input('query');
+        $query = request('query');
         $tags = $this->repository->getTags($query);
         return response()->json($tags, 200);
-    }
-
-    public function browser()
-    {
-        return $this->getBrowserData() + $this->request->all();
-    }
-
-    public function getBrowserData($prependScope = [])
-    {
-        $scopes = $this->filterScope($prependScope);
-        return $this->getViewData($this->getBrowserItems($scopes), $scopes, $prependScope);
-    }
-
-    public function getBrowserItems($scopes = [])
-    {
-        return $this->getIndexItems($scopes, true);
     }
 
     protected function orderScope()
     {
         $orders = [];
         if ($this->request->has("sortKey") && $this->request->has("sortDir")) {
-            if (($key = $this->request->has("sortKey")) == 'name') {
+            if (($key = $this->request->get("sortKey")) == 'name') {
                 $orders[$this->nameColumnKey] = $this->request->get("sortDir");
-            } else {
+            } elseif (!empty($key)) {
                 $orders[$key] = $this->request->get("sortDir");
             }
         }
-        return $orders + ($this->defaultOrders ?? []);
+
+        $sort = $this->indexOptions['sort'] ?? false;
+        $defaultOrders = ($sort ? [] : ($this->defaultOrders ?? []));
+
+        return $orders + $defaultOrders;
     }
 
     protected function filterScope($prepend = [])
     {
         $scope = [];
 
+        $requestFilters = json_decode($this->request->get('filter'), true) ?? [];
+
         $this->filters = array_merge($this->filters, $this->defaultFilters);
 
+        if (array_key_exists('status', $requestFilters)) {
+            switch ($requestFilters['status']) {
+                case 'published':
+                    $scope['published'] = true;
+                    break;
+                case 'draft':
+                    $scope['draft'] = true;
+                    break;
+                case 'trash':
+                    $scope['onlyTrashed'] = true;
+                    break;
+                case 'mine':
+                    break;
+            }
+
+            unset($requestFilters['status']);
+        }
+
         foreach ($this->filters as $key => $field) {
-            if ($this->request->has($key)) {
-                $value = $this->request->$key;
+            if (array_key_exists($key, $requestFilters)) {
+                $value = $requestFilters[$key];
                 if ($value == 0 || !empty($value)) {
                     // add some syntaxic sugar to scope the same filter on multiple columns
                     $fieldSplitted = explode('|', $field);
                     if (count($fieldSplitted) > 1) {
-                        $requestValue = $this->request->$key;
+                        $requestValue = $requestFilters[$key];
                         collect($fieldSplitted)->each(function ($scopeKey) use (&$scope, $requestValue) {
                             $scope[$scopeKey] = $requestValue;
                         });
                     } else {
-                        $scope[$field] = $this->request->$key;
+                        $scope[$field] = $requestFilters[$key];
                     }
                 }
             }
@@ -528,38 +741,6 @@ abstract class ModuleController extends Controller
         }
     }
 
-    protected function defaultFormOptions()
-    {
-        return [
-            'id' => $this->moduleName . '_form',
-            'class' => "simple_form",
-            'accept-charset' => "UTF-8",
-            'novalidate' => "novalidate",
-        ] + (app()->isLocal() ? [] : [
-            'data-behavior' => 'navigate_away',
-            'data-navigate-away-confirm' => 'Any changes will be lost.',
-        ]);
-    }
-
-    protected function getBreadcrumb($item_id, $append = [])
-    {
-        if (isset($this->breadcrumb) ? $this->breadcrumb : true) {
-            $breadcrumb = [];
-
-            if (!$item_id) {
-                return $breadcrumb;
-            }
-
-            $breadcrumb[ucfirst($this->moduleName)] = moduleRoute($this->moduleName, $this->routePrefix, "index");
-
-            if (($obj = $this->repository->getById($item_id)) !== null && isset($obj->title)) {
-                $breadcrumb[$obj->title] = null;
-            }
-
-            return $breadcrumb + $append;
-        }
-    }
-
     protected function getNamespace()
     {
         return $this->namespace ?? config('cms-toolkit.namespace');
@@ -567,8 +748,12 @@ abstract class ModuleController extends Controller
 
     protected function getRoutePrefix()
     {
-        $routePrefix = ($this->request->route() != null) ? ltrim($this->request->route()->getPrefix(), "/") : '';
-        return str_replace("/", ".", ($routePrefix));
+        if ($this->request->route() != null) {
+            $routePrefix = ltrim($this->request->route()->getPrefix(), "/");
+            return str_replace("/", ".", ($routePrefix));
+        }
+
+        return '';
     }
 
     protected function getModelName()
@@ -584,14 +769,5 @@ abstract class ModuleController extends Controller
     protected function getViewPrefix()
     {
         return "admin.$this->moduleName";
-    }
-
-    protected function setMiddlewarePermission()
-    {
-        $this->middleware('can:list', ['only' => ['index', 'show']]);
-        $this->middleware('can:edit', ['only' => ['create', 'store', 'edit', 'update', 'media', 'file']]);
-        $this->middleware('can:publish', ['only' => ['publish', 'feature']]);
-        $this->middleware('can:sort', ['only' => ['sort']]);
-        $this->middleware('can:delete', ['only' => ['destroy']]);
     }
 }

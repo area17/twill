@@ -3,12 +3,11 @@
 namespace A17\CmsToolkit\Models;
 
 use A17\CmsToolkit\Models\Behaviors\HasPresenter;
+use Auth;
 use Cartalyst\Tags\TaggableInterface;
 use Cartalyst\Tags\TaggableTrait;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-use Auth;
 
 abstract class Model extends BaseModel implements TaggableInterface
 {
@@ -25,6 +24,16 @@ abstract class Model extends BaseModel implements TaggableInterface
     public function scopePublished($query)
     {
         return $query->wherePublished(true);
+    }
+
+    public function scopeDraft($query)
+    {
+        return $query->wherePublished(false);
+    }
+
+    public function scopeOnlyTrashed($query)
+    {
+        return $query->whereNotNull('deleted_at');
     }
 
     public function isNotLockedByCurrentUser()

@@ -35,7 +35,7 @@
             <a17-tablehead :columns="visibleColumns" ref="thead"></a17-tablehead>
           </thead>
           <template v-if="draggable">
-            <draggable :element="'tbody'" v-model='rows' :options="{ handle:'.tablecell__handle' }">
+            <draggable :element="'tbody'" v-model='rows' :options="{ handle:'.tablecell__handle', disabled: !reorderable }">
               <template v-for="(row, index) in rows">
                 <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :key="row.id"></a17-tablerow>
               </template>
@@ -100,6 +100,7 @@
         columnsWidth: [],
         initialOffset: 50,
         initialMaxPage: 1,
+        reorderable: false
       }
     },
     computed: {
@@ -174,7 +175,7 @@
       },
       updateSort: function (column) {
         if (!column.sortable) return
-
+        this.reorderable = false
         this.$store.commit('updateDatablePage', 1)
         this.$store.commit('updateDatableSort', column)
 
@@ -222,6 +223,8 @@
         })
       }
 
+      this.reorderable = this.draggable
+
       // draggable column
       const draggableColumn = {
         name: 'draggable',
@@ -231,7 +234,7 @@
         sortable: false
       }
 
-      if (this.draggable) {
+      if (this.reorderable) {
         this.$store.commit('addDatableColumn', {
           index: 0,
           data: draggableColumn

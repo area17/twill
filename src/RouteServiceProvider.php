@@ -134,11 +134,11 @@ class RouteServiceProvider extends ServiceProvider
                     Route::get($routeSlug . "/{id}", $mapping);
                 }
 
-                if (in_array($route, ['publish', 'feature'])) {
+                if (in_array($route, ['publish', 'feature', 'restore'])) {
                     Route::put($routeSlug, $mapping);
                 }
 
-                if (in_array($route, ['preview', 'restore'])) {
+                if (in_array($route, ['preview'])) {
                     Route::put($routeSlug . "/{id}", $mapping);
                 }
 

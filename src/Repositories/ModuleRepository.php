@@ -32,6 +32,24 @@ abstract class ModuleRepository
         return $query->paginate($perPage);
     }
 
+    public function getCountByStatusSlug($slug)
+    {
+        switch ($slug) {
+            case 'all':
+                return $this->model->count();
+            case 'published':
+                return $this->model->published()->count();
+            case 'draft':
+                return $this->model->draft()->count();
+            case 'trash':
+                return $this->model->onlyTrashed()->count();
+            case 'mine':
+                return 0;
+            default:
+                return 0;
+        }
+    }
+
     public function getById($id, $with = [], $withCount = [])
     {
         return $this->model->with($with)->withCount($withCount)->findOrFail($id);
@@ -143,7 +161,21 @@ abstract class ModuleRepository
         if (($object = $this->model->find($id)) != null) {
             $object->delete();
             $this->afterDelete($object);
+            return true;
         }
+
+        return false;
+    }
+
+    public function restore($id)
+    {
+        if (($object = $this->model->withTrashed()->find($id)) != null) {
+            $object->restore();
+            $this->afterRestore($object);
+            return true;
+        }
+
+        return false;
     }
 
     public function cleanupFields($object, $fields)
@@ -240,6 +272,15 @@ abstract class ModuleRepository
         }
     }
 
+    public function afterRestore($object)
+    {
+        foreach (class_uses_recursive(get_called_class()) as $trait) {
+            if (method_exists(get_called_class(), $method = 'afterRestore' . class_basename($trait))) {
+                $this->$method($object);
+            }
+        }
+    }
+
     public function hydrate($object, $fields)
     {
         foreach (class_uses_recursive(get_called_class()) as $trait) {
@@ -279,16 +320,19 @@ abstract class ModuleRepository
         }
 
         unset($scopes['search']);
-
         foreach ($scopes as $column => $value) {
-            if (is_array($value)) {
-                $query->whereIn($column, $value);
-            } elseif ($column[0] == '%') {
-                $value[0] == '!' ? $query->where(substr($column, 1), 'not like', '%' . substr($value, 1) . '%') : $query->where(substr($column, 1), 'like', '%' . $value . '%');
-            } elseif ($value[0] == '!') {
-                $query->where($column, '<>', substr($value, 1));
+            if (method_exists($this->model, 'scope' . ucfirst($column))) {
+                $query->$column();
             } else {
-                $query->where($column, $value);
+                if (is_array($value)) {
+                    $query->whereIn($column, $value);
+                } elseif ($column[0] == '%') {
+                    $value[0] == '!' ? $query->where(substr($column, 1), 'not like', '%' . substr($value, 1) . '%') : $query->where(substr($column, 1), 'like', '%' . $value . '%');
+                } elseif ($value[0] == '!') {
+                    $query->where($column, '<>', substr($value, 1));
+                } else {
+                    $query->where($column, $value);
+                }
             }
         }
 
@@ -475,10 +519,12 @@ abstract class ModuleRepository
 
     public function searchIn($query, &$scopes, $scopeField, $orFields = [])
     {
+
         if (isset($scopes[$scopeField]) && is_string($scopes[$scopeField])) {
-            $query->where(function ($query) use ($scopes, $scopeField, $orFields) {
+            $query->where(function ($query) use (&$scopes, $scopeField, $orFields) {
                 foreach ($orFields as $field) {
                     $query->orWhere($field, 'like', '%' . $scopes[$scopeField] . '%');
+                    unset($scopes[$field]);
                 }
             });
         }

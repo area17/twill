@@ -4,8 +4,8 @@
       <template v-if="isSpecificColumn(col)">
         <span v-if="col.name === 'draggable'" class="tablecell__handle"></span> <!-- Drag handle button -->
         <a v-if="col.name === 'bulk'" href="#" @click.prevent.stop="toggleBulk(row['id'])"><a17-checkbox name="bulkEdit" :value="row['id']" :initialValue="bulkIds" ></a17-checkbox></a><!-- Bulk -->
-        <span v-if="col.name === 'featured'" class="tablecell__feature" :class="{'tablecell__feature--active': row[col.name] }" @click.prevent="toggleFeatured" data-tooltip-title="Feature" v-tooltip><span v-svg symbol="star-feature_active"></span><span v-svg symbol="star-feature"></span></span> <!-- Featured star button -->
-        <span v-if="col.name === 'published'" class="tablecell__pubstate" :class="{'tablecell__pubstate--live': row[col.name] }"  @click.prevent="togglePublish" data-tooltip-title="Publish" v-tooltip ></span> <!-- Published circle icon -->
+        <span v-if="col.name === 'featured'" class="tablecell__feature" :class="{'tablecell__feature--active': row[col.name] }" @click.prevent="toggleFeatured" :data-tooltip-title="row['featured'] ? 'Unfeature' : 'Feature'" v-tooltip><span v-svg symbol="star-feature_active"></span><span v-svg symbol="star-feature"></span></span> <!-- Featured star button -->
+        <span v-if="col.name === 'published'" class="tablecell__pubstate" :class="{'tablecell__pubstate--live': row[col.name] }"  @click.prevent="togglePublish" :data-tooltip-title="row['published'] ? 'Unpublish' : 'Publish'" v-tooltip ></span> <!-- Published circle icon -->
         <a class="tablerow__thumb" :href="row['edit']" v-if="col.name === 'thumbnail'"><img :src="row[col.name]" /></a> <!-- Thumbnail -->
       </template>
       <template v-else>
@@ -22,7 +22,8 @@
           <a v-if="row.hasOwnProperty('permalink')" :href="row['permalink']" target="_blank">View Permalink</a>
           <a v-if="row.hasOwnProperty('edit')" :href="row['edit']">Edit</a>
           <a v-if="row.hasOwnProperty('published')" href="#" @click.prevent="togglePublish">{{ row['published'] ? 'Unpublish' : 'Publish' }}</a>
-          <a href="#" @click.prevent="deleteRow">Delete</a>
+          <a v-if="row.hasOwnProperty('deleted')" href="#" @click.prevent="restoreRow">Restore</a>
+          <a v-else href="#" @click.prevent="deleteRow">Delete</a>
         </div>
       </a17-dropdown>
     </td>
@@ -72,13 +73,16 @@
                col.name === 'thumbnail'
       },
       toggleFeatured: function () {
-        this.$store.dispatch('toggleFeaturedData', this.row.id)
+        this.$store.dispatch('toggleFeaturedData', this.row)
       },
       togglePublish: function () {
         this.$store.dispatch('togglePublishedData', this.row)
       },
+      restoreRow: function () {
+        this.$store.dispatch('restoreData', this.row)
+      },
       deleteRow: function () {
-        this.$store.dispatch('deleteData', this.row.id)
+        this.$store.dispatch('deleteData', this.row)
       },
       toggleBulk: function (id) {
         // We cant use the vmodel of the a17-checkbox directly because the checkboxes are in separated components (so the model is not shared)

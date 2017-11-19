@@ -1,7 +1,6 @@
 @extends('cms-toolkit::layouts.main')
 
 @php
-    $sort = $sort ?? true;
     $emptyDataTable = $emptyMessage ?? "There is not yet items here."
 @endphp
 
@@ -32,9 +31,13 @@
 
                         {{--<a17-vselect class="secondarynav secondarynav--mobile secondarynav--select" slot="navigation" name="filters-navigation" :options="selectItems" :selected="selectedNav">--}}
                         {{--</a17-vselect>--}}
-                        <div slot="hidden-filters">
-                            @yield('hiddenFilters')
-                        </div>
+
+                        @hasSection('hiddenFilters')
+                            <div slot="hidden-filters">
+                                @yield('hiddenFilters')
+                            </div>
+                        @endif
+
                         <div slot="additional-actions"><a17-button variant="validate" size="small" v-on:click="$refs.addNewModal.open()">Add New</a17-button></div>
                     </a17-filter>
                 </div>
@@ -58,7 +61,11 @@
 
 @section('initialStore')
     window.CMS_URLS = {
-        publish: '{{ $publishUrl }}'
+        index: @if(isset($indexUrl)) '{{ $indexUrl }}' @else window.location.href @endif,
+        publish: '{{ $publishUrl }}',
+        restore: '{{ $restoreUrl }}',
+        reorder: '{{ $reorderUrl }}',
+        feature: '{{ $featureUrl }}'
     }
 
     window.STORE.datatable = {
@@ -66,45 +73,16 @@
       page: 1,
       maxPage: {{ $maxPage }},
       offset: {{ $offset }},
-      sortKey: 'name',
-      sortDir: 'desc'
+      sortKey: '{{ $sort ? '' : 'name' }}',
+      sortDir: 'asc'
     }
 
-    window.STORE.datatable.data = {!! json_encode($mappedData) !!}
+    window.STORE.datatable.data = {!! json_encode($tableData) !!}
+    window.STORE.datatable.columns = {!! json_encode($tableColumns) !!}
 
-    window.STORE.datatable.columns = {!! json_encode($mappedColumns) !!}
+    window.STORE.datatable.navigation = {!! json_encode($tableMainFilters) !!}
 
-    window.STORE.datatable.navigation = [
-      {
-        name: 'All items',
-        slug: 'all',
-        number: 1253
-      },
-      {
-        name: 'Mine',
-        slug: 'mine',
-        number: 3
-      },
-      {
-        name: 'Published',
-        slug: 'published',
-        number: 6
-      },
-      {
-        name: 'Draft',
-        slug: 'draft',
-        number: 1
-      },
-      {
-        name: 'Trash',
-        slug: 'trash',
-        number: 1
-      }
-    ]
-
-    window.STORE.datatable.filter = {
-        status: 'all'
-    }
+    window.STORE.datatable.filter = { status: 'all' }
 @stop
 
 @push('extra_js')

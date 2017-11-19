@@ -22,7 +22,7 @@
     data: function () {
       return {
         currentSort: 'name',
-        currentDirection: 'desc' // asc or desc
+        currentDirection: 'asc' // asc or desc
       }
     },
     computed: {
@@ -135,7 +135,7 @@
     }
   }
 
-  .tablehead__cell--sortedasc .tablehead__arrow {
+  .tablehead__cell--sorteddesc .tablehead__arrow {
     transform:rotate(180deg);
   }
 </style>

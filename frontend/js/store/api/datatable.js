@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { getURLWithoutQuery, replaceState } from '@/utils/pushState.js'
+import { replaceState } from '@/utils/pushState.js'
 
 // Shuffle : for demo purpose only
 function shuffle (a) {
@@ -24,28 +24,17 @@ export default {
     // offset : number of items per page
     // columns: the set of visible columns
     // filter: the current navigation ("all", "mine", "published", "draft", "trash")
-    const _url = getURLWithoutQuery()
 
-    axios.interceptors.response.use(function (response) {
-      if (response.config.method === 'get') {
-        const url = response.request.responseURL
-        replaceState(url)
-      }
-      // Do something with response data
-      return response
-    }, function (error) {
-      // Do something with response error
-      return Promise.reject(error)
-    })
-
-    axios.get(_url, { params: params }).then(function (resp) {
-      // update data and max page
-      const _data = resp.data.mappedData ? resp.data.mappedData : shuffle(window.STORE.datatable.data)
+    axios.get(window.CMS_URLS.index, { params: params }).then(function (resp) {
+      const url = resp.request.responseURL
+      replaceState(url)
 
       if (callback && typeof callback === 'function') {
+      // update data, nav and max page
         callback({
-          data: _data,
-          maxPage: (resp.data.maxPage ? resp.data.maxPage : 10)
+          data: resp.data.tableData ? resp.data.tableData : [],
+          nav: resp.data.tableMainFilters ? resp.data.tableMainFilters : [],
+          maxPage: (resp.data.maxPage ? resp.data.maxPage : 1)
         })
       }
     }, function (resp) {
@@ -53,34 +42,34 @@ export default {
     })
   },
 
-  reorder (params) {
-    // Todo : Do ajax here for reorder
-    // Should only send ids of position ?
-    console.log('Reorder', params)
-  },
-
-  togglePublished (id, published, callback) {
-    // Params
-    //
-    // id : id of the item to toggle
-    console.log({ id: id, active: published })
-    // Set endpoint in global config  https://github.com/axios/axios#axiosposturl-data-config-1
-    axios.put(window.CMS_URLS.publish, { id: id, active: published }).then(function (resp) {
-      // todo : this need to be in the resp
-      const navigation = [
-        {
-          name: 'Published',
-          number: Math.round(Math.random() * 10)
-        },
-        {
-          name: 'Draft',
-          number: Math.round(Math.random() * 10)
-        }
-      ]
-
-      if (callback && typeof callback === 'function') callback(id, navigation)
+  togglePublished (row, callback) {
+    axios.put(window.CMS_URLS.publish, { id: row.id, active: row.published }).then(function (resp) {
+      if (callback && typeof callback === 'function') callback()
     }, function (resp) {
       // error callback
+    })
+  },
+
+  delete (row, callback) {
+    axios.delete(row.delete).then(function (resp) {
+      if (callback && typeof callback === 'function') callback()
+    }, function (resp) {
+      // error callback
+    })
+  },
+  restore (row, callback) {
+    axios.put(window.CMS_URLS.restore, { id: row.id }).then(function (resp) {
+      if (callback && typeof callback === 'function') callback()
+    }, function (resp) {
+      // error callback
+    })
+  },
+
+  reorder (ids, callback) {
+    axios.post(window.CMS_URLS.reorder, { ids: ids }).then(function (resp) {
+      if (callback && typeof callback === 'function') callback()
+    }, function (resp) {
+      console.log('reorder request error.')
     })
   },
 
@@ -110,14 +99,13 @@ export default {
     })
   },
 
-  toggleFeatured (id, callback) {
+  toggleFeatured (row, callback) {
     // Params
     //
     // id : id of the item to toggle
 
-    // Set endpoint in global config https://github.com/axios/axios#axiosposturl-data-config-1
-    axios.put('https://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { id: id }).then(function (resp) {
-      if (callback && typeof callback === 'function') callback(id)
+    axios.put(window.CMS_URLS.feature, { id: row.id, active: row.featured }).then(function (resp) {
+      if (callback && typeof callback === 'function') callback(row.id)
     }, function (resp) {
       // error callback
     })
@@ -127,36 +115,6 @@ export default {
     // Set endpoint in global config https://github.com/axios/axios#axiosposturl-data-config-1
     axios.put('https://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { ids: ids }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(ids)
-    }, function (resp) {
-      // error callback
-    })
-  },
-
-  delete (params, callback) {
-    // Params (same as get)
-    //
-    // sortKey : colmun used for sorting content
-    // sortDir : desc or asc
-    // page : current page number
-    // offset : number of items per page
-    // columns: the set of visible columns
-    // filter: the current navigation ("all", "mine", "published", "draft", "trash")
-
-    // + the following :
-    // id : id of the item to delete
-
-    // Set endpoint in global config and adjust setting using axios DELETE https://github.com/axios/axios#axiosdeleteurl-config-1
-    axios.get('https://www.mocky.io/v2/59d77e61120000ce04cb1c5b', { params: params }).then(function (resp) {
-      // update data and max page
-      const _data = window.STORE.datatable.data || []
-      const _newData = shuffle(_data)
-
-      if (callback && typeof callback === 'function') {
-        callback({
-          data: _newData,
-          maxPage: 10 // maxPage need to be updated if needed
-        })
-      }
     }, function (resp) {
       // error callback
     })
