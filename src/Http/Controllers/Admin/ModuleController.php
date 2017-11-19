@@ -48,7 +48,8 @@ abstract class ModuleController extends Controller
     /*
      * Options of the index view
      */
-    protected $indexOptions = [
+    protected $defaultIndexOptions = [
+        'create' => true,
         'publish' => true,
         'bulkPublish' => true,
         'feature' => false,
@@ -135,9 +136,9 @@ abstract class ModuleController extends Controller
     {
         $this->middleware('can:list', ['only' => ['index', 'show']]);
         $this->middleware('can:edit', ['only' => ['create', 'store', 'edit', 'update']]);
-        $this->middleware('can:publish', ['only' => ['publish', 'feature']]);
-        $this->middleware('can:delete', ['only' => ['destroy']]);
+        $this->middleware('can:publish', ['only' => ['publish', 'feature', 'bulkPublish', 'bulkFeature']]);
         $this->middleware('can:reorder', ['only' => ['reorder']]);
+        $this->middleware('can:delete', ['only' => ['destroy', 'bulkDelete', 'restore', 'bulkRestore']]);
     }
 
     protected function indexData($request)
@@ -223,9 +224,9 @@ abstract class ModuleController extends Controller
                 'edit' => moduleRoute($this->moduleName, $this->routePrefix, 'edit', $item->id),
                 'delete' => moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id),
             ] + $columnsData
-                 + (($this->indexOptions['publish'] ?? true) ? ['published' => $item->published] : [])
-                 + (($this->indexOptions['feature'] ?? false) ? ['featured' => $item->$featuredField] : [])
-                 + (($this->indexOptions['restore'] ?? true && $item->trashed()) ? ['deleted' => true] : []);
+                 + ($this->getIndexOption('publish') ? ['published' => $item->published] : [])
+                 + ($this->getIndexOption('feature') ? ['featured' => $item->$featuredField] : [])
+                 + (($this->getIndexOption('restore') && $item->trashed()) ? ['deleted' => true] : []);
         })->toArray();
     }
 
@@ -273,7 +274,7 @@ abstract class ModuleController extends Controller
             array_shift($this->indexColumns);
         }
 
-        if ($this->indexOptions['feature'] ?? false) {
+        if ($this->getIndexOption('feature')) {
             array_push($tableColumns, [
                 'name' => 'featured',
                 'label' => 'Featured',
@@ -283,7 +284,7 @@ abstract class ModuleController extends Controller
             ]);
         }
 
-        if ($this->indexOptions['published'] ?? true) {
+        if ($this->getIndexOption('publish')) {
             array_push($tableColumns, [
                 'name' => 'published',
                 'label' => 'Published',
@@ -295,7 +296,7 @@ abstract class ModuleController extends Controller
 
         array_push($tableColumns, [
             'name' => 'name',
-            'label' => $this->indexColumns[$this->nameColumnKey]['title'],
+            'label' => $this->indexColumns[$this->nameColumnKey]['title'] ?? 'Name',
             'visible' => true,
             'optional' => false,
             'sortable' => true,
@@ -354,16 +355,19 @@ abstract class ModuleController extends Controller
 
     public function getIndexUrls($moduleName, $routePrefix)
     {
-        return [
-            'publishUrl' => ($this->indexOptions['publish'] ?? true) ? moduleRoute($this->moduleName, $this->routePrefix, 'publish') : null,
-            'bulkPublishUrl' => ($this->indexOptions['bulkPublish'] ?? true) ? moduleRoute($this->moduleName, $this->routePrefix, 'bulkPublish') : null,
-            'restoreUrl' => ($this->indexOptions['restore'] ?? true) ? moduleRoute($this->moduleName, $this->routePrefix, 'restore') : null,
-            'bulkRestoreUrl' => ($this->indexOptions['bulkRestore'] ?? true) ? moduleRoute($this->moduleName, $this->routePrefix, 'bulkRestore') : null,
-            'reorderUrl' => ($this->indexOptions['sort'] ?? false) ? moduleRoute($this->moduleName, $this->routePrefix, 'sort') : null,
-            'featureUrl' => ($this->indexOptions['feature'] ?? false) ? moduleRoute($this->moduleName, $this->routePrefix, 'feature') : null,
-            'bulkFeatureUrl' => ($this->indexOptions['bulkFeature'] ?? false) ? moduleRoute($this->moduleName, $this->routePrefix, 'bulkFeature') : null,
-            'bulkDeleteUrl' => ($this->indexOptions['bulkDelete'] ?? true) ? moduleRoute($this->moduleName, $this->routePrefix, 'bulkDelete') : null,
-        ];
+        return collect([
+            'create',
+            'publish',
+            'bulkPublish',
+            'restore',
+            'bulkRestore',
+            'reorder',
+            'feature',
+            'bulkFeature',
+            'bulkDelete',
+        ])->mapWithKeys(function ($endpoint) use ($moduleName, $routePrefix) {
+            return [$endpoint . 'Url' => $this->getIndexOption($endpoint) ? moduleRoute($this->moduleName, $this->routePrefix, $endpoint) : null];
+        })->toArray();
     }
 
     public function browser()
@@ -689,8 +693,9 @@ abstract class ModuleController extends Controller
             }
         }
 
-        $sort = $this->indexOptions['sort'] ?? false;
-        $defaultOrders = ($sort ? [] : ($this->defaultOrders ?? []));
+        // don't apply default orders if reorder is enabled
+        $reorder = $this->getIndexOption('reorder');
+        $defaultOrders = ($reorder ? [] : ($this->defaultOrders ?? []));
 
         return $orders + $defaultOrders;
     }
@@ -841,5 +846,10 @@ abstract class ModuleController extends Controller
     protected function getModelTitle()
     {
         return camelCaseToWords($this->modelName);
+    }
+
+    protected function getIndexOption($option)
+    {
+        return $this->indexOptions[$option] ?? $this->defaultIndexOptions[$option] ?? false;
     }
 }

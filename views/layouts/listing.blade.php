@@ -46,7 +46,7 @@
         </div>
         <a17-datatable :draggable="{{ $reorder ? 'true' : 'false' }}" empty-message="{{ __($emptyDataTable) }}"></a17-datatable>
         <a17-modal class="modal--form" ref="addNewModal" title="Add New">
-            <form action="#">
+            <form action="{{ $createUrl }}" method="post">
                 <a17-modal-title-editor v-bind:base-url="baseUrl" @unless($permalink ?? true) :with-permalink="false" @endunless></a17-modal-title-editor>
                 <a17-modal-validation v-bind:mode="'create'"></a17-modal-validation>
             </form>
