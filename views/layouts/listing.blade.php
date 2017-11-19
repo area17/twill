@@ -44,6 +44,7 @@
             <a17-modal class="modal--form" ref="addNewModal" title="Add New">
                 <form action="#">
                     <a17-modal-title-editor v-bind:base-url="baseUrl"></a17-modal-title-editor>
+                    <a17-modal-title-editor v-bind:base-url="baseUrl" @unless($permalink ?? true) :with-permalink="false" @endunless></a17-modal-title-editor>
                     <a17-modal-validation v-bind:mode="'create'"></a17-modal-validation>
                 </form>
             </a17-modal>

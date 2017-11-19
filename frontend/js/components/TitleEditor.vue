@@ -1,15 +1,15 @@
 <template>
   <div class="titleEditor">
     <div class="titleEditor__preview">
-      <h2 class="titleEditor__title"><a @click.prevent="$refs.editModal.open()" href="#"><span class="f--underlined--o">{{ title }}</span> <span v-svg symbol="edit"></span></a></h2>
+      <h2 class="titleEditor__title" :class="{ 'titleEditor__title-only' : !permalink }"><a @click.prevent="$refs.editModal.open()" href="#"><span class="f--underlined--o">{{ title }}</span> <span v-svg symbol="edit"></span></a></h2>
       <input type="hidden" name="title" :value="title"/>
       <input type="hidden" name="permalink" :value="permalink"/>
-      <a :href="fullUrl" target="_blank" class="titleEditor__permalink f--small"><span class="f--note f--external f--underlined--o">{{ fullUrl | prettierUrl }}</span></a>
+      <a v-if="permalink" :href="fullUrl" target="_blank" class="titleEditor__permalink f--small"><span class="f--note f--external f--underlined--o">{{ fullUrl | prettierUrl }}</span></a>
 
       <!-- Editing modal -->
       <a17-modal class="modal--form" ref="editModal" title="Update item">
         <form action="#" @submit.prevent="update">
-          <a17-model-title-editor ref="titleEditor" :title="title" :permalink="permalink" :baseUrl="baseUrl"></a17-model-title-editor>
+          <a17-model-title-editor ref="titleEditor" :title="title" :permalink="permalink" :withPermalink="permalink != false" :baseUrl="baseUrl"></a17-model-title-editor>
           <a17-modal-validation :mode="mode"></a17-modal-validation>
         </form>
       </a17-modal>
@@ -81,6 +81,10 @@
     a:hover .icon {
       color: $color__text;
     }
+  }
+
+  .titleEditor__title-only {
+    line-height: 35px;
   }
 
   .titleEditor__permalink {
