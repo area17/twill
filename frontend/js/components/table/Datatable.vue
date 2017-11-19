@@ -52,7 +52,7 @@
             <h4>{{ emptyMessage }}</h4>
           </div>
         </template>
-        <a17-paginate :max="maxPage" :value="page" :offset="offset" :availableOffsets="[initialOffset,initialOffset*3,initialOffset*6]" @changePage="updatePage" @changeOffset="updateOffset"></a17-paginate>
+        <a17-paginate v-if="maxPage > 1 || initialMaxPage > maxPage" :max="maxPage" :value="page" :offset="offset" :availableOffsets="[initialOffset,initialOffset*3,initialOffset*6]" @changePage="updatePage" @changeOffset="updateOffset"></a17-paginate>
       </div>
     </div>
   </div>
@@ -98,7 +98,8 @@
       return {
         xScroll: 0,
         columnsWidth: [],
-        initialOffset: 50
+        initialOffset: 50,
+        initialMaxPage: 1,
       }
     },
     computed: {
@@ -240,6 +241,7 @@
     mounted: function () {
       this.initEvents()
       this.initialOffset = this.$store.state.datatable.offset
+      this.initialMaxPage = this.$store.state.datatable.maxPage
     },
     beforeDestroy: function () {
       this.disposeEvents()

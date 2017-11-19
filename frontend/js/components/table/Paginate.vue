@@ -8,7 +8,7 @@
         </div>
       </a17-dropdown>
     </p>
-    <div class="paginate__pages">
+    <div class="paginate__pages" v-if="max > 1">
       <p class="paginate__current f--small"><input class="form__input paginate__input" type="number" v-model="newPageFormat" maxlength="4" @blur="formatPage" /> of {{ max }}</p>
       <button type="button" :disabled="value <= min"  class="paginate__prev" @click="previousPage"><span v-svg symbol="pagination_left"></span></button>
       <button type="button" :disabled="value >= max"  class="paginate__next" @click="nextPage"><span v-svg symbol="pagination_right"></span></button>
