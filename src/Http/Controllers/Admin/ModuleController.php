@@ -472,7 +472,15 @@ abstract class ModuleController extends Controller
     {
         $this->setBackLink();
         $this->addLock($id);
-        $view = view()->exists("$this->viewPrefix.form") ? "$this->viewPrefix.form" : "cms-toolkit::{$this->moduleName}.form";
+
+        $view = collect([
+            "$this->viewPrefix.form",
+            "cms-toolkit::$this->moduleName.form",
+            "cms-toolkit::layouts.form",
+        ])->first(function ($view) {
+            return view()->exists($view);
+        });
+
         return view($view, $this->form($id));
     }
 
