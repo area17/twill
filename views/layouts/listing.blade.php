@@ -44,7 +44,7 @@
             </div>
             <a17-bulk></a17-bulk>
         </div>
-        <a17-datatable :draggable="{{ $sort ? 'true' : 'false' }}" empty-message="{{ __($emptyDataTable) }}"></a17-datatable>
+        <a17-datatable :draggable="{{ $reorder ? 'true' : 'false' }}" empty-message="{{ __($emptyDataTable) }}"></a17-datatable>
         <a17-modal class="modal--form" ref="addNewModal" title="Add New">
             <form action="#">
                 <a17-modal-title-editor v-bind:base-url="baseUrl" @unless($permalink ?? true) :with-permalink="false" @endunless></a17-modal-title-editor>
@@ -74,7 +74,7 @@
       defaultMaxPage: {{ $defaultMaxPage ?? 1 }},
       offset: {{ request('offset') ?? $offset ?? 60 }},
       defaultOffset: {{ $defaultOffset ?? 60 }},
-      sortKey: '{{ $sort ? (request('sortKey') ?? '') : (request('sortKey') ?? 'name') }}',
+      sortKey: '{{ $reorder ? (request('sortKey') ?? '') : (request('sortKey') ?? 'name') }}',
       sortDir: '{{ request('sortDir') ?? 'asc' }}'
     }
 

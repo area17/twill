@@ -56,7 +56,7 @@ abstract class ModuleController extends Controller
         'restore' => true,
         'bulkRestore' => true,
         'bulkDelete' => true,
-        'sort' => false,
+        'reorder' => false,
         'permalink' => true,
     ];
 
@@ -136,8 +136,8 @@ abstract class ModuleController extends Controller
         $this->middleware('can:list', ['only' => ['index', 'show']]);
         $this->middleware('can:edit', ['only' => ['create', 'store', 'edit', 'update']]);
         $this->middleware('can:publish', ['only' => ['publish', 'feature']]);
-        $this->middleware('can:sort', ['only' => ['sort']]);
         $this->middleware('can:delete', ['only' => ['destroy']]);
+        $this->middleware('can:reorder', ['only' => ['reorder']]);
     }
 
     protected function indexData($request)
@@ -191,7 +191,7 @@ abstract class ModuleController extends Controller
             'defaultMaxPage' => method_exists($items, 'total') ? ceil($items->total() / $this->perPage) : 1,
             'offset' => method_exists($items, 'perPage') ? $items->perPage() : count($items),
             'defaultOffset' => $this->perPage,
-            'sort' => $this->indexOptions['sort'] ?? false,
+            'reorder' => $this->getIndexOption('reorder'),
             'permalink' => $this->indexOptions['permalink'] ?? true,
             'filters' => json_decode($this->request->get('filter'), true) ?? [],
         ] + $this->getIndexUrls($this->moduleName, $this->routePrefix);
@@ -500,7 +500,7 @@ abstract class ModuleController extends Controller
         return $this->respondWithError($this->modelTitle . ' items were not featured. Something wrong happened!');
     }
 
-    public function sort()
+    public function reorder()
     {
         if (($values = request('ids')) && !empty($values)) {
             $this->repository->setNewOrder($values);
