@@ -31,6 +31,11 @@ trait HandleSlugs
         $object->slugs()->delete();
     }
 
+    public function afterRestoreHandleSlugs($object)
+    {
+        $object->slugs()->restore();
+    }
+
     public function getFormFieldsHandleSlugs($object, $fields)
     {
         if ($object->slugs != null) {
