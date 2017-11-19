@@ -60,10 +60,8 @@ class ModuleMake extends Command
         $this->createRequest($modelName);
         $this->createViews($moduleName, $translatable);
 
-        $this->info("\nStart by filling in the migration and models.");
         $this->info("Add Route::module('{$moduleName}'); to your admin routes file.");
         $this->info("Setup a new CMS menu item in config/cms-navigation.php.");
-        $this->info("Setup your index and form views.");
         $this->info("Enjoy.");
 
         $this->composer->dumpAutoloads();
@@ -208,7 +206,7 @@ class ModuleMake extends Command
 
         $this->files->put(app_path('Http/Controllers/Admin/' . $controllerClassName . '.php'), $stub);
 
-        $this->info('Controller created successfully! Add your module name, index and form data!');
+        $this->info('Controller created successfully! Define your index/browser/form endpoints options!');
     }
 
     private function createRequest($modelName = 'Item')
@@ -234,12 +232,10 @@ class ModuleMake extends Command
             $this->files->makeDirectory($viewsPath, 0755, true);
         }
 
-        $this->files->put($viewsPath . '/index.blade.php', $this->files->get(__DIR__ . '/stubs/index.blade.stub'));
-
         $formView = $translatable ? 'form_translatable' : 'form';
 
         $this->files->put($viewsPath . '/form.blade.php', $this->files->get(__DIR__ . '/stubs/' . $formView . '.blade.stub'));
 
-        $this->info('Views created successfully! Customize all the things!');
+        $this->info('Form view created successfully! Include your form fields using @formField directives!');
     }
 }
