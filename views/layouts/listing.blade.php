@@ -10,7 +10,7 @@
     <div class="listing">
         <div class="listing__nav">
             <div class="container" ref="form">
-                <a17-filter v-on:submit="filterListing" v-bind:closed="hasBulkIds">
+                <a17-filter v-on:submit="filterListing" v-bind:closed="hasBulkIds" initial-search-value="{{ $filters['search'] ?? '' }}">
                     <ul class="secondarynav secondarynav--desktop" slot="navigation">
                         <li v-for="(navItem, index) in navFilters" class="secondarynav__item" :class="{ 's--on' : navActive === navItem.slug }"><a href="#" v-on:click.prevent="filterStatus(navItem.slug)"><span class="secondarynav__link">@{{ navItem.name }}</span><span class="secondarynav__number">(@{{ navItem.number }})</span></a></li>
                     </ul>

@@ -4,7 +4,7 @@
       <div class="filter__navigation"><slot name="navigation"></slot></div>
 
       <div class="filter__search">
-        <input type="search" class="form__input form__input--small" name="search" value="" :placeholder="placeholder" />
+        <input type="search" class="form__input form__input--small" name="search" :value="searchValue" :placeholder="placeholder" @input="onSearchInput" />
         <a17-button class="filter__toggle" variant="ghost" @click="toggleFilter" v-if="withHiddenFilters" :aria-expanded="opened ?  'true' : 'false'" >Filter <span v-svg symbol="dropdown_module"></span></a17-button>
         <slot name="additional-actions"></slot>
       </div>
@@ -26,6 +26,10 @@
   export default {
     name: 'A17Filter',
     props: {
+      initialSearchValue: {
+        type: String,
+        default: ''
+      },
       placeholder: {
         type: String,
         default: 'Search'
@@ -40,7 +44,8 @@
         openable: !this.closed,
         open: false,
         withHiddenFilters: true,
-        withNavigation: true
+        withNavigation: true,
+        searchValue: this.initialSearchValue
       }
     },
     computed: {
@@ -51,6 +56,9 @@
     watch: {
       closed: function () {
         this.openable = !this.closed
+      },
+      initialSearchValue: function () {
+        this.searchValue = this.initialSearchValue
       }
     },
     methods: {
@@ -67,6 +75,9 @@
       submitFilter: function () {
         let formData = FormDataAsObj(this.$refs.form)
         this.$emit('submit', formData)
+      },
+      onSearchInput: function (event) {
+        this.searchValue = event.target.value
       }
     },
     beforeMount: function () {
