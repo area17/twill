@@ -21,7 +21,6 @@ $passwordText = isset($welcome) && $welcome ? 'Choose Password' : 'Reset Passwor
 
                     <fieldset class="login__fieldset">
                         <label class="login__label" for="password">Password</label>
-                        <a href="{{ route('admin.password.reset.link') }}" class="login__help f--small">Forgot password</a>
                         <input type="password" name="password" id="password" class="login__input" required />
                     </fieldset>
 
