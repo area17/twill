@@ -203,12 +203,12 @@ const actions = {
   setDatatableDatas ({ commit, state, dispatch }, data) {
     const ids = data.map((row) => row.id)
 
+    commit(types.UPDATE_DATATABLE_DATA, data)
+
     api.reorder(
       ids,
       function (resp) {
         // success callback
-        commit(types.UPDATE_DATATABLE_DATA, data)
-
         commit('setNotification', { message: 'setDatatableDatas message', variant: 'success' })
       }
     )
