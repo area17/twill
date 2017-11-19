@@ -183,7 +183,9 @@ abstract class ModuleController extends Controller
             'tableColumns' => $this->getIndexTableColumns($items),
             'tableMainFilters' => $this->getIndexTableMainFilters($items),
             'maxPage' => method_exists($items, 'lastPage') ? $items->lastPage() : 1,
+            'defaultMaxPage' => method_exists($items, 'total') ? ceil($items->total() / $this->perPage) : 1,
             'offset' => method_exists($items, 'perPage') ? $items->perPage() : count($items),
+            'defaultOffset' => $this->perPage,
             'sort' => $this->indexOptions['sort'] ?? false,
             'permalink' => $this->indexOptions['permalink'] ?? true,
         ] + $this->getIndexUrls($this->moduleName, $this->routePrefix);

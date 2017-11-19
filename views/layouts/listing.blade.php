@@ -73,6 +73,8 @@
       page: 1,
       maxPage: {{ $maxPage }},
       offset: {{ $offset }},
+      defaultMaxPage: {{ $defaultMaxPage ?? 1 }},
+      defaultOffset: {{ $defaultOffset ?? 60 }},
       sortKey: '{{ $sort ? '' : 'name' }}',
       sortDir: 'asc'
     }

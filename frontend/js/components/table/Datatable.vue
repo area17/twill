@@ -98,8 +98,6 @@
       return {
         xScroll: 0,
         columnsWidth: [],
-        initialOffset: 50,
-        initialMaxPage: 1,
         reorderable: false
       }
     },
@@ -134,7 +132,9 @@
         page: state => state.datatable.page,
         offset: state => state.datatable.offset,
         maxPage: state => state.datatable.maxPage,
-        columns: state => state.datatable.columns
+        columns: state => state.datatable.columns,
+        initialOffset: state => state.datatable.defaultOffset,
+        initialMaxPage: state => state.datatable.defaultMaxPage
       }),
       ...mapGetters([
         'visibleColumns',
@@ -243,8 +243,6 @@
     },
     mounted: function () {
       this.initEvents()
-      this.initialOffset = this.$store.state.datatable.offset
-      this.initialMaxPage = this.$store.state.datatable.maxPage
     },
     beforeDestroy: function () {
       this.disposeEvents()
