@@ -165,6 +165,11 @@ trait HasSlug
         return "";
     }
 
+    public function getSlugAttribute()
+    {
+        return $this->getSlug();
+    }
+
     public function getSlugParams($locale = null)
     {
         if (count(getLocales()) === 1 && !isset($this->translations)) {
