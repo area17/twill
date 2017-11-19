@@ -12,6 +12,11 @@ export default {
         const tooltip = el._tooltip = new Tooltip(el, vtooltip.options)
         tooltip._vueEl = el
       },
+      componentUpdated: function (el, binding, vnode, oldVnode) {
+        el._tooltip.dispose()
+        const tooltip = el._tooltip = new Tooltip(el, vtooltip.options)
+        tooltip._vueEl = el
+      },
       inserted: function (el, binding, vnode) {
       },
       unbind: function (el, binding, vnode) {
