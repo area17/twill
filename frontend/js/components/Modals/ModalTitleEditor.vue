@@ -1,7 +1,7 @@
 <template>
   <div class="modal--titleEditor">
-    <a17-textfield label="Title" name="savedTitle" :required="true" :initialValue="savedTitle" :autofocus="true" @change="updateTitle" :maxlength="100"></a17-textfield>
-    <a17-textfield v-if="withPermalink" label="Permalink" name="savedPermalink" :prefix="baseUrl | prettierUrl" :initialValue="inputPermalink" @change="updatePermalink" @blur="formatPermalink" :maxlength="60"></a17-textfield>
+    <a17-textfield label="Title" name="savedTitle" :required="true" :initialValue="savedTitle" :autofocus="true" @change="updateTitle" :maxlength="100" autocomplete="off"></a17-textfield>
+    <a17-textfield v-if="withPermalink" label="Permalink" name="savedPermalink" :prefix="baseUrl | prettierUrl" :initialValue="inputPermalink" @change="updatePermalink" @blur="formatPermalink" :maxlength="100" autocomplete="off"></a17-textfield>
   </div>
 </template>
 
