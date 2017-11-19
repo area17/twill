@@ -31,7 +31,7 @@ if (!function_exists('createDefaultTranslationsTableFields')) {
         $table->boolean('active');
         $table->integer("{$tableNameSingular}_id")->unsigned();
         $table->foreign("{$tableNameSingular}_id", "fk_{$tableNameSingular}_translations_{$tableNameSingular}_id")->references('id')->on($tableNamePlural)->onDelete('CASCADE');
-        $table->unique(["{$tableNameSingular}_id", 'locale'], "{$tableNameSingular}_local_id_unique");
+        $table->unique(["{$tableNameSingular}_id", 'locale'], "{$tableNameSingular}_id_locale_unique");
     }
 }
 
@@ -71,8 +71,8 @@ if (!function_exists('createDefaultRelationshipTableFields')) {
     }
 }
 
-if (!function_exists('createDefaultRevisionTableFields')) {
-    function createDefaultRevisionTableFields($table, $tableNameSingular, $tableNamePlural = null)
+if (!function_exists('createDefaultRevisionsTableFields')) {
+    function createDefaultRevisionsTableFields($table, $tableNameSingular, $tableNamePlural = null)
     {
         if (!$tableNamePlural) {
             $tableNamePlural = str_plural($tableNameSingular);
