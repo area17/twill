@@ -24,11 +24,12 @@
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
                     <input class="login__button" type="submit" value="Login" tabindex="3">
-
-                    <a href="#" class="login__google" tabindex="4">
-                        <span symbol="more-dots" class="icon icon--google-sign-in"><svg><title>Google Icon</title><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#google-sign-in"></use></svg></span>
-                        <span>Sign in with Google</span>
-                    </a>
+                    @if (config('cms-toolkit.enabled.google-login'))
+                        <a href="#" class="login__google" tabindex="4">
+                            <span symbol="more-dots" class="icon icon--google-sign-in"><svg><title>Google Icon</title><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#google-sign-in"></use></svg></span>
+                            <span>Sign in with Google</span>
+                        </a>
+                    @endif
                 </form>
                 @include('cms-toolkit::partials.footer')
             </section>

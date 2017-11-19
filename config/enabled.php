@@ -18,4 +18,5 @@ return [
     'users-in-top-right-nav' => false,
     'site-link' => false,
     'settings' => false,
+    'google-login' => false,
 ];
