@@ -150,7 +150,7 @@ abstract class ModuleController extends Controller
         $indexData = $this->getIndexData() + $this->request->all();
 
         if ($this->request->ajax()) {
-            return $indexData;
+            return $indexData + ['replaceUrl' => true];
         }
 
         $view = collect([
@@ -188,6 +188,7 @@ abstract class ModuleController extends Controller
             'defaultOffset' => $this->perPage,
             'sort' => $this->indexOptions['sort'] ?? false,
             'permalink' => $this->indexOptions['permalink'] ?? true,
+            'filters' => json_decode($this->request->get('filter'), true) ?? [],
         ] + $this->getIndexUrls($this->moduleName, $this->routePrefix);
 
         return array_replace_recursive($data, $this->indexData($this->request));

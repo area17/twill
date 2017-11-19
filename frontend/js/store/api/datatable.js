@@ -26,8 +26,10 @@ export default {
     // filter: the current navigation ("all", "mine", "published", "draft", "trash")
 
     axios.get(window.CMS_URLS.index, { params: params }).then(function (resp) {
-      const url = resp.request.responseURL
-      replaceState(url)
+      if (resp.data.replaceUrl) {
+        const url = resp.request.responseURL
+        replaceState(url)
+      }
 
       if (callback && typeof callback === 'function') {
       // update data, nav and max page

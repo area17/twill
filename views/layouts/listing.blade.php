@@ -61,7 +61,7 @@
 
 @section('initialStore')
     window.CMS_URLS = {
-        index: @if(isset($indexUrl)) '{{ $indexUrl }}' @else window.location.href @endif,
+        index: @if(isset($indexUrl)) '{{ $indexUrl }}' @else window.location.href.split('?')[0] @endif,
         publish: '{{ $publishUrl }}',
         restore: '{{ $restoreUrl }}',
         reorder: '{{ $reorderUrl }}',
@@ -70,13 +70,13 @@
 
     window.STORE.datatable = {
       baseUrl: 'http://pentagram.com/work/',
-      page: 1,
-      maxPage: {{ $maxPage }},
-      offset: {{ $offset }},
+      page: {{ request('page') ?? 1 }},
+      maxPage: {{ $maxPage ?? 1 }},
       defaultMaxPage: {{ $defaultMaxPage ?? 1 }},
+      offset: {{ request('offset') ?? $offset ?? 60 }},
       defaultOffset: {{ $defaultOffset ?? 60 }},
       sortKey: '{{ $sort ? '' : 'name' }}',
-      sortDir: 'asc'
+      sortDir: '{{ request('sortDir') ?? 'asc' }}'
     }
 
     window.STORE.datatable.data = {!! json_encode($tableData) !!}
@@ -84,7 +84,7 @@
 
     window.STORE.datatable.navigation = {!! json_encode($tableMainFilters) !!}
 
-    window.STORE.datatable.filter = { status: 'all' }
+    window.STORE.datatable.filter = { status: '{{ $filters['status'] ?? 'all' }}' }
 @stop
 
 @push('extra_js')
