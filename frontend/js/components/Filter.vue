@@ -4,7 +4,7 @@
       <div class="filter__navigation"><slot name="navigation"></slot></div>
 
       <div class="filter__search">
-        <input type="search" class="form__input form__input--small" name="query" value="" :placeholder="placeholder" />
+        <input type="search" class="form__input form__input--small" name="search" value="" :placeholder="placeholder" />
         <a17-button class="filter__toggle" variant="ghost" @click="toggleFilter" v-if="withHiddenFilters" :aria-expanded="opened ?  'true' : 'false'" >Filter <span v-svg symbol="dropdown_module"></span></a17-button>
         <slot name="additional-actions"></slot>
       </div>
