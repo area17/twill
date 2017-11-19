@@ -5,16 +5,14 @@ const state = {
   startDate: window.STORE.publication.startDate || null,
   endDate: window.STORE.publication.endDate || null,
   visibility: 'public',
-  visibilityOptions: [
-    {
-      value: 'public',
-      label: 'Public'
-    },
-    {
-      value: 'private',
-      label: 'Private'
-    }
-  ],
+  visibilityOptions: window.STORE.publication.visibilityOptions || [{
+    value: 'public',
+    label: 'Public'
+  },
+  {
+    value: 'private',
+    label: 'Private'
+  }],
   submitOptions: {
     draft: [
       {
