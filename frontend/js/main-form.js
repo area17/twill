@@ -9,6 +9,8 @@ import openMediaLibrary from '@/behaviors/openMediaLibrary'
 
 // Page Components
 import a17StickyNav from '@/components/StickyNav.vue'
+import a17TitleEditor from '@/components/TitleEditor.vue'
+import a17Langswitcher from '@/components/LangSwitcher.vue'
 import a17Fieldset from '@/components/Fieldset.vue'
 import a17Publisher from '@/components/Publisher.vue'
 import a17Content from '@/components/Content.vue'
@@ -82,6 +84,8 @@ Window.vm = new Vue({
   el: '#app',
   components: {
     'a17-sticky-nav': a17StickyNav,
+    'a17-title-editor': a17TitleEditor,
+    'a17-langswitcher': a17Langswitcher,
     'a17-fieldset': a17Fieldset,
     'a17-content': a17Content,
     'a17-publisher': a17Publisher,

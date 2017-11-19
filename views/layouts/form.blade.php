@@ -6,12 +6,16 @@
             <form action="#" v-sticky data-sticky-id="navbar" data-sticky-offset="0" data-sticky-topoffset="12">
                 <div class="navbar navbar--sticky" data-sticky-top="navbar">
                     @php
+                        $customFieldsetsItems = $customFieldsetsItems ?? [];
                         array_unshift($customFieldsetsItems, [
                             'fieldset' => 'content',
                             'label' => 'Content'
                         ]);
                     @endphp
-                    <a17-sticky-nav data-sticky-target="navbar" :items="{{ json_encode($customFieldsetsItems) }}"></a17-sticky-nav>
+                    <a17-sticky-nav data-sticky-target="navbar" :items="{{ json_encode($customFieldsetsItems) }}">
+                        <a17-title-editor slot="title"></a17-title-editor>
+                        <a17-langswitcher slot="actions"></a17-langswitcher>
+                    </a17-sticky-nav>
                 </div>
                 <div class="container">
                     <div class="wrapper wrapper--reverse" v-sticky data-sticky-id="publisher" data-sticky-offset="80">

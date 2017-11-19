@@ -5,11 +5,11 @@
         <div class="stickyNav__links">
           <a href="#" v-for="(item, index) in navItems" :key="item.fieldset" @click.prevent="scrollToFieldset(index)" :class="{ 's--on' : item.active }">{{ item.label }}</a>
         </div>
-        <a17-title-editor></a17-title-editor>
+        <slot name="title"></slot>
       </div>
 
       <div class="stickyNav__actions">
-        <a17-langswitcher></a17-langswitcher>
+        <slot name="actions"></slot>
       </div>
     </div>
   </div>
@@ -20,15 +20,9 @@
   import debounce from 'lodash/debounce'
 
   import scrollToY from '@/utils/scrollToY.js'
-  import a17TitleEditor from '@/components/TitleEditor.vue'
-  import a17Langswitcher from '@/components/LangSwitcher.vue'
 
   export default {
     name: 'A17StickyNav',
-    components: {
-      'a17-title-editor': a17TitleEditor,
-      'a17-langswitcher': a17Langswitcher
-    },
     props: {
       items: {
         type: Array,
