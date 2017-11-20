@@ -22,9 +22,9 @@
                 </ul>
               </div>
             </a17-dropdown>
+            <input type="hidden" name="type" :value="type" />
           </div>
 
-          <input type="hidden" name="type" :value="type" />
           <!-- <div slot="hidden-filters">
           </div> -->
         </a17-filter>
@@ -168,6 +168,8 @@
 
         if (data) data.page = this.page
         else data = { page: this.page }
+
+        data.type = { page: this.page }
 
         return data
       },
