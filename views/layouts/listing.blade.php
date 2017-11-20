@@ -30,9 +30,6 @@
                         </a17-dropdown>
                     </div>
 
-                    {{--<a17-vselect class="secondarynav secondarynav--mobile secondarynav--select" slot="navigation" name="filters-navigation" :options="selectItems" :selected="selectedNav">--}}
-                    {{--</a17-vselect>--}}
-
                     @hasSection('hiddenFilters')
                         <div slot="hidden-filters">
                             @yield('hiddenFilters')

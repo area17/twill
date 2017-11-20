@@ -28,6 +28,9 @@ import datatable from '@/store/modules/datatable'
 
 store.registerModule('datatable', datatable)
 
+// LocalStorage
+import { getStorage } from '@/utils/localeStorage.js'
+
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
 Window.vm = new Vue({
@@ -100,6 +103,20 @@ Window.vm = new Vue({
   },
   created: function () {
     openMediaLibrary()
+    let reload = false
+    if (getStorage('page-offset')) {
+      this.$store.commit('updateDatableOffset', parseInt(getStorage('page-offset')))
+      reload = true
+    }
+
+    if (getStorage('columns-visible')) {
+      this.$store.commit('updateDatableVisibility', JSON.parse(getStorage('columns-visible')))
+      reload = true
+    }
+
+    if (reload) {
+      this.$store.dispatch('getDatatableDatas')
+    }
   }
 })
 

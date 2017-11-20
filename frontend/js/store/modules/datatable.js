@@ -1,5 +1,6 @@
 import api from '../api/datatable'
 import * as types from '../mutation-types'
+import { setStorage } from '@/utils/localeStorage.js'
 
 const state = {
   baseUrl: window.STORE.datatable.baseUrl || '',
@@ -71,7 +72,7 @@ const mutations = {
   },
   [types.UPDATE_DATATABLE_OFFSET] (state, offsetNumber) {
     state.offset = offsetNumber
-    // todo : save offset settings in localStorage too
+    setStorage('page-offset', state.offset)
   },
   [types.UPDATE_DATATABLE_PAGE] (state, pageNumber) {
     state.page = pageNumber
@@ -81,8 +82,9 @@ const mutations = {
     state.maxPage = maxPage
   },
   [types.UPDATE_DATATABLE_VISIBLITY] (state, columnNames) {
+    setStorage('columns-visible', JSON.stringify(columnNames))
     state.columns.forEach(function (column) {
-      for (var i = 0; i < columnNames.length; i++) {
+      for (let i = 0; i < columnNames.length; i++) {
         if (columnNames[i] === column.name) {
           column.visible = true
 

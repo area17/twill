@@ -2,7 +2,7 @@
   <tr class="tablehead">
     <td class="tablehead__cell f--small" v-for="col in columns" @click="sortColumn(col)" :key="col.name" :class="cellClasses(col)">
       <span v-if="isSortableColumn(col)">{{ col.label }} <span class="tablehead__arrow">↓</span></span>
-      <a v-if="col.name === 'bulk'" href="#" @click.prevent.stop="toggleBulkSelect()"><a17-checkbox name="bulkAll" :value="1" :initialValue="bulkValue" :class="{ 'checkbox--minus' : checkboxMinus }" ></a17-checkbox></span></a>
+      <a v-if="col.name === 'bulk'" href="#" @click.prevent.stop="toggleBulkSelect()"><span><a17-checkbox name="bulkAll" :value="1" :initialValue="bulkValue" :class="{ 'checkbox--minus' : checkboxMinus }" ></a17-checkbox></span></a>
     </td>
     <td class="tablehead__spacer">&nbsp;</td>
   </tr>
