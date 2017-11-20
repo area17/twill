@@ -2,7 +2,7 @@
   <a17-inputframe :error="error" :label="label" :note="note" :size="size">
     <div class="vselect" :class="vselectClasses">
       <div class="vselect__field">
-        <input type="hidden" :name="name" :value="uniqValue" v-if="hasUniqValue" />
+        <input type="hidden" :name="name" :value="inputValue" />
         <v-select
           :multiple="multiple"
           :placeholder="placeholder"
@@ -109,15 +109,19 @@
       }
     },
     computed: {
-      uniqValue: function () {
+      inputValue: function () {
+        console.log(this.value)
+
         if (this.value) {
-          return this.value.value
+          if (!this.multiple) { // single selects
+            if (typeof this.value === 'object') return this.value.value
+          } else if (this.multiple) { // multiple selects
+            if (Array.isArray(this.value)) return this.value.join(',')
+          }
+          return this.value
         } else {
           return ''
         }
-      },
-      hasUniqValue: function () {
-        return !this.multiple && typeof this.value === 'object'
       },
       vselectClasses: function () {
         return [
