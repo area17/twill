@@ -216,6 +216,28 @@
     }
   }
 
+  .button--dropdown-transparent {
+    position: relative;
+    border: none;
+    background: transparent;
+    padding-left: 15px;
+    padding-right: 15px + 4px + 20px;
+
+    &:after {
+      top: 50%;
+      right: 15px;
+      content: '';
+      position: absolute;
+      display: block;
+      width: 0;
+      height: 0;
+      margin-top: -1px;
+      border-width: 4px 4px 0;
+      border-style: solid;
+      border-color: $color__icons transparent transparent;
+    }
+  }
+
   .button--ghost {
     height: $height_small_btn;
     line-height: $height_small_btn;

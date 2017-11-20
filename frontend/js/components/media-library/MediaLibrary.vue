@@ -11,7 +11,7 @@
 
           <div class="secondarynav secondarynav--mobile secondarynav--dropdown" slot="navigation">
             <a17-dropdown ref="secondaryNavDropdown" position="bottom-left" width="full" :offset="0">
-              <a17-button variant="dropdown" size="small" @click="$refs.secondaryNavDropdown.toggle()">
+              <a17-button class="secondarynav__button" variant="dropdown-transparent" size="small" @click="$refs.secondaryNavDropdown.toggle()">
                 <span class="secondarynav__link">{{ selectedType.text }}</span><span class="secondarynav__number">{{ selectedType.total }}</span>
               </a17-button>
               <div slot="dropdown__content">
