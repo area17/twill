@@ -14,7 +14,7 @@
         </div>
         <form class="mediasidebar__inner mediasidebar__form" @submit="bulkUpdate" :class="formClasses">
           <input type="hidden" name="ids" :value="selectMediasIds" />
-          <a17-vselect label="Tags" name="tags" :multiple="true" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true"  size="small"></a17-vselect>
+          <a17-vselect label="Tags" name="tags" :multiple="true" :selected="selectMediasTags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small"></a17-vselect>
           <a17-button type="submit" variant="ghost" :disabled="updateInProgress">Update</a17-button>
         </form>
       </template>
@@ -25,7 +25,7 @@
           <p class="mediasidebar__name">{{ selectedMedias[0].name }}</p>
 
           <ul class="mediasidebar__metadatas">
-            <li class="f--small">File size : {{ selectedMedias[0].size }}</li>
+            <li class="f--small" v-if="selectedMedias[0].size" >File size : {{ selectedMedias[0].size }}</li>
             <li class="f--small">Dimensions : {{ selectedMedias[0].width }} x {{ selectedMedias[0].height }}</li>
           </ul>
 
@@ -39,7 +39,7 @@
           <input type="hidden" name="id" :value="selectedMedias[0].id" />
           <a17-textfield label="Alt text" name="alt-text" :initialValue="selectedMedias[0].metadatas.default.altText" @change="updateAltText" size="small"></a17-textfield>
           <a17-textfield label="Caption" name="caption" :initialValue="selectedMedias[0].metadatas.default.caption" @change="updateCaption" size="small"></a17-textfield>
-          <a17-vselect label="Tags" name="tags" :multiple="true" :searchable="true" :taggable="true" :pushTags="true" size="small"></a17-vselect>
+          <a17-vselect label="Tags" name="tags" :multiple="true" :selected="selectedMedias[0].tags" :searchable="true" :taggable="true" :pushTags="true" size="small"></a17-vselect>
           <a17-button type="submit" variant="ghost" :disabled="updateInProgress">Update</a17-button>
         </form>
       </template>
@@ -73,6 +73,9 @@
       }
     },
     computed: {
+      selectMediasTags: function () {
+        return [] // Todo : display merged tags
+      },
       selectMediasIds: function () {
         return this.selectedMedias.map(function (media) { return media.id }).join(',')
       },
@@ -172,7 +175,7 @@
 
   .mediasidebar__inner {
     padding:20px;
-    overflow: hidden;
+    // overflow: hidden;
   }
 
   .mediasidebar__inner button {

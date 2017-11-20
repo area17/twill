@@ -333,8 +333,8 @@
     input[type="text"],
     input[type="email"],
     input[type="password"] {
-      height:$height_input - 10px;
-      line-height:$height_input - 10px;
+      height:$height_input - 10px - 2px;
+      line-height:$height_input - 10px - 2px;
     }
   }
 </style>
