@@ -1,13 +1,14 @@
 @extends('cms-toolkit::layouts.main')
 
 @php
-    $emptyDataTable = $emptyMessage ?? "There is no items here yet."
+    $emptyDataTable = $emptyMessage ?? "There is no items here yet.";
+    $routeName = $moduleName ?? Route::getCurrentRoute();
 @endphp
 
 @section('appTypeClass', 'app--listing')
 
 @section('content')
-    <div class="listing">
+    <div class="listing" xmlns:v-on="http://www.w3.org/1999/xhtml">
         <div class="listing__nav">
             <div class="container" ref="form">
                 <a17-filter v-on:submit="filterListing" v-bind:closed="hasBulkIds" initial-search-value="{{ $filters['search'] ?? '' }}">
@@ -77,6 +78,7 @@
       sortKey: '{{ $reorder ? (request('sortKey') ?? '') : (request('sortKey') ?? 'name') }}',
       sortDir: '{{ request('sortDir') ?? 'asc' }}',
       baseUrl: 'https://cms-sandbox.a17.io/',
+      localSlug: '{{ $currentUser->id }}__{{ $routeName }}'
     }
 @stop
 

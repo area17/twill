@@ -68,6 +68,7 @@ Window.vm = new Vue({
       return navItem[0]
     },
     ...mapState({
+      localSlug: state => state.datatable.localSlug,
       navActive: state => state.datatable.filter.status,
       baseUrl: state => state.datatable.baseUrl,
       bulkIds: state => state.datatable.bulk
@@ -104,13 +105,15 @@ Window.vm = new Vue({
   created: function () {
     openMediaLibrary()
     let reload = false
-    if (getStorage('page-offset')) {
-      this.$store.commit('updateDatableOffset', parseInt(getStorage('page-offset')))
+    const pageOffset = getStorage(this.localSlug + '_page-offset')
+    if (pageOffset) {
+      this.$store.commit('updateDatableOffset', parseInt(pageOffset))
       reload = true
     }
 
-    if (getStorage('columns-visible')) {
-      this.$store.commit('updateDatableVisibility', JSON.parse(getStorage('columns-visible')))
+    const columnsVisible = getStorage(this.localSlug + '_columns-visible')
+    if (columnsVisible) {
+      this.$store.commit('updateDatableVisibility', JSON.parse(columnsVisible))
       reload = true
     }
 
