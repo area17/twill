@@ -25,7 +25,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         'fTag' => 'tag_id',
     ];
 
-    protected $perPage = 20;
+    protected $perPage = 40;
 
     protected $endpointType;
 
@@ -33,7 +33,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     {
         parent::__construct($app, $request);
         $this->removeMiddleware('can:edit');
-        $this->middleware('can:edit', ['only' => ['create', 'signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
+        $this->middleware('can:edit', ['only' => ['signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = config('cms-toolkit.media_library.endpoint_type');
     }
 
@@ -63,9 +63,10 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
         $updateUrl = route('admin.media-library.medias.single-update');
         $updateBulkUrl = route('admin.media-library.medias.bulk-update');
+        $deleteBulkUrl = route('admin.media-library.medias.bulk-delete');
 
         $data = [
-            'items' => $items->map(function ($item) use ($updateUrl, $updateBulkUrl) {
+            'items' => $items->map(function ($item) use ($updateUrl, $updateBulkUrl, $deleteBulkUrl) {
                 return [
                     'id' => $item->id,
                     'name' => $item->filename,
@@ -76,6 +77,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
                     'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
                     'updateUrl' => $updateUrl,
                     'updateBulkUrl' => $updateBulkUrl,
+                    'deleteBulkUrl' => $deleteBulkUrl,
                     'metadatas' => [
                         'default' => [
                             'caption' => $item->caption,

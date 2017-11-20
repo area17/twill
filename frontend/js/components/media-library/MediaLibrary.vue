@@ -5,7 +5,7 @@
         <a17-filter @submit="submitFilter">
           <ul class="secondarynav secondarynav--desktop" slot="navigation">
             <li class="secondarynav__item" v-for="navType in types" :class="{ 's--on': type === navType.value, 's--disabled' : type !== navType.value && strict }">
-              <a href="#" @click.prevent="updateType(navType.value)"><span class="secondarynav__link">{{ navType.text }}</span> <span class="secondarynav__number">({{ navType.total }})</span></a>
+              <a href="#" @click.prevent="updateType(navType.value)"><span class="secondarynav__link">{{ navType.text }}</span> <span v-if="navType.total > 0" class="secondarynav__number">({{ navType.total }})</span></a>
             </li>
           </ul>
 
@@ -33,7 +33,7 @@
       <div class="medialibrary__inner">
         <div class="medialibrary__grid">
           <aside class="medialibrary__sidebar">
-            <a17-mediasidebar :selectedMedias="selectedMedias" @clear="clearSelectedMedias"></a17-mediasidebar>
+            <a17-mediasidebar :selectedMedias="selectedMedias" @clear="clearSelectedMedias" @delete="deleteSelectedMedias"></a17-mediasidebar>
           </aside>
           <footer class="medialibrary__footer" v-if="selectedMedias.length && showInsert && connector">
             <a17-button variant="action" @click="saveAndClose">{{ selectedMedias.length > 1 ? btnMultiLabel : btnLabel }}</a17-button>
@@ -172,6 +172,12 @@
         return data
       },
       clearSelectedMedias: function () {
+        this.selectedMedias.splice(0)
+      },
+      deleteSelectedMedias: function () {
+        this.fullMedias = this.fullMedias.filter((media) => {
+          return !this.selectedMedias.includes(media)
+        })
         this.selectedMedias.splice(0)
       },
       clearFullMedias: function () {

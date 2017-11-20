@@ -53,6 +53,7 @@
 <script>
   import { mapState } from 'vuex'
   import FormDataAsObj from '@/utils/formDataAsObj.js'
+  import api from '../../store/api/media-library'
 
   import a17MediaSidebarUpload from '@/components/media-library/MediaSidebarUpload'
 
@@ -91,7 +92,21 @@
     },
     methods: {
       deleteSelectedMedias: function () {
-        console.log('Deleted files')
+        let self = this
+
+        this.updateInProgress = true
+
+        if (this.selectedMedias.length > 1) {
+          api.bulkDelete(this.selectedMedias[0].deleteBulkUrl, { ids: this.selectMediasIds }, function (resp) {
+            self.updateInProgress = false
+          })
+        } else {
+          api.delete(this.selectedMedias[0].deleteUrl, function (resp) {
+            self.updateInProgress = false
+          })
+        }
+
+        this.$emit('delete')
       },
       clear: function () {
         this.$emit('clear')
@@ -107,12 +122,9 @@
 
         this.updateInProgress = true
 
-        console.log('Bulk Update Ajax goes here')
-        console.log(data)
-
-        setTimeout(function () {
+        api.update(this.selectedMedias[0].updateBulkUrl, data, function (resp) {
           self.updateInProgress = false
-        }, 500)
+        })
       },
       singleUpdate: function (event) {
         event.preventDefault()
@@ -122,12 +134,9 @@
 
         this.updateInProgress = true
 
-        console.log('Single Update Ajax goes here')
-        console.log(data)
-
-        setTimeout(function () {
+        api.update(this.selectedMedias[0].updateUrl, data, function (resp) {
           self.updateInProgress = false
-        }, 500)
+        })
       },
       updateAltText: function (val) {
         this.selectedMedias[0].metadatas.default.altText = val

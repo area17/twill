@@ -30,8 +30,11 @@ class MediaRepository extends ModuleRepository
                 if ($object->delete() && config('cms-toolkit.media_library.cascade_delete')) {
                     Storage::disk(config('cms-toolkit.media_library.disk'))->delete($storageId);
                 }
+                return true;
             }
         }
+
+        return false;
     }
 
     public function prepareFieldsBeforeCreate($fields)

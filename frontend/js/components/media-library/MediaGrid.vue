@@ -6,7 +6,7 @@
         <span class="mediagrid__progressError" v-else>Upload Error</span>
       </span>
     </div>
-    <div class="mediagrid__item" v-for="(media, index) in gridMedias" :key="media.id">
+    <div class="mediagrid__item" v-for="(media, index) in medias" :key="media.id">
       <span class="mediagrid__button" :class="{ 's--picked': isSelected(media.id) }" @click="toggleSelection(media.id)"><img :src="media.src" class="mediagrid__img" /></span>
     </div>
   </div>
@@ -29,11 +29,6 @@
         default: function () {
           return []
         }
-      }
-    },
-    data: function () {
-      return {
-        gridMedias: this.medias
       }
     },
     computed: {
