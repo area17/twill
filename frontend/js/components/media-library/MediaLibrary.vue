@@ -24,10 +24,9 @@
             </a17-dropdown>
           </div>
 
-          <div slot="hidden-filters">
-            <input type="hidden" name="type" :value="type" />
-            Additional filters goes here
-          </div>
+          <input type="hidden" name="type" :value="type" />
+          <!-- <div slot="hidden-filters">
+          </div> -->
         </a17-filter>
       </div>
 
@@ -168,6 +167,7 @@
         let data = FormDataAsObj(form)
 
         if (data) data.page = this.page
+        else data = { page: this.page }
 
         return data
       },
@@ -187,19 +187,10 @@
 
         // see api/media-library for actual ajax
         api.get(this.endpoint, formdata, function (resp) {
-          // TEMP : randomize ID, ratios, name and SRC for demo purpose
-          resp.data.forEach(function (media) {
-            const ratio = (Math.round(Math.random() * 10) > 5) ? '300x200' : '200x300'
-            media.id = Math.round(Math.random() * 999999)
-            media.name = 'image_' + media.id + '.jpg'
-            media.src = 'https://source.unsplash.com/random/' + ratio + '?sig=' + media.id
-            media.original = media.src
-            media.metadatas.default.altText = media.name
-          })
-
           // add medias here
-          self.fullMedias.push(...resp.data)
-
+          self.fullMedias.push(...resp.data.items)
+          self.maxPage = resp.data.maxPage
+          self.$store.commit('updateMediaTypeTotal', { type: self.type, total: resp.data.total })
           // re-listen for scroll position
           self.$nextTick(function () {
             if (self.gridHeight !== list.scrollHeight) {

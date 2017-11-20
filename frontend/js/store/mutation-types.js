@@ -14,6 +14,7 @@ export const UPDATE_LANG = 'updateLanguage'
 export const PUBLISH_LANG = 'updatePublishedLanguage'
 
 /* media-library */
+export const UPDATE_MEDIA_TYPE_TOTAL = 'updateMediaTypeTotal'
 export const SAVE_MEDIAS = 'saveSelectedMedias'
 export const DESTROY_MEDIAS = 'destroySelectedMedias'
 export const REORDER_MEDIAS = 'reorderSelectedMedias'

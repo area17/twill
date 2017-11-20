@@ -306,6 +306,10 @@ class CmsToolkitServiceProvider extends ServiceProvider
             View::composer('cms-toolkit::*', CurrentUser::class);
         }
 
+        if (config('cms-toolkit.enabled.media-library')) {
+            View::share('mediaLibraryUrl', route('admin.media-library.medias.index'));
+        }
+
         View::composer('cms-toolkit::partials.navigation.*', ActiveNavigation::class);
     }
 

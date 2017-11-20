@@ -7,6 +7,7 @@ use A17\CmsToolkit\Services\Uploader\SignS3Upload;
 use A17\CmsToolkit\Services\Uploader\SignS3UploadListener;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
+use ImageService;
 use Input;
 
 class MediaLibraryController extends ModuleController implements SignS3UploadListener
@@ -20,11 +21,11 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     ];
 
     protected $defaultFilters = [
-        'fSearch' => 'search',
+        'search' => 'search',
         'fTag' => 'tag_id',
     ];
 
-    protected $perPage = 30;
+    protected $perPage = 10;
 
     protected $endpointType;
 
@@ -52,7 +53,44 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
             'filesizeLimit' => config('cms-toolkit.media_library.filesize_limit'),
         ];
 
-        return $this->getIndexData($prependScope ?? []) + $uploaderConfig + $this->request->all();
+        return $this->getIndexData() + ($uploaderConfig);
+    }
+
+    public function getIndexData($prependScope = [])
+    {
+        $scopes = $this->filterScope($prependScope);
+        $items = $this->getIndexItems($scopes);
+
+        $data = [
+            'items' => $items->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'name' => $item->filename,
+                    'src' => ImageService::getCmsUrl($item->uuid, ["h" => "256"]),
+                    'original' => ImageService::getRawUrl($item->uuid),
+                    'width' => $item->width,
+                    'height' => $item->height,
+                    'edit' => moduleRoute($this->moduleName, $this->routePrefix, 'edit', $item->id),
+                    'delete' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
+                    'metadatas' => [
+                        'default' => [
+                            'caption' => $item->caption,
+                            'altText' => $item->alt_text,
+                        ],
+                        'custom' => [
+                            'caption' => null,
+                            'altText' => null,
+                        ],
+                    ],
+                ];
+            })->toArray(),
+            'maxPage' => $items->lastPage(),
+            'total' => $items->total(),
+            'offset' => $items->perPage(),
+            'filters' => json_decode($this->request->get('filter'), true) ?? [],
+        ];
+
+        return array_replace_recursive($data, $this->indexData($this->request));
     }
 
     public function indexData($request)
@@ -60,6 +98,11 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         return [
             'fTagList' => [null => 'All tags'] + $this->repository->getTagsList(),
         ];
+    }
+
+    protected function getRequestFilters()
+    {
+        return request()->has('search') ? ['search' => request('search')] : [];
     }
 
     public function store()

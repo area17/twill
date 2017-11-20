@@ -21,9 +21,11 @@
             <section class="main">
                 <div class="app @yield('appTypeClass')" id="app" v-cloak>
                     @yield('content')
-                    <a17-modal ref="mediaLibrary" title="Media Library" mode="wide">
-                        <a17-medialibrary endpoint="https://www.mocky.io/v2/59edf8273300000e00b5c7d6" />
-                    </a17-modal>
+                    @if (config('cms-toolkit.enabled.media-library'))
+                        <a17-modal ref="mediaLibrary" title="Media Library" mode="wide">
+                            <a17-medialibrary endpoint="{{ $mediaLibraryUrl }}" />
+                        </a17-modal>
+                    @endif
                     <a17-notif variant="success"></a17-notif>
                     <a17-notif variant="error"></a17-notif>
                 </div>
@@ -54,17 +56,12 @@
               {
                 value: 'image',
                 text: 'Images',
-                total: 1321
-              },
-              {
-                value: 'video',
-                text: 'Vidéos',
-                total: 152
+                total: 0
               },
               {
                 value: 'file',
                 text: 'Files',
-                total: 81
+                total: 0
               }
             ]
 

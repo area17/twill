@@ -16,6 +16,12 @@ const state = {
 const getters = {}
 
 const mutations = {
+  [types.UPDATE_MEDIA_TYPE_TOTAL] (state, type) {
+    state.types = state.types.map(t => {
+      if (t.value === type.type) t.total = type.total
+      return t
+    })
+  },
   [types.SAVE_MEDIAS] (state, medias) {
     if (state.connector) {
       if (state.selected[state.connector] && state.selected[state.connector].length) {

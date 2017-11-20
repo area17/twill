@@ -707,7 +707,7 @@ abstract class ModuleController extends Controller
     {
         $scope = [];
 
-        $requestFilters = json_decode($this->request->get('filter'), true) ?? [];
+        $requestFilters = $this->getRequestFilters();
 
         $this->filters = array_merge($this->filters, $this->defaultFilters);
 
@@ -748,6 +748,11 @@ abstract class ModuleController extends Controller
         }
 
         return $prepend + $scope;
+    }
+
+    protected function getRequestFilters()
+    {
+        return json_decode($this->request->get('filter'), true) ?? [];
     }
 
     protected function addLock($id)
