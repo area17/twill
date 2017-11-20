@@ -59,6 +59,7 @@ const A17Config = {
     // Media Library
     Vue.component('a17-medialibrary', a17MediaLibrary)
 
+    // Globale Vue mixin : Use global mixins sparsely and carefully!
     Vue.mixin({
       methods: {
         openFreeMediaLibrary: function () {
