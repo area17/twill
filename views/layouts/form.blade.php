@@ -120,19 +120,15 @@
       {
         name: 'subtitle', // text-field with language
         value: {
-          'fr-FR': 'FR Subtitle',
-          'en-UK': 'UK Subtitle',
-          'en-US': 'US subtitle',
-          'de': 'de subtitle'
+          'fr': 'FR Subtitle',
+          'en': 'EN Subtitle'
         }
       },
       {
         name: 'description', // text-field with language
         value: {
-          'fr-FR': 'FR description',
-          'en-UK': 'UK description',
-          'en-US': 'US description',
-          'de': 'DE description'
+          'fr': 'FR description',
+          'en': 'EN description'
         }
       },
       {
@@ -155,10 +151,8 @@
       {
         name: 'case_study', // wysiwyg
         value: {
-          'fr-FR': '<p>FR Some html here<br />Why not it’s possible too.</p>',
-          'en-UK': '<p>UK Some html here<br />Why not it’s possible too.</p>',
-          'en-US': '<p>US Some html here<br />Why not it’s possible too.</p>',
-          'de': '<p>DE Some html here<br />Why not it’s possible too.</p>'
+          'fr': '<p>FR Some html here<br />Why not it’s possible too.</p>',
+          'en': '<p>EN Some html here<br />Why not it’s possible too.</p>'
         }
       }
     ]

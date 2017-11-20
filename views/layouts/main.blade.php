@@ -42,37 +42,7 @@
 
             // languages
             window.STORE.languages = {}
-            window.STORE.languages.all = [
-              {
-                shortlabel: 'FR',
-                label: 'French (Default)',
-                value: 'fr-FR',
-                // This is the default language
-                disabled: true,
-                published: true
-              },
-              {
-                shortlabel: 'EN',
-                label: 'English - UK',
-                value: 'en-UK',
-                disabled: false,
-                published: false
-              },
-              {
-                shortlabel: 'US',
-                label: 'English - US',
-                value: 'en-US',
-                disabled: false,
-                published: true
-              },
-              {
-                shortlabel: 'DE',
-                label: 'German',
-                value: 'de',
-                disabled: false,
-                published: false
-              }
-            ]
+            window.STORE.languages.all = {!! json_encode(getLanguagesForVueStore()) !!}
 
             // form
             window.STORE.publication = {}
