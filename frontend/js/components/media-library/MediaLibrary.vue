@@ -169,8 +169,6 @@
         if (data) data.page = this.page
         else data = { page: this.page }
 
-        data.type = { page: this.page }
-
         return data
       },
       clearSelectedMedias: function () {
