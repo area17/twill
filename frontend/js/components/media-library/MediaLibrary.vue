@@ -22,7 +22,6 @@
                 </ul>
               </div>
             </a17-dropdown>
-            <input type="hidden" name="type" :value="type" />
           </div>
 
           <!-- <div slot="hidden-filters">
@@ -108,7 +107,7 @@
       ...mapState({
         connector: state => state.mediaLibrary.connector,
         max: state => state.mediaLibrary.max,
-        type: state => state.mediaLibrary.type, // image, video, audio or pdf
+        type: state => state.mediaLibrary.type, // image, video, file
         types: state => state.mediaLibrary.types,
         strict: state => state.mediaLibrary.strict
       })
@@ -168,6 +167,8 @@
 
         if (data) data.page = this.page
         else data = { page: this.page }
+
+        data.type = this.type
 
         return data
       },
