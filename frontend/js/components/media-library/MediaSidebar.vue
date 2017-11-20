@@ -9,7 +9,7 @@
           <!--Actions-->
           <a17-buttonbar class="mediasidebar__buttonbar">
             <a href="#" download><span v-svg symbol="download"></span></a>
-            <button type="button" @click="deleteSelectedMedias"><span v-svg symbol="trash"></span></button>
+            <button type="button" v-if="allowDelete" @click="deleteSelectedMedias"><span v-svg symbol="trash"></span></button>
           </a17-buttonbar>
         </div>
         <form class="mediasidebar__inner mediasidebar__form" @submit="bulkUpdate" :class="formClasses">
@@ -32,7 +32,7 @@
           <!--Actions-->
           <a17-buttonbar class="mediasidebar__buttonbar">
             <a :href="selectedMedias[0].original" download><span v-svg symbol="download"></span></a>
-            <button type="button" @click="deleteSelectedMedias"><span v-svg symbol="trash"></span></button>
+            <button type="button" v-if="allowDelete" @click="deleteSelectedMedias"><span v-svg symbol="trash"></span></button>
           </a17-buttonbar>
         </div>
         <form class="mediasidebar__inner mediasidebar__form" @submit="singleUpdate" :class="formClasses">
@@ -74,6 +74,11 @@
     computed: {
       selectMediasIds: function () {
         return this.selectedMedias.map(function (media) { return media.id }).join(',')
+      },
+      allowDelete: function () {
+        return this.selectedMedias.every((media) => {
+          return media.deleteUrl
+        })
       },
       formClasses: function () {
         return {
