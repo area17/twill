@@ -25,7 +25,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         'fTag' => 'tag_id',
     ];
 
-    protected $perPage = 10;
+    protected $perPage = 20;
 
     protected $endpointType;
 
@@ -53,7 +53,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
             'filesizeLimit' => config('cms-toolkit.media_library.filesize_limit'),
         ];
 
-        return $this->getIndexData() + ($uploaderConfig);
+        return $this->getIndexData() + $uploaderConfig;
     }
 
     public function getIndexData($prependScope = [])
@@ -61,8 +61,11 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         $scopes = $this->filterScope($prependScope);
         $items = $this->getIndexItems($scopes);
 
+        $updateUrl = route('admin.media-library.medias.single-update');
+        $updateBulkUrl = route('admin.media-library.medias.bulk-update');
+
         $data = [
-            'items' => $items->map(function ($item) {
+            'items' => $items->map(function ($item) use ($updateUrl, $updateBulkUrl) {
                 return [
                     'id' => $item->id,
                     'name' => $item->filename,
@@ -70,8 +73,9 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
                     'original' => ImageService::getRawUrl($item->uuid),
                     'width' => $item->width,
                     'height' => $item->height,
-                    'edit' => moduleRoute($this->moduleName, $this->routePrefix, 'edit', $item->id),
-                    'delete' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
+                    'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
+                    'updateUrl' => $updateUrl,
+                    'updateBulkUrl' => $updateBulkUrl,
                     'metadatas' => [
                         'default' => [
                             'caption' => $item->caption,
@@ -82,6 +86,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
                             'altText' => null,
                         ],
                     ],
+
                 ];
             })->toArray(),
             'maxPage' => $items->lastPage(),
@@ -152,33 +157,9 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         return $this->repository->create($fields);
     }
 
-    public function edit($id)
-    {
-        $media = $this->repository->getById($id);
-        return [
-            'isBulkUpdate' => false,
-            'media' => $media,
-            'tags' => $media->tags,
-            'moduleName' => $this->moduleName,
-            'modelName' => $this->modelName,
-            'routePrefix' => $this->routePrefix,
-        ];
-    }
-
-    public function bulkEdit()
-    {
-        $ids = $this->request->input('ids');
-        $tags = $this->repository->getTags(null, $ids);
-        return [
-            'isBulkUpdate' => true,
-            'tags' => $tags,
-            'media' => $this->repository->getById(last($ids)),
-        ];
-    }
-
     public function tags()
     {
-        $query = $this->request->input('query');
+        $query = $this->request->input('q');
         $tags = $this->repository->getTags($query);
         return response()->json($tags, 200);
     }

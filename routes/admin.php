@@ -7,11 +7,10 @@ if (config('cms-toolkit.enabled.users-management')) {
 if (config('cms-toolkit.enabled.media-library')) {
     Route::group(['prefix' => 'media-library', 'as' => 'media-library.'], function () {
         Route::post('sign-s3-upload', ['as' => 'sign-s3-upload', 'uses' => 'MediaLibraryController@signS3Upload']);
-        Route::get('medias/bulk-edit', ['as' => 'medias.bulk-edit', 'uses' => 'MediaLibraryController@bulkEdit']);
         Route::put('medias/single-update', ['as' => 'medias.single-update', 'uses' => 'MediaLibraryController@singleUpdate']);
         Route::put('medias/bulk-update', ['as' => 'medias.bulk-update', 'uses' => 'MediaLibraryController@bulkUpdate']);
         Route::get('medias/tags', ['as' => 'medias.tags', 'uses' => 'MediaLibraryController@tags']);
-        Route::resource('medias', 'MediaLibraryController', ['only' => ['index', 'edit', 'store', 'destroy']]);
+        Route::resource('medias', 'MediaLibraryController', ['only' => ['index', 'store', 'destroy']]);
     });
 }
 
