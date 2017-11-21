@@ -35,5 +35,10 @@ Window.vm = new Vue({
   }
 })
 
+// User header dropdown
+/* eslint-disable no-new */
+/* eslint no-unused-vars: "off" */
+Window.vheader = new Vue({ el: '#headerUser' })
+
 // DOM Ready general actions
 document.addEventListener('DOMContentLoaded', main)

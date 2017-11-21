@@ -68,6 +68,12 @@ $height__nav: 60px;
   a {
     text-decoration:none;
     color:inherit;
+  }
+}
+
+.header__title,
+.header__nav {
+  a {
     padding:0 17px;
   }
 }
@@ -92,6 +98,26 @@ $height__nav: 60px;
 
 .header__user {
   display: none;
+
+  a {
+    .icon {
+      position:relative;
+      margin-left:5px;
+      top:-1px;
+      color:$color__text--forms;
+    }
+
+    &:hover .icon {
+      color:$color__background;
+    }
+  }
+
+  .dropdown--active {
+    a,
+    a .icon {
+      color:$color__background;
+    }
+  }
 
   @include breakpoint('large+') {
     display:block;
