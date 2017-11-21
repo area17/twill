@@ -30,12 +30,12 @@
     <!-- Actual table content -->
     <div class="container">
       <div class="datatable__table" :class="isEmptyDatable">
-          <div v-if="loading" class="datatable__loading">
-            <div class="spinner">
-              <div class="dot1"></div>
-              <div class="dot2"></div>
-            </div>
+        <div v-if="loading" class="datatable__loading">
+          <div class="spinner">
+            <div class="dot1"></div>
+            <div class="dot2"></div>
           </div>
+        </div>
         <a17-table :xScroll="xScroll" @scroll="updateScroll">
           <thead>
             <a17-tablehead :columns="visibleColumns" ref="thead"></a17-tablehead>
@@ -371,10 +371,15 @@
   .datatable__loading {
     display: flex;
     width: 100%;
-    height: 50px;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba($color__border--light, 0.95);
+    // height: 50px;
+    padding:10vh 0;
+    background-color: rgba($color__background, 0.5);
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index: $zindex__loadingTable;
 
     .spinner {
       margin: 100px auto;

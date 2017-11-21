@@ -160,7 +160,7 @@
   .filter__toggle {
     position:relative;
     padding-right:  20px + 20px !important;
-    margin-left:15px;
+    margin-left:15px !important;
 
     .icon {
       transition: all .2s linear;
