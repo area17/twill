@@ -4,7 +4,7 @@
       <h2 class="titleEditor__title" :class="{ 'titleEditor__title-only' : !permalink }"><a @click.prevent="$refs.editModal.open()" href="#"><span class="f--underlined--o">{{ title }}</span> <span v-svg symbol="edit"></span></a></h2>
       <input type="hidden" name="title" :value="title"/>
       <input type="hidden" name="permalink" :value="permalink"/>
-      <a v-if="permalink" :href="fullUrl" target="_blank" class="titleEditor__permalink f--small"><span class="f--note f--external f--underlined--o">{{ fullUrl | prettierUrl }}</span></a>
+      <a v-if="permalink" :href="fullUrl" target="_blank" class="titleEditor__permalink f--small"><span class="f--note f--external f--underlined--o">{{ fullUrl | prettierUrl }} <span v-svg symbol="arrow-external"></span></span></a>
 
       <!-- Editing modal -->
       <a17-modal class="modal--form" ref="editModal" title="Update item">

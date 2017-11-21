@@ -173,7 +173,7 @@
       },
       resize: debounce(function () {
         this.getColumnWidth()
-      }, 200),
+      }, 100),
       initEvents: function () {
         let self = this
         window.addEventListener('resize', () => self.resize())
@@ -216,8 +216,15 @@
         this.$store.dispatch('getDatatableDatas')
       }
     },
+    watch: {
+      loading: function () {
+        this.$nextTick(function () {
+          this.getColumnWidth()
+        })
+      }
+    },
     beforeMount: function () {
-      // bulk edit colmun
+      // bulk edit column
       const bulkColumn = {
         name: 'bulk',
         label: '',

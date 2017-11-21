@@ -7,7 +7,7 @@ Showing an arrow close to the text :
 
 ```
 <div class="styleguide--demo">
-    <a class="f--external" href="#" target="_blank">Permalink</a>
+    <a class="f--external" href="#" target="_blank">Permalink <span v-svg symbol="arrow-external"></span></a>
 </div>
 ```
 
@@ -17,22 +17,11 @@ Showing an arrow close to the text :
   position:relative;
   text-decoration:none;
 
-  &:after {
-    content: "\2197";
-    font-size:12px;
+  .icon {
     color:inherit;
     position:absolute;
-    top:0;
-    /*bottom:0em;*/
+    bottom: 0.25em;
     vertical-align:baseline;
     transform: translateX(50%);
-    font-weight:400;
-  }
-}
-
-.f--small .f--external,
-.f--small.f--external {
-  &:after {
-    /*bottom:-0.1em;*/
   }
 }

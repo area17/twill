@@ -187,6 +187,8 @@
 
   .mediasidebar__img {
     max-width:135px;
+    max-height:135px;
+    height:auto;
     display:block;
     margin-bottom:17px;
   }

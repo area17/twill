@@ -282,7 +282,7 @@
 
   .dropdown__inner {
     position:relative;
-    background:rgba($color__background,0.95);
+    background:rgba($color__background,0.98);
     border-radius:2px;
     box-shadow:0 0px 8px rgba(0,0,0,0.3);
     padding:10px 0;

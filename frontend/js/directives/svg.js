@@ -13,7 +13,7 @@ export default {
       inserted: function (el, binding, vnode) {
       },
       unbind: function (el, binding, vnode) {
-        removeSvg(el)
+        // removeSvg(el)
       }
     }
 

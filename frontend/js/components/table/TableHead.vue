@@ -1,7 +1,7 @@
 <template>
   <tr class="tablehead">
     <td class="tablehead__cell f--small" v-for="col in columns" @click="sortColumn(col)" :key="col.name" :class="cellClasses(col)">
-      <span v-if="isSortableColumn(col)">{{ col.label }} <span class="tablehead__arrow">↓</span></span>
+      <span v-if="isSortableColumn(col)">{{ col.label }} <span class="tablehead__arrow"><span v-svg symbol="arrow-sort"></span></span></span>
       <a v-if="col.name === 'bulk'" href="#" @click.prevent.stop="toggleBulkSelect()"><span><a17-checkbox name="bulkAll" :value="1" :initialValue="bulkValue" :class="{ 'checkbox--minus' : checkboxMinus }" ></a17-checkbox></span></a>
     </td>
     <td class="tablehead__spacer">&nbsp;</td>
@@ -89,8 +89,10 @@
     opacity:0;
     display: inline-block;
     margin-left:10px;
-    position:relative;
-    top:-1px;
+
+    .icon {
+      display:block;
+    }
   }
 
   .tablehead__spacer {

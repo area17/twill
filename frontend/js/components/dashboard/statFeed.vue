@@ -15,7 +15,7 @@
       </template>
     </div>
     <footer class="box__footer statFeed__footer">
-      <a href="#" class="f--external" target="_blank">Google Analytics</a>
+      <a href="#" class="f--external" target="_blank">Google Analytics <span v-svg symbol="arrow-external"></span></a>
     </footer>
   </div>
 </template>
