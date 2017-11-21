@@ -16,7 +16,8 @@ const state = {
   sortKey: window.STORE.datatable.sortKey || '',
   sortDir: window.STORE.datatable.sortDir || 'asc',
   bulk: [],
-  localSlug: window.STORE.datatable.localSlug || location.pathname
+  localSlug: window.STORE.datatable.localSlug || location.pathname,
+  loading: false
 }
 
 // getters
@@ -169,27 +170,35 @@ const mutations = {
       const index = getIndex(id)
       updateState(index)
     }
+  },
+  [types.UPDATE_DATATABLE_LOADING] (state, loading) {
+    state.loading = !state.loading
   }
 }
 
 const actions = {
   getDatatableDatas ({ commit, state, getters }) {
-    const params = {
-      sortKey: state.sortKey,
-      sortDir: state.sortDir,
-      page: state.page,
-      offset: state.offset,
-      columns: getters.visibleColumnsNames,
-      filter: state.filter
-    }
+    if (!state.loading) {
+      commit(types.UPDATE_DATATABLE_LOADING, true)
+      const params = {
+        sortKey: state.sortKey,
+        sortDir: state.sortDir,
+        page: state.page,
+        offset: state.offset,
+        columns: getters.visibleColumnsNames,
+        filter: state.filter
+      }
 
-    api.get(params, function (resp) {
-      commit(types.UPDATE_DATATABLE_DATA, resp.data)
-      commit(types.UPDATE_DATATABLE_MAXPAGE, resp.maxPage)
-      commit(types.UPDATE_DATATABLE_NAV, resp.nav)
-    })
+      api.get(params, function (resp) {
+        commit(types.UPDATE_DATATABLE_DATA, resp.data)
+        commit(types.UPDATE_DATATABLE_MAXPAGE, resp.maxPage)
+        commit(types.UPDATE_DATATABLE_NAV, resp.nav)
+        commit(types.UPDATE_DATATABLE_LOADING, false)
+      })
+    }
   },
   setDatatableDatas ({ commit, state, dispatch }, data) {
+    // TBD: Maybe, we can keep and reset the old state if we have and error
     // reorder in store first
     commit(types.UPDATE_DATATABLE_DATA, data)
 

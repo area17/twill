@@ -85,7 +85,7 @@ Window.vm = new Vue({
     },
     filterListing: function (formData) {
       this.$store.commit('updateDatablePage', 1)
-      this.$store.commit('updateDatableFilter', formData || { search: '' })
+      this.$store.commit('updateDatableFilter', formData || {search: ''})
       this.reloadDatas()
     },
     filterStatus: function (slug) {
@@ -118,7 +118,7 @@ Window.vm = new Vue({
     }
 
     if (reload) {
-      this.$store.dispatch('getDatatableDatas')
+      this.reloadDatas()
     }
   }
 })
