@@ -12,7 +12,7 @@
                 <div class="container">
                     @partialView(($moduleName ?? null), 'navigation._title')
                     @partialView(($moduleName ?? null), 'navigation._global_navigation')
-                    <div class="header__user">
+                    <div class="header__user" id="headerUser" v-cloak>
                         @partialView(($moduleName ?? null), 'navigation._user')
                     </div>
                 </div>

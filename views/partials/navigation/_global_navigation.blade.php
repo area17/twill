@@ -20,7 +20,11 @@
                         @if (config('cms-toolkit.enabled.media-library'))
                             <a href="#" data-closenav-btn data-medialib-btn>Media Library</a><br />
                         @endif
-                        @partialView(($moduleName ?? null), 'navigation._user')
+                        @if(isset($currentUser))
+                            <a href="{{ route('admin.users.edit', $currentUser->id) }}">{{ $currentUser->name }}</a><br />
+                            <a href="{{ route('admin.users.edit', $currentUser->id) }}">Settings</a><br />
+                            <a href="/logout">Logout</a>
+                        @endif
                     </div>
                 </div>
             </nav>

@@ -98,6 +98,12 @@ $height__nav: 60px;
   }
 }
 
+.header__user[v-cloak] {
+  div {
+    display:none;
+  }
+}
+
 .header__nav::-webkit-scrollbar-track-piece{
   background:$color__header;
 }

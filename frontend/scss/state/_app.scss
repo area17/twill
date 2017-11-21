@@ -9,7 +9,7 @@ Show a loading mention at page load
 
 /* https://medium.com/vuejs-tips/v-cloak-45a05da28dc4 */
 
-[v-cloak] {
+.app[v-cloak] {
   position:relative;
   min-height:calc(100vh - 230px);
 
