@@ -680,9 +680,12 @@ abstract class ModuleController extends Controller
 
     public function tags()
     {
-        $query = request('query');
+        $query = $this->request->input('q');
         $tags = $this->repository->getTags($query);
-        return response()->json($tags, 200);
+
+        return response()->json(['items' => $tags->map(function ($tag) {
+            return $tag->name;
+        })], 200);
     }
 
     protected function orderScope()

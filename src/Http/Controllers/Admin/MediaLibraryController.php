@@ -22,7 +22,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
     protected $defaultFilters = [
         'search' => 'search',
-        'fTag' => 'tag_id',
+        'tag' => 'tag_id',
     ];
 
     protected $perPage = 40;
@@ -65,7 +65,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         $updateBulkUrl = route('admin.media-library.medias.bulk-update');
         $deleteBulkUrl = route('admin.media-library.medias.bulk-delete');
 
-        $data = [
+        return [
             'items' => $items->map(function ($item) use ($updateUrl, $updateBulkUrl, $deleteBulkUrl) {
                 return [
                     'id' => $item->id,
@@ -74,6 +74,9 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
                     'original' => ImageService::getRawUrl($item->uuid),
                     'width' => $item->width,
                     'height' => $item->height,
+                    'tags' => $item->tags->map(function ($tag) {
+                        return $tag->name;
+                    }),
                     'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
                     'updateUrl' => $updateUrl,
                     'updateBulkUrl' => $updateBulkUrl,
@@ -93,23 +96,21 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
             })->toArray(),
             'maxPage' => $items->lastPage(),
             'total' => $items->total(),
-            'offset' => $items->perPage(),
-            'filters' => json_decode($this->request->get('filter'), true) ?? [],
-        ];
-
-        return array_replace_recursive($data, $this->indexData($this->request));
-    }
-
-    public function indexData($request)
-    {
-        return [
-            'fTagList' => [null => 'All tags'] + $this->repository->getTagsList(),
+            'tags' => $this->repository->getTagsList(),
         ];
     }
 
     protected function getRequestFilters()
     {
-        return request()->has('search') ? ['search' => request('search')] : [];
+        if (request()->has('search')) {
+            $requestFilters['search'] = request('search');
+        }
+
+        if (request()->has('tag')) {
+            $requestFilters['tag'] = request('tag');
+        }
+
+        return $requestFilters ?? [];
     }
 
     public function store()
@@ -159,13 +160,6 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         return $this->repository->create($fields);
     }
 
-    public function tags()
-    {
-        $query = $this->request->input('q');
-        $tags = $this->repository->getTags($query);
-        return response()->json($tags, 200);
-    }
-
     public function singleUpdate()
     {
         $this->repository->update(
@@ -179,9 +173,12 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     public function bulkUpdate()
     {
         $ids = explode(',', $this->request->input('ids'));
+
         $previousCommonTags = $this->repository->getTags(null, $ids);
+        $newTags = explode(',', $this->request->input('tags'));
+
         foreach ($ids as $id) {
-            $this->repository->update($id, ['bulk_tags' => $this->request->input('tags'), 'previous_common_tags' => $previousCommonTags]);
+            $this->repository->update($id, ['bulk_tags' => $newTags, 'previous_common_tags' => $previousCommonTags]);
         }
 
         return response()->json([], 200);

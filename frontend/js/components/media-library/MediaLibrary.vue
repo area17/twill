@@ -24,8 +24,9 @@
             </a17-dropdown>
           </div>
 
-          <!-- <div slot="hidden-filters">
-          </div> -->
+          <div slot="hidden-filters">
+            <a17-vselect name="tag" :options="tags"></a17-vselect>
+          </div>
         </a17-filter>
       </div>
 
@@ -93,7 +94,8 @@
         fullMedias: [],
         selectedMedias: [],
         gridHeight: 0,
-        page: this.initialPage
+        page: this.initialPage,
+        tags: []
       }
     },
     computed: {
@@ -196,7 +198,8 @@
         api.get(this.endpoint, formdata, function (resp) {
           // add medias here
           self.fullMedias.push(...resp.data.items)
-          self.maxPage = resp.data.maxPage
+          self.maxPage = resp.data.maxPage || 1
+          self.tags = resp.data.tags || []
           self.$store.commit('updateMediaTypeTotal', { type: self.type, total: resp.data.total })
           // re-listen for scroll position
           self.$nextTick(function () {

@@ -70,7 +70,7 @@
       },
       clearSearchOnSelect: {
         type: Boolean,
-        default: false
+        default: true
       },
       selected: {
         default: null
@@ -106,6 +106,14 @@
         value: this.selected,
         currentOptions: this.options,
         ajaxUrl: this.endpoint
+      }
+    },
+    watch: {
+      selected: function (selected) {
+        this.value = selected
+      },
+      options: function (options) {
+        this.currentOptions = this.options
       }
     },
     computed: {

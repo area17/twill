@@ -2,7 +2,8 @@
 
 @php
     $emptyDataTable = $emptyMessage ?? "There is no items here yet.";
-    $routeName = $moduleName ?? Route::getCurrentRoute();
+    $routeName = $moduleName ?? Route::currentRouteName();
+    $userId = isset($currentUser) ? $currentUser->id : 0;
 @endphp
 
 @section('appTypeClass', 'app--listing')
@@ -78,7 +79,7 @@
       sortKey: '{{ $reorder ? (request('sortKey') ?? '') : (request('sortKey') ?? 'name') }}',
       sortDir: '{{ request('sortDir') ?? 'asc' }}',
       baseUrl: 'https://cms-sandbox.a17.io/',
-      localSlug: '{{ $currentUser->id }}__{{ $routeName }}'
+      localSlug: '{{ $userId }}__{{ $routeName }}'
     }
 @stop
 

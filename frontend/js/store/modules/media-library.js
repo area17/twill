@@ -9,7 +9,8 @@ const state = {
   max: 0,
   strict: true,
   selected: window.STORE.medias.selected || {},
-  loading: []
+  loading: [],
+  tagsEndpoint: window.STORE.medias.tagsEndpoint || ''
 }
 
 // getters

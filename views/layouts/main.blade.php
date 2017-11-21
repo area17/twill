@@ -52,6 +52,7 @@
 
             // media library
             window.STORE.medias = {}
+            window.STORE.medias.tagsEndpoint = '{{ route('admin.media-library.medias.tags') }}'
             window.STORE.medias.types = [
               {
                 value: 'image',
