@@ -240,7 +240,7 @@
 
   .button--ghost {
     height: $height_small_btn;
-    line-height: $height_small_btn;
+    line-height: $height_small_btn - 2px;
     border-radius: $height_small_btn / 2;
     background-color: transparent;
     border: 1px solid $color__border--hover;
@@ -268,7 +268,7 @@
   .button--icon {
     height: 26px;
     width: 26px;
-    line-height: 26px;
+    line-height: 26px - 2px;
     border-radius: 50%;
     border: 1px solid $color__fborder;
     padding: 0;

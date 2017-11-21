@@ -108,9 +108,8 @@
 
     input {
       display:inline-block;
-      width:auto;
-      min-width:300px;
-      margin-right:15px;
+      width:20vw;
+      max-width:300px;
     }
 
     .icon {
@@ -161,6 +160,7 @@
   .filter__toggle {
     position:relative;
     padding-right:  20px + 20px !important;
+    margin-left:15px;
 
     .icon {
       transition: all .2s linear;
