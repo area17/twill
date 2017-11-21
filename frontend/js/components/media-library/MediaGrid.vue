@@ -63,6 +63,8 @@
     display: block;
     width: 100%;
     height: 100%;
+    font-size:0;
+    line-height: 1em;
   }
 
   .mediagrid__item {
@@ -136,6 +138,7 @@
     display: flex;
     justify-content: center; /* align horizontal */
     align-items: center; /* align vertical */
+    @include font-regular;
 
     user-select: none;
     background: $color__background;
