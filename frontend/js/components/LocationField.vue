@@ -75,8 +75,8 @@
         autocompletePlace: null,
         markers: [],
         address: '',
-        lat: parseFloat(this.initialLat),
-        lng: parseFloat(this.initialLng),
+        lat: this.initialLat,
+        lng: this.initialLng,
         focused: false,
         isMapOpen: this.openMap,
         mapMessage: this.openMap ? MAPMESSAGE.hide : MAPMESSAGE.show,
@@ -114,6 +114,12 @@
       onBlur: function (event) {
         this.focused = false
 
+        if (this.address === '') {
+          this.clearMarkers()
+          this.lat = this.initialLat
+          this.lng = this.initialLng
+        }
+
         // see formStore mixin
         this.saveIntoStore()
 
@@ -143,6 +149,9 @@
             this.map.setZoom(this.zoom)
           }
         }
+
+        // see formStore mixin
+        this.saveIntoStore()
       },
       clearMarkers: function () {
         for (let i = 0; i < this.markers.length; i++) {
@@ -207,7 +216,7 @@
         this.autocompletePlace = new google.maps.places.Autocomplete(this.$el.querySelector('input[type="search"]'))
         // When a place is selected
         google.maps.event.addListener(this.autocompletePlace, 'place_changed', this.onPlaceChanged)
-        
+
         if (this.address === '' && this.lat && this.lng) {
           const geocoder = new google.maps.Geocoder()
           const location = {lat: this.lat, lng: this.lng}
