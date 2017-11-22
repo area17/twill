@@ -4,6 +4,7 @@ import a17Infotip from '@/components/Infotip.vue'
 import a17Select from '@/components/Select.vue'
 import a17VSelect from '@/components/VSelect.vue'
 import a17Inputframe from '@/components/InputFrame.vue'
+import a17ColorField from '@/components/ColorField.vue'
 import a17Textfield from '@/components/Textfield.vue'
 import a17Wysiwyg from '@/components/Wysiwyg.vue'
 import a17MediaField from '@/components/MediaField.vue'
@@ -55,6 +56,7 @@ const A17Config = {
     Vue.component('a17-modal', a17Modal)
     Vue.component('a17-datepicker', a17DatePicker)
     Vue.component('a17-filefield', a17FileField)
+    Vue.component('a17-colorfield', a17ColorField)
 
     // Media Library
     Vue.component('a17-medialibrary', a17MediaLibrary)
