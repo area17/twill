@@ -99,16 +99,16 @@
   .checkbox__icon {
     background-color: $color__fborder--active;
     color:$color__background;
-    text-align:center;
-    line-height:15px;
     opacity: 0;
-    font-size:11px;
   }
 
   .checkbox__icon .icon {
     color:$color__background;
-    top: 1px;
+    top: 2px;
     position: relative;
+    display: block;
+    margin-left:auto;
+    margin-right:auto;
   }
 
   .checkbox__input:focus + .checkbox__label::before,

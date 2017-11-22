@@ -64,7 +64,7 @@
     flex-direction: row;
     flex-wrap:no-wrap;
     color:$color__text--light;
-    padding:7px 20px 8px 20px;
+    padding:7.5px 20px;
     cursor:pointer;
     margin-left:-20px;
     margin-right:-20px;
