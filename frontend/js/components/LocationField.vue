@@ -33,10 +33,12 @@
   import InputframeMixin from '@/mixins/inputFrame'
   import LocaleMixin from '@/mixins/locale'
 
-  const openMapMessage = 'Show&nbsp;map'
-  const hideMapMessage = 'Hide&nbsp;map'
-  const googleMapUrl = 'https://maps.googleapis.com/maps/api/js?libraries=places&key='
-  const APIKEY = 'AIzaSyB_gNP6U9pPkfbhfTGNYdKMaWk_r-4EsLY'
+  const MAPMESSAGE = {
+    show: 'Show&nbsp;map',
+    hide: 'Hide&nbsp;map'
+  }
+  const GOOGLEMAPURL = 'https://maps.googleapis.com/maps/api/js?libraries=places&key='
+  const APIKEY = window.hasOwnProperty('APIKEYS') && window.APIKEYS.hasOwnProperty('googleMapApi') ? window.APIKEYS.googleMapApi : null
 
   export default {
     name: 'A17Locationfield',
@@ -77,19 +79,23 @@
         lng: parseFloat(this.initialLng),
         focused: false,
         isMapOpen: this.openMap,
-        mapMessage: this.openMap ? hideMapMessage : openMapMessage,
+        mapMessage: this.openMap ? MAPMESSAGE.hide : MAPMESSAGE.show,
         googleScript: null
       }
     },
     computed: {
-      latLng: {
+      value: {
         get () {
-          return this.lat + '|' + this.lng
+          return {
+            latlng: this.lat + '|' + this.lng,
+            address: this.address
+          }
         },
         set (value) {
-          const coord = value.split('|')
+          const coord = value.latlng.split('|')
           this.lat = parseFloat(coord[0])
           this.lng = parseFloat(coord[coord.length - 1])
+          this.address = value.address
         }
       },
       textfieldClasses: function () {
@@ -139,7 +145,7 @@
         }
       },
       clearMarkers: function () {
-        for (var i = 0; i < this.markers.length; i++) {
+        for (let i = 0; i < this.markers.length; i++) {
           if (this.markers[i]) {
             this.markers[i].setMap(null)
           }
@@ -164,7 +170,7 @@
       },
       toggleMap: function () {
         this.isMapOpen = !this.isMapOpen
-        this.mapMessage = this.isMapOpen ? hideMapMessage : openMapMessage
+        this.mapMessage = this.isMapOpen ? MAPMESSAGE.hide : MAPMESSAGE.show
         /* global google */
         if (!this.map && typeof google !== 'undefined') {
           this.$nextTick(function () {
@@ -251,7 +257,7 @@
       if (typeof google !== 'undefined') {
         this.initGoogleApi()
       } else {
-        const src = googleMapUrl + APIKEY
+        const src = GOOGLEMAPURL + APIKEY
         this.loadScript(src, this.initGoogleApi)
       }
     },

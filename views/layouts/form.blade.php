@@ -52,11 +52,17 @@
 @stop
 
 @section('initialStore')
+
+    window.APIKEYS = {
+    'googleMapApi': 'AIzaSyB_gNP6U9pPkfbhfTGNYdKMaWk_r-4EsLY'
+    }
+
     window.STORE.form = {
       title: '{{ $item->title }}',
       permalink: '{{ $item->slug ?? '' }}',
-      baseUrl: '{{ $baseUrl }}',
+      baseUrl: '{{ $baseUrl }}'
     }
+
 
     window.STORE.publication = {
       published: {{ json_encode($item->published) }},
@@ -133,7 +139,10 @@
       },
       {
         name: 'location', // location field
-        value: '40.730610|-73.935242'
+        value: {
+            'latlng': '40.730610|-73.935242',
+            'address': ''
+        }
       },
       {
         name: 'sectors', // vselect multiple
