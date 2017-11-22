@@ -35,6 +35,8 @@
 
   const openMapMessage = 'Show&nbsp;map'
   const hideMapMessage = 'Hide&nbsp;map'
+  const googleMapUrl = 'https://maps.googleapis.com/maps/api/js?libraries=places&key='
+  const APIKEY = 'AIzaSyB_gNP6U9pPkfbhfTGNYdKMaWk_r-4EsLY'
 
   export default {
     name: 'A17Locationfield',
@@ -75,7 +77,8 @@
         lng: parseFloat(this.initialLng),
         focused: false,
         isMapOpen: this.openMap,
-        mapMessage: this.openMap ? hideMapMessage : openMapMessage
+        mapMessage: this.openMap ? hideMapMessage : openMapMessage,
+        googleScript: null
       }
     },
     computed: {
@@ -164,7 +167,7 @@
         this.mapMessage = this.isMapOpen ? hideMapMessage : openMapMessage
         if (!this.map && google) this.initMap(google)
       },
-      initMap: function (google) {
+      initMap: function () {
         const preset = this.lat + this.lng
 
         const mapOptions = {
@@ -186,12 +189,9 @@
         if (preset) {
           this.addMarker(new google.maps.LatLng(this.lat, this.lng))
         }
-      }
-    },
-    mounted: function () {
-      const self = this
-      /* global google */
-      if (google) {
+      },
+      initGeocoder: function () {
+        const self = this
         // Create the autocomplete object and associate it with the UI input control.
         this.autocompletePlace = new google.maps.places.Autocomplete(this.$el.querySelector('input[type="search"]'))
         // When a place is selected
@@ -216,14 +216,43 @@
             }
           })
         }
-
+      },
+      initGoogleApi: function () {
+        this.initGeocoder()
         if (this.showMap && this.isMapOpen) {
-          this.initMap(google)
+          this.initMap()
+        }
+        if (this.googleScript) this.googleScript.removeEventListener('load', this.initGoogleApi)
+      },
+      loadScript: function (src) {
+        const id = 'google-map-api-script'
+        let script = document.getElementById(id)
+        if (script) {
+          this.googleScript = script
+          script.addEventListener('load', this.initGoogleApi)
+        } else {
+          script = document.createElement('script')
+          this.googleScript = script
+          script.setAttribute('id', id)
+          script.type = 'text/javascript'
+          script.onload = this.initGoogleApi
+          document.getElementsByTagName('head')[0].appendChild(script)
+          script.src = src
         }
       }
     },
+    mounted: function () {
+      /* global google */
+      if (typeof google !== 'undefined') {
+        this.initGoogleApi()
+      } else {
+        const src = googleMapUrl + APIKEY
+        this.loadScript(src, this.initGoogleApi)
+      }
+    },
     beforeDestroy: function () {
-      if (google) google.maps.event.clearListeners(this.autocompletePlace, 'place_changed', this.onPlaceChanged)
+      /* global google */
+      if (typeof google !== 'undefined') google.maps.event.clearListeners(this.autocompletePlace, 'place_changed', this.onPlaceChanged)
     }
   }
 </script>
