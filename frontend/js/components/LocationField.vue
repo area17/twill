@@ -62,11 +62,11 @@
       },
       initialLat: {
         type: Number,
-        default: 0
+        default: null
       },
       initialLng: {
         type: Number,
-        default: 0
+        default: null
       }
     },
     data: function () {
@@ -207,8 +207,8 @@
         this.autocompletePlace = new google.maps.places.Autocomplete(this.$el.querySelector('input[type="search"]'))
         // When a place is selected
         google.maps.event.addListener(this.autocompletePlace, 'place_changed', this.onPlaceChanged)
-
-        if (this.address === '') {
+        
+        if (this.address === '' && this.lat && this.lng) {
           const geocoder = new google.maps.Geocoder()
           const location = {lat: this.lat, lng: this.lng}
 
