@@ -165,7 +165,12 @@
       toggleMap: function () {
         this.isMapOpen = !this.isMapOpen
         this.mapMessage = this.isMapOpen ? hideMapMessage : openMapMessage
-        if (!this.map && google) this.initMap(google)
+        /* global google */
+        if (!this.map && typeof google !== 'undefined') {
+          this.$nextTick(function () {
+            this.initMap()
+          })
+        }
       },
       initMap: function () {
         const preset = this.lat + this.lng
