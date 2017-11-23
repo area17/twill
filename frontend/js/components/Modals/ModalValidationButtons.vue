@@ -1,26 +1,83 @@
 <template>
-  <a17-inputframe>
-    <template v-if="mode === 'create'">
-      <a17-button type="submit" name="create" variant="validate" :disabled="isDisabled">Create</a17-button>
-      <a17-button type="submit" name="create-another" v-if="!isDisabled" variant="aslink-grey"><span>Create and add another</span></a17-button>
-    </template>
-    <a17-button type="submit" name="update" v-else="" variant="validate" :disabled="isDisabled">Update</a17-button>
-  </a17-inputframe>
+  <div class="modalValidation">
+    <a17-inputframe>
+      <template v-if="mode === 'create'">
+        <a17-button type="submit" name="create" variant="validate" :disabled="isDisabled">Create</a17-button>
+        <a17-button type="submit" name="create-another" v-if="!isDisabled" variant="aslink-grey"><span>Create and add another</span></a17-button>
+      </template>
+      <a17-button type="submit" name="update" v-else="" variant="validate" :disabled="isDisabled">Update</a17-button>
+    </a17-inputframe>
+    <label v-if="activePublishState" :for="name + '_live'" class="switcher__button" :class="switcherClasses">
+      <span v-if="isChecked" class="switcher__label">{{ textEnabled }}</span>
+      <span v-if="!isChecked" class="switcher__label">{{ textDisabled }}</span>
+
+      <input type="checkbox" :disabled="disabled" v-model="published" :name="name" :id="name + '_live'" value="live"/>
+      <span class="switcher__switcher"></span>
+    </label>
+  </div>
 </template>
 
 <script>
+  import a17Switcher from '@/components/Switcher.vue'
+
   export default {
     name: 'A17ModalValidationButtons',
     props: {
+      name: {
+        type: String,
+        required: true
+      },
+      disabled: {
+        type: Boolean,
+        default: false
+      },
+      activePublishState: {
+        type: Boolean,
+        default: false
+      },
+      isPublish: {
+        type: Boolean,
+        default: false
+      },
       mode: {
         type: String, // create / update
         default: 'create'
+      },
+      textEnabled: {
+        type: String,
+        default: 'Live'
+      },
+      textDisabled: {
+        type: String,
+        default: 'Draft'
       }
+    },
+    components: {
+      'a17-switcher': a17Switcher
     },
     data: function () {
       return {
         fields: false,
-        isDisabled: true
+        isDisabled: true,
+        published: this.isPublish
+      }
+    },
+    computed: {
+      switcherClasses: function () {
+        return [
+          this.isChecked ? `switcher--active` : ''
+        ]
+      },
+      isChecked: function () {
+        return this.published
+      },
+      checkedValue: {
+        get: function () {
+          return this.published
+        },
+        set: function (value) {
+          this.published = value
+        }
       }
     },
     methods: {
@@ -74,3 +131,111 @@
     }
   }
 </script>
+
+<style lang="scss" scoped>
+  @import '~styles/setup/_mixins-colors-vars.scss';
+
+  .modalValidation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 35px;
+
+    /deep/ .input {
+      margin-top: 0;
+    }
+  }
+
+  .switcher__button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    min-width: 145px;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 25px;
+    border-radius: 25px;
+    color: $color__button_disabled-txt;
+    background: $color__button_disabled-bcg;
+
+    cursor: pointer;
+    transition: background-color .25s linear, color .25s linear;
+
+    input {
+      position: absolute;
+      opacity: 0;
+    }
+  }
+
+  .switcher__label {
+    margin-right: 15px;
+  }
+
+  .switcher__switcher {
+    display: inline-block;
+    height: 12px;
+    border-radius: 6px;
+    width: 40px;
+    background: $color__button_disabled-txt;
+    box-shadow: inset 0 0 1px #000;
+    position: relative;
+
+    // Big rounded thing
+    &::after,
+    &::before {
+      content: "";
+      position: absolute;
+      display: block;
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+      left: 0;
+      top: -3px;
+      transform: translateX(0);
+      transition: all .25s $bezier__bounce;
+    }
+
+    // Big rounded thing you want to click
+    &::after {
+      background: $color__background;
+      box-shadow: 0 0 1px #666;
+    }
+
+    // Big rounded thing for hover / focus states only
+    &::before {
+      background: $color__background;
+      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+    }
+  }
+
+  .switcher--active {
+    background: $color__lightGreen;
+    color: $color__publish;
+
+    .switcher__switcher {
+      background: $color__publish;
+      box-shadow: inset 0 0 1px rgba($color__black, 0.4);
+    }
+
+    .switcher__switcher::after,
+    .switcher__switcher::before {
+      transform: translateX(40px - 18px);
+    }
+  }
+
+  /* Show something when hover / focus */
+  .switcher__button {
+    input:focus + .switcher__switcher::before {
+      opacity: 1;
+    }
+  }
+
+  .switcher__button:hover,
+  .switcher__button:focus {
+    .switcher__switcher::before {
+      opacity: 1;
+    }
+  }
+</style>

@@ -47,7 +47,7 @@
         <a17-modal class="modal--form" ref="addNewModal" title="Add New">
             <form action="{{ $storeUrl }}" method="post">
                 <a17-modal-title-editor v-bind:base-url="baseUrl" @unless($permalink ?? true) :with-permalink="false" @endunless></a17-modal-title-editor>
-                <a17-modal-validation v-bind:mode="'create'"></a17-modal-validation>
+                <a17-modal-validation v-bind:mode="'create'" name="add-new" :active-publish-state="true" :is-publish="false"></a17-modal-validation>
             </form>
         </a17-modal>
     </div>

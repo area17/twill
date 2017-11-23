@@ -10,7 +10,7 @@
       <a17-modal class="modal--form" ref="editModal" title="Update item">
         <form action="#" @submit.prevent="update">
           <a17-model-title-editor ref="titleEditor" :title="title" :permalink="permalink" :withPermalink="permalink != false" :baseUrl="baseUrl"></a17-model-title-editor>
-          <a17-modal-validation :mode="mode"></a17-modal-validation>
+          <a17-modal-validation :mode="mode" name="titleEditor"></a17-modal-validation>
         </form>
       </a17-modal>
     </div>
