@@ -95,7 +95,8 @@
         selectedMedias: [],
         gridHeight: 0,
         page: this.initialPage,
-        tags: []
+        tags: [],
+        lastScrollTop: 0
       }
     },
     computed: {
@@ -204,7 +205,6 @@
           // re-listen for scroll position
           self.$nextTick(function () {
             if (self.gridHeight !== list.scrollHeight) {
-              self.gridHeight = list.scrollHeight
               list.addEventListener('scroll', self.scrollToPaginate)
             }
           })
@@ -221,16 +221,19 @@
 
       scrollToPaginate: function () {
         const list = this.$refs.list
-
-        if (list.scrollTop + list.offsetHeight > this.gridHeight - 10) {
+        const offset = 10
+        if (list.scrollTop > this.lastScrollTop && list.scrollTop + list.offsetHeight > list.scrollHeight - offset) {
           list.removeEventListener('scroll', this.scrollToPaginate)
 
           if (this.maxPage > this.page) {
             this.page = this.page + 1
-
             this.reloadGrid()
+          } else {
+            this.gridHeight = list.scrollHeight
           }
         }
+
+        this.lastScrollTop = list.scrollTop
       },
       saveAndClose: function () {
         this.$store.commit('saveSelectedMedias', this.selectedMedias)
