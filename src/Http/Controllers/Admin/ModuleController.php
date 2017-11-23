@@ -219,7 +219,7 @@ abstract class ModuleController extends Controller
             ] + $columnsData
                  + ($this->getIndexOption('publish') ? ['published' => $item->published] : [])
                  + ($this->getIndexOption('feature') ? ['featured' => $item->$featuredField] : [])
-                 + (($this->getIndexOption('restore') && $item->trashed()) ? ['deleted' => true] : []);
+                 + (($this->getIndexOption('restore') && method_exists($item, 'trashed') && $item->trashed()) ? ['deleted' => true] : []);
         })->toArray();
     }
 
@@ -337,11 +337,15 @@ abstract class ModuleController extends Controller
             'name' => 'Draft',
             'slug' => 'draft',
             'number' => $this->repository->getCountByStatusSlug('draft'),
-        ], [
-            'name' => 'Trash',
-            'slug' => 'trash',
-            'number' => $this->repository->getCountByStatusSlug('trash'),
         ]);
+
+        if (!empty($items) && method_exists(array_first($items), 'trashed')) {
+            array_push($statusFilters, [
+                'name' => 'Trash',
+                'slug' => 'trash',
+                'number' => $this->repository->getCountByStatusSlug('trash'),
+            ]);
+        }
 
         return $statusFilters;
     }
