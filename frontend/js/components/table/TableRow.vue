@@ -74,10 +74,18 @@
                col.name === 'thumbnail'
       },
       toggleFeatured: function () {
-        this.$store.dispatch('toggleFeaturedData', this.row)
+        if (!this.row.hasOwnProperty('deleted')) {
+          this.$store.dispatch('toggleFeaturedData', this.row)
+        } else {
+          this.$store.commit('setNotification', { message: 'You can’t feature/unfeature a deleted item, please restore it first.', variant: 'error' })
+        }
       },
       togglePublish: function () {
-        this.$store.dispatch('togglePublishedData', this.row)
+        if (!this.row.hasOwnProperty('deleted')) {
+          this.$store.dispatch('togglePublishedData', this.row)
+        } else {
+          this.$store.commit('setNotification', { message: 'You can’t publish/unpublish a deleted item, please restore it first.', variant: 'error' })
+        }
       },
       restoreRow: function () {
         this.$store.dispatch('restoreData', this.row)
