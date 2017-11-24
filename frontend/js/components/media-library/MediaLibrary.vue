@@ -2,7 +2,7 @@
   <div class="medialibrary">
     <div class="medialibrary__frame">
       <div class="medialibrary__header" ref="form">
-        <a17-filter @submit="submitFilter">
+        <a17-filter @submit="submitFilter" :clearOption="true" @clear="clearFilters">
           <ul class="secondarynav secondarynav--desktop" slot="navigation">
             <li class="secondarynav__item" v-for="navType in types" :class="{ 's--on': type === navType.value, 's--disabled' : type !== navType.value && strict }">
               <a href="#" @click.prevent="updateType(navType.value)"><span class="secondarynav__link">{{ navType.text }}</span> <span v-if="navType.total > 0" class="secondarynav__number">({{ navType.total }})</span></a>
@@ -25,7 +25,7 @@
           </div>
 
           <div slot="hidden-filters">
-            <a17-vselect name="tag" :options="tags"></a17-vselect>
+            <a17-vselect class="medialibrary__filter-item" ref="filter" name="tag" :options="tags" :toggleSelectOption="true"></a17-vselect>
           </div>
         </a17-filter>
       </div>
@@ -174,6 +174,12 @@
         data.type = this.type
 
         return data
+      },
+      clearFilters: function () {
+        this.$refs.filter.$data.value = null
+        this.$nextTick(function () {
+          this.submitFilter()
+        })
       },
       clearSelectedMedias: function () {
         this.selectedMedias.splice(0)
@@ -364,6 +370,11 @@
     padding:10px;
   }
 
+  .medialibrary__filter-item {
+    /deep/ .vselect {
+      min-width: 200px;
+    }
+  }
   /* with a sidebar visible */
   .medialibrary__list {
     right:map-get($width_sidebar, default);
