@@ -118,8 +118,6 @@
     },
     computed: {
       inputValue: function () {
-        console.log(this.value)
-
         if (this.value) {
           if (!this.multiple) { // single selects
             if (typeof this.value === 'object') return this.value.value
