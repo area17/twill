@@ -40,8 +40,11 @@
           </footer>
           <div class="medialibrary__list" ref="list">
             <a17-uploader @loaded="addMedia" @clear="clearSelectedMedias" :type="type"></a17-uploader>
-            <a17-itemlist :items="fullMedias" :selectedItems="selectedMedias" @change="updateSelectedMedias" v-if="type === 'file'"></a17-itemlist>
-            <a17-mediagrid :medias="fullMedias" :selectedMedias="selectedMedias" @change="updateSelectedMedias" v-else></a17-mediagrid>
+            <div class="medialibrary__list-items">
+              <a17-itemlist :items="fullMedias" :selectedItems="selectedMedias" @change="updateSelectedMedias" v-if="type === 'file'"></a17-itemlist>
+              <a17-mediagrid :medias="fullMedias" :selectedMedias="selectedMedias" @change="updateSelectedMedias" v-else></a17-mediagrid>
+              <a17-spinner v-if="loading" class="medialibrary__spinner"></a17-spinner>
+            </div>
           </div>
         </div>
       </div>
@@ -58,6 +61,8 @@
   import a17Uploader from './Uploader.vue'
   import a17MediaGrid from './MediaGrid.vue'
   import a17ItemList from '../ItemList.vue'
+  import a17Spinner from '@/components/Spinner.vue'
+
   import FormDataAsObj from '@/utils/formDataAsObj.js'
 
   export default {
@@ -67,7 +72,8 @@
       'a17-mediasidebar': a17MediaSidebar,
       'a17-uploader': a17Uploader,
       'a17-mediagrid': a17MediaGrid,
-      'a17-itemlist': a17ItemList
+      'a17-itemlist': a17ItemList,
+      'a17-spinner': a17Spinner
     },
     props: {
       btnLabel: {
@@ -89,6 +95,7 @@
     },
     data: function () {
       return {
+        loading: false,
         showInsert: true,
         maxPage: 20,
         fullMedias: [],
@@ -125,8 +132,6 @@
       },
       addMedia: function (media) {
         let self = this
-
-        // this.selectedMedias = []
 
         // remove unecessary loading states
         if (media.hasOwnProperty('progress')) delete media.progress
@@ -197,6 +202,8 @@
       reloadGrid: function () {
         let self = this
 
+        this.loading = true
+
         const form = this.$refs.form
         const list = this.$refs.list
         const formdata = this.getFormData(form)
@@ -208,6 +215,8 @@
           self.maxPage = resp.data.maxPage || 1
           self.tags = resp.data.tags || []
           self.$store.commit('updateMediaTypeTotal', { type: self.type, total: resp.data.total })
+          self.loading = false
+
           // re-listen for scroll position
           self.$nextTick(function () {
             if (self.gridHeight !== list.scrollHeight) {
@@ -368,6 +377,19 @@
     bottom: 0;
     overflow: auto;
     padding:10px;
+  }
+
+  .medialibrary__list-items {
+    position: relative;
+    display: block;
+    width: 100%;
+    min-height: 100%;
+
+    .medialibrary__spinner {
+      /deep/ .spinner__container {
+        padding: 5vh 0;
+      }
+    }
   }
 
   .medialibrary__filter-item {

@@ -30,12 +30,7 @@
     <!-- Actual table content -->
     <div class="container">
       <div class="datatable__table" :class="isEmptyDatable">
-        <div v-if="loading" class="datatable__loading">
-          <div class="spinner">
-            <div class="dot1"></div>
-            <div class="dot2"></div>
-          </div>
-        </div>
+        <a17-spinner v-if="loading"></a17-spinner>
         <a17-table :xScroll="xScroll" @scroll="updateScroll">
           <thead>
             <a17-tablehead :columns="visibleColumns" ref="thead"></a17-tablehead>
@@ -75,6 +70,7 @@
   import a17Tablehead from './TableHead.vue'
   import a17Tablerow from './TableRow.vue'
   import a17Paginate from './Paginate.vue'
+  import a17Spinner from '@/components/Spinner.vue'
 
   export default {
     name: 'A17Datatable',
@@ -83,6 +79,7 @@
       'a17-tablehead': a17Tablehead,
       'a17-tablerow': a17Tablerow,
       'a17-paginate': a17Paginate,
+      'a17-spinner': a17Spinner,
       draggable
     },
     mixins: [draggableMixin],
@@ -110,9 +107,6 @@
     computed: {
       isEmptyDatable: function () {
         return { 'datatable__table--empty': this.rows.length <= 0 }
-      },
-      loadingClass: function () {
-        return { 'datatable__table--loading': this.loading }
       },
       rows: {
         get () {
@@ -375,60 +369,5 @@
     position: relative;
   }
 
-  .datatable__loading {
-    display: flex;
-    width: 100%;
-    // height: 50px;
-    padding:10vh 0;
-    background-color: rgba($color__background, 0.5);
-    position:absolute;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
-    z-index: $zindex__loadingTable;
 
-    .spinner {
-      margin: 100px auto;
-      width: 20px;
-      height: 20px;
-      position: relative;
-      text-align: center;
-
-      animation: sk-rotate 2.0s infinite linear;
-    }
-
-    .dot1, .dot2 {
-      width: 60%;
-      height: 60%;
-      display: inline-block;
-      position: absolute;
-      top: 0;
-      background-color: $color__text;
-      border-radius: 100%;
-
-      animation: sk-bounce 2.0s infinite ease-in-out;
-    }
-
-    .dot2 {
-      top: auto;
-      bottom: 0;
-      animation-delay: -1.0s;
-    }
-
-    @keyframes sk-rotate {
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
-    @keyframes sk-bounce {
-      0%, 100% {
-        transform: scale(0.0);
-      }
-      50% {
-        transform: scale(1.0);
-      }
-    }
-  }
 </style>
