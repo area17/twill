@@ -14,6 +14,7 @@
         <div class="filter__moreInner" >
           <slot name="hidden-filters"></slot>
           <a17-button variant="ghost" type="submit">Apply</a17-button>
+          <a17-button v-if="clearOption" variant="ghost" @click="clear">Clear</a17-button>
         </div>
       </div>
     </transition>
@@ -35,6 +36,10 @@
         default: 'Search'
       },
       closed: {
+        type: Boolean,
+        default: false
+      },
+      clearOption: {
         type: Boolean,
         default: false
       }
@@ -78,6 +83,9 @@
       },
       onSearchInput: function (event) {
         this.searchValue = event.target.value
+      },
+      clear: function () {
+        this.$emit('clear')
       }
     },
     beforeMount: function () {
@@ -135,6 +143,10 @@
       margin-top:0;
       margin-bottom:20px;
       margin-right: 20px;
+    }
+
+    button {
+      margin-right: 10px;
     }
   }
 
