@@ -63,6 +63,8 @@
   import a17ItemList from '../ItemList.vue'
   import a17Spinner from '@/components/Spinner.vue'
 
+  import scrollToY from '@/utils/scrollToY.js'
+
   import FormDataAsObj from '@/utils/formDataAsObj.js'
 
   export default {
@@ -182,9 +184,7 @@
       },
       clearFilters: function () {
         this.$refs.filter.$data.value = null
-        this.$nextTick(function () {
-          this.submitFilter()
-        })
+        this.submitFilter()
       },
       clearSelectedMedias: function () {
         this.selectedMedias.splice(0)
@@ -226,12 +226,27 @@
         })
       },
       submitFilter: function (formData) {
+        const self = this
+        const el = this.$refs.list
         // when changing filters, reset the page to 1
         this.page = 1
 
         this.clearFullMedias()
         this.clearSelectedMedias()
-        this.reloadGrid()
+
+        if (el.scrollTop === 0) {
+          self.reloadGrid()
+          return
+        }
+
+        scrollToY({
+          el: el,
+          offset: 0,
+          easing: 'easeOut',
+          onComplete: function () {
+            self.reloadGrid()
+          }
+        })
       },
 
       scrollToPaginate: function () {
