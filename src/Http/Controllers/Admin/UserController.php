@@ -73,6 +73,11 @@ class UserController extends ModuleController
         ];
     }
 
+    protected function getRequestFilters()
+    {
+        return json_decode($this->request->get('filter'), true) ?? ['status' => 'published'];
+    }
+
     public function getIndexTableMainFilters($items)
     {
         $statusFilters = [];
