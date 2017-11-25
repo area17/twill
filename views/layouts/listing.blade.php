@@ -1,7 +1,7 @@
 @extends('cms-toolkit::layouts.main')
 
 @php
-    $emptyDataTable = $emptyMessage ?? "There is no items here yet.";
+    $emptyDataTable = $emptyMessage ?? "There is no item here yet.";
     $routeName = $moduleName ?? Route::currentRouteName();
     $userId = isset($currentUser) ? $currentUser->id : 0;
 @endphp
@@ -31,6 +31,7 @@
                             </div>
                         </a17-dropdown>
                     </div>
+
 
                     @hasSection('hiddenFilters')
                         <div slot="hidden-filters">
@@ -67,19 +68,19 @@
     }
 
     window.STORE.datatable = {
-      data: {!! json_encode($tableData) !!},
-      columns: {!! json_encode($tableColumns) !!},
-      navigation: {!! json_encode($tableMainFilters) !!},
-      filter: { status: '{{ $filters['status'] ?? 'all' }}' },
-      page: {{ request('page') ?? 1 }},
-      maxPage: {{ $maxPage ?? 1 }},
-      defaultMaxPage: {{ $defaultMaxPage ?? 1 }},
-      offset: {{ request('offset') ?? $offset ?? 60 }},
-      defaultOffset: {{ $defaultOffset ?? 60 }},
-      sortKey: '{{ $reorder ? (request('sortKey') ?? '') : (request('sortKey') ?? 'name') }}',
-      sortDir: '{{ request('sortDir') ?? 'asc' }}',
-      baseUrl: 'https://cms-sandbox.a17.io/',
-      localSlug: '{{ $userId }}__{{ $routeName }}'
+        data: {!! json_encode($tableData) !!},
+        columns: {!! json_encode($tableColumns) !!},
+        navigation: {!! json_encode($tableMainFilters) !!},
+        filter: { status: '{{ $filters['status'] ?? $defaultFilterSlug ?? 'all' }}' },
+        page: {{ request('page') ?? 1 }},
+        maxPage: {{ $maxPage ?? 1 }},
+        defaultMaxPage: {{ $defaultMaxPage ?? 1 }},
+        offset: {{ request('offset') ?? $offset ?? 60 }},
+        defaultOffset: {{ $defaultOffset ?? 60 }},
+        sortKey: '{{ $reorder ? (request('sortKey') ?? '') : (request('sortKey') ?? 'name') }}',
+        sortDir: '{{ request('sortDir') ?? 'asc' }}',
+        baseUrl: 'https://cms-sandbox.a17.io/',
+        localSlug: '{{ $userId }}__{{ $routeName }}'
     }
 @stop
 
