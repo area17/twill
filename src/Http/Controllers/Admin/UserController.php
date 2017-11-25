@@ -14,22 +14,54 @@ class UserController extends ModuleController
     protected $indexWith = ['medias'];
     protected $defaultOrders = ['name' => 'asc'];
     protected $defaultFilters = [
-        'fSearch' => 'name',
+        'search' => 'name',
     ];
     protected $filters = [
         'fRole' => 'role',
     ];
 
+    protected $indexColumns = [
+        'name' => [
+            'title' => 'Name',
+            'edit_link' => true,
+            'field' => 'name',
+        ],
+        'email' => [
+            'title' => 'Email',
+            'field' => 'email',
+        ],
+        'role' => [
+            'title' => 'Role',
+            'field' => 'role_value',
+        ],
+    ];
+
+    protected $nameColumnKey = 'name';
+
     public function __construct(Application $app, Request $request)
     {
         parent::__construct($app, $request);
         $this->removeMiddleware('can:edit');
-        $this->middleware('can:edit-user,user', ['only' => ['create', 'store', 'edit', 'update', 'media', 'file']]);
+        $this->middleware('can:edit-user,user', ['only' => ['store', 'edit', 'update']]);
+
+        if (config('cms-toolkit.enabled.users-image')) {
+            $this->indexColumns = [
+                'image' => [
+                    'title' => 'Image',
+                    'thumb' => true,
+                    'variant' => [
+                        'role' => 'profile',
+                        'crop' => 'square',
+                    ],
+                ],
+            ] + $this->indexColumns;
+        }
     }
 
     protected function indexData($request)
     {
         return [
+            'defaultFilterSlug' => 'published',
             'fRoleList' => [null => 'All roles'] + UserRole::toArray(),
         ];
     }
@@ -39,5 +71,22 @@ class UserController extends ModuleController
         return [
             'roleList' => UserRole::toArray(),
         ];
+    }
+
+    public function getIndexTableMainFilters($items)
+    {
+        $statusFilters = [];
+
+        array_push($statusFilters, [
+            'name' => 'Active',
+            'slug' => 'published',
+            'number' => $this->repository->getCountByStatusSlug('published'),
+        ], [
+            'name' => 'Disabled',
+            'slug' => 'draft',
+            'number' => $this->repository->getCountByStatusSlug('draft'),
+        ]);
+
+        return $statusFilters;
     }
 }

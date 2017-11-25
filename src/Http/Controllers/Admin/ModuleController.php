@@ -135,7 +135,7 @@ abstract class ModuleController extends Controller
     protected function setMiddlewarePermission()
     {
         $this->middleware('can:list', ['only' => ['index', 'show']]);
-        $this->middleware('can:edit', ['only' => ['create', 'store', 'edit', 'update']]);
+        $this->middleware('can:edit', ['only' => ['store', 'edit', 'update']]);
         $this->middleware('can:publish', ['only' => ['publish', 'feature', 'bulkPublish', 'bulkFeature']]);
         $this->middleware('can:reorder', ['only' => ['reorder']]);
         $this->middleware('can:delete', ['only' => ['destroy', 'bulkDelete', 'restore', 'bulkRestore']]);
@@ -563,22 +563,19 @@ abstract class ModuleController extends Controller
         $restoreRouteName = $fullRoutePrefix . 'restore';
 
         $data = [
-            'form_options' => [
-                'method' => 'PUT',
-                'url' => moduleRoute($this->moduleName, $this->routePrefix, 'update', $id),
-            ] + (Route::has($previewRouteName) ? [
-                'data-preview-url' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $id),
-            ] : []) + (Route::has($restoreRouteName) ? [
-                'data-restore-url' => moduleRoute($this->moduleName, $this->routePrefix, 'restore', $id),
-            ] : []),
             'item' => $item,
             'form_fields' => $this->repository->getFormFields($item),
+            'saveUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'update', $id),
             'back_link' => $this->getBackLink(),
             'moduleName' => $this->moduleName,
             'modelName' => $this->modelName,
             'routePrefix' => $this->routePrefix,
-            'baseUrl' => $item->urlWithoutSlug ?? config('app.url') . '/'
-        ];
+            'baseUrl' => $item->urlWithoutSlug ?? config('app.url') . '/',
+        ] + (Route::has($previewRouteName) ? [
+            'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $id),
+        ] : []) + (Route::has($restoreRouteName) ? [
+            'restoreUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'restoreRevision', $id),
+        ] : []);
 
         return array_replace_recursive($data, $this->formData($this->request));
     }

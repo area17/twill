@@ -44,10 +44,21 @@ class User extends AuthenticatableContract
             if ($this->role == 'SUPERADMIN') {
                 return "SUPERADMIN";
             }
-            return UserRole::{$this->role}();
+
+            return UserRole::{$this->role}()->getValue();
         }
 
         return null;
+    }
+
+    public function scopePublished($query)
+    {
+        return $query->wherePublished(true);
+    }
+
+    public function scopeDraft($query)
+    {
+        return $query->wherePublished(false);
     }
 
     public function setImpersonating($id)

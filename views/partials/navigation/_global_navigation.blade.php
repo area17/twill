@@ -21,7 +21,7 @@
                             <a href="#" data-closenav-btn data-medialib-btn>Media Library</a><br />
                         @endif
                         @if(isset($currentUser))
-                            <a href="{{ route('admin.users.edit', $currentUser->id) }}">{{ $currentUser->name }}</a><br />
+                            <a href="{{ route('admin.users.index') }}">CMS Users</a><br />
                             <a href="{{ route('admin.users.edit', $currentUser->id) }}">Settings</a><br />
                             <a href="/logout">Logout</a>
                         @endif

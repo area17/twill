@@ -19,9 +19,6 @@ class UserRepository extends ModuleRepository
     public function filter($query, array $scopes = [])
     {
         $this->addLikeFilterScope($query, $scopes, 'name');
-
-        $query->where('role', '<>', 'SUPERADMIN');
-
         return parent::filter($query, $scopes);
     }
 
