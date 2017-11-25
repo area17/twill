@@ -1,5 +1,5 @@
 @php
-$passwordText = isset($welcome) && $welcome ? 'Choose Password' : 'Reset Password';
+$passwordText = isset($welcome) && $welcome ? 'Choose password' : 'Reset password';
 @endphp
 
 <!DOCTYPE html>
@@ -25,7 +25,7 @@ $passwordText = isset($welcome) && $welcome ? 'Choose Password' : 'Reset Passwor
                     </fieldset>
 
                     <fieldset class="login__fieldset">
-                        <label class="login__label" for="password_confirmation">Confirm Password</label>
+                        <label class="login__label" for="password_confirmation">Confirm password</label>
                         <input type="password" name="password_confirmation" id="password_confirmation" class="login__input" required />
                     </fieldset>
 

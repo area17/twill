@@ -8,7 +8,7 @@
             <section class="login">
                 <form accept-charset="UTF-8" action="{{ route('admin.password.reset.email') }}" method="post">
                     <h1 class="f--heading login__heading login__heading--title">{{ config('app.name') }} <span class="envlabel envlabel--heading">{{ app()->environment() }}</span></h1>
-                    <h2 class="f--heading login__heading">Reset Password</h2>
+                    <h2 class="f--heading login__heading">Reset password</h2>
 
                     <fieldset class="login__fieldset">
                         <label class="login__label" for="email">Email</label>
@@ -17,7 +17,7 @@
 
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-                    <input class="login__button" type="submit" value="Send Password Reset Link">
+                    <input class="login__button" type="submit" value="Send password reset Link">
                 </form>
             </section>
         </div>
