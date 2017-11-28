@@ -9,7 +9,7 @@
 
         <ul class="media__metadatas">
           <li><strong>{{ currentMedia.name }}</strong></li>
-          <li class="f--small">File size : {{ currentMedia.size }}</li>
+          <li class="f--small" v-if="currentMedia.size">File size : {{ currentMedia.size }}</li>
           <li class="f--small">Dimensions : {{ currentMedia.width }} x {{ currentMedia.height }}</li>
           <li class="f--small media__metadatas--add">
             <a href="#" @click.prevent="metadatasInfos"> {{ metadatas.text }}</a></li>
@@ -52,7 +52,7 @@
 
         <a17-inputframe label="Caption">
           <div class="form__field">
-            <input type="text" :name="`${name}_caption`" placeholder="Poster variations" v-model="caption">
+            <input type="text" :name="`${name}_caption`" :placeholder="caption" v-model="caption">
           </div>
         </a17-inputframe>
 
@@ -100,7 +100,7 @@
       },
       btnLabel: {
         type: String,
-        default: 'Attach Image'
+        default: 'Attach image'
       },
       hover: {
         type: Boolean,

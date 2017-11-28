@@ -3,6 +3,7 @@
 namespace A17\CmsToolkit\Repositories\Behaviors;
 
 use A17\CmsToolkit\Models\Media;
+use ImageService;
 
 trait HandleMedias
 {
@@ -45,18 +46,41 @@ trait HandleMedias
         $fields['medias'] = null;
 
         if ($object->has('medias')) {
-
             foreach ($object->medias->groupBy('pivot.role') as $role => $mediasByRole) {
                 foreach ($mediasByRole->groupBy('id') as $id => $mediasById) {
-                    foreach ($mediasById->groupBy('pivot.crop') as $crop => $mediaByCrop) {
-                        $fields['medias'][$role]['images'][$id][$crop] = $mediaByCrop->first();
-                    }
-                }
-            }
+                    $item = $mediasById->first();
 
-            foreach ($object->mediasParams as $role => $crops) {
-                foreach ($crops as $crop_name => $ratio) {
-                    $fields['medias'][$role]['crops'][$crop_name] = $ratio;
+                    $itemForForm = [
+                        'id' => $item->id,
+                        'name' => $item->filename,
+                        'src' => ImageService::getCmsUrl($item->uuid, ["h" => "256"]),
+                        'original' => ImageService::getRawUrl($item->uuid),
+                        'width' => $item->width,
+                        'height' => $item->height,
+                        'metadatas' => [
+                            'default' => [
+                                'caption' => $item->caption,
+                                'altText' => $item->alt_text,
+                            ],
+                            'custom' => [
+                                'caption' => null,
+                                'altText' => null,
+                            ],
+                        ],
+                    ];
+
+                    foreach ($mediasById->groupBy('pivot.crop') as $crop => $mediaByCrop) {
+                        $media = $mediaByCrop->first();
+                        $itemForForm['crops'][$crop] = [
+                            'name' => $media->pivot->ratio,
+                            'width' => $media->pivot->crop_w,
+                            'height' => $media->pivot->crop_h,
+                            'x' => $media->pivot->crop_x,
+                            'y' => $media->pivot->crop_y,
+                        ];
+                    }
+
+                    $fields['medias'][$role][] = $itemForForm;
                 }
             }
         }

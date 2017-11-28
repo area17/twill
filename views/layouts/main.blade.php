@@ -4,6 +4,10 @@
         @include('cms-toolkit::partials.head')
     </head>
     <body class="env env--{{ app()->environment() }} s--app">
+        <div class="svg-sprite">
+            {!! File::exists(public_path("/assets/admin/icons/icons.svg")) ? File::get(public_path("/assets/admin/icons/icons.svg")) : '' !!}
+            {!! File::exists(public_path("/assets/admin/icons/icons-files.svg")) ? File::get(public_path("/assets/admin/icons/icons-files.svg")) : '' !!}
+        </div>
         @partialView(($moduleName ?? null), 'navigation._global_navigation', [
             'mobile' => true
         ])
@@ -36,20 +40,6 @@
         <script>
             window.STORE = {}
 
-            // datatable
-            window.STORE.datatable = {}
-
-            // buckets
-            window.STORE.buckets = {}
-
-            // languages
-            window.STORE.languages = {}
-            window.STORE.languages.all = {!! json_encode(getLanguagesForVueStore()) !!}
-
-            // form
-            window.STORE.publication = {}
-            window.STORE.form = {}
-
             // media library
             window.STORE.medias = {}
             window.STORE.medias.tagsEndpoint = '{{ route('admin.media-library.medias.tags') }}'
@@ -67,6 +57,7 @@
             ]
 
             @yield('initialStore')
+            @stack('fieldsStore')
         </script>
         @stack('extra_js')
     </body>

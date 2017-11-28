@@ -1,23 +1,26 @@
 <template>
-  <div class="fileField">
-    <table class="fileField__list ">
-      <draggable :element="'tbody'" v-model="items">
-        <a17-fileitem v-for="(item, index) in items" :key="item.id" class="item__content" :name="`${name}_${item.id}`" :draggable="isDraggable" :item="item" @delete="deleteItem(index)"></a17-fileitem>
-      </draggable>
-    </table>
-    <div class="fileField__trigger">
-      <input type="hidden" :name="name" :value="itemsIds"/>
-      <a17-button type="button" variant="ghost" @click="openMediaLibrary(remainingItems)" :disabled="!remainingItems">{{ addLabel }}</a17-button>
-      <span class="fileField__note f--small"><slot></slot></span>
+  <a17-inputframe :error="error" :label="label" :locale="locale" @localize="updateLocale" :size="size" :name="name">
+    <div class="fileField">
+      <table class="fileField__list ">
+        <draggable :element="'tbody'" v-model="items">
+          <a17-fileitem v-for="(item, index) in items" :key="item.id" class="item__content" :name="`${name}_${item.id}`" :draggable="isDraggable" :item="item" @delete="deleteItem(index)"></a17-fileitem>
+        </draggable>
+      </table>
+      <div class="fileField__trigger">
+        <input type="hidden" :name="name" :value="itemsIds"/>
+        <a17-button type="button" variant="ghost" @click="openMediaLibrary(remainingItems)" :disabled="!remainingItems">{{ addLabel }}</a17-button>
+        <span class="fileField__note f--small">{{ note }}</span>
+      </div>
     </div>
-  </div>
+  </a17-inputframe>
 </template>
 <script>
   import { mapState, mapGetters } from 'vuex'
   import fileItem from './FileItem.vue'
   import draggableMixin from '@/mixins/draggable'
   import mediaLibraryMixin from '@/mixins/mediaLibrary'
-
+  import localeMixin from '@/mixins/locale'
+  import inputframeMixin from '@/mixins/inputFrame'
   import draggable from 'vuedraggable'
 
   export default {
@@ -26,7 +29,7 @@
       'a17-fileitem': fileItem,
       draggable
     },
-    mixins: [draggableMixin, mediaLibraryMixin],
+    mixins: [draggableMixin, mediaLibraryMixin, localeMixin, inputframeMixin],
     props: {
       type: {
         type: String,
@@ -51,6 +54,10 @@
       max: {
         type: Number,
         default: 1
+      },
+      note: {
+        type: String,
+        default: ''
       }
     },
     data: () => {

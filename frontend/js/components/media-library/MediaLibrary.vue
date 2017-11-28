@@ -121,7 +121,8 @@
         max: state => state.mediaLibrary.max,
         type: state => state.mediaLibrary.type, // image, video, file
         types: state => state.mediaLibrary.types,
-        strict: state => state.mediaLibrary.strict
+        strict: state => state.mediaLibrary.strict,
+        selected: state => state.mediaLibrary.selected
       })
     },
     methods: {
@@ -207,6 +208,11 @@
         const form = this.$refs.form
         const list = this.$refs.list
         const formdata = this.getFormData(form)
+        if (this.selected[this.connector]) {
+          formdata.except = this.selected[this.connector].map((media) => {
+            return media.id
+          })
+        }
 
         // see api/media-library for actual ajax
         api.get(this.endpoint, formdata, function (resp) {

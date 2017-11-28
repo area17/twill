@@ -355,7 +355,7 @@ abstract class ModuleRepository
 
     public function getFormFields($object)
     {
-        $fields = $object->toArray();
+        $fields = [];
 
         foreach (class_uses_recursive(get_called_class()) as $trait) {
             if (method_exists(get_called_class(), $method = 'getFormFields' . class_basename($trait))) {
@@ -381,6 +381,12 @@ abstract class ModuleRepository
         }
 
         unset($scopes['search']);
+
+        if (isset($scopes['exceptIds'])) {
+            $query->whereNotIn($this->model->getTable() . '.id', $scopes['exceptIds']);
+            unset($scopes['exceptIds']);
+        }
+
         foreach ($scopes as $column => $value) {
             if (method_exists($this->model, 'scope' . ucfirst($column))) {
                 $query->$column();

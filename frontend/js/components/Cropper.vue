@@ -78,8 +78,8 @@
           return r.name === self.crop.name
         })
         if (typeof filter !== 'undefined' && filter) {
-          self.minCropValues.width = filter.minValues.width
-          self.minCropValues.height = filter.minValues.height
+          self.minCropValues.width = filter.minValues ? filter.minValues.width : 0
+          self.minCropValues.height = filter.minValues ? filter.minValues.height : 0
           return filter.ratio
         }
         return self.aspectRatio

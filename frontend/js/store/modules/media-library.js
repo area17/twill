@@ -110,7 +110,7 @@ const mutations = {
       return mediaToModify
     }
 
-    if (metadatas.hasOwnProperty('index')) {
+    if (metadatas.media.hasOwnProperty('index')) {
       const media = setMetatadas(medias[metadatas.media.index])
       medias[metadatas.index] = Object.assign({}, medias[metadatas.index], media)
     }

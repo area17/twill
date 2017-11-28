@@ -53,7 +53,11 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
             'filesizeLimit' => config('cms-toolkit.media_library.filesize_limit'),
         ];
 
-        return $this->getIndexData() + $uploaderConfig;
+        if (request()->has('except')) {
+            $prependScope['exceptIds'] = request('except');
+        }
+
+        return $this->getIndexData($prependScope ?? []) + $uploaderConfig;
     }
 
     public function getIndexData($prependScope = [])
@@ -91,7 +95,6 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
                             'altText' => null,
                         ],
                     ],
-
                 ];
             })->toArray(),
             'maxPage' => $items->lastPage(),
