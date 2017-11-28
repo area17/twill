@@ -5,3 +5,4 @@ vendor/
 assets/dist/*
 mix-manifest.json
 public/
+frontend/js/components/blocks/customs/*
