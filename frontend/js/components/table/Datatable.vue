@@ -30,7 +30,7 @@
     <!-- Actual table content -->
     <div class="container">
       <div class="datatable__table" :class="isEmptyDatable">
-        <a17-spinner v-if="loading"></a17-spinner>
+        <a17-spinner v-if="loading" class="datatable__spinner">Loading&hellip;</a17-spinner>
         <a17-table :xScroll="xScroll" @scroll="updateScroll">
           <thead>
             <a17-tablehead :columns="visibleColumns" ref="thead"></a17-tablehead>

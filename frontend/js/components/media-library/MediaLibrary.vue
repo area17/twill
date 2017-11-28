@@ -43,7 +43,7 @@
             <div class="medialibrary__list-items">
               <a17-itemlist :items="fullMedias" :selectedItems="selectedMedias" @change="updateSelectedMedias" v-if="type === 'file'"></a17-itemlist>
               <a17-mediagrid :medias="fullMedias" :selectedMedias="selectedMedias" @change="updateSelectedMedias" v-else></a17-mediagrid>
-              <a17-spinner v-if="loading" class="medialibrary__spinner"></a17-spinner>
+              <a17-spinner v-if="loading" class="medialibrary__spinner">Loading&hellip;</a17-spinner>
             </div>
           </div>
         </div>
