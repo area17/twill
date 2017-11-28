@@ -35,7 +35,7 @@
     },
     mixins: [draggableMixin],
     props: {
-      id: {
+      type: {
         type: String,
         required: true
       },
@@ -66,7 +66,7 @@
         return this.blockType.max > this.blocks.length
       },
       blockType: function () {
-        return this.availableBlocks[this.id] ? this.availableBlocks[this.id] : {}
+        return this.availableBlocks[this.type] ? this.availableBlocks[this.type] : {}
       },
       blocks: {
         get () {
@@ -78,7 +78,7 @@
         },
         set (value) {
           this.$store.commit('reorderFormBlocks', {
-            type: this.id,
+            type: this.type,
             name: this.name,
             blocks: value
           })
@@ -91,18 +91,18 @@
     },
     methods: {
       addBlock: function () {
-        this.$store.commit('addFormBlock', { type: this.id, name: this.name })
+        this.$store.commit('addFormBlock', { type: this.type, name: this.name })
       },
       duplicateBlock: function (index) {
         this.$store.commit('duplicateFormBlock', {
-          type: this.id,
+          type: this.type,
           name: this.name,
           index: index
         })
       },
       deleteBlock: function (index) {
         this.$store.commit('deleteFormBlock', {
-          type: this.id,
+          type: this.type,
           name: this.name,
           index: index
         })

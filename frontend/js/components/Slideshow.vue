@@ -6,7 +6,7 @@
             <div class="slide__handle">
               <div class="slide__handle--drag"></div>
             </div>
-            <a17-mediafield class="slide__content" :name="`${name}_${slide.id}`" :index="index" :mediaContext="name" cropContext="slideshow" :hover="hoverable" :isSlide="true"></a17-mediafield>
+            <a17-mediafield class="slide__content" :name="`${name}_${slide.id}`" :index="index" :mediaContext="name" :cropContext="cropContext" :hover="hoverable" :isSlide="true"></a17-mediafield>
         </div>
       </transition-group>
     </draggable>
@@ -42,7 +42,7 @@
       },
       itemLabel: {
         type: String,
-        default: 'Image'
+        default: 'image'
       },
       max: {
         type: Number,

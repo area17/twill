@@ -6,8 +6,7 @@
           <a17-block :block="block" :index="index">
             <button type="button" slot="dropdown-add" v-if="availableBlocks.length" v-for="(availableBlock, dropdownIndex) in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, index)"><span v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
             <div slot="dropdown-action">
-              <!--TBD: Maybe this could be delete-->
-              <!-- <button type="button" @click="deleteBlock(index)">Open in Live Editor</button> -->
+              <!-- <button type="button" @click="">Open in Live Editor</button> -->
               <button type="button" @click="deleteBlock(index)">Delete</button>
               <button type="button" @click="duplicateBlock(index)">Duplicate</button>
             </div>

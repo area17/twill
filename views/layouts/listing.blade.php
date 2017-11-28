@@ -14,24 +14,32 @@
             <div class="container" ref="form">
                 <a17-filter v-on:submit="filterListing" v-bind:closed="hasBulkIds" initial-search-value="{{ $filters['search'] ?? '' }}">
                     <ul class="secondarynav secondarynav--desktop" slot="navigation">
-                        <li v-for="(navItem, index) in navFilters" class="secondarynav__item" :class="{ 's--on' : navActive === navItem.slug }"><a href="#" v-on:click.prevent="filterStatus(navItem.slug)"><span class="secondarynav__link">@{{ navItem.name }}</span><span class="secondarynav__number">(@{{ navItem.number }})</span></a></li>
+                        <li v-for="(navItem, index) in navFilters" class="secondarynav__item" :class="{ 's--on' : navActive === navItem.slug }">
+                            <a href="#" v-on:click.prevent="filterStatus(navItem.slug)">
+                                <span class="secondarynav__link">@{{ navItem.name }}</span>
+                                <span class="secondarynav__number">(@{{ navItem.number }})</span>
+                            </a>
+                        </li>
                     </ul>
 
                     <div class="secondarynav secondarynav--mobile secondarynav--dropdown" slot="navigation">
                         <a17-dropdown ref="secondaryNavDropdown" position="bottom-left" width="full" :offset="0">
                             <a17-button class="secondarynav__button" variant="dropdown-transparent" size="small" @click="$refs.secondaryNavDropdown.toggle()">
-                                <span class="secondarynav__link">@{{ selectedNav.name }}</span><span class="secondarynav__number">(@{{ selectedNav.number }})</span>
+                                <span class="secondarynav__link">@{{ selectedNav.name }}</span>
+                                <span class="secondarynav__number">(@{{ selectedNav.number }})</span>
                             </a17-button>
                             <div slot="dropdown__content">
                                 <ul>
                                     <li v-for="(navItem, index) in navFilters" class="secondarynav__item">
-                                        <a href="#" v-on:click.prevent="filterStatus(navItem.slug)"><span class="secondarynav__link">@{{ navItem.name }}</span><span class="secondarynav__number">(@{{ navItem.number }})</span></a>
+                                        <a href="#" v-on:click.prevent="filterStatus(navItem.slug)">
+                                            <span class="secondarynav__link">@{{ navItem.name }}</span>
+                                            <span class="secondarynav__number">(@{{ navItem.number }})</span>
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
                         </a17-dropdown>
                     </div>
-
 
                     @hasSection('hiddenFilters')
                         <div slot="hidden-filters">
@@ -39,13 +47,15 @@
                         </div>
                     @endif
 
-                    <div slot="additional-actions"><a17-button variant="validate" size="small" v-on:click="$refs.addNewModal.open()">Add New</a17-button></div>
+                    <div slot="additional-actions">
+                        <a17-button variant="validate" size="small" v-on:click="$refs.addNewModal.open()">Add new</a17-button>
+                    </div>
                 </a17-filter>
             </div>
             <a17-bulk></a17-bulk>
         </div>
         <a17-datatable :draggable="{{ $reorder ? 'true' : 'false' }}" empty-message="{{ __($emptyDataTable) }}"></a17-datatable>
-        <a17-modal class="modal--form" ref="addNewModal" title="Add New">
+        <a17-modal class="modal--form" ref="addNewModal" title="Add new">
             <form action="{{ $storeUrl }}" method="post">
                 <a17-modal-title-editor v-bind:base-url="baseUrl" @unless($permalink ?? true) :with-permalink="false" @endunless></a17-modal-title-editor>
                 <a17-modal-validation v-bind:mode="'create'" name="add-new" :active-publish-state="true" :is-publish="false"></a17-modal-validation>

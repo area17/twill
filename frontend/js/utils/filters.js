@@ -36,10 +36,10 @@ const filters = {
   formatDate: function (value) {
     if (!value) return ''
 
-    return dateFormat(value, 'MMM, DD, YYYY HH:mm A')
+    return dateFormat(value, 'MMM, DD, YYYY hh:mm A')
   },
   formatCalendarDate: function (value) {
-    const datepickerFormat = 'MMM, DD, YYYY HH:mm A'
+    const datepickerFormat = 'MMM, DD, YYYY hh:mm A'
     if (!value) value = new Date()
     return dateFormat(value, datepickerFormat)
   }

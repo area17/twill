@@ -20,15 +20,6 @@ import a17Slideshow from '@/components/Slideshow.vue'
 import a17Multiselect from '@/components/MultiSelect.vue'
 import a17Singleselect from '@/components/SingleSelect.vue'
 
-// Specific children components for page
-// Blocks Components
-import a17BlockImage from '@/components/blocks/BlockImage.vue'
-import a17BlockTitle from '@/components/blocks/BlockTitle.vue'
-import a17BlockGrid from '@/components/blocks/BlockGrid.vue'
-import a17BlockQuote from '@/components/blocks/BlockQuote.vue'
-import a17BlockVideo from '@/components/blocks/BlockVideo.vue'
-import a17BlockWysiwyg from '@/components/blocks/BlockWysiwyg.vue'
-
 // Browser
 import a17Browser from '@/components/Browser.vue'
 
@@ -57,14 +48,6 @@ store.registerModule('content', content)
 store.registerModule('language', language)
 store.registerModule('revision', revision)
 
-// Blocks
-Vue.component('a17-block-title', a17BlockTitle)
-Vue.component('a17-block-quote', a17BlockQuote)
-Vue.component('a17-block-video', a17BlockVideo)
-Vue.component('a17-block-wysiwyg', a17BlockWysiwyg)
-Vue.component('a17-block-image', a17BlockImage)
-Vue.component('a17-block-grid', a17BlockGrid)
-
 // Browser
 Vue.component('a17-repeater', a17Repeater)
 Vue.component('a17-browser', a17Browser)
@@ -76,6 +59,16 @@ Vue.component('a17-singleselect', a17Singleselect)
 // Preview
 Vue.component('a17-overlay', a17Overlay)
 Vue.component('a17-previewer', a17Previewer)
+
+// Blocks
+const importedBlocks = require.context('@/components/blocks/', true, /\.(js|vue)$/i)
+importedBlocks.keys().map(block => {
+  const blockForName = block.replace(/customs\//, '')
+  const blockName = blockForName.match(/\w+/)[0].replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase()
+  if (blockName !== 'block') {
+    return Vue.component('a17-' + blockName, importedBlocks(block))
+  }
+})
 
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
