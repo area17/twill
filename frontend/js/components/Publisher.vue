@@ -6,7 +6,7 @@
       <a17-checkboxaccordion  v-if="languages && languages.length" :options="languages" name="active_languages" :value="publishedLanguagesValues" :open="openStates['A17Checkboxaccordion']" @open="openCloseAccordion">Languages</a17-checkboxaccordion>
       <a17-pubaccordion :open="openStates['A17Pubaccordion']" @open="openCloseAccordion">Published on</a17-pubaccordion>
       <a17-revaccordion v-if="revisions.length" :open="openStates['A17Revisions']" @open="openCloseAccordion" :revisions="revisions">Revisions</a17-revaccordion>
-      <div class="publisher__item">
+      <div class="publisher__item" v-if="revisions.length">
         <a href="#" class="publisher__link" @click.prevent="openPreview"><span v-svg symbol="preview"></span><span class="f--link-underlined--o">Preview changes</span></a>
       </div>
       <div class="publisher__item publisher__item--btns">

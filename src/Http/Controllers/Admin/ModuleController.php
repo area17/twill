@@ -568,6 +568,7 @@ abstract class ModuleController extends Controller
 
         $data = [
             'item' => $item,
+            'revisions' => method_exists($item, 'hasRevisions') && $item->hasRevisions() ? $item->revisionsForPublisher() : [],
             'form_fields' => $this->repository->getFormFields($item),
             'saveUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'update', $id),
             'back_link' => $this->getBackLink(),

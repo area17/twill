@@ -15,16 +15,16 @@ if (!function_exists('getFallbackLocale')) {
 }
 
 if (!function_exists('getLanguagesForVueStore')) {
-    function getLanguagesForVueStore()
+    function getLanguagesForVueStore($form_fields = [])
     {
         $manageMultipleLanguages = count(getLocales()) > 1;
-        return $manageMultipleLanguages ? collect(config('translatable.locales'))->map(function ($locale, $index) {
+        return $manageMultipleLanguages ? collect(config('translatable.locales'))->map(function ($locale, $index) use ($form_fields) {
             return [
                 'shortlabel' => strtoupper($locale),
-                'label' => getLanguageLabelFromLocaleCode($locale) . ($index === 0 ? ' (default)' : ''),
+                'label' => getLanguageLabelFromLocaleCode($locale),
                 'value' => $locale,
-                'disabled' => $index === 0 ? true : false,
-                'published' => $index === 0 ? true : false,
+                'disabled' => false,
+                'published' => $form_fields['translations']['active'][$locale],
             ];
         }) : [];
     }

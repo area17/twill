@@ -1,7 +1,7 @@
 <?php
 
 if (!function_exists('createDefaultFields')) {
-    function createDefaultTableFields($table, $softDeletes = true, $published = true)
+    function createDefaultTableFields($table, $softDeletes = true, $published = true, $publishDates = true)
     {
         $table->increments('id');
 
@@ -13,6 +13,11 @@ if (!function_exists('createDefaultFields')) {
 
         if ($published) {
             $table->boolean('published');
+        }
+
+        if ($publishDates) {
+            $this->timestamp('publish_start_date')->nullable();
+            $this->timestamp('publish_end_date')->nullable();
         }
     }
 }
