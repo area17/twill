@@ -18,8 +18,7 @@ export default {
         ghostClass: self.ghostClass,
         chosenClass: self.chosenClass,
         dragClass: self.dragClass,
-        scrollSensitivity: self.scrollSensitivity,
-        scrollSpeed: self.scrollSpeed
+        scrollSensitivity: self.scrollSensitivity
       }
     }
   }
