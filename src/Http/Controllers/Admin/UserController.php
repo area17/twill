@@ -11,14 +11,19 @@ class UserController extends ModuleController
     protected $namespace = 'A17\CmsToolkit';
 
     protected $moduleName = 'users';
+
     protected $indexWith = ['medias'];
+
     protected $defaultOrders = ['name' => 'asc'];
+
     protected $defaultFilters = [
         'search' => 'name',
     ];
     protected $filters = [
         'fRole' => 'role',
     ];
+
+    protected $titleColumnKey = 'name';
 
     protected $indexColumns = [
         'name' => [
@@ -36,7 +41,9 @@ class UserController extends ModuleController
         ],
     ];
 
-    protected $nameColumnKey = 'name';
+    protected $indexOptions = [
+        'permalink' => false,
+    ];
 
     public function __construct(Application $app, Request $request)
     {

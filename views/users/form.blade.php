@@ -1,6 +1,6 @@
 @extends('cms-toolkit::layouts.form')
 
-@php
+{{-- @php
     $isSuperAdmin = isset($form_fields['role']) ? $form_fields['role'] === 'SUPERADMIN' : false;
 @endphp
 
@@ -34,3 +34,4 @@
             @formField('medias', ['media_role' => 'profile'])
         @endif
 @stop
+ --}}
