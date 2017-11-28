@@ -115,7 +115,7 @@ abstract class ModuleController extends Controller
     /*
      * Name of the index column to use as name column
      */
-    protected $nameColumnKey = 'title';
+    protected $titleColumnKey = 'title';
 
     public function __construct(Application $app, Request $request)
     {
@@ -177,7 +177,7 @@ abstract class ModuleController extends Controller
 
         $data = [
             'moduleName' => $this->moduleName,
-            'nameColumnKey' => $this->nameColumnKey,
+            'titleColumnKey' => $this->titleColumnKey,
             'tableData' => $this->getIndexTableData($items),
             'tableColumns' => $this->getIndexTableColumns($items),
             'tableMainFilters' => $this->getIndexTableMainFilters($items),
@@ -206,8 +206,8 @@ abstract class ModuleController extends Controller
                 return $this->getItemColumnData($item, $column);
             })->toArray();
 
-            $name = $columnsData[$this->nameColumnKey];
-            unset($columnsData[$this->nameColumnKey]);
+            $name = $columnsData[$this->titleColumnKey];
+            unset($columnsData[$this->titleColumnKey]);
 
             $featuredField = $this->featureField ?? 'featured';
 
@@ -289,13 +289,13 @@ abstract class ModuleController extends Controller
 
         array_push($tableColumns, [
             'name' => 'name',
-            'label' => $this->indexColumns[$this->nameColumnKey]['title'] ?? 'Name',
+            'label' => $this->indexColumns[$this->titleColumnKey]['title'] ?? 'Name',
             'visible' => true,
             'optional' => false,
             'sortable' => true,
         ]);
 
-        unset($this->indexColumns[$this->nameColumnKey]);
+        unset($this->indexColumns[$this->titleColumnKey]);
 
         foreach ($this->indexColumns as $column) {
             $columnName = isset($column['relationship']) ? $column['relationship'] . ucfirst($column['field']) : $column['field'];
@@ -402,8 +402,8 @@ abstract class ModuleController extends Controller
                 return $this->getItemColumnData($item, $column);
             })->toArray();
 
-            $name = $columnsData[$this->nameColumnKey];
-            unset($columnsData[$this->nameColumnKey]);
+            $name = $columnsData[$this->titleColumnKey];
+            unset($columnsData[$this->titleColumnKey]);
 
             return [
                 'id' => $item->id,
@@ -699,7 +699,7 @@ abstract class ModuleController extends Controller
         $orders = [];
         if ($this->request->has("sortKey") && $this->request->has("sortDir")) {
             if (($key = $this->request->get("sortKey")) == 'name') {
-                $orders[$this->nameColumnKey] = $this->request->get("sortDir");
+                $orders[$this->titleColumnKey] = $this->request->get("sortDir");
             } elseif (!empty($key)) {
                 $orders[$key] = $this->request->get("sortDir");
             }
