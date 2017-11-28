@@ -1,4 +1,4 @@
-# Laravel CMS Toolkit Documentation
+# AREA 17 CMS Toolkit
 
 ## Introduction
 
@@ -31,31 +31,12 @@ By default, with very little developer actions, it provides:
   - can be used to attach and serve pdfs or videos in any content type
 - the ability to art direct responsive images through:
   - different manual cropping ratio for each breakpoints
-  - automatic focal point cropping with only one manual user input
   - automatic entropy or faces cropping with no manual input
 - rapid new content types creation/edition/maintenance for developers (generators and conventions for unified CRUD features)
 - development and production ready toolset (debug bar, inspector, exceptions handler)
 - static templates automatic routing (ie: adding a blade file at a certain location will be automatically available at the same url of its filename, no need to deal with application code, nice for frontend devs or simple page needs)
 
 In development, you can use it in any Laravel environment like [Valet](https://laravel.com/docs/5.3/valet) or [Homestead](https://laravel.com/docs/5.3/homestead), though in a client's project context, you would ideally run your application in a custom virtual machine or Docker environment that is as close as possible as your production environment (either through a custom `after.sh` config for Homestead, an Ansible provisionned Vagrant box or a Docker Compose project).
-
-## Table of content
-
-* [Introduction](#introduction)
-* [Install](#install)
-* [Usage](#usage)
- * [Static templates](#static-templates)
- * [Configuration](#configuration)
- * [Users management](#users-management)
- * [CRUD Modules](#crud-modules)
- * [Media Library](#media-library)
- * [File library](#file-library)
- * [S3 direct upload](#s3-direct-upload)
- * [Block editor](#block-editor)
- * [Frontend controllers](#frontend-controllers)
- * [Roadmap](#roadmap)
- * [Other useful packages](#other-useful-packages)
-* [Changelog](#changelog)
 
 ## Install
 
@@ -127,6 +108,20 @@ Run the setup command (it will migrate your database schema so run it where your
 php artisan cms-toolkit:setup
 ```
 
+Setup your list of available languages for translated fields in `config/translatable.php` (without nested locales).
+
+```php
+<?php
+
+return [
+    'locales' => [
+        'en',
+        'fr',
+    ],
+```
+
+Use a single locale code if you're not using model translations in your project.
+
 That's about it!
 
 
@@ -147,7 +142,7 @@ Use the `icon('icon-name', [])` helper to display an icon from the SVG sprite. T
 
 
 ### Configuration
-#### The cms-toolkit configuration file
+#### Options
 
 By default, you shouldn't have to modify anything if you want to use the default config which is basically:
 - users management
@@ -198,7 +193,6 @@ return [
         'block-editor' => true,
         'buckets' => false,
         'users-image' => false,
-        'users-in-top-right-nav' => false,
         'site-link' => false,
         'settings' => false,
     ],
@@ -309,35 +303,15 @@ return [
     |--------------------------------------------------------------------------
     |
     | This array allows you to provide the package with your configuration
-    | for the Block renderer service.
+    | for the Block Editor form field.
     | More to come here...
     |
      */
     'block_editor' => [
-        'blocks_js_path' => '/assets/admin/blocks/blocks.js',
-        'blocks_js_rev' => false,
-
-        'blocks_css_path' => 'blocks.css',
-        'blocks_css_rev' => true,
-
-        'use_iframes' => false,
+        'use_iframes' => true,
         'iframe_wrapper_view' => '',
-
         'show_render_errors' => env('BLOCK_EDITOR_SHOW_ERRORS', false),
 
-        'blocks' => [
-            "blocktitle" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",
-            "blocktext" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",
-            "blockquote" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",
-            "image" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
-            "imagegrid" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
-            "imagetext" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
-            "diaporama" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
-            "blockseparator" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Separator",
-        ],
-        'sitemap_blocks' => [
-            'A17\CmsToolkit\Services\BlockEditor\Blocks\Image',
-        ],
     ],
 
     /*
@@ -395,12 +369,12 @@ return [
 ```
 
 
-#### The cms-navigation configuration file
+#### Navigation
 
-This file manages the navigation of your admin area. Using the CMS UI Toolkit, the package provides 3 levels of navigation: global, primary and secondary. This file simply contains a nested array description of your navigation.
+This file manages the navigation of your admin area. Using the CMS UI, the package provides 2 levels of navigation: global and primaryy. This file simply contains a nested array description of your navigation.
 
 Each entry is defined by multiple options.
-The simplest entry has a `title` and a `route` option which is a Laravel route name. A global entry can define a `primary_navigation` array that will contains more entries. Same thing for the `primary_navigation` entries but with `secondary_navigation`.
+The simplest entry has a `title` and a `route` option which is a Laravel route name. A global entry can define a `primary_navigation` array that will contains more entries.
 
 Two other options are provided that are really useful in conjunction with the CRUD modules you'll create in your application: `module` and `can`. `module` is a boolean to indicate if the entry is routing to a module route. By default it will link to the index route of the module you used as your entry key. `can` allows you to display/hide navigation links depending on the current user and permission name you specify.
 
@@ -436,11 +410,6 @@ return [
             ],
         ],
     ],
-    'users' => [
-        'can' => 'list',
-        'title' => 'Users',
-        'module' => true,
-    ],
 ];
 ```
 
@@ -457,42 +426,6 @@ Route::group(['prefix' => 'work'], function () {
     Route::module('studios');
 });
 ```
-
-### Users management
-
-Authentication and authorization are provided by default in Laravel. This package simply leverages it and configure the views with the A17 CMS UI Toolkit for you. By default, users can login at `/login` and also reset their password through that screen. New users have to start by resetting their password before initial access to the admin application. You should redirect users to anywhere you want in your application after they login. The cms-toolkit configuration file has an option for you to change the default redirect path (`auth_login_redirect_path`).
-
-#### Roles
-The package currently only provides 3 different roles:
-- view only
-- publisher
-- admin
-
-#### Permissions
-View only users are able to:
-- login
-- view CRUD listings
-- filter CRUD listings
-- view media/file library
-- download original files from the media/file library
-- edit their own profile
-
-Publishers have the same permissions as view only users plus:
-- full CRUD permissions
-- publish
-- sort
-- upload new images/files to the media/file library
-
-Admin user have the same permissions as publisher users plus:
-- full permissions on users
-
-There is also a super admin user that can impersonate other users at `/users/impersonate/{id}`. This can be really useful for you to test your features with different user roles without having to logout/login manually. Also when debugging a ticket reported by a specific user. Stop impersonating by going to `/users/impersonate/stop`.
-
-
-#### Extending user roles and permissions
-You can create new permissions on the existing roles by using the Gate façade in your `AuthServiceProvider`. The new can middleware Laravel provides by default is very easy to use, either through route definition or controller constructor.
-
-You should follow the Laravel documentation regarding [authorization](https://laravel.com/docs/5.3/authorization). It's pretty good. Also if you would like to bring administration of roles and permissions to the admin application, [spatie/laravel-permission](https://github.com/spatie/laravel-permission) would probably be your best friend. The Opera CMS had that feature but it was not very well developed which makes it a pain to use.
 
 ### CRUD Modules
 #### CLI Generator
@@ -521,6 +454,26 @@ Setup a new CMS menu item in `config/cms-navigation.php`.
 Setup your `index` and form `views`.
 
 Enjoy.
+
+#### Routes
+
+A router macro is available to create module routes quicker:
+```php
+<?php
+
+Route::module('yourModulePluralName');
+
+// You can add an array of only/except action names as a second parameter
+// By default, the following routes are created : 'sort', 'publish', 'browser', 'bucket', 'media', 'feature', 'file'
+Route::module('yourModulePluralName', ['except' => ['sort', 'feature', 'bucket', 'browser', 'file']])
+
+// You can add an array of only/except action names for the resource controller as a third parameter
+// By default, the following routes are created : 'index', 'create', 'store', 'show', 'edit', 'update', 'destroy'
+Route::module('yourModulePluralName', [], ['only' => ['index', 'edit', 'store', 'destroy']])
+
+// The last optional parameter disable the resource controller actions on the module
+Route::module('yourPluralModuleName', [], [], false)
+```
 
 #### Migrations
 Migrations are regular Laravel migrations. A few helpers are available to create the default fields any CRUD module will use:
@@ -587,7 +540,7 @@ Schema::create('table_name_singular1_table_name_singular2', function (Blueprint 
 });
 ```
 
-A few CRUD controllers require that your model have a field in the database with a specific name: `published` and `position`, so stick with those column names if you are going to use publication status and sortable listings. When using the block editor, you can name the field that will contains the blocks json whatever you want but it's type should be `json`.
+A few CRUD controllers require that your model have a field in the database with a specific name: `published` and `position`, so stick with those column names if you are going to use publication status and sortable listings.
 
 
 #### Models
@@ -605,25 +558,35 @@ Depending on the features you need on your model, include the availables traits 
 
 - HasTranslation: add translated fields in the `translatedAttributes` array and in the `fillable` array of the generated translatable model in `App/Models/Translations` (always keep the active and locale fields).
 
+- HasSlug: specify the field(s) that is going to be used to create the slug in the `slugAttributes` array
+
 - HasMedias: add the `mediasParams` configuration array:
 
 ```php
 <?php
 
 public $mediasParams = [
-    'hero' => [ // role name
-        'default' => '16/9', //crop name => ratio as a fraction or number
-        'square' => '1',
+    'cover' => [ // role name
+        'default' => [ // crop name
+            [
+                'name' => 'default', // ratio name, same as crop name if single
+                'ratio' => 16 / 9, // ratio as a fraction or number
+            ],
+        ],
+        'mobile' => [
+            [
+                'name' => 'landscape', // ratio name, multiple allowed
+                'ratio' => 16 / 9, 
+            ],
+            [
+                'name' => 'portrait', // ratio name, multiple allowed
+                'ratio' => 3 / 4,
+            ],
+        ],
     ],
-    'logo' => [
-        'default' => 0, // no crop
-    ],
-    'profile' => [
-        'desktop' => '1340/560',
-        'tablet' => '780/395',
-        'mobile' => '320/270',
-    ],
-
+    '...' => [ // another role
+        ... // with crops
+    ]
 ];
 ```
 
@@ -632,16 +595,174 @@ public $mediasParams = [
 ```php
 <?php
 
-public $filesParams = ['finishe', 'caring', 'warranty']; // a list of file roles
+public $filesParams = ['project_pdf']; // a list of file roles
 ```
 
+- HasRevisions: no options
 
-- HasSlug: specify the field(s) that is going to be used to create the slug in the `slugAttributes` array
+#### Controllers
+
+```php
+<?php
+
+    protected $moduleName = 'yourModuleName';
+    
+    /*
+     * Options of the index view
+     */
+    protected $indexOptions = [
+        'create' => true,
+        'publish' => true,
+        'bulkPublish' => true,
+        'feature' => false,
+        'bulkFeature' => false,
+        'restore' => true,
+        'bulkRestore' => true,
+        'bulkDelete' => true,
+        'reorder' => false,
+        'permalink' => true,
+    ];
+
+    /*
+     * Key of the index column to use as title/name/anythingelse column
+     * This will be the first column in the listing and will have a link to the form
+     */
+    protected $titleColumnKey = 'title';
+    
+    /*
+     * Available columns of the index view
+     */
+    protected $indexColumns = [
+        'image' => [
+            'thumb' => true, // image column
+            'variant' => [
+                'role' => 'cover',
+                'crop' => 'default',
+            ],
+        ],
+        'title' => [ // field column
+            'title' => 'Title',
+            'field' => 'title',
+        ],
+        'subtitle' => [
+            'title' => 'Subtitle',
+            'field' => 'subtitle',
+            'sort' => true, // column is sortable
+            'visible' => false, // will be available from the columns settings dropdown
+        ],
+        'relationName' => [ // relation column
+            'title' => 'Relation name',
+            'sort' => true,
+            'relationship' => 'relationName',
+            'field' => 'relationFieldToDisplay'
+        ],
+        'presenterMethodField' => [ // presenter column
+            'title' => 'Field title',
+            'field' => 'presenterMethod',
+            'present' => true,
+        ]
+    ];
+
+    /*
+     * Columns of the browser view for this module when browsed from another module
+     * using a browser form field
+     */
+    protected $browserColumns = [
+        'title' => [
+            'title' => 'Title',
+            'field' => 'title',
+        ],
+    ];
+
+    /*
+     * Relations to eager load for the index view
+     */
+    protected $indexWith = [];
+
+    /*
+     * Relations to eager load for the form view
+     * Add relationship used in multiselect and resource form fields
+     */
+    protected $formWith = [];
+
+    /*
+     * Relation count to eager load for the form view
+     */
+    protected $formWithCount = [];
+
+    /*
+     * Filters mapping ('fFilterName' => 'filterColumn')
+     * You can associate items list to filters by having a fFilterNameList key in the indexData array
+     * For example, 'fCategory' => 'category_id' and 'fCategoryList' => app(CategoryRepository::class)->listAll()
+     */
+    protected $filters = [];
+
+    /*
+     * Add anything you would like to have available in your module's index view
+     */
+    protected function indexData($request)
+    {
+        return [];
+    }
+
+    /*
+     * Add anything you would like to have available in your module's form view
+     * For example, relationship lists for multiselect form fields
+     */
+    protected function formData($request)
+    {
+        return [];
+    }
+
+    // Optional, if the automatic way is not working for you (default is ucfirst(str_singular($moduleName)))
+    protected $modelName = 'model';
+
+    // Optional, to specify a different feature field name than the default 'featured'
+    protected $featureField = 'featured';
+
+    // Optional, specify number of items per page in the listing view (-1 to disable pagination)
+    protected $perPage = 20;
+
+    // Optional, specify the default listing order
+    protected $defaultOrders = ['title' => 'asc'];
+
+    // Optional, specify the default listing filters
+    protected $defaultFilters = ['search' => 'title|search'];
+```
+
+You can also override all actions and internal functions, checkout the ModuleController source in `A17\CmsToolkit\Http\Controllers\Admin\ModuleController`.
+
+#### Form Requests
+Classic Laravel 5 [form request validation](https://laravel.com/docs/5.5/validation#form-request-validation).
+
+There is an helper to define rules for translated fields without having to deal with each locales:
+
+```php
+<?php
+
+$this->rulesForTranslatedFields([
+ // regular rules
+], [
+  // translated fields rules with just the field name like regular rules
+]);
+```
+
+There is also an helper to define validation messages for translated fields:
+
+```php
+<?php
+
+$this->messagesForTranslatedFields([
+ // regular messages
+], [
+  // translated fields messages
+]);
+```
 
 
 #### Repositories
 
-Depending on the model feature, include one or multiple of those traits: `HandleTranslations`, `HandleSlugs`, `HandleMedias`, `HandleFiles`.
+Depending on the model feature, include one or multiple of those traits: `HandleTranslations`, `HandleSlugs`, `HandleMedias`, `HandleFiles`, `HandleRevisions`.
 
 Repositories allows you to modify the default behavior of your models by providing some entry points in the form of methods that you might implement:
 
@@ -701,6 +822,9 @@ public function getFormFields($object) {
     // get oneToMany relationship for select multiple input
     $fields = $this->getFormFieldsForMultiSelect($fields, 'relationName');
 
+    // get fields for a repeater
+    $fields['externalLinks'] = $this->getFormFieldsForRepeater($object, 'externalLinks');
+
     // return fields
     return $fields
 }
@@ -746,338 +870,326 @@ public function afterSave($object, $fields) {
     // $object->relationName()->sync($fields['relationName'] ?? []);
     // or, to save a oneToMany relationship
     // $this->updateOneToMany($object, $fields, 'relationName', 'formFieldName', 'relationAttribute')
+    // or, to save a belongToMany relationship used with the browser field
+    $this->updateOrderedBelongsTomany($object, $fields, 'people');
+    // or, to save a belongToMany relationship used with the repeater field
+    $this->updateRepeaterMany($object, $fields, 'externalLinks', false);
+    // or, to save a hasMany relationship used with the repeater field
+    $this->updateRepeater($object, $fields, 'partnerVideos');
     parent::afterSave($object, $fields);}
 
 ```
 
-#### Controllers
+- for hydrating the model for preview of revisions
 
 ```php
 <?php
 
-    protected $moduleName = 'yourModuleName';
-
-    /*
-     * Relations to eager load for the index view
-     */
-    protected $indexWith = [];
-
-    /*
-     * Relations to eager load for the form view
-     * Add relationship used in multiselect and resource form fields
-     */
-    protected $formWith = [];
-
-    /*
-     * Relation count to eager load for the form view
-     */
-    protected $formWithCount = [];
-
-    /*
-     * Filters mapping ('fFilterName' => 'filterColumn')
-     * You can associate items list to filters by having a fFilterNameList key in the indexData array
-     * For example, 'fCategory' => 'category_id' and 'fCategoryList' => app(CategoryRepository::class)->listAll()
-     */
-    protected $filters = [];
-
-    /*
-     * Add anything you would like to have available in your module's index view
-     */
-    protected function indexData($request)
-    {
-        return [];
-    }
-
-    /*
-     * Add anything you would like to have available in your module's form view
-     * For example, relationship lists for multiselect form fields
-     */
-    protected function formData($request)
-    {
-        return [];
-    }
-
-    // Optional, if the automatic way is not working for you (default is ucfirst(str_singular($moduleName)))
-    protected $modelName = 'model';
-
-    // Optional, to specify a different feature field name than the default 'featured'
-    protected $featureField = 'featured';
-
-    // Optional, ativate breadcrumb
-    protected $breadcrumb = true;
-
-    // Optional, specify number of items per page in the listing view (-1 to disable pagination)
-    protected $perPage = 50;
-
-    // Optional, specify the default listing order
-    protected $defaultOrders = ['title' => 'asc'];
-
-    // Optional, specify the default listing filters
-    protected $defaultFilters = ['fSearch' => 'search'];
-
-    // Optional, change default form options
-    protected function defaultFormOptions()
-    {
-        return [
-            'class' => "simple_form",
-            'accept-charset' => "UTF-8",
-            'novalidate' => "novalidate",
-        ] + (app()->isLocal() ? [] : [
-            'data-behavior' => 'navigate_away',
-            'data-navigate-away-confirm' => 'Any changes will be lost.',
-        ]);
-    }
+// implement the hydrate method
+public function hydrate($object, $fields)
+{
+    // for exemple, to hydrate a belongToMany relationship used with the browser field
+    $this->hydrateOrderedBelongsTomany($object, $fields, 'people');
+    return parent::hydrate($object, $fields);
+}
 ```
 
-You can also override all actions and internal functions, checkout the ModuleController source in `A17\CmsToolkit\Http\Controllers\Admin\ModuleController`.
+#### Form fields
 
-#### Routes
+##### Input
+>![screenshot](_media/input.png)
 
-A router macro is available to create module routes quicker:
 ```php
-<?php
+@formField('input', [
+    'name' => 'subtitle',
+    'label' => 'Subtitle',
+    'maxlength' => 100,
+    'required' => true,
+    'note' => 'Hint message goes here',
+    'placeholder' => 'Placeholder goes here',
+])
 
-Route::module('yourModulePluralName');
-
-// You can add an array of only/except action names as a second parameter
-// By default, the following routes are created : 'sort', 'publish', 'browser', 'bucket', 'media', 'feature', 'file'
-Route::module('yourModulePluralName', ['except' => ['sort', 'feature', 'bucket', 'browser', 'file']])
-
-// You can add an array of only/except action names for the resource controller as a third parameter
-// By default, the following routes are created : 'index', 'create', 'store', 'show', 'edit', 'update', 'destroy'
-Route::module('yourModulePluralName', [], ['only' => ['index', 'edit', 'store', 'destroy']])
-
-// The last optional parameter disable the resource controller actions on the module
-Route::module('yourPluralModuleName', [], [], false)
+@formField('input', [
+    'translated' => true,
+    'name' => 'subtitle_translated',
+    'label' => 'Subtitle (translated)',
+    'maxlength' => 250,
+    'required' => true,
+    'note' => 'Hint message goes here',
+    'placeholder' => 'Placeholder goes here',
+    'type' => 'textarea',
+    'rows' => 3
+])
 ```
 
-#### Form Requests
-Classic Laravel 5 [form request validation](https://laravel.com/docs/5.3/validation#form-request-validation).
-
-There is an helper to define rules for translated fields without having to deal with each locales:
+##### WYSIWYG
+>![screenshot](_media/wysiwyg.png)
 
 ```php
-<?php
+@formField('wysiwyg', [
+    'name' => 'case_study',
+    'label' => 'Case study text',
+    'toolbarOptions' => ['list-ordered', 'list-unordered'],
+    'placeholder' => 'Case study text',
+    'maxlength' => 200,
+    'note' => 'Hint message',
+])
 
-$this->rulesForTranslatedFields([
- // regular rules
-], [
-  // translated fields rules with just the field name like regular rules
-]);
-```
-
-There is also an helper to define validation messages for translated fields:
-
-```php
-<?php
-
-$this->messagesForTranslatedFields([
- // regular messages
-], [
-  // translated fields messages
-]);
-```
-
-#### Listing view
-
-```php
-@extends('cms-toolkit::layouts.resources.index', [
-    'create' => true, // enable/disable the create action
-    'edit' => true, // enable/disable the edit action
-    'delete' => true, // enable/disable the delete action
-    'sort' => false, // enable/disable the sort action
-    'search' => true, // enable/disable the search field
-    'publish' => true, // enable/disable the publish action
-    'title' => 'defaults to module name',
-    'toggle_columns' => [ // Quick columns for featuring capabilities
-        [
-            'toggle_field' => 'featured',
-            'icon_class'   => 'icon-feature'
-        ],
-        [
-            'toggle_title' => 'Feature at the homepage',
-            'toggle_field' => 'homepage_featured',
-            'icon_class'   => 'icon-feature'
+@formField('wysiwyg', [
+    'translated' => true,
+    'name' => 'case_study_translated',
+    'label' => 'Case study text (translated)',
+    'placeholder' => 'Case study text (translated)',
+    'customOptions' => [
+        'modules' => [
+            'toolbar' => ['bold', 'clean']
         ]
     ],
-    'columns' => [
-        'image' => [
-            'title' => 'Image',
-            'thumb' => true, // image column
-            'variant' => [
-                'role' => 'roleName',
-                'crop' => 'cropName',
-            ],
+])
+```
+
+##### Medias
+>![screenshot](_media/medias.png)
+
+```php
+@formField('medias', [
+    'name' => 'cover',
+    'label' => 'Cover image',
+    'note' => 'Minimum image width 1300px'
+])
+
+@formField('medias', [
+    'name' => 'slideshow',
+    'label' => 'Slideshow',
+    'max' => 5,
+    'note' => 'Minimum image width: 1500px'
+])
+```
+
+##### Datepicker
+>![screenshot](_media/datepicker.png)
+
+```php
+@formField('date_picker', [
+    'name' => 'event_date',
+    'label' => 'Event date',
+    'minDate' => '2017-09-10 12:00',
+    'maxDate' => '2017-12-10 12:00'
+])
+```
+
+##### Select
+>![screenshot](_media/select.png)
+
+```php
+@formField('select', [
+    'name' => 'office',
+    'label' => 'Office',
+    'placeholder' => 'Select an office',
+    'options' => [
+        [
+            'value' => 1,
+            'label' => 'New York'
         ],
-        'fieldName' => [ // field column
-            'title' => 'Field title',
-            'edit_link' => true, // column content is wrapped in a link to the edit action
-            'sort' => true, // column is sortable
-            'field' => 'fieldName', // column field
+        [
+            'value' => 2,
+            'label' => 'London'
         ],
-        'relationName' => [ // relation column
-            'title' => 'Relation name',
-            'sort' => true,
-            'sortField' => 'foreign_key',
-            'relationship' => 'relationName',
-            'field' => 'relationFieldToDisplay'
-        ],
-        'presenterMethodField' => [ // presenter column
-            'title' => 'Field title',
-            'field' => 'presenterMethod',
-            'present' => true,
+        [
+            'value' => 3,
+            'label' => 'Berlin'
         ]
     ]
 ])
 ```
 
-You can add more filters than the automatically added ones (using the fFilterList convention in your controller) by adding an `extra_filters` section to your index view.
-
-#### Form view
-
-##### input (and input_locale)
-
-```php
-@formField('input', ['field' => 'name', 'field_name' => 'Name'])
-```
-
-##### textarea (and textarea_locale)
-
-```php
-@formField('textarea', [
-    'field' => 'name',
-    'field_name' => 'Name',
-    'textLimit' => 100,
-    'required' => true/false
-])
-```
-
-##### medium style textarea (and medium_textarea_locale)
-
-```php
-@formField('medium_textarea', [
-    'field' => 'name',
-    'field_name' => 'Name',
-    'data_medium_editor_options' => "editorOptions", // optional
-    'hint' => 'Hint',
-    'textLimit' => 100,
-    'required' => true/false
-])
-
-<script>
-       var editorOptions = {
-            toolbar : {
-                buttons: ['bold', 'italic',  'unorderedlist', 'orderedlist']
-            }
-        };
-</script>
-```
-
-##### checkbox
-
-```php
-@formField('checkbox', [
-    'field' => 'boolean_field',
-    'field_name' => 'Featured on homepage?',
-])
-```
-
-##### select
+##### Select unpacked
+>![screenshot](_media/selectunpacked.png)
 
 ```php
 @formField('select', [
-    'field' => "relationship_id",
-    'field_name' => "Relationship",
-    'list' => $relationshipList,
-    'data_behavior' => 'selector',
-    'placeholder' => 'Select a relationship'
+    'name' => 'discipline',
+    'label' => 'Discipline',
+    'unpack' => true,
+    'options' => [
+        [
+            'value' => 'arts',
+            'label' => 'Arts & Culture'
+        ],
+        [
+            'value' => 'finance',
+            'label' => 'Banking & Finance'
+        ],
+        [
+            'value' => 'civic',
+            'label' => 'Civic & Public'
+        ],
+        [
+            'value' => 'design',
+            'label' => 'Design & Architecture'
+        ],
+        [
+            'value' => 'education',
+            'label' => 'Education'
+        ],
+        [
+            'value' => 'entertainment',
+            'label' => 'Entertainment'
+        ],
+    ]
 ])
 ```
 
-##### multi select
+##### Multi select
+>![screenshot](_media/multiselect.png)
 
 ```php
 @formField('multi_select', [
-    'field' => "relationship",
-    'field_name' => 'Related relationship',
-    'list' => $relationshipList,
-    'placeholder' => 'Add some relationship',
-    'maximumSelectionLength' => 5
+    'name' => 'sectors',
+    'label' => 'Sectors',
+    'options' => [
+        [
+            'value' => 'arts',
+            'label' => 'Arts & Culture'
+        ],
+        [
+            'value' => 'finance',
+            'label' => 'Banking & Finance'
+        ],
+        [
+            'value' => 'civic',
+            'label' => 'Civic & Public'
+        ],
+        [
+            'value' => 'design',
+            'label' => 'Design & Architecture'
+        ],
+        [
+            'value' => 'education',
+            'label' => 'Education'
+        ]
+    ]
 ])
 
+@formField('multi_select', [
+    'name' => 'sectors_bis',
+    'label' => 'Sectors bis',
+    'min' => 1,
+    'max' => 2,
+    'options' => [
+        [
+            'value' => 'arts',
+            'label' => 'Arts & Culture'
+        ],
+        [
+            'value' => 'finance',
+            'label' => 'Banking & Finance'
+        ],
+        [
+            'value' => 'civic',
+            'label' => 'Civic & Public'
+        ],
+        [
+            'value' => 'design',
+            'label' => 'Design & Architecture'
+        ],
+        [
+            'value' => 'education',
+            'label' => 'Education'
+        ],
+        [
+            'value' => 'entertainment',
+            'label' => 'Entertainment'
+        ],
+    ]
+])
 ```
 
-##### date picker
+##### Block editor
+>![screenshot](_media/blockeditor.png)
 
 ```php
-@formField('date_picker', [
-    'field_name' => "Date",
-    'field' => "date",
-])
-
+@formField('block_editor')
 ```
 
-##### medias
+##### Repeater
+>![screenshot](_media/repeater.png)
 
 ```php
-@formField('medias', [
-    'media_role' => 'media_role',
-    'media_role_name' => 'Media role name',
-    'with_multiple' => true/false,
-    'max' => 5,
-    'no_crop' => true/false
-])
+<a17-fieldset title="Videos" id="videos" :open="true">
+        @formField('repeater', ['type' => 'video'])
+</a17-fieldset>
 ```
 
-##### files
+##### Browser
+>![screenshot](_media/browser.png)
+
+```php
+<a17-fieldset title="Related" id="related" :open="true">
+    @formField('browser', [
+        'label' => 'Publications',
+        'max' => 4,
+        'name' => 'publications',
+        'endpoint' => 'http://admin.cms-sandbox.dev.a17.io/content/posts/browser'
+    ])
+</a17-fieldset>
+```
+
+##### Files
+>![screenshot](_media/files.png)
 
 ```php
 @formField('files', [
-    'file_role' => 'media_role',
-    'file_role_name' => 'Media role name',
-    'with_multiple' => true/false,
-    'max' => 5,
+    'name' => 'single-file',
+    'label' => 'Single file',
+    'note' => 'Add one file (per language)'
+])
+
+@formField('files', [
+    'name' => 'single-file-no-translate',
+    'label' => 'Single file (no translate)',
+    'note' => 'Add one file',
+    'noTranslate' => true,
+])
+
+@formField('files', [
+    'name' => 'files',
+    'label' => 'Files',
+    'noTranslate' => true,
+    'max' => 4,
 ])
 ```
 
-##### tags
+##### Map
+>![screenshot](_media/map.png)
 
 ```php
-@formField('tags')
-```
+@formField('map', [
+    'name' => 'location',
+    'label' => 'Location',
+    'showMap' => false,
+])
 
-##### browser
-
-```php
-@formField('browser', [
-    'routePrefix' => '', // where your related module lives in the cms
-    'relationship' => 'relationName',
-    'relationship_name' => 'Relationships',
-    'with_multiple' => true,
-    'max' => 10,
-    'hint' => 'Select up to 10 relationships'
+@formField('map', [
+    'name' => 'location-3',
+    'label' => 'Location',
 ])
 ```
 
-
-##### publication state
-
-```php
-@formField('publish_status')
-@formField('optional_languages') // only activate the default locale
-@formField('all_languages') // activate all languages
-```
-
-##### slug
+##### Color
+>![screenshot](_media/color.png)
 
 ```php
-@formField('slug_input', [
-    'currentSlug' => isset($item) ? $item->getActiveSlug() : '',
-    'currentName' => isset($item) ? $item->name : '',
+@formField('color', [
+    'name' => 'main-color',
+    'label' => 'Main color'
 ])
 ```
+
 
 ### Media Library
+>![screenshot](_media/medialibrary.png)
+
 #### Storage provider
 The media and files libraries currently support S3 and local storage. Head over to the `cms-toolkit` configuration file to setup your storage disk and configurations. Also check out the S3 direct upload section of this documentation to setup your IAM users and bucket if you want to use S3 as a storage provider.
 
@@ -1173,7 +1285,6 @@ $model->imageBackgroundPosition($roleName, $cropName)
 $model->imageObject($roleName)
 ```
 
-
 ### File library
 The file library is much simpler but also work with S3 and local storage. To associate files to your model, use the `HasFiles` and `HandleFiles` traits, the `$filesParams` configuration and the `files` form partial.
 
@@ -1201,7 +1312,7 @@ $model->filesList($roleName[, $locale])
 $model->fileObject($roleName)
 ```
 
-#### S3 direct upload
+### S3 direct upload
 
 Create a IAM user for full access to the bucket and use its credentials in your `.env` file. You can use the following IAM permission:
 
@@ -1259,14 +1370,51 @@ For improved security, modify the bucket CORS configuration to accept uploads re
 </CORSConfiguration>
 ```
 
+### Users management
+
+Authentication and authorization are provided by default in Laravel. This package simply leverages it and configure the views with the A17 CMS UI Toolkit for you. By default, users can login at `/login` and also reset their password through that screen. New users have to start by resetting their password before initial access to the admin application. You should redirect users to anywhere you want in your application after they login. The cms-toolkit configuration file has an option for you to change the default redirect path (`auth_login_redirect_path`).
+
+#### Roles
+The package currently only provides 3 different roles:
+- view only
+- publisher
+- admin
+
+#### Permissions
+View only users are able to:
+- login
+- view CRUD listings
+- filter CRUD listings
+- view media/file library
+- download original files from the media/file library
+- edit their own profile
+
+Publishers have the same permissions as view only users plus:
+- full CRUD permissions
+- publish
+- sort
+- upload new images/files to the media/file library
+
+Admin user have the same permissions as publisher users plus:
+- full permissions on users
+
+There is also a super admin user that can impersonate other users at `/users/impersonate/{id}`. This can be really useful for you to test your features with different user roles without having to logout/login manually. Also when debugging a ticket reported by a specific user. Stop impersonating by going to `/users/impersonate/stop`.
+
+
+#### Extending user roles and permissions
+You can create new permissions on the existing roles by using the Gate façade in your `AuthServiceProvider`. The new can middleware Laravel provides by default is very easy to use, either through route definition or controller constructor.
+
+You should follow the Laravel documentation regarding [authorization](https://laravel.com/docs/5.3/authorization). It's pretty good. Also if you would like to bring administration of roles and permissions to the admin application, [spatie/laravel-permission](https://github.com/spatie/laravel-permission) would probably be your best friend. The Opera CMS had that feature but it was not very well developed which makes it a pain to use.
+
+
 ### Roadmap
 - [x] Content versionning
 - [x] Preview/compare changes without saving
-- [in progress] Redesign (Vue.js components integration and new block editor)
-- [in progress] Concurrent editing/locking
-- [in backlog] Content review/approval worflow
-- [in backlog] Auto saving
-- [in backlog] Dashboard
+- [x] Redesign (Vue.js components integration and new block editor)
+- [ ] Dashboard
+- [ ] Concurrent editing/locking
+- [ ] Content review/approval worflow
+- [ ] Auto saving
 
 ### Other useful packages
 
