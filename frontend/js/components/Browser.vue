@@ -55,9 +55,11 @@
     },
     computed: {
       ...mapState({
+        connector: state => state.browser.connector,
         max: state => state.browser.max,
         endpoint: state => state.browser.endpoint,
-        browserTitle: state => state.browser.title
+        browserTitle: state => state.browser.title,
+        selected: state => state.browser.selected
       })
     },
     methods: {
@@ -89,6 +91,12 @@
 
         if (data) data.page = this.page
         else data = { page: this.page }
+
+        if (this.selected[this.connector]) {
+          data.except = this.selected[this.connector].map((item) => {
+            return item.id
+          })
+        }
 
         return data
       },

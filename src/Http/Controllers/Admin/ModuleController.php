@@ -241,7 +241,7 @@ abstract class ModuleController extends Controller
 
         if (isset($column['relationship'])) {
             $field = $column['relationship'] . ucfirst($column['field']);
-            $value = e(array_get($item, "{$column['relationship']}.{$column['field']}"));
+            $value = array_get($item, "{$column['relationship']}.{$column['field']}");
         } elseif (isset($column['present']) && $column['present']) {
             $value = $item->presentAdmin()->{$column['field']};
         }
@@ -384,6 +384,10 @@ abstract class ModuleController extends Controller
 
     public function getBrowserData($prependScope = [])
     {
+        if (request()->has('except')) {
+            $prependScope['exceptIds'] = request('except');
+        }
+
         $scopes = $this->filterScope($prependScope);
         $items = $this->getBrowserItems($scopes);
         $data = $this->getBrowserTableData($items);

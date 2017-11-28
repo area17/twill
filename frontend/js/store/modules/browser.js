@@ -6,7 +6,7 @@ const state = {
   title: 'Attach related resources',
   endpoint: '',
   max: 0,
-  selected: {}
+  selected: window.STORE.browser.selected || {}
 }
 
 // getters
