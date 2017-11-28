@@ -42,8 +42,8 @@ trait HandleTranslations
     {
         if ($object->translations != null && $object->translatedAttributes != null) {
             foreach ($object->translations as $translation) {
-                foreach ($object->translatedAttributes as $value) {
-                    $fields[$value . '_' . $translation->locale] = $translation->{$value};
+                foreach ($object->translatedAttributes as $attribute) {
+                    $fields['translations'][$attribute][$translation->locale] = $translation->{$attribute};
                 }
             }
         }

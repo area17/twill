@@ -1,10 +1,11 @@
-<div class="input">
-    <label for="tags">Tags</label>
-    <select id="tags" data-behavior="selector" name="tags[]" multiple="multiple" data-selector-ajax-url="{{ moduleRoute($moduleName, $routePrefix, 'tags') }}" data-placeholder="Add tags">
-        @if (isset($item))
-            @foreach($item->tags as $tag)
-                <option value="{{ $tag->name }}" selected>{{ $tag->name }}</option>
-            @endforeach
-        @endif
-    </select>
-</div>
+<a17-vselect
+    label="Tags"
+    name="tags"
+    :multiple="true"
+    :selected="{{ json_encode($item->tags->map(function ($tag) { return $tag->name; })) }}"
+    :searchable="true"
+    :taggable="true"
+    :pushTags="true"
+    size="small"
+    :endpoint="{{ $endpoint }}"
+></a17-vselect>

@@ -1,42 +1,56 @@
 @php
-    $required = $required ?? "";
-    $value_field = $value_field ?? null;
-    $options = [];
-
-    if (isset($disabled)) {
-        $options['disabled'] = 'disabled';
-    }
-
-    if (isset($placeholder)) {
-        $options['placeholder'] = $placeholder;
-    }
-
-    if (isset($maxlength)) {
-        $options['maxlength'] = $maxlength;
-    }
-
-    if (isset($readonly)) {
-        $options['readonly'] = $readonly;
-    }
-
-    if (isset($field_wrapper)) {
-        $fullField = $field_wrapper . '[' . $field . ']';
-        $fieldValue = $form_fields[$fullField] ?? (isset($item) && $item->$field_wrapper ? $item->$field_wrapper->$field : null);
-    } else {
-        $fullField = $field;
-        $fieldValue = $form_fields[$fullField] ?? null;
-    }
-
-    if (isset($repeater) && $repeater) {
-        $fullField = $moduleName . '[' . $repeaterIndex . '][' . $field . ']';
-        $fieldValue = $form_fields[$fullField] ?? null;
-    }
+    $type = $type ?? 'text';
 @endphp
 
-<div class="input string {{ $fullField }}">
-    <label class="string control-label" for="{{ $fullField }}">
-        {!! $field_name !!} {!! !empty($required) ? '<abbr title="required">*</abbr>' : '' !!}
-        {!! isset($hint) ? '<span class="hint">'.$hint.'</span>' : '' !!}
-    </label>
-    {!! Form::text($fullField, $fieldValue, ['class' => "string", 'id' => $fullField] + $options) !!}
-</div>
+@if($translated ?? false)
+    <a17-locale
+        type="a17-textfield"
+        :attributes="{
+            label: '{{ $label }}',
+            name: '{{ $name }}',
+            type: '{{ $type }}',
+            @if ($required ?? false) required: true, @endif
+            @if ($note ?? false) note: '{{ $note }}', @endif
+            @if ($placeholder ?? false) placeholder: '{{ $placeholder }}', @endif
+            @if ($maxlength ?? false) maxlength: {{ $maxlength }}, @endif
+            @if ($disabled ?? false) disabled: true, @endif
+            @if ($readonly ?? false) readonly: true, @endif
+            @if ($rows ?? false) rows: {{ $rows }}, @endif
+            inStore: 'value'
+        }"
+    ></a17-locale>
+@else
+    <a17-textfield
+        label="{{ $label }}"
+        name="{{ $name }}"
+        type="{{ $type }}"
+        @if ($required ?? false) required @endif
+        @if ($note ?? false) note="{{ $note }}" @endif
+        @if ($placeholder ?? false) placeholder="{{ $placeholder }}" @endif
+        @if ($maxlength ?? false) :maxlength="{{ $maxlength }}" @endif
+        @if ($disabled ?? false) disabled @endif
+        @if ($readonly ?? false) readonly @endif
+        @if ($rows ?? false) :rows="{{ $rows }}" @endif
+        in-store="value"
+    ></a17-textfield>
+@endif
+
+@push('fieldsStore')
+    @if($translated ?? false && isset($form_fields['translations']) && isset($form_fields['translations'][$name]))
+        var field = {
+            name: '{{ $name }}',
+            value: {
+                @foreach(getLocales() as $locale)
+                    '{{ $locale }}': "{!! $form_fields['translations'][$name][$locale] !!}"@unless($loop->last),@endif
+                @endforeach
+            }
+        }
+    @else
+        var field = {
+            name: '{{ $name }}',
+            value: "{{ $item->$name }}"
+        }
+    @endif
+
+    window.STORE.form.fields.push(field)
+@endpush

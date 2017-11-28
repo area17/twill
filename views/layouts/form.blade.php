@@ -53,272 +53,50 @@
 
 @section('initialStore')
 
-    window.APIKEYS = {
-    'googleMapApi': 'AIzaSyB_gNP6U9pPkfbhfTGNYdKMaWk_r-4EsLY'
-    }
-
+    window.STORE.languages = {}
+    window.STORE.languages.all = {!! json_encode(getLanguagesForVueStore($form_fields)) !!}
     window.STORE.form = {
-      title: '{{ $item->title }}',
-      permalink: '{{ $item->slug ?? '' }}',
-      baseUrl: '{{ $baseUrl }}'
+        title: '{{ $item->title }}',
+        permalink: '{{ $item->slug ?? '' }}',
+        baseUrl: '{{ $baseUrl }}',
+        fields: []
     }
-
 
     window.STORE.publication = {
-      published: {{ json_encode($item->published) }},
-      startDate: null,
-      endDate: null
+        published: {{ json_encode($item->published) }},
+        startDate: '{{ $item->publish_start_date ?? '' }}',
+        endDate: '{{ $item->publish_end_date ?? '' }}'
     }
 
-    window.STORE.revisions = [
-      {
-        id: 1,
-        author: 'George',
-        datetime: '2017-09-11 16:30:10'
-      },
-      {
-        id: 2,
-        author: 'Martin',
-        datetime: '2017-09-11 15:41:01'
-      },
-      {
-        id: 3,
-        author: 'George',
-        datetime: '2017-09-11 11:16:45'
-      },
-      {
-        id: 4,
-        author: 'Admin',
-        datetime: '2017-09-11 10:22:10'
-      },
-      {
-        id: 5,
-        author: 'Martin',
-        datetime: '2017-09-11 09:30:53'
-      },
-      {
-        id: 6,
-        author: 'Martin',
-        datetime: '2017-09-10 15:41:01'
-      },
-      {
-        id: 7,
-        author: 'George',
-        datetime: '2017-09-09 11:16:45'
-      },
-      {
-        id: 8,
-        author: 'Admin',
-        datetime: '2017-09-08 10:22:10'
-      },
-      {
-        id: 9,
-        author: 'Martin',
-        datetime: '2017-09-07 09:30:53'
-      }
-    ]
-
-    window.STORE.form.fields = [
-      {
-        name: 'event_date', // datepicker
-        value: '2017-10-03 12:00'
-      },
-      {
-        name: 'subtitle', // text-field with language
-        value: {
-          'fr': 'FR Subtitle',
-          'en': 'EN Subtitle'
-        }
-      },
-      {
-        name: 'description', // text-field with language
-        value: {
-          'fr': 'FR description',
-          'en': 'EN description'
-        }
-      },
-      {
-        name: 'location', // location field
-        value: {
-            'latlng': '40.730610|-73.935242',
-            'address': ''
-        }
-      },
-      {
-        name: 'sectors', // vselect multiple
-        value: [
-          {
-            value: 'finance',
-            label: 'Banking & Finance'
-          }
-        ]
-      },
-      {
-        name: 'disciplines', // radiogroup or singleselect
-        value: 'design'
-      },
-      {
-        name: 'case_study', // wysiwyg
-        value: {
-          'fr': '<p>FR Some html here<br />Why not it’s possible too.</p>',
-          'en': '<p>EN Some html here<br />Why not it’s possible too.</p>'
-        }
-      }
-    ]
-
-    window.STORE.form.content = [
-      {
-        title: 'Title',
-        icon: 'text',
-        component: 'a17-block-title'
-      },{
-        title: 'Quote',
-        icon: 'quote',
-        component: 'a17-block-quote'
-      },
-      {
-        title: 'Body text',
-        icon: 'text',
-        component: 'a17-block-wysiwyg'
-      },
-      {
-        title: 'Full width Image',
-        icon: 'image',
-        component: 'a17-block-image',
-        attributes: {
-          cropContext: 'cover'
-        }
-      },
-      {
-        title: 'Grid',
-        icon: 'text',
-        component: 'a17-block-grid'
-      },
-      {
-        title: 'Image Grid',
-        icon: 'image',
-        component: 'a17-slideshow', // example of a basic slideshow block
-        attributes: {
-          max: 6
-        }
-      }
-    ]
-
-    // example of a simple browser block to attach related content
-    //
-    // {
-    //   title: 'Publication Grid',
-    //   icon: 'text',
-    //   component: 'a17-browserfield'
-    //   attributes: {
-    //     max: 4,
-    //     itemLabel: 'Publications',
-    //     endpoint: 'https://www.mocky.io/v2/59d77e61120000ce04cb1c5b',
-    //     modalTitle: 'Attach publications'
-    //   }
-    // }
-
-    // example of a basic full width image block
-    //
-    // {
-    //   title: 'Full width Image',
-    //   icon: 'image',
-    //   component: 'a17-mediafield', // example of a basic image block
-    //   attributes: {
-    //     crop-context: 'cover'
-    //   }
-    // }
+    window.STORE.revisions = {!! json_encode($revisions)  !!}
+    window.STORE.medias.crops = {!! json_encode($item->mediasParams) !!}
+    window.STORE.medias.selected = {}
+    window.STORE.browser = {}
+    window.STORE.browser.selected = {}
 
     window.STORE.form.availableRepeaters = {
-      video: {
-        title: 'Video',
-        trigger: 'Add Videos',
-        component: 'a17-block-video', // This will be project specific
-        max: 4
-      },
-      gridItem: {
-        title: 'Grid Item',
-        trigger: 'Add Grid Item',
-        component: 'a17-block-video', // This will be project specific
-        max: 4
-      }
+        video: {
+            title: 'Video',
+            trigger: 'Add Videos',
+            component: 'a17-block-test', // This will be project specific
+            max: 4
+        },
+        gridItem: {
+            title: 'Grid Item',
+            trigger: 'Add Grid Item',
+            component: 'a17-block-video', // This will be project specific
+            max: 4
+        },
+        gridItemMore: {
+            title: 'Grid Item',
+            trigger: 'Add Grid Item',
+            component: 'a17-block-video', // This will be project specific
+            max: 6
+        }
     }
 
-    window.STORE.medias.crops = {
-      cover: {
-        default: [
-          {
-            name: 'landscape',
-            ratio: 16 / 9,
-            minValues: {
-              width: 1600,
-              height: 900
-            }
-          },
-          {
-            name: 'portrait',
-            ratio: 3 / 4,
-            minValues: {
-              width: 1000,
-              height: 750
-            }
-          }
-        ],
-        mobile: [
-          {
-            name: 'mobile',
-            ratio: 1,
-            minValues: {
-              width: 500,
-              height: 500
-            }
-          }
-        ]
-      },
-      listing: {
-        default: [
-          {
-            name: 'default',
-            ratio: 16 / 9,
-            minValues: {
-              width: 600,
-              height: 284
-            }
-          }
-        ],
-        mobile: [
-          {
-            name: 'mobile',
-            ratio: 1,
-            minValues: {
-              width: 300,
-              height: 300
-            }
-          }
-        ]
-      },
-      slideshow: {
-        default: [
-          {
-            name: 'default',
-            ratio: 16 / 9,
-            minValues: {
-              width: 600,
-              height: 284
-            }
-          }
-        ],
-        mobile: [
-          {
-            name: 'mobile',
-            ratio: 1,
-            minValues: {
-              width: 300,
-              height: 300
-            }
-          }
-        ]
-      }
+    window.APIKEYS = {
+        'googleMapApi': 'AIzaSyB_gNP6U9pPkfbhfTGNYdKMaWk_r-4EsLY'
     }
 @stop
 

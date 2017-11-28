@@ -11,15 +11,17 @@
 <script>
   import InputframeMixin from '@/mixins/inputFrame'
   import CheckboxMixin from '@/mixins/checkboxes'
+  import FormStoreMixin from '@/mixins/formStore'
 
   export default {
     name: 'A17CheckboxGroup',
-    mixins: [InputframeMixin, CheckboxMixin],
+    mixins: [InputframeMixin, CheckboxMixin, FormStoreMixin],
     methods: {
       changeValue: function (newValue) {
         this.currentValue = newValue
 
         this.$emit('change', this.currentValue)
+        this.saveIntoStore(newValue)
       }
     }
   }

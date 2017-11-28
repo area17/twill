@@ -38,10 +38,6 @@
       initialValue: {
         default: ''
       },
-      rows: {
-        type: Number,
-        default: 5
-      },
       options: {
         type: Object,
         required: false,
@@ -119,22 +115,26 @@
     // set editor content
       if (self.value) {
         self.quill.pasteHTML(self.value)
+        self.updateInput()
       }
 
       // update model if text changes
       self.quill.on('text-change', (delta, oldDelta, source) => {
-        var html = self.$refs.editor.children[0].innerHTML
-        var text = self.quill.getText()
+        if (self.maxlength > 0 && self.quill.getLength() > self.maxlength + 1) {
+          self.quill.deleteText(self.maxlength, self.quill.getLength())
+        } else {
+          var html = self.$refs.editor.children[0].innerHTML
+          var text = self.quill.getText()
+          if (html === '<p><br></p>') html = ''
+          self.value = html
 
-        if (html === '<p><br></p>') html = ''
-        self.value = html
-
-        self.$emit('input', self.value)
-        self.$emit('change', {
-          editor: self.quill,
-          html: html,
-          text: text
-        })
+          self.$emit('input', self.value)
+          self.$emit('change', {
+            editor: self.quill,
+            html: html,
+            text: text
+          })
+        }
       })
 
       // focus / blur event

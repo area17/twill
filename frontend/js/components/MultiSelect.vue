@@ -30,12 +30,13 @@
         },
         set: function (value) {
           this.currentValue = value
-
-          // see formStore mixin
-          this.saveIntoStore(value)
-
           this.$emit('change', value)
         }
+      }
+    },
+    watch: {
+      currentValue: function (value) {
+        this.saveIntoStore(value)
       }
     }
   }

@@ -117,16 +117,22 @@
       }
     },
     computed: {
-      inputValue: function () {
-        if (this.value) {
-          if (!this.multiple) { // single selects
-            if (typeof this.value === 'object') return this.value.value
-          } else if (this.multiple) { // multiple selects
-            if (Array.isArray(this.value)) return this.value.join(',')
+      inputValue: {
+        get: function () {
+          if (this.value) {
+            if (!this.multiple) { // single selects
+              if (typeof this.value === 'object') return this.value.value
+            } else if (this.multiple) { // multiple selects
+              if (Array.isArray(this.value)) return this.value.join(',')
+            }
+            return this.value
+          } else {
+            return ''
           }
-          return this.value
-        } else {
-          return ''
+        },
+        set: function (value) {
+          let newValue = this.options.find(o => o.value === value)
+          this.value = newValue
         }
       },
       vselectClasses: function () {
@@ -145,7 +151,7 @@
       updateValue: function (value) {
         // see formStore mixin
         this.value = value
-        this.saveIntoStore(value)
+        this.saveIntoStore()
 
         this.$emit('change', value)
       },

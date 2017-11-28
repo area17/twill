@@ -1,30 +1,19 @@
-@php
-    $disabled = $disabled ?? null;
-    if (isset($value_field_id) && !is_null($value_field_id)) {
-        $field_value = $value_field_id;
-    } elseif (isset($form_fields[$field])) {
-        $field_value = $form_fields[$field];
-    } else {
-        $field_value = [];
-    }
-@endphp
+<a17-inputframe>
+    <a17-multiselect
+        :options="{{ json_encode($options) }}"
+        label="{{ $label }}"
+        name="{{ $name }}"
+        @if ($min ?? false) :min="{{ $min }}" @endif
+        @if ($max ?? false) :max="{{ $max }}" @endif
+        in-store="currentValue"
+    ></a17-multiselect>
+</a17-inputframe>
 
-<div class="input select" id="input_{{$id or $field}}">
-    <label class="select control-label" for="{{$field}}">
-        {{$field_name}} {!! !empty($required) ? '<abbr title="required">*</abbr>' : '' !!}
-        {!! (!empty($hint) ? "<span class='hint'>{$hint}</span>" : '') !!}
-    </label>
-    {!!	Form::select("{$field}[]", $list, $field_value, [
-        "disabled" => $disabled,
-        "id" => $field,
-        "data-placeholder" => $placeholder ?? '',
-        "multiple" => "multiple",
-        "data-behavior" => "selector",
-        "data-maximum-selection-length" => $maximumSelectionLength ?? "Infinity",
-        "data-language" => "en",
-    ]) !!}
-    @if (isset($button_all))
-        <br /><br />
-        <a href="#" class="btn btn-tiny btn-primary-border" data-behavior="select_all">Select all</a>
+@push('fieldsStore')
+    @if (isset($item->$name))
+        window.STORE.form.fields.push({
+            name: '{{ $name }}',
+            value: {!! json_encode(array_pluck($item->$name, 'id')) !!}
+        })
     @endif
-</div>
+@endpush

@@ -7,6 +7,7 @@
         ref="input"
         :name="name"
         :id="name"
+        :placeholder="placeholder"
         :disabled="disabled"
         :required="required"
         :readonly="readonly"
