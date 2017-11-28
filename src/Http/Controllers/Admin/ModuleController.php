@@ -292,7 +292,7 @@ abstract class ModuleController extends Controller
             'label' => $this->indexColumns[$this->titleColumnKey]['title'] ?? 'Name',
             'visible' => true,
             'optional' => false,
-            'sortable' => true,
+            'sortable' => $this->getIndexOption('reorder') ? false : true,
         ]);
 
         unset($this->indexColumns[$this->titleColumnKey]);
@@ -304,7 +304,7 @@ abstract class ModuleController extends Controller
                 'label' => $column['title'],
                 'visible' => $visibleColumns ? in_array($columnName, $visibleColumns) : ($column['visible'] ?? true),
                 'optional' => $column['optional'] ?? true,
-                'sortable' => $column['sort'] ?? false, // TODO: support a different sort field
+                'sortable' => $this->getIndexOption('reorder') ? false : ($column['sort'] ?? false), // TODO: support a different sort field
             ]);
         }
 
