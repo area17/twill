@@ -16,8 +16,8 @@ if (!function_exists('createDefaultFields')) {
         }
 
         if ($publishDates) {
-            $this->timestamp('publish_start_date')->nullable();
-            $this->timestamp('publish_end_date')->nullable();
+            $table->timestamp('publish_start_date')->nullable();
+            $table->timestamp('publish_end_date')->nullable();
         }
     }
 }
