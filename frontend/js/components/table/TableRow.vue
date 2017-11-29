@@ -267,23 +267,14 @@
 
   .tablecell__handle {
     display:none;
-    cursor: move;
     position:absolute;
-    background:repeating-linear-gradient(180deg, $color__drag 0, $color__drag 2px, transparent 2px, transparent 4px);
     height:40px;
     width:10px;
     left:50%;
     top:50%;
     margin-left:-5px;
     margin-top:-20px;
-
-    &:before {
-      display:block;
-      content:'';
-      background:repeating-linear-gradient(90deg, $color__f--bg 0, $color__f--bg 2px, transparent 2px, transparent 4px);
-      width:100%;
-      height:40px;
-    }
+    @include dragGrid($color__drag, $color__f--bg);
   }
 
   tr:hover .tablecell__handle {

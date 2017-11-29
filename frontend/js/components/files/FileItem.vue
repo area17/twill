@@ -170,22 +170,16 @@
   }
 
   .drag__handle:hover .drag__handle--drag:before {
-    background: repeating-linear-gradient(180deg, $color__drag_bg--hover 0, $color__drag_bg--hover 2px, transparent 2px, transparent 4px);
+    background: dragGrid__bg($color__drag_bg--hover);
   }
 
   .drag__handle--drag {
     position: relative;
-    width: 6px;
+    width: 10px;
     height: 42px;
-    background: repeating-linear-gradient(90deg, $color__drag 0, $color__drag 2px, transparent 2px, transparent 4px);
+    margin-left:auto;
+    margin-right:auto;
     transition: background 250ms ease;
-
-    &:before {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: repeating-linear-gradient(180deg, $color__drag_bg 0, $color__drag_bg 2px, transparent 2px, transparent 4px);
-    }
+    @include dragGrid($color__drag, $color__drag_bg);
   }
 </style>

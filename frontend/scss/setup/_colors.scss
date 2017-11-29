@@ -6,6 +6,8 @@ $color__green: #1d9f3c;
 $color__lightGreen: #D3ECD9;
 $color__green--hover: #1A8F36;
 $color__lightBlue: #E7F4FB;
+$color__translucentBlue: #f4f9fd;
+$color__translucentBlue--hover: #eaf4fa;
 $color__blue: #148DDB;
 $color__darkBlue: #3278B8;
 $color__darkBlue--hover: #2D6CA6;
@@ -106,6 +108,9 @@ $color__nav: $color__black--85;
 $color__login--btn:$color__black--80;
 
 $color__bulk--background:$color__lightBlue;
+
+$color__block-bg:$color__translucentBlue;
+$color__block-bg--hover:$color__translucentBlue--hover;
 
 $color__stats:#853bb7;
 

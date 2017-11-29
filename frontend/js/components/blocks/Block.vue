@@ -111,10 +111,22 @@
   .block__header {
     height:50px;
     line-height:50px;
-    background:$color__f--bg;
+    background:$color__block-bg;
     padding:0 15px;
     position:relative;
     display:flex;
+    background-clip: padding-box;
+  }
+
+  .block__handle {
+    position:absolute;
+    height:10px;
+    width:40px;
+    left:50%;
+    top:50%;
+    margin-left:-20px;
+    margin-top:-5px;
+    @include dragGrid($color__drag, $color__block-bg);
   }
 
   .block__counter {
@@ -161,26 +173,6 @@
     }
   }
 
-  .block__handle {
-    cursor: move;
-    position:absolute;
-    background:repeating-linear-gradient(180deg, $color__drag 0, $color__drag 2px, transparent 2px, transparent 4px);
-    height:10px;
-    width:40px;
-    left:50%;
-    top:50%;
-    margin-left:-20px;
-    margin-top:-5px;
-
-    &:before {
-      display:block;
-      content:'';
-      background:repeating-linear-gradient(90deg, $color__light 0, $color__light 2px, transparent 2px, transparent 4px);
-      width:100%;
-      height:10px;
-    }
-  }
-
   .block__actions {
     button[data-action] {
       display:none;
@@ -192,7 +184,13 @@
   }
 
   .block__header:hover {
-    background:$color__light;
+    background:$color__block-bg--hover;
+
+    .block__handle {
+      &:before {
+        background: dragGrid__bg($color__block-bg--hover);
+      }
+    }
 
     button[data-action] {
       display:inline-block;
@@ -241,6 +239,26 @@
 
   // Small blocks (for repeater inside the block editor)
   .block--small {
+    .block__header {
+      background:$color__f--bg;
+
+      .block__handle {
+        background: dragGrid__dots($color__drag);
+
+        &:before {
+          background: dragGrid__bg($color__f--bg);
+        }
+      }
+    }
+
+    .block__header:hover {
+      background:$color__light;
+
+      .block__handle:before {
+        background: dragGrid__bg($color__light);
+      }
+    }
+
     .block__title {
       font-weight:normal;
     }
