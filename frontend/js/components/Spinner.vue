@@ -1,9 +1,11 @@
 <template functional>
-  <div class="spinner__container">
-    <div class="spinner">
-      <slot></slot>
+  <transition name="fade_spinner">
+    <div class="spinner__container">
+      <div class="spinner">
+        <slot></slot>
+      </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <style lang="scss" scoped>
@@ -28,6 +30,7 @@
       height: 20px;
       position: relative;
       text-align: center;
+      color:$color__text--light;
     }
   }
 </style>

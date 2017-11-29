@@ -30,7 +30,6 @@
     <!-- Actual table content -->
     <div class="container">
       <div class="datatable__table" :class="isEmptyDatable">
-        <a17-spinner v-if="loading" class="datatable__spinner">Loading&hellip;</a17-spinner>
         <a17-table :xScroll="xScroll" @scroll="updateScroll">
           <thead>
             <a17-tablehead :columns="visibleColumns" ref="thead"></a17-tablehead>
@@ -54,6 +53,7 @@
           </div>
         </template>
         <a17-paginate v-if="maxPage > 1 || initialMaxPage > maxPage" :max="maxPage" :value="page" :offset="offset" :availableOffsets="[initialOffset,initialOffset*3,initialOffset*6]" @changePage="updatePage" @changeOffset="updateOffset"></a17-paginate>
+        <a17-spinner v-if="loading">Loading&hellip;</a17-spinner>
       </div>
     </div>
   </div>
@@ -364,10 +364,4 @@
       padding-bottom: 50px;
     }
   }
-
-  .datatable__table--loading {
-    position: relative;
-  }
-
-
 </style>

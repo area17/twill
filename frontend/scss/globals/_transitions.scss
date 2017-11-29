@@ -97,3 +97,19 @@ https://vuejs.org/v2/guide/transitions.html
   max-height:0;
 }
 
+/**** Overlay Spinner ****/
+.fade_spinner-enter-active,
+.fade_spinner-leave-active {
+  transition: opacity .25s linear;
+}
+
+.fade_spinner-enter-to,
+.fade_spinner-leave {
+  opacity:1;
+}
+
+.fade_spinner-enter,
+.fade_spinner-leave-to {
+  opacity:0;
+}
+
