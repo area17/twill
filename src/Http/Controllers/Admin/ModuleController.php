@@ -339,7 +339,7 @@ abstract class ModuleController extends Controller
             'number' => $this->repository->getCountByStatusSlug('draft'),
         ]);
 
-        if (!empty($items) && method_exists(array_first($items), 'trashed')) {
+        if ($this->getIndexOption('restore')) {
             array_push($statusFilters, [
                 'name' => 'Trash',
                 'slug' => 'trash',
