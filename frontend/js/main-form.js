@@ -92,12 +92,17 @@ Window.vm = new Vue({
       unSubscribe: function () {
         return null
       },
-      isFormUpdate: false
+      isFormUpdated: false
     }
   },
   methods: {
+    submitForm: function (event) {
+      this.isFormUpdated = false
+
+      // do submit here
+    },
     confirmExit: function (event) {
-      if (!this.isFormUpdate) {
+      if (!this.isFormUpdated) {
         if (window.event !== undefined) window.event.cancelBubble = true
         else event.cancelBubble = true
       } else { return 'message' }
@@ -109,11 +114,11 @@ Window.vm = new Vue({
 
     // Subscribe to store mutation
     this.unSubscribe = this.$store.subscribe((mutation, state) => {
-      this.isFormUpdate = true
+      this.isFormUpdated = true
     })
   },
   watch: {
-    'isFormUpdate': function (newVal) {
+    'isFormUpdated': function (newVal) {
       if (newVal) this.unSubscribe()
     }
   },
