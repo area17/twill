@@ -24,7 +24,7 @@ if (!function_exists('getLanguagesForVueStore')) {
                 'label' => getLanguageLabelFromLocaleCode($locale),
                 'value' => $locale,
                 'disabled' => false,
-                'published' => $form_fields['translations']['active'][$locale],
+                'published' => $form_fields['translations']['active'][$locale] ?? false,
             ];
         }) : [];
     }

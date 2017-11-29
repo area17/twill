@@ -58,7 +58,7 @@
             name: '{{ $name }}',
             value: {
                 @foreach(getLocales() as $locale)
-                    '{{ $locale }}': "{!! $form_fields['translations'][$name][$locale] !!}"@unless($loop->last),@endif
+                    '{{ $locale }}': "{!! $form_fields['translations'][$name][$locale] ?? '' !!}"@unless($loop->last),@endif
                 @endforeach
             }
         }
