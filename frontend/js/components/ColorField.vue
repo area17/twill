@@ -15,10 +15,15 @@
         @focus="onFocus"
         @blur="onBlur"
         @input="onInput"
+        maxlength="7"
       />
-      <span v-if="color !== ''" class="form__field--color" :style="bcgStyle"></span>
+      <a17-dropdown ref="colorDropdown" class="form__field--color" position="bottom-right" :arrow="true" :offset="15" :minWidth="300" :clickable="true" :sideOffset="15">
+        <span class="form__field--colorBtn" :style="bcgStyle" @click="$refs.colorDropdown.toggle()"></span>
+        <div slot="dropdown__content">
+          <a17-colorpicker :color="color" @change="updateColor"></a17-colorpicker>
+        </div>
+      </a17-dropdown>
     </div>
-    <a17-colorpicker :color="color" @change="updateColor"></a17-colorpicker>
   </a17-inputframe>
 </template>
 
@@ -35,7 +40,8 @@
     },
     data: function () {
       return {
-        color: '#256817'
+        focused: false,
+        color: ''
       }
     },
     computed: {
@@ -58,6 +64,7 @@
         this.color = newValue
       },
       onFocus: function () {
+        this.focused = true
       },
       onInput: function () {
       },
@@ -75,18 +82,24 @@
     display: flex;
     align-items: center;
     padding: 0 15px;
+    overflow: visible;
 
     input {
       padding: 0;
     }
+  }
 
-    .form__field--color {
-      display: block;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      border: 1px solid $color__border--hover;
-      transition: background 250ms;
-    }
+  .form__field--color {
+
+  }
+
+  .form__field--colorBtn {
+    cursor:pointer;
+    display: block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    transition: background 250ms;
+    box-shadow: 0 0 6px rgba(0, 0, 0, .5);
   }
 </style>

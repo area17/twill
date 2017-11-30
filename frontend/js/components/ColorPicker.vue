@@ -18,8 +18,8 @@
       </div>
     </div>
 
-    <div class="colorpicker__info">
-    </div>
+<!--     <div class="colorpicker__info">
+    </div> -->
   </div>
 </template>
 
@@ -215,13 +215,15 @@
     display: flex;
     max-width: 100%;
     height: 250px;
-    margin-top: 10px;
-    background: #ccc;
+    margin: 0 10px;
+    // margin-top: 10px;
+    // background: #ccc;
   }
 
   .colorpicker__color {
     display: flex;
-    width: 50%;
+    width:100%;
+    // width: 50%;
   }
 
   .colorpicker__saturation {
@@ -294,9 +296,9 @@
     width: 10px;
     /*border-radius: 1px;*/
     height: 8px;
-    /*box-shadow: 0 0 2px rgba(0, 0, 0, .6);*/
+    box-shadow: 0 0 2px rgba(0, 0, 0, .25);
     background: #fff;
-    transform: translateX(-2px) translateY(-4px);
+    transform: translateX(-1px) translateY(-4px);
   }
 
 </style>

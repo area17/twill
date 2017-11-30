@@ -36,6 +36,10 @@
         type: Number,
         default: 300
       },
+      minWidth: {
+        type: Number,
+        default: 0
+      },
       arrow: {
         type: Boolean,
         default: false
@@ -47,6 +51,10 @@
       offset: {
         type: Number,
         default: 5
+      },
+      sideOffset: {
+        type: Number,
+        default: 0
       }
     },
     data: function () {
@@ -73,7 +81,9 @@
         return {
           'margin-top': this.isPosition('bottom') ? this.offset + 'px' : '',
           'margin-bottom': this.isPosition('top') ? this.offset + 'px' : '',
-          'max-width': this.maxWidth > 0 && this.width !== 'full' ? this.maxWidth + 'px' : ''
+          'transform': this.sideOffset ? 'translateX(' + this.sideOffset + 'px)' : '',
+          'max-width': this.maxWidth > 0 && this.width !== 'full' ? this.maxWidth + 'px' : '',
+          'min-width': this.minWidth > 0 ? this.minWidth + 'px' : ''
         }
       }
     },
@@ -341,6 +351,11 @@
 
   .dropdown--left .dropdown__arrow {
     left:0;
+  }
+
+  .dropdown--right .dropdown__arrow {
+    right:0;
+    left:auto;
   }
 
   .dropdown--center .dropdown__arrow {
