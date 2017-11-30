@@ -10,13 +10,13 @@
             <div slot="dropdown__content">
               <ul>
                 <li>
-                  <button v-if="!bulkStatus.publish && !bulkStatus.delete" @click="bulkPublish">Publish</button>
-                  <button v-if="bulkStatus.publish && !bulkStatus.delete" @click="bulkUnpublish">Unpublish</button>
-                  <button v-if="!bulkStatus.feature && !bulkStatus.delete" @click="bulkFeature">Feature</button>
-                  <button v-if="bulkStatus.feature && !bulkStatus.delete" @click="bulkUnFeature">Unfeature</button>
+                  <button v-if="bulkStatus.canPublish && !bulkStatus.published && !bulkStatus.deleted" @click="bulkPublish">Publish</button>
+                  <button v-if="bulkStatus.canPublish && bulkStatus.published && !bulkStatus.deleted" @click="bulkUnpublish">Unpublish</button>
+                  <button v-if="bulkStatus.canFeature && !bulkStatus.featured && !bulkStatus.deleted" @click="bulkFeature">Feature</button>
+                  <button v-if="bulkStatus.canFeature && bulkStatus.featured && !bulkStatus.deleted" @click="bulkUnFeature">Unfeature</button>
                   <!-- <button @click="bulkExport">Export</button> -->
-                  <button v-if="!bulkStatus.delete" @click="bulkDelete">Delete</button>
-                  <button v-if="bulkStatus.delete" @click="bulkRestore">Restore</button>
+                  <button v-if="!bulkStatus.deleted" @click="bulkDelete">Delete</button>
+                  <button v-if="bulkStatus.deleted" @click="bulkRestore">Restore</button>
                 </li>
               </ul>
             </div>
@@ -40,14 +40,18 @@
           return state.datatable.bulk.includes(row.id)
         }).reduce((status, row) => {
           return {
-            feature: status.feature && (row.featured || false),
-            publish: status.publish && (row.published || false),
-            delete: status.delete && (row.deleted || false)
+            featured: status.featured && (row.featured || false),
+            canFeature: status.canFeature && row.hasOwnProperty('featured'),
+            published: status.published && (row.published || false),
+            canPublish: status.canPublish && row.hasOwnProperty('published'),
+            deleted: status.deleted && (row.deleted || false)
           }
         }, {
-          feature: true,
-          publish: true,
-          delete: true
+          featured: true,
+          canFeature: true,
+          published: true,
+          canPublish: true,
+          deleted: true
         })
       })
     },
