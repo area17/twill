@@ -422,13 +422,13 @@
   }
 
   .media__actions {
-    @include breakpoint('small-') {
+    @media screen and (max-width: 1140px) {
       display: none;
     }
   }
 
   .media__actions-dropDown {
-    @include breakpoint('medium+') {
+    @media screen and (min-width: 1139px) {
       display: none;
     }
   }

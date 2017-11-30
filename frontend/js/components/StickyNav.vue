@@ -37,6 +37,7 @@
         topOffset: 70,
         ticking: false,
         navItems: this.items,
+        selectedFieldset: -1,
         fieldset: []
       }
     },
@@ -62,12 +63,14 @@
           if (isActive && index > 0) itemToActivate = index
         })
 
-        // no active, let fallback on the first one
-        Vue.set(self.navItems[itemToActivate], 'active', true)
+        // no active, let fallback on the first one or the last one the user clicked
+        if (this.selectedFieldset >= 0) Vue.set(self.navItems[self.selectedFieldset], 'active', true)
+        else Vue.set(self.navItems[itemToActivate], 'active', true)
       },
       refresh: function () {
         let self = this
 
+        self.selectedFieldset = -1
         this.getFieldsetPosition()
         this.setActiveItems()
 
@@ -80,7 +83,7 @@
       scroll: function () {
         let self = this
 
-        self.lastScrollPos = window.pageYOffset
+        this.lastScrollPos = window.pageYOffset
 
         if (!self.ticking) {
           window.requestAnimationFrame(function () {
@@ -97,13 +100,14 @@
 
         this.getFieldsetPosition()
         this.dispose()
+        this.selectedFieldset = index
+        this.setActiveItems()
 
         scrollToY({
           offset: ypos,
           easing: 'easeOut',
           onComplete: function () {
             self.init()
-            self.setActiveItems()
           }
         })
       },

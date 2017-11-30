@@ -7,6 +7,14 @@
         <span v-if="col.name === 'featured'" class="tablecell__feature" :class="{'tablecell__feature--active': row[col.name] }" @click.prevent="toggleFeatured" :data-tooltip-title="row['featured'] ? 'Unfeature' : 'Feature'" v-tooltip><span v-svg symbol="star-feature_active"></span><span v-svg symbol="star-feature"></span></span> <!-- Featured star button -->
         <span v-if="col.name === 'published'" class="tablecell__pubstate" :class="{'tablecell__pubstate--live': row[col.name] }"  @click.prevent="togglePublish" :data-tooltip-title="row['published'] ? 'Unpublish' : 'Publish'" v-tooltip ></span> <!-- Published circle icon -->
         <a class="tablerow__thumb" :href="row['edit']" v-if="col.name === 'thumbnail'"><img :src="row[col.name]" /></a> <!-- Thumbnail -->
+        <template v-if="col.name === 'publish_start_date'">
+          <span v-if="formatDateLabel" class="tablecell__datePub" :class="{ 's--expired' : formatDateLabel === textExpired }">
+            {{ row['publish_start_date'] | formatDatatableDate }}<br /><span>{{ formatDateLabel }}</span>
+          </span>
+          <span v-else>
+            {{ row['publish_start_date'] | formatDatatableDate }}
+          </span>
+        </template> <!-- Published Date -->
       </template>
       <template v-else>
         <a :href="row['edit']" v-if="col.name === 'name'"><span class="f--link-underlined--o">{{ row[col.name] }}</span></a>
@@ -33,6 +41,8 @@
 
 <script>
   import { mapState } from 'vuex'
+  import a17VueFilters from '@/utils/filters.js'
+  import compareAsc from 'date-fns/compare_asc'
 
   export default {
     name: 'A17Tablerow',
@@ -40,6 +50,14 @@
       index: {
         type: Number,
         default: 0
+      },
+      textExpired: {
+        type: String,
+        default: 'Expired'
+      },
+      textScheduled: {
+        type: String,
+        default: 'Scheduled'
       },
       row: {
         type: Object,
@@ -53,10 +71,21 @@
       }
     },
     computed: {
+      formatDateLabel: function () {
+        let label = ''
+        let scoreStart = compareAsc(this.row['publish_start_date'], new Date())
+        let scoreEnd = compareAsc(this.row['publish_end_date'], new Date())
+
+        if (this.row['publish_start_date'] && scoreEnd < 0) label = this.textExpired
+        else if (this.row['publish_end_date'] && scoreStart > 0) label = this.textScheduled
+
+        return label
+      },
       ...mapState({
         bulkIds: state => state.datatable.bulk
       })
     },
+    filters: a17VueFilters,
     methods: {
       cellClasses: function (col) {
         return {
@@ -71,7 +100,8 @@
                col.name === 'bulk' ||
                col.name === 'featured' ||
                col.name === 'published' ||
-               col.name === 'thumbnail'
+               col.name === 'thumbnail' ||
+               col.name === 'publish_start_date'
       },
       toggleFeatured: function () {
         if (!this.row.hasOwnProperty('deleted')) {
@@ -172,33 +202,34 @@
     }
   }
 
-  // @keyframes pulse {
-  //   0% {
-  //     transform: scale(1);
-  //   }
-  //   33% {
-  //     transform: scale(1.3);
-  //   }
-  //   100% {
-  //     transform: scale(1);
-  //   }
-  // }
-
   .tablecell__pubstate {
     cursor:pointer;
     border-radius:50%;
-    height:9px;
-    width:9px;
+    height:10px;
+    width:10px;
     display:block;
     background:$color__fborder;
     position:relative;
-    top:6px;
+    top:5px;
     transition: background-color 0.3s ease, border-color 0.3s ease;
   }
 
   .tablecell__pubstate--live {
     background:$color__publish;
-    // animation: pulse 0.3s normal forwards;
+  }
+
+  .tablecell__datePub {
+    color:$color__text--forms;
+
+    span {
+      color:$color__ok;
+    }
+
+    &.s--expired {
+      span {
+        color:$color__error;
+      }
+    }
   }
 
   .tablerow__thumb {

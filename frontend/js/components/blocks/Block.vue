@@ -86,7 +86,7 @@
     methods: {
       toggleExpand: function () {
         this.visible = !this.visible
-        if(this.visible) this.$emit('open', this.visible)
+        if (this.visible) this.$emit('open', this.visible)
       },
       componentName: function (id) {
         const slug = this.$options.filters.slugify(this.block.title)
