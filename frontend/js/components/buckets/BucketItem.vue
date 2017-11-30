@@ -113,13 +113,19 @@
         return 'bucket-' + this.bucket + '_item-' + this.item.id + '_type-' + this.item.content_type.value + '_inb-' + id
       },
       updateBucket: function (value) {
-        // todo : need more testing
-        //  This seems to be buggy when is triggered from the radio buttons (ie : removeFromBucket called twice)
-
         let pattern = 'inb-'
         let self = this
 
         let selected = self.selectedBuckets()
+
+        if (self.restricted) { // when restricted : value is coming from a radio group
+          let index = parseInt(value.split(pattern)[1])
+          if (!self.inBucketById(index)) {
+            self.$refs.bucketDropdown.toggle()
+            self.addToBucket(index)
+          }
+          return
+        }
 
         selected.forEach(function (select) {
           if (value.indexOf(select) === -1) {
@@ -129,22 +135,15 @@
           }
         })
 
-        if (self.restricted) {
-          let index = parseInt(value.split(pattern)[1])
-          if (!self.inBucketById(index)) {
-            self.$refs.bucketDropdown.toggle()
-            self.addToBucket(index)
-          }
-          return
+        if (Array.isArray(value)) { // when no restricted : values are coming from checkboxes as an array
+          value.forEach(function (val) {
+            let index = parseInt(val.split(pattern)[1])
+            if (!self.inBucketById(index)) {
+              self.$refs.bucketDropdown.toggle()
+              self.addToBucket(index)
+            }
+          })
         }
-
-        value.forEach(function (val) {
-          let index = parseInt(val.split(pattern)[1])
-          if (!self.inBucketById(index)) {
-            self.$refs.bucketDropdown.toggle()
-            self.addToBucket(index)
-          }
-        })
       }
     }
   }
