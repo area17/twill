@@ -40,6 +40,10 @@
         type: Number,
         default: 0
       },
+      opened: {
+        type: Boolean,
+        default: true
+      },
       size: {
         type: String,
         default: '' // small
@@ -74,9 +78,15 @@
         return `add${this.block.id}Dropdown`
       }
     },
+    watch: {
+      opened: function () {
+        if (!this.opened) this.visible = false
+      }
+    },
     methods: {
       toggleExpand: function () {
         this.visible = !this.visible
+        if(this.visible) this.$emit('open', this.visible)
       },
       componentName: function (id) {
         const slug = this.$options.filters.slugify(this.block.title)

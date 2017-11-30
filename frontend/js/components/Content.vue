@@ -3,9 +3,10 @@
     <draggable class="content__content" v-model="blocks" :options="dragOptions">
       <transition-group name="draggable_list" tag='div'>
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
-          <a17-block :block="block" :index="index">
+          <a17-block :block="block" :index="index" :opened="opened" @open="setOpened">
             <button type="button" slot="dropdown-add" v-if="availableBlocks.length" v-for="(availableBlock, dropdownIndex) in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, index)"><span v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
             <div slot="dropdown-action">
+              <button type="button" @click="collapseAllBlocks()">Collapse All</button>
               <!-- <button type="button" @click="">Open in Live Editor</button> -->
               <button type="button" @click="deleteBlock(index)">Delete</button>
               <button type="button" @click="duplicateBlock(index)">Duplicate</button>
@@ -46,6 +47,7 @@
     },
     data: function () {
       return {
+        opened: true,
         handle: '.block__handle' // drag handle
       }
     },
@@ -64,6 +66,9 @@
       })
     },
     methods: {
+      setOpened: function (value) {
+        this.opened = value
+      },
       addDropdownId: function (index) {
         return `addBlock${index}Dropdown`
       },
@@ -73,6 +78,7 @@
         if (dropdown) dropdown.toggle()
       },
       addBlock: function (block, fromIndex) {
+        this.opened = true
         let newBlock = {
           title: block.title,
           type: block.component,
@@ -86,10 +92,14 @@
         })
       },
       duplicateBlock: function (index) {
+        this.opened = true
         this.$store.commit('duplicateBlock', index)
       },
       deleteBlock: function (index) {
         this.$store.commit('deleteBlock', index)
+      },
+      collapseAllBlocks: function () {
+        this.opened = false
       }
     }
   }

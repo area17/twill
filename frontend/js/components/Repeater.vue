@@ -3,9 +3,10 @@
     <draggable class="content__content" v-model="blocks" :options="dragOptions">
       <transition-group name="draggable_list" tag='div'>
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
-          <a17-block :block="block" :index="index" :size="blockSize">
+          <a17-block :block="block" :index="index" :size="blockSize" :opened="opened" @open="setOpened">
             <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)"  v-if="hasRemainingBlocks"><span v-svg symbol="add"></span></a17-button>
             <div slot="dropdown-action">
+              <button type="button" @click="collapseAllBlocks()">Collapse All</button>
               <button type="button" @click="deleteBlock(index)">Delete</button>
               <button type="button" @click="duplicateBlock(index)" v-if="hasRemainingBlocks">Duplicate</button>
             </div>
@@ -46,6 +47,7 @@
     },
     data: function () {
       return {
+        opened: true,
         handle: '.block__handle' // drag handle
       }
     },
@@ -90,10 +92,15 @@
       })
     },
     methods: {
+      setOpened: function (value) {
+        this.opened = value
+      },
       addBlock: function () {
+        this.opened = true
         this.$store.commit('addFormBlock', { type: this.type, name: this.name })
       },
       duplicateBlock: function (index) {
+        this.opened = true
         this.$store.commit('duplicateFormBlock', {
           type: this.type,
           name: this.name,
@@ -106,6 +113,9 @@
           name: this.name,
           index: index
         })
+      },
+      collapseAllBlocks: function () {
+        this.opened = false
       }
     }
   }
