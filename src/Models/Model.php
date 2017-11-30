@@ -26,6 +26,11 @@ abstract class Model extends BaseModel implements TaggableInterface
         return $query->wherePublished(true);
     }
 
+    public function scopePublic($query)
+    {
+        return $query->wherePublic(true);
+    }
+
     public function scopeDraft($query)
     {
         return $query->wherePublished(false);

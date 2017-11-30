@@ -1,7 +1,7 @@
 <?php
 
 if (!function_exists('createDefaultFields')) {
-    function createDefaultTableFields($table, $softDeletes = true, $published = true, $publishDates = true)
+    function createDefaultTableFields($table, $softDeletes = true, $published = true, $publishDates = false, $visibility = false)
     {
         $table->increments('id');
 
@@ -18,6 +18,10 @@ if (!function_exists('createDefaultFields')) {
         if ($publishDates) {
             $table->timestamp('publish_start_date')->nullable();
             $table->timestamp('publish_end_date')->nullable();
+        }
+
+        if ($visibility) {
+            $table->boolean('public');
         }
     }
 }

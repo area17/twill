@@ -4,16 +4,16 @@
 
 @section('content')
     <div class="form">
-        <form action="#" v-sticky data-sticky-id="navbar" data-sticky-offset="0" data-sticky-topoffset="12" v-on:submit="submitForm">
+        <form action="{{ $saveUrl }}" v-sticky data-sticky-id="navbar" data-sticky-offset="0" data-sticky-topoffset="12" v-on:submit="submitForm">
             <div class="navbar navbar--sticky" data-sticky-top="navbar">
                 @php
-                    $customFieldsetsItems = $customFieldsetsItems ?? [];
-                    array_unshift($customFieldsetsItems, [
+                    $additionalFieldsets = $additionalFieldsets ?? [];
+                    array_unshift($additionalFieldsets, [
                         'fieldset' => 'content',
                         'label' => 'Content'
                     ]);
                 @endphp
-                <a17-sticky-nav data-sticky-target="navbar" :items="{{ json_encode($customFieldsetsItems) }}">
+                <a17-sticky-nav data-sticky-target="navbar" :items="{{ json_encode($additionalFieldsets) }}">
                     <a17-title-editor slot="title"></a17-title-editor>
                     <a17-langswitcher slot="actions"></a17-langswitcher>
                 </a17-sticky-nav>
@@ -63,9 +63,12 @@
     }
 
     window.STORE.publication = {
+        withPublicationToggle: {{ json_encode($item->isFillable('published')) }},
         published: {{ json_encode($item->published) }},
+        withPublicationTimeframe: {{ json_encode($item->isFillable('publish_start_date')) }},
         startDate: '{{ $item->publish_start_date ?? '' }}',
-        endDate: '{{ $item->publish_end_date ?? '' }}'
+        endDate: '{{ $item->publish_end_date ?? '' }}',
+        visibility: '{{ $item->isFillable('public') ? ($item->public ? 'public' : 'private') : false }}'
     }
 
     window.STORE.revisions = {!! json_encode($revisions)  !!}

@@ -1,11 +1,13 @@
 import * as types from '../mutation-types'
 
 const state = {
+  withPublicationToggle: window.STORE.publication.withPublicationToggle || false,
   published: window.STORE.publication.published || false,
+  withPublicationTimeframe: window.STORE.publication.withPublicationTimeframe || false,
   startDate: window.STORE.publication.startDate || null,
   endDate: window.STORE.publication.endDate || null,
-  visibility: 'public',
-  visibilityOptions: window.STORE.publication.visibilityOptions || [{
+  visibility: window.STORE.publication.visibility || false,
+  visibilityOptions: [{
     value: 'public',
     label: 'Public'
   },

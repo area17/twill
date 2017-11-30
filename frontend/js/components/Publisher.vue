@@ -1,10 +1,10 @@
 <template>
   <div class="publisher">
     <div class="publisher__wrapper">
-      <a17-switcher title="Status" name="publish_state"></a17-switcher>
-      <a17-radioaccordion  v-if="visibilityOptions && visibilityOptions.length" :radios="visibilityOptions" name="visibility" :value="visibility" :open="openStates['A17Radioaccordion']" @open="openCloseAccordion" @change="updateVisibility">Visibility</a17-radioaccordion>
+      <a17-switcher title="Status" name="publish_state" v-if="withPublicationToggle"></a17-switcher>
+      <a17-radioaccordion  v-if="visibility && visibilityOptions && visibilityOptions.length" :radios="visibilityOptions" name="visibility" :value="visibility" :open="openStates['A17Radioaccordion']" @open="openCloseAccordion" @change="updateVisibility">Visibility</a17-radioaccordion>
       <a17-checkboxaccordion  v-if="languages && languages.length" :options="languages" name="active_languages" :value="publishedLanguagesValues" :open="openStates['A17Checkboxaccordion']" @open="openCloseAccordion">Languages</a17-checkboxaccordion>
-      <a17-pubaccordion :open="openStates['A17Pubaccordion']" @open="openCloseAccordion">Published on</a17-pubaccordion>
+      <a17-pubaccordion :open="openStates['A17Pubaccordion']" @open="openCloseAccordion" v-if="withPublicationTimeframe">Published on</a17-pubaccordion>
       <a17-revaccordion v-if="revisions.length" :open="openStates['A17Revisions']" @open="openCloseAccordion" :revisions="revisions">Revisions</a17-revaccordion>
       <div class="publisher__item" v-if="revisions.length">
         <a href="#" class="publisher__link" @click.prevent="openPreview"><span v-svg symbol="preview"></span><span class="f--link-underlined--o">Preview changes</span></a>
@@ -74,6 +74,8 @@
         languages: state => state.language.all,
         revisions: state => state.revision.all,
         published: state => state.publication.published,
+        withPublicationToggle: state => state.publication.withPublicationToggle,
+        withPublicationTimeframe: state => state.publication.withPublicationTimeframe,
         visibility: state => state.publication.visibility,
         visibilityOptions: state => state.publication.visibilityOptions,
         defaultSubmitOptions: state => state.publication.submitOptions
