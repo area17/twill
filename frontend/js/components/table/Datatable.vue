@@ -179,7 +179,13 @@
       },
       updateSort: function (column) {
         if (!column.sortable) return
-        this.reorderable = false
+
+        // The listing should not be reordable if it is sorted
+        if (this.reorderable) {
+          this.reorderable = false
+          this.$store.commit('removeDatableColumn', 'draggable')
+        }
+
         this.$store.commit('updateDatablePage', 1)
         this.$store.commit('updateDatableSort', column)
 

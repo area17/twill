@@ -113,6 +113,9 @@
         return 'bucket-' + this.bucket + '_item-' + this.item.id + '_type-' + this.item.content_type.value + '_inb-' + id
       },
       updateBucket: function (value) {
+        // todo : need more testing
+        //  This seems to be buggy when is triggered from the radio buttons (ie : removeFromBucket called twice)
+
         let pattern = 'inb-'
         let self = this
 

@@ -125,6 +125,10 @@
       display:block;
       width: 15px;
     }
+
+    &:first-child {
+      padding-left:20px;
+    }
   }
 
   .tablehead__cell--sortable {

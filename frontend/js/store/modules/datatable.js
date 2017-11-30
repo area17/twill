@@ -66,6 +66,11 @@ const mutations = {
   [types.ADD_DATATABLE_COLUMN] (state, column) {
     state.columns.splice(column.index, 0, column.data)
   },
+  [types.REMOVE_DATATABLE_COLUMN] (state, columnName) {
+    state.columns.forEach(function (column, index) {
+      if (column.name === columnName) state.columns.splice(index, 1)
+    })
+  },
   [types.UPDATE_DATATABLE_FILTER] (state, filter) {
     state.filter = Object.assign({}, state.filter, filter)
   },
