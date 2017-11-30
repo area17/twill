@@ -100,6 +100,7 @@ Window.vm = new Vue({
       this.isFormUpdated = false
 
       // do submit here
+      console.log(this.$store.state.form.fields)
     },
     confirmExit: function (event) {
       if (!this.isFormUpdated) {
