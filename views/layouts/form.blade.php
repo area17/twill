@@ -99,7 +99,7 @@
     }
 
     window.APIKEYS = {
-        'googleMapApi': 'AIzaSyB_gNP6U9pPkfbhfTGNYdKMaWk_r-4EsLY'
+        'googleMapApi': '{{ config('services.google.maps_api_key') }}'
     }
 @stop
 
