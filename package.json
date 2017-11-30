@@ -27,6 +27,7 @@
     "vuex": "3.0.1"
   },
   "devDependencies": {
+    "vue-template-compiler": "2.5.9",
     "cross-env": "5.1.1",
     "laravel-mix": "1.6.0",
     "babel-eslint": "7.1.1",
