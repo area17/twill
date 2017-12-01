@@ -298,6 +298,7 @@
     height: 80px;
 
     background-color: $color__ultralight;
+    border-bottom:1px solid $color__border--light;
 
     .buckets__sources {
       flex-grow: 2;
@@ -339,7 +340,6 @@
     padding: 15px 20px;
 
     h4 {
-      @include font-medium();
       color: $color__f--text;
     }
   }

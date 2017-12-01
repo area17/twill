@@ -186,7 +186,7 @@
   }
 </style>
 
-<style lang="scss">
+<style lang="scss"> /* not scoped because this style apply for the BucketSourceItem element */
   @import '~styles/setup/_mixins-colors-vars.scss';
 
   /*Child component style*/
@@ -300,8 +300,7 @@
       .bucket__action {
         @include font-tiny();
 
-        line-height: 20px;
-
+        line-height: 25px;
         margin-right: 15px;
 
         &:last-child {

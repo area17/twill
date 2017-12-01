@@ -347,7 +347,7 @@
         display: block;
         top: 0;
 
-        background-color: rgba($color__border--light, 0.95);
+        background-color: rgba($color__border--light, 0.97);
         border-bottom: 1px solid rgba($color__black, 0.05);
 
         .datatable__setupDropdown {

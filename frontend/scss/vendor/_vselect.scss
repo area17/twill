@@ -147,12 +147,12 @@ $multiSelectHeight: 45px;
 
   .vselect__field {
     .dropdown-toggle {
-      height:$singleSelectHeight;
+      height:$singleSelectHeight - 2px;
     }
 
     .selected-tag {
-      height:$singleSelectHeight;
-      line-height:$singleSelectHeight;
+      height:$singleSelectHeight - 2px;
+      line-height:$singleSelectHeight - 2px;
       @include font-regular;
     }
   }

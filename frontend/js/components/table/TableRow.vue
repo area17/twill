@@ -290,15 +290,16 @@
     position:absolute;
     right:0;
     top: auto;
-    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 15%);
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 25%);
     padding-top: 16px;
     padding-bottom: 16px - 2px;
     overflow:visible;
     padding-right:20px;
+    padding-left:20px;
   }
 
   tr:hover .tablecell--sticky {
-    background: linear-gradient(to right, #{rgba($color__f--bg, 0)} 0%, #{rgba($color__f--bg, 1)} 15%);
+    background: linear-gradient(to right, #{rgba($color__f--bg, 0)} 0%, #{rgba($color__f--bg, 1)} 25%);
   }
 
   .tablecell__handle {
