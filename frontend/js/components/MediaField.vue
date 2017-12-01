@@ -280,7 +280,7 @@
 
   .media {
     border-radius: 2px;
-    border: 1px solid $color__fborder;
+    border: 1px solid $color__border;
   }
 
   .media__field {

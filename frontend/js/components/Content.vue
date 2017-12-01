@@ -109,7 +109,7 @@
   @import '~styles/setup/_mixins-colors-vars.scss';
 
   .content {
-    margin-top:35px;
+    margin-top:20px; // margin-top:35px;
   }
 
   .content__content {

@@ -269,9 +269,9 @@
       }
     }
 
-    .block__title {
-      font-weight:normal;
-    }
+    // .block__title {
+    //   font-weight:normal;
+    // }
 
     .block__counter {
       display:none;

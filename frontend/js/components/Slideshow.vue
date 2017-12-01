@@ -10,8 +10,8 @@
         </div>
       </transition-group>
     </draggable>
-    <div class="slideshow__trigger">
-      <a17-button type="button" variant="ghost" @click="openMediaLibrary(remainingSlides)" :disabled="!remainingSlides">{{ addLabel }}</a17-button>
+    <div class="slideshow__trigger" v-if="remainingSlides">
+      <a17-button type="button" variant="ghost" @click="openMediaLibrary(remainingSlides)">{{ addLabel }}</a17-button>
       <span class="slideshow__note f--small"><slot></slot></span>
     </div>
   </div>

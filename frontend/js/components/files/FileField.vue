@@ -6,9 +6,9 @@
           <a17-fileitem v-for="(item, index) in items" :key="item.id" class="item__content" :name="`${name}_${item.id}`" :draggable="isDraggable" :item="item" @delete="deleteItem(index)"></a17-fileitem>
         </draggable>
       </table>
-      <div class="fileField__trigger">
+      <div class="fileField__trigger" v-if="remainingItems">
         <input type="hidden" :name="name" :value="itemsIds"/>
-        <a17-button type="button" variant="ghost" @click="openMediaLibrary(remainingItems)" :disabled="!remainingItems">{{ addLabel }}</a17-button>
+        <a17-button type="button" variant="ghost" @click="openMediaLibrary(remainingItems)">{{ addLabel }}</a17-button>
         <span class="fileField__note f--small">{{ note }}</span>
       </div>
     </div>

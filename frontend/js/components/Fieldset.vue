@@ -106,7 +106,7 @@
 
     > hr {
       height: 5px;
-      margin: 20px -20px 20px -20px;
+      margin: 50px -20px 20px -20px;
       padding: 0;
       background: $color__border--light;
       border: 0 none;
