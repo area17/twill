@@ -38,6 +38,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      border-radius:0;
 
       &:first-child {
         border-top-left-radius: $border__radius;
@@ -52,9 +53,7 @@
 
       .icon {
         color:$color__icons;
-        // vertical-align: top;
         display: block;
-        // height: 100%;
       }
 
       &:hover {

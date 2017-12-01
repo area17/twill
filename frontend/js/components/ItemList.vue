@@ -12,13 +12,14 @@
       </span>
       <span class="itemlist__cell itemlist__cell--thumb" v-if="item.hasOwnProperty('thumbnail')"><img :src="item.thumbnail" /></span>
       <span class="itemlist__cell itemlist__cell--name">{{ item.name }}</span>
-      <span v-if="item.hasOwnProperty('size')">{{ item.size }}</span>
+      <span v-if="item.hasOwnProperty('size')">{{ item.size | uppercase }}</span>
     </div>
   </div>
 </template>
 
 <script>
   import { mapState } from 'vuex'
+  import a17VueFilters from '@/utils/filters.js'
 
   export default {
     name: 'A17Itemlist',
@@ -41,6 +42,7 @@
         listItems: this.items
       }
     },
+    filters: a17VueFilters,
     computed: {
       checkedItems: function () {
         let checkItemsIds = []
@@ -94,7 +96,7 @@
     border:1px solid $color__border--light;
     margin-bottom: -1px;
     cursor:pointer;
-    padding:20px 15px 20px 0;
+    padding:20px 20px 20px 0;
 
     &:hover {
       background-color: $color__f--bg;
@@ -107,7 +109,7 @@
   }
 
   .itemlist__cell {
-    margin-left:15px;
+    margin-left:20px;
     white-space: nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
@@ -148,7 +150,8 @@
 
   .itemlist__progress {
     height: 4px;
-    width: 100%;
+    width: 15%;
+    min-width:120px;
     background: $color__border--focus;
     border-radius: 2px;
     position: relative;

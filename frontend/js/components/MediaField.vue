@@ -9,8 +9,8 @@
 
         <ul class="media__metadatas">
           <li><strong>{{ currentMedia.name }}</strong></li>
-          <li class="f--small" v-if="currentMedia.size">File size : {{ currentMedia.size }}</li>
-          <li class="f--small">Dimensions : {{ currentMedia.width }} x {{ currentMedia.height }}</li>
+          <li class="f--small" v-if="currentMedia.size">File size: {{ currentMedia.size | uppercase }}</li>
+          <li class="f--small">Dimensions: {{ currentMedia.width }} &times; {{ currentMedia.height }}</li>
           <li class="f--small media__metadatas--add">
             <a href="#" @click.prevent="metadatasInfos"> {{ metadatas.text }}</a></li>
         </ul>
@@ -78,6 +78,7 @@
 
   import a17Cropper from '@/components/Cropper.vue'
   import mediaLibrayMixin from '@/mixins/mediaLibrary.js'
+  import a17VueFilters from '@/utils/filters.js'
 
   export default {
     name: 'A17Mediafield',
@@ -133,6 +134,7 @@
         }
       }
     },
+    filters: a17VueFilters,
     computed: {
       mediaKey: function () {
         return this.mediaContext.length > 0 ? this.mediaContext : this.name
@@ -327,7 +329,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      border:1px solid rgba(0,0,0,0.1);
+      border:1px solid rgba(0,0,0,0.05);
     }
 
     img {

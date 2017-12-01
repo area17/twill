@@ -151,13 +151,13 @@
     align-items: center;
     justify-content: space-between;
     position: relative;
-    min-width: 145px;
+    min-width: 125px;
     height: 40px;
     line-height: 40px;
-    padding: 0 25px;
-    border-radius: 25px;
-    color: $color__button_disabled-txt;
-    background: $color__button_disabled-bcg;
+    padding: 0 15px 0 20px;
+    border-radius: 20px;
+    color: $color__text;
+    background: $color__button_disabled-bg;
 
     cursor: pointer;
     transition: background-color .25s linear, color .25s linear;
@@ -177,7 +177,7 @@
     height: 12px;
     border-radius: 6px;
     width: 40px;
-    background: $color__button_disabled-txt;
+    background: $color__text--forms;
     box-shadow: inset 0 0 1px #000;
     position: relative;
 

@@ -128,8 +128,8 @@
     }
 
     &:disabled {
-      color: $color__button_disabled-txt;
-      background: $color__button_disabled-bcg;
+      color: $color__button_disabled-text;
+      background: $color__button_disabled-bg;
       /*opacity: .5;*/
       pointer-events: none;
     }
@@ -320,7 +320,7 @@
 
     &.button--icon {
       color: $color__button_greyed;
-      background: $color__button_greyed--bcg;
+      background: $color__button_greyed--bg;
 
       .icon {
         color: $color__button_greyed;

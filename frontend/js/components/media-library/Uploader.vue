@@ -132,7 +132,7 @@
   }
 
   .uploader__dropzone {
-    border:1px dashed $color__border;
+    border:1px dashed $color__border--hover;
     text-align:center;
     padding:26px 0;
     color:$color__text--light;

@@ -17,7 +17,7 @@
         </template> <!-- Published Date -->
       </template>
       <template v-else>
-        <a :href="row['edit']" v-if="col.name === 'name'"><span class="f--link-underlined--o">{{ row[col.name] }}</span></a>
+        <a :href="row['edit']" class="tablecell__name" v-if="col.name === 'name'"><span class="f--link-underlined--o">{{ row[col.name] }}</span></a>
         <template v-else>{{ row[col.name] }}</template>
       </template>
     </td>
@@ -234,6 +234,11 @@
 
   .tablerow__thumb {
     display:block;
+  }
+
+  .tablecell__name {
+    min-width: 15vw;
+    max-width: 33.33vw;
   }
 
   .tablecell--thumb {

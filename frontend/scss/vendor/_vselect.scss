@@ -25,6 +25,12 @@ $multiSelectHeight: 45px;
       box-shadow:0 0px 8px rgba(0,0,0,0.3);
       border-radius: 2px;
 
+      li.no-options {
+        color:$color__text--light;
+        text-align:left;
+        padding:0 15px;
+      }
+
       li {
         > a {
           padding:0 15px;
@@ -289,6 +295,10 @@ $multiSelectHeight: 45px;
   used for tags in the media library
   */
   .vselect--small {
+    .dropdown-menu li.no-options {
+      font-size: 13px;
+    }
+
     &.vselect--multiple {
       .selected-tag {
         height: 21px;

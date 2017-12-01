@@ -16,7 +16,7 @@
     width: 100%;
     // height: 50px;
     padding: 10vh 0;
-    background-color: rgba($color__background, 0.5);
+    background-color: rgba($color__background, 0.75);
     position: absolute;
     top: 0;
     bottom: 0;

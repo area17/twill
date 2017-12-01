@@ -25,8 +25,8 @@
           <p class="mediasidebar__name">{{ selectedMedias[0].name }}</p>
 
           <ul class="mediasidebar__metadatas">
-            <li class="f--small" v-if="selectedMedias[0].size" >File size : {{ selectedMedias[0].size }}</li>
-            <li class="f--small">Dimensions : {{ selectedMedias[0].width }} x {{ selectedMedias[0].height }}</li>
+            <li class="f--small" v-if="selectedMedias[0].size" >File size: {{ selectedMedias[0].size | uppercase }}</li>
+            <li class="f--small">Dimensions: {{ selectedMedias[0].width }} &times; {{ selectedMedias[0].height }}</li>
           </ul>
 
           <!--Actions-->
@@ -56,6 +56,7 @@
   import api from '../../store/api/media-library'
 
   import a17MediaSidebarUpload from '@/components/media-library/MediaSidebarUpload'
+  import a17VueFilters from '@/utils/filters.js'
 
   export default {
     name: 'A17MediaSidebar',
@@ -72,6 +73,7 @@
         updateInProgress: false
       }
     },
+    filters: a17VueFilters,
     computed: {
       sharedTags: function () {
         return this.selectedMedias.map((media) => {
