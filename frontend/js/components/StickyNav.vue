@@ -37,7 +37,7 @@
         topOffset: 70,
         ticking: false,
         navItems: this.items,
-        selectedFieldset: -1,
+        clickedFieldset: -1,
         fieldset: []
       }
     },
@@ -56,6 +56,7 @@
         let self = this
         let itemToActivate = 0
 
+        // desactivate all fieldset
         this.navItems.forEach(function (item, index) {
           const isActive = ((item.position - self.topOffset) < self.lastScrollPos)
 
@@ -64,23 +65,24 @@
         })
 
         // no active, let fallback on the first one or the last one the user clicked
-        if (this.selectedFieldset >= 0) Vue.set(self.navItems[self.selectedFieldset], 'active', true)
+        if (this.clickedFieldset >= 0) Vue.set(self.navItems[self.clickedFieldset], 'active', true)
         else Vue.set(self.navItems[itemToActivate], 'active', true)
       },
       refresh: function () {
         let self = this
 
-        self.selectedFieldset = -1
+        self.clickedFieldset = -1
         this.getFieldsetPosition()
         this.setActiveItems()
 
         self.ticking = false
       },
-      resize: debounce(function () {
+      _resize: debounce(function () {
         this.lastScrollPos = window.pageYOffset
         this.refresh()
       }, 200),
-      scroll: function () {
+      _scroll: function () {
+        console.log('_scroll !!')
         let self = this
 
         this.lastScrollPos = window.pageYOffset
@@ -98,9 +100,9 @@
         let self = this
         const ypos = this.navItems[index].position - this.topOffset + 1
 
-        this.getFieldsetPosition()
         this.dispose()
-        this.selectedFieldset = index
+        this.clickedFieldset = index
+        this.getFieldsetPosition()
         this.setActiveItems()
 
         scrollToY({
@@ -112,16 +114,12 @@
         })
       },
       init: function () {
-        let self = this
-
-        window.addEventListener('scroll', () => self.scroll())
-        window.addEventListener('resize', () => self.resize())
+        window.addEventListener('scroll', this._scroll)
+        window.addEventListener('resize', this._resize)
       },
       dispose: function () {
-        let self = this
-
-        window.removeEventListener('scroll', () => self.scroll())
-        window.removeEventListener('resize', () => self.resize())
+        window.removeEventListener('scroll', this._scroll)
+        window.removeEventListener('resize', this._resize)
       }
     },
     mounted: function () {
