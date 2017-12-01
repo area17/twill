@@ -130,6 +130,7 @@
       return {
         metadatas: {
           text: 'Add info',
+          isDestroyed: false,
           active: false
         }
       }
@@ -256,6 +257,7 @@
       },
       // media
       deleteMedia: function () {
+        this.isDestroyed = true
         this.$store.commit('destroyMediasInSelected', {name: this.mediaKey, index: this.index})
       },
       // metadatas
@@ -266,7 +268,7 @@
       }
     },
     beforeDestroy: function () {
-      this.deleteMedia()
+      if (!this.isDestroyed) this.deleteMedia()
     }
   }
 </script>
