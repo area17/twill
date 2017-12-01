@@ -82,8 +82,6 @@
         'trailing': false
       }),
       satHandleChange (event, skip) {
-        console.log('sat')
-
         !skip && event.preventDefault()
         const container = this.$refs.satContainer
         const containerWidth = container.clientWidth
@@ -121,7 +119,6 @@
       },
       hueHandleChange (event, skip) {
         !skip && event.preventDefault()
-        console.log('hue')
         const container = this.$refs.hueContainer
         const containerWidth = container.clientWidth
         const containerHeight = container.clientHeight

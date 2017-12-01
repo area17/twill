@@ -45,6 +45,8 @@
       getFieldsetPosition: function () {
         let self = this
 
+        this.lastScrollPos = window.pageYOffset
+
         this.navItems.forEach(function (item, index) {
           const fieldset = self.fieldset[index]
           let pos = fieldset ? (fieldset.getBoundingClientRect().top + self.lastScrollPos) : 0
