@@ -17,7 +17,7 @@
 
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-                    <input class="login__button" type="submit" value="Send password reset Link">
+                    <input class="login__button" type="submit" value="Send password reset link">
                 </form>
             </section>
         </div>

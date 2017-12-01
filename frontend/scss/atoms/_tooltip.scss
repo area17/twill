@@ -109,7 +109,7 @@ $arrowSize:6px;
     background:rgba($color__background,0.95);
     padding:10px 15px;
     border-radius:2px;
-    box-shadow:0px 0px 8px rgba(0,0,0,0.3);
+    box-shadow:$box-shadow;
     max-width:270px;
     color:$color__text--light;
     @include font-small;

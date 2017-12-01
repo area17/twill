@@ -294,7 +294,7 @@
     position:relative;
     background:rgba($color__background,0.98);
     border-radius:2px;
-    box-shadow:0 0px 8px rgba(0,0,0,0.3);
+    box-shadow:$box-shadow;
     padding:10px 0;
 
     /deep/ .input {
@@ -331,7 +331,7 @@
       width:10px;
       height:10px;
       background-color:$color__background;
-      box-shadow:0 0px 8px rgba(0,0,0,0.3);
+      box-shadow:$box-shadow;
       transform: rotate(45deg);
     }
   }

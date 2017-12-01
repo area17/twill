@@ -121,8 +121,8 @@ $color__env--prod: #E31A22;
 
 /**** Notif Colors ****/
 $color__notif--default: $color__black--20;
-$color__notif--success: $color__yellow;
-$color__notif--error: $color__red;
+$color__notif--success: rgba(#ffff00, 0.97);
+$color__notif--error: rgba(#ff0000, 0.97);
 
 /**** Buckets Colors ****/
 $color__bucket--1: #7ca4a2;

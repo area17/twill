@@ -275,6 +275,11 @@
       overflow: hidden;
       z-index:1;
       position:relative;
+      color:inherit;
+
+      @include placeholder() {
+        color:$color__f--placeholder;
+      }
     }
 
     .input__clone {
