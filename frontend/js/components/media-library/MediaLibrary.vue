@@ -5,7 +5,7 @@
         <a17-filter @submit="submitFilter" :clearOption="true" @clear="clearFilters">
           <ul class="secondarynav secondarynav--desktop" slot="navigation">
             <li class="secondarynav__item" v-for="navType in types" :class="{ 's--on': type === navType.value, 's--disabled' : type !== navType.value && strict }">
-              <a href="#" @click.prevent="updateType(navType.value)"><span class="secondarynav__link">{{ navType.text }}</span> <span v-if="navType.total > 0" class="secondarynav__number">({{ navType.total }})</span></a>
+              <a href="#" @click.prevent="updateType(navType.value)"><span class="secondarynav__link">{{ navType.text }}</span><span v-if="navType.total > 0" class="secondarynav__number">({{ navType.total }})</span></a>
             </li>
           </ul>
 

@@ -76,7 +76,7 @@
     color:$color__text--light;
     white-space: nowrap;
     vertical-align: top;
-    padding:20px 15px;
+    padding:20px 10px;
 
     &:hover {
       color:$color__text;

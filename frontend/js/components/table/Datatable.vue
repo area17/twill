@@ -52,7 +52,7 @@
             <h4>{{ emptyMessage }}</h4>
           </div>
         </template>
-        <a17-paginate v-if="maxPage > 1 || initialMaxPage > maxPage" :max="maxPage" :value="page" :offset="offset" :availableOffsets="[initialOffset,initialOffset*3,initialOffset*6]" @changePage="updatePage" @changeOffset="updateOffset"></a17-paginate>
+        <a17-paginate v-if="maxPage > 1 || initialMaxPage > maxPage && !isEmpty" :max="maxPage" :value="page" :offset="offset" :availableOffsets="[initialOffset,initialOffset*3,initialOffset*6]" @changePage="updatePage" @changeOffset="updateOffset"></a17-paginate>
         <a17-spinner v-if="loading">Loading&hellip;</a17-spinner>
       </div>
     </div>
@@ -105,8 +105,11 @@
       }
     },
     computed: {
+      isEmpty: function () {
+        return this.rows.length <= 0
+      },
       isEmptyDatable: function () {
-        return { 'datatable__table--empty': this.rows.length <= 0 }
+        return { 'datatable__table--empty': this.isEmpty }
       },
       rows: {
         get () {
@@ -286,13 +289,14 @@
 
   .datatable__setupDropdown {
     float: right;
-    padding: 18px 10px 16px;
+    padding: 18px 20px 16px 15px;
     background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 25%);
   }
 
   .datatable__setupButton {
     @include btn-reset;
     color: $color--icons;
+    padding:0;
 
     &:focus,
     &:hover {

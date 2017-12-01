@@ -148,7 +148,7 @@
   .tablecell {
     overflow: hidden;
     vertical-align: top;
-    padding:20px 15px;
+    padding:20px 10px;
     background-color: $color__background;
 
     > a {
@@ -294,6 +294,7 @@
     padding-top: 16px;
     padding-bottom: 16px - 2px;
     overflow:visible;
+    padding-right:20px;
   }
 
   tr:hover .tablecell--sticky {
