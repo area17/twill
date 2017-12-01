@@ -11,7 +11,7 @@
         :readonly="readonly"
         :autofocus="autofocus"
         :autocomplete="autocomplete"
-        :value="color"
+        :value="value"
         @focus="onFocus"
         @blur="onBlur"
         @input="onInput"
@@ -20,7 +20,7 @@
       <a17-dropdown ref="colorDropdown" class="form__field--color" position="bottom-right" :arrow="true" :offset="15" :minWidth="300" :clickable="true" :sideOffset="15">
         <span class="form__field--colorBtn" :style="bcgStyle" @click="$refs.colorDropdown.toggle()"></span>
         <div slot="dropdown__content">
-          <a17-colorpicker :color="color" @change="updateColor"></a17-colorpicker>
+          <a17-colorpicker :color="value" @change="updateValue"></a17-colorpicker>
         </div>
       </a17-dropdown>
     </div>
@@ -29,25 +29,35 @@
 
 <script>
   import InputMixin from '@/mixins/input'
+  import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
   import ColorPicker from '@/components/ColorPicker'
 
   export default {
     name: 'a17ColorField',
-    mixins: [InputMixin, InputframeMixin],
+    mixins: [InputMixin, InputframeMixin, FormStoreMixin],
+    props: {
+      name: {
+        type: String,
+        required: true
+      },
+      initialValue: {
+        default: ''
+      }
+    },
     components: {
       'a17-colorpicker': ColorPicker
     },
     data: function () {
       return {
         focused: false,
-        color: ''
+        value: this.initialValue
       }
     },
     computed: {
       bcgStyle: function () {
         return {
-          'background-color': this.color !== '' ? this.color : 'transparent'
+          'background-color': this.value !== '' ? this.value : 'transparent'
         }
       },
       textfieldClasses: function () {
@@ -58,18 +68,20 @@
       }
     },
     methods: {
+      updateValue: function (newValue) {
+        this.value = newValue
+
+        // see formStore mixin
+        this.saveIntoStore()
+      },
       onBlur: function (event) {
-        console.log(event)
         const newValue = event.target.value
-        this.color = newValue
+        this.updateValue(newValue)
       },
       onFocus: function () {
         this.focused = true
       },
       onInput: function () {
-      },
-      updateColor: function (color) {
-        this.color = color
       }
     }
   }

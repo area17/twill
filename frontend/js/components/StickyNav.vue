@@ -82,7 +82,6 @@
         this.refresh()
       }, 200),
       _scroll: function () {
-        console.log('_scroll !!')
         let self = this
 
         this.lastScrollPos = window.pageYOffset
