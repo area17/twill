@@ -26,7 +26,7 @@
 
           <ul class="mediasidebar__metadatas">
             <li class="f--small" v-if="selectedMedias[0].size" >File size: {{ selectedMedias[0].size | uppercase }}</li>
-            <li class="f--small">Dimensions: {{ selectedMedias[0].width }} &times; {{ selectedMedias[0].height }}</li>
+            <li class="f--small" v-if="selectedMedias[0].width + selectedMedias[0].height">Dimensions: {{ selectedMedias[0].width }} &times; {{ selectedMedias[0].height }}</li>
           </ul>
 
           <!--Actions-->
