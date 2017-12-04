@@ -769,6 +769,10 @@ abstract class ModuleController extends Controller
 
     protected function getRequestFilters()
     {
+        if (request()->has('search')) {
+            return ['search' => request('search')];
+        }
+
         return json_decode($this->request->get('filter'), true) ?? [];
     }
 
