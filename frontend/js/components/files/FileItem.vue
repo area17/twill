@@ -103,6 +103,10 @@
         background-color: $color__f--bg;
       }
     }
+
+    &:last-child {
+      border-bottom: 0 none;
+    }
   }
 
   .fileItem__cell {

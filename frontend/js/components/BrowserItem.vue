@@ -83,6 +83,10 @@
         background-color: $color__f--bg;
       }
     }
+
+    &:last-child {
+      border-bottom: 0 none;
+    }
   }
 
   .browserItem__cell {

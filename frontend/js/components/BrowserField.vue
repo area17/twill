@@ -1,13 +1,13 @@
 <template>
   <div class="browserField">
-    <table class="browserField__table">
+    <table class="browserField__table" v-if="items.length">
       <draggable :element="'tbody'" v-model="items">
         <a17-browseritem v-for="(item, index) in items" :key="item.id" class="item__content" :name="`${name}_${item.id}`" :draggable="draggable" :item="item" @delete="deleteItem(index)"></a17-browseritem>
       </draggable>
     </table>
-    <div class="browserField__trigger">
+    <div class="browserField__trigger" v-if="remainingItems">
+      <a17-button type="button" variant="ghost" @click="openBrowser">{{ addLabel }}</a17-button>
       <input type="hidden" :name="name" :value="itemsIds" />
-      <a17-button type="button" variant="ghost" @click="openBrowser" :disabled="!remainingItems">{{ addLabel }}</a17-button>
       <span class="browserField__note f--small"><slot></slot></span>
     </div>
   </div>
@@ -137,6 +137,11 @@
   .browserField__trigger {
     padding:10px;
     position:relative;
+    border-top: 1px solid $color__border--light;
+
+    &:first-child {
+      border-top:0 none
+    }
   }
 
   .browserField__note {

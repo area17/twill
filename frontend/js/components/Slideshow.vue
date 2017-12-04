@@ -1,6 +1,6 @@
 <template>
   <div class="slideshow">
-    <draggable class="slideshow__content" v-model="slides" :options="dragOptions">
+    <draggable class="slideshow__content" v-model="slides" :options="dragOptions" v-if="slides.length">
       <transition-group name="draggable_list" tag='div'>
         <div class="slide" v-for="(slide, index) in slides" :key="slide.id">
             <div class="slide__handle">
@@ -108,6 +108,11 @@
   .slideshow__trigger {
     padding:10px;
     position:relative;
+    border-top: 1px solid $color__border--light;
+
+    &:first-child {
+      border-top:0 none
+    }
   }
 
   .slideshow__note {
@@ -132,6 +137,10 @@
     flex-direction: row;
     border-bottom: 1px solid $color__border--light;
     background-color: $color__background;
+
+    &:last-child {
+      border-bottom: 0 none;
+    }
   }
 
   .slide__handle {

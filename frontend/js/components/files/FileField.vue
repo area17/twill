@@ -1,7 +1,7 @@
 <template>
   <a17-inputframe :error="error" :label="label" :locale="locale" @localize="updateLocale" :size="size" :name="name">
     <div class="fileField">
-      <table class="fileField__list ">
+      <table class="fileField__list" v-if="items.length">
         <draggable :element="'tbody'" v-model="items">
           <a17-fileitem v-for="(item, index) in items" :key="item.id" class="item__content" :name="`${name}_${item.id}`" :draggable="isDraggable" :item="item" @delete="deleteItem(index)"></a17-fileitem>
         </draggable>
@@ -137,6 +137,11 @@
   .fileField__trigger {
     padding: 10px;
     position: relative;
+    border-top: 1px solid $color__border--light;
+
+    &:first-child {
+      border-top:0 none
+    }
   }
 
   .fileField__note {
