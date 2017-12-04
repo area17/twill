@@ -10,7 +10,7 @@
 
 @push('fieldsStore')
     window.STORE.form.content = {!! json_encode(array_values($availableBlocks)) !!}
-    window.STORE.form.blocks = {!! json_encode($form_fields['blocks']) !!}
+    window.STORE.form.blocks = {!! json_encode($form_fields['blocks'] ?? []) !!}
 
     @foreach($form_fields['blocksFields'] ?? [] as $field)
         window.STORE.form.fields.push({!! json_encode($field) !!})
