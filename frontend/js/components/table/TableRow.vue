@@ -6,7 +6,10 @@
         <a v-if="col.name === 'bulk'" href="#" @click.prevent.stop="toggleBulk(row['id'])"><a17-checkbox name="bulkEdit" :value="row['id']" :initialValue="bulkIds" ></a17-checkbox></a><!-- Bulk -->
         <span v-if="col.name === 'featured'" class="tablecell__feature" :class="{'tablecell__feature--active': row[col.name] }" @click.prevent="toggleFeatured" :data-tooltip-title="row['featured'] ? 'Unfeature' : 'Feature'" v-tooltip><span v-svg symbol="star-feature_active"></span><span v-svg symbol="star-feature"></span></span> <!-- Featured star button -->
         <span v-if="col.name === 'published'" class="tablecell__pubstate" :class="{'tablecell__pubstate--live': row[col.name] }"  @click.prevent="togglePublish" :data-tooltip-title="row['published'] ? 'Unpublish' : 'Publish'" v-tooltip ></span> <!-- Published circle icon -->
-        <a class="tablerow__thumb" :href="row['edit']" v-if="col.name === 'thumbnail'"><img :src="row[col.name]" /></a> <!-- Thumbnail -->
+        <a class="tablerow__thumb" :href="row['edit']" v-if="col.name === 'thumbnail' && !row.hasOwnProperty('deleted')"><img :src="row[col.name]" /></a>
+        <template v-else>
+          <a class="tablerow__thumb" v-if="col.name === 'thumbnail'"><img :src="row[col.name]" /></a>
+        </template> <!-- Thumbnail -->
         <template v-if="col.name === 'publish_start_date'">
           <span v-if="formatDateLabel" class="tablecell__datePub" :class="{ 's--expired' : formatDateLabel === textExpired }">
             {{ row['publish_start_date'] | formatDatatableDate }}<br /><span>{{ formatDateLabel }}</span>
@@ -17,7 +20,7 @@
         </template> <!-- Published Date -->
       </template>
       <template v-else>
-        <a :href="row['edit']" class="tablecell__name" v-if="col.name === 'name'"><span class="f--link-underlined--o">{{ row[col.name] }}</span></a>
+        <a :href="row['edit']" class="tablecell__name" v-if="col.name === 'name' && !row.hasOwnProperty('deleted')"><span class="f--link-underlined--o">{{ row[col.name] }}</span></a>
         <template v-else>{{ row[col.name] }}</template>
       </template>
     </td>

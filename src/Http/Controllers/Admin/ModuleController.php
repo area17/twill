@@ -211,6 +211,8 @@ abstract class ModuleController extends Controller
 
             $featuredField = $this->featureField ?? 'featured';
 
+            $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
+
             return [
                 'id' => $item->id,
                 'name' => $name,
@@ -221,7 +223,7 @@ abstract class ModuleController extends Controller
             ] + $columnsData
                  + ($this->getIndexOption('publish') ? ['published' => $item->published] : [])
                  + ($this->getIndexOption('feature') ? ['featured' => $item->$featuredField] : [])
-                 + (($this->getIndexOption('restore') && method_exists($item, 'trashed') && $item->trashed()) ? ['deleted' => true] : []);
+                 + (($this->getIndexOption('restore') && $itemIsTrashed) ? ['deleted' => true] : []);
         })->toArray();
     }
 
