@@ -33,8 +33,6 @@ trait HandleBlocks
             foreach ($fields['blocks'] as $index => $block) {
                 $block['position'] = $index + 1;
 
-                $block['content'] = json_encode($block['content']);
-
                 $block['type'] = collect($blocksConfig)->search(function ($configBlock) use ($block) {
                     return $configBlock['component'] === $block['type'];
                 });
@@ -63,7 +61,7 @@ trait HandleBlocks
                     'attributes' => $blocksConfig[$block->type]['attributes'] ?? [],
                 ];
 
-                $fields['blocksFields'][] = collect(json_decode($block['content'], true))->map(function ($value, $key) use ($block) {
+                $fields['blocksFields'][] = collect($block['content'])->map(function ($value, $key) use ($block) {
                     return [
                         'name' => "blocks[$block->id][$key]",
                         'value' => $value,

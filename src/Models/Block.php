@@ -21,8 +21,24 @@ class Block extends BaseModel
         'parent_id',
     ];
 
+    protected $casts = [
+        'content' => 'array',
+    ];
+
     public function blockable()
     {
         return $this->morphTo();
+    }
+
+    public function input($name)
+    {
+        return $this->content[$name] ?? null;
+    }
+
+    public function translatedInput($name, $forceLocale = null)
+    {
+        $value = $this->content[$name] ?? null;
+        $locale = $forceLocale ?? app()->getLocale();
+        return $value[$locale] ?? null;
     }
 }
