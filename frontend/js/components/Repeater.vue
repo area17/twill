@@ -87,8 +87,8 @@
         }
       },
       ...mapState({
-        savedBlocks: state => state.form.repeaters,
-        availableBlocks: state => state.form.availableRepeaters
+        savedBlocks: state => state.repeaters.repeaters,
+        availableBlocks: state => state.repeaters.availableRepeaters
       })
     },
     methods: {
