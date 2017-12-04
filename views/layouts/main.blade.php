@@ -48,11 +48,6 @@
                 value: 'image',
                 text: 'Images',
                 total: 0
-              },
-              {
-                value: 'file',
-                text: 'Files',
-                total: 0
               }
             ]
 
