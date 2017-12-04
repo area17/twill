@@ -12,7 +12,8 @@
       </span>
       <span class="itemlist__cell itemlist__cell--thumb" v-if="item.hasOwnProperty('thumbnail')"><img :src="item.thumbnail" /></span>
       <span class="itemlist__cell itemlist__cell--name">{{ item.name }}</span>
-      <span v-if="item.hasOwnProperty('size')">{{ item.size | uppercase }}</span>
+      <!-- <span class="itemlist__cell" v-for="extraProperty in extraProperties(item)">{{ item[extraProperty] }}</span> -->
+      <span v-if="item.hasOwnProperty('size')">{{ item.size | uppercase}}</span>
     </div>
   </div>
 </template>
@@ -74,6 +75,11 @@
       },
       toggleSelection: function (id) {
         this.$emit('change', id)
+      },
+      extraProperties: function (item) {
+        return Object.keys(item).filter(key => {
+          return !['id', 'thumbnail', 'name', 'size', 'edit'].includes(key)
+        })
       }
     }
   }
