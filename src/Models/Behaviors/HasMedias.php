@@ -17,7 +17,6 @@ trait HasMedias
             'crop_h',
             'crop_x',
             'crop_y',
-            'background_position',
             'lqip_data',
             'ratio',
         ])->withTimestamps()->orderBy('mediables.id', 'asc');
@@ -87,15 +86,6 @@ trait HasMedias
         return $this->medias->first(function ($media) use ($role, $crop) {
             return $media->pivot->role === $role && $media->pivot->crop === $crop;
         });
-    }
-
-    public function imageBackgroundPosition($role, $crop)
-    {
-        $media = $this->medias->first(function ($media) use ($role, $crop) {
-            return $media->pivot->role === $role && $media->pivot->crop === $crop;
-        });
-
-        return $media->pivot->background_position ?? 'top';
     }
 
     public function lowQualityImagePlaceholder($role, $crop = "default", $params = [], $has_fallback = false)

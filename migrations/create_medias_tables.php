@@ -33,7 +33,6 @@ class CreateMediasTables extends Migration
             $table->string('role')->nullable();
             $table->string('crop')->nullable();
             $table->text('lqip_data')->nullable();
-            $table->string('background_position', 20)->default('top');
             $table->string('ratio')->nullable();
             $table->foreign('media_id', 'fk_mediables_media_id')->references('id')->on('medias')->onDelete('cascade')->onUpdate('cascade');
             $table->index(['mediable_type', 'mediable_id']);
