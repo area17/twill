@@ -37,6 +37,8 @@ trait HandleBlocks
                     return $configBlock['component'] === $block['type'];
                 });
 
+                $block['content'] = empty($block['content']) ? new \stdClass : $block['content'];
+
                 $blocks->push($block);
             }
         }
