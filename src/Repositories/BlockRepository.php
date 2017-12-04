@@ -18,4 +18,9 @@ class BlockRepository extends ModuleRepository
     {
         return config('cms-toolkit.block-editor.crops')[$role];
     }
+
+    public function afterDelete($object)
+    {
+        $object->medias()->sync([]);
+    }
 }

@@ -12,13 +12,15 @@ trait HandleBlocks
             return;
         }
 
-        $object->blocks()->delete();
+        $blockRepository = app(BlockRepository::class);
 
-        $this->getBlocks($fields)->each(function ($block) use ($object) {
+        $blockRepository->bulkDelete($object->blocks()->pluck('id')->toArray());
+
+        $this->getBlocks($fields)->each(function ($block) use ($object, $blockRepository) {
             $block['blockable_id'] = $object->id;
             $block['blockable_type'] = $object->getMorphClass();
             $block['content'] = json_encode($block['content']);
-            app(BlockRepository::class)->create($block);
+            $blockRepository->create($block);
         });
     }
 
