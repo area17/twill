@@ -30,9 +30,6 @@ return [
             'title' => 'Full width Image',
             'icon' => 'image',
             'component' => 'a17-block-image',
-            'attributes' => [
-                'cropContext' => 'cover',
-            ],
         ],
         'sonia' => [
             'title' => 'Sonia',
@@ -63,6 +60,48 @@ return [
                 'itemLabel' => 'Publications',
                 'endpoint' => 'https://www.mocky.io/v2/59d77e61120000ce04cb1c5b',
                 'modalTitle' => 'Attach publications',
+            ],
+        ],
+    ],
+    'crops' => [
+        'image' => [
+            'default' => [
+                [
+                    'name' => 'square',
+                    'ratio' => 1,
+                    'minValues' => [
+                        'width' => 100,
+                        'height' => 100,
+                    ],
+                ],
+                [
+                    'name' => 'landscape',
+                    'ratio' => 16 / 9,
+                    'minValues' => [
+                        'width' => 100,
+                        'height' => 100,
+                    ],
+                ],
+            ],
+            'tablet' => [
+                [
+                    'name' => 'tablet',
+                    'ratio' => 16 / 9,
+                    'minValues' => [
+                        'width' => 100,
+                        'height' => 100,
+                    ],
+                ],
+            ],
+            'mobile' => [
+                [
+                    'name' => 'mobile',
+                    'ratio' => 4 / 3,
+                    'minValues' => [
+                        'width' => 100,
+                        'height' => 100,
+                    ],
+                ],
             ],
         ],
     ],

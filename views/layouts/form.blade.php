@@ -73,7 +73,7 @@
     }
 
     window.STORE.revisions = {!! json_encode($revisions)  !!}
-    window.STORE.medias.crops = {!! json_encode($item->mediasParams) !!}
+    window.STORE.medias.crops = {!! json_encode($item->mediasParams + config('cms-toolkit.block-editor.crops')) !!}
     window.STORE.medias.selected = {}
     window.STORE.browser = {}
     window.STORE.browser.selected = {}

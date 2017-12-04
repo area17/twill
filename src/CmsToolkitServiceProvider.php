@@ -146,7 +146,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
 
     private function publishMigrations()
     {
-        $migrations = ['CreateTagsTables', 'CreateModelLocksTable'];
+        $migrations = ['CreateTagsTables', 'CreateModelLocksTable', 'CreateBlocksTable'];
 
         $optionalMigrations = [
             'CreateUsersTables' => 'users-management',

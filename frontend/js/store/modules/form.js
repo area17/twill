@@ -136,17 +136,19 @@ const gatherSelected = (selected, block = null) => {
 
 const buildBlock = (block, state, rootState) => {
   return {
-    id: block.id,
     type: block.type,
     // retrieve all fields for this block and clean up field names
-    fields: state.fields.filter((field) => {
+    content: state.fields.filter((field) => {
       return isBlockField(field.name, block.id)
     }).map((field) => {
       return {
         name: stripOutBlockNamespace(field.name, block.id),
         value: field.value
       }
-    }),
+    }).reduce((content, field) => {
+      content[field.name] = field.value
+      return content
+    }, {}),
     medias: gatherSelected(rootState.mediaLibrary.selected, block),
     browsers: gatherSelected(rootState.browser.selected, block),
     // gather repeater blocks from the repeater store module
