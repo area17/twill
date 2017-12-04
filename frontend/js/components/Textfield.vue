@@ -168,7 +168,7 @@
         this.updateCounter(newValue)
       },
       updateCounter: function (newValue) {
-        if (this.maxlength > 0) this.counter = this.maxlength - newValue.toString().length
+        if (this.maxlength > 0) this.counter = this.maxlength - (newValue ? newValue.toString().length : 0)
       },
       onFocus: function (event) {
         this.focused = true
