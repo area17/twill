@@ -173,6 +173,8 @@
       onFocus: function (event) {
         this.focused = true
 
+        this.resizeTextarea()
+
         this.$emit('focus')
       },
       onBlur: function (event) {
@@ -192,11 +194,14 @@
         this.$emit('change', newValue)
       },
       resizeTextarea: function () {
+        if (this.type !== 'textarea') return
+
         const clone = this.$refs.clone
+        const minH = 15
 
         if (clone) {
           let h = clone.scrollHeight
-          this.$refs.input.style.minHeight = `${h + 15}px`
+          this.$refs.input.style.minHeight = `${h + minH}px`
         }
       }
     },

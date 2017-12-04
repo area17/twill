@@ -50,7 +50,7 @@
           const currentLanguageItem = this.$el.querySelector('[data-lang="' + this.currentLocale.value + '"]')
 
           if (currentLanguageItem) {
-            const field = currentLanguageItem.querySelector('input, textarea, select')
+            const field = currentLanguageItem.querySelector('input:not([disabled]), textarea:not([disabled]), select:not([disabled])')
             if (field) field.focus()
           }
         })

@@ -1,5 +1,5 @@
 <template>
-  <div class="input" :class="textfieldClasses" :hidden="!this.isCurrentLocale ?  true : null">
+  <div class="input" :class="textfieldClasses" v-show="isCurrentLocale" :hidden="!isCurrentLocale ?  true : null">
     <label class="input__label" :for="name" v-if="label">{{ label }} <span class="input__lang" v-if="hasLocale" @click="onClickLocale" data-tooltip-title="Switch language" v-tooltip>{{ displayedLocale }}</span> <span class="input__note f--small" v-if="note">{{ note }}</span></label>
     <slot></slot>
   </div>
@@ -17,8 +17,7 @@
       textfieldClasses: function () {
         return {
           'input--error': this.error,
-          'input--small': this.size === 'small',
-          'input--hidden': !this.isCurrentLocale
+          'input--small': this.size === 'small'
         }
       }
     }
@@ -66,10 +65,6 @@
     &:hover {
       background:$color__f--text;
     }
-  }
-
-  .input--hidden {
-    display:none;
   }
 
   .input--error {
