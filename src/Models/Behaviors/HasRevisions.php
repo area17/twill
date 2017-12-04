@@ -15,7 +15,7 @@ trait HasRevisions
             return [
                 'id' => $revision->id,
                 'author' => $revision->user->name,
-                'datetime' => $revision->created_at->format('M j, Y g:i A'),
+                'datetime' => $revision->created_at->toIso8601String(),
             ];
         })->toArray();
     }
