@@ -160,7 +160,7 @@
         get: function () {
           if (this.currentMedia.hasOwnProperty('metadatas')) {
             let altText = this.currentMedia.metadatas.custom.altText
-            return altText !== null && altText > 0 ? altText : this.currentMedia.metadatas.default.altText
+            return altText !== null && altText.length > 0 ? altText : this.currentMedia.metadatas.default.altText
           } else {
             return ''
           }
