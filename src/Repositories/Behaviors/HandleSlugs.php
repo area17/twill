@@ -82,9 +82,9 @@ trait HandleSlugs
 
     public function forSlug($slug, $with = [], $withCount = [], $scopes = [])
     {
-        $item = $this->model->forSlug($slug)->with($with)->withCount($withCount)->where($scopes)->published()->first();
+        $item = $this->model->forSlug($slug)->with($with)->withCount($withCount)->where($scopes)->published()->visible()->first();
 
-        if (!$item && $item = $this->model->forInactiveSlug($slug)->where($scopes)->published()->first()) {
+        if (!$item && $item = $this->model->forInactiveSlug($slug)->where($scopes)->published()->visible()->first()) {
             $item->redirect = true;
         }
 

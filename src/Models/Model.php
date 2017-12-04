@@ -4,6 +4,7 @@ namespace A17\CmsToolkit\Models;
 
 use A17\CmsToolkit\Models\Behaviors\HasPresenter;
 use Auth;
+use Carbon\Carbon;
 use Cartalyst\Tags\TaggableInterface;
 use Cartalyst\Tags\TaggableTrait;
 use Illuminate\Database\Eloquent\Model as BaseModel;
@@ -26,9 +27,27 @@ abstract class Model extends BaseModel implements TaggableInterface
         return $query->wherePublished(true);
     }
 
-    public function scopePublic($query)
+    public function scopePublishedInListings($query)
     {
-        return $query->wherePublic(true);
+        if ($this->isFillable('public')) {
+            $query->wherePublic(true);
+        }
+
+        return $query->published()->visible();
+    }
+
+    public function scopeVisible($query)
+    {
+        if ($this->isFillable('publish_start_date')) {
+            $query->where(function ($query) {
+                $query->whereNull('publish_start_date')->orWhere('publish_start_date', '<=', Carbon::now());
+            });
+            $query->where(function ($query) {
+                $query->whereNull('publish_end_date')->orWhere('publish_end_date', '>=', Carbon::now());
+            });
+        }
+
+        return $query;
     }
 
     public function scopeDraft($query)
