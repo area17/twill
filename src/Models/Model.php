@@ -50,6 +50,11 @@ abstract class Model extends BaseModel implements TaggableInterface
         return $query;
     }
 
+    public function setPublishStartDateAttribute($value)
+    {
+        $this->attributes['publish_start_date'] = $value ?? Carbon::now();
+    }
+
     public function scopeDraft($query)
     {
         return $query->wherePublished(false);

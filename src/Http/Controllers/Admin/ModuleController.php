@@ -216,6 +216,8 @@ abstract class ModuleController extends Controller
                 'name' => $name,
                 'edit' => moduleRoute($this->moduleName, $this->routePrefix, 'edit', $item->id),
                 'delete' => moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id),
+                'publish_start_date' => $item->publish_start_date,
+                'publish_end_date' => $item->publish_end_date,
             ] + $columnsData
                  + ($this->getIndexOption('publish') ? ['published' => $item->published] : [])
                  + ($this->getIndexOption('feature') ? ['featured' => $item->$featuredField] : [])

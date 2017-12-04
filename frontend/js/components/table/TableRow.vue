@@ -74,10 +74,10 @@
       formatDateLabel: function () {
         let label = ''
         let scoreStart = compareAsc(this.row['publish_start_date'], new Date())
-        let scoreEnd = compareAsc(this.row['publish_end_date'], new Date())
+        let scoreEnd = this.row['publish_end_date'] ? compareAsc(this.row['publish_end_date'], new Date()) : 1
 
         if (this.row['publish_start_date'] && scoreEnd < 0) label = this.textExpired
-        else if (this.row['publish_end_date'] && scoreStart > 0) label = this.textScheduled
+        else if (scoreStart > 0) label = this.textScheduled
 
         return label
       },
