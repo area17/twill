@@ -104,6 +104,18 @@ return [
                 ],
             ],
         ],
+        'block_cover' => [
+            'default' => [
+                [
+                    'name' => 'square',
+                    'ratio' => 1,
+                    'minValues' => [
+                        'width' => 100,
+                        'height' => 100,
+                    ],
+                ],
+            ],
+        ],
     ],
     'use_iframes' => false,
     'iframe_wrapper_view' => '',
