@@ -57,35 +57,6 @@
 
 
 /*
-  @mixin text-underline
-
-  Inserts vendor prefixed box shadows
-
-  Parameters:
-  $off - color
-  $on - color for hover
-  $pos - vertical position
-*/
-@mixin text-underline($pos: 14,$off: $color__white,$on: $color__black--93) {
-  text-decoration: none;
-  background: {
-    image: linear-gradient(to bottom, rgba($off, 0) 50%, rgba($off, 1) 50%);
-    repeat: repeat-x;
-    size: 2px 2px;
-    position: 0 $pos*1px;
-  }
-  // to draw the lines below the regular height of the box...
-  //padding-bottom: 3px;
-  //margin-bottom: -3px;
-
-  &:hover,
-  &:focus {
-    background-image: linear-gradient(to bottom, rgba($on, 0) 50%, rgba($on, 1) 50%);
-  }
-}
-
-
-/*
   @mixin hide_text
 
   Hides text in an element
@@ -111,21 +82,26 @@
 
 /*
     @mixin bordered
+
+    Parameters:
+    $color - color
+    $color--hover - color for hover
+    $pos - vertical position (in % or in px)
 */
 
-@mixin bordered($bordered__color: $color__text , $bordered__color--hover: $color__text, $vertical__position: 98%) {
+@mixin bordered($color: $color__text , $color--hover: $color__text, $pos: 98%) {
 
-  $bordered__color--opacity: rgba($bordered__color, 0.75);
+  $color--opacity: rgba($color, 0.75);
 
   text-decoration: none;
-  background-image: linear-gradient(to bottom, #{$bordered__color--opacity} 75%, #{$bordered__color--opacity} 75%);
+  background-image: linear-gradient(to bottom, #{$color--opacity} 75%, #{$color--opacity} 75%);
   background-repeat: repeat-x;
   background-size: 1px 1px;
-  background-position: 0 $vertical__position;
+  background-position: 0 $pos;
 
-  @if $bordered__color--hover != false {
+  @if $color--hover != false {
     &:hover {
-      background-image: linear-gradient(to bottom, #{$bordered__color--hover} 75%, #{$bordered__color--hover} 75%);
+      background-image: linear-gradient(to bottom, #{$color--hover} 75%, #{$color--hover} 75%);
     }
   }
 }

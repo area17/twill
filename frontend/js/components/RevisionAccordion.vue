@@ -80,7 +80,9 @@
   }
 
   .revaccordion__datetime {
-    color:$color__link
+    color:$color__link;
+    white-space: nowrap;
+    overflow:hidden;
   }
 
 </style>

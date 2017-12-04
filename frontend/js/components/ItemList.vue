@@ -1,20 +1,30 @@
 <template>
   <div class="itemlist">
-    <div class="itemlist__row" v-for="(item, index) in listItemsLoading" :key="item.id" >
-      <span class="itemlist__cell itemlist__cell--loading" :class="{ 'itemlist__cell--error' : item.error }">
-        <span class="itemlist__progress" v-if="!item.error" ><span class="itemlist__progressBar" :style="loadingProgress(index)"></span></span>
-        <span class="itemlist__progressError" v-else>Upload Error</span>
-      </span>
-    </div>
-    <div class="itemlist__row" v-for="(item, index) in listItems" :key="item.id" :class="{ 's--picked': isSelected(item.id) }" @click.prevent="toggleSelection(item.id)">
-      <span class="itemlist__cell itemlist__cell--btn">
-        <a17-checkbox name="item_list" :value="item.id" :initialValue="checkedItems" theme="bold"></a17-checkbox>
-      </span>
-      <span class="itemlist__cell itemlist__cell--thumb" v-if="item.hasOwnProperty('thumbnail')"><img :src="item.thumbnail" /></span>
-      <span class="itemlist__cell itemlist__cell--name">{{ item.name }}</span>
-      <!-- <span class="itemlist__cell" v-for="extraProperty in extraProperties(item)">{{ item[extraProperty] }}</span> -->
-      <span v-if="item.hasOwnProperty('size')">{{ item.size | uppercase}}</span>
-    </div>
+    <table class="itemlist__table">
+      <tbody>
+        <tr class="itemlist__row" v-for="(item, index) in listItemsLoading" :key="item.id" >
+          <td class="itemlist__cell itemlist__cell--loading" :class="{ 'itemlist__cell--error' : item.error }" :colspan="columnsNumber">
+            <span class="itemlist__progress" v-if="!item.error" ><span class="itemlist__progressBar" :style="loadingProgress(index)"></span></span>
+            <span class="itemlist__progressError" v-else>Upload Error</span>
+          </td>
+        </tr>
+        <tr class="itemlist__row" v-for="(item, index) in listItems" :key="item.id" :class="{ 's--picked': isSelected(item.id) }" @click.prevent="toggleSelection(item.id)">
+          <td class="itemlist__cell itemlist__cell--btn" v-if="item.hasOwnProperty('id')">
+            <a17-checkbox name="item_list" :value="item.id" :initialValue="checkedItems" theme="bold"></a17-checkbox>
+          </td>
+          <td class="itemlist__cell itemlist__cell--thumb" v-if="item.hasOwnProperty('thumbnail')">
+            <img :src="item.thumbnail" />
+          </td>
+          <td class="itemlist__cell itemlist__cell--name" v-if="item.hasOwnProperty('name')">
+            {{ item.name }}
+          </td>
+          <td class="itemlist__cell" v-for="extraColumn in extraColumns" :class="rowClass(extraColumn)">
+            <template v-if="extraColumn === 'size'">{{ item[extraColumn] | uppercase}}</template>
+            <template v-else>{{ item[extraColumn] }}</template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -45,6 +55,28 @@
     },
     filters: a17VueFilters,
     computed: {
+      columnsNumber: function () {
+        if (!this.listItems.length) return 0
+
+        let numb = this.extraColumns.length
+
+        const firstItem = this.listItems[0]
+
+        if (firstItem.hasOwnProperty('id')) numb++
+        if (firstItem.hasOwnProperty('name')) numb++
+        if (firstItem.hasOwnProperty('thumbnail')) numb++
+
+        return numb
+      },
+      extraColumns: function () {
+        if (!this.listItems.length) return []
+
+        const firstItem = this.listItems[0]
+
+        return Object.keys(firstItem).filter(key => { // exclude columns here
+          return !['id', 'name', 'thumbnail', 'src', 'original', 'edit'].includes(key) && typeof firstItem[key] === 'string' // only strings
+        })
+      },
       checkedItems: function () {
         let checkItemsIds = []
 
@@ -61,6 +93,9 @@
       })
     },
     methods: {
+      rowClass: function (item) {
+        return 'itemlist__cell--' + item
+      },
       loadingProgress: function (index) {
         return {
           'width': this.listItemsLoading[index].progress ? this.listItemsLoading[index].progress + '%' : '0%'
@@ -75,11 +110,6 @@
       },
       toggleSelection: function (id) {
         this.$emit('change', id)
-      },
-      extraProperties: function (item) {
-        return Object.keys(item).filter(key => {
-          return !['id', 'thumbnail', 'name', 'size', 'edit'].includes(key)
-        })
       }
     }
   }
@@ -89,20 +119,43 @@
   @import '~styles/setup/_mixins-colors-vars.scss';
 
   .itemlist {
-    display:block;
     padding: 10px;
+    overflow:hidden;
+  }
+
+  .itemlist__table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    // table-layout: fixed;
+    white-space: nowrap;
+  }
+
+  .itemlist__table {
+    th, td {
+      border-top:1px solid $color__border--light;
+      border-bottom:1px solid $color__border--light;
+      vertical-align: top;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    td:first-child {
+      border-left:1px solid $color__border--light;
+    }
+
+    td:last-child {
+      border-right:1px solid $color__border--light;
+    }
   }
 
   .itemlist__row {
-    display:flex;
     overflow: hidden;
     background:white;
     position:relative;
-    // color:$color__link;
-    border:1px solid $color__border--light;
-    margin-bottom: -1px;
+
     cursor:pointer;
-    padding:20px 20px 20px 0;
 
     &:hover {
       background-color: $color__f--bg;
@@ -115,28 +168,36 @@
   }
 
   .itemlist__cell {
-    margin-left:20px;
+    padding:20px 10px;
     white-space: nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
+    vertical-align:middle;
+
+    &:first-child {
+      padding-left:20px;
+    }
+
+    &:last-child {
+      padding-left:20px;
+    }
   }
 
   .itemlist__cell > *:first-child {
-    display: inline-block;
-    vertical-align: top;
+    display: block;
   }
 
   .itemlist__cell--btn {
-    width:15px;
+    width:1px;
+    // width:15px + 20px + 10px;
   }
 
-  .itemlist__cell--name {
-    flex-grow: 1;
-  }
+  // .itemlist__cell--name {
+  //   width:40%;
+  // }
 
   .itemlist__cell--thumb {
-    display:inline-block;
-    max-width:50px;
+    width:50px;
 
     img {
       display:block;
@@ -146,7 +207,6 @@
   }
 
   .itemlist__cell--loading {
-    flex-grow: 1;
     height: 4px;
   }
 
