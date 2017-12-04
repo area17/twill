@@ -36,12 +36,6 @@ import { getStorage } from '@/utils/localeStorage.js'
 Window.vm = new Vue({
   store, // inject store to all children
   el: '#app',
-  props: {
-    pageType: {
-      type: String,
-      default: ''
-    }
-  },
   components: {
     'a17-filter': a17Filter,
     'a17-datatable': a17Datatable,
