@@ -1,5 +1,6 @@
 @php
     $type = $type ?? 'text';
+    $renderForBlocks = $renderForBlocks ?? false;
 @endphp
 
 @if($translated ?? false)
@@ -7,7 +8,7 @@
         type="a17-textfield"
         :attributes="{
             label: '{{ $label }}',
-            name: '{{ $name }}',
+            @if ($renderForBlocks) name: fieldName('{{ $name }}'), @else name: '{{ $name }}', @endif
             type: '{{ $type }}',
             @if ($required ?? false) required: true, @endif
             @if ($note ?? false) note: '{{ $note }}', @endif
@@ -22,7 +23,7 @@
 @else
     <a17-textfield
         label="{{ $label }}"
-        name="{{ $name }}"
+        @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif
         type="{{ $type }}"
         @if ($required ?? false) required @endif
         @if ($note ?? false) note="{{ $note }}" @endif
@@ -35,22 +36,24 @@
     ></a17-textfield>
 @endif
 
-@push('fieldsStore')
-    @if($translated ?? false && isset($form_fields['translations']) && isset($form_fields['translations'][$name]))
-        var field = {
-            name: '{{ $name }}',
-            value: {
-                @foreach(getLocales() as $locale)
-                    '{{ $locale }}': "{!! $form_fields['translations'][$name][$locale] ?? '' !!}"@unless($loop->last),@endif
-                @endforeach
+@unless($renderForBlocks)
+    @push('fieldsStore')
+        @if($translated ?? false && isset($form_fields['translations']) && isset($form_fields['translations'][$name]))
+            var field = {
+                name: '{{ $name }}',
+                value: {
+                    @foreach(getLocales() as $locale)
+                        '{{ $locale }}': "{!! $form_fields['translations'][$name][$locale] ?? '' !!}"@unless($loop->last),@endif
+                    @endforeach
+                }
             }
-        }
-    @else
-        var field = {
-            name: '{{ $name }}',
-            value: "{{ $item->$name }}"
-        }
-    @endif
+        @else
+            var field = {
+                name: '{{ $name }}',
+                value: "{{ $item->$name }}"
+            }
+        @endif
 
-    window.STORE.form.fields.push(field)
-@endpush
+        window.STORE.form.fields.push(field)
+    @endpush
+@endunless

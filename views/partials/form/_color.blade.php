@@ -1,1 +1,9 @@
-<a17-colorfield label="{{ $label }}" name="{{ $name }}" in-store="value"></a17-colorfield>
+@php
+    $renderForBlocks = $renderForBlocks ?? false;
+@endphp
+
+<a17-colorfield
+    label="{{ $label }}"
+    @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif
+    in-store="value"
+></a17-colorfield>

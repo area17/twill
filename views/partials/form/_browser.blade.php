@@ -5,11 +5,12 @@
     $max = $max ?? 1;
     $note = $note ?? 'Add' . ($max > 1 ? " up to $max ". strtolower($label) : ' one ' . str_singular(strtolower($label)));
     $itemLabel = $itemLabel ?? strtolower($label);
+    $renderForBlocks = $renderForBlocks ?? false;
 @endphp
 
 <a17-inputframe label="{{ $label }}">
     <a17-browserfield
-        name="{{ $name }}"
+        @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif
         :max="{{ $max }}"
         item-label="{{ $itemLabel }}"
         endpoint="{{ $endpoint }}"
@@ -17,8 +18,10 @@
     >{{ $note }}</a17-browserfield>
 </a17-inputframe>
 
+@unless($renderForBlocks)
 @push('fieldsStore')
     @if (isset($item->$name))
         window.STORE.browser.selected["{{ $name }}"] = {!! json_encode($item->$name) !!}
     @endif
 @endpush
+@endunless

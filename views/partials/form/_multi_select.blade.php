@@ -1,14 +1,19 @@
+@php
+    $renderForBlocks = $renderForBlocks ?? false;
+@endphp
+
 <a17-inputframe>
     <a17-multiselect
         :options="{{ json_encode($options) }}"
         label="{{ $label }}"
-        name="{{ $name }}"
+        @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif
         @if ($min ?? false) :min="{{ $min }}" @endif
         @if ($max ?? false) :max="{{ $max }}" @endif
         in-store="currentValue"
     ></a17-multiselect>
 </a17-inputframe>
 
+@unless($renderForBlocks)
 @push('fieldsStore')
     @if (isset($item->$name))
         window.STORE.form.fields.push({
@@ -17,3 +22,4 @@
         })
     @endif
 @endpush
+@endunless

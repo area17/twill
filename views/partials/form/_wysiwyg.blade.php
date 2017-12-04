@@ -20,7 +20,7 @@
     }
 
     $options = $customOptions ?? $toolbarOptions ?? false;
-
+    $renderForBlocks = $renderForBlocks ?? false;
 @endphp
 
 @if($translated ?? false)
@@ -28,7 +28,7 @@
         type="a17-wysiwyg"
         :attributes='{
             label: "{{ $label }}",
-            name: "{{ $name }}",
+            @if ($renderForBlocks) name: fieldName("{{ $name }}"), @else name: "{{ $name }}", @endif
             @if ($maxlength ?? false) maxlength: {{ $maxlength }}, @endif
             @if ($options ?? false) options: {!! json_encode($options) !!}, @endif
             @if ($placeholder ?? false) placeholder: "{{ $placeholder }}", @endif
@@ -41,7 +41,7 @@
 @else
     <a17-wysiwyg
         label="{{ $label }}"
-        name="{{ $name }}"
+        @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif
         @if ($maxlength ?? false) :maxlength='{{ $maxlength }}' @endif
         @if ($toolbarOptions ?? false) :options='{!! json_encode($options) !!}' @endif
         @if ($placeholder ?? false) placeholder='{{ $placeholder }}' @endif
@@ -52,6 +52,7 @@
     ></a17-wysiwyg>
 @endif
 
+@unless($renderForBlocks)
 @push('fieldsStore')
     @if($translated ?? false && isset($form_fields['translations']) && isset($form_fields['translations'][$name]))
         var field = {
@@ -71,3 +72,4 @@
 
     window.STORE.form.fields.push(field)
 @endpush
+@endunless

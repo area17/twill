@@ -3,11 +3,12 @@
     $noTranslate = $noTranslate ?? false;
     $note = $note ?? 'Add' . ($max > 1 ? " up to $max files" : ' one file');
     $itemLabel = $itemLabel ?? strtolower($label);
+    $renderForBlocks = $renderForBlocks ?? false;
 @endphp
 
 @if($noTranslate)
     <a17-filefield
-        name="{{ $name }}"
+        @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif
         label="{{ $label }}"
         item-label="{{ $itemLabel }}"
         note="{{ $note }}"
@@ -19,13 +20,14 @@
         :attributes="{
             label: '{{ $label }}',
             itemLabel: '{{ $itemLabel }}',
-            name: '{{ $name }}',
+            @if ($renderForBlocks) name: fieldName('{{ $name }}'), @else name: '{{ $name }}', @endif
             note: '{{ $note }}',
             max: {{ $max }}
         }"
     ></a17-locale>
 @endif
 
+@unless($renderForBlocks)
 @push('fieldsStore')
     @if ($noTranslate)
         @if (isset($item->$name))
@@ -39,3 +41,4 @@
         @endforeach
     @endif
 @endpush
+@endunless

@@ -1,8 +1,12 @@
+@php
+    $renderForBlocks = $renderForBlocks ?? false;
+@endphp
+
 @if ($unpack ?? false)
     <a17-inputframe>
         <a17-singleselect
             label="{{ $label }}"
-            name="{{ $name }}"
+            @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif
             :options="{{ json_encode($options) }}"
             in-store="value"
         ></a17-singleselect>
@@ -10,7 +14,7 @@
 @else
     <a17-vselect
         label="{{ $label }}"
-        name="{{ $name }}"
+        @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif
         :options="{{ json_encode($options) }}"
         @if ($emptyText ?? false) empty-text="{{ $emptyText }}" @endif
         @if ($placeholder ?? false) placeholder="{{ $placeholder }}" @endif
@@ -19,6 +23,7 @@
     ></a17-vselect>
 @endif
 
+@unless($renderForBlocks)
 @push('fieldsStore')
     @if (isset($item->$name))
         window.STORE.form.fields.push({
@@ -27,3 +32,4 @@
         })
     @endif
 @endpush
+@endunless

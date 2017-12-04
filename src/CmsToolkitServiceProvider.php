@@ -3,6 +3,7 @@
 namespace A17\CmsToolkit;
 
 use A17\CmsToolkit\Commands\CreateSuperAdmin;
+use A17\CmsToolkit\Commands\GenerateBlocks;
 use A17\CmsToolkit\Commands\ModuleMake;
 use A17\CmsToolkit\Commands\RefreshLQIP;
 use A17\CmsToolkit\Commands\Setup;
@@ -212,6 +213,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
                 ModuleMake::class,
                 CreateSuperAdmin::class,
                 RefreshLQIP::class,
+                GenerateBlocks::class,
             ]);
         }
     }

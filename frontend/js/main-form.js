@@ -16,7 +16,6 @@ import a17Publisher from '@/components/Publisher.vue'
 import a17Content from '@/components/Content.vue'
 import a17Repeater from '@/components/Repeater.vue'
 import a17LocationField from '@/components/LocationField.vue'
-import a17Slideshow from '@/components/Slideshow.vue'
 import a17Multiselect from '@/components/MultiSelect.vue'
 import a17Singleselect from '@/components/SingleSelect.vue'
 
@@ -58,6 +57,9 @@ Vue.component('a17-browser', a17Browser)
 Vue.component('a17-multiselect', a17Multiselect)
 Vue.component('a17-singleselect', a17Singleselect)
 
+// Form: map component
+Vue.component('a17-locationfield', a17LocationField)
+
 // Preview
 Vue.component('a17-overlay', a17Overlay)
 Vue.component('a17-previewer', a17Previewer)
@@ -83,9 +85,7 @@ Window.vm = new Vue({
     'a17-langswitcher': a17Langswitcher,
     'a17-fieldset': a17Fieldset,
     'a17-content': a17Content,
-    'a17-publisher': a17Publisher,
-    'a17-locationfield': a17LocationField,
-    'a17-slideshow': a17Slideshow
+    'a17-publisher': a17Publisher
   },
   data: function () {
     return {
