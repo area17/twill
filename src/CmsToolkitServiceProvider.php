@@ -7,7 +7,6 @@ use A17\CmsToolkit\Commands\GenerateBlocks;
 use A17\CmsToolkit\Commands\ModuleMake;
 use A17\CmsToolkit\Commands\RefreshLQIP;
 use A17\CmsToolkit\Commands\Setup;
-use A17\CmsToolkit\Helpers\FlashNotifier;
 use A17\CmsToolkit\Http\ViewComposers\ActiveNavigation;
 use A17\CmsToolkit\Http\ViewComposers\CurrentUser;
 use A17\CmsToolkit\Models\File;
@@ -19,18 +18,12 @@ use A17\CmsToolkit\Services\MediaLibrary\ImageService;
 use Barryvdh\Debugbar\Facade as Debugbar;
 use Barryvdh\Debugbar\ServiceProvider as DebugbarServiceProvider;
 use Cartalyst\Tags\TagsServiceProvider;
-use Collective\Html\FormFacade;
-use Collective\Html\HtmlFacade;
-use Collective\Html\HtmlServiceProvider;
 use Dimsav\Translatable\TranslatableServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\AliasLoader;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\ServiceProvider;
-use Laracasts\Flash\FlashServiceProvider;
 use Lsrur\Inspector\Facade\Inspector;
 use Lsrur\Inspector\InspectorServiceProvider;
-use MathiasGrimm\LaravelEnvValidator\ServiceProvider as EnvValidatorServiceProvider;
 use Sofa\ModelLocking\ServiceProvider as ModelLockingServiceProvider;
 use View;
 
@@ -40,20 +33,9 @@ class CmsToolkitServiceProvider extends ServiceProvider
         RouteServiceProvider::class,
         AuthServiceProvider::class,
         ValidationServiceProvider::class,
-        HtmlServiceProvider::class,
         TranslatableServiceProvider::class,
-        FlashServiceProvider::class,
         TagsServiceProvider::class,
-        EnvValidatorServiceProvider::class,
         ModelLockingServiceProvider::class,
-    ];
-
-    protected $aliases = [
-        'Form' => FormFacade::class,
-        'Html' => HtmlFacade::class,
-        'Input' => Input::class,
-        'Inspector' => Inspector::class,
-        'Debugbar' => Debugbar::class,
     ];
 
     public function boot()
@@ -105,10 +87,6 @@ class CmsToolkitServiceProvider extends ServiceProvider
             }
         }
 
-        $this->app->singleton('flash', function () {
-            return $this->app->make(FlashNotifier::class);
-        });
-
         if (config('cms-toolkit.enabled.media-library')) {
             $this->app->singleton('imageService', function () {
                 return $this->app->make(config('cms-toolkit.media_library.image_service'));
@@ -125,8 +103,11 @@ class CmsToolkitServiceProvider extends ServiceProvider
     private function registerAliases()
     {
         $loader = AliasLoader::getInstance();
-        foreach ($this->aliases as $alias => $facade) {
-            $loader->alias($alias, $facade);
+
+        if (config('cms-toolkit.debug.use_inspector', false)) {
+            $loader->alias('Inspector', Inspector::class);
+        } else {
+            $loader->alias('Debugbar', Debugbar::class);
         }
 
         if (config('cms-toolkit.enabled.media-library')) {
@@ -225,7 +206,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
         require_once __DIR__ . '/Helpers/media_library_helpers.php';
         require_once __DIR__ . '/Helpers/frontend_helpers.php';
         require_once __DIR__ . '/Helpers/migrations_helpers.php';
-        require_once __DIR__ . '/Helpers/model_helpers.php';
+        require_once __DIR__ . '/Helpers/helpers.php';
     }
 
     private function publishPublicAssets()

@@ -1274,12 +1274,6 @@ $model->imageAltText($roleName)
 $model->imageCaption($roleName)
 
 /**
- * Returns the background position setting associated with $roleName and $cropName.
- * Use this in conjunction with a media form field with the with_background_position option.
- */
-$model->imageBackgroundPosition($roleName, $cropName)
-
-/**
  * Returns the image object associated with $roleName.
  */
 $model->imageObject($roleName)
