@@ -40,7 +40,7 @@ trait HandleDates
     public function getDatesField($fields, $f)
     {
         if (($dateTime = DateTime::createFromFormat("Y-m-d H:i:s", $fields[$f]))) {
-            $fields[$f] = $dateTime->format("m/d/Y H:i");
+            $fields[$f] = $dateTime->format("Y-m-d H:i");
         }
 
         return $fields;
@@ -48,7 +48,7 @@ trait HandleDates
 
     public function prepareDatesField($fields, $f)
     {
-        if (($datetime = DateTime::createFromFormat("m/d/Y H:i", $fields[$f]))) {
+        if (($datetime = DateTime::createFromFormat("Y-m-d H:i", $fields[$f]))) {
             $fields[$f] = $datetime->format("Y-m-d H:i:s");
         } else {
             $fields[$f] = null;

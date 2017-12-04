@@ -519,7 +519,7 @@ abstract class ModuleController extends Controller
     {
         if (($values = request('ids')) && !empty($values)) {
             $this->repository->setNewOrder($values);
-            return $this->respondWithSuccess(camelCaseToWords($this->modelTitle) . ' order changed!');
+            return $this->respondWithSuccess($this->modelTitle . ' order changed!');
         }
 
         return $this->respondWithError($this->modelTitle . ' order was not changed. Something wrong happened!');
@@ -529,7 +529,7 @@ abstract class ModuleController extends Controller
     {
         $input = $this->request->all();
         if (isset($input['cancel'])) {
-            return redirect($this->getBackLink(null));
+            return redirect($this->getBackLink());
         }
 
         $formRequest = $this->validateFormRequest();
@@ -589,11 +589,12 @@ abstract class ModuleController extends Controller
     {
         $item = $this->repository->getById($id);
         $input = $this->request->all();
-        if (isset($input['cancel'])) {
+
+        if (isset($input['cmsSaveType']) && $input['cmsSaveType'] === 'cancel') {
             if ($item->isLockable() && $item->isLocked() && $item->isLockedByCurrentUser()) {
                 $this->removeLock($id);
             }
-            return redirect($this->getBackLink(null));
+            return $this->respondWithRedirect($this->getBackLink());
         } else {
 
             $formRequest = $this->validateFormRequest();
@@ -601,7 +602,7 @@ abstract class ModuleController extends Controller
             if (($item->isLockable() == false) || ($item->isLocked() && $item->isLockedByCurrentUser())) {
                 // check the lock?
                 $this->repository->update($id, $formRequest->all());
-                return $this->redirectToForm($id);
+                return $this->respondWithSuccess('Content saved. All good!');
             } else {
                 abort(403);
             }
@@ -669,6 +670,13 @@ abstract class ModuleController extends Controller
     private function respondWithSuccess($message)
     {
         return $this->respondWithJson($message, FlashLevel::SUCCESS);
+    }
+
+    private function respondWithRedirect($redirectUrl)
+    {
+        return response()->json([
+            'redirect' => $redirectUrl,
+        ]);
     }
 
     private function respondWithError($message)
@@ -805,8 +813,10 @@ abstract class ModuleController extends Controller
             }
         }
 
-        if (!$this->request->has('retain')) {
+        if (!Session::get($this->moduleName . "_retain")) {
             Session::put($this->moduleName . "_back_link", $back_link);
+        } else {
+            Session::put($this->moduleName . "_retain", false);
         }
     }
 
@@ -816,17 +826,14 @@ abstract class ModuleController extends Controller
         return $back_link ?? moduleRoute($this->moduleName, $this->routePrefix, "index", $params);
     }
 
-    protected function redirectToForm($id = null, $params = [])
+    protected function redirectToForm($id, $params = [])
     {
         $input = $this->request->all();
-        if (isset($input['finish'])) {
-            flash()->message('All good!', FlashLevel::SUCCESS);
+        if (isset($input['cmsSaveType']) && ends_with($input['cmsSaveType'], 'close')) {
             return redirect($this->getBackLink(null, $params));
-        } elseif ($id == null) {
-            return redirect(moduleRoute($this->moduleName, $this->routePrefix, "create", $params + ['retain' => true]));
         } else {
-            flash()->message('All good!', FlashLevel::SUCCESS);
-            return redirect(moduleRoute($this->moduleName, $this->routePrefix, "edit", $params + ['id' => $id, 'retain' => true]));
+            Session::put($this->moduleName . "_retain", true);
+            return redirect(moduleRoute($this->moduleName, $this->routePrefix, "edit", $params + ['id' => $id]));
         }
     }
 

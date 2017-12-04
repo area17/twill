@@ -3,18 +3,16 @@
 namespace A17\CmsToolkit\Repositories;
 
 use A17\CmsToolkit\Models\Behaviors\Sortable;
-use A17\CmsToolkit\Repositories\Behaviors\HandleDates;
 use Carbon\Carbon;
+use Log;
 
 abstract class ModuleRepository
 {
-    use HandleDates;
-
     protected $model;
 
     protected $ignoreFieldsBeforeSave = [];
 
-    public function get($with = [], $scopes = [], $orders = [], $perPage = 15, $forcePagination = false)
+    public function get($with = [], $scopes = [], $orders = [], $perPage = 20, $forcePagination = false)
     {
         $query = $this->model->with($with);
 
@@ -87,7 +85,7 @@ abstract class ModuleRepository
 
         $fields = $this->prepareFieldsBeforeCreate($fields);
 
-        $object = $this->model->create($fields);
+        $object = $this->model->create(array_except($fields, $this->getReservedFields()));
 
         $this->beforeSave($object, $original_fields);
 
@@ -108,29 +106,11 @@ abstract class ModuleRepository
 
         $fields = $this->prepareFieldsBeforeSave($object, $fields);
 
-        $object->fill($fields);
+        $object->fill(array_except($fields, $this->getReservedFields()));
 
         $object->push();
 
         $this->afterSave($object, $fields);
-    }
-
-    public function preview($id, $fields)
-    {
-        $object = $this->model->findOrFail($id);
-
-        return $this->hydrateObject($object, $fields);
-    }
-
-    protected function hydrateObject($object, $fields)
-    {
-        $fields = $this->prepareFieldsBeforeSave($object, $fields);
-
-        $object->fill($fields);
-
-        $object = $this->hydrate($object, $fields);
-
-        return $object;
     }
 
     public function updateBasic($id, $values, $scopes = [])
@@ -202,7 +182,7 @@ abstract class ModuleRepository
                 $this->afterDelete($object);
             });
         } catch (\Exception $e) {
-            \Log::error($e);
+            Log::error($e);
             return false;
         }
 
@@ -232,7 +212,7 @@ abstract class ModuleRepository
                 $this->afterRestore($object);
             });
         } catch (\Exception $e) {
-            \Log::error($e);
+            Log::error($e);
             return false;
         }
 
@@ -243,8 +223,12 @@ abstract class ModuleRepository
     {
         if (property_exists($this->model, 'checkboxes')) {
             foreach ($this->model->checkboxes as $field) {
-                if (!isset($fields[$field]) && !$this->shouldIgnoreFieldBeforeSave($field)) {
-                    $fields[$field] = false;
+                if (!$this->shouldIgnoreFieldBeforeSave($field)) {
+                    if (!isset($fields[$field])) {
+                        $fields[$field] = false;
+                    } else {
+                        $fields[$field] = !empty($fields[$field]);
+                    }
                 }
             }
         }
@@ -340,17 +324,6 @@ abstract class ModuleRepository
                 $this->$method($object);
             }
         }
-    }
-
-    public function hydrate($object, $fields)
-    {
-        foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'hydrate' . class_basename($trait))) {
-                $object = $this->$method($object, $fields);
-            }
-        }
-
-        return $object;
     }
 
     public function getFormFields($object)
@@ -465,24 +438,6 @@ abstract class ModuleRepository
         }
 
         $object->$relationship()->sync($relatedElementsWithPosition);
-    }
-
-    public function hydrateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute = 'position', $model = null)
-    {
-        $relatedElements = isset($fields[$relationship]) && !empty($fields[$relationship]) ? explode(',', $fields[$relationship]) : [];
-
-        $relationRepository = $this->getModelRepository($relationship, $model);
-        $relatedElementsCollection = collect();
-        $position = 1;
-
-        foreach ($relatedElements as $relatedElement) {
-            $newRelatedElement = $relationRepository->getById($relatedElement);
-            $pivot = $newRelatedElement->newPivot($object, [$positionAttribute => $position++], $object->$relationship()->getTable(), true);
-            $newRelatedElement->setRelation('pivot', $pivot);
-            $relatedElementsCollection->push($newRelatedElement);
-        }
-
-        $object->setRelation($relationship, $relatedElementsCollection);
     }
 
     public function updateRepeaterMany($object, $fields, $relation, $keepExisting = true, $model = null)
@@ -613,5 +568,15 @@ abstract class ModuleRepository
     public function shouldIgnoreFieldBeforeSave($ignore)
     {
         return in_array($ignore, $this->ignoreFieldsBeforeSave);
+    }
+
+    public function getReservedFields()
+    {
+        return [
+            'medias',
+            'browsers',
+            'repeaters',
+            'blocks',
+        ];
     }
 }

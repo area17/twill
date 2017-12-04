@@ -1,22 +1,5 @@
 <?php
 
-if (!function_exists('routeLocalized')) {
-    function routeLocalized($name, $parameters = [], $force_zone = null, $force_locale = null, $absolute = false)
-    {
-        if (str_contains($name, '/')) {
-            return $name;
-        }
-
-        if ($force_locale && in_array($force_locale, config('translatable.locales'))) {
-            $route_name = $force_locale . '.' . $name;
-        } else {
-            $route_name = app()->getLocale() . '.' . $name;
-        }
-
-        return app('url')->route($route_name, $parameters, $absolute);
-    }
-}
-
 if (!function_exists('moduleRoute')) {
     function moduleRoute($moduleName, $prefix, $action, $parameters = [])
     {
@@ -43,8 +26,16 @@ if (!function_exists('getNavigationUrl')) {
 }
 
 if (!function_exists('isActiveNavigation')) {
-    function isActiveNavigation($element, $key, $activeNavigation)
+    function isActiveNavigation($navigationElement, $navigationKey, $activeNavigationKey)
     {
-        return (isset($activeNavigation) && $key === $activeNavigation) || (($element['raw'] ?? false) && Request::url() == $element['route']);
+        $keysAreMatching = isset($activeNavigationKey) && $navigationKey === $activeNavigationKey;
+
+        if ($keysAreMatching) {
+            return true;
+        }
+
+        $urlsAreMatching = ($navigationElement['raw'] ?? false) && Request::url() == $navigationElement['route'];
+
+        return $urlsAreMatching;
     }
 }

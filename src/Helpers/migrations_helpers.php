@@ -21,7 +21,7 @@ if (!function_exists('createDefaultFields')) {
         }
 
         if ($visibility) {
-            $table->boolean('public');
+            $table->boolean('public')->default(true);
         }
     }
 }
