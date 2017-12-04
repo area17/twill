@@ -22,16 +22,16 @@ const state = {
         text: 'Save as draft'
       },
       {
-        name: 'save-continue',
-        text: 'Save as draft and continue'
-      },
-      {
-        name: 'save-finish',
-        text: 'Save as draft and finish'
+        name: 'save-close',
+        text: 'Save as draft and close'
       },
       {
         name: 'save-new',
         text: 'Save as draft and create new'
+      },
+      {
+        name: 'cancel',
+        text: 'Cancel'
       }
     ],
     live: [
@@ -40,16 +40,16 @@ const state = {
         text: 'Publish'
       },
       {
-        name: 'publish-continue',
-        text: 'Publish and continue'
-      },
-      {
-        name: 'publish-finish',
-        text: 'Publish and finish'
+        name: 'publish-close',
+        text: 'Publish and close'
       },
       {
         name: 'publish-new',
         text: 'Publish and create new'
+      },
+      {
+        name: 'cancel',
+        text: 'Cancel'
       }
     ],
     update: [
@@ -58,16 +58,16 @@ const state = {
         text: 'Update'
       },
       {
-        name: 'update-continue',
-        text: 'Update and continue'
-      },
-      {
-        name: 'update-finish',
-        text: 'Update and finish'
+        name: 'update-close',
+        text: 'Update and close'
       },
       {
         name: 'update-new',
         text: 'Update and create new'
+      },
+      {
+        name: 'cancel',
+        text: 'Cancel'
       }
     ]
   }
