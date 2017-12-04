@@ -3,6 +3,7 @@
     <a17-locale type="a17-textfield" :attributes="{ label: 'Title', name: fieldName('title'), type: 'text', maxlength: 250, inStore: 'value' }"></a17-locale>
     <a17-locale type="a17-textfield" :attributes="{ label: 'Video URL', name: fieldName('url'), type: 'text', maxlength: 250, inStore: 'value' }"></a17-locale>
     <a17-inputframe label="Thumbnail"><a17-mediafield :name="fieldName('thumbnail')" cropContext="thumbnail" ref="thumbnail">Minimum image width 1300px</a17-mediafield></a17-inputframe>
+    <a17-inputframe label="Publications"> <a17-browserfield :name="fieldName('publications')" :max="4" item-label="publications" endpoint="http://admin.cms-sandbox.dev.a17.io/content/posts/browser" modal-title="Attach publications" >Add up to 4 publications</a17-browserfield></a17-inputframe>
   </div>
 </template>
 
