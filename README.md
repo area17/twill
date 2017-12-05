@@ -122,8 +122,67 @@ return [
 
 Use a single locale code if you're not using model translations in your project.
 
-That's about it!
+Next, let's setup the CMS frontend toolset composed of NPM scripts and a Laravel Mix configuration.
 
+Add the following dev dependencies to your project's `package.json`:
+
+```json
+"devDependencies": {
+  "cross-env": "^5.1",
+  "laravel-mix": "^1.0",
+  "watch": "^1.0.2",
+  "concurrently": "^3.5.0"
+}
+```
+
+Add the following npm scripts to your project's `package.json`:
+
+```json
+"scripts": {
+  "cms-dev": "npm run cms-copy-blocks && concurrently \"cd vendor/a17/laravel-cms-toolkit && npm install --no-save && npm run hot\" \"npm run cms-watch\" && npm run cms-clean-blocks",
+  "cms-watch": "concurrently \"watch 'npm run cms-development' vendor/a17/laravel-cms-toolkit/public --wait=2 --interval=0.1\" \"npm run cms-watch-blocks\"",
+  "cms-development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+  "cms-prod": "npm run cms-copy-blocks && cd vendor/a17/laravel-cms-toolkit && npm install --no-save && npm run prod && cd ../../.. && npm run cms-production && npm run cms-clean-blocks",
+  "cms-production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+  "cms-copy-blocks": "mkdir -p resources/assets/js/blocks/ && mkdir -p vendor/a17/laravel-cms-toolkit/frontend/js/components/blocks/customs/ && cp -R resources/assets/js/blocks/ vendor/a17/laravel-cms-toolkit/frontend/js/components/blocks/customs/",
+  "cms-clean-blocks": "rm -rf vendor/a17/laravel-cms-toolkit/frontend/js/components/blocks/customs/*",
+  "cms-watch-blocks": "watch 'npm run cms-copy-blocks' resources/assets/js/blocks --wait=2 --interval=0.1"
+}
+```
+
+Add or modify your project's `wepback.mix.js` file with the following content:
+```
+let mix = require('laravel-mix');
+
+if (mix.inProduction()) {
+  mix.copyDirectory('vendor/a17/laravel-cms-toolkit/public/assets/vendor', 'public/assets/vendor');
+  mix.copyDirectory('vendor/a17/laravel-cms-toolkit/public/assets/admin/fonts', 'public/assets/admin/fonts');
+  mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/icons/icons.svg', 'public/assets/admin/icons/icons.svg');
+  mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/icons/icons-files.svg', 'public/assets/admin/icons/icons-files.svg');
+  mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/css/app.css', 'public/assets/admin/css/app.css');
+  mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/js/main-dashboard.js', 'public/assets/admin/js/main-dashboard.js');
+  mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/js/main-listing.js', 'public/assets/admin/js/main-listing.js');
+  mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/js/main-form.js', 'public/assets/admin/js/main-form.js');
+  mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/js/main-buckets.js', 'public/assets/admin/js/main-buckets.js');
+  mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/js/manifest.js', 'public/assets/admin/js/manifest.js');
+  mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/js/vendor.js', 'public/assets/admin/js/vendor.js');
+  mix.version();
+} else {
+  mix.copyDirectory('vendor/a17/laravel-cms-toolkit/public', 'public');
+}
+```
+
+Finally, add the following to your project `.gitignore`:
+```
+public/assets/admin
+public/assets/vendor
+public/mix-manifest.json
+public/hot
+```
+
+You'll want to run `npm run cms-dev` to start working locally and `npm run cms-prod` to build for production.
+
+That's about it!
 
 ## Usage
 
@@ -436,6 +495,7 @@ php artisan cms-toolkit:module yourPluralModuleName
 ```
 
 The command has a couple of options :
+- `--hasBlocks (-B)`,
 - `--hasTranslation (-T)`,
 - `--hasSlug (-S)`,
 - `--hasMedias (-M)`,
@@ -443,7 +503,7 @@ The command has a couple of options :
 - `--hasPosition (-P)`
 - `--hasRevisions(-R)`.
 
-It will generate a migration file, a model, a repository, a controller, a form request object and an index and form views.
+It will generate a migration file, a model, a repository, a controller, a form request object and a form view.
 
 Start by filling in the migration and models.
 
@@ -451,7 +511,9 @@ Add `Route::module('yourPluralModuleName}');` to your admin routes file.
 
 Setup a new CMS menu item in `config/cms-navigation.php`.
 
-Setup your `index` and form `views`.
+Setup your index options and columns in your controller.
+
+Setup your form fields in `resources/views/admin/moduleName/form.blade.php`.
 
 Enjoy.
 
@@ -464,11 +526,11 @@ A router macro is available to create module routes quicker:
 Route::module('yourModulePluralName');
 
 // You can add an array of only/except action names as a second parameter
-// By default, the following routes are created : 'sort', 'publish', 'browser', 'bucket', 'media', 'feature', 'file'
-Route::module('yourModulePluralName', ['except' => ['sort', 'feature', 'bucket', 'browser', 'file']])
+// By default, the following routes are created : 'reorder', 'publish', 'browser', 'bucket', 'feature', 'restore', 'bulkFeature', 'bulkPublish', 'bulkDelete', 'bulkRestore'
+Route::module('yourModulePluralName', ['except' => ['reorder', 'feature', 'bucket', 'browser']])
 
 // You can add an array of only/except action names for the resource controller as a third parameter
-// By default, the following routes are created : 'index', 'create', 'store', 'show', 'edit', 'update', 'destroy'
+// By default, the following routes are created : 'index', 'store', 'show', 'edit', 'update', 'destroy'
 Route::module('yourModulePluralName', [], ['only' => ['index', 'edit', 'store', 'destroy']])
 
 // The last optional parameter disable the resource controller actions on the module
@@ -896,6 +958,34 @@ public function hydrate($object, $fields)
 
 #### Form fields
 
+Wrap them into the following in your module `form` view (`resources/views/admin/moduleName/form.blade.php`):
+
+```php
+@extends('cms-toolkit::layouts.form')
+@section('contentFields')
+    @formField('...', [...])
+    ...
+@stop
+```
+
+The idea of the `contentFields` section is to contain the most important fields and the block editor as the last field.
+
+If you have attributes, relationships, extra images, file attachments or repeaters, you'll want to add a `fieldsets` section after the `contentFields` section and use the `a17-fieldset` Vue component to create new ones like in the following example:
+
+```php
+@extends('cms-toolkit::layouts.form')
+
+@section('contentFields')
+    @formField('...', [...])
+    ...
+@stop
+
+@section('fieldsets')
+    @formField('...', [...])
+    ...
+@stop
+```
+
 ##### Input
 >![screenshot](_media/input.png)
 
@@ -1109,7 +1199,9 @@ public function hydrate($object, $fields)
 >![screenshot](_media/blockeditor.png)
 
 ```php
-@formField('block_editor')
+@formField('block_editor', [
+    'blocks' => ['title', 'quote', 'text', 'image', 'grid', 'test', 'publications', 'news']
+])
 ```
 
 ##### Repeater
@@ -1117,7 +1209,7 @@ public function hydrate($object, $fields)
 
 ```php
 <a17-fieldset title="Videos" id="videos" :open="true">
-        @formField('repeater', ['type' => 'video'])
+    @formField('repeater', ['type' => 'video'])
 </a17-fieldset>
 ```
 
@@ -1140,13 +1232,13 @@ public function hydrate($object, $fields)
 
 ```php
 @formField('files', [
-    'name' => 'single-file',
+    'name' => 'single_file',
     'label' => 'Single file',
     'note' => 'Add one file (per language)'
 ])
 
 @formField('files', [
-    'name' => 'single-file-no-translate',
+    'name' => 'single_file_no_translate',
     'label' => 'Single file (no translate)',
     'note' => 'Add one file',
     'noTranslate' => true,
@@ -1171,7 +1263,7 @@ public function hydrate($object, $fields)
 ])
 
 @formField('map', [
-    'name' => 'location-3',
+    'name' => 'location_3',
     'label' => 'Location',
 ])
 ```
@@ -1429,3 +1521,40 @@ You should follow the Laravel documentation regarding [authorization](https://la
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+
+## Upgrade guide
+
+### Upgrading to 1.0 from 0.7
+
+##### Assets
+Remove the `public/assets/admin` directory content from your project.
+Refer to the frontend section of the setup documentation to update your project's CMS assets management.
+
+##### Module index view
+Delete your module admin index view blade file and move your columns definition to the corresponding module controller `$indexColumns` property.
+
+Refer to the CRUD modules Controller documentation to learn about other index options.
+
+By default, the index is ordered by and search in the `title` column. Use the `$titleColumnKey`, `$defaultFilters` and `$defaultOrders` controller properties to customize it.
+
+##### Module form view
+Only keep `@formField` instructions, remove everything else and wrap them into the following:
+
+```php
+@extends('cms-toolkit::layouts.form')
+@section('contentFields')
+    @formField('input', [...])
+    ...
+@stop
+```
+
+Refer to the CRUD modules form fields documentation above to learn about the new available form fields.
+
+Globally, `field_name` have been renamed `label` and `field` have been renamed `name`.
+
+In select fields, `list` have been renamed `options`. The easiest way to feed for a module a select is by using the `listAll` repository method and return it from your module controller `formData` function.
+
+```
+
+##### CMS navigation
+If you have an entry for CMS users, you can now remove it as it is automatically added to the top right user dropdown.
