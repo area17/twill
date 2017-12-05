@@ -1554,7 +1554,5 @@ Globally, `field_name` have been renamed `label` and `field` have been renamed `
 
 In select fields, `list` have been renamed `options`. The easiest way to feed for a module a select is by using the `listAll` repository method and return it from your module controller `formData` function.
 
-```
-
 ##### CMS navigation
 If you have an entry for CMS users, you can now remove it as it is automatically added to the top right user dropdown.
