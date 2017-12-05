@@ -5,7 +5,7 @@ export default {
     axios.put(endpoint, data).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      console.log('save request error.')
+      console.warn('save request error.')
     })
   }
 }

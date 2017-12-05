@@ -1,7 +1,7 @@
 <template>
-  <transition name="fade_spinner"  v-on:after-enter="afterEnter" v-on:before-leave="beforeLeave">
-    <div class="spinner__container">
-      <div class="spinner" :class="{ 'spinner--visible' : visible }">
+  <transition name="fade_spinner"  @after-enter="afterEnter" @before-leave="beforeLeave">
+    <div class="spinner">
+      <div class="spinner__anim" :class="{ 'spinner__anim--visible' : visible }">
         <svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
             <g fill="none" fill-rule="evenodd">
                 <g transform="translate(1 1)" stroke-width="2">
@@ -46,7 +46,7 @@
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
 
-  .spinner__container {
+  .spinner {
     display: flex;
     width: 100%;
     // height: 50px;
@@ -58,21 +58,21 @@
     left: 0;
     right: 0;
     z-index: $zindex__loadingTable;
+  }
 
-    .spinner {
-      margin: 100px auto;
-      width: 20px;
-      height: 20px;
-      position: relative;
-      text-align: center;
-      color:$color__text--light;
-      opacity:0;
-      transition: opacity .25s linear;
-      transition-delay:0.5s;
+  .spinner__anim {
+    margin: 100px auto;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    text-align: center;
+    color:$color__text--light;
+    opacity:0;
+    transition: opacity .25s linear;
+    transition-delay:0.5s;
 
-      &.spinner--visible {
-        opacity:1;
-      }
+    &.spinner__anim--visible {
+      opacity:1;
     }
   }
 </style>

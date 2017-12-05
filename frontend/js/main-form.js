@@ -109,8 +109,16 @@ Window.vm = new Vue({
   },
   methods: {
     submitForm: function (event) {
-      this.isFormUpdated = false
-      this.$store.dispatch('saveFormData', document.activeElement.name)
+      let self = this
+
+      if (!this.loading) {
+        this.isFormUpdated = false
+        this.$store.commit('updateFormLoading', true)
+
+        self.$nextTick(function () { // let's wait for the loading state to be properly deployed (used to save wysiwyg fields)
+          self.$store.dispatch('saveFormData', document.activeElement.name)
+        })
+      }
     },
     confirmExit: function (event) {
       if (!this.isFormUpdated) {

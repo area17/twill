@@ -66,10 +66,6 @@ const mutations = {
 
 const actions = {
   saveFormData ({ commit, state, getters, rootState }, saveType) {
-    if (state.loading) return
-
-    commit(types.UPDATE_FORM_LOADING, true)
-
     let fields = state.fields.filter((field) => {
       // we start by filtering out blocks related form fields
       return !field.name.startsWith('blocks[')
