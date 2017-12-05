@@ -16,7 +16,7 @@
 <script>
   import { mapState, mapGetters } from 'vuex'
 
-  import Browseritem from './Browseritem.vue'
+  import Browseritem from './BrowserItem.vue'
   import draggableMixin from '@/mixins/draggable'
   import draggable from 'vuedraggable'
 
