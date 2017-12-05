@@ -107,6 +107,10 @@ export default class Tooltip {
    * @return {HTMLelement} tooltipNode
    */
   _create (reference, template, theme, title, allowHtml) {
+    if (this._tooltipNode) {
+      return this
+    }
+
     // create tooltip element
     const tooltipTemp = window.document.createElement('div')
     tooltipTemp.innerHTML = template.trim()
@@ -216,7 +220,7 @@ export default class Tooltip {
 
   _show (reference, options) {
     // don't show if it's already visible
-    if (this._isOpen) {
+    if (this._isOpen && !this._isOpening) {
       return this
     }
     this._isOpen = true
@@ -289,6 +293,14 @@ export default class Tooltip {
   }
 
   _dispose () {
+    // remove event listeners
+    if (this._events.length) {
+      this._events.forEach(({ func, event }) => {
+        this.reference.removeEventListener(event, func)
+      })
+      this._events = []
+    }
+
     if (this._tooltipNode) {
       this._hide()
 
@@ -296,12 +308,6 @@ export default class Tooltip {
       this._tooltipNode.parentNode.removeChild(this._tooltipNode)
       this._tooltipNode = null
     }
-
-    // remove event listeners
-    this._events.forEach(({ func, event }) => {
-      this.reference.removeEventListener(event, func)
-    })
-    this._events = []
 
     return this
   }
@@ -351,7 +357,7 @@ export default class Tooltip {
     // schedule show tooltip
     directEvents.forEach(event => {
       const func = evt => {
-        if (this._isOpen === true) {
+        if (this._isOpening === true) {
           return
         }
         evt.usedByTooltip = true
@@ -375,12 +381,15 @@ export default class Tooltip {
   }
 
   _scheduleShow (reference, delay, options /*, evt */) {
+    this._isOpening = true
     // defaults to 0
     const computedDelay = (delay && delay.show) || delay || 0
-    window.setTimeout(() => this._show(reference, options), computedDelay)
+    if (computedDelay > 0) window.setTimeout(() => this._show(reference, options), computedDelay)
+    else this._show(reference, options)
   }
 
   _scheduleHide (reference, delay, options, evt) {
+    this._isOpening = false
     // defaults to 0
     const computedDelay = (delay && delay.hide) || delay || 0
     window.setTimeout(() => {

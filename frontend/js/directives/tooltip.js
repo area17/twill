@@ -25,7 +25,9 @@ export default {
       inserted: function (el, binding, vnode) {
       },
       unbind: function (el, binding, vnode) {
-        if (el._tooltip) el._tooltip.dispose()
+        if (el._tooltip) {
+          el._tooltip.dispose()
+        }
       }
     }
 
