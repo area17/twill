@@ -8,6 +8,14 @@ class {{controllerClassName}} extends ModuleController
 {
     protected $moduleName = '{{moduleName}}';
 
+    protected $indexColumns = [
+        'title' => [
+            'title' => 'Title',
+            'field' => 'title',
+            'sort' => true
+        ],
+    ];
+
     /*
      * Relations to eager load for the index view
      */

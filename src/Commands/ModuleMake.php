@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 class ModuleMake extends Command
 {
     protected $signature = 'cms-toolkit:module {moduleName}
+        {--B|hasBlocks}
         {--T|hasTranslation}
         {--S|hasSlug}
         {--M|hasMedias}
@@ -34,14 +35,15 @@ class ModuleMake extends Command
         $this->files = $files;
         $this->composer = $composer;
 
-        $this->modelTraits = ['HasTranslation', 'HasSlug', 'HasMedias', 'HasFiles', 'HasPosition', 'HasRevision'];
-        $this->repositoryTraits = ['HandleTranslations', 'HandleSlugs', 'HandleMedias', 'HandleFiles', 'HandleRevisions'];
+        $this->modelTraits = ['HasBlocks', 'HasTranslation', 'HasSlug', 'HasMedias', 'HasFiles', 'HasRevision', 'HasPosition'];
+        $this->repositoryTraits = ['HandleBlocks', 'HandleTranslations', 'HandleSlugs', 'HandleMedias', 'HandleFiles', 'HandleRevisions'];
     }
 
     public function handle()
     {
         $moduleName = $this->argument('moduleName');
 
+        $blockable = $this->option('hasBlocks') ?? false;
         $translatable = $this->option('hasTranslation') ?? false;
         $sluggable = $this->option('hasSlug') ?? false;
         $mediable = $this->option('hasMedias') ?? false;
@@ -49,7 +51,7 @@ class ModuleMake extends Command
         $sortable = $this->option('hasPosition') ?? false;
         $revisionable = $this->option('hasRevisions') ?? false;
 
-        $activeTraits = [$translatable, $sluggable, $mediable, $fileable, $sortable, $revisionable];
+        $activeTraits = [$blockable, $translatable, $sluggable, $mediable, $fileable, $revisionable, $sortable];
 
         $modelName = Str::studly(Str::singular($moduleName));
 

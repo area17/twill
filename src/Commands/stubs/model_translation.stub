@@ -8,7 +8,7 @@ class {{modelTranslationClassName}} extends Model
 {
     protected $fillable = [
         // 'title',
-        // 'description',
+        // 'subtitle',
         'active',
         'locale',
     ];

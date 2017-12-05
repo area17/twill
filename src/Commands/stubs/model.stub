@@ -11,8 +11,11 @@ class {{modelClassName}} extends Model {{modelImplements}}
 
     protected $fillable = [
         // 'published',
-        // 'content',
         // 'position',
+        // 'public',
+        // 'featured',
+        // 'publish_start_date',
+        // 'publish_end_date',
     ];
 
     // public $translatedAttributes = [
@@ -25,15 +28,26 @@ class {{modelClassName}} extends Model {{modelImplements}}
     //     'title',
     // ];
 
-    // those fields get auto set to null if not submited
-    public $nullable = [];
-
-    // those fields get auto set to false if not submited
-    public $checkboxes = [];
 
     // fill this in if you use the HasMedias traits
-    // public $mediasParams = [];
-
-    // fill this in if you use the HasFiles traits
-    // public $filesParams = [];
+    // public $mediasParams = [
+    //     'cover' => [
+    //         'default' => [
+    //             [
+    //                 'name' => 'landscape',
+    //                 'ratio' => 16 / 9,
+    //             ],
+    //             [
+    //                 'name' => 'portrait',
+    //                 'ratio' => 3 / 4,
+    //             ],
+    //         ],
+    //         'mobile' => [
+    //             [
+    //                 'name' => 'mobile',
+    //                 'ratio' => 1,
+    //             ],
+    //         ],
+    //     ],
+    // ];
 }
