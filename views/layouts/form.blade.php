@@ -84,19 +84,19 @@
     window.STORE.form.availableRepeaters = {
         video: {
             title: 'Video',
-            trigger: 'Add Videos',
+            trigger: 'Add videos',
             component: 'a17-block-test', // This will be project specific
             max: 4
         },
         gridItem: {
-            title: 'Grid Item',
-            trigger: 'Add Grid Item',
+            title: 'Grid item',
+            trigger: 'Add grid item',
             component: 'a17-block-video', // This will be project specific
             max: 4
         },
         gridItemMore: {
-            title: 'Grid Item',
-            trigger: 'Add Grid Item',
+            title: 'Grid item',
+            trigger: 'Add grid item',
             component: 'a17-block-video', // This will be project specific
             max: 6
         }

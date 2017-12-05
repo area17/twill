@@ -1,6 +1,6 @@
 <hr/>
 
-<a17-content title="Add Content"></a17-content>
+<a17-content title="Add content"></a17-content>
 
 @php
     $availableBlocks = isset($blocks) ? collect($blocks)->map(function ($block) {
