@@ -43,7 +43,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss"> // beware : not scoped
   @import '~styles/setup/_mixins-colors-vars.scss';
 
   .spinner {
@@ -74,5 +74,9 @@
     &.spinner__anim--visible {
       opacity:1;
     }
+  }
+
+  .app--form .spinner {
+    background-color: rgba($color__border--light, 0.75);
   }
 </style>
