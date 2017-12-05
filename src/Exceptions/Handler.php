@@ -60,22 +60,17 @@ class Handler extends ExceptionHandler
             return $this->renderExceptionWithWhoops($e);
         }
 
-        if ($this->isHttpException($e)) {
-            return $this->renderHttpExceptionWithView($request, $e);
-        } elseif (app()->environment('production', 'preprod')) {
-            return response()->view(config('cms-toolkit.frontend.views_path') . '.errors.500', [], 500);
-        }
-
-        return parent::render($request, $e);
+        return $this->renderHttpExceptionWithView($request, $e);
     }
 
     public function renderHttpExceptionWithView($request, $e)
     {
-        $statusCode = $e->getStatusCode();
-
         if (config('app.debug')) {
             return $this->convertExceptionToResponse($e);
         }
+
+        $statusCode = $this->isHttpException($e) ? $e->getStatusCode() : 500;
+        $headers = $this->isHttpException($e) ? $e->getHeaders() : [];
 
         if ($request->getHost() == config('cms-toolkit.admin_app_url')) {
             $view = view()->exists("admin.errors.$statusCode") ? "admin.errors.$statusCode" : "cms-toolkit::errors.$statusCode";
@@ -84,7 +79,7 @@ class Handler extends ExceptionHandler
         }
 
         if (view()->exists($view)) {
-            return response()->view($view, ['exception' => $e], $statusCode, $e->getHeaders());
+            return response()->view($view, ['exception' => $e], $statusCode, $headers);
         }
 
         return $this->renderHttpException($e);
