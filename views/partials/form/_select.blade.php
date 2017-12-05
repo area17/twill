@@ -1,5 +1,11 @@
 @php
     $renderForBlocks = $renderForBlocks ?? false;
+    $options = method_exists($options, 'map') ? $options->map(function($option, $id) {
+        return [
+            'value' => $id,
+            'label' => $option
+        ];
+    })->values()->toArray() : $options;
 @endphp
 
 @if ($unpack ?? false)
