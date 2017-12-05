@@ -7,6 +7,7 @@ export const ADD_FORM_BLOCK = 'addFormBlock'
 export const DELETE_FORM_BLOCK = 'deleteFormBlock'
 export const DUPLICATE_FORM_BLOCK = 'duplicateFormBlock'
 export const REORDER_FORM_BLOCKS = 'reorderFormBlocks'
+export const UPDATE_FORM_LOADING = 'updateFormLoading'
 
 /* language */
 export const SWITCH_LANG = 'switchLanguage'

@@ -41,6 +41,8 @@
                     <a17-button variant="validate">Ok</a17-button> <a17-button variant="aslink" @click="$refs.moveToTrashModal.close()"><span>Cancel</span></a17-button>
                 </a17-inputframe>
             </a17-modal>
+
+            <a17-spinner v-if="loading"></a17-spinner>
         </form>
     </div>
     <a17-modal class="modal--browser" ref="browser" mode="medium">

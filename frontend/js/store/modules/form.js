@@ -2,6 +2,7 @@ import api from '../api/form'
 import * as types from '../mutation-types'
 
 const state = {
+  loading: false,
   title: window.STORE.form.title || '',
   permalink: window.STORE.form.permalink || '',
   baseUrl: window.STORE.form.baseUrl || '',
@@ -57,11 +58,18 @@ const mutations = {
     state.fields.forEach(function (field, index) {
       if (field.name === fieldName) state.fields.splice(index, 1)
     })
+  },
+  [types.UPDATE_FORM_LOADING] (state, loading) {
+    state.loading = !state.loading
   }
 }
 
 const actions = {
   saveFormData ({ commit, state, getters, rootState }, saveType) {
+    if (state.loading) return
+
+    commit(types.UPDATE_FORM_LOADING, true)
+
     let fields = state.fields.filter((field) => {
       // we start by filtering out blocks related form fields
       return !field.name.startsWith('blocks[')
@@ -95,6 +103,8 @@ const actions = {
     console.table(data)
 
     api.save(state.saveUrl, data, function (resp) {
+      commit(types.UPDATE_FORM_LOADING, false)
+
       if (resp.data.hasOwnProperty('redirect')) {
         window.location.replace(resp.data.redirect)
       }

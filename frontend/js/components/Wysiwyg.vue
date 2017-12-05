@@ -87,8 +87,18 @@
       updateInput: function () {
         this.$refs.input.value = this.value
 
+        console.log('WYSIWYG value : ' + this.$refs.input.value)
+
         // see formStore mixin
         this.saveIntoStore()
+      }
+    },
+    watch: {
+      submitting: function () {
+        if (this.submitting) {
+          // Form is ready to be submitted
+          this.updateInput()
+        }
       }
     },
     mounted: function () {

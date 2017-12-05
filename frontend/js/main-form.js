@@ -1,6 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
+import { mapState } from 'vuex'
 import store from '@/store'
 
 // General behaviors
@@ -29,6 +30,9 @@ import a17Previewer from '@/components/Previewer.vue'
 // Plugins
 import A17Config from '@/plugins/A17Config'
 import A17Notif from '@/plugins/A17Notif'
+
+// Loader
+import a17Spinner from '@/components/Spinner.vue'
 
 // configuration
 Vue.use(A17Config)
@@ -82,6 +86,7 @@ Window.vm = new Vue({
   store, // inject store to all children
   el: '#app',
   components: {
+    'a17-spinner': a17Spinner,
     'a17-sticky-nav': a17StickyNav,
     'a17-title-editor': a17TitleEditor,
     'a17-langswitcher': a17Langswitcher,
@@ -96,6 +101,11 @@ Window.vm = new Vue({
       },
       isFormUpdated: false
     }
+  },
+  computed: {
+    ...mapState({
+      loading: state => state.form.loading
+    })
   },
   methods: {
     submitForm: function (event) {

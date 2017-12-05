@@ -11,6 +11,7 @@ export default {
   },
   computed: {
     ...mapState({
+      submitting: state => state.form.loading,
       fields: state => state.form.fields
     })
   },
