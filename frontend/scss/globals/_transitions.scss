@@ -112,19 +112,3 @@ https://vuejs.org/v2/guide/transitions.html
 .fade_spinner-leave-to {
   opacity:0;
 }
-
-/* text in spinner */
-.fade_spinnerlabel {
-  transition: opacity 1s linear;
-  transition-delay: 2s;
-}
-
-.fade_spinnerlabel-enter-to,
-.fade_spinnerlabel-leave {
-  opacity:1;
-}
-
-.fade_spinnerlabel-enter,
-.fade_spinnerlabel-leave-to {
-  opacity:0;
-}
