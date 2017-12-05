@@ -112,8 +112,10 @@
           minDate: self.minDate,
           maxDate: self.maxDate,
           onOpen: function () {
-            self.flatPicker.set('maxDate', self.maxDate) // in case maxDate changed since last open
-            self.flatPicker.set('minDate', self.minDate) // in case minDate changed since last open
+            setTimeout(function () {
+              self.flatPicker.set('maxDate', self.maxDate) // in case maxDate changed since last open
+              self.flatPicker.set('minDate', self.minDate) // in case minDate changed since last open
+            }, 10)
 
             self.$emit('open', self.date)
           },
