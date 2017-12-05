@@ -1,6 +1,6 @@
 <template>
   <span class="checkbox">
-    <input type="checkbox" class="checkbox__input" :class="checkboxClasses" :value="value" :name="name" :id="name + '_' + value" :disabled="disabled" v-model="checkedValue">
+    <input type="checkbox" class="checkbox__input" :class="checkboxClasses" :value="value" :name="name" :id="name + '_' + value" :disabled="disabled"  v-model="checkedValue">
     <label class="checkbox__label" :for="name + '_' + value">{{ label }} <span class="checkbox__icon"><span v-svg symbol="check"></span></span></label>
   </span>
 </template>
@@ -128,7 +128,12 @@
 
   /* disabled state */
   .checkbox__input:disabled + .checkbox__label {
-    opacity: .5;
+    opacity: .33;
+    pointer-events: none;
+  }
+
+  .checkbox__input:checked:disabled + .checkbox__label {
+    opacity: .66;
     pointer-events: none;
   }
 

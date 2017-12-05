@@ -2,6 +2,7 @@
   <div class="publisher">
     <div class="publisher__wrapper">
       <a17-switcher title="Status" name="publish_state" v-if="withPublicationToggle"></a17-switcher>
+      <a17-reviewaccordion  v-if="reviewProcess && reviewProcess.length" :options="reviewProcess" name="review_process" :value="reviewProcessCompleteValues" :open="openStates['A17Reviewaccordion']" @open="openCloseAccordion">Review status</a17-reviewaccordion>
       <a17-radioaccordion  v-if="visibility && visibilityOptions && visibilityOptions.length" :radios="visibilityOptions" name="visibility" :value="visibility" :open="openStates['A17Radioaccordion']" @open="openCloseAccordion" @change="updateVisibility">Visibility</a17-radioaccordion>
       <a17-checkboxaccordion  v-if="languages && languages.length" :options="languages" name="active_languages" :value="publishedLanguagesValues" :open="openStates['A17Checkboxaccordion']" @open="openCloseAccordion">Languages</a17-checkboxaccordion>
       <a17-pubaccordion :open="openStates['A17Pubaccordion']" @open="openCloseAccordion" v-if="withPublicationTimeframe">Published on</a17-pubaccordion>
@@ -25,6 +26,7 @@
 
   import a17Switcher from '@/components/Switcher.vue'
   import a17RadioAccordion from '@/components/RadioAccordion.vue'
+  import a17ReviewAccordion from '@/components/ReviewAccordion.vue'
   import a17CheckboxAccordion from '@/components/CheckboxAccordion.vue'
   import a17RevisionAccordion from '@/components/RevisionAccordion.vue'
   import a17PubAccordion from '@/components/PubAccordion.vue'
@@ -38,6 +40,7 @@
       'a17-switcher': a17Switcher,
       'a17-radioaccordion': a17RadioAccordion,
       'a17-checkboxaccordion': a17CheckboxAccordion,
+      'a17-reviewaccordion': a17ReviewAccordion,
       'a17-revaccordion': a17RevisionAccordion,
       'a17-pubaccordion': a17PubAccordion,
       'a17-multibutton': a17MultiButton
@@ -47,6 +50,7 @@
         singleOpen: true,
         publishSubmit: 'live',
         openStates: {
+          'A17Reviewaccordion': false,
           'A17Radioaccordion': false,
           'A17Checkboxaccordion': false,
           'A17Revisions': false,
@@ -56,16 +60,27 @@
     },
     filters: a17VueFilters,
     computed: {
-      publishedLanguagesValues: function () {
-        const publishedLanguagesValues = []
+      reviewProcessCompleteValues: function () {
+        const values = []
 
-        if (this.publishedLanguages.length) {
-          this.publishedLanguages.forEach(function (language) {
-            publishedLanguagesValues.push(language.value)
+        if (this.reviewProcessComplete.length) {
+          this.reviewProcessComplete.forEach(function (item) {
+            values.push(item.value)
           })
         }
 
-        return publishedLanguagesValues
+        return values
+      },
+      publishedLanguagesValues: function () {
+        const values = []
+
+        if (this.publishedLanguages.length) {
+          this.publishedLanguages.forEach(function (item) {
+            values.push(item.value)
+          })
+        }
+
+        return values
       },
       submitOptions: function () {
         return this.published ? this.defaultSubmitOptions[this.publishSubmit] : this.defaultSubmitOptions['draft']
@@ -78,10 +93,12 @@
         withPublicationTimeframe: state => state.publication.withPublicationTimeframe,
         visibility: state => state.publication.visibility,
         visibilityOptions: state => state.publication.visibilityOptions,
-        defaultSubmitOptions: state => state.publication.submitOptions
+        defaultSubmitOptions: state => state.publication.submitOptions,
+        reviewProcess: state => state.publication.reviewProcess
       }),
       ...mapGetters([
-        'publishedLanguages'
+        'publishedLanguages',
+        'reviewProcessComplete'
       ])
     },
     methods: {

@@ -7,14 +7,17 @@ const state = {
   startDate: window.STORE.publication.startDate || null,
   endDate: window.STORE.publication.endDate || null,
   visibility: window.STORE.publication.visibility || false,
-  visibilityOptions: [{
-    value: 'public',
-    label: 'Public'
-  },
-  {
-    value: 'private',
-    label: 'Private'
-  }],
+  reviewProcess: window.STORE.publication.reviewProcess || [],
+  visibilityOptions: [
+    {
+      value: 'public',
+      label: 'Public'
+    },
+    {
+      value: 'private',
+      label: 'Private'
+    }
+  ],
   submitOptions: {
     draft: [
       {
@@ -74,7 +77,11 @@ const state = {
 }
 
 // getters
-const getters = { }
+const getters = {
+  reviewProcessComplete: state => {
+    return state.reviewProcess.filter(reviewProcess => reviewProcess.checked)
+  }
+}
 
 const mutations = {
   [types.UPDATE_PUBLISH_START_DATE] (state, newValue) {
@@ -88,6 +95,27 @@ const mutations = {
   },
   [types.UPDATE_PUBLISH_VISIBILITY] (state, newValue) {
     state.visibility = newValue
+  },
+  [types.UPDATE_REVIEW_PROCESS] (state, newValue) {
+    let currentStep = ''
+    let currentIndex = -1
+
+    if (newValue.length) {
+      currentStep = newValue[newValue.length - 1]
+
+      state.reviewProcess.forEach(function (option, index) {
+        if (option.value === currentStep) currentIndex = index
+      })
+    }
+
+    // update disabled states & checked state
+    state.reviewProcess.forEach(function (option, index) {
+      if (index <= currentIndex) option.checked = true
+      else option.checked = false
+
+      if (index === currentIndex || index === (currentIndex + 1)) option.disabled = false
+      else option.disabled = true
+    })
   }
 }
 

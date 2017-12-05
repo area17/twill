@@ -71,7 +71,8 @@
         withPublicationTimeframe: {{ json_encode($item->isFillable('publish_start_date')) }},
         startDate: '{{ $item->publish_start_date ?? '' }}',
         endDate: '{{ $item->publish_end_date ?? '' }}',
-        visibility: '{{ $item->isFillable('public') ? ($item->public ? 'public' : 'private') : false }}'
+        visibility: '{{ $item->isFillable('public') ? ($item->public ? 'public' : 'private') : false }}',
+        reviewProcess: {!! isset($reviewProcess) ? json_encode($reviewProcess) : '[]' !!}
     }
 
     window.STORE.revisions = {!! json_encode($revisions)  !!}
