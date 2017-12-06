@@ -54,8 +54,16 @@
         <a17-datatable :draggable="{{ $reorder ? 'true' : 'false' }}" empty-message="{{ __($emptyDataTable) }}"></a17-datatable>
         <a17-modal class="modal--form" ref="addNewModal" title="Add new">
             <form action="{{ $storeUrl }}" method="post">
-                <a17-modal-title-editor v-bind:base-url="baseUrl" @unless($permalink ?? true) :with-permalink="false" @endunless></a17-modal-title-editor>
-                <a17-modal-validation v-bind:mode="'create'" name="add-new" :active-publish-state="true" :is-publish="false"></a17-modal-validation>
+                {{ csrf_field() }}
+                <a17-modal-title-editor
+                    title-name="{{ $formCustomTitleName ?? $titleColumnKey ?? 'title' }}"
+                    title-label="{{ $formCustomTitleLabel ?? ucfirst($titleColumnKey ?? 'title') }}"
+                    :base-url="baseUrl"
+                    @unless($permalink ?? true) :with-permalink="false" @endunless
+                >
+                    @partialView(($moduleName ?? null), 'modal_form')
+                </a17-modal-title-editor>
+                <a17-modal-validation v-bind:mode="'create'" :active-publish-state="false" :is-publish="false" published-name="published"></a17-modal-validation>
             </form>
         </a17-modal>
     </div>

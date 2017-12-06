@@ -7,11 +7,11 @@
       </template>
       <a17-button type="submit" name="update" v-else="" variant="validate" :disabled="isDisabled">Update</a17-button>
     </a17-inputframe>
-    <label v-if="activePublishState" :for="name + '_live'" class="switcher__button" :class="switcherClasses">
+    <label v-if="activePublishState" :for="publishedName" class="switcher__button" :class="switcherClasses">
       <span v-if="isChecked" class="switcher__label">{{ textEnabled }}</span>
       <span v-if="!isChecked" class="switcher__label">{{ textDisabled }}</span>
 
-      <input type="checkbox" :disabled="disabled" v-model="published" :name="name" :id="name + '_live'" value="live"/>
+      <input type="checkbox" :disabled="disabled" v-model="published" :name="publishedName" :id="publishedName" :value="1"/>
       <span class="switcher__switcher"></span>
     </label>
   </div>
@@ -23,9 +23,9 @@
   export default {
     name: 'A17ModalValidationButtons',
     props: {
-      name: {
+      publishedName: {
         type: String,
-        required: true
+        required: false
       },
       disabled: {
         type: Boolean,

@@ -178,6 +178,8 @@ abstract class ModuleController extends Controller
         $data = [
             'moduleName' => $this->moduleName,
             'titleColumnKey' => $this->titleColumnKey,
+            'formCustomTitleName' => $this->formCustomTitleName ?? null,
+            'formCustomTitleLabel' => $this->formCustomTitleLabel ?? null,
             'tableData' => $this->getIndexTableData($items),
             'tableColumns' => $this->getIndexTableColumns($items),
             'tableMainFilters' => $this->getIndexTableMainFilters($items),
@@ -185,6 +187,7 @@ abstract class ModuleController extends Controller
             'defaultMaxPage' => method_exists($items, 'total') ? ceil($items->total() / $this->perPage) : 1,
             'offset' => method_exists($items, 'perPage') ? $items->perPage() : count($items),
             'defaultOffset' => $this->perPage,
+            'publish' => $this->getIndexOption('publish'),
             'reorder' => $this->getIndexOption('reorder'),
             'permalink' => $this->getIndexOption('permalink'),
             'filters' => json_decode($this->request->get('filter'), true) ?? [],
@@ -531,13 +534,8 @@ abstract class ModuleController extends Controller
 
     public function store()
     {
-        $input = $this->request->all();
-        if (isset($input['cancel'])) {
-            return redirect($this->getBackLink());
-        }
-
-        $formRequest = $this->validateFormRequest();
-        $item = $this->repository->create($formRequest->all());
+        $input = $this->validateFormRequest()->all();
+        $item = $this->repository->create($input);
         return $this->redirectToForm($item->id);
     }
 
@@ -572,6 +570,9 @@ abstract class ModuleController extends Controller
 
         $data = [
             'item' => $item,
+            'titleColumnKey' => $this->titleColumnKey,
+            'formCustomTitleName' => $this->formCustomTitleName ?? null,
+            'formCustomTitleLabel' => $this->formCustomTitleLabel ?? null,
             'revisions' => method_exists($item, 'hasRevisions') && $item->hasRevisions() ? $item->revisionsForPublisher() : [],
             'form_fields' => $this->repository->getFormFields($item),
             'saveUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'update', $id),

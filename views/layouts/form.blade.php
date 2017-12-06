@@ -14,7 +14,11 @@
                     ]);
                 @endphp
                 <a17-sticky-nav data-sticky-target="navbar" :items="{{ json_encode($additionalFieldsets) }}">
-                    <a17-title-editor slot="title"></a17-title-editor>
+                    <a17-title-editor title-name="{{ $formCustomTitleName ?? $titleColumnKey ?? 'title' }}" title-label="{{ $formCustomTitleLabel ?? ucfirst($titleColumnKey ?? 'title') }}" slot="title">
+                        <template slot="modal-form">
+                            @partialView(($moduleName ?? null), 'modal_form')
+                        </template>
+                    </a17-title-editor>
                     <a17-langswitcher slot="actions"></a17-langswitcher>
                 </a17-sticky-nav>
             </div>
@@ -58,7 +62,7 @@
     window.STORE.languages = {}
     window.STORE.languages.all = {!! json_encode(getLanguagesForVueStore($form_fields)) !!}
     window.STORE.form = {
-        title: '{{ $item->title }}',
+        title: '{{ $item->{$titleColumnKey ?? 'title'} }}',
         permalink: '{{ $item->slug ?? '' }}',
         baseUrl: '{{ $baseUrl }}',
         saveUrl: '{{ $saveUrl }}',

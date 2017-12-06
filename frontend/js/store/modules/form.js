@@ -96,8 +96,6 @@ const actions = {
       repeaters: gatherRepeaters(state, rootState)
     })
 
-    console.table(data)
-
     api.save(state.saveUrl, data, function (resp) {
       commit(types.UPDATE_FORM_LOADING, false)
 
