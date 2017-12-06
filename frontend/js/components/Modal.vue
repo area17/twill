@@ -1,7 +1,7 @@
 <template>
   <div class="modal" :class="modalClasses" @mousedown="close" @touchstart="close">
     <transition name="fade_scale_modal">
-      <div class="modal__window" @mousedown.stop @touchstart.stop v-if="active">
+      <div class="modal__window" @mousedown.stop @touchstart.stop v-if="active" v-show="!hidden">
         <header class="modal__header" v-if="modalTitle">
           {{ modalTitle }}
           <button class="modal__close" type="button" @click="close"><span v-svg symbol="close_modal"></span></button>
@@ -34,7 +34,8 @@
     },
     data: function () {
       return {
-        active: false
+        active: false,
+        hidden: false
       }
     },
     computed: {
@@ -60,6 +61,7 @@
         const html = document.documentElement
 
         this.active = true
+        this.hidden = false
 
         html.classList.add(htmlClass)
 
@@ -72,6 +74,19 @@
         })
 
         this.$emit('open')
+      },
+      hide: function () {
+        if (!this.active) return
+
+        const html = document.documentElement
+
+        this.hidden = true
+
+        html.classList.remove(htmlClass)
+
+        if (this.$el.parentNode) {
+          this.$el.parentNode.removeChild(this.$el)
+        }
       },
       close: function (onClose) {
         if (!this.active) return
