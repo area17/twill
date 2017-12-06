@@ -28,7 +28,7 @@ trait HandleBlocks
         $blocks = collect();
 
         if (isset($fields['blocks'])) {
-            $blocksConfig = config('cms-toolkit.block-editor.blocks');
+            $blocksConfig = config('cms-toolkit.block_editor.blocks');
 
             foreach ($fields['blocks'] as $index => $block) {
                 $block['position'] = $index + 1;
@@ -52,7 +52,7 @@ trait HandleBlocks
 
         if ($object->has('blocks')) {
 
-            $blocksConfig = config('cms-toolkit.block-editor.blocks');
+            $blocksConfig = config('cms-toolkit.block_editor.blocks');
 
             foreach ($object->blocks as $block) {
                 $fields['blocks'][] = [

@@ -22,7 +22,7 @@ class BaseBlock
         $this->data = $block['data'];
         $this->locale = $block['locale'] ?? app()->getLocale();
         $this->options = $options;
-        $this->customViewsNamespace = config('cms-toolkit.block-editor.custom_views_namespace', 'blocks');
+        $this->customViewsNamespace = config('cms-toolkit.block_editor.custom_views_namespace', 'blocks');
     }
 
     public function renderToHtml()
@@ -38,7 +38,7 @@ class BaseBlock
 
                 } catch (\Exception $e) {
 
-                    if (config('cms-toolkit.block-editor.show_render_errors')) {
+                    if (config('cms-toolkit.block_editor.show_render_errors')) {
                         Log::debug($e);
                         return $e->getMessage();
                     }

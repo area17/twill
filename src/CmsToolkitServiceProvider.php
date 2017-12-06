@@ -137,7 +137,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/frontend.php', 'cms-toolkit.frontend');
         $this->mergeConfigFrom(__DIR__ . '/../config/debug.php', 'cms-toolkit.debug');
         $this->mergeConfigFrom(__DIR__ . '/../config/seo.php', 'cms-toolkit.seo');
-        $this->mergeConfigFrom(__DIR__ . '/../config/blocks.php', 'cms-toolkit.block-editor');
+        $this->mergeConfigFrom(__DIR__ . '/../config/blocks.php', 'cms-toolkit.block_editor');
         $this->mergeConfigFrom(__DIR__ . '/../config/enabled.php', 'cms-toolkit.enabled');
         $this->mergeConfigFrom(__DIR__ . '/../config/imgix.php', 'cms-toolkit.imgix');
         $this->mergeConfigFrom(__DIR__ . '/../config/media-library.php', 'cms-toolkit.media_library');

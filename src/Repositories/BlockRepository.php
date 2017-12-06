@@ -16,7 +16,7 @@ class BlockRepository extends ModuleRepository
 
     public function getCrops($role)
     {
-        return config('cms-toolkit.block-editor.crops')[$role];
+        return config('cms-toolkit.block_editor.crops')[$role];
     }
 
     public function afterDelete($object)

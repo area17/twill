@@ -80,12 +80,12 @@
     }
 
     window.STORE.revisions = {!! json_encode($revisions ?? [])  !!}
-    window.STORE.medias.crops = {!! json_encode($item->mediasParams ?? [] + config('cms-toolkit.block-editor.crops')) !!}
+    window.STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('cms-toolkit.block_editor.crops')) !!}
     window.STORE.medias.selected = {}
     window.STORE.browser = {}
     window.STORE.browser.selected = {}
 
-    window.STORE.form.availableRepeaters = {!! json_encode(config('cms-toolkit.block-editor.repeaters')) !!}
+    window.STORE.form.availableRepeaters = {!! json_encode(config('cms-toolkit.block_editor.repeaters')) !!}
 
     window.APIKEYS = {
         'googleMapApi': '{{ config('services.google.maps_api_key') }}'

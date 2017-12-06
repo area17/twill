@@ -8,11 +8,11 @@ class BlocksController extends Controller
 {
     public function preview(RenderBlocks $renderBlocks)
     {
-        if (config('cms-toolkit.block-editor.use_iframes')) {
-            $view = view(config('cms-toolkit.block-editor.iframe_wrapper_view'));
+        if (config('cms-toolkit.block_editor.use_iframes')) {
+            $view = view(config('cms-toolkit.block_editor.iframe_wrapper_view'));
             $view->getFactory()->inject('content', $renderBlocks->fromSingleJsonToHtml(json_encode(request()->all())));
             return view('cms-toolkit::layouts.block_frame', [
-                'blockMarkup' => $view->render()
+                'blockMarkup' => $view->render(),
             ]);
         }
 

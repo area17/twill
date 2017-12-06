@@ -54,11 +54,11 @@ class RenderBlocks
 
     protected function getRenderer($block, $options = [])
     {
-        if (!isset($block['data']) || !array_key_exists($block['type'], config('cms-toolkit.block-editor.blocks'))) {
+        if (!isset($block['data']) || !array_key_exists($block['type'], config('cms-toolkit.block_editor.blocks'))) {
             return null;
         }
 
-        $class = config('cms-toolkit.block-editor.blocks')[$block['type']];
+        $class = config('cms-toolkit.block_editor.blocks')[$block['type']];
 
         return new $class($block, $options);
     }

@@ -4,8 +4,8 @@
 
 @php
     $availableBlocks = isset($blocks) ? collect($blocks)->map(function ($block) {
-        return config('cms-toolkit.block-editor.blocks.' . $block);
-    })->filter()->toArray() : config('cms-toolkit.block-editor.blocks');
+        return config('cms-toolkit.block_editor.blocks.' . $block);
+    })->filter()->toArray() : config('cms-toolkit.block_editor.blocks');
 @endphp
 
 @push('fieldsStore')
