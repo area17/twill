@@ -28,6 +28,7 @@ class {{modelClassName}} extends Model {{modelImplements}}
     //     'title',
     // ];
 
+    // public $checkboxes = ['published', 'active'];
 
     // fill this in if you use the HasMedias traits
     // public $mediasParams = [
