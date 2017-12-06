@@ -75,32 +75,13 @@
         reviewProcess: {!! isset($reviewProcess) ? json_encode($reviewProcess) : '[]' !!}
     }
 
-    window.STORE.revisions = {!! json_encode($revisions)  !!}
-    window.STORE.medias.crops = {!! json_encode($item->mediasParams + config('cms-toolkit.block-editor.crops')) !!}
+    window.STORE.revisions = {!! json_encode($revisions ?? [])  !!}
+    window.STORE.medias.crops = {!! json_encode($item->mediasParams ?? [] + config('cms-toolkit.block-editor.crops')) !!}
     window.STORE.medias.selected = {}
     window.STORE.browser = {}
     window.STORE.browser.selected = {}
 
-    window.STORE.form.availableRepeaters = {
-        video: {
-            title: 'Video',
-            trigger: 'Add videos',
-            component: 'a17-block-test', // This will be project specific
-            max: 4
-        },
-        gridItem: {
-            title: 'Grid item',
-            trigger: 'Add grid item',
-            component: 'a17-block-video', // This will be project specific
-            max: 4
-        },
-        gridItemMore: {
-            title: 'Grid item',
-            trigger: 'Add grid item',
-            component: 'a17-block-video', // This will be project specific
-            max: 6
-        }
-    }
+    window.STORE.form.availableRepeaters = {!! json_encode(config('cms-toolkit.block-editor.repeaters')) !!}
 
     window.APIKEYS = {
         'googleMapApi': '{{ config('services.google.maps_api_key') }}'
