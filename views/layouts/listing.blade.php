@@ -61,7 +61,7 @@
                     :base-url="baseUrl"
                     @unless($permalink ?? true) :with-permalink="false" @endunless
                 >
-                    @partialView(($moduleName ?? null), 'modal_form')
+                    @partialView(($moduleName ?? null), 'modal_extra_fields')
                 </a17-modal-title-editor>
                 <a17-modal-validation v-bind:mode="'create'" :active-publish-state="false" :is-publish="false" published-name="published"></a17-modal-validation>
             </form>
