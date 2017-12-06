@@ -15,7 +15,12 @@
             {{ row['publish_start_date'] | formatDatatableDate }}<br /><span>{{ formatDateLabel }}</span>
           </span>
           <span v-else>
+            <template v-if="!row['publish_start_date']">
+              —
+            </template>
+            <template v-else>
             {{ row['publish_start_date'] | formatDatatableDate }}
+            </template>
           </span>
         </template> <!-- Published Date -->
       </template>
