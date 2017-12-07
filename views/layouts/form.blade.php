@@ -86,6 +86,7 @@
     window.STORE.browser.selected = {}
 
     window.STORE.form.availableRepeaters = {!! json_encode(config('cms-toolkit.block_editor.repeaters')) !!}
+    window.STORE.form.repeaters = {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!}
 
     window.APIKEYS = {
         'googleMapApi': '{{ config('services.google.maps_api_key') }}'

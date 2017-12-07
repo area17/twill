@@ -179,12 +179,9 @@ const gatherRepeaters = (state, rootState) => {
         let repeaterBlock = buildBlock(repeaterItem, state, rootState)
 
         // we want to inline fields in the repeater object
-        let fields = repeaterBlock.fields.reduce((fields, field) => {
-          fields[field.name] = field.value
-          return fields
-        }, {})
+        let fields = repeaterBlock.content
 
-        delete repeaterBlock.fields
+        delete repeaterBlock.content
 
         return Object.assign(repeaterBlock, fields)
       })

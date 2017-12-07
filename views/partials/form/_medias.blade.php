@@ -22,7 +22,7 @@
 
 @unless($renderForBlocks)
 @push('fieldsStore')
-    @if (isset($form_fields['medias']))
+    @if (isset($form_fields['medias']) && isset($formFields['medias'][$name]))
         window.STORE.medias.selected["{{ $name }}"] = {!! json_encode($form_fields['medias'][$name]) !!}
     @endif
 @endpush
