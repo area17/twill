@@ -12,44 +12,143 @@ class FeaturedController extends Controller
     {
         $featuredSectionKey = request()->segment(count(request()->segments()));
         $featuredSection = config("cms-toolkit.buckets.$featuredSectionKey");
+        $filters = json_decode(request()->get('filter'), true) ?? [];
 
-        if (request()->has("search_" . request('bucketable'))) {
-            $bucketable = request('bucketable');
-            $featurableItemsByBucketable = $this->getFeaturableItemsByBucketable($featuredSection, request("search_{$bucketable}"));
+        $featuredSources = $this->getFeaturedSources($featuredSection, $filters['search'] ?? '');
+
+        $contentTypes = collect($featuredSources)->map(function ($source, $sourceKey) {
+            return [
+                'label' => $source['name'],
+                'value' => $sourceKey,
+            ];
+        })->values()->toArray();
+
+        if (request()->has('content_type')) {
+            $source = array_first($featuredSources, function ($source, $sourceKey) {
+                return $sourceKey == request('content_type');
+            });
 
             return [
-                'bucketableName' => $featurableItemsByBucketable[$bucketable]['name'] ?? [],
-                'items' => $featurableItemsByBucketable[$bucketable]['items'] ?? [],
-                'buckets' => $featurableItemsByBucketable[$bucketable]['buckets'] ?? [],
-                'bucketable' => $bucketable,
-                'all_buckets' => collect($featuredSection['buckets']),
-                'search' => request("search_{$bucketable}") ?? null,
+                'source' => [
+                    'content_type' => array_first($contentTypes, function ($contentTypeItem) {
+                        return $contentTypeItem['value'] == request('content_type');
+                    }),
+                    'items' => $source['items'],
+                ],
+                'maxPage' => $source['maxPage'],
             ];
         }
 
-        $featurableItemsByBucketable = $this->getFeaturableItemsByBucketable($featuredSection);
-        $featuredItemsByBucket = $this->getFeaturedItemsByBucket($featuredSection);
+        $buckets = $this->getFeaturedItemsByBucket($featuredSection, $featuredSectionKey);
+        $firstSource = array_first($featuredSources);
 
-        $this->prepareSessionWithCurrentFeatures($featuredItemsByBucket);
+        $this->prepareSessionWithCurrentFeatures($buckets);
 
-        return [
-            'featurableItemsByBucketable' => $featurableItemsByBucketable,
-            'featuredItemsByBucket' => $featuredItemsByBucket,
-            'buckets' => collect($featuredSection['buckets']),
-            'sectionKey' => $featuredSectionKey,
-        ];
+        return view('cms-toolkit::layouts.buckets', [
+            'dataSources' => [
+                'selected' => array_first($contentTypes),
+                'content_types' => $contentTypes,
+            ],
+            'items' => $buckets,
+            'source' => [
+                'content_type' => array_first($contentTypes),
+                'items' => $firstSource['items'],
+            ],
+            'maxPage' => $firstSource['maxPage'],
+            'offset' => $firstSource['offset'],
+        ]);
     }
 
-    private function prepareSessionWithCurrentFeatures($featuredItemsByBucket)
+    private function getFeaturedItemsByBucket($featuredSection, $featuredSectionKey)
+    {
+        return collect($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use ($featuredSectionKey) {
+            return [
+                'id' => $bucketKey,
+                'name' => $bucket['name'],
+                'max' => $bucket['max_items'],
+                'addUrl' => route("admin.featured.$featuredSectionKey.add", ['bucket' => $bucketKey]),
+                'removeUrl' => route("admin.featured.$featuredSectionKey.remove", ['bucket' => $bucketKey]),
+                'reorderUrl' => route("admin.featured.$featuredSectionKey.sortable", ['bucket' => $bucketKey]),
+                'children' => Feature::where('bucket_key', $bucketKey)->with('featured')->get()->map(function ($feature) {
+                    $item = $feature->featured;
+                    return [
+                        'id' => $item->id,
+                        'name' => $item->titleInBucket,
+                        'edit' => $item->adminEditUrl,
+                        'content_type' => [
+                            'label' => ucfirst($feature->featured_type),
+                            'value' => $feature->featured_type,
+                        ],
+                    ];
+                })->toArray(),
+            ];
+        })->values()->toArray();
+    }
+
+    private function getFeaturedSources($featuredSection, $search = null)
+    {
+        $fetchedModules = [];
+        $featuredSources = [];
+
+        collect($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use (&$fetchedModules, $search) {
+            return collect($bucket['bucketables'])->mapWithKeys(function ($bucketable) use (&$fetchedModules, $bucketKey, $search) {
+
+                $module = $bucketable['module'];
+
+                if ($search) {
+                    $searchField = $bucketable['search_field'] ?? '%title';
+                    $scopes[$searchField] = $search;
+                }
+
+                $items = $fetchedModules[$module] ?? $this->getRepository($module)->get(
+                    $bucketable['with'] ?? [],
+                    ($bucketable['scopes'] ?? []) + ($scopes ?? []),
+                    $bucketable['orders'] ?? [],
+                    $bucketable['per_page'] ?? request('offset') ?? 10,
+                    $forcePagination = true
+                )->appends('bucketable', $module);
+
+                $fetchedModules[$module] = $items;
+
+                return [$module => [
+                    'name' => $bucketable['name'] ?? ucfirst($module),
+                    'items' => $items,
+                ]];
+            });
+        })->each(function ($bucketables, $bucket) use (&$featuredSources) {
+            $bucketables->each(function ($bucketableData, $bucketable) use ($bucket, &$featuredSources) {
+                // $featuredSources[$bucketable]['buckets'][] = $bucket; // not used at the moment because our new components are not supporting restricting items from going into a certain bucket.
+                $featuredSources[$bucketable]['name'] = $bucketableData['name'];
+                $featuredSources[$bucketable]['maxPage'] = $bucketableData['items']->lastPage();
+                $featuredSources[$bucketable]['offset'] = $bucketableData['items']->perPage();
+                $featuredSources[$bucketable]['items'] = $bucketableData['items']->map(function ($item) use ($bucketableData, $bucketable) {
+                    return [
+                        'id' => $item->id,
+                        'name' => $item->titleInBucket,
+                        'edit' => $item->adminEditUrl,
+                        'content_type' => [
+                            'label' => $bucketableData['name'],
+                            'value' => $bucketable,
+                        ],
+                    ];
+                })->toArray();
+            });
+
+        });
+
+        return $featuredSources;
+    }
+
+    private function prepareSessionWithCurrentFeatures($buckets)
     {
         session()->forget('buckets');
-        collect($featuredItemsByBucket)->each(function ($items, $bucket) {
-            $items->each(function ($item) use ($bucket) {
-                session()->push("buckets.$bucket", [
-                    'id' => $item->featured_id,
-                    'type' => $item->featured_type,
+        collect($buckets)->each(function ($bucket) {
+            foreach ($bucket['children'] as $feature) {
+                session()->push("buckets." . $bucket['id'], [
+                    'id' => $feature['id'],
+                    'type' => $feature['content_type']['value'],
                 ]);
-            });
+            }
         });
     }
 
@@ -77,7 +176,7 @@ class FeaturedController extends Controller
 
     public function sortable($bucket)
     {
-        if ($bucket != null && ($values = json_decode(request()->getContent(), true)) && !empty($values)) {
+        if ($bucket != null && ($values = request('buckets')) && !empty($values)) {
             session()->put("buckets.$bucket", $values);
             $this->save();
         }
@@ -99,65 +198,6 @@ class FeaturedController extends Controller
             });
         });
         \Event::fire('buckets.saved');
-
-        return redirect()->back();
-    }
-
-    public function cancel()
-    {
-        return redirect()->back();
-    }
-
-    private function getFeaturedItemsByBucket($featuredSection)
-    {
-        $featuredItems = [];
-        collect($featuredSection['buckets'])->each(function ($bucket, $bucketKey) use (&$featuredItems) {
-            $featuredItems[$bucketKey] = Feature::where('bucket_key', $bucketKey)->with('featured')->get();
-        });
-
-        return $featuredItems;
-    }
-
-    private function getFeaturableItemsByBucketable($featuredSection, $search = null)
-    {
-        $fetchedBucketables = [];
-        $featurableItemsByBucketable = [];
-
-        collect($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use (&$fetchedBucketables, $search) {
-            return collect($bucket['bucketables'])->mapWithKeys(function ($bucketable) use (&$fetchedBucketables, $bucketKey, $search) {
-
-                $module = $bucketable['module'];
-
-                if ($search) {
-                    $searchField = $bucketable['search_field'] ?? '%title';
-                    $scopes[$searchField] = $search;
-                }
-
-                $items = $fetchedBucketables[$module] ?? $this->getRepository($module)->get(
-                    $bucketable['with'] ?? [],
-                    ($bucketable['scopes'] ?? []) + ($scopes ?? []),
-                    $bucketable['orders'] ?? [],
-                    $bucketable['per_page'] ?? 5,
-                    $forcePagination = true
-                )->appends('bucketable', $module);
-
-                $fetchedBucketables[$module] = $items;
-
-                return [$module => [
-                    'name' => $bucketable['name'] ?? ucfirst($module),
-                    'items' => $items,
-                ]];
-            });
-        })->each(function ($bucketables, $bucket) use (&$featurableItemsByBucketable) {
-            $bucketables->each(function ($bucketableData, $bucketable) use ($bucket, &$featurableItemsByBucketable) {
-                $featurableItemsByBucketable[$bucketable]['buckets'][] = $bucket;
-                $featurableItemsByBucketable[$bucketable]['items'] = $bucketableData['items'];
-                $featurableItemsByBucketable[$bucketable]['name'] = $bucketableData['name'];
-            });
-
-        });
-
-        return $featurableItemsByBucketable;
     }
 
     private function getRepository($bucketable)

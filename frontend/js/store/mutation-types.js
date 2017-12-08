@@ -90,6 +90,7 @@ export const UPDATE_BUCKETS_DATA = 'updateBucketsData'
 export const UPDATE_BUCKETS_FILTER = 'updateBucketsFilter'
 export const UPDATE_BUCKETS_DATA_OFFSET = 'updateBucketsDataOffset'
 export const UPDATE_BUCKETS_DATA_PAGE = 'updateBucketsDataPage'
+export const UPDATE_BUCKETS_MAX_PAGE = 'updateBucketsMaxPage'
 
 /* Notifications */
 export const SET_NOTIF = 'setNotification'

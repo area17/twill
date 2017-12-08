@@ -46,73 +46,65 @@ const mutations = {
   },
   [types.UPDATE_BUCKETS_DATA_PAGE] (state, pageNumber) {
     state.page = pageNumber
+  },
+  [types.UPDATE_BUCKETS_MAX_PAGE] (state, maxPage) {
+    state.maxPage = maxPage
   }
 }
 
 const actions = {
   getBucketsData ({commit, state}) {
-    bucketsAPI.get(
-      {
-        content_type: state.dataSources.selected.value,
-        page: state.page,
-        offset: state.offset,
-        filter: state.filter
-      },
-      source => {
-        commit(types.UPDATE_BUCKETS_DATA, source)
-      },
-      () => {
-        console.log('An error is occurred')
-      }
-    )
+    bucketsAPI.get({
+      content_type: state.dataSources.selected.value,
+      page: state.page,
+      offset: state.offset,
+      filter: state.filter
+    }, resp => {
+      commit(types.UPDATE_BUCKETS_DATA, resp.source)
+      commit(types.UPDATE_BUCKETS_MAX_PAGE, resp.maxPage)
+    })
   },
-  addToBucket ({commit}, data) {
-    bucketsAPI.add({
+  addToBucket ({commit, state}, data) {
+    const bucket = state.buckets[data.index]
+
+    bucketsAPI.add(bucket.addUrl, {
       bucket_index: data.index,
-      item_id: data.item.id,
-      item_content_type: data.item.content_type.value
-    },
-      () => {
-        commit(types.ADD_TO_BUCKET, data)
-      },
-      () => {
-        console.log('An error is occurred')
-      })
+      id: data.item.id,
+      type: data.item.content_type.value
+    }, () => {
+      commit(types.ADD_TO_BUCKET, data)
+    })
   },
-  deleteFromBucket ({commit}, data) {
-    bucketsAPI.delete({
-      buckets_index: data.index,
-      item_index: data.itemIndex
-    },
-      () => {
-        commit(types.DELETE_FROM_BUCKET, data)
-      },
-      () => {
-        console.log('An error is occurred')
-      })
+  deleteFromBucket ({commit, state}, data) {
+    const bucket = state.buckets[data.index]
+    const bucketItem = bucket['children'][data.itemIndex]
+
+    bucketsAPI.delete(bucket.removeUrl, {
+      id: bucketItem['id'],
+      type: bucketItem['content_type']['value']
+    }, () => {
+      commit(types.DELETE_FROM_BUCKET, data)
+    })
   },
-  reorderBucket ({ commit }, data) {
-    bucketsAPI.reorder({
-      buckets_index: data.index,
-      item_old_index: data.oldIndex,
-      item_new_index: data.newIndex
-    },
-      () => {
-        commit(types.REORDER_BUCKET_LIST, data)
-      },
-      () => {
-        console.log('An error is occurred')
+  reorderBucket ({ commit, state }, data) {
+    commit(types.REORDER_BUCKET_LIST, data)
+
+    const bucket = state.buckets[data.bucketIndex]
+
+    bucketsAPI.reorder(bucket.reorderUrl, {
+      buckets: bucket['children'].map(bucketItem => {
+        return {
+          id: bucketItem['id'],
+          type: bucketItem['content_type']['value']
+        }
       })
+    }, () => {})
   },
   overrideBucket ({commit}, data) {
-    bucketsAPI.replace(data,
-      () => {
-        commit(types.DELETE_FROM_BUCKET, data.del)
-        commit(types.ADD_TO_BUCKET, data.add)
-      },
-      () => {
-        console.log('An error is occurred')
-      })
+    bucketsAPI.replace(data, () => {
+      commit(types.DELETE_FROM_BUCKET, data.del)
+      commit(types.ADD_TO_BUCKET, data.add)
+    })
   }
 }
 

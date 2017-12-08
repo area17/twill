@@ -9,7 +9,7 @@
     <td class="buckets__itemTitle">
       <h4><span class="f--link-underlined--o"><a :href="item.edit" target="_blank">{{ item.name }}</a></span></h4>
     </td>
-    <td class="buckets__itemContentType" v-if="item.content_type">
+    <td class="buckets__itemContentType" v-if="item.content_type &&!singleSource">
       {{ item.content_type.label }}
     </td>
     <td class="buckets__itemOptions">
@@ -39,7 +39,7 @@
     name: 'a17BucketItem',
     props: {
       bucket: {
-        type: Number
+        type: String
       },
       draggable: {
         type: Boolean,
@@ -53,6 +53,10 @@
       type: {
         type: String,
         default: 'bucket'
+      },
+      singleSource: {
+        type: Boolean,
+        default: false
       }
     },
     mixins: [bucketMixin],
@@ -183,144 +187,5 @@
     margin-right:auto;
     transition: background 250ms ease;
     @include dragGrid($color__drag, $color__drag_bg);
-  }
-</style>
-
-<style lang="scss"> /* not scoped because this style apply for the BucketSourceItem element */
-  @import '~styles/setup/_mixins-colors-vars.scss';
-
-  /*Child component style*/
-  .buckets__item {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 80px;
-    padding: 0 15px;
-    border-top: 1px solid $color__border--light;
-
-    td {
-      padding-top: 15px;
-      padding-bottom: 15px;
-      // height: 80px;
-    }
-
-    &:hover {
-      background-color: $color__f--bg;
-    }
-
-    &:first-child {
-      border-top: 0 none;
-    }
-
-    .buckets__itemThumbnail {
-
-      @include breakpoint(xsmall) {
-        display: none;
-      }
-
-      img {
-        display: block;
-        width: 50px;
-        min-width: 50px;
-        height: 50px;
-      }
-    }
-
-    .buckets__itemTitle {
-      flex-grow: 1;
-      margin: 0 30px 0 15px;
-      overflow: hidden;
-
-      h4 {
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        color: $color__link;
-      }
-
-      @include breakpoint(xsmall) {
-        margin-left: 0;
-      }
-
-      @media screen and (min-width: 1440px) {
-        margin-right: 80px;
-      }
-
-      a {
-        color: $color__link;
-        text-decoration: none;
-      }
-    }
-
-    .buckets__itemDate {
-      @include breakpoint(medium) {
-        display: none;
-      }
-    }
-
-    .buckets__itemDate,
-    .buckets__itemContentType {
-      margin-right: 25px;
-      color: $color__text--light;
-
-      @include breakpoint(xsmall) {
-        display: none;
-      }
-
-      @include breakpoint(medium) {
-        margin-right: 15px;
-      }
-
-      @include breakpoint(large) {
-        margin-right: 40px;
-      }
-
-      @media screen and (min-width: 1440px) {
-        margin-right: 80px;
-      }
-    }
-
-    .buckets__itemOptions {
-      display: flex;
-
-      .item__dropdown {
-
-        .item__dropdown__content {
-          min-width: 250px;
-
-          /deep/ .radioGroup__item {
-            &:hover {
-              background-color: $color__border--light;
-            }
-          }
-        }
-      }
-
-      .bucket__action {
-        @include font-tiny();
-
-        line-height: 25px;
-        margin-right: 15px;
-
-        &:last-child {
-          margin-right: 0;
-        }
-
-        &.selected {
-          opacity: 0.4;
-        }
-
-      }
-
-    }
-
-    &.single.selected > * {
-      opacity: 0.4;
-    }
-
-    &.draggable {
-      padding-left: 27px;
-    }
   }
 </style>

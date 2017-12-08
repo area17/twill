@@ -1,33 +1,23 @@
 @extends('cms-toolkit::layouts.main')
 
-@php
-    $title = $title ?? "All Projects";
-    $message = $message ?? "What would you like to feature today?";
-    $emptyBucketMessage =  $emptyBucketMessage ?? "No files selected.";
-    $emptySourceMessage =  $emptySourceMessage ?? "No items found.";
-@endphp
-
 @section('appTypeClass', 'app--buckets')
 
 @section('content')
-    <a17-buckets title="{{__($title)}}" empty-buckets="{{__($emptyBucketMessage)}}" empty-source="{{__($emptySourceMessage)}}">{{__($message)}}</a17-buckets>
+    <a17-buckets title="Available items" empty-buckets="No items featured." empty-source="No items available.">
+        What would you like to feature today?
+    </a17-buckets>
 @stop
 
 @section('initialStore')
     window.STORE.buckets = {
+        items: {!! json_encode($items) !!},
+        source: {!! json_encode($source) !!},
+        dataSources: {!! json_encode($dataSources) !!},
         page: 1,
-        maxPage: {{ $maxPage }},
-        offset: {{ $offset }},
-        availableOffsets: {!! json_encode($availableOffsets) !!},
+        maxPage: {{ $maxPage ?? 1 }},
+        offset: {{ $offset ?? 10 }},
+        filter: {}
     }
-
-    window.STORE.buckets.filter = {}
-
-    window.STORE.buckets.dataSources =  {!! json_encode($dataSources) !!}
-
-    window.STORE.buckets.items = {!! json_encode($items) !!}
-
-    window.STORE.buckets.source = {!! json_encode($source) !!}
 @stop
 
 @push('extra_js')

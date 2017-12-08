@@ -35,12 +35,9 @@ if (config('cms-toolkit.enabled.buckets')) {
         collect(config('cms-toolkit.buckets'))->each(function ($bucketSection, $bucketSectionKey) {
             Route::get($bucketSectionKey, ['as' => $bucketSectionKey, 'uses' => 'FeaturedController@index']);
             Route::group(['prefix' => $bucketSectionKey, 'as' => $bucketSectionKey . '.'], function () {
-                Route::post('{bucket}', ['as' => 'add', 'uses' => 'FeaturedController@add']);
-                Route::delete('{bucket}', ['as' => 'remove', 'uses' => 'FeaturedController@remove']);
-                Route::post('{bucket}/sortable', ['as' => 'sortable', 'uses' => 'FeaturedController@sortable']);
-                //TODO this is going to happen on add/remove/sort now that we don't have a save button anymore, or should we have one?
-                Route::get('save', ['as' => 'save', 'uses' => 'FeaturedController@save']);
-                Route::get('cancel', ['as' => 'cancel', 'uses' => 'FeaturedController@cancel']);
+                Route::put('{bucket}', ['as' => 'add', 'uses' => 'FeaturedController@add']);
+                Route::put('{bucket}/remove', ['as' => 'remove', 'uses' => 'FeaturedController@remove']);
+                Route::put('{bucket}/sortable', ['as' => 'sortable', 'uses' => 'FeaturedController@sortable']);
             });
         });
     });

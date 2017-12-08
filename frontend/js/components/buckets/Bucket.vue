@@ -11,7 +11,8 @@
           <a17-fieldset class="buckets__fieldset" :title="title" :activeToggle="false">
             <div class="buckets__header">
               <div class="buckets__sources">
-                <a17-vselect class="sources__select" name="sources" :selected="currentSource" :options="dataSources" :required="true" @change="changeDataSource"></a17-vselect>
+                <a17-vselect v-if="!singleSource" class="sources__select" name="sources" :selected="currentSource" :options="dataSources" :required="true" @change="changeDataSource"></a17-vselect>
+                <h3 v-else>{{ currentSource.label }}</h3>
               </div>
               <div class="buckets__filter">
                 <a17-filter @submit="filterBucketsData"></a17-filter>
@@ -35,7 +36,7 @@
             </h3>
             <draggable v-if="bucket.children.length > 0" class="buckets__list buckets__draggable" :options="dragOptions" @change="sortBucket($event, index)" :value="bucket.children" :element="'table'" >
               <transition-group name="fade_scale_list" tag='tbody'>
-                <a17-bucket-item v-for="(child, index) in bucket.children" :key="index" :item="child" :restricted="restricted" :draggable="bucket.children.length > 1" :singleBucket="singleBucket" :bucket="bucket.id" :buckets="buckets" v-on:add-to-bucket="addToBucket" v-on:remove-from-bucket="deleteFromBucket"></a17-bucket-item>
+                <a17-bucket-item v-for="(child, index) in bucket.children" :key="index" :item="child" :restricted="restricted" :draggable="bucket.children.length > 1" :singleBucket="singleBucket" :singleSource="singleSource" :bucket="bucket.id" :buckets="buckets" v-on:add-to-bucket="addToBucket" v-on:remove-from-bucket="deleteFromBucket"></a17-bucket-item>
               </transition-group>
             </draggable>
             <div v-else="" class="buckets__empty">
@@ -129,6 +130,9 @@
       singleBucket: function () {
         return this.buckets.length === 1
       },
+      singleSource: function () {
+        return this.dataSources.length === 1
+      },
       overrideBucketText: function () {
         let bucket = this.buckets.find(b => b.id === this.currentBucketID)
         let bucketName = ''
@@ -211,7 +215,7 @@
       },
       filterBucketsData: function (formData) {
         this.$store.commit('updateBucketsDataPage', 1)
-        this.$store.commit('updateBucketsFilter', formData)
+        this.$store.commit('updateBucketsFilter', formData || {search: ''})
         // reload datas
         this.$store.dispatch('getBucketsData')
       },
@@ -341,6 +345,144 @@
 
     h4 {
       color: $color__f--text;
+    }
+  }
+</style>
+
+<style lang="scss">
+  @import '~styles/setup/_mixins-colors-vars.scss';
+
+  .buckets__item {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+    padding: 0 15px;
+    border-top: 1px solid $color__border--light;
+
+    td {
+      padding-top: 15px;
+      padding-bottom: 15px;
+      // height: 80px;
+    }
+
+    &:hover {
+      background-color: $color__f--bg;
+    }
+
+    &:first-child {
+      border-top: 0 none;
+    }
+
+    .buckets__itemThumbnail {
+
+      @include breakpoint(xsmall) {
+        display: none;
+      }
+
+      img {
+        display: block;
+        width: 50px;
+        min-width: 50px;
+        height: 50px;
+      }
+    }
+
+    .buckets__itemTitle {
+      flex-grow: 1;
+      margin: 0 30px 0 15px;
+      overflow: hidden;
+
+      h4 {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        color: $color__link;
+      }
+
+      @include breakpoint(xsmall) {
+        margin-left: 0;
+      }
+
+      @media screen and (min-width: 1440px) {
+        margin-right: 80px;
+      }
+
+      a {
+        color: $color__link;
+        text-decoration: none;
+      }
+    }
+
+    .buckets__itemDate {
+      @include breakpoint(medium) {
+        display: none;
+      }
+    }
+
+    .buckets__itemDate,
+    .buckets__itemContentType {
+      margin-right: 25px;
+      color: $color__text--light;
+
+      @include breakpoint(xsmall) {
+        display: none;
+      }
+
+      @include breakpoint(medium) {
+        margin-right: 15px;
+      }
+
+      @include breakpoint(large) {
+        margin-right: 40px;
+      }
+
+      @media screen and (min-width: 1440px) {
+        margin-right: 80px;
+      }
+    }
+
+    .buckets__itemOptions {
+      display: flex;
+
+      .item__dropdown {
+
+        .item__dropdown__content {
+          min-width: 250px;
+
+          /deep/ .radioGroup__item {
+            &:hover {
+              background-color: $color__border--light;
+            }
+          }
+        }
+      }
+
+      .bucket__action {
+        @include font-tiny();
+
+        line-height: 25px;
+        margin-right: 15px;
+
+        &:last-child {
+          margin-right: 0;
+        }
+
+        &.selected {
+          opacity: 0.4;
+        }
+
+      }
+
+    }
+
+    &.single.selected > * {
+      opacity: 0.4;
+    }
+
+    &.draggable {
+      padding-left: 27px;
     }
   }
 </style>
