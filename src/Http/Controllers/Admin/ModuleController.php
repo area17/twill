@@ -712,7 +712,7 @@ abstract class ModuleController extends Controller
         $orders = [];
         if ($this->request->has("sortKey") && $this->request->has("sortDir")) {
             if (($key = $this->request->get("sortKey")) == 'name') {
-                $orders[$this->titleColumnKey] = $this->request->get("sortDir");
+                $orders[$this->indexColumns[$this->titleColumnKey]['sortKey'] ?? $this->titleColumnKey] = $this->request->get("sortDir");
             } elseif (!empty($key)) {
                 $orders[$key] = $this->request->get("sortDir");
             }
