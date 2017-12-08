@@ -94,7 +94,7 @@
         defaultOffset: {{ $defaultOffset ?? 60 }},
         sortKey: '{{ $reorder ? (request('sortKey') ?? '') : (request('sortKey') ?? 'name') }}',
         sortDir: '{{ request('sortDir') ?? 'asc' }}',
-        baseUrl: 'https://cms-sandbox.a17.io/',
+        baseUrl: '{{ rtrim(config('app.url'), '/') . '/' }}',
         localSlug: '{{ $userId }}__{{ $routeName }}'
     }
 @stop
