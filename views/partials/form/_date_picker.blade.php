@@ -1,7 +1,3 @@
-@php
-    $renderForBlocks = $renderForBlocks ?? false;
-@endphp
-
 <a17-datepicker
     @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif
     label="{{ $label }}"
@@ -14,7 +10,7 @@
     in-store="date"
 ></a17-datepicker>
 
-@unless($renderForBlocks)
+@unless($renderForBlocks || $renderForModal)
 @push('fieldsStore')
     @if (isset($item->$name))
         window.STORE.form.fields.push({

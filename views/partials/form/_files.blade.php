@@ -3,7 +3,6 @@
     $noTranslate = $noTranslate ?? false;
     $note = $note ?? 'Add' . ($max > 1 ? " up to $max files" : ' one file');
     $itemLabel = $itemLabel ?? strtolower($label);
-    $renderForBlocks = $renderForBlocks ?? false;
 @endphp
 
 @if($noTranslate)

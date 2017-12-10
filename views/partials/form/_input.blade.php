@@ -1,6 +1,5 @@
 @php
     $type = $type ?? 'text';
-    $renderForBlocks = $renderForBlocks ?? false;
 @endphp
 
 @if($translated ?? false)
@@ -36,24 +35,22 @@
     ></a17-textfield>
 @endif
 
-@unless($renderForBlocks)
+@unless($renderForBlocks || $renderForModal)
     @push('fieldsStore')
         @if($translated ?? false && isset($form_fields['translations']) && isset($form_fields['translations'][$name]))
-            var field = {
+            window.STORE.form.fields.push({
                 name: '{{ $name }}',
                 value: {
                     @foreach(getLocales() as $locale)
                         '{{ $locale }}': "{!! $form_fields['translations'][$name][$locale] ?? '' !!}"@unless($loop->last),@endif
                     @endforeach
                 }
-            }
-        @else
-            var field = {
+            })
+        @elseif(isset($item->$name))
+            window.STORE.form.fields.push({
                 name: '{{ $name }}',
                 value: "{{ $item->$name }}"
-            }
+            })
         @endif
-
-        window.STORE.form.fields.push(field)
     @endpush
 @endunless

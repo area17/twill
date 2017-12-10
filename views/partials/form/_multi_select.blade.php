@@ -1,7 +1,3 @@
-@php
-    $renderForBlocks = $renderForBlocks ?? false;
-@endphp
-
 <a17-inputframe>
     <a17-multiselect
         :options="{{ json_encode($options) }}"
@@ -13,7 +9,7 @@
     ></a17-multiselect>
 </a17-inputframe>
 
-@unless($renderForBlocks)
+@unless($renderForBlocks || $renderForModal)
 @push('fieldsStore')
     @if (isset($item->$name))
         window.STORE.form.fields.push({

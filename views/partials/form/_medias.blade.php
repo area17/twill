@@ -1,6 +1,5 @@
 @php
     $max = $max ?? 1;
-    $renderForBlocks = $renderForBlocks ?? false;
 @endphp
 
 <a17-inputframe label="{{ $label }}">

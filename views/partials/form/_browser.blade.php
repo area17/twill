@@ -5,7 +5,6 @@
     $max = $max ?? 1;
     $note = $note ?? 'Add' . ($max > 1 ? " up to $max ". strtolower($label) : ' one ' . str_singular(strtolower($label)));
     $itemLabel = $itemLabel ?? strtolower($label);
-    $renderForBlocks = $renderForBlocks ?? false;
 @endphp
 
 <a17-inputframe label="{{ $label }}">

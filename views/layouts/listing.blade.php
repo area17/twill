@@ -1,11 +1,5 @@
 @extends('cms-toolkit::layouts.main')
 
-@php
-    $emptyDataTable = $emptyMessage ?? "There is no item here yet.";
-    $routeName = $moduleName ?? Route::currentRouteName();
-    $userId = isset($currentUser) ? $currentUser->id : 0;
-@endphp
-
 @section('appTypeClass', 'app--listing')
 
 @section('content')
@@ -51,7 +45,8 @@
             </div>
             <a17-bulk></a17-bulk>
         </div>
-        <a17-datatable :draggable="{{ $reorder ? 'true' : 'false' }}" empty-message="{{ __($emptyDataTable) }}"></a17-datatable>
+        <a17-datatable :draggable="{{ $reorder ? 'true' : 'false' }}" empty-message="There is no item here yet."></a17-datatable>
+
         <a17-modal class="modal--form" ref="addNewModal" title="Add new">
             <form action="{{ $storeUrl }}" method="post">
                 {{ csrf_field() }}
@@ -95,7 +90,7 @@
         sortKey: '{{ $reorder ? (request('sortKey') ?? '') : (request('sortKey') ?? 'name') }}',
         sortDir: '{{ request('sortDir') ?? 'asc' }}',
         baseUrl: '{{ rtrim(config('app.url'), '/') . '/' }}',
-        localSlug: '{{ $userId }}__{{ $routeName }}'
+        localStorageKey: '{{ isset($currentUser) ? $currentUser->id : 0 }}__{{ $moduleName ?? Route::currentRouteName() }}'
     }
 @stop
 

@@ -20,7 +20,6 @@
     }
 
     $options = $customOptions ?? $toolbarOptions ?? false;
-    $renderForBlocks = $renderForBlocks ?? false;
 @endphp
 
 @if($translated ?? false)
@@ -52,7 +51,7 @@
     ></a17-wysiwyg>
 @endif
 
-@unless($renderForBlocks)
+@unless($renderForBlocks || $renderForModal)
 @push('fieldsStore')
     @if($translated ?? false && isset($form_fields['translations']) && isset($form_fields['translations'][$name]))
         var field = {

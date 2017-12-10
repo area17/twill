@@ -1,7 +1,3 @@
-@php
-    $renderForBlocks = $renderForBlocks ?? false;
-@endphp
-
 <a17-locationfield
     label="{{ $label }}"
     @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif

@@ -2,7 +2,6 @@
 
 namespace A17\CmsToolkit\Http\Controllers\Admin;
 
-use A17\CmsToolkit\Helpers\FlashLevel;
 use A17\CmsToolkit\Repositories\UserRepository;
 use Auth;
 
@@ -15,7 +14,6 @@ class ImpersonateController extends Controller
             Auth::user()->setImpersonating($user->id);
         }
 
-        flash()->message('You are now impersonating user with id ' . $id, FlashLevel::WARNING);
         return back();
     }
 

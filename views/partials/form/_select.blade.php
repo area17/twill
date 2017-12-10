@@ -1,9 +1,8 @@
 @php
-    $renderForBlocks = $renderForBlocks ?? false;
-    $options = method_exists($options, 'map') ? $options->map(function($option, $id) {
+    $options = method_exists($options, 'map') ? $options->map(function($label, $value) {
         return [
-            'value' => $id,
-            'label' => $option
+            'value' => $value,
+            'label' => $label
         ];
     })->values()->toArray() : $options;
 @endphp
@@ -29,7 +28,7 @@
     ></a17-vselect>
 @endif
 
-@unless($renderForBlocks)
+@unless($renderForBlocks || $renderForModal)
 @push('fieldsStore')
     @if (isset($item->$name))
         window.STORE.form.fields.push({

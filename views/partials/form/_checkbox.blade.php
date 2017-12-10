@@ -1,7 +1,3 @@
-@php
-    $renderForBlocks = $renderForBlocks ?? false;
-@endphp
-
 <a17-inputframe>
     <a17-checkboxgroup
         @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif
@@ -10,7 +6,7 @@
     ></a17-checkboxgroup>
 </a17-inputframe>
 
-@unless($renderForBlocks)
+@unless($renderForBlocks || $renderForModal)
 @push('fieldsStore')
     window.STORE.form.fields.push({
         name: '{{ $name }}',
