@@ -3,6 +3,7 @@
 namespace A17\CmsToolkit;
 
 use A17\CmsToolkit\Models\Enums\UserRole;
+use A17\CmsToolkit\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -46,7 +47,8 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('edit-user', function ($user, $editedUser) {
-            return $user->can('edit') || $user->id == $editedUser;
+            $editedUserObject = User::find($editedUser);
+            return ($user->can('edit') || $user->id == $editedUser) && $editedUserObject->role !== 'SUPERADMIN';
         });
 
         Gate::define('edit-user-role', function ($user) {

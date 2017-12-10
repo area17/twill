@@ -19,6 +19,7 @@ class UserRepository extends ModuleRepository
     public function filter($query, array $scopes = [])
     {
         $this->addLikeFilterScope($query, $scopes, 'name');
+        $query->where('role', '<>', 'SUPERADMIN');
         return parent::filter($query, $scopes);
     }
 
@@ -26,6 +27,16 @@ class UserRepository extends ModuleRepository
     {
         $this->sendWelcomeEmail($user);
         parent::afterUpdateBasic($user, $fields);
+    }
+
+    public function getCountForPublished()
+    {
+        return $this->model->where('role', '<>', 'SUPERADMIN')->published()->count();
+    }
+
+    public function getCountForDraft()
+    {
+        return $this->model->where('role', '<>', 'SUPERADMIN')->draft()->count();
     }
 
     public function afterSave($user, $fields)

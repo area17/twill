@@ -10,8 +10,8 @@
     in-store="date"
 ></a17-datepicker>
 
-@unless($renderForBlocks || $renderForModal)
 @push('fieldsStore')
+@unless($renderForBlocks || ($renderForModal ?? false))
     @if (isset($item->$name))
         window.STORE.form.fields.push({
             name: '{{ $name }}',

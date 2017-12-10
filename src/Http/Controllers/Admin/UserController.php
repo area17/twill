@@ -17,7 +17,7 @@ class UserController extends ModuleController
     protected $defaultOrders = ['name' => 'asc'];
 
     protected $defaultFilters = [
-        'search' => 'name',
+        'search' => '%name',
     ];
     protected $filters = [
         'fRole' => 'role',
@@ -58,7 +58,7 @@ class UserController extends ModuleController
                     'thumb' => true,
                     'variant' => [
                         'role' => 'profile',
-                        'crop' => 'square',
+                        'crop' => 'default',
                     ],
                 ],
             ] + $this->indexColumns;
@@ -69,14 +69,15 @@ class UserController extends ModuleController
     {
         return [
             'defaultFilterSlug' => 'published',
-            'fRoleList' => [null => 'All roles'] + UserRole::toArray(),
+            'create' => $this->getIndexOption('create') && auth()->user()->can('edit-user-role'),
+            'roleList' => collect(UserRole::toArray()),
         ];
     }
 
     protected function formData($request)
     {
         return [
-            'roleList' => UserRole::toArray(),
+            'roleList' => collect(UserRole::toArray()),
         ];
     }
 

@@ -1,37 +1,97 @@
-@extends('cms-toolkit::layouts.form')
+@extends('cms-toolkit::layouts.form', [
+    'contentFieldsetLabel' => 'User settings',
+    'editModalTitle' => 'Edit user name'
+])
 
-{{-- @php
-    $isSuperAdmin = isset($form_fields['role']) ? $form_fields['role'] === 'SUPERADMIN' : false;
+@php
+    $isSuperAdmin = isset($item->role) ? $item->role === 'SUPERADMIN' : false;
 @endphp
 
-@section('form')
-    {{ Form::model($form_fields, $form_options) }}
-        @can('edit-user-role')
-            @formField('publish_status', [
-                'hiddenTitle' => 'Disabled',
-                'publishedTitle' => 'Enabled'
+@section('contentFields')
+    @formField('input', [
+        'name' => 'email',
+        'label' => 'Email'
+    ])
+
+    @can('edit-user-role')
+        @if(!$isSuperAdmin && ($item->id !== $currentUser->id))
+            @formField('select', [
+                'name' => "role",
+                'label' => "Role",
+                'options' => $roleList,
+                'placeholder' => 'Select a role'
             ])
-        @endcan
-        <section class="box">
-            <header class="header_small">
-                <h3><b>{{ isset($form_fields['name']) ? $form_fields['name'] . ($isSuperAdmin ? ' (SuperAdmin)' : '') : 'New user' }}</b></h3>
-            </header>
-            @formField('input', ['field' => 'name', 'field_name' => 'Name'])
-            @formField('input', ['field' => 'email', 'field_name' => 'Email'] + (isset($form_fields['id']) ? ['disabled' => 'disabled'] : []))
-            @can('edit-user-role')
-                @if((!isset($form_fields['id']) || (!$isSuperAdmin && ($form_fields['id'] !== $currentUser->id))))
-                    @formField('select', [
-                        'field' => "role",
-                        'field_name' => "Role",
-                        'list' => $roleList,
-                        'data_behavior' => 'selector',
-                        'placeholder' => 'Select a role'
-                    ])
-                @endif
-            @endcan
-        </section>
-        @if(config('cms-toolkit.enabled.users-image'))
-            @formField('medias', ['media_role' => 'profile'])
         @endif
+    @endcan
+
+    @if(config('cms-toolkit.enabled.users-image'))
+        @formField('medias', [
+            'name' => 'profile',
+            'label' => 'Profile image'
+        ])
+    @endif
 @stop
- --}}
+
+@push('vuexStore')
+    window.STORE.publication.publishedLabel = 'Enabled'
+    window.STORE.publication.draftLabel = 'Disabled'
+    window.STORE.publication.submitOptions = {
+        draft: [
+          {
+            name: 'save',
+            text: 'Disable user'
+          },
+          {
+            name: 'save-close',
+            text: 'Disable user and close'
+          },
+          {
+            name: 'save-new',
+            text: 'Disable user and create new'
+          },
+          {
+            name: 'cancel',
+            text: 'Cancel'
+          }
+        ],
+        live: [
+          {
+            name: 'publish',
+            text: 'Enable user'
+          },
+          {
+            name: 'publish-close',
+            text: 'Enable user and close'
+          },
+          {
+            name: 'publish-new',
+            text: 'Enable user and create new'
+          },
+          {
+            name: 'cancel',
+            text: 'Cancel'
+          }
+        ],
+        update: [
+          {
+            name: 'update',
+            text: 'Update'
+          },
+          {
+            name: 'update-close',
+            text: 'Update and close'
+          },
+          {
+            name: 'update-new',
+            text: 'Update and create new'
+          },
+          {
+            name: 'cancel',
+            text: 'Cancel'
+          }
+        ]
+      }
+    @if ($item->id == $currentUser->id)
+        window.STORE.publication.withPublicationToggle = false
+    @endif
+@endpush

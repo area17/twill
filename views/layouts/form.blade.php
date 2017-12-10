@@ -10,13 +10,18 @@
                     $additionalFieldsets = $additionalFieldsets ?? [];
                     array_unshift($additionalFieldsets, [
                         'fieldset' => 'content',
-                        'label' => 'Content'
+                        'label' => $contentFieldsetLabel ?? 'Content'
                     ]);
                 @endphp
                 <a17-sticky-nav data-sticky-target="navbar" :items="{{ json_encode($additionalFieldsets) }}">
-                    <a17-title-editor title-name="{{ $formCustomTitleName ?? $titleColumnKey ?? 'title' }}" title-label="{{ $formCustomTitleLabel ?? ucfirst($titleColumnKey ?? 'title') }}" slot="title">
+                    <a17-title-editor
+                        @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif
+                        title-name="{{ $formCustomTitleName ?? $titleColumnKey ?? 'title' }}"
+                        title-label="{{ $formCustomTitleLabel ?? ucfirst($titleColumnKey ?? 'title') }}"
+                        slot="title"
+                    >
                         <template slot="modal-form">
-                            @partialView(($moduleName ?? null), 'modal_extra_fields')
+                            @partialView(($moduleName ?? null), 'modal_extra_fields', ['renderForModal' => true])
                         </template>
                     </a17-title-editor>
                     <a17-langswitcher slot="actions"></a17-langswitcher>
@@ -28,7 +33,7 @@
                         <a17-publisher data-sticky-target="publisher"></a17-publisher>
                     </aside>
                     <section class="col col--primary">
-                        <a17-fieldset title="Content" id="content" data-sticky-top="publisher">
+                        <a17-fieldset title="{{ $contentFieldsetLabel ?? 'Content' }}" id="content" data-sticky-top="publisher">
                             @yield('contentFields')
                         </a17-fieldset>
 
@@ -38,13 +43,13 @@
             </div>
 
             <!-- Move to trash -->
-            <a17-modal class="modal--tiny modal--form modal--withintro" ref="moveToTrashModal" title="Move To Trash">
+            {{-- <a17-modal class="modal--tiny modal--form modal--withintro" ref="moveToTrashModal" title="Move To Trash">
                 <p class="modal--tiny-title"><strong>Are you sure ?</strong></p>
                 <p>This change can't be undone.</p>
                 <a17-inputframe>
                     <a17-button variant="validate">Ok</a17-button> <a17-button variant="aslink" @click="$refs.moveToTrashModal.close()"><span>Cancel</span></a17-button>
                 </a17-inputframe>
-            </a17-modal>
+            </a17-modal> --}}
 
             <a17-spinner v-if="loading"></a17-spinner>
         </form>
@@ -58,7 +63,6 @@
 @stop
 
 @section('initialStore')
-
     window.STORE.languages = {}
     window.STORE.languages.all = {!! json_encode(getLanguagesForVueStore($form_fields)) !!}
     window.STORE.form = {

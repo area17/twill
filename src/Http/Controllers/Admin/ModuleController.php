@@ -176,24 +176,27 @@ abstract class ModuleController extends Controller
         $items = $this->getIndexItems($scopes);
 
         $data = [
-            'moduleName' => $this->moduleName,
-            'titleColumnKey' => $this->titleColumnKey,
-            'formCustomTitleName' => $this->formCustomTitleName ?? null,
-            'formCustomTitleLabel' => $this->formCustomTitleLabel ?? null,
             'tableData' => $this->getIndexTableData($items),
             'tableColumns' => $this->getIndexTableColumns($items),
             'tableMainFilters' => $this->getIndexTableMainFilters($items),
+            'filters' => json_decode($this->request->get('filter'), true) ?? [],
             'maxPage' => method_exists($items, 'lastPage') ? $items->lastPage() : 1,
             'defaultMaxPage' => method_exists($items, 'total') ? ceil($items->total() / $this->perPage) : 1,
             'offset' => method_exists($items, 'perPage') ? $items->perPage() : count($items),
             'defaultOffset' => $this->perPage,
-            'publish' => $this->getIndexOption('publish'),
-            'reorder' => $this->getIndexOption('reorder'),
-            'permalink' => $this->getIndexOption('permalink'),
-            'filters' => json_decode($this->request->get('filter'), true) ?? [],
         ] + $this->getIndexUrls($this->moduleName, $this->routePrefix);
 
-        return array_replace_recursive($data, $this->indexData($this->request));
+        $options = [
+            'moduleName' => $this->moduleName,
+            'reorder' => $this->getIndexOption('reorder'),
+            'create' => $this->getIndexOption('create') && auth()->user()->can('edit'),
+            'permalink' => $this->getIndexOption('permalink'),
+            'titleColumnKey' => $this->titleColumnKey,
+            'formCustomTitleName' => $this->formCustomTitleName ?? null,
+            'formCustomTitleLabel' => $this->formCustomTitleLabel ?? null,
+        ];
+
+        return array_replace_recursive($data + $options, $this->indexData($this->request));
     }
 
     public function getIndexItems($scopes = [], $forcePagination = false)

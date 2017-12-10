@@ -28,8 +28,8 @@
     ></a17-vselect>
 @endif
 
-@unless($renderForBlocks || $renderForModal)
 @push('fieldsStore')
+@unless($renderForBlocks || ($renderForModal ?? false))
     @if (isset($item->$name))
         window.STORE.form.fields.push({
             name: '{{ $name }}',

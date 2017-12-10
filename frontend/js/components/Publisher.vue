@@ -1,7 +1,7 @@
 <template>
   <div class="publisher">
     <div class="publisher__wrapper">
-      <a17-switcher title="Status" name="publish_state" v-if="withPublicationToggle"></a17-switcher>
+      <a17-switcher title="Status" name="publish_state" v-if="withPublicationToggle" :textEnabled="textEnabled" :textDisabled="textDisabled"></a17-switcher>
       <a17-reviewaccordion  v-if="reviewProcess && reviewProcess.length" :options="reviewProcess" name="review_process" :value="reviewProcessCompleteValues" :open="openStates['A17Reviewaccordion']" @open="openCloseAccordion">Review status</a17-reviewaccordion>
       <a17-radioaccordion  v-if="visibility && visibilityOptions && visibilityOptions.length" :radios="visibilityOptions" name="visibility" :value="visibility" :open="openStates['A17Radioaccordion']" @open="openCloseAccordion" @change="updateVisibility">Visibility</a17-radioaccordion>
       <a17-checkboxaccordion  v-if="languages && languages.length" :options="languages" name="active_languages" :value="publishedLanguagesValues" :open="openStates['A17Checkboxaccordion']" @open="openCloseAccordion">Languages</a17-checkboxaccordion>
@@ -14,9 +14,9 @@
         <a17-multibutton :options="submitOptions" type="submit"></a17-multibutton>
       </div>
     </div>
-    <div class="publisher__trash">
+    <!-- <div class="publisher__trash">
       <a href="#" @click.prevent="openMoveToTrashModal" class="f--small f--note f--underlined">Move to Trash</a>
-    </div>
+    </div> -->
   </div>
 
 </template>
@@ -89,6 +89,8 @@
         languages: state => state.language.all,
         revisions: state => state.revision.all,
         published: state => state.publication.published,
+        textEnabled: state => state.publication.publishedLabel,
+        textDisabled: state => state.publication.draftLabel,
         withPublicationToggle: state => state.publication.withPublicationToggle,
         withPublicationTimeframe: state => state.publication.withPublicationTimeframe,
         visibility: state => state.publication.visibility,

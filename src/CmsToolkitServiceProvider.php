@@ -299,10 +299,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
         View::composer('cms-toolkit::partials.navigation.*', ActiveNavigation::class);
 
         View::composer(['admin.*', 'cms-toolkit::*'], function ($view) {
-            return $view->with([
-                'renderForModal' => false,
-                'renderForBlocks' => false,
-            ]);
+            return $view->with(['renderForBlocks' => false]);
         });
 
     }

@@ -7,7 +7,7 @@
       <a v-if="permalink" :href="fullUrl" target="_blank" class="titleEditor__permalink f--small"><span class="f--note f--external f--underlined--o">{{ fullUrl | prettierUrl }}</span></a>
 
       <!-- Editing modal -->
-      <a17-modal class="modal--form" ref="editModal" title="Update item">
+      <a17-modal class="modal--form" ref="editModal" :title="modalTitle">
         <form action="#" @submit.prevent="update">
           <a17-model-title-editor ref="titleEditor" :title="title" :titleLabel="titleLabel" :titleName="titleName" :permalink="permalink" :withPermalink="permalink != false" :baseUrl="baseUrl" :mode="mode">
             <slot name="modal-form"></slot>
@@ -40,6 +40,10 @@
       titleLabel: {
         type: String,
         default: 'Title'
+      },
+      modalTitle: {
+        type: String,
+        default: 'Update item'
       }
     },
     computed: {

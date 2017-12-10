@@ -31,10 +31,14 @@ class User extends AuthenticatableContract
     ];
 
     protected $hidden = ['password', 'remember_token'];
+    public $checkboxes = ['published'];
 
     public $mediasParams = [
         'profile' => [
-            'square' => '1',
+            'default' => [
+                'name' => 'default',
+                'ratio' => 1,
+            ],
         ],
     ];
 

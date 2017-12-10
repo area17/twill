@@ -34,18 +34,43 @@ abstract class ModuleRepository
     {
         switch ($slug) {
             case 'all':
-                return $this->model->count();
+                return $this->getCountForAll();
             case 'published':
-                return $this->model->published()->count();
+                return $this->getCountForPublished();
             case 'draft':
-                return $this->model->draft()->count();
+                return $this->getCountForDraft();
             case 'trash':
-                return $this->model->onlyTrashed()->count();
+                return $this->getCountForTrash();
             case 'mine':
-                return 0;
+                return $this->getCountForMine();
             default:
                 return 0;
         }
+    }
+
+    public function getCountForAll()
+    {
+        return $this->model->count();
+    }
+
+    public function getCountForPublished()
+    {
+        return $this->model->published()->count();
+    }
+
+    public function getCountForDraft()
+    {
+        return $this->model->draft()->count();
+    }
+
+    public function getCountForTrash()
+    {
+        return $this->model->onlyTrashed()->count();
+    }
+
+    public function getCountForMine()
+    {
+        return 0;
     }
 
     public function getById($id, $with = [], $withCount = [])

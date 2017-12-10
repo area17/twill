@@ -51,8 +51,8 @@
     ></a17-wysiwyg>
 @endif
 
-@unless($renderForBlocks || $renderForModal)
 @push('fieldsStore')
+@unless($renderForBlocks || ($renderForModal ?? false))
     @if($translated ?? false && isset($form_fields['translations']) && isset($form_fields['translations'][$name]))
         var field = {
             name: '{{ $name }}',

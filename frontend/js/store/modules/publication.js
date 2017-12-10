@@ -3,6 +3,8 @@ import * as types from '../mutation-types'
 const state = {
   withPublicationToggle: window.STORE.publication.withPublicationToggle || false,
   published: window.STORE.publication.published || false,
+  publishedLabel: window.STORE.publication.publishedLabel || 'Live',
+  draftLabel: window.STORE.publication.draftLabel || 'Draft',
   withPublicationTimeframe: window.STORE.publication.withPublicationTimeframe || false,
   startDate: window.STORE.publication.startDate || null,
   endDate: window.STORE.publication.endDate || null,
@@ -18,7 +20,7 @@ const state = {
       label: 'Private'
     }
   ],
-  submitOptions: {
+  submitOptions: window.STORE.publication.submitOptions || {
     draft: [
       {
         name: 'save',

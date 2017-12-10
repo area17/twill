@@ -38,9 +38,11 @@
                         </div>
                     @endif
 
-                    <div slot="additional-actions">
-                        <a17-button variant="validate" size="small" v-on:click="$refs.addNewModal.open()">Add new</a17-button>
-                    </div>
+                    @if($create ?? false)
+                        <div slot="additional-actions">
+                            <a17-button variant="validate" size="small" v-on:click="$refs.addNewModal.open()">Add new</a17-button>
+                        </div>
+                    @endif
                 </a17-filter>
             </div>
             <a17-bulk></a17-bulk>
@@ -56,7 +58,7 @@
                     :base-url="baseUrl"
                     @unless($permalink ?? true) :with-permalink="false" @endunless
                 >
-                    @partialView(($moduleName ?? null), 'modal_extra_fields')
+                    @partialView(($moduleName ?? null), 'modal_extra_fields', ['renderForModal' => true])
                 </a17-modal-title-editor>
                 <a17-modal-validation v-bind:mode="'create'" :active-publish-state="false" :is-publish="false" published-name="published"></a17-modal-validation>
             </form>
