@@ -16,7 +16,7 @@ const state = {
   sortKey: window.STORE.datatable.sortKey || '',
   sortDir: window.STORE.datatable.sortDir || 'asc',
   bulk: [],
-  localSlug: window.STORE.datatable.localSlug || location.pathname,
+  localStorageKey: window.STORE.datatable.localStorageKey || location.pathname,
   loading: false
 }
 
@@ -79,7 +79,7 @@ const mutations = {
   },
   [types.UPDATE_DATATABLE_OFFSET] (state, offsetNumber) {
     state.offset = offsetNumber
-    setStorage(state.localSlug + '_page-offset', state.offset)
+    setStorage(state.localStorageKey + '_page-offset', state.offset)
   },
   [types.UPDATE_DATATABLE_PAGE] (state, pageNumber) {
     state.page = pageNumber
@@ -89,7 +89,7 @@ const mutations = {
     state.maxPage = maxPage
   },
   [types.UPDATE_DATATABLE_VISIBLITY] (state, columnNames) {
-    setStorage(state.localSlug + '_columns-visible', JSON.stringify(columnNames))
+    setStorage(state.localStorageKey + '_columns-visible', JSON.stringify(columnNames))
     state.columns.forEach(function (column) {
       for (let i = 0; i < columnNames.length; i++) {
         if (columnNames[i] === column.name) {

@@ -94,7 +94,7 @@
       },
       emptyMessage: {
         type: String,
-        default: 'No drafts baby.'
+        default: ''
       }
     },
     data: function () {
