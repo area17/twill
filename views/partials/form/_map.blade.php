@@ -7,7 +7,7 @@
 ></a17-locationfield>
 
 @unless($renderForBlocks)
-@push('fieldsStore')
+@push('vuexStore')
     @if (isset($item->$name))
         window.STORE.form.fields.push({
             name: '{{ $name }}',

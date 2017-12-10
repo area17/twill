@@ -20,7 +20,7 @@
 </a17-inputframe>
 
 @unless($renderForBlocks)
-@push('fieldsStore')
+@push('vuexStore')
     @if (isset($form_fields['medias']) && isset($formFields['medias'][$name]))
         window.STORE.medias.selected["{{ $name }}"] = {!! json_encode($form_fields['medias'][$name]) !!}
     @endif

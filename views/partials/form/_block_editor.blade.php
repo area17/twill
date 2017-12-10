@@ -8,7 +8,7 @@
     })->filter()->toArray() : config('cms-toolkit.block_editor.blocks');
 @endphp
 
-@push('fieldsStore')
+@push('vuexStore')
     window.STORE.form.content = {!! json_encode(array_values($availableBlocks)) !!}
     window.STORE.form.blocks = {!! json_encode($form_fields['blocks'] ?? []) !!}
 

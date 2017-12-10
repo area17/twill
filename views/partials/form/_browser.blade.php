@@ -18,7 +18,7 @@
 </a17-inputframe>
 
 @unless($renderForBlocks)
-@push('fieldsStore')
+@push('vuexStore')
     @if (isset($item->$name))
         window.STORE.browser.selected["{{ $name }}"] = {!! json_encode($item->$name) !!}
     @endif

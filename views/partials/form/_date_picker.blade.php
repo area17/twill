@@ -10,8 +10,8 @@
     in-store="date"
 ></a17-datepicker>
 
-@push('fieldsStore')
 @unless($renderForBlocks || ($renderForModal ?? false))
+@push('vuexStore')
     @if (isset($item->$name))
         window.STORE.form.fields.push({
             name: '{{ $name }}',

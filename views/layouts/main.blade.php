@@ -52,7 +52,7 @@
             ]
 
             @yield('initialStore')
-            @stack('fieldsStore')
+            @stack('vuexStore')
         </script>
         @stack('extra_js')
     </body>

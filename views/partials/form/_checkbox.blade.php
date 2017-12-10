@@ -6,8 +6,8 @@
     ></a17-checkboxgroup>
 </a17-inputframe>
 
-@push('fieldsStore')
 @unless($renderForBlocks || ($renderForModal ?? false))
+@push('vuexStore')
     window.STORE.form.fields.push({
         name: '{{ $name }}',
         value: @if($item->$name) [1] @else [] @endif

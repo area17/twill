@@ -27,7 +27,7 @@
 @endif
 
 @unless($renderForBlocks)
-@push('fieldsStore')
+@push('vuexStore')
     @if ($noTranslate)
         @if (isset($item->$name))
             window.STORE.medias.selected["{{ $name }}"] = {!! json_encode($item->$name) !!}

@@ -35,8 +35,8 @@
     ></a17-textfield>
 @endif
 
-    @push('fieldsStore')
 @unless($renderForBlocks || ($renderForModal ?? false))
+    @push('vuexStore')
         @if($translated ?? false && isset($form_fields['translations']) && isset($form_fields['translations'][$name]))
             window.STORE.form.fields.push({
                 name: '{{ $name }}',
