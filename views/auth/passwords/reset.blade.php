@@ -16,7 +16,7 @@ $passwordText = isset($welcome) && $welcome ? 'Choose password' : 'Reset passwor
 
                     <fieldset class="login__fieldset">
                         <label class="login__label" for="email">Email</label>
-                        <input type="email" name="email" id="email" class="login__input" required autofocus />
+                        <input type="email" name="email" id="email" class="login__input" required autofocus value="{{ $email ?? '' }}" />
                     </fieldset>
 
                     <fieldset class="login__fieldset">
