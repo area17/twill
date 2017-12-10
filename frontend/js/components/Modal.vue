@@ -1,10 +1,10 @@
 <template>
-  <div class="modal" :class="modalClasses" @mousedown="close" @touchstart="close">
+  <div class="modal" :class="modalClasses" @mousedown="hide" @touchstart="hide">
     <transition name="fade_scale_modal">
       <div class="modal__window" @mousedown.stop @touchstart.stop v-if="active" v-show="!hidden">
         <header class="modal__header" v-if="modalTitle">
           {{ modalTitle }}
-          <button class="modal__close" type="button" @click="close"><span v-svg symbol="close_modal"></span></button>
+          <button class="modal__close" type="button" @click="hide"><span v-svg symbol="close_modal"></span></button>
         </header>
 
         <div class="modal__content">
@@ -35,7 +35,7 @@
     data: function () {
       return {
         active: false,
-        hidden: false
+        hidden: true
       }
     },
     computed: {
@@ -45,6 +45,7 @@
       modalClasses: function () {
         return {
           'modal--active': this.active,
+          'modal--hidden': this.hidden,
           'modal--tiny': this.mode === 'tiny',
           'modal--medium': this.mode === 'medium',
           'modal--wide': this.mode === 'wide'
@@ -56,7 +57,9 @@
     },
     methods: {
       open: function (onShow) {
-        if (this.active) return
+        if (this.active && !this.hidden) {
+          return
+        }
 
         const html = document.documentElement
 
@@ -83,10 +86,6 @@
         this.hidden = true
 
         html.classList.remove(htmlClass)
-
-        if (this.$el.parentNode) {
-          this.$el.parentNode.removeChild(this.$el)
-        }
       },
       close: function (onClose) {
         if (!this.active) return
@@ -289,6 +288,10 @@
     opacity: 1;
     visibility: visible;
     transition: opacity 0.35s;
+  }
+
+  .modal--hidden {
+    display: none;
   }
 
   /* Tiny modal option */
