@@ -257,6 +257,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
 
             $viewModule = "'admin.'.$moduleName.'.{$viewName}'";
             $viewApplication = "'admin.partials.{$viewName}'";
+            $viewModuleToolkit = "'cms-toolkit::'.$moduleName.'.{$viewName}'";
             $view = $partialNamespace . "." . $viewName;
 
             if (!isset($moduleName) || is_null($moduleName)) {
@@ -275,6 +276,8 @@ class CmsToolkitServiceProvider extends ServiceProvider
                 echo \$__env->make($viewModule, array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             } elseif( view()->exists($viewApplication)) {
                 echo \$__env->make($viewApplication, array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
+            } elseif( view()->exists($viewModuleToolkit)) {
+                echo \$__env->make($viewModuleToolkit, array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             } elseif( view()->exists('$view')) {
                 echo \$__env->make('$view', array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             }
