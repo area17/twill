@@ -16,6 +16,14 @@
             in-store="value"
         ></a17-singleselect>
     </a17-inputframe>
+@elseif ($native ?? false)
+    <a17-select
+        label="{{ $label }}"
+        @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif
+        :options="{{ json_encode($options) }}"
+        @if ($placeholder ?? false) placeholder="{{ $placeholder }}" @endif
+        in-store="currentValue"
+    ></a17-vselect>
 @else
     <a17-vselect
         label="{{ $label }}"
