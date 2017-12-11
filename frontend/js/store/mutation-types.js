@@ -16,6 +16,8 @@ export const PUBLISH_LANG = 'updatePublishedLanguage'
 
 /* media-library */
 export const UPDATE_MEDIA_TYPE_TOTAL = 'updateMediaTypeTotal'
+export const INCREMENT_MEDIA_TYPE_TOTAL = 'incrementMediaTypeTotal'
+export const DECREMENT_MEDIA_TYPE_TOTAL = 'decrementMediaTypeTotal'
 export const SAVE_MEDIAS = 'saveSelectedMedias'
 export const DESTROY_MEDIAS = 'destroySelectedMedias'
 export const REORDER_MEDIAS = 'reorderSelectedMedias'

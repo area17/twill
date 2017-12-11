@@ -51,6 +51,8 @@
               }
             ]
 
+            window.STORE.medias.uploaderConfig = {!! json_encode($uploaderConfig) !!}
+
             @yield('initialStore')
             @stack('vuexStore')
         </script>

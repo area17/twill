@@ -24,7 +24,10 @@
     "vue-select": "2.3.0",
     "vue-timeago": "3.4.0",
     "vuedraggable": "2.15.0",
-    "vuex": "3.0.1"
+    "vuex": "3.0.1",
+    "fine-uploader": "5.15.4",
+    "fine-uploader-wrappers": "0.1.1",
+    "truncate-utf8-bytes": "1.0.2"
   },
   "devDependencies": {
     "vue-template-compiler": "2.5.9",

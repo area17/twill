@@ -1,10 +1,18 @@
 <template>
   <div class="uploader">
-    <div class="uploader__dropzone"><a17-button type="button" variant="ghost" @click="downloadMedias">Add new</a17-button><span class="uploader__dropzone--desktop">  or drop new files here</span></div>
+    <div class="uploader__dropzone" ref="uploaderDropzone">
+      <div class="button" ref="uploaderBrowseButton">Add new</div>
+      <div class="uploader__dropzone--desktop">or drop new files here</div>
+    </div>
   </div>
 </template>
 
 <script>
+  import { mapState } from 'vuex'
+  import qq from 'fine-uploader/lib/dnd'
+  import FineUploaderS3 from 'fine-uploader-wrappers/s3'
+  import sanitizeFilename from '@/utils/sanitizeFilename.js'
+
   export default {
     name: 'A17Uploader',
     props: {
@@ -18,114 +26,186 @@
         loadingMedias: []
       }
     },
+    computed: {
+      ...mapState({
+        uploaderConfig: state => state.mediaLibrary.uploaderConfig
+      })
+    },
     methods: {
       loadingProgress: function (media) {
         this.$store.commit('progressUploadMedia', media)
       },
-      loadingFinished: function (media) {
-        // add the loaded image to the main image list (+ do ajax to save image)
-        this.$emit('loaded', media)
-
-        this.$store.commit('doneUploadMedia', media)
+      loadingFinished: function (loadingMedia, savedMedia) {
+        // add the saved image to the main image list
+        this.$emit('loaded', savedMedia)
+        this.$store.commit('doneUploadMedia', loadingMedia)
       },
       loadingError: function (media) {
         this.$store.commit('errorUploadMedia', media)
       },
-      downloadMedias: function () {
-        let self = this
+      _onCompleteCallback (id, name, responseJSON, xhr) {
+        const index = this.loadingMedias.findIndex(function (m) {
+          return m.id === id
+        })
 
-        // clear selected medias
+        if (responseJSON.success) {
+          this.loadingFinished(this.loadingMedias[index], responseJSON.media)
+        } else {
+          this.loadingError(this.loadingMedias[index])
+        }
+      },
+      _onAllCompleteCallback (succeeded, failed) {
+        // reset folder name for next upload session
+        this.unique_folder_name = null
+      },
+      _onSubmitCallback (id, name) {
         this.$emit('clear')
+        // each upload session will add upload files with original filenames in a folder named using a uuid
+        this.unique_folder_name = this.unique_folder_name || qq.getUniqueId()
+        this._uploader.methods.setParams({ unique_folder_name: this.unique_folder_name }, id)
 
-        // Fake download here
-        const randId = Math.round(Math.random() * 99999)
-        let name
-        let media
-        switch (this.type) {
-          case 'file':
-            const _ext = ['pdf', 'ppt', 'xls', 'txt', 'zip', 'dmg', 'fsfsfs']
-            const extension = _ext[Math.floor(_ext.length * Math.random())]
-            name = 'file_' + randId + '.' + extension
-            media = {
-              id: randId,
-              name: name,
-              size: '2mb',
-              extension: extension,
-              progress: 0,
-              error: false,
-              interval: null, // demos : to track progress of the image fake loading
-              metadatas: {
-                default: {
-                  caption: '',
-                  video: '',
-                  altText: name
-                }
-              }
-            }
-            break
-          default:
-            name = 'image_' + randId + '.jpg'
-            media = {
-              id: randId,
-              name: name,
-              src: 'https://source.unsplash.com/random/300x200?sig=' + randId,
-              original: 'https://source.unsplash.com/random/300x200?sig=' + randId,
-              size: '227kb',
-              width: 1280,
-              height: 800,
-              progress: 0,
-              error: false,
-              interval: null, // demos : to track progress of the image fake loading
-              metadatas: {
-                default: {
-                  caption: '',
-                  video: '',
-                  altText: name
-                },
-                custom: {
-                  caption: null,
-                  video: null,
-                  altText: null
-                }
-              }
-            }
+        // determine the image dimensions and add it to params sent on upload success
+        var imageUrl = URL.createObjectURL(this._uploader.methods.getFile(id))
+        var img = new Image()
+
+        var self = this
+        img.onload = () => {
+          self._uploader.methods.setParams({
+            width: img.width,
+            height: img.height
+          }, id)
+        }
+
+        img.src = imageUrl
+
+        const media = {
+          id: id,
+          name: sanitizeFilename(name),
+          progress: 0,
+          error: false
         }
 
         this.loadingMedias.push(media)
-
-        const index = self.loadingMedias.findIndex(function (m) {
-          return m.id === randId
+        this.loadingProgress(media)
+      },
+      _onProgressCallback (id, name, uploadedBytes, totalBytes) {
+        const index = this.loadingMedias.findIndex(function (m) {
+          return m.id === id
         })
 
         if (index >= 0) {
-          this.loadingMedias[index].interval = setInterval(function () {
-            const media = self.loadingMedias[index]
-
-            media.progress = media.progress + Math.round(Math.random() * 15)
-
-            if (media.progress < 100) self.loadingProgress(media) // update progress
-            else {
-              clearInterval(media.interval)
-              media.interval = null
-              self.loadingFinished(media)  // finish to load
-            }
-
-            // Simulate random error
-            if (Math.round(Math.random() * 100) < 2) {
-              media.progress = 0
-              clearInterval(media.interval)
-              media.interval = null
-              self.loadingError(media) // error
-            }
-          }, 600)
+          let media = this.loadingMedias[index]
+          media.progress = uploadedBytes / totalBytes * 100 || 0
+          media.error = false
+          this.loadingProgress(media)
         }
+      },
+      _onErrorCallback (id, name, errorReason, xhr) {
+        const index = this.loadingMedias.findIndex(function (m) {
+          return m.id === id
+        })
+
+        if (index >= 0) {
+          this.loadingError(this.loadingMedias[index])
+        }
+      },
+      _onStatusChangeCallback (id, oldStatus, newStatus) {
+        if (newStatus === 'retrying upload') {
+          const index = this.loadingMedias.findIndex(function (m) {
+            return m.id === id
+          })
+
+          if (index >= 0) {
+            let media = this.loadingMedias[index]
+            media.progress = 0
+            media.error = false
+            this.loadingProgress(media)
+          }
+        }
+      },
+      _onDropError (errorCode, errorData) {
+        console.error(errorCode, errorData)
+      },
+      _onProcessingDroppedFilesComplete (files) {
+        this._uploader.methods.addFiles(files)
       }
+    },
+    mounted () {
+      const buttonEl = this.$refs.uploaderBrowseButton
+      const dropzoneEl = this.$refs.uploaderDropzone
+
+      var self = this
+
+      this._uploader = new FineUploaderS3({
+        options: {
+          debug: true,
+          maxConnections: 5,
+          validation: {
+            allowedExtensions: ['svg', 'jpg', 'gif', 'png', 'jpeg']
+          },
+          button: buttonEl,
+          retry: {
+            enableAuto: true
+          },
+          objectProperties: {
+            key: id => {
+              return self.unique_folder_name + '/' + sanitizeFilename(self._uploader.methods.getName(id))
+            },
+            region: this.uploaderConfig.endpointRegion,
+            acl: this.uploaderConfig.acl
+          },
+          request: {
+            endpoint: this.uploaderConfig.endpoint,
+            accessKey: this.uploaderConfig.accessKey
+          },
+          signature: {
+            endpoint: this.uploaderConfig.signatureEndpoint,
+            version: 4,
+            customHeaders: {
+              'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
+            }
+          },
+          uploadSuccess: {
+            endpoint: this.uploaderConfig.successEndpoint,
+            customHeaders: {
+              'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
+            }
+          },
+          callbacks: {
+            onSubmit: this._onSubmitCallback.bind(this),
+            onProgress: this._onProgressCallback.bind(this),
+            onError: this._onErrorCallback.bind(this),
+            onComplete: this._onCompleteCallback.bind(this),
+            onAllComplete: this._onAllCompleteCallback.bind(this),
+            onStatusChange: this._onStatusChangeCallback.bind(this)
+          },
+          text: {
+            fileInputTitle: 'Browse...'
+          }
+        }
+      })
+
+      this._qqDropzone && this._qqDropzone.dispose()
+
+      this._qqDropzone = new qq.DragAndDrop({
+        dropZoneElements: [dropzoneEl],
+        allowMultipleItems: true,
+        callbacks: {
+          dropError: this._onDropError.bind(this),
+          processingDroppedFilesComplete: this._onProcessingDroppedFilesComplete.bind(this)
+        }
+      })
+    },
+    beforeDestroy () {
+      this._qqDropzone && this._qqDropzone.dispose()
     }
   }
 </script>
 
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
+
+  $height_small_btn: 35px;
 
   .uploader {
     margin:10px;
@@ -137,12 +217,41 @@
     padding:26px 0;
     color:$color__text--light;
 
-    button {
-      margin-right:10px;
+    .button {
+      @include btn-reset;
+      display: inline-block;
+      height: $height_small_btn;
+      margin-right: 10px;
+      line-height: $height_small_btn - 2px;
+      border-radius: $height_small_btn / 2;
+      background-color: transparent;
+      border: 1px solid $color__border--hover;
+      color: $color__text--light;
+      padding: 0 20px;
+      text-align: center;
+      transition: color .2s linear, border-color .2s linear, background-color .2s linear;
+
+      &:hover {
+        border-color: $color__text;
+        color: $color__text;
+      }
+
+      &:focus {
+        border-color: $color__text;
+        color: $color__text;
+      }
+
+      &:disabled {
+        opacity: .5;
+        pointer-events: none;
+      }
     }
   }
 
   .uploader__dropzone--desktop {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 8px;
     @include breakpoint(small-) {
       display: none;
     }

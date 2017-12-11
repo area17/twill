@@ -59,7 +59,8 @@ mix.js(
   'vue', 'vuex', 'axios',
   'quill', 'vuedraggable', 'cropperjs',
   'flatpickr', 'vue-select', 'vue-timeago',
-  'date-fns', 'lodash/debounce'
+  'date-fns', 'lodash/debounce',
+  'fine-uploader', 'fine-uploader-wrappers'
 ]).sass(
   'frontend/scss/app.scss',
   'public/assets/admin/css'

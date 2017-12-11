@@ -9,6 +9,7 @@ use A17\CmsToolkit\Commands\RefreshLQIP;
 use A17\CmsToolkit\Commands\Setup;
 use A17\CmsToolkit\Http\ViewComposers\ActiveNavigation;
 use A17\CmsToolkit\Http\ViewComposers\CurrentUser;
+use A17\CmsToolkit\Http\ViewComposers\UploaderConfig;
 use A17\CmsToolkit\Models\File;
 use A17\CmsToolkit\Models\Media;
 use A17\CmsToolkit\Models\User;
@@ -288,12 +289,12 @@ class CmsToolkitServiceProvider extends ServiceProvider
     private function addViewComposers()
     {
         if (config('cms-toolkit.enabled.users-management')) {
-            View::composer('admin.*', CurrentUser::class);
-            View::composer('cms-toolkit::*', CurrentUser::class);
+            View::composer(['admin.*', 'cms-toolkit::*'], CurrentUser::class);
         }
 
         if (config('cms-toolkit.enabled.media-library')) {
             View::share('mediaLibraryUrl', route('admin.media-library.medias.index'));
+            View::composer('cms-toolkit::layouts.main', UploaderConfig::class);
         }
 
         View::composer('cms-toolkit::partials.navigation.*', ActiveNavigation::class);

@@ -1,6 +1,6 @@
 <template>
   <div class="mediasidebar__inner mediasidebar__inner--single">
-    <p class="f--note">Uploading {{ mediasLoading.length }} file(s)</p>
+    <p class="f--note">Uploading {{ mediasLoading.length }} file{{ mediasLoading.length > 1 ? 's' : '' }}</p>
 
     <div class="mediasidebar__progress"><span class="mediasidebar__progressBar" :style="loadingProgress"></span></div>
 

@@ -135,20 +135,11 @@
       },
       addMedia: function (media) {
         let self = this
-
-        // remove unecessary loading states
-        if (media.hasOwnProperty('progress')) delete media.progress
-        if (media.hasOwnProperty('error')) delete media.error
-        if (media.hasOwnProperty('interval')) delete media.interval
-
         // add media in first position of the available media
-        // see api/media-library for actual ajax
-        api.add(media, function (resp) {
-          self.fullMedias.unshift(resp)
-
-          // select it
-          self.updateSelectedMedias(media.id)
-        })
+        self.fullMedias.unshift(media)
+        this.$store.commit('incrementMediaTypeTotal', this.type)
+        // select it
+        self.updateSelectedMedias(media.id)
       },
       updateSelectedMedias: function (id) {
         const alreadySelectedMedia = this.selectedMedias.filter(function (media) {
@@ -191,6 +182,9 @@
         this.selectedMedias.splice(0)
       },
       deleteSelectedMedias: function () {
+        this.selectedMedias.forEach(() => {
+          this.$store.commit('decrementMediaTypeTotal', this.type)
+        })
         this.fullMedias = this.fullMedias.filter((media) => {
           return !this.selectedMedias.includes(media)
         })

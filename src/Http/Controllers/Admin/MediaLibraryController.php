@@ -39,25 +39,11 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
     public function index()
     {
-        $libraryDisk = config('cms-toolkit.media_library.disk');
-
-        $uploaderConfig = [
-            'endpointType' => $this->endpointType,
-            'endpoint' => $this->endpointType === 'local' ? route('admin.media-library.medias.store') : s3Endpoint($libraryDisk),
-            'successEndpoint' => route('admin.media-library.medias.store'),
-            'signatureEndpoint' => route('admin.media-library.sign-s3-upload'),
-            'endpointRegion' => config('filesystems.disks.' . $libraryDisk . '.region', 'none'),
-            'accessKey' => config('filesystems.disks.' . $libraryDisk . '.key', 'none'),
-            'csrfToken' => csrf_token(),
-            'acl' => config('cms-toolkit.media_library.acl'),
-            'filesizeLimit' => config('cms-toolkit.media_library.filesize_limit'),
-        ];
-
         if (request()->has('except')) {
             $prependScope['exceptIds'] = request('except');
         }
 
-        return $this->getIndexData($prependScope ?? []) + $uploaderConfig;
+        return $this->getIndexData($prependScope ?? []);
     }
 
     public function getIndexData($prependScope = [])
@@ -65,41 +51,42 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         $scopes = $this->filterScope($prependScope);
         $items = $this->getIndexItems($scopes);
 
-        $updateUrl = route('admin.media-library.medias.single-update');
-        $updateBulkUrl = route('admin.media-library.medias.bulk-update');
-        $deleteBulkUrl = route('admin.media-library.medias.bulk-delete');
-
         return [
-            'items' => $items->map(function ($item) use ($updateUrl, $updateBulkUrl, $deleteBulkUrl) {
-                return [
-                    'id' => $item->id,
-                    'name' => $item->filename,
-                    'src' => ImageService::getCmsUrl($item->uuid, ["h" => "256"]),
-                    'original' => ImageService::getRawUrl($item->uuid),
-                    'width' => $item->width,
-                    'height' => $item->height,
-                    'tags' => $item->tags->map(function ($tag) {
-                        return $tag->name;
-                    }),
-                    'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
-                    'updateUrl' => $updateUrl,
-                    'updateBulkUrl' => $updateBulkUrl,
-                    'deleteBulkUrl' => $deleteBulkUrl,
-                    'metadatas' => [
-                        'default' => [
-                            'caption' => $item->caption,
-                            'altText' => $item->alt_text,
-                        ],
-                        'custom' => [
-                            'caption' => null,
-                            'altText' => null,
-                        ],
-                    ],
-                ];
+            'items' => $items->map(function ($item) {
+                return $this->buildMedia($item);
             })->toArray(),
             'maxPage' => $items->lastPage(),
             'total' => $items->total(),
             'tags' => $this->repository->getTagsList(),
+        ];
+    }
+
+    private function buildMedia($item)
+    {
+        return [
+            'id' => $item->id,
+            'name' => $item->filename,
+            'src' => ImageService::getCmsUrl($item->uuid, ["h" => "256"]),
+            'original' => ImageService::getRawUrl($item->uuid),
+            'width' => $item->width,
+            'height' => $item->height,
+            'tags' => $item->tags->map(function ($tag) {
+                return $tag->name;
+            }),
+            'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
+            'updateUrl' => route('admin.media-library.medias.single-update'),
+            'updateBulkUrl' => route('admin.media-library.medias.bulk-update'),
+            'deleteBulkUrl' => route('admin.media-library.medias.bulk-delete'),
+            'metadatas' => [
+                'default' => [
+                    'caption' => $item->caption,
+                    'altText' => $item->alt_text,
+                ],
+                'custom' => [
+                    'caption' => null,
+                    'altText' => null,
+                ],
+            ],
         ];
     }
 
@@ -126,7 +113,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
             $media = $this->storeReference($request);
         }
 
-        return response()->json(['id' => $media->id, 'success' => true], 200);
+        return response()->json(['media' => $this->buildMedia($media), 'success' => true], 200);
     }
 
     public function storeFile($request)

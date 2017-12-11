@@ -21,7 +21,7 @@
 
 @unless($renderForBlocks)
 @push('vuexStore')
-    @if (isset($form_fields['medias']) && isset($formFields['medias'][$name]))
+    @if (isset($form_fields['medias']) && isset($form_fields['medias'][$name]))
         window.STORE.medias.selected["{{ $name }}"] = {!! json_encode($form_fields['medias'][$name]) !!}
     @endif
 @endpush

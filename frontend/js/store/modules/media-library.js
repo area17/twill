@@ -10,7 +10,8 @@ const state = {
   strict: true,
   selected: window.STORE.medias.selected || {},
   loading: [],
-  tagsEndpoint: window.STORE.medias.tagsEndpoint || ''
+  tagsEndpoint: window.STORE.medias.tagsEndpoint || '',
+  uploaderConfig: window.STORE.medias.uploaderConfig || {}
 }
 
 // getters
@@ -20,6 +21,18 @@ const mutations = {
   [types.UPDATE_MEDIA_TYPE_TOTAL] (state, type) {
     state.types = state.types.map(t => {
       if (t.value === type.type) t.total = type.total
+      return t
+    })
+  },
+  [types.INCREMENT_MEDIA_TYPE_TOTAL] (state, type) {
+    state.types = state.types.map(t => {
+      if (t.value === type) t.total = t.total + 1
+      return t
+    })
+  },
+  [types.DECREMENT_MEDIA_TYPE_TOTAL] (state, type) {
+    state.types = state.types.map(t => {
+      if (t.value === type) t.total = t.total - 1
       return t
     })
   },
@@ -64,7 +77,7 @@ const mutations = {
       mediaToUpdate[0].error = false
       mediaToUpdate[0].progress = media.progress
     } else {
-      state.loading.push({
+      state.loading.unshift({
         id: media.id,
         name: media.name,
         progress: media.progress
