@@ -1,4 +1,6 @@
-<hr/>
+@unless ($withoutSeparator ?? false)
+    <hr/>
+@endif
 
 <a17-content title="Add content"></a17-content>
 
