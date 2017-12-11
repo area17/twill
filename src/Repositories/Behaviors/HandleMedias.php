@@ -59,6 +59,7 @@ trait HandleMedias
                                 'crop_h' => $cropData['height'],
                                 'crop_x' => $cropData['x'],
                                 'crop_y' => $cropData['y'],
+                                'metadatas' => json_encode($media['metadatas']['custom']),
                             ]);
                         }
                     } else {
@@ -72,6 +73,7 @@ trait HandleMedias
                                 'crop_h' => null,
                                 'crop_x' => null,
                                 'crop_y' => null,
+                                'metadatas' => json_encode($media['metadatas']['custom']),
                             ]);
                         }
                     }
@@ -91,6 +93,11 @@ trait HandleMedias
                 foreach ($mediasByRole->groupBy('id') as $id => $mediasById) {
                     $item = $mediasById->first();
 
+                    $metadatas = json_decode($item->pivot->metadatas, true);
+                    $caption = $metadatas['caption'] ?? '';
+                    $altText = $metadatas['altText'] ?? '';
+                    $video = $metadatas['video'] ?? '';
+
                     $itemForForm = [
                         'id' => $item->id,
                         'name' => $item->filename,
@@ -102,10 +109,12 @@ trait HandleMedias
                             'default' => [
                                 'caption' => $item->caption,
                                 'altText' => $item->alt_text,
+                                'video' => '',
                             ],
                             'custom' => [
-                                'caption' => null, // TODO: add caption and alttext to mediables table
-                                'altText' => null,
+                                'caption' => $caption, // TODO: add caption and alttext to mediables table
+                                'altText' => $altText,
+                                'video' => $video,
                             ],
                         ],
                     ];

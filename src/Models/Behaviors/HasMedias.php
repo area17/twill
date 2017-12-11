@@ -19,6 +19,7 @@ trait HasMedias
             'crop_y',
             'lqip_data',
             'ratio',
+            'metadatas',
         ])->withTimestamps()->orderBy('mediables.id', 'asc');
     }
 

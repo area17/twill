@@ -81,10 +81,12 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
                 'default' => [
                     'caption' => $item->caption,
                     'altText' => $item->alt_text,
+                    'video' => null,
                 ],
                 'custom' => [
                     'caption' => null,
                     'altText' => null,
+                    'video' => null,
                 ],
             ],
         ];

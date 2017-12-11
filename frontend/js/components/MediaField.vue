@@ -11,9 +11,9 @@
           <li><strong>{{ currentMedia.name }}</strong></li>
           <li class="f--small" v-if="currentMedia.size">File size: {{ currentMedia.size | uppercase }}</li>
           <li class="f--small" v-if="currentMedia.width + currentMedia.height">Dimensions: {{ currentMedia.width }} &times; {{ currentMedia.height }}</li>
-          <!-- <li class="f--small media__metadatas--add">
+          <li class="f--small media__metadatas--add">
             <a href="#" @click.prevent="metadatasInfos"> {{ metadatas.text }}</a>
-          </li> -->
+          </li>
         </ul>
 
         <!--Actions-->
