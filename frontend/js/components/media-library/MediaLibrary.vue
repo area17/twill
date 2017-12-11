@@ -25,7 +25,7 @@
           </div>
 
           <div slot="hidden-filters">
-            <a17-vselect class="medialibrary__filter-item" ref="filter" name="tag" :options="tags" :toggleSelectOption="true"></a17-vselect>
+            <a17-vselect class="medialibrary__filter-item" ref="filter" name="tag" :options="tags" placeholder="Filter by tag" :toggleSelectOption="true"></a17-vselect>
           </div>
         </a17-filter>
       </div>
