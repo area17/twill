@@ -51,7 +51,7 @@
     ></a17-wysiwyg>
 @endif
 
-@unless($renderForBlocks || ($renderForModal ?? false))
+@unless($renderForBlocks || $renderForModal)
 @push('vuexStore')
     @if($translated ?? false && isset($form_fields['translations']) && isset($form_fields['translations'][$name]))
         var field = {

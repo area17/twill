@@ -36,7 +36,7 @@
     ></a17-vselect>
 @endif
 
-@unless($renderForBlocks || ($renderForModal ?? false))
+@unless($renderForBlocks || $renderForModal)
 @push('vuexStore')
     @if (isset($item->$name))
         window.STORE.form.fields.push({
