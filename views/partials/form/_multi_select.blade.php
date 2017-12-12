@@ -9,7 +9,7 @@
     ></a17-multiselect>
 </a17-inputframe>
 
-@unless($renderForBlocks || $renderForModal)
+@unless($renderForBlocks || $renderForModal)
 @push('vuexStore')
     @if (isset($item->$name))
         window.STORE.form.fields.push({
