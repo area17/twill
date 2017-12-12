@@ -122,21 +122,22 @@ return [
             'title' => 'Video',
             'trigger' => 'Add videos',
             'component' => 'a17-block-test',
-            'max' => 4
+            'max' => 4,
         ],
         'gridItem' => [
             'title' => 'Grid item',
             'trigger' => 'Add grid item',
             'component' => 'a17-block-video',
-            'max' => 4
+            'max' => 4,
         ],
         'gridItemMore' => [
             'title' => 'Grid item',
             'trigger' => 'Add grid item',
             'component' => 'a17-block-video',
-            'max' => 6
-        ]
+            'max' => 6,
+        ],
     ],
+    'render_views_namespace' => 'site.blocks',
     'use_iframes' => false,
     'iframe_wrapper_view' => '',
     'show_render_errors' => env('BLOCK_EDITOR_SHOW_ERRORS', false),

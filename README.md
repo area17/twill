@@ -151,6 +151,7 @@ Add the following npm scripts to your project's `package.json`:
 ```
 
 Add or modify your project's `wepback.mix.js` file with the following content:
+
 ```
 let mix = require('laravel-mix');
 
@@ -367,6 +368,7 @@ return [
     |
      */
     'block_editor' => [
+        'render_views_namespace' => 'site.blocks'
         'use_iframes' => true,
         'iframe_wrapper_view' => '',
         'show_render_errors' => env('BLOCK_EDITOR_SHOW_ERRORS', false),
@@ -420,7 +422,7 @@ return [
         'dist_assets_path' => '/dist',
         'svg_sprites_path' => 'sprites.svg', // relative to dev/dist assets paths
         'svg_sprites_use_hash_only' => true,
-        'views_path' => 'front',
+        'views_path' => 'site',
         'home_route_name' => 'home',
     ],
 ];
@@ -1278,6 +1280,51 @@ If you have attributes, relationships, extra images, file attachments or repeate
 ])
 ```
 
+### Block editor
+
+#### Creating blocks
+In progress.
+
+#### Using blocks
+First, make sure your project have the blocks table migration. If not, you can find the `create_blocks_table` migration in the toolkit's source in `migrations`.
+
+Add the corresponding traits to your model and repository, respectively `HasBlocks` and `HandleBlocks`.
+
+In your module's form view, use the `block_editor` form field. If you want to restrict the list of blocks available for this specific module, pass a `blocks` array with a list of block names as defined in your `cms-toolkit` configuration file.
+
+
+#### Rendering blocks
+As long as you have access to a model instance that uses the HasBlocks trait in a view, you can call the `renderBlocks` helper on it to render the list of blocks that were created from the CMS. By default, this function will loop over all the blocks and their child blocks and render a Blade view located in `resources/views/site/blocks` with the same name as the block key you specified in your CMS toolkit configuration and module form. 
+
+In the frontend templates, you can call the `renderBlocks` helper like this:
+
+```php
+{!! $item->renderBlocks() !!}
+```
+
+If you need to swap out a block view for a specific module (let’s say you used the same block in 2 modules of the CMS but need different rendering), you can do the following:
+
+```php
+{!! $work->renderBlocks([
+  'block-type' => 'view.path',
+  'block-type-2' => 'another.view.path'
+]) !!}
+```
+
+In those Blade view, you will have access to a `$block`variable with a couple of helper function available to retrieve the block content:
+
+```php
+{{ $block->input('inputNameYouSpecifiedInTheBlockFormField') }}
+{{ $block->translatedinput('inputNameYouSpecifiedInATranslatedBlockFormField') }}
+```
+
+If the block has a media field, you can refer to the Media Library documentation below to learn about the `HasMedias` trait helpers.
+To give an exemple:
+
+```php
+{{ $block->image('mediaFieldName', 'cropNameFromBlocksConfig') }}
+{{ $block->images('mediaFieldName', 'cropNameFromBlocksConfig')}}
+```
 
 ### Media Library
 >![screenshot](_media/medialibrary.png)
