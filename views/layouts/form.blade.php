@@ -25,7 +25,10 @@
                             @partialView(($moduleName ?? null), 'create')
                         </template>
                     </a17-title-editor>
-                    <a17-langswitcher slot="actions"></a17-langswitcher>
+                    <div slot="actions">
+                        <a17-langswitcher></a17-langswitcher>
+                        <a17-button type="button" variant="action" size="small" @click="$root.$refs.editor.open()">Editor</a17-button>
+                    </div>
                 </a17-sticky-nav>
             </div>
             <div class="container">
@@ -63,6 +66,9 @@
     </a17-modal>
     <a17-overlay ref="preview" title="Preview changes">
         <a17-previewer />
+    </a17-overlay>
+    <a17-overlay ref="editor" title="Content editor">
+        <a17-editor />
     </a17-overlay>
 @stop
 

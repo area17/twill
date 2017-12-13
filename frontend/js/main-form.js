@@ -28,6 +28,9 @@ import a17Browser from '@/components/Browser.vue'
 import a17Overlay from '@/components/Overlay.vue'
 import a17Previewer from '@/components/Previewer.vue'
 
+// Overlay Editor
+import a17Editor from '@/components/Editor.vue'
+
 // Plugins
 import A17Config from '@/plugins/A17Config'
 import A17Notif from '@/plugins/A17Notif'
@@ -75,6 +78,9 @@ Vue.component('a17-previewer', a17Previewer)
 
 // mixins
 import formatPermalink from '@/mixins/formatPermalink'
+
+// Editor
+Vue.component('a17-editor', a17Editor)
 
 // Blocks
 const importedBlocks = require.context('@/components/blocks/', true, /\.(js|vue)$/i)
