@@ -1,6 +1,12 @@
 import api from '../api/datatable'
 import * as types from '../mutation-types'
 import { setStorage } from '@/utils/localeStorage.js'
+const getObject = (container, id, callback) => {
+  container.forEach(function (item) {
+    if (item.id === id) callback(item)
+    if (item.child) getObject(item.child, id, callback)
+  })
+}
 
 const state = {
   baseUrl: window.STORE.datatable.baseUrl || '',
@@ -17,7 +23,8 @@ const state = {
   sortDir: window.STORE.datatable.sortDir || 'asc',
   bulk: [],
   localStorageKey: window.STORE.datatable.localStorageKey || location.pathname,
-  loading: false
+  loading: false,
+  nested: true
 }
 
 // getters
@@ -184,6 +191,11 @@ const mutations = {
   },
   [types.UPDATE_DATATABLE_LOADING] (state, loading) {
     state.loading = !state.loading
+  },
+  [types.UPDATE_DATATABLE_NESTED] (state, data) {
+    getObject(state.data, data.parentId, (item) => {
+      item.child = data.val
+    })
   }
 }
 
@@ -208,7 +220,12 @@ const actions = {
       })
     }
   },
-  setDatatableDatas ({ commit, state, dispatch }, data) {
+  setDatatableNestedDatas ({commit, state, dispatch}, data) {
+    commit(types.UPDATE_DATATABLE_NESTED, data)
+
+    // TODO: api connection
+  },
+  setDatatableDatas ({commit, state, dispatch}, data) {
     // TBD: Maybe, we can keep and reset the old state if we have and error
     // reorder in store first
     commit(types.UPDATE_DATATABLE_DATA, data)

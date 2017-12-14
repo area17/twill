@@ -35,18 +35,32 @@
             <a17-tablehead :columns="visibleColumns" ref="thead"></a17-tablehead>
           </thead>
           <template v-if="draggable">
-            <draggable :element="'tbody'" v-model='rows' :options="{ handle:'.tablecell__handle', disabled: !reorderable }">
+            <draggable class="datatable__drag" :element="'tbody'" v-model="rows" :options="draggableOptions" :move="checkMove" @change="nestedSort">
               <template v-for="(row, index) in rows">
-                <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :key="row.id"></a17-tablerow>
+                <a17-tablerow v-if="!nested" :row="row" :index="index" :columns="visibleColumns" :key="row.id"></a17-tablerow>
+                <template v-else>
+                  <tr class="tablerow-nested" :key="row.id">
+                    <td :colspan="visibleColumns.length + 2">
+                      <table>
+                        <tbody>
+                          <a17-tablerow :row="row" :index="index" :columns="visibleColumns"></a17-tablerow>
+                          <a17-tablerow-nested :maxDepth="nestedDepth" :parentId="row.id" :items="row.child" :columns="visibleColumns" :draggable="draggable" :draggableOptions="draggableOptions"></a17-tablerow-nested>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </template>
               </template>
             </draggable>
           </template>
+
           <tbody v-else>
             <template v-for="(row, index) in rows">
-              <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :key="row.id"></a17-tablerow>
+              <a17-tablerow :row="row" :index="index" :columns="visibleColumns"></a17-tablerow>
             </template>
           </tbody>
         </a17-table>
+
         <template v-if="rows.length <= 0">
           <div class="datatable__empty">
             <h4>{{ emptyMessage }}</h4>
@@ -69,6 +83,7 @@
   import a17Table from './Table.vue'
   import a17Tablehead from './TableHead.vue'
   import a17Tablerow from './TableRow.vue'
+  import a17TableRowNested from './TableRowNested.vue'
   import a17Paginate from './Paginate.vue'
   import a17Spinner from '@/components/Spinner.vue'
 
@@ -78,6 +93,7 @@
       'a17-table': a17Table,
       'a17-tablehead': a17Tablehead,
       'a17-tablerow': a17Tablerow,
+      'a17-tablerow-nested': a17TableRowNested,
       'a17-paginate': a17Paginate,
       'a17-spinner': a17Spinner,
       draggable
@@ -95,10 +111,19 @@
       emptyMessage: {
         type: String,
         default: ''
+      },
+      name: {
+        type: String,
+        default: 'group1'
+      },
+      nestedDepth: {
+        type: Number,
+        default: 2
       }
     },
     data: function () {
       return {
+        willUpdate: true,
         xScroll: 0,
         columnsWidth: [],
         reorderable: false
@@ -134,6 +159,15 @@
 
         return checkboxes
       },
+      draggableOptions: function () {
+        return {
+          handle: '.tablecell__handle',
+          disabled: !this.reorderable,
+          group: {
+            name: this.name
+          }
+        }
+      },
       ...mapState({
         page: state => state.datatable.page,
         offset: state => state.datatable.offset,
@@ -141,7 +175,8 @@
         columns: state => state.datatable.columns,
         initialOffset: state => state.datatable.defaultOffset,
         initialMaxPage: state => state.datatable.defaultMaxPage,
-        loading: state => state.datatable.loading
+        loading: state => state.datatable.loading,
+        nested: state => state.datatable.nested
       }),
       ...mapGetters([
         'visibleColumns',
@@ -273,6 +308,10 @@
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
 
+  table {
+    width: 100%;
+  }
+
   .datatable {
 
   }
@@ -282,7 +321,7 @@
     border-radius: 2px;
     position: relative;
 
-    /deep/ table {
+    /deep/ .table {
       margin-top: -60px; // hide the other thead
     }
   }

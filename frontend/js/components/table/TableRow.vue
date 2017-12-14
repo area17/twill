@@ -1,8 +1,12 @@
 <template>
   <tr class="tablerow">
+    <!-- Drag handle button -->
+    <td class="tablecell tablecell--draggable" v-if="nested && draggable"><span class="tablecell__handle"></span></td>
+    <td class="tablecell" v-if="nested"></td>
+
     <td v-for="col in columns" :key="col.name" class="tablecell" :class="cellClasses(col)">
       <template v-if="isSpecificColumn(col)">
-        <span v-if="col.name === 'draggable'" class="tablecell__handle"></span> <!-- Drag handle button -->
+        <span v-if="!nested && col.name === 'draggable'" class="tablecell__handle"></span> <!-- Drag handle button -->
         <a v-if="col.name === 'bulk'" href="#" @click.prevent.stop="toggleBulk(row['id'])"><a17-checkbox name="bulkEdit" :value="row['id']" :initialValue="bulkIds" ></a17-checkbox></a><!-- Bulk -->
         <span v-if="col.name === 'featured'" class="tablecell__feature" :class="{'tablecell__feature--active': row[col.name] }" @click.prevent="toggleFeatured" :data-tooltip-title="row['featured'] ? 'Unfeature' : 'Feature'" v-tooltip><span v-svg symbol="star-feature_active"></span><span v-svg symbol="star-feature"></span></span> <!-- Featured star button -->
         <span v-if="col.name === 'published'" class="tablecell__pubstate" :class="{'tablecell__pubstate--live': row[col.name] }"  @click.prevent="togglePublish" :data-tooltip-title="row['published'] ? 'Unpublish' : 'Publish'" v-tooltip ></span> <!-- Published circle icon -->
@@ -18,7 +22,6 @@
         <template v-else>{{ row[col.name] }}</template>
       </template>
     </td>
-
     <td class="tablecell tablecell--spacer">&nbsp;</td>
     <td class="tablecell tablecell--sticky">
       <a17-dropdown ref="rowSetupDropdown" position="bottom-right">
@@ -61,6 +64,14 @@
       columns: {
         type: Array,
         default: function () { return [] }
+      },
+      draggable: {
+        type: Boolean,
+        default: false
+      },
+      nested: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {
@@ -267,6 +278,19 @@
     }
   }
 
+  .tablecell--sticky {
+    position:absolute;
+    right:0;
+    top: auto;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 25%);
+    padding: 16px 20px 16px -2px;
+    overflow:visible;
+  }
+
+  tr:hover > .tablecell--sticky {
+    background: linear-gradient(to right, #{rgba($color__f--bg, 0)} 0%, #{rgba($color__f--bg, 1)} 25%);
+  }
+
   .tablecell__handle {
     display:none;
     position:absolute;
@@ -279,7 +303,7 @@
     @include dragGrid($color__drag, $color__f--bg);
   }
 
-  tr:hover .tablecell__handle {
+  tr:hover > .tablecell--draggable .tablecell__handle {
     display:block;
   }
 
