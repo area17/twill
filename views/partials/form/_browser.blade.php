@@ -9,9 +9,9 @@
 
 <a17-inputframe label="{{ $label }}">
     <a17-browserfield
-        @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif
-        :max="{{ $max }}"
+        @include('cms-toolkit::partials.form.utils._field_name')
         item-label="{{ $itemLabel }}"
+        :max="{{ $max }}"
         endpoint="{{ $endpoint }}"
         modal-title="Attach {{ strtolower($label) }}"
     >{{ $note }}</a17-browserfield>
@@ -19,8 +19,8 @@
 
 @unless($renderForBlocks)
 @push('vuexStore')
-    @if (isset($item->$name))
-        window.STORE.browser.selected["{{ $name }}"] = {!! json_encode($item->$name) !!}
+    @if (isset($form_fields['browsers']) && isset($form_fields['browsers'][$name]))
+        window.STORE.browser.selected["{{ $name }}"] = {!! json_encode($form_fields['browsers'][$name]) !!}
     @endif
 @endpush
 @endunless

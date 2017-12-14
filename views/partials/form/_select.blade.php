@@ -5,44 +5,46 @@
             'label' => $label
         ];
     })->values()->toArray() : $options;
+    $placeholder = $placeholder ?? false;
+    $default = $default ?? false;
 @endphp
 
 @if ($unpack ?? false)
     <a17-inputframe>
         <a17-singleselect
             label="{{ $label }}"
-            @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif
+            @include('cms-toolkit::partials.form.utils._field_name')
             :options="{{ json_encode($options) }}"
+            @if ($default) selected="{{ $default }}" @endif
             in-store="value"
         ></a17-singleselect>
     </a17-inputframe>
 @elseif ($native ?? false)
     <a17-select
         label="{{ $label }}"
-        @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif
+        @include('cms-toolkit::partials.form.utils._field_name')
         :options="{{ json_encode($options) }}"
-        @if ($placeholder ?? false) placeholder="{{ $placeholder }}" @endif
+        @if ($placeholder) placeholder="{{ $placeholder }}" @endif
+        @if ($default) initial-value="{{ $default }}" @endif
         in-store="currentValue"
     ></a17-vselect>
 @else
     <a17-vselect
         label="{{ $label }}"
-        @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif
+        @include('cms-toolkit::partials.form.utils._field_name')
         :options="{{ json_encode($options) }}"
         @if ($emptyText ?? false) empty-text="{{ $emptyText }}" @endif
-        @if ($placeholder ?? false) placeholder="{{ $placeholder }}" @endif
+        @if ($placeholder) placeholder="{{ $placeholder }}" @endif
         size="large"
         in-store="inputValue"
     ></a17-vselect>
 @endif
 
-@unless($renderForBlocks || $renderForModal)
+@unless($renderForBlocks || $renderForModal || !isset($item->$name))
 @push('vuexStore')
-    @if (isset($item->$name))
-        window.STORE.form.fields.push({
-            name: '{{ $name }}',
-            value: @if(is_numeric($item->$name)) {{ $item->$name }} @else '{{ $item->$name }}' @endif
-        })
-    @endif
+    window.STORE.form.fields.push({
+        name: '{{ $name }}',
+        value: @if(is_numeric($item->$name)) {{ $item->$name }} @else {!! json_encode($item->$name) !!} @endif
+    })
 @endpush
 @endunless

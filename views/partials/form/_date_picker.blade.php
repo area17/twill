@@ -1,6 +1,6 @@
 <a17-datepicker
-    @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif
     label="{{ $label }}"
+    @include('cms-toolkit::partials.form.utils._field_name')
     place-holder="{{ $placeholder or $label }}"
     @if ($withTime ?? true) enable-time @endif
     @if ($allowInput ?? true) allow-input @endif
@@ -10,13 +10,11 @@
     in-store="date"
 ></a17-datepicker>
 
-@unless($renderForBlocks || $renderForModal)
+@unless($renderForBlocks || $renderForModal || !isset($item->$name))
 @push('vuexStore')
-    @if (isset($item->$name))
-        window.STORE.form.fields.push({
-            name: '{{ $name }}',
-            value: '{{ $item->$name }}'
-        })
-    @endif
+    window.STORE.form.fields.push({
+        name: '{{ $name }}',
+        value: {!! json_encode($item->$name) !!}
+    })
 @endpush
 @endunless

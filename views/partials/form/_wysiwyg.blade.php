@@ -1,5 +1,13 @@
 @php
+    $translated = $translated ?? false;
+    $maxlength = $maxlength ?? false;
+    $options = $options ?? false;
+    $placeholder = $placeholder ?? false;
+    $note = $note ?? false;
+    $disabled = $disabled ?? false;
+    $readonly = $readonly ?? false;
     $toolbarOptions = $toolbarOptions ?? false;
+
     if ($toolbarOptions) {
         $toolbarOptions = array_map(function ($option) {
             if ($option == 'list-unordered') {
@@ -22,50 +30,52 @@
     $options = $customOptions ?? $toolbarOptions ?? false;
 @endphp
 
-@if($translated ?? false)
+@if($translated)
     <a17-locale
         type="a17-wysiwyg"
-        :attributes='{
-            label: "{{ $label }}",
-            @if ($renderForBlocks) name: fieldName("{{ $name }}"), @else name: "{{ $name }}", @endif
-            @if ($maxlength ?? false) maxlength: {{ $maxlength }}, @endif
-            @if ($options ?? false) options: {!! json_encode($options) !!}, @endif
-            @if ($placeholder ?? false) placeholder: "{{ $placeholder }}", @endif
-            @if ($note ?? false) note: "{{ $note }}", @endif
-            @if ($disabled ?? false) disabled: true, @endif
-            @if ($readonly ?? false) readonly: true, @endif
-            inStore: "value"
-        }'
+        :attributes="{
+            label: '{{ $label }}',
+            @include('cms-toolkit::partials.form.utils._field_name', ['asAttributes' => true])
+            @if ($note) note: '{{ $note }}', @endif
+            @if ($options) options: {!! e(json_encode($options)) !!}, @endif
+            @if ($placeholder) placeholder: '{{ $placeholder }}', @endif
+            @if ($maxlength) maxlength: {{ $maxlength }}, @endif
+            @if ($disabled) disabled: true, @endif
+            @if ($readonly) readonly: true, @endif
+            inStore: 'value'
+        }"
     ></a17-locale>
 @else
     <a17-wysiwyg
         label="{{ $label }}"
-        @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif
-        @if ($maxlength ?? false) :maxlength='{{ $maxlength }}' @endif
-        @if ($toolbarOptions ?? false) :options='{!! json_encode($options) !!}' @endif
-        @if ($placeholder ?? false) placeholder='{{ $placeholder }}' @endif
-        @if ($note ?? false) note="{{ $note }}" @endif
-        @if ($disabled ?? false) disabled @endif
-        @if ($readonly ?? false) readonly @endif
+        @include('cms-toolkit::partials.form.utils._field_name')
+        @if ($note) note="{{ $note }}" @endif
+        @if ($options) :options='{!! json_encode($options) !!}' @endif
+        @if ($placeholder) placeholder='{{ $placeholder }}' @endif
+        @if ($maxlength) :maxlength='{{ $maxlength }}' @endif
+        @if ($disabled) disabled @endif
+        @if ($readonly) readonly @endif
         in-store="value"
     ></a17-wysiwyg>
 @endif
 
 @unless($renderForBlocks || $renderForModal)
 @push('vuexStore')
-    @if($translated ?? false && isset($form_fields['translations']) && isset($form_fields['translations'][$name]))
+    @if($translated && isset($form_fields['translations']) && isset($form_fields['translations'][$name]))
         var field = {
             name: '{{ $name }}',
             value: {
                 @foreach(getLocales() as $locale)
-                    '{{ $locale }}': "{!! $form_fields['translations'][$name][$locale] ?? '' !!}"@unless($loop->last),@endif
+                    '{{ $locale }}': {!! json_encode(
+                        $form_fields['translations'][$name][$locale] ?? ''
+                    ) !!}@unless($loop->last),@endif
                 @endforeach
             }
         }
-    @else
+    @elseif(isset($item->$name))
         var field = {
             name: '{{ $name }}',
-            value: "{!! $item->$name !!}"
+            value: {!! json_encode($item->$name) !!}
         }
     @endif
 

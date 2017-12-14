@@ -1,6 +1,6 @@
 <a17-inputframe>
     <a17-checkboxgroup
-        @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif
+        @include('cms-toolkit::partials.form.utils._field_name')
         :options="[ { value: '{{ $value or 1 }}', label: '{{ $label }}' } ]"
         in-store="currentValue"
     ></a17-checkboxgroup>

@@ -7,9 +7,9 @@
 
 @if($noTranslate)
     <a17-filefield
-        @if ($renderForBlocks) :name="fieldName('{{ $name }}')" @else name="{{ $name }}" @endif
         label="{{ $label }}"
         item-label="{{ $itemLabel }}"
+        @include('cms-toolkit::partials.form.utils._field_name')
         note="{{ $note }}"
         :max="{{ $max }}"
     ></a17-filefield>
@@ -19,7 +19,7 @@
         :attributes="{
             label: '{{ $label }}',
             itemLabel: '{{ $itemLabel }}',
-            @if ($renderForBlocks) name: fieldName('{{ $name }}'), @else name: '{{ $name }}', @endif
+            @include('cms-toolkit::partials.form.utils._field_name', ['asAttributes' => true])
             note: '{{ $note }}',
             max: {{ $max }}
         }"
