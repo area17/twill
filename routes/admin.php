@@ -26,10 +26,6 @@ if (config('cms-toolkit.enabled.file-library')) {
     });
 }
 
-if (config('cms-toolkit.enabled.block-editor')) {
-    Route::post('blocks/preview', ['as' => 'blocks.preview', 'uses' => 'BlocksController@preview']);
-}
-
 if (config('cms-toolkit.enabled.buckets')) {
     Route::group(['prefix' => 'featured', 'as' => 'featured.'], function () {
         collect(config('cms-toolkit.buckets'))->each(function ($bucketSection, $bucketSectionKey) {
