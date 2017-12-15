@@ -3,16 +3,15 @@
     <td :colspan="tdWidth">
       <table class="tablerow-nested__table">
         <template v-if="draggable">
-          <draggable :element="'tbody'" v-model="rows" :options="draggableOptions" class="tablerow-nested__dragArea tablerow-nested__body">
+          <draggable :element="'tbody'" v-model="rows" :options="draggableOptions" ref="dragArea" class="tablerow-nested__dragArea tablerow-dragArea tablerow-nested__body" @start="startDrag"
+                     @end="endDrag">
             <template v-for="(row, index) in rows">
-
               <a17-tablerow class="tablerow-nested__row" :row="row" :index="index" :key="row.id" :columns="columns"
                             :nested="nested" :draggable="draggable"></a17-tablerow>
 
-              <a17-tablerow-nested v-if="depth < maxDepth" :depth="depth + 1" :maxDepth="maxDepth" :parentId="row.id"
-                                   :items="row.child" :columns="columns" :draggable="draggable"
-                                   :draggableOptions="draggableOptions"></a17-tablerow-nested>
-
+              <!--<a17-tablerow-nested v-if="depth < maxDepth" :depth="depth + 1" :maxDepth="maxDepth" :parentId="row.id"-->
+                                   <!--:items="row.child" :columns="columns" :draggable="draggable"-->
+                                   <!--:draggableOptions="draggableOptions"></a17-tablerow-nested>-->
             </template>
           </draggable>
         </template>
@@ -34,11 +33,10 @@
 </template>
 
 <script>
-  /* eslint-disable */
-
   import A17TableRow from './TableRow'
   import draggableMixin from '@/mixins/draggable'
   import draggable from 'vuedraggable'
+  import { EventBus, Events } from '@/utils/event-bus'
 
   export default {
     name: 'a17-tablerow-nested',
@@ -88,10 +86,10 @@
     },
     computed: {
       rows: {
-        get() {
+        get () {
           return this.items
         },
-        set(value) {
+        set (value) {
           const data = {
             parentId: this.parentId,
             val: value
@@ -99,7 +97,7 @@
           this.$store.dispatch('setDatatableNestedDatas', data)
         }
       },
-      nested() {
+      nested () {
         return {
           active: true,
           depth: this.depth
@@ -111,9 +109,8 @@
       }
     },
     methods: {
-      checkMove(evt, original) {
-        this.$emit('checkMove', evt, original)
-      }
+      startDrag () { EventBus.$emit(Events.drag.start) },
+      endDrag () { EventBus.$emit(Events.drag.end) }
     }
   }
 </script>
@@ -126,15 +123,25 @@
 
   .tablerow-nested__table {
     width: 100%;
+    /*border-collapse: separate;*/
+    border-left: 80px solid transparent;
+
   }
 
   .tablerow-nested__dragArea {
+    display: table;
     position: relative;
+    width: 100%;
+    min-height: 0px;
+    transition: min-height 250ms ease;
+    &.active {
+      min-height: 50px;
+    }
   }
 
   .tablerow-nested__body {
     position: relative;
-    border-left: 80px solid transparent;
+    /*border-left: 80px solid transparent;*/
   }
 
   .tablerow-nested__row {

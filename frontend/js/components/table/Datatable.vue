@@ -35,7 +35,7 @@
             <a17-tablehead :columns="visibleColumns" ref="thead"></a17-tablehead>
           </thead>
           <template v-if="draggable">
-            <draggable class="datatable__drag" :element="'tbody'" v-model="rows" :options="draggableOptions" :move="checkMove" @change="nestedSort">
+            <draggable class="datatable__drag" :element="'tbody'" v-model="rows" :options="draggableOptions">
               <template v-for="(row, index) in rows">
                 <a17-tablerow v-if="!nested" :row="row" :index="index" :columns="visibleColumns" :key="row.id"></a17-tablerow>
                 <template v-else>
@@ -44,7 +44,7 @@
                       <table>
                         <tbody>
                           <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :draggable="draggable"></a17-tablerow>
-                          <a17-tablerow-nested :maxDepth="nestedDepth" :parentId="row.id" :items="row.child" :columns="visibleColumns" :draggable="draggable" :draggableOptions="draggableOptions"></a17-tablerow-nested>
+                          <a17-tablerow-nested v-if="row.child" :maxDepth="nestedDepth" :parentId="row.id" :items="row.child" :columns="visibleColumns" :draggable="draggable" :draggableOptions="draggableOptions"></a17-tablerow-nested>
                         </tbody>
                       </table>
                     </td>
@@ -65,7 +65,7 @@
                       <tbody>
                       <a17-tablerow :row="row" :index="index" :columns="visibleColumns"
                                     :draggable="draggable"></a17-tablerow>
-                      <a17-tablerow-nested :maxDepth="nestedDepth" :parentId="row.id" :items="row.child"
+                      <a17-tablerow-nested v-if="row.child" :maxDepth="nestedDepth" :parentId="row.id" :items="row.child"
                                            :columns="visibleColumns"></a17-tablerow-nested>
                       </tbody>
                     </table>
@@ -102,6 +102,9 @@
   import a17Paginate from './Paginate.vue'
   import a17Spinner from '@/components/Spinner.vue'
 
+  import {EventBus, Events} from '@/utils/event-bus'
+
+
   export default {
     name: 'A17Datatable',
     components: {
@@ -133,7 +136,7 @@
       },
       nestedDepth: {
         type: Number,
-        default: 2
+        default: 1
       }
     },
     data: function () {
@@ -141,7 +144,8 @@
         willUpdate: true,
         xScroll: 0,
         columnsWidth: [],
-        reorderable: false
+        reorderable: false,
+        dragAreas: null
       }
     },
     computed: {
@@ -225,10 +229,18 @@
         let self = this
         window.addEventListener('resize', () => self.resize())
         self.resize()
+        if (self.draggable) {
+          EventBus.$on(Events.drag.start, self.startDrag)
+          EventBus.$on(Events.drag.end, self.endDrag)
+        }
       },
       disposeEvents: function () {
         let self = this
         window.removeEventListener('resize', self.resize())
+        if (self.draggable) {
+          EventBus.$off(Events.drag.start, self.startDrag)
+          EventBus.$off(Events.drag.end, self.endDrag)
+        }
       },
       updateSort: function (column) {
         if (!column.sortable) return
@@ -267,6 +279,12 @@
 
         // reload datas
         this.$store.dispatch('getDatatableDatas')
+      startDrag() {
+        this.dragAreas = document.querySelectorAll('.tablerow-dragArea ')
+        this.dragAreas.forEach((el) => { el.classList.add('active') })
+      },
+      endDrag() {
+        this.dragAreas.forEach((el) => { el.classList.remove('active') })
       }
     },
     watch: {
