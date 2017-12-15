@@ -24,7 +24,7 @@
           </span>
         </template> <!-- Published Date -->
         <template v-if="col.name === 'languages'">
-          <a v-for="language in row['languages']" :key="language.value" :href="editUrl" class="tag tag--rounded tag--disabled" :class="{ 'tag--ok' : language.published }">{{ language.shortlabel }}</a>
+          <a v-for="language in row['languages']" :key="language.value" :href="editWithLanguage(language)" class="tag tag--rounded tag--disabled" :class="{ 'tag--ok' : language.published }">{{ language.shortlabel }}</a>
         </template> <!-- Published Date -->
       </template>
       <template v-else>
@@ -101,6 +101,22 @@
     },
     filters: a17VueFilters,
     methods: {
+      editWithLanguage: function (lang) {
+        const langQuery = {}
+        langQuery['lang'] = lang.value
+        return this.editWithQuery(langQuery)
+      },
+      editWithQuery: function (context) {
+        const queries = []
+        for (var prop in context) {
+          if (context.hasOwnProperty(prop)) {
+            queries.push(encodeURIComponent(prop) + '=' + encodeURIComponent(context[prop]))
+          }
+        }
+
+        const queryString = queries.length ? '?' + queries.join('&') : ''
+        return this.editUrl !== '#' ? (this.editUrl + queryString) : this.editUrl
+      },
       cellClasses: function (col) {
         return {
           'tablecell--icon': col.name === 'featured' || col.name === 'published',
