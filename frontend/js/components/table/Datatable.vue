@@ -294,22 +294,7 @@
       }
 
       this.reorderable = this.draggable
-
-      // draggable column
-      const draggableColumn = {
-        name: 'draggable',
-        label: '',
-        visible: true,
-        optional: false,
-        sortable: false
-      }
-
-      if (this.reorderable) {
-        this.$store.commit('addDatableColumn', {
-          index: 0,
-          data: draggableColumn
-        })
-      }
+      
     },
     mounted: function () {
       this.initEvents()
