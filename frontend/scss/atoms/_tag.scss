@@ -29,5 +29,21 @@ The little tag
   letter-spacing: 0.05em;
   top: -2px;
   margin:0 5px;
+  text-decoration:none;
   /*font-weight:600;*/
 }
+
+.tag--rounded {
+  border-radius:7px;
+  padding: 0 8px;
+}
+
+.tag--disabled {
+  background:$color__tag--disabled;
+}
+
+.tag--ok {
+  background:$color__ok;
+}
+
+

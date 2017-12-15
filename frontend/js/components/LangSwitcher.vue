@@ -2,7 +2,7 @@
   <div class="language" v-if="languages.length > 1">
     <span class="language__label f--small">Edit in</span>
     <span class="language__toolbar">
-      <button type="button" class="language__button" v-for="language in languages" :class="{ 'selected': language.value === localeValue.value, 'published': language.published }" @click="onClick(language.value)" >{{ language.shortlabel }}</button>
+      <button type="button" class="language__button" :key="language.value" v-for="language in languages" :class="{ 'selected': language.value === localeValue.value, 'published': language.published }" @click="onClick(language.value)" >{{ language.shortlabel }}</button>
     </span>
   </div>
 </template>

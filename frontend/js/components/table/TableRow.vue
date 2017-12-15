@@ -6,7 +6,7 @@
         <a v-if="col.name === 'bulk'" href="#" @click.prevent.stop="toggleBulk(row['id'])"><a17-checkbox name="bulkEdit" :value="row['id']" :initialValue="bulkIds" ></a17-checkbox></a><!-- Bulk -->
         <span v-if="col.name === 'featured'" class="tablecell__feature" :class="{'tablecell__feature--active': row[col.name] }" @click.prevent="toggleFeatured" :data-tooltip-title="row['featured'] ? 'Unfeature' : 'Feature'" v-tooltip><span v-svg symbol="star-feature_active"></span><span v-svg symbol="star-feature"></span></span> <!-- Featured star button -->
         <span v-if="col.name === 'published'" class="tablecell__pubstate" :class="{'tablecell__pubstate--live': row[col.name] }"  @click.prevent="togglePublish" :data-tooltip-title="row['published'] ? 'Unpublish' : 'Publish'" v-tooltip ></span> <!-- Published circle icon -->
-        <a class="tablerow__thumb" :href="row['edit']" v-if="col.name === 'thumbnail' && !row.hasOwnProperty('deleted')"><img :src="row[col.name]" /></a>
+        <a class="tablerow__thumb" :href="editUrl" v-if="col.name === 'thumbnail' && !row.hasOwnProperty('deleted')"><img :src="row[col.name]" /></a>
         <template v-else>
           <a class="tablerow__thumb" v-if="col.name === 'thumbnail'"><img :src="row[col.name]" /></a>
         </template> <!-- Thumbnail -->
@@ -23,9 +23,12 @@
             </template>
           </span>
         </template> <!-- Published Date -->
+        <template v-if="col.name === 'languages'">
+          <a v-for="language in row['languages']" :key="language.value" :href="editUrl" class="tag tag--rounded tag--disabled" :class="{ 'tag--ok' : language.published }">{{ language.shortlabel }}</a>
+        </template> <!-- Published Date -->
       </template>
       <template v-else>
-        <a :href="row['edit']" class="tablecell__name" v-if="col.name === 'name' && !row.hasOwnProperty('deleted')"><span class="f--link-underlined--o">{{ row[col.name] }}</span></a>
+        <a :href="editUrl" class="tablecell__name" v-if="col.name === 'name' && !row.hasOwnProperty('deleted')"><span class="f--link-underlined--o">{{ row[col.name] }}</span></a>
         <template v-else>{{ row[col.name] }}</template>
       </template>
     </td>
@@ -36,7 +39,7 @@
         <a17-button variant="icon" @click="$refs.rowSetupDropdown.toggle()"><span v-svg symbol="more-dots"></span></a17-button>
         <div slot="dropdown__content">
           <a v-if="row.hasOwnProperty('permalink')" :href="row['permalink']" target="_blank">View Permalink</a>
-          <a v-if="row.hasOwnProperty('edit') && !row.hasOwnProperty('deleted')" :href="row['edit']">Edit</a>
+          <a v-if="row.hasOwnProperty('edit') && !row.hasOwnProperty('deleted')" :href="editUrl">Edit</a>
           <a v-if="row.hasOwnProperty('published') && !row.hasOwnProperty('deleted')" href="#" @click.prevent="togglePublish">{{ row['published'] ? 'Unpublish' : 'Publish' }}</a>
           <a v-if="row.hasOwnProperty('featured') && !row.hasOwnProperty('deleted')" href="#" @click.prevent="toggleFeatured">{{ row['featured'] ? 'Unfeature' : 'Feature' }}</a>
           <a v-if="row.hasOwnProperty('deleted')" href="#" @click.prevent="restoreRow">Restore</a>
@@ -79,6 +82,9 @@
       }
     },
     computed: {
+      editUrl: function () {
+        return this.row['edit'] ? this.row['edit'] : '#'
+      },
       formatDateLabel: function () {
         let label = ''
         let scoreStart = compareAsc(this.row['publish_start_date'], new Date())
@@ -100,12 +106,14 @@
           'tablecell--icon': col.name === 'featured' || col.name === 'published',
           'tablecell--bulk': col.name === 'bulk',
           'tablecell--thumb': col.name === 'thumbnail',
-          'tablecell--draggable': col.name === 'draggable'
+          'tablecell--draggable': col.name === 'draggable',
+          'tablecell--languages': col.name === 'languages'
         }
       },
       isSpecificColumn: function (col) {
         return col.name === 'draggable' ||
                col.name === 'bulk' ||
+               col.name === 'languages' ||
                col.name === 'featured' ||
                col.name === 'published' ||
                col.name === 'thumbnail' ||
@@ -158,16 +166,6 @@
     vertical-align: top;
     padding:20px 10px;
     background-color: $color__background;
-
-    > a {
-      color:$color__link;
-      text-decoration:none;
-      display:block;
-
-      // &:hover {
-      //   text-decoration: underline;
-      // }
-    }
   }
 
   .tablecell__feature {
@@ -247,6 +245,9 @@
   .tablecell__name {
     min-width: 15vw;
     max-width: 33.33vw;
+    color:$color__link;
+    text-decoration:none;
+    display:block;
   }
 
   .tablecell--thumb {
