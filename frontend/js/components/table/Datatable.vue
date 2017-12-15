@@ -43,7 +43,7 @@
                     <td :colspan="visibleColumns.length + 2">
                       <table>
                         <tbody>
-                          <a17-tablerow :row="row" :index="index" :columns="visibleColumns"></a17-tablerow>
+                          <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :draggable="draggable"></a17-tablerow>
                           <a17-tablerow-nested :maxDepth="nestedDepth" :parentId="row.id" :items="row.child" :columns="visibleColumns" :draggable="draggable" :draggableOptions="draggableOptions"></a17-tablerow-nested>
                         </tbody>
                       </table>
@@ -56,7 +56,22 @@
 
           <tbody v-else>
             <template v-for="(row, index) in rows">
-              <a17-tablerow :row="row" :index="index" :columns="visibleColumns"></a17-tablerow>
+              <a17-tablerow v-if="!nested" :row="row" :index="index" :columns="visibleColumns"
+                            :key="row.id"></a17-tablerow>
+              <template v-else>
+                <tr class="tablerow-nested" :key="row.id">
+                  <td :colspan="visibleColumns.length + 2">
+                    <table>
+                      <tbody>
+                      <a17-tablerow :row="row" :index="index" :columns="visibleColumns"
+                                    :draggable="draggable"></a17-tablerow>
+                      <a17-tablerow-nested :maxDepth="nestedDepth" :parentId="row.id" :items="row.child"
+                                           :columns="visibleColumns"></a17-tablerow-nested>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </template>
             </template>
           </tbody>
         </a17-table>

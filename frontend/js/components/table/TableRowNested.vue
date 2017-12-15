@@ -2,13 +2,32 @@
   <tr class="tablerow-nested">
     <td :colspan="tdWidth">
       <table class="tablerow-nested__table">
-        <draggable :element="'tbody'" v-model="rows" :options="draggableOptions" class="tablerow-nested__dragArea">
+        <template v-if="draggable">
+          <draggable :element="'tbody'" v-model="rows" :options="draggableOptions" class="tablerow-nested__dragArea tablerow-nested__body">
+            <template v-for="(row, index) in rows">
+
+              <a17-tablerow class="tablerow-nested__row" :row="row" :index="index" :key="row.id" :columns="columns"
+                            :nested="nested" :draggable="draggable"></a17-tablerow>
+
+              <a17-tablerow-nested v-if="depth < maxDepth" :depth="depth + 1" :maxDepth="maxDepth" :parentId="row.id"
+                                   :items="row.child" :columns="columns" :draggable="draggable"
+                                   :draggableOptions="draggableOptions"></a17-tablerow-nested>
+
+            </template>
+          </draggable>
+        </template>
+
+        <template v-else>
+          <tbody class="tablerow-nested__body">
           <template v-for="(row, index) in rows">
-            <a17-tablerow :row="row" :index="index" :key="row.id" :columns="columns" :nested="true" :draggable="draggable"></a17-tablerow>
-            <!--<a17-tablerow-nested v-if="depth < maxDepth" :depth="depth + 1" :maxDepth="maxDepth" :parentId="row.id" :items="row.child" :columns="columns" :draggable="draggable"
-                                 :draggableOptions="draggableOptions"></a17-tablerow-nested>-->
+            <a17-tablerow class="tablerow-nested__row" :row="row" :index="index" :key="row.id" :columns="columns"
+                          :nested="nested" :draggable="draggable"></a17-tablerow>
+            <a17-tablerow-nested v-if="depth < maxDepth" :depth="depth + 1" :maxDepth="maxDepth" :parentId="row.id"
+                                 :items="row.child" :columns="columns"></a17-tablerow-nested>
+
           </template>
-        </draggable>
+          </tbody>
+        </template>
       </table>
     </td>
   </tr>
@@ -51,7 +70,8 @@
       },
       draggableOptions: {
         type: Object,
-        default: () => {}
+        default: () => {
+        }
       },
       reorderable: {
         type: Boolean,
@@ -68,15 +88,21 @@
     },
     computed: {
       rows: {
-        get () {
+        get() {
           return this.items
         },
-        set (value) {
+        set(value) {
           const data = {
             parentId: this.parentId,
             val: value
           }
           this.$store.dispatch('setDatatableNestedDatas', data)
+        }
+      },
+      nested() {
+        return {
+          active: true,
+          depth: this.depth
         }
       },
       tdWidth: function () {
@@ -85,7 +111,7 @@
       }
     },
     methods: {
-      checkMove (evt, original) {
+      checkMove(evt, original) {
         this.$emit('checkMove', evt, original)
       }
     }
@@ -103,8 +129,16 @@
   }
 
   .tablerow-nested__dragArea {
-    height: 25px;
-    padding: 25px;
-    background-color: red;
+    position: relative;
+  }
+
+  .tablerow-nested__body {
+    position: relative;
+    border-left: 80px solid transparent;
+  }
+
+  .tablerow-nested__row {
+    display: table;
+    width: 100%;
   }
 </style>

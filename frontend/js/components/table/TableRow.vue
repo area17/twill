@@ -1,12 +1,15 @@
 <template>
   <tr class="tablerow">
     <!-- Drag handle button -->
-    <td class="tablecell tablecell--draggable" v-if="nested && draggable"><span class="tablecell__handle"></span></td>
-    <td class="tablecell" v-if="nested"></td>
+
+    <td class="tablecell tablecell--draggable" :class="{'tablecell--nested': nested.active}" :style="nestedStyle" v-if="draggable || nested.active">
+      <span v-if="draggable" class="tablecell__handle"></span>
+      <span v-if="nested.active" class="tablecell__nested-depth"></span>
+    </td>
 
     <td v-for="col in columns" :key="col.name" class="tablecell" :class="cellClasses(col)">
       <template v-if="isSpecificColumn(col)">
-        <span v-if="!nested && col.name === 'draggable'" class="tablecell__handle"></span> <!-- Drag handle button -->
+        <!--<span v-if="!nested && col.name === 'draggable'" class="tablecell__handle"></span>--> <!-- Drag handle button -->
         <a v-if="col.name === 'bulk'" href="#" @click.prevent.stop="toggleBulk(row['id'])"><a17-checkbox name="bulkEdit" :value="row['id']" :initialValue="bulkIds" ></a17-checkbox></a><!-- Bulk -->
         <span v-if="col.name === 'featured'" class="tablecell__feature" :class="{'tablecell__feature--active': row[col.name] }" @click.prevent="toggleFeatured" :data-tooltip-title="row['featured'] ? 'Unfeature' : 'Feature'" v-tooltip><span v-svg symbol="star-feature_active"></span><span v-svg symbol="star-feature"></span></span> <!-- Featured star button -->
         <span v-if="col.name === 'published'" class="tablecell__pubstate" :class="{'tablecell__pubstate--live': row[col.name] }"  @click.prevent="togglePublish" :data-tooltip-title="row['published'] ? 'Unpublish' : 'Publish'" v-tooltip ></span> <!-- Published circle icon -->
@@ -70,13 +73,21 @@
         default: false
       },
       nested: {
-        type: Boolean,
-        default: false
+        type: Object,
+        default: () => {
+          return {
+            active: false,
+            depth: 1
+          }
+        }
       }
     },
     computed: {
       editUrl: function () {
         return this.row['edit'] ? this.row['edit'] : '#'
+      },
+      nestedStyle () {
+        return this.nested.active ? { width: this.nested.depth * 80 + 'px' } : ''
       },
       ...mapState({
         bulkIds: state => state.datatable.bulk
@@ -321,5 +332,44 @@
 
   tr:hover .tablecell--sticky {
     background: linear-gradient(to right, #{rgba($color__f--bg, 0)} 0%, #{rgba($color__f--bg, 1)} 25%);
+  }
+
+    /* Nested table cell */
+  .tablecell.tablecell--nested {
+    position: absolute;
+    width: 80px;
+    height: 100%;
+    padding: 20px 10px 20px 20px;
+    border-bottom: 1px solid $color__border--light;
+    overflow: auto;
+    transform: translateX(-100%);
+
+    .tablecell__handle {
+      left: 0;
+      margin-left: 0;
+    }
+
+    .tablecell__nested-depth {
+      position: relative;
+      display: block;
+      &:before {
+        content: '';
+        position: absolute;
+        top: 5px;
+        left: 10px;
+        width: 1px;
+        height: 7px;
+        background-color: $color__border--hover;
+      }
+      &:after {
+        content: '';
+        position: absolute;
+        top: 12px;
+        left: 10px;
+        right: 0;
+        height: 1px;
+        background-color: $color__border--hover;
+      }
+    }
   }
 </style>
