@@ -338,8 +338,8 @@
   .tablecell.tablecell--nested {
     position: absolute;
     width: 80px;
-    height: 100%;
-    padding: 20px 10px 20px 20px;
+    height: calc(100% + 1px);
+    padding: 20px 10px;
     border-bottom: 1px solid $color__border--light;
     overflow: auto;
     transform: translateX(-100%);
@@ -356,7 +356,7 @@
         content: '';
         position: absolute;
         top: 5px;
-        left: 10px;
+        left: 15px;
         width: 1px;
         height: 7px;
         background-color: $color__border--hover;
@@ -365,7 +365,7 @@
         content: '';
         position: absolute;
         top: 12px;
-        left: 10px;
+        left: 15px;
         right: 0;
         height: 1px;
         background-color: $color__border--hover;
