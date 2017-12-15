@@ -104,7 +104,6 @@
 
   import {EventBus, Events} from '@/utils/event-bus'
 
-
   export default {
     name: 'A17Datatable',
     components: {
@@ -279,11 +278,12 @@
 
         // reload datas
         this.$store.dispatch('getDatatableDatas')
-      startDrag() {
+      },
+      startDrag () {
         this.dragAreas = document.querySelectorAll('.tablerow-dragArea ')
         this.dragAreas.forEach((el) => { el.classList.add('active') })
       },
-      endDrag() {
+      endDrag () {
         this.dragAreas.forEach((el) => { el.classList.remove('active') })
       }
     },
@@ -312,7 +312,6 @@
       }
 
       this.reorderable = this.draggable
-      
     },
     mounted: function () {
       this.initEvents()
