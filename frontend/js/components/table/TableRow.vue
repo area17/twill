@@ -6,9 +6,9 @@
         <a v-if="col.name === 'bulk'" href="#" @click.prevent.stop="toggleBulk(row['id'])"><a17-checkbox name="bulkEdit" :value="row['id']" :initialValue="bulkIds" ></a17-checkbox></a><!-- Bulk -->
         <span v-if="col.name === 'featured'" class="tablecell__feature" :class="{'tablecell__feature--active': row[col.name] }" @click.prevent="toggleFeatured" :data-tooltip-title="row['featured'] ? 'Unfeature' : 'Feature'" v-tooltip><span v-svg symbol="star-feature_active"></span><span v-svg symbol="star-feature"></span></span> <!-- Featured star button -->
         <span v-if="col.name === 'published'" class="tablecell__pubstate" :class="{'tablecell__pubstate--live': row[col.name] }"  @click.prevent="togglePublish" :data-tooltip-title="row['published'] ? 'Unpublish' : 'Publish'" v-tooltip ></span> <!-- Published circle icon -->
-        <a class="tablerow__thumb" :href="editUrl" v-if="col.name === 'thumbnail' && !row.hasOwnProperty('deleted')"><img :src="row[col.name]" /></a>
+        <a class="tablecell__thumb" :href="editUrl" v-if="col.name === 'thumbnail' && !row.hasOwnProperty('deleted')"><img :src="row[col.name]" /></a>
         <template v-else>
-          <a class="tablerow__thumb" v-if="col.name === 'thumbnail'"><img :src="row[col.name]" /></a>
+          <a class="tablecell__thumb" v-if="col.name === 'thumbnail'"><img :src="row[col.name]" /></a>
         </template> <!-- Thumbnail -->
         <template v-if="col.name === 'publish_start_date'">
           <span v-if="formatDateLabel" class="tablecell__datePub" :class="{ 's--expired' : formatDateLabel === textExpired }">
@@ -177,6 +177,8 @@
     }
   }
 
+  /* Default cell */
+
   .tablecell {
     overflow: hidden;
     vertical-align: top;
@@ -184,6 +186,7 @@
     background-color: $color__background;
   }
 
+  /* Featuring content */
   .tablecell__feature {
     display:block;
     cursor:pointer;
@@ -224,6 +227,7 @@
     }
   }
 
+  /* Publish/Unpublish content */
   .tablecell__pubstate {
     cursor:pointer;
     border-radius:50%;
@@ -240,6 +244,13 @@
     background:$color__publish;
   }
 
+  /* Languages */
+  .tablecell--languages .tag {
+    margin:0 10px 0 0;
+  }
+
+  /* Publication dates */
+
   .tablecell__datePub {
     color:$color__text--forms;
 
@@ -254,18 +265,7 @@
     }
   }
 
-  .tablerow__thumb {
-    display:block;
-  }
-
-  .tablecell__name {
-    min-width: 15vw;
-    max-width: 33.33vw;
-    color:$color__link;
-    text-decoration:none;
-    display:block;
-  }
-
+  /* Thumbnails */
   .tablecell--thumb {
     width:1px;
 
@@ -278,12 +278,27 @@
     }
   }
 
+  .tablecell__thumb {
+    display:block;
+  }
+
+  /* Name */
+  .tablecell__name {
+    min-width: 15vw;
+    max-width: 33.33vw;
+    color:$color__link;
+    text-decoration:none;
+    display:block;
+  }
+
+  /* Icons */
   .tablecell--icon {
     width:1px;
     padding-left:10px;
     padding-right:10px;
   }
 
+  /* Bulk Edit checkboxes */
   .tablecell--bulk {
     width:1px;
     padding-left:10px;
@@ -300,12 +315,14 @@
     }
   }
 
+  /* Spacer */
   .tablecell--spacer {
     width:1px;
     padding-left:25px;
     padding-right:25px;
   }
 
+  /* Draggable */
   .tablecell.tablecell--draggable {
     width:10px;
     padding:0;
@@ -314,22 +331,6 @@
     + td {
       padding-left:20px - 10px;
     }
-  }
-
-  .tablecell--sticky {
-    position:absolute;
-    right:0;
-    top: auto;
-    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 25%);
-    padding-top: 16px;
-    padding-bottom: 16px - 2px;
-    overflow:visible;
-    padding-right:20px;
-    padding-left:20px;
-  }
-
-  tr:hover .tablecell--sticky {
-    background: linear-gradient(to right, #{rgba($color__f--bg, 0)} 0%, #{rgba($color__f--bg, 1)} 25%);
   }
 
   .tablecell__handle {
@@ -346,5 +347,21 @@
 
   tr:hover .tablecell__handle {
     display:block;
+  }
+
+  .tablecell--sticky {
+    position:absolute;
+    right:0;
+    top: auto;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 25%);
+    padding-top: 16px;
+    padding-bottom: 16px - 2px;
+    overflow:visible;
+    padding-right:20px;
+    padding-left:20px;
+  }
+
+  tr:hover .tablecell--sticky {
+    background: linear-gradient(to right, #{rgba($color__f--bg, 0)} 0%, #{rgba($color__f--bg, 1)} 25%);
   }
 </style>
