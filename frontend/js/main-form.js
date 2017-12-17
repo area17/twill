@@ -129,11 +129,13 @@ Window.vm = new Vue({
   },
   mounted: function () {
     // Form : confirm exit or lock panel if form is changed
-    window.onbeforeunload = this.confirmExit
-
-    // Subscribe to store mutation
-    this.unSubscribe = this.$store.subscribe((mutation, state) => {
-      this.isFormUpdated = true
+    this.$nextTick(function () {
+      window.onbeforeunload = this.confirmExit
+      // Subscribe to store mutation
+      this.unSubscribe = this.$store.subscribe((mutation, state) => {
+        console.log('subscribe')
+        this.isFormUpdated = true
+      })
     })
   },
   watch: {
