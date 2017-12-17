@@ -12,7 +12,7 @@
           <li class="f--small" v-if="currentMedia.size">File size: {{ currentMedia.size | uppercase }}</li>
           <li class="f--small" v-if="currentMedia.width + currentMedia.height">Dimensions: {{ currentMedia.width }} &times; {{ currentMedia.height }}</li>
           <li class="f--small media__metadatas--add">
-            <a href="#" @click.prevent="metadatasInfos"> {{ metadatas.text }}</a>
+            <a href="#" @click.prevent="metadatasInfos" v-if="withAddInfo"> {{ metadatas.text }}</a>
           </li>
         </ul>
 
@@ -125,6 +125,10 @@
       cropContext: {
         type: String,
         default: ''
+      },
+      withAddInfo: {
+        type: Boolean,
+        default: true
       }
     },
     data: function () {

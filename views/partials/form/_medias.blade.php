@@ -2,6 +2,7 @@
     $max = $max ?? 1;
     $required = $required ?? false;
     $note = $note ?? '';
+    $withAddInfo = $withAddInfo ?? true
 @endphp
 
 <a17-inputframe label="{{ $label }}">
@@ -11,12 +12,14 @@
             :max="{{ $max }}"
             crop-context="{{ $name }}"
             @if ($required) required @endif
+            @if (!$withAddInfo) :with-add-info="false" @endif
         >{{ $note }}</a17-slideshow>
     @else
         <a17-mediafield
             @include('cms-toolkit::partials.form.utils._field_name')
             crop-context="{{ $name }}"
             @if ($required) required @endif
+            @if (!$withAddInfo) :with-add-info="false" @endif
         >{{ $note }}</a17-mediafield>
     @endif
 </a17-inputframe>
