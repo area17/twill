@@ -1,3 +1,12 @@
+@php
+    $options = method_exists($options, 'map') ? $options->map(function($label, $value) {
+        return [
+            'value' => $value,
+            'label' => $label
+        ];
+    })->values()->toArray() : $options;
+@endphp
+
 <a17-inputframe>
     <a17-multiselect
         label="{{ $label }}"
