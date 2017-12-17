@@ -11,6 +11,7 @@
   import { mapState } from 'vuex'
   import qq from 'fine-uploader/lib/dnd'
   import FineUploaderS3 from 'fine-uploader-wrappers/s3'
+  import FineUploaderTraditional from 'fine-uploader-wrappers/traditional'
   import sanitizeFilename from '@/utils/sanitizeFilename.js'
 
   export default {
@@ -136,16 +137,30 @@
 
       var self = this
 
-      this._uploader = new FineUploaderS3({
-        options: {
-          debug: true,
-          maxConnections: 5,
+      const sharedConfig = {
+        debug: true,
+        maxConnections: 5,
+        button: buttonEl,
+        retry: {
+          enableAuto: true
+        },
+        callbacks: {
+          onSubmit: this._onSubmitCallback.bind(this),
+          onProgress: this._onProgressCallback.bind(this),
+          onError: this._onErrorCallback.bind(this),
+          onComplete: this._onCompleteCallback.bind(this),
+          onAllComplete: this._onAllCompleteCallback.bind(this),
+          onStatusChange: this._onStatusChangeCallback.bind(this)
+        },
+        text: {
+          fileInputTitle: 'Browse...'
+        }
+      }
+
+      this._uploader = this.uploaderConfig.endpointType === 's3' ? new FineUploaderS3({
+        options: Object.assign(sharedConfig, {
           validation: {
             allowedExtensions: ['svg', 'jpg', 'gif', 'png', 'jpeg']
-          },
-          button: buttonEl,
-          retry: {
-            enableAuto: true
           },
           objectProperties: {
             key: id => {
@@ -170,19 +185,21 @@
             customHeaders: {
               'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
             }
-          },
-          callbacks: {
-            onSubmit: this._onSubmitCallback.bind(this),
-            onProgress: this._onProgressCallback.bind(this),
-            onError: this._onErrorCallback.bind(this),
-            onComplete: this._onCompleteCallback.bind(this),
-            onAllComplete: this._onAllCompleteCallback.bind(this),
-            onStatusChange: this._onStatusChangeCallback.bind(this)
-          },
-          text: {
-            fileInputTitle: 'Browse...'
           }
-        }
+        })
+      }) : new FineUploaderTraditional({
+        options: Object.assign(sharedConfig, {
+          validation: {
+            allowedExtensions: ['svg', 'jpg', 'gif', 'png', 'jpeg'],
+            sizeLimit: this.uploaderConfig.filesizeLimit * 1048576 // mb to bytes
+          },
+          request: {
+            endpoint: this.uploaderConfig.endpoint,
+            customHeaders: {
+              'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
+            }
+          }
+        })
       })
 
       this._qqDropzone && this._qqDropzone.dispose()

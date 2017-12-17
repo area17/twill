@@ -38,7 +38,7 @@ class Local implements ImageServiceInterface
 
     public function getRawUrl($id)
     {
-        return '/' . config('cms-toolkit.media_library.local_path') . $id;
+        return '/' . $id;
     }
 
     public function getDimensions($id)
