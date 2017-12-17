@@ -436,6 +436,17 @@ abstract class ModuleRepository
         return $fields;
     }
 
+    public function getFormFieldsForBrowser($object, $relation, $routePrefix = null, $titleKey = 'title', $moduleName = null)
+    {
+        return $object->$relation->map(function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName) {
+            return [
+                'id' => $relatedElement->id,
+                'name' => $relatedElement->$titleKey,
+                'edit' => moduleRoute($moduleName ?? $relation, $routePrefix ?? '', 'edit', $relatedElement->id),
+            ];
+        })->toArray();
+    }
+
     public function updateOneToMany($object, $fields, $relationship, $formField, $attribute)
     {
         if (isset($fields[$formField])) {
@@ -455,14 +466,20 @@ abstract class ModuleRepository
 
     public function updateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute = 'position')
     {
-        $relatedElements = isset($fields[$relationship]) && !empty($fields[$relationship]) ? explode(',', $fields[$relationship]) : [];
+        $fieldsHasElements = isset($fields['browsers'][$relationship]) && !empty($fields['browsers'][$relationship]);
+        $relatedElements = $fieldsHasElements ? $fields['browsers'][$relationship] : [];
         $relatedElementsWithPosition = [];
         $position = 1;
         foreach ($relatedElements as $relatedElement) {
-            $relatedElementsWithPosition[$relatedElement] = [$positionAttribute => $position++];
+            $relatedElementsWithPosition[$relatedElement['id']] = [$positionAttribute => $position++];
         }
 
         $object->$relationship()->sync($relatedElementsWithPosition);
+    }
+
+    public function updateBrowser($object, $fields, $relationship, $positionAttribute = 'position')
+    {
+        $this->updateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute);
     }
 
     public function updateRepeaterMany($object, $fields, $relation, $keepExisting = true, $model = null)
