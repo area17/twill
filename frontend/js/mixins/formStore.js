@@ -15,11 +15,6 @@ export default {
       fields: state => state.form.fields
     })
   },
-  data: function () {
-    return {
-      _originalValue: ''
-    }
-  },
   methods: {
     getFieldName: function () {
       return this.fieldName !== '' ? this.fieldName : this.name
@@ -31,9 +26,6 @@ export default {
 
       if (value) newValue = value
       else newValue = this[this.inStore]
-
-      // There is no change on the field here
-      if (this[this._originalValue] === newValue) return
 
       let field = {}
       field.name = this.getFieldName()
@@ -59,7 +51,6 @@ export default {
       } else {
         this[this.inStore] = fieldInStore[0].value
       }
-      this[this._originalValue] = this[this.inStore]
     }
   },
   beforeDestroy: function () {
