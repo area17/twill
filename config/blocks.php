@@ -31,16 +31,6 @@ return [
             'icon' => 'image',
             'component' => 'a17-block-image',
         ],
-        'sonia' => [
-            'title' => 'Sonia',
-            'icon' => 'text',
-            'component' => 'a17-block-sonia',
-        ],
-        'charvet' => [
-            'title' => 'Charvet',
-            'icon' => 'text',
-            'component' => 'a17-block-charvet',
-        ],
         'grid' => [
             'title' => 'Grid',
             'icon' => 'text',
