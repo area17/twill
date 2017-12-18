@@ -340,15 +340,17 @@ abstract class ModuleController extends Controller
             ]);
         }
 
-        array_push($statusFilters, [
-            'name' => 'Published',
-            'slug' => 'published',
-            'number' => $this->repository->getCountByStatusSlug('published'),
-        ], [
-            'name' => 'Draft',
-            'slug' => 'draft',
-            'number' => $this->repository->getCountByStatusSlug('draft'),
-        ]);
+        if ($this->getIndexOption('publish')) {
+            array_push($statusFilters, [
+                'name' => 'Published',
+                'slug' => 'published',
+                'number' => $this->repository->getCountByStatusSlug('published'),
+            ], [
+                'name' => 'Draft',
+                'slug' => 'draft',
+                'number' => $this->repository->getCountByStatusSlug('draft'),
+            ]);
+        }
 
         if ($this->getIndexOption('restore')) {
             array_push($statusFilters, [
