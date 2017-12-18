@@ -5,7 +5,7 @@
         <!--Drag handle button-->
         <span v-if="col.name === 'draggable'" class="tablecell__handle"></span>
         <!-- Nested -->
-        <a17-tableNested v-if="col.name === 'nested'" :depth="nestedDepth"></a17-tableNested>
+        <a17-tableNested v-if="col.name === 'nested'" :depth="nestedDepth" :offset="nestedOffset"></a17-tableNested>
         <a v-if="col.name === 'bulk'" href="#" @click.prevent.stop="toggleBulk(row['id'])">
           <a17-checkbox name="bulkEdit" :value="row['id']" :initialValue="bulkIds"></a17-checkbox>
         </a><!-- Bulk -->
@@ -103,7 +103,10 @@
       },
       ...mapState({
         bulkIds: state => state.datatable.bulk
-      })
+      }),
+      nestedOffset () {
+        return this.columns.find((col) => col.name === 'draggable') ? 10 : 0
+      }
     },
     methods: {
       cellClasses: function (col) {

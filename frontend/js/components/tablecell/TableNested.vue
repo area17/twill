@@ -9,11 +9,15 @@
       depth: {
         type: Number,
         default: 0
+      },
+      offset: {
+        type: Number,
+        default: 0
       }
     },
     computed: {
       cellWidth () {
-        return this.depth > 0 ? { width: this.depth * 80 - 20 - 10 + 'px' } : ''
+        return this.depth > 0 ? { width: this.depth * 80 - 20 - this.offset + 'px' } : ''
       }
 
     }
