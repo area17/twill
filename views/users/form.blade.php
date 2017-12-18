@@ -39,16 +39,16 @@
         draft: [
           {
             name: 'save',
-            text: 'Disable user'
+            text: 'Update disabled user'
           },
           {
             name: 'save-close',
-            text: 'Disable user and close'
+            text: 'Update disabled and close'
           },
-          {
+          {{-- {
             name: 'save-new',
-            text: 'Disable user and create new'
-          },
+            text: 'Update disabled user and create new'
+          }, --}}
           {
             name: 'cancel',
             text: 'Cancel'
@@ -63,10 +63,10 @@
             name: 'publish-close',
             text: 'Enable user and close'
           },
-          {
+          {{-- {
             name: 'publish-new',
             text: 'Enable user and create new'
-          },
+          }, --}}
           {
             name: 'cancel',
             text: 'Cancel'
@@ -81,10 +81,10 @@
             name: 'update-close',
             text: 'Update and close'
           },
-          {
+          {{-- {
             name: 'update-new',
             text: 'Update and create new'
-          },
+          }, --}}
           {
             name: 'cancel',
             text: 'Cancel'
