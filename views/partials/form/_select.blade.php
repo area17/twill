@@ -16,6 +16,7 @@
             @include('cms-toolkit::partials.form.utils._field_name')
             :options="{{ json_encode($options) }}"
             @if ($default) selected="{{ $default }}" @endif
+            :has-default-store="true"
             in-store="value"
         ></a17-singleselect>
     </a17-inputframe>
@@ -25,8 +26,10 @@
         @include('cms-toolkit::partials.form.utils._field_name')
         :options="{{ json_encode($options) }}"
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
-        @if ($default) initial-value="{{ $default }}" @endif
-        in-store="currentValue"
+        @if ($default) selected="{{ $default }}" @endif
+        :has-default-store="true"
+        size="large"
+        in-store="value"
     ></a17-vselect>
 @else
     <a17-vselect
@@ -38,6 +41,7 @@
         @if ($default) :selected="{{ json_encode(collect($options)->first(function ($option) use ($default) {
             return $option['value'] === $default;
         })) }}" @endif
+        :has-default-store="true"
         size="large"
         in-store="inputValue"
     ></a17-vselect>

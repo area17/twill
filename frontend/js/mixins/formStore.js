@@ -2,10 +2,16 @@ import { mapState } from 'vuex'
 
 export default {
   props: {
+    hasDefaultStore: {
+      type: Boolean,
+      default: false
+    },
     inStore: {
+      type: String,
       default: ''
     },
     fieldName: {
+      type: String,
       default: ''
     }
   },
@@ -19,6 +25,7 @@ export default {
     getFieldName: function () {
       return this.fieldName !== '' ? this.fieldName : this.name
     },
+    // Save the value into the store
     saveIntoStore: function (value) {
       if (this.inStore === '') return
 
@@ -27,6 +34,7 @@ export default {
       if (value) newValue = value
       else newValue = this[this.inStore]
 
+      // The object that is saved
       let field = {}
       field.name = this.getFieldName()
       field.value = newValue
@@ -44,13 +52,18 @@ export default {
       return field.name === fieldName
     })
 
-    // init value with the one from the store
     if (fieldInStore.length) {
+      // init value with the one from the store
+
       if (this.locale) {
         this[this.inStore] = fieldInStore[0].value[this.locale.value]
       } else {
         this[this.inStore] = fieldInStore[0].value
       }
+    } else if (this.hasDefaultStore) {
+      // init value with the one present into the component itself
+      // used for select / single-selects
+      this.saveIntoStore()
     }
   },
   beforeDestroy: function () {

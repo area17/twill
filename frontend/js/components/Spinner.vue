@@ -1,7 +1,7 @@
 <template>
   <transition name="fade_spinner"  @after-enter="afterEnter" @before-leave="beforeLeave">
-    <div class="spinner">
-      <div class="spinner__anim" :class="{ 'spinner__anim--visible' : visible }">
+    <div class="a17spinner">
+      <div class="a17spinner__anim" :class="{ 'a17spinner__anim--visible' : visible }">
         <svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
             <g fill="none" fill-rule="evenodd">
                 <g transform="translate(1 1)" stroke-width="2">
@@ -46,7 +46,7 @@
 <style lang="scss"> // beware : not scoped
   @import '~styles/setup/_mixins-colors-vars.scss';
 
-  .spinner {
+  .a17spinner {
     display: flex;
     width: 100%;
     // height: 50px;
@@ -60,7 +60,7 @@
     z-index: $zindex__loadingTable;
   }
 
-  .spinner__anim {
+  .a17spinner__anim {
     margin: 100px auto;
     width: 20px;
     height: 20px;
@@ -71,12 +71,12 @@
     transition: opacity .25s linear;
     transition-delay:0.5s;
 
-    &.spinner__anim--visible {
+    &.a17spinner__anim--visible {
       opacity:1;
     }
   }
 
-  .app--form .spinner {
+  .app--form .a17spinner {
     background-color: rgba($color__border--light, 0.75);
   }
 </style>

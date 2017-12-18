@@ -399,12 +399,6 @@
     display: block;
     width: 100%;
     min-height: 100%;
-
-    .medialibrary__spinner {
-      /deep/ .spinner__container {
-        padding: 5vh 0;
-      }
-    }
   }
 
   .medialibrary__filter-item {
