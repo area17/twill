@@ -44,7 +44,7 @@
                       <table>
                         <tbody>
                           <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :draggable="draggable"></a17-tablerow>
-                          <a17-tablerow-nested v-if="row.child" :maxDepth="nestedDepth" :parentId="row.id" :items="row.child" :columns="visibleColumns" :draggable="draggable" :draggableOptions="draggableOptions"></a17-tablerow-nested>
+                          <a17-tablerow-nested v-if="row.child" :maxDepth="nestedDepth" :parentId="row.id" :items="row.child" :columns="visibleColumns" :draggableOptions="draggableOptions"></a17-tablerow-nested>
                         </tbody>
                       </table>
                     </td>
@@ -63,10 +63,8 @@
                   <td :colspan="visibleColumns.length + 2">
                     <table>
                       <tbody>
-                      <a17-tablerow :row="row" :index="index" :columns="visibleColumns"
-                                    :draggable="draggable"></a17-tablerow>
-                      <a17-tablerow-nested v-if="row.child" :maxDepth="nestedDepth" :parentId="row.id" :items="row.child"
-                                           :columns="visibleColumns"></a17-tablerow-nested>
+                      <a17-tablerow :row="row" :index="index" :columns="visibleColumns"></a17-tablerow>
+                      <a17-tablerow-nested v-if="row.child" :maxDepth="nestedDepth" :parentId="row.id" :items="row.child" :columns="visibleColumns"></a17-tablerow-nested>
                       </tbody>
                     </table>
                   </td>
@@ -314,7 +312,38 @@
         })
       }
 
+      // Nested Column
+      const nestedColumn = {
+        name: 'nested',
+        label: '',
+        visible: true,
+        optional: false,
+        sortable: false
+      }
+
+      if (this.nested) {
+        this.$store.commit('addDatableColumn', {
+          index: 0,
+          data: nestedColumn
+        })
+      }
+
       this.reorderable = this.draggable
+      // draggable column
+      const draggableColumn = {
+        name: 'draggable',
+        label: '',
+        visible: true,
+        optional: false,
+        sortable: false
+      }
+
+      if (this.reorderable) {
+        this.$store.commit('addDatableColumn', {
+          index: 0,
+          data: draggableColumn
+        })
+      }
     },
     mounted: function () {
       this.initEvents()
