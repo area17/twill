@@ -179,9 +179,13 @@ const gatherRepeaters = (state, rootState) => {
         let repeaterBlock = buildBlock(repeaterItem, state, rootState)
 
         // we want to inline fields in the repeater object
+        // and we don't need the type of component used
         let fields = repeaterBlock.content
-
         delete repeaterBlock.content
+        delete repeaterBlock.type
+
+        // and lastly we want to keep the id to update existing items
+        repeaterBlock.id = repeaterItem.id
 
         return Object.assign(repeaterBlock, fields)
       })

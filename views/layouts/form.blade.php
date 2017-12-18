@@ -2,6 +2,10 @@
 
 @section('appTypeClass', 'app--form')
 
+@php
+    $formTitleName = $formCustomTitleName ?? $titleColumnKey ?? 'title';
+@endphp
+
 @section('content')
     <div class="form">
         <form action="{{ $saveUrl }}" v-sticky data-sticky-id="navbar" data-sticky-offset="0" data-sticky-topoffset="12" v-on:submit.prevent="submitForm">
@@ -16,7 +20,7 @@
                 <a17-sticky-nav data-sticky-target="navbar" :items="{{ json_encode($additionalFieldsets) }}">
                     <a17-title-editor
                         @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif
-                        title-name="{{ $formCustomTitleName ?? $titleColumnKey ?? 'title' }}"
+                        title-name="{{ $formTitleName }}"
                         title-label="{{ $formCustomTitleLabel ?? ucfirst($titleColumnKey ?? 'title') }}"
                         slot="title"
                     >
@@ -66,11 +70,13 @@
     window.STORE.languages = {}
     window.STORE.languages.all = {!! json_encode(getLanguagesForVueStore($form_fields)) !!}
     window.STORE.form = {
-        title: '{{ $item->{$titleColumnKey ?? 'title'} }}',
+        title: '{{ $item->{$formTitleName} }}',
         permalink: '{{ $item->slug ?? '' }}',
         baseUrl: '{{ $baseUrl }}',
         saveUrl: '{{ $saveUrl }}',
-        fields: []
+        fields: [],
+        availableRepeaters: {!! json_encode(config('cms-toolkit.block_editor.repeaters')) !!},
+        repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!}
     }
 
     window.STORE.publication = {
@@ -84,13 +90,12 @@
     }
 
     window.STORE.revisions = {!! json_encode($revisions ?? [])  !!}
+
     window.STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('cms-toolkit.block_editor.crops')) !!}
     window.STORE.medias.selected = {}
+
     window.STORE.browser = {}
     window.STORE.browser.selected = {}
-
-    window.STORE.form.availableRepeaters = {!! json_encode(config('cms-toolkit.block_editor.repeaters')) !!}
-    window.STORE.form.repeaters = {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!}
 
     window.APIKEYS = {
         'googleMapApi': '{{ config('services.google.maps_api_key') }}'

@@ -65,7 +65,7 @@
         return typeof this.$parent.repeaterName !== 'undefined'
       },
       hasRemainingBlocks: function () {
-        return this.blockType.max > this.blocks.length
+        return !this.blockType.hasOwnProperty('max') || (this.blockType.max > this.blocks.length)
       },
       blockType: function () {
         return this.availableBlocks[this.type] ? this.availableBlocks[this.type] : {}

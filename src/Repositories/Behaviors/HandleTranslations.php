@@ -6,6 +6,11 @@ trait HandleTranslations
 {
     protected $nullableFields = [];
 
+    public function prepareFieldsBeforeCreateHandleTranslations($fields)
+    {
+        return $this->prepareFieldsBeforeSaveHandleTranslations(null, $fields);
+    }
+
     public function prepareFieldsBeforeSaveHandleTranslations($object, $fields)
     {
         if (property_exists($this->model, 'translatedAttributes')) {
