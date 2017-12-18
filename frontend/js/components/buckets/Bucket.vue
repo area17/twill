@@ -385,7 +385,9 @@
         display: block;
         width: 50px;
         min-width: 50px;
-        height: 50px;
+        min-height: 50px;
+        height:auto;
+        background:$color__border--light;
       }
     }
 
