@@ -6,7 +6,7 @@
     <div class="listing" xmlns:v-on="http://www.w3.org/1999/xhtml">
         <div class="listing__nav">
             <div class="container" ref="form">
-                <a17-filter v-on:submit="filterListing" v-bind:closed="hasBulkIds" initial-search-value="{{ $filters['search'] ?? '' }}">
+                <a17-filter v-on:submit="filterListing" v-bind:closed="hasBulkIds" initial-search-value="{{ $filters['search'] ?? '' }}" :clear-option="true" v-on:clear="clearFiltersAndReloadDatas">
                     <ul class="secondarynav secondarynav--desktop" slot="navigation">
                         <li v-for="(navItem, index) in navFilters" class="secondarynav__item" :class="{ 's--on' : navActive === navItem.slug }">
                             <a href="#" v-on:click.prevent="filterStatus(navItem.slug)">
@@ -32,11 +32,34 @@
                         </a17-dropdown>
                     </div>
 
-                    @hasSection('hiddenFilters')
-                        <div slot="hidden-filters">
-                            @yield('hiddenFilters')
-                        </div>
-                    @endif
+                    @forelse($hiddenFilters as $filter)
+                        @if ($loop->first)
+                            <div slot="hidden-filters">
+                        @endif
+
+                        @if (isset(${$filter.'List'}))
+                            <a17-vselect
+                            name="{{ $filter }}"
+                            :options="{{ json_encode(${$filter.'List'}->map(function($label, $value) {
+                                return [
+                                    'value' => $value,
+                                    'label' => $label
+                                ];
+                            })->values()->toArray()) }}"
+                            placeholder="All {{ strtolower(str_plural(str_replace_first('f', '', $filter))) }}"
+                            ></a17-vselect>
+                        @endif
+
+                        @if ($loop->last)
+                            </div>
+                        @endif
+                    @empty
+                        @hasSection('hiddenFilters')
+                            <div slot="hidden-filters">
+                                @yield('hiddenFilters')
+                            </div>
+                        @endif
+                    @endforelse
 
                     @if($create ?? false)
                         <div slot="additional-actions">

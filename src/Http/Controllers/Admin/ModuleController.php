@@ -180,6 +180,7 @@ abstract class ModuleController extends Controller
             'tableColumns' => $this->getIndexTableColumns($items),
             'tableMainFilters' => $this->getIndexTableMainFilters($items),
             'filters' => json_decode($this->request->get('filter'), true) ?? [],
+            'hiddenFilters' => array_keys(array_except($this->filters, array_keys($this->defaultFilters))),
             'maxPage' => method_exists($items, 'lastPage') ? $items->lastPage() : 1,
             'defaultMaxPage' => method_exists($items, 'total') ? ceil($items->total() / $this->perPage) : 1,
             'offset' => method_exists($items, 'perPage') ? $items->perPage() : count($items),
@@ -339,15 +340,17 @@ abstract class ModuleController extends Controller
             ]);
         }
 
-        array_push($statusFilters, [
-            'name' => 'Published',
-            'slug' => 'published',
-            'number' => $this->repository->getCountByStatusSlug('published'),
-        ], [
-            'name' => 'Draft',
-            'slug' => 'draft',
-            'number' => $this->repository->getCountByStatusSlug('draft'),
-        ]);
+        if ($this->getIndexOption('publish')) {
+            array_push($statusFilters, [
+                'name' => 'Published',
+                'slug' => 'published',
+                'number' => $this->repository->getCountByStatusSlug('published'),
+            ], [
+                'name' => 'Draft',
+                'slug' => 'draft',
+                'number' => $this->repository->getCountByStatusSlug('draft'),
+            ]);
+        }
 
         if ($this->getIndexOption('restore')) {
             array_push($statusFilters, [

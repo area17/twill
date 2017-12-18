@@ -81,6 +81,11 @@ Window.vm = new Vue({
       // reload datas
       this.$store.dispatch('getDatatableDatas')
     },
+    clearFiltersAndReloadDatas: function () {
+      this.$store.commit('updateDatablePage', 1)
+      this.$store.commit('clearDatableFilter')
+      this.reloadDatas()
+    },
     filterListing: function (formData) {
       this.$store.commit('updateDatablePage', 1)
       this.$store.commit('updateDatableFilter', formData || {search: ''})

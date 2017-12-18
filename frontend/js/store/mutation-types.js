@@ -80,6 +80,7 @@ export const PUBLISH_DATATABLE = 'publishDatatable'
 export const FEATURE_DATATABLE = 'featureDatatable'
 export const UPDATE_DATATABLE_FILTER = 'updateDatableFilter'
 export const UPDATE_DATATABLE_FILTER_STATUS = 'updateDatableFilterStatus'
+export const CLEAR_DATATABLE_FILTER = 'clearDatableFilter'
 export const UPDATE_DATATABLE_MESSAGE = 'updateDatableMessage'
 export const UPDATE_DATATABLE_LOADING = 'updateDatableLoading'
 
