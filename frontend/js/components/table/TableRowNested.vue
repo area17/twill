@@ -1,17 +1,17 @@
 <template>
-  <tr class="tablerow-nested">
+  <tr class="nested">
     <td :colspan="tdWidth">
-      <table class="tablerow-nested__table">
+      <table class="nested__table">
         <template v-if="draggable">
-          <draggable :element="'tbody'" v-model="rows" :options="draggableOptions" ref="dragArea" class="tablerow-nested__dragArea tablerow-dragArea tablerow-nested__body" @start="startDrag"
+          <draggable :element="'tbody'" v-model="rows" :options="draggableOptions" ref="dragArea" class="nested__dragArea" @start="startDrag"
                      @end="endDrag">
             <template v-for="(row, index) in rows">
-              <a17-tablerow class="tablerow-nested__row" :row="row" :index="index" :key="row.id" :columns="columns"
-                            :nested="nested" :draggable="draggable"></a17-tablerow>
+              <a17-tablerow :rowType="'nested'" :row="row" :index="index" :key="row.id" :columns="columns"
+                            :nestedDepth="depth" :draggable="draggable"></a17-tablerow>
 
-              <!--<a17-tablerow-nested v-if="depth < maxDepth" :depth="depth + 1" :maxDepth="maxDepth" :parentId="row.id"-->
-                                   <!--:items="row.child" :columns="columns" :draggable="draggable"-->
-                                   <!--:draggableOptions="draggableOptions"></a17-tablerow-nested>-->
+              <a17-tablerow-nested v-if="depth <= maxDepth" :rowType="'nested'" :depth="depth + 1" :maxDepth="maxDepth" :parentId="row.id"
+                                   :items="row.child" :columns="columns" :draggable="draggable"
+                                   :draggableOptions="draggableOptions"></a17-tablerow-nested>
             </template>
           </draggable>
         </template>
@@ -19,8 +19,8 @@
         <template v-else>
           <tbody class="tablerow-nested__body">
           <template v-for="(row, index) in rows">
-            <a17-tablerow class="tablerow-nested__row" :row="row" :index="index" :key="row.id" :columns="columns"
-                          :nested="nested" :draggable="draggable"></a17-tablerow>
+            <a17-tablerow :rowType="'nested'" :row="row" :index="index" :key="row.id" :columns="columns"
+                          :nestedDepth="depth" :draggable="draggable"></a17-tablerow>
             <a17-tablerow-nested v-if="depth < maxDepth" :depth="depth + 1" :maxDepth="maxDepth" :parentId="row.id"
                                  :items="row.child" :columns="columns"></a17-tablerow-nested>
 
@@ -117,18 +117,21 @@
 
 
 <style lang="scss" scoped>
-  .tablerow-nested {
-
-  }
-
-  .tablerow-nested__table {
+  .nested {
     width: 100%;
-    /*border-collapse: separate;*/
-    border-left: 80px solid transparent;
-
   }
 
-  .tablerow-nested__dragArea {
+  .nested__table {
+    width: 100%;
+    border-left: 80px solid transparent;
+  }
+
+  .nested__row {
+    display: table;
+    width: 100%;
+  }
+
+  .nested__dragArea {
     display: table;
     position: relative;
     width: 100%;
@@ -139,13 +142,4 @@
     }
   }
 
-  .tablerow-nested__body {
-    position: relative;
-    /*border-left: 80px solid transparent;*/
-  }
-
-  .tablerow-nested__row {
-    display: table;
-    width: 100%;
-  }
 </style>

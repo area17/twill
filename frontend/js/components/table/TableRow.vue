@@ -1,19 +1,19 @@
 <template>
-  <tr class="tablerow">
-    <!-- Drag handle button -->
-
-    <td class="tablecell tablecell--draggable" :class="{'tablecell--nested': nested.active}" :style="nestedStyle" v-if="draggable || nested.active">
-      <span v-if="draggable" class="tablecell__handle"></span>
-      <span v-if="nested.active" class="tablecell__nested-depth"></span>
-    </td>
 
     <td v-for="col in columns" :key="col.name" class="tablecell" :class="cellClasses(col)">
       <template v-if="isSpecificColumn(col)">
-        <!--<span v-if="!nested && col.name === 'draggable'" class="tablecell__handle"></span>--> <!-- Drag handle button -->
-        <a v-if="col.name === 'bulk'" href="#" @click.prevent.stop="toggleBulk(row['id'])"><a17-checkbox name="bulkEdit" :value="row['id']" :initialValue="bulkIds" ></a17-checkbox></a><!-- Bulk -->
-        <span v-if="col.name === 'featured'" class="tablecell__feature" :class="{'tablecell__feature--active': row[col.name] }" @click.prevent="toggleFeatured" :data-tooltip-title="row['featured'] ? 'Unfeature' : 'Feature'" v-tooltip><span v-svg symbol="star-feature_active"></span><span v-svg symbol="star-feature"></span></span> <!-- Featured star button -->
-        <span v-if="col.name === 'published'" class="tablecell__pubstate" :class="{'tablecell__pubstate--live': row[col.name] }"  @click.prevent="togglePublish" :data-tooltip-title="row['published'] ? 'Unpublish' : 'Publish'" v-tooltip ></span> <!-- Published circle icon -->
-        <a class="tablecell__thumb" :href="editUrl" v-if="col.name === 'thumbnail' && !row.hasOwnProperty('deleted')"><img :src="row[col.name]" /></a>
+        <!--Drag handle button-->
+        <span v-if="col.name === 'draggable'" class="tablecell__handle"></span>
+        <!-- Nested -->
+        <a17-tableNested v-if="col.name === 'nested'" :depth="nestedDepth"></a17-tableNested>
+        <a v-if="col.name === 'bulk'" href="#" @click.prevent.stop="toggleBulk(row['id'])">
+          <a17-checkbox name="bulkEdit" :value="row['id']" :initialValue="bulkIds"></a17-checkbox>
+        </a><!-- Bulk -->
+        <span v-if="col.name === 'featured'" class="tablecell__feature" :class="{'tablecell__feature--active': row[col.name] }" @click.prevent="toggleFeatured" :data-tooltip-title="row['featured'] ? 'Unfeature' : 'Feature'" v-tooltip><span v-svg symbol="star-feature_active"></span><span v-svg symbol="star-feature"></span></span>
+        <!-- Featured star button -->
+        <span v-if="col.name === 'published'" class="tablecell__pubstate" :class="{'tablecell__pubstate--live': row[col.name] }" @click.prevent="togglePublish" :data-tooltip-title="row['published'] ? 'Unpublish' : 'Publish'" v-tooltip></span>
+        <!-- Published circle icon -->
+        <a class="tablecell__thumb" :href="editUrl" v-if="col.name === 'thumbnail' && !row.hasOwnProperty('deleted')"><img :src="row[col.name]"/></a>
         <template v-else>
           <a class="tablecell__thumb" v-if="col.name === 'thumbnail'"><img :src="row[col.name]" /></a>
         </template> <!-- Thumbnail -->
@@ -46,12 +46,14 @@
   import { mapState } from 'vuex'
   import a17TableLanguages from '@/components/tablecell/TableLanguages'
   import a17TableDates from '@/components/tablecell/TableDates'
+  import a17TableNested from '@/components/tablecell/TableNested'
 
   export default {
     name: 'A17Tablerow',
     components: {
       'a17-tableLanguages': a17TableLanguages,
-      'a17-tableDates': a17TableDates
+      'a17-tableDates': a17TableDates,
+      'a17-tableNested': a17TableNested
     },
     props: {
       index: {
@@ -72,22 +74,23 @@
         type: Boolean,
         default: false
       },
-      nested: {
-        type: Object,
-        default: () => {
-          return {
-            active: false,
-            depth: 1
-          }
-        }
+      nestedDepth: {
+        type: Number,
+        default: 0
+      },
+      rowType: {
+        type: String,
+        default: ''
       }
     },
     computed: {
       editUrl: function () {
         return this.row['edit'] ? this.row['edit'] : '#'
       },
-      nestedStyle () {
-        return this.nested.active ? { width: this.nested.depth * 80 + 'px' } : ''
+      rowClasses () {
+        return {
+          'tablerow--nested': this.rowType === 'nested'
+        }
       },
       ...mapState({
         bulkIds: state => state.datatable.bulk
@@ -100,17 +103,21 @@
           'tablecell--bulk': col.name === 'bulk',
           'tablecell--thumb': col.name === 'thumbnail',
           'tablecell--draggable': col.name === 'draggable',
-          'tablecell--languages': col.name === 'languages'
+          'tablecell--languages': col.name === 'languages',
+          'tablecell--nested': col.name === 'nested',
+          'tablecell--nested--parent': col.name === 'nested' && this.nestedDepth === 0,
+          'tablecell--name': col.name === 'name'
         }
       },
       isSpecificColumn: function (col) {
         return col.name === 'draggable' ||
-               col.name === 'bulk' ||
-               col.name === 'languages' ||
-               col.name === 'featured' ||
-               col.name === 'published' ||
-               col.name === 'thumbnail' ||
-               col.name === 'publish_start_date'
+          col.name === 'bulk' ||
+          col.name === 'languages' ||
+          col.name === 'featured' ||
+          col.name === 'published' ||
+          col.name === 'thumbnail' ||
+          col.name === 'publish_start_date' ||
+          col.name === 'nested'
       },
       toggleFeatured: function () {
         if (!this.row.hasOwnProperty('deleted')) {
@@ -334,42 +341,17 @@
     background: linear-gradient(to right, #{rgba($color__f--bg, 0)} 0%, #{rgba($color__f--bg, 1)} 25%);
   }
 
-    /* Nested table cell */
   .tablecell.tablecell--nested {
     position: absolute;
-    width: 80px;
     height: calc(100% + 1px);
     padding: 20px 10px;
     border-bottom: 1px solid $color__border--light;
     overflow: auto;
     transform: translateX(-100%);
 
-    .tablecell__handle {
-      left: 0;
-      margin-left: 0;
-    }
-
-    .tablecell__nested-depth {
-      position: relative;
-      display: block;
-      &:before {
-        content: '';
-        position: absolute;
-        top: 5px;
-        left: 15px;
-        width: 1px;
-        height: 7px;
-        background-color: $color__border--hover;
-      }
-      &:after {
-        content: '';
-        position: absolute;
-        top: 12px;
-        left: 15px;
-        right: 0;
-        height: 1px;
-        background-color: $color__border--hover;
-      }
+    &.tablecell--nested--parent {
+      width: 0;
+      padding: 0;
     }
   }
 </style>
