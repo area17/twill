@@ -14,7 +14,6 @@
                 </div>
               </a17-dropdown>
             </div>
-
             <div class="datatable__stickyTable">
               <a17-table :columnsWidth="columnsWidth" :xScroll="xScroll" @scroll="updateScroll">
                 <thead>
@@ -281,7 +280,7 @@
         this.$store.dispatch('getDatatableDatas')
       },
       startDrag () {
-        this.dragAreas = document.querySelectorAll('.tablerow-dragArea ')
+        this.dragAreas = document.querySelectorAll('.nested__dragArea')
         this.dragAreas.forEach((el) => { el.classList.add('active') })
       },
       endDrag () {
