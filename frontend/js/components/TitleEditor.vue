@@ -64,7 +64,11 @@
       update: function () {
         let data = this.$refs.titleEditor.update()
         this.$store.commit('updateFormTitle', data.title)
-        this.$store.commit('updateFormPermalink', data.permalink)
+
+        if (this.permalink !== '') {
+          this.$store.commit('updateFormPermalink', data.permalink)
+        }
+
         this.$refs.editModal.hide()
       }
     }

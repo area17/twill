@@ -25,8 +25,12 @@ import ModalValidationButtons from '@/components/Modals/ModalValidationButtons.v
 
 // Store modules
 import datatable from '@/store/modules/datatable'
+import language from '@/store/modules/language'
+import form from '@/store/modules/form'
 
 store.registerModule('datatable', datatable)
+store.registerModule('language', language)
+store.registerModule('form', form)
 
 // LocalStorage
 import { getStorage } from '@/utils/localeStorage.js'

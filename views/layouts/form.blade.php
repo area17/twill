@@ -25,7 +25,7 @@
                         slot="title"
                     >
                         <template slot="modal-form">
-                            @partialView(($moduleName ?? null), 'modal_extra_fields', ['renderForModal' => true])
+                            @partialView(($moduleName ?? null), 'modal_extra_fields')
                         </template>
                     </a17-title-editor>
                     <a17-langswitcher slot="actions"></a17-langswitcher>
@@ -67,8 +67,7 @@
 @stop
 
 @section('initialStore')
-    window.STORE.languages = {}
-    window.STORE.languages.all = {!! json_encode(getLanguagesForVueStore($form_fields)) !!}
+
     window.STORE.form = {
         title: '{{ $item->{$formTitleName} }}',
         permalink: '{{ $item->slug ?? '' }}',
