@@ -23,8 +23,7 @@ const state = {
   sortDir: window.STORE.datatable.sortDir || 'asc',
   bulk: [],
   localStorageKey: window.STORE.datatable.localStorageKey || location.pathname,
-  loading: false,
-  nested: true
+  loading: false
 }
 
 // getters

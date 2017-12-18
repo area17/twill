@@ -133,6 +133,10 @@
         type: String,
         default: 'group1'
       },
+      nested: {
+        type: Boolean,
+        default: false
+      },
       nestedDepth: {
         type: Number,
         default: 1
@@ -193,8 +197,7 @@
         columns: state => state.datatable.columns,
         initialOffset: state => state.datatable.defaultOffset,
         initialMaxPage: state => state.datatable.defaultMaxPage,
-        loading: state => state.datatable.loading,
-        nested: state => state.datatable.nested
+        loading: state => state.datatable.loading
       }),
       ...mapGetters([
         'visibleColumns',
