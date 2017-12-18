@@ -10,22 +10,8 @@
         <template v-else>
           <a class="tablecell__thumb" v-if="col.name === 'thumbnail'"><img :src="row[col.name]" /></a>
         </template> <!-- Thumbnail -->
-        <template v-if="col.name === 'publish_start_date'">
-          <span v-if="formatDateLabel" class="tablecell__datePub" :class="{ 's--expired' : formatDateLabel === textExpired }">
-            {{ row['publish_start_date'] | formatDatatableDate }}<br /><span>{{ formatDateLabel }}</span>
-          </span>
-          <span v-else>
-            <template v-if="!row['publish_start_date']">
-              —
-            </template>
-            <template v-else>
-            {{ row['publish_start_date'] | formatDatatableDate }}
-            </template>
-          </span>
-        </template> <!-- Published Date -->
-        <template v-if="col.name === 'languages'">
-          <a v-for="language in row['languages']" :key="language.value" :href="editWithLanguage(language)" class="tag tag--rounded tag--disabled" :class="{ 'tag--ok' : language.published }">{{ language.shortlabel }}</a>
-        </template> <!-- Published Date -->
+        <a17-tableDates v-if="col.name === 'publish_start_date'" :startDate="row['publish_start_date']" :endDate="row['publish_end_date'] || ''"></a17-tableDates> <!-- Published Date -->
+        <a17-tableLanguages v-if="col.name === 'languages'" :languages="row['languages']" :editUrl="editUrl"></a17-tableLanguages> <!-- Languages -->
       </template>
       <template v-else>
         <a :href="editUrl" class="tablecell__name" v-if="col.name === 'name' && !row.hasOwnProperty('deleted')"><span class="f--link-underlined--o">{{ row[col.name] }}</span></a>
@@ -52,23 +38,19 @@
 
 <script>
   import { mapState } from 'vuex'
-  import a17VueFilters from '@/utils/filters.js'
-  import compareAsc from 'date-fns/compare_asc'
+  import a17TableLanguages from '@/components/tablecell/TableLanguages'
+  import a17TableDates from '@/components/tablecell/TableDates'
 
   export default {
     name: 'A17Tablerow',
+    components: {
+      'a17-tableLanguages': a17TableLanguages,
+      'a17-tableDates': a17TableDates
+    },
     props: {
       index: {
         type: Number,
         default: 0
-      },
-      textExpired: {
-        type: String,
-        default: 'Expired'
-      },
-      textScheduled: {
-        type: String,
-        default: 'Scheduled'
       },
       row: {
         type: Object,
@@ -85,38 +67,11 @@
       editUrl: function () {
         return this.row['edit'] ? this.row['edit'] : '#'
       },
-      formatDateLabel: function () {
-        let label = ''
-        let scoreStart = compareAsc(this.row['publish_start_date'], new Date())
-        let scoreEnd = this.row['publish_end_date'] ? compareAsc(this.row['publish_end_date'], new Date()) : 1
-
-        if (this.row['publish_start_date'] && scoreEnd < 0) label = this.textExpired
-        else if (scoreStart > 0) label = this.textScheduled
-
-        return label
-      },
       ...mapState({
         bulkIds: state => state.datatable.bulk
       })
     },
-    filters: a17VueFilters,
     methods: {
-      editWithLanguage: function (lang) {
-        const langQuery = {}
-        langQuery['lang'] = lang.value
-        return this.editWithQuery(langQuery)
-      },
-      editWithQuery: function (context) {
-        const queries = []
-        for (var prop in context) {
-          if (context.hasOwnProperty(prop)) {
-            queries.push(encodeURIComponent(prop) + '=' + encodeURIComponent(context[prop]))
-          }
-        }
-
-        const queryString = queries.length ? '?' + queries.join('&') : ''
-        return this.editUrl !== '#' ? (this.editUrl + queryString) : this.editUrl
-      },
       cellClasses: function (col) {
         return {
           'tablecell--icon': col.name === 'featured' || col.name === 'published',
@@ -242,27 +197,6 @@
 
   .tablecell__pubstate--live {
     background:$color__publish;
-  }
-
-  /* Languages */
-  .tablecell--languages .tag {
-    margin:0 10px 0 0;
-  }
-
-  /* Publication dates */
-
-  .tablecell__datePub {
-    color:$color__text--forms;
-
-    span {
-      color:$color__ok;
-    }
-
-    &.s--expired {
-      span {
-        color:$color__error;
-      }
-    }
   }
 
   /* Thumbnails */
