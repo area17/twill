@@ -20,7 +20,7 @@
     name: 'A17Select',
     mixins: [InputMixin, InputframeMixin, LocaleMixin, FormStoreMixin],
     props: {
-      initialValue: {
+      selected: {
         default: ''
       },
       options: {
@@ -29,21 +29,21 @@
     },
     data: function () {
       return {
-        currentValue: this.initialValue
+        value: this.selected
       }
     },
     computed: {
       selectedValue: {
         get: function () {
-          return this.currentValue
+          return this.value
         },
-        set: function (value) {
-          this.currentValue = value
+        set: function (newValue) {
+          this.value = newValue
 
           // see formStore mixin
-          this.saveIntoStore(value)
+          this.saveIntoStore(newValue)
 
-          this.$emit('change', value)
+          this.$emit('change', newValue)
         }
       }
     }
