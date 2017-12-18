@@ -35,6 +35,9 @@
         :options="{{ json_encode($options) }}"
         @if ($emptyText ?? false) empty-text="{{ $emptyText }}" @endif
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
+        @if ($default) :selected="{{ json_encode(collect($options)->first(function ($option) use ($default) {
+            return $option['value'] === $default;
+        })) }}" @endif
         size="large"
         in-store="inputValue"
     ></a17-vselect>
