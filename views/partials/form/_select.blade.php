@@ -28,6 +28,7 @@
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
         @if ($default) selected="{{ $default }}" @endif
         :has-default-store="true"
+        size="large"
         in-store="value"
     ></a17-vselect>
 @else

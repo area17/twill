@@ -1,6 +1,6 @@
 <template>
   <a17-inputframe :error="error" :note="note" :label="label" :locale="locale" @localize="updateLocale">
-    <span class="select__input">
+    <span class="select__input" :class="selectClasses">
       <select v-model="selectedValue" :name="name" :id="name" :disabled="disabled" :required="required" :readonly="readonly">
         <option v-for="option in options" :value="option.value" >
           {{ option.label }}
@@ -20,6 +20,10 @@
     name: 'A17Select',
     mixins: [InputMixin, InputframeMixin, LocaleMixin, FormStoreMixin],
     props: {
+      size: {
+        type: String,
+        default: ''
+      },
       selected: {
         default: ''
       },
@@ -33,6 +37,12 @@
       }
     },
     computed: {
+      selectClasses: function () {
+        return [
+          this.size === 'small' ? 'select__input--small' : '',
+          this.size === 'large' ? 'select__input--large' : ''
+        ]
+      },
       selectedValue: {
         get: function () {
           return this.value
@@ -176,12 +186,15 @@
 
   /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
+  $nativeSelectHeight: 35px;
+  $nativeLargeSelectHeight: 45px;
+
   .select__input {
     border: 1px solid $color__fborder;
     background-color: $color__background;
     border-radius: 2px;
     cursor: pointer;
-    height: 35px;
+    height: $nativeSelectHeight;
 
     &:hover {
       border-color: $color__fborder--hover;
@@ -194,8 +207,8 @@
 
   .select__input select {
     font-size:15px;
-    line-height:15px;
-    height: 35px;
+    line-height:$nativeSelectHeight - 2px;
+    height: $nativeSelectHeight;
     padding: 0 35px 0 14px;
     border-radius: 2px;
     color: $color__text--light;
@@ -238,5 +251,15 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+  }
+
+  /* Large variant */
+  .select__input--large,
+  .select__input--large select {
+    height: $nativeLargeSelectHeight;
+  }
+
+  .select__input--large select {
+    line-height: $nativeLargeSelectHeight - 2px;
   }
 </style>
