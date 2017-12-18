@@ -4,7 +4,7 @@
     <div class="locale__item" v-for="(language, index) in languages" :key="language.value">
       <component v-bind:is="`${type}`" :data-lang="language.value"
         v-bind="attributes"
-        :name="`${attributes.name}['${language.value}']`"
+        :name="`${attributes.name}[${language.value}]`"
         :fieldName="attributes.name"
         :locale="language"
         @localize="updateLocale"
