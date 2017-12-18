@@ -38,6 +38,8 @@
         :options="{{ json_encode($options) }}"
         @if ($emptyText ?? false) empty-text="{{ $emptyText }}" @endif
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
+        @if ($default) :selected="{{ json_encode($default) }}" @endif
+        :has-default-store="true"
         size="large"
         in-store="inputValue"
     ></a17-vselect>
