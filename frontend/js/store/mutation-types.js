@@ -60,6 +60,7 @@ export const ADD_BLOCK = 'addBlock'
 export const DELETE_BLOCK = 'deleteBlock'
 export const DUPLICATE_BLOCK = 'duplicateBlock'
 export const REORDER_BLOCKS = 'reorderBlocks'
+export const ACTIVATE_BLOCK = 'activateBlock'
 
 /* publications */
 export const UPDATE_PUBLISH_START_DATE = 'updatePublishStartDate'

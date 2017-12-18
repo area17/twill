@@ -2,7 +2,8 @@ import * as types from '../mutation-types'
 
 const state = {
   available: window.STORE.form.content || {},
-  blocks: window.STORE.form.blocks || []
+  blocks: window.STORE.form.blocks || [],
+  active: {}
 }
 
 // getters
@@ -34,6 +35,10 @@ const mutations = {
   },
   [types.REORDER_BLOCKS] (state, newBlocks) {
     state.blocks = newBlocks
+  },
+  [types.ACTIVATE_BLOCK] (state, index) {
+    if (state.blocks[index]) state.active = state.blocks[index]
+    else state.active = {}
   }
 }
 
