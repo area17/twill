@@ -4,7 +4,10 @@
       <img :src="item.thumbnail" :alt="item.name">
     </td>
     <td class="buckets__itemTitle">
-      <h4><span class="f--link-underlined--o"><a :href="item.edit" target="_blank">{{ item.name }}</a></span></h4>
+      <h4>
+        <span class="f--link-underlined--o"><a :href="item.edit" target="_blank">{{ item.name }}</a></span>
+        <template v-if="item.languages"><br /><a17-tableLanguages :languages="item.languages" :editUrl="item.edit"></a17-tableLanguages></template>
+      </h4>
     </td>
     <td class="buckets__itemDate" v-if="item.publication">
       {{ item.publication }}
@@ -26,8 +29,12 @@
 
 <script>
   import bucketMixin from '@/mixins/buckets'
+  import a17TableLanguages from '@/components/tablecell/TableLanguages'
 
   export default {
-    mixins: [bucketMixin]
+    mixins: [bucketMixin],
+    components: {
+      'a17-tableLanguages': a17TableLanguages
+    }
   }
 </script>

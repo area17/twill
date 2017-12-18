@@ -409,7 +409,7 @@
         margin-right: 80px;
       }
 
-      a {
+      .f--link-underlined--o a {
         color: $color__link;
         text-decoration: none;
       }
