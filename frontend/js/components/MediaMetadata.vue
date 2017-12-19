@@ -1,5 +1,5 @@
 <template>
-  <a17-locale v-if="languages.length > 1" type="a17-textfield" :attributes="attributes" :initialValues="initialValues" :initialValue="initialValue" @change="saveMetadata"></a17-locale>
+  <a17-locale type="a17-textfield" :attributes="attributes" :initialValues="initialValues" :initialValue="initialValue" @change="saveMetadata"></a17-locale>
 </template>
 
 <script>
