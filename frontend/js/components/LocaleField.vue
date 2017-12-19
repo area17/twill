@@ -3,7 +3,7 @@
     <template v-if="languages && languages.length">
     <div class="locale__item" v-for="(language, index) in languages" :key="language.value">
       <component v-bind:is="`${type}`" :data-lang="language.value"
-        v-bind="attributes"
+        v-bind="attributesPerLang(language.value)"
         :name="`${attributes.name}[${language.value}]`"
         :fieldName="attributes.name"
         :locale="language"
@@ -13,7 +13,7 @@
     </div>
     </template>
     <template v-else>
-      <component v-bind:is="`${type}`" v-bind="attributes"><slot></slot></component>
+      <component v-bind:is="`${type}`" v-bind="attributesNoLang" @change="updateValue(false, ...arguments)"><slot></slot></component>
     </template>
   </div>
 </template>
@@ -33,6 +33,16 @@
         default: function () {
           return {}
         }
+      },
+      initialValues: {
+        type: Object,
+        default: function () {
+          return {}
+        }
+      },
+      initialValue: {
+        type: String,
+        default: ''
       }
     },
     computed: {
@@ -42,6 +52,18 @@
       })
     },
     methods: {
+      attributesPerLang: function (lang) {
+        // for textfields set initial values using the initialValues prop
+        if (this.initialValues[lang]) this.attributes.initialValue = this.initialValues[lang]
+
+        return this.attributes
+      },
+      attributesNoLang: function (lang) {
+        // for textfields set initial values using the initialValue prop
+        if (this.initialValue) this.attributes.initialValue = this.initialValue
+
+        return this.attributes
+      },
       updateLocale: function (oldValue) {
         this.$store.commit('switchLanguage', { oldValue })
 
@@ -58,8 +80,16 @@
         this.$emit('localize', this.currentLocale)
       },
       updateValue: function (locale, newValue) {
-        // const name = this.attributes.name
-        // TODO : emit change again here
+        if (locale) {
+          this.$emit('change', {
+            locale: locale,
+            value: newValue
+          })
+        } else {
+          this.$emit('change', {
+            value: newValue
+          })
+        }
       }
     }
   }

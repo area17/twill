@@ -45,23 +45,9 @@
 
       <!-- Metadatas options -->
       <div class="media__metadatas--options" :class="{ 's--active' : metadatas.active }" v-if="hasMedia">
-        <a17-inputframe label="Alt Text">
-          <div class="form__field">
-            <input type="text" :name="`${name}_text`" :placeholder="altText" v-model="altText">
-          </div>
-        </a17-inputframe>
-
-        <a17-inputframe label="Caption">
-          <div class="form__field">
-            <input type="text" :name="`${name}_caption`" :placeholder="caption" v-model="caption">
-          </div>
-        </a17-inputframe>
-
-        <a17-inputframe label="Video URL (optional)">
-          <div class="form__field">
-            <input type="text" :name="`${name}_video`" placeholder="Youtube or Vimeo URL" v-model="video">
-          </div>
-        </a17-inputframe>
+        <a17-mediametadata :name='name' label="Alt Text" id="altText" :media="currentMedia" @change="updateMetadata"></a17-mediametadata>
+        <a17-mediametadata :name='name' label="Caption" id="caption" :media="currentMedia" @change="updateMetadata"></a17-mediametadata>
+        <a17-mediametadata :name='name' label="Video URL (optional)" id="video" :media="currentMedia" @change="updateMetadata"></a17-mediametadata>
       </div>
     </div>
 
@@ -78,13 +64,15 @@
   import { mapState } from 'vuex'
 
   import a17Cropper from '@/components/Cropper.vue'
+  import a17MediaMetadata from '@/components/MediaMetadata.vue'
   import mediaLibrayMixin from '@/mixins/mediaLibrary.js'
   import a17VueFilters from '@/utils/filters.js'
 
   export default {
     name: 'A17Mediafield',
     components: {
-      'a17-cropper': a17Cropper
+      'a17-cropper': a17Cropper,
+      'a17-mediametadata': a17MediaMetadata
     },
     mixins: [mediaLibrayMixin],
     props: {
@@ -161,69 +149,6 @@
       cropModalName: function () {
         return `${name}Modal`
       },
-      altText: {
-        get: function () {
-          if (this.currentMedia.hasOwnProperty('metadatas')) {
-            let altText = this.currentMedia.metadatas.custom.altText
-            return altText !== null && altText.length > 0 ? altText : this.currentMedia.metadatas.default.altText
-          } else {
-            return ''
-          }
-        },
-        set: function (val) {
-          this.$store.commit('setMediaMetadatas', {
-            media: {
-              context: this.mediaKey,
-              index: this.index
-            },
-            values: {
-              altText: val
-            }
-          })
-        }
-      },
-      caption: {
-        get: function () {
-          if (this.currentMedia.hasOwnProperty('metadatas')) {
-            let caption = this.currentMedia.metadatas.custom.caption
-            return caption !== null ? caption : this.currentMedia.metadatas.default.caption
-          } else {
-            return ''
-          }
-        },
-        set: function (val) {
-          this.$store.commit('setMediaMetadatas', {
-            media: {
-              context: this.mediaKey,
-              index: this.index
-            },
-            values: {
-              caption: val
-            }
-          })
-        }
-      },
-      video: {
-        get: function () {
-          if (this.currentMedia.hasOwnProperty('metadatas')) {
-            let video = this.currentMedia.metadatas.custom.video
-            return video !== null ? video : this.currentMedia.metadatas.default.video
-          } else {
-            return ''
-          }
-        },
-        set: function (val) {
-          this.$store.commit('setMediaMetadatas', {
-            media: {
-              context: this.mediaKey,
-              index: this.index
-            },
-            values: {
-              video: val
-            }
-          })
-        }
-      },
       ...mapState({
         selectedMedias: state => state.mediaLibrary.selected,
         allCrops: state => state.mediaLibrary.crops
@@ -266,6 +191,15 @@
         this.$store.commit('destroyMediasInSelected', {name: this.mediaKey, index: this.index})
       },
       // metadatas
+      updateMetadata: function (newValue) {
+        this.$store.commit('setMediaMetadatas', {
+          media: {
+            context: this.mediaKey,
+            index: this.index
+          },
+          value: newValue
+        })
+      },
       metadatasInfos: function () {
         let self = this
         self.metadatas.active = !self.metadatas.active
