@@ -1,6 +1,6 @@
 <template>
   <tr class="tablerow" :class="rowClasses">
-    <td v-for="col in columns" :key="col.name" class="tablecell" :class="cellClasses(col)">
+    <td v-for="col in columns" :key="col.name" class="tablecell" :class="cellClasses(col)" :style="nestedStyle(col)">
       <template v-if="isSpecificColumn(col)">
         <!--Drag handle button-->
         <span v-if="col.name === 'draggable'" class="tablecell__handle"></span>
@@ -120,6 +120,12 @@
           'tablecell--nested--parent': col.name === 'nested' && this.nestedDepth === 0,
           'tablecell--name': col.name === 'name'
         }
+      },
+      nestedStyle (col) {
+        return this.columns.find((col) => col.name === 'nested') && col.name === 'draggable' ? {
+          'webkit-transform': 'translateX(-' + this.nestedDepth * 80 + 'px)',
+          'transform': 'translateX(-' + this.nestedDepth * 80 + 'px)'
+        } : ''
       },
       isSpecificColumn: function (col) {
         return col.name === 'draggable' ||

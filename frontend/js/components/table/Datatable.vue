@@ -34,7 +34,7 @@
             <a17-tablehead :columns="visibleColumns" ref="thead"></a17-tablehead>
           </thead>
           <template v-if="draggable">
-            <draggable class="datatable__drag" :element="'tbody'" v-model="rows" :options="draggableOptions">
+            <draggable class="datatable__drag" :element="'tbody'" v-model="rows" :options="draggableOptions" @start="startDrag" @end="endDrag">
               <template v-for="(row, index) in rows">
                 <a17-tablerow v-if="!nested" :row="row" :index="index" :columns="visibleColumns" :key="row.id"></a17-tablerow>
                 <template v-else>
@@ -43,7 +43,7 @@
                       <table>
                         <tbody>
                           <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :draggable="draggable"></a17-tablerow>
-                          <a17-tablerow-nested v-if="row.child" :maxDepth="nestedDepth" :parentId="row.id" :items="row.child" :columns="visibleColumns" :draggableOptions="draggableOptions"></a17-tablerow-nested>
+                          <a17-tablerow-nested v-if="row.children" :maxDepth="nestedDepth" :parentId="row.id" :items="row.children" :columns="visibleColumns" :draggableOptions="draggableOptions"></a17-tablerow-nested>
                         </tbody>
                       </table>
                     </td>
@@ -63,7 +63,7 @@
                     <table>
                       <tbody>
                       <a17-tablerow :row="row" :index="index" :columns="visibleColumns"></a17-tablerow>
-                      <a17-tablerow-nested v-if="row.child" :maxDepth="nestedDepth" :parentId="row.id" :items="row.child" :columns="visibleColumns"></a17-tablerow-nested>
+                      <a17-tablerow-nested v-if="row.children" :maxDepth="nestedDepth" :parentId="row.id" :items="row.children" :columns="visibleColumns"></a17-tablerow-nested>
                       </tbody>
                     </table>
                   </td>
