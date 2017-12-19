@@ -117,6 +117,10 @@
       collapseAllBlocks: function () {
         this.opened = false
       }
+    },
+    beforeMount: function () {
+      // if there are blocks, these should be all collapse by default
+      if (this.savedBlocks.length > 0) this.opened = false
     }
   }
 </script>
