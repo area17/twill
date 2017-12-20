@@ -1,11 +1,28 @@
 import api from '../api/datatable'
 import * as types from '../mutation-types'
 import { setStorage } from '@/utils/localeStorage.js'
+/* NESTED functions */
 const getObject = (container, id, callback) => {
-  container.forEach(function (item) {
+  container.forEach((item) => {
     if (item.id === id) callback(item)
-    if (item.child) getObject(item.child, id, callback)
+    if (item.children) getObject(item.children, id, callback)
   })
+}
+
+const deepRemoveFromObj = (items, keys = ['id', 'children'], deep = 'children') => {
+  let deepItems = JSON.parse(JSON.stringify(items))
+  deepItems.forEach((obj) => {
+    for (const prop in obj) {
+      if (!keys.includes(prop)) {
+        delete obj[prop]
+      }
+
+      if (prop === deep) {
+        deepRemoveFromObj(obj[prop])
+      }
+    }
+  })
+  return deepItems
 }
 
 const state = {
@@ -222,7 +239,11 @@ const actions = {
   setDatatableNestedDatas ({commit, state, dispatch}, data) {
     commit(types.UPDATE_DATATABLE_NESTED, data)
 
-    // TODO: api connection
+    const ids = deepRemoveFromObj(state.data)
+    // TODO: ids is here an array of object. Maybe api need an update on back
+    api.reorder(ids, function (resp) {
+      commit('setNotification', {message: resp.data.message, variant: resp.data.variant})
+    })
   },
   setDatatableDatas ({commit, state, dispatch}, data) {
     // TBD: Maybe, we can keep and reset the old state if we have and error
