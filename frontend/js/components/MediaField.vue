@@ -3,8 +3,11 @@
     <div class="media__field">
       <div class="media__info" v-if="hasMedia">
         <div class="media__img">
-          <img :src="currentMedia.src"/>
-          <input type="hidden" :name="name" :value="currentMedia.id"/>
+          <div class="media__imgFrame">
+            <div class="media__imgCentered">
+              <img :src="currentMedia.src"/>
+            </div>
+          </div>
         </div>
 
         <ul class="media__metadatas">
@@ -25,7 +28,7 @@
 
         <div class="media__actions-dropDown">
           <a17-dropdown ref="dropDown" position="right">
-            <a17-button size="smallIcon" variant="icon" @click="$refs.dropDown.toggle()">
+            <a17-button size="icon" variant="icon" @click="$refs.dropDown.toggle()">
               <span v-svg symbol="more-dots"></span></a17-button>
             <div slot="dropdown__content">
               <a :href="currentMedia.original" download><span v-svg symbol="download"></span> Download</a>
@@ -320,7 +323,7 @@
 
   .media__img {
     width: 33.33%;
-    max-width: 270px;
+    max-width: 240px;
     user-select: none;
     position:relative;
 
@@ -347,47 +350,38 @@
     }
   }
 
-  // Image centered in a square option :
+  // Image centered in a square option
+  .media__imgFrame {
+    width:100%;
+    padding-bottom:100%;
+    position:relative;
+    overflow:hidden;
+  }
 
-  // <div class="media__img">
-  //   <div class="media__imgFrame">
-  //     <div class="media__imgCentered">
-  //       <img :src="currentMedia.src"/>
-  //     </div>
-  //   </div>
-  // </div>
+  .media__imgCentered {
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-  // .media__imgFrame {
-  //   width:100%;
-  //   padding-bottom:100%;
-  //   position:relative;
-  //   overflow:hidden;
-  // }
-
-  // .media__imgCentered {
-  //   top:0;
-  //   bottom:0;
-  //   left:0;
-  //   right:0;
-  //   position: absolute;
-  //   display: flex;
-  //   justify-content: center;
-  //   align-items: center;
-
-  //   &:before {
-  //     content: "";
-  //     position: absolute;
-  //     display:block;
-  //     top: 0;
-  //     left: 0;
-  //     right: 0;
-  //     bottom: 0;
-  //     border:1px solid rgba(0,0,0,0.1);
-  //   }
-  // }
+    &:before {
+      content: "";
+      position: absolute;
+      display:block;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border:1px solid rgba(0,0,0,0.05);
+    }
+  }
 
   .media--slide .media__img {
-    max-width: 180px;
+    max-width: 120px;
   }
 
   .media__info {
