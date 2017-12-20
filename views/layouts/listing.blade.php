@@ -53,7 +53,7 @@
             </div>
             <a17-bulk></a17-bulk>
         </div>
-        <a17-datatable :draggable="{{ $reorder ? 'true' : 'false' }}" :nested="true" empty-message="There is no item here yet."></a17-datatable>
+        <a17-datatable :draggable="{{ $reorder ? 'true' : 'false' }}" :nested="true" :nestedDepth="2" empty-message="There is no item here yet."></a17-datatable>
 
         <a17-modal class="modal--form" ref="addNewModal" title="Add new">
             <form action="{{ $storeUrl }}" method="post">
