@@ -210,7 +210,7 @@ const mutations = {
   },
   [types.UPDATE_DATATABLE_NESTED] (state, data) {
     getObject(state.data, data.parentId, (item) => {
-      item.child = data.val
+      item.children = data.val
     })
   }
 }
