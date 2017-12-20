@@ -102,9 +102,9 @@
         this.opened = false
       }
     },
-    beforeMount: function () {
+    Mounted: function () {
       // if there are blocks, these should be all collapse by default
-      if (this.savedBlocks.length > 0) this.opened = false
+      if (this.savedBlocks.length > 0) this.collapseAllBlocks()
     }
   }
 </script>
