@@ -45,6 +45,7 @@
       cellClasses: function (col) {
         return [
           col.name === 'draggable' ? 'tablehead__cell--draggable' : '',
+          col.name === 'nested' ? 'tablehead__cell--nested' : '',
           col.name === 'bulk' ? 'tablehead__cell--bulk' : '',
           col.sortable ? 'tablehead__cell--sortable' : '',
           col.name === this.sortKey ? `tablehead__cell--sorted` : '',
@@ -54,6 +55,7 @@
       isSortableColumn: function (col) {
         return col.name !== 'draggable' &&
                col.name !== 'featured' &&
+               col.name !== 'nested' &&
                col.name !== 'bulk' &&
                col.name !== 'published' &&
                col.name !== 'thumbnail'
@@ -103,11 +105,13 @@
     padding-right:25px;
   }
 
-  .tablehead__cell--draggable {
+  .tablehead__cell--draggable,
+  .tablehead__cell--nested {
     padding:0;
   }
 
   .tablehead__cell--draggable,
+  .tablehead__cell--nested,
   .tablehead__cell--bulk {
     width:1px;
 
