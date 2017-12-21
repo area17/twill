@@ -25,15 +25,14 @@
       <form v-if="hasMedia" class="mediasidebar__inner mediasidebar__form" @submit="update" :class="formClasses">
         <template v-if="hasMultipleMedias">
           <input type="hidden" name="ids" :value="mediasIds" />
-          <a17-vselect label="Tags" name="tags" :multiple="true" :selected="sharedTags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small" :endpoint="tagsEndpoint"></a17-vselect>
         </template>
         <template v-else>
           <input type="hidden" name="id" :value="firstMedia.id" />
           <a17-textfield label="Alt text" name="alt-text" :initialValue="firstMedia.metadatas.default.altText" size="small"></a17-textfield>
           <a17-textfield label="Caption" name="caption" :initialValue="firstMedia.metadatas.default.caption" size="small"></a17-textfield>
-          <a17-vselect label="Tags" name="tags" :multiple="true" :selected="firstMedia.tags" :searchable="true" :taggable="true" :pushTags="true" size="small" :endpoint="tagsEndpoint"></a17-vselect>
         </template>
-        <a17-button type="submit" variant="ghost" :disabled="updateInProgress">Update</a17-button>
+        <a17-vselect label="Tags" name="tags" :multiple="true" :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small" :endpoint="tagsEndpoint"></a17-vselect>
+        <a17-button type="submit" variant="ghost" :disabled="loading">Update</a17-button>
       </form>
     </template>
   </div>
@@ -59,7 +58,7 @@
     },
     data: function () {
       return {
-        updateInProgress: false
+        loading: false
       }
     },
     filters: a17VueFilters,
@@ -97,7 +96,7 @@
       },
       formClasses: function () {
         return {
-          'mediasidebar__form--loading': this.updateInProgress
+          'mediasidebar__form--loading': this.loading
         }
       },
       ...mapState({
@@ -109,15 +108,17 @@
       deleteSelectedMedias: function () {
         let self = this
 
-        this.updateInProgress = true
+        if (this.loading) return false
+
+        this.loading = true
 
         if (this.hasMultipleMedias) {
           api.bulkDelete(this.firstMedia.deleteBulkUrl, { ids: this.mediasIds }, function (resp) {
-            self.updateInProgress = false
+            self.loading = false
           })
         } else {
           api.delete(this.firstMedia.deleteUrl, function (resp) {
-            self.updateInProgress = false
+            self.loading = false
           })
         }
 
@@ -132,16 +133,18 @@
       update: function (event) {
         event.preventDefault()
 
+        if (this.loading) return false
+
         let self = this
         let data = this.getFormData(event.target)
 
-        this.updateInProgress = true
+        this.loading = true
 
         // single or multi updates
         const url = this.hasMultipleMedias ? this.firstMedia.updateBulkUrl : this.firstMedia.updateUrl
 
         api.update(url, data, function (resp) {
-          self.updateInProgress = false
+          self.loading = false
 
           if (!self.hasMedia) return false
 
