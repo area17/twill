@@ -2,50 +2,39 @@
   <div class="mediasidebar">
     <a17-mediasidebar-upload v-if="mediasLoading.length"></a17-mediasidebar-upload>
     <template v-else>
-      <template v-if="selectedMedias.length > 1">
-        <div class="mediasidebar__inner mediasidebar__inner--single" v-if="selectedMedias.length > 1">
-          <p class="mediasidebar__info">{{ selectedMedias.length }} files selected <a href="#" @click.prevent="clear" >Clear</a></p>
+      <div class="mediasidebar__inner" :class="containerClasses">
+        <p v-if="!hasMedia" class="f--note">No file selected</p>
+        <p v-if="hasMultipleMedias" class="mediasidebar__info">{{ medias.length }} files selected <a href="#" @click.prevent="clear" >Clear</a></p>
 
-          <!--Actions-->
-          <a17-buttonbar class="mediasidebar__buttonbar">
-            <!-- <a href="#" download><span v-svg symbol="download"></span></a> -->
-            <button type="button" v-if="allowDelete" @click="deleteSelectedMedias"><span v-svg symbol="trash"></span></button>
-          </a17-buttonbar>
-        </div>
-        <form class="mediasidebar__inner mediasidebar__form" @submit="bulkUpdate" :class="formClasses">
-          <input type="hidden" name="ids" :value="selectMediasIds" />
-          <a17-vselect label="Tags" name="tags" :multiple="true" :selected="sharedTags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small" :endpoint="tagsEndpoint"></a17-vselect>
-          <a17-button type="submit" variant="ghost" :disabled="updateInProgress">Update</a17-button>
-        </form>
-      </template>
-      <template v-else-if="selectedMedias.length === 1">
-        <div class="mediasidebar__inner mediasidebar__inner--multi">
-          <img :src="selectedMedias[0].src" class="mediasidebar__img" :alt="selectedMedias[0].original" />
-
-          <p class="mediasidebar__name">{{ selectedMedias[0].name }}</p>
-
+        <template v-if="hasSingleMedia">
+          <img :src="firstMedia.src" class="mediasidebar__img" :alt="firstMedia.original" />
+          <p class="mediasidebar__name">{{ firstMedia.name }}</p>
           <ul class="mediasidebar__metadatas">
-            <li class="f--small" v-if="selectedMedias[0].size" >File size: {{ selectedMedias[0].size | uppercase }}</li>
-            <li class="f--small" v-if="selectedMedias[0].width + selectedMedias[0].height">Dimensions: {{ selectedMedias[0].width }} &times; {{ selectedMedias[0].height }}</li>
+            <li class="f--small" v-if="firstMedia.size" >File size: {{ firstMedia.size | uppercase }}</li>
+            <li class="f--small" v-if="firstMedia.width + firstMedia.height">Dimensions: {{ firstMedia.width }} &times; {{ firstMedia.height }}</li>
           </ul>
+        </template>
 
-          <!--Actions-->
-          <a17-buttonbar class="mediasidebar__buttonbar">
-            <a :href="selectedMedias[0].original" download><span v-svg symbol="download"></span></a>
-            <button type="button" v-if="allowDelete" @click="deleteSelectedMedias"><span v-svg symbol="trash"></span></button>
-          </a17-buttonbar>
-        </div>
-        <form class="mediasidebar__inner mediasidebar__form" @submit="singleUpdate" :class="formClasses">
-          <input type="hidden" name="id" :value="selectedMedias[0].id" />
-          <a17-textfield label="Alt text" name="alt-text" :initialValue="selectedMedias[0].metadatas.default.altText" @change="updateAltText" size="small"></a17-textfield>
-          <a17-textfield label="Caption" name="caption" :initialValue="selectedMedias[0].metadatas.default.caption" @change="updateCaption" size="small"></a17-textfield>
-          <a17-vselect label="Tags" name="tags" :multiple="true" :selected="selectedMedias[0].tags" :searchable="true" :taggable="true" :pushTags="true" size="small" :endpoint="tagsEndpoint"></a17-vselect>
-          <a17-button type="submit" variant="ghost" :disabled="updateInProgress">Update</a17-button>
-        </form>
-      </template>
-      <div class="mediasidebar__inner" v-else>
-        <p class="f--note">No file selected</p>
+        <a17-buttonbar class="mediasidebar__buttonbar" v-if="hasMedia">
+          <!-- Actions -->
+          <a v-if="hasSingleMedia" :href="firstMedia.original" download><span v-svg symbol="download"></span></a>
+          <button v-if="allowDelete" type="button" @click="deleteSelectedMedias"><span v-svg symbol="trash"></span></button>
+        </a17-buttonbar>
       </div>
+
+      <form v-if="hasMedia" class="mediasidebar__inner mediasidebar__form" @submit="update" :class="formClasses">
+        <template v-if="hasMultipleMedias">
+          <input type="hidden" name="ids" :value="mediasIds" />
+          <a17-vselect label="Tags" name="tags" :multiple="true" :selected="sharedTags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small" :endpoint="tagsEndpoint"></a17-vselect>
+        </template>
+        <template v-else>
+          <input type="hidden" name="id" :value="firstMedia.id" />
+          <a17-textfield label="Alt text" name="alt-text" :initialValue="firstMedia.metadatas.default.altText" @change="updateAltText" size="small"></a17-textfield>
+          <a17-textfield label="Caption" name="caption" :initialValue="firstMedia.metadatas.default.caption" @change="updateCaption" size="small"></a17-textfield>
+          <a17-vselect label="Tags" name="tags" :multiple="true" :selected="firstMedia.tags" :searchable="true" :taggable="true" :pushTags="true" size="small" :endpoint="tagsEndpoint"></a17-vselect>
+        </template>
+        <a17-button type="submit" variant="ghost" :disabled="updateInProgress">Update</a17-button>
+      </form>
     </template>
   </div>
 </template>
@@ -64,7 +53,7 @@
       'a17-mediasidebar-upload': a17MediaSidebarUpload
     },
     props: {
-      selectedMedias: {
+      medias: {
         default: function () { return [] }
       }
     },
@@ -75,18 +64,36 @@
     },
     filters: a17VueFilters,
     computed: {
+      firstMedia: function () {
+        return this.hasMedia ? this.medias[0] : null
+      },
+      hasMultipleMedias: function () {
+        return this.medias.length > 1
+      },
+      hasSingleMedia: function () {
+        return this.medias.length === 1
+      },
+      hasMedia: function () {
+        return this.medias.length > 0
+      },
       sharedTags: function () {
-        return this.selectedMedias.map((media) => {
+        return this.medias.map((media) => {
           return media.tags
         }).reduce((allTags, currentTags) => allTags.filter(tag => currentTags.includes(tag)))
       },
-      selectMediasIds: function () {
-        return this.selectedMedias.map(function (media) { return media.id }).join(',')
+      mediasIds: function () {
+        return this.medias.map(function (media) { return media.id }).join(',')
       },
       allowDelete: function () {
-        return this.selectedMedias.every((media) => {
+        return this.medias.every((media) => {
           return media.deleteUrl
         })
+      },
+      containerClasses: function () {
+        return {
+          'mediasidebar__inner--multi': this.hasMultipleMedias,
+          'mediasidebar__inner--single': this.hasSingleMedia
+        }
       },
       formClasses: function () {
         return {
@@ -104,12 +111,12 @@
 
         this.updateInProgress = true
 
-        if (this.selectedMedias.length > 1) {
-          api.bulkDelete(this.selectedMedias[0].deleteBulkUrl, { ids: this.selectMediasIds }, function (resp) {
+        if (this.hasMultipleMedias) {
+          api.bulkDelete(this.firstMedia.deleteBulkUrl, { ids: this.mediasIds }, function (resp) {
             self.updateInProgress = false
           })
         } else {
-          api.delete(this.selectedMedias[0].deleteUrl, function (resp) {
+          api.delete(this.firstMedia.deleteUrl, function (resp) {
             self.updateInProgress = false
           })
         }
@@ -122,7 +129,7 @@
       getFormData: function (form) {
         return FormDataAsObj(form)
       },
-      bulkUpdate: function (event) {
+      update: function (event) {
         event.preventDefault()
 
         let self = this
@@ -130,27 +137,18 @@
 
         this.updateInProgress = true
 
-        api.update(this.selectedMedias[0].updateBulkUrl, data, function (resp) {
-          self.updateInProgress = false
-        })
-      },
-      singleUpdate: function (event) {
-        event.preventDefault()
+        // single or multi updates
+        const url = this.hasMultipleMedias ? this.firstMedia.updateBulkUrl : this.firstMedia.updateUrl
 
-        let self = this
-        let data = this.getFormData(event.target)
-
-        this.updateInProgress = true
-
-        api.update(this.selectedMedias[0].updateUrl, data, function (resp) {
+        api.update(url, data, function (resp) {
           self.updateInProgress = false
         })
       },
       updateAltText: function (val) {
-        this.selectedMedias[0].metadatas.default.altText = val
+        this.firstMedia.metadatas.default.altText = val
       },
       updateCaption: function (val) {
-        this.selectedMedias[0].metadatas.default.caption = val
+        this.firstMedia.metadatas.default.caption = val
       }
     }
   }
@@ -183,10 +181,6 @@
     // overflow: hidden;
   }
 
-  .mediasidebar__inner button {
-    margin-top:16px;
-  }
-
   .mediasidebar__img {
     max-width:135px;
     max-height:135px;
@@ -210,6 +204,10 @@
 
   .mediasidebar__form {
     border-top:1px solid $color__border;
+
+    button {
+      margin-top:16px;
+    }
 
     &.mediasidebar__form--loading {
       opacity:0.5;
