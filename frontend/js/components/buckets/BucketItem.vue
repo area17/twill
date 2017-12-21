@@ -7,7 +7,10 @@
       <img :src="item.thumbnail" :alt="item.name">
     </td>
     <td class="buckets__itemTitle">
-      <h4><span class="f--link-underlined--o"><a :href="item.edit" target="_blank">{{ item.name }}</a></span></h4>
+      <h4>
+        <span v-if="item.edit" class="f--link-underlined--o"><a :href="item.edit" target="_blank">{{ item.name }}</a></span>
+        <span v-else>{{ item.name }}</span>
+      </h4>
     </td>
     <td class="buckets__itemContentType" v-if="item.content_type &&!singleSource">
       {{ item.content_type.label }}
