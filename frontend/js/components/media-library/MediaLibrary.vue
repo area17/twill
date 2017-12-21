@@ -33,7 +33,7 @@
       <div class="medialibrary__inner">
         <div class="medialibrary__grid">
           <aside class="medialibrary__sidebar">
-            <a17-mediasidebar :selectedMedias="selectedMedias" @clear="clearSelectedMedias" @delete="deleteSelectedMedias"></a17-mediasidebar>
+            <a17-mediasidebar :medias="selectedMedias" @clear="clearSelectedMedias" @delete="deleteSelectedMedias"></a17-mediasidebar>
           </aside>
           <footer class="medialibrary__footer" v-if="selectedMedias.length && showInsert && connector">
             <a17-button variant="action" @click="saveAndClose">{{ selectedMedias.length > 1 ? btnMultiLabel : btnLabel }}</a17-button>
