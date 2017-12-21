@@ -29,8 +29,8 @@
         </template>
         <template v-else>
           <input type="hidden" name="id" :value="firstMedia.id" />
-          <a17-textfield label="Alt text" name="alt-text" :initialValue="firstMedia.metadatas.default.altText" @change="updateAltText" size="small"></a17-textfield>
-          <a17-textfield label="Caption" name="caption" :initialValue="firstMedia.metadatas.default.caption" @change="updateCaption" size="small"></a17-textfield>
+          <a17-textfield label="Alt text" name="alt-text" :initialValue="firstMedia.metadatas.default.altText" size="small"></a17-textfield>
+          <a17-textfield label="Caption" name="caption" :initialValue="firstMedia.metadatas.default.caption" size="small"></a17-textfield>
           <a17-vselect label="Tags" name="tags" :multiple="true" :selected="firstMedia.tags" :searchable="true" :taggable="true" :pushTags="true" size="small" :endpoint="tagsEndpoint"></a17-vselect>
         </template>
         <a17-button type="submit" variant="ghost" :disabled="updateInProgress">Update</a17-button>
@@ -142,13 +142,23 @@
 
         api.update(url, data, function (resp) {
           self.updateInProgress = false
+
+          if (!self.hasMedia) return false
+
+          // save caption and alt text on the media
+          if (data['alt-text']) self.firstMedia.metadatas.default.altText = data['alt-text']
+          if (data['caption']) self.firstMedia.metadatas.default.caption = data['caption']
+
+          // save new tags on the medias
+          if (data['tags']) {
+            const newTags = data['tags'].split(',')
+            self.medias.forEach(function (media) {
+              newTags.forEach(function (tag) {
+                if (!media.tags.includes(tag)) media.tags.push(tag)
+              })
+            })
+          }
         })
-      },
-      updateAltText: function (val) {
-        this.firstMedia.metadatas.default.altText = val
-      },
-      updateCaption: function (val) {
-        this.firstMedia.metadatas.default.caption = val
       }
     }
   }
