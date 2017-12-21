@@ -5,7 +5,8 @@
     </td>
     <td class="buckets__itemTitle">
       <h4>
-        <span class="f--link-underlined--o"><a :href="item.edit" target="_blank">{{ item.name }}</a></span>
+        <span v-if="item.edit" class="f--link-underlined--o"><a :href="item.edit" target="_blank">{{ item.name }}</a></span>
+        <span v-else>{{ item.name }}</span>
         <template v-if="item.languages"><br /><a17-tableLanguages :languages="item.languages" :editUrl="item.edit"></a17-tableLanguages></template>
       </h4>
     </td>
