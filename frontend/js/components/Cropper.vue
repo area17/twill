@@ -15,7 +15,7 @@
       <ul v-if="ratiosByContext.length > 1" class="cropper__ratios">
         <li v-for="ratio in ratiosByContext" @click="changeRatio(ratio)" :key="ratio.name" :class="{ 's--active' : crop.name === ratio.name }">{{ ratio.name | capitalize }}</li>
       </ul>
-      <span class="cropper__values" :class="cropperWarning">{{ cropValues.width }} x {{ cropValues.height }}</span>
+      <span class="cropper__values f--small" :class="cropperWarning">{{ cropValues.width }} &times; {{ cropValues.height }}</span>
     </footer>
   </div>
 </template>

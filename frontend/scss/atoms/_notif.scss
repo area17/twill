@@ -7,7 +7,7 @@ Self destructing notification showing at the bottom of the page
 
 ```
 <div class="styleguide--demo">
-    <div class="notif notif--success">Login complete</div>
+    <div class="notif notif--success"><div class="notif__inner">Login complete</div></div>
 </div>
 ```
 
@@ -17,15 +17,39 @@ Self destructing notification showing at the bottom of the page
   position:fixed;
   bottom:0;
   height:60px;
-  line-height:60px;
   width:100%;
   left:0;
   right:0;
-  white-space:nowrap;
-  overflow:hidden;
   z-index:$zindex__notif;
   background:$color__notif--default;
+}
+
+.notif__inner {
+  height:60px;
+  line-height:60px;
   text-align:center;
+  position:relative;
+  white-space:nowrap;
+  overflow:hidden;
+  padding:0 50px;
+}
+
+.notif__close {
+  @include btn-reset;
+  position:absolute;
+  right:(60px - 46px) / 2;
+  top:(60px - 46px) / 2;
+  background:transparent;
+  height:16px + 30px;
+  width:16px + 30px;
+  color:$color__text;
+  opacity:0.5;
+  padding:15px;
+
+  &:hover {
+    color:$color__text;
+    opacity:0.25;
+  }
 }
 
 @keyframes godown {

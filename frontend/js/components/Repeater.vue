@@ -117,6 +117,13 @@
       collapseAllBlocks: function () {
         this.opened = false
       }
+    },
+    mounted: function () {
+      let self = this
+      // if there are blocks, these should be all collapse by default
+      this.$nextTick(function () {
+        if (self.savedBlocks.length > 0) self.collapseAllBlocks()
+      })
     }
   }
 </script>

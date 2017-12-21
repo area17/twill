@@ -1,21 +1,12 @@
 <template>
   <transition name="move_down_notif">
-    <div v-if="show"
-    :class="notifClasses"
-    role="alert"
-    aria-live="polite"
-    aria-atomic="true"
-    >
-      <button v-if="!important"
-        type="button"
-        class="close"
-        data-dismiss="alert"
-        aria-label="alertClose"
-        @click.stop.prevent="closeNotif"
-        >
-        <span aria-hidden="true">&times</span>
-      </button>
-    {{ message }}
+    <div v-if="show" :class="notifClasses" role="alert" aria-live="polite" aria-atomic="true">
+      <div class="notif__inner">
+        <button v-if="!important" type="button" class="notif__close" data-dismiss="alert" aria-label="alertClose" @click.stop.prevent="closeNotif" >
+          <span v-svg symbol="close_modal"></span>
+        </button>
+        {{ message }}
+      </div>
     </div>
   </transition>
 </template>
@@ -97,8 +88,3 @@
     }
   }
 </script>
-
-<style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
-
-</style>
