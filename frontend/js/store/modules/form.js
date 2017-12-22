@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import api from '../api/form'
 import * as types from '../mutation-types'
 
@@ -11,7 +12,16 @@ const state = {
 }
 
 // getters
-const getters = {}
+const getters = {
+  fieldsByName (state) {
+    return name => state.fields.filter(function (field) {
+      return field.name === name
+    })
+  },
+  fieldValueByName: (state, getters) => name => { // want to use getters
+    return getters.fieldsByName(name).length ? getters.fieldsByName(name)[0].value : false
+  }
+}
 
 const mutations = {
   [types.UPDATE_FORM_TITLE] (state, newValue) {
@@ -32,7 +42,7 @@ const mutations = {
     // Update existing form field
     if (fieldToUpdate.length) {
       if (field.locale) {
-        fieldToUpdate[0].value[field.locale] = field.value
+        Vue.set(fieldToUpdate[0].value, field.locale, field.value)
       } else {
         fieldToUpdate[0].value = field.value
       }
@@ -52,6 +62,17 @@ const mutations = {
           value: field.value
         })
       }
+    }
+  },
+  [types.REFRESH_FORM_FIELD] (state, field) {
+    const fieldIndex = state.fields.findIndex(function (f) {
+      return f.name === field.name
+    })
+
+    if (fieldIndex !== -1) {
+      const fieldToRefresh = state.fields[fieldIndex].value
+      state.fields[fieldIndex].value = null
+      state.fields[fieldIndex].value = fieldToRefresh
     }
   },
   [types.REMOVE_FORM_FIELD] (state, fieldName) {

@@ -8,6 +8,10 @@
     $disabled = $disabled ?? false;
     $readonly = $readonly ?? false;
     $rows = $rows ?? false;
+    $ref = $ref ?? false;
+    $onChange = $onChange ?? false;
+    $onChangeAttribute = $onChangeAttribute ?? false;
+    $onChangeFullAttribute = $onChangeAttribute ? "('".$onChangeAttribute."', ...arguments)" : "";
 @endphp
 
 @if($translated)
@@ -26,6 +30,8 @@
             @if ($rows) rows: {{ $rows }}, @endif
             inStore: 'value'
         }"
+        @if ($ref) ref="{{ $ref }}" @endif
+        @if ($onChange) v-on:change="{{ $onChange }}{{ $onChangeFullAttribute }}" @endif
     ></a17-locale>
 @else
     <a17-textfield
@@ -39,6 +45,8 @@
         @if ($disabled) disabled @endif
         @if ($readonly) readonly @endif
         @if ($rows) :rows="{{ $rows }}" @endif
+        @if ($ref) ref="{{ $ref }}" @endif
+        @if ($onChange) v-on:change="{{ $onChange }}{{ $onChangeFullAttribute }}" @endif
         in-store="value"
     ></a17-textfield>
 @endif

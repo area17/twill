@@ -51,6 +51,12 @@
         languages: state => state.language.all
       })
     },
+    watch: {
+      initialValues: function (value) {
+        console.log('WATCH initialValues')
+        console.log(value)
+      }
+    },
     methods: {
       attributesPerLang: function (lang) {
         // for textfields set initial values using the initialValues prop

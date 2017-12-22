@@ -2,6 +2,7 @@
 export const UPDATE_FORM_TITLE = 'updateFormTitle'
 export const UPDATE_FORM_PERMALINK = 'updateFormPermalink'
 export const UPDATE_FORM_FIELD = 'updateFormField'
+export const REFRESH_FORM_FIELD = 'refreshFormFieldUI'
 export const REMOVE_FORM_FIELD = 'removeFormField'
 export const ADD_FORM_BLOCK = 'addFormBlock'
 export const DELETE_FORM_BLOCK = 'deleteFormBlock'

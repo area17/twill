@@ -14,7 +14,6 @@ Vue.use(A17Config)
 Vue.use(A17Notif)
 
 import { mapState } from 'vuex'
-import a17VueFilters from '@/utils/filters.js'
 
 // components
 import a17Datatable from '@/components/table/Datatable.vue'
@@ -35,6 +34,9 @@ store.registerModule('form', form)
 // LocalStorage
 import { getStorage } from '@/utils/localeStorage.js'
 
+// mixins
+import formatPermalink from '@/mixins/formatPermalink'
+
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
 Window.vm = new Vue({
@@ -47,7 +49,7 @@ Window.vm = new Vue({
     'a17-modal-title-editor': a17ModalTitleEditor,
     'a17-modal-validation': ModalValidationButtons
   },
-  filters: a17VueFilters,
+  mixins: [formatPermalink],
   data: function () {
     return {
       inputPermalink: '',
@@ -73,10 +75,6 @@ Window.vm = new Vue({
     })
   },
   methods: {
-    formatPermalink: function (newValue) {
-      const slug = this.$options.filters.slugify(newValue)
-      this.inputPermalink = slug
-    },
     reloadDatas: function () {
       // reload datas
       this.$store.dispatch('getDatatableDatas')
