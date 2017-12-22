@@ -13,9 +13,13 @@ export default {
       default: ''
     }
   },
+
   computed: {
+    errorMessage () {
+      return 'The field has error'
+    },
     error () {
-      return this.$store.state.form ? this.$store.state.form.errors.includes(this.name) : false
+      this.$store.state.form ? this.$store.state.form.errors.includes(this.name) : false
     }
   }
 }
