@@ -11,10 +11,11 @@ export default {
     note: {
       type: String,
       default: ''
-    },
-    error: {
-      type: Boolean,
-      default: false
+    }
+  },
+  computed: {
+    error () {
+      return this.$store.state.form ? this.$store.state.form.errors.includes(this.name) : false
     }
   }
 }

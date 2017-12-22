@@ -1,5 +1,5 @@
 <template>
-  <a17-inputframe :error="error" :note="note" :label="label" class="datePicker" :class="{ 'datePicker--static' : static }">
+  <a17-inputframe :name="name" :error="error" :note="note" :label="label" class="datePicker" :class="{ 'datePicker--static' : static }">
     <div class="datePicker__group" :ref="refs.flatPicker">
       <div class="form__field datePicker__field">
         <input type="text" :name="name" :placeholder="placeHolder" data-input @blur="onBlur" v-model="date">

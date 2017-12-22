@@ -7,7 +7,8 @@ const state = {
   permalink: window.STORE.form.permalink || '',
   baseUrl: window.STORE.form.baseUrl || '',
   fields: window.STORE.form.fields || [],
-  saveUrl: window.STORE.form.saveUrl || ''
+  saveUrl: window.STORE.form.saveUrl || '',
+  errors: []
 }
 
 // getters
@@ -61,11 +62,20 @@ const mutations = {
   },
   [types.UPDATE_FORM_LOADING] (state, loading) {
     state.loading = !state.loading
+  },
+  [types.SET_FORM_ERRORS] (state, errors) {
+    state.errors = errors
+  },
+  [types.CLEAR_FORM_ERRORS] (state) {
+    state.errors = []
   }
 }
 
 const actions = {
   saveFormData ({ commit, state, getters, rootState }, saveType) {
+    commit(types.CLEAR_FORM_ERRORS)
+    commit(types.CLEAR_NOTIF, 'error')
+
     let fields = state.fields.filter((field) => {
       // we start by filtering out blocks related form fields
       return !field.name.startsWith('blocks[')
@@ -103,7 +113,11 @@ const actions = {
         window.location.replace(resp.data.redirect)
       }
 
-      commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
+      commit(types.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
+    }, function (resp) {
+      commit(types.UPDATE_FORM_LOADING, false)
+      commit(types.SET_FORM_ERRORS, Object.keys(resp.response.data))
+      commit(types.SET_NOTIF, { message: Object.values(resp.response.data).join('<br>'), variant: 'error' })
     })
   }
 }

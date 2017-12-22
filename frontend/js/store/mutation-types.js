@@ -8,6 +8,8 @@ export const DELETE_FORM_BLOCK = 'deleteFormBlock'
 export const DUPLICATE_FORM_BLOCK = 'duplicateFormBlock'
 export const REORDER_FORM_BLOCKS = 'reorderFormBlocks'
 export const UPDATE_FORM_LOADING = 'updateFormLoading'
+export const SET_FORM_ERRORS = 'setFormErrors'
+export const CLEAR_FORM_ERRORS = 'clearFormErrors'
 
 /* language */
 export const SWITCH_LANG = 'switchLanguage'

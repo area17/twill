@@ -31,7 +31,7 @@
                         </a17-modal>
                     @endif
                     <a17-notif variant="success"></a17-notif>
-                    <a17-notif variant="error"></a17-notif>
+                    <a17-notif variant="error" :auto-hide="false" :important="false"></a17-notif>
                 </div>
                 @include('cms-toolkit::partials.footer')
             </section>
