@@ -8,6 +8,7 @@
     $disabled = $disabled ?? false;
     $readonly = $readonly ?? false;
     $rows = $rows ?? false;
+    $prefix = $prefix ?? false;
 @endphp
 
 @if($translated)
@@ -24,6 +25,7 @@
             @if ($disabled) disabled: true, @endif
             @if ($readonly) readonly: true, @endif
             @if ($rows) rows: {{ $rows }}, @endif
+            @if ($prefix) prefix: '{{ $prefix }}', @endif
             inStore: 'value'
         }"
     ></a17-locale>
@@ -39,6 +41,7 @@
         @if ($disabled) disabled @endif
         @if ($readonly) readonly @endif
         @if ($rows) :rows="{{ $rows }}" @endif
+        @if ($prefix) prefix="{{ $prefix }}" @endif
         in-store="value"
     ></a17-textfield>
 @endif
