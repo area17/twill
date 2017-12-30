@@ -109,9 +109,6 @@
       }
     },
     watch: {
-      selected: function (selected) {
-        this.value = selected
-      },
       options: function (options) {
         this.currentOptions = this.options
       }

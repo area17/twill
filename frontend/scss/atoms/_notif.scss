@@ -16,7 +16,7 @@ Self destructing notification showing at the bottom of the page
 .notif {
   position:fixed;
   bottom:0;
-  height:60px;
+  min-height:60px;
   width:100%;
   left:0;
   right:0;
@@ -25,7 +25,7 @@ Self destructing notification showing at the bottom of the page
 }
 
 .notif__inner {
-  height:60px;
+  min-height:60px;
   line-height:60px;
   text-align:center;
   position:relative;

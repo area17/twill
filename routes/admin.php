@@ -27,16 +27,21 @@ if (config('cms-toolkit.enabled.file-library')) {
 }
 
 if (config('cms-toolkit.enabled.buckets')) {
-    Route::group(['prefix' => 'featured', 'as' => 'featured.'], function () {
-        collect(config('cms-toolkit.buckets'))->each(function ($bucketSection, $bucketSectionKey) {
+    $bucketsRoutes = config('cms-toolkit.bucketsRoutes') ?? collect(config('cms-toolkit.buckets'))->mapWithKeys(function ($bucketSection, $bucketSectionKey) {
+        return [$bucketSectionKey => 'featured'];
+    })->toArray();
+
+    foreach ($bucketsRoutes as $bucketSectionKey => $routePrefix) {
+        Route::group(['prefix' => $routePrefix, 'as' => $routePrefix . '.'], function () use ($bucketSectionKey) {
             Route::get($bucketSectionKey, ['as' => $bucketSectionKey, 'uses' => 'FeaturedController@index']);
             Route::group(['prefix' => $bucketSectionKey, 'as' => $bucketSectionKey . '.'], function () {
                 Route::put('{bucket}', ['as' => 'add', 'uses' => 'FeaturedController@add']);
                 Route::put('{bucket}/remove', ['as' => 'remove', 'uses' => 'FeaturedController@remove']);
                 Route::put('{bucket}/sortable', ['as' => 'sortable', 'uses' => 'FeaturedController@sortable']);
             });
+
         });
-    });
+    }
 }
 
 if (config('cms-toolkit.enabled.settings')) {

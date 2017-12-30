@@ -5,7 +5,7 @@
         <button v-if="!important" type="button" class="notif__close" data-dismiss="alert" aria-label="alertClose" @click.stop.prevent="closeNotif" >
           <span v-svg symbol="close_modal"></span>
         </button>
-        {{ message }}
+        <span v-html="message"></span>
       </div>
     </div>
   </transition>

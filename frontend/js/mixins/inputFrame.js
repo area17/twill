@@ -11,10 +11,15 @@ export default {
     note: {
       type: String,
       default: ''
+    }
+  },
+
+  computed: {
+    errorMessage () {
+      return 'The field has error'
     },
-    error: {
-      type: Boolean,
-      default: false
+    error () {
+      this.$store.state.form ? this.$store.state.form.errors.includes(this.name) : false
     }
   }
 }

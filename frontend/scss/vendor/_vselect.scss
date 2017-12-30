@@ -332,4 +332,16 @@ $multiSelectHeight: 45px;
       }
     }
   }
+
+  /* Error states */
+  .input--error {
+    .v-select .dropdown-toggle {
+      border-color:$color__error;
+
+      &:hover,
+      &:focus {
+        border-color:$color__error;
+      }
+    }
+  }
 }

@@ -3,10 +3,13 @@
 namespace A17\CmsToolkit\Repositories;
 
 use A17\CmsToolkit\Models\Behaviors\Sortable;
+use A17\CmsToolkit\Repositories\Behaviors\HandleDates;
 use Log;
 
 abstract class ModuleRepository
 {
+    use HandleDates;
+
     protected $model;
 
     protected $ignoreFieldsBeforeSave = [];

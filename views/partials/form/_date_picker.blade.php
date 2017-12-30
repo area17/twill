@@ -7,6 +7,7 @@
     @if ($allowClear ?? true) clear @endif
     @if (isset($minDate)) min-date="{{ $minDate }}" @endif
     @if (isset($maxDate)) max-date="{{ $maxDate }}" @endif
+    @if ($note ?? false) note="{{ $note }}" @endif
     in-store="date"
 ></a17-datepicker>
 
@@ -14,7 +15,7 @@
 @push('vuexStore')
     window.STORE.form.fields.push({
         name: '{{ $name }}',
-        value: {!! json_encode($item->$name) !!}
+        value: {!! json_encode(e($item->$name)) !!}
     })
 @endpush
 @endunless

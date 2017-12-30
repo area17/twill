@@ -210,6 +210,17 @@
       border-color:$color__fborder;
     }
 
+    .input--error {
+      .ql-toolbar.ql-snow {
+        border-color:$color__error;
+        border-bottom-color:$color__border--light;
+      }
+
+      .ql-container.ql-snow {
+        border-color:$color__error;
+      }
+    }
+
     .s--focus {
       .ql-toolbar.ql-snow {
         border-color:$color__fborder--hover;

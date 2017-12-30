@@ -61,14 +61,16 @@ class FeaturedController extends Controller
 
     private function getFeaturedItemsByBucket($featuredSection, $featuredSectionKey)
     {
-        return collect($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use ($featuredSectionKey) {
+        $bucketRouteConfig = config('cms-toolkit.bucketsRoutes') ?? [$featuredSectionKey => 'featured'];
+        return collect($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use ($featuredSectionKey, $bucketRouteConfig) {
+            $routePrefix = $bucketRouteConfig[$featuredSectionKey];
             return [
                 'id' => $bucketKey,
                 'name' => $bucket['name'],
                 'max' => $bucket['max_items'],
-                'addUrl' => route("admin.featured.$featuredSectionKey.add", ['bucket' => $bucketKey]),
-                'removeUrl' => route("admin.featured.$featuredSectionKey.remove", ['bucket' => $bucketKey]),
-                'reorderUrl' => route("admin.featured.$featuredSectionKey.sortable", ['bucket' => $bucketKey]),
+                'addUrl' => route("admin.$routePrefix.$featuredSectionKey.add", ['bucket' => $bucketKey]),
+                'removeUrl' => route("admin.$routePrefix.$featuredSectionKey.remove", ['bucket' => $bucketKey]),
+                'reorderUrl' => route("admin.$routePrefix.$featuredSectionKey.sortable", ['bucket' => $bucketKey]),
                 'children' => Feature::where('bucket_key', $bucketKey)->with('featured')->get()->map(function ($feature) {
                     $item = $feature->featured;
                     return [
