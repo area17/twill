@@ -37,6 +37,10 @@
       modalTitle: {
         type: String,
         default: 'Update item'
+      },
+      translated: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {
@@ -47,7 +51,7 @@
         return this.baseUrl + this.permalink
       },
       title: function () {
-        return this.currentLocale != null
+        return this.translated
           ? this.$store.state.form.title[this.currentLocale['value']]
           : this.$store.state.form.title
       },

@@ -8,10 +8,10 @@ if (!function_exists('getLocales')) {
 }
 
 if (!function_exists('getLanguagesForVueStore')) {
-    function getLanguagesForVueStore($form_fields = [])
+    function getLanguagesForVueStore($form_fields = [], $translate = true)
     {
         $manageMultipleLanguages = count(getLocales()) > 1;
-        if ($manageMultipleLanguages) {
+        if ($manageMultipleLanguages && $translate) {
             $allLanguages = collect(config('translatable.locales'))->map(function ($locale, $index) use ($form_fields) {
                 return [
                     'shortlabel' => strtoupper($locale),

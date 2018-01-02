@@ -14,7 +14,7 @@
                     ]);
                 @endphp
                 <a17-sticky-nav data-sticky-target="navbar" :items="{{ json_encode($additionalFieldsets) }}">
-                    <a17-title-editor @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif slot="title">
+                    <a17-title-editor @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif v-bind:translated="{!! json_encode($translate) !!}" slot="title">
                         <template slot="modal-form">
                             @partialView(($moduleName ?? null), 'create')
                         </template>
