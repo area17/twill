@@ -11,6 +11,17 @@ abstract class Request extends FormRequest
         return true;
     }
 
+    public function rules()
+    {
+        switch ($this->method()) {
+            case 'POST':{return $this->rulesForCreate();}
+            case 'PUT':{return $this->rulesForUpdate();}
+            default:break;
+        }
+
+        return [];
+    }
+
     protected function rulesForTranslatedFields($rules, $fields)
     {
         $locales = getLocales();
