@@ -1,3 +1,8 @@
+@formField('input', [
+    'name' => 'name',
+    'label' => 'Name'
+])
+
 @unless($item ?? null)
     @formField('input', [
         'name' => 'email',
