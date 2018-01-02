@@ -2,10 +2,6 @@
 
 @section('appTypeClass', 'app--form')
 
-@php
-    $formTitleName = $formCustomTitleName ?? $titleColumnKey ?? 'title';
-@endphp
-
 @section('content')
     <div class="form">
         <form action="{{ $saveUrl }}" v-sticky data-sticky-id="navbar" data-sticky-offset="0" data-sticky-topoffset="12" v-on:submit.prevent="submitForm">
@@ -18,14 +14,9 @@
                     ]);
                 @endphp
                 <a17-sticky-nav data-sticky-target="navbar" :items="{{ json_encode($additionalFieldsets) }}">
-                    <a17-title-editor
-                        @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif
-                        title-name="{{ $formTitleName }}"
-                        title-label="{{ $formCustomTitleLabel ?? ucfirst($titleColumnKey ?? 'title') }}"
-                        slot="title"
-                    >
+                    <a17-title-editor @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif slot="title">
                         <template slot="modal-form">
-                            @partialView(($moduleName ?? null), 'modal_extra_fields')
+                            @partialView(($moduleName ?? null), 'create')
                         </template>
                     </a17-title-editor>
                     <a17-langswitcher slot="actions"></a17-langswitcher>
@@ -66,16 +57,20 @@
     </a17-overlay>
 @stop
 
+@php
+    $formTitleName = $titleColumnKey ?? 'title';
+@endphp
+
 @section('initialStore')
 
     window.STORE.form = {
-        title: '{{ $item->{$formTitleName} }}',
+        title: {!! json_encode($translate ? $item->translatedAttribute($formTitleName) : $item->$formTitleName) !!},
         permalink: '{{ $item->slug ?? '' }}',
         baseUrl: '{{ $baseUrl }}',
         saveUrl: '{{ $saveUrl }}',
-        fields: [],
         availableRepeaters: {!! json_encode(config('cms-toolkit.block_editor.repeaters')) !!},
-        repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!}
+        repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!},
+        fields: []
     }
 
     window.STORE.publication = {

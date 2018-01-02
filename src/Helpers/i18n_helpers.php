@@ -11,15 +11,26 @@ if (!function_exists('getLanguagesForVueStore')) {
     function getLanguagesForVueStore($form_fields = [])
     {
         $manageMultipleLanguages = count(getLocales()) > 1;
-        return $manageMultipleLanguages ? collect(config('translatable.locales'))->map(function ($locale, $index) use ($form_fields) {
+        if ($manageMultipleLanguages) {
+            $allLanguages = collect(config('translatable.locales'))->map(function ($locale, $index) use ($form_fields) {
+                return [
+                    'shortlabel' => strtoupper($locale),
+                    'label' => getLanguageLabelFromLocaleCode($locale),
+                    'value' => $locale,
+                    'disabled' => false,
+                    'published' => $form_fields['translations']['active'][$locale] ?? false,
+                ];
+            });
+
             return [
-                'shortlabel' => strtoupper($locale),
-                'label' => getLanguageLabelFromLocaleCode($locale),
-                'value' => $locale,
-                'disabled' => false,
-                'published' => $form_fields['translations']['active'][$locale] ?? false,
+                'all' => $allLanguages,
+                'active' => request()->has('lang') ? $allLanguages->where('value', request('lang'))->first() : null,
             ];
-        }) : [];
+        }
+
+        return [
+            'all' => [],
+        ];
     }
 }
 

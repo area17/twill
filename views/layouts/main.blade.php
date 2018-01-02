@@ -40,8 +40,7 @@
         <script>
             window.STORE = {}
             window.STORE.form = {}
-            window.STORE.languages = {}
-            window.STORE.languages.all = {!! json_encode(getLanguagesForVueStore($form_fields ?? [])) !!}
+            window.STORE.languages = {!! json_encode(getLanguagesForVueStore($form_fields ?? [])) !!}
 
             // media library
             window.STORE.medias = {}

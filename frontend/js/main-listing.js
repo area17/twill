@@ -19,7 +19,6 @@ import { mapState } from 'vuex'
 import a17Datatable from '@/components/table/Datatable.vue'
 import a17Filter from '@/components/Filter.vue'
 import a17BulkEdit from '@/components/table/BulkEdit.vue'
-import a17ModalTitleEditor from '@/components/Modals/ModalTitleEditor.vue'
 import ModalValidationButtons from '@/components/Modals/ModalValidationButtons.vue'
 
 // Store modules
@@ -46,7 +45,6 @@ Window.vm = new Vue({
     'a17-filter': a17Filter,
     'a17-datatable': a17Datatable,
     'a17-bulk': a17BulkEdit,
-    'a17-modal-title-editor': a17ModalTitleEditor,
     'a17-modal-validation': ModalValidationButtons
   },
   mixins: [formatPermalink],
