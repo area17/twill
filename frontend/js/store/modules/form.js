@@ -9,7 +9,7 @@ const state = {
   baseUrl: window.STORE.form.baseUrl || '',
   fields: window.STORE.form.fields || [],
   saveUrl: window.STORE.form.saveUrl || '',
-  errors: []
+  errors: {}
 }
 
 // getters
@@ -127,18 +127,18 @@ const actions = {
       repeaters: gatherRepeaters(state, rootState)
     })
 
-    api.save(state.saveUrl, data, function (resp) {
+    api.save(state.saveUrl, data, function (successResponse) {
       commit(types.UPDATE_FORM_LOADING, false)
 
-      if (resp.data.hasOwnProperty('redirect')) {
-        window.location.replace(resp.data.redirect)
+      if (successResponse.data.hasOwnProperty('redirect')) {
+        window.location.replace(successResponse.data.redirect)
       }
 
-      commit(types.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
-    }, function (resp) {
+      commit(types.SET_NOTIF, { message: successResponse.data.message, variant: successResponse.data.variant })
+    }, function (errorResponse) {
       commit(types.UPDATE_FORM_LOADING, false)
-      commit(types.SET_FORM_ERRORS, Object.keys(resp.response.data))
-      commit(types.SET_NOTIF, { message: Object.values(resp.response.data).join('<br>'), variant: 'error' })
+      commit(types.SET_FORM_ERRORS, errorResponse.response.data)
+      commit(types.SET_NOTIF, { message: 'Your submission could not be validated, please fix and retry', variant: 'error' })
     })
   }
 }

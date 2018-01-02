@@ -1,5 +1,5 @@
 <template>
-  <a17-inputframe :error="error" :note="note" :label="label">
+  <a17-inputframe :error="error" :note="note" :label="label" :name="name">
     <div class="multiselector">
       <div class="multiselector__grid">
         <div class="multiselector__item" v-for="checkbox in options">

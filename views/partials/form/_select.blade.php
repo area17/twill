@@ -10,16 +10,14 @@
 @endphp
 
 @if ($unpack ?? false)
-    <a17-inputframe>
-        <a17-singleselect
-            label="{{ $label }}"
-            @include('cms-toolkit::partials.form.utils._field_name')
-            :options="{{ json_encode($options) }}"
-            @if ($default) selected="{{ $default }}" @endif
-            :has-default-store="true"
-            in-store="value"
-        ></a17-singleselect>
-    </a17-inputframe>
+    <a17-singleselect
+        label="{{ $label }}"
+        @include('cms-toolkit::partials.form.utils._field_name')
+        :options="{{ json_encode($options) }}"
+        @if ($default) selected="{{ $default }}" @endif
+        :has-default-store="true"
+        in-store="value"
+    ></a17-singleselect>
 @elseif ($native ?? false)
     <a17-select
         label="{{ $label }}"

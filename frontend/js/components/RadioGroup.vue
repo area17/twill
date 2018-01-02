@@ -1,5 +1,5 @@
 <template>
-  <a17-inputframe :error="error" :note="note" :label="label">
+  <a17-inputframe :error="error" :note="note" :label="label" :name="name">
     <ul class="radioGroup">
       <li class="radioGroup__item" v-for="(radio, index) in radios">
         <a17-radio :customClass="'radio__' + radioClass + '--' + (index + 1)" :name="name" :value="radio.value" :label="radio.label" @change="changeValue" :initialValue="currentValue" :disabled="radio.disabled"></a17-radio>
@@ -28,10 +28,6 @@
       },
       initialValue: {
         default: ''
-      },
-      error: {
-        type: Boolean,
-        default: false
       },
       radios: {
         default: function () { return [] }

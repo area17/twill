@@ -1,5 +1,5 @@
 <template>
-  <a17-inputframe :error="error" :label="label" :note="note" :size="size">
+  <a17-inputframe :error="error" :label="label" :note="note" :size="size" :name="name">
     <div class="vselect" :class="vselectClasses">
       <div class="vselect__field">
         <input type="hidden" :name="name" :value="inputValue" />
