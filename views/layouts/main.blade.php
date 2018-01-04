@@ -27,7 +27,7 @@
                     @yield('content')
                     @if (config('cms-toolkit.enabled.media-library'))
                         <a17-modal ref="mediaLibrary" title="Media Library" mode="wide">
-                            <a17-medialibrary endpoint="{{ $mediaLibraryUrl }}" />
+                            <a17-medialibrary endpoint="{{ route('admin.media-library.medias.index') }}" />
                         </a17-modal>
                     @endif
                     <a17-notif variant="success"></a17-notif>
@@ -40,20 +40,20 @@
         <script>
             window.STORE = {}
             window.STORE.form = {}
+            window.STORE.medias = {}
             window.STORE.languages = {!! json_encode(getLanguagesForVueStore($form_fields ?? [], $translate ?? false)) !!}
 
-            // media library
-            window.STORE.medias = {}
-            window.STORE.medias.tagsEndpoint = '{{ route('admin.media-library.medias.tags') }}'
-            window.STORE.medias.types = [
-              {
-                value: 'image',
-                text: 'Images',
-                total: 0
-              }
-            ]
-
-            window.STORE.medias.uploaderConfig = {!! json_encode($uploaderConfig) !!}
+            @if (config('cms-toolkit.enabled.media-library'))
+                window.STORE.medias.tagsEndpoint = '{{ route('admin.media-library.medias.tags') }}'
+                window.STORE.medias.uploaderConfig = {!! json_encode($uploaderConfig) !!}
+                window.STORE.medias.types = [
+                  {
+                    value: 'image',
+                    text: 'Images',
+                    total: 0
+                  }
+                ]
+            @endif
 
             @yield('initialStore')
             @stack('vuexStore')

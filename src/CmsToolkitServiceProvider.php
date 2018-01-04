@@ -293,7 +293,6 @@ class CmsToolkitServiceProvider extends ServiceProvider
         }
 
         if (config('cms-toolkit.enabled.media-library')) {
-            View::share('mediaLibraryUrl', route('admin.media-library.medias.index'));
             View::composer('cms-toolkit::layouts.main', UploaderConfig::class);
         }
 
