@@ -2,6 +2,12 @@
 
 @section('appTypeClass', 'app--form')
 
+@php
+    $translate = $translate ?? false;
+    $translateTitle = $translateTitle ?? $translate ?? false;
+@endphp
+
+
 @section('content')
     <div class="form">
         <form action="{{ $saveUrl }}" v-sticky data-sticky-id="navbar" data-sticky-offset="0" data-sticky-topoffset="12" v-on:submit.prevent="submitForm">
@@ -14,7 +20,7 @@
                     ]);
                 @endphp
                 <a17-sticky-nav data-sticky-target="navbar" :items="{{ json_encode($additionalFieldsets) }}">
-                    <a17-title-editor @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif v-bind:translated="{!! json_encode($translate) !!}" slot="title">
+                    <a17-title-editor @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif v-bind:translated="{!! json_encode($translateTitle) !!}" slot="title">
                         <template slot="modal-form">
                             @partialView(($moduleName ?? null), 'create')
                         </template>

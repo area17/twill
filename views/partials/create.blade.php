@@ -1,6 +1,6 @@
 @formField('input', [
     'name' => $titleColumnKey ?? 'title',
     'label' => ucfirst($titleColumnKey ?? 'title'),
-    'translated' => $translate ?? false,
+    'translated' => $translateTitle ?? false,
     'required' => true
 ])
