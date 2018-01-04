@@ -3,8 +3,8 @@
 @section('appTypeClass', 'app--buckets')
 
 @section('content')
-    <a17-buckets title="Available items" empty-buckets="No items featured." empty-source="No items available.">
-        What would you like to feature today?
+    <a17-buckets title="{{ $bucketSourceTitle or 'Available items' }}" empty-buckets="No items featured." empty-source="No items available.">
+        {{ $bucketsSectionIntro or 'What would you like to feature today?' }}
     </a17-buckets>
 @stop
 

@@ -3,6 +3,7 @@
 namespace A17\CmsToolkit\Http\Controllers\Admin;
 
 use A17\CmsToolkit\Models\Feature;
+use A17\CmsToolkit\Repositories\Behaviors\HandleTranslations;
 use App\Http\Controllers\Controller;
 use DB;
 
@@ -56,6 +57,8 @@ class FeaturedController extends Controller
             ],
             'maxPage' => $firstSource['maxPage'],
             'offset' => $firstSource['offset'],
+            'bucketSourceTitle' => $featuredSection['sourceHeaderTitle'] ?? null,
+            'bucketsSectionIntro' => $featuredSection['sectionIntroText'] ?? null,
         ]);
     }
 
@@ -75,8 +78,8 @@ class FeaturedController extends Controller
                     $item = $feature->featured;
                     return [
                         'id' => $item->id,
-                        'name' => $item->titleInBucket,
-                        'edit' => $item->adminEditUrl,
+                        'name' => $item->title ?? $item->titleInBucket ?? $item->present()->titleInBucket,
+                        'edit' => $item->adminEditUrl ?? '',
                         'content_type' => [
                             'label' => ucfirst($feature->featured_type),
                             'value' => $feature->featured_type,
@@ -96,13 +99,15 @@ class FeaturedController extends Controller
             return collect($bucket['bucketables'])->mapWithKeys(function ($bucketable) use (&$fetchedModules, $bucketKey, $search) {
 
                 $module = $bucketable['module'];
+                $repository = $this->getRepository($module);
+                $translated = classHasTrait($repository, HandleTranslations::class);
 
                 if ($search) {
-                    $searchField = $bucketable['search_field'] ?? '%title';
+                    $searchField = $bucketable['searchField'] ?? ($translated ? 'title' : '%title');
                     $scopes[$searchField] = $search;
                 }
 
-                $items = $fetchedModules[$module] ?? $this->getRepository($module)->get(
+                $items = $fetchedModules[$module] ?? $repository->get(
                     $bucketable['with'] ?? [],
                     ($bucketable['scopes'] ?? []) + ($scopes ?? []),
                     $bucketable['orders'] ?? [],
@@ -115,6 +120,7 @@ class FeaturedController extends Controller
                 return [$module => [
                     'name' => $bucketable['name'] ?? ucfirst($module),
                     'items' => $items,
+                    'translated' => $translated,
                 ]];
             });
         })->each(function ($bucketables, $bucket) use (&$featuredSources) {
@@ -126,13 +132,13 @@ class FeaturedController extends Controller
                 $featuredSources[$bucketable]['items'] = $bucketableData['items']->map(function ($item) use ($bucketableData, $bucketable) {
                     return [
                         'id' => $item->id,
-                        'name' => $item->titleInBucket,
-                        'edit' => $item->adminEditUrl,
+                        'name' => $item->title ?? $item->titleInBucket ?? $item->present()->titleInBucket,
+                        'edit' => $item->adminEditUrl ?? '',
                         'content_type' => [
                             'label' => $bucketableData['name'],
                             'value' => $bucketable,
                         ],
-                    ];
+                    ] + ($bucketableData['translated'] ? ['languages' => $item->getActiveLanguages()] : []);
                 })->toArray();
             });
 
