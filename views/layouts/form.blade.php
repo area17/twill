@@ -7,7 +7,6 @@
     $translateTitle = $translateTitle ?? $translate ?? false;
 @endphp
 
-
 @section('content')
     <div class="form">
         <form action="{{ $saveUrl }}" v-sticky data-sticky-id="navbar" data-sticky-offset="0" data-sticky-topoffset="12" v-on:submit.prevent="submitForm">

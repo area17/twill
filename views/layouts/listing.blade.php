@@ -2,6 +2,11 @@
 
 @section('appTypeClass', 'app--listing')
 
+@php
+    $translate = $translate ?? false;
+    $translateTitle = $translateTitle ?? $translate ?? false;
+@endphp
+
 @section('content')
     <div class="listing">
         <div class="listing__nav">
