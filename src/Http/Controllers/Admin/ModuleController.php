@@ -3,6 +3,8 @@
 namespace A17\CmsToolkit\Http\Controllers\Admin;
 
 use A17\CmsToolkit\Helpers\FlashLevel;
+use A17\CmsToolkit\Repositories\Behaviors\HandleRevisions;
+use A17\CmsToolkit\Repositories\Behaviors\HandleTranslations;
 use Auth;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
@@ -105,17 +107,17 @@ abstract class ModuleController extends Controller
         'title' => 'asc',
     ];
 
-    /*
-     * Feature field name if the controller is using the feature route (defaults to "featured")
-     */
-    protected $featureField;
-
     protected $perPage = 20;
 
     /*
      * Name of the index column to use as name column
      */
     protected $titleColumnKey = 'title';
+
+    /*
+     * Feature field name if the controller is using the feature route (defaults to "featured")
+     */
+    protected $featureField = 'featured';
 
     public function __construct(Application $app, Request $request)
     {
@@ -191,10 +193,9 @@ abstract class ModuleController extends Controller
             'moduleName' => $this->moduleName,
             'reorder' => $this->getIndexOption('reorder'),
             'create' => $this->getIndexOption('create') && auth()->user()->can('edit'),
+            'translate' => $this->moduleIsTranslated(),
             'permalink' => $this->getIndexOption('permalink'),
             'titleColumnKey' => $this->titleColumnKey,
-            'formCustomTitleName' => $this->formCustomTitleName ?? null,
-            'formCustomTitleLabel' => $this->formCustomTitleLabel ?? null,
         ];
 
         return array_replace_recursive($data + $options, $this->indexData($this->request));
@@ -208,15 +209,14 @@ abstract class ModuleController extends Controller
 
     public function getIndexTableData($items)
     {
-        return $items->map(function ($item) {
+        $translated = $this->moduleIsTranslated();
+        return $items->map(function ($item) use ($translated) {
             $columnsData = collect($this->indexColumns)->mapWithKeys(function ($column) use ($item) {
                 return $this->getItemColumnData($item, $column);
             })->toArray();
 
             $name = $columnsData[$this->titleColumnKey];
             unset($columnsData[$this->titleColumnKey]);
-
-            $featuredField = $this->featureField ?? 'featured';
 
             $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
 
@@ -229,7 +229,8 @@ abstract class ModuleController extends Controller
                 'publish_end_date' => $item->publish_end_date,
             ] + $columnsData
                  + ($this->getIndexOption('publish') ? ['published' => $item->published] : [])
-                 + ($this->getIndexOption('feature') ? ['featured' => $item->$featuredField] : [])
+                 + ($this->getIndexOption('feature') ? ['featured' => $item->{$this->featureField}] : [])
+                 + ($translated ? ['languages' => $item->getActiveLanguages()] : [])
                  + (($this->getIndexOption('restore') && $itemIsTrashed) ? ['deleted' => true] : []);
         })->toArray();
     }
@@ -240,7 +241,9 @@ abstract class ModuleController extends Controller
             $variant = isset($column['variant']);
             $role = $variant ? $column['variant']['role'] : head(array_keys($item->mediasParams));
             $crop = $variant ? $column['variant']['crop'] : head(array_keys(head($item->mediasParams)));
-            $params = $variant && isset($column['variant']['params']) ? $column['variant']['params'] : ['w' => 80, 'h' => 80, 'fit' => 'crop'];
+            $params = $variant && isset($column['variant']['params'])
+            ? $column['variant']['params']
+            : ['w' => 80, 'h' => 80, 'fit' => 'crop'];
 
             return [
                 'thumbnail' => $item->cmsImage($role, $crop, $params),
@@ -315,7 +318,17 @@ abstract class ModuleController extends Controller
                 'label' => $column['title'],
                 'visible' => $visibleColumns ? in_array($columnName, $visibleColumns) : ($column['visible'] ?? true),
                 'optional' => $column['optional'] ?? true,
-                'sortable' => $this->getIndexOption('reorder') ? false : ($column['sort'] ?? false), // TODO: support a different sort field
+                'sortable' => $this->getIndexOption('reorder') ? false : ($column['sort'] ?? false),
+            ]);
+        }
+
+        if ($this->moduleIsTranslated()) {
+            array_push($tableColumns, [
+                'name' => 'languages',
+                'label' => 'Languages',
+                'visible' => $visibleColumns ? in_array('languages', $visibleColumns) : true,
+                'optional' => true,
+                'sortable' => false,
             ]);
         }
 
@@ -332,7 +345,7 @@ abstract class ModuleController extends Controller
             'number' => $this->repository->getCountByStatusSlug('all'),
         ]);
 
-        if (method_exists($this->repository, 'beforeSaveHandleRevisions')) {
+        if (classHasTrait($this->repository, HandleRevisions::class)) {
             array_push($statusFilters, [
                 'name' => 'Mine',
                 'slug' => 'mine',
@@ -496,7 +509,7 @@ abstract class ModuleController extends Controller
     public function feature()
     {
         if (($id = request('id'))) {
-            $featuredField = request('featureField') ?? ($this->featureField ?? 'featured');
+            $featuredField = request('featureField') ?? $this->featureField;
             $featured = !request('active');
 
             if ($this->repository->isUniqueFeature()) {
@@ -517,7 +530,7 @@ abstract class ModuleController extends Controller
     public function bulkFeature()
     {
         if (($ids = explode(',', request('ids')))) {
-            $featuredField = request('featureField') ?? ($this->featureField ?? 'featured');
+            $featuredField = request('featureField') ?? $this->featureField;
             $featured = request('feature') ?? true;
             // we don't need to check if unique feature since bulk operation shouldn't be allowed in this case
             $this->repository->updateBasic($ids, [$featuredField => $featured]);
@@ -536,6 +549,16 @@ abstract class ModuleController extends Controller
         }
 
         return $this->respondWithError($this->modelTitle . ' order was not changed. Something wrong happened!');
+    }
+
+    public function tags()
+    {
+        $query = $this->request->input('q');
+        $tags = $this->repository->getTags($query);
+
+        return response()->json(['items' => $tags->map(function ($tag) {
+            return $tag->name;
+        })], 200);
     }
 
     public function store()
@@ -576,17 +599,19 @@ abstract class ModuleController extends Controller
 
         $data = [
             'item' => $item,
-            'titleColumnKey' => $this->titleColumnKey,
-            'formCustomTitleName' => $this->formCustomTitleName ?? null,
-            'formCustomTitleLabel' => $this->formCustomTitleLabel ?? null,
-            'revisions' => method_exists($item, 'hasRevisions') && $item->hasRevisions() ? $item->revisionsForPublisher() : [],
-            'form_fields' => $this->repository->getFormFields($item),
-            'saveUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'update', $id),
-            'back_link' => $this->getBackLink(),
             'moduleName' => $this->moduleName,
-            'modelName' => $this->modelName,
-            'routePrefix' => $this->routePrefix,
+            'titleColumnKey' => $this->titleColumnKey,
+            'translate' => $this->moduleIsTranslated(),
+            'form_fields' => $this->repository->getFormFields($item),
             'baseUrl' => $item->urlWithoutSlug ?? config('app.url') . '/',
+            'revisions' => $item->revisions ? $item->revisions->map(function ($revision) {
+                return [
+                    'id' => $revision->id,
+                    'author' => $revision->user->name,
+                    'datetime' => $revision->created_at->toIso8601String(),
+                ];
+            })->toArray() : null,
+            'saveUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'update', $id),
         ] + (Route::has($previewRouteName) ? [
             'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $id),
         ] : []) + (Route::has($restoreRouteName) ? [
@@ -676,41 +701,6 @@ abstract class ModuleController extends Controller
     protected function validateFormRequest()
     {
         return $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
-    }
-
-    private function respondWithSuccess($message)
-    {
-        return $this->respondWithJson($message, FlashLevel::SUCCESS);
-    }
-
-    private function respondWithRedirect($redirectUrl)
-    {
-        return response()->json([
-            'redirect' => $redirectUrl,
-        ]);
-    }
-
-    private function respondWithError($message)
-    {
-        return $this->respondWithJson($message, FlashLevel::ERROR);
-    }
-
-    private function respondWithJson($message, $variant)
-    {
-        return response()->json([
-            'message' => $message,
-            'variant' => $variant,
-        ]);
-    }
-
-    public function tags()
-    {
-        $query = $this->request->input('q');
-        $tags = $this->repository->getTags($query);
-
-        return response()->json(['items' => $tags->map(function ($tag) {
-            return $tag->name;
-        })], 200);
     }
 
     protected function orderScope()
@@ -885,5 +875,35 @@ abstract class ModuleController extends Controller
     protected function getModelTitle()
     {
         return camelCaseToWords($this->modelName);
+    }
+
+    private function respondWithSuccess($message)
+    {
+        return $this->respondWithJson($message, FlashLevel::SUCCESS);
+    }
+
+    private function respondWithRedirect($redirectUrl)
+    {
+        return response()->json([
+            'redirect' => $redirectUrl,
+        ]);
+    }
+
+    private function respondWithError($message)
+    {
+        return $this->respondWithJson($message, FlashLevel::ERROR);
+    }
+
+    private function respondWithJson($message, $variant)
+    {
+        return response()->json([
+            'message' => $message,
+            'variant' => $variant,
+        ]);
+    }
+
+    private function moduleIsTranslated()
+    {
+        return classHasTrait($this->repository, HandleTranslations::class);
     }
 }

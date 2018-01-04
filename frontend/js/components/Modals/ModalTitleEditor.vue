@@ -2,7 +2,7 @@
   <div class="modal--titleEditor">
     <a17-textfield :label="titleLabel" :name="titleName" :required="true" :initialValue="savedTitle" :autofocus="true" @change="updateTitle" :maxlength="100" autocomplete="off" :inStore="mode === 'update' ? 'value' : ''"></a17-textfield>
     <slot></slot>
-    <a17-textfield v-if="withPermalink" label="Permalink" name="slug" :prefix="baseUrl | prettierUrl" :initialValue="inputPermalink" @change="updatePermalink" @blur="formatPermalink" :maxlength="100" autocomplete="off" :inStore="mode === 'update' ? 'value' : ''"></a17-textfield>
+    <!-- <a17-textfield v-if="withPermalink" label="Permalink" name="slug" :prefix="baseUrl | prettierUrl" :initialValue="inputPermalink" @change="updatePermalink" @blur="formatPermalink" :maxlength="100" autocomplete="off" :inStore="mode === 'update' ? 'value' : ''"></a17-textfield> -->
   </div>
 </template>
 

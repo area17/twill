@@ -70,6 +70,9 @@ Vue.component('a17-locationfield', a17LocationField)
 Vue.component('a17-overlay', a17Overlay)
 Vue.component('a17-previewer', a17Previewer)
 
+// mixins
+import formatPermalink from '@/mixins/formatPermalink'
+
 // Blocks
 const importedBlocks = require.context('@/components/blocks/', true, /\.(js|vue)$/i)
 importedBlocks.keys().map(block => {
@@ -94,6 +97,7 @@ Window.vm = new Vue({
     'a17-content': a17Content,
     'a17-publisher': a17Publisher
   },
+  mixins: [formatPermalink],
   data: function () {
     return {
       unSubscribe: function () {

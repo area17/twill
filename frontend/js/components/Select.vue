@@ -1,5 +1,5 @@
 <template>
-  <a17-inputframe :error="error" :note="note" :label="label" :locale="locale" @localize="updateLocale">
+  <a17-inputframe :error="error" :note="note" :label="label" :locale="locale" @localize="updateLocale" :name="name">
     <span class="select__input" :class="selectClasses">
       <select v-model="selectedValue" :name="name" :id="name" :disabled="disabled" :required="required" :readonly="readonly">
         <option v-for="option in options" :value="option.value" >

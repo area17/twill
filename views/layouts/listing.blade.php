@@ -3,7 +3,7 @@
 @section('appTypeClass', 'app--listing')
 
 @section('content')
-    <div class="listing" xmlns:v-on="http://www.w3.org/1999/xhtml">
+    <div class="listing">
         <div class="listing__nav">
             <div class="container" ref="form">
                 <a17-filter v-on:submit="filterListing" v-bind:closed="hasBulkIds" initial-search-value="{{ $filters['search'] ?? '' }}" :clear-option="true" v-on:clear="clearFiltersAndReloadDatas">
@@ -70,19 +70,13 @@
             </div>
             <a17-bulk></a17-bulk>
         </div>
+
         <a17-datatable :draggable="{{ $reorder ? 'true' : 'false' }}" empty-message="There is no item here yet."></a17-datatable>
 
         <a17-modal class="modal--form" ref="addNewModal" title="Add new">
             <form action="{{ $storeUrl }}" method="post">
                 {{ csrf_field() }}
-                <a17-modal-title-editor
-                    title-name="{{ $formCustomTitleName ?? $titleColumnKey ?? 'title' }}"
-                    title-label="{{ $formCustomTitleLabel ?? ucfirst($titleColumnKey ?? 'title') }}"
-                    :base-url="baseUrl"
-                    @unless($permalink ?? true) :with-permalink="false" @endunless
-                >
-                    @partialView(($moduleName ?? null), 'modal_extra_fields', ['renderForModal' => true])
-                </a17-modal-title-editor>
+                @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
                 <a17-modal-validation v-bind:mode="'create'" :active-publish-state="false" :is-publish="false" published-name="published"></a17-modal-validation>
             </form>
         </a17-modal>

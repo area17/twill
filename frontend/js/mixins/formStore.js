@@ -1,4 +1,4 @@
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   props: {
@@ -16,10 +16,26 @@ export default {
     }
   },
   computed: {
+    storedValue: function () {
+      return this.fieldValueByName(this.getFieldName())
+    },
+    ...mapGetters([
+      'fieldValueByName'
+    ]),
     ...mapState({
       submitting: state => state.form.loading,
       fields: state => state.form.fields
     })
+  },
+  watch: {
+    storedValue: function (fieldInstore) {
+      if (!fieldInstore) return
+
+      const currentValue = this[this.inStore]
+      const newValue = (this.locale) ? fieldInstore[this.locale.value] : fieldInstore
+
+      if (currentValue !== newValue) this.updateValue(newValue)
+    }
   },
   methods: {
     getFieldName: function () {

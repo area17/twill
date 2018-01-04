@@ -13,13 +13,16 @@ export default {
       default: ''
     }
   },
-
   computed: {
+    errorKey () {
+      return this.hasLocale ? (this.name.replace('[', '.').replace(']', '')) : this.name
+    },
     errorMessage () {
-      return 'The field has error'
+      let message = this.error ? this.$store.state.form.errors[this.errorKey][0] : ''
+      return message.endsWith('is required.') ? '' : message
     },
     error () {
-      this.$store.state.form ? this.$store.state.form.errors.includes(this.name) : false
+      return this.$store.state.form ? Object.keys(this.$store.state.form.errors).includes(this.errorKey) : false
     }
   }
 }

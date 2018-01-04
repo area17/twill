@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import api from '../api/form'
 import * as types from '../mutation-types'
 
@@ -8,11 +9,20 @@ const state = {
   baseUrl: window.STORE.form.baseUrl || '',
   fields: window.STORE.form.fields || [],
   saveUrl: window.STORE.form.saveUrl || '',
-  errors: []
+  errors: {}
 }
 
 // getters
-const getters = {}
+const getters = {
+  fieldsByName (state) {
+    return name => state.fields.filter(function (field) {
+      return field.name === name
+    })
+  },
+  fieldValueByName: (state, getters) => name => { // want to use getters
+    return getters.fieldsByName(name).length ? getters.fieldsByName(name)[0].value : false
+  }
+}
 
 const mutations = {
   [types.UPDATE_FORM_TITLE] (state, newValue) {
@@ -33,7 +43,7 @@ const mutations = {
     // Update existing form field
     if (fieldToUpdate.length) {
       if (field.locale) {
-        fieldToUpdate[0].value[field.locale] = field.value
+        Vue.set(fieldToUpdate[0].value, field.locale, field.value)
       } else {
         fieldToUpdate[0].value = field.value
       }
@@ -53,6 +63,17 @@ const mutations = {
           value: field.value
         })
       }
+    }
+  },
+  [types.REFRESH_FORM_FIELD] (state, field) {
+    const fieldIndex = state.fields.findIndex(function (f) {
+      return f.name === field.name
+    })
+
+    if (fieldIndex !== -1) {
+      const fieldToRefresh = state.fields[fieldIndex].value
+      state.fields[fieldIndex].value = null
+      state.fields[fieldIndex].value = fieldToRefresh
     }
   },
   [types.REMOVE_FORM_FIELD] (state, fieldName) {
@@ -106,18 +127,18 @@ const actions = {
       repeaters: gatherRepeaters(state, rootState)
     })
 
-    api.save(state.saveUrl, data, function (resp) {
+    api.save(state.saveUrl, data, function (successResponse) {
       commit(types.UPDATE_FORM_LOADING, false)
 
-      if (resp.data.hasOwnProperty('redirect')) {
-        window.location.replace(resp.data.redirect)
+      if (successResponse.data.hasOwnProperty('redirect')) {
+        window.location.replace(successResponse.data.redirect)
       }
 
-      commit(types.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
-    }, function (resp) {
+      commit(types.SET_NOTIF, { message: successResponse.data.message, variant: successResponse.data.variant })
+    }, function (errorResponse) {
       commit(types.UPDATE_FORM_LOADING, false)
-      commit(types.SET_FORM_ERRORS, Object.keys(resp.response.data))
-      commit(types.SET_NOTIF, { message: Object.values(resp.response.data).join('<br>'), variant: 'error' })
+      commit(types.SET_FORM_ERRORS, errorResponse.response.data)
+      commit(types.SET_NOTIF, { message: 'Your submission could not be validated, please fix and retry', variant: 'error' })
     })
   }
 }

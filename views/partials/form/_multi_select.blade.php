@@ -7,16 +7,14 @@
     })->values()->toArray() : $options;
 @endphp
 
-<a17-inputframe>
-    <a17-multiselect
-        label="{{ $label }}"
-        @include('cms-toolkit::partials.form.utils._field_name')
-        :options="{{ json_encode($options) }}"
-        @if ($min ?? false) :min="{{ $min }}" @endif
-        @if ($max ?? false) :max="{{ $max }}" @endif
-        in-store="currentValue"
-    ></a17-multiselect>
-</a17-inputframe>
+<a17-multiselect
+    label="{{ $label }}"
+    @include('cms-toolkit::partials.form.utils._field_name')
+    :options="{{ json_encode($options) }}"
+    @if ($min ?? false) :min="{{ $min }}" @endif
+    @if ($max ?? false) :max="{{ $max }}" @endif
+    in-store="currentValue"
+></a17-multiselect>
 
 @unless($renderForBlocks || $renderForModal || !isset($item->$name))
 @push('vuexStore')

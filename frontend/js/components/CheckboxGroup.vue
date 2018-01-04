@@ -1,5 +1,5 @@
 <template>
-  <a17-inputframe :error="error" :note="note" :label="label">
+  <a17-inputframe :error="error" :note="note" :label="label" :name="name">
     <ul class="checkboxGroup">
       <li class="checkboxGroup__item" v-for="checkbox in options">
         <a17-checkbox :name="name" :value="checkbox.value" :label="checkbox.label" @change="changeValue" :initialValue="currentValue" :disabled="checkbox.disabled || disabled"></a17-checkbox>

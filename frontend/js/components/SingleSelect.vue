@@ -1,5 +1,5 @@
 <template>
-  <a17-inputframe :error="error" :note="note" :label="label">
+  <a17-inputframe :error="error" :note="note" :label="label" :name="name">
     <div class="singleselector">
       <div class="singleselector__grid">
         <div class="singleselector__item" v-for="radio in options">

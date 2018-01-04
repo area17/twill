@@ -8,15 +8,4 @@ trait HasRevisions
     {
         return $this->hasMany("App\Models\Revisions\\" . class_basename($this) . "Revision")->orderBy('created_at', 'desc');
     }
-
-    public function revisionsForPublisher()
-    {
-        return $this->revisions->map(function ($revision) {
-            return [
-                'id' => $revision->id,
-                'author' => $revision->user->name,
-                'datetime' => $revision->created_at->toIso8601String(),
-            ];
-        })->toArray();
-    }
 }

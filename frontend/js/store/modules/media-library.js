@@ -113,11 +113,19 @@ const mutations = {
   [types.SET_MEDIA_METADATAS] (state, metadatas) {
     const connector = metadatas.media.context
     const medias = state.selected[connector]
+    const newValue = metadatas.value
 
-    // Save all the custom metadatas here
+    // Save all the custom metadatas here (with or wthout localization)
     function setMetatadas (mediaToModify) {
-      for (let metadata in metadatas.values) {
-        mediaToModify.metadatas.custom[metadata] = metadatas.values[metadata]
+      if (newValue.locale) {
+        // if multi language we will fill an object
+        if (!mediaToModify.metadatas.custom[newValue.id]) {
+          mediaToModify.metadatas.custom[newValue.id] = {}
+        }
+
+        mediaToModify.metadatas.custom[newValue.id][newValue.locale] = newValue.value
+      } else {
+        mediaToModify.metadatas.custom[newValue.id] = newValue.value
       }
 
       return mediaToModify

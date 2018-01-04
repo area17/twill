@@ -20,7 +20,10 @@ Vue.use(A17Notif)
 
 // Store modules
 import buckets from '@/store/modules/buckets'
+import form from '@/store/modules/form'
+
 store.registerModule('buckets', buckets)
+store.registerModule('form', form)
 
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */

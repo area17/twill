@@ -11,14 +11,28 @@ abstract class Request extends FormRequest
         return true;
     }
 
+    public function rules()
+    {
+        switch ($this->method()) {
+            case 'POST':{return $this->rulesForCreate();}
+            case 'PUT':{return $this->rulesForUpdate();}
+            default:break;
+        }
+
+        return [];
+    }
+
     protected function rulesForTranslatedFields($rules, $fields)
     {
         $locales = getLocales();
         $localeActive = false;
         foreach ($locales as $locale) {
-            if ($this->request->has("active_{$locale}")) {
-                $localeActive = true;
-                $rules = $this->updateRules($rules, $fields, $locale);
+            if ($this->request->has('languages')) {
+                $languageFromRequest = collect($this->request->get('languages'))->where('value', $locale)->first();
+                if ($languageFromRequest['published']) {
+                    $localeActive = true;
+                    $rules = $this->updateRules($rules, $fields, $locale);
+                }
             }
         }
 
@@ -36,12 +50,12 @@ abstract class Request extends FormRequest
             if (str_contains($field_rules, $fields)) {
                 foreach ($fields as $fieldName => $fieldRules) {
                     if (str_contains($field_rules, $fieldName) && starts_with('required_', $field_rules)) {
-                        $field_rules = str_replace($fieldName, "{$fieldName}_{$locale}", $field_rules);
+                        $field_rules = str_replace($fieldName, "{$fieldName}.{$locale}", $field_rules);
                     }
                 }
             }
 
-            $rules["{$field}_{$locale}"] = $field_rules;
+            $rules["{$field}.{$locale}"] = $field_rules;
         }
 
         return $rules;
@@ -62,7 +76,7 @@ abstract class Request extends FormRequest
             $fieldSplitted = explode('.', $field);
             $rule = array_pop($fieldSplitted);
             $field = implode('.', $fieldSplitted);
-            $messages["{$field}_{$locale}.$rule"] = str_replace('{lang}', $locale, $message);
+            $messages["{$field}.{$locale}.$rule"] = str_replace('{lang}', $locale, $message);
         }
 
         return $messages;

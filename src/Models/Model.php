@@ -95,13 +95,4 @@ abstract class Model extends BaseModel implements TaggableInterface
 
         return false;
     }
-
-    public function hasRevisions()
-    {
-        if (classHasTrait(get_class($this), 'A17\CmsToolkit\Models\Behaviors\HasRevisions')) {
-            return true;
-        }
-
-        return false;
-    }
 }

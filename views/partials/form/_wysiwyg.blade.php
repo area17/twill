@@ -16,7 +16,12 @@
             if ($option == 'list-ordered') {
                 return (object) ['list' => 'ordered'];
             }
-
+            if ($option == 'h1') {
+                return (object) ['header' => 1];
+            }
+            if ($option == 'h2') {
+                return (object) ['header' => 2];
+            }
             return $option;
         }, $toolbarOptions);
 

@@ -12,7 +12,6 @@
             <div class="buckets__header">
               <div class="buckets__sources">
                 <a17-vselect v-if="!singleSource" class="sources__select" name="sources" :selected="currentSource" :options="dataSources" :required="true" @change="changeDataSource"></a17-vselect>
-                <h3 v-else>{{ currentSource.label }}</h3>
               </div>
               <div class="buckets__filter">
                 <a17-filter @submit="filterBucketsData"></a17-filter>

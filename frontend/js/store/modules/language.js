@@ -2,7 +2,7 @@ import * as types from '../mutation-types'
 
 const state = {
   all: window.STORE.languages.all || [],
-  active: window.STORE.languages.all[0] || {}
+  active: window.STORE.languages.active || window.STORE.languages.all[0] || {}
 }
 
 // getters

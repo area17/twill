@@ -8,6 +8,10 @@
     $disabled = $disabled ?? false;
     $readonly = $readonly ?? false;
     $rows = $rows ?? false;
+    $ref = $ref ?? false;
+    $onChange = $onChange ?? false;
+    $onChangeAttribute = $onChangeAttribute ?? false;
+    $onChangeFullAttribute = $onChangeAttribute ? "('".$onChangeAttribute."', ...arguments)" : "";
     $prefix = $prefix ?? false;
 @endphp
 
@@ -28,6 +32,8 @@
             @if ($prefix) prefix: '{{ $prefix }}', @endif
             inStore: 'value'
         }"
+        @if ($ref) ref="{{ $ref }}" @endif
+        @if ($onChange) v-on:change="{{ $onChange }}{{ $onChangeFullAttribute }}" @endif
     ></a17-locale>
 @else
     <a17-textfield
@@ -41,6 +47,8 @@
         @if ($disabled) disabled @endif
         @if ($readonly) readonly @endif
         @if ($rows) :rows="{{ $rows }}" @endif
+        @if ($ref) ref="{{ $ref }}" @endif
+        @if ($onChange) v-on:change="{{ $onChange }}{{ $onChangeFullAttribute }}" @endif
         @if ($prefix) prefix="{{ $prefix }}" @endif
         in-store="value"
     ></a17-textfield>

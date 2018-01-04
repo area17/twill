@@ -20,7 +20,7 @@ class UserRequest extends Request
                         'role' => 'required',
                     ];
                 }
-            case 'PATCH':
+            case 'PUT':
                 {
                     return [
                         'name' => 'required',

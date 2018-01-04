@@ -73,4 +73,23 @@ trait HasTranslation
         return false;
     }
 
+    public function getActiveLanguages()
+    {
+        return $this->translations->map(function ($translation) {
+            return [
+                'shortlabel' => strtoupper($translation->locale),
+                'label' => getLanguageLabelFromLocaleCode($translation->locale),
+                'value' => $translation->locale,
+                'published' => $translation->active ?? false,
+            ];
+        });
+    }
+
+    public function translatedAttribute($key)
+    {
+        return $this->translations->mapWithKeys(function ($translation) use ($key) {
+            return [$translation->locale => $this->translate($translation->locale)->$key];
+        });
+    }
+
 }
