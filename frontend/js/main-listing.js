@@ -18,6 +18,7 @@ import { mapState } from 'vuex'
 // components
 import a17Datatable from '@/components/table/Datatable.vue'
 import a17Filter from '@/components/Filter.vue'
+import a17TableFilters from '@/components/table/TableFilters.vue'
 import a17BulkEdit from '@/components/table/BulkEdit.vue'
 import ModalValidationButtons from '@/components/Modals/ModalValidationButtons.vue'
 
@@ -43,6 +44,7 @@ Window.vm = new Vue({
   el: '#app',
   components: {
     'a17-filter': a17Filter,
+    'a17-table-filters': a17TableFilters,
     'a17-datatable': a17Datatable,
     'a17-bulk': a17BulkEdit,
     'a17-modal-validation': ModalValidationButtons
@@ -50,24 +52,15 @@ Window.vm = new Vue({
   mixins: [formatPermalink],
   data: function () {
     return {
-      inputPermalink: '',
-      navFilters: this.$store.state.datatable.filtersNav
+      inputPermalink: ''
     }
   },
   computed: {
     hasBulkIds: function () {
       return this.bulkIds.length > 0
     },
-    selectedNav: function () {
-      let self = this
-      const navItem = self.navFilters.filter(function (n) {
-        return n.slug === self.navActive
-      })
-      return navItem[0]
-    },
     ...mapState({
       localStorageKey: state => state.datatable.localStorageKey,
-      navActive: state => state.datatable.filter.status,
       baseUrl: state => state.datatable.baseUrl,
       bulkIds: state => state.datatable.bulk
     })
@@ -80,17 +73,18 @@ Window.vm = new Vue({
     clearFiltersAndReloadDatas: function () {
       this.$store.commit('updateDatablePage', 1)
       this.$store.commit('clearDatableFilter')
+
+      Object.keys(this.$refs).filter(k => {
+        return k.indexOf('filterDropdown[') === 0
+      }).map(k => {
+        this.$refs[k].updateValue()
+      })
+
       this.reloadDatas()
     },
     filterListing: function (formData) {
       this.$store.commit('updateDatablePage', 1)
       this.$store.commit('updateDatableFilter', formData || {search: ''})
-      this.reloadDatas()
-    },
-    filterStatus: function (slug) {
-      if (this.navActive === slug) return
-      this.$store.commit('updateDatablePage', 1)
-      this.$store.commit('updateDatableFilterStatus', slug)
       this.reloadDatas()
     }
   },

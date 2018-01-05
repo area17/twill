@@ -75,7 +75,10 @@ const mutations = {
     state.filter = Object.assign({}, state.filter, filter)
   },
   [types.CLEAR_DATATABLE_FILTER] (state) {
-    state.filter = {search: ''}
+    state.filter = Object.assign({}, {
+      search: '',
+      status: state.filter.status
+    })
   },
   [types.UPDATE_DATATABLE_FILTER_STATUS] (state, slug) {
     state.filter.status = slug

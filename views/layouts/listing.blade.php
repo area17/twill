@@ -12,30 +12,7 @@
         <div class="listing__nav">
             <div class="container" ref="form">
                 <a17-filter v-on:submit="filterListing" v-bind:closed="hasBulkIds" initial-search-value="{{ $filters['search'] ?? '' }}" :clear-option="true" v-on:clear="clearFiltersAndReloadDatas">
-                    <ul class="secondarynav secondarynav--desktop" slot="navigation">
-                        <li v-for="(navItem, index) in navFilters" class="secondarynav__item" :class="{ 's--on' : navActive === navItem.slug }">
-                            <a href="#" v-on:click.prevent="filterStatus(navItem.slug)">
-                                <span class="secondarynav__link">@{{ navItem.name }}</span><span class="secondarynav__number">(@{{ navItem.number }})</span>
-                            </a>
-                        </li>
-                    </ul>
-
-                    <div class="secondarynav secondarynav--mobile secondarynav--dropdown" slot="navigation">
-                        <a17-dropdown ref="secondaryNavDropdown" position="bottom-left" width="full" :offset="0">
-                            <a17-button class="secondarynav__button" variant="dropdown-transparent" size="small" @click="$refs.secondaryNavDropdown.toggle()">
-                                <span class="secondarynav__link">@{{ selectedNav.name }}</span><span class="secondarynav__number">(@{{ selectedNav.number }})</span>
-                            </a17-button>
-                            <div slot="dropdown__content">
-                                <ul>
-                                    <li v-for="(navItem, index) in navFilters" class="secondarynav__item">
-                                        <a href="#" v-on:click.prevent="filterStatus(navItem.slug)">
-                                            <span class="secondarynav__link">@{{ navItem.name }}</span><span class="secondarynav__number">(@{{ navItem.number }})</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </a17-dropdown>
-                    </div>
+                    <a17-table-filters slot="navigation"></a17-table-filters>
 
                     @forelse($hiddenFilters as $filter)
                         @if ($loop->first)
@@ -52,6 +29,7 @@
                                 ];
                             })->values()->toArray()) }}"
                             placeholder="All {{ strtolower(str_plural(str_replace_first('f', '', $filter))) }}"
+                            ref="filterDropdown[{{ $loop->index }}]"
                             ></a17-vselect>
                         @endif
 
