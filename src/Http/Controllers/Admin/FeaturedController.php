@@ -78,7 +78,7 @@ class FeaturedController extends Controller
                     $item = $feature->featured;
                     return [
                         'id' => $item->id,
-                        'name' => $item->title ?? $item->titleInBucket ?? $item->present()->titleInBucket,
+                        'name' => $item->titleInBucket ?? $item->title,
                         'edit' => $item->adminEditUrl ?? '',
                         'content_type' => [
                             'label' => ucfirst($feature->featured_type),
@@ -132,7 +132,7 @@ class FeaturedController extends Controller
                 $featuredSources[$bucketable]['items'] = $bucketableData['items']->map(function ($item) use ($bucketableData, $bucketable) {
                     return [
                         'id' => $item->id,
-                        'name' => $item->title ?? $item->titleInBucket ?? $item->present()->titleInBucket,
+                        'name' => $item->titleInBucket ?? $item->title,
                         'edit' => $item->adminEditUrl ?? '',
                         'content_type' => [
                             'label' => $bucketableData['name'],

@@ -2,7 +2,7 @@
   <div class="browserField">
     <table class="browserField__table" v-if="items.length">
       <draggable :element="'tbody'" v-model="items">
-        <a17-browseritem v-for="(item, index) in items" :key="item.id" class="item__content" :name="`${name}_${item.id}`" :draggable="draggable" :item="item" @delete="deleteItem(index)"></a17-browseritem>
+        <a17-browseritem v-for="(item, index) in items" :key="item.id" class="item__content" :name="`${name}_${item.id}`" :draggable="draggable" :item="item" @delete="deleteItem(index)" :max="max"></a17-browseritem>
       </draggable>
     </table>
     <div class="browserField__trigger" v-if="remainingItems">

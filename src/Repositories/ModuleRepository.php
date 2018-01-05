@@ -443,7 +443,7 @@ abstract class ModuleRepository
         return $object->$relation->map(function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName) {
             return [
                 'id' => $relatedElement->id,
-                'name' => $relatedElement->$titleKey,
+                'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
                 'edit' => moduleRoute($moduleName ?? $relation, $routePrefix ?? '', 'edit', $relatedElement->id),
             ];
         })->toArray();

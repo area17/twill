@@ -1,6 +1,6 @@
 <template>
   <tr class="browserItem">
-    <td v-if="draggable" class="browserItem__cell browserItem__cell--drag">
+    <td v-if="draggable && max > 1" class="browserItem__cell browserItem__cell--drag">
       <div class="drag__handle--drag"></div>
     </td>
     <td class="browserItem__cell browserItem__cell--thumb" v-if="currentItem.hasOwnProperty('thumbnail')">
@@ -123,7 +123,7 @@
     padding-left: 15px;
 
     @include breakpoint('small+') {
-      padding-left:29px;
+      padding-left: 29px;
     }
   }
 
