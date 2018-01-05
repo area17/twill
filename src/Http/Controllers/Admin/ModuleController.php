@@ -195,7 +195,7 @@ abstract class ModuleController extends Controller
             'create' => $this->getIndexOption('create') && auth()->user()->can('edit'),
             'translate' => $this->moduleIsTranslated(),
             'permalink' => $this->getIndexOption('permalink'),
-            'titleColumnKey' => $this->titleColumnKey,
+            'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
         ];
 
         return array_replace_recursive($data + $options, $this->indexData($this->request));
@@ -600,7 +600,7 @@ abstract class ModuleController extends Controller
         $data = [
             'item' => $item,
             'moduleName' => $this->moduleName,
-            'titleColumnKey' => $this->titleColumnKey,
+            'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
             'translate' => $this->moduleIsTranslated(),
             'form_fields' => $this->repository->getFormFields($item),
             'baseUrl' => $item->urlWithoutSlug ?? config('app.url') . '/',

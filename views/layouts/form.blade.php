@@ -63,13 +63,13 @@
 @stop
 
 @php
-    $formTitleName = $titleColumnKey ?? 'title';
+    $titleFormKey = $titleFormKey ?? 'title';
 @endphp
 
 @section('initialStore')
 
     window.STORE.form = {
-        title: {!! json_encode($translate ? $item->translatedAttribute($formTitleName) : $item->$formTitleName) !!},
+        title: {!! json_encode($translate ? $item->translatedAttribute($titleFormKey) : $item->$titleFormKey) !!},
         permalink: '{{ $item->slug ?? '' }}',
         baseUrl: '{{ $baseUrl }}',
         saveUrl: '{{ $saveUrl }}',
