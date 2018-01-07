@@ -1,6 +1,6 @@
 <template>
   <div class="locale">
-    <template v-if="languages && languages.length">
+    <template v-if="languages && languages.length && languages.length > 1">
     <div class="locale__item" v-for="(language, index) in languages" :key="language.value">
       <component v-bind:is="`${type}`" :data-lang="language.value"
         v-bind="attributesPerLang(language.value)"
@@ -13,7 +13,11 @@
     </div>
     </template>
     <template v-else>
-      <component v-bind:is="`${type}`" v-bind="attributesNoLang" @change="updateValue(false, ...arguments)"><slot></slot></component>
+      <component v-bind:is="`${type}`"
+        :name="attributes.name"
+        v-bind="attributesNoLang()"
+        @change="updateValue(false, ...arguments)"
+      ><slot></slot></component>
     </template>
   </div>
 </template>
@@ -64,10 +68,9 @@
 
         return this.attributes
       },
-      attributesNoLang: function (lang) {
+      attributesNoLang: function () {
         // for textfields set initial values using the initialValue prop
         if (this.initialValue) this.attributes.initialValue = this.initialValue
-
         return this.attributes
       },
       updateLocale: function (oldValue) {

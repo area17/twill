@@ -1,6 +1,6 @@
 <template>
   <div class="input" :class="textfieldClasses" v-show="isCurrentLocale" :hidden="!isCurrentLocale ?  true : null">
-    <label class="input__label" :for="name" v-if="label">{{ label }} <span class="input__lang" v-if="hasLocale" @click="onClickLocale" data-tooltip-title="Switch language" v-tooltip>{{ displayedLocale }}</span> <span class="input__note f--small" v-if="note">{{ note }}</span></label>
+    <label class="input__label" :for="name" v-if="label">{{ label }} <span class="input__lang" v-if="hasLocale && languages.length > 1" @click="onClickLocale" data-tooltip-title="Switch language" v-tooltip>{{ displayedLocale }}</span> <span class="input__note f--small" v-if="note">{{ note }}</span></label>
     <slot></slot>
     <span v-if="error && errorMessage" class="input__errorMessage f--small">{{ errorMessage }}</span>
   </div>
@@ -12,7 +12,7 @@
   import LocaleMixin from '@/mixins/locale'
 
   export default {
-    name: 'A17Textfield',
+    name: 'A17InputFrame',
     mixins: [InputMixin, InputframeMixin, LocaleMixin],
     computed: {
       textfieldClasses: function () {

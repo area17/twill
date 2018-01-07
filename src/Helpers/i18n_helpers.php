@@ -28,8 +28,18 @@ if (!function_exists('getLanguagesForVueStore')) {
             ];
         }
 
+        $locale = config('app.locale');
+
         return [
-            'all' => [],
+            'all' => [
+                [
+                    'shortlabel' => strtoupper($locale),
+                    'label' => getLanguageLabelFromLocaleCode($locale),
+                    'value' => $locale,
+                    'disabled' => false,
+                    'published' => true,
+                ],
+            ],
         ];
     }
 }
