@@ -96,15 +96,19 @@ trait HandleBlocks
                 $blockItem = [
                     'id' => $block->id,
                     'type' => $blocksConfig[$configKey][$block->type]['component'],
-                    'icon' => $blocksConfig[$configKey][$block->type]['icon'],
                     'title' => $blocksConfig[$configKey][$block->type]['title'],
                     'attributes' => $blocksConfig[$configKey][$block->type]['attributes'] ?? [],
                 ];
 
                 if ($isInRepeater) {
-                    $fields['blocksRepeaters']["blocks-{$block->parent_id}_{$block->child_key}"][] = $blockItem;
+                    $fields['blocksRepeaters']["blocks-{$block->parent_id}_{$block->child_key}"][] = $blockItem + [
+                        'max' => $blocksConfig[$configKey][$block->type]['max'],
+                        'trigger' => $blocksConfig[$configKey][$block->type]['trigger'],
+                    ];
                 } else {
-                    $fields['blocks'][] = $blockItem;
+                    $fields['blocks'][] = $blockItem + [
+                        'icon' => $blocksConfig[$configKey][$block->type]['icon'],
+                    ];
                 }
 
                 $fields['blocksFields'][] = collect($block['content'])->filter(function ($value, $key) {
