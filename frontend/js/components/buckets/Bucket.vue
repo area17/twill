@@ -489,6 +489,10 @@
         }
       }
 
+      .button--add:disabled {
+        opacity: 0.3;
+      }
+
       .bucket__action {
         @include font-tiny();
 
