@@ -30,7 +30,10 @@
             <div class="container">
                 <div class="wrapper wrapper--reverse" v-sticky data-sticky-id="publisher" data-sticky-offset="80">
                     <aside class="col col--aside">
-                        <a17-publisher data-sticky-target="publisher"></a17-publisher>
+                        <div data-sticky-target="publisher">
+                            <a17-publisher></a17-publisher>
+                            <a17-page-nav placeholder="Go to page"></a17-page-nav>
+                        </div>
                     </aside>
                     <section class="col col--primary">
                         <a17-fieldset title="{{ $contentFieldsetLabel ?? 'Content' }}" id="content" data-sticky-top="publisher">

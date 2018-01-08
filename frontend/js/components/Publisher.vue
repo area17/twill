@@ -137,21 +137,18 @@
   $trigger_height:55px;
 
   .publisher {
-    margin-bottom:20px;
-
-    @include breakpoint('medium+') {
-      margin-bottom:0;
-    }
   }
 
   .publisher__wrapper {
     border-radius:2px;
     border:1px solid $color__border;
     background:$color__background;
+    margin-bottom:20px;
   }
 
   .publisher__trash {
-    padding:15px 10px;
+    padding:0 10px;
+    margin-bottom:20px;
   }
 
   .publisher__item {
