@@ -59,6 +59,7 @@ class FeaturedController extends Controller
             'offset' => $firstSource['offset'],
             'bucketSourceTitle' => $featuredSection['sourceHeaderTitle'] ?? null,
             'bucketsSectionIntro' => $featuredSection['sectionIntroText'] ?? null,
+            'restricted' => $featuredSection['restricted'] ?? true,
         ]);
     }
 
