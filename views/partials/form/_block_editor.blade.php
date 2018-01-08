@@ -21,4 +21,8 @@
     @foreach($form_fields['blocksMedias'] ?? [] as $name => $medias)
         window.STORE.medias.selected["{{ $name }}"] = {!! json_encode($form_fields['blocksMedias'][$name]) !!}
     @endforeach
+
+    @foreach($form_fields['blocksBrowsers'] ?? [] as $name => $browser)
+        window.STORE.browser.selected["{{ $name }}"] = {!! json_encode($form_fields['blocksBrowsers'][$name]) !!}
+    @endforeach
 @endpush

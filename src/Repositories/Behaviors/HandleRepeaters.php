@@ -121,13 +121,4 @@ trait HandleRepeaters
 
         return $fields;
     }
-
-    private function getModelRepository($relation, $model = null)
-    {
-        if (!$model) {
-            $model = ucfirst(str_singular($relation));
-        }
-
-        return app(config('cms-toolkit.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
-    }
 }

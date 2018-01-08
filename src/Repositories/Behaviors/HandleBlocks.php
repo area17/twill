@@ -70,6 +70,14 @@ trait HandleBlocks
 
         $block['content'] = empty($block['content']) ? new \stdClass : $block['content'];
 
+        if ($block['browsers']) {
+            $browsers = collect($block['browsers'])->map(function ($items) {
+                return collect($items)->pluck('id');
+            })->toArray();
+
+            $block['content']->browsers = $browsers;
+        }
+
         return $block;
     }
 
@@ -79,24 +87,29 @@ trait HandleBlocks
 
         if ($object->has('blocks')) {
 
-            $blocksConfig = config('cms-toolkit.block_editor.blocks');
+            $blocksConfig = config('cms-toolkit.block_editor');
 
             foreach ($object->blocks as $block) {
+                $isInRepeater = isset($block->parent_id);
+                $configKey = $isInRepeater ? 'repeaters' : 'blocks';
+
                 $blockItem = [
                     'id' => $block->id,
-                    'type' => $blocksConfig[$block->type]['component'],
-                    'icon' => $blocksConfig[$block->type]['icon'],
-                    'title' => $blocksConfig[$block->type]['title'],
-                    'attributes' => $blocksConfig[$block->type]['attributes'] ?? [],
+                    'type' => $blocksConfig[$configKey][$block->type]['component'],
+                    'icon' => $blocksConfig[$configKey][$block->type]['icon'],
+                    'title' => $blocksConfig[$configKey][$block->type]['title'],
+                    'attributes' => $blocksConfig[$configKey][$block->type]['attributes'] ?? [],
                 ];
 
-                if ($block->parent_id) {
+                if ($isInRepeater) {
                     $fields['blocksRepeaters']["blocks-{$block->parent_id}_{$block->child_key}"][] = $blockItem;
                 } else {
                     $fields['blocks'][] = $blockItem;
                 }
 
-                $fields['blocksFields'][] = collect($block['content'])->map(function ($value, $key) use ($block) {
+                $fields['blocksFields'][] = collect($block['content'])->filter(function ($value, $key) {
+                    return $key !== "browsers";
+                })->map(function ($value, $key) use ($block) {
                     return [
                         'name' => "blocks[$block->id][$key]",
                         'value' => $value,
@@ -112,6 +125,33 @@ trait HandleBlocks
                         ];
                     })->filter()->toArray();
                 }
+
+                if (isset($block['content']['browsers'])) {
+                    $fields['blocksBrowsers'][] = collect($block['content']['browsers'])->mapWithKeys(function ($ids, $relation) use ($block) {
+
+                        $relationRepository = $this->getModelRepository($relation);
+                        $relatedItems = $relationRepository->get([], ['id' => $ids], [], -1);
+                        $sortedRelatedItems = array_flip($ids);
+
+                        foreach ($relatedItems as $item) {
+                            $sortedRelatedItems[$item->id] = $item;
+                        }
+
+                        $items = collect(array_values($sortedRelatedItems))->filter(function ($value) {
+                            return is_object($value);
+                        })->map(function ($relatedElement) use ($relation) {
+                            return [
+                                'id' => $relatedElement->id,
+                                'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
+                                'edit' => moduleRoute($relation, config('cms-toolkit.block_editor.browser_route_prefixes.' . $relation), 'edit', $relatedElement->id),
+                            ];
+                        })->toArray();
+
+                        return [
+                            "blocks[$block->id][$relation]" => $items,
+                        ];
+                    })->filter()->toArray();
+                }
             }
 
             if ($fields['blocksFields'] ?? false) {
@@ -120,6 +160,10 @@ trait HandleBlocks
 
             if ($fields['blocksMedias'] ?? false) {
                 $fields['blocksMedias'] = call_user_func_array('array_merge', $fields['blocksMedias'] ?? []);
+            }
+
+            if ($fields['blocksBrowsers'] ?? false) {
+                $fields['blocksBrowsers'] = call_user_func_array('array_merge', $fields['blocksBrowsers'] ?? []);
             }
         }
 

@@ -41,4 +41,9 @@ class Block extends BaseModel
         $locale = $forceLocale ?? app()->getLocale();
         return $value[$locale] ?? null;
     }
+
+    public function browserIds($name)
+    {
+        return $this->content['browsers'] ? $this->content['browsers'][$name] : [];
+    }
 }
