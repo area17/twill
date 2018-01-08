@@ -11,6 +11,7 @@ class Feature extends BaseModel
         'featured_type',
         'position',
         'bucket_key',
+        'starred',
     ];
 
     public function featured()

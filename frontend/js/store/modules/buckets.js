@@ -28,6 +28,11 @@ const mutations = {
   [types.DELETE_FROM_BUCKET] (state, payload) {
     state.buckets[payload.index].children.splice(payload.itemIndex, 1)
   },
+  [types.TOGGLE_FEATURED_IN_BUCKET] (state, payload) {
+    let item = state.buckets[payload.index].children.splice(payload.itemIndex, 1)
+    item[0].starred = !item[0].starred
+    state.buckets[payload.index].children.splice(payload.itemIndex, 0, item[0])
+  },
   [types.UPDATE_BUCKETS_DATASOURCE] (state, dataSource) {
     if (state.dataSources.selected.value !== dataSource.value) state.dataSources.selected = dataSource
   },
@@ -68,11 +73,9 @@ const actions = {
     const bucket = state.buckets[data.index]
 
     bucketsAPI.add(bucket.addUrl, {
-      bucket_index: data.index,
       id: data.item.id,
-      type: data.item.content_type.value
-    }, () => {
-      commit(types.ADD_TO_BUCKET, data)
+      type: data.item.content_type.value,
+      starred: data.item.starred
     })
   },
   deleteFromBucket ({commit, state}, data) {
@@ -86,6 +89,17 @@ const actions = {
       commit(types.DELETE_FROM_BUCKET, data)
     })
   },
+  toggleFeaturedInBucket ({ commit, state }, data) {
+    const bucket = state.buckets[data.index]
+    const bucketItem = bucket['children'][data.itemIndex]
+
+    bucketsAPI.toggleFeatured(bucket.toggleFeaturedUrl, {
+      id: bucketItem['id'],
+      type: bucketItem['content_type']['value']
+    }, () => {
+      commit(types.TOGGLE_FEATURED_IN_BUCKET, data)
+    })
+  },
   reorderBucket ({ commit, state }, data) {
     commit(types.REORDER_BUCKET_LIST, data)
 
@@ -95,7 +109,8 @@ const actions = {
       buckets: bucket['children'].map(bucketItem => {
         return {
           id: bucketItem['id'],
-          type: bucketItem['content_type']['value']
+          type: bucketItem['content_type']['value'],
+          starred: bucketItem['starred']
         }
       })
     }, () => {})

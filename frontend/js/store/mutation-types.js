@@ -90,6 +90,7 @@ export const UPDATE_DATATABLE_LOADING = 'updateDatableLoading'
 /* Buckets */
 export const ADD_TO_BUCKET = 'addToBucket'
 export const DELETE_FROM_BUCKET = 'deleteFromBucket'
+export const TOGGLE_FEATURED_IN_BUCKET = 'toggleFeaturedInBucket'
 export const REORDER_BUCKET_LIST = 'reorderBucketList'
 export const UPDATE_BUCKETS_DATASOURCE = 'updateBucketsDataSource'
 export const UPDATE_BUCKETS_DATA = 'updateBucketsData'

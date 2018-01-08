@@ -38,6 +38,7 @@ if (config('cms-toolkit.enabled.buckets')) {
                 Route::put('{bucket}', ['as' => 'add', 'uses' => 'FeaturedController@add']);
                 Route::put('{bucket}/remove', ['as' => 'remove', 'uses' => 'FeaturedController@remove']);
                 Route::put('{bucket}/sortable', ['as' => 'sortable', 'uses' => 'FeaturedController@sortable']);
+                Route::put('{bucket}/feature', ['as' => 'feature', 'uses' => 'FeaturedController@feature']);
             });
 
         });

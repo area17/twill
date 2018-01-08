@@ -73,6 +73,8 @@ class FeaturedController extends Controller
                 'max' => $bucket['max_items'],
                 'addUrl' => route("admin.$routePrefix.$featuredSectionKey.add", ['bucket' => $bucketKey]),
                 'removeUrl' => route("admin.$routePrefix.$featuredSectionKey.remove", ['bucket' => $bucketKey]),
+                'withToggleFeatured' => $bucket['with_starred_items'] ?? false,
+                'toggleFeaturedUrl' => route("admin.$routePrefix.$featuredSectionKey.feature", ['bucket' => $bucketKey]),
                 'reorderUrl' => route("admin.$routePrefix.$featuredSectionKey.sortable", ['bucket' => $bucketKey]),
                 'children' => Feature::where('bucket_key', $bucketKey)->with('featured')->get()->map(function ($feature) {
                     $item = $feature->featured;
@@ -80,6 +82,7 @@ class FeaturedController extends Controller
                         'id' => $item->id,
                         'name' => $item->titleInBucket ?? $item->title,
                         'edit' => $item->adminEditUrl ?? '',
+                        'starred' => $feature->starred ?? false,
                         'content_type' => [
                             'label' => ucfirst($feature->featured_type),
                             'value' => $feature->featured_type,
@@ -155,6 +158,7 @@ class FeaturedController extends Controller
                 session()->push("buckets." . $bucket['id'], [
                     'id' => $feature['id'],
                     'type' => $feature['content_type']['value'],
+                    'starred' => $feature['starred'] ?? false,
                 ]);
             }
         });
@@ -182,6 +186,21 @@ class FeaturedController extends Controller
         return response()->json();
     }
 
+    public function feature($bucket)
+    {
+        $currentBucket = session()->get("buckets.$bucket");
+
+        collect($currentBucket)->each(function ($bucketItem, $index) use (&$currentBucket) {
+            if ($bucketItem['id'] === request('id') && $bucketItem['type'] === request('type')) {
+                $currentBucket[$index]['starred'] = !($currentBucket[$index]['starred'] ?? false);
+            }
+        });
+
+        session()->put("buckets.$bucket", $currentBucket);
+        $this->save();
+        return response()->json();
+    }
+
     public function sortable($bucket)
     {
         if ($bucket != null && ($values = request('buckets')) && !empty($values)) {
@@ -201,6 +220,7 @@ class FeaturedController extends Controller
                         'featured_type' => $bucketable['type'],
                         'position' => $position + 1,
                         'bucket_key' => $bucketKey,
+                        'starred' => $bucketable['starred'] ?? false,
                     ]);
                 }
             });

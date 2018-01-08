@@ -35,7 +35,7 @@
             </h3>
             <draggable v-if="bucket.children.length > 0" class="buckets__list buckets__draggable" :options="dragOptions" @change="sortBucket($event, index)" :value="bucket.children" :element="'table'" >
               <transition-group name="fade_scale_list" tag='tbody'>
-                <a17-bucket-item v-for="(child, index) in bucket.children" :key="index" :item="child" :restricted="restricted" :draggable="bucket.children.length > 1" :singleBucket="singleBucket" :singleSource="singleSource" :bucket="bucket.id" :buckets="buckets" v-on:add-to-bucket="addToBucket" v-on:remove-from-bucket="deleteFromBucket"></a17-bucket-item>
+                <a17-bucket-item v-for="(child, index) in bucket.children" :key="index" :item="child" :restricted="restricted" :draggable="bucket.children.length > 1" :singleBucket="singleBucket" :singleSource="singleSource" :bucket="bucket.id" :buckets="buckets" v-on:add-to-bucket="addToBucket" v-on:remove-from-bucket="deleteFromBucket" v-on:toggle-featured-in-bucket="toggleFeaturedInBucket" :withToggleFeatured="bucket.withToggleFeatured"></a17-bucket-item>
               </transition-group>
             </draggable>
             <div v-else="" class="buckets__empty">
@@ -198,6 +198,21 @@
         }
 
         this.$store.dispatch('deleteFromBucket', data)
+      },
+      toggleFeaturedInBucket: function (item, bucket) {
+        let bucketIndex = this.buckets.findIndex(b => b.id === bucket)
+        if (bucketIndex === -1) return
+
+        let itemIndex = this.buckets[bucketIndex].children.findIndex(c => c.id === item.id && c.content_type.value === item.content_type.value)
+
+        if (itemIndex === -1) return
+
+        const data = {
+          index: bucketIndex,
+          itemIndex: itemIndex
+        }
+
+        this.$store.dispatch('toggleFeaturedInBucket', data)
       },
       sortBucket: function (evt, index) {
         const data = {

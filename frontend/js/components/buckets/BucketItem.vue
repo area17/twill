@@ -6,6 +6,12 @@
     <td class="buckets__itemThumbnail" v-if="item.thumbnail">
       <img :src="item.thumbnail" :alt="item.name">
     </td>
+    <td class="buckets__itemStarred" v-if="withToggleFeatured" :class="{'buckets__itemStarred--active': item.starred }">
+      <span @click.prevent="toggleFeatured" :data-tooltip-title="item.starred ? 'Unfeature' : 'Feature'" v-tooltip>
+        <span v-svg symbol="star-feature_active"></span>
+        <span v-svg symbol="star-feature"></span>
+      </span>
+    </td>
     <td class="buckets__itemTitle">
       <h4>
         <span v-if="item.edit" class="f--link-underlined--o"><a :href="item.edit" target="_blank">{{ item.name }}</a></span>
@@ -60,6 +66,10 @@
       singleSource: {
         type: Boolean,
         default: false
+      },
+      withToggleFeatured: {
+        type: Boolean,
+        default: false
       }
     },
     mixins: [bucketMixin],
@@ -101,6 +111,9 @@
     methods: {
       removeFromBucket: function (bucketId = this.bucket) {
         this.$emit('remove-from-bucket', this.item, bucketId)
+      },
+      toggleFeatured: function () {
+        this.$emit('toggle-featured-in-bucket', this.item, this.bucket)
       },
       selectedBuckets: function () {
         let selected = []
@@ -190,5 +203,45 @@
     margin-right:auto;
     transition: background 250ms ease;
     @include dragGrid($color__drag, $color__drag_bg);
+  }
+
+  .buckets__itemStarred {
+    display:block;
+    cursor:pointer;
+    position:relative;
+    top:2px;
+
+    .icon {
+      color:$color__icons;
+      display:block;
+      top: -2px;
+      position: relative;
+    }
+
+    .icon--star-feature_active {
+      color:$color__error;
+    }
+
+    .icon--star-feature {
+      display:block;
+    }
+
+    .icon--star-feature_active {
+      display:none;
+    }
+  }
+
+  .buckets__itemStarred--active {
+    .icon svg {
+      fill: $color__red;
+    }
+
+    .icon--star-feature {
+      display:none;
+    }
+
+    .icon--star-feature_active {
+      display:block;
+    }
   }
 </style>

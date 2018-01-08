@@ -5,7 +5,7 @@ export default {
 
   get: function (params, callback) {
     axios.get(getURLWithoutQuery(), {params: params}).then(function (resp) {
-      callback(resp.data)
+      if (callback && typeof callback === 'function') callback(resp.data)
     }, function (resp) {
       // error callback
     })
@@ -13,7 +13,15 @@ export default {
 
   add: function (endpoint, params, callback) {
     axios.put(endpoint, params).then(function (resp) {
-      callback()
+      if (callback && typeof callback === 'function') callback()
+    }, function (resp) {
+      // error callback
+    })
+  },
+
+  toggleFeatured (endpoint, params, callback) {
+    axios.put(endpoint, params).then(function (resp) {
+      if (callback && typeof callback === 'function') callback()
     }, function (resp) {
       // error callback
     })
@@ -21,7 +29,7 @@ export default {
 
   reorder (endpoint, params, callback) {
     axios.put(endpoint, params).then(function (resp) {
-      callback()
+      if (callback && typeof callback === 'function') callback()
     }, function (resp) {
       // error callback
     })
@@ -29,15 +37,7 @@ export default {
 
   delete (endpoint, params, callback) {
     axios.put(endpoint, params).then(function (resp) {
-      callback()
-    }, function (resp) {
-      // error callback
-    })
-  },
-
-  replace (endpoint, params, callback) {
-    axios.get(endpoint, params).then(function (resp) {
-      callback()
+      if (callback && typeof callback === 'function') callback()
     }, function (resp) {
       // error callback
     })
