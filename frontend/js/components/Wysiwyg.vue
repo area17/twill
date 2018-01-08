@@ -115,6 +115,12 @@
       icons['italic'] = self.getIcon('italic')
       icons['underline'] = self.getIcon('underline')
       icons['link'] = self.getIcon('link')
+      icons['header']['1'] = self.getIcon('header')
+      icons['header']['2'] = self.getIcon('header-2')
+      icons['header']['3'] = self.getIcon('header-3')
+      icons['header']['4'] = self.getIcon('header-4')
+      icons['header']['5'] = self.getIcon('header-5')
+      icons['header']['6'] = self.getIcon('header-6')
 
       // init Quill
       this.quill = new Quill(self.$refs.editor, self.options)
@@ -201,6 +207,32 @@
       }
     }
 
+    .ql-snow .ql-editor {
+      h1, h2, h3, h4, h5 {
+        font-weight:700;
+      }
+
+      p, ul, h1, h2, h3, h4, h5 {
+        margin-bottom:1em;
+      }
+    }
+
+    .ql-snow .ql-editor h1 {
+      font-size: 2em;
+    }
+
+    .ql-snow .ql-editor h2 {
+      font-size: 1.66em;
+    }
+
+    .ql-snow .ql-editor h3 {
+      font-size: 1.33em;
+    }
+
+    .ql-snow .ql-editor h4 {
+      font-size: 1.25em;
+    }
+
     .ql-toolbar.ql-snow {
       border-color:$color__fborder;
       border-bottom-color:$color__border--light;
@@ -236,6 +268,8 @@
     }
 
     .ql-snow.ql-toolbar {
+      padding: 10px 8px;
+
       button {
         width: 24px;
         margin-right: 35px - 6px - 6px - 6px - 6px;
@@ -253,6 +287,10 @@
       .icon {
         position:relative;
       }
+    }
+
+    .ql-snow.ql-toolbar .ql-formats {
+      border-right:1px solid $color__border--light;
     }
 
     .ql-snow.ql-toolbar,
