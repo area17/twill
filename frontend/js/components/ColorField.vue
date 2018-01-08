@@ -108,10 +108,14 @@
   .form__field--colorBtn {
     cursor:pointer;
     display: block;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
+    margin-right:-10px;
+    width: 33px;
+    height: 33px;
+    border-radius: $border-radius;
     transition: background 250ms;
-    box-shadow: 0 0 6px rgba(0, 0, 0, .5);
+    border:1px solid rgba(0, 0, 0, .10);
+    box-sizing: border-box;
+    overflow: hidden;
+    background-clip: padding-box;
   }
 </style>
