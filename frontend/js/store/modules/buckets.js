@@ -113,12 +113,6 @@ const actions = {
           starred: bucketItem['starred']
         }
       })
-    }, () => {})
-  },
-  overrideBucket ({commit}, data) {
-    bucketsAPI.replace(data, () => {
-      commit(types.DELETE_FROM_BUCKET, data.del)
-      commit(types.ADD_TO_BUCKET, data.add)
     })
   }
 }

@@ -224,7 +224,7 @@ class FeaturedController extends Controller
                     ]);
                 }
             });
-        });
+        }, 5);
         \Event::fire('buckets.saved');
     }
 

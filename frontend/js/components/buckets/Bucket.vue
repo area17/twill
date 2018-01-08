@@ -158,11 +158,16 @@
           item: item
         }
 
+        let deletedItems = false
+
         // Remove item from each bucket if option restricted to one bucket is active
         if (self.restricted) {
           self.buckets.forEach(function (bucket) {
             bucket.children.forEach(function (child) {
-              if (child.id === item.id && child.content_type.value === item.content_type.value) self.deleteFromBucket(item, bucket.id)
+              if (child.id === item.id && child.content_type.value === item.content_type.value) {
+                self.deleteFromBucket(item, bucket.id)
+                deletedItems = true
+              }
             })
           })
         }
@@ -172,13 +177,22 @@
 
         if (count > -1 && count < self.buckets[index].max) {
           // Commit before dispatch to prevent ui visual effect timeout
-          self.$store.dispatch('addToBucket', data)
-        } else if (self.overridableMax || self.overrideItem) {
-          const opts = {
-            add: data,
-            del: {index: index, itemIndex: 0}
+          self.$store.commit('addToBucket', data)
+          if (deletedItems) {
+            setTimeout(() => {
+              self.$store.dispatch('addToBucket', data)
+            }, 1000)
+          } else {
+            self.$store.dispatch('addToBucket', data)
           }
-          self.$store.dispatch('overrideBucket', opts)
+        } else if (self.overridableMax || self.overrideItem) {
+          self.$store.dispatch('deleteFromBucket', {index: index, itemIndex: 0})
+
+          setTimeout(() => {
+            self.$store.commit('addToBucket', data)
+            self.$store.dispatch('addToBucket', data)
+          }, 1000)
+
           self.overrideItem = false
         } else {
           self.$refs.overrideBucket.open()
