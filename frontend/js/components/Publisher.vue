@@ -1,6 +1,5 @@
 <template>
-  <div class="publisher">
-    <div class="publisher__wrapper">
+  <div class="publisher__wrapper">
       <a17-switcher title="Status" name="publish_state" v-if="withPublicationToggle" :textEnabled="textEnabled" :textDisabled="textDisabled"></a17-switcher>
       <a17-reviewaccordion  v-if="reviewProcess && reviewProcess.length" :options="reviewProcess" name="review_process" :value="reviewProcessCompleteValues" :open="openStates['A17Reviewaccordion']" @open="openCloseAccordion">Review status</a17-reviewaccordion>
       <a17-radioaccordion  v-if="visibility && visibilityOptions && visibilityOptions.length" :radios="visibilityOptions" name="visibility" :value="visibility" :open="openStates['A17Radioaccordion']" @open="openCloseAccordion" @change="updateVisibility">Visibility</a17-radioaccordion>
@@ -13,12 +12,10 @@
       <div class="publisher__item publisher__item--btns">
         <a17-multibutton :options="submitOptions" type="submit"></a17-multibutton>
       </div>
-    </div>
-    <!-- <div class="publisher__trash">
-      <a href="#" @click.prevent="openMoveToTrashModal" class="f--small f--note f--underlined">Move to Trash</a>
-    </div> -->
   </div>
-
+  <!-- <div class="publisher__trash">
+    <a href="#" @click.prevent="openMoveToTrashModal" class="f--small f--note f--underlined">Move to Trash</a>
+  </div> -->
 </template>
 
 <script>

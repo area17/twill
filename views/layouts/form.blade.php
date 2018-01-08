@@ -30,7 +30,7 @@
             <div class="container">
                 <div class="wrapper wrapper--reverse" v-sticky data-sticky-id="publisher" data-sticky-offset="80">
                     <aside class="col col--aside">
-                        <div data-sticky-target="publisher">
+                        <div class="publisher" data-sticky-target="publisher">
                             <a17-publisher></a17-publisher>
                             <a17-page-nav placeholder="Go to page" previousUrl="/templates/form" nextUrl="/templates/form"></a17-page-nav>
                         </div>
