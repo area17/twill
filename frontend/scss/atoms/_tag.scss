@@ -42,6 +42,10 @@ The little tag
   background:$color__tag--disabled;
 }
 
+.tag--enabled {
+  background:$color__tag;
+}
+
 .tag--ok {
   background:$color__ok;
 }
