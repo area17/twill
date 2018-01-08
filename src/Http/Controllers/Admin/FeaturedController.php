@@ -78,17 +78,20 @@ class FeaturedController extends Controller
                 'toggleFeaturedUrl' => route("admin.$routePrefix.$featuredSectionKey.feature", ['bucket' => $bucketKey]),
                 'reorderUrl' => route("admin.$routePrefix.$featuredSectionKey.sortable", ['bucket' => $bucketKey]),
                 'children' => Feature::where('bucket_key', $bucketKey)->with('featured')->get()->map(function ($feature) {
-                    $item = $feature->featured;
-                    return [
-                        'id' => $item->id,
-                        'name' => $item->titleInBucket ?? $item->title,
-                        'edit' => $item->adminEditUrl ?? '',
-                        'starred' => $feature->starred ?? false,
-                        'content_type' => [
-                            'label' => ucfirst($feature->featured_type),
-                            'value' => $feature->featured_type,
-                        ],
-                    ];
+                    if (($item = $feature->featured) != null) {
+                        return [
+                            'id' => $item->id,
+                            'name' => $item->titleInBucket ?? $item->title,
+                            'edit' => $item->adminEditUrl ?? '',
+                            'starred' => $feature->starred ?? false,
+                            'content_type' => [
+                                'label' => ucfirst($feature->featured_type),
+                                'value' => $feature->featured_type,
+                            ],
+                        ];
+                    }
+                })->reject(function ($item) {
+                    return is_null($item);
                 })->toArray(),
             ];
         })->values()->toArray();
@@ -233,5 +236,4 @@ class FeaturedController extends Controller
     {
         return app(config('cms-toolkit.namespace') . "\Repositories\\" . ucfirst(str_singular($bucketable)) . "Repository");
     }
-
 }
