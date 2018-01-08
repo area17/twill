@@ -13,7 +13,7 @@
     <a17-singleselect
         label="{{ $label }}"
         @include('cms-toolkit::partials.form.utils._field_name')
-        :options="{{ json_encode($options) }}"
+        :options='{!! json_encode($options) !!}'
         @if ($default) selected="{{ $default }}" @endif
         :has-default-store="true"
         in-store="value"
@@ -22,18 +22,18 @@
     <a17-select
         label="{{ $label }}"
         @include('cms-toolkit::partials.form.utils._field_name')
-        :options="{{ json_encode($options) }}"
+        :options='{!! json_encode($options) !!}'
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
         @if ($default) selected="{{ $default }}" @endif
         :has-default-store="true"
         size="large"
         in-store="value"
-    ></a17-vselect>
+    ></a17-select>
 @else
     <a17-vselect
         label="{{ $label }}"
         @include('cms-toolkit::partials.form.utils._field_name')
-        :options="{{ json_encode($options) }}"
+        :options='{!! json_encode($options) !!}'
         @if ($emptyText ?? false) empty-text="{{ $emptyText }}" @endif
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
         @if ($default) :selected="{{ json_encode(collect($options)->first(function ($option) use ($default) {
