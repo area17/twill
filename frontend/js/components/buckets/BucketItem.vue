@@ -139,7 +139,7 @@
         let selected = self.selectedBuckets()
 
         if (self.restricted) { // when restricted : value is coming from a radio group
-          let index = parseInt(value.split(pattern)[1])
+          let index = value.split(pattern)[1]
           if (!self.inBucketById(index)) {
             self.$refs.bucketDropdown.toggle()
             self.addToBucket(index)
@@ -149,7 +149,7 @@
 
         selected.forEach(function (select) {
           if (value.indexOf(select) === -1) {
-            let index = parseInt(select.split(pattern)[1])
+            let index = select.split(pattern)[1]
             self.$refs.bucketDropdown.toggle()
             self.removeFromBucket(index)
           }
@@ -157,7 +157,7 @@
 
         if (Array.isArray(value)) { // when no restricted : values are coming from checkboxes as an array
           value.forEach(function (val) {
-            let index = parseInt(val.split(pattern)[1])
+            let index = val.split(pattern)[1]
             if (!self.inBucketById(index)) {
               self.$refs.bucketDropdown.toggle()
               self.addToBucket(index)
