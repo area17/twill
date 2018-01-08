@@ -1,6 +1,6 @@
 <template>
   <span>
-    <a v-for="language in languages" :key="language.value" :href="editWithLanguage(language)" class="tag tag--rounded tag--disabled" :class="{ 'tag--ok' : language.published }">{{ language.shortlabel }}</a>
+    <a v-for="language in languages" :key="language.value" :href="editWithLanguage(language)" class="tag tag--disabled" :class="{ 'tag--enabled' : language.published }">{{ language.shortlabel }}</a>
   </span>
 </template>
 
