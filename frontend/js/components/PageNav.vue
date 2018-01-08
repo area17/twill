@@ -7,8 +7,11 @@
       </div>
     </div>
     <nav class="pagenav__nav">
-      <a href="#" class="pagenav__btn">← Previous page</a>
-      <a href="#" class="pagenav__btn">Next page →</a>
+      <a :href="previousUrl" class="pagenav__btn" v-if="previousUrl">← {{ previousLabel }}</a>
+      <span v-else class="pagenav__btn">← {{ previousLabel }}</span>
+
+      <a :href="nextUrl" class="pagenav__btn" v-if="nextUrl">{{ nextLabel }} →</a>
+      <span v-else class="pagenav__btn">{{ nextLabel }} →</span>
     </nav>
   </div>
 
@@ -30,9 +33,21 @@
   export default {
     name: 'A17PageNav',
     props: {
-      disabled: {
-        type: Boolean,
-        default: false
+      previousLabel: {
+        type: String,
+        default: 'Previous page'
+      },
+      nextLabel: {
+        type: String,
+        default: 'Next page'
+      },
+      previousUrl: {
+        type: String,
+        default: ''
+      },
+      nextUrl: {
+        type: String,
+        default: ''
       },
       placeholder: {
         type: String,
@@ -81,13 +96,15 @@
     text-decoration:none;
     color:$color__text--light;
 
+    &:last-child {
+      border-right:0 none;
+    }
+  }
+
+  a.pagenav__btn {
     &:hover {
       color:$color__text;
       background:$color__ultralight;
-    }
-
-    &:last-child {
-      border-right:0 none;
     }
   }
 

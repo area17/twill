@@ -32,7 +32,7 @@
                     <aside class="col col--aside">
                         <div data-sticky-target="publisher">
                             <a17-publisher></a17-publisher>
-                            <a17-page-nav placeholder="Go to page"></a17-page-nav>
+                            <a17-page-nav placeholder="Go to page" previousUrl="/templates/form" nextUrl="/templates/form"></a17-page-nav>
                         </div>
                     </aside>
                     <section class="col col--primary">
