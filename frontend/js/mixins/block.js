@@ -3,9 +3,16 @@ export default {
     name: {
       type: String,
       required: true
+    },
+    opened: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
+    open: function () {
+      this.opened = true
+    },
     fieldName: function (id) {
       return this.name + '[' + id + ']' // output : nameOfBlock[UniqID][name]
     },
