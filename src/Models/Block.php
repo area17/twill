@@ -44,6 +44,6 @@ class Block extends BaseModel
 
     public function browserIds($name)
     {
-        return $this->content['browsers'] ? $this->content['browsers'][$name] : [];
+        return isset($this->content['browsers']) ? ($this->content['browsers'][$name] ?? []) : [];
     }
 }
