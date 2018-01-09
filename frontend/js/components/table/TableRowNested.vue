@@ -3,7 +3,7 @@
     <td :colspan="tdWidth">
       <table class="nested__table nested__table--parent">
         <template v-if="draggable">
-          <draggable :element="'tbody'" v-model="rows" :options="draggableOptions" class="nested__dragArea" @start="startDrag" @end="endDrag">
+          <draggable :element="'tbody'" v-model="rows" :options="draggableOptions" class="nested__dropArea">
             <template v-for="(row, index) in rows">
               <tr class="nested">
                 <td :colspan="tdWidth">
@@ -40,7 +40,6 @@
   import A17TableRow from './TableRow'
   import draggableMixin from '@/mixins/draggable'
   import draggable from 'vuedraggable'
-  import { EventBus, Events } from '@/utils/event-bus'
 
   export default {
     name: 'a17-tablerow-nested',
@@ -100,10 +99,6 @@
         // 2 come from the two last td in a17-tablerow component
         return this.columns.length + 2
       }
-    },
-    methods: {
-      startDrag () { EventBus.$emit(Events.drag.start) },
-      endDrag () { EventBus.$emit(Events.drag.end) }
     }
   }
 </script>
@@ -128,16 +123,25 @@
     width: 100%;
   }
 
-  .nested__dragArea {
+  .nested__dropArea {
     display: table;
     position: relative;
     width: 100%;
-    min-height: 0px;
-    background-color: $color__background;
-    transition: min-height 250ms ease, background-color 250ms ease;
-    &.active {
-      min-height: 20px;
-      background-color: $color__drag_bg;
+
+    // Drop zone
+    &::after {
+      margin-top: -1px;
+      position: relative;
+      left: -240px;
+      display: block;
+      content: '';
+      width: calc(100% + 240px);
+      background-color: $color__f--bg;
+      // border-top:1px solid $color__border--light;
+      border-bottom:1px solid $color__border--light;
+      height: 20px;
+      bottom: 0;
+      z-index: 0;
     }
   }
 

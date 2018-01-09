@@ -2,7 +2,7 @@
   <div class="datatable" v-sticky data-sticky-id="thead" data-sticky-offset="0">
 
     <!-- Sticky table head -->
-    <div class="datatable__sticky" data-sticky-top="thead">
+    <div class="datatable__sticky" data-sticky-top="thead" v-if="!nested">
       <div class="datatable__stickyHead" data-sticky-target="thead">
         <div class="container">
           <div class="datatable__stickyInner">
@@ -34,7 +34,7 @@
             <a17-tablehead :columns="visibleColumns" ref="thead"></a17-tablehead>
           </thead>
           <template v-if="draggable">
-            <draggable class="datatable__drag" :element="'tbody'" v-model="rows" :options="draggableOptions" @start="startDrag" @end="endDrag">
+            <draggable class="datatable__drag" :element="'tbody'" v-model="rows" :options="draggableOptions">
               <template v-for="(row, index) in rows">
                 <a17-tablerow v-if="!nested" :row="row" :index="index" :columns="visibleColumns" :key="row.id"></a17-tablerow>
                 <template v-else>
@@ -98,8 +98,6 @@
   import a17TableRowNested from './TableRowNested.vue'
   import a17Paginate from './Paginate.vue'
   import a17Spinner from '@/components/Spinner.vue'
-
-  import {EventBus, Events} from '@/utils/event-bus'
 
   export default {
     name: 'A17Datatable',
@@ -228,18 +226,10 @@
         let self = this
         window.addEventListener('resize', () => self.resize())
         self.resize()
-        if (self.draggable) {
-          EventBus.$on(Events.drag.start, self.startDrag)
-          EventBus.$on(Events.drag.end, self.endDrag)
-        }
       },
       disposeEvents: function () {
         let self = this
         window.removeEventListener('resize', self.resize())
-        if (self.draggable) {
-          EventBus.$off(Events.drag.start, self.startDrag)
-          EventBus.$off(Events.drag.end, self.endDrag)
-        }
       },
       updateSort: function (column) {
         if (!column.sortable) return
@@ -278,13 +268,6 @@
 
         // reload datas
         this.$store.dispatch('getDatatableDatas')
-      },
-      startDrag () {
-        this.dragAreas = document.querySelectorAll('.nested__dragArea')
-        this.dragAreas.forEach((el) => { el.classList.add('active') })
-      },
-      endDrag () {
-        this.dragAreas.forEach((el) => { el.classList.remove('active') })
       }
     },
     watch: {
@@ -345,10 +328,10 @@
       }
     },
     mounted: function () {
-      this.initEvents()
+      if (!this.nested) this.initEvents()
     },
     beforeDestroy: function () {
-      this.disposeEvents()
+      if (!this.nested) this.disposeEvents()
     }
   }
 </script>
