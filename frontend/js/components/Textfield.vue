@@ -163,6 +163,9 @@
       }
     },
     methods: {
+      updateFromStore: function (newValue) { // called from the formStore mixin
+        this.updateValue(newValue)
+      },
       updateValue: function (newValue) {
         this.value = newValue
         this.updateCounter(newValue)

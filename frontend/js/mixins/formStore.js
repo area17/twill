@@ -29,12 +29,13 @@ export default {
   },
   watch: {
     storedValue: function (fieldInstore) {
-      if (!fieldInstore) return
-
       const currentValue = this[this.inStore]
       const newValue = (this.locale) ? fieldInstore[this.locale.value] : fieldInstore
 
-      if (currentValue !== newValue) this.updateValue(newValue)
+      // new value detected, let's update the UI (updateFromStore method need to be present into the component so the value is properly updated)
+      if (currentValue !== newValue) {
+        if (typeof this.updateFromStore !== 'undefined') this.updateFromStore(newValue)
+      }
     }
   },
   methods: {
