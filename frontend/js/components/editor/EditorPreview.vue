@@ -6,9 +6,9 @@
     <draggable class="editorPreview__content" v-model="blocks" :options="{ group: 'editorBlocks', handle: handle }" @add="onAdd" @update="onUpdate">
       <div class="editorPreview__item" :class="{ 'editorPreview__item--active' : isBlockActive(block.id) }" v-for="(block, index) in blocks" :key="block.id" >
         <div class="editorPreview__frame" tabindex="0" @click="selectBlock(index)">
-          <div class="">{{ block.title }}</div>
-          <iframe srcdoc="Preview HTML content goes here" @load=""></iframe>
+          <iframe :srcdoc="block.title + ' <br /> Preview of the block in the iframe will be retrieved from the back-end at some point'" @load=""></iframe>
         </div>
+        <div class="editorPreview__protector" @click="selectBlock(index)"></div>
         <a17-buttonbar class="editorPreview__actions">
           <button type="button" @click="selectBlock(index)">Edit</button>
           <button type="button" class="editorPreview__handle">Drag</button>
@@ -165,6 +165,15 @@
   }
 
   .editorPreview__frame {
+    cursor:pointer;
+  }
+
+  .editorPreview__protector {
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    bottom:0;
     cursor:pointer;
   }
 
