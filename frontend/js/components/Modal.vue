@@ -82,6 +82,10 @@
 
         this.$emit('open')
       },
+      mask: function () {
+        const html = document.documentElement
+        html.classList.remove(htmlClass)
+      },
       hide: function () {
         if (!this.active) return
 
@@ -93,20 +97,15 @@
         const html = document.documentElement
 
         this.hidden = true
-
-        html.classList.remove(htmlClass)
+        this.mask()
       },
       close: function (onClose) {
         if (!this.active) return
 
-        const html = document.documentElement
-
         this.active = false
-
-        html.classList.remove(htmlClass)
+        this.mask()
 
         window.removeEventListener('keyup', this.keyPressed)
-
         this.$emit('close')
       },
       keyPressed: function (event) {

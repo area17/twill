@@ -1,23 +1,21 @@
 <template>
   <div class="editorPreview">
-    <draggable class="editorPreview__content" v-model="blocks" :options="dragOptions" v-if="blocks.length">
-      <transition-group name="draggable_list" tag='div'>
-        <div class="editorPreview__item" :class="{ 'editorPreview__item--active' : isBlockActive(block.id) }" v-for="(block, index) in blocks" :key="block.id" >
-          <div class="editorPreview__frame" tabindex="0" @click="selectBlock(index)">
-            <div class="">{{ block.title }}</div>
-            <iframe srcdoc="Preview HTML content goes here" @load=""></iframe>
-          </div>
-          <div class="editorPreview__actions">
-            <button type="button" @click="selectBlock(index)">Edit</button>
-            <button type="button" class="editorPreview__handle">Drag</button>
-            <button type="button" @click="deleteBlock(index)">Delete</button>
-          </div>
-        </div>
-      </transition-group>
-    </draggable>
-    <div class="editorPreview__empty" v-else>
+    <div class="editorPreview__empty" v-if="!blocks.length">
       <b>Add content</b>
     </div>
+    <draggable class="editorPreview__content" v-model="blocks" :options="{ group: 'editorBlocks', handle: handle }" @add="onAdd" @update="onUpdate">
+      <div class="editorPreview__item" :class="{ 'editorPreview__item--active' : isBlockActive(block.id) }" v-for="(block, index) in blocks" :key="block.id" >
+        <div class="editorPreview__frame" tabindex="0" @click="selectBlock(index)">
+          <div class="">{{ block.title }}</div>
+          <iframe srcdoc="Preview HTML content goes here" @load=""></iframe>
+        </div>
+        <a17-buttonbar class="editorPreview__actions">
+          <button type="button" @click="selectBlock(index)">Edit</button>
+          <button type="button" class="editorPreview__handle">Drag</button>
+          <button type="button" @click="deleteBlock(index)">Delete</button>
+        </a17-buttonbar>
+      </div>
+    </draggable>
   </div>
 </template>
 
@@ -44,7 +42,6 @@
           return this.savedBlocks
         },
         set (value) {
-          this.$store.commit('reorderBlocks', value)
         }
       },
       hasBlockActive: function () {
@@ -56,10 +53,39 @@
       })
     },
     methods: {
+      onAdd: function (evt) {
+        const item = evt.item
+        const block = {}
+
+        block.title = item.getAttribute('data-title')
+        block.component = item.getAttribute('data-component')
+        block.icon = item.getAttribute('data-icon')
+
+        this.addBlock(block, evt.newIndex - 1)
+      },
+      onUpdate: function (evt) {
+        this.$store.commit('moveBlock', {
+          oldIndex: evt.oldIndex,
+          newIndex: evt.newIndex
+        })
+      },
       isBlockActive: function (id) {
         if (!this.hasBlockActive) return false
 
         return id === this.activeBlock.id
+      },
+      addBlock: function (block, fromIndex) {
+        let newBlock = {
+          title: block.title,
+          type: block.component,
+          icon: block.icon,
+          attributes: block.attributes
+        }
+
+        this.$store.commit('addBlock', {
+          block: newBlock,
+          index: fromIndex
+        })
       },
       deleteBlock: function (index) {
         this.unselectBlock()

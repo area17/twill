@@ -24,6 +24,15 @@ const mutations = {
       state.blocks.push(block) // or add a new block at the end of the list
     }
   },
+  [types.MOVE_BLOCK] (state, fromTo) {
+    if (fromTo.newIndex >= state.blocks.length) {
+      var k = fromTo.newIndex - state.blocks.length
+      while ((k--) + 1) {
+        state.blocks.push(undefined)
+      }
+    }
+    state.blocks.splice(fromTo.newIndex, 0, state.blocks.splice(fromTo.oldIndex, 1)[0])
+  },
   [types.DELETE_BLOCK] (state, index) {
     state.blocks.splice(index, 1)
   },

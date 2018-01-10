@@ -38,17 +38,20 @@ const mutations = {
     }
   },
   [types.UPDATE_FORM_FIELD] (state, field) {
-    const fieldToUpdate = state.fields.filter(function (f) {
+    const fieldIndex = state.fields.findIndex(function (f) {
       return f.name === field.name
     })
 
     // Update existing form field
-    if (fieldToUpdate.length) {
+    if (fieldIndex !== -1) {
       if (field.locale) {
-        Vue.set(fieldToUpdate[0].value, field.locale, field.value)
+        Vue.set(state.fields[fieldIndex].value, field.locale, field.value)
       } else {
-        fieldToUpdate[0].value = field.value
+        Vue.set(state.fields[fieldIndex], 'value', field.value) // value = field.value
       }
+      // const fieldToRefresh = state.fields[fieldIndex].value
+      // state.fields[fieldIndex].value = null
+      // state.fields[fieldIndex].value = fieldToRefresh
     } else {
       // Or Create a new form field
       if (field.locale) {

@@ -57,6 +57,7 @@ export const UPDATE_REV_CURRENT_CONTENT = 'updatePreviewContent'
 
 /* content */
 export const ADD_BLOCK = 'addBlock'
+export const MOVE_BLOCK = 'moveBlock'
 export const DELETE_BLOCK = 'deleteBlock'
 export const DUPLICATE_BLOCK = 'duplicateBlock'
 export const REORDER_BLOCKS = 'reorderBlocks'

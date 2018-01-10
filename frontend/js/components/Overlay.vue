@@ -1,12 +1,12 @@
 <template>
-  <div class="overlay" :class="overlayClasses" @mousedown="close" @touchstart="close">
+  <div class="overlay" :class="overlayClasses" @mousedown="hide" @touchstart="hide">
     <div class="overlay__window" @mousedown.stop @touchstart.stop>
       <header class="overlay__header" v-if="overlayTitle">
         {{ overlayTitle }}
-        <button class="overlay__close" type="button" @click="close"><span v-svg symbol="close_modal"></span><span class="overlay__closeLabel">Close</span></button>
+        <button class="overlay__close" type="button" @click="hide"><span v-svg symbol="close_modal"></span><span class="overlay__closeLabel">Close</span></button>
       </header>
-      <div class="overlay__content">
-        <slot v-if="active"></slot>
+      <div class="overlay__content" v-if="active" v-show="!hidden">
+        <slot></slot><!--  v-if="active" -->
       </div>
     </div>
   </div>
@@ -35,7 +35,8 @@
     },
     data: function () {
       return {
-        active: false
+        active: false,
+        hidden: true
       }
     },
     computed: {
@@ -47,7 +48,8 @@
       },
       overlayClasses: function () {
         return {
-          'overlay--active': this.active
+          'overlay--active': this.active,
+          'overlay--hidden': this.hidden
         }
       },
       ...mapState({
@@ -56,11 +58,14 @@
     },
     methods: {
       open: function (onShow) {
-        if (this.active) return
+        if (this.active && !this.hidden) {
+          return
+        }
 
         const html = document.documentElement
 
         this.active = true
+        this.hidden = false
 
         html.classList.add(htmlClass)
 
@@ -68,22 +73,28 @@
 
         this.$emit('open')
       },
+      mask: function () {
+        const html = document.documentElement
+        html.classList.remove(htmlClass)
+      },
+      hide: function () {
+        if (!this.active) return
+
+        this.hidden = true
+        this.mask()
+      },
       close: function (onClose) {
         if (!this.active) return
 
-        const html = document.documentElement
-
         this.active = false
-
-        html.classList.remove(htmlClass)
+        this.mask()
 
         window.removeEventListener('keyup', this.keyPressed)
-
         this.$emit('close')
       },
       keyPressed: function (event) {
         if (event.which === 27 || event.keyCode === 27) {
-          this.close()
+          this.hide()
           this.$emit('esc-key')
         }
       }
@@ -188,6 +199,10 @@
     opacity: 1;
     visibility: visible;
     transition: opacity 0.35s;
+  }
+
+  .overlay--hidden {
+    display: none;
   }
 
 </style>
