@@ -139,7 +139,7 @@
       background-color: $color__f--bg;
       // border-top:1px solid $color__border--light;
       border-bottom:1px solid $color__border--light;
-      height: 20px;
+      height: 10px;
       bottom: 0;
       z-index: 0;
     }

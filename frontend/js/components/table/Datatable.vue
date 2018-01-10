@@ -2,11 +2,11 @@
   <div class="datatable" v-sticky data-sticky-id="thead" data-sticky-offset="0">
 
     <!-- Sticky table head -->
-    <div class="datatable__sticky" data-sticky-top="thead" v-if="!nested">
+    <div class="datatable__sticky" data-sticky-top="thead">
       <div class="datatable__stickyHead" data-sticky-target="thead">
         <div class="container">
           <div class="datatable__stickyInner">
-            <div class="datatable__setup">
+            <div class="datatable__setup" v-if="!nested">
               <a17-dropdown class="datatable__setupDropdown" v-if="hideableColumns.length" ref="setupDropdown" position="bottom-right" title="Show" :clickable="true" :offset="-10">
                 <button class="datatable__setupButton" @click="$refs.setupDropdown.toggle()"><span v-svg symbol="preferences"></span></button>
                 <div slot="dropdown__content">
@@ -17,7 +17,7 @@
             <div class="datatable__stickyTable">
               <a17-table :columnsWidth="columnsWidth" :xScroll="xScroll" @scroll="updateScroll">
                 <thead>
-                  <a17-tablehead :columns="visibleColumns" @sortColumn="updateSort"></a17-tablehead>
+                  <a17-tablehead :columns="visibleColumns" @sortColumn="updateSort" :sortable="!nested"></a17-tablehead>
                 </thead>
               </a17-table>
             </div>
@@ -31,7 +31,7 @@
       <div class="datatable__table" :class="isEmptyDatable">
         <a17-table :xScroll="xScroll" @scroll="updateScroll">
           <thead>
-            <a17-tablehead :columns="visibleColumns" ref="thead"></a17-tablehead>
+            <a17-tablehead :columns="visibleColumns" ref="thead" :sortable="!nested"></a17-tablehead>
           </thead>
           <template v-if="draggable">
             <draggable class="datatable__drag" :element="'tbody'" v-model="rows" :options="draggableOptions">
@@ -204,14 +204,18 @@
       getColumnWidth: function () {
         let self = this
         let newColumnsWidth = []
+        let tds = []
 
-        if (self.$refs.thead) {
-          // Get all the tds width (there must be a better way to do this) :
-          const tds = self.$refs.thead.$el.children
+        // Get all the tds width (not working in nested because the table structure is much more complex)
+        if (!self.nested && self.$refs.thead) tds = self.$refs.thead.$el.children
+        else {
+          // with the nested we are looking at the first tablerow tr to get the width of cells
+          const firstTR = self.$el.querySelector('.table tr.tablerow')
+          if (firstTR) tds = firstTR.children
+        }
 
-          for (let index = 0; index < tds.length; index++) {
-            newColumnsWidth.push(tds[index].offsetWidth)
-          }
+        for (let index = 0; index < tds.length; index++) {
+          newColumnsWidth.push(tds[index].offsetWidth)
         }
 
         self.columnsWidth = newColumnsWidth
@@ -278,60 +282,73 @@
       }
     },
     beforeMount: function () {
-      // bulk edit column
-      const bulkColumn = {
-        name: 'bulk',
-        label: '',
-        visible: true,
-        optional: false,
-        sortable: false
+      function findBulkColumn (column) {
+        return column.name === 'bulk'
       }
 
+      function findNestedColumn (column) {
+        return column.name === 'nested'
+      }
+
+      function findDraggableColumn (column) {
+        return column.name === 'draggable'
+      }
+
+      // bulk edit column
       if (this.bulkeditable) {
-        this.$store.commit('addDatableColumn', {
-          index: 0,
-          data: bulkColumn
-        })
+        if (!this.columns.find(findBulkColumn)) {
+          this.$store.commit('addDatableColumn', {
+            index: 0,
+            data: {
+              name: 'bulk',
+              label: '',
+              visible: true,
+              optional: false,
+              sortable: false
+            }
+          })
+        }
       }
 
       // Nested Column
-      const nestedColumn = {
-        name: 'nested',
-        label: '',
-        visible: true,
-        optional: false,
-        sortable: false
-      }
-
       if (this.nested) {
-        this.$store.commit('addDatableColumn', {
-          index: 0,
-          data: nestedColumn
-        })
+        if (!this.columns.find(findNestedColumn)) {
+          this.$store.commit('addDatableColumn', {
+            index: 0,
+            data: {
+              name: 'nested',
+              label: '',
+              visible: true,
+              optional: false,
+              sortable: false
+            }
+          })
+        }
       }
 
-      this.reorderable = this.draggable
       // draggable column
-      const draggableColumn = {
-        name: 'draggable',
-        label: '',
-        visible: true,
-        optional: false,
-        sortable: false
-      }
+      this.reorderable = this.draggable
 
       if (this.reorderable) {
-        this.$store.commit('addDatableColumn', {
-          index: 0,
-          data: draggableColumn
-        })
+        if (!this.columns.find(findDraggableColumn)) {
+          this.$store.commit('addDatableColumn', {
+            index: 0,
+            data: {
+              name: 'draggable',
+              label: '',
+              visible: true,
+              optional: false,
+              sortable: false
+            }
+          })
+        }
       }
     },
     mounted: function () {
-      if (!this.nested) this.initEvents()
+      this.initEvents()
     },
     beforeDestroy: function () {
-      if (!this.nested) this.disposeEvents()
+      this.disposeEvents()
     }
   }
 </script>
