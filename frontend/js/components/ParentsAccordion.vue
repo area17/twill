@@ -2,7 +2,9 @@
   <a17-accordion :open="open" @toggleVisibility="notifyOpen">
     <span slot="accordion__title"><slot></slot></span>
     <div slot="accordion__value" v-html="currentLabel"></div>
-    <a17-select name="parent_id" :options="options" :selected="currentValue" size="large" @change="updateSelected"></a17-select>
+    <div class="accordion__fields">
+      <a17-select name="parent_id" :options="options" :selected="currentValue" size="small" @change="updateSelected"></a17-select>
+    </div>
   </a17-accordion>
 </template>
 

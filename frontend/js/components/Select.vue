@@ -218,6 +218,7 @@
     overflow: hidden;
     -webkit-padding-end: 35px !important;
     -webkit-padding-start: 14px !important;
+    margin-top:-1px;
   }
 
   .select__input:hover select {
@@ -227,7 +228,7 @@
   .select__input::after {
     width: 0;
     height: 0;
-    margin-top: -1px;
+    margin-top: -3px;
     border-width: 4px 4px 0;
     border-style: solid;
     border-color: $color__icons transparent transparent;

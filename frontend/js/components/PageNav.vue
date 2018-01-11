@@ -1,5 +1,5 @@
 <template>
-  <div class="pagenav">
+  <div class="pagenav" v-if="parents.length">
     <div class="pagenav__form">
       <a17-vselect name="parents_sources" :placeholder="placeholder" size="large" :searchable="true" :options="options" @change="gotoUrl"></a17-vselect>
     </div>
@@ -11,7 +11,6 @@
       <span v-else class="pagenav__btn">{{ nextLabel }} →</span>
     </nav>
   </div>
-
 </template>
 
 <script>
@@ -48,7 +47,7 @@
     },
     computed: {
       options: function () {
-        return parentTreeToOptions(this.parents, '-')
+        return parentTreeToOptions(this.parents, '–')
       },
       ...mapState({
         parents: state => state.parents.all

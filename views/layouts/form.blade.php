@@ -93,22 +93,23 @@
 
     window.STORE.revisions = {!! json_encode($revisions ?? [])  !!}
 
-    window.STORE.parentId = 2
+{{-- For parent/child functionalities to work nicely in forms --}}
+{{--     window.STORE.parentId = 2
     window.STORE.parents = [
         {
             'id': 1,
-            'name': 'Page 1',
+            'name': 'Logo',
             'edit': '/templates/form',
             'children': [
                 {
                     'id': 2,
-                    'name': 'Sub Page 1 - Introduction',
+                    'name': 'Flag',
                     'edit': '/templates/form',
                     'children': []
                 },
                 {
                     'id': 3,
-                    'name': 'Sub Page 1 - Sub page',
+                    'name': 'Files system',
                     'edit': '/templates/form',
                     'children': []
                 },
@@ -121,12 +122,20 @@
             'children': [
                 {
                     'id': 5,
-                    'name': 'Sub Page 2 - Introduction',
-                    'edit': '/templates/form'
+                    'name': 'Introduction',
+                    'edit': '/templates/form',
+                    'children': [
+                        {
+                            'id': 8,
+                            'name': 'Introduction paragraph',
+                            'edit': '/templates/form',
+                            'children': []
+                        }
+                    ]
                 }
             ]
         }
-    ]
+    ] --}}
 
     window.STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('cms-toolkit.block_editor.crops')) !!}
     window.STORE.medias.selected = {}
