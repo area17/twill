@@ -602,6 +602,7 @@ abstract class ModuleController extends Controller
             'moduleName' => $this->moduleName,
             'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
             'translate' => $this->moduleIsTranslated(),
+            'permalink' => $this->getIndexOption('permalink'),
             'form_fields' => $this->repository->getFormFields($item),
             'baseUrl' => $item->urlWithoutSlug ?? config('app.url') . '/',
             'revisions' => $item->revisions ? $item->revisions->map(function ($revision) {

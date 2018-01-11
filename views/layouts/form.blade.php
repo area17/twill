@@ -3,6 +3,7 @@
 @section('appTypeClass', 'app--form')
 
 @php
+    $permalink = $permalink ?? true;
     $translate = $translate ?? false;
     $translateTitle = $translateTitle ?? $translate ?? false;
 @endphp
@@ -70,7 +71,7 @@
 
     window.STORE.form = {
         title: {!! json_encode($translate ? $item->translatedAttribute($titleFormKey) : $item->$titleFormKey) !!},
-        permalink: '{{ $item->slug ?? '' }}',
+        permalink: '{{ $permalink ? ($item->slug ?? '') : '' }}',
         baseUrl: '{{ $baseUrl }}',
         saveUrl: '{{ $saveUrl }}',
         availableRepeaters: {!! json_encode(config('cms-toolkit.block_editor.repeaters')) !!},
