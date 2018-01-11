@@ -91,7 +91,7 @@
       },
       size: {
         type: String,
-        default: ''
+        default: '' // 'small', 'large'
       },
       required: {
         type: Boolean,

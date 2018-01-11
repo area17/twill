@@ -8,6 +8,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import parentTreeToOptions from '@/utils/parentTreeToOptions.js'
 
   import a17Accordion from '@/components/Accordion.vue'
   import VisibilityMixin from '@/mixins/toggleVisibility'
@@ -35,32 +36,9 @@
         else return ''
       },
       options: function () {
-        const options = []
-        const spacing = '&nbsp;&nbsp;&nbsp;'
-
-        // No parents default value
+        const options = parentTreeToOptions(this.parents, '&nbsp;&nbsp;&nbsp;')
         const noParent = { value: 0, label: '(No parent)' }
-        options.push(noParent)
-
-        function setSpacing (level) {
-          return Array(level + 1).join(spacing) + ''
-        }
-
-        function getOptionsFromArray (parents, level) {
-          parents.forEach(function (parent) {
-            const option = {}
-            option.value = parent.id
-            option.label = setSpacing(level) + parent.name
-            options.push(option)
-
-            if (parent.children && parent.children.length) {
-              const newLevel = level + 1
-              getOptionsFromArray(parent.children, newLevel)
-            }
-          })
-        }
-
-        getOptionsFromArray(this.parents, 0)
+        options.unshift(noParent)
 
         return options
       },

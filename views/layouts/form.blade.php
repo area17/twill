@@ -98,15 +98,18 @@
         {
             'id': 1,
             'name': 'Page 1',
+            'edit': '/templates/form',
             'children': [
                 {
                     'id': 2,
                     'name': 'Sub Page 1 - Introduction',
+                    'edit': '/templates/form',
                     'children': []
                 },
                 {
                     'id': 3,
                     'name': 'Sub Page 1 - Sub page',
+                    'edit': '/templates/form',
                     'children': []
                 },
             ]
@@ -114,10 +117,12 @@
         {
             'id': 4,
             'name': 'Page 2',
+            'edit': '/templates/form',
             'children': [
                 {
                     'id': 5,
-                    'name': 'Sub Page 2 - Introduction'
+                    'name': 'Sub Page 2 - Introduction',
+                    'edit': '/templates/form'
                 }
             ]
         }

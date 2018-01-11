@@ -1,10 +1,7 @@
 <template>
   <div class="pagenav">
     <div class="pagenav__form">
-      <div class="form__field">
-        <input type="search" :placeholder="placeholder" />
-        <button type="button">search</button>
-      </div>
+      <a17-vselect name="parents_sources" :placeholder="placeholder" size="large" :searchable="true" :options="options" @change="gotoUrl"></a17-vselect>
     </div>
     <nav class="pagenav__nav">
       <a :href="previousUrl" class="pagenav__btn" v-if="previousUrl">← {{ previousLabel }}</a>
@@ -18,6 +15,9 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
+  import parentTreeToOptions from '@/utils/parentTreeToOptions.js'
+
   export default {
     name: 'A17PageNav',
     props: {
@@ -47,8 +47,19 @@
       }
     },
     computed: {
+      options: function () {
+        return parentTreeToOptions(this.parents, '-')
+      },
+      ...mapState({
+        parents: state => state.parents.all
+      })
     },
     methods: {
+      gotoUrl: function (newValue) {
+        if (newValue.edit) {
+          window.location.href = newValue.edit
+        }
+      }
     },
     beforeMount: function () {
     }
@@ -66,7 +77,8 @@
   }
 
   .pagenav__form {
-    padding:20px;
+    padding:0 20px 20px 20px;
+    margin-top: -15px;
   }
 
   .pagenav__nav {
