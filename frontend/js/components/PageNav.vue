@@ -1,7 +1,7 @@
 <template>
   <div class="pagenav">
     <div class="pagenav__form">
-      <div class="form__field" :class="textfieldClasses">
+      <div class="form__field">
         <input type="search" :placeholder="placeholder" />
         <button type="button">search</button>
       </div>
@@ -18,18 +18,6 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
-
-  import a17Switcher from '@/components/Switcher.vue'
-  import a17RadioAccordion from '@/components/RadioAccordion.vue'
-  import a17ReviewAccordion from '@/components/ReviewAccordion.vue'
-  import a17CheckboxAccordion from '@/components/CheckboxAccordion.vue'
-  import a17RevisionAccordion from '@/components/RevisionAccordion.vue'
-  import a17PubAccordion from '@/components/PubAccordion.vue'
-  import a17MultiButton from '@/components/MultiButton.vue'
-
-  import a17VueFilters from '@/utils/filters.js'
-
   export default {
     name: 'A17PageNav',
     props: {

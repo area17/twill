@@ -47,6 +47,7 @@ import language from '@/store/modules/language'
 import revision from '@/store/modules/revision'
 import browser from '@/store/modules/browser'
 import repeaters from '@/store/modules/repeaters'
+import parents from '@/store/modules/parents'
 
 store.registerModule('form', form)
 store.registerModule('publication', publication)
@@ -55,6 +56,7 @@ store.registerModule('language', language)
 store.registerModule('revision', revision)
 store.registerModule('browser', browser)
 store.registerModule('repeaters', repeaters)
+store.registerModule('parents', parents)
 
 // Browser
 Vue.component('a17-repeater', a17Repeater)

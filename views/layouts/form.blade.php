@@ -32,7 +32,7 @@
                     <aside class="col col--aside">
                         <div class="publisher" data-sticky-target="publisher">
                             <a17-publisher></a17-publisher>
-                            <a17-page-nav placeholder="Go to page" previousUrl="/templates/form" nextUrl="/templates/form"></a17-page-nav>
+                            <a17-page-nav placeholder="Go to page" previous-url="/templates/form" next-url="/templates/form"></a17-page-nav>
                         </div>
                     </aside>
                     <section class="col col--primary">
@@ -92,6 +92,36 @@
     }
 
     window.STORE.revisions = {!! json_encode($revisions ?? [])  !!}
+
+    window.STORE.parentId = 2
+    window.STORE.parents = [
+        {
+            'id': 1,
+            'name': 'Page 1',
+            'children': [
+                {
+                    'id': 2,
+                    'name': 'Sub Page 1 - Introduction',
+                    'children': []
+                },
+                {
+                    'id': 3,
+                    'name': 'Sub Page 1 - Sub page',
+                    'children': []
+                },
+            ]
+        },
+        {
+            'id': 4,
+            'name': 'Page 2',
+            'children': [
+                {
+                    'id': 5,
+                    'name': 'Sub Page 2 - Introduction'
+                }
+            ]
+        }
+    ]
 
     window.STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('cms-toolkit.block_editor.crops')) !!}
     window.STORE.medias.selected = {}
