@@ -15,14 +15,7 @@ const state = {
 }
 
 // getters
-const getters = {
-  cropByMedia (state) {
-    return mediaData => {
-      const results = state.selected[mediaData.context].filter(media => media.id === mediaData.id)
-      return results.length ? results[0].crops : {}
-    }
-  }
-}
+const getters = { }
 
 const mutations = {
   [types.UPDATE_MEDIA_TYPE_TOTAL] (state, type) {
