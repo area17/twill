@@ -14,8 +14,13 @@
           <li><strong>{{ currentMedia.name }}</strong></li>
           <li class="f--small" v-if="currentMedia.size">File size: {{ currentMedia.size | uppercase }}</li>
           <li class="f--small" v-if="currentMedia.width + currentMedia.height">Dimensions: {{ currentMedia.width }} &times; {{ currentMedia.height }}</li>
-          <li class="f--small media__metadatas--add">
-            <a href="#" @click.prevent="metadatasInfos" v-if="withAddInfo"> {{ metadatas.text }}</a>
+          <li class="f--small" v-if="cropInfos.length" @click="openCropMedia">
+            <span class="f--small f--note f--underlined--o f--underlined--link">
+              Cropped : <span v-for="(cropInfo, index) in cropInfos" :key="cropInfo.name">{{ cropInfo.name }}<span v-if="index !== cropInfos.length - 1">,&nbsp;</span></span>
+            </span>
+          </li>
+          <li class="f--small">
+            <a href="#" @click.prevent="metadatasInfos" v-if="withAddInfo" class="f--link-underlined--o"> {{ metadatas.text }}</a>
           </li>
         </ul>
 
@@ -125,7 +130,9 @@
     data: function () {
       return {
         metadatas: {
-          text: 'Add info',
+          text: 'Edit info',
+          textOpen: 'Edit info',
+          textClose: 'Close info',
           isDestroyed: false,
           active: false
         }
@@ -142,6 +149,21 @@
         } else {
           return {}
         }
+      },
+      cropInfos: function () {
+        const cropInfos = []
+
+        if (this.currentMedia.crops) {
+          for (let variant in this.currentMedia.crops) {
+            cropInfos.push({
+              name: this.currentMedia.crops[variant].name,
+              width: this.currentMedia.crops[variant].width,
+              height: this.currentMedia.crops[variant].height
+            })
+          }
+        }
+
+        return cropInfos
       },
       hasCrop: function () {
         return this.crop !== ''
@@ -172,8 +194,8 @@
             defaultCrops[cropVariant].name = self.allCrops[self.cropContext][cropVariant][0].name || cropVariant
             defaultCrops[cropVariant].x = 0
             defaultCrops[cropVariant].y = 0
-            defaultCrops[cropVariant].width = this.currentMedia.width / 2
-            defaultCrops[cropVariant].height = this.currentMedia.height / 2
+            defaultCrops[cropVariant].width = this.currentMedia.width
+            defaultCrops[cropVariant].height = this.currentMedia.height
           }
         }
 
@@ -206,7 +228,7 @@
       metadatasInfos: function () {
         let self = this
         self.metadatas.active = !self.metadatas.active
-        self.metadatas.text = self.metadatas.active ? 'Close info' : 'Add info'
+        self.metadatas.text = self.metadatas.active ? self.metadatas.textClose : self.metadatas.textOpen
       }
     },
     beforeDestroy: function () {
@@ -335,17 +357,9 @@
       font-weight: normal;
       color: $color__text;
     }
-  }
-
-  .media__metadatas--add {
 
     a {
-      color: $color__link;
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
+      color:$color__link;
     }
   }
 

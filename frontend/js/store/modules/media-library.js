@@ -15,7 +15,14 @@ const state = {
 }
 
 // getters
-const getters = {}
+const getters = {
+  cropByMedia (state) {
+    return mediaData => {
+      const results = state.selected[mediaData.context].filter(media => media.id === mediaData.id)
+      return results.length ? results[0].crops : {}
+    }
+  }
+}
 
 const mutations = {
   [types.UPDATE_MEDIA_TYPE_TOTAL] (state, type) {
@@ -162,7 +169,9 @@ const mutations = {
       return mediaToModify
     }
 
-    state.selected[key][index] = Object.assign({}, addCrop(media), media)
+    const newMedia = addCrop(media)
+    state.selected[key].splice(index, 1)
+    state.selected[key].splice(index, 0, Object.assign({}, newMedia, media))
   }
 }
 

@@ -23,6 +23,10 @@ Underlined texts for links or hover states :
   text-decoration:none;
 }
 
+.f--underlined--link {
+  cursor:pointer
+}
+
 .f--underlined {
   @include bordered;
 }
