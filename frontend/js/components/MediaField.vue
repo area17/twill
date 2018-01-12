@@ -283,9 +283,9 @@
     user-select: none;
     position:relative;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
 
     &:before {
       content: "";
@@ -305,6 +305,10 @@
       max-height:100%;
     }
   }
+
+  // .media__square {
+  //   width:100%;
+  // }
 
   // Image centered in a square option
   .media__imgFrame {
@@ -374,7 +378,7 @@
 
   .media__actions {
     @media screen and (max-width: 1140px) {
-      display: none;
+      display: none !important;
     }
   }
 

@@ -20,6 +20,7 @@
     clear:both;
     overflow:hidden;
     border-radius:2px;
+    display:flex;
 
     > a,
     > button {
@@ -36,6 +37,7 @@
       text-decoration:none;
       border-right:1px solid $color__border--light;
       display: flex;
+      flex-wrap:no-wrap;
       align-items: center;
       justify-content: center;
       border-radius:0;
