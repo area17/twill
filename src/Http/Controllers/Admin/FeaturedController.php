@@ -6,6 +6,7 @@ use A17\CmsToolkit\Models\Feature;
 use A17\CmsToolkit\Repositories\Behaviors\HandleTranslations;
 use App\Http\Controllers\Controller;
 use DB;
+use Event;
 
 class FeaturedController extends Controller
 {
@@ -229,7 +230,8 @@ class FeaturedController extends Controller
                 }
             });
         }, 5);
-        \Event::fire('buckets.saved');
+
+        Event::fire('cms-buckets.saved', 'cms-buckets.saved');
     }
 
     private function getRepository($bucketable)
