@@ -6,6 +6,7 @@ use A17\CmsToolkit\Helpers\FlashLevel;
 use A17\CmsToolkit\Repositories\Behaviors\HandleRevisions;
 use A17\CmsToolkit\Repositories\Behaviors\HandleTranslations;
 use Auth;
+use Event;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Route;
@@ -454,6 +455,7 @@ abstract class ModuleController extends Controller
             return $this->respondWithError($this->modelTitle . ' was not published. Something wrong happened!');
         }
 
+        $this->fireEvent();
         return $this->respondWithSuccess($this->modelTitle . ' ' . (request('active') ? 'un' : '') . 'published!');
     }
 
@@ -467,12 +469,14 @@ abstract class ModuleController extends Controller
             return $this->respondWithError($this->modelTitle . ' items were not published. Something wrong happened!');
         }
 
+        $this->fireEvent();
         return $this->respondWithSuccess($this->modelTitle . ' items ' . (request('publish') ? '' : 'un') . 'published!');
     }
 
     public function destroy($id)
     {
         if ($this->repository->delete($id)) {
+            $this->fireEvent();
             return $this->respondWithSuccess($this->modelTitle . ' deleted!');
         }
 
@@ -482,6 +486,7 @@ abstract class ModuleController extends Controller
     public function bulkDelete()
     {
         if ($this->repository->bulkDelete(explode(',', request('ids')))) {
+            $this->fireEvent();
             return $this->respondWithSuccess($this->modelTitle . ' items deleted!');
         }
 
@@ -491,6 +496,7 @@ abstract class ModuleController extends Controller
     public function restore()
     {
         if ($this->repository->restore(request('id'))) {
+            $this->fireEvent();
             return $this->respondWithSuccess($this->modelTitle . ' restored!');
         }
 
@@ -500,6 +506,7 @@ abstract class ModuleController extends Controller
     public function bulkRestore()
     {
         if ($this->repository->bulkRestore(explode(',', request('ids')))) {
+            $this->fireEvent();
             return $this->respondWithSuccess($this->modelTitle . ' items restored!');
         }
 
@@ -521,6 +528,7 @@ abstract class ModuleController extends Controller
                 $this->repository->updateBasic($id, [$featuredField => $featured]);
             }
 
+            $this->fireEvent();
             return $this->respondWithSuccess($this->modelTitle . ' ' . (request('active') ? 'un' : '') . 'featured!');
         }
 
@@ -534,7 +542,7 @@ abstract class ModuleController extends Controller
             $featured = request('feature') ?? true;
             // we don't need to check if unique feature since bulk operation shouldn't be allowed in this case
             $this->repository->updateBasic($ids, [$featuredField => $featured]);
-
+            $this->fireEvent();
             return $this->respondWithSuccess($this->modelTitle . ' items ' . (request('feature') ? '' : 'un') . 'featured!');
         }
 
@@ -545,6 +553,7 @@ abstract class ModuleController extends Controller
     {
         if (($values = request('ids')) && !empty($values)) {
             $this->repository->setNewOrder($values);
+            $this->fireEvent();
             return $this->respondWithSuccess($this->modelTitle . ' order changed!');
         }
 
@@ -565,6 +574,8 @@ abstract class ModuleController extends Controller
     {
         $input = $this->validateFormRequest()->all();
         $item = $this->repository->create($input);
+        $this->fireEvent($input);
+
         return $this->redirectToForm($item->id);
     }
 
@@ -639,6 +650,7 @@ abstract class ModuleController extends Controller
             if (($item->isLockable() == false) || ($item->isLocked() && $item->isLockedByCurrentUser())) {
                 // check the lock?
                 $this->repository->update($id, $formRequest->all());
+                $this->fireEvent();
                 return $this->respondWithSuccess('Content saved. All good!');
             } else {
                 abort(403);
@@ -893,6 +905,11 @@ abstract class ModuleController extends Controller
     private function respondWithError($message)
     {
         return $this->respondWithJson($message, FlashLevel::ERROR);
+    }
+
+    private function fireEvent($input = [])
+    {
+        Event::fire('cms-module.saved', ['cms-module.saved', $input]);
     }
 
     private function respondWithJson($message, $variant)
