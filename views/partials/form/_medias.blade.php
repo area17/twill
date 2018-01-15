@@ -5,7 +5,7 @@
     $withAddInfo = $withAddInfo ?? true
 @endphp
 
-<a17-inputframe label="{{ $label }}" name="{{ $name }}">
+<a17-inputframe label="{{ $label }}" name="medias.{{ $name }}">
     @if($max > 1)
         <a17-slideshow
             @include('cms-toolkit::partials.form.utils._field_name')
