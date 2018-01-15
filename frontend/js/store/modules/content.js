@@ -18,8 +18,10 @@ const mutations = {
     let block = blockInfos.block
     block.id = setBlockID()
 
+    console.log('ADD_BLOCK : ' + blockInfos.index)
+
     if (blockInfos.index > -1) {
-      state.blocks.splice(blockInfos.index + 1, 0, block) // add after a certain position
+      state.blocks.splice(blockInfos.index, 0, block) // add after a certain position
     } else {
       state.blocks.push(block) // or add a new block at the end of the list
     }

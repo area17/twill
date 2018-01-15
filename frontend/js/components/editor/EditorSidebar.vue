@@ -2,7 +2,7 @@
   <div class="editorSidebar">
     <div class="editorSidebar__item" v-for="(block, index) in blocks" :key="block.id" v-show="isBlockActive(block.id)">
       <div class="editorSidebar__title">
-        <span class="editorSidebar__blockTitle">{{ activeBlock.title }}</span><a href="#" @click.prevent="" class="f--small f--note f--underlined">Delete</a>
+        <span class="editorSidebar__blockTitle"><span class="editorSidebar__counter f--tiny">{{ index + 1 }}</span> {{ activeBlock.title }}</span><span><a href="#" @click.prevent="deleteBlock(index)" class="f--small f--note f--underlined">Delete</a></span>
       </div>
       <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes"><!-- dynamic components --></component>
     </div>
@@ -60,6 +60,10 @@
       },
       unselectBlock: function () {
         this.$store.commit('activateBlock', -1)
+      },
+      deleteBlock: function (index) {
+        this.unselectBlock()
+        this.$store.commit('deleteBlock', index)
       }
     },
     mounted: function () {
@@ -79,6 +83,22 @@
   .editorSidebar__title {
     padding:15px 0 10px 0;
     display:flex;
+  }
+
+  .editorSidebar__counter {
+    border:1px solid $color__border;
+    border-radius:50%;
+    height:26px;
+    width:26px;
+    text-align:center;
+    display:inline-block;
+    line-height:25px;
+    margin-right:10px;
+    background:$color__background;
+    color:$color__text--light;
+    @include monospaced-figures('off'); // dont use monospaced figures here
+    user-select: none;
+    cursor: default;
   }
 
   h4,

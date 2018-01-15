@@ -9,11 +9,13 @@
           <iframe :srcdoc="block.title + ' <br /> Preview of the block in the iframe will be retrieved from the back-end at some point'" @load=""></iframe>
         </div>
         <div class="editorPreview__protector" @click="selectBlock(index)"></div>
-        <a17-buttonbar class="editorPreview__actions">
-          <button type="button" @click="selectBlock(index)">Edit</button>
-          <button type="button" class="editorPreview__handle">Drag</button>
-          <button type="button" @click="deleteBlock(index)">Delete</button>
-        </a17-buttonbar>
+        <div class="editorPreview__actions">
+          <a17-buttonbar >
+            <button type="button" @click="selectBlock(index)">Edit</button>
+            <button type="button" class="editorPreview__handle">Drag</button>
+            <button type="button" @click="deleteBlock(index)"><span v-svg symbol="trash"></span></button>
+          </a17-buttonbar>
+        </div>
       </div>
     </draggable>
   </div>
@@ -61,7 +63,7 @@
         block.component = item.getAttribute('data-component')
         block.icon = item.getAttribute('data-icon')
 
-        this.addBlock(block, evt.newIndex - 1)
+        this.addBlock(block, Math.max(0, evt.newIndex))
       },
       onUpdate: function (evt) {
         this.$store.commit('moveBlock', {
@@ -149,7 +151,8 @@
 
   .editorPreview__item {
     min-height:100px;
-    border:1px solid $color__background;
+    border:1px dashed $color__background;
+    border-radius:2px;
     position:relative;
   }
 
@@ -166,6 +169,12 @@
 
   .editorPreview__frame {
     cursor:pointer;
+
+    iframe {
+      width: 100%;
+      overflow: hidden;
+      display: block;
+    }
   }
 
   .editorPreview__protector {
@@ -179,7 +188,7 @@
 
   .editorPreview__actions {
     position:absolute;
-    right:0;
-    top:0;
+    right:20px;
+    top:20px;
   }
 </style>

@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import api from '../api/form'
 import * as types from '../mutation-types'
 import { getFormData } from '@/utils/getFormData.js'
@@ -38,37 +37,25 @@ const mutations = {
     }
   },
   [types.UPDATE_FORM_FIELD] (state, field) {
+    let fieldValue = field.locale ? {} : null
     const fieldIndex = state.fields.findIndex(function (f) {
       return f.name === field.name
     })
 
     // Update existing form field
     if (fieldIndex !== -1) {
-      if (field.locale) {
-        Vue.set(state.fields[fieldIndex].value, field.locale, field.value)
-      } else {
-        Vue.set(state.fields[fieldIndex], 'value', field.value) // value = field.value
-      }
-      // const fieldToRefresh = state.fields[fieldIndex].value
-      // state.fields[fieldIndex].value = null
-      // state.fields[fieldIndex].value = fieldToRefresh
-    } else {
-      // Or Create a new form field
-      if (field.locale) {
-        const localeValue = {}
-        localeValue[field.locale] = field.value
-
-        state.fields.push({
-          name: field.name,
-          value: localeValue
-        })
-      } else {
-        state.fields.push({
-          name: field.name,
-          value: field.value
-        })
-      }
+      if (field.locale) fieldValue = state.fields[fieldIndex].value
+      // remove existing field
+      state.fields.splice(fieldIndex, 1)
     }
+
+    if (field.locale) fieldValue[field.locale] = field.value
+    else fieldValue = field.value
+
+    state.fields.push({
+      name: field.name,
+      value: fieldValue
+    })
   },
   [types.REFRESH_FORM_FIELD] (state, field) {
     const fieldIndex = state.fields.findIndex(function (f) {

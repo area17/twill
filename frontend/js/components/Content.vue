@@ -88,7 +88,7 @@
 
         this.$store.commit('addBlock', {
           block: newBlock,
-          index: fromIndex
+          index: (fromIndex + 1)
         })
       },
       duplicateBlock: function (index) {
