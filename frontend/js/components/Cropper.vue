@@ -257,7 +257,7 @@
 
         display: inline-block;
         height: $height_li;
-        line-height: $height_li;
+        line-height: $height_li - 2px;
         margin-right: 15px;
         padding: 0 20px;
         background-color: transparent;

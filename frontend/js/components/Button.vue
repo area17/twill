@@ -57,7 +57,7 @@
     border-radius: 2px;
     padding: 0 30px;
     height: $height_btn;
-    line-height: $height_btn;
+    line-height: $height_btn - 2px;
     text-align: center;
     transition: color .2s linear, border-color .2s linear, background-color .2s linear;
 
@@ -71,7 +71,7 @@
 
   .button--small {
     height: $height_small_btn;
-    line-height: $height_small_btn;
+    line-height: $height_small_btn - 2px;
     padding: 0 25px;
   }
 
