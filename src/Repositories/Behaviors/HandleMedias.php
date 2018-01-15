@@ -3,7 +3,6 @@
 namespace A17\CmsToolkit\Repositories\Behaviors;
 
 use A17\CmsToolkit\Models\Media;
-use ImageService;
 
 trait HandleMedias
 {
@@ -98,13 +97,7 @@ trait HandleMedias
                     $altText = $metadatas['altText'] ?? '';
                     $video = $metadatas['video'] ?? '';
 
-                    $itemForForm = [
-                        'id' => $item->id,
-                        'name' => $item->filename,
-                        'src' => ImageService::getCmsUrl($item->uuid, ["h" => "256"]),
-                        'original' => ImageService::getRawUrl($item->uuid),
-                        'width' => $item->width,
-                        'height' => $item->height,
+                    $itemForForm = $item->toCmsArray() + [
                         'metadatas' => [
                             'default' => [
                                 'caption' => $item->caption,

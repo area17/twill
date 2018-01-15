@@ -3,6 +3,7 @@
 namespace A17\CmsToolkit\Models;
 
 use DB;
+use ImageService;
 
 class Media extends Model
 {
@@ -37,5 +38,18 @@ class Media extends Model
     public function canDeleteSafely()
     {
         return DB::table('mediables')->where('media_id', $this->id)->count() === 0;
+    }
+
+    public function toCmsArray()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->filename,
+            'src' => ImageService::getCmsUrl($this->uuid, ["h" => "256"]),
+            'original' => ImageService::getRawUrl($this->uuid),
+            // 'crop' => ImageService::getUrl($this->uuid, ["h" => "430"]),
+            'width' => $this->width,
+            'height' => $this->height,
+        ];
     }
 }

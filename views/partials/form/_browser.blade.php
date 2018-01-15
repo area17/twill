@@ -7,7 +7,7 @@
     $itemLabel = $itemLabel ?? strtolower($label);
 @endphp
 
-<a17-inputframe label="{{ $label }}" name="{{ $name }}">
+<a17-inputframe label="{{ $label }}" name="browsers.{{ $name }}">
     <a17-browserfield
         @include('cms-toolkit::partials.form.utils._field_name')
         item-label="{{ $itemLabel }}"

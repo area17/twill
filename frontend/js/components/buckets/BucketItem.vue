@@ -7,7 +7,7 @@
       <img :src="item.thumbnail" :alt="item.name">
     </td>
     <td class="buckets__itemStarred" v-if="withToggleFeatured" :class="{'buckets__itemStarred--active': item.starred }">
-      <span @click.prevent="toggleFeatured" :data-tooltip-title="item.starred ? 'Unfeature' : 'Feature'" v-tooltip>
+      <span @click.prevent="toggleFeatured" :data-tooltip-title="item.starred ? toggleFeaturedLabels['unstar'] ? toggleFeaturedLabels['unstar'] : 'Unfeature' : toggleFeaturedLabels['star'] ? toggleFeaturedLabels['star'] : 'Feature'" v-tooltip>
         <span v-svg symbol="star-feature_active"></span>
         <span v-svg symbol="star-feature"></span>
       </span>
@@ -70,6 +70,10 @@
       withToggleFeatured: {
         type: Boolean,
         default: false
+      },
+      toggleFeaturedLabels: {
+        type: Array,
+        default: []
       }
     },
     mixins: [bucketMixin],
