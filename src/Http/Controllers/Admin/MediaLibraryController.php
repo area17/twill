@@ -7,7 +7,6 @@ use A17\CmsToolkit\Services\Uploader\SignS3Upload;
 use A17\CmsToolkit\Services\Uploader\SignS3UploadListener;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
-use ImageService;
 use Input;
 
 class MediaLibraryController extends ModuleController implements SignS3UploadListener
@@ -63,13 +62,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
     private function buildMedia($item)
     {
-        return [
-            'id' => $item->id,
-            'name' => $item->filename,
-            'src' => ImageService::getCmsUrl($item->uuid, ["h" => "256"]),
-            'original' => ImageService::getRawUrl($item->uuid),
-            'width' => $item->width,
-            'height' => $item->height,
+        return $item->toCmsArray() + [
             'tags' => $item->tags->map(function ($tag) {
                 return $tag->name;
             }),
