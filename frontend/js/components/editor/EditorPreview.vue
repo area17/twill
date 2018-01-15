@@ -6,7 +6,7 @@
     <draggable class="editorPreview__content" v-model="blocks" :options="{ group: 'editorBlocks', handle: handle }" @add="onAdd" @update="onUpdate">
       <div class="editorPreview__item" :class="{ 'editorPreview__item--active' : isBlockActive(block.id) }" v-for="(block, index) in blocks" :key="block.id" >
         <div class="editorPreview__frame" tabindex="0" @click="selectBlock(index)">
-          <iframe :srcdoc="block.title + ' <br /> Preview of the block in the iframe will be retrieved from the back-end at some point'" @load=""></iframe>
+          <a17-editor-iframe :block="block"></a17-editor-iframe>
         </div>
         <div class="editorPreview__protector" @click="selectBlock(index)"></div>
         <div class="editorPreview__actions">
@@ -25,12 +25,14 @@
   import { mapState } from 'vuex'
 
   import draggableMixin from '@/mixins/draggable'
+  import EditorIframe from './EditorIframe.vue'
   import draggable from 'vuedraggable'
 
   export default {
     name: 'A17editorpreview',
     components: {
-      draggable
+      draggable,
+      'a17-editor-iframe': EditorIframe
     },
     mixins: [draggableMixin],
     data: function () {
@@ -164,16 +166,6 @@
   .editorPreview__item--active  {
     .editorPreview__actions {
       display:block;
-    }
-  }
-
-  .editorPreview__frame {
-    cursor:pointer;
-
-    iframe {
-      width: 100%;
-      overflow: hidden;
-      display: block;
     }
   }
 

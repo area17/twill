@@ -1,14 +1,19 @@
+import Vue from 'vue'
 import * as types from '../mutation-types'
 
 const state = {
   available: window.STORE.form.content || {},
   blocks: window.STORE.form.blocks || [],
-  previews: window.STORE.form.previews || [],
+  previews: window.STORE.form.previews || {},
   active: {}
 }
 
 // getters
-const getters = { }
+const getters = {
+  previewsById (state) {
+    return id => state.previews[id] ? state.previews[id] : ''
+  }
+}
 
 function setBlockID () {
   return Date.now()
@@ -35,6 +40,8 @@ const mutations = {
     state.blocks.splice(fromTo.newIndex, 0, state.blocks.splice(fromTo.oldIndex, 1)[0])
   },
   [types.DELETE_BLOCK] (state, index) {
+    const id = state.blocks[index].id
+    if (id) Vue.delete(state.previews, id)
     state.blocks.splice(index, 1)
   },
   [types.DUPLICATE_BLOCK] (state, index) {
@@ -49,11 +56,25 @@ const mutations = {
   [types.ACTIVATE_BLOCK] (state, index) {
     if (state.blocks[index]) state.active = state.blocks[index]
     else state.active = {}
+  },
+  [types.ADD_BLOCK_PREVIEW] (state, data) {
+    Vue.set(state.previews, data.id, data.html)
+  }
+}
+
+const actions = {
+  getPreview ({ commit, state, getters }, block) {
+    commit(types.ADD_BLOCK_PREVIEW, {
+      id: block.id,
+      html: block.title + ' - Get preview HTML for data : ' + block.id
+    })
+    // AJAX goes here
   }
 }
 
 export default {
   state,
   getters,
-  mutations
+  mutations,
+  actions
 }

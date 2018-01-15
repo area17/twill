@@ -1,6 +1,6 @@
 <template>
   <div class="editorSidebar">
-    <div class="editorSidebar__item" v-for="(block, index) in blocks" :key="block.id" v-show="isBlockActive(block.id)">
+    <div class="editorSidebar__item" v-for="(block, index) in blocks" :key="block.id" v-show="isBlockActive(block.id)"  :ref="blockSideBarName(block.id)">
       <div class="editorSidebar__title">
         <span class="editorSidebar__blockTitle"><span class="editorSidebar__counter f--tiny">{{ index + 1 }}</span> {{ activeBlock.title }}</span><span><a href="#" @click.prevent="deleteBlock(index)" class="f--small f--note f--underlined">Delete</a></span>
       </div>
@@ -16,7 +16,7 @@
     </template>
     <template v-else>
       <div class="editorSidebar__actions">
-        <a17-button variant="action" @click="unselectBlock">Done</a17-button>
+        <a17-button variant="action" @click="previewBlock()">Done</a17-button>
         <a17-button variant="secondary" @click="unselectBlock">Cancel</a17-button>
       </div>
     </template>
@@ -28,6 +28,8 @@
 
   import draggableMixin from '@/mixins/draggable'
   import draggable from 'vuedraggable'
+
+  import FormDataAsObj from '@/utils/formDataAsObj.js'
 
   export default {
     name: 'A17editorsidebar',
@@ -50,6 +52,9 @@
       })
     },
     methods: {
+      blockSideBarName: function (id) {
+        return `block_${id}`
+      },
       isBlockActive: function (id) {
         if (!this.hasBlockActive) return false
 
@@ -57,6 +62,20 @@
       },
       componentName: function (id) {
         return 'blocks[' + id + ']'
+      },
+      previewBlock: function () {
+        if (this.hasBlockActive) {
+          const ref = this.blockSideBarName(this.hasBlockActive.id)
+          let formData = FormDataAsObj(this.$refs[ref])
+
+          console.log(this.hasBlockActive)
+          console.log(this.$refs)
+          console.log(ref)
+          console.log(this.$refs[ref])
+          console.log(formData)
+          this.$store.dispatch('getPreview', this.activeBlock)
+        }
+        this.unselectBlock()
       },
       unselectBlock: function () {
         this.$store.commit('activateBlock', -1)
