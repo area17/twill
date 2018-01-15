@@ -1,9 +1,9 @@
 <template>
-  <div class="pagenav" v-if="parents.length">
-    <div class="pagenav__form">
+  <div class="pagenav" v-if="parents.length || hasUrl">
+    <div class="pagenav__form" v-if="parents.length">
       <a17-vselect name="parents_sources" :placeholder="placeholder" size="large" :searchable="true" :options="options" @change="gotoUrl"></a17-vselect>
     </div>
-    <nav class="pagenav__nav">
+    <nav class="pagenav__nav" v-if="hasUrl">
       <a :href="previousUrl" class="pagenav__btn" v-if="previousUrl">← {{ previousLabel }}</a>
       <span v-else class="pagenav__btn">← {{ previousLabel }}</span>
 
@@ -46,6 +46,9 @@
       }
     },
     computed: {
+      hasUrl: function () {
+        return this.previousUrl || this.nextUrl
+      },
       options: function () {
         return parentTreeToOptions(this.parents, '–')
       },
@@ -84,8 +87,13 @@
     display:flex;
   }
 
+  .pagenav__form + .pagenav__nav {
+    .pagenav__btn {
+      border-top:1px solid $color__border--light;
+    }
+  }
+
   .pagenav__btn {
-    border-top:1px solid $color__border--light;
     border-right:1px solid $color__border--light;
     padding:0 20px;
     flex: 1 0 0px;
@@ -94,6 +102,7 @@
     line-height:48px;
     text-decoration:none;
     color:$color__text--light;
+    opacity:0.5;
 
     &:last-child {
       border-right:0 none;
@@ -101,6 +110,7 @@
   }
 
   a.pagenav__btn {
+    opacity:1;
     &:hover {
       color:$color__text;
       background:$color__ultralight;

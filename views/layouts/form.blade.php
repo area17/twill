@@ -32,7 +32,8 @@
                     <aside class="col col--aside">
                         <div class="publisher" data-sticky-target="publisher">
                             <a17-publisher></a17-publisher>
-                            <a17-page-nav placeholder="Go to page" previous-url="/templates/form" next-url="/templates/form"></a17-page-nav>
+                            <a17-page-nav placeholder="Go to page"></a17-page-nav>
+                            {{-- Fix me - set previous and next url attributes for the module a17-page-nav to appear : previous-url="/templates/form" next-url="/templates/form" --}}
                         </div>
                     </aside>
                     <section class="col col--primary">
@@ -93,8 +94,11 @@
 
     window.STORE.revisions = {!! json_encode($revisions ?? [])  !!}
 
-{{-- For parent/child functionalities to work nicely in forms --}}
-{{--     window.STORE.parentId = 2
+{{--
+    For parent/child functionalities to work nicely in forms
+--}}
+{{--
+    window.STORE.parentId = 2
     window.STORE.parents = [
         {
             'id': 1,
