@@ -78,6 +78,7 @@ Vue.component('a17-previewer', a17Previewer)
 
 // mixins
 import formatPermalink from '@/mixins/formatPermalink'
+import editorMixin from '@/mixins/editor.js'
 
 // Editor
 Vue.component('a17-editor', a17Editor)
@@ -107,7 +108,7 @@ Window.vm = new Vue({
     'a17-publisher': a17Publisher,
     'a17-page-nav': a17PageNav
   },
-  mixins: [formatPermalink],
+  mixins: [formatPermalink, editorMixin],
   data: function () {
     return {
       unSubscribe: function () {

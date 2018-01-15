@@ -1,13 +1,13 @@
 <template>
   <div class="content">
-    <draggable class="content__content" v-model="blocks" :options="dragOptions">
+    <draggable class="content__container" v-model="blocks" :options="dragOptions">
       <transition-group name="draggable_list" tag='div'>
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
           <a17-block :block="block" :index="index" :opened="opened" @open="setOpened">
             <button type="button" slot="dropdown-add" v-if="availableBlocks.length" v-for="(availableBlock, dropdownIndex) in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, index + 1)"><span v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
             <div slot="dropdown-action">
               <button type="button" @click="collapseAllBlocks()">Collapse All</button>
-              <!-- <button type="button" @click="">Open in Live Editor</button> -->
+              <button type="button" @click="openEditor(index)">Open in Live Editor</button>
               <button type="button" @click="deleteBlock(index)">Delete</button>
               <button type="button" @click="duplicateBlock(index)">Duplicate</button>
             </div>
@@ -16,12 +16,17 @@
       </transition-group>
     </draggable>
 
-    <a17-dropdown ref="blocksDropdown" position="top-center" :arrow="true" :offset="10" v-if="availableBlocks.length">
-      <a17-button size="small" variant="action" @click="$refs.blocksDropdown.toggle()">{{ title }}</a17-button>
-      <div slot="dropdown__content">
-        <button type="button" v-for="(availableBlock, index) in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, -1)"><span class="content__icon" v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
+    <div class="content__actions">
+      <a17-dropdown ref="blocksDropdown" position="top-center" :arrow="true" :offset="10" v-if="availableBlocks.length">
+        <a17-button size="small" variant="action" @click="$refs.blocksDropdown.toggle()">{{ title }}</a17-button>
+        <div slot="dropdown__content">
+          <button type="button" v-for="(availableBlock, index) in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, -1)"><span class="content__icon" v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
+        </div>
+      </a17-dropdown>
+      <div class="content__secondaryActions">
+        <a href="#" class="f--link f--link-underlined--o" @click.prevent="openEditor(-1)">Open in Editor</a>
       </div>
-    </a17-dropdown>
+    </div>
   </div>
 </template>
 
@@ -30,6 +35,7 @@
 
   import draggable from 'vuedraggable'
   import draggableMixin from '@/mixins/draggable'
+  import editorMixin from '@/mixins/editor.js'
   import Block from '@/components/blocks/Block.vue'
 
   export default {
@@ -38,7 +44,7 @@
       'a17-block': Block,
       draggable
     },
-    mixins: [draggableMixin],
+    mixins: [draggableMixin, editorMixin],
     props: {
       title: {
         type: String,
@@ -119,12 +125,22 @@
     margin-top:20px; // margin-top:35px;
   }
 
-  .content__content {
+  .content__container {
     margin-bottom:20px;
 
     + .dropdown {
       display:inline-block;
     }
+  }
+
+  .content__actions {
+    display:flex;
+  }
+
+  .content__secondaryActions {
+    flex-grow:1;
+    text-align:right;
+    margin-right:20px;
   }
 
   .content__item {

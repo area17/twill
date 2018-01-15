@@ -27,7 +27,7 @@
                     </a17-title-editor>
                     <div slot="actions">
                         <a17-langswitcher></a17-langswitcher>
-                        <a17-button type="button" variant="action" size="small" @click="$root.$refs.editor.open()">Editor</a17-button>
+                        <a17-button type="button" variant="action" size="small" @click="openEditor(-1)">Editor</a17-button>
                     </div>
                 </a17-sticky-nav>
             </div>

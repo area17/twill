@@ -133,7 +133,7 @@
     justify-content: center;
     color:$color__fborder;
 
-    &after {
+    &::after {
       display:block;
       content:'';
       position:absolute;
