@@ -76,6 +76,7 @@ class FeaturedController extends Controller
                 'addUrl' => route("admin.$routePrefix.$featuredSectionKey.add", ['bucket' => $bucketKey]),
                 'removeUrl' => route("admin.$routePrefix.$featuredSectionKey.remove", ['bucket' => $bucketKey]),
                 'withToggleFeatured' => $bucket['with_starred_items'] ?? false,
+                'toggleFeaturedLabels' => $bucket['starred_items_labels'] ?? [],
                 'toggleFeaturedUrl' => route("admin.$routePrefix.$featuredSectionKey.feature", ['bucket' => $bucketKey]),
                 'reorderUrl' => route("admin.$routePrefix.$featuredSectionKey.sortable", ['bucket' => $bucketKey]),
                 'children' => Feature::where('bucket_key', $bucketKey)->with('featured')->get()->map(function ($feature) {
