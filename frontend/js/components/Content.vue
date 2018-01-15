@@ -4,7 +4,7 @@
       <transition-group name="draggable_list" tag='div'>
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
           <a17-block :block="block" :index="index" :opened="opened" @open="setOpened">
-            <button type="button" slot="dropdown-add" v-if="availableBlocks.length" v-for="(availableBlock, dropdownIndex) in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, index)"><span v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
+            <button type="button" slot="dropdown-add" v-if="availableBlocks.length" v-for="(availableBlock, dropdownIndex) in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, index + 1)"><span v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
             <div slot="dropdown-action">
               <button type="button" @click="collapseAllBlocks()">Collapse All</button>
               <!-- <button type="button" @click="">Open in Live Editor</button> -->
@@ -88,7 +88,7 @@
 
         this.$store.commit('addBlock', {
           block: newBlock,
-          index: (fromIndex + 1)
+          index: fromIndex
         })
       },
       duplicateBlock: function (index) {

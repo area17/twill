@@ -2,9 +2,9 @@
   <a17-inputframe :error="error" :note="note" :label="label" :name="name">
     <div class="multiselector">
       <div class="multiselector__grid">
-        <div class="multiselector__item" v-for="checkbox in options">
-          <input class="multiselector__checkbox" type="checkbox" :value="checkbox.value" :name="name" :id="name + '_' + checkbox.value" :disabled="checkbox.disabled || disabled" v-model="checkedValue">
-          <label class="multiselector__label" :for="name + '_' + checkbox.value">
+        <div class="multiselector__item" v-for="(checkbox, index) in options">
+          <input class="multiselector__checkbox" type="checkbox" :value="checkbox.value" :name="name" :id="uniqId(checkbox.value, index)" :disabled="checkbox.disabled || disabled" v-model="checkedValue">
+          <label class="multiselector__label" :for="uniqId(checkbox.value, index)">
             <span class="multiselector__icon"><span v-svg symbol="check"></span></span>
             {{ checkbox.label }}
           </label>
@@ -23,6 +23,11 @@
   export default {
     name: 'A17Multiselect',
     mixins: [InputframeMixin, CheckboxMixin, FormStoreMixin],
+    data: function () {
+      return {
+        randKey: Date.now() + Math.floor(Math.random() * 9999) // Label for attributes need to be uniq in the page - we use a random key so the ids are uniqs for each time the component is used
+      }
+    },
     computed: {
       checkedValue: {
         get: function () {
@@ -37,6 +42,14 @@
     watch: {
       currentValue: function (value) {
         this.saveIntoStore(value)
+      }
+    },
+    methods: {
+      updateFromStore: function (newValue) { // called from the formStore mixin
+        this.currentValue = newValue
+      },
+      uniqId: function (value, index) {
+        return this.name + '_' + value + '-' + (this.randKey * (index + 1))
       }
     }
   }

@@ -1,7 +1,7 @@
 <template>
   <span class="radio" :class="customClass">
-    <input type="radio" class="radio__input" :value="value" :name="name" :id="name + '_' + value" :disabled="disabled" v-model="selectedValue">
-    <label class="radio__label" :for="name + '_' + value">{{ label }}</label>
+    <input type="radio" class="radio__input" :value="value" :name="name" :id="uniqId(value)" :disabled="disabled" v-model="selectedValue">
+    <label class="radio__label" :for="uniqId(value)">{{ label }}</label>
   </span>
 </template>
 
@@ -34,6 +34,8 @@
     },
     data: function () {
       return {
+        randKey: Date.now() + Math.floor(Math.random() * 9999),
+        // Label for attributes need to be uniq in the page - we use a random key so the ids are uniqs for each time the component is used (even if name and value are the same)
         currentValue: this.initialValue
       }
     },
@@ -46,6 +48,11 @@
           this.currentValue = value
           this.$emit('change', value)
         }
+      }
+    },
+    methods: {
+      uniqId: function (value) {
+        return this.name + '_' + value + '-' + this.randKey
       }
     }
   }
