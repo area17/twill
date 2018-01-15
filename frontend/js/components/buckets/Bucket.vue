@@ -428,7 +428,9 @@
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
-        color: $color__link;
+        a :not(.tag) {
+          color: $color__link;
+        }
       }
 
       @include breakpoint(xsmall) {
