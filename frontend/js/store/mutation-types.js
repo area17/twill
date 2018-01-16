@@ -99,6 +99,9 @@ export const UPDATE_BUCKETS_DATA_OFFSET = 'updateBucketsDataOffset'
 export const UPDATE_BUCKETS_DATA_PAGE = 'updateBucketsDataPage'
 export const UPDATE_BUCKETS_MAX_PAGE = 'updateBucketsMaxPage'
 
+/* Parents */
+export const UPDATE_PARENT = 'updateParent'
+
 /* Notifications */
 export const SET_NOTIF = 'setNotification'
 export const CLEAR_NOTIF = 'clearNotification'

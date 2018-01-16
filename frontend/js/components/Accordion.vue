@@ -82,6 +82,16 @@
     }
   }
 
+  .accordion__fields {
+    border-top:1px solid $color__border--light;
+    padding:20px;
+  }
+
+  .accordion__list .accordion__fields {
+    border-top:0 none;
+    padding:8px 0;
+  }
+
   /* Opened accordion */
   .s--open {
     background-color:$color__ultralight;

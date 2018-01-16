@@ -2,9 +2,7 @@
   <a17-inputframe :error="error" :note="note" :label="label" :locale="locale" @localize="updateLocale" :name="name">
     <span class="select__input" :class="selectClasses">
       <select v-model="selectedValue" :name="name" :id="name" :disabled="disabled" :required="required" :readonly="readonly">
-        <option v-for="option in options" :value="option.value" >
-          {{ option.label }}
-        </option>
+        <option v-for="option in options" :value="option.value" v-html="option.label"></option>
       </select>
     </span>
   </a17-inputframe>
@@ -28,7 +26,7 @@
         default: ''
       },
       options: {
-        default: function () { return [] }
+        default: function () { return [] } // Array of objects with : value & label keys
       }
     },
     data: function () {
@@ -56,6 +54,9 @@
           this.$emit('change', newValue)
         }
       }
+    },
+    mounted: function () {
+      this.$emit('change', this.value)
     }
   }
 </script>
@@ -217,6 +218,7 @@
     overflow: hidden;
     -webkit-padding-end: 35px !important;
     -webkit-padding-start: 14px !important;
+    margin-top:-1px;
   }
 
   .select__input:hover select {
@@ -226,7 +228,7 @@
   .select__input::after {
     width: 0;
     height: 0;
-    margin-top: -1px;
+    margin-top: -3px;
     border-width: 4px 4px 0;
     border-style: solid;
     border-color: $color__icons transparent transparent;

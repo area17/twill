@@ -1,24 +1,22 @@
 <template>
-  <div class="publisher">
-    <div class="publisher__wrapper">
+  <div class="publisher__wrapper">
       <a17-switcher title="Status" name="publish_state" v-if="withPublicationToggle" :textEnabled="textEnabled" :textDisabled="textDisabled"></a17-switcher>
       <a17-reviewaccordion  v-if="reviewProcess && reviewProcess.length" :options="reviewProcess" name="review_process" :value="reviewProcessCompleteValues" :open="openStates['A17Reviewaccordion']" @open="openCloseAccordion">Review status</a17-reviewaccordion>
       <a17-radioaccordion  v-if="visibility && visibilityOptions && visibilityOptions.length" :radios="visibilityOptions" name="visibility" :value="visibility" :open="openStates['A17Radioaccordion']" @open="openCloseAccordion" @change="updateVisibility">Visibility</a17-radioaccordion>
       <a17-checkboxaccordion  v-if="languages && languages.length > 1" :options="languages" name="active_languages" :value="publishedLanguagesValues" :open="openStates['A17Checkboxaccordion']" @open="openCloseAccordion">Languages</a17-checkboxaccordion>
       <a17-pubaccordion :open="openStates['A17Pubaccordion']" @open="openCloseAccordion" v-if="withPublicationTimeframe">Published on</a17-pubaccordion>
       <a17-revaccordion v-if="revisions.length" :open="openStates['A17Revisions']" @open="openCloseAccordion" :revisions="revisions">Revisions</a17-revaccordion>
+      <a17-parentaccordion v-if="parents.length" :open="openStates['A17Parents']" @open="openCloseAccordion" :parents="parents" :value="parentId">Parent page</a17-parentaccordion>
       <div class="publisher__item" v-if="revisions.length">
         <a href="#" class="publisher__link" @click.prevent="openPreview"><span v-svg symbol="preview"></span><span class="f--link-underlined--o">Preview changes</span></a>
       </div>
       <div class="publisher__item publisher__item--btns">
         <a17-multibutton :options="submitOptions" type="submit"></a17-multibutton>
       </div>
-    </div>
-    <!-- <div class="publisher__trash">
-      <a href="#" @click.prevent="openMoveToTrashModal" class="f--small f--note f--underlined">Move to Trash</a>
-    </div> -->
   </div>
-
+  <!-- <div class="publisher__trash">
+    <a href="#" @click.prevent="openMoveToTrashModal" class="f--small f--note f--underlined">Move to Trash</a>
+  </div> -->
 </template>
 
 <script>
@@ -30,6 +28,7 @@
   import a17CheckboxAccordion from '@/components/CheckboxAccordion.vue'
   import a17RevisionAccordion from '@/components/RevisionAccordion.vue'
   import a17PubAccordion from '@/components/PubAccordion.vue'
+  import a17ParentsAccordion from '@/components/ParentsAccordion.vue'
   import a17MultiButton from '@/components/MultiButton.vue'
 
   import a17VueFilters from '@/utils/filters.js'
@@ -42,6 +41,7 @@
       'a17-checkboxaccordion': a17CheckboxAccordion,
       'a17-reviewaccordion': a17ReviewAccordion,
       'a17-revaccordion': a17RevisionAccordion,
+      'a17-parentaccordion': a17ParentsAccordion,
       'a17-pubaccordion': a17PubAccordion,
       'a17-multibutton': a17MultiButton
     },
@@ -54,7 +54,8 @@
           'A17Radioaccordion': false,
           'A17Checkboxaccordion': false,
           'A17Revisions': false,
-          'A17Pubaccordion': false
+          'A17Pubaccordion': false,
+          'A17Parents': false
         }
       }
     },
@@ -88,6 +89,8 @@
       ...mapState({
         languages: state => state.language.all,
         revisions: state => state.revision.all,
+        parentId: state => state.parents.active,
+        parents: state => state.parents.all,
         published: state => state.publication.published,
         textEnabled: state => state.publication.publishedLabel,
         textDisabled: state => state.publication.draftLabel,
@@ -137,21 +140,18 @@
   $trigger_height:55px;
 
   .publisher {
-    margin-bottom:20px;
-
-    @include breakpoint('medium+') {
-      margin-bottom:0;
-    }
   }
 
   .publisher__wrapper {
     border-radius:2px;
     border:1px solid $color__border;
     background:$color__background;
+    margin-bottom:20px;
   }
 
   .publisher__trash {
-    padding:15px 10px;
+    padding:0 10px;
+    margin-bottom:20px;
   }
 
   .publisher__item {

@@ -14,6 +14,7 @@ import a17TitleEditor from '@/components/TitleEditor.vue'
 import a17Langswitcher from '@/components/LangSwitcher.vue'
 import a17Fieldset from '@/components/Fieldset.vue'
 import a17Publisher from '@/components/Publisher.vue'
+import a17PageNav from '@/components/PageNav.vue'
 import a17Content from '@/components/Content.vue'
 import a17Repeater from '@/components/Repeater.vue'
 import a17LocationField from '@/components/LocationField.vue'
@@ -46,6 +47,7 @@ import language from '@/store/modules/language'
 import revision from '@/store/modules/revision'
 import browser from '@/store/modules/browser'
 import repeaters from '@/store/modules/repeaters'
+import parents from '@/store/modules/parents'
 
 store.registerModule('form', form)
 store.registerModule('publication', publication)
@@ -54,6 +56,7 @@ store.registerModule('language', language)
 store.registerModule('revision', revision)
 store.registerModule('browser', browser)
 store.registerModule('repeaters', repeaters)
+store.registerModule('parents', parents)
 
 // Browser
 Vue.component('a17-repeater', a17Repeater)
@@ -95,7 +98,8 @@ Window.vm = new Vue({
     'a17-langswitcher': a17Langswitcher,
     'a17-fieldset': a17Fieldset,
     'a17-content': a17Content,
-    'a17-publisher': a17Publisher
+    'a17-publisher': a17Publisher,
+    'a17-page-nav': a17PageNav
   },
   mixins: [formatPermalink],
   data: function () {

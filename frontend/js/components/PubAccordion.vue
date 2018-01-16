@@ -9,8 +9,10 @@
         {{ defaultStartDate }}
       </template>
     </div>
-    <a17-datepicker name="publish_date" place-holder="Start Date" :initialValue="startDate" :maxDate="endDate" :enableTime="true" :allowInput="true" :static="true" @open="openStartCalendar" @close="closeCalendar" @input="updateStartDate" :clear="true"></a17-datepicker>
-    <a17-datepicker name="end_date" place-holder="End Date" :initialValue="endDate" :minDate="startDate" :enableTime="true" :allowInput="true" :static="true" @open="openEndCalendar" @close="closeCalendar" @input="updateEndDate" :clear="true"></a17-datepicker>
+    <div class="accordion__fields">
+      <a17-datepicker name="publish_date" place-holder="Start Date" :initialValue="startDate" :maxDate="endDate" :enableTime="true" :allowInput="true" :static="true" @open="openStartCalendar" @close="closeCalendar" @input="updateStartDate" :clear="true"></a17-datepicker>
+      <a17-datepicker name="end_date" place-holder="End Date" :initialValue="endDate" :minDate="startDate" :enableTime="true" :allowInput="true" :static="true" @open="openEndCalendar" @close="closeCalendar" @input="updateEndDate" :clear="true"></a17-datepicker>
+    </div>
   </a17-accordion>
 </template>
 
