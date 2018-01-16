@@ -1,10 +1,10 @@
 <template>
   <div class="block" :class="blockClasses">
     <div class="block__header">
-      <span class="block__counter f--tiny">{{ index + 1 }}</span>
-      <span class="block__title">{{ block.title }}</span>
       <span class="block__handle"></span>
-
+      <div class="block__toggle" @dblclick.prevent="toggleExpand()">
+        <span class="block__counter f--tiny">{{ index + 1 }}</span><span class="block__title">{{ block.title }}</span>
+      </div>
       <div class="block__actions">
         <slot name="block-actions"></slot>
         <a17-dropdown :ref="addDropdown" position="bottom-right" @open="hover = true" @close="hover = false" v-if="withAddDropdown">
@@ -159,10 +159,14 @@
     font-weight:600;
     height:50px;
     line-height:50px;
+    user-select:none;
+  }
+
+  .block__toggle {
+    flex-grow:1;
   }
 
   .block__actions {
-    flex-grow:1;
     text-align:right;
     font-size:0px;
     padding-top:(50px - 26px) / 2;
