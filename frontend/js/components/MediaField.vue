@@ -11,16 +11,16 @@
         </div>
 
         <ul class="media__metadatas">
-          <li><strong>{{ currentMedia.name }}</strong></li>
+          <li class="media__name"><strong :title="currentMedia.name">{{ currentMedia.name }}</strong></li>
           <li class="f--small" v-if="currentMedia.size">File size: {{ currentMedia.size | uppercase }}</li>
-          <li class="f--small" v-if="currentMedia.width + currentMedia.height">Dimensions: {{ currentMedia.width }} &times; {{ currentMedia.height }}</li>
+          <li class="f--small" v-if="currentMedia.width + currentMedia.height">Dimensions: {{ currentMedia.width }}&nbsp;&times;&nbsp;{{ currentMedia.height }}</li>
           <li class="f--small" v-if="cropInfos.length" @click="openCropMedia">
             <span class="f--small f--note f--underlined--o f--underlined--link">
               Cropped : <span v-for="(cropInfo, index) in cropInfos" :key="cropInfo.name">{{ cropInfo.name }}<span v-if="index !== cropInfos.length - 1">,&nbsp;</span></span>
             </span>
           </li>
           <li class="f--small">
-            <a href="#" @click.prevent="metadatasInfos" v-if="withAddInfo" class="f--link-underlined--o"> {{ metadatas.text }}</a>
+            <a href="#" @click.prevent="metadatasInfos" v-if="withAddInfo" class="f--link-underlined--o">{{ metadatas.text }}</a>
           </li>
         </ul>
 
@@ -282,10 +282,7 @@
     max-width: 240px;
     user-select: none;
     position:relative;
-
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
+    min-width: 100px;
 
     &:before {
       content: "";
@@ -304,6 +301,10 @@
       height:auto;
       max-height:100%;
     }
+  }
+
+  .media--slide .media__img {
+    max-width: 120px;
   }
 
   // .media__square {
@@ -340,9 +341,7 @@
     }
   }
 
-  .media--slide .media__img {
-    max-width: 120px;
-  }
+
 
   .media__info {
     display: flex;
@@ -356,14 +355,26 @@
     padding: 5px 15px;
     flex-grow: 1;
     color: $color__text--light;
+    overflow: hidden;
 
-    strong {
-      font-weight: normal;
-      color: $color__text;
+    li {
+      overflow:hidden;
     }
 
     a {
       color:$color__link;
+    }
+  }
+
+  .media__name {
+    strong {
+      font-weight: normal;
+      color: $color__text;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      display:block;
+      margin-bottom:5px;
+      // white-space: nowrap;
     }
   }
 
