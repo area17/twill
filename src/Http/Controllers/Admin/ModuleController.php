@@ -890,12 +890,12 @@ abstract class ModuleController extends Controller
         return camelCaseToWords($this->modelName);
     }
 
-    private function respondWithSuccess($message)
+    protected function respondWithSuccess($message)
     {
         return $this->respondWithJson($message, FlashLevel::SUCCESS);
     }
 
-    private function respondWithRedirect($redirectUrl)
+    protected function respondWithRedirect($redirectUrl)
     {
         return response()->json([
             'redirect' => $redirectUrl,
