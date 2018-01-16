@@ -66,6 +66,7 @@
       margin: 0;
       font-weight: 600;
       border-radius: 2px;
+      user-select:none;
     }
 
     .icon {
