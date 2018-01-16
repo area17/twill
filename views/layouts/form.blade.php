@@ -27,7 +27,7 @@
                     </a17-title-editor>
                     <div slot="actions">
                         <a17-langswitcher></a17-langswitcher>
-                        <a17-button type="button" variant="action" size="small" @click="openEditor(-1)">Editor</a17-button>
+                        <a17-button type="button" variant="editor" size="small" @click="openEditor(-1)"><span v-svg symbol="editor"></span>Editor</a17-button>
                     </div>
                 </a17-sticky-nav>
             </div>
@@ -64,11 +64,11 @@
     <a17-modal class="modal--browser" ref="browser" mode="medium">
         <a17-browser />
     </a17-modal>
-    <a17-overlay ref="preview" title="Preview changes">
-        <a17-previewer />
-    </a17-overlay>
     <a17-overlay ref="editor" title="Content editor">
         <a17-editor />
+    </a17-overlay>
+    <a17-overlay ref="preview" title="Preview changes">
+        <a17-previewer />
     </a17-overlay>
 @stop
 

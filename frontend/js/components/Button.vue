@@ -95,7 +95,8 @@
     }
   }
 
-  .button--action {
+  .button--action,
+  .button--editor {
     background: $color__darkBlue;
     color: white;
     @include font-smoothing();
@@ -111,6 +112,20 @@
     &:disabled {
       opacity: .5;
       pointer-events: none;
+    }
+  }
+
+  .button--editor {
+    text-transform:uppercase;
+    @include font-tiny-btn;
+    font-weight:600;
+    padding: 0 15px;
+
+    .icon {
+      vertical-align: baseline;
+      top: 3px;
+      position: relative;
+      margin-right: 10px;
     }
   }
 

@@ -133,6 +133,10 @@
     background-color: $color__overlay--background;
   }
 
+  .overlay + .overlay {
+    z-index: $zindex__overlay + 1;
+  }
+
   .overlay__window {
     background:$color__background;
     min-width: 50vw;

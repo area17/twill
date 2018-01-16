@@ -21,6 +21,11 @@
   /*letter-spacing: -0.01em;*/
 }
 
+@mixin font-tiny-btn() {
+  font-size:11.5px;
+  letter-spacing: 0;
+}
+
 @mixin font-tiny() {
   font-size:11px;
   letter-spacing: 0;

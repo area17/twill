@@ -1,6 +1,6 @@
 <template>
   <div class="editor">
-    <a17-button class="editor__leave" variant="action" size="small">Preview</a17-button>
+    <a17-button class="editor__leave" variant="editor" size="small" @click="openPreview"><span v-svg symbol="preview"></span>Preview</a17-button>
     <div class="editor__frame">
       <div class="editor__inner">
         <div class="editor__sidebar">
@@ -45,6 +45,10 @@
       })
     },
     methods: {
+      openPreview: function () {
+        this.$store.commit('updateRevision', 0)
+        if (this.$root.$refs.preview) this.$root.$refs.preview.open()
+      }
     },
     mounted: function () {
     }

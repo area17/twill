@@ -72,7 +72,7 @@
     outline:0;
     -webkit-appearance: none;
     cursor: pointer;
-    font-size:0.75em;
+    @include font-tiny-btn;
     padding:0 18px 0 30px;
     position:relative;
     color:$color__f--text;
