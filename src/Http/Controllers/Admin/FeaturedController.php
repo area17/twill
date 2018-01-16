@@ -94,7 +94,7 @@ class FeaturedController extends Controller
                     }
                 })->reject(function ($item) {
                     return is_null($item);
-                })->toArray(),
+                })->values()->toArray(),
             ];
         })->values()->toArray();
     }
