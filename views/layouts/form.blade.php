@@ -33,8 +33,7 @@
                     <aside class="col col--aside">
                         <div class="publisher" data-sticky-target="publisher">
                             <a17-publisher></a17-publisher>
-                            <a17-page-nav placeholder="Go to page"></a17-page-nav>
-                            {{-- Fix me - set previous and next url attributes for the module a17-page-nav to appear : previous-url="/templates/form" next-url="/templates/form" --}}
+                            <a17-page-nav placeholder="Go to page" previous-url="{{ $parentPreviousUrl ?? '' }}" next-url="{{ $parentNextUrl ?? '' }}"></a17-page-nav>
                         </div>
                     </aside>
                     <section class="col col--primary">
@@ -95,52 +94,8 @@
 
     window.STORE.revisions = {!! json_encode($revisions ?? [])  !!}
 
-{{--
-    For parent/child functionalities to work nicely in forms
---}}
-{{--
-    window.STORE.parentId = 2
-    window.STORE.parents = [
-        {
-            'id': 1,
-            'name': 'Logo',
-            'edit': '/templates/form',
-            'children': [
-                {
-                    'id': 2,
-                    'name': 'Flag',
-                    'edit': '/templates/form',
-                    'children': []
-                },
-                {
-                    'id': 3,
-                    'name': 'Files system',
-                    'edit': '/templates/form',
-                    'children': []
-                },
-            ]
-        },
-        {
-            'id': 4,
-            'name': 'Page 2',
-            'edit': '/templates/form',
-            'children': [
-                {
-                    'id': 5,
-                    'name': 'Introduction',
-                    'edit': '/templates/form',
-                    'children': [
-                        {
-                            'id': 8,
-                            'name': 'Introduction paragraph',
-                            'edit': '/templates/form',
-                            'children': []
-                        }
-                    ]
-                }
-            ]
-        }
-    ] --}}
+    window.STORE.parentId = {{ $parentId ?? 0 }}
+    window.STORE.parents = {!! json_encode($parents ?? [])  !!}
 
     window.STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('cms-toolkit.block_editor.crops')) !!}
     window.STORE.medias.selected = {}
