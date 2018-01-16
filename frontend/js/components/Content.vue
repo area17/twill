@@ -19,7 +19,7 @@
     <a17-dropdown ref="blocksDropdown" position="top-center" :arrow="true" :offset="10" v-if="availableBlocks.length">
       <a17-button size="small" variant="action" @click="$refs.blocksDropdown.toggle()">{{ title }}</a17-button>
       <div slot="dropdown__content">
-        <button type="button" v-for="(availableBlock, index) in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, -1)"><span v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
+        <button type="button" v-for="(availableBlock, index) in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, -1)"><span class="content__icon" v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
       </div>
     </a17-dropdown>
   </div>
@@ -134,6 +134,11 @@
     &.sortable-ghost {
       opacity:0.5;
     }
+  }
+
+  .content__icon {
+    min-width: 19px;
+    text-align: center;
   }
 
   .content__item:first-child {

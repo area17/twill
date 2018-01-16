@@ -176,6 +176,7 @@
 
   .slide__content {
     flex-grow: 1;
+    max-width:calc(100% - 12px);
   }
 
 </style>
