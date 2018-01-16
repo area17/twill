@@ -113,6 +113,7 @@ const actions = {
     // - selected medias and browsers
     // - created blocks and repeaters
     let data = Object.assign(fields, {
+      parentId: rootState.parents.active,
       cmsSaveType: saveType,
       published: rootState.publication.published,
       public: rootState.publication.visibility === 'public',
