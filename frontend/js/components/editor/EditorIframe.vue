@@ -1,11 +1,13 @@
 <template>
   <div class="editorIframe" >
-    <iframe :srcdoc="preview" @load="loadPreview"></iframe>
+    <iframe :srcdoc="preview" ref="frame" @load="loadPreview"></iframe>
   </div>
 </template>
 
 <script>
   import { mapState, mapGetters } from 'vuex'
+
+  import debounce from 'lodash/debounce'
 
   export default {
     name: 'A17editoriframe',
@@ -32,8 +34,25 @@
       })
     },
     methods: {
-      loadPreview: function () {
+      refresh: function () {
+        const frame = this.$refs.frame
+        const frameBody = frame.contentWindow.document.body
+
+        // no scollbars
+        console.log(frame)
+        frameBody.style.overflow = 'hidden'
+
+        console.log('Refresh the iframe')
+        frame.height = frameBody.scrollHeight + 'px'
+      },
+      _resize: debounce(function () {
+        console.log('Resize the iframe')
+        this.refresh()
+      }, 200),
+      loadPreview: function (event) {
         console.log('loadPreview')
+        console.log(event)
+        this.refresh()
       }
     },
     mounted: function () {

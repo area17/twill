@@ -66,7 +66,7 @@ const actions = {
   getPreview ({ commit, state, getters }, block) {
     commit(types.ADD_BLOCK_PREVIEW, {
       id: block.id,
-      html: block.title + ' - Get preview HTML for data : ' + block.id
+      html: block.title + ' - Get preview HTML <br /> <div style="background-color:yellow; padding:20px; height:' + (30 + Math.floor(Math.random() * 350)) + 'px">Variable height div to test resize</div> Block ID : ' + block.id
     })
     // AJAX goes here
   }
