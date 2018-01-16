@@ -15,7 +15,7 @@
       <ul v-if="ratiosByContext.length > 1" class="cropper__ratios">
         <li v-for="ratio in ratiosByContext" @click="changeRatio(ratio)" :key="ratio.name" :class="{ 's--active' : crop.name === ratio.name }">{{ ratio.name | capitalize }}</li>
       </ul>
-      <span class="cropper__values f--small" :class="cropperWarning">{{ cropValues.width }} &times; {{ cropValues.height }}</span>
+      <span class="cropper__values f--small" :class="cropperWarning">{{ cropValues.originalWidth }} &times; {{ cropValues.originalHeight }}</span>
     </footer>
   </div>
 </template>
@@ -49,7 +49,11 @@
         toggleBreakpoint: 0,
         cropValues: {
           width: this.media.crops[Object.keys(this.media.crops)[0]].width,
-          height: this.media.crops[Object.keys(this.media.crops)[0]].height
+          height: this.media.crops[Object.keys(this.media.crops)[0]].height,
+          originalWidth: this.media.width,
+          originalHeight: this.media.height,
+          naturalWidth: null,
+          naturalHeight: null
         },
         minCropValues: {
           width: 0,
@@ -99,7 +103,7 @@
       },
       cropperWarning: function () {
         return {
-          'cropper__warning': this.cropValues.width < this.minCropValues.width || this.cropValues.height < this.minCropValues.height
+          'cropper__warning': this.cropValues.originalWidth < this.minCropValues.width || this.cropValues.originalHeight < this.minCropValues.height
         }
       },
       ...mapState({
@@ -124,6 +128,8 @@
 
       // init displayed crop values
       imageBox.addEventListener('ready', function () {
+        self.cropValues.naturalWidth = img.naturalWidth
+        self.cropValues.naturalHeight = img.naturalHeight
         self.updateCropperValues()
         self.sendCropperValues()
       })
@@ -157,6 +163,8 @@
       setCropperValues: function (data) {
         this.cropValues.width = data.width
         this.cropValues.height = data.height
+        this.cropValues.originalWidth = Math.round(this.cropValues.width * this.currentMedia.width / this.cropValues.naturalWidth)
+        this.cropValues.originalHeight = Math.round(this.cropValues.height * this.currentMedia.height / this.cropValues.naturalHeight)
       },
       sendCropperValues: function () {
         let data = {}
@@ -309,5 +317,4 @@
       }
     }
   }
-
 </style>
