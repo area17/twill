@@ -34,7 +34,7 @@
             <a17-tablehead :columns="visibleColumns" ref="thead" :sortable="!nested"></a17-tablehead>
           </thead>
           <template v-if="draggable">
-            <draggable class="datatable__drag" :element="'tbody'" v-model="rows" :options="draggableOptions">
+            <draggable class="datatable__drag" :element="'tbody'" v-model="rows" :options="draggableOptions" @start="onStart" @end="onEnd">
               <template v-for="(row, index) in rows">
                 <a17-tablerow v-if="!nested" :row="row" :index="index" :columns="visibleColumns" :key="row.id"></a17-tablerow>
                 <template v-else>
@@ -89,6 +89,7 @@
   import { mapState, mapGetters } from 'vuex'
 
   import draggableMixin from '@/mixins/draggable'
+  import nestedDraggableMixin from '@/mixins/nestedDraggable'
   import draggable from 'vuedraggable'
   import debounce from 'lodash/debounce'
 
@@ -110,7 +111,7 @@
       'a17-spinner': a17Spinner,
       draggable
     },
-    mixins: [draggableMixin],
+    mixins: [draggableMixin, nestedDraggableMixin],
     props: {
       draggable: {
         type: Boolean,
@@ -459,6 +460,12 @@
 
     .table__scroller {
       padding-bottom: 50px;
+    }
+  }
+
+  .datatable--dragging /deep/ .nested__dropArea:empty {
+    &::after {
+      min-height: 20px;
     }
   }
 </style>
