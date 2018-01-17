@@ -133,10 +133,10 @@
       imageBox.addEventListener('ready', function () {
         self.cropValues.natural.width = img.naturalWidth
         self.cropValues.natural.height = img.naturalHeight
-        const naturalCrop = self.toNaturalCrop(self.crop)
-        self.cropper.setData(naturalCrop)
+
+        self.initCrop()
         self.updateCropperValues()
-        self.sendCropperValues()
+        //self.sendCropperValues()
       })
     },
     methods: {
@@ -147,10 +147,10 @@
         let ratio = this.initAspectRatio
 
         this.cropper.setAspectRatio(ratio)
-        this.cropper.setData(this.crop)
 
         this.toggleBreakpoint = index
 
+        this.initCrop()
         this.updateCropperValues()
         this.sendCropperValues()
       },
@@ -168,6 +168,9 @@
         const originalCrop = this.toOriginalCrop(data)
         this.cropValues.original.width = originalCrop.width
         this.cropValues.original.height = originalCrop.height
+      },
+      initCrop: function () {
+        this.cropper.setData(this.toNaturalCrop(this.crop))
       },
       sendCropperValues: function () {
         let data = {}
