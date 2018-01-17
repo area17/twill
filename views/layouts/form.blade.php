@@ -64,9 +64,7 @@
     <a17-modal class="modal--browser" ref="browser" mode="medium">
         <a17-browser />
     </a17-modal>
-    <a17-overlay ref="editor" title="Content editor">
-        <a17-editor />
-    </a17-overlay>
+    <a17-editor ref="editor"></a17-editor>
     <a17-overlay ref="preview" title="Preview changes">
         <a17-previewer />
     </a17-overlay>

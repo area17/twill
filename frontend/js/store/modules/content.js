@@ -63,12 +63,18 @@ const mutations = {
 }
 
 const actions = {
-  getPreview ({ commit, state, getters }, block) {
-    commit(types.ADD_BLOCK_PREVIEW, {
-      id: block.id,
-      html: block.title + ' - Get preview HTML <br /> <div style="background-color:yellow; padding:20px; height:' + (30 + Math.floor(Math.random() * 350)) + 'px">Variable height div to test resize</div> Block ID : ' + block.id
-    })
-    // AJAX goes here
+  getPreviews ({ commit, state, getters }) {
+    // refresh preview of the active block
+    if (state.active.hasOwnProperty('id')) {
+      const block = state.active
+      // AJAX goes here to retrieve the html
+      commit(types.ADD_BLOCK_PREVIEW, {
+        id: block.id,
+        html: block.title + ' - Get preview HTML <br /> <div style="background-color:yellow; padding:20px; height:' + (30 + Math.floor(Math.random() * 350)) + 'px">Variable height div to test resize</div> Block ID : ' + block.id
+      })
+    } else {
+      // AJAX goes here to retrieve the html
+    }
   }
 }
 

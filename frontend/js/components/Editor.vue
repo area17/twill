@@ -1,17 +1,19 @@
 <template>
-  <div class="editor">
-    <a17-button class="editor__leave" variant="editor" size="small" @click="openPreview"><span v-svg symbol="preview"></span>Preview</a17-button>
-    <div class="editor__frame">
-      <div class="editor__inner">
-        <div class="editor__sidebar">
-          <a17-editorsidebar>Add Content</a17-editorsidebar>
-        </div>
-        <div class="editor__preview">
-          <a17-editorpreview>Preview</a17-editorpreview>
+  <a17-overlay ref="overlay" title="Content editor" @close="closeEditor">
+    <div class="editor">
+      <a17-button class="editor__leave" variant="editor" size="small" @click="openPreview"><span v-svg symbol="preview"></span>Preview</a17-button>
+      <div class="editor__frame">
+        <div class="editor__inner">
+          <div class="editor__sidebar">
+            <a17-editorsidebar @delete="deleteBlock" @save="saveBlock" @cancel="cancelBlock">Add Content</a17-editorsidebar>
+          </div>
+          <div class="editor__preview">
+            <a17-editorpreview @select="selectBlock" @delete="deleteBlock" @unselect="unselectBlock">Preview</a17-editorpreview>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </a17-overlay>
 </template>
 
 <script>
@@ -19,6 +21,8 @@
 
   import A17EditorSidebar from '@/components/editor/EditorSidebar.vue'
   import A17EditorPreview from '@/components/editor/EditorPreview.vue'
+
+  import cloneDeep from 'lodash/cloneDeep'
 
   export default {
     name: 'A17editor',
@@ -39,15 +43,77 @@
           this.$store.commit('reorderBlocks', value)
         }
       },
+      hasBlockActive: function () {
+        return Object.keys(this.activeBlock).length > 0
+      },
       ...mapState({
+        activeBlock: state => state.content.active,
         savedBlocks: state => state.content.blocks,
         availableBlocks: state => state.content.available
       })
     },
     methods: {
+      open: function (index) {
+        console.log('open Editor')
+        if (index >= 0) this.selectBlock(index)
+        this.$refs.overlay.open()
+      },
+      closeEditor: function () {
+        console.log('close Editor')
+        this.cancelBlock()
+      },
+      isBlockActive: function (id) {
+        if (!this.hasBlockActive) return false
+
+        return id === this.activeBlock.id
+      },
       openPreview: function () {
         this.$store.commit('updateRevision', 0)
         if (this.$root.$refs.preview) this.$root.$refs.preview.open()
+      },
+      saveBlock: function () {
+        console.log('save Block')
+        // refresh Preview
+        if (this.hasBlockActive) this.$store.dispatch('getPreviews')
+        this.unselectBlock()
+      },
+      deleteBlock: function (index) {
+        console.log('delete Block')
+        this.unselectBlock()
+        this.$store.commit('deleteBlock', index)
+      },
+      cancelBlock: function () {
+        console.log('cancel Block')
+        // Display some sort of warning
+        if (this.hasBlockActive) {
+          if (window.hasOwnProperty('PREVSTATE')) this.$store.replaceState(window.PREVSTATE)
+          this.$store.dispatch('getPreviews')
+        }
+        this.unselectBlock()
+      },
+      getBlockId: function (index) {
+        if (typeof this.blocks[index] === 'undefined') return 0
+        else return this.blocks[index].id
+      },
+      selectBlock: function (index) {
+        console.log('select Block ' + index)
+        // toggle selection
+        const blockId = this.getBlockId(index)
+        if (!blockId) return
+
+        if (this.isBlockActive(blockId)) this.cancelBlock()
+        else {
+          // Save current Store and activate
+          window.PREVSTATE = cloneDeep(this.$store.state)
+          this.$store.commit('activateBlock', index)
+        }
+      },
+      unselectBlock: function () {
+        console.log('unselect Block')
+        this.$store.commit('activateBlock', -1)
+
+        // remove prevstate
+        if (window.hasOwnProperty('PREVSTATE')) delete window.PREVSTATE
       }
     },
     mounted: function () {

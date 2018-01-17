@@ -16,8 +16,8 @@
     </template>
     <template v-else>
       <div class="editorSidebar__actions">
-        <a17-button variant="action" @click="previewBlock()">Done</a17-button>
-        <a17-button variant="secondary" @click="unselectBlock">Cancel</a17-button>
+        <a17-button variant="action" @click="saveBlock()">Done</a17-button>
+        <a17-button variant="secondary" @click="cancelBlock()">Cancel</a17-button>
       </div>
     </template>
   </div>
@@ -58,18 +58,14 @@
       componentName: function (id) {
         return 'blocks[' + id + ']'
       },
-      previewBlock: function () {
-        if (this.hasBlockActive) {
-          this.$store.dispatch('getPreview', this.activeBlock)
-        }
-        this.unselectBlock()
+      saveBlock: function () {
+        this.$emit('save')
       },
-      unselectBlock: function () {
-        this.$store.commit('activateBlock', -1)
+      cancelBlock: function () {
+        this.$emit('cancel')
       },
       deleteBlock: function (index) {
-        this.unselectBlock()
-        this.$store.commit('deleteBlock', index)
+        this.$emit('delete', index)
       }
     },
     mounted: function () {
@@ -83,6 +79,11 @@
   .editorSidebar {
     padding:20px;
     height:100%;
+    position:relative;
+  }
+
+  .editorSidebar__item {
+    max-height: calc(100% - 80px);
     overflow-y: scroll;
   }
 
@@ -117,8 +118,17 @@
   }
 
   .editorSidebar__actions {
-    position:fixed;
-    bottom:20px;
+    position:absolute;
+    width:100%;
+    left:0;
+    bottom:0;
+    padding:20px;
+    background:$color__border--light;
+    display:flex;
+
+    button {
+      width:50%;
+    }
   }
 
   .editorSidebar__button {

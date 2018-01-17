@@ -92,15 +92,10 @@
         })
       },
       deleteBlock: function (index) {
-        this.unselectBlock()
-        this.$store.commit('deleteBlock', index)
-      },
-      unselectBlock: function () {
-        this.$store.commit('activateBlock', -1)
+        this.$emit('delete', index)
       },
       selectBlock: function (index) {
-        if (this.isBlockActive(this.blocks[index].id)) this.unselectBlock()
-        else this.$store.commit('activateBlock', index)
+        this.$emit('select', index)
       }
     },
     mounted: function () {
