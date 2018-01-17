@@ -80,8 +80,9 @@
         let self = this
         let filtered = self.ratiosByContext
         let filter = filtered.find(function (r) {
-          return r.name === self.currentRatioName
+          return r.name === self.crop.name
         })
+
         if (typeof filter !== 'undefined' && filter) {
           self.minCropValues.width = filter.minValues ? filter.minValues.width : 0
           self.minCropValues.height = filter.minValues ? filter.minValues.height : 0
@@ -138,8 +139,10 @@
     methods: {
       changeCrop: function (cropName, index) {
         this.currentCrop = cropName
+        this.currentRatioName = this.crop.name
 
         let ratio = this.initAspectRatio
+
         this.cropper.setAspectRatio(ratio)
         this.cropper.setData(this.crop)
 
