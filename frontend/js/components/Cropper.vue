@@ -13,7 +13,7 @@
     <footer class="cropper__footer">
       <slot></slot>
       <ul v-if="ratiosByContext.length > 1" class="cropper__ratios">
-        <li v-for="ratio in ratiosByContext" @click="changeRatio(ratio)" :key="ratio.name" :class="{ 's--active' : crop.name === ratio.name }">{{ ratio.name | capitalize }}</li>
+        <li v-for="ratio in ratiosByContext" @click="changeRatio(ratio)" :key="ratio.name" :class="{ 's--active' : currentRatioName === ratio.name }">{{ ratio.name | capitalize }}</li>
       </ul>
       <span class="cropper__values f--small" :class="cropperWarning">{{ cropValues.originalWidth }} &times; {{ cropValues.originalHeight }}</span>
     </footer>
@@ -58,7 +58,8 @@
         minCropValues: {
           width: 0,
           height: 0
-        }
+        },
+        currentRatioName: this.media.crops[Object.keys(this.media.crops)[0]].name
       }
     },
     computed: {
@@ -79,7 +80,7 @@
         let self = this
         let filtered = self.ratiosByContext
         let filter = filtered.find(function (r) {
-          return r.name === self.crop.name
+          return r.name === self.currentRatioName
         })
         if (typeof filter !== 'undefined' && filter) {
           self.minCropValues.width = filter.minValues ? filter.minValues.width : 0
@@ -148,12 +149,12 @@
         this.sendCropperValues()
       },
       changeRatio: function (ratioObj) {
-        this.crop.name = ratioObj.name
+        this.currentRatioName = ratioObj.name
         this.cropper.setAspectRatio(ratioObj.ratio)
-        this.minCropValues.width = ratioObj.minValues.width
-        this.minCropValues.height = ratioObj.minValues.height
-        this.sendCropperValues()
+        this.minCropValues.width = ratioObj.minValues ? ratioObj.minValues.width : 0
+        this.minCropValues.height = ratioObj.minValues ? ratioObj.minValues.height : 0
 
+        this.sendCropperValues()
         this.updateCropperValues()
       },
       updateCropperValues: function () {
@@ -170,7 +171,7 @@
         let data = {}
         data.values = {}
         data.values[this.currentCrop] = this.cropper.getData(true)
-        data.values[this.currentCrop].name = this.crop.name
+        data.values[this.currentCrop].name = this.currentRatioName
         this.$emit('crop-end', data)
       }
     }
