@@ -70,8 +70,23 @@ const actions = {
     })
   },
   saveBuckets ({state}) {
-    console.log('save')
-    bucketsAPI.save({}, () => {
+    const buckets = {}
+
+    state.buckets.forEach((bucket) => {
+      const children = []
+      bucket.children.forEach((child) => {
+        children.push({
+          id: child.id,
+          type: child.content_type.value,
+          starred: child.withToggleFeatured
+        })
+      })
+      buckets[bucket.id] = children
+    })
+
+    bucketsAPI.save({
+      buckets: buckets
+    }, () => {
       // TODO: Show notification success
     }, () => {
       // TODO: Show notification error
