@@ -69,50 +69,12 @@ const actions = {
       commit(types.UPDATE_BUCKETS_MAX_PAGE, resp.maxPage)
     })
   },
-  addToBucket ({commit, state}, data) {
-    const bucket = state.buckets[data.index]
-
-    bucketsAPI.add(bucket.addUrl, {
-      id: data.item.id,
-      type: data.item.content_type.value,
-      starred: data.item.starred
-    })
-  },
-  deleteFromBucket ({commit, state}, data) {
-    const bucket = state.buckets[data.index]
-    const bucketItem = bucket['children'][data.itemIndex]
-
-    bucketsAPI.delete(bucket.removeUrl, {
-      id: bucketItem['id'],
-      type: bucketItem['content_type']['value']
+  saveBuckets ({state}) {
+    console.log('save')
+    bucketsAPI.save({}, () => {
+      // TODO: Show notification success
     }, () => {
-      commit(types.DELETE_FROM_BUCKET, data)
-    })
-  },
-  toggleFeaturedInBucket ({ commit, state }, data) {
-    const bucket = state.buckets[data.index]
-    const bucketItem = bucket['children'][data.itemIndex]
-
-    bucketsAPI.toggleFeatured(bucket.toggleFeaturedUrl, {
-      id: bucketItem['id'],
-      type: bucketItem['content_type']['value']
-    }, () => {
-      commit(types.TOGGLE_FEATURED_IN_BUCKET, data)
-    })
-  },
-  reorderBucket ({ commit, state }, data) {
-    commit(types.REORDER_BUCKET_LIST, data)
-
-    const bucket = state.buckets[data.bucketIndex]
-
-    bucketsAPI.reorder(bucket.reorderUrl, {
-      buckets: bucket['children'].map(bucketItem => {
-        return {
-          id: bucketItem['id'],
-          type: bucketItem['content_type']['value'],
-          starred: bucketItem['starred']
-        }
-      })
+      // TODO: Show notification error
     })
   }
 }

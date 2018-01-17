@@ -41,5 +41,13 @@ export default {
     }, function (resp) {
       // error callback
     })
+  },
+
+  save (endpoint, params, callback) {
+    axios.put(endpoint, params).then(function (resp) {
+      if (callback && typeof callback === 'function') callback()
+    }, function (resp) {
+      // error callback
+    })
   }
 }

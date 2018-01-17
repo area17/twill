@@ -159,15 +159,12 @@
           item: item
         }
 
-        let deletedItems = false
-
         // Remove item from each bucket if option restricted to one bucket is active
         if (self.restricted) {
           self.buckets.forEach(function (bucket) {
             bucket.children.forEach(function (child) {
               if (child.id === item.id && child.content_type.value === item.content_type.value) {
                 self.deleteFromBucket(item, bucket.id)
-                deletedItems = true
               }
             })
           })
@@ -179,21 +176,9 @@
         if (count > -1 && count < self.buckets[index].max) {
           // Commit before dispatch to prevent ui visual effect timeout
           self.$store.commit('addToBucket', data)
-          if (deletedItems) {
-            setTimeout(() => {
-              self.$store.dispatch('addToBucket', data)
-            }, 1000)
-          } else {
-            self.$store.dispatch('addToBucket', data)
-          }
         } else if (self.overridableMax || self.overrideItem) {
-          self.$store.dispatch('deleteFromBucket', {index: index, itemIndex: 0})
-
-          setTimeout(() => {
-            self.$store.commit('addToBucket', data)
-            self.$store.dispatch('addToBucket', data)
-          }, 1000)
-
+          self.$store.commit('deleteFromBucket', {index: index, itemIndex: 0})
+          self.$store.commit('addToBucket', data)
           self.overrideItem = false
         } else {
           self.$refs.overrideBucket.open()
@@ -211,8 +196,7 @@
           index: bucketIndex,
           itemIndex: itemIndex
         }
-
-        this.$store.dispatch('deleteFromBucket', data)
+        this.$store.commit('deleteFromBucket', data)
       },
       toggleFeaturedInBucket: function (item, bucket) {
         let bucketIndex = this.buckets.findIndex(b => b.id === bucket)
@@ -227,7 +211,7 @@
           itemIndex: itemIndex
         }
 
-        this.$store.dispatch('toggleFeaturedInBucket', data)
+        this.$store.commit('toggleFeaturedInBucket', data)
       },
       sortBucket: function (evt, index) {
         const data = {
@@ -235,7 +219,7 @@
           oldIndex: evt.moved.oldIndex,
           newIndex: evt.moved.newIndex
         }
-        this.$store.dispatch('reorderBucket', data)
+        this.$store.commit('reorderBucketList', data)
       },
       changeDataSource: function (value) {
         this.$store.commit('updateBucketsDataSource', value)
@@ -264,6 +248,9 @@
         this.overrideItem = true
         this.addToBucket(this.currentItem, this.currentBucketID)
         this.$refs.overrideBucket.close()
+      },
+      save: function () {
+        this.$store.dispatch('saveBuckets')
       }
     }
   }
