@@ -1,8 +1,9 @@
 <template>
   <div class="buckets">
     <div class="buckets__page-title">
-      <div class="container">
+      <div class="container buckets__page-title-content">
         <h2><slot></slot></h2>
+        <a17-button variant="validate" @click="save">Publish</a17-button>
       </div>
     </div>
     <div class="container">
@@ -281,9 +282,12 @@
     border-bottom: 1px solid $color__border;
     overflow: hidden;
 
-    h2 {
-      // min-height: 90px;
-      padding: 30px 0;
+    .buckets__page-title-content {
+      padding-top: 30px;
+      padding-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
   }
 
