@@ -16,7 +16,7 @@ class RefreshLQIP extends Command
     // TODO: document this and actually think about moving to queuable job after content type updates
     public function handle()
     {
-        DB::table('mediables')->chunk(100, function ($attached_medias) {
+        DB::table('mediables')->orderBy('id')->chunk(100, function ($attached_medias) {
             foreach ($attached_medias as $attached_media) {
                 $uuid = Media::withTrashed()->find($attached_media->media_id, ['uuid'])->uuid;
 
