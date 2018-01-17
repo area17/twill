@@ -110,3 +110,25 @@ export const UPDATE_PARENT = 'updateParent'
 /* Notifications */
 export const SET_NOTIF = 'setNotification'
 export const CLEAR_NOTIF = 'clearNotification'
+
+/* Mutations taht must trigger a change in the preview in the block editor need to be listed here */
+export const REFRESH_BLOCK_PREVIEW = [
+  UPDATE_FORM_FIELD,
+  REFRESH_FORM_FIELD,
+  REMOVE_FORM_FIELD,
+  ADD_FORM_BLOCK,
+  DELETE_FORM_BLOCK,
+  DUPLICATE_FORM_BLOCK,
+  REORDER_FORM_BLOCKS,
+  SWITCH_LANG,
+  SET_MEDIA_CROP,
+  SET_MEDIA_METADATAS,
+  SAVE_MEDIAS,
+  DESTROY_MEDIAS,
+  DESTROY_SPECIFIC_MEDIA,
+  REORDER_MEDIAS,
+  SAVE_ITEMS,
+  DESTROY_ITEMS,
+  DESTROY_ITEM,
+  REORDER_ITEMS
+]

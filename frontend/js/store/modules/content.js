@@ -73,7 +73,7 @@ const actions = {
         html: block.title + ' - Get preview HTML <br /> <div style="background-color:yellow; padding:20px; height:' + (30 + Math.floor(Math.random() * 350)) + 'px">Variable height div to test resize</div> Block ID : ' + block.id
       })
     } else {
-      // AJAX goes here to retrieve the html
+      // AJAX goes here to retrieve the html of all the state.blocks
     }
   }
 }

@@ -11,8 +11,8 @@
         <div class="editorPreview__protector" @click="selectBlock(index)"></div>
         <div class="editorPreview__actions">
           <a17-buttonbar >
-            <button type="button" @click="selectBlock(index)">Edit</button>
-            <button type="button" class="editorPreview__handle">Drag</button>
+            <button type="button" @click="selectBlock(index)"><span v-svg symbol="edit_large"></span></button>
+            <button type="button" class="editorPreview__handle"><span v-svg symbol="drag"></span></button>
             <button type="button" @click="deleteBlock(index)"><span v-svg symbol="trash"></span></button>
           </a17-buttonbar>
         </div>

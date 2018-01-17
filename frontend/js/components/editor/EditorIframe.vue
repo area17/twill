@@ -1,6 +1,6 @@
 <template>
   <div class="editorIframe" >
-    <iframe :srcdoc="preview" ref="frame" @load="loadPreview"></iframe>
+    <iframe :srcdoc="preview" ref="frame" @load="loadedPreview"></iframe>
   </div>
 </template>
 
@@ -49,8 +49,8 @@
         console.log('Resize the iframe')
         this.refresh()
       }, 200),
-      loadPreview: function (event) {
-        console.log('loadPreview')
+      loadedPreview: function (event) {
+        console.log('loaded Preview')
         console.log(event)
         this.refresh()
       }

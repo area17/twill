@@ -22,6 +22,8 @@
   import A17EditorSidebar from '@/components/editor/EditorSidebar.vue'
   import A17EditorPreview from '@/components/editor/EditorPreview.vue'
 
+  import * as mutationTypes from '@/store/mutation-types'
+
   import cloneDeep from 'lodash/cloneDeep'
 
   export default {
@@ -32,6 +34,9 @@
     },
     data: function () {
       return {
+        unSubscribe: function () {
+          return null
+        }
       }
     },
     computed: {
@@ -54,12 +59,10 @@
     },
     methods: {
       open: function (index) {
-        console.log('open Editor')
         if (index >= 0) this.selectBlock(index)
         this.$refs.overlay.open()
       },
       closeEditor: function () {
-        console.log('close Editor')
         this.cancelBlock()
       },
       isBlockActive: function (id) {
@@ -72,18 +75,15 @@
         if (this.$root.$refs.preview) this.$root.$refs.preview.open()
       },
       saveBlock: function () {
-        console.log('save Block')
         // refresh Preview
         if (this.hasBlockActive) this.$store.dispatch('getPreviews')
         this.unselectBlock()
       },
       deleteBlock: function (index) {
-        console.log('delete Block')
         this.unselectBlock()
         this.$store.commit('deleteBlock', index)
       },
       cancelBlock: function () {
-        console.log('cancel Block')
         // Display some sort of warning
         if (this.hasBlockActive) {
           if (window.hasOwnProperty('PREVSTATE')) this.$store.replaceState(window.PREVSTATE)
@@ -106,9 +106,20 @@
           // Save current Store and activate
           window.PREVSTATE = cloneDeep(this.$store.state)
           this.$store.commit('activateBlock', index)
+
+          this.unSubscribe = this.$store.subscribe((mutation, state) => {
+            // Don't trigger a refresh of the preview every single time
+            if (mutationTypes.REFRESH_BLOCK_PREVIEW.includes(mutation.type)) {
+              console.log('Editor - store changed : refresh Preview')
+              console.log(mutation.type)
+              this.$store.dispatch('getPreviews')
+            }
+          })
         }
       },
       unselectBlock: function () {
+        this.unSubscribe()
+
         console.log('unselect Block')
         this.$store.commit('activateBlock', -1)
 
