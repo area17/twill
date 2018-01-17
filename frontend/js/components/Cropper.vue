@@ -78,20 +78,6 @@
         }
         return []
       },
-      initAspectRatio: function () {
-        let self = this
-        let filtered = self.ratiosByContext
-        let filter = filtered.find(function (r) {
-          return r.name === self.crop.name
-        })
-
-        if (typeof filter !== 'undefined' && filter) {
-          self.minCropValues.width = filter.minValues ? filter.minValues.width : 0
-          self.minCropValues.height = filter.minValues ? filter.minValues.height : 0
-          return filter.ratio
-        }
-        return self.aspectRatio
-      },
       cropperOpts: function () {
         let self = this
         return {
@@ -136,32 +122,39 @@
 
         self.initCrop()
         self.updateCropperValues()
-        //self.sendCropperValues()
       })
     },
     methods: {
+      initAspectRatio: function () {
+        let self = this
+        let filtered = self.ratiosByContext
+        let filter = filtered.find(function (r) {
+          return r.name === self.currentRatioName
+        })
+
+        if (typeof filter !== 'undefined' && filter) {
+          self.minCropValues.width = filter.minValues ? filter.minValues.width : 0
+          self.minCropValues.height = filter.minValues ? filter.minValues.height : 0
+          self.cropper.setAspectRatio(filter.ratio)
+          return
+        }
+        self.cropper.setAspectRatio(self.aspectRatio)
+      },
       changeCrop: function (cropName, index) {
         this.currentCrop = cropName
         this.currentRatioName = this.crop.name
-
-        let ratio = this.initAspectRatio
-
-        this.cropper.setAspectRatio(ratio)
-
         this.toggleBreakpoint = index
 
+        this.initAspectRatio()
         this.initCrop()
         this.updateCropperValues()
         this.sendCropperValues()
       },
       changeRatio: function (ratioObj) {
         this.currentRatioName = ratioObj.name
-        this.cropper.setAspectRatio(ratioObj.ratio)
-        this.minCropValues.width = ratioObj.minValues ? ratioObj.minValues.width : 0
-        this.minCropValues.height = ratioObj.minValues ? ratioObj.minValues.height : 0
-
-        this.sendCropperValues()
+        this.initAspectRatio()
         this.updateCropperValues()
+        this.sendCropperValues()
       },
       updateCropperValues: function () {
         let data = this.cropper.getData(true)
