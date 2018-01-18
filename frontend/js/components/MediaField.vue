@@ -60,7 +60,7 @@
     </div>
 
     <!-- Crop modal -->
-    <a17-modal class="modal--cropper" :ref="cropModalName" title="Edit image crop" mode="medium" v-if="hasMedia">
+    <a17-modal class="modal--cropper" :ref="cropModalName" :forceClose="true" title="Edit image crop" mode="medium" v-if="hasMedia">
       <a17-cropper :media="currentMedia" v-on:crop-end="cropMedia" :aspectRatio="16 / 9" :context="cropContext">
         <a17-button class="cropper__button" variant="action" @click="$refs[cropModalName].close()">Update</a17-button>
       </a17-cropper>
