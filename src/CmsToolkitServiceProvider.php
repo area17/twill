@@ -189,15 +189,13 @@ class CmsToolkitServiceProvider extends ServiceProvider
 
     private function registerCommands()
     {
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                Setup::class,
-                ModuleMake::class,
-                CreateSuperAdmin::class,
-                RefreshLQIP::class,
-                GenerateBlocks::class,
-            ]);
-        }
+        $this->commands([
+            Setup::class,
+            ModuleMake::class,
+            CreateSuperAdmin::class,
+            RefreshLQIP::class,
+            GenerateBlocks::class,
+        ]);
     }
 
     private function requireHelpers()
