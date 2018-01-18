@@ -120,8 +120,7 @@
         self.cropValues.natural.width = img.naturalWidth
         self.cropValues.natural.height = img.naturalHeight
 
-        self.initCrop()
-        self.updateCropperValues()
+        self.updateCrop()
       })
     },
     methods: {
@@ -145,16 +144,18 @@
         this.currentRatioName = this.crop.name
         this.toggleBreakpoint = index
 
-        this.initAspectRatio()
-        this.initCrop()
-        this.updateCropperValues()
+        this.updateCrop()
         this.sendCropperValues()
       },
       changeRatio: function (ratioObj) {
         this.currentRatioName = ratioObj.name
-        this.initAspectRatio()
-        this.updateCropperValues()
+        this.updateCrop()
         this.sendCropperValues()
+      },
+      updateCrop: function () {
+        this.initAspectRatio()
+        this.initCrop()
+        this.updateCropperValues()
       },
       updateCropperValues: function () {
         let data = this.cropper.getData(true)
