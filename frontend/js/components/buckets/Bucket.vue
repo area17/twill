@@ -474,7 +474,7 @@
         .item__dropdown__content {
           min-width: 250px;
 
-          /deep/ .radioGroup__item {
+          .radioGroup__item {
             &:hover {
               background-color: $color__border--light;
             }
