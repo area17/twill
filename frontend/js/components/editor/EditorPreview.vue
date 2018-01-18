@@ -90,6 +90,8 @@
           block: newBlock,
           index: fromIndex
         })
+
+        this.$emit('add', fromIndex)
       },
       deleteBlock: function (index) {
         this.$emit('delete', index)

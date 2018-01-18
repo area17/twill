@@ -119,11 +119,11 @@
     },
     methods: {
       updateFromStore: function (newValue) { // called from the formStore mixin
-        if (typeof newValue !== 'undefined') {
-          this.value = newValue
-          this.$refs.input.value = this.value
-          this.quill.pasteHTML(newValue)
-        }
+        if (typeof newValue === 'undefined') newValue = ''
+
+        this.value = newValue
+        this.$refs.input.value = this.value
+        this.quill.pasteHTML(newValue)
       },
       updateInput: function () {
         this.$refs.input.value = this.value

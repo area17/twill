@@ -62,18 +62,38 @@ const mutations = {
   }
 }
 
+const previewHTML = function (block) {
+  return block.title + ' - Get preview HTML ' + new Date() + '<br /> <div style="background-color:yellow; padding:20px; min-height:' + Math.floor(Math.random() * 300) + 'px">Variable height div to test resize.<br />Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div> Block ID : ' + block.id
+}
+
 const actions = {
-  getPreviews ({ commit, state, getters }) {
+  getPreview ({ commit, state, getters }, index = -1) {
+    let block = index >= 0 ? state.blocks[index] : {}
+
     // refresh preview of the active block
-    if (state.active.hasOwnProperty('id')) {
-      const block = state.active
-      // AJAX goes here to retrieve the html
+    if (state.active.hasOwnProperty('id') && index === -1) block = state.active
+
+    if (block.hasOwnProperty('id')) {
+      console.log('Actions - getPreview HTML : ' + block.id)
+
+      // AJAX goes here to retrieve the html output
       commit(types.ADD_BLOCK_PREVIEW, {
         id: block.id,
-        html: block.title + ' - Get preview HTML <br /> <div style="background-color:yellow; padding:20px; height:' + (30 + Math.floor(Math.random() * 350)) + 'px">Variable height div to test resize</div> Block ID : ' + block.id
+        html: previewHTML(block)
       })
-    } else {
-      // AJAX goes here to retrieve the html of all the state.blocks
+    }
+  },
+  getAllPreviews ({ commit, state, getters }) {
+    if (state.blocks.length) {
+      state.blocks.forEach(function (block) {
+        console.log('Actions - getPreview HTML : ' + block.id)
+
+        // AJAX goes here to retrieve the html output
+        commit(types.ADD_BLOCK_PREVIEW, {
+          id: block.id,
+          html: previewHTML(block)
+        })
+      })
     }
   }
 }

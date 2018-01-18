@@ -21,9 +21,7 @@
     },
     computed: {
       preview: function () {
-        console.log('preview')
-        console.log(this.block.id)
-        return this.previewsById(this.block.id) || 'No preview'
+        return this.previewsById(this.block.id) || ''
       },
       ...mapGetters([
         'previewsById'
@@ -39,23 +37,38 @@
         const frameBody = frame.contentWindow.document.body
 
         // no scollbars
-        console.log(frame)
         frameBody.style.overflow = 'hidden'
 
-        console.log('Refresh the iframe')
-        frame.height = frameBody.scrollHeight + 'px'
+        // get body extra margin
+        const bodyStyle = window.getComputedStyle(frameBody)
+        const bodyMarginTop = bodyStyle.getPropertyValue('margin-top')
+        const bodyMarginBottom = bodyStyle.getPropertyValue('margin-bottom')
+
+        const frameHeight = frameBody.scrollHeight + parseInt(bodyMarginTop) + parseInt(bodyMarginBottom)
+
+        console.log('Iframe - Change the iframe height : ' + frameHeight + 'px')
+        frame.height = frameHeight + 'px'
       },
       _resize: debounce(function () {
-        console.log('Resize the iframe')
+        console.log('Iframe - Resize Preview')
         this.refresh()
       }, 200),
       loadedPreview: function (event) {
-        console.log('loaded Preview')
-        console.log(event)
+        console.log('Iframe - Loaded Preview')
         this.refresh()
+      },
+      init: function () {
+        window.addEventListener('resize', this._resize)
+      },
+      dispose: function () {
+        window.removeEventListener('resize', this._resize)
       }
     },
     mounted: function () {
+      this.init()
+    },
+    beforeDestroy: function () {
+      this.dispose()
     }
   }
 </script>
