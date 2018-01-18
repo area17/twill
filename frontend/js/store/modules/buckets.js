@@ -69,7 +69,7 @@ const actions = {
       commit(types.UPDATE_BUCKETS_MAX_PAGE, resp.maxPage)
     })
   },
-  saveBuckets ({state}) {
+  saveBuckets ({commit, state}) {
     const buckets = {}
 
     state.buckets.forEach((bucket) => {
@@ -84,12 +84,16 @@ const actions = {
       buckets[bucket.id] = children
     })
 
-    bucketsAPI.save({
-      buckets: buckets
-    }, () => {
+    bucketsAPI.save('', {buckets: buckets}, (successResponse) => {
       // TODO: Show notification success
-    }, () => {
-      // TODO: Show notification error
+      commit(types.SET_NOTIF, {
+        message: 'all saved',
+        variant: 'success'})
+    }, (errorResponse) => {
+      commit(types.SET_NOTIF, {
+        message: 'Your submission could not be validated, please fix and retry',
+        variant: 'error'
+      })
     })
   }
 }

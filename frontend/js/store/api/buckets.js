@@ -43,11 +43,13 @@ export default {
     })
   },
 
-  save (endpoint, params, callback) {
+  save (endpoint, params, callback, errorCallback) {
     axios.put(endpoint, params).then(function (resp) {
-      if (callback && typeof callback === 'function') callback()
+      if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       // error callback
+      if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
+      console.warn('save request error.')
     })
   }
 }
