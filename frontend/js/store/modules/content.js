@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import * as types from '../mutation-types'
+import { getFormData } from '@/utils/getFormData.js'
 
 const state = {
   editor: window.STORE.form.editor || false,
@@ -63,13 +64,15 @@ const mutations = {
   }
 }
 
-const previewHTML = function (block) {
-  return block.title + ' - Get preview HTML ' + new Date() + '<br /> <div style="background-color:yellow; padding:20px; min-height:' + Math.floor(Math.random() * 300) + 'px">Variable height div to test resize.<br />Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div> Block ID : ' + block.id
+const previewHTML = function (block, data) {
+  return '<div style="font-family:Arial">' + block.title + ' - Get preview HTML<br />' + new Date() + '<br />Block ID : ' + block.id + '<br /><div style="background-color:#EFEFEF; padding:20px;">' + JSON.stringify(data.blocks, null, 4) + '<br/>Variable height div to test resize.</div></div>'
 }
 
 const actions = {
-  getPreview ({ commit, state, getters }, index = -1) {
+  getPreview ({ commit, state, getters, rootState }, index = -1) {
     let block = index >= 0 ? state.blocks[index] : {}
+
+    const data = getFormData(rootState)
 
     // refresh preview of the active block
     if (state.active.hasOwnProperty('id') && index === -1) block = state.active
@@ -80,11 +83,14 @@ const actions = {
       // AJAX goes here to retrieve the html output
       commit(types.ADD_BLOCK_PREVIEW, {
         id: block.id,
-        html: previewHTML(block)
+        html: previewHTML(block, data)
       })
     }
   },
   getAllPreviews ({ commit, state, getters }) {
+
+    const data = getFormData(rootState)
+
     if (state.blocks.length) {
       state.blocks.forEach(function (block) {
         console.log('Actions - getPreview HTML : ' + block.id)
@@ -92,7 +98,7 @@ const actions = {
         // AJAX goes here to retrieve the html output
         commit(types.ADD_BLOCK_PREVIEW, {
           id: block.id,
-          html: previewHTML(block)
+          html: previewHTML(block, data)
         })
       })
     }
