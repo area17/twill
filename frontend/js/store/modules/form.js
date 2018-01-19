@@ -5,6 +5,7 @@ import { getFormData } from '@/utils/getFormData.js'
 
 const state = {
   loading: false,
+  type: 'save',
   title: window.STORE.form.title || '',
   permalink: window.STORE.form.permalink || '',
   baseUrl: window.STORE.form.baseUrl || '',
@@ -90,6 +91,9 @@ const mutations = {
   },
   [types.CLEAR_FORM_ERRORS] (state) {
     state.errors = []
+  },
+  [types.UPDATE_FORM_SAVE_TYPE] (state, type) {
+    state.type = type
   }
 }
 
@@ -98,12 +102,15 @@ const actions = {
     commit(types.CLEAR_FORM_ERRORS)
     commit(types.CLEAR_NOTIF, 'error')
 
+    // update or create etc...
+    commit(types.UPDATE_FORM_SAVE_TYPE, saveType)
+
     // we can now create our submitted data object out of:
     // - our just created fields object,
     // - publication properties
     // - selected medias and browsers
     // - created blocks and repeaters
-    const data = getFormData(rootState, saveType)
+    const data = getFormData(rootState)
 
     api.save(state.saveUrl, data, function (successResponse) {
       commit(types.UPDATE_FORM_LOADING, false)

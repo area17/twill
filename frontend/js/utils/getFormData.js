@@ -83,7 +83,7 @@ export const gatherRepeaters = (rootState) => {
   }))
 }
 
-export const getFormData = (rootState, saveType) => {
+export const getFormData = (rootState) => {
   let fields = rootState.form.fields.filter((field) => {
     // we start by filtering out blocks related form fields
     return !field.name.startsWith('blocks[')
@@ -101,7 +101,7 @@ export const getFormData = (rootState, saveType) => {
   // - created blocks and repeaters
   let data = Object.assign(fields, {
     parentId: rootState.parents.active,
-    cmsSaveType: saveType,
+    cmsSaveType: rootState.form.type,
     published: rootState.publication.published,
     public: rootState.publication.visibility === 'public',
     publish_start_date: rootState.publication.startDate,
