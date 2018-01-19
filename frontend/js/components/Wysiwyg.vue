@@ -19,6 +19,52 @@
   import InputframeMixin from '@/mixins/inputFrame'
   import LocaleMixin from '@/mixins/locale'
 
+  const QuillDefaultFormats = [
+    'background',
+    'bold',
+    'color',
+    'font',
+    'code',
+    'italic',
+    'link',
+    'size',
+    'strike',
+    'script',
+    'underline',
+    'blockquote',
+    'header',
+    'indent',
+    'list',
+    'align',
+    'direction',
+    'code-block',
+    'formula',
+    'image',
+    'video'
+  ]
+
+  function getQuillFormats (toolbarEls) {
+    const formats = []
+    function addFormat (format) {
+      if (formats.indexOf(format) > -1 || QuillDefaultFormats.indexOf(format) === -1) return
+      formats.push(format)
+    }
+
+    toolbarEls.forEach((el) => {
+      if (typeof el === 'object') {
+        for (let property in el) {
+          addFormat(property)
+        }
+      }
+
+      if (typeof el === 'string') {
+        addFormat(el)
+      }
+    })
+
+    return formats
+  }
+
   export default {
     name: 'A17Wysiwyg',
     mixins: [InputMixin, InputframeMixin, LocaleMixin, FormStoreMixin],
@@ -61,7 +107,10 @@
         defaultModules: {
           toolbar: [
             ['bold', 'italic', 'underline', 'link']
-          ]
+          ],
+          clipboard: {
+            matchVisual: false
+          }
           // Complete Toolbar example :
           //
           // ['blockquote', 'code-block', 'strike'],
@@ -104,11 +153,10 @@
       self.options.theme = self.options.theme || 'snow'
       self.options.boundary = self.options.boundary || document.body
       self.options.modules = self.options.modules || self.defaultModules
-      self.options.modules.toolbar = self.options.modules.toolbar !== undefined
-                                      ? self.options.modules.toolbar
-                                      : self.defaultModules.toolbar
+      self.options.modules.toolbar = self.options.modules.toolbar !== undefined ? self.options.modules.toolbar : self.defaultModules.toolbar
       self.options.placeholder = self.options.placeholder || self.placeholder
       self.options.readOnly = self.options.readOnly !== undefined ? self.options.readOnly : self.readonly
+      self.options.formats = getQuillFormats(self.options.modules.toolbar) // Formats are based on current toolbar configuration
 
       const icons = Quill.import('ui/icons') // custom icons
       icons['bold'] = self.getIcon('bold')
