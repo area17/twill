@@ -4,7 +4,7 @@
       <div class="editorSidebar__title">
         <span class="editorSidebar__blockTitle"><span class="editorSidebar__counter f--tiny">{{ index + 1 }}</span> {{ activeBlock.title }}</span><span><a href="#" @click.prevent="deleteBlock(index)" class="f--small f--note f--underlined">Delete</a></span>
       </div>
-      <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes"><!-- dynamic components --></component>
+      <div class="editorSidebar__body"><component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes"><!-- dynamic components --></component></div>
     </div>
     <template v-if="!hasBlockActive">
       <h4 class="editorSidebar__title"><slot></slot></h4>
@@ -90,6 +90,13 @@
   .editorSidebar__title {
     padding:15px 0 10px 0;
     display:flex;
+  }
+
+  .editorSidebar__body {
+    border: 1px solid $color__border;
+    border-radius:2px;
+    background:$color__background;
+    padding:15px;
   }
 
   .editorSidebar__counter {
