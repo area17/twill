@@ -2,6 +2,7 @@ import Vue from 'vue'
 import * as types from '../mutation-types'
 
 const state = {
+  editor: window.STORE.form.editor || false,
   available: window.STORE.form.content || {},
   blocks: window.STORE.form.blocks || [],
   previews: window.STORE.form.previews || {},

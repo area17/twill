@@ -4,6 +4,7 @@
 
 @php
     $permalink = $permalink ?? true;
+    $editor = $editor ?? false;
     $translate = $translate ?? false;
     $translateTitle = $translateTitle ?? $translate ?? false;
 @endphp
@@ -27,7 +28,7 @@
                     </a17-title-editor>
                     <div slot="actions">
                         <a17-langswitcher></a17-langswitcher>
-                        <a17-button type="button" variant="editor" size="small" @click="openEditor(-1)"><span v-svg symbol="editor"></span>Editor</a17-button>
+                        <a17-button v-if="editor" type="button" variant="editor" size="small" @click="openEditor(-1)"><span v-svg symbol="editor"></span>Editor</a17-button>
                     </div>
                 </a17-sticky-nav>
             </div>
@@ -64,7 +65,7 @@
     <a17-modal class="modal--browser" ref="browser" mode="medium">
         <a17-browser />
     </a17-modal>
-    <a17-editor ref="editor"></a17-editor>
+    <a17-editor v-if="editor" ref="editor"></a17-editor>
     <a17-overlay ref="preview" title="Preview changes">
         <a17-previewer />
     </a17-overlay>
@@ -95,6 +96,8 @@
         visibility: '{{ $item->isFillable('public') ? ($item->public ? 'public' : 'private') : false }}',
         reviewProcess: {!! isset($reviewProcess) ? json_encode($reviewProcess) : '[]' !!}
     }
+
+    window.STORE.form.editor = {{ $editor ? 'true' : 'false' }}
 
     window.STORE.revisions = {!! json_encode($revisions ?? [])  !!}
 

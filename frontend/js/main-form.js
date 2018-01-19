@@ -119,7 +119,8 @@ Window.vm = new Vue({
   },
   computed: {
     ...mapState({
-      loading: state => state.form.loading
+      loading: state => state.form.loading,
+      editor: state => state.content.editor
     })
   },
   methods: {
