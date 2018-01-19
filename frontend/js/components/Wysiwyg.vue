@@ -14,6 +14,8 @@
 
   import QuillConfiguration from '@/libs/Quill/QuillConfiguration'
 
+  import debounce from 'lodash/debounce'
+
   import InputMixin from '@/mixins/input'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
@@ -74,7 +76,6 @@
             }
           }
           // Complete Toolbar example :
-          //
           // ['blockquote', 'code-block', 'strike'],
           // [{ 'header': 1 }, { 'header': 2 }],
           // [{ 'list': 'ordered'}, { 'list': 'bullet' }],
@@ -97,15 +98,18 @@
 
         // see formStore mixin
         this.saveIntoStore()
-      }
+      },
+      textUpdate: debounce(function () {
+        this.updateInput()
+      }, 500)
     },
-    watch: {
-      submitting: function () {
-        if (this.submitting) { // The form is about to submit so lets make sure we saved the wysiwyg
-          this.updateInput()
-        }
-      }
-    },
+    // watch: {
+    //   submitting: function () {
+    //     if (this.submitting) { // The form is about to submit so lets make sure we saved the wysiwyg
+    //       this.updateInput()
+    //     }
+    //   }
+    // },
     mounted: function () {
       const self = this
 
@@ -133,8 +137,8 @@
         if (self.maxlength > 0 && self.quill.getLength() > self.maxlength + 1) {
           self.quill.deleteText(self.maxlength, self.quill.getLength())
         } else {
-          var html = self.$refs.editor.children[0].innerHTML
-          var text = self.quill.getText()
+          let html = self.$refs.editor.children[0].innerHTML
+          let text = self.quill.getText()
           if (html === '<p><br></p>') html = ''
           self.value = html
 
@@ -145,6 +149,8 @@
             text: text
           })
         }
+
+        self.textUpdate()
       })
 
       // focus / blur event
