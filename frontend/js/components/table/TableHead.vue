@@ -1,7 +1,7 @@
 <template>
   <tr class="tablehead">
     <td class="tablehead__cell f--small" v-for="col in columns" @click="sortColumn(col)" :key="col.name" :class="cellClasses(col)">
-      <span v-if="isSortableColumn(col)">{{ col.label }} <span class="tablehead__arrow">↓</span></span>
+      <span v-if="isDisplayedColumn(col)">{{ col.label }} <span class="tablehead__arrow">↓</span></span>
       <a v-if="col.name === 'bulk'" href="#" @click.prevent.stop="toggleBulkSelect()"><span><a17-checkbox name="bulkAll" :value="1" :initialValue="bulkValue" :class="{ 'checkbox--minus' : checkboxMinus }" ></a17-checkbox></span></a>
     </td>
     <td class="tablehead__spacer">&nbsp;</td>
@@ -14,6 +14,10 @@
   export default {
     name: 'A17Tablehead',
     props: {
+      sortable: {
+        type: Boolean,
+        default: true
+      },
       columns: {
         type: Array,
         default: function () { return [] }
@@ -45,21 +49,23 @@
       cellClasses: function (col) {
         return [
           col.name === 'draggable' ? 'tablehead__cell--draggable' : '',
+          col.name === 'nested' ? 'tablehead__cell--nested' : '',
           col.name === 'bulk' ? 'tablehead__cell--bulk' : '',
-          col.sortable ? 'tablehead__cell--sortable' : '',
+          col.sortable && this.sortable ? 'tablehead__cell--sortable' : '',
           col.name === this.sortKey ? `tablehead__cell--sorted` : '',
           col.name === this.sortKey && this.sortDir ? `tablehead__cell--sorted${this.sortDir}` : ''
         ]
       },
-      isSortableColumn: function (col) {
+      isDisplayedColumn: function (col) {
         return col.name !== 'draggable' &&
                col.name !== 'featured' &&
+               col.name !== 'nested' &&
                col.name !== 'bulk' &&
                col.name !== 'published' &&
                col.name !== 'thumbnail'
       },
       sortColumn: function (column) {
-        this.$emit('sortColumn', column)
+        if (column.sortable && this.sortable) this.$emit('sortColumn', column)
       },
       toggleBulkSelect: function () {
         const newBulkIds = (this.bulkIds.length) ? [] : this.dataIds
@@ -103,11 +109,13 @@
     padding-right:25px;
   }
 
-  .tablehead__cell--draggable {
+  .tablehead__cell--draggable,
+  .tablehead__cell--nested {
     padding:0;
   }
 
   .tablehead__cell--draggable,
+  .tablehead__cell--nested,
   .tablehead__cell--bulk {
     width:1px;
 

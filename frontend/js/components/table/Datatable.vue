@@ -6,7 +6,7 @@
       <div class="datatable__stickyHead" data-sticky-target="thead">
         <div class="container">
           <div class="datatable__stickyInner">
-            <div class="datatable__setup">
+            <div class="datatable__setup" v-if="!nested">
               <a17-dropdown class="datatable__setupDropdown" v-if="hideableColumns.length" ref="setupDropdown" position="bottom-right" title="Show" :clickable="true" :offset="-10">
                 <button class="datatable__setupButton" @click="$refs.setupDropdown.toggle()"><span v-svg symbol="preferences"></span></button>
                 <div slot="dropdown__content">
@@ -14,11 +14,10 @@
                 </div>
               </a17-dropdown>
             </div>
-
             <div class="datatable__stickyTable">
               <a17-table :columnsWidth="columnsWidth" :xScroll="xScroll" @scroll="updateScroll">
                 <thead>
-                  <a17-tablehead :columns="visibleColumns" @sortColumn="updateSort"></a17-tablehead>
+                  <a17-tablehead :columns="visibleColumns" @sortColumn="updateSort" :sortable="!nested"></a17-tablehead>
                 </thead>
               </a17-table>
             </div>
@@ -32,21 +31,48 @@
       <div class="datatable__table" :class="isEmptyDatable">
         <a17-table :xScroll="xScroll" @scroll="updateScroll">
           <thead>
-            <a17-tablehead :columns="visibleColumns" ref="thead"></a17-tablehead>
+            <a17-tablehead :columns="visibleColumns" ref="thead" :sortable="!nested"></a17-tablehead>
           </thead>
           <template v-if="draggable">
-            <draggable :element="'tbody'" v-model='rows' :options="{ handle:'.tablecell__handle', disabled: !reorderable }">
+            <draggable class="datatable__drag" :element="'tbody'" v-model="rows" :options="draggableOptions" @start="onStart" @end="onEnd">
               <template v-for="(row, index) in rows">
-                <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :key="row.id"></a17-tablerow>
+                <a17-tablerow v-if="!nested" :row="row" :index="index" :columns="visibleColumns" :key="row.id"></a17-tablerow>
+                <template v-else>
+                  <tr class="tablerow-nested" :key="row.id">
+                    <td :colspan="visibleColumns.length + 2">
+                      <table>
+                        <tbody>
+                          <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :draggable="draggable"></a17-tablerow>
+                          <a17-tablerow-nested v-if="row.children" :maxDepth="nestedDepth" :parentId="row.id" :items="row.children" :columns="visibleColumns" :draggableOptions="draggableOptions"></a17-tablerow-nested>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </template>
               </template>
             </draggable>
           </template>
+
           <tbody v-else>
             <template v-for="(row, index) in rows">
-              <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :key="row.id"></a17-tablerow>
+              <a17-tablerow v-if="!nested" :row="row" :index="index" :columns="visibleColumns"
+                            :key="row.id"></a17-tablerow>
+              <template v-else>
+                <tr class="tablerow-nested" :key="row.id">
+                  <td :colspan="visibleColumns.length + 2">
+                    <table>
+                      <tbody>
+                      <a17-tablerow :row="row" :index="index" :columns="visibleColumns"></a17-tablerow>
+                      <a17-tablerow-nested v-if="row.children" :maxDepth="nestedDepth" :parentId="row.id" :items="row.children" :columns="visibleColumns"></a17-tablerow-nested>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </template>
             </template>
           </tbody>
         </a17-table>
+
         <template v-if="rows.length <= 0">
           <div class="datatable__empty">
             <h4>{{ emptyMessage }}</h4>
@@ -63,12 +89,14 @@
   import { mapState, mapGetters } from 'vuex'
 
   import draggableMixin from '@/mixins/draggable'
+  import nestedDraggableMixin from '@/mixins/nestedDraggable'
   import draggable from 'vuedraggable'
   import debounce from 'lodash/debounce'
 
   import a17Table from './Table.vue'
   import a17Tablehead from './TableHead.vue'
   import a17Tablerow from './TableRow.vue'
+  import a17TableRowNested from './TableRowNested.vue'
   import a17Paginate from './Paginate.vue'
   import a17Spinner from '@/components/Spinner.vue'
 
@@ -78,11 +106,12 @@
       'a17-table': a17Table,
       'a17-tablehead': a17Tablehead,
       'a17-tablerow': a17Tablerow,
+      'a17-tablerow-nested': a17TableRowNested,
       'a17-paginate': a17Paginate,
       'a17-spinner': a17Spinner,
       draggable
     },
-    mixins: [draggableMixin],
+    mixins: [draggableMixin, nestedDraggableMixin],
     props: {
       draggable: {
         type: Boolean,
@@ -95,13 +124,27 @@
       emptyMessage: {
         type: String,
         default: ''
+      },
+      name: {
+        type: String,
+        default: 'group1'
+      },
+      nested: {
+        type: Boolean,
+        default: false
+      },
+      nestedDepth: {
+        type: Number,
+        default: 1
       }
     },
     data: function () {
       return {
+        willUpdate: true,
         xScroll: 0,
         columnsWidth: [],
-        reorderable: false
+        reorderable: false,
+        dragAreas: null
       }
     },
     computed: {
@@ -134,6 +177,15 @@
 
         return checkboxes
       },
+      draggableOptions: function () {
+        return {
+          handle: '.tablecell__handle',
+          disabled: !this.reorderable,
+          group: {
+            name: this.name
+          }
+        }
+      },
       ...mapState({
         page: state => state.datatable.page,
         offset: state => state.datatable.offset,
@@ -153,14 +205,18 @@
       getColumnWidth: function () {
         let self = this
         let newColumnsWidth = []
+        let tds = []
 
-        if (self.$refs.thead) {
-          // Get all the tds width (there must be a better way to do this) :
-          const tds = self.$refs.thead.$el.children
+        // Get all the tds width (not working in nested because the table structure is much more complex)
+        if (!self.nested && self.$refs.thead) tds = self.$refs.thead.$el.children
+        else {
+          // with the nested we are looking at the first tablerow tr to get the width of cells
+          const firstTR = self.$el.querySelector('.table tr.tablerow')
+          if (firstTR) tds = firstTR.children
+        }
 
-          for (let index = 0; index < tds.length; index++) {
-            newColumnsWidth.push(tds[index].offsetWidth)
-          }
+        for (let index = 0; index < tds.length; index++) {
+          newColumnsWidth.push(tds[index].offsetWidth)
         }
 
         self.columnsWidth = newColumnsWidth
@@ -227,38 +283,66 @@
       }
     },
     beforeMount: function () {
+      function findBulkColumn (column) {
+        return column.name === 'bulk'
+      }
+
+      function findNestedColumn (column) {
+        return column.name === 'nested'
+      }
+
+      function findDraggableColumn (column) {
+        return column.name === 'draggable'
+      }
+
       // bulk edit column
-      const bulkColumn = {
-        name: 'bulk',
-        label: '',
-        visible: true,
-        optional: false,
-        sortable: false
-      }
-
       if (this.bulkeditable) {
-        this.$store.commit('addDatableColumn', {
-          index: 0,
-          data: bulkColumn
-        })
+        if (!this.columns.find(findBulkColumn)) {
+          this.$store.commit('addDatableColumn', {
+            index: 0,
+            data: {
+              name: 'bulk',
+              label: '',
+              visible: true,
+              optional: false,
+              sortable: false
+            }
+          })
+        }
       }
 
-      this.reorderable = this.draggable
+      // Nested Column
+      if (this.nested) {
+        if (!this.columns.find(findNestedColumn)) {
+          this.$store.commit('addDatableColumn', {
+            index: 0,
+            data: {
+              name: 'nested',
+              label: '',
+              visible: true,
+              optional: false,
+              sortable: false
+            }
+          })
+        }
+      }
 
       // draggable column
-      const draggableColumn = {
-        name: 'draggable',
-        label: '',
-        visible: true,
-        optional: false,
-        sortable: false
-      }
+      this.reorderable = this.draggable
 
       if (this.reorderable) {
-        this.$store.commit('addDatableColumn', {
-          index: 0,
-          data: draggableColumn
-        })
+        if (!this.columns.find(findDraggableColumn)) {
+          this.$store.commit('addDatableColumn', {
+            index: 0,
+            data: {
+              name: 'draggable',
+              label: '',
+              visible: true,
+              optional: false,
+              sortable: false
+            }
+          })
+        }
       }
     },
     mounted: function () {
@@ -273,6 +357,10 @@
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
 
+  table {
+    width: 100%;
+  }
+
   .datatable {
 
   }
@@ -282,7 +370,7 @@
     border-radius: 2px;
     position: relative;
 
-    /deep/ table {
+    /deep/ .table {
       margin-top: -60px; // hide the other thead
     }
   }
@@ -372,6 +460,12 @@
 
     .table__scroller {
       padding-bottom: 50px;
+    }
+  }
+
+  .datatable--dragging /deep/ .nested__dropArea:empty {
+    &::after {
+      min-height: 20px;
     }
   }
 </style>

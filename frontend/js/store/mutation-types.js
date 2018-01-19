@@ -86,6 +86,7 @@ export const UPDATE_DATATABLE_FILTER_STATUS = 'updateDatableFilterStatus'
 export const CLEAR_DATATABLE_FILTER = 'clearDatableFilter'
 export const UPDATE_DATATABLE_MESSAGE = 'updateDatableMessage'
 export const UPDATE_DATATABLE_LOADING = 'updateDatableLoading'
+export const UPDATE_DATATABLE_NESTED = 'updateDatatableNestedDatas'
 
 /* Buckets */
 export const ADD_TO_BUCKET = 'addToBucket'

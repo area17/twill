@@ -1,6 +1,29 @@
 import api from '../api/datatable'
 import * as types from '../mutation-types'
 import { setStorage } from '@/utils/localeStorage.js'
+/* NESTED functions */
+const getObject = (container, id, callback) => {
+  container.forEach((item) => {
+    if (item.id === id) callback(item)
+    if (item.children) getObject(item.children, id, callback)
+  })
+}
+
+const deepRemoveFromObj = (items, keys = ['id', 'children'], deep = 'children') => {
+  let deepItems = JSON.parse(JSON.stringify(items))
+  deepItems.forEach((obj) => {
+    for (const prop in obj) {
+      if (!keys.includes(prop)) {
+        delete obj[prop]
+      }
+
+      if (prop === deep) {
+        deepRemoveFromObj(obj[prop])
+      }
+    }
+  })
+  return deepItems
+}
 
 const state = {
   baseUrl: window.STORE.datatable.baseUrl || '',
@@ -184,6 +207,11 @@ const mutations = {
   },
   [types.UPDATE_DATATABLE_LOADING] (state, loading) {
     state.loading = !state.loading
+  },
+  [types.UPDATE_DATATABLE_NESTED] (state, data) {
+    getObject(state.data, data.parentId, (item) => {
+      item.children = data.val
+    })
   }
 }
 
@@ -208,7 +236,16 @@ const actions = {
       })
     }
   },
-  setDatatableDatas ({ commit, state, dispatch }, data) {
+  setDatatableNestedDatas ({commit, state, dispatch}, data) {
+    commit(types.UPDATE_DATATABLE_NESTED, data)
+
+    const ids = deepRemoveFromObj(state.data)
+    // TODO: ids is here an array of object. Maybe api need an update on back
+    api.reorder(ids, function (resp) {
+      commit('setNotification', {message: resp.data.message, variant: resp.data.variant})
+    })
+  },
+  setDatatableDatas ({commit, state, dispatch}, data) {
     // TBD: Maybe, we can keep and reset the old state if we have and error
     // reorder in store first
     commit(types.UPDATE_DATATABLE_DATA, data)
