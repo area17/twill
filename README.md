@@ -1282,18 +1282,282 @@ If you have attributes, relationships, extra images, file attachments or repeate
 
 ### Block editor
 
-#### Creating blocks
-In progress.
+#### How to add Block Editors to the CMS
+The Block Editor, lets you add content freely to your Entity(Article, Exhibition, Event). The block editors can be easy added and rearranged.
+Once a Block Editor is created, it can be used/added to any Entity by adding the corresponding traits.
 
-#### Using blocks
-First, make sure your project have the blocks table migration. If not, you can find the `create_blocks_table` migration in the toolkit's source in `migrations`.
+In order to add a Block Editor you need to add the `block_editor` field to your entity form. e.g.:
 
+filename: ```views/admin/articles/form.blade.php```
+```php
+@extends('cms-toolkit::layouts.form')
+
+@section('contentFields')
+    @formField('input', [
+        'name' => 'title',
+        'label' => 'Title',
+    ])
+...
+    @formField('block_editor')
+@stop
+```
+
+By adding the `@formField('block_editor')` you've enabled all the available Block Editors. To scope the *blocks* that will be displayed you can add a second parameter with the *blocks* key. e.g.:
+
+```php
+@formField('block_editor', [
+    'blocks' => ['quote', 'image']
+])
+```
+
+The *blocks* that can be added need to be defined under the `views/admin/blocks` folder.
+The blocks can be defined exactly like a regular form. e.g.:
+
+filename: ```admin/blocks/quote.blade.php```
+```php
+@formField('input', [
+    'name' => 'quote',
+    'type' => 'textarea',
+    'label' => 'Quote text',
+    'maxlength' => 250,
+    'rows' => 4
+])
+```
+
+Once the form is created an _artisan_ task needs to be run to generate the _Vue_ component.
+
+`php artisan cms-toolkit:blocks`
+
+Example output:
+```shell
+$ php artisan cms-toolkit:blocks
+Starting to scan block views directory...
+Block Quote generated successfully
+All blocks have been generated!
+$
+```
+
+The task will generate a file inside the folder `resources/assets/js/blocks/`.
+
+filename: ```resources/assets/js/blocks/BlockQuote.vue```
+
+```js
+<template>
+    <div class="block__body">
+        <a17-textfield label="Quote text" :name="fieldName('quote')" type="textarea" :maxlength="250" :rows="4" in-store="value" ></a17-textfield>
+    </div>
+</template>
+
+<script>
+  import BlockMixin from '@/mixins/block'
+
+  export default {
+    mixins: [BlockMixin]
+  }
+</script>
+
+```
+
+With that the *block* is ready to be used on the form, it just need to be enabled in the CMS configuration.
+For it a `block_editor` key it is required and inside the list of `blocks`.
+
+filename: ```config/cms-toolkit.php```
+
+```php
+    'block_editor' => [
+        'blocks' => [
+            ...
+            'quote' => [
+                'title' => 'Quote',
+                'icon' => 'text',
+                'component' => 'a17-block-quote',
+            ],
+            ..
+        ]
+    ]
+```
+
+Please note the naming convention. If the *block* added is _quote_ then the component should be prefixed with _a17-block-_.
+If you added a block like *my_awesome_block* then you need to make sure that keep the same name as _key_ and the _component name_ with the prefix. e.g.:
+```php
+    'block_editor' => [
+        'blocks' => [
+            ...
+            'my_awesome_block' => [
+                'title' => 'Title for my awesome block',
+                'icon' => 'text',
+                'component' => 'a17-block-my_awesome_block',
+            ],
+            ..
+        ]
+```
+
+
+After having the blocks added and the configuration set it is required to have the traits added inside the Entity(Laravel Model).
 Add the corresponding traits to your model and repository, respectively `HasBlocks` and `HandleBlocks`.
 
-In your module's form view, use the `block_editor` form field. If you want to restrict the list of blocks available for this specific module, pass a `blocks` array with a list of block names as defined in your `cms-toolkit` configuration file.
+filename: ```app/Models/Article.php```
+```php
+<?php
+
+namespace App\Models;
+
+use A17\CmsToolkit\Models\Behaviors\HasBlocks;
+use A17\CmsToolkit\Models\Model;
+
+class Article extends Model
+{
+    use HasBlocks;
+
+    ...
+}
+```
+
+filename: ```app/Repositories/ArticleRepository.php```
+```php
+<?php
+
+namespace App\Repositories;
+
+use A17\CmsToolkit\Repositories\Behaviors\HandleBlocks;
+use A17\CmsToolkit\Repositories\ModuleRepository;
+use App\Models\Article;
+
+class ArticleRepository extends ModuleRepository
+{
+    use HandleBlocks;
+
+    ...
+}
+```
+
+##### Common Errors
+- Make sure your project have the blocks table migration. If not, you can find the `create_blocks_table` migration in the toolkit's source in `migrations`.
+
+- Not running the _cms-toolkit:blocks_ task.
+
+- Not adding the *block* to the configuration.
+
+- Not using the same name of the block inside the configuration.
+
+#### How to add Repeater blocks
+Lets say that it is requested to have an Accordion on Articles, where each item should have a _Header_ and a _Description_.
+This accordion can be moved around along with the rest of the Block Editors.
+On the Article(entity) form we have:
+
+filename: ```views/admin/articles/form.blade.php```
+```php
+@extends('cms-toolkit::layouts.form')
+
+@section('contentFields')
+    @formField('input', [
+        'name' => 'title',
+        'label' => 'Title',
+    ])
+...
+    @formField('block_editor')
+@stop
+
+```
+
+- Add the *container block* it should be something like:
+
+  filename: ```admin/blocks/accordion.blade.php```
+```php
+  @formField('repeater', ['type' => 'accordion_item'])
+```
 
 
-#### Rendering blocks
+- Add it on the config/cms-toolkit.php
+```php
+    'block_editor' => [
+        'blocks' => [
+            ...
+            'accordion' => [
+                'title' => 'Accordion',
+                'icon' => 'text',
+                'component' => 'a17-block-accordion',
+            ],
+            ..
+        ]
+    ]
+```
+
+- Add the *item block*, the one that will be reapeated inside the *container block*
+  filename: ```admin/blocks/accordion_item.blade.php```
+
+```php
+  @formField('input', [
+      'name' => 'header',
+      'label' => 'Header'
+  ])
+
+  @formField('input', [
+      'type' => 'textarea',
+      'name' => 'description',
+      'label' => 'Description',
+      'rows' => 4
+  ])
+```
+
+- Add it on the config/cms-toolkit.php on the repeaters section
+```php
+    'block_editor' => [
+        'blocks' => [
+            ...
+            'accordion' => [
+                'title' => 'Accordion',
+                'icon' => 'text',
+                'component' => 'a17-block-accordion',
+            ],
+            ..
+        ],
+        'repeaters' => [
+            ...
+            'accordion_item' => [
+                'title' => 'Accordion',
+                'trigger' => 'Add accordion',
+                'component' => 'a17-block-accordion_item',
+                'max' => 10,
+            ],
+            ...
+        ]
+    ]
+```
+
+##### Common errors:
+- If you add the *container block* to the _repeaters_ section inside the config, it won't work, e.g.:
+```php
+        'repeaters' => [
+            ...
+            'accordion' => [
+                'title' => 'Accordion',
+                'trigger' => 'Add accordion',
+                'component' => 'a17-block-accordion',
+                'max' => 10,
+            ],
+            ...
+        ]
+```
+
+- If you use a different name for the block inside the _repeaters_ section, neither. e. g.:
+```php
+        'repeaters' => [
+            ...
+            'accordion-item' => [
+                'title' => 'Accordion',
+                'trigger' => 'Add accordion',
+                'component' => 'a17-block-accordion_item',
+                'max' => 10,
+            ],
+            ...
+        ]
+```
+
+- Not adding the *item block* to the _repeaters_ section.
+
+
+#### How to render blocks in the FE
 As long as you have access to a model instance that uses the HasBlocks trait in a view, you can call the `renderBlocks` helper on it to render the list of blocks that were created from the CMS. By default, this function will loop over all the blocks and their child blocks and render a Blade view located in `resources/views/site/blocks` with the same name as the block key you specified in your CMS toolkit configuration and module form. 
 
 In the frontend templates, you can call the `renderBlocks` helper like this:
@@ -1324,7 +1588,6 @@ To give an exemple:
 ```php
 {{ $block->image('mediaFieldName', 'cropNameFromBlocksConfig') }}
 {{ $block->images('mediaFieldName', 'cropNameFromBlocksConfig')}}
-```
 
 ### Media Library
 >![screenshot](_media/medialibrary.png)
