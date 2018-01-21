@@ -93,4 +93,18 @@ trait HandleRevisions
 
         $object->setRelation($relationship, $relatedElementsCollection);
     }
+
+    public function getCountForMine()
+    {
+        return $this->model->mine()->count();
+    }
+
+    public function getCountByStatusSlugHandleRevisions($slug)
+    {
+        if ($slug === 'mine') {
+            return $this->getCountForMine();
+        }
+
+        return false;
+    }
 }
