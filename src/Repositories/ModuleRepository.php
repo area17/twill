@@ -43,11 +43,17 @@ abstract class ModuleRepository
                 return $this->getCountForDraft();
             case 'trash':
                 return $this->getCountForTrash();
-            case 'mine':
-                return $this->getCountForMine();
-            default:
-                return 0;
         }
+
+        foreach (class_uses_recursive(get_called_class()) as $trait) {
+            if (method_exists(get_called_class(), $method = 'getCountByStatusSlug' . class_basename($trait))) {
+                if ($count = $this->$method($slug)) {
+                    return $count;
+                }
+            }
+        }
+
+        return 0;
     }
 
     public function getCountForAll()
@@ -68,11 +74,6 @@ abstract class ModuleRepository
     public function getCountForTrash()
     {
         return $this->model->onlyTrashed()->count();
-    }
-
-    public function getCountForMine()
-    {
-        return 0;
     }
 
     public function getById($id, $with = [], $withCount = [])

@@ -754,6 +754,7 @@ abstract class ModuleController extends Controller
                     $scope['onlyTrashed'] = true;
                     break;
                 case 'mine':
+                    $scope['mine'] = true;
                     break;
             }
 
