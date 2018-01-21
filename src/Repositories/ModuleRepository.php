@@ -230,7 +230,7 @@ abstract class ModuleRepository
     public function bulkRestore($ids)
     {
         try {
-            $query = $this->model->whereIn('id', $ids);
+            $query = $this->model->withTrashed()->whereIn('id', $ids);
             $objects = $query->get();
 
             $query->restore();

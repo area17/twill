@@ -17,6 +17,10 @@ trait HasSlug
         static::updated(function ($model) {
             $model->setSlugs();
         });
+
+        static::restored(function ($model) {
+            $model->setSlugs($restoring = true);
+        });
     }
 
     public function slugs()
@@ -54,15 +58,15 @@ trait HasSlug
             ->with(['slugs']);
     }
 
-    public function setSlugs()
+    public function setSlugs($restoring = false)
     {
         foreach ($this->getSlugParams() as $slugParams) {
             unset($slugParams['active']);
-            $this->updateOrNewSlug($slugParams);
+            $this->updateOrNewSlug($slugParams, $restoring);
         }
     }
 
-    public function updateOrNewSlug($slugParams)
+    public function updateOrNewSlug($slugParams, $restoring = false)
     {
         if (in_array($slugParams['locale'], config('cms-toolkit.slug_utf8_languages', []))) {
             $slugParams['slug'] = $this->getUtf8Slug($slugParams['slug']);
@@ -71,7 +75,8 @@ trait HasSlug
         }
 
         //active old slug if already existing or create a new one
-        if (($oldSlug = $this->getExistingSlug($slugParams)) != null) {
+        if ((($oldSlug = $this->getExistingSlug($slugParams)) != null)
+            && ($restoring ? $slugParams['slug'] === $this->suffixSlugIfExisting($slugParams) : true)) {
             if (!$oldSlug->active) {
                 DB::table($this->getSlugsTable())->where('id', $oldSlug->id)->update(['active' => 1]);
                 $this->disableLocaleSlugs($oldSlug->locale, $oldSlug->id);
