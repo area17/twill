@@ -12,7 +12,9 @@
   import 'quill/dist/quill.bubble.css'
   import 'quill/dist/quill.core.css'
 
-  import Quill from 'quill'
+  import QuillConfiguration from '@/libs/Quill/QuillConfiguration'
+
+  import debounce from 'lodash/debounce'
 
   import InputMixin from '@/mixins/input'
   import FormStoreMixin from '@/mixins/formStore'
@@ -61,9 +63,19 @@
         defaultModules: {
           toolbar: [
             ['bold', 'italic', 'underline', 'link']
-          ]
+          ],
+          clipboard: {
+            matchVisual: false,
+            matchers: [
+              QuillConfiguration.lineBreak.clipboard
+            ]
+          },
+          keyboard: {
+            bindings: {
+              lineBreak: QuillConfiguration.lineBreak.handle
+            }
+          }
           // Complete Toolbar example :
-          //
           // ['blockquote', 'code-block', 'strike'],
           // [{ 'header': 1 }, { 'header': 2 }],
           // [{ 'list': 'ordered'}, { 'list': 'bullet' }],
@@ -81,51 +93,40 @@
       }
     },
     methods: {
-      getIcon: function (shape) {
-        return '<span class="icon icon--wysiwyg_' + shape + '" aria-hidden="true"><svg><title>' + shape + '</title><use xlink:href="#wysiwyg_' + shape + '"></use></svg></span>'
-      },
       updateInput: function () {
         this.$refs.input.value = this.value
 
         // see formStore mixin
         this.saveIntoStore()
-      }
+      },
+      textUpdate: debounce(function () {
+        this.updateInput()
+      }, 500)
     },
-    watch: {
-      submitting: function () {
-        if (this.submitting) { // The form is about to submit so lets make sure we saved the wysiwyg
-          this.updateInput()
-        }
-      }
-    },
+    // watch: {
+    //   submitting: function () {
+    //     if (this.submitting) { // The form is about to submit so lets make sure we saved the wysiwyg
+    //       this.updateInput()
+    //     }
+    //   }
+    // },
     mounted: function () {
-      var self = this
+      const self = this
 
       self.options.theme = self.options.theme || 'snow'
       self.options.boundary = self.options.boundary || document.body
       self.options.modules = self.options.modules || self.defaultModules
-      self.options.modules.toolbar = self.options.modules.toolbar !== undefined
-                                      ? self.options.modules.toolbar
-                                      : self.defaultModules.toolbar
+      self.options.modules.toolbar = self.options.modules.toolbar !== undefined ? self.options.modules.toolbar : self.defaultModules.toolbar
+      self.options.modules.clipboard = self.options.modules.clipboard !== undefined ? self.options.modules.clipboard : self.defaultModules.clipboard
+      self.options.modules.keyboard = self.options.modules.keyboard !== undefined ? self.options.modules.keyboard : self.defaultModules.keyboard
       self.options.placeholder = self.options.placeholder || self.placeholder
       self.options.readOnly = self.options.readOnly !== undefined ? self.options.readOnly : self.readonly
-
-      const icons = Quill.import('ui/icons') // custom icons
-      icons['bold'] = self.getIcon('bold')
-      icons['italic'] = self.getIcon('italic')
-      icons['underline'] = self.getIcon('underline')
-      icons['link'] = self.getIcon('link')
-      icons['header']['1'] = self.getIcon('header')
-      icons['header']['2'] = self.getIcon('header-2')
-      icons['header']['3'] = self.getIcon('header-3')
-      icons['header']['4'] = self.getIcon('header-4')
-      icons['header']['5'] = self.getIcon('header-5')
-      icons['header']['6'] = self.getIcon('header-6')
+      self.options.formats = QuillConfiguration.getFormats(self.options.modules.toolbar) // Formats are based on current toolbar configuration
 
       // init Quill
-      this.quill = new Quill(self.$refs.editor, self.options)
+      this.quill = new QuillConfiguration.Quill(self.$refs.editor, self.options)
 
-    // set editor content
+      // set editor content
       if (self.value) {
         self.quill.pasteHTML(self.value)
         self.updateInput()
@@ -136,8 +137,8 @@
         if (self.maxlength > 0 && self.quill.getLength() > self.maxlength + 1) {
           self.quill.deleteText(self.maxlength, self.quill.getLength())
         } else {
-          var html = self.$refs.editor.children[0].innerHTML
-          var text = self.quill.getText()
+          let html = self.$refs.editor.children[0].innerHTML
+          let text = self.quill.getText()
           if (html === '<p><br></p>') html = ''
           self.value = html
 
@@ -148,6 +149,8 @@
             text: text
           })
         }
+
+        self.textUpdate()
       })
 
       // focus / blur event
@@ -219,7 +222,7 @@
         font-weight:700;
       }
 
-      p, ul, h1, h2, h3, h4, h5 {
+      p, ul, ol, h1, h2, h3, h4, h5 {
         margin-bottom:1em;
       }
     }
