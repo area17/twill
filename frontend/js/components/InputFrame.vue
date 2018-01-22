@@ -41,9 +41,14 @@
 
   .input__note {
     color:$color__text--light;
-    right:0;
-    top:1px;
-    position:absolute;
+    display:block;
+
+    @include breakpoint('small+') {
+      display:inline;
+      right:0;
+      top:1px;
+      position:absolute;
+    }
   }
 
   .input__required {

@@ -73,7 +73,7 @@
   .radio__label {
     display: block;
     position: relative;
-    padding-left: 18px + 15px;
+    padding-left: 18px + 10px;
     color: $color__f--text;
     cursor: pointer;
   }

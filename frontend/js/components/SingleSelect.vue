@@ -120,7 +120,7 @@
   .singleselector__label {
     display: block;
     position: relative;
-    padding-left: 15px + 18px + 15px;
+    padding-left: 15px + 18px + 10px;
     color: $color__text--light;
     cursor: pointer;
     z-index:1;

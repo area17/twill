@@ -104,7 +104,7 @@
   .multiselector__label {
     display: block;
     position: relative;
-    padding-left: 30px + 15px;
+    padding-left: 30px + 10px;
     color: $color__text--light;
     cursor: pointer;
     z-index:1;

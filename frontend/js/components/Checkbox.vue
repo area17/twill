@@ -74,7 +74,7 @@
   .checkbox__label {
     display: block;
     position: relative;
-    padding-left: 15px + 15px;
+    padding-left: 15px + 10px;
     color: $color__f--text;
     cursor: pointer;
   }

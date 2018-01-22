@@ -1,4 +1,5 @@
 @php
+    $note = $note ?? false;
     $options = method_exists($options, 'map') ? $options->map(function($label, $value) {
         return [
             'value' => $value,
@@ -15,6 +16,7 @@
         @include('cms-toolkit::partials.form.utils._field_name')
         :options='{!! json_encode($options) !!}'
         @if ($default) selected="{{ $default }}" @endif
+        @if ($note) note='{{ $note }}' @endif
         :has-default-store="true"
         in-store="value"
     ></a17-singleselect>
@@ -25,6 +27,7 @@
         :options='{!! json_encode($options) !!}'
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
         @if ($default) selected="{{ $default }}" @endif
+        @if ($note) note='{{ $note }}' @endif
         :has-default-store="true"
         size="large"
         in-store="value"
@@ -39,6 +42,7 @@
         @if ($default) :selected="{{ json_encode(collect($options)->first(function ($option) use ($default) {
             return $option['value'] === $default;
         })) }}" @endif
+        @if ($note) note='{{ $note }}' @endif
         :has-default-store="true"
         size="large"
         in-store="inputValue"

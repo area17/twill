@@ -6,23 +6,27 @@
             'label' => $label
         ];
     })->values()->toArray() : $options;
+    $placeholder = $placeholder ?? false;
+    $default = $default ?? false;
+    $inline = $inline ?? false;
 @endphp
 
-<a17-multiselect
+<a17-radiogroup
     label="{{ $label }}"
     @include('cms-toolkit::partials.form.utils._field_name')
-    :options="{{ json_encode($options) }}"
-    @if ($min ?? false) :min="{{ $min }}" @endif
-    @if ($max ?? false) :max="{{ $max }}" @endif
+    :radios='{!! json_encode($options) !!}'
+    :inline='{{ $inline ? 'true' : 'false' }}'
+    @if ($default) initial-value='{{ $default }}' @endif
     @if ($note) note='{{ $note }}' @endif
+    :has-default-store="true"
     in-store="currentValue"
-></a17-multiselect>
+></a17-radiogroup>
 
 @unless($renderForBlocks || $renderForModal || !isset($item->$name))
 @push('vuexStore')
     window.STORE.form.fields.push({
         name: '{{ $name }}',
-        value: {!! json_encode(array_pluck($item->$name, 'id')) !!}
+        value: @if(is_numeric($item->$name)) {{ $item->$name }} @else {!! json_encode($item->$name) !!} @endif
     })
 @endpush
 @endunless
