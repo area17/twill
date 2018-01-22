@@ -1,10 +1,10 @@
 <?php
 
 if (!function_exists('moduleRoute')) {
-    function moduleRoute($moduleName, $prefix, $action, $parameters = [])
+    function moduleRoute($moduleName, $prefix, $action, $parameters = [], $absolute = true)
     {
         $routeName = 'admin.' . ($prefix ? $prefix . '.' : '') . camel_case($moduleName) . '.' . $action;
-        return route($routeName, $parameters);
+        return route($routeName, $parameters, $absolute);
     }
 }
 

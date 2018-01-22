@@ -1,7 +1,7 @@
 @php
     $name = $name ?? $moduleName;
     $label = $label ?? 'Missing browser label';
-    $endpoint = $endpoint ?? moduleRoute($moduleName, $routePrefix ?? null, 'browser', $params ?? []);
+    $endpoint = $endpoint ?? moduleRoute($moduleName, $routePrefix ?? null, 'browser', $params ?? [], false);
     $max = $max ?? 1;
     $note = $note ?? 'Add' . ($max > 1 ? " up to $max ". strtolower($label) : ' one ' . str_singular(strtolower($label)));
     $itemLabel = $itemLabel ?? strtolower($label);
