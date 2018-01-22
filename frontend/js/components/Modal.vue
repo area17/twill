@@ -30,6 +30,10 @@
       mode: {
         type: String,
         default: ''
+      },
+      forceClose: {
+        type: Boolean,
+        default: false
       }
     },
     data: function () {
@@ -81,6 +85,11 @@
       hide: function () {
         if (!this.active) return
 
+        if (this.forceClose) {
+          this.close()
+          return
+        }
+
         const html = document.documentElement
 
         this.hidden = true
@@ -102,7 +111,7 @@
       },
       keyPressed: function (event) {
         if (event.which === 27 || event.keyCode === 27) {
-          this.close()
+          this.hide()
           this.$emit('esc-key')
         }
       }

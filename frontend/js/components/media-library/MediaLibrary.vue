@@ -3,7 +3,7 @@
     <div class="medialibrary__frame">
       <div class="medialibrary__header" ref="form">
         <a17-filter @submit="submitFilter" :clearOption="true" @clear="clearFilters">
-          <ul class="secondarynav secondarynav--desktop" slot="navigation">
+          <ul class="secondarynav secondarynav--desktop" slot="navigation" v-if="types.length">
             <li class="secondarynav__item" v-for="navType in types" :class="{ 's--on': type === navType.value, 's--disabled' : type !== navType.value && strict }">
               <a href="#" @click.prevent="updateType(navType.value)"><span class="secondarynav__link">{{ navType.text }}</span><span v-if="navType.total > 0" class="secondarynav__number">({{ navType.total }})</span></a>
             </li>
@@ -11,7 +11,7 @@
 
           <div class="secondarynav secondarynav--mobile secondarynav--dropdown" slot="navigation">
             <a17-dropdown ref="secondaryNavDropdown" position="bottom-left" width="full" :offset="0">
-              <a17-button class="secondarynav__button" variant="dropdown-transparent" size="small" @click="$refs.secondaryNavDropdown.toggle()">
+              <a17-button class="secondarynav__button" variant="dropdown-transparent" size="small" @click="$refs.secondaryNavDropdown.toggle()" v-if="selectedType">
                 <span class="secondarynav__link">{{ selectedType.text }}</span><span class="secondarynav__number">{{ selectedType.total }}</span>
               </a17-button>
               <div slot="dropdown__content">

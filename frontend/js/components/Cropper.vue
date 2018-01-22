@@ -13,9 +13,9 @@
     <footer class="cropper__footer">
       <slot></slot>
       <ul v-if="ratiosByContext.length > 1" class="cropper__ratios">
-        <li v-for="ratio in ratiosByContext" @click="changeRatio(ratio)" :key="ratio.name" :class="{ 's--active' : crop.name === ratio.name }">{{ ratio.name | capitalize }}</li>
+        <li v-for="ratio in ratiosByContext" @click="changeRatio(ratio)" :key="ratio.name" :class="{ 's--active' : currentRatioName === ratio.name }">{{ ratio.name | capitalize }}</li>
       </ul>
-      <span class="cropper__values f--small" :class="cropperWarning">{{ cropValues.width }} &times; {{ cropValues.height }}</span>
+      <span class="cropper__values f--small" :class="cropperWarning">{{ cropValues.original.width }} &times; {{ cropValues.original.height }}</span>
     </footer>
   </div>
 </template>
@@ -48,13 +48,20 @@
         currentCrop: Object.keys(this.media.crops)[0],
         toggleBreakpoint: 0,
         cropValues: {
-          width: this.media.crops[Object.keys(this.media.crops)[0]].width,
-          height: this.media.crops[Object.keys(this.media.crops)[0]].height
+          natural: {
+            width: null,
+            height: null
+          },
+          original: {
+            width: this.media.crops[Object.keys(this.media.crops)[0]].width,
+            height: this.media.crops[Object.keys(this.media.crops)[0]].height
+          }
         },
         minCropValues: {
           width: 0,
           height: 0
-        }
+        },
+        currentRatioName: this.media.crops[Object.keys(this.media.crops)[0]].name
       }
     },
     computed: {
@@ -71,24 +78,10 @@
         }
         return []
       },
-      initAspectRatio: function () {
-        let self = this
-        let filtered = self.ratiosByContext
-        let filter = filtered.find(function (r) {
-          return r.name === self.crop.name
-        })
-        if (typeof filter !== 'undefined' && filter) {
-          self.minCropValues.width = filter.minValues ? filter.minValues.width : 0
-          self.minCropValues.height = filter.minValues ? filter.minValues.height : 0
-          return filter.ratio
-        }
-        return self.aspectRatio
-      },
       cropperOpts: function () {
         let self = this
         return {
           ...this.defaultCropsOpts,
-          data: this.crop,
           cropmove: function () {
             self.updateCropperValues()
           },
@@ -99,7 +92,7 @@
       },
       cropperWarning: function () {
         return {
-          'cropper__warning': this.cropValues.width < this.minCropValues.width || this.cropValues.height < this.minCropValues.height
+          'cropper__warning': this.cropValues.original.width < this.minCropValues.width || this.cropValues.original.height < this.minCropValues.height
         }
       },
       ...mapState({
@@ -124,46 +117,77 @@
 
       // init displayed crop values
       imageBox.addEventListener('ready', function () {
-        self.updateCropperValues()
-        self.sendCropperValues()
+        self.cropValues.natural.width = img.naturalWidth
+        self.cropValues.natural.height = img.naturalHeight
+
+        self.updateCrop()
       })
     },
     methods: {
+      initAspectRatio: function () {
+        let self = this
+        let filtered = self.ratiosByContext
+        let filter = filtered.find(function (r) {
+          return r.name === self.currentRatioName
+        })
+
+        if (typeof filter !== 'undefined' && filter) {
+          self.minCropValues.width = filter.minValues ? filter.minValues.width : 0
+          self.minCropValues.height = filter.minValues ? filter.minValues.height : 0
+          self.cropper.setAspectRatio(filter.ratio)
+          return
+        }
+        self.cropper.setAspectRatio(self.aspectRatio)
+      },
       changeCrop: function (cropName, index) {
         this.currentCrop = cropName
-
-        let ratio = this.initAspectRatio
-        this.cropper.setAspectRatio(ratio)
-        this.cropper.setData(this.crop)
-
+        this.currentRatioName = this.crop.name
         this.toggleBreakpoint = index
 
-        this.updateCropperValues()
+        this.updateCrop()
         this.sendCropperValues()
       },
       changeRatio: function (ratioObj) {
-        this.crop.name = ratioObj.name
-        this.cropper.setAspectRatio(ratioObj.ratio)
-        this.minCropValues.width = ratioObj.minValues.width
-        this.minCropValues.height = ratioObj.minValues.height
+        this.currentRatioName = ratioObj.name
+        this.updateCrop()
         this.sendCropperValues()
-
+      },
+      updateCrop: function () {
+        this.initAspectRatio()
+        this.initCrop()
         this.updateCropperValues()
       },
       updateCropperValues: function () {
         let data = this.cropper.getData(true)
-        this.setCropperValues(data)
+        const originalCrop = this.toOriginalCrop(data)
+        this.cropValues.original.width = originalCrop.width
+        this.cropValues.original.height = originalCrop.height
       },
-      setCropperValues: function (data) {
-        this.cropValues.width = data.width
-        this.cropValues.height = data.height
+      initCrop: function () {
+        this.cropper.setData(this.toNaturalCrop(this.crop))
       },
       sendCropperValues: function () {
         let data = {}
         data.values = {}
-        data.values[this.currentCrop] = this.cropper.getData(true)
-        data.values[this.currentCrop].name = this.crop.name
+        data.values[this.currentCrop] = this.toOriginalCrop(this.cropper.getData(true))
+        data.values[this.currentCrop].name = this.currentRatioName
         this.$emit('crop-end', data)
+      },
+      toNaturalCrop: function (data) {
+        return {
+          x: Math.round(data.x * this.cropValues.natural.width / this.currentMedia.width),
+          y: Math.round(data.y * this.cropValues.natural.height / this.currentMedia.height),
+          width: Math.round(data.width * this.cropValues.natural.width / this.currentMedia.width),
+          height: Math.round(data.height * this.cropValues.natural.height / this.currentMedia.height)
+        }
+      },
+      toOriginalCrop: function (data) {
+        return {
+          x: Math.round(data.x * this.currentMedia.width / this.cropValues.natural.width),
+          y: Math.round(data.y * this.currentMedia.height / this.cropValues.natural.height),
+          width: Math.round(data.width * this.currentMedia.width / this.cropValues.natural.width),
+          height: Math.round(data.height * this.currentMedia.height / this.cropValues.natural.height)
+        }
       }
     }
   }
@@ -309,5 +333,4 @@
       }
     }
   }
-
 </style>
