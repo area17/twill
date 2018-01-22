@@ -37,6 +37,7 @@ export default {
         this.$nextTick(function () {
           this.currentValue = oldval
           this.$emit('change', this.currentValue)
+          if (typeof this.saveIntoStore !== 'undefined') this.saveIntoStore(oldval)
         })
       }
     }

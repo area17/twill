@@ -29,6 +29,8 @@ export default {
   },
   watch: {
     storedValue: function (fieldInstore) {
+      if (this.inStore === '') return
+
       const currentValue = this[this.inStore]
       const newValue = (this.locale) ? fieldInstore[this.locale.value] : fieldInstore
 
