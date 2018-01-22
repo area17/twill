@@ -35,7 +35,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         $this->endpointType = config('cms-toolkit.file_library.endpoint_type');
     }
 
-    public function index()
+    public function index($parentModuleId = null)
     {
         $libraryDisk = config('cms-toolkit.file_library.disk');
 
@@ -72,7 +72,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         ];
     }
 
-    public function store()
+    public function store($parentModuleId = null)
     {
         $request = app(FileRequest::class);
 

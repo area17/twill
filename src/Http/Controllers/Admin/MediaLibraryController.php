@@ -36,7 +36,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         $this->endpointType = config('cms-toolkit.media_library.endpoint_type');
     }
 
-    public function index()
+    public function index($parentModuleId = null)
     {
         if (request()->has('except')) {
             $prependScope['exceptIds'] = request('except');
@@ -98,7 +98,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         return $requestFilters ?? [];
     }
 
-    public function store()
+    public function store($parentModuleId = null)
     {
         $request = app(MediaRequest::class);
 

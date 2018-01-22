@@ -120,6 +120,12 @@ abstract class ModuleController extends Controller
      */
     protected $featureField = 'featured';
 
+    /*
+     * Indicates if this module is edited through a parent module
+     */
+    protected $submodule = false;
+    protected $submoduleParentId = null;
+
     public function __construct(Application $app, Request $request)
     {
         $this->app = $app;
@@ -154,9 +160,12 @@ abstract class ModuleController extends Controller
         return [];
     }
 
-    public function index()
+    public function index($parentModuleId = null)
     {
-        $indexData = $this->getIndexData();
+        $this->submodule = isset($parentModuleId);
+        $this->submoduleParentId = $parentModuleId;
+
+        $indexData = $this->getIndexData($this->submodule ? [$this->getParentModuleForeignKey() => $this->submoduleParentId] : []);
 
         if ($this->request->ajax()) {
             return $indexData + ['replaceUrl' => true];
@@ -171,6 +180,11 @@ abstract class ModuleController extends Controller
         });
 
         return view($view, $indexData);
+    }
+
+    protected function getParentModuleForeignKey()
+    {
+        return str_singular(explode('.', $this->moduleName)[0]) . '_id';
     }
 
     public function getIndexData($prependScope = [])
@@ -224,8 +238,14 @@ abstract class ModuleController extends Controller
             return [
                 'id' => $item->id,
                 'name' => $name,
-                'edit' => moduleRoute($this->moduleName, $this->routePrefix, 'edit', $item->id),
-                'delete' => moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id),
+                'edit' => moduleRoute(
+                    $this->moduleName, $this->routePrefix, 'edit',
+                    array_merge($this->submodule ? [$this->submoduleParentId] : [], [$item->id])
+                ),
+                'delete' => moduleRoute(
+                    $this->moduleName, $this->routePrefix, 'destroy',
+                    array_merge($this->submodule ? [$this->submoduleParentId] : [], [$item->id])
+                ),
                 'publish_start_date' => $item->publish_start_date,
                 'publish_end_date' => $item->publish_end_date,
             ] + $columnsData
@@ -251,8 +271,16 @@ abstract class ModuleController extends Controller
             ];
         }
 
-        $field = $column['field'];
-        $value = $item->$field;
+        if (isset($column['nested']) && $column['nested']) {
+            $field = $column['nested'];
+            $nestedCount = $item->{$column['nested']}->count();
+            $value = '<a href="';
+            $value .= moduleRoute("$this->moduleName.$field", $this->routePrefix, 'index', [$item->id]);
+            $value .= '">' . $nestedCount . " " . (strtolower($nestedCount > 1 ? str_plural($column['title']) : str_singular($column['title']))) . '</a>';
+        } else {
+            $field = $column['field'];
+            $value = $item->$field;
+        }
 
         if (isset($column['relationship'])) {
             $field = $column['relationship'] . ucfirst($column['field']);
@@ -313,13 +341,17 @@ abstract class ModuleController extends Controller
         unset($this->indexColumns[$this->titleColumnKey]);
 
         foreach ($this->indexColumns as $column) {
-            $columnName = isset($column['relationship']) ? $column['relationship'] . ucfirst($column['field']) : $column['field'];
+            $columnName = isset($column['relationship'])
+            ? $column['relationship'] . ucfirst($column['field'])
+            : isset($column['nested']) ? $column['nested'] : $column['field'];
+
             array_push($tableColumns, [
                 'name' => $columnName,
                 'label' => $column['title'],
                 'visible' => $visibleColumns ? in_array($columnName, $visibleColumns) : ($column['visible'] ?? true),
                 'optional' => $column['optional'] ?? true,
                 'sortable' => $this->getIndexOption('reorder') ? false : ($column['sort'] ?? false),
+                'html' => $column['html'] ?? false,
             ]);
         }
 
@@ -340,17 +372,19 @@ abstract class ModuleController extends Controller
     {
         $statusFilters = [];
 
+        $scope = $this->submodule ? [$this->getParentModuleForeignKey() => $this->submoduleParentId] : [];
+
         array_push($statusFilters, [
             'name' => 'All items',
             'slug' => 'all',
-            'number' => $this->repository->getCountByStatusSlug('all'),
+            'number' => $this->repository->getCountByStatusSlug('all', $scope),
         ]);
 
         if (classHasTrait($this->repository, HandleRevisions::class)) {
             array_push($statusFilters, [
                 'name' => 'Mine',
                 'slug' => 'mine',
-                'number' => $this->repository->getCountByStatusSlug('mine'),
+                'number' => $this->repository->getCountByStatusSlug('mine', $scope),
             ]);
         }
 
@@ -358,11 +392,11 @@ abstract class ModuleController extends Controller
             array_push($statusFilters, [
                 'name' => 'Published',
                 'slug' => 'published',
-                'number' => $this->repository->getCountByStatusSlug('published'),
+                'number' => $this->repository->getCountByStatusSlug('published', $scope),
             ], [
                 'name' => 'Draft',
                 'slug' => 'draft',
-                'number' => $this->repository->getCountByStatusSlug('draft'),
+                'number' => $this->repository->getCountByStatusSlug('draft', $scope),
             ]);
         }
 
@@ -370,7 +404,7 @@ abstract class ModuleController extends Controller
             array_push($statusFilters, [
                 'name' => 'Trash',
                 'slug' => 'trash',
-                'number' => $this->repository->getCountByStatusSlug('trash'),
+                'number' => $this->repository->getCountByStatusSlug('trash', $scope),
             ]);
         }
 
@@ -390,7 +424,15 @@ abstract class ModuleController extends Controller
             'bulkFeature',
             'bulkDelete',
         ])->mapWithKeys(function ($endpoint) use ($moduleName, $routePrefix) {
-            return [$endpoint . 'Url' => $this->getIndexOption($endpoint) ? moduleRoute($this->moduleName, $this->routePrefix, $endpoint) : null];
+
+            $route = moduleRoute(
+                $this->moduleName, $this->routePrefix, $endpoint,
+                $this->submodule ? [$this->submoduleParentId] : []
+            );
+
+            return [
+                $endpoint . 'Url' => $this->getIndexOption($endpoint) ? $route : null,
+            ];
         })->toArray();
     }
 
@@ -473,9 +515,9 @@ abstract class ModuleController extends Controller
         return $this->respondWithSuccess($this->modelTitle . ' items ' . (request('publish') ? '' : 'un') . 'published!');
     }
 
-    public function destroy($id)
+    public function destroy($id, $submoduleId = null)
     {
-        if ($this->repository->delete($id)) {
+        if ($this->repository->delete($submoduleId ?? $id)) {
             $this->fireEvent();
             return $this->respondWithSuccess($this->modelTitle . ' deleted!');
         }
@@ -570,13 +612,16 @@ abstract class ModuleController extends Controller
         })], 200);
     }
 
-    public function store()
+    public function store($parentModuleId = null)
     {
         $input = $this->validateFormRequest()->all();
-        $item = $this->repository->create($input);
+        $optionalParent = $parentModuleId ? [$this->getParentModuleForeignKey() => $parentModuleId] : [];
+
+        $item = $this->repository->create($input + $optionalParent);
+
         $this->fireEvent($input);
 
-        return $this->redirectToForm($item->id);
+        return $this->redirectToForm($item->id, [$parentModuleId]);
     }
 
     public function show($id)
@@ -584,10 +629,13 @@ abstract class ModuleController extends Controller
         return $this->redirectToForm($id);
     }
 
-    public function edit($id)
+    public function edit($id, $submoduleId = null)
     {
+        $this->submodule = isset($submoduleId);
+        $this->submoduleParentId = $id;
+
         $this->setBackLink();
-        $this->addLock($id);
+        $this->addLock($submoduleId ?? $id);
 
         $view = collect([
             "$this->viewPrefix.form",
@@ -597,7 +645,7 @@ abstract class ModuleController extends Controller
             return view()->exists($view);
         });
 
-        return view($view, $this->form($id));
+        return view($view, $this->form($submoduleId ?? $id));
     }
 
     protected function form($id)
@@ -623,35 +671,48 @@ abstract class ModuleController extends Controller
                     'datetime' => $revision->created_at->toIso8601String(),
                 ];
             })->toArray() : null,
-            'saveUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'update', $id),
+            'saveUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'update', array_merge($this->submodule ? [$this->submoduleParentId] : [], [$item->id])),
         ] + (Route::has($previewRouteName) ? [
-            'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $id),
+            'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', array_merge($this->submodule ? [$this->submoduleParentId] : [], [$item->id])),
         ] : []) + (Route::has($restoreRouteName) ? [
-            'restoreUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'restoreRevision', $id),
+            'restoreUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'restoreRevision', array_merge($this->submodule ? [$this->submoduleParentId] : [], [$item->id])),
         ] : []);
 
         return array_replace_recursive($data, $this->formData($this->request));
     }
 
-    public function update($id)
+    public function update($id, $submoduleId = null)
     {
-        $item = $this->repository->getById($id);
+        $this->submodule = isset($submoduleId);
+        $this->submoduleParentId = $id;
+
+        $item = $this->repository->getById($submoduleId ?? $id);
         $input = $this->request->all();
 
         if (isset($input['cmsSaveType']) && $input['cmsSaveType'] === 'cancel') {
+
             if ($item->isLockable() && $item->isLocked() && $item->isLockedByCurrentUser()) {
-                $this->removeLock($id);
+                $this->removeLock($submoduleId ?? $id);
             }
+
             return $this->respondWithRedirect($this->getBackLink());
+
         } else {
 
             $formRequest = $this->validateFormRequest();
 
             if (($item->isLockable() == false) || ($item->isLocked() && $item->isLockedByCurrentUser())) {
-                // check the lock?
-                $this->repository->update($id, $formRequest->all());
+
+                $this->repository->update($submoduleId ?? $id, $formRequest->all());
+
                 $this->fireEvent();
+
+                if (isset($input['cmsSaveType']) && ends_with($input['cmsSaveType'], 'close')) {
+                    return $this->respondWithRedirect($this->getBackLink());
+                }
+
                 return $this->respondWithSuccess('Content saved. All good!');
+
             } else {
                 abort(403);
             }
@@ -827,13 +888,13 @@ abstract class ModuleController extends Controller
     protected function setBackLink($back_link = null, $params = [])
     {
         if (!isset($back_link)) {
-            if (($back_link = Session::get($this->moduleName . "_back_link")) == null) {
+            if (($back_link = Session::get($this->getBackLinkSessionKey())) == null) {
                 $back_link = $this->request->headers->get('referer') ?? moduleRoute($this->moduleName, $this->routePrefix, "index", $params);
             }
         }
 
         if (!Session::get($this->moduleName . "_retain")) {
-            Session::put($this->moduleName . "_back_link", $back_link);
+            Session::put($this->getBackLinkSessionKey(), $back_link);
         } else {
             Session::put($this->moduleName . "_retain", false);
         }
@@ -841,19 +902,20 @@ abstract class ModuleController extends Controller
 
     protected function getBackLink($fallback = null, $params = [])
     {
-        $back_link = Session::get($this->moduleName . "_back_link", $fallback);
+        $back_link = Session::get($this->getBackLinkSessionKey(), $fallback);
         return $back_link ?? moduleRoute($this->moduleName, $this->routePrefix, "index", $params);
+    }
+
+    protected function getBackLinkSessionKey()
+    {
+        return $this->moduleName . ($this->submodule ? $this->submoduleParentId ?? "" : "") . "_back_link";
     }
 
     protected function redirectToForm($id, $params = [])
     {
         $input = $this->request->all();
-        if (isset($input['cmsSaveType']) && ends_with($input['cmsSaveType'], 'close')) {
-            return redirect($this->getBackLink(null, $params));
-        } else {
-            Session::put($this->moduleName . "_retain", true);
-            return redirect(moduleRoute($this->moduleName, $this->routePrefix, "edit", $params + ['id' => $id]));
-        }
+        Session::put($this->moduleName . "_retain", true);
+        return redirect(moduleRoute($this->moduleName, $this->routePrefix, "edit", $params + ['id' => $id]));
     }
 
     protected function getNamespace()

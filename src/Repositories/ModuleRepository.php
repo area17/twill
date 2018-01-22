@@ -14,6 +14,8 @@ abstract class ModuleRepository
 
     protected $ignoreFieldsBeforeSave = [];
 
+    protected $countScope = [];
+
     public function get($with = [], $scopes = [], $orders = [], $perPage = 20, $forcePagination = false)
     {
         $query = $this->model->with($with);
@@ -32,8 +34,10 @@ abstract class ModuleRepository
         return $query->paginate($perPage);
     }
 
-    public function getCountByStatusSlug($slug)
+    public function getCountByStatusSlug($slug, $scope = [])
     {
+        $this->countScope = $scope;
+
         switch ($slug) {
             case 'all':
                 return $this->getCountForAll();
@@ -58,22 +62,22 @@ abstract class ModuleRepository
 
     public function getCountForAll()
     {
-        return $this->model->count();
+        return $this->model->where($this->countScope)->count();
     }
 
     public function getCountForPublished()
     {
-        return $this->model->published()->count();
+        return $this->model->where($this->countScope)->published()->count();
     }
 
     public function getCountForDraft()
     {
-        return $this->model->draft()->count();
+        return $this->model->where($this->countScope)->draft()->count();
     }
 
     public function getCountForTrash()
     {
-        return $this->model->onlyTrashed()->count();
+        return $this->model->where($this->countScope)->onlyTrashed()->count();
     }
 
     public function getById($id, $with = [], $withCount = [])
