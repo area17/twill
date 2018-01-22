@@ -4,8 +4,10 @@
 
 @php
     $translate = $translate ?? false;
-    $nested = $nested ?? false;
     $translateTitle = $translateTitle ?? $translate ?? false;
+    $reorder = $reorder ?? false;
+    $nested = $nested ?? false;
+    $bulkEdit = $bulkEdit ?? true;
 @endphp
 
 @section('content')
@@ -52,9 +54,11 @@
                     @endif
                 </a17-filter>
             </div>
-            <a17-bulk></a17-bulk>
+            @if($bulkEdit)
+                <a17-bulk></a17-bulk>
+            @endif
         </div>
-        <a17-datatable :draggable="{{ $reorder ? 'true' : 'false' }}" :nested="{{ $nested ? 'true' : 'false' }}" :nested-depth="{{ $nestedDepth ?? '1' }}" empty-message="There is no item here yet."></a17-datatable>
+        <a17-datatable :draggable="{{ $reorder ? 'true' : 'false' }}" :nested="{{ $nested ? 'true' : 'false' }}" :nested-depth="{{ $nestedDepth ?? '1' }}" :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}" empty-message="There is no item here yet."></a17-datatable>
 
         <a17-modal class="modal--form" ref="addNewModal" title="Add new">
             <form action="{{ $storeUrl }}" method="post">

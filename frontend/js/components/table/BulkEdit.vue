@@ -10,13 +10,12 @@
             <div slot="dropdown__content">
               <ul>
                 <li>
-                  <button v-if="bulkStatus.canPublish && !bulkStatus.published && !bulkStatus.deleted" @click="bulkPublish">Publish</button>
-                  <button v-if="bulkStatus.canPublish && bulkStatus.published && !bulkStatus.deleted" @click="bulkUnpublish">Unpublish</button>
-                  <button v-if="bulkStatus.canFeature && !bulkStatus.featured && !bulkStatus.deleted" @click="bulkFeature">Feature</button>
-                  <button v-if="bulkStatus.canFeature && bulkStatus.featured && !bulkStatus.deleted" @click="bulkUnFeature">Unfeature</button>
-                  <!-- <button @click="bulkExport">Export</button> -->
-                  <button v-if="!bulkStatus.deleted" @click="bulkDelete">Delete</button>
-                  <button v-if="bulkStatus.deleted" @click="bulkRestore">Restore</button>
+                  <button v-if="bulkPublishable()" @click="bulkPublish">Publish</button>
+                  <button v-if="bulkPublishable(true)" @click="bulkUnpublish">Unpublish</button>
+                  <button v-if="bulkFeaturable()" @click="bulkFeature">Feature</button>
+                  <button v-if="bulkFeaturable(true)" @click="bulkUnFeature">Unfeature</button>
+                  <button v-if="bulkDeletable()" @click="bulkDelete">Delete</button>
+                  <button v-if="bulkRestorable()" @click="bulkRestore">Restore</button>
                 </li>
               </ul>
             </div>
@@ -44,18 +43,32 @@
             canFeature: status.canFeature && row.hasOwnProperty('featured'),
             published: status.published && (row.published || false),
             canPublish: status.canPublish && row.hasOwnProperty('published'),
-            deleted: status.deleted && (row.deleted || false)
+            deleted: status.deleted && (row.deleted || false),
+            canDelete: status.canDelete && row.delete !== null
           }
         }, {
           featured: true,
           canFeature: true,
           published: true,
           canPublish: true,
-          deleted: true
+          deleted: true,
+          canDelete: true
         })
       })
     },
     methods: {
+      bulkPublishable: function ($inverse = false) {
+        return window.CMS_URLS.bulkPublish !== '' && this.bulkStatus.canPublish && ($inverse ? this.bulkStatus.published : !this.bulkStatus.published) && !this.bulkStatus.deleted
+      },
+      bulkFeaturable: function ($inverse = false) {
+        return window.CMS_URLS.bulkFeature !== '' && this.bulkStatus.canFeature && ($inverse ? this.bulkStatus.featured : !this.bulkStatus.featured) && !this.bulkStatus.deleted
+      },
+      bulkDeletable: function () {
+        return window.CMS_URLS.bulkDelete !== '' && !this.bulkStatus.deleted && this.bulkStatus.canDelete
+      },
+      bulkRestorable: function () {
+        return window.CMS_URLS.bulkRestore !== '' && this.bulkStatus.deleted
+      },
       clearBulkSelect: function () {
         this.$store.commit('replaceDatableBulk', [])
       },

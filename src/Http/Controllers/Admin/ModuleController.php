@@ -59,9 +59,11 @@ abstract class ModuleController extends Controller
         'bulkFeature' => false,
         'restore' => true,
         'bulkRestore' => true,
+        'delete' => true,
         'bulkDelete' => true,
         'reorder' => false,
         'permalink' => true,
+        'bulkEdit' => true,
     ];
 
     /*
@@ -210,6 +212,7 @@ abstract class ModuleController extends Controller
             'create' => $this->getIndexOption('create') && auth()->user()->can('edit'),
             'translate' => $this->moduleIsTranslated(),
             'permalink' => $this->getIndexOption('permalink'),
+            'bulkEdit' => $this->getIndexOption('bulkEdit'),
             'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
         ];
 
@@ -242,15 +245,15 @@ abstract class ModuleController extends Controller
                     $this->moduleName, $this->routePrefix, 'edit',
                     array_merge($this->submodule ? [$this->submoduleParentId] : [], [$item->id])
                 ),
-                'delete' => moduleRoute(
+                'delete' => $this->getIndexOption('delete') && ($item->canDelete ?? true) ? moduleRoute(
                     $this->moduleName, $this->routePrefix, 'destroy',
                     array_merge($this->submodule ? [$this->submoduleParentId] : [], [$item->id])
-                ),
+                ) : null,
                 'publish_start_date' => $item->publish_start_date,
                 'publish_end_date' => $item->publish_end_date,
             ] + $columnsData
-                 + ($this->getIndexOption('publish') ? ['published' => $item->published] : [])
-                 + ($this->getIndexOption('feature') ? ['featured' => $item->{$this->featureField}] : [])
+                 + ($this->getIndexOption('publish') && ($item->canPublish ?? true) ? ['published' => $item->published] : [])
+                 + ($this->getIndexOption('feature') && ($item->canFeature ?? true) ? ['featured' => $item->{$this->featureField}] : [])
                  + ($translated ? ['languages' => $item->getActiveLanguages()] : [])
                  + (($this->getIndexOption('restore') && $itemIsTrashed) ? ['deleted' => true] : []);
         })->toArray();
