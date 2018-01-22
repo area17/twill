@@ -84,7 +84,7 @@
         return values
       },
       submitOptions: function () {
-        return this.published ? this.defaultSubmitOptions[this.publishSubmit] : this.defaultSubmitOptions['draft']
+        return (this.published || !this.withPublicationToggle) ? this.defaultSubmitOptions[this.publishSubmit] : this.defaultSubmitOptions['draft']
       },
       ...mapState({
         languages: state => state.language.all,
@@ -129,7 +129,7 @@
       }
     },
     beforeMount: function () {
-      if (this.published) this.publishSubmit = 'update'
+      if (this.published || !this.withPublicationToggle) this.publishSubmit = 'update'
     }
   }
 </script>
