@@ -99,6 +99,24 @@ $height_input: 45px;
     }
   }
 
+  textarea {
+    @include resetfield;
+    padding:10px;
+    line-height:inherit;
+    width:100%;
+    box-sizing: border-box;
+    display:block;
+    resize: none;
+    overflow: hidden;
+    z-index:1;
+    position:relative;
+    color:inherit;
+
+    @include placeholder() {
+      color:$color__f--placeholder;
+    }
+  }
+
   input[type="search"] {
     display: block;
     background-repeat: no-repeat;
@@ -108,6 +126,13 @@ $height_input: 45px;
       color: $color__f--placeholder;
     }
   }
+}
+
+.form__field--textarea {
+  display:block;
+  padding:0;
+  height:auto;
+  line-height:inherit;
 }
 
 @mixin regular-field() {
