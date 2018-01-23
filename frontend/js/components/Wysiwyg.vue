@@ -1,8 +1,21 @@
 <template>
   <a17-inputframe :error="error" :note="note" :label="label" :locale="locale" @localize="updateLocale" :size="size" :name="name">
-    <div class="wysiwyg" :class="textfieldClasses">
+    <div class="wysiwyg__outer" :class="textfieldClasses">
       <input ref="input" :name="name" :id="name" :disabled="disabled" :required="required" :readonly="readonly" type="hidden" value="" />
-      <div class="wysiwyg__editor" ref="editor"></div>
+      <template v-if="editSource">
+        <div class="wysiwyg" :class="textfieldClasses" v-show="!activeSource">
+          <div class="wysiwyg__editor" ref="editor"></div>
+        </div>
+        <div class="form__field form__field--textarea" v-show="activeSource">
+          <textarea :placeholder="placeholder" :autofocus="autofocus" v-model="value" :style="textareaHeight"></textarea>
+        </div>
+        <a17-button variant="ghost" @click="toggleSourcecode" class="wysiwyg__button">Source code</a17-button>
+      </template>
+      <template v-else>
+        <div class="wysiwyg" :class="textfieldClasses">
+          <div class="wysiwyg__editor" ref="editor"></div>
+        </div>
+      </template>
     </div>
   </a17-inputframe>
 </template>
@@ -25,6 +38,10 @@
     name: 'A17Wysiwyg',
     mixins: [InputMixin, InputframeMixin, LocaleMixin, FormStoreMixin],
     props: {
+      editSource: {
+        type: Boolean,
+        default: true
+      },
       type: {
         type: String,
         default: 'text'
@@ -49,6 +66,11 @@
       }
     },
     computed: {
+      textareaHeight: function () {
+        return {
+          height: this.editorHeight
+        }
+      },
       textfieldClasses: function () {
         return {
           's--disabled': this.disabled,
@@ -59,7 +81,10 @@
     data: function () {
       return {
         value: this.initialValue,
+        editorHeight: 50,
+        toolbarHeight: 52,
         focused: false,
+        activeSource: false,
         defaultModules: {
           toolbar: [
             ['bold', 'italic', 'underline', 'link']
@@ -101,7 +126,15 @@
       },
       textUpdate: debounce(function () {
         this.updateInput()
-      }, 500)
+      }, 500),
+      toggleSourcecode: function () {
+        this.editorHeight = (Math.max(50, this.$refs.editor.clientHeight) + this.toolbarHeight) + 'px'
+        this.activeSource = !this.activeSource
+
+        // set editor content
+        this.quill.pasteHTML(this.value)
+        this.updateInput()
+      }
     },
     // watch: {
     //   submitting: function () {
@@ -182,6 +215,11 @@
   }
 </script>
 
+<style lang="scss" scoped>
+  .wysiwyg__button {
+    margin-top:20px;
+  }
+</style>
 <style lang="scss">
   /* Not scoped style here because we want to overwrite default style of the wysiwig */
   @import '~styles/setup/_mixins-colors-vars.scss';
