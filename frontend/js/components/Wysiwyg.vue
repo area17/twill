@@ -128,7 +128,7 @@
         this.updateInput()
       }, 500),
       toggleSourcecode: function () {
-        this.editorHeight = (Math.max(50, this.$refs.editor.clientHeight) + this.toolbarHeight) + 'px'
+        this.editorHeight = (Math.max(50, this.$refs.editor.clientHeight) + this.toolbarHeight - 1) + 'px'
         this.activeSource = !this.activeSource
 
         // set editor content
