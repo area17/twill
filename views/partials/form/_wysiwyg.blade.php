@@ -6,6 +6,7 @@
     $note = $note ?? false;
     $disabled = $disabled ?? false;
     $readonly = $readonly ?? false;
+    $editSource = $editSource ?? false;
     $toolbarOptions = $toolbarOptions ?? false;
 
     if ($toolbarOptions) {
@@ -47,6 +48,7 @@
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
             @if ($disabled) disabled: true, @endif
             @if ($readonly) readonly: true, @endif
+            @if ($editSource) editSource: true, @endif
             inStore: 'value'
         }"
     ></a17-locale>
@@ -60,6 +62,7 @@
         @if ($maxlength) :maxlength='{{ $maxlength }}' @endif
         @if ($disabled) disabled @endif
         @if ($readonly) readonly @endif
+        @if ($editSource) :edit-source='true' @endif
         in-store="value"
     ></a17-wysiwyg>
 @endif
