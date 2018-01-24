@@ -22,6 +22,8 @@
                 </div>
             </header>
             @partialView(($moduleName ?? null), 'navigation._primary_navigation')
+            {{-- TODO breadcrumb - need Back-end logic : @partialView(($moduleName ?? null), 'navigation._breadcrumb') --}}
+            {{-- TODO secondary navigation : need Back-end logic : @partialView(($moduleName ?? null), 'navigation._secondary_navigation') --}}
             <section class="main">
                 <div class="app @yield('appTypeClass')" id="app" v-cloak>
                     @yield('content')
