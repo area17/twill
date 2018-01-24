@@ -65,7 +65,7 @@ const mutations = {
 }
 
 const previewHTML = function (block, data) {
-  return '<div style="font-family:Arial">' + block.title + ' - Get preview HTML<br />' + new Date() + '<br />Block ID : ' + block.id + '<br /><div style="background-color:#EFEFEF; padding:20px;">' + JSON.stringify(data.blocks, null, 4) + '<br/>Variable height div to test resize.</div></div>'
+  return '<div style="font-family:Arial"><div style="background-color:#EFEFEF; padding:20px;">' + block.title + ' - Preview<br />' + new Date() + '<br />Block ID : ' + block.id + '<br /><br />' + JSON.stringify(data.blocks, null, 4) + '</div></div>'
 }
 
 const actions = {
