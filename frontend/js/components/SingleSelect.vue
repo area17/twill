@@ -2,9 +2,9 @@
   <a17-inputframe :error="error" :note="note" :label="label" :name="name">
     <div class="singleselector">
       <div class="singleselector__grid">
-        <div class="singleselector__item" v-for="radio in options">
-          <input class="singleselector__radio" type="radio" :value="radio.value" :name="name" :id="name + '_' + radio.value" :disabled="radio.disabled || disabled" v-model="selectedValue">
-          <label class="singleselector__label" :for="name + '_' + radio.value">{{ radio.label }}</label>
+        <div class="singleselector__item" v-for="(radio, index) in options">
+          <input class="singleselector__radio" type="radio" :value="radio.value" :name="name" :id="uniqId(radio.value, index)" :disabled="radio.disabled || disabled" v-model="selectedValue">
+          <label class="singleselector__label" :for="uniqId(radio.value, index)">{{ radio.label }}</label>
           <span class="singleselector__bg"></span>
         </div>
       </div>
@@ -37,6 +37,8 @@
     },
     data: function () {
       return {
+        randKey: Date.now() + Math.floor(Math.random() * 9999),
+        // Label for attributes need to be uniq in the page - we use a random key so the ids are uniqs for each time the component is used (even if name and value are the same)
         value: this.selected
       }
     },
@@ -53,6 +55,14 @@
 
           this.$emit('change', value)
         }
+      }
+    },
+    methods: {
+      updateFromStore: function (newValue) { // called from the formStore mixin
+        this.value = newValue
+      },
+      uniqId: function (value, index) {
+        return this.name + '_' + value + '-' + (this.randKey * (index + 1))
       }
     }
   }

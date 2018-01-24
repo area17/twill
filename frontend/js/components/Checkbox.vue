@@ -1,7 +1,7 @@
 <template>
   <span class="checkbox">
-    <input type="checkbox" class="checkbox__input" :class="checkboxClasses" :value="value" :name="name" :id="name + '_' + value" :disabled="disabled"  v-model="checkedValue">
-    <label class="checkbox__label" :for="name + '_' + value">{{ label }} <span class="checkbox__icon"><span v-svg symbol="check"></span></span></label>
+    <input type="checkbox" class="checkbox__input" :class="checkboxClasses" :value="value" :name="name" :id="uniqId(value)" :disabled="disabled"  v-model="checkedValue">
+    <label class="checkbox__label" :for="uniqId(value)">{{ label }} <span class="checkbox__icon"><span v-svg symbol="check"></span></span></label>
   </span>
 </template>
 
@@ -32,6 +32,12 @@
         default: false
       }
     },
+    data: function () {
+      return {
+        randKey: Date.now() + Math.floor(Math.random() * 9999)
+        // Label for attributes need to be uniq in the page - we use a random key so the ids are uniqs for each time the component is used (even if name and value are the same)
+      }
+    },
     computed: {
       checkboxClasses: function () {
         return [
@@ -45,6 +51,11 @@
         set: function (value) {
           this.$emit('change', value)
         }
+      }
+    },
+    methods: {
+      uniqId: function (value) {
+        return this.name + '_' + value + '-' + this.randKey
       }
     }
   }

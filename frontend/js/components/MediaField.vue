@@ -247,6 +247,7 @@
   .media {
     border-radius: 2px;
     border: 1px solid $color__border;
+    background:$color__background;
   }
 
   .media__field {

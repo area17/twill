@@ -223,6 +223,14 @@
     }
   }
 
+  .stickyNav__actions > div {
+    display:flex;
+
+    .button {
+      margin-left:20px;
+    }
+  }
+
   .stickyNav .container {
     display: block;
     padding-top:26px;

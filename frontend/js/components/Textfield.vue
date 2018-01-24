@@ -1,12 +1,12 @@
 <template>
-  <a17-inputframe :error="error" :note="note" :label="label" :locale="locale" @localize="updateLocale" :size="size" :name="name">
+  <a17-inputframe :error="error" :note="note" :label="label" :locale="locale" @localize="updateLocale" :size="size" :name="uniqId">
     <div class="input__field" :class="textfieldClasses">
       <span class="input__prefix" v-if="hasPrefix">{{ prefix }}</span>
-      <textarea v-if="type === 'textarea'" ref="clone" :rows="rows" class="input__clone" disabled="true">{{ value }}</textarea>
+      <textarea v-if="type === 'textarea'" ref="clone" :rows="rows" class="input__clone" disabled="true" v-model="value"></textarea>
       <textarea v-if="type === 'textarea'"
         ref="input"
         :name="name"
-        :id="name"
+        :id="uniqId"
         :placeholder="placeholder"
         :disabled="disabled"
         :required="required"
@@ -16,13 +16,14 @@
         @focus="onFocus"
         @blur="onBlur"
         @input="onInput"
-      >{{ value }}</textarea>
+        v-model="value"
+      ></textarea>
       <input v-if="type == 'number'"
         ref="input"
         type="number"
         :placeholder="placeholder"
         :name="name"
-        :id="name"
+        :id="uniqId"
         :disabled="disabled"
         :maxlength="displayedMaxlength"
         :required="required"
@@ -39,7 +40,7 @@
         type="text"
         :placeholder="placeholder"
         :name="name"
-        :id="name"
+        :id="uniqId"
         :disabled="disabled"
         :maxlength="displayedMaxlength"
         :required="required"
@@ -56,7 +57,7 @@
         type="email"
         :placeholder="placeholder"
         :name="name"
-        :id="name"
+        :id="uniqId"
         :disabled="disabled"
         :maxlength="displayedMaxlength"
         :required="required"
@@ -74,7 +75,7 @@
         type="password"
         :placeholder="placeholder"
         :name="name"
-        :id="name"
+        :id="uniqId"
         :disabled="disabled"
         :maxlength="displayedMaxlength"
         :required="required"
@@ -126,6 +127,9 @@
       }
     },
     computed: {
+      uniqId: function (value) {
+        return this.name + '-' + this.randKey
+      },
       textfieldClasses: function () {
         return {
           'input__field--textarea': this.type === 'textarea',
@@ -152,6 +156,7 @@
     },
     data: function () {
       return {
+        randKey: Date.now() + Math.floor(Math.random() * 9999),
         value: this.initialValue,
         focused: false,
         counter: 0
@@ -164,6 +169,9 @@
     },
     methods: {
       updateFromStore: function (newValue) { // called from the formStore mixin
+        if (typeof newValue === 'undefined') newValue = ''
+
+        console.warn('Update UI value : ' + this.name + ' -> ' + newValue)
         this.updateValue(newValue)
       },
       updateValue: function (newValue) {

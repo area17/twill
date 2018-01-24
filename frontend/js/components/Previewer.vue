@@ -1,6 +1,7 @@
 <template>
   <div class="previewer" :class="{ 'previewer--loading' : loading }">
     <a17-button @click="restoreRevision" v-if="activeRevision" class="previewer__restore" variant="warning" size="small">Restore</a17-button>
+    <a17-button @click="openEditor" v-else class="previewer__restore" variant="editor" size="small"><span v-svg symbol="editor"></span>Editor</a17-button>
     <div class="previewer__frame">
       <div class="previewer__inner">
         <div class="previewer__nav">
@@ -103,6 +104,10 @@
       })
     },
     methods: {
+      openEditor: function () {
+        this.$root.$refs.preview.close()
+        if (this.$root.$refs.editor) this.$root.$refs.editor.open()
+      },
       getCurrentPreview: function () {
         if (this.loadedCurrent) return
 

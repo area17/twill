@@ -28,6 +28,9 @@ import a17Browser from '@/components/Browser.vue'
 import a17Overlay from '@/components/Overlay.vue'
 import a17Previewer from '@/components/Previewer.vue'
 
+// Overlay Editor
+import a17Editor from '@/components/Editor.vue'
+
 // Plugins
 import A17Config from '@/plugins/A17Config'
 import A17Notif from '@/plugins/A17Notif'
@@ -75,6 +78,10 @@ Vue.component('a17-previewer', a17Previewer)
 
 // mixins
 import formatPermalink from '@/mixins/formatPermalink'
+import editorMixin from '@/mixins/editor.js'
+
+// Editor
+Vue.component('a17-editor', a17Editor)
 
 // Blocks
 const importedBlocks = require.context('@/components/blocks/', true, /\.(js|vue)$/i)
@@ -101,7 +108,7 @@ Window.vm = new Vue({
     'a17-publisher': a17Publisher,
     'a17-page-nav': a17PageNav
   },
-  mixins: [formatPermalink],
+  mixins: [formatPermalink, editorMixin],
   data: function () {
     return {
       unSubscribe: function () {
@@ -112,7 +119,8 @@ Window.vm = new Vue({
   },
   computed: {
     ...mapState({
-      loading: state => state.form.loading
+      loading: state => state.form.loading,
+      editor: state => state.content.editor
     })
   },
   methods: {

@@ -142,6 +142,9 @@
       }
     },
     methods: {
+      updateFromStore: function (newValue) { // called from the formStore mixin
+        this.value = newValue
+      },
       isAjax: function () {
         return this.ajaxUrl !== ''
       },

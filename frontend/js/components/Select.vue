@@ -55,6 +55,11 @@
         }
       }
     },
+    methods: {
+      updateFromStore: function (newValue) { // called from the formStore mixin
+        this.value = newValue
+      }
+    },
     mounted: function () {
       this.$emit('change', this.value)
     }

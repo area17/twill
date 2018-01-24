@@ -119,7 +119,7 @@
       },
       openPreview: function () {
         this.$store.commit('updateRevision', 0)
-        this.$root.$refs.preview.open()
+        if (this.$root.$refs.preview) this.$root.$refs.preview.open()
       },
       updateVisibility: function (newValue) {
         this.$store.commit('updatePublishVisibility', newValue)

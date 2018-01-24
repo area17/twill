@@ -107,6 +107,7 @@
     border-radius: 2px;
     border: 1px solid $color__border;
     overflow-x: hidden;
+    background:$color__background;
   }
 
   .slideshow__trigger {
