@@ -94,8 +94,6 @@
           return
         }
 
-        const html = document.documentElement
-
         this.hidden = true
         this.mask()
       },

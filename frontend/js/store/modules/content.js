@@ -79,7 +79,6 @@ const actions = {
 
     if (block.hasOwnProperty('id')) {
       console.log('Actions - getPreview HTML : ' + block.id)
-
       // AJAX goes here to retrieve the html output
       commit(types.ADD_BLOCK_PREVIEW, {
         id: block.id,
@@ -87,14 +86,12 @@ const actions = {
       })
     }
   },
-  getAllPreviews ({ commit, state, getters }) {
-
+  getAllPreviews ({ commit, state, getters, rootState }) {
     const data = getFormData(rootState)
 
     if (state.blocks.length) {
       state.blocks.forEach(function (block) {
         console.log('Actions - getPreview HTML : ' + block.id)
-
         // AJAX goes here to retrieve the html output
         commit(types.ADD_BLOCK_PREVIEW, {
           id: block.id,
