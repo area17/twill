@@ -2,6 +2,7 @@ import Quill from 'quill'
 let Delta = Quill.import('delta')
 let Break = Quill.import('blots/break')
 let Embed = Quill.import('blots/embed')
+let Link = Quill.import('formats/link')
 
 /*
 * Support for shift enter
@@ -58,6 +59,32 @@ function lineBreakMatcher () {
 }
 
 Quill.register(SmartBreak)
+
+/* Customize Link */
+class MyLink extends Link {
+  static create (value) {
+    let node = super.create(value)
+    value = this.sanitize(value)
+    node.setAttribute('href', value)
+
+    // relative urls wont have target blank
+    const urlPattern = /^((http|https|ftp):\/\/)/
+    if (!urlPattern.test(value)) {
+      node.removeAttribute('target')
+    }
+
+    // url starting with the front-end base url wont have target blank
+    if (window.STORE.form.baseUrl) {
+      if (value.startsWith(window.STORE.form.baseUrl)) {
+        node.removeAttribute('target')
+      }
+    }
+
+    return node
+  }
+}
+
+Quill.register(MyLink)
 
 /* Custom Icons */
 function getIcon (shape) {
