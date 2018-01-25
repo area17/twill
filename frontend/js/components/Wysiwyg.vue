@@ -21,6 +21,8 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
+
   import 'quill/dist/quill.snow.css'
   import 'quill/dist/quill.bubble.css'
   import 'quill/dist/quill.core.css'
@@ -76,7 +78,10 @@
           's--disabled': this.disabled,
           's--focus': this.focused
         }
-      }
+      },
+      ...mapState({
+        baseUrl: state => state.form.baseUrl
+      })
     },
     data: function () {
       return {
@@ -208,9 +213,20 @@
         }
       })
 
-    // disabled
+      // disabled
       if (this.disabled) {
         this.quill.enable(false)
+      }
+
+      // Change the link placeholder + add a checkbox to add or not the target blank attribute to current url
+      if (this.baseUrl) {
+        const tooltip = this.quill.theme.tooltip
+        const rootElement = tooltip.root
+
+        if (rootElement) {
+          const input = rootElement.querySelector('input[data-link]')
+          if (input) input.setAttribute('data-link', this.baseUrl)
+        }
       }
 
       // emit ready
