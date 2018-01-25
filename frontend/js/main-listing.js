@@ -20,6 +20,7 @@ import a17Datatable from '@/components/table/Datatable.vue'
 import a17Filter from '@/components/Filter.vue'
 import a17TableFilters from '@/components/table/TableFilters.vue'
 import a17BulkEdit from '@/components/table/BulkEdit.vue'
+import a17Langswitcher from '@/components/LangSwitcher.vue'
 import ModalValidationButtons from '@/components/Modals/ModalValidationButtons.vue'
 
 // Store modules
@@ -47,7 +48,8 @@ Window.vm = new Vue({
     'a17-table-filters': a17TableFilters,
     'a17-datatable': a17Datatable,
     'a17-bulk': a17BulkEdit,
-    'a17-modal-validation': ModalValidationButtons
+    'a17-modal-validation': ModalValidationButtons,
+    'a17-langswitcher': a17Langswitcher
   },
   mixins: [formatPermalink],
   data: function () {

@@ -1,6 +1,6 @@
 <template>
-  <div class="language" v-if="languages.length > 1">
-    <span class="language__label f--small">Edit in</span>
+  <div class="language" :class="{'language--inModal': inModal}" v-if="languages.length > 1">
+    <span class="language__label f--small" v-if="!inModal">Edit in</span>
     <span class="language__toolbar">
       <button type="button" class="language__button" :key="language.value" v-for="language in languages" :class="{ 'selected': language.value === localeValue.value, 'published': language.published }" @click="onClick(language.value)" >{{ language.shortlabel }}</button>
     </span>
@@ -13,6 +13,12 @@
   export default {
     name: 'A17Langswitcher',
     mixins: [LocaleMixin],
+    props: {
+      inModal: {
+        type: Boolean,
+        default: false
+      }
+    },
     computed: {
       localeValue () {
         return this.$store.state.language.active
@@ -34,6 +40,12 @@
 
   .language {
     color: $color__f--text;
+  }
+
+  .language--inModal {
+    padding: 15px 0 10px 20px;
+    margin: 0 -20px;
+    background-color: $color__light;
   }
 
   .language__label {
