@@ -1,5 +1,4 @@
 /* form */
-export const UPDATE_FORM_TITLE = 'updateFormTitle'
 export const UPDATE_FORM_PERMALINK = 'updateFormPermalink'
 export const UPDATE_FORM_FIELD = 'updateFormField'
 export const REFRESH_FORM_FIELD = 'refreshFormFieldUI'

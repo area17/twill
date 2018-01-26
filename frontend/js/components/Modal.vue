@@ -34,12 +34,17 @@
       forceClose: {
         type: Boolean,
         default: false
+      },
+      forceLock: {
+        type: Boolean,
+        default: false
       }
     },
     data: function () {
       return {
         active: false,
-        hidden: true
+        hidden: true,
+        locked: false
       }
     },
     computed: {
@@ -58,6 +63,11 @@
       ...mapState({
         browserTitle: state => state.browser.title
       })
+    },
+    watch: {
+      forceLock: function () {
+        this.locked = this.forceLock
+      }
     },
     methods: {
       open: function (onShow) {
@@ -88,6 +98,7 @@
       },
       hide: function () {
         if (!this.active) return
+        if (this.locked) return
 
         if (this.forceClose) {
           this.close()
@@ -99,6 +110,7 @@
       },
       close: function (onClose) {
         if (!this.active) return
+        if (this.locked) return
 
         this.active = false
         this.mask()

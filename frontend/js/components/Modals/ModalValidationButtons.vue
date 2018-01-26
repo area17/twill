@@ -84,12 +84,14 @@
       disable: function () {
         if (!this.fields) {
           this.isDisabled = true
+          this.$emit('disable', true)
           return
         }
 
         // There are no required fields, so buttons are enabled
         if (this.fields.length === 0) {
           this.isDisabled = false
+          this.$emit('disable', false)
           return
         }
 
@@ -100,10 +102,12 @@
 
         if (filtered.length === this.fields.length) {
           this.isDisabled = false
+          this.$emit('disable', false)
           return
         }
 
         this.isDisabled = true
+        this.$emit('disable', true)
       }
     },
     mounted: function () {
