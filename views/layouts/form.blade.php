@@ -6,7 +6,6 @@
     $permalink = $permalink ?? true;
     $editor = $editor ?? false;
     $translate = $translate ?? false;
-    $translateTitle = $translateTitle ?? $translate ?? false;
 @endphp
 
 @section('content')
@@ -21,7 +20,7 @@
                     ]);
                 @endphp
                 <a17-sticky-nav data-sticky-target="navbar" :items="{{ json_encode($additionalFieldsets) }}">
-                    <a17-title-editor @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif v-bind:translated="{!! json_encode($translateTitle) !!}" slot="title">
+                    <a17-title-editor @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif slot="title">
                         <template slot="modal-form">
                             @partialView(($moduleName ?? null), 'create')
                         </template>

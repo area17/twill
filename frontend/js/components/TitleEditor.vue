@@ -1,5 +1,5 @@
 <template>
-  <div class="titleEditor">
+  <div class="titleEditor" :class="titleEditorClasses">
     <div class="titleEditor__preview">
       <h2 class="titleEditor__title" :class="{ 'titleEditor__title-only' : !permalink }">
         <a @click.prevent="$refs.editModal.open()" href="#">
@@ -23,13 +23,16 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
+  import { mapState, mapGetters } from 'vuex'
   import a17VueFilters from '@/utils/filters.js'
-  import FormDataAsObj from '@/utils/formDataAsObj.js'
   import a17ModalValidationButtons from '@/components/Modals/ModalValidationButtons.vue'
+
+  import InputframeMixin from '@/mixins/inputFrame'
+  import LocaleMixin from '@/mixins/locale'
 
   export default {
     name: 'A17TitleEditor',
+    mixins: [InputframeMixin, LocaleMixin],
     components: {
       'a17-modal-validation': a17ModalValidationButtons
     },
@@ -38,12 +41,20 @@
         type: String,
         default: 'Update item'
       },
-      translated: {
-        type: Boolean,
-        default: false
+      warningMessage: {
+        type: String,
+        default: 'Please include a title'
+      },
+      name: {
+        default: 'title'
       }
     },
     computed: {
+      titleEditorClasses: function () {
+        return {
+          'titleEditor--error': this.error || (this.title === this.warningMessage)
+        }
+      },
       mode: function () {
         return this.title.length > 0 ? 'update' : 'create'
       },
@@ -51,26 +62,25 @@
         return this.baseUrl + this.permalink
       },
       title: function () {
-        return this.translated
-          ? this.$store.state.form.title[this.currentLocale['value']]
-          : this.$store.state.form.title
+        // Get the title from the store
+        const title = this.fieldValueByName(this.name) ? this.fieldValueByName(this.name) : ''
+        const titleValue = this.languages.length > 1 ? title[this.currentLocale['value']] : title
+        return titleValue || this.warningMessage
       },
       ...mapState({
         permalink: state => state.form.permalink,
         baseUrl: state => state.form.baseUrl,
-        currentLocale: state => state.language.active
-      })
+        currentLocale: state => state.language.active,
+        languages: state => state.language.all,
+        fields: state => state.form.fields
+      }),
+      ...mapGetters([
+        'fieldValueByName'
+      ])
     },
     filters: a17VueFilters,
     methods: {
       update: function () {
-        let data = FormDataAsObj(this.$refs.modalForm)
-        this.$store.commit('updateFormTitle', data[Object.keys(data)[0]])
-
-        // if (this.permalink !== '') {
-        //   this.$store.commit('updateFormPermalink', data.permalink)
-        // }
-
         this.$refs.editModal.hide()
       }
     }
@@ -102,6 +112,24 @@
 
     a:hover .icon {
       color: $color__text;
+    }
+  }
+
+  .titleEditor--error .titleEditor__title {
+    .f--underlined--o,
+    .icon {
+      color:$color__error;
+    }
+
+    &:hover {
+      .f--underlined--o,
+      .icon {
+        color: $color__error;
+      }
+
+      .f--underlined--o {
+        @include bordered($color__error, false);
+      }
     }
   }
 
