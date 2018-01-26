@@ -1556,6 +1556,70 @@ filename: ```views/admin/articles/form.blade.php```
 
 - Not adding the *item block* to the _repeaters_ section.
 
+#### How to add Browser Fields
+If you are requested to enable the possibility to add a related model, then the Browser fields are the match.
+If you have an Article that can have related products.
+
+On the Article(entity) form we have:
+
+filename: ```views/admin/articles/form.blade.php```
+```php
+@extends('cms-toolkit::layouts.form')
+
+@section('contentFields')
+    @formField('input', [
+        'name' => 'title',
+        'label' => 'Title',
+    ])
+...
+    @formField('block_editor')
+@stop
+
+```
+
+- Add the block editors that will handle the `Browser Field`
+filename: ```views/admin/blocks/products.blade.php```
+```php
+    @formField('browser', [
+        'routePrefix' => 'content',
+        'moduleName' => 'products',
+        'name' => 'products',
+        'label' => 'Products',
+        'max' => 10
+    ])
+```
+
+- Define the block in the configuration like any other block in the config/cms-toolkit.php.
+```php
+    'blocks' => [
+        ...
+        'products' => [
+            'title' => 'Products',
+            'icon' => 'text',
+            'component' => 'a17-block-products',
+        ],
+```
+
+- After that, it is required to add the Route Prefixes. e.g.:
+```php
+    'block_editor' => [
+        'blocks' => [
+            ...
+            'product' => [
+                'title' => 'Product',
+                'icon' => 'text',
+                'component' => 'a17-block-products',
+            ],
+            ...
+        ],
+        'repeaters' => [
+                ...
+        ],
+        'browser_route_prefixes' => [
+            'products' => 'content',
+        ],
+    ]
+```
 
 #### How to render blocks in the FE
 As long as you have access to a model instance that uses the HasBlocks trait in a view, you can call the `renderBlocks` helper on it to render the list of blocks that were created from the CMS. By default, this function will loop over all the blocks and their child blocks and render a Blade view located in `resources/views/site/blocks` with the same name as the block key you specified in your CMS toolkit configuration and module form. 
