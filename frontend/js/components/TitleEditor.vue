@@ -11,10 +11,10 @@
       </a>
 
       <!-- Editing modal -->
-      <a17-modal class="modal--form" ref="editModal" :title="modalTitle">
+      <a17-modal class="modal--form" ref="editModal" :title="modalTitle" :forceLock="disabled">
         <form action="#" @submit.prevent="update" ref="modalForm">
           <slot name="modal-form"></slot>
-          <a17-modal-validation :mode="mode"></a17-modal-validation>
+          <a17-modal-validation :mode="mode" @disable="lockModal"></a17-modal-validation>
         </form>
       </a17-modal>
     </div>
@@ -49,6 +49,11 @@
         default: 'title'
       }
     },
+    data: function () {
+      return {
+        disabled: false
+      }
+    },
     computed: {
       titleEditorClasses: function () {
         return {
@@ -64,7 +69,7 @@
       title: function () {
         // Get the title from the store
         const title = this.fieldValueByName(this.name) ? this.fieldValueByName(this.name) : ''
-        const titleValue = this.languages.length > 1 ? title[this.currentLocale['value']] : title
+        const titleValue = typeof title === 'string' ? title : title[this.currentLocale['value']]
         return titleValue || this.warningMessage
       },
       ...mapState({
@@ -82,6 +87,9 @@
     methods: {
       update: function () {
         this.$refs.editModal.hide()
+      },
+      lockModal: function (newValue) {
+        this.disabled = newValue
       }
     }
   }

@@ -5,7 +5,6 @@ import { getFormData } from '@/utils/getFormData.js'
 const state = {
   loading: false,
   type: 'save',
-  title: window.STORE.form.title || '',
   permalink: window.STORE.form.permalink || '',
   baseUrl: window.STORE.form.baseUrl || '',
   fields: window.STORE.form.fields || [],
@@ -26,11 +25,6 @@ const getters = {
 }
 
 const mutations = {
-  [types.UPDATE_FORM_TITLE] (state, newValue) {
-    if (newValue && newValue !== '') {
-      state.title = newValue
-    }
-  },
   [types.UPDATE_FORM_PERMALINK] (state, newValue) {
     if (newValue && newValue !== '') {
       state.permalink = newValue
