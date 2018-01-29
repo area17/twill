@@ -23,7 +23,7 @@ const getters = {
     })
   },
   fieldValueByName: (state, getters) => name => { // want to use getters
-    return getters.fieldsByName(name).length ? getters.fieldsByName(name)[0].value : false
+    return getters.fieldsByName(name).length ? getters.fieldsByName(name)[0].value : ''
   }
 }
 
@@ -32,6 +32,12 @@ const mutations = {
     if (newValue && newValue !== '') {
       state.permalink = newValue
     }
+  },
+  [types.EMPTY_FORM_FIELDS] (state, fields) {
+    state.fields = []
+  },
+  [types.REPLACE_FORM_FIELDS] (state, fields) {
+    state.fields = fields
   },
   [types.UPDATE_FORM_FIELD] (state, field) {
     let fieldValue = field.locale ? {} : null
@@ -85,6 +91,19 @@ const mutations = {
 }
 
 const actions = {
+  replaceFormData ({ commit, state, getters, rootState }, endpoint) {
+    commit(types.CLEAR_FORM_ERRORS)
+    commit(types.CLEAR_NOTIF, 'error')
+
+    api.get(endpoint, function (successResponse) {
+      commit(types.UPDATE_FORM_LOADING, false)
+      commit(types.REPLACE_FORM_FIELDS, successResponse.data)
+    }, function (errorResponse) {
+      commit(types.UPDATE_FORM_LOADING, false)
+      commit(types.SET_FORM_ERRORS, errorResponse.response.data)
+      commit(types.SET_NOTIF, { message: 'Your submission could not be validated, please fix and retry', variant: 'error' })
+    })
+  },
   saveFormData ({ commit, state, getters, rootState }, saveType) {
     commit(types.CLEAR_FORM_ERRORS)
     commit(types.CLEAR_NOTIF, 'error')

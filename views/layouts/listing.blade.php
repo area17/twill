@@ -53,7 +53,7 @@
 
                     @if($create ?? false)
                         <div slot="additional-actions">
-                            <a17-button variant="validate" size="small" v-on:click="$refs.addNewModal.open()">Add new</a17-button>
+                            <a17-button variant="validate" size="small" v-on:click="create">Add new</a17-button>
                         </div>
                     @endif
                 </a17-filter>

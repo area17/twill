@@ -69,6 +69,12 @@ Window.vm = new Vue({
     })
   },
   methods: {
+    create: function () {
+      if (this.$refs.addNewModal) {
+        this.$store.commit('emptyFormField')
+        this.$refs.addNewModal.open()
+      }
+    },
     reloadDatas: function () {
       // reload datas
       this.$store.dispatch('getDatatableDatas')

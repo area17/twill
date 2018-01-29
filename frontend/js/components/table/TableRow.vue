@@ -13,7 +13,7 @@
         <!-- Featured star button -->
         <span v-if="col.name === 'published' && row.hasOwnProperty('published')" class="tablecell__pubstate" :class="{'tablecell__pubstate--live': row[col.name] }" @click.prevent="togglePublish" :data-tooltip-title="row['published'] ? 'Unpublish' : 'Publish'" v-tooltip></span>
         <!-- Published circle icon -->
-        <a class="tablecell__thumb" :href="editUrl" v-if="col.name === 'thumbnail' && !row.hasOwnProperty('deleted')"><img :src="row[col.name]"/></a>
+        <a class="tablecell__thumb" :href="editUrl" @click="editInPlace" v-if="col.name === 'thumbnail' && !row.hasOwnProperty('deleted')"><img :src="row[col.name]"/></a>
         <template v-else>
           <a class="tablecell__thumb" v-if="col.name === 'thumbnail'"><img :src="row[col.name]"/></a>
         </template> <!-- Thumbnail -->
@@ -24,7 +24,7 @@
       </template>
 
       <template v-else>
-        <a :href="editUrl" class="tablecell__name" v-if="col.name === 'name' && !row.hasOwnProperty('deleted')"><span
+        <a :href="editUrl" class="tablecell__name" v-if="col.name === 'name' && !row.hasOwnProperty('deleted')" @click="editInPlace"><span
           class="f--link-underlined--o">{{ row[col.name] }}</span></a>
         <span v-else-if="col.html" v-html="row[col.name]"></span>
         <template v-else>{{ row[col.name] }}</template>
@@ -37,7 +37,7 @@
         </a17-button>
         <div slot="dropdown__content">
           <a v-if="row.hasOwnProperty('permalink')" :href="row['permalink']" target="_blank">View Permalink</a>
-          <a v-if="row.hasOwnProperty('edit') && !row.hasOwnProperty('deleted')" :href="editUrl">Edit</a>
+          <a v-if="row.hasOwnProperty('edit') && !row.hasOwnProperty('deleted')" :href="editUrl" @click="editInPlace">Edit</a>
           <a v-if="row.hasOwnProperty('published') && !row.hasOwnProperty('deleted')" href="#"
              @click.prevent="togglePublish">{{ row['published'] ? 'Unpublish' : 'Publish' }}</a>
           <a v-if="row.hasOwnProperty('featured') && !row.hasOwnProperty('deleted')" href="#"
@@ -94,6 +94,9 @@
       }
     },
     computed: {
+      editInModal: function () {
+        return this.row['editInModal'] ? this.row['editInModal'] : false
+      },
       editUrl: function () {
         return this.row['edit'] ? this.row['edit'] : '#'
       },
@@ -110,6 +113,18 @@
       }
     },
     methods: {
+      editInPlace: function (event) {
+        if (this.editInModal) {
+          const endpoint = this.editInModal
+          this.$store.commit('updateFormLoading', true)
+          console.log('Get data to feed the store so we can edit in place')
+          this.$store.dispatch('replaceFormData', endpoint)
+
+          if (this.$root.$refs.addNewModal) this.$root.$refs.addNewModal.open()
+
+          event.preventDefault()
+        }
+      },
       cellClasses: function (col) {
         return {
           'tablecell--icon': col.name === 'featured' || col.name === 'published',
