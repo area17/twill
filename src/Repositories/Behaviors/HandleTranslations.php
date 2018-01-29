@@ -108,4 +108,9 @@ trait HandleTranslations
             }
         }
     }
+
+    public function getPublishedScopes()
+    {
+        return ['withActiveTranslations'];
+    }
 }

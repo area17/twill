@@ -1,5 +1,6 @@
 import revisionAPI from '../api/revision'
 import * as types from '../mutation-types'
+import { getFormData } from '@/utils/getFormData.js'
 
 const state = {
   loading: false,
@@ -37,30 +38,44 @@ const mutations = {
 }
 
 const actions = {
-  getRevisionContent ({ commit, state, getters }) {
-    commit(types.LOADING_REV)
+  getCurrentContent ({ commit, rootState }) {
+    return new Promise((resolve, reject) => {
+      commit(types.LOADING_REV)
 
-    let id = 0
-
-    if (Object.keys(state.active).length === 0) id = state.all[0].id
-    else id = state.active.id
-
-    revisionAPI.getRevisionContent(
-      id,
-      data => {
-        commit(types.UPDATE_REV_CONTENT, data)
-      }
-    )
+      revisionAPI.getCurrentContent(
+        rootState.form.previewUrl,
+        getFormData(rootState),
+        data => {
+          commit(types.UPDATE_REV_CURRENT_CONTENT, data)
+          resolve()
+        },
+        errorResponse => {
+          reject(errorResponse)
+        }
+      )
+    })
   },
-  getCurrentContent ({ commit, state, getters }) {
-    commit(types.LOADING_REV)
+  getRevisionContent ({ commit, state, rootState }) {
+    return new Promise((resolve, reject) => {
+      commit(types.LOADING_REV)
 
-    revisionAPI.getCurrentContent(
-      'some params',
-      data => {
-        commit(types.UPDATE_REV_CURRENT_CONTENT, data)
-      }
-    )
+      let id = 0
+
+      if (Object.keys(state.active).length === 0) id = state.all[0].id
+      else id = state.active.id
+
+      revisionAPI.getRevisionContent(
+        rootState.form.previewUrl,
+        id,
+        data => {
+          commit(types.UPDATE_REV_CONTENT, data)
+          resolve()
+        },
+        errorResponse => {
+          reject(errorResponse)
+        }
+      )
+    })
   }
 }
 

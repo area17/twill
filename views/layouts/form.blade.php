@@ -78,6 +78,8 @@
         permalink: '{{ $permalink ? ($item->slug ?? '') : '' }}',
         baseUrl: '{{ $baseUrl }}',
         saveUrl: '{{ $saveUrl }}',
+        previewUrl: '{{ $previewUrl or '' }}',
+        restoreUrl: '{{ $restoreUrl or '' }}',
         availableRepeaters: {!! json_encode(config('cms-toolkit.block_editor.repeaters')) !!},
         repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!},
         fields: []

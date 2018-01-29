@@ -119,7 +119,16 @@
       },
       openPreview: function () {
         this.$store.commit('updateRevision', 0)
-        if (this.$root.$refs.preview) this.$root.$refs.preview.open()
+
+        this.$store.dispatch('getCurrentContent').then(() => {
+          if (this.$root.$refs.preview) this.$root.$refs.preview.open()
+        }, (errorResponse) => {
+          this.$store.commit('setFormErrors', errorResponse.response.data)
+          this.$store.commit('setNotification', {
+            message: 'Your submission could not be validated, please fix and retry',
+            variant: 'error'
+          })
+        })
       },
       updateVisibility: function (newValue) {
         this.$store.commit('updatePublishVisibility', newValue)

@@ -48,15 +48,6 @@ trait HandleRevisions
         return $this->hydrateObject($object, $fields);
     }
 
-    public function previewForCompare($id)
-    {
-        $object = $this->model->findOrFail($id);
-
-        $fields = json_decode($object->revisions->first()->payload, true);
-
-        return $this->hydrateObject($object, $fields);
-    }
-
     private function payloadChanged($requestPayload, $revisionPayload)
     {
         $requestPayloadValues = array_values($requestPayload);
@@ -65,33 +56,49 @@ trait HandleRevisions
         return array_sort_recursive($requestPayloadValues) !== array_sort_recursive($revisionPayloadValues);
     }
 
-    public function hydrate($object, $fields)
+    public function hydrateMultiSelect($object, $fields, $relationship, $model = null)
     {
-        foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'hydrate' . class_basename($trait))) {
-                $object = $this->$method($object, $fields);
-            }
+        $fieldsHasElements = isset($fields[$relationship]) && !empty($fields[$relationship]);
+        $relatedElements = $fieldsHasElements ? $fields[$relationship] : [];
+
+        $relationRepository = $this->getModelRepository($relationship, $model);
+        $relatedElementsCollection = collect();
+
+        foreach ($relatedElements as $relatedElement) {
+            $newRelatedElement = $relationRepository->getById($relatedElement);
+            $relatedElementsCollection->push($newRelatedElement);
         }
 
-        return $object;
+        $object->setRelation($relationship, $relatedElementsCollection);
+    }
+
+    public function hydrateBrowser($object, $fields, $relationship, $positionAttribute = 'position', $model = null)
+    {
+        return $this->hydrateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute, $model);
     }
 
     public function hydrateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute = 'position', $model = null)
     {
-        $relatedElements = isset($fields[$relationship]) && !empty($fields[$relationship]) ? explode(',', $fields[$relationship]) : [];
+        $fieldsHasElements = isset($fields['browsers'][$relationship]) && !empty($fields['browsers'][$relationship]);
+        $relatedElements = $fieldsHasElements ? $fields['browsers'][$relationship] : [];
 
         $relationRepository = $this->getModelRepository($relationship, $model);
         $relatedElementsCollection = collect();
         $position = 1;
 
         foreach ($relatedElements as $relatedElement) {
-            $newRelatedElement = $relationRepository->getById($relatedElement);
+            $newRelatedElement = $relationRepository->getById($relatedElement['id']);
             $pivot = $newRelatedElement->newPivot($object, [$positionAttribute => $position++], $object->$relationship()->getTable(), true);
             $newRelatedElement->setRelation('pivot', $pivot);
             $relatedElementsCollection->push($newRelatedElement);
         }
 
         $object->setRelation($relationship, $relatedElementsCollection);
+    }
+
+    public function hydrateRepeater($object, $fields, $relationship, $model = null)
+    {
+        throw new \Exception('Hydrate repeater function is not implemented.');
     }
 
     public function getCountForMine()

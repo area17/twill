@@ -38,7 +38,15 @@
       },
       openPreview: function (id) {
         this.$store.commit('updateRevision', parseInt(id))
-        this.$root.$refs.preview.open()
+
+        this.$store.dispatch('getRevisionContent').then(() => {
+          if (this.$root.$refs.preview) this.$root.$refs.preview.open()
+        }, (errorResponse) => {
+          this.$store.commit('setNotification', {
+            message: 'Invalid revision.',
+            variant: 'error'
+          })
+        })
       }
     }
   }

@@ -113,7 +113,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         return $this->repository->create($fields);
     }
 
-    public function edit($id)
+    public function edit($id, $submoduleId = null)
     {
         $file = $this->repository->getById($id);
         return [

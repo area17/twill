@@ -82,9 +82,17 @@ trait HandleSlugs
 
     public function forSlug($slug, $with = [], $withCount = [], $scopes = [])
     {
-        $item = $this->model->forSlug($slug)->with($with)->withCount($withCount)->where($scopes)->published()->visible()->first();
+        $query = $this->model->where($scopes)->scopes(['published', 'visible']);
 
-        if (!$item && $item = $this->model->forInactiveSlug($slug)->where($scopes)->published()->visible()->first()) {
+        foreach (class_uses_recursive(get_called_class()) as $trait) {
+            if (method_exists(get_called_class(), $method = 'getPublishedScopes')) {
+                $query->scopes($this->$method());
+            }
+        }
+
+        $item = (clone $query)->forSlug($slug)->with($with)->withCount($withCount)->first();
+
+        if (!$item && $item = (clone $query)->forInactiveSlug($slug)->first()) {
             $item->redirect = true;
         }
 
@@ -95,5 +103,4 @@ trait HandleSlugs
     {
         return $this->model->forInactiveSlug($slug)->with($with)->withCount($withCount)->first();
     }
-
 }

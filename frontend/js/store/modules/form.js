@@ -9,6 +9,8 @@ const state = {
   baseUrl: window.STORE.form.baseUrl || '',
   fields: window.STORE.form.fields || [],
   saveUrl: window.STORE.form.saveUrl || '',
+  previewUrl: window.STORE.form.previewUrl || '',
+  restoreUrl: window.STORE.form.restoreUrl || '',
   errors: {}
 }
 

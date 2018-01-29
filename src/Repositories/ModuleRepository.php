@@ -374,6 +374,17 @@ abstract class ModuleRepository
         }
     }
 
+    public function hydrate($object, $fields)
+    {
+        foreach (class_uses_recursive(get_called_class()) as $trait) {
+            if (method_exists(get_called_class(), $method = 'hydrate' . class_basename($trait))) {
+                $object = $this->$method($object, $fields);
+            }
+        }
+
+        return $object;
+    }
+
     public function getFormFields($object)
     {
         $fields = [];

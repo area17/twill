@@ -45,8 +45,7 @@ trait HasSlug
             $query->whereSlug($slug);
             $query->whereActive(true);
             $query->whereLocale(app()->getLocale());
-        })->withActiveTranslations()
-            ->with(['slugs']);
+        })->with(['slugs']);
     }
 
     public function scopeForInactiveSlug($query, $slug)
@@ -54,8 +53,7 @@ trait HasSlug
         return $query->whereHas('slugs', function ($query) use ($slug) {
             $query->whereSlug($slug);
             $query->whereLocale(app()->getLocale());
-        })->withActiveTranslations()
-            ->with(['slugs']);
+        })->with(['slugs']);
     }
 
     public function setSlugs($restoring = false)

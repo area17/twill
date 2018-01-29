@@ -1,13 +1,13 @@
 <template>
   <div class="previewer" :class="{ 'previewer--loading' : loading }">
-    <a17-button @click="restoreRevision" v-if="activeRevision" class="previewer__restore" variant="warning" size="small">Restore</a17-button>
-    <a17-button @click="openEditor" v-else class="previewer__restore" variant="editor" size="small"><span v-svg symbol="editor"></span>Editor</a17-button>
+    <!-- <a17-button @click="restoreRevision" v-if="activeRevision" class="previewer__restore" variant="warning" size="small">Restore</a17-button> -->
+    <a17-button @click="openEditor" v-if="!activeRevision && editor" class="previewer__restore" variant="editor" size="small"><span v-svg symbol="editor"></span>Editor</a17-button>
     <div class="previewer__frame">
       <div class="previewer__inner">
         <div class="previewer__nav">
           <div class="previewer__revisions">
             <span class="tag tag--revision" v-if="slipScreen">Past</span>
-            <a17-dropdown ref="previewRevisionsDropdown" position="bottom-left" :maxWidth="400">
+            <a17-dropdown ref="previewRevisionsDropdown" position="bottom-left" :maxWidth="400" :maxHeight="300">
               <a17-button class="previewer__trigger" @click="$refs.previewRevisionsDropdown.toggle()">
                 <template v-if="activeRevision" >
                   {{ currentRevision.datetime | formatDate }} ({{ currentRevision.author }}) <span v-svg symbol="dropdown_module"></span>
@@ -96,6 +96,7 @@
         return Object.keys(this.currentRevision).length
       },
       ...mapState({
+        editor: state => state.content.editor,
         loading: state => state.revision.loading,
         currentRevision: state => state.revision.active,
         activeContent: state => state.revision.activeContent,
@@ -110,7 +111,6 @@
       },
       getCurrentPreview: function () {
         if (this.loadedCurrent) return
-
         this.loadedCurrent = true
         this.$store.dispatch('getCurrentContent')
       },
@@ -123,9 +123,14 @@
       },
       previewRevision: function (id) {
         this.$store.commit('updateRevision', id)
-
-        // Update preview HTML
-        this.$store.dispatch('getRevisionContent')
+        this.$store.dispatch('getRevisionContent').then(() => {
+          // all good
+        }, (errorResponse) => {
+          this.$store.commit('setNotification', {
+            message: 'Invalid revision.',
+            variant: 'error'
+          })
+        })
       },
       compareView: function () {
         this.activeBreakpoint = 0
@@ -140,11 +145,6 @@
       setIframeScroll: function (value) {
         this.scrollPosition = value
       }
-    },
-    mounted: function () {
-      // get preview HTML
-      if (this.activeRevision) this.$store.dispatch('getRevisionContent')
-      else this.getCurrentPreview()
     }
   }
 </script>

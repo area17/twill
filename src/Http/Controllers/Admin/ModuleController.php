@@ -167,7 +167,9 @@ abstract class ModuleController extends Controller
         $this->submodule = isset($parentModuleId);
         $this->submoduleParentId = $parentModuleId;
 
-        $indexData = $this->getIndexData($this->submodule ? [$this->getParentModuleForeignKey() => $this->submoduleParentId] : []);
+        $indexData = $this->getIndexData($this->submodule ? [
+            $this->getParentModuleForeignKey() => $this->submoduleParentId,
+        ] : []);
 
         if ($this->request->ajax()) {
             return $indexData + ['replaceUrl' => true];
@@ -189,7 +191,7 @@ abstract class ModuleController extends Controller
         return str_singular(explode('.', $this->moduleName)[0]) . '_id';
     }
 
-    public function getIndexData($prependScope = [])
+    protected function getIndexData($prependScope = [])
     {
         $scopes = $this->filterScope($prependScope);
         $items = $this->getIndexItems($scopes);
@@ -219,13 +221,18 @@ abstract class ModuleController extends Controller
         return array_replace_recursive($data + $options, $this->indexData($this->request));
     }
 
-    public function getIndexItems($scopes = [], $forcePagination = false)
+    protected function getIndexItems($scopes = [], $forcePagination = false)
     {
-        $perPage = request('offset') ?? $this->perPage ?? 50;
-        return $this->repository->get($this->indexWith, $scopes, $this->orderScope(), $perPage, $forcePagination);
+        return $this->repository->get(
+            $this->indexWith,
+            $scopes,
+            $this->orderScope(),
+            request('offset') ?? $this->perPage ?? 50,
+            $forcePagination
+        );
     }
 
-    public function getIndexTableData($items)
+    protected function getIndexTableData($items)
     {
         $translated = $this->moduleIsTranslated();
         return $items->map(function ($item) use ($translated) {
@@ -237,29 +244,29 @@ abstract class ModuleController extends Controller
             unset($columnsData[$this->titleColumnKey]);
 
             $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
+            $itemCanDelete = $this->getIndexOption('delete') && ($item->canDelete ?? true);
 
             return [
                 'id' => $item->id,
                 'name' => $name,
-                'edit' => moduleRoute(
-                    $this->moduleName, $this->routePrefix, 'edit',
-                    array_merge($this->submodule ? [$this->submoduleParentId] : [], [$item->id])
-                ),
-                'delete' => $this->getIndexOption('delete') && ($item->canDelete ?? true) ? moduleRoute(
-                    $this->moduleName, $this->routePrefix, 'destroy',
-                    array_merge($this->submodule ? [$this->submoduleParentId] : [], [$item->id])
-                ) : null,
                 'publish_start_date' => $item->publish_start_date,
                 'publish_end_date' => $item->publish_end_date,
-            ] + $columnsData
-                 + ($this->getIndexOption('publish') && ($item->canPublish ?? true) ? ['published' => $item->published] : [])
-                 + ($this->getIndexOption('feature') && ($item->canFeature ?? true) ? ['featured' => $item->{$this->featureField}] : [])
-                 + ($translated ? ['languages' => $item->getActiveLanguages()] : [])
-                 + (($this->getIndexOption('restore') && $itemIsTrashed) ? ['deleted' => true] : []);
+                'edit' => $this->getModuleRouteWithEventualParent($item->id, 'edit'),
+                'delete' => $itemCanDelete ? $this->getModuleRouteWithEventualParent($item->id, 'destroy') : null,
+            ] + ($this->getIndexOption('publish') && ($item->canPublish ?? true) ? [
+                'published' => $item->published,
+            ] : []) + ($this->getIndexOption('feature') && ($item->canFeature ?? true) ? [
+                'featured' => $item->{$this->featureField},
+            ] : []) + (($this->getIndexOption('restore') && $itemIsTrashed) ? [
+                'deleted' => true,
+            ] : []) + ($translated ? [
+                'languages' => $item->getActiveLanguages(),
+            ] : []) + $columnsData;
+
         })->toArray();
     }
 
-    public function getItemColumnData($item, $column)
+    protected function getItemColumnData($item, $column)
     {
         if (isset($column['thumb']) && $column['thumb']) {
             $variant = isset($column['variant']);
@@ -279,7 +286,9 @@ abstract class ModuleController extends Controller
             $nestedCount = $item->{$column['nested']}->count();
             $value = '<a href="';
             $value .= moduleRoute("$this->moduleName.$field", $this->routePrefix, 'index', [$item->id]);
-            $value .= '">' . $nestedCount . " " . (strtolower($nestedCount > 1 ? str_plural($column['title']) : str_singular($column['title']))) . '</a>';
+            $value .= '">' . $nestedCount . " " . (strtolower($nestedCount > 1
+                ? str_plural($column['title'])
+                : str_singular($column['title']))) . '</a>';
         } else {
             $field = $column['field'];
             $value = $item->$field;
@@ -297,12 +306,14 @@ abstract class ModuleController extends Controller
         ];
     }
 
-    public function getIndexTableColumns($items)
+    protected function getIndexTableColumns($items)
     {
         $tableColumns = [];
         $visibleColumns = request('columns') ?? false;
 
-        if (isset(array_first($this->indexColumns)['thumb']) && array_first($this->indexColumns)['thumb']) {
+        if (isset(array_first($this->indexColumns)['thumb'])
+            && array_first($this->indexColumns)['thumb']
+        ) {
             array_push($tableColumns, [
                 'name' => 'thumbnail',
                 'label' => 'Thumbnail',
@@ -371,11 +382,13 @@ abstract class ModuleController extends Controller
         return $tableColumns;
     }
 
-    public function getIndexTableMainFilters($items)
+    protected function getIndexTableMainFilters($items)
     {
         $statusFilters = [];
 
-        $scope = $this->submodule ? [$this->getParentModuleForeignKey() => $this->submoduleParentId] : [];
+        $scope = $this->submodule ? [
+            $this->getParentModuleForeignKey() => $this->submoduleParentId,
+        ] : [];
 
         array_push($statusFilters, [
             'name' => 'All items',
@@ -414,7 +427,7 @@ abstract class ModuleController extends Controller
         return $statusFilters;
     }
 
-    public function getIndexUrls($moduleName, $routePrefix)
+    protected function getIndexUrls($moduleName, $routePrefix)
     {
         return collect([
             'store',
@@ -454,7 +467,7 @@ abstract class ModuleController extends Controller
         return response()->json($this->getBrowserData());
     }
 
-    public function getBrowserData($prependScope = [])
+    protected function getBrowserData($prependScope = [])
     {
         if (request()->has('except')) {
             $prependScope['exceptIds'] = request('except');
@@ -467,7 +480,7 @@ abstract class ModuleController extends Controller
         return array_replace_recursive($data, $this->indexData($this->request));
     }
 
-    public function getBrowserTableData($items)
+    protected function getBrowserTableData($items)
     {
         return $items->map(function ($item) {
             $columnsData = collect($this->browserColumns)->mapWithKeys(function ($column) use ($item) {
@@ -485,7 +498,7 @@ abstract class ModuleController extends Controller
         })->toArray();
     }
 
-    public function getBrowserItems($scopes = [])
+    protected function getBrowserItems($scopes = [])
     {
         return $this->getIndexItems($scopes, true);
     }
@@ -493,29 +506,43 @@ abstract class ModuleController extends Controller
     public function publish()
     {
         try {
-            // TODO: validate publish is allowed based on model state
-            $this->repository->updateBasic(request('id'), ['published' => !request('active')]);
+            if ($this->repository->updateBasic(request('id'), [
+                'published' => !request('active'),
+            ])) {
+                $this->fireEvent();
+
+                return $this->respondWithSuccess(
+                    $this->modelTitle . ' ' . (request('active') ? 'un' : '') . 'published!'
+                );
+            }
         } catch (\Exception $e) {
             \Log::error($e);
-            return $this->respondWithError($this->modelTitle . ' was not published. Something wrong happened!');
         }
 
-        $this->fireEvent();
-        return $this->respondWithSuccess($this->modelTitle . ' ' . (request('active') ? 'un' : '') . 'published!');
+        return $this->respondWithError(
+            $this->modelTitle . ' was not published. Something wrong happened!'
+        );
     }
 
     public function bulkPublish()
     {
         try {
-            // TODO: validate publish is allowed based on model state
-            $this->repository->updateBasic(explode(',', request('ids')), ['published' => request('publish')]);
+            if ($this->repository->updateBasic(explode(',', request('ids')), [
+                'published' => request('publish'),
+            ])) {
+                $this->fireEvent();
+
+                return $this->respondWithSuccess(
+                    $this->modelTitle . ' items ' . (request('publish') ? '' : 'un') . 'published!'
+                );
+            }
         } catch (\Exception $e) {
             \Log::error($e);
-            return $this->respondWithError($this->modelTitle . ' items were not published. Something wrong happened!');
         }
 
-        $this->fireEvent();
-        return $this->respondWithSuccess($this->modelTitle . ' items ' . (request('publish') ? '' : 'un') . 'published!');
+        return $this->respondWithError(
+            $this->modelTitle . ' items were not published. Something wrong happened!'
+        );
     }
 
     public function destroy($id, $submoduleId = null)
@@ -657,7 +684,7 @@ abstract class ModuleController extends Controller
 
         $fullRoutePrefix = 'admin.' . ($this->routePrefix ? $this->routePrefix . '.' : '') . $this->moduleName . '.';
         $previewRouteName = $fullRoutePrefix . 'preview';
-        $restoreRouteName = $fullRoutePrefix . 'restore';
+        $restoreRouteName = $fullRoutePrefix . 'restoreRevision';
 
         $data = [
             'item' => $item,
@@ -666,7 +693,8 @@ abstract class ModuleController extends Controller
             'translate' => $this->moduleIsTranslated(),
             'permalink' => $this->getIndexOption('permalink'),
             'form_fields' => $this->repository->getFormFields($item),
-            'baseUrl' => $item->urlWithoutSlug ?? config('app.url') . '/',
+            'baseUrl' => $item->urlWithoutSlug ?? $this->getPermalinkBaseUrl(),
+            'saveUrl' => $this->getModuleRouteWithEventualParent($item->id, 'update'),
             'revisions' => $item->revisions ? $item->revisions->map(function ($revision) {
                 return [
                     'id' => $revision->id,
@@ -674,14 +702,29 @@ abstract class ModuleController extends Controller
                     'datetime' => $revision->created_at->toIso8601String(),
                 ];
             })->toArray() : null,
-            'saveUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'update', array_merge($this->submodule ? [$this->submoduleParentId] : [], [$item->id])),
         ] + (Route::has($previewRouteName) ? [
-            'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', array_merge($this->submodule ? [$this->submoduleParentId] : [], [$item->id])),
-        ] : []) + (Route::has($restoreRouteName) ? [
-            'restoreUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'restoreRevision', array_merge($this->submodule ? [$this->submoduleParentId] : [], [$item->id])),
+            'previewUrl' => $this->getModuleRouteWithEventualParent($item->id, 'preview'),
+        ] : [])
+             + (Route::has($restoreRouteName) ? [
+            'restoreUrl' => $this->getModuleRouteWithEventualParent($item->id, 'restoreRevision'),
         ] : []);
 
         return array_replace_recursive($data, $this->formData($this->request));
+    }
+
+    protected function getPermalinkBaseUrl()
+    {
+        return request()->getScheme() . '://' . config('app.url') . '/' . ($this->permalinkBase ?? $this->moduleName) . '/';
+    }
+
+    protected function getModuleRouteWithEventualParent($id, $action)
+    {
+        return moduleRoute(
+            $this->moduleName,
+            $this->routePrefix,
+            $action,
+            array_merge($this->submodule ? [$this->submoduleParentId] : [], [$id])
+        );
     }
 
     public function update($id, $submoduleId = null)
@@ -724,33 +767,16 @@ abstract class ModuleController extends Controller
 
     public function preview($id)
     {
-        $formRequest = $this->request;
-
-        $comparing = $formRequest->has('_compare') && $formRequest->input('_compare');
-        $revision = $formRequest->has('_revision') && $formRequest->input('_revision');
-
-        // trigger FormRequest validation unless previewing a revision
-        if ($comparing || !$revision) {
+        if (request()->has('revisionId')) {
+            $item = $this->repository->previewForRevision($id, request('revisionId'));
+        } else {
             $formRequest = $this->validateFormRequest();
+            $item = $this->repository->preview($id, $formRequest->all());
         }
 
-        if ($revision) {
-            $object = $this->repository->previewForRevision($id, $formRequest->input('_revision'));
-        } elseif ($comparing) {
-            $object = $this->repository->previewForCompare($id);
-        } else {
-            $object = $this->repository->preview($id, $formRequest->all());
-        }
-
-        if ($comparing) {
-            $objectToCompare = $this->repository->preview($id, $formRequest->all());
-            session()->flash('_preview_' . $this->moduleName . '_' . $id, $objectToCompare);
-            session()->flash('_compare_' . $this->moduleName . '_' . $id, $object);
-        } else {
-            session()->flash('_preview_' . $this->moduleName . '_' . $id, $object);
-        }
-
-        return response()->json('ok', 200);
+        return view('site.post', [
+            'item' => $item,
+        ]);
     }
 
     public function status($id)
@@ -784,11 +810,14 @@ abstract class ModuleController extends Controller
     {
         $orders = [];
         if ($this->request->has("sortKey") && $this->request->has("sortDir")) {
+
             if (($key = $this->request->get("sortKey")) == 'name') {
-                $orders[$this->indexColumns[$this->titleColumnKey]['sortKey'] ?? $this->titleColumnKey] = $this->request->get("sortDir");
+                $sortKey = $this->titleColumnKey;
             } elseif (!empty($key)) {
-                $orders[$this->indexColumns[$key]['sortKey'] ?? $key] = $this->request->get("sortDir");
+                $sortKey = $key;
             }
+
+            $orders[$this->indexColumns[$sortKey]['sortKey'] ?? $sortKey] = $this->request->get("sortDir");
         }
 
         // don't apply default orders if reorder is enabled
@@ -892,7 +921,12 @@ abstract class ModuleController extends Controller
     {
         if (!isset($back_link)) {
             if (($back_link = Session::get($this->getBackLinkSessionKey())) == null) {
-                $back_link = $this->request->headers->get('referer') ?? moduleRoute($this->moduleName, $this->routePrefix, "index", $params);
+                $back_link = $this->request->headers->get('referer') ?? moduleRoute(
+                    $this->moduleName,
+                    $this->routePrefix,
+                    "index",
+                    $params
+                );
             }
         }
 
@@ -916,9 +950,14 @@ abstract class ModuleController extends Controller
 
     protected function redirectToForm($id, $params = [])
     {
-        $input = $this->request->all();
         Session::put($this->moduleName . "_retain", true);
-        return redirect(moduleRoute($this->moduleName, $this->routePrefix, "edit", $params + ['id' => $id]));
+
+        return redirect(moduleRoute(
+            $this->moduleName,
+            $this->routePrefix,
+            "edit",
+            $params + ['id' => $id]
+        ));
     }
 
     protected function getNamespace()
@@ -968,17 +1007,17 @@ abstract class ModuleController extends Controller
         ]);
     }
 
-    private function respondWithError($message)
+    protected function respondWithError($message)
     {
         return $this->respondWithJson($message, FlashLevel::ERROR);
     }
 
-    private function fireEvent($input = [])
+    protected function fireEvent($input = [])
     {
         Event::fire('cms-module.saved', ['cms-module.saved', $input]);
     }
 
-    private function respondWithJson($message, $variant)
+    protected function respondWithJson($message, $variant)
     {
         return response()->json([
             'message' => $message,
@@ -986,7 +1025,7 @@ abstract class ModuleController extends Controller
         ]);
     }
 
-    private function moduleIsTranslated()
+    protected function moduleIsTranslated()
     {
         return classHasTrait($this->repository, HandleTranslations::class);
     }
