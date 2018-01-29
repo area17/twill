@@ -141,7 +141,7 @@
   .content__secondaryActions {
     flex-grow:1;
     text-align:right;
-    margin-right:20px;
+    margin-left:20px;
   }
 
   .content__item {

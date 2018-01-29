@@ -107,6 +107,7 @@
 
         this.hidden = true
         this.mask()
+        this.$emit('close')
       },
       close: function (onClose) {
         if (!this.active) return

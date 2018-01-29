@@ -40,7 +40,7 @@
         label="{{ $label }}"
         @include('cms-toolkit::partials.form.utils._field_name')
         type="{{ $type }}"
-        @if ($required) required @endif
+        @if ($required) :required="true" @endif
         @if ($note) note="{{ $note }}" @endif
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
         @if ($maxlength) :maxlength="{{ $maxlength }}" @endif

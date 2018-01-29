@@ -10,29 +10,29 @@
 @endphp
 
 @section('content')
-    <div class="form">
-        <form action="{{ $saveUrl }}" novalidate v-sticky data-sticky-id="navbar" data-sticky-offset="0" data-sticky-topoffset="12" v-on:submit.prevent="submitForm">
-            <div class="navbar navbar--sticky" data-sticky-top="navbar">
-                @php
-                    $additionalFieldsets = $additionalFieldsets ?? [];
-                    array_unshift($additionalFieldsets, [
-                        'fieldset' => 'content',
-                        'label' => $contentFieldsetLabel ?? 'Content'
-                    ]);
-                @endphp
-                <a17-sticky-nav data-sticky-target="navbar" :items="{{ json_encode($additionalFieldsets) }}">
+    <div class="form" v-sticky data-sticky-id="navbar" data-sticky-offset="0" data-sticky-topoffset="12" >
+        <div class="navbar navbar--sticky" data-sticky-top="navbar">
+            @php
+                $additionalFieldsets = $additionalFieldsets ?? [];
+                array_unshift($additionalFieldsets, [
+                    'fieldset' => 'content',
+                    'label' => $contentFieldsetLabel ?? 'Content'
+                ]);
+            @endphp
+            <a17-sticky-nav data-sticky-target="navbar" :items="{{ json_encode($additionalFieldsets) }}">
 
-                    <a17-title-editor @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif name="{{ $titleFormKey }}" slot="title">
-                        <template slot="modal-form">
-                            @partialView(($moduleName ?? null), 'create')
-                        </template>
-                    </a17-title-editor>
-                    <div slot="actions">
-                        <a17-langswitcher></a17-langswitcher>
-                        <a17-button v-if="editor" type="button" variant="editor" size="small" @click="openEditor(-1)"><span v-svg symbol="editor"></span>Editor</a17-button>
-                    </div>
-                </a17-sticky-nav>
-            </div>
+                <a17-title-editor @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif name="{{ $titleFormKey }}" slot="title">
+                    <template slot="modal-form">
+                        @partialView(($moduleName ?? null), 'create')
+                    </template>
+                </a17-title-editor>
+                <div slot="actions">
+                    <a17-langswitcher></a17-langswitcher>
+                    <a17-button v-if="editor" type="button" variant="editor" size="small" @click="openEditor(-1)"><span v-svg symbol="editor"></span>Editor</a17-button>
+                </div>
+            </a17-sticky-nav>
+        </div>
+        <form action="{{ $saveUrl }}" novalidate v-on:submit.prevent="submitForm">
             <div class="container">
                 <div class="wrapper wrapper--reverse" v-sticky data-sticky-id="publisher" data-sticky-offset="80">
                     <aside class="col col--aside">
