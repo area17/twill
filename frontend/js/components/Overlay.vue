@@ -28,6 +28,14 @@
         type: String,
         default: 'Revision history'
       },
+      forceClose: {
+        type: Boolean,
+        default: false
+      },
+      forceLock: {
+        type: Boolean,
+        default: false
+      },
       mode: {
         type: String,
         default: ''
@@ -36,7 +44,8 @@
     data: function () {
       return {
         active: false,
-        hidden: true
+        hidden: true,
+        locked: false
       }
     },
     computed: {
@@ -79,6 +88,12 @@
       },
       hide: function () {
         if (!this.active) return
+        if (this.locked) return
+
+        if (this.forceClose) {
+          this.close()
+          return
+        }
 
         this.hidden = true
         this.mask()
@@ -86,6 +101,7 @@
       },
       close: function (onClose) {
         if (!this.active) return
+        if (this.locked) return
 
         this.active = false
         this.mask()
