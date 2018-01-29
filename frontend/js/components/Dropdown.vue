@@ -36,6 +36,10 @@
         type: Number,
         default: 300
       },
+      maxHeight: {
+        type: Number,
+        default: 0
+      },
       minWidth: {
         type: Number,
         default: 0
@@ -83,7 +87,10 @@
           'margin-bottom': this.isPosition('top') ? this.offset + 'px' : '',
           'transform': this.sideOffset ? 'translateX(' + this.sideOffset + 'px)' : '',
           'max-width': this.maxWidth > 0 && this.width !== 'full' ? this.maxWidth + 'px' : '',
-          'min-width': this.minWidth > 0 ? this.minWidth + 'px' : ''
+          'min-width': this.minWidth > 0 ? this.minWidth + 'px' : '',
+          'max-height': this.maxHeight > 0 ? this.maxHeight + 'px' : '',
+          'overflow': this.maxHeight > 0 ? 'hidden' : '',
+          'overflow-y': this.maxHeight > 0 ? 'scroll' : ''
         }
       }
     },
