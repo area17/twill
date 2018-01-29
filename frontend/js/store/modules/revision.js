@@ -42,9 +42,15 @@ const actions = {
     return new Promise((resolve, reject) => {
       commit(types.LOADING_REV)
 
-      revisionAPI.getCurrentContent(
+      let formData = getFormData(rootState)
+
+      if (rootState.language.all.length > 1) {
+        formData.activeLanguage = rootState.language.active.value
+      }
+
+      revisionAPI.getRevisionContent(
         rootState.form.previewUrl,
-        getFormData(rootState),
+        formData,
         data => {
           commit(types.UPDATE_REV_CURRENT_CONTENT, data)
           resolve()
@@ -64,9 +70,15 @@ const actions = {
       if (Object.keys(state.active).length === 0) id = state.all[0].id
       else id = state.active.id
 
+      let revisionData = { revisionId: id }
+
+      if (rootState.language.all.length > 1) {
+        revisionData.activeLanguage = rootState.language.active.value
+      }
+
       revisionAPI.getRevisionContent(
         rootState.form.previewUrl,
-        id,
+        revisionData,
         data => {
           commit(types.UPDATE_REV_CONTENT, data)
           resolve()

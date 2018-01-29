@@ -774,6 +774,10 @@ abstract class ModuleController extends Controller
             $item = $this->repository->preview($id, $formRequest->all());
         }
 
+        if (request()->has('activeLanguage')) {
+            $this->app->setLocale(request('activeLanguage'));
+        }
+
         return view('site.post', [
             'item' => $item,
         ]);
