@@ -114,6 +114,8 @@
     },
     methods: {
       editInPlace: function (event) {
+        let self = this
+
         if (this.editInModal) {
           const endpoint = this.editInModal
           this.$store.commit('updateModalMode', 'update')
@@ -121,7 +123,9 @@
           this.$store.commit('updateFormLoading', true)
           this.$store.dispatch('replaceFormData', endpoint)
 
-          if (this.$root.$refs.editionModal) this.$root.$refs.editionModal.open()
+          setTimeout(function () {
+            if (self.$root.$refs.editionModal) self.$root.$refs.editionModal.open()
+          }, 500)
 
           event.preventDefault()
         }

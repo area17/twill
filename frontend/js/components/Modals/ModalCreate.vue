@@ -1,8 +1,8 @@
 <template>
-  <a17-modal ref="modal" class="modal--form" :title="modalTitle">
+  <a17-modal ref="modal" class="modal--form" :title="modalTitle" :forceClose="true">
     <form :action="actionForm" method="post">
       <slot></slot>
-      <a17-modal-validation :mode="mode" :disabled="isDisabled" :active-publish-state="false" :is-publish="false" published-name="published" @disable="lockModal"></a17-modal-validation>
+      <a17-modal-validation :mode="mode" :is-disable="isDisabled" :active-publish-state="false" :is-publish="false" published-name="published"></a17-modal-validation>
     </form>
   </a17-modal>
 </template>
@@ -42,10 +42,8 @@
       })
     },
     methods: {
-      open: function (index) {
+      open: function () {
         this.$refs.modal.open()
-      },
-      lockModal: function (isDisabled) {
       }
     },
     mounted: function () {

@@ -29,13 +29,17 @@
       },
       disabled: {
         type: Boolean,
-        default: true
+        default: false
       },
       activePublishState: {
         type: Boolean,
         default: false
       },
       isPublish: {
+        type: Boolean,
+        default: false
+      },
+      isDisable: {
         type: Boolean,
         default: false
       },
@@ -58,13 +62,8 @@
     data: function () {
       return {
         fields: false,
-        isDisabled: this.disabled,
+        isDisabled: this.isDisable,
         published: this.isPublish
-      }
-    },
-    watch: {
-      disabled: function () {
-        this.isDisabled = this.disabled
       }
     },
     computed: {
@@ -100,7 +99,7 @@
           return
         }
 
-        // If all required fields have a value
+        // If all required fields must have a value
         const filtered = this.fields.filter(function (field) {
           return field.value.length > 0
         })
