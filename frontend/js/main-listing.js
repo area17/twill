@@ -22,16 +22,18 @@ import a17Filter from '@/components/Filter.vue'
 import a17TableFilters from '@/components/table/TableFilters.vue'
 import a17BulkEdit from '@/components/table/BulkEdit.vue'
 import a17Langswitcher from '@/components/LangSwitcher.vue'
-import ModalValidationButtons from '@/components/Modals/ModalValidationButtons.vue'
+import ModalCreate from '@/components/Modals/ModalCreate.vue'
 
 // Store modules
 import datatable from '@/store/modules/datatable'
 import language from '@/store/modules/language'
 import form from '@/store/modules/form'
+import modalEdition from '@/store/modules/modal-edition'
 
 store.registerModule('datatable', datatable)
 store.registerModule('language', language)
 store.registerModule('form', form)
+store.registerModule('modalEdition', modalEdition)
 
 // LocalStorage
 import { getStorage } from '@/utils/localeStorage.js'
@@ -49,8 +51,8 @@ Window.vm = new Vue({
     'a17-table-filters': a17TableFilters,
     'a17-datatable': a17Datatable,
     'a17-bulk': a17BulkEdit,
-    'a17-modal-validation': ModalValidationButtons,
-    'a17-langswitcher': a17Langswitcher
+    'a17-langswitcher': a17Langswitcher,
+    'a17-modal-create': ModalCreate
   },
   mixins: [formatPermalink],
   data: function () {
@@ -70,9 +72,11 @@ Window.vm = new Vue({
   },
   methods: {
     create: function () {
-      if (this.$refs.addNewModal) {
+      if (this.$refs.editionModal) {
+        this.$store.commit('updateModalAction', '')
+        this.$store.commit('updateModalMode', 'create')
         this.$store.commit('emptyFormField')
-        this.$refs.addNewModal.open()
+        this.$refs.editionModal.open()
       }
     },
     reloadDatas: function () {

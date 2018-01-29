@@ -29,7 +29,7 @@
       },
       disabled: {
         type: Boolean,
-        default: false
+        default: true
       },
       activePublishState: {
         type: Boolean,
@@ -58,8 +58,13 @@
     data: function () {
       return {
         fields: false,
-        isDisabled: true,
+        isDisabled: this.disabled,
         published: this.isPublish
+      }
+    },
+    watch: {
+      disabled: function () {
+        this.isDisabled = this.disabled
       }
     },
     computed: {

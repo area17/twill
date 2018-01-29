@@ -96,6 +96,10 @@ export const UPDATE_DATATABLE_LOADING = 'updateDatableLoading'
 export const UPDATE_DATATABLE_NESTED = 'updateDatatableNestedDatas'
 export const UPDATE_DATATABLE_TRACKER = 'updateDatableTracker'
 
+/* Modal-edition */
+export const UPDATE_MODAL_ACTION = 'updateModalAction'
+export const UPDATE_MODAL_MODE = 'updateModalMode'
+
 /* Buckets */
 export const ADD_TO_BUCKET = 'addToBucket'
 export const DELETE_FROM_BUCKET = 'deleteFromBucket'

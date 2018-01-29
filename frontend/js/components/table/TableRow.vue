@@ -116,11 +116,12 @@
       editInPlace: function (event) {
         if (this.editInModal) {
           const endpoint = this.editInModal
+          this.$store.commit('updateModalMode', 'update')
+          this.$store.commit('updateModalAction', 'test' + this.row['id'])
           this.$store.commit('updateFormLoading', true)
-          console.log('Get data to feed the store so we can edit in place')
           this.$store.dispatch('replaceFormData', endpoint)
 
-          if (this.$root.$refs.addNewModal) this.$root.$refs.addNewModal.open()
+          if (this.$root.$refs.editionModal) this.$root.$refs.editionModal.open()
 
           event.preventDefault()
         }
