@@ -55,7 +55,7 @@
       <div class="media__metadatas--options" :class="{ 's--active' : metadatas.active }" v-if="hasMedia">
         <a17-mediametadata :name='name' label="Alt Text" id="altText" :media="currentMedia" @change="updateMetadata"></a17-mediametadata>
         <a17-mediametadata :name='name' label="Caption" id="caption" :media="currentMedia" @change="updateMetadata"></a17-mediametadata>
-        <a17-mediametadata :name='name' label="Video URL (optional)" id="video" :media="currentMedia" @change="updateMetadata"></a17-mediametadata>
+        <a17-mediametadata v-if="withVideoUrl" :name='name' label="Video URL (optional)" id="video" :media="currentMedia" @change="updateMetadata"></a17-mediametadata>
       </div>
     </div>
 
@@ -123,6 +123,10 @@
         default: ''
       },
       withAddInfo: {
+        type: Boolean,
+        default: true
+      },
+      withVideoUrl: {
         type: Boolean,
         default: true
       }

@@ -2,7 +2,8 @@
     $max = $max ?? 1;
     $required = $required ?? false;
     $note = $note ?? '';
-    $withAddInfo = $withAddInfo ?? true
+    $withAddInfo = $withAddInfo ?? true;
+    $withVideoUrl = $withVideoUrl ?? true;
 @endphp
 
 <a17-inputframe label="{{ $label }}" name="medias.{{ $name }}" @if ($required) :required="true" @endif>
@@ -13,6 +14,7 @@
             crop-context="{{ $name }}"
             @if ($required) :required="true" @endif
             @if (!$withAddInfo) :with-add-info="false" @endif
+            @if (!$withVideoUrl) :with-video-url="false" @endif
         >{{ $note }}</a17-slideshow>
     @else
         <a17-mediafield
@@ -20,6 +22,7 @@
             crop-context="{{ $name }}"
             @if ($required) :required="true" @endif
             @if (!$withAddInfo) :with-add-info="false" @endif
+            @if (!$withVideoUrl) :with-video-url="false" @endif
         >{{ $note }}</a17-mediafield>
     @endif
 </a17-inputframe>
