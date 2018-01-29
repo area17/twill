@@ -387,12 +387,6 @@ abstract class ModuleRepository
         return $fields;
     }
 
-    public function getOldFormFieldsOnCreate()
-    {
-        $object = new $this->model();
-        return $this->getFormFields($object);
-    }
-
     public function filter($query, array $scopes = [])
     {
         foreach (class_uses_recursive(get_called_class()) as $trait) {
@@ -442,23 +436,6 @@ abstract class ModuleRepository
         return $query;
     }
 
-    public function getFormFieldsForMultiSelect($fields, $relation, $attribute = 'id', $form_field_name = null)
-    {
-        if (isset($fields[$relation])) {
-            $list = [];
-            foreach ($fields[$relation] as $value) {
-                $list[$value['id']] = $value[$attribute];
-            }
-
-            $fields[$form_field_name ?? $relation] = $list;
-            if ($form_field_name) {
-                unset($fields[$relation]);
-            }
-        }
-
-        return $fields;
-    }
-
     public function getFormFieldsForBrowser($object, $relation, $routePrefix = null, $titleKey = 'title', $moduleName = null)
     {
         return $object->$relation->map(function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName) {
@@ -503,6 +480,11 @@ abstract class ModuleRepository
     public function updateBrowser($object, $fields, $relationship, $positionAttribute = 'position')
     {
         $this->updateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute);
+    }
+
+    public function updateMultiSelect($object, $fields, $relationship)
+    {
+        $object->$relationship()->sync($fields[$relationship] ?? []);
     }
 
     public function addRelationFilterScope($query, &$scopes, $scopeField, $scopeRelation)
