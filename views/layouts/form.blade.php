@@ -6,6 +6,7 @@
     $permalink = $permalink ?? true;
     $editor = $editor ?? false;
     $translate = $translate ?? false;
+    $translateTitle = $translateTitle ?? $translate ?? false;
     $titleFormKey = $titleFormKey ?? 'title';
 @endphp
 
