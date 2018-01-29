@@ -7,6 +7,7 @@
         ];
     })->values()->toArray() : $options;
     $placeholder = $placeholder ?? false;
+    $required = $required ?? false;
     $default = $default ?? false;
 @endphp
 
@@ -17,6 +18,7 @@
         :options='{!! json_encode($options) !!}'
         @if ($default) selected="{{ $default }}" @endif
         @if ($note) note='{{ $note }}' @endif
+        @if ($required) :required="true" @endif
         :has-default-store="true"
         in-store="value"
     ></a17-singleselect>
@@ -28,6 +30,7 @@
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
         @if ($default) selected="{{ $default }}" @endif
         @if ($note) note='{{ $note }}' @endif
+        @if ($required) :required="true" @endif
         :has-default-store="true"
         size="large"
         in-store="value"
@@ -43,6 +46,7 @@
             return $option['value'] === $default;
         })) }}" @endif
         @if ($note) note='{{ $note }}' @endif
+        @if ($required) :required="true" @endif
         :has-default-store="true"
         size="large"
         in-store="inputValue"
