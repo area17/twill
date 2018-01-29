@@ -4,6 +4,7 @@ namespace A17\CmsToolkit\Repositories;
 
 use A17\CmsToolkit\Models\Behaviors\Sortable;
 use A17\CmsToolkit\Repositories\Behaviors\HandleDates;
+use DB;
 use Log;
 
 abstract class ModuleRepository
@@ -113,142 +114,157 @@ abstract class ModuleRepository
 
     public function create($fields)
     {
-        $original_fields = $fields;
+        return DB::transaction(function () use ($fields) {
+            $original_fields = $fields;
 
-        $fields = $this->prepareFieldsBeforeCreate($fields);
+            $fields = $this->prepareFieldsBeforeCreate($fields);
 
-        $object = $this->model->create(array_except($fields, $this->getReservedFields()));
+            $object = $this->model->create(array_except($fields, $this->getReservedFields()));
 
-        $this->beforeSave($object, $original_fields);
+            $this->beforeSave($object, $original_fields);
 
-        $fields = $this->prepareFieldsBeforeSave($object, $fields);
+            $fields = $this->prepareFieldsBeforeSave($object, $fields);
 
-        $object->push();
+            $object->push();
 
-        $this->afterSave($object, $fields);
+            $this->afterSave($object, $fields);
 
-        return $object;
+            return $object;
+        }, 3);
     }
 
     public function update($id, $fields)
     {
-        $object = $this->model->findOrFail($id);
+        DB::transaction(function () use ($id, $fields) {
+            $object = $this->model->findOrFail($id);
 
-        $this->beforeSave($object, $fields);
+            $this->beforeSave($object, $fields);
 
-        $fields = $this->prepareFieldsBeforeSave($object, $fields);
+            $fields = $this->prepareFieldsBeforeSave($object, $fields);
 
-        $object->fill(array_except($fields, $this->getReservedFields()));
+            $object->fill(array_except($fields, $this->getReservedFields()));
 
-        $object->push();
+            $object->push();
 
-        $this->afterSave($object, $fields);
+            $this->afterSave($object, $fields);
+        }, 3);
     }
 
     public function updateBasic($id, $values, $scopes = [])
     {
-        // apply scopes if no id provided
-        if (is_null($id)) {
-            $query = $this->model->query();
+        return DB::transaction(function () use ($id, $values, $scopes) {
+            // apply scopes if no id provided
+            if (is_null($id)) {
+                $query = $this->model->query();
 
-            foreach ($scopes as $column => $value) {
-                $query->where($column, $value);
+                foreach ($scopes as $column => $value) {
+                    $query->where($column, $value);
+                }
+
+                $query->update($values);
+
+                $query->get()->each(function ($object) use ($values) {
+                    $this->afterUpdateBasic($object, $values);
+                });
+
+                return true;
             }
 
-            $query->update($values);
+            // apply to all ids if array of ids provided
+            if (is_array($id)) {
+                $query = $this->model->whereIn('id', $id);
+                $query->update($values);
 
-            $query->get()->each(function ($object) use ($values) {
+                $query->get()->each(function ($object) use ($values) {
+                    $this->afterUpdateBasic($object, $values);
+                });
+
+                return true;
+            }
+
+            if (($object = $this->model->find($id)) != null) {
+                $object->update($values);
                 $this->afterUpdateBasic($object, $values);
-            });
+                return true;
+            }
 
-            return true;
-        }
-
-        // apply to all ids if array of ids provided
-        if (is_array($id)) {
-            $query = $this->model->whereIn('id', $id);
-            $query->update($values);
-
-            $query->get()->each(function ($object) use ($values) {
-                $this->afterUpdateBasic($object, $values);
-            });
-
-            return true;
-        }
-
-        if (($object = $this->model->find($id)) != null) {
-            $object->update($values);
-            $this->afterUpdateBasic($object, $values);
-
-            return true;
-        }
-
-        return false;
+            return false;
+        }, 3);
     }
 
     public function setNewOrder($ids)
     {
-        $this->model->setNewOrder($ids);
+        DB::transaction(function () use ($ids) {
+            $this->model->setNewOrder($ids);
+        }, 3);
     }
 
     public function delete($id)
     {
-        if (($object = $this->model->find($id)) != null) {
-            $object->delete();
-            $this->afterDelete($object);
-            return true;
-        }
+        return DB::transaction(function () use ($id) {
+            if (($object = $this->model->find($id)) != null) {
+                $object->delete();
+                $this->afterDelete($object);
+                return true;
+            }
 
-        return false;
+            return false;
+        }, 3);
     }
 
     public function bulkDelete($ids)
     {
-        try {
-            $query = $this->model->whereIn('id', $ids);
-            $objects = $query->get();
+        return DB::transaction(function () use ($ids) {
+            try {
+                $query = $this->model->whereIn('id', $ids);
+                $objects = $query->get();
 
-            $query->delete();
+                $query->delete();
 
-            $objects->each(function ($object) {
-                $this->afterDelete($object);
-            });
-        } catch (\Exception $e) {
-            Log::error($e);
-            return false;
-        }
+                $objects->each(function ($object) {
+                    $this->afterDelete($object);
+                });
+            } catch (\Exception $e) {
+                Log::error($e);
+                return false;
+            }
 
-        return true;
+            return true;
+        }, 3);
     }
 
     public function restore($id)
     {
-        if (($object = $this->model->withTrashed()->find($id)) != null) {
-            $object->restore();
-            $this->afterRestore($object);
-            return true;
-        }
+        return DB::transaction(function () use ($id) {
+            if (($object = $this->model->withTrashed()->find($id)) != null) {
+                $object->restore();
+                $this->afterRestore($object);
+                return true;
+            }
 
-        return false;
+            return false;
+        }, 3);
     }
 
     public function bulkRestore($ids)
     {
-        try {
-            $query = $this->model->withTrashed()->whereIn('id', $ids);
-            $objects = $query->get();
+        return DB::transaction(function () use ($ids) {
+            try {
+                $query = $this->model->withTrashed()->whereIn('id', $ids);
+                $objects = $query->get();
 
-            $query->restore();
+                $query->restore();
 
-            $objects->each(function ($object) {
-                $this->afterRestore($object);
-            });
-        } catch (\Exception $e) {
-            Log::error($e);
-            return false;
-        }
+                $objects->each(function ($object) {
+                    $this->afterRestore($object);
+                });
+            } catch (\Exception $e) {
+                Log::error($e);
+                return false;
+            }
 
-        return true;
+            return true;
+        }, 3);
     }
 
     public function cleanupFields($object, $fields)
