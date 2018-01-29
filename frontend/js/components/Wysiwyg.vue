@@ -91,9 +91,7 @@
         focused: false,
         activeSource: false,
         defaultModules: {
-          toolbar: [
-            ['bold', 'italic', 'underline', 'link']
-          ],
+          toolbar: ['bold', 'italic', 'underline', 'link'],
           clipboard: {
             matchVisual: false,
             matchers: [
