@@ -1,5 +1,5 @@
 <template>
-  <a17-inputframe :error="error" :note="note" :label="label" :name="name">
+  <a17-inputframe :error="error" :note="note" :label="label" :name="name" :required="required">
     <div class="form__field" :class="textfieldClasses">
       <input
         type="text"
