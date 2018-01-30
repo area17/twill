@@ -38,7 +38,7 @@ $height__nav: 60px;
 
 .header .container {
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
 }
 
 .header__title {
@@ -68,6 +68,7 @@ $height__nav: 60px;
   a {
     text-decoration:none;
     color:inherit;
+    white-space:nowrap;
   }
 }
 
@@ -83,7 +84,7 @@ $height__nav: 60px;
 
   flex-grow: 1;
   overflow:hidden;
-  overflow-x:auto;
+  position:relative;
 
   ul {
     white-space:nowrap;
