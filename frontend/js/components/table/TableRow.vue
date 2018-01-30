@@ -97,6 +97,9 @@
       editInModal: function () {
         return this.row['editInModal'] ? this.row['editInModal'] : false
       },
+      updateUrl: function () {
+        return this.row['updateUrl'] ? this.row['updateUrl'] : '#'
+      },
       editUrl: function () {
         return this.row['edit'] ? this.row['edit'] : '#'
       },
@@ -119,7 +122,7 @@
         if (this.editInModal) {
           const endpoint = this.editInModal
           this.$store.commit('updateModalMode', 'update')
-          this.$store.commit('updateModalAction', 'test' + this.row['id'])
+          this.$store.commit('updateModalAction', this.updateUrl)
           this.$store.commit('updateFormLoading', true)
           this.$store.dispatch('replaceFormData', endpoint)
 
