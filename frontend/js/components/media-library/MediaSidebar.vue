@@ -211,7 +211,7 @@
     margin-bottom:16px;
   }
 
-  .mediasidebar__buttonbar {
+  .mediasidebar .mediasidebar__buttonbar {
     display:inline-block;
   }
 
