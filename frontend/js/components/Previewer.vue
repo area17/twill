@@ -251,14 +251,19 @@
   }
 
   .previewer__breakpoints {
-    margin: 0 auto;
-    position:absolute;
-    top: 0;
-    left: 50%;
-    font-size:0;
-    transform:translateX(-50%);
-    height:$height__nav;
-    line-height:$height__nav;
+    display:none;
+
+    @include breakpoint('medium+') {
+      display:block;
+      margin: 0 auto;
+      position:absolute;
+      top: 0;
+      left: 50%;
+      font-size:0;
+      transform:translateX(-50%);
+      height:$height__nav;
+      line-height:$height__nav;
+    }
   }
 
   .previewer__breakpoint {

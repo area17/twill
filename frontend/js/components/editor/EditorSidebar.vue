@@ -83,7 +83,7 @@
   }
 
   .editorSidebar__item {
-    max-height: calc(100% - 80px);
+    height: calc(100% + 20px - 80px);
     overflow-y: scroll;
   }
 
@@ -134,7 +134,11 @@
     display:flex;
 
     button {
-      width:50%;
+      width:calc(50% - 10px);
+    }
+
+    button + button {
+      margin-left:20px;
     }
   }
 

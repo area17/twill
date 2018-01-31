@@ -6,7 +6,7 @@
     <draggable class="editorPreview__content" v-model="blocks" :options="{ group: 'editorBlocks', handle: handle }" @add="onAdd" @update="onUpdate">
       <div class="editorPreview__item" :class="{ 'editorPreview__item--active' : isBlockActive(block.id) }" v-for="(block, index) in blocks" :key="block.id" >
         <div class="editorPreview__frame" tabindex="0" @click="selectBlock(index)">
-          <a17-editor-iframe :block="block"></a17-editor-iframe>
+          <a17-editor-iframe :block="block" @loaded="resizeIframe"></a17-editor-iframe>
         </div>
         <div class="editorPreview__protector" @click="selectBlock(index)"></div>
         <div class="editorPreview__actions">
@@ -27,6 +27,8 @@
   import draggableMixin from '@/mixins/draggable'
   import EditorIframe from './EditorIframe.vue'
   import draggable from 'vuedraggable'
+
+  import debounce from 'lodash/debounce'
 
   export default {
     name: 'A17editorpreview',
@@ -98,9 +100,43 @@
       },
       selectBlock: function (index) {
         this.$emit('select', index)
+      },
+      resizeIframe: function (iframe) {
+        const frameBody = iframe.contentWindow.document.body
+
+          // no scollbars
+          frameBody.style.overflow = 'hidden'
+
+          // get body extra margin
+          const bodyStyle = window.getComputedStyle(frameBody)
+          const bodyMarginTop = bodyStyle.getPropertyValue('margin-top')
+          const bodyMarginBottom = bodyStyle.getPropertyValue('margin-bottom')
+
+          const frameHeight = frameBody.scrollHeight + parseInt(bodyMarginTop) + parseInt(bodyMarginBottom)
+
+          console.log('Editor - Preview refresh height : ' + frameHeight + 'px')
+          iframe.height = frameHeight + 'px'
+      },
+      _resize: debounce(function () {
+        let self = this
+        const iframes = this.$el.querySelectorAll('iframe')
+
+        iframes.forEach(function (iframe) {
+          self.resizeIframe(iframe)
+        })
+      }, 200),
+      init: function () {
+        window.addEventListener('resize', this._resize)
+      },
+      dispose: function () {
+        window.removeEventListener('resize', this._resize)
       }
     },
     mounted: function () {
+      this.init()
+    },
+    beforeDestroy: function () {
+      this.dispose()
     }
   }
 </script>
@@ -149,7 +185,7 @@
   }
 
   .editorPreview__item {
-    min-height:100px;
+    min-height:40px + 20px + 20px;
     border:1px dashed $color__background;
     border-radius:2px;
     position:relative;

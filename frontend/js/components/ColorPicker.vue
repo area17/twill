@@ -84,6 +84,9 @@
       satHandleChange (event, skip) {
         !skip && event.preventDefault()
         const container = this.$refs.satContainer
+
+        if (!container) return
+
         const containerWidth = container.clientWidth
         const containerHeight = container.clientHeight
         const xOffset = container.getBoundingClientRect().left + window.pageXOffset
@@ -198,7 +201,6 @@
       },
       onChange (param) {
         this.currentColor = tinyColor(param)
-        console.log(tinyColor(param).toHexString())
         this.$emit('change', this.currentColor.toHexString())
       }
     }

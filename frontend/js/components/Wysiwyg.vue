@@ -1,7 +1,7 @@
 <template>
   <a17-inputframe :error="error" :note="note" :label="label" :locale="locale" @localize="updateLocale" :size="size" :name="name" :required="required">
     <div class="wysiwyg__outer" :class="textfieldClasses">
-      <input ref="input" :name="name" :id="name" :disabled="disabled" :required="required" :readonly="readonly" type="hidden" value="" />
+      <!-- <input ref="input" :name="name" :id="name" :disabled="disabled" :required="required" :readonly="readonly" type="hidden" value="" /> -->
       <template v-if="editSource">
         <div class="wysiwyg" :class="textfieldClasses" v-show="!activeSource">
           <div class="wysiwyg__editor" ref="editor"></div>
@@ -124,12 +124,15 @@
       updateFromStore: function (newValue) { // called from the formStore mixin
         if (typeof newValue === 'undefined') newValue = ''
 
-        this.value = newValue
-        this.$refs.input.value = this.value
-        this.quill.pasteHTML(newValue)
+        if (this.value !== newValue) {
+          console.warn('Update UI value : ' + this.name + ' -> ' + newValue)
+          this.value = newValue
+          // this.$refs.input.value = this.value
+          this.quill.pasteHTML(newValue)
+        }
       },
       updateInput: function () {
-        this.$refs.input.value = this.value
+        // this.$refs.input.value = this.value
 
         // see formStore mixin
         this.saveIntoStore()
@@ -172,7 +175,6 @@
       // set editor content
       if (self.value) {
         self.quill.pasteHTML(self.value)
-        self.updateInput()
       }
 
       // update model if text changes

@@ -17,10 +17,10 @@
         @input="onInput"
         maxlength="7"
       />
-      <a17-dropdown ref="colorDropdown" class="form__field--color" position="bottom-right" :arrow="true" :offset="15" :minWidth="300" :clickable="true" :sideOffset="15">
+      <a17-dropdown ref="colorDropdown" class="form__field--color" position="bottom-right" :arrow="true" :offset="15" :minWidth="300" :clickable="true" :sideOffset="15" @close="saveIntoStore">
         <span class="form__field--colorBtn" :style="bcgStyle" @click="$refs.colorDropdown.toggle()"></span>
         <div slot="dropdown__content">
-          <a17-colorpicker :color="value" @change="updateValue"></a17-colorpicker>
+          <a17-colorpicker :color="value" @change="updateValueFromPicker"></a17-colorpicker>
         </div>
       </a17-dropdown>
     </div>
@@ -68,15 +68,32 @@
       }
     },
     methods: {
-      updateValue: function (newValue) {
-        this.value = newValue
+      updateFromStore: function (newValue) { // called from the formStore mixin
+        if (typeof newValue === 'undefined') newValue = ''
 
-        // see formStore mixin
-        this.saveIntoStore()
+        if (this.value !== newValue) {
+          console.warn('Update UI value : ' + this.name + ' -> ' + newValue)
+          this.value = newValue
+        }
+      },
+      updateValueFromPicker: function (newValue) {
+        if (this.value !== newValue) {
+          this.value = newValue
+        }
+      },
+      updateValue: function (newValue) {
+        if (this.value !== newValue) {
+          this.value = newValue
+
+          // see formStore mixin
+          this.saveIntoStore()
+        }
       },
       onBlur: function (event) {
         const newValue = event.target.value
         this.updateValue(newValue)
+
+        this.focused = false
       },
       onFocus: function () {
         this.focused = true
