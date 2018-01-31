@@ -1027,7 +1027,7 @@ abstract class ModuleController extends Controller
             $this->moduleName,
             $this->routePrefix,
             "edit",
-            $params + ['id' => $id]
+            array_filter($params) + ['id' => $id]
         ));
     }
 
