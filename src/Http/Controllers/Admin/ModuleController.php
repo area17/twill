@@ -134,6 +134,11 @@ abstract class ModuleController extends Controller
     protected $submodule = false;
     protected $submoduleParentId = null;
 
+    /*
+     * Can be used in child classes to disable the content editor (full screen block editor)
+     */
+    protected $disableEditor = false;
+
     public function __construct(Application $app, Request $request)
     {
         $this->app = $app;
@@ -261,6 +266,25 @@ abstract class ModuleController extends Controller
         }
     }
 
+    public function preview($id)
+    {
+        if (request()->has('revisionId')) {
+            $item = $this->repository->previewForRevision($id, request('revisionId'));
+        } else {
+            $formRequest = $this->validateFormRequest();
+            $item = $this->repository->preview($id, $formRequest->all());
+        }
+
+        if (request()->has('activeLanguage')) {
+            $this->app->setLocale(request('activeLanguage'));
+        }
+
+        $previewView = $this->previewView ?? ('site.' . str_singular($this->moduleName));
+
+        return view($previewView, [
+            'item' => $item,
+        ] + $this->previewData($item));
+    }
 
     public function publish()
     {
@@ -808,6 +832,8 @@ abstract class ModuleController extends Controller
             'form_fields' => $this->repository->getFormFields($item),
             'baseUrl' => $item->urlWithoutSlug ?? $this->getPermalinkBaseUrl(),
             'saveUrl' => $this->getModuleRoute($item->id, 'update'),
+            'editor' => $this->moduleHasRevisions() && $this->moduleHasBlocks() && !$this->disableEditor,
+            'blockPreviewUrl' => route('admin.blocks.preview'),
             'revisions' => $item->revisions ? $item->revisions->map(function ($revision) {
                 return [
                     'id' => $revision->id,

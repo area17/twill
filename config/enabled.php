@@ -12,6 +12,7 @@ return [
     'users-management' => true,
     'media-library' => true,
     'file-library' => true,
+    'block-editor' => true,
     'buckets' => false,
     'users-image' => false,
     'site-link' => false,

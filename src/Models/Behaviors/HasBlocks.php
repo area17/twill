@@ -29,7 +29,7 @@ trait HasBlocks
 
     private function getBlockView($blockType, $blockViewMappings = [])
     {
-        $view = config('cms-toolkit.block_editor.render_views_namespace') . '.' . $blockType;
+        $view = config('cms-toolkit.block_editor.block_views_path') . '.' . $blockType;
 
         if (array_key_exists($blockType, $blockViewMappings)) {
             $view = $blockViewMappings[$blockType];

@@ -10,6 +10,10 @@ return [
     | for the Block editor service.
     |
      */
+    'block_single_layout' => 'site.layouts.block',
+    'block_views_path' => 'site.blocks',
+    'block_views_mappings' => [],
+    'block_preview_render_childs' => true,
     'blocks' => [
         'title' => [
             'title' => 'Title',
@@ -27,45 +31,16 @@ return [
             'component' => 'a17-block-wysiwyg',
         ],
         'image' => [
-            'title' => 'Full width Image',
+            'title' => 'Image',
             'icon' => 'image',
             'component' => 'a17-block-image',
-        ],
-        'grid' => [
-            'title' => 'Grid',
-            'icon' => 'text',
-            'component' => 'a17-block-grid',
-        ],
-        'complex' => [
-            'title' => 'Complex block test',
-            'icon' => 'image',
-            'component' => 'a17-block-test',
-        ],
-        'publications' => [
-            'title' => 'Publication Grid',
-            'icon' => 'text',
-            'component' => 'a17-browserfield',
-            'attributes' => [
-                'max' => 4,
-                'itemLabel' => 'Publications',
-                'endpoint' => 'https://www.mocky.io/v2/59d77e61120000ce04cb1c5b',
-                'modalTitle' => 'Attach publications',
-            ],
         ],
     ],
     'crops' => [
         'image' => [
-            'default' => [
+            'desktop' => [
                 [
-                    'name' => 'square',
-                    'ratio' => 1,
-                    'minValues' => [
-                        'width' => 100,
-                        'height' => 100,
-                    ],
-                ],
-                [
-                    'name' => 'landscape',
+                    'name' => 'desktop',
                     'ratio' => 16 / 9,
                     'minValues' => [
                         'width' => 100,
@@ -76,7 +51,7 @@ return [
             'tablet' => [
                 [
                     'name' => 'tablet',
-                    'ratio' => 16 / 9,
+                    'ratio' => 4 / 3,
                     'minValues' => [
                         'width' => 100,
                         'height' => 100,
@@ -86,18 +61,6 @@ return [
             'mobile' => [
                 [
                     'name' => 'mobile',
-                    'ratio' => 4 / 3,
-                    'minValues' => [
-                        'width' => 100,
-                        'height' => 100,
-                    ],
-                ],
-            ],
-        ],
-        'block_cover' => [
-            'default' => [
-                [
-                    'name' => 'square',
                     'ratio' => 1,
                     'minValues' => [
                         'width' => 100,
@@ -107,28 +70,5 @@ return [
             ],
         ],
     ],
-    'repeaters' => [
-        'video' => [
-            'title' => 'Video',
-            'trigger' => 'Add videos',
-            'component' => 'a17-block-test',
-            'max' => 4,
-        ],
-        'gridItem' => [
-            'title' => 'Grid item',
-            'trigger' => 'Add grid item',
-            'component' => 'a17-block-video',
-            'max' => 4,
-        ],
-        'gridItemMore' => [
-            'title' => 'Grid item',
-            'trigger' => 'Add grid item',
-            'component' => 'a17-block-video',
-            'max' => 6,
-        ],
-    ],
-    'render_views_namespace' => 'site.blocks',
-    'use_iframes' => false,
-    'iframe_wrapper_view' => '',
-    'show_render_errors' => env('BLOCK_EDITOR_SHOW_ERRORS', false),
+    'repeaters' => [],
 ];

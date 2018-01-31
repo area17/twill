@@ -1,6 +1,7 @@
 import Vue from 'vue'
+import api from '../api/content'
 import * as types from '../mutation-types'
-import { getFormData } from '@/utils/getFormData.js'
+import { buildBlock } from '@/utils/getFormData.js'
 
 const state = {
   editor: window.STORE.form.editor || false,
@@ -64,39 +65,35 @@ const mutations = {
   }
 }
 
-const previewHTML = function (block, data) {
-  return '<div style="font-family:Arial"><div style="background-color:#EFEFEF; padding:20px;">' + block.title + ' - Preview<br />' + new Date() + '<br />Block ID : ' + block.id + '<br /><br />' + JSON.stringify(data.blocks, null, 4) + '</div></div>'
+function getBlockPreview (block, commit, rootState) {
+  if (block.hasOwnProperty('id')) {
+    api.getBlockPreview(
+      rootState.form.blockPreviewUrl,
+      buildBlock(block, rootState),
+      data => {
+        commit(types.ADD_BLOCK_PREVIEW, {
+          id: block.id,
+          html: data
+        })
+      },
+      errorResponse => {}
+    )
+  }
 }
 
 const actions = {
-  getPreview ({ commit, state, getters, rootState }, index = -1) {
+  getPreview ({ commit, state, rootState }, index = -1) {
     let block = index >= 0 ? state.blocks[index] : {}
-
-    const data = getFormData(rootState)
 
     // refresh preview of the active block
     if (state.active.hasOwnProperty('id') && index === -1) block = state.active
 
-    if (block.hasOwnProperty('id')) {
-      console.log('Actions - getPreview HTML : ' + block.id)
-      // AJAX goes here to retrieve the html output
-      commit(types.ADD_BLOCK_PREVIEW, {
-        id: block.id,
-        html: previewHTML(block, data)
-      })
-    }
+    getBlockPreview(block, commit, rootState)
   },
-  getAllPreviews ({ commit, state, getters, rootState }) {
-    const data = getFormData(rootState)
-
+  getAllPreviews ({ commit, state, rootState }) {
     if (state.blocks.length) {
       state.blocks.forEach(function (block) {
-        console.log('Actions - getPreview HTML : ' + block.id)
-        // AJAX goes here to retrieve the html output
-        commit(types.ADD_BLOCK_PREVIEW, {
-          id: block.id,
-          html: previewHTML(block, data)
-        })
+        getBlockPreview(block, commit, rootState)
       })
     }
   }

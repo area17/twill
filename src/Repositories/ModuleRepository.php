@@ -133,6 +133,15 @@ abstract class ModuleRepository
         }, 3);
     }
 
+    public function createForPreview($fields)
+    {
+        $fields = $this->prepareFieldsBeforeCreate($fields);
+
+        $object = $this->model->newInstance(array_except($fields, $this->getReservedFields()));
+
+        return $this->hydrate($object, $fields);
+    }
+
     public function update($id, $fields)
     {
         DB::transaction(function () use ($id, $fields) {

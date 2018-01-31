@@ -6,6 +6,36 @@ use A17\CmsToolkit\Repositories\BlockRepository;
 
 trait HandleBlocks
 {
+    public function hydrateHandleBlocks($object, $fields)
+    {
+        if ($this->shouldIgnoreFieldBeforeSave('blocks')) {
+            return;
+        }
+
+        $blocksCollection = collect();
+        $blocksFromFields = $this->getBlocks($object, $fields);
+        $blockRepository = app(BlockRepository::class);
+
+        $blocksFromFields->each(function ($block, $key) use ($blocksCollection, $blockRepository) {
+            $newBlock = $blockRepository->createForPreview($block);
+            $newBlock->id = $key + 1;
+
+            $blocksCollection->push($newBlock);
+
+            $block['blocks']->each(function ($childBlock) use ($newBlock, $blocksCollection, $blockRepository) {
+                $childBlock['parent_id'] = $newBlock->id;
+                $newChildBlock = $blockRepository->createForPreview($childBlock);
+                $blocksCollection->push($newChildBlock);
+            });
+
+        });
+
+        $object->setRelation('blocks', $blocksCollection);
+
+        return $object;
+
+    }
+
     public function afterSaveHandleBlocks($object, $fields)
     {
         if ($this->shouldIgnoreFieldBeforeSave('blocks')) {
@@ -41,7 +71,7 @@ trait HandleBlocks
 
                 foreach ($block['blocks'] as $childKey => $childBlocks) {
                     foreach ($childBlocks as $index => $childBlock) {
-                        $childBlock = $this->buildBlock($childBlock, $object);
+                        $childBlock = $this->buildBlock($childBlock, $object, true);
 
                         $childBlock['child_key'] = $childKey;
                         $childBlock['position'] = $index + 1;
@@ -59,26 +89,12 @@ trait HandleBlocks
         return $blocks;
     }
 
-    private function buildBlock($block, $object)
+    private function buildBlock($block, $object, $repeater = false)
     {
         $block['blockable_id'] = $object->id;
         $block['blockable_type'] = $object->getMorphClass();
 
-        $block['type'] = collect(config('cms-toolkit.block_editor.blocks'))->search(function ($configBlock) use ($block) {
-            return $configBlock['component'] === $block['type'];
-        });
-
-        $block['content'] = empty($block['content']) ? new \stdClass : $block['content'];
-
-        if ($block['browsers']) {
-            $browsers = collect($block['browsers'])->map(function ($items) {
-                return collect($items)->pluck('id');
-            })->toArray();
-
-            $block['content']->browsers = $browsers;
-        }
-
-        return $block;
+        return app(BlockRepository::class)->buildFromCmsArray($block, $repeater);
     }
 
     public function getFormFieldsHandleBlocks($object, $fields)

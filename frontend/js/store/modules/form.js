@@ -11,6 +11,7 @@ const state = {
   saveUrl: window.STORE.form.saveUrl || '',
   previewUrl: window.STORE.form.previewUrl || '',
   restoreUrl: window.STORE.form.restoreUrl || '',
+  blockPreviewUrl: window.STORE.form.blockPreviewUrl || '',
   errors: {}
 }
 

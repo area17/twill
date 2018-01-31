@@ -23,4 +23,25 @@ class BlockRepository extends ModuleRepository
     {
         $object->medias()->sync([]);
     }
+
+    public function buildFromCmsArray($block, $repeater = false)
+    {
+        $blocksFromConfig = config('cms-toolkit.block_editor.' . ($repeater ? 'repeaters' : 'blocks'));
+
+        $block['type'] = collect($blocksFromConfig)->search(function ($blockConfig) use ($block) {
+            return $blockConfig['component'] === $block['type'];
+        });
+
+        $block['content'] = empty($block['content']) ? new \stdClass : $block['content'];
+
+        if ($block['browsers']) {
+            $browsers = collect($block['browsers'])->map(function ($items) {
+                return collect($items)->pluck('id');
+            })->toArray();
+
+            $block['content']->browsers = $browsers;
+        }
+
+        return $block;
+    }
 }
