@@ -364,15 +364,62 @@ return [
     |
     | This array allows you to provide the package with your configuration
     | for the Block Editor form field.
-    | More to come here...
     |
      */
     'block_editor' => [
-        'render_views_namespace' => 'site.blocks'
-        'use_iframes' => true,
-        'iframe_wrapper_view' => '',
-        'show_render_errors' => env('BLOCK_EDITOR_SHOW_ERRORS', false),
-
+        'block_single_layout' => 'site.layouts.block',
+        'block_views_path' => 'site.blocks',
+        'block_views_mappings' => [],
+        'block_preview_render_childs' => true,
+        'blocks' => [
+            'title' => [
+                'title' => 'Title',
+                'icon' => 'text',
+                'component' => 'a17-block-title',
+            ],
+            'image' => [
+                'title' => 'Image',
+                'icon' => 'image',
+                'component' => 'a17-block-image',
+            ],
+            'product' => [
+                'title' => 'Product',
+                'icon' => 'text',
+                'component' => 'a17-block-products',
+            ],
+            'color' => [
+                'title' => 'Colors',
+                'icon' => 'image',
+                'component' => 'a17-block-color',
+            ],
+        ],
+        'repeaters' => [
+            'colors' => [
+                'title' => 'Colors',
+                'trigger' => 'Add colors',
+                'component' => 'a17-block-colors',
+                'max' => 20,
+            ],
+        ],
+        'crops' => [
+            'media' => [
+                'desktop' => [
+                    [
+                        'name' => 'desktop',
+                        'ratio' => 16/9,
+                    ],
+                ],
+                'mobile' => [
+                    [
+                        'name' => 'mobile',
+                        'ratio' => 1,
+                    ],
+                ],
+            ],
+        ],
+        'browser_route_prefixes' => [
+            'products' => 'content',
+        ],
     ],
 
     /*
