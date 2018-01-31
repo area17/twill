@@ -83,7 +83,7 @@
   }
 
   .editorSidebar__item {
-    max-height: calc(100% - 80px);
+    height: calc(100% + 20px - 80px);
     overflow-y: scroll;
   }
 
