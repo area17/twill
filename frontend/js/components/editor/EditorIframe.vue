@@ -46,15 +46,13 @@
 
         const frameHeight = frameBody.scrollHeight + parseInt(bodyMarginTop) + parseInt(bodyMarginBottom)
 
-        console.log('Iframe - Change the iframe height : ' + frameHeight + 'px')
+        console.log('Editor - Preview refresh height : ' + frameHeight + 'px')
         frame.height = frameHeight + 'px'
       },
       _resize: debounce(function () {
-        console.log('Iframe - Resize Preview')
         this.refresh()
       }, 200),
       loadedPreview: function (event) {
-        console.log('Iframe - Loaded Preview')
         this.refresh()
       },
       init: function () {

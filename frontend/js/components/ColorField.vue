@@ -68,15 +68,27 @@
       }
     },
     methods: {
-      updateValue: function (newValue) {
-        this.value = newValue
+      updateFromStore: function (newValue) { // called from the formStore mixin
+        if (typeof newValue === 'undefined') newValue = ''
 
-        // see formStore mixin
-        this.saveIntoStore()
+        if (this.value !== newValue) {
+          console.warn('Update UI value : ' + this.name + ' -> ' + newValue)
+          this.value = newValue
+        }
+      },
+      updateValue: function (newValue) {
+        if (this.value !== newValue) {
+          this.value = newValue
+
+          // see formStore mixin
+          this.saveIntoStore()
+        }
       },
       onBlur: function (event) {
         const newValue = event.target.value
         this.updateValue(newValue)
+
+        this.focused = false
       },
       onFocus: function () {
         this.focused = true

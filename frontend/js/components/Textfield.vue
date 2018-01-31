@@ -171,8 +171,10 @@
       updateFromStore: function (newValue) { // called from the formStore mixin
         if (typeof newValue === 'undefined') newValue = ''
 
-        console.warn('Update UI value : ' + this.name + ' -> ' + newValue)
-        this.updateValue(newValue)
+        if (this.value !== newValue) {
+          console.warn('Update UI value : ' + this.name + ' -> ' + newValue)
+          this.updateValue(newValue)
+        }
       },
       updateValue: function (newValue) {
         this.value = newValue
