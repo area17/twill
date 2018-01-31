@@ -96,9 +96,25 @@ trait HandleRevisions
         $object->setRelation($relationship, $relatedElementsCollection);
     }
 
-    public function hydrateRepeater($object, $fields, $relationship, $model = null)
+    public function hydrateRepeater($object, $fields, $relationship, $model)
     {
-        throw new \Exception('Hydrate repeater function is not implemented.');
+        $relationFields = $fields['repeaters'][$relationship] ?? [];
+
+        $relationRepository = $this->getModelRepository($relationship, $model);
+
+        $repeaterCollection = collect();
+
+        foreach ($relationFields as $index => $relationField) {
+            $relationField['position'] = $index + 1;
+            $relationField[$this->model->getForeignKey()] = $object->id;
+            unset($relationField['id']);
+
+            $newRepeater = $relationRepository->createForPreview($relationField);
+
+            $repeaterCollection->push($newRepeater);
+        }
+
+        $object->setRelation($relationship, $repeaterCollection);
     }
 
     public function getCountForMine()
