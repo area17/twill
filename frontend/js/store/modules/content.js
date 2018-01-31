@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import api from '../api/content'
 import * as types from '../mutation-types'
-import { buildBlock } from '@/utils/getFormData.js'
+import { buildBlock, isBlockEmpty } from '@/utils/getFormData.js'
 
 const state = {
   editor: window.STORE.form.editor || false,
@@ -67,17 +67,26 @@ const mutations = {
 
 function getBlockPreview (block, commit, rootState) {
   if (block.hasOwnProperty('id')) {
-    api.getBlockPreview(
-      rootState.form.blockPreviewUrl,
-      buildBlock(block, rootState),
-      data => {
-        commit(types.ADD_BLOCK_PREVIEW, {
-          id: block.id,
-          html: data
-        })
-      },
-      errorResponse => {}
-    )
+    const blockData = buildBlock(block, rootState)
+
+    if (isBlockEmpty(blockData)) {
+      commit(types.ADD_BLOCK_PREVIEW, {
+        id: block.id,
+        html: ''
+      })
+    } else {
+      api.getBlockPreview(
+        rootState.form.blockPreviewUrl,
+        blockData,
+        data => {
+          commit(types.ADD_BLOCK_PREVIEW, {
+            id: block.id,
+            html: data
+          })
+        },
+        errorResponse => {}
+      )
+    }
   }
 }
 

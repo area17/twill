@@ -1,5 +1,8 @@
 <template>
   <div class="editorIframe" >
+    <div class="editorIframe__empty" v-if="preview === ''">
+      {{ title }} &mdash; No preview available
+    </div>
     <iframe :srcdoc="preview" ref="frame" @load="loadedPreview"></iframe>
   </div>
 </template>
@@ -21,11 +24,13 @@
       preview: function () {
         return this.previewsById(this.block.id) || ''
       },
+      title: function () {
+        return this.block.title || ''
+      },
       ...mapGetters([
         'previewsById'
       ]),
       ...mapState({
-        activeBlock: state => state.content.active,
         savedBlocks: state => state.content.blocks
       })
     },
@@ -48,5 +53,19 @@
       overflow: hidden;
       display: block;
     }
+  }
+
+  .editorIframe__empty {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    text-align:center;
+    display: flex;
+    flex-wrap:no-wrap;
+    align-items: center;
+    justify-content: center;
+    color:$color__fborder;
   }
 </style>
