@@ -1,3 +1,5 @@
+import isEmpty from 'lodash/isEmpty'
+
 /*
 * Gather selected items in a selected object (currently used for medias and browsers)
 * if a block is passed as second argument, we retrieve selected items namespaced by the block id
@@ -56,6 +58,10 @@ export const buildBlock = (block, rootState) => {
       }
     }))
   }
+}
+
+export const isBlockEmpty = (blockData) => {
+  return isEmpty(blockData.content) && isEmpty(blockData.browsers) && isEmpty(blockData.medias) && isEmpty(blockData.blocks)
 }
 
 export const gatherRepeaters = (rootState) => {

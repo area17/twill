@@ -104,18 +104,16 @@
       resizeIframe: function (iframe) {
         const frameBody = iframe.contentWindow.document.body
 
-          // no scollbars
-          frameBody.style.overflow = 'hidden'
+        // no scollbars
+        frameBody.style.overflow = 'hidden'
 
-          // get body extra margin
-          const bodyStyle = window.getComputedStyle(frameBody)
-          const bodyMarginTop = bodyStyle.getPropertyValue('margin-top')
-          const bodyMarginBottom = bodyStyle.getPropertyValue('margin-bottom')
-
-          const frameHeight = frameBody.scrollHeight + parseInt(bodyMarginTop) + parseInt(bodyMarginBottom)
-
-          console.log('Editor - Preview refresh height : ' + frameHeight + 'px')
-          iframe.height = frameHeight + 'px'
+        // get body extra margin
+        const bodyStyle = window.getComputedStyle(frameBody)
+        const bodyMarginTop = bodyStyle.getPropertyValue('margin-top')
+        const bodyMarginBottom = bodyStyle.getPropertyValue('margin-bottom')
+        const frameHeight = frameBody.scrollHeight + parseInt(bodyMarginTop) + parseInt(bodyMarginBottom)
+        console.log('Editor - Preview refresh height : ' + frameHeight + 'px')
+        iframe.height = frameHeight + 'px'
       },
       _resize: debounce(function () {
         let self = this
@@ -185,7 +183,7 @@
   }
 
   .editorPreview__item {
-    min-height:40px + 20px + 20px;
+    min-height:10px + 20px + 20px + 1px;
     border:1px dashed $color__background;
     border-radius:2px;
     position:relative;
@@ -213,7 +211,7 @@
 
   .editorPreview__actions {
     position:absolute;
-    right:20px;
-    top:20px;
+    right:5px;
+    top:5px;
   }
 </style>
