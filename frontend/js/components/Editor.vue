@@ -8,7 +8,7 @@
             <a17-editorsidebar @delete="deleteBlock" @save="saveBlock" @cancel="cancelBlock">Add Content</a17-editorsidebar>
           </div>
           <div class="editor__preview">
-            <a17-editorpreview @select="selectBlock" @delete="deleteBlock" @unselect="unselectBlock" @add="getPreview">Preview</a17-editorpreview>
+            <a17-editorpreview @select="selectBlock" @delete="deleteBlock" @unselect="unselectBlock" @add="addBlock">Preview</a17-editorpreview>
           </div>
         </div>
       </div>
@@ -81,6 +81,10 @@
         // refresh Preview
         if (this.hasBlockActive) this.getPreview()
         this.unselectBlock()
+      },
+      addBlock: function (index) {
+        this.selectBlock(index)
+        this.getPreview(index)
       },
       deleteBlock: function (index) {
         this.unselectBlock()
