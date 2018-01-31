@@ -1,6 +1,6 @@
 <template>
   <div class="block__body">
-    <a17-mediafield :name="fieldName('image')" crop-context="image">Minimum image width 1300px</a17-mediafield>
+    <a17-mediafield :name="fieldName('image')" crop-context="image"></a17-mediafield>
   </div>
 </template>
 
