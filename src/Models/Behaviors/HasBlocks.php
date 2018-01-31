@@ -11,19 +11,23 @@ trait HasBlocks
         return $this->morphMany(Block::class, 'blockable')->orderBy('blocks.position', 'asc');
     }
 
-    public function renderBlocks($blockViewMappings = [])
+    public function renderBlocks($renderChilds = true, $blockViewMappings = [])
     {
-        return $this->blocks->where('parent_id', null)->map(function ($block) use ($blockViewMappings) {
-            $childBlocks = $this->blocks->where('parent_id', $block->id);
+        return $this->blocks->where('parent_id', null)->map(function ($block) use ($blockViewMappings, $renderChilds) {
+            if ($renderChilds) {
+                $childBlocks = $this->blocks->where('parent_id', $block->id);
 
-            $renderedChildViews = $childBlocks->map(function ($childBlock) use ($blockViewMappings) {
-                $view = $this->getBlockView($childBlock->type, $blockViewMappings);
-                return view($view)->with('block', $childBlock)->render();
-            })->implode('');
+                $renderedChildViews = $childBlocks->map(function ($childBlock) use ($blockViewMappings) {
+                    $view = $this->getBlockView($childBlock->type, $blockViewMappings);
+                    return view($view)->with('block', $childBlock)->render();
+                })->implode('');
+            } else {
+                $block->childs = $this->blocks->where('parent_id', $block->id);
+            }
 
             $view = $this->getBlockView($block->type, $blockViewMappings);
 
-            return view($view)->with('block', $block)->render() . $renderedChildViews;
+            return view($view)->with('block', $block)->render() . ($renderedChildViews ?? '');
         })->implode('');
     }
 
