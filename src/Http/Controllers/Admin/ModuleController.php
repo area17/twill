@@ -3,6 +3,7 @@
 namespace A17\CmsToolkit\Http\Controllers\Admin;
 
 use A17\CmsToolkit\Helpers\FlashLevel;
+use A17\CmsToolkit\Repositories\Behaviors\HandleBlocks;
 use A17\CmsToolkit\Repositories\Behaviors\HandleRevisions;
 use A17\CmsToolkit\Repositories\Behaviors\HandleTranslations;
 use Auth;
@@ -118,6 +119,11 @@ abstract class ModuleController extends Controller
     protected $titleColumnKey = 'title';
 
     /*
+     * Attribute to use as title in forms
+     */
+    protected $titleFormKey;
+
+    /*
      * Feature field name if the controller is using the feature route (defaults to "featured")
      */
     protected $featureField = 'featured';
@@ -152,16 +158,6 @@ abstract class ModuleController extends Controller
         $this->middleware('can:delete', ['only' => ['destroy', 'bulkDelete', 'restore', 'bulkRestore']]);
     }
 
-    protected function indexData($request)
-    {
-        return [];
-    }
-
-    protected function formData($request)
-    {
-        return [];
-    }
-
     public function index($parentModuleId = null)
     {
         $this->submodule = isset($parentModuleId);
@@ -186,9 +182,223 @@ abstract class ModuleController extends Controller
         return view($view, $indexData);
     }
 
-    protected function getParentModuleForeignKey()
+    public function browser()
     {
-        return str_singular(explode('.', $this->moduleName)[0]) . '_id';
+        return response()->json($this->getBrowserData());
+    }
+
+    public function store($parentModuleId = null)
+    {
+        $input = $this->validateFormRequest()->all();
+        $optionalParent = $parentModuleId ? [$this->getParentModuleForeignKey() => $parentModuleId] : [];
+
+        $item = $this->repository->create($input + $optionalParent);
+
+        $this->fireEvent($input);
+
+        return $this->redirectToForm($item->id, [$parentModuleId]);
+    }
+
+    public function show($id)
+    {
+        return $this->redirectToForm($id);
+    }
+
+    public function edit($id, $submoduleId = null)
+    {
+        $this->submodule = isset($submoduleId);
+        $this->submoduleParentId = $id;
+
+        $this->setBackLink();
+        $this->addLock($submoduleId ?? $id);
+
+        $view = collect([
+            "$this->viewPrefix.form",
+            "cms-toolkit::$this->moduleName.form",
+            "cms-toolkit::layouts.form",
+        ])->first(function ($view) {
+            return view()->exists($view);
+        });
+
+        return view($view, $this->form($submoduleId ?? $id));
+    }
+
+    public function update($id, $submoduleId = null)
+    {
+        $this->submodule = isset($submoduleId);
+        $this->submoduleParentId = $id;
+
+        $item = $this->repository->getById($submoduleId ?? $id);
+        $input = $this->request->all();
+
+        if (isset($input['cmsSaveType']) && $input['cmsSaveType'] === 'cancel') {
+
+            if ($item->isLockable() && $item->isLocked() && $item->isLockedByCurrentUser()) {
+                $this->removeLock($submoduleId ?? $id);
+            }
+
+            return $this->respondWithRedirect($this->getBackLink());
+
+        } else {
+
+            $formRequest = $this->validateFormRequest();
+
+            if (($item->isLockable() == false) || ($item->isLocked() && $item->isLockedByCurrentUser())) {
+
+                $this->repository->update($submoduleId ?? $id, $formRequest->all());
+
+                $this->fireEvent();
+
+                if (isset($input['cmsSaveType']) && ends_with($input['cmsSaveType'], 'close')) {
+                    return $this->respondWithRedirect($this->getBackLink());
+                }
+
+                return $this->respondWithSuccess('Content saved. All good!');
+
+            } else {
+                abort(403);
+            }
+        }
+    }
+
+
+    public function publish()
+    {
+        try {
+            if ($this->repository->updateBasic(request('id'), [
+                'published' => !request('active'),
+            ])) {
+                $this->fireEvent();
+
+                return $this->respondWithSuccess(
+                    $this->modelTitle . ' ' . (request('active') ? 'un' : '') . 'published!'
+                );
+            }
+        } catch (\Exception $e) {
+            \Log::error($e);
+        }
+
+        return $this->respondWithError(
+            $this->modelTitle . ' was not published. Something wrong happened!'
+        );
+    }
+
+    public function bulkPublish()
+    {
+        try {
+            if ($this->repository->updateBasic(explode(',', request('ids')), [
+                'published' => request('publish'),
+            ])) {
+                $this->fireEvent();
+
+                return $this->respondWithSuccess(
+                    $this->modelTitle . ' items ' . (request('publish') ? '' : 'un') . 'published!'
+                );
+            }
+        } catch (\Exception $e) {
+            \Log::error($e);
+        }
+
+        return $this->respondWithError(
+            $this->modelTitle . ' items were not published. Something wrong happened!'
+        );
+    }
+
+    public function destroy($id, $submoduleId = null)
+    {
+        if ($this->repository->delete($submoduleId ?? $id)) {
+            $this->fireEvent();
+            return $this->respondWithSuccess($this->modelTitle . ' deleted!');
+        }
+
+        return $this->respondWithError($this->modelTitle . ' was not deleted. Something wrong happened!');
+    }
+
+    public function bulkDelete()
+    {
+        if ($this->repository->bulkDelete(explode(',', request('ids')))) {
+            $this->fireEvent();
+            return $this->respondWithSuccess($this->modelTitle . ' items deleted!');
+        }
+
+        return $this->respondWithError($this->modelTitle . ' items were not deleted. Something wrong happened!');
+    }
+
+    public function restore()
+    {
+        if ($this->repository->restore(request('id'))) {
+            $this->fireEvent();
+            return $this->respondWithSuccess($this->modelTitle . ' restored!');
+        }
+
+        return $this->respondWithError($this->modelTitle . ' was not restored. Something wrong happened!');
+    }
+
+    public function bulkRestore()
+    {
+        if ($this->repository->bulkRestore(explode(',', request('ids')))) {
+            $this->fireEvent();
+            return $this->respondWithSuccess($this->modelTitle . ' items restored!');
+        }
+
+        return $this->respondWithError($this->modelTitle . ' items were not restored. Something wrong happened!');
+    }
+
+    public function feature()
+    {
+        if (($id = request('id'))) {
+            $featuredField = request('featureField') ?? $this->featureField;
+            $featured = !request('active');
+
+            if ($this->repository->isUniqueFeature()) {
+                if ($featured) {
+                    $this->repository->updateBasic(null, [$featuredField => false]);
+                    $this->repository->updateBasic($id, [$featuredField => $featured]);
+                }
+            } else {
+                $this->repository->updateBasic($id, [$featuredField => $featured]);
+            }
+
+            $this->fireEvent();
+            return $this->respondWithSuccess($this->modelTitle . ' ' . (request('active') ? 'un' : '') . 'featured!');
+        }
+
+        return $this->respondWithError($this->modelTitle . ' was not featured. Something wrong happened!');
+    }
+
+    public function bulkFeature()
+    {
+        if (($ids = explode(',', request('ids')))) {
+            $featuredField = request('featureField') ?? $this->featureField;
+            $featured = request('feature') ?? true;
+            // we don't need to check if unique feature since bulk operation shouldn't be allowed in this case
+            $this->repository->updateBasic($ids, [$featuredField => $featured]);
+            $this->fireEvent();
+            return $this->respondWithSuccess($this->modelTitle . ' items ' . (request('feature') ? '' : 'un') . 'featured!');
+        }
+
+        return $this->respondWithError($this->modelTitle . ' items were not featured. Something wrong happened!');
+    }
+
+    public function reorder()
+    {
+        if (($values = request('ids')) && !empty($values)) {
+            $this->repository->setNewOrder($values);
+            $this->fireEvent();
+            return $this->respondWithSuccess($this->modelTitle . ' order changed!');
+        }
+
+        return $this->respondWithError($this->modelTitle . ' order was not changed. Something wrong happened!');
+    }
+
+    public function tags()
+    {
+        $query = $this->request->input('q');
+        $tags = $this->repository->getTags($query);
+
+        return response()->json(['items' => $tags->map(function ($tag) {
+            return $tag->name;
+        })], 200);
     }
 
     protected function getIndexData($prependScope = [])
@@ -221,6 +431,11 @@ abstract class ModuleController extends Controller
         return array_replace_recursive($data + $options, $this->indexData($this->request));
     }
 
+    protected function indexData($request)
+    {
+        return [];
+    }
+
     protected function getIndexItems($scopes = [], $forcePagination = false)
     {
         return $this->repository->get(
@@ -251,8 +466,8 @@ abstract class ModuleController extends Controller
                 'name' => $name,
                 'publish_start_date' => $item->publish_start_date,
                 'publish_end_date' => $item->publish_end_date,
-                'edit' => $this->getModuleRouteWithEventualParent($item->id, 'edit'),
-                'delete' => $itemCanDelete ? $this->getModuleRouteWithEventualParent($item->id, 'destroy') : null,
+                'edit' => $this->getModuleRoute($item->id, 'edit'),
+                'delete' => $itemCanDelete ? $this->getModuleRoute($item->id, 'destroy') : null,
             ] + ($this->getIndexOption('publish') && ($item->canPublish ?? true) ? [
                 'published' => $item->published,
             ] : []) + ($this->getIndexOption('feature') && ($item->canFeature ?? true) ? [
@@ -396,7 +611,7 @@ abstract class ModuleController extends Controller
             'number' => $this->repository->getCountByStatusSlug('all', $scope),
         ]);
 
-        if (classHasTrait($this->repository, HandleRevisions::class)) {
+        if ($this->moduleHasRevisions()) {
             array_push($statusFilters, [
                 'name' => 'Mine',
                 'slug' => 'mine',
@@ -462,11 +677,6 @@ abstract class ModuleController extends Controller
         return $this->indexOptions[$option] ?? $this->defaultIndexOptions[$option] ?? false;
     }
 
-    public function browser()
-    {
-        return response()->json($this->getBrowserData());
-    }
-
     protected function getBrowserData($prependScope = [])
     {
         if (request()->has('except')) {
@@ -501,334 +711,6 @@ abstract class ModuleController extends Controller
     protected function getBrowserItems($scopes = [])
     {
         return $this->getIndexItems($scopes, true);
-    }
-
-    public function publish()
-    {
-        try {
-            if ($this->repository->updateBasic(request('id'), [
-                'published' => !request('active'),
-            ])) {
-                $this->fireEvent();
-
-                return $this->respondWithSuccess(
-                    $this->modelTitle . ' ' . (request('active') ? 'un' : '') . 'published!'
-                );
-            }
-        } catch (\Exception $e) {
-            \Log::error($e);
-        }
-
-        return $this->respondWithError(
-            $this->modelTitle . ' was not published. Something wrong happened!'
-        );
-    }
-
-    public function bulkPublish()
-    {
-        try {
-            if ($this->repository->updateBasic(explode(',', request('ids')), [
-                'published' => request('publish'),
-            ])) {
-                $this->fireEvent();
-
-                return $this->respondWithSuccess(
-                    $this->modelTitle . ' items ' . (request('publish') ? '' : 'un') . 'published!'
-                );
-            }
-        } catch (\Exception $e) {
-            \Log::error($e);
-        }
-
-        return $this->respondWithError(
-            $this->modelTitle . ' items were not published. Something wrong happened!'
-        );
-    }
-
-    public function destroy($id, $submoduleId = null)
-    {
-        if ($this->repository->delete($submoduleId ?? $id)) {
-            $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' deleted!');
-        }
-
-        return $this->respondWithError($this->modelTitle . ' was not deleted. Something wrong happened!');
-    }
-
-    public function bulkDelete()
-    {
-        if ($this->repository->bulkDelete(explode(',', request('ids')))) {
-            $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' items deleted!');
-        }
-
-        return $this->respondWithError($this->modelTitle . ' items were not deleted. Something wrong happened!');
-    }
-
-    public function restore()
-    {
-        if ($this->repository->restore(request('id'))) {
-            $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' restored!');
-        }
-
-        return $this->respondWithError($this->modelTitle . ' was not restored. Something wrong happened!');
-    }
-
-    public function bulkRestore()
-    {
-        if ($this->repository->bulkRestore(explode(',', request('ids')))) {
-            $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' items restored!');
-        }
-
-        return $this->respondWithError($this->modelTitle . ' items were not restored. Something wrong happened!');
-    }
-
-    public function feature()
-    {
-        if (($id = request('id'))) {
-            $featuredField = request('featureField') ?? $this->featureField;
-            $featured = !request('active');
-
-            if ($this->repository->isUniqueFeature()) {
-                if ($featured) {
-                    $this->repository->updateBasic(null, [$featuredField => false]);
-                    $this->repository->updateBasic($id, [$featuredField => $featured]);
-                }
-            } else {
-                $this->repository->updateBasic($id, [$featuredField => $featured]);
-            }
-
-            $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' ' . (request('active') ? 'un' : '') . 'featured!');
-        }
-
-        return $this->respondWithError($this->modelTitle . ' was not featured. Something wrong happened!');
-    }
-
-    public function bulkFeature()
-    {
-        if (($ids = explode(',', request('ids')))) {
-            $featuredField = request('featureField') ?? $this->featureField;
-            $featured = request('feature') ?? true;
-            // we don't need to check if unique feature since bulk operation shouldn't be allowed in this case
-            $this->repository->updateBasic($ids, [$featuredField => $featured]);
-            $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' items ' . (request('feature') ? '' : 'un') . 'featured!');
-        }
-
-        return $this->respondWithError($this->modelTitle . ' items were not featured. Something wrong happened!');
-    }
-
-    public function reorder()
-    {
-        if (($values = request('ids')) && !empty($values)) {
-            $this->repository->setNewOrder($values);
-            $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' order changed!');
-        }
-
-        return $this->respondWithError($this->modelTitle . ' order was not changed. Something wrong happened!');
-    }
-
-    public function tags()
-    {
-        $query = $this->request->input('q');
-        $tags = $this->repository->getTags($query);
-
-        return response()->json(['items' => $tags->map(function ($tag) {
-            return $tag->name;
-        })], 200);
-    }
-
-    public function store($parentModuleId = null)
-    {
-        $input = $this->validateFormRequest()->all();
-        $optionalParent = $parentModuleId ? [$this->getParentModuleForeignKey() => $parentModuleId] : [];
-
-        $item = $this->repository->create($input + $optionalParent);
-
-        $this->fireEvent($input);
-
-        return $this->redirectToForm($item->id, [$parentModuleId]);
-    }
-
-    public function show($id)
-    {
-        return $this->redirectToForm($id);
-    }
-
-    public function edit($id, $submoduleId = null)
-    {
-        $this->submodule = isset($submoduleId);
-        $this->submoduleParentId = $id;
-
-        $this->setBackLink();
-        $this->addLock($submoduleId ?? $id);
-
-        $view = collect([
-            "$this->viewPrefix.form",
-            "cms-toolkit::$this->moduleName.form",
-            "cms-toolkit::layouts.form",
-        ])->first(function ($view) {
-            return view()->exists($view);
-        });
-
-        return view($view, $this->form($submoduleId ?? $id));
-    }
-
-    protected function form($id)
-    {
-        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
-
-        $fullRoutePrefix = 'admin.' . ($this->routePrefix ? $this->routePrefix . '.' : '') . $this->moduleName . '.';
-        $previewRouteName = $fullRoutePrefix . 'preview';
-        $restoreRouteName = $fullRoutePrefix . 'restoreRevision';
-
-        $data = [
-            'item' => $item,
-            'moduleName' => $this->moduleName,
-            'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
-            'translate' => $this->moduleIsTranslated(),
-            'permalink' => $this->getIndexOption('permalink'),
-            'form_fields' => $this->repository->getFormFields($item),
-            'baseUrl' => $item->urlWithoutSlug ?? $this->getPermalinkBaseUrl(),
-            'saveUrl' => $this->getModuleRouteWithEventualParent($item->id, 'update'),
-            'revisions' => $item->revisions ? $item->revisions->map(function ($revision) {
-                return [
-                    'id' => $revision->id,
-                    'author' => $revision->user->name,
-                    'datetime' => $revision->created_at->toIso8601String(),
-                ];
-            })->toArray() : null,
-        ] + (Route::has($previewRouteName) ? [
-            'previewUrl' => $this->getModuleRouteWithEventualParent($item->id, 'preview'),
-        ] : [])
-             + (Route::has($restoreRouteName) ? [
-            'restoreUrl' => $this->getModuleRouteWithEventualParent($item->id, 'restoreRevision'),
-        ] : []);
-
-        return array_replace_recursive($data, $this->formData($this->request));
-    }
-
-    protected function getPermalinkBaseUrl()
-    {
-        return request()->getScheme() . '://' . config('app.url') . '/' . ($this->permalinkBase ?? $this->moduleName) . '/';
-    }
-
-    protected function getModuleRouteWithEventualParent($id, $action)
-    {
-        return moduleRoute(
-            $this->moduleName,
-            $this->routePrefix,
-            $action,
-            array_merge($this->submodule ? [$this->submoduleParentId] : [], [$id])
-        );
-    }
-
-    public function update($id, $submoduleId = null)
-    {
-        $this->submodule = isset($submoduleId);
-        $this->submoduleParentId = $id;
-
-        $item = $this->repository->getById($submoduleId ?? $id);
-        $input = $this->request->all();
-
-        if (isset($input['cmsSaveType']) && $input['cmsSaveType'] === 'cancel') {
-
-            if ($item->isLockable() && $item->isLocked() && $item->isLockedByCurrentUser()) {
-                $this->removeLock($submoduleId ?? $id);
-            }
-
-            return $this->respondWithRedirect($this->getBackLink());
-
-        } else {
-
-            $formRequest = $this->validateFormRequest();
-
-            if (($item->isLockable() == false) || ($item->isLocked() && $item->isLockedByCurrentUser())) {
-
-                $this->repository->update($submoduleId ?? $id, $formRequest->all());
-
-                $this->fireEvent();
-
-                if (isset($input['cmsSaveType']) && ends_with($input['cmsSaveType'], 'close')) {
-                    return $this->respondWithRedirect($this->getBackLink());
-                }
-
-                return $this->respondWithSuccess('Content saved. All good!');
-
-            } else {
-                abort(403);
-            }
-        }
-    }
-
-    public function preview($id)
-    {
-        if (request()->has('revisionId')) {
-            $item = $this->repository->previewForRevision($id, request('revisionId'));
-        } else {
-            $formRequest = $this->validateFormRequest();
-            $item = $this->repository->preview($id, $formRequest->all());
-        }
-
-        if (request()->has('activeLanguage')) {
-            $this->app->setLocale(request('activeLanguage'));
-        }
-
-        return view('site.post', [
-            'item' => $item,
-        ]);
-    }
-
-    public function status($id)
-    {
-        $item = $this->repository->getById($id);
-
-        $response_data = [
-            'status' => 'ok',
-        ];
-
-        // include other information, revisions count, etc.
-        $lockStatus = ['locked' => false];
-        if ($item->isLockable()) {
-            if ($item->isLocked()) {
-                $lockStatus['locked'] = true;
-                $lockStatus['locked_by']['id'] = $item->lockedBy()->id;
-                $lockStatus['locked_by']['name'] = $item->lockedBy()->name;
-            }
-        }
-        $response_data['lock'] = $lockStatus;
-
-        return response()->json($response_data, 200);
-    }
-
-    protected function validateFormRequest()
-    {
-        return $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
-    }
-
-    protected function orderScope()
-    {
-        $orders = [];
-        if ($this->request->has("sortKey") && $this->request->has("sortDir")) {
-
-            if (($key = $this->request->get("sortKey")) == 'name') {
-                $sortKey = $this->titleColumnKey;
-            } elseif (!empty($key)) {
-                $sortKey = $key;
-            }
-
-            $orders[$this->indexColumns[$sortKey]['sortKey'] ?? $sortKey] = $this->request->get("sortDir");
-        }
-
-        // don't apply default orders if reorder is enabled
-        $reorder = $this->getIndexOption('reorder');
-        $defaultOrders = ($reorder ? [] : ($this->defaultOrders ?? []));
-
-        return $orders + $defaultOrders;
     }
 
     protected function filterScope($prepend = [])
@@ -886,6 +768,168 @@ abstract class ModuleController extends Controller
         }
 
         return json_decode($this->request->get('filter'), true) ?? [];
+    }
+
+    protected function orderScope()
+    {
+        $orders = [];
+        if ($this->request->has("sortKey") && $this->request->has("sortDir")) {
+
+            if (($key = $this->request->get("sortKey")) == 'name') {
+                $sortKey = $this->titleColumnKey;
+            } elseif (!empty($key)) {
+                $sortKey = $key;
+            }
+
+            $orders[$this->indexColumns[$sortKey]['sortKey'] ?? $sortKey] = $this->request->get("sortDir");
+        }
+
+        // don't apply default orders if reorder is enabled
+        $reorder = $this->getIndexOption('reorder');
+        $defaultOrders = ($reorder ? [] : ($this->defaultOrders ?? []));
+
+        return $orders + $defaultOrders;
+    }
+
+    protected function form($id)
+    {
+        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
+
+        $fullRoutePrefix = 'admin.' . ($this->routePrefix ? $this->routePrefix . '.' : '') . $this->moduleName . '.';
+        $previewRouteName = $fullRoutePrefix . 'preview';
+        $restoreRouteName = $fullRoutePrefix . 'restoreRevision';
+
+        $data = [
+            'item' => $item,
+            'moduleName' => $this->moduleName,
+            'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
+            'translate' => $this->moduleIsTranslated(),
+            'permalink' => $this->getIndexOption('permalink'),
+            'form_fields' => $this->repository->getFormFields($item),
+            'baseUrl' => $item->urlWithoutSlug ?? $this->getPermalinkBaseUrl(),
+            'saveUrl' => $this->getModuleRoute($item->id, 'update'),
+            'revisions' => $item->revisions ? $item->revisions->map(function ($revision) {
+                return [
+                    'id' => $revision->id,
+                    'author' => $revision->user->name,
+                    'datetime' => $revision->created_at->toIso8601String(),
+                ];
+            })->toArray() : null,
+        ] + (Route::has($previewRouteName) ? [
+            'previewUrl' => $this->getModuleRoute($item->id, 'preview'),
+        ] : [])
+             + (Route::has($restoreRouteName) ? [
+            'restoreUrl' => $this->getModuleRoute($item->id, 'restoreRevision'),
+        ] : []);
+
+        return array_replace_recursive($data, $this->formData($this->request));
+    }
+
+    protected function formData($request)
+    {
+        return [];
+    }
+
+    protected function previewData($item)
+    {
+        return [];
+    }
+
+    protected function validateFormRequest()
+    {
+        return $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
+    }
+
+    protected function getNamespace()
+    {
+        return $this->namespace ?? config('cms-toolkit.namespace');
+    }
+
+    protected function getRoutePrefix()
+    {
+        if ($this->request->route() != null) {
+            $routePrefix = ltrim($this->request->route()->getPrefix(), "/");
+            return str_replace("/", ".", ($routePrefix));
+        }
+
+        return '';
+    }
+
+    protected function getModelName()
+    {
+        return $this->modelName ?? ucfirst(str_singular($this->moduleName));
+    }
+
+    protected function getRepository()
+    {
+        return $this->app->make("$this->namespace\Repositories\\" . $this->modelName . "Repository");
+    }
+
+    protected function getViewPrefix()
+    {
+        return "admin.$this->moduleName";
+    }
+
+    protected function getModelTitle()
+    {
+        return camelCaseToWords($this->modelName);
+    }
+
+    protected function getParentModuleForeignKey()
+    {
+        return str_singular(explode('.', $this->moduleName)[0]) . '_id';
+    }
+
+    protected function getPermalinkBaseUrl()
+    {
+        return request()->getScheme() . '://' . config('app.url') . '/' . ($this->permalinkBase ?? $this->moduleName) . '/';
+    }
+
+    protected function getModuleRoute($id, $action)
+    {
+        return moduleRoute(
+            $this->moduleName,
+            $this->routePrefix,
+            $action,
+            array_merge($this->submodule ? [$this->submoduleParentId] : [], [$id])
+        );
+    }
+
+    protected function moduleIsTranslated()
+    {
+        return classHasTrait($this->repository, HandleTranslations::class);
+    }
+
+    protected function moduleHasRevisions()
+    {
+        return classHasTrait($this->repository, HandleRevisions::class);
+    }
+
+    protected function moduleHasBlocks()
+    {
+        return classHasTrait($this->repository, HandleBlocks::class);
+    }
+
+    public function status($id)
+    {
+        $item = $this->repository->getById($id);
+
+        $response_data = [
+            'status' => 'ok',
+        ];
+
+        // include other information, revisions count, etc.
+        $lockStatus = ['locked' => false];
+        if ($item->isLockable()) {
+            if ($item->isLocked()) {
+                $lockStatus['locked'] = true;
+                $lockStatus['locked_by']['id'] = $item->lockedBy()->id;
+                $lockStatus['locked_by']['name'] = $item->lockedBy()->name;
+            }
+        }
+        $response_data['lock'] = $lockStatus;
+
+        return response()->json($response_data, 200);
     }
 
     protected function addLock($id)
@@ -964,41 +1008,6 @@ abstract class ModuleController extends Controller
         ));
     }
 
-    protected function getNamespace()
-    {
-        return $this->namespace ?? config('cms-toolkit.namespace');
-    }
-
-    protected function getRoutePrefix()
-    {
-        if ($this->request->route() != null) {
-            $routePrefix = ltrim($this->request->route()->getPrefix(), "/");
-            return str_replace("/", ".", ($routePrefix));
-        }
-
-        return '';
-    }
-
-    protected function getModelName()
-    {
-        return $this->modelName ?? ucfirst(str_singular($this->moduleName));
-    }
-
-    protected function getRepository()
-    {
-        return $this->app->make("$this->namespace\Repositories\\" . $this->modelName . "Repository");
-    }
-
-    protected function getViewPrefix()
-    {
-        return "admin.$this->moduleName";
-    }
-
-    protected function getModelTitle()
-    {
-        return camelCaseToWords($this->modelName);
-    }
-
     protected function respondWithSuccess($message)
     {
         return $this->respondWithJson($message, FlashLevel::SUCCESS);
@@ -1016,11 +1025,6 @@ abstract class ModuleController extends Controller
         return $this->respondWithJson($message, FlashLevel::ERROR);
     }
 
-    protected function fireEvent($input = [])
-    {
-        Event::fire('cms-module.saved', ['cms-module.saved', $input]);
-    }
-
     protected function respondWithJson($message, $variant)
     {
         return response()->json([
@@ -1029,8 +1033,8 @@ abstract class ModuleController extends Controller
         ]);
     }
 
-    protected function moduleIsTranslated()
+    protected function fireEvent($input = [])
     {
-        return classHasTrait($this->repository, HandleTranslations::class);
+        Event::fire('cms-module.saved', ['cms-module.saved', $input]);
     }
 }
