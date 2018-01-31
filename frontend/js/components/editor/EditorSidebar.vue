@@ -97,6 +97,22 @@
     border-radius:2px;
     background:$color__background;
     padding:15px;
+
+    /deep/ .block__body {
+      > .media,
+      > .slideshow,
+      > .browserField {
+        margin-left:-15px;
+        margin-right:-15px;
+        border:0 none;
+      }
+
+      > .media:last-child,
+      > .slideshow:last-child,
+      > .browserField:last-child {
+        margin-bottom:-15px;
+      }
+    }
   }
 
   .editorSidebar__counter {
