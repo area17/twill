@@ -679,14 +679,11 @@ abstract class ModuleController extends Controller
             'bulkFeature',
             'bulkDelete',
         ])->mapWithKeys(function ($endpoint) use ($moduleName, $routePrefix) {
-
-            $route = moduleRoute(
-                $this->moduleName, $this->routePrefix, $endpoint,
-                $this->submodule ? [$this->submoduleParentId] : []
-            );
-
             return [
-                $endpoint . 'Url' => $this->getIndexOption($endpoint) ? $route : null,
+                $endpoint . 'Url' => $this->getIndexOption($endpoint) ? moduleRoute(
+                    $this->moduleName, $this->routePrefix, $endpoint,
+                    $this->submodule ? [$this->submoduleParentId] : []
+                ) : null,
             ];
         })->toArray();
     }
