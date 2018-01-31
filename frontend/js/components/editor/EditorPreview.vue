@@ -149,7 +149,7 @@
   }
 
   .editorPreview__item {
-    min-height:100px;
+    min-height:40px + 20px + 20px;
     border:1px dashed $color__background;
     border-radius:2px;
     position:relative;
