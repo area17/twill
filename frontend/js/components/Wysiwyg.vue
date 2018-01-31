@@ -177,7 +177,6 @@
       // set editor content
       if (self.value) {
         self.quill.pasteHTML(self.value)
-        self.updateInput()
       }
 
       // update model if text changes

@@ -134,7 +134,11 @@
     display:flex;
 
     button {
-      width:50%;
+      width:calc(50% - 10px);
+    }
+
+    button + button {
+      margin-left:20px;
     }
   }
 
