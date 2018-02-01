@@ -161,7 +161,6 @@
 
   .button--aslink-grey {
     @include font-small();
-    @include font-smoothing();
 
     background: transparent;
     color: $color__link-light;

@@ -3,7 +3,7 @@
     <a17-inputframe>
       <template v-if="mode === 'create'">
         <a17-button type="submit" name="create" variant="validate" :disabled="isDisabled">Create</a17-button>
-        <!-- <a17-button type="submit" name="create-another" v-if="!isDisabled" variant="aslink-grey"><span>Create and add another</span></a17-button> -->
+        <a17-button type="submit" name="create-another" v-if="!isDisabled" variant="aslink-grey"><span>Create and add another</span></a17-button>
       </template>
       <a17-button type="submit" name="update" v-else="" variant="validate" :disabled="isDisabled">Update</a17-button>
     </a17-inputframe>

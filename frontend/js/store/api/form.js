@@ -14,7 +14,7 @@ export default {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
-      console.warn('get request error.')
+      console.warn('post request error.')
     })
   },
   save (endpoint, data, callback, errorCallback) {

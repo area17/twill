@@ -33,7 +33,7 @@ const mutations = {
       state.permalink = newValue
     }
   },
-  [types.EMPTY_FORM_FIELDS] (state, fields) {
+  [types.EMPTY_FORM_FIELDS] (state, status) {
     state.fields = []
   },
   [types.REPLACE_FORM_FIELDS] (state, fields) {
@@ -108,23 +108,27 @@ const actions = {
     })
   },
   updateFormInListing ({ commit, state, getters, rootState }, endpoint) {
-    commit(types.CLEAR_FORM_ERRORS)
-    commit(types.CLEAR_NOTIF, 'error')
+    return new Promise((resolve, reject) => {
+      commit(types.CLEAR_FORM_ERRORS)
+      commit(types.CLEAR_NOTIF, 'error')
 
-    const data = getFormFields(rootState)
+      const data = getFormFields(rootState)
 
-    api.post(endpoint, data, function (successResponse) {
-      commit(types.UPDATE_FORM_LOADING, false)
+      api.post(endpoint, data, function (successResponse) {
+        commit(types.UPDATE_FORM_LOADING, false)
 
-      if (successResponse.data.hasOwnProperty('redirect')) {
-        window.location.replace(successResponse.data.redirect)
-      }
+        if (successResponse.data.hasOwnProperty('redirect')) {
+          window.location.replace(successResponse.data.redirect)
+        }
 
-      commit(types.SET_NOTIF, { message: successResponse.data.message, variant: successResponse.data.variant })
-    }, function (errorResponse) {
-      commit(types.UPDATE_FORM_LOADING, false)
-      commit(types.SET_FORM_ERRORS, errorResponse.response.data)
-      commit(types.SET_NOTIF, { message: 'Your submission could not be validated, please fix and retry', variant: 'error' })
+        commit(types.SET_NOTIF, { message: successResponse.data.message, variant: successResponse.data.variant })
+        resolve()
+      }, function (errorResponse) {
+        commit(types.UPDATE_FORM_LOADING, false)
+        commit(types.SET_FORM_ERRORS, errorResponse.response.data)
+        commit(types.SET_NOTIF, { message: 'Your submission could not be validated, please fix and retry', variant: 'error' })
+        reject(errorResponse)
+      })
     })
   },
   saveFormData ({ commit, state, getters, rootState }, saveType) {

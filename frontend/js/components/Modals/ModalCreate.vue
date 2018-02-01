@@ -45,12 +45,30 @@
       open: function () {
         this.$refs.modal.open()
       },
-      submit: function () {
+      submit: function (event) {
         let self = this
-        this.$store.commit('updateFormLoading', true)
 
-        this.$nextTick(function () { // let's wait for the loading state to be properly deployed (used to save wysiwyg fields)
-          self.$store.dispatch('updateFormInListing', this.actionForm)
+        this.$store.commit('updateFormLoading', true)
+        const submitMode = document.activeElement.name
+
+        this.$nextTick(function () {
+          this.$store.dispatch('updateFormInListing', this.actionForm).then(() => {
+            self.$nextTick(function () {
+              if (submitMode === 'create-another') {
+                this.$store.commit('emptyFormField', true)
+              } else {
+                if (self.$refs.modal) self.$refs.modal.close()
+              }
+
+              if (this.mode === 'create') this.$store.commit('updateDatablePage', 1)
+              this.$emit('reload')
+            })
+          }, (errorResponse) => {
+            self.$store.commit('setNotification', {
+              message: 'Your content can not be edited, please retry',
+              variant: 'error'
+            })
+          })
         })
       }
     },
