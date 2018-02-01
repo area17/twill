@@ -1,7 +1,6 @@
 <template>
   <a17-inputframe :error="error" :note="note" :label="label" :locale="locale" @localize="updateLocale" :size="size" :name="name" :required="required">
     <div class="wysiwyg__outer" :class="textfieldClasses">
-      <!-- <input ref="input" :name="name" :id="name" :disabled="disabled" :required="required" :readonly="readonly" type="hidden" value="" /> -->
       <template v-if="editSource">
         <div class="wysiwyg" :class="textfieldClasses" v-show="!activeSource">
           <div class="wysiwyg__editor" ref="editor"></div>
@@ -125,34 +124,27 @@
         if (typeof newValue === 'undefined') newValue = ''
 
         if (this.value !== newValue) {
-          console.warn('Update UI value : ' + this.name + ' -> ' + newValue)
+          console.warn('updateFromStore - Update UI value : ' + this.name + ' -> ' + newValue)
           this.value = newValue
-          // this.$refs.input.value = this.value
           this.quill.pasteHTML(newValue)
         }
       },
-      updateInput: function () {
-        // this.$refs.input.value = this.value
-
-        // see formStore mixin
-        this.saveIntoStore()
-      },
       textUpdate: debounce(function () {
-        this.updateInput()
-      }, 500),
+        this.saveIntoStore() // see formStore mixin
+      }, 600),
       toggleSourcecode: function () {
         this.editorHeight = (Math.max(50, this.$refs.editor.clientHeight) + this.toolbarHeight - 1) + 'px'
         this.activeSource = !this.activeSource
 
         // set editor content
         this.quill.pasteHTML(this.value)
-        this.updateInput()
+        this.saveIntoStore() // see formStore mixin
       }
     },
     // watch: {
     //   submitting: function () {
     //     if (this.submitting) { // The form is about to submit so lets make sure we saved the wysiwyg
-    //       this.updateInput()
+    //       this.saveIntoStore()
     //     }
     //   }
     // },
@@ -183,19 +175,14 @@
           self.quill.deleteText(self.maxlength, self.quill.getLength())
         } else {
           let html = self.$refs.editor.children[0].innerHTML
-          let text = self.quill.getText()
           if (html === '<p><br></p>') html = ''
           self.value = html
 
           self.$emit('input', self.value)
-          self.$emit('change', {
-            editor: self.quill,
-            html: html,
-            text: text
-          })
+          self.$emit('change', self.value)
         }
 
-        self.textUpdate()
+        if (source === 'user') self.textUpdate()
       })
 
       // focus / blur event
@@ -206,9 +193,8 @@
         } else {
           self.focused = false
 
-          // save value in store or in input
-          self.updateInput()
-
+          // save value in store
+          if (source === 'user') self.saveIntoStore()
           self.$emit('blur')
         }
       })
