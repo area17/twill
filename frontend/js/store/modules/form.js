@@ -92,16 +92,19 @@ const mutations = {
 
 const actions = {
   replaceFormData ({ commit, state, getters, rootState }, endpoint) {
-    commit(types.CLEAR_FORM_ERRORS)
-    commit(types.CLEAR_NOTIF, 'error')
+    return new Promise((resolve, reject) => {
+      commit(types.CLEAR_FORM_ERRORS)
+      commit(types.CLEAR_NOTIF, 'error')
 
-    api.get(endpoint, function (successResponse) {
-      commit(types.UPDATE_FORM_LOADING, false)
-      commit(types.REPLACE_FORM_FIELDS, successResponse.data)
-    }, function (errorResponse) {
-      commit(types.UPDATE_FORM_LOADING, false)
-      commit(types.SET_FORM_ERRORS, errorResponse.response.data)
-      commit(types.SET_NOTIF, { message: 'Your submission could not be validated, please fix and retry', variant: 'error' })
+      api.get(endpoint, function (successResponse) {
+        commit(types.UPDATE_FORM_LOADING, false)
+        commit(types.REPLACE_FORM_FIELDS, successResponse.data)
+        resolve()
+      }, function (errorResponse) {
+        commit(types.UPDATE_FORM_LOADING, false)
+        commit(types.SET_FORM_ERRORS, errorResponse.response.data)
+        reject(errorResponse)
+      })
     })
   },
   saveFormData ({ commit, state, getters, rootState }, saveType) {

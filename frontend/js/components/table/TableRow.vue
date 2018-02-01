@@ -124,12 +124,17 @@
           this.$store.commit('updateModalMode', 'update')
           this.$store.commit('updateModalAction', this.updateUrl)
           this.$store.commit('updateFormLoading', true)
-          this.$store.dispatch('replaceFormData', endpoint)
 
-          setTimeout(function () {
-            if (self.$root.$refs.editionModal) self.$root.$refs.editionModal.open()
-          }, 500)
-
+          this.$store.dispatch('replaceFormData', endpoint).then(() => {
+            self.$nextTick(function () {
+              if (self.$root.$refs.editionModal) self.$root.$refs.editionModal.open()
+            })
+          }, (errorResponse) => {
+            self.$store.commit('setNotification', {
+              message: 'Your content can not be edited, please retry',
+              variant: 'error'
+            })
+          })
           event.preventDefault()
         }
       },
