@@ -120,13 +120,18 @@
       }
     },
     methods: {
+      updateEditor: function (newValue) {
+        // convert string to HTML and update the content silently
+        const htmlData = this.quill.clipboard.convert(newValue)
+        this.quill.setContents(htmlData, 'silent')
+      },
       updateFromStore: function (newValue) { // called from the formStore mixin
         if (typeof newValue === 'undefined') newValue = ''
 
         if (this.value !== newValue) {
           console.warn('updateFromStore - Update UI value : ' + this.name + ' -> ' + newValue)
           this.value = newValue
-          this.quill.pasteHTML(newValue)
+          this.updateEditor(newValue)
         }
       },
       textUpdate: debounce(function () {
@@ -137,7 +142,7 @@
         this.activeSource = !this.activeSource
 
         // set editor content
-        this.quill.pasteHTML(this.value)
+        this.updateEditor(this.value)
         this.saveIntoStore() // see formStore mixin
       }
     },
@@ -161,13 +166,13 @@
       self.options.readOnly = self.options.readOnly !== undefined ? self.options.readOnly : self.readonly
       self.options.formats = QuillConfiguration.getFormats(self.options.modules.toolbar) // Formats are based on current toolbar configuration
 
+      self.options.scrollingContainer = null
+
       // init Quill
-      this.quill = new QuillConfiguration.Quill(self.$refs.editor, self.options)
+      self.quill = new QuillConfiguration.Quill(self.$refs.editor, self.options)
 
       // set editor content
-      if (self.value) {
-        self.quill.pasteHTML(self.value)
-      }
+      if (self.value) self.updateEditor(self.value)
 
       // update model if text changes
       self.quill.on('text-change', (delta, oldDelta, source) => {
@@ -200,18 +205,18 @@
       })
 
       // disabled
-      if (this.disabled) {
-        this.quill.enable(false)
+      if (self.disabled) {
+        self.quill.enable(false)
       }
 
       // Change the link placeholder + add a checkbox to add or not the target blank attribute to current url
-      if (this.baseUrl) {
-        const tooltip = this.quill.theme.tooltip
+      if (self.baseUrl) {
+        const tooltip = self.quill.theme.tooltip
         const rootElement = tooltip.root
 
         if (rootElement) {
           const input = rootElement.querySelector('input[data-link]')
-          if (input) input.setAttribute('data-link', this.baseUrl)
+          if (input) input.setAttribute('data-link', self.baseUrl)
         }
       }
 
