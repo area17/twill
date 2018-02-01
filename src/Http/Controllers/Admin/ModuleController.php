@@ -795,14 +795,15 @@ abstract class ModuleController extends Controller
     {
         $orders = [];
         if ($this->request->has("sortKey") && $this->request->has("sortDir")) {
-
             if (($key = $this->request->get("sortKey")) == 'name') {
                 $sortKey = $this->titleColumnKey;
             } elseif (!empty($key)) {
                 $sortKey = $key;
             }
 
-            $orders[$this->indexColumns[$sortKey]['sortKey'] ?? $sortKey] = $this->request->get("sortDir");
+            if ($sortKey) {
+                $orders[$this->indexColumns[$sortKey]['sortKey'] ?? $sortKey] = $this->request->get("sortDir");
+            }
         }
 
         // don't apply default orders if reorder is enabled
