@@ -104,18 +104,18 @@
       resizeIframe: function (iframe) {
         const frameBody = iframe.contentWindow.document.body
 
-          // no scollbars
-          frameBody.style.overflow = 'hidden'
+        // no scollbars
+        frameBody.style.overflow = 'hidden'
 
-          // get body extra margin
-          const bodyStyle = window.getComputedStyle(frameBody)
-          const bodyMarginTop = bodyStyle.getPropertyValue('margin-top')
-          const bodyMarginBottom = bodyStyle.getPropertyValue('margin-bottom')
+        // get body extra margin
+        const bodyStyle = window.getComputedStyle(frameBody)
+        const bodyMarginTop = bodyStyle.getPropertyValue('margin-top')
+        const bodyMarginBottom = bodyStyle.getPropertyValue('margin-bottom')
 
-          const frameHeight = frameBody.scrollHeight + parseInt(bodyMarginTop) + parseInt(bodyMarginBottom)
+        const frameHeight = frameBody.scrollHeight + parseInt(bodyMarginTop) + parseInt(bodyMarginBottom)
 
-          console.log('Editor - Preview refresh height : ' + frameHeight + 'px')
-          iframe.height = frameHeight + 'px'
+        console.log('Editor - Preview refresh height : ' + frameHeight + 'px')
+        iframe.height = frameHeight + 'px'
       },
       _resize: debounce(function () {
         let self = this
