@@ -4,6 +4,10 @@ export default {
       type: String,
       default: ''
     },
+    labelFor: {
+      type: String,
+      default: ''
+    },
     size: {
       type: String,
       default: 'large' // large, small
