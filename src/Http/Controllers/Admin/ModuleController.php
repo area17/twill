@@ -801,7 +801,7 @@ abstract class ModuleController extends Controller
                 $sortKey = $key;
             }
 
-            if ($sortKey) {
+            if (isset($sortKey)) {
                 $orders[$this->indexColumns[$sortKey]['sortKey'] ?? $sortKey] = $this->request->get("sortDir");
             }
         }
