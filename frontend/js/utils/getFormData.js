@@ -89,7 +89,7 @@ export const gatherRepeaters = (rootState) => {
   }))
 }
 
-export const getFormData = (rootState) => {
+export const getFormFields = (rootState) => {
   let fields = rootState.form.fields.filter((field) => {
     // we start by filtering out blocks related form fields
     return !field.name.startsWith('blocks[')
@@ -99,6 +99,12 @@ export const getFormData = (rootState) => {
     fields[field.name] = field.value
     return fields
   }, {})
+
+  return fields
+}
+
+export const getFormData = (rootState) => {
+  let fields = getFormFields(rootState)
 
   // we can now create our submitted data object out of:
   // - our just created fields object,

@@ -1,6 +1,6 @@
 <template>
   <a17-modal ref="modal" class="modal--form" :title="modalTitle" :forceClose="true">
-    <form :action="actionForm" method="post">
+    <form :action="actionForm" method="post" @submit.prevent="submit">
       <slot></slot>
       <a17-modal-validation :mode="mode" :is-disable="isDisabled" :active-publish-state="false" :is-publish="false" published-name="published"></a17-modal-validation>
     </form>
@@ -44,6 +44,14 @@
     methods: {
       open: function () {
         this.$refs.modal.open()
+      },
+      submit: function () {
+        let self = this
+        this.$store.commit('updateFormLoading', true)
+
+        this.$nextTick(function () { // let's wait for the loading state to be properly deployed (used to save wysiwyg fields)
+          self.$store.dispatch('updateFormInListing', this.actionForm)
+        })
       }
     },
     mounted: function () {

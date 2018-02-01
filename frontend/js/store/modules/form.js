@@ -1,6 +1,6 @@
 import api from '../api/form'
 import * as types from '../mutation-types'
-import { getFormData } from '@/utils/getFormData.js'
+import { getFormData, getFormFields } from '@/utils/getFormData.js'
 
 const state = {
   loading: false,
@@ -105,6 +105,26 @@ const actions = {
         commit(types.SET_FORM_ERRORS, errorResponse.response.data)
         reject(errorResponse)
       })
+    })
+  },
+  updateFormInListing ({ commit, state, getters, rootState }, endpoint) {
+    commit(types.CLEAR_FORM_ERRORS)
+    commit(types.CLEAR_NOTIF, 'error')
+
+    const data = getFormFields(rootState)
+
+    api.post(endpoint, data, function (successResponse) {
+      commit(types.UPDATE_FORM_LOADING, false)
+
+      if (successResponse.data.hasOwnProperty('redirect')) {
+        window.location.replace(successResponse.data.redirect)
+      }
+
+      commit(types.SET_NOTIF, { message: successResponse.data.message, variant: successResponse.data.variant })
+    }, function (errorResponse) {
+      commit(types.UPDATE_FORM_LOADING, false)
+      commit(types.SET_FORM_ERRORS, errorResponse.response.data)
+      commit(types.SET_NOTIF, { message: 'Your submission could not be validated, please fix and retry', variant: 'error' })
     })
   },
   saveFormData ({ commit, state, getters, rootState }, saveType) {
