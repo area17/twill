@@ -115,13 +115,16 @@
         console.log('Editor - Preview refresh height : ' + frameHeight + 'px')
         iframe.height = frameHeight + 'px'
       },
-      _resize: debounce(function () {
+      resizeAllIframes: function () {
         let self = this
         const iframes = this.$el.querySelectorAll('iframe')
 
         iframes.forEach(function (iframe) {
           self.resizeIframe(iframe)
         })
+      },
+      _resize: debounce(function () {
+        this.resizeAllIframes()
       }, 200),
       init: function () {
         window.addEventListener('resize', this._resize)

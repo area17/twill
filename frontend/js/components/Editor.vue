@@ -4,11 +4,12 @@
       <a17-button class="editor__leave" variant="editor" size="small" @click="openPreview"><span v-svg symbol="preview"></span>Preview</a17-button>
       <div class="editor__frame">
         <div class="editor__inner">
-          <div class="editor__sidebar">
+          <div class="editor__sidebar" ref="sidebar">
             <a17-editorsidebar @delete="deleteBlock" @save="saveBlock" @cancel="cancelBlock">Add Content</a17-editorsidebar>
           </div>
+          <div class="editor__resizer" @mousedown="resize"><span></span></div>
           <div class="editor__preview">
-            <a17-editorpreview @select="selectBlock" @delete="deleteBlock" @unselect="unselectBlock" @add="addBlock">Preview</a17-editorpreview>
+            <a17-editorpreview ref="previews" @select="selectBlock" @delete="deleteBlock" @unselect="unselectBlock" @add="addBlock">Preview</a17-editorpreview>
           </div>
         </div>
       </div>
@@ -75,6 +76,24 @@
       },
       openPreview: function () {
         if (this.$root.$refs.preview) this.$root.$refs.preview.open()
+      },
+      resize: function () {
+        let self = this
+        window.addEventListener('mousemove', self.resizeSidebar, false)
+        window.addEventListener('mouseup', self.stopResizeSidebar, false)
+      },
+      resizeSidebar: function (event) {
+        const sidebar = this.$refs.sidebar
+        const windowWidth = window.innerWidth
+        if (sidebar) sidebar.style.width = (event.clientX - sidebar.offsetLeft) / windowWidth * 100 + '%'
+      },
+      stopResizeSidebar: function () {
+        let self = this
+        window.removeEventListener('mousemove', self.resizeSidebar, false)
+        window.removeEventListener('mouseup', self.stopResizeSidebar, false)
+
+        // resize all previews
+        this.$refs.previews.resizeAllIframes()
       },
       saveBlock: function () {
         // refresh Preview
@@ -193,8 +212,29 @@
     min-width:320px;
   }
 
+  .editor__resizer {
+    width:10px;
+    min-width: 10px;
+    cursor: e-resize;
+    background:$color__border--light;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    span {
+      width:2px;
+      height:20px;
+      display:block;
+      background: dragGrid__dots($color__drag);
+      overflow:hidden;
+      margin-left:auto;
+      margin-right:auto;
+    }
+  }
+
   .editor__preview {
     flex-grow:1;
     position:relative;
+    min-width:300px;
   }
 </style>

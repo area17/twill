@@ -77,7 +77,7 @@
   @import '~styles/setup/_mixins-colors-vars.scss';
 
   .editorSidebar {
-    padding:20px;
+    padding:20px 10px 20px 20px;
     height:100%;
     position:relative;
   }

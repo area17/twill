@@ -89,6 +89,7 @@
         toolbarHeight: 52,
         focused: false,
         activeSource: false,
+        quill: null,
         defaultModules: {
           toolbar: ['bold', 'italic', 'underline', 'link'],
           clipboard: {
@@ -155,6 +156,8 @@
     // },
     mounted: function () {
       const self = this
+
+      if (this.quill) return
 
       self.options.theme = self.options.theme || 'snow'
       self.options.boundary = self.options.boundary || document.body
