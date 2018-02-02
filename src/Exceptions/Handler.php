@@ -82,7 +82,11 @@ class Handler extends ExceptionHandler
             return response()->view($view, ['exception' => $e], $statusCode, $headers);
         }
 
-        return $this->renderHttpException($e);
+        if ($this->isHttpException($e)) {
+            return $this->renderHttpException($e);
+        }
+
+        return parent::render($request, $e);
     }
 
     protected function renderExceptionWithWhoops(Exception $e)
