@@ -74,7 +74,6 @@
         return id === this.activeBlock.id
       },
       openPreview: function () {
-        this.$store.commit('updateRevision', 0)
         if (this.$root.$refs.preview) this.$root.$refs.preview.open()
       },
       saveBlock: function () {

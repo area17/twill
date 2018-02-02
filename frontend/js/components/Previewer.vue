@@ -108,8 +108,18 @@
     },
     methods: {
       open: function () {
-        this.$refs.overlay.open()
-        this.singleView()
+        this.$store.commit('updateRevision', 0)
+
+        this.$store.dispatch('getCurrentContent').then(() => {
+          this.$refs.overlay.open()
+          this.singleView()
+        }, (errorResponse) => {
+          this.$store.commit('setFormErrors', errorResponse.response.data)
+          this.$store.commit('setNotification', {
+            message: 'Your submission could not be validated, please fix and retry',
+            variant: 'error'
+          })
+        })
       },
       close: function () {
         this.$refs.overlay.close()
