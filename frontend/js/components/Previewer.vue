@@ -1,4 +1,5 @@
 <template>
+  <a17-overlay ref="overlay" title="Preview changes">
   <div class="previewer" :class="{ 'previewer--loading' : loading }">
     <!-- <a17-button @click="restoreRevision" v-if="activeRevision" class="previewer__restore" variant="warning" size="small">Restore</a17-button> -->
     <a17-button @click="openEditor" v-if="!activeRevision && editor" class="previewer__restore" variant="editor" size="small"><span v-svg symbol="editor"></span>Editor</a17-button>
@@ -49,6 +50,7 @@
       </div>
     </div>
   </div>
+  </a17-overlay>
 </template>
 
 <script>
@@ -105,6 +107,13 @@
       })
     },
     methods: {
+      open: function () {
+        this.$refs.overlay.open()
+        this.singleView()
+      },
+      close: function () {
+        this.$refs.overlay.close()
+      },
       openEditor: function () {
         this.$root.$refs.preview.close()
         if (this.$root.$refs.editor) this.$root.$refs.editor.open()

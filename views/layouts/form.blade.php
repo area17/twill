@@ -68,9 +68,7 @@
         <a17-browser />
     </a17-modal>
     <a17-editor v-if="editor" ref="editor"></a17-editor>
-    <a17-overlay ref="preview" title="Preview changes">
-        <a17-previewer />
-    </a17-overlay>
+    <a17-previewer ref="preview"></a17-previewer>
 @stop
 
 @section('initialStore')
