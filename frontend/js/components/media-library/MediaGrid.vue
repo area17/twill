@@ -141,7 +141,7 @@
     @include font-regular;
 
     user-select: none;
-    background: $color__background;
+    background:$color__ultralight;
 
     top: 10px;
     left: 10px;

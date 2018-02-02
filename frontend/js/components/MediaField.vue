@@ -329,6 +329,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    background:$color__ultralight;
 
     &:before {
       content: "";
