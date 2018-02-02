@@ -46,4 +46,9 @@ class Block extends BaseModel
     {
         return isset($this->content['browsers']) ? ($this->content['browsers'][$name] ?? []) : [];
     }
+
+    public function checkbox($name)
+    {
+        return isset($this->content[$name]) && ($this->content[$name][0] ?? false);
+    }
 }
