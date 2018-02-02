@@ -112,6 +112,7 @@
         const bodyMarginTop = bodyStyle.getPropertyValue('margin-top')
         const bodyMarginBottom = bodyStyle.getPropertyValue('margin-bottom')
         const frameHeight = frameBody.scrollHeight + parseInt(bodyMarginTop) + parseInt(bodyMarginBottom)
+
         console.log('Editor - Preview refresh height : ' + frameHeight + 'px')
         iframe.height = frameHeight + 'px'
       },
