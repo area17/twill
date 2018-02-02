@@ -125,8 +125,9 @@
         this.$refs.overlay.close()
       },
       openEditor: function () {
-        this.$root.$refs.preview.close()
-        if (this.$root.$refs.editor) this.$root.$refs.editor.open()
+        const rootRefs = this.$root.$refs
+        if (rootRefs.preview) rootRefs.preview.close()
+        if (rootRefs.editor) rootRefs.editor.open()
       },
       getCurrentPreview: function () {
         if (this.loadedCurrent) return

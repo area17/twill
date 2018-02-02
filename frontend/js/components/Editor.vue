@@ -63,6 +63,9 @@
         if (index >= 0) this.selectBlock(index)
         this.$refs.overlay.open()
       },
+      close: function (index) {
+        this.$refs.overlay.close()
+      },
       openEditor: function () {
         this.getAllPreviews()
       },

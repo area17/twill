@@ -18,6 +18,7 @@
 <script>
   import { mapState } from 'vuex'
 
+  const html = document.documentElement
   let htmlClass = 's--modal'
 
   export default {
@@ -75,8 +76,6 @@
           return
         }
 
-        const html = document.documentElement
-
         this.active = true
         this.hidden = false
 
@@ -93,7 +92,6 @@
         this.$emit('open')
       },
       mask: function () {
-        const html = document.documentElement
         html.classList.remove(htmlClass)
       },
       hide: function () {

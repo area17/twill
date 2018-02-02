@@ -15,6 +15,7 @@
 <script>
   import { mapState } from 'vuex'
 
+  const html = document.documentElement
   let htmlClass = 's--overlay'
 
   export default {
@@ -67,23 +68,20 @@
     },
     methods: {
       open: function (onShow) {
+        html.classList.add(htmlClass)
+
         if (this.active && !this.hidden) {
           return
         }
 
-        const html = document.documentElement
-
         this.active = true
         this.hidden = false
-
-        html.classList.add(htmlClass)
 
         window.addEventListener('keyup', this.keyPressed)
 
         this.$emit('open')
       },
       mask: function () {
-        const html = document.documentElement
         html.classList.remove(htmlClass)
       },
       hide: function () {
