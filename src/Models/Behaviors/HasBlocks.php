@@ -21,9 +21,9 @@ trait HasBlocks
                     $view = $this->getBlockView($childBlock->type, $blockViewMappings);
                     return view($view)->with('block', $childBlock)->render();
                 })->implode('');
-            } else {
-                $block->childs = $this->blocks->where('parent_id', $block->id);
             }
+
+            $block->childs = $this->blocks->where('parent_id', $block->id);
 
             $view = $this->getBlockView($block->type, $blockViewMappings);
 

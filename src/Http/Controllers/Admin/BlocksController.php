@@ -44,18 +44,20 @@ class BlocksController extends Controller
                     $view = $this->getBlockView($childBlock->type);
                     return view($view)->with('block', $childBlock)->render();
                 })->implode('');
-            } else {
-                $block->childs = $blocksCollection->where('parent_id', $block->id);
             }
+
+            $block->childs = $blocksCollection->where('parent_id', $block->id);
 
             $view = $this->getBlockView($block->type);
 
             return view($view)->with('block', $block)->render() . ($renderedChildViews ?? '');
         })->implode('');
 
-        return view(config('cms-toolkit.block_editor.block_single_layout'), [
-            'renderedBlocks' => $renderedBlocks,
-        ]);
+        $view = view(config('cms-toolkit.block_editor.block_single_layout'));
+
+        $view->getFactory()->inject('content', $renderedBlocks);
+
+        return html_entity_decode($view);
     }
 
     private function getBlockView($blockType)
