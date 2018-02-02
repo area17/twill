@@ -78,5 +78,6 @@
     top:0;
     bottom:0;
     left:50%;
+    background:$color__background;
   }
 </style>
