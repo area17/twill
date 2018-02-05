@@ -6,8 +6,8 @@
           <a17-block :block="block" :index="index" :opened="opened" @open="setOpened">
             <button type="button" slot="dropdown-add" v-if="availableBlocks.length" v-for="(availableBlock, dropdownIndex) in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, index + 1)"><span v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
             <div slot="dropdown-action">
-              <button type="button" @click="collapseAllBlocks()">Collapse All</button>
-              <button v-if="editor" type="button" @click="openEditor(index)">Open in Live Editor</button>
+              <button type="button" @click="collapseAllBlocks()">Collapse all</button>
+              <button v-if="editor" type="button" @click="openEditor(index)">Open in editor</button>
               <button type="button" @click="deleteBlock(index)">Delete</button>
               <button type="button" @click="duplicateBlock(index)">Duplicate</button>
             </div>
@@ -24,7 +24,7 @@
         </div>
       </a17-dropdown>
       <div class="content__secondaryActions">
-        <a href="#" v-if="editor" class="f--link f--link-underlined--o" @click.prevent="openEditor(-1)">Open in Editor</a>
+        <a href="#" v-if="editor" class="f--link f--link-underlined--o" @click.prevent="openEditor(-1)">Open in editor</a>
       </div>
     </div>
   </div>
