@@ -840,10 +840,10 @@ abstract class ModuleController extends Controller
                 ];
             })->toArray() : null,
         ] + (Route::has($previewRouteName) ? [
-            'previewUrl' => $this->getModuleRoute($item->id, 'preview'),
+            'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $item->id),
         ] : [])
              + (Route::has($restoreRouteName) ? [
-            'restoreUrl' => $this->getModuleRoute($item->id, 'restoreRevision'),
+            'restoreUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'restoreRevision', $item->id),
         ] : []);
 
         return array_replace_recursive($data, $this->formData($this->request));
