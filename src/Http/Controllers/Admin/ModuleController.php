@@ -281,9 +281,9 @@ abstract class ModuleController extends Controller
 
         $previewView = $this->previewView ?? ('site.' . str_singular($this->moduleName));
 
-        return view($previewView, [
+        return view($previewView, array_replace([
             'item' => $item,
-        ] + $this->previewData($item));
+        ], $this->previewData($item)));
     }
 
     public function publish()
