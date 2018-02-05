@@ -142,6 +142,7 @@
     flex-grow:1;
     text-align:right;
     margin-left:20px;
+    padding-top:8px;
   }
 
   .content__item {
