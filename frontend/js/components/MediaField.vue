@@ -149,6 +149,8 @@
       },
       currentMedia: function () {
         if (this.selectedMedias.hasOwnProperty(this.mediaKey)) {
+          // reset is destroyed
+          if (this.selectedMedias[this.mediaKey][this.index]) this.isDestroyed = false
           return this.selectedMedias[this.mediaKey][this.index] || {}
         } else {
           return {}
