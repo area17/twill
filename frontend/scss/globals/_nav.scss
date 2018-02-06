@@ -13,6 +13,10 @@ $height__nav: 60px;
   background: $color__nav;
   overflow:hidden;
   height:60px;
+
+  .s--search & {
+    background: black;
+  }
 }
 
 .nav__list {
@@ -22,6 +26,10 @@ $height__nav: 60px;
   height:60px + 50px;
   overflow:hidden;
   overflow-x:auto;
+
+  .s--search & {
+    visibility: hidden;
+  }
 }
 
 .nav__item {
