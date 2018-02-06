@@ -3,10 +3,11 @@
     <draggable class="content__container" v-model="blocks" :options="dragOptions">
       <transition-group name="draggable_list" tag='div'>
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
-          <a17-block :block="block" :index="index" :opened="opened" @open="setOpened">
+          <a17-block :block="block" :index="index" :opened="opened" :closed="closed" @expand="setOpened" ref="blockList">
             <button type="button" slot="dropdown-add" v-if="availableBlocks.length" v-for="(availableBlock, dropdownIndex) in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, index + 1)"><span v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
             <div slot="dropdown-action">
-              <button type="button" @click="collapseAllBlocks()">Collapse all</button>
+              <button type="button" @click="collapseAllBlocks()" v-if="opened">Collapse all</button>
+              <button type="button" @click="expandAllBlocks()" v-else>Expand all</button>
               <button v-if="editor" type="button" @click="openEditor(index)">Open in editor</button>
               <button type="button" @click="deleteBlock(index)">Delete</button>
               <button type="button" @click="duplicateBlock(index)">Duplicate</button>
@@ -54,6 +55,7 @@
     data: function () {
       return {
         opened: true,
+        closed: false,
         handle: '.block__handle' // drag handle
       }
     },
@@ -74,7 +76,13 @@
     },
     methods: {
       setOpened: function (value) {
-        this.opened = value
+        const allHidden = this.$refs.blockList.every((block) => !block.visible)
+        if (allHidden) {
+          this.opened = false
+          this.closed = true
+        }
+
+        if (value) this.opened = true
       },
       addDropdownId: function (index) {
         return `addBlock${index}Dropdown`
@@ -107,6 +115,11 @@
       },
       collapseAllBlocks: function () {
         this.opened = false
+        this.closed = true
+      },
+      expandAllBlocks: function () {
+        this.opened = true
+        this.closed = false
       }
     },
     mounted: function () {

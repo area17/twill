@@ -44,6 +44,10 @@
         type: Boolean,
         default: true
       },
+      closed: {
+        type: Boolean,
+        default: false
+      },
       size: {
         type: String,
         default: '' // small
@@ -81,12 +85,15 @@
     watch: {
       opened: function () {
         if (!this.opened) this.visible = false
+      },
+      closed: function () {
+        if (!this.closed) this.visible = true
       }
     },
     methods: {
       toggleExpand: function () {
         this.visible = !this.visible
-        if (this.visible) this.$emit('open', this.visible)
+        this.$emit('expand', this.visible)
       },
       componentName: function (id) {
         return 'blocks[' + id + ']'
