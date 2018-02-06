@@ -4,22 +4,24 @@
       <span v-svg symbol="search" v-show="!open"></span>
       <span v-svg symbol="close_modal" v-show="open"></span>
     </a17-button>
-    <div class="search__overlay" v-show="open">
-      <div class="container search__container">
-        <input type="search" class="form__input search__input" name="search" :value="searchValue" :placeholder="placeholder" @input="onSearchInput" />
-        <span v-svg symbol="search"></span>
-        <div class="search__results" v-show="searchValue">
-          <ul>
-            <li class="search__results__item" v-for="(result, index) in searchResults" :key="result">
-              {{result}}
-            </li>
-            <li class="search__results__no-result" v-show="searchValue && !searchResults.length">
-              No results found.
-            </li>
-          </ul>
+    <transition name="search-fade">
+      <div class="search__overlay" v-show="open">
+        <div class="container search__container">
+          <input type="search" class="form__input search__input" name="search" :value="searchValue" :placeholder="placeholder" @input="onSearchInput" />
+          <span v-svg symbol="search"></span>
+          <div class="search__results" v-show="searchValue">
+            <ul>
+              <li class="search__results__item" v-for="(result, index) in searchResults" :key="result">
+                {{result}}
+              </li>
+              <li class="search__results__no-result" v-show="searchValue && !searchResults.length">
+                No results found.
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -99,6 +101,17 @@
     height: calc(100vh - 60px);
     background: rgba($color__overlay--header, 0.5);
     z-index: $zindex__search;
+    opacity: 1;
+  }
+
+  .search-fade-enter-active,
+  .search-fade-leave-active {
+    transition: opacity 0.14s $bezier__bounce;
+  }
+
+  .search-fade-enter,
+  .search-fade-leave-to {
+    opacity: 0;
   }
 
   .search__container {
