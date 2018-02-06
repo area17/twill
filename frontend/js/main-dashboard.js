@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import store from '@/store'
 
-// General behaviors
+// General shared behaviors
 import main from '@/main'
+import search from '@/main-search'
 import openMediaLibrary from '@/behaviors/openMediaLibrary'
 
 // Plugins
@@ -44,6 +45,11 @@ Window.vm = new Vue({
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
 Window.vheader = new Vue({ el: '#headerUser' })
+
+// Search
+/* eslint-disable no-new */
+/* eslint no-unused-vars: "off" */
+Window.vsearch = search
 
 // DOM Ready general actions
 document.addEventListener('DOMContentLoaded', main)
