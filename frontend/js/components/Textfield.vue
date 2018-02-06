@@ -158,6 +158,7 @@
       return {
         randKey: Date.now() + Math.floor(Math.random() * 9999),
         value: this.initialValue,
+        beforeFocusValue: this.initialValue,
         focused: false,
         counter: 0
       }
@@ -185,6 +186,7 @@
       },
       onFocus: function (event) {
         this.focused = true
+        this.beforeFocusValue = this.value
 
         this.resizeTextarea()
 
@@ -195,8 +197,9 @@
 
         this.focused = false
 
+        // Only save into the store if something changed from the moment you focused the field
         // see formStore mixin
-        this.saveIntoStore()
+        if (this.beforeFocusValue !== this.value) this.saveIntoStore()
 
         this.$emit('blur', newValue)
       },
