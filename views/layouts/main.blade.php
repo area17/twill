@@ -20,7 +20,6 @@
                         @partialView(($moduleName ?? null), 'navigation._user')
                     </div>
                     <div class="header__search" id="searchApp" v-cloak>
-                        <a17-button type="button" variant="secondary">Search</a17-button>
                         <a17-search></a17-search>
                     </div>
                 </div>
