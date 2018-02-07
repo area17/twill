@@ -8,13 +8,14 @@
         <div class="editorPreview__frame" tabindex="0" @click="selectBlock(index)">
           <a17-editor-iframe :block="block" @loaded="resizeIframe"></a17-editor-iframe>
         </div>
-        <div class="editorPreview__protector" @click="selectBlock(index)"></div>
-        <div class="editorPreview__actions">
-          <a17-buttonbar >
-            <button type="button" @click="selectBlock(index)"><span v-svg symbol="edit_large"></span></button>
-            <button type="button" class="editorPreview__handle"><span v-svg symbol="drag"></span></button>
-            <button type="button" @click="deleteBlock(index)"><span v-svg symbol="trash"></span></button>
-          </a17-buttonbar>
+        <div class="editorPreview__protector editorPreview__dragger" @click="selectBlock(index)"></div>
+        <div class="editorPreview__header">
+          <div class="editorPreview__actions">
+            <a17-buttonbar>
+              <button type="button" class="editorPreview__dragger"><span v-svg symbol="drag"></span></button>
+              <button type="button" @click="deleteBlock(index)"><span v-svg symbol="trash"></span></button>
+            </a17-buttonbar>
+          </div>
         </div>
       </div>
     </draggable>
@@ -39,7 +40,7 @@
     mixins: [draggableMixin],
     data: function () {
       return {
-        handle: '.editorPreview__handle' // Drag handle override
+        handle: '.editorPreview__dragger' // Drag handle override
       }
     },
     computed: {
@@ -182,26 +183,38 @@
     }
   }
 
-  .editorPreview__actions {
+  .editorPreview__header {
     display:none;
   }
 
   .editorPreview__item {
-    min-height:10px + 20px + 20px + 1px;
-    border:1px dashed $color__background;
-    border-radius:2px;
+    min-height:80px;
     position:relative;
-  }
+    margin-bottom:1px;
 
-  .editorPreview__item--active {
-    border-color:$color__text;
-  }
-
-  .editorPreview__item:hover,
-  .editorPreview__item--active  {
-    .editorPreview__actions {
-      display:block;
+    &::after {
+      content:'';
+      border-radius:2px;
+      position:absolute;
+      top:0;
+      right:0;
+      left:0;
+      bottom:0;
+      border:1px solid $color__border;
+      z-index:0;
+      opacity:0;
     }
+  }
+
+  .editorPreview__item:hover::after {
+    border-color:$color__border;
+    opacity:1;
+  }
+
+  .editorPreview__item--active::after,
+  .editorPreview__item--active:hover::after {
+    border-color:$color_editor--active;
+    opacity:1;
   }
 
   .editorPreview__protector {
@@ -210,12 +223,33 @@
     right:0;
     top:0;
     bottom:0;
-    cursor:pointer;
+    cursor:move;
+    z-index:1;
   }
 
-  .editorPreview__actions {
+  .editorPreview__header {
     position:absolute;
-    right:5px;
-    top:5px;
+    top:20px;
+    right:20px;
+    padding:0;
+    display:none;
+    background-clip: padding-box;
+    z-index:2;
+  }
+
+  .editorPreview__handle {
+    position:absolute;
+    height:10px;
+    width:40px;
+    left:50%;
+    top:50%;
+    margin-left:-20px;
+    margin-top:-5px;
+    @include dragGrid($color__drag, $color__block-bg);
+  }
+
+  .editorPreview__item:hover .editorPreview__header,
+  .editorPreview__item--active .editorPreview__header {
+    display:flex;
   }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="editorIframe" >
     <div class="editorIframe__empty" v-if="preview === ''">
-      {{ title }} &mdash; No preview available
+      {{ title }}
     </div>
     <iframe :srcdoc="preview" ref="frame" @load="loadedPreview"></iframe>
   </div>
@@ -66,6 +66,8 @@
     flex-wrap:no-wrap;
     align-items: center;
     justify-content: center;
-    color:$color__fborder;
+    color:rgba($color__text, 0.5);
+    background-color:rgba($color_editor--active, 0.05);
+    border:1px solid rgba($color_editor--active, 0.5);
   }
 </style>
