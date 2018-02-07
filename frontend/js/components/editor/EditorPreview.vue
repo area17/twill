@@ -1,10 +1,10 @@
 <template>
-  <div class="editorPreview">
+  <div class="editorPreview" @mousedown="unselectBlock">
     <div class="editorPreview__empty" v-if="!blocks.length">
       <b>Add content</b>
     </div>
     <draggable class="editorPreview__content" v-model="blocks" :options="{ group: 'editorBlocks', handle: handle }" @add="onAdd" @update="onUpdate">
-      <div class="editorPreview__item" :class="{ 'editorPreview__item--active' : isBlockActive(block.id) }" v-for="(block, index) in blocks" :key="block.id" >
+      <div class="editorPreview__item" :class="{ 'editorPreview__item--active' : isBlockActive(block.id) }" v-for="(block, index) in blocks" :key="block.id" @mousedown.stop >
         <div class="editorPreview__frame" tabindex="0" @click="selectBlock(index)">
           <a17-editor-iframe :block="block" @loaded="resizeIframe"></a17-editor-iframe>
         </div>
@@ -101,6 +101,9 @@
       },
       selectBlock: function (index) {
         this.$emit('select', index)
+      },
+      unselectBlock: function () {
+        this.$emit('unselect')
       },
       resizeIframe: function (iframe) {
         const frameBody = iframe.contentWindow.document.body

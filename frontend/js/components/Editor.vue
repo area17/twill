@@ -167,6 +167,8 @@
         }
       },
       unselectBlock: function () {
+        if (!this.hasBlockActive) return
+
         this.unSubscribe()
 
         this.$store.commit('activateBlock', -1)
