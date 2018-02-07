@@ -20,7 +20,7 @@
                         @partialView(($moduleName ?? null), 'navigation._user')
                     </div>
                     <div class="header__search" id="searchApp" v-cloak>
-                        <a17-search></a17-search>
+                        <a17-search endpoint="http://www.mocky.io/v2/5a7b81d43000004b0028bf3d"></a17-search>
                     </div>
                 </div>
             </header>

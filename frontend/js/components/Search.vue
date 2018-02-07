@@ -4,17 +4,35 @@
       <span v-svg symbol="search" v-show="!open"></span>
       <span v-svg symbol="close_modal" v-show="open"></span>
     </a17-button>
-    <transition name="search-fade">
+    <transition name="search-fade" @after-enter="afterAnimate">
       <div class="search__overlay" v-show="open">
         <div class="container search__container">
-          <input type="search" class="form__input search__input" name="search" :value="searchValue" :placeholder="placeholder" @input="onSearchInput" />
-          <span v-svg symbol="search"></span>
+          <div class="search__input">
+            <input type="search" ref="search" class="form__input" name="search" autocomplete="off" :placeholder="placeholder" @input="onSearchInput" />
+            <span v-svg symbol="search"></span>
+          </div>
           <div class="search__results" v-show="searchValue">
             <ul>
-              <li class="search__results__item" v-for="(result, index) in searchResults" :key="result">
-                {{result}}
+              <li v-for="(item, index) in searchResults" :key="item.id">
+                <a :href="item.href" class="search__result">
+                  <div class="search__cell search__cell--thumb">
+                    <figure class="search__result__thumb">
+                      <img :src="item.thumbnail" />
+                    </figure>
+                  </div>
+                  <div class="search__cell search__cell--pubstate">
+                    <span class="search__result__pubstate" :class="{'search__result__pubstate--live': item.published }"></span>
+                  </div>
+                  <div class="search__cell">
+                    <span class="search__result__title">{{ item.title }}</span>
+                    <p class="f--note">
+                      {{ item.activity }} <timeago :auto-update="1" :since="new Date(item.date)"></timeago> by {{ item.author }}
+                      <span class="search__result__type">{{ item.type }}</span>
+                    </p>
+                  </div>
+                </a>
               </li>
-              <li class="search__results__no-result" v-show="searchValue && !searchResults.length">
+              <li class="search__results__no-result" v-show="searchValue && !searchResults.length && !loading">
                 No results found.
               </li>
             </ul>
@@ -26,6 +44,7 @@
 </template>
 
 <script>
+  import debounce from 'lodash/debounce'
   const html = document.documentElement
   let htmlClasses = ['s--search', 's--overlay']
 
@@ -36,35 +55,77 @@
         type: String,
         default: 'Search everything…'
       },
-      initialSearchValue: {
+      endpoint: {
         type: String,
-        default: ''
+        default: null
       }
     },
     data: function () {
       return {
         open: false,
-        searchValue: this.initialSearchValue,
+        searchValue: null,
+        loading: false,
         searchResults: []
       }
     },
     watch: {
-      initialSearchValue: function () {
-        this.searchValue = this.initialSearchValue
-      }
     },
     computed: {
     },
     methods: {
+      afterAnimate: function () {
+        this.$refs.search.focus()
+      },
       toggleSearch: function () {
         this.open = !this.open
         htmlClasses.forEach((klass) => {
           html.classList.toggle(klass)
         })
+        if (this.open) {
+          document.addEventListener('keydown', this.handleKeyDown, false)
+        } else {
+          this.$refs.search.blur()
+          document.removeEventListener('keydown', this.handleKeyDown, false)
+        }
       },
-      onSearchInput: function (event) {
+      handleKeyDown: function (event) {
+        switch (event.keyCode) {
+          case 27:
+            /* esc key */
+            this.toggleSearch()
+            break
+          case 38:
+            /* arrow up */
+            console.log('up')
+            break
+          case 40:
+            /* arrow down */
+            console.log('down')
+            break
+        }
+      },
+      fetchSearchResults: function () {
+        let self = this
+        let data = {
+          'search': this.searchValue
+        }
+
+        this.$http.get(this.endpoint, { params: data }).then(function (resp) {
+          self.searchResults = resp.data
+          self.loading = false
+        }, function (resp) {
+          // handle error
+          self.loading = false
+          console.log('error')
+        })
+      },
+      onSearchInput: debounce(function (event) {
         this.searchValue = event.target.value
-      }
+        this.loading = true
+        if (this.searchValue && this.searchValue !== '') {
+          this.fetchSearchResults()
+        }
+      }, 300)
     }
   }
 </script>
@@ -120,23 +181,27 @@
     padding-top: 40px;
   }
 
-  .form__input.search__input {
-    display: block;
-    padding-left: 45px;
-    color: $color__text;
-    border: 0;
-    box-shadow: none;
-    font-size: 17px;
-    line-height: 46px;
-    @include placeholder() {
-      color: $color__text--light;
+  .search__input {
+    position: relative;
+
+    .form__input {
+      display: block;
+      padding-left: 45px;
+      color: $color__text;
+      border: 0;
+      box-shadow: none;
+      font-size: 17px;
+      line-height: 46px;
+      @include placeholder() {
+        color: $color__text--light;
+      }
     }
   }
 
   .search__container .icon--search {
     position: absolute;
-    top: 53px;
-    left: 65px;
+    top: 13px;
+    left: 15px;
     width: 24px;
     height: 24px;
     color: $color__overlay--header;
@@ -154,21 +219,8 @@
     max-height: ($itemHeight * 3);
     background: $color__background;
     border-radius: 2px;
+    box-shadow: 0 0 2px rgba($color__overlay--header, 0.3);
     overflow: auto;
-  }
-
-  .search__results__item {
-    height: $itemHeight;
-    border-bottom: 1px solid $color__border--light;
-    cursor: pointer;
-
-    &:last-child {
-      border-bottom: 0;
-    }
-
-    &:hover {
-      background: $color__ultralight;
-    }
   }
 
   .search__results__no-result {
@@ -177,5 +229,77 @@
     background: $color__border;
     border-radius: 2px;
     line-height: 70px;
+  }
+
+  .search__result {
+    display: flex;
+    min-height: $itemHeight;
+    padding: 20px;
+    border-bottom: 1px solid $color__border--light;
+    cursor: pointer;
+    flex-direction: row;
+    justify-content: flex-start;
+    outline: none;
+
+    li:last-child & {
+      border-bottom: 0;
+    }
+
+    &:hover,
+    &:focus {
+      background: $color__verylight;
+    }
+  }
+
+  .search__cell {
+    vertical-align: top;
+    padding-top: 4px;
+  }
+
+  .search__cell--thumb {
+    width: 50px;
+    padding-top: 0;
+  }
+
+  .search__cell--pubstate {
+    width: 38px;
+    padding: 10px 15px;
+  }
+
+  .search__result__title {
+    color: $color__link;
+    margin-bottom: 5px;
+  }
+
+  .search__result__type {
+    &::before {
+      content: "•";
+      display: inline;
+      padding: 0 8px 0 5px;
+      font-size: 11px;
+      position: relative;
+      top: -2px;
+    }
+  }
+
+  .search__result__thumb {
+    img {
+      display: block;
+      width: 50px;
+      min-height: 50px;
+      background: $color__border--light;
+    }
+  }
+
+  .search__result__pubstate {
+    border-radius: 50%;
+    height: 9px;
+    width: 9px;
+    display: block;
+    background: $color__fborder;
+  }
+
+  .search__result__pubstate--live {
+    background: $color__publish;
   }
 </style>
