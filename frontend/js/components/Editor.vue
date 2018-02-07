@@ -212,7 +212,7 @@
   .editor__sidebar {
     background:$color__border--light;
     width:30vw;
-    min-width:320px;
+    min-width:400px;
   }
 
   .editor__resizer {
