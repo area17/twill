@@ -8,7 +8,7 @@
             <a17-editorsidebar @delete="deleteBlock" @save="saveBlock" @cancel="cancelBlock">Add Content</a17-editorsidebar>
           </div>
           <div class="editor__resizer" @mousedown="resize"><span></span></div>
-          <div class="editor__preview">
+          <div class="editor__preview" :style="previewStyle">
             <a17-editorpreview ref="previews" @select="selectBlock" @delete="deleteBlock" @unselect="unselectBlock" @add="addBlock">Preview</a17-editorpreview>
           </div>
         </div>
@@ -33,6 +33,12 @@
       'a17-editorsidebar': A17EditorSidebar,
       'a17-editorpreview': A17EditorPreview
     },
+    props: {
+      bgColor: {
+        type: String,
+        default: '#FFFFFF'
+      }
+    },
     data: function () {
       return {
         unSubscribe: function () {
@@ -51,6 +57,11 @@
       },
       hasBlockActive: function () {
         return Object.keys(this.activeBlock).length > 0
+      },
+      previewStyle: function () {
+        return {
+          'background-color': this.bgColor
+        }
       },
       ...mapState({
         activeBlock: state => state.content.active,

@@ -148,6 +148,7 @@
   @import '~styles/setup/_mixins-colors-vars.scss';
 
   .editorPreview {
+    background-color:inherit;
   }
 
   .editorPreview__content {
@@ -158,6 +159,7 @@
     left:0;
     padding:20px;
     overflow-y: scroll;
+    background-color:inherit;
   }
 
   .editorPreview__empty {
@@ -170,6 +172,7 @@
     align-items: center;
     justify-content: center;
     color:$color__fborder;
+    background-color:inherit;
 
     &::after {
       display:block;
@@ -183,8 +186,8 @@
     }
   }
 
-  .editorPreview__header {
-    display:none;
+  .editorPreview__empty + .editorPreview__content {
+    background-color: transparent;
   }
 
   .editorPreview__item {
