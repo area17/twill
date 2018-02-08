@@ -96,7 +96,7 @@
 
 @mixin bordered($color: $color__text , $color--hover: $color__text, $pos: 98%) {
 
-  $color--opacity: rgba($color, 0.75);
+  $color--opacity: rgba($color, 0.5);
 
   text-decoration: none;
   background-image: linear-gradient(to bottom, #{$color--opacity} 75%, #{$color--opacity} 75%);

@@ -4,14 +4,14 @@
       <b>Add content</b>
     </div>
     <draggable class="editorPreview__content" v-model="blocks" :options="{ group: 'editorBlocks', handle: handle }" @add="onAdd" @update="onUpdate">
-      <div class="editorPreview__item" :class="{ 'editorPreview__item--active' : isBlockActive(block.id) }" v-for="(block, index) in blocks" :key="block.id" @mousedown.stop >
+      <div class="editorPreview__item" :class="{ 'editorPreview__item--active' : isBlockActive(block.id), 'editorPreview__item--hover' : activeItem === index }" v-for="(block, index) in blocks" :key="block.id" @mousedown.stop >
         <div class="editorPreview__frame" tabindex="0" @click="selectBlock(index)">
           <a17-editor-iframe :block="block" @loaded="resizeIframe"></a17-editor-iframe>
         </div>
         <div class="editorPreview__protector editorPreview__dragger" @click="selectBlock(index)"></div>
         <div class="editorPreview__header">
           <a17-buttonbar variant="visible">
-            <a17-dropdown class="f--small" position="bottom-left" :ref="moveDropdown(index)" v-if="blocks.length > 1">
+            <a17-dropdown class="f--small" position="bottom-left" :ref="moveDropdown(index)" v-if="blocks.length > 1" @open="activeItem = index" @close="activeItem = -1">
               <button type="button" @click="toggleDropdown(index)"><span v-svg symbol="drag"></span></button>
               <div slot="dropdown__content">
                 <button type="button" v-for="n in blocks.length" @click="moveBlock(index, n - 1)">{{ n }}</button>
@@ -43,6 +43,7 @@
     mixins: [draggableMixin],
     data: function () {
       return {
+        activeItem: -1,
         handle: '.editorPreview__dragger' // Drag handle override
       }
     },
@@ -217,6 +218,7 @@
     min-height:80px;
     position:relative;
     margin-bottom:1px;
+    z-index:1;
 
     &::after {
       content:'';
@@ -235,6 +237,10 @@
   .editorPreview__item:hover::after {
     border-color:$color__border;
     opacity:1;
+  }
+
+  .editorPreview__item--hover {
+    z-index:2;
   }
 
   .editorPreview__item--active::after,
@@ -275,7 +281,8 @@
   }
 
   .editorPreview__item:hover .editorPreview__header,
-  .editorPreview__item--active .editorPreview__header {
+  .editorPreview__item--active .editorPreview__header,
+  .editorPreview__item--hover .editorPreview__header {
     display:flex;
   }
 </style>

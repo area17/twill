@@ -22,7 +22,7 @@
           this.variant ? `buttonbar--${this.variant}` : ''
         ]
       }
-    },
+    }
   }
 </script>
 
@@ -61,17 +61,6 @@
       justify-content: center;
       border-radius:0;
 
-      &:first-child {
-        border-top-left-radius: $border__radius;
-        border-bottom-left-radius: $border__radius;
-      }
-
-      &:last-child {
-        border-top-right-radius: $border__radius;
-        border-bottom-right-radius: $border__radius;
-        border-right:0 none;
-      }
-
       .icon {
         color:$color__icons;
         display: block;
@@ -85,6 +74,21 @@
           color:$color__text;
         }
       }
+    }
+
+    > a:first-child,
+    /deep/ > .dropdown:first-child > button,
+    > button:first-child {
+      border-top-left-radius: $border__radius;
+      border-bottom-left-radius: $border__radius;
+    }
+
+    > a:last-child,
+    /deep/ > .dropdown:last-child > button,
+    > button:last-child {
+      border-top-right-radius: $border__radius;
+      border-bottom-right-radius: $border__radius;
+      border-right:0 none;
     }
 
     &:hover {

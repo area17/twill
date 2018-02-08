@@ -12,6 +12,10 @@
               <button type="button" @click="deleteBlock(index)">Delete</button>
               <button type="button" @click="duplicateBlock(index)">Duplicate</button>
             </div>
+            <div slot="dropdown-move">
+              TOTO
+              <button type="button"  v-for="n in blocks.length" @click="moveBlock(index, n - 1)">{{ n }}</button>
+            </div>
           </a17-block>
         </div>
       </transition-group>
@@ -91,6 +95,14 @@
         const dropdownId = this.addDropdownId(index)
         const dropdown = this.$refs[dropdownId][0]
         if (dropdown) dropdown.toggle()
+      },
+      moveBlock: function (oldIndex, newIndex) {
+        if (oldIndex !== newIndex) {
+          this.$store.commit('moveBlock', {
+            oldIndex: oldIndex,
+            newIndex: newIndex
+          })
+        }
       },
       addBlock: function (block, fromIndex) {
         this.opened = true

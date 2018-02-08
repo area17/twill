@@ -168,6 +168,12 @@
     cursor: pointer;
   }
 
+  .editorSidebar__counter:hover,
+  .dropdown--active .editorSidebar__counter {
+    color:$color__text;
+    border-color:$color__text--light;
+  }
+
   h4,
   .editorSidebar__blockTitle {
     font-weight:600;

@@ -2,8 +2,15 @@
   <div class="block" :class="blockClasses">
     <div class="block__header">
       <span class="block__handle"></span>
-      <div class="block__toggle" @dblclick.prevent="toggleExpand()">
-        <span class="block__counter f--tiny">{{ index + 1 }}</span><span class="block__title">{{ block.title }}</span>
+      <div class="block__toggle">
+        <a17-dropdown class="f--small" position="bottom-left" :ref="moveDropdown" v-if="withMoveDropdown">
+          <span class="block__counter f--tiny" @click="toggleDropdown">{{ index + 1 }}</span>
+          <div slot="dropdown__content">
+            <slot name="dropdown-move"></slot>
+          </div>
+        </a17-dropdown>
+        <span class="block__counter f--tiny" v-else>{{ index + 1 }}</span>
+        <span class="block__title" @dblclick.prevent="toggleExpand()">{{ block.title }}</span>
       </div>
       <div class="block__actions">
         <slot name="block-actions"></slot>
@@ -63,6 +70,7 @@
       return {
         visible: true,
         hover: false,
+        withMoveDropdown: true,
         withAddDropdown: true
       }
     },
@@ -91,6 +99,13 @@
       }
     },
     methods: {
+      toggleDropdown: function () {
+        const ddName = this.moveDropdown(this.index)
+        if (this.$refs[ddName].length) this.$refs[ddName][0].toggle()
+      },
+      moveDropdown: function () {
+        return `moveBlock${this.index}Dropdown`
+      },
       toggleExpand: function () {
         this.visible = !this.visible
         this.$emit('expand', this.visible)
@@ -100,6 +115,7 @@
       }
     },
     beforeMount: function () {
+      if (!this.$slots['dropdown-move']) this.withMoveDropdown = false
       if (!this.$slots['dropdown-add']) this.withAddDropdown = false
     }
   }
@@ -159,7 +175,14 @@
     @include monospaced-figures('off'); // dont use monospaced figures here
     user-select: none;
     cursor: default;
-    margin-top:(50px - 26px) / 2
+    margin-top:(50px - 26px) / 2;
+    cursor: pointer;
+  }
+
+  .block__counter:hover,
+  .dropdown--active .block__counter {
+    color:$color__text;
+    border-color:$color__text--light;
   }
 
   .block__title {
@@ -171,6 +194,10 @@
 
   .block__toggle {
     flex-grow:1;
+
+    .dropdown {
+      display:inline-block;
+    }
   }
 
   .block__actions {
