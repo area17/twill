@@ -68,6 +68,6 @@
     justify-content: center;
     color:rgba($color__text, 0.5);
     background-color:rgba($color_editor--active, 0.05);
-    border:1px solid rgba($color_editor--active, 0.5);
+    border:1px solid rgba($color_editor--active, 0.33);
   }
 </style>

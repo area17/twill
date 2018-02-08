@@ -2,18 +2,29 @@
   <div class="editorSidebar">
     <div class="editorSidebar__item" v-for="(block, index) in blocks" :key="block.id" v-show="isBlockActive(block.id)">
       <div class="editorSidebar__title">
-        <span class="editorSidebar__blockTitle"><span class="editorSidebar__counter f--tiny">{{ index + 1 }}</span> {{ activeBlock.title }}</span><span><a href="#" @click.prevent="deleteBlock(index)" class="f--small f--note f--underlined">Delete</a></span>
+        <div class="editorSidebar__blockTitle">
+          <a17-dropdown ref="paginateDropdown" class="f--small" position="bottom-left" :ref="moveDropdown(index)" v-if="blocks.length > 1">
+            <span class="editorSidebar__counter f--tiny" @click="toggleDropdown(index)">{{ index + 1 }}</span>
+            <div slot="dropdown__content">
+              <button type="button" v-for="n in blocks.length" @click="moveBlock(index, n - 1)">{{ n }}</button>
+            </div>
+          </a17-dropdown>
+          <span class="editorSidebar__counter f--tiny" v-else>{{ index + 1 }}</span>{{ activeBlock.title }}
+        </div>
+        <span>
+          <a href="#" @click.prevent="deleteBlock(index)" class="f--small f--note f--underlined">Delete</a>
+        </span>
       </div>
       <div class="editorSidebar__body"><component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes"><!-- dynamic components --></component></div>
     </div>
-    <template v-if="!hasBlockActive">
+    <div class="editorSidebar__list" v-if="!hasBlockActive">
       <h4 class="editorSidebar__title"><slot></slot></h4>
       <draggable v-model="availableBlocks" :options="{ group: { name: 'editorBlocks',  pull: 'clone', put: false }, sort: false }" v-if="availableBlocks.length">
         <button class="editorSidebar__button" type="button" :data-title="availableBlock.title" :data-icon="availableBlock.icon" :data-component="availableBlock.component" v-for="(availableBlock, dropdownIndex) in availableBlocks" :key="availableBlock.component">
           <span v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}
         </button>
       </draggable>
-    </template>
+    </div>
     <template v-else>
       <div class="editorSidebar__actions">
         <a17-button variant="action" @click="saveBlock()">Done</a17-button>
@@ -50,6 +61,13 @@
       })
     },
     methods: {
+      toggleDropdown: function (index) {
+        const ddName = this.moveDropdown(index)
+        if (this.$refs[ddName].length) this.$refs[ddName][0].toggle()
+      },
+      moveDropdown: function (index) {
+        return `move${index}Dropdown`
+      },
       isBlockActive: function (id) {
         if (!this.hasBlockActive) return false
 
@@ -57,6 +75,14 @@
       },
       componentName: function (id) {
         return 'blocks[' + id + ']'
+      },
+      moveBlock: function (oldIndex, newIndex) {
+        if (oldIndex !== newIndex) {
+          this.$store.commit('moveBlock', {
+            oldIndex: oldIndex,
+            newIndex: newIndex
+          })
+        }
       },
       saveBlock: function () {
         this.$emit('save')
@@ -77,14 +103,20 @@
   @import '~styles/setup/_mixins-colors-vars.scss';
 
   .editorSidebar {
-    padding:20px 10px 20px 20px;
+    padding:20px 0 20px 0;
     height:100%;
     position:relative;
   }
 
-  .editorSidebar__item {
-    height: calc(100% + 20px - 80px);
+  .editorSidebar__item,
+  .editorSidebar__list {
+    padding:0 10px 0 20px;
     overflow-y: scroll;
+    height: calc(100% + 20px - 80px);
+  }
+
+  .editorSidebar__list {
+    height:100%;
   }
 
   .editorSidebar__title {
@@ -131,6 +163,10 @@
     cursor: default;
   }
 
+  .dropdown .editorSidebar__counter {
+    cursor: pointer;
+  }
+
   h4,
   .editorSidebar__blockTitle {
     font-weight:600;
@@ -138,6 +174,10 @@
 
   .editorSidebar__blockTitle {
     flex-grow:1;
+
+    .dropdown {
+      display:inline-block;
+    }
   }
 
   .editorSidebar__actions {

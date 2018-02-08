@@ -64,7 +64,7 @@
             <a17-spinner v-if="loading"></a17-spinner>
         </form>
     </div>
-    <a17-modal class="modal--browser" ref="browser" mode="medium">
+    <a17-modal class="modal--browser" ref="browser" mode="medium" :force-close="true">
         <a17-browser />
     </a17-modal>
     <a17-editor v-if="editor" ref="editor" bg-color="{{ $siteColor ?? '#FFFFFF' }}"></a17-editor>
