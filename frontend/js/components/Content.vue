@@ -12,10 +12,7 @@
               <button type="button" @click="deleteBlock(index)">Delete</button>
               <button type="button" @click="duplicateBlock(index)">Duplicate</button>
             </div>
-            <div slot="dropdown-move">
-              TOTO
-              <button type="button"  v-for="n in blocks.length" @click="moveBlock(index, n - 1)">{{ n }}</button>
-            </div>
+            <button type="button" slot="dropdown-numbers" v-for="n in blocks.length" @click="moveBlock(index, n - 1)">{{ n }}</button>
           </a17-block>
         </div>
       </transition-group>

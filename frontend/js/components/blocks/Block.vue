@@ -3,10 +3,10 @@
     <div class="block__header">
       <span class="block__handle"></span>
       <div class="block__toggle">
-        <a17-dropdown class="f--small" position="bottom-left" :ref="moveDropdown" v-if="withMoveDropdown">
-          <span class="block__counter f--tiny" @click="toggleDropdown">{{ index + 1 }}</span>
+        <a17-dropdown :ref="moveDropdown" class="f--small" position="bottom-left" v-if="withMoveDropdown">
+          <span class="block__counter f--tiny" @click="$refs[moveDropdown].toggle()">{{ index + 1 }}</span>
           <div slot="dropdown__content">
-            <slot name="dropdown-move"></slot>
+            <slot name="dropdown-numbers"></slot>
           </div>
         </a17-dropdown>
         <span class="block__counter f--tiny" v-else>{{ index + 1 }}</span>
@@ -83,6 +83,9 @@
           this.size ? `block--${this.size}` : ''
         ]
       },
+      moveDropdown: function () {
+        return `moveBlock${this.index}Dropdown`
+      },
       actionsDropdown: function () {
         return `action${this.block.id}Dropdown`
       },
@@ -99,13 +102,6 @@
       }
     },
     methods: {
-      toggleDropdown: function () {
-        const ddName = this.moveDropdown(this.index)
-        if (this.$refs[ddName].length) this.$refs[ddName][0].toggle()
-      },
-      moveDropdown: function () {
-        return `moveBlock${this.index}Dropdown`
-      },
       toggleExpand: function () {
         this.visible = !this.visible
         this.$emit('expand', this.visible)
@@ -115,7 +111,7 @@
       }
     },
     beforeMount: function () {
-      if (!this.$slots['dropdown-move']) this.withMoveDropdown = false
+      if (!this.$slots['dropdown-numbers']) this.withMoveDropdown = false
       if (!this.$slots['dropdown-add']) this.withAddDropdown = false
     }
   }

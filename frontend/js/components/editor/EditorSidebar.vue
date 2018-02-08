@@ -227,6 +227,11 @@
 
     &:hover {
       color:$color__text;
+      border-color:$color__border--focus;
+
+      .icon {
+        color:$color__text;
+      }
     }
   }
 </style>
