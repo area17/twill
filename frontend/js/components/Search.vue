@@ -8,7 +8,7 @@
       <div class="search__overlay" v-show="open">
         <div class="container search__container">
           <div class="search__input">
-            <input type="search" ref="search" class="form__input" name="search" autocomplete="off" :placeholder="placeholder" @input="onSearchInput" />
+            <input type="search" class="form__input" ref="search" name="search" autocomplete="off" :placeholder="placeholder" @input="onSearchInput" />
             <span v-svg symbol="search"></span>
           </div>
           <div class="search__results" v-show="searchValue">
@@ -25,12 +25,15 @@
                   </div>
                   <div class="search__cell">
                     <span class="search__result__title">{{ item.title }}</span>
-                    <p class="f--note">
+                    <p>
                       {{ item.activity }} <timeago :auto-update="1" :since="new Date(item.date)"></timeago> by {{ item.author }}
                       <span class="search__result__type">{{ item.type }}</span>
                     </p>
                   </div>
                 </a>
+              </li>
+              <li class="search__results__no-result" v-show="loading">
+                Loading…
               </li>
               <li class="search__results__no-result" v-show="searchValue && !searchResults.length && !loading">
                 No results found.
@@ -47,6 +50,8 @@
   import debounce from 'lodash/debounce'
   const html = document.documentElement
   let htmlClasses = ['s--search', 's--overlay']
+  let firstFocusableEl = document.querySelector('.header .header__title > a')
+  let lastFocusableEl
 
   export default {
     name: 'A17Search',
@@ -74,7 +79,8 @@
     },
     methods: {
       afterAnimate: function () {
-        this.$refs.search.focus()
+        lastFocusableEl = this.$refs.search
+        lastFocusableEl.focus()
       },
       toggleSearch: function () {
         this.open = !this.open
@@ -88,20 +94,41 @@
           document.removeEventListener('keydown', this.handleKeyDown, false)
         }
       },
+      handleFocusSwitch: function (e) {
+        if (e.shiftKey) {
+          // backwards
+          if (document.activeElement.isEqualNode(firstFocusableEl)) {
+            lastFocusableEl.focus()
+            e.preventDefault()
+          }
+        } else {
+          // onwards
+          if (document.activeElement.isEqualNode(lastFocusableEl)) {
+            firstFocusableEl.focus()
+            e.preventDefault()
+          }
+        }
+      },
       handleKeyDown: function (event) {
         switch (event.keyCode) {
+          case 9:
+            // tab
+            this.handleFocusSwitch(event)
+            break
           case 27:
-            /* esc key */
+            // esc
             this.toggleSearch()
             break
-          case 38:
-            /* arrow up */
-            console.log('up')
-            break
-          case 40:
-            /* arrow down */
-            console.log('down')
-            break
+        }
+      },
+      setLastFocusElement: function () {
+        let resultsLength = this.searchResults.length
+        if (resultsLength) {
+          setTimeout(function () {
+            lastFocusableEl = document.querySelectorAll('.search__result')[resultsLength - 1]
+          }, 1)
+        } else {
+          lastFocusableEl = this.$refs.search
         }
       },
       fetchSearchResults: function () {
@@ -113,10 +140,10 @@
         this.$http.get(this.endpoint, { params: data }).then(function (resp) {
           self.searchResults = resp.data
           self.loading = false
+          self.setLastFocusElement()
         }, function (resp) {
           // handle error
           self.loading = false
-          console.log('error')
         })
       },
       onSearchInput: debounce(function (event) {
@@ -124,6 +151,9 @@
         this.loading = true
         if (this.searchValue && this.searchValue !== '') {
           this.fetchSearchResults()
+        } else {
+          this.searchResults = []
+          this.setLastFocusElement()
         }
       }, 300)
     }
@@ -139,17 +169,18 @@
 
     .icon {
       position: relative;
-      top: 3px;
+      top: 2px;
       width: 20px;
       height: 20px;
       color: $color__text--light;
 
       &.icon--search {
-        top: 5px;
+        top: 4px;
       }
     }
 
-    &:hover .icon {
+    &:hover .icon,
+    &:focus .icon {
       color: $color__background;
     }
   }
@@ -267,8 +298,9 @@
   }
 
   .search__result__title {
-    color: $color__link;
+    display: inline-block;
     margin-bottom: 5px;
+    color: $color__link;
   }
 
   .search__result__type {

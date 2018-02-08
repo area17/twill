@@ -31,7 +31,7 @@ $height__nav: 60px;
 
   @each $name, $point in $breakpoints {
     @include breakpoint('#{$name}') {
-      margin-right: map-get($outer-gutters, $name);
+      margin-right: map-get($outer-gutters, $name) + 30px;
       margin-left: map-get($outer-gutters, $name);
     }
   }
