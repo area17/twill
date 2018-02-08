@@ -93,6 +93,7 @@
 </template>
 
 <script>
+  import randKeyMixin from '@/mixins/randKey'
   import InputMixin from '@/mixins/input'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
@@ -100,7 +101,7 @@
 
   export default {
     name: 'A17Textfield',
-    mixins: [InputMixin, InputframeMixin, LocaleMixin, FormStoreMixin],
+    mixins: [randKeyMixin, InputMixin, InputframeMixin, LocaleMixin, FormStoreMixin],
     props: {
       name: {
         type: String,
@@ -156,7 +157,6 @@
     },
     data: function () {
       return {
-        randKey: Date.now() + Math.floor(Math.random() * 9999),
         value: this.initialValue,
         beforeFocusValue: this.initialValue,
         focused: false,

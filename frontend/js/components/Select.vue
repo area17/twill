@@ -1,7 +1,7 @@
 <template>
-  <a17-inputframe :error="error" :note="note" :label="label" :locale="locale" @localize="updateLocale" :name="name" :required="required">
+  <a17-inputframe :error="error" :note="note" :label="label" :locale="locale" @localize="updateLocale" :name="name" :label-for="uniqId" :required="required">
     <span class="select__input" :class="selectClasses">
-      <select v-model="selectedValue" :name="name" :id="name" :disabled="disabled" :required="required" :readonly="readonly">
+      <select v-model="selectedValue" :name="name" :id="uniqId" :disabled="disabled" :required="required" :readonly="readonly">
         <option v-for="option in options" :value="option.value" v-html="option.label"></option>
       </select>
     </span>
@@ -9,6 +9,7 @@
 </template>
 
 <script>
+  import randKeyMixin from '@/mixins/randKey'
   import InputMixin from '@/mixins/input'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
@@ -16,7 +17,7 @@
 
   export default {
     name: 'A17Select',
-    mixins: [InputMixin, InputframeMixin, LocaleMixin, FormStoreMixin],
+    mixins: [randKeyMixin, InputMixin, InputframeMixin, LocaleMixin, FormStoreMixin],
     props: {
       size: {
         type: String,
@@ -35,6 +36,9 @@
       }
     },
     computed: {
+      uniqId: function (value) {
+        return this.name + '-' + this.randKey
+      },
       selectClasses: function () {
         return [
           this.size === 'small' ? 'select__input--small' : '',

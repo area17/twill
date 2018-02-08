@@ -1,8 +1,8 @@
 <template>
-  <a17-inputframe :error="error" :label="label" :note="note" :size="size" :name="name" :required="required">
+  <a17-inputframe :error="error" :label="label" :note="note" :size="size" :name="name" :label-for="uniqId" :required="required">
     <div class="vselect" :class="vselectClasses">
       <div class="vselect__field">
-        <input type="hidden" :name="name" :value="inputValue" />
+        <input type="hidden" :name="name" :id="uniqId" :value="inputValue" />
         <v-select
           :multiple="multiple"
           :placeholder="placeholder"
@@ -27,6 +27,7 @@
 
 <script>
   import debounce from 'lodash/debounce'
+  import randKeyMixin from '@/mixins/randKey'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
   import extendedVSelect from '@/components/VSelect/ExtendedVSelect.vue' // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
@@ -34,7 +35,7 @@
 
   export default {
     name: 'A17VSelect',
-    mixins: [InputframeMixin, FormStoreMixin],
+    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin],
     props: {
       placeholder: {
         type: String,
@@ -114,6 +115,9 @@
       }
     },
     computed: {
+      uniqId: function (value) {
+        return this.name + '-' + this.randKey
+      },
       inputValue: {
         get: function () {
           if (this.value) {
@@ -143,7 +147,7 @@
     },
     methods: {
       updateFromStore: function (newValue) { // called from the formStore mixin
-        this.value = newValue
+        this.inputValue = newValue
       },
       isAjax: function () {
         return this.ajaxUrl !== ''

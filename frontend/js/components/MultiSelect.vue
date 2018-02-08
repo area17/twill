@@ -16,18 +16,14 @@
 </template>
 
 <script>
+  import randKeyMixin from '@/mixins/randKey'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
   import CheckboxMixin from '@/mixins/checkboxes'
 
   export default {
     name: 'A17Multiselect',
-    mixins: [InputframeMixin, CheckboxMixin, FormStoreMixin],
-    data: function () {
-      return {
-        randKey: Date.now() + Math.floor(Math.random() * 9999) // Label for attributes need to be uniq in the page - we use a random key so the ids are uniqs for each time the component is used
-      }
-    },
+    mixins: [randKeyMixin, InputframeMixin, CheckboxMixin, FormStoreMixin],
     computed: {
       checkedValue: {
         get: function () {

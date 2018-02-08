@@ -13,12 +13,13 @@
 </template>
 
 <script>
+  import randKeyMixin from '@/mixins/randKey'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
 
   export default {
     name: 'A17Singleselect',
-    mixins: [InputframeMixin, FormStoreMixin],
+    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin],
     props: {
       name: {
         type: String,
@@ -37,8 +38,6 @@
     },
     data: function () {
       return {
-        randKey: Date.now() + Math.floor(Math.random() * 9999),
-        // Label for attributes need to be uniq in the page - we use a random key so the ids are uniqs for each time the component is used (even if name and value are the same)
         value: this.selected
       }
     },

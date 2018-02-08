@@ -6,8 +6,11 @@
 </template>
 
 <script>
+  import randKeyMixin from '@/mixins/randKey'
+
   export default {
     name: 'A17Radio',
+    mixins: [randKeyMixin],
     props: {
       customClass: {
         type: String,
@@ -34,8 +37,6 @@
     },
     data: function () {
       return {
-        randKey: Date.now() + Math.floor(Math.random() * 9999),
-        // Label for attributes need to be uniq in the page - we use a random key so the ids are uniqs for each time the component is used (even if name and value are the same)
         currentValue: this.initialValue
       }
     },
