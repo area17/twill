@@ -116,7 +116,7 @@
 
         this.$http.get(this.endpoint, { params: formdata }).then(function (resp) {
           // add items here
-          self.fullItems.push(...resp.data)
+          self.fullItems.push(...resp.data['data'])
 
           // re-listen for scroll position if height changed
           self.$nextTick(function () {

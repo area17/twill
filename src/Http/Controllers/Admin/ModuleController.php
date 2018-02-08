@@ -708,7 +708,7 @@ abstract class ModuleController extends Controller
         $items = $this->getBrowserItems($scopes);
         $data = $this->getBrowserTableData($items);
 
-        return array_replace_recursive($data, $this->indexData($this->request));
+        return array_replace_recursive(['data' => $data], $this->indexData($this->request));
     }
 
     protected function getBrowserTableData($items)
