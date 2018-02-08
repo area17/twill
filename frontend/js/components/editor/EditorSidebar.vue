@@ -171,7 +171,7 @@
   .editorSidebar__counter:hover,
   .dropdown--active .editorSidebar__counter {
     color:$color__text;
-    border-color:$color__text--light;
+    border-color:$color__text;
   }
 
   h4,

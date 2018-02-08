@@ -178,7 +178,7 @@
   .block__counter:hover,
   .dropdown--active .block__counter {
     color:$color__text;
-    border-color:$color__text--light;
+    border-color:$color__text;
   }
 
   .block__title {
