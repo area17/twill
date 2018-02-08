@@ -48,7 +48,10 @@
 
 <script>
   import debounce from 'lodash/debounce'
+  import axios from 'axios'
   const html = document.documentElement
+  let CancelToken = axios.CancelToken
+  let source = CancelToken.source()
   let htmlClasses = ['s--search', 's--overlay']
   let firstFocusableEl = document.querySelector('.header .header__title > a')
   let lastFocusableEl
@@ -137,18 +140,29 @@
           'search': this.searchValue
         }
 
-        this.$http.get(this.endpoint, { params: data }).then(function (resp) {
+        if (this.loading) {
+          source.cancel()
+          source = CancelToken.source()
+        } else {
+          this.loading = true
+        }
+
+        this.$http.get(this.endpoint, {
+          params: data,
+          cancelToken: source.token
+        }).then(function (resp) {
           self.searchResults = resp.data
           self.loading = false
           self.setLastFocusElement()
         }, function (resp) {
           // handle error
-          self.loading = false
+          if (!axios.isCancel(resp)) {
+            self.loading = false
+          }
         })
       },
       onSearchInput: debounce(function (event) {
         this.searchValue = event.target.value
-        this.loading = true
         if (this.searchValue && this.searchValue !== '') {
           this.fetchSearchResults()
         } else {
