@@ -32,7 +32,7 @@ class BlockRepository extends ModuleRepository
             return $blockConfig['component'] === $block['type'];
         });
 
-        $block['content'] = empty($block['content']) ? new \stdClass : $block['content'];
+        $block['content'] = empty($block['content']) ? new \stdClass : (object) $block['content'];
 
         if ($block['browsers']) {
             $browsers = collect($block['browsers'])->map(function ($items) {
