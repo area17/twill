@@ -10,12 +10,15 @@
         </div>
         <div class="editorPreview__protector editorPreview__dragger" @click="selectBlock(index)"></div>
         <div class="editorPreview__header">
-          <div class="editorPreview__actions">
-            <a17-buttonbar>
-              <button type="button" class="editorPreview__dragger"><span v-svg symbol="drag"></span></button>
-              <button type="button" @click="deleteBlock(index)"><span v-svg symbol="trash"></span></button>
-            </a17-buttonbar>
-          </div>
+          <a17-buttonbar variant="visible">
+            <a17-dropdown class="f--small" position="bottom-left" :ref="moveDropdown(index)" v-if="blocks.length > 1">
+              <button type="button" @click="toggleDropdown(index)"><span v-svg symbol="drag"></span></button>
+              <div slot="dropdown__content">
+                <button type="button" v-for="n in blocks.length" @click="moveBlock(index, n - 1)">{{ n }}</button>
+              </div>
+            </a17-dropdown>
+            <button type="button" @click="deleteBlock(index)"><span v-svg symbol="trash"></span></button>
+          </a17-buttonbar>
         </div>
       </div>
     </draggable>
@@ -60,6 +63,23 @@
       })
     },
     methods: {
+      toggleDropdown: function (index) {
+        if (this.blocks.length > 1) {
+          const ddName = this.moveDropdown(index)
+          if (this.$refs[ddName].length) this.$refs[ddName][0].toggle()
+        }
+      },
+      moveDropdown: function (index) {
+        return `movePreview${index}Dropdown`
+      },
+      moveBlock: function (oldIndex, newIndex) {
+        if (oldIndex !== newIndex) {
+          this.$store.commit('moveBlock', {
+            oldIndex: oldIndex,
+            newIndex: newIndex
+          })
+        }
+      },
       onAdd: function (evt) {
         const item = evt.item
         const block = {}

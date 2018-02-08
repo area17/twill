@@ -3,13 +3,12 @@
     <div class="editorSidebar__item" v-for="(block, index) in blocks" :key="block.id" v-show="isBlockActive(block.id)">
       <div class="editorSidebar__title">
         <div class="editorSidebar__blockTitle">
-          <a17-dropdown ref="paginateDropdown" class="f--small" position="bottom-left" :ref="moveDropdown(index)" v-if="blocks.length > 1">
+          <a17-dropdown class="f--small" position="bottom-left" :ref="moveDropdown(index)">
             <span class="editorSidebar__counter f--tiny" @click="toggleDropdown(index)">{{ index + 1 }}</span>
             <div slot="dropdown__content">
               <button type="button" v-for="n in blocks.length" @click="moveBlock(index, n - 1)">{{ n }}</button>
             </div>
-          </a17-dropdown>
-          <span class="editorSidebar__counter f--tiny" v-else>{{ index + 1 }}</span>{{ activeBlock.title }}
+          </a17-dropdown>{{ activeBlock.title }}
         </div>
         <span>
           <a href="#" @click.prevent="deleteBlock(index)" class="f--small f--note f--underlined">Delete</a>
@@ -62,8 +61,10 @@
     },
     methods: {
       toggleDropdown: function (index) {
-        const ddName = this.moveDropdown(index)
-        if (this.$refs[ddName].length) this.$refs[ddName][0].toggle()
+        if (this.blocks.length > 1) {
+          const ddName = this.moveDropdown(index)
+          if (this.$refs[ddName].length) this.$refs[ddName][0].toggle()
+        }
       },
       moveDropdown: function (index) {
         return `move${index}Dropdown`

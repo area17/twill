@@ -1,10 +1,28 @@
 <template>
-  <div class="buttonbar"><slot></slot></div>
+  <div :class="barClasses"><slot></slot></div>
 </template>
 
 <script>
   export default {
-    name: 'A17Buttonbar'
+    name: 'A17Buttonbar',
+    props: {
+      type: {
+        type: String,
+        default: 'button'
+      },
+      variant: {
+        type: String,
+        default: '' // visible
+      }
+    },
+    computed: {
+      barClasses: function () {
+        return [
+          `buttonbar`,
+          this.variant ? `buttonbar--${this.variant}` : ''
+        ]
+      }
+    },
   }
 </script>
 
@@ -23,6 +41,7 @@
     display:flex;
 
     > a,
+    /deep/ > .dropdown > button,
     > button {
       @include btn-reset;
       height:$toolbar__height - 2px;
@@ -71,6 +90,10 @@
     &:hover {
       border-color: $color__border--focus;
     }
+  }
+
+  .buttonbar--visible {
+    overflow:visible;
   }
 
 </style>
