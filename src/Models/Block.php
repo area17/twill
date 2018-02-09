@@ -25,6 +25,8 @@ class Block extends BaseModel
         'content' => 'array',
     ];
 
+    protected $with = ['medias'];
+
     public function blockable()
     {
         return $this->morphTo();
