@@ -18,7 +18,7 @@ const deepRemoveFromObj = (items, keys = ['id', 'children'], deep = 'children') 
       }
 
       if (prop === deep) {
-        deepRemoveFromObj(obj[prop])
+        obj[prop] = deepRemoveFromObj(obj[prop])
       }
     }
   })
@@ -240,14 +240,12 @@ const actions = {
     commit(types.UPDATE_DATATABLE_NESTED, data)
 
     const ids = deepRemoveFromObj(state.data)
-    // TODO: ids is here an array of object. Maybe api need an update on back
+
     api.reorder(ids, function (resp) {
       commit('setNotification', {message: resp.data.message, variant: resp.data.variant})
     })
   },
   setDatatableDatas ({commit, state, dispatch}, data) {
-    // TBD: Maybe, we can keep and reset the old state if we have and error
-    // reorder in store first
     commit(types.UPDATE_DATATABLE_DATA, data)
 
     const ids = data.map((row) => row.id)
