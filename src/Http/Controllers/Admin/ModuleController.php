@@ -505,9 +505,13 @@ abstract class ModuleController extends Controller
                 'deleted' => true,
             ] : []) + ($translated ? [
                 'languages' => $item->getActiveLanguages(),
-            ] : []) + $columnsData;
-
+            ] : []) + $columnsData + $this->indexItemData($item);
         })->toArray();
+    }
+
+    protected function indexItemData($item)
+    {
+        return [];
     }
 
     protected function getItemColumnData($item, $column)
