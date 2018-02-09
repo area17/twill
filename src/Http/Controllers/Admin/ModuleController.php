@@ -462,13 +462,18 @@ abstract class ModuleController extends Controller
 
     protected function getIndexItems($scopes = [], $forcePagination = false)
     {
-        return $this->repository->get(
+        return $this->transformIndexItems($this->repository->get(
             $this->indexWith,
             $scopes,
             $this->orderScope(),
             request('offset') ?? $this->perPage ?? 50,
             $forcePagination
-        );
+        ));
+    }
+
+    protected function transformIndexItems($items)
+    {
+        return $items;
     }
 
     protected function getIndexTableData($items)
