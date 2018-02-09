@@ -5,7 +5,7 @@
       <div class="editor__frame">
         <div class="editor__inner">
           <div class="editor__sidebar" ref="sidebar">
-            <a17-editorsidebar @delete="deleteBlock" @save="saveBlock" @cancel="cancelBlock">Add Content</a17-editorsidebar>
+            <a17-editorsidebar @delete="deleteBlock" @save="saveBlock" @cancel="cancelBlock">Add content</a17-editorsidebar>
           </div>
           <div class="editor__resizer" @mousedown="resize"><span></span></div>
           <div class="editor__preview" :style="previewStyle">
