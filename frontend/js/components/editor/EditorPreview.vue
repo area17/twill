@@ -1,7 +1,7 @@
 <template>
   <div class="editorPreview" @mousedown="unselectBlock">
     <div class="editorPreview__empty" v-if="!blocks.length">
-      <b>Add content</b>
+      <b>Drag and drop content from the left navigation</b>
     </div>
     <draggable class="editorPreview__content" v-model="blocks" :options="{ group: 'editorBlocks', handle: handle }" @add="onAdd" @update="onUpdate">
       <div class="editorPreview__item" :class="{ 'editorPreview__item--active' : isBlockActive(block.id), 'editorPreview__item--hover' : activeItem === index }" v-for="(block, index) in blocks" :key="block.id" @mousedown.stop >
@@ -208,6 +208,10 @@
       left:20px;
       border:1px dashed $color__fborder;
     }
+
+    > * {
+      padding:0 40px;
+    }
   }
 
   .editorPreview__empty + .editorPreview__content {
@@ -284,5 +288,13 @@
   .editorPreview__item--active .editorPreview__header,
   .editorPreview__item--hover .editorPreview__header {
     display:flex;
+  }
+
+  /* Dragged item */
+  .editorPreview__item.sortable-chosen {
+    opacity:1;
+  }
+  .editorPreview__item.sortable-ghost {
+    opacity:0.25;
   }
 </style>

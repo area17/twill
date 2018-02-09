@@ -78,9 +78,25 @@
     }
   }
 
+  /* small variant */
+
+  .input--small {
+    margin-top:16px;
+
+    .input__label {
+      margin-bottom:9px;
+      @include font-small;
+    }
+  }
+
+  /* Error variant */
   .input--error {
     > label {
       color:$color__error;
+
+      .input__lang {
+        background-color:$color__error;
+      }
     }
 
     .form__field,
@@ -89,6 +105,7 @@
     .v-select .dropdown-toggle {
       border-color:$color__error;
 
+      &.s--focus,
       &:hover,
       &:focus {
         border-color:$color__error;
@@ -100,16 +117,5 @@
     color:$color__error;
     margin-top:10px;
     display:block;
-  }
-
-  /* small variant */
-
-  .input--small {
-    margin-top:16px;
-
-    .input__label {
-      margin-bottom:9px;
-      @include font-small;
-    }
   }
 </style>
