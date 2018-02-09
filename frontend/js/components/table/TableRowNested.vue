@@ -93,7 +93,34 @@
             parentId: this.parentId,
             val: value
           }
-          this.$store.dispatch('setDatatableNestedDatas', data)
+
+          const isChangingParents = (this.items.length !== value.length)
+
+          console.warn('CHANGING CHILDS AND PARENTS ? ' + isChangingParents)
+          console.warn('setDatatableNestedDatas -------------------')
+          console.log('current items :')
+          console.log(this.items)
+          console.log('new items :')
+          console.log(value)
+
+          this.$store.commit('setDatatableNestedDatas', data)
+
+          // Proof of concepts
+          if (isChangingParents) {
+            movingSequence++
+
+            // 2 moves need to happen so we can save the new tree (1 move to remove from list and a second to add to a new list)
+            if (movingSequence === 2) {
+              movingSequence = 0
+              this.$store.dispatch('setDatatableNestedDatas', data)
+            }
+          } else {
+            // reorder rows
+            movingSequence = 0
+            this.$store.dispatch('setDatatableNestedDatas', data)
+          }
+
+          console.log('setDatatableNestedDatas -------------------')
         }
       },
       tdWidth: function () {

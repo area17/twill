@@ -40,7 +40,8 @@ const state = {
   sortDir: window.STORE.datatable.sortDir || 'asc',
   bulk: [],
   localStorageKey: window.STORE.datatable.localStorageKey || location.pathname,
-  loading: false
+  loading: false,
+  movingSequence: 0
 }
 
 // getters
@@ -237,7 +238,9 @@ const actions = {
     }
   },
   setDatatableNestedDatas ({commit, state, dispatch}, data) {
-    commit(types.UPDATE_DATATABLE_NESTED, data)
+    // commit(types.UPDATE_DATATABLE_NESTED, data)
+
+    console.log('setDatatableNestedDatas')
 
     const ids = deepRemoveFromObj(state.data)
 

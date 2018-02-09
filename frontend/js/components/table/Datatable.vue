@@ -159,8 +159,30 @@
           return this.$store.state.datatable.data
         },
         set (value) {
-          // reorder rows
+          console.warn('setDatatableDatas -------------------')
+          console.log('current items :')
+          console.log(this.rows)
+          console.log('new items :')
+          console.log(value)
           this.$store.dispatch('setDatatableDatas', value)
+          console.log('setDatatableDatas -------------------')
+
+          const isChangingParents = (this.rows.length !== value.length)
+
+          // Proof of concepts
+          if (isChangingParents) {
+            movingSequence++
+
+            // 2 moves need to happen so we can save the new tree (1 move to remove from list and a second to add to a new list)
+            if (movingSequence === 2) {
+              movingSequence = 0
+              this.$store.dispatch('setDatatableDatas', value)
+            }
+          } else {
+            // reorder rows
+            movingSequence = 0
+            this.$store.dispatch('setDatatableDatas', value)
+          }
         }
       },
       checkboxesColumns: function () {
