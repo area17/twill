@@ -1,7 +1,7 @@
 <template>
   <a17-overlay ref="overlay" title="Content editor" @close="closeEditor" @open="openEditor">
     <div class="editor">
-      <a17-button class="editor__leave" variant="editor" size="small" @click="openPreview"><span v-svg symbol="preview"></span>Preview</a17-button>
+      <a17-button class="editor__leave" variant="editor" size="small" @click="openPreview" v-if="revisions.length"><span v-svg symbol="preview"></span>Preview</a17-button>
       <div class="editor__frame">
         <div class="editor__inner">
           <div class="editor__sidebar" ref="sidebar">
@@ -66,7 +66,8 @@
       ...mapState({
         activeBlock: state => state.content.active,
         savedBlocks: state => state.content.blocks,
-        availableBlocks: state => state.content.available
+        availableBlocks: state => state.content.available,
+        revisions: state => state.revision.all
       })
     },
     methods: {
