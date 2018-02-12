@@ -27,7 +27,7 @@
                         </a17-button>
                         <transition name="header__search-fade" @after-enter="afterAnimate">
                           <div class="header__search__overlay" v-show="open">
-                            <a17-search endpoint="http://www.mocky.io/v2/5a7b81d43000004b0028bf3d" :open="open" :opened="opened" :type="header"></a17-search>
+                            <a17-search endpoint="http://www.mocky.io/v2/5a7b81d43000004b0028bf3d" :open="open" :opened="opened"></a17-search>
                           </div>
                         </transition>
                       </div>

@@ -162,14 +162,14 @@
       onSearchInput: debounce(function (event) {
         this.searchValue = event.target.value
         if (this.searchValue && this.searchValue !== '') {
-          if (this.type === 'dasboard') {
+          if (this.type === 'dashboard') {
             htmlClasses.forEach((klass) => {
               html.classList.add(klass)
             })
           }
           this.fetchSearchResults()
         } else {
-          if (this.type === 'dasboard') {
+          if (this.type === 'dashboard') {
             htmlClasses.forEach((klass) => {
               html.classList.remove(klass)
             })
