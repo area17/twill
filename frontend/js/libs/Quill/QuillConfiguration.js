@@ -82,6 +82,31 @@ class MyLink extends Link {
 
     return node
   }
+
+  format (name, value) {
+    super.format(name, value)
+
+    if (name !== this.statics.blotName || !value) {
+      return
+    }
+
+    // relative urls wont have target blank
+    const urlPattern = /^((http|https|ftp):\/\/)/
+    if (!urlPattern.test(value)) {
+      this.domNode.removeAttribute('target')
+      return
+    }
+
+    // url starting with the front-end base url wont have target blank
+    if (window.STORE.form.baseUrl) {
+      if (value.startsWith(window.STORE.form.baseUrl)) {
+        this.domNode.removeAttribute('target')
+        return
+      }
+    }
+
+    this.domNode.setAttribute('target', '_blank')
+  }
 }
 
 Quill.register(MyLink)
