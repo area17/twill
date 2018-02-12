@@ -80,6 +80,11 @@
         default: 1
       }
     },
+    data: function () {
+      return {
+        nested: true
+      }
+    },
     computed: {
       draggable () {
         return this.columns.find((col) => col.name === 'draggable')
@@ -93,7 +98,10 @@
             parentId: this.parentId,
             val: value
           }
-          this.$store.dispatch('setDatatableNestedDatas', data)
+          const isChangingParents = (this.items.length !== value.length)
+
+          this.$store.commit('updateDatatableNestedDatas', data)
+          this.saveNewTree(isChangingParents)
         }
       },
       tdWidth: function () {

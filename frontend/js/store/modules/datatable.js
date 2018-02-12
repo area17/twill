@@ -40,7 +40,8 @@ const state = {
   sortDir: window.STORE.datatable.sortDir || 'asc',
   bulk: [],
   localStorageKey: window.STORE.datatable.localStorageKey || location.pathname,
-  loading: false
+  loading: false,
+  updateTracker: 0
 }
 
 // getters
@@ -212,6 +213,9 @@ const mutations = {
     getObject(state.data, data.parentId, (item) => {
       item.children = data.val
     })
+  },
+  [types.UPDATE_DATATABLE_TRACKER] (state, newTracker) {
+    state.updateTracker = newTracker ? state.updateTracker + 1 : 0
   }
 }
 
@@ -236,19 +240,15 @@ const actions = {
       })
     }
   },
-  setDatatableNestedDatas ({commit, state, dispatch}, data) {
-    commit(types.UPDATE_DATATABLE_NESTED, data)
-
+  setDatatableNestedDatas ({commit, state, dispatch}) {
+    // Get all ids and children ids if any
     const ids = deepRemoveFromObj(state.data)
-
     api.reorder(ids, function (resp) {
       commit('setNotification', {message: resp.data.message, variant: resp.data.variant})
     })
   },
-  setDatatableDatas ({commit, state, dispatch}, data) {
-    commit(types.UPDATE_DATATABLE_DATA, data)
-
-    const ids = data.map((row) => row.id)
+  setDatatableDatas ({commit, state, dispatch}) {
+    const ids = state.data.map((row) => row.id)
 
     api.reorder(ids, function (resp) {
       commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
