@@ -2,20 +2,61 @@ import Vue from 'vue'
 import * as types from '../mutation-types'
 
 const state = {
+  /**
+   * An object of all crops available for cropper component configuration
+   * @type {Object}
+   */
   crops: window.STORE.medias.crops || {},
+  /**
+   * Define types available in medias library
+   * @type {Array.<string>}
+   */
   types: window.STORE.medias.types || [],
+  /**
+   * Current type of media library
+   * @type {string}
+   */
   type: 'image',
+  /**
+   * Connector is used to save media by usage (eg. cover, image, profile...)
+   * @type {string}
+   */
   connector: null,
+  /**
+   * Define the max of medias that can be select from the media libray
+   * @type {number}
+   */
   max: 0,
+  /**
+   * Restrict the media library navigation between type
+   * @type {Boolean}
+   */
   strict: true,
+  /**
+   * An object of selected medias by usage (connector)
+   * @type {Object.<string,Object>}
+   */
   selected: window.STORE.medias.selected || {},
+  /**
+   * An array of current uploading medias. When upload is ended, array is reset
+   * @type {Array}
+   */
   loading: [],
+  /**
+   * The endpoint to get, add and validate tags on the fly (ajax)
+   * @type {string}
+   */
   tagsEndpoint: window.STORE.medias.tagsEndpoint || '',
+  /**
+   * An Object to configure FineUploader
+   * @type {Object}
+   * @see https://docs.fineuploader.com/
+   */
   uploaderConfig: window.STORE.medias.uploaderConfig || {}
 }
 
 // getters
-const getters = { }
+const getters = {}
 
 const mutations = {
   [types.UPDATE_MEDIA_TYPE_TOTAL] (state, type) {
