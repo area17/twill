@@ -1,64 +1,61 @@
 <template>
-  <div class="search">
-    <a17-button type="button" class="search__toggle" @click="toggleSearch">
-      <span v-svg symbol="search" v-show="!open"></span>
-      <span v-svg symbol="close_modal" v-show="open"></span>
-    </a17-button>
-    <transition name="search-fade" @after-enter="afterAnimate">
-      <div class="search__overlay" v-show="open">
-        <div class="container search__container">
-          <div class="search__input">
-            <input type="search" class="form__input" ref="search" name="search" autocomplete="off" :placeholder="placeholder" @input="onSearchInput" />
-            <span v-svg symbol="search"></span>
-          </div>
-          <div class="search__results" v-show="searchValue">
-            <ul>
-              <li v-for="(item, index) in searchResults" :key="item.id">
-                <a :href="item.href" class="search__result">
-                  <div class="search__cell search__cell--thumb">
-                    <figure class="search__result__thumb">
-                      <img :src="item.thumbnail" />
-                    </figure>
-                  </div>
-                  <div class="search__cell search__cell--pubstate">
-                    <span class="search__result__pubstate" :class="{'search__result__pubstate--live': item.published }"></span>
-                  </div>
-                  <div class="search__cell">
-                    <span class="search__result__title">{{ item.title }}</span>
-                    <p>
-                      {{ item.activity }} <timeago :auto-update="1" :since="new Date(item.date)"></timeago> by {{ item.author }}
-                      <span class="search__result__type">{{ item.type }}</span>
-                    </p>
-                  </div>
-                </a>
-              </li>
-              <li class="search__results__no-result" v-show="loading">
-                Loading…
-              </li>
-              <li class="search__results__no-result" v-show="searchValue && !searchResults.length && !loading">
-                No results found.
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </transition>
+  <div class="container search__container">
+    <div class="search__overlay" v-show="searchValue"></div>
+    <div class="search__input">
+      <input type="search" class="form__input" ref="search" name="search" autocomplete="off" :placeholder="placeholder" @input="onSearchInput" />
+      <span v-svg symbol="search"></span>
+    </div>
+    <div class="search__results" v-show="searchValue">
+      <ul>
+        <li v-for="(item, index) in searchResults" :key="item.id">
+          <a :href="item.href" class="search__result">
+            <div class="search__cell search__cell--thumb">
+              <figure class="search__result__thumb">
+                <img :src="item.thumbnail" />
+              </figure>
+            </div>
+            <div class="search__cell search__cell--pubstate">
+              <span class="search__result__pubstate" :class="{'search__result__pubstate--live': item.published }"></span>
+            </div>
+            <div class="search__cell">
+              <span class="search__result__title">{{ item.title }}</span>
+              <p class="f--note">
+                {{ item.activity }} <timeago :auto-update="1" :since="new Date(item.date)"></timeago> by {{ item.author }}
+                <span class="search__result__type">{{ item.type }}</span>
+              </p>
+            </div>
+          </a>
+        </li>
+        <li class="search__results__no-result" v-show="loading">
+          Loading…
+        </li>
+        <li class="search__results__no-result" v-show="searchValue && !searchResults.length && !loading">
+          No results found.
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
   import debounce from 'lodash/debounce'
   import axios from 'axios'
-  const html = document.documentElement
   let CancelToken = axios.CancelToken
   let source = CancelToken.source()
-  let htmlClasses = ['s--search', 's--overlay']
   let firstFocusableEl = document.querySelector('.header .header__title > a')
   let lastFocusableEl
 
   export default {
     name: 'A17Search',
     props: {
+      open: {
+        type: Boolean,
+        default: false
+      },
+      opened: {
+        type: Boolean,
+        default: false
+      },
       placeholder: {
         type: String,
         default: 'Search everything…'
@@ -70,58 +67,50 @@
     },
     data: function () {
       return {
-        open: false,
         searchValue: null,
         loading: false,
         searchResults: []
       }
     },
     watch: {
+      open: function () {
+        this.toggleSearch()
+      },
+      opened: function () {
+        if (this.opened) {
+          lastFocusableEl = this.$refs.search
+          lastFocusableEl.focus()
+        }
+      }
     },
     computed: {
     },
     methods: {
-      afterAnimate: function () {
-        lastFocusableEl = this.$refs.search
-        lastFocusableEl.focus()
-      },
       toggleSearch: function () {
-        this.open = !this.open
-        htmlClasses.forEach((klass) => {
-          html.classList.toggle(klass)
-        })
         if (this.open) {
           document.addEventListener('keydown', this.handleKeyDown, false)
         } else {
           this.$refs.search.blur()
+          this.searchResults = []
+          this.searchValue = null
           document.removeEventListener('keydown', this.handleKeyDown, false)
         }
       },
-      handleFocusSwitch: function (e) {
-        if (e.shiftKey) {
-          // backwards
-          if (document.activeElement.isEqualNode(firstFocusableEl)) {
-            lastFocusableEl.focus()
-            e.preventDefault()
-          }
-        } else {
-          // onwards
-          if (document.activeElement.isEqualNode(lastFocusableEl)) {
-            firstFocusableEl.focus()
-            e.preventDefault()
-          }
-        }
-      },
       handleKeyDown: function (event) {
-        switch (event.keyCode) {
-          case 9:
-            // tab
-            this.handleFocusSwitch(event)
-            break
-          case 27:
-            // esc
-            this.toggleSearch()
-            break
+        if (event.keyCode && event.keyCode === 9) {
+          if (event.shiftKey) {
+            // backwards
+            if (document.activeElement.isEqualNode(firstFocusableEl)) {
+              lastFocusableEl.focus()
+              event.preventDefault()
+            }
+          } else {
+            // onwards
+            if (document.activeElement.isEqualNode(lastFocusableEl)) {
+              firstFocusableEl.focus()
+              event.preventDefault()
+            }
+          }
         }
       },
       setLastFocusElement: function () {
@@ -177,57 +166,25 @@
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
 
-  .button.search__toggle {
-    padding-left: 26px;
-    padding-right: 0;
-
-    .icon {
-      position: relative;
-      top: 2px;
-      width: 20px;
-      height: 20px;
-      color: $color__text--light;
-
-      &.icon--search {
-        top: 4px;
-      }
-    }
-
-    &:hover .icon,
-    &:focus .icon {
-      color: $color__background;
-    }
+  .header__search .search__overlay {
+    display: none !important;
   }
 
-  .search__overlay {
-    position: fixed;
-    top: 60px;
-    left: 0;
-    width: 100vw;
-    height: calc(100vh - 60px);
-    background: rgba($color__overlay--header, 0.5);
-    z-index: $zindex__search;
-    opacity: 1;
-  }
-
-  .search-fade-enter-active,
-  .search-fade-leave-active {
-    transition: opacity 0.14s $bezier__bounce;
-  }
-
-  .search-fade-enter,
-  .search-fade-leave-to {
-    opacity: 0;
-  }
-
-  .search__container {
+  .header__search .search__container {
     display: block;
     position: relative;
     padding-top: 40px;
   }
 
+  .dashboard__search .search__container {
+    position: relative;
+    padding-bottom: 25px;
+    background: $color__overlay--header;
+  }
+
   .search__input {
     position: relative;
+    z-index: $zindex__search;
 
     .form__input {
       display: block;
@@ -268,6 +225,16 @@
     overflow: auto;
   }
 
+  .dashboard__search .search__results {
+    position: absolute;
+    z-index: $zindex__search;
+    @each $name, $point in $breakpoints {
+      @include breakpoint('#{$name}') {
+        width: calc(100% - #{map-get($outer-gutters, $name) * 2});
+      }
+    }
+  }
+
   .search__results__no-result {
     padding: 0 30px;
     height: 70px;
@@ -285,6 +252,7 @@
     flex-direction: row;
     justify-content: flex-start;
     outline: none;
+    text-decoration: none;
 
     li:last-child & {
       border-bottom: 0;

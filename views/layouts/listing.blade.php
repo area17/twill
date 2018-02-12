@@ -10,6 +10,21 @@
     $bulkEdit = $bulkEdit ?? true;
 @endphp
 
+@section('search')
+  <div class="header__search" id="searchApp" v-cloak>
+    <a17-button type="button" class="header__search__toggle" @click="toggleSearch">
+      <span v-svg symbol="search" v-show="!open"></span>
+      <span v-svg symbol="close_modal" v-show="open"></span>
+    </a17-button>
+    <transition name="header__search-fade" @after-enter="afterAnimate">
+      <div class="header__search__overlay" v-show="open">
+        <a17-search endpoint="http://www.mocky.io/v2/5a7b81d43000004b0028bf3d" :open="open" :opened="opened"></a17-search>
+      </div>
+    </transition>
+  </div>
+@stop
+
+
 @section('content')
     <div class="listing">
         <div class="listing__nav">

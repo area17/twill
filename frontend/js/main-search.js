@@ -9,6 +9,8 @@ Vue.use(A17Config)
 
 // components
 import a17Search from '@/components/Search.vue'
+const html = document.documentElement
+let htmlClasses = ['s--search', 's--overlay']
 
 const A17SearchApp = new Vue({
   el: '#searchApp',
@@ -17,17 +19,37 @@ const A17SearchApp = new Vue({
   },
   data: function () {
     return {
+      open: false,
+      opened: false
     }
   },
   computed: {
   },
   methods: {
+    afterAnimate: function () {
+      this.opened = true
+    },
+    toggleSearch: function () {
+      this.open = !this.open
+      htmlClasses.forEach((klass) => {
+        html.classList.toggle(klass)
+      })
+      if (this.open) {
+        document.addEventListener('keydown', this.handleKeyDown, false)
+      } else {
+        this.opened = false
+        document.removeEventListener('keydown', this.handleKeyDown, false)
+      }
+    },
+    handleKeyDown: function (event) {
+      if (event.keyCode && event.keyCode === 27) {
+        this.toggleSearch()
+      }
+    }
   },
   mounted: function () {
-    console.log(this.$el)
   },
   created: function () {
-    console.log('search created')
   }
 })
 

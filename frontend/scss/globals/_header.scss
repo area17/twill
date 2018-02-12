@@ -185,3 +185,57 @@ $height__nav: 60px;
     color:$color__background;
   }
 }
+
+.header__search[v-cloak] {
+  div {
+    display:none;
+  }
+}
+
+.header__search .button.header__search__toggle {
+  padding-left: 26px;
+  padding-right: 0;
+
+  .icon {
+    position: relative;
+    top: 2px;
+    width: 20px;
+    height: 20px;
+    color: $color__text--light;
+
+    &.icon--search {
+      top: 4px;
+    }
+  }
+
+  &:hover .icon,
+  &:focus .icon {
+    color: $color__background;
+  }
+}
+
+.header__search__overlay,
+.dashboard__search .search__overlay {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 60px);
+  background: rgba($color__overlay--header, 0.5);
+  z-index: $zindex__search;
+  opacity: 1;
+}
+
+.dashboard__search .search__overlay {
+  z-index: $zindex__search - 1;
+}
+
+.header__search-fade-enter-active,
+.header__search-fade-leave-active {
+  transition: opacity 0.14s $bezier__bounce;
+}
+
+.header__search-fade-enter,
+.header__search-fade-leave-to {
+  opacity: 0;
+}

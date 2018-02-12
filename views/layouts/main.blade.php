@@ -19,11 +19,10 @@
                     <div class="header__user" id="headerUser" v-cloak>
                         @partialView(($moduleName ?? null), 'navigation._user')
                     </div>
-                    <div class="header__search" id="searchApp" v-cloak>
-                        <a17-search endpoint="http://www.mocky.io/v2/5a7b81d43000004b0028bf3d"></a17-search>
-                    </div>
+                    @yield('search')
                 </div>
             </header>
+            @yield('searchDashboard')
             @partialView(($moduleName ?? null), 'navigation._primary_navigation')
             <section class="main">
                 <div class="app @yield('appTypeClass')" id="app" v-cloak>
