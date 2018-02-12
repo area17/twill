@@ -48,11 +48,33 @@ const mutations = {
         media.crops = {}
 
         for (let crop in crops) {
+          const ratio = crops[crop][0].ratio
+          const width = media.width
+          const height = media.height
+          const center = {
+            x: width / 2,
+            y: height / 2
+          }
+
+          let cropWidth = 0
+          let cropHeight = 0
+
+          if (ratio < 1) { // "portrait" crop
+            cropWidth = Math.floor(Math.min(height * ratio, width))
+            cropHeight = Math.floor(cropWidth / ratio)
+          } else { // "landscape" or square crop
+            cropHeight = Math.floor(Math.min(width / ratio, height))
+            cropWidth = Math.floor(cropHeight * ratio)
+          }
+
+          let x = Math.floor(center.x - cropWidth / 2)
+          let y = Math.floor(center.y - cropHeight / 2)
+
           media.crops[crop] = {
-            x: 0,
-            y: 0,
-            width: media.width,
-            height: media.height,
+            x: x,
+            y: y,
+            width: cropWidth,
+            height: cropHeight,
             name: crops[crop][0].name
           }
         }
