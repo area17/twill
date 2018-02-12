@@ -605,7 +605,7 @@ abstract class ModuleController extends Controller
         foreach ($this->indexColumns as $column) {
             $columnName = isset($column['relationship'])
             ? $column['relationship'] . ucfirst($column['field'])
-            : isset($column['nested']) ? $column['nested'] : $column['field'];
+            : (isset($column['nested']) ? $column['nested'] : $column['field']);
 
             array_push($tableColumns, [
                 'name' => $columnName,
