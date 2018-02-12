@@ -1,6 +1,7 @@
 @extends('cms-toolkit::layouts.main')
 
 @section('appTypeClass', 'app--form')
+@section('globalNavSearch', 'true')
 
 @php
     $permalink = $permalink ?? true;

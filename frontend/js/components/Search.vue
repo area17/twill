@@ -1,6 +1,6 @@
 <template>
   <div class="container search__container">
-    <div class="search__overlay" v-show="searchValue"></div>
+    <div class="search__overlay" v-show="searchValue" @click="toggleSearch"></div>
     <div class="search__input">
       <input type="search" class="form__input" ref="search" name="search" autocomplete="off" :placeholder="placeholder" @input="onSearchInput" />
       <span v-svg symbol="search"></span>
@@ -65,6 +65,10 @@
       endpoint: {
         type: String,
         default: null
+      },
+      type: {
+        type: String,
+        default: 'header'
       }
     },
     data: function () {
@@ -158,14 +162,14 @@
       onSearchInput: debounce(function (event) {
         this.searchValue = event.target.value
         if (this.searchValue && this.searchValue !== '') {
-          if (!html.classList.contains(htmlClasses[0]) || !html.classList.contains(htmlClasses[0])) {
+          if (this.type === 'dasboard') {
             htmlClasses.forEach((klass) => {
               html.classList.add(klass)
             })
           }
           this.fetchSearchResults()
         } else {
-          if (!this.open) {
+          if (this.type === 'dasboard') {
             htmlClasses.forEach((klass) => {
               html.classList.remove(klass)
             })
