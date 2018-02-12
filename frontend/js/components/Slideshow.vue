@@ -110,7 +110,7 @@
     display: block;
     border-radius: 2px;
     border: 1px solid $color__border;
-    overflow-x: hidden;
+    /*overflow-x: hidden;*/
     background:$color__background;
   }
 
