@@ -38,6 +38,26 @@ const mutations = {
   },
   [types.SAVE_MEDIAS] (state, medias) {
     if (state.connector) {
+      // init crop values
+      const crops = state.crops[state.connector]
+      medias.forEach((media) => {
+        if (media.hasOwnProperty('crops')) {
+          return
+        }
+
+        media.crops = {}
+
+        for (let crop in crops) {
+          media.crops[crop] = {
+            x: 0,
+            y: 0,
+            width: media.width,
+            height: media.height,
+            name: crops[crop][0].name
+          }
+        }
+      })
+
       if (state.selected[state.connector] && state.selected[state.connector].length) {
         medias.forEach(function (media) {
           state.selected[state.connector].push(media)
@@ -139,6 +159,7 @@ const mutations = {
   [types.DESTROY_MEDIA_CONNECTOR] (state) {
     state.connector = null
   },
+
   [types.SET_MEDIA_CROP] (state, crop) {
     const key = crop.key
     const index = crop.index
