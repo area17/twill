@@ -40,6 +40,8 @@
 <script>
   import debounce from 'lodash/debounce'
   import axios from 'axios'
+  const html = document.documentElement
+  let htmlClasses = ['s--search', 's--overlay']
   let CancelToken = axios.CancelToken
   let source = CancelToken.source()
   let firstFocusableEl = document.querySelector('.header .header__title > a')
@@ -87,6 +89,9 @@
     },
     methods: {
       toggleSearch: function () {
+        htmlClasses.forEach((klass) => {
+          html.classList.toggle(klass)
+        })
         if (this.open) {
           document.addEventListener('keydown', this.handleKeyDown, false)
         } else {
@@ -153,8 +158,18 @@
       onSearchInput: debounce(function (event) {
         this.searchValue = event.target.value
         if (this.searchValue && this.searchValue !== '') {
+          if (!html.classList.contains(htmlClasses[0]) || !html.classList.contains(htmlClasses[0])) {
+            htmlClasses.forEach((klass) => {
+              html.classList.add(klass)
+            })
+          }
           this.fetchSearchResults()
         } else {
+          if (!this.open) {
+            htmlClasses.forEach((klass) => {
+              html.classList.remove(klass)
+            })
+          }
           this.searchResults = []
           this.setLastFocusElement()
         }

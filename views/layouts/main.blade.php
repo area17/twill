@@ -22,8 +22,11 @@
                     @yield('search')
                 </div>
             </header>
-            @yield('searchDashboard')
-            @partialView(($moduleName ?? null), 'navigation._primary_navigation')
+            @hasSection('primaryNavigation')
+                @yield('primaryNavigation')
+            @else
+                @partialView(($moduleName ?? null), 'navigation._primary_navigation')
+            @endif
             <section class="main">
                 <div class="app @yield('appTypeClass')" id="app" v-cloak>
                     @yield('content')
