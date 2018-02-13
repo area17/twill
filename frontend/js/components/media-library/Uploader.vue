@@ -52,7 +52,7 @@
             enableAuto: true
           },
           callbacks: {
-            onSubmitted: this._onSubmitedCallback.bind(this),
+            onSubmit: this._onSubmitCallback.bind(this),
             onProgress: this._onProgressCallback.bind(this),
             onError: this._onErrorCallback.bind(this),
             onComplete: this._onCompleteCallback.bind(this),
@@ -61,6 +61,13 @@
           },
           text: {
             fileInputTitle: 'Browse...'
+          },
+          messages: {
+            // Todo: need to translate this in uploaderConfig
+            retryFailTooManyItemsError: 'Retry failed - you have reached your file limit.',
+            sizeError: '{file} is too large, maximum file size is {sizeLimit}.',
+            tooManyItemsError: 'Too many items ({netItems}) would be uploaded. Item limit is {itemLimit}.',
+            typeError: '{file} has an invalid extension. Valid extension(s): {extensions}.'
           }
         }
 
@@ -135,7 +142,7 @@
         // reset folder name for next upload session
         this.unique_folder_name = null
       },
-      _onSubmitedCallback (id, name) {
+      _onSubmitCallback (id, name) {
         this.$emit('clear')
         // each upload session will add upload files with original filenames in a folder named using a uuid
         this.unique_folder_name = this.unique_folder_name || qq.getUniqueId()
@@ -145,9 +152,8 @@
         const imageUrl = URL.createObjectURL(this._uploader.methods.getFile(id))
         const img = new Image()
 
-        const self = this
         img.onload = () => {
-          self._uploader.methods.setParams({
+          this._uploader.methods.setParams({
             width: img.width,
             height: img.height
           }, id)
@@ -159,7 +165,8 @@
           id: this._uploader.methods.getUuid(id),
           name: sanitizeFilename(name),
           progress: 0,
-          error: false
+          error: false,
+          errorMessage: null
         }
 
         this.loadingMedias.push(media)
@@ -176,10 +183,23 @@
         }
       },
       _onErrorCallback (id, name, errorReason, xhr) {
-        const index = this.loadingMedias.findIndex((m) => m.id === this._uploader.methods.getUuid(id))
+        const index = id ? this.loadingMedias.findIndex((m) => m.id === this._uploader.methods.getUuid(id)) : -1
 
         if (index >= 0) {
+          this.loadingMedias[index].errorMessage = errorReason
           this.loadingError(this.loadingMedias[index])
+        } else {
+          const media = {
+            id: Date.now(),
+            name: sanitizeFilename(name),
+            progress: 0,
+            error: true,
+            errorMessage: errorReason
+          }
+
+          this.loadingMedias.push(media)
+          this.loadingProgress(media)
+          this.loadingError(this.loadingMedias[this.loadingMedias.length - 1])
         }
       },
       _onStatusChangeCallback (id, oldStatus, newStatus) {

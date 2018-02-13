@@ -177,6 +177,7 @@ const mutations = {
       if (m.id === media.id) {
         Vue.set(state.loading[index], 'progress', 0)
         Vue.set(state.loading[index], 'error', true)
+        Vue.set(state.loading[index], 'errorMessage', media.errorMessage)
       }
     })
   },
