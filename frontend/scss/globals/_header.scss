@@ -215,6 +215,10 @@ $height__nav: 60px;
   }
 }
 
+.dashboard__search {
+  background: $color__overlay--header;
+}
+
 .header__search__overlay,
 .dashboard__search .search__overlay {
   position: fixed;
