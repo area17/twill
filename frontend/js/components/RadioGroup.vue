@@ -1,5 +1,5 @@
 <template>
-  <a17-inputframe :error="error" :note="note" :label="label" :name="name">
+  <a17-inputframe :error="error" :note="note" :label="label" :name="name" :label-for="uniqId">
     <ul class="radioGroup" :class="radioClasses">
       <li class="radioGroup__item" v-for="(radio, index) in radios">
         <a17-radio :customClass="'radio__' + radioClass + '--' + (index + 1)" :name="name" :value="radio.value" :label="radio.label" @change="changeValue" :initialValue="currentValue" :disabled="radio.disabled"></a17-radio>
@@ -9,12 +9,13 @@
 </template>
 
 <script>
+  import randKeyMixin from '@/mixins/randKey'
   import InputframeMixin from '@/mixins/inputFrame'
   import FormStoreMixin from '@/mixins/formStore'
 
   export default {
     name: 'A17CheckboxGroup',
-    mixins: [InputframeMixin, FormStoreMixin],
+    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin],
     props: {
       radioClass: {
         type: String,
@@ -44,6 +45,9 @@
       }
     },
     computed: {
+      uniqId: function (value) {
+        return this.name + '-' + this.randKey
+      },
       radioClasses: function () {
         return [
           this.inline ? `radioGroup--inline` : ''
@@ -52,16 +56,19 @@
     },
     methods: {
       updateFromStore: function (newValue) { // called from the formStore mixin
-        this.updateValue(newValue)
+        if (newValue !== this.currentValue) {
+          this.updateValue(newValue)
+        }
       },
       updateValue: function (newValue) {
         this.currentValue = newValue
       },
       changeValue: function (newValue) {
-        this.updateValue(newValue)
-
-        this.$emit('change', this.currentValue)
-        this.saveIntoStore(newValue)
+        if (newValue !== this.currentValue) {
+          this.updateValue(newValue)
+          this.$emit('change', this.currentValue)
+          this.saveIntoStore(newValue)
+        }
       }
     }
   }

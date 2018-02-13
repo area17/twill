@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash'
 import { mapState, mapGetters } from 'vuex'
 
 export default {
@@ -35,7 +36,7 @@ export default {
       const newValue = (this.locale) ? fieldInstore[this.locale.value] : fieldInstore
 
       // new value detected, let's update the UI (updateFromStore method need to be present into the component so the value is properly updated)
-      if (currentValue !== newValue) {
+      if (!isEqual(currentValue, newValue)) {
         if (typeof this.updateFromStore !== 'undefined') this.updateFromStore(newValue)
       }
     }

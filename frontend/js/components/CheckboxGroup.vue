@@ -9,6 +9,7 @@
 </template>
 
 <script>
+  import { isEqual } from 'lodash'
   import InputframeMixin from '@/mixins/inputFrame'
   import CheckboxMixin from '@/mixins/checkboxes'
   import FormStoreMixin from '@/mixins/formStore'
@@ -37,9 +38,11 @@
         this.currentValue = newValue
       },
       changeValue: function (newValue) {
-        this.updateValue(newValue)
-        this.$emit('change', this.currentValue)
-        this.saveIntoStore(newValue)
+        if (!isEqual(newValue, this.currentValue)) {
+          this.updateValue(newValue)
+          this.$emit('change', this.currentValue)
+          this.saveIntoStore(newValue)
+        }
       }
     }
   }
