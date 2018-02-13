@@ -3,7 +3,7 @@
     <div class="editorSidebar__item" v-for="(block, index) in blocks" :key="block.id" v-show="isBlockActive(block.id)">
       <div class="editorSidebar__title">
         <div class="editorSidebar__blockTitle">
-          <a17-dropdown class="f--small" position="bottom-left" :ref="moveDropdown(index)">
+          <a17-dropdown class="f--small" position="bottom-left" :ref="moveDropdown(index)" :maxHeight="270">
             <span class="editorSidebar__counter f--tiny" @click="toggleDropdown(index)">{{ index + 1 }}</span>
             <div slot="dropdown__content">
               <button type="button" v-for="n in blocks.length" @click="moveBlock(index, n - 1)">{{ n }}</button>

@@ -4,7 +4,7 @@
     <transition name="fade_move_dropdown">
       <div class="dropdown__position" v-if="active">
         <div class="dropdown__content" :style="offsetStyle" data-dropdown-content>
-          <div class="dropdown__inner">
+          <div class="dropdown__inner" :style="innerStyle">
             <span class="dropdown__arrow" v-if="arrow"></span>
             <span class="dropdown__title f--small" v-if="title">{{ title }}</span>
             <slot name="dropdown__content">
@@ -88,6 +88,11 @@
           'transform': this.sideOffset ? 'translateX(' + this.sideOffset + 'px)' : '',
           'max-width': this.maxWidth > 0 && this.width !== 'full' ? this.maxWidth + 'px' : '',
           'min-width': this.minWidth > 0 ? this.minWidth + 'px' : '',
+          'max-height': this.maxHeight > 0 ? this.maxHeight + 'px' : '',
+        }
+      },
+      innerStyle: function () {
+        return {
           'max-height': this.maxHeight > 0 ? this.maxHeight + 'px' : '',
           'overflow': this.maxHeight > 0 ? 'hidden' : '',
           'overflow-y': this.maxHeight > 0 ? 'scroll' : ''

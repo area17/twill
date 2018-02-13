@@ -11,7 +11,7 @@
         <div class="editorPreview__protector editorPreview__dragger" @click="selectBlock(index)"></div>
         <div class="editorPreview__header">
           <a17-buttonbar variant="visible">
-            <a17-dropdown class="f--small" position="bottom-left" :ref="moveDropdown(index)" v-if="blocks.length > 1" @open="activeItem = index" @close="activeItem = -1">
+            <a17-dropdown class="f--small" position="bottom-left" :ref="moveDropdown(index)" v-if="blocks.length > 1" @open="activeItem = index" @close="activeItem = -1" :maxHeight="270">
               <button type="button" @click="toggleDropdown(index)"><span v-svg symbol="drag"></span></button>
               <div slot="dropdown__content">
                 <button type="button" v-for="n in blocks.length" @click="moveBlock(index, n - 1)">{{ n }}</button>
