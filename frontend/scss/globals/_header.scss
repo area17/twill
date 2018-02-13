@@ -186,11 +186,7 @@ $height__nav: 60px;
   }
 }
 
-.header__search__overlay[v-cloak] {
-  display: none;
-}
-
-.header__search .header__search__toggle {
+.header__search__toggle {
   display: inline-block;
   width: 47px;
   padding-left: 26px;
@@ -200,17 +196,18 @@ $height__nav: 60px;
   .icon {
     position: relative;
     top: 2px;
+    right: 2px;
     width: 20px;
     height: 20px;
     color: $color__text--light;
 
     &.icon--search {
       top: 4px;
+      right: 0;
     }
   }
 
-  &:hover .icon,
-  &:focus .icon {
+  &:hover .icon {
     color: $color__background;
   }
 }
@@ -219,28 +216,21 @@ $height__nav: 60px;
   background: $color__overlay--header;
 }
 
-.header__search__overlay,
-.dashboard__search .search__overlay {
+.search__positioner[v-cloak] {
+  display: none;
+}
+
+.search__positioner,
+.search__overlay {
   position: fixed;
   top: 60px;
   left: 0;
   width: 100vw;
   height: calc(100vh - 60px);
-  background: rgba($color__overlay--header, 0.5);
   z-index: $zindex__search;
-  opacity: 1;
 }
 
-.dashboard__search .search__overlay {
+.search__overlay {
+  background: rgba($color__overlay--header, 0.5);
   z-index: $zindex__search - 1;
-}
-
-.header__search-fade-enter-active,
-.header__search-fade-leave-active {
-  transition: opacity 0.14s $bezier__bounce;
-}
-
-.header__search-fade-enter,
-.header__search-fade-leave-to {
-  opacity: 0;
 }

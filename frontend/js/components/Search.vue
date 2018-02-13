@@ -1,39 +1,43 @@
 <template>
   <div class="container search__container">
-    <div class="search__overlay" v-show="searchValue" @click="toggleSearch"></div>
+    <transition name="fade_search-overlay">
+      <div class="search__overlay search__overlay--dashboard" v-show="readyToShowResult" @click="toggleSearch"></div>
+    </transition>
     <div class="search__input">
       <input type="search" class="form__input" ref="search" name="search" autocomplete="off" :placeholder="placeholder" @input="onSearchInput" />
       <span v-svg symbol="search"></span>
     </div>
-    <div class="search__results" v-show="searchValue">
-      <ul>
-        <li v-for="(item, index) in searchResults" :key="item.id">
-          <a :href="item.href" class="search__result">
-            <div class="search__cell search__cell--thumb">
-              <figure class="search__result__thumb">
-                <img :src="item.thumbnail" />
-              </figure>
-            </div>
-            <div class="search__cell search__cell--pubstate">
-              <span class="search__result__pubstate" :class="{'search__result__pubstate--live': item.published }"></span>
-            </div>
-            <div class="search__cell">
-              <span class="search__result__title">{{ item.title }}</span>
-              <p class="f--note">
-                {{ item.activity }} <timeago :auto-update="1" :since="new Date(item.date)"></timeago> by {{ item.author }}
-                <span class="search__result__type">{{ item.type }}</span>
-              </p>
-            </div>
-          </a>
-        </li>
-        <li class="search__results__no-result" v-show="loading">
-          Loading…
-        </li>
-        <li class="search__results__no-result" v-show="searchValue && !searchResults.length && !loading">
-          No results found.
-        </li>
-      </ul>
-    </div>
+    <transition name="fade_search-overlay">
+      <div class="search__results" v-show="readyToShowResult">
+        <ul>
+          <li v-for="(item, index) in searchResults" :key="item.id">
+            <a :href="item.href" class="search__result">
+              <div class="search__cell search__cell--thumb">
+                <figure class="search__thumb">
+                  <img :src="item.thumbnail" />
+                </figure>
+              </div>
+              <div class="search__cell search__cell--pubstate">
+                <span class="search__pubstate" :class="{'search__pubstate--live': item.published }"></span>
+              </div>
+              <div class="search__cell">
+                <span class="search__title">{{ item.title }}</span>
+                <p class="f--note">
+                  {{ item.activity }} <timeago :auto-update="1" :since="new Date(item.date)"></timeago> by {{ item.author }}
+                  <span class="search__type">{{ item.type }}</span>
+                </p>
+              </div>
+            </a>
+          </li>
+          <li class="search__no-result" v-show="loading">
+            Loading…
+          </li>
+          <li class="search__no-result" v-show="readyToShowResult && !searchResults.length && !loading">
+            No results found.
+          </li>
+        </ul>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -75,6 +79,7 @@
       return {
         searchValue: null,
         loading: false,
+        readyToShowResult: false,
         searchResults: []
       }
     },
@@ -102,6 +107,7 @@
           this.$refs.search.blur()
           this.searchResults = []
           this.searchValue = null
+          this.readyToShowResult = false
           document.removeEventListener('keydown', this.handleKeyDown, false)
         }
       },
@@ -145,6 +151,8 @@
           this.loading = true
         }
 
+        this.readyToShowResult = true
+
         this.$http.get(this.endpoint, {
           params: data,
           cancelToken: source.token
@@ -161,7 +169,7 @@
       },
       onSearchInput: debounce(function (event) {
         this.searchValue = event.target.value
-        if (this.searchValue && this.searchValue !== '') {
+        if (this.searchValue && this.searchValue.length > 2) {
           if (this.type === 'dashboard') {
             htmlClasses.forEach((klass) => {
               html.classList.add(klass)
@@ -174,6 +182,7 @@
               html.classList.remove(klass)
             })
           }
+          this.readyToShowResult = false
           this.searchResults = []
           this.setLastFocusElement()
         }
@@ -185,7 +194,7 @@
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
 
-  .header__search .search__overlay {
+  .header__search .search__overlay--dashboard {
     display: none !important;
   }
 
@@ -208,24 +217,22 @@
     .form__input {
       display: block;
       padding-left: 45px;
-      color: $color__text;
       border: 0;
       box-shadow: none;
       font-size: 17px;
       line-height: 46px;
-      @include placeholder() {
-        color: $color__text--light;
-      }
     }
   }
 
-  .search__container .icon--search {
+  .icon--search {
     position: absolute;
     top: 13px;
     left: 15px;
     width: 24px;
     height: 24px;
-    color: $color__overlay--header;
+    color: $color__icons;
+    pointer-events: none;
+    transition: color 0.12s ease-in-out;
 
     svg {
       width: 24px;
@@ -233,20 +240,25 @@
     }
   }
 
+  .form__input:focus + .icon--search {
+    color: $color__text;
+  }
+
   $itemHeight: 91px;
 
   .search__results {
+    position: relative;
     margin-top: 10px;
     max-height: ($itemHeight * 3);
     background: $color__background;
     border-radius: 2px;
     box-shadow: 0 0 2px rgba($color__overlay--header, 0.3);
     overflow: auto;
+    z-index: $zindex__search;
   }
 
   .dashboard__search .search__results {
     position: absolute;
-    z-index: $zindex__search;
     @each $name, $point in $breakpoints {
       @include breakpoint('#{$name}') {
         width: calc(100% - #{map-get($outer-gutters, $name) * 2});
@@ -254,7 +266,7 @@
     }
   }
 
-  .search__results__no-result {
+  .search__no-result {
     padding: 0 30px;
     height: 70px;
     background: $color__border;
@@ -298,13 +310,13 @@
     padding: 10px 15px;
   }
 
-  .search__result__title {
+  .search__title {
     display: inline-block;
     margin-bottom: 5px;
     color: $color__link;
   }
 
-  .search__result__type {
+  .search__type {
     &::before {
       content: "•";
       display: inline;
@@ -315,7 +327,7 @@
     }
   }
 
-  .search__result__thumb {
+  .search__thumb {
     img {
       display: block;
       width: 50px;
@@ -324,7 +336,7 @@
     }
   }
 
-  .search__result__pubstate {
+  .search__pubstate {
     border-radius: 50%;
     height: 9px;
     width: 9px;
@@ -332,7 +344,7 @@
     background: $color__fborder;
   }
 
-  .search__result__pubstate--live {
+  .search__pubstate--live {
     background: $color__publish;
   }
 </style>

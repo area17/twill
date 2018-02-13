@@ -112,3 +112,15 @@ https://vuejs.org/v2/guide/transitions.html
 .fade_spinner-leave-to {
   opacity:0;
 }
+
+/***** Search Overlay ****/
+
+.fade_search-overlay-enter-active,
+.fade_search-overlay-leave-active {
+  transition: opacity 0.12s ease-in-out;
+}
+
+.fade_search-overlay-enter,
+.fade_search-overlay-leave-to {
+  opacity: 0;
+}
