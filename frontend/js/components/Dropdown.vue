@@ -4,11 +4,13 @@
     <transition name="fade_move_dropdown">
       <div class="dropdown__position" v-if="active">
         <div class="dropdown__content" :style="offsetStyle" data-dropdown-content>
-          <div class="dropdown__inner" :style="innerStyle">
+          <div class="dropdown__inner">
             <span class="dropdown__arrow" v-if="arrow"></span>
-            <span class="dropdown__title f--small" v-if="title">{{ title }}</span>
-            <slot name="dropdown__content">
-            </slot>
+            <div class="dropdown__scroller" :style="innerStyle">
+              <span class="dropdown__title f--small" v-if="title">{{ title }}</span>
+              <slot name="dropdown__content">
+              </slot>
+            </div>
           </div>
         </div>
       </div>
@@ -87,8 +89,7 @@
           'margin-bottom': this.isPosition('top') ? this.offset + 'px' : '',
           'transform': this.sideOffset ? 'translateX(' + this.sideOffset + 'px)' : '',
           'max-width': this.maxWidth > 0 && this.width !== 'full' ? this.maxWidth + 'px' : '',
-          'min-width': this.minWidth > 0 ? this.minWidth + 'px' : '',
-          'max-height': this.maxHeight > 0 ? this.maxHeight + 'px' : '',
+          'min-width': this.minWidth > 0 ? this.minWidth + 'px' : ''
         }
       },
       innerStyle: function () {
@@ -307,12 +308,15 @@
     background:rgba($color__background,0.98);
     border-radius:2px;
     box-shadow:$box-shadow;
-    padding:10px 0;
 
     /deep/ .input {
       margin-top:0;
       padding:0 15px;
     }
+  }
+
+  .dropdown__scroller {
+    padding:10px 0;
   }
 
   .dropdown--arrow.dropdown--bottom .dropdown__content {

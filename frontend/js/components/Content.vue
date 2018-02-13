@@ -19,7 +19,7 @@
     </draggable>
 
     <div class="content__actions">
-      <a17-dropdown ref="blocksDropdown" position="top-center" :arrow="true" :offset="10" v-if="availableBlocks.length">
+      <a17-dropdown ref="blocksDropdown" position="top-center" :arrow="true" :offset="10" v-if="availableBlocks.length" :maxHeight="430">
         <a17-button size="small" variant="action" @click="$refs.blocksDropdown.toggle()">{{ title }}</a17-button>
         <div slot="dropdown__content">
           <button type="button" v-for="(availableBlock, index) in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, -1)"><span class="content__icon" v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
