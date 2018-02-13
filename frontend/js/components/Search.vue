@@ -94,8 +94,6 @@
         }
       }
     },
-    computed: {
-    },
     methods: {
       toggleSearch: function () {
         htmlClasses.forEach((klass) => {

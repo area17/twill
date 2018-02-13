@@ -21,8 +21,6 @@ const A17SearchApp = new Vue({
       opened: false
     }
   },
-  computed: {
-  },
   methods: {
     afterAnimate: function () {
       this.opened = true
