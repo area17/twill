@@ -123,9 +123,7 @@
         this.$store.commit('errorUploadMedia', media)
       },
       _onCompleteCallback (id, name, responseJSON, xhr) {
-        const index = this.loadingMedias.findIndex(function (m) {
-          return m.id === id
-        })
+        const index = this.loadingMedias.findIndex((m) => m.id === this._uploader.methods.getUuid(id))
 
         if (responseJSON.success) {
           this.loadingFinished(this.loadingMedias[index], responseJSON.media)
@@ -158,7 +156,7 @@
         img.src = imageUrl
 
         const media = {
-          id: id,
+          id: this._uploader.methods.getUuid(id),
           name: sanitizeFilename(name),
           progress: 0,
           error: false
@@ -168,9 +166,7 @@
         this.loadingProgress(media)
       },
       _onProgressCallback (id, name, uploadedBytes, totalBytes) {
-        const index = this.loadingMedias.findIndex(function (m) {
-          return m.id === id
-        })
+        const index = this.loadingMedias.findIndex((m) => m.id === this._uploader.methods.getUuid(id))
 
         if (index >= 0) {
           let media = this.loadingMedias[index]
@@ -180,9 +176,7 @@
         }
       },
       _onErrorCallback (id, name, errorReason, xhr) {
-        const index = this.loadingMedias.findIndex(function (m) {
-          return m.id === id
-        })
+        const index = this.loadingMedias.findIndex((m) => m.id === this._uploader.methods.getUuid(id))
 
         if (index >= 0) {
           this.loadingError(this.loadingMedias[index])
