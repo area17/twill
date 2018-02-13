@@ -59,17 +59,18 @@
         // reset folder name for next upload session
         this.unique_folder_name = null
       },
-      _onSubmitCallback (id, name) {
+      _onSubmitedCallback (id, name) {
         this.$emit('clear')
         // each upload session will add upload files with original filenames in a folder named using a uuid
         this.unique_folder_name = this.unique_folder_name || qq.getUniqueId()
         this._uploader.methods.setParams({ unique_folder_name: this.unique_folder_name }, id)
 
         // determine the image dimensions and add it to params sent on upload success
-        var imageUrl = URL.createObjectURL(this._uploader.methods.getFile(id))
-        var img = new Image()
+        const imageUrl = URL.createObjectURL(this._uploader.methods.getFile(id))
+        console.log(imageUrl)
+        const img = new Image()
 
-        var self = this
+        const self = this
         img.onload = () => {
           self._uploader.methods.setParams({
             width: img.width,
@@ -135,7 +136,7 @@
       const buttonEl = this.$refs.uploaderBrowseButton
       const dropzoneEl = this.$refs.uploaderDropzone
 
-      var self = this
+      const self = this
 
       const sharedConfig = {
         debug: true,
@@ -145,7 +146,7 @@
           enableAuto: true
         },
         callbacks: {
-          onSubmit: this._onSubmitCallback.bind(this),
+          onSubmitted: this._onSubmitedCallback.bind(this),
           onProgress: this._onProgressCallback.bind(this),
           onError: this._onErrorCallback.bind(this),
           onComplete: this._onCompleteCallback.bind(this),
