@@ -195,7 +195,7 @@
     display:flex;
     align-items: center;
     justify-content: center;
-    color:$color__fborder;
+    color:$color__text--light;
     background-color:inherit;
 
     &::after {
@@ -211,6 +211,8 @@
 
     > * {
       padding:0 40px;
+      @include font-medium;
+      font-weight: 400;
     }
   }
 
