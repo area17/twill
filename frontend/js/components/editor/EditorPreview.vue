@@ -212,6 +212,8 @@
     > * {
       padding:0 40px;
       @include font-medium;
+      line-height:1.35em;
+      text-align:center;
       font-weight: 400;
     }
   }
