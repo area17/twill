@@ -30,9 +30,87 @@
     computed: {
       ...mapState({
         uploaderConfig: state => state.mediaLibrary.uploaderConfig
-      })
+      }),
+      uploaderValidation: function () {
+        const extensions = this.uploaderConfig.allowedExtensions[this.type]
+        return {
+          allowedExtensions: extensions,
+          acceptFiles: '.' + extensions.join(', .'),
+          stopOnFirstInvalidFile: false
+        }
+      }
     },
     methods: {
+      initUploader: function () {
+        const buttonEl = this.$refs.uploaderBrowseButton
+
+        const sharedConfig = {
+          debug: true,
+          maxConnections: 5,
+          button: buttonEl,
+          retry: {
+            enableAuto: true
+          },
+          callbacks: {
+            onSubmitted: this._onSubmitedCallback.bind(this),
+            onProgress: this._onProgressCallback.bind(this),
+            onError: this._onErrorCallback.bind(this),
+            onComplete: this._onCompleteCallback.bind(this),
+            onAllComplete: this._onAllCompleteCallback.bind(this),
+            onStatusChange: this._onStatusChangeCallback.bind(this)
+          },
+          text: {
+            fileInputTitle: 'Browse...'
+          }
+        }
+
+        this._uploader = this.uploaderConfig.endpointType === 's3' ? new FineUploaderS3({
+          options: {
+            ...sharedConfig,
+            validation: {
+              ...this.uploaderValidation
+            },
+            objectProperties: {
+              key: id => {
+                return this.unique_folder_name + '/' + sanitizeFilename(this._uploader.methods.getName(id))
+              },
+              region: this.uploaderConfig.endpointRegion,
+              acl: this.uploaderConfig.acl
+            },
+            request: {
+              endpoint: this.uploaderConfig.endpoint,
+              accessKey: this.uploaderConfig.accessKey
+            },
+            signature: {
+              endpoint: this.uploaderConfig.signatureEndpoint,
+              version: 4,
+              customHeaders: {
+                'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
+              }
+            },
+            uploadSuccess: {
+              endpoint: this.uploaderConfig.successEndpoint,
+              customHeaders: {
+                'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
+              }
+            }
+          }
+        }) : new FineUploaderTraditional({
+          options: {
+            ...sharedConfig,
+            validation: {
+              ...this.uploaderValidation,
+              sizeLimit: this.uploaderConfig.filesizeLimit * 1048576 // mb to bytes
+            },
+            request: {
+              endpoint: this.uploaderConfig.endpoint,
+              customHeaders: {
+                'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
+              }
+            }
+          }
+        })
+      },
       loadingProgress: function (media) {
         this.$store.commit('progressUploadMedia', media)
       },
@@ -67,7 +145,6 @@
 
         // determine the image dimensions and add it to params sent on upload success
         const imageUrl = URL.createObjectURL(this._uploader.methods.getFile(id))
-        console.log(imageUrl)
         const img = new Image()
 
         const self = this
@@ -132,79 +209,20 @@
         this._uploader.methods.addFiles(files)
       }
     },
-    mounted () {
-      const buttonEl = this.$refs.uploaderBrowseButton
-      const dropzoneEl = this.$refs.uploaderDropzone
-
-      const self = this
-
-      const sharedConfig = {
-        debug: true,
-        maxConnections: 5,
-        button: buttonEl,
-        retry: {
-          enableAuto: true
-        },
-        callbacks: {
-          onSubmitted: this._onSubmitedCallback.bind(this),
-          onProgress: this._onProgressCallback.bind(this),
-          onError: this._onErrorCallback.bind(this),
-          onComplete: this._onCompleteCallback.bind(this),
-          onAllComplete: this._onAllCompleteCallback.bind(this),
-          onStatusChange: this._onStatusChangeCallback.bind(this)
-        },
-        text: {
-          fileInputTitle: 'Browse...'
+    watch: {
+      type: function () {
+        if (this._uploader) {
+          this.initUploader()
         }
       }
+    },
+    mounted () {
+      // Init uploader
+      this.initUploader()
 
-      this._uploader = this.uploaderConfig.endpointType === 's3' ? new FineUploaderS3({
-        options: Object.assign(sharedConfig, {
-          validation: {
-            allowedExtensions: ['svg', 'jpg', 'gif', 'png', 'jpeg']
-          },
-          objectProperties: {
-            key: id => {
-              return self.unique_folder_name + '/' + sanitizeFilename(self._uploader.methods.getName(id))
-            },
-            region: this.uploaderConfig.endpointRegion,
-            acl: this.uploaderConfig.acl
-          },
-          request: {
-            endpoint: this.uploaderConfig.endpoint,
-            accessKey: this.uploaderConfig.accessKey
-          },
-          signature: {
-            endpoint: this.uploaderConfig.signatureEndpoint,
-            version: 4,
-            customHeaders: {
-              'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
-            }
-          },
-          uploadSuccess: {
-            endpoint: this.uploaderConfig.successEndpoint,
-            customHeaders: {
-              'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
-            }
-          }
-        })
-      }) : new FineUploaderTraditional({
-        options: Object.assign(sharedConfig, {
-          validation: {
-            allowedExtensions: ['svg', 'jpg', 'gif', 'png', 'jpeg'],
-            sizeLimit: this.uploaderConfig.filesizeLimit * 1048576 // mb to bytes
-          },
-          request: {
-            endpoint: this.uploaderConfig.endpoint,
-            customHeaders: {
-              'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
-            }
-          }
-        })
-      })
-
+      // Init dropzone
+      const dropzoneEl = this.$refs.uploaderDropzone
       this._qqDropzone && this._qqDropzone.dispose()
-
       this._qqDropzone = new qq.DragAndDrop({
         dropZoneElements: [dropzoneEl],
         allowMultipleItems: true,

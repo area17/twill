@@ -10,6 +10,7 @@ class UploaderConfig
     {
         $libraryDisk = config('cms-toolkit.media_library.disk');
         $endpointType = config('cms-toolkit.media_library.endpoint_type');
+        $allowedExtensions = config('cms-toolkit.media_library.allowed_extensions');
 
         $uploaderConfig = [
             'endpointType' => $endpointType,
@@ -21,6 +22,7 @@ class UploaderConfig
             'csrfToken' => csrf_token(),
             'acl' => config('cms-toolkit.media_library.acl'),
             'filesizeLimit' => config('cms-toolkit.media_library.filesize_limit'),
+            'allowedExtensions'=> $allowedExtensions
         ];
 
         $view->with(compact('uploaderConfig'));
