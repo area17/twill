@@ -332,20 +332,20 @@ abstract class ModuleController extends Controller
     {
         if ($this->repository->delete($submoduleId ?? $id)) {
             $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' deleted!');
+            return $this->respondWithSuccess($this->modelTitle . ' moved to Trash!');
         }
 
-        return $this->respondWithError($this->modelTitle . ' was not deleted. Something wrong happened!');
+        return $this->respondWithError($this->modelTitle . ' was not moved to Trash. Something wrong happened!');
     }
 
     public function bulkDelete()
     {
         if ($this->repository->bulkDelete(explode(',', request('ids')))) {
             $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' items deleted!');
+            return $this->respondWithSuccess($this->modelTitle . ' items moved to Trash!');
         }
 
-        return $this->respondWithError($this->modelTitle . ' items were not deleted. Something wrong happened!');
+        return $this->respondWithError($this->modelTitle . ' items were not moved to Trash. Something wrong happened!');
     }
 
     public function restore()
@@ -462,13 +462,18 @@ abstract class ModuleController extends Controller
 
     protected function getIndexItems($scopes = [], $forcePagination = false)
     {
-        return $this->repository->get(
+        return $this->transformIndexItems($this->repository->get(
             $this->indexWith,
             $scopes,
             $this->orderScope(),
             request('offset') ?? $this->perPage ?? 50,
             $forcePagination
-        );
+        ));
+    }
+
+    protected function transformIndexItems($items)
+    {
+        return $items;
     }
 
     protected function getIndexTableData($items)
@@ -500,9 +505,13 @@ abstract class ModuleController extends Controller
                 'deleted' => true,
             ] : []) + ($translated ? [
                 'languages' => $item->getActiveLanguages(),
-            ] : []) + $columnsData;
-
+            ] : []) + $columnsData + $this->indexItemData($item);
         })->toArray();
+    }
+
+    protected function indexItemData($item)
+    {
+        return [];
     }
 
     protected function getItemColumnData($item, $column)
@@ -596,7 +605,7 @@ abstract class ModuleController extends Controller
         foreach ($this->indexColumns as $column) {
             $columnName = isset($column['relationship'])
             ? $column['relationship'] . ucfirst($column['field'])
-            : isset($column['nested']) ? $column['nested'] : $column['field'];
+            : (isset($column['nested']) ? $column['nested'] : $column['field']);
 
             array_push($tableColumns, [
                 'name' => $columnName,

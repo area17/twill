@@ -1,0 +1,52 @@
+/***
+
+Breadcrumb
+==========
+
+Header contextual navigation
+
+***/
+
+$height__nav: 60px;
+
+.breadcrumb {
+  background-color:$color__border;
+  overflow:hidden;
+  height:$height__nav;
+}
+
+.breadcrumb__item {
+  height: $height__nav;
+  display: inline-block;
+  color: $color__header--light;
+
+  a,
+  span {
+    display: inherit;
+    height: $height__nav;
+    line-height: $height__nav;
+    padding: 0 11px;
+  }
+
+  a {
+    color: $color__text;
+    text-decoration: none;
+  }
+
+  &::before {
+    content: '/';
+    color:inherit;
+  }
+
+  &:first-child {
+    a,
+    span {
+      padding-left:0;
+    }
+
+    &::before {
+      content:'';
+      display:none;
+    }
+  }
+}

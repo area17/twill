@@ -1,0 +1,45 @@
+/***
+
+NavUnder
+========
+
+Header contextual navigation
+
+***/
+
+$height__nav: 60px;
+
+.navUnder {
+  background-color:$color__border;
+  overflow:hidden;
+  height:$height__nav;
+}
+
+.navUnder__list {
+  margin-left: -17px;
+  flex-grow: 1;
+  white-space: nowrap;
+  height:60px + 50px;
+  overflow:hidden;
+  overflow-x:auto;
+}
+
+.navUnder__item {
+  height: $height__nav;
+  display: inline-block;
+  color: $color__header--light;
+
+  &.s--on,
+  &:hover {
+    color: $color__text;
+  }
+
+  a {
+    height: $height__nav;
+    line-height: $height__nav;
+    display: inherit;
+    text-decoration: none;
+    position: relative;
+    padding: 0 17px;
+  }
+}

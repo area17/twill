@@ -106,13 +106,13 @@ export const getFormData = (rootState) => {
   // - selected medias and browsers
   // - created blocks and repeaters
   let data = Object.assign(fields, {
-    parentId: rootState.parents.active,
     cmsSaveType: rootState.form.type,
     published: rootState.publication.published,
     public: rootState.publication.visibility === 'public',
     publish_start_date: rootState.publication.startDate,
     publish_end_date: rootState.publication.endDate,
     languages: rootState.language.all,
+    parent_id: rootState.parents.active,
     medias: gatherSelected(rootState.mediaLibrary.selected),
     browsers: gatherSelected(rootState.browser.selected),
     blocks: rootState.content.blocks.map(block => {

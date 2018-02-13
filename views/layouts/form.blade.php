@@ -100,7 +100,7 @@
 
     window.STORE.revisions = {!! json_encode($revisions ?? [])  !!}
 
-    window.STORE.parentId = {{ $parentId ?? 0 }}
+    window.STORE.parentId = {{ $item->parent_id ?? 0 }}
     window.STORE.parents = {!! json_encode($parents ?? [])  !!}
 
     window.STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('cms-toolkit.block_editor.crops')) !!}

@@ -3,7 +3,7 @@
     <div class="block__header">
       <span class="block__handle"></span>
       <div class="block__toggle">
-        <a17-dropdown :ref="moveDropdown" class="f--small" position="bottom-left" v-if="withMoveDropdown">
+        <a17-dropdown :ref="moveDropdown" class="f--small" position="bottom-left" v-if="withMoveDropdown" :maxHeight="270">
           <span class="block__counter f--tiny" @click="$refs[moveDropdown].toggle()">{{ index + 1 }}</span>
           <div slot="dropdown__content">
             <slot name="dropdown-numbers"></slot>
@@ -172,10 +172,17 @@
     user-select: none;
     cursor: default;
     margin-top:(50px - 26px) / 2;
-    cursor: pointer;
   }
 
-  .block__counter:hover,
+  .dropdown .block__counter {
+    cursor: pointer;
+
+    &:hover {
+      color:$color__text;
+      border-color:$color__text;
+    }
+  }
+
   .dropdown--active .block__counter {
     color:$color__text;
     border-color:$color__text;

@@ -159,8 +159,10 @@
           return this.$store.state.datatable.data
         },
         set (value) {
-          // reorder rows
-          this.$store.dispatch('setDatatableDatas', value)
+          const isChangingParents = (this.rows.length !== value.length)
+
+          this.$store.commit('updateDatableData', value)
+          this.saveNewTree(isChangingParents)
         }
       },
       checkboxesColumns: function () {

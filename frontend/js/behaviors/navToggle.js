@@ -1,3 +1,4 @@
+import forEachNodelist from '../utils/forEachNodelist.js'
 // Show / Hide the menu on mobile devices
 
 const navToggle = function () {
@@ -52,7 +53,7 @@ const navToggle = function () {
 
   // Toggle Click button
   if (bts.length) {
-    bts.forEach(function (bt) {
+    forEachNodelist(bts, function (bt) {
       bt.addEventListener('click', function (e) {
         if (!isActive) _triggerOpenNav()
         else _triggerCloseNav()
@@ -64,7 +65,7 @@ const navToggle = function () {
 
   // close the navigation
   if (btsClose.length) {
-    btsClose.forEach(function (bt) {
+    forEachNodelist(btsClose, function (bt) {
       bt.addEventListener('click', function (e) {
         if (isActive) _triggerCloseNav()
         bt.blur()

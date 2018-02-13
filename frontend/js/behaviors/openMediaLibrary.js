@@ -1,3 +1,4 @@
+import forEachNodelist from '../utils/forEachNodelist.js'
 // Open Media library from the nav
 
 const openMediaLibrary = function () {
@@ -11,7 +12,7 @@ const openMediaLibrary = function () {
 
   // Toggle Click button
   if (bts.length) {
-    bts.forEach(function (bt) {
+    forEachNodelist(bts, function (bt) {
       bt.addEventListener('click', function (e) {
         e.preventDefault()
 

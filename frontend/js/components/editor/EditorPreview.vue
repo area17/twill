@@ -1,7 +1,7 @@
 <template>
   <div class="editorPreview" @mousedown="unselectBlock">
     <div class="editorPreview__empty" v-if="!blocks.length">
-      <b>Add content</b>
+      <b>Drag and drop content from the left navigation</b>
     </div>
     <draggable class="editorPreview__content" v-model="blocks" :options="{ group: 'editorBlocks', handle: handle }" @add="onAdd" @update="onUpdate">
       <div class="editorPreview__item" :class="{ 'editorPreview__item--active' : isBlockActive(block.id), 'editorPreview__item--hover' : activeItem === index }" v-for="(block, index) in blocks" :key="block.id" @mousedown.stop >
@@ -11,7 +11,7 @@
         <div class="editorPreview__protector editorPreview__dragger" @click="selectBlock(index)"></div>
         <div class="editorPreview__header">
           <a17-buttonbar variant="visible">
-            <a17-dropdown class="f--small" position="bottom-left" :ref="moveDropdown(index)" v-if="blocks.length > 1" @open="activeItem = index" @close="activeItem = -1">
+            <a17-dropdown class="f--small" position="bottom-left" :ref="moveDropdown(index)" v-if="blocks.length > 1" @open="activeItem = index" @close="activeItem = -1" :maxHeight="270">
               <button type="button" @click="toggleDropdown(index)"><span v-svg symbol="drag"></span></button>
               <div slot="dropdown__content">
                 <button type="button" v-for="n in blocks.length" @click="moveBlock(index, n - 1)">{{ n }}</button>
@@ -195,7 +195,7 @@
     display:flex;
     align-items: center;
     justify-content: center;
-    color:$color__fborder;
+    color:$color__text--light;
     background-color:inherit;
 
     &::after {
@@ -207,6 +207,14 @@
       right:20px;
       left:20px;
       border:1px dashed $color__fborder;
+    }
+
+    > * {
+      padding:0 40px;
+      @include font-medium;
+      line-height:1.35em;
+      text-align:center;
+      font-weight: 400;
     }
   }
 
@@ -284,5 +292,13 @@
   .editorPreview__item--active .editorPreview__header,
   .editorPreview__item--hover .editorPreview__header {
     display:flex;
+  }
+
+  /* Dragged item */
+  .editorPreview__item.sortable-chosen {
+    opacity:1;
+  }
+  .editorPreview__item.sortable-ghost {
+    opacity:0.25;
   }
 </style>
