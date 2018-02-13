@@ -28,7 +28,7 @@
         <a17-buttonbar class="media__actions">
           <a :href="currentMedia.original" download><span v-svg symbol="download"></span></a>
           <button type="button" @click="openCropMedia" v-if="hasCrop"><span v-svg symbol="crop"></span></button>
-          <button type="button" @click="deleteMedia"><span v-svg symbol="trash"></span></button>
+          <button type="button" @click="deleteMediaClick"><span v-svg symbol="trash"></span></button>
         </a17-buttonbar>
 
         <div class="media__actions-dropDown">
@@ -39,7 +39,7 @@
               <a :href="currentMedia.original" download><span v-svg symbol="download"></span> Download</a>
               <button type="button" @click="openCropMedia" v-if="hasCrop"><span v-svg symbol="crop"></span> Crop
               </button>
-              <button type="button" @click="deleteMedia"><span v-svg symbol="trash"></span> Delete</button>
+              <button type="button" @click="deleteMediaClick"><span v-svg symbol="trash"></span> Delete</button>
             </div>
           </a17-dropdown>
         </div>
@@ -133,11 +133,11 @@
     },
     data: function () {
       return {
+        isDestroyed: false,
         metadatas: {
           text: 'Edit info',
           textOpen: 'Edit info',
           textClose: 'Close info',
-          isDestroyed: false,
           active: false
         }
       }
@@ -149,7 +149,7 @@
       },
       currentMedia: function () {
         if (this.selectedMedias.hasOwnProperty(this.mediaKey)) {
-          // reset is destroyed
+          // reset is destroyed status because we changed the media
           if (this.selectedMedias[this.mediaKey][this.index]) this.isDestroyed = false
           return this.selectedMedias[this.mediaKey][this.index] || {}
         } else {
@@ -216,10 +216,16 @@
         if (!this.currentMedia.crops) this.setDefaultCrops()
         this.$refs[this.cropModalName].open()
       },
-      // media
-      deleteMedia: function () {
+      deleteMediaClick: function () {
         this.isDestroyed = true
-        this.$store.commit('destroyMediasInSelected', {name: this.mediaKey, index: this.index})
+        this.deleteMedia()
+      },
+      // delete the media
+      deleteMedia: function () {
+        this.$store.commit('destroyMediasInSelected', {
+          name: this.mediaKey,
+          index: this.index
+        })
       },
       // metadatas
       updateMetadata: function (newValue) {
@@ -238,6 +244,7 @@
       }
     },
     beforeDestroy: function () {
+      if (this.isSlide) return // for Slideshows : the medias are deleted when the slideshow component is destroyed (so no need to do it here)
       if (!this.isDestroyed) this.deleteMedia()
     }
   }
