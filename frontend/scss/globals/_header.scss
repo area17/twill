@@ -186,15 +186,16 @@ $height__nav: 60px;
   }
 }
 
-.header__search[v-cloak] {
-  div {
-    display:none;
-  }
+.header__search__overlay[v-cloak] {
+  display: none;
 }
 
-.header__search .button.header__search__toggle {
+.header__search .header__search__toggle {
+  display: inline-block;
+  width: 47px;
   padding-left: 26px;
   padding-right: 0;
+  text-align: right;
 
   .icon {
     position: relative;
