@@ -32,7 +32,19 @@
         }
       },
       changeCheckbox: function (newValue) {
+        const isChecked = this.checkedValue.indexOf(newValue)
+        const newCheckedValue = this.checkedValue.slice()
 
+        // remove or add
+        if (isChecked > -1) newCheckedValue.splice(isChecked, 1)
+        else newCheckedValue.push(newValue)
+
+        // check min or max here to avoid unecessary commits
+        const isMax = this.isMax(newCheckedValue)
+        const isMin = this.isMin(newCheckedValue)
+        if (isMax || isMin) return
+
+        this.checkedValue = newCheckedValue
       },
       uniqId: function (value, index) {
         return this.name + '_' + value + '-' + (this.randKey * (index + 1))

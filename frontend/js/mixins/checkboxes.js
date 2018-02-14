@@ -47,13 +47,19 @@ export default {
     }
   },
   methods: {
+    isMax: function (arrayToTest) {
+      return (arrayToTest.length > this.max && this.max > 0)
+    },
+    isMin: function (arrayToTest) {
+      return (arrayToTest.length < this.min && this.min > 0)
+    },
     formatValue: function (newVal, oldval) {
       let self = this
       if (!newVal) return
       if (!oldval) return
 
-      const isMax = (newVal.length > this.max && this.max > 0)
-      const isMin = (newVal.length < this.min && this.min > 0)
+      const isMax = this.isMax(newVal)
+      const isMin = this.isMin(newVal)
 
       if (isMax || isMin) {
         if (!isEqual(oldval, self.checkedValue)) {
