@@ -49,6 +49,7 @@ export default {
   methods: {
     formatValue: function (newVal, oldval) {
       if (!newVal) return
+      if (!oldval) return
 
       const isMax = (newVal.length > this.max && this.max > 0)
       const isMin = (newVal.length < this.min && this.min > 0)
