@@ -11,10 +11,9 @@
                 </div>
             </header>
             <section class="main">
-                <div class="app error">
+                <div class="app error container">
                     @yield('content')
                 </div>
-                @include('cms-toolkit::partials.footer')
             </section>
         </div>
     </body>

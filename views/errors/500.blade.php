@@ -2,6 +2,7 @@
 
 @section('content')
 
-    <h2>Error 500 — Something went wrong!</h2>
+    <p>Error 500</p>
+    <p>Something went wrong!</p>
 
 @stop
