@@ -1282,27 +1282,26 @@ If you have attributes, relationships, extra images, file attachments or repeate
 
 ### Block editor
 
-#### How to add Block Editors to the CMS
-The Block Editor, lets you add content freely to your Entity(Article, Exhibition, Event). The block editors can be easy added and rearranged.
-Once a Block Editor is created, it can be used/added to any Entity by adding the corresponding traits.
+#### How to add blocks to the CMS
+The block editor form field lets you add content freely to your module. The blocks can be easy added and rearranged.
+Once a block is created, it can be used/added to any module by adding the corresponding traits.
 
-In order to add a Block Editor you need to add the `block_editor` field to your entity form. e.g.:
+In order to add a block editor you need to add the `block_editor` field to your module form. e.g.:
 
-filename: ```views/admin/articles/form.blade.php```
 ```php
 @extends('cms-toolkit::layouts.form')
 
 @section('contentFields')
     @formField('input', [
-        'name' => 'title',
-        'label' => 'Title',
+        'name' => 'description',
+        'label' => 'Description',
     ])
 ...
     @formField('block_editor')
 @stop
 ```
 
-By adding the `@formField('block_editor')` you've enabled all the available Block Editors. To scope the *blocks* that will be displayed you can add a second parameter with the *blocks* key. e.g.:
+By adding the `@formField('block_editor')` you've enabled all the available blocks. To scope the *blocks* that will be displayed you can add a second parameter with the *blocks* key. e.g.:
 
 ```php
 @formField('block_editor', [
@@ -1324,7 +1323,7 @@ filename: ```admin/blocks/quote.blade.php```
 ])
 ```
 
-Once the form is created an _artisan_ task needs to be run to generate the _Vue_ component.
+Once the form is created an _artisan_ task needs to be run to generate the _Vue_ component for this block.
 
 `php artisan cms-toolkit:blocks`
 
@@ -1337,7 +1336,7 @@ All blocks have been generated!
 $
 ```
 
-The task will generate a file inside the folder `resources/assets/js/blocks/`.
+The task will generate a file inside the folder `resources/assets/js/blocks/`. Do not ignore those files in Git.
 
 filename: ```resources/assets/js/blocks/BlockQuote.vue```
 
@@ -1358,8 +1357,8 @@ filename: ```resources/assets/js/blocks/BlockQuote.vue```
 
 ```
 
-With that the *block* is ready to be used on the form, it just need to be enabled in the CMS configuration.
-For it a `block_editor` key it is required and inside the list of `blocks`.
+With that the *block* is ready to be used on the form, it just needs to be enabled in the CMS configuration.
+For it a `block_editor` key is required and inside you can defined the list of `blocks` available in your project.
 
 filename: ```config/cms-toolkit.php```
 
@@ -1393,7 +1392,7 @@ If you added a block like *my_awesome_block* then you need to make sure that kee
 ```
 
 
-After having the blocks added and the configuration set it is required to have the traits added inside the Entity(Laravel Model).
+After having the blocks added and the configuration set it is required to have the traits added inside your module(Laravel Model).
 Add the corresponding traits to your model and repository, respectively `HasBlocks` and `HandleBlocks`.
 
 filename: ```app/Models/Article.php```
@@ -1442,8 +1441,8 @@ class ArticleRepository extends ModuleRepository
 
 #### How to add Repeater blocks
 Lets say that it is requested to have an Accordion on Articles, where each item should have a _Header_ and a _Description_.
-This accordion can be moved around along with the rest of the Block Editors.
-On the Article(entity) form we have:
+This accordion can be moved around along with the rest of the blocks.
+On the Article (module) form we have:
 
 filename: ```views/admin/articles/form.blade.php```
 ```php
@@ -1451,8 +1450,8 @@ filename: ```views/admin/articles/form.blade.php```
 
 @section('contentFields')
     @formField('input', [
-        'name' => 'title',
-        'label' => 'Title',
+        'name' => 'description',
+        'label' => 'Description',
     ])
 ...
     @formField('block_editor')
@@ -1460,7 +1459,7 @@ filename: ```views/admin/articles/form.blade.php```
 
 ```
 
-- Add the *container block* it should be something like:
+- Inside the *container block* file, add a repeater form field:
 
   filename: ```admin/blocks/accordion.blade.php```
 ```php
@@ -1557,7 +1556,7 @@ filename: ```views/admin/articles/form.blade.php```
 - Not adding the *item block* to the _repeaters_ section.
 
 #### How to add Browser Fields
-If you are requested to enable the possibility to add a related model, then the Browser fields are the match.
+If you are requested to enable the possibility to add a related model, then the browser fields are the match.
 If you have an Article that can have related products.
 
 On the Article(entity) form we have:
@@ -1568,8 +1567,8 @@ filename: ```views/admin/articles/form.blade.php```
 
 @section('contentFields')
     @formField('input', [
-        'name' => 'title',
-        'label' => 'Title',
+        'name' => 'description',
+        'label' => 'Description',
     ])
 ...
     @formField('block_editor')
@@ -1621,7 +1620,7 @@ filename: ```views/admin/blocks/products.blade.php```
     ]
 ```
 
-#### How to render blocks in the FE
+#### Rendering blocks
 As long as you have access to a model instance that uses the HasBlocks trait in a view, you can call the `renderBlocks` helper on it to render the list of blocks that were created from the CMS. By default, this function will loop over all the blocks and their child blocks and render a Blade view located in `resources/views/site/blocks` with the same name as the block key you specified in your CMS toolkit configuration and module form. 
 
 In the frontend templates, you can call the `renderBlocks` helper like this:
@@ -1630,10 +1629,16 @@ In the frontend templates, you can call the `renderBlocks` helper like this:
 {!! $item->renderBlocks() !!}
 ```
 
+If you want to render child blocks (when using repeaters) inside the parent block, you can do the following:
+
+```php
+{!! $work->renderBlocks(false) !!}
+```
+
 If you need to swap out a block view for a specific module (let’s say you used the same block in 2 modules of the CMS but need different rendering), you can do the following:
 
 ```php
-{!! $work->renderBlocks([
+{!! $work->renderBlocks(true, [
   'block-type' => 'view.path',
   'block-type-2' => 'another.view.path'
 ]) !!}
@@ -1652,6 +1657,7 @@ To give an exemple:
 ```php
 {{ $block->image('mediaFieldName', 'cropNameFromBlocksConfig') }}
 {{ $block->images('mediaFieldName', 'cropNameFromBlocksConfig')}}
+```
 
 ### Media Library
 >![screenshot](_media/medialibrary.png)
