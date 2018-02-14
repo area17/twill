@@ -2,6 +2,10 @@
 
 @section('appTypeClass', 'app--form')
 
+@if($search ?? false)
+@section('globalNavSearch', 'true')
+@endif
+
 @php
     $permalink = $permalink ?? true;
     $editor = $editor ?? false;

@@ -6,6 +6,12 @@
 
 @section('appTypeClass', 'app--dashboard')
 
+@section('primaryNavigation')
+  <div class="dashboard__search" id="searchApp" v-cloak>
+    <a17-search endpoint="http://www.mocky.io/v2/5a7b81d43000004b0028bf3d" :type="'dashboard'"></a17-search>
+  </div>
+@stop
+
 @section('content')
     <div class="dashboard">
         <a17-shortcut-creator :entities="[ { label: 'Projects', singular: 'Project', number: 2257, url: '/templates/listing' }, { label: 'News articles', singular: 'News article', number: 9434, url: '/templates/listing' }, { label: 'People', singular: 'Member', number: 46, url: '/templates/listing' } ]"></a17-shortcut-creator>

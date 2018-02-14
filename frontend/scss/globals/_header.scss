@@ -61,7 +61,8 @@ $height__nav: 60px;
 
 .header__title,
 .header__nav,
-.header__user {
+.header__user,
+.header__search {
   height:$height__nav;
   line-height:$height__nav;
 
@@ -183,4 +184,53 @@ $height__nav: 60px;
   &:hover {
     color:$color__background;
   }
+}
+
+.header__search__toggle {
+  display: inline-block;
+  width: 47px;
+  padding-left: 26px;
+  padding-right: 0;
+  text-align: right;
+
+  .icon {
+    position: relative;
+    top: 2px;
+    right: 2px;
+    width: 20px;
+    height: 20px;
+    color: $color__text--light;
+
+    &.icon--search {
+      top: 4px;
+      right: 0;
+    }
+  }
+
+  &:hover .icon {
+    color: $color__background;
+  }
+}
+
+.dashboard__search {
+  background: $color__overlay--header;
+}
+
+.search__positioner[v-cloak] {
+  display: none;
+}
+
+.search__positioner,
+.search__overlay {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 60px);
+  z-index: $zindex__search;
+}
+
+.search__overlay {
+  background: rgba($color__overlay--header, 0.5);
+  z-index: $zindex__search - 1;
 }

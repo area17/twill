@@ -13,6 +13,11 @@ $height__nav: 60px;
   background: $color__nav;
   overflow:hidden;
   height:60px;
+
+  .s--search & {
+    transition: background-color 0.14s $bezier__bounce;
+    background: black;
+  }
 }
 
 .nav__list {
@@ -22,6 +27,11 @@ $height__nav: 60px;
   height:60px + 50px;
   overflow:hidden;
   overflow-x:auto;
+
+  .s--search & {
+    transition: all 0.14s $bezier__bounce;
+    visibility: hidden;
+  }
 }
 
 .nav__item {

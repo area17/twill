@@ -2,6 +2,10 @@
 
 @section('appTypeClass', 'app--listing')
 
+@if($search ?? false)
+@section('globalNavSearch', 'true')
+@endif
+
 @php
     $translate = $translate ?? false;
     $translateTitle = $translateTitle ?? $translate ?? false;

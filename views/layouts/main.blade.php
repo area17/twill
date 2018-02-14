@@ -19,11 +19,29 @@
                     <div class="header__user" id="headerUser" v-cloak>
                         @partialView(($moduleName ?? null), 'navigation._user')
                     </div>
+                    @hasSection('globalNavSearch')
+                      <div class="header__search" id="searchApp">
+                        <a href="#" class="header__search__toggle" @click.prevent="toggleSearch">
+                          <span v-svg symbol="search" v-show="!open"></span>
+                          <span v-svg symbol="close_modal" v-show="open"></span>
+                        </a>
+                        <transition name="fade_search-overlay" @after-enter="afterAnimate">
+                          <div class="search__positioner" v-show="open" v-cloak>
+                            <div class="search__overlay" @click="toggleSearch"></div>
+                            <a17-search endpoint="http://www.mocky.io/v2/5a7b81d43000004b0028bf3d" :open="open" :opened="opened"></a17-search>
+                          </div>
+                        </transition>
+                      </div>
+                    @endif
                 </div>
             </header>
-            @partialView(($moduleName ?? null), 'navigation._primary_navigation')
-            @partialView(($moduleName ?? null), 'navigation._breadcrumb')
-            {{-- TODO secondary navigation : need Back-end logic : @partialView(($moduleName ?? null), 'navigation._secondary_navigation') --}}
+            @hasSection('primaryNavigation')
+                @yield('primaryNavigation')
+            @else
+                @partialView(($moduleName ?? null), 'navigation._primary_navigation')
+                @partialView(($moduleName ?? null), 'navigation._breadcrumb')
+                {{-- TODO secondary navigation : need Back-end logic : @partialView(($moduleName ?? null), 'navigation._secondary_navigation') --}}
+            @endif
             <section class="main">
                 <div class="app @yield('appTypeClass')" id="app" v-cloak>
                     @yield('content')
