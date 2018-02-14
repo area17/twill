@@ -4,7 +4,7 @@
       <div class="search__overlay search__overlay--dashboard" v-show="readyToShowResult" @click="toggleSearch"></div>
     </transition>
     <div class="search__input">
-      <input type="search" class="form__input" ref="search" name="search" autocomplete="off" v-model="searchValue" :placeholder="placeholder" @input="onSearchInput" />
+      <input type="search" class="form__input" ref="search" name="search" autocomplete="off" v-model="searchValue" :placeholder="placeholder" />
       <span v-svg symbol="search"></span>
     </div>
     <transition name="fade_search-overlay">
@@ -66,6 +66,10 @@
         type: String,
         default: 'Search everything…'
       },
+      initialValue: {
+        type: String,
+        default: ''
+      },
       endpoint: {
         type: String,
         default: null
@@ -77,10 +81,40 @@
     },
     data: function () {
       return {
-        searchValue: null,
+        value: this.initialValue,
         loading: false,
         readyToShowResult: false,
         searchResults: []
+      }
+    },
+    computed: {
+      searchValue: {
+        // getter
+        get: function () {
+          return this.value
+        },
+        // setter
+        set: debounce(function (newValue) {
+          this.value = newValue
+
+          if (this.value && this.value.length > 2) {
+            if (this.type === 'dashboard') {
+              htmlClasses.forEach((klass) => {
+                html.classList.add(klass)
+              })
+            }
+            this.fetchSearchResults()
+          } else {
+            if (this.type === 'dashboard') {
+              htmlClasses.forEach((klass) => {
+                html.classList.remove(klass)
+              })
+            }
+            this.readyToShowResult = false
+            this.searchResults = []
+            this.setLastFocusElement()
+          }
+        }, 300)
       }
     },
     watch: {
@@ -104,7 +138,7 @@
         } else {
           this.$refs.search.blur()
           this.searchResults = []
-          this.searchValue = null
+          this.searchValue = ''
           this.readyToShowResult = false
           document.removeEventListener('keydown', this.handleKeyDown, false)
         }
@@ -164,26 +198,7 @@
             self.loading = false
           }
         })
-      },
-      onSearchInput: debounce(function (event) {
-        if (this.searchValue && this.searchValue.length > 2) {
-          if (this.type === 'dashboard') {
-            htmlClasses.forEach((klass) => {
-              html.classList.add(klass)
-            })
-          }
-          this.fetchSearchResults()
-        } else {
-          if (this.type === 'dashboard') {
-            htmlClasses.forEach((klass) => {
-              html.classList.remove(klass)
-            })
-          }
-          this.readyToShowResult = false
-          this.searchResults = []
-          this.setLastFocusElement()
-        }
-      }, 300)
+      }
     }
   }
 </script>
