@@ -4,7 +4,7 @@
       <div class="search__overlay search__overlay--dashboard" v-show="readyToShowResult" @click="toggleSearch"></div>
     </transition>
     <div class="search__input">
-      <input type="search" class="form__input" ref="search" name="search" autocomplete="off" :placeholder="placeholder" @input="onSearchInput" />
+      <input type="search" class="form__input" ref="search" name="search" autocomplete="off" :value="searchValue" :placeholder="placeholder" @input="onSearchInput" />
       <span v-svg symbol="search"></span>
     </div>
     <transition name="fade_search-overlay">
