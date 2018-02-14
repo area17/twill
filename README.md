@@ -873,7 +873,7 @@ $this->messagesForTranslatedFields([
 
 #### Repositories
 
-Depending on the model feature, include one or multiple of those traits: `HandleTranslations`, `HandleSlugs`, `HandleMedias`, `HandleFiles`, `HandleRevisions`.
+Depending on the model feature, include one or multiple of those traits: `HandleTranslations`, `HandleSlugs`, `HandleMedias`, `HandleFiles`, `HandleRevisions`, `HandleBlocks`.
 
 Repositories allows you to modify the default behavior of your models by providing some entry points in the form of methods that you might implement:
 
@@ -930,11 +930,11 @@ public function getFormFields($object) {
     // don't forget to call the parent getFormFields function
     $fields = parent::getFormFields($object);
 
-    // get oneToMany relationship for select multiple input
-    $fields = $this->getFormFieldsForMultiSelect($fields, 'relationName');
+    // get fields for a browser
+    $fields['browsers']['relationName'] = $this->getFormFieldsForBrowser($object, 'relationName');
 
     // get fields for a repeater
-    $fields['externalLinks'] = $this->getFormFieldsForRepeater($object, 'externalLinks');
+    $fields = $this->getFormFieldsForRepeater($object, 'relationName');
 
     // return fields
     return $fields
@@ -978,16 +978,25 @@ public function prepareFieldsBeforeSave($object, $fields) {
 // implement the afterSave method
 public function afterSave($object, $fields) {
     // for exemple, to sync a many to many relationship
-    // $object->relationName()->sync($fields['relationName'] ?? []);
+    $this->updateMultiSelect($object, $fields, 'relationName');
+    
+    // which will simply run the following for you
+    $object->relationName()->sync($fields['relationName'] ?? []);
+    
     // or, to save a oneToMany relationship
-    // $this->updateOneToMany($object, $fields, 'relationName', 'formFieldName', 'relationAttribute')
+    $this->updateOneToMany($object, $fields, 'relationName', 'formFieldName', 'relationAttribute')
+    
     // or, to save a belongToMany relationship used with the browser field
-    $this->updateOrderedBelongsTomany($object, $fields, 'people');
-    // or, to save a belongToMany relationship used with the repeater field
-    $this->updateRepeaterMany($object, $fields, 'externalLinks', false);
+    $this->updateBrowser($object, $fields, 'relationName');
+    
     // or, to save a hasMany relationship used with the repeater field
-    $this->updateRepeater($object, $fields, 'partnerVideos');
-    parent::afterSave($object, $fields);}
+    $this->updateRepeater($object, $fields, 'relationName');
+    
+    // or, to save a belongToMany relationship used with the repeater field
+    $this->updateRepeaterMany($object, $fields, 'relationName', false);
+    
+    parent::afterSave($object, $fields);
+}
 
 ```
 
@@ -1000,7 +1009,14 @@ public function afterSave($object, $fields) {
 public function hydrate($object, $fields)
 {
     // for exemple, to hydrate a belongToMany relationship used with the browser field
-    $this->hydrateOrderedBelongsTomany($object, $fields, 'people');
+    $this->hydrateBrowser($object, $fields, 'relationName');
+
+    // or a multiselect
+    $this->hydrateMultiSelect($object, $fields, 'relationName');
+
+    // or a repeater
+    $this->hydrateRepeater($object, $fields, 'relationName');
+
     return parent::hydrate($object, $fields);
 }
 ```
