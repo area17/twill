@@ -52,7 +52,7 @@
         const submitMode = document.activeElement.name
 
         this.$nextTick(function () {
-          this.$store.dispatch('updateFormInListing', this.actionForm).then(() => {
+          this.$store.dispatch('updateFormInListing', { endpoint: this.actionForm, redirect: submitMode !== 'create-another'}).then(() => {
             self.$nextTick(function () {
               if (submitMode === 'create-another') {
                 this.$store.commit('emptyFormField', true)

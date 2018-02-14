@@ -10,7 +10,7 @@ export default {
     })
   },
   post (endpoint, data, callback, errorCallback) {
-    axios.post(endpoint).then(function (resp) {
+    axios.post(endpoint, data).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)

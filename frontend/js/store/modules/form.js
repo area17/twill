@@ -107,17 +107,17 @@ const actions = {
       })
     })
   },
-  updateFormInListing ({ commit, state, getters, rootState }, endpoint) {
+  updateFormInListing ({ commit, state, getters, rootState }, options) {
     return new Promise((resolve, reject) => {
       commit(types.CLEAR_FORM_ERRORS)
       commit(types.CLEAR_NOTIF, 'error')
 
       const data = getFormFields(rootState)
 
-      api.post(endpoint, data, function (successResponse) {
+      api.post(options.endpoint, data, function (successResponse) {
         commit(types.UPDATE_FORM_LOADING, false)
 
-        if (successResponse.data.hasOwnProperty('redirect')) {
+        if (successResponse.data.hasOwnProperty('redirect') && options.redirect) {
           window.location.replace(successResponse.data.redirect)
         }
 

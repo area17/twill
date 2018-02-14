@@ -201,7 +201,14 @@ abstract class ModuleController extends Controller
 
         $this->fireEvent($input);
 
-        return $this->redirectToForm($item->id, [$parentModuleId]);
+        Session::put($this->moduleName . "_retain", true);
+
+        return $this->respondWithRedirect(moduleRoute(
+            $this->moduleName,
+            $this->routePrefix,
+            "edit",
+            array_filter([$parentModuleId]) + ['id' => $item->id]
+        ));
     }
 
     public function show($id)
