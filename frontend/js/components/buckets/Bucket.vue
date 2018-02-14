@@ -79,7 +79,7 @@
       },
       emptyBuckets: {
         type: String,
-        default: 'No files selected.'
+        default: 'No items selected.'
       },
       emptySource: {
         type: String,

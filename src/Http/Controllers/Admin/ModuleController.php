@@ -332,20 +332,20 @@ abstract class ModuleController extends Controller
     {
         if ($this->repository->delete($submoduleId ?? $id)) {
             $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' moved to Trash!');
+            return $this->respondWithSuccess($this->modelTitle . ' moved to trash!');
         }
 
-        return $this->respondWithError($this->modelTitle . ' was not moved to Trash. Something wrong happened!');
+        return $this->respondWithError($this->modelTitle . ' was not moved to trash. Something wrong happened!');
     }
 
     public function bulkDelete()
     {
         if ($this->repository->bulkDelete(explode(',', request('ids')))) {
             $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' items moved to Trash!');
+            return $this->respondWithSuccess($this->modelTitle . ' items moved to trash!');
         }
 
-        return $this->respondWithError($this->modelTitle . ' items were not moved to Trash. Something wrong happened!');
+        return $this->respondWithError($this->modelTitle . ' items were not moved to trash. Something wrong happened!');
     }
 
     public function restore()
