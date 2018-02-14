@@ -14,7 +14,9 @@
           <a href="#" @click.prevent="deleteBlock(index)" class="f--small f--note f--underlined">Delete</a>
         </span>
       </div>
-      <div class="editorSidebar__body"><component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes"><!-- dynamic components --></component></div>
+      <div class="editorSidebar__body">
+        <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes" key="`editor_${block.type}_${block.id}`"></component>
+      </div>
     </div>
     <div class="editorSidebar__list" v-if="!hasBlockActive">
       <h4 class="editorSidebar__title"><slot></slot></h4>

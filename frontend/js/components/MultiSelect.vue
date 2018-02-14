@@ -3,8 +3,8 @@
     <div class="multiselector">
       <div class="multiselector__grid">
         <div class="multiselector__item" v-for="(checkbox, index) in options">
-          <input class="multiselector__checkbox" type="checkbox" :value="checkbox.value" :name="name" :id="uniqId(checkbox.value, index)" :disabled="checkbox.disabled || disabled" v-model="checkedValue">
-          <label class="multiselector__label" :for="uniqId(checkbox.value, index)">
+          <input class="multiselector__checkbox" :class="{'multiselector__checkbox--checked': checkedValue.includes(checkbox.value) }" type="checkbox" :value="checkbox.value" :name="name + '[' + randKey + ']'" :id="uniqId(checkbox.value, index)" :disabled="checkbox.disabled || disabled" v-model="checkedValue">
+          <label class="multiselector__label" :for="uniqId(checkbox.value, index)" @click.prevent="changeCheckbox(checkbox.value)">
             <span class="multiselector__icon"><span v-svg symbol="check"></span></span>
             {{ checkbox.label }}
           </label>
@@ -30,6 +30,9 @@
         if (!isEqual(newValue, this.checkedValue)) {
           this.checkedValue = newValue
         }
+      },
+      changeCheckbox: function (newValue) {
+
       },
       uniqId: function (value, index) {
         return this.name + '_' + value + '-' + (this.randKey * (index + 1))
@@ -141,14 +144,16 @@
     border-color: $color__fborder--hover;
   }
 
+  // .multiselector__checkbox:checked + .multiselector__label
   .multiselector__label:hover,
   .multiselector__checkbox:hover   + .multiselector__label,
   .multiselector__checkbox:focus   + .multiselector__label,
-  .multiselector__checkbox:checked + .multiselector__label {
+  .multiselector__checkbox--checked + .multiselector__label {
     color:$color__text;
   }
 
-  .multiselector__checkbox:checked + .multiselector__label .multiselector__icon {
+  //.multiselector__checkbox:checked + .multiselector__label .multiselector__icon,
+  .multiselector__checkbox--checked + .multiselector__label .multiselector__icon {
     border-color: $color__ok;
     background-color: $color__ok;
   }
@@ -162,7 +167,8 @@
     border-color: $color__border--focus;
   }
 
-  .multiselector__checkbox:focus:checked + .multiselector__label .multiselector__icon {
+  // .multiselector__checkbox:focus:checked + .multiselector__label .multiselector__icon,
+  .multiselector__checkbox--checked:focus + .multiselector__label .multiselector__icon {
     border-color: $color__ok;
   }
 
@@ -178,8 +184,9 @@
     transition: background-color .25s $bezier__bounce;
   }
 
+  // .multiselector__checkbox:checked
   .multiselector__checkbox:hover,
-  .multiselector__checkbox:checked {
+   .multiselector__checkbox--checked{
     + .multiselector__label + .multiselector__bg {
       background-color:$color__ultralight;
     }

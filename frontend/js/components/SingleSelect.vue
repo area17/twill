@@ -3,8 +3,8 @@
     <div class="singleselector">
       <div class="singleselector__grid">
         <div class="singleselector__item" v-for="(radio, index) in options">
-          <input class="singleselector__radio" type="radio" :value="radio.value" :name="name" :id="uniqId(radio.value, index)" :disabled="radio.disabled || disabled" v-model="selectedValue">
-          <label class="singleselector__label" :for="uniqId(radio.value, index)">{{ radio.label }}</label>
+          <input class="singleselector__radio" type="radio" :value="radio.value" :name="name + '[' + randKey + ']'" :id="uniqId(radio.value, index)" :disabled="radio.disabled || disabled" :class="{'singleselector__radio--checked': radio.value == selectedValue }">
+          <label class="singleselector__label" :for="uniqId(radio.value, index)" @click.prevent="changeRadio(radio.value)">{{ radio.label }}</label>
           <span class="singleselector__bg"></span>
         </div>
       </div>
@@ -47,18 +47,22 @@
           return this.value
         },
         set: function (value) {
-          this.value = value
+          if (value !== this.value) {
+            this.value = value
 
-          // see formStore mixin
-          this.saveIntoStore()
-
-          this.$emit('change', value)
+            // see formStore mixin
+            this.saveIntoStore(value)
+            this.$emit('change', value)
+          }
         }
       }
     },
     methods: {
       updateFromStore: function (newValue) { // called from the formStore mixin
         this.value = newValue
+      },
+      changeRadio: function (value) {
+        this.selectedValue = value
       },
       uniqId: function (value, index) {
         return this.name + '_' + value + '-' + (this.randKey * (index + 1))
@@ -171,19 +175,22 @@
     border-color: $color__fborder--hover;
   }
 
+  // .singleselector__radio:checked  + .singleselector__label,
   .singleselector__label:hover,
-  .singleselector__radio:hover   + .singleselector__label,
-  .singleselector__radio:focus   + .singleselector__label,
-  .singleselector__radio:checked + .singleselector__label {
+  .singleselector__radio:hover    + .singleselector__label,
+  .singleselector__radio:focus    + .singleselector__label,
+  .singleselector__radio--checked + .singleselector__label {
     color:$color__text;
   }
 
-  .singleselector__radio:checked + .singleselector__label::before {
+  // .singleselector__radio:checked + .singleselector__label::before,
+  .singleselector__radio--checked + .singleselector__label::before {
     border-color: $color__blue;
     background-color: $color__blue;
   }
 
-  .singleselector__radio:checked + .singleselector__label::after {
+  // .singleselector__radio:checked + .singleselector__label::after,
+  .singleselector__radio--checked + .singleselector__label::after {
     opacity: 1;
     transform: scale(.33);
     background-color: $color__background;
@@ -198,7 +205,8 @@
     border-color: $color__border--focus;
   }
 
-  .singleselector__radio:focus:checked + .singleselector__label::before {
+  // .singleselector__radio:focus:checked + .singleselector__label::before,
+  .singleselector__radio--checked:focus + .singleselector__label::before {
     border-color: $color__blue;
   }
 
@@ -214,8 +222,9 @@
     transition: background-color .25s $bezier__bounce;
   }
 
+  // .singleselector__radio:checked,
   .singleselector__radio:hover,
-  .singleselector__radio:checked {
+  .singleselector__radio--checked {
     + .singleselector__label + .singleselector__bg {
       background:$color__ultralight;
     }
