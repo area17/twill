@@ -17,6 +17,10 @@
   export default {
     name: 'A17Uploader',
     props: {
+      /**
+       * Required to configure the uploader accept files
+       * @type {string}
+       */
       type: {
         type: String,
         required: true
@@ -57,7 +61,8 @@
             onError: this._onErrorCallback.bind(this),
             onComplete: this._onCompleteCallback.bind(this),
             onAllComplete: this._onAllCompleteCallback.bind(this),
-            onStatusChange: this._onStatusChangeCallback.bind(this)
+            onStatusChange: this._onStatusChangeCallback.bind(this),
+            onTotalProgress: this._onTotalProgressCallback.bind(this)
           },
           text: {
             fileInputTitle: 'Browse...'
@@ -129,6 +134,9 @@
       loadingError: function (media) {
         this.$store.commit('errorUploadMedia', media)
       },
+      uploadProgress: function (uploadProgress) {
+        this.$store.commit('progressUpload', uploadProgress)
+      },
       _onCompleteCallback (id, name, responseJSON, xhr) {
         const index = this.loadingMedias.findIndex((m) => m.id === this._uploader.methods.getUuid(id))
 
@@ -141,6 +149,7 @@
       _onAllCompleteCallback (succeeded, failed) {
         // reset folder name for next upload session
         this.unique_folder_name = null
+        this.uploadProgress(0)
       },
       _onSubmitCallback (id, name) {
         this.$emit('clear')
@@ -215,6 +224,10 @@
             this.loadingProgress(media)
           }
         }
+      },
+      _onTotalProgressCallback (totalUploadedBytes, totalBytes) {
+        const uploadProgress = Math.floor(totalUploadedBytes / totalBytes * 100)
+        this.uploadProgress(uploadProgress)
       },
       _onDropError (errorCode, errorData) {
         console.error(errorCode, errorData)

@@ -43,6 +43,11 @@ const state = {
    */
   loading: [],
   /**
+   * The progress value of an upload. When upload is ended, this value is reset to 0.
+   * @type {number}
+   */
+  uploadProgress: 0,
+  /**
    * The endpoint to get, add and validate tags on the fly (ajax)
    * @type {string}
    */
@@ -166,6 +171,9 @@ const mutations = {
         progress: media.progress
       })
     }
+  },
+  [types.PROGRESS_UPLOAD] (state, uploadProgress) {
+    state.uploadProgress = uploadProgress
   },
   [types.DONE_UPLOAD_MEDIA] (state, media) {
     state.loading.forEach(function (m, index) {
