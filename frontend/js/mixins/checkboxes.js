@@ -48,6 +48,7 @@ export default {
   },
   methods: {
     formatValue: function (newVal, oldval) {
+      let self = this
       if (!newVal) return
       if (!oldval) return
 
@@ -55,9 +56,9 @@ export default {
       const isMin = (newVal.length < this.min && this.min > 0)
 
       if (isMax || isMin) {
-        this.$nextTick(function () {
-          this.checkedValue = oldval
-        })
+        if (!isEqual(oldval, self.checkedValue)) {
+          self.checkedValue = oldval
+        }
       }
     }
   },
