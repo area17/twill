@@ -42,7 +42,7 @@
             <a17-uploader @loaded="addMedia" @clear="clearSelectedMedias" :type="type"></a17-uploader>
             <div class="medialibrary__list-items">
               <a17-itemlist :items="fullMedias" :selectedItems="selectedMedias" @change="updateSelectedMedias" v-if="type === 'file'"></a17-itemlist>
-              <a17-mediagrid :medias="fullMedias" :selectedMedias="selectedMedias" @change="updateSelectedMedias" v-else></a17-mediagrid>
+              <a17-mediagrid :medias="fullMedias" :selectedMedias="selectedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias" v-else></a17-mediagrid>
               <a17-spinner v-if="loading" class="medialibrary__spinner">Loading&hellip;</a17-spinner>
             </div>
           </div>
@@ -141,7 +141,7 @@
         // select it
         self.updateSelectedMedias(media.id)
       },
-      updateSelectedMedias: function (id) {
+      updateSelectedMedias: function (id, shift = false) {
         const alreadySelectedMedia = this.selectedMedias.filter(function (media) {
           return media.id === id
         })
@@ -151,12 +151,39 @@
           if (this.max === 1) this.clearSelectedMedias()
           if (this.selectedMedias.length >= this.max && this.max > 0) return
 
-          const mediaToSelect = this.fullMedias.filter(function (media) {
-            return media.id === id
-          })
+          if (shift && this.selectedMedias.length > 0) {
+            const lastSelectedMedia = this.selectedMedias[this.selectedMedias.length - 1]
+            let lastSelectedMediaIndex = this.fullMedias.findIndex((media) => media.id === lastSelectedMedia.id)
+            let selectedMediaIndex = this.fullMedias.findIndex((media) => media.id === id)
+            if (selectedMediaIndex === -1 && lastSelectedMediaIndex === -1) return
 
-          // Add one media to the selected media
-          if (mediaToSelect.length) this.selectedMedias.push(mediaToSelect[0])
+            let start = null
+            let end = null
+            if (lastSelectedMediaIndex < selectedMediaIndex) {
+              start = lastSelectedMediaIndex + 1
+              end = selectedMediaIndex + 1
+            } else {
+              start = selectedMediaIndex
+              end = lastSelectedMediaIndex
+            }
+
+            const selectedMedias = this.fullMedias.slice(start, end)
+
+            selectedMedias.forEach((media) => {
+              if (this.selectedMedias.length >= this.max && this.max > 0) return
+              const index = this.selectedMedias.findIndex((m) => m.id === media.id)
+              if (index === -1) {
+                this.selectedMedias.push(media)
+              }
+            })
+          } else {
+            const mediaToSelect = this.fullMedias.filter(function (media) {
+              return media.id === id
+            })
+
+            // Add one media to the selected media
+            if (mediaToSelect.length) this.selectedMedias.push(mediaToSelect[0])
+          }
         } else {
           // Remove one item from the selected media
           this.selectedMedias = this.selectedMedias.filter(function (media) {

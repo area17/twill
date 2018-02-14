@@ -7,7 +7,7 @@
       </span>
     </div>
     <div class="mediagrid__item" v-for="(media, index) in medias" :key="index">
-      <span class="mediagrid__button" :class="{ 's--picked': isSelected(media.id) }" @click="toggleSelection(media.id)"><img :src="media.src" class="mediagrid__img" /></span>
+      <span class="mediagrid__button" :class="{ 's--picked': isSelected(media.id) }" @click.exact="toggleSelection(media.id)" @click.shift.exact="shiftToggleSelection(media.id)"><img :src="media.src" class="mediagrid__img" /></span>
     </div>
   </div>
 </template>
@@ -51,6 +51,9 @@
       },
       toggleSelection: function (id) {
         this.$emit('change', id)
+      },
+      shiftToggleSelection: function (id) {
+        this.$emit('shiftChange', id, true)
       }
     }
   }
