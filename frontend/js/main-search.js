@@ -10,7 +10,8 @@ Vue.use(A17Config)
 // components
 import a17Search from '@/components/Search.vue'
 
-const A17SearchApp = new Vue({
+const idSearch = 'searchApp'
+const vueSearchApp = {
   el: '#searchApp',
   components: {
     'a17-search': a17Search
@@ -44,6 +45,7 @@ const A17SearchApp = new Vue({
   },
   created: function () {
   }
-})
+}
 
+const A17SearchApp = document.getElementById(idSearch) ? new Vue(vueSearchApp) : false
 export default A17SearchApp
