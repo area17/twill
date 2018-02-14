@@ -39,10 +39,7 @@ if (config('cms-toolkit.enabled.buckets')) {
         Route::group(['prefix' => $routePrefix, 'as' => $routePrefix . '.'], function () use ($bucketSectionKey) {
             Route::get($bucketSectionKey, ['as' => $bucketSectionKey, 'uses' => 'FeaturedController@index']);
             Route::group(['prefix' => $bucketSectionKey, 'as' => $bucketSectionKey . '.'], function () {
-                Route::put('{bucket}', ['as' => 'add', 'uses' => 'FeaturedController@add']);
-                Route::put('{bucket}/remove', ['as' => 'remove', 'uses' => 'FeaturedController@remove']);
-                Route::put('{bucket}/sortable', ['as' => 'sortable', 'uses' => 'FeaturedController@sortable']);
-                Route::put('{bucket}/feature', ['as' => 'feature', 'uses' => 'FeaturedController@feature']);
+                Route::post('save', ['as' => 'save', 'uses' => 'FeaturedController@save']);
             });
 
         });

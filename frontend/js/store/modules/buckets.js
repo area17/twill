@@ -2,6 +2,7 @@ import bucketsAPI from '../api/buckets'
 import * as types from '../mutation-types'
 
 const state = {
+  saveUrl: window.STORE.buckets.saveUrl || '',
   dataSources: window.STORE.buckets.dataSources || {},
   source: window.STORE.buckets.source || {},
   /**
@@ -69,49 +70,30 @@ const actions = {
       commit(types.UPDATE_BUCKETS_MAX_PAGE, resp.maxPage)
     })
   },
-  addToBucket ({commit, state}, data) {
-    const bucket = state.buckets[data.index]
+  saveBuckets ({commit, state}) {
+    const buckets = {}
 
-    bucketsAPI.add(bucket.addUrl, {
-      id: data.item.id,
-      type: data.item.content_type.value,
-      starred: data.item.starred
+    state.buckets.forEach((bucket) => {
+      const children = []
+      bucket.children.forEach((child) => {
+        children.push({
+          id: child.id,
+          type: child.content_type.value,
+          starred: child.starred
+        })
+      })
+      buckets[bucket.id] = children
     })
-  },
-  deleteFromBucket ({commit, state}, data) {
-    const bucket = state.buckets[data.index]
-    const bucketItem = bucket['children'][data.itemIndex]
 
-    bucketsAPI.delete(bucket.removeUrl, {
-      id: bucketItem['id'],
-      type: bucketItem['content_type']['value']
-    }, () => {
-      commit(types.DELETE_FROM_BUCKET, data)
-    })
-  },
-  toggleFeaturedInBucket ({ commit, state }, data) {
-    const bucket = state.buckets[data.index]
-    const bucketItem = bucket['children'][data.itemIndex]
-
-    bucketsAPI.toggleFeatured(bucket.toggleFeaturedUrl, {
-      id: bucketItem['id'],
-      type: bucketItem['content_type']['value']
-    }, () => {
-      commit(types.TOGGLE_FEATURED_IN_BUCKET, data)
-    })
-  },
-  reorderBucket ({ commit, state }, data) {
-    commit(types.REORDER_BUCKET_LIST, data)
-
-    const bucket = state.buckets[data.bucketIndex]
-
-    bucketsAPI.reorder(bucket.reorderUrl, {
-      buckets: bucket['children'].map(bucketItem => {
-        return {
-          id: bucketItem['id'],
-          type: bucketItem['content_type']['value'],
-          starred: bucketItem['starred']
-        }
+    bucketsAPI.save(state.saveUrl, {buckets: buckets}, (successResponse) => {
+      // TODO: Show notification success
+      commit(types.SET_NOTIF, {
+        message: 'Features saved. All good!',
+        variant: 'success'})
+    }, (errorResponse) => {
+      commit(types.SET_NOTIF, {
+        message: 'Your submission could not be validated, please fix and retry',
+        variant: 'error'
       })
     })
   }

@@ -11,35 +11,13 @@ export default {
     })
   },
 
-  add: function (endpoint, params, callback) {
-    axios.put(endpoint, params).then(function (resp) {
-      if (callback && typeof callback === 'function') callback()
+  save (endpoint, params, callback, errorCallback) {
+    axios.post(endpoint, params).then(function (resp) {
+      if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       // error callback
-    })
-  },
-
-  toggleFeatured (endpoint, params, callback) {
-    axios.put(endpoint, params).then(function (resp) {
-      if (callback && typeof callback === 'function') callback()
-    }, function (resp) {
-      // error callback
-    })
-  },
-
-  reorder (endpoint, params, callback) {
-    axios.put(endpoint, params).then(function (resp) {
-      if (callback && typeof callback === 'function') callback()
-    }, function (resp) {
-      // error callback
-    })
-  },
-
-  delete (endpoint, params, callback) {
-    axios.put(endpoint, params).then(function (resp) {
-      if (callback && typeof callback === 'function') callback()
-    }, function (resp) {
-      // error callback
+      if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
+      console.warn('save request error.')
     })
   }
 }
