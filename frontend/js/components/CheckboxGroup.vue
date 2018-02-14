@@ -35,13 +35,11 @@
         this.updateValue(newValue)
       },
       updateValue: function (newValue) {
-        this.currentValue = newValue
+        this.checkedValue = newValue
       },
       changeValue: function (newValue) {
         if (!isEqual(newValue, this.currentValue)) {
           this.updateValue(newValue)
-          this.$emit('change', this.currentValue)
-          this.saveIntoStore(newValue)
         }
       }
     }

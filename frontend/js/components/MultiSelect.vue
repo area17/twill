@@ -16,6 +16,7 @@
 </template>
 
 <script>
+  import { isEqual } from 'lodash'
   import randKeyMixin from '@/mixins/randKey'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
@@ -24,25 +25,11 @@
   export default {
     name: 'A17Multiselect',
     mixins: [randKeyMixin, InputframeMixin, CheckboxMixin, FormStoreMixin],
-    computed: {
-      checkedValue: {
-        get: function () {
-          return this.currentValue
-        },
-        set: function (value) {
-          this.currentValue = value
-          this.$emit('change', value)
-        }
-      }
-    },
-    watch: {
-      currentValue: function (value) {
-        this.saveIntoStore(value)
-      }
-    },
     methods: {
       updateFromStore: function (newValue) { // called from the formStore mixin
-        this.currentValue = newValue
+        if (!isEqual(newValue, this.checkedValue)) {
+          this.checkedValue = newValue
+        }
       },
       uniqId: function (value, index) {
         return this.name + '_' + value + '-' + (this.randKey * (index + 1))

@@ -1,3 +1,5 @@
+import { isEqual } from 'lodash'
+
 export default {
   props: {
     name: {
@@ -17,9 +19,11 @@ export default {
       default: false
     },
     selected: {
+      type: Array,
       default: function () { return [] }
     },
     options: {
+      type: Array,
       default: function () { return [] }
     }
   },
@@ -28,16 +32,30 @@ export default {
       currentValue: this.selected
     }
   },
+  computed: {
+    checkedValue: {
+      get: function () {
+        return this.currentValue
+      },
+      set: function (value) {
+        if (!isEqual(value, this.currentValue)) {
+          this.currentValue = value
+          if (typeof this.saveIntoStore !== 'undefined') this.saveIntoStore(value)
+          this.$emit('change', value)
+        }
+      }
+    }
+  },
   methods: {
     formatValue: function (newVal, oldval) {
+      if (!newVal) return
+
       const isMax = (newVal.length > this.max && this.max > 0)
       const isMin = (newVal.length < this.min && this.min > 0)
 
       if (isMax || isMin) {
         this.$nextTick(function () {
-          this.currentValue = oldval
-          this.$emit('change', this.currentValue)
-          if (typeof this.saveIntoStore !== 'undefined') this.saveIntoStore(oldval)
+          this.checkedValue = oldval
         })
       }
     }
