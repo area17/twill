@@ -44,8 +44,6 @@ class FeaturedController extends Controller
         $buckets = $this->getFeaturedItemsByBucket($featuredSection, $featuredSectionKey);
         $firstSource = array_first($featuredSources);
 
-        $this->prepareSessionWithCurrentFeatures($buckets);
-
         return view('cms-toolkit::layouts.buckets', [
             'dataSources' => [
                 'selected' => array_first($contentTypes),
@@ -61,6 +59,7 @@ class FeaturedController extends Controller
             'bucketSourceTitle' => $featuredSection['sourceHeaderTitle'] ?? null,
             'bucketsSectionIntro' => $featuredSection['sectionIntroText'] ?? null,
             'restricted' => $featuredSection['restricted'] ?? true,
+            'saveUrl' => route("admin.featured.$featuredSectionKey.save"),
         ]);
     }
 
@@ -73,12 +72,8 @@ class FeaturedController extends Controller
                 'id' => $bucketKey,
                 'name' => $bucket['name'],
                 'max' => $bucket['max_items'],
-                'addUrl' => route("admin.$routePrefix.$featuredSectionKey.add", ['bucket' => $bucketKey]),
-                'removeUrl' => route("admin.$routePrefix.$featuredSectionKey.remove", ['bucket' => $bucketKey]),
                 'withToggleFeatured' => $bucket['with_starred_items'] ?? false,
                 'toggleFeaturedLabels' => $bucket['starred_items_labels'] ?? [],
-                'toggleFeaturedUrl' => route("admin.$routePrefix.$featuredSectionKey.feature", ['bucket' => $bucketKey]),
-                'reorderUrl' => route("admin.$routePrefix.$featuredSectionKey.sortable", ['bucket' => $bucketKey]),
                 'children' => Feature::where('bucket_key', $bucketKey)->with('featured')->get()->map(function ($feature) {
                     if (($item = $feature->featured) != null) {
                         return [
@@ -156,69 +151,10 @@ class FeaturedController extends Controller
         return $featuredSources;
     }
 
-    private function prepareSessionWithCurrentFeatures($buckets)
-    {
-        session()->forget('buckets');
-        collect($buckets)->each(function ($bucket) {
-            foreach ($bucket['children'] as $feature) {
-                session()->push("buckets." . $bucket['id'], [
-                    'id' => $feature['id'],
-                    'type' => $feature['content_type']['value'],
-                    'starred' => $feature['starred'] ?? false,
-                ]);
-            }
-        });
-    }
-
-    public function add($bucket)
-    {
-        session()->push("buckets.$bucket", request()->all());
-        $this->save();
-        return response()->json();
-    }
-
-    public function remove($bucket)
-    {
-        $currentBucket = session()->get("buckets.$bucket");
-
-        collect($currentBucket)->each(function ($bucketItem, $index) use (&$currentBucket) {
-            if ($bucketItem['id'] === request('id') && $bucketItem['type'] === request('type')) {
-                unset($currentBucket[$index]);
-            }
-        });
-
-        session()->put("buckets.$bucket", $currentBucket);
-        $this->save();
-        return response()->json();
-    }
-
-    public function feature($bucket)
-    {
-        $currentBucket = session()->get("buckets.$bucket");
-
-        collect($currentBucket)->each(function ($bucketItem, $index) use (&$currentBucket) {
-            if ($bucketItem['id'] === request('id') && $bucketItem['type'] === request('type')) {
-                $currentBucket[$index]['starred'] = !($currentBucket[$index]['starred'] ?? false);
-            }
-        });
-
-        session()->put("buckets.$bucket", $currentBucket);
-        $this->save();
-        return response()->json();
-    }
-
-    public function sortable($bucket)
-    {
-        if ($bucket != null && ($values = request('buckets')) && !empty($values)) {
-            session()->put("buckets.$bucket", $values);
-            $this->save();
-        }
-    }
-
     public function save()
     {
         DB::transaction(function () {
-            collect(session()->get('buckets'))->each(function ($bucketables, $bucketKey) {
+            collect(request('buckets'))->each(function ($bucketables, $bucketKey) {
                 Feature::where('bucket_key', $bucketKey)->delete();
                 foreach (($bucketables ?? []) as $position => $bucketable) {
                     Feature::create([

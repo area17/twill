@@ -10,6 +10,7 @@
 
 @section('initialStore')
     window.STORE.buckets = {
+        saveUrl: {!! json_encode($saveUrl) !!},
         items: {!! json_encode($items) !!},
         source: {!! json_encode($source) !!},
         dataSources: {!! json_encode($dataSources) !!},

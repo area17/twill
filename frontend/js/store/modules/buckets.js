@@ -2,6 +2,7 @@ import bucketsAPI from '../api/buckets'
 import * as types from '../mutation-types'
 
 const state = {
+  saveUrl: window.STORE.buckets.saveUrl || '',
   dataSources: window.STORE.buckets.dataSources || {},
   source: window.STORE.buckets.source || {},
   /**
@@ -78,16 +79,16 @@ const actions = {
         children.push({
           id: child.id,
           type: child.content_type.value,
-          starred: child.withToggleFeatured
+          starred: child.starred
         })
       })
       buckets[bucket.id] = children
     })
 
-    bucketsAPI.save('', {buckets: buckets}, (successResponse) => {
+    bucketsAPI.save(state.saveUrl, {buckets: buckets}, (successResponse) => {
       // TODO: Show notification success
       commit(types.SET_NOTIF, {
-        message: 'all saved',
+        message: 'Features saved. All good!',
         variant: 'success'})
     }, (errorResponse) => {
       commit(types.SET_NOTIF, {

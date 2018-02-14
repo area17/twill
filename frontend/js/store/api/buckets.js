@@ -11,40 +11,8 @@ export default {
     })
   },
 
-  add: function (endpoint, params, callback) {
-    axios.put(endpoint, params).then(function (resp) {
-      if (callback && typeof callback === 'function') callback()
-    }, function (resp) {
-      // error callback
-    })
-  },
-
-  toggleFeatured (endpoint, params, callback) {
-    axios.put(endpoint, params).then(function (resp) {
-      if (callback && typeof callback === 'function') callback()
-    }, function (resp) {
-      // error callback
-    })
-  },
-
-  reorder (endpoint, params, callback) {
-    axios.put(endpoint, params).then(function (resp) {
-      if (callback && typeof callback === 'function') callback()
-    }, function (resp) {
-      // error callback
-    })
-  },
-
-  delete (endpoint, params, callback) {
-    axios.put(endpoint, params).then(function (resp) {
-      if (callback && typeof callback === 'function') callback()
-    }, function (resp) {
-      // error callback
-    })
-  },
-
   save (endpoint, params, callback, errorCallback) {
-    axios.put(endpoint, params).then(function (resp) {
+    axios.post(endpoint, params).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       // error callback
