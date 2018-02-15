@@ -18,6 +18,7 @@
     :grid="false"
     :inline='{{ $inline ? 'true' : 'false' }}'
     @if ($note) note='{{ $note }}' @endif
+    :has-default-store="true"
     in-store="value"
 ></a17-singleselect>
 

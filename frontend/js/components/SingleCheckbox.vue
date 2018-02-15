@@ -1,56 +1,74 @@
 <template>
-  <span class="checkbox">
-    <input type="checkbox" class="checkbox__input" :class="checkboxClasses" :value="value" :name="name" :id="uniqId" :disabled="disabled"  v-model="checkedValue">
-    <label class="checkbox__label" :for="uniqId">{{ label }} <span class="checkbox__icon"><span v-svg symbol="check"></span></span></label>
-  </span>
+  <a17-inputframe :error="error" :note="note" :name="name">
+    <div class="singleCheckbox">
+      <span class="checkbox">
+        <input type="checkbox" class="checkbox__input" :class="checkboxClasses" value="true" :name="name + '[' + randKey + ']'" :id="uniqId" :disabled="disabled">
+        <label class="checkbox__label" :for="uniqId" @click.prevent="changeCheckbox">{{ label }} <span class="checkbox__icon"><span v-svg symbol="check"></span></span></label>
+      </span>
+    </div>
+  </a17-inputframe>
 </template>
 
 <script>
   import randKeyMixin from '@/mixins/randKey'
+  import InputframeMixin from '@/mixins/inputFrame'
+  import FormStoreMixin from '@/mixins/formStore'
 
   export default {
-    name: 'A17Checkbox',
-    mixins: [randKeyMixin],
+    name: 'A17SingleCheckbox',
+    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin],
     props: {
-      value: {
-        default: ''
-      },
-      initialValue: {
-        default: function () { return [] }
-      },
       name: {
         type: String,
         default: ''
       },
+      initialValue: {
+        type: Boolean,
+        default: true // bold
+      },
       theme: {
         type: String,
         default: '' // bold
-      },
-      label: {
-        type: String,
-        default: ''
       },
       disabled: {
         type: Boolean,
         default: false
       }
     },
+    data: function () {
+      return {
+        currentValue: this.initialValue
+      }
+    },
     computed: {
-      uniqId: function (value) {
-        return this.name + '_' + this.value + '-' + this.randKey
+      uniqId: function () {
+        return this.name + '_' + this.randKey
       },
       checkboxClasses: function () {
         return [
-          this.theme ? `checkbox__input--${this.theme}` : ''
+          this.theme ? `checkbox__input--${this.theme}` : '',
+          this.checkedValue ? 'checkbox__input--checked' : ''
         ]
       },
       checkedValue: {
         get: function () {
-          return this.initialValue
+          return this.currentValue
         },
         set: function (value) {
-          this.$emit('change', value)
+          if (value !== this.currentValue) {
+            this.currentValue = value
+            if (typeof this.saveIntoStore !== 'undefined') this.saveIntoStore(value)
+            this.$emit('change', value)
+          }
         }
+      }
+    },
+    methods: {
+      updateFromStore: function (newValue) { // called from the formStore mixin
+        this.checkedValue = newValue
+      },
+      changeCheckbox: function () {
+        this.checkedValue = !this.checkedValue
       }
     }
   }
@@ -122,13 +140,15 @@
     border-color: $color__fborder--hover;
   }
 
+  // .checkbox__input:checked + .checkbox__label,
   .checkbox__label:hover,
   .checkbox__input:hover   + .checkbox__label,
-  .checkbox__input:checked + .checkbox__label {
+  .checkbox__input--checked + .checkbox__label {
     color:$color__text;
   }
 
-  .checkbox__input:checked + .checkbox__label .checkbox__icon {
+  // .checkbox__input:checked + .checkbox__label .checkbox__icon,
+  .checkbox__input--checked + .checkbox__label .checkbox__icon {
     opacity: 1;
   }
 
@@ -138,7 +158,8 @@
     pointer-events: none;
   }
 
-  .checkbox__input:checked:disabled + .checkbox__label {
+  // .checkbox__input:checked:disabled + .checkbox__label,
+  .checkbox__input--checked:disabled + .checkbox__label {
     opacity: .66;
     pointer-events: none;
   }
@@ -161,7 +182,8 @@
       top:8px;
     }
 
-    .checkbox__input:checked + .checkbox__label .checkbox__icon {
+    // .checkbox__input:checked + .checkbox__label .checkbox__icon,
+    .checkbox__input--checked + .checkbox__label .checkbox__icon {
       opacity: 0;
     }
   }
