@@ -192,31 +192,31 @@
       overflow:hidden;
       margin-bottom: -1px;
       margin-right: -1px;
+    }
 
-      .multiselector__item {
+    .multiselector__item {
+      width:100%;
+      height:50%;
+      border-right:1px solid $color__border--light;
+      border-bottom:1px solid $color__border--light;
+      overflow: hidden;
+      position:relative;
+      padding:0;
+
+      @include breakpoint('small') {
+        width:33.3333%;
+      }
+
+      @include breakpoint('medium') {
         width:100%;
-        height:50%;
-        border-right:1px solid $color__border--light;
-        border-bottom:1px solid $color__border--light;
-        overflow: hidden;
-        position:relative;
-        padding:0;
+      }
 
-        @include breakpoint('small') {
-          width:33.3333%;
-        }
+      @include breakpoint('large') {
+        width:33.3333%;
+      }
 
-        @include breakpoint('medium') {
-          width:100%;
-        }
-
-        @include breakpoint('large') {
-          width:33.3333%;
-        }
-
-        @include breakpoint('large+') {
-          width:25%;
-        }
+      @include breakpoint('large+') {
+        width:25%;
       }
     }
 
