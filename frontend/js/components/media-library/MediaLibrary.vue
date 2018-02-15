@@ -208,14 +208,18 @@
       clearSelectedMedias: function () {
         this.selectedMedias.splice(0)
       },
-      deleteSelectedMedias: function () {
-        this.selectedMedias.forEach(() => {
+      deleteSelectedMedias: function (mediasIds) {
+        let keepSelectedMedias = []
+        if (mediasIds && mediasIds.length !== this.selectedMedias.length) {
+          keepSelectedMedias = this.selectedMedias.filter((media) => !media.deleteUrl)
+        }
+        mediasIds.forEach(() => {
           this.$store.commit('decrementMediaTypeTotal', this.type)
         })
         this.fullMedias = this.fullMedias.filter((media) => {
-          return !this.selectedMedias.includes(media)
+          return !this.selectedMedias.includes(media) || keepSelectedMedias.includes(media)
         })
-        this.selectedMedias.splice(0)
+        this.selectedMedias = keepSelectedMedias
       },
       clearFullMedias: function () {
         this.selectedMedias.splice(0)

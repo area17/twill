@@ -211,43 +211,12 @@
     }
   }
 
-  /* Modal Tiny Size */
-  .modal--tiny {
-
-    .modal__window {
-      width: calc(100vw - 40px);
-      max-width: 350px;
-      margin-bottom:25vh;
-    }
-
-    .modal__header {
-      display:none;
-    }
-  }
-
-  /* Modal Medium Size */
-  .modal--medium {
-
-    .modal__window {
-      width: calc(100vw - 40px);
-      max-width: 830px;
-      // max-width: inherit;
-      min-height: 66vh;
-      max-height:100%;
-    }
-
-    .modal__content {
-      // padding:0;
-      display: flex;
-    }
-  }
-
   /* Modal Wide Size */
   .modal--wide {
     padding: 30px;
 
     .modal__content {
-      padding:0;
+      padding: 0;
       display: flex;
     }
 
@@ -272,6 +241,44 @@
       padding: 0px;
     }
   }
+
+  /* Modal Medium Size */
+  .modal--medium {
+
+    .modal__window {
+      width: calc(100vw - 40px);
+      max-width: 830px;
+      // max-width: inherit;
+      min-height: 66vh;
+      max-height: 100%;
+    }
+
+    .modal__content {
+      // padding:0;
+      display: flex;
+    }
+  }
+
+  /* Modal Tiny Size */
+  .modal--tiny {
+
+    .modal__window {
+      width: calc(100vw - 40px);
+      max-width: 350px;
+      height: auto;
+      margin-bottom:25vh;
+    }
+
+    .modal__content {
+      padding: 0 20px;
+      display: block;
+    }
+
+    .modal__header {
+      display:none;
+    }
+  }
+
 
   /* Modal with form */
   .modal--form {
