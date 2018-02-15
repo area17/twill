@@ -1,13 +1,15 @@
 @php
     $note = $note ?? false;
     $inline = $inline ?? false;
+    $default = $default ?? false;
 @endphp
 
 <a17-singlecheckbox
     @include('cms-toolkit::partials.form.utils._field_name')
     label="{{ $label ?? '' }}"
-    :initialValue="{{ $value or true }}"
+    :initial-value="{{ $default ? 'true' : 'false' }}"
     @if ($note) note='{{ $note }}' @endif
+    :has-default-store="true"
     in-store="currentValue"
 ></a17-singlecheckbox>
 
