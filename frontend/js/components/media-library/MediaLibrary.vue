@@ -226,7 +226,6 @@
         this.fullMedias.splice(0)
       },
       reloadGrid: function () {
-        let self = this
 
         this.loading = true
 
@@ -240,19 +239,17 @@
         }
 
         // see api/media-library for actual ajax
-        api.get(this.endpoint, formdata, function (resp) {
+        api.get(this.endpoint, formdata, (resp) => {
           // add medias here
-          self.fullMedias.push(...resp.data.items)
-          self.maxPage = resp.data.maxPage || 1
-          self.tags = resp.data.tags || []
-          self.$store.commit('updateMediaTypeTotal', { type: self.type, total: resp.data.total })
-          self.loading = false
-
-          // re-listen for scroll position
-          self.$nextTick(function () {
-            if (self.gridHeight !== list.scrollHeight) {
-              list.addEventListener('scroll', self.scrollToPaginate)
-            }
+          this.fullMedias.push(...resp.data.items)
+          this.maxPage = resp.data.maxPage || 1
+          this.tags = resp.data.tags || []
+          this.$store.commit('updateMediaTypeTotal', { type: this.type, total: resp.data.total })
+          this.loading = false
+        }, (error) => {
+          this.$store.commit('setNotification', {
+            message: error.data.message,
+            variant: 'error'
           })
         })
       },

@@ -144,16 +144,22 @@
             this.loading = false
             this.$emit('delete', this.mediasIdsToDelete)
             this.$refs.warningDelete.close()
-          }, (resp) => {
-            console.log(resp)
+          }, (error) => {
+            this.$store.commit('setNotification', {
+              message: error.data.message,
+              variant: 'error'
+            })
           })
         } else {
           api.delete(this.firstMedia.deleteUrl, (resp) => {
             this.loading = false
             this.$emit('delete', this.mediasIdsToDelete)
             this.$refs.warningDelete.close()
-          }, (resp) => {
-            console.log(resp)
+          }, (error) => {
+            this.$store.commit('setNotification', {
+              message: error.data.message,
+              variant: 'error'
+            })
           })
         }
       },
@@ -168,7 +174,6 @@
 
         if (this.loading) return false
 
-        let self = this
         let data = this.getFormData(event.target)
 
         this.loading = true
@@ -176,24 +181,29 @@
         // single or multi updates
         const url = this.hasMultipleMedias ? this.firstMedia.updateBulkUrl : this.firstMedia.updateUrl
 
-        api.update(url, data, function (resp) {
-          self.loading = false
+        api.update(url, data, (resp) => {
+          this.loading = false
 
-          if (!self.hasMedia) return false
+          if (!this.hasMedia) return false
 
           // save caption and alt text on the media
-          if (data['alt-text']) self.firstMedia.metadatas.default.altText = data['alt-text']
-          if (data['caption']) self.firstMedia.metadatas.default.caption = data['caption']
+          if (data['alt-text']) this.firstMedia.metadatas.default.altText = data['alt-text']
+          if (data['caption']) this.firstMedia.metadatas.default.caption = data['caption']
 
           // save new tags on the medias
           if (data['tags']) {
             const newTags = data['tags'].split(',')
-            self.medias.forEach(function (media) {
+            this.medias.forEach(function (media) {
               newTags.forEach(function (tag) {
                 if (!media.tags.includes(tag)) media.tags.push(tag)
               })
             })
           }
+        }, (error) => {
+          this.$store.commit('setNotification', {
+            message: error.data.message,
+            variant: 'error'
+          })
         })
       }
     }
