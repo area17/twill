@@ -18,7 +18,7 @@
     :grid="false"
     :inline='{{ $inline ? 'true' : 'false' }}'
     @if ($note) note='{{ $note }}' @endif
-    in-store="currentValue"
+    in-store="value"
 ></a17-singleselect>
 
 @unless($renderForBlocks || $renderForModal || !isset($item->$name))

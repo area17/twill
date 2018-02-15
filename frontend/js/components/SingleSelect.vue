@@ -73,7 +73,9 @@
     },
     methods: {
       updateFromStore: function (newValue) { // called from the formStore mixin
-        this.value = newValue
+        if (newValue !== this.value) {
+          this.value = newValue
+        }
       },
       changeRadio: function (value) {
         this.selectedValue = value
