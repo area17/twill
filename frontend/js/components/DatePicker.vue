@@ -65,7 +65,7 @@
         type: Number,
         default: 30
       },
-      static: { // Set static when the input need to show inside a sticky element
+      static: { // Set static when the input need to show inside a sticky element (in the publish module for example)
         type: Boolean,
         default: false
       },
