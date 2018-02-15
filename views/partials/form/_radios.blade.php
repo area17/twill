@@ -15,6 +15,7 @@
     label="{{ $label }}"
     @include('cms-toolkit::partials.form.utils._field_name')
     :options="{{ json_encode($options) }}"
+    @if ($default) selected="{{ $default }}" @endif
     :grid="false"
     :inline='{{ $inline ? 'true' : 'false' }}'
     @if ($note) note='{{ $note }}' @endif
