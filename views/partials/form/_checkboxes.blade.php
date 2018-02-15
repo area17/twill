@@ -21,7 +21,7 @@
     in-store="currentValue"
 ></a17-multiselect>
 
-@unless($renderForBlocks || $renderForModal)
+@unless($renderForBlocks || $renderForModal || !isset($item->$name))
 @push('vuexStore')
     window.STORE.form.fields.push({
         name: '{{ $name }}',
