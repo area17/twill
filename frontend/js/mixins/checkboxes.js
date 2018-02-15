@@ -52,27 +52,6 @@ export default {
     },
     isMin: function (arrayToTest) {
       return (arrayToTest.length < this.min && this.min > 0)
-    },
-    formatValue: function (newVal, oldval) {
-      let self = this
-      if (!newVal) return
-      if (!oldval) return
-
-      const isMax = this.isMax(newVal)
-      const isMin = this.isMin(newVal)
-
-      if (isMax || isMin) {
-        if (!isEqual(oldval, self.checkedValue)) {
-          self.checkedValue = oldval
-        }
-      }
-    }
-  },
-  mounted: function () {
-    if ((this.max + this.min) > 0) {
-      this.$watch('currentValue', this.formatValue, {
-        immediate: true
-      })
     }
   }
 }
