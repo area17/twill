@@ -220,17 +220,18 @@
           return !this.selectedMedias.includes(media) || keepSelectedMedias.includes(media)
         })
         this.selectedMedias = keepSelectedMedias
+        if (this.fullMedias.length <= 40) {
+          this.reloadGrid()
+        }
       },
       clearFullMedias: function () {
         this.selectedMedias.splice(0)
         this.fullMedias.splice(0)
       },
       reloadGrid: function () {
-
         this.loading = true
 
         const form = this.$refs.form
-        const list = this.$refs.list
         const formdata = this.getFormData(form)
         if (this.selected[this.connector]) {
           formdata.except = this.selected[this.connector].map((media) => {
@@ -241,11 +242,16 @@
         // see api/media-library for actual ajax
         api.get(this.endpoint, formdata, (resp) => {
           // add medias here
-          this.fullMedias.push(...resp.data.items)
+          resp.data.items.forEach(item => {
+            if (!this.fullMedias.find(media => media.id === item.id)) {
+              this.fullMedias.push(item)
+            }
+          })
           this.maxPage = resp.data.maxPage || 1
           this.tags = resp.data.tags || []
           this.$store.commit('updateMediaTypeTotal', { type: this.type, total: resp.data.total })
           this.loading = false
+          this.listenScrollPosition()
         }, (error) => {
           this.$store.commit('setNotification', {
             message: error.data.message,
@@ -276,7 +282,15 @@
           }
         })
       },
-
+      listenScrollPosition: function () {
+        // re-listen for scroll position
+        this.$nextTick(function () {
+          const list = this.$refs.list
+          if (this.gridHeight !== list.scrollHeight) {
+            list.addEventListener('scroll', this.scrollToPaginate)
+          }
+        })
+      },
       scrollToPaginate: function () {
         const list = this.$refs.list
         const offset = 10
