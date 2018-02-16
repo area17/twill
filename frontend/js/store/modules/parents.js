@@ -1,4 +1,4 @@
-import * as types from '../mutation-types'
+import * as types from '../mutations'
 
 const state = {
   active: window.STORE.parentId || 0,

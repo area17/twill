@@ -1,5 +1,5 @@
 import revisionAPI from '../api/revision'
-import * as types from '../mutation-types'
+import * as types from '../mutations'
 import { getFormData } from '@/utils/getFormData.js'
 
 const state = {

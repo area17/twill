@@ -1,5 +1,5 @@
 import api from '../api/datatable'
-import * as types from '../mutation-types'
+import * as types from '../mutations'
 import { setStorage } from '@/utils/localeStorage.js'
 /* NESTED functions */
 const getObject = (container, id, callback) => {

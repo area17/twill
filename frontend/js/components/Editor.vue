@@ -25,7 +25,7 @@
   import A17EditorPreview from '@/components/editor/EditorPreview.vue'
   import A17Spinner from '@/components/Spinner.vue'
 
-  import * as mutationTypes from '@/store/mutation-types'
+  import * as mutationTypes from '@/store/mutations'
 
   import cloneDeep from 'lodash/cloneDeep'
 

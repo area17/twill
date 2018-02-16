@@ -1,5 +1,5 @@
 import bucketsAPI from '../api/buckets'
-import * as types from '../mutation-types'
+import * as types from '../mutations'
 
 const state = {
   saveUrl: window.STORE.buckets.saveUrl || '',
