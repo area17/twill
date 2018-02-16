@@ -11,8 +11,10 @@
                 </div>
             </header>
             <section class="main">
-                <div class="app error container">
+                <div class="app error">
+                    <div class="container">
                     @yield('content')
+                    </div>
                 </div>
             </section>
         </div>
