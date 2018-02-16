@@ -23,6 +23,9 @@ export { default as MODALEDITION } from './modal-edition'
 /* language */
 export { default as LANGUAGE } from './language'
 
+/* Buckets */
+export { default as BUCKETS } from './buckets'
+
 /* revision */
 export const LOADING_REV = 'loadingRevision'
 export const UPDATE_REV = 'updateRevision'
@@ -57,18 +60,6 @@ export const UPDATE_DATATABLE_MESSAGE = 'updateDatableMessage'
 export const UPDATE_DATATABLE_LOADING = 'updateDatableLoading'
 export const UPDATE_DATATABLE_NESTED = 'updateDatatableNestedDatas'
 export const UPDATE_DATATABLE_TRACKER = 'updateDatableTracker'
-
-/* Buckets */
-export const ADD_TO_BUCKET = 'addToBucket'
-export const DELETE_FROM_BUCKET = 'deleteFromBucket'
-export const TOGGLE_FEATURED_IN_BUCKET = 'toggleFeaturedInBucket'
-export const REORDER_BUCKET_LIST = 'reorderBucketList'
-export const UPDATE_BUCKETS_DATASOURCE = 'updateBucketsDataSource'
-export const UPDATE_BUCKETS_DATA = 'updateBucketsData'
-export const UPDATE_BUCKETS_FILTER = 'updateBucketsFilter'
-export const UPDATE_BUCKETS_DATA_OFFSET = 'updateBucketsDataOffset'
-export const UPDATE_BUCKETS_DATA_PAGE = 'updateBucketsDataPage'
-export const UPDATE_BUCKETS_MAX_PAGE = 'updateBucketsMaxPage'
 
 /* Parents */
 export const UPDATE_PARENT = 'updateParent'
