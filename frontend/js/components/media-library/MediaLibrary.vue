@@ -36,7 +36,7 @@
             <a17-mediasidebar :medias="selectedMedias" @clear="clearSelectedMedias" @delete="deleteSelectedMedias"></a17-mediasidebar>
           </aside>
           <footer class="medialibrary__footer" v-if="selectedMedias.length && showInsert && connector">
-            <a17-button variant="action" @click="saveAndClose">{{ selectedMedias.length > 1 ? btnMultiLabel : btnLabel }}</a17-button>
+            <a17-button variant="action" @click="saveAndClose">{{ btnLabel }}</a17-button>
           </footer>
           <div class="medialibrary__list" ref="list">
             <a17-uploader @loaded="addMedia" @clear="clearSelectedMedias" :type="type"></a17-uploader>
@@ -78,11 +78,15 @@
       'a17-spinner': a17Spinner
     },
     props: {
-      btnLabel: {
+      btnLabelSingle: {
         type: String,
         default: 'Insert file'
       },
-      btnMultiLabel: {
+      btnLabelUpdate: {
+        type: String,
+        default: 'Update file'
+      },
+      btnLabelMulti: {
         type: String,
         default: 'Insert files'
       },
@@ -109,6 +113,10 @@
       }
     },
     computed: {
+      btnLabel: function () {
+        if (this.indexToReplace > -1) return this.btnLabelUpdate
+        return this.selectedMedias.length > 1 ? this.btnLabelMulti : this.btnLabelSingle
+      },
       selectedType: function () {
         let self = this
         const navItem = self.types.filter(function (t) {
@@ -122,7 +130,8 @@
         type: state => state.mediaLibrary.type, // image, video, file
         types: state => state.mediaLibrary.types,
         strict: state => state.mediaLibrary.strict,
-        selected: state => state.mediaLibrary.selected
+        selected: state => state.mediaLibrary.selected,
+        indexToReplace: state => state.mediaLibrary.indexToReplace
       })
     },
     methods: {

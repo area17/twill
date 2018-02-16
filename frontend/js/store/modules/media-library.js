@@ -62,7 +62,7 @@ const state = {
    * An index used when mediaLibrary is open to replace a file
    * @type {number}
    */
-  indexToReplace: null
+  indexToReplace: -1
 }
 
 // getters
