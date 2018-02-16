@@ -12,3 +12,6 @@ export { default as BROWSER } from './browser'
 
 /* content */
 export { default as CONTENT } from './content'
+
+/* preview */
+export { default as REFRESH_BLOCK_PREVIEW } from './preview'
