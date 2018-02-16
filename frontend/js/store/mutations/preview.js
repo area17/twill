@@ -1,5 +1,5 @@
 /* Mutations that must trigger a change in the preview in the block editor need to be listed here */
-import { SWITCH_LANG } from './index'
+import * as LANGUAGE from './language'
 import * as FORM from './form'
 import * as MEDIA_LIBRARY from './media-library'
 import * as BROWSER from './browser'
@@ -12,7 +12,7 @@ const REFRESH_BLOCK_PREVIEW = [
   FORM.DELETE_FORM_BLOCK,
   FORM.DUPLICATE_FORM_BLOCK,
   FORM.REORDER_FORM_BLOCKS,
-  SWITCH_LANG,
+  LANGUAGE.SWITCH_LANG,
   MEDIA_LIBRARY.SET_MEDIA_CROP,
   MEDIA_LIBRARY.SET_MEDIA_METADATAS,
   MEDIA_LIBRARY.SAVE_MEDIAS,

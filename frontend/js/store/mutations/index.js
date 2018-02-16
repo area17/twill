@@ -21,9 +21,7 @@ export { default as REFRESH_BLOCK_PREVIEW } from './preview'
 export { default as MODALEDITION } from './modal-edition'
 
 /* language */
-export const SWITCH_LANG = 'switchLanguage'
-export const UPDATE_LANG = 'updateLanguage'
-export const PUBLISH_LANG = 'updatePublishedLanguage'
+export { default as LANGUAGE } from './language'
 
 /* revision */
 export const LOADING_REV = 'loadingRevision'
