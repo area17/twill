@@ -5,7 +5,7 @@
         <div class="media__img">
           <div class="media__imgFrame">
             <div class="media__imgCentered">
-              <img :src="currentMedia.src"/>
+              <img :src="media.src"/>
             </div>
             <div class="media__edit" @click="openMediaLibrary(1, mediaKey, index)">
               <a17-button class="media__edit--button" icon="edit" :disabled="true"><span v-svg symbol="edit"></span></a17-button>
@@ -14,9 +14,9 @@
         </div>
 
         <ul class="media__metadatas">
-          <li class="media__name" @click="openMediaLibrary(1, mediaKey, index)"><strong :title="currentMedia.name">{{ currentMedia.name }}</strong></li>
-          <li class="f--small" v-if="currentMedia.size">File size: {{ currentMedia.size | uppercase }}</li>
-          <li class="f--small" v-if="currentMedia.width + currentMedia.height">Dimensions: {{ currentMedia.width }}&nbsp;&times;&nbsp;{{ currentMedia.height }}</li>
+          <li class="media__name" @click="openMediaLibrary(1, mediaKey, index)"><strong :title="media.name">{{ media.name }}</strong></li>
+          <li class="f--small" v-if="media.size">File size: {{ media.size | uppercase }}</li>
+          <li class="f--small" v-if="media.width + media.height">Dimensions: {{ media.width }}&nbsp;&times;&nbsp;{{ media.height }}</li>
           <li class="f--small" v-if="cropInfos.length" @click="openCropMedia">
             <span class="f--small f--note f--underlined--o f--underlined--link">
               Cropped : <span v-for="(cropInfo, index) in cropInfos" :key="cropInfo.name">{{ cropInfo.name }}<span v-if="index !== cropInfos.length - 1">,&nbsp;</span></span>
@@ -29,8 +29,8 @@
 
         <!--Actions-->
         <a17-buttonbar class="media__actions">
-          <a :href="currentMedia.original" download><span v-svg symbol="download"></span></a>
-          <button type="button" @click="openCropMedia" v-if="hasCrop"><span v-svg symbol="crop"></span></button>
+          <a :href="media.original" download><span v-svg symbol="download"></span></a>
+          <button type="button" @click="openCropMedia" v-if="activeCrop"><span v-svg symbol="crop"></span></button>
           <button type="button" @click="deleteMediaClick"><span v-svg symbol="trash"></span></button>
         </a17-buttonbar>
 
@@ -39,8 +39,8 @@
             <a17-button size="icon" variant="icon" @click="$refs.dropDown.toggle()">
               <span v-svg symbol="more-dots"></span></a17-button>
             <div slot="dropdown__content">
-              <a :href="currentMedia.original" download><span v-svg symbol="download"></span> Download</a>
-              <button type="button" @click="openCropMedia" v-if="hasCrop"><span v-svg symbol="crop"></span> Crop
+              <a :href="media.original" download><span v-svg symbol="download"></span> Download</a>
+              <button type="button" @click="openCropMedia" v-if="activeCrop"><span v-svg symbol="crop"></span> Crop
               </button>
               <button type="button" @click="deleteMediaClick"><span v-svg symbol="trash"></span> Delete</button>
             </div>
@@ -56,15 +56,15 @@
 
       <!-- Metadatas options -->
       <div class="media__metadatas--options" :class="{ 's--active' : metadatas.active }" v-if="hasMedia">
-        <a17-mediametadata :name='name' label="Alt Text" id="altText" :media="currentMedia" @change="updateMetadata"></a17-mediametadata>
-        <a17-mediametadata :name='name' label="Caption" id="caption" :media="currentMedia" @change="updateMetadata"></a17-mediametadata>
-        <a17-mediametadata v-if="withVideoUrl" :name='name' label="Video URL (optional)" id="video" :media="currentMedia" @change="updateMetadata"></a17-mediametadata>
+        <a17-mediametadata :name='name' label="Alt Text" id="altText" :media="media" @change="updateMetadata"></a17-mediametadata>
+        <a17-mediametadata :name='name' label="Caption" id="caption" :media="media" @change="updateMetadata"></a17-mediametadata>
+        <a17-mediametadata v-if="withVideoUrl" :name='name' label="Video URL (optional)" id="video" :media="media" @change="updateMetadata"></a17-mediametadata>
       </div>
     </div>
 
     <!-- Crop modal -->
     <a17-modal class="modal--cropper" :ref="cropModalName" :forceClose="true" title="Edit image crop" mode="medium" v-if="hasMedia">
-      <a17-cropper :media="currentMedia" v-on:crop-end="cropMedia" :aspectRatio="16 / 9" :context="cropContext">
+      <a17-cropper :media="media" v-on:crop-end="cropMedia" :aspectRatio="16 / 9" :context="cropContext">
         <a17-button class="cropper__button" variant="action" @click="$refs[cropModalName].close()">Update</a17-button>
       </a17-cropper>
     </a17-modal>
@@ -132,6 +132,10 @@
       withVideoUrl: {
         type: Boolean,
         default: true
+      },
+      activeCrop: {
+        type: Boolean,
+        default: true
       }
     },
     data: function () {
@@ -150,7 +154,7 @@
       mediaKey: function () {
         return this.mediaContext.length > 0 ? this.mediaContext : this.name
       },
-      currentMedia: function () {
+      media: function () {
         if (this.selectedMedias.hasOwnProperty(this.mediaKey)) {
           // reset is destroyed status because we changed the media
           if (this.selectedMedias[this.mediaKey][this.index]) this.isDestroyed = false
@@ -162,23 +166,23 @@
       cropInfos: function () {
         const cropInfos = []
 
-        if (this.currentMedia.crops) {
-          for (let variant in this.currentMedia.crops) {
+        if (this.media.crops) {
+          for (let variant in this.media.crops) {
             cropInfos.push({
-              name: this.currentMedia.crops[variant].name,
-              width: this.currentMedia.crops[variant].width,
-              height: this.currentMedia.crops[variant].height
+              name: this.media.crops[variant].name,
+              width: this.media.crops[variant].width,
+              height: this.media.crops[variant].height
             })
           }
         }
 
         return cropInfos
       },
-      hasCrop: function () {
-        return this.crop !== ''
-      },
       hasMedia: function () {
-        return Object.keys(this.currentMedia).length
+        return Object.keys(this.media).length > 0
+      },
+      mediaHasCrop: function () {
+        return this.media.crops
       },
       cropModalName: function () {
         return `${name}Modal`
@@ -191,20 +195,38 @@
     methods: {
       // crop
       setDefaultCrops: function () {
-        let self = this
-
-        if (!this.hasCrop) return
-
         let defaultCrops = {}
 
-        if (self.allCrops.hasOwnProperty(self.cropContext)) {
-          for (let cropVariant in self.allCrops[self.cropContext]) {
+        if (this.allCrops.hasOwnProperty(this.cropContext)) {
+          for (let cropVariant in this.allCrops[this.cropContext]) {
+            const ratio = this.allCrops[this.cropContext][cropVariant][0].ratio
+            const width = this.media.width
+            const height = this.media.height
+            const center = {
+              x: width / 2,
+              y: height / 2
+            }
+
+            let cropWidth = width
+            let cropHeight = height
+
+            if (ratio > 0 && ratio < 1) { // "portrait" crop
+              cropWidth = Math.floor(Math.min(height * ratio, width))
+              cropHeight = Math.floor(cropWidth / ratio)
+            } else if (ratio >= 1) { // "landscape" or square crop
+              cropHeight = Math.floor(Math.min(width / ratio, height))
+              cropWidth = Math.floor(cropHeight * ratio)
+            }
+
+            let x = Math.floor(center.x - cropWidth / 2)
+            let y = Math.floor(center.y - cropHeight / 2)
+
             defaultCrops[cropVariant] = {}
-            defaultCrops[cropVariant].name = self.allCrops[self.cropContext][cropVariant][0].name || cropVariant
-            defaultCrops[cropVariant].x = 0
-            defaultCrops[cropVariant].y = 0
-            defaultCrops[cropVariant].width = this.currentMedia.width
-            defaultCrops[cropVariant].height = this.currentMedia.height
+            defaultCrops[cropVariant].name = this.allCrops[this.cropContext][cropVariant][0].name || cropVariant
+            defaultCrops[cropVariant].x = x
+            defaultCrops[cropVariant].y = y
+            defaultCrops[cropVariant].width = cropWidth
+            defaultCrops[cropVariant].height = cropHeight
           }
         }
 
@@ -216,7 +238,6 @@
         this.$store.commit('setMediaCrop', crop)
       },
       openCropMedia: function () {
-        if (!this.currentMedia.crops) this.setDefaultCrops()
         this.$refs[this.cropModalName].open()
       },
       deleteMediaClick: function () {
@@ -241,10 +262,15 @@
         })
       },
       metadatasInfos: function () {
-        let self = this
-        self.metadatas.active = !self.metadatas.active
-        self.metadatas.text = self.metadatas.active ? self.metadatas.textClose : self.metadatas.textOpen
+        this.metadatas.active = !this.metadatas.active
+        this.metadatas.text = this.metadatas.active ? this.metadatas.textClose : this.metadatas.textOpen
       }
+    },
+    beforeMount: function () {
+      if (this.hasMedia && !this.mediaHasCrop) this.setDefaultCrops()
+    },
+    beforeUpdate: function () {
+      if (this.hasMedia && !this.mediaHasCrop) this.setDefaultCrops()
     },
     beforeDestroy: function () {
       if (this.isSlide) return // for Slideshows : the medias are deleted when the slideshow component is destroyed (so no need to do it here)

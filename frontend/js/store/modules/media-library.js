@@ -92,50 +92,7 @@ const mutations = {
   },
   [types.SAVE_MEDIAS] (state, medias) {
     if (state.connector) {
-      // init crop values
       const key = state.connector
-      const crops = state.crops[key]
-
-      medias.forEach((media) => {
-        if (media.hasOwnProperty('crops')) {
-          return
-        }
-
-        media.crops = {}
-
-        for (let crop in crops) {
-          const ratio = crops[crop][0].ratio
-          const width = media.width
-          const height = media.height
-          const center = {
-            x: width / 2,
-            y: height / 2
-          }
-
-          let cropWidth = 0
-          let cropHeight = 0
-
-          if (ratio < 1) { // "portrait" crop
-            cropWidth = Math.floor(Math.min(height * ratio, width))
-            cropHeight = Math.floor(cropWidth / ratio)
-          } else { // "landscape" or square crop
-            cropHeight = Math.floor(Math.min(width / ratio, height))
-            cropWidth = Math.floor(cropHeight * ratio)
-          }
-
-          let x = Math.floor(center.x - cropWidth / 2)
-          let y = Math.floor(center.y - cropHeight / 2)
-
-          media.crops[crop] = {
-            x: x,
-            y: y,
-            width: cropWidth,
-            height: cropHeight,
-            name: crops[crop][0].name
-          }
-        }
-      })
-
       const existedSelectedConnector = state.selected[key] && state.selected[key].length
       if (existedSelectedConnector && state.indexToReplace > -1) {
         // Replace mode
@@ -249,7 +206,6 @@ const mutations = {
   [types.DESTROY_MEDIA_CONNECTOR] (state) {
     state.connector = null
   },
-
   [types.SET_MEDIA_CROP] (state, crop) {
     const key = crop.key
     const index = crop.index
