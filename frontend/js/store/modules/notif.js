@@ -1,4 +1,4 @@
-import * as types from '../mutation-types'
+import { NOTIFICATION } from '../mutations'
 
 const state = {
   success: null,
@@ -18,10 +18,10 @@ const getters = {
 }
 
 const mutations = {
-  [types.SET_NOTIF] (state, notif) {
+  [NOTIFICATION.SET_NOTIF] (state, notif) {
     state[notif.variant] = notif.message
   },
-  [types.CLEAR_NOTIF] (state, variant) {
+  [NOTIFICATION.CLEAR_NOTIF] (state, variant) {
     if (state[variant]) {
       state[variant] = null
     }
