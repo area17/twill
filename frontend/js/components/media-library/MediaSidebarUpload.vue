@@ -1,11 +1,15 @@
 <template>
   <div class="mediasidebar__inner mediasidebar__inner--single">
+    <!--todo: add translation-->
     <p class="f--note">Uploading {{ mediasLoading.length }} file{{ mediasLoading.length > 1 ? 's' : '' }}</p>
 
     <div class="mediasidebar__progress"><span class="mediasidebar__progressBar" :style="loadingProgress"></span></div>
 
     <div class="mediasidebar__loading">
-      <p class="f--small" v-for="(media, index) in mediasLoading" :key="media.id" :class="{ 's--error' : media.error }"><span>{{ media.name }}</span> <a href="#" v-if="media.error" @click.prevent="cancelUpload(media)">Cancel</a></p>
+      <p class="f--small" v-for="(media, index) in mediasLoading" :key="media.id" :class="{ 's--error' : media.error }">
+        <span class="mediasidebar__errorMessage" v-if="media.error">{{media.errorMessage}}</span>
+        <span>{{ media.name }}</span> <a href="#" v-if="media.error" @click.prevent="cancelUpload(media)">Cancel</a>
+      </p>
     </div>
   </div>
 </template>
@@ -27,16 +31,14 @@
     },
     computed: {
       loadingProgress: function () {
-        const total = this.mediasLoading.length * 100
-        const allProgress = this.mediasLoading.map(media => media.progress)
-        const sum = allProgress.reduce((a, b) => a + b, 0)
-
+        const progress = -100 + this.uploadProgress
         return {
-          'width': ((sum / total) * 100) + '%'
+          'transform': 'translateX(' + progress + '%)'
         }
       },
       ...mapState({
-        mediasLoading: state => state.mediaLibrary.loading
+        mediasLoading: state => state.mediaLibrary.loading,
+        uploadProgress: state => state.mediaLibrary.uploadProgress
       })
     },
     methods: {
@@ -56,6 +58,7 @@
     border-radius: 3px;
     position: relative;
     margin-top:20px;
+    overflow: hidden;
   }
 
   .mediasidebar__progressBar {
@@ -67,6 +70,8 @@
     border-radius: 3px;
     height:6px;
     background: $color__action;
+    transform: translateX(-100%);
+    transition: transform 250ms;
   }
 
   .mediasidebar__loading {
@@ -75,7 +80,7 @@
     p {
       margin-top:5px;
       display:flex;
-      flex-flow: row nowrap;
+      flex-flow: row wrap;
 
       span {
         flex-grow:1;
@@ -90,6 +95,14 @@
         text-decoration:underline;
       }
     }
+  }
+
+  .mediasidebar__errorMessage {
+    display: block;
+    width: 100%;
+    color: $color__black;
+    margin-top: 5px;
+    margin-bottom: 5px;
   }
 
   .s--error {

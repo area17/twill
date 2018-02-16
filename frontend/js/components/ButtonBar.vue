@@ -66,13 +66,18 @@
         display: block;
       }
 
-      &:hover {
+      &:not(.button--disabled):hover {
         color:$color__text;
         background:$color__f--bg;
 
         .icon {
           color:$color__text;
         }
+      }
+
+      &.button--disabled {
+        opacity: 0.5;
+        cursor: default;
       }
     }
 

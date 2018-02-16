@@ -18,13 +18,15 @@
         <a17-buttonbar class="mediasidebar__buttonbar" v-if="hasMedia">
           <!-- Actions -->
           <a v-if="hasSingleMedia" :href="firstMedia.original" download><span v-svg symbol="download"></span></a>
-          <button v-if="allowDelete" type="button" @click="deleteSelectedMedias"><span v-svg symbol="trash"></span></button>
+          <button v-if="allowDelete" type="button" @click="deleteSelectedMediasValidation"><span v-svg symbol="trash"></span></button>
+          <button v-else="" type="button" class="button--disabled"><span v-svg symbol="trash"></span></button>
         </a17-buttonbar>
+          <p v-if="!allowDelete">{{ warningDeleteMessage }}</p>
       </div>
 
       <form v-if="hasMedia" class="mediasidebar__inner mediasidebar__form" @submit="update" :class="formClasses">
         <template v-if="hasMultipleMedias">
-          <input type="hidden" name="ids" :value="mediasIds" />
+          <input type="hidden" name="ids" :value="mediasIdsToDeleteString" />
         </template>
         <template v-else>
           <input type="hidden" name="id" :value="firstMedia.id" />
@@ -35,6 +37,14 @@
         <a17-button type="submit" variant="ghost" :disabled="loading">Update</a17-button>
       </form>
     </template>
+    <a17-modal class="modal--tiny modal--form modal--withintro" ref="warningDelete" title="Warning Delete">
+      <p class="modal--tiny-title"><strong>Are you sure ?</strong></p>
+      <p>{{ warningDeleteMessage }}</p>
+      <a17-inputframe>
+        <a17-button variant="validate" @click="deleteSelectedMedias">Delete ( {{ mediasIdsToDelete.length }})</a17-button>
+        <a17-button variant="aslink" @click="$refs.warningDelete.close()"><span>Cancel</span></a17-button>
+      </a17-inputframe>
+    </a17-modal>
   </div>
 </template>
 
@@ -80,13 +90,23 @@
           return media.tags
         }).reduce((allTags, currentTags) => allTags.filter(tag => currentTags.includes(tag)))
       },
-      mediasIds: function () {
-        return this.medias.map(function (media) { return media.id }).join(',')
+      mediasIdsToDelete: function () {
+        return this.medias.filter(media => media.deleteUrl).map(media => media.id)
+      },
+      mediasIdsToDeleteString: function () {
+        return this.mediasIdsToDelete.join(',')
       },
       allowDelete: function () {
         return this.medias.every((media) => {
           return media.deleteUrl
-        })
+        }) || (this.hasMultipleMedias &&
+        !this.medias.every((media) => {
+          return !media.deleteUrl
+        }))
+      },
+      warningDeleteMessage: function () {
+        let prefix = this.hasMultipleMedias ? this.allowDelete ? 'Some files are' : 'This files are' : 'This file is'
+        return this.allowDelete ? prefix + ' used and can\'t be deleted. Do you want to delete the others ?' : prefix + ' used and can\'t be deleted.'
       },
       containerClasses: function () {
         return {
@@ -105,24 +125,43 @@
       })
     },
     methods: {
-      deleteSelectedMedias: function () {
-        let self = this
-
+      deleteSelectedMediasValidation: function () {
         if (this.loading) return false
 
+        if (this.mediasIdsToDelete.length !== this.medias.length) {
+          this.$refs.warningDelete.open()
+          return
+        }
+
+        this.deleteSelectedMedias()
+      },
+      deleteSelectedMedias: function () {
+        if (this.loading) return false
         this.loading = true
 
         if (this.hasMultipleMedias) {
-          api.bulkDelete(this.firstMedia.deleteBulkUrl, { ids: this.mediasIds }, function (resp) {
-            self.loading = false
+          api.bulkDelete(this.firstMedia.deleteBulkUrl, { ids: this.mediasIdsToDeleteString }, (resp) => {
+            this.loading = false
+            this.$emit('delete', this.mediasIdsToDelete)
+            this.$refs.warningDelete.close()
+          }, (error) => {
+            this.$store.commit('setNotification', {
+              message: error.data.message,
+              variant: 'error'
+            })
           })
         } else {
-          api.delete(this.firstMedia.deleteUrl, function (resp) {
-            self.loading = false
+          api.delete(this.firstMedia.deleteUrl, (resp) => {
+            this.loading = false
+            this.$emit('delete', this.mediasIdsToDelete)
+            this.$refs.warningDelete.close()
+          }, (error) => {
+            this.$store.commit('setNotification', {
+              message: error.data.message,
+              variant: 'error'
+            })
           })
         }
-
-        this.$emit('delete')
       },
       clear: function () {
         this.$emit('clear')
@@ -135,7 +174,6 @@
 
         if (this.loading) return false
 
-        let self = this
         let data = this.getFormData(event.target)
 
         this.loading = true
@@ -143,24 +181,29 @@
         // single or multi updates
         const url = this.hasMultipleMedias ? this.firstMedia.updateBulkUrl : this.firstMedia.updateUrl
 
-        api.update(url, data, function (resp) {
-          self.loading = false
+        api.update(url, data, (resp) => {
+          this.loading = false
 
-          if (!self.hasMedia) return false
+          if (!this.hasMedia) return false
 
           // save caption and alt text on the media
-          if (data['alt-text']) self.firstMedia.metadatas.default.altText = data['alt-text']
-          if (data['caption']) self.firstMedia.metadatas.default.caption = data['caption']
+          if (data['alt-text']) this.firstMedia.metadatas.default.altText = data['alt-text']
+          if (data['caption']) this.firstMedia.metadatas.default.caption = data['caption']
 
           // save new tags on the medias
           if (data['tags']) {
             const newTags = data['tags'].split(',')
-            self.medias.forEach(function (media) {
+            this.medias.forEach(function (media) {
               newTags.forEach(function (tag) {
                 if (!media.tags.includes(tag)) media.tags.push(tag)
               })
             })
           }
+        }, (error) => {
+          this.$store.commit('setNotification', {
+            message: error.data.message,
+            variant: 'error'
+          })
         })
       }
     }

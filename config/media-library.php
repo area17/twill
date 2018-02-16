@@ -24,4 +24,8 @@ return [
     'image_service' => 'A17\CmsToolkit\Services\MediaLibrary\Imgix',
     'acl' => env('MEDIA_LIBRARY_ACL', 'private'),
     'filesize_limit' => env('MEDIA_LIBRARY_FILESIZE_LIMIT', 50),
+    'allowed_extensions' => [
+        'image' => ['svg', 'jpg', 'gif', 'png', 'jpeg'],
+        'pdf' => ['pdf']
+    ]
 ];

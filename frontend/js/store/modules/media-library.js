@@ -2,20 +2,71 @@ import Vue from 'vue'
 import * as types from '../mutation-types'
 
 const state = {
+  /**
+   * An object of all crops available for cropper component configuration
+   * @type {Object}
+   */
   crops: window.STORE.medias.crops || {},
+  /**
+   * Define types available in medias library
+   * @type {Array.<string>}
+   */
   types: window.STORE.medias.types || [],
+  /**
+   * Current type of media library
+   * @type {string}
+   */
   type: 'image',
+  /**
+   * Connector is used to save media by usage (eg. cover, image, profile...)
+   * @type {string}
+   */
   connector: null,
+  /**
+   * Define the max of medias that can be select from the media libray
+   * @type {number}
+   */
   max: 0,
+  /**
+   * Restrict the media library navigation between type
+   * @type {Boolean}
+   */
   strict: true,
+  /**
+   * An object of selected medias by usage (connector)
+   * @type {Object.<string,Object>}
+   */
   selected: window.STORE.medias.selected || {},
+  /**
+   * An array of current uploading medias. When upload is ended, array is reset
+   * @type {Array}
+   */
   loading: [],
+  /**
+   * The progress value of an upload. When upload is ended, this value is reset to 0.
+   * @type {number}
+   */
+  uploadProgress: 0,
+  /**
+   * The endpoint to get, add and validate tags on the fly (ajax)
+   * @type {string}
+   */
   tagsEndpoint: window.STORE.medias.tagsEndpoint || '',
-  uploaderConfig: window.STORE.medias.uploaderConfig || {}
+  /**
+   * An Object to configure FineUploader
+   * @type {Object}
+   * @see https://docs.fineuploader.com/
+   */
+  uploaderConfig: window.STORE.medias.uploaderConfig || {},
+  /**
+   * An index used when mediaLibrary is open to replace a file
+   * @type {number}
+   */
+  indexToReplace: -1
 }
 
 // getters
-const getters = { }
+const getters = {}
 
 const mutations = {
   [types.UPDATE_MEDIA_TYPE_TOTAL] (state, type) {
@@ -23,6 +74,9 @@ const mutations = {
       if (t.value === type.type) t.total = type.total
       return t
     })
+  },
+  [types.UPDATE_REPLACE_INDEX] (state, index) {
+    state.indexToReplace = index
   },
   [types.INCREMENT_MEDIA_TYPE_TOTAL] (state, type) {
     state.types = state.types.map(t => {
@@ -38,15 +92,24 @@ const mutations = {
   },
   [types.SAVE_MEDIAS] (state, medias) {
     if (state.connector) {
-      if (state.selected[state.connector] && state.selected[state.connector].length) {
+      const key = state.connector
+      const existedSelectedConnector = state.selected[key] && state.selected[key].length
+      if (existedSelectedConnector && state.indexToReplace > -1) {
+        // Replace mode
+        state.selected[key].splice(state.indexToReplace, 1, medias[0])
+      } else if (existedSelectedConnector) {
+        // Add mode
         medias.forEach(function (media) {
-          state.selected[state.connector].push(media)
+          state.selected[key].push(media)
         })
       } else {
+        // Create mode
         const newMedias = {}
-        newMedias[state.connector] = medias
+        newMedias[key] = medias
         state.selected = Object.assign({}, state.selected, newMedias)
       }
+
+      state.indexToReplace = -1
     }
   },
   [types.DESTROY_SPECIFIC_MEDIA] (state, media) {
@@ -84,6 +147,9 @@ const mutations = {
       })
     }
   },
+  [types.PROGRESS_UPLOAD] (state, uploadProgress) {
+    state.uploadProgress = uploadProgress
+  },
   [types.DONE_UPLOAD_MEDIA] (state, media) {
     state.loading.forEach(function (m, index) {
       if (m.id === media.id) state.loading.splice(index, 1)
@@ -94,6 +160,7 @@ const mutations = {
       if (m.id === media.id) {
         Vue.set(state.loading[index], 'progress', 0)
         Vue.set(state.loading[index], 'error', true)
+        Vue.set(state.loading[index], 'errorMessage', media.errorMessage)
       }
     })
   },

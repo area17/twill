@@ -1,13 +1,13 @@
 <template>
   <div class="mediagrid">
-    <div class="mediagrid__item" v-for="(media, index) in mediasLoading" :key="media.id">
+    <div class="mediagrid__item" v-for="(media, index) in mediasLoading" :key="'mediaLoading_' + media.id">
       <span class="mediagrid__button s--loading">
         <span class="mediagrid__progress" v-if="!media.error"><span class="mediagrid__progressBar" :style="loadingProgress(index)"></span></span>
         <span class="mediagrid__progressError" v-else>Upload Error</span>
       </span>
     </div>
     <div class="mediagrid__item" v-for="(media, index) in medias" :key="media.id">
-      <span class="mediagrid__button" :class="{ 's--picked': isSelected(media.id) }" @click="toggleSelection(media.id)"><img :src="media.src" class="mediagrid__img" /></span>
+      <span class="mediagrid__button" :class="{ 's--picked': isSelected(media.id) }" @click.exact="toggleSelection(media.id)" @click.shift.exact="shiftToggleSelection(media.id)"><img :src="media.src" class="mediagrid__img" /></span>
     </div>
   </div>
 </template>
@@ -51,6 +51,9 @@
       },
       toggleSelection: function (id) {
         this.$emit('change', id)
+      },
+      shiftToggleSelection: function (id) {
+        this.$emit('shiftChange', id, true)
       }
     }
   }

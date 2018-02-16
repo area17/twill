@@ -2,7 +2,7 @@
   <div class="slideshow">
     <draggable class="slideshow__content" v-model="slides" :options="dragOptions" v-if="slides.length">
       <transition-group name="draggable_list" tag='div'>
-        <div class="slide" v-for="(slide, index) in slides" :key="slide.id">
+        <div class="slide" v-for="(slide, index) in slides" :key="index">
             <div class="slide__handle">
               <div class="slide__handle--drag"></div>
             </div>
@@ -110,7 +110,7 @@
     display: block;
     border-radius: 2px;
     border: 1px solid $color__border;
-    overflow-x: hidden;
+    /*overflow-x: hidden;*/
     background:$color__background;
   }
 

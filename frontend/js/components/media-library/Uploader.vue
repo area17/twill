@@ -17,6 +17,10 @@
   export default {
     name: 'A17Uploader',
     props: {
+      /**
+       * Required to configure the uploader accept files
+       * @type {string}
+       */
       type: {
         type: String,
         required: true
@@ -30,9 +34,95 @@
     computed: {
       ...mapState({
         uploaderConfig: state => state.mediaLibrary.uploaderConfig
-      })
+      }),
+      uploaderValidation: function () {
+        const extensions = this.uploaderConfig.allowedExtensions[this.type]
+        return {
+          allowedExtensions: extensions,
+          acceptFiles: '.' + extensions.join(', .'),
+          stopOnFirstInvalidFile: false
+        }
+      }
     },
     methods: {
+      initUploader: function () {
+        const buttonEl = this.$refs.uploaderBrowseButton
+
+        const sharedConfig = {
+          debug: true,
+          maxConnections: 5,
+          button: buttonEl,
+          retry: {
+            enableAuto: true
+          },
+          callbacks: {
+            onSubmit: this._onSubmitCallback.bind(this),
+            onProgress: this._onProgressCallback.bind(this),
+            onError: this._onErrorCallback.bind(this),
+            onComplete: this._onCompleteCallback.bind(this),
+            onAllComplete: this._onAllCompleteCallback.bind(this),
+            onStatusChange: this._onStatusChangeCallback.bind(this),
+            onTotalProgress: this._onTotalProgressCallback.bind(this)
+          },
+          text: {
+            fileInputTitle: 'Browse...'
+          },
+          messages: {
+            // Todo: need to translate this in uploaderConfig
+            retryFailTooManyItemsError: 'Retry failed - you have reached your file limit.',
+            sizeError: '{file} is too large, maximum file size is {sizeLimit}.',
+            tooManyItemsError: 'Too many items ({netItems}) would be uploaded. Item limit is {itemLimit}.',
+            typeError: '{file} has an invalid extension. Valid extension(s): {extensions}.'
+          }
+        }
+
+        this._uploader = this.uploaderConfig.endpointType === 's3' ? new FineUploaderS3({
+          options: {
+            ...sharedConfig,
+            validation: {
+              ...this.uploaderValidation
+            },
+            objectProperties: {
+              key: id => {
+                return this.unique_folder_name + '/' + sanitizeFilename(this._uploader.methods.getName(id))
+              },
+              region: this.uploaderConfig.endpointRegion,
+              acl: this.uploaderConfig.acl
+            },
+            request: {
+              endpoint: this.uploaderConfig.endpoint,
+              accessKey: this.uploaderConfig.accessKey
+            },
+            signature: {
+              endpoint: this.uploaderConfig.signatureEndpoint,
+              version: 4,
+              customHeaders: {
+                'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
+              }
+            },
+            uploadSuccess: {
+              endpoint: this.uploaderConfig.successEndpoint,
+              customHeaders: {
+                'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
+              }
+            }
+          }
+        }) : new FineUploaderTraditional({
+          options: {
+            ...sharedConfig,
+            validation: {
+              ...this.uploaderValidation,
+              sizeLimit: this.uploaderConfig.filesizeLimit * 1048576 // mb to bytes
+            },
+            request: {
+              endpoint: this.uploaderConfig.endpoint,
+              customHeaders: {
+                'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
+              }
+            }
+          }
+        })
+      },
       loadingProgress: function (media) {
         this.$store.commit('progressUploadMedia', media)
       },
@@ -44,10 +134,11 @@
       loadingError: function (media) {
         this.$store.commit('errorUploadMedia', media)
       },
+      uploadProgress: function (uploadProgress) {
+        this.$store.commit('progressUpload', uploadProgress)
+      },
       _onCompleteCallback (id, name, responseJSON, xhr) {
-        const index = this.loadingMedias.findIndex(function (m) {
-          return m.id === id
-        })
+        const index = this.loadingMedias.findIndex((m) => m.id === this._uploader.methods.getUuid(id))
 
         if (responseJSON.success) {
           this.loadingFinished(this.loadingMedias[index], responseJSON.media)
@@ -58,6 +149,7 @@
       _onAllCompleteCallback (succeeded, failed) {
         // reset folder name for next upload session
         this.unique_folder_name = null
+        this.uploadProgress(0)
       },
       _onSubmitCallback (id, name) {
         this.$emit('clear')
@@ -66,12 +158,11 @@
         this._uploader.methods.setParams({ unique_folder_name: this.unique_folder_name }, id)
 
         // determine the image dimensions and add it to params sent on upload success
-        var imageUrl = URL.createObjectURL(this._uploader.methods.getFile(id))
-        var img = new Image()
+        const imageUrl = URL.createObjectURL(this._uploader.methods.getFile(id))
+        const img = new Image()
 
-        var self = this
         img.onload = () => {
-          self._uploader.methods.setParams({
+          this._uploader.methods.setParams({
             width: img.width,
             height: img.height
           }, id)
@@ -80,19 +171,18 @@
         img.src = imageUrl
 
         const media = {
-          id: id,
+          id: this._uploader.methods.getUuid(id),
           name: sanitizeFilename(name),
           progress: 0,
-          error: false
+          error: false,
+          errorMessage: null
         }
 
         this.loadingMedias.push(media)
         this.loadingProgress(media)
       },
       _onProgressCallback (id, name, uploadedBytes, totalBytes) {
-        const index = this.loadingMedias.findIndex(function (m) {
-          return m.id === id
-        })
+        const index = this.loadingMedias.findIndex((m) => m.id === this._uploader.methods.getUuid(id))
 
         if (index >= 0) {
           let media = this.loadingMedias[index]
@@ -102,12 +192,23 @@
         }
       },
       _onErrorCallback (id, name, errorReason, xhr) {
-        const index = this.loadingMedias.findIndex(function (m) {
-          return m.id === id
-        })
+        const index = id ? this.loadingMedias.findIndex((m) => m.id === this._uploader.methods.getUuid(id)) : -1
 
         if (index >= 0) {
+          this.loadingMedias[index].errorMessage = errorReason
           this.loadingError(this.loadingMedias[index])
+        } else {
+          const media = {
+            id: Date.now(),
+            name: sanitizeFilename(name),
+            progress: 0,
+            error: true,
+            errorMessage: errorReason
+          }
+
+          this.loadingMedias.push(media)
+          this.loadingProgress(media)
+          this.loadingError(this.loadingMedias[this.loadingMedias.length - 1])
         }
       },
       _onStatusChangeCallback (id, oldStatus, newStatus) {
@@ -124,6 +225,10 @@
           }
         }
       },
+      _onTotalProgressCallback (totalUploadedBytes, totalBytes) {
+        const uploadProgress = Math.floor(totalUploadedBytes / totalBytes * 100)
+        this.uploadProgress(uploadProgress)
+      },
       _onDropError (errorCode, errorData) {
         console.error(errorCode, errorData)
       },
@@ -131,79 +236,20 @@
         this._uploader.methods.addFiles(files)
       }
     },
-    mounted () {
-      const buttonEl = this.$refs.uploaderBrowseButton
-      const dropzoneEl = this.$refs.uploaderDropzone
-
-      var self = this
-
-      const sharedConfig = {
-        debug: true,
-        maxConnections: 5,
-        button: buttonEl,
-        retry: {
-          enableAuto: true
-        },
-        callbacks: {
-          onSubmit: this._onSubmitCallback.bind(this),
-          onProgress: this._onProgressCallback.bind(this),
-          onError: this._onErrorCallback.bind(this),
-          onComplete: this._onCompleteCallback.bind(this),
-          onAllComplete: this._onAllCompleteCallback.bind(this),
-          onStatusChange: this._onStatusChangeCallback.bind(this)
-        },
-        text: {
-          fileInputTitle: 'Browse...'
+    watch: {
+      type: function () {
+        if (this._uploader) {
+          this.initUploader()
         }
       }
+    },
+    mounted () {
+      // Init uploader
+      this.initUploader()
 
-      this._uploader = this.uploaderConfig.endpointType === 's3' ? new FineUploaderS3({
-        options: Object.assign(sharedConfig, {
-          validation: {
-            allowedExtensions: ['svg', 'jpg', 'gif', 'png', 'jpeg']
-          },
-          objectProperties: {
-            key: id => {
-              return self.unique_folder_name + '/' + sanitizeFilename(self._uploader.methods.getName(id))
-            },
-            region: this.uploaderConfig.endpointRegion,
-            acl: this.uploaderConfig.acl
-          },
-          request: {
-            endpoint: this.uploaderConfig.endpoint,
-            accessKey: this.uploaderConfig.accessKey
-          },
-          signature: {
-            endpoint: this.uploaderConfig.signatureEndpoint,
-            version: 4,
-            customHeaders: {
-              'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
-            }
-          },
-          uploadSuccess: {
-            endpoint: this.uploaderConfig.successEndpoint,
-            customHeaders: {
-              'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
-            }
-          }
-        })
-      }) : new FineUploaderTraditional({
-        options: Object.assign(sharedConfig, {
-          validation: {
-            allowedExtensions: ['svg', 'jpg', 'gif', 'png', 'jpeg'],
-            sizeLimit: this.uploaderConfig.filesizeLimit * 1048576 // mb to bytes
-          },
-          request: {
-            endpoint: this.uploaderConfig.endpoint,
-            customHeaders: {
-              'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
-            }
-          }
-        })
-      })
-
+      // Init dropzone
+      const dropzoneEl = this.$refs.uploaderDropzone
       this._qqDropzone && this._qqDropzone.dispose()
-
       this._qqDropzone = new qq.DragAndDrop({
         dropZoneElements: [dropzoneEl],
         allowMultipleItems: true,
