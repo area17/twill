@@ -28,6 +28,7 @@
 </template>
 
 <script>
+  import { isEqual } from 'lodash'
   import InputMixin from '@/mixins/input'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
@@ -106,6 +107,13 @@
       }
     },
     methods: {
+      updateFromStore: function (newValue) { // called from the formStore mixin
+        if (!isEqual(newValue,this.value)) {
+          this.value = newValue
+
+          // todo upfate google map here
+        }
+      },
       onFocus: function (event) {
         this.focused = true
 
