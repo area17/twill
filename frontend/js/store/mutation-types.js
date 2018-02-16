@@ -36,6 +36,7 @@ export const SET_MEDIA_METADATAS = 'setMediaMetadatas'
 export const UPDATE_MEDIA_CONNECTOR = 'updateMediaConnector'
 export const UPDATE_MEDIA_MODE = 'updateMediaMode'
 export const DESTROY_MEDIA_CONNECTOR = 'destroyMediaConnector'
+export const UPDATE_REPLACE_INDEX = 'updateReplaceIndex'
 
 /* browser */
 export const SAVE_ITEMS = 'saveSelectedItems'

@@ -7,11 +7,14 @@
             <div class="media__imgCentered">
               <img :src="currentMedia.src"/>
             </div>
+            <div class="media__edit" @click="openMediaLibrary(1, mediaKey, index)">
+              <a17-button class="media__edit--button" icon="edit" :disabled="true"><span v-svg symbol="edit"></span></a17-button>
+            </div>
           </div>
         </div>
 
         <ul class="media__metadatas">
-          <li class="media__name"><strong :title="currentMedia.name">{{ currentMedia.name }}</strong></li>
+          <li class="media__name" @click="openMediaLibrary(1, mediaKey, index)"><strong :title="currentMedia.name">{{ currentMedia.name }}</strong></li>
           <li class="f--small" v-if="currentMedia.size">File size: {{ currentMedia.size | uppercase }}</li>
           <li class="f--small" v-if="currentMedia.width + currentMedia.height">Dimensions: {{ currentMedia.width }}&nbsp;&times;&nbsp;{{ currentMedia.height }}</li>
           <li class="f--small" v-if="cropInfos.length" @click="openCropMedia">
@@ -356,7 +359,26 @@
     }
   }
 
+  .media__edit {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: none;
+    background-color: rgba(51, 51, 51, 0.35);
+    cursor: pointer;
 
+    .media__edit--button {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+    }
+
+    .media__imgFrame:hover & {
+      display: block;
+    }
+  }
 
   .media__info {
     display: flex;
@@ -390,6 +412,14 @@
       display:block;
       margin-bottom:5px;
       // white-space: nowrap;
+    }
+
+    &:hover {
+      cursor: pointer;
+
+      strong {
+        color: $color__link;
+      }
     }
   }
 

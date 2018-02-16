@@ -57,7 +57,12 @@ const state = {
    * @type {Object}
    * @see https://docs.fineuploader.com/
    */
-  uploaderConfig: window.STORE.medias.uploaderConfig || {}
+  uploaderConfig: window.STORE.medias.uploaderConfig || {},
+  /**
+   * An index used when mediaLibrary is open to replace a file
+   * @type {number}
+   */
+  indexToReplace: null
 }
 
 // getters
@@ -69,6 +74,9 @@ const mutations = {
       if (t.value === type.type) t.total = type.total
       return t
     })
+  },
+  [types.UPDATE_REPLACE_INDEX] (state, index) {
+    state.indexToReplace = index
   },
   [types.INCREMENT_MEDIA_TYPE_TOTAL] (state, type) {
     state.types = state.types.map(t => {
@@ -85,7 +93,9 @@ const mutations = {
   [types.SAVE_MEDIAS] (state, medias) {
     if (state.connector) {
       // init crop values
-      const crops = state.crops[state.connector]
+      const key = state.connector
+      const crops = state.crops[key]
+
       medias.forEach((media) => {
         if (media.hasOwnProperty('crops')) {
           return
@@ -126,15 +136,23 @@ const mutations = {
         }
       })
 
-      if (state.selected[state.connector] && state.selected[state.connector].length) {
+      const existedSelectedConnector = state.selected[key] && state.selected[key].length
+      if (existedSelectedConnector && state.indexToReplace > -1) {
+        // Replace mode
+        state.selected[key].splice(state.indexToReplace, 1, medias[0])
+      } else if (existedSelectedConnector) {
+        // Add mode
         medias.forEach(function (media) {
-          state.selected[state.connector].push(media)
+          state.selected[key].push(media)
         })
       } else {
+        // Create mode
         const newMedias = {}
-        newMedias[state.connector] = medias
+        newMedias[key] = medias
         state.selected = Object.assign({}, state.selected, newMedias)
       }
+
+      state.indexToReplace = -1
     }
   },
   [types.DESTROY_SPECIFIC_MEDIA] (state, media) {
