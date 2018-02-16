@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import api from '../api/content'
-import * as types from '../mutation-types'
+import { CONTENT } from '../mutations'
 import { buildBlock, isBlockEmpty } from '@/utils/getFormData.js'
 
 const state = {
@@ -24,7 +24,7 @@ function setBlockID () {
 }
 
 const mutations = {
-  [types.ADD_BLOCK] (state, blockInfos) {
+  [CONTENT.ADD_BLOCK] (state, blockInfos) {
     let block = blockInfos.block
     block.id = setBlockID()
 
@@ -34,7 +34,7 @@ const mutations = {
       state.blocks.push(block) // or add a new block at the end of the list
     }
   },
-  [types.MOVE_BLOCK] (state, fromTo) {
+  [CONTENT.MOVE_BLOCK] (state, fromTo) {
     if (fromTo.newIndex >= state.blocks.length) {
       var k = fromTo.newIndex - state.blocks.length
       while ((k--) + 1) {
@@ -43,25 +43,25 @@ const mutations = {
     }
     state.blocks.splice(fromTo.newIndex, 0, state.blocks.splice(fromTo.oldIndex, 1)[0])
   },
-  [types.DELETE_BLOCK] (state, index) {
+  [CONTENT.DELETE_BLOCK] (state, index) {
     const id = state.blocks[index].id
     if (id) Vue.delete(state.previews, id)
     state.blocks.splice(index, 1)
   },
-  [types.DUPLICATE_BLOCK] (state, index) {
+  [CONTENT.DUPLICATE_BLOCK] (state, index) {
     let clone = Object.assign({}, state.blocks[index])
     clone.id = setBlockID()
 
     state.blocks.splice(index + 1, 0, clone)
   },
-  [types.REORDER_BLOCKS] (state, newBlocks) {
+  [CONTENT.REORDER_BLOCKS] (state, newBlocks) {
     state.blocks = newBlocks
   },
-  [types.ACTIVATE_BLOCK] (state, index) {
+  [CONTENT.ACTIVATE_BLOCK] (state, index) {
     if (state.blocks[index]) state.active = state.blocks[index]
     else state.active = {}
   },
-  [types.ADD_BLOCK_PREVIEW] (state, data) {
+  [CONTENT.ADD_BLOCK_PREVIEW] (state, data) {
     Vue.set(state.previews, data.id, data.html)
   },
   [types.UPDATE_PREVIEW_LOADING] (state, loading) {
@@ -78,7 +78,7 @@ function getBlockPreview (block, commit, rootState, callback) {
     }
 
     if (isBlockEmpty(blockData)) {
-      commit(types.ADD_BLOCK_PREVIEW, {
+      commit(CONTENT.ADD_BLOCK_PREVIEW, {
         id: block.id,
         html: ''
       })
@@ -89,7 +89,7 @@ function getBlockPreview (block, commit, rootState, callback) {
         rootState.form.blockPreviewUrl,
         blockData,
         data => {
-          commit(types.ADD_BLOCK_PREVIEW, {
+          commit(CONTENT.ADD_BLOCK_PREVIEW, {
             id: block.id,
             html: data
           })
