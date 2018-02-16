@@ -1,7 +1,9 @@
 @extends('cms-toolkit::layouts.errors')
 
 @section('content')
-
-    <h2>Error 500 — Something went wrong!</h2>
-
+  <p>Error 500</p>
+  <p>Something went wrong!</p>
+  <p>
+    <a href="/" class="f--underlined">Homepage</a>
+  </p>
 @stop
