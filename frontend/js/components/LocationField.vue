@@ -76,6 +76,7 @@
         autocompletePlace: null,
         markers: [],
         address: '',
+        beforeFocusAddress: '',
         lat: this.initialLat,
         lng: this.initialLng,
         focused: false,
@@ -108,14 +109,26 @@
     },
     methods: {
       updateFromStore: function (newValue) { // called from the formStore mixin
-        if (!isEqual(newValue,this.value)) {
+        if (!isEqual(newValue, this.value)) {
           this.value = newValue
 
-          // todo upfate google map here
+          this.clearMarkers()
+
+          if (this.address === '') {
+            this.lat = this.initialLat
+            this.lng = this.initialLng
+          }
+
+          if (this.lat && this.lng && this.map) {
+            const location = { lat: this.lat, lng: this.lng }
+            this.addMarker(location)
+            this.map.panTo(location)
+          }
         }
       },
       onFocus: function (event) {
         this.focused = true
+        this.beforeFocusAddress = this.address
 
         this.$emit('focus')
       },
@@ -128,8 +141,9 @@
           this.lng = this.initialLng
         }
 
+        // Only save into the store if something changed from the moment you focused the field
         // see formStore mixin
-        this.saveIntoStore()
+        if (this.beforeFocusAddress !== this.address) this.saveIntoStore()
 
         this.$emit('blur')
       },
@@ -157,6 +171,8 @@
             this.map.setZoom(this.zoom)
           }
         }
+
+        this.beforeFocusAddress = this.address
 
         // see formStore mixin
         this.saveIntoStore()
@@ -227,7 +243,7 @@
 
         if (this.address === '' && this.lat && this.lng) {
           const geocoder = new google.maps.Geocoder()
-          const location = {lat: this.lat, lng: this.lng}
+          const location = { lat: this.lat, lng: this.lng }
 
           // reverse geocoding
           geocoder.geocode({
