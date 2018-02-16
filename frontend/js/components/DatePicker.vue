@@ -1,8 +1,8 @@
 <template>
-  <a17-inputframe :name="name" :error="error" :note="note" :label="label" class="datePicker" :class="{ 'datePicker--static' : static }" :required="required">
+  <a17-inputframe :name="name" :error="error" :note="note" :label="label" :label-for="uniqId" class="datePicker" :class="{ 'datePicker--static' : static }" :required="required">
     <div class="datePicker__group" :ref="refs.flatPicker">
       <div class="form__field datePicker__field">
-        <input type="text" :name="name" :placeholder="placeHolder" data-input @blur="onBlur" v-model="date">
+        <input type="text" :name="name" :id="uniqId" :placeholder="placeHolder" data-input @blur="onBlur" v-model="date">
         <a href="#" v-if="clear" class="datePicker__reset" :class="{ 'datePicker__reset--cleared' : !date }" @click.prevent="onClear"><span v-svg symbol="close_icon"></span></a>
       </div>
     </div>
@@ -10,6 +10,7 @@
 </template>
 
 <script>
+  import randKeyMixin from '@/mixins/randKey'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
   import FlatPickr from 'flatpickr'
@@ -17,7 +18,7 @@
 
   export default {
     name: 'A17DatePicker',
-    mixins: [InputframeMixin, FormStoreMixin],
+    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin],
     props: {
       /* @see: https://chmln.github.io/flatpickr/options/ */
       name: { // FlatPicker hidden input name
@@ -64,7 +65,7 @@
         type: Number,
         default: 30
       },
-      static: { // Set static when the input need to show inside a sticky element
+      static: { // Set static when the input need to show inside a sticky element (in the publish module for example)
         type: Boolean,
         default: false
       },
@@ -98,6 +99,9 @@
       }
     },
     computed: {
+      uniqId: function (value) {
+        return this.name + '-' + this.randKey
+      },
       config: function () {
         let self = this
         return {
@@ -134,6 +138,12 @@
       }
     },
     methods: {
+      updateFromStore: function (newValue) { // called from the formStore mixin
+        if (newValue !== this.date) {
+          this.date = newValue
+          this.flatPicker.setDate(newValue)
+        }
+      },
       onInput: function (evt) {
         this.$emit('input', this.date)
       },

@@ -47,26 +47,11 @@ export default {
     }
   },
   methods: {
-    formatValue: function (newVal, oldval) {
-      let self = this
-      if (!newVal) return
-      if (!oldval) return
-
-      const isMax = (newVal.length > this.max && this.max > 0)
-      const isMin = (newVal.length < this.min && this.min > 0)
-
-      if (isMax || isMin) {
-        if (!isEqual(oldval, self.checkedValue)) {
-          self.checkedValue = oldval
-        }
-      }
-    }
-  },
-  mounted: function () {
-    if ((this.max + this.min) > 0) {
-      this.$watch('currentValue', this.formatValue, {
-        immediate: true
-      })
+    isMax: function (arrayToTest) {
+      return (arrayToTest.length > this.max && this.max > 0)
+    },
+    isMin: function (arrayToTest) {
+      return (arrayToTest.length < this.min && this.min > 0)
     }
   }
 }

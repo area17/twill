@@ -31,6 +31,20 @@
       }
     },
     methods: {
+      formatValue: function (newVal, oldval) {
+        let self = this
+        if (!newVal) return
+        if (!oldval) return
+
+        const isMax = this.isMax(newVal) // defined in the checkboxes mixin
+        const isMin = this.isMin(newVal) // defined in the checkboxes mixin
+
+        if (isMax || isMin) {
+          if (!isEqual(oldval, self.checkedValue)) {
+            self.checkedValue = oldval
+          }
+        }
+      },
       updateFromStore: function (newValue) { // called from the formStore mixin
         this.updateValue(newValue)
       },
@@ -41,6 +55,13 @@
         if (!isEqual(newValue, this.currentValue)) {
           this.updateValue(newValue)
         }
+      }
+    },
+    mounted: function () {
+      if ((this.max + this.min) > 0) {
+        this.$watch('currentValue', this.formatValue, {
+          immediate: true
+        })
       }
     }
   }

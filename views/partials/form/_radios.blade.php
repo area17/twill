@@ -11,16 +11,17 @@
     $inline = $inline ?? false;
 @endphp
 
-<a17-radiogroup
+<a17-singleselect
     label="{{ $label }}"
     @include('cms-toolkit::partials.form.utils._field_name')
-    :radios='{!! json_encode($options) !!}'
+    :options="{{ json_encode($options) }}"
+    @if ($default) selected="{{ $default }}" @endif
+    :grid="false"
     :inline='{{ $inline ? 'true' : 'false' }}'
-    @if ($default) initial-value='{{ $default }}' @endif
     @if ($note) note='{{ $note }}' @endif
     :has-default-store="true"
-    in-store="currentValue"
-></a17-radiogroup>
+    in-store="value"
+></a17-singleselect>
 
 @unless($renderForBlocks || $renderForModal || !isset($item->$name))
 @push('vuexStore')

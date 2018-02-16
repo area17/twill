@@ -12,6 +12,8 @@
     label="{{ $label }}"
     @include('cms-toolkit::partials.form.utils._field_name')
     :options="{{ json_encode($options) }}"
+    :grid="true"
+    :inline="false"
     @if ($min ?? false) :min="{{ $min }}" @endif
     @if ($max ?? false) :max="{{ $max }}" @endif
     @if ($note) note='{{ $note }}' @endif

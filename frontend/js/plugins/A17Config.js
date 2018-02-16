@@ -11,6 +11,7 @@ import a17MediaField from '@/components/MediaField.vue'
 import a17Radio from '@/components/Radio.vue'
 import a17RadioGroup from '@/components/RadioGroup.vue'
 import a17Checkbox from '@/components/Checkbox.vue'
+import a17SingleCheckbox from '@/components/SingleCheckbox.vue'
 import a17CheckboxGroup from '@/components/CheckboxGroup.vue'
 import a17Dropdown from '@/components/Dropdown.vue'
 import a17Buttonbar from '@/components/ButtonBar.vue'
@@ -47,6 +48,7 @@ const A17Config = {
     Vue.component('a17-radio', a17Radio)
     Vue.component('a17-radiogroup', a17RadioGroup)
     Vue.component('a17-checkbox', a17Checkbox)
+    Vue.component('a17-singlecheckbox', a17SingleCheckbox)
     Vue.component('a17-checkboxgroup', a17CheckboxGroup)
     Vue.component('a17-select', a17Select)
     Vue.component('a17-vselect', a17VSelect)

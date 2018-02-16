@@ -1,6 +1,6 @@
 <template>
-  <div class="overlay" :class="overlayClasses" @mousedown="hide" @touchstart="hide">
-    <div class="overlay__window" @mousedown.stop @touchstart.stop>
+  <div class="overlay" :class="overlayClasses">
+    <div class="overlay__window">
       <header class="overlay__header" v-if="overlayTitle">
         {{ overlayTitle }}
         <button class="overlay__close" type="button" @click="hide"><span v-svg symbol="close_modal"></span><span class="overlay__closeLabel">Close</span></button>

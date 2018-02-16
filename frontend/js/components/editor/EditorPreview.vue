@@ -5,10 +5,10 @@
     </div>
     <draggable class="editorPreview__content" v-model="blocks" :options="{ group: 'editorBlocks', handle: handle }" @add="onAdd" @update="onUpdate">
       <div class="editorPreview__item" :class="{ 'editorPreview__item--active' : isBlockActive(block.id), 'editorPreview__item--hover' : activeItem === index }" v-for="(block, index) in blocks" :key="block.id" @mousedown.stop >
-        <div class="editorPreview__frame" tabindex="0" @click="selectBlock(index)">
+        <div class="editorPreview__frame">
           <a17-editor-iframe :block="block" @loaded="resizeIframe"></a17-editor-iframe>
         </div>
-        <div class="editorPreview__protector editorPreview__dragger" @click="selectBlock(index)"></div>
+        <div class="editorPreview__protector editorPreview__dragger" @click.prevent="selectBlock(index)"></div>
         <div class="editorPreview__header">
           <a17-buttonbar variant="visible">
             <a17-dropdown class="f--small" position="bottom-left" :ref="moveDropdown(index)" v-if="blocks.length > 1" @open="activeItem = index" @close="activeItem = -1" :maxHeight="270">
