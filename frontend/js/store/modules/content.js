@@ -36,7 +36,7 @@ const mutations = {
   },
   [CONTENT.MOVE_BLOCK] (state, fromTo) {
     if (fromTo.newIndex >= state.blocks.length) {
-      var k = fromTo.newIndex - state.blocks.length
+      let k = fromTo.newIndex - state.blocks.length
       while ((k--) + 1) {
         state.blocks.push(undefined)
       }

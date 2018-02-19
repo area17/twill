@@ -14,9 +14,8 @@ const getters = {
   selectedItemsByIds: state => {
     let arrayOfIds = []
 
-    for (var name in state.selected) {
-      const ids = state.selected[name].map((item) => item.id)
-      arrayOfIds[name] = ids
+    for (let name in state.selected) {
+      arrayOfIds[name] = state.selected[name].map((item) => item.id)
     }
 
     return arrayOfIds

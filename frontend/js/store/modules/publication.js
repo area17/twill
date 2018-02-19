@@ -112,11 +112,8 @@ const mutations = {
 
     // update disabled states & checked state
     state.reviewProcess.forEach(function (option, index) {
-      if (index <= currentIndex) option.checked = true
-      else option.checked = false
-
-      if (index === currentIndex || index === (currentIndex + 1)) option.disabled = false
-      else option.disabled = true
+      option.checked = index <= currentIndex
+      option.disabled = !(index === currentIndex || index === (currentIndex + 1))
     })
   }
 }
