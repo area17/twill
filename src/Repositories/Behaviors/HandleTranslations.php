@@ -18,12 +18,20 @@ trait HandleTranslations
             $localesCount = count($locales);
             $attributes = collect($this->model->translatedAttributes);
 
+            $submittedLanguages = collect($fields['languages'] ?? []);
+
+            $atLeastOneLanguageIsPublished = $submittedLanguages->contains(function ($language) {
+                return $language['published'];
+            });
+
             foreach ($locales as $index => $locale) {
-                $submittedLanguage = array_first(collect($fields['languages'] ?? [])->filter(function ($lang) use ($locale) {
+                $submittedLanguage = array_first($submittedLanguages->filter(function ($lang) use ($locale) {
                     return $lang['value'] == $locale;
                 }));
 
-                $activeField = isset($submittedLanguage) ? $submittedLanguage['published'] : false;
+                $shouldPublishFirstLanguage = ($index === 0 && !$atLeastOneLanguageIsPublished);
+
+                $activeField = $shouldPublishFirstLanguage || (isset($submittedLanguage) ? $submittedLanguage['published'] : false);
 
                 $fields[$locale] = [
                     'active' => $activeField,

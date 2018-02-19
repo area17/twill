@@ -1,6 +1,6 @@
 <template>
   <div class="locale">
-    <template v-if="languages && languages.length && languages.length > 1">
+    <template v-if="languages && languages.length && languages.length > 0">
     <div class="locale__item" v-for="(language, index) in languages" :key="language.value">
       <component v-bind:is="`${type}`" :data-lang="language.value"
         v-bind="attributesPerLang(language.value)"
@@ -63,8 +63,14 @@
     },
     methods: {
       attributesPerLang: function (lang) {
+        const language = this.languages.find(l => l.value === lang)
+
         // for textfields set initial values using the initialValues prop
         if (this.initialValues[lang]) this.attributes.initialValue = this.initialValues[lang]
+
+        if (!language.published) {
+          this.attributes.required = false
+        }
 
         return this.attributes
       },
