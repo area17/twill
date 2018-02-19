@@ -1,5 +1,5 @@
 import api from '../api/datatable'
-import * as types from '../mutations'
+import { DATATABLE } from '../mutations'
 import { setStorage } from '@/utils/localeStorage.js'
 /* NESTED functions */
 const getObject = (container, id, callback) => {
@@ -69,13 +69,13 @@ const getters = {
 }
 
 const mutations = {
-  [types.UPDATE_DATATABLE_DATA] (state, data) {
+  [DATATABLE.UPDATE_DATATABLE_DATA] (state, data) {
     // Each time the data is changing, we reset the bulk ids
     state.bulk = []
 
     state.data = data
   },
-  [types.UPDATE_DATATABLE_BULK] (state, id) {
+  [DATATABLE.UPDATE_DATATABLE_BULK] (state, id) {
     if (state.bulk.indexOf(id) > -1) {
       state.bulk = state.bulk.filter(function (item) {
         return item !== id
@@ -84,41 +84,41 @@ const mutations = {
       state.bulk.push(id)
     }
   },
-  [types.REPLACE_DATATABLE_BULK] (state, ids) {
+  [DATATABLE.REPLACE_DATATABLE_BULK] (state, ids) {
     state.bulk = ids
   },
-  [types.ADD_DATATABLE_COLUMN] (state, column) {
+  [DATATABLE.ADD_DATATABLE_COLUMN] (state, column) {
     state.columns.splice(column.index, 0, column.data)
   },
-  [types.REMOVE_DATATABLE_COLUMN] (state, columnName) {
+  [DATATABLE.REMOVE_DATATABLE_COLUMN] (state, columnName) {
     state.columns.forEach(function (column, index) {
       if (column.name === columnName) state.columns.splice(index, 1)
     })
   },
-  [types.UPDATE_DATATABLE_FILTER] (state, filter) {
+  [DATATABLE.UPDATE_DATATABLE_FILTER] (state, filter) {
     state.filter = Object.assign({}, state.filter, filter)
   },
-  [types.CLEAR_DATATABLE_FILTER] (state) {
+  [DATATABLE.CLEAR_DATATABLE_FILTER] (state) {
     state.filter = Object.assign({}, {
       search: '',
       status: state.filter.status
     })
   },
-  [types.UPDATE_DATATABLE_FILTER_STATUS] (state, slug) {
+  [DATATABLE.UPDATE_DATATABLE_FILTER_STATUS] (state, slug) {
     state.filter.status = slug
   },
-  [types.UPDATE_DATATABLE_OFFSET] (state, offsetNumber) {
+  [DATATABLE.UPDATE_DATATABLE_OFFSET] (state, offsetNumber) {
     state.offset = offsetNumber
     setStorage(state.localStorageKey + '_page-offset', state.offset)
   },
-  [types.UPDATE_DATATABLE_PAGE] (state, pageNumber) {
+  [DATATABLE.UPDATE_DATATABLE_PAGE] (state, pageNumber) {
     state.page = pageNumber
   },
-  [types.UPDATE_DATATABLE_MAXPAGE] (state, maxPage) {
+  [DATATABLE.UPDATE_DATATABLE_MAXPAGE] (state, maxPage) {
     if (state.page > maxPage) state.page = maxPage
     state.maxPage = maxPage
   },
-  [types.UPDATE_DATATABLE_VISIBLITY] (state, columnNames) {
+  [DATATABLE.UPDATE_DATATABLE_VISIBLITY] (state, columnNames) {
     setStorage(state.localStorageKey + '_columns-visible', JSON.stringify(columnNames))
     state.columns.forEach(function (column) {
       for (let i = 0; i < columnNames.length; i++) {
@@ -132,7 +132,7 @@ const mutations = {
       }
     })
   },
-  [types.UPDATE_DATATABLE_SORT] (state, column) {
+  [DATATABLE.UPDATE_DATATABLE_SORT] (state, column) {
     const defaultSortDirection = 'asc'
 
     if (state.sortKey === column.name) {
@@ -143,14 +143,14 @@ const mutations = {
 
     state.sortKey = column.name
   },
-  [types.UPDATE_DATATABLE_NAV] (state, navigation) {
+  [DATATABLE.UPDATE_DATATABLE_NAV] (state, navigation) {
     navigation.forEach(function (navItem) {
       state.filtersNav.forEach(function (filterItem) {
         if (filterItem.name === navItem.name) filterItem.number = navItem.number
       })
     })
   },
-  [types.PUBLISH_DATATABLE] (state, data) {
+  [DATATABLE.PUBLISH_DATATABLE] (state, data) {
     const id = data.id
     const value = data.value
 
@@ -178,7 +178,7 @@ const mutations = {
       updateState(index)
     }
   },
-  [types.FEATURE_DATATABLE] (state, data) {
+  [DATATABLE.FEATURE_DATATABLE] (state, data) {
     const id = data.id
     const value = data.value
 
@@ -206,15 +206,15 @@ const mutations = {
       updateState(index)
     }
   },
-  [types.UPDATE_DATATABLE_LOADING] (state, loading) {
+  [DATATABLE.UPDATE_DATATABLE_LOADING] (state, loading) {
     state.loading = !state.loading
   },
-  [types.UPDATE_DATATABLE_NESTED] (state, data) {
+  [DATATABLE.UPDATE_DATATABLE_NESTED] (state, data) {
     getObject(state.data, data.parentId, (item) => {
       item.children = data.val
     })
   },
-  [types.UPDATE_DATATABLE_TRACKER] (state, newTracker) {
+  [DATATABLE.UPDATE_DATATABLE_TRACKER] (state, newTracker) {
     state.updateTracker = newTracker ? state.updateTracker + 1 : 0
   }
 }
@@ -222,7 +222,7 @@ const mutations = {
 const actions = {
   getDatatableDatas ({ commit, state, getters }) {
     if (!state.loading) {
-      commit(types.UPDATE_DATATABLE_LOADING, true)
+      commit(DATATABLE.UPDATE_DATATABLE_LOADING, true)
       const params = {
         sortKey: state.sortKey,
         sortDir: state.sortDir,
@@ -233,10 +233,10 @@ const actions = {
       }
 
       api.get(params, function (resp) {
-        commit(types.UPDATE_DATATABLE_DATA, resp.data)
-        commit(types.UPDATE_DATATABLE_MAXPAGE, resp.maxPage)
-        commit(types.UPDATE_DATATABLE_NAV, resp.nav)
-        commit(types.UPDATE_DATATABLE_LOADING, false)
+        commit(DATATABLE.UPDATE_DATATABLE_DATA, resp.data)
+        commit(DATATABLE.UPDATE_DATATABLE_MAXPAGE, resp.maxPage)
+        commit(DATATABLE.UPDATE_DATATABLE_NAV, resp.nav)
+        commit(DATATABLE.UPDATE_DATATABLE_LOADING, false)
       })
     }
   },
@@ -288,7 +288,7 @@ const actions = {
   },
   toggleFeaturedData ({ commit, state }, row) {
     api.toggleFeatured(row, resp => {
-      commit(types.FEATURE_DATATABLE, {
+      commit(DATATABLE.FEATURE_DATATABLE, {
         id: row.id,
         value: 'toggle'
       })
@@ -302,7 +302,7 @@ const actions = {
         toFeature: payload.toFeature
       },
       function (resp) {
-        commit(types.FEATURE_DATATABLE, {
+        commit(DATATABLE.FEATURE_DATATABLE, {
           id: state.bulk,
           value: true
         })
