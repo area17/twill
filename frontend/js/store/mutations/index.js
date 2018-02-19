@@ -36,4 +36,4 @@ export { default as PUBLICATION } from './publication'
 export { default as DATATABLE } from './datatable'
 
 /* Parents */
-export const UPDATE_PARENT = 'updateParent'
+export { default as PARENTS } from './parents'
