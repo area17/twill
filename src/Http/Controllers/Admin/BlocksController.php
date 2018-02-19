@@ -11,7 +11,11 @@ class BlocksController extends Controller
         $blocksCollection = collect();
         $childBlocksList = collect();
 
-        $block = $blockRepository->buildFromCmsArray(request()->all());
+        if (request()->has('activeLanguage')) {
+            app()->setLocale(request('activeLanguage'));
+        }
+
+        $block = $blockRepository->buildFromCmsArray(request()->except('activeLanguage'));
 
         foreach ($block['blocks'] as $childKey => $childBlocks) {
             foreach ($childBlocks as $index => $childBlock) {

@@ -69,6 +69,10 @@ function getBlockPreview (block, commit, rootState) {
   if (block.hasOwnProperty('id')) {
     const blockData = buildBlock(block, rootState)
 
+    if (rootState.language.all.length > 1) {
+      blockData.activeLanguage = rootState.language.active.value
+    }
+
     if (isBlockEmpty(blockData)) {
       commit(types.ADD_BLOCK_PREVIEW, {
         id: block.id,
