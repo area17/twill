@@ -27,10 +27,7 @@ export { default as LANGUAGE } from './language'
 export { default as BUCKETS } from './buckets'
 
 /* revision */
-export const LOADING_REV = 'loadingRevision'
-export const UPDATE_REV = 'updateRevision'
-export const UPDATE_REV_CONTENT = 'updateRevisionContent'
-export const UPDATE_REV_CURRENT_CONTENT = 'updatePreviewContent'
+export { default as REVISION } from './revision'
 
 /* publications */
 export const UPDATE_PUBLISH_START_DATE = 'updatePublishStartDate'
