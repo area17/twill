@@ -575,4 +575,9 @@ abstract class ModuleRepository
 
         return app(config('cms-toolkit.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
     }
+
+    public function __call($method, $parameters)
+    {
+        return $this->model->$method(...$parameters);
+    }
 }
