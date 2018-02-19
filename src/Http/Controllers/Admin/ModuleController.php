@@ -457,6 +457,7 @@ abstract class ModuleController extends Controller
             'permalink' => $this->getIndexOption('permalink'),
             'bulkEdit' => $this->getIndexOption('bulkEdit'),
             'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
+            'baseUrl' => $this->getPermalinkBaseUrl(),
         ];
 
         return array_replace_recursive($data + $options, $this->indexData($this->request));

@@ -8,19 +8,14 @@ trait HandleSlugs
     {
         if (property_exists($this->model, 'slugAttributes')) {
             foreach (getLocales() as $locale) {
-                if ($object->getActiveSlug($locale) == null) {
-                    $this->createOneSlug($object, $fields, $locale);
-                } elseif (isset($fields['slug_' . $locale]) && !empty($fields['slug_' . $locale])) {
-                    if (!isset($fields['active_' . $locale])) {
-                        $object->disableLocaleSlugs($locale);
-                    } else {
-                        $currentSlug = [];
-                        $currentSlug['slug'] = $fields['slug_' . $locale];
-                        $currentSlug['locale'] = $locale;
-                        $currentSlug = $this->getSlugParameters($object, $fields, $currentSlug);
-                        $object->updateOrNewSlug($currentSlug);
-
-                    }
+                if (isset($fields['slug']) && isset($fields['slug'][$locale]) && !empty($fields['slug'][$locale])) {
+                    $object->disableLocaleSlugs($locale);
+                    $currentSlug = [];
+                    $currentSlug['slug'] = $fields['slug'][$locale];
+                    $currentSlug['locale'] = $locale;
+                    $currentSlug['active'] = $object->translate($locale)->active;
+                    $currentSlug = $this->getSlugParameters($object, $fields, $currentSlug);
+                    $object->updateOrNewSlug($currentSlug);
                 }
             }
         }
@@ -40,8 +35,8 @@ trait HandleSlugs
     {
         if ($object->slugs != null) {
             foreach ($object->slugs as $slug) {
-                if ($slug->active) {
-                    $fields['slug_' . $slug->locale] = $slug->slug;
+                if ($slug->active || $object->slugs->where('locale', $slug->locale)->where('active', true)->count() === 0) {
+                    $fields['translations']['slug'][$slug->locale] = $slug->slug;
                 }
             }
         }
@@ -49,26 +44,10 @@ trait HandleSlugs
         return $fields;
     }
 
-    private function createOneSlug($object, $fields, $locale)
-    {
-        $newSlug = [];
-
-        if (isset($fields['slug_' . $locale]) && !empty($fields['slug_' . $locale])) {
-            $newSlug['slug'] = $fields['slug_' . $locale];
-        } elseif (isset($fields[reset($object->slugAttributes) . '_' . $locale]) && isset($fields['active_' . $locale])) {
-            $newSlug['slug'] = $fields[reset($object->slugAttributes) . '_' . $locale];
-        }
-
-        if (!empty($newSlug)) {
-            $newSlug['locale'] = $locale;
-            $newSlug = $this->getSlugParameters($object, $fields, $newSlug);
-            $object->updateOrNewSlug($newSlug);
-        }
-    }
-
     public function getSlugParameters($object, $fields, $slug)
     {
         $slugParams = $object->getSlugParams($slug['locale']);
+
         foreach ($object->slugAttributes as $param) {
             if (isset($slugParams[$param]) && isset($fields[$param])) {
                 $slug[$param] = $fields[$param];

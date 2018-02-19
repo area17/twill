@@ -3,12 +3,15 @@
     'label' => ucfirst($titleFormKey ?? 'title'),
     'translated' => $translateTitle ?? false,
     'required' => true,
-    {{-- 'onChange' => 'formatPermalink' --}}
+    'onChange' => 'formatPermalink'
 ])
 
-{{-- @formField('input', [
-    'name' => 'permalink',
-    'label' => 'Permalink',
-    'translated' => true,
-    'ref' => 'permalink'
-]) --}}
+@if ($permalink ?? true)
+    @formField('input', [
+        'name' => 'slug',
+        'label' => 'Permalink',
+        'translated' => true,
+        'ref' => 'permalink',
+        'prefix' => ($baseUrl ?? false ) ? str_replace(['http://','https://'], '', $baseUrl) : ''
+    ])
+@endif

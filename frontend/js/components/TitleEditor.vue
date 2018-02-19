@@ -46,7 +46,7 @@
       },
       warningMessage: {
         type: String,
-        default: 'Please include a title'
+        default: 'Missing title'
       },
       name: {
         default: 'title'
@@ -75,8 +75,10 @@
         const titleValue = typeof title === 'string' ? title : title[this.currentLocale['value']]
         return titleValue || this.warningMessage
       },
+      permalink: function () {
+        return this.fieldValueByName('slug')[this.currentLocale.value]
+      },
       ...mapState({
-        permalink: state => state.form.permalink,
         baseUrl: state => state.form.baseUrl,
         currentLocale: state => state.language.active,
         languages: state => state.language.all,

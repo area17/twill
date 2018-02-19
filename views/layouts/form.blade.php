@@ -7,7 +7,6 @@
 @endif
 
 @php
-    $permalink = $permalink ?? true;
     $editor = $editor ?? false;
     $translate = $translate ?? false;
     $translateTitle = $translateTitle ?? $translate ?? false;
@@ -78,7 +77,6 @@
 @section('initialStore')
 
     window.STORE.form = {
-        permalink: '{{ $permalink ? ($item->slug ?? '') : '' }}',
         baseUrl: '{{ $baseUrl }}',
         saveUrl: '{{ $saveUrl }}',
         previewUrl: '{{ $previewUrl or '' }}',

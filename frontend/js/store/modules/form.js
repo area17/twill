@@ -5,7 +5,6 @@ import { getFormData, getFormFields } from '@/utils/getFormData.js'
 const state = {
   loading: false,
   type: 'save',
-  permalink: window.STORE.form.permalink || '',
   baseUrl: window.STORE.form.baseUrl || '',
   fields: window.STORE.form.fields || [],
   saveUrl: window.STORE.form.saveUrl || '',

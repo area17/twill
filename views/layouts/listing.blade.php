@@ -66,7 +66,6 @@
 
         <a17-modal-create ref="editionModal" :form-create="'{{ $storeUrl }}'" v-on:reload="reloadDatas">
             <a17-langswitcher :in-modal="true"></a17-langswitcher>
-            {{ csrf_field() }}
             @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
         </a17-modal-create>
     </div>

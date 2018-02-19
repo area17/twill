@@ -99,6 +99,8 @@
   import InputframeMixin from '@/mixins/inputFrame'
   import LocaleMixin from '@/mixins/locale'
 
+  import debounce from 'lodash/debounce'
+
   export default {
     name: 'A17Textfield',
     mixins: [randKeyMixin, InputMixin, InputframeMixin, LocaleMixin, FormStoreMixin],
@@ -194,21 +196,21 @@
       },
       onBlur: function (event) {
         let newValue = event.target.value
-
         this.focused = false
-
-        // Only save into the store if something changed from the moment you focused the field
-        // see formStore mixin
-        if (this.beforeFocusValue !== this.value) this.saveIntoStore()
-
         this.$emit('blur', newValue)
       },
-      onInput: function (event) {
+      onInput: debounce(function (event) {
         let newValue = event.target.value
 
         this.updateValue(newValue)
+
+        // Only save into the store if something changed from the moment you focused the field
+        if (this.beforeFocusValue !== this.value) {
+          this.saveIntoStore() // see formStore mixin
+        }
+
         this.$emit('change', newValue)
-      },
+      }, 400),
       resizeTextarea: function () {
         if (this.type !== 'textarea') return
 

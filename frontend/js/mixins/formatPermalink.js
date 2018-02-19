@@ -1,19 +1,41 @@
+import { mapState } from 'vuex'
 import a17VueFilters from '@/utils/filters.js'
 
 export default {
   filters: a17VueFilters,
+  computed: {
+    ...mapState({
+      currentLocale: state => state.language.active
+    })
+  },
   methods: {
     formatPermalink: function (newValue) {
-      if (newValue.value) {
-        const slug = this.$options.filters.slugify(newValue.value)
+      if (newValue) {
+        let text = ''
+
+        if (newValue.value && typeof newValue.value === 'string') {
+          text = newValue.value
+        } else if (typeof newValue === 'string') {
+          text = newValue
+        }
+
+        const slug = this.$options.filters.slugify(text)
+
+        const permalinkRef = this.$refs.permalink
+
+        let field = {
+          name: permalinkRef.attributes ? permalinkRef.attributes.name : permalinkRef.name,
+          value: slug
+        }
+
+        if (newValue.locale) {
+          field.locale = newValue.locale
+        } else {
+          field.locale = this.currentLocale.value
+        }
 
         // Update value in the store
-        let field = {}
-        field.name = this.$refs.permalink.attributes.name
-        field.value = slug
-        if (newValue.locale) field.locale = newValue.locale
         this.$store.commit('updateFormField', field)
-        this.$store.commit('refreshFormFieldUI', field)
       }
     }
   }

@@ -59,7 +59,6 @@ trait HasSlug
     public function setSlugs($restoring = false)
     {
         foreach ($this->getSlugParams() as $slugParams) {
-            unset($slugParams['active']);
             $this->updateOrNewSlug($slugParams, $restoring);
         }
     }
@@ -75,11 +74,12 @@ trait HasSlug
         //active old slug if already existing or create a new one
         if ((($oldSlug = $this->getExistingSlug($slugParams)) != null)
             && ($restoring ? $slugParams['slug'] === $this->suffixSlugIfExisting($slugParams) : true)) {
-            if (!$oldSlug->active) {
+            if (!$oldSlug->active && ($slugParams['active'] ?? false)) {
                 DB::table($this->getSlugsTable())->where('id', $oldSlug->id)->update(['active' => 1]);
                 $this->disableLocaleSlugs($oldSlug->locale, $oldSlug->id);
             }
         } else {
+
             $this->addOneSlug($slugParams);
         }
     }
@@ -87,6 +87,7 @@ trait HasSlug
     public function getExistingSlug($slugParams)
     {
         $query = DB::table($this->getSlugsTable())->where($this->getForeignKey(), $this->id);
+        unset($slugParams['active']);
 
         foreach ($slugParams as $key => $value) {
             //check variations of the slug
@@ -94,7 +95,7 @@ trait HasSlug
                 $query->where(function ($query) use ($value) {
                     $query->orWhere('slug', $value);
                     $query->orWhere('slug', $value . '-' . $this->getSuffixSlug());
-                    for ($i = 1; $i < $this->nb_variation_slug; $i++) {
+                    for ($i = 2; $i <= $this->nb_variation_slug; $i++) {
                         $query->orWhere('slug', $value . '-' . $i);
                     }
                 });
@@ -114,7 +115,7 @@ trait HasSlug
         }
 
         $datas['slug'] = $this->suffixSlugIfExisting($slugParams);
-        $datas['active'] = $slugParams['active'] ?? 1;
+
         $datas[$this->getForeignKey()] = $this->id;
 
         $id = DB::table($this->getSlugsTable())->insertGetId($datas);
@@ -136,10 +137,12 @@ trait HasSlug
     {
         $slugBackup = $slugParams['slug'];
         $table = $this->getSlugsTable();
-        for ($i = 1; $i <= $this->nb_variation_slug; $i++) {
+
+        unset($slugParams['active']);
+
+        for ($i = 2; $i <= $this->nb_variation_slug + 1; $i++) {
             $qCheck = DB::table($table);
             $qCheck->whereNull($this->getDeletedAtColumn());
-
             foreach ($slugParams as $key => $value) {
                 $qCheck->where($key, '=', $value);
             }
@@ -149,7 +152,7 @@ trait HasSlug
             }
 
             if (!empty($slugParams['slug'])) {
-                $slugParams['slug'] = $slugBackup . (($i == $this->nb_variation_slug) ? "-" . $this->getSuffixSlug() : "-{$i}");
+                $slugParams['slug'] = $slugBackup . (($i > $this->nb_variation_slug) ? "-" . $this->getSuffixSlug() : "-{$i}");
             }
         }
 
