@@ -473,14 +473,13 @@
 
   .datatable--dragging /deep/ .nested__dropArea:empty {
     &::after {
-      background-color: red;
       min-height: 20px;
     }
   }
 
   .datatable--dragging /deep/ .datatable--selected > .nested__dropArea:empty {
     &::after {
-     //display: none;
+     display: none;
     }
   }
 </style>
