@@ -62,7 +62,7 @@
                 <a17-bulk></a17-bulk>
             @endif
         </div>
-        <a17-datatable :draggable="{{ $reorder ? 'true' : 'false' }}" :nested="{{ $nested ? 'true' : 'false' }}" :nested-depth="{{ $nestedDepth ?? '1' }}" :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}" empty-message="There is no item here yet."></a17-datatable>
+        <a17-datatable :draggable="{{ $reorder ? 'true' : 'false' }}" :nested="{{ $nested ? 'true' : 'false' }}" :max-depth="{{ $nestedDepth ?? '1' }}" :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}" empty-message="There is no item here yet."></a17-datatable>
 
         <a17-modal class="modal--form" ref="addNewModal" title="Add new">
             <a17-langswitcher :in-modal="true"></a17-langswitcher>

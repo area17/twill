@@ -3,7 +3,7 @@
     <td :colspan="tdWidth">
       <table class="nested__table nested__table--parent">
         <template v-if="draggable">
-          <draggable :element="'tbody'" v-model="rows" :options="draggableOptions" class="nested__dropArea" @start="onStart" @end="onEnd">
+          <draggable :element="'tbody'" :component-data=" draggableGetComponentData" v-model="rows" :options="draggableOptions" class="nested__dropArea" @start="onStart" :move="onMove" @end="onEnd">
             <template v-for="(row, index) in rows">
               <tr class="nested">
                 <td :colspan="tdWidth">
@@ -68,21 +68,7 @@
       },
       draggableOptions: {
         type: Object,
-        default: () => {
-        }
-      },
-      depth: {
-        type: Number,
-        default: 1
-      },
-      maxDepth: {
-        type: Number,
-        default: 1
-      }
-    },
-    data: function () {
-      return {
-        nested: true
+        default: () => {}
       }
     },
     computed: {

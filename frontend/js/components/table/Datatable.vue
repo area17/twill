@@ -34,7 +34,7 @@
             <a17-tablehead :columns="visibleColumns" ref="thead" :sortable="!nested"></a17-tablehead>
           </thead>
           <template v-if="draggable">
-            <draggable class="datatable__drag" :element="'tbody'" v-model="rows" :options="draggableOptions" @start="onStart" @end="onEnd">
+            <draggable class="datatable__drag" :component-data=" draggableGetComponentData" :element="'tbody'" v-model="rows" :options="draggableOptions" @start="onStart" :move="onMove" @end="onEnd">
               <template v-for="(row, index) in rows">
                 <a17-tablerow v-if="!nested" :row="row" :index="index" :columns="visibleColumns" :key="row.id"></a17-tablerow>
                 <template v-else>
@@ -128,14 +128,6 @@
       name: {
         type: String,
         default: 'group1'
-      },
-      nested: {
-        type: Boolean,
-        default: false
-      },
-      nestedDepth: {
-        type: Number,
-        default: 1
       }
     },
     data: function () {
