@@ -42,9 +42,12 @@ abstract class Model extends BaseModel implements TaggableInterface
             $query->where(function ($query) {
                 $query->whereNull('publish_start_date')->orWhere('publish_start_date', '<=', Carbon::now());
             });
-            $query->where(function ($query) {
-                $query->whereNull('publish_end_date')->orWhere('publish_end_date', '>=', Carbon::now());
-            });
+
+            if ($this->isFillable('publish_end_date')) {
+                $query->where(function ($query) {
+                    $query->whereNull('publish_end_date')->orWhere('publish_end_date', '>=', Carbon::now());
+                });
+            }
         }
 
         return $query;
