@@ -18,7 +18,7 @@ trait ShowWithPreview
             $this->showViewName = 'site.' . str_singular($this->moduleName);
         }
 
-        if ($preview = request()->route()->getName() === $this->routeName . '.preview') {
+        if (ends_with(request()->route()->getName(), $this->routeName . '.preview')) {
             $item = $this->getItemPreview($slug);
         }
 
