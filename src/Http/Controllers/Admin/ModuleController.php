@@ -493,6 +493,19 @@ abstract class ModuleController extends Controller
             })->toArray();
 
             $name = $columnsData[$this->titleColumnKey];
+
+            if (empty($name)) {
+                if ($this->moduleIsTranslated()) {
+                    $fallBackTranslation = $item->translations()->where('active', true)->first();
+
+                    if (isset($fallBackTranslation->{$this->titleColumnKey})) {
+                        $name = $fallBackTranslation->{$this->titleColumnKey};
+                    }
+                }
+
+                $name = $name ?? ('Missing ' . $this->titleColumnKey);
+            }
+
             unset($columnsData[$this->titleColumnKey]);
 
             $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
