@@ -477,7 +477,7 @@
     }
   }
 
-  .datatable--dragging /deep/ .datatable--selected > .nested__dropArea:empty {
+  .datatable--dragging /deep/ .datatable--selected .nested__dropArea:empty {
     &::after {
      display: none;
     }

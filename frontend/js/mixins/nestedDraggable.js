@@ -59,11 +59,20 @@ export default {
       }
 
       const targetDepth = event.relatedContext.component.componentData.props.depth
-      return targetDepth + this.currentElDepth <= this.maxDepth + 1
+      const canDrag = targetDepth + this.currentElDepth <= this.maxDepth + 1
+
+      if (!canDrag) {
+        event.dragged.classList.add('sortable-nodrag')
+      } else {
+        event.dragged.classList.remove('sortable-nodrag')
+      }
+      return canDrag
     },
     onEnd: function (event) {
       this.currentElDepth = undefined
       event.item.classList.remove('datatable--selected')
+      event.item.classList.remove('sortable-nodrag')
+
       document.querySelector('.datatable').classList.remove('datatable--dragging')
     },
     saveNewTree: function (isChangingParents) {
