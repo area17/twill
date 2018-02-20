@@ -1,15 +1,15 @@
 <template>
   <tr class="nested">
-    <td :colspan="tdWidth">
+    <td :colspan="tdColspan">
       <table class="nested__table nested__table--parent">
         <template v-if="draggable">
           <draggable :element="'tbody'" :component-data=" draggableGetComponentData" v-model="rows" :options="draggableOptions" class="nested__dropArea" @start="onStart" :move="onMove" @end="onEnd">
             <template v-for="(row, index) in rows">
               <tr class="nested">
-                <td :colspan="tdWidth">
+                <td :colspan="tdColspan">
                   <table class="nested__table">
-                    <a17-tablerow :rowType="'nested'" :row="row" :index="index" :key="row.id" :columns="columns" :nestedDepth="depth"></a17-tablerow>
-                    <a17-tablerow-nested v-if="depth < maxDepth" :rowType="'nested'" :depth="depth + 1" :maxDepth="maxDepth" :parentId="row.id" :items="row.children" :columns="columns" :draggableOptions="draggableOptions"></a17-tablerow-nested>
+                    <a17-tablerow :rowType="'nested'" :row="row" :index="index" :key="row.id" :columns="columns" :nestedDepth="depth"/>
+                    <a17-tablerow-nested v-if="depth < maxDepth" :rowType="'nested'" :depth="depth + 1" :maxDepth="maxDepth" :parentId="row.id" :items="row.children" :columns="columns" :draggableOptions="draggableOptions"/>
                   </table>
                 </td>
               </tr>
@@ -20,10 +20,10 @@
           <tbody class="tablerow-nested__body">
             <template v-for="(row, index) in rows">
               <tr class="nested">
-                <td :colspan="tdWidth">
+                <td :colspan="tdColspan">
                   <table class="nested__table">
-                    <a17-tablerow :rowType="'nested'" :row="row" :index="index" :key="row.id" :columns="columns" :nestedDepth="depth"></a17-tablerow>
-                    <a17-tablerow-nested v-if="depth < maxDepth" :rowType="'nested'" :depth="depth + 1" :maxDepth="maxDepth" :parentId="row.id" :items="row.children" :columns="columns" :draggableOptions="draggableOptions"></a17-tablerow-nested>
+                    <a17-tablerow :rowType="'nested'" :row="row" :index="index" :key="row.id" :columns="columns" :nestedDepth="depth"/>
+                    <a17-tablerow-nested v-if="depth < maxDepth" :rowType="'nested'" :depth="depth + 1" :maxDepth="maxDepth" :parentId="row.id" :items="row.children" :columns="columns" :draggableOptions="draggableOptions"/>
                   </table>
                 </td>
               </tr>
@@ -50,22 +50,43 @@
     },
     mixins: [draggableMixin, nestedDraggableMixin],
     props: {
+      /**
+       * The id of parent component and must be unique.
+       * Parent could be a dataTable component or a tableRowNested component.
+       * This is required to save tree of listing in store.
+       * @type {number}
+       *
+       */
       parentId: {
         type: Number,
         required: true
       },
+      /**
+       * The list of items to show in TableRow
+       * @type {Array|.<Object>}
+       */
       items: {
         type: Array,
         default: function () {
           return []
         }
       },
+      /**
+       * The list of datable parent columns.
+       * Used to know if this component must be draggable or not.
+       * Also used to define the colpsan width for nested item
+       * @type {Array.<Object>}
+       */
       columns: {
         type: Array,
         default: function () {
           return []
         }
       },
+      /**
+       * Configuration of vue-draggable option.
+       * @type {Object}
+       */
       draggableOptions: {
         type: Object,
         default: () => {}
@@ -90,7 +111,7 @@
           this.saveNewTree(isChangingParents)
         }
       },
-      tdWidth: function () {
+      tdColspan: function () {
         // 2 come from the two last td in a17-tablerow component
         return this.columns.length + 2
       }
@@ -99,7 +120,7 @@
 </script>
 
 
-<style lang="scss" > // scoped
+<style lang="scss"> // scoped
   @import '~styles/setup/_mixins-colors-vars.scss';
 
   .nested {

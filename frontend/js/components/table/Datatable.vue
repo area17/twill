@@ -10,14 +10,14 @@
               <a17-dropdown class="datatable__setupDropdown" v-if="hideableColumns.length" ref="setupDropdown" position="bottom-right" title="Show" :clickable="true" :offset="-10">
                 <button class="datatable__setupButton" @click="$refs.setupDropdown.toggle()"><span v-svg symbol="preferences"></span></button>
                 <div slot="dropdown__content">
-                  <a17-checkboxgroup name="visibleColumns" :options="checkboxesColumns" :selected="visibleColumnsNames" @change="updateActiveColumns" :min="2"></a17-checkboxgroup>
+                  <a17-checkboxgroup name="visibleColumns" :options="checkboxesColumns" :selected="visibleColumnsNames" @change="updateActiveColumns" :min="2"/>
                 </div>
               </a17-dropdown>
             </div>
             <div class="datatable__stickyTable">
               <a17-table :columnsWidth="columnsWidth" :xScroll="xScroll" @scroll="updateScroll">
                 <thead>
-                  <a17-tablehead :columns="visibleColumns" @sortColumn="updateSort" :sortable="!nested"></a17-tablehead>
+                <a17-tablehead :columns="visibleColumns" @sortColumn="updateSort" :sortable="!nested"/>
                 </thead>
               </a17-table>
             </div>
@@ -31,19 +31,19 @@
       <div class="datatable__table" :class="isEmptyDatable">
         <a17-table :xScroll="xScroll" @scroll="updateScroll">
           <thead>
-            <a17-tablehead :columns="visibleColumns" ref="thead" :sortable="!nested"></a17-tablehead>
+          <a17-tablehead :columns="visibleColumns" ref="thead" :sortable="!nested"/>
           </thead>
           <template v-if="draggable">
             <draggable class="datatable__drag" :component-data=" draggableGetComponentData" :element="'tbody'" v-model="rows" :options="draggableOptions" @start="onStart" :move="onMove" @end="onEnd">
               <template v-for="(row, index) in rows">
-                <a17-tablerow v-if="!nested" :row="row" :index="index" :columns="visibleColumns" :key="row.id"></a17-tablerow>
+                <a17-tablerow v-if="!nested" :row="row" :index="index" :columns="visibleColumns" :key="row.id"/>
                 <template v-else>
                   <tr class="tablerow-nested" :key="row.id">
                     <td :colspan="visibleColumns.length + 2">
                       <table>
                         <tbody>
-                          <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :draggable="draggable"></a17-tablerow>
-                          <a17-tablerow-nested v-if="row.children" :maxDepth="nestedDepth" :parentId="row.id" :items="row.children" :columns="visibleColumns" :draggableOptions="draggableOptions"></a17-tablerow-nested>
+                          <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :draggable="draggable"/>
+                          <a17-tablerow-nested v-if="row.children" :maxDepth="maxDepth" :depth="depth + 1" :parentId="row.id" :items="row.children" :columns="visibleColumns" :draggableOptions="draggableOptions"/>
                         </tbody>
                       </table>
                     </td>
@@ -55,15 +55,14 @@
 
           <tbody v-else>
             <template v-for="(row, index) in rows">
-              <a17-tablerow v-if="!nested" :row="row" :index="index" :columns="visibleColumns"
-                            :key="row.id"></a17-tablerow>
+              <a17-tablerow v-if="!nested" :row="row" :index="index" :columns="visibleColumns" :key="row.id"/>
               <template v-else>
                 <tr class="tablerow-nested" :key="row.id">
                   <td :colspan="visibleColumns.length + 2">
                     <table>
                       <tbody>
-                      <a17-tablerow :row="row" :index="index" :columns="visibleColumns"></a17-tablerow>
-                      <a17-tablerow-nested v-if="row.children" :maxDepth="nestedDepth" :parentId="row.id" :items="row.children" :columns="visibleColumns"></a17-tablerow-nested>
+                      <a17-tablerow :row="row" :index="index" :columns="visibleColumns"/>
+                      <a17-tablerow-nested v-if="row.children" :maxDepth="maxDepth" :parentId="row.id" :items="row.children" :columns="visibleColumns"/>
                       </tbody>
                     </table>
                   </td>
@@ -78,7 +77,7 @@
             <h4>{{ emptyMessage }}</h4>
           </div>
         </template>
-        <a17-paginate v-if="maxPage > 1 || initialMaxPage > maxPage && !isEmpty" :max="maxPage" :value="page" :offset="offset" :availableOffsets="[initialOffset,initialOffset*3,initialOffset*6]" @changePage="updatePage" @changeOffset="updateOffset"></a17-paginate>
+        <a17-paginate v-if="maxPage > 1 || initialMaxPage > maxPage && !isEmpty" :max="maxPage" :value="page" :offset="offset" :availableOffsets="[initialOffset,initialOffset*3,initialOffset*6]" @changePage="updatePage" @changeOffset="updateOffset"/>
         <a17-spinner v-if="loading">Loading&hellip;</a17-spinner>
       </div>
     </div>
@@ -113,18 +112,34 @@
     },
     mixins: [draggableMixin, nestedDraggableMixin],
     props: {
+      /**
+       * Define if the dataTable can be draggable or not
+       * @type {Boolean}
+       */
       draggable: {
         type: Boolean,
         default: false
       },
+      /**
+       * Enable bulk edition on dataTable. Actions are publish / unPublish, delete...
+       * @type {Boolean}
+       */
       bulkeditable: {
         type: Boolean,
         default: true
       },
+      /**
+       * The message to show when the listing is empty
+       * @type {string}
+       */
       emptyMessage: {
         type: String,
         default: ''
       },
+      /**
+       * Name is used by sortable.js in vue-draggable to drag elements from one list into another
+       * @type {string}
+       */
       name: {
         type: String,
         default: 'group1'
@@ -132,7 +147,6 @@
     },
     data: function () {
       return {
-        willUpdate: true,
         xScroll: 0,
         columnsWidth: [],
         reorderable: false,
@@ -459,7 +473,14 @@
 
   .datatable--dragging /deep/ .nested__dropArea:empty {
     &::after {
+      background-color: red;
       min-height: 20px;
+    }
+  }
+
+  .datatable--dragging /deep/ .datatable--selected > .nested__dropArea:empty {
+    &::after {
+     //display: none;
     }
   }
 </style>

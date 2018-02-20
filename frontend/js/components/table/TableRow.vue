@@ -5,9 +5,9 @@
         <!--Drag handle button-->
         <span v-if="col.name === 'draggable'" class="tablecell__handle"></span>
         <!-- Nested -->
-        <a17-tableNested v-if="col.name === 'nested'" :depth="nestedDepth" :offset="nestedOffset"></a17-tableNested>
+        <a17-tableNested v-if="col.name === 'nested'" :depth="nestedDepth" :offset="nestedOffset"/>
         <a v-if="col.name === 'bulk'" href="#" @click.prevent.stop="toggleBulk(row['id'])">
-          <a17-checkbox name="bulkEdit" :value="row['id']" :initialValue="bulkIds"></a17-checkbox>
+          <a17-checkbox name="bulkEdit" :value="row['id']" :initialValue="bulkIds"/>
         </a><!-- Bulk -->
         <span v-if="col.name === 'featured' && row.hasOwnProperty('featured')" class="tablecell__feature" :class="{'tablecell__feature--active': row[col.name] }" @click.prevent="toggleFeatured" :data-tooltip-title="row['featured'] ? 'Unfeature' : 'Feature'" v-tooltip><span v-svg symbol="star-feature_active"></span><span v-svg symbol="star-feature"></span></span>
         <!-- Featured star button -->
@@ -17,9 +17,9 @@
         <template v-else>
           <a class="tablecell__thumb" v-if="col.name === 'thumbnail'"><img :src="row[col.name]"/></a>
         </template> <!-- Thumbnail -->
-        <a17-tableDates v-if="col.name === 'publish_start_date'" :startDate="row['publish_start_date']" :endDate="row['publish_end_date'] || ''"></a17-tableDates>
+        <a17-tableDates v-if="col.name === 'publish_start_date'" :startDate="row['publish_start_date']" :endDate="row['publish_end_date'] || ''"/>
         <!-- Published Date -->
-        <a17-tableLanguages v-if="col.name === 'languages'" :languages="row['languages']" :editUrl="editUrl"></a17-tableLanguages>
+        <a17-tableLanguages v-if="col.name === 'languages'" :languages="row['languages']" :editUrl="editUrl"/>
         <!-- Languages -->
       </template>
 
@@ -52,9 +52,9 @@
 
 <script>
   import {mapState} from 'vuex'
-  import a17TableLanguages from '@/components/tablecell/TableLanguages'
-  import a17TableDates from '@/components/tablecell/TableDates'
-  import a17TableNested from '@/components/tablecell/TableNested'
+  import a17TableLanguages from '@/components/table/tablecell/TableLanguages'
+  import a17TableDates from '@/components/table/tablecell/TableDates'
+  import a17TableNested from '@/components/table/tablecell/TableNested'
 
   export default {
     name: 'A17Tablerow',
