@@ -6,7 +6,7 @@
                     @if ($loop->last)
                         <li class="breadcrumb__item"><span>{{ $breadcrumbItem['label'] }}</span></li>
                     @else
-                        <li class="breadcrumb__item"><a href="{{ $breadcrumbItem['url'] }}">{{ $breadcrumbItem['label'] }}</a></li>
+                        <li class="breadcrumb__item"><a href="{{ $breadcrumbItem['url'] }}"><span class="breadcrumb__link">{{ $breadcrumbItem['label'] }}</span></a></li>
                     @endif
                 @endforeach
             </ul>

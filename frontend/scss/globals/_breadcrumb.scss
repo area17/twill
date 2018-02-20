@@ -21,21 +21,29 @@ $height__nav: 60px;
   color: $color__header--light;
 
   a,
-  span {
+  span:not(.breadcrumb__link) {
     display: inherit;
     height: $height__nav;
     line-height: $height__nav;
-    padding: 0 11px;
+    padding: 0 14px;
   }
 
   a {
     color: $color__text;
     text-decoration: none;
+
+    &:hover .breadcrumb__link {
+      @include bordered($color__text, false);
+    }
   }
 
   &::before {
-    content: '/';
-    color:inherit;
+    content: '';
+    display: inline-block;
+    height: 18px;
+    width: 1px;
+    background: $color__black--35;
+    transform: rotate(29deg) translateY(4px);
   }
 
   &:first-child {
@@ -45,7 +53,6 @@ $height__nav: 60px;
     }
 
     &::before {
-      content:'';
       display:none;
     }
   }
