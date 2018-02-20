@@ -67,7 +67,9 @@
         return this.title.length > 0 ? 'update' : 'create'
       },
       fullUrl: function () {
-        return this.baseUrl + this.permalink
+        return this.baseUrl
+          .replace('{language}', this.currentLocale.value)
+          .replace('{preview}/', this.published ? '' : 'admin-preview/') + this.permalink
       },
       title: function () {
         // Get the title from the store
@@ -82,7 +84,8 @@
         baseUrl: state => state.form.baseUrl,
         currentLocale: state => state.language.active,
         languages: state => state.language.all,
-        fields: state => state.form.fields
+        fields: state => state.form.fields,
+        published: state => state.publication.published
       }),
       ...mapGetters([
         'fieldValueByName'

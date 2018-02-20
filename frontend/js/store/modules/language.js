@@ -38,7 +38,17 @@ const mutations = {
       if (publishedValues.includes(language.value)) language.published = true
       else language.published = false
     })
+  },
+
+  [types.PUBLISH_SINGLE_LANG] (state, newValue) {
+    function isMatchingLocale (language) {
+      return language.value === newValue
+    }
+
+    const index = state.all.findIndex(isMatchingLocale)
+    state.all[index].published = !state.all[index].published
   }
+
 }
 
 export default {

@@ -111,7 +111,7 @@ const actions = {
       commit(types.CLEAR_FORM_ERRORS)
       commit(types.CLEAR_NOTIF, 'error')
 
-      const data = getFormFields(rootState)
+      const data = Object.assign(getFormFields(rootState), {languages: rootState.language.all})
 
       api.post(options.endpoint, data, function (successResponse) {
         commit(types.UPDATE_FORM_LOADING, false)

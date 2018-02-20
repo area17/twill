@@ -92,19 +92,23 @@
           return
         }
 
+        const requiredFields = this.fields.filter((field) => {
+          return field.getAttribute('required')
+        })
+
         // There are no required fields, so buttons are enabled
-        if (this.fields.length === 0) {
+        if (requiredFields.length === 0) {
           this.isDisabled = false
           this.$emit('disable', false)
           return
         }
 
         // If all required fields must have a value
-        const filtered = this.fields.filter(function (field) {
+        const filtered = requiredFields.filter(function (field) {
           return field.value.length > 0
         })
 
-        if (filtered.length === this.fields.length) {
+        if (filtered.length === requiredFields.length) {
           this.isDisabled = false
           this.$emit('disable', false)
           return
@@ -117,7 +121,7 @@
     mounted: function () {
       let self = this
 
-      this.fields = [...this.$parent.$el.querySelectorAll('input[required], textarea[required], select[required]')]
+      this.fields = [...this.$parent.$el.querySelectorAll('input, textarea, select')]
 
       // check disable state on init
       self.disable()

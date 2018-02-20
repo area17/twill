@@ -47,6 +47,12 @@
       initialValue: {
         type: String,
         default: ''
+      },
+      isRequired: {
+        type: Boolean,
+        default: function () {
+          return this.attributes.required || false
+        }
       }
     },
     computed: {
@@ -68,9 +74,7 @@
         // for textfields set initial values using the initialValues prop
         if (this.initialValues[lang]) this.attributes.initialValue = this.initialValues[lang]
 
-        if (!language.published) {
-          this.attributes.required = false
-        }
+        this.attributes.required = language.published && this.isRequired
 
         return this.attributes
       },

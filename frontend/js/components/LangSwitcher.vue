@@ -9,6 +9,7 @@
 
 <script>
   import LocaleMixin from '@/mixins/locale'
+  import { mapGetters } from 'vuex'
 
   export default {
     name: 'A17Langswitcher',
@@ -22,11 +23,20 @@
     computed: {
       localeValue () {
         return this.$store.state.language.active
-      }
+      },
+      ...mapGetters([
+        'publishedLanguages'
+      ])
     },
     methods: {
       onClick: function (newValue) {
-        this.$store.commit('updateLanguage', newValue)
+        if (newValue === this.localeValue.value) {
+          if (this.inModal && ((this.localeValue.published && this.publishedLanguages.length > 1) || !this.localeValue.published)) {
+            this.$store.commit('publishLanguage', newValue)
+          }
+        } else {
+          this.$store.commit('updateLanguage', newValue)
+        }
       }
     }
   }
