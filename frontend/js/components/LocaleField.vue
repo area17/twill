@@ -61,12 +61,6 @@
         languages: state => state.language.all
       })
     },
-    watch: {
-      initialValues: function (value) {
-        console.log('WATCH initialValues')
-        console.log(value)
-      }
-    },
     methods: {
       attributesPerLang: function (lang) {
         const language = this.languages.find(l => l.value === lang)
@@ -74,7 +68,7 @@
         // for textfields set initial values using the initialValues prop
         if (this.initialValues[lang]) this.attributes.initialValue = this.initialValues[lang]
 
-        this.attributes.required = language.published && this.isRequired
+        this.attributes.required = !!language.published && this.isRequired
 
         return this.attributes
       },
