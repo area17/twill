@@ -7,7 +7,7 @@
         </a>
       </h2>
       <a v-if="permalink" :href="fullUrl" target="_blank" class="titleEditor__permalink f--small">
-        <span class="f--note f--external f--underlined--o">{{ fullUrl | prettierUrl }}</span>
+        <span class="f--note f--external f--underlined--o">{{ visibleUrl | prettierUrl }}</span>
       </a>
 
       <!-- Editing modal -->
@@ -70,6 +70,11 @@
         return this.baseUrl
           .replace('{language}', this.currentLocale.value)
           .replace('{preview}/', this.published ? '' : 'admin-preview/') + this.permalink
+      },
+      visibleUrl: function () {
+        return this.baseUrl
+          .replace('{language}', this.currentLocale.value)
+          .replace('{preview}/', '') + this.permalink
       },
       title: function () {
         // Get the title from the store
