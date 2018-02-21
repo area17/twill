@@ -464,11 +464,19 @@
     @media screen and (max-width: 1140px) {
       display: none !important;
     }
+
+    .s--in-editor &{
+      display: none!important;
+    }
   }
 
   .media__actions-dropDown {
     @media screen and (min-width: 1139px) {
       display: none;
+    }
+
+    .s--in-editor & {
+      display: block!important;
     }
   }
 
