@@ -72,6 +72,7 @@ class FeaturedController extends Controller
                 'id' => $bucketKey,
                 'name' => $bucket['name'],
                 'max' => $bucket['max_items'],
+                'acceptedSources' => collect($bucket['bucketables'])->pluck('module'),
                 'withToggleFeatured' => $bucket['with_starred_items'] ?? false,
                 'toggleFeaturedLabels' => $bucket['starred_items_labels'] ?? [],
                 'children' => Feature::where('bucket_key', $bucketKey)->with('featured')->get()->map(function ($feature) {
