@@ -34,6 +34,17 @@ export default {
       })
 
       return !!find
+    },
+    restrictedBySource: function (id) {
+      const bucket = this.buckets.find((b) => b.id === id)
+      if (!bucket) return false
+
+      // In this case all sources are accepted by the bucket
+      if (!bucket.hasOwnProperty('acceptedSources')) return true
+      if (bucket.acceptedSources.length === 0) return true
+
+      const currentSource = this.item.content_type.value
+      return bucket.acceptedSources.findIndex((souce) => souce === currentSource) !== -1
     }
   }
 }
