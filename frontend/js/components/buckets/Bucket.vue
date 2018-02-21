@@ -2,7 +2,7 @@
   <div class="buckets">
     <div class="buckets__page-title">
       <div class="container buckets__page-title-content">
-        <h2><slot></slot></h2>
+        <h2><slot/></h2>
         <a17-button variant="validate" @click="save">Publish</a17-button>
       </div>
     </div>
@@ -12,21 +12,21 @@
           <a17-fieldset class="buckets__fieldset" :title="title" :activeToggle="false">
             <div class="buckets__header">
               <div class="buckets__sources">
-                <a17-vselect v-if="!singleSource" class="sources__select" name="sources" :selected="currentSource" :options="dataSources" :required="true" @change="changeDataSource"></a17-vselect>
+                <a17-vselect v-if="!singleSource" class="sources__select" name="sources" :selected="currentSource" :options="dataSources" :required="true" @change="changeDataSource"/>
               </div>
               <div class="buckets__filter">
-                <a17-filter @submit="filterBucketsData"></a17-filter>
+                <a17-filter @submit="filterBucketsData"/>
               </div>
             </div>
             <table v-if="source.items.length > 0" class="buckets__list">
               <tbody>
-                <a17-bucket-item-source v-for="item in source.items" :key="item.id" :item="item" :singleBucket="singleBucket" :buckets="buckets" v-on:add-to-bucket="addToBucket"></a17-bucket-item-source>
+              <a17-bucket-item-source v-for="item in source.items" :key="item.id" :item="item" :singleBucket="singleBucket" :buckets="buckets" v-on:add-to-bucket="addToBucket"/>
               </tbody>
             </table>
             <div v-else="" class="buckets__empty">
               <h4>{{ emptySource }}</h4>
             </div>
-            <a17-paginate :max="max" :value="page" :offset="offset" :availableOffsets="availableOffsets" @changePage="updatePage" @changeOffset="updateOffset"></a17-paginate>
+            <a17-paginate :max="max" :value="page" :offset="offset" :availableOffsets="availableOffsets" @changePage="updatePage" @changeOffset="updateOffset"/>
           </a17-fieldset>
         </div>
         <div class="buckets__container col--even">
@@ -36,7 +36,7 @@
             </h3>
             <draggable v-if="bucket.children.length > 0" class="buckets__list buckets__draggable" :options="dragOptions" @change="sortBucket($event, index)" :value="bucket.children" :element="'table'" >
               <transition-group name="fade_scale_list" tag='tbody'>
-                <a17-bucket-item v-for="(child, index) in bucket.children" :key="index" :item="child" :restricted="restricted" :draggable="bucket.children.length > 1" :singleBucket="singleBucket" :singleSource="singleSource" :bucket="bucket.id" :buckets="buckets" v-on:add-to-bucket="addToBucket" v-on:remove-from-bucket="deleteFromBucket" v-on:toggle-featured-in-bucket="toggleFeaturedInBucket" :withToggleFeatured="bucket.withToggleFeatured" :toggleFeaturedLabels="bucket.toggleFeaturedLabels"></a17-bucket-item>
+                <a17-bucket-item v-for="(child, index) in bucket.children" :key="index" :item="child" :restricted="restricted" :draggable="bucket.children.length > 1" :singleBucket="singleBucket" :singleSource="singleSource" :bucket="bucket.id" :buckets="buckets" v-on:add-to-bucket="addToBucket" v-on:remove-from-bucket="deleteFromBucket" v-on:toggle-featured-in-bucket="toggleFeaturedInBucket" :withToggleFeatured="bucket.withToggleFeatured" :toggleFeaturedLabels="bucket.toggleFeaturedLabels"/>
               </transition-group>
             </draggable>
             <div v-else="" class="buckets__empty">
@@ -146,42 +146,32 @@
     },
     methods: {
       addToBucket: function (item, bucket) {
-        let self = this
-        let index = self.buckets.findIndex(b => b.id === bucket)
+        let index = this.buckets.findIndex(b => b.id === bucket)
 
         if (!item && index === -1) return
 
-        self.currentBucketID = bucket
-        self.currentItem = item
+        this.currentBucketID = bucket
+        this.currentItem = item
 
         const data = {
           index: index,
           item: item
         }
 
-        // Remove item from each bucket if option restricted to one bucket is active
-        if (self.restricted) {
-          self.buckets.forEach(function (bucket) {
-            bucket.children.forEach(function (child) {
-              if (child.id === item.id && child.content_type.value === item.content_type.value) {
-                self.deleteFromBucket(item, bucket.id)
-              }
-            })
-          })
-        }
-
         // Use -1 for an unlimited bucket
-        let count = self.buckets[index].children.length
+        let count = this.buckets[index].children.length
 
-        if (count > -1 && count < self.buckets[index].max) {
+        if (count > -1 && count < this.buckets[index].max) {
           // Commit before dispatch to prevent ui visual effect timeout
-          self.$store.commit('addToBucket', data)
-        } else if (self.overridableMax || self.overrideItem) {
-          self.$store.commit('deleteFromBucket', {index: index, itemIndex: 0})
-          self.$store.commit('addToBucket', data)
-          self.overrideItem = false
+          this.checkRestriced(item)
+          this.$store.commit('addToBucket', data)
+        } else if (this.overridableMax || this.overrideItem) {
+          this.checkRestriced(item)
+          this.$store.commit('addToBucket', data)
+          this.$store.commit('deleteFromBucket', {index: index, itemIndex: 0})
+          this.overrideItem = false
         } else {
-          self.$refs.overrideBucket.open()
+          this.$refs.overrideBucket.open()
         }
       },
       deleteFromBucket: function (item, bucket) {
@@ -212,6 +202,18 @@
         }
 
         this.$store.commit('toggleFeaturedInBucket', data)
+      },
+      checkRestriced: function (item) {
+        // Remove item from each bucket if option restricted to one bucket is active
+        if (this.restricted) {
+          this.buckets.forEach((bucket) => {
+            bucket.children.forEach((child) => {
+              if (child.id === item.id && child.content_type.value === item.content_type.value) {
+                this.deleteFromBucket(item, bucket.id)
+              }
+            })
+          })
+        }
       },
       sortBucket: function (evt, index) {
         const data = {
