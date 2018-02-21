@@ -25,13 +25,12 @@ export default {
       this.$emit('add-to-bucket', this.item, bucketId)
     },
     inBucketById: function (id) {
-      let self = this
-      let index = self.buckets.findIndex(b => b.id === id)
+      let index = this.buckets.findIndex(b => b.id === id)
 
       if (index === -1) return
 
-      let find = self.buckets[index].children.find(function (c) {
-        return c.id === self.item.id && c.content_type.value === self.item.content_type.value
+      let find = this.buckets[index].children.find((c) => {
+        return c.id === this.item.id && c.content_type.value === this.item.content_type.value
       })
 
       return !!find
