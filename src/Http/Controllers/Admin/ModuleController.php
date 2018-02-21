@@ -538,16 +538,22 @@ abstract class ModuleController extends Controller
     protected function getItemColumnData($item, $column)
     {
         if (isset($column['thumb']) && $column['thumb']) {
-            $variant = isset($column['variant']);
-            $role = $variant ? $column['variant']['role'] : head(array_keys($item->mediasParams));
-            $crop = $variant ? $column['variant']['crop'] : head(array_keys(head($item->mediasParams)));
-            $params = $variant && isset($column['variant']['params'])
-            ? $column['variant']['params']
-            : ['w' => 80, 'h' => 80, 'fit' => 'crop'];
+            if (isset($column['present']) && $column['present']) {
+                return [
+                    'thumbnail' => $item->presentAdmin()->{$column['presenter']},
+                ];
+            } else {
+                $variant = isset($column['variant']);
+                $role = $variant ? $column['variant']['role'] : head(array_keys($item->mediasParams));
+                $crop = $variant ? $column['variant']['crop'] : head(array_keys(head($item->mediasParams)));
+                $params = $variant && isset($column['variant']['params'])
+                ? $column['variant']['params']
+                : ['w' => 80, 'h' => 80, 'fit' => 'crop'];
 
-            return [
-                'thumbnail' => $item->cmsImage($role, $crop, $params),
-            ];
+                return [
+                    'thumbnail' => $item->cmsImage($role, $crop, $params),
+                ];
+            }
         }
 
         if (isset($column['nested']) && $column['nested']) {
