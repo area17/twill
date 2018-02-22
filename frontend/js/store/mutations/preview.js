@@ -26,7 +26,7 @@ const REFRESH_BLOCK_PREVIEW = [
 ]
 
 export const REFRESH_BLOCK_PREVIEW_ALL = [
-  SWITCH_LANG
+  LANGUAGE.SWITCH_LANG
 ]
 
 export default {

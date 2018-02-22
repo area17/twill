@@ -14,7 +14,7 @@ export { default as BROWSER } from './browser'
 export { default as CONTENT } from './content'
 
 /* preview */
-export { default as REFRESH_BLOCK_PREVIEW } from './preview'
+export { default as PREVIEW } from './preview'
 
 /* modal-edition */
 

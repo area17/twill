@@ -39,7 +39,7 @@ const mutations = {
     })
   },
 
-  [types.PUBLISH_SINGLE_LANG] (state, newValue) {
+  [LANGUAGE.PUBLISH_SINGLE_LANG] (state, newValue) {
     function isMatchingLocale (language) {
       return language.value === newValue
     }
