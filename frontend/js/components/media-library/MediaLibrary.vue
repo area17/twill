@@ -25,7 +25,7 @@
           </div>
 
           <div slot="hidden-filters">
-            <a17-vselect class="medialibrary__filter-item" ref="filter" name="tag" :options="tags" placeholder="Filter by tag" :toggleSelectOption="true"></a17-vselect>
+            <a17-vselect class="medialibrary__filter-item" ref="filter" name="tag" :options="tags" placeholder="Filter by tag" :toggleSelectOption="true"/>
           </div>
         </a17-filter>
       </div>
@@ -33,17 +33,17 @@
       <div class="medialibrary__inner">
         <div class="medialibrary__grid">
           <aside class="medialibrary__sidebar">
-            <a17-mediasidebar :medias="selectedMedias" :authorized="authorized" @clear="clearSelectedMedias" @delete="deleteSelectedMedias"></a17-mediasidebar>
+            <a17-mediasidebar :medias="selectedMedias" :authorized="authorized" @clear="clearSelectedMedias" @delete="deleteSelectedMedias"/>
           </aside>
           <footer class="medialibrary__footer" v-if="selectedMedias.length && showInsert && connector">
             <a17-button v-if="canInsert" variant="action" @click="saveAndClose">{{ btnLabel }} </a17-button>
             <a17-button v-else="" variant="action" :disabled="true">{{ btnLabel }} </a17-button>
           </footer>
           <div class="medialibrary__list" ref="list">
-            <a17-uploader v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias" :type="type"></a17-uploader>
+            <a17-uploader v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias" :type="type"/>
             <div class="medialibrary__list-items">
-              <a17-itemlist :items="fullMedias" :selectedItems="selectedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias" v-if="type === 'file'"></a17-itemlist>
-              <a17-mediagrid :medias="fullMedias" :selectedMedias="selectedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias" v-else></a17-mediagrid>
+              <a17-itemlist v-if="type === 'file'" :items="fullMedias" :selectedItems="selectedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias"/>
+              <a17-mediagrid v-else :medias="fullMedias" :selected-medias="selectedMedias" :used-medias="usedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias"/>
               <a17-spinner v-if="loading" class="medialibrary__spinner">Loading&hellip;</a17-spinner>
             </div>
           </div>
@@ -157,12 +157,11 @@
         this.submitFilter()
       },
       addMedia: function (media) {
-        let self = this
         // add media in first position of the available media
-        self.fullMedias.unshift(media)
+        this.fullMedias.unshift(media)
         this.$store.commit('incrementMediaTypeTotal', this.type)
         // select it
-        self.updateSelectedMedias(media.id)
+        this.updateSelectedMedias(media.id)
       },
       updateSelectedMedias: function (id, shift = false) {
         const alreadySelectedMedia = this.selectedMedias.filter(function (media) {
@@ -334,7 +333,6 @@
       },
       saveAndClose: function () {
         this.$store.commit('saveSelectedMedias', this.selectedMedias)
-
         this.$parent.close()
       }
     },
