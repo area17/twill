@@ -1,62 +1,28 @@
 <template>
   <div class="mediagrid">
-    <div class="mediagrid__item" v-for="(media, index) in mediasLoading" :key="'mediaLoading_' + media.id">
+    <div class="mediagrid__item" v-for="(item, index) in itemsLoading" :key="'mediaLoading_' + item.id">
       <span class="mediagrid__button s--loading">
-        <span class="mediagrid__progress" v-if="!media.error"><span class="mediagrid__progressBar" :style="loadingProgress(index)"></span></span>
+        <span class="mediagrid__progress" v-if="!item.error"><span class="mediagrid__progressBar" :style="loadingProgress(index)"></span></span>
         <span class="mediagrid__progressError" v-else>Upload Error</span>
       </span>
     </div>
-    <div class="mediagrid__item" v-for="(media, index) in medias" :key="media.id">
-      <span class="mediagrid__button" :class="{ 's--picked': isSelected(media.id), 's--used': isUsed(media.id) }" @click.exact="toggleSelection(media.id)" @click.shift.exact="shiftToggleSelection(media.id)"><img :src="media.src" class="mediagrid__img" /></span>
+    <div class="mediagrid__item" v-for="(item, index) in items" :key="item.id">
+      <span class="mediagrid__button" :class="{ 's--picked': isSelected(item.id), 's--used': isUsed(item.id) }" @click.exact="toggleSelection(item.id)" @click.shift.exact="shiftToggleSelection(item.id)"><img :src="item.src" class="mediagrid__img" /></span>
     </div>
   </div>
 </template>
 
 <script>
-  import { mapState } from 'vuex'
+  import mediaItemsMixin from '@/mixins/mediaLibrary/mediaItems'
 
   export default {
     name: 'A17Mediagrid',
-    props: {
-      medias: {
-        type: Array,
-        default: () => []
-      },
-      selectedMedias: {
-        type: Array,
-        default: () => []
-      },
-      usedMedias: {
-        type: Array,
-        default: () => []
-      }
-    },
-    computed: {
-      ...mapState({
-        mediasLoading: state => state.mediaLibrary.loading
-      })
-    },
+    mixins: [mediaItemsMixin],
     methods: {
       loadingProgress: function (index) {
         return {
           'width': this.mediasLoading[index].progress ? this.mediasLoading[index].progress + '%' : '0%'
         }
-      },
-      isSelected: function (id) {
-        const result = this.selectedMedias.filter(function (media) {
-          return media.id === id
-        })
-
-        return result.length > 0
-      },
-      isUsed: function (id) {
-        return !!this.usedMedias.find(media => media.id === id)
-      },
-      toggleSelection: function (id) {
-        this.$emit('change', id)
-      },
-      shiftToggleSelection: function (id) {
-        this.$emit('shiftChange', id, true)
       }
     }
   }

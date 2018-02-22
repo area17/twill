@@ -21,7 +21,7 @@
   import { mapState } from 'vuex'
 
   import draggableMixin from '@/mixins/draggable'
-  import mediaLibrayMixin from '@/mixins/mediaLibrary.js'
+  import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
 
   import draggable from 'vuedraggable'
 

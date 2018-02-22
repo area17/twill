@@ -76,7 +76,7 @@
 
   import a17Cropper from '@/components/Cropper.vue'
   import a17MediaMetadata from '@/components/MediaMetadata.vue'
-  import mediaLibrayMixin from '@/mixins/mediaLibrary.js'
+  import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
   import a17VueFilters from '@/utils/filters.js'
 
   export default {
