@@ -7,7 +7,7 @@
       </span>
     </div>
     <div class="mediagrid__item" v-for="(media, index) in medias" :key="media.id">
-      <span class="mediagrid__button" :class="{ 's--picked': isSelected(media.id) }" @click.exact="toggleSelection(media.id)" @click.shift.exact="shiftToggleSelection(media.id)"><img :src="media.src" class="mediagrid__img" /></span>
+      <span class="mediagrid__button" :class="{ 's--picked': isSelected(media.id), 's--used': isUsed(media.id) }" @click.exact="toggleSelection(media.id)" @click.shift.exact="shiftToggleSelection(media.id)"><img :src="media.src" class="mediagrid__img" /></span>
     </div>
   </div>
 </template>
@@ -20,15 +20,15 @@
     props: {
       medias: {
         type: Array,
-        default: function () {
-          return []
-        }
+        default: () => []
       },
       selectedMedias: {
         type: Array,
-        default: function () {
-          return []
-        }
+        default: () => []
+      },
+      usedMedias: {
+        type: Array,
+        default: () => []
       }
     },
     computed: {
@@ -48,6 +48,9 @@
         })
 
         return result.length > 0
+      },
+      isUsed: function (id) {
+        return !!this.usedMedias.find(media => media.id === id)
       },
       toggleSelection: function (id) {
         this.$emit('change', id)
@@ -172,6 +175,21 @@
         right: 0;
         bottom: 0;
         border:4px solid $color__link;
+        z-index: 1;
+      }
+    }
+
+    &.s--used {
+      &:before {
+        content: "";
+        position: absolute;
+        display:block;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: $color__translucentBlue;
+        opacity: 0.85;
       }
     }
   }

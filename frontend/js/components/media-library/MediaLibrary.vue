@@ -36,7 +36,8 @@
             <a17-mediasidebar :medias="selectedMedias" :authorized="authorized" @clear="clearSelectedMedias" @delete="deleteSelectedMedias"></a17-mediasidebar>
           </aside>
           <footer class="medialibrary__footer" v-if="selectedMedias.length && showInsert && connector">
-            <a17-button variant="action" @click="saveAndClose">{{ btnLabel }}</a17-button>
+            <a17-button v-if="canInsert" variant="action" @click="saveAndClose">{{ btnLabel }} </a17-button>
+            <a17-button v-else="" variant="action" :disabled="true">{{ btnLabel }} </a17-button>
           </footer>
           <div class="medialibrary__list" ref="list">
             <a17-uploader v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias" :type="type"></a17-uploader>
@@ -101,12 +102,15 @@
       authorized: {
         type: Boolean,
         default: false
+      },
+      showInsert: {
+        type: Boolean,
+        default: true
       }
     },
     data: function () {
       return {
         loading: false,
-        showInsert: true,
         maxPage: 20,
         fullMedias: [],
         selectedMedias: [],
@@ -121,12 +125,18 @@
         if (this.indexToReplace > -1) return this.btnLabelUpdate
         return this.selectedMedias.length > 1 ? this.btnLabelMulti : this.btnLabelSingle
       },
+      usedMedias: function () {
+        return this.selected[this.connector] || []
+      },
       selectedType: function () {
         let self = this
         const navItem = self.types.filter(function (t) {
           return t.value === self.type
         })
         return navItem[0]
+      },
+      canInsert: function () {
+        return !this.selectedMedias.some(sMedia => !!this.usedMedias.find(uMedia => uMedia.id === sMedia.id))
       },
       ...mapState({
         connector: state => state.mediaLibrary.connector,
@@ -246,11 +256,13 @@
 
         const form = this.$refs.form
         const formdata = this.getFormData(form)
-        if (this.selected[this.connector]) {
-          formdata.except = this.selected[this.connector].map((media) => {
-            return media.id
-          })
-        }
+
+        // if (this.selected[this.connector]) {
+        //   formdata.except = this.selected[this.connector].map((media) => {
+        //     return media.id
+        //   })
+        //   console.log(formdata.except)
+        // }
 
         // see api/media-library for actual ajax
         api.get(this.endpoint, formdata, (resp) => {
