@@ -945,7 +945,8 @@ abstract class ModuleController extends Controller
         return request()->getScheme() . '://' . config('app.url') . '/'
             . ($this->moduleIsTranslated() ? '{language}/' : '')
             . ($this->moduleHasRevisions() ? '{preview}/' : '')
-            . ($this->permalinkBase ?? $this->moduleName) . '/';
+            . ($this->permalinkBase ?? $this->moduleName)
+            . (empty($this->permalinkBase) ? '' : '/');
     }
 
     protected function getModuleRoute($id, $action)
