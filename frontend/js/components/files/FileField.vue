@@ -18,8 +18,6 @@
   import { mapState, mapGetters } from 'vuex'
   import fileItem from './FileItem.vue'
   import draggableMixin from '@/mixins/draggable'
-  import mediaLibraryMixin from '@/mixins/mediaLibrary'
-  import draggableMixin from '@/mixins/draggable/draggable'
   import mediaLibraryMixin from '@/mixins/mediaLibrary/mediaLibrary'
   import localeMixin from '@/mixins/locale'
   import inputframeMixin from '@/mixins/inputFrame'
