@@ -4,7 +4,7 @@
       <b>Drag and drop content from the left navigation</b>
     </div>
     <draggable class="editorPreview__content" v-model="blocks" :options="{ group: 'editorBlocks', handle: handle }" @add="onAdd" @update="onUpdate">
-      <div class="editorPreview__item" :class="{ 'editorPreview__item--active' : isBlockActive(block.id), 'editorPreview__item--hover' : activeItem === index }" v-for="(block, index) in blocks" :key="block.id" @mousedown.stop >
+      <div class="editorPreview__item" :class="{ 'editorPreview__item--active' : isBlockActive(block.id), 'editorPreview__item--hover' : activeItem === index }" v-for="(block, index) in blocks" :ref="block.id" :key="block.id" @mousedown.stop >
         <div class="editorPreview__frame">
           <a17-editor-iframe :block="block" @loaded="resizeIframe"></a17-editor-iframe>
         </div>
@@ -44,6 +44,7 @@
     data: function () {
       return {
         activeItem: -1,
+        blocksLoaded: 0,
         handle: '.editorPreview__dragger' // Drag handle override
       }
     },
@@ -62,6 +63,11 @@
         activeBlock: state => state.content.active,
         savedBlocks: state => state.content.blocks
       })
+    },
+    watch: {
+      activeBlock: function (val) {
+        this.scrollToActive()
+      }
     },
     methods: {
       toggleDropdown: function (index) {
@@ -126,6 +132,14 @@
       unselectBlock: function () {
         this.$emit('unselect')
       },
+      scrollToActive: function () {
+        if (!this.hasBlockActive) {
+          return
+        }
+        const activeScrollTop = this.$refs[this.activeBlock.id][0].offsetTop
+        const scrollContainer = this.$el.querySelector('.editorPreview__content')
+        scrollContainer.scrollTop = activeScrollTop
+      },
       resizeIframe: function (iframe) {
         const frameBody = iframe.contentWindow.document.body
 
@@ -140,6 +154,12 @@
 
         console.log('Editor - Preview refresh height : ' + frameHeight + 'px')
         iframe.height = frameHeight + 'px'
+
+        // scroll to active block if all are loaded
+        this.blocksLoaded++
+        if (this.blocks.length === this.blocksLoaded) {
+          this.scrollToActive()
+        }
       },
       resizeAllIframes: function () {
         let self = this
