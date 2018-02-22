@@ -51,6 +51,6 @@ class Block extends BaseModel
 
     public function checkbox($name)
     {
-        return isset($this->content[$name]) && ($this->content[$name][0] ?? false);
+        return isset($this->content[$name]) && ($this->content[$name][0] ?? $this->content[$name] ?? false);
     }
 }
