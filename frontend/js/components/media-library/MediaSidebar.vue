@@ -19,9 +19,8 @@
           <!-- Actions -->
           <a v-if="hasSingleMedia" :href="firstMedia.original" download><span v-svg symbol="download"></span></a>
           <button v-if="allowDelete && authorized" type="button" @click="deleteSelectedMediasValidation"><span v-svg symbol="trash"></span></button>
-          <button v-else="" type="button" class="button--disabled"><span v-svg symbol="trash"></span></button>
+          <button v-else="" type="button" class="button--disabled" :data-tooltip-title="warningDeleteMessage" v-tooltip><span v-svg symbol="trash"></span></button>
         </a17-buttonbar>
-          <p v-if="!allowDelete">{{ warningDeleteMessage }}</p>
       </div>
 
       <form v-if="hasMedia" class="mediasidebar__inner mediasidebar__form" @submit="update" :class="formClasses">
