@@ -125,6 +125,10 @@ class CmsToolkitServiceProvider extends ServiceProvider
     {
         if (config('cms-toolkit.enabled.users-management')) {
             config(['auth.providers.users' => require __DIR__ . '/../config/auth.php']);
+            config(['mail.markdown.paths' => array_merge(
+                [__DIR__ . '/../views/emails'],
+                config('mail.markdown.paths')
+            )]);
         }
 
         $this->publishes([__DIR__ . '/../config/cms-toolkit-publish.php' => config_path('cms-toolkit.php')], 'config');
