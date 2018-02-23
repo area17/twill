@@ -42,8 +42,8 @@
           <div class="medialibrary__list" ref="list">
             <a17-uploader v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias" :type="type"/>
             <div class="medialibrary__list-items">
-              <a17-itemlist v-if="type" :items="fullMedias" :selected-items="selectedMedias" :used-items="usedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias"/>
-              <!--<a17-mediagrid v-else :items="fullMedias" :selected-items="selectedMedias" :used-items="usedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias"/>-->
+              <a17-itemlist v-if="type === 'file'" :items="fullMedias" :selected-items="selectedMedias" :used-items="usedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias"/>
+              <a17-mediagrid v-else :items="fullMedias" :selected-items="selectedMedias" :used-items="usedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias"/>
               <a17-spinner v-if="loading" class="medialibrary__spinner">Loading&hellip;</a17-spinner>
             </div>
           </div>
