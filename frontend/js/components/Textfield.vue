@@ -210,7 +210,9 @@
         }
 
         this.$emit('change', newValue)
-      }, 400),
+        // we need to debounce other listeners time needed to save changes into vuex store
+        // also it allows tabbing inputs and submitting by enter key very fast
+      }, 50),
       resizeTextarea: function () {
         if (this.type !== 'textarea') return
 
