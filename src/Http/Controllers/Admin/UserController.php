@@ -71,6 +71,12 @@ class UserController extends ModuleController
             'defaultFilterSlug' => 'published',
             'create' => $this->getIndexOption('create') && auth()->user()->can('edit-user-role'),
             'roleList' => collect(UserRole::toArray()),
+            'single_primary_nav' => [
+                'users' => [
+                    'title' => 'Users',
+                    'module' => true,
+                ],
+            ],
         ];
     }
 
@@ -78,6 +84,12 @@ class UserController extends ModuleController
     {
         return [
             'roleList' => collect(UserRole::toArray()),
+            'single_primary_nav' => [
+                'users' => [
+                    'title' => 'Users',
+                    'module' => true,
+                ],
+            ],
         ];
     }
 

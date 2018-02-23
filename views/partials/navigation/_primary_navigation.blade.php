@@ -1,8 +1,21 @@
-@if (isset($_global_active_navigation) && isset(config('cms-navigation.'.$_global_active_navigation)['primary_navigation']))
+@if ((isset($_global_active_navigation) && isset(config('cms-navigation.'.$_global_active_navigation)['primary_navigation'])) || isset($single_primary_nav))
+
+    @if (isset($single_primary_nav))
+        @php
+        $primaryNavElements = $single_primary_nav;
+        $_global_active_navigation = null;
+        $_primary_active_navigation = array_first(array_keys($single_primary_nav));
+        @endphp
+    @else
+        @php
+        $primaryNavElements = config('cms-navigation.'.$_global_active_navigation)['primary_navigation'];
+        @endphp
+    @endif
+
     <nav class="nav">
         <div class="container">
             <ul class="nav__list">
-                @foreach(config('cms-navigation.'.$_global_active_navigation)['primary_navigation'] as $primary_navigation_key => $primary_navigation_element)
+                @foreach($primaryNavElements as $primary_navigation_key => $primary_navigation_element)
                     @can($primary_navigation_element['can'] ?? 'list')
                         @if(isActiveNavigation($primary_navigation_element, $primary_navigation_key, $_primary_active_navigation))
                             <li class="nav__item s--on">
