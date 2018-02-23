@@ -26,10 +26,10 @@
         <a17-button variant="icon" @click="$refs.bucketDropdown.toggle()"><span v-svg symbol="more-dots"></span>
         </a17-button>
         <div v-if="restricted" slot="dropdown__content" class="item__dropdown__content">
-          <a17-radiogroup name="bucketsSelection" radioClass="bucket" :radios="dropDownBuckets" :initialValue="selectedBuckets()[0]" @change="updateBucket"></a17-radiogroup>
+          <a17-radiogroup name="bucketsSelection" radioClass="bucket" :radios="dropDownBuckets" :initialValue="selectedBuckets()[0]" @change="updateBucket"/>
         </div>
         <div v-else="" slot="dropdown__content" class="item__dropdown__content">
-          <a17-checkboxgroup name="bucketsSelection" :options="dropDownBuckets" :selected="selectedBuckets()" @change="updateBucket"></a17-checkboxgroup>
+          <a17-checkboxgroup name="bucketsSelection" :options="dropDownBuckets" :selected="selectedBuckets()" @change="updateBucket"/>
         </div>
       </a17-dropdown>
       <a17-button class="bucket__action" icon="close" @click="removeFromBucket()">
@@ -73,7 +73,7 @@
       },
       toggleFeaturedLabels: {
         type: Array,
-        default: []
+        default: () => []
       }
     },
     mixins: [bucketMixin],

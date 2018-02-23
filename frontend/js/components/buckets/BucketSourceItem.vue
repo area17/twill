@@ -7,7 +7,7 @@
       <h4>
         <span v-if="item.edit" class="f--link-underlined--o"><a :href="item.edit" target="_blank">{{ item.name }}</a></span>
         <span v-else>{{ item.name }}</span>
-        <template v-if="item.languages"><br /><a17-tableLanguages :languages="item.languages"></a17-tableLanguages></template>
+        <template v-if="item.languages"><br/><a17-tableLanguages :languages="item.languages"/></template>
       </h4>
     </td>
     <td class="buckets__itemDate" v-if="item.publication">
@@ -20,8 +20,8 @@
       <a17-button v-else-if="singleBucket" icon="add" :disabled="true"><span v-svg symbol="add"></span></a17-button>
 
       <template v-else="" v-for="(b, index) in buckets">
-        <a17-button :key="b.id" v-if="!inBucketById(b.id)" class="bucket__action" :icon="'bucket--'+(index+1)" @click="addToBucket(b.id)">{{ index + 1 }}</a17-button>
-        <a17-button :key="b.id" v-else="" class="bucket__action selected" :icon="'bucket--'+(index+1)" :disabled="true">{{ index + 1 }}</a17-button>
+        <a17-button :key="b.id" v-if="!inBucketById(b.id) && restrictedBySource(b.id)" class="bucket__action" :icon="'bucket--'+(index+1)" @click="addToBucket(b.id)">{{ index + 1 }}</a17-button>
+        <a17-button :key="b.id" v-else-if="restrictedBySource(b.id)" class="bucket__action selected" :icon="'bucket--'+(index+1)" :disabled="true">{{ index + 1 }}</a17-button>
       </template>
 
     </td>

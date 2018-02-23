@@ -6,6 +6,7 @@ const state = {
   dataSources: window.STORE.buckets.dataSources || {},
   source: window.STORE.buckets.source || {},
   /**
+   * An array of Object. Each representing a bucket with his data types and current children
    * Buckets action ui is based on buckets length.
    * If buckets.length === 1 an 'add' icon instead of buckets number
    */
@@ -86,7 +87,6 @@ const actions = {
     })
 
     bucketsAPI.save(state.saveUrl, {buckets: buckets}, (successResponse) => {
-      // TODO: Show notification success
       commit(types.SET_NOTIF, {
         message: 'Features saved. All good!',
         variant: 'success'})
