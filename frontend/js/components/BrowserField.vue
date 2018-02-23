@@ -15,6 +15,7 @@
 
 <script>
   import { mapState, mapGetters } from 'vuex'
+  import { BROWSER } from '@/store/mutations'
 
   import Browseritem from './BrowserItem.vue'
   import draggableMixin from '@/mixins/draggable'
@@ -77,7 +78,7 @@
           }
         },
         set (value) {
-          this.$store.commit('reorderSelectedItems', {
+          this.$store.commit(BROWSER.REORDER_ITEMS, {
             name: this.name,
             items: value
           })
@@ -99,21 +100,21 @@
     },
     methods: {
       deleteAll: function (index) {
-        this.$store.commit('destroyAllItems', {
+        this.$store.commit(BROWSER.DESTROY_ITEMS, {
           name: this.name
         })
       },
       deleteItem: function (index) {
-        this.$store.commit('destroySelectedItem', {
+        this.$store.commit(BROWSER.DESTROY_ITEM, {
           name: this.name,
           index: index
         })
       },
       openBrowser: function () {
-        this.$store.commit('updateBrowserConnector', this.name)
-        this.$store.commit('updateBrowserEndpoint', this.endpoint)
-        this.$store.commit('updateBrowserMax', this.remainingItems)
-        this.$store.commit('updateBrowserTitle', this.browserTitle)
+        this.$store.commit(BROWSER.UPDATE_BROWSER_CONNECTOR, this.name)
+        this.$store.commit(BROWSER.UPDATE_BROWSER_ENDPOINT, this.endpoint)
+        this.$store.commit(BROWSER.UPDATE_BROWSER_MAX, this.remainingItems)
+        this.$store.commit(BROWSER.UPDATE_BROWSER_TITLE, this.browserTitle)
         this.$root.$refs.browser.open()
       }
     },
