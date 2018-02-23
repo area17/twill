@@ -74,6 +74,8 @@
 <script>
   import { mapState } from 'vuex'
 
+  import { MEDIA_LIBRARY } from '@/store/mutations'
+
   import a17Cropper from '@/components/Cropper.vue'
   import a17MediaMetadata from '@/components/MediaMetadata.vue'
   import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
@@ -235,7 +237,7 @@
       cropMedia: function (crop) {
         crop.key = this.mediaKey
         crop.index = this.index
-        this.$store.commit('setMediaCrop', crop)
+        this.$store.commit(MEDIA_LIBRARY.SET_MEDIA_CROP, crop)
       },
       openCropMedia: function () {
         this.$refs[this.cropModalName].open()
@@ -246,14 +248,14 @@
       },
       // delete the media
       deleteMedia: function () {
-        this.$store.commit('destroyMediasInSelected', {
+        this.$store.commit(MEDIA_LIBRARY.DESTROY_SPECIFIC_MEDIA, {
           name: this.mediaKey,
           index: this.index
         })
       },
       // metadatas
       updateMetadata: function (newValue) {
-        this.$store.commit('setMediaMetadatas', {
+        this.$store.commit(MEDIA_LIBRARY.SET_MEDIA_METADATAS, {
           media: {
             context: this.mediaKey,
             index: this.index
