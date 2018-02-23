@@ -2,6 +2,7 @@
 
 /* Draggable options */
 .sortable-ghost {
+  cursor: grabbing!important;
 }
 
 .sortable-chosen {
@@ -10,6 +11,10 @@
 
 .sortable-drag {
   opacity: 0.95;
+}
+
+.sortable-nodrag {
+  cursor: no-drop!important;
 }
 
 /* Draggable transitions */

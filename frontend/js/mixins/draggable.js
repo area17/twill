@@ -11,14 +11,13 @@ export default {
   },
   computed: {
     dragOptions: function () {
-      let self = this
       return {
-        animation: self.animation,
-        handle: self.handle,
-        ghostClass: self.ghostClass,
-        chosenClass: self.chosenClass,
-        dragClass: self.dragClass,
-        scrollSensitivity: self.scrollSensitivity
+        animation: this.animation,
+        handle: this.handle,
+        ghostClass: this.ghostClass,
+        chosenClass: this.chosenClass,
+        dragClass: this.dragClass,
+        scrollSensitivity: this.scrollSensitivity
       }
     }
   }
