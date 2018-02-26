@@ -197,7 +197,7 @@
     margin-right:13px;
     line-height:45px - 13px - 13px;
     text-align:center;
-    transition: opacity 0.2ms ease;
+    transition: opacity 0.2s ease;
 
     .icon {
       overflow: hidden;

@@ -1,5 +1,5 @@
 <template>
-  <a17-modal title="Media Library" mode="wide" ref="modal" @open="opened">
+  <a17-modal :title="modalTitle" mode="wide" ref="modal" @open="opened">
   <div class="medialibrary">
     <div class="medialibrary__frame">
       <div class="medialibrary__header" ref="form">
@@ -81,6 +81,10 @@
       'a17-spinner': a17Spinner
     },
     props: {
+      modalTitlePrefix: {
+        type: String,
+        default: 'Media Library'
+      },
       btnLabelSingle: {
         type: String,
         default: 'Insert file'
@@ -123,6 +127,13 @@
       }
     },
     computed: {
+      modalTitle: function () {
+        if (this.connector) {
+          if (this.indexToReplace > -1) return this.modalTitlePrefix + ' – ' + this.btnLabelUpdate
+          return this.selectedMedias.length > 1 ? this.modalTitlePrefix + ' – ' + this.btnLabelMulti : this.modalTitlePrefix + ' – ' + this.btnLabelSingle
+        }
+        return this.modalTitlePrefix
+      },
       btnLabel: function () {
         if (this.indexToReplace > -1) return this.btnLabelUpdate
         return this.selectedMedias.length > 1 ? this.btnLabelMulti : this.btnLabelSingle

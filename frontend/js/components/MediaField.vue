@@ -8,7 +8,7 @@
               <img :src="media.src"/>
             </div>
             <div class="media__edit" @click="openMediaLibrary(1, mediaKey, index)">
-              <a17-button class="media__edit--button" icon="edit" :disabled="true"><span v-svg symbol="edit"></span></a17-button>
+              <span class="media__edit--button"><span v-svg symbol="edit"></span></span>
             </div>
           </div>
         </div>
@@ -391,18 +391,33 @@
     bottom: 0;
     left: 0;
     right: 0;
-    display: none;
-    background-color: rgba(51, 51, 51, 0.35);
+    display: block;
+    opacity:0;
+    background-color: rgba(0, 0, 0, 0.2);
     cursor: pointer;
+    transition: opacity 0.3s ease;
 
     .media__edit--button {
+      display: block;
       position: absolute;
       right: 10px;
       bottom: 10px;
+      height: 26px;
+      width: 26px;
+      line-height: 26px;
+      text-align: center;
+      border-radius: 50%;
+      background: $color__background;
+      color: $color__icons;
+
+      .icon {
+        color: $color__icons;
+        transition: color .25s linear;
+      }
     }
 
     .media__imgFrame:hover & {
-      display: block;
+      opacity:1;
     }
   }
 
