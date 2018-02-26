@@ -85,6 +85,7 @@
         this.searchValue = event.target.value
       },
       clear: function () {
+        this.searchValue = ''
         this.$emit('clear')
       }
     },
