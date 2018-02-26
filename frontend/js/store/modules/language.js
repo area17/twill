@@ -1,4 +1,4 @@
-import * as types from '../mutation-types'
+import { LANGUAGE } from '../mutations'
 
 const state = {
   all: window.STORE.languages.all || [],
@@ -13,7 +13,7 @@ const getters = {
 }
 
 const mutations = {
-  [types.SWITCH_LANG] (state, { oldValue }) {
+  [LANGUAGE.SWITCH_LANG] (state, { oldValue }) {
     function isMatchingLocale (language) {
       return language.value === oldValue.value
     }
@@ -24,7 +24,7 @@ const mutations = {
     state.active = state.all[newIndex]
   },
 
-  [types.UPDATE_LANG] (state, newValue) {
+  [LANGUAGE.UPDATE_LANG] (state, newValue) {
     function isMatchingLocale (language) {
       return language.value === newValue
     }
@@ -33,14 +33,13 @@ const mutations = {
     state.active = state.all[index]
   },
 
-  [types.PUBLISH_LANG] (state, publishedValues) {
+  [LANGUAGE.PUBLISH_LANG] (state, publishedValues) {
     state.all.forEach(function (language) {
-      if (publishedValues.includes(language.value)) language.published = true
-      else language.published = false
+      language.published = !!publishedValues.includes(language.value)
     })
   },
 
-  [types.PUBLISH_SINGLE_LANG] (state, newValue) {
+  [LANGUAGE.PUBLISH_SINGLE_LANG] (state, newValue) {
     function isMatchingLocale (language) {
       return language.value === newValue
     }

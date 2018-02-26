@@ -1,4 +1,4 @@
-import * as types from '../mutation-types'
+import { PARENTS } from '../mutations'
 
 const state = {
   active: window.STORE.parentId || 0,
@@ -9,7 +9,7 @@ const state = {
 const getters = { }
 
 const mutations = {
-  [types.UPDATE_PARENT] (state, newValue) {
+  [PARENTS.UPDATE_PARENT] (state, newValue) {
     if (newValue) state.active = newValue
     else state.active = 0
   }

@@ -22,6 +22,8 @@
 <script>
   import { mapState, mapGetters } from 'vuex'
 
+  import { PUBLICATION } from '@/store/mutations'
+
   import a17Switcher from '@/components/Switcher.vue'
   import a17RadioAccordion from '@/components/RadioAccordion.vue'
   import a17ReviewAccordion from '@/components/ReviewAccordion.vue'
@@ -121,7 +123,7 @@
         if (this.$root.$refs.preview) this.$root.$refs.preview.open()
       },
       updateVisibility: function (newValue) {
-        this.$store.commit('updatePublishVisibility', newValue)
+        this.$store.commit(PUBLICATION.UPDATE_PUBLISH_VISIBILITY, newValue)
       },
       openMoveToTrashModal: function () {
         this.$parent.$refs.moveToTrashModal.open() // Goes back to parent Form.vue componenent

@@ -19,6 +19,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { MEDIA_LIBRARY } from '@/store/mutations'
 
   import draggableMixin from '@/mixins/draggable'
   import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
@@ -80,7 +81,7 @@
           }
         },
         set (value) {
-          this.$store.commit('reorderSelectedMedias', {
+          this.$store.commit(MEDIA_LIBRARY.REORDER_MEDIAS, {
             name: this.name,
             medias: value
           })
@@ -93,7 +94,7 @@
     methods: {
       deleteSlideshow: function () {
         // destroy all the medias of the slideshow
-        this.$store.commit('destroySelectedMedias', this.name)
+        this.$store.commit(MEDIA_LIBRARY.DESTROY_MEDIAS, this.name)
       }
     },
     beforeDestroy: function () {

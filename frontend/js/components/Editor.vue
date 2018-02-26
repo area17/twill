@@ -25,7 +25,7 @@
   import A17EditorPreview from '@/components/editor/EditorPreview.vue'
   import A17Spinner from '@/components/Spinner.vue'
 
-  import * as mutationTypes from '@/store/mutation-types'
+  import { PREVIEW } from '@/store/mutations'
 
   import cloneDeep from 'lodash/cloneDeep'
 
@@ -172,9 +172,9 @@
             this.isWatching = true
             this.unSubscribe = this.$store.subscribe((mutation, state) => {
               // Don't trigger a refresh of the preview every single time, just when necessary
-              if (mutationTypes.REFRESH_BLOCK_PREVIEW.includes(mutation.type)) {
+              if (PREVIEW.REFRESH_BLOCK_PREVIEW.includes(mutation.type)) {
                 console.log('Editor - store changed : ' + mutation.type)
-                if (mutationTypes.REFRESH_BLOCK_PREVIEW_ALL.includes(mutation.type)) {
+                if (PREVIEW.REFRESH_BLOCK_PREVIEW_ALL.includes(mutation.type)) {
                   self.getAllPreviews()
                 } else {
                   self.getPreview()

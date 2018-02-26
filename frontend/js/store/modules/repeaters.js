@@ -1,4 +1,4 @@
-import * as types from '../mutation-types'
+import { FORM } from '../mutations'
 
 const state = {
   repeaters: window.STORE.form.repeaters || {},
@@ -13,10 +13,7 @@ function setBlockID () {
 }
 
 const mutations = {
-  [types.ADD_FORM_BLOCK] (state, blockInfos) {
-    console.log('ADD_FORM_BLOCK')
-    console.log(blockInfos)
-
+  [FORM.ADD_FORM_BLOCK] (state, blockInfos) {
     const blockName = blockInfos.name
     const blockType = blockInfos.type
     const block = {}
@@ -40,15 +37,15 @@ const mutations = {
       state.repeaters[blockName].push(block) // or add a new block at the end of the list
     }
   },
-  [types.DELETE_FORM_BLOCK] (state, blockInfos) {
+  [FORM.DELETE_FORM_BLOCK] (state, blockInfos) {
     state.repeaters[blockInfos.name].splice(blockInfos.index, 1)
   },
-  [types.DUPLICATE_FORM_BLOCK] (state, blockInfos) {
+  [FORM.DUPLICATE_FORM_BLOCK] (state, blockInfos) {
     let clone = Object.assign({}, state.repeaters[blockInfos.name][blockInfos.index])
     clone.id = setBlockID()
     state.repeaters[blockInfos.name].splice(blockInfos.index + 1, 0, clone)
   },
-  [types.REORDER_FORM_BLOCKS] (state, newValues) {
+  [FORM.REORDER_FORM_BLOCKS] (state, newValues) {
     const newBlocks = {}
     newBlocks[newValues.name] = newValues.blocks
     state.repeaters = Object.assign({}, state.repeaters, newBlocks)

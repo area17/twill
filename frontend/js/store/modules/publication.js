@@ -1,4 +1,4 @@
-import * as types from '../mutation-types'
+import { PUBLICATION } from '../mutations'
 
 const state = {
   withPublicationToggle: window.STORE.publication.withPublicationToggle || false,
@@ -86,19 +86,19 @@ const getters = {
 }
 
 const mutations = {
-  [types.UPDATE_PUBLISH_START_DATE] (state, newValue) {
+  [PUBLICATION.UPDATE_PUBLISH_START_DATE] (state, newValue) {
     state.startDate = newValue
   },
-  [types.UPDATE_PUBLISH_END_DATE] (state, newValue) {
+  [PUBLICATION.UPDATE_PUBLISH_END_DATE] (state, newValue) {
     state.endDate = newValue
   },
-  [types.UPDATE_PUBLISH_STATE] (state, newValue) {
+  [PUBLICATION.UPDATE_PUBLISH_STATE] (state, newValue) {
     state.published = newValue
   },
-  [types.UPDATE_PUBLISH_VISIBILITY] (state, newValue) {
+  [PUBLICATION.UPDATE_PUBLISH_VISIBILITY] (state, newValue) {
     state.visibility = newValue
   },
-  [types.UPDATE_REVIEW_PROCESS] (state, newValue) {
+  [PUBLICATION.UPDATE_REVIEW_PROCESS] (state, newValue) {
     let currentStep = ''
     let currentIndex = -1
 
@@ -112,11 +112,8 @@ const mutations = {
 
     // update disabled states & checked state
     state.reviewProcess.forEach(function (option, index) {
-      if (index <= currentIndex) option.checked = true
-      else option.checked = false
-
-      if (index === currentIndex || index === (currentIndex + 1)) option.disabled = false
-      else option.disabled = true
+      option.checked = index <= currentIndex
+      option.disabled = !(index === currentIndex || index === (currentIndex + 1))
     })
   }
 }

@@ -1,5 +1,5 @@
 import bucketsAPI from '../api/buckets'
-import * as types from '../mutation-types'
+import {BUCKETS, NOTIFICATION} from '../mutations'
 
 const state = {
   saveUrl: window.STORE.buckets.saveUrl || '',
@@ -24,37 +24,37 @@ const getters = {
 }
 
 const mutations = {
-  [types.ADD_TO_BUCKET] (state, payload) {
+  [BUCKETS.ADD_TO_BUCKET] (state, payload) {
     state.buckets[payload.index].children.push(payload.item)
   },
-  [types.DELETE_FROM_BUCKET] (state, payload) {
+  [BUCKETS.DELETE_FROM_BUCKET] (state, payload) {
     state.buckets[payload.index].children.splice(payload.itemIndex, 1)
   },
-  [types.TOGGLE_FEATURED_IN_BUCKET] (state, payload) {
+  [BUCKETS.TOGGLE_FEATURED_IN_BUCKET] (state, payload) {
     let item = state.buckets[payload.index].children.splice(payload.itemIndex, 1)
     item[0].starred = !item[0].starred
     state.buckets[payload.index].children.splice(payload.itemIndex, 0, item[0])
   },
-  [types.UPDATE_BUCKETS_DATASOURCE] (state, dataSource) {
+  [BUCKETS.UPDATE_BUCKETS_DATASOURCE] (state, dataSource) {
     if (state.dataSources.selected.value !== dataSource.value) state.dataSources.selected = dataSource
   },
-  [types.UPDATE_BUCKETS_DATA] (state, data) {
+  [BUCKETS.UPDATE_BUCKETS_DATA] (state, data) {
     state.source = Object.assign({}, state.source, data)
   },
-  [types.UPDATE_BUCKETS_FILTER] (state, filter) {
+  [BUCKETS.UPDATE_BUCKETS_FILTER] (state, filter) {
     state.filter = Object.assign({}, state.filter, filter)
   },
-  [types.REORDER_BUCKET_LIST] (state, payload) {
+  [BUCKETS.REORDER_BUCKET_LIST] (state, payload) {
     let item = state.buckets[payload.bucketIndex].children.splice(payload.oldIndex, 1)
     state.buckets[payload.bucketIndex].children.splice(payload.newIndex, 0, item[0])
   },
-  [types.UPDATE_BUCKETS_DATA_OFFSET] (state, offsetNumber) {
+  [BUCKETS.UPDATE_BUCKETS_DATA_OFFSET] (state, offsetNumber) {
     state.offset = offsetNumber
   },
-  [types.UPDATE_BUCKETS_DATA_PAGE] (state, pageNumber) {
+  [BUCKETS.UPDATE_BUCKETS_DATA_PAGE] (state, pageNumber) {
     state.page = pageNumber
   },
-  [types.UPDATE_BUCKETS_MAX_PAGE] (state, maxPage) {
+  [BUCKETS.UPDATE_BUCKETS_MAX_PAGE] (state, maxPage) {
     state.maxPage = maxPage
   }
 }
@@ -67,8 +67,8 @@ const actions = {
       offset: state.offset,
       filter: state.filter
     }, resp => {
-      commit(types.UPDATE_BUCKETS_DATA, resp.source)
-      commit(types.UPDATE_BUCKETS_MAX_PAGE, resp.maxPage)
+      commit(BUCKETS.UPDATE_BUCKETS_DATA, resp.source)
+      commit(BUCKETS.UPDATE_BUCKETS_MAX_PAGE, resp.maxPage)
     })
   },
   saveBuckets ({commit, state}) {
@@ -87,11 +87,11 @@ const actions = {
     })
 
     bucketsAPI.save(state.saveUrl, {buckets: buckets}, (successResponse) => {
-      commit(types.SET_NOTIF, {
+      commit(NOTIFICATION.SET_NOTIF, {
         message: 'Features saved. All good!',
         variant: 'success'})
     }, (errorResponse) => {
-      commit(types.SET_NOTIF, {
+      commit(NOTIFICATION.SET_NOTIF, {
         message: 'Your submission could not be validated, please fix and retry',
         variant: 'error'
       })

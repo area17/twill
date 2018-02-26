@@ -4,9 +4,9 @@ import { replaceState } from '@/utils/pushState.js'
 export default {
   /*
   *
-  * Main listing request with muliple params
+  * Main listing request with multiple params
   *
-  * sortKey : colmun used for sorting content
+  * sortKey : column used for sorting content
   * sortDir : desc or asc
   * page : current page number
   * offset : number of items per page

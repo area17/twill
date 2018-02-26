@@ -57,6 +57,9 @@
   // nb : UI is quite similar to https://github.com/nerijusgood/viewport-resizer
 
   import { mapState } from 'vuex'
+
+  import { REVISION, FORM, NOTIFICATION } from '@/store/mutations'
+
   import A17PreviewerFrame from '@/components/PreviewerFrame.vue'
   import a17VueFilters from '@/utils/filters.js'
 
@@ -108,14 +111,14 @@
     },
     methods: {
       open: function () {
-        this.$store.commit('updateRevision', 0)
+        this.$store.commit(REVISION.UPDATE_REV, 0)
 
         this.$store.dispatch('getCurrentContent').then(() => {
           this.$refs.overlay.open()
           this.singleView()
         }, (errorResponse) => {
-          this.$store.commit('setFormErrors', errorResponse.response.data)
-          this.$store.commit('setNotification', {
+          this.$store.commit(FORM.SET_FORM_ERRORS, errorResponse.response.data)
+          this.$store.commit(NOTIFICATION.SET_NOTIF, {
             message: 'Your submission could not be validated, please fix and retry',
             variant: 'error'
           })
@@ -142,11 +145,11 @@
         this.lastActiveBreakpoint = parseInt(size)
       },
       previewRevision: function (id) {
-        this.$store.commit('updateRevision', id)
+        this.$store.commit(REVISION.UPDATE_REV, id)
         this.$store.dispatch('getRevisionContent').then(() => {
           // all good
         }, (errorResponse) => {
-          this.$store.commit('setNotification', {
+          this.$store.commit(NOTIFICATION.SET_NOTIF, {
             message: 'Invalid revision.',
             variant: 'error'
           })

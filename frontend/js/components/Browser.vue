@@ -19,6 +19,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { BROWSER } from '@/store/mutations'
 
   import a17Filter from './Filter.vue'
   import a17ItemList from './ItemList.vue'
@@ -151,7 +152,7 @@
         }
       },
       saveAndClose: function () {
-        this.$store.commit('saveSelectedItems', this.selectedItems)
+        this.$store.commit(BROWSER.SAVE_ITEMS, this.selectedItems)
         this.$parent.close()
       }
     },

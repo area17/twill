@@ -60,6 +60,8 @@
 <script>
   import { mapState, mapGetters } from 'vuex'
 
+  import { BUCKETS } from '@/store/mutations'
+
   import BucketItem from './BucketItem.vue'
   import BucketSourceItem from './BucketSourceItem.vue'
   import draggableMixin from '@/mixins/draggable'
@@ -164,11 +166,11 @@
         if (count > -1 && count < this.buckets[index].max) {
           // Commit before dispatch to prevent ui visual effect timeout
           this.checkRestriced(item)
-          this.$store.commit('addToBucket', data)
+          this.$store.commit(BUCKETS.ADD_TO_BUCKET, data)
         } else if (this.overridableMax || this.overrideItem) {
           this.checkRestriced(item)
-          this.$store.commit('addToBucket', data)
-          this.$store.commit('deleteFromBucket', {index: index, itemIndex: 0})
+          this.$store.commit(BUCKETS.ADD_TO_BUCKET, data)
+          this.$store.commit(BUCKETS.DELETE_FROM_BUCKET, {index: index, itemIndex: 0})
           this.overrideItem = false
         } else {
           this.$refs.overrideBucket.open()
@@ -186,7 +188,7 @@
           index: bucketIndex,
           itemIndex: itemIndex
         }
-        this.$store.commit('deleteFromBucket', data)
+        this.$store.commit(BUCKETS.DELETE_FROM_BUCKET, data)
       },
       toggleFeaturedInBucket: function (item, bucket) {
         let bucketIndex = this.buckets.findIndex(b => b.id === bucket)
@@ -201,7 +203,7 @@
           itemIndex: itemIndex
         }
 
-        this.$store.commit('toggleFeaturedInBucket', data)
+        this.$store.commit(BUCKETS.TOGGLE_FEATURED_IN_BUCKET, data)
       },
       checkRestriced: function (item) {
         // Remove item from each bucket if option restricted to one bucket is active
@@ -221,28 +223,28 @@
           oldIndex: evt.moved.oldIndex,
           newIndex: evt.moved.newIndex
         }
-        this.$store.commit('reorderBucketList', data)
+        this.$store.commit(BUCKETS.REORDER_BUCKET_LIST, data)
       },
       changeDataSource: function (value) {
-        this.$store.commit('updateBucketsDataSource', value)
-        this.$store.commit('updateBucketsDataPage', 1)
+        this.$store.commit(BUCKETS.UPDATE_BUCKETS_DATASOURCE, value)
+        this.$store.commit(BUCKETS.UPDATE_BUCKETS_DATA_PAGE, 1)
         this.$store.dispatch('getBucketsData')
       },
       filterBucketsData: function (formData) {
-        this.$store.commit('updateBucketsDataPage', 1)
-        this.$store.commit('updateBucketsFilter', formData || {search: ''})
+        this.$store.commit(BUCKETS.UPDATE_BUCKETS_DATA_PAGE, 1)
+        this.$store.commit(BUCKETS.UPDATE_BUCKETS_FILTER, formData || {search: ''})
         // reload datas
         this.$store.dispatch('getBucketsData')
       },
       updateOffset: function (value) {
-        this.$store.commit('updateBucketsDataPage', 1)
-        this.$store.commit('updateBucketsDataOffset', value)
+        this.$store.commit(BUCKETS.UPDATE_BUCKETS_DATA_PAGE, 1)
+        this.$store.commit(BUCKETS.UPDATE_BUCKETS_DATA_OFFSET, value)
 
         // reload datas
         this.$store.dispatch('getBucketsData')
       },
       updatePage: function (value) {
-        this.$store.commit('updateBucketsDataPage', value)
+        this.$store.commit(BUCKETS.UPDATE_BUCKETS_DATA_PAGE, value)
         // reload datas
         this.$store.dispatch('getBucketsData')
       },
