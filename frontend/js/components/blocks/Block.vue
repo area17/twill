@@ -1,6 +1,6 @@
 <template>
   <div class="block" :class="blockClasses">
-    <div class="block__header">
+    <div class="block__header" @dblclick.prevent="toggleExpand()">
       <span class="block__handle"></span>
       <div class="block__toggle">
         <a17-dropdown :ref="moveDropdown" class="f--small" position="bottom-left" v-if="withMoveDropdown" :maxHeight="270">
@@ -10,7 +10,7 @@
           </div>
         </a17-dropdown>
         <span class="block__counter f--tiny" v-else>{{ index + 1 }}</span>
-        <span class="block__title" @dblclick.prevent="toggleExpand()">{{ block.title }}</span>
+        <span class="block__title">{{ block.title }}</span>
       </div>
       <div class="block__actions">
         <slot name="block-actions"></slot>
