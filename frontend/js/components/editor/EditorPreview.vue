@@ -6,7 +6,7 @@
     <draggable class="editorPreview__content" v-model="blocks" :options="{ group: 'editorBlocks', handle: handle }" @add="onAdd" @update="onUpdate">
       <div class="editorPreview__item" :class="{ 'editorPreview__item--active' : isBlockActive(block.id), 'editorPreview__item--hover' : activeItem === index }" v-for="(block, index) in blocks" :ref="block.id" :key="block.id" @mousedown.stop >
         <div class="editorPreview__frame">
-          <a17-editor-iframe :block="block" @loaded="resizeIframe"></a17-editor-iframe>
+          <a17-editor-iframe :block="block" @loaded="resizeIframe" />
         </div>
         <div class="editorPreview__protector editorPreview__dragger" @click.prevent="selectBlock(index)"></div>
         <div class="editorPreview__header">
@@ -60,11 +60,24 @@
         return Object.keys(this.activeBlock).length
       },
       ...mapState({
+        loading: state => state.content.loading,
         activeBlock: state => state.content.active,
         savedBlocks: state => state.content.blocks
       })
     },
     watch: {
+      loading: function (loading) {
+        let self = this
+
+        if (!loading) {
+          self.$nextTick(function () {
+            setTimeout(function () {
+              console.log('loading : ' + loading)
+              self.scrollToActive()
+            }, 100)
+          })
+        }
+      },
       activeBlock: function (val) {
         this.scrollToActive()
       }
@@ -133,12 +146,14 @@
         this.$emit('unselect')
       },
       scrollToActive: function () {
-        if (!this.hasBlockActive) {
-          return
+        if (!this.hasBlockActive) return
+
+        const activeBlockEl = this.$refs[this.activeBlock.id]
+        if (activeBlockEl) {
+          const activeScrollTop = activeBlockEl[0].offsetTop
+          const scrollContainer = this.$el.querySelector('.editorPreview__content')
+          scrollContainer.scrollTop = Math.max(0, activeScrollTop - 20)
         }
-        const activeScrollTop = this.$refs[this.activeBlock.id][0].offsetTop
-        const scrollContainer = this.$el.querySelector('.editorPreview__content')
-        scrollContainer.scrollTop = activeScrollTop
       },
       resizeIframe: function (iframe) {
         const frameBody = iframe.contentWindow.document.body
@@ -152,14 +167,9 @@
         const bodyMarginBottom = bodyStyle.getPropertyValue('margin-bottom')
         const frameHeight = frameBody.scrollHeight + parseInt(bodyMarginTop) + parseInt(bodyMarginBottom)
 
-        console.log('Editor - Preview refresh height : ' + frameHeight + 'px')
         iframe.height = frameHeight + 'px'
 
-        // scroll to active block if all are loaded
-        this.blocksLoaded++
-        if (this.blocks.length === this.blocksLoaded) {
-          this.scrollToActive()
-        }
+        console.log('resizeIframe')
       },
       resizeAllIframes: function () {
         let self = this

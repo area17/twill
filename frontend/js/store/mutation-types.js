@@ -67,6 +67,7 @@ export const DUPLICATE_BLOCK = 'duplicateBlock'
 export const REORDER_BLOCKS = 'reorderBlocks'
 export const ACTIVATE_BLOCK = 'activateBlock'
 export const ADD_BLOCK_PREVIEW = 'addBlockPreview'
+export const UPDATE_PREVIEW_LOADING = 'updateBlockPreviewLoading'
 
 /* publications */
 export const UPDATE_PUBLISH_START_DATE = 'updatePublishStartDate'

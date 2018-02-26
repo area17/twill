@@ -196,6 +196,9 @@
       },
       onBlur: function (event) {
         let newValue = event.target.value
+
+        this.updateValue(newValue)
+
         this.focused = false
         this.$emit('blur', newValue)
       },
