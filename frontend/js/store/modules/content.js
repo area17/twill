@@ -119,8 +119,6 @@ const actions = {
       state.blocks.forEach(function (block) {
         getBlockPreview(block, commit, rootState, function () {
           loadedPreview++
-
-          console.log('LOADED : ' + loadedPreview + '/' + state.blocks.length)
           if (loadedPreview === state.blocks.length) commit(types.UPDATE_PREVIEW_LOADING, true)
         })
       })

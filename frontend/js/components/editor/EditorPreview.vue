@@ -69,12 +69,12 @@
       loading: function (loading) {
         let self = this
 
+        // all the preview are loaded : let's move to the active block
         if (!loading) {
           self.$nextTick(function () {
             setTimeout(function () {
-              console.log('loading : ' + loading)
               self.scrollToActive()
-            }, 100)
+            }, 200)
           })
         }
       },

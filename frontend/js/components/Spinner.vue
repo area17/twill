@@ -79,4 +79,11 @@
   .app--form .a17spinner {
     background-color: rgba($color__border--light, 0.75);
   }
+
+  .s--in-editor .overlay .a17spinner {
+    background-color: $color__background;
+    .a17spinner__anim {
+      transition-delay:0s;
+    }
+  }
 </style>

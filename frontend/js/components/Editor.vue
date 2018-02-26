@@ -80,6 +80,7 @@
     },
     methods: {
       open: function (index) {
+        this.getAllPreviews()
         if (index >= 0) this.selectBlock(index)
         this.$refs.overlay.open()
       },
@@ -87,11 +88,9 @@
         this.$refs.overlay.close()
       },
       openEditor: function () {
-        this.getAllPreviews()
         html.classList.add(htmlClass)
       },
       closeEditor: function () {
-        console.log('closeEditor')
         this.unselectBlock()
         html.classList.remove(htmlClass)
       },
