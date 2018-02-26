@@ -29,27 +29,6 @@ abstract class ModuleController extends Controller
     protected $repository;
 
     /*
-     * Available columns of the index view
-     */
-    protected $indexColumns = [
-        'title' => [
-            'title' => 'Title',
-            'field' => 'title',
-            'sort' => true,
-        ],
-    ];
-
-    /*
-     * Available columns of the browser view
-     */
-    protected $browserColumns = [
-        'title' => [
-            'title' => 'Title',
-            'field' => 'title',
-        ],
-    ];
-
-    /*
      * Options of the index view
      */
     protected $defaultIndexOptions = [
@@ -95,20 +74,10 @@ abstract class ModuleController extends Controller
     protected $filters = [];
 
     /*
-     * Default filters for the index view
-     * By default, the search field will run a like query on the title field
-     * and is giving you the ability to specify more column to search in
-     * using the searchIn function in your repository filter() function.
-     */
-    protected $defaultFilters = [
-        'search' => 'title|search',
-    ];
-
-    /*
      * Default orders for the index view
      */
     protected $defaultOrders = [
-        'title' => 'asc',
+        'created_at' => 'desc',
     ];
 
     protected $perPage = 20;
@@ -152,6 +121,41 @@ abstract class ModuleController extends Controller
         $this->repository = $this->getRepository();
         $this->viewPrefix = $this->getViewPrefix();
         $this->modelTitle = $this->getModelTitle();
+
+        /*
+         * Default filters for the index view
+         * By default, the search field will run a like query on the title field
+         */
+        if (!isset($this->defaultFilters)) {
+            $this->defaultFilters = [
+                'search' => ($this->moduleIsTranslated() ? '' : '%') . $this->titleColumnKey,
+            ];
+        }
+
+        /*
+         * Available columns of the index view
+         */
+        if (!isset($this->indexColumns)) {
+            $this->indexColumns = [
+                $this->titleColumnKey => [
+                    'title' => ucfirst($this->titleColumnKey),
+                    'field' => $this->titleColumnKey,
+                    'sort' => true,
+                ],
+            ];
+        }
+
+        /*
+         * Available columns of the browser view
+         */
+        if (!isset($this->browserColumns)) {
+            $this->browserColumns = [
+                $this->titleColumnKey => [
+                    'title' => ucfirst($this->titleColumnKey),
+                    'field' => $this->titleColumnKey,
+                ],
+            ];
+        }
     }
 
     protected function setMiddlewarePermission()
