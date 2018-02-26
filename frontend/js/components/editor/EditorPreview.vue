@@ -74,7 +74,7 @@
           self.$nextTick(function () {
             setTimeout(function () {
               self.scrollToActive()
-            }, 200)
+            }, 250)
           })
         }
       },
@@ -168,8 +168,6 @@
         const frameHeight = frameBody.scrollHeight + parseInt(bodyMarginTop) + parseInt(bodyMarginBottom)
 
         iframe.height = frameHeight + 'px'
-
-        console.log('resizeIframe')
       },
       resizeAllIframes: function () {
         let self = this

@@ -8,9 +8,9 @@
             <a17-editorsidebar @delete="deleteBlock" @save="saveBlock" @cancel="cancelBlock">Add content</a17-editorsidebar>
           </div>
           <div class="editor__resizer" @mousedown="resize"><span></span></div>
-          <div class="editor__preview" :style="previewStyle">
+          <div class="editor__preview" :class="{ 'editor__preview--loading' : loading }" :style="previewStyle">
             <a17-editorpreview ref="previews" @select="selectBlock" @delete="deleteBlock" @unselect="unselectBlock" @add="addBlock" />
-            <a17-spinner v-if="loading">Loading&hellip;</a17-spinner>
+            <a17-spinner v-if="loading" :visible="true">Loading&hellip;</a17-spinner>
           </div>
         </div>
       </div>
@@ -270,5 +270,9 @@
     flex-grow:1;
     position:relative;
     min-width:300px;
+  }
+
+  .editor__preview--loading /deep/ .editorPreview {
+    opacity: 0;
   }
 </style>

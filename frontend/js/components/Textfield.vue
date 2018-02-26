@@ -208,9 +208,7 @@
         this.updateValue(newValue)
 
         // Only save into the store if something changed from the moment you focused the field
-        if (this.beforeFocusValue !== this.value) {
-          this.saveIntoStore() // see formStore mixin
-        }
+        if (this.beforeFocusValue !== this.value) this.saveIntoStore() // see formStore mixin
 
         this.$emit('change', newValue)
         // we need to debounce other listeners time needed to save changes into vuex store
