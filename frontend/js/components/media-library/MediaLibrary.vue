@@ -1,5 +1,5 @@
 <template>
-  <a17-modal title="Media Library" mode="wide" ref="modal">
+  <a17-modal title="Media Library" mode="wide" ref="modal" @open="opened">
   <div class="medialibrary">
     <div class="medialibrary__frame">
       <div class="medialibrary__header" ref="form">
@@ -156,6 +156,10 @@
       },
       close: function () {
         this.$refs.modal.close()
+      },
+      opened: function () {
+        // empty selected medias (to avoid bugs when adding)
+        this.selectedMedias = []
       },
       updateType: function (newType) {
         if (this.strict) return
