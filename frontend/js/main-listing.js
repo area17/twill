@@ -55,11 +55,6 @@ Window.vm = new Vue({
     'a17-modal-create': ModalCreate
   },
   mixins: [formatPermalink],
-  data: function () {
-    return {
-      inputPermalink: ''
-    }
-  },
   computed: {
     hasBulkIds: function () {
       return this.bulkIds.length > 0
