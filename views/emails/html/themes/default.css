@@ -102,8 +102,7 @@ img {
   text-transform:uppercase;
   height: 15px;
   line-height: 15px;
-  padding: 0 5px;
-  display: inline-block;
+  padding: 1px 5px;
   position: relative;
   border-radius:7px;
   background:black;
