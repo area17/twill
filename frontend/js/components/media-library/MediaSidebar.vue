@@ -251,6 +251,8 @@
 
   .mediasidebar__name {
     margin-bottom:6px;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
 
   .mediasidebar__metadatas {
