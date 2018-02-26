@@ -47,7 +47,7 @@
                     @yield('content')
                     @if (config('cms-toolkit.enabled.media-library'))
                         <a17-modal ref="mediaLibrary" title="Media Library" mode="wide">
-                            <a17-medialibrary endpoint="{{ route('admin.media-library.medias.index') }}" />
+                            <a17-medialibrary endpoint="{{ route('admin.media-library.medias.index') }}" :authorized="{{ json_encode(auth()->user()->can('edit')) }}" />
                         </a17-modal>
                     @endif
                     <a17-notif variant="success"></a17-notif>

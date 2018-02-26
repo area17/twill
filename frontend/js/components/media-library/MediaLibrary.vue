@@ -33,13 +33,13 @@
       <div class="medialibrary__inner">
         <div class="medialibrary__grid">
           <aside class="medialibrary__sidebar">
-            <a17-mediasidebar :medias="selectedMedias" @clear="clearSelectedMedias" @delete="deleteSelectedMedias"></a17-mediasidebar>
+            <a17-mediasidebar :medias="selectedMedias" :authorized="authorized" @clear="clearSelectedMedias" @delete="deleteSelectedMedias"></a17-mediasidebar>
           </aside>
           <footer class="medialibrary__footer" v-if="selectedMedias.length && showInsert && connector">
             <a17-button variant="action" @click="saveAndClose">{{ btnLabel }}</a17-button>
           </footer>
           <div class="medialibrary__list" ref="list">
-            <a17-uploader @loaded="addMedia" @clear="clearSelectedMedias" :type="type"></a17-uploader>
+            <a17-uploader v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias" :type="type"></a17-uploader>
             <div class="medialibrary__list-items">
               <a17-itemlist :items="fullMedias" :selectedItems="selectedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias" v-if="type === 'file'"></a17-itemlist>
               <a17-mediagrid :medias="fullMedias" :selectedMedias="selectedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias" v-else></a17-mediagrid>
@@ -97,6 +97,10 @@
       initialPage: {
         type: Number,
         default: 1
+      },
+      authorized: {
+        type: Boolean,
+        default: false
       }
     },
     data: function () {

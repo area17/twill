@@ -33,6 +33,7 @@ abstract class ModuleController extends Controller
      */
     protected $defaultIndexOptions = [
         'create' => true,
+        'edit' => true,
         'publish' => true,
         'bulkPublish' => true,
         'feature' => false,
@@ -456,7 +457,7 @@ abstract class ModuleController extends Controller
         $options = [
             'moduleName' => $this->moduleName,
             'reorder' => $this->getIndexOption('reorder'),
-            'create' => $this->getIndexOption('create') && auth()->user()->can('edit'),
+            'create' => $this->getIndexOption('create'),
             'translate' => $this->moduleIsTranslated(),
             'permalink' => $this->getIndexOption('permalink'),
             'bulkEdit' => $this->getIndexOption('bulkEdit'),
@@ -514,14 +515,15 @@ abstract class ModuleController extends Controller
 
             $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
             $itemCanDelete = $this->getIndexOption('delete') && ($item->canDelete ?? true);
+            $canEdit = $this->getIndexOption('edit');
 
             return [
                 'id' => $item->id,
                 'name' => $name,
                 'publish_start_date' => $item->publish_start_date,
                 'publish_end_date' => $item->publish_end_date,
-                'edit' => $this->getModuleRoute($item->id, 'edit'),
-                'delete' => $itemCanDelete ? $this->getModuleRoute($item->id, 'destroy') : null,
+                'edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null,
+                'delete' => ($canEdit && $itemCanDelete) ? $this->getModuleRoute($item->id, 'destroy') : null,
             ] + ($this->getIndexOption('publish') && ($item->canPublish ?? true) ? [
                 'published' => $item->published,
             ] : []) + ($this->getIndexOption('feature') && ($item->canFeature ?? true) ? [
@@ -675,7 +677,7 @@ abstract class ModuleController extends Controller
             'number' => $this->repository->getCountByStatusSlug('all', $scope),
         ]);
 
-        if ($this->moduleHasRevisions()) {
+        if ($this->moduleHasRevisions() && $this->getIndexOption('create')) {
             array_push($statusFilters, [
                 'name' => 'Mine',
                 'slug' => 'mine',
@@ -730,12 +732,32 @@ abstract class ModuleController extends Controller
 
     protected function getIndexOption($option)
     {
-        $customOptionNamesMapping = [
-            'store' => 'create',
-        ];
+        once(function () use ($option) {
+            $customOptionNamesMapping = [
+                'store' => 'create',
+            ];
 
-        $option = array_key_exists($option, $customOptionNamesMapping) ? $customOptionNamesMapping[$option] : $option;
-        return $this->indexOptions[$option] ?? $this->defaultIndexOptions[$option] ?? false;
+            $option = array_key_exists($option, $customOptionNamesMapping) ? $customOptionNamesMapping[$option] : $option;
+
+            $authorizableOptions = [
+                'create' => 'edit',
+                'edit' => 'edit',
+                'publish' => 'publish',
+                'feature' => 'feature',
+                'reorder' => 'reorder',
+                'delete' => 'delete',
+                'restore' => 'delete',
+                'bulkPublish' => 'publish',
+                'bulkRestore' => 'delete',
+                'bulkFeature' => 'feature',
+                'bulkDelete' => 'delete',
+                'bulkEdit' => 'edit',
+            ];
+
+            $authorized = array_key_exists($option, $authorizableOptions) ? auth()->user()->can($authorizableOptions[$option]) : true;
+
+            return ($this->indexOptions[$option] ?? $this->defaultIndexOptions[$option] ?? false) && $authorized;
+        });
     }
 
     protected function getBrowserData($prependScope = [])

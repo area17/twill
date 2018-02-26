@@ -18,7 +18,7 @@
         <a17-buttonbar class="mediasidebar__buttonbar" v-if="hasMedia">
           <!-- Actions -->
           <a v-if="hasSingleMedia" :href="firstMedia.original" download><span v-svg symbol="download"></span></a>
-          <button v-if="allowDelete" type="button" @click="deleteSelectedMediasValidation"><span v-svg symbol="trash"></span></button>
+          <button v-if="allowDelete && authorized" type="button" @click="deleteSelectedMediasValidation"><span v-svg symbol="trash"></span></button>
           <button v-else="" type="button" class="button--disabled"><span v-svg symbol="trash"></span></button>
         </a17-buttonbar>
           <p v-if="!allowDelete">{{ warningDeleteMessage }}</p>
@@ -34,7 +34,7 @@
           <a17-textfield label="Caption" name="caption" :initialValue="firstMedia.metadatas.default.caption" size="small"></a17-textfield>
         </template>
         <a17-vselect label="Tags" name="tags" :multiple="true" :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small" :endpoint="tagsEndpoint"></a17-vselect>
-        <a17-button type="submit" variant="ghost" :disabled="loading">Update</a17-button>
+        <a17-button v-if="authorized" type="submit" variant="ghost" :disabled="loading">Update</a17-button>
       </form>
     </template>
     <a17-modal class="modal--tiny modal--form modal--withintro" ref="warningDelete" title="Warning Delete">
@@ -64,6 +64,10 @@
     props: {
       medias: {
         default: function () { return [] }
+      },
+      authorized: {
+        type: Boolean,
+        default: false
       }
     },
     data: function () {
