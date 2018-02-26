@@ -160,6 +160,14 @@
       opened: function () {
         // empty selected medias (to avoid bugs when adding)
         this.selectedMedias = []
+
+        // in replace mode : select the media to replace when opening
+        if (this.connector && this.indexToReplace > -1) {
+          const mediaInitSelect = this.selected[this.connector][this.indexToReplace]
+          if (mediaInitSelect) {
+            this.updateSelectedMedias(mediaInitSelect.id)
+          }
+        }
       },
       updateType: function (newType) {
         if (this.strict) return
