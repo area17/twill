@@ -10,7 +10,7 @@
         </div>
       </transition-group>
     </draggable>
-    <div class="slideshow__trigger" v-if="remainingSlides">
+    <div class="slideshow__trigger" v-if="remainingSlides > 0">
       <a17-button type="button" variant="ghost" @click="openMediaLibrary(remainingSlides)">{{ addLabel }}</a17-button>
       <span class="slideshow__note f--small"><slot></slot></span>
     </div>
@@ -21,7 +21,7 @@
   import { mapState } from 'vuex'
 
   import draggableMixin from '@/mixins/draggable'
-  import mediaLibrayMixin from '@/mixins/mediaLibrary.js'
+  import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
 
   import draggable from 'vuedraggable'
 
@@ -65,7 +65,7 @@
     },
     computed: {
       remainingSlides: function () {
-        return this.max - this.slides.length
+        return Math.max(0, this.max - this.slides.length)
       },
       addLabel: function () {
         const itemNames = this.remainingSlides > 1 ? 'up to ' + this.remainingSlides + ' ' + this.itemLabel + 's' : this.remainingSlides + ' ' + this.itemLabel

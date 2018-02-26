@@ -2,7 +2,7 @@
   <div class="itemlist">
     <table class="itemlist__table">
       <tbody>
-        <tr class="itemlist__row" v-for="(item, index) in listItemsLoading" :key="item.id" >
+        <tr class="itemlist__row" v-for="(item, index) in itemsLoading" :key="item.id" >
           <td class="itemlist__cell itemlist__cell--loading" :class="{ 'itemlist__cell--error' : item.error }" :colspan="columnsNumber">
             <span class="itemlist__progress" v-if="!item.error" ><span class="itemlist__progressBar" :style="loadingProgress(index)"></span></span>
             <span class="itemlist__progressError" v-else>Upload Error</span>
@@ -10,7 +10,7 @@
         </tr>
         <tr class="itemlist__row" v-for="(item, index) in listItems" :key="item.id" :class="{ 's--picked': isSelected(item.id) }" @click.exact.prevent="toggleSelection(item.id)" @click.shift.exact.prevent="shiftToggleSelection(item.id)">
           <td class="itemlist__cell itemlist__cell--btn" v-if="item.hasOwnProperty('id')">
-            <a17-checkbox name="item_list" :value="item.id" :initialValue="checkedItems" theme="bold"></a17-checkbox>
+            <a17-checkbox name="item_list" :value="item.id" :initialValue="checkedItems" theme="bold"/>
           </td>
           <td class="itemlist__cell itemlist__cell--thumb" v-if="item.hasOwnProperty('thumbnail')">
             <img :src="item.thumbnail" />
@@ -29,25 +29,12 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
   import a17VueFilters from '@/utils/filters.js'
+  import mediaItemsMixin from '@/mixins/mediaLibrary/mediaItems'
 
   export default {
     name: 'A17Itemlist',
-    props: {
-      items: {
-        type: Array,
-        default: function () {
-          return []
-        }
-      },
-      selectedItems: {
-        type: Array,
-        default: function () {
-          return []
-        }
-      }
-    },
+    mixins: [mediaItemsMixin],
     data: function () {
       return {
         listItems: this.items
@@ -87,10 +74,7 @@
         }
 
         return checkItemsIds
-      },
-      ...mapState({
-        listItemsLoading: state => state.mediaLibrary.loading
-      })
+      }
     },
     methods: {
       rowClass: function (item) {
@@ -100,19 +84,6 @@
         return {
           'width': this.listItemsLoading[index].progress ? this.listItemsLoading[index].progress + '%' : '0%'
         }
-      },
-      isSelected: function (id) {
-        const result = this.selectedItems.filter(function (item) {
-          return item.id === id
-        })
-
-        return result.length > 0
-      },
-      toggleSelection: function (id) {
-        this.$emit('change', id)
-      },
-      shiftToggleSelection: function (id) {
-        this.$emit('shiftChange', id, true)
       }
     }
   }

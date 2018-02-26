@@ -51,14 +51,14 @@
       <!--Add media button-->
       <a17-button variant="ghost" @click="openMediaLibrary" :disabled="disabled" v-if="!hasMedia">{{ btnLabel }}</a17-button>
       <p class="media__note f--small" v-if="!!this.$slots.default">
-        <slot></slot>
+        <slot/>
       </p>
 
       <!-- Metadatas options -->
       <div class="media__metadatas--options" :class="{ 's--active' : metadatas.active }" v-if="hasMedia">
-        <a17-mediametadata :name='name' label="Alt Text" id="altText" :media="media" @change="updateMetadata"></a17-mediametadata>
-        <a17-mediametadata :name='name' label="Caption" id="caption" :media="media" @change="updateMetadata"></a17-mediametadata>
-        <a17-mediametadata v-if="withVideoUrl" :name='name' label="Video URL (optional)" id="video" :media="media" @change="updateMetadata"></a17-mediametadata>
+        <a17-mediametadata :name='name' label="Alt Text" id="altText" :media="media" @change="updateMetadata"/>
+        <a17-mediametadata :name='name' label="Caption" id="caption" :media="media" @change="updateMetadata"/>
+        <a17-mediametadata v-if="withVideoUrl" :name='name' label="Video URL (optional)" id="video" :media="media" @change="updateMetadata"/>
       </div>
     </div>
 
@@ -76,7 +76,7 @@
 
   import a17Cropper from '@/components/Cropper.vue'
   import a17MediaMetadata from '@/components/MediaMetadata.vue'
-  import mediaLibrayMixin from '@/mixins/mediaLibrary.js'
+  import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
   import a17VueFilters from '@/utils/filters.js'
 
   export default {
@@ -464,11 +464,19 @@
     @media screen and (max-width: 1140px) {
       display: none !important;
     }
+
+    .s--in-editor &{
+      display: none!important;
+    }
   }
 
   .media__actions-dropDown {
     @media screen and (min-width: 1139px) {
       display: none;
+    }
+
+    .s--in-editor & {
+      display: block!important;
     }
   }
 

@@ -27,6 +27,9 @@
 
   import cloneDeep from 'lodash/cloneDeep'
 
+  const html = document.documentElement
+  let htmlClass = 's--in-editor'
+
   export default {
     name: 'A17editor',
     components: {
@@ -80,9 +83,11 @@
       },
       openEditor: function () {
         this.getAllPreviews()
+        html.classList.add(htmlClass)
       },
       closeEditor: function () {
         this.unselectBlock()
+        html.classList.remove(htmlClass)
       },
       isBlockActive: function (id) {
         if (!this.hasBlockActive) return false

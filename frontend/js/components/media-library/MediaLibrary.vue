@@ -1,4 +1,5 @@
 <template>
+  <a17-modal title="Media Library" mode="wide" ref="modal" @open="opened">
   <div class="medialibrary">
     <div class="medialibrary__frame">
       <div class="medialibrary__header" ref="form">
@@ -25,7 +26,7 @@
           </div>
 
           <div slot="hidden-filters">
-            <a17-vselect class="medialibrary__filter-item" ref="filter" name="tag" :options="tags" placeholder="Filter by tag" :toggleSelectOption="true"></a17-vselect>
+            <a17-vselect class="medialibrary__filter-item" ref="filter" name="tag" :options="tags" placeholder="Filter by tag" :toggleSelectOption="true"/>
           </div>
         </a17-filter>
       </div>
@@ -33,16 +34,17 @@
       <div class="medialibrary__inner">
         <div class="medialibrary__grid">
           <aside class="medialibrary__sidebar">
-            <a17-mediasidebar :medias="selectedMedias" :authorized="authorized" @clear="clearSelectedMedias" @delete="deleteSelectedMedias"></a17-mediasidebar>
+            <a17-mediasidebar :medias="selectedMedias" :authorized="authorized" @clear="clearSelectedMedias" @delete="deleteSelectedMedias"/>
           </aside>
           <footer class="medialibrary__footer" v-if="selectedMedias.length && showInsert && connector">
-            <a17-button variant="action" @click="saveAndClose">{{ btnLabel }}</a17-button>
+            <a17-button v-if="canInsert" variant="action" @click="saveAndClose">{{ btnLabel }} </a17-button>
+            <a17-button v-else="" variant="action" :disabled="true">{{ btnLabel }} </a17-button>
           </footer>
           <div class="medialibrary__list" ref="list">
-            <a17-uploader v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias" :type="type"></a17-uploader>
+            <a17-uploader v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias" :type="type"/>
             <div class="medialibrary__list-items">
-              <a17-itemlist :items="fullMedias" :selectedItems="selectedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias" v-if="type === 'file'"></a17-itemlist>
-              <a17-mediagrid :medias="fullMedias" :selectedMedias="selectedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias" v-else></a17-mediagrid>
+              <a17-itemlist v-if="type === 'file'" :items="fullMedias" :selected-items="selectedMedias" :used-items="usedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias"/>
+              <a17-mediagrid v-else :items="fullMedias" :selected-items="selectedMedias" :used-items="usedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias"/>
               <a17-spinner v-if="loading" class="medialibrary__spinner">Loading&hellip;</a17-spinner>
             </div>
           </div>
@@ -50,6 +52,7 @@
       </div>
     </div>
   </div>
+  </a17-modal>
 </template>
 
 <script>
@@ -101,12 +104,15 @@
       authorized: {
         type: Boolean,
         default: false
+      },
+      showInsert: {
+        type: Boolean,
+        default: true
       }
     },
     data: function () {
       return {
         loading: false,
-        showInsert: true,
         maxPage: 20,
         fullMedias: [],
         selectedMedias: [],
@@ -121,12 +127,18 @@
         if (this.indexToReplace > -1) return this.btnLabelUpdate
         return this.selectedMedias.length > 1 ? this.btnLabelMulti : this.btnLabelSingle
       },
+      usedMedias: function () {
+        return this.selected[this.connector] || []
+      },
       selectedType: function () {
         let self = this
         const navItem = self.types.filter(function (t) {
           return t.value === self.type
         })
         return navItem[0]
+      },
+      canInsert: function () {
+        return !this.selectedMedias.some(sMedia => !!this.usedMedias.find(uMedia => uMedia.id === sMedia.id))
       },
       ...mapState({
         connector: state => state.mediaLibrary.connector,
@@ -139,6 +151,16 @@
       })
     },
     methods: {
+      open: function () {
+        this.$refs.modal.open()
+      },
+      close: function () {
+        this.$refs.modal.close()
+      },
+      opened: function () {
+        // empty selected medias (to avoid bugs when adding)
+        this.selectedMedias = []
+      },
       updateType: function (newType) {
         if (this.strict) return
         if (this.type === newType) return
@@ -147,12 +169,11 @@
         this.submitFilter()
       },
       addMedia: function (media) {
-        let self = this
         // add media in first position of the available media
-        self.fullMedias.unshift(media)
+        this.fullMedias.unshift(media)
         this.$store.commit('incrementMediaTypeTotal', this.type)
         // select it
-        self.updateSelectedMedias(media.id)
+        this.updateSelectedMedias(media.id)
       },
       updateSelectedMedias: function (id, shift = false) {
         const alreadySelectedMedia = this.selectedMedias.filter(function (media) {
@@ -246,11 +267,13 @@
 
         const form = this.$refs.form
         const formdata = this.getFormData(form)
-        if (this.selected[this.connector]) {
-          formdata.except = this.selected[this.connector].map((media) => {
-            return media.id
-          })
-        }
+
+        // if (this.selected[this.connector]) {
+        //   formdata.except = this.selected[this.connector].map((media) => {
+        //     return media.id
+        //   })
+        //   console.log(formdata.except)
+        // }
 
         // see api/media-library for actual ajax
         api.get(this.endpoint, formdata, (resp) => {
@@ -299,6 +322,8 @@
         // re-listen for scroll position
         this.$nextTick(function () {
           const list = this.$refs.list
+
+          if (!list) return
           if (this.gridHeight !== list.scrollHeight) {
             list.addEventListener('scroll', this.scrollToPaginate)
           }
@@ -307,6 +332,8 @@
       scrollToPaginate: function () {
         const list = this.$refs.list
         const offset = 10
+
+        if (!list) return
         if (list.scrollTop > this.lastScrollTop && list.scrollTop + list.offsetHeight > list.scrollHeight - offset) {
           list.removeEventListener('scroll', this.scrollToPaginate)
 
@@ -322,8 +349,7 @@
       },
       saveAndClose: function () {
         this.$store.commit('saveSelectedMedias', this.selectedMedias)
-
-        this.$parent.close()
+        this.close()
       }
     },
     mounted: function () {

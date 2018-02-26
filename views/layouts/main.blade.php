@@ -46,9 +46,7 @@
                 <div class="app @yield('appTypeClass')" id="app" v-cloak>
                     @yield('content')
                     @if (config('cms-toolkit.enabled.media-library'))
-                        <a17-modal ref="mediaLibrary" title="Media Library" mode="wide">
-                            <a17-medialibrary endpoint="{{ route('admin.media-library.medias.index') }}" :authorized="{{ json_encode(auth()->user()->can('edit')) }}" />
-                        </a17-modal>
+                        <a17-medialibrary ref="mediaLibrary" endpoint="{{ route('admin.media-library.medias.index') }}" :authorized="{{ json_encode(auth()->user()->can('edit')) }}" />
                     @endif
                     <a17-notif variant="success"></a17-notif>
                     <a17-notif variant="error"></a17-notif>

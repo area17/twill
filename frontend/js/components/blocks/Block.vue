@@ -6,18 +6,18 @@
         <a17-dropdown :ref="moveDropdown" class="f--small" position="bottom-left" v-if="withMoveDropdown" :maxHeight="270">
           <span class="block__counter f--tiny" @click="$refs[moveDropdown].toggle()">{{ index + 1 }}</span>
           <div slot="dropdown__content">
-            <slot name="dropdown-numbers"></slot>
+            <slot name="dropdown-numbers"/>
           </div>
         </a17-dropdown>
         <span class="block__counter f--tiny" v-else>{{ index + 1 }}</span>
         <span class="block__title">{{ block.title }}</span>
       </div>
       <div class="block__actions">
-        <slot name="block-actions"></slot>
+        <slot name="block-actions"/>
         <a17-dropdown :ref="addDropdown" position="bottom-right" @open="hover = true" @close="hover = false" v-if="withAddDropdown">
           <a17-button variant="icon" data-action @click="$refs[addDropdown].toggle()"><span v-svg symbol="add"></span></a17-button>
           <div slot="dropdown__content">
-            <slot name="dropdown-add"></slot>
+            <slot name="dropdown-add"/>
           </div>
         </a17-dropdown>
 
@@ -26,12 +26,12 @@
         <a17-dropdown :ref="actionsDropdown" position="bottom-right" @open="hover = true" @close="hover = false">
           <a17-button variant="icon" @click="$refs[actionsDropdown].toggle()"><span v-svg symbol="more-dots"></span></a17-button>
           <div slot="dropdown__content">
-            <slot name="dropdown-action"></slot>
+            <slot name="dropdown-action"/>
           </div>
         </a17-dropdown>
       </div>
     </div>
-    <div class="block__content" :aria-hidden="!visible ?  true : null">
+    <div class="block__content" :aria-hidden="!visible ? true : null">
       <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes" key="`form_${block.type}_${block.id}`"><!-- dynamic components --></component>
     </div>
   </div>

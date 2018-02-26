@@ -1,6 +1,6 @@
 <template>
   <div class="mediasidebar">
-    <a17-mediasidebar-upload v-if="mediasLoading.length"></a17-mediasidebar-upload>
+    <a17-mediasidebar-upload v-if="mediasLoading.length"/>
     <template v-else>
       <div class="mediasidebar__inner" :class="containerClasses">
         <p v-if="!hasMedia" class="f--note">No file selected</p>
@@ -19,9 +19,8 @@
           <!-- Actions -->
           <a v-if="hasSingleMedia" :href="firstMedia.original" download><span v-svg symbol="download"></span></a>
           <button v-if="allowDelete && authorized" type="button" @click="deleteSelectedMediasValidation"><span v-svg symbol="trash"></span></button>
-          <button v-else="" type="button" class="button--disabled"><span v-svg symbol="trash"></span></button>
+          <button v-else="" type="button" class="button--disabled" :data-tooltip-title="warningDeleteMessage" v-tooltip><span v-svg symbol="trash"></span></button>
         </a17-buttonbar>
-          <p v-if="!allowDelete">{{ warningDeleteMessage }}</p>
       </div>
 
       <form v-if="hasMedia" class="mediasidebar__inner mediasidebar__form" @submit="update" :class="formClasses">
@@ -30,13 +29,14 @@
         </template>
         <template v-else>
           <input type="hidden" name="id" :value="firstMedia.id" />
-          <a17-textfield label="Alt text" name="alt-text" :initialValue="firstMedia.metadatas.default.altText" size="small"></a17-textfield>
-          <a17-textfield label="Caption" name="caption" :initialValue="firstMedia.metadatas.default.caption" size="small"></a17-textfield>
+          <a17-textfield label="Alt text" name="alt-text" :initialValue="firstMedia.metadatas.default.altText" size="small"/>
+          <a17-textfield label="Caption" name="caption" :initialValue="firstMedia.metadatas.default.caption" size="small"/>
         </template>
-        <a17-vselect label="Tags" name="tags" :multiple="true" :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small" :endpoint="tagsEndpoint"></a17-vselect>
+        <a17-vselect label="Tags" name="tags" :multiple="true" :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small" :endpoint="tagsEndpoint"/>
         <a17-button v-if="authorized" type="submit" variant="ghost" :disabled="loading">Update</a17-button>
       </form>
     </template>
+
     <a17-modal class="modal--tiny modal--form modal--withintro" ref="warningDelete" title="Warning Delete">
       <p class="modal--tiny-title"><strong>Are you sure ?</strong></p>
       <p>{{ warningDeleteMessage }}</p>
