@@ -2,7 +2,6 @@
 
 namespace A17\CmsToolkit\Http\Controllers\Admin;
 
-use A17\CmsToolkit\Helpers\FlashLevel;
 use A17\CmsToolkit\Models\User;
 use DB;
 use Hash;
@@ -38,8 +37,9 @@ class ResetPasswordController extends Controller
             ]);
         }
 
-        flash()->message('Your password reset token has expired or could not be found, please retry.', FlashLevel::ERROR);
-        return redirect(route('admin.password.reset.link'));
+        return redirect(route('admin.password.reset.link'))->withErrors([
+            'token' => 'Your password reset token has expired or could not be found, please retry.',
+        ]);
     }
 
     public function showWelcomeForm(Request $request, $token = null)
@@ -55,8 +55,9 @@ class ResetPasswordController extends Controller
             ]);
         }
 
-        flash()->message('Your set password token has expired or could not be found, please retry.', FlashLevel::ERROR);
-        return redirect(route('admin.password.reset.link'));
+        return redirect(route('admin.password.reset.link'))->withErrors([
+            'token' => 'Your password reset token has expired or could not be found, please retry.',
+        ]);
     }
 
     /*

@@ -258,6 +258,8 @@ const actions = {
     api.togglePublished(row, function (resp) {
       commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
       dispatch('getDatatableDatas')
+    }, function (errorResp) {
+      commit('setNotification', { message: errorResp.data.error.message, variant: 'error' })
     })
   },
   deleteData ({ commit, state, dispatch }, row) {

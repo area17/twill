@@ -52,7 +52,9 @@ class UserController extends ModuleController
     {
         parent::__construct($app, $request);
         $this->removeMiddleware('can:edit');
+        $this->removeMiddleware('can:publish');
         $this->middleware('can:edit-user,user', ['only' => ['store', 'edit', 'update']]);
+        $this->middleware('can:publish-user', ['only' => ['publish']]);
 
         if (config('cms-toolkit.enabled.users-image')) {
             $this->indexColumns = [

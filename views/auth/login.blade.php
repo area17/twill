@@ -12,7 +12,7 @@
 
                     <fieldset class="login__fieldset">
                         <label class="login__label" for="email">Email</label>
-                        <input type="email" name="email" id="email" class="login__input" required autofocus tabindex="1"/>
+                        <input type="email" name="email" id="email" class="login__input" required autofocus tabindex="1" value="{{ old('email') }}" />
                     </fieldset>
 
                     <fieldset class="login__fieldset">

@@ -19,6 +19,7 @@
 
                     <input class="login__button" type="submit" value="Send password reset link">
                 </form>
+                @include('cms-toolkit::partials.footer')
             </section>
         </div>
     </body>

@@ -33,10 +33,11 @@ export default {
     })
   },
 
-  togglePublished (row, callback) {
+  togglePublished (row, callback, errorCallback) {
     axios.put(window.CMS_URLS.publish, { id: row.id, active: row.published }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
+      if (errorCallback && typeof errorCallback === 'function') errorCallback(resp.response)
       console.log('publish request error.')
     })
   },
