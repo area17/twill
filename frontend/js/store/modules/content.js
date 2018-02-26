@@ -4,6 +4,7 @@ import * as types from '../mutation-types'
 import { buildBlock, isBlockEmpty } from '@/utils/getFormData.js'
 
 const state = {
+  loading: false,
   editor: window.STORE.form.editor || false,
   available: window.STORE.form.content || {},
   blocks: window.STORE.form.blocks || [],
@@ -62,10 +63,13 @@ const mutations = {
   },
   [types.ADD_BLOCK_PREVIEW] (state, data) {
     Vue.set(state.previews, data.id, data.html)
+  },
+  [types.UPDATE_PREVIEW_LOADING] (state, loading) {
+    state.loading = !state.loading
   }
 }
 
-function getBlockPreview (block, commit, rootState) {
+function getBlockPreview (block, commit, rootState, callback) {
   if (block.hasOwnProperty('id')) {
     const blockData = buildBlock(block, rootState)
 
@@ -78,6 +82,8 @@ function getBlockPreview (block, commit, rootState) {
         id: block.id,
         html: ''
       })
+
+      if (callback && typeof callback === 'function') callback()
     } else {
       api.getBlockPreview(
         rootState.form.blockPreviewUrl,
@@ -87,6 +93,8 @@ function getBlockPreview (block, commit, rootState) {
             id: block.id,
             html: data
           })
+
+          if (callback && typeof callback === 'function') callback()
         },
         errorResponse => {}
       )
@@ -104,9 +112,15 @@ const actions = {
     getBlockPreview(block, commit, rootState)
   },
   getAllPreviews ({ commit, state, rootState }) {
-    if (state.blocks.length) {
+    if (state.blocks.length && !state.loading) {
+      commit(types.UPDATE_PREVIEW_LOADING, true)
+      let loadedPreview = 0
+
       state.blocks.forEach(function (block) {
-        getBlockPreview(block, commit, rootState)
+        getBlockPreview(block, commit, rootState, function () {
+          loadedPreview++
+          if (loadedPreview === state.blocks.length) commit(types.UPDATE_PREVIEW_LOADING, true)
+        })
       })
     }
   }

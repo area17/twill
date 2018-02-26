@@ -1,7 +1,7 @@
 <template>
-  <transition name="fade_spinner"  @after-enter="afterEnter" @before-leave="beforeLeave">
+  <transition name="fade_spinner" @before-enter="beforeEnter" @after-enter="afterEnter" @before-leave="beforeLeave">
     <div class="a17spinner">
-      <div class="a17spinner__anim" :class="{ 'a17spinner__anim--visible' : visible }">
+      <div class="a17spinner__anim" :class="{ 'a17spinner__anim--visible' : isVisible }">
         <svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
             <g fill="none" fill-rule="evenodd">
                 <g transform="translate(1 1)" stroke-width="2">
@@ -27,17 +27,26 @@
 <script>
   export default {
     name: 'A17Spinner',
+    props: {
+      visible: {
+        type: Boolean,
+        default: false
+      }
+    },
     data: function () {
       return {
-        visible: false
+        isVisible: this.visible
       }
     },
     methods: {
+      beforeEnter: function (el) {
+        this.isVisible = this.visible
+      },
       afterEnter: function (el) {
-        this.visible = true
+        this.isVisible = true
       },
       beforeLeave: function (el) {
-        this.visible = false
+        this.isVisible = false
       }
     }
   }
@@ -78,5 +87,12 @@
 
   .app--form .a17spinner {
     background-color: rgba($color__border--light, 0.75);
+  }
+
+  .s--in-editor .overlay .a17spinner {
+    background-color: $color__background;
+    .a17spinner__anim {
+      transition-delay:0s;
+    }
   }
 </style>

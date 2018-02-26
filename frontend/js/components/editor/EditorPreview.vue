@@ -4,9 +4,9 @@
       <b>Drag and drop content from the left navigation</b>
     </div>
     <draggable class="editorPreview__content" v-model="blocks" :options="{ group: 'editorBlocks', handle: handle }" @add="onAdd" @update="onUpdate">
-      <div class="editorPreview__item" :class="{ 'editorPreview__item--active' : isBlockActive(block.id), 'editorPreview__item--hover' : activeItem === index }" v-for="(block, index) in blocks" :key="block.id" @mousedown.stop >
+      <div class="editorPreview__item" :class="{ 'editorPreview__item--active' : isBlockActive(block.id), 'editorPreview__item--hover' : activeItem === index }" v-for="(block, index) in blocks" :ref="block.id" :key="block.id" @mousedown.stop >
         <div class="editorPreview__frame">
-          <a17-editor-iframe :block="block" @loaded="resizeIframe"></a17-editor-iframe>
+          <a17-editor-iframe :block="block" @loaded="resizeIframe" />
         </div>
         <div class="editorPreview__protector editorPreview__dragger" @click.prevent="selectBlock(index)"></div>
         <div class="editorPreview__header">
@@ -44,6 +44,7 @@
     data: function () {
       return {
         activeItem: -1,
+        blocksLoaded: 0,
         handle: '.editorPreview__dragger' // Drag handle override
       }
     },
@@ -59,9 +60,27 @@
         return Object.keys(this.activeBlock).length
       },
       ...mapState({
+        loading: state => state.content.loading,
         activeBlock: state => state.content.active,
         savedBlocks: state => state.content.blocks
       })
+    },
+    watch: {
+      loading: function (loading) {
+        let self = this
+
+        // all the preview are loaded : let's move to the active block
+        if (!loading) {
+          self.$nextTick(function () {
+            setTimeout(function () {
+              self.scrollToActive()
+            }, 250)
+          })
+        }
+      },
+      activeBlock: function (val) {
+        this.scrollToActive()
+      }
     },
     methods: {
       toggleDropdown: function (index) {
@@ -126,6 +145,16 @@
       unselectBlock: function () {
         this.$emit('unselect')
       },
+      scrollToActive: function () {
+        if (!this.hasBlockActive) return
+
+        const activeBlockEl = this.$refs[this.activeBlock.id]
+        if (activeBlockEl) {
+          const activeScrollTop = activeBlockEl[0].offsetTop
+          const scrollContainer = this.$el.querySelector('.editorPreview__content')
+          scrollContainer.scrollTop = Math.max(0, activeScrollTop - 20)
+        }
+      },
       resizeIframe: function (iframe) {
         const frameBody = iframe.contentWindow.document.body
 
@@ -138,7 +167,6 @@
         const bodyMarginBottom = bodyStyle.getPropertyValue('margin-bottom')
         const frameHeight = frameBody.scrollHeight + parseInt(bodyMarginTop) + parseInt(bodyMarginBottom)
 
-        console.log('Editor - Preview refresh height : ' + frameHeight + 'px')
         iframe.height = frameHeight + 'px'
       },
       resizeAllIframes: function () {

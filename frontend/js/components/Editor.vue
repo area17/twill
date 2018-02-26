@@ -8,8 +8,9 @@
             <a17-editorsidebar @delete="deleteBlock" @save="saveBlock" @cancel="cancelBlock">Add content</a17-editorsidebar>
           </div>
           <div class="editor__resizer" @mousedown="resize"><span></span></div>
-          <div class="editor__preview" :style="previewStyle">
-            <a17-editorpreview ref="previews" @select="selectBlock" @delete="deleteBlock" @unselect="unselectBlock" @add="addBlock">Preview</a17-editorpreview>
+          <div class="editor__preview" :class="{ 'editor__preview--loading' : loading }" :style="previewStyle">
+            <a17-editorpreview ref="previews" @select="selectBlock" @delete="deleteBlock" @unselect="unselectBlock" @add="addBlock" />
+            <a17-spinner v-if="loading" :visible="true">Loading&hellip;</a17-spinner>
           </div>
         </div>
       </div>
@@ -22,6 +23,7 @@
 
   import A17EditorSidebar from '@/components/editor/EditorSidebar.vue'
   import A17EditorPreview from '@/components/editor/EditorPreview.vue'
+  import A17Spinner from '@/components/Spinner.vue'
 
   import * as mutationTypes from '@/store/mutation-types'
 
@@ -34,7 +36,8 @@
     name: 'A17editor',
     components: {
       'a17-editorsidebar': A17EditorSidebar,
-      'a17-editorpreview': A17EditorPreview
+      'a17-editorpreview': A17EditorPreview,
+      'a17-spinner': A17Spinner
     },
     props: {
       bgColor: {
@@ -44,6 +47,7 @@
     },
     data: function () {
       return {
+        isWatching: false,
         unSubscribe: function () {
           return null
         }
@@ -67,6 +71,7 @@
         }
       },
       ...mapState({
+        loading: state => state.content.loading,
         activeBlock: state => state.content.active,
         savedBlocks: state => state.content.blocks,
         availableBlocks: state => state.content.available,
@@ -75,6 +80,7 @@
     },
     methods: {
       open: function (index) {
+        this.getAllPreviews()
         if (index >= 0) this.selectBlock(index)
         this.$refs.overlay.open()
       },
@@ -82,7 +88,6 @@
         this.$refs.overlay.close()
       },
       openEditor: function () {
-        this.getAllPreviews()
         html.classList.add(htmlClass)
       },
       closeEditor: function () {
@@ -163,28 +168,31 @@
           window.PREVSTATE = cloneDeep(this.$store.state)
           this.$store.commit('activateBlock', index)
 
-          this.unSubscribe = this.$store.subscribe((mutation, state) => {
-            // Don't trigger a refresh of the preview every single time, just when necessary
-            if (mutationTypes.REFRESH_BLOCK_PREVIEW.includes(mutation.type)) {
-              console.log('Editor - store changed : ' + mutation.type)
-              if (mutationTypes.REFRESH_BLOCK_PREVIEW_ALL.includes(mutation.type)) {
-                self.getAllPreviews()
-              } else {
-                self.getPreview()
+          if (!this.isWatching) {
+            this.isWatching = true
+            this.unSubscribe = this.$store.subscribe((mutation, state) => {
+              // Don't trigger a refresh of the preview every single time, just when necessary
+              if (mutationTypes.REFRESH_BLOCK_PREVIEW.includes(mutation.type)) {
+                console.log('Editor - store changed : ' + mutation.type)
+                if (mutationTypes.REFRESH_BLOCK_PREVIEW_ALL.includes(mutation.type)) {
+                  self.getAllPreviews()
+                } else {
+                  self.getPreview()
+                }
               }
-            }
-          })
+            })
+          }
         }
       },
       unselectBlock: function () {
-        if (!this.hasBlockActive) return
-
         this.unSubscribe()
-
-        this.$store.commit('activateBlock', -1)
+        this.isWatching = false
 
         // remove prevstate
         if (window.hasOwnProperty('PREVSTATE')) delete window.PREVSTATE
+
+        if (!this.hasBlockActive) return
+        this.$store.commit('activateBlock', -1)
       }
     },
     mounted: function () {
@@ -262,5 +270,9 @@
     flex-grow:1;
     position:relative;
     min-width:300px;
+  }
+
+  .editor__preview--loading /deep/ .editorPreview {
+    opacity: 0;
   }
 </style>

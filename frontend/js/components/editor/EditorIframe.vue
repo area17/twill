@@ -36,7 +36,7 @@
     },
     methods: {
       loadedPreview: function (event) {
-        if (this.$refs.frame) this.$emit('loaded', this.$refs.frame)
+        if (this.$refs.frame && this.$refs.frame.srcdoc) this.$emit('loaded', this.$refs.frame)
       }
     }
   }
