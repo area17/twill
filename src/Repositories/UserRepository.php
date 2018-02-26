@@ -18,8 +18,11 @@ class UserRepository extends ModuleRepository
 
     public function filter($query, array $scopes = [])
     {
-        $this->addLikeFilterScope($query, $scopes, 'name');
+        $query->when(isset($scopes['role']), function ($query) use ($scopes) {
+            $query->where('role', $scopes['role']);
+        });
         $query->where('role', '<>', 'SUPERADMIN');
+        $this->searchIn($query, $scopes, 'search', ['name', 'email', 'role']);
         return parent::filter($query, $scopes);
     }
 

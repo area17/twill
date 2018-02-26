@@ -17,10 +17,11 @@ class UserController extends ModuleController
     protected $defaultOrders = ['name' => 'asc'];
 
     protected $defaultFilters = [
-        'search' => '%name',
+        'search' => 'search',
     ];
+
     protected $filters = [
-        'fRole' => 'role',
+        'role' => 'role',
     ];
 
     protected $titleColumnKey = 'name';
@@ -28,16 +29,18 @@ class UserController extends ModuleController
     protected $indexColumns = [
         'name' => [
             'title' => 'Name',
-            'edit_link' => true,
             'field' => 'name',
         ],
         'email' => [
             'title' => 'Email',
             'field' => 'email',
+            'sort' => true,
         ],
-        'role' => [
+        'role_value' => [
             'title' => 'Role',
             'field' => 'role_value',
+            'sort' => true,
+            'sortKey' => 'role',
         ],
     ];
 
