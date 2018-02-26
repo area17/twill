@@ -732,7 +732,7 @@ abstract class ModuleController extends Controller
 
     protected function getIndexOption($option)
     {
-        once(function () use ($option) {
+        return once(function () use ($option) {
             $customOptionNamesMapping = [
                 'store' => 'create',
             ];
@@ -755,7 +755,6 @@ abstract class ModuleController extends Controller
             ];
 
             $authorized = array_key_exists($option, $authorizableOptions) ? auth()->user()->can($authorizableOptions[$option]) : true;
-
             return ($this->indexOptions[$option] ?? $this->defaultIndexOptions[$option] ?? false) && $authorized;
         });
     }

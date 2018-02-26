@@ -59,7 +59,8 @@
     "barryvdh/laravel-debugbar": "^3.0.1",
     "guzzlehttp/guzzle": "^6.2",
     "filp/whoops": "^2.0",
-    "sofa/model-locking": "5.4|5.5"
+    "sofa/model-locking": "5.4|5.5",
+    "spatie/once": "^2.0"
   },
   "require-dev": {
     "phpunit/phpunit": "~5.0|~6.0"
