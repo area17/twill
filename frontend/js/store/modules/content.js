@@ -64,7 +64,7 @@ const mutations = {
   [CONTENT.ADD_BLOCK_PREVIEW] (state, data) {
     Vue.set(state.previews, data.id, data.html)
   },
-  [types.UPDATE_PREVIEW_LOADING] (state, loading) {
+  [CONTENT.UPDATE_PREVIEW_LOADING] (state, loading) {
     state.loading = !state.loading
   }
 }
@@ -113,13 +113,13 @@ const actions = {
   },
   getAllPreviews ({ commit, state, rootState }) {
     if (state.blocks.length && !state.loading) {
-      commit(types.UPDATE_PREVIEW_LOADING, true)
+      commit(CONTENT.UPDATE_PREVIEW_LOADING, true)
       let loadedPreview = 0
 
       state.blocks.forEach(function (block) {
         getBlockPreview(block, commit, rootState, function () {
           loadedPreview++
-          if (loadedPreview === state.blocks.length) commit(types.UPDATE_PREVIEW_LOADING, true)
+          if (loadedPreview === state.blocks.length) commit(CONTENT.UPDATE_PREVIEW_LOADING, true)
         })
       })
     }
