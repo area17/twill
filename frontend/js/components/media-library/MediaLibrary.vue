@@ -1,4 +1,5 @@
 <template>
+  <a17-modal title="Media Library" mode="wide" ref="modal">
   <div class="medialibrary">
     <div class="medialibrary__frame">
       <div class="medialibrary__header" ref="form">
@@ -51,6 +52,7 @@
       </div>
     </div>
   </div>
+  </a17-modal>
 </template>
 
 <script>
@@ -149,6 +151,12 @@
       })
     },
     methods: {
+      open: function () {
+        this.$refs.modal.open()
+      },
+      close: function () {
+        this.$refs.modal.close()
+      },
       updateType: function (newType) {
         if (this.strict) return
         if (this.type === newType) return
@@ -310,6 +318,8 @@
         // re-listen for scroll position
         this.$nextTick(function () {
           const list = this.$refs.list
+
+          if (!list) return
           if (this.gridHeight !== list.scrollHeight) {
             list.addEventListener('scroll', this.scrollToPaginate)
           }
@@ -318,6 +328,8 @@
       scrollToPaginate: function () {
         const list = this.$refs.list
         const offset = 10
+
+        if (!list) return
         if (list.scrollTop > this.lastScrollTop && list.scrollTop + list.offsetHeight > list.scrollHeight - offset) {
           list.removeEventListener('scroll', this.scrollToPaginate)
 
@@ -333,7 +345,7 @@
       },
       saveAndClose: function () {
         this.$store.commit('saveSelectedMedias', this.selectedMedias)
-        this.$parent.close()
+        this.close()
       }
     },
     mounted: function () {
