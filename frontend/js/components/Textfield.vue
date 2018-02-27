@@ -160,7 +160,7 @@
     data: function () {
       return {
         value: this.initialValue,
-        beforeFocusValue: this.initialValue,
+        lastSavedValue: this.initialValue,
         focused: false,
         counter: 0
       }
@@ -168,6 +168,11 @@
     watch: {
       initialValue: function () {
         this.updateValue(this.initialValue)
+      },
+      submitting: function () {
+        if (this.submitting) { // The form is about to submit so lets make sure we are saving the textfield
+          this.updateAndSaveValue(this.$refs.input.value)
+        }
       }
     },
     methods: {
@@ -183,12 +188,20 @@
         this.value = newValue
         this.updateCounter(newValue)
       },
+      updateAndSaveValue: function (newValue) {
+        this.updateValue(newValue)
+
+        // Only save into the store if something changed from the moment you focused the field
+        if (this.lastSavedValue !== this.value) {
+          this.lastSavedValue = this.value
+          this.saveIntoStore() // see formStore mixin
+        }
+      },
       updateCounter: function (newValue) {
         if (this.maxlength > 0) this.counter = this.maxlength - (newValue ? newValue.toString().length : 0)
       },
       onFocus: function (event) {
         this.focused = true
-        this.beforeFocusValue = this.value
 
         this.resizeTextarea()
 
@@ -196,24 +209,17 @@
       },
       onBlur: function (event) {
         let newValue = event.target.value
-
-        this.updateValue(newValue)
+        this.updateAndSaveValue(newValue)
 
         this.focused = false
         this.$emit('blur', newValue)
       },
       onInput: debounce(function (event) {
         let newValue = event.target.value
-
-        this.updateValue(newValue)
-
-        // Only save into the store if something changed from the moment you focused the field
-        if (this.beforeFocusValue !== this.value) this.saveIntoStore() // see formStore mixin
+        this.updateAndSaveValue(newValue)
 
         this.$emit('change', newValue)
-        // we need to debounce other listeners time needed to save changes into vuex store
-        // also it allows tabbing inputs and submitting by enter key very fast
-      }, 50),
+      }, 200),
       resizeTextarea: function () {
         if (this.type !== 'textarea') return
 
