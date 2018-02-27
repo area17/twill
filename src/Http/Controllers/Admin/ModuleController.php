@@ -454,6 +454,8 @@ abstract class ModuleController extends Controller
             'defaultOffset' => $this->perPage,
         ] + $this->getIndexUrls($this->moduleName, $this->routePrefix);
 
+        $baseUrl = $this->getPermalinkBaseUrl();
+
         $options = [
             'moduleName' => $this->moduleName,
             'reorder' => $this->getIndexOption('reorder'),
@@ -462,7 +464,8 @@ abstract class ModuleController extends Controller
             'permalink' => $this->getIndexOption('permalink'),
             'bulkEdit' => $this->getIndexOption('bulkEdit'),
             'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
-            'baseUrl' => $this->getPermalinkBaseUrl(),
+            'baseUrl' => $baseUrl,
+            'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
         ];
 
         return array_replace_recursive($data + $options, $this->indexData($this->request));
@@ -882,6 +885,8 @@ abstract class ModuleController extends Controller
         $previewRouteName = $fullRoutePrefix . 'preview';
         $restoreRouteName = $fullRoutePrefix . 'restoreRevision';
 
+        $baseUrl = $item->urlWithoutSlug ?? $this->getPermalinkBaseUrl();
+
         $data = [
             'item' => $item,
             'moduleName' => $this->moduleName,
@@ -889,7 +894,8 @@ abstract class ModuleController extends Controller
             'translate' => $this->moduleIsTranslated(),
             'permalink' => $this->getIndexOption('permalink'),
             'form_fields' => $this->repository->getFormFields($item),
-            'baseUrl' => $item->urlWithoutSlug ?? $this->getPermalinkBaseUrl(),
+            'baseUrl' => $baseUrl,
+            'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
             'saveUrl' => $this->getModuleRoute($item->id, 'update'),
             'editor' => $this->moduleHasRevisions() && $this->moduleHasBlocks() && !$this->disableEditor,
             'blockPreviewUrl' => route('admin.blocks.preview'),
@@ -970,8 +976,12 @@ abstract class ModuleController extends Controller
         return request()->getScheme() . '://' . config('app.url') . '/'
             . ($this->moduleIsTranslated() ? '{language}/' : '')
             . ($this->moduleHasRevisions() ? '{preview}/' : '')
-            . ($this->permalinkBase ?? $this->moduleName)
-            . (empty($this->permalinkBase) ? '' : '/');
+            . ($this->permalinkBase ?? $this->moduleName);
+    }
+
+    protected function getPermalinkPrefix($baseUrl)
+    {
+        return rtrim(str_replace(['http://', 'https://', '{preview}/', '{language}/'], '', $baseUrl), "/") . '/';
     }
 
     protected function getModuleRoute($id, $action)

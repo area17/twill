@@ -12,6 +12,6 @@
         'label' => 'Permalink',
         'translated' => true,
         'ref' => 'permalink',
-        'prefix' => ($baseUrl ?? false ) ? str_replace(['http://','https://', '{preview}/', '{language}/'], '', $baseUrl) : ''
+        'prefix' => $permalinkPrefix ?? ''
     ])
 @endif
