@@ -192,11 +192,11 @@
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
 
-  .header__search .search__overlay--dashboard {
+  .headerSearch .search__overlay--dashboard {
     display: none !important;
   }
 
-  .header__search .search__container {
+  .headerSearch .search__container {
     display: block;
     position: relative;
     padding-top: 40px;

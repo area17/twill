@@ -8,9 +8,11 @@
             {!! File::exists(public_path("/assets/admin/icons/icons.svg")) ? File::get(public_path("/assets/admin/icons/icons.svg")) : '' !!}
             {!! File::exists(public_path("/assets/admin/icons/icons-files.svg")) ? File::get(public_path("/assets/admin/icons/icons-files.svg")) : '' !!}
         </div>
-        @partialView(($moduleName ?? null), 'navigation._global_navigation', [
-            'mobile' => true
-        ])
+        @hasSection('globalNavSearch')
+            @partialView(($moduleName ?? null), 'navigation._overlay_navigation', [ 'search' => true ])
+        @else
+            @partialView(($moduleName ?? null), 'navigation._overlay_navigation')
+        @endif
         <div class="a17">
             <header class="header">
                 <div class="container">
@@ -20,8 +22,8 @@
                         @partialView(($moduleName ?? null), 'navigation._user')
                     </div>
                     @hasSection('globalNavSearch')
-                      <div class="header__search" id="searchApp">
-                        <a href="#" class="header__search__toggle" @click.prevent="toggleSearch">
+                      <div class="headerSearch" id="searchApp">
+                        <a href="#" class="headerSearch__toggle" @click.prevent="toggleSearch">
                           <span v-svg symbol="search" v-show="!open"></span>
                           <span v-svg symbol="close_modal" v-show="open"></span>
                         </a>
