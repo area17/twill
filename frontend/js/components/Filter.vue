@@ -137,10 +137,10 @@
   }
 
   .filter__moreInner {
-    padding:20px 0;
+    padding:20px 0 0 0;
     border-top:1px solid $color__border;
 
-    .input {
+    /deep/ .input {
       margin-top:0;
       margin-bottom:20px;
       margin-right: 20px;
@@ -148,6 +148,7 @@
 
     button {
       margin-right: 10px;
+      margin-bottom:20px;
     }
   }
 

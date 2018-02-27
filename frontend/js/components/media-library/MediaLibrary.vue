@@ -403,12 +403,16 @@
 
       /deep/ .filter__search {
         padding-top: 10px;
+        display: flex;
+      }
+
+      /deep/ .filter__search input {
+        flex-grow: 1;
       }
 
       .secondarynav {
         padding-bottom: 10px;
       }
-
     }
   }
 
