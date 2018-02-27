@@ -36,7 +36,7 @@ const vueSearchApp = {
       }
     },
     handleKeyDown: function (event) {
-      if (event.keyCode && event.keyCode === 27) {
+      if (event.keyCode && event.keyCode === 27) { // esc key
         this.toggleSearch()
       }
     }

@@ -1,14 +1,14 @@
 <template>
-  <div class="container search__container">
-    <transition name="fade_search-overlay">
-      <div class="search__overlay search__overlay--dashboard" v-show="readyToShowResult" @click="toggleSearch"></div>
+  <div class="container search">
+    <transition name="fade_search-overlay" v-if="type === 'dashboard'">
+      <div class="search__overlay" v-show="readyToShowResult" @click="toggleSearch"></div>
     </transition>
     <div class="search__input">
       <input type="search" class="form__input" ref="search" name="search" autocomplete="off" :value="searchValue" :placeholder="placeholder" @input="onSearchInput" />
       <span v-svg symbol="search"></span>
     </div>
     <transition name="fade_search-overlay">
-      <div class="search__results" v-show="readyToShowResult">
+      <div class="search__results" :class="{ 'search__results--dashboard' : type === 'dashboard' }" v-show="readyToShowResult">
         <ul>
           <li v-for="(item, index) in searchResults" :key="item.id">
             <a :href="item.href" class="search__result">
@@ -72,7 +72,7 @@
       },
       type: {
         type: String,
-        default: 'header'
+        default: 'header' // 'header' or 'dashboard'
       }
     },
     data: function () {
@@ -192,20 +192,9 @@
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
 
-  .headerSearch .search__overlay--dashboard {
-    display: none !important;
-  }
-
-  .headerSearch .search__container {
+  .search {
     display: block;
     position: relative;
-    padding-top: 40px;
-  }
-
-  .dashboard__search .search__container {
-    position: relative;
-    padding-bottom: 25px;
-    background: $color__overlay--header;
   }
 
   .search__input {
@@ -255,7 +244,7 @@
     z-index: $zindex__search;
   }
 
-  .dashboard__search .search__results {
+  .search__results--dashboard {
     position: absolute;
     @each $name, $point in $breakpoints {
       @include breakpoint('#{$name}') {
