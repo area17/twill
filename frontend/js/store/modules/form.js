@@ -1,16 +1,58 @@
+/**
+ * Form
+ *
+ * Save all the fields pf the form
+ */
+
 import api from '../api/form'
 import { getFormData, getFormFields } from '@/utils/getFormData.js'
 import { FORM, NOTIFICATION } from '../mutations'
 
 const state = {
+  /**
+   * Loading state of the form when submitting
+   * @type {Boolean}
+   */
   loading: false,
+  /**
+   * Type of submit : can be any value from state.publication.submitOptions
+   * @type {String}
+   */
   type: 'save',
+  /**
+   * Form errors after submitting
+   * @type {Object}
+   */
   baseUrl: window.STORE.form.baseUrl || '',
+  /**
+   * All the fields that need to be saved
+   * @type {Array}
+   */
   fields: window.STORE.form.fields || [],
+  /**
+   * Url to save/update the form
+   * @type {String}
+   */
   saveUrl: window.STORE.form.saveUrl || '',
+  /**
+   * Url to get a full preview of the form datas
+   * @type {String}
+   */
   previewUrl: window.STORE.form.previewUrl || '',
+  /**
+   * Url to restore previous form datas
+   * @type {String}
+   */
   restoreUrl: window.STORE.form.restoreUrl || '',
+  /**
+   * Url to get only the preview of a block
+   * @type {String}
+   */
   blockPreviewUrl: window.STORE.form.blockPreviewUrl || '',
+  /**
+   * Form errors after submitting
+   * @type {Object}
+   */
   errors: {}
 }
 

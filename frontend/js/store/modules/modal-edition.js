@@ -2,7 +2,7 @@ import { MODALEDITION } from '@/store/mutations'
 
 const state = {
   action: '#',
-  mode: 'create'
+  mode: 'create' // 'create' or 'update'
 }
 
 // getters

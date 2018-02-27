@@ -1,7 +1,15 @@
 import { FORM } from '../mutations'
 
 const state = {
+  /**
+   * An array with all the repeaters created
+   * @type {Array.Object}
+   */
   repeaters: window.STORE.form.repeaters || {},
+  /**
+   * An object with all the repeaters available to add
+   * @type {Object}
+   */
   availableRepeaters: window.STORE.form.availableRepeaters || {}
 }
 

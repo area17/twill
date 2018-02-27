@@ -1,7 +1,22 @@
+/**
+ * Language
+ *
+ * Switch between languages
+ * Publish, unpublish languages
+ */
+
 import { LANGUAGE } from '../mutations'
 
 const state = {
+  /**
+   * Array of all the languages available
+   * @type {Array.Object}
+   */
   all: window.STORE.languages.all || [],
+  /**
+   * The language you are currently editing
+   * @type {Object}
+   */
   active: window.STORE.languages.active || window.STORE.languages.all[0] || {}
 }
 

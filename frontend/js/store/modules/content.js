@@ -1,14 +1,45 @@
+/**
+ * Content
+ *
+ * Manages the block editor / visual editor :
+ * create, delete reoder blocks of different types of content to create complex pages
+ */
+
 import Vue from 'vue'
 import api from '../api/content'
 import { CONTENT } from '../mutations'
 import { buildBlock, isBlockEmpty } from '@/utils/getFormData.js'
 
 const state = {
+  /**
+   * Loading previews state
+   * @type {Boolean}
+   */
   loading: false,
+  /**
+   * Define if we want to have a visual editor
+   * @type {Boolean}
+   */
   editor: window.STORE.form.editor || false,
+  /**
+   * An object with all the blocks available to add
+   * @type {Object}
+   */
   available: window.STORE.form.content || {},
+  /**
+   * An array with all the blocks created
+   * @type {Array.Object}
+   */
   blocks: window.STORE.form.blocks || [],
+  /**
+   * An object with all the Html for the previews of the blocks
+   * @type {Object.string}
+   */
   previews: window.STORE.form.previews || {},
+  /**
+   * Block that is currently being edited in the visual Editor
+   * @type {Object}
+   */
   active: {}
 }
 

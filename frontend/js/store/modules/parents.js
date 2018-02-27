@@ -1,7 +1,21 @@
+/**
+ * Parents
+ *
+ * Parent / Child relationship for entities (pages, posts)
+ */
+
 import { PARENTS } from '../mutations'
 
 const state = {
+  /**
+   * Id of the parent entity. O mean no parent
+   * @type {Number}
+   */
   active: window.STORE.parentId || 0,
+  /**
+   * Array of all the possible parents
+   * @type {Array}
+   */
   all: window.STORE.parents || []
 }
 

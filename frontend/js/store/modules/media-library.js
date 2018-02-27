@@ -1,3 +1,9 @@
+/**
+ * Media Library
+ *
+ * Set options for the Media Library and all the medias attached into the form
+ */
+
 import Vue from 'vue'
 import { MEDIA_LIBRARY } from '../mutations'
 
