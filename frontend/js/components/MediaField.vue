@@ -56,9 +56,9 @@
 
       <!-- Metadatas options -->
       <div class="media__metadatas--options" :class="{ 's--active' : metadatas.active }" v-if="hasMedia">
-        <a17-mediametadata :name='name' label="Alt Text" id="altText" :media="media" @change="updateMetadata"/>
-        <a17-mediametadata :name='name' label="Caption" id="caption" :media="media" @change="updateMetadata"/>
-        <a17-mediametadata v-if="withVideoUrl" :name='name' label="Video URL (optional)" id="video" :media="media" @change="updateMetadata"/>
+        <a17-mediametadata :name='metadataName' label="Alt Text" id="altText" :media="media" @change="updateMetadata"/>
+        <a17-mediametadata :name='metadataName' label="Caption" id="caption" :media="media" @change="updateMetadata"/>
+        <a17-mediametadata v-if="withVideoUrl" :name='metadataName' label="Video URL (optional)" id="video" :media="media" @change="updateMetadata"/>
       </div>
     </div>
 
@@ -155,6 +155,9 @@
     computed: {
       mediaKey: function () {
         return this.mediaContext.length > 0 ? this.mediaContext : this.name
+      },
+      metadataName: function () {
+        return 'mediaMeta[' + this.name + '][' + this.media.id + ']'
       },
       media: function () {
         if (this.selectedMedias.hasOwnProperty(this.mediaKey)) {

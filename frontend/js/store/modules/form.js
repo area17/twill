@@ -162,12 +162,12 @@ const actions = {
           window.location.replace(successResponse.data.redirect)
         }
 
-        commit(FORM.SET_NOTIF, { message: successResponse.data.message, variant: successResponse.data.variant })
+        commit(NOTIFICATION.SET_NOTIF, { message: successResponse.data.message, variant: successResponse.data.variant })
         resolve()
       }, function (errorResponse) {
         commit(FORM.UPDATE_FORM_LOADING, false)
         commit(FORM.SET_FORM_ERRORS, errorResponse.response.data)
-        commit(FORM.SET_NOTIF, { message: 'Your submission could not be validated, please fix and retry', variant: 'error' })
+        commit(NOTIFICATION.SET_NOTIF, { message: 'Your submission could not be validated, please fix and retry', variant: 'error' })
         reject(errorResponse)
       })
     })
@@ -193,7 +193,7 @@ const actions = {
         window.location.replace(successResponse.data.redirect)
       }
 
-      commit(FORM.SET_NOTIF, { message: successResponse.data.message, variant: successResponse.data.variant })
+      commit(NOTIFICATION.SET_NOTIF, { message: successResponse.data.message, variant: successResponse.data.variant })
     }, function (errorResponse) {
       commit(FORM.UPDATE_FORM_LOADING, false)
       commit(FORM.SET_FORM_ERRORS, errorResponse.response.data)

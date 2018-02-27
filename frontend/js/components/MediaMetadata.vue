@@ -1,5 +1,5 @@
 <template>
-  <a17-locale type="a17-textfield" :attributes="attributes" :initialValues="initialValues" :initialValue="initialValue" @change="saveMetadata"></a17-locale>
+  <a17-locale type="a17-textfield" :initialValues="initialValues" :attributes="attributes" @change="saveMetadata"></a17-locale>
 </template>
 
 <script>
@@ -44,16 +44,13 @@
           return false
         }
       },
-      hasLanguages: function () {
-        return this.languages.length > 1
-      },
       attributes: function () {
-        let self = this
         return {
-          label: self.label,
-          name: `${self.name}_${self.id}`,
+          label: this.label,
+          name: `${this.name}[${this.id}]`,
           type: 'text',
-          placeholder: self.placeholder
+          placeholder: this.placeholder,
+          inStore: 'value'
         }
       },
       placeholder: function () {
@@ -63,41 +60,19 @@
           return ''
         }
       },
-      initialValue: function () {
-        let self = this
-        let initialValue = ''
-
-        // Do we have only one language
-        if (!this.hasLanguages) {
-          this.languages.forEach(function (lang) {
-            // Custom or default values
-            if (self.customMetadatas) {
-              initialValue = self.customMetadatas !== null ? self.customMetadatas : ''
-            } else if (self.defaultMetadatas) {
-              initialValue = self.defaultMetadatas !== null ? self.defaultMetadatas : ''
-            }
-          })
-        }
-
-        return initialValue
-      },
       initialValues: function () {
-        let self = this
         let initialValues = {}
 
-        // Do we have many languages
-        if (this.hasLanguages) {
-          this.languages.forEach(function (lang) {
-            const langVal = lang.value
+        this.languages.forEach((lang) => {
+          const langVal = lang.value
 
-            // Custom or default values
-            if (self.customMetadatas) {
-              initialValues[langVal] = self.customMetadatas[langVal] !== null ? self.customMetadatas[langVal] : ''
-            } else if (self.defaultMetadatas) {
-              initialValues[langVal] = self.defaultMetadatas
-            }
-          })
-        }
+          // Custom or default values
+          if (this.customMetadatas) {
+            initialValues[langVal] = this.customMetadatas[langVal] !== null ? this.customMetadatas[langVal] : ''
+          } else if (this.defaultMetadatas) {
+            initialValues[langVal] = this.defaultMetadatas
+          }
+        })
 
         return initialValues
       },
@@ -113,7 +88,3 @@
     }
   }
 </script>
-
-<style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
-</style>

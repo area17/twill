@@ -92,7 +92,7 @@ export const gatherRepeaters = (rootState) => {
 export const getFormFields = (rootState) => {
   let fields = rootState.form.fields.filter((field) => {
     // we start by filtering out blocks related form fields
-    return !field.name.startsWith('blocks[')
+    return !field.name.startsWith('blocks[') && !field.name.startsWith('mediaMeta[')
   }).reduce((fields, field) => {
     // and we create a new object with field names as keys,
     // to inline fields in the submitted data
