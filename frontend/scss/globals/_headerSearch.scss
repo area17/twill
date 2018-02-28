@@ -1,3 +1,24 @@
+/***
+
+Search
+======
+
+Every decent CMS need a search engine
+
+```
+<div class="styleguide--demo">
+  <div class="headerSearch__wrapper">
+    <div class="headerSearch__overlay">
+    </div>
+    <div class="container search">
+      Search form goes here
+    </div>
+  </div>
+</div>
+```
+
+***/
+
 .headerSearch {
   height:$height__nav;
   line-height:$height__nav;
@@ -35,6 +56,22 @@
   }
 }
 
-.headerSearch .search {
-  padding-top: 40px;
+.headerSearch__wrapper[v-cloak] {
+  display: none;
+}
+
+.headerSearch__wrapper,
+.headerSearch__overlay {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  bottom:0;
+  z-index: $zindex__search;
+}
+
+.headerSearch__overlay {
+  background: rgba($color__overlay--header, 0.5);
+  z-index: $zindex__search - 1;
 }

@@ -195,9 +195,11 @@
   .search {
     display: block;
     position: relative;
+    padding-top: 40px;
   }
 
   .search--dashboard {
+    padding-top: 0;
     padding-bottom: 25px;
     background: $color__overlay--header;
   }
