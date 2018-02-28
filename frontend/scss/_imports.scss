@@ -58,6 +58,7 @@ $include-icons: false; // see icons.scss!
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ organisms */
 
 @import 'organisms/login';
+@import 'organisms/dashboardSearch';
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ layout */
 
@@ -70,6 +71,7 @@ $include-icons: false; // see icons.scss!
 
 @import 'globals/header';
 @import 'globals/headerMobile';
+@import 'globals/headerSearch';
 @import 'globals/nav';
 @import 'globals/navUnder';
 @import 'globals/breadcrumb';

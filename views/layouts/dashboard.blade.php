@@ -7,8 +7,8 @@
 @section('appTypeClass', 'app--dashboard')
 
 @section('primaryNavigation')
-  <div class="dashboard__search" id="searchApp" v-cloak>
-    <a17-search endpoint="http://www.mocky.io/v2/5a7b81d43000004b0028bf3d" :type="'dashboard'"></a17-search>
+  <div class="dashboardSearch" id="searchApp" v-cloak>
+    <a17-search endpoint="http://www.mocky.io/v2/5a7b81d43000004b0028bf3d" type="dashboard"></a17-search>
   </div>
 @stop
 

@@ -8,9 +8,11 @@
             {!! File::exists(public_path("/assets/admin/icons/icons.svg")) ? File::get(public_path("/assets/admin/icons/icons.svg")) : '' !!}
             {!! File::exists(public_path("/assets/admin/icons/icons-files.svg")) ? File::get(public_path("/assets/admin/icons/icons-files.svg")) : '' !!}
         </div>
-        @partialView(($moduleName ?? null), 'navigation._global_navigation', [
-            'mobile' => true
-        ])
+        @hasSection('globalNavSearch')
+            @partialView(($moduleName ?? null), 'navigation._overlay_navigation', [ 'search' => true ])
+        @else
+            @partialView(($moduleName ?? null), 'navigation._overlay_navigation')
+        @endif
         <div class="a17">
             <header class="header">
                 <div class="container">
@@ -20,14 +22,14 @@
                         @partialView(($moduleName ?? null), 'navigation._user')
                     </div>
                     @hasSection('globalNavSearch')
-                      <div class="header__search" id="searchApp">
-                        <a href="#" class="header__search__toggle" @click.prevent="toggleSearch">
+                      <div class="headerSearch" id="searchApp">
+                        <a href="#" class="headerSearch__toggle" @click.prevent="toggleSearch">
                           <span v-svg symbol="search" v-show="!open"></span>
                           <span v-svg symbol="close_modal" v-show="open"></span>
                         </a>
                         <transition name="fade_search-overlay" @after-enter="afterAnimate">
-                          <div class="search__positioner" v-show="open" v-cloak>
-                            <div class="search__overlay" @click="toggleSearch"></div>
+                          <div class="headerSearch__wrapper" :style="positionStyle" v-show="open" v-cloak>
+                            <div class="headerSearch__overlay" :style="positionStyle" @click="toggleSearch"></div>
                             <a17-search endpoint="http://www.mocky.io/v2/5a7b81d43000004b0028bf3d" :open="open" :opened="opened"></a17-search>
                           </div>
                         </transition>

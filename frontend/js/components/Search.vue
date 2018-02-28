@@ -1,7 +1,7 @@
 <template>
-  <div class="container search__container">
-    <transition name="fade_search-overlay">
-      <div class="search__overlay search__overlay--dashboard" v-show="readyToShowResult" @click="toggleSearch"></div>
+  <div class="container search" :class="{ 'search--dashboard' : type === 'dashboard' }">
+    <transition name="fade_search-overlay" v-if="type === 'dashboard'">
+      <div class="search__overlay" v-show="readyToShowResult" @click="toggleSearch"></div>
     </transition>
     <div class="search__input">
       <input type="search" class="form__input" ref="search" name="search" autocomplete="off" :value="searchValue" :placeholder="placeholder" @input="onSearchInput" />
@@ -72,7 +72,7 @@
       },
       type: {
         type: String,
-        default: 'header'
+        default: 'header' // 'header' or 'dashboard'
       }
     },
     data: function () {
@@ -192,20 +192,27 @@
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
 
-  .header__search .search__overlay--dashboard {
-    display: none !important;
-  }
-
-  .header__search .search__container {
+  .search {
     display: block;
     position: relative;
     padding-top: 40px;
   }
 
-  .dashboard__search .search__container {
-    position: relative;
+  .search--dashboard {
+    padding-top: 0;
     padding-bottom: 25px;
     background: $color__overlay--header;
+  }
+
+  .search__overlay {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    bottom:0;
+    background: rgba($color__overlay--header, 0.5);
+    z-index: $zindex__search - 1;
   }
 
   .search__input {
@@ -255,7 +262,7 @@
     z-index: $zindex__search;
   }
 
-  .dashboard__search .search__results {
+  .search--dashboard .search__results {
     position: absolute;
     @each $name, $point in $breakpoints {
       @include breakpoint('#{$name}') {
