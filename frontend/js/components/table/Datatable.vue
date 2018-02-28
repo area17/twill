@@ -86,6 +86,7 @@
 
 <script>
   import { mapState, mapGetters } from 'vuex'
+  import { DATATABLE } from '@/store/mutations'
 
   import draggableMixin from '@/mixins/draggable'
   import nestedDraggableMixin from '@/mixins/nestedDraggable'
@@ -167,7 +168,7 @@
         set (value) {
           const isChangingParents = (this.rows.length !== value.length)
 
-          this.$store.commit('updateDatableData', value)
+          this.$store.commit(DATATABLE.UPDATE_DATATABLE_DATA, value)
           this.saveNewTree(isChangingParents)
         }
       },
@@ -250,30 +251,30 @@
         // The listing should not be reordable if it is sorted
         if (this.reorderable) {
           this.reorderable = false
-          this.$store.commit('removeDatableColumn', 'draggable')
+          this.$store.commit(DATATABLE.REMOVE_DATATABLE_COLUMN, 'draggable')
         }
 
-        this.$store.commit('updateDatablePage', 1)
-        this.$store.commit('updateDatableSort', column)
+        this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
+        this.$store.commit(DATATABLE.UPDATE_DATATABLE_SORT, column)
 
         // reload datas
         this.$store.dispatch('getDatatableDatas')
       },
       updateOffset: function (value) {
-        this.$store.commit('updateDatablePage', 1)
-        this.$store.commit('updateDatableOffset', value)
+        this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
+        this.$store.commit(DATATABLE.UPDATE_DATATABLE_OFFSET, value)
 
         // reload datas
         this.$store.dispatch('getDatatableDatas')
       },
       updatePage: function (value) {
-        this.$store.commit('updateDatablePage', value)
+        this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, value)
 
         // reload datas
         this.$store.dispatch('getDatatableDatas')
       },
       updateActiveColumns: function (values) {
-        this.$store.commit('updateDatableVisibility', values)
+        this.$store.commit(DATATABLE.UPDATE_DATATABLE_VISIBLITY, values)
 
         this.$nextTick(function () {
           this.getColumnWidth()
@@ -306,7 +307,7 @@
       // bulk edit column
       if (this.bulkeditable) {
         if (!this.columns.find(findBulkColumn)) {
-          this.$store.commit('addDatableColumn', {
+          this.$store.commit(DATATABLE.ADD_DATATABLE_COLUMN, {
             index: 0,
             data: {
               name: 'bulk',
@@ -322,7 +323,7 @@
       // Nested Column
       if (this.nested) {
         if (!this.columns.find(findNestedColumn)) {
-          this.$store.commit('addDatableColumn', {
+          this.$store.commit(DATATABLE.ADD_DATATABLE_COLUMN, {
             index: 0,
             data: {
               name: 'nested',
@@ -340,7 +341,7 @@
 
       if (this.reorderable) {
         if (!this.columns.find(findDraggableColumn)) {
-          this.$store.commit('addDatableColumn', {
+          this.$store.commit(DATATABLE.ADD_DATATABLE_COLUMN, {
             index: 0,
             data: {
               name: 'draggable',
