@@ -9,10 +9,9 @@ Show a loading mention at page load
 
 /* https://medium.com/vuejs-tips/v-cloak-45a05da28dc4 */
 
-.app::after {
-  content:'Loading...';
+.app__loader {
   display:block;
-  position:absolute;
+  position:fixed;
   top:calc(50vh - 150px);
   left:50%;
   width:250px;
@@ -22,23 +21,18 @@ Show a loading mention at page load
   z-index:$zindex__loader;
 /*    letter-spacing:0.25em;
     text-transform:uppercase;*/
-  opacity:0;
-  transition: opacity 0.25s ease, visibility 0s 0.25s;
+  transition: opacity 0.3s ease, visibility 0s 0.3s;
   pointer-events: none;
+  opacity:0;
   visibility:hidden;
 }
 
-.app[v-cloak] {
-  position:relative;
-  min-height:calc(100vh - 230px);
+.app[v-cloak] > * {
+  visibility:hidden;
+}
 
-  > * {
-    visibility:hidden;
-  }
-
-  &::after {
-    opacity:1;
-    visibility: visible;
-    transition: opacity 0.25s;
-  }
+.app[v-cloak] + .app__loader {
+  opacity:1;
+  visibility: visible;
+  transition: opacity 0.3s;
 }

@@ -3,7 +3,7 @@
     <head>
         @include('cms-toolkit::partials.head')
     </head>
-    <body class="env env--{{ app()->environment() }} s--app">
+    <body class="env env--{{ app()->environment() }}">
         <div class="a17">
             <header class="header">
                 <div class="container">

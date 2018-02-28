@@ -1,6 +1,6 @@
 @extends('cms-toolkit::layouts.main')
 
-@section('appTypeClass', 'app--listing')
+@section('appTypeClass', 'body--listing')
 
 @if($search ?? false)
 @section('globalNavSearch', 'true')

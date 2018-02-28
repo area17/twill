@@ -4,7 +4,7 @@
     $emptyMessage = $emptyMessage ?? "You don't have any activity yet.";
 @endphp
 
-@section('appTypeClass', 'app--dashboard')
+@section('appTypeClass', 'body--dashboard')
 
 @section('primaryNavigation')
   <div class="dashboardSearch" id="searchApp" v-cloak>

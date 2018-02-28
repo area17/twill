@@ -3,7 +3,7 @@
     <head>
         @include('cms-toolkit::partials.head')
     </head>
-    <body class="env env--{{ app()->environment() }} s--app">
+    <body class="env env--{{ app()->environment() }} @yield('appTypeClass')">
         <div class="svg-sprite">
             {!! File::exists(public_path("/assets/admin/icons/icons.svg")) ? File::get(public_path("/assets/admin/icons/icons.svg")) : '' !!}
             {!! File::exists(public_path("/assets/admin/icons/icons-files.svg")) ? File::get(public_path("/assets/admin/icons/icons-files.svg")) : '' !!}
@@ -45,7 +45,7 @@
                 {{-- TODO secondary navigation : need Back-end logic : @partialView(($moduleName ?? null), 'navigation._secondary_navigation') --}}
             @endif
             <section class="main">
-                <div class="app @yield('appTypeClass')" id="app" v-cloak>
+                <div class="app" id="app" v-cloak>
                     @yield('content')
                     @if (config('cms-toolkit.enabled.media-library'))
                         <a17-medialibrary ref="mediaLibrary" endpoint="{{ route('admin.media-library.medias.index') }}" :authorized="{{ json_encode(auth()->user()->can('edit')) }}"></a17-medialibrary>
@@ -53,6 +53,7 @@
                     <a17-notif variant="success"></a17-notif>
                     <a17-notif variant="error"></a17-notif>
                 </div>
+                <span class="app__loader">Loading...</span>
                 @include('cms-toolkit::partials.footer')
             </section>
         </div>

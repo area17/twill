@@ -63,9 +63,9 @@ body {
   min-height:calc(100vh - 230px);
 }
 
-.app--form,
-.app--dashboard,
-.app--buckets {
+.body--form,
+.body--dashboard,
+.body--buckets {
   background-color:$color__border--light;
 }
 

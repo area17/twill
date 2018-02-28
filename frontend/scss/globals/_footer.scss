@@ -25,15 +25,6 @@ $height__footer: 60px;
   padding:20px 0;
 }
 
-.app--dashboard + .footer,
-.dashboard + .footer,
-.app--buckets + .footer,
-.buckets + .footer,
-.app--form + .footer,
-.form + .footer {
-  background-color:$color__border--light;
-}
-
 .footer .container {
   display: flex;
   flex-flow: row wrap;
