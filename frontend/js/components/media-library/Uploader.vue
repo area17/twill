@@ -9,6 +9,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { MEDIA_LIBRARY } from '@/store/mutations'
   import qq from 'fine-uploader/lib/dnd'
   import FineUploaderS3 from 'fine-uploader-wrappers/s3'
   import FineUploaderTraditional from 'fine-uploader-wrappers/traditional'
@@ -124,18 +125,18 @@
         })
       },
       loadingProgress: function (media) {
-        this.$store.commit('progressUploadMedia', media)
+        this.$store.commit(MEDIA_LIBRARY.PROGRESS_UPLOAD_MEDIA, media)
       },
       loadingFinished: function (loadingMedia, savedMedia) {
         // add the saved image to the main image list
         this.$emit('loaded', savedMedia)
-        this.$store.commit('doneUploadMedia', loadingMedia)
+        this.$store.commit(MEDIA_LIBRARY.DONE_UPLOAD_MEDIA, loadingMedia)
       },
       loadingError: function (media) {
-        this.$store.commit('errorUploadMedia', media)
+        this.$store.commit(MEDIA_LIBRARY.ERROR_UPLOAD_MEDIA, media)
       },
       uploadProgress: function (uploadProgress) {
-        this.$store.commit('progressUpload', uploadProgress)
+        this.$store.commit(MEDIA_LIBRARY.PROGRESS_UPLOAD, uploadProgress)
       },
       _onCompleteCallback (id, name, responseJSON, xhr) {
         const index = this.loadingMedias.findIndex((m) => m.id === this._uploader.methods.getUuid(id))
