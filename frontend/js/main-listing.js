@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import store from '@/store'
+import { DATATABLE, MODALEDITION, FORM } from '@/store/mutations'
 
 // General shared behaviors
 import main from '@/main'
@@ -68,9 +69,9 @@ Window.vm = new Vue({
   methods: {
     create: function () {
       if (this.$refs.editionModal) {
-        this.$store.commit('updateModalAction', '')
-        this.$store.commit('updateModalMode', 'create')
-        this.$store.commit('emptyFormField')
+        this.$store.commit(MODALEDITION.UPDATE_MODAL_ACTION, '')
+        this.$store.commit(MODALEDITION.UPDATE_MODAL_MODE, 'create')
+        this.$store.commit(FORM.EMPTY_FORM_FIELDS)
         this.$refs.editionModal.open()
       }
     },
@@ -79,8 +80,8 @@ Window.vm = new Vue({
       this.$store.dispatch('getDatatableDatas')
     },
     clearFiltersAndReloadDatas: function () {
-      this.$store.commit('updateDatablePage', 1)
-      this.$store.commit('clearDatableFilter')
+      this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
+      this.$store.commit(DATATABLE.CLEAR_DATATABLE_FILTER)
 
       Object.keys(this.$refs).filter(k => {
         return k.indexOf('filterDropdown[') === 0
@@ -91,8 +92,8 @@ Window.vm = new Vue({
       this.reloadDatas()
     },
     filterListing: function (formData) {
-      this.$store.commit('updateDatablePage', 1)
-      this.$store.commit('updateDatableFilter', formData || {search: ''})
+      this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
+      this.$store.commit(DATATABLE.UPDATE_DATATABLE_FILTER, formData || {search: ''})
       this.reloadDatas()
     }
   },
@@ -101,13 +102,13 @@ Window.vm = new Vue({
     let reload = false
     const pageOffset = getStorage(this.localStorageKey + '_page-offset')
     if (pageOffset) {
-      this.$store.commit('updateDatableOffset', parseInt(pageOffset))
+      this.$store.commit(DATATABLE.UPDATE_DATATABLE_OFFSET, parseInt(pageOffset))
       reload = true
     }
 
     const columnsVisible = getStorage(this.localStorageKey + '_columns-visible')
     if (columnsVisible) {
-      this.$store.commit('updateDatableVisibility', JSON.parse(columnsVisible))
+      this.$store.commit(DATATABLE.UPDATE_DATATABLE_VISIBLITY, JSON.parse(columnsVisible))
       reload = true
     }
 
