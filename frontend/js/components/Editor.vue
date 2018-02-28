@@ -25,7 +25,7 @@
   import A17EditorPreview from '@/components/editor/EditorPreview.vue'
   import A17Spinner from '@/components/Spinner.vue'
 
-  import { PREVIEW } from '@/store/mutations'
+  import { PREVIEW, CONTENT } from '@/store/mutations'
 
   import cloneDeep from 'lodash/cloneDeep'
 
@@ -59,7 +59,7 @@
           return this.savedBlocks
         },
         set (value) {
-          this.$store.commit('reorderBlocks', value)
+          this.$store.commit(CONTENT.REORDER_BLOCKS, value)
         }
       },
       hasBlockActive: function () {
@@ -131,7 +131,7 @@
       },
       deleteBlock: function (index) {
         this.unselectBlock()
-        this.$store.commit('deleteBlock', index)
+        this.$store.commit(CONTENT.DELETE_BLOCK, index)
       },
       cancelBlock: function () {
         if (this.hasBlockActive) {
@@ -166,7 +166,7 @@
           // Save current Store and activate
           console.warn('Store - copy current Store state')
           window.PREVSTATE = cloneDeep(this.$store.state)
-          this.$store.commit('activateBlock', index)
+          this.$store.commit(CONTENT.ACTIVATE_BLOCK, index)
 
           if (!this.isWatching) {
             this.isWatching = true
@@ -192,7 +192,7 @@
         if (window.hasOwnProperty('PREVSTATE')) delete window.PREVSTATE
 
         if (!this.hasBlockActive) return
-        this.$store.commit('activateBlock', -1)
+        this.$store.commit(CONTENT.ACTIVATE_BLOCK, -1)
       }
     },
     mounted: function () {

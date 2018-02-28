@@ -29,6 +29,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { DATATABLE } from '@/store/mutations'
 
   export default {
     name: 'A17TableFilters',
@@ -52,8 +53,8 @@
     methods: {
       filterStatus: function (slug) {
         if (this.navActive === slug) return
-        this.$store.commit('updateDatablePage', 1)
-        this.$store.commit('updateDatableFilterStatus', slug)
+        this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
+        this.$store.commit(DATATABLE.UPDATE_DATATABLE_FILTER_STATUS, slug)
         this.$store.dispatch('getDatatableDatas')
       }
     }

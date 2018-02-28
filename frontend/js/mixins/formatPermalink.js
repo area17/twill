@@ -1,4 +1,5 @@
 import { mapState } from 'vuex'
+import { FORM } from '@/store/mutations'
 import a17VueFilters from '@/utils/filters.js'
 
 export default {
@@ -35,7 +36,7 @@ export default {
         }
 
         // Update value in the store
-        this.$store.commit('updateFormField', field)
+        this.$store.commit(FORM.UPDATE_FORM_FIELD, field)
       }
     }
   }

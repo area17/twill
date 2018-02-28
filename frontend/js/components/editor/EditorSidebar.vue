@@ -37,6 +37,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { CONTENT } from '@/store/mutations'
 
   import draggableMixin from '@/mixins/draggable'
   import draggable from 'vuedraggable'
@@ -81,7 +82,7 @@
       },
       moveBlock: function (oldIndex, newIndex) {
         if (oldIndex !== newIndex) {
-          this.$store.commit('moveBlock', {
+          this.$store.commit(CONTENT.MOVE_BLOCK, {
             oldIndex: oldIndex,
             newIndex: newIndex
           })

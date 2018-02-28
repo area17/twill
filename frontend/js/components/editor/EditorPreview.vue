@@ -27,6 +27,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { CONTENT } from '@/store/mutations'
 
   import draggableMixin from '@/mixins/draggable'
   import EditorIframe from './EditorIframe.vue'
@@ -94,7 +95,7 @@
       },
       moveBlock: function (oldIndex, newIndex) {
         if (oldIndex !== newIndex) {
-          this.$store.commit('moveBlock', {
+          this.$store.commit(CONTENT.MOVE_BLOCK, {
             oldIndex: oldIndex,
             newIndex: newIndex
           })
@@ -111,7 +112,7 @@
         this.addBlock(block, Math.max(0, evt.newIndex))
       },
       onUpdate: function (evt) {
-        this.$store.commit('moveBlock', {
+        this.$store.commit(CONTENT.MOVE_BLOCK, {
           oldIndex: evt.oldIndex,
           newIndex: evt.newIndex
         })
@@ -129,7 +130,7 @@
           attributes: block.attributes
         }
 
-        this.$store.commit('addBlock', {
+        this.$store.commit(CONTENT.ADD_BLOCK, {
           block: newBlock,
           index: fromIndex
         })

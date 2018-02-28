@@ -1,5 +1,6 @@
 import { isEqual } from 'lodash'
 import { mapState, mapGetters } from 'vuex'
+import { FORM } from '@/store/mutations'
 
 export default {
   props: {
@@ -59,7 +60,7 @@ export default {
       field.name = this.getFieldName()
       field.value = newValue
       if (this.locale) field.locale = this.locale.value
-      this.$store.commit('updateFormField', field)
+      this.$store.commit(FORM.UPDATE_FORM_FIELD, field)
     }
   },
   beforeMount: function () {
@@ -89,7 +90,7 @@ export default {
   beforeDestroy: function () {
     if (this.inStore !== '') {
       // Delete form field from store because the field has been removed
-      this.$store.commit('removeFormField', this.getFieldName())
+      this.$store.commit(FORM.REMOVE_FORM_FIELD, this.getFieldName())
     }
   }
 }

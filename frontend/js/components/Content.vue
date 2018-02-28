@@ -34,6 +34,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { CONTENT } from '@/store/mutations'
 
   import draggable from 'vuedraggable'
   import draggableMixin from '@/mixins/draggable'
@@ -66,7 +67,7 @@
           return this.savedBlocks
         },
         set (value) {
-          this.$store.commit('reorderBlocks', value)
+          this.$store.commit(CONTENT.REORDER_BLOCKS, value)
         }
       },
       ...mapState({
@@ -95,7 +96,7 @@
       },
       moveBlock: function (oldIndex, newIndex) {
         if (oldIndex !== newIndex) {
-          this.$store.commit('moveBlock', {
+          this.$store.commit(CONTENT.MOVE_BLOCK, {
             oldIndex: oldIndex,
             newIndex: newIndex
           })
@@ -110,17 +111,17 @@
           attributes: block.attributes
         }
 
-        this.$store.commit('addBlock', {
+        this.$store.commit(CONTENT.ADD_BLOCK, {
           block: newBlock,
           index: fromIndex
         })
       },
       duplicateBlock: function (index) {
         this.opened = true
-        this.$store.commit('duplicateBlock', index)
+        this.$store.commit(CONTENT.DUPLICATE_BLOCK, index)
       },
       deleteBlock: function (index) {
-        this.$store.commit('deleteBlock', index)
+        this.$store.commit(CONTENT.DELETE_BLOCK, index)
       },
       collapseAllBlocks: function () {
         this.opened = false
