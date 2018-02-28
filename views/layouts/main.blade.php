@@ -53,7 +53,9 @@
                     <a17-notif variant="success"></a17-notif>
                     <a17-notif variant="error"></a17-notif>
                 </div>
-                <span class="app__loader">Loading...</span>
+                <div class="appLoader">
+                    <span>Loading...</span>
+                </div>
                 @include('cms-toolkit::partials.footer')
             </section>
         </div>

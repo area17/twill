@@ -4,13 +4,12 @@
 
 <title>{{ config('app.name') }}</title>
 
+{{-- Global styles --}}
+<link href="{{ mix('/assets/admin/css/app.css')}}" rel="stylesheet" />
+
 <!-- Fonts -->
 <link href="/assets/admin/fonts/Inter-UI-Regular.woff2" rel="preload" as="font" type="font/woff2" crossorigin>
 <link href="/assets/admin/fonts/Inter-UI-Medium.woff2" rel="preload" as="font" type="font/woff2" crossorigin>
-<link href="/assets/admin/fonts/Inter-UI-Italic.woff2" rel="preload" as="font" type="font/woff2" crossorigin>
-
-{{-- Global styles --}}
-<link href="{{ mix('/assets/admin/css/app.css')}}" rel="stylesheet" />
 
 <!-- head.js -->
 <script>
