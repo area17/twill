@@ -28,8 +28,8 @@
                           <span v-svg symbol="close_modal" v-show="open"></span>
                         </a>
                         <transition name="fade_search-overlay" @after-enter="afterAnimate">
-                          <div class="headerSearch__wrapper" v-show="open" v-cloak>
-                            <div class="headerSearch__overlay" @click="toggleSearch"></div>
+                          <div class="headerSearch__wrapper" :style="positionStyle" v-show="open" v-cloak>
+                            <div class="headerSearch__overlay" :style="positionStyle" @click="toggleSearch"></div>
                             <a17-search endpoint="http://www.mocky.io/v2/5a7b81d43000004b0028bf3d" :open="open" :opened="opened"></a17-search>
                           </div>
                         </transition>

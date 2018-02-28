@@ -16,10 +16,24 @@ const vueSearchApp = {
   components: {
     'a17-search': a17Search
   },
+  props: {
+    topSpacing: {
+      type: Number,
+      default: 60
+    }
+  },
   data: function () {
     return {
       open: false,
-      opened: false
+      opened: false,
+      top: this.topSpacing
+    }
+  },
+  computed: {
+    positionStyle: function () {
+      return {
+        'top': this.top + 'px'
+      }
     }
   },
   methods: {
@@ -28,6 +42,8 @@ const vueSearchApp = {
     },
     toggleSearch: function () {
       this.open = !this.open
+      this.top = this.topSpacing - (window.pageYOffset || document.documentElement.scrollTop)
+
       if (this.open) {
         document.addEventListener('keydown', this.handleKeyDown, false)
       } else {
