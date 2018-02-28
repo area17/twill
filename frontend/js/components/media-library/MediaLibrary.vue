@@ -57,6 +57,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { NOTIFICATION } from '@/store/mutations'
   import api from '../../store/api/media-library'
 
   import a17MediaSidebar from './MediaSidebar.vue'
@@ -308,7 +309,7 @@
           this.loading = false
           this.listenScrollPosition()
         }, (error) => {
-          this.$store.commit('setNotification', {
+          this.$store.commit(NOTIFICATION.SET_NOTIF, {
             message: error.data.message,
             variant: 'error'
           })

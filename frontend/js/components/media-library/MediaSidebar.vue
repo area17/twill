@@ -50,6 +50,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { NOTIFICATION } from '@/store/mutations'
   import FormDataAsObj from '@/utils/formDataAsObj.js'
   import api from '../../store/api/media-library'
 
@@ -149,7 +150,7 @@
             this.$emit('delete', this.mediasIdsToDelete)
             this.$refs.warningDelete.close()
           }, (error) => {
-            this.$store.commit('setNotification', {
+            this.$store.commit(NOTIFICATION.SET_NOTIF, {
               message: error.data.message,
               variant: 'error'
             })
@@ -160,7 +161,7 @@
             this.$emit('delete', this.mediasIdsToDelete)
             this.$refs.warningDelete.close()
           }, (error) => {
-            this.$store.commit('setNotification', {
+            this.$store.commit(NOTIFICATION.SET_NOTIF, {
               message: error.data.message,
               variant: 'error'
             })
@@ -204,7 +205,7 @@
             })
           }
         }, (error) => {
-          this.$store.commit('setNotification', {
+          this.$store.commit(NOTIFICATION.SET_NOTIF, {
             message: error.data.message,
             variant: 'error'
           })

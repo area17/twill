@@ -1,5 +1,5 @@
 import api from '../api/datatable'
-import { DATATABLE } from '../mutations'
+import { DATATABLE, NOTIFICATION } from '../mutations'
 import { setStorage } from '@/utils/localeStorage.js'
 /* NESTED functions */
 const getObject = (container, id, callback) => {
@@ -244,33 +244,33 @@ const actions = {
     // Get all ids and children ids if any
     const ids = deepRemoveFromObj(state.data)
     api.reorder(ids, function (resp) {
-      commit('setNotification', {message: resp.data.message, variant: resp.data.variant})
+      commit(NOTIFICATION.SET_NOTIF, {message: resp.data.message, variant: resp.data.variant})
     })
   },
   setDatatableDatas ({commit, state, dispatch}) {
     const ids = state.data.map((row) => row.id)
 
     api.reorder(ids, function (resp) {
-      commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
+      commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
     })
   },
   togglePublishedData ({ commit, state, dispatch }, row) {
     api.togglePublished(row, function (resp) {
-      commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
+      commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
       dispatch('getDatatableDatas')
     }, function (errorResp) {
-      commit('setNotification', { message: errorResp.data.error.message, variant: 'error' })
+      commit(NOTIFICATION.SET_NOTIF, { message: errorResp.data.error.message, variant: 'error' })
     })
   },
   deleteData ({ commit, state, dispatch }, row) {
     api.delete(row, function (resp) {
-      commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
+      commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
       dispatch('getDatatableDatas')
     })
   },
   restoreData ({ commit, state, dispatch }, row) {
     api.restore(row, function (resp) {
-      commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
+      commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
       dispatch('getDatatableDatas')
     })
   },
@@ -281,7 +281,7 @@ const actions = {
         toPublish: payload.toPublish
       },
       function (resp) {
-        commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
+        commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
         dispatch('getDatatableDatas')
       }
     )
@@ -292,7 +292,7 @@ const actions = {
         id: row.id,
         value: 'toggle'
       })
-      commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
+      commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
     })
   },
   bulkFeatureData ({ commit, state }, payload) {
@@ -306,19 +306,19 @@ const actions = {
           id: state.bulk,
           value: true
         })
-        commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
+        commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
       }
     )
   },
   bulkDeleteData ({ commit, state, dispatch }) {
     api.bulkDelete(state.bulk.join(), function (resp) {
-      commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
+      commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
       dispatch('getDatatableDatas')
     })
   },
   bulkRestoreData ({ commit, state, dispatch }) {
     api.bulkRestore(state.bulk.join(), function (resp) {
-      commit('setNotification', { message: resp.data.message, variant: resp.data.variant })
+      commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
       dispatch('getDatatableDatas')
     })
   }

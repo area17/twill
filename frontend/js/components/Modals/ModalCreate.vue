@@ -9,6 +9,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { NOTIFICATION } from '@/store/mutations'
   import a17ModalValidationButtons from '@/components/Modals/ModalValidationButtons.vue'
 
   export default {
@@ -64,7 +65,7 @@
               this.$emit('reload')
             })
           }, (errorResponse) => {
-            self.$store.commit('setNotification', {
+            self.$store.commit(NOTIFICATION.SET_NOTIF, {
               message: 'Your content can not be edited, please retry',
               variant: 'error'
             })

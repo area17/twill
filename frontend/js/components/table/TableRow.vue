@@ -52,6 +52,7 @@
 
 <script>
   import {mapState} from 'vuex'
+  import { NOTIFICATION } from '@/store/mutations'
   import a17TableLanguages from '@/components/table/tablecell/TableLanguages'
   import a17TableDates from '@/components/table/tablecell/TableDates'
   import a17TableNested from '@/components/table/tablecell/TableNested'
@@ -130,7 +131,7 @@
               if (self.$root.$refs.editionModal) self.$root.$refs.editionModal.open()
             })
           }, (errorResponse) => {
-            self.$store.commit('setNotification', {
+            self.$store.commit(NOTIFICATION.SET_NOTIF, {
               message: 'Your content can not be edited, please retry',
               variant: 'error'
             })
@@ -170,7 +171,7 @@
         if (!this.row.hasOwnProperty('deleted')) {
           this.$store.dispatch('toggleFeaturedData', this.row)
         } else {
-          this.$store.commit('setNotification', {
+          this.$store.commit(NOTIFICATION.SET_NOTIF, {
             message: 'You can’t feature/unfeature a deleted item, please restore it first.',
             variant: 'error'
           })
@@ -180,7 +181,7 @@
         if (!this.row.hasOwnProperty('deleted')) {
           this.$store.dispatch('togglePublishedData', this.row)
         } else {
-          this.$store.commit('setNotification', {
+          this.$store.commit(NOTIFICATION.SET_NOTIF, {
             message: 'You can’t publish/unpublish a deleted item, please restore it first.',
             variant: 'error'
           })

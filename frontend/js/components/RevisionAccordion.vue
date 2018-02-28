@@ -14,6 +14,8 @@
 </template>
 
 <script>
+  import { NOTIFICATION } from '@/store/mutations'
+
   import a17Accordion from '@/components/Accordion.vue'
   import VisibilityMixin from '@/mixins/toggleVisibility'
   import a17VueFilters from '@/utils/filters.js'
@@ -42,7 +44,7 @@
         this.$store.dispatch('getRevisionContent').then(() => {
           if (this.$root.$refs.preview) this.$root.$refs.preview.open()
         }, (errorResponse) => {
-          this.$store.commit('setNotification', {
+          this.$store.commit(NOTIFICATION.SET_NOTIF, {
             message: 'Invalid revision.',
             variant: 'error'
           })

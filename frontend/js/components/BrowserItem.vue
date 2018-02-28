@@ -17,6 +17,8 @@
 </template>
 
 <script>
+  import { BROWSER } from '@/store/mutations'
+
   export default {
     name: 'A17BrowserItem',
     props: {
@@ -62,9 +64,9 @@
         this.$emit('delete')
       },
       openBrowser: function () {
-        this.$store.commit('updateBrowserConnector', this.name)
-        this.$store.commit('updateBrowserEndpoint', this.endpoint)
-        this.$store.commit('updateBrowserMax', this.max)
+        this.$store.commit(BROWSER.UPDATE_BROWSER_CONNECTOR, this.name)
+        this.$store.commit(BROWSER.UPDATE_BROWSER_ENDPOINT, this.endpoint)
+        this.$store.commit(BROWSER.UPDATE_BROWSER_MAX, this.max)
         this.$root.$refs.browser.open()
       }
     }

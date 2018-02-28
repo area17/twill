@@ -12,6 +12,8 @@
 </template>
 
 <script>
+  import { NOTIFICATION } from '@/store/mutations'
+
   export default {
     name: 'A17Notification',
     props: {
@@ -66,7 +68,7 @@
         }
       },
       clearNotification: function () {
-        this.$store.commit('clearNotification', this.variant)
+        this.$store.commit(NOTIFICATION.CLEAR_NOTIF, this.variant)
       },
       autoClose: function () {
         if (this.timer === null) {
