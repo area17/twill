@@ -57,7 +57,7 @@
 
 <script>
   import { mapState } from 'vuex'
-  import { NOTIFICATION } from '@/store/mutations'
+  import { NOTIFICATION, MEDIA_LIBRARY } from '@/store/mutations'
   import api from '../../store/api/media-library'
 
   import a17MediaSidebar from './MediaSidebar.vue'
@@ -185,13 +185,13 @@
         if (this.strict) return
         if (this.type === newType) return
 
-        this.$store.commit('updateMediaType', newType)
+        this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_TYPE, newType)
         this.submitFilter()
       },
       addMedia: function (media) {
         // add media in first position of the available media
         this.fullMedias.unshift(media)
-        this.$store.commit('incrementMediaTypeTotal', this.type)
+        this.$store.commit(MEDIA_LIBRARY.INCREMENT_MEDIA_TYPE_TOTAL, this.type)
         // select it
         this.updateSelectedMedias(media.id)
       },
@@ -268,7 +268,7 @@
           keepSelectedMedias = this.selectedMedias.filter((media) => !media.deleteUrl)
         }
         mediasIds.forEach(() => {
-          this.$store.commit('decrementMediaTypeTotal', this.type)
+          this.$store.commit(MEDIA_LIBRARY.DECREMENT_MEDIA_TYPE_TOTAL, this.type)
         })
         this.fullMedias = this.fullMedias.filter((media) => {
           return !this.selectedMedias.includes(media) || keepSelectedMedias.includes(media)
@@ -305,7 +305,7 @@
           })
           this.maxPage = resp.data.maxPage || 1
           this.tags = resp.data.tags || []
-          this.$store.commit('updateMediaTypeTotal', { type: this.type, total: resp.data.total })
+          this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_TYPE_TOTAL, { type: this.type, total: resp.data.total })
           this.loading = false
           this.listenScrollPosition()
         }, (error) => {
@@ -368,7 +368,7 @@
         this.lastScrollTop = list.scrollTop
       },
       saveAndClose: function () {
-        this.$store.commit('saveSelectedMedias', this.selectedMedias)
+        this.$store.commit(MEDIA_LIBRARY.SAVE_MEDIAS, this.selectedMedias)
         this.close()
       }
     },

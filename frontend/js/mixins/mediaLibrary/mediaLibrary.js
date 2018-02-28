@@ -1,3 +1,5 @@
+import { MEDIA_LIBRARY } from '@/store/mutations'
+
 export default {
   props: {
     type: {
@@ -7,10 +9,10 @@ export default {
   },
   methods: {
     openMediaLibrary: function (max = 1, name = this.name, index = -1) {
-      this.$store.commit('updateMediaConnector', name)
-      this.$store.commit('updateMediaType', this.type)
-      this.$store.commit('updateReplaceIndex', index)
-      this.$store.commit('updateMediaMax', max)
+      this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_CONNECTOR, name)
+      this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_TYPE, this.type)
+      this.$store.commit(MEDIA_LIBRARY.UPDATE_REPLACE_INDEX, index)
+      this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_MAX, max)
       if (this.$root.$refs.mediaLibrary) this.$root.$refs.mediaLibrary.open()
     }
   }

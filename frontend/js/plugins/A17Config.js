@@ -1,3 +1,6 @@
+// mutations
+import { MEDIA_LIBRARY } from '@/store/mutations'
+
 // Generic Components
 import a17Button from '@/components/Button.vue'
 import a17Infotip from '@/components/Infotip.vue'
@@ -67,11 +70,11 @@ const A17Config = {
     Vue.mixin({
       methods: {
         openFreeMediaLibrary: function () {
-          this.$store.commit('updateMediaConnector', null) // reset connector
-          this.$store.commit('updateMediaType', 'image') // default active section is 'image' because what would be a media library with no images
-          this.$store.commit('updateReplaceIndex', -1) // we are not replacing an image here
-          this.$store.commit('updateMediaMax', 0) // set max to 0
-          this.$store.commit('updateMediaMode', false) // set the strict to false (you can change the active section)
+          this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_CONNECTOR, null) // reset connector
+          this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_TYPE, 'image') // default active section is 'image' because what would be a media library with no images
+          this.$store.commit(MEDIA_LIBRARY.UPDATE_REPLACE_INDEX, -1) // we are not replacing an image here
+          this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_MAX, 0) // set max to 0
+          this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_MODE, false) // set the strict to false (you can change the active section)
 
           if (this.$root.$refs.mediaLibrary) this.$root.$refs.mediaLibrary.open()
         }
