@@ -18,6 +18,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { PUBLICATION } from '@/store/mutations'
   import a17VueFilters from '@/utils/filters.js'
 
   import a17Accordion from './Accordion.vue'
@@ -48,10 +49,10 @@
     },
     methods: {
       updateStartDate: function (newValue) {
-        this.$store.commit('updatePublishStartDate', newValue)
+        this.$store.commit(PUBLICATION.UPDATE_PUBLISH_START_DATE, newValue)
       },
       updateEndDate: function (newValue) {
-        this.$store.commit('updatePublishEndDate', newValue)
+        this.$store.commit(PUBLICATION.UPDATE_PUBLISH_END_DATE, newValue)
       },
       notifyOpen: function (newValue) {
         this.$emit('open', newValue, this.$options.name)

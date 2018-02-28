@@ -10,6 +10,7 @@
 
 <script>
   import { mapState, mapGetters } from 'vuex'
+  import { DATATABLE } from '@/store/mutations'
 
   export default {
     name: 'A17Tablehead',
@@ -69,7 +70,7 @@
       },
       toggleBulkSelect: function () {
         const newBulkIds = (this.bulkIds.length) ? [] : this.dataIds
-        this.$store.commit('replaceDatableBulk', newBulkIds)
+        this.$store.commit(DATATABLE.REPLACE_DATATABLE_BULK, newBulkIds)
       }
     }
   }

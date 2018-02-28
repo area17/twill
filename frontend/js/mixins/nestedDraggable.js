@@ -1,3 +1,5 @@
+import { DATATABLE } from '@/store/mutations'
+
 const getDepth = ({children}) => 1 + (children && children.length > 0 ? Math.max(...children.map(getDepth)) : 0)
 
 export default {
@@ -80,14 +82,14 @@ export default {
       const action = isNestedAction ? 'setDatatableNestedDatas' : 'setDatatableDatas'
 
       const save = () => {
-        this.$store.commit('updateDatableTracker', 0)
+        this.$store.commit(DATATABLE.UPDATE_DATATABLE_TRACKER, 0)
         this.$store.dispatch(action)
       }
 
       // Proof of concepts
       if (isChangingParents) {
         // 2 moves need to happen so we can save the new tree (1 move to remove from list and a second to add to a new list)
-        this.$store.commit('updateDatableTracker', 1)
+        this.$store.commit(DATATABLE.UPDATE_DATATABLE_TRACKER, 1)
         if (this.updateTracker >= 2) save()
       } else {
         // reorder rows

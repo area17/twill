@@ -10,6 +10,7 @@
 <script>
   import LocaleMixin from '@/mixins/locale'
   import { mapGetters } from 'vuex'
+  import { LANGUAGE } from '@/store/mutations'
 
   export default {
     name: 'A17Langswitcher',
@@ -32,10 +33,10 @@
       onClick: function (newValue) {
         if (newValue === this.localeValue.value) {
           if (this.inModal && ((this.localeValue.published && this.publishedLanguages.length > 1) || !this.localeValue.published)) {
-            this.$store.commit('publishLanguage', newValue)
+            this.$store.commit(LANGUAGE.PUBLISH_SINGLE_LANG, newValue)
           }
         } else {
-          this.$store.commit('updateLanguage', newValue)
+          this.$store.commit(LANGUAGE.UPDATE_LANG, newValue)
         }
       }
     }

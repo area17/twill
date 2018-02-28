@@ -36,6 +36,8 @@
 </template>
 
 <script>
+  import { DATATABLE } from '@/store/mutations'
+
   /* eslint-disable */
   import A17TableRow from './TableRow'
   import draggableMixin from '@/mixins/draggable'
@@ -107,7 +109,7 @@
           }
           const isChangingParents = (this.items.length !== value.length)
 
-          this.$store.commit('updateDatatableNestedDatas', data)
+          this.$store.commit(DATATABLE.UPDATE_DATATABLE_NESTED, data)
           this.saveNewTree(isChangingParents)
         }
       },

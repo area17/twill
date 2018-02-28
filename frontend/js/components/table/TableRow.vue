@@ -52,7 +52,7 @@
 
 <script>
   import {mapState} from 'vuex'
-  import { NOTIFICATION, MODALEDITION, FORM } from '@/store/mutations'
+  import { NOTIFICATION, MODALEDITION, FORM, DATATABLE } from '@/store/mutations'
   import a17TableLanguages from '@/components/table/tablecell/TableLanguages'
   import a17TableDates from '@/components/table/tablecell/TableDates'
   import a17TableNested from '@/components/table/tablecell/TableNested'
@@ -195,7 +195,7 @@
       },
       toggleBulk: function (id) {
         // We cant use the vmodel of the a17-checkbox directly because the checkboxes are in separated components (so the model is not shared)
-        this.$store.commit('updateDatableBulk', id)
+        this.$store.commit(DATATABLE.UPDATE_DATATABLE_BULK, id)
       }
     }
   }

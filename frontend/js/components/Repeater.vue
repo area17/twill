@@ -23,6 +23,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { FORM } from '@/store/mutations'
 
   import draggable from 'vuedraggable'
   import draggableMixin from '@/mixins/draggable'
@@ -82,7 +83,7 @@
           }
         },
         set (value) {
-          this.$store.commit('reorderFormBlocks', {
+          this.$store.commit(FORM.REORDER_FORM_BLOCKS, {
             type: this.type,
             name: this.name,
             blocks: value
@@ -100,18 +101,18 @@
       },
       addBlock: function () {
         this.opened = true
-        this.$store.commit('addFormBlock', { type: this.type, name: this.name })
+        this.$store.commit(FORM.ADD_FORM_BLOCK, { type: this.type, name: this.name })
       },
       duplicateBlock: function (index) {
         this.opened = true
-        this.$store.commit('duplicateFormBlock', {
+        this.$store.commit(FORM.DUPLICATE_FORM_BLOCK, {
           type: this.type,
           name: this.name,
           index: index
         })
       },
       deleteBlock: function (index) {
-        this.$store.commit('deleteFormBlock', {
+        this.$store.commit(FORM.DELETE_FORM_BLOCK, {
           type: this.type,
           name: this.name,
           index: index

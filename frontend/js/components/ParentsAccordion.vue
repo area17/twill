@@ -54,7 +54,7 @@
         return false
       },
       updateSelected: function (newValue) {
-        this.$store.commit('updateParent', newValue)
+        this.$store.commit(PARENTS.UPDATE_PARENT, newValue)
       },
       notifyOpen: function (newValue) {
         this.$emit('open', newValue, this.$options.name)

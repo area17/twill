@@ -29,6 +29,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { DATATABLE } from '@/store/mutations'
 
   export default {
     name: 'A17BulkEditor',
@@ -70,7 +71,7 @@
         return window.CMS_URLS.bulkRestore !== '' && this.bulkStatus.deleted
       },
       clearBulkSelect: function () {
-        this.$store.commit('replaceDatableBulk', [])
+        this.$store.commit(DATATABLE.REPLACE_DATATABLE_BULK, [])
       },
       bulkPublish: function () {
         this.$store.dispatch('bulkPublishData', { toPublish: true })

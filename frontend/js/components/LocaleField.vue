@@ -24,6 +24,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { LANGUAGE } from '@/store/mutations'
 
   export default {
     name: 'A17Locale',
@@ -78,7 +79,7 @@
         return this.attributes
       },
       updateLocale: function (oldValue) {
-        this.$store.commit('switchLanguage', { oldValue })
+        this.$store.commit(LANGUAGE.SWITCH_LANG, { oldValue })
 
         // auto focus new field
         this.$nextTick(function () {

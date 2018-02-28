@@ -9,6 +9,7 @@
 <script>
   import a17Accordion from './Accordion.vue'
   import VisibilityMixin from '@/mixins/toggleVisibility'
+  import { LANGUAGE } from '@/store/mutations'
 
   export default {
     name: 'A17Checkboxaccordion',
@@ -45,7 +46,7 @@
     methods: {
       changeValue: function (newValue) {
         this.currentValue = newValue
-        this.$store.commit('updatePublishedLanguage', newValue)
+        this.$store.commit(LANGUAGE.PUBLISH_LANG, newValue)
       },
       notifyOpen: function (newValue) {
         this.$emit('open', newValue, this.$options.name)

@@ -14,6 +14,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { PUBLICATION } from '@/store/mutations'
   import a17VueFilters from '@/utils/filters.js'
   import compareAsc from 'date-fns/compare_asc'
 
@@ -75,7 +76,7 @@
           return this.published
         },
         set: function (value) {
-          this.$store.commit('updatePublishState', value)
+          this.$store.commit(PUBLICATION.UPDATE_PUBLISH_STATE, value)
           this.$emit('change', value)
         }
       },

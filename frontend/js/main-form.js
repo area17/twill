@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import store from '@/store'
+import { FORM } from '@/store/mutations'
 
 // General shared behaviors
 import main from '@/main'
@@ -130,7 +131,7 @@ Window.vm = new Vue({
 
       if (!this.loading) {
         this.isFormUpdated = false
-        this.$store.commit('updateFormLoading', true)
+        this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
 
         self.$nextTick(function () { // let's wait for the loading state to be properly deployed (used to save wysiwyg fields)
           self.$store.dispatch('saveFormData', document.activeElement.name)

@@ -16,6 +16,7 @@
 </template>
 <script>
   import { mapState, mapGetters } from 'vuex'
+  import { MEDIA_LIBRARY } from '@/store/mutations'
   import fileItem from './FileItem.vue'
   import draggableMixin from '@/mixins/draggable'
   import mediaLibraryMixin from '@/mixins/mediaLibrary/mediaLibrary'
@@ -78,7 +79,7 @@
           }
         },
         set (value) {
-          this.$store.commit('reorderSelectedMedias', {
+          this.$store.commit(MEDIA_LIBRARY.REORDER_MEDIAS, {
             name: this.name,
             medias: value
           })
@@ -106,12 +107,12 @@
     },
     methods: {
       deleteAll: function (index) {
-        this.$store.commit('destroySelectedMedias', {
+        this.$store.commit(MEDIA_LIBRARY.DESTROY_MEDIAS, {
           name: this.name
         })
       },
       deleteItem: function (index) {
-        this.$store.commit('destroyMediasInSelected', {
+        this.$store.commit(MEDIA_LIBRARY.DESTROY_SPECIFIC_MEDIA, {
           name: this.name,
           index: index
         })

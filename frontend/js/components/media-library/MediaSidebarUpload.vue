@@ -16,6 +16,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { MEDIA_LIBRARY } from '@/store/mutations'
 
   export default {
     name: 'A17MediaSidebarUpload',
@@ -43,7 +44,7 @@
     },
     methods: {
       cancelUpload: function (media) {
-        this.$store.commit('doneUploadMedia', media)
+        this.$store.commit(MEDIA_LIBRARY.DONE_UPLOAD_MEDIA, media)
       }
     }
   }

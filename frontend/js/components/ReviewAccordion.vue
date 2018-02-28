@@ -8,6 +8,7 @@
 
 <script>
   import a17Accordion from './Accordion.vue'
+  import { PUBLICATION } from '@/store/mutations'
   import VisibilityMixin from '@/mixins/toggleVisibility'
 
   export default {
@@ -57,7 +58,7 @@
     methods: {
       changeValue: function (newValue) {
         this.currentValue = newValue
-        this.$store.commit('updateReviewProcess', newValue)
+        this.$store.commit(PUBLICATION.UPDATE_REVIEW_PROCESS, newValue)
       },
       notifyOpen: function (newValue) {
         this.$emit('open', newValue, this.$options.name)
