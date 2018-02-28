@@ -9,6 +9,25 @@ Show a loading mention at page load
 
 /* https://medium.com/vuejs-tips/v-cloak-45a05da28dc4 */
 
+.app::after {
+  content:'Loading...';
+  display:block;
+  position:absolute;
+  top:calc(50vh - 150px);
+  left:50%;
+  width:250px;
+  margin-left:-125px;
+  color:$color__text--light;
+  text-align:center;
+  z-index:$zindex__loader;
+/*    letter-spacing:0.25em;
+    text-transform:uppercase;*/
+  opacity:0;
+  transition: opacity 0.25s ease, visibility 0s 0.25s;
+  pointer-events: none;
+  visibility:hidden;
+}
+
 .app[v-cloak] {
   position:relative;
   min-height:calc(100vh - 230px);
@@ -18,17 +37,8 @@ Show a loading mention at page load
   }
 
   &::after {
-    content:'Loading...';
-/*    letter-spacing:0.25em;
-    text-transform:uppercase;*/
-    display:block;
-    position:absolute;
-    top:calc(50vh - 150px);
-    left:50%;
-    width:250px;
-    margin-left:-125px;
-    color:$color__text--light;
-    text-align:center;
-    visibility:visible;
+    opacity:1;
+    visibility: visible;
+    transition: opacity 0.25s;
   }
 }

@@ -10,6 +10,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { PARENTS } from '@/store/mutations'
   import parentTreeToOptions from '@/utils/parentTreeToOptions.js'
 
   import a17Accordion from '@/components/Accordion.vue'
