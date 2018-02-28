@@ -9,7 +9,7 @@
 
 <script>
   import { mapState } from 'vuex'
-  import { NOTIFICATION } from '@/store/mutations'
+  import { NOTIFICATION, FORM, DATATABLE } from '@/store/mutations'
   import a17ModalValidationButtons from '@/components/Modals/ModalValidationButtons.vue'
 
   export default {
@@ -49,19 +49,19 @@
       submit: function (event) {
         let self = this
 
-        this.$store.commit('updateFormLoading', true)
+        this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
         const submitMode = document.activeElement.name
 
         this.$nextTick(function () {
           this.$store.dispatch('updateFormInListing', {endpoint: this.actionForm, redirect: submitMode !== 'create-another'}).then(() => {
             self.$nextTick(function () {
               if (submitMode === 'create-another') {
-                this.$store.commit('emptyFormField', true)
+                this.$store.commit(FORM.EMPTY_FORM_FIELDS, true)
               } else {
                 if (self.$refs.modal) self.$refs.modal.close()
               }
 
-              if (this.mode === 'create') this.$store.commit('updateDatablePage', 1)
+              if (this.mode === 'create') this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
               this.$emit('reload')
             })
           }, (errorResponse) => {

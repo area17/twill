@@ -52,7 +52,7 @@
 
 <script>
   import {mapState} from 'vuex'
-  import { NOTIFICATION } from '@/store/mutations'
+  import { NOTIFICATION, MODALEDITION, FORM } from '@/store/mutations'
   import a17TableLanguages from '@/components/table/tablecell/TableLanguages'
   import a17TableDates from '@/components/table/tablecell/TableDates'
   import a17TableNested from '@/components/table/tablecell/TableNested'
@@ -122,9 +122,9 @@
 
         if (this.editInModal) {
           const endpoint = this.editInModal
-          this.$store.commit('updateModalMode', 'update')
-          this.$store.commit('updateModalAction', this.updateUrl)
-          this.$store.commit('updateFormLoading', true)
+          this.$store.commit(MODALEDITION.UPDATE_MODAL_MODE, 'update')
+          this.$store.commit(MODALEDITION.UPDATE_MODAL_ACTION, this.updateUrl)
+          this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
 
           this.$store.dispatch('replaceFormData', endpoint).then(() => {
             self.$nextTick(function () {
