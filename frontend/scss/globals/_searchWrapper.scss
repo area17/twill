@@ -7,8 +7,8 @@ Every decent CMS need a search engine
 
 ```
 <div class="styleguide--demo">
-  <div class="search__positioner">
-    <div class="search__overlay">
+  <div class="searchWrapper">
+    <div class="searchWrapper__overlay">
     </div>
     <div class="container search">
       Search form goes here
@@ -21,12 +21,12 @@ Every decent CMS need a search engine
 
 
 
-.search__positioner[v-cloak] {
+.searchWrapper[v-cloak] {
   display: none;
 }
 
-.search__positioner,
-.search__overlay {
+.searchWrapper,
+.searchWrapper__overlay {
   position: fixed;
   top: 60px;
   left: 0;
@@ -36,7 +36,7 @@ Every decent CMS need a search engine
   z-index: $zindex__search;
 }
 
-.search__overlay {
+.searchWrapper__overlay {
   background: rgba($color__overlay--header, 0.5);
   z-index: $zindex__search - 1;
 }

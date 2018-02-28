@@ -1,5 +1,5 @@
 <template>
-  <div class="container search">
+  <div class="container search" :class="{ 'search--dashboard' : type === 'dashboard' }">
     <transition name="fade_search-overlay" v-if="type === 'dashboard'">
       <div class="search__overlay" v-show="readyToShowResult" @click="toggleSearch"></div>
     </transition>
@@ -8,7 +8,7 @@
       <span v-svg symbol="search"></span>
     </div>
     <transition name="fade_search-overlay">
-      <div class="search__results" :class="{ 'search__results--dashboard' : type === 'dashboard' }" v-show="readyToShowResult">
+      <div class="search__results" v-show="readyToShowResult">
         <ul>
           <li v-for="(item, index) in searchResults" :key="item.id">
             <a :href="item.href" class="search__result">
@@ -197,6 +197,22 @@
     position: relative;
   }
 
+  .search--dashboard {
+    padding-bottom: 25px;
+    background: $color__overlay--header;
+  }
+
+  .search__overlay {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    bottom:0;
+    background: rgba($color__overlay--header, 0.5);
+    z-index: $zindex__search - 1;
+  }
+
   .search__input {
     position: relative;
     z-index: $zindex__search;
@@ -244,7 +260,7 @@
     z-index: $zindex__search;
   }
 
-  .search__results--dashboard {
+  .search--dashboard .search__results {
     position: absolute;
     @each $name, $point in $breakpoints {
       @include breakpoint('#{$name}') {
