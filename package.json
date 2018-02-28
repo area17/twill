@@ -9,7 +9,7 @@
     "watch": "concurrently \"npm run watch:icons\"  \"cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js\"",
     "watch-poll": "npm run watch -- --watch-poll",
     "preicons": "rimraf public/assets/admin/icons/icons.svg && rimraf frontend/scss/setup/_icons.scss && rimraf public/assets/admin/icons/icons-files.svg && rimraf frontend/scss/setup/_icons-files.scss && mkdirp public/assets/admin/icons",
-    "icons": "node frontend/tasks/icons.js && node frontend/tasks/icons-files.js",
+    "icons": "node frontend/tasks/icons.js",
     "watch:icons": "watch 'npm run icons' frontend/icons --wait=2 --interval=0.1"
   },
   "dependencies": {
