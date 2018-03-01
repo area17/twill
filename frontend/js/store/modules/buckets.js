@@ -1,5 +1,6 @@
 import bucketsAPI from '../api/buckets'
 import {BUCKETS, NOTIFICATION} from '../mutations'
+import * as ACTIONS from '@/store/actions'
 
 const state = {
   saveUrl: window.STORE.buckets.saveUrl || '',
@@ -60,7 +61,7 @@ const mutations = {
 }
 
 const actions = {
-  getBucketsData ({commit, state}) {
+  [ACTIONS.GET_BUCKETS] ({commit, state}) {
     bucketsAPI.get({
       content_type: state.dataSources.selected.value,
       page: state.page,
@@ -71,7 +72,7 @@ const actions = {
       commit(BUCKETS.UPDATE_BUCKETS_MAX_PAGE, resp.maxPage)
     })
   },
-  saveBuckets ({commit, state}) {
+  [ACTIONS.SAVE_BUCKETS] ({commit, state}) {
     const buckets = {}
 
     state.buckets.forEach((bucket) => {

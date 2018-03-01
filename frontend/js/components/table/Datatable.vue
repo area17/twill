@@ -87,6 +87,7 @@
 <script>
   import { mapState, mapGetters } from 'vuex'
   import { DATATABLE } from '@/store/mutations'
+  import * as ACTIONS from '@/store/actions'
 
   import draggableMixin from '@/mixins/draggable'
   import nestedDraggableMixin from '@/mixins/nestedDraggable'
@@ -258,20 +259,20 @@
         this.$store.commit(DATATABLE.UPDATE_DATATABLE_SORT, column)
 
         // reload datas
-        this.$store.dispatch('getDatatableDatas')
+        this.$store.dispatch(ACTIONS.GET_DATATABLE)
       },
       updateOffset: function (value) {
         this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
         this.$store.commit(DATATABLE.UPDATE_DATATABLE_OFFSET, value)
 
         // reload datas
-        this.$store.dispatch('getDatatableDatas')
+        this.$store.dispatch(ACTIONS.GET_DATATABLE)
       },
       updatePage: function (value) {
         this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, value)
 
         // reload datas
-        this.$store.dispatch('getDatatableDatas')
+        this.$store.dispatch(ACTIONS.GET_DATATABLE)
       },
       updateActiveColumns: function (values) {
         this.$store.commit(DATATABLE.UPDATE_DATATABLE_VISIBLITY, values)
@@ -281,7 +282,7 @@
         })
 
         // reload datas
-        this.$store.dispatch('getDatatableDatas')
+        this.$store.dispatch(ACTIONS.GET_DATATABLE)
       }
     },
     watch: {

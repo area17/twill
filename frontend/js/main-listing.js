@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import store from '@/store'
 import { DATATABLE, MODALEDITION, FORM } from '@/store/mutations'
+import * as ACTIONS from '@/store/actions'
 
 // General shared behaviors
 import main from '@/main'
@@ -77,7 +78,7 @@ Window.vm = new Vue({
     },
     reloadDatas: function () {
       // reload datas
-      this.$store.dispatch('getDatatableDatas')
+      this.$store.dispatch(ACTIONS.GET_DATATABLE)
     },
     clearFiltersAndReloadDatas: function () {
       this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)

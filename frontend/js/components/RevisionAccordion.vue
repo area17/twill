@@ -15,6 +15,7 @@
 
 <script>
   import { NOTIFICATION, REVISION } from '@/store/mutations'
+  import * as ACTIONS from '@/store/actions'
 
   import a17Accordion from '@/components/Accordion.vue'
   import VisibilityMixin from '@/mixins/toggleVisibility'
@@ -41,7 +42,7 @@
       openPreview: function (id) {
         this.$store.commit(REVISION.UPDATE_REV, parseInt(id))
 
-        this.$store.dispatch('getRevisionContent').then(() => {
+        this.$store.dispatch(ACTIONS.GET_REVISION).then(() => {
           if (this.$root.$refs.preview) this.$root.$refs.preview.open()
         }, (errorResponse) => {
           this.$store.commit(NOTIFICATION.SET_NOTIF, {

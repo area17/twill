@@ -1,4 +1,5 @@
 import { DATATABLE } from '@/store/mutations'
+import * as ACTIONS from '@/store/actions'
 
 const getDepth = ({children}) => 1 + (children && children.length > 0 ? Math.max(...children.map(getDepth)) : 0)
 
@@ -79,7 +80,7 @@ export default {
     },
     saveNewTree: function (isChangingParents) {
       const isNestedAction = isChangingParents ? true : this.nested
-      const action = isNestedAction ? 'setDatatableNestedDatas' : 'setDatatableDatas'
+      const action = isNestedAction ? ACTIONS.SET_DATATABLE_NESTED : ACTIONS.SET_DATATABLE
 
       const save = () => {
         this.$store.commit(DATATABLE.UPDATE_DATATABLE_TRACKER, 0)

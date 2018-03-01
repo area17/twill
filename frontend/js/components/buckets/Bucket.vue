@@ -61,6 +61,7 @@
   import { mapState, mapGetters } from 'vuex'
 
   import { BUCKETS } from '@/store/mutations'
+  import * as ACTIONS from '@/store/actions'
 
   import BucketItem from './BucketItem.vue'
   import BucketSourceItem from './BucketSourceItem.vue'
@@ -228,25 +229,25 @@
       changeDataSource: function (value) {
         this.$store.commit(BUCKETS.UPDATE_BUCKETS_DATASOURCE, value)
         this.$store.commit(BUCKETS.UPDATE_BUCKETS_DATA_PAGE, 1)
-        this.$store.dispatch('getBucketsData')
+        this.$store.dispatch(ACTIONS.GET_BUCKETS)
       },
       filterBucketsData: function (formData) {
         this.$store.commit(BUCKETS.UPDATE_BUCKETS_DATA_PAGE, 1)
         this.$store.commit(BUCKETS.UPDATE_BUCKETS_FILTER, formData || {search: ''})
         // reload datas
-        this.$store.dispatch('getBucketsData')
+        this.$store.dispatch(ACTIONS.GET_BUCKETS)
       },
       updateOffset: function (value) {
         this.$store.commit(BUCKETS.UPDATE_BUCKETS_DATA_PAGE, 1)
         this.$store.commit(BUCKETS.UPDATE_BUCKETS_DATA_OFFSET, value)
 
         // reload datas
-        this.$store.dispatch('getBucketsData')
+        this.$store.dispatch(ACTIONS.GET_BUCKETS)
       },
       updatePage: function (value) {
         this.$store.commit(BUCKETS.UPDATE_BUCKETS_DATA_PAGE, value)
         // reload datas
-        this.$store.dispatch('getBucketsData')
+        this.$store.dispatch(ACTIONS.GET_BUCKETS)
       },
       override: function () {
         this.overrideItem = true
@@ -254,7 +255,7 @@
         this.$refs.overrideBucket.close()
       },
       save: function () {
-        this.$store.dispatch('saveBuckets')
+        this.$store.dispatch(ACTIONS.SAVE_BUCKETS)
       }
     }
   }

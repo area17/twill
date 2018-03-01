@@ -30,6 +30,8 @@
 </template>
 
 <script>
+  import * as ACTIONS from '@/store/actions'
+
   export default {
     name: 'A17ActivityRow',
     props: {
@@ -64,13 +66,13 @@
                col.name === 'thumbnail'
       },
       toggleFeatured: function () {
-        this.$store.dispatch('toggleFeaturedData', this.row.id)
+        this.$store.dispatch(ACTIONS.TOGGLE_FEATURE, this.row.id)
       },
       togglePublish: function () {
-        this.$store.dispatch('togglePublishedData', this.row)
+        this.$store.dispatch(ACTIONS.TOGGLE_PUBLISH, this.row)
       },
       deleteRow: function () {
-        this.$store.dispatch('deleteData', this.row.id)
+        this.$store.dispatch(ACTIONS.DELETE_ROW, this.row.id)
       }
     }
   }

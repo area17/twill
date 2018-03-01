@@ -53,6 +53,7 @@
 <script>
   import {mapState} from 'vuex'
   import { NOTIFICATION, MODALEDITION, FORM, DATATABLE } from '@/store/mutations'
+  import * as ACTIONS from '@/store/actions'
   import a17TableLanguages from '@/components/table/tablecell/TableLanguages'
   import a17TableDates from '@/components/table/tablecell/TableDates'
   import a17TableNested from '@/components/table/tablecell/TableNested'
@@ -126,7 +127,7 @@
           this.$store.commit(MODALEDITION.UPDATE_MODAL_ACTION, this.updateUrl)
           this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
 
-          this.$store.dispatch('replaceFormData', endpoint).then(() => {
+          this.$store.dispatch(ACTIONS.REPLACE_FORM, endpoint).then(() => {
             self.$nextTick(function () {
               if (self.$root.$refs.editionModal) self.$root.$refs.editionModal.open()
             })
@@ -169,7 +170,7 @@
       },
       toggleFeatured: function () {
         if (!this.row.hasOwnProperty('deleted')) {
-          this.$store.dispatch('toggleFeaturedData', this.row)
+          this.$store.dispatch(ACTIONS.TOGGLE_FEATURE, this.row)
         } else {
           this.$store.commit(NOTIFICATION.SET_NOTIF, {
             message: 'You can’t feature/unfeature a deleted item, please restore it first.',
@@ -179,7 +180,7 @@
       },
       togglePublish: function () {
         if (!this.row.hasOwnProperty('deleted')) {
-          this.$store.dispatch('togglePublishedData', this.row)
+          this.$store.dispatch(ACTIONS.TOGGLE_PUBLISH, this.row)
         } else {
           this.$store.commit(NOTIFICATION.SET_NOTIF, {
             message: 'You can’t publish/unpublish a deleted item, please restore it first.',
@@ -188,10 +189,10 @@
         }
       },
       restoreRow: function () {
-        this.$store.dispatch('restoreData', this.row)
+        this.$store.dispatch(ACTIONS.RESTORE_ROW, this.row)
       },
       deleteRow: function () {
-        this.$store.dispatch('deleteData', this.row)
+        this.$store.dispatch(ACTIONS.DELETE_ROW, this.row)
       },
       toggleBulk: function (id) {
         // We cant use the vmodel of the a17-checkbox directly because the checkboxes are in separated components (so the model is not shared)

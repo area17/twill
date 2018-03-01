@@ -26,6 +26,8 @@
   import A17Spinner from '@/components/Spinner.vue'
 
   import { PREVIEW, CONTENT } from '@/store/mutations'
+  import * as ACTIONS from '@/store/actions'
+
   import htmlClasses from '@/utils/htmlClasses'
 
   import cloneDeep from 'lodash/cloneDeep'
@@ -149,11 +151,11 @@
         else return this.blocks[index].id
       },
       getAllPreviews: function () {
-        this.$store.dispatch('getAllPreviews')
+        this.$store.dispatch(ACTIONS.GET_ALL_PREVIEWS)
       },
       getPreview: function (index = -1) {
         console.warn('Editor - getPreview')
-        this.$store.dispatch('getPreview', index)
+        this.$store.dispatch(ACTIONS.GET_PREVIEW, index)
       },
       selectBlock: function (index) {
         let self = this
