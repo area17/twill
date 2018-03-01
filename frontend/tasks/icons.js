@@ -5,13 +5,31 @@ const fs = require('fs')
 const createLogger = require('logging').default
 const logger = createLogger('Icons')
 
-const iconPath = path.resolve('frontend/icons')
+const iconPaths = [
+  {
+    path: path.resolve('frontend/icons'),
+    destination: {
+      svg: 'icons.svg',
+      scss: '_icons.scss'
+    },
+    output: {
+      sprite: svgstore(),
+      icons: []
+    }
+  },
+  {
+    path: path.resolve('frontend/icons-files'),
+    destination: {
+      svg: 'icons-files.svg',
+      scss: '_icons-files.scss'
+    },
+    output: {
+      sprite: svgstore(),
+      icons: []
+    }
+  }
+]
 const svgo = new SVGO()
-
-let files = fs.readdirSync(iconPath)
-let sprite = svgstore()
-let icons = []
-let scss = ''
 
 /**
  *
@@ -19,46 +37,55 @@ let scss = ''
  * @param fn A function that accepts an item from the array and returns a promise.
  * @returns {Promise}
  */
-function forEachPromise(items, fn) {
+function forEachPromise(items, fn, iconPath) {
     return items.reduce(function (promise, item) {
         return promise.then(function () {
-            return fn(item);
+            return fn(item, iconPath);
         });
     }, Promise.resolve());
 }
 
-forEachPromise(files, buildIcon).then(() => {
-    storeSprite()
-    makeScssFile()
-});
-
-function buildIcon(fileName) {
+function buildIcon(fileName, iconPath) {
   if (fileName === '.keep') { return false }
   if (fileName === '.DS_Store') { return false }
   const title = path.basename(fileName, '.svg')
 
-  let file = fs.readFileSync(path.resolve(iconPath, fileName))
+  let file = fs.readFileSync(path.resolve(iconPath.path, fileName))
   return svgo.optimize(file).then(function(result) {
     if(result.error) logger.info('Icon error '+ fileName +'.svg : ', result.error)
     else {
-      icons.push(Object.assign({title}, result.info))
-      sprite.add(path.parse(fileName).name, result.data)
+      iconPath.output.icons.push(Object.assign({title}, result.info))
+      iconPath.output.sprite.add(path.parse(fileName).name, result.data)
     }
   })
 }
 
-function storeSprite () {
-  const destination = path.resolve('public/assets/admin/icons', 'icons.svg')
-  fs.writeFileSync(destination, sprite.toString())
+function storeSprite (iconPath) {
+  const destination = path.resolve('public/assets/admin/icons', iconPath.destination.svg)
+
+  fs.writeFileSync(destination, iconPath.output.sprite.toString())
   logger.info('Icons compiled to: ', destination)
 }
 
-function makeScssFile() {
-  const destination = path.resolve('frontend/scss', 'setup', '_icons.scss')
-  icons.forEach(icon => {
+function makeScssFile(iconPath) {
+  const destination = path.resolve('frontend/scss', 'setup', iconPath.destination.scss)
+  let scss = ''
+  iconPath.output.icons.forEach(icon => {
     scss = scss.concat(`.icon--${icon.title}, .icon--${icon.title} svg { width: ${icon.width}px; height: ${icon.height}px }\n`)
   })
+
   fs.writeFileSync(destination, scss)
   logger.info('Icons SCSS file written at: ', destination)
 }
 
+function handleIconPaths() {
+  iconPaths.forEach((iconPath) => {
+    let files = fs.readdirSync(iconPath.path)
+    forEachPromise(files, buildIcon, iconPath).then(() => {
+        storeSprite(iconPath)
+        makeScssFile(iconPath)
+    });
+  })
+}
+
+handleIconPaths()
