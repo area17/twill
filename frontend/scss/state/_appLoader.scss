@@ -31,7 +31,7 @@ Show a loading mention at page load
   visibility:hidden;
 }
 
-.appLoader span {
+.appLoader > span {
   display:inline-block;
   margin-top:20vh;
 }
