@@ -17,9 +17,10 @@
 
 <script>
   import { mapState } from 'vuex'
+  import htmlClasses from '@/utils/htmlClasses'
 
   const html = document.documentElement
-  let htmlClass = 's--modal'
+  const htmlClass = htmlClasses.modal
 
   export default {
     name: 'A17Modal',

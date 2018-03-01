@@ -45,7 +45,8 @@
   import debounce from 'lodash/debounce'
   import axios from 'axios'
   const html = document.documentElement
-  let htmlClasses = ['s--search', 's--overlay']
+  import htmlClasses from '@/utils/htmlClasses'
+  const htmlSearchClasses = [ htmlClasses.search, htmlClasses.overlay ]
   let CancelToken = axios.CancelToken
   let source = CancelToken.source()
   let firstFocusableEl = document.querySelector('.header .header__title > a')
@@ -96,7 +97,7 @@
     },
     methods: {
       toggleSearch: function () {
-        htmlClasses.forEach((klass) => {
+        htmlSearchClasses.forEach((klass) => {
           html.classList.toggle(klass)
         })
         if (this.open) {

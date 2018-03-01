@@ -26,11 +26,12 @@
   import A17Spinner from '@/components/Spinner.vue'
 
   import { PREVIEW, CONTENT } from '@/store/mutations'
+  import htmlClasses from '@/utils/htmlClasses'
 
   import cloneDeep from 'lodash/cloneDeep'
 
   const html = document.documentElement
-  let htmlClass = 's--in-editor'
+  const htmlClass = htmlClasses.editor
 
   export default {
     name: 'A17editor',

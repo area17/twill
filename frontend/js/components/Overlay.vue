@@ -14,9 +14,11 @@
 
 <script>
   import { mapState } from 'vuex'
+  import htmlClasses from '@/utils/htmlClasses'
 
   const html = document.documentElement
-  let htmlClass = 's--overlay'
+  const htmlOverlayClass = htmlClasses.overlay
+  const htmlModalClass = htmlClasses.modal
 
   export default {
     name: 'A17Overlay',
@@ -68,7 +70,7 @@
     },
     methods: {
       open: function (onShow) {
-        html.classList.add(htmlClass)
+        html.classList.add(htmlOverlayClass)
 
         if (this.active && !this.hidden) {
           return
@@ -82,7 +84,7 @@
         this.$emit('open')
       },
       mask: function () {
-        html.classList.remove(htmlClass)
+        html.classList.remove(htmlOverlayClass)
       },
       hide: function () {
         if (!this.active) return
@@ -109,6 +111,8 @@
       },
       keyPressed: function (event) {
         if (event.which === 27 || event.keyCode === 27) {
+          // Lets not close the overlay if we already have a modal opened on top of the overlay
+          if (html.classList.contains(htmlModalClass)) return
           this.hide()
           this.$emit('esc-key')
         }
