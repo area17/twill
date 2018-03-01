@@ -977,7 +977,7 @@ abstract class ModuleController extends Controller
             . ($this->moduleIsTranslated() ? '{language}/' : '')
             . ($this->moduleHasRevisions() ? '{preview}/' : '')
             . ($this->permalinkBase ?? $this->moduleName)
-            . (empty($this->permalinkBase) ? '' : '/');
+            . (isset($this->permalinkBase) && empty($this->permalinkBase) ? '' : '/');
     }
 
     protected function getPermalinkPrefix($baseUrl)
