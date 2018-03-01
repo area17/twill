@@ -260,6 +260,27 @@
     }
   }
 
+  /* Grid in editor */
+  .s--in-editor .multiselector--grid .multiselector__item {
+      width:100%;
+
+      @include breakpoint('small') {
+        width:100%
+      }
+
+      @include breakpoint('medium') {
+        width:100%
+      }
+
+      @include breakpoint('large') {
+        width:100%
+      }
+
+      @include breakpoint('large+') {
+        width:100%
+      }
+  }
+
   /* inline version */
   .multiselector--inline .multiselector__outer {
     display:flex;

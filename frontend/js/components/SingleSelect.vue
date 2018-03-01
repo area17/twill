@@ -281,6 +281,27 @@
     }
   }
 
+  /* Grid in editor */
+  .s--in-editor .singleselector--grid .singleselector__item {
+      width:100%;
+
+      @include breakpoint('small') {
+        width:100%
+      }
+
+      @include breakpoint('medium') {
+        width:100%
+      }
+
+      @include breakpoint('large') {
+        width:100%
+      }
+
+      @include breakpoint('large+') {
+        width:100%
+      }
+  }
+
   /* inline version */
   .singleselector--inline .singleselector__outer {
     display:flex;

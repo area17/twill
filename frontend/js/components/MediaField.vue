@@ -323,6 +323,12 @@
     @include breakpoint('medium') {
       display: none;
     }
+
+    .s--in-editor & {
+      @include breakpoint('small+') {
+        display: none;
+      }
+    }
   }
 
   .media__img {
