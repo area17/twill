@@ -251,11 +251,12 @@
   .editor__resizer {
     width:10px;
     min-width: 10px;
-    cursor: e-resize;
+    cursor: col-resize;
     background:$color__border--light;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    user-select:none;
 
     span {
       width:2px;
