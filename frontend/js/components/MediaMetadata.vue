@@ -27,6 +27,7 @@
     },
     data: function () {
       return {
+        initialValues: {}
       }
     },
     computed: {
@@ -60,22 +61,6 @@
           return ''
         }
       },
-      initialValues: function () {
-        let initialValues = {}
-
-        this.languages.forEach((lang) => {
-          const langVal = lang.value
-
-          // Custom or default values
-          if (this.customMetadatas) {
-            initialValues[langVal] = this.customMetadatas[langVal] !== null ? this.customMetadatas[langVal] : ''
-          } else if (this.defaultMetadatas) {
-            initialValues[langVal] = this.defaultMetadatas
-          }
-        })
-
-        return initialValues
-      },
       ...mapState({
         languages: state => state.language.all
       })
@@ -85,6 +70,26 @@
         newDatas.id = this.id
         this.$emit('change', newDatas)
       }
+    },
+    mounted: function () {
+      let initialValues = {}
+      let index = 0
+
+      this.languages.forEach((lang) => {
+        const langVal = lang.value
+
+        if (this.customMetadatas) {
+          if (this.customMetadatas[langVal]) {
+            initialValues[langVal] = this.customMetadatas[langVal]
+          } else if (typeof this.customMetadatas === 'string' && index === 0) {
+            initialValues[langVal] = this.customMetadatas
+          }
+        }
+
+        index++
+      })
+
+      this.initialValues = initialValues
     }
   }
 </script>
