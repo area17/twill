@@ -45,10 +45,6 @@
           return {}
         }
       },
-      initialValue: {
-        type: String,
-        default: ''
-      },
       isRequired: {
         type: Boolean,
         default: function () {
@@ -67,7 +63,11 @@
         const language = this.languages.find(l => l.value === lang)
 
         // for textfields set initial values using the initialValues prop
-        if (this.initialValues[lang]) this.attributes.initialValue = this.initialValues[lang]
+        if (this.initialValues[lang]) {
+          this.attributes.initialValue = this.initialValues[lang]
+        } else {
+          this.attributes.initialValue = ''
+        }
 
         this.attributes.required = !!language.published && this.isRequired
 

@@ -1,9 +1,11 @@
 <template>
-  <a17-locale type="a17-textfield" :initialValues="initialValues" :attributes="attributes" @change="saveMetadata"></a17-locale>
+  <a17-locale v-if="languages.length > 1" type="a17-textfield" :initialValues="initialValues" :attributes="attributes" @change="saveMetadata"></a17-locale>
+  <a17-textfield v-else :label="label" :name="fieldName" type="text" :placeholder="placeholder" :initialValue="initialValue" in-store="value" @change="saveMetadata"></a17-textfield>
 </template>
 
 <script>
   import { mapState } from 'vuex'
+  import { FORM } from '@/store/mutations'
 
   export default {
     name: 'A17MediaMetadata',
@@ -27,10 +29,14 @@
     },
     data: function () {
       return {
-        initialValues: {}
+        initialValues: {},
+        initialValue: ''
       }
     },
     computed: {
+      fieldName: function () {
+        return `${this.name}[${this.id}]`
+      },
       defaultMetadatas: function () {
         if (this.media.hasOwnProperty('metadatas')) {
           return this.media.metadatas.default[this.id] || false
@@ -48,7 +54,7 @@
       attributes: function () {
         return {
           label: this.label,
-          name: `${this.name}[${this.id}]`,
+          name: this.fieldName,
           type: 'text',
           placeholder: this.placeholder,
           inStore: 'value'
@@ -67,12 +73,20 @@
     },
     methods: {
       saveMetadata: function (newDatas) {
+        if (!newDatas.locale) {
+          const value = newDatas
+          newDatas = {
+            value: value
+          }
+        }
+
         newDatas.id = this.id
         this.$emit('change', newDatas)
       }
     },
     mounted: function () {
       let initialValues = {}
+      let initialValue = ''
       let index = 0
 
       this.languages.forEach((lang) => {
@@ -83,13 +97,25 @@
             initialValues[langVal] = this.customMetadatas[langVal]
           } else if (typeof this.customMetadatas === 'string' && index === 0) {
             initialValues[langVal] = this.customMetadatas
+            initialValue = this.customMetadatas
+          } else {
+            initialValues[langVal] = ''
           }
+
+          let field = {}
+          field.name = this.fieldName
+          field.value = initialValues[langVal]
+
+          if (this.languages.length > 1) field.locale = langVal
+
+          this.$store.commit(FORM.UPDATE_FORM_FIELD, field)
         }
 
         index++
       })
 
       this.initialValues = initialValues
+      this.initialValue = initialValue
     }
   }
 </script>
