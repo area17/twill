@@ -149,7 +149,7 @@ const actions = {
       })
     })
   },
-  [ACTIONS.UPDATE_FORM_LISTING] ({ commit, state, getters, rootState }, options) {
+  [ACTIONS.UPDATE_FORM_IN_LISTING] ({ commit, state, getters, rootState }, options) {
     return new Promise((resolve, reject) => {
       commit(FORM.CLEAR_FORM_ERRORS)
       commit(NOTIFICATION.CLEAR_NOTIF, 'error')
