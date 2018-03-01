@@ -135,7 +135,7 @@ const actions = {
   replaceFormData ({ commit, state, getters, rootState }, endpoint) {
     return new Promise((resolve, reject) => {
       commit(FORM.CLEAR_FORM_ERRORS)
-      commit(FORM.CLEAR_NOTIF, 'error')
+      commit(NOTIFICATION.CLEAR_NOTIF, 'error')
 
       api.get(endpoint, function (successResponse) {
         commit(FORM.UPDATE_FORM_LOADING, false)
@@ -151,7 +151,7 @@ const actions = {
   updateFormInListing ({ commit, state, getters, rootState }, options) {
     return new Promise((resolve, reject) => {
       commit(FORM.CLEAR_FORM_ERRORS)
-      commit(FORM.CLEAR_NOTIF, 'error')
+      commit(NOTIFICATION.CLEAR_NOTIF, 'error')
 
       const data = Object.assign(getFormFields(rootState), {languages: rootState.language.all})
 
