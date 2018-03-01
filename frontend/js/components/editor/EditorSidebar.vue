@@ -107,16 +107,23 @@
   @import '~styles/setup/_mixins-colors-vars.scss';
 
   .editorSidebar {
-    padding:20px 0 20px 0;
-    height:100%;
+    margin:20px 0 20px 0;
+    // height:100%;
     position:relative;
+    overflow: hidden;
+    height: calc(100% - 40px);
   }
 
   .editorSidebar__item,
   .editorSidebar__list {
     padding:0 10px 0 20px;
     overflow-y: scroll;
-    height: calc(100% + 20px - 80px);
+    // height: calc(100% + 20px - 80px);
+    position:absolute;
+    top:0;
+    bottom:60px;
+    left:0;
+    right:0;
   }
 
   .editorSidebar__list {
@@ -195,7 +202,7 @@
     width:100%;
     left:0;
     bottom:0;
-    padding:20px;
+    padding: 20px 10px 0 20px;
     background:$color__border--light;
     display:flex;
 

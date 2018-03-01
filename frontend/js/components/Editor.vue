@@ -238,6 +238,7 @@
     flex-grow: 1;
     display:flex;
     flex-flow: row nowrap;
+    // height: calc(100vh - 60px);
   }
 
   .editor__sidebar {
