@@ -5,11 +5,13 @@
       <div class="accordion__value"><slot name="accordion__value"></slot></div>
       <span v-svg symbol="dropdown_module"></span>
     </button>
-    <div class="accordion__dropdown" :aria-hidden="!visible ?  true : null">
-      <div class="accordion__list">
-        <slot></slot>
+    <transition name="move_accordion" class="accordion__animator">
+      <div class="accordion__dropdown" v-show="visible">
+        <div class="accordion__list">
+          <slot></slot>
+        </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -61,19 +63,26 @@
     color:$color__text--light;
   }
 
+  .accordion__animator {
+    max-height:250px;
+  }
+
   .accordion__dropdown {
-    max-height:0;
-    height:auto;
+    // max-height:250px;
+    // visibility: visible;
     overflow:hidden;
-    transition: max-height .3s linear, visibility 0s .3s;
-    visibility: hidden;
+    // max-height:0;
+    // height:auto;
+    // overflow:hidden;
+    // transition: max-height .3s linear, visibility 0s .3s;
+    // visibility: hidden;
   }
 
   .accordion__list {
     border-top:1px solid $color__border--light;
     padding:12px 20px;
 
-    .input {
+    /deep/ .input {
       margin-top:0;
 
       + .input {
@@ -96,11 +105,11 @@
   .s--open {
     background-color:$color__ultralight;
 
-    .accordion__dropdown {
-      max-height:250px;
-      visibility: visible;
-      transition: max-height .3s linear;
-    }
+    // .accordion__dropdown {
+    //   max-height:250px;
+    //   visibility: visible;
+    //   transition: max-height .3s linear;
+    // }
 
     .icon {
       transform:rotate(180deg);

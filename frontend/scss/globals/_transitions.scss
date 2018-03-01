@@ -124,3 +124,20 @@ https://vuejs.org/v2/guide/transitions.html
 .fade_search-overlay-leave-to {
   opacity: 0;
 }
+
+/* Accordion open / close */
+.move_accordion-enter-active,
+.move_accordion-leave-active {
+  transition: max-height 0.5s ease;
+  overflow:hidden;
+}
+
+.move_accordion-enter-to,
+.move_accordion-leave {
+  max-height:250px;
+}
+
+.move_accordion-enter,
+.move_accordion-leave-to {
+  max-height:0;
+}
