@@ -113,7 +113,7 @@
     @include font-regular;
 
     user-select: none;
-    background:$color__ultralight;
+    background:$color__lighter;
 
     top: 10px;
     left: 10px;
