@@ -15,16 +15,6 @@ return [
     'block_views_mappings' => [],
     'block_preview_render_childs' => true,
     'blocks' => [
-        'title' => [
-            'title' => 'Title',
-            'icon' => 'text',
-            'component' => 'a17-block-title',
-        ],
-        'quote' => [
-            'title' => 'Quote',
-            'icon' => 'quote',
-            'component' => 'a17-block-quote',
-        ],
         'text' => [
             'title' => 'Body text',
             'icon' => 'text',
