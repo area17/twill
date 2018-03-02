@@ -5,11 +5,13 @@
       <div class="accordion__value"><slot name="accordion__value"></slot></div>
       <span v-svg symbol="dropdown_module"></span>
     </button>
-    <div class="accordion__dropdown" :aria-hidden="!visible ?  true : null">
-      <div class="accordion__list">
-        <slot></slot>
+    <transition :css="false" :duration="275" @before-enter="beforeEnter" @before-leave="beforeLeave" @enter="enter" @leave="leave">
+      <div class="accordion__dropdown" v-show="visible">
+        <div class="accordion__list">
+          <slot></slot>
+        </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -24,6 +26,23 @@
         if (this.visible !== this.open) {
           this.visible = this.open
         }
+      }
+    },
+    methods: {
+      getMaxHeight: function () { // retrieve max height depending on the content height
+        return Math.min(250, this.$el.querySelector('.accordion__list').clientHeight)
+      },
+      beforeEnter: function (el) {
+        el.style.maxHeight = '0px'
+      },
+      enter: function (el, done) {
+        el.style.maxHeight = this.getMaxHeight() + 'px'
+      },
+      beforeLeave: function (el, done) {
+        el.style.maxHeight = this.getMaxHeight() + 'px'
+      },
+      leave: function (el, done) {
+        el.style.maxHeight = '0px'
       }
     }
   }
@@ -62,18 +81,17 @@
   }
 
   .accordion__dropdown {
+    overflow:hidden;
     max-height:0;
     height:auto;
-    overflow:hidden;
-    transition: max-height .3s linear, visibility 0s .3s;
-    visibility: hidden;
+    transition: max-height 0.275s ease;
   }
 
   .accordion__list {
     border-top:1px solid $color__border--light;
     padding:12px 20px;
 
-    .input {
+    /deep/ .input {
       margin-top:0;
 
       + .input {
@@ -98,8 +116,6 @@
 
     .accordion__dropdown {
       max-height:250px;
-      visibility: visible;
-      transition: max-height .3s linear;
     }
 
     .icon {
