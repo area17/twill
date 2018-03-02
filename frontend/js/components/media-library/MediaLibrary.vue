@@ -470,7 +470,7 @@
     right: 0;
     bottom: 0;
     width: map-get($width_sidebar, default); // fixed arbitrary width
-    padding: 0 0 90px 0;
+    padding: 0 0 130px 0; // 130px so we have some room to display the tags dropdown menu under the field
     z-index: 75;
     background:$color__border--light;
     overflow: auto;
