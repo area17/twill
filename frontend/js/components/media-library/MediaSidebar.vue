@@ -202,9 +202,6 @@
 
         const data = this.getFormData(form)
 
-        console.log('refreshMetadatas')
-        console.log(data)
-
         // save caption and alt text on the media
         if (!this.focused && this.hasSingleMedia) {
           if (data.hasOwnProperty('alt-text')) this.firstMedia.metadatas.default.altText = data['alt-text']
