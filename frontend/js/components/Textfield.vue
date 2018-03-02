@@ -219,7 +219,7 @@
         this.updateAndSaveValue(newValue)
 
         this.$emit('change', newValue)
-      }, 200),
+      }, 250),
       resizeTextarea: function () {
         if (this.type !== 'textarea') return
 

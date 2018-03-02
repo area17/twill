@@ -23,17 +23,17 @@
         </a17-buttonbar>
       </div>
 
-      <form v-if="hasMedia" class="mediasidebar__inner mediasidebar__form" @submit="update" :class="formClasses">
+      <form v-if="hasMedia" ref="form" class="mediasidebar__inner mediasidebar__form" @submit="submit">
+        <span class="mediasidebar__loader" v-if="loading"><span class="loader"><span></span></span></span>
         <template v-if="hasMultipleMedias">
           <input type="hidden" name="ids" :value="mediasIdsToDeleteString" />
         </template>
         <template v-else>
           <input type="hidden" name="id" :value="firstMedia.id" />
-          <a17-textfield label="Alt text" name="alt-text" :initialValue="firstMedia.metadatas.default.altText" size="small"/>
-          <a17-textfield label="Caption" name="caption" :initialValue="firstMedia.metadatas.default.caption" size="small"/>
+          <a17-textfield label="Alt text" name="alt-text" :initialValue="firstMedia.metadatas.default.altText" size="small" @focus="focus" @blur="blur" @change="save" />
+          <a17-textfield label="Caption" name="caption" :initialValue="firstMedia.metadatas.default.caption" size="small" @focus="focus" @blur="blur" @change="save" />
         </template>
-        <a17-vselect label="Tags" name="tags" :multiple="true" :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small" :endpoint="tagsEndpoint"/>
-        <a17-button v-if="authorized" type="submit" variant="ghost" :disabled="loading">Update</a17-button>
+        <a17-vselect label="Tags" name="tags" :multiple="true" :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small" :endpoint="tagsEndpoint" @change="save" />
       </form>
     </template>
 
@@ -52,6 +52,7 @@
   import { mapState } from 'vuex'
   import { NOTIFICATION } from '@/store/mutations'
   import FormDataAsObj from '@/utils/formDataAsObj.js'
+  import { isEqual } from 'lodash'
   import api from '../../store/api/media-library'
 
   import a17MediaSidebarUpload from '@/components/media-library/MediaSidebarUpload'
@@ -73,7 +74,9 @@
     },
     data: function () {
       return {
-        loading: false
+        loading: false,
+        focused: false,
+        previousSavedData: {}
       }
     },
     filters: a17VueFilters,
@@ -117,11 +120,6 @@
         return {
           'mediasidebar__inner--multi': this.hasMultipleMedias,
           'mediasidebar__inner--single': this.hasSingleMedia
-        }
-      },
-      formClasses: function () {
-        return {
-          'mediasidebar__form--loading': this.loading
         }
       },
       ...mapState({
@@ -174,17 +172,65 @@
       getFormData: function (form) {
         return FormDataAsObj(form)
       },
-      update: function (event) {
+      focus: function () {
+        this.focused = true
+      },
+      blur: function () {
+        this.focused = false
+        this.save()
+
+        const form = this.$refs.form
+        if (form) this.refreshMetadatas(form)
+      },
+      save: function () {
+        const form = this.$refs.form
+        if (!form) return
+
+        const formData = this.getFormData(form)
+
+        if (!isEqual(formData, this.previousSavedData) && !this.loading) {
+          this.previousSavedData = formData
+          this.update(form)
+        }
+      },
+      submit: function (event) {
         event.preventDefault()
+        this.save()
+      },
+      refreshMetadatas: function (form) {
+        if (!this.hasMedia) return
 
-        if (this.loading) return false
+        const data = this.getFormData(form)
 
-        let data = this.getFormData(event.target)
+        console.log('refreshMetadatas')
+        console.log(data)
+
+        // save caption and alt text on the media
+        if (!this.focused && this.hasSingleMedia) {
+          if (data.hasOwnProperty('alt-text')) this.firstMedia.metadatas.default.altText = data['alt-text']
+          else this.firstMedia.metadatas.default.altText = ''
+
+          if (data.hasOwnProperty('caption')) this.firstMedia.metadatas.default.caption = data['caption']
+          else this.firstMedia.metadatas.default.caption = ''
+        }
+
+        // save new tags on the medias
+        if (data.hasOwnProperty('tags')) {
+          const newTags = data['tags'].split(',')
+          this.medias.forEach(function (media) {
+            newTags.forEach(function (tag) {
+              if (!media.tags.includes(tag)) media.tags.push(tag)
+            })
+          })
+        }
+      },
+      update: function (form) {
+        if (this.loading) return
 
         this.loading = true
 
-        // single or multi updates
-        const url = this.hasMultipleMedias ? this.firstMedia.updateBulkUrl : this.firstMedia.updateUrl
+        let data = this.getFormData(form)
+        const url = this.hasMultipleMedias ? this.firstMedia.updateBulkUrl : this.firstMedia.updateUrl // single or multi updates
 
         api.update(url, data, (resp) => {
           this.loading = false
@@ -192,18 +238,7 @@
           if (!this.hasMedia) return false
 
           // save caption and alt text on the media
-          if (data['alt-text']) this.firstMedia.metadatas.default.altText = data['alt-text']
-          if (data['caption']) this.firstMedia.metadatas.default.caption = data['caption']
-
-          // save new tags on the medias
-          if (data['tags']) {
-            const newTags = data['tags'].split(',')
-            this.medias.forEach(function (media) {
-              newTags.forEach(function (tag) {
-                if (!media.tags.includes(tag)) media.tags.push(tag)
-              })
-            })
-          }
+          this.refreshMetadatas(form)
         }, (error) => {
           this.$store.commit(NOTIFICATION.SET_NOTIF, {
             message: error.data.message,
@@ -267,6 +302,7 @@
 
   .mediasidebar__form {
     border-top:1px solid $color__border;
+    position: relative;
 
     button {
       margin-top:16px;
@@ -275,5 +311,11 @@
     &.mediasidebar__form--loading {
       opacity:0.5;
     }
+  }
+
+  .mediasidebar__loader {
+    position:absolute;
+    top:20px;
+    right:20px + 8px + 8px;
   }
 </style>
