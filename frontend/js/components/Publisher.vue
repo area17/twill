@@ -117,6 +117,8 @@
             if (prop !== componentname) this.openStates[prop] = false // close other accordion
             else this.openStates[prop] = true
           }
+        } else {
+          this.openStates[componentname] = false
         }
       },
       openPreview: function () {

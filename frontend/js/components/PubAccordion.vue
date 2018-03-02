@@ -82,9 +82,3 @@
     }
   }
 </script>
-
-<style lang="scss" scoped>
-  .accordion__fields {
-    min-height:125px;
-  }
-</style>
