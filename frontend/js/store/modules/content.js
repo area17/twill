@@ -8,6 +8,7 @@
 import Vue from 'vue'
 import api from '../api/content'
 import { CONTENT } from '../mutations'
+import * as ACTIONS from '@/store/actions'
 import { buildBlock, isBlockEmpty } from '@/utils/getFormData.js'
 
 const state = {
@@ -134,7 +135,7 @@ function getBlockPreview (block, commit, rootState, callback) {
 }
 
 const actions = {
-  getPreview ({ commit, state, rootState }, index = -1) {
+  [ACTIONS.GET_PREVIEW] ({ commit, state, rootState }, index = -1) {
     let block = index >= 0 ? state.blocks[index] : {}
 
     // refresh preview of the active block
@@ -142,7 +143,7 @@ const actions = {
 
     getBlockPreview(block, commit, rootState)
   },
-  getAllPreviews ({ commit, state, rootState }) {
+  [ACTIONS.GET_ALL_PREVIEWS] ({ commit, state, rootState }) {
     if (state.blocks.length && !state.loading) {
       commit(CONTENT.UPDATE_PREVIEW_LOADING, true)
       let loadedPreview = 0

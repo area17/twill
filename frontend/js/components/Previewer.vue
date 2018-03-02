@@ -59,6 +59,7 @@
   import { mapState } from 'vuex'
 
   import { REVISION, FORM, NOTIFICATION } from '@/store/mutations'
+  import * as ACTIONS from '@/store/actions'
 
   import A17PreviewerFrame from '@/components/PreviewerFrame.vue'
   import a17VueFilters from '@/utils/filters.js'
@@ -113,7 +114,7 @@
       open: function () {
         this.$store.commit(REVISION.UPDATE_REV, 0)
 
-        this.$store.dispatch('getCurrentContent').then(() => {
+        this.$store.dispatch(ACTIONS.GET_CURRENT).then(() => {
           this.$refs.overlay.open()
           this.singleView()
         }, (errorResponse) => {
@@ -135,7 +136,7 @@
       getCurrentPreview: function () {
         if (this.loadedCurrent) return
         this.loadedCurrent = true
-        this.$store.dispatch('getCurrentContent')
+        this.$store.dispatch(ACTIONS.GET_CURRENT)
       },
       restoreRevision: function () {
         // Do something here
@@ -146,7 +147,7 @@
       },
       previewRevision: function (id) {
         this.$store.commit(REVISION.UPDATE_REV, id)
-        this.$store.dispatch('getRevisionContent').then(() => {
+        this.$store.dispatch(ACTIONS.GET_REVISION).then(() => {
           // all good
         }, (errorResponse) => {
           this.$store.commit(NOTIFICATION.SET_NOTIF, {

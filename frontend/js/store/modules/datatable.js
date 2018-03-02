@@ -1,5 +1,7 @@
 import api from '../api/datatable'
 import { DATATABLE, NOTIFICATION } from '../mutations'
+import * as ACTIONS from '@/store/actions'
+
 import { setStorage } from '@/utils/localeStorage.js'
 /* NESTED functions */
 const getObject = (container, id, callback) => {
@@ -220,7 +222,7 @@ const mutations = {
 }
 
 const actions = {
-  getDatatableDatas ({ commit, state, getters }) {
+  [ACTIONS.GET_DATATABLE] ({ commit, state, getters }) {
     if (!state.loading) {
       commit(DATATABLE.UPDATE_DATATABLE_LOADING, true)
       const params = {
@@ -240,41 +242,41 @@ const actions = {
       })
     }
   },
-  setDatatableNestedDatas ({commit, state, dispatch}) {
+  [ACTIONS.SET_DATATABLE_NESTED] ({commit, state, dispatch}) {
     // Get all ids and children ids if any
     const ids = deepRemoveFromObj(state.data)
     api.reorder(ids, function (resp) {
       commit(NOTIFICATION.SET_NOTIF, {message: resp.data.message, variant: resp.data.variant})
     })
   },
-  setDatatableDatas ({commit, state, dispatch}) {
+  [ACTIONS.SET_DATATABLE] ({commit, state, dispatch}) {
     const ids = state.data.map((row) => row.id)
 
     api.reorder(ids, function (resp) {
       commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
     })
   },
-  togglePublishedData ({ commit, state, dispatch }, row) {
+  [ACTIONS.TOGGLE_PUBLISH] ({ commit, state, dispatch }, row) {
     api.togglePublished(row, function (resp) {
       commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
-      dispatch('getDatatableDatas')
+      dispatch(ACTIONS.GET_DATATABLE)
     }, function (errorResp) {
       commit(NOTIFICATION.SET_NOTIF, { message: errorResp.data.error.message, variant: 'error' })
     })
   },
-  deleteData ({ commit, state, dispatch }, row) {
+  [ACTIONS.DELETE_ROW] ({ commit, state, dispatch }, row) {
     api.delete(row, function (resp) {
       commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
-      dispatch('getDatatableDatas')
+      dispatch(ACTIONS.GET_DATATABLE)
     })
   },
-  restoreData ({ commit, state, dispatch }, row) {
+  [ACTIONS.RESTORE_ROW] ({ commit, state, dispatch }, row) {
     api.restore(row, function (resp) {
       commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
-      dispatch('getDatatableDatas')
+      dispatch(ACTIONS.GET_DATATABLE)
     })
   },
-  bulkPublishData ({ commit, state, dispatch }, payload) {
+  [ACTIONS.BULK_PUBLISH] ({ commit, state, dispatch }, payload) {
     api.bulkPublish(
       {
         ids: state.bulk.join(),
@@ -282,11 +284,11 @@ const actions = {
       },
       function (resp) {
         commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
-        dispatch('getDatatableDatas')
+        dispatch(ACTIONS.GET_DATATABLE)
       }
     )
   },
-  toggleFeaturedData ({ commit, state }, row) {
+  [ACTIONS.TOGGLE_FEATURE] ({ commit, state }, row) {
     api.toggleFeatured(row, resp => {
       commit(DATATABLE.FEATURE_DATATABLE, {
         id: row.id,
@@ -295,7 +297,7 @@ const actions = {
       commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
     })
   },
-  bulkFeatureData ({ commit, state }, payload) {
+  [ACTIONS.BULK_FEATURE] ({ commit, state }, payload) {
     api.bulkFeature(
       {
         ids: state.bulk.join(),
@@ -310,16 +312,16 @@ const actions = {
       }
     )
   },
-  bulkDeleteData ({ commit, state, dispatch }) {
+  [ACTIONS.BULK_DELETE] ({ commit, state, dispatch }) {
     api.bulkDelete(state.bulk.join(), function (resp) {
       commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
-      dispatch('getDatatableDatas')
+      dispatch(ACTIONS.GET_DATATABLE)
     })
   },
-  bulkRestoreData ({ commit, state, dispatch }) {
+  [ACTIONS.BULK_RESTORE] ({ commit, state, dispatch }) {
     api.bulkRestore(state.bulk.join(), function (resp) {
       commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
-      dispatch('getDatatableDatas')
+      dispatch(ACTIONS.GET_DATATABLE)
     })
   }
 }

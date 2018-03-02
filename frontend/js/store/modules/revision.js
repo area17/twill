@@ -1,5 +1,6 @@
 import revisionAPI from '../api/revision'
 import { REVISION } from '../mutations'
+import * as ACTIONS from '@/store/actions'
 import { getFormData } from '@/utils/getFormData.js'
 
 const state = {
@@ -38,7 +39,7 @@ const mutations = {
 }
 
 const actions = {
-  getCurrentContent ({ commit, rootState }) {
+  [ACTIONS.GET_CURRENT] ({ commit, rootState }) {
     return new Promise((resolve, reject) => {
       commit(REVISION.LOADING_REV)
 
@@ -61,7 +62,7 @@ const actions = {
       )
     })
   },
-  getRevisionContent ({ commit, state, rootState }) {
+  [ACTIONS.GET_REVISION] ({ commit, state, rootState }) {
     return new Promise((resolve, reject) => {
       commit(REVISION.LOADING_REV)
 

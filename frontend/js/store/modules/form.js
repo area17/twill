@@ -7,6 +7,7 @@
 import api from '../api/form'
 import { getFormData, getFormFields } from '@/utils/getFormData.js'
 import { FORM, NOTIFICATION } from '../mutations'
+import * as ACTIONS from '@/store/actions'
 
 const state = {
   /**
@@ -132,7 +133,7 @@ const mutations = {
 }
 
 const actions = {
-  replaceFormData ({ commit, state, getters, rootState }, endpoint) {
+  [ACTIONS.REPLACE_FORM] ({ commit, state, getters, rootState }, endpoint) {
     return new Promise((resolve, reject) => {
       commit(FORM.CLEAR_FORM_ERRORS)
       commit(NOTIFICATION.CLEAR_NOTIF, 'error')
@@ -148,7 +149,7 @@ const actions = {
       })
     })
   },
-  updateFormInListing ({ commit, state, getters, rootState }, options) {
+  [ACTIONS.UPDATE_FORM_IN_LISTING] ({ commit, state, getters, rootState }, options) {
     return new Promise((resolve, reject) => {
       commit(FORM.CLEAR_FORM_ERRORS)
       commit(NOTIFICATION.CLEAR_NOTIF, 'error')
@@ -172,7 +173,7 @@ const actions = {
       })
     })
   },
-  saveFormData ({ commit, state, getters, rootState }, saveType) {
+  [ACTIONS.SAVE_FORM] ({ commit, state, getters, rootState }, saveType) {
     commit(FORM.CLEAR_FORM_ERRORS)
     commit(NOTIFICATION.CLEAR_NOTIF, 'error')
 

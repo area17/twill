@@ -25,6 +25,7 @@
 <script>
   import { mapState } from 'vuex'
   import { DATATABLE } from '@/store/mutations'
+  import * as ACTIONS from '@/store/actions'
   import A17ActivityRow from '@/components/dashboard/activityRow.vue'
 
   export default {
@@ -71,7 +72,7 @@
       },
       reloadDatas: function () {
         // reload datas
-        this.$store.dispatch('getDatatableDatas')
+        this.$store.dispatch(ACTIONS.GET_DATATABLE)
       }
     }
   }

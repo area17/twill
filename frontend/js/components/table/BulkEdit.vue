@@ -30,6 +30,7 @@
 <script>
   import { mapState } from 'vuex'
   import { DATATABLE } from '@/store/mutations'
+  import * as ACTIONS from '@/store/actions'
 
   export default {
     name: 'A17BulkEditor',
@@ -74,26 +75,26 @@
         this.$store.commit(DATATABLE.REPLACE_DATATABLE_BULK, [])
       },
       bulkPublish: function () {
-        this.$store.dispatch('bulkPublishData', { toPublish: true })
+        this.$store.dispatch(ACTIONS.BULK_PUBLISH, { toPublish: true })
       },
       bulkUnpublish: function () {
-        this.$store.dispatch('bulkPublishData', { toPublish: false })
+        this.$store.dispatch(ACTIONS.BULK_PUBLISH, { toPublish: false })
       },
       bulkFeature: function () {
-        this.$store.dispatch('bulkFeatureData', { toFeature: true })
+        this.$store.dispatch(ACTIONS.BULK_FEATURE, { toFeature: true })
       },
       bulkUnFeature: function () {
-        this.$store.dispatch('bulkFeatureData', { toFeature: false })
+        this.$store.dispatch(ACTIONS.BULK_FEATURE, { toFeature: false })
       },
       bulkExport: function () {
         // Todo : not sure what should be done here
-        this.$store.dispatch('bulkExportData')
+        this.$store.dispatch(ACTIONS.BULK_EXPORT)
       },
       bulkDelete: function () {
-        this.$store.dispatch('bulkDeleteData')
+        this.$store.dispatch(ACTIONS.BULK_DELETE)
       },
       bulkRestore: function () {
-        this.$store.dispatch('bulkRestoreData')
+        this.$store.dispatch(ACTIONS.BULK_RESTORE)
       }
     }
   }

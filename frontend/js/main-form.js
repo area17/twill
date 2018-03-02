@@ -4,6 +4,7 @@ import Vue from 'vue'
 import { mapState } from 'vuex'
 import store from '@/store'
 import { FORM } from '@/store/mutations'
+import * as ACTIONS from '@/store/actions'
 
 // General shared behaviors
 import main from '@/main'
@@ -134,7 +135,7 @@ Window.vm = new Vue({
         this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
 
         self.$nextTick(function () { // let's wait for the loading state to be properly deployed (used to save wysiwyg fields)
-          self.$store.dispatch('saveFormData', document.activeElement.name)
+          self.$store.dispatch(ACTIONS.SAVE_FORM, document.activeElement.name)
         })
       }
     },
