@@ -106,6 +106,8 @@
 
         this.hidden = true
         this.mask()
+
+        window.removeEventListener('keyup', this.keyPressed)
         this.$emit('close')
       },
       close: function (onClose) {
