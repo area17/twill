@@ -62,21 +62,24 @@
       attributesPerLang: function (lang) {
         const language = this.languages.find(l => l.value === lang)
 
+        let attributes = Object.assign({}, this.attributes)
+
         // for textfields set initial values using the initialValues prop
         if (this.initialValues[lang]) {
-          this.attributes.initialValue = this.initialValues[lang]
+          attributes.initialValue = this.initialValues[lang]
         } else {
-          this.attributes.initialValue = ''
+          attributes.initialValue = ''
         }
 
-        this.attributes.required = !!language.published && this.isRequired
+        attributes.required = !!language.published && this.isRequired
 
-        return this.attributes
+        return attributes
       },
       attributesNoLang: function () {
+        let attributes = Object.assign({}, this.attributes)
         // for textfields set initial values using the initialValue prop
-        if (this.initialValue) this.attributes.initialValue = this.initialValue
-        return this.attributes
+        if (this.initialValue) attributes.initialValue = this.initialValue
+        return attributes
       },
       updateLocale: function (oldValue) {
         this.$store.commit(LANGUAGE.SWITCH_LANG, { oldValue })
