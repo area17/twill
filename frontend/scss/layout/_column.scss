@@ -49,3 +49,29 @@ $column-spans__even: (
 .col--aside {
   @include column-flex($column-spans__aside);
 }
+
+.col--double {
+  flex: 0 0 auto;
+  @each $name, $point in $breakpoints {
+    @include breakpoint('#{$name}') {
+      width: calc(50% - #{map-get($inner-gutters, $name)});
+      margin-left: map-get($inner-gutters, $name);
+    }
+  }
+
+  @include breakpoint('xsmall') {
+    width: calc(100% - #{map-get($inner-gutters, 'xsmall')});
+  }
+
+  @include breakpoint('medium') {
+    width: calc(100% - #{map-get($inner-gutters, 'medium')});
+  }
+}
+
+.editor .col--double {
+  @each $name, $point in $breakpoints {
+    @include breakpoint('#{$name}') {
+      width: calc(100% - #{map-get($inner-gutters, $name)});
+    }
+  }
+}
