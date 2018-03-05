@@ -110,7 +110,7 @@ trait HasMedias
         }
 
         if ($media) {
-            $metadatas = json_decode($media->pivot->metadatas);
+            $metadatas = (object) json_decode($media->pivot->metadatas);
             $language = app()->getLocale();
             return $metadatas->altText->$language ?? (is_object($metadatas->altText) ? ($media->altText ?? '') : ($metadatas->altText ?? $media->altText));
         }
@@ -127,7 +127,7 @@ trait HasMedias
         }
 
         if ($media) {
-            $metadatas = json_decode($media->pivot->metadatas);
+            $metadatas = (object) json_decode($media->pivot->metadatas);
             $language = app()->getLocale();
             return $metadatas->caption->$language ?? (is_object($metadatas->caption) ? ($media->caption ?? '') : ($metadatas->caption ?? $media->caption));
         }
@@ -144,7 +144,7 @@ trait HasMedias
         }
 
         if ($media) {
-            $metadatas = json_decode($media->pivot->metadatas);
+            $metadatas = (object) json_decode($media->pivot->metadatas);
             $language = app()->getLocale();
             return $metadatas->video->$language ?? (is_object($metadatas->video) ? '' : ($metadatas->video ?? ''));
         }
