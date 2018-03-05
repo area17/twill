@@ -19,6 +19,10 @@
       inModal: {
         type: Boolean,
         default: false
+      },
+      toggleOnClick: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {
@@ -32,7 +36,7 @@
     methods: {
       onClick: function (newValue) {
         if (newValue === this.localeValue.value) {
-          if (this.inModal && ((this.localeValue.published && this.publishedLanguages.length > 1) || !this.localeValue.published)) {
+          if (this.inModal && this.toggleOnClick && ((this.localeValue.published && this.publishedLanguages.length > 1) || !this.localeValue.published)) {
             this.$store.commit(LANGUAGE.PUBLISH_SINGLE_LANG, newValue)
           }
         } else {
