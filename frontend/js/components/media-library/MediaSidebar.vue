@@ -33,7 +33,7 @@
           <a17-textfield label="Alt text" name="alt_text" :initialValue="firstMedia.metadatas.default.altText" size="small" @focus="focus" @blur="blur" @change="save" />
           <a17-textfield label="Caption" name="caption" :initialValue="firstMedia.metadatas.default.caption" size="small" @focus="focus" @blur="blur" @change="save" />
         </template>
-        <a17-vselect label="Tags" name="tags" :multiple="true" :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small" :endpoint="tagsEndpoint" @change="save" />
+        <a17-vselect label="Tags" :key="medias.length" name="tags" :multiple="true" :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small" :endpoint="tagsEndpoint" @change="save" />
       </form>
     </template>
 
@@ -215,6 +215,7 @@
         }
 
         // save new tags on the medias
+        // TODO: remove tags too
         if (data.hasOwnProperty('tags')) {
           const newTags = data['tags'].split(',')
           this.medias.forEach(function (media) {

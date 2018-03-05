@@ -160,7 +160,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         $ids = explode(',', $this->request->input('ids'));
 
         $previousCommonTags = $this->repository->getTags(null, $ids);
-        $newTags = explode(',', $this->request->input('tags'));
+        $newTags = array_filter(explode(',', $this->request->input('tags')));
 
         foreach ($ids as $id) {
             $this->repository->update($id, ['bulk_tags' => $newTags, 'previous_common_tags' => $previousCommonTags]);
