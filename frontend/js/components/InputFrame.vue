@@ -84,6 +84,19 @@
     }
   }
 
+  /* Input inline */
+  .input__inliner {
+    > .input {
+      display:inline-block;
+      margin-top:0;
+      margin-right: 20px;
+
+      .singleCheckbox {
+        padding:7px 0 8px 0;
+      }
+    }
+  }
+
   /* small variant */
 
   .input--small {
