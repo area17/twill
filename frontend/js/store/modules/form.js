@@ -6,7 +6,7 @@
 
 import api from '../api/form'
 import { getFormData, getFormFields } from '@/utils/getFormData.js'
-import { FORM, NOTIFICATION } from '../mutations'
+import { FORM, NOTIFICATION, LANGUAGE } from '../mutations'
 import * as ACTIONS from '@/store/actions'
 
 const state = {
@@ -140,7 +140,15 @@ const actions = {
 
       api.get(endpoint, function (successResponse) {
         commit(FORM.UPDATE_FORM_LOADING, false)
-        commit(FORM.REPLACE_FORM_FIELDS, successResponse.data)
+
+        let data = successResponse.data
+
+        if (data.hasOwnProperty('languages')) {
+          commit(LANGUAGE.REPLACE_LANGUAGES, successResponse.data.languages)
+          delete data.languages
+        }
+
+        commit(FORM.REPLACE_FORM_FIELDS, data.fields)
         resolve()
       }, function (errorResponse) {
         commit(FORM.UPDATE_FORM_LOADING, false)
@@ -154,9 +162,11 @@ const actions = {
       commit(FORM.CLEAR_FORM_ERRORS)
       commit(NOTIFICATION.CLEAR_NOTIF, 'error')
 
-      const data = Object.assign(getFormFields(rootState), {languages: rootState.language.all})
+      const data = Object.assign(getFormFields(rootState), {
+        languages: rootState.language.all
+      })
 
-      api.post(options.endpoint, data, function (successResponse) {
+      api[options.method](options.endpoint, data, function (successResponse) {
         commit(FORM.UPDATE_FORM_LOADING, false)
 
         if (successResponse.data.hasOwnProperty('redirect') && options.redirect) {
@@ -187,7 +197,7 @@ const actions = {
     // - created blocks and repeaters
     const data = getFormData(rootState)
 
-    api.save(state.saveUrl, data, function (successResponse) {
+    api.put(state.saveUrl, data, function (successResponse) {
       commit(FORM.UPDATE_FORM_LOADING, false)
 
       if (successResponse.data.hasOwnProperty('redirect')) {

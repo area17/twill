@@ -14,6 +14,11 @@ const state = {
    */
   all: window.STORE.languages.all || [],
   /**
+   * Array of all the languages available (initial value (not to be modified))
+   * @type {Array.Object}
+   */
+  initialAll: window.STORE.languages.all || [],
+  /**
    * The language you are currently editing
    * @type {Object}
    */
@@ -61,8 +66,13 @@ const mutations = {
 
     const index = state.all.findIndex(isMatchingLocale)
     state.all[index].published = !state.all[index].published
+  },
+  [LANGUAGE.REPLACE_LANGUAGES] (state, newValue) {
+    state.all = newValue
+  },
+  [LANGUAGE.RESET_LANGUAGES] (state) {
+    state.all = state.initialAll
   }
-
 }
 
 export default {

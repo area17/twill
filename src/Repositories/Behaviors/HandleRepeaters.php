@@ -103,7 +103,7 @@ trait HandleRepeaters
                 }
             }
 
-            $itemFields = method_exists($relationItem, 'toRepeaterArray') ? $relationItem->toRepeaterArray() : array_except($relationItem->toArray(), $translatedFields);
+            $itemFields = method_exists($relationItem, 'toRepeaterArray') ? $relationItem->toRepeaterArray() : array_except($relationItem->attributesToArray(), $translatedFields);
 
             foreach ($itemFields as $key => $value) {
                 $repeatersFields[] = [

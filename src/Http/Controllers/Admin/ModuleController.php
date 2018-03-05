@@ -45,6 +45,7 @@ abstract class ModuleController extends Controller
         'reorder' => false,
         'permalink' => true,
         'bulkEdit' => true,
+        'editInModal' => false,
     ];
 
     /*
@@ -206,25 +207,39 @@ abstract class ModuleController extends Controller
 
         $this->fireEvent($input);
 
-        Session::put($this->moduleName . "_retain", true);
+        Session::put($this->moduleName . '_retain', true);
+
+        if ($this->getIndexOption('editInModal')) {
+            return $this->respondWithSuccess('Content saved. All good!');
+        }
 
         return $this->respondWithRedirect(moduleRoute(
             $this->moduleName,
             $this->routePrefix,
-            "edit",
+            'edit',
             array_filter([$parentModuleId]) + ['id' => $item->id]
         ));
     }
 
-    public function show($id)
+    public function show($id, $submoduleId = null)
     {
-        return $this->redirectToForm($id);
+        if ($this->getIndexOption('editInModal')) {
+            return redirect(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
+        }
+
+        return $this->redirectToForm($submoduleId ?? $submodule);
     }
 
     public function edit($id, $submoduleId = null)
     {
         $this->submodule = isset($submoduleId);
         $this->submoduleParentId = $id;
+
+        if ($this->getIndexOption('editInModal')) {
+            return $this->request->ajax()
+            ? response()->json($this->modalFormData($submodule ?? $id))
+            : redirect(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
+        }
 
         $this->setBackLink();
         $this->addLock($submoduleId ?? $id);
@@ -536,7 +551,10 @@ abstract class ModuleController extends Controller
                 'publish_end_date' => $item->publish_end_date,
                 'edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null,
                 'delete' => ($canEdit && $itemCanDelete) ? $this->getModuleRoute($item->id, 'destroy') : null,
-            ] + ($this->getIndexOption('publish') && ($item->canPublish ?? true) ? [
+            ] + ($this->getIndexOption('editInModal') ? [
+                'editInModal' => $this->getModuleRoute($item->id, 'edit'),
+                'updateUrl' => $this->getModuleRoute($item->id, 'update'),
+            ] : []) + ($this->getIndexOption('publish') && ($item->canPublish ?? true) ? [
                 'published' => $item->published,
             ] : []) + ($this->getIndexOption('feature') && ($item->canFeature ?? true) ? [
                 'featured' => $item->{$this->featureField},
@@ -764,6 +782,7 @@ abstract class ModuleController extends Controller
                 'bulkFeature' => 'feature',
                 'bulkDelete' => 'delete',
                 'bulkEdit' => 'edit',
+                'editInModal' => 'edit',
             ];
 
             $authorized = array_key_exists($option, $authorizableOptions) ? auth()->user()->can($authorizableOptions[$option]) : true;
@@ -867,15 +886,15 @@ abstract class ModuleController extends Controller
     protected function orderScope()
     {
         $orders = [];
-        if ($this->request->has("sortKey") && $this->request->has("sortDir")) {
-            if (($key = $this->request->get("sortKey")) == 'name') {
+        if ($this->request->has('sortKey') && $this->request->has('sortDir')) {
+            if (($key = $this->request->get('sortKey')) == 'name') {
                 $sortKey = $this->titleColumnKey;
             } elseif (!empty($key)) {
                 $sortKey = $key;
             }
 
             if (isset($sortKey)) {
-                $orders[$this->indexColumns[$sortKey]['sortKey'] ?? $sortKey] = $this->request->get("sortDir");
+                $orders[$this->indexColumns[$sortKey]['sortKey'] ?? $sortKey] = $this->request->get('sortDir');
             }
         }
 
@@ -921,6 +940,35 @@ abstract class ModuleController extends Controller
              + (Route::has($restoreRouteName) ? [
             'restoreUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'restoreRevision', $item->id),
         ] : []);
+
+        return array_replace_recursive($data, $this->formData($this->request));
+    }
+
+    protected function modalFormData($id)
+    {
+        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
+        $fields = $this->repository->getFormFields($item);
+        $data = [];
+
+        if ($this->moduleIsTranslated() && isset($fields['translations'])) {
+            foreach ($fields['translations'] as $fieldName => $fieldValue) {
+                $data['fields'][] = [
+                    'name' => $fieldName,
+                    'value' => $fieldValue,
+                ];
+            }
+
+            $data['languages'] = $item->getActiveLanguages();
+
+            unset($fields['translations']);
+        }
+
+        foreach ($fields as $fieldName => $fieldValue) {
+            $data['fields'][] = [
+                'name' => $fieldName,
+                'value' => $fieldValue,
+            ];
+        }
 
         return array_replace_recursive($data, $this->formData($this->request));
     }
@@ -1081,38 +1129,38 @@ abstract class ModuleController extends Controller
                 $back_link = $this->request->headers->get('referer') ?? moduleRoute(
                     $this->moduleName,
                     $this->routePrefix,
-                    "index",
+                    'index',
                     $params
                 );
             }
         }
 
-        if (!Session::get($this->moduleName . "_retain")) {
+        if (!Session::get($this->moduleName . '_retain')) {
             Session::put($this->getBackLinkSessionKey(), $back_link);
         } else {
-            Session::put($this->moduleName . "_retain", false);
+            Session::put($this->moduleName . '_retain', false);
         }
     }
 
     protected function getBackLink($fallback = null, $params = [])
     {
         $back_link = Session::get($this->getBackLinkSessionKey(), $fallback);
-        return $back_link ?? moduleRoute($this->moduleName, $this->routePrefix, "index", $params);
+        return $back_link ?? moduleRoute($this->moduleName, $this->routePrefix, 'index', $params);
     }
 
     protected function getBackLinkSessionKey()
     {
-        return $this->moduleName . ($this->submodule ? $this->submoduleParentId ?? "" : "") . "_back_link";
+        return $this->moduleName . ($this->submodule ? $this->submoduleParentId ?? '' : '') . '_back_link';
     }
 
     protected function redirectToForm($id, $params = [])
     {
-        Session::put($this->moduleName . "_retain", true);
+        Session::put($this->moduleName . '_retain', true);
 
         return redirect(moduleRoute(
             $this->moduleName,
             $this->routePrefix,
-            "edit",
+            'edit',
             array_filter($params) + ['id' => $id]
         ));
     }

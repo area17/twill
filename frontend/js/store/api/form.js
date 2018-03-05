@@ -17,7 +17,7 @@ export default {
       console.warn('post request error.')
     })
   },
-  save (endpoint, data, callback, errorCallback) {
+  put (endpoint, data, callback, errorCallback) {
     axios.put(endpoint, data).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {

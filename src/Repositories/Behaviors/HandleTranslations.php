@@ -58,9 +58,12 @@ trait HandleTranslations
 
     public function getFormFieldsHandleTranslations($object, $fields)
     {
+        unset($fields['translations']);
+
         if ($object->translations != null && $object->translatedAttributes != null) {
             foreach ($object->translations as $translation) {
                 foreach ($object->translatedAttributes as $attribute) {
+                    unset($fields[$attribute]);
                     $fields['translations'][$attribute][$translation->locale] = $translation->{$attribute};
                 }
             }
