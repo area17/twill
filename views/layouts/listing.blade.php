@@ -62,10 +62,17 @@
                 <a17-bulk></a17-bulk>
             @endif
         </div>
-        <a17-datatable :draggable="{{ $reorder ? 'true' : 'false' }}" :nested="{{ $nested ? 'true' : 'false' }}" :max-depth="{{ $nestedDepth ?? '1' }}" :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}" empty-message="There is no item here yet."></a17-datatable>
+
+        <a17-datatable
+            :draggable="{{ $reorder ? 'true' : 'false' }}"
+            :nested="{{ $nested ? 'true' : 'false' }}"
+            :max-depth="{{ $nestedDepth ?? '1' }}"
+            :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
+            empty-message="There is no item here yet."
+        ></a17-datatable>
 
         <a17-modal-create ref="editionModal" :form-create="'{{ $storeUrl }}'" v-on:reload="reloadDatas">
-            <a17-langswitcher :in-modal="true"></a17-langswitcher>
+            <a17-langswitcher :in-modal="true" :toggle-on-click="true"></a17-langswitcher>
             @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
         </a17-modal-create>
     </div>
@@ -99,6 +106,10 @@
         baseUrl: '{{ rtrim(config('app.url'), '/') . '/' }}',
         localStorageKey: '{{ isset($currentUser) ? $currentUser->id : 0 }}__{{ $moduleName ?? Route::currentRouteName() }}'
     }
+
+    @if ($openCreate ?? false)
+        window.openCreate = {!! json_encode($openCreate) !!}
+    @endif
 @stop
 
 @push('extra_js')

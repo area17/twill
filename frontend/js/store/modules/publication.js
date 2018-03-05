@@ -30,10 +30,10 @@ const state = {
         name: 'save-close',
         text: 'Save as draft and close'
       },
-      // {
-      //   name: 'save-new',
-      //   text: 'Save as draft and create new'
-      // },
+      {
+        name: 'save-new',
+        text: 'Save as draft and create new'
+      },
       {
         name: 'cancel',
         text: 'Cancel'
@@ -48,10 +48,10 @@ const state = {
         name: 'publish-close',
         text: 'Publish and close'
       },
-      // {
-      //   name: 'publish-new',
-      //   text: 'Publish and create new'
-      // },
+      {
+        name: 'publish-new',
+        text: 'Publish and create new'
+      },
       {
         name: 'cancel',
         text: 'Cancel'
@@ -66,10 +66,10 @@ const state = {
         name: 'update-close',
         text: 'Update and close'
       },
-      // {
-      //   name: 'update-new',
-      //   text: 'Update and create new'
-      // },
+      {
+        name: 'update-new',
+        text: 'Update and create new'
+      },
       {
         name: 'cancel',
         text: 'Cancel'

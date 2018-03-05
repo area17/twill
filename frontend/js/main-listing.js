@@ -98,8 +98,12 @@ Window.vm = new Vue({
       this.reloadDatas()
     }
   },
+  mounted: function () {
+    if (window.openCreate) this.create()
+  },
   created: function () {
     openMediaLibrary()
+
     let reload = false
     const pageOffset = getStorage(this.localStorageKey + '_page-offset')
     if (pageOffset) {

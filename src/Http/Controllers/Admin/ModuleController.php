@@ -189,7 +189,7 @@ abstract class ModuleController extends Controller
             return view()->exists($view);
         });
 
-        return view($view, $indexData);
+        return view($view, $indexData + (request()->has('openCreate') && request('openCreate') ? ['openCreate' => true] : []));
     }
 
     public function browser()
@@ -266,8 +266,17 @@ abstract class ModuleController extends Controller
 
                 $this->fireEvent();
 
-                if (isset($input['cmsSaveType']) && ends_with($input['cmsSaveType'], 'close')) {
-                    return $this->respondWithRedirect($this->getBackLink());
+                if (isset($input['cmsSaveType'])) {
+                    if (ends_with($input['cmsSaveType'], '-close')) {
+                        return $this->respondWithRedirect($this->getBackLink());
+                    } elseif (ends_with($input['cmsSaveType'], '-new')) {
+                        return $this->respondWithRedirect(moduleRoute(
+                            $this->moduleName,
+                            $this->routePrefix,
+                            'index',
+                            ['openCreate' => true]
+                        ));
+                    }
                 }
 
                 return $this->respondWithSuccess('Content saved. All good!');
