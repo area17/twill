@@ -18,6 +18,7 @@
 </template>
 
 <script>
+  import { FORM } from '@/store/mutations'
   import a17Switcher from '@/components/Switcher.vue'
 
   export default {
@@ -64,6 +65,14 @@
         fields: false,
         isDisabled: this.isDisable,
         published: this.isPublish
+      }
+    },
+    watch: {
+      published: function (value) {
+        this.$store.commit(FORM.UPDATE_FORM_FIELD, {
+          name: 'published',
+          value: value
+        })
       }
     },
     computed: {
