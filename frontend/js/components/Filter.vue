@@ -14,7 +14,7 @@
         <div class="filter__moreInner" >
           <slot name="hidden-filters"></slot>
           <a17-button variant="ghost" type="submit">Apply</a17-button>
-          <a17-button v-if="clearOption" variant="ghost" @click="clear">Clear</a17-button>
+          <a17-button v-if="clearOption" variant="ghost" type="button" @click="clear">Clear</a17-button>
         </div>
       </div>
     </transition>

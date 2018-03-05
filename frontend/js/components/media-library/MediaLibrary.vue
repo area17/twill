@@ -26,7 +26,7 @@
           </div>
 
           <div slot="hidden-filters">
-            <a17-vselect class="medialibrary__filter-item" ref="filter" name="tag" :options="tags" placeholder="Filter by tag" :toggleSelectOption="true"/>
+            <a17-vselect class="medialibrary__filter-item" ref="filter" name="tag" :options="tags" placeholder="Filter by tag" :toggleSelectOption="true" />
           </div>
         </a17-filter>
       </div>
@@ -256,8 +256,13 @@
         return data
       },
       clearFilters: function () {
-        this.$refs.filter.$data.value = null
-        this.submitFilter()
+        let self = this
+        // reset tags
+        if (this.$refs.filter) this.$refs.filter.value = null
+
+        this.$nextTick(function () {
+          self.submitFilter()
+        })
       },
       clearSelectedMedias: function () {
         this.selectedMedias.splice(0)

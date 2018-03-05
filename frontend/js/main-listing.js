@@ -93,9 +93,13 @@ Window.vm = new Vue({
       this.reloadDatas()
     },
     filterListing: function (formData) {
+      let self = this
       this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
       this.$store.commit(DATATABLE.UPDATE_DATATABLE_FILTER, formData || {search: ''})
-      this.reloadDatas()
+
+      this.$nextTick(function () {
+        self.reloadDatas()
+      })
     }
   },
   mounted: function () {
