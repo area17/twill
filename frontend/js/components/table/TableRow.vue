@@ -19,7 +19,7 @@
         </template> <!-- Thumbnail -->
         <a17-tableDates v-if="col.name === 'publish_start_date'" :startDate="row['publish_start_date']" :endDate="row['publish_end_date'] || ''"/>
         <!-- Published Date -->
-        <a17-tableLanguages v-if="col.name === 'languages'" :languages="row['languages']" :editUrl="editUrl"/>
+        <a17-tableLanguages v-if="col.name === 'languages'" :languages="row['languages']" :editUrl="editUrl" @editInPlaceWithLang="editInPlace"/>
         <!-- Languages -->
       </template>
 

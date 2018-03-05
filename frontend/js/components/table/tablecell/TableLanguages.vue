@@ -1,10 +1,11 @@
 <template>
   <span>
-    <a v-for="language in languages" :key="language.value" :href="editWithLanguage(language)" class="tag tag--disabled" :class="{ 'tag--enabled' : language.published }">{{ language.shortlabel }}</a>
+    <a v-for="language in languages" :key="language.value" :href="editWithLanguage(language)" @click="editInPlace($event, language)" class="tag tag--disabled" :class="{ 'tag--enabled' : language.published }">{{ language.shortlabel }}</a>
   </span>
 </template>
 
 <script>
+  import { LANGUAGE } from '@/store/mutations'
   export default {
     name: 'A17TableLanguages',
     props: {
@@ -35,6 +36,10 @@
 
         const queryString = queries.length ? '?' + queries.join('&') : ''
         return this.editUrl !== '#' ? (this.editUrl + queryString) : this.editUrl
+      },
+      editInPlace: function (event, lang) {
+        this.$store.commit(LANGUAGE.UPDATE_LANG, lang.value)
+        this.$emit('editInPlaceWithLang', event)
       }
     }
   }
