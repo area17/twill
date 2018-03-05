@@ -26,7 +26,7 @@
       <form v-if="hasMedia" ref="form" class="mediasidebar__inner mediasidebar__form" @submit="submit">
         <span class="mediasidebar__loader" v-if="loading"><span class="loader"><span></span></span></span>
         <template v-if="hasMultipleMedias">
-          <input type="hidden" name="ids" :value="mediasIdsToDeleteString" />
+          <input type="hidden" name="ids" :value="mediasIds" />
         </template>
         <template v-else>
           <input type="hidden" name="id" :value="firstMedia.id" />
@@ -97,6 +97,9 @@
         return this.medias.map((media) => {
           return media.tags
         }).reduce((allTags, currentTags) => allTags.filter(tag => currentTags.includes(tag)))
+      },
+      mediasIds: function () {
+        return this.medias.map(function (media) { return media.id }).join(',')
       },
       mediasIdsToDelete: function () {
         return this.medias.filter(media => media.deleteUrl).map(media => media.id)
