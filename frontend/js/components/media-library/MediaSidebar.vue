@@ -30,7 +30,7 @@
         </template>
         <template v-else>
           <input type="hidden" name="id" :value="firstMedia.id" />
-          <a17-textfield label="Alt text" name="alt-text" :initialValue="firstMedia.metadatas.default.altText" size="small" @focus="focus" @blur="blur" @change="save" />
+          <a17-textfield label="Alt text" name="alt_text" :initialValue="firstMedia.metadatas.default.altText" size="small" @focus="focus" @blur="blur" @change="save" />
           <a17-textfield label="Caption" name="caption" :initialValue="firstMedia.metadatas.default.caption" size="small" @focus="focus" @blur="blur" @change="save" />
         </template>
         <a17-vselect label="Tags" name="tags" :multiple="true" :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small" :endpoint="tagsEndpoint" @change="save" />
@@ -207,7 +207,7 @@
 
         // save caption and alt text on the media
         if (!this.focused && this.hasSingleMedia) {
-          if (data.hasOwnProperty('alt-text')) this.firstMedia.metadatas.default.altText = data['alt-text']
+          if (data.hasOwnProperty('alt_text')) this.firstMedia.metadatas.default.altText = data['alt_text']
           else this.firstMedia.metadatas.default.altText = ''
 
           if (data.hasOwnProperty('caption')) this.firstMedia.metadatas.default.caption = data['caption']
