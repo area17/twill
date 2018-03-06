@@ -7,6 +7,11 @@
         ];
     })->values()->toArray() : $options;
     $inline = $inline ?? false;
+
+    # Add new option
+    $addNew = $addNew ?? false;
+    $moduleName = $moduleName ?? null;
+    $storeUrl = $storeUrl ?? '';
     $inModal = $fieldsInModal ?? false;
 @endphp
 
@@ -31,3 +36,13 @@
     })
 @endpush
 @endunless
+
+@if($addNew && isset($item->$name))
+@push('modalAttributes')
+    <a17-modal-add ref="{{ $name }}Modal" :form-create="'{{ $storeUrl }}'">
+        {{-- fieldsInModal will manage fields separately --}}
+        {{-- permalink and translateTitle should not be defined here --}}
+        @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true, 'permalink' => false, 'translateTitle' => false])
+    </a17-modal-add>
+@endpush
+@endif

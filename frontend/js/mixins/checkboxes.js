@@ -1,3 +1,4 @@
+import { mapState } from 'vuex'
 import { isEqual } from 'lodash'
 
 export default {
@@ -38,6 +39,16 @@ export default {
     }
   },
   computed: {
+    fullOptions: function () {
+      if(this.moreOptions)
+      return this.options.concat(this.moreOptions)
+    },
+    fullOptions: function () {
+      const moreOptions = this.optionsByName(this.name)
+
+      if(moreOptions.length) return this.options.concat(moreOptions)
+      else return this.options
+    },
     checkedValue: {
       get: function () {
         return this.currentValue
@@ -49,7 +60,10 @@ export default {
           this.$emit('change', value)
         }
       }
-    }
+    },
+    ...mapGetters([
+      'optionsByName'
+    ])
   },
   methods: {
     isMax: function (arrayToTest) {

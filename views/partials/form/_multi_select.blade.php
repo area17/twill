@@ -7,7 +7,7 @@
         ];
     })->values()->toArray() : $options;
 
-    # Add new
+    # Add new option
     $addNew = $addNew ?? false;
     $moduleName = $moduleName ?? null;
     $storeUrl = $storeUrl ?? '';

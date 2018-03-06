@@ -1,7 +1,7 @@
 /**
  * Form
  *
- * Save all the fields pf the form
+ * Save all the fields of the form. Submit the form. Display errors.
  */
 
 import api from '../api/form'
