@@ -103,7 +103,7 @@ class UserController extends ModuleController
         return json_decode($this->request->get('filter'), true) ?? ['status' => 'published'];
     }
 
-    public function getIndexTableMainFilters($items)
+    public function getIndexTableMainFilters($items, $scopes = [])
     {
         $statusFilters = [];
 

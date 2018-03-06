@@ -693,13 +693,13 @@ abstract class ModuleController extends Controller
         return $tableColumns;
     }
 
-    protected function getIndexTableMainFilters($items)
+    protected function getIndexTableMainFilters($items, $scopes = [])
     {
         $statusFilters = [];
 
-        $scope = $this->submodule ? [
+        $scope = ($this->submodule ? [
             $this->getParentModuleForeignKey() => $this->submoduleParentId,
-        ] : [];
+        ] : []) + $scopes;
 
         array_push($statusFilters, [
             'name' => 'All items',
