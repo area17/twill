@@ -70,7 +70,7 @@
 @unless($renderForBlocks || $renderForModal)
 @push('vuexStore')
     @if($translated && isset($form_fields['translations']) && isset($form_fields['translations'][$name]))
-        var field = {
+        window.STORE.form.fields.push({
             name: '{{ $name }}',
             value: {
                 @foreach(getLocales() as $locale)
@@ -79,14 +79,13 @@
                     ) !!}@unless($loop->last),@endif
                 @endforeach
             }
-        }
+        })
     @elseif(isset($item->$name))
-        var field = {
+        window.STORE.form.fields.push({
             name: '{{ $name }}',
             value: {!! json_encode($item->$name) !!}
-        }
+        })
     @endif
 
-    window.STORE.form.fields.push(field)
 @endpush
 @endunless
