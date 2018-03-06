@@ -9,6 +9,11 @@
     $placeholder = $placeholder ?? false;
     $default = $default ?? false;
     $inline = $inline ?? false;
+
+    # Add new option
+    $addNew = $addNew ?? false;
+    $moduleName = $moduleName ?? null;
+    $storeUrl = $storeUrl ?? '';
     $inModal = $fieldsInModal ?? false;
 @endphp
 
@@ -19,8 +24,12 @@
     @if ($default) selected="{{ $default }}" @endif
     :grid="false"
     :inline='{{ $inline ? 'true' : 'false' }}'
-    @if ($note) note='{{ $note }}' @endif
+
     @if ($inModal) :in-modal="true" @endif
+    @if ($addNew) add-new='{{ $name }}Modal'
+    @elseif ($note) note='{{ $note }}'
+    @endif
+
     :has-default-store="true"
     in-store="value"
 ></a17-singleselect>
@@ -33,3 +42,13 @@
     })
 @endpush
 @endunless
+
+@if($addNew)
+@push('modalAttributes')
+    <a17-modal-add ref="{{ $name }}Modal" name="{{ $name }}" :form-create="'{{ $storeUrl }}'">
+        {{-- fieldsInModal will manage fields separately --}}
+        {{-- permalink and translateTitle should not be defined here --}}
+        @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true, 'permalink' => false, 'translateTitle' => false])
+    </a17-modal-add>
+@endpush
+@endif

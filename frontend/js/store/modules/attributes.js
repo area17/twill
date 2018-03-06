@@ -14,7 +14,7 @@ const state = {
 // getters
 const getters = {
   optionsByName (state) {
-    return name => state.options[name]
+    return name => state.options[name] || []
   }
 }
 
@@ -24,14 +24,29 @@ const mutations = {
       Vue.delete(state.options, name)
     }
   },
-  [ATTRIBUTES.REPLACE_OPTIONS] (state, attributes) {
+  [ATTRIBUTES.UPDATE_OPTIONS] (state, attributes) {
     const name = attributes.name
     const options = attributes.options
+    let currentOptions = []
 
     // Update existing form field
-    if (state.options[name]) Vue.delete(state.options, name)
+    if (state.options[name]) {
+      currentOptions = state.options[name]
 
-    Vue.set(state.options, name, options)
+      Vue.delete(state.options, name)
+    }
+
+    // Make sure there is no duplicates
+    if (Array.isArray(options)) {
+      options.forEach(function (option) {
+        const currentOptionIndex = currentOptions.findIndex(currentOption => currentOption.value === option.value)
+        if (currentOptionIndex === -1) {
+          currentOptions.push(option)
+        }
+      })
+    }
+
+    Vue.set(state.options, name, currentOptions)
   }
 }
 

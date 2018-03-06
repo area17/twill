@@ -23,8 +23,11 @@
     :inline='{{ $inline ? 'true' : 'false' }}'
     @if ($min ?? false) :min="{{ $min }}" @endif
     @if ($max ?? false) :max="{{ $max }}" @endif
-    @if ($note) note='{{ $note }}' @endif
+
     @if ($inModal) :in-modal="true" @endif
+    @if ($addNew) add-new='{{ $name }}Modal'
+    @elseif ($note) note='{{ $note }}'
+    @endif
     in-store="currentValue"
 ></a17-multiselect>
 
@@ -37,9 +40,9 @@
 @endpush
 @endunless
 
-@if($addNew && isset($item->$name))
+@if($addNew)
 @push('modalAttributes')
-    <a17-modal-add ref="{{ $name }}Modal" :form-create="'{{ $storeUrl }}'">
+    <a17-modal-add ref="{{ $name }}Modal" name="{{ $name }}" :form-create="'{{ $storeUrl }}'">
         {{-- fieldsInModal will manage fields separately --}}
         {{-- permalink and translateTitle should not be defined here --}}
         @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true, 'permalink' => false, 'translateTitle' => false])

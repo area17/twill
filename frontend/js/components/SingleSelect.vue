@@ -1,9 +1,10 @@
 <template>
-  <a17-inputframe :error="error" :note="note" :label="label" :name="name">
+  <a17-inputframe :error="error" :note="note" :label="label" :name="name" class="singleselectorOuter">
+    <a href="#" v-if="addNew" @click.prevent="openAddModal" class="singleselector__add f--link f--link-underlined--o">Add New</a>
     <input type="hidden" :name="name" v-model="value" />
     <div class="singleselector" :class="gridClasses">
       <div class="singleselector__outer">
-        <div class="singleselector__item" v-for="(radio, index) in options">
+        <div class="singleselector__item" v-for="(radio, index) in fullOptions">
           <input class="singleselector__radio" type="radio" :value="radio.value" :name="name + '[' + randKey + ']'" :id="uniqId(radio.value, index)" :disabled="radio.disabled || disabled" :class="{'singleselector__radio--checked': radio.value == selectedValue }">
           <label class="singleselector__label" :for="uniqId(radio.value, index)" @click.prevent="changeRadio(radio.value)">{{ radio.label }}</label>
           <span class="singleselector__bg"></span>
@@ -17,10 +18,11 @@
   import randKeyMixin from '@/mixins/randKey'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
+  import AttributesMixin from '@/mixins/addAttributes'
 
   export default {
     name: 'A17Singleselect',
-    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin],
+    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin],
     props: {
       name: {
         type: String,
@@ -90,6 +92,16 @@
 
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
+
+  .singleselectorOuter {
+    position: relative;
+  }
+
+  .singleselector__add {
+    position:absolute;
+    top:0;
+    right:0;
+  }
 
   .singleselector {
     color:$color__text;

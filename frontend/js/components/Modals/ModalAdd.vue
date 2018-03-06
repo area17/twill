@@ -15,6 +15,10 @@
   export default {
     name: 'A17ModalAdd',
     props: {
+      name: {
+        type: String,
+        default: ''
+      },
       formCreate: {
         type: String,
         default: '#'
@@ -34,12 +38,12 @@
 
         this.$nextTick(function () {
           this.$store.dispatch(ACTIONS.CREATE_FORM_IN_MODAL, {
+            name: this.name,
             endpoint: this.formCreate,
             method: 'post'
           }).then(() => {
             self.$nextTick(function () {
               console.log('Refresh attributes somehow')
-
               if (this.$refs.modal) this.$refs.modal.close()
             })
           }, (errorResponse) => {

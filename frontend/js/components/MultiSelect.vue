@@ -3,7 +3,7 @@
     <a href="#" v-if="addNew" @click.prevent="openAddModal" class="multiselector__add f--link f--link-underlined--o">Add New</a>
     <div class="multiselector" :class="gridClasses">
       <div class="multiselector__outer">
-        <div class="multiselector__item" v-for="(checkbox, index) in options">
+        <div class="multiselector__item" v-for="(checkbox, index) in fullOptions">
           <input class="multiselector__checkbox" :class="{'multiselector__checkbox--checked': checkedValue.includes(checkbox.value) }" type="checkbox" :value="checkbox.value" :name="name + '[' + randKey + ']'" :id="uniqId(checkbox.value, index)" :disabled="checkbox.disabled || disabled" v-model="checkedValue">
           <label class="multiselector__label" :for="uniqId(checkbox.value, index)" @click.prevent="changeCheckbox(checkbox.value)">
             <span class="multiselector__icon"><span v-svg symbol="check"></span></span>
@@ -21,16 +21,13 @@
   import randKeyMixin from '@/mixins/randKey'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
+  import AttributesMixin from '@/mixins/addAttributes'
   import CheckboxMixin from '@/mixins/checkboxes'
 
   export default {
     name: 'A17Multiselect',
-    mixins: [randKeyMixin, InputframeMixin, CheckboxMixin, FormStoreMixin],
+    mixins: [randKeyMixin, InputframeMixin, CheckboxMixin, FormStoreMixin, AttributesMixin],
     props: {
-      addNew: {
-        type: String,
-        default: ''
-      },
       grid: {
         type: Boolean,
         default: true
@@ -71,9 +68,6 @@
       },
       uniqId: function (value, index) {
         return this.name + '_' + value + '-' + (this.randKey * (index + 1))
-      },
-      openAddModal: function () {
-        if (this.$root.$refs[this.addNew]) this.$root.$refs[this.addNew].open()
       }
     }
   }

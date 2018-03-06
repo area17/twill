@@ -6,7 +6,7 @@
 
 import api from '../api/form'
 import { getFormData, getFormFields, getModalFormFields } from '@/utils/getFormData.js'
-import { FORM, NOTIFICATION, LANGUAGE } from '../mutations'
+import { FORM, NOTIFICATION, LANGUAGE, ATTRIBUTES } from '../mutations'
 import * as ACTIONS from '@/store/actions'
 import { PUBLICATION, REVISION } from '@/store/mutations'
 
@@ -244,11 +244,13 @@ const actions = {
       api[options.method](options.endpoint, data, function (successResponse) {
         commit(FORM.UPDATE_FORM_LOADING, false)
 
-        if (successResponse.data.hasOwnProperty('redirect') && options.redirect) {
-          window.location.replace(successResponse.data.redirect)
-        }
+        // SuccessResponse much the newly created attributes as json
+        commit(ATTRIBUTES.UPDATE_OPTIONS, {
+          name: options.name,
+          options: successResponse.data
+        })
 
-        commit(NOTIFICATION.SET_NOTIF, { message: successResponse.data.message, variant: successResponse.data.variant })
+        // commit(NOTIFICATION.SET_NOTIF, { message: successResponse.data.message, variant: successResponse.data.variant })
         resolve()
       }, function (errorResponse) {
         commit(FORM.UPDATE_FORM_LOADING, false)

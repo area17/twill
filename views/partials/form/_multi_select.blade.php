@@ -50,9 +50,9 @@
 @endpush
 @endunless
 
-@if($addNew && isset($item->$name))
+@if($addNew)
 @push('modalAttributes')
-    <a17-modal-add ref="{{ $name }}Modal" :form-create="'{{ $storeUrl }}'">
+    <a17-modal-add ref="{{ $name }}Modal" name="{{ $name }}" :form-create="'{{ $storeUrl }}'">
         {{-- fieldsInModal will manage fields separately --}}
         {{-- permalink and translateTitle should not be defined here --}}
         @partialView(($moduleName ?? null), 'create', [
