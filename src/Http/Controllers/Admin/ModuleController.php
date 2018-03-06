@@ -927,7 +927,7 @@ abstract class ModuleController extends Controller
             'saveUrl' => $this->getModuleRoute($item->id, 'update'),
             'editor' => $this->moduleHasRevisions() && $this->moduleHasBlocks() && !$this->disableEditor,
             'blockPreviewUrl' => route('admin.blocks.preview'),
-            'revisions' => $item->revisions ? $item->revisions->map(function ($revision) {
+            'revisions' => $this->moduleHasRevisions() ? $item->revisions->map(function ($revision) {
                 return [
                     'id' => $revision->id,
                     'author' => $revision->user->name,
