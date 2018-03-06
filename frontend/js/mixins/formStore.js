@@ -8,6 +8,10 @@ export default {
       type: Boolean,
       default: false
     },
+    inModal: {
+      type: Boolean,
+      default: false
+    },
     inStore: {
       type: String,
       default: ''
@@ -19,14 +23,17 @@ export default {
   },
   computed: {
     storedValue: function () {
-      return this.fieldValueByName(this.getFieldName())
+      if (this.inModal) return this.modalFieldValueByName(this.getFieldName())
+      else return this.fieldValueByName(this.getFieldName())
     },
     ...mapGetters([
-      'fieldValueByName'
+      'fieldValueByName',
+      'modalFieldValueByName'
     ]),
     ...mapState({
       submitting: state => state.form.loading,
-      fields: state => state.form.fields
+      fields: state => state.form.fields, // Fields in the form
+      modalFields: state => state.form.modalFields // Fields in the create/edit modal
     })
   },
   watch: {
@@ -60,7 +67,10 @@ export default {
       field.name = this.getFieldName()
       field.value = newValue
       if (this.locale) field.locale = this.locale.value
-      this.$store.commit(FORM.UPDATE_FORM_FIELD, field)
+
+      // in Modal or in Form
+      if (this.inModal) this.$store.commit(FORM.UPDATE_MODAL_FIELD, field)
+      else this.$store.commit(FORM.UPDATE_FORM_FIELD, field)
     }
   },
   beforeMount: function () {
@@ -69,7 +79,9 @@ export default {
     if (this.inStore === '') return
     if (fieldName === '') return
 
-    const fieldInStore = this.fields.filter(function (field) {
+    const fields = this.inModal ? this.modalFields : this.fields
+
+    const fieldInStore = fields.filter(function (field) {
       return field.name === fieldName
     })
 
@@ -90,7 +102,8 @@ export default {
   beforeDestroy: function () {
     if (this.inStore !== '') {
       // Delete form field from store because the field has been removed
-      this.$store.commit(FORM.REMOVE_FORM_FIELD, this.getFieldName())
+      if (this.inModal) this.$store.commit(FORM.REMOVE_MODAL_FIELD, this.getFieldName())
+      else this.$store.commit(FORM.REMOVE_FORM_FIELD, this.getFieldName())
     }
   }
 }

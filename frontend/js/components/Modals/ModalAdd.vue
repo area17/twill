@@ -25,7 +25,6 @@
     },
     methods: {
       open: function () {
-        console.log('OPEN')
         if (this.$refs.modal) this.$refs.modal.open()
       },
       submit: function (event) {
@@ -34,12 +33,12 @@
         this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
 
         this.$nextTick(function () {
-          this.$store.dispatch(ACTIONS.UPDATE_FORM_IN_LISTING, {
+          this.$store.dispatch(ACTIONS.CREATE_FORM_IN_MODAL, {
             endpoint: this.formCreate,
             method: 'post'
           }).then(() => {
             self.$nextTick(function () {
-              console.log('Refresh attributes')
+              console.log('Refresh attributes somehow')
             })
           }, (errorResponse) => {
             self.$store.commit(NOTIFICATION.SET_NOTIF, {

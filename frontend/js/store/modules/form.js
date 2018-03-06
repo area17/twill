@@ -5,7 +5,7 @@
  */
 
 import api from '../api/form'
-import { getFormData, getFormFields } from '@/utils/getFormData.js'
+import { getFormData, getFormFields, getModalFormFields } from '@/utils/getFormData.js'
 import { FORM, NOTIFICATION, LANGUAGE } from '../mutations'
 import * as ACTIONS from '@/store/actions'
 import { PUBLICATION, REVISION } from '@/store/mutations'
@@ -31,6 +31,11 @@ const state = {
    * @type {Array}
    */
   fields: window.STORE.form.fields || [],
+  /**
+   * All the fields that are in the create/edit modals (so these are not mixed with the form)
+   * @type {Array}
+   */
+  modalFields: [],
   /**
    * Url to save/update the form
    * @type {String}
@@ -72,6 +77,14 @@ const getters = {
   },
   fieldValueByName: (state, getters) => name => { // want to use getters
     return getters.fieldsByName(name).length ? getters.fieldsByName(name)[0].value : ''
+  },
+  modalFieldsByName (state) {
+    return name => state.modalFields.filter(function (field) {
+      return field.name === name
+    })
+  },
+  modalFieldValueByName: (state, getters) => name => { // want to use getters
+    return getters.modalFieldsByName(name).length ? getters.modalFieldsByName(name)[0].value : ''
   }
 }
 
@@ -81,6 +94,7 @@ const mutations = {
       state.permalink = newValue
     }
   },
+  // ----------- Form fields ----------- //
   [FORM.EMPTY_FORM_FIELDS] (state, status) {
     state.fields = []
   },
@@ -108,22 +122,45 @@ const mutations = {
       value: fieldValue
     })
   },
-  [FORM.REFRESH_FORM_FIELD] (state, field) {
-    const fieldIndex = state.fields.findIndex(function (f) {
-      return f.name === field.name
-    })
-
-    if (fieldIndex !== -1) {
-      const fieldToRefresh = state.fields[fieldIndex].value
-      state.fields[fieldIndex].value = null
-      state.fields[fieldIndex].value = fieldToRefresh
-    }
-  },
   [FORM.REMOVE_FORM_FIELD] (state, fieldName) {
     state.fields.forEach(function (field, index) {
       if (field.name === fieldName) state.fields.splice(index, 1)
     })
   },
+  // ----------- Modal fields ----------- //
+  [FORM.EMPTY_MODAL_FIELDS] (state, status) {
+    state.modalFields = []
+  },
+  [FORM.REPLACE_MODAL_FIELDS] (state, fields) {
+    state.modalFields = fields
+  },
+  [FORM.UPDATE_MODAL_FIELD] (state, field) {
+    let fieldValue = field.locale ? {} : null
+    const fieldIndex = state.modalFields.findIndex(function (f) {
+      return f.name === field.name
+    })
+
+    // Update existing form field
+    if (fieldIndex !== -1) {
+      if (field.locale) fieldValue = state.modalFields[fieldIndex].value
+      // remove existing field
+      state.modalFields.splice(fieldIndex, 1)
+    }
+
+    if (field.locale) fieldValue[field.locale] = field.value
+    else fieldValue = field.value
+
+    state.modalFields.push({
+      name: field.name,
+      value: fieldValue
+    })
+  },
+  [FORM.REMOVE_MODAL_FIELD] (state, fieldName) {
+    state.modalFields.forEach(function (field, index) {
+      if (field.name === fieldName) state.modalFields.splice(index, 1)
+    })
+  },
+  // ----------- Form errors and Loading ----------- //
   [FORM.UPDATE_FORM_LOADING] (state, loading) {
     state.loading = loading || !state.loading
   },
@@ -174,6 +211,33 @@ const actions = {
       commit(NOTIFICATION.CLEAR_NOTIF, 'error')
 
       const data = Object.assign(getFormFields(rootState), {
+        languages: rootState.language.all
+      })
+
+      api[options.method](options.endpoint, data, function (successResponse) {
+        commit(FORM.UPDATE_FORM_LOADING, false)
+
+        if (successResponse.data.hasOwnProperty('redirect') && options.redirect) {
+          window.location.replace(successResponse.data.redirect)
+        }
+
+        commit(NOTIFICATION.SET_NOTIF, { message: successResponse.data.message, variant: successResponse.data.variant })
+        resolve()
+      }, function (errorResponse) {
+        commit(FORM.UPDATE_FORM_LOADING, false)
+        commit(FORM.SET_FORM_ERRORS, errorResponse.response.data)
+        commit(NOTIFICATION.SET_NOTIF, { message: 'Your submission could not be validated, please fix and retry', variant: 'error' })
+        reject(errorResponse)
+      })
+    })
+  },
+  [ACTIONS.CREATE_FORM_IN_MODAL] ({ commit, state, getters, rootState }, options) {
+    return new Promise((resolve, reject) => {
+      commit(FORM.CLEAR_FORM_ERRORS)
+      commit(NOTIFICATION.CLEAR_NOTIF, 'error')
+
+      // Get modal fields
+      const data = Object.assign(getModalFormFields(rootState), {
         languages: rootState.language.all
       })
 

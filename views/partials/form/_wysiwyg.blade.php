@@ -8,6 +8,7 @@
     $readonly = $readonly ?? false;
     $editSource = $editSource ?? false;
     $toolbarOptions = $toolbarOptions ?? false;
+    $inModal = $fieldsInModal ?? false;
 
     if ($toolbarOptions) {
         $toolbarOptions = array_map(function ($option) {
@@ -49,6 +50,7 @@
             @if ($disabled) disabled: true, @endif
             @if ($readonly) readonly: true, @endif
             @if ($editSource) editSource: true, @endif
+            @if ($inModal) inModal: true, @endif
             inStore: 'value'
         }"
     ></a17-locale>
@@ -63,6 +65,7 @@
         @if ($disabled) disabled @endif
         @if ($readonly) readonly @endif
         @if ($editSource) :edit-source='true' @endif
+        @if ($inModal) :in-modal="true" @endif
         in-store="value"
     ></a17-wysiwyg>
 @endif

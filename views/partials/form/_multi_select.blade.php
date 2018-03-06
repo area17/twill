@@ -50,7 +50,7 @@
 @unless(!isset($item->$name) || !$addNew)
 @push('modalAttributes')
     <a17-modal-add ref="{{ $name }}Modal" :form-create="'{{ $storeUrl }}'">
-        @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
+        @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
     </a17-modal-add>
 @endpush
 @endunless

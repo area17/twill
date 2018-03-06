@@ -13,6 +13,7 @@
     $onChangeAttribute = $onChangeAttribute ?? false;
     $onChangeFullAttribute = $onChangeAttribute ? "('".$onChangeAttribute."', ...arguments)" : "";
     $prefix = $prefix ?? false;
+    $inModal = $fieldsInModal ?? false;
 @endphp
 
 @if($translated)
@@ -30,6 +31,7 @@
             @if ($readonly) readonly: true, @endif
             @if ($rows) rows: {{ $rows }}, @endif
             @if ($prefix) prefix: '{{ $prefix }}', @endif
+            @if ($inModal) inModal: true, @endif
             inStore: 'value'
         }"
         @if ($ref) ref="{{ $ref }}" @endif
@@ -50,6 +52,7 @@
         @if ($ref) ref="{{ $ref }}" @endif
         @if ($onChange) v-on:change="{{ $onChange }}{{ $onChangeFullAttribute }}" @endif
         @if ($prefix) prefix="{{ $prefix }}" @endif
+        @if ($inModal) :in-modal="true" @endif
         in-store="value"
     ></a17-textfield>
 @endif

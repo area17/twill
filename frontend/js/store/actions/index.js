@@ -22,6 +22,7 @@ export const BULK_RESTORE = 'bulkRestoreData'
 export const REPLACE_FORM = 'replaceFormData'
 export const SAVE_FORM = 'saveFormData'
 export const UPDATE_FORM_IN_LISTING = 'updateFormInListing'
+export const CREATE_FORM_IN_MODAL = 'createFormInModal'
 
 /* Previews */
 export const GET_ALL_PREVIEWS = 'getAllPreviews'
