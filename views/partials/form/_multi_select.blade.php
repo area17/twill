@@ -11,6 +11,7 @@
     $addNew = $addNew ?? false;
     $moduleName = $moduleName ?? null;
     $storeUrl = $storeUrl ?? '';
+    $inModal = $fieldsInModal ?? false;
 @endphp
 
 @if ($unpack ?? true)
@@ -22,6 +23,7 @@
         :inline="false"
         @if ($min ?? false) :min="{{ $min }}" @endif
         @if ($max ?? false) :max="{{ $max }}" @endif
+        @if ($inModal) :in-modal="true" @endif
         @if ($addNew) add-new='{{ $name }}Modal' @elseif ($note) note='{{ $note }}' @endif
         in-store="currentValue"
     ></a17-multiselect>
@@ -32,6 +34,7 @@
         :options='{!! json_encode($options) !!}'
         @if ($emptyText ?? false) empty-text="{{ $emptyText }}" @endif
         @if ($placeholder ?? false) placeholder="{{ $placeholder }}" @endif
+        @if ($inModal) :in-modal="true" @endif
         @if ($addNew) add-new='{{ $name }}Modal' @elseif ($note) note='{{ $note }}' @endif
         :multiple="true"
         in-store="inputValue"
@@ -47,10 +50,17 @@
 @endpush
 @endunless
 
-@unless(!isset($item->$name) || !$addNew)
+@if($addNew && isset($item->$name))
 @push('modalAttributes')
     <a17-modal-add ref="{{ $name }}Modal" :form-create="'{{ $storeUrl }}'">
-        @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
+        {{-- fieldsInModal will manage fields separately --}}
+        {{-- permalink and translateTitle should not be defined here --}}
+        @partialView(($moduleName ?? null), 'create', [
+            'renderForModal' => true,
+            'fieldsInModal' => true,
+            'permalink' => false,
+            'translateTitle' => false
+        ])
     </a17-modal-add>
 @endpush
-@endunless
+@endif

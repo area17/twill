@@ -7,6 +7,7 @@
         ];
     })->values()->toArray() : $options;
     $inline = $inline ?? false;
+    $inModal = $fieldsInModal ?? false;
 @endphp
 
 <a17-multiselect
@@ -18,6 +19,7 @@
     @if ($min ?? false) :min="{{ $min }}" @endif
     @if ($max ?? false) :max="{{ $max }}" @endif
     @if ($note) note='{{ $note }}' @endif
+    @if ($inModal) :in-modal="true" @endif
     in-store="currentValue"
 ></a17-multiselect>
 

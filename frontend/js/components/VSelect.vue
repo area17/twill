@@ -35,7 +35,7 @@
 //  import vSelect from 'vue-select' // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
 
   export default {
-    name: 'A17VSelect',
+    name: 'A17VueSelect',
     mixins: [randKeyMixin, InputframeMixin, FormStoreMixin],
     props: {
       placeholder: {

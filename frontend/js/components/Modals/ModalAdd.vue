@@ -39,12 +39,16 @@
           }).then(() => {
             self.$nextTick(function () {
               console.log('Refresh attributes somehow')
+
+              if (this.$refs.modal) this.$refs.modal.close()
             })
           }, (errorResponse) => {
             self.$store.commit(NOTIFICATION.SET_NOTIF, {
               message: 'Your content can not be added, please retry',
               variant: 'error'
             })
+
+            if (this.$refs.modal) this.$refs.modal.close()
           })
         })
       }

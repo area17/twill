@@ -9,6 +9,7 @@
     $placeholder = $placeholder ?? false;
     $default = $default ?? false;
     $inline = $inline ?? false;
+    $inModal = $fieldsInModal ?? false;
 @endphp
 
 <a17-singleselect
@@ -19,6 +20,7 @@
     :grid="false"
     :inline='{{ $inline ? 'true' : 'false' }}'
     @if ($note) note='{{ $note }}' @endif
+    @if ($inModal) :in-modal="true" @endif
     :has-default-store="true"
     in-store="value"
 ></a17-singleselect>

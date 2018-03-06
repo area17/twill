@@ -9,6 +9,7 @@
     $placeholder = $placeholder ?? false;
     $required = $required ?? false;
     $default = $default ?? false;
+    $inModal = $fieldsInModal ?? false;
 @endphp
 
 @if ($unpack ?? false)
@@ -19,6 +20,7 @@
         @if ($default) selected="{{ $default }}" @endif
         @if ($note) note='{{ $note }}' @endif
         @if ($required) :required="true" @endif
+        @if ($inModal) :in-modal="true" @endif
         :has-default-store="true"
         in-store="value"
     ></a17-singleselect>
@@ -31,6 +33,7 @@
         @if ($default) selected="{{ $default }}" @endif
         @if ($note) note='{{ $note }}' @endif
         @if ($required) :required="true" @endif
+        @if ($inModal) :in-modal="true" @endif
         :has-default-store="true"
         size="large"
         in-store="value"
@@ -47,6 +50,7 @@
         })) }}" @endif
         @if ($note) note='{{ $note }}' @endif
         @if ($required) :required="true" @endif
+        @if ($inModal) :in-modal="true" @endif
         :has-default-store="true"
         size="large"
         in-store="inputValue"
