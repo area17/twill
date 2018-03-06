@@ -147,30 +147,7 @@ trait HandleBlocks
                 }
 
                 if (isset($block['content']['browsers'])) {
-                    $fields['blocksBrowsers'][] = collect($block['content']['browsers'])->mapWithKeys(function ($ids, $relation) use ($block) {
-
-                        $relationRepository = $this->getModelRepository($relation);
-                        $relatedItems = $relationRepository->get([], ['id' => $ids], [], -1);
-                        $sortedRelatedItems = array_flip($ids);
-
-                        foreach ($relatedItems as $item) {
-                            $sortedRelatedItems[$item->id] = $item;
-                        }
-
-                        $items = collect(array_values($sortedRelatedItems))->filter(function ($value) {
-                            return is_object($value);
-                        })->map(function ($relatedElement) use ($relation) {
-                            return [
-                                'id' => $relatedElement->id,
-                                'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
-                                'edit' => moduleRoute($relation, config('cms-toolkit.block_editor.browser_route_prefixes.' . $relation), 'edit', $relatedElement->id),
-                            ];
-                        })->toArray();
-
-                        return [
-                            "blocks[$block->id][$relation]" => $items,
-                        ];
-                    })->filter()->toArray();
+                    $fields['blocksBrowsers'][] = $this->getBlockBrowsers($block);
                 }
             }
 
@@ -188,5 +165,32 @@ trait HandleBlocks
         }
 
         return $fields;
+    }
+
+    protected function getBlockBrowsers($block)
+    {
+        return collect($block['content']['browsers'])->mapWithKeys(function ($ids, $relation) use ($block) {
+            $relationRepository = $this->getModelRepository($relation);
+            $relatedItems = $relationRepository->get([], ['id' => $ids], [], -1);
+            $sortedRelatedItems = array_flip($ids);
+
+            foreach ($relatedItems as $item) {
+                $sortedRelatedItems[$item->id] = $item;
+            }
+
+            $items = collect(array_values($sortedRelatedItems))->filter(function ($value) {
+                return is_object($value);
+            })->map(function ($relatedElement) use ($relation) {
+                return [
+                    'id' => $relatedElement->id,
+                    'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
+                    'edit' => moduleRoute($relation, config('cms-toolkit.block_editor.browser_route_prefixes.' . $relation), 'edit', $relatedElement->id),
+                ];
+            })->toArray();
+
+            return [
+                "blocks[$block->id][$relation]" => $items,
+            ];
+        })->filter()->toArray();
     }
 }
