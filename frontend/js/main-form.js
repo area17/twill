@@ -40,6 +40,9 @@ import A17Notif from '@/plugins/A17Notif'
 // Loader
 import a17Spinner from '@/components/Spinner.vue'
 
+// Add attributes
+import ModalAdd from '@/components/Modals/ModalAdd.vue'
+
 // Store Modules
 import form from '@/store/modules/form'
 import publication from '@/store/modules/publication'
@@ -108,7 +111,8 @@ window.vm = new Vue({
     'a17-fieldset': a17Fieldset,
     'a17-content': a17Content,
     'a17-publisher': a17Publisher,
-    'a17-page-nav': a17PageNav
+    'a17-page-nav': a17PageNav,
+    'a17-modal-add': ModalAdd
   },
   mixins: [formatPermalink, editorMixin],
   data: function () {

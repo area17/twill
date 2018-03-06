@@ -1,5 +1,6 @@
 <template>
-  <a17-inputframe :error="error" :note="note" :label="label" :name="name">
+  <a17-inputframe :error="error" :note="note" :label="label" :name="name" class="multiselectorOuter">
+    <a href="#" v-if="addNew" @click.prevent="openAddModal" class="multiselector__add f--link f--link-underlined--o">Add New</a>
     <div class="multiselector" :class="gridClasses">
       <div class="multiselector__outer">
         <div class="multiselector__item" v-for="(checkbox, index) in options">
@@ -26,6 +27,10 @@
     name: 'A17Multiselect',
     mixins: [randKeyMixin, InputframeMixin, CheckboxMixin, FormStoreMixin],
     props: {
+      addNew: {
+        type: String,
+        default: ''
+      },
       grid: {
         type: Boolean,
         default: true
@@ -66,6 +71,9 @@
       },
       uniqId: function (value, index) {
         return this.name + '_' + value + '-' + (this.randKey * (index + 1))
+      },
+      openAddModal: function () {
+        if (this.$root.$refs[this.addNew]) this.$root.$refs[this.addNew].open()
       }
     }
   }
@@ -73,6 +81,16 @@
 
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
+
+  .multiselectorOuter {
+    position:relative;
+  }
+
+  .multiselector__add {
+    position:absolute;
+    top:0;
+    right:0;
+  }
 
   .multiselector {
     color:$color__text;
