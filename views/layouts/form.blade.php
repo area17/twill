@@ -70,7 +70,7 @@
     <a17-modal class="modal--browser" ref="browser" mode="medium" :force-close="true">
         <a17-browser></a17-browser>
     </a17-modal>
-    <a17-editor v-if="editor" ref="editor" bg-color="{{ $siteColor ?? '#FFFFFF' }}"></a17-editor>
+    <a17-editor v-if="editor" ref="editor" bg-color="{{ config('cms-toolkit.blocks.background_color') ?? '#FFFFFF' }}"></a17-editor>
     <a17-previewer ref="preview"></a17-previewer>
 @stop
 
