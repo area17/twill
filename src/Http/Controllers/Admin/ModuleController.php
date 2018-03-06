@@ -544,7 +544,7 @@ abstract class ModuleController extends Controller
             $itemCanDelete = $this->getIndexOption('delete') && ($item->canDelete ?? true);
             $canEdit = $this->getIndexOption('edit');
 
-            return [
+            return array_replace([
                 'id' => $item->id,
                 'name' => $name,
                 'publish_start_date' => $item->publish_start_date,
@@ -562,7 +562,7 @@ abstract class ModuleController extends Controller
                 'deleted' => true,
             ] : []) + ($translated ? [
                 'languages' => $item->getActiveLanguages(),
-            ] : []) + $columnsData + $this->indexItemData($item);
+            ] : []) + $columnsData, $this->indexItemData($item));
         })->toArray();
     }
 
