@@ -42,7 +42,7 @@
             @else
                 @partialView(($moduleName ?? null), 'navigation._primary_navigation')
                 @partialView(($moduleName ?? null), 'navigation._breadcrumb')
-                {{-- TODO secondary navigation : need Back-end logic : @partialView(($moduleName ?? null), 'navigation._secondary_navigation') --}}
+                @partialView(($moduleName ?? null), 'navigation._secondary_navigation')
             @endif
             <section class="main">
                 <div class="app" id="app" v-cloak>
