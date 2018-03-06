@@ -24,15 +24,21 @@
                 ]);
             @endphp
             <a17-sticky-nav data-sticky-target="navbar" :items="{{ json_encode($additionalFieldsets) }}">
-
-                <a17-title-editor @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif name="{{ $titleFormKey }}" slot="title">
+                <a17-title-editor
+                    name="{{ $titleFormKey }}"
+                    :editable-title="{{ json_encode($editableTitle ?? true) }}"
+                    slot="title"
+                    @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif
+                >
                     <template slot="modal-form">
                         @partialView(($moduleName ?? null), 'create')
                     </template>
                 </a17-title-editor>
                 <div slot="actions">
                     <a17-langswitcher></a17-langswitcher>
-                    <a17-button v-if="editor" type="button" variant="editor" size="small" @click="openEditor(-1)"><span v-svg symbol="editor"></span>Editor</a17-button>
+                    <a17-button v-if="editor" type="button" variant="editor" size="small" @click="openEditor(-1)">
+                        <span v-svg symbol="editor"></span>Editor
+                    </a17-button>
                 </div>
             </a17-sticky-nav>
         </div>
@@ -42,7 +48,11 @@
                     <aside class="col col--aside">
                         <div class="publisher" data-sticky-target="publisher">
                             <a17-publisher></a17-publisher>
-                            <a17-page-nav placeholder="Go to page" previous-url="{{ $parentPreviousUrl ?? '' }}" next-url="{{ $parentNextUrl ?? '' }}"></a17-page-nav>
+                            <a17-page-nav
+                                placeholder="Go to page"
+                                previous-url="{{ $parentPreviousUrl ?? '' }}"
+                                next-url="{{ $parentNextUrl ?? '' }}"
+                            ></a17-page-nav>
                         </div>
                     </aside>
                     <section class="col col--primary">
@@ -88,9 +98,9 @@
     }
 
     window.STORE.publication = {
-        withPublicationToggle: {{ json_encode($item->isFillable('published')) }},
+        withPublicationToggle: {{ json_encode(($publish ?? true) && $item->isFillable('published')) }},
         published: {{ json_encode($item->published) }},
-        withPublicationTimeframe: {{ json_encode($item->isFillable('publish_start_date')) }},
+        withPublicationTimeframe: {{ json_encode(($schedule ?? true) && $item->isFillable('publish_start_date')) }},
         startDate: '{{ $item->publish_start_date ?? '' }}',
         endDate: '{{ $item->publish_end_date ?? '' }}',
         visibility: '{{ $item->isFillable('public') ? ($item->public ? 'public' : 'private') : false }}',

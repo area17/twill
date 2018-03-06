@@ -2,9 +2,10 @@
   <div class="titleEditor" :class="titleEditorClasses">
     <div class="titleEditor__preview">
       <h2 class="titleEditor__title" :class="{ 'titleEditor__title-only' : !permalink }">
-        <a @click.prevent="$refs.editModal.open()" href="#">
+        <a v-if="editableTitle" @click.prevent="$refs.editModal.open()" href="#">
           <span class="f--underlined--o">{{ title }}</span> <span v-svg symbol="edit"></span>
         </a>
+        <span v-else>{{ title }}</span>
       </h2>
       <a v-if="permalink" :href="fullUrl" target="_blank" class="titleEditor__permalink f--small">
         <span class="f--note f--external f--underlined--o">{{ visibleUrl | prettierUrl }}</span>
@@ -50,6 +51,10 @@
       },
       name: {
         default: 'title'
+      },
+      editableTitle: {
+        type: Boolean,
+        default: true
       }
     },
     data: function () {
