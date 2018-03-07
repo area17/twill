@@ -41,7 +41,7 @@ import A17Notif from '@/plugins/A17Notif'
 import a17Spinner from '@/components/Spinner.vue'
 
 // Add attributes
-import ModalAdd from '@/components/Modals/ModalAdd.vue'
+import a17ModalAdd from '@/components/Modals/ModalAdd.vue'
 
 // Store Modules
 import form from '@/store/modules/form'
@@ -90,6 +90,9 @@ Vue.component('a17-previewer', a17Previewer)
 // Editor
 Vue.component('a17-editor', a17Editor)
 
+// Add attributes
+Vue.component('a17-modal-add', a17ModalAdd)
+
 // Blocks
 const importedBlocks = require.context('@/components/blocks/', true, /\.(js|vue)$/i)
 importedBlocks.keys().map(block => {
@@ -113,8 +116,7 @@ window.vm = new Vue({
     'a17-fieldset': a17Fieldset,
     'a17-content': a17Content,
     'a17-publisher': a17Publisher,
-    'a17-page-nav': a17PageNav,
-    'a17-modal-add': ModalAdd
+    'a17-page-nav': a17PageNav
   },
   mixins: [formatPermalink, editorMixin],
   data: function () {

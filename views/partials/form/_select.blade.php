@@ -1,16 +1,16 @@
 @php
-    $note = $note ?? false;
     $options = method_exists($options, 'map') ? $options->map(function($label, $value) {
         return [
             'value' => $value,
             'label' => $label
         ];
     })->values()->toArray() : $options;
+
+    $note = $note ?? false;
     $placeholder = $placeholder ?? false;
     $required = $required ?? false;
     $default = $default ?? false;
 
-    # Add new option
     $addNew = $addNew ?? false;
     $moduleName = $moduleName ?? null;
     $storeUrl = $storeUrl ?? '';
@@ -24,15 +24,17 @@
         :options='{!! json_encode($options) !!}'
         @if ($default) selected="{{ $default }}" @endif
         @if ($required) :required="true" @endif
-
         @if ($inModal) :in-modal="true" @endif
-        @if ($addNew) add-new='{{ $name }}Modal'
-        @elseif ($note) note='{{ $note }}'
-        @endif
-
+        @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
         :has-default-store="true"
         in-store="value"
-    ></a17-singleselect>
+    >
+        @if($addNew)
+            <div slot="addModal">
+                @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
+            </div>
+        @endif
+    </a17-singleselect>
 @elseif ($native ?? false)
     <a17-select
         label="{{ $label }}"
@@ -40,17 +42,19 @@
         :options='{!! json_encode($options) !!}'
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
         @if ($default) selected="{{ $default }}" @endif
-
         @if ($required) :required="true" @endif
         @if ($inModal) :in-modal="true" @endif
-        @if ($addNew) add-new='{{ $name }}Modal'
-        @elseif ($note) note='{{ $note }}'
-        @endif
-
+        @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
         :has-default-store="true"
         size="large"
         in-store="value"
-    ></a17-select>
+    >
+        @if($addNew)
+            <div slot="addModal">
+                @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
+            </div>
+        @endif
+    </a17-select>
 @else
     <a17-vselect
         label="{{ $label }}"
@@ -61,17 +65,19 @@
         @if ($default) :selected="{{ json_encode(collect($options)->first(function ($option) use ($default) {
             return $option['value'] === $default;
         })) }}" @endif
-
         @if ($required) :required="true" @endif
         @if ($inModal) :in-modal="true" @endif
-        @if ($addNew) add-new='{{ $name }}Modal'
-        @elseif ($note) note='{{ $note }}'
-        @endif
-
+        @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
         :has-default-store="true"
         size="large"
         in-store="inputValue"
-    ></a17-vselect>
+    >
+        @if($addNew)
+            <div slot="addModal">
+                @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
+            </div>
+        @endif
+    </a17-vselect>
 @endif
 
 @unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
@@ -82,22 +88,3 @@
     })
 @endpush
 @endunless
-
-@if($addNew)
-{{-- TODO : Should I reset the php variables set previously ? --}}
-@php
-    unset($note, $options, $placeholder, $required, $default, $addNew, $inModal);
-@endphp
-@push('modalAttributes')
-    <a17-modal-add ref="{{ $name }}Modal" name="{{ $name }}" :form-create="'{{ $storeUrl }}'" modal-title="Add new {{ $label }}">
-        {{-- fieldsInModal will manage fields separately --}}
-        {{-- permalink and translateTitle should not be defined here --}}
-        @partialView(($moduleName ?? null), 'create', [
-            'renderForModal' => true,
-            'fieldsInModal' => true,
-            'permalink' => false,
-            'translateTitle' => false
-        ])
-    </a17-modal-add>
-@endpush
-@endif

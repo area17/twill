@@ -37,7 +37,7 @@
     },
     methods: {
       openAddModal: function () {
-        if (this.$root.$refs[this.addNew]) this.$root.$refs[this.addNew].open()
+        if (this.$parent.$refs.addModal) this.$parent.$refs.addModal.open()
       }
     }
   }

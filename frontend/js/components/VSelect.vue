@@ -1,29 +1,36 @@
 <template>
-  <a17-inputframe :error="error" :label="label" :note="note" :size="size" :name="name" :label-for="uniqId" :required="required" :add-new="addNew" class="vselectOuter">
-    <div class="vselect" :class="vselectClasses">
-      <div class="vselect__field">
-        <input type="hidden" :name="name" :id="uniqId" :value="inputValue" />
-        <v-select
-          :multiple="multiple"
-          :placeholder="placeholder"
-          :value="value"
-          :options="currentOptions"
-          :searchable="searchable"
-          :clearSearchOnSelect="clearSearchOnSelect"
-          :label="optionsLabel"
-          :on-search="getOptions"
-          :taggable="taggable"
-          :pushTags="pushTags"
-          :transition="transition"
-          :requiredValue="required"
-          :maxHeight="maxHeight"
-          @input="updateValue"
-        >
-          <span slot="no-options">{{ emptyText }}</span>
-        </v-select>
+  <div class="vselectOuter">
+    <a17-inputframe :error="error" :label="label" :note="note" :size="size" :name="name" :label-for="uniqId" :required="required" :add-new="addNew">
+      <div class="vselect" :class="vselectClasses">
+        <div class="vselect__field">
+          <input type="hidden" :name="name" :id="uniqId" :value="inputValue" />
+          <v-select
+            :multiple="multiple"
+            :placeholder="placeholder"
+            :value="value"
+            :options="currentOptions"
+            :searchable="searchable"
+            :clearSearchOnSelect="clearSearchOnSelect"
+            :label="optionsLabel"
+            :on-search="getOptions"
+            :taggable="taggable"
+            :pushTags="pushTags"
+            :transition="transition"
+            :requiredValue="required"
+            :maxHeight="maxHeight"
+            @input="updateValue"
+          >
+            <span slot="no-options">{{ emptyText }}</span>
+          </v-select>
+        </div>
       </div>
-    </div>
-  </a17-inputframe>
+    </a17-inputframe>
+    <template v-if="addNew">
+      <a17-modal-add ref="addModal" :name="name" :form-create="addNew" :modal-title="'Add new ' + label">
+        <slot name="addModal"></slot>
+      </a17-modal-add>
+    </template>
+  </div>
 </template>
 
 <script>

@@ -6,12 +6,12 @@
             'label' => $label
         ];
     })->values()->toArray() : $options;
+
     $placeholder = $placeholder ?? false;
     $required = $required ?? false;
     $default = $default ?? false;
     $inline = $inline ?? false;
 
-    # Add new option
     $addNew = $addNew ?? false;
     $moduleName = $moduleName ?? null;
     $storeUrl = $storeUrl ?? '';
@@ -24,17 +24,19 @@
     :options="{{ json_encode($options) }}"
     @if ($default) selected="{{ $default }}" @endif
     :grid="false"
-    :inline='{{ $inline ? 'true' : 'false' }}'
+    @if ($inline) :inline="true" @endif
     @if ($required) :required="true" @endif
-
     @if ($inModal) :in-modal="true" @endif
-    @if ($addNew) add-new='{{ $name }}Modal'
-    @elseif ($note) note='{{ $note }}'
-    @endif
-
+    @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
     :has-default-store="true"
     in-store="value"
-></a17-singleselect>
+>
+@if($addNew)
+    <div slot="addModal">
+        @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
+    </div>
+@endif
+</a17-singleselect>
 
 @unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
 @push('vuexStore')
@@ -44,22 +46,3 @@
     })
 @endpush
 @endunless
-
-@if($addNew)
-{{-- TODO : Should I reset the php variables set previously ? --}}
-@php
-    unset($note, $options, $placeholder, $required, $default, $inline, $addNew, $inModal);
-@endphp
-@push('modalAttributes')
-    <a17-modal-add ref="{{ $name }}Modal" name="{{ $name }}" :form-create="'{{ $storeUrl }}'" modal-title="Add new {{ $label }}">
-        {{-- fieldsInModal will manage fields separately --}}
-        {{-- permalink and translateTitle should not be defined here --}}
-        @partialView(($moduleName ?? null), 'create', [
-            'renderForModal' => true,
-            'fieldsInModal' => true,
-            'permalink' => false,
-            'translateTitle' => false
-        ])
-    </a17-modal-add>
-@endpush
-@endif

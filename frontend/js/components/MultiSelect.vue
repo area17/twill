@@ -1,18 +1,25 @@
 <template>
-  <a17-inputframe :error="error" :note="note" :label="label" :name="name" :add-new="addNew">
-    <div class="multiselector" :class="gridClasses">
-      <div class="multiselector__outer">
-        <div class="multiselector__item" v-for="(checkbox, index) in fullOptions">
-          <input class="multiselector__checkbox" :class="{'multiselector__checkbox--checked': checkedValue.includes(checkbox.value) }" type="checkbox" :value="checkbox.value" :name="name + '[' + randKey + ']'" :id="uniqId(checkbox.value, index)" :disabled="checkbox.disabled || disabled" v-model="checkedValue">
-          <label class="multiselector__label" :for="uniqId(checkbox.value, index)" @click.prevent="changeCheckbox(checkbox.value)">
-            <span class="multiselector__icon"><span v-svg symbol="check"></span></span>
-            {{ checkbox.label }}
-          </label>
-          <span class="multiselector__bg"></span>
+  <div class="multiselectorOuter">
+    <a17-inputframe :error="error" :note="note" :label="label" :name="name" :add-new="addNew">
+      <div class="multiselector" :class="gridClasses">
+        <div class="multiselector__outer">
+          <div class="multiselector__item" v-for="(checkbox, index) in fullOptions">
+            <input class="multiselector__checkbox" :class="{'multiselector__checkbox--checked': checkedValue.includes(checkbox.value) }" type="checkbox" :value="checkbox.value" :name="name +   '[' + randKey + ']'" :id="uniqId(checkbox.value, index)" :disabled="checkbox.disabled || disabled" v-model="checkedValue">
+            <label class="multiselector__label" :for="uniqId(checkbox.value, index)" @click.prevent="changeCheckbox(checkbox.value)">
+              <span class="multiselector__icon"><span v-svg symbol="check"></span></span>
+              {{ checkbox.label }}
+            </label>
+            <span class="multiselector__bg"></span>
+          </div>
         </div>
       </div>
-    </div>
-  </a17-inputframe>
+    </a17-inputframe>
+    <template v-if="addNew">
+      <a17-modal-add ref="addModal" :name="name" :form-create="addNew" :modal-title="'Add new ' + label">
+        <slot name="addModal"></slot>
+      </a17-modal-add>
+    </template>
+  </div>
 </template>
 
 <script>
