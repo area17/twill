@@ -26,11 +26,11 @@
     @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
     in-store="currentValue"
 >
-@if($addNew)
-    <div slot="addModal">
-        @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
-    </div>
-@endif
+    @if($addNew)
+        <div slot="addModal">
+            @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
+        </div>
+    @endif
 </a17-multiselect>
 
 @unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))

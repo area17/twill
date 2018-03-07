@@ -52,7 +52,6 @@
             </div>
         @endif
     </a17-vselect>
-
 @endif
 
 @unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))

@@ -31,11 +31,13 @@
     :has-default-store="true"
     in-store="value"
 >
-@if($addNew)
-    <div slot="addModal">
-        @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
-    </div>
-@endif
+    @if($addNew)
+        <div slot="addModal">
+            {{-- TODO : Should I reset the php variables set previously ? --}}
+            {{-- unset($note, $options, $placeholder, $required, $default, $inline, $addNew, $inModal); --}}
+            @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
+        </div>
+    @endif
 </a17-singleselect>
 
 @unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
