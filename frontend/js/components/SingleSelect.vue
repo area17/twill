@@ -1,6 +1,5 @@
 <template>
-  <a17-inputframe :error="error" :note="note" :label="label" :name="name" class="singleselectorOuter">
-    <a href="#" v-if="addNew" @click.prevent="openAddModal" class="singleselector__add f--link f--link-underlined--o">Add New</a>
+  <a17-inputframe :error="error" :note="note" :label="label" :name="name" :add-new="addNew">
     <input type="hidden" :name="name" v-model="value" />
     <div class="singleselector" :class="gridClasses">
       <div class="singleselector__outer">
@@ -92,16 +91,6 @@
 
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
-
-  .singleselectorOuter {
-    position: relative;
-  }
-
-  .singleselector__add {
-    position:absolute;
-    top:0;
-    right:0;
-  }
 
   .singleselector {
     color:$color__text;

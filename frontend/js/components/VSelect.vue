@@ -1,5 +1,5 @@
 <template>
-  <a17-inputframe :error="error" :label="label" :note="note" :size="size" :name="name" :label-for="uniqId" :required="required">
+  <a17-inputframe :error="error" :label="label" :note="note" :size="size" :name="name" :label-for="uniqId" :required="required" :add-new="addNew" class="vselectOuter">
     <div class="vselect" :class="vselectClasses">
       <div class="vselect__field">
         <input type="hidden" :name="name" :id="uniqId" :value="inputValue" />
@@ -31,12 +31,13 @@
   import randKeyMixin from '@/mixins/randKey'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
+  import AttributesMixin from '@/mixins/addAttributes'
   import extendedVSelect from '@/components/VSelect/ExtendedVSelect.vue' // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
 //  import vSelect from 'vue-select' // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
 
   export default {
     name: 'A17VueSelect',
-    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin],
+    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin],
     props: {
       placeholder: {
         type: String,
@@ -110,13 +111,13 @@
     data: function () {
       return {
         value: this.selected,
-        currentOptions: this.options,
+        currentOptions: this.fullOptions,
         ajaxUrl: this.endpoint
       }
     },
     watch: {
       options: function (options) {
-        this.currentOptions = this.options
+        this.currentOptions = this.fullOptions
       }
     },
     computed: {

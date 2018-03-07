@@ -7,6 +7,7 @@
         ];
     })->values()->toArray() : $options;
     $placeholder = $placeholder ?? false;
+    $required = $required ?? false;
     $default = $default ?? false;
     $inline = $inline ?? false;
 
@@ -24,6 +25,7 @@
     @if ($default) selected="{{ $default }}" @endif
     :grid="false"
     :inline='{{ $inline ? 'true' : 'false' }}'
+    @if ($required) :required="true" @endif
 
     @if ($inModal) :in-modal="true" @endif
     @if ($addNew) add-new='{{ $name }}Modal'

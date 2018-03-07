@@ -36,10 +36,5 @@ export default {
     ...mapGetters([
       'optionsByName'
     ])
-  },
-  methods: {
-    openAddModal: function () {
-      if (this.$root.$refs[this.addNew]) this.$root.$refs[this.addNew].open()
-    }
   }
 }

@@ -1,8 +1,8 @@
 <template>
-  <a17-inputframe :error="error" :note="note" :label="label" :locale="locale" @localize="updateLocale" :name="name" :label-for="uniqId" :required="required">
+  <a17-inputframe :error="error" :note="note" :label="label" :locale="locale" @localize="updateLocale" :name="name" :label-for="uniqId" :required="required" :add-new="addNew">
     <span class="select__input" :class="selectClasses">
       <select v-model="selectedValue" :name="name" :id="uniqId" :disabled="disabled" :required="required" :readonly="readonly">
-        <option v-for="option in options" :value="option.value" v-html="option.label"></option>
+        <option v-for="option in fullOptions" :value="option.value" v-html="option.label"></option>
       </select>
     </span>
   </a17-inputframe>
@@ -13,11 +13,12 @@
   import InputMixin from '@/mixins/input'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
+  import AttributesMixin from '@/mixins/addAttributes'
   import LocaleMixin from '@/mixins/locale'
 
   export default {
     name: 'A17Select',
-    mixins: [randKeyMixin, InputMixin, InputframeMixin, LocaleMixin, FormStoreMixin],
+    mixins: [randKeyMixin, InputMixin, InputframeMixin, LocaleMixin, FormStoreMixin, AttributesMixin],
     props: {
       size: {
         type: String,

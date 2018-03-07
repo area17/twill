@@ -9,6 +9,11 @@
     $placeholder = $placeholder ?? false;
     $required = $required ?? false;
     $default = $default ?? false;
+
+    # Add new option
+    $addNew = $addNew ?? false;
+    $moduleName = $moduleName ?? null;
+    $storeUrl = $storeUrl ?? '';
     $inModal = $fieldsInModal ?? false;
 @endphp
 
@@ -18,9 +23,13 @@
         @include('cms-toolkit::partials.form.utils._field_name')
         :options='{!! json_encode($options) !!}'
         @if ($default) selected="{{ $default }}" @endif
-        @if ($note) note='{{ $note }}' @endif
         @if ($required) :required="true" @endif
+
         @if ($inModal) :in-modal="true" @endif
+        @if ($addNew) add-new='{{ $name }}Modal'
+        @elseif ($note) note='{{ $note }}'
+        @endif
+
         :has-default-store="true"
         in-store="value"
     ></a17-singleselect>
@@ -31,9 +40,13 @@
         :options='{!! json_encode($options) !!}'
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
         @if ($default) selected="{{ $default }}" @endif
-        @if ($note) note='{{ $note }}' @endif
+
         @if ($required) :required="true" @endif
         @if ($inModal) :in-modal="true" @endif
+        @if ($addNew) add-new='{{ $name }}Modal'
+        @elseif ($note) note='{{ $note }}'
+        @endif
+
         :has-default-store="true"
         size="large"
         in-store="value"
@@ -48,9 +61,13 @@
         @if ($default) :selected="{{ json_encode(collect($options)->first(function ($option) use ($default) {
             return $option['value'] === $default;
         })) }}" @endif
-        @if ($note) note='{{ $note }}' @endif
+
         @if ($required) :required="true" @endif
         @if ($inModal) :in-modal="true" @endif
+        @if ($addNew) add-new='{{ $name }}Modal'
+        @elseif ($note) note='{{ $note }}'
+        @endif
+
         :has-default-store="true"
         size="large"
         in-store="inputValue"
@@ -65,3 +82,13 @@
     })
 @endpush
 @endunless
+
+@if($addNew)
+@push('modalAttributes')
+    <a17-modal-add ref="{{ $name }}Modal" name="{{ $name }}" :form-create="'{{ $storeUrl }}'">
+        {{-- fieldsInModal will manage fields separately --}}
+        {{-- permalink and translateTitle should not be defined here --}}
+        @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true, 'permalink' => false, 'translateTitle' => false])
+    </a17-modal-add>
+@endpush
+@endif

@@ -6,6 +6,7 @@
       <span class="input__lang" v-if="hasLocale && languages.length > 1" @click="onClickLocale" data-tooltip-title="Switch language" v-tooltip>{{ displayedLocale }}</span>
       <span class="input__note f--small" v-if="note">{{ note }}</span>
     </label>
+    <a href="#" v-if="addNew" @click.prevent="openAddModal" class="input__add f--link f--link-underlined--o">Add New</a>
     <slot></slot>
     <span v-if="error && errorMessage" class="input__errorMessage f--small">{{ errorMessage }}</span>
     <span v-if="otherLocalesError" class="input__errorMessage f--small">{{ errorMessageLocales }}</span>
@@ -20,12 +21,23 @@
   export default {
     name: 'A17InputFrame',
     mixins: [InputMixin, InputframeMixin, LocaleMixin],
+    props: {
+      addNew: {
+        type: String,
+        default: ''
+      }
+    },
     computed: {
       textfieldClasses: function () {
         return {
           'input--error': this.error,
           'input--small': this.size === 'small'
         }
+      }
+    },
+    methods: {
+      openAddModal: function () {
+        if (this.$root.$refs[this.addNew]) this.$root.$refs[this.addNew].open()
       }
     }
   }
@@ -36,6 +48,13 @@
 
   .input {
     margin-top:35px;
+    position: relative;
+  }
+
+  .input__add {
+    position:absolute;
+    top:0;
+    right:0;
   }
 
   .input__label {

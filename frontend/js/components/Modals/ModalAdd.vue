@@ -43,7 +43,6 @@
             method: 'post'
           }).then(() => {
             self.$nextTick(function () {
-              console.log('Refresh attributes somehow')
               if (this.$refs.modal) this.$refs.modal.close()
             })
           }, (errorResponse) => {
