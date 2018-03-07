@@ -40,6 +40,8 @@
 
         this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
 
+        const submitMode = document.activeElement.name
+
         this.$nextTick(function () {
           this.$store.dispatch(ACTIONS.CREATE_FORM_IN_MODAL, {
             name: this.name,
@@ -47,7 +49,16 @@
             method: 'post'
           }).then(() => {
             self.$nextTick(function () {
-              if (this.$refs.modal) this.$refs.modal.close()
+              self.$store.commit(NOTIFICATION.SET_NOTIF, {
+                message: 'Your content has been added',
+                variant: 'success'
+              })
+
+              if (submitMode === 'create-another') {
+                this.$store.commit(FORM.EMPTY_MODAL_FIELDS, true)
+              } else {
+                if (self.$refs.modal) self.$refs.modal.close()
+              }
             })
           }, (errorResponse) => {
             self.$store.commit(NOTIFICATION.SET_NOTIF, {

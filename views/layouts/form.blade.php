@@ -85,9 +85,6 @@
     </a17-modal>
     <a17-editor v-if="editor" ref="editor" bg-color="{{ config('cms-toolkit.block_editor.background_color') ?? '#FFFFFF' }}"></a17-editor>
     <a17-previewer ref="preview"></a17-previewer>
-
-    <!-- Attributes -->
-    @stack('modalAttributes')
 @stop
 
 @section('initialStore')
