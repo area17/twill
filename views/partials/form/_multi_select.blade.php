@@ -52,7 +52,7 @@
 
 @if($addNew)
 @push('modalAttributes')
-    <a17-modal-add ref="{{ $name }}Modal" name="{{ $name }}" :form-create="'{{ $storeUrl }}'">
+    <a17-modal-add ref="{{ $name }}Modal" name="{{ $name }}" :form-create="'{{ $storeUrl }}'" modal-title="Add new {{ $label }}">
         {{-- fieldsInModal will manage fields separately --}}
         {{-- permalink and translateTitle should not be defined here --}}
         @partialView(($moduleName ?? null), 'create', [

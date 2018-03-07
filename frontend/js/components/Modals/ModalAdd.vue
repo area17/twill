@@ -1,5 +1,5 @@
 <template>
-  <a17-modal ref="modal" class="modal--form" title="Add new" :forceClose="true">
+  <a17-modal ref="modal" class="modal--form" :title="modalTitle" :forceClose="true">
     <form :action="formCreate" @submit.prevent="submit">
       <slot></slot>
       <a17-modal-validation :is-disable="true"></a17-modal-validation>
@@ -18,6 +18,10 @@
       name: {
         type: String,
         default: ''
+      },
+      modalTitle: {
+        type: String,
+        default: 'Add new'
       },
       formCreate: {
         type: String,
