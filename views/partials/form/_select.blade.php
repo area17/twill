@@ -84,11 +84,20 @@
 @endunless
 
 @if($addNew)
+{{-- TODO : Should I reset the php variables set previously ? --}}
+@php
+    unset($note, $options, $placeholder, $required, $default, $addNew, $inModal);
+@endphp
 @push('modalAttributes')
     <a17-modal-add ref="{{ $name }}Modal" name="{{ $name }}" :form-create="'{{ $storeUrl }}'" modal-title="Add new {{ $label }}">
         {{-- fieldsInModal will manage fields separately --}}
         {{-- permalink and translateTitle should not be defined here --}}
-        @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true, 'permalink' => false, 'translateTitle' => false])
+        @partialView(($moduleName ?? null), 'create', [
+            'renderForModal' => true,
+            'fieldsInModal' => true,
+            'permalink' => false,
+            'translateTitle' => false
+        ])
     </a17-modal-add>
 @endpush
 @endif

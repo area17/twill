@@ -51,6 +51,10 @@
 @endunless
 
 @if($addNew)
+{{-- TODO : Should I reset the php variables set previously ? --}}
+@php
+    unset($note, $options, $addNew, $inModal);
+@endphp
 @push('modalAttributes')
     <a17-modal-add ref="{{ $name }}Modal" name="{{ $name }}" :form-create="'{{ $storeUrl }}'" modal-title="Add new {{ $label }}">
         {{-- fieldsInModal will manage fields separately --}}
