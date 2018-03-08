@@ -165,6 +165,7 @@
     methods: {
       open: function () {
         this.$refs.modal.open()
+        this.listenScrollPosition()
       },
       close: function () {
         this.$refs.modal.close()
