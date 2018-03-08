@@ -8,7 +8,7 @@
             <a17-editorsidebar @delete="deleteBlock" @save="saveBlock" @cancel="cancelBlock">Add content</a17-editorsidebar>
           </div>
           <div class="editor__resizer" @mousedown="resize"><span></span></div>
-          <div class="editor__preview" :class="{ 'editor__preview--loading' : loading }" :style="previewStyle">
+          <div class="editor__preview" :class="previewClass" :style="previewStyle">
             <a17-editorpreview ref="previews" @select="selectBlock" @delete="deleteBlock" @unselect="unselectBlock" @add="addBlock" />
             <a17-spinner v-if="loading" :visible="true">Loading&hellip;</a17-spinner>
           </div>
@@ -19,6 +19,7 @@
 </template>
 
 <script>
+  import tinyColor from 'tinycolor2'
   import { mapState } from 'vuex'
 
   import A17EditorSidebar from '@/components/editor/EditorSidebar.vue'
@@ -68,10 +69,17 @@
       hasBlockActive: function () {
         return Object.keys(this.activeBlock).length > 0
       },
-      previewStyle: function () {
+      previewClass: function () {
+        const bgColorObj = tinyColor(this.bgColor)
+        console.log(bgColorObj.getBrightness())
+
         return {
-          'background-color': this.bgColor
+          'editor__preview--dark': bgColorObj.getBrightness() < 180,
+          'editor__preview--loading': this.loading
         }
+      },
+      previewStyle: function () {
+        return { 'background-color': this.bgColor }
       },
       ...mapState({
         loading: state => state.content.loading,
@@ -275,9 +283,15 @@
     flex-grow:1;
     position:relative;
     min-width:300px;
+    color:$color__text--light;
   }
 
   .editor__preview--loading /deep/ .editorPreview {
     opacity: 0;
   }
+
+  .editor__preview--dark {
+    color:$color__background;
+  }
+
 </style>

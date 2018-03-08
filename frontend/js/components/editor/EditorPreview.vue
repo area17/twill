@@ -202,6 +202,7 @@
 
   .editorPreview {
     background-color:inherit;
+    color:inherit;
   }
 
   .editorPreview__content {
@@ -224,7 +225,7 @@
     display:flex;
     align-items: center;
     justify-content: center;
-    color:$color__text--light;
+    color:inherit;
     background-color:inherit;
 
     &::after {

@@ -70,4 +70,10 @@
     background-color:rgba($color_editor--active, 0.05);
     border:1px solid rgba($color_editor--active, 0.33);
   }
+
+  .editor__preview--dark .editorIframe__empty {
+    color:rgba($color__background, 0.75);
+    background-color:rgba($color_editor--active, 0.2);
+    border:1px solid rgba($color_editor--active, 0.5);
+  }
 </style>
