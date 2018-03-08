@@ -71,8 +71,6 @@
       },
       previewClass: function () {
         const bgColorObj = tinyColor(this.bgColor)
-        console.log(bgColorObj.getBrightness())
-
         return {
           'editor__preview--dark': bgColorObj.getBrightness() < 180,
           'editor__preview--loading': this.loading

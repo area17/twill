@@ -16,6 +16,7 @@
           :pushTags="pushTags"
           :transition="transition"
           :requiredValue="required"
+          :maxHeight="maxHeight"
           @input="updateValue"
         >
           <span slot="no-options">{{ emptyText }}</span>
@@ -97,6 +98,10 @@
       required: {
         type: Boolean,
         default: false
+      },
+      maxHeight: { // max-height of the dropdown menu
+        type: String,
+        default: '400px'
       }
     },
     components: {
