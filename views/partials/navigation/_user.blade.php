@@ -4,7 +4,7 @@
         <div slot="dropdown__content">
             <a href="{{ route('admin.users.index') }}">CMS Users</a>
             <a href="{{ route('admin.users.edit', $currentUser->id) }}">Settings</a>
-            <a href="/logout">Logout</a>
+            <a href="{{ route('admin.users.logout') }}">Logout</a>
         </div>
     </a17-dropdown>
 @endif
