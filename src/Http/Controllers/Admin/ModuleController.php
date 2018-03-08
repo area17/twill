@@ -996,8 +996,8 @@ abstract class ModuleController extends Controller
     protected function getRoutePrefix()
     {
         if ($this->request->route() != null) {
-            $routePrefix = ltrim($this->request->route()->getPrefix(), "/");
-            return str_replace("/", ".", ($routePrefix));
+            $routePrefix = ltrim(str_replace(config('cms-toolkit.admin_app_path'), '', $this->request->route()->getPrefix()), "/");
+            return str_replace("/", ".", $routePrefix);
         }
 
         return '';

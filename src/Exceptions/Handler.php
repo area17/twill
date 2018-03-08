@@ -72,7 +72,10 @@ class Handler extends ExceptionHandler
         $statusCode = $this->isHttpException($e) ? $e->getStatusCode() : 500;
         $headers = $this->isHttpException($e) ? $e->getHeaders() : [];
 
-        if ($request->getHost() == config('cms-toolkit.admin_app_url')) {
+        $isSubdomainAdmin = empty(config('cms-toolkit.admin_app_path')) && $request->getHost() == config('cms-toolkit.admin_app_url');
+        $isSubdirectoryAdmin = !empty(config('cms-toolkit.admin_app_path')) && starts_with($request->path(), config('cms-toolkit.admin_app_path'));
+
+        if ($isSubdomainAdmin || $isSubdirectoryAdmin) {
             $view = view()->exists("admin.errors.$statusCode") ? "admin.errors.$statusCode" : "cms-toolkit::errors.$statusCode";
         } else {
             $view = config('cms-toolkit.frontend.views_path') . ".errors.{$statusCode}";

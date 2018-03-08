@@ -29,6 +29,7 @@ class RouteServiceProvider extends ServiceProvider
             'domain' => config('cms-toolkit.admin_app_url'),
             'as' => 'admin.',
             'middleware' => [config('cms-toolkit.admin_middleware_group', 'web')],
+            'prefix' => rtrim(ltrim(config('cms-toolkit.admin_app_path'), '/'), '/'),
         ], function ($router) {
             $router->group(['middleware' => ['auth', 'impersonate', 'validateBackHistory']], function ($router) {
                 require base_path('routes/admin.php');
@@ -40,6 +41,7 @@ class RouteServiceProvider extends ServiceProvider
             'domain' => config('cms-toolkit.admin_app_url'),
             'as' => 'admin.',
             'middleware' => [config('cms-toolkit.admin_middleware_group', 'web')],
+            'prefix' => rtrim(ltrim(config('cms-toolkit.admin_app_path'), '/'), '/'),
         ],
             function ($router) {
                 $router->group(['middleware' => ['auth', 'impersonate', 'validateBackHistory']], function ($router) {
@@ -120,6 +122,11 @@ class RouteServiceProvider extends ServiceProvider
             }
 
             $groupPrefix = trim(str_replace('/', '.', Route::getLastGroupPrefix()), '.');
+
+            if (!empty(config('cms-toolkit.admin_app_path'))) {
+                $groupPrefix = ltrim(str_replace(config('cms-toolkit.admin_app_path'), '', $groupPrefix), '.');
+            }
+
             $customRoutePrefix = !empty($groupPrefix) ? "{$groupPrefix}.{$slug}" : "{$slug}";
 
             foreach ($customRoutes as $route) {
