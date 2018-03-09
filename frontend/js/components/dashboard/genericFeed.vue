@@ -8,8 +8,9 @@
         <li v-for="entity in entities">
           <a :href="entity.url" class="genericFeed__item" :target="target(entity)">
             <span class="genericFeed__thumbnails" v-if="entity.thumbnail"><img :src="entity.thumbnail" /></span>
-            <span class="genericFeed__label"><span>{{ entity.name }}</span></span>
+            <span class="genericFeed__label"><span><span class="genericFeed__hover">{{ entity.name }}</span></span></span>
             <span class="genericFeed__views f--tiny" v-if="entity.number">{{ entity.number }}</span>
+            <span class="genericFeed__type" v-if="entity.type">{{ entity.type }}</span>
           </a>
         </li>
       </ol>
@@ -52,6 +53,10 @@
 
   }
 
+  .genericFeed__hover {
+    display:inline;
+  }
+
   .genericFeed__item {
     padding:20px;
     border-top:1px solid $color__border--light;
@@ -63,7 +68,7 @@
     &:hover {
       background-color: $color__ultralight;
 
-      .genericFeed__label span {
+      .genericFeed__hover {
         @include bordered($color__link, false);
       }
     }
@@ -95,6 +100,12 @@
 
   .genericFeed__views {
     color:$color__text--light;
+    padding-left:15px;
+  }
+
+  .genericFeed__type {
+    color:$color__text--light;
+    padding-left:15px;
   }
 
   /* With numbers */

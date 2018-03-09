@@ -27,7 +27,7 @@
                         Most Viewed
                     </a17-feed>
 
-                    <a17-feed :entities="[ { name: 'Garden Museum', url: '/fe/templates/form' }, { name: 'London Design Festival 2017', url: '/fe/templates/form' }, { name: 'The National', url: '/fe/templates/form' }, { name: 'The Hollow Woods: Storytelling', url: '/fe/templates/form' }, { name: 'William Russell: A Collection', url: '/fe/templates/form' }, { name: 'Red Trees', url: '/fe/templates/form' }, { name: 'Musuem für Film umd Fernsehen', url: '/fe/templates/form' }, { name: 'Shakespeare in the Park 2017', url: '/fe/templates/form' }, { name: 'Artifact', url: '/fe/templates/form' }, { name: 'Dance Ink (Vol. 8, No. 2)', url: '/fe/templates/form' } ]">
+                    <a17-feed :entities="[ { name: 'Garden Museum', url: '/fe/templates/form', type: 'Projects' }, { name: 'London Design Festival 2017', url: '/fe/templates/form', type: 'News' }, { name: 'The National', url: '/fe/templates/form', type: 'Partners' }, { name: 'The Hollow Woods: Storytelling', url: '/fe/templates/form', type: 'News' }, { name: 'William Russell: A Collection', url: '/fe/templates/form', type: 'News' }, { name: 'Red Trees', url: '/fe/templates/form', type: 'Partners' }, { name: 'Musuem für Film umd Fernsehen', url: '/fe/templates/form', type: 'Projects' }, { name: 'Shakespeare in the Park 2017', url: '/fe/templates/form', type: 'News' }, { name: 'Artifact', url: '/fe/templates/form', type: 'News' }, { name: 'Dance Ink (Vol. 8, No. 2)', url: '/fe/templates/form', type: 'Projects' } ]">
                         My drafts
                     </a17-feed>
 
@@ -50,7 +50,10 @@
 
     window.STORE.datatable = {}
 
-    window.STORE.datatable.data = {!! json_encode($tableData) !!}
+    window.STORE.datatable.mine = {!! json_encode($myActivityData) !!}
+    window.STORE.datatable.all = {!! json_encode($allActivityData) !!}
+
+    window.STORE.datatable.data = window.STORE.datatable.all
     window.STORE.datatable.columns = {!! json_encode($tableColumns) !!}
 @stop
 

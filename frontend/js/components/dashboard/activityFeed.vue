@@ -55,9 +55,16 @@
       }
     },
     computed: {
+      rows: {
+        get () {
+          return this.$store.state.datatable.data
+        },
+        set (value) {
+          this.$store.commit(DATATABLE.UPDATE_DATATABLE_DATA, value)
+        }
+      },
       ...mapState({
         page: state => state.datatable.page,
-        rows: state => state.datatable.data,
         maxPage: state => state.datatable.maxPage,
         columns: state => state.datatable.columns
       })
@@ -65,14 +72,15 @@
     methods: {
       filterStatus: function (index, slug) {
         if (this.navActive === index) return
+
+        // No XHR requests just a simple switch of data
         this.navActive = index
-        this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
-        this.$store.commit(DATATABLE.UPDATE_DATATABLE_FILTER_STATUS, slug)
-        this.reloadDatas()
-      },
-      reloadDatas: function () {
-        // reload datas
-        this.$store.dispatch(ACTIONS.GET_DATATABLE)
+        // No pagination
+        // this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
+        // this.$store.commit(DATATABLE.UPDATE_DATATABLE_FILTER_STATUS, slug)
+        if (window.STORE.datatable) {
+          if(window.STORE.datatable.hasOwnProperty(slug)) this.rows = window.STORE.datatable[slug]
+        }
       }
     }
   }
