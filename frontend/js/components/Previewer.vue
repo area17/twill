@@ -18,7 +18,7 @@
                 </template>
               </a17-button>
               <div slot="dropdown__content">
-                <button type="button" class="previewerRevision" @click="previewRevision(revision.id)" v-for="(revision, index) in revisions"  :key="revision.id">
+                <button type="button" class="previewerRevision" :class="{ 'previewerRevision--active' : currentRevision.id === revision.id }" @click="toggleRevision(revision.id)" v-for="(revision, index) in revisions"  :key="revision.id">
                   <span class="previewerRevision__author">{{ revision.author }}</span>
                   <span class="previewerRevision__datetime"><span class="tag" v-if="index === 0">Current</span> {{ revision.datetime | formatDate }}</span>
                 </button>
@@ -114,6 +114,11 @@
       open: function (previewId = 0) {
         let self = this
 
+        // reset previewer state
+        this.loadedCurrent = false
+        this.activeBreakpoint = 1280
+        this.lastActiveBreakpoint = 1280
+
         function initPreview () {
           if (self.$refs.overlay) self.$refs.overlay.open()
           self.singleView()
@@ -130,11 +135,6 @@
         if (rootRefs.preview) rootRefs.preview.close()
         if (rootRefs.editor) rootRefs.editor.open()
       },
-      getCurrentPreview: function () {
-        if (this.loadedCurrent) return
-        this.loadedCurrent = true
-        this.$store.dispatch(ACTIONS.GET_CURRENT)
-      },
       restoreRevision: function () {
         // Do something here
       },
@@ -144,6 +144,15 @@
       },
       previewCurrent: function (callback) {
         this.$store.commit(REVISION.UPDATE_REV, 0)
+        this.loadCurrent(callback)
+      },
+      loadCurrent: function (callback) {
+        if (this.loadedCurrent) {
+          if (callback && typeof callback === 'function') callback()
+          return
+        }
+
+        this.loadedCurrent = true
         this.$store.dispatch(ACTIONS.GET_CURRENT).then(() => {
           if (callback && typeof callback === 'function') callback()
         }, (errorResponse) => {
@@ -153,6 +162,19 @@
             variant: 'error'
           })
         })
+      },
+      toggleRevision: function (id) {
+        if (this.activeRevision) {
+          // Toggle : go back to current version in Single view mode
+          if (this.currentRevision.id === id) {
+            this.singleView()
+            this.previewCurrent()
+            return
+          }
+        }
+
+        // Or display the revision
+        this.previewRevision(id)
       },
       previewRevision: function (id, callback) {
         this.$store.commit(REVISION.UPDATE_REV, id)
@@ -169,7 +191,7 @@
         this.activeBreakpoint = 0
         this.slipScreen = true
 
-        if (this.activeRevision) this.getCurrentPreview()
+        if (this.activeRevision) this.loadCurrent()
       },
       singleView: function () {
         this.activeBreakpoint = this.lastActiveBreakpoint
@@ -366,6 +388,11 @@
   button.previewerRevision {
     display:flex;
     padding:0 15px;
+  }
+
+  button.previewerRevision--active {
+    color:$color__text;
+    background:$color__light;
   }
 
   .previewerRevision__author {
