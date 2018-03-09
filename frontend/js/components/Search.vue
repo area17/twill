@@ -170,14 +170,14 @@
         this.searchValue = event.target.value
         if (this.searchValue && this.searchValue.length > 2) {
           if (this.type === 'dashboard') {
-            htmlClasses.forEach((klass) => {
+            htmlSearchClasses.forEach((klass) => {
               html.classList.add(klass)
             })
           }
           this.fetchSearchResults()
         } else {
           if (this.type === 'dashboard') {
-            htmlClasses.forEach((klass) => {
+            htmlSearchClasses.forEach((klass) => {
               html.classList.remove(klass)
             })
           }
