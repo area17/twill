@@ -18,7 +18,7 @@ Vue.use(A17Notif)
 import a17ShortcutCreator from '@/components/dashboard/shortcutCreator.vue'
 import A17ActivityFeed from '@/components/dashboard/activityFeed.vue'
 import A17StatFeed from '@/components/dashboard/statFeed.vue'
-import A17PopularFeed from '@/components/dashboard/popularFeed.vue'
+import A17GenericFeed from '@/components/dashboard/genericFeed.vue'
 
 // Store modules
 import datatable from '@/store/modules/datatable'
@@ -34,7 +34,7 @@ Window.vm = new Vue({
     'a17-shortcut-creator': a17ShortcutCreator,
     'a17-activity-feed': A17ActivityFeed,
     'a17-stat-feed': A17StatFeed,
-    'a17-popular-feed': A17PopularFeed
+    'a17-feed': A17GenericFeed
   },
   created: function () {
     openMediaLibrary()

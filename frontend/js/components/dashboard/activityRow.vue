@@ -2,7 +2,7 @@
   <tr class="activityRow">
     <td v-for="col in columns" :key="col.name" class="activityCell" :class="cellClasses(col)">
       <template v-if="isSpecificColumn(col)">
-        <span v-if="col.name === 'published'" class="activityCell__pubstate" :class="{'activityCell__pubstate--live': row[col.name] }"  @click.prevent="togglePublish" data-tooltip-title="Publish" v-tooltip ></span> <!-- Published circle icon -->
+        <span v-if="col.name === 'published'" class="activityCell__pubstate" :class="{'activityCell__pubstate--live': row[col.name] }" :data-tooltip-title="row[col.name] ? 'Published' : 'Draft'" v-tooltip ></span> <!-- Published circle icon @click.prevent="togglePublish"  -->
         <a v-if="col.name === 'thumbnail'" class="activityCell__thumb" :href="row['edit']" ><img :src="row[col.name]" /></a> <!-- Thumbnail -->
       </template>
       <template v-else>
@@ -21,8 +21,8 @@
         <div slot="dropdown__content">
           <a v-if="row.hasOwnProperty('permalink')" :href="row['permalink']" target="_blank">View Permalink</a>
           <a v-if="row.hasOwnProperty('edit')" :href="row['edit']">Edit</a>
-          <a v-if="row.hasOwnProperty('published')" href="#" @click.prevent="togglePublish">{{ row['published'] ? 'Unpublish' : 'Publish' }}</a>
-          <a href="#" @click.prevent="deleteRow">Delete</a>
+          <!-- <a v-if="row.hasOwnProperty('published')" href="#" @click.prevent="togglePublish">{{ row['published'] ? 'Unpublish' : 'Publish' }}</a> -->
+          <!-- <a href="#" @click.prevent="deleteRow">Delete</a> -->
         </div>
       </a17-dropdown>
     </td>
@@ -64,16 +64,16 @@
         return col.name === 'featured' ||
                col.name === 'published' ||
                col.name === 'thumbnail'
-      },
-      toggleFeatured: function () {
-        this.$store.dispatch(ACTIONS.TOGGLE_FEATURE, this.row.id)
-      },
-      togglePublish: function () {
-        this.$store.dispatch(ACTIONS.TOGGLE_PUBLISH, this.row)
-      },
-      deleteRow: function () {
-        this.$store.dispatch(ACTIONS.DELETE_ROW, this.row.id)
       }
+      // toggleFeatured: function () {
+      //   this.$store.dispatch(ACTIONS.TOGGLE_FEATURE, this.row.id)
+      // },
+      // togglePublish: function () {
+      //   this.$store.dispatch(ACTIONS.TOGGLE_PUBLISH, this.row)
+      // },
+      // deleteRow: function () {
+      //   this.$store.dispatch(ACTIONS.DELETE_ROW, this.row.id)
+      // }
     }
   }
 </script>
@@ -189,7 +189,7 @@
   // }
 
   .activityCell__pubstate {
-    cursor:pointer;
+    // cursor:pointer;
     border-radius:50%;
     height:9px;
     width:9px;
@@ -197,7 +197,7 @@
     background:$color__fborder;
     position:relative;
     top:3px;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    // transition: background-color 0.3s ease, border-color 0.3s ease;
   }
 
   .activityCell__pubstate--live {
