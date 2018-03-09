@@ -25,7 +25,7 @@
 <script>
   import { mapState } from 'vuex'
   import { DATATABLE } from '@/store/mutations'
-  import * as ACTIONS from '@/store/actions'
+  // import * as ACTIONS from '@/store/actions'
   import A17ActivityRow from '@/components/dashboard/activityRow.vue'
 
   export default {
@@ -79,7 +79,7 @@
         // this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
         // this.$store.commit(DATATABLE.UPDATE_DATATABLE_FILTER_STATUS, slug)
         if (window.STORE.datatable) {
-          if(window.STORE.datatable.hasOwnProperty(slug)) this.rows = window.STORE.datatable[slug]
+          if (window.STORE.datatable.hasOwnProperty(slug)) this.rows = window.STORE.datatable[slug]
         }
       }
     }
