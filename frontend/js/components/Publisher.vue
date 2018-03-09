@@ -122,7 +122,7 @@
         }
       },
       openPreview: function () {
-        if (this.$root.$refs.preview) this.$root.$refs.preview.open()
+        if (this.$root.$refs.preview) this.$root.$refs.preview.open(0)
       },
       updateVisibility: function (newValue) {
         this.$store.commit(PUBLICATION.UPDATE_PUBLISH_VISIBILITY, newValue)

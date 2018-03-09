@@ -111,19 +111,16 @@
       })
     },
     methods: {
-      open: function () {
-        this.$store.commit(REVISION.UPDATE_REV, 0)
+      open: function (previewId = 0) {
+        let self = this
 
-        this.$store.dispatch(ACTIONS.GET_CURRENT).then(() => {
-          this.$refs.overlay.open()
-          this.singleView()
-        }, (errorResponse) => {
-          this.$store.commit(FORM.SET_FORM_ERRORS, errorResponse.response.data)
-          this.$store.commit(NOTIFICATION.SET_NOTIF, {
-            message: 'Your submission could not be validated, please fix and retry',
-            variant: 'error'
-          })
-        })
+        function initPreview () {
+          if (self.$refs.overlay) self.$refs.overlay.open()
+          self.singleView()
+        }
+
+        if (previewId) this.previewRevision(previewId, function () { initPreview() })
+        else this.previewCurrent(function () { initPreview() })
       },
       close: function () {
         this.$refs.overlay.close()
@@ -145,10 +142,22 @@
         this.activeBreakpoint = parseInt(size)
         this.lastActiveBreakpoint = parseInt(size)
       },
-      previewRevision: function (id) {
+      previewCurrent: function (callback) {
+        this.$store.commit(REVISION.UPDATE_REV, 0)
+        this.$store.dispatch(ACTIONS.GET_CURRENT).then(() => {
+          if (callback && typeof callback === 'function') callback()
+        }, (errorResponse) => {
+          this.$store.commit(FORM.SET_FORM_ERRORS, errorResponse.response.data)
+          this.$store.commit(NOTIFICATION.SET_NOTIF, {
+            message: 'Your submission could not be validated, please fix and retry',
+            variant: 'error'
+          })
+        })
+      },
+      previewRevision: function (id, callback) {
         this.$store.commit(REVISION.UPDATE_REV, id)
         this.$store.dispatch(ACTIONS.GET_REVISION).then(() => {
-          // all good
+          if (callback && typeof callback === 'function') callback()
         }, (errorResponse) => {
           this.$store.commit(NOTIFICATION.SET_NOTIF, {
             message: 'Invalid revision.',

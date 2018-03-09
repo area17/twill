@@ -323,8 +323,6 @@
       },
       reloadTags: function () {
         api.get(this.endpoint, '', (resp) => {
-          console.log('reloadTags')
-          console.log(resp.data.tags)
           this.tags = resp.data.tags || []
         })
       },
