@@ -166,21 +166,22 @@
     height:$height_btn;
     line-height:$height_btn;
     text-align:center;
-    border-top-left-radius:0;
-    border-bottom-left-radius:0;
-    border-top-right-radius:2px;
-    border-bottom-right-radius:2px;
+    // border-top-left-radius:0;
+    // border-bottom-left-radius:0;
+    // border-top-right-radius:2px;
+    // border-bottom-right-radius:2px;
     color: $color__background;
-    margin-left: -2px;
-    padding:0 10px;
     transition: color .2s linear;
-    position:absolute;
-    right:0;
-    top:0;
+    padding-left:6px;
+    // margin-left: -2px;
+    // padding:0 10px;
+    // position:absolute;
+    // right:0;
+    // top:0;
 
     .icon {
       position:relative;
-      top:-3px;
+      top:-2px;
     }
   }
 
