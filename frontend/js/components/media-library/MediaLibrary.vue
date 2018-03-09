@@ -165,12 +165,14 @@
     methods: {
       open: function () {
         this.$refs.modal.open()
-        this.listenScrollPosition()
       },
       close: function () {
-        this.$refs.modal.close()
+        this.$refs.modal.hide()
       },
       opened: function () {
+        if (!this.isGridLoaded()) this.reloadGrid()
+        this.listenScrollPosition()
+
         // empty selected medias (to avoid bugs when adding)
         this.selectedMedias = []
 
@@ -181,6 +183,9 @@
             this.updateSelectedMedias(mediaInitSelect.id)
           }
         }
+      },
+      isGridLoaded: function () { // The Grid is loaded (and so we have a list)
+        return this.$refs.list
       },
       updateType: function (newType) {
         if (this.strict) return
@@ -352,19 +357,20 @@
       listenScrollPosition: function () {
         // re-listen for scroll position
         this.$nextTick(function () {
-          const list = this.$refs.list
+          if (!this.isGridLoaded()) return
 
-          if (!list) return
+          const list = this.$refs.list
           if (this.gridHeight !== list.scrollHeight) {
             list.addEventListener('scroll', this.scrollToPaginate)
           }
         })
       },
       scrollToPaginate: function () {
+        if (!this.isGridLoaded()) return
+
         const list = this.$refs.list
         const offset = 10
 
-        if (!list) return
         if (list.scrollTop > this.lastScrollTop && list.scrollTop + list.offsetHeight > list.scrollHeight - offset) {
           list.removeEventListener('scroll', this.scrollToPaginate)
 
@@ -382,10 +388,6 @@
         this.$store.commit(MEDIA_LIBRARY.SAVE_MEDIAS, this.selectedMedias)
         this.close()
       }
-    },
-    mounted: function () {
-      // bind scroll on the feed
-      this.reloadGrid()
     }
   }
 </script>
