@@ -223,6 +223,8 @@
               if (!media.tags.includes(tag)) media.tags.push(tag)
             })
           })
+
+          this.$emit('tagUpdated')
         }
       },
       update: function (form) {

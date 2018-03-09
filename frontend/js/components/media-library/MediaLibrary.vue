@@ -34,7 +34,7 @@
       <div class="medialibrary__inner">
         <div class="medialibrary__grid">
           <aside class="medialibrary__sidebar">
-            <a17-mediasidebar :medias="selectedMedias" :authorized="authorized" @clear="clearSelectedMedias" @delete="deleteSelectedMedias"/>
+            <a17-mediasidebar :medias="selectedMedias" :authorized="authorized" @clear="clearSelectedMedias" @delete="deleteSelectedMedias" @tagUpdated="reloadTags" />
           </aside>
           <footer class="medialibrary__footer" v-if="selectedMedias.length && showInsert && connector">
             <a17-button v-if="canInsert" variant="action" @click="saveAndClose">{{ btnLabel }} </a17-button>
@@ -319,6 +319,13 @@
             message: error.data.message,
             variant: 'error'
           })
+        })
+      },
+      reloadTags: function () {
+        api.get(this.endpoint, '', (resp) => {
+          console.log('reloadTags')
+          console.log(resp.data.tags)
+          this.tags = resp.data.tags || []
         })
       },
       submitFilter: function (formData) {
