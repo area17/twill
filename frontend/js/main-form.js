@@ -1,5 +1,3 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import store from '@/store'
@@ -169,16 +167,6 @@ Window.vm = new Vue({
     openMediaLibrary()
   }
 })
-
-// User header dropdown
-/* eslint-disable no-new */
-/* eslint no-unused-vars: "off" */
-Window.vheader = new Vue({ el: '#headerUser' })
-
-// Search
-/* eslint-disable no-new */
-/* eslint no-unused-vars: "off" */
-Window.vsearch = search
 
 // DOM Ready general actions
 document.addEventListener('DOMContentLoaded', main)
