@@ -27,6 +27,7 @@
                 <a17-title-editor
                     name="{{ $titleFormKey }}"
                     :editable-title="{{ json_encode($editableTitle ?? true) }}"
+                    custom-title="{{ $customTitle ?? '' }}"
                     slot="title"
                     @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif
                 >

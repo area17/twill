@@ -5,7 +5,7 @@
         <a v-if="editableTitle" @click.prevent="$refs.editModal.open()" href="#">
           <span class="f--underlined--o">{{ title }}</span> <span v-svg symbol="edit"></span>
         </a>
-        <span v-else>{{ title }}</span>
+        <span v-else>{{ customTitle ? customTitle : title }}</span>
       </h2>
       <a v-if="permalink" :href="fullUrl" target="_blank" class="titleEditor__permalink f--small">
         <span class="f--note f--external f--underlined--o">{{ visibleUrl | prettierUrl }}</span>
@@ -55,6 +55,10 @@
       editableTitle: {
         type: Boolean,
         default: true
+      },
+      customTitle: {
+        type: String,
+        default: ''
       }
     },
     data: function () {
