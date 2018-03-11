@@ -8,6 +8,7 @@
     @if (isset($minDate)) min-date="{{ $minDate }}" @endif
     @if (isset($maxDate)) max-date="{{ $maxDate }}" @endif
     @if ($note ?? false) note="{{ $note }}" @endif
+    @if ($required ?? false) :required="true" @endif
     in-store="date"
 ></a17-datepicker>
 
