@@ -1,5 +1,6 @@
 <template>
   <a17-inputframe :error="error" :note="note" :label="label" :name="name">
+    <input type="hidden" :name="name" v-model="value" />
     <div class="singleselector" :class="gridClasses">
       <div class="singleselector__outer">
         <div class="singleselector__item" v-for="(radio, index) in options">

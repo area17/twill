@@ -55,7 +55,12 @@ const state = {
    * Form errors after submitting
    * @type {Object}
    */
-  errors: {}
+  errors: {},
+  /**
+   * Is this a custom form (that will let the browser submit the form instead of hooking up the submit event)
+   * @type {Bookean}
+   */
+  isCustom: window.STORE.form.isCustom || false
 }
 
 // getters

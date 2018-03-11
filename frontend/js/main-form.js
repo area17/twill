@@ -121,7 +121,8 @@ Window.vm = new Vue({
   computed: {
     ...mapState({
       loading: state => state.form.loading,
-      editor: state => state.content.editor
+      editor: state => state.content.editor,
+      isCustom: state => state.form.isCustom
     })
   },
   methods: {
@@ -138,7 +139,7 @@ Window.vm = new Vue({
       }
     },
     confirmExit: function (event) {
-      if (!this.isFormUpdated) {
+      if (!this.isFormUpdated || this.isCustom) {
         if (window.event !== undefined) window.event.cancelBubble = true
         else event.cancelBubble = true
       } else { return 'message' }

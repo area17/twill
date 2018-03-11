@@ -1,6 +1,7 @@
 <template>
   <a17-inputframe :error="error" :note="note" :label="label" :locale="locale" @localize="updateLocale" :size="size" :name="name" :required="required">
     <div class="wysiwyg__outer" :class="textfieldClasses">
+      <input :name="name" type="hidden" v-model="value" />
       <template v-if="editSource">
         <div class="wysiwyg" :class="textfieldClasses" v-show="!activeSource">
           <div class="wysiwyg__editor" ref="editor"></div>

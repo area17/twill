@@ -137,8 +137,11 @@
           }
         },
         set: function (value) {
-          let newValue = this.options.find(o => o.value === value)
-          this.value = newValue
+          if (Array.isArray(value)) {
+            this.value = value
+          } else {
+            this.value = this.options.find(o => o.value === value)
+          }
         }
       },
       vselectClasses: function () {
