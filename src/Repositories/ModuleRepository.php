@@ -425,7 +425,7 @@ abstract class ModuleRepository
         foreach ($scopes as $column => $value) {
             if (method_exists($this->model, 'scope' . ucfirst($column))) {
                 $query->$column();
-            } else {
+            } elseif (!empty($value)) {
                 if (is_array($value)) {
                     $query->whereIn($column, $value);
                 } elseif ($column[0] == '%') {
