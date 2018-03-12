@@ -294,6 +294,20 @@ abstract class ModuleController extends Controller
                     }
                 }
 
+                if ($this->moduleHasRevisions()) {
+                    return response()->json([
+                        'message' => 'Content saved. All good!',
+                        'variant' => FlashLevel::SUCCESS,
+                        'revisions' => $item->revisions->map(function ($revision) {
+                            return [
+                                'id' => $revision->id,
+                                'author' => $revision->user->name,
+                                'datetime' => $revision->created_at->toIso8601String(),
+                            ];
+                        })->toArray()
+                    ]);
+                }
+
                 return $this->respondWithSuccess('Content saved. All good!');
 
             } else {

@@ -145,8 +145,13 @@ const actions = {
         let data = successResponse.data
 
         if (data.hasOwnProperty('languages')) {
-          commit(LANGUAGE.REPLACE_LANGUAGES, successResponse.data.languages)
+          commit(LANGUAGE.REPLACE_LANGUAGES, data.languages)
           delete data.languages
+        }
+
+        if (data.hasOwnProperty('revisions')) {
+          commit(REVISION.UPDATE_REV_ALL, data.revisions)
+          delete data.revisions
         }
 
         commit(FORM.REPLACE_FORM_FIELDS, data.fields)
@@ -204,10 +209,9 @@ const actions = {
       if (successResponse.data.hasOwnProperty('redirect')) {
         window.location.replace(successResponse.data.redirect)
       }
-
       commit(NOTIFICATION.SET_NOTIF, { message: successResponse.data.message, variant: successResponse.data.variant })
       commit(PUBLICATION.UPDATE_PUBLISH_SUBMIT)
-      if (successResponse.data.revisions) {
+      if (successResponse.data.hasOwnProperty('revisions')) {
         commit(REVISION.UPDATE_REV_ALL, successResponse.data.revisions)
       }
     }, function (errorResponse) {
