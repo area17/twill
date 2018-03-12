@@ -4,9 +4,14 @@ export default {
       type: String,
       required: true
     },
-    opened: {
+    isOpen: {
       type: Boolean,
       default: false
+    }
+  },
+  data: function () {
+    return {
+      opened: this.isOpen
     }
   },
   methods: {
