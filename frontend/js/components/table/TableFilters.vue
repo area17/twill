@@ -8,7 +8,7 @@
         </li>
     </ul>
 
-    <div class="secondarynav secondarynav--mobile secondarynav--dropdown" slot="navigation">
+    <div class="secondarynav secondarynav--mobile secondarynav--dropdown" slot="navigation" v-if="navFilters.length">
         <a17-dropdown ref="secondaryNavDropdown" position="bottom-left" width="full" :offset="0">
             <a17-button class="secondarynav__button" variant="dropdown-transparent" size="small" @click="$refs.secondaryNavDropdown.toggle()">
                 <span class="secondarynav__link">{{ selectedNav.name }}</span><span class="secondarynav__number">({{ selectedNav.number }})</span>
