@@ -8,6 +8,7 @@ import api from '../api/form'
 import { getFormData, getFormFields } from '@/utils/getFormData.js'
 import { FORM, NOTIFICATION, LANGUAGE } from '../mutations'
 import * as ACTIONS from '@/store/actions'
+import { PUBLICATION } from '@/store/mutations'
 
 const state = {
   /**
@@ -205,6 +206,7 @@ const actions = {
       }
 
       commit(NOTIFICATION.SET_NOTIF, { message: successResponse.data.message, variant: successResponse.data.variant })
+      commit(PUBLICATION.UPDATE_PUBLISH_SUBMIT)
     }, function (errorResponse) {
       commit(FORM.UPDATE_FORM_LOADING, false)
       commit(FORM.SET_FORM_ERRORS, errorResponse.response.data)

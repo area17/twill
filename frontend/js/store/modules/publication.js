@@ -3,6 +3,7 @@ import { PUBLICATION } from '../mutations'
 const state = {
   withPublicationToggle: window.STORE.publication.withPublicationToggle || false,
   published: window.STORE.publication.published || false,
+  publishSubmit: window.STORE.publication.published ? 'update' : 'live',
   publishedLabel: window.STORE.publication.publishedLabel || 'Live',
   draftLabel: window.STORE.publication.draftLabel || 'Draft',
   withPublicationTimeframe: window.STORE.publication.withPublicationTimeframe || false,
@@ -94,6 +95,9 @@ const mutations = {
   },
   [PUBLICATION.UPDATE_PUBLISH_STATE] (state, newValue) {
     state.published = newValue
+  },
+  [PUBLICATION.UPDATE_PUBLISH_SUBMIT] (state) {
+    state.publishSubmit = state.published ? 'update' : 'live'
   },
   [PUBLICATION.UPDATE_PUBLISH_VISIBILITY] (state, newValue) {
     state.visibility = newValue

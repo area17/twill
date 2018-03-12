@@ -50,7 +50,6 @@
     data: function () {
       return {
         singleOpen: true,
-        publishSubmit: 'live',
         openStates: {
           'A17Reviewaccordion': false,
           'A17Radioaccordion': false,
@@ -94,6 +93,7 @@
         parentId: state => state.parents.active,
         parents: state => state.parents.all,
         published: state => state.publication.published,
+        publishSubmit: state => state.publication.publishSubmit,
         textEnabled: state => state.publication.publishedLabel,
         textDisabled: state => state.publication.draftLabel,
         withPublicationToggle: state => state.publication.withPublicationToggle,
@@ -130,9 +130,6 @@
       openMoveToTrashModal: function () {
         this.$parent.$refs.moveToTrashModal.open() // Goes back to parent Form.vue componenent
       }
-    },
-    beforeMount: function () {
-      if (this.published || !this.withPublicationToggle) this.publishSubmit = 'update'
     }
   }
 </script>
