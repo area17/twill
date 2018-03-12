@@ -32,6 +32,11 @@ export default {
       currentValue: this.selected
     }
   },
+  watch: {
+    selected: function (value) {
+      this.currentValue = value
+    }
+  },
   computed: {
     checkedValue: {
       get: function () {
