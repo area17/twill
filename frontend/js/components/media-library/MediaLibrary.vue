@@ -180,7 +180,7 @@
         if (this.connector && this.indexToReplace > -1) {
           const mediaInitSelect = this.selected[this.connector][this.indexToReplace]
           if (mediaInitSelect) {
-            this.updateSelectedMedias(mediaInitSelect.id)
+            this.selectedMedias.push(mediaInitSelect)
           }
         }
       },

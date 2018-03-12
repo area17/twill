@@ -22,14 +22,10 @@ export default {
   },
   methods: {
     isSelected: function (id) {
-      const result = this.selectedItems.filter(function (item) {
-        return item.id === id
-      })
-
-      return result.length > 0
+      return Boolean(this.selectedItems.find(item => item.id === id))
     },
     isUsed: function (id) {
-      return !!this.usedItems.find(item => item.id === id)
+      return Boolean(this.usedItems.find(item => item.id === id))
     },
     toggleSelection: function (id) {
       this.$emit('change', id)
