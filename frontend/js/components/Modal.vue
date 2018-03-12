@@ -150,9 +150,9 @@
 
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-
+    align-items: flex-start;
+    overflow-x: hidden;
+    overflow-y: auto;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.35s ease, visibility 0s 0.35s;
@@ -170,6 +170,7 @@
     border-radius:2px;
     display:flex;
     flex-flow: column nowrap;
+    margin:auto;
   }
 
   .modal__content {
