@@ -35,6 +35,9 @@ const mutations = {
   [REVISION.UPDATE_REV_CURRENT_CONTENT] (state, fullHTML) {
     state.loading = false
     state.currentContent = fullHTML
+  },
+  [REVISION.UPDATE_REV_ALL] (state, revisions) {
+    state.all = revisions
   }
 }
 
