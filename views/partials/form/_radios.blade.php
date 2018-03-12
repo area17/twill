@@ -23,11 +23,11 @@
     in-store="value"
 ></a17-singleselect>
 
-@unless($renderForBlocks || $renderForModal || !isset($item->$name))
+@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
 @push('vuexStore')
     window.STORE.form.fields.push({
         name: '{{ $name }}',
-        value: @if(is_numeric($item->$name)) {{ $item->$name }} @else {!! json_encode($item->$name) !!} @endif
+        value: @if(isset($item) && is_numeric($item->$name)) {{ $item->$name }} @else {!! json_encode($item->$name ?? $formFieldsValue) !!} @endif
     })
 @endpush
 @endunless

@@ -13,11 +13,11 @@
     in-store="currentValue"
 ></a17-singlecheckbox>
 
-@unless($renderForBlocks || $renderForModal)
+@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
 @push('vuexStore')
     window.STORE.form.fields.push({
         name: '{{ $name }}',
-        value: @if($item->$name) true @else false @endif
+        value: @if(isset($item) && $item->$name || ($formFieldsValue ?? false)) true @else false @endif
     })
 @endpush
 @endunless
