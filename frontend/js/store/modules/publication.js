@@ -3,7 +3,7 @@ import { PUBLICATION } from '../mutations'
 const state = {
   withPublicationToggle: window.STORE.publication.withPublicationToggle || false,
   published: window.STORE.publication.published || false,
-  publishSubmit: window.STORE.publication.published ? 'update' : 'live',
+  publishSubmit: (window.STORE.publication.published || !window.STORE.publication.withPublicationToggle) ? 'update' : 'live',
   publishedLabel: window.STORE.publication.publishedLabel || 'Live',
   draftLabel: window.STORE.publication.draftLabel || 'Draft',
   withPublicationTimeframe: window.STORE.publication.withPublicationTimeframe || false,
