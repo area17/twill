@@ -69,11 +69,16 @@
   .languageManager {
     .accordion {
       background-color: $color__light;
+      border-color:$color__border;
     }
     /deep/ .accordion__trigger,
     /deep/ .accordion__trigger:hover,
     /deep/ .accordion__trigger:focus {
       background-color: $color__light;
+    }
+
+    /deep/ .accordion__list {
+      border-color:$color__border;
     }
   }
 
