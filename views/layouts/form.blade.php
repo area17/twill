@@ -110,7 +110,7 @@
 
     window.STORE.form.editor = {{ $editor ? 'true' : 'false' }}
 
-    window.STORE.revisions = {!! json_encode($revisions ?? [])  !!}
+    window.STORE.revisions = {!! json_encode($revisions ?? []) !!}
 
     window.STORE.parentId = {{ $item->parent_id ?? 0 }}
     window.STORE.parents = {!! json_encode($parents ?? [])  !!}
