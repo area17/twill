@@ -2,7 +2,7 @@
   <div class="stickyNav">
     <div class="container">
       <div class="stickyNav__nav">
-        <div class="stickyNav__links">
+        <div class="stickyNav__links" v-if="navItems.length > 1">
           <a href="#" v-for="(item, index) in navItems" :key="item.fieldset" @click.prevent="scrollToFieldset(index)" :class="{ 's--on' : item.active }">{{ item.label }}</a>
         </div>
         <slot name="title"></slot>
@@ -176,6 +176,12 @@
           opacity:0;
           visibility: hidden;
           transition: opacity 0.25s ease, visibility 0s 0.25s;
+        }
+
+        .titleEditor:first-child {
+          opacity:1;
+          visibility: visible;
+          transition: opacity 0.25s;
         }
       }
     }
