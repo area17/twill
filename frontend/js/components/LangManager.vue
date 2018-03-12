@@ -1,7 +1,7 @@
 <template>
   <div class="languageManager" v-if="languages.length > 1">
     <a17-accordion :open="open">
-      <div slot="accordion__value">{{ currentValue.length }} live</div>
+      <div slot="accordion__value">{{ currentValue.length }} Live</div>
       <a17-checkboxgroup name="langManager" :options="languages" @change="changeValue" :selected="currentValue" :min="1"></a17-checkboxgroup>
     </a17-accordion>
     <div class="languageManager__switcher"><a17-langswitcher :in-modal="true"></a17-langswitcher></div>
