@@ -1,4 +1,4 @@
-let mix = require('laravel-mix');
+let mix = require('laravel-mix')
 
 /*
  |--------------------------------------------------------------------------
@@ -10,11 +10,11 @@ let mix = require('laravel-mix');
  |
  */
 
-mix.setPublicPath('public');
+mix.setPublicPath('public')
 
 mix.options({
   processCssUrls: false,
-  purifyCss: false, // Remove unused CSS selectors.
+  purifyCss: false // Remove unused CSS selectors.
 })
 
 mix.webpackConfig({
@@ -38,10 +38,10 @@ mix.webpackConfig({
       }
     ]
   }
-});
+})
 
-mix.copyDirectory('frontend/fonts', 'public/assets/admin/fonts');
-mix.copyDirectory('assets/vendor', 'public/assets/vendor');
+mix.copyDirectory('frontend/fonts', 'public/assets/admin/fonts')
+mix.copyDirectory('assets/vendor', 'public/assets/vendor')
 
 mix.js(
   'frontend/js/main-listing.js',
@@ -64,4 +64,4 @@ mix.js(
 ]).sass(
   'frontend/scss/app.scss',
   'public/assets/admin/css'
-).sourceMaps();
+).sourceMaps()

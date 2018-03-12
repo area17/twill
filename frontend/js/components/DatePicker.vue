@@ -108,7 +108,7 @@
           wrap: true,
           altInput: true,
           static: self.static,
-          appendTo: self.static ? self.$refs[self.refs.flatPicker] : null,
+          appendTo: self.static ? self.$refs[self.refs.flatPicker] : undefined,
           enableTime: self.enableTime,
           noCalendar: self.noCalendar,
           time_24hr: self.time_24hr,

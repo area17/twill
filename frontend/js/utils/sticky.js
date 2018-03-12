@@ -12,7 +12,6 @@ const DEFAULT_OPTIONS = {
 // import getCurrentMediaQuery from '../../frontend/js/helpers/getCurrentMediaQuery'
 
 export default class Sticky {
-
   constructor (ref, options) {
     // todo apply options here
     options = { ...DEFAULT_OPTIONS, ...options }

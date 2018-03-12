@@ -178,8 +178,7 @@
 
           loading(false)
         }, function (resp) {
-            // error callback
-
+          // error callback
           loading(false)
         })
       }, 500)

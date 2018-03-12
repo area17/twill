@@ -12,6 +12,11 @@
         mutableValue: this.value
       }
     },
+    computed: {
+      showClearButton () {
+        return false
+      }
+    },
     methods: {
       /**
        * Select a given option.

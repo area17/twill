@@ -113,13 +113,11 @@ export default function (formNode) {
     for (i = 0; i < arr.length; i++) {
       callback.call(arr, arr[i], i)
     }
-
-    return
   }
 
   // Constructor
   function init (formNode) {
-      // Assign the current form reference.
+    // Assign the current form reference.
     if (!formNode) return false
 
     formRef = formNode
@@ -204,22 +202,22 @@ export default function (formNode) {
   }
 
   function getNodeValues ($domNode) {
-        // We're only interested in the radio that is checked.
+    // We're only interested in the radio that is checked.
     if (isRadio($domNode)) {
       return isChecked($domNode) ? $domNode.value : false
     }
 
-        // We're only interested in the checkbox that is checked.
+    // We're only interested in the checkbox that is checked.
     if (isCheckbox($domNode)) {
       return isChecked($domNode) ? $domNode.value : false
     }
 
-        // File inputs are a special case.
-        // We have to grab the .files property of the input, which is a FileList.
+    // File inputs are a special case.
+    // We have to grab the .files property of the input, which is a FileList.
     if (isFileField($domNode)) {
-            // Ignore input file fields if the form is not encoded properly.
+      // Ignore input file fields if the form is not encoded properly.
       if (isUploadForm()) {
-                // HTML5 compatible browser.
+        // HTML5 compatible browser.
         if (isFileList($domNode) && $domNode.files.length > 0) {
           return $domNode.files
         } else {
@@ -230,7 +228,7 @@ export default function (formNode) {
       }
     }
 
-        // We're only interested in textarea fields that have values.
+    // We're only interested in textarea fields that have values.
     if (isTextarea($domNode)) {
       return ($domNode.value && $domNode.value !== '' ? $domNode.value : false)
     }
@@ -245,7 +243,7 @@ export default function (formNode) {
       }
     }
 
-        // We're only interested in multiple selects that have at least one option selected.
+    // We're only interested in multiple selects that have at least one option selected.
     if (isSelectMultiple($domNode)) {
       if ($domNode.options && $domNode.options.length > 0) {
         var values = []
@@ -265,7 +263,7 @@ export default function (formNode) {
       }
     }
 
-        // We're only interested if the button is type="submit"
+    // We're only interested if the button is type="submit"
     if (isSubmitButton($domNode)) {
       if ($domNode.value && $domNode.value !== '') {
         return $domNode.value
@@ -278,7 +276,7 @@ export default function (formNode) {
       return false
     }
 
-        // Fallback or other non special fields.
+    // Fallback or other non special fields.
     if (typeof $domNode.value !== 'undefined') {
       if (includeEmptyValuedElements) {
         return $domNode.value
@@ -291,10 +289,10 @@ export default function (formNode) {
   }
 
   function processSingleLevelNode ($domNode, arr, domNodeValue, result) {
-        // Get the last remaining key.
+    // Get the last remaining key.
     var key = arr[0]
 
-        // We're only interested in the radio that is checked.
+    // We're only interested in the radio that is checked.
     if (isRadio($domNode)) {
       if (domNodeValue !== false) {
         result[key] = domNodeValue
@@ -304,9 +302,9 @@ export default function (formNode) {
       }
     }
 
-        // Checkboxes are a special case.
-        // We have to grab each checked values
-        // and put them into an array.
+    // Checkboxes are a special case.
+    // We have to grab each checked values
+    // and put them into an array.
     if (isCheckbox($domNode)) {
       if (domNodeValue !== false) {
         if (!result[key]) {
@@ -319,8 +317,8 @@ export default function (formNode) {
       }
     }
 
-        // Multiple select is a special case.
-        // We have to grab each selected option and put them into an array.
+    // Multiple select is a special case.
+    // We have to grab each selected option and put them into an array.
     if (isSelectMultiple($domNode)) {
       if (domNodeValue !== false) {
         result[key] = domNodeValue
@@ -329,8 +327,8 @@ export default function (formNode) {
       }
     }
 
-        // Fallback or other cases that don't
-        // need special treatment of the value.
+    // Fallback or other cases that don't
+    // need special treatment of the value.
     result[key] = domNodeValue
 
     return domNodeValue
@@ -341,23 +339,23 @@ export default function (formNode) {
 
     if (arr.length > 1) {
       if (keyName === '[]') {
-                // result.push({});
+        // result.push({});
         result[getNextIntegerKey(result)] = {}
         return processMultiLevelNode(
-                    $domNode,
-                    arr.splice(1, arr.length),
-                    value,
-                    result[getLastIntegerKey(result)]
-                )
+          $domNode,
+          arr.splice(1, arr.length),
+          value,
+          result[getLastIntegerKey(result)]
+        )
       } else {
         if (result[keyName] && getObjLength(result[keyName]) > 0) {
-                    // result[keyName].push(null);
+          // result[keyName].push(null);
           return processMultiLevelNode(
-                        $domNode,
-                        arr.splice(1, arr.length),
-                        value,
-                        result[keyName]
-                    )
+            $domNode,
+            arr.splice(1, arr.length),
+            value,
+            result[keyName]
+          )
         } else {
           result[keyName] = {}
         }
@@ -366,16 +364,16 @@ export default function (formNode) {
       }
     }
 
-        // Last key, attach the original value.
+    // Last key, attach the original value.
     if (arr.length === 1) {
       if (keyName === '[]') {
-                // result.push(value);
+        // result.push(value);
         result[getNextIntegerKey(result)] = value
         return result
       } else {
         processSingleLevelNode($domNode, arr, value, result)
 
-                //  result[keyName] = value;
+        //  result[keyName] = value;
         return result
       }
     }
@@ -392,50 +390,50 @@ export default function (formNode) {
     for (i = 0; i < $formElements.length; i++) {
       $domNode = $formElements[i]
 
-            // Skip the element if the 'name' attribute is empty.
-            // Skip the 'disabled' elements.
-            // Skip the non selected radio elements.
+      // Skip the element if the 'name' attribute is empty.
+      // Skip the 'disabled' elements.
+      // Skip the non selected radio elements.
       if (
-                !$domNode.name ||
+        !$domNode.name ||
                 $domNode.name === '' ||
                 $domNode.disabled ||
                 (isRadio($domNode) && !isChecked($domNode))
-            ) {
+      ) {
         continue
       }
 
-            // Get the final processed domNode value.
+      // Get the final processed domNode value.
       domNodeValue = getNodeValues($domNode)
 
-            // Exclude empty valued nodes if the settings allow it.
+      // Exclude empty valued nodes if the settings allow it.
       if (domNodeValue === false && !includeEmptyValuedElements) {
         continue
       }
 
-            // Extract all possible keys
-            // Eg. name="firstName", name="settings[a][b]", name="settings[0][a]"
+      // Extract all possible keys
+      // Eg. name="firstName", name="settings[a][b]", name="settings[0][a]"
       objKeyNames = $domNode.name.match(keyRegex)
 
       if (objKeyNames.length === 1) {
         processSingleLevelNode(
-                    $domNode,
-                    objKeyNames,
-                    (domNodeValue || ''),
-                    result
-                )
+          $domNode,
+          objKeyNames,
+          (domNodeValue || ''),
+          result
+        )
       }
 
       if (objKeyNames.length > 1) {
         processMultiLevelNode(
-                    $domNode,
-                    objKeyNames,
-                    (domNodeValue || ''),
-                    result
-                )
+          $domNode,
+          objKeyNames,
+          (domNodeValue || ''),
+          result
+        )
       }
     }
 
-        // Check the length of the result.
+    // Check the length of the result.
     resultLength = getObjLength(result)
 
     return resultLength > 0 ? result : false

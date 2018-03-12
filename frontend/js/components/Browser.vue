@@ -69,7 +69,7 @@
           return item.id === id
         })
 
-      // not already seelcted
+        // not already seelcted
         if (alreadySelected.length === 0) {
           if (this.max === 1) this.clearSelectedItems()
           if (this.selectedItems.length >= this.max && this.max > 0) return
@@ -78,7 +78,7 @@
             return item.id === id
           })
 
-        // Add one item to the selected item
+          // Add one item to the selected item
           if (itemToSelect.length) this.selectedItems.push(itemToSelect[0])
         } else {
           // Remove one item from the selected item

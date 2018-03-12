@@ -10,13 +10,13 @@ export default {
     axios.get(getURLWithoutQuery(), {
       params: params
     })
-    .then((resp) => {
-      if (callback && typeof callback === 'function') callback(resp.data)
-    })
-    .catch((resp) => {
-      globalError(component, resp)
-      if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
-    })
+      .then((resp) => {
+        if (callback && typeof callback === 'function') callback(resp.data)
+      })
+      .catch((resp) => {
+        globalError(component, resp)
+        if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
+      })
   },
 
   save (endpoint, params, callback, errorCallback) {

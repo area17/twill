@@ -12,10 +12,6 @@ import openMediaLibrary from '@/behaviors/openMediaLibrary'
 import A17Config from '@/plugins/A17Config'
 import A17Notif from '@/plugins/A17Notif'
 
-// configuration
-Vue.use(A17Config)
-Vue.use(A17Notif)
-
 import { mapState } from 'vuex'
 
 // components
@@ -32,20 +28,24 @@ import language from '@/store/modules/language'
 import form from '@/store/modules/form'
 import modalEdition from '@/store/modules/modal-edition'
 
-store.registerModule('datatable', datatable)
-store.registerModule('language', language)
-store.registerModule('form', form)
-store.registerModule('modalEdition', modalEdition)
-
 // LocalStorage
 import { getStorage } from '@/utils/localeStorage.js'
 
 // mixins
 import formatPermalink from '@/mixins/formatPermalink'
 
+// configuration
+Vue.use(A17Config)
+Vue.use(A17Notif)
+
+store.registerModule('datatable', datatable)
+store.registerModule('language', language)
+store.registerModule('form', form)
+store.registerModule('modalEdition', modalEdition)
+
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
-Window.vm = new Vue({
+window.vm = new Vue({
   store, // inject store to all children
   el: '#app',
   components: {
