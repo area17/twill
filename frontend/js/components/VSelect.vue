@@ -127,9 +127,17 @@
         get: function () {
           if (this.value) {
             if (!this.multiple) { // single selects
-              if (typeof this.value === 'object') return this.value.value
-            } else if (this.multiple) { // multiple selects
-              if (Array.isArray(this.value)) return this.value.join(',')
+              if (typeof this.value === 'object') {
+                return this.value.value
+              }
+            } else { // multiple selects
+              if (Array.isArray(this.value)) {
+                if (typeof this.value[0] === 'object') {
+                  return this.value.map(e => e.value)
+                }
+
+                return this.value.join(',')
+              }
             }
             return this.value
           } else {
@@ -138,7 +146,11 @@
         },
         set: function (value) {
           if (Array.isArray(value)) {
-            this.value = value
+            if (this.taggable) {
+              this.value = value
+            } else {
+              this.value = this.options.filter(o => value.includes(o.value))
+            }
           } else {
             this.value = this.options.find(o => o.value === value)
           }
@@ -174,8 +186,13 @@
 
         loading(true)
         this.$http.get(this.ajaxUrl, {params: {q: search}}).then(function (resp) {
-          if (resp.data.items && resp.data.items.length) self.currentOptions = resp.data.items
-
+          if (resp.data.items && resp.data.items.length) {
+            if (self.taggable) {
+              self.currentOptions = resp.data.items.filter(i => !self.value.includes(i))
+            } else {
+              self.currentOptions = resp.data.items
+            }
+          }
           loading(false)
         }, function (resp) {
           // error callback

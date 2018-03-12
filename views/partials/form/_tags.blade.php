@@ -2,10 +2,18 @@
     label="Tags"
     name="tags"
     :multiple="true"
-    :selected="{{ json_encode($item->tags->map(function ($tag) { return $tag->name; })) }}"
     :searchable="true"
     :taggable="true"
-    :pushTags="true"
-    size="small"
-    :endpoint="{{ $endpoint }}"
+    :push-tags="true"
+    endpoint="{{ moduleRoute($moduleName, $routePrefix, 'tags') }}"
+    in-store="inputValue"
 ></a17-vselect>
+
+@unless($renderForBlocks || $renderForModal || $item->tags->count() === 0)
+@push('vuexStore')
+    window.STORE.form.fields.push({
+        name: 'tags',
+        value: {!! json_encode($item->tags->map(function ($tag) { return $tag->name; })->toArray()) !!}
+    })
+@endpush
+@endunless

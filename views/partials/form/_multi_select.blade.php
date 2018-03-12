@@ -37,7 +37,7 @@
 @push('vuexStore')
     window.STORE.form.fields.push({
         name: '{{ $name }}',
-        value: {!! json_encode(isset($item) ? array_pluck($item->$name, 'id') : $formFieldsValue) !!}
+        value: {!! json_encode(isset($item) && isset($item->$name) ? array_pluck($item->$name, 'id') : $formFieldsValue) !!}
     })
 @endpush
 @endunless
