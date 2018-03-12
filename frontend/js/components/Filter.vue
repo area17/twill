@@ -9,8 +9,8 @@
         <slot name="additional-actions"></slot>
       </div>
     </div>
-    <transition name="scale_filter" @before-enter="beforeAnimate" @after-enter="afterAnimate" @before-leave="beforeAnimate" @after-leave="afterAnimate">
-      <div class="filter__more" v-if="withHiddenFilters" :aria-hidden="!opened ?  true : null" v-show="opened">
+    <transition :css="false" :duration="275" @before-enter="beforeEnter" @before-leave="beforeLeave" @enter="enter" @leave="leave">
+      <div class="filter__more" v-show="opened" v-if="withHiddenFilters" :aria-hidden="!opened ? true : null">
         <div class="filter__moreInner" >
           <slot name="hidden-filters"></slot>
           <a17-button variant="ghost" type="submit">Apply</a17-button>
@@ -67,11 +67,20 @@
       }
     },
     methods: {
-      beforeAnimate: function (el) {
-        el.style.overflow = 'hidden'
+      getMaxHeight: function () { // retrieve max height depending on the content height
+        return Math.min(150, this.$el.querySelector('.filter__moreInner').clientHeight)
       },
-      afterAnimate: function (el) {
-        el.style.overflow = 'visible'
+      beforeEnter: function (el) {
+        el.style.maxHeight = '0px'
+      },
+      enter: function (el, done) {
+        el.style.maxHeight = this.getMaxHeight() + 'px'
+      },
+      beforeLeave: function (el, done) {
+        el.style.maxHeight = this.getMaxHeight() + 'px'
+      },
+      leave: function (el, done) {
+        el.style.maxHeight = '0px'
       },
       toggleFilter: function () {
         this.openable = true
@@ -134,6 +143,12 @@
         margin-left:15px;
       }
     }
+  }
+
+  .filter__more {
+    max-height: 150px;
+    transition: max-height 0.3s ease;
+    overflow: hidden;
   }
 
   .filter__moreInner {
