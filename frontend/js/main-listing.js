@@ -23,7 +23,7 @@ import a17Datatable from '@/components/table/Datatable.vue'
 import a17Filter from '@/components/Filter.vue'
 import a17TableFilters from '@/components/table/TableFilters.vue'
 import a17BulkEdit from '@/components/table/BulkEdit.vue'
-import a17Langswitcher from '@/components/LangSwitcher.vue'
+import a17LangManager from '@/components/LangManager.vue'
 import ModalCreate from '@/components/Modals/ModalCreate.vue'
 
 // Store modules
@@ -53,7 +53,7 @@ Window.vm = new Vue({
     'a17-table-filters': a17TableFilters,
     'a17-datatable': a17Datatable,
     'a17-bulk': a17BulkEdit,
-    'a17-langswitcher': a17Langswitcher,
+    'a17-langmanager': a17LangManager,
     'a17-modal-create': ModalCreate
   },
   mixins: [formatPermalink],
