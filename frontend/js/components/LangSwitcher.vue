@@ -1,5 +1,5 @@
 <template>
-  <div class="language" :class="{'language--inModal': inModal}" v-if="languages.length > 1">
+  <div class="language" v-if="languages.length > 1">
     <span class="language__label f--small" v-if="!inModal">Edit in</span>
     <span class="language__toolbar">
       <button type="button" class="language__button" :key="language.value" v-for="language in languages" :class="{ 'selected': language.value === localeValue.value, 'published': language.published }" @click="onClick(language.value)" >{{ language.shortlabel }}</button>
@@ -35,13 +35,7 @@
     },
     methods: {
       onClick: function (newValue) {
-        if (newValue === this.localeValue.value) {
-          if (this.inModal && this.toggleOnClick && ((this.localeValue.published && this.publishedLanguages.length > 1) || !this.localeValue.published)) {
-            this.$store.commit(LANGUAGE.PUBLISH_SINGLE_LANG, newValue)
-          }
-        } else {
-          this.$store.commit(LANGUAGE.UPDATE_LANG, newValue)
-        }
+        this.$store.commit(LANGUAGE.UPDATE_LANG, newValue)
       }
     }
   }
@@ -55,12 +49,6 @@
 
   .language {
     color: $color__f--text;
-  }
-
-  .language--inModal {
-    padding: 15px 0 10px 20px;
-    margin: 0 -20px;
-    background-color: $color__light;
   }
 
   .language__label {
@@ -134,12 +122,12 @@
     border-left:0 none;
   }
 
-  .language__button:last-child {
-    // border-top-right-radius: $border__radius;
-    // border-bottom-right-radius: $border__radius;
-    // border-left:0 none;
-    // border-right:1px solid $color__fborder;
-  }
+  // .language__button:last-child {
+  //   border-top-right-radius: $border__radius;
+  //   border-bottom-right-radius: $border__radius;
+  //   border-left:0 none;
+  //   border-right:1px solid $color__fborder;
+  // }
 
   .language__item.selected:last-child,
   .language__button.selected {

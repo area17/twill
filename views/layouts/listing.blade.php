@@ -72,7 +72,7 @@
         ></a17-datatable>
 
         <a17-modal-create ref="editionModal" :form-create="'{{ $storeUrl }}'" v-on:reload="reloadDatas">
-            <a17-langswitcher :in-modal="true" :toggle-on-click="true"></a17-langswitcher>
+            <a17-langmanager></a17-langmanager>
             @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
         </a17-modal-create>
     </div>

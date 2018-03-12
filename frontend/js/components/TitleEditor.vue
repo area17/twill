@@ -13,7 +13,7 @@
 
       <!-- Editing modal -->
       <a17-modal class="modal--form" ref="editModal" :title="modalTitle" :forceLock="disabled">
-        <a17-langswitcher :in-modal="true"></a17-langswitcher>
+        <a17-langmanager></a17-langmanager>
         <form action="#" @submit.prevent="update" ref="modalForm">
           <slot name="modal-form"></slot>
           <a17-modal-validation :mode="mode" @disable="lockModal"></a17-modal-validation>
@@ -28,7 +28,7 @@
   import { mapState, mapGetters } from 'vuex'
   import a17VueFilters from '@/utils/filters.js'
   import a17ModalValidationButtons from '@/components/Modals/ModalValidationButtons.vue'
-  import langSwitcher from '@/components/LangSwitcher.vue'
+  import langManager from '@/components/LangManager.vue'
 
   import InputframeMixin from '@/mixins/inputFrame'
   import LocaleMixin from '@/mixins/locale'
@@ -38,7 +38,7 @@
     mixins: [InputframeMixin, LocaleMixin],
     components: {
       'a17-modal-validation': a17ModalValidationButtons,
-      'a17-langswitcher': langSwitcher
+      'a17-langmanager': langManager
     },
     props: {
       modalTitle: {

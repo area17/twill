@@ -38,6 +38,11 @@
         currentValue: this.value
       }
     },
+    watch: {
+      value: function (newValue) {
+        this.currentValue = newValue
+      }
+    },
     computed: {
       currentLabel: function () {
         return this.currentValue.length + ' Live'
