@@ -11,6 +11,7 @@ const state = {
   endDate: window.STORE.publication.endDate || null,
   visibility: window.STORE.publication.visibility || false,
   reviewProcess: window.STORE.publication.reviewProcess || [],
+  saveType: undefined,
   visibilityOptions: [
     {
       value: 'public',
@@ -83,6 +84,12 @@ const state = {
 const getters = {
   reviewProcessComplete: state => {
     return state.reviewProcess.filter(reviewProcess => reviewProcess.checked)
+  },
+  getSubmitOptions: state => {
+    return (state.published || !state.withPublicationToggle) ? state.submitOptions[state.publishSubmit] : state.submitOptions['draft']
+  },
+  getSaveType: (state, getters) => {
+    return state.saveType || getters.getSubmitOptions[0].name
   }
 }
 
@@ -119,6 +126,9 @@ const mutations = {
       option.checked = index <= currentIndex
       option.disabled = !(index === currentIndex || index === (currentIndex + 1))
     })
+  },
+  [PUBLICATION.UPDATE_SAVE_TYPE] (state, newValue) {
+    state.saveType = newValue
   }
 }
 

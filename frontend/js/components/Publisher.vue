@@ -11,7 +11,7 @@
         <a href="#" class="publisher__link" @click.prevent="openPreview"><span v-svg symbol="preview"></span><span class="f--link-underlined--o">Preview changes</span></a>
       </div>
       <div class="publisher__item publisher__item--btns">
-        <a17-multibutton :options="submitOptions" type="submit"></a17-multibutton>
+        <a17-multibutton @button-clicked="buttonClicked" :options="submitOptions" type="submit"></a17-multibutton>
       </div>
   </div>
   <!-- <div class="publisher__trash">
@@ -73,6 +73,9 @@
 
         return values
       },
+      submitOptions: function () {
+        return this.$store.getters.getSubmitOptions
+      },
       publishedLanguagesValues: function () {
         const values = []
 
@@ -83,9 +86,6 @@
         }
 
         return values
-      },
-      submitOptions: function () {
-        return (this.published || !this.withPublicationToggle) ? this.defaultSubmitOptions[this.publishSubmit] : this.defaultSubmitOptions['draft']
       },
       ...mapState({
         languages: state => state.language.all,
@@ -100,7 +100,6 @@
         withPublicationTimeframe: state => state.publication.withPublicationTimeframe,
         visibility: state => state.publication.visibility,
         visibilityOptions: state => state.publication.visibilityOptions,
-        defaultSubmitOptions: state => state.publication.submitOptions,
         reviewProcess: state => state.publication.reviewProcess
       }),
       ...mapGetters([
@@ -109,6 +108,9 @@
       ])
     },
     methods: {
+      buttonClicked: function (buttonName) {
+        this.$store.commit(PUBLICATION.UPDATE_SAVE_TYPE, buttonName)
+      },
       openCloseAccordion: function (isOpen, componentname) {
         if (!this.singleOpen) return
 
