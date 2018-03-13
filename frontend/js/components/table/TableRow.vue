@@ -352,7 +352,7 @@
     position: absolute;
     right: 0;
     top: auto;
-    padding: 16px 20px 16px 0;
+    padding: 15px 20px;
     background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 25%);
     overflow: visible;
   }
