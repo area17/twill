@@ -4,6 +4,7 @@
     $note = $note ?? '';
     $withAddInfo = $withAddInfo ?? true;
     $withVideoUrl = $withVideoUrl ?? true;
+    $withCaption = $withCaption ?? true;
 @endphp
 
 <a17-inputframe label="{{ $label }}" name="medias.{{ $name }}" @if ($required) :required="true" @endif>
@@ -15,6 +16,7 @@
             @if ($required) :required="true" @endif
             @if (!$withAddInfo) :with-add-info="false" @endif
             @if (!$withVideoUrl) :with-video-url="false" @endif
+            @if (!$withCaption) :with-caption="false" @endif
         >{{ $note }}</a17-slideshow>
     @else
         <a17-mediafield
@@ -23,6 +25,7 @@
             @if ($required) :required="true" @endif
             @if (!$withAddInfo) :with-add-info="false" @endif
             @if (!$withVideoUrl) :with-video-url="false" @endif
+            @if (!$withCaption) :with-caption="false" @endif
         >{{ $note }}</a17-mediafield>
     @endif
 </a17-inputframe>

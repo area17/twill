@@ -40,6 +40,9 @@ import A17Notif from '@/plugins/A17Notif'
 // Loader
 import a17Spinner from '@/components/Spinner.vue'
 
+// Add attributes
+import a17ModalAdd from '@/components/Modals/ModalAdd.vue'
+
 // Store Modules
 import form from '@/store/modules/form'
 import publication from '@/store/modules/publication'
@@ -49,6 +52,7 @@ import revision from '@/store/modules/revision'
 import browser from '@/store/modules/browser'
 import repeaters from '@/store/modules/repeaters'
 import parents from '@/store/modules/parents'
+import attributes from '@/store/modules/attributes'
 
 // mixins
 import formatPermalink from '@/mixins/formatPermalink'
@@ -66,6 +70,7 @@ store.registerModule('revision', revision)
 store.registerModule('browser', browser)
 store.registerModule('repeaters', repeaters)
 store.registerModule('parents', parents)
+store.registerModule('attributes', attributes)
 
 // Browser
 Vue.component('a17-repeater', a17Repeater)
@@ -84,6 +89,9 @@ Vue.component('a17-previewer', a17Previewer)
 
 // Editor
 Vue.component('a17-editor', a17Editor)
+
+// Add attributes
+Vue.component('a17-modal-add', a17ModalAdd)
 
 // Blocks
 const importedBlocks = require.context('@/components/blocks/', true, /\.(js|vue)$/i)

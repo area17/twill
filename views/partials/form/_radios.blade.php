@@ -6,9 +6,16 @@
             'label' => $label
         ];
     })->values()->toArray() : $options;
+
     $placeholder = $placeholder ?? false;
+    $required = $required ?? false;
     $default = $default ?? false;
     $inline = $inline ?? false;
+
+    $addNew = $addNew ?? false;
+    $moduleName = $moduleName ?? null;
+    $storeUrl = $storeUrl ?? '';
+    $inModal = $fieldsInModal ?? false;
 @endphp
 
 <a17-singleselect
@@ -17,11 +24,21 @@
     :options="{{ json_encode($options) }}"
     @if ($default) selected="{{ $default }}" @endif
     :grid="false"
-    :inline='{{ $inline ? 'true' : 'false' }}'
-    @if ($note) note='{{ $note }}' @endif
+    @if ($inline) :inline="true" @endif
+    @if ($required) :required="true" @endif
+    @if ($inModal) :in-modal="true" @endif
+    @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
     :has-default-store="true"
     in-store="value"
-></a17-singleselect>
+>
+    @if($addNew)
+        <div slot="addModal">
+            {{-- TODO : Should I reset the php variables set previously ? --}}
+            {{-- unset($note, $options, $placeholder, $required, $default, $inline, $addNew, $inModal); --}}
+            @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
+        </div>
+    @endif
+</a17-singleselect>
 
 @unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
 @push('vuexStore')

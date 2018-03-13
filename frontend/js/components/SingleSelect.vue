@@ -1,26 +1,34 @@
 <template>
-  <a17-inputframe :error="error" :note="note" :label="label" :name="name">
-    <input type="hidden" :name="name" v-model="value" />
-    <div class="singleselector" :class="gridClasses">
-      <div class="singleselector__outer">
-        <div class="singleselector__item" v-for="(radio, index) in options">
-          <input class="singleselector__radio" type="radio" :value="radio.value" :name="name + '[' + randKey + ']'" :id="uniqId(radio.value, index)" :disabled="radio.disabled || disabled" :class="{'singleselector__radio--checked': radio.value == selectedValue }">
-          <label class="singleselector__label" :for="uniqId(radio.value, index)" @click.prevent="changeRadio(radio.value)">{{ radio.label }}</label>
-          <span class="singleselector__bg"></span>
+  <div class="multiselectorOuter">
+    <a17-inputframe :error="error" :note="note" :label="label" :name="name" :add-new="addNew">
+      <input type="hidden" :name="name" v-model="value" />
+      <div class="singleselector" :class="gridClasses">
+        <div class="singleselector__outer">
+          <div class="singleselector__item" v-for="(radio, index) in fullOptions">
+            <input class="singleselector__radio" type="radio" :value="radio.value" :name="name + '[' + randKey + ']'" :id="uniqId(radio.value, index)" :disabled="radio.disabled || disabled" :class="{'singleselector__radio--checked': radio.value == selectedValue }">
+            <label class="singleselector__label" :for="uniqId(radio.value, index)" @click.prevent="changeRadio(radio.value)">{{ radio.label }}</label>
+            <span class="singleselector__bg"></span>
+          </div>
         </div>
       </div>
-    </div>
-  </a17-inputframe>
+    </a17-inputframe>
+    <template v-if="addNew">
+      <a17-modal-add ref="addModal" :name="name" :form-create="addNew" :modal-title="'Add new ' + label">
+        <slot name="addModal"></slot>
+      </a17-modal-add>
+    </template>
+  </div>
 </template>
 
 <script>
   import randKeyMixin from '@/mixins/randKey'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
+  import AttributesMixin from '@/mixins/addAttributes'
 
   export default {
     name: 'A17Singleselect',
-    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin],
+    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin],
     props: {
       name: {
         type: String,

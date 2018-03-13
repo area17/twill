@@ -103,6 +103,20 @@ export const getFormFields = (rootState) => {
   return fields
 }
 
+export const getModalFormFields = (rootState) => {
+  let fields = rootState.form.modalFields.filter((field) => {
+    // we start by filtering out blocks related form fields
+    return !field.name.startsWith('blocks[') && !field.name.startsWith('mediaMeta[')
+  }).reduce((fields, field) => {
+    // and we create a new object with field names as keys,
+    // to inline fields in the submitted data
+    fields[field.name] = field.value
+    return fields
+  }, {})
+
+  return fields
+}
+
 export const getFormData = (rootState) => {
   let fields = getFormFields(rootState)
 

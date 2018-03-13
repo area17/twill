@@ -17,9 +17,17 @@
   export default {
     name: 'A17CheckboxGroup',
     props: {
+      name: {
+        type: String,
+        default: ''
+      },
       inline: {
         type: Boolean,
         default: false
+      },
+      options: {
+        type: Array,
+        default: function () { return [] }
       }
     },
     mixins: [InputframeMixin, CheckboxMixin, FormStoreMixin],

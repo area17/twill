@@ -2,6 +2,7 @@
     $note = $note ?? false;
     $inline = $inline ?? false;
     $default = $default ?? false;
+    $inModal = $fieldsInModal ?? false;
 @endphp
 
 <a17-singlecheckbox

@@ -2,10 +2,6 @@ import { isEqual } from 'lodash'
 
 export default {
   props: {
-    name: {
-      type: String,
-      default: ''
-    },
     min: {
       type: Number,
       default: 0
@@ -19,10 +15,6 @@ export default {
       default: false
     },
     selected: {
-      type: Array,
-      default: function () { return [] }
-    },
-    options: {
       type: Array,
       default: function () { return [] }
     }

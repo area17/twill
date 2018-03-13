@@ -17,7 +17,6 @@ export { default as CONTENT } from './content'
 export { default as PREVIEW } from './preview'
 
 /* modal-edition */
-
 export { default as MODALEDITION } from './modal-edition'
 
 /* language */
@@ -40,3 +39,6 @@ export { default as PARENTS } from './parents'
 
 /* Subscribers */
 export { default as SUBSCRIBERS } from './subscribers'
+
+/* Attributes */
+export { default as ATTRIBUTES } from './attributes'

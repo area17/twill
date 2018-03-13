@@ -65,7 +65,7 @@
   import a17VueFilters from '@/utils/filters.js'
 
   export default {
-    name: 'A17previewer',
+    name: 'A17Previewer',
     components: {
       'a17-iframe': A17PreviewerFrame
     },

@@ -11,6 +11,10 @@ export default {
   },
   methods: {
     formatPermalink: function (newValue) {
+      const permalinkRef = this.$refs.permalink
+
+      if (!permalinkRef) return
+
       if (newValue) {
         let text = ''
 
@@ -21,8 +25,6 @@ export default {
         }
 
         const slug = this.$options.filters.slugify(text)
-
-        const permalinkRef = this.$refs.permalink
 
         let field = {
           name: permalinkRef.attributes ? permalinkRef.attributes.name : permalinkRef.name,

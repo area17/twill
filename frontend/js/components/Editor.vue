@@ -37,7 +37,7 @@
   const htmlClass = htmlClasses.editor
 
   export default {
-    name: 'A17editor',
+    name: 'A17Editor',
     components: {
       'a17-editorsidebar': A17EditorSidebar,
       'a17-editorpreview': A17EditorPreview,

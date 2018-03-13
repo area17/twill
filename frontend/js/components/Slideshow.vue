@@ -6,7 +6,7 @@
             <div class="slide__handle">
               <div class="slide__handle--drag"></div>
             </div>
-            <a17-mediafield class="slide__content" :name="`${name}_${slide.id}`" :index="index" :mediaContext="name" :cropContext="cropContext" :hover="hoverable" :isSlide="true" :withAddInfo="withAddInfo" :withVideoUrl="withVideoUrl"></a17-mediafield>
+            <a17-mediafield class="slide__content" :name="`${name}_${slide.id}`" :index="index" :mediaContext="name" :cropContext="cropContext" :hover="hoverable" :isSlide="true" :withAddInfo="withAddInfo" :withCaption="withCaption" :withVideoUrl="withVideoUrl"></a17-mediafield>
         </div>
       </transition-group>
     </draggable>
@@ -50,6 +50,10 @@
         default: 10
       },
       withAddInfo: {
+        type: Boolean,
+        default: true
+      },
+      withCaption: {
         type: Boolean,
         default: true
       },

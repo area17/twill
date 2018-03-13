@@ -1,14 +1,20 @@
 @php
-    $note = $note ?? false;
     $options = method_exists($options, 'map') ? $options->map(function($label, $value) {
         return [
             'value' => $value,
             'label' => $label
         ];
     })->values()->toArray() : $options;
+
+    $unpack = $unpack ?? true;
+    $note = $note ?? false;
+    $addNew = $addNew ?? false;
+    $moduleName = $moduleName ?? null;
+    $storeUrl = $storeUrl ?? '';
+    $inModal = $fieldsInModal ?? false;
 @endphp
 
-@if ($unpack ?? true)
+@if ($unpack)
     <a17-multiselect
         label="{{ $label }}"
         @include('cms-toolkit::partials.form.utils._field_name')
@@ -17,9 +23,16 @@
         :inline="false"
         @if ($min ?? false) :min="{{ $min }}" @endif
         @if ($max ?? false) :max="{{ $max }}" @endif
-        @if ($note) note='{{ $note }}' @endif
+        @if ($inModal) :in-modal="true" @endif
+        @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
         in-store="currentValue"
-    ></a17-multiselect>
+    >
+        @if($addNew)
+            <div slot="addModal">
+                @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
+            </div>
+        @endif
+    </a17-multiselect>
 @else
     <a17-vselect
         label="{{ $label }}"
@@ -27,10 +40,18 @@
         :options='{!! json_encode($options) !!}'
         @if ($emptyText ?? false) empty-text="{{ $emptyText }}" @endif
         @if ($placeholder ?? false) placeholder="{{ $placeholder }}" @endif
-        @if ($note) note='{{ $note }}' @endif
+        @if ($inModal) :in-modal="true" @endif
+        @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
+        @if ($endpoint ?? false) :searchable="true" endpoint="{{ $endpoint }}" @endif
         :multiple="true"
         in-store="inputValue"
-    ></a17-vselect>
+    >
+        @if($addNew)
+            <div slot="addModal">
+                @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
+            </div>
+        @endif
+    </a17-vselect>
 @endif
 
 @unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))

@@ -1,12 +1,17 @@
 @php
-    $note = $note ?? false;
     $options = method_exists($options, 'map') ? $options->map(function($label, $value) {
         return [
             'value' => $value,
             'label' => $label
         ];
     })->values()->toArray() : $options;
+
+    $note = $note ?? false;
     $inline = $inline ?? false;
+    $addNew = $addNew ?? false;
+    $moduleName = $moduleName ?? null;
+    $storeUrl = $storeUrl ?? '';
+    $inModal = $fieldsInModal ?? false;
 @endphp
 
 <a17-multiselect
@@ -17,9 +22,16 @@
     :inline='{{ $inline ? 'true' : 'false' }}'
     @if ($min ?? false) :min="{{ $min }}" @endif
     @if ($max ?? false) :max="{{ $max }}" @endif
-    @if ($note) note='{{ $note }}' @endif
+    @if ($inModal) :in-modal="true" @endif
+    @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
     in-store="currentValue"
-></a17-multiselect>
+>
+    @if($addNew)
+        <div slot="addModal">
+            @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
+        </div>
+    @endif
+</a17-multiselect>
 
 @unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
 @push('vuexStore')
