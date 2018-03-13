@@ -43,7 +43,7 @@
             <a17-iframe :content="activeRevision ? activeContent : currentContent" :size="activeBreakpoint" @scrollDoc="setIframeScroll" :scrollPosition="scrollPosition"></a17-iframe>
           </div>
           <div class="previewer__iframe" v-if="slipScreen">
-            <div class="previewer__iframeInfos"><span class="tag tag--revision">Current</span>{{ revisions[0].datetime  | formatDate }} ({{ revisions[0].author }})</div>
+            <div class="previewer__iframeInfos"><span class="tag tag--revision">Current</span>Previewing with your unsaved changes</div>
             <a17-iframe :content="currentContent" @scrollDoc="setIframeScroll" :scrollPosition="scrollPosition"></a17-iframe>
           </div>
         </div>
