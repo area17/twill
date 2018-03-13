@@ -49,6 +49,8 @@
     methods: {
       cellClasses: function (col) {
         return [
+          col.name === 'featured' || col.name === 'published' ? 'tablehead__cell--icon' : '',
+          col.name === 'thumbnail' ? 'tablehead__cell--thumb' : '',
           col.name === 'draggable' ? 'tablehead__cell--draggable' : '',
           col.name === 'nested' ? 'tablehead__cell--nested' : '',
           col.name === 'bulk' ? 'tablehead__cell--bulk' : '',
@@ -115,6 +117,9 @@
     padding:0;
   }
 
+  /* Thumbnails */
+  .tablehead__cell--thumb,
+  .tablehead__cell--icon,
   .tablehead__cell--draggable,
   .tablehead__cell--nested,
   .tablehead__cell--bulk {
@@ -125,7 +130,24 @@
     }
   }
 
+  .tablehead__cell--draggable {
+    width:10px;
+  }
+
   .tablehead__cell--bulk {
+    width:15px + 20px;
+  }
+
+  .tablehead__cell--thumb {
+    width:80px + 20px;
+  }
+
+  .tablehead__cell--icon {
+    width:20px + 20px;
+  }
+
+  .tablehead__cell--bulk {
+    border-left: 1px solid transparent;
     padding-left:10px;
     padding-right:10px;
 

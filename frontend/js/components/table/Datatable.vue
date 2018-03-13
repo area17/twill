@@ -220,7 +220,7 @@
         // Get all the tds width (not working in nested because the table structure is much more complex)
         if (!self.nested && self.$refs.thead) tds = self.$refs.thead.$el.children
         else {
-          // with the nested we are looking at the first tablerow tr to get the width of cells
+          // with the nested we are looking at the first tablerow tr (which will be a parent) to get the width of cells
           const firstTR = self.$el.querySelector('.table tr.tablerow')
           if (firstTR) tds = firstTR.children
         }
@@ -371,9 +371,8 @@
     width: 100%;
   }
 
-  .datatable {
-
-  }
+  // .datatable {
+  // }
 
   .datatable__table {
     border: 1px solid $color__border--light;
