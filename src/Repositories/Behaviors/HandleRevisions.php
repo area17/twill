@@ -11,7 +11,7 @@ trait HandleRevisions
     {
         $lastRevisionPayload = json_decode($object->revisions->first()->payload ?? "{}", true);
 
-        if ($this->payloadChanged($fields, $lastRevisionPayload)) {
+        if ($fields != $lastRevisionPayload) {
             $object->revisions()->create([
                 'payload' => json_encode($fields),
                 'user_id' => Auth::user()->id ?? null,
@@ -46,14 +46,6 @@ trait HandleRevisions
         $fields = json_decode($object->revisions->where('id', $revisionId)->first()->payload, true);
 
         return $this->hydrateObject($object, $fields);
-    }
-
-    private function payloadChanged($requestPayload, $revisionPayload)
-    {
-        $requestPayloadValues = array_values($requestPayload);
-        $revisionPayloadValues = array_values($revisionPayload);
-
-        return array_sort_recursive($requestPayloadValues) !== array_sort_recursive($revisionPayloadValues);
     }
 
     public function hydrateMultiSelect($object, $fields, $relationship, $model = null)
