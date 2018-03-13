@@ -91,6 +91,10 @@
         bulkDelete: '{{ $bulkDeleteUrl }}'
     }
 
+    window.STORE.form = {
+        fields: []
+    }
+
     window.STORE.datatable = {
         data: {!! json_encode($tableData) !!},
         columns: {!! json_encode($tableColumns) !!},
