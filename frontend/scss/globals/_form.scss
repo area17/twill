@@ -168,3 +168,7 @@ $height_input: 45px;
   height: $height_input - 10px;
   line-height: $height_input - 10px;
 }
+
+.form__input--hidden {
+  display:none;
+}
