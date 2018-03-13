@@ -37,3 +37,6 @@ export { default as DATATABLE } from './datatable'
 
 /* Parents */
 export { default as PARENTS } from './parents'
+
+/* Subscribers */
+export { default as SUBSCRIBERS } from './subscribers'

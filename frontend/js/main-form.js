@@ -3,6 +3,7 @@ import { mapState } from 'vuex'
 import store from '@/store'
 import { FORM } from '@/store/mutations'
 import * as ACTIONS from '@/store/actions'
+import { FORM_MUTATIONS_TO_SUBSCRIBE } from '@/store/mutations/subscribers'
 
 // General shared behaviors
 import main from '@/main'
@@ -150,15 +151,12 @@ Window.vm = new Vue({
       window.onbeforeunload = this.confirmExit
       // Subscribe to store mutation
       this.unSubscribe = this.$store.subscribe((mutation, state) => {
-        console.log('subscribe')
-        this.isFormUpdated = true
+        if (FORM_MUTATIONS_TO_SUBSCRIBE.includes(mutation.type)) {
+          this.isFormUpdated = true
+          this.unSubscribe()
+        }
       })
     })
-  },
-  watch: {
-    'isFormUpdated': function (newVal) {
-      if (newVal) this.unSubscribe()
-    }
   },
   beforeDestroy: function () {
     this.unSubscribe()
