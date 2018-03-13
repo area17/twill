@@ -1,13 +1,13 @@
 <template>
   <div class="multibutton">
     <a17-dropdown ref="submitDown" position="bottom-right" width="full" :offset="0">
-      <a17-button :type="type" :name="options[0].name" variant="validate">{{ options[0].text }}</a17-button>
+      <a17-button :type="type" @click="buttonClicked(options[0].name)" :name="options[0].name" variant="validate">{{ options[0].text }}</a17-button>
       <button class="multibutton__trigger" type="button" @click="$refs.submitDown.toggle()"><span v-svg symbol="dropdown_module"></span></button>
 
       <div slot="dropdown__content">
         <ul>
           <li v-for="option in otherOptions">
-            <button :type="type" :name="option.name">{{ option.text }}</button>
+            <button @click="buttonClicked(option.name)" :type="type" :name="option.name">{{ option.text }}</button>
           </li>
         </ul>
       </div>
@@ -33,6 +33,11 @@
       otherOptions: function () {
         if (this.options.length) return this.options.slice(1)
         else return []
+      }
+    },
+    methods: {
+      buttonClicked: function (val) {
+        this.$emit('button-clicked', val)
       }
     }
   }

@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import store from '@/store'
 import { FORM } from '@/store/mutations'
 import * as ACTIONS from '@/store/actions'
@@ -123,19 +123,20 @@ Window.vm = new Vue({
     ...mapState({
       loading: state => state.form.loading,
       editor: state => state.content.editor
-    })
+    }),
+    ...mapGetters([
+      'getSaveType'
+    ])
   },
   methods: {
     submitForm: function (event) {
-      console.log(event)
-
       if (!this.loading) {
         this.isFormUpdated = false
         this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
-
         this.unSubscribe()
         this.$nextTick(() => { // let's wait for the loading state to be properly deployed (used to save wysiwyg fields)
-          this.$store.dispatch(ACTIONS.SAVE_FORM, document.activeElement.name).then(() => {
+          const saveType = this.getSaveType || document.activeElement.name
+          this.$store.dispatch(ACTIONS.SAVE_FORM, saveType).then(() => {
             this.mutationsSubscribe()
           })
         })
