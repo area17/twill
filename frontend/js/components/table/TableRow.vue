@@ -310,7 +310,7 @@
   }
 
   /* With HTML */
-  .tablecell__raw a {
+  .tablecell__raw /deep/ a {
     text-decoration:none;
     cursor:pointer;
     @include bordered;
