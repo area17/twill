@@ -4,7 +4,7 @@
       <transition-group name="draggable_list" tag='div'>
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
           <a17-block :block="block" :index="index" :opened="opened" :closed="closed" @expand="setOpened" ref="blockList">
-            <button type="button" slot="dropdown-add" v-if="availableBlocks.length" v-for="(availableBlock, dropdownIndex) in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, index + 1)"><span v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
+            <button type="button" slot="dropdown-add" v-if="availableBlocks.length" v-for="availableBlock in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, index + 1)"><span v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
             <div slot="dropdown-action">
               <button type="button" @click="collapseAllBlocks()" v-if="opened">Collapse all</button>
               <button type="button" @click="expandAllBlocks()" v-else>Expand all</button>
@@ -12,7 +12,7 @@
               <button type="button" @click="deleteBlock(index)">Delete</button>
               <button type="button" @click="duplicateBlock(index)">Duplicate</button>
             </div>
-            <button type="button" slot="dropdown-numbers" v-for="n in blocks.length" @click="moveBlock(index, n - 1)">{{ n }}</button>
+            <button type="button" slot="dropdown-numbers" v-for="n in blocks.length" @click="moveBlock(index, n - 1)" :key="n">{{ n }}</button>
           </a17-block>
         </div>
       </transition-group>
@@ -22,7 +22,7 @@
       <a17-dropdown ref="blocksDropdown" position="top-center" :arrow="true" :offset="10" v-if="availableBlocks.length" :maxHeight="430">
         <a17-button size="small" variant="action" @click="$refs.blocksDropdown.toggle()">{{ title }}</a17-button>
         <div slot="dropdown__content">
-          <button type="button" v-for="(availableBlock, index) in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, -1)"><span class="content__icon" v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
+          <button type="button" v-for="availableBlock in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, -1)"><span class="content__icon" v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
         </div>
       </a17-dropdown>
       <div class="content__secondaryActions">

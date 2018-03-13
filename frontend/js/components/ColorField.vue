@@ -118,9 +118,8 @@
     }
   }
 
-  .form__field--color {
-
-  }
+  // .form__field--color {
+  // }
 
   .form__field--colorBtn {
     cursor:pointer;

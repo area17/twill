@@ -108,17 +108,17 @@
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
 
-  .filter {
-  }
+  // .filter {
+  // }
 
   .filter__inner {
     display:flex;
     justify-content: space-between;
   }
 
-  .filter__navigation {
-    /*flex-grow:1;*/
-  }
+  // .filter__navigation {
+  //   flex-grow:1;
+  // }
 
   .filter__search {
     padding:20px 0;

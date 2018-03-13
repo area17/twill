@@ -8,7 +8,7 @@
             <span class="itemlist__progressError" v-else>Upload Error</span>
           </td>
         </tr>
-        <tr class="itemlist__row" v-for="(item, index) in listItems" :key="item.id" :class="{ 's--picked': isSelected(item.id) }" @click.exact.prevent="toggleSelection(item.id)" @click.shift.exact.prevent="shiftToggleSelection(item.id)">
+        <tr class="itemlist__row" v-for="item in listItems" :key="item.id" :class="{ 's--picked': isSelected(item.id) }" @click.exact.prevent="toggleSelection(item.id)" @click.shift.exact.prevent="shiftToggleSelection(item.id)">
           <td class="itemlist__cell itemlist__cell--btn" v-if="item.hasOwnProperty('id')">
             <a17-checkbox name="item_list" :value="item.id" :initialValue="checkedItems" theme="bold"/>
           </td>

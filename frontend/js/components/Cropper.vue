@@ -2,7 +2,7 @@
   <div class="cropper">
     <header class="cropper__header">
       <ul v-if="multiCrops" class="cropper__breakpoints">
-        <li v-for="(crop, key, index) in currentMedia.crops" :class="{ 's--active' : toggleBreakpoint === index }" @click="changeCrop(key, index)">{{ key | capitalize }}</li>
+        <li v-for="(crop, key, index) in currentMedia.crops" :key="key" :class="{ 's--active' : toggleBreakpoint === index }" @click="changeCrop(key, index)">{{ key | capitalize }}</li>
       </ul>
     </header>
     <div class="cropper__content">
