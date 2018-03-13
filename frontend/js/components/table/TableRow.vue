@@ -26,7 +26,7 @@
       <template v-else>
         <a :href="editUrl" class="tablecell__name" v-if="col.name === 'name' && !row.hasOwnProperty('deleted')" @click="editInPlace"><span
           class="f--link-underlined--o">{{ row[col.name] }}</span></a>
-        <span v-else-if="col.html" v-html="row[col.name]"></span>
+        <span class="tablecell__raw" v-else-if="col.html" v-html="row[col.name]"></span>
         <template v-else>{{ row[col.name] }}</template>
       </template>
     </td>
@@ -307,6 +307,13 @@
     color: $color__link;
     text-decoration: none;
     display: block;
+  }
+
+  /* With HTML */
+  .tablecell__raw a {
+    text-decoration:none;
+    cursor:pointer;
+    @include bordered;
   }
 
   /* Icons */
