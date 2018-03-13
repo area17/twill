@@ -932,6 +932,7 @@ abstract class ModuleController extends Controller
         $data = [
             'item' => $item,
             'moduleName' => $this->moduleName,
+            'routePrefix' => $this->routePrefix,
             'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
             'translate' => $this->moduleIsTranslated(),
             'permalink' => $this->getIndexOption('permalink'),

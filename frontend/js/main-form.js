@@ -40,10 +40,6 @@ import A17Notif from '@/plugins/A17Notif'
 // Loader
 import a17Spinner from '@/components/Spinner.vue'
 
-// configuration
-Vue.use(A17Config)
-Vue.use(A17Notif)
-
 // Store Modules
 import form from '@/store/modules/form'
 import publication from '@/store/modules/publication'
@@ -53,6 +49,14 @@ import revision from '@/store/modules/revision'
 import browser from '@/store/modules/browser'
 import repeaters from '@/store/modules/repeaters'
 import parents from '@/store/modules/parents'
+
+// mixins
+import formatPermalink from '@/mixins/formatPermalink'
+import editorMixin from '@/mixins/editor.js'
+
+// configuration
+Vue.use(A17Config)
+Vue.use(A17Notif)
 
 store.registerModule('form', form)
 store.registerModule('publication', publication)
@@ -78,10 +82,6 @@ Vue.component('a17-locationfield', a17LocationField)
 Vue.component('a17-overlay', a17Overlay)
 Vue.component('a17-previewer', a17Previewer)
 
-// mixins
-import formatPermalink from '@/mixins/formatPermalink'
-import editorMixin from '@/mixins/editor.js'
-
 // Editor
 Vue.component('a17-editor', a17Editor)
 
@@ -97,7 +97,7 @@ importedBlocks.keys().map(block => {
 
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
-Window.vm = new Vue({
+window.vm = new Vue({
   store, // inject store to all children
   el: '#app',
   components: {
@@ -122,7 +122,8 @@ Window.vm = new Vue({
   computed: {
     ...mapState({
       loading: state => state.form.loading,
-      editor: state => state.content.editor
+      editor: state => state.content.editor,
+      isCustom: state => state.form.isCustom
     })
   },
   methods: {
@@ -142,7 +143,7 @@ Window.vm = new Vue({
       }
     },
     confirmExit: function (event) {
-      if (!this.isFormUpdated) {
+      if (!this.isFormUpdated || this.isCustom) {
         if (window.event !== undefined) window.event.cancelBubble = true
         else event.cancelBubble = true
       } else { return 'message' }

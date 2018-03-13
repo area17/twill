@@ -13,24 +13,24 @@ export default {
   },
   computed: {
     hasMaxlength: function () {
-      return this.maxlength > 0;
+      return this.maxlength > 0
     },
     displayedMaxlength: function () {
-      if(this.hasMaxlength) return this.maxlength;
-      else return false;
+      if (this.hasMaxlength) return this.maxlength
+      else return false
     },
-    limitClasses: function() {
+    limitClasses: function () {
       return {
         'input__limit--red': this.counter < 10
       }
     }
   },
   methods: {
-    onClickLocale: function() {
-      this.$emit("localize", this.locale);
+    onClickLocale: function () {
+      this.$emit('localize', this.locale)
     },
     updateCounter: function (newValue) {
-      if(this.maxlength > 0) this.counter = this.maxlength - newValue.toString().length;
+      if (this.maxlength > 0) this.counter = this.maxlength - newValue.toString().length
     }
   }
 }

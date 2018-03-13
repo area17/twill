@@ -21,7 +21,6 @@ const DEFAULT_OPTIONS = {
 }
 
 export default class Tooltip {
-
   constructor (ref, options) {
     // todo apply options here
     options = { ...DEFAULT_OPTIONS, ...options }
@@ -32,11 +31,7 @@ export default class Tooltip {
 
     // get events list
     const events = typeof options.trigger === 'string'
-      ? options.trigger
-          .split(' ')
-          .filter(
-            trigger => ['click', 'hover', 'focus'].indexOf(trigger) !== -1
-          )
+      ? options.trigger.split(' ').filter(trigger => ['click', 'hover', 'focus'].indexOf(trigger) !== -1)
       : []
 
     // set initial state

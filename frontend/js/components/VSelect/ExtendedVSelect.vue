@@ -12,6 +12,17 @@
         mutableValue: this.value
       }
     },
+    computed: {
+      showClearButton () {
+        return false
+      }
+    },
+    watch: {
+      search () {
+        this.onSearch(this.search, this.toggleLoading)
+        this.$emit('search', this.search, this.toggleLoading)
+      }
+    },
     methods: {
       /**
        * Select a given option.
@@ -91,6 +102,9 @@
         type: Boolean,
         default: false
       }
+    },
+    mounted () {
+      if (this.taggable) this.onSearch(this.search, this.toggleLoading)
     }
   }
 </script>

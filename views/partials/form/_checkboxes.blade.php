@@ -21,11 +21,11 @@
     in-store="currentValue"
 ></a17-multiselect>
 
-@unless($renderForBlocks || $renderForModal || !isset($item->$name))
+@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
 @push('vuexStore')
     window.STORE.form.fields.push({
         name: '{{ $name }}',
-        value: {!! json_encode(array_pluck($item->$name, 'id')) !!}
+        value: {!! json_encode(isset($item) && isset($item->$name) ? array_pluck($item->$name, 'id') : $formFieldsValue) !!}
     })
 @endpush
 @endunless

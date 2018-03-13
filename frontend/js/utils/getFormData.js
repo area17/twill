@@ -66,7 +66,7 @@ export const isBlockEmpty = (blockData) => {
 
 export const gatherRepeaters = (rootState) => {
   return Object.assign({}, ...Object.keys(rootState.repeaters.repeaters).filter(repeaterKey => {
-      // we start by filtering out repeater blocks
+    // we start by filtering out repeater blocks
     return !repeaterKey.startsWith('blocks-')
   }).map(repeater => {
     return {

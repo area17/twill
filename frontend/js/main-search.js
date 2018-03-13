@@ -4,11 +4,11 @@ import Vue from 'vue'
 // Plugins
 import A17Config from '@/plugins/A17Config'
 
-// configuration
-Vue.use(A17Config)
-
 // components
 import a17Search from '@/components/Search.vue'
+
+// configuration
+Vue.use(A17Config)
 
 const idSearch = 'searchApp'
 const vueSearchApp = {

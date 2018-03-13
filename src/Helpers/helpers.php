@@ -49,3 +49,10 @@ if (!function_exists('classHasTrait')) {
         return false;
     }
 }
+
+if (!function_exists('getFormFieldsValue')) {
+    function getFormFieldsValue($formFields, $name)
+    {
+        return array_get($formFields, str_replace(']', '', str_replace('[', '.', $name)));
+    }
+}

@@ -41,7 +41,7 @@ const state = {
   sortKey: window.STORE.datatable.sortKey || '',
   sortDir: window.STORE.datatable.sortDir || 'asc',
   bulk: [],
-  localStorageKey: window.STORE.datatable.localStorageKey || location.pathname,
+  localStorageKey: window.STORE.datatable.localStorageKey || window.location.pathname,
   loading: false,
   updateTracker: 0
 }

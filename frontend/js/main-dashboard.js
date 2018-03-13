@@ -10,10 +10,6 @@ import openMediaLibrary from '@/behaviors/openMediaLibrary'
 import A17Config from '@/plugins/A17Config'
 import A17Notif from '@/plugins/A17Notif'
 
-// configuration
-Vue.use(A17Config)
-Vue.use(A17Notif)
-
 // Dashboard
 import a17ShortcutCreator from '@/components/dashboard/shortcutCreator.vue'
 import A17ActivityFeed from '@/components/dashboard/activityFeed.vue'
@@ -23,11 +19,15 @@ import A17GenericFeed from '@/components/dashboard/genericFeed.vue'
 // Store modules
 import datatable from '@/store/modules/datatable'
 
+// configuration
+Vue.use(A17Config)
+Vue.use(A17Notif)
+
 store.registerModule('datatable', datatable)
 
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
-Window.vm = new Vue({
+window.vm = new Vue({
   store, // inject store to all children
   el: '#app',
   components: {

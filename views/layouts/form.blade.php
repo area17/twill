@@ -11,6 +11,7 @@
     $translate = $translate ?? false;
     $translateTitle = $translateTitle ?? $translate ?? false;
     $titleFormKey = $titleFormKey ?? 'title';
+    $customForm = $customForm ?? false;
 @endphp
 
 @section('content')
@@ -43,7 +44,8 @@
                 </div>
             </a17-sticky-nav>
         </div>
-        <form action="{{ $saveUrl }}" novalidate v-on:submit.prevent="submitForm">
+        <form action="{{ $saveUrl }}" novalidate method="POST" @unless($customForm) v-on:submit.prevent="submitForm" @endif>
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <div class="container">
                 <div class="wrapper wrapper--reverse" v-sticky data-sticky-id="publisher" data-sticky-offset="80">
                     <aside class="col col--aside">
@@ -88,27 +90,27 @@
 @section('initialStore')
 
     window.STORE.form = {
-        baseUrl: '{{ $baseUrl }}',
+        baseUrl: '{{ $baseUrl ?? '' }}',
         saveUrl: '{{ $saveUrl }}',
         previewUrl: '{{ $previewUrl or '' }}',
         restoreUrl: '{{ $restoreUrl or '' }}',
         blockPreviewUrl: '{{ $blockPreviewUrl or '' }}',
         availableRepeaters: {!! json_encode(config('cms-toolkit.block_editor.repeaters')) !!},
         repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!},
-        fields: []
+        fields: [],
+        editor: {{ $editor ? 'true' : 'false' }},
+        isCustom: {{ $customForm ? 'true' : 'false' }}
     }
 
     window.STORE.publication = {
-        withPublicationToggle: {{ json_encode(($publish ?? true) && $item->isFillable('published')) }},
-        published: {{ json_encode($item->published) }},
-        withPublicationTimeframe: {{ json_encode(($schedule ?? true) && $item->isFillable('publish_start_date')) }},
+        withPublicationToggle: {{ json_encode(($publish ?? true) && isset($item) && $item->isFillable('published')) }},
+        published: {{ json_encode(isset($item) ? $item->published : false) }},
+        withPublicationTimeframe: {{ json_encode(($schedule ?? true) && isset($item) && $item->isFillable('publish_start_date')) }},
         startDate: '{{ $item->publish_start_date ?? '' }}',
         endDate: '{{ $item->publish_end_date ?? '' }}',
-        visibility: '{{ $item->isFillable('public') ? ($item->public ? 'public' : 'private') : false }}',
+        visibility: '{{ isset($item) && $item->isFillable('public') ? ($item->public ? 'public' : 'private') : false }}',
         reviewProcess: {!! isset($reviewProcess) ? json_encode($reviewProcess) : '[]' !!}
     }
-
-    window.STORE.form.editor = {{ $editor ? 'true' : 'false' }}
 
     window.STORE.revisions = {!! json_encode($revisions ?? []) !!}
 

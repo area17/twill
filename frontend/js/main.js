@@ -12,11 +12,11 @@ const A17Init = function () {
 // User header dropdown
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
-Window.vheader = new Vue({ el: '#headerUser' })
+window.vheader = new Vue({ el: '#headerUser' })
 
 // Search
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
-Window.vsearch = search
+window.vsearch = search
 
 export default A17Init

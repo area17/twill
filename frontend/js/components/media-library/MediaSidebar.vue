@@ -110,8 +110,7 @@
       allowDelete: function () {
         return this.medias.every((media) => {
           return media.deleteUrl
-        }) || (this.hasMultipleMedias &&
-        !this.medias.every((media) => {
+        }) || (this.hasMultipleMedias && !this.medias.every((media) => {
           return !media.deleteUrl
         }))
       },

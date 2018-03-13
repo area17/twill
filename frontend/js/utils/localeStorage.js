@@ -23,12 +23,12 @@ export function getStorage (name) {
   if (localStoreSupport()) {
     return localStorage.getItem(name)
   } else {
-    const name = name + '='
+    const cookieName = name + '='
     const ca = document.cookie.split(';')
     for (let i = 0; i < ca.length; i++) {
       let c = ca[i]
       while (c.charAt(0) === ' ') c = c.substring(1, c.length)
-      if (c.indexOf(name) === 0) return c.substring(name.length, c.length)
+      if (c.indexOf(cookieName) === 0) return c.substring(cookieName.length, c.length)
     }
     return null
   }

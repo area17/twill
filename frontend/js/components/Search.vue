@@ -44,8 +44,8 @@
 <script>
   import debounce from 'lodash/debounce'
   import axios from 'axios'
-  const html = document.documentElement
   import htmlClasses from '@/utils/htmlClasses'
+  const html = document.documentElement
   const htmlSearchClasses = [ htmlClasses.search, htmlClasses.overlay ]
   let CancelToken = axios.CancelToken
   let source = CancelToken.source()

@@ -22,11 +22,13 @@ export default {
       }
 
       if (callback && typeof callback === 'function') {
-        callback({
+        const data = {
           data: resp.data.tableData ? resp.data.tableData : [],
           nav: resp.data.tableMainFilters ? resp.data.tableMainFilters : [],
           maxPage: (resp.data.maxPage ? resp.data.maxPage : 1)
-        })
+        }
+
+        callback(data)
       }
     }, function (resp) {
       console.log('get request error.')
