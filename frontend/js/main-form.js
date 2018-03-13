@@ -133,6 +133,7 @@ Window.vm = new Vue({
         this.isFormUpdated = false
         this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
 
+        this.unSubscribe()
         this.$nextTick(() => { // let's wait for the loading state to be properly deployed (used to save wysiwyg fields)
           this.$store.dispatch(ACTIONS.SAVE_FORM, document.activeElement.name).then(() => {
             this.mutationsSubscribe()

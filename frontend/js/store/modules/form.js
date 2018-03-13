@@ -120,7 +120,7 @@ const mutations = {
     })
   },
   [FORM.UPDATE_FORM_LOADING] (state, loading) {
-    state.loading = !state.loading
+    state.loading = loading || !state.loading
   },
   [FORM.SET_FORM_ERRORS] (state, errors) {
     state.errors = errors
