@@ -127,14 +127,16 @@ Window.vm = new Vue({
   },
   methods: {
     submitForm: function (event) {
-      let self = this
+      console.log(event)
 
       if (!this.loading) {
         this.isFormUpdated = false
         this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
 
-        self.$nextTick(function () { // let's wait for the loading state to be properly deployed (used to save wysiwyg fields)
-          self.$store.dispatch(ACTIONS.SAVE_FORM, document.activeElement.name)
+        this.$nextTick(() => { // let's wait for the loading state to be properly deployed (used to save wysiwyg fields)
+          this.$store.dispatch(ACTIONS.SAVE_FORM, document.activeElement.name).then(() => {
+            this.mutationsSubscribe()
+          })
         })
       }
     },
@@ -143,12 +145,8 @@ Window.vm = new Vue({
         if (window.event !== undefined) window.event.cancelBubble = true
         else event.cancelBubble = true
       } else { return 'message' }
-    }
-  },
-  mounted: function () {
-    // Form : confirm exit or lock panel if form is changed
-    this.$nextTick(function () {
-      window.onbeforeunload = this.confirmExit
+    },
+    mutationsSubscribe: function () {
       // Subscribe to store mutation
       this.unSubscribe = this.$store.subscribe((mutation, state) => {
         if (FORM_MUTATIONS_TO_SUBSCRIBE.includes(mutation.type)) {
@@ -156,6 +154,13 @@ Window.vm = new Vue({
           this.unSubscribe()
         }
       })
+    }
+  },
+  mounted: function () {
+    // Form : confirm exit or lock panel if form is changed
+    this.$nextTick(() => {
+      window.onbeforeunload = this.confirmExit
+      this.mutationsSubscribe()
     })
   },
   beforeDestroy: function () {
