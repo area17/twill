@@ -9,7 +9,7 @@
         <slot name="additional-actions"></slot>
       </div>
     </div>
-    <transition :css="false" :duration="275" @before-enter="beforeEnter" @before-leave="beforeLeave" @enter="enter" @leave="leave">
+    <transition :css='false' :duration="500" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter" @before-leave="beforeLeave" @leave="leave">
       <div class="filter__more" v-show="opened" v-if="withHiddenFilters" :aria-hidden="!opened ? true : null">
         <div class="filter__moreInner" >
           <slot name="hidden-filters"></slot>
@@ -72,12 +72,22 @@
       },
       beforeEnter: function (el) {
         el.style.maxHeight = '0px'
+        el.style.overflow = 'hidden'
       },
       enter: function (el, done) {
         el.style.maxHeight = this.getMaxHeight() + 'px'
+        done()
       },
-      beforeLeave: function (el, done) {
+      afterEnter: function (el) {
+        const timeOut = window.setTimeout(function () {
+          el.style.maxHeight = ''
+          el.style.overflow = 'visible'
+          window.clearTimeout(timeOut)
+        }, 501)
+      },
+      beforeLeave: function (el) {
         el.style.maxHeight = this.getMaxHeight() + 'px'
+        el.style.overflow = 'hidden'
       },
       leave: function (el, done) {
         el.style.maxHeight = '0px'
@@ -146,8 +156,8 @@
   }
 
   .filter__more {
-    max-height: 150px;
-    transition: max-height 0.3s ease;
+    max-height: 200px;
+    transition: max-height 0.5s ease;
     overflow: hidden;
   }
 
