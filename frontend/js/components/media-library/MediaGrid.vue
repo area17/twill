@@ -6,7 +6,7 @@
         <span class="mediagrid__progressError" v-else>Upload Error</span>
       </span>
     </div>
-    <div class="mediagrid__item" v-for="(item, index) in items" :key="item.id">
+    <div class="mediagrid__item" v-for="item in items" :key="item.id">
       <span class="mediagrid__button" :class="{ 's--picked': isSelected(item.id), 's--used': isUsed(item.id) }" @click.exact="toggleSelection(item.id)" @click.shift.exact="shiftToggleSelection(item.id)"><img :src="item.src" class="mediagrid__img" /></span>
     </div>
   </div>

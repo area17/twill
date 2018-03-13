@@ -5,7 +5,7 @@
       <div class="medialibrary__header" ref="form">
         <a17-filter @submit="submitFilter" :clearOption="true" @clear="clearFilters">
           <ul class="secondarynav secondarynav--desktop" slot="navigation" v-if="types.length">
-            <li class="secondarynav__item" v-for="navType in types" :class="{ 's--on': type === navType.value, 's--disabled' : type !== navType.value && strict }">
+            <li class="secondarynav__item" v-for="navType in types" :key="navType.value" :class="{ 's--on': type === navType.value, 's--disabled' : type !== navType.value && strict }">
               <a href="#" @click.prevent="updateType(navType.value)"><span class="secondarynav__link">{{ navType.text }}</span><span v-if="navType.total > 0" class="secondarynav__number">({{ navType.total }})</span></a>
             </li>
           </ul>
@@ -17,7 +17,7 @@
               </a17-button>
               <div slot="dropdown__content">
                 <ul>
-                  <li v-for="navType in types" class="secondarynav__item">
+                  <li v-for="navType in types" :key="navType.value" class="secondarynav__item">
                     <a href="#" v-on:click.prevent="updateType(navType.value)"><span class="secondarynav__link">{{ navType.text }}</span><span class="secondarynav__number">{{ navType.total }}</span></a>
                   </li>
                 </ul>
@@ -38,7 +38,7 @@
           </aside>
           <footer class="medialibrary__footer" v-if="selectedMedias.length && showInsert && connector">
             <a17-button v-if="canInsert" variant="action" @click="saveAndClose">{{ btnLabel }} </a17-button>
-            <a17-button v-else="" variant="action" :disabled="true">{{ btnLabel }} </a17-button>
+            <a17-button v-else variant="action" :disabled="true">{{ btnLabel }} </a17-button>
           </footer>
           <div class="medialibrary__list" ref="list">
             <a17-uploader v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias" :type="type"/>
