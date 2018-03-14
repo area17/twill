@@ -66,3 +66,24 @@ Loader
     animation-delay: 0.6s;
   }
 }
+
+.loader--small {
+  height:6px;
+  width:6px;
+
+  /* dots */
+  span,
+  &::before,
+  &::after {
+   height:6px;
+   width:6px;
+  }
+
+  &::before {
+   left:-12px;
+  }
+
+  &::after {
+    left:12px;
+  }
+}

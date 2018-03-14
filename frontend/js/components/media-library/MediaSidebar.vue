@@ -24,7 +24,7 @@
       </div>
 
       <form v-if="hasMedia" ref="form" class="mediasidebar__inner mediasidebar__form" @submit="submit">
-        <span class="mediasidebar__loader" v-if="loading"><span class="loader"><span></span></span></span>
+        <span class="mediasidebar__loader" v-if="loading"><span class="loader loader--small"><span></span></span></span>
         <a17-vselect label="Tags" :key="firstMedia.id + '-' + medias.length" name="tags" :multiple="true" :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small" :endpoint="tagsEndpoint" @change="save" maxHeight="175px" />
         <template v-if="hasMultipleMedias">
           <input type="hidden" name="ids" :value="mediasIds" />
