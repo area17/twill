@@ -48,17 +48,15 @@
             endpoint: this.formCreate,
             method: 'post'
           }).then(() => {
+            if (self.$refs.modal) self.$refs.modal.close()
+
             self.$nextTick(function () {
               self.$store.commit(NOTIFICATION.SET_NOTIF, {
                 message: 'Your content has been added',
                 variant: 'success'
               })
 
-              if (submitMode === 'create-another') {
-                this.$store.commit(FORM.EMPTY_MODAL_FIELDS, true)
-              } else {
-                if (self.$refs.modal) self.$refs.modal.close()
-              }
+              if (submitMode === 'create-another' && self.$refs.modal) self.$refs.modal.open()
             })
           }, (errorResponse) => {
             self.$store.commit(NOTIFICATION.SET_NOTIF, {
@@ -66,7 +64,7 @@
               variant: 'error'
             })
 
-            if (this.$refs.modal) this.$refs.modal.close()
+            if (self.$refs.modal) self.$refs.modal.close()
           })
         })
       }

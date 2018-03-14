@@ -91,6 +91,8 @@
               message: 'Your content can not be edited, please retry',
               variant: 'error'
             })
+
+            if (self.$refs.modal) self.$refs.modal.close()
           })
         })
       }
