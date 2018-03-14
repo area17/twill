@@ -12,6 +12,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Route;
 use Session;
+use URL;
 
 abstract class ModuleController extends Controller
 {
@@ -269,7 +270,7 @@ abstract class ModuleController extends Controller
                 $this->removeLock($submoduleId ?? $id);
             }
 
-            return $this->respondWithRedirect($this->getBackLink());
+            return $this->respondWithRedirect(URL::previous());
 
         } else {
 
@@ -304,7 +305,7 @@ abstract class ModuleController extends Controller
                                 'author' => $revision->user->name,
                                 'datetime' => $revision->created_at->toIso8601String(),
                             ];
-                        })->toArray()
+                        })->toArray(),
                     ]);
                 }
 
