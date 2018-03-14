@@ -6,7 +6,7 @@
         <button class="overlay__close" type="button" @click="hide"><span v-svg symbol="close_modal"></span><span class="overlay__closeLabel">Close</span></button>
       </header>
       <div class="overlay__content" v-if="active" v-show="!hidden">
-        <slot></slot><!--  v-if="active" -->
+        <slot></slot>
       </div>
     </div>
   </div>
@@ -70,8 +70,6 @@
     },
     methods: {
       open: function (onShow) {
-        html.classList.add(htmlOverlayClass)
-
         if (this.active && !this.hidden) {
           return
         }
@@ -79,11 +77,16 @@
         this.active = true
         this.hidden = false
 
+        html.classList.add(htmlOverlayClass)
+
         window.addEventListener('keyup', this.keyPressed)
         this.$emit('open')
       },
       mask: function () {
         html.classList.remove(htmlOverlayClass)
+
+        window.removeEventListener('keyup', this.keyPressed)
+        this.$emit('close')
       },
       hide: function () {
         if (!this.active) return
@@ -96,9 +99,6 @@
 
         this.hidden = true
         this.mask()
-
-        window.removeEventListener('keyup', this.keyPressed)
-        this.$emit('close')
       },
       close: function (onClose) {
         if (!this.active) return
@@ -106,9 +106,6 @@
 
         this.active = false
         this.mask()
-
-        window.removeEventListener('keyup', this.keyPressed)
-        this.$emit('close')
       },
       keyPressed: function (event) {
         if (event.which === 27 || event.keyCode === 27) {

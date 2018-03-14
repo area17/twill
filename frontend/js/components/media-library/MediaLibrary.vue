@@ -185,9 +185,6 @@
           }
         }
       },
-      isGridLoaded: function () { // The Grid is loaded
-        return this.gridLoaded
-      },
       updateType: function (newType) {
         if (this.strict) return
         if (this.type === newType) return

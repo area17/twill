@@ -235,7 +235,8 @@
       color:$color__icons;
     }
 
-    &:hover {
+    &:hover,
+    &:focus {
       color:$color__text;
       border-color:$color__border--focus;
 
