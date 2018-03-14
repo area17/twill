@@ -41,7 +41,6 @@ mix.webpackConfig({
 })
 
 mix.copyDirectory('frontend/fonts', 'public/assets/admin/fonts')
-mix.copyDirectory('assets/vendor', 'public/assets/vendor')
 
 mix.js(
   'frontend/js/main-listing.js',
