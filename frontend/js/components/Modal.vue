@@ -46,7 +46,9 @@
       return {
         active: false,
         hidden: true,
-        locked: false
+        locked: false,
+        firstFocusableEl: null,
+        lastFocusableEl: null
       }
     },
     computed: {
@@ -82,18 +84,25 @@
 
         html.classList.add(htmlClass)
 
-        window.addEventListener('keyup', this.keyPressed)
+        this.bindKeyboard()
 
         // auto focus first field
         this.$nextTick(function () {
           const field = this.$el.querySelector('input, textarea, select')
+
+          // Trap focus inside the modal
+          this.firstFocusableEl = this.$el.querySelector('.modal__close')
+          const submitNodes = this.$el.querySelectorAll('form input,select,button[type="submit"]')
+          this.lastFocusableEl = submitNodes[submitNodes.length - 1]
+
+          this.$emit('open')
+
           if (field) field.focus()
         })
-
-        this.$emit('open')
       },
       mask: function () {
         html.classList.remove(htmlClass)
+        this.unbindKeyboard()
       },
       hide: function () {
         if (!this.active) return
@@ -107,7 +116,6 @@
         this.hidden = true
         this.mask()
 
-        window.removeEventListener('keyup', this.keyPressed)
         this.$emit('close')
       },
       close: function (onClose) {
@@ -117,19 +125,44 @@
         this.active = false
         this.mask()
 
-        window.removeEventListener('keyup', this.keyPressed)
         this.$emit('close')
+      },
+      bindKeyboard: function () {
+        window.addEventListener('keyup', this.keyPressed)
+        document.addEventListener('keydown', this.keyDown, false)
+      },
+      unbindKeyboard: function () {
+        window.removeEventListener('keyup', this.keyPressed)
+        document.removeEventListener('keydown', this.keyDown)
       },
       keyPressed: function (event) {
         if (event.which === 27 || event.keyCode === 27) {
           this.hide()
           this.$emit('esc-key')
         }
+      },
+      keyDown: function (event) {
+        // tab
+        if (event.keyCode && event.keyCode === 9) {
+          if (event.shiftKey) {
+            // backwards
+            if (document.activeElement.isEqualNode(this.firstFocusableEl)) {
+              this.lastFocusableEl.focus()
+              event.preventDefault()
+            }
+          } else {
+            // onwards
+            if (document.activeElement.isEqualNode(this.lastFocusableEl)) {
+              this.firstFocusableEl.focus()
+              event.preventDefault()
+            }
+          }
+        }
       }
     },
     beforeDestroy: function () {
       if (this.$el.parentNode) {
-        if (this.active) window.removeEventListener('keyup', this.keyPressed)
+        if (this.active) this.unbindKeyboard()
         this.$el.parentNode.removeChild(this.$el)
       }
     }
@@ -202,7 +235,8 @@
     color:$color__icons;
     padding:15px;
 
-    &:hover {
+    &:hover,
+    &:focus {
       color:$color__text;
     }
   }
