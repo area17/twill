@@ -1,10 +1,12 @@
 <template>
   <div class="languageManager" v-if="languages.length > 1">
-    <a17-accordion :open="open">
-      <div slot="accordion__value">{{ currentValue.length }} Live</div>
-      <a17-checkboxgroup name="langManager" :options="languages" @change="changeValue" :selected="currentValue" :min="1"></a17-checkboxgroup>
-    </a17-accordion>
     <div class="languageManager__switcher"><a17-langswitcher :in-modal="true"></a17-langswitcher></div>
+    <a17-dropdown class="languageManager__dropdown" ref="languageManagerDropdown" position="bottom-right" :clickable="true">
+      <button class="languageManager__button" type="button" @click="$refs.languageManagerDropdown.toggle()">{{ currentValue.length }} Live <span v-svg symbol="dropdown_module"></span></button>
+      <div slot="dropdown__content">
+        <a17-checkboxgroup name="langManager" :options="languages" @change="changeValue" :selected="currentValue" :min="1"></a17-checkboxgroup>
+      </div>
+    </a17-dropdown>
   </div>
 </template>
 
@@ -64,27 +66,31 @@
     margin: 0 -20px;
     background-color: $color__light;
     position: relative;
-  }
-
-  .languageManager {
-    .accordion {
-      background-color: $color__light;
-      border-color:$color__border;
-    }
-    /deep/ .accordion__trigger,
-    /deep/ .accordion__trigger:hover,
-    /deep/ .accordion__trigger:focus {
-      background-color: $color__light;
-    }
-
-    /deep/ .accordion__list {
-      border-color:$color__border;
-    }
+    display:flex;
+    padding:20px;
   }
 
   .languageManager__switcher {
-    position:absolute;
-    top:11px;
-    left:20px;
+    flex-grow:1;
+    height:35px;
+  }
+
+  .languageManager__button {
+    @include btn-reset;
+    color: $color--icons;
+    padding:0;
+    height:35px;
+    line-height:35px;
+
+    &:focus,
+    &:hover {
+      color: $color--text;
+    }
+
+    .icon {
+      position: relative;
+      margin-left: 5px;
+      top: -1px;
+    }
   }
 </style>
