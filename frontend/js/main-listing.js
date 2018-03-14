@@ -27,6 +27,7 @@ import datatable from '@/store/modules/datatable'
 import language from '@/store/modules/language'
 import form from '@/store/modules/form'
 import modalEdition from '@/store/modules/modal-edition'
+import attributes from '@/store/modules/attributes'
 
 // LocalStorage
 import { getStorage } from '@/utils/localeStorage.js'
@@ -42,6 +43,7 @@ store.registerModule('datatable', datatable)
 store.registerModule('language', language)
 store.registerModule('form', form)
 store.registerModule('modalEdition', modalEdition)
+store.registerModule('attributes', attributes)
 
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
