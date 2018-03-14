@@ -79,13 +79,10 @@
             method: this.mode === 'create' ? 'post' : 'put',
             redirect: submitMode !== 'create-another'
           }).then(() => {
-            self.$nextTick(function () {
-              if (submitMode === 'create-another') {
-                this.$store.commit(FORM.EMPTY_FORM_FIELDS, true)
-              } else {
-                if (self.$refs.modal) self.$refs.modal.close()
-              }
+            if (self.$refs.modal) self.$refs.modal.close()
 
+            self.$nextTick(function () {
+              if (submitMode === 'create-another' && self.$refs.modal) self.$refs.modal.open()
               if (this.mode === 'create') this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
               this.$emit('reload')
             })
