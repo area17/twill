@@ -1,5 +1,5 @@
 @php
-    $withTime = $withTime ?? false;
+    $withTime = $withTime ?? true;
     $allowInput = $allowInput ?? false;
     $allowClear = $allowClear ?? false;
     $note = $note ?? false;
