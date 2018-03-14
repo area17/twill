@@ -44,7 +44,7 @@ export default {
       if (bucket.acceptedSources.length === 0) return true
 
       const currentSource = this.item.content_type.value
-      return bucket.acceptedSources.findIndex((souce) => souce === currentSource) !== -1
+      return bucket.acceptedSources.findIndex((source) => source === currentSource) !== -1
     }
   }
 }

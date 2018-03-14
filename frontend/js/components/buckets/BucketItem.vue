@@ -102,10 +102,12 @@
         let index = 1
         if (this.buckets.length > 0) {
           this.buckets.forEach(function (bucket) {
-            checkboxes.push({
-              value: self.slug(bucket.id),
-              label: index + ' ' + bucket.name
-            })
+            if (self.restrictedBySource(bucket.id)) {
+              checkboxes.push({
+                value: self.slug(bucket.id),
+                label: index + ' ' + bucket.name
+              })
+            }
             index++
           })
         }
