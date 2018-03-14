@@ -17,13 +17,10 @@ export default {
   },
   computed: {
     fullOptions: function () {
-      // Do not use for now : Options newly created will not appear under the options
-      if (!this.inModal) return this.options
-
       const moreOptions = this.optionsByName(this.name)
       const currentOptions = this.options
 
-      // Make sure there is no duplicates
+      // Make sure there is no duplicates in the options
       if (Array.isArray(moreOptions)) {
         moreOptions.forEach(function (option) {
           const currentOptionIndex = currentOptions.findIndex(currentOption => currentOption.value === option.value)
@@ -33,6 +30,7 @@ export default {
         })
       }
 
+      // return options or options + newly created options available in the store
       if (moreOptions.length) return currentOptions
       else return this.options
     },

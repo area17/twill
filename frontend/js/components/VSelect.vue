@@ -124,7 +124,7 @@
     },
     watch: {
       options: function (options) {
-        this.currentOptions = this.fullOptions
+        this.currentOptions = this.options
       }
     },
     computed: {
