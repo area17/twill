@@ -332,7 +332,7 @@
       flex-grow: 2;
 
       .sources__select {
-        margin-top: 0;
+        margin-top: -35px;
       }
     }
 
