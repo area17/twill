@@ -192,7 +192,7 @@
         this.updateValue(newValue)
 
         // Only save into the store if something changed from the moment you focused the field
-        if (this.lastSavedValue !== this.value) {
+        if (this.value === '' || this.lastSavedValue !== this.value) {
           this.lastSavedValue = this.value
           this.saveIntoStore() // see formStore mixin
         }
