@@ -17,6 +17,7 @@ export default {
   },
   computed: {
     fullOptions: function () {
+      // Do not use for now : Options newly created will not appear under the options
       if (!this.inModal) return this.options
 
       const moreOptions = this.optionsByName(this.name)
