@@ -10,6 +10,10 @@ import { FORM, NOTIFICATION, LANGUAGE, ATTRIBUTES } from '../mutations'
 import * as ACTIONS from '@/store/actions'
 import { PUBLICATION, REVISION } from '@/store/mutations'
 
+const getFieldIndex = (stateKey, field) => {
+  return stateKey.findIndex(f => f.name === field.name)
+}
+
 const state = {
   /**
    * Loading state of the form when submitting
@@ -103,9 +107,7 @@ const mutations = {
   },
   [FORM.UPDATE_FORM_FIELD] (state, field) {
     let fieldValue = field.locale ? {} : null
-    const fieldIndex = state.fields.findIndex(function (f) {
-      return f.name === field.name
-    })
+    const fieldIndex = getFieldIndex(state.fields, field)
 
     // Update existing form field
     if (fieldIndex !== -1) {
@@ -136,9 +138,7 @@ const mutations = {
   },
   [FORM.UPDATE_MODAL_FIELD] (state, field) {
     let fieldValue = field.locale ? {} : null
-    const fieldIndex = state.modalFields.findIndex(function (f) {
-      return f.name === field.name
-    })
+    const fieldIndex = getFieldIndex(state.modalFields, field)
 
     // Update existing form field
     if (fieldIndex !== -1) {
