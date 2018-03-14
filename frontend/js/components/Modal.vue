@@ -88,21 +88,23 @@
 
         // auto focus first field
         this.$nextTick(function () {
-          const field = this.$el.querySelector('input, textarea, select')
+          const focusableSelector = 'textarea, input:not([type="hidden"]), select, button[type="submit"]'
+          const focusableNodes = this.$el.querySelectorAll(focusableSelector)
+          const allFocusableNodes = this.$el.querySelectorAll(focusableSelector + ', a, button[type="button"]')
 
           // Trap focus inside the modal
           this.firstFocusableEl = this.$el.querySelector('.modal__close')
-          const submitNodes = this.$el.querySelectorAll('form input,select,button[type="submit"]')
-          this.lastFocusableEl = submitNodes[submitNodes.length - 1]
+          this.lastFocusableEl = allFocusableNodes[allFocusableNodes.length - 1]
 
+          // init focus
+          if (focusableNodes.length) focusableNodes[0].focus()
           this.$emit('open')
-
-          if (field) field.focus()
         })
       },
       mask: function () {
         html.classList.remove(htmlClass)
         this.unbindKeyboard()
+        this.$emit('close')
       },
       hide: function () {
         if (!this.active) return
@@ -115,8 +117,6 @@
 
         this.hidden = true
         this.mask()
-
-        this.$emit('close')
       },
       close: function (onClose) {
         if (!this.active) return
@@ -124,8 +124,6 @@
 
         this.active = false
         this.mask()
-
-        this.$emit('close')
       },
       bindKeyboard: function () {
         window.addEventListener('keyup', this.keyPressed)
