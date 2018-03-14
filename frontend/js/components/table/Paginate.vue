@@ -4,7 +4,7 @@
       <a17-dropdown ref="paginateDropdown" position="bottom-right">
         <button @click="$refs.paginateDropdown.toggle()" class="paginate__button">{{ newOffset }}</button>
         <div slot="dropdown__content">
-          <button type="button" v-for="availableOffset in availableOffsets" :class="{ 'dropdown__active' : availableOffset === newOffset }" @click="changeOffset(availableOffset)">{{ availableOffset }}</button>
+          <button type="button" v-for="availableOffset in availableOffsets" :key="availableOffset" :class="{ 'dropdown__active' : availableOffset === newOffset }" @click="changeOffset(availableOffset)">{{ availableOffset }}</button>
         </div>
       </a17-dropdown>
     </p>
@@ -84,15 +84,15 @@
   @import '~styles/setup/_mixins-colors-vars.scss';
 
   .paginate {
-    border-top:1px solid $color__border--light;
+    // border-top:1px solid $color__border--light;
     color:$color__text--light;
     padding:27px 20px 25px 20px;
     display:flex;
     flex-flow: row wrap;
   }
 
-  .paginate__pages {
-  }
+  // .paginate__pages {
+  // }
 
   .paginate__current {
     display:inline-block;

@@ -78,9 +78,9 @@
           </div>
         </template>
         <a17-paginate v-if="maxPage > 1 || initialMaxPage > maxPage && !isEmpty" :max="maxPage" :value="page" :offset="offset" :availableOffsets="[initialOffset,initialOffset*3,initialOffset*6]" @changePage="updatePage" @changeOffset="updateOffset"/>
-        <a17-spinner v-if="loading">Loading&hellip;</a17-spinner>
       </div>
     </div>
+    <a17-spinner v-if="loading">Loading&hellip;</a17-spinner>
   </div>
 </template>
 
