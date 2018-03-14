@@ -124,7 +124,8 @@
         gridHeight: 0,
         page: this.initialPage,
         tags: [],
-        lastScrollTop: 0
+        lastScrollTop: 0,
+        gridLoaded: false
       }
     },
     computed: {
@@ -170,7 +171,7 @@
         this.$refs.modal.hide()
       },
       opened: function () {
-        if (!this.isGridLoaded()) this.reloadGrid()
+        if (!this.gridLoaded) this.reloadGrid()
         this.listenScrollPosition()
 
         // empty selected medias (to avoid bugs when adding)
@@ -184,8 +185,8 @@
           }
         }
       },
-      isGridLoaded: function () { // The Grid is loaded (and so we have a list)
-        return this.$refs.list
+      isGridLoaded: function () { // The Grid is loaded
+        return this.gridLoaded
       },
       updateType: function (newType) {
         if (this.strict) return
@@ -319,6 +320,7 @@
           this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_TYPE_TOTAL, { type: this.type, total: resp.data.total })
           this.loading = false
           this.listenScrollPosition()
+          this.gridLoaded = true
         }, (error) => {
           this.$store.commit(NOTIFICATION.SET_NOTIF, {
             message: error.data.message,
@@ -357,7 +359,7 @@
       listenScrollPosition: function () {
         // re-listen for scroll position
         this.$nextTick(function () {
-          if (!this.isGridLoaded()) return
+          if (!this.gridLoaded) return
 
           const list = this.$refs.list
           if (this.gridHeight !== list.scrollHeight) {
@@ -366,7 +368,7 @@
         })
       },
       scrollToPaginate: function () {
-        if (!this.isGridLoaded()) return
+        if (!this.gridLoaded) return
 
         const list = this.$refs.list
         const offset = 10
