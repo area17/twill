@@ -82,6 +82,8 @@ class UserController extends ModuleController
                     'module' => true,
                 ],
             ],
+            'customPublishedLabel' => 'Enabled',
+            'customDraftLabel' => 'Disabled',
         ];
     }
 
@@ -95,6 +97,8 @@ class UserController extends ModuleController
                     'module' => true,
                 ],
             ],
+            'customPublishedLabel' => 'Enabled',
+            'customDraftLabel' => 'Disabled',
         ];
     }
 

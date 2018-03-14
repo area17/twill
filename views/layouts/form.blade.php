@@ -106,6 +106,8 @@
         withPublicationToggle: {{ json_encode(($publish ?? true) && isset($item) && $item->isFillable('published')) }},
         published: {{ json_encode(isset($item) ? $item->published : false) }},
         withPublicationTimeframe: {{ json_encode(($schedule ?? true) && isset($item) && $item->isFillable('publish_start_date')) }},
+        publishedLabel: '{{ $customPublishedLabel ?? 'Live' }}',
+        draftLabel: '{{ $customDraftLabel ?? 'Draft' }}',
         startDate: '{{ $item->publish_start_date ?? '' }}',
         endDate: '{{ $item->publish_end_date ?? '' }}',
         visibility: '{{ isset($item) && $item->isFillable('public') ? ($item->public ? 'public' : 'private') : false }}',

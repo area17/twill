@@ -33,8 +33,6 @@
 @stop
 
 @push('vuexStore')
-    window.STORE.publication.publishedLabel = 'Enabled'
-    window.STORE.publication.draftLabel = 'Disabled'
     window.STORE.publication.submitOptions = {
         draft: [
           {
@@ -45,10 +43,10 @@
             name: 'save-close',
             text: 'Update disabled and close'
           },
-          {{-- {
+          {
             name: 'save-new',
             text: 'Update disabled user and create new'
-          }, --}}
+          },
           {
             name: 'cancel',
             text: 'Cancel'
@@ -63,10 +61,10 @@
             name: 'publish-close',
             text: 'Enable user and close'
           },
-          {{-- {
+          {
             name: 'publish-new',
             text: 'Enable user and create new'
-          }, --}}
+          },
           {
             name: 'cancel',
             text: 'Cancel'
@@ -81,10 +79,10 @@
             name: 'update-close',
             text: 'Update and close'
           },
-          {{-- {
+          {
             name: 'update-new',
             text: 'Update and create new'
-          }, --}}
+          },
           {
             name: 'cancel',
             text: 'Cancel'
