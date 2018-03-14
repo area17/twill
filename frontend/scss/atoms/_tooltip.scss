@@ -96,12 +96,13 @@ $arrowSize:6px;
 
 .tooltip__inner {
   background:rgba($color__black,0.60);
-  padding:3px 9px;
+  padding:5px 9px;
   border-radius:2px;
   max-width:150px;
   color:$color__background;
   @include font-tiny;
   font-weight:400;
+  line-height:1.5em;
 }
 
 .tooltip--large {

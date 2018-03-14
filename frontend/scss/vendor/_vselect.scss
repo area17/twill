@@ -13,13 +13,14 @@ $multiSelectHeight: 45px;
     }
 
     .spinner {
-      top:7px;
-      width: 21px;
-      height: 21px;
-    }
-
-    &.vselect--large .spinner {
-      top: 12px;
+      top: 15px;
+      right: 15px;
+      width: 18px;
+      height: 18px;
+      border-top: 2px solid rgba($color__icons,.2);
+      border-right: 2px solid rgba($color__icons,.2);
+      border-bottom: 2px solid rgba($color__icons,.2);
+      border-left: 2px solid rgba($color__icons,.8);
     }
 
     .dropdown-menu {
@@ -270,7 +271,7 @@ $multiSelectHeight: 45px;
 
       .close {
         border-radius:50%;
-        background:$color__fborder--hover;
+        background-color:$color__fborder--hover;
         height: 18px;
         width: 18px;
         line-height: 18px;
@@ -284,15 +285,16 @@ $multiSelectHeight: 45px;
         position:absolute;
         right:5px;
         top:6px;
+        background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDEwIDEwIj48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiNFNUU1RTUiIGQ9Ik0yIDJsNiA2TTggMkwyIDgiLz48L3N2Zz4=);
+        background-repeat: no-repeat;
+        background-position: center;
 
         span {
-          height: 18px;
-          width: 18px;
-          display:inline-block;
-          top:-1px;
-          position: relative;
-          text-align: center;
-          font-weight: 100;
+          display:none;
+        }
+
+        &:hover {
+          background-color:$color__fborder--hover;
         }
       }
     }
@@ -303,6 +305,11 @@ $multiSelectHeight: 45px;
   used for tags in the media library
   */
   .vselect--small {
+    .spinner {
+      top: 10px;
+      right: 10px;
+    }
+
     .dropdown-menu li.no-options {
       font-size: 13px;
     }
@@ -318,13 +325,14 @@ $multiSelectHeight: 45px;
         @include font-small;
 
         .close {
-          top:1px;
-          right:1px;
+          top:2px;
+          right:2px;
           background-color:transparent;
+          background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDEwIDEwIj48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiNhNmE2YTYiIGQ9Ik0yIDJsNiA2TTggMkwyIDgiLz48L3N2Zz4=);
           color:$color__fborder--hover;
 
           span {
-            top:0;
+            display:none
           }
         }
       }
