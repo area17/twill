@@ -7,11 +7,11 @@
         ];
     })->values()->toArray() : $options;
 
-    $placeholder = $placeholder ?? false;
     $required = $required ?? false;
     $default = $default ?? false;
     $inline = $inline ?? false;
 
+    // do not use for now, but this will allow you to create a new option directly from the form
     $addNew = $addNew ?? false;
     $moduleName = $moduleName ?? null;
     $storeUrl = $storeUrl ?? '';
@@ -33,8 +33,7 @@
 >
     @if($addNew)
         <div slot="addModal">
-            {{-- TODO : Should I reset the php variables set previously ? --}}
-            {{-- unset($note, $options, $placeholder, $required, $default, $inline, $addNew, $inModal); --}}
+            {{-- unset($note, $options, $required, $default, $inline, $addNew, $inModal); --}}
             @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
         </div>
     @endif

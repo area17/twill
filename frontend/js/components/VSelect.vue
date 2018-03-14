@@ -118,7 +118,7 @@
     data: function () {
       return {
         value: this.selected,
-        currentOptions: this.fullOptions,
+        currentOptions: this.options,
         ajaxUrl: this.endpoint
       }
     },

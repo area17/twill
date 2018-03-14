@@ -17,6 +17,8 @@ export default {
   },
   computed: {
     fullOptions: function () {
+      if (!this.inModal) return this.options
+
       const moreOptions = this.optionsByName(this.name)
       const currentOptions = this.options
 

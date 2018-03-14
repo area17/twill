@@ -11,6 +11,7 @@
     $required = $required ?? false;
     $default = $default ?? false;
 
+    // do not use for now, but this will allow you to create a new option directly from the form
     $addNew = $addNew ?? false;
     $moduleName = $moduleName ?? null;
     $storeUrl = $storeUrl ?? '';
@@ -31,6 +32,9 @@
     >
         @if($addNew)
             <div slot="addModal">
+                @php
+                    unset($note, $placeholder, $emptyText, $default, $required, $inModal, $addNew, $options);
+                @endphp
                 @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
             </div>
         @endif
@@ -51,6 +55,9 @@
     >
         @if($addNew)
             <div slot="addModal">
+                @php
+                    unset($note, $placeholder, $emptyText, $default, $required, $inModal, $addNew, $options);
+                @endphp
                 @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
             </div>
         @endif
@@ -74,6 +81,9 @@
     >
         @if($addNew)
             <div slot="addModal">
+                @php
+                    unset($note, $placeholder, $emptyText, $default, $required, $inModal, $addNew, $options);
+                @endphp
                 @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
             </div>
         @endif
