@@ -32,7 +32,7 @@
     </td>
     <td class="tablecell tablecell--spacer">&nbsp;</td>
     <td class="tablecell tablecell--sticky">
-      <a17-dropdown ref="rowSetupDropdown" position="bottom-right">
+      <a17-dropdown ref="rowSetupDropdown" position="bottom-right" :fixed="true">
         <a17-button variant="icon" @click="$refs.rowSetupDropdown.toggle()"><span v-svg symbol="more-dots"></span>
         </a17-button>
         <div slot="dropdown__content">

@@ -1,8 +1,11 @@
 <template>
   <div class="dropdown" :aria-title="title" :class="dropdownClasses">
-    <slot></slot>
+    <div v-if="fixed" ref="dropdown__cta">
+      <slot></slot>
+    </div>
+    <slot v-else></slot>
     <transition name="fade_move_dropdown">
-      <div class="dropdown__position" v-if="active">
+      <div class="dropdown__position" ref="dropdown__position" v-if="active">
         <div class="dropdown__content" :style="offsetStyle" data-dropdown-content>
           <div class="dropdown__inner">
             <span class="dropdown__arrow" v-if="arrow"></span>
@@ -61,6 +64,10 @@
       sideOffset: {
         type: Number,
         default: 0
+      },
+      fixed: {
+        type: Boolean,
+        default: false
       }
     },
     data: function () {
@@ -80,7 +87,8 @@
           'dropdown--left': this.isPosition('left'),
           'dropdown--right': this.isPosition('right'),
           'dropdown--center': this.isPosition('center'),
-          'dropdown--full': this.width === 'full'
+          'dropdown--full': this.width === 'full',
+          'dropdown--fixed': this.fixed
         }
       },
       offsetStyle: function () {
@@ -122,60 +130,84 @@
         // save current height of the dropdown for positioning purpose
         this.currentHeight = this.$el.querySelector('[data-dropdown-content]') ? this.$el.querySelector('[data-dropdown-content]').offsetHeight : 100
       },
-      closeFromDoc: function (event) {
-        var self = this
+      setFixedPosition: function () {
+        const ctaPosition = this.$refs.dropdown__cta.getBoundingClientRect()
+        const dropDown = this.$refs.dropdown__position.getBoundingClientRect()
+        console.log(ctaPosition, dropDown)
 
+        // Top / Bottom position
+        console.log(this.currentPosition)
+        if (this.isPosition('top')) {
+          this.$refs.dropdown__position.style.bottom = Math.round(window.innerHeight - ctaPosition.bottom + ctaPosition.height) + 'px'
+        } else {
+          this.$refs.dropdown__position.style.top = Math.round(ctaPosition.top + ctaPosition.height) + 'px'
+        }
+
+        // Left / Right / Center position
+        if (this.isPosition('left')) {
+          this.$refs.dropdown__position.style.left = Math.round(ctaPosition.left) + 'px'
+        } else if (this.isPosition('right')) {
+          this.$refs.dropdown__position.style.right = Math.round(window.innerWidth - ctaPosition.right) + 'px'
+        } else {
+          this.$refs.dropdown__position.style.left = Math.round(ctaPosition.left) + 'px'
+        }
+        console.log(this.$refs.dropdown__position)
+      },
+      closeFromDoc: function (event) {
         const target = event.target
 
-        if (!this.clickable) self.close()
-        else if (!self.$el.querySelector('[data-dropdown-content]').contains(target) && this.clickable) self.close()
+        if (!this.clickable) this.close()
+        else if (!this.$el.querySelector('[data-dropdown-content]').contains(target) && this.clickable) this.close()
       },
       open: function (onShow) {
-        var self = this
-
         if (this.active) return
 
         document.body.click() // close other dropdown
 
         // timeout so the click is not triggered directly
-        this.timer = setTimeout(function () {
-          self.timer = null
-          self.active = true
+        this.timer = setTimeout(() => {
+          this.timer = null
+          this.active = true
 
-          document.addEventListener('click', self.closeFromDoc, true)
-          document.addEventListener('touchstart', self.closeFromDoc, true)
+          document.addEventListener('click', this.closeFromDoc, true)
+          document.addEventListener('touchstart', this.closeFromDoc, true)
 
-          self.$nextTick(function () {
-            self.setHeight()
-            self.reposition()
+          if (this.fixed) {
+            window.addEventListener('scroll', this.closeFromDoc, true)
+          }
+
+          this.$nextTick(function () {
+            this.fixed && this.setFixedPosition()
+            this.setHeight()
+            this.reposition()
           })
 
-          self.$emit('open')
+          this.$emit('open')
         }, 1)
       },
       close: function (onClose) {
-        var self = this
-
         if (!this.active) return
 
         clearTimeout(this.timer)
         document.removeEventListener('click', this.closeFromDoc, true)
         document.removeEventListener('touchstart', this.closeFromDoc, true)
 
-        setTimeout(function () {
-          self.active = false
-          self.$emit('close')
-        }, 1)
+        if (this.fixed) {
+          window.removeEventListener('scroll', this.closeFromDoc, true)
+          this.active = false
+          this.$emit('close')
+          return
+        }
+
+        setTimeout(() => {
+          this.active = false
+          this.$emit('close')
+        }, 0)
       },
       toggle: function (onToggle) {
         if (this.active) this.close()
         else this.open()
       }
-    },
-    beforeDestroy: function () {
-      // if (this.$el.parentNode) {
-      //   this.$el.parentNode.removeChild(this.$el)
-      // }
     }
   }
 </script>
@@ -191,6 +223,10 @@
   .dropdown__position {
     position: absolute;
     z-index:$zindex__dropdown;
+
+    .dropdown--fixed & {
+      position: fixed;
+    }
   }
 
   .dropdown__content {
