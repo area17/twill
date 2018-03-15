@@ -1,7 +1,9 @@
 <template>
-  <div v-show="open">
+<div>
+  <div v-if="open">
     <slot></slot>
   </div>
+</div>
 </template>
 
 <script>
@@ -21,6 +23,10 @@
       inModal: {
         type: Boolean,
         default: false
+      },
+      isValueEqual: { // requiredFieldValues must be equal (or different) to the stored value to show
+        type: Boolean,
+        default: true
       }
     },
     computed: {
@@ -57,7 +63,8 @@
         if (Array.isArray(newValue)) newValue.sort()
 
         // update visiblity
-        this.open = isEqual(newValue, newFieldValues)
+        if (this.isValueEqual) this.open = isEqual(newValue, newFieldValues)
+        else this.open = !isEqual(newValue, newFieldValues)
       }
     },
     mounted: function () {

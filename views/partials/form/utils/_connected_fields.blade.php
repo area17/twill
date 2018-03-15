@@ -1,11 +1,22 @@
 @php
-    if (is_bool($fieldValues)) $fieldValues = $fieldValues ? "true" :  "false";
-    else if (is_string($fieldValues)) $fieldValues = "'$fieldValues'";
-    else if (is_array($fieldValues)) $fieldValues = json_encode($fieldValues);
+    $isEqual = $isEqual ?? true;
+    $inModal = $fieldsInModal ?? false;
+
+    // Field values misc updates
+    $fieldType = gettype($fieldValues);
+    if ($fieldType === 'boolean') $fieldValues = $fieldValues ? "true" :  "false";
+    else if ($fieldType === 'array') $fieldValues = json_encode($fieldValues);
 @endphp
 <a17-connectorfield
-    field-name="{{ $fieldName }}"
-    @if (is_array($fieldValues)) :required-field-values='{!! $fieldValues !!}'
+    @if ($isEqual) :is-value-equal="true" @else :is-value-equal="false" @endif
+    @if ($inModal) :in-modal="true" @endif
+
+    @if ($renderForBlocks) :field-name="fieldName('{{ $fieldName }}')"
+    @else field-name="{{ $fieldName }}"
+    @endif
+
+    @if ($fieldType === 'array') :required-field-values='{!! $fieldValues !!}'
+    @elseif ($fieldType === 'string') :required-field-values="'{{ $fieldValues }}'"
     @else :required-field-values="{{ $fieldValues }}"
     @endif
 >
