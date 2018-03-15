@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import { isEqual } from 'lodash'
+  import { isEqual, clone } from 'lodash'
   import { mapState, mapGetters } from 'vuex'
 
   export default {
@@ -49,10 +49,15 @@
     },
     methods: {
       toggleVisibility: function (value) {
-        console.log('toggleVisibility')
-        console.log(value)
-        console.log(this.requiredFieldValues)
-        this.open = isEqual(value, this.requiredFieldValues)
+        let newValue = clone(value)
+        let newFieldValues = clone(this.requiredFieldValues)
+
+        // sort requiredFieldValues and value if is array, so the order of values is the same
+        if (Array.isArray(newFieldValues)) newFieldValues.sort()
+        if (Array.isArray(newValue)) newValue.sort()
+
+        // update visiblity
+        this.open = isEqual(newValue, newFieldValues)
       }
     },
     mounted: function () {
