@@ -143,6 +143,10 @@
     a:hover .icon {
       color: $color__text;
     }
+
+    .stickyNav.sticky__fixedTop & {
+      line-height: 35px;
+    }
   }
 
   .titleEditor--error .titleEditor__title {
@@ -171,5 +175,9 @@
     text-decoration: none;
     display: inline-block;
     white-space: nowrap;
+
+    .stickyNav.sticky__fixedTop & {
+      display: none;
+    }
   }
 </style>
