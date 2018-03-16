@@ -1,4 +1,5 @@
 <template>
+    <!-- eslint-disable -->
     <div class="block__body">
         {!! $render !!}
     </div>

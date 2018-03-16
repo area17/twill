@@ -3,7 +3,7 @@
     <div class="container">
       <div class="stickyNav__nav">
         <div class="stickyNav__links" v-if="navItems.length > 1">
-          <a href="#" v-for="item in navItems" :key="item.fieldset" @click.prevent="scrollToFieldset(index)" :class="{ 's--on' : item.active }">{{ item.label }}</a>
+          <a href="#" v-for="(item, index) in navItems" :key="item.fieldset" @click.prevent="scrollToFieldset(index)" :class="{ 's--on' : item.active }">{{ item.label }}</a>
         </div>
         <slot name="title"></slot>
       </div>
