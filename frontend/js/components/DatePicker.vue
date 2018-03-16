@@ -101,7 +101,9 @@
     computed: {
       uniqId: function (value) {
         return this.name + '-' + this.randKey
-      },
+      }
+    },
+    methods: {
       config: function () {
         let self = this
         return {
@@ -135,9 +137,7 @@
             self.saveIntoStore()
           }
         }
-      }
-    },
-    methods: {
+      },
       updateFromStore: function (newValue) { // called from the formStore mixin
         if (newValue !== this.date) {
           this.date = newValue
@@ -162,7 +162,7 @@
     mounted: function () {
       let self = this
       let el = self.$refs[self.refs.flatPicker]
-      let opts = self.config
+      let opts = self.config()
       self.flatPicker = new FlatPickr(el, opts)
     },
     beforeDestroy: function () {
