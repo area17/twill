@@ -62,8 +62,8 @@
       },
       isSpecificColumn: function (col) {
         return col.name === 'featured' ||
-               col.name === 'published' ||
-               col.name === 'thumbnail'
+          col.name === 'published' ||
+          col.name === 'thumbnail'
       }
       // toggleFeatured: function () {
       //   this.$store.dispatch(ACTIONS.TOGGLE_FEATURE, this.row.id)

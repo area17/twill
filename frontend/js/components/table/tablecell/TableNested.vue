@@ -19,7 +19,6 @@
       cellWidth () {
         return this.depth > 0 ? { width: this.depth * 80 - 20 - this.offset + 'px' } : ''
       }
-
     }
   }
 </script>

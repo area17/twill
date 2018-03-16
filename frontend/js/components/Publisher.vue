@@ -196,6 +196,4 @@
   .publisher__item--btns {
     padding:10px;
   }
-
-
 </style>

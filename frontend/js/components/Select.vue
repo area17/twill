@@ -95,7 +95,6 @@
     position: relative;
   }
 
-
   /* This is the native select, we're making everything but the text invisible so
    * we can see the button styles in the wrapper */
   .select__input select {
@@ -112,7 +111,6 @@
     /* Font size must be 16px to prevent iOS page zoom on focus */
     font-size: 16px;
   }
-
 
   /* Custom arrow sits on top of the select - could be an image, SVG, icon font,
    * etc. or the arrow could just baked into the bg image on the select. */
@@ -178,29 +176,29 @@
   /* IE 10/11+ - This hides native dropdown button arrow so it will have the custom appearance. Targeting media query hack via http://browserhacks.com/#hack-28f493d247a12ab654f6c3637f6978d5 - looking for better ways to achieve this targeting */
   /* The second rule removes the odd blue bg color behind the text in the select button in IE 10/11 and sets the text color to match the focus style's - fix via http://stackoverflow.com/questions/17553300/change-ie-background-color-on-unopened-focused-select-box */
   @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-      .select__input select::-ms-expand {
-        display: none;
-      }
-
-      .select__input select:focus {
-        //border-color: #aaa; /* Match-03 */
-      }
-
-      .select__input select:focus::-ms-value {
-        background: transparent;
-        color: #222; /* Match-02*/
-      }
-
-      .select__input select {
-        padding-right: 2em; /* Match-01 */
-        background: none; /* Match-04 */
-        border: 1px solid transparent; /* Match-05 */
-      }
-
-      .select__input::after {
-        display: block;
-      }
+    .select__input select::-ms-expand {
+      display: none;
     }
+
+    .select__input select:focus {
+      //border-color: #aaa; /* Match-03 */
+    }
+
+    .select__input select:focus::-ms-value {
+      background: transparent;
+      color: #222; /* Match-02*/
+    }
+
+    .select__input select {
+      padding-right: 2em; /* Match-01 */
+      background: none; /* Match-04 */
+      border: 1px solid transparent; /* Match-05 */
+    }
+
+    .select__input::after {
+      display: block;
+    }
+  }
 
   /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 

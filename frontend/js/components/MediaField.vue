@@ -165,8 +165,6 @@
       },
       media: function () {
         if (this.selectedMedias.hasOwnProperty(this.mediaKey)) {
-          // reset is destroyed status because we changed the media
-          if (this.selectedMedias[this.mediaKey][this.index]) this.isDestroyed = false
           return this.selectedMedias[this.mediaKey][this.index] || {}
         } else {
           return {}
@@ -200,6 +198,14 @@
         selectedMedias: state => state.mediaLibrary.selected,
         allCrops: state => state.mediaLibrary.crops
       })
+    },
+    watch: {
+      media: function (val) {
+        if (this.selectedMedias.hasOwnProperty(this.mediaKey)) {
+          // reset isDestroyed status because we changed the media
+          if (this.selectedMedias[this.mediaKey][this.index]) this.isDestroyed = false
+        }
+      }
     },
     methods: {
       // crop

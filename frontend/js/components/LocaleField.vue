@@ -1,7 +1,7 @@
 <template>
   <div class="locale">
     <template v-if="languages && languages.length && languages.length > 0">
-    <div class="locale__item" v-for="(language, index) in languages" :key="language.value">
+    <div class="locale__item" v-for="language in languages" :key="language.value">
       <component v-bind:is="`${type}`" :data-lang="language.value"
         v-bind="attributesPerLang(language.value)"
         :name="`${attributes.name}[${language.value}]`"

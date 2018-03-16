@@ -61,11 +61,11 @@
       },
       isDisplayedColumn: function (col) {
         return col.name !== 'draggable' &&
-               col.name !== 'featured' &&
-               col.name !== 'nested' &&
-               col.name !== 'bulk' &&
-               col.name !== 'published' &&
-               col.name !== 'thumbnail'
+          col.name !== 'featured' &&
+          col.name !== 'nested' &&
+          col.name !== 'bulk' &&
+          col.name !== 'published' &&
+          col.name !== 'thumbnail'
       },
       sortColumn: function (column) {
         if (column.sortable && this.sortable) this.$emit('sortColumn', column)

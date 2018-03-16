@@ -10,7 +10,7 @@
     <transition name="fade_search-overlay">
       <div class="search__results" v-show="readyToShowResult">
         <ul>
-          <li v-for="(item, index) in searchResults" :key="item.id">
+          <li v-for="item in searchResults" :key="item.id">
             <a :href="item.href" class="search__result">
               <div class="search__cell search__cell--thumb">
                 <figure class="search__thumb">

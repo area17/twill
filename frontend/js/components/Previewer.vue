@@ -27,7 +27,7 @@
           </div>
 
           <ul class="previewer__breakpoints" v-if="!slipScreen">
-            <li v-for="(breakpoint, index) in breakpoints" :key="breakpoint.size" class="previewer__breakpoint" :class="{ 's--active' : activeBreakpoint === breakpoint.size }" @click="resizePreview(breakpoint.size)">
+            <li v-for="breakpoint in breakpoints" :key="breakpoint.size" class="previewer__breakpoint" :class="{ 's--active' : activeBreakpoint === breakpoint.size }" @click="resizePreview(breakpoint.size)">
               <span v-svg :symbol="breakpoint.name"></span>
             </li>
           </ul>
