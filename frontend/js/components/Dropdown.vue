@@ -146,7 +146,7 @@
         } else if (this.isPosition('right')) {
           this.$refs.dropdown__position.style.right = Math.round(window.innerWidth - ctaPosition.right) + 'px'
         } else {
-          this.$refs.dropdown__position.style.left = Math.round(ctaPosition.left) + 'px'
+          this.$refs.dropdown__position.style.left = Math.round(ctaPosition.left + ctaPosition.width / 2) + 'px'
         }
       },
       closeFromDoc: function (event) {
