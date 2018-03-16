@@ -132,11 +132,8 @@
       },
       setFixedPosition: function () {
         const ctaPosition = this.$refs.dropdown__cta.getBoundingClientRect()
-        const dropDown = this.$refs.dropdown__position.getBoundingClientRect()
-        console.log(ctaPosition, dropDown)
 
         // Top / Bottom position
-        console.log(this.currentPosition)
         if (this.isPosition('top')) {
           this.$refs.dropdown__position.style.bottom = Math.round(window.innerHeight - ctaPosition.bottom + ctaPosition.height) + 'px'
         } else {
@@ -151,7 +148,6 @@
         } else {
           this.$refs.dropdown__position.style.left = Math.round(ctaPosition.left) + 'px'
         }
-        console.log(this.$refs.dropdown__position)
       },
       closeFromDoc: function (event) {
         const target = event.target
@@ -177,9 +173,9 @@
           }
 
           this.$nextTick(function () {
-            this.fixed && this.setFixedPosition()
             this.setHeight()
             this.reposition()
+            this.fixed && this.setFixedPosition()
           })
 
           this.$emit('open')
