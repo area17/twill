@@ -74,7 +74,9 @@
       return {
         currentPosition: this.position,
         currentHeight: 100,
-        active: false
+        active: false,
+        originScrollPostion: null,
+        scrollOffset: 75
       }
     },
     computed: {
@@ -146,11 +148,20 @@
         } else if (this.isPosition('right')) {
           this.$refs.dropdown__position.style.right = Math.round(window.innerWidth - ctaPosition.right) + 'px'
         } else {
-          this.$refs.dropdown__position.style.left = Math.round(ctaPosition.left) + 'px'
+          this.$refs.dropdown__position.style.left = Math.round(ctaPosition.left + ctaPosition.width / 2) + 'px'
         }
       },
       closeFromDoc: function (event) {
         const target = event.target
+
+        if (event.type === 'scroll') {
+          if (this.$el.querySelector('[data-dropdown-content]').contains(target)) return
+          const scrollPos = window.pageYOffset || document.documentElement.scrollTop
+          if (scrollPos > this.originScrollPostion - this.scrollOffset && scrollPos < this.originScrollPostion + this.scrollOffset) {
+            this.setFixedPosition()
+            return
+          }
+        }
 
         if (!this.clickable) this.close()
         else if (!this.$el.querySelector('[data-dropdown-content]').contains(target) && this.clickable) this.close()
@@ -170,6 +181,7 @@
 
           if (this.fixed) {
             window.addEventListener('scroll', this.closeFromDoc, true)
+            this.originScrollPostion = window.pageYOffset || document.documentElement.scrollTop
           }
 
           this.$nextTick(function () {
@@ -190,6 +202,7 @@
 
         if (this.fixed) {
           window.removeEventListener('scroll', this.closeFromDoc, true)
+          this.originScrollPostion = null
           this.active = false
           this.$emit('close')
           return
