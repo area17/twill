@@ -1,5 +1,5 @@
 <template>
-  <a17-inputframe :name="name" :error="error" :note="note" :label="label" :label-for="uniqId" class="datePicker" :class="{ 'datePicker--static' : static }" :required="required">
+  <a17-inputframe :name="name" :error="error" :note="note" :label="label" :label-for="uniqId" class="datePicker" :class="{ 'datePicker--static' : staticMode }" :required="required">
     <div class="datePicker__group" :ref="refs.flatPicker">
       <div class="form__field datePicker__field">
         <input type="text" :name="name" :id="uniqId" :required="required" :placeholder="placeHolder" data-input @blur="onBlur" v-model="date">
@@ -65,7 +65,7 @@
         type: Number,
         default: 30
       },
-      static: { // Set static when the input need to show inside a sticky element (in the publish module for example)
+      staticMode: { // Set static when the input need to show inside a sticky element (in the publish module for example)
         type: Boolean,
         default: false
       },
@@ -107,8 +107,8 @@
         return {
           wrap: true,
           altInput: true,
-          static: self.static,
-          appendTo: self.static ? self.$refs[self.refs.flatPicker] : undefined,
+          static: self.staticMode,
+          appendTo: self.staticMode ? self.$refs[self.refs.flatPicker] : undefined,
           enableTime: self.enableTime,
           noCalendar: self.noCalendar,
           time_24hr: self.time_24hr,
@@ -175,11 +175,11 @@
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
 
-  .datePicker {
-  }
+  // .datePicker {
+  // }
 
-  .datePicker__group {
-  }
+  // .datePicker__group {
+  // }
 
   .datePicker__field {
     display: flex;
