@@ -10,11 +10,13 @@ use Illuminate\Support\Str;
 class ModuleMake extends Command
 {
     protected $signature = 'cms-toolkit:module {moduleName}
+        {--B|hasBlocks}
         {--T|hasTranslation}
         {--S|hasSlug}
         {--M|hasMedias}
         {--F|hasFiles}
-        {--P|hasPosition}';
+        {--P|hasPosition}
+        {--R|hasRevisions}';
 
     protected $description = 'Create a new CMS Module';
 
@@ -33,35 +35,35 @@ class ModuleMake extends Command
         $this->files = $files;
         $this->composer = $composer;
 
-        $this->modelTraits = ['HasTranslation', 'HasSlug', 'HasMedias', 'HasFiles', 'HasPosition'];
-        $this->repositoryTraits = ['HandleTranslations', 'HandleSlugs', 'HandleMedias', 'HandleFiles'];
+        $this->modelTraits = ['HasBlocks', 'HasTranslation', 'HasSlug', 'HasMedias', 'HasFiles', 'HasRevision', 'HasPosition'];
+        $this->repositoryTraits = ['HandleBlocks', 'HandleTranslations', 'HandleSlugs', 'HandleMedias', 'HandleFiles', 'HandleRevisions'];
     }
 
     public function handle()
     {
         $moduleName = $this->argument('moduleName');
 
+        $blockable = $this->option('hasBlocks') ?? false;
         $translatable = $this->option('hasTranslation') ?? false;
         $sluggable = $this->option('hasSlug') ?? false;
         $mediable = $this->option('hasMedias') ?? false;
         $fileable = $this->option('hasFiles') ?? false;
         $sortable = $this->option('hasPosition') ?? false;
+        $revisionable = $this->option('hasRevisions') ?? false;
 
-        $activeTraits = [$translatable, $sluggable, $mediable, $fileable, $sortable];
+        $activeTraits = [$blockable, $translatable, $sluggable, $mediable, $fileable, $revisionable, $sortable];
 
         $modelName = Str::studly(Str::singular($moduleName));
 
         $this->createMigration($moduleName);
-        $this->createModels($modelName, $translatable, $sluggable, $sortable, $activeTraits);
+        $this->createModels($modelName, $translatable, $sluggable, $sortable, $revisionable, $activeTraits);
         $this->createRepository($modelName, $activeTraits);
         $this->createController($moduleName, $modelName);
         $this->createRequest($modelName);
         $this->createViews($moduleName, $translatable);
 
-        $this->info("\nStart by filling in the migration and models.");
         $this->info("Add Route::module('{$moduleName}'); to your admin routes file.");
         $this->info("Setup a new CMS menu item in config/cms-navigation.php.");
-        $this->info("Setup your index and form views.");
         $this->info("Enjoy.");
 
         $this->composer->dumpAutoloads();
@@ -83,7 +85,7 @@ class ModuleMake extends Command
             $fullPath = $this->laravel['migration.creator']->create($migrationName, $migrationPath);
 
             $stub = str_replace(
-                ['{{table}}', '{{translationTable}}', '{{tableClassName}}'],
+                ['{{table}}', '{{singularTableName}}', '{{tableClassName}}'],
                 [$table, Str::singular($table), $tableClassName],
                 $this->files->get(__DIR__ . '/stubs/migration.stub')
             );
@@ -94,7 +96,7 @@ class ModuleMake extends Command
         }
     }
 
-    private function createModels($modelName = 'Item', $translatable = false, $sluggable = false, $sortable = false, $activeTraits = [])
+    private function createModels($modelName = 'Item', $translatable = false, $sluggable = false, $sortable = false, $revisionable = false, $activeTraits = [])
     {
         if (!$this->files->isDirectory(app_path('Models'))) {
             $this->files->makeDirectory(app_path('Models'));
@@ -122,6 +124,18 @@ class ModuleMake extends Command
             $stub = str_replace(['{{modelSlugClassName}}', '{{modelName}}'], [$modelSlugClassName, Str::snake($modelName)], $this->files->get(__DIR__ . '/stubs/model_slug.stub'));
 
             $this->files->put(app_path('Models/Slugs/' . $modelSlugClassName . '.php'), $stub);
+        }
+
+        if ($revisionable) {
+            if (!$this->files->isDirectory(app_path('Models/Revisions'))) {
+                $this->files->makeDirectory(app_path('Models/Revisions'));
+            }
+
+            $modelRevisionClassName = $modelName . 'Revision';
+
+            $stub = str_replace(['{{modelRevisionClassName}}', '{{modelName}}'], [$modelRevisionClassName, Str::snake($modelName)], $this->files->get(__DIR__ . '/stubs/model_revision.stub'));
+
+            $this->files->put(app_path('Models/Revisions/' . $modelRevisionClassName . '.php'), $stub);
         }
 
         $modelClassName = $modelName;
@@ -194,7 +208,7 @@ class ModuleMake extends Command
 
         $this->files->put(app_path('Http/Controllers/Admin/' . $controllerClassName . '.php'), $stub);
 
-        $this->info('Controller created successfully! Add your module name, index and form data!');
+        $this->info('Controller created successfully! Define your index/browser/form endpoints options!');
     }
 
     private function createRequest($modelName = 'Item')
@@ -220,12 +234,10 @@ class ModuleMake extends Command
             $this->files->makeDirectory($viewsPath, 0755, true);
         }
 
-        $this->files->put($viewsPath . '/index.blade.php', $this->files->get(__DIR__ . '/stubs/index.blade.stub'));
-
         $formView = $translatable ? 'form_translatable' : 'form';
 
         $this->files->put($viewsPath . '/form.blade.php', $this->files->get(__DIR__ . '/stubs/' . $formView . '.blade.stub'));
 
-        $this->info('Views created successfully! Customize all the things!');
+        $this->info('Form view created successfully! Include your form fields using @formField directives!');
     }
 }

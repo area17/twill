@@ -1,0 +1,32 @@
+/* Dragger mixins */
+
+/* Draw the grid of dots */
+@function dragGrid__bg($color_bg: $color__drag_bg) {
+  @return repeating-linear-gradient(90deg, #{$color_bg} 0, #{$color_bg} 2px, transparent 2px, transparent 4px);
+}
+
+@function dragGrid__dots($color_dots: $color__drag) {
+  @return repeating-linear-gradient(180deg, #{$color_dots} 0, #{$color_dots} 2px, transparent 2px, transparent 4px);
+}
+
+@mixin dragGrid($color_dots: $color__drag, $color_bg: $color__drag_bg) {
+  cursor: move;
+  background: dragGrid__dots($color_dots);
+
+  &:before {
+    position: absolute;
+    display:block;
+    content:'';
+    background: dragGrid__bg($color_bg);
+    width:100%;
+    height:100%;
+  }
+}
+
+@mixin dragGrid__hover($color_dots: $color__drag, $color_bg: $color__drag_bg) {
+  background: dragGrid__dots($color_dots);
+
+  &:before {
+    background: dragGrid__bg($color_bg);
+  }
+}

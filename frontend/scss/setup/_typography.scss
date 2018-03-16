@@ -1,0 +1,55 @@
+/* Inter-UI font */
+@font-face {
+  font-family: 'Inter-UI';
+  font-style:  normal;
+  font-weight: 400;
+  src: url("/assets/admin/fonts/Inter-UI-Regular.woff2") format("woff2"),
+       url("/assets/admin/fonts/Inter-UI-Regular.woff") format("woff");
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter-UI';
+  font-style:  italic;
+  font-weight: 400;
+  src: url("/assets/admin/fonts/Inter-UI-RegularItalic.woff2") format("woff2"),
+       url("/assets/admin/fonts/Inter-UI-RegularItalic.woff") format("woff");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter-UI';
+  font-style:  normal;
+  font-weight: 600;
+  src: url("/assets/admin/fonts/Inter-UI-Medium.woff2") format("woff2"),
+       url("/assets/admin/fonts/Inter-UI-Medium.woff") format("woff");
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter-UI';
+  font-style:  italic;
+  font-weight: 600;
+  src: url("/assets/admin/fonts/Inter-UI-MediumItalic.woff2") format("woff2"),
+       url("/assets/admin/fonts/Inter-UI-MediumItalic.woff") format("woff");
+  font-display: swap;
+}
+
+/*@font-face {
+  font-family: 'Inter-UI';
+  font-style:  normal;
+  font-weight: 700;
+  src: url("/assets/admin/fonts/Inter-UI-Bold.woff2") format("woff2"),
+       url("/assets/admin/fonts/Inter-UI-Bold.woff") format("woff");
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter-UI';
+  font-style:  italic;
+  font-weight: 700;
+  src: url("/assets/admin/fonts/Inter-UI-BoldItalic.woff2") format("woff2"),
+       url("/assets/admin/fonts/Inter-UI-BoldItalic.woff") format("woff");
+  font-display: swap;
+}*/
+
+$sans-serif: Inter-UI, -apple-system, -system-ui, system-ui, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+/*$sans-serif: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+/*-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";*/

@@ -29,6 +29,7 @@ class RouteServiceProvider extends ServiceProvider
             'domain' => config('cms-toolkit.admin_app_url'),
             'as' => 'admin.',
             'middleware' => [config('cms-toolkit.admin_middleware_group', 'web')],
+            'prefix' => rtrim(ltrim(config('cms-toolkit.admin_app_path'), '/'), '/'),
         ], function ($router) {
             $router->group(['middleware' => ['auth', 'impersonate', 'validateBackHistory']], function ($router) {
                 require base_path('routes/admin.php');
@@ -40,6 +41,7 @@ class RouteServiceProvider extends ServiceProvider
             'domain' => config('cms-toolkit.admin_app_url'),
             'as' => 'admin.',
             'middleware' => [config('cms-toolkit.admin_middleware_group', 'web')],
+            'prefix' => rtrim(ltrim(config('cms-toolkit.admin_app_path'), '/'), '/'),
         ],
             function ($router) {
                 $router->group(['middleware' => ['auth', 'impersonate', 'validateBackHistory']], function ($router) {
@@ -111,7 +113,7 @@ class RouteServiceProvider extends ServiceProvider
                 return ucfirst(str_singular($s));
             }, $slugs));
 
-            $customRoutes = $defaults = ['sort', 'publish', 'browser', 'media', 'feature', 'file', 'insert', 'repeater', 'tags', 'preview', 'restore', 'status'];
+            $customRoutes = $defaults = ['reorder', 'publish', 'bulkPublish', 'browser', 'feature', 'bulkFeature', 'tags', 'preview', 'restore', 'bulkRestore', 'status', 'bulkDelete', 'restoreRevision'];
 
             if (isset($options['only'])) {
                 $customRoutes = array_intersect($defaults, (array) $options['only']);
@@ -120,13 +122,18 @@ class RouteServiceProvider extends ServiceProvider
             }
 
             $groupPrefix = trim(str_replace('/', '.', Route::getLastGroupPrefix()), '.');
+
+            if (!empty(config('cms-toolkit.admin_app_path'))) {
+                $groupPrefix = ltrim(str_replace(config('cms-toolkit.admin_app_path'), '', $groupPrefix), '.');
+            }
+
             $customRoutePrefix = !empty($groupPrefix) ? "{$groupPrefix}.{$slug}" : "{$slug}";
 
             foreach ($customRoutes as $route) {
                 $routeSlug = "{$prefixSlug}/{$route}";
                 $mapping = ['as' => $customRoutePrefix . ".{$route}", 'uses' => "{$className}Controller@{$route}"];
 
-                if (in_array($route, ['browser', 'media', 'file', 'insert', 'repeater', 'tags'])) {
+                if (in_array($route, ['browser', 'tags'])) {
                     Route::get($routeSlug, $mapping);
                 }
 
@@ -134,15 +141,15 @@ class RouteServiceProvider extends ServiceProvider
                     Route::get($routeSlug . "/{id}", $mapping);
                 }
 
-                if (in_array($route, ['publish', 'feature'])) {
+                if (in_array($route, ['publish', 'feature', 'restore', 'restoreRevision'])) {
                     Route::put($routeSlug, $mapping);
                 }
 
-                if (in_array($route, ['preview', 'restore'])) {
+                if (in_array($route, ['preview'])) {
                     Route::put($routeSlug . "/{id}", $mapping);
                 }
 
-                if (in_array($route, ['sort'])) {
+                if (in_array($route, ['reorder', 'bulkPublish', 'bulkFeature', 'bulkDelete', 'bulkRestore'])) {
                     Route::post($routeSlug, $mapping);
                 }
             }

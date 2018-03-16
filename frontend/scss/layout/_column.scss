@@ -1,0 +1,77 @@
+$column-spans__primary: (
+    xsmall: 6,
+    small: 6,
+    medium: 3,
+    large: 4,
+    xlarge: 4
+);
+
+$column-spans__aside: (
+    xsmall: 6,
+    small: 6,
+    medium: 3,
+    large: 2,
+    xlarge: 2
+);
+
+$column-spans__even: (
+    xsmall: 6,
+    small: 6,
+    medium: 3,
+    large: 3,
+    xlarge: 3
+);
+
+.wrapper {
+  @include columns-container-flex;
+}
+
+.wrapper--reverse {
+  flex-direction: row-reverse;
+}
+
+.wrapper--oneline {
+  flex-wrap: no-wrap;
+}
+
+.col {
+
+}
+
+.col--even {
+  @include column-flex($column-spans__even);
+}
+
+.col--primary {
+  @include column-flex($column-spans__primary);
+}
+
+.col--aside {
+  @include column-flex($column-spans__aside);
+}
+
+.col--double {
+  flex: 0 0 auto;
+  @each $name, $point in $breakpoints {
+    @include breakpoint('#{$name}') {
+      width: calc(50% - #{map-get($inner-gutters, $name)});
+      margin-left: map-get($inner-gutters, $name);
+    }
+  }
+
+  @include breakpoint('xsmall') {
+    width: calc(100% - #{map-get($inner-gutters, 'xsmall')});
+  }
+
+  @include breakpoint('medium') {
+    width: calc(100% - #{map-get($inner-gutters, 'medium')});
+  }
+}
+
+.editor .col--double {
+  @each $name, $point in $breakpoints {
+    @include breakpoint('#{$name}') {
+      width: calc(100% - #{map-get($inner-gutters, $name)});
+    }
+  }
+}

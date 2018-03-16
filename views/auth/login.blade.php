@@ -1,37 +1,38 @@
 <!DOCTYPE html>
 <html dir="ltr" lang="en-US">
     <head>
-        @include('cms-toolkit::layouts.head')
+        @include('cms-toolkit::partials.head')
     </head>
-    <body>
-        <div id="a17" class="login">
-            <form accept-charset="UTF-8" action="{{ route('admin.login') }}" class="simple_form credentials" method="post" novalidate="novalidate">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                <section class="box box-login">
-                    <header>
-                        <h3><b>{{ config('app.name') }}</b></h3>
-                        <ul>
-                            <li><a href="{{ route('admin.password.reset.link') }}">Reset your password</a></li>
-                        </ul>
-                    </header>
-                    @include('cms-toolkit::layouts._flash')
-                    <div class="input email required credentials_email field_with_hint">
-                        <label class="email required control-label" for="email">
-                            Email<abbr title="required">*</abbr>
-                        </label>
-                        <input class="string email required" id="credentials_email" name="email" type="email"/>
-                    </div>
-                    <div class="input password required credentials_password field_with_hint">
-                        <label class="password required control-label" for="password">
-                            Password<abbr title="required">*</abbr>
-                        </label>
-                        <input class="password required" id="credentials_password" name="password" type="password"/>
-                    </div>
-                    <footer>
-                        <input class="btn btn-small" type="submit" value="Sign in"/>
-                    </footer>
-                </section>
-            </form>
+    <body class="env env--{{ app()->environment() }}">
+        <div class="a17 a17--login">
+            <section class="login">
+                <form accept-charset="UTF-8" action="{{ route('admin.login') }}" method="post">
+                    <h1 class="f--heading login__heading login__heading--title">{{ config('app.name') }} <span class="envlabel envlabel--heading">{{ app()->environment() }}</span></h1>
+                    <h2 class="f--heading login__heading">Login</h2>
+
+                    <fieldset class="login__fieldset">
+                        <label class="login__label" for="email">Email</label>
+                        <input type="email" name="email" id="email" class="login__input" required autofocus tabindex="1" value="{{ old('email') }}" />
+                    </fieldset>
+
+                    <fieldset class="login__fieldset">
+                        <label class="login__label" for="password">Password</label>
+                        <a href="{{ route('admin.password.reset.link') }}" class="login__help f--small" tabindex="5"><span>Forgot password</span></a>
+                        <input type="password" name="password" id="password" class="login__input" required tabindex="2" />
+                    </fieldset>
+
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+                    <input class="login__button" type="submit" value="Login" tabindex="3">
+                    @if (config('cms-toolkit.enabled.google-login'))
+                        <a href="#" class="login__google" tabindex="4">
+                            <span symbol="more-dots" class="icon icon--google-sign-in"><svg><title>Google Icon</title><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#google-sign-in"></use></svg></span>
+                            <span>Sign in with Google</span>
+                        </a>
+                    @endif
+                </form>
+                @include('cms-toolkit::partials.footer')
+            </section>
         </div>
     </body>
 </html>

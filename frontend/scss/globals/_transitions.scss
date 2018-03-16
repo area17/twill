@@ -1,0 +1,126 @@
+/***
+
+Vue.js Transition
+=================
+
+Define awesome transition using the Vue.js transition wrapper component
+https://vuejs.org/v2/guide/transitions.html
+
+***/
+
+/**** Fade Scale List transition : used in buckets ****/
+
+.fade_scale_list-enter-active,
+.fade_scale_list-leave-active {
+  transition: max-height 0.25s ease;
+  overflow:hidden;
+}
+
+.fade_scale_list-enter-to,
+.fade_scale_list-leave {
+  max-height:80px;
+}
+
+.fade_scale_list-enter,
+.fade_scale_list-leave-to {
+  max-height:0;
+}
+
+/*.fade_scale_list-move {
+  transition: transform 100ms ease-in-out;
+  transition: opacity 250ms ease, transform 300ms ease-in-out;
+}*/
+
+/**** Fade & Scale Modal transition ****/
+.move_down_notif-enter-active,
+.fade_scale_modal-leave-active {
+  transition: transform .25s linear;
+}
+
+.fade_scale_modal-enter,
+.fade_scale_modal-leave-to {
+  transform: scale(.975);
+}
+
+/**** Fade & Move Dropdown transition ****/
+.fade_move_dropdown-enter-active, .fade_move_dropdown-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s linear;
+}
+
+.fade_move_dropdown-enter,
+.fade_move_dropdown-leave-to {
+  opacity: 0;
+}
+
+/*.fade_move_dropdown-enter,
+.fade_move_dropdown-leave-to {
+  transform: translateY(-10px);
+}
+
+.dropdown--top .fade_move_dropdown-enter,
+.dropdown--top .fade_move_dropdown-leave-to {
+  transform: translateY(10px);
+}*/
+
+/**** Move Down Notification transition ****/
+.move_down_notif-enter-active,
+.move_down_notif-leave-active {
+  transition: transform .25s linear, opacity .25s linear;
+}
+
+.move_down_notif-enter-to,
+.move_down_notif-leave {
+  transform: translateY(0);
+  opacity:1;
+}
+
+.move_down_notif-enter,
+.move_down_notif-leave-to {
+  transform: translateY(100%);
+  opacity:0;
+}
+
+/**** Filter transition ****/
+.scale_filter-enter-active,
+.scale_filter-leave-active {
+  transition: max-height .5s ease;
+  overflow:hidden;
+}
+
+.scale_filter-enter-to,
+.scale_filter-leave {
+  max-height:100px;
+}
+
+.scale_filter-enter,
+.scale_filter-leave-to {
+  max-height:0;
+}
+
+/**** Overlay Spinner ****/
+.fade_spinner-enter-active,
+.fade_spinner-leave-active {
+  transition: opacity .25s linear;
+}
+
+.fade_spinner-enter-to,
+.fade_spinner-leave {
+  opacity:1;
+}
+
+.fade_spinner-enter,
+.fade_spinner-leave-to {
+  opacity:0;
+}
+
+/***** Search Overlay ****/
+
+.fade_search-overlay-enter-active,
+.fade_search-overlay-leave-active {
+  transition: opacity .12s ease-in-out;
+}
+
+.fade_search-overlay-enter,
+.fade_search-overlay-leave-to {
+  opacity: 0;
+}

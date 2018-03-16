@@ -1,0 +1,94 @@
+/***
+
+HeaderMobile
+============
+
+Header overlay that is showing on smaller devices
+
+```
+<div class="styleguide--demo">
+    <header class="headerMobile" data-header-mobile>
+      <nav class="headerMobile__nav">
+        <div class="container">
+          <ul class="headerMobile__list">
+            <li class="headerMobile__item s--on"><a href="#">Home</a></li>
+            <li class="headerMobile__item"><a href="#">Work</a></li>
+            <li class="headerMobile__item">...</li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+</div>
+```
+
+***/
+
+.headerMobile {
+  width:100%;
+  min-height:100%;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  overflow:hidden;
+  position:fixed;
+  visibility: hidden;
+  transition: all .3s ease;
+  z-index:$zindex__headermobile;
+  opacity: 0;
+  color:$color__background;
+  /*@include font-smoothing;*/
+  transform: translateZ(0);
+  background:rgba($color__black,0.9);
+  @include monospaced-figures('off'); // dont use monospaced figures here
+}
+
+.headerMobile__nav {
+  pointer-events: auto;
+  max-height:100%;
+  min-height:100%;
+  position:relative;
+  z-index:$zindex__headermobile + 1;
+  transform: translateZ(0);
+  overflow-y:scroll;
+}
+
+.headerMobile__list {
+  padding-top:35px;
+
+  > a {
+    line-height:30px;
+    height:30px;
+    white-space:nowrap;
+    display:inline-block;
+    text-decoration:none;
+    color:$color__text--light;
+
+    &:focus {
+      outline:0;
+    }
+
+    &.s--on {
+      color:$color__background;
+    }
+
+    &:hover {
+      color:$color__background;
+    }
+  }
+}
+
+.headerMobile__list + .headerMobile__list {
+  padding-top:0;
+
+  &::before {
+    content:"•";
+    color:$color__header--sep;
+    display:block;
+    line-height:30px;
+    height:30px;
+  }
+}
+.headerMobile__list:last-child {
+  padding-bottom:35px;
+}

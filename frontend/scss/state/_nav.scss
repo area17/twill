@@ -1,0 +1,37 @@
+@include breakpoint('medium-') {
+  .s--nav {
+    overflow: visible;
+    height: 100%;
+
+    body .a17 {
+      position:fixed;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .headerMobile {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+
+    .ham {
+/*      position:fixed;*/
+      z-index:$zindex__headermobile + 2;
+    }
+
+    .ham__label,
+    .ham__line {
+      opacity:0;
+    }
+
+    .ham__icon {
+        &:after {
+            transform:translateY(-6px) rotate(45deg);
+        }
+
+        &:before {
+            transform:translateY(6px) rotate(-45deg);
+        }
+    }
+  }
+}

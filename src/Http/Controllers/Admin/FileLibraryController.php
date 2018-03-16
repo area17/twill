@@ -35,7 +35,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         $this->endpointType = config('cms-toolkit.file_library.endpoint_type');
     }
 
-    public function index()
+    public function index($parentModuleId = null)
     {
         $libraryDisk = config('cms-toolkit.file_library.disk');
 
@@ -53,7 +53,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         ];
 
         if ($this->request->ajax()) {
-            return view("cms-toolkit::files.list", $this->getIndexData());
+            return $this->getIndexData();
         }
 
         // if we are currently uploading new files, display the file library with those files only and disable pagination
@@ -62,7 +62,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
             $this->perPage = -1;
         }
 
-        return view("cms-toolkit::files.index", $this->getIndexData($prependScope ?? []) + $uploaderConfig + $this->request->all());
+        return $this->getIndexData($prependScope ?? []) + $uploaderConfig + $this->request->all();
     }
 
     public function indexData($request)
@@ -72,7 +72,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         ];
     }
 
-    public function store()
+    public function store($parentModuleId = null)
     {
         $request = app(FileRequest::class);
 
@@ -113,27 +113,27 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         return $this->repository->create($fields);
     }
 
-    public function edit($id)
+    public function edit($id, $submoduleId = null)
     {
         $file = $this->repository->getById($id);
-        return view('cms-toolkit::files.form', [
+        return [
             'isBulkUpdate' => false,
             'file' => $file,
             'tags' => $file->tags,
             'moduleName' => $this->moduleName,
             'modelName' => $this->modelName,
             'routePrefix' => $this->routePrefix,
-        ]);
+        ];
     }
 
     public function bulkEdit()
     {
         $ids = $this->request->input('ids');
         $tags = $this->repository->getTags(null, $ids);
-        return view('cms-toolkit::files.form', [
+        return [
             'isBulkUpdate' => true,
             'tags' => $tags,
-        ]);
+        ];
     }
 
     public function tags()

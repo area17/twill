@@ -1,0 +1,123 @@
+/***
+
+Tooltip
+=======
+
+Information showing up when hovering some UI/texts. (see tooltip.js)
+
+
+```
+<div class="styleguide--demo">
+    <div class="tooltip" role="tooltip"><div class="tooltip__arrow"></div><div class="tooltip__inner"></div></div>
+</div>
+```
+
+***/
+
+$arrowSize:6px;
+
+.tooltip {
+  display:block;
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:$zindex__tooltip;
+
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.2s ease, visibility 0s 0.2s;
+}
+
+/* Variants */
+
+.tooltip--top {
+
+}
+
+.tooltip--bottom {
+
+}
+
+.tooltip--left {
+
+}
+
+.tooltip--right {
+
+}
+
+.tooltip__arrow {
+  $arrowWidth: $arrowSize + 10px + 10px;
+
+  left: 50%;
+  pointer-events: none;
+  width:$arrowWidth;
+  height:$arrowSize;
+  overflow:hidden;
+  position: absolute;
+  margin-left:- $arrowWidth / 2;
+
+  &::after {
+    border: solid transparent;
+    content: "";
+    left:50%;
+    display:block;
+    margin-top:$arrowSize / 2;
+    margin-left:- $arrowSize / 2;
+    position: absolute;
+    width:$arrowSize;
+    height:$arrowSize;
+    background-color:rgba($color__black,0.60);
+    transform: rotate(45deg);
+  }
+}
+
+.tooltip--bottom .tooltip__arrow {
+  bottom: 100%;
+}
+
+.tooltip--top .tooltip__arrow {
+  bottom: - $arrowSize;
+  transform: rotate(180deg);
+
+  &::after {
+    transform: rotate(45deg);
+  }
+}
+
+.tooltip--left .tooltip__arrow {
+  left:0;
+}
+
+.tooltip--center .tooltip__arrow {
+  left: 50%;
+  margin-left:-25px;
+}
+
+.tooltip__inner {
+  background:rgba($color__black,0.60);
+  padding:5px 9px;
+  border-radius:2px;
+  max-width:150px;
+  color:$color__background;
+  @include font-tiny;
+  font-weight:400;
+  line-height:1.5em;
+}
+
+.tooltip--large {
+  .tooltip__inner {
+    background:rgba($color__background,0.95);
+    padding:10px 15px;
+    border-radius:2px;
+    box-shadow:$box-shadow;
+    max-width:270px;
+    color:$color__text--light;
+    @include font-small;
+    font-weight:400;
+  }
+
+  .tooltip__arrow {
+    display:none;
+  }
+}

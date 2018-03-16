@@ -6,33 +6,51 @@ trait HandleTranslations
 {
     protected $nullableFields = [];
 
+    public function prepareFieldsBeforeCreateHandleTranslations($fields)
+    {
+        return $this->prepareFieldsBeforeSaveHandleTranslations(null, $fields);
+    }
+
     public function prepareFieldsBeforeSaveHandleTranslations($object, $fields)
     {
         if (property_exists($this->model, 'translatedAttributes')) {
             $locales = getLocales();
-            foreach ($locales as $locale) {
-                $translate = $object->translateOrNew($locale);
-                $translate->active = $fields['active_' . $locale] ?? 0;
+            $localesCount = count($locales);
+            $attributes = collect($this->model->translatedAttributes);
 
-                // in the case of repeater modules, the $_POST variables
-                // names are only replaced (dots by underscores) on the first level
-                // let's do it ourselves for now but let's get rid of that asap
-                $fields = array_combine(array_map(function ($key) {
-                    return str_replace('.', '_', $key);
-                }, array_keys($fields)), array_values($fields));
+            $submittedLanguages = collect($fields['languages'] ?? []);
 
-                foreach ($object->translatedAttributes as $field) {
-                    if (array_key_exists("{$field}_{$locale}", $fields)) {
-                        if (empty($fields["{$field}_{$locale}"])) {
-                            $translate->{$field} = null;
-                        } else {
-                            $translate->{$field} = $fields["{$field}_{$locale}"];
-                        }
-                    } elseif (in_array($field, $this->nullableFields)) {
-                        $translate->{$field} = null;
+            $atLeastOneLanguageIsPublished = $submittedLanguages->contains(function ($language) {
+                return $language['published'];
+            });
+
+            foreach ($locales as $index => $locale) {
+                $submittedLanguage = array_first($submittedLanguages->filter(function ($lang) use ($locale) {
+                    return $lang['value'] == $locale;
+                }));
+
+                $shouldPublishFirstLanguage = ($index === 0 && !$atLeastOneLanguageIsPublished);
+
+                $activeField = $shouldPublishFirstLanguage || (isset($submittedLanguage) ? $submittedLanguage['published'] : false);
+
+                $fields[$locale] = [
+                    'active' => $activeField,
+                ] + $attributes->mapWithKeys(function ($attribute) use (&$fields, $locale, $localesCount, $index) {
+                    $attributeValue = $fields[$attribute] ?? null;
+
+                    // if we are at the last locale,
+                    // let's unset this field as it is now managed by this trait
+                    if ($index + 1 === $localesCount) {
+                        unset($fields[$attribute]);
                     }
-                }
+
+                    return [
+                        $attribute => ($attributeValue[$locale] ?? null),
+                    ];
+                })->toArray();
             }
+
+            unset($fields['languages']);
         }
 
         return $fields;
@@ -40,10 +58,13 @@ trait HandleTranslations
 
     public function getFormFieldsHandleTranslations($object, $fields)
     {
+        unset($fields['translations']);
+
         if ($object->translations != null && $object->translatedAttributes != null) {
             foreach ($object->translations as $translation) {
-                foreach ($object->translatedAttributes as $value) {
-                    $fields[$value . '_' . $translation->locale] = $translation->{$value};
+                foreach ($object->translatedAttributes as $attribute) {
+                    unset($fields[$attribute]);
+                    $fields['translations'][$attribute][$translation->locale] = $translation->{$attribute};
                 }
             }
         }
@@ -97,5 +118,10 @@ trait HandleTranslations
                 ;
             }
         }
+    }
+
+    public function getPublishedScopes()
+    {
+        return ['withActiveTranslations'];
     }
 }

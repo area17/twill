@@ -1,0 +1,48 @@
+/***
+
+Typographic default styles
+==========================
+
+Text can be set as heading, regular (default), small or tiny
+
+
+```
+<div class="styleguide--demo">
+    <p class="f--heading">Heading</p>
+    <p class="f--medium">I am medium</p>
+    <p class="f--regular">Regular texts</p>
+    <p class="f--small">Small texts</p>
+    <p class="f--tiny">Tiny ones</p>
+    <p class="f--note">I am note</p>
+</div>
+```
+
+***/
+
+.f--heading {
+  @include font-heading;
+}
+
+.f--medium {
+  @include font-medium;
+}
+
+.f--regular {
+  @include font-regular;
+}
+
+.f--small {
+  @include font-small;
+}
+
+.f--tiny {
+  @include font-tiny;
+}
+
+.f--note {
+  color:$color__text--light
+}
+
+.f--link {
+  color:$color__link
+}

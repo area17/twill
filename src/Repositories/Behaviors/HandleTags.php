@@ -57,7 +57,12 @@ trait HandleTags
 
     public function getTagsList()
     {
-        return $this->getTagsQuery()->where('count', '>', 0)->pluck('name', 'id')->toArray();
+        return $this->getTagsQuery()->where('count', '>', 0)->select('name', 'id')->get()->map(function ($tag) {
+            return [
+                'label' => $tag->name,
+                'value' => $tag->id,
+            ];
+        });
     }
 
 }

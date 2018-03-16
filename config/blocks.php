@@ -7,32 +7,58 @@ return [
     |--------------------------------------------------------------------------
     |
     | This array allows you to provide the package with your configuration
-    | for the Block renderer service.
-    | More to come here...
+    | for the Block editor service.
     |
      */
-    'blocks_js_path' => '/assets/admin/blocks/blocks.js',
-    'blocks_js_rev' => false,
-
-    'blocks_css_path' => 'blocks.css',
-    'blocks_css_rev' => true,
-
-    'use_iframes' => false,
-    'iframe_wrapper_view' => '',
-
-    'show_render_errors' => env('BLOCK_EDITOR_SHOW_ERRORS', false),
-
+    'block_single_layout' => 'site.layouts.block',
+    'block_views_path' => 'site.blocks',
+    'block_views_mappings' => [],
+    'block_preview_render_childs' => true,
     'blocks' => [
-        "blocktitle" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",
-        "blocktext" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",
-        "blockquote" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Text",
-        "image" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
-        "imagegrid" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
-        "imagetext" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
-        "diaporama" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Image",
-        "blockseparator" => "A17\CmsToolkit\Services\BlockEditor\Blocks\Separator",
+        'text' => [
+            'title' => 'Body text',
+            'icon' => 'text',
+            'component' => 'a17-block-wysiwyg',
+        ],
+        'image' => [
+            'title' => 'Image',
+            'icon' => 'image',
+            'component' => 'a17-block-image',
+        ],
     ],
-    'sitemap_blocks' => [
-        'A17\CmsToolkit\Services\BlockEditor\Blocks\Image',
+    'crops' => [
+        'image' => [
+            'desktop' => [
+                [
+                    'name' => 'desktop',
+                    'ratio' => 16 / 9,
+                    'minValues' => [
+                        'width' => 100,
+                        'height' => 100,
+                    ],
+                ],
+            ],
+            'tablet' => [
+                [
+                    'name' => 'tablet',
+                    'ratio' => 4 / 3,
+                    'minValues' => [
+                        'width' => 100,
+                        'height' => 100,
+                    ],
+                ],
+            ],
+            'mobile' => [
+                [
+                    'name' => 'mobile',
+                    'ratio' => 1,
+                    'minValues' => [
+                        'width' => 100,
+                        'height' => 100,
+                    ],
+                ],
+            ],
+        ],
     ],
+    'repeaters' => [],
 ];

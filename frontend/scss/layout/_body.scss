@@ -1,0 +1,90 @@
+html,
+body {
+    min-width: 320px;
+    min-height: 100%;
+    overflow-x: hidden;
+    /*
+    @include breakpoint('xsmall') {
+        overflow-x: auto;
+    }
+    */
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* juggling left/right and margin left/right as 100vw includes scroll bars so forcing 100vw width to make grid colspan calcs work */
+  /*
+  left: 50%;
+  right: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  */
+}
+
+body {
+  @include sans-serif();
+  background: $color__background;
+  color: $color__text;
+  @include monospaced-figures();
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+  font-variant-ligatures: common-ligatures;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  padding:0;
+  height:100%;
+  /* letter-spacing:-0.022em; San Francisco font : similar to apple.com */
+
+  &::after {
+    position: absolute;
+    left: -1px;
+    top: -1px;
+    width: 1px;
+    height: 1px;
+    margin: -1px 0 0 -1px;
+    color: transparent;
+    font: 0/0 a;
+    text-shadow: none;
+  }
+}
+
+.a17 {
+  width:100vw;
+  overflow:hidden;
+  min-height:100vh;
+}
+
+
+.app {
+  min-height:calc(100vh - 230px);
+}
+
+.appLoader {
+  background-color:$color__background;
+}
+
+.body--form,
+.body--dashboard,
+.body--buckets {
+  background-color:$color__border--light;
+
+  .appLoader {
+    background-color:$color__border--light;
+  }
+}
+
+@each $name, $point in $breakpoints {
+  @include breakpoint('#{$name}') {
+    head {
+      font-family: '#{$name}';
+    }
+
+    body::after {
+      content: '#{$name}';
+    }
+  }
+}

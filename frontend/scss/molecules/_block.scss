@@ -1,0 +1,50 @@
+/***
+
+Block
+=====
+
+A block is wrapping is each block fields in the content editor. There are some handy classes to changes the spacing depending on the needs
+
+```
+<div class="styleguide--demo">
+    <div class="block__body">
+      Form fields goes here
+    </div>
+</div>
+```
+
+***/
+
+.block__body {
+  margin-top:-15px;
+}
+
+.block__body--nolabel {
+  margin-top:-30px;
+}
+
+.block__body {
+  > h2,
+  > h3,
+  > h4 {
+    font-size: 1em;
+    font-weight: 600;
+    margin-top: 35px;
+  }
+
+  > p {
+    margin-top: 35px;
+  }
+
+  > hr {
+    height: 5px;
+    margin: 20px -20px 20px -20px;
+    padding: 0;
+    background: $color__border--light;
+    border: 0 none;
+
+    + .repeater {
+      margin-top:20px;
+    }
+  }
+}

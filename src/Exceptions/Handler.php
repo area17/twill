@@ -23,7 +23,6 @@ class Handler extends ExceptionHandler
 
     protected $isJsonOutputFormat = false;
 
-
     public function report(Exception $e)
     {
         return parent::report($e);
@@ -61,34 +60,36 @@ class Handler extends ExceptionHandler
             return $this->renderExceptionWithWhoops($e);
         }
 
-        if ($this->isHttpException($e)) {
-            return $this->renderHttpExceptionWithView($request, $e);
-        } elseif (app()->environment('production', 'preprod')) {
-            return response()->view(config('cms-toolkit.frontend.views_path') . '.errors.500', [], 500);
-        }
-
-        return parent::render($request, $e);
+        return $this->renderHttpExceptionWithView($request, $e);
     }
 
     public function renderHttpExceptionWithView($request, $e)
     {
-        $statusCode = $e->getStatusCode();
-
         if (config('app.debug')) {
             return $this->convertExceptionToResponse($e);
         }
 
-        if ($request->getHost() == config('cms-toolkit.admin_app_url')) {
+        $statusCode = $this->isHttpException($e) ? $e->getStatusCode() : 500;
+        $headers = $this->isHttpException($e) ? $e->getHeaders() : [];
+
+        $isSubdomainAdmin = empty(config('cms-toolkit.admin_app_path')) && $request->getHost() == config('cms-toolkit.admin_app_url');
+        $isSubdirectoryAdmin = !empty(config('cms-toolkit.admin_app_path')) && starts_with($request->path(), config('cms-toolkit.admin_app_path'));
+
+        if ($isSubdomainAdmin || $isSubdirectoryAdmin) {
             $view = view()->exists("admin.errors.$statusCode") ? "admin.errors.$statusCode" : "cms-toolkit::errors.$statusCode";
         } else {
             $view = config('cms-toolkit.frontend.views_path') . ".errors.{$statusCode}";
         }
 
         if (view()->exists($view)) {
-            return response()->view($view, ['exception' => $e], $statusCode, $e->getHeaders());
+            return response()->view($view, ['exception' => $e], $statusCode, $headers);
         }
 
-        return $this->renderHttpException($e);
+        if ($this->isHttpException($e)) {
+            return $this->renderHttpException($e);
+        }
+
+        return parent::render($request, $e);
     }
 
     protected function renderExceptionWithWhoops(Exception $e)
@@ -105,7 +106,7 @@ class Handler extends ExceptionHandler
             if (app()->environment('local', 'development')) {
                 $handler->setEditor(function ($file, $line) {
                     $translations = array('^' .
-                        config('cms-toolkit.debug.whoops_path_guest') => config('cms-toolkit.debug.whoops_path_host')
+                        config('cms-toolkit.debug.whoops_path_guest') => config('cms-toolkit.debug.whoops_path_host'),
                     );
                     foreach ($translations as $from => $to) {
                         $file = rawurlencode(preg_replace('#' . $from . '#', $to, $file, 1));
@@ -116,9 +117,6 @@ class Handler extends ExceptionHandler
                     );
                 });
             }
-
-            $handler->addResourcePath(base_path('public/assets/admin/vendor'));
-            $handler->addCustomCss('whoops.base.css');
         }
 
         $whoops->pushHandler($handler);

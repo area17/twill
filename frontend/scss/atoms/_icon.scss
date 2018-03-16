@@ -1,0 +1,24 @@
+/***
+
+Icon
+====
+
+SVG Icons (see svg.js)
+
+
+```
+<div class="styleguide--demo">
+    <span class="icon icon--${id}"><svg><title>id</title><use xlink:href="#icon--${id}"></use></svg></span>
+</div>
+```
+
+***/
+
+.icon {
+  display:inline-block;
+
+  svg {
+    vertical-align:inherit;
+    display:inherit;
+  }
+}

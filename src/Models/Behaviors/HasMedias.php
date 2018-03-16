@@ -17,11 +17,9 @@ trait HasMedias
             'crop_h',
             'crop_x',
             'crop_y',
-            'crop_x2',
-            'crop_y2',
-            'background_position',
             'lqip_data',
             'ratio',
+            'metadatas',
         ])->withTimestamps()->orderBy('mediables.id', 'asc');
     }
 
@@ -51,7 +49,7 @@ trait HasMedias
         return ImageService::getTransparentFallbackUrl();
     }
 
-    public function images($role, $crop, $params = [])
+    public function images($role, $crop = "default", $params = [])
     {
         $medias = $this->medias->filter(function ($media) use ($role, $crop) {
             return $media->pivot->role === $role && $media->pivot->crop === $crop;
@@ -66,38 +64,99 @@ trait HasMedias
         return $urls;
     }
 
-    public function imageAltText($role)
+    public function imageAsArray($role, $crop = "default", $params = [], $media = null)
     {
-        $media = $this->medias->first(function ($media) use ($role) {
-            return $media->pivot->role === $role;
-        });
+        if (!$media) {
+            $media = $this->medias->first(function ($media) use ($role, $crop) {
+                return $media->pivot->role === $role && $media->pivot->crop === $crop;
+            });
+        }
 
-        return $media->alt_text ?? null;
+        if ($media) {
+            return [
+                'src' => $this->image($role, $crop, $params, false, false, $media),
+                'width' => $media->pivot->crop_w ?? $media->width,
+                'height' => $media->pivot->crop_h ?? $media->height,
+                'alt' => $this->imageAltText($role, $media),
+                'caption' => $this->imageCaption($role, $media),
+                'video' => $this->imageVideo($role, $media),
+            ];
+        }
+
+        return [];
     }
 
-    public function imageCaption($role)
+    public function imagesAsArrays($role, $crop = "default", $params = [])
     {
-        $media = $this->medias->first(function ($media) use ($role) {
-            return $media->pivot->role === $role;
+        $medias = $this->medias->filter(function ($media) use ($role, $crop) {
+            return $media->pivot->role === $role && $media->pivot->crop === $crop;
         });
 
-        return $media->caption ?? null;
+        $arrays = [];
+
+        foreach ($medias as $media) {
+            $arrays[] = $this->imageAsArray($role, $crop, $params, $media);
+        }
+
+        return $arrays;
     }
 
-    public function imageObject($role, $crop)
+    public function imageAltText($role, $media = null)
+    {
+        if (!$media) {
+            $media = $this->medias->first(function ($media) use ($role) {
+                return $media->pivot->role === $role;
+            });
+        }
+
+        if ($media) {
+            $metadatas = (object) json_decode($media->pivot->metadatas);
+            $language = app()->getLocale();
+            return $metadatas->altText->$language ?? (is_object($metadatas->altText) ? ($media->altText ?? '') : ($metadatas->altText ?? $media->altText));
+        }
+
+        return '';
+    }
+
+    public function imageCaption($role, $media = null)
+    {
+        if (!$media) {
+            $media = $this->medias->first(function ($media) use ($role) {
+                return $media->pivot->role === $role;
+            });
+        }
+
+        if ($media) {
+            $metadatas = (object) json_decode($media->pivot->metadatas);
+            $language = app()->getLocale();
+            return $metadatas->caption->$language ?? (is_object($metadatas->caption) ? ($media->caption ?? '') : ($metadatas->caption ?? $media->caption));
+        }
+
+        return '';
+    }
+
+    public function imageVideo($role, $media = null)
+    {
+        if (!$media) {
+            $media = $this->medias->first(function ($media) use ($role) {
+                return $media->pivot->role === $role;
+            });
+        }
+
+        if ($media) {
+            $metadatas = (object) json_decode($media->pivot->metadatas);
+            $language = app()->getLocale();
+            return $metadatas->video->$language ?? (is_object($metadatas->video) ? '' : ($metadatas->video ?? ''));
+        }
+
+        return '';
+    }
+
+    public function imageObject($role, $crop = "default")
     {
         return $this->medias->first(function ($media) use ($role, $crop) {
             return $media->pivot->role === $role && $media->pivot->crop === $crop;
         });
-    }
-
-    public function imageBackgroundPosition($role, $crop)
-    {
-        $media = $this->medias->first(function ($media) use ($role, $crop) {
-            return $media->pivot->role === $role && $media->pivot->crop === $crop;
-        });
-
-        return $media->pivot->background_position ?? 'top';
     }
 
     public function lowQualityImagePlaceholder($role, $crop = "default", $params = [], $has_fallback = false)
@@ -142,7 +201,7 @@ trait HasMedias
         return $this->image($role, $crop, $params, false, true, false) ?? ImageService::getTransparentFallbackUrl($params);
     }
 
-    public function imageObjects($role, $crop)
+    public function imageObjects($role, $crop = "default")
     {
         return $this->medias->filter(function ($media) use ($role, $crop) {
             return $media->pivot->role === $role && $media->pivot->crop === $crop;

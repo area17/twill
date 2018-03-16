@@ -18,10 +18,11 @@ class UserRepository extends ModuleRepository
 
     public function filter($query, array $scopes = [])
     {
-        $this->addLikeFilterScope($query, $scopes, 'name');
-
+        $query->when(isset($scopes['role']), function ($query) use ($scopes) {
+            $query->where('role', $scopes['role']);
+        });
         $query->where('role', '<>', 'SUPERADMIN');
-
+        $this->searchIn($query, $scopes, 'search', ['name', 'email', 'role']);
         return parent::filter($query, $scopes);
     }
 
@@ -29,6 +30,16 @@ class UserRepository extends ModuleRepository
     {
         $this->sendWelcomeEmail($user);
         parent::afterUpdateBasic($user, $fields);
+    }
+
+    public function getCountForPublished()
+    {
+        return $this->model->where('role', '<>', 'SUPERADMIN')->published()->count();
+    }
+
+    public function getCountForDraft()
+    {
+        return $this->model->where('role', '<>', 'SUPERADMIN')->draft()->count();
     }
 
     public function afterSave($user, $fields)

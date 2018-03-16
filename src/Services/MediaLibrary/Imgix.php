@@ -33,9 +33,9 @@ class Imgix implements ImageServiceInterface
         return $this->getUrl($id, $this->getCrop($cropParams) + $params);
     }
 
-    public function getUrlWithCropWithFocal($id, array $cropParams, $width, $height, array $params = [])
+    public function getUrlWithFocalCrop($id, array $cropParams, $width, $height, array $params = [])
     {
-        return $this->getUrl($id, $this->getFocalCrop($cropParams, $width, $height) + $params);
+        return $this->getUrl($id, $this->getFocalPointCrop($cropParams, $width, $height) + $params);
     }
 
     public function getLQIPUrl($id, array $params = [])

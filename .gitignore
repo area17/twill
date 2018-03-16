@@ -1,3 +1,9 @@
+.idea
 vendor/
 !assets/vendor
+!frontend/scss/vendor
 /node_modules
+assets/dist/*
+mix-manifest.json
+public/
+frontend/js/components/blocks/customs/*

@@ -2,6 +2,9 @@
 
 @section('content')
 
-    <h2>Forbidden!</h2>
+  <p>Forbidden!</p>
+  <p>
+    <a href="/">Homepage</a>
+  </p>
 
 @stop

@@ -1,0 +1,59 @@
+/***
+
+Breadcrumb
+==========
+
+Header contextual navigation
+
+***/
+
+$height__nav: 60px;
+
+.breadcrumb {
+  background-color:$color__border;
+  overflow:hidden;
+  height:$height__nav;
+}
+
+.breadcrumb__item {
+  height: $height__nav;
+  display: inline-block;
+  color: $color__header--light;
+
+  a,
+  span:not(.breadcrumb__link) {
+    display: inherit;
+    height: $height__nav;
+    line-height: $height__nav;
+    padding: 0 14px;
+  }
+
+  a {
+    color: $color__text;
+    text-decoration: none;
+
+    &:hover .breadcrumb__link {
+      @include bordered($color__text, false);
+    }
+  }
+
+  &::before {
+    content: '';
+    display: inline-block;
+    height: 18px;
+    width: 1px;
+    background: $color__black--35;
+    transform: rotate(29deg) translateY(4px);
+  }
+
+  &:first-child {
+    a,
+    span {
+      padding-left:0;
+    }
+
+    &::before {
+      display:none;
+    }
+  }
+}

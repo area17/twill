@@ -8,19 +8,14 @@ trait HandleSlugs
     {
         if (property_exists($this->model, 'slugAttributes')) {
             foreach (getLocales() as $locale) {
-                if ($object->getActiveSlug($locale) == null) {
-                    $this->createOneSlug($object, $fields, $locale);
-                } elseif (isset($fields['slug_' . $locale]) && !empty($fields['slug_' . $locale])) {
-                    if (!isset($fields['active_' . $locale])) {
-                        $object->disableLocaleSlugs($locale);
-                    } else {
-                        $currentSlug = [];
-                        $currentSlug['slug'] = $fields['slug_' . $locale];
-                        $currentSlug['locale'] = $locale;
-                        $currentSlug = $this->getSlugParameters($object, $fields, $currentSlug);
-                        $object->updateOrNewSlug($currentSlug);
-
-                    }
+                if (isset($fields['slug']) && isset($fields['slug'][$locale]) && !empty($fields['slug'][$locale])) {
+                    $object->disableLocaleSlugs($locale);
+                    $currentSlug = [];
+                    $currentSlug['slug'] = $fields['slug'][$locale];
+                    $currentSlug['locale'] = $locale;
+                    $currentSlug['active'] = property_exists($this->model, 'translatedAttributes') ? $object->translate($locale)->active : 1;
+                    $currentSlug = $this->getSlugParameters($object, $fields, $currentSlug);
+                    $object->updateOrNewSlug($currentSlug);
                 }
             }
         }
@@ -31,12 +26,19 @@ trait HandleSlugs
         $object->slugs()->delete();
     }
 
+    public function afterRestoreHandleSlugs($object)
+    {
+        $object->slugs()->restore();
+    }
+
     public function getFormFieldsHandleSlugs($object, $fields)
     {
+        unset($fields['slugs']);
+
         if ($object->slugs != null) {
             foreach ($object->slugs as $slug) {
-                if ($slug->active) {
-                    $fields['slug_' . $slug->locale] = $slug->slug;
+                if ($slug->active || $object->slugs->where('locale', $slug->locale)->where('active', true)->count() === 0) {
+                    $fields['translations']['slug'][$slug->locale] = $slug->slug;
                 }
             }
         }
@@ -44,26 +46,10 @@ trait HandleSlugs
         return $fields;
     }
 
-    private function createOneSlug($object, $fields, $locale)
-    {
-        $newSlug = [];
-
-        if (isset($fields['slug_' . $locale]) && !empty($fields['slug_' . $locale])) {
-            $newSlug['slug'] = $fields['slug_' . $locale];
-        } elseif (isset($fields[reset($object->slugAttributes) . '_' . $locale]) && isset($fields['active_' . $locale])) {
-            $newSlug['slug'] = $fields[reset($object->slugAttributes) . '_' . $locale];
-        }
-
-        if (!empty($newSlug)) {
-            $newSlug['locale'] = $locale;
-            $newSlug = $this->getSlugParameters($object, $fields, $newSlug);
-            $object->updateOrNewSlug($newSlug);
-        }
-    }
-
     public function getSlugParameters($object, $fields, $slug)
     {
         $slugParams = $object->getSlugParams($slug['locale']);
+
         foreach ($object->slugAttributes as $param) {
             if (isset($slugParams[$param]) && isset($fields[$param])) {
                 $slug[$param] = $fields[$param];
@@ -77,9 +63,17 @@ trait HandleSlugs
 
     public function forSlug($slug, $with = [], $withCount = [], $scopes = [])
     {
-        $item = $this->model->forSlug($slug)->with($with)->withCount($withCount)->where($scopes)->published()->first();
+        $query = $this->model->where($scopes)->scopes(['published', 'visible']);
 
-        if (!$item && $item = $this->model->forInactiveSlug($slug)->where($scopes)->published()->first()) {
+        foreach (class_uses_recursive(get_called_class()) as $trait) {
+            if (method_exists(get_called_class(), $method = 'getPublishedScopes')) {
+                $query->scopes($this->$method());
+            }
+        }
+
+        $item = (clone $query)->forSlug($slug)->with($with)->withCount($withCount)->first();
+
+        if (!$item && $item = (clone $query)->forInactiveSlug($slug)->first()) {
             $item->redirect = true;
         }
 
@@ -90,5 +84,4 @@ trait HandleSlugs
     {
         return $this->model->forInactiveSlug($slug)->with($with)->withCount($withCount)->first();
     }
-
 }

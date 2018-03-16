@@ -1,0 +1,117 @@
+.design-grid-toggle {
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  bottom: 0;
+  padding: 1px 8px;
+  background: $color__black;
+  color: $color__white;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.design-grid-toggle--columns {
+  left: auto;
+  right: 0;
+
+  &::before,
+  &::after {
+    display: block;
+    position: absolute;
+    right: 8px;
+    bottom: 100%;
+    color: $color__green;
+    font-weight: bold;
+    text-align: right;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  &::before {
+    margin-bottom: -2px;
+    @each $name, $point in $breakpoints {
+      @include breakpoint('#{$name}') {
+        content: '#{$name}';
+      }
+    }
+  }
+
+  &::after {
+    content: attr(data-env);
+    margin-bottom: 12px;
+  }
+}
+
+
+.design-grid--baseline {
+  display: block;
+  position: absolute;
+  z-index: 9998;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0) 5px, #7fffff 5px, #7fffff 10px);
+  opacity: .25;
+  pointer-events: none;
+
+  &.js-hide {
+    display: none;
+  }
+}
+
+.design-grid--columns {
+  display: block;
+  position: fixed;
+  z-index: 9998;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  background-color: transparent;
+  opacity: .25;
+  pointer-events: none;
+
+  &.js-hide {
+    display: none;
+  }
+
+  @each $name, $point in $breakpoints {
+    @include breakpoint('#{$name}') {
+      @if (map-get($main-col-widths, $name) == 'fluid') {
+        width: calc(100vw - #{map-get($outer-gutters, $name) * 2});
+        background: repeating-linear-gradient(
+          90deg,
+          #7fffff,
+          #7fffff calc((100vw - #{((map-get($column-count, $name) - 1) * map-get($inner-gutters, $name)) + (2 * map-get($outer-gutters, $name))}) / #{map-get($column-count, $name)}),
+          rgba(0,0,0,0) calc((100vw - #{((map-get($column-count, $name) - 1) * map-get($inner-gutters, $name)) + (2 * map-get($outer-gutters, $name))}) / #{map-get($column-count, $name)}),
+          rgba(0,0,0,0) calc(
+            (
+              (100vw - #{((map-get($column-count, $name) - 1) * map-get($inner-gutters, $name)) + (2 * map-get($outer-gutters, $name))}) / #{map-get($column-count, $name)})
+              +
+              #{map-get($inner-gutters, $name)}
+            )
+        );
+      } @else {
+        width: map-get($main-col-widths, $name) + map-get($inner-gutters, $name) + map-get($inner-gutters, $name);
+        background: repeating-linear-gradient(
+          90deg,
+          rgba(0,0,0,0),
+          rgba(0,0,0,0) map-get($inner-gutters, $name),
+          #7fffff map-get($inner-gutters, $name),
+          #7fffff calc(
+            (
+              (#{map-get($main-col-widths, $name)} - #{(map-get($column-count, $name) - 1) * map-get($inner-gutters, $name)}) / #{map-get($column-count, $name)})
+              +
+              #{map-get($inner-gutters, $name)}
+            )
+        );
+      }
+    }
+  }
+}

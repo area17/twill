@@ -1,0 +1,66 @@
+/***
+
+Nav
+===
+
+Header contextual navigation
+
+***/
+
+$height__nav: 60px;
+
+.nav {
+  background: $color__nav;
+  overflow:hidden;
+  height:60px;
+
+  .s--search & {
+    transition: background-color 0.14s $bezier__bounce;
+    background: black;
+  }
+}
+
+.nav__list {
+  margin-left: -17px;
+  flex-grow: 1;
+  white-space: nowrap;
+  height:60px + 50px;
+  overflow:hidden;
+  overflow-x:auto;
+
+  .s--search & {
+    transition: all 0.14s $bezier__bounce;
+    visibility: hidden;
+  }
+}
+
+.nav__item {
+  height: $height__nav;
+  display: inline-block;
+  color: $color__text--light;
+
+  &.s--on,
+  &:hover {
+    color: $color__background;
+  }
+
+  a {
+    height: $height__nav;
+    line-height: $height__nav;
+    display: inherit;
+    text-decoration: none;
+    position: relative;
+    padding: 0 17px;
+  }
+
+  &.s--on a::after {
+    content: '';
+    height: 3px;
+    position: absolute;
+    bottom:0;
+    background:$color__background;
+    width:100%;
+    left:0;
+    right:0;
+  }
+}

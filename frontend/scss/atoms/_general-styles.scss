@@ -1,0 +1,60 @@
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+dl,
+label {
+  @include sans-serif(15, 20);
+  margin-top: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 600;
+  @include sans-serif(15, 20);
+}
+
+p em {
+  font-style:italic;
+}
+
+strong,
+b {
+  font-weight: 600;
+}
+
+p strong,
+p b {
+  font-weight: 600;
+}
+
+ul li {
+  list-style-type: none;
+}
+
+img {
+  border: 0 none;
+}
+
+a {
+  color: inherit;
+}
+
+.js--hide {
+  display: none;
+}
+
+.js--show {
+  display: block;
+}
+
+input, select, textarea, button {
+  font-family:inherit;
+}
+
+.btn--reset {
+  @include btn-reset;
+}

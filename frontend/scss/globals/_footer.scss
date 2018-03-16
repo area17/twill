@@ -1,0 +1,38 @@
+/***
+
+Footer
+======
+
+Minimal footer
+
+```
+<div class="styleguide--demo">
+    <footer class="footer">
+      <div class="container">
+        <span class="footer__copyright">CMS by <a href="https://area17.com" target="_blank">AREA 17</a></span>
+        <span class="footer__version">Version X.X.X</span>
+      </div>
+    </footer>
+</div>
+```
+
+***/
+
+
+$height__footer: 60px;
+
+.footer {
+  padding:20px 0;
+}
+
+.footer .container {
+  display: flex;
+  flex-flow: row wrap;
+  color: $color__text--light;
+  @include font-small;
+}
+
+.footer__copyright {
+  flex-grow: 1;
+  @include monospaced-figures('off'); // dont use monospaced figures here
+}

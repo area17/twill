@@ -11,6 +11,16 @@ class Local implements ImageServiceInterface
         return $this->getRawUrl($id);
     }
 
+    public function getUrlWithCrop($id, array $crop_params, array $params = [])
+    {
+        return $this->getRawUrl($id);
+    }
+
+    public function getUrlWithFocalCrop($id, array $cropParams, $width, $height, array $params = [])
+    {
+        return $this->getRawUrl($id);
+    }
+
     public function getLQIPUrl($id, array $params = [])
     {
         return $this->getRawUrl($id);
@@ -28,7 +38,7 @@ class Local implements ImageServiceInterface
 
     public function getRawUrl($id)
     {
-        return '/' . config('cms-toolkit.media_library.local_path') . $id;
+        return '/' . $id;
     }
 
     public function getDimensions($id)

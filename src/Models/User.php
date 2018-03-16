@@ -31,10 +31,14 @@ class User extends AuthenticatableContract
     ];
 
     protected $hidden = ['password', 'remember_token'];
+    public $checkboxes = ['published'];
 
     public $mediasParams = [
         'profile' => [
-            'square' => '1',
+            'default' => [
+                'name' => 'default',
+                'ratio' => 1,
+            ],
         ],
     ];
 
@@ -44,10 +48,21 @@ class User extends AuthenticatableContract
             if ($this->role == 'SUPERADMIN') {
                 return "SUPERADMIN";
             }
-            return UserRole::{$this->role}();
+
+            return UserRole::{$this->role}()->getValue();
         }
 
         return null;
+    }
+
+    public function scopePublished($query)
+    {
+        return $query->wherePublished(true);
+    }
+
+    public function scopeDraft($query)
+    {
+        return $query->wherePublished(false);
     }
 
     public function setImpersonating($id)

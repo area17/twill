@@ -1,0 +1,174 @@
+/***
+
+Form
+====
+
+General styles for the forms : can be used to style general thing that will live outside of the component scope
+
+```
+<div class="styleguide--demo">
+    <div class="form__field">
+      <input type="text" name="name" placeholder="altText" />
+    </div>
+
+    <input class="form__input" type="number" maxlength="4" />
+</div>
+```
+
+***/
+
+.form {
+  background-color:$color__border--light;
+  min-height:calc(100vh - 200px);
+  padding-bottom:80px;
+}
+
+/* Hide search input button */
+
+input::-ms-clear {
+  display: none;
+}
+
+input[type="search"] {
+  -webkit-appearance: none;
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+}
+
+/* Hide HTML5 Up and Down arrows. */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  text-align:left;
+  -moz-appearance: textfield;
+}
+
+.form__map {
+  max-width: 100%;
+  height: 250px;
+  margin-top: 10px;
+  background:$color__f--placeholder;
+}
+
+$height_input: 45px;
+
+.form__field {
+  position: relative;
+  overflow: hidden;
+  height: $height_input;
+  @include textfield;
+  @include defaultState;
+  display: block;
+
+  @include placeholder() {
+    color:$color__f--placeholder;
+  }
+
+  &.s--focus {
+    @include focusState;
+  }
+
+  &:hover {
+    @include focusState;
+  }
+
+  &.s--disabled {
+    @include disabledState;
+  }
+
+  input[type="text"],
+  input[type="search"] {
+    @include resetfield;
+    width: 100%;
+    height: $height_input - 2px;
+    line-height: $height_input - 2px;
+    padding: 0 15px;
+    color:inherit;
+
+    @include placeholder() {
+      color:$color__f--placeholder;
+    }
+  }
+
+  textarea {
+    @include resetfield;
+    padding:10px;
+    line-height:inherit;
+    width:100%;
+    box-sizing: border-box;
+    display:block;
+    resize: none;
+    z-index:1;
+    position:relative;
+    color:inherit;
+
+    @include placeholder() {
+      color:$color__f--placeholder;
+    }
+  }
+
+  input[type="search"] {
+    display: block;
+    background-repeat: no-repeat;
+    background-position: right;
+
+    @include placeholder() {
+      color: $color__f--placeholder;
+    }
+  }
+}
+
+.form__field--textarea {
+  display:block;
+  padding:0;
+  height:auto;
+  line-height:inherit;
+}
+
+@mixin regular-field() {
+  @include textfield;
+  @include defaultState;
+  width: 100%;
+  height: $height_input;
+  line-height: $height_input;
+  padding: 0 15px;
+
+  &:focus {
+    @include focusState;
+  }
+
+  &:hover {
+    @include focusState;
+  }
+
+  &:disabled {
+    @include disabledState;
+  }
+
+  @include placeholder() {
+    color:$color__f--placeholder;
+  }
+}
+
+.form__input {
+  @include regular-field;
+}
+
+.form__input--small {
+  padding: 0 13px;
+  height: $height_input - 10px;
+  line-height: $height_input - 10px;
+}
+
+.form__input--hidden {
+  display:none;
+}

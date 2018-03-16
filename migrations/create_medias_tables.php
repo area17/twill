@@ -28,15 +28,13 @@ class CreateMediasTables extends Migration
             $table->integer('media_id')->unsigned();
             $table->integer('crop_x')->nullable();
             $table->integer('crop_y')->nullable();
-            $table->integer('crop_x2')->nullable();
-            $table->integer('crop_y2')->nullable();
             $table->integer('crop_w')->nullable();
             $table->integer('crop_h')->nullable();
             $table->string('role')->nullable();
             $table->string('crop')->nullable();
             $table->text('lqip_data')->nullable();
-            $table->string('background_position', 20)->default('top');
             $table->string('ratio')->nullable();
+            $table->json('metadatas');
             $table->foreign('media_id', 'fk_mediables_media_id')->references('id')->on('medias')->onDelete('cascade')->onUpdate('cascade');
             $table->index(['mediable_type', 'mediable_id']);
         });

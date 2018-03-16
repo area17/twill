@@ -1,0 +1,112 @@
+// ####################################################
+// Font setup mixins
+//
+// Use the serif/sans-serif mixins directly in the SCSS do any responsive overwrites
+// with within the breakpoint mixin e.g.
+
+@mixin font-heading() {
+  font-size: 40px;
+}
+
+@mixin font-medium() {
+  font-size: 18px;
+}
+
+@mixin font-regular() {
+  font-size:15px;
+}
+
+@mixin font-small() {
+  font-size:13px;
+  /*letter-spacing: -0.01em;*/
+}
+
+@mixin font-tiny-btn() {
+  font-size:11.5px;
+  letter-spacing: 0;
+}
+
+@mixin font-tiny() {
+  font-size:11px;
+  letter-spacing: 0;
+}
+
+@mixin sans-serif($font-size:15, $line-height:20, $weight:normal, $style:normal) {
+  font-family: $sans-serif;
+
+  font-size: $font-size * 1px;
+  line-height: $line-height * 1px;
+  font-weight: $weight;
+  font-style: $style;
+
+  /* .js-sans-loaded & {
+    font-family: $sans-serif--loaded;
+  } */
+}
+
+
+/*
+  @mixin font_smoothing
+
+  Set font smoothing ON or OFF
+*/
+@mixin font-smoothing($value: on) {
+  @if $value == on {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  } @else {
+    -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: auto;
+  }
+}
+
+
+/*
+  @mixin hide_text
+
+  Hides text in an element
+*/
+
+@mixin hide-text() {
+  font: 0/0 a;
+  text-shadow: none;
+  color: transparent;
+  overflow: hidden;
+  text-indent: -100%;
+}
+
+
+@mixin monospaced-figures($value: on) {
+  @if $value == on {
+    font-feature-settings: 'kern', 'tnum';
+  } @else {
+    font-feature-settings: 'kern';
+  }
+}
+
+
+/*
+    @mixin bordered
+
+    Parameters:
+    $color - color
+    $color--hover - color for hover
+    $pos - vertical position (in % or in px)
+*/
+
+@mixin bordered($color: $color__text , $color--hover: $color__text, $pos: 98%) {
+
+  $color--opacity: rgba($color, 0.5);
+
+  text-decoration: none;
+  background-image: linear-gradient(to bottom, #{$color--opacity} 75%, #{$color--opacity} 75%);
+  background-repeat: repeat-x;
+  background-size: 1px 1px;
+  background-position: 0 $pos;
+
+  @if $color--hover != false {
+    &:hover {
+      background-image: linear-gradient(to bottom, #{$color--hover} 75%, #{$color--hover} 75%);
+    }
+  }
+}

@@ -1,0 +1,116 @@
+/***
+
+Secondary Nav
+=============
+
+Secondary navigation used in the components (media library or in listings)
+
+***/
+
+$height__nav: 35px;
+$breakpointCustom: 1200px;
+
+.secondarynav {
+  padding: 20px 0;
+
+  &.secondarynav--mobile {
+    display: none;
+  }
+
+  &.secondarynav--dropdown {
+    min-width: 150px;
+  }
+
+  @media screen and (max-width: $breakpointCustom) {
+    &.secondarynav--mobile {
+      display: inline-block;
+    }
+
+    &.secondarynav--desktop {
+      display: none;
+    }
+  }
+}
+
+.secondarynav__item {
+  height: $height__nav;
+  display: inline-block;
+  color: $color__link;
+
+  a {
+    height: $height__nav;
+    line-height: $height__nav;
+    display: inherit;
+    color: inherit;
+    text-decoration: inherit;
+    position: relative;
+    padding: 0 17px;
+    border-radius: 17px;
+  }
+
+  &.s--on {
+    color: $color__text;
+
+    a {
+      background: $color__background;
+    }
+  }
+
+  &.s--disabled {
+    color: $color__text;
+
+    a {
+      opacity: .5;
+      pointer-events: none;
+    }
+  }
+
+}
+
+.secondarynav__link {
+  text-decoration: none;
+}
+
+.secondarynav__item:hover .secondarynav__link {
+  @include bordered($color__link, false);
+}
+
+.secondarynav__item.s--on:hover .secondarynav__link {
+  background-image: none;
+}
+
+.secondarynav__item.s--disabled:hover .secondarynav__link {
+  background-image: none;
+}
+
+.secondarynav__number {
+  color: $color__icons;
+  @include font-small;
+  margin-left: 6px;
+}
+
+/* Secondary nav dropdown */
+.secondarynav--dropdown {
+   .dropdown {
+    width: 100%;
+  }
+
+  .secondarynav__button {
+    position: relative;
+
+  }
+
+  .dropdown__content a {
+    padding-right: 15px!important;
+  }
+
+  .secondarynav__item {
+    width: 100%;
+    color: $color__light;
+
+    &:hover .secondarynav__link {
+      @include bordered($color__light, false);
+    }
+
+  }
+}

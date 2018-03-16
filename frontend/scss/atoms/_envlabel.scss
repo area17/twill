@@ -1,0 +1,95 @@
+/***
+
+Env label
+=========
+
+Little label to indicate the current application ENV
+
+```
+<div class="styleguide--demo">
+    <span class="envlabel">STAGE</span>
+</div>
+```
+
+***/
+
+.envlabel {
+  text-transform:uppercase;
+  height: 15px;
+  line-height: 15px;
+  padding: 0 5px;
+  display: inline-block;
+  position: relative;
+  border-radius:7px;
+  background:black;
+  font-size:10px;
+  color:$color__header;
+  background:$color__background;
+  font-weight:600;
+  top: -2px;
+  letter-spacing:0.05em;
+  margin:0 5px;
+}
+
+.envlabel--heading {
+  top:-3px - 17px;
+}
+
+.nav__item {
+  &.s--on a::after {
+    background:$color__env--staging;
+  }
+}
+
+.env {
+  &::before {
+    content:'';
+    position:fixed;
+    height:3px;
+    top:0;
+    left:0;
+    right:0;
+    background:$color__background;
+    z-index:$zindex__env;
+  }
+}
+
+.env--localhost,
+.env--local,
+.env--dev,
+.env--development {
+  &::before {
+    background:$color__env--dev;
+  }
+
+  .nav__item.s--on a::after,
+  .envlabel {
+    background:$color__env--dev;
+  }
+}
+
+.env--preprod,
+.env--stage,
+.env--staging {
+  &::before {
+    background:$color__env--staging;
+  }
+
+  .nav__item.s--on a::after,
+  .envlabel {
+    background:$color__env--staging;
+  }
+}
+
+.env--prod,
+.env--live,
+.env--production {
+  &::before {
+    background:$color__env--prod;
+  }
+
+  .nav__item.s--on a::after,
+  .envlabel {
+    background:$color__env--prod;
+  }
+}

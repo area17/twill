@@ -3,13 +3,13 @@
 namespace A17\CmsToolkit;
 
 use A17\CmsToolkit\Commands\CreateSuperAdmin;
+use A17\CmsToolkit\Commands\GenerateBlocks;
 use A17\CmsToolkit\Commands\ModuleMake;
 use A17\CmsToolkit\Commands\RefreshLQIP;
 use A17\CmsToolkit\Commands\Setup;
-use A17\CmsToolkit\Commands\UpdateCmsAssets;
-use A17\CmsToolkit\Helpers\FlashNotifier;
 use A17\CmsToolkit\Http\ViewComposers\ActiveNavigation;
 use A17\CmsToolkit\Http\ViewComposers\CurrentUser;
+use A17\CmsToolkit\Http\ViewComposers\UploaderConfig;
 use A17\CmsToolkit\Models\File;
 use A17\CmsToolkit\Models\Media;
 use A17\CmsToolkit\Models\User;
@@ -19,20 +19,13 @@ use A17\CmsToolkit\Services\MediaLibrary\ImageService;
 use Barryvdh\Debugbar\Facade as Debugbar;
 use Barryvdh\Debugbar\ServiceProvider as DebugbarServiceProvider;
 use Cartalyst\Tags\TagsServiceProvider;
-use Collective\Html\FormFacade;
-use Collective\Html\HtmlFacade;
-use Collective\Html\HtmlServiceProvider;
 use Dimsav\Translatable\TranslatableServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\AliasLoader;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\ServiceProvider;
-use Laracasts\Flash\FlashServiceProvider;
 use Lsrur\Inspector\Facade\Inspector;
 use Lsrur\Inspector\InspectorServiceProvider;
-use MathiasGrimm\LaravelEnvValidator\ServiceProvider as EnvValidatorServiceProvider;
 use Sofa\ModelLocking\ServiceProvider as ModelLockingServiceProvider;
-
 use View;
 
 class CmsToolkitServiceProvider extends ServiceProvider
@@ -41,20 +34,9 @@ class CmsToolkitServiceProvider extends ServiceProvider
         RouteServiceProvider::class,
         AuthServiceProvider::class,
         ValidationServiceProvider::class,
-        HtmlServiceProvider::class,
         TranslatableServiceProvider::class,
-        FlashServiceProvider::class,
         TagsServiceProvider::class,
-        EnvValidatorServiceProvider::class,
-        ModelLockingServiceProvider::class
-    ];
-
-    protected $aliases = [
-        'Form' => FormFacade::class,
-        'Html' => HtmlFacade::class,
-        'Input' => Input::class,
-        'Inspector' => Inspector::class,
-        'Debugbar' => Debugbar::class,
+        ModelLockingServiceProvider::class,
     ];
 
     public function boot()
@@ -70,7 +52,6 @@ class CmsToolkitServiceProvider extends ServiceProvider
         $this->registerAndPublishViews();
 
         $this->extendBlade();
-
         $this->addViewComposers();
     }
 
@@ -107,10 +88,6 @@ class CmsToolkitServiceProvider extends ServiceProvider
             }
         }
 
-        $this->app->singleton('flash', function () {
-            return $this->app->make(FlashNotifier::class);
-        });
-
         if (config('cms-toolkit.enabled.media-library')) {
             $this->app->singleton('imageService', function () {
                 return $this->app->make(config('cms-toolkit.media_library.image_service'));
@@ -127,8 +104,11 @@ class CmsToolkitServiceProvider extends ServiceProvider
     private function registerAliases()
     {
         $loader = AliasLoader::getInstance();
-        foreach ($this->aliases as $alias => $facade) {
-            $loader->alias($alias, $facade);
+
+        if (config('cms-toolkit.debug.use_inspector', false)) {
+            $loader->alias('Inspector', Inspector::class);
+        } else {
+            $loader->alias('Debugbar', Debugbar::class);
         }
 
         if (config('cms-toolkit.enabled.media-library')) {
@@ -145,6 +125,10 @@ class CmsToolkitServiceProvider extends ServiceProvider
     {
         if (config('cms-toolkit.enabled.users-management')) {
             config(['auth.providers.users' => require __DIR__ . '/../config/auth.php']);
+            config(['mail.markdown.paths' => array_merge(
+                [__DIR__ . '/../views/emails'],
+                config('mail.markdown.paths')
+            )]);
         }
 
         $this->publishes([__DIR__ . '/../config/cms-toolkit-publish.php' => config_path('cms-toolkit.php')], 'config');
@@ -154,29 +138,26 @@ class CmsToolkitServiceProvider extends ServiceProvider
     private function mergeConfigs()
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/cms-toolkit.php', 'cms-toolkit');
-        $this->mergeConfigFrom(__DIR__ . '/../config/services.php', 'services');
-        $this->mergeConfigFrom(__DIR__ . '/../config/laravel-env-validator.php', 'laravel-env-validator');
         $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
         $this->mergeConfigFrom(__DIR__ . '/../config/frontend.php', 'cms-toolkit.frontend');
         $this->mergeConfigFrom(__DIR__ . '/../config/debug.php', 'cms-toolkit.debug');
         $this->mergeConfigFrom(__DIR__ . '/../config/seo.php', 'cms-toolkit.seo');
-        $this->mergeConfigFrom(__DIR__ . '/../config/blocks.php', 'cms-toolkit.block-editor');
+        $this->mergeConfigFrom(__DIR__ . '/../config/blocks.php', 'cms-toolkit.block_editor');
         $this->mergeConfigFrom(__DIR__ . '/../config/enabled.php', 'cms-toolkit.enabled');
         $this->mergeConfigFrom(__DIR__ . '/../config/imgix.php', 'cms-toolkit.imgix');
         $this->mergeConfigFrom(__DIR__ . '/../config/media-library.php', 'cms-toolkit.media_library');
         $this->mergeConfigFrom(__DIR__ . '/../config/file-library.php', 'cms-toolkit.file_library');
-        $this->mergeConfigFrom(__DIR__ . '/../config/imgix.php', 'cms-toolkit.imgix');
     }
 
     private function publishMigrations()
     {
-        $migrations = ['CreateTagsTables', 'CreateModelLocksTable'];
+        $migrations = ['CreateTagsTables', 'CreateModelLocksTable', 'CreateBlocksTable'];
 
         $optionalMigrations = [
             'CreateUsersTables' => 'users-management',
             'CreateFilesTables' => 'file-library',
             'CreateMediasTables' => 'media-library',
-            'CreateFeaturesTable' => 'buckets'
+            'CreateFeaturesTable' => 'buckets',
         ];
 
         if ($this->app->runningInConsole()) {
@@ -212,15 +193,13 @@ class CmsToolkitServiceProvider extends ServiceProvider
 
     private function registerCommands()
     {
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                Setup::class,
-                UpdateCmsAssets::class,
-                ModuleMake::class,
-                CreateSuperAdmin::class,
-                RefreshLQIP::class,
-            ]);
-        }
+        $this->commands([
+            Setup::class,
+            ModuleMake::class,
+            CreateSuperAdmin::class,
+            RefreshLQIP::class,
+            GenerateBlocks::class,
+        ]);
     }
 
     private function requireHelpers()
@@ -230,12 +209,12 @@ class CmsToolkitServiceProvider extends ServiceProvider
         require_once __DIR__ . '/Helpers/media_library_helpers.php';
         require_once __DIR__ . '/Helpers/frontend_helpers.php';
         require_once __DIR__ . '/Helpers/migrations_helpers.php';
-        require_once __DIR__ . '/Helpers/model_helpers.php';
+        require_once __DIR__ . '/Helpers/helpers.php';
     }
 
     private function publishPublicAssets()
     {
-        $this->publishes([__DIR__ . '/../assets' => public_path('assets/admin')], 'assets');
+        $this->publishes([__DIR__ . '/../assets' => public_path('assets')], 'assets');
     }
 
     private function includeView($view, $expression)
@@ -263,25 +242,30 @@ class CmsToolkitServiceProvider extends ServiceProvider
             return "<?php dd({$param}); ?>";
         });
 
+        $blade->directive('dumpData', function ($data) {
+            return sprintf("<?php (new Illuminate\Support\Debug\Dumper)->dump(%s); exit; ?>",
+                null != $data ? $data : "get_defined_vars()");
+        });
+
         $blade->directive('formField', function ($expression) use ($blade) {
-            return $this->includeView('layouts.form_partials._', $expression);
+            return $this->includeView('partials.form._', $expression);
         });
 
-        $blade->directive('extendableView', function ($expression) use ($blade) {
-            return $this->includeView('layouts.resources._', $expression);
-        });
-
-        $blade->directive('resourceView', function ($expression) use ($blade) {
+        $blade->directive('partialView', function ($expression) use ($blade) {
 
             $expressionAsArray = str_getcsv($expression, ',', '\'');
 
             list($moduleName, $viewName) = $expressionAsArray;
+            $partialNamespace = 'cms-toolkit::partials';
 
-            $partialNamespace = 'cms-toolkit::layouts.resources';
+            $viewModule = "'admin.'.$moduleName.'.{$viewName}'";
+            $viewApplication = "'admin.partials.{$viewName}'";
+            $viewModuleToolkit = "'cms-toolkit::'.$moduleName.'.{$viewName}'";
+            $view = $partialNamespace . "." . $viewName;
 
-            $viewModule = "'admin.'.$moduleName.'._{$viewName}'";
-            $viewApplication = "'admin.layouts.resources._{$viewName}'";
-            $view = $partialNamespace . "._" . $viewName;
+            if (!isset($moduleName) || is_null($moduleName)) {
+                $viewModule = $viewApplication;
+            }
 
             $expression = explode(',', $expression);
             $expression = array_slice($expression, 2);
@@ -295,6 +279,8 @@ class CmsToolkitServiceProvider extends ServiceProvider
                 echo \$__env->make($viewModule, array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             } elseif( view()->exists($viewApplication)) {
                 echo \$__env->make($viewApplication, array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
+            } elseif( view()->exists($viewModuleToolkit)) {
+                echo \$__env->make($viewModuleToolkit, array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             } elseif( view()->exists('$view')) {
                 echo \$__env->make('$view', array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             }
@@ -305,11 +291,24 @@ class CmsToolkitServiceProvider extends ServiceProvider
     private function addViewComposers()
     {
         if (config('cms-toolkit.enabled.users-management')) {
-            View::composer('admin.*', CurrentUser::class);
-            View::composer('cms-toolkit::*', CurrentUser::class);
+            View::composer(['admin.*', 'cms-toolkit::*'], CurrentUser::class);
         }
 
-        View::composer('cms-toolkit::layouts.navigation.*', ActiveNavigation::class);
+        if (config('cms-toolkit.enabled.media-library')) {
+            View::composer('cms-toolkit::layouts.main', UploaderConfig::class);
+        }
+
+        View::composer('cms-toolkit::partials.navigation.*', ActiveNavigation::class);
+
+        View::composer(['admin.*', 'templates.*', 'cms-toolkit::*'], function ($view) {
+            $with = array_merge([
+                'renderForBlocks' => false,
+                'renderForModal' => false,
+            ], $view->getData());
+
+            return $view->with($with);
+        });
+
     }
 
     private function registerAndPublishTranslations()

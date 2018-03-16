@@ -4,9 +4,8 @@ namespace A17\CmsToolkit\Repositories;
 
 use A17\CmsToolkit\Models\Behaviors\Sortable;
 use A17\CmsToolkit\Repositories\Behaviors\HandleDates;
-use Carbon\Carbon;
 use DB;
-use Illuminate\Support\Str;
+use Log;
 
 abstract class ModuleRepository
 {
@@ -16,7 +15,9 @@ abstract class ModuleRepository
 
     protected $ignoreFieldsBeforeSave = [];
 
-    public function get($with = [], $scopes = [], $orders = [], $perPage = 15, $forcePagination = false)
+    protected $countScope = [];
+
+    public function get($with = [], $scopes = [], $orders = [], $perPage = 20, $forcePagination = false)
     {
         $query = $this->model->with($with);
 
@@ -32,6 +33,52 @@ abstract class ModuleRepository
         }
 
         return $query->paginate($perPage);
+    }
+
+    public function getCountByStatusSlug($slug, $scope = [])
+    {
+        $this->countScope = $scope;
+
+        switch ($slug) {
+            case 'all':
+                return $this->getCountForAll();
+            case 'published':
+                return $this->getCountForPublished();
+            case 'draft':
+                return $this->getCountForDraft();
+            case 'trash':
+                return $this->getCountForTrash();
+        }
+
+        foreach (class_uses_recursive(get_called_class()) as $trait) {
+            if (method_exists(get_called_class(), $method = 'getCountByStatusSlug' . class_basename($trait))) {
+                if ($count = $this->$method($slug)) {
+                    return $count;
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    public function getCountForAll()
+    {
+        return $this->model->where($this->countScope)->count();
+    }
+
+    public function getCountForPublished()
+    {
+        return $this->model->where($this->countScope)->published()->count();
+    }
+
+    public function getCountForDraft()
+    {
+        return $this->model->where($this->countScope)->draft()->count();
+    }
+
+    public function getCountForTrash()
+    {
+        return $this->model->where($this->countScope)->onlyTrashed()->count();
     }
 
     public function getById($id, $with = [], $withCount = [])
@@ -67,93 +114,178 @@ abstract class ModuleRepository
 
     public function create($fields)
     {
-        $original_fields = $fields;
+        return DB::transaction(function () use ($fields) {
+            $original_fields = $fields;
 
+            $fields = $this->prepareFieldsBeforeCreate($fields);
+
+            $object = $this->model->create(array_except($fields, $this->getReservedFields()));
+
+            $this->beforeSave($object, $original_fields);
+
+            $fields = $this->prepareFieldsBeforeSave($object, $fields);
+
+            $object->push();
+
+            $this->afterSave($object, $fields);
+
+            return $object;
+        }, 3);
+    }
+
+    public function createForPreview($fields)
+    {
         $fields = $this->prepareFieldsBeforeCreate($fields);
 
-        $object = $this->model->create($fields);
+        $object = $this->model->newInstance(array_except($fields, $this->getReservedFields()));
 
-        $this->beforeSave($object, $original_fields);
-
-        $fields = $this->prepareFieldsBeforeSave($object, $fields);
-
-        $object->push();
-
-        $this->afterSave($object, $fields);
-
-        return $object;
+        return $this->hydrate($object, $fields);
     }
 
     public function update($id, $fields)
     {
-        $object = $this->model->findOrFail($id);
+        DB::transaction(function () use ($id, $fields) {
+            $object = $this->model->findOrFail($id);
 
-        $this->beforeSave($object, $fields);
+            $this->beforeSave($object, $fields);
 
-        $fields = $this->prepareFieldsBeforeSave($object, $fields);
+            $fields = $this->prepareFieldsBeforeSave($object, $fields);
 
-        $object->fill($fields);
+            $object->fill(array_except($fields, $this->getReservedFields()));
 
-        $object->push();
+            $object->push();
 
-        $this->afterSave($object, $fields);
-    }
-
-    public function preview($id, $fields)
-    {
-        $object = $this->model->findOrFail($id);
-
-        return $this->hydrateObject($object, $fields);
-    }
-
-    protected function hydrateObject($object, $fields)
-    {
-        $fields = $this->prepareFieldsBeforeSave($object, $fields);
-
-        $object->fill($fields);
-
-        $object = $this->hydrate($object, $fields);
-
-        return $object;
+            $this->afterSave($object, $fields);
+        }, 3);
     }
 
     public function updateBasic($id, $values, $scopes = [])
     {
-        if (is_null($id)) {
-            $query = $this->model->query();
+        return DB::transaction(function () use ($id, $values, $scopes) {
+            // apply scopes if no id provided
+            if (is_null($id)) {
+                $query = $this->model->query();
 
-            foreach ($scopes as $column => $value) {
-                $query->where($column, $value);
+                foreach ($scopes as $column => $value) {
+                    $query->where($column, $value);
+                }
+
+                $query->update($values);
+
+                $query->get()->each(function ($object) use ($values) {
+                    $this->afterUpdateBasic($object, $values);
+                });
+
+                return true;
             }
 
-            $query->update($values);
-        }
+            // apply to all ids if array of ids provided
+            if (is_array($id)) {
+                $query = $this->model->whereIn('id', $id);
+                $query->update($values);
 
-        if (($object = $this->model->find($id)) != null) {
-            $object->update($values);
-            $this->afterUpdateBasic($object, $values);
-        }
+                $query->get()->each(function ($object) use ($values) {
+                    $this->afterUpdateBasic($object, $values);
+                });
+
+                return true;
+            }
+
+            if (($object = $this->model->find($id)) != null) {
+                $object->update($values);
+                $this->afterUpdateBasic($object, $values);
+                return true;
+            }
+
+            return false;
+        }, 3);
     }
 
     public function setNewOrder($ids)
     {
-        $this->model->setNewOrder($ids);
+        DB::transaction(function () use ($ids) {
+            $this->model->setNewOrder($ids);
+        }, 3);
     }
 
     public function delete($id)
     {
-        if (($object = $this->model->find($id)) != null) {
-            $object->delete();
-            $this->afterDelete($object);
-        }
+        return DB::transaction(function () use ($id) {
+            if (($object = $this->model->find($id)) != null) {
+                $object->delete();
+                $this->afterDelete($object);
+                return true;
+            }
+
+            return false;
+        }, 3);
+    }
+
+    public function bulkDelete($ids)
+    {
+        return DB::transaction(function () use ($ids) {
+            try {
+                $query = $this->model->whereIn('id', $ids);
+                $objects = $query->get();
+
+                $query->delete();
+
+                $objects->each(function ($object) {
+                    $this->afterDelete($object);
+                });
+            } catch (\Exception $e) {
+                Log::error($e);
+                return false;
+            }
+
+            return true;
+        }, 3);
+    }
+
+    public function restore($id)
+    {
+        return DB::transaction(function () use ($id) {
+            if (($object = $this->model->withTrashed()->find($id)) != null) {
+                $object->restore();
+                $this->afterRestore($object);
+                return true;
+            }
+
+            return false;
+        }, 3);
+    }
+
+    public function bulkRestore($ids)
+    {
+        return DB::transaction(function () use ($ids) {
+            try {
+                $query = $this->model->withTrashed()->whereIn('id', $ids);
+                $objects = $query->get();
+
+                $query->restore();
+
+                $objects->each(function ($object) {
+                    $this->afterRestore($object);
+                });
+            } catch (\Exception $e) {
+                Log::error($e);
+                return false;
+            }
+
+            return true;
+        }, 3);
     }
 
     public function cleanupFields($object, $fields)
     {
         if (property_exists($this->model, 'checkboxes')) {
             foreach ($this->model->checkboxes as $field) {
-                if (!isset($fields[$field]) && !$this->shouldIgnoreFieldBeforeSave($field)) {
-                    $fields[$field] = false;
+                if (!$this->shouldIgnoreFieldBeforeSave($field)) {
+                    if (!isset($fields[$field])) {
+                        $fields[$field] = false;
+                    } else {
+                        $fields[$field] = !empty($fields[$field]);
+                    }
                 }
             }
         }
@@ -242,6 +374,15 @@ abstract class ModuleRepository
         }
     }
 
+    public function afterRestore($object)
+    {
+        foreach (class_uses_recursive(get_called_class()) as $trait) {
+            if (method_exists(get_called_class(), $method = 'afterRestore' . class_basename($trait))) {
+                $this->$method($object);
+            }
+        }
+    }
+
     public function hydrate($object, $fields)
     {
         foreach (class_uses_recursive(get_called_class()) as $trait) {
@@ -255,7 +396,7 @@ abstract class ModuleRepository
 
     public function getFormFields($object)
     {
-        $fields = $object->toArray();
+        $fields = $object->attributesToArray();
 
         foreach (class_uses_recursive(get_called_class()) as $trait) {
             if (method_exists(get_called_class(), $method = 'getFormFields' . class_basename($trait))) {
@@ -264,12 +405,6 @@ abstract class ModuleRepository
         }
 
         return $fields;
-    }
-
-    public function getOldFormFieldsOnCreate()
-    {
-        $object = new $this->model();
-        return $this->getFormFields($object);
     }
 
     public function filter($query, array $scopes = [])
@@ -282,15 +417,24 @@ abstract class ModuleRepository
 
         unset($scopes['search']);
 
+        if (isset($scopes['exceptIds'])) {
+            $query->whereNotIn($this->model->getTable() . '.id', $scopes['exceptIds']);
+            unset($scopes['exceptIds']);
+        }
+
         foreach ($scopes as $column => $value) {
-            if (is_array($value)) {
-                $query->whereIn($column, $value);
-            } elseif ($column[0] == '%') {
-                $value[0] == '!' ? $query->where(substr($column, 1), 'not like', '%' . substr($value, 1) . '%') : $query->where(substr($column, 1), 'like', '%' . $value . '%');
-            } elseif ($value[0] == '!') {
-                $query->where($column, '<>', substr($value, 1));
-            } else {
-                $query->where($column, $value);
+            if (method_exists($this->model, 'scope' . ucfirst($column))) {
+                $query->$column();
+            } elseif (!empty($value)) {
+                if (is_array($value)) {
+                    $query->whereIn($column, $value);
+                } elseif ($column[0] == '%') {
+                    $value && ($value[0] == '!') ? $query->where(substr($column, 1), 'not like', '%' . substr($value, 1) . '%') : $query->where(substr($column, 1), 'like', '%' . $value . '%');
+                } elseif ($value[0] == '!') {
+                    $query->where($column, '<>', substr($value, 1));
+                } else {
+                    $query->where($column, $value);
+                }
             }
         }
 
@@ -312,21 +456,15 @@ abstract class ModuleRepository
         return $query;
     }
 
-    public function getFormFieldsForMultiSelect($fields, $relation, $attribute = 'id', $form_field_name = null)
+    public function getFormFieldsForBrowser($object, $relation, $routePrefix = null, $titleKey = 'title', $moduleName = null)
     {
-        if (isset($fields[$relation])) {
-            $list = [];
-            foreach ($fields[$relation] as $value) {
-                $list[$value['id']] = $value[$attribute];
-            }
-
-            $fields[$form_field_name ?? $relation] = $list;
-            if ($form_field_name) {
-                unset($fields[$relation]);
-            }
-        }
-
-        return $fields;
+        return $object->$relation->map(function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName) {
+            return [
+                'id' => $relatedElement->id,
+                'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
+                'edit' => moduleRoute($moduleName ?? $relation, $routePrefix ?? '', 'edit', $relatedElement->id),
+            ];
+        })->toArray();
     }
 
     public function updateOneToMany($object, $fields, $relationship, $formField, $attribute)
@@ -348,112 +486,25 @@ abstract class ModuleRepository
 
     public function updateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute = 'position')
     {
-        $relatedElements = isset($fields[$relationship]) && !empty($fields[$relationship]) ? explode(',', $fields[$relationship]) : [];
+        $fieldsHasElements = isset($fields['browsers'][$relationship]) && !empty($fields['browsers'][$relationship]);
+        $relatedElements = $fieldsHasElements ? $fields['browsers'][$relationship] : [];
         $relatedElementsWithPosition = [];
         $position = 1;
         foreach ($relatedElements as $relatedElement) {
-            $relatedElementsWithPosition[$relatedElement] = [$positionAttribute => $position++];
+            $relatedElementsWithPosition[$relatedElement['id']] = [$positionAttribute => $position++];
         }
 
         $object->$relationship()->sync($relatedElementsWithPosition);
     }
 
-    public function hydrateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute = 'position', $model = null)
+    public function updateBrowser($object, $fields, $relationship, $positionAttribute = 'position')
     {
-        $relatedElements = isset($fields[$relationship]) && !empty($fields[$relationship]) ? explode(',', $fields[$relationship]) : [];
-
-        $relationRepository = $this->getModelRepository($relationship, $model);
-        $relatedElementsCollection = collect();
-        $position = 1;
-
-        foreach ($relatedElements as $relatedElement) {
-            $newRelatedElement = $relationRepository->getById($relatedElement);
-            $pivot = $newRelatedElement->newPivot($object, [$positionAttribute => $position++], $object->$relationship()->getTable(), true);
-            $newRelatedElement->setRelation('pivot', $pivot);
-            $relatedElementsCollection->push($newRelatedElement);
-        }
-
-        $object->setRelation($relationship, $relatedElementsCollection);
+        $this->updateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute);
     }
 
-    public function updateRepeaterMany($object, $fields, $relation, $keepExisting = true, $model = null)
+    public function updateMultiSelect($object, $fields, $relationship)
     {
-        $relationFields = $fields[$relation] ?? [];
-        $relationRepository = $this->getModelRepository($relation, $model);
-
-        if (!$keepExisting) {
-            $object->$relation()->each(function ($repeaterElement) {
-                $repeaterElement->forceDelete();
-            });
-        }
-
-        foreach ($relationFields as $relationField) {
-            $newRelation = $relationRepository->create($relationField);
-            $object->$relation()->attach($newRelation->id);
-        }
-    }
-
-    public function updateRepeater($object, $fields, $relation, $model = null)
-    {
-        $relationFields = $fields[$relation] ?? [];
-
-        $relationRepository = $this->getModelRepository($relation, $model);
-
-        // if no relation field submitted, soft deletes all associated rows
-        if (!$relationFields) {
-            $relationRepository->updateBasic(null, [
-                'deleted_at' => Carbon::now(),
-            ], [
-                $this->model->getForeignKey() => $object->id,
-            ]);
-        }
-
-        // keep a list of updated and new rows to delete (soft delete?) old rows that were deleted from the frontend
-        $currentIdList = [];
-
-        foreach ($relationFields as $relationField) {
-            if (isset($relationField['id'])) {
-                // row already exists, let's update
-                $relationRepository->update($relationField['id'], $relationField);
-                $currentIdList[] = $relationField['id'];
-            } else {
-                // new row, let's attach to our object and create
-                $relationField[$this->model->getForeignKey()] = $object->id;
-                $newRelation = $relationRepository->create($relationField);
-                $currentIdList[] = $newRelation['id'];
-            }
-        }
-
-        foreach ($object->$relation->pluck('id') as $id) {
-            if (!in_array($id, $currentIdList)) {
-                $relationRepository->updateBasic(null, [
-                    'deleted_at' => Carbon::now(),
-                ], [
-                    'id' => $id,
-                ]);
-            }
-        }
-    }
-
-    public function getFormFieldsForRepeater($object, $relation, $model = null)
-    {
-        $relationFormFields = [];
-        $relationRepository = $this->getModelRepository($relation, $model);
-
-        foreach ($object->$relation as $index => $relationItem) {
-            $relationFormFields[$index] = $relationRepository->getFormFields($relationItem);
-        }
-
-        return $relationFormFields;
-    }
-
-    private function getModelRepository($relation, $model = null)
-    {
-        if (!$model) {
-            $model = ucfirst(str_singular($relation));
-        }
-
-        return app(config('cms-toolkit.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
+        $object->$relationship()->sync($fields[$relationship] ?? []);
     }
 
     public function addRelationFilterScope($query, &$scopes, $scopeField, $scopeRelation)
@@ -477,10 +528,12 @@ abstract class ModuleRepository
 
     public function searchIn($query, &$scopes, $scopeField, $orFields = [])
     {
+
         if (isset($scopes[$scopeField]) && is_string($scopes[$scopeField])) {
-            $query->where(function ($query) use ($scopes, $scopeField, $orFields) {
+            $query->where(function ($query) use (&$scopes, $scopeField, $orFields) {
                 foreach ($orFields as $field) {
                     $query->orWhere($field, 'like', '%' . $scopes[$scopeField] . '%');
+                    unset($scopes[$field]);
                 }
             });
         }
@@ -504,47 +557,27 @@ abstract class ModuleRepository
         return in_array($ignore, $this->ignoreFieldsBeforeSave);
     }
 
-    public function getItemBySlug($params, $with = [])
+    public function getReservedFields()
     {
-        if (!isset($params['slug'])) {
-            return null;
+        return [
+            'medias',
+            'browsers',
+            'repeaters',
+            'blocks',
+        ];
+    }
+
+    protected function getModelRepository($relation, $model = null)
+    {
+        if (!$model) {
+            $model = ucfirst(str_singular($relation));
         }
 
-        if (!isset($params['locale'])) {
-            $params['locale'] = app()->getLocale();
-        }
+        return app(config('cms-toolkit.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
+    }
 
-        $tableName = $this->model->getTable();
-        $tableSlugName = Str::singular($tableName) . '_slugs';
-        $tableId = Str::singular($tableName) . '_id';
-
-        $object = DB::table($tableName)
-            ->select("{$tableName}.id", "{$tableSlugName}.active")
-            ->join($tableSlugName, "{$tableSlugName}.{$tableId}", '=', "{$tableName}.id")
-            ->where("{$tableSlugName}.locale", $params['locale'])
-            ->where("{$tableSlugName}.slug", $params['slug'])
-            ->where("{$tableName}.published", 1)
-            ->first()
-        ;
-
-        //Test if it"s an old link
-        if ($object != null && !$object->active) {
-            $object = DB::table($tableName)
-                ->select("{$tableName}.id")
-                ->join($tableSlugName, "{$tableSlugName}.{$tableId}", '=', "{$tableName}.id")
-                ->where("{$tableSlugName}.locale", $params['locale'])
-                ->where("{$tableSlugName}.{$tableId}", $object->id)
-                ->where("{$tableSlugName}.active", 1)
-                ->where("{$tableName}.published", 1)
-                ->first()
-            ;
-            if ($object != null) {
-                $object->is_redirect = 1;
-            }
-
-            return $object;
-        }
-
-        return $object != null ? $this->getById($object->id, $with) : null;
+    public function __call($method, $parameters)
+    {
+        return $this->model->$method(...$parameters);
     }
 }

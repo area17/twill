@@ -6,26 +6,37 @@ use Auth;
 
 trait HandleRevisions
 {
-    protected $except = [
-        '_method',
-        '_token',
-        'continue',
-        'finish',
-    ];
 
     public function beforeSaveHandleRevisions($object, $fields)
     {
-        $requestPayload = array_except($fields, $this->except);
         $lastRevisionPayload = json_decode($object->revisions->first()->payload ?? "{}", true);
 
-        if ($this->payloadChanged($requestPayload, $lastRevisionPayload)) {
+        if ($fields != $lastRevisionPayload) {
             $object->revisions()->create([
-                'payload' => json_encode($requestPayload),
+                'payload' => json_encode($fields),
                 'user_id' => Auth::user()->id ?? null,
             ]);
         }
 
         return $fields;
+    }
+
+    public function preview($id, $fields)
+    {
+        $object = $this->model->findOrFail($id);
+
+        return $this->hydrateObject($object, $fields);
+    }
+
+    protected function hydrateObject($object, $fields)
+    {
+        $fields = $this->prepareFieldsBeforeSave($object, $fields);
+
+        $object->fill(array_except($fields, $this->getReservedFields()));
+
+        $object = $this->hydrate($object, $fields);
+
+        return $object;
     }
 
     public function previewForRevision($id, $revisionId)
@@ -34,23 +45,81 @@ trait HandleRevisions
 
         $fields = json_decode($object->revisions->where('id', $revisionId)->first()->payload, true);
 
-        return $this->hydrateObject($object, $fields);
+        return $this->hydrateObject($this->model->newInstance(), $fields);
     }
 
-    public function previewForCompare($id)
+    public function hydrateMultiSelect($object, $fields, $relationship, $model = null)
     {
-        $object = $this->model->findOrFail($id);
+        $fieldsHasElements = isset($fields[$relationship]) && !empty($fields[$relationship]);
+        $relatedElements = $fieldsHasElements ? $fields[$relationship] : [];
 
-        $fields = json_decode($object->revisions->first()->payload, true);
+        $relationRepository = $this->getModelRepository($relationship, $model);
+        $relatedElementsCollection = collect();
 
-        return $this->hydrateObject($object, $fields);
+        foreach ($relatedElements as $relatedElement) {
+            $newRelatedElement = $relationRepository->getById($relatedElement);
+            $relatedElementsCollection->push($newRelatedElement);
+        }
+
+        $object->setRelation($relationship, $relatedElementsCollection);
     }
 
-    private function payloadChanged($requestPayload, $revisionPayload)
+    public function hydrateBrowser($object, $fields, $relationship, $positionAttribute = 'position', $model = null)
     {
-        $requestPayloadValues = array_values($requestPayload);
-        $revisionPayloadValues = array_values($revisionPayload);
+        return $this->hydrateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute, $model);
+    }
 
-        return array_sort_recursive($requestPayloadValues) !== array_sort_recursive($revisionPayloadValues);
+    public function hydrateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute = 'position', $model = null)
+    {
+        $fieldsHasElements = isset($fields['browsers'][$relationship]) && !empty($fields['browsers'][$relationship]);
+        $relatedElements = $fieldsHasElements ? $fields['browsers'][$relationship] : [];
+
+        $relationRepository = $this->getModelRepository($relationship, $model);
+        $relatedElementsCollection = collect();
+        $position = 1;
+
+        foreach ($relatedElements as $relatedElement) {
+            $newRelatedElement = $relationRepository->getById($relatedElement['id']);
+            $pivot = $newRelatedElement->newPivot($object, [$positionAttribute => $position++], $object->$relationship()->getTable(), true);
+            $newRelatedElement->setRelation('pivot', $pivot);
+            $relatedElementsCollection->push($newRelatedElement);
+        }
+
+        $object->setRelation($relationship, $relatedElementsCollection);
+    }
+
+    public function hydrateRepeater($object, $fields, $relationship, $model)
+    {
+        $relationFields = $fields['repeaters'][$relationship] ?? [];
+
+        $relationRepository = $this->getModelRepository($relationship, $model);
+
+        $repeaterCollection = collect();
+
+        foreach ($relationFields as $index => $relationField) {
+            $relationField['position'] = $index + 1;
+            $relationField[$this->model->getForeignKey()] = $object->id;
+            unset($relationField['id']);
+
+            $newRepeater = $relationRepository->createForPreview($relationField);
+
+            $repeaterCollection->push($newRepeater);
+        }
+
+        $object->setRelation($relationship, $repeaterCollection);
+    }
+
+    public function getCountForMine()
+    {
+        return $this->model->where($this->countScope)->mine()->count();
+    }
+
+    public function getCountByStatusSlugHandleRevisions($slug)
+    {
+        if ($slug === 'mine') {
+            return $this->getCountForMine();
+        }
+
+        return false;
     }
 }

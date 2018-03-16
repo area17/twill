@@ -1,0 +1,21 @@
+@mixin accordion-trigger() {
+  $trigger_height:55px;
+  padding:0 (20px + 10px + 10px) 0 20px;
+  display:block;
+  @include btn-reset;
+  background:transparent;
+  height:$trigger_height;
+  width:100%;
+  text-align:left;
+  position:relative;
+
+  .icon {
+    display:block;
+    transform-origin:50% 50%;
+    position:absolute;
+    right:20px;
+    top:50%;
+    margin-top: -4px;
+    transition: transform .25s linear;
+  }
+}

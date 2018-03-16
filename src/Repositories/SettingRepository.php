@@ -24,13 +24,12 @@ class SettingRepository
         return $this->model->when($section, function ($query) use ($section) {
             $query->where('section', $section);
         })->with('translations')->get()->mapWithKeys(function ($setting) {
-            if ($setting->translations->count() >= 1) {
-                return $setting->translations->mapWithKeys(function ($translation) use ($setting) {
-                    return [$setting->key . '_' . $translation->locale => $translation->value];
-                });
+            $settingValue = [];
+            foreach ($setting->translations as $translation) {
+                $settingValue[$translation->locale] = $translation->value;
             }
 
-            return [$setting->key => $setting->translations->first()->value];
+            return [$setting->key => $settingValue];
         });
     }
 
@@ -38,12 +37,10 @@ class SettingRepository
     {
         $section = $section ? ['section' => $section] : [];
 
-        $settingsTranslatedDotted = collect($settingsFields)->mapWithKeys(function ($value, $key) {
-            return [(ends_with($key, getLocales()) ? str_replace_last('_', '.', $key) : $key) => $value];
-        });
-
-        foreach ($settingsTranslatedDotted as $key => $value) {
-            array_set($settingsTranslated, $key, ['value' => $value] + ['active' => true]);
+        foreach (collect($settingsFields)->filter() as $key => $value) {
+            foreach (getLocales() as $locale) {
+                array_set($settingsTranslated, $key, [$locale => ['value' => $value[$locale]] + ['active' => true]]);
+            }
         }
 
         foreach ($settingsTranslated as $key => $values) {

@@ -1,0 +1,10 @@
+.app.error {
+  min-height:calc(100vh - 110px);
+  padding-top: 45px;
+  background: $color__yellow;
+}
+
+.app.error p {
+  margin-bottom: 25px;
+  line-height: 24px;
+}

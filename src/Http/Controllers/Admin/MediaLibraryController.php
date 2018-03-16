@@ -7,7 +7,6 @@ use A17\CmsToolkit\Services\Uploader\SignS3Upload;
 use A17\CmsToolkit\Services\Uploader\SignS3UploadListener;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
-use ImageService;
 use Input;
 
 class MediaLibraryController extends ModuleController implements SignS3UploadListener
@@ -21,11 +20,11 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     ];
 
     protected $defaultFilters = [
-        'fSearch' => 'search',
-        'fTag' => 'tag_id',
+        'search' => 'search',
+        'tag' => 'tag_id',
     ];
 
-    protected $perPage = 30;
+    protected $perPage = 40;
 
     protected $endpointType;
 
@@ -33,48 +32,73 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     {
         parent::__construct($app, $request);
         $this->removeMiddleware('can:edit');
-        $this->middleware('can:edit', ['only' => ['create', 'signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
+        $this->middleware('can:edit', ['only' => ['signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = config('cms-toolkit.media_library.endpoint_type');
     }
 
-    public function index()
+    public function index($parentModuleId = null)
     {
-        $libraryDisk = config('cms-toolkit.media_library.disk');
-
-        $uploaderConfig = [
-            'endpointType' => $this->endpointType,
-            'endpoint' => $this->endpointType === 'local' ? route('admin.media-library.medias.store') : s3Endpoint($libraryDisk),
-            'successEndpoint' => route('admin.media-library.medias.store'),
-            'completeEndpoint' => route('admin.media-library.medias.index') . "?new_uploads_ids=",
-            'signatureEndpoint' => route('admin.media-library.sign-s3-upload'),
-            'endpointRegion' => config('filesystems.disks.' . $libraryDisk . '.region', 'none'),
-            'accessKey' => config('filesystems.disks.' . $libraryDisk . '.key', 'none'),
-            'csrfToken' => csrf_token(),
-            'acl' => config('cms-toolkit.media_library.acl'),
-            'filesizeLimit' => config('cms-toolkit.media_library.filesize_limit'),
-        ];
-
-        if ($this->request->ajax()) {
-            return view("cms-toolkit::medias.list", $this->getIndexData());
+        if (request()->has('except')) {
+            $prependScope['exceptIds'] = request('except');
         }
 
-        // if we are currently uploading new medias, display the media library with those medias only and disable pagination
-        if ($newUploads = $this->request->input('new_uploads_ids')) {
-            $prependScope = ['id' => explode(',', $newUploads)];
-            $this->perPage = -1;
-        }
-
-        return view("cms-toolkit::medias.index", $this->getIndexData($prependScope ?? []) + $uploaderConfig + $this->request->all());
+        return $this->getIndexData($prependScope ?? []);
     }
 
-    public function indexData($request)
+    public function getIndexData($prependScope = [])
     {
+        $scopes = $this->filterScope($prependScope);
+        $items = $this->getIndexItems($scopes);
+
         return [
-            'fTagList' => [null => 'All tags'] + $this->repository->getTagsList(),
+            'items' => $items->map(function ($item) {
+                return $this->buildMedia($item);
+            })->toArray(),
+            'maxPage' => $items->lastPage(),
+            'total' => $items->total(),
+            'tags' => $this->repository->getTagsList(),
         ];
     }
 
-    public function store()
+    private function buildMedia($item)
+    {
+        return $item->toCmsArray() + [
+            'tags' => $item->tags->map(function ($tag) {
+                return $tag->name;
+            }),
+            'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
+            'updateUrl' => route('admin.media-library.medias.single-update'),
+            'updateBulkUrl' => route('admin.media-library.medias.bulk-update'),
+            'deleteBulkUrl' => route('admin.media-library.medias.bulk-delete'),
+            'metadatas' => [
+                'default' => [
+                    'caption' => $item->caption,
+                    'altText' => $item->alt_text,
+                    'video' => null,
+                ],
+                'custom' => [
+                    'caption' => null,
+                    'altText' => null,
+                    'video' => null,
+                ],
+            ],
+        ];
+    }
+
+    protected function getRequestFilters()
+    {
+        if (request()->has('search')) {
+            $requestFilters['search'] = request('search');
+        }
+
+        if (request()->has('tag')) {
+            $requestFilters['tag'] = request('tag');
+        }
+
+        return $requestFilters ?? [];
+    }
+
+    public function store($parentModuleId = null)
     {
         $request = app(MediaRequest::class);
 
@@ -84,7 +108,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
             $media = $this->storeReference($request);
         }
 
-        return response()->json(['id' => $media->id, 'success' => true], 200);
+        return response()->json(['media' => $this->buildMedia($media), 'success' => true], 200);
     }
 
     public function storeFile($request)
@@ -121,37 +145,6 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         return $this->repository->create($fields);
     }
 
-    public function edit($id)
-    {
-        $media = $this->repository->getById($id);
-        return view('cms-toolkit::medias.form', [
-            'isBulkUpdate' => false,
-            'media' => $media,
-            'tags' => $media->tags,
-            'moduleName' => $this->moduleName,
-            'modelName' => $this->modelName,
-            'routePrefix' => $this->routePrefix,
-        ]);
-    }
-
-    public function bulkEdit()
-    {
-        $ids = $this->request->input('ids');
-        $tags = $this->repository->getTags(null, $ids);
-        return view('cms-toolkit::medias.form', [
-            'isBulkUpdate' => true,
-            'tags' => $tags,
-            'media' => $this->repository->getById(last($ids)),
-        ]);
-    }
-
-    public function tags()
-    {
-        $query = $this->request->input('query');
-        $tags = $this->repository->getTags($query);
-        return response()->json($tags, 200);
-    }
-
     public function singleUpdate()
     {
         $this->repository->update(
@@ -165,9 +158,12 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     public function bulkUpdate()
     {
         $ids = explode(',', $this->request->input('ids'));
+
         $previousCommonTags = $this->repository->getTags(null, $ids);
+        $newTags = array_filter(explode(',', $this->request->input('tags')));
+
         foreach ($ids as $id) {
-            $this->repository->update($id, ['bulk_tags' => $this->request->input('tags'), 'previous_common_tags' => $previousCommonTags]);
+            $this->repository->update($id, ['bulk_tags' => $newTags, 'previous_common_tags' => $previousCommonTags]);
         }
 
         return response()->json([], 200);
@@ -186,24 +182,5 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     public function policyIsNotValid()
     {
         return response()->json(["invalid" => true], 500);
-    }
-
-    public function thumbnail()
-    {
-        $id = $this->request->input('id');
-        $media = $this->repository->getById($id);
-        return ImageService::getCmsUrl($media->uuid, ["w" => "150", "h" => "150"]);
-    }
-
-    public function crop()
-    {
-        $media = $this->repository->getById($this->request->input('id'));
-        $crop = json_decode($this->request->input('crop'), true);
-
-        return view('cms-toolkit::medias.crop_template')->with([
-            'media' => $media,
-            'crop' => $crop,
-            'blockRatio' => $this->request->input('ratio'),
-        ]);
     }
 }

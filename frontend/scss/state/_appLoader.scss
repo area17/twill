@@ -1,0 +1,59 @@
+/***
+
+APP is loading
+==============
+
+Show a loading mention at page load
+
+***/
+
+/* https://medium.com/vuejs-tips/v-cloak-45a05da28dc4 */
+
+.main {
+  position:relative;
+}
+
+@keyframes fadeInLoader {
+  0% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+.appLoader {
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+  color:$color__text--light;
+  text-align:center;
+  z-index:$zindex__loader;
+  display:block;
+/*    letter-spacing:0.25em;
+    text-transform:uppercase;*/
+  transition: opacity 0.35s ease, visibility 0s 0.35s;
+  pointer-events: none;
+  opacity:0;
+  visibility:hidden;
+}
+
+.appLoader > span {
+  display:inline-block;
+  margin-top:20vh;
+  opacity:0;
+  animation:fadeInLoader 1s normal forwards;
+  animation-delay: 0.6s;
+}
+
+.app[v-cloak] > * {
+  visibility:hidden;
+}
+
+.app[v-cloak] + .appLoader {
+  opacity:1;
+  visibility: visible;
+  transition: opacity 0.35s;
+}

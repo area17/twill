@@ -1,0 +1,89 @@
+/***
+
+Loader
+======
+
+3 dots fading in/out in sequence
+
+```
+<div class="styleguide--demo">
+    <span class="loader"><span></span></span>
+</div>
+```
+
+***/
+
+@keyframes fadeIn {
+  10% {
+    opacity:1;
+  }
+  50% {
+    opacity:0.2;
+  }
+  90% {
+    opacity:1;
+  }
+}
+
+.loader {
+  height:8px;
+  width:8px;
+  display:block;
+  overflow:visible;
+  position:relative;
+
+  /* dots */
+  span,
+  &::before,
+  &::after {
+    background:$color__icons;
+    display:block;
+    border-radius:50%;
+    animation: fadeIn 1.8s infinite;
+    height:8px;
+    width:8px;
+    display:block;
+  }
+
+  &::before,
+  &::after {
+    content:'';
+    position:absolute;
+    top:0;
+  }
+
+  span {
+    animation-delay: 0.3s;
+  }
+
+  &::before {
+    left:-16px;
+    animation-delay: 0;
+  }
+
+  &::after {
+    left:16px;
+    animation-delay: 0.6s;
+  }
+}
+
+.loader--small {
+  height:6px;
+  width:6px;
+
+  /* dots */
+  span,
+  &::before,
+  &::after {
+   height:6px;
+   width:6px;
+  }
+
+  &::before {
+   left:-12px;
+  }
+
+  &::after {
+    left:12px;
+  }
+}

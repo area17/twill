@@ -1,0 +1,20 @@
+/***
+
+ENV IS SHOWING
+==============
+
+Show a little env bar when scrolled enough
+
+***/
+
+.env::before {
+  transition: transform .3s linear;
+  transform:translateY(-100%);
+}
+
+.s--env {
+  .env::before {
+    transform:translateY(0);
+  }
+}
+

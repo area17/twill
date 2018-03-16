@@ -1,0 +1,99 @@
+$include-icons: false; // see icons.scss!
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ reset
+
+@import 'setup/resets';
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ variables */
+
+@import 'setup/variables';
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ colors */
+
+@import 'setup/colors';
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ functions/mixins
+@import 'setup/mixins';
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ typography */
+
+@import 'setup/typography';
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ grid overlay */
+
+@import 'setup/design-grids';
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ icons image-map */
+
+//@import '../icons/icons';
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ icon classes */
+
+@import 'setup/icons';
+@import 'setup/icons-files';
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ placeholders */
+
+@import 'setup/placeholders';
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ atoms */
+
+@import 'atoms/general-styles';
+@import 'atoms/fonts-styles';
+@import 'atoms/underlined';
+@import 'atoms/external';
+@import 'atoms/icon';
+@import 'atoms/envlabel';
+@import 'atoms/tooltip';
+@import 'atoms/tag';
+@import 'atoms/ham';
+@import 'atoms/notif';
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ molecules */
+
+@import 'molecules/box';
+@import 'molecules/block';
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ organisms */
+
+@import 'organisms/login';
+@import 'organisms/dashboardSearch';
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ layout */
+
+@import 'layout/body';
+@import 'layout/a17';
+@import 'layout/column';
+@import 'layout/error';
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ sections */
+
+@import 'globals/header';
+@import 'globals/headerMobile';
+@import 'globals/headerSearch';
+@import 'globals/nav';
+@import 'globals/navUnder';
+@import 'globals/breadcrumb';
+@import 'globals/navbar';
+@import 'globals/secondarynav';
+@import 'globals/footer';
+@import 'globals/draggable';
+@import 'globals/form';
+@import 'globals/listing';
+@import 'globals/sticky';
+@import 'globals/transitions';
+@import 'globals/loader';
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ sections */
+
+@import 'vendor/flatpickr';
+@import 'vendor/vselect';
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ states */
+
+@import 'state/appLoader';
+@import 'state/modal';
+@import 'state/overlay';
+@import 'state/nav';
+@import 'state/env';

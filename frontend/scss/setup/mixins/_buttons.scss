@@ -1,0 +1,14 @@
+// @mixin btn-reset
+@mixin btn-reset() {
+  background-color:transparent;
+  -webkit-appearance: none;
+  cursor: pointer;
+  font-size:1em;
+  outline: none;
+  margin:0;
+  border:0 none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow:hidden;
+  letter-spacing:inherit;
+}
