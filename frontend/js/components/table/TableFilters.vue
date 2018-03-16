@@ -1,7 +1,7 @@
 <template>
   <div>
     <ul class="secondarynav secondarynav--desktop" slot="navigation">
-        <li v-for="(navItem, index) in navFilters" class="secondarynav__item" :class="{ 's--on' : navActive === navItem.slug }">
+        <li v-for="navItem in navFilters" class="secondarynav__item" :class="{ 's--on' : navActive === navItem.slug }">
             <a href="#" v-on:click.prevent="filterStatus(navItem.slug)">
                 <span class="secondarynav__link">{{ navItem.name }}</span><span class="secondarynav__number">({{ navItem.number }})</span>
             </a>
@@ -15,7 +15,7 @@
             </a17-button>
             <div slot="dropdown__content">
                 <ul>
-                    <li v-for="(navItem, index) in navFilters" class="secondarynav__item">
+                    <li v-for="navItem in navFilters" class="secondarynav__item">
                         <a href="#" v-on:click.prevent="filterStatus(navItem.slug)">
                             <span class="secondarynav__link">{{ navItem.name }}</span><span class="secondarynav__number">({{ navItem.number }})</span>
                         </a>

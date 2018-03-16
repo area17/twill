@@ -315,7 +315,6 @@
     }
   }
 
-
   /* Modal with form */
   .modal--form {
     .modal__content {
