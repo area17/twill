@@ -9,7 +9,8 @@ module.exports = {
   env: {
     browser: true,
   },
-  // https://github.com/standard/standard
+  // Standard JS : https://github.com/standard/standard
+  // VueJs - Priority A: Essential https://github.com/vuejs/eslint-plugin-vue#bulb-rules
   extends: [
     'standard',
     'plugin:vue/essential'
@@ -20,7 +21,7 @@ module.exports = {
   ],
   // add your custom rules here
   'rules': {
-    // v-key in vue v-for loop
+    // no need of v-key in vue v-for loop
     'vue/require-v-for-key': 'off',
     // indent
     'indent': ['warn', 2],
@@ -35,15 +36,15 @@ module.exports = {
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   },
-	overrides: [
-		{
-			files: ["*.vue"],
-			rules: {
-				"indent": "off",
-				"vue/script-indent": ['warn', 2, {
+  overrides: [
+    {
+      files: ["*.vue"],
+      rules: {
+        "indent": "off",
+        "vue/script-indent": ['warn', 2, {
           'baseIndent': 1
         }]
-			}
-		}
-	]
+      }
+    }
+  ]
 }
