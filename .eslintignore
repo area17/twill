@@ -1,0 +1,8 @@
+# Ignore generated files (custom blocks)
+/vendor/**
+/node_modules/**
+/bower_components/**
+/frontend/js/components/blocks/customs/*
+/public/**
+/assets/dist/**
+/tmp/**
