@@ -24,8 +24,8 @@ module.exports = {
     // no need of v-key in vue v-for loop
     'vue/require-v-for-key': 'off',
     // indent
-    'indent': ['warn', 2],
-    'vue/script-indent': ['warn', 2, {
+    'indent': ['error', 2],
+    'vue/script-indent': ['error', 2, {
       'baseIndent': 1
     }],
     'no-useless-escape': 0,
@@ -41,7 +41,7 @@ module.exports = {
       files: ["*.vue"],
       rules: {
         "indent": "off",
-        "vue/script-indent": ['warn', 2, {
+        "vue/script-indent": ['error', 2, {
           'baseIndent': 1
         }]
       }
