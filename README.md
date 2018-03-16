@@ -1657,6 +1657,7 @@ filename: ```views/admin/articles/form.blade.php```
 ```
 
 - Add it on the config/cms-toolkit.php on the repeaters section
+
 ```php
     'block_editor' => [
         'blocks' => [
