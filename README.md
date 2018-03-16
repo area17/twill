@@ -3,40 +3,41 @@
 ## Introduction
 
 The CMS Toolkit is a Laravel Composer package to rapidly create and deploy a completely custom admin area for our clients websites that is highly functional, beautiful and easy to use.
-It's a curation of all the features that were developed on custom admin areas since our switch to Laravel in 2014. The architecture, conventions and helpers it provides currently powers the [Opéra National de Paris 2015 website redesign](https://www.operadeparis.fr/), the [AREA 17 2016 website redesign](https://area17.com) and the [THG 2016 redesign website](https://www.thg-paris.com/). Initially released in December 2016, this Laravel package is powering the [Roto](https://roto.com), [Mai 36](https://mai36.com) and [Pentagram](https://www.pentagram.com) 2017 redesigns, as well as the [Artists at Risk Connection](https://artistsatriskconnection.org) platform.
+It's a curation of all the features that were developed on custom admin areas since our switch to Laravel in 2014. The architecture, conventions and helpers it provides currently powers the [Opéra National de Paris 2015 website redesign](https://www.operadeparis.fr/), the [AREA 17 2016 website redesign](https://area17.com) and the [THG 2016 redesign website](https://www.thg-paris.com/). Initially released in December 2016, this Laravel package is powering the [Roto](https://roto.com), [Mai 36](https://mai36.com) and [Pentagram](https://www.pentagram.com) 2017 redesigns, as well as the [Artists at Risk Connection](https://artistsatriskconnection.org) platform and Sonia Rykiel's [Rykielism](https://rykielism.soniarykiel.com). Translation, Art Institute of Chicago, Charvet, OSF Guides and AREA 17 Guides are currently being built or about to launch using this package as a dependency to build their CMS.
 
-By default, with very little developer actions, it provides:
-- a beautiful admin interface that really focuses on the editors needs, using AREA 17's custom built Vue.js components
+It provides a beautiful admin interface that really focuses on the editors needs, using AREA 17's custom built Vue.js components and a vast number of pre-built features to focus on building fully custom forms instead of rebuilding the same thing over and over:
 - user authentication, authorization and management
-- rapid searching and editing of content for editors with various tools:
-  - search / multi-filtering / sort
+- rapid searching and editing of content for editors with various tools and options:
+  - search / filters / sort
   - quick publish / feature / reorder / edit / delete
   - input, textarea, rich textarea form fields with optional SEO optimized limits
-  - date pickers for publication timeframe
+  - date pickers
   - select, multi-select, content type browser for related content and tags
   - image selector with cropping
-  - form repeaters
   - flexible content block editor (composable blocks from Vue components)
+  - form repeaters
   - translated fields with independent publication status
-  - slugs management with automatic redirect of old urls
+  - slugs management that allows you to automatically redirect old urls
   - content versioning with preview and side by side comparison of fully rendered frontend site
-- intuitive content featuring using a bucket UI
+- intuitive content featuring using a buckets UI (put any of your content types in "buckets" to manage any layout of featured content)
 - a media library:
   - with S3 or local storage
   - powered by Imgix rendering for on the fly resizing, cropping and compression of responsive images
-  - easily extendable to support other storage and/or rendering providers (ie. Cloudinary, IIIF, ...)
+  - easily extendable to support other storage and/or rendering providers (ie. Cloudinary, Croppa, IIIF, ...)
+  - alternative text and caption attached to each image, changeable when attached to a form too
+  - bulk tagging for easier filtering of image collection
 - a file library:
   - with S3 or local storage
   - easily extendable to support other storage providers
-  - can be used to attach and serve pdfs or videos in any content type
+  - can be used to attach and serve pdfs or videos (or any file...) in any content type
 - the ability to art direct responsive images through:
   - different manual cropping ratio for each breakpoints
-  - automatic entropy or faces cropping with no manual input
+  - entropy or faces cropping with no manual input (when using with Imgix or another image service supporting this)
 - rapid new content types creation/edition/maintenance for developers (generators and conventions for unified CRUD features)
 - development and production ready toolset (debug bar, inspector, exceptions handler)
-- static templates automatic routing (ie: adding a blade file at a certain location will be automatically available at the same url of its filename, no need to deal with application code, nice for frontend devs or simple page needs)
+- static templates automatic routing (ie: adding a blade file at a certain location will be automatically available at the same url of its filename, no need to deal with application code, nice for frontend devs building statics before backend devs starts)
 
-In development, you can use it in any Laravel environment like [Valet](https://laravel.com/docs/5.3/valet) or [Homestead](https://laravel.com/docs/5.3/homestead), though in a client's project context, you would ideally run your application in a custom virtual machine or Docker environment that is as close as possible as your production environment (either through a custom `after.sh` config for Homestead, an Ansible provisionned Vagrant box or a Docker Compose project).
+In development, you can use it in any Laravel environment like [Valet](https://laravel.com/docs/5.6/valet) or [Homestead](https://laravel.com/docs/5.6/homestead), though in a client's project context, you would ideally run your application in a custom virtual machine or Docker environment that is as close as possible as your production environment (either through a custom `after.sh` config for Homestead, an Ansible provisionned Vagrant box or a Docker Compose project, for example).
 
 ## Install
 
@@ -77,23 +78,31 @@ Setup your `.env` file:
 # 192.168.10.10 admin.APP_URL
 APP_URL=client.dev.a17.io 
 
-MAIL_DRIVER=log # so that until you configure it, welcome and reset emails will go to your logs
+# Optionnaly, you can specify the admin url yourself 
+#ADMIN_APP_URL=client.dev.a17.io
+# as well as a path if you want to show the admin on the same domain as your app
+#ADMIN_APP_PATH=admin
 
-# if you use S3 uploads, you'll need those credentials
+# When running on 2 different subdomains (which is the default configuration), you might want to share cookies 
+# between both so that CMS users can access drafts on the frontend
+#SESSION_DOMAIN=.client.dev.a17.io
+
+# If you use S3 uploads, you'll need those credentials
 #AWS_KEY=client_aws_key
 #AWS_SECRET=client_aws_secret
 #AWS_BUCKET=client_bucket
 AWS_USE_HTTPS=true
 
-FILE_LIBRARY_CASCADE_DELETE=true
+# If you use Imgix, you'll need a source url
+#IMGIX_SOURCE_HOST=client.imgix.net
+#IMGIX_USE_SIGNED_URLS=false
+#IMGIX_USE_HTTPS=true
+
+# Delete uploaded files when deleting from media library UI
 MEDIA_LIBRARY_CASCADE_DELETE=true
 
-# if you use Imgix, you'll need the source url
-#IMGIX_SOURCE_HOST=client.imgix.net
-IMGIX_USE_SIGNED_URLS=false
-IMGIX_USE_HTTPS=true
-
-BLOCK_EDITOR_SHOW_ERRORS=true
+# Needed only if you use a map form field
+#GOOGLE_MAPS_API_KEY=
 ```
 
 Run the install command
@@ -128,10 +137,10 @@ Add the following dev dependencies to your project's `package.json`:
 
 ```json
 "devDependencies": {
-  "cross-env": "^5.1",
-  "laravel-mix": "^1.0",
-  "watch": "^1.0.2",
-  "concurrently": "^3.5.0"
+    "concurrently": "^3.5.1",
+    "cross-env": "^5.1.4",
+    "laravel-mix": "^2.0.0",
+    "watch": "^1.0.2"
 }
 ```
 
@@ -144,7 +153,7 @@ Add the following npm scripts to your project's `package.json`:
   "cms-development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
   "cms-prod": "npm run cms-copy-blocks && cd vendor/a17/laravel-cms-toolkit && npm install --no-save && npm run prod && cd ../../.. && npm run cms-production && npm run cms-clean-blocks",
   "cms-production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-  "cms-copy-blocks": "mkdir -p resources/assets/js/blocks/ && mkdir -p vendor/a17/laravel-cms-toolkit/frontend/js/components/blocks/customs/ && cp -R resources/assets/js/blocks/ vendor/a17/laravel-cms-toolkit/frontend/js/components/blocks/customs/",
+  "cms-copy-blocks": "npm run cms-clean-blocks && mkdir -p resources/assets/js/blocks/ && mkdir -p vendor/a17/laravel-cms-toolkit/frontend/js/components/blocks/customs/ && cp -R resources/assets/js/blocks/ vendor/a17/laravel-cms-toolkit/frontend/js/components/blocks/customs/",
   "cms-clean-blocks": "rm -rf vendor/a17/laravel-cms-toolkit/frontend/js/components/blocks/customs/*",
   "cms-watch-blocks": "watch 'npm run cms-copy-blocks' resources/assets/js/blocks --wait=2 --interval=0.1"
 }
@@ -156,7 +165,6 @@ Add or modify your project's `wepback.mix.js` file with the following content:
 let mix = require('laravel-mix');
 
 if (mix.inProduction()) {
-  mix.copyDirectory('vendor/a17/laravel-cms-toolkit/public/assets/vendor', 'public/assets/vendor');
   mix.copyDirectory('vendor/a17/laravel-cms-toolkit/public/assets/admin/fonts', 'public/assets/admin/fonts');
   mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/icons/icons.svg', 'public/assets/admin/icons/icons.svg');
   mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/icons/icons-files.svg', 'public/assets/admin/icons/icons-files.svg');
@@ -173,15 +181,16 @@ if (mix.inProduction()) {
 }
 ```
 
-Finally, add the following to your project `.gitignore`:
+Finally, add the following to your project `.gitignore` if you don't want to put CMS compiled assets in Git:
 ```
 public/assets/admin
-public/assets/vendor
 public/mix-manifest.json
 public/hot
 ```
 
 You'll want to run `npm run cms-dev` to start working locally and `npm run cms-prod` to build for production.
+You don't need to have `cms-dev` running at all times unless you are working on blocks, or contributing to this project. 
+You can run `cms-prod` for your local instance too.
 
 That's about it!
 
@@ -237,6 +246,7 @@ return [
     |
      */
     'admin_app_url' => env('ADMIN_APP_URL', 'admin.' . env('APP_URL')),
+    'admin_app_path' => env('ADMIN_APP_PATH', ''),
 
     /*
     |--------------------------------------------------------------------------
@@ -250,6 +260,7 @@ return [
         'users-management' => true,
         'media-library' => true,
         'file-library' => true,
+        'block-editor' => true,
         'buckets' => false,
         'users-image' => false,
         'site-link' => false,
@@ -465,7 +476,7 @@ return [
      */
     'frontend' => [
         'rev_manifest_path' => public_path('dist/rev-manifest.json'),
-        'dev_assets_path' => '/dev',
+        'dev_assets_path' => '/dist',
         'dist_assets_path' => '/dist',
         'svg_sprites_path' => 'sprites.svg', // relative to dev/dist assets paths
         'svg_sprites_use_hash_only' => true,
@@ -651,7 +662,7 @@ Schema::create('table_name_singular1_table_name_singular2', function (Blueprint 
 });
 ```
 
-A few CRUD controllers require that your model have a field in the database with a specific name: `published` and `position`, so stick with those column names if you are going to use publication status and sortable listings.
+A few CRUD controllers require that your model have a field in the database with a specific name: `published`, `publish_start_date`, `publish_end_date`, `public`, and `position`, so stick with those column names if you are going to use publication status, timeframe and reorderable listings.
 
 
 #### Models
@@ -661,13 +672,13 @@ Set your fillables to prevent mass-assignement. Very important as we use `reques
 
 For fields that should always be saved as null in the database when not sent by the form, use the `nullable` array.
 
-For fields that should always be saved to false in the database when not sent by the form, use the `checkboxes` array.
+For fields that should always be saved to false in the database when not sent by the form, use the `checkboxes` array. The `published` field is a good example.
 
 Depending on the features you need on your model, include the availables traits and configure their respective options:
 
 - HasPosition: implement the `A17\CmsToolkit\Models\Behaviors\Sortable` interface and add a position field to your fillables.
 
-- HasTranslation: add translated fields in the `translatedAttributes` array and in the `fillable` array of the generated translatable model in `App/Models/Translations` (always keep the active and locale fields).
+- HasTranslation: add translated fields in the `translatedAttributes` array and in the `fillable` array of the generated translatable model in `App/Models/Translations` (always keep the `active` and `locale` fields).
 
 - HasSlug: specify the field(s) that is going to be used to create the slug in the `slugAttributes` array
 
@@ -723,15 +734,19 @@ public $filesParams = ['project_pdf']; // a list of file roles
      */
     protected $indexOptions = [
         'create' => true,
+        'edit' => true,
         'publish' => true,
         'bulkPublish' => true,
         'feature' => false,
         'bulkFeature' => false,
         'restore' => true,
         'bulkRestore' => true,
+        'delete' => true,
         'bulkDelete' => true,
         'reorder' => false,
         'permalink' => true,
+        'bulkEdit' => true,
+        'editInModal' => false,
     ];
 
     /*
@@ -802,9 +817,9 @@ public $filesParams = ['project_pdf']; // a list of file roles
     protected $formWithCount = [];
 
     /*
-     * Filters mapping ('fFilterName' => 'filterColumn')
-     * You can associate items list to filters by having a fFilterNameList key in the indexData array
-     * For example, 'fCategory' => 'category_id' and 'fCategoryList' => app(CategoryRepository::class)->listAll()
+     * Filters mapping ('filterName' => 'filterColumn')
+     * You can associate items list to filters by having a filterNameList key in the indexData array
+     * For example, 'category' => 'category_id' and 'categoryList' => app(CategoryRepository::class)->listAll()
      */
     protected $filters = [];
 
@@ -846,7 +861,23 @@ You can also override all actions and internal functions, checkout the ModuleCon
 #### Form Requests
 Classic Laravel 5 [form request validation](https://laravel.com/docs/5.5/validation#form-request-validation).
 
-There is an helper to define rules for translated fields without having to deal with each locales:
+You can choose to use different rules for creation and update by implementing the following 2 functions instead of the classic `rules` one :
+
+```php
+<?php
+
+public function rulesForCreate()
+{
+    return [];
+}
+
+public function rulesForUpdate()
+{
+    return [];
+}
+```
+
+There is also an helper to define rules for translated fields without having to deal with each locales:
 
 ```php
 <?php
@@ -873,7 +904,7 @@ $this->messagesForTranslatedFields([
 
 #### Repositories
 
-Depending on the model feature, include one or multiple of those traits: `HandleTranslations`, `HandleSlugs`, `HandleMedias`, `HandleFiles`, `HandleRevisions`, `HandleBlocks`.
+Depending on the model feature, include one or multiple of those traits: `HandleTranslations`, `HandleSlugs`, `HandleMedias`, `HandleFiles`, `HandleRevisions`, `HandleBlocks`, `HandleRepeaters`, `HandleTags`.
 
 Repositories allows you to modify the default behavior of your models by providing some entry points in the form of methods that you might implement:
 
@@ -1038,7 +1069,11 @@ The idea of the `contentFields` section is to contain the most important fields 
 If you have attributes, relationships, extra images, file attachments or repeaters, you'll want to add a `fieldsets` section after the `contentFields` section and use the `a17-fieldset` Vue component to create new ones like in the following example:
 
 ```php
-@extends('cms-toolkit::layouts.form')
+@extends('cms-toolkit::layouts.form', [
+    'additionalFieldsets' => [
+        ['fieldset' => 'attributes', 'label' => 'Attributes'],
+    ]
+])
 
 @section('contentFields')
     @formField('...', [...])
@@ -1046,10 +1081,15 @@ If you have attributes, relationships, extra images, file attachments or repeate
 @stop
 
 @section('fieldsets')
-    @formField('...', [...])
-    ...
+    <a17-fieldset title="Attributes" id="attributes">
+        @formField('...', [...])
+        ...
+    </a17-fieldset>
 @stop
 ```
+
+The additional fieldsets array passed to the form layout will display a sticky navigation of your fieldset on scroll.
+You can also rename the content section by passing a `contentFieldsetLabel` property to the layout.
 
 ##### Input
 >![screenshot](_media/input.png)
@@ -1091,15 +1131,13 @@ If you have attributes, relationships, extra images, file attachments or repeate
 ])
 
 @formField('wysiwyg', [
-    'translated' => true,
-    'name' => 'case_study_translated',
-    'label' => 'Case study text (translated)',
-    'placeholder' => 'Case study text (translated)',
-    'customOptions' => [
-        'modules' => [
-            'toolbar' => ['bold', 'clean']
-        ]
-    ],
+    'name' => 'case_study',
+    'label' => 'Case study text',
+    'toolbarOptions' => [ [ 'header' => [1, 2, false] ], 'list-ordered', 'list-unordered', [ 'indent' => '-1'], [ 'indent' => '+1' ] ],
+    'placeholder' => 'Case study text',
+    'maxlength' => 200,
+    'editSource' => true,
+    'note' => 'Hint message',
 ])
 ```
 
@@ -1326,11 +1364,6 @@ If you have attributes, relationships, extra images, file attachments or repeate
     'label' => 'Location',
     'showMap' => false,
 ])
-
-@formField('map', [
-    'name' => 'location_3',
-    'label' => 'Location',
-])
 ```
 
 ##### Color
@@ -1340,6 +1373,67 @@ If you have attributes, relationships, extra images, file attachments or repeate
 @formField('color', [
     'name' => 'main-color',
     'label' => 'Main color'
+])
+```
+
+##### Single checkbox
+
+```php
+@formField('checkbox', [
+    'name' => 'featured',
+    'label' => 'Featured'
+])
+```
+
+##### Multiple checkboxes (multi select as checkboxes)
+
+```php
+@formField('checkboxes', [
+    'name' => 'sectors',
+    'label' => 'Sectors',
+    'note' => '3 sectors max & at least 1 sector',
+    'min' => 1,
+    'max' => 3,
+    'inline' => true/false
+    'options' => [
+        [
+            'value' => 'arts',
+            'label' => 'Arts & Culture'
+        ],
+        [
+            'value' => 'finance',
+            'label' => 'Banking & Finance'
+        ],
+        [
+            'value' => 'civic',
+            'label' => 'Civic & Public'
+        ],
+    ]
+])
+```
+
+##### Radios
+
+```php
+@formField('radios', [
+    'name' => 'discipline',
+    'label' => 'Discipline',
+    'default' => 'civic',
+    'inline' => true/false,
+    'options' => [
+        [
+            'value' => 'arts',
+            'label' => 'Arts & Culture'
+        ],
+        [
+            'value' => 'finance',
+            'label' => 'Banking & Finance'
+        ],
+        [
+            'value' => 'civic',
+            'label' => 'Civic & Public'
+        ],
+    ]
 ])
 ```
 
@@ -1421,7 +1515,7 @@ filename: ```resources/assets/js/blocks/BlockQuote.vue```
 ```
 
 With that the *block* is ready to be used on the form, it just needs to be enabled in the CMS configuration.
-For it a `block_editor` key is required and inside you can defined the list of `blocks` available in your project.
+For it a `block_editor` key is required and inside you can define the list of `blocks` available in your project.
 
 filename: ```config/cms-toolkit.php```
 
@@ -2023,15 +2117,17 @@ But you might need to split your buckets page between sections of your CMS. For 
 ]
 ```
 
+### Automated settings pages
+TODO
 
-### Roadmap
-- [x] Content versionning
-- [x] Preview/compare changes without saving
-- [x] Redesign (Vue.js components integration and new block editor)
-- [ ] Dashboard
-- [ ] Concurrent editing/locking
-- [ ] Content review/approval worflow
-- [ ] Auto saving
+### Frontend previews setuo
+TODO
+
+### Using as a headless platform
+TODO
+
+### Extending Vue components
+TODO
 
 ### Other useful packages
 
