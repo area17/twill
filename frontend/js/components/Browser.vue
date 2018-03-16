@@ -131,7 +131,7 @@
         })
       },
       submitFilter: function (formData) {
-      // when changing filters, reset the page to 1
+        // when changing filters, reset the page to 1
         this.page = 1
 
         this.clearFullItems()

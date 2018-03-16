@@ -25,7 +25,7 @@ export default {
         if (callback && typeof callback === 'function') callback(resp)
       })
       .catch((resp) => {
-      // error callback
+        // error callback
         globalError(component, resp)
         if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
       })
