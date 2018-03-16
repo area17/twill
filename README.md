@@ -2120,7 +2120,7 @@ But you might need to split your buckets page between sections of your CMS. For 
 ### Automated settings pages
 TODO
 
-### Frontend previews setuo
+### Frontend previews setup
 TODO
 
 ### Using as a headless platform
