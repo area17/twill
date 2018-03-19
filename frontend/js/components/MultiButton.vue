@@ -6,7 +6,7 @@
 
       <div slot="dropdown__content">
         <ul>
-          <li v-for="option in otherOptions">
+          <li v-for="option in otherOptions" :key="option.name">
             <button @click="buttonClicked(option.name)" :type="type" :name="option.name">{{ option.text }}</button>
           </li>
         </ul>

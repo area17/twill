@@ -269,10 +269,12 @@
         this.$store.dispatch(ACTIONS.GET_DATATABLE)
       },
       updatePage: function (value) {
-        this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, value)
+        if (value !== this.page) {
+          this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, value)
 
-        // reload datas
-        this.$store.dispatch(ACTIONS.GET_DATATABLE)
+          // reload datas
+          this.$store.dispatch(ACTIONS.GET_DATATABLE)
+        }
       },
       updateActiveColumns: function (values) {
         this.$store.commit(DATATABLE.UPDATE_DATATABLE_VISIBLITY, values)

@@ -30,7 +30,7 @@
     },
     methods: {
       getMaxHeight: function () { // retrieve max height depending on the content height
-        return Math.min(250, this.$el.querySelector('.accordion__list').clientHeight)
+        return Math.min(250, this.$el.querySelector('.accordion__list').clientHeight + 1)
       },
       beforeEnter: function (el) {
         el.style.maxHeight = '0px'
