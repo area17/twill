@@ -10,6 +10,13 @@ class Create{{tableClassName}}Tables extends Migration
         Schema::create('{{table}}', function (Blueprint $table) {
             createDefaultTableFields($table);
             // add some fields
+            // $table->string('title', 200)->nullable();
+            // $table->text('description')->nullable();
+            // use those 2 for publication timeframe
+            // $table->timestamp('publish_start_date')->nullable();
+            // $table->timestamp('publish_end_date')->nullable();
+            // use this one for public/private publication (private doesn't show in listing when using the appropriate scopes)
+            // $table->boolean('public')->default(true);
             // use this one with the HasPosition trait
             // $table->integer('position')->unsigned()->nullable();
         });

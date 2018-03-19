@@ -6,7 +6,12 @@ use A17\CmsToolkit\Http\Requests\Admin\Request;
 
 class {{requestClassName}} extends Request
 {
-    public function rules()
+    public function rulesForCreate()
+    {
+        return [];
+    }
+
+    public function rulesForUpdate()
     {
         return [];
     }

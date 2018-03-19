@@ -7,13 +7,13 @@ return [
     |--------------------------------------------------------------------------
     |
     | This array allows you to provide the package with your configuration
-    | for the Block editor service.
+    | for the Block editor field and Editor features.
     |
      */
-    'block_single_layout' => 'site.layouts.block',
-    'block_views_path' => 'site.blocks',
-    'block_views_mappings' => [],
-    'block_preview_render_childs' => true,
+    'block_single_layout' => 'site.layouts.block', // layout to use when rendering a single block in the editor
+    'block_views_path' => 'site.blocks', // path where a view file per block type is stored
+    'block_views_mappings' => [], // custom mapping of block types and views
+    'block_preview_render_childs' => true, // indicates if childs should be rendered when using repeater in blocks
     'blocks' => [
         'text' => [
             'title' => 'Body text',

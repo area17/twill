@@ -2,11 +2,8 @@
 
 @section('contentFields')
     {{-- @formField('input', [
-        'name' => 'subtitle',
-        'label' => 'Subtitle',
+        'name' => 'description',
+        'label' => 'Description',
         'maxlength' => 100
-    ])
-    @formField('block_editor', [
-        'blocks' => ['image', 'title', 'quote', 'charvet']
     ]) --}}
 @stop

@@ -91,7 +91,7 @@ APP_URL=client.dev.a17.io
 #AWS_KEY=client_aws_key
 #AWS_SECRET=client_aws_secret
 #AWS_BUCKET=client_bucket
-AWS_USE_HTTPS=true
+#AWS_USE_HTTPS=true
 
 # If you use Imgix, you'll need a source url
 #IMGIX_SOURCE_HOST=client.imgix.net
@@ -99,7 +99,7 @@ AWS_USE_HTTPS=true
 #IMGIX_USE_HTTPS=true
 
 # Delete uploaded files when deleting from media library UI
-MEDIA_LIBRARY_CASCADE_DELETE=true
+#MEDIA_LIBRARY_CASCADE_DELETE=true
 
 # Needed only if you use a map form field
 #GOOGLE_MAPS_API_KEY=
