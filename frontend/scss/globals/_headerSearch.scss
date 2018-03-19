@@ -72,6 +72,6 @@ Every decent CMS need a search engine
 }
 
 .headerSearch__overlay {
-  background: rgba($color__overlay--header, 0.5);
+  background: rgba($color__overlay--header, 0.9);
   z-index: $zindex__search - 1;
 }

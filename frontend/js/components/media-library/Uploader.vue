@@ -295,11 +295,13 @@
       text-align: center;
       transition: color .2s linear, border-color .2s linear, background-color .2s linear;
 
+      &.qq-upload-button-hover,
       &:hover {
         border-color: $color__text;
         color: $color__text;
       }
 
+      &.qq-upload-button-focus,
       &:focus {
         border-color: $color__text;
         color: $color__text;
