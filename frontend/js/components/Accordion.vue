@@ -6,7 +6,7 @@
       <span v-svg symbol="dropdown_module"></span>
     </button>
     <transition :css="false" :duration="275" @before-enter="beforeEnter" @before-leave="beforeLeave" @enter="enter" @leave="leave">
-      <div class="accordion__dropdown" v-show="visible">
+      <div class="accordion__dropdown" v-show="visible" :aria-hidden="!visible">
         <div class="accordion__list">
           <slot></slot>
         </div>

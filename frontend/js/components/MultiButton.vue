@@ -84,6 +84,7 @@
     padding:0 10px;
     transition: color .2s linear, border-color .2s linear, background-color .2s linear;
 
+    &:focus,
     &:hover {
       background:$color__ok--hover;
     }

@@ -162,10 +162,10 @@
     margin-left:15px;
 
     .icon {
-      vertical-align: top;
       display:block;
     }
 
+    &:focus,
     &:hover {
       color:$color__text;
     }
@@ -174,6 +174,7 @@
       opacity:0.5;
       pointer-events: none;
 
+      &:focus,
       &:hover {
         color:$color__icons;
       }

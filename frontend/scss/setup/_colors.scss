@@ -84,13 +84,25 @@ $color__drag_bg--hover: $color__black--5;
 /**** Main Button Colors ****/
 $color__error: $color__red;
 $color__error--hover: darken($color__red, 10%);
+$color__error--active: darken($color__red, 15%);
+
 $color__warning: $color__orange;
+
 $color__action: $color__darkBlue;
 $color__action--hover: $color__darkBlue--hover;
+$color__action--active: darken($color__darkBlue--hover, 5%);
+
 $color__ok: $color__green;
 $color__ok--hover: $color__green--hover;
+$color__ok--active: darken($color__green--hover, 5%);
+
 $color__publish: $color__green;
 $color__publish--hover: $color__green--hover;
+$color__publish--active: darken($color__green--hover, 5%);
+
+$color__button: $color__black--80;
+$color__button--hover: darken($color__black--80, 10%);
+$color__button--active: darken($color__black--80, 15%);
 
 $color__button_greyed: $color__white;
 $color__button_greyed--bg: $color__black--20;

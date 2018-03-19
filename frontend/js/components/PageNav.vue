@@ -111,6 +111,8 @@
 
   a.pagenav__btn {
     opacity:1;
+
+    &:focus,
     &:hover {
       color:$color__text;
       background:$color__ultralight;
