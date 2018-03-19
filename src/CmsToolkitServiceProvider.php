@@ -67,6 +67,8 @@ class CmsToolkitServiceProvider extends ServiceProvider
             'media' => Media::class,
             'files' => File::class,
         ]);
+
+        config(['cms-toolkit.version' => trim(file_get_contents(__DIR__ . '/../VERSION'))]);
     }
 
     public function provides()
