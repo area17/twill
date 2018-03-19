@@ -1,6 +1,7 @@
 {
   "name": "a17/laravel-cms-toolkit",
   "type": "library",
+  "license": "Apache-2.0",
   "description": "A collection of Laravel helpers, traits and classes to quickly create custom content management apps for our clients",
   "keywords": [
     "A17",
