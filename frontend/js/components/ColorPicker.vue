@@ -17,13 +17,12 @@
         </div>
       </div>
     </div>
-
-<!--     <div class="colorpicker__info">
-    </div> -->
   </div>
 </template>
 
 <script>
+  // Hightly inspired by https://github.com/xiaokaike/vue-color
+
   import tinyColor from 'tinycolor2'
   import { throttle } from 'lodash'
 
@@ -43,13 +42,14 @@
     data: function () {
       return {
         currentColor: tinyColor(this.color),
+        currentColorHue: tinyColor(this.color).toHsv().h,
         currentTarget: '', // [saturation | hue]
         pullDirection: ''
       }
     },
     computed: {
       bgColor () {
-        return `hsl(${this.currentColor.toHsv().h}, 100%, 50%)`
+        return `hsl(${this.currentColorHue}, 100%, 50%)`
       },
       satPointerTop () {
         return (-(this.currentColor.toHsv().v * 100) + 1) + 100 + '%'
@@ -59,8 +59,8 @@
       },
       huePointerTop () {
         if (this.direction === 'vertical') {
-          if (this.currentColor.toHsl().h === 0 && this.pullDirection === 'right') return 0
-          return -((this.currentColor.toHsl().h * 100) / 360) + 100 + '%'
+          if (this.currentColorHue === 0 && this.pullDirection === 'right') return 0
+          return -((this.currentColorHue * 100) / 360) + 100 + '%'
         } else {
           return 0
         }
@@ -69,8 +69,8 @@
         if (this.direction === 'vertical') {
           return 0
         } else {
-          if (this.currentColor.toHsl().h === 0 && this.pullDirection === 'right') return '100%'
-          return (this.currentColor.toHsl().h * 100) / 360 + '%'
+          if (this.currentColorHue === 0 && this.pullDirection === 'right') return '100%'
+          return (this.currentColorHue * 100) / 360 + '%'
         }
       }
     },
@@ -114,7 +114,7 @@
         bright = bright > 1 ? 1 : bright
 
         this.throttle(this.onChange, {
-          h: this.currentColor.toHsv().h,
+          h: this.currentColorHue,
           s: saturation,
           v: bright,
           a: this.currentColor.toHsv().a
@@ -144,15 +144,6 @@
             percent = -(top * 100 / containerHeight) + 100
             h = (360 * percent / 100)
           }
-          if (this.currentColor.toHsl().h !== h) {
-            this.throttle(this.onChange, {
-              h: h,
-              s: this.currentColor.toHsl().s,
-              l: this.currentColor.toHsl().l,
-              a: this.currentColor.toHsl().a,
-              source: 'hsl'
-            })
-          }
         } else {
           if (left < 0) {
             h = 0
@@ -162,15 +153,16 @@
             percent = left * 100 / containerWidth
             h = (360 * percent / 100)
           }
-          if (this.currentColor.toHsl().h !== h) {
-            this.throttle(this.onChange, {
-              h: h,
-              s: this.currentColor.toHsl().s,
-              l: this.currentColor.toHsl().l,
-              a: this.currentColor.toHsl().a,
-              source: 'hsl'
-            })
-          }
+        }
+
+        if (this.currentColorHue !== h) {
+          this.throttle(this.onChange, {
+            h: h,
+            s: this.currentColor.toHsl().s,
+            l: this.currentColor.toHsl().l,
+            a: this.currentColor.toHsl().a,
+            source: 'hsl'
+          })
         }
       },
       handleMouseDown (type) {
@@ -201,6 +193,7 @@
       },
       onChange (param) {
         this.currentColor = tinyColor(param)
+        this.currentColorHue = param.h
         this.$emit('change', this.currentColor.toHexString())
       }
     }
@@ -230,6 +223,7 @@
     flex-grow: 1;
     margin-right: 5px;
     cursor: pointer;
+    overflow:hidden;
 
     .colorpicker__saturation--white,
     .colorpicker__saturation--black {
@@ -255,11 +249,11 @@
 
     .colorpicker__saturation-circle {
       cursor: head;
-      width: 4px;
-      height: 4px;
+      width: 8px;
+      height: 8px;
       box-shadow: 0 0 0 1.5px #fff, inset 0 0 1px 1px rgba(0, 0, 0, .3), 0 0 1px 2px rgba(0, 0, 0, .4);
       border-radius: 50%;
-      transform: translate(-2px, -2px);
+      transform: translate(-4px, -4px);
     }
   }
 
@@ -291,11 +285,11 @@
 
   .colorpicker__hue-picker {
     cursor: pointer;
-    /*margin-top: 1px;*/
-    width: 10px;
-    /*border-radius: 1px;*/
+    margin-left: -2px;
+    width: 14px;
+    border-radius: 2px;
     height: 8px;
-    box-shadow: 0 0 2px rgba(0, 0, 0, .25);
+    box-shadow: 0 0 2px rgba(0, 0, 0, .5);
     background: #fff;
     transform: translateX(-1px) translateY(-4px);
   }
