@@ -187,7 +187,16 @@
         this.save()
 
         const form = this.$refs.form
-        if (form) this.refreshMetadatas(form)
+        const data = this.getFormData(form)
+
+        // save caption and alt text on the media
+        if (this.hasSingleMedia) {
+          if (data.hasOwnProperty('alt_text')) this.firstMedia.metadatas.default.altText = data['alt_text']
+          else this.firstMedia.metadatas.default.altText = ''
+
+          if (data.hasOwnProperty('caption')) this.firstMedia.metadatas.default.caption = data['caption']
+          else this.firstMedia.metadatas.default.caption = ''
+        }
       },
       save: function () {
         const form = this.$refs.form
@@ -204,33 +213,6 @@
         event.preventDefault()
         this.save()
       },
-      refreshMetadatas: function (form) {
-        if (!this.hasMedia) return
-
-        const data = this.getFormData(form)
-
-        // save caption and alt text on the media
-        if (!this.focused && this.hasSingleMedia && this.isImage) {
-          if (data.hasOwnProperty('alt_text')) this.firstMedia.metadatas.default.altText = data['alt_text']
-          else this.firstMedia.metadatas.default.altText = ''
-
-          if (data.hasOwnProperty('caption')) this.firstMedia.metadatas.default.caption = data['caption']
-          else this.firstMedia.metadatas.default.caption = ''
-        }
-
-        // save new tags on the medias
-        // TODO: remove tags too
-        if (data.hasOwnProperty('tags')) {
-          const newTags = data['tags'].split(',')
-          this.medias.forEach(function (media) {
-            newTags.forEach(function (tag) {
-              if (!media.tags.includes(tag)) media.tags.push(tag)
-            })
-          })
-
-          this.$emit('tagUpdated')
-        }
-      },
       update: function (form) {
         if (this.loading) return
 
@@ -244,8 +226,23 @@
 
           if (!this.hasMedia) return false
 
-          // save caption and alt text on the media
-          this.refreshMetadatas(form)
+          if (data.hasOwnProperty('tags') && resp.data.items) {
+            // Refresh tags
+            // respMedias : only the media that are matching the mediaIds
+            const respMedias = resp.data.items.filter(item => this.mediasIds.split(',').includes(item.id + '')) // ideally the response should only return the whole medias
+
+            this.medias.forEach(function (media) {
+              respMedias.some(function (respMedia) {
+                if (respMedia.id === media.id) {
+                  media.tags = respMedia.tags // replace tags with the one from the response
+                }
+
+                return respMedia.id === media.id
+              })
+            })
+
+            this.$emit('tagUpdated')
+          }
         }, (error) => {
           this.$store.commit(NOTIFICATION.SET_NOTIF, {
             message: error.data.message,
