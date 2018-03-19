@@ -27,14 +27,16 @@
           </div>
 
           <ul class="previewer__breakpoints" v-if="!slipScreen">
-            <li v-for="breakpoint in breakpoints" :key="breakpoint.size" class="previewer__breakpoint" :class="{ 's--active' : activeBreakpoint === breakpoint.size }" @click="resizePreview(breakpoint.size)">
-              <span v-svg :symbol="breakpoint.name"></span>
+            <li v-for="breakpoint in breakpoints" :key="breakpoint.size" class="previewer__breakpoint" :class="{ 's--active' : activeBreakpoint === breakpoint.size }">
+              <a href="#" @click.prevent="resizePreview(breakpoint.size)">
+                <span v-svg :symbol="breakpoint.name"></span>
+              </a>
             </li>
           </ul>
 
           <div class="previewer__compare" v-if="activeRevision">
-            <a href="#" v-if="!slipScreen" @click.prevent="compareView">Compare view <span v-svg symbol="revision-compare"></span></a>
-            <a href="#" v-else @click.prevent="singleView">Single view <span v-svg symbol="revision-single"></span></a>
+            <a href="#" v-if="!slipScreen" @click.prevent="compareView"><span class="previewer__compareLabel">Compare view</span> <span v-svg symbol="revision-compare"></span></a>
+            <a href="#" v-else @click.prevent="singleView"><span class="previewer__compareLabel">Single view</span> <span v-svg symbol="revision-single"></span></a>
           </div>
         </div>
 
@@ -282,24 +284,40 @@
     }
 
     a {
+      white-space: nowrap;
+      overflow: hidden;
       text-decoration:none;
     }
   }
 
-  .previewer__compare .icon {
-    position:relative;
-    margin-left:9px;
-    top:2px;
+  .previewer__compare {
+    @include breakpoint('medium+') {
+      margin-left:20px;
+    }
+
+    .icon {
+      position:relative;
+      margin-left:9px;
+      top:2px;
+    }
+  }
+
+  .previewer__compareLabel {
+    display:none;
+
+    @include breakpoint('small+') {
+      display:inline;
+    }
   }
 
   .previewer__revisions,
   .previewer__compare {
-    margin-left:20px;
     margin-right:20px;
     padding-top: 40px;
   }
 
   .previewer__revisions {
+    margin-left:20px;
     padding-top: 40px;
     flex-grow:1;
     position:relative;
@@ -322,11 +340,19 @@
   }
 
   .previewer__breakpoint {
-    cursor:pointer;
     display:inline-block;
     color:$color__text--light;
     padding:25px 15px;
     vertical-align: bottom;
+
+    a {
+      display:block;
+
+      &:hover,
+      &:focus {
+        color:$color__icons;
+      }
+    }
 
     .icon {
       display:block;
@@ -334,6 +360,13 @@
 
     &.s--active {
       color:$color__background;
+
+      a {
+        &:hover,
+        &:focus {
+          color:$color__background;
+        }
+      }
     }
   }
 

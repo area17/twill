@@ -4,9 +4,11 @@
     <div slot="accordion__value">Last edited <timeago :auto-update="1" :since="new Date(revisions[0].datetime)"></timeago></div>
     <div class="revaccordion__scroller">
       <ul class="revaccordion__list">
-        <li class="revaccordion__item" v-for="(revision, index) in revisions" :key="revision.id" @click="openPreview(revision.id)">
-          <span class="revaccordion__author">{{ revision.author }}</span>
-          <span class="revaccordion__datetime"><span class="tag" v-if="index === 0">Current</span> {{ revision.datetime | formatDate }}</span>
+        <li class="revaccordion__item" v-for="(revision, index) in revisions" :key="revision.id">
+          <a href="#" @click.prevent="openPreview(revision.id)">
+            <span class="revaccordion__author">{{ revision.author }}</span>
+            <span class="revaccordion__datetime"><span class="tag" v-if="index === 0">Current</span> {{ revision.datetime | formatDate }}</span>
+          </a>
         </li>
       </ul>
     </div>
@@ -58,16 +60,20 @@
     padding:12px 20px;
   }
 
-  .revaccordion__item {
+  // .revaccordion__item {
+  // }
+
+  .revaccordion__item a {
     display: flex;
     flex-direction: row;
     flex-wrap:no-wrap;
     color:$color__text--light;
     padding:7.5px 20px;
-    cursor:pointer;
     margin-left:-20px;
     margin-right:-20px;
+    text-decoration:none;
 
+    &:focus,
     &:hover {
       color:$color__text;
       background:$color__light;

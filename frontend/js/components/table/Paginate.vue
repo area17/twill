@@ -59,11 +59,13 @@
     methods: {
       formatPage: function (event) {
         let newValue = event.target.value
+        newValue = newValue !== '' ? parseInt(newValue) : 1
 
         if (newValue > this.max) newValue = this.max
         if (newValue < 1) newValue = 1
 
-        this.$emit('changePage', parseInt(newValue))
+        event.target.value = newValue
+        if (newValue !== this.value) this.$emit('changePage', newValue)
       },
       changeOffset: function (offset) {
         this.newOffset = offset
@@ -145,7 +147,7 @@
     height:28px;
     line-height: 28px;
     width:auto;
-    max-width:(4*10px);
+    max-width:(4*12px);
     font-size:13px;
     margin-right:6px;
   }
@@ -162,10 +164,10 @@
     margin-left:15px;
 
     .icon {
-      vertical-align: top;
       display:block;
     }
 
+    &:focus,
     &:hover {
       color:$color__text;
     }
@@ -174,6 +176,7 @@
       opacity:0.5;
       pointer-events: none;
 
+      &:focus,
       &:hover {
         color:$color__icons;
       }

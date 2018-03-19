@@ -78,16 +78,17 @@
   /* ----- Variants ----- */
 
   .button--primary {
-    background: $color__black--80;
+    background: $color__button;
     color: white;
     @include font-smoothing();
 
+    &:focus,
     &:hover {
-      background: $color__black;
+      background: $color__button--hover;
     }
 
-    &:focus {
-      background: $color__black;
+    &:active {
+      background: $color__button--active;
     }
 
     &:disabled {
@@ -97,16 +98,17 @@
 
   .button--action,
   .button--editor {
-    background: $color__darkBlue;
+    background: $color__action;
     color: white;
     @include font-smoothing();
 
+    &:focus,
     &:hover {
-      background: $color__darkBlue--hover;
+      background: $color__action--hover;
     }
 
-    &:focus {
-      background: $color__darkBlue--hover;
+    &:active {
+      background: $color__action--active;
     }
 
     &:disabled {
@@ -134,12 +136,13 @@
     color: white;
     @include font-smoothing();
 
+    &:focus,
     &:hover {
       background: $color__ok--hover;
     }
 
-    &:focus {
-      background: $color__ok--hover;
+    &:active {
+      background: $color__ok--active;
     }
 
     &:disabled {
@@ -175,12 +178,13 @@
     color: white;
     @include font-smoothing();
 
+    &:focus,
     &:hover {
       background: $color__error--hover;
     }
 
-    &:focus {
-      background: $color__error--hover;
+    &:active {
+      background: $color__error--active;
     }
 
     &:disabled {
@@ -193,13 +197,14 @@
     background: $color__border;
     color: $color__text--forms;
 
+    &:focus,
     &:hover {
       background: $color__border--hover;
       color: $color__text;
     }
 
-    &:focus {
-      background: $color__border--hover;
+    &:active {
+      background: $color__border--focus;
       color: $color__text;
     }
 
@@ -261,12 +266,13 @@
     color: $color__text--light;
     padding: 0 20px;
 
+    &:focus,
     &:hover {
       border-color: $color__text;
       color: $color__text;
     }
 
-    &:focus {
+    &:active {
       border-color: $color__text;
       color: $color__text;
     }
@@ -294,16 +300,8 @@
       transition: color .25s linear;
     }
 
+    &:focus,
     &:hover {
-      border-color: $color__text;
-      color: $color__text;
-
-      .icon {
-        color: $color__text;
-      }
-    }
-
-    &:focus {
       border-color: $color__text;
       color: $color__text;
 

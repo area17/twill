@@ -6,7 +6,7 @@
 
       <div slot="dropdown__content">
         <ul>
-          <li v-for="option in otherOptions">
+          <li v-for="option in otherOptions" :key="option.name">
             <button @click="buttonClicked(option.name)" :type="type" :name="option.name">{{ option.text }}</button>
           </li>
         </ul>
@@ -84,6 +84,7 @@
     padding:0 10px;
     transition: color .2s linear, border-color .2s linear, background-color .2s linear;
 
+    &:focus,
     &:hover {
       background:$color__ok--hover;
     }

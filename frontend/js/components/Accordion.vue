@@ -6,7 +6,7 @@
       <span v-svg symbol="dropdown_module"></span>
     </button>
     <transition :css="false" :duration="275" @before-enter="beforeEnter" @before-leave="beforeLeave" @enter="enter" @leave="leave">
-      <div class="accordion__dropdown" v-show="visible">
+      <div class="accordion__dropdown" v-show="visible" :aria-hidden="!visible">
         <div class="accordion__list">
           <slot></slot>
         </div>
@@ -30,7 +30,7 @@
     },
     methods: {
       getMaxHeight: function () { // retrieve max height depending on the content height
-        return Math.min(250, this.$el.querySelector('.accordion__list').clientHeight)
+        return Math.min(250, this.$el.querySelector('.accordion__list').clientHeight + 1)
       },
       beforeEnter: function (el) {
         el.style.maxHeight = '0px'

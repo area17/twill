@@ -260,6 +260,7 @@
       color:$color__link;
       text-decoration:none;
 
+      &:focus,
       &:hover {
         text-decoration:underline;
       }
