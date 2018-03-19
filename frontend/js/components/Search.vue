@@ -212,7 +212,7 @@
     right: 0;
     width: 100%;
     bottom:0;
-    background: rgba($color__overlay--header, 0.5);
+    background: rgba($color__overlay--header, 0.9);
     z-index: $zindex__search - 1;
   }
 
