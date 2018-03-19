@@ -2,6 +2,64 @@
 
 All notable changes to `laravel-cms-toolkit` will be documented in this file.
 
+## 1.0.0 - 2018-03-19
+
+### Added
+
+- Full-screen block editor with left side editing and right side drag and drop-able previews
+- Blocks can now be created as regular forms using @formField Blade directives
+- Vue.js blocks components generator: php artisan cms-toolkit:blocks
+- Form layout helpers: collapsed fields, columns, inline checkboxes and radios, connected fields
+- Listings status filters (published/mine/draft/trash)
+- Per CMS user listings options saved in local storage (items per page, displayed columns)
+- Bulk editing in listings (publish/feature/delete/restore)
+- Display/hide columns in listings
+- Support for nested listings (to use in combination with a nested set)
+- Support for blocks and revisions features in module stub and generator
+- Publication management: add public/private and publication timeframe options
+- Ability to create and edit content in a modal when a full form page is not necessary
+- Custom email template
+- Color picker form field
+- Bulk delete and multiple selection with shift in media library
+- Replace image in media form field
+- Context based image alternative text and caption
+- Restore soft deleted models
+- Suggested frontend controller for show and preview routes with its associated router macro (Route::moduleShowWithPreview)
+- Allow custom buckets routes prefixes, default to "featured" prefix
+- Support starred items in buckets
+- Preview in selected language
+- Preview model hydration support for multi-select, browsers and repeaters
+- More image helpers
+- Provide a way to transform index items collection
+- Provide a hook to add custom data per index item
+- Allows querying module's model through its repository
+- Contributions guidelines
+
+### Improved
+
+- Simplified form views
+- Unified form fields options
+- Inline form fields validation messages
+- Blocks are now their own Eloquent model and a polymorphic relationship instead of being a dead json column in each module
+- Media in the media library can't be deleted in they are attached to a module or block
+- Use consistant syntax for config keys
+- Use database transactions in module repository operations
+- Support slugs with non latin languages
+- Slugs management when restoring a soft deleted model
+- UI responsiveness
+- Documentation
+
+### Changed
+
+- Redesign of every single part of the admin ui
+- Admin frontend assets sources are now part of this repository (in frontend/) and consists of multiple Vue.js apps compiled using Laravel Mix
+- Laravel and Vue communicates using Vuex store hydration at page load and ajax requests
+- Admin assets need to be compiled by the project using this library in order to include its own blocks
+- Block editor changed from SirTrevor to custom Vue.js components
+- WYSIWYG editor changed from Medium Editor JS to Quill.js
+- Modules don't need an index Blade view anymore, all listings options are defined in the controller
+- Repeaters for inline one-to-many relationships are now created as blocks
+
 ## 0.7 - 2017-10-03
 
 ### Added
