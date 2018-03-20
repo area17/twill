@@ -2,6 +2,24 @@
 
 All notable changes to `laravel-cms-toolkit` will be documented in this file.
 
+## 1.0.1 - 2018-03-20
+
+### Added
+
+- Error pages for error 419 and error 429 (page expired and too many requests) (!48)
+
+### Improved
+
+- Focus states, active states, accessibility (!50)
+- Previewer responsiveness (!50)
+- Pagination reload (no reload if same page and constraint page number input) (!50)
+
+### Fixed
+
+- Missing brackets to build the index name in  related table migration helper (!51)
+- Color picker hue selector jumps (!49)
+- NPM warning because of missing config in package.json
+
 ## 1.0.0 - 2018-03-19
 
 ### Added
