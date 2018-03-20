@@ -76,7 +76,7 @@ if (!function_exists('createDefaultRelationshipTableFields')) {
         $table->foreign("{$table1NameSingular}_id")->references('id')->on($table1NamePlural)->onDelete('cascade');
         $table->integer("{$table2NameSingular}_id")->unsigned();
         $table->foreign("{$table2NameSingular}_id")->references('id')->on($table2NamePlural)->onDelete('cascade');
-        $table->index(["{$table2NameSingular}_id", "{$table1NameSingular}_id"], "idx_$table1NameSingular_$table2NameSingular");
+        $table->index(["{$table2NameSingular}_id", "{$table1NameSingular}_id"], "idx_{$table1NameSingular}_{$table2NameSingular}");
     }
 }
 
