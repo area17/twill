@@ -31,9 +31,10 @@ Header overlay that is showing on smaller devices
   right:0;
   bottom:0;
   overflow:hidden;
-  position:fixed;
+  // position:fixed;
+  position:absolute;
   visibility: hidden;
-  transition: all .3s ease;
+  transition: opacity .3s ease, visibility .3s ease;
   z-index:$zindex__headermobile;
   opacity: 0;
   color:$color__background;

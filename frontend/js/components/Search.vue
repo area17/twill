@@ -73,7 +73,7 @@
       },
       type: {
         type: String,
-        default: 'header' // 'header' or 'dashboard'
+        default: 'header' // Enum : [ 'header', 'dashboard' ]
       }
     },
     data: function () {

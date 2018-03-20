@@ -28,6 +28,22 @@ $height__nav: 60px;
   overflow:hidden;
   overflow-x:auto;
 
+  @include breakpoint(xsmall) {
+    width:calc(100% + #{ 17px + map-get($outer-gutters, xsmall) });
+  }
+
+  @include breakpoint(small) {
+    width:calc(100% + #{ 17px + map-get($outer-gutters, small) });
+  }
+
+  @include breakpoint(medium) {
+    width:calc(100% + #{ 17px + map-get($outer-gutters, medium) });
+  }
+
+  @include breakpoint(large) {
+    width:calc(100% + #{ 17px + map-get($outer-gutters, large) });
+  }
+
   .s--search & {
     transition: all 0.14s $bezier__bounce;
     visibility: hidden;
