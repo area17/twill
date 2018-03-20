@@ -177,7 +177,7 @@
           this.active = true
 
           document.addEventListener('click', this.closeFromDoc, true)
-          document.addEventListener('touchstart', this.closeFromDoc, true)
+          document.addEventListener('touchend', this.closeFromDoc, true)
 
           if (this.fixed) {
             window.addEventListener('scroll', this.closeFromDoc, true)
@@ -198,7 +198,7 @@
 
         clearTimeout(this.timer)
         document.removeEventListener('click', this.closeFromDoc, true)
-        document.removeEventListener('touchstart', this.closeFromDoc, true)
+        document.removeEventListener('touchend', this.closeFromDoc, true)
 
         if (this.fixed) {
           window.removeEventListener('scroll', this.closeFromDoc, true)
