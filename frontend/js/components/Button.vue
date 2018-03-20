@@ -239,8 +239,7 @@
     position: relative;
     border: none;
     background: transparent;
-    // padding-left: 15px;
-    padding-left: 0;
+    padding-left: 15px;
     padding-right: 15px + 4px + 20px;
 
     &:after {
