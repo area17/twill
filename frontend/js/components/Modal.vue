@@ -1,7 +1,7 @@
 <template>
-  <div class="modal" :class="modalClasses" @mousedown="hide" @touchstart="hide">
+  <div class="modal" :class="modalClasses" @mousedown="hide" @touchend.prevent="hide">
     <transition name="fade_scale_modal">
-      <div class="modal__window" @mousedown.stop @touchstart.stop v-if="active" v-show="!hidden">
+      <div class="modal__window" @mousedown.stop @touchend.stop v-if="active" v-show="!hidden">
         <header class="modal__header" v-if="modalTitle">
           {{ modalTitle }}
           <button class="modal__close" type="button" @click="hide"><span v-svg symbol="close_modal"></span></button>
