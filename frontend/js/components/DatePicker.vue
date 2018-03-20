@@ -1,5 +1,5 @@
 <template>
-  <a17-inputframe :name="name" :error="error" :note="note" :label="label" :label-for="uniqId" class="datePicker" :class="{ 'datePicker--static' : staticMode }" :required="required">
+  <a17-inputframe :name="name" :error="error" :note="note" :label="label" :label-for="uniqId" class="datePicker" :class="{ 'datePicker--static' : staticMode, 'datePicker--mobile' : isMobile }" :required="required">
     <div class="datePicker__group" :ref="refs.flatPicker">
       <div class="form__field datePicker__field">
         <input type="text" :name="name" :id="uniqId" :required="required" :placeholder="placeHolder" data-input @blur="onBlur" v-model="date">
@@ -92,6 +92,7 @@
     data: function () {
       return {
         date: this.initialValue,
+        isMobile: false,
         flatPicker: null,
         refs: {
           flatPicker: 'flatPicker'
@@ -164,6 +165,8 @@
       let el = self.$refs[self.refs.flatPicker]
       let opts = self.config()
       self.flatPicker = new FlatPickr(el, opts)
+
+      this.isMobile = self.flatPicker.isMobile
     },
     beforeDestroy: function () {
       let self = this
@@ -217,8 +220,8 @@
     pointer-events:none;
   }
 
-  /* Static variant */
-  .datePicker--static {
+  /* Static variant (but not in the mobile version) */
+  .datePicker--static:not(.datePicker--mobile) {
     .form__field {
       height:0;
       position:static;
