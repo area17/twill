@@ -32,6 +32,12 @@ $breakpointCustom: 1200px;
   }
 }
 
+@include breakpoint('xsmall') {
+  .secondarynav.secondarynav--dropdown.secondarynav--mobile {
+    padding-bottom:0;
+  }
+}
+
 .secondarynav__item {
   height: $height__nav;
   display: inline-block;
