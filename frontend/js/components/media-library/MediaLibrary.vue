@@ -338,7 +338,7 @@
         })
       },
       reloadTags: function (tags = []) {
-        this.tags = tags || []
+        this.tags = tags
       },
       submitFilter: function (formData) {
         const self = this

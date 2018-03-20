@@ -229,15 +229,11 @@
 
           // Bulk update : Refresh tags
           if (this.hasMultipleMedias && resp.data.items) {
-            // respMedias : only the media that are matching the mediaIds
-            // ideally the response should only return the medias matching mediasIds
-            const respMedias = resp.data.items.filter(item => this.mediasIds.split(',').includes(item.id + ''))
-
             // Update the tags of all the selected medias
             this.medias.forEach(function (media) {
-              respMedias.some(function (respMedia) {
-                if (respMedia.id === media.id) media.tags = respMedia.tags // replace tags with the one from the response
-                return respMedia.id === media.id
+              resp.data.items.some(function (mediaFromResp) {
+                if (mediaFromResp.id === media.id) media.tags = mediaFromResp.tags // replace tags with the one from the response
+                return mediaFromResp.id === media.id
               })
             })
           }
