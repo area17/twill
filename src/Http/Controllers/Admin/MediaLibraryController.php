@@ -152,7 +152,9 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
             $this->request->only('alt_text', 'caption', 'tags')
         );
 
-        return response()->json([], 200);
+        return response()->json([
+            'tags' => $this->repository->getTagsList(),
+        ], 200);
     }
 
     public function bulkUpdate()
@@ -166,13 +168,15 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
             $this->repository->update($id, ['bulk_tags' => $newTags, 'previous_common_tags' => $previousCommonTags]);
         }
 
-        $scopes = $this->filterScope([]); // TODO only return media with $ids
+        // TODO : only return medias matching $ids
+        $scopes = $this->filterScope([]);
         $items = $this->getIndexItems($scopes);
 
         return response()->json([
             'items' => $items->map(function ($item) {
                 return $this->buildMedia($item);
-            })->toArray()
+            })->toArray(),
+            'tags' => $this->repository->getTagsList(),
         ], 200);
     }
 

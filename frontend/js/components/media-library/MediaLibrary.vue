@@ -337,10 +337,8 @@
           })
         })
       },
-      reloadTags: function () {
-        api.get(this.endpoint, '', (resp) => {
-          this.tags = resp.data.tags || []
-        })
+      reloadTags: function (tags = []) {
+        this.tags = tags || []
       },
       submitFilter: function (formData) {
         const self = this

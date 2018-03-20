@@ -224,30 +224,32 @@
         api.update(url, data, (resp) => {
           this.loading = false
 
-          if (!this.hasMedia) return false
+          // Refresh the select filter displaying all tags
+          if (resp.data.tags) this.$emit('tagUpdated', resp.data.tags)
 
-          if (data.hasOwnProperty('tags') && resp.data.items) {
-            // Refresh tags
+          // Bulk update : Refresh tags
+          if (this.hasMultipleMedias && resp.data.items) {
             // respMedias : only the media that are matching the mediaIds
-            const respMedias = resp.data.items.filter(item => this.mediasIds.split(',').includes(item.id + '')) // ideally the response should only return the whole medias
+            // ideally the response should only return the medias matching mediasIds
+            const respMedias = resp.data.items.filter(item => this.mediasIds.split(',').includes(item.id + ''))
 
+            // Update the tags of all the selected medias
             this.medias.forEach(function (media) {
               respMedias.some(function (respMedia) {
-                if (respMedia.id === media.id) {
-                  media.tags = respMedia.tags // replace tags with the one from the response
-                }
-
+                if (respMedia.id === media.id) media.tags = respMedia.tags // replace tags with the one from the response
                 return respMedia.id === media.id
               })
             })
-
-            this.$emit('tagUpdated')
           }
         }, (error) => {
-          this.$store.commit(NOTIFICATION.SET_NOTIF, {
-            message: error.data.message,
-            variant: 'error'
-          })
+          this.loading = false
+
+          if (error.data.message) {
+            this.$store.commit(NOTIFICATION.SET_NOTIF, {
+              message: error.data.message,
+              variant: 'error'
+            })
+          }
         })
       }
     }
