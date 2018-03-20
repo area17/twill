@@ -31,7 +31,17 @@ Self destructing notification showing at the bottom of the page
   position:relative;
   white-space:nowrap;
   overflow:hidden;
-  padding:0 50px;
+  text-overflow:ellipsis;
+
+  @each $name, $point in $breakpoints {
+    @include breakpoint('#{$name}') {
+      padding: 0 #{map-get($outer-gutters, $name)};
+    }
+  }
+
+  @include breakpoint(xsmall) {
+    text-align:left;
+  }
 }
 
 .notif__close {

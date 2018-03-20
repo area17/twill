@@ -217,6 +217,7 @@
     pointer-events:none;
   }
 
+  /* Static variant */
   .datePicker--static {
     .form__field {
       height:0;
@@ -233,5 +234,26 @@
 
   .flatpickr-wrapper {
     display:block;
+  }
+
+  /* Mobile bersion */
+  .datePicker__group /deep/ input.flatpickr-input.flatpickr-mobile {
+    width:100%;
+    font-family: inherit;
+    font-size: inherit;
+    background:transparent;
+    border:0 none;
+    padding: 0 15px;
+    -webkit-appearance: none;
+
+    &::-webkit-clear-button {
+      display: none;
+    }
+    &::-webkit-inner-spin-button {
+      display: none;
+    }
+    &::-webkit-calendar-picker-indicator {
+      display: none;
+    }
   }
 </style>
