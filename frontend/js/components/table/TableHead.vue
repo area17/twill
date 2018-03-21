@@ -140,6 +140,12 @@
 
   .tablehead__cell--thumb {
     width:80px + 20px;
+
+    @include breakpoint(xsmall) { // no thumbnail on smaller screens
+      width:1px;
+      padding-left:0;
+      padding-right:0;
+    }
   }
 
   .tablehead__cell--icon {

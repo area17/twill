@@ -12,12 +12,12 @@
         <ul>
           <li v-for="item in searchResults" :key="item.id">
             <a :href="item.href" class="search__result">
-              <div class="search__cell search__cell--thumb">
+              <div class="search__cell search__cell--thumb hide--xsmall">
                 <figure class="search__thumb">
                   <img :src="item.thumbnail" />
                 </figure>
               </div>
-              <div class="search__cell search__cell--pubstate">
+              <div class="search__cell search__cell--pubstate hide--xsmall">
                 <span class="search__pubstate" :class="{'search__pubstate--live': item.published }"></span>
               </div>
               <div class="search__cell">
