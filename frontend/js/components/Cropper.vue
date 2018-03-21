@@ -11,11 +11,11 @@
       </div>
     </div>
     <footer class="cropper__footer">
-      <slot></slot>
       <ul v-if="ratiosByContext.length > 1" class="cropper__ratios">
         <li v-for="ratio in ratiosByContext" @click="changeRatio(ratio)" :key="ratio.name" :class="{ 's--active' : currentRatioName === ratio.name }">{{ ratio.name | capitalize }}</li>
       </ul>
-      <span class="cropper__values f--small" :class="cropperWarning">{{ cropValues.original.width }} &times; {{ cropValues.original.height }}</span>
+      <span class="cropper__values f--small hide--xsmall" :class="cropperWarning">{{ cropValues.original.width }} &times; {{ cropValues.original.height }}</span>
+      <slot></slot>
     </footer>
   </div>
 </template>
@@ -268,13 +268,21 @@
   .cropper__footer {
     position: relative;
     width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height:75px;
+
+    @include breakpoint('small+') {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height:75px;
+    }
 
     .cropper__ratios {
-      padding: 20px 0;
+      padding: 20px 0 0 0;
+      text-align: center;
+
+      @include breakpoint('small+') {
+        padding: 20px 0;
+      }
 
       li {
         @include font-smoothing();

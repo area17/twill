@@ -533,8 +533,18 @@
 
   /* Modal with cropper */
   .modal--cropper .cropper__button {
-    position: absolute;
-    bottom: 20px;
-    left: 0;
+    width:100%;
+    display:block;
+    margin-top:20px;
+    margin-bottom:20px;
+
+    @include breakpoint('small+') {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width:auto;
+      margin-top:20px;
+      margin-bottom:20px;
+    }
   }
 </style>
