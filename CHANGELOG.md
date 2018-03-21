@@ -2,6 +2,17 @@
 
 All notable changes to `laravel-cms-toolkit` will be documented in this file.
 
+## 1.0.2 - 2018-03-21
+
+### Improved
+
+- Responsive: navigation, datepickers, modals, notifications, accordeons, dropdowns, filters (!52)
+- Login: footer position (!52)
+
+### Fixed
+
+- Datepickers with no time option: fix value update in vuex store (!53)
+
 ## 1.0.1 - 2018-03-20
 
 ### Added
