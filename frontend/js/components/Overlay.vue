@@ -128,6 +128,8 @@
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
 
+  $height__header:60px;
+
   .overlay {
     position:fixed;
     top: 0;
@@ -176,8 +178,8 @@
     background: $color__overlay--header;
     color:$color__background;
     padding:0 20px;
-    height:60px;
-    line-height:60px;
+    height:$height__header;
+    line-height:$height__header;
     position:relative;
     font-weight:600;
     text-align:center;
@@ -190,9 +192,9 @@
     left:0;
     top:0;
     background:transparent;
-    height:16px + 19px + 19px;
+    height:$height__header;
     color:$color__text--light;
-    padding:19px 20px;
+    padding:#{($height__header - 16px) / 2 } 20px;
     text-align:left;
 
     &:hover,

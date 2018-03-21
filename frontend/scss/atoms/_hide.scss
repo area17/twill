@@ -1,0 +1,23 @@
+@include breakpoint(xsmall) {
+  .hide--xsmall {
+    display:none;
+  }
+}
+
+@include breakpoint(small) {
+  .hide--small {
+    display:none;
+  }
+}
+
+@include breakpoint(medium) {
+  .hide--medium {
+    display:none;
+  }
+}
+
+@include breakpoint(xlarge) {
+  .hide--xlarge {
+    display:none;
+  }
+}
