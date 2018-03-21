@@ -194,8 +194,7 @@
     $button-reset__width:45px - 13px - 14px;
     display:block;
     width: $button-reset__width;
-    min-width: $button-reset__width;
-    max-width: $button-reset__width;
+    flex: 0 0 $button-reset__width;
     height: $button-reset__width;
     overflow:hidden;
     color: $color__background;
