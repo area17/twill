@@ -1,5 +1,5 @@
 <template>
-  <form class="filter" :class="{ 'filter--opened' : opened, 'filter--single' : !withNavigation }" @submit.prevent="submitFilter" ref="form">
+  <form class="filter" :class="{ 'filter--opened' : opened, 'filter--single' : !withNavigation, 'filter--withHiddenFilters' : withHiddenFilters }" @submit.prevent="submitFilter" ref="form">
     <div class="filter__inner">
       <div class="filter__navigation"><slot name="navigation"></slot></div>
 
@@ -9,7 +9,7 @@
         <slot name="additional-actions"></slot>
       </div>
     </div>
-    <transition :css='false' :duration="500" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter" @before-leave="beforeLeave" @leave="leave">
+    <transition :css='false' :duration="275" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter" @before-leave="beforeLeave" @leave="leave">
       <div class="filter__more" v-show="opened" v-if="withHiddenFilters" :aria-hidden="!opened ? true : null">
         <div class="filter__moreInner" >
           <slot name="hidden-filters"></slot>
@@ -68,7 +68,7 @@
     },
     methods: {
       getMaxHeight: function () { // retrieve max height depending on the content height
-        return Math.min(150, this.$el.querySelector('.filter__moreInner').clientHeight)
+        return Math.min(250, this.$el.querySelector('.filter__moreInner').clientHeight)
       },
       beforeEnter: function (el) {
         el.style.maxHeight = '0px'
@@ -76,14 +76,15 @@
       },
       enter: function (el, done) {
         el.style.maxHeight = this.getMaxHeight() + 'px'
-        done()
+
+        const timeOut = window.setTimeout(function () {
+          done()
+          window.clearTimeout(timeOut)
+        }, 275 + 1)
       },
       afterEnter: function (el) {
-        const timeOut = window.setTimeout(function () {
-          el.style.maxHeight = ''
-          el.style.overflow = 'visible'
-          window.clearTimeout(timeOut)
-        }, 501)
+        el.style.maxHeight = ''
+        el.style.overflow = ''
       },
       beforeLeave: function (el) {
         el.style.maxHeight = this.getMaxHeight() + 'px'
@@ -155,9 +156,26 @@
     }
   }
 
+  /* variant when filter has hidden filters on small screens */
+  @include breakpoint(xsmall) {
+    .filter--withHiddenFilters {
+      .filter__inner {
+        display:block;
+      }
+
+      .filter__search {
+        display:flex;
+
+        input {
+          flex-grow:1;
+        }
+      }
+    }
+  }
+
   .filter__more {
     max-height: 200px;
-    transition: max-height 0.5s ease;
+    transition: max-height 0.275s ease;
     overflow: hidden;
   }
 

@@ -6,6 +6,8 @@ const navToggle = function () {
   let isActive = false
   let lastScrollPos = 0
   const htmlElement = document.documentElement
+  const header = document.querySelector('[data-header-mobile]')
+  const ham = document.querySelector('.ham')
   const bts = document.querySelectorAll('[data-ham-btn]')
   const btsClose = document.querySelectorAll('[data-closenav-btn]')
   const wrapper = document.querySelector('.a17')
@@ -22,6 +24,8 @@ const navToggle = function () {
 
     htmlElement.classList.add(klass)
     wrapper.style.top = '-' + lastScrollPos + 'px'
+    ham.style.top = '-' + lastScrollPos + 'px'
+    header.style.top = '-' + lastScrollPos + 'px'
 
     document.addEventListener('keydown', _escNav, false)
 
@@ -37,6 +41,8 @@ const navToggle = function () {
 
     htmlElement.classList.remove(klass)
     wrapper.style.top = ''
+    ham.style.top = ''
+    header.style.top = ''
 
     document.removeEventListener('keydown', _escNav, false)
 

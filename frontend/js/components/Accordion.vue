@@ -78,6 +78,13 @@
     flex-grow:1;
     text-align:right;
     color:$color__text--light;
+    padding-left:10px;
+    overflow:hidden;
+
+    > * {
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   .accordion__dropdown {

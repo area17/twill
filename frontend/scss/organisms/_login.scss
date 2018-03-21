@@ -13,7 +13,8 @@
   width:400px;
   max-width:calc(100vw - 60px);
   padding-top:30px;
-  padding-bottom:50px;
+  padding-bottom:70px;
+  position:relative;
 }
 
 .login__heading {
@@ -129,8 +130,19 @@
   width:100%;
   left:0;
   right:0;
+  padding-top:0;
 
   .container {
     color:$color__text--forms;
+  }
+
+  /* fixed nav bar */
+  @media (max-height: 600px) {
+    position:absolute;
+
+    .container {
+      padding-left:0;
+      padding-right:0;
+    }
   }
 }

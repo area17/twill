@@ -25,13 +25,21 @@
     }
 
     .ham__icon {
+        display:none;
+
         &:after {
-            transform:translateY(-6px) rotate(45deg);
+            // transform:translateY(-6px) rotate(45deg);
+            opacity:0;
         }
 
         &:before {
-            transform:translateY(6px) rotate(-45deg);
+            // transform:translateY(6px) rotate(-45deg);
+            opacity:0;
         }
+    }
+
+    .ham .icon {
+      display:block;
     }
   }
 }

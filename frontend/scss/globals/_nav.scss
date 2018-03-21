@@ -28,6 +28,30 @@ $height__nav: 60px;
   overflow:hidden;
   overflow-x:auto;
 
+  @include breakpoint(xsmall) {
+    margin-left: -#{ map-get($outer-gutters, xsmall)};
+    padding-left: #{ map-get($outer-gutters, xsmall) - 17px };
+    width:calc(100% + #{ map-get($outer-gutters, xsmall) + map-get($outer-gutters, xsmall) });
+  }
+
+  @include breakpoint(small) {
+    margin-left: -#{ map-get($outer-gutters, small)};
+    padding-left: #{ map-get($outer-gutters, small) - 17px };
+    width:calc(100% + #{ map-get($outer-gutters, small) + map-get($outer-gutters, small) });
+  }
+
+  @include breakpoint(medium) {
+    margin-left: -#{ map-get($outer-gutters, medium)};
+    padding-left: #{ map-get($outer-gutters, medium) - 17px };
+    width:calc(100% + #{ map-get($outer-gutters, medium) + map-get($outer-gutters, medium) });
+  }
+
+  @include breakpoint(large) {
+    margin-left: -#{ map-get($outer-gutters, large)};
+    padding-left: #{ map-get($outer-gutters, large) - 17px };
+    width:calc(100% + #{ map-get($outer-gutters, large) + map-get($outer-gutters, large) });
+  }
+
   .s--search & {
     transition: all 0.14s $bezier__bounce;
     visibility: hidden;

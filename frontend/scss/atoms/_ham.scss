@@ -46,6 +46,13 @@ $height__nav: 60px;
   }
 }
 
+.ham__label,
+.ham__btn {
+  //height:20px;
+  //padding: 19px 0 20px 20px;
+  display: inline-block;
+}
+
 .ham__label {
   color:$color__background;
   /*@include font-smoothing;*/
@@ -64,18 +71,11 @@ $height__nav: 60px;
 .ham__label,
 .ham__line {
   opacity:1;
-  transition: opacity .3s ease;
+  // transition: opacity .3s ease;
 }
 
 .ham__label {
   margin-right: 20px;
-}
-
-.ham__label,
-.ham__btn {
-  //height:20px;
-  //padding: 19px 0 20px 20px;
-  display: inline-block;
 }
 
 .ham__icon {
@@ -94,7 +94,7 @@ $height__nav: 60px;
     right:0;
     width:100%;
     background:$color__text--light;
-    transition: transform .3s ease;
+    // transition: transform .3s ease;
   }
 
   &:before {
@@ -103,6 +103,18 @@ $height__nav: 60px;
 
   &:after {
     bottom:0;
+  }
+}
+
+.ham .icon {
+  display:none;
+  color:$color__text--light;
+}
+
+.ham:hover,
+.ham:focus {
+  .icon {
+    color:$color__background;
   }
 }
 
