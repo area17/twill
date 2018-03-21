@@ -34,8 +34,8 @@ $passwordText = isset($welcome) && $welcome ? 'Choose password' : 'Reset passwor
 
                     <input class="login__button" type="submit" value="{{ $passwordText }}">
                 </form>
-                @include('cms-toolkit::partials.footer')
             </section>
+            @include('cms-toolkit::partials.footer')
         </div>
     </body>
 </html>

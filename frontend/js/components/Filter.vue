@@ -84,7 +84,7 @@
       },
       afterEnter: function (el) {
         el.style.maxHeight = ''
-        el.style.overflow = ''
+        el.style.overflow = 'visible'
       },
       beforeLeave: function (el) {
         el.style.maxHeight = this.getMaxHeight() + 'px'
