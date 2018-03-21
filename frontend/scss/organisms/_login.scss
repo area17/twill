@@ -2,19 +2,15 @@
   background:black;
   display:flex;
   flex-flow: column nowrap;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .login {
-  margin:0 auto;
+  margin:auto;
   color:$color__text--forms;
   width:400px;
   max-width:calc(100vw - 60px);
   padding-top:30px;
   padding-bottom:70px;
-  position:relative;
 }
 
 .login__heading {
@@ -124,8 +120,8 @@
   }
 }
 
-.login .footer {
-  position:fixed;
+.a17--login .footer {
+  position:absolute;
   bottom:0;
   width:100%;
   left:0;
@@ -133,16 +129,7 @@
   padding-top:0;
 
   .container {
+    width:auto;
     color:$color__text--forms;
-  }
-
-  /* fixed nav bar */
-  @media (max-height: 600px) {
-    position:absolute;
-
-    .container {
-      padding-left:0;
-      padding-right:0;
-    }
   }
 }

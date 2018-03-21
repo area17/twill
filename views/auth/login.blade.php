@@ -31,8 +31,8 @@
                         </a>
                     @endif
                 </form>
-                @include('cms-toolkit::partials.footer')
             </section>
+            @include('cms-toolkit::partials.footer')
         </div>
     </body>
 </html>
