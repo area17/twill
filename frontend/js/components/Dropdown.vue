@@ -74,6 +74,7 @@
       return {
         currentPosition: this.position,
         currentHeight: 100,
+        currentMaxWidth: this.maxWidth,
         active: false,
         originScrollPostion: null,
         scrollOffset: 75
@@ -98,7 +99,7 @@
           'margin-top': this.isPosition('bottom') ? this.offset + 'px' : '',
           'margin-bottom': this.isPosition('top') ? this.offset + 'px' : '',
           'transform': this.sideOffset ? 'translateX(' + this.sideOffset + 'px)' : '',
-          'max-width': this.maxWidth > 0 && this.width !== 'full' ? this.maxWidth + 'px' : '',
+          'max-width': this.currentMaxWidth > 0 && this.width !== 'full' ? this.currentMaxWidth + 'px' : '',
           'min-width': this.minWidth > 0 ? this.minWidth + 'px' : ''
         }
       },
@@ -128,9 +129,17 @@
           if ((yLimitTop - this.currentHeight) < window.pageYOffset) this.currentPosition = this.currentPosition.replace(/top/i, 'bottom') // reposition from top to bottom
         }
       },
-      setHeight: function () {
+      getHeight: function () {
         // save current height of the dropdown for positioning purpose
         this.currentHeight = this.$el.querySelector('[data-dropdown-content]') ? this.$el.querySelector('[data-dropdown-content]').offsetHeight : 100
+      },
+      setMaxWidth: function () {
+        // adjust max width if larger than the viewport
+        const elPosition = this.$el.getBoundingClientRect()
+
+        if (this.isPosition('left')) this.currentMaxWidth = (this.maxWidth + elPosition.left) > window.innerWidth ? window.innerWidth - elPosition.left : this.maxWidth
+        else if (this.isPosition('right')) this.currentMaxWidth = (this.maxWidth + (window.innerWidth - elPosition.right)) > window.innerWidth ? window.innerWidth - (window.innerWidth - elPosition.right) : this.maxWidth
+        else this.currentMaxWidth = this.maxWidth > window.innerWidth ? window.innerWidth : this.maxWidth
       },
       setFixedPosition: function () {
         const ctaPosition = this.$refs.dropdown__cta.getBoundingClientRect()
@@ -185,8 +194,9 @@
           }
 
           this.$nextTick(function () {
-            this.setHeight()
+            this.getHeight()
             this.reposition()
+            this.setMaxWidth()
             this.fixed && this.setFixedPosition()
           })
 
@@ -238,9 +248,8 @@
     }
   }
 
-  .dropdown__content {
-
-  }
+  // .dropdown__content {
+  // }
 
   // .dropdown--active {
   //   .dropdown__content {
@@ -353,6 +362,7 @@
     background:rgba($color__background,0.98);
     border-radius:2px;
     box-shadow:$box-shadow;
+    max-width:calc(100vw - 10px);
 
     /deep/ .input {
       margin-top:0;

@@ -429,11 +429,19 @@
   }
 
   .previewerRevision__author {
-    padding-right:30px;
+    padding-right:10px;
     flex-grow: 1;
+    white-space: nowrap;
+
+    @include breakpoint('small+') {
+      padding-right:30px;
+    }
   }
 
   .previewerRevision__datetime {
     color:$color__link;
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow: ellipsis;
   }
 </style>

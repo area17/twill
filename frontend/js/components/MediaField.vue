@@ -18,7 +18,7 @@
           <li class="f--small" v-if="media.size">File size: {{ media.size | uppercase }}</li>
           <li class="f--small" v-if="media.width + media.height">Dimensions: {{ media.width }}&nbsp;&times;&nbsp;{{ media.height }}</li>
           <li class="f--small" v-if="cropInfos.length" @click="openCropMedia">
-            <span class="f--small f--note f--underlined--o f--underlined--link">
+            <span class="f--small f--note f--underlined--o f--underlined--link hide--xsmall">
               Cropped : <span v-for="(cropInfo, index) in cropInfos" :key="cropInfo.name">{{ cropInfo.name }}<span v-if="index !== cropInfos.length - 1">,&nbsp;</span></span>
             </span>
           </li>
