@@ -2,6 +2,13 @@
 
 All notable changes to `laravel-cms-toolkit` will be documented in this file.
 
+## 1.0.3 2018-03-21
+
+### Fixed
+
+- Eventual duplicate index name from migration helpers (!54)
+- Listing filters overflow after opening (18577c1)
+
 ## 1.0.2 - 2018-03-21
 
 ### Improved
