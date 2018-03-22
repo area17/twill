@@ -47,14 +47,14 @@
     overflow: hidden;
     background:white;
 
-    @media (max-width: 400px) {
-      width: 100%;
-      padding-bottom:100%;
-    }
-
-    @media (min-width: 400px) {
+    @media (max-width: 300px) {
       width: 100%;
       padding-bottom: 100%;
+    }
+
+    @media (min-width: 300px) {
+      width: (100% / 2);
+      padding-bottom: (100% / 2);
     }
 
     @media (min-width: 600px) {

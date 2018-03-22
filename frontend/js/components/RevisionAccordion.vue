@@ -82,12 +82,15 @@
 
   .revaccordion__author {
     flex-grow: 1;
+    white-space: nowrap;
   }
 
   .revaccordion__datetime {
+    padding-left:10px;
     color:$color__link;
     white-space: nowrap;
     overflow:hidden;
+    text-overflow: ellipsis;
   }
 
 </style>

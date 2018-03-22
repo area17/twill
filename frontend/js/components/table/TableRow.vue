@@ -287,6 +287,19 @@
   .tablecell--thumb {
     width: 1px;
 
+    @include breakpoint(xsmall) { // no thumbnail on smaller screens
+      padding-left:0;
+      padding-right:0;
+    }
+  }
+
+  .tablecell__thumb {
+    display: block;
+
+    @include breakpoint(xsmall) { // no thumbnail on smaller screens
+      display:none;
+    }
+
     img {
       display: block;
       width: 80px;
@@ -294,10 +307,6 @@
       background: $color__border--light;
       height: auto;
     }
-  }
-
-  .tablecell__thumb {
-    display: block;
   }
 
   /* Name */

@@ -191,16 +191,18 @@
   }
 
   .datePicker__reset {
+    $button-reset__width:45px - 13px - 14px;
     display:block;
-    width: 45px - 13px - 14px;
-    height: 45px - 13px - 14px;
+    width: $button-reset__width;
+    flex: 0 0 $button-reset__width;
+    height: $button-reset__width;
     overflow:hidden;
     color: $color__background;
     background:$color__icons;
-    border-radius:50%;
+    border-radius:#{$button-reset__width / 2};
     margin-top:13px;
     margin-right:13px;
-    line-height:45px - 13px - 13px;
+    line-height:$button-reset__width;
     text-align:center;
     transition: opacity 0.2s ease;
 

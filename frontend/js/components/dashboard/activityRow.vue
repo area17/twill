@@ -56,8 +56,8 @@
       cellClasses: function (col) {
         return {
           'activityCell--icon': col.name === 'featured' || col.name === 'published',
-          'activityCell--pub': col.name === 'published',
-          'activityCell--thumb': col.name === 'thumbnail'
+          'activityCell--pub hide--xsmall': col.name === 'published',
+          'activityCell--thumb hide--xsmall': col.name === 'thumbnail'
         }
       },
       isSpecificColumn: function (col) {

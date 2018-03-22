@@ -2,7 +2,7 @@
   <a17-overlay ref="overlay" title="Preview changes">
   <div class="previewer" :class="{ 'previewer--loading' : loading }" v-if="revisions.length">
     <!-- <a17-button @click="restoreRevision" v-if="activeRevision" class="previewer__restore" variant="warning" size="small">Restore</a17-button> -->
-    <a17-button @click="openEditor" v-if="!activeRevision && editor" class="previewer__restore" variant="editor" size="small"><span v-svg symbol="editor"></span>Editor</a17-button>
+    <a17-button @click="openEditor" v-if="!activeRevision && editor" class="previewer__restore" variant="editor" size="small"><span v-svg symbol="editor" class="hide--xsmall"></span>Editor</a17-button>
     <div class="previewer__frame">
       <div class="previewer__inner">
         <div class="previewer__nav">
@@ -429,11 +429,19 @@
   }
 
   .previewerRevision__author {
-    padding-right:30px;
+    padding-right:10px;
     flex-grow: 1;
+    white-space: nowrap;
+
+    @include breakpoint('small+') {
+      padding-right:30px;
+    }
   }
 
   .previewerRevision__datetime {
     color:$color__link;
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow: ellipsis;
   }
 </style>
