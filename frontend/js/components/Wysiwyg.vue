@@ -36,6 +36,10 @@
   import InputframeMixin from '@/mixins/inputFrame'
   import LocaleMixin from '@/mixins/locale'
 
+  import { loadScript } from '@/utils/loader'
+
+  const HIGHLIGHT = '//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js'
+
   export default {
     name: 'A17Wysiwyg',
     mixins: [InputMixin, InputframeMixin, LocaleMixin, FormStoreMixin],
@@ -93,17 +97,6 @@
         quill: null,
         defaultModules: {
           toolbar: ['bold', 'italic', 'underline', 'link'],
-          clipboard: {
-            matchVisual: false,
-            matchers: [
-              QuillConfiguration.lineBreak.clipboard
-            ]
-          },
-          keyboard: {
-            bindings: {
-              lineBreak: QuillConfiguration.lineBreak.handle
-            }
-          }
           // Complete Toolbar example :
           // ['blockquote', 'code-block', 'strike'],
           // [{ 'header': 1 }, { 'header': 2 }],
@@ -118,10 +111,78 @@
           // [{ 'align': [] }],
           // ['clean'],
           // ['link', 'image', 'video']
+          clipboard: {
+            matchVisual: false,
+            matchers: [
+              QuillConfiguration.lineBreak.clipboard
+            ]
+          },
+          keyboard: {
+            bindings: {
+              lineBreak: QuillConfiguration.lineBreak.handle
+            }
+          },
+          syntax: false
         }
       }
     },
     methods: {
+      initQuill () {
+        // init Quill
+        this.quill = new QuillConfiguration.Quill(this.$refs.editor, this.options)
+
+        // set editor content
+        if (this.value) this.updateEditor(this.value)
+
+        // update model if text changes
+        this.quill.on('text-change', (delta, oldDelta, source) => {
+          if (this.maxlength > 0 && this.quill.getLength() > this.maxlength + 1) {
+            this.quill.deleteText(this.maxlength, this.quill.getLength())
+          } else {
+            let html = this.$refs.editor.children[0].innerHTML
+            if (html === '<p><br></p>') html = ''
+            this.value = html
+
+            this.$emit('input', this.value)
+            this.$emit('change', this.value)
+          }
+
+          if (source === 'user') this.textUpdate()
+        })
+
+        // focus / blur event
+        this.quill.on('selection-change', (range, oldRange, source) => {
+          if (range) {
+            this.focused = true
+            this.$emit('focus')
+          } else {
+            this.focused = false
+
+            // save value in store
+            if (source === 'user') this.saveIntoStore()
+            this.$emit('blur')
+          }
+        })
+
+        // disabled
+        if (this.disabled) {
+          this.quill.enable(false)
+        }
+
+        // Change the link placeholder + add a checkbox to add or not the target blank attribute to current url
+        if (this.baseUrl) {
+          const tooltip = this.quill.theme.tooltip
+          const rootElement = tooltip.root
+
+          if (rootElement) {
+            const input = rootElement.querySelector('input[data-link]')
+            if (input) input.setAttribute('data-link', this.baseUrl)
+          }
+        }
+
+        // emit ready
+        this.$emit('ready', this.quill)
+      },
       updateEditor: function (newValue) {
         // convert string to HTML and update the content silently
         const htmlData = this.quill.clipboard.convert(newValue)
@@ -148,84 +209,30 @@
         this.saveIntoStore() // see formStore mixin
       }
     },
-    // watch: {
-    //   submitting: function () {
-    //     if (this.submitting) { // The form is about to submit so lets make sure we saved the wysiwyg
-    //       this.saveIntoStore()
-    //     }
-    //   }
-    // },
     mounted: function () {
-      const self = this
-
       if (this.quill) return
 
-      self.options.theme = self.options.theme || 'snow'
-      self.options.boundary = self.options.boundary || document.body
-      self.options.modules = self.options.modules || self.defaultModules
-      self.options.modules.toolbar = self.options.modules.toolbar !== undefined ? self.options.modules.toolbar : self.defaultModules.toolbar
-      self.options.modules.clipboard = self.options.modules.clipboard !== undefined ? self.options.modules.clipboard : self.defaultModules.clipboard
-      self.options.modules.keyboard = self.options.modules.keyboard !== undefined ? self.options.modules.keyboard : self.defaultModules.keyboard
-      self.options.placeholder = self.options.placeholder || self.placeholder
-      self.options.readOnly = self.options.readOnly !== undefined ? self.options.readOnly : self.readonly
-      self.options.formats = QuillConfiguration.getFormats(self.options.modules.toolbar) // Formats are based on current toolbar configuration
+      /* global hljs */
+      this.options.theme = this.options.theme || 'snow'
+      this.options.boundary = this.options.boundary || document.body
+      this.options.modules = this.options.modules || this.defaultModules
+      this.options.modules.toolbar = this.options.modules.toolbar !== undefined ? this.options.modules.toolbar : this.defaultModules.toolbar
+      this.options.modules.clipboard = this.options.modules.clipboard !== undefined ? this.options.modules.clipboard : this.defaultModules.clipboard
+      this.options.modules.keyboard = this.options.modules.keyboard !== undefined ? this.options.modules.keyboard : this.defaultModules.keyboard
+      this.options.modules.syntax = this.options.modules.syntax !== undefined ? { highlight: text => hljs.highlightAuto(text).value } : this.defaultModules.syntax
+      this.options.placeholder = this.options.placeholder || this.placeholder
+      this.options.readOnly = this.options.readOnly !== undefined ? this.options.readOnly : this.readonly
+      this.options.formats = QuillConfiguration.getFormats(this.options.modules.toolbar) // Formats are based on current toolbar configuration
+      this.options.scrollingContainer = null
 
-      self.options.scrollingContainer = null
-
-      // init Quill
-      self.quill = new QuillConfiguration.Quill(self.$refs.editor, self.options)
-
-      // set editor content
-      if (self.value) self.updateEditor(self.value)
-
-      // update model if text changes
-      self.quill.on('text-change', (delta, oldDelta, source) => {
-        if (self.maxlength > 0 && self.quill.getLength() > self.maxlength + 1) {
-          self.quill.deleteText(self.maxlength, self.quill.getLength())
-        } else {
-          let html = self.$refs.editor.children[0].innerHTML
-          if (html === '<p><br></p>') html = ''
-          self.value = html
-
-          self.$emit('input', self.value)
-          self.$emit('change', self.value)
-        }
-
-        if (source === 'user') self.textUpdate()
-      })
-
-      // focus / blur event
-      self.quill.on('selection-change', function (range, oldRange, source) {
-        if (range) {
-          self.focused = true
-          self.$emit('focus')
-        } else {
-          self.focused = false
-
-          // save value in store
-          if (source === 'user') self.saveIntoStore()
-          self.$emit('blur')
-        }
-      })
-
-      // disabled
-      if (self.disabled) {
-        self.quill.enable(false)
+      if (this.options.modules.syntax && typeof hljs === 'undefined') {
+        const id = 'highlight-js-script'
+        loadScript(id, HIGHLIGHT, 'text/javascript').then(() => {
+          this.initQuill()
+        })
+      } else {
+        this.initQuill()
       }
-
-      // Change the link placeholder + add a checkbox to add or not the target blank attribute to current url
-      if (self.baseUrl) {
-        const tooltip = self.quill.theme.tooltip
-        const rootElement = tooltip.root
-
-        if (rootElement) {
-          const input = rootElement.querySelector('input[data-link]')
-          if (input) input.setAttribute('data-link', self.baseUrl)
-        }
-      }
-
-      // emit ready
-      self.$emit('ready', self.quill)
     },
     beforeDestroy () {
       this.quill = null

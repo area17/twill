@@ -27,15 +27,22 @@
             return $option;
         }, $toolbarOptions);
 
+        $activeSyntax = in_array('code-block', $toolbarOptions);
         $toolbarOptions = [
             'modules' => [
-                'toolbar' => $toolbarOptions
+                'toolbar' => $toolbarOptions,
+                'syntax' => $activeSyntax
             ]
         ];
     }
-
     $options = $customOptions ?? $toolbarOptions ?? false;
 @endphp
+
+@if($activeSyntax)
+    @push('extra_css')
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/solarized-light.min.css">
+    @endpush
+@endif
 
 @if($translated)
     <a17-locale
