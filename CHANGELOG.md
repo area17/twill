@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-cms-toolkit` will be documented in this file.
 
+## 1.0.4 2018-03-21
+
+### Fixed
+
+- Module repository filter ignoring null scopes (1de874e)
+
 ## 1.0.3 2018-03-21
 
 ### Fixed
