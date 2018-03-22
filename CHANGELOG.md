@@ -2,6 +2,21 @@
 
 All notable changes to `laravel-cms-toolkit` will be documented in this file.
 
+## 1.0.5 2018-03-22
+
+### Fixed
+
+- Module generator hasRevisions option (3fcf7f0)
+
+### Improved
+
+- Misc responsive fixes for small screen (!55):
+  * Cropper modal update
+  * Media library : grid is showing 2 images on the same row on mobile
+  * Dropdown : resize based on available space
+  * Overlay header : adjust infos showing up on smaller screens
+  *  Listing and search results : dont show thumbnails on smaller screens
+
 ## 1.0.4 2018-03-21
 
 ### Fixed
