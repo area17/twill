@@ -3,7 +3,6 @@ export const loadScript = (id, src, type) => {
     let script = document.getElementById(id)
 
     const done = () => {
-      console.log('first')
       script.removeEventListener('load', done)
       resolve()
     }
@@ -18,7 +17,6 @@ export const loadScript = (id, src, type) => {
       script.onerror = reject
       document.getElementsByTagName('head')[0].appendChild(script)
       script.src = src
-      console.log('second')
     }
   })
 }
