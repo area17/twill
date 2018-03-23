@@ -27,8 +27,7 @@
             return $option;
         }, $toolbarOptions);
 
-        $activeSyntax = in_array('code-block', $toolbarOptions);
-        //$activeSyntax = false;
+        $activeSyntax = $synthax ?? false;
 
         $toolbarOptions = [
             'modules' => [
@@ -37,7 +36,6 @@
             ]
         ];
     }
-
     $theme = $customTheme ?? 'github';
     $options = $customOptions ?? $toolbarOptions ?? false;
 @endphp
