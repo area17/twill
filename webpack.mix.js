@@ -59,7 +59,8 @@ mix.js(
   'quill', 'vuedraggable', 'cropperjs',
   'flatpickr', 'vue-select', 'vue-timeago',
   'date-fns', 'lodash/debounce',
-  'fine-uploader', 'fine-uploader-wrappers'
+  'tinycolor2', 'fine-uploader/lib/dnd',
+  'fine-uploader-wrappers/s3', 'fine-uploader-wrappers/traditional'
 ]).sass(
   'frontend/scss/app.scss',
   'public/assets/admin/css'
