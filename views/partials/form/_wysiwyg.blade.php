@@ -28,6 +28,8 @@
         }, $toolbarOptions);
 
         $activeSyntax = in_array('code-block', $toolbarOptions);
+        //$activeSyntax = false;
+
         $toolbarOptions = [
             'modules' => [
                 'toolbar' => $toolbarOptions,
@@ -35,13 +37,15 @@
             ]
         ];
     }
+
+    $theme = $customTheme ?? 'github';
     $options = $customOptions ?? $toolbarOptions ?? false;
 @endphp
 
 @if($activeSyntax)
-    @push('extra_css')
-        <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/solarized-light.min.css">
-    @endpush
+    @pushonce('extra_css:wysiwyg')
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/{{$theme}}.min.css">
+    @endpushonce
 @endif
 
 @if($translated)
