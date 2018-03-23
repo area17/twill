@@ -50,13 +50,12 @@
 
 <script>
   import { mapState } from 'vuex'
+  import api from '@/store/api/media-library'
   import { NOTIFICATION } from '@/store/mutations'
+  import isEqual from 'lodash/isEqual'
   import FormDataAsObj from '@/utils/formDataAsObj.js'
-  import { isEqual } from 'lodash'
-  import api from '../../store/api/media-library'
-
-  import a17MediaSidebarUpload from '@/components/media-library/MediaSidebarUpload'
   import a17VueFilters from '@/utils/filters.js'
+  import a17MediaSidebarUpload from '@/components/media-library/MediaSidebarUpload'
 
   export default {
     name: 'A17MediaSidebar',

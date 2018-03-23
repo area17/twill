@@ -1,4 +1,4 @@
-import { isEqual } from 'lodash'
+import isEqual from 'lodash/isEqual'
 import { mapState, mapGetters } from 'vuex'
 import { FORM } from '@/store/mutations'
 

@@ -7,7 +7,8 @@
 </template>
 
 <script>
-  import { isEqual, clone } from 'lodash'
+  import isEqual from 'lodash/isEqual'
+  import clone from 'lodash/clone'
   import { mapState, mapGetters } from 'vuex'
 
   export default {
