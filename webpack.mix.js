@@ -1,4 +1,5 @@
 let mix = require('laravel-mix')
+let webpack = require('webpack')
 
 /*
  |--------------------------------------------------------------------------
@@ -24,6 +25,23 @@ mix.webpackConfig({
       'styles': path.resolve('frontend/scss')
     }
   },
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'assets/admin/js/vendor',
+      minChunks: function (module) {
+        // This prevents stylesheet resources with these extensions
+        // from being moved from their original chunk to the vendor chunk
+        if (module.resource && (/^.*\.(css|scss|less)$/).test(module.resource)) {
+          return false
+        }
+        return module.context && module.context.indexOf('node_modules') !== -1
+      }
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'assets/admin/js/manifest',
+      minChunks: Infinity
+    })
+  ],
   module: {
     rules: [
       {
@@ -54,14 +72,16 @@ mix.js(
 ).js(
   'frontend/js/main-dashboard.js',
   'public/assets/admin/js'
-).extract([
-  'vue', 'vuex', 'axios',
-  'quill', 'vuedraggable', 'cropperjs',
-  'flatpickr', 'vue-select', 'vue-timeago',
-  'date-fns', 'lodash/debounce',
-  'tinycolor2', 'fine-uploader/lib/dnd',
-  'fine-uploader-wrappers/s3', 'fine-uploader-wrappers/traditional'
-]).sass(
+).sass(
   'frontend/scss/app.scss',
   'public/assets/admin/css'
-).sourceMaps()
+)
+  // .extract([
+  //   'vue', 'vuex', 'axios',
+  //   'quill', 'vuedraggable', 'cropperjs',
+  //   'flatpickr', 'vue-select', 'vue-timeago',
+  //   'date-fns', 'lodash/debounce',
+  //   'tinycolor2', 'fine-uploader/lib/dnd',
+  //   'fine-uploader-wrappers/s3', 'fine-uploader-wrappers/traditional'
+  // ])
+  .sourceMaps()
