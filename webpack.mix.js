@@ -38,7 +38,7 @@ mix.webpackConfig({
       }
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'assets/admin/js/manifest',
+      name: 'public/assets/admin/js/manifest',
       minChunks: Infinity
     })
   ],
@@ -75,13 +75,14 @@ mix.js(
 ).sass(
   'frontend/scss/app.scss',
   'public/assets/admin/css'
-)
-  // .extract([
-  //   'vue', 'vuex', 'axios',
-  //   'quill', 'vuedraggable', 'cropperjs',
-  //   'flatpickr', 'vue-select', 'vue-timeago',
-  //   'date-fns', 'lodash/debounce',
-  //   'tinycolor2', 'fine-uploader/lib/dnd',
-  //   'fine-uploader-wrappers/s3', 'fine-uploader-wrappers/traditional'
-  // ])
-  .sourceMaps()
+).sourceMaps()
+
+// .extract([
+//   'vue', 'vuex', 'axios',
+//   'quill', 'vuedraggable', 'cropperjs',
+//   'flatpickr', 'vue-select', 'vue-timeago',
+//   'date-fns', 'lodash/debounce',
+//   'tinycolor2', 'fine-uploader/lib/dnd',
+//   'fine-uploader-wrappers/s3', 'fine-uploader-wrappers/traditional'
+// ])
+
