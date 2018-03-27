@@ -10,6 +10,9 @@
     $toolbarOptions = $toolbarOptions ?? false;
     $inModal = $fieldsInModal ?? false;
 
+    // quill.js options
+    $activeSyntax = $syntax ?? false;
+    $theme = $customTheme ?? 'github';
     if ($toolbarOptions) {
         $toolbarOptions = array_map(function ($option) {
             if ($option == 'list-unordered') {
@@ -27,8 +30,6 @@
             return $option;
         }, $toolbarOptions);
 
-        $activeSyntax = $synthax ?? false;
-
         $toolbarOptions = [
             'modules' => [
                 'toolbar' => $toolbarOptions,
@@ -36,7 +37,6 @@
             ]
         ];
     }
-    $theme = $customTheme ?? 'github';
     $options = $customOptions ?? $toolbarOptions ?? false;
 @endphp
 
