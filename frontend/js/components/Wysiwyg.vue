@@ -280,6 +280,7 @@
       }
     }
 
+    /* Default content styling */
     .ql-snow .ql-editor {
       h1, h2, h3, h4, h5, h6 {
         font-weight:700;
@@ -288,26 +289,41 @@
       p, ul, ol, h1, h2, h3, h4, h5 {
         margin-bottom:1em;
       }
-    }
 
-    .ql-snow .ql-editor h1 {
-      font-size: 2em;
-      line-height:1.25em;
-    }
+      h1 {
+        font-size: 2em;
+        line-height:1.25em;
+      }
 
-    .ql-snow .ql-editor h2 {
-      font-size: 1.66em;
-      line-height:1.25em;
-    }
+      h2 {
+        font-size: 1.66em;
+        line-height:1.25em;
+      }
 
-    .ql-snow .ql-editor h3 {
-      font-size: 1.33em;
-      line-height:1.25em;
-    }
+      h3 {
+        font-size: 1.33em;
+        line-height:1.25em;
+      }
 
-    .ql-snow .ql-editor h4 {
-      font-size: 1.25em;
-      line-height:1.25em;
+      h4 {
+        font-size: 1.25em;
+        line-height:1.25em;
+      }
+
+      h5 {
+        font-size: 1em;
+        line-height:1.25em;
+      }
+
+      // default code syntax hightlighting is github
+      pre {
+        color: $color__wysiwyg-codeText;
+        padding: 15px;
+        overflow: auto;
+        background-color:$color__wysiwyg-codeBg;
+        border-radius: 3px;
+        font-family: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,monospace;
+      }
     }
 
     .ql-toolbar.ql-snow {
