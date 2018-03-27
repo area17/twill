@@ -1,5 +1,5 @@
 import { DATATABLE } from '@/store/mutations'
-import * as ACTIONS from '@/store/actions'
+import ACTIONS from '@/store/actions'
 
 const getDepth = ({children}) => 1 + (children && children.length > 0 ? Math.max(...children.map(getDepth)) : 0)
 

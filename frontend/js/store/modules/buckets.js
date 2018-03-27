@@ -1,6 +1,6 @@
 import bucketsAPI from '../api/buckets'
 import {BUCKETS, NOTIFICATION} from '../mutations'
-import * as ACTIONS from '@/store/actions'
+import ACTIONS from '@/store/actions'
 
 const state = {
   saveUrl: window.STORE.buckets.saveUrl || '',

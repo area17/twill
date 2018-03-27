@@ -1,6 +1,6 @@
 import revisionAPI from '../api/revision'
 import { REVISION } from '../mutations'
-import * as ACTIONS from '@/store/actions'
+import ACTIONS from '@/store/actions'
 import { getFormData } from '@/utils/getFormData.js'
 
 const state = {

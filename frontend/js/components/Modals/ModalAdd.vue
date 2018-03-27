@@ -9,7 +9,7 @@
 
 <script>
   import { NOTIFICATION, FORM } from '@/store/mutations'
-  import * as ACTIONS from '@/store/actions'
+  import ACTIONS from '@/store/actions'
   import a17ModalValidationButtons from '@/components/Modals/ModalValidationButtons.vue'
 
   export default {

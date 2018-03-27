@@ -8,7 +8,7 @@
 import Vue from 'vue'
 import api from '../api/content'
 import { CONTENT } from '../mutations'
-import * as ACTIONS from '@/store/actions'
+import ACTIONS from '@/store/actions'
 import { buildBlock, isBlockEmpty } from '@/utils/getFormData.js'
 
 const state = {

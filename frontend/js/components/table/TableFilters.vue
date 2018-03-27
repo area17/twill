@@ -30,7 +30,7 @@
 <script>
   import { mapState } from 'vuex'
   import { DATATABLE } from '@/store/mutations'
-  import * as ACTIONS from '@/store/actions'
+  import ACTIONS from '@/store/actions'
 
   export default {
     name: 'A17TableFilters',

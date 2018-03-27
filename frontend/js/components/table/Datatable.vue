@@ -87,7 +87,7 @@
 <script>
   import { mapState, mapGetters } from 'vuex'
   import { DATATABLE } from '@/store/mutations'
-  import * as ACTIONS from '@/store/actions'
+  import ACTIONS from '@/store/actions'
 
   import draggableMixin from '@/mixins/draggable'
   import nestedDraggableMixin from '@/mixins/nestedDraggable'

@@ -61,7 +61,7 @@
   import { mapState, mapGetters } from 'vuex'
 
   import { BUCKETS } from '@/store/mutations'
-  import * as ACTIONS from '@/store/actions'
+  import ACTIONS from '@/store/actions'
 
   import BucketItem from './BucketItem.vue'
   import BucketSourceItem from './BucketSourceItem.vue'
