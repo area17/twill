@@ -10,6 +10,9 @@
     $toolbarOptions = $toolbarOptions ?? false;
     $inModal = $fieldsInModal ?? false;
 
+    // quill.js options
+    $activeSyntax = $syntax ?? false;
+    $theme = $customTheme ?? 'github';
     if ($toolbarOptions) {
         $toolbarOptions = array_map(function ($option) {
             if ($option == 'list-unordered') {
@@ -29,13 +32,19 @@
 
         $toolbarOptions = [
             'modules' => [
-                'toolbar' => $toolbarOptions
+                'toolbar' => $toolbarOptions,
+                'syntax' => $activeSyntax
             ]
         ];
     }
-
     $options = $customOptions ?? $toolbarOptions ?? false;
 @endphp
+
+@if($activeSyntax)
+    @pushonce('extra_css:wysiwyg')
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/{{$theme}}.min.css">
+    @endpushonce
+@endif
 
 @if($translated)
     <a17-locale

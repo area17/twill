@@ -33,6 +33,7 @@
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
   import LocaleMixin from '@/mixins/locale'
+  import { loadScript } from '@/utils/loader'
 
   const MAPMESSAGE = {
     show: 'Show&nbsp;map',
@@ -81,8 +82,7 @@
         lng: this.initialLng,
         focused: false,
         isMapOpen: this.openMap,
-        mapMessage: this.openMap ? MAPMESSAGE.hide : MAPMESSAGE.show,
-        googleScript: null
+        mapMessage: this.openMap ? MAPMESSAGE.hide : MAPMESSAGE.show
       }
     },
     computed: {
@@ -239,6 +239,7 @@
         // Create the autocomplete object and associate it with the UI input control.
         this.autocompletePlace = new google.maps.places.Autocomplete(this.$el.querySelector('input[type="search"]'))
         // When a place is selected
+        /* global google */
         google.maps.event.addListener(this.autocompletePlace, 'place_changed', this.onPlaceChanged)
 
         if (this.address === '' && this.lat && this.lng) {
@@ -266,23 +267,6 @@
         if (this.showMap && this.isMapOpen) {
           this.initMap()
         }
-        if (this.googleScript) this.googleScript.removeEventListener('load', this.initGoogleApi)
-      },
-      loadScript: function (src) {
-        const id = 'google-map-api-script'
-        let script = document.getElementById(id)
-        if (script) {
-          this.googleScript = script
-          script.addEventListener('load', this.initGoogleApi)
-        } else {
-          script = document.createElement('script')
-          this.googleScript = script
-          script.setAttribute('id', id)
-          script.type = 'text/javascript'
-          script.onload = this.initGoogleApi
-          document.getElementsByTagName('head')[0].appendChild(script)
-          script.src = src
-        }
       }
     },
     mounted: function () {
@@ -290,8 +274,12 @@
       if (typeof google !== 'undefined') {
         this.initGoogleApi()
       } else {
+        const id = 'google-map-api-script'
         const src = GOOGLEMAPURL + APIKEY
-        this.loadScript(src, this.initGoogleApi)
+        loadScript(id, src, 'text/javascript')
+          .then(() => {
+            this.initGoogleApi()
+          })
       }
     },
     beforeDestroy: function () {
