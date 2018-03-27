@@ -38,7 +38,7 @@ mix.webpackConfig({
       }
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'public/assets/admin/js/manifest',
+      name: 'assets/admin/js/manifest',
       minChunks: Infinity
     })
   ],
