@@ -23,7 +23,7 @@
               <a17-bucket-item-source v-for="item in source.items" :key="item.id" :item="item" :singleBucket="singleBucket" :buckets="buckets" v-on:add-to-bucket="addToBucket"/>
               </tbody>
             </table>
-            <div v-else="" class="buckets__empty">
+            <div v-else class="buckets__empty">
               <h4>{{ emptySource }}</h4>
             </div>
             <a17-paginate :max="max" :value="page" :offset="offset" :availableOffsets="availableOffsets" @changePage="updatePage" @changeOffset="updateOffset"/>
@@ -39,7 +39,7 @@
                 <a17-bucket-item v-for="(child, index) in bucket.children" :key="index" :item="child" :restricted="restricted" :draggable="bucket.children.length > 1" :singleBucket="singleBucket" :singleSource="singleSource" :bucket="bucket.id" :buckets="buckets" v-on:add-to-bucket="addToBucket" v-on:remove-from-bucket="deleteFromBucket" v-on:toggle-featured-in-bucket="toggleFeaturedInBucket" :withToggleFeatured="bucket.withToggleFeatured" :toggleFeaturedLabels="bucket.toggleFeaturedLabels"/>
               </transition-group>
             </draggable>
-            <div v-else="" class="buckets__empty">
+            <div v-else class="buckets__empty">
               <h4>{{ emptyBuckets }}</h4>
             </div>
           </a17-fieldset>
@@ -61,7 +61,7 @@
   import { mapState, mapGetters } from 'vuex'
 
   import { BUCKETS } from '@/store/mutations'
-  import * as ACTIONS from '@/store/actions'
+  import ACTIONS from '@/store/actions'
 
   import BucketItem from './BucketItem.vue'
   import BucketSourceItem from './BucketSourceItem.vue'

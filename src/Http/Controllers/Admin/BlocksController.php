@@ -42,7 +42,7 @@ class BlocksController extends Controller
         });
 
         $renderedBlocks = $blocksCollection->where('parent_id', null)->map(function ($block) use ($blocksCollection) {
-            if (config('cms-toolkit.block-editor.block_preview_render_childs') ?? true) {
+            if (config('cms-toolkit.block_editor.block_preview_render_childs') ?? true) {
                 $childBlocks = $blocksCollection->where('parent_id', $block->id);
                 $renderedChildViews = $childBlocks->map(function ($childBlock) {
                     $view = $this->getBlockView($childBlock->type);

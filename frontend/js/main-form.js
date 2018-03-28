@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { mapState, mapGetters } from 'vuex'
 import store from '@/store'
 import { FORM } from '@/store/mutations'
-import * as ACTIONS from '@/store/actions'
+import ACTIONS from '@/store/actions'
 import { FORM_MUTATIONS_TO_SUBSCRIBE } from '@/store/mutations/subscribers'
 
 // General shared behaviors

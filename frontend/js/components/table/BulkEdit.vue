@@ -30,7 +30,7 @@
 <script>
   import { mapState } from 'vuex'
   import { DATATABLE } from '@/store/mutations'
-  import * as ACTIONS from '@/store/actions'
+  import ACTIONS from '@/store/actions'
 
   export default {
     name: 'A17BulkEditor',
@@ -103,8 +103,8 @@
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
 
-  .bulkEditor {
-  }
+  // .bulkEditor {
+  // }
 
   .bulkEditor__infos {
     display:inline-block;

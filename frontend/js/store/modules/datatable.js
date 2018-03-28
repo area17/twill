@@ -1,6 +1,6 @@
 import api from '../api/datatable'
 import { DATATABLE, NOTIFICATION } from '../mutations'
-import * as ACTIONS from '@/store/actions'
+import ACTIONS from '@/store/actions'
 
 import { setStorage } from '@/utils/localeStorage.js'
 /* NESTED functions */

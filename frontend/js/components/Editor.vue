@@ -27,7 +27,7 @@
   import A17Spinner from '@/components/Spinner.vue'
 
   import { PREVIEW, CONTENT } from '@/store/mutations'
-  import * as ACTIONS from '@/store/actions'
+  import ACTIONS from '@/store/actions'
 
   import htmlClasses from '@/utils/htmlClasses'
 

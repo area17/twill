@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import store from '@/store'
 import { DATATABLE, MODALEDITION, FORM } from '@/store/mutations'
-import * as ACTIONS from '@/store/actions'
+import ACTIONS from '@/store/actions'
 
 // General shared behaviors
 import main from '@/main'

@@ -53,7 +53,7 @@
 <script>
   import {mapState} from 'vuex'
   import { NOTIFICATION, MODALEDITION, FORM, DATATABLE } from '@/store/mutations'
-  import * as ACTIONS from '@/store/actions'
+  import ACTIONS from '@/store/actions'
   import a17TableLanguages from '@/components/table/tablecell/TableLanguages'
   import a17TableDates from '@/components/table/tablecell/TableDates'
   import a17TableNested from '@/components/table/tablecell/TableNested'

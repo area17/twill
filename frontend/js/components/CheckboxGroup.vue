@@ -9,7 +9,7 @@
 </template>
 
 <script>
-  import { isEqual } from 'lodash'
+  import isEqual from 'lodash/isEqual'
   import InputframeMixin from '@/mixins/inputFrame'
   import CheckboxMixin from '@/mixins/checkboxes'
   import FormStoreMixin from '@/mixins/formStore'

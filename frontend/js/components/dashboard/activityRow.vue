@@ -30,7 +30,7 @@
 </template>
 
 <script>
-  // import * as ACTIONS from '@/store/actions'
+  // import ACTIONS from '@/store/actions'
 
   export default {
     name: 'A17ActivityRow',

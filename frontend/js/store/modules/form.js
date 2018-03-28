@@ -7,7 +7,7 @@
 import api from '../api/form'
 import { getFormData, getFormFields, getModalFormFields } from '@/utils/getFormData.js'
 import { FORM, NOTIFICATION, LANGUAGE, ATTRIBUTES } from '../mutations'
-import * as ACTIONS from '@/store/actions'
+import ACTIONS from '@/store/actions'
 import { PUBLICATION, REVISION } from '@/store/mutations'
 
 const getFieldIndex = (stateKey, field) => {

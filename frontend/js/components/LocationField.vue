@@ -28,7 +28,7 @@
 </template>
 
 <script>
-  import { isEqual } from 'lodash'
+  import isEqual from 'lodash/isEqual'
   import InputMixin from '@/mixins/input'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
