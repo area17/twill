@@ -2,6 +2,23 @@
 
 All notable changes to `laravel-cms-toolkit` will be documented in this file.
 
+## 1.0.6 2018-03-28
+
+### Added
+
+- Code highlighting module in WYSIWYG form field (`code-block` in toolbarOptions) (!56)
+- @pushonce(stack:key) and @endpushonce Blade directives to push to a Blade stack, but only once (by suffixing the stack name with an arbitrary unique key) (9830ef0c)
+
+### Fixed
+
+- Support direct S3 upload to non-default (us-east-1) S3 regions (!58)
+- Block editor option to render childs in previews (64756f0)
+ 
+### Improved
+ 
+- Frontend build configuration slimming down non-vendor admin assets by around 40% (auto-vendorize imports from node-modules) (!57)
+- Refactor external js/css loader into a reusable util (d177d0ec)
+
 ## 1.0.5 2018-03-22
 
 ### Fixed
