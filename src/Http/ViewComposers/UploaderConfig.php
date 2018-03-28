@@ -17,6 +17,7 @@ class UploaderConfig
             'endpoint' => $endpointType === 'local' ? route('admin.media-library.medias.store') : s3Endpoint($libraryDisk),
             'successEndpoint' => route('admin.media-library.medias.store'),
             'signatureEndpoint' => route('admin.media-library.sign-s3-upload'),
+            'endpointBucket' => config('filesystems.disks.' . $libraryDisk . '.bucket', 'none'),
             'endpointRegion' => config('filesystems.disks.' . $libraryDisk . '.region', 'none'),
             'accessKey' => config('filesystems.disks.' . $libraryDisk . '.key', 'none'),
             'csrfToken' => csrf_token(),

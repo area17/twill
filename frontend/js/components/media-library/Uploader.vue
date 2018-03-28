@@ -88,6 +88,7 @@
                 return this.unique_folder_name + '/' + sanitizeFilename(this._uploader.methods.getName(id))
               },
               region: this.uploaderConfig.endpointRegion,
+              bucket: this.uploaderConfig.endpointBucket,
               acl: this.uploaderConfig.acl
             },
             request: {
