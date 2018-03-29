@@ -22,7 +22,7 @@
       <a17-dropdown ref="blocksDropdown" position="top-center" :arrow="true" :offset="10" v-if="availableBlocks.length" :maxHeight="430">
         <a17-button size="small" variant="action" @click="$refs.blocksDropdown.toggle()">{{ title }}</a17-button>
         <div slot="dropdown__content">
-          <button type="button" v-for="availableBlock in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, -1)"><span class="content__icon" v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
+          <button type="button" v-for="availableBlock in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, -1)"><span class="content__icon" v-svg :symbol="availableBlock.icon"></span>{{ availableBlock.title }}</button>
         </div>
       </a17-dropdown>
       <div class="content__secondaryActions">
@@ -177,9 +177,12 @@
     }
   }
 
-  .content__icon {
-    min-width: 19px;
+  .content__actions button .content__icon {
+    margin-right:0;
+    margin-left:-15px;
+    min-width: 55px;
     text-align: center;
+    height:40px;
   }
 
   .content__item:first-child {

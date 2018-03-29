@@ -22,7 +22,7 @@
       <h4 class="editorSidebar__title"><slot></slot></h4>
       <draggable v-model="availableBlocks" :options="{ group: { name: 'editorBlocks',  pull: 'clone', put: false }, sort: false }" v-if="availableBlocks.length">
         <button class="editorSidebar__button" type="button" :data-title="availableBlock.title" :data-icon="availableBlock.icon" :data-component="availableBlock.component" v-for="availableBlock in availableBlocks" :key="availableBlock.component">
-          <span v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}
+          <span v-svg :symbol="availableBlock.icon"></span>{{ availableBlock.title }}
         </button>
       </draggable>
     </div>
@@ -231,8 +231,11 @@
     color:$color__text--light;
 
     .icon {
-      margin-right:20px;
+      margin-left:-20px;
+      min-width:65px;
+      text-align:center;
       color:$color__icons;
+      height:60px - 2px;
     }
 
     &:hover,
