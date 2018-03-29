@@ -3,11 +3,12 @@
 namespace A17\CmsToolkit\Repositories;
 
 use A17\CmsToolkit\Models\Block;
+use A17\CmsToolkit\Repositories\Behaviors\HandleFiles;
 use A17\CmsToolkit\Repositories\Behaviors\HandleMedias;
 
 class BlockRepository extends ModuleRepository
 {
-    use HandleMedias;
+    use HandleMedias, HandleFiles;
 
     public function __construct(Block $model)
     {
@@ -22,6 +23,7 @@ class BlockRepository extends ModuleRepository
     public function afterDelete($object)
     {
         $object->medias()->sync([]);
+        $object->files()->sync([]);
     }
 
     public function buildFromCmsArray($block, $repeater = false)

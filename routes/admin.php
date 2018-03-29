@@ -18,7 +18,7 @@ if (config('cms-toolkit.enabled.media-library')) {
 if (config('cms-toolkit.enabled.file-library')) {
     Route::group(['prefix' => 'file-library', 'as' => 'file-library.'], function () {
         Route::post('sign-s3-upload', ['as' => 'sign-s3-upload', 'uses' => 'FileLibraryController@signS3Upload']);
-        Route::put('file/single-update', ['as' => 'files.single-update', 'uses' => 'FileLibraryController@singleUpdate']);
+        Route::put('files/single-update', ['as' => 'files.single-update', 'uses' => 'FileLibraryController@singleUpdate']);
         Route::put('files/bulk-update', ['as' => 'files.bulk-update', 'uses' => 'FileLibraryController@bulkUpdate']);
         Route::put('files/bulk-delete', ['as' => 'files.bulk-delete', 'uses' => 'FileLibraryController@bulkDelete']);
         Route::get('files/tags', ['as' => 'files.tags', 'uses' => 'FileLibraryController@tags']);

@@ -40,6 +40,37 @@ trait HandleFiles
         });
     }
 
+    private function getFiles($fields)
+    {
+        $files = collect();
+
+        if (isset($fields['medias'])) {
+            foreach ($fields['medias'] as $role => $filesForRole) {
+                if (str_contains($role, ['[', ']'])) {
+                    $start = strpos($role, '[') + 1;
+                    $finish = strpos($role, ']', $start);
+                    $locale = substr($role, $start, $finish - $start);
+                    $role = strtok($role, '[');
+                }
+
+                $locale = $locale ?? config('app.locale');
+                if (in_array($role, $this->model->filesParams ?? [])
+                    || in_array($role, config('cms-toolkit.block_editor.files', []))) {
+
+                    collect($filesForRole)->each(function ($file) use (&$files, $role, $locale) {
+                        $files->push([
+                            'id' => $file['id'],
+                            'role' => $role,
+                            'locale' => $locale,
+                        ]);
+                    });
+                }
+            }
+        }
+
+        return $files;
+    }
+
     public function getFormFieldsHandleFiles($object, $fields)
     {
         $fields['files'] = null;
@@ -47,36 +78,13 @@ trait HandleFiles
         if ($object->has('files')) {
             foreach ($object->files->groupBy('pivot.role') as $role => $filesByRole) {
                 foreach ($filesByRole->groupBy('pivot.locale') as $locale => $filesByLocale) {
-                    foreach ($filesByLocale->groupBy('id') as $id => $filesById) {
-                        $fields['files'][$role][$locale][$id] = $filesById->first();
-                    }
+                    $fields['files'][$locale][$role] = $filesByRole->map(function ($file) {
+                        return $file->toCmsArray();
+                    });
                 }
             }
         }
 
         return $fields;
-    }
-
-    private function getFiles($fields)
-    {
-        $files = collect();
-
-        if (isset($fields['files'])) {
-            foreach ($fields['files'] as $role => $locale) {
-                foreach ($locale as $localeName => $localizedFiles) {
-                    $fileCollection = collect($localizedFiles);
-
-                    $transposedFileCollection = array_map(function (...$items) use ($fileCollection) {
-                        return array_combine($fileCollection->keys()->all(), $items);
-                    }, ...$fileCollection->values());
-
-                    foreach ($transposedFileCollection as $file) {
-                        $files->push(['id' => $file['id'], 'role' => $role, 'locale' => $localeName]);
-                    }
-                }
-            }
-        }
-
-        return $files;
     }
 }

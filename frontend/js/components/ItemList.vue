@@ -8,7 +8,7 @@
             <span class="itemlist__progressError" v-else>Upload Error</span>
           </td>
         </tr>
-        <tr class="itemlist__row" v-for="item in listItems" :key="item.id" :class="{ 's--picked': isSelected(item.id) }" @click.exact.prevent="toggleSelection(item.id)" @click.shift.exact.prevent="shiftToggleSelection(item.id)">
+        <tr class="itemlist__row" v-for="item in items" :key="item.id" :class="{ 's--picked': isSelected(item.id) }" @click.exact.prevent="toggleSelection(item.id)" @click.shift.exact.prevent="shiftToggleSelection(item.id)">
           <td class="itemlist__cell itemlist__cell--btn" v-if="item.hasOwnProperty('id')">
             <a17-checkbox name="item_list" :value="item.id" :initialValue="checkedItems" theme="bold"/>
           </td>
@@ -35,19 +35,14 @@
   export default {
     name: 'A17Itemlist',
     mixins: [mediaItemsMixin],
-    data: function () {
-      return {
-        listItems: this.items
-      }
-    },
     filters: a17VueFilters,
     computed: {
       columnsNumber: function () {
-        if (!this.listItems.length) return 0
+        if (!this.items.length) return 0
 
         let numb = this.extraColumns.length
 
-        const firstItem = this.listItems[0]
+        const firstItem = this.items[0]
 
         if (firstItem.hasOwnProperty('id')) numb++
         if (firstItem.hasOwnProperty('name')) numb++
@@ -56,12 +51,15 @@
         return numb
       },
       extraColumns: function () {
-        if (!this.listItems.length) return []
+        if (!this.items.length) return []
 
-        const firstItem = this.listItems[0]
+        const firstItem = this.items[0]
 
         return Object.keys(firstItem).filter(key => { // exclude columns here
-          return !['id', 'name', 'thumbnail', 'src', 'original', 'edit'].includes(key) && typeof firstItem[key] === 'string' // only strings
+          return ![
+            'id', 'name', 'thumbnail', 'src', 'original', 'edit',
+            'crop', 'deleteUrl', 'updateUrl', 'updateBulkUrl', 'deleteBulkUrl'
+          ].includes(key) && typeof firstItem[key] === 'string' // only strings
         })
       },
       checkedItems: function () {
@@ -82,7 +80,7 @@
       },
       loadingProgress: function (index) {
         return {
-          'width': this.listItemsLoading[index].progress ? this.listItemsLoading[index].progress + '%' : '0%'
+          'width': this.itemsLoading[index].progress ? this.itemsLoading[index].progress + '%' : '0%'
         }
       }
     }

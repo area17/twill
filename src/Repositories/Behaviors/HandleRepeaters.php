@@ -73,6 +73,7 @@ trait HandleRepeaters
         $repeaters = [];
         $repeatersFields = [];
         $repeatersMedias = [];
+        $repeatersFiles = [];
         $relationRepository = $this->getModelRepository($relation, $model);
         $repeatersConfig = config('cms-toolkit.block_editor.repeaters');
 
@@ -103,6 +104,20 @@ trait HandleRepeaters
                 }
             }
 
+            if (isset($relatedItemFormFields['files'])) {
+                $repeatersFiles = [];
+
+                collect($relatedItemFormFields['files'])->each(function ($rolesWithFiles, $locale) use (&$repeatersFiles, $relation, $relationItem) {
+                    $repeatersFiles[] = collect($rolesWithFiles)->mapWithKeys(function ($files, $role) use ($locale, $relation, $relationItem) {
+                        return [
+                            "blocks[$relation-$relationItem->id][$role][$locale]" => $files,
+                        ];
+                    })->toArray();
+                });
+
+                $repeatersFiles = call_user_func_array('array_merge', $repeatersFiles);
+            }
+
             $itemFields = method_exists($relationItem, 'toRepeaterArray') ? $relationItem->toRepeaterArray() : array_except($relationItem->attributesToArray(), $translatedFields);
 
             foreach ($itemFields as $key => $value) {
@@ -118,6 +133,8 @@ trait HandleRepeaters
         $fields['repeaterFields'][$relation] = $repeatersFields;
 
         $fields['repeaterMedias'][$relation] = $repeatersMedias;
+
+        $fields['repeaterFiles'][$relation] = $repeatersFiles;
 
         return $fields;
     }

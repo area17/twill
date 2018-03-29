@@ -34,14 +34,14 @@
       <div class="medialibrary__inner">
         <div class="medialibrary__grid">
           <aside class="medialibrary__sidebar">
-            <a17-mediasidebar :medias="selectedMedias" :authorized="authorized" @clear="clearSelectedMedias" @delete="deleteSelectedMedias" @tagUpdated="reloadTags" />
+            <a17-mediasidebar :medias="selectedMedias" :authorized="authorized" @clear="clearSelectedMedias" @delete="deleteSelectedMedias" @tagUpdated="reloadTags" :type="currentTypeObject" />
           </aside>
           <footer class="medialibrary__footer" v-if="selectedMedias.length && showInsert && connector">
             <a17-button v-if="canInsert" variant="action" @click="saveAndClose">{{ btnLabel }} </a17-button>
             <a17-button v-else variant="action" :disabled="true">{{ btnLabel }} </a17-button>
           </footer>
           <div class="medialibrary__list" ref="list">
-            <a17-uploader v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias" :type="type"/>
+            <a17-uploader v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias" :type="currentTypeObject"/>
             <div class="medialibrary__list-items">
               <a17-itemlist v-if="type === 'file'" :items="fullMedias" :selected-items="selectedMedias" :used-items="usedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias"/>
               <a17-mediagrid v-else :items="fullMedias" :selected-items="selectedMedias" :used-items="usedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias"/>
@@ -98,10 +98,6 @@
         type: String,
         default: 'Insert files'
       },
-      endpoint: {
-        type: String,
-        default: ''
-      },
       initialPage: {
         type: Number,
         default: 1
@@ -129,6 +125,14 @@
       }
     },
     computed: {
+      currentTypeObject: function () {
+        return this.types.find((type) => {
+          return type.value === this.type
+        })
+      },
+      endpoint: function () {
+        return this.currentTypeObject.endpoint
+      },
       modalTitle: function () {
         if (this.connector) {
           if (this.indexToReplace > -1) return this.modalTitlePrefix + ' – ' + this.btnLabelUpdate

@@ -3,6 +3,7 @@
 namespace A17\CmsToolkit\Models;
 
 use DB;
+use FileService;
 
 class File extends Model
 {
@@ -24,5 +25,16 @@ class File extends Model
     public function canDeleteSafely()
     {
         return DB::table('fileables')->where('file_id', $this->id)->count() === 0;
+    }
+
+    public function toCmsArray()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->filename,
+            'src' => FileService::getUrl($this->uuid),
+            'original' => FileService::getUrl($this->uuid),
+            'size' => $this->size,
+        ];
     }
 }

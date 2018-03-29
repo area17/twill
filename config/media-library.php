@@ -14,18 +14,17 @@ return [
     | Set cascade_delete to true to delete files on the storage too when
     | deleting from the media library.
     | If using the 'local' endpoint type, define a 'local_path' to store files.
-    | Supported image service: 'A17\CmsToolkit\Services\MediaLibrary\Imgix'
+    | Supported image services:
+    | - 'A17\CmsToolkit\Services\MediaLibrary\Imgix'
+    | - 'A17\CmsToolkit\Services\MediaLibrary\Local'
     |
      */
     'disk' => 'libraries',
     'endpoint_type' => env('MEDIA_LIBRARY_ENDPOINT_TYPE', 's3'),
     'cascade_delete' => env('MEDIA_LIBRARY_CASCADE_DELETE', false),
     'local_path' => env('MEDIA_LIBRARY_LOCAL_PATH'),
-    'image_service' => 'A17\CmsToolkit\Services\MediaLibrary\Imgix',
+    'image_service' => env('MEDIA_LIBRARY_IMAGE_SERVICE', 'A17\CmsToolkit\Services\MediaLibrary\Imgix'),
     'acl' => env('MEDIA_LIBRARY_ACL', 'private'),
     'filesize_limit' => env('MEDIA_LIBRARY_FILESIZE_LIMIT', 50),
-    'allowed_extensions' => [
-        'image' => ['svg', 'jpg', 'gif', 'png', 'jpeg'],
-        'pdf' => ['pdf']
-    ]
+    'allowed_extensions' => ['svg', 'jpg', 'gif', 'png', 'jpeg'],
 ];

@@ -7,11 +7,11 @@
         <p v-if="hasMultipleMedias" class="mediasidebar__info">{{ medias.length }} files selected <a href="#" @click.prevent="clear" >Clear</a></p>
 
         <template v-if="hasSingleMedia">
-          <img :src="firstMedia.src" class="mediasidebar__img" :alt="firstMedia.original" />
+          <img v-if="isImage" :src="firstMedia.src" class="mediasidebar__img" :alt="firstMedia.original" />
           <p class="mediasidebar__name">{{ firstMedia.name }}</p>
           <ul class="mediasidebar__metadatas">
             <li class="f--small" v-if="firstMedia.size" >File size: {{ firstMedia.size | uppercase }}</li>
-            <li class="f--small" v-if="firstMedia.width + firstMedia.height">Dimensions: {{ firstMedia.width }} &times; {{ firstMedia.height }}</li>
+            <li class="f--small" v-if="isImage && (firstMedia.width + firstMedia.height)">Dimensions: {{ firstMedia.width }} &times; {{ firstMedia.height }}</li>
           </ul>
         </template>
 
@@ -25,14 +25,14 @@
 
       <form v-if="hasMedia" ref="form" class="mediasidebar__inner mediasidebar__form" @submit="submit">
         <span class="mediasidebar__loader" v-if="loading"><span class="loader loader--small"><span></span></span></span>
-        <a17-vselect label="Tags" :key="firstMedia.id + '-' + medias.length" name="tags" :multiple="true" :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small" :endpoint="tagsEndpoint" @change="save" maxHeight="175px" />
+        <a17-vselect label="Tags" :key="firstMedia.id + '-' + medias.length" name="tags" :multiple="true" :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small" :endpoint="type.tagsEndpoint" @change="save" maxHeight="175px" />
         <template v-if="hasMultipleMedias">
           <input type="hidden" name="ids" :value="mediasIds" />
         </template>
         <template v-else>
           <input type="hidden" name="id" :value="firstMedia.id" />
-          <a17-textfield label="Alt text" name="alt_text" :initialValue="firstMedia.metadatas.default.altText" size="small" @focus="focus" @blur="blur" @change="save" />
-          <a17-textfield label="Caption" name="caption" :initialValue="firstMedia.metadatas.default.caption" size="small" @focus="focus" @blur="blur" @change="save" />
+          <a17-textfield v-if="isImage" label="Alt text" name="alt_text" :initialValue="firstMedia.metadatas.default.altText" size="small" @focus="focus" @blur="blur" @change="save" />
+          <a17-textfield v-if="isImage" label="Caption" name="caption" :initialValue="firstMedia.metadatas.default.caption" size="small" @focus="focus" @blur="blur" @change="save" />
         </template>
       </form>
     </template>
@@ -69,6 +69,10 @@
       authorized: {
         type: Boolean,
         default: false
+      },
+      type: {
+        type: Object,
+        required: true
       }
     },
     data: function () {
@@ -91,6 +95,9 @@
       },
       hasMedia: function () {
         return this.medias.length > 0
+      },
+      isImage: function () {
+        return this.type.value === 'image'
       },
       sharedTags: function () {
         return this.medias.map((media) => {
@@ -124,8 +131,7 @@
         }
       },
       ...mapState({
-        mediasLoading: state => state.mediaLibrary.loading,
-        tagsEndpoint: state => state.mediaLibrary.tagsEndpoint
+        mediasLoading: state => state.mediaLibrary.loading
       })
     },
     methods: {
@@ -204,7 +210,7 @@
         const data = this.getFormData(form)
 
         // save caption and alt text on the media
-        if (!this.focused && this.hasSingleMedia) {
+        if (!this.focused && this.hasSingleMedia && this.isImage) {
           if (data.hasOwnProperty('alt_text')) this.firstMedia.metadatas.default.altText = data['alt_text']
           else this.firstMedia.metadatas.default.altText = ''
 

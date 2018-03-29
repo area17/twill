@@ -8,7 +8,6 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
   import { MEDIA_LIBRARY } from '@/store/mutations'
   import qq from 'fine-uploader/lib/dnd'
   import FineUploaderS3 from 'fine-uploader-wrappers/s3'
@@ -18,12 +17,8 @@
   export default {
     name: 'A17Uploader',
     props: {
-      /**
-       * Required to configure the uploader accept files
-       * @type {string}
-       */
       type: {
-        type: String,
+        type: Object,
         required: true
       }
     },
@@ -33,11 +28,11 @@
       }
     },
     computed: {
-      ...mapState({
-        uploaderConfig: state => state.mediaLibrary.uploaderConfig
-      }),
+      uploaderConfig: function () {
+        return this.type.uploaderConfig
+      },
       uploaderValidation: function () {
-        const extensions = this.uploaderConfig.allowedExtensions[this.type]
+        const extensions = this.uploaderConfig.allowedExtensions
         return {
           allowedExtensions: extensions,
           acceptFiles: '.' + extensions.join(', .'),

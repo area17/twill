@@ -4,7 +4,7 @@ namespace A17\CmsToolkit\Http\ViewComposers;
 
 use Illuminate\Contracts\View\View;
 
-class UploaderConfig
+class MediasUploaderConfig
 {
     public function compose(View $view)
     {
@@ -12,7 +12,7 @@ class UploaderConfig
         $endpointType = config('cms-toolkit.media_library.endpoint_type');
         $allowedExtensions = config('cms-toolkit.media_library.allowed_extensions');
 
-        $uploaderConfig = [
+        $mediasUploaderConfig = [
             'endpointType' => $endpointType,
             'endpoint' => $endpointType === 'local' ? route('admin.media-library.medias.store') : s3Endpoint($libraryDisk),
             'successEndpoint' => route('admin.media-library.medias.store'),
@@ -26,6 +26,6 @@ class UploaderConfig
             'allowedExtensions'=> $allowedExtensions
         ];
 
-        $view->with(compact('uploaderConfig'));
+        $view->with(compact('mediasUploaderConfig'));
     }
 }

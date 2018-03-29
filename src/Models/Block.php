@@ -2,12 +2,13 @@
 
 namespace A17\CmsToolkit\Models;
 
+use A17\CmsToolkit\Models\Behaviors\HasFiles;
 use A17\CmsToolkit\Models\Behaviors\HasMedias;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class Block extends BaseModel
 {
-    use HasMedias;
+    use HasMedias, HasFiles;
 
     public $timestamps = false;
 
