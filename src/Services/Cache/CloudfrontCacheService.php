@@ -39,11 +39,11 @@ class CloudfrontCacheService
         }
     }
 
-    public function invalidate()
+    public function invalidate($urls = ["/*"])
     {
         if (!$this->hasInProgressInvalidation()) {
             try {
-                $this->createInvalidationRequest(["/*"]);
+                $this->createInvalidationRequest($urls);
             } catch (\Exception $e) {
                 Log::debug('Cloudfront invalidation request failed');
             }
