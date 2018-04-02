@@ -52,6 +52,8 @@
                     @endif
                     <a17-notif variant="success"></a17-notif>
                     <a17-notif variant="error"></a17-notif>
+                    <a17-notif variant="info" :auto-hide="false" :important="false"></a17-notif>
+                    <a17-notif variant="warning" :auto-hide="false" :important="false"></a17-notif>
                 </div>
                 <div class="appLoader">
                     <span>
