@@ -7,20 +7,27 @@ use Log;
 
 class CloudfrontCacheService
 {
-    protected static $sdk_version = '2016-01-13';
-    protected static $region = 'us-east-1';
     protected $client = null;
+
+    // Added for backwards compatibility. Should be removed in future releases.
+    protected static $defaultRegion = 'us-east-1';
+    protected static $defaultSdkVersion = '2016-01-13';
 
     public static function getSdkVersion()
     {
-        return self::$sdk_version;
+        return config('services.cloudfront.sdk_version') ?? self::$defaultSdkVersion;
+    }
+
+    public static function getRegion()
+    {
+        return config('services.cloudfront.region') ?? self::$defaultRegion;
     }
 
     public static function getClient()
     {
         $cloudFront = new CloudFrontClient(array(
-            'region' => self::$region,
-            'version' => self::$sdk_version,
+            'region' => self::getRegion(),
+            'version' => self::getSdkVersion(),
             'credentials' => array(
                 'key' => config('services.cloudfront.key'),
                 'secret' => config('services.cloudfront.secret'),
@@ -39,11 +46,11 @@ class CloudfrontCacheService
         }
     }
 
-    public function invalidate()
+    public function invalidate($urls = ["/*"])
     {
         if (!$this->hasInProgressInvalidation()) {
             try {
-                $this->createInvalidationRequest(["/*"]);
+                $this->createInvalidationRequest($urls);
             } catch (\Exception $e) {
                 Log::debug('Cloudfront invalidation request failed');
             }
