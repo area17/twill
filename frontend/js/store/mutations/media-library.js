@@ -12,6 +12,7 @@ export const ERROR_UPLOAD_MEDIA = 'errorUploadMedia'
 export const DESTROY_SPECIFIC_MEDIA = 'destroyMediasInSelected'
 export const UPDATE_MEDIA_MAX = 'updateMediaMax'
 export const UPDATE_MEDIA_TYPE = 'updateMediaType'
+export const RESET_MEDIA_TYPE = 'resetMediaType'
 export const SET_MEDIA_CROP = 'setMediaCrop'
 export const SET_MEDIA_METADATAS = 'setMediaMetadatas'
 export const UPDATE_MEDIA_CONNECTOR = 'updateMediaConnector'
@@ -33,6 +34,7 @@ export default {
   DESTROY_SPECIFIC_MEDIA,
   UPDATE_MEDIA_MAX,
   UPDATE_MEDIA_TYPE,
+  RESET_MEDIA_TYPE,
   SET_MEDIA_CROP,
   SET_MEDIA_METADATAS,
   UPDATE_MEDIA_CONNECTOR,

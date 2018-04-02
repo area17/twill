@@ -16,7 +16,7 @@
                     @endforeach
                 </div>
                 <div class="headerMobile__list">
-                    @if (config('cms-toolkit.enabled.media-library'))
+                    @if (config('cms-toolkit.enabled.media-library') || config('cms-toolkit.enabled.file-library'))
                         <a href="#" data-closenav-btn data-medialib-btn>Media Library</a><br />
                     @endif
                     @if(isset($currentUser))

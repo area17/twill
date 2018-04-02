@@ -47,7 +47,7 @@
             <section class="main">
                 <div class="app" id="app" v-cloak>
                     @yield('content')
-                    @if (config('cms-toolkit.enabled.media-library'))
+                    @if (config('cms-toolkit.enabled.media-library') || config('cms-toolkit.enabled.file-library'))
                         <a17-medialibrary ref="mediaLibrary" :authorized="{{ json_encode(auth()->user()->can('edit')) }}"></a17-medialibrary>
                     @endif
                     <a17-notif variant="success"></a17-notif>

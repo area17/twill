@@ -9,12 +9,11 @@ use A17\CmsToolkit\Commands\RefreshLQIP;
 use A17\CmsToolkit\Commands\Setup;
 use A17\CmsToolkit\Http\ViewComposers\ActiveNavigation;
 use A17\CmsToolkit\Http\ViewComposers\CurrentUser;
-use A17\CmsToolkit\Http\ViewComposers\MediasUploaderConfig;
 use A17\CmsToolkit\Http\ViewComposers\FilesUploaderConfig;
+use A17\CmsToolkit\Http\ViewComposers\MediasUploaderConfig;
 use A17\CmsToolkit\Models\File;
 use A17\CmsToolkit\Models\Media;
 use A17\CmsToolkit\Models\User;
-use A17\CmsToolkit\Services\FileLibrary\Disk;
 use A17\CmsToolkit\Services\FileLibrary\FileService;
 use A17\CmsToolkit\Services\MediaLibrary\ImageService;
 use Barryvdh\Debugbar\Facade as Debugbar;
@@ -118,7 +117,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
             $loader->alias('ImageService', ImageService::class);
         }
 
-        if (config('cms-toolkit.enabled.media-library')) {
+        if (config('cms-toolkit.enabled.file-library')) {
             $loader->alias('FileService', FileService::class);
         }
 

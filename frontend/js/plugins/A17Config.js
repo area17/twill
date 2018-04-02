@@ -73,10 +73,10 @@ const A17Config = {
       methods: {
         openFreeMediaLibrary: function () {
           this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_CONNECTOR, null) // reset connector
-          this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_TYPE, 'image') // default active section is 'image' because what would be a media library with no images
+          this.$store.commit(MEDIA_LIBRARY.RESET_MEDIA_TYPE) // reset to first available type
           this.$store.commit(MEDIA_LIBRARY.UPDATE_REPLACE_INDEX, -1) // we are not replacing an image here
           this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_MAX, 0) // set max to 0
-          this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_MODE, false) // set the strict to false (you can change the active section)
+          this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_MODE, false) // set the strict to false (you can change the active type)
 
           if (this.$root.$refs.mediaLibrary) this.$root.$refs.mediaLibrary.open()
         }
