@@ -149,6 +149,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/imgix.php', 'cms-toolkit.imgix');
         $this->mergeConfigFrom(__DIR__ . '/../config/media-library.php', 'cms-toolkit.media_library');
         $this->mergeConfigFrom(__DIR__ . '/../config/file-library.php', 'cms-toolkit.file_library');
+        $this->mergeConfigFrom(__DIR__ . '/../config/cloudfront.php', 'services');
     }
 
     private function publishMigrations()
