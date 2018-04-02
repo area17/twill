@@ -88,15 +88,15 @@
       },
       btnLabelSingle: {
         type: String,
-        default: 'Insert file'
+        default: 'Insert'
       },
       btnLabelUpdate: {
         type: String,
-        default: 'Update file'
+        default: 'Update'
       },
       btnLabelMulti: {
         type: String,
-        default: 'Insert files'
+        default: 'Insert'
       },
       initialPage: {
         type: Number,
@@ -141,8 +141,8 @@
         return this.modalTitlePrefix
       },
       btnLabel: function () {
-        if (this.indexToReplace > -1) return this.btnLabelUpdate
-        return this.selectedMedias.length > 1 ? this.btnLabelMulti : this.btnLabelSingle
+        if (this.indexToReplace > -1) return this.btnLabelUpdate + ' ' + this.type
+        return (this.selectedMedias.length > 1 ? this.btnLabelMulti + ' ' + this.type + 's' : this.btnLabelSingle + ' ' + this.type)
       },
       usedMedias: function () {
         return this.selected[this.connector] || []
@@ -167,6 +167,13 @@
         indexToReplace: state => state.mediaLibrary.indexToReplace
       })
     },
+    watch: {
+      type: function () {
+        this.clearFullMedias()
+        this.clearSelectedMedias()
+        this.gridLoaded = false
+      }
+    },
     methods: {
       open: function () {
         this.$refs.modal.open()
@@ -176,6 +183,7 @@
       },
       opened: function () {
         if (!this.gridLoaded) this.reloadGrid()
+
         this.listenScrollPosition()
 
         // empty selected medias (to avoid bugs when adding)
