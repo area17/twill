@@ -2,6 +2,27 @@
 
 All notable changes to `laravel-cms-toolkit` will be documented in this file.
 
+## 1.0.7 2018-04-03
+
+### Added
+- Support for files input in forms, blocks and repeaters (!61)
+- Ability to invalidate specific paths on Cloudfront (!60)
+- New block icon (text-2col) (!59)
+
+### Fixed
+- Ignore blocks in database if config for type is not available (0a4f528)
+
+### Improved
+
+- Refactor and hook up files library with the new single media library tab system (!61)
+  * Ability to configure allowed file extensions for images and files
+  * Ability to configure the file service (defaults to Disk)
+  * Ability to add custom types (documentation TODO)
+- Merge Cloudfront config with host application's services config (!60)
+- Move AWS sdk version and region to services configuration file (!60)
+- Improve global error management and session expired UX (dd3390b)
+- Fix block icons position (!59)
+
 ## 1.0.6 2018-03-28
 
 ### Added
