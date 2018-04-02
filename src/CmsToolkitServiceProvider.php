@@ -9,7 +9,8 @@ use A17\CmsToolkit\Commands\RefreshLQIP;
 use A17\CmsToolkit\Commands\Setup;
 use A17\CmsToolkit\Http\ViewComposers\ActiveNavigation;
 use A17\CmsToolkit\Http\ViewComposers\CurrentUser;
-use A17\CmsToolkit\Http\ViewComposers\UploaderConfig;
+use A17\CmsToolkit\Http\ViewComposers\MediasUploaderConfig;
+use A17\CmsToolkit\Http\ViewComposers\FilesUploaderConfig;
 use A17\CmsToolkit\Models\File;
 use A17\CmsToolkit\Models\Media;
 use A17\CmsToolkit\Models\User;
@@ -98,7 +99,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
 
         if (config('cms-toolkit.enabled.file-library')) {
             $this->app->singleton('fileService', function () {
-                return $this->app->make(Disk::class);
+                return $this->app->make(config('cms-toolkit.file_library.file_service'));
             });
         }
     }
@@ -307,7 +308,11 @@ class CmsToolkitServiceProvider extends ServiceProvider
         }
 
         if (config('cms-toolkit.enabled.media-library')) {
-            View::composer('cms-toolkit::layouts.main', UploaderConfig::class);
+            View::composer('cms-toolkit::layouts.main', MediasUploaderConfig::class);
+        }
+
+        if (config('cms-toolkit.enabled.file-library')) {
+            View::composer('cms-toolkit::layouts.main', FilesUploaderConfig::class);
         }
 
         View::composer('cms-toolkit::partials.navigation.*', ActiveNavigation::class);

@@ -27,7 +27,8 @@ export const isBlockField = (name, id) => {
 }
 
 export const stripOutBlockNamespace = (name, id) => {
-  return name.replace('blocks[' + id + '][', '').slice(0, -1)
+  let nameWithoutBlock = name.replace('blocks[' + id + '][', '')
+  return nameWithoutBlock.match(/]/gi).length > 1 ? nameWithoutBlock.replace(']', '') : nameWithoutBlock.slice(0, -1)
 }
 
 export const buildBlock = (block, rootState) => {

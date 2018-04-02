@@ -20,56 +20,70 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
     ];
 
     protected $defaultFilters = [
-        'fSearch' => 'search',
-        'fTag' => 'tag_id',
+        'search' => 'search',
+        'tag' => 'tag_id',
     ];
 
-    protected $perPage = 10;
+    protected $perPage = 40;
 
     protected $endpointType;
 
     public function __construct(Application $app, Request $request)
     {
         parent::__construct($app, $request);
+        $this->removeMiddleware('can:edit');
         $this->middleware('can:edit', ['only' => ['signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = config('cms-toolkit.file_library.endpoint_type');
     }
 
     public function index($parentModuleId = null)
     {
-        $libraryDisk = config('cms-toolkit.file_library.disk');
-
-        $uploaderConfig = [
-            'endpointType' => $this->endpointType,
-            'endpoint' => $this->endpointType === 'local' ? route('admin.file-library.files.store') : s3Endpoint($libraryDisk),
-            'successEndpoint' => route('admin.file-library.files.store'),
-            'completeEndpoint' => route('admin.file-library.files.index') . "?new_uploads_ids=",
-            'signatureEndpoint' => route('admin.file-library.sign-s3-upload'),
-            'endpointRegion' => config('filesystems.disks.' . $libraryDisk . '.region', 'none'),
-            'accessKey' => config('filesystems.disks.' . $libraryDisk . '.key', 'none'),
-            'csrfToken' => csrf_token(),
-            'acl' => config('cms-toolkit.file_library.acl'),
-            'filesizeLimit' => config('cms-toolkit.file_library.filesize_limit'),
-        ];
-
-        if ($this->request->ajax()) {
-            return $this->getIndexData();
+        if (request()->has('except')) {
+            $prependScope['exceptIds'] = request('except');
         }
 
-        // if we are currently uploading new files, display the file library with those files only and disable pagination
-        if ($newUploads = $this->request->input('new_uploads_ids')) {
-            $prependScope = ['id' => explode(',', $newUploads)];
-            $this->perPage = -1;
-        }
-
-        return $this->getIndexData($prependScope ?? []) + $uploaderConfig + $this->request->all();
+        return $this->getIndexData($prependScope ?? []);
     }
 
-    public function indexData($request)
+    public function getIndexData($prependScope = [])
     {
+        $scopes = $this->filterScope($prependScope);
+        $items = $this->getIndexItems($scopes);
+
         return [
-            'fTagList' => [null => 'All tags'] + $this->repository->getTagsList(),
+            'items' => $items->map(function ($item) {
+                return $this->buildFile($item);
+            })->toArray(),
+            'maxPage' => $items->lastPage(),
+            'total' => $items->total(),
+            'tags' => $this->repository->getTagsList(),
         ];
+    }
+
+    private function buildFile($item)
+    {
+        return $item->toCmsArray() + [
+            'tags' => $item->tags->map(function ($tag) {
+                return $tag->name;
+            }),
+            'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
+            'updateUrl' => route('admin.file-library.files.single-update'),
+            'updateBulkUrl' => route('admin.file-library.files.bulk-update'),
+            'deleteBulkUrl' => route('admin.file-library.files.bulk-delete'),
+        ];
+    }
+
+    protected function getRequestFilters()
+    {
+        if (request()->has('search')) {
+            $requestFilters['search'] = request('search');
+        }
+
+        if (request()->has('tag')) {
+            $requestFilters['tag'] = request('tag');
+        }
+
+        return $requestFilters ?? [];
     }
 
     public function store($parentModuleId = null)
@@ -77,12 +91,12 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         $request = app(FileRequest::class);
 
         if ($this->endpointType === 'local') {
-            $media = $this->storeFile($request);
+            $file = $this->storeFile($request);
         } else {
-            $media = $this->storeReference($request);
+            $file = $this->storeReference($request);
         }
 
-        return response()->json(['id' => $media->id, 'success' => true], 200);
+        return response()->json(['media' => $this->buildFile($file), 'success' => true], 200);
     }
 
     public function storeFile($request)
@@ -113,36 +127,6 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         return $this->repository->create($fields);
     }
 
-    public function edit($id, $submoduleId = null)
-    {
-        $file = $this->repository->getById($id);
-        return [
-            'isBulkUpdate' => false,
-            'file' => $file,
-            'tags' => $file->tags,
-            'moduleName' => $this->moduleName,
-            'modelName' => $this->modelName,
-            'routePrefix' => $this->routePrefix,
-        ];
-    }
-
-    public function bulkEdit()
-    {
-        $ids = $this->request->input('ids');
-        $tags = $this->repository->getTags(null, $ids);
-        return [
-            'isBulkUpdate' => true,
-            'tags' => $tags,
-        ];
-    }
-
-    public function tags()
-    {
-        $query = $this->request->input('query');
-        $tags = $this->repository->getTags($query);
-        return response()->json($tags, 200);
-    }
-
     public function singleUpdate()
     {
         $this->repository->update(
@@ -156,9 +140,12 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
     public function bulkUpdate()
     {
         $ids = explode(',', $this->request->input('ids'));
+
         $previousCommonTags = $this->repository->getTags(null, $ids);
+        $newTags = array_filter(explode(',', $this->request->input('tags')));
+
         foreach ($ids as $id) {
-            $this->repository->update($id, ['bulk_tags' => $this->request->input('tags'), 'previous_common_tags' => $previousCommonTags]);
+            $this->repository->update($id, ['bulk_tags' => $newTags, 'previous_common_tags' => $previousCommonTags]);
         }
 
         return response()->json([], 200);

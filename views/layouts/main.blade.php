@@ -48,10 +48,12 @@
                 <div class="app" id="app" v-cloak>
                     @yield('content')
                     @if (config('cms-toolkit.enabled.media-library'))
-                        <a17-medialibrary ref="mediaLibrary" endpoint="{{ route('admin.media-library.medias.index') }}" :authorized="{{ json_encode(auth()->user()->can('edit')) }}"></a17-medialibrary>
+                        <a17-medialibrary ref="mediaLibrary" :authorized="{{ json_encode(auth()->user()->can('edit')) }}"></a17-medialibrary>
                     @endif
                     <a17-notif variant="success"></a17-notif>
                     <a17-notif variant="error"></a17-notif>
+                    <a17-notif variant="info" :auto-hide="false" :important="false"></a17-notif>
+                    <a17-notif variant="warning" :auto-hide="false" :important="false"></a17-notif>
                 </div>
                 <div class="appLoader">
                     <span>
@@ -66,18 +68,29 @@
             window.STORE = {}
             window.STORE.form = {}
             window.STORE.medias = {}
+            window.STORE.medias.types = []
             window.STORE.languages = {!! json_encode(getLanguagesForVueStore($form_fields ?? [], $translate ?? false)) !!}
 
             @if (config('cms-toolkit.enabled.media-library'))
-                window.STORE.medias.tagsEndpoint = '{{ route('admin.media-library.medias.tags') }}'
-                window.STORE.medias.uploaderConfig = {!! json_encode($uploaderConfig) !!}
-                window.STORE.medias.types = [
-                  {
+                window.STORE.medias.types.push({
                     value: 'image',
                     text: 'Images',
-                    total: 0
-                  }
-                ]
+                    total: {{ \A17\CmsToolkit\Models\Media::count() }},
+                    endpoint: '{{ route('admin.media-library.medias.index') }}',
+                    tagsEndpoint: '{{ route('admin.media-library.medias.tags') }}',
+                    uploaderConfig: {!! json_encode($mediasUploaderConfig) !!}
+                })
+            @endif
+
+            @if (config('cms-toolkit.enabled.file-library'))
+                window.STORE.medias.types.push({
+                    value: 'file',
+                    text: 'Files',
+                    total: {{ \A17\CmsToolkit\Models\File::count() }},
+                    endpoint: '{{ route('admin.file-library.files.index') }}',
+                    tagsEndpoint: '{{ route('admin.file-library.files.tags') }}',
+                    uploaderConfig: {!! json_encode($filesUploaderConfig) !!}
+                })
             @endif
 
             @yield('initialStore')

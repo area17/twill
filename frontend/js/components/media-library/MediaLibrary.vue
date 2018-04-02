@@ -34,14 +34,14 @@
       <div class="medialibrary__inner">
         <div class="medialibrary__grid">
           <aside class="medialibrary__sidebar">
-            <a17-mediasidebar :medias="selectedMedias" :authorized="authorized" @clear="clearSelectedMedias" @delete="deleteSelectedMedias" @tagUpdated="reloadTags" />
+            <a17-mediasidebar :medias="selectedMedias" :authorized="authorized" @clear="clearSelectedMedias" @delete="deleteSelectedMedias" @tagUpdated="reloadTags" :type="currentTypeObject" />
           </aside>
           <footer class="medialibrary__footer" v-if="selectedMedias.length && showInsert && connector">
             <a17-button v-if="canInsert" variant="action" @click="saveAndClose">{{ btnLabel }} </a17-button>
             <a17-button v-else variant="action" :disabled="true">{{ btnLabel }} </a17-button>
           </footer>
           <div class="medialibrary__list" ref="list">
-            <a17-uploader v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias" :type="type"/>
+            <a17-uploader v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias" :type="currentTypeObject"/>
             <div class="medialibrary__list-items">
               <a17-itemlist v-if="type === 'file'" :items="fullMedias" :selected-items="selectedMedias" :used-items="usedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias"/>
               <a17-mediagrid v-else :items="fullMedias" :selected-items="selectedMedias" :used-items="usedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias"/>
@@ -88,19 +88,15 @@
       },
       btnLabelSingle: {
         type: String,
-        default: 'Insert file'
+        default: 'Insert'
       },
       btnLabelUpdate: {
         type: String,
-        default: 'Update file'
+        default: 'Update'
       },
       btnLabelMulti: {
         type: String,
-        default: 'Insert files'
-      },
-      endpoint: {
-        type: String,
-        default: ''
+        default: 'Insert'
       },
       initialPage: {
         type: Number,
@@ -129,6 +125,14 @@
       }
     },
     computed: {
+      currentTypeObject: function () {
+        return this.types.find((type) => {
+          return type.value === this.type
+        })
+      },
+      endpoint: function () {
+        return this.currentTypeObject.endpoint
+      },
       modalTitle: function () {
         if (this.connector) {
           if (this.indexToReplace > -1) return this.modalTitlePrefix + ' – ' + this.btnLabelUpdate
@@ -137,8 +141,8 @@
         return this.modalTitlePrefix
       },
       btnLabel: function () {
-        if (this.indexToReplace > -1) return this.btnLabelUpdate
-        return this.selectedMedias.length > 1 ? this.btnLabelMulti : this.btnLabelSingle
+        if (this.indexToReplace > -1) return this.btnLabelUpdate + ' ' + this.type
+        return (this.selectedMedias.length > 1 ? this.btnLabelMulti + ' ' + this.type + 's' : this.btnLabelSingle + ' ' + this.type)
       },
       usedMedias: function () {
         return this.selected[this.connector] || []
@@ -163,6 +167,13 @@
         indexToReplace: state => state.mediaLibrary.indexToReplace
       })
     },
+    watch: {
+      type: function () {
+        this.clearFullMedias()
+        this.clearSelectedMedias()
+        this.gridLoaded = false
+      }
+    },
     methods: {
       open: function () {
         this.$refs.modal.open()
@@ -172,6 +183,7 @@
       },
       opened: function () {
         if (!this.gridLoaded) this.reloadGrid()
+
         this.listenScrollPosition()
 
         // empty selected medias (to avoid bugs when adding)

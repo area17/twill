@@ -463,7 +463,7 @@ abstract class ModuleRepository
                 'id' => $relatedElement->id,
                 'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
                 'edit' => moduleRoute($moduleName ?? $relation, $routePrefix ?? '', 'edit', $relatedElement->id),
-            ];
+            ]; // TODO: add thumbnail if module has medias
         })->toArray();
     }
 

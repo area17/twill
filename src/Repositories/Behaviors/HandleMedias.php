@@ -46,37 +46,40 @@ trait HandleMedias
 
         if (isset($fields['medias'])) {
             foreach ($fields['medias'] as $role => $mediasForRole) {
-                collect($mediasForRole)->each(function ($media) use (&$medias, $role) {
-                    if (isset($media['crops'])) {
-                        foreach ($media['crops'] as $cropName => $cropData) {
-                            $medias->push([
-                                'id' => $media['id'],
-                                'crop' => $cropName,
-                                'role' => $role,
-                                'ratio' => $cropData['name'],
-                                'crop_w' => $cropData['width'],
-                                'crop_h' => $cropData['height'],
-                                'crop_x' => $cropData['x'],
-                                'crop_y' => $cropData['y'],
-                                'metadatas' => json_encode($media['metadatas']['custom']),
-                            ]);
+                if (in_array($role, array_keys($this->model->mediasParams ?? []))
+                    || in_array($role, array_keys(config('cms-toolkit.block_editor.crops')))) {
+                    collect($mediasForRole)->each(function ($media) use (&$medias, $role) {
+                        if (isset($media['crops'])) {
+                            foreach ($media['crops'] as $cropName => $cropData) {
+                                $medias->push([
+                                    'id' => $media['id'],
+                                    'crop' => $cropName,
+                                    'role' => $role,
+                                    'ratio' => $cropData['name'],
+                                    'crop_w' => $cropData['width'],
+                                    'crop_h' => $cropData['height'],
+                                    'crop_x' => $cropData['x'],
+                                    'crop_y' => $cropData['y'],
+                                    'metadatas' => json_encode($media['metadatas']['custom']),
+                                ]);
+                            }
+                        } else {
+                            foreach ($this->getCrops($role) as $cropName => $cropDefinitions) {
+                                $medias->push([
+                                    'id' => $media['id'],
+                                    'crop' => $cropName,
+                                    'role' => $role,
+                                    'ratio' => array_first($cropDefinitions)['name'],
+                                    'crop_w' => null,
+                                    'crop_h' => null,
+                                    'crop_x' => null,
+                                    'crop_y' => null,
+                                    'metadatas' => json_encode($media['metadatas']['custom']),
+                                ]);
+                            }
                         }
-                    } else {
-                        foreach ($this->getCrops($role) as $cropName => $cropDefinitions) {
-                            $medias->push([
-                                'id' => $media['id'],
-                                'crop' => $cropName,
-                                'role' => $role,
-                                'ratio' => array_first($cropDefinitions)['name'],
-                                'crop_w' => null,
-                                'crop_h' => null,
-                                'crop_x' => null,
-                                'crop_y' => null,
-                                'metadatas' => json_encode($media['metadatas']['custom']),
-                            ]);
-                        }
-                    }
-                });
+                    });
+                }
             }
         }
 

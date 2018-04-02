@@ -84,7 +84,7 @@ Self destructing notification showing at the bottom of the page
   background:$color__notif--success;
 }
 
-.notif--error {
+.notif--error, .notif--warning {
   color:$color__background;
   background:$color__notif--error;
 }

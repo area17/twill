@@ -108,22 +108,27 @@ trait HandleBlocks
             foreach ($object->blocks as $block) {
                 $isInRepeater = isset($block->parent_id);
                 $configKey = $isInRepeater ? 'repeaters' : 'blocks';
+                $blockTypeConfig = $blocksConfig[$configKey][$block->type] ?? null;
+
+                if (is_null($blockTypeConfig)) {
+                    continue;
+                }
 
                 $blockItem = [
                     'id' => $block->id,
-                    'type' => $blocksConfig[$configKey][$block->type]['component'],
-                    'title' => $blocksConfig[$configKey][$block->type]['title'],
-                    'attributes' => $blocksConfig[$configKey][$block->type]['attributes'] ?? [],
+                    'type' => $blockTypeConfig['component'],
+                    'title' => $blockTypeConfig['title'],
+                    'attributes' => $blockTypeConfig['attributes'] ?? [],
                 ];
 
                 if ($isInRepeater) {
                     $fields['blocksRepeaters']["blocks-{$block->parent_id}_{$block->child_key}"][] = $blockItem + [
-                        'max' => $blocksConfig[$configKey][$block->type]['max'],
-                        'trigger' => $blocksConfig[$configKey][$block->type]['trigger'],
+                        'max' => $blockTypeConfig['max'],
+                        'trigger' => $blockTypeConfig['trigger'],
                     ];
                 } else {
                     $fields['blocks'][] = $blockItem + [
-                        'icon' => $blocksConfig[$configKey][$block->type]['icon'],
+                        'icon' => $blockTypeConfig['icon'],
                     ];
                 }
 
@@ -136,7 +141,9 @@ trait HandleBlocks
                     ];
                 })->filter()->values()->toArray();
 
-                $medias = app(BlockRepository::class)->getFormFields($block)['medias'];
+                $blockFormFields = app(BlockRepository::class)->getFormFields($block);
+
+                $medias = $blockFormFields['medias'];
 
                 if ($medias) {
                     $fields['blocksMedias'][] = collect($medias)->mapWithKeys(function ($value, $key) use ($block) {
@@ -144,6 +151,18 @@ trait HandleBlocks
                             "blocks[$block->id][$key]" => $value,
                         ];
                     })->filter()->toArray();
+                }
+
+                $files = $blockFormFields['files'];
+
+                if ($files) {
+                    collect($files)->each(function ($rolesWithFiles, $locale) use (&$fields, $block) {
+                        $fields['blocksFiles'][] = collect($rolesWithFiles)->mapWithKeys(function ($files, $role) use ($locale, $block) {
+                            return [
+                                "blocks[$block->id][$role][$locale]" => $files,
+                            ];
+                        })->toArray();
+                    });
                 }
 
                 if (isset($block['content']['browsers'])) {
@@ -157,6 +176,10 @@ trait HandleBlocks
 
             if ($fields['blocksMedias'] ?? false) {
                 $fields['blocksMedias'] = call_user_func_array('array_merge', $fields['blocksMedias'] ?? []);
+            }
+
+            if ($fields['blocksFiles'] ?? false) {
+                $fields['blocksFiles'] = call_user_func_array('array_merge', $fields['blocksFiles'] ?? []);
             }
 
             if ($fields['blocksBrowsers'] ?? false) {

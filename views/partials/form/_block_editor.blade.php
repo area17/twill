@@ -19,10 +19,14 @@
     @endforeach
 
     @foreach($form_fields['blocksMedias'] ?? [] as $name => $medias)
-        window.STORE.medias.selected["{{ $name }}"] = {!! json_encode($form_fields['blocksMedias'][$name]) !!}
+        window.STORE.medias.selected["{{ $name }}"] = {!! json_encode($medias) !!}
+    @endforeach
+
+    @foreach($form_fields['blocksFiles'] ?? [] as $name => $files)
+        window.STORE.medias.selected["{{ $name }}"] = {!! json_encode($files) !!}
     @endforeach
 
     @foreach($form_fields['blocksBrowsers'] ?? [] as $name => $browser)
-        window.STORE.browser.selected["{{ $name }}"] = {!! json_encode($form_fields['blocksBrowsers'][$name]) !!}
+        window.STORE.browser.selected["{{ $name }}"] = {!! json_encode($browser) !!}
     @endforeach
 @endpush

@@ -1,5 +1,8 @@
 import axios from 'axios'
 import { replaceState } from '@/utils/pushState.js'
+import { globalError } from '@/utils/errors'
+
+const component = 'DATATABLE'
 
 export default {
   /*
@@ -31,6 +34,7 @@ export default {
         callback(data)
       }
     }, function (resp) {
+      globalError(component, resp)
       console.log('get request error.')
     })
   },
@@ -39,6 +43,7 @@ export default {
     axios.put(window.CMS_URLS.publish, { id: row.id, active: row.published }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
+      globalError(component, resp)
       if (errorCallback && typeof errorCallback === 'function') errorCallback(resp.response)
       console.log('publish request error.')
     })
@@ -48,6 +53,7 @@ export default {
     axios.put(window.CMS_URLS.feature, { id: row.id, active: row.featured }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
+      globalError(component, resp)
       console.log('feature request error.')
     })
   },
@@ -56,6 +62,7 @@ export default {
     axios.delete(row.delete).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
+      globalError(component, resp)
       console.log('delete request error.')
     })
   },
@@ -64,6 +71,7 @@ export default {
     axios.put(window.CMS_URLS.restore, { id: row.id }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
+      globalError(component, resp)
       console.log('restore request error.')
     })
   },
@@ -72,6 +80,7 @@ export default {
     axios.post(window.CMS_URLS.reorder, { ids: ids }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
+      globalError(component, resp)
       console.log('reorder request error.')
     })
   },
@@ -80,6 +89,7 @@ export default {
     axios.post(window.CMS_URLS.bulkPublish, { ids: params.ids, publish: params.toPublish }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
+      globalError(component, resp)
       console.log('bulk publish request error.')
     })
   },
@@ -88,6 +98,7 @@ export default {
     axios.post(window.CMS_URLS.bulkFeature, { ids: params.ids, feature: params.toFeature }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
+      globalError(component, resp)
       console.log('bulk feature request error.')
     })
   },
@@ -96,6 +107,7 @@ export default {
     axios.post(window.CMS_URLS.bulkDelete, { ids: ids }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
+      globalError(component, resp)
       console.log('bulk delete request error.')
     })
   },
@@ -104,6 +116,7 @@ export default {
     axios.post(window.CMS_URLS.bulkRestore, { ids: ids }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
+      globalError(component, resp)
       console.log('bulk restore request error.')
     })
   }

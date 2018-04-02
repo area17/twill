@@ -54,17 +54,6 @@ const state = {
    */
   uploadProgress: 0,
   /**
-   * The endpoint to get, add and validate tags on the fly (ajax)
-   * @type {string}
-   */
-  tagsEndpoint: window.STORE.medias.tagsEndpoint || '',
-  /**
-   * An Object to configure FineUploader
-   * @type {Object}
-   * @see https://docs.fineuploader.com/
-   */
-  uploaderConfig: window.STORE.medias.uploaderConfig || {},
-  /**
    * An index used when mediaLibrary is open to replace a file
    * @type {number}
    */

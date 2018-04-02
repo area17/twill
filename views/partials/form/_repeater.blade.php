@@ -9,6 +9,10 @@
     @endforeach
 
     @foreach($form_fields['repeaterMedias'][$type] ?? [] as $name => $medias)
-        window.STORE.medias.selected["{{ $name }}"] = {!! json_encode($form_fields['repeaterMedias'][$type][$name]) !!}
+        window.STORE.medias.selected["{{ $name }}"] = {!! json_encode($medias) !!}
+    @endforeach
+
+    @foreach($form_fields['repeaterFiles'][$type] ?? [] as $name => $files)
+        window.STORE.medias.selected["{{ $name }}"] = {!! json_encode($files) !!}
     @endforeach
 @endpush
