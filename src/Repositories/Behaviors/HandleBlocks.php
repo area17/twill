@@ -108,9 +108,9 @@ trait HandleBlocks
             foreach ($object->blocks as $block) {
                 $isInRepeater = isset($block->parent_id);
                 $configKey = $isInRepeater ? 'repeaters' : 'blocks';
-                $blockTypeConfig = $blocksConfig[$configKey][$block->type];
+                $blockTypeConfig = $blocksConfig[$configKey][$block->type] ?? null;
 
-                if (!isset($blockTypeConfig)) {
+                if (is_null($blockTypeConfig)) {
                     continue;
                 }
 
