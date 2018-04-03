@@ -148,7 +148,15 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
             $this->repository->update($id, ['bulk_tags' => $newTags, 'previous_common_tags' => $previousCommonTags]);
         }
 
-        return response()->json([], 200);
+        $scopes = $this->filterScope(['id' => $ids]);
+        $items = $this->getIndexItems($scopes);
+
+        return response()->json([
+            'items' => $items->map(function ($item) {
+                return $this->buildFile($item);
+            })->toArray(),
+            'tags' => $this->repository->getTagsList(),
+        ], 200);
     }
 
     public function signS3Upload(Request $request, SignS3Upload $signS3Upload)
