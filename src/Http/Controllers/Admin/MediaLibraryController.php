@@ -168,8 +168,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
             $this->repository->update($id, ['bulk_tags' => $newTags, 'previous_common_tags' => $previousCommonTags]);
         }
 
-        // TODO : only return medias matching $ids
-        $scopes = $this->filterScope([]);
+        $scopes = $this->filterScope(['id' => $ids]);
         $items = $this->getIndexItems($scopes);
 
         return response()->json([
