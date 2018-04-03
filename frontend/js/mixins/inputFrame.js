@@ -55,7 +55,7 @@ export default {
     },
     errorMessage () {
       let message = this.error ? this.$store.state.form.errors[this.errorKey][0] : ''
-      return message.endsWith('is required.') ? '' : message
+      return message.endsWith('is required.') && !this.errorKey.startsWith('block') ? '' : message
     },
     error () {
       return this.$store.state.form ? Object.keys(this.$store.state.form.errors).includes(this.errorKey) : false

@@ -2,6 +2,7 @@
 
 namespace A17\CmsToolkit;
 
+use A17\CmsToolkit\Repositories\BlockRepository;
 use Illuminate\Support\ServiceProvider;
 use Validator;
 
@@ -24,6 +25,32 @@ class ValidationServiceProvider extends ServiceProvider
 
         Validator::extend('phone_number', function ($attribute, $value, $parameters) {
             return preg_match("/^[+]?[0-9\-\ ]*$/", $value);
+        });
+
+        Validator::extend('validBlocks', function ($attribute, $value, $parameters, $validator) {
+            foreach ($value as $block) {
+                $cmsBlock = app(BlockRepository::class)->buildFromCmsArray($block, false);
+
+                $rules = config('cms-toolkit.block_editor.blocks.' . $cmsBlock['type'] . '.rules') ?? [];
+
+                unset($cmsBlock['content']);
+
+                $blockValidator = Validator::make(array_merge($block['content'], $cmsBlock), $rules);
+
+                if (!$blockValidator->passes()) {
+                    foreach ($blockValidator->errors()->all() as $error) {
+                        $blockMessages[] = $error;
+                    }
+                }
+
+                if (!empty($blockMessages ?? [])) {
+                    $validator->errors()->add('block.' . $block['id'], join('<br>', $blockMessages));
+                }
+
+                $blockMessages = [];
+            }
+
+            return true;
         });
     }
 
