@@ -198,6 +198,7 @@
         }
       },
       updateType: function (newType) {
+        if (this.loading) return
         if (this.strict) return
         if (this.type === newType) return
 
