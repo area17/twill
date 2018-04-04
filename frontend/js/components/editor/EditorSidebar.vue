@@ -20,10 +20,10 @@
     </div>
     <div class="editorSidebar__list" v-if="!hasBlockActive">
       <h4 class="editorSidebar__title"><slot></slot></h4>
-      <draggable v-model="availableBlocks" :options="{ group: { name: 'editorBlocks',  pull: 'clone', put: false }, sort: false }" v-if="availableBlocks.length">
-        <button class="editorSidebar__button" type="button" :data-title="availableBlock.title" :data-icon="availableBlock.icon" :data-component="availableBlock.component" v-for="availableBlock in availableBlocks" :key="availableBlock.component">
+      <draggable v-model="availableBlocks" :options="{ group: { name: 'editorBlocks',  pull: 'clone', put: false }, handle: '.editorSidebar__button' }" v-if="availableBlocks.length">
+        <div class="editorSidebar__button" :data-title="availableBlock.title" :data-icon="availableBlock.icon" :data-component="availableBlock.component" v-for="availableBlock in availableBlocks" :key="availableBlock.component">
           <span v-svg :symbol="availableBlock.icon"></span>{{ availableBlock.title }}
-        </button>
+        </div>
       </draggable>
     </div>
     <template v-else>
