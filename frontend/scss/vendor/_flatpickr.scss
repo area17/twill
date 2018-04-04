@@ -1,6 +1,6 @@
 /*
-  Flatpickrr specific style when the component is set static: true
-  Flatpickr is creating form elements itself so style can't be scopped
+  Flatpickr specific style when the component is set static: true
+  Flatpickr is creating the form elements itself so style can't be scoped
 */
 body .flatpickr-wrapper {
   display:block;
@@ -20,13 +20,14 @@ body {
 
   .flatpickr-month {
     height:50px;
+  }
 
-    .flatpickr-prev-month, .flatpickr-next-month {
-      height:50px;
-      line-height:50px;
-      padding-top:0;
-      padding-bottom:0;
-    }
+  .flatpickr-month .flatpickr-prev-month,
+  .flatpickr-month .flatpickr-next-month {
+    height:50px;
+    line-height:50px;
+    padding-top:0;
+    padding-bottom:0;
   }
 
   .flatpickr-current-month {
