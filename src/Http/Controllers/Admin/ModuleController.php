@@ -675,7 +675,7 @@ abstract class ModuleController extends Controller
             'label' => $this->indexColumns[$this->titleColumnKey]['title'] ?? 'Name',
             'visible' => true,
             'optional' => false,
-            'sortable' => $this->getIndexOption('reorder') ? false : true,
+            'sortable' => $this->getIndexOption('reorder') ? false : ($this->indexColumns[$this->titleColumnKey]['sort'] ?? false),
         ]);
 
         unset($this->indexColumns[$this->titleColumnKey]);
