@@ -2,14 +2,32 @@
 
 All notable changes to `laravel-cms-toolkit` will be documented in this file.
 
+## 1.0.8 2018-04-05
+
+### Added
+
+- Ability to disable sorting on the "title" listing column (03b65a8)
+
+### Fixed
+
+- Content editor: non draggable list of blocks in Firefox (!65)
+- Media Library: switching types quickly is creating wrong listing (!64)
+- Media library: bulk tagging (60c6fe9, c6ab250, 51dfd3d, 9be8227)
+
+### Changed
+
+- Updated flatpicker and cropper deps to more recent versions (!63)
+
 ## 1.0.7 2018-04-03
 
 ### Added
+
 - Support for files input in forms, blocks and repeaters (!61)
 - Ability to invalidate specific paths on Cloudfront (!60)
 - New block icon (text-2col) (!59)
 
 ### Fixed
+
 - Ignore blocks in database if config for type is not available (0a4f528)
 
 ### Improved
