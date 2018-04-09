@@ -5,7 +5,7 @@
         <div class="media__img">
           <div class="media__imgFrame">
             <div class="media__imgCentered">
-              <img :src="media.src"/>
+              <img :src="cropSrc"/>
             </div>
             <div class="media__edit" @click="openMediaLibrary(1, mediaKey, index)">
               <span class="media__edit--button"><span v-svg symbol="edit"></span></span>
@@ -14,9 +14,12 @@
         </div>
 
         <ul class="media__metadatas">
-          <li class="media__name" @click="openMediaLibrary(1, mediaKey, index)"><strong :title="media.name">{{ media.name }}</strong></li>
+          <li class="media__name" @click="openMediaLibrary(1, mediaKey, index)"><strong :title="media.name">{{
+            media.name }}</strong></li>
           <li class="f--small" v-if="media.size">File size: {{ media.size | uppercase }}</li>
-          <li class="f--small" v-if="media.width + media.height">Dimensions: {{ media.width }}&nbsp;&times;&nbsp;{{ media.height }}</li>
+          <li class="f--small" v-if="media.width + media.height">Original: {{ media.width }}&nbsp;&times;&nbsp;{{
+            media.height }}
+          </li>
           <li class="f--small media__crop-link" v-if="cropInfos" @click="openCropMedia">
             <div class="media__crop-link-col">
               <span class="f--small f--note hide--xsmall">Cropped:&nbsp;</span>
@@ -66,7 +69,7 @@
     </div>
 
     <!-- Crop modal -->
-    <a17-modal class="modal--cropper" :ref="cropModalName" :forceClose="true" title="Edit image crop" mode="medium" v-if="hasMedia">
+    <a17-modal class="modal--cropper" :ref="cropModalName" :forceClose="true" title="Edit image crop" mode="medium" v-if="hasMedia && activeCrop">
       <a17-cropper :media="media" v-on:crop-end="cropMedia" :aspectRatio="16 / 9" :context="cropContext">
         <a17-button class="cropper__button" variant="action" @click="$refs[cropModalName].close()">Update</a17-button>
       </a17-cropper>
@@ -83,6 +86,8 @@
   import a17MediaMetadata from '@/components/MediaMetadata.vue'
   import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
   import a17VueFilters from '@/utils/filters.js'
+  import { cropConversion } from '@/utils/cropper'
+  import smartCrop from 'smartcrop'
 
   export default {
     name: 'A17Mediafield',
@@ -126,6 +131,7 @@
         type: String,
         default: ''
       },
+      // current crop context put in store. eg: slideshow, cover...
       cropContext: {
         type: String,
         default: ''
@@ -149,6 +155,11 @@
     },
     data: function () {
       return {
+        canvas: null,
+        img: null,
+        ctx: null,
+        imgLoaded: false,
+        cropSrc: '',
         isDestroyed: false,
         metadatas: {
           text: 'Edit info',
@@ -212,9 +223,29 @@
     },
     methods: {
       // crop
+      canvasCrop () {
+        let crop = this.media.crops[Object.keys(this.media.crops)[0]]
+        if (!crop) return
+        const naturalDim = {
+          width: this.img.naturalWidth,
+          height: this.img.naturalHeight
+        }
+        const originalDim = {
+          width: this.media.width,
+          height: this.media.height
+        }
+        crop = cropConversion(crop, naturalDim, originalDim)
+
+        const cropWidth = crop.width
+        const cropHeight = crop.height
+        this.canvas.width = cropWidth
+        this.canvas.height = cropHeight
+        this.ctx.drawImage(this.img, crop.x, crop.y, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight)
+        this.cropSrc = this.canvas.toDataURL('image/png')
+      },
       setDefaultCrops: function () {
         let defaultCrops = {}
-
+        let smarcrops = []
         if (this.allCrops.hasOwnProperty(this.cropContext)) {
           for (let cropVariant in this.allCrops[this.cropContext]) {
             const ratio = this.allCrops[this.cropContext][cropVariant][0].ratio
@@ -236,6 +267,10 @@
               cropWidth = Math.floor(cropHeight * ratio)
             }
 
+            console.log(this.img)
+            console.log(cropWidth, cropHeight)
+            smarcrops.push(smartCrop.crop(this.img, {width: this.media.width, height: this.media.height, cropWidth: cropWidth, cropHeight: cropHeight, minScale: 1.0, debug: true}))
+
             let x = Math.floor(center.x - cropWidth / 2)
             let y = Math.floor(center.y - cropHeight / 2)
 
@@ -246,14 +281,46 @@
             defaultCrops[cropVariant].width = cropWidth
             defaultCrops[cropVariant].height = cropHeight
           }
-        }
 
-        this.cropMedia({values: defaultCrops})
+          Promise.all(smarcrops).then((values) => {
+            let index = 0
+            values.forEach((value) => {
+              let crop = defaultCrops[Object.keys(defaultCrops)[index]]
+              crop.x = value.topCrop.x
+              crop.y = value.topCrop.y
+              crop.width = value.topCrop.width
+              crop.height = value.topCrop.height
+              index++
+            })
+            this.cropMedia({values: defaultCrops})
+          }, (error) => {
+            console.log(`an error is occured: ${error}`)
+            this.cropMedia({values: defaultCrops})
+          })
+        } else {
+          this.cropMedia({values: defaultCrops})
+        }
       },
       cropMedia: function (crop) {
         crop.key = this.mediaKey
         crop.index = this.index
         this.$store.commit(MEDIA_LIBRARY.SET_MEDIA_CROP, crop)
+        if (this.img) this.canvasCrop()
+      },
+      initImg: function () {
+        return new Promise((resolve, reject) => {
+          this.img = new Image()
+          this.img.crossOrigin = 'Anonymous'
+          this.canvas = document.createElement('canvas')
+          this.ctx = this.canvas.getContext('2d')
+          this.img.onload = () => {
+            resolve()
+          }
+          this.img.onError = (e) => {
+            reject(e)
+          }
+          this.img.src = this.media.src
+        })
       },
       openCropMedia: function () {
         this.$refs[this.cropModalName].open()
@@ -285,10 +352,16 @@
       }
     },
     beforeMount: function () {
-      if (this.hasMedia && !this.mediaHasCrop) this.setDefaultCrops()
+      this.initImg().then(() => {
+        if (this.hasMedia && !this.mediaHasCrop) this.setDefaultCrops()
+        if (this.mediaHasCrop) this.canvasCrop()
+      })
     },
     beforeUpdate: function () {
-      if (this.hasMedia && !this.mediaHasCrop) this.setDefaultCrops()
+      this.initImg().then(() => {
+        if (this.hasMedia && !this.mediaHasCrop) this.setDefaultCrops()
+        if (this.mediaHasCrop) this.canvasCrop()
+      })
     },
     beforeDestroy: function () {
       if (this.isSlide) return // for Slideshows : the medias are deleted when the slideshow component is destroyed (so no need to do it here)

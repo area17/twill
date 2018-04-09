@@ -27,6 +27,7 @@
   import CropperJs from 'cropperjs'
   import 'cropperjs/dist/cropper.min.css'
   import cropperMixin from '@/mixins/cropper'
+  import { cropConversion } from '@/utils/cropper'
 
   export default {
     name: 'a17Cropper',
@@ -174,20 +175,10 @@
         this.$emit('crop-end', data)
       },
       toNaturalCrop: function (data) {
-        return {
-          x: Math.round(data.x * this.cropValues.natural.width / this.currentMedia.width),
-          y: Math.round(data.y * this.cropValues.natural.height / this.currentMedia.height),
-          width: Math.round(data.width * this.cropValues.natural.width / this.currentMedia.width),
-          height: Math.round(data.height * this.cropValues.natural.height / this.currentMedia.height)
-        }
+        return cropConversion(data, this.cropValues.natural, this.currentMedia)
       },
       toOriginalCrop: function (data) {
-        return {
-          x: Math.round(data.x * this.currentMedia.width / this.cropValues.natural.width),
-          y: Math.round(data.y * this.currentMedia.height / this.cropValues.natural.height),
-          width: Math.round(data.width * this.currentMedia.width / this.cropValues.natural.width),
-          height: Math.round(data.height * this.currentMedia.height / this.cropValues.natural.height)
-        }
+        return cropConversion(data, this.currentMedia, this.cropValues.natural)
       }
     }
   }
