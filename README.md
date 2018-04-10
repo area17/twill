@@ -131,53 +131,15 @@ return [
 
 Use a single locale code if you're not using model translations in your project.
 
-Next, let's setup the CMS frontend toolset composed of NPM scripts and a Laravel Mix configuration.
-
-Add the following dev dependencies to your project's `package.json`:
-
-```json
-"devDependencies": {
-    "concurrently": "^3.5.1",
-    "cross-env": "^5.1.4",
-    "laravel-mix": "^2.0.0",
-    "watch": "^1.0.2"
-}
-```
+Next, let's setup the CMS frontend toolset composed of NPM scripts.
 
 Add the following npm scripts to your project's `package.json`:
 
 ```json
 "scripts": {
-  "cms-dev": "npm run cms-copy-blocks && concurrently \"cd vendor/a17/laravel-cms-toolkit && npm install --no-save && npm run hot\" \"npm run cms-watch\" && npm run cms-clean-blocks",
-  "cms-watch": "concurrently \"watch 'npm run cms-development' vendor/a17/laravel-cms-toolkit/public --wait=2 --interval=0.1\" \"npm run cms-watch-blocks\"",
-  "cms-development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-  "cms-prod": "npm run cms-copy-blocks && cd vendor/a17/laravel-cms-toolkit && npm install --no-save && npm run prod && cd ../../.. && npm run cms-production && npm run cms-clean-blocks",
-  "cms-production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+  "cms-build": "npm run cms-copy-blocks && cd vendor/a17/laravel-cms-toolkit && npm ci && npm run prod && cp -R public/ ${INIT_CWD}/public",
   "cms-copy-blocks": "npm run cms-clean-blocks && mkdir -p resources/assets/js/blocks/ && mkdir -p vendor/a17/laravel-cms-toolkit/frontend/js/components/blocks/customs/ && cp -R resources/assets/js/blocks/ vendor/a17/laravel-cms-toolkit/frontend/js/components/blocks/customs/",
-  "cms-clean-blocks": "rm -rf vendor/a17/laravel-cms-toolkit/frontend/js/components/blocks/customs/*",
-  "cms-watch-blocks": "watch 'npm run cms-copy-blocks' resources/assets/js/blocks --wait=2 --interval=0.1"
-}
-```
-
-Add or modify your project's `wepback.mix.js` file with the following content:
-
-```
-let mix = require('laravel-mix');
-
-if (mix.inProduction()) {
-  mix.copyDirectory('vendor/a17/laravel-cms-toolkit/public/assets/admin/fonts', 'public/assets/admin/fonts');
-  mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/icons/icons.svg', 'public/assets/admin/icons/icons.svg');
-  mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/icons/icons-files.svg', 'public/assets/admin/icons/icons-files.svg');
-  mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/css/app.css', 'public/assets/admin/css/app.css');
-  mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/js/main-dashboard.js', 'public/assets/admin/js/main-dashboard.js');
-  mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/js/main-listing.js', 'public/assets/admin/js/main-listing.js');
-  mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/js/main-form.js', 'public/assets/admin/js/main-form.js');
-  mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/js/main-buckets.js', 'public/assets/admin/js/main-buckets.js');
-  mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/js/manifest.js', 'public/assets/admin/js/manifest.js');
-  mix.copy('vendor/a17/laravel-cms-toolkit/public/assets/admin/js/vendor.js', 'public/assets/admin/js/vendor.js');
-  mix.version();
-} else {
-  mix.copyDirectory('vendor/a17/laravel-cms-toolkit/public', 'public');
+  "cms-clean-blocks": "rm -rf vendor/a17/laravel-cms-toolkit/frontend/js/components/blocks/customs/*"
 }
 ```
 
@@ -188,9 +150,27 @@ public/mix-manifest.json
 public/hot
 ```
 
-You'll want to run `npm run cms-dev` to start working locally and `npm run cms-prod` to build for production.
-You don't need to have `cms-dev` running at all times unless you are working on blocks, or contributing to this project. 
-You can run `cms-prod` for your local instance too.
+You'll want to run `npm run cms-build` to start working locally as well on a production server.
+
+If you are working on blocks, or contributing to this project, and would like to use Hot Module Reloading to propagate your changes when recompiling blocks or contributing to the toolkit itself, use `npm run cms-dev`. You'll need to install the following dev dependencies to your project's `package.json`:
+
+```json
+"devDependencies": {
+    "concurrently": "^3.5.1",
+    "watch": "^1.0.2"
+}
+```
+
+And the following npm scripts: 
+
+```json
+"scripts": {
+  "cms-dev": "mkdir -p vendor/a17/laravel-cms-toolkit/public npm run cms-copy-blocks && concurrently \"cd vendor/a17/laravel-cms-toolkit && npm ci && npm run hot\" \"npm run cms-watch\" && npm run cms-clean-blocks",
+  "cms-watch": "concurrently \"watch 'npm run cms-hot' vendor/a17/laravel-cms-toolkit/public --wait=2 --interval=0.1\" \"npm run cms-watch-blocks\"",
+  "cms-hot": "cd vendor/a17/laravel-cms-toolkit && cp -R public/ ${INIT_CWD}/public",
+  "cms-watch-blocks": "watch 'npm run cms-copy-blocks' resources/assets/js/blocks --wait=2 --interval=0.1"
+}
+```
 
 That's about it!
 
