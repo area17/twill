@@ -5,7 +5,7 @@
         <div class="media__img">
           <div class="media__imgFrame">
             <div class="media__imgCentered">
-              <img v-if="cropSrc" :src="cropSrc"/>
+              <img v-if="cropSrc" :src="cropSrc" :class="cropThumbnailClass"/>
             </div>
             <div class="media__edit" @click="openMediaLibrary(1, mediaKey, index)">
               <span class="media__edit--button"><span v-svg symbol="edit"></span></span>
@@ -171,6 +171,15 @@
     },
     filters: a17VueFilters,
     computed: {
+      cropThumbnailClass: function () {
+        if (!this.hasMedia) return {}
+        if (!this.media.crops) return {}
+        const crop = this.media.crops[Object.keys(this.media.crops)[0]]
+        return {
+          'media__img--landscape': crop.width / crop.height >= 1,
+          'media__img--portrait': crop.width / crop.height < 1
+        }
+      },
       mediaKey: function () {
         return this.mediaContext.length > 0 ? this.mediaContext : this.name
       },
@@ -479,8 +488,17 @@
     img {
       display:block;
       max-width:100%;
-      height:auto;
       max-height:100%;
+
+      &.media__img--landscape {
+        width: 100%;
+        height: auto;
+      }
+
+      &.media__img--portrait {
+        width: auto;
+        height: 100%;
+      }
     }
   }
 
