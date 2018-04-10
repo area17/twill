@@ -245,6 +245,7 @@
       },
       setDefaultCrops: function () {
         let defaultCrops = {}
+        let dimensions = {}
         let smarcrops = []
         if (this.allCrops.hasOwnProperty(this.cropContext)) {
           for (let cropVariant in this.allCrops[this.cropContext]) {
@@ -267,9 +268,26 @@
               cropWidth = Math.floor(cropHeight * ratio)
             }
 
-            console.log(this.img)
-            console.log(cropWidth, cropHeight)
-            smarcrops.push(smartCrop.crop(this.img, {width: this.media.width, height: this.media.height, cropWidth: cropWidth, cropHeight: cropHeight, minScale: 1.0, debug: true}))
+            let crop = {
+              x: 0,
+              y: 0,
+              width: cropWidth,
+              height: cropHeight
+            }
+
+            const naturalDim = {
+              width: this.img.naturalWidth,
+              height: this.img.naturalHeight
+            }
+            const originalDim = {
+              width: this.media.width,
+              height: this.media.height
+            }
+
+            // Convert crop for original img values
+            crop = cropConversion(crop, naturalDim, originalDim)
+
+            smarcrops.push(smartCrop.crop(this.img, {width: crop.width, height: crop.height, minScale: 1.0}))
 
             let x = Math.floor(center.x - cropWidth / 2)
             let y = Math.floor(center.y - cropHeight / 2)
@@ -280,16 +298,29 @@
             defaultCrops[cropVariant].y = y
             defaultCrops[cropVariant].width = cropWidth
             defaultCrops[cropVariant].height = cropHeight
+            dimensions[cropVariant] = {
+              natural: naturalDim,
+              original: originalDim
+            }
           }
 
           Promise.all(smarcrops).then((values) => {
             let index = 0
             values.forEach((value) => {
-              let crop = defaultCrops[Object.keys(defaultCrops)[index]]
-              crop.x = value.topCrop.x
-              crop.y = value.topCrop.y
-              crop.width = value.topCrop.width
-              crop.height = value.topCrop.height
+              const topCrop = {
+                x: value.topCrop.x,
+                y: value.topCrop.y,
+                width: value.topCrop.width,
+                height: value.topCrop.height
+              }
+              // Restore crop natural values (aka: value to store)
+              const cropVariant = defaultCrops[Object.keys(defaultCrops)[index]]
+              const dimension = dimensions[Object.keys(dimensions)[index]]
+              const crop = cropConversion(topCrop, dimension.original, dimension.natural)
+              cropVariant.x = crop.x
+              cropVariant.y = crop.y
+              cropVariant.width = crop.width
+              cropVariant.height = crop.height
               index++
             })
             this.cropMedia({values: defaultCrops})
