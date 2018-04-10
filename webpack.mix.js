@@ -75,14 +75,11 @@ mix.js(
 ).sass(
   'frontend/scss/app.scss',
   'public/assets/admin/css'
-).sourceMaps()
+)
 
-// .extract([
-//   'vue', 'vuex', 'axios',
-//   'quill', 'vuedraggable', 'cropperjs',
-//   'flatpickr', 'vue-select', 'vue-timeago',
-//   'date-fns', 'lodash/debounce',
-//   'tinycolor2', 'fine-uploader/lib/dnd',
-//   'fine-uploader-wrappers/s3', 'fine-uploader-wrappers/traditional'
-// ])
+if (mix.inProduction()) {
+  mix.version()
+} else {
+  mix.sourceMaps()
+}
 
