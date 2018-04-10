@@ -17,10 +17,13 @@
           <li class="media__name" @click="openMediaLibrary(1, mediaKey, index)"><strong :title="media.name">{{ media.name }}</strong></li>
           <li class="f--small" v-if="media.size">File size: {{ media.size | uppercase }}</li>
           <li class="f--small" v-if="media.width + media.height">Dimensions: {{ media.width }}&nbsp;&times;&nbsp;{{ media.height }}</li>
-          <li class="f--small" v-if="cropInfos.length" @click="openCropMedia">
-            <span class="f--small f--note f--underlined--o f--underlined--link hide--xsmall">
-              Cropped : <span v-for="(cropInfo, index) in cropInfos" :key="cropInfo.name">{{ cropInfo.name }}<span v-if="index !== cropInfos.length - 1">,&nbsp;</span></span>
-            </span>
+          <li class="f--small media__crop-link" v-if="cropInfos" @click="openCropMedia">
+            <div class="media__crop-link-col">
+              <span class="f--small f--note hide--xsmall">Cropped:&nbsp;</span>
+            </div>
+            <div class="media__crop-link-col">
+              <span class="f--small f--note hide--xsmall" v-html="cropInfos"></span>
+            </div>
           </li>
           <li class="f--small">
             <a href="#" @click.prevent="metadatasInfos" v-if="withAddInfo" class="f--link-underlined--o">{{ metadatas.text }}</a>
@@ -171,19 +174,19 @@
         }
       },
       cropInfos: function () {
-        const cropInfos = []
-
+        let cropInfos = ''
+        let index = 0
         if (this.media.crops) {
           for (let variant in this.media.crops) {
-            cropInfos.push({
-              name: this.media.crops[variant].name,
-              width: this.media.crops[variant].width,
-              height: this.media.crops[variant].height
-            })
+            if (index > 0) {
+              cropInfos += ', '
+            }
+            cropInfos += this.media.crops[variant].width + 'x' + this.media.crops[variant].height + '&nbsp;'
+            cropInfos += '(' + this.media.crops[variant].name + ')'
+            index++
           }
         }
-
-        return cropInfos
+        return cropInfos.length > 0 ? cropInfos : null
       },
       hasMedia: function () {
         return Object.keys(this.media).length > 0
@@ -200,7 +203,7 @@
       })
     },
     watch: {
-      media: function (val) {
+      media: function () {
         if (this.selectedMedias.hasOwnProperty(this.mediaKey)) {
           // reset isDestroyed status because we changed the media
           if (this.selectedMedias[this.mediaKey][this.index]) this.isDestroyed = false
@@ -369,6 +372,25 @@
 
   .media--slide .media__img {
     max-width: 120px;
+  }
+
+  .media__crop-link {
+    display: flex;
+    flex-direction: row;
+    text-decoration: none;
+    cursor: pointer;
+
+    .media__crop-link-col {
+      display: inline-block;
+    }
+
+    &:hover .f--small {
+      @include bordered($color__text, false);
+    }
+
+    @include breakpoint('medium-') {
+      flex-direction: column;
+    }
   }
 
   // .media__square {
