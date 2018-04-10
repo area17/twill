@@ -2,6 +2,22 @@
 
 All notable changes to `laravel-cms-toolkit` will be documented in this file.
 
+## 1.0.9 2018-04-10
+
+### Improved
+
+- Drop laravel-mix requirement on host projects (!66)
+```
+This is to avoid conflicts with arbitrary npm setups in hosts projects
+(like a project running on Webpack 4, which is not compatible with Laravel Mix as of April 2018). 
+Provided NPM scripts have been modified to use a simple copy command. 
+This means the CMS build is fully independent from the project build. 
+It also gives up a slight performance boost in HMR mode when developing. 
+```
+
+- Media field cropped information (2f802d8)
+
+
 ## 1.0.8 2018-04-05
 
 ### Added
