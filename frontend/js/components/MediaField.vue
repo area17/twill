@@ -4,7 +4,7 @@
       <div class="media__info" v-if="hasMedia">
         <div class="media__img">
           <div class="media__imgFrame">
-            <div class="media__imgCentered">
+            <div class="media__imgCentered" :class="cropThumbnailClass" :style="cropThumbnailStyle">
               <img v-if="cropSrc || showImg" :src="cropSrc" crossorigin="anonymous" ref="mediaImg" :class="cropThumbnailClass"/>
             </div>
             <div class="media__edit" @click="openMediaLibrary(1, mediaKey, index)">
@@ -182,6 +182,14 @@
     },
     filters: a17VueFilters,
     computed: {
+      cropThumbnailStyle: function () {
+        if (!this.hasMedia) return {}
+        if (!this.media.crops) return {}
+        if (!this.isDataToUrl) return {}
+        return {
+          'backgroundImage': `url(${this.cropSrc})`
+        }
+      },
       cropThumbnailClass: function () {
         if (!this.hasMedia) return {}
         if (!this.media.crops) return {}
@@ -261,13 +269,18 @@
         this.canvas.height = cropHeight
         this.ctx.drawImage(this.img, crop.x, crop.y, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight)
         this.$nextTick(() => {
+          let src = ''
           try {
-            this.cropSrc = this.canvas.toDataURL('image/png')
+            src = this.canvas.toDataURL('image/png')
             this.isDataToUrl = true
           } catch (e) {
             console.error(`an error is occured: ${e}`)
             this.isDataToUrl = false
-            this.cropSrc = this.media.thumbnail
+            src = this.media.thumbnail
+          }
+
+          if (this.cropSrc !== src) {
+            this.cropSrc = src
           }
         })
       },
@@ -530,6 +543,8 @@
       display:block;
       max-width:100%;
       max-height:100%;
+      opacity: 0;
+      visibility: hidden;
 
       &.media__img--landscape {
         width: 100%;
@@ -587,7 +602,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background:$color__lighter;
+    background: $color__lighter no-repeat center center;
+    background-size: 100% auto;
+    transition: background-image 350ms cubic-bezier(0.795, 0.125, 0.280, 0.990), background-size 0ms;
 
     &:before {
       content: "";
@@ -598,6 +615,14 @@
       right: 0;
       bottom: 0;
       border:1px solid rgba(0,0,0,0.05);
+    }
+
+    &.media__img--landscape {
+      background-size: 100% auto;
+    }
+
+    &.media__img--portrait {
+      background-size: auto 100%;
     }
   }
 
