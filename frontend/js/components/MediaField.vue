@@ -5,7 +5,7 @@
         <div class="media__img">
           <div class="media__imgFrame">
             <div class="media__imgCentered">
-              <img v-if="cropSrc" :src="cropSrc" :class="cropThumbnailClass"/>
+              <img v-if="cropSrc || showImg" :src="cropSrc" crossorigin="anonymous" ref="mediaImg" :class="cropThumbnailClass"/>
             </div>
             <div class="media__edit" @click="openMediaLibrary(1, mediaKey, index)">
               <span class="media__edit--button"><span v-svg symbol="edit"></span></span>
@@ -158,9 +158,20 @@
         canvas: null,
         img: null,
         ctx: null,
+        isDataToUrl: false,
         imgLoaded: false,
         cropSrc: false,
+        showImg: false,
         isDestroyed: false,
+        naturalDim: {
+          width: null,
+          height: null
+        },
+        originalDim: {
+          width: null,
+          height: null
+        },
+        hasMediaChange: false,
         metadatas: {
           text: 'Edit info',
           textOpen: 'Edit info',
@@ -174,6 +185,7 @@
       cropThumbnailClass: function () {
         if (!this.hasMedia) return {}
         if (!this.media.crops) return {}
+        if (!this.isDataToUrl) return {}
         const crop = this.media.crops[Object.keys(this.media.crops)[0]]
         return {
           'media__img--landscape': crop.width / crop.height >= 1,
@@ -226,7 +238,9 @@
       })
     },
     watch: {
-      media: function () {
+      media: function (val, oldVal) {
+        this.hasMediaChange = val !== oldVal
+
         if (this.selectedMedias.hasOwnProperty(this.mediaKey)) {
           // reset isDestroyed status because we changed the media
           if (this.selectedMedias[this.mediaKey][this.index]) this.isDestroyed = false
@@ -238,15 +252,8 @@
       canvasCrop () {
         let crop = this.media.crops[Object.keys(this.media.crops)[0]]
         if (!crop) return
-        const naturalDim = {
-          width: this.img.naturalWidth,
-          height: this.img.naturalHeight
-        }
-        const originalDim = {
-          width: this.media.width,
-          height: this.media.height
-        }
-        crop = cropConversion(crop, naturalDim, originalDim)
+
+        crop = cropConversion(crop, this.naturalDim, this.originalDim)
 
         const cropWidth = crop.width
         const cropHeight = crop.height
@@ -254,12 +261,18 @@
         this.canvas.height = cropHeight
         this.ctx.drawImage(this.img, crop.x, crop.y, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight)
         this.$nextTick(() => {
-          this.cropSrc = this.canvas.toDataURL('image/png')
+          try {
+            this.cropSrc = this.canvas.toDataURL('image/png')
+            this.isDataToUrl = true
+          } catch (e) {
+            console.error(`an error is occured: ${e}`)
+            this.isDataToUrl = false
+            this.cropSrc = this.media.src
+          }
         })
       },
       setDefaultCrops: function () {
         let defaultCrops = {}
-        let dimensions = {}
         let smarcrops = []
         if (this.allCrops.hasOwnProperty(this.cropContext)) {
           for (let cropVariant in this.allCrops[this.cropContext]) {
@@ -289,17 +302,8 @@
               height: cropHeight
             }
 
-            const naturalDim = {
-              width: this.img.naturalWidth,
-              height: this.img.naturalHeight
-            }
-            const originalDim = {
-              width: this.media.width,
-              height: this.media.height
-            }
-
             // Convert crop for original img values
-            crop = cropConversion(crop, naturalDim, originalDim)
+            crop = cropConversion(crop, this.naturalDim, this.originalDim)
 
             smarcrops.push(smartCrop.crop(this.img, {width: crop.width, height: crop.height, minScale: 1.0}))
 
@@ -312,10 +316,6 @@
             defaultCrops[cropVariant].y = y
             defaultCrops[cropVariant].width = cropWidth
             defaultCrops[cropVariant].height = cropHeight
-            dimensions[cropVariant] = {
-              natural: naturalDim,
-              original: originalDim
-            }
           }
 
           Promise.all(smarcrops).then((values) => {
@@ -329,8 +329,7 @@
               }
               // Restore crop natural values (aka: value to store)
               const cropVariant = defaultCrops[Object.keys(defaultCrops)[index]]
-              const dimension = dimensions[Object.keys(dimensions)[index]]
-              const crop = cropConversion(topCrop, dimension.original, dimension.natural)
+              const crop = cropConversion(topCrop, this.originalDim, this.naturalDim)
               cropVariant.x = crop.x
               cropVariant.y = crop.y
               cropVariant.width = crop.width
@@ -339,7 +338,7 @@
             })
             this.cropMedia({values: defaultCrops})
           }, (error) => {
-            console.log(`an error is occured: ${error}`)
+            console.error(`An error is occured: ${error}`)
             this.cropMedia({values: defaultCrops})
           })
         } else {
@@ -355,12 +354,47 @@
       init: function () {
         if (this.hasMedia) {
           this.initImg().then(() => {
+            this.naturalDim.width = this.img.naturalWidth
+            this.naturalDim.height = this.img.naturalHeight
+            this.originalDim.width = this.media.width
+            this.originalDim.height = this.media.height
+
             if (!this.mediaHasCrop) {
               this.setDefaultCrops()
             } else {
               this.canvasCrop()
             }
+          }, (e) => {
+            console.error(`An error is occured: ${e}`)
+            this.showImg = true
+            this.originalDim.width = this.media.width
+            this.originalDim.height = this.media.height
+
+            this.$nextTick(() => {
+              this.$refs.mediaImg.addEventListener('load', () => {
+                this.img = this.$refs.mediaImg
+                this.naturalDim.width = this.img.naturalWidth
+                this.naturalDim.height = this.img.naturalHeight
+
+                if (!this.mediaHasCrop) {
+                  this.setDefaultCrops()
+                } else {
+                  this.canvasCrop()
+                }
+              }, {
+                once: true,
+                passive: true,
+                capture: true
+              })
+
+              this.$refs.mediaImg.onError = (error) => {
+                console.error(`An error is occured: ${error}`)
+              }
+
+              this.cropSrc = this.media.src
+            })
           })
+          this.hasMediaChange = false
         }
       },
       initImg: function () {
@@ -369,12 +403,19 @@
           this.img.crossOrigin = 'Anonymous'
           this.canvas = document.createElement('canvas')
           this.ctx = this.canvas.getContext('2d')
-          this.img.onload = () => {
+
+          this.img.addEventListener('load', () => {
             resolve()
-          }
+          }, {
+            once: true,
+            passive: true,
+            capture: true
+          })
+
           this.img.onError = (e) => {
             reject(e)
           }
+
           this.img.src = this.media.src
         })
       },
@@ -411,7 +452,7 @@
       this.init()
     },
     beforeUpdate: function () {
-      this.init()
+      if (this.hasMediaChange) this.init()
     },
     beforeDestroy: function () {
       if (this.isSlide) return // for Slideshows : the medias are deleted when the slideshow component is destroyed (so no need to do it here)
