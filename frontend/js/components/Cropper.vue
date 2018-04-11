@@ -7,7 +7,7 @@
     </header>
     <div class="cropper__content">
       <div class="cropper__wrapper" ref="cropWrapper">
-        <img class="cropper__img" ref="cropImage" :src="currentMedia.crop || currentMedia.original" :alt="currentMedia.name">
+        <img class="cropper__img" ref="cropImage" :src="currentMedia.medium || currentMedia.original" :alt="currentMedia.name">
       </div>
     </div>
     <footer class="cropper__footer">
@@ -114,7 +114,7 @@
         self.cropper = new CropperJs(imageBox, opts)
       }
 
-      img.src = self.currentMedia.crop || self.currentMedia.original
+      img.src = self.currentMedia.medium || self.currentMedia.original
 
       // init displayed crop values
       imageBox.addEventListener('ready', function () {

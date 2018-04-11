@@ -267,7 +267,7 @@
           } catch (e) {
             console.error(`an error is occured: ${e}`)
             this.isDataToUrl = false
-            this.cropSrc = this.media.src
+            this.cropSrc = this.media.thumbnail
           }
         })
       },
@@ -391,7 +391,7 @@
                 console.error(`An error is occured: ${error}`)
               }
 
-              this.cropSrc = this.media.src
+              this.cropSrc = this.media.thumbnail
             })
           })
           this.hasMediaChange = false
@@ -416,7 +416,7 @@
             reject(e)
           }
 
-          this.img.src = this.media.src
+          this.img.src = this.media.thumbnail
         })
       },
       openCropMedia: function () {
