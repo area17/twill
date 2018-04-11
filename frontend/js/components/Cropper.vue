@@ -180,6 +180,9 @@
       toOriginalCrop: function (data) {
         return cropConversion(data, this.currentMedia, this.cropValues.natural)
       }
+    },
+    beforeDestroy: function () {
+      this.cropper.destroy()
     }
   }
 </script>
