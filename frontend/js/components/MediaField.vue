@@ -4,8 +4,8 @@
       <div class="media__info" v-if="hasMedia">
         <div class="media__img">
           <div class="media__imgFrame">
-            <div class="media__imgCentered">
-              <img :src="media.src"/>
+            <div class="media__imgCentered" :class="cropThumbnailClass" :style="cropThumbnailStyle">
+              <img v-if="cropSrc || showImg" :src="cropSrc" crossorigin="anonymous" ref="mediaImg" :class="cropThumbnailClass"/>
             </div>
             <div class="media__edit" @click="openMediaLibrary(1, mediaKey, index)">
               <span class="media__edit--button"><span v-svg symbol="edit"></span></span>
@@ -14,9 +14,12 @@
         </div>
 
         <ul class="media__metadatas">
-          <li class="media__name" @click="openMediaLibrary(1, mediaKey, index)"><strong :title="media.name">{{ media.name }}</strong></li>
+          <li class="media__name" @click="openMediaLibrary(1, mediaKey, index)"><strong :title="media.name">{{
+            media.name }}</strong></li>
           <li class="f--small" v-if="media.size">File size: {{ media.size | uppercase }}</li>
-          <li class="f--small" v-if="media.width + media.height">Dimensions: {{ media.width }}&nbsp;&times;&nbsp;{{ media.height }}</li>
+          <li class="f--small" v-if="media.width + media.height">Original: {{ media.width }}&nbsp;&times;&nbsp;{{
+            media.height }}
+          </li>
           <li class="f--small media__crop-link" v-if="cropInfos" @click="openCropMedia">
             <div class="media__crop-link-col">
               <span class="f--small f--note hide--xsmall">Cropped:&nbsp;</span>
@@ -66,8 +69,8 @@
     </div>
 
     <!-- Crop modal -->
-    <a17-modal class="modal--cropper" :ref="cropModalName" :forceClose="true" title="Edit image crop" mode="medium" v-if="hasMedia">
-      <a17-cropper :media="media" v-on:crop-end="cropMedia" :aspectRatio="16 / 9" :context="cropContext">
+    <a17-modal class="modal--cropper" :ref="cropModalName" :forceClose="true" title="Edit image crop" mode="medium" v-if="hasMedia && activeCrop">
+      <a17-cropper :media="media" v-on:crop-end="cropMedia" :aspectRatio="16 / 9" :context="cropContext" :key="cropperKey">
         <a17-button class="cropper__button" variant="action" @click="$refs[cropModalName].close()">Update</a17-button>
       </a17-cropper>
     </a17-modal>
@@ -83,6 +86,8 @@
   import a17MediaMetadata from '@/components/MediaMetadata.vue'
   import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
   import a17VueFilters from '@/utils/filters.js'
+  import { cropConversion } from '@/utils/cropper'
+  import smartCrop from 'smartcrop'
 
   export default {
     name: 'A17Mediafield',
@@ -126,6 +131,7 @@
         type: String,
         default: ''
       },
+      // current crop context put in store. eg: slideshow, cover...
       cropContext: {
         type: String,
         default: ''
@@ -149,7 +155,23 @@
     },
     data: function () {
       return {
+        canvas: null,
+        img: null,
+        ctx: null,
+        isDataToUrl: false,
+        imgLoaded: false,
+        cropSrc: false,
+        showImg: false,
         isDestroyed: false,
+        naturalDim: {
+          width: null,
+          height: null
+        },
+        originalDim: {
+          width: null,
+          height: null
+        },
+        hasMediaChange: false,
         metadatas: {
           text: 'Edit info',
           textOpen: 'Edit info',
@@ -160,6 +182,25 @@
     },
     filters: a17VueFilters,
     computed: {
+      cropThumbnailStyle: function () {
+        if (!this.hasMedia) return {}
+        if (!this.media.crops) return {}
+        if (!this.cropSrc) return {}
+
+        return {
+          'backgroundImage': `url(${this.cropSrc})`
+        }
+      },
+      cropThumbnailClass: function () {
+        if (!this.hasMedia) return {}
+        if (!this.media.crops) return {}
+        if (!this.isDataToUrl) return {}
+        const crop = this.media.crops[Object.keys(this.media.crops)[0]]
+        return {
+          'media__img--landscape': crop.width / crop.height >= 1,
+          'media__img--portrait': crop.width / crop.height < 1
+        }
+      },
       mediaKey: function () {
         return this.mediaContext.length > 0 ? this.mediaContext : this.name
       },
@@ -191,6 +232,9 @@
       hasMedia: function () {
         return Object.keys(this.media).length > 0
       },
+      cropperKey: function () {
+        return `${this.mediaKey}-${this.index}_${this.cropContext}`
+      },
       mediaHasCrop: function () {
         return this.media.crops
       },
@@ -203,7 +247,9 @@
       })
     },
     watch: {
-      media: function () {
+      media: function (val, oldVal) {
+        this.hasMediaChange = val !== oldVal
+
         if (this.selectedMedias.hasOwnProperty(this.mediaKey)) {
           // reset isDestroyed status because we changed the media
           if (this.selectedMedias[this.mediaKey][this.index]) this.isDestroyed = false
@@ -212,8 +258,36 @@
     },
     methods: {
       // crop
+      canvasCrop () {
+        let crop = this.media.crops[Object.keys(this.media.crops)[0]]
+        if (!crop) return
+
+        crop = cropConversion(crop, this.naturalDim, this.originalDim)
+
+        const cropWidth = crop.width
+        const cropHeight = crop.height
+        this.canvas.width = cropWidth
+        this.canvas.height = cropHeight
+        this.ctx.drawImage(this.img, crop.x, crop.y, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight)
+        this.$nextTick(() => {
+          let src = ''
+          try {
+            src = this.canvas.toDataURL('image/png')
+            this.isDataToUrl = true
+          } catch (error) {
+            console.error(`An error have occured: ${error}`)
+            this.isDataToUrl = false
+            src = this.media.thumbnail
+          }
+
+          if (this.cropSrc !== src) {
+            this.cropSrc = src
+          }
+        })
+      },
       setDefaultCrops: function () {
         let defaultCrops = {}
+        let smarcrops = []
 
         if (this.allCrops.hasOwnProperty(this.cropContext)) {
           for (let cropVariant in this.allCrops[this.cropContext]) {
@@ -236,6 +310,18 @@
               cropWidth = Math.floor(cropHeight * ratio)
             }
 
+            let crop = {
+              x: 0,
+              y: 0,
+              width: cropWidth,
+              height: cropHeight
+            }
+
+            // Convert crop for original img values
+            crop = cropConversion(crop, this.naturalDim, this.originalDim)
+
+            smarcrops.push(smartCrop.crop(this.img, {width: crop.width, height: crop.height, minScale: 1.0}))
+
             let x = Math.floor(center.x - cropWidth / 2)
             let y = Math.floor(center.y - cropHeight / 2)
 
@@ -246,14 +332,114 @@
             defaultCrops[cropVariant].width = cropWidth
             defaultCrops[cropVariant].height = cropHeight
           }
-        }
 
-        this.cropMedia({values: defaultCrops})
+          Promise.all(smarcrops).then((values) => {
+            let index = 0
+            values.forEach((value) => {
+              const topCrop = {
+                x: value.topCrop.x,
+                y: value.topCrop.y,
+                width: value.topCrop.width,
+                height: value.topCrop.height
+              }
+              // Restore crop natural values (aka: value to store)
+              const cropVariant = defaultCrops[Object.keys(defaultCrops)[index]]
+              const crop = cropConversion(topCrop, this.originalDim, this.naturalDim)
+              cropVariant.x = crop.x
+              cropVariant.y = crop.y
+              cropVariant.width = crop.width
+              cropVariant.height = crop.height
+              index++
+            })
+            this.cropMedia({values: defaultCrops})
+          }, (error) => {
+            console.error(`An error have occured: ${error}`)
+            this.cropMedia({values: defaultCrops})
+          })
+        } else {
+          this.cropMedia({values: defaultCrops})
+        }
       },
       cropMedia: function (crop) {
         crop.key = this.mediaKey
         crop.index = this.index
         this.$store.commit(MEDIA_LIBRARY.SET_MEDIA_CROP, crop)
+        if (this.img) this.canvasCrop()
+      },
+      setNaturalDimensions: function () {
+        if (this.img) {
+          this.naturalDim.width = this.img.naturalWidth
+          this.naturalDim.height = this.img.naturalHeight
+        }
+      },
+      setOriginalDimensions: function () {
+        if (this.media) {
+          this.originalDim.width = this.media.width
+          this.originalDim.height = this.media.height
+        }
+      },
+      init: function () {
+        this.showImg = false
+
+        const imgLoaded = () => {
+          this.setNaturalDimensions()
+          this.setOriginalDimensions()
+
+          if (!this.mediaHasCrop) {
+            this.setDefaultCrops()
+          } else {
+            this.canvasCrop()
+          }
+        }
+
+        if (this.hasMedia) {
+          this.initImg().then(() => {
+            imgLoaded()
+          }, (error) => {
+            console.error(`An error have occured: ${error}`)
+            this.showImg = true
+
+            this.$nextTick(() => {
+              this.$refs.mediaImg.addEventListener('load', () => {
+                this.img = this.$refs.mediaImg
+                imgLoaded()
+              }, {
+                once: true,
+                passive: true,
+                capture: true
+              })
+
+              this.$refs.mediaImg.onError = (error) => {
+                console.error(`An error have occured: ${error}`)
+              }
+
+              this.cropSrc = this.media.thumbnail
+            })
+          })
+          this.hasMediaChange = false
+        }
+      },
+      initImg: function () {
+        return new Promise((resolve, reject) => {
+          this.img = new Image()
+          this.img.crossOrigin = 'Anonymous'
+          this.canvas = document.createElement('canvas')
+          this.ctx = this.canvas.getContext('2d')
+
+          this.img.addEventListener('load', () => {
+            resolve()
+          }, {
+            once: true,
+            passive: true,
+            capture: true
+          })
+
+          this.img.onError = (e) => {
+            reject(e)
+          }
+
+          this.img.src = this.media.thumbnail
+        })
       },
       openCropMedia: function () {
         this.$refs[this.cropModalName].open()
@@ -285,10 +471,10 @@
       }
     },
     beforeMount: function () {
-      if (this.hasMedia && !this.mediaHasCrop) this.setDefaultCrops()
+      this.init()
     },
     beforeUpdate: function () {
-      if (this.hasMedia && !this.mediaHasCrop) this.setDefaultCrops()
+      if (this.hasMediaChange) this.init()
     },
     beforeDestroy: function () {
       if (this.isSlide) return // for Slideshows : the medias are deleted when the slideshow component is destroyed (so no need to do it here)
@@ -365,8 +551,19 @@
     img {
       display:block;
       max-width:100%;
-      height:auto;
       max-height:100%;
+      opacity: 0;
+      visibility: hidden;
+
+      &.media__img--landscape {
+        width: 100%;
+        height: auto;
+      }
+
+      &.media__img--portrait {
+        width: auto;
+        height: 100%;
+      }
     }
   }
 
@@ -414,7 +611,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background:$color__lighter;
+    background: $color__lighter no-repeat center center;
+    background-size: 100% auto;
+    transition: background-image 350ms cubic-bezier(0.795, 0.125, 0.280, 0.990), background-size 0ms;
 
     &:before {
       content: "";
@@ -425,6 +624,14 @@
       right: 0;
       bottom: 0;
       border:1px solid rgba(0,0,0,0.05);
+    }
+
+    &.media__img--landscape {
+      background-size: 100% auto;
+    }
+
+    &.media__img--portrait {
+      background-size: auto 100%;
     }
   }
 

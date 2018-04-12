@@ -116,6 +116,9 @@
 
       this.initialValues = initialValues
       this.initialValue = initialValue
+    },
+    beforeDestroy: function () {
+      this.$store.commit(FORM.REMOVE_FORM_FIELD, this.fieldName)
     }
   }
 </script>

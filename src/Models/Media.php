@@ -45,9 +45,9 @@ class Media extends Model
         return [
             'id' => $this->id,
             'name' => $this->filename,
-            'src' => ImageService::getCmsUrl($this->uuid, ["h" => "256"]),
+            'thumbnail' => ImageService::getCmsUrl($this->uuid, ["h" => "256"]),
             'original' => ImageService::getRawUrl($this->uuid),
-            'crop' => ImageService::getUrl($this->uuid, ["h" => "430"]),
+            'medium' => ImageService::getUrl($this->uuid, ["h" => "430"]),
             'width' => $this->width,
             'height' => $this->height,
         ];

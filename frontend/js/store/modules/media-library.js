@@ -5,6 +5,7 @@
  */
 
 import Vue from 'vue'
+import cloneDeep from 'lodash/cloneDeep'
 import { MEDIA_LIBRARY } from '../mutations'
 
 const state = {
@@ -91,11 +92,11 @@ const mutations = {
       const existedSelectedConnector = state.selected[key] && state.selected[key].length
       if (existedSelectedConnector && state.indexToReplace > -1) {
         // Replace mode
-        state.selected[key].splice(state.indexToReplace, 1, medias[0])
+        state.selected[key].splice(state.indexToReplace, 1, cloneDeep(medias[0]))
       } else if (existedSelectedConnector) {
         // Add mode
         medias.forEach(function (media) {
-          state.selected[key].push(media)
+          state.selected[key].push(cloneDeep(media))
         })
       } else {
         // Create mode
@@ -194,8 +195,8 @@ const mutations = {
     }
 
     if (metadatas.media.hasOwnProperty('index')) {
-      const media = setMetatadas(medias[metadatas.media.index])
-      medias[metadatas.index] = Object.assign({}, medias[metadatas.index], media)
+      const media = setMetatadas(cloneDeep(medias[metadatas.media.index]))
+      Vue.set(medias, metadatas.media.index, media)
     }
   },
   [MEDIA_LIBRARY.DESTROY_MEDIA_CONNECTOR] (state) {
@@ -224,9 +225,8 @@ const mutations = {
       return mediaToModify
     }
 
-    const newMedia = addCrop(media)
-    state.selected[key].splice(index, 1)
-    state.selected[key].splice(index, 0, Object.assign({}, newMedia, media))
+    const newMedia = addCrop(cloneDeep(media))
+    Vue.set(state.selected[key], index, newMedia)
   }
 }
 

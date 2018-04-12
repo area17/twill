@@ -188,17 +188,19 @@
         this.$emit('change', value)
       },
       getOptions: debounce(function (search, loading) {
-        let self = this
-
         if (!this.isAjax) return true
 
         loading(true)
-        this.$http.get(this.ajaxUrl, {params: {q: search}}).then(function (resp) {
+        this.$http.get(this.ajaxUrl, {params: {q: search}}).then((resp) => {
           if (resp.data.items && resp.data.items.length) {
-            if (self.taggable) {
-              self.currentOptions = resp.data.items.filter(i => !self.value.includes(i))
+            if (this.taggable) {
+              if (Array.isArray(this.value)) {
+                this.currentOptions = resp.data.items.filter(i => !this.value.includes(i))
+              } else {
+                this.currentOptions = resp.data.items
+              }
             } else {
-              self.currentOptions = resp.data.items
+              this.currentOptions = resp.data.items
             }
           }
           loading(false)

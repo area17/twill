@@ -7,7 +7,7 @@
     </header>
     <div class="cropper__content">
       <div class="cropper__wrapper" ref="cropWrapper">
-        <img class="cropper__img" ref="cropImage" :src="currentMedia.crop || currentMedia.original" :alt="currentMedia.name">
+        <img class="cropper__img" ref="cropImage" :src="currentMedia.medium || currentMedia.original" :alt="currentMedia.name">
       </div>
     </div>
     <footer class="cropper__footer">
@@ -27,6 +27,7 @@
   import CropperJs from 'cropperjs'
   import 'cropperjs/dist/cropper.min.css'
   import cropperMixin from '@/mixins/cropper'
+  import { cropConversion } from '@/utils/cropper'
 
   export default {
     name: 'a17Cropper',
@@ -113,7 +114,7 @@
         self.cropper = new CropperJs(imageBox, opts)
       }
 
-      img.src = self.currentMedia.crop || self.currentMedia.original
+      img.src = self.currentMedia.medium || self.currentMedia.original
 
       // init displayed crop values
       imageBox.addEventListener('ready', function () {
@@ -125,19 +126,16 @@
     },
     methods: {
       initAspectRatio: function () {
-        let self = this
-        let filtered = self.ratiosByContext
-        let filter = filtered.find(function (r) {
-          return r.name === self.currentRatioName
-        })
+        let filtered = this.ratiosByContext
+        let filter = filtered.find((r) => r.name === this.currentRatioName)
 
         if (typeof filter !== 'undefined' && filter) {
-          self.minCropValues.width = filter.minValues ? filter.minValues.width : 0
-          self.minCropValues.height = filter.minValues ? filter.minValues.height : 0
-          self.cropper.setAspectRatio(filter.ratio)
+          this.minCropValues.width = filter.minValues ? filter.minValues.width : 0
+          this.minCropValues.height = filter.minValues ? filter.minValues.height : 0
+          this.cropper.setAspectRatio(filter.ratio)
           return
         }
-        self.cropper.setAspectRatio(self.aspectRatio)
+        this.cropper.setAspectRatio(this.aspectRatio)
       },
       changeCrop: function (cropName, index) {
         this.currentCrop = cropName
@@ -174,21 +172,14 @@
         this.$emit('crop-end', data)
       },
       toNaturalCrop: function (data) {
-        return {
-          x: Math.round(data.x * this.cropValues.natural.width / this.currentMedia.width),
-          y: Math.round(data.y * this.cropValues.natural.height / this.currentMedia.height),
-          width: Math.round(data.width * this.cropValues.natural.width / this.currentMedia.width),
-          height: Math.round(data.height * this.cropValues.natural.height / this.currentMedia.height)
-        }
+        return cropConversion(data, this.cropValues.natural, this.currentMedia)
       },
       toOriginalCrop: function (data) {
-        return {
-          x: Math.round(data.x * this.currentMedia.width / this.cropValues.natural.width),
-          y: Math.round(data.y * this.currentMedia.height / this.cropValues.natural.height),
-          width: Math.round(data.width * this.currentMedia.width / this.cropValues.natural.width),
-          height: Math.round(data.height * this.currentMedia.height / this.cropValues.natural.height)
-        }
+        return cropConversion(data, this.currentMedia, this.cropValues.natural)
       }
+    },
+    beforeDestroy: function () {
+      this.cropper.destroy()
     }
   }
 </script>
