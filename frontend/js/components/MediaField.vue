@@ -288,6 +288,7 @@
       setDefaultCrops: function () {
         let defaultCrops = {}
         let smarcrops = []
+
         if (this.allCrops.hasOwnProperty(this.cropContext)) {
           for (let cropVariant in this.allCrops[this.cropContext]) {
             const ratio = this.allCrops[this.cropContext][cropVariant][0].ratio
@@ -365,36 +366,41 @@
         this.$store.commit(MEDIA_LIBRARY.SET_MEDIA_CROP, crop)
         if (this.img) this.canvasCrop()
       },
+      setNaturalDimensions: function () {
+        if (this.img) {
+          this.naturalDim.width = this.img.naturalWidth
+          this.naturalDim.height = this.img.naturalHeight
+        }
+      },
+      setOriginalDimensions: function () {
+        if (this.media) {
+          this.originalDim.width = this.media.width
+          this.originalDim.height = this.media.height
+        }
+      },
       init: function () {
+        const initCallback = () => {
+          this.setNaturalDimensions()
+          this.setOriginalDimensions()
+
+          if (!this.mediaHasCrop) {
+            this.setDefaultCrops()
+          } else {
+            this.canvasCrop()
+          }
+        }
+
         if (this.hasMedia) {
           this.initImg().then(() => {
-            this.naturalDim.width = this.img.naturalWidth
-            this.naturalDim.height = this.img.naturalHeight
-            this.originalDim.width = this.media.width
-            this.originalDim.height = this.media.height
-
-            if (!this.mediaHasCrop) {
-              this.setDefaultCrops()
-            } else {
-              this.canvasCrop()
-            }
+            initCallback()
           }, (e) => {
-            console.error(`An error is occured: ${e}`)
+            console.error(`An error have occured: ${e}`)
             this.showImg = true
-            this.originalDim.width = this.media.width
-            this.originalDim.height = this.media.height
 
             this.$nextTick(() => {
               this.$refs.mediaImg.addEventListener('load', () => {
                 this.img = this.$refs.mediaImg
-                this.naturalDim.width = this.img.naturalWidth
-                this.naturalDim.height = this.img.naturalHeight
-
-                if (!this.mediaHasCrop) {
-                  this.setDefaultCrops()
-                } else {
-                  this.canvasCrop()
-                }
+                initCallback()
               }, {
                 once: true,
                 passive: true,
