@@ -275,7 +275,7 @@
             src = this.canvas.toDataURL('image/png')
             this.isDataToUrl = true
           } catch (e) {
-            console.error(`an error is occured: ${e}`)
+            console.error(`An error have occured: ${e}`)
             this.isDataToUrl = false
             src = this.media.thumbnail
           }
@@ -352,7 +352,7 @@
             })
             this.cropMedia({values: defaultCrops})
           }, (error) => {
-            console.error(`An error is occured: ${error}`)
+            console.error(`An error have occured: ${error}`)
             this.cropMedia({values: defaultCrops})
           })
         } else {
