@@ -222,7 +222,7 @@
             if (index > 0) {
               cropInfos += ', '
             }
-            cropInfos += this.media.crops[variant].width + 'x' + this.media.crops[variant].height + '&nbsp;'
+            cropInfos += this.media.crops[variant].width + '&nbsp;&times;&nbsp;' + this.media.crops[variant].height + '&nbsp;'
             cropInfos += '(' + this.media.crops[variant].name + ')'
             index++
           }
@@ -263,15 +263,15 @@
         if (!crop) return
 
         crop = cropConversion(crop, this.naturalDim, this.originalDim)
-
         const cropWidth = crop.width
         const cropHeight = crop.height
-        this.canvas.width = cropWidth
-        this.canvas.height = cropHeight
-        this.ctx.drawImage(this.img, crop.x, crop.y, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight)
+
         this.$nextTick(() => {
           let src = ''
           try {
+            this.canvas.width = cropWidth
+            this.canvas.height = cropHeight
+            this.ctx.drawImage(this.img, crop.x, crop.y, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight)
             src = this.canvas.toDataURL('image/png')
             this.isDataToUrl = true
           } catch (error) {
