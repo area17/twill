@@ -126,19 +126,16 @@
     },
     methods: {
       initAspectRatio: function () {
-        let self = this
-        let filtered = self.ratiosByContext
-        let filter = filtered.find(function (r) {
-          return r.name === self.currentRatioName
-        })
+        let filtered = this.ratiosByContext
+        let filter = filtered.find((r) => r.name === this.currentRatioName)
 
         if (typeof filter !== 'undefined' && filter) {
-          self.minCropValues.width = filter.minValues ? filter.minValues.width : 0
-          self.minCropValues.height = filter.minValues ? filter.minValues.height : 0
-          self.cropper.setAspectRatio(filter.ratio)
+          this.minCropValues.width = filter.minValues ? filter.minValues.width : 0
+          this.minCropValues.height = filter.minValues ? filter.minValues.height : 0
+          this.cropper.setAspectRatio(filter.ratio)
           return
         }
-        self.cropper.setAspectRatio(self.aspectRatio)
+        this.cropper.setAspectRatio(this.aspectRatio)
       },
       changeCrop: function (cropName, index) {
         this.currentCrop = cropName

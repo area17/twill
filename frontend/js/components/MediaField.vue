@@ -379,7 +379,9 @@
         }
       },
       init: function () {
-        const initCallback = () => {
+        this.showImg = false
+
+        const imgLoaded = () => {
           this.setNaturalDimensions()
           this.setOriginalDimensions()
 
@@ -392,7 +394,7 @@
 
         if (this.hasMedia) {
           this.initImg().then(() => {
-            initCallback()
+            imgLoaded()
           }, (error) => {
             console.error(`An error have occured: ${error}`)
             this.showImg = true
@@ -400,7 +402,7 @@
             this.$nextTick(() => {
               this.$refs.mediaImg.addEventListener('load', () => {
                 this.img = this.$refs.mediaImg
-                initCallback()
+                imgLoaded()
               }, {
                 once: true,
                 passive: true,
