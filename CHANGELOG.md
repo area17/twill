@@ -2,6 +2,13 @@
 
 All notable changes to `laravel-cms-toolkit` will be documented in this file.
 
+## 1.0.10 2018-04-12
+
+### Improved
+
+- Media field : crop is now using smart crop to detect the best crop by default (58141925)
+- Media field : refresh the thumbnail of media field on the fly based on the first crop (58141925)
+
 ## 1.0.9 2018-04-10
 
 ### Improved
