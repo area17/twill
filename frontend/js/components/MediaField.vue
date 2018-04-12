@@ -274,8 +274,8 @@
           try {
             src = this.canvas.toDataURL('image/png')
             this.isDataToUrl = true
-          } catch (e) {
-            console.error(`An error have occured: ${e}`)
+          } catch (error) {
+            console.error(`An error have occured: ${error}`)
             this.isDataToUrl = false
             src = this.media.thumbnail
           }
@@ -393,8 +393,8 @@
         if (this.hasMedia) {
           this.initImg().then(() => {
             initCallback()
-          }, (e) => {
-            console.error(`An error have occured: ${e}`)
+          }, (error) => {
+            console.error(`An error have occured: ${error}`)
             this.showImg = true
 
             this.$nextTick(() => {
@@ -408,7 +408,7 @@
               })
 
               this.$refs.mediaImg.onError = (error) => {
-                console.error(`An error is occured: ${error}`)
+                console.error(`An error have occured: ${error}`)
               }
 
               this.cropSrc = this.media.thumbnail
