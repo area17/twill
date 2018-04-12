@@ -185,7 +185,6 @@
       cropThumbnailStyle: function () {
         if (!this.hasMedia) return {}
         if (!this.media.crops) return {}
-        if (!this.isDataToUrl) return {}
         return {
           'backgroundImage': `url(${this.cropSrc})`
         }
