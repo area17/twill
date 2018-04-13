@@ -89,6 +89,8 @@
   import { cropConversion } from '@/utils/cropper'
   import smartCrop from 'smartcrop'
 
+  const IS_SAFARI = window.navigator && /(Macintosh|iPhone|iPod|iPad).*AppleWebKit/i.test(window.navigator.userAgent)
+
   export default {
     name: 'A17Mediafield',
     components: {
@@ -266,8 +268,9 @@
         const cropWidth = crop.width
         const cropHeight = crop.height
 
+        let src = this.media.thumbnail
+
         this.$nextTick(() => {
-          let src = ''
           try {
             this.canvas.width = cropWidth
             this.canvas.height = cropHeight
@@ -277,7 +280,6 @@
           } catch (error) {
             console.error(`An error have occured: ${error}`)
             this.isDataToUrl = false
-            src = this.media.thumbnail
           }
 
           if (this.cropSrc !== src) {
@@ -422,7 +424,9 @@
       initImg: function () {
         return new Promise((resolve, reject) => {
           this.img = new Image()
-          this.img.crossOrigin = 'Anonymous'
+          if (!IS_SAFARI) {
+            this.img.crossOrigin = 'anonymous'
+          }
           this.canvas = document.createElement('canvas')
           this.ctx = this.canvas.getContext('2d')
 
