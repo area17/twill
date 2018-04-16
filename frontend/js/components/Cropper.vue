@@ -80,14 +80,13 @@
         return []
       },
       cropperOpts: function () {
-        let self = this
         return {
           ...this.defaultCropsOpts,
-          cropmove: function () {
-            self.updateCropperValues()
+          cropmove: () => {
+            this.updateCropperValues()
           },
-          cropend: function () {
-            self.sendCropperValues()
+          cropend: () => {
+            this.sendCropperValues()
           }
         }
       },
@@ -102,26 +101,33 @@
     },
     filters: a17VueFilters,
     mounted: function () {
-      let self = this
-      let opts = self.cropperOpts
-      let imageBox = self.$refs.cropImage
-      let imageWrapper = self.$refs.cropWrapper
+      let opts = this.cropperOpts
+      let imageBox = this.$refs.cropImage
+      let imageWrapper = this.$refs.cropWrapper
       let img = new Image()
-      img.onload = function () {
+
+      img.addEventListener('load', () => {
         imageWrapper.style.maxWidth = imageWrapper.getBoundingClientRect().width + 'px'
         imageWrapper.style.minHeight = imageWrapper.getBoundingClientRect().height + 'px'
 
-        self.cropper = new CropperJs(imageBox, opts)
-      }
+        this.cropper = new CropperJs(imageBox, opts)
+      }, {
+        once: true,
+        passive: true,
+        capture: true
+      })
 
-      img.src = self.currentMedia.medium || self.currentMedia.original
+      img.src = this.currentMedia.medium || this.currentMedia.original
 
       // init displayed crop values
-      imageBox.addEventListener('ready', function () {
-        self.cropValues.natural.width = img.naturalWidth
-        self.cropValues.natural.height = img.naturalHeight
-
-        self.updateCrop()
+      imageBox.addEventListener('ready', () => {
+        this.cropValues.natural.width = img.naturalWidth
+        this.cropValues.natural.height = img.naturalHeight
+        this.updateCrop()
+      }, {
+        once: true,
+        passive: true,
+        capture: true
       })
     },
     methods: {
@@ -162,7 +168,13 @@
         this.cropValues.original.height = originalCrop.height
       },
       initCrop: function () {
-        this.cropper.setData(this.toNaturalCrop(this.crop))
+        const crop = this.toNaturalCrop(this.crop)
+        this.cropper.setData(crop)
+      },
+      test: function () {
+        const crop = this.toNaturalCrop({x: 0, y: 0, width: 380, height: 475})
+        this.cropper.setAspectRatio(0.8)
+        this.cropper.setData(crop)
       },
       sendCropperValues: function () {
         let data = {}

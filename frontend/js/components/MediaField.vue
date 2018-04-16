@@ -425,7 +425,7 @@
         return new Promise((resolve, reject) => {
           this.img = new Image()
           if (!IS_SAFARI) {
-            this.img.crossOrigin = 'anonymous'
+            this.img.crossOrigin = 'Anonymous'
           }
           this.canvas = document.createElement('canvas')
           this.ctx = this.canvas.getContext('2d')
