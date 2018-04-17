@@ -89,6 +89,8 @@
   import { cropConversion } from '@/utils/cropper'
   import smartCrop from 'smartcrop'
 
+  const IS_SAFARI = window.navigator && /(Macintosh|iPhone|iPod|iPad).*AppleWebKit/i.test(window.navigator.userAgent)
+
   export default {
     name: 'A17Mediafield',
     components: {
@@ -222,7 +224,7 @@
             if (index > 0) {
               cropInfos += ', '
             }
-            cropInfos += this.media.crops[variant].width + 'x' + this.media.crops[variant].height + '&nbsp;'
+            cropInfos += this.media.crops[variant].width + '&nbsp;&times;&nbsp;' + this.media.crops[variant].height + '&nbsp;'
             cropInfos += '(' + this.media.crops[variant].name + ')'
             index++
           }
@@ -263,21 +265,21 @@
         if (!crop) return
 
         crop = cropConversion(crop, this.naturalDim, this.originalDim)
-
         const cropWidth = crop.width
         const cropHeight = crop.height
-        this.canvas.width = cropWidth
-        this.canvas.height = cropHeight
-        this.ctx.drawImage(this.img, crop.x, crop.y, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight)
+
+        let src = this.media.thumbnail
+
         this.$nextTick(() => {
-          let src = ''
           try {
+            this.canvas.width = cropWidth
+            this.canvas.height = cropHeight
+            this.ctx.drawImage(this.img, crop.x, crop.y, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight)
             src = this.canvas.toDataURL('image/png')
             this.isDataToUrl = true
           } catch (error) {
             console.error(`An error have occured: ${error}`)
             this.isDataToUrl = false
-            src = this.media.thumbnail
           }
 
           if (this.cropSrc !== src) {
@@ -422,7 +424,9 @@
       initImg: function () {
         return new Promise((resolve, reject) => {
           this.img = new Image()
-          this.img.crossOrigin = 'Anonymous'
+          if (!IS_SAFARI) {
+            this.img.crossOrigin = 'Anonymous'
+          }
           this.canvas = document.createElement('canvas')
           this.ctx = this.canvas.getContext('2d')
 
