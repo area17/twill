@@ -12,7 +12,7 @@
     </div>
     <footer class="cropper__footer">
       <ul v-if="ratiosByContext.length > 1" class="cropper__ratios">
-        <li v-for="ratio in ratiosByContext" @click="changeRatio(ratio)" :key="ratio.name" :class="{ 's--active' : currentRatioName === ratio.name }">{{ ratio.name | capitalize }}</li>
+        <li class="f--small" v-for="ratio in ratiosByContext" @click="changeRatio(ratio)" :key="ratio.name" :class="{ 's--active' : currentRatioName === ratio.name }">{{ ratio.name | capitalize }}</li>
       </ul>
       <span class="cropper__values f--small hide--xsmall" :class="cropperWarning">{{ cropValues.original.width }} &times; {{ cropValues.original.height }}</span>
       <slot></slot>
