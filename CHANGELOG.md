@@ -2,6 +2,21 @@
 
 All notable changes to `laravel-cms-toolkit` will be documented in this file.
 
+## 1.0.11 2018-04-17
+
+### Fixed
+
+- Media field cropped thumbnail: fix Safari error (missing support for tainted canvas with CORS) (!68)
+
+### Improved
+
+- Media field cropped thumbnail: prevent CORS errors entirely (!68)
+- Cropper component refactor (!68)
+ 
+### Changed
+
+- First hint of renaming introducing Twill credit in footer (b84a5f6c)
+
 ## 1.0.10 2018-04-12
 
 ### Improved
@@ -94,7 +109,7 @@ It also gives up a slight performance boost in HMR mode when developing.
   * Media library : grid is showing 2 images on the same row on mobile
   * Dropdown : resize based on available space
   * Overlay header : adjust infos showing up on smaller screens
-  *  Listing and search results : dont show thumbnails on smaller screens
+  * Listing and search results : dont show thumbnails on smaller screens
 
 ## 1.0.4 2018-03-21
 
