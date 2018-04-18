@@ -1,7 +1,12 @@
 <template>
   <span>
-    <span v-if="formatDateLabel" class="tablecell__datePub" :class="{ 's--expired' : formatDateLabel === textExpired }">
-      {{ startDate | formatDatatableDate }}<br /><span>{{ formatDateLabel }}</span>
+    <!--Todo: check formatDateLabel logic-->
+    <span v-if="formatDateLabel"
+      class="tablecell__datePub"
+      :class="{ 's--expired' : formatDateLabel === textExpired }">
+      {{ startDate | formatDatatableDate }}
+      <br>
+      <span>{{ formatDateLabel }}</span>
     </span>
     <span v-else>
       <template v-if="!startDate">
@@ -17,18 +22,12 @@
 <script>
   import a17VueFilters from '@/utils/filters.js'
   import compareAsc from 'date-fns/compare_asc'
+  import { TableCellMixin } from '@/mixins'
 
   export default {
-    name: 'A17TableDates',
+    name: 'A17TableCellDates',
+    mixins: [TableCellMixin],
     props: {
-      startDate: {
-        type: String,
-        default: ''
-      },
-      endDate: {
-        type: String,
-        default: ''
-      },
       textExpired: {
         type: String,
         default: 'Expired'
@@ -48,6 +47,12 @@
         else if (scoreStart > 0) label = this.textScheduled
 
         return label
+      },
+      startDate: function () {
+        return this.row.hasOwnProperty('publish_start_date') ? this.row.publish_start_date : ''
+      },
+      endDate: function () {
+        return this.row.hasOwnProperty('publish_end_date') ? this.row.publish_start_date : ''
       }
     },
     filters: a17VueFilters
@@ -59,15 +64,15 @@
 
   /* Publication dates */
   .tablecell__datePub {
-    color:$color__text--light;
+    color: $color__text--light;
 
     span {
-      color:$color__ok;
+      color: $color__ok;
     }
 
     &.s--expired {
       span {
-        color:$color__error;
+        color: $color__error;
       }
     }
   }

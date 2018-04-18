@@ -1,10 +1,15 @@
 <template>
-  <span class="tablecell__nested-depth" :style="cellWidth"></span>
+  <span class="tablecell__nested-depth"
+        :style="cellWidth">
+  </span>
 </template>
 
 <script>
+  import { TableCellMixin } from '@/mixins'
+
   export default {
-    name: 'a17-tableNested',
+    name: 'A17TableCellNested',
+    mixins: [TableCellMixin],
     props: {
       depth: {
         type: Number,
@@ -17,7 +22,7 @@
     },
     computed: {
       cellWidth () {
-        return this.depth > 0 ? { width: this.depth * 80 - 20 - this.offset + 'px' } : ''
+        return this.depth > 0 ? {width: this.depth * 80 - 20 - this.offset + 'px'} : ''
       }
     }
   }
@@ -51,4 +56,5 @@
       background-color: $color__border--hover;
     }
   }
+
 </style>
