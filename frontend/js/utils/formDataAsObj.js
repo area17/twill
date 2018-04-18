@@ -136,16 +136,15 @@ export default function (formNode) {
   // Set the main form object we are working on.
   function setForm () {
     switch (typeof formRef) {
-    case 'string':
-      $form = document.getElementById(formRef)
-      break
+      case 'string':
+        $form = document.getElementById(formRef)
+        break
 
-    case 'object':
-      if (isDomElementNode(formRef)) {
-        $form = formRef
-      }
-
-      break
+      case 'object':
+        if (isDomElementNode(formRef)) {
+          $form = formRef
+        }
+        break
     }
 
     return $form

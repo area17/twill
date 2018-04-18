@@ -24,9 +24,10 @@ module.exports = {
     // no need of v-key in vue v-for loop
     'vue/require-v-for-key': 'off',
     // indent
-    'indent': ['error', 2],
+    'indent': ['error', 2, {'SwitchCase' : 1}],
     'vue/script-indent': ['error', 2, {
-      'baseIndent': 1
+      'baseIndent': 1,
+      'switchCase': 1
     }],
     'no-useless-escape': 0,
     // allow paren-less arrow functions
@@ -42,7 +43,8 @@ module.exports = {
       rules: {
         "indent": "off",
         "vue/script-indent": ['error', 2, {
-          'baseIndent': 1
+          'baseIndent': 1,
+          'switchCase': 1
         }]
       }
     }
