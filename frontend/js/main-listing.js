@@ -20,7 +20,7 @@ import a17Filter from '@/components/Filter.vue'
 import a17TableFilters from '@/components/table/TableFilters.vue'
 import a17BulkEdit from '@/components/table/BulkEdit.vue'
 import a17LangManager from '@/components/LangManager.vue'
-import ModalCreate from '@/components/Modals/ModalCreate.vue'
+import ModalCreate from '@/components/modals/ModalCreate.vue'
 
 // Store modules
 import datatable from '@/store/modules/datatable'

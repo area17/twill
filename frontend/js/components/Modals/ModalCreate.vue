@@ -11,7 +11,7 @@
   import { mapState, mapGetters } from 'vuex'
   import { NOTIFICATION, FORM, DATATABLE, LANGUAGE } from '@/store/mutations'
   import ACTIONS from '@/store/actions'
-  import a17ModalValidationButtons from '@/components/Modals/ModalValidationButtons.vue'
+  import a17ModalValidationButtons from './ModalValidationButtons.vue'
 
   export default {
     name: 'A17ModalCreate',

@@ -42,7 +42,7 @@ import A17Notif from '@/plugins/A17Notif'
 import a17Spinner from '@/components/Spinner.vue'
 
 // Add attributes
-import a17ModalAdd from '@/components/Modals/ModalAdd.vue'
+import a17ModalAdd from '@/components/modals/ModalAdd.vue'
 
 // Store Modules
 import form from '@/store/modules/form'
