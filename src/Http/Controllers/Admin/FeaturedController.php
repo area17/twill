@@ -44,6 +44,12 @@ class FeaturedController extends Controller
         $buckets = $this->getFeaturedItemsByBucket($featuredSection, $featuredSectionKey);
         $firstSource = array_first($featuredSources);
 
+        $routePrefix = 'featured';
+
+        if (isset(config('cms-toolkit.bucketsRoutes'))) {
+            $routePrefix =  config('cms-toolkit.bucketsRoutes')[$featuredSectionKey] ?? $routePrefix;
+        }
+
         return view('cms-toolkit::layouts.buckets', [
             'dataSources' => [
                 'selected' => array_first($contentTypes),
@@ -59,7 +65,7 @@ class FeaturedController extends Controller
             'bucketSourceTitle' => $featuredSection['sourceHeaderTitle'] ?? null,
             'bucketsSectionIntro' => $featuredSection['sectionIntroText'] ?? null,
             'restricted' => $featuredSection['restricted'] ?? true,
-            'saveUrl' => route("admin.featured.$featuredSectionKey.save"),
+            'saveUrl' => route("admin.$routePrefix.$featuredSectionKey.save"),
         ]);
     }
 
