@@ -6,6 +6,7 @@ use A17\CmsToolkit\Models\Behaviors\Sortable;
 use A17\CmsToolkit\Repositories\Behaviors\HandleDates;
 use DB;
 use Log;
+use PDO;
 
 abstract class ModuleRepository
 {
@@ -409,6 +410,8 @@ abstract class ModuleRepository
 
     public function filter($query, array $scopes = [])
     {
+        $likeOperator = $this->getLikeOperator();
+
         foreach (class_uses_recursive(get_called_class()) as $trait) {
             if (method_exists(get_called_class(), $method = 'filter' . class_basename($trait))) {
                 $this->$method($query, $scopes);
@@ -429,7 +432,7 @@ abstract class ModuleRepository
                 if (is_array($value)) {
                     $query->whereIn($column, $value);
                 } elseif ($column[0] == '%') {
-                    $value && ($value[0] == '!') ? $query->where(substr($column, 1), 'not like', '%' . substr($value, 1) . '%') : $query->where(substr($column, 1), 'like', '%' . $value . '%');
+                    $value && ($value[0] == '!') ? $query->where(substr($column, 1), "not $likeOperator", '%' . substr($value, 1) . '%') : $query->where(substr($column, 1), $likeOperator, '%' . $value . '%');
                 } elseif ($value[0] == '!') {
                     $query->where($column, '<>', substr($value, 1));
                 } elseif ($value !== '') {
@@ -521,7 +524,7 @@ abstract class ModuleRepository
     public function addLikeFilterScope($query, &$scopes, $scopeField)
     {
         if (isset($scopes[$scopeField]) && is_string($scopes[$scopeField])) {
-            $query->where($scopeField, 'like', '%' . $scopes[$scopeField] . '%');
+            $query->where($scopeField, $this->getLikeOperator(), '%' . $scopes[$scopeField] . '%');
             unset($scopes[$scopeField]);
         }
     }
@@ -532,7 +535,7 @@ abstract class ModuleRepository
         if (isset($scopes[$scopeField]) && is_string($scopes[$scopeField])) {
             $query->where(function ($query) use (&$scopes, $scopeField, $orFields) {
                 foreach ($orFields as $field) {
-                    $query->orWhere($field, 'like', '%' . $scopes[$scopeField] . '%');
+                    $query->orWhere($field, $this->getLikeOperator(), '%' . $scopes[$scopeField] . '%');
                     unset($scopes[$field]);
                 }
             });
@@ -574,6 +577,15 @@ abstract class ModuleRepository
         }
 
         return app(config('cms-toolkit.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
+    }
+
+    private function getLikeOperator()
+    {
+        if (DB::connection()->getPDO()->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql') {
+            return 'ILIKE';
+        }
+
+        return 'LIKE';
     }
 
     public function __call($method, $parameters)
