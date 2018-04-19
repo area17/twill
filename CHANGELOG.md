@@ -2,6 +2,16 @@
 
 All notable changes to `laravel-cms-toolkit` will be documented in this file.
 
+## 1.0.12 2018-04-19
+
+### Improved
+
+- Case insensitive search when using Postgres (47a64c1)
+
+### Fixed
+
+- Buckets: custom routes save button URL (1febe6c)
+
 ## 1.0.11 2018-04-17
 
 ### Fixed
