@@ -89,7 +89,7 @@
   import { cropConversion } from '@/utils/cropper'
   import smartCrop from 'smartcrop'
 
-  const IS_SAFARI = window.navigator && /(Macintosh|iPhone|iPod|iPad).*AppleWebKit/i.test(window.navigator.userAgent)
+  const IS_SAFARI = navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') === -1
 
   export default {
     name: 'A17Mediafield',
