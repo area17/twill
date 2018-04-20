@@ -62,7 +62,7 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
+  import { mapState } from 'vuex'
   import { DATATABLE } from '@/store/mutations'
   import ACTIONS from '@/store/actions'
 
@@ -117,12 +117,7 @@
         initialOffset: state => state.datatable.defaultOffset,
         initialMaxPage: state => state.datatable.defaultMaxPage,
         loading: state => state.datatable.loading
-      }),
-      ...mapGetters([
-        'visibleColumns',
-        'hideableColumns',
-        'visibleColumnsNames'
-      ])
+      })
     },
     methods: {
       getColumnWidth: function () {
@@ -140,7 +135,6 @@
         this.xScroll = newValue
       },
       resize: debounce(function () {
-        console.log('resize', this)
         this.getColumnWidth()
       }, 100),
       initEvents: function () {
@@ -294,7 +288,7 @@
     z-index: 1;
   }
 
-  /* Empty datable */
+  /* Empty datatable */
   .datatable__table--empty {
     border: none;
     border-top: 1px solid $color__border--light;

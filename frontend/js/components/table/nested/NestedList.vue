@@ -5,10 +5,7 @@
              v-model="rows"
              :options="draggableOptions"
              :element="'ul'"
-             :component-data="draggableGetComponentData"
-             @start="onStart"
-             :move="onMove"
-             @end="onEnd">
+             :component-data="draggableGetComponentData">
     <li class="nested-datatable__item"
         v-for="(row, index) in rows"
         :class="haveChildren(row.children)"

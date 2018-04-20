@@ -63,39 +63,5 @@ export default {
         }
       }
     }
-  },
-  methods: {
-    onStart: function (event) {
-      return
-      event.item.classList.add('datatable--selected')
-      document.querySelector('.datatable').classList.add('datatable--dragging')
-    },
-    onMove: function (event) {
-      return
-      if (!this.nested) return true
-
-      if (typeof this.currentElDepth === 'undefined') {
-        const children = JSON.parse(JSON.stringify(event.draggedContext.element))
-        this.currentElDepth = getDepth(children)
-      }
-
-      const targetDepth = event.relatedContext.component.componentData.props.depth
-      const canDrag = targetDepth + this.currentElDepth <= this.maxDepth + 1
-
-      if (!canDrag) {
-        event.dragged.classList.add('sortable-nodrag')
-      } else {
-        event.dragged.classList.remove('sortable-nodrag')
-      }
-      return canDrag
-    },
-    onEnd: function (event) {
-      return
-      this.currentElDepth = undefined
-      event.item.classList.remove('datatable--selected')
-      event.item.classList.remove('sortable-nodrag')
-
-      document.querySelector('.datatable').classList.remove('datatable--dragging')
-    }
   }
 }

@@ -1,8 +1,17 @@
 <template>
   <div class="nested-datatable">
-    <div class="nested-datatable__header">
-
+    <!-- Actual table content -->
+    <!--Todo: refactor to remove table-->
+    <div class="container">
+      <div class="datatable__table">
+        <a17-table>
+          <thead>
+          <a17-tablehead :columns="visibleColumns" ref="thead"/>
+          </thead>
+        </a17-table>
+      </div>
     </div>
+
     <div class="container">
       <div class="nested-datatable__table">
         <a17-nested-list
@@ -17,6 +26,8 @@
 
 <script>
   import { DatatableMixin, DraggableMixin, NestedDraggableMixin } from '@/mixins/index'
+  import a17Table from './../Table.vue'
+  import a17Tablehead from './../TableHead.vue'
   import { DATATABLE } from '@/store/mutations/index'
   import NestedList from './NestedList'
   import draggable from 'vuedraggable'
@@ -30,6 +41,8 @@
       }
     },
     components: {
+      'a17-table': a17Table,
+      'a17-tablehead': a17Tablehead,
       'a17-nested-list': NestedList,
       draggable
     },

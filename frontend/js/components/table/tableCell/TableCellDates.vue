@@ -1,7 +1,7 @@
 <template>
   <span>
     <!--Todo: check formatDateLabel logic-->
-    <span v-if="formatDateLabel"
+    <span v-if="formatDateLabel.length > 0"
       class="tablecell__datePub"
       :class="{ 's--expired' : formatDateLabel === textExpired }">
       {{ startDate | formatDatatableDate }}

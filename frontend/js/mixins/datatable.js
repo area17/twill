@@ -1,4 +1,4 @@
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import { DATATABLE } from '@/store/mutations/index'
 import ACTIONS from '@/store/actions'
 
@@ -44,7 +44,12 @@ export default {
     },
     ...mapState({
       columns: state => state.datatable.columns
-    })
+    }),
+    ...mapGetters([
+      'visibleColumns',
+      'hideableColumns',
+      'visibleColumnsNames'
+    ])
   },
   methods: {
     saveNewTree: function (isChangingParents) {
