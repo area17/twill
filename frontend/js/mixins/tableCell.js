@@ -2,19 +2,19 @@ export default {
   props: {
     col: {
       type: Object,
-      required: true
+      default: () => {}
     },
     row: {
       type: Object,
-      required: true
+      default: () => {}
     },
     editUrl: {
       type: String,
-      required: true
+      default: '#'
     },
     editInModal: {
       type: Boolean,
-      required: true
+      default: false
     }
   },
   computed: {

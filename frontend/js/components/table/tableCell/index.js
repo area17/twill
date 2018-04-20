@@ -1,3 +1,14 @@
+import TableCellActions_ from './TableCellActions'
+import TableCellBulk_ from './TableCellBulk'
+import TableCellDates_ from './TableCellDates'
+import TableCellFeatured_ from './TableCellFeatured'
+import TableCellDraggable_ from './TableCellDraggable'
+import TableCellLanguages_ from './TableCellLanguages'
+import TableCellPublished_ from './TableCellPublished'
+import TableCellGeneric_ from './TableCellGeneric'
+import TableCellNested_ from './TableCellNested'
+import TableCellThumbnail_ from './TableCellThumbnail'
+
 export const TableCellSpecificColumns = [
   'draggable',
   'bulk',
@@ -11,16 +22,16 @@ export const TableCellSpecificColumns = [
 
 export const TableCellPrefix = 'a17-table-cell-'
 /* Components */
-export const TableCellActions = require('./TableCellActions')
-export const TableCellBulk = require('./TableCellBulk')
-export const TableCellDates = require('./TableCellDates')
-export const TableCellFeatured = require('./TableCellFeatured')
-export const TableCellDraggable = require('./TableCellDraggable')
-export const TableCellLanguages = require('./TableCellLanguages')
-export const TableCellPublished = require('./TableCellPublished')
-export const TableCellGeneric = require('./TableCellGeneric')
-export const TableCellNested = require('./TableCellNested')
-export const TableCellThumbnail = require('./TableCellThumbnail')
+export const TableCellActions = TableCellActions_
+export const TableCellBulk = TableCellBulk_
+export const TableCellDates = TableCellDates_
+export const TableCellFeatured = TableCellFeatured_
+export const TableCellDraggable = TableCellDraggable_
+export const TableCellLanguages = TableCellLanguages_
+export const TableCellPublished = TableCellPublished_
+export const TableCellGeneric = TableCellGeneric_
+export const TableCellNested = TableCellNested_
+export const TableCellThumbnail = TableCellThumbnail_
 
 export default {
   [TableCellPrefix + 'actions']: TableCellActions,

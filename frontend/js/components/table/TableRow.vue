@@ -1,6 +1,6 @@
 <template>
-  <tr class="tablerow" :class="rowClasses">
-    <td v-for="col in columns" :key="col.name" class="tablecell" :class="cellClasses(col)" :style="nestedStyle(col)">
+  <tr class="tablerow">
+    <td v-for="col in columns" :key="col.name" class="tablecell" :class="cellClasses(col, 'tablecell')" :style="nestedStyle(col)">
       <template v-if="isSpecificColumn(col)">
         <component :is="currentComponent(col.name)"
                    v-bind="currentComponentProps(col)"
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-  import { default as TableCellComponents } from '@/components/table/tableCell'
+  import TableCellComponents from '@/components/table/tableCell'
   import { DatatableRowMixin } from '@/mixins'
 
   export default {
@@ -41,28 +41,11 @@
       }
     },
     computed: {
-      rowClasses () {
-        return {
-          'tablerow--nested': this.rowType === 'nested'
-        }
-      },
       nestedOffset () {
         return this.columns.find((col) => col.name === 'draggable') ? 10 : 0
       }
     },
     methods: {
-      cellClasses: function (col) {
-        return {
-          'tablecell--icon': col.name === 'featured' || col.name === 'published',
-          'tablecell--bulk': col.name === 'bulk',
-          'tablecell--thumb': col.name === 'thumbnail',
-          'tablecell--draggable': col.name === 'draggable',
-          'tablecell--languages': col.name === 'languages',
-          'tablecell--nested': col.name === 'nested',
-          'tablecell--nested--parent': col.name === 'nested' && this.nestedDepth === 0,
-          'tablecell--name': col.name === 'name'
-        }
-      },
       nestedStyle (col) {
         return this.columns.find((col) => col.name === 'nested') && col.name === 'draggable' ? {
           'webkit-transform': 'translateX(-' + this.nestedDepth * 80 + 'px)',

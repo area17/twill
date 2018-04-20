@@ -16,6 +16,7 @@ import { mapState } from 'vuex'
 
 // components
 import a17Datatable from '@/components/table/Datatable.vue'
+import a17NestedDatatable from '@/components/table/nested/NestedDatatable'
 import a17Filter from '@/components/Filter.vue'
 import a17TableFilters from '@/components/table/TableFilters.vue'
 import a17BulkEdit from '@/components/table/BulkEdit.vue'
@@ -33,7 +34,7 @@ import attributes from '@/store/modules/attributes'
 import { getStorage } from '@/utils/localeStorage.js'
 
 // mixins
-import formatPermalink from '@/mixins/formatPermalink'
+import { FormatPermalinkMixin } from '@/mixins'
 
 // configuration
 Vue.use(A17Config)
@@ -54,11 +55,12 @@ window.vm = new Vue({
     'a17-filter': a17Filter,
     'a17-table-filters': a17TableFilters,
     'a17-datatable': a17Datatable,
+    'a17-nested-datatable': a17NestedDatatable,
     'a17-bulk': a17BulkEdit,
     'a17-langmanager': a17LangManager,
     'a17-modal-create': ModalCreate
   },
-  mixins: [formatPermalink],
+  mixins: [FormatPermalinkMixin],
   computed: {
     hasBulkIds: function () {
       return this.bulkIds.length > 0

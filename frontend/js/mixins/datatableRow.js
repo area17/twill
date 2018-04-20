@@ -72,7 +72,6 @@ export default {
       return props
     },
     editInPlace: function (data) {
-      console.log('editInPlace<Data')
       if (data.lang) {
         const lang = data.lang
         this.$store.commit(LANGUAGE.UPDATE_LANG, lang.value)
@@ -93,6 +92,18 @@ export default {
             variant: 'error'
           })
         })
+      }
+    },
+    cellClasses: function (col, prefix) {
+      return {
+        [prefix + '--icon']: col.name === 'featured' || col.name === 'published',
+        [prefix + '--bulk']: col.name === 'bulk',
+        [prefix + '--thumb']: col.name === 'thumbnail',
+        [prefix + '--draggable']: col.name === 'draggable',
+        [prefix + '--languages']: col.name === 'languages',
+        [prefix + '--nested']: col.name === 'nested',
+        [prefix + '--nested--parent']: col.name === 'nested' && this.nestedDepth === 0,
+        [prefix + '--name']: col.name === 'name'
       }
     },
     isSpecificColumn: function (col) {
