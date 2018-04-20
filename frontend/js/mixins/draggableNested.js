@@ -1,8 +1,5 @@
-import { DATATABLE } from '@/store/mutations'
-import ACTIONS from '@/store/actions'
-
 const getDepth = ({children}) => 1 + (children && children.length > 0 ? Math.max(...children.map(getDepth)) : 0)
-
+/* eslint-disable */
 export default {
   props: {
     /**
@@ -29,6 +26,25 @@ export default {
     depth: {
       type: Number,
       default: 0
+    },
+    /**
+     * Name is used by sortable.js in vue-draggable to drag elements from one list into another
+     * @type {string}
+     */
+    name: {
+      type: String,
+      default: 'group1'
+    },
+    /**
+     * The id of parent component and must be unique.
+     * Parent could be a dataTable component or a tableRowNested component.
+     * This is required to save tree of listing in store.
+     * @type {number}
+     *
+     */
+    parentId: {
+      type: Number,
+      default: -1
     }
   },
   data () {
@@ -50,10 +66,12 @@ export default {
   },
   methods: {
     onStart: function (event) {
+      return
       event.item.classList.add('datatable--selected')
       document.querySelector('.datatable').classList.add('datatable--dragging')
     },
     onMove: function (event) {
+      return
       if (!this.nested) return true
 
       if (typeof this.currentElDepth === 'undefined') {
@@ -72,30 +90,12 @@ export default {
       return canDrag
     },
     onEnd: function (event) {
+      return
       this.currentElDepth = undefined
       event.item.classList.remove('datatable--selected')
       event.item.classList.remove('sortable-nodrag')
 
       document.querySelector('.datatable').classList.remove('datatable--dragging')
-    },
-    saveNewTree: function (isChangingParents) {
-      const isNestedAction = isChangingParents ? true : this.nested
-      const action = isNestedAction ? ACTIONS.SET_DATATABLE_NESTED : ACTIONS.SET_DATATABLE
-
-      const save = () => {
-        this.$store.commit(DATATABLE.UPDATE_DATATABLE_TRACKER, 0)
-        this.$store.dispatch(action)
-      }
-
-      // Proof of concepts
-      if (isChangingParents) {
-        // 2 moves need to happen so we can save the new tree (1 move to remove from list and a second to add to a new list)
-        this.$store.commit(DATATABLE.UPDATE_DATATABLE_TRACKER, 1)
-        if (this.updateTracker >= 2) save()
-      } else {
-        // reorder rows
-        save()
-      }
     }
   }
 }

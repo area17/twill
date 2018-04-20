@@ -28,9 +28,5 @@
     tr:hover > .tablecell--draggable & {
       display: block;
     }
-
-    li:hover > .nested-item & {
-      display: block;
-    }
   }
 </style>

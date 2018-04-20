@@ -63,13 +63,20 @@
             @endif
         </div>
 
-        <a17-datatable
+        @if($nested)
+        <a17-nested-datatable
             :draggable="{{ $reorder ? 'true' : 'false' }}"
-            :nested="{{ $nested ? 'true' : 'false' }}"
             :max-depth="{{ $nestedDepth ?? '1' }}"
             :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
-            empty-message="There is no item here yet."
-        ></a17-datatable>
+            empty-message="There is no item here yet.">
+        </a17-nested-datatable>
+        @else
+        <a17-datatable
+            :draggable="{{ $reorder ? 'true' : 'false' }}"
+            :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
+            empty-message="There is no item here yet.">
+        </a17-datatable>
+        @endif
 
         <a17-modal-create
             ref="editionModal"
