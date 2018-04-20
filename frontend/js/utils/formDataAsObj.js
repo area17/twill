@@ -1,18 +1,18 @@
 export default function (formNode) {
   // We are not using FormaData because this can be used for get requests (where you need to send direct params)
 
-  var formRef = null
+  let formRef = null
 
   /**
    * Defaults
    */
 
-  var includeEmptyValuedElements = false
+  let includeEmptyValuedElements = false
 
   // Currently matching only '[]'.
-  var keyRegex = /[^\[\]]+|\[\]/g // eslint-disable-line
-  var $form = null
-  var $formElements = []
+  let keyRegex = /[^\[\]]+|\[\]/g // eslint-disable-line
+  let $form = null
+  let $formElements = []
 
   /**
    * Private methods
@@ -53,7 +53,7 @@ export default function (formNode) {
    * @return int
    */
   function getLastIntegerKey (o) {
-    var lastKeyIndex = checkForLastNumericKey(o)
+    let lastKeyIndex = checkForLastNumericKey(o)
     if (typeof lastKeyIndex === 'string') {
       return parseInt(lastKeyIndex, 10)
     } else {
@@ -67,7 +67,7 @@ export default function (formNode) {
    * @return int
    */
   function getNextIntegerKey (o) {
-    var lastKeyIndex = checkForLastNumericKey(o)
+    let lastKeyIndex = checkForLastNumericKey(o)
     if (typeof lastKeyIndex === 'string') {
       return parseInt(lastKeyIndex, 10) + 1
     } else {
@@ -86,8 +86,8 @@ export default function (formNode) {
       return 0
     }
 
-    var l = 0
-    var k
+    let l = 0
+    let k
 
     if (typeof Object.keys === 'function') {
       l = Object.keys(o).length
@@ -109,7 +109,7 @@ export default function (formNode) {
       return [].forEach.call(arr, callback)
     }
 
-    var i
+    let i
     for (i = 0; i < arr.length; i++) {
       callback.call(arr, arr[i], i)
     }
@@ -245,7 +245,7 @@ export default function (formNode) {
     // We're only interested in multiple selects that have at least one option selected.
     if (isSelectMultiple($domNode)) {
       if ($domNode.options && $domNode.options.length > 0) {
-        var values = []
+        let values = []
         forEach($domNode.options, function ($option) {
           if ($option.selected) {
             values.push($option.value)
@@ -289,7 +289,7 @@ export default function (formNode) {
 
   function processSingleLevelNode ($domNode, arr, domNodeValue, result) {
     // Get the last remaining key.
-    var key = arr[0]
+    let key = arr[0]
 
     // We're only interested in the radio that is checked.
     if (isRadio($domNode)) {
@@ -334,7 +334,7 @@ export default function (formNode) {
   }
 
   function processMultiLevelNode ($domNode, arr, value, result) {
-    var keyName = arr[0]
+    let keyName = arr[0]
 
     if (arr.length > 1) {
       if (keyName === '[]') {
@@ -379,12 +379,12 @@ export default function (formNode) {
   }
 
   function convertToObj () {
-    var i = 0
-    var objKeyNames
-    var $domNode
-    var domNodeValue
-    var result = {}
-    var resultLength
+    let i = 0
+    let objKeyNames
+    let $domNode
+    let domNodeValue
+    let result = {}
+    let resultLength
 
     for (i = 0; i < $formElements.length; i++) {
       $domNode = $formElements[i]
