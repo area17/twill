@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-cms-toolkit` will be documented in this file.
 
+## 1.0.13 2018-04-20
+
+### Fixed
+
+- Media field: fix canvas based cropped thumbnail (make sure it is working on Chrome and Firefox, still fallbacking to the original thumbnail on Safari because of lack of support for tainted canvas with CORS)
+
 ## 1.0.12 2018-04-19
 
 ### Improved
