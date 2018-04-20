@@ -22,8 +22,7 @@ const DEFAULT_OPTIONS = {
 
 export default class Tooltip {
   constructor (ref, options) {
-    // todo apply options here
-    options = { ...DEFAULT_OPTIONS, ...options }
+    options = {...DEFAULT_OPTIONS, ...options}
 
     // save reference and options
     this.reference = ref
