@@ -1,5 +1,5 @@
 function arrayToSentence (arr) {
-  var length = arr.length
+  const length = arr.length
   return arr.reduce(function (a, b, c) {
     return a + (c - 1 === length ? ', ' : ' and ') + b
   })

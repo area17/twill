@@ -37,15 +37,14 @@
     },
     computed: {
       currentLabel: function () {
-        var selectRadios = this.radios.filter(this.isSameValue)
+        const selectRadios = this.radios.filter(this.isSameValue)
         if (selectRadios.length) return selectRadios[0].label
         else return ''
       }
     },
     methods: {
       isSameValue: function (radio) {
-        if (radio.value === this.currentValue) return true
-        return false
+        return radio.value === this.currentValue
       },
       changeValue: function (newValue) {
         this.currentValue = newValue

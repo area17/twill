@@ -38,7 +38,7 @@
         const iframe = event.target
         const buttons = iframe.contentDocument.querySelectorAll('a,button')
 
-        for (var i = 0; i < buttons.length; i++) {
+        for (let i = 0; i < buttons.length; i++) {
           buttons[i].setAttribute('disabled', 'disabled')
           buttons[i].style.pointerEvents = 'none'
           buttons[i].onclick = function () {

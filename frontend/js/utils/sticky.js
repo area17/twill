@@ -13,7 +13,6 @@ const DEFAULT_OPTIONS = {
 
 export default class Sticky {
   constructor (ref, options) {
-    // todo apply options here
     options = { ...DEFAULT_OPTIONS, ...options }
 
     this.target = null
@@ -128,7 +127,7 @@ export default class Sticky {
   }
 
   _removePositionClass () {
-    for (var i = 0; i < this.anchors.length; i++) {
+    for (let i = 0; i < this.anchors.length; i++) {
       this.target.classList.remove(this.options.classFixed + this.anchors[i])
     }
 

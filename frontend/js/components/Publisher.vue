@@ -115,9 +115,8 @@
         if (!this.singleOpen) return
 
         if (isOpen) {
-          for (var prop in this.openStates) {
-            if (prop !== componentname) this.openStates[prop] = false // close other accordion
-            else this.openStates[prop] = true
+          for (let prop in this.openStates) {
+            this.openStates[prop] = prop === componentname
           }
         } else {
           this.openStates[componentname] = false
