@@ -70,11 +70,14 @@
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
+
+    &.table--nested {
+      background-color: $color__drag_bg--ghost;
+    }
   }
 
   .table--sized {
     table-layout: fixed;
-    // width:auto;
   }
 
   .table__spacer {

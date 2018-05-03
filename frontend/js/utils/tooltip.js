@@ -289,7 +289,7 @@ export default class Tooltip {
   _dispose () {
     // remove event listeners
     if (this._events.length) {
-      this._events.forEach(({ func, event }) => {
+      this._events.forEach(({func, event}) => {
         this.reference.removeEventListener(event, func)
       })
       this._events = []
@@ -333,18 +333,18 @@ export default class Tooltip {
 
     events.forEach(event => {
       switch (event) {
-      case 'hover':
-        directEvents.push('mouseenter')
-        oppositeEvents.push('mouseleave')
-        break
-      case 'focus':
-        directEvents.push('focus')
-        oppositeEvents.push('blur')
-        break
-      case 'click':
-        directEvents.push('click')
-        oppositeEvents.push('click')
-        break
+        case 'hover':
+          directEvents.push('mouseenter')
+          oppositeEvents.push('mouseleave')
+          break
+        case 'focus':
+          directEvents.push('focus')
+          oppositeEvents.push('blur')
+          break
+        case 'click':
+          directEvents.push('click')
+          oppositeEvents.push('click')
+          break
       }
     })
 
@@ -357,7 +357,7 @@ export default class Tooltip {
         evt.usedByTooltip = true
         this._scheduleShow(reference, options.delay, options, evt)
       }
-      this._events.push({ event, func })
+      this._events.push({event, func})
       reference.addEventListener(event, func)
     })
 
@@ -369,7 +369,7 @@ export default class Tooltip {
         }
         this._scheduleHide(reference, options.delay, options, evt)
       }
-      this._events.push({ event, func })
+      this._events.push({event, func})
       reference.addEventListener(event, func)
     })
   }

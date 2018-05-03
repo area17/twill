@@ -1,23 +1,28 @@
 <template>
   <span>
-    <a v-for="language in languages" :key="language.value" :href="editWithLanguage(language)" @click="editInPlace($event, language)" class="tag tag--disabled" :class="{ 'tag--enabled' : language.published }">{{ language.shortlabel }}</a>
+    <a v-for="language in languages"
+       :key="language.value"
+       :href="editWithLanguage(language)"
+       class="tag tag--disabled"
+       :class="{ 'tag--enabled' : language.published }"
+       @click="editInPlace($event, language)">
+      {{ language.shortlabel }}
+    </a>
   </span>
 </template>
 
 <script>
-  import { LANGUAGE } from '@/store/mutations'
+  import { TableCellMixin } from '@/mixins'
+
   export default {
-    name: 'A17TableLanguages',
+    name: 'A17TableCellLanguages',
+    mixins: [TableCellMixin],
     props: {
       languages: {
         type: Array,
         default: function () {
           return []
         }
-      },
-      editUrl: {
-        type: String,
-        default: '#'
       }
     },
     methods: {
@@ -28,18 +33,16 @@
       },
       editWithQuery: function (context) {
         const queries = []
-        for (var prop in context) {
+        for (let prop in context) {
           if (context.hasOwnProperty(prop)) {
             queries.push(encodeURIComponent(prop) + '=' + encodeURIComponent(context[prop]))
           }
         }
-
         const queryString = queries.length ? '?' + queries.join('&') : ''
         return this.editUrl !== '#' ? (this.editUrl + queryString) : this.editUrl
       },
       editInPlace: function (event, lang) {
-        this.$store.commit(LANGUAGE.UPDATE_LANG, lang.value)
-        this.$emit('editInPlaceWithLang', event)
+        this.$emit('editInPlace', event, lang)
       }
     }
   }
@@ -50,6 +53,6 @@
 
   /* Languages */
   .tag {
-    margin:0 10px 0 0;
+    margin: 0 10px 0 0;
   }
 </style>

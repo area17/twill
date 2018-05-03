@@ -30,12 +30,12 @@
 
 <script>
   import bucketMixin from '@/mixins/buckets'
-  import a17TableLanguages from '@/components/table/tablecell/TableLanguages'
+  import { TableCellLanguages } from '@/components/table/tableCell'
 
   export default {
     mixins: [bucketMixin],
     components: {
-      'a17-tableLanguages': a17TableLanguages
+      'a17-tableLanguages': TableCellLanguages
     }
   }
 </script>
