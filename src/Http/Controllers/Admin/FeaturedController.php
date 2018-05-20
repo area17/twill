@@ -4,7 +4,6 @@ namespace A17\CmsToolkit\Http\Controllers\Admin;
 
 use A17\CmsToolkit\Models\Feature;
 use A17\CmsToolkit\Repositories\Behaviors\HandleTranslations;
-use App\Http\Controllers\Controller;
 use DB;
 use Event;
 
