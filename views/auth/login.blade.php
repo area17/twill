@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html dir="ltr" lang="en-US">
     <head>
-        @include('cms-toolkit::partials.head')
+        @include('twill::partials.head')
     </head>
     <body class="env env--{{ app()->environment() }}">
         <div class="a17 a17--login">
@@ -24,7 +24,7 @@
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
                     <input class="login__button" type="submit" value="Login" tabindex="3">
-                    @if (config('cms-toolkit.enabled.google-login'))
+                    @if (config('twill.enabled.google-login'))
                         <a href="#" class="login__google" tabindex="4">
                             <span symbol="more-dots" class="icon icon--google-sign-in"><svg><title>Google Icon</title><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#google-sign-in"></use></svg></span>
                             <span>Sign in with Google</span>
@@ -32,7 +32,7 @@
                     @endif
                 </form>
             </section>
-            @include('cms-toolkit::partials.footer')
+            @include('twill::partials.footer')
         </div>
     </body>
 </html>

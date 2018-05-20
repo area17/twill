@@ -1,10 +1,10 @@
 <?php
 
-namespace A17\CmsToolkit\Repositories;
+namespace A17\Twill\Repositories;
 
-use A17\CmsToolkit\Models\Block;
-use A17\CmsToolkit\Repositories\Behaviors\HandleFiles;
-use A17\CmsToolkit\Repositories\Behaviors\HandleMedias;
+use A17\Twill\Models\Block;
+use A17\Twill\Repositories\Behaviors\HandleFiles;
+use A17\Twill\Repositories\Behaviors\HandleMedias;
 
 class BlockRepository extends ModuleRepository
 {
@@ -17,7 +17,7 @@ class BlockRepository extends ModuleRepository
 
     public function getCrops($role)
     {
-        return config('cms-toolkit.block_editor.crops')[$role];
+        return config('twill.block_editor.crops')[$role];
     }
 
     public function afterDelete($object)
@@ -28,7 +28,7 @@ class BlockRepository extends ModuleRepository
 
     public function buildFromCmsArray($block, $repeater = false)
     {
-        $blocksFromConfig = config('cms-toolkit.block_editor.' . ($repeater ? 'repeaters' : 'blocks'));
+        $blocksFromConfig = config('twill.block_editor.' . ($repeater ? 'repeaters' : 'blocks'));
 
         $block['type'] = collect($blocksFromConfig)->search(function ($blockConfig) use ($block) {
             return $blockConfig['component'] === $block['type'];

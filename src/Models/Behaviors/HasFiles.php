@@ -1,9 +1,9 @@
 <?php
 
-namespace A17\CmsToolkit\Models\Behaviors;
+namespace A17\Twill\Models\Behaviors;
 
-use A17\CmsToolkit\Models\File;
-use A17\CmsToolkit\Services\FileLibrary\FileService;
+use A17\Twill\Models\File;
+use A17\Twill\Services\FileLibrary\FileService;
 
 trait HasFiles
 {

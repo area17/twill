@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Http\ViewComposers;
+namespace A17\Twill\Http\ViewComposers;
 
 use Illuminate\Contracts\View\View;
 
@@ -8,9 +8,9 @@ class FilesUploaderConfig
 {
     public function compose(View $view)
     {
-        $libraryDisk = config('cms-toolkit.file_library.disk');
-        $endpointType = config('cms-toolkit.file_library.endpoint_type');
-        $allowedExtensions = config('cms-toolkit.file_library.allowed_extensions');
+        $libraryDisk = config('twill.file_library.disk');
+        $endpointType = config('twill.file_library.endpoint_type');
+        $allowedExtensions = config('twill.file_library.allowed_extensions');
 
         $filesUploaderConfig = [
             'endpointType' => $endpointType,
@@ -21,9 +21,9 @@ class FilesUploaderConfig
             'endpointRegion' => config('filesystems.disks.' . $libraryDisk . '.region', 'none'),
             'accessKey' => config('filesystems.disks.' . $libraryDisk . '.key', 'none'),
             'csrfToken' => csrf_token(),
-            'acl' => config('cms-toolkit.file_library.acl'),
-            'filesizeLimit' => config('cms-toolkit.file_library.filesize_limit'),
-            'allowedExtensions'=> $allowedExtensions
+            'acl' => config('twill.file_library.acl'),
+            'filesizeLimit' => config('twill.file_library.filesize_limit'),
+            'allowedExtensions' => $allowedExtensions,
         ];
 
         $view->with(compact('filesUploaderConfig'));

@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\CmsToolkit\Repositories\Behaviors;
+namespace A17\Twill\Repositories\Behaviors;
 
-use A17\CmsToolkit\Models\Media;
+use A17\Twill\Models\Media;
 
 trait HandleMedias
 {
@@ -47,7 +47,7 @@ trait HandleMedias
         if (isset($fields['medias'])) {
             foreach ($fields['medias'] as $role => $mediasForRole) {
                 if (in_array($role, array_keys($this->model->mediasParams ?? []))
-                    || in_array($role, array_keys(config('cms-toolkit.block_editor.crops')))) {
+                    || in_array($role, array_keys(config('twill.block_editor.crops')))) {
                     collect($mediasForRole)->each(function ($media) use (&$medias, $role) {
                         if (isset($media['crops'])) {
                             foreach ($media['crops'] as $cropName => $cropData) {

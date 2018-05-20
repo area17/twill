@@ -1,11 +1,11 @@
 <?php
 
-namespace A17\CmsToolkit\Http\Controllers\Admin;
+namespace A17\Twill\Http\Controllers\Admin;
 
-use A17\CmsToolkit\Helpers\FlashLevel;
-use A17\CmsToolkit\Repositories\Behaviors\HandleBlocks;
-use A17\CmsToolkit\Repositories\Behaviors\HandleRevisions;
-use A17\CmsToolkit\Repositories\Behaviors\HandleTranslations;
+use A17\Twill\Helpers\FlashLevel;
+use A17\Twill\Repositories\Behaviors\HandleBlocks;
+use A17\Twill\Repositories\Behaviors\HandleRevisions;
+use A17\Twill\Repositories\Behaviors\HandleTranslations;
 use Auth;
 use Event;
 use Illuminate\Contracts\Foundation\Application;
@@ -189,8 +189,8 @@ abstract class ModuleController extends Controller
 
         $view = collect([
             "$this->viewPrefix.index",
-            "cms-toolkit::$this->moduleName.index",
-            "cms-toolkit::layouts.listing",
+            "twill::$this->moduleName.index",
+            "twill::layouts.listing",
         ])->first(function ($view) {
             return view()->exists($view);
         });
@@ -250,8 +250,8 @@ abstract class ModuleController extends Controller
 
         $view = collect([
             "$this->viewPrefix.form",
-            "cms-toolkit::$this->moduleName.form",
-            "cms-toolkit::layouts.form",
+            "twill::$this->moduleName.form",
+            "twill::layouts.form",
         ])->first(function ($view) {
             return view()->exists($view);
         });
@@ -984,13 +984,13 @@ abstract class ModuleController extends Controller
 
     protected function getNamespace()
     {
-        return $this->namespace ?? config('cms-toolkit.namespace');
+        return $this->namespace ?? config('twill.namespace');
     }
 
     protected function getRoutePrefix()
     {
         if ($this->request->route() != null) {
-            $routePrefix = ltrim(str_replace(config('cms-toolkit.admin_app_path'), '', $this->request->route()->getPrefix()), "/");
+            $routePrefix = ltrim(str_replace(config('twill.admin_app_path'), '', $this->request->route()->getPrefix()), "/");
             return str_replace("/", ".", $routePrefix);
         }
 

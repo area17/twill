@@ -6,8 +6,8 @@
 
 @php
     $availableBlocks = isset($blocks) ? collect($blocks)->map(function ($block) {
-        return config('cms-toolkit.block_editor.blocks.' . $block);
-    })->filter()->toArray() : config('cms-toolkit.block_editor.blocks');
+        return config('twill.block_editor.blocks.' . $block);
+    })->filter()->toArray() : config('twill.block_editor.blocks');
 @endphp
 
 @push('vuexStore')

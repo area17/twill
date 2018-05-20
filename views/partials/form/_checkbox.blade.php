@@ -6,7 +6,7 @@
 @endphp
 
 <a17-singlecheckbox
-    @include('cms-toolkit::partials.form.utils._field_name')
+    @include('twill::partials.form.utils._field_name')
     label="{{ $label ?? '' }}"
     :initial-value="{{ $default ? 'true' : 'false' }}"
     @if ($note) note='{{ $note }}' @endif

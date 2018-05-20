@@ -1,4 +1,4 @@
-@extends('cms-toolkit::layouts.main')
+@extends('twill::layouts.main')
 
 @section('appTypeClass', 'body--buckets')
 

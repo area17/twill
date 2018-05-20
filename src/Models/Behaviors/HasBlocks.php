@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\CmsToolkit\Models\Behaviors;
+namespace A17\Twill\Models\Behaviors;
 
-use A17\CmsToolkit\Models\Block;
+use A17\Twill\Models\Block;
 
 trait HasBlocks
 {
@@ -33,7 +33,7 @@ trait HasBlocks
 
     private function getBlockView($blockType, $blockViewMappings = [])
     {
-        $view = config('cms-toolkit.block_editor.block_views_path') . '.' . $blockType;
+        $view = config('twill.block_editor.block_views_path') . '.' . $blockType;
 
         if (array_key_exists($blockType, $blockViewMappings)) {
             $view = $blockViewMappings[$blockType];

@@ -11,6 +11,6 @@
 <footer class="footer">
     <div class="container">
         <span class="footer__copyright">&copy; {{ date('Y') }} &mdash; Made with <a href="https://twill.io" target="_blank" class="f--light-underlined" tabindex="0">Twill</a></span>
-        <span class="footer__version">Version {{ config('cms-toolkit.version', '1.0') }}</span>
+        <span class="footer__version">Version {{ config('twill.version', '1.0') }}</span>
     </div>
 </footer>

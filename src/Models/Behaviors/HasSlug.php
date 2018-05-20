@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Models\Behaviors;
+namespace A17\Twill\Models\Behaviors;
 
 use DB;
 
@@ -65,7 +65,7 @@ trait HasSlug
 
     public function updateOrNewSlug($slugParams, $restoring = false)
     {
-        if (in_array($slugParams['locale'], config('cms-toolkit.slug_utf8_languages', []))) {
+        if (in_array($slugParams['locale'], config('twill.slug_utf8_languages', []))) {
             $slugParams['slug'] = $this->getUtf8Slug($slugParams['slug']);
         } else {
             $slugParams['slug'] = str_slug($slugParams['slug']);

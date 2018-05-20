@@ -6,7 +6,7 @@
 
 <a17-locationfield
     label="{{ $label }}"
-    @include('cms-toolkit::partials.form.utils._field_name')
+    @include('twill::partials.form.utils._field_name')
     @if ($showMap) show-map @else :show-map="false" @endif
     @if ($openMap) open-map @endif
     @if ($inModal) :in-modal="true" @endif

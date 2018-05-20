@@ -1,11 +1,11 @@
 <?php
 
-namespace A17\CmsToolkit;
+namespace A17\Twill;
 
-use A17\CmsToolkit\Commands\Install;
+use A17\Twill\Commands\Install;
 use Illuminate\Support\ServiceProvider;
 
-class CmsToolkitInstallServiceProvider extends ServiceProvider
+class TwillInstallServiceProvider extends ServiceProvider
 {
     public function boot()
     {

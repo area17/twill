@@ -1,15 +1,15 @@
 <?php
 
-namespace A17\CmsToolkit\Commands;
+namespace A17\Twill\Commands;
 
-use A17\CmsToolkit\Models\Media;
+use A17\Twill\Models\Media;
 use DB;
 use Illuminate\Console\Command;
 use ImageService;
 
 class RefreshLQIP extends Command
 {
-    protected $signature = 'cms-toolkit:lqip {--all=0}';
+    protected $signature = 'twill:lqip {--all=0}';
 
     protected $description = 'Refresh Low Quality Image Placeholders.';
 

@@ -20,7 +20,7 @@
 
 <a17-singleselect
     label="{{ $label }}"
-    @include('cms-toolkit::partials.form.utils._field_name')
+    @include('twill::partials.form.utils._field_name')
     :options="{{ json_encode($options) }}"
     @if ($default) selected="{{ $default }}" @endif
     :grid="false"

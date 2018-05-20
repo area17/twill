@@ -1,16 +1,16 @@
 <?php
 
-namespace A17\CmsToolkit\Services\MediaLibrary;
+namespace A17\Twill\Services\MediaLibrary;
 
 trait ImageServiceDefaults
 {
     public function getSocialFallbackUrl()
     {
-        if ($id = config("cms-toolkit.seo.image_default_id")) {
+        if ($id = config("twill.seo.image_default_id")) {
             return $this->getSocialUrl($id);
         }
 
-        return config("cms-toolkit.seo.image_local_fallback");
+        return config("twill.seo.image_local_fallback");
     }
 
     public function getTransparentFallbackUrl()

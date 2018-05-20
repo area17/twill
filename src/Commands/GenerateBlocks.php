@@ -1,13 +1,13 @@
 <?php
 
-namespace A17\CmsToolkit\Commands;
+namespace A17\Twill\Commands;
 
 use File;
 use Illuminate\Console\Command;
 
 class GenerateBlocks extends Command
 {
-    protected $signature = 'cms-toolkit:blocks';
+    protected $signature = 'twill:blocks';
 
     protected $description = "Generate blocks as single file Vue components from blade views";
 
@@ -19,7 +19,7 @@ class GenerateBlocks extends Command
 
             $vueBlockTemplate = view('admin.blocks.' . $blockName, ['renderForBlocks' => true])->render();
 
-            $vueBlockContent = view('cms-toolkit::blocks.builder', [
+            $vueBlockContent = view('twill::blocks.builder', [
                 'render' => $this->sanitize($vueBlockTemplate),
             ])->render();
 

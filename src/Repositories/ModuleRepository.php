@@ -1,9 +1,9 @@
 <?php
 
-namespace A17\CmsToolkit\Repositories;
+namespace A17\Twill\Repositories;
 
-use A17\CmsToolkit\Models\Behaviors\Sortable;
-use A17\CmsToolkit\Repositories\Behaviors\HandleDates;
+use A17\Twill\Models\Behaviors\Sortable;
+use A17\Twill\Repositories\Behaviors\HandleDates;
 use DB;
 use Log;
 use PDO;
@@ -576,7 +576,7 @@ abstract class ModuleRepository
             $model = ucfirst(str_singular($relation));
         }
 
-        return app(config('cms-toolkit.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
+        return app(config('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
     }
 
     private function getLikeOperator()

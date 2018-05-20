@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\CmsToolkit\Models\Translations;
+namespace A17\Twill\Models\Translations;
 
-use A17\CmsToolkit\Models\Model;
+use A17\Twill\Models\Model;
 
 class SettingTranslation extends Model
 {

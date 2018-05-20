@@ -1,4 +1,4 @@
-@extends('cms-toolkit::layouts.main')
+@extends('twill::layouts.main')
 
 @php
     $emptyMessage = $emptyMessage ?? "You don't have any activity yet.";

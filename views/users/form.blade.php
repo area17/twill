@@ -1,4 +1,4 @@
-@extends('cms-toolkit::layouts.form', [
+@extends('twill::layouts.form', [
     'contentFieldsetLabel' => 'User settings',
     'editModalTitle' => 'Edit user name'
 ])
@@ -24,7 +24,7 @@
         @endif
     @endcan
 
-    @if(config('cms-toolkit.enabled.users-image'))
+    @if(config('twill.enabled.users-image'))
         @formField('medias', [
             'name' => 'profile',
             'label' => 'Profile image'

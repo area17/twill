@@ -1,9 +1,8 @@
 <?php
 
-namespace A17\CmsToolkit\Models;
+namespace A17\Twill\Models;
 
-use A17\CmsToolkit\Models\Behaviors\HasPresenter;
-use Auth;
+use A17\Twill\Models\Behaviors\HasPresenter;
 use Carbon\Carbon;
 use Cartalyst\Tags\TaggableInterface;
 use Cartalyst\Tags\TaggableTrait;

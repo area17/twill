@@ -1,9 +1,9 @@
 <?php
 
-namespace A17\CmsToolkit\Models;
+namespace A17\Twill\Models;
 
-use A17\CmsToolkit\Models\Behaviors\HasTranslation;
-use A17\CmsToolkit\Models\Model;
+use A17\Twill\Models\Behaviors\HasTranslation;
+use A17\Twill\Models\Model;
 
 class Setting extends Model
 {
@@ -24,6 +24,6 @@ class Setting extends Model
 
     public function getTranslationModelNameDefault()
     {
-        return "A17\CmsToolkit\Models\Translations\SettingTranslation";
+        return "A17\Twill\Models\Translations\SettingTranslation";
     }
 }

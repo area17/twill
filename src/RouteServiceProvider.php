@@ -1,11 +1,11 @@
 <?php
 
-namespace A17\CmsToolkit;
+namespace A17\Twill;
 
-use A17\CmsToolkit\Http\Middleware\Impersonate;
-use A17\CmsToolkit\Http\Middleware\NoDebugBar;
-use A17\CmsToolkit\Http\Middleware\RedirectIfAuthenticated;
-use A17\CmsToolkit\Http\Middleware\ValidateBackHistory;
+use A17\Twill\Http\Middleware\Impersonate;
+use A17\Twill\Http\Middleware\NoDebugBar;
+use A17\Twill\Http\Middleware\RedirectIfAuthenticated;
+use A17\Twill\Http\Middleware\ValidateBackHistory;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
@@ -13,7 +13,7 @@ use Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    protected $namespace = 'A17\CmsToolkit\Http\Controllers';
+    protected $namespace = 'A17\Twill\Http\Controllers';
 
     public function boot()
     {
@@ -25,11 +25,11 @@ class RouteServiceProvider extends ServiceProvider
     public function map(Router $router)
     {
         $router->group([
-            'namespace' => config('cms-toolkit.namespace', 'App') . '\Http\Controllers\Admin',
-            'domain' => config('cms-toolkit.admin_app_url'),
+            'namespace' => config('twill.namespace', 'App') . '\Http\Controllers\Admin',
+            'domain' => config('twill.admin_app_url'),
             'as' => 'admin.',
-            'middleware' => [config('cms-toolkit.admin_middleware_group', 'web')],
-            'prefix' => rtrim(ltrim(config('cms-toolkit.admin_app_path'), '/'), '/'),
+            'middleware' => [config('twill.admin_middleware_group', 'web')],
+            'prefix' => rtrim(ltrim(config('twill.admin_app_path'), '/'), '/'),
         ], function ($router) {
             $router->group(['middleware' => ['auth', 'impersonate', 'validateBackHistory']], function ($router) {
                 require base_path('routes/admin.php');
@@ -38,10 +38,10 @@ class RouteServiceProvider extends ServiceProvider
 
         $router->group([
             'namespace' => $this->namespace . '\Admin',
-            'domain' => config('cms-toolkit.admin_app_url'),
+            'domain' => config('twill.admin_app_url'),
             'as' => 'admin.',
-            'middleware' => [config('cms-toolkit.admin_middleware_group', 'web')],
-            'prefix' => rtrim(ltrim(config('cms-toolkit.admin_app_path'), '/'), '/'),
+            'middleware' => [config('twill.admin_middleware_group', 'web')],
+            'prefix' => rtrim(ltrim(config('twill.admin_app_path'), '/'), '/'),
         ],
             function ($router) {
                 $router->group(['middleware' => ['auth', 'impersonate', 'validateBackHistory']], function ($router) {
@@ -58,11 +58,11 @@ class RouteServiceProvider extends ServiceProvider
             }
         );
 
-        if (config('cms-toolkit.templates_on_frontend_domain')) {
+        if (config('twill.templates_on_frontend_domain')) {
             $router->group([
                 'namespace' => $this->namespace . '\Admin',
                 'domain' => config('app.url'),
-                'middleware' => [config('cms-toolkit.admin_middleware_group', 'web')],
+                'middleware' => [config('twill.admin_middleware_group', 'web')],
             ],
                 function ($router) {
                     $router->group(['middleware' => array_merge(['noDebugBar'], (app()->environment('production') ? ['auth'] : []))], function ($router) {
@@ -123,8 +123,8 @@ class RouteServiceProvider extends ServiceProvider
 
             $groupPrefix = trim(str_replace('/', '.', Route::getLastGroupPrefix()), '.');
 
-            if (!empty(config('cms-toolkit.admin_app_path'))) {
-                $groupPrefix = ltrim(str_replace(config('cms-toolkit.admin_app_path'), '', $groupPrefix), '.');
+            if (!empty(config('twill.admin_app_path'))) {
+                $groupPrefix = ltrim(str_replace(config('twill.admin_app_path'), '', $groupPrefix), '.');
             }
 
             $customRoutePrefix = !empty($groupPrefix) ? "{$groupPrefix}.{$slug}" : "{$slug}";

@@ -1,9 +1,9 @@
 <?php
 
-namespace A17\CmsToolkit\Repositories;
+namespace A17\Twill\Repositories;
 
-use A17\CmsToolkit\Models\Media;
-use A17\CmsToolkit\Repositories\Behaviors\HandleTags;
+use A17\Twill\Models\Media;
+use A17\Twill\Repositories\Behaviors\HandleTags;
 use ImageService;
 use Storage;
 
@@ -27,8 +27,8 @@ class MediaRepository extends ModuleRepository
         if (($object = $this->model->find($id)) != null) {
             if ($object->canDeleteSafely()) {
                 $storageId = $object->uuid;
-                if ($object->delete() && config('cms-toolkit.media_library.cascade_delete')) {
-                    Storage::disk(config('cms-toolkit.media_library.disk'))->delete($storageId);
+                if ($object->delete() && config('twill.media_library.cascade_delete')) {
+                    Storage::disk(config('twill.media_library.disk'))->delete($storageId);
                 }
                 return true;
             }

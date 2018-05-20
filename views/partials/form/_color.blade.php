@@ -1,6 +1,6 @@
 <a17-colorfield
     label="{{ $label }}"
-    @include('cms-toolkit::partials.form.utils._field_name')
+    @include('twill::partials.form.utils._field_name')
     in-store="value"
 ></a17-colorfield>
 

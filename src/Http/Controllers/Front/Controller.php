@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\CmsToolkit\Http\Controllers\Front;
+namespace A17\Twill\Http\Controllers\Front;
 
-use A17\CmsToolkit\Http\Controllers\Front\Helpers\Seo;
+use A17\Twill\Http\Controllers\Front\Helpers\Seo;
 use Illuminate\Routing\Controller as BaseController;
 use View;
 
@@ -14,8 +14,8 @@ class Controller extends BaseController
     {
         $this->seo = new Seo;
 
-        $this->seo->title = config('cms-toolkit.seo.site_title');
-        $this->seo->description = config('cms-toolkit.seo.site_desc');
+        $this->seo->title = config('twill.seo.site_title');
+        $this->seo->description = config('twill.seo.site_desc');
         $this->seo->width = 900;
         $this->seo->height = 470;
 

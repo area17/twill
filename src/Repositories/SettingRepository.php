@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\CmsToolkit\Repositories;
+namespace A17\Twill\Repositories;
 
-use A17\CmsToolkit\Models\Setting;
+use A17\Twill\Models\Setting;
 
 class SettingRepository
 {

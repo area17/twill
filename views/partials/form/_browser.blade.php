@@ -9,7 +9,7 @@
 
 <a17-inputframe label="{{ $label }}" name="browsers.{{ $name }}">
     <a17-browserfield
-        @include('cms-toolkit::partials.form.utils._field_name')
+        @include('twill::partials.form.utils._field_name')
         item-label="{{ $itemLabel }}"
         :max="{{ $max }}"
         endpoint="{{ $endpoint }}"

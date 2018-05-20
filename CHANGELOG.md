@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to `laravel-cms-toolkit` will be documented in this file.
+All notable changes to `twill` will be documented in this file.
 
 ## 1.0.13 2018-04-20
 
@@ -175,7 +175,7 @@ It also gives up a slight performance boost in HMR mode when developing.
 
 - Full-screen block editor with left side editing and right side drag and drop-able previews
 - Blocks can now be created as regular forms using @formField Blade directives
-- Vue.js blocks components generator: php artisan cms-toolkit:blocks
+- Vue.js blocks components generator: php artisan twill:blocks
 - Form layout helpers: collapsed fields, columns, inline checkboxes and radios, connected fields
 - Listings status filters (published/mine/draft/trash)
 - Per CMS user listings options saved in local storage (items per page, displayed columns)

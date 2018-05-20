@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Http\Requests\Admin;
+namespace A17\Twill\Http\Requests\Admin;
 
 class UserRequest extends Request
 {

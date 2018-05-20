@@ -3,7 +3,7 @@
 namespace App\Models;
 
 {{modelImports}}
-use A17\CmsToolkit\Models\Model;
+use A17\Twill\Models\Model;
 
 class {{modelClassName}} extends Model {{modelImplements}}
 {

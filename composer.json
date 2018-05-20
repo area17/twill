@@ -5,7 +5,7 @@
   "description": "A collection of Laravel helpers, traits and classes to quickly create custom content management apps for our clients",
   "keywords": [
     "A17",
-    "cms-toolkit",
+    "twill",
     "laravel",
     "cms"
   ],
@@ -67,7 +67,7 @@
   },
   "autoload": {
     "psr-4": {
-      "A17\\CmsToolkit\\": "src/"
+      "A17\\Twill\\": "src/"
     }
   },
   "minimum-stability": "stable"

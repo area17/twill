@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Commands;
+namespace A17\Twill\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class ModuleMake extends Command
 {
-    protected $signature = 'cms-toolkit:module {moduleName}
+    protected $signature = 'twill:module {moduleName}
         {--B|hasBlocks}
         {--T|hasTranslation}
         {--S|hasSlug}
@@ -150,12 +150,12 @@ class ModuleMake extends Command
 
         $activeModelTraitsString = empty($activeModelTraits) ? '' : 'use ' . rtrim(implode(', ', $activeModelTraits), ', ') . ';';
 
-        $activeModelTraitsImports = empty($activeModelTraits) ? '' : "use A17\CmsToolkit\Models\Behaviors\\" . implode(";\nuse A17\CmsToolkit\Models\Behaviors\\", $activeModelTraits) . ";";
+        $activeModelTraitsImports = empty($activeModelTraits) ? '' : "use A17\Twill\Models\Behaviors\\" . implode(";\nuse A17\Twill\Models\Behaviors\\", $activeModelTraits) . ";";
 
         $activeModelImplements = $sortable ? 'implements Sortable' : '';
 
         if ($sortable) {
-            $activeModelTraitsImports .= "\nuse A17\CmsToolkit\Models\Behaviors\Sortable;";
+            $activeModelTraitsImports .= "\nuse A17\Twill\Models\Behaviors\Sortable;";
         }
 
         $stub = str_replace(['{{modelClassName}}', '{{modelTraits}}', '{{modelImports}}', '{{modelImplements}}'], [$modelClassName, $activeModelTraitsString, $activeModelTraitsImports, $activeModelImplements], $this->files->get(__DIR__ . '/stubs/model.stub'));
@@ -183,7 +183,7 @@ class ModuleMake extends Command
 
         $activeRepositoryTraitsString = empty($activeRepositoryTraits) ? '' : 'use ' . (empty($activeRepositoryTraits) ? "" : rtrim(implode(', ', $activeRepositoryTraits), ', ') . ';');
 
-        $activeRepositoryTraitsImports = empty($activeRepositoryTraits) ? '' : "use A17\CmsToolkit\Repositories\Behaviors\\" . implode(";\nuse A17\CmsToolkit\Repositories\Behaviors\\", $activeRepositoryTraits) . ";";
+        $activeRepositoryTraitsImports = empty($activeRepositoryTraits) ? '' : "use A17\Twill\Repositories\Behaviors\\" . implode(";\nuse A17\Twill\Repositories\Behaviors\\", $activeRepositoryTraits) . ";";
 
         $stub = str_replace(['{{repositoryClassName}}', '{{modelName}}', '{{repositoryTraits}}', '{{repositoryImports}}'], [$repositoryClassName, $modelName, $activeRepositoryTraitsString, $activeRepositoryTraitsImports], $this->files->get(__DIR__ . '/stubs/repository.stub'));
 

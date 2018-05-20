@@ -1,14 +1,14 @@
 <?php
 
-namespace A17\CmsToolkit\Http\Controllers\Admin;
+namespace A17\Twill\Http\Controllers\Admin;
 
-use A17\CmsToolkit\Models\Enums\UserRole;
+use A17\Twill\Models\Enums\UserRole;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 
 class UserController extends ModuleController
 {
-    protected $namespace = 'A17\CmsToolkit';
+    protected $namespace = 'A17\Twill';
 
     protected $moduleName = 'users';
 
@@ -56,7 +56,7 @@ class UserController extends ModuleController
         $this->middleware('can:edit-user,user', ['only' => ['store', 'edit', 'update']]);
         $this->middleware('can:publish-user', ['only' => ['publish']]);
 
-        if (config('cms-toolkit.enabled.users-image')) {
+        if (config('twill.enabled.users-image')) {
             $this->indexColumns = [
                 'image' => [
                     'title' => 'Image',

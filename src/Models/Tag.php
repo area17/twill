@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Models;
+namespace A17\Twill\Models;
 
 use Cartalyst\Tags\IlluminateTag;
 

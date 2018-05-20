@@ -13,15 +13,15 @@
                 @endcan
             @endforeach
         </ul>
-        @if (config('cms-toolkit.enabled.media-library') || config('cms-toolkit.enabled.file-library') || config('cms-toolkit.enabled.site-link'))
+        @if (config('twill.enabled.media-library') || config('twill.enabled.file-library') || config('twill.enabled.site-link'))
             <ul class="header__items">
                 @can('list')
-                    @if (config('cms-toolkit.enabled.media-library') || config('cms-toolkit.enabled.file-library'))
+                    @if (config('twill.enabled.media-library') || config('twill.enabled.file-library'))
                         <li class="header__item"><a href="#" data-medialib-btn>Media Library</a></li>
                     @endif
                 @endcan
-                @if (config('cms-toolkit.enabled.site-link'))
-                    <li class="header__item"><a href="{{ route(config('cms-toolkit.frontend.home_route_name')) }}" target="_blank">Open live site &#8599;</a></li>
+                @if (config('twill.enabled.site-link'))
+                    <li class="header__item"><a href="{{ route(config('twill.frontend.home_route_name')) }}" target="_blank">Open live site &#8599;</a></li>
                 @endif
             </ul>
         @endif

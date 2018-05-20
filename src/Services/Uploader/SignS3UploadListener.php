@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Services\Uploader;
+namespace A17\Twill\Services\Uploader;
 
 interface SignS3UploadListener
 {

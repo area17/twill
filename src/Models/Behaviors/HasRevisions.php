@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Models\Behaviors;
+namespace A17\Twill\Models\Behaviors;
 
 trait HasRevisions
 {

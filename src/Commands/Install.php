@@ -1,13 +1,13 @@
 <?php
 
-namespace A17\CmsToolkit\Commands;
+namespace A17\Twill\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 
 class Install extends Command
 {
-    protected $signature = 'cms-toolkit:install';
+    protected $signature = 'twill:install';
 
     protected $description = 'Install Twill into a default Laravel application';
 
@@ -45,8 +45,8 @@ class Install extends Command
     private function addServiceProvider()
     {
         $fileToReplace = base_path('config/app.php');
-        $lineToReplace = 'A17\CmsToolkit\CmsToolkitInstallServiceProvider::class,';
-        $newLine = 'A17\CmsToolkit\CmsToolkitServiceProvider::class,';
+        $lineToReplace = 'A17\Twill\TwillInstallServiceProvider::class,';
+        $newLine = 'A17\Twill\TwillServiceProvider::class,';
         $this->replaceAndSave($fileToReplace, $lineToReplace, $newLine);
     }
 

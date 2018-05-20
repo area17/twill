@@ -8,7 +8,7 @@
 
 <a17-datepicker
     label="{{ $label }}"
-    @include('cms-toolkit::partials.form.utils._field_name')
+    @include('twill::partials.form.utils._field_name')
     place-holder="{{ $placeholder or $label }}"
     @if ($withTime) enable-time @endif
     @if ($allowInput) allow-input @endif

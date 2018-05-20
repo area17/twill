@@ -21,7 +21,7 @@
         type="a17-textfield"
         :attributes="{
             label: '{{ $label }}',
-            @include('cms-toolkit::partials.form.utils._field_name', ['asAttributes' => true])
+            @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
             type: '{{ $type }}',
             @if ($required) required: true, @endif
             @if ($note) note: '{{ $note }}', @endif
@@ -40,7 +40,7 @@
 @else
     <a17-textfield
         label="{{ $label }}"
-        @include('cms-toolkit::partials.form.utils._field_name')
+        @include('twill::partials.form.utils._field_name')
         type="{{ $type }}"
         @if ($required) :required="true" @endif
         @if ($note) note="{{ $note }}" @endif

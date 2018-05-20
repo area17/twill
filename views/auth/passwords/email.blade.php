@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html dir="ltr" lang="en-US">
     <head>
-        @include('cms-toolkit::partials.head')
+        @include('twill::partials.head')
     </head>
     <body class="env env--{{ app()->environment() }}">
         <div class="a17 a17--login">
@@ -20,7 +20,7 @@
                     <input class="login__button" type="submit" value="Send password reset link">
                 </form>
             </section>
-            @include('cms-toolkit::partials.footer')
+            @include('twill::partials.footer')
         </div>
     </body>
 </html>

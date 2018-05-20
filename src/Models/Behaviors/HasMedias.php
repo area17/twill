@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\CmsToolkit\Models\Behaviors;
+namespace A17\Twill\Models\Behaviors;
 
-use A17\CmsToolkit\Models\Media;
+use A17\Twill\Models\Media;
 use ImageService;
 
 trait HasMedias

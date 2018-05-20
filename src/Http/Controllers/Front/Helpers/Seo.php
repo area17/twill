@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Http\Controllers\Front\Helpers;
+namespace A17\Twill\Http\Controllers\Front\Helpers;
 
 class Seo
 {

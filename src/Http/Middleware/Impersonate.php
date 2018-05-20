@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Http\Middleware;
+namespace A17\Twill\Http\Middleware;
 
 use Auth;
 use Closure;

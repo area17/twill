@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Http\Controllers\Admin;
+namespace A17\Twill\Http\Controllers\Admin;
 
 use Analytics;
 use Spatie\Analytics\Period;
@@ -9,9 +9,9 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $modules = collect(config('cms-toolkit.dashboard.modules'));
+        $modules = collect(config('twill.dashboard.modules'));
 
-        return view('cms-toolkit::layouts.dashboard', [
+        return view('twill::layouts.dashboard', [
             'myActivityData' => [
                 [
                     'id' => 10,
@@ -209,7 +209,7 @@ class DashboardController extends Controller
             'today',
             'yesterday',
             'week',
-            'month'
+            'month',
         ])->mapWithKeys(function ($period) use ($statsByDate) {
             $stats = $this->getPeriodStats($period, $statsByDate);
             return [$period => [
@@ -334,6 +334,6 @@ class DashboardController extends Controller
 
     private function getRepository($module)
     {
-        return app(config('cms-toolkit.namespace') . "\Repositories\\" . ucfirst(str_singular($module)) . "Repository");
+        return app(config('twill.namespace') . "\Repositories\\" . ucfirst(str_singular($module)) . "Repository");
     }
 }

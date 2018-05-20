@@ -9,7 +9,7 @@
     :attributes="{
         label: '{{ $label }}',
         itemLabel: '{{ $itemLabel }}',
-        @include('cms-toolkit::partials.form.utils._field_name', ['asAttributes' => true])
+        @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
         note: '{{ $note }}',
         max: {{ $max }}
     }"

@@ -64,7 +64,7 @@ Add Twill Install service provider in `config/app.php` (before Application Servi
 
 'providers' => [
     ...
-    A17\CmsToolkit\CmsToolkitInstallServiceProvider::class,
+    A17\Twill\TwillInstallServiceProvider::class,
 ];
 ```
 
@@ -108,13 +108,13 @@ APP_URL=client.dev.a17.io
 Run the install command
 
 ```bash
-php artisan cms-toolkit:install
+php artisan twill:install
 ```
 
 Run the setup command (it will migrate your database schema so run it where your database is accessible, ie. in vagrant)
 
 ```bash
-php artisan cms-toolkit:setup
+php artisan twill:setup
 ```
 
 Setup your list of available languages for translated fields in `config/translatable.php` (without nested locales).
@@ -200,7 +200,7 @@ By default, you shouldn't have to modify anything if you want to use the default
 
 The only thing you would have to do is setting up the necessary environment variables in your `.env` file.
 
-You can override any of these configurations values independendtly from the empty `config/cms-toolkit.php` file that was published in your app when you ran the `cms-toolkit:install` command.
+You can override any of these configurations values independendtly from the empty `config/twill.php` file that was published in your app when you ran the `twill:install` command.
 
 ```php
 <?php
@@ -272,7 +272,7 @@ return [
     | Set cascade_delete to true to delete files on the storage too when
     | deleting from the media library.
     | If using the 'local' endpoint type, define a 'local_path' to store files.
-    | Supported image service: 'A17\CmsToolkit\Services\MediaLibrary\Imgix'
+    | Supported image service: 'A17\Twill\Services\MediaLibrary\Imgix'
     |
      */
     'media_library' => [
@@ -280,7 +280,7 @@ return [
         'endpoint_type' => env('MEDIA_LIBRARY_ENDPOINT_TYPE', 's3'),
         'cascade_delete' => env('MEDIA_LIBRARY_CASCADE_DELETE', false),
         'local_path' => env('MEDIA_LIBRARY_LOCAL_PATH'),
-        'image_service' => env('MEDIA_LIBRARY_IMAGE_SERVICE', 'A17\CmsToolkit\Services\MediaLibrary\Imgix'),
+        'image_service' => env('MEDIA_LIBRARY_IMAGE_SERVICE', 'A17\Twill\Services\MediaLibrary\Imgix'),
         'acl' => env('MEDIA_LIBRARY_ACL', 'private'),
         'filesize_limit' => env('MEDIA_LIBRARY_FILESIZE_LIMIT', 50),
         'allowed_extensions' => ['svg', 'jpg', 'gif', 'png', 'jpeg'],
@@ -345,7 +345,7 @@ return [
       'endpoint_type' => env('FILE_LIBRARY_ENDPOINT_TYPE', 's3'),
       'cascade_delete' => env('FILE_LIBRARY_CASCADE_DELETE', false),
       'local_path' => env('FILE_LIBRARY_LOCAL_PATH'),
-      'file_service' => env('FILE_LIBRARY_FILE_SERVICE', 'A17\CmsToolkit\Services\FileLibrary\Disk'),
+      'file_service' => env('FILE_LIBRARY_FILE_SERVICE', 'A17\Twill\Services\FileLibrary\Disk'),
       'acl' => env('FILE_LIBRARY_ACL', 'public-read'),
       'filesize_limit' => env('FILE_LIBRARY_FILESIZE_LIMIT', 50),
       'allowed_extensions' => [],
@@ -534,7 +534,7 @@ Route::group(['prefix' => 'work'], function () {
 You can generate all the files needed for a new CRUD using the generator:
 
 ```bash
-php artisan cms-toolkit:module yourPluralModuleName
+php artisan twill:module yourPluralModuleName
 ```
 
 The command has a couple of options :
@@ -659,7 +659,7 @@ For fields that should always be saved to false in the database when not sent by
 
 Depending on the features you need on your model, include the availables traits and configure their respective options:
 
-- HasPosition: implement the `A17\CmsToolkit\Models\Behaviors\Sortable` interface and add a position field to your fillables.
+- HasPosition: implement the `A17\Twill\Models\Behaviors\Sortable` interface and add a position field to your fillables.
 
 - HasTranslation: add translated fields in the `translatedAttributes` array and in the `fillable` array of the generated translatable model in `App/Models/Translations` (always keep the `active` and `locale` fields).
 
@@ -839,7 +839,7 @@ public $filesParams = ['project_pdf']; // a list of file roles
     protected $defaultFilters = ['search' => 'title|search'];
 ```
 
-You can also override all actions and internal functions, checkout the ModuleController source in `A17\CmsToolkit\Http\Controllers\Admin\ModuleController`.
+You can also override all actions and internal functions, checkout the ModuleController source in `A17\Twill\Http\Controllers\Admin\ModuleController`.
 
 #### Form Requests
 Classic Laravel 5 [form request validation](https://laravel.com/docs/5.5/validation#form-request-validation).
@@ -1040,7 +1040,7 @@ public function hydrate($object, $fields)
 Wrap them into the following in your module `form` view (`resources/views/admin/moduleName/form.blade.php`):
 
 ```php
-@extends('cms-toolkit::layouts.form')
+@extends('twill::layouts.form')
 @section('contentFields')
     @formField('...', [...])
     ...
@@ -1052,7 +1052,7 @@ The idea of the `contentFields` section is to contain the most important fields 
 If you have attributes, relationships, extra images, file attachments or repeaters, you'll want to add a `fieldsets` section after the `contentFields` section and use the `a17-fieldset` Vue component to create new ones like in the following example:
 
 ```php
-@extends('cms-toolkit::layouts.form', [
+@extends('twill::layouts.form', [
     'additionalFieldsets' => [
         ['fieldset' => 'attributes', 'label' => 'Attributes'],
     ]
@@ -1429,7 +1429,7 @@ Once a block is created, it can be used/added to any module by adding the corres
 In order to add a block editor you need to add the `block_editor` field to your module form. e.g.:
 
 ```php
-@extends('cms-toolkit::layouts.form')
+@extends('twill::layouts.form')
 
 @section('contentFields')
     @formField('input', [
@@ -1465,11 +1465,11 @@ filename: ```admin/blocks/quote.blade.php```
 
 Once the form is created an _artisan_ task needs to be run to generate the _Vue_ component for this block.
 
-`php artisan cms-toolkit:blocks`
+`php artisan twill:blocks`
 
 Example output:
 ```shell
-$ php artisan cms-toolkit:blocks
+$ php artisan twill:blocks
 Starting to scan block views directory...
 Block Quote generated successfully
 All blocks have been generated!
@@ -1500,7 +1500,7 @@ filename: ```resources/assets/js/blocks/BlockQuote.vue```
 With that the *block* is ready to be used on the form, it just needs to be enabled in the CMS configuration.
 For it a `block_editor` key is required and inside you can define the list of `blocks` available in your project.
 
-filename: ```config/cms-toolkit.php```
+filename: ```config/twill.php```
 
 ```php
     'block_editor' => [
@@ -1541,8 +1541,8 @@ filename: ```app/Models/Article.php```
 
 namespace App\Models;
 
-use A17\CmsToolkit\Models\Behaviors\HasBlocks;
-use A17\CmsToolkit\Models\Model;
+use A17\Twill\Models\Behaviors\HasBlocks;
+use A17\Twill\Models\Model;
 
 class Article extends Model
 {
@@ -1558,8 +1558,8 @@ filename: ```app/Repositories/ArticleRepository.php```
 
 namespace App\Repositories;
 
-use A17\CmsToolkit\Repositories\Behaviors\HandleBlocks;
-use A17\CmsToolkit\Repositories\ModuleRepository;
+use A17\Twill\Repositories\Behaviors\HandleBlocks;
+use A17\Twill\Repositories\ModuleRepository;
 use App\Models\Article;
 
 class ArticleRepository extends ModuleRepository
@@ -1573,7 +1573,7 @@ class ArticleRepository extends ModuleRepository
 ##### Common Errors
 - Make sure your project have the blocks table migration. If not, you can find the `create_blocks_table` migration in the toolkit's source in `migrations`.
 
-- Not running the _cms-toolkit:blocks_ task.
+- Not running the _twill:blocks_ task.
 
 - Not adding the *block* to the configuration.
 
@@ -1586,7 +1586,7 @@ On the Article (module) form we have:
 
 filename: ```views/admin/articles/form.blade.php```
 ```php
-@extends('cms-toolkit::layouts.form')
+@extends('twill::layouts.form')
 
 @section('contentFields')
     @formField('input', [
@@ -1607,7 +1607,7 @@ filename: ```views/admin/articles/form.blade.php```
 ```
 
 
-- Add it on the config/cms-toolkit.php
+- Add it on the config/twill.php
 ```php
     'block_editor' => [
         'blocks' => [
@@ -1639,7 +1639,7 @@ filename: ```views/admin/articles/form.blade.php```
   ])
 ```
 
-- Add it on the config/cms-toolkit.php on the repeaters section
+- Add it on the config/twill.php on the repeaters section
 
 ```php
     'block_editor' => [
@@ -1704,7 +1704,7 @@ On the Article(entity) form we have:
 
 filename: ```views/admin/articles/form.blade.php```
 ```php
-@extends('cms-toolkit::layouts.form')
+@extends('twill::layouts.form')
 
 @section('contentFields')
     @formField('input', [
@@ -1729,7 +1729,7 @@ filename: ```views/admin/blocks/products.blade.php```
     ])
 ```
 
-- Define the block in the configuration like any other block in the config/cms-toolkit.php.
+- Define the block in the configuration like any other block in the config/twill.php.
 ```php
     'blocks' => [
         ...
@@ -1804,11 +1804,11 @@ To give an exemple:
 >![screenshot](_media/medialibrary.png)
 
 #### Storage provider
-The media and files libraries currently support S3 and local storage. Head over to the `cms-toolkit` configuration file to setup your storage disk and configurations. Also check out the S3 direct upload section of this documentation to setup your IAM users and bucket if you want to use S3 as a storage provider.
+The media and files libraries currently support S3 and local storage. Head over to the `twill` configuration file to setup your storage disk and configurations. Also check out the S3 direct upload section of this documentation to setup your IAM users and bucket if you want to use S3 as a storage provider.
 
 #### Image Rendering Service
 This package currently ship with only one rendering service, [Imgix](https://www.imgix.com/). It is very simple to implement another one like [Cloudinary](http://cloudinary.com/) or even a local service like [Glide](http://glide.thephpleague.com/) or [Croppa](https://github.com/BKWLD/croppa).
-You would have to implement the `ImageServiceInterface` and modify your `cms-toolkit` configuration value `media_library.image_service` with your implementation class.
+You would have to implement the `ImageServiceInterface` and modify your `twill` configuration value `media_library.image_service` with your implementation class.
 Here are the methods you would have to implement:
 
 ```php
@@ -1979,7 +1979,7 @@ For improved security, modify the bucket CORS configuration to accept uploads re
 
 ### Users management
 
-Authentication and authorization are provided by default in Laravel. This package simply leverages it and configure the views with the A17 CMS UI Toolkit for you. By default, users can login at `/login` and also reset their password through that screen. New users have to start by resetting their password before initial access to the admin application. You should redirect users to anywhere you want in your application after they login. The cms-toolkit configuration file has an option for you to change the default redirect path (`auth_login_redirect_path`).
+Authentication and authorization are provided by default in Laravel. This package simply leverages it and configure the views with the A17 CMS UI Toolkit for you. By default, users can login at `/login` and also reset their password through that screen. New users have to start by resetting their password before initial access to the admin application. You should redirect users to anywhere you want in your application after they login. The twill configuration file has an option for you to change the default redirect path (`auth_login_redirect_path`).
 
 #### Roles
 The package currently only provides 3 different roles:
@@ -2018,7 +2018,7 @@ You should follow the Laravel documentation regarding [authorization](https://la
 
 Buckets allow you to provide admins with featured content management screens. You can add multiple pages of buckets anywhere you'd like in your CMS navigation and, in each page, multiple buckets with differents rules and accepted modules. In the following example, we will assume that our application has a Guide model and that we want to feature guides on the homepage of our site. Our site's homepage has multiple zones for featured guides: a primary zone, that shows only one featured guide, and a secondary zone, that shows guides in a carousel of maximum 10 items.
 
-First, you will need to enable the buckets feature. In `config/cms-toolkit.php`:
+First, you will need to enable the buckets feature. In `config/twill.php`:
 ```php
 'enabled' => [
     'buckets' => true,
@@ -2152,7 +2152,7 @@ By default, the index is ordered by and search in the `title` column. Use the `$
 Only keep `@formField` instructions, remove everything else and wrap them into the following:
 
 ```php
-@extends('cms-toolkit::layouts.form')
+@extends('twill::layouts.form')
 @section('contentFields')
     @formField('input', [...])
     ...

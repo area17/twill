@@ -21,7 +21,7 @@
 @if ($unpack ?? false)
     <a17-singleselect
         label="{{ $label }}"
-        @include('cms-toolkit::partials.form.utils._field_name')
+        @include('twill::partials.form.utils._field_name')
         :options='{{ json_encode($options) }}'
         @if ($default) selected="{{ $default }}" @endif
         @if ($required) :required="true" @endif
@@ -42,7 +42,7 @@
 @elseif ($native ?? false)
     <a17-select
         label="{{ $label }}"
-        @include('cms-toolkit::partials.form.utils._field_name')
+        @include('twill::partials.form.utils._field_name')
         :options='{{ json_encode($options) }}'
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
         @if ($default) selected="{{ $default }}" @endif
@@ -65,7 +65,7 @@
 @else
     <a17-vselect
         label="{{ $label }}"
-        @include('cms-toolkit::partials.form.utils._field_name')
+        @include('twill::partials.form.utils._field_name')
         :options='{{ json_encode($options) }}'
         @if ($emptyText ?? false) empty-text="{{ $emptyText }}" @endif
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif

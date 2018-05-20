@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html dir="ltr" lang="en-US">
     <head>
-        @include('cms-toolkit::partials.head')
+        @include('twill::partials.head')
     </head>
     <body class="env env--{{ app()->environment() }} @yield('appTypeClass')">
         <div class="svg-sprite">
@@ -47,7 +47,7 @@
             <section class="main">
                 <div class="app" id="app" v-cloak>
                     @yield('content')
-                    @if (config('cms-toolkit.enabled.media-library') || config('cms-toolkit.enabled.file-library'))
+                    @if (config('twill.enabled.media-library') || config('twill.enabled.file-library'))
                         <a17-medialibrary ref="mediaLibrary" :authorized="{{ json_encode(auth()->user()->can('edit')) }}"></a17-medialibrary>
                     @endif
                     <a17-notif variant="success"></a17-notif>
@@ -60,7 +60,7 @@
                         <span class="loader"><span></span></span>
                     </span>
                 </div>
-                @include('cms-toolkit::partials.footer')
+                @include('twill::partials.footer')
             </section>
         </div>
 
@@ -71,22 +71,22 @@
             window.STORE.medias.types = []
             window.STORE.languages = {!! json_encode(getLanguagesForVueStore($form_fields ?? [], $translate ?? false)) !!}
 
-            @if (config('cms-toolkit.enabled.media-library'))
+            @if (config('twill.enabled.media-library'))
                 window.STORE.medias.types.push({
                     value: 'image',
                     text: 'Images',
-                    total: {{ \A17\CmsToolkit\Models\Media::count() }},
+                    total: {{ \A17\Twill\Models\Media::count() }},
                     endpoint: '{{ route('admin.media-library.medias.index') }}',
                     tagsEndpoint: '{{ route('admin.media-library.medias.tags') }}',
                     uploaderConfig: {!! json_encode($mediasUploaderConfig) !!}
                 })
             @endif
 
-            @if (config('cms-toolkit.enabled.file-library'))
+            @if (config('twill.enabled.file-library'))
                 window.STORE.medias.types.push({
                     value: 'file',
                     text: 'Files',
-                    total: {{ \A17\CmsToolkit\Models\File::count() }},
+                    total: {{ \A17\Twill\Models\File::count() }},
                     endpoint: '{{ route('admin.file-library.files.index') }}',
                     tagsEndpoint: '{{ route('admin.file-library.files.tags') }}',
                     uploaderConfig: {!! json_encode($filesUploaderConfig) !!}

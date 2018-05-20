@@ -1,9 +1,9 @@
 <?php
 
-namespace A17\CmsToolkit\Repositories;
+namespace A17\Twill\Repositories;
 
-use A17\CmsToolkit\Models\User;
-use A17\CmsToolkit\Repositories\Behaviors\HandleMedias;
+use A17\Twill\Models\User;
+use A17\Twill\Repositories\Behaviors\HandleMedias;
 use DB;
 use Password;
 

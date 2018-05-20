@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit;
+namespace A17\Twill;
 
 use Illuminate\Support\ServiceProvider;
 use Validator;

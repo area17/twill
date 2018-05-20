@@ -18,7 +18,7 @@
 
 <a17-multiselect
     label="{{ $label }}"
-    @include('cms-toolkit::partials.form.utils._field_name')
+    @include('twill::partials.form.utils._field_name')
     :options="{{ json_encode($options) }}"
     :grid="false"
     :inline='{{ $inline ? 'true' : 'false' }}'

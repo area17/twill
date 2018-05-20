@@ -1,4 +1,4 @@
-@extends('cms-toolkit::layouts.main')
+@extends('twill::layouts.main')
 
 @section('appTypeClass', 'body--form')
 
@@ -83,7 +83,7 @@
     <a17-modal class="modal--browser" ref="browser" mode="medium" :force-close="true">
         <a17-browser></a17-browser>
     </a17-modal>
-    <a17-editor v-if="editor" ref="editor" bg-color="{{ config('cms-toolkit.block_editor.background_color') ?? '#FFFFFF' }}"></a17-editor>
+    <a17-editor v-if="editor" ref="editor" bg-color="{{ config('twill.block_editor.background_color') ?? '#FFFFFF' }}"></a17-editor>
     <a17-previewer ref="preview"></a17-previewer>
 @stop
 
@@ -95,7 +95,7 @@
         previewUrl: '{{ $previewUrl or '' }}',
         restoreUrl: '{{ $restoreUrl or '' }}',
         blockPreviewUrl: '{{ $blockPreviewUrl or '' }}',
-        availableRepeaters: {!! json_encode(config('cms-toolkit.block_editor.repeaters')) !!},
+        availableRepeaters: {!! json_encode(config('twill.block_editor.repeaters')) !!},
         repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!},
         fields: [],
         editor: {{ $editor ? 'true' : 'false' }},
@@ -119,7 +119,7 @@
     window.STORE.parentId = {{ $item->parent_id ?? 0 }}
     window.STORE.parents = {!! json_encode($parents ?? [])  !!}
 
-    window.STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('cms-toolkit.block_editor.crops')) !!}
+    window.STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('twill.block_editor.crops')) !!}
     window.STORE.medias.selected = {}
 
     window.STORE.browser = {}

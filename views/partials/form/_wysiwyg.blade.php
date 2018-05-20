@@ -51,7 +51,7 @@
         type="a17-wysiwyg"
         :attributes="{
             label: '{{ $label }}',
-            @include('cms-toolkit::partials.form.utils._field_name', ['asAttributes' => true])
+            @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
             @if ($note) note: '{{ $note }}', @endif
             @if ($options) options: {!! e(json_encode($options)) !!}, @endif
             @if ($placeholder) placeholder: '{{ $placeholder }}', @endif
@@ -66,7 +66,7 @@
 @else
     <a17-wysiwyg
         label="{{ $label }}"
-        @include('cms-toolkit::partials.form.utils._field_name')
+        @include('twill::partials.form.utils._field_name')
         @if ($note) note="{{ $note }}" @endif
         @if ($options) :options='{!! json_encode($options) !!}' @endif
         @if ($placeholder) placeholder='{{ $placeholder }}' @endif

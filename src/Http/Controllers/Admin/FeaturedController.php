@@ -1,9 +1,9 @@
 <?php
 
-namespace A17\CmsToolkit\Http\Controllers\Admin;
+namespace A17\Twill\Http\Controllers\Admin;
 
-use A17\CmsToolkit\Models\Feature;
-use A17\CmsToolkit\Repositories\Behaviors\HandleTranslations;
+use A17\Twill\Models\Feature;
+use A17\Twill\Repositories\Behaviors\HandleTranslations;
 use DB;
 use Event;
 
@@ -12,7 +12,7 @@ class FeaturedController extends Controller
     public function index()
     {
         $featuredSectionKey = request()->segment(count(request()->segments()));
-        $featuredSection = config("cms-toolkit.buckets.$featuredSectionKey");
+        $featuredSection = config("twill.buckets.$featuredSectionKey");
         $filters = json_decode(request()->get('filter'), true) ?? [];
 
         $featuredSources = $this->getFeaturedSources($featuredSection, $filters['search'] ?? '');
@@ -45,11 +45,11 @@ class FeaturedController extends Controller
 
         $routePrefix = 'featured';
 
-        if (isset(config('cms-toolkit.bucketsRoutes'))) {
-            $routePrefix =  config('cms-toolkit.bucketsRoutes')[$featuredSectionKey] ?? $routePrefix;
+        if (isset(config('twill.bucketsRoutes'))) {
+            $routePrefix =  config('twill.bucketsRoutes')[$featuredSectionKey] ?? $routePrefix;
         }
 
-        return view('cms-toolkit::layouts.buckets', [
+        return view('twill::layouts.buckets', [
             'dataSources' => [
                 'selected' => array_first($contentTypes),
                 'content_types' => $contentTypes,
@@ -70,7 +70,7 @@ class FeaturedController extends Controller
 
     private function getFeaturedItemsByBucket($featuredSection, $featuredSectionKey)
     {
-        $bucketRouteConfig = config('cms-toolkit.bucketsRoutes') ?? [$featuredSectionKey => 'featured'];
+        $bucketRouteConfig = config('twill.bucketsRoutes') ?? [$featuredSectionKey => 'featured'];
         return collect($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use ($featuredSectionKey, $bucketRouteConfig) {
             $routePrefix = $bucketRouteConfig[$featuredSectionKey];
             return [
@@ -179,6 +179,6 @@ class FeaturedController extends Controller
 
     private function getRepository($bucketable)
     {
-        return app(config('cms-toolkit.namespace') . "\Repositories\\" . ucfirst(str_singular($bucketable)) . "Repository");
+        return app(config('twill.namespace') . "\Repositories\\" . ucfirst(str_singular($bucketable)) . "Repository");
     }
 }

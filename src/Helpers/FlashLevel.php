@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Helpers;
+namespace A17\Twill\Helpers;
 
 use MyCLabs\Enum\Enum;
 

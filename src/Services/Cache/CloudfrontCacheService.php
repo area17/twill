@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Services\Cache;
+namespace A17\Twill\Services\Cache;
 
 use Aws\CloudFront\CloudFrontClient;
 use Log;

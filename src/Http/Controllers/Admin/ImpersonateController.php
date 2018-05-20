@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\CmsToolkit\Http\Controllers\Admin;
+namespace A17\Twill\Http\Controllers\Admin;
 
-use A17\CmsToolkit\Repositories\UserRepository;
+use A17\Twill\Repositories\UserRepository;
 use Auth;
 
 class ImpersonateController extends Controller
