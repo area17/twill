@@ -946,7 +946,7 @@ abstract class ModuleController extends Controller
             'revisions' => $this->moduleHasRevisions() ? $item->revisions->map(function ($revision) {
                 return [
                     'id' => $revision->id,
-                    'author' => $revision->user->name,
+                    'author' => $revision->user->name ?? 'Deleted user',
                     'datetime' => $revision->created_at->toIso8601String(),
                 ];
             })->toArray() : null,
