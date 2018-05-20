@@ -15,4 +15,15 @@ trait HasRevisions
             $query->where('user_id', auth()->user()->id);
         });
     }
+
+    public function revisionsArray()
+    {
+        return $this->revisions->map(function ($revision) {
+            return [
+                'id' => $revision->id,
+                'author' => $revision->user->name ?? 'Unknown',
+                'datetime' => $revision->created_at->toIso8601String(),
+            ];
+        })->toArray();
+    }
 }

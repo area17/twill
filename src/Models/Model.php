@@ -67,35 +67,4 @@ abstract class Model extends BaseModel implements TaggableInterface
     {
         return $query->whereNotNull('deleted_at');
     }
-
-    public function isNotLockedByCurrentUser()
-    {
-        if ($this->isLockable()) {
-            if ($this->lockedBy() != null && $this->lockedBy()->id != Auth::user()->id) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function isLockedByCurrentUser()
-    {
-        if ($this->isLockable()) {
-            if ($this->lockedBy() != null && $this->lockedBy()->id == Auth::user()->id) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function isLockable()
-    {
-        if (classHasTrait(get_class($this), 'A17\CmsToolkit\Models\Behaviors\HasLock')) {
-            return true;
-        }
-
-        return false;
-    }
 }

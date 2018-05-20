@@ -183,6 +183,10 @@ abstract class ModuleController extends Controller
             return $indexData + ['replaceUrl' => true];
         }
 
+        if ($this->request->has('openCreate') && request('openCreate')) {
+            $indexData += ['openCreate' => true];
+        }
+
         $view = collect([
             "$this->viewPrefix.index",
             "cms-toolkit::$this->moduleName.index",
@@ -191,7 +195,7 @@ abstract class ModuleController extends Controller
             return view()->exists($view);
         });
 
-        return view($view, $indexData + (request()->has('openCreate') && request('openCreate') ? ['openCreate' => true] : []));
+        return view($view, $indexData);
     }
 
     public function browser()
@@ -243,7 +247,6 @@ abstract class ModuleController extends Controller
         }
 
         $this->setBackLink();
-        $this->addLock($submoduleId ?? $id);
 
         $view = collect([
             "$this->viewPrefix.form",
@@ -265,55 +268,36 @@ abstract class ModuleController extends Controller
         $input = $this->request->all();
 
         if (isset($input['cmsSaveType']) && $input['cmsSaveType'] === 'cancel') {
-
-            if ($item->isLockable() && $item->isLocked() && $item->isLockedByCurrentUser()) {
-                $this->removeLock($submoduleId ?? $id);
-            }
-
             return $this->respondWithRedirect(URL::previous());
-
         } else {
-
             $formRequest = $this->validateFormRequest();
 
-            if (($item->isLockable() == false) || ($item->isLocked() && $item->isLockedByCurrentUser())) {
+            $this->repository->update($submoduleId ?? $id, $formRequest->all());
 
-                $this->repository->update($submoduleId ?? $id, $formRequest->all());
+            $this->fireEvent();
 
-                $this->fireEvent();
-
-                if (isset($input['cmsSaveType'])) {
-                    if (ends_with($input['cmsSaveType'], '-close')) {
-                        return $this->respondWithRedirect($this->getBackLink());
-                    } elseif (ends_with($input['cmsSaveType'], '-new')) {
-                        return $this->respondWithRedirect(moduleRoute(
-                            $this->moduleName,
-                            $this->routePrefix,
-                            'index',
-                            ['openCreate' => true]
-                        ));
-                    }
+            if (isset($input['cmsSaveType'])) {
+                if (ends_with($input['cmsSaveType'], '-close')) {
+                    return $this->respondWithRedirect($this->getBackLink());
+                } elseif (ends_with($input['cmsSaveType'], '-new')) {
+                    return $this->respondWithRedirect(moduleRoute(
+                        $this->moduleName,
+                        $this->routePrefix,
+                        'index',
+                        ['openCreate' => true]
+                    ));
                 }
-
-                if ($this->moduleHasRevisions()) {
-                    return response()->json([
-                        'message' => 'Content saved. All good!',
-                        'variant' => FlashLevel::SUCCESS,
-                        'revisions' => $item->revisions->map(function ($revision) {
-                            return [
-                                'id' => $revision->id,
-                                'author' => $revision->user->name,
-                                'datetime' => $revision->created_at->toIso8601String(),
-                            ];
-                        })->toArray(),
-                    ]);
-                }
-
-                return $this->respondWithSuccess('Content saved. All good!');
-
-            } else {
-                abort(403);
             }
+
+            if ($this->moduleHasRevisions()) {
+                return response()->json([
+                    'message' => 'Content saved. All good!',
+                    'variant' => FlashLevel::SUCCESS,
+                    'revisions' => $item->revisionsArray(),
+                ]);
+            }
+
+            return $this->respondWithSuccess('Content saved. All good!');
         }
     }
 
@@ -943,13 +927,7 @@ abstract class ModuleController extends Controller
             'saveUrl' => $this->getModuleRoute($item->id, 'update'),
             'editor' => $this->moduleHasRevisions() && $this->moduleHasBlocks() && !$this->disableEditor,
             'blockPreviewUrl' => route('admin.blocks.preview'),
-            'revisions' => $this->moduleHasRevisions() ? $item->revisions->map(function ($revision) {
-                return [
-                    'id' => $revision->id,
-                    'author' => $revision->user->name ?? 'Deleted user',
-                    'datetime' => $revision->created_at->toIso8601String(),
-                ];
-            })->toArray() : null,
+            'revisions' => $this->moduleHasRevisions() ? $item->revisionsArray() : null,
         ] + (Route::has($previewRouteName) ? [
             'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $item->id),
         ] : [])
@@ -1081,61 +1059,6 @@ abstract class ModuleController extends Controller
     protected function moduleHasBlocks()
     {
         return classHasTrait($this->repository, HandleBlocks::class);
-    }
-
-    public function status($id)
-    {
-        $item = $this->repository->getById($id);
-
-        $response_data = [
-            'status' => 'ok',
-        ];
-
-        // include other information, revisions count, etc.
-        $lockStatus = ['locked' => false];
-        if ($item->isLockable()) {
-            if ($item->isLocked()) {
-                $lockStatus['locked'] = true;
-                $lockStatus['locked_by']['id'] = $item->lockedBy()->id;
-                $lockStatus['locked_by']['name'] = $item->lockedBy()->name;
-            }
-        }
-        $response_data['lock'] = $lockStatus;
-
-        return response()->json($response_data, 200);
-    }
-
-    protected function addLock($id)
-    {
-        $item = $this->repository->getById($id);
-
-        if ($item->isLockable()) {
-            if (!$item->isLocked()) {
-                $item->lock(null, Auth::user());
-                return true;
-            } else {
-                // was this lock held by the current user?
-                if ($item->lockedBy()->id == Auth::user()->id) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    protected function removeLock($id, $forceUnlock = false)
-    {
-        $item = $this->repository->getById($id);
-
-        if ($item->isLockable()) {
-            if ($forceUnlock || ($item->lockedBy()->id == Auth::user()->id)) {
-                $item->unlock();
-                return true;
-            }
-        }
-
-        return false;
     }
 
     protected function setBackLink($back_link = null, $params = [])
