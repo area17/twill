@@ -1,10 +1,24 @@
 <template>
   <div class="box statFeed">
     <header class="box__header">
-      <b><slot></slot></b>
+      <div class="wrapper">
+          <div class="col--double">
+            <b><slot></slot></b>
+          </div>
+          <div class="col--double">
+            <div class="statFeed__dropdown">
+              <a17-dropdown ref="statPeriodDropdown" position="bottom-right">
+                <a17-button variant="ghost" @click="$refs.statPeriodDropdown.toggle()">{{ selectedPeriodLabel }} <span v-svg class="statFeed__dropdownIcon" symbol="dropdown_module"></span></a17-button>
+                <div slot="dropdown__content">
+                  <button type="button" v-for="period in periods" v-if="period.value !== selectedPeriod" @click="selectPeriod(period.value)">{{ period.label }}</button>
+                </div>
+              </a17-dropdown>
+            </div>
+          </div>
+      </div>
     </header>
     <div class="box__body">
-      <template  v-for="(fact, index) in facts">
+      <template  v-for="(fact, index) in factsForSelectedPeriod">
       <a :href="fact.url" class="statFeed__item" target="_blank">
         <h3 class="statFeed__numb f--heading" :class="trending(index)">{{ fact.figure }}</h3>
         <div class="statFeed__info">
@@ -15,7 +29,7 @@
       </template>
     </div>
     <footer class="box__footer statFeed__footer">
-      <a href="#" class="f--external" target="_blank">Google Analytics</a>
+      <a href="https://analytics.google.com/analytics/web" class="f--external" target="_blank">Google Analytics</a>
     </footer>
   </div>
 </template>
@@ -25,17 +39,49 @@
     name: 'A17StatFeed',
     props: {
       facts: {
-        type: Array,
+        type: Object,
         default: function () {
-          return []
+          return {}
         }
       }
     },
+    data: function () {
+      return {
+        selectedPeriod: 'yesterday',
+        periods: [
+          {
+            label: 'Today',
+            value: 'today'
+          },
+          {
+            label: 'Yesterday',
+            value: 'yesterday'
+          },
+          {
+            label: 'This week',
+            value: 'week'
+          },
+          {
+            label: 'This month',
+            value: 'month'
+          }
+        ]
+      }
+    },
     computed: {
+      factsForSelectedPeriod () {
+        return this.facts[this.selectedPeriod]
+      },
+      selectedPeriodLabel () {
+        return this.periods.find((p) => { return p.value === this.selectedPeriod }).label
+      }
     },
     methods: {
       trending: function (index) {
-        return 'statFeed__numb--' + this.facts[index].trend
+        return 'statFeed__numb--' + this.factsForSelectedPeriod[index].trend
+      },
+      selectPeriod: function (period) {
+        this.selectedPeriod = period
       }
     }
   }
@@ -46,6 +92,10 @@
 
   .statFeed {
 
+  }
+
+  .statFeed__dropdown {
+    text-align: right;
   }
 
   .statFeed__item {

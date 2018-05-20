@@ -10,14 +10,13 @@
             </a17-button>
             <div slot="dropdown__content">
               <ul>
-                <li v-for="entity in entities"><a href="#">{{ entity.singular }}</a></li>
+                <li v-for="entity in entities" v-if="entity.createUrl"><a :href="entity.createUrl">{{ entity.singular }}</a></li>
               </ul>
             </div>
           </a17-dropdown>
         </div>
         <div class="shortcutCreator__listing">
-          <a class="shortcutCreator__listingItem" :href="entity.url" v-for="entity in entities">
-
+          <a class="shortcutCreator__listingItem" :href="entity.url" v-for="entity in entities" v-if="entity.number">
             <span class="shortcutCreator__label">{{ entity.label }}</span>
             <h3 class="shortcutCreator__sum f--heading">{{ entity.number }}</h3>
           </a>
