@@ -25,7 +25,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | CMS Toolkit Auth configuration
+    | Twill Auth configuration
     |--------------------------------------------------------------------------
     |
     | Right now this only allows you to redefine the default login redirect path.

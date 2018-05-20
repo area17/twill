@@ -9,7 +9,7 @@ class Setup extends Command
 {
     protected $signature = 'cms-toolkit:setup';
 
-    protected $description = 'Setup the CMS Toolkit superadmin and publish assets/configs';
+    protected $description = 'Setup Twill superadmin and publish assets/configs';
 
     public function handle()
     {

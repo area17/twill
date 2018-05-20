@@ -9,7 +9,7 @@ class Install extends Command
 {
     protected $signature = 'cms-toolkit:install';
 
-    protected $description = 'Install the CMS Toolkit into a default Laravel application';
+    protected $description = 'Install Twill into a default Laravel application';
 
     protected $files;
 

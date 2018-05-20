@@ -3,7 +3,7 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | CMS Toolkit SEO configuration
+    | Twill SEO configuration
     |--------------------------------------------------------------------------
     |
     | This array allows you to provide the package with some SEO configuration

@@ -1,8 +1,8 @@
-# AREA 17 CMS Toolkit
+# Twill
 
 ## Introduction
 
-The CMS Toolkit is a Laravel Composer package to rapidly create and deploy a completely custom admin area for our clients websites that is highly functional, beautiful and easy to use.
+Twill is a Laravel Composer package to rapidly create and deploy a completely custom admin area for our clients websites that is highly functional, beautiful and easy to use.
 It's a curation of all the features that were developed on custom admin areas since our switch to Laravel in 2014. The architecture, conventions and helpers it provides currently powers the [Opéra National de Paris 2015 website redesign](https://www.operadeparis.fr/), the [AREA 17 2016 website redesign](https://area17.com) and the [THG 2016 redesign website](https://www.thg-paris.com/). Initially released in December 2016, this Laravel package is powering the [Roto](https://roto.com), [Mai 36](https://mai36.com) and [Pentagram](https://www.pentagram.com) 2017 redesigns, as well as the [Artists at Risk Connection](https://artistsatriskconnection.org) platform and Sonia Rykiel's [Rykielism](https://rykielism.soniarykiel.com). Translation, Art Institute of Chicago, Charvet, OSF Guides and AREA 17 Guides are currently being built or about to launch using this package as a dependency to build their CMS.
 
 It provides a beautiful admin interface that really focuses on the editors needs, using AREA 17's custom built Vue.js components and a vast number of pre-built features to focus on building fully custom forms instead of rebuilding the same thing over and over:
@@ -57,7 +57,7 @@ Then you should be able to run:
 ```bash
 composer require a17/laravel-cms-toolkit
 ```
-Add the CMS Toolkit Install service provider in `config/app.php` (before Application Service Providers):
+Add Twill Install service provider in `config/app.php` (before Application Service Providers):
 
 ```php
 <?php
@@ -230,10 +230,10 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | CMS Toolkit Enabled Features
+    | Twill Enabled Features
     |--------------------------------------------------------------------------
     |
-    | This array allows you to enable/disable the CMS Toolkit default features.
+    | This array allows you to enable/disable the Twill default features.
     |
      */
     'enabled' => [
@@ -250,7 +250,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | CMS Toolkit Auth configuration
+    | Twill Auth configuration
     |--------------------------------------------------------------------------
     |
     | Right now this only allows you to redefine the
@@ -261,7 +261,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | CMS Toolkit Media Library configuration
+    | Twill Media Library configuration
     |--------------------------------------------------------------------------
     |
     | This array allows you to provide the package with your configuration
@@ -288,7 +288,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | CMS Toolkit Imgix configuration
+    | Twill Imgix configuration
     |--------------------------------------------------------------------------
     |
     | This array allows you to provide the package with your configuration
@@ -327,7 +327,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | CMS Toolkit File Library configuration
+    | Twill File Library configuration
     |--------------------------------------------------------------------------
     |
     | This array allows you to provide the package with your configuration
@@ -353,7 +353,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | CMS Toolkit Block Editor configuration
+    | Twill Block Editor configuration
     |--------------------------------------------------------------------------
     |
     | This array allows you to provide the package with your configuration
@@ -418,7 +418,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | CMS Toolkit SEO configuration
+    | Twill SEO configuration
     |--------------------------------------------------------------------------
     |
     | This array allows you to provide the package with some SEO configuration
@@ -434,7 +434,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | CMS Toolkit Developer configuration
+    | Twill Developer configuration
     |--------------------------------------------------------------------------
     |
     | This array allows you to enable/disable debug tool and configurations.
@@ -450,7 +450,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | CMS Toolkit Frontend assets configuration
+    | Twill Frontend assets configuration
     |--------------------------------------------------------------------------
     |
     | This allows you to setup frontend helpers related settings.

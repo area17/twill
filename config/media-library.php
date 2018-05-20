@@ -3,7 +3,7 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | CMS Toolkit Media Library configuration
+    | Twill Media Library configuration
     |--------------------------------------------------------------------------
     |
     | This allows you to provide the package with your configuration

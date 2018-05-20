@@ -1,4 +1,4 @@
-# Contributing to CMS Toolkit
+# Contributing to Twill
 
 ## Reporting issues, giving feedback or proposing new features
 
@@ -10,8 +10,8 @@ We are using Pipefy to manage this projects through 3 different pipes:
 
 ## Versioning scheme
 
-CMS Toolkit's versioning scheme maintains the following convention: `paradigm.major.minor`. Minor releases should never contain breaking changes.
-When referencing the CMS Toolkit from your application, you should always use a version constraint such as `1.0.*`, since major releases of CMS Toolkit do include breaking changes. We will most likely follow SemVer 2.0 (`major.minor.patch`) once we are public to make it easier for applications to update, but because we are going to change name without moving to 2.0, we need to follow this versionning scheme right now, which is actually the one Laravel itself is following. The VERSION file needs to be updated and a Git tag created to properly release a new version.
+Twill's versioning scheme maintains the following convention: `paradigm.major.minor`. Minor releases should never contain breaking changes.
+When referencing Twill from your application, you should always use a version constraint such as `1.0.*`, since major releases of Twill do include breaking changes. We will most likely follow SemVer 2.0 (`major.minor.patch`) once we are public to make it easier for applications to update, but because we are going to change name without moving to 2.0, we need to follow this versionning scheme right now, which is actually the one Laravel itself is following. The VERSION file needs to be updated and a Git tag created to properly release a new version.
 
 ## Merge requests guidelines
 

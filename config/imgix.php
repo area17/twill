@@ -3,7 +3,7 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | CMS Toolkit Imgix configuration
+    | Twill Imgix configuration
     |--------------------------------------------------------------------------
     |
     | This array allows you to provide the package with your configuration

@@ -3,10 +3,10 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | CMS Toolkit Enabled Features
+    | Twill Enabled Features
     |--------------------------------------------------------------------------
     |
-    | This array allows you to enable/disable the CMS Toolkit default features.
+    | This array allows you to enable/disable the Twill default features.
     |
      */
     'users-management' => true,
