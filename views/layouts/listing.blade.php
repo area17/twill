@@ -12,6 +12,7 @@
     $reorder = $reorder ?? false;
     $nested = $nested ?? false;
     $bulkEdit = $bulkEdit ?? true;
+    $create = $create ?? false;
 @endphp
 
 @section('content')
@@ -51,7 +52,7 @@
                         @endif
                     @endforelse
 
-                    @if($create ?? false)
+                    @if($create)
                         <div slot="additional-actions">
                             <a17-button variant="validate" size="small" v-on:click="create">Add new</a17-button>
                         </div>
@@ -64,30 +65,32 @@
         </div>
 
         @if($nested)
-        <a17-nested-datatable
-            :draggable="{{ $reorder ? 'true' : 'false' }}"
-            :max-depth="{{ $nestedDepth ?? '1' }}"
-            :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
-            empty-message="There is no item here yet.">
-        </a17-nested-datatable>
+            <a17-nested-datatable
+                :draggable="{{ $reorder ? 'true' : 'false' }}"
+                :max-depth="{{ $nestedDepth ?? '1' }}"
+                :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
+                empty-message="There is no item here yet.">
+            </a17-nested-datatable>
         @else
-        <a17-datatable
-            :draggable="{{ $reorder ? 'true' : 'false' }}"
-            :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
-            empty-message="There is no item here yet.">
-        </a17-datatable>
+            <a17-datatable
+                :draggable="{{ $reorder ? 'true' : 'false' }}"
+                :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
+                empty-message="There is no item here yet.">
+            </a17-datatable>
         @endif
 
-        <a17-modal-create
-            ref="editionModal"
-            form-create="{{ $storeUrl }}"
-            v-on:reload="reloadDatas"
-            @if ($customPublishedLabel ?? false) published-label="{{ $customPublishedLabel }}" @endif
-            @if ($customDraftLabel ?? false) draft-label="{{ $customDraftLabel }}" @endif
-        >
-            <a17-langmanager></a17-langmanager>
-            @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
-        </a17-modal-create>
+        @if($create)
+            <a17-modal-create
+                ref="editionModal"
+                form-create="{{ $storeUrl }}"
+                v-on:reload="reloadDatas"
+                @if ($customPublishedLabel ?? false) published-label="{{ $customPublishedLabel }}" @endif
+                @if ($customDraftLabel ?? false) draft-label="{{ $customDraftLabel }}" @endif
+            >
+                <a17-langmanager></a17-langmanager>
+                @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
+            </a17-modal-create>
+        @endif
     </div>
 @stop
 
@@ -124,7 +127,7 @@
         localStorageKey: '{{ isset($currentUser) ? $currentUser->id : 0 }}__{{ $moduleName ?? Route::currentRouteName() }}'
     }
 
-    @if ($openCreate ?? false)
+    @if ($create && ($openCreate ?? false))
         window.openCreate = {!! json_encode($openCreate) !!}
     @endif
 @stop
