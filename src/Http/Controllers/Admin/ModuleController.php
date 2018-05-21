@@ -210,6 +210,8 @@ abstract class ModuleController extends Controller
 
         $item = $this->repository->create($input + $optionalParent);
 
+        activity()->performedOn($item)->log('created');
+
         $this->fireEvent($input);
 
         Session::put($this->moduleName . '_retain', true);
@@ -274,6 +276,8 @@ abstract class ModuleController extends Controller
 
             $this->repository->update($submoduleId ?? $id, $formRequest->all());
 
+            activity()->performedOn($item)->log('edited');
+
             $this->fireEvent();
 
             if (isset($input['cmsSaveType'])) {
@@ -327,6 +331,12 @@ abstract class ModuleController extends Controller
             if ($this->repository->updateBasic(request('id'), [
                 'published' => !request('active'),
             ])) {
+                activity()->performedOn(
+                    $this->repository->getById(request('id'))
+                )->log(
+                    (request('active') ? 'un' : '') . 'published'
+                );
+
                 $this->fireEvent();
 
                 return $this->respondWithSuccess(
@@ -365,8 +375,10 @@ abstract class ModuleController extends Controller
 
     public function destroy($id, $submoduleId = null)
     {
+        $item = $this->repository->getById($id);
         if ($this->repository->delete($submoduleId ?? $id)) {
             $this->fireEvent();
+            activity()->performedOn($item)->log('deleted');
             return $this->respondWithSuccess($this->modelTitle . ' moved to trash!');
         }
 
@@ -387,6 +399,7 @@ abstract class ModuleController extends Controller
     {
         if ($this->repository->restore(request('id'))) {
             $this->fireEvent();
+            activity()->performedOn($this->repository->getById(request('id')))->log('restored');
             return $this->respondWithSuccess($this->modelTitle . ' restored!');
         }
 

@@ -25,7 +25,7 @@ use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 use Lsrur\Inspector\Facade\Inspector;
 use Lsrur\Inspector\InspectorServiceProvider;
-use Sofa\ModelLocking\ServiceProvider as ModelLockingServiceProvider;
+use Spatie\Activitylog\ActivitylogServiceProvider;
 use View;
 
 class TwillServiceProvider extends ServiceProvider
@@ -36,7 +36,7 @@ class TwillServiceProvider extends ServiceProvider
         ValidationServiceProvider::class,
         TranslatableServiceProvider::class,
         TagsServiceProvider::class,
-        ModelLockingServiceProvider::class,
+        ActivitylogServiceProvider::class,
     ];
 
     public function boot()
@@ -132,6 +132,8 @@ class TwillServiceProvider extends ServiceProvider
                 config('mail.markdown.paths')
             )]);
         }
+
+        config(['activitylog.subject_returns_soft_deleted_models' => true]);
 
         $this->publishes([__DIR__ . '/../config/twill-publish.php' => config_path('twill.php')], 'config');
         $this->publishes([__DIR__ . '/../config/twill-navigation.php' => config_path('twill-navigation.php')], 'config');

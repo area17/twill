@@ -38,6 +38,11 @@ class Setup extends Command
             '--provider' => 'A17\Twill\TwillServiceProvider',
             '--tag' => 'migrations',
         ]);
+
+        $this->call('vendor:publish', [
+            '--provider' => 'Spatie\Activitylog\ActivitylogServiceProvider',
+            '--tag' => 'migrations',
+        ]);
     }
 
     private function createSuperAdmin()
