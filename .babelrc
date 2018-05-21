@@ -4,9 +4,9 @@
       "modules": false,
       "targets": {
         "browsers": [
-          "> 1%",
-          "last 2 versions",
-          "not ie <= 10"
+          ">0.25%",
+          "not ie 11",
+          "not op_mini all"
         ]
       }
     }],
