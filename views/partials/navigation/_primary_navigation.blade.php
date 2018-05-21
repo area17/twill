@@ -1,4 +1,4 @@
-@if ((isset($_global_active_navigation) && isset(config('cms-navigation.'.$_global_active_navigation)['primary_navigation'])) || isset($single_primary_nav))
+@if ((isset($_global_active_navigation) && isset(config('twill-navigation.'.$_global_active_navigation)['primary_navigation'])) || isset($single_primary_nav))
 
     @if (isset($single_primary_nav))
         @php
@@ -8,7 +8,7 @@
         @endphp
     @else
         @php
-        $primaryNavElements = config('cms-navigation.'.$_global_active_navigation)['primary_navigation'];
+        $primaryNavElements = config('twill-navigation.'.$_global_active_navigation)['primary_navigation'];
         @endphp
     @endif
 

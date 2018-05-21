@@ -63,7 +63,7 @@ class ModuleMake extends Command
         $this->createViews($moduleName, $translatable);
 
         $this->info("Add Route::module('{$moduleName}'); to your admin routes file.");
-        $this->info("Setup a new CMS menu item in config/cms-navigation.php.");
+        $this->info("Setup a new CMS menu item in config/twill-navigation.php.");
         $this->info("Enjoy.");
 
         $this->composer->dumpAutoloads();

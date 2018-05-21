@@ -152,7 +152,7 @@ public/hot
 
 You'll want to run `npm run cms-build` to start working locally as well on a production server.
 
-If you are working on blocks, or contributing to this project, and would like to use Hot Module Reloading to propagate your changes when recompiling blocks or contributing to the toolkit itself, use `npm run cms-dev`. You'll need to install the following dev dependencies to your project's `package.json`:
+If you are working on blocks, or contributing to this project, and would like to use Hot Module Reloading to propagate your changes when recompiling blocks or contributing to Twill itself, use `npm run cms-dev`. You'll need to install the following dev dependencies to your project's `package.json`:
 
 ```json
 "devDependencies": {
@@ -552,7 +552,7 @@ Start by filling in the migration and models.
 
 Add `Route::module('yourPluralModuleName}');` to your admin routes file.
 
-Setup a new CMS menu item in `config/cms-navigation.php`.
+Setup a new CMS menu item in `config/twill-navigation.php`.
 
 Setup your index options and columns in your controller.
 
@@ -1571,7 +1571,7 @@ class ArticleRepository extends ModuleRepository
 ```
 
 ##### Common Errors
-- Make sure your project have the blocks table migration. If not, you can find the `create_blocks_table` migration in the toolkit's source in `migrations`.
+- Make sure your project have the blocks table migration. If not, you can find the `create_blocks_table` migration in Twill's source in `migrations`.
 
 - Not running the _twill:blocks_ task.
 
@@ -1979,7 +1979,7 @@ For improved security, modify the bucket CORS configuration to accept uploads re
 
 ### Users management
 
-Authentication and authorization are provided by default in Laravel. This package simply leverages it and configure the views with the A17 CMS UI Toolkit for you. By default, users can login at `/login` and also reset their password through that screen. New users have to start by resetting their password before initial access to the admin application. You should redirect users to anywhere you want in your application after they login. The twill configuration file has an option for you to change the default redirect path (`auth_login_redirect_path`).
+Authentication and authorization are provided by default in Laravel. This package simply leverages it and configure the views for you. By default, users can login at `/login` and also reset their password through that screen. New users have to start by resetting their password before initial access to the admin application. You should redirect users to anywhere you want in your application after they login. The twill configuration file has an option for you to change the default redirect path (`auth_login_redirect_path`).
 
 #### Roles
 The package currently only provides 3 different roles:

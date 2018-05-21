@@ -154,7 +154,7 @@ class TwillServiceProvider extends ServiceProvider
 
     private function publishMigrations()
     {
-        $migrations = ['CreateTagsTables', 'CreateModelLocksTable', 'CreateBlocksTable'];
+        $migrations = ['CreateTagsTables', 'CreateBlocksTable'];
 
         $optionalMigrations = [
             'CreateUsersTables' => 'users-management',

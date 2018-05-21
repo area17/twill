@@ -1,7 +1,7 @@
-@if (config()->has('cms-navigation'))
+@if (config()->has('twill-navigation'))
     <nav class="header__nav">
         <ul class="header__items">
-            @foreach(config('cms-navigation') as $global_navigation_key => $global_navigation_element)
+            @foreach(config('twill-navigation') as $global_navigation_key => $global_navigation_element)
                 @can($global_navigation_element['can'] ?? 'list')
                     @if(isActiveNavigation($global_navigation_element, $global_navigation_key, $_global_active_navigation))
                         <li class="header__item s--on">

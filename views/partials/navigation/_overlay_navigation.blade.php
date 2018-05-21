@@ -1,11 +1,11 @@
-@if (config()->has('cms-navigation'))
+@if (config()->has('twill-navigation'))
     <header class="headerMobile" data-header-mobile>
         <nav class="headerMobile__nav">
             <div class="container">
                 @partialView(($moduleName ?? null), 'navigation._title')
 
                 <div class="headerMobile__list">
-                    @foreach(config('cms-navigation') as $global_navigation_key => $global_navigation_element)
+                    @foreach(config('twill-navigation') as $global_navigation_key => $global_navigation_element)
                         @can($global_navigation_element['can'] ?? 'list')
                             @if(isActiveNavigation($global_navigation_element, $global_navigation_key, $_global_active_navigation))
                                 <a class="s--on" href="{{ getNavigationUrl($global_navigation_element, $global_navigation_key) }}">{{ $global_navigation_element['title'] }}</a><br />
@@ -30,7 +30,7 @@
     </header>
 
     <button class="ham @if(isset($search) && $search) ham--search @endif" data-ham-btn>
-        @foreach(config('cms-navigation') as $global_navigation_key => $global_navigation_element)
+        @foreach(config('twill-navigation') as $global_navigation_key => $global_navigation_element)
             @can($global_navigation_element['can'] ?? 'list')
                 @if(isActiveNavigation($global_navigation_element, $global_navigation_key, $_global_active_navigation))
                     <span class="ham__label">{{ $global_navigation_element['title'] }}</span>
