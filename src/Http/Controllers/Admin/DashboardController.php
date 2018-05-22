@@ -219,7 +219,7 @@ class DashboardController extends Controller
                     ['openCreate' => true]
                 ) : null
             ];
-        });
+        })->values();
     }
 
     private function getRepository($module)
