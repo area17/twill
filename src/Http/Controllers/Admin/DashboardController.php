@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use Analytics;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Analytics\Period;
 
 class DashboardController extends Controller
@@ -12,153 +13,8 @@ class DashboardController extends Controller
         $modules = collect(config('twill.dashboard.modules'));
 
         return view('twill::layouts.dashboard', [
-            'myActivityData' => [
-                [
-                    'id' => 10,
-                    'type' => 'Projects',
-                    'date' => '2018/01/09 00:00:00',
-                    'author' => 'Antoine',
-                    'featured' => true,
-                    'published' => true,
-                    'name' => 'Barnes Foundation website',
-                    'edit' => '/templates/form',
-                    'activity' => 'Unpublished',
-                    'thumbnail' => 'https://source.unsplash.com/random/80x80?sig=10',
-                    'permalink' => 'https://pentagram.com',
-                ],
-            ],
-            'allActivityData' => [
-                [
-                    'id' => 1,
-                    'type' => 'Projects',
-                    'date' => '2017/11/09 00:00:00',
-                    'author' => 'George',
-                    'featured' => true,
-                    'published' => true,
-                    'name' => 'The New School Website',
-                    'edit' => '/templates/form',
-                    'activity' => 'Unpublished',
-                    'thumbnail' => 'https://source.unsplash.com/random/80x80?sig=1',
-                    'permalink' => 'https://pentagram.com',
-                ],
-                [
-                    'id' => 2,
-                    'type' => 'Projects',
-                    'date' => '2017/11/08 00:00:00',
-                    'author' => 'George',
-                    'featured' => true,
-                    'published' => true,
-                    'name' => 'THG Paris website',
-                    'edit' => '/templates/form',
-                    'activity' => 'Updated',
-                    'thumbnail' => 'https://source.unsplash.com/random/80x80?sig=2',
-                    'permalink' => 'https://pentagram.com',
-                ],
-                [
-                    'id' => 3,
-                    'type' => 'News',
-                    'date' => '2017/11/05 00:00:00',
-                    'author' => 'George',
-                    'featured' => false,
-                    'published' => false,
-                    'name' => 'Pentagram website',
-                    'edit' => '/templates/form',
-                    'activity' => 'Created',
-                    'thumbnail' => 'https://source.unsplash.com/random/80x80?sig=3',
-                    'permalink' => 'https://pentagram.com',
-                ],
-                [
-                    'id' => 4,
-                    'type' => 'Projects',
-                    'date' => '2017/11/02 00:00:00',
-                    'author' => 'George',
-                    'featured' => false,
-                    'published' => false,
-                    'name' => 'Mai 36 Galerie website',
-                    'edit' => '/templates/form',
-                    'activity' => 'Updated',
-                    'thumbnail' => 'https://source.unsplash.com/random/80x80?sig=4',
-                    'permalink' => 'https://pentagram.com',
-                ],
-                [
-                    'id' => 5,
-                    'type' => 'News',
-                    'date' => '2017/11/01 00:00:00',
-                    'author' => 'George',
-                    'featured' => false,
-                    'published' => false,
-                    'name' => 'Mai 36 Galerie website',
-                    'edit' => '/templates/form',
-                    'activity' => 'Published',
-                    'thumbnail' => 'https://source.unsplash.com/random/80x80?sig=5',
-                    'permalink' => 'https://pentagram.com',
-                ],
-                [
-                    'id' => 6,
-                    'type' => 'Partners',
-                    'date' => '2017/10/09 00:00:00',
-                    'author' => 'Quentin',
-                    'featured' => false,
-                    'published' => false,
-                    'name' => 'Roto website',
-                    'edit' => '/templates/form',
-                    'activity' => 'Updated',
-                    'thumbnail' => 'https://source.unsplash.com/random/80x80?sig=6',
-                    'permalink' => 'https://pentagram.com',
-                ],
-                [
-                    'id' => 7,
-                    'type' => 'Partner',
-                    'date' => '2017/09/09 00:00:00',
-                    'author' => 'Partners',
-                    'featured' => false,
-                    'published' => true,
-                    'name' => 'THG Paris website',
-                    'edit' => '/templates/form',
-                    'activity' => 'Published',
-                    'thumbnail' => 'https://source.unsplash.com/random/80x80?sig=7',
-                    'permalink' => 'https://pentagram.com',
-                ],
-                [
-                    'id' => 8,
-                    'type' => 'News',
-                    'date' => '2017/04/09 00:00:00',
-                    'author' => 'Martin',
-                    'featured' => false,
-                    'published' => true,
-                    'name' => 'La Parqueterie Nouvelle strategie',
-                    'edit' => '/templates/form',
-                    'activity' => 'Published',
-                    'thumbnail' => 'https://source.unsplash.com/random/80x80?sig=8',
-                    'permalink' => 'https://pentagram.com',
-                ],
-                [
-                    'id' => 9,
-                    'type' => 'News',
-                    'date' => '2017/04/09 00:00:00',
-                    'author' => 'Martin',
-                    'featured' => false,
-                    'published' => true,
-                    'name' => 'La Parqueterie Nouvelle strategie',
-                    'edit' => '/templates/form',
-                    'activity' => 'Published',
-                    'thumbnail' => 'https://source.unsplash.com/random/80x80?sig=8',
-                    'permalink' => 'https://pentagram.com',
-                ],
-                [
-                    'id' => 10,
-                    'type' => 'News',
-                    'date' => '2017/04/09 00:00:00',
-                    'author' => 'Martin',
-                    'featured' => false,
-                    'published' => true,
-                    'name' => 'La Parqueterie Nouvelle strategie',
-                    'edit' => '/templates/form',
-                    'activity' => 'Published',
-                    'thumbnail' => 'https://source.unsplash.com/random/80x80?sig=8',
-                    'permalink' => 'https://pentagram.com',
-                ],
-            ],
+            'allActivityData' => $this->getAllActivities(),
+            'myActivityData' => $this->getLoggedInUserActivities(),
             'tableColumns' => [
                 [
                     'name' => 'thumbnail',
@@ -167,13 +23,13 @@ class DashboardController extends Controller
                     'optional' => false,
                     'sortable' => false,
                 ],
-                [
-                    'name' => 'published',
-                    'label' => 'Published',
-                    'visible' => true,
-                    'optional' => false,
-                    'sortable' => false,
-                ],
+                // [
+                //     'name' => 'published',
+                //     'label' => 'Published',
+                //     'visible' => true,
+                //     'optional' => false,
+                //     'sortable' => false,
+                // ],
                 [
                     'name' => 'name',
                     'label' => 'Name',
@@ -185,6 +41,40 @@ class DashboardController extends Controller
             'shortcuts' => $this->getShortcuts($modules),
             'facts' => $this->getFacts(),
         ]);
+    }
+
+    private function getAllActivities()
+    {
+        return Activity::take(20)->latest()->get()->map(function ($activity) {
+            return $this->formatActivity($activity);
+        })->filter();
+    }
+
+    private function getLoggedInUserActivities()
+    {
+        return Activity::where('causer_id', auth()->user()->id)->take(20)->latest()->get()->map(function ($activity) {
+            return $this->formatActivity($activity);
+        })->filter();
+    }
+
+    private function formatActivity($activity)
+    {
+        $dashboardModule = config('twill.dashboard.modules.' . $activity->subject_type);
+
+        if (!$dashboardModule) return null;
+
+        return [
+            'id' => $activity->id,
+            'type' => ucfirst($activity->subject_type),
+            'date' => $activity->created_at->toIso8601String(),
+            'author' => $activity->causer->name ?? 'Unknown',
+            // 'published' => $activity->subject->published ?? true,
+            'name' => $activity->subject->title,
+            'edit' => moduleRoute($activity->subject_type, $dashboardModule ? $dashboardModule['routePrefix'] : '', 'edit', $activity->subject_id),
+            'activity' => ucfirst($activity->description),
+            'thumbnail' => $activity->subject->cmsImage('hero', 'default', ['w' => 100, 'h' => 100]),
+            // 'permalink' => '#',
+        ];
     }
 
     private function getFacts()
