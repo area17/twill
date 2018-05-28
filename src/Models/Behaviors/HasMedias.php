@@ -201,6 +201,17 @@ trait HasMedias
         return $this->image($role, $crop, $params, false, true, false) ?? ImageService::getTransparentFallbackUrl($params);
     }
 
+    public function defaultCmsImage($params = [])
+    {
+        $media = $this->medias->first();
+
+        if ($media) {
+            return $this->image(null, null, $params, true, true, $media) ?? ImageService::getTransparentFallbackUrl($params);
+        }
+
+        return ImageService::getTransparentFallbackUrl($params);
+    }
+
     public function imageObjects($role, $crop = "default")
     {
         return $this->medias->filter(function ($media) use ($role, $crop) {
