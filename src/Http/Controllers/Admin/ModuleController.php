@@ -273,7 +273,7 @@ abstract class ModuleController extends Controller
 
             $this->repository->update($submoduleId ?? $id, $formRequest->all());
 
-            activity()->performedOn($item)->log('edited');
+            activity()->performedOn($item)->log('updated');
 
             $this->fireEvent();
 
