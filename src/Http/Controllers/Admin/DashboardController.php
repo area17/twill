@@ -61,7 +61,9 @@ class DashboardController extends Controller
     {
         $dashboardModule = config('twill.dashboard.modules.' . $activity->subject_type);
 
-        if (!$dashboardModule) return null;
+        if (!$dashboardModule) {
+            return null;
+        }
 
         return [
             'id' => $activity->id,
@@ -72,7 +74,7 @@ class DashboardController extends Controller
             'name' => $activity->subject->title,
             'edit' => moduleRoute($activity->subject_type, $dashboardModule ? $dashboardModule['routePrefix'] : '', 'edit', $activity->subject_id),
             'activity' => ucfirst($activity->description),
-            'thumbnail' => $activity->subject->cmsImage('hero', 'default', ['w' => 100, 'h' => 100]),
+            'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
             // 'permalink' => '#',
         ];
     }
