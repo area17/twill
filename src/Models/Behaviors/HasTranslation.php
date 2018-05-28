@@ -82,7 +82,10 @@ trait HasTranslation
                 'value' => $translation->locale,
                 'published' => $translation->active ?? false,
             ];
-        });
+        })->sortBy(function($translation) {
+            $localesOrdered = config('translatable.locales');
+            return array_search($translation['value'], $localesOrdered);
+        })->values();
     }
 
     public function translatedAttribute($key)
