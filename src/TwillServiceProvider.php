@@ -11,6 +11,7 @@ use A17\Twill\Http\ViewComposers\ActiveNavigation;
 use A17\Twill\Http\ViewComposers\CurrentUser;
 use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
 use A17\Twill\Http\ViewComposers\MediasUploaderConfig;
+use A17\Twill\Models\Block;
 use A17\Twill\Models\File;
 use A17\Twill\Models\Media;
 use A17\Twill\Models\User;
@@ -66,6 +67,7 @@ class TwillServiceProvider extends ServiceProvider
             'users' => User::class,
             'media' => Media::class,
             'files' => File::class,
+            'blocks' => Block::class,
         ]);
 
         config(['twill.version' => trim(file_get_contents(__DIR__ . '/../VERSION'))]);
