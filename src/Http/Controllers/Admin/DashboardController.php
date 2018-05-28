@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Models\Behaviors\HasMedias;
 use Analytics;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Analytics\Period;
@@ -39,7 +40,7 @@ class DashboardController extends Controller
                 ],
             ],
             'shortcuts' => $this->getShortcuts($modules),
-            'facts' => $this->getFacts(),
+            'facts' => config('twill.dashboard.analytics.enabled', false) ? $this->getFacts() : null,
         ]);
     }
 
@@ -72,11 +73,13 @@ class DashboardController extends Controller
             'author' => $activity->causer->name ?? 'Unknown',
             // 'published' => $activity->subject->published ?? true,
             'name' => $activity->subject->title,
-            'edit' => moduleRoute($activity->subject_type, $dashboardModule ? $dashboardModule['routePrefix'] : '', 'edit', $activity->subject_id),
             'activity' => ucfirst($activity->description),
-            'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
             // 'permalink' => '#',
-        ];
+        ] + (classHasTrait($activity->subject, HasMedias::class) ? [
+            'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
+        ] : []) + (!$activity->subject->trashed() ? [
+            'edit' => moduleRoute($activity->subject_type, $dashboardModule ? $dashboardModule['routePrefix'] : '', 'edit', $activity->subject_id),
+        ]: []);
     }
 
     private function getFacts()
@@ -104,22 +107,24 @@ class DashboardController extends Controller
             'month',
         ])->mapWithKeys(function ($period) use ($statsByDate) {
             $stats = $this->getPeriodStats($period, $statsByDate);
-            return [$period => [
-                [
-                    'label' => 'Users',
-                    'figure' => $this->formatStat($stats['stats']['users']),
-                    'insight' => round($stats['stats']['bounceRate']) . '% Bounce rate',
-                    'trend' => $stats['moreUsers'] ? 'up' : 'down',
-                    'url' => 'https://analytics.google.com/analytics/web',
-                ],
-                [
-                    'label' => 'Pageviews',
-                    'figure' => $this->formatStat($stats['stats']['pageViews']),
-                    'insight' => round($stats['stats']['pageviewsPerSession'], 1) . ' Pages / Session',
-                    'trend' => $stats['morePageViews'] ? 'up' : 'down',
-                    'url' => 'https://analytics.google.com/analytics/web',
-                ],
-            ]];
+            return [
+                $period => [
+                    [
+                        'label' => 'Users',
+                        'figure' => $this->formatStat($stats['stats']['users']),
+                        'insight' => round($stats['stats']['bounceRate']) . '% Bounce rate',
+                        'trend' => $stats['moreUsers'] ? 'up' : 'down',
+                        'url' => 'https://analytics.google.com/analytics/web',
+                    ],
+                    [
+                        'label' => 'Pageviews',
+                        'figure' => $this->formatStat($stats['stats']['pageViews']),
+                        'insight' => round($stats['stats']['pageviewsPerSession'], 1) . ' Pages / Session',
+                        'trend' => $stats['morePageViews'] ? 'up' : 'down',
+                        'url' => 'https://analytics.google.com/analytics/web',
+                    ],
+                ]
+            ];
         });
     }
 
