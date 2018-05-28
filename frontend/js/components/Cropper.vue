@@ -65,13 +65,18 @@
         currentRatioName: this.media.crops[Object.keys(this.media.crops)[0]].name
       }
     },
+    watch: {
+      media: function (newMedia) {
+        this.currentMedia = newMedia
+      }
+    },
     computed: {
       cropOptions: function () {
         if (this.allCrops.hasOwnProperty(this.context)) return this.allCrops[this.context]
         return {}
       },
       crop: function () {
-        return this.media.crops[this.currentCrop]
+        return this.currentMedia.crops[this.currentCrop]
       },
       multiCrops: function () {
         return Object.keys(this.media.crops).length > 1

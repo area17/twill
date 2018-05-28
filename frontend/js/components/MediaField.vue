@@ -4,7 +4,7 @@
       <div class="media__info" v-if="hasMedia">
         <div class="media__img">
           <div class="media__imgFrame">
-            <div class="media__imgCentered" :class="cropThumbnailClass" :style="cropThumbnailStyle">
+            <div class="media__imgCentered" :style="cropThumbnailStyle">
               <img v-if="cropSrc || showImg" :src="cropSrc" crossorigin="anonymous" ref="mediaImg" :class="cropThumbnailClass"/>
             </div>
             <div class="media__edit" @click="openMediaLibrary(1, mediaKey, index)">
@@ -160,9 +160,8 @@
         canvas: null,
         img: null,
         ctx: null,
-        isDataToUrl: false,
         imgLoaded: false,
-        cropSrc: false,
+        cropSrc: '',
         showImg: false,
         isDestroyed: false,
         naturalDim: {
@@ -187,7 +186,7 @@
       cropThumbnailStyle: function () {
         if (!this.hasMedia) return {}
         if (!this.media.crops) return {}
-        if (!this.cropSrc) return {}
+        if (this.cropSrc.length === 0) return {}
 
         return {
           'backgroundImage': `url(${this.cropSrc})`
@@ -221,12 +220,14 @@
         let index = 0
         if (this.media.crops) {
           for (let variant in this.media.crops) {
-            if (index > 0) {
-              cropInfos += ', '
+            if (this.media.crops[variant].width + this.media.crops[variant].height) { // crop is not 0x0
+              if (index > 0) {
+                cropInfos += ', '
+              }
+              cropInfos += this.media.crops[variant].width + '&nbsp;&times;&nbsp;' + this.media.crops[variant].height + '&nbsp;'
+              cropInfos += '(' + this.media.crops[variant].name + ')'
+              index++
             }
-            cropInfos += this.media.crops[variant].width + '&nbsp;&times;&nbsp;' + this.media.crops[variant].height + '&nbsp;'
-            cropInfos += '(' + this.media.crops[variant].name + ')'
-            index++
           }
         }
         return cropInfos.length > 0 ? cropInfos : null
@@ -261,29 +262,39 @@
     methods: {
       // crop
       canvasCrop () {
-        let crop = this.media.crops[Object.keys(this.media.crops)[0]]
-        if (!crop) return
+        let data = this.media.crops[Object.keys(this.media.crops)[0]]
+        if (!data) return
 
-        crop = cropConversion(crop, this.naturalDim, this.originalDim)
-        const cropWidth = crop.width
-        const cropHeight = crop.height
+        // in case of a 0x0 crop : let's display the full image in the preview
+        if (data.width + data.height === 0) {
+          data.width = this.naturalDim.width || 0
+          data.height = this.naturalDim.height || 0
+          data.x = 0
+          data.y = 0
+        }
 
+        // default src
         let src = this.media.thumbnail
 
         this.$nextTick(() => {
           try {
+            let crop = cropConversion(data, this.naturalDim, this.originalDim)
+            const cropWidth = crop.width
+            const cropHeight = crop.height
             this.canvas.width = cropWidth
             this.canvas.height = cropHeight
             this.ctx.drawImage(this.img, crop.x, crop.y, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight)
             src = this.canvas.toDataURL('image/png')
-            this.isDataToUrl = true
+
+            if (this.cropSrc !== src) {
+              this.cropSrc = src
+            }
           } catch (error) {
             console.error(`An error have occured: ${error}`)
-            this.isDataToUrl = false
-          }
 
-          if (this.cropSrc !== src) {
-            this.cropSrc = src
+            if (this.cropSrc !== src) {
+              this.cropSrc = src
+            }
           }
         })
       },
@@ -395,6 +406,8 @@
         }
 
         if (this.hasMedia) {
+          this.cropSrc = this.media.thumbnail
+
           this.initImg().then(() => {
             imgLoaded()
           }, (error) => {
@@ -411,11 +424,15 @@
                 capture: true
               })
 
-              this.$refs.mediaImg.onError = (error) => {
-                console.error(`An error have occured: ${error}`)
-              }
+              this.$refs.mediaImg.addEventListener('error', (e) => {
+                console.error(`An error have occured: ${e.error}`)
+                if (this.media) this.cropSrc = this.media.thumbnail
+              })
 
-              this.cropSrc = this.media.thumbnail
+              self.$refs.mediaImg.onError = (e) => {
+                console.error(`An error have occured: ${e.error}`)
+                if (this.media) this.cropSrc = this.media.thumbnail
+              }
             })
           })
           this.hasMediaChange = false
@@ -438,8 +455,12 @@
             capture: true
           })
 
-          this.img.onError = (e) => {
-            reject(e)
+          this.img.addEventListener('error', function (e) {
+            reject(e.error)
+          })
+
+          this.img.onError = function (e) {
+            reject(e.error)
           }
 
           this.img.src = this.media.thumbnail
@@ -478,7 +499,9 @@
       this.init()
     },
     beforeUpdate: function () {
-      if (this.hasMediaChange) this.init()
+      if (this.hasMediaChange) {
+        this.init()
+      }
     },
     beforeDestroy: function () {
       if (this.isSlide) return // for Slideshows : the medias are deleted when the slideshow component is destroyed (so no need to do it here)
@@ -558,6 +581,7 @@
       max-height:100%;
       opacity: 0;
       visibility: hidden;
+      margin:auto;
 
       &.media__img--landscape {
         width: 100%;
@@ -613,11 +637,11 @@
     right:0;
     position: absolute;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    background: $color__lighter no-repeat center center;
-    background-size: 100% auto;
-    transition: background-image 350ms cubic-bezier(0.795, 0.125, 0.280, 0.990), background-size 0ms;
+    background-color: $color__lighter;
+    background-size: contain;
+    background-repeat:no-repeat;
+    background-position:center center;
+    transition: background-image 350ms cubic-bezier(0.795, 0.125, 0.280, 0.990), background-size 0ms 350ms;
 
     &:before {
       content: "";
@@ -628,14 +652,6 @@
       right: 0;
       bottom: 0;
       border:1px solid rgba(0,0,0,0.05);
-    }
-
-    &.media__img--landscape {
-      background-size: 100% auto;
-    }
-
-    &.media__img--portrait {
-      background-size: auto 100%;
     }
   }
 
