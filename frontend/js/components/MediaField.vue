@@ -267,10 +267,8 @@
 
         // in case of a 0x0 crop : let's display the full image in the preview
         if (data.width + data.height === 0) {
-          data.width = this.naturalDim.width || 0
-          data.height = this.naturalDim.height || 0
-          data.x = 0
-          data.y = 0
+          this.cropSrc = this.media.thumbnail
+          return
         }
 
         // default src
@@ -429,7 +427,7 @@
                 if (this.media) this.cropSrc = this.media.thumbnail
               })
 
-              self.$refs.mediaImg.onError = (e) => {
+              this.$refs.mediaImg.onError = (e) => {
                 console.error(`An error have occured: ${e.error}`)
                 if (this.media) this.cropSrc = this.media.thumbnail
               }
