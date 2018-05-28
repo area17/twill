@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Repositories\BlockRepository;
 
 trait HandleBlocks
@@ -208,7 +209,9 @@ trait HandleBlocks
                     'id' => $relatedElement->id,
                     'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
                     'edit' => moduleRoute($relation, config('twill.block_editor.browser_route_prefixes.' . $relation), 'edit', $relatedElement->id),
-                ];
+                ] + (classHasTrait($relatedElement, HasMedias::class) ? [
+                    'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
+                ] : []);
             })->toArray();
 
             return [

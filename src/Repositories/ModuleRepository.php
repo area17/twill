@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories;
 
+use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Repositories\Behaviors\HandleDates;
 use DB;
@@ -466,7 +467,9 @@ abstract class ModuleRepository
                 'id' => $relatedElement->id,
                 'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
                 'edit' => moduleRoute($moduleName ?? $relation, $routePrefix ?? '', 'edit', $relatedElement->id),
-            ]; // TODO: add thumbnail if module has medias
+            ] + (classHasTrait($relatedElement, HasMedias::class) ? [
+                'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
+            ] : []);
         })->toArray();
     }
 
