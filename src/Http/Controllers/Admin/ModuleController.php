@@ -3,9 +3,6 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Helpers\FlashLevel;
-use A17\Twill\Repositories\Behaviors\HandleBlocks;
-use A17\Twill\Repositories\Behaviors\HandleRevisions;
-use A17\Twill\Repositories\Behaviors\HandleTranslations;
 use Auth;
 use Event;
 use Illuminate\Contracts\Foundation\Application;
@@ -131,7 +128,7 @@ abstract class ModuleController extends Controller
          */
         if (!isset($this->defaultFilters)) {
             $this->defaultFilters = [
-                'search' => ($this->moduleIsTranslated() ? '' : '%') . $this->titleColumnKey,
+                'search' => ($this->moduleHas('translations') ? '' : '%') . $this->titleColumnKey,
             ];
         }
 
@@ -293,7 +290,7 @@ abstract class ModuleController extends Controller
                 }
             }
 
-            if ($this->moduleHasRevisions()) {
+            if ($this->moduleHas('revisions')) {
                 return response()->json([
                     'message' => 'Content saved. All good!',
                     'variant' => FlashLevel::SUCCESS,
@@ -496,7 +493,7 @@ abstract class ModuleController extends Controller
             'moduleName' => $this->moduleName,
             'reorder' => $this->getIndexOption('reorder'),
             'create' => $this->getIndexOption('create'),
-            'translate' => $this->moduleIsTranslated(),
+            'translate' => $this->moduleHas('translations'),
             'permalink' => $this->getIndexOption('permalink'),
             'bulkEdit' => $this->getIndexOption('bulkEdit'),
             'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
@@ -530,7 +527,7 @@ abstract class ModuleController extends Controller
 
     protected function getIndexTableData($items)
     {
-        $translated = $this->moduleIsTranslated();
+        $translated = $this->moduleHas('translations');
         return $items->map(function ($item) use ($translated) {
             $columnsData = collect($this->indexColumns)->mapWithKeys(function ($column) use ($item) {
                 return $this->getItemColumnData($item, $column);
@@ -539,7 +536,7 @@ abstract class ModuleController extends Controller
             $name = $columnsData[$this->titleColumnKey];
 
             if (empty($name)) {
-                if ($this->moduleIsTranslated()) {
+                if ($this->moduleHas('translations')) {
                     $fallBackTranslation = $item->translations()->where('active', true)->first();
 
                     if (isset($fallBackTranslation->{$this->titleColumnKey})) {
@@ -692,7 +689,7 @@ abstract class ModuleController extends Controller
             ]);
         }
 
-        if ($this->moduleIsTranslated()) {
+        if ($this->moduleHas('translations')) {
             array_push($tableColumns, [
                 'name' => 'languages',
                 'label' => 'Languages',
@@ -719,7 +716,7 @@ abstract class ModuleController extends Controller
             'number' => $this->repository->getCountByStatusSlug('all', $scope),
         ]);
 
-        if ($this->moduleHasRevisions() && $this->getIndexOption('create')) {
+        if ($this->moduleHas('revisions') && $this->getIndexOption('create')) {
             array_push($statusFilters, [
                 'name' => 'Mine',
                 'slug' => 'mine',
@@ -817,6 +814,8 @@ abstract class ModuleController extends Controller
 
     protected function getBrowserTableData($items)
     {
+        $withImage = $this->moduleHas('medias');
+
         return $items->map(function ($item) {
             $columnsData = collect($this->browserColumns)->mapWithKeys(function ($column) use ($item) {
                 return $this->getItemColumnData($item, $column);
@@ -932,15 +931,15 @@ abstract class ModuleController extends Controller
             'moduleName' => $this->moduleName,
             'routePrefix' => $this->routePrefix,
             'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
-            'translate' => $this->moduleIsTranslated(),
+            'translate' => $this->moduleHas('translations'),
             'permalink' => $this->getIndexOption('permalink'),
             'form_fields' => $this->repository->getFormFields($item),
             'baseUrl' => $baseUrl,
             'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
             'saveUrl' => $this->getModuleRoute($item->id, 'update'),
-            'editor' => $this->moduleHasRevisions() && $this->moduleHasBlocks() && !$this->disableEditor,
+            'editor' => $this->moduleHas('revisions') && $this->moduleHas('blocks') && !$this->disableEditor,
             'blockPreviewUrl' => route('admin.blocks.preview'),
-            'revisions' => $this->moduleHasRevisions() ? $item->revisionsArray() : null,
+            'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
         ] + (Route::has($previewRouteName) ? [
             'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $item->id),
         ] : [])
@@ -957,7 +956,7 @@ abstract class ModuleController extends Controller
         $fields = $this->repository->getFormFields($item);
         $data = [];
 
-        if ($this->moduleIsTranslated() && isset($fields['translations'])) {
+        if ($this->moduleHas('translations') && isset($fields['translations'])) {
             foreach ($fields['translations'] as $fieldName => $fieldValue) {
                 $data['fields'][] = [
                     'name' => $fieldName,
@@ -1038,8 +1037,8 @@ abstract class ModuleController extends Controller
     protected function getPermalinkBaseUrl()
     {
         return request()->getScheme() . '://' . config('app.url') . '/'
-            . ($this->moduleIsTranslated() ? '{language}/' : '')
-            . ($this->moduleHasRevisions() ? '{preview}/' : '')
+            . ($this->moduleHas('translations') ? '{language}/' : '')
+            . ($this->moduleHas('revisions') ? '{preview}/' : '')
             . ($this->permalinkBase ?? $this->moduleName)
             . (isset($this->permalinkBase) && empty($this->permalinkBase) ? '' : '/');
     }
@@ -1059,19 +1058,9 @@ abstract class ModuleController extends Controller
         );
     }
 
-    protected function moduleIsTranslated()
+    protected function moduleHas($behavior)
     {
-        return classHasTrait($this->repository, HandleTranslations::class);
-    }
-
-    protected function moduleHasRevisions()
-    {
-        return classHasTrait($this->repository, HandleRevisions::class);
-    }
-
-    protected function moduleHasBlocks()
-    {
-        return classHasTrait($this->repository, HandleBlocks::class);
+        return classHasTrait($this->repository, 'A17\Twill\Repositories\Behaviors\Handle' . ucfirst($behavior));
     }
 
     protected function setBackLink($back_link = null, $params = [])
