@@ -5,6 +5,7 @@
     $max = $max ?? 1;
     $note = $note ?? 'Add' . ($max > 1 ? " up to $max ". strtolower($label) : ' one ' . str_singular(strtolower($label)));
     $itemLabel = $itemLabel ?? strtolower($label);
+    $sortable = $sortable ?? true;
 @endphp
 
 <a17-inputframe label="{{ $label }}" name="browsers.{{ $name }}">
@@ -14,6 +15,7 @@
         :max="{{ $max }}"
         endpoint="{{ $endpoint }}"
         modal-title="Attach {{ strtolower($label) }}"
+        :draggable="{{ json_encode($sortable) }}"
     >{{ $note }}</a17-browserfield>
 </a17-inputframe>
 
