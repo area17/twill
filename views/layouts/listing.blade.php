@@ -30,13 +30,13 @@
                         @if (isset(${$filter.'List'}))
                             <a17-vselect
                             name="{{ $filter }}"
-                            :options="{{ json_encode(${$filter.'List'}->map(function($label, $value) {
+                            :options="{{ json_encode(method_exists(${$filter.'List'}, 'map') ? ${$filter.'List'}->map(function($label, $value) {
                                 return [
                                     'value' => $value,
                                     'label' => $label
                                 ];
-                            })->values()->toArray()) }}"
-                            placeholder="All {{ strtolower(str_plural(str_replace_first('f', '', $filter))) }}"
+                            })->values()->toArray() : ${$filter.'List'}) }}"
+                            placeholder="All {{ strtolower(str_plural($filter)) }}"
                             ref="filterDropdown[{{ $loop->index }}]"
                             ></a17-vselect>
                         @endif
