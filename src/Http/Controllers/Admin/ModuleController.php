@@ -428,6 +428,12 @@ abstract class ModuleController extends Controller
                 $this->repository->updateBasic($id, [$featuredField => $featured]);
             }
 
+            activity()->performedOn(
+                $this->repository->getById($id)
+            )->log(
+                (request('active') ? 'un' : '') . 'featured'
+            );
+
             $this->fireEvent();
             return $this->respondWithSuccess($this->modelTitle . ' ' . (request('active') ? 'un' : '') . 'featured!');
         }
