@@ -15,12 +15,6 @@ abstract class Model extends BaseModel implements TaggableInterface
 
     public $timestamps = true;
 
-    protected static function boot()
-    {
-        parent::boot();
-        static::setTagsModel(Tag::class);
-    }
-
     public function scopePublished($query)
     {
         return $query->wherePublished(true);
