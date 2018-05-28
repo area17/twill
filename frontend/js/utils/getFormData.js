@@ -33,6 +33,7 @@ export const stripOutBlockNamespace = (name, id) => {
 
 export const buildBlock = (block, rootState) => {
   return {
+    id: block.id,
     type: block.type,
     // retrieve all fields for this block and clean up field names
     content: rootState.form.fields.filter((field) => {
