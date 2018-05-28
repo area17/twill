@@ -165,7 +165,7 @@ And the following npm scripts:
 
 ```json
 "scripts": {
-  "cms-dev": "mkdir -p vendor/a17/laravel-cms-toolkit/public npm run cms-copy-blocks && concurrently \"cd vendor/a17/laravel-cms-toolkit && npm ci && npm run hot\" \"npm run cms-watch\" && npm run cms-clean-blocks",
+  "cms-dev": "mkdir -p vendor/a17/laravel-cms-toolkit/public && npm run cms-copy-blocks && concurrently \"cd vendor/a17/laravel-cms-toolkit && npm ci && npm run hot\" \"npm run cms-watch\" && npm run cms-clean-blocks",
   "cms-watch": "concurrently \"watch 'npm run cms-hot' vendor/a17/laravel-cms-toolkit/public --wait=2 --interval=0.1\" \"npm run cms-watch-blocks\"",
   "cms-hot": "cd vendor/a17/laravel-cms-toolkit && cp -R public/ ${INIT_CWD}/public",
   "cms-watch-blocks": "watch 'npm run cms-copy-blocks' resources/assets/js/blocks --wait=2 --interval=0.1"
