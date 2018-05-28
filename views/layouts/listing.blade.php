@@ -121,7 +121,7 @@
         defaultMaxPage: {{ $defaultMaxPage ?? 1 }},
         offset: {{ request('offset') ?? $offset ?? 60 }},
         defaultOffset: {{ $defaultOffset ?? 60 }},
-        sortKey: '{{ $reorder ? (request('sortKey') ?? '') : (request('sortKey') ?? 'name') }}',
+        sortKey: '{{ $reorder ? (request('sortKey') ?? '') : (request('sortKey') ?? '') }}',
         sortDir: '{{ request('sortDir') ?? 'asc' }}',
         baseUrl: '{{ rtrim(config('app.url'), '/') . '/' }}',
         localStorageKey: '{{ isset($currentUser) ? $currentUser->id : 0 }}__{{ $moduleName ?? Route::currentRouteName() }}'
