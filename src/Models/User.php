@@ -89,24 +89,4 @@ class User extends AuthenticatableContract
     {
         $this->notify(new ResetNotification($token));
     }
-
-    public function isNotLockedByCurrentUser()
-    {
-        return false;
-    }
-
-    public function isLockedByCurrentUser()
-    {
-        return false;
-    }
-
-    public function isLockable()
-    {
-        return false;
-    }
-
-    public function isLocked()
-    {
-        return false;
-    }
 }
