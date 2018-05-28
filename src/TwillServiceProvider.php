@@ -133,6 +133,7 @@ class TwillServiceProvider extends ServiceProvider
             )]);
         }
 
+        config(['activitylog.enabled' => config('twill.enabled.dashboard')]);
         config(['activitylog.subject_returns_soft_deleted_models' => true]);
 
         $this->publishes([__DIR__ . '/../config/twill-publish.php' => config_path('twill.php')], 'config');
