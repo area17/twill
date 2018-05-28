@@ -24,13 +24,13 @@ class DashboardController extends Controller
                     'optional' => false,
                     'sortable' => false,
                 ],
-                // [
-                //     'name' => 'published',
-                //     'label' => 'Published',
-                //     'visible' => true,
-                //     'optional' => false,
-                //     'sortable' => false,
-                // ],
+                [
+                    'name' => 'published',
+                    'label' => 'Published',
+                    'visible' => true,
+                    'optional' => false,
+                    'sortable' => false,
+                ],
                 [
                     'name' => 'name',
                     'label' => 'Name',
@@ -71,15 +71,15 @@ class DashboardController extends Controller
             'type' => ucfirst($activity->subject_type),
             'date' => $activity->created_at->toIso8601String(),
             'author' => $activity->causer->name ?? 'Unknown',
-            // 'published' => $activity->subject->published ?? true,
             'name' => $activity->subject->title,
             'activity' => ucfirst($activity->description),
-            // 'permalink' => '#',
         ] + (classHasTrait($activity->subject, HasMedias::class) ? [
             'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
         ] : []) + (!$activity->subject->trashed() ? [
             'edit' => moduleRoute($activity->subject_type, $dashboardModule ? $dashboardModule['routePrefix'] : '', 'edit', $activity->subject_id),
-        ]: []);
+        ] : []) + (!is_null($activity->subject->published) ? [
+            'published' => $activity->description === 'published' ? true : ($activity->description === 'unpublished' ? false : $activity->subject->published),
+        ] : []);
     }
 
     private function getFacts()
