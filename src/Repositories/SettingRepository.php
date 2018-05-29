@@ -37,9 +37,13 @@ class SettingRepository
     {
         $section = $section ? ['section' => $section] : [];
 
-        foreach (collect($settingsFields)->filter() as $key => $value) {
+        foreach (collect($settingsFields)->except('active_languages')->filter() as $key => $value) {
             foreach (getLocales() as $locale) {
-                array_set($settingsTranslated, $key, [$locale => ['value' => $value[$locale]] + ['active' => true]]);
+                array_set(
+                    $settingsTranslated,
+                    $key . '.' . $locale,
+                    ['value' => $value[$locale]] + ['active' => true]
+                );
             }
         }
 
