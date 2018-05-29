@@ -5,7 +5,7 @@
         <div class="media__img">
           <div class="media__imgFrame">
             <div class="media__imgCentered" :style="cropThumbnailStyle">
-              <img v-if="cropSrc || showImg" :src="cropSrc" crossorigin="anonymous" ref="mediaImg" :class="cropThumbnailClass"/>
+              <img v-if="cropSrc && showImg" :src="cropSrc" crossorigin="anonymous" ref="mediaImg" :class="cropThumbnailClass"/>
             </div>
             <div class="media__edit" @click="openMediaLibrary(1, mediaKey, index)">
               <span class="media__edit--button"><span v-svg symbol="edit"></span></span>
@@ -172,7 +172,7 @@
           width: null,
           height: null
         },
-        hasMediaChange: false,
+        hasMediaChanged: false,
         metadatas: {
           text: 'Edit info',
           textOpen: 'Edit info',
@@ -184,6 +184,7 @@
     filters: a17VueFilters,
     computed: {
       cropThumbnailStyle: function () {
+        if (this.showImg) return {}
         if (!this.hasMedia) return {}
         if (!this.media.crops) return {}
         if (this.cropSrc.length === 0) return {}
@@ -195,7 +196,6 @@
       cropThumbnailClass: function () {
         if (!this.hasMedia) return {}
         if (!this.media.crops) return {}
-        if (!this.isDataToUrl) return {}
         const crop = this.media.crops[Object.keys(this.media.crops)[0]]
         return {
           'media__img--landscape': crop.width / crop.height >= 1,
@@ -251,7 +251,7 @@
     },
     watch: {
       media: function (val, oldVal) {
-        this.hasMediaChange = val !== oldVal
+        this.hasMediaChanged = val !== oldVal
 
         if (this.selectedMedias.hasOwnProperty(this.mediaKey)) {
           // reset isDestroyed status because we changed the media
@@ -284,13 +284,17 @@
             this.ctx.drawImage(this.img, crop.x, crop.y, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight)
             src = this.canvas.toDataURL('image/png')
 
+            // show data url in the background
             if (this.cropSrc !== src) {
+              this.showImg = false
               this.cropSrc = src
             }
           } catch (error) {
-            console.error(`An error have occured: ${error}`)
+            console.error(error)
 
+            // fallback on displaying the thumbnail
             if (this.cropSrc !== src) {
+              this.showImg = true
               this.cropSrc = src
             }
           }
@@ -364,7 +368,7 @@
             })
             this.cropMedia({values: defaultCrops})
           }, (error) => {
-            console.error(`An error have occured: ${error}`)
+            console.error(error)
             this.cropMedia({values: defaultCrops})
           })
         } else {
@@ -409,31 +413,37 @@
           this.initImg().then(() => {
             imgLoaded()
           }, (error) => {
-            console.error(`An error have occured: ${error}`)
+            console.error(error)
             this.showImg = true
+            this.cropSrc = this.media.thumbnail
 
+            // lets try to load to image tag now
             this.$nextTick(() => {
-              this.$refs.mediaImg.addEventListener('load', () => {
-                this.img = this.$refs.mediaImg
-                imgLoaded()
-              }, {
-                once: true,
-                passive: true,
-                capture: true
-              })
+              // the image tag
+              const imgTag = this.$refs.mediaImg
+              if (imgTag) {
+                imgTag.addEventListener('load', () => {
+                  this.img = imgTag
+                  imgLoaded()
+                }, {
+                  once: true,
+                  passive: true,
+                  capture: true
+                })
 
-              this.$refs.mediaImg.addEventListener('error', (e) => {
-                console.error(`An error have occured: ${e.error}`)
-                if (this.media) this.cropSrc = this.media.thumbnail
-              })
-
-              this.$refs.mediaImg.onError = (e) => {
-                console.error(`An error have occured: ${e.error}`)
-                if (this.media) this.cropSrc = this.media.thumbnail
+                imgTag.addEventListener('error', (e) => {
+                  console.error(e)
+                  if (this.media) {
+                    this.cropSrc = this.media.thumbnail
+                  }
+                })
+              } else {
+                this.showImg = false
+                this.cropSrc = this.media.thumbnail
               }
             })
           })
-          this.hasMediaChange = false
+          this.hasMediaChanged = false
         }
       },
       initImg: function () {
@@ -453,14 +463,12 @@
             capture: true
           })
 
-          this.img.addEventListener('error', function (e) {
-            reject(e.error)
+          // in case of CORS issue or anything else
+          this.img.addEventListener('error', (e) => {
+            reject(e)
           })
 
-          this.img.onError = function (e) {
-            reject(e.error)
-          }
-
+          // try to load the media thumbnail
           this.img.src = this.media.thumbnail
         })
       },
@@ -497,7 +505,7 @@
       this.init()
     },
     beforeUpdate: function () {
-      if (this.hasMediaChange) {
+      if (this.hasMediaChanged) {
         this.init()
       }
     },
@@ -577,7 +585,6 @@
       display:block;
       max-width:100%;
       max-height:100%;
-      opacity: 0;
       visibility: hidden;
       margin:auto;
 
