@@ -1,5 +1,5 @@
 @extends('twill::layouts.form', [
-    'contentFieldsetLabel' => 'Edit settings',
+    'contentFieldsetLabel' => $contentFieldsetLabel ?? 'Edit settings',
 ])
 
 @section('contentFields')
