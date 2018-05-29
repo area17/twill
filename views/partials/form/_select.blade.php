@@ -10,6 +10,7 @@
     $placeholder = $placeholder ?? false;
     $required = $required ?? false;
     $default = $default ?? false;
+    $searchable = $searchable ?? false;
 
     // do not use for now, but this will allow you to create a new option directly from the form
     $addNew = $addNew ?? false;
@@ -76,6 +77,7 @@
         @if ($inModal) :in-modal="true" @endif
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
         :has-default-store="true"
+        @if ($searchable) :searchable="true" @endif
         size="large"
         in-store="inputValue"
     >
