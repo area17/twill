@@ -49,6 +49,10 @@
                     @yield('content')
                     @if (config('twill.enabled.media-library') || config('twill.enabled.file-library'))
                         <a17-medialibrary ref="mediaLibrary" :authorized="{{ json_encode(auth()->user()->can('edit')) }}"></a17-medialibrary>
+                        <a17-dialog ref="warningMediaLibrary" modal-title="Delete media" confirm-label="Delete">
+                            <p class="modal--tiny-title"><strong>Delete media</strong></p>
+                            <p>Are you sure ?<br />This change can't be undone.</p>
+                        </a17-dialog>
                     @endif
                     <a17-notif variant="success"></a17-notif>
                     <a17-notif variant="error"></a17-notif>

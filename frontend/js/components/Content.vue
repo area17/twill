@@ -121,7 +121,14 @@
         this.$store.commit(CONTENT.DUPLICATE_BLOCK, index)
       },
       deleteBlock: function (index) {
-        this.$store.commit(CONTENT.DELETE_BLOCK, index)
+        // open confirm dialog if any
+        if (this.$root.$refs.warningContentEditor) {
+          this.$root.$refs.warningContentEditor.open(() => {
+            this.$store.commit(CONTENT.DELETE_BLOCK, index)
+          })
+        } else {
+          this.$store.commit(CONTENT.DELETE_BLOCK, index)
+        }
       },
       collapseAllBlocks: function () {
         this.opened = false

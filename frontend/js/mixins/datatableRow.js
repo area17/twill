@@ -150,7 +150,14 @@ export default {
       this.$store.dispatch(ACTIONS.RESTORE_ROW, row)
     },
     deleteRow: function (row) {
-      this.$store.dispatch(ACTIONS.DELETE_ROW, row)
+      // open confirm dialog if any
+      if (this.$root.$refs.warningDeleteRow) {
+        this.$root.$refs.warningDeleteRow.open(() => {
+          this.$store.dispatch(ACTIONS.DELETE_ROW, row)
+        })
+      } else {
+        this.$store.dispatch(ACTIONS.DELETE_ROW, row)
+      }
     }
   }
 }

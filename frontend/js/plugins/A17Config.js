@@ -21,6 +21,7 @@ import a17Dropdown from '@/components/Dropdown.vue'
 import a17Buttonbar from '@/components/ButtonBar.vue'
 import a17Locale from '@/components/LocaleField.vue'
 import a17Modal from '@/components/Modal.vue'
+import a17Dialog from '@/components/Dialog.vue'
 import a17Slideshow from '@/components/Slideshow.vue'
 import a17BrowserField from '@/components/BrowserField.vue'
 import a17FileField from '@/components/files/FileField.vue'
@@ -61,6 +62,7 @@ const A17Config = {
     Vue.component('a17-dropdown', a17Dropdown)
     Vue.component('a17-buttonbar', a17Buttonbar)
     Vue.component('a17-modal', a17Modal)
+    Vue.component('a17-dialog', a17Dialog)
     Vue.component('a17-datepicker', a17DatePicker)
     Vue.component('a17-filefield', a17FileField)
     Vue.component('a17-colorfield', a17ColorField)

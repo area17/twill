@@ -85,6 +85,10 @@
     </a17-modal>
     <a17-editor v-if="editor" ref="editor" bg-color="{{ config('twill.block_editor.background_color') ?? '#FFFFFF' }}"></a17-editor>
     <a17-previewer ref="preview"></a17-previewer>
+    <a17-dialog ref="warningContentEditor" modal-title="Delete content" confirm-label="Delete">
+        <p class="modal--tiny-title"><strong>Delete content</strong></p>
+        <p>Are you sure ?<br />This change can't be undone.</p>
+    </a17-dialog>
 @stop
 
 @section('initialStore')

@@ -91,6 +91,11 @@
                 @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
             </a17-modal-create>
         @endif
+
+        <a17-dialog ref="warningDeleteRow" modal-title="Delete item" confirm-label="Delete">
+            <p class="modal--tiny-title"><strong>Move To Trash</strong></p>
+            <p>The item won't be deleted but moved to Trash.</p>
+        </a17-dialog>
     </div>
 @stop
 

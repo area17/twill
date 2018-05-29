@@ -139,8 +139,16 @@
         this.getPreview(index)
       },
       deleteBlock: function (index) {
-        this.unselectBlock()
-        this.$store.commit(CONTENT.DELETE_BLOCK, index)
+        // open confirm dialog if any
+        if (this.$root.$refs.warningContentEditor) {
+          this.$root.$refs.warningContentEditor.open(() => {
+            this.unselectBlock()
+            this.$store.commit(CONTENT.DELETE_BLOCK, index)
+          })
+        } else {
+          this.unselectBlock()
+          this.$store.commit(CONTENT.DELETE_BLOCK, index)
+        }
       },
       cancelBlock: function () {
         if (this.hasBlockActive) {
