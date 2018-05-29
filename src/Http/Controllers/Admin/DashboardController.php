@@ -71,7 +71,7 @@ class DashboardController extends Controller
             'type' => ucfirst($activity->subject_type),
             'date' => $activity->created_at->toIso8601String(),
             'author' => $activity->causer->name ?? 'Unknown',
-            'name' => $activity->subject->title,
+            'name' => $activity->subject->titleInDashboard ?? $activity->subject->title,
             'activity' => ucfirst($activity->description),
         ] + (classHasTrait($activity->subject, HasMedias::class) ? [
             'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
