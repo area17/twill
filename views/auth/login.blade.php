@@ -35,11 +35,10 @@
 
             <div class="login__copyright f--small">
                 <a href="https://twill.io/" target="_blank" rel="noopener">Made with
-                <svg width="82" height="33" viewBox="0 0 82 33">
-                    <title>Twill Logo</title>
-                    <path fill="currentColor" d="M63 2h8v31h-8zM74 2h8v31h-8zM39.342 22.922L34.185 11h-5.97L23.56 21.666 18.2 11H11V5H3v6H0v7h3v15h8V18h2.025l7.902 15h5.238l5.195-11.644L36.81 33h5.154l8.053-15H52v15h8V11H45.044"/>
-                    <circle fill="currentColor" cx="56" cy="5" r="4.3"/>
-                </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="55" height="24">
+                        <path fill="currentColor" d="M42 2h5v21h-5zM49 2h5v21h-5zM26.776 16.587L23.24 9h-4.097l-3.37 7.11L12.532 9H8V5H3v4H1v4h2v10h5V13h1.333l5.205 10h3.449l3.421-7.762L24.998 23h3.393l5.303-10H35v10h5V9h-9.66z"/>
+                        <circle fill="currentColor" cx="37.5" cy="4.5" r="2.875"/>
+                    </svg>
                 </a>
             </div>
         </div>
