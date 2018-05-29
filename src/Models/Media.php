@@ -52,4 +52,17 @@ class Media extends Model
             'height' => $this->height,
         ];
     }
+
+    public function getMetadata($name, $fallback = null)
+    {
+        $metadatas = (object) json_decode($this->pivot->metadatas);
+        $language = app()->getLocale();
+        $fallback = $fallback ? $this->$fallback : $this->name;
+
+        return $metadatas->$name->$language ?? (
+            is_object($metadatas->$name)
+                ? ($fallback ?? '')
+                : ($metadatas->$name ?? $fallback)
+        );
+    }
 }

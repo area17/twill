@@ -110,9 +110,7 @@ trait HasMedias
         }
 
         if ($media) {
-            $metadatas = (object) json_decode($media->pivot->metadatas);
-            $language = app()->getLocale();
-            return $metadatas->altText->$language ?? (is_object($metadatas->altText) ? ($media->altText ?? '') : ($metadatas->altText ?? $media->altText));
+            return $media->getMetadata('altText', 'alt_text');
         }
 
         return '';
@@ -127,9 +125,7 @@ trait HasMedias
         }
 
         if ($media) {
-            $metadatas = (object) json_decode($media->pivot->metadatas);
-            $language = app()->getLocale();
-            return $metadatas->caption->$language ?? (is_object($metadatas->caption) ? ($media->caption ?? '') : ($metadatas->caption ?? $media->caption));
+            return $media->getMetadata('caption');
         }
 
         return '';
