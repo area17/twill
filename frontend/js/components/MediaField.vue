@@ -5,7 +5,7 @@
         <div class="media__img">
           <div class="media__imgFrame">
             <div class="media__imgCentered" :style="cropThumbnailStyle">
-              <img v-if="cropSrc && showImg" :src="cropSrc" crossorigin="anonymous" ref="mediaImg" :class="cropThumbnailClass"/>
+              <img v-if="cropSrc && showImg" :src="cropSrc" ref="mediaImg" :class="cropThumbnailClass"/>
             </div>
             <div class="media__edit" @click="openMediaLibrary(1, mediaKey, index)">
               <span class="media__edit--button"><span v-svg symbol="edit"></span></span>
@@ -267,7 +267,7 @@
 
         // in case of a 0x0 crop : let's display the full image in the preview
         if (data.width + data.height === 0) {
-          this.cropSrc = this.media.thumbnail
+          this.showDefaultThumbnail()
           return
         }
 
@@ -414,8 +414,7 @@
             imgLoaded()
           }, (error) => {
             console.error(error)
-            this.showImg = true
-            this.cropSrc = this.media.thumbnail
+            this.showDefaultThumbnail()
 
             // lets try to load to image tag now
             this.$nextTick(() => {
@@ -433,9 +432,7 @@
 
                 imgTag.addEventListener('error', (e) => {
                   console.error(e)
-                  if (this.media) {
-                    this.cropSrc = this.media.thumbnail
-                  }
+                  this.showDefaultThumbnail()
                 })
               } else {
                 this.showImg = false
@@ -471,6 +468,10 @@
           // try to load the media thumbnail
           this.img.src = this.media.thumbnail
         })
+      },
+      showDefaultThumbnail: function () {
+        this.showImg = true
+        if (this.hasMedia) this.cropSrc = this.media.thumbnail
       },
       openCropMedia: function () {
         this.$refs[this.cropModalName].open()
@@ -585,7 +586,6 @@
       display:block;
       max-width:100%;
       max-height:100%;
-      visibility: hidden;
       margin:auto;
 
       &.media__img--landscape {
