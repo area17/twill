@@ -18,4 +18,5 @@ return [
     'site-link' => false,
     'settings' => false,
     'google-login' => false,
+    'dashboard' => false
 ];

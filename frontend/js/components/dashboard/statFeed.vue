@@ -25,6 +25,9 @@
           <h4 class="statFeed__label">{{ fact.label }}</h4>
           <p class="statFeed__meta f--note f--small">{{ fact.insight }}</p>
         </div>
+        <div class="statFeed__line">
+            <trend :data="fact.data" :gradient="['#cccccc']" stroke-width="2" :padding="0" auto-draw smooth width="100" height="50"></trend>
+        </div>
       </a>
       </template>
     </div>
@@ -35,6 +38,11 @@
 </template>
 
 <script>
+  import Vue from 'vue'
+  import Trend from 'vuetrend'
+
+  Vue.use(Trend)
+
   export default {
     name: 'A17StatFeed',
     props: {
@@ -148,9 +156,11 @@
 
   .statFeed__info {
     padding:10px 20px;
+    flex-grow: 1;
+    border-left:1px solid $color__border--light;
   }
 
-  .statFeed__info {
-    border-left:1px solid $color__border--light;
+  .statFeed__line {
+    padding: 5px 20px 0 20px;
   }
 </style>

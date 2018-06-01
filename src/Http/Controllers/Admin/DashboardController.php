@@ -4,6 +4,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use Analytics;
+use Spatie\Analytics\Exceptions\InvalidConfiguration;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Analytics\Period;
 
@@ -84,11 +85,16 @@ class DashboardController extends Controller
 
     private function getFacts()
     {
-        $response = Analytics::performQuery(
-            Period::days(60),
-            'ga:users,ga:pageviews,ga:bouncerate,ga:pageviewsPerSession',
-            ['dimensions' => 'ga:date']
-        );
+        try {
+            $response = Analytics::performQuery(
+                Period::days(60),
+                'ga:users,ga:pageviews,ga:bouncerate,ga:pageviewsPerSession',
+                ['dimensions' => 'ga:date']
+            );
+        } catch (InvalidConfiguration $exception) {
+            \Log::error($exception);
+            return [];
+        }
 
         $statsByDate = collect($response['rows'] ?? [])->map(function (array $dateRow) {
             return [
@@ -114,6 +120,7 @@ class DashboardController extends Controller
                         'figure' => $this->formatStat($stats['stats']['users']),
                         'insight' => round($stats['stats']['bounceRate']) . '% Bounce rate',
                         'trend' => $stats['moreUsers'] ? 'up' : 'down',
+                        'data' => $stats['usersData']->reverse()->values()->toArray(),
                         'url' => 'https://analytics.google.com/analytics/web',
                     ],
                     [
@@ -121,6 +128,7 @@ class DashboardController extends Controller
                         'figure' => $this->formatStat($stats['stats']['pageViews']),
                         'insight' => round($stats['stats']['pageviewsPerSession'], 1) . ' Pages / Session',
                         'trend' => $stats['morePageViews'] ? 'up' : 'down',
+                        'data' => $stats['pageViewsData']->reverse()->values()->toArray(),
                         'url' => 'https://analytics.google.com/analytics/web',
                     ],
                 ]
@@ -135,12 +143,24 @@ class DashboardController extends Controller
                 'stats' => $stats = $statsByDate->first(),
                 'moreUsers' => $stats['users'] > $statsByDate->get(1)['users'],
                 'morePageViews' => $stats['pageViews'] > $statsByDate->get(1)['pageViews'],
+                'usersData' => $statsByDate->take(7)->map(function ($stat) {
+                    return $stat['users'];
+                }),
+                'pageViewsData' => $statsByDate->take(7)->map(function ($stat) {
+                    return $stat['pageViews'];
+                })
             ];
         } elseif ($period === 'yesterday') {
             return [
                 'stats' => $stats = $statsByDate->get(1),
                 'moreUsers' => $stats['users'] > $statsByDate->get(2)['users'],
                 'morePageViews' => $stats['pageViews'] > $statsByDate->get(2)['pageViews'],
+                'usersData' => $statsByDate->slice(1)->take(7)->map(function ($stat) {
+                    return $stat['users'];
+                }),
+                'pageViewsData' => $statsByDate->slice(1)->take(7)->map(function ($stat) {
+                    return $stat['pageViews'];
+                })
             ];
         } elseif ($period === 'week') {
             $first7stats = $statsByDate->take(7)->all();
@@ -161,6 +181,12 @@ class DashboardController extends Controller
                 'stats' => $stats,
                 'moreUsers' => $stats['users'] > $compareStats['users'],
                 'morePageViews' => $stats['pageViews'] > $compareStats['pageViews'],
+                'usersData' => $statsByDate->slice(1)->take(29)->map(function ($stat) {
+                    return $stat['users'];
+                }),
+                'pageViewsData' => $statsByDate->slice(1)->take(29)->map(function ($stat) {
+                    return $stat['pageViews'];
+                })
             ];
         } elseif ($period === 'month') {
             $first30stats = $statsByDate->take(30)->all();
@@ -181,6 +207,12 @@ class DashboardController extends Controller
                 'stats' => $stats,
                 'moreUsers' => $stats['users'] > $compareStats['users'],
                 'morePageViews' => $stats['pageViews'] > $compareStats['pageViews'],
+                'usersData' => $statsByDate->slice(1)->take(29)->map(function ($stat) {
+                    return $stat['users'];
+                }),
+                'pageViewsData' => $statsByDate->slice(1)->take(29)->map(function ($stat) {
+                    return $stat['pageViews'];
+                })
             ];
         }
     }

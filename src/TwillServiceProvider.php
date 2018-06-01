@@ -138,6 +138,8 @@ class TwillServiceProvider extends ServiceProvider
         config(['activitylog.enabled' => config('twill.enabled.dashboard')]);
         config(['activitylog.subject_returns_soft_deleted_models' => true]);
 
+        config(['analytics.service_account_credentials_json' => config('twill.dashboard.analytics.service_account_credentials_json', storage_path('app/analytics/service-account-credentials.json'))]);
+
         $this->publishes([__DIR__ . '/../config/twill-publish.php' => config_path('twill.php')], 'config');
         $this->publishes([__DIR__ . '/../config/twill-navigation.php' => config_path('twill-navigation.php')], 'config');
     }
