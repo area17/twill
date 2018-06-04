@@ -108,12 +108,16 @@
   @import '~styles/setup/_mixins-colors-vars.scss';
 
   .nested-datatable__item {
+    border:1px solid #F2F2F2;
+    // padding:10px 0 0 10px;
+    margin-top:-1px;
+
     &.sortable-ghost {
       opacity: 0.5;
 
-      /deep/ > .nested-item {
-        border: 10px solid $color__drag_bg--ghost;
-      }
+      // /deep/ > .nested-item {
+      //   border: 10px solid $color__drag_bg--ghost;
+      // }
     }
 
     &.sortable-chosen {
@@ -133,14 +137,16 @@
   }
 
   .nested__dropArea {
+    // border:1px solid grey;
+    padding:10px;
 
     * {
       will-change: auto;
     }
 
     &.nested__dropArea--empty {
-      padding-top: 10px;
-      min-height: 10px;
+      padding-top: 20px;
+      min-height: 20px;
 
       /deep/ .nested-item {
         margin-bottom: 0;
@@ -148,30 +154,38 @@
     }
   }
 
-  .nested__dropArea--depth > li > div {
-    &::after {
-      content:'';
-      display:block;
-      height:6px;
-      border-left:1px solid #D9D9D9;
-      border-bottom:1px solid #D9D9D9;
-      position:absolute;
-      top:calc(50% - 3px);
-      left:20px;
-      background-color: transparent;
-      width:0;
-      pointer-events:none;
+  .nested-item:hover + .nested__dropArea {
+    background:$color__f--bg;
+
+    .nested-datatable__item {
+      background:white;
     }
   }
 
-  @for $i from 1 through 10 {
-    .nested__dropArea--depth#{$i} > li > div {
-      padding-left:#{$i * 50px};
+  // .nested__dropArea--depth > li > div {
+  //   &::after {
+  //     content:'';
+  //     display:block;
+  //     height:6px;
+  //     border-left:1px solid #D9D9D9;
+  //     border-bottom:1px solid #D9D9D9;
+  //     position:absolute;
+  //     top:calc(50% - 3px);
+  //     left:20px;
+  //     background-color: transparent;
+  //     width:0;
+  //     pointer-events:none;
+  //   }
+  // }
 
-      &::after {
-        width:#{($i * 50px) - 20px};
-      }
-    }
-  }
+  // @for $i from 1 through 10 {
+  //   .nested__dropArea--depth#{$i} > li > div {
+  //     padding-left:#{$i * 50px};
+
+  //     &::after {
+  //       width:#{($i * 50px) - 20px};
+  //     }
+  //   }
+  // }
 
 </style>
