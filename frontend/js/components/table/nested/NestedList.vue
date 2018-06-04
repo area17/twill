@@ -113,7 +113,12 @@
     margin-top:-1px;
 
     &.sortable-ghost {
-      opacity: 0.5;
+      opacity: 1 !important;
+      overflow:hidden;
+
+      height:5px;
+      border: 0 none;
+      background-color:grey;
 
       // /deep/ > .nested-item {
       //   border: 10px solid $color__drag_bg--ghost;
@@ -138,7 +143,7 @@
 
   .nested__dropArea {
     // border:1px solid grey;
-    padding:10px;
+    padding:15px;
 
     * {
       will-change: auto;
@@ -147,6 +152,7 @@
     &.nested__dropArea--empty {
       padding-top: 20px;
       min-height: 20px;
+      margin-top:-20px;
 
       /deep/ .nested-item {
         margin-bottom: 0;

@@ -1,8 +1,6 @@
 <template>
   <div class="nested-item">
     <span v-for="col in columns" :key="col.name" class="nested-item__cell" :class="cellClasses(col, 'nested-item__cell')">
-
-      <template v-if="col.name !== 'thumbnail'">
       <template v-if="isSpecificColumn(col)">
         <component :is="currentComponent(col.name)"
                    v-bind="currentComponentProps(col)"
@@ -10,7 +8,6 @@
                    @editInPlace="editInPlace"/>
       </template>
       <a17-table-cell-generic v-else v-bind="currentComponentProps(col)" @editInPlace="editInPlace" @update="tableCellUpdate"/>
-      </template>
     </span>
     <span class="nested-item__cell nested-item__cell--actions">
       <a17-table-cell-actions v-bind="currentComponentProps()" @editInPlace="editInPlace" @update="tableCellUpdate" @restoreRow=" restoreRow" @deleteRow="deleteRow"/>
