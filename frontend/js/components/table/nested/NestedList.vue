@@ -1,7 +1,6 @@
 <template>
   <draggable class="nested__dropArea"
-             :class="classesNestedDropArea"
-             :style="styleDepth"
+             :class="nestedDropAreaClasses"
              v-model="rows"
              :options="draggableOptions"
              :element="'ul'"
@@ -9,7 +8,7 @@
     <li class="nested-datatable__item"
         v-for="(row, index) in rows"
         :class="haveChildren(row.children)"
-        :key="row.id">
+        :key="depth + '-' +  row.id">
       <a17-nested-item :index="index"
                        :row="row"
                        :columns="columns"/>
@@ -55,7 +54,6 @@
     computed: {
       styleDepth: function () {
         return {
-          // 'marginLeft': this.depth * 20 + 'px'
           'marginLeft': this.depth === 0 ? '0px' : '60px'
         }
       },
@@ -69,7 +67,8 @@
             parentId: this.parentId,
             val: value
           }
-          const isChangingParents = (this.items.length !== value.length)
+
+          const isChangingParents = (this.rows.length !== data.val.length)
 
           if (this.parentId > -1) {
             this.$store.commit(DATATABLE.UPDATE_DATATABLE_NESTED, data)
@@ -79,10 +78,11 @@
           this.saveNewTree(isChangingParents)
         }
       },
-      classesNestedDropArea: function () {
-        return {
-          'nested__dropArea--empty': this.rows.length === 0
-        }
+      nestedDropAreaClasses: function () {
+        return [
+          this.rows.length === 0 ? 'nested__dropArea--empty' : '',
+          this.depth ? `nested__dropArea--depth nested__dropArea--depth${Math.min(10, this.depth)}` : ''
+        ]
       },
       draggableOptions: function () {
         return {
@@ -147,4 +147,31 @@
       }
     }
   }
+
+  .nested__dropArea--depth > li > div {
+    &::after {
+      content:'';
+      display:block;
+      height:6px;
+      border-left:1px solid #D9D9D9;
+      border-bottom:1px solid #D9D9D9;
+      position:absolute;
+      top:calc(50% - 3px);
+      left:20px;
+      background-color: transparent;
+      width:0;
+      pointer-events:none;
+    }
+  }
+
+  @for $i from 1 through 10 {
+    .nested__dropArea--depth#{$i} > li > div {
+      padding-left:#{$i * 50px};
+
+      &::after {
+        width:#{($i * 50px) - 20px};
+      }
+    }
+  }
+
 </style>
