@@ -12,7 +12,7 @@
       <a17-nested-item :index="index"
                        :row="row"
                        :columns="columns"/>
-      <a17-nested-list v-if="row.children && depth < maxDepth"
+      <a17-nested-list v-if="row.children"
                        :maxDepth="maxDepth"
                        :depth="depth + 1"
                        :parentId="row.id"
@@ -112,13 +112,17 @@
     // padding:10px 0 0 10px;
     margin-top:-1px;
 
+    .nested-datatable__item {
+      border-right: 0 none;
+    }
+
     &.sortable-ghost {
       opacity: 1 !important;
-      overflow:hidden;
+      // overflow:hidden;
 
-      height:5px;
-      border: 0 none;
-      background-color:grey;
+      // height:5px;
+      // border: 0 none;
+      background-color:$color__f--bg;
 
       // /deep/ > .nested-item {
       //   border: 10px solid $color__drag_bg--ghost;
@@ -131,7 +135,7 @@
 
     &.sortable-drag {
       display: block;
-      opacity: 0.95!important;
+      // opacity: 0!important;
     }
 
     &.nested-datatable__item--empty {
@@ -143,16 +147,20 @@
 
   .nested__dropArea {
     // border:1px solid grey;
-    padding:15px;
+    padding:15px 0px 15px 0px;
 
     * {
       will-change: auto;
     }
 
+    .nested__dropArea {
+      padding-left: 15px;
+    }
+
     &.nested__dropArea--empty {
       padding-top: 20px;
       min-height: 20px;
-      margin-top:-20px;
+      margin-top: -20px;
 
       /deep/ .nested-item {
         margin-bottom: 0;
@@ -168,30 +176,38 @@
     }
   }
 
-  // .nested__dropArea--depth > li > div {
-  //   &::after {
-  //     content:'';
-  //     display:block;
-  //     height:6px;
-  //     border-left:1px solid #D9D9D9;
-  //     border-bottom:1px solid #D9D9D9;
-  //     position:absolute;
-  //     top:calc(50% - 3px);
-  //     left:20px;
-  //     background-color: transparent;
-  //     width:0;
-  //     pointer-events:none;
-  //   }
-  // }
+  .nested__dropArea--depth > li > div {
+    &::after {
+      content:'';
+      display:block;
+      height:6px;
+      border-left:1px solid #D9D9D9;
+      border-bottom:1px solid #D9D9D9;
+      position:absolute;
+      top:calc(50% - 3px);
+      left:20px;
+      background-color: transparent;
+      width:0;
+      pointer-events:none;
+    }
+  }
 
-  // @for $i from 1 through 10 {
-  //   .nested__dropArea--depth#{$i} > li > div {
-  //     padding-left:#{$i * 50px};
+  .nested__dropArea--depth1 > li > div {
+    padding-left:50px;
 
-  //     &::after {
-  //       width:#{($i * 50px) - 20px};
-  //     }
-  //   }
-  // }
+    &::after {
+      width:30px;
+    }
+  }
+
+  @for $i from 2 through 10 {
+    .nested__dropArea--depth#{$i} > li > div {
+      padding-left:#{$i * 35px};
+
+      &::after {
+        width:#{($i * 35px) - 20px};
+      }
+    }
+  }
 
 </style>
