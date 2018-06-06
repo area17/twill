@@ -66,23 +66,6 @@
         savedBlocks: state => state.content.blocks
       })
     },
-    watch: {
-      loading: function (loading) {
-        let self = this
-
-        // all the preview are loaded : let's move to the active block
-        if (!loading) {
-          self.$nextTick(function () {
-            setTimeout(function () {
-              self.scrollToActive()
-            }, 250)
-          })
-        }
-      },
-      activeBlock: function (val) {
-        this.scrollToActive()
-      }
-    },
     methods: {
       toggleDropdown: function (index) {
         if (this.blocks.length > 1) {
@@ -145,16 +128,6 @@
       },
       unselectBlock: function () {
         this.$emit('unselect')
-      },
-      scrollToActive: function () {
-        if (!this.hasBlockActive) return
-
-        const activeBlockEl = this.$refs[this.activeBlock.id]
-        if (activeBlockEl) {
-          const activeScrollTop = activeBlockEl[0].offsetTop
-          const scrollContainer = this.$el.querySelector('.editorPreview__content')
-          scrollContainer.scrollTop = Math.max(0, activeScrollTop - 20)
-        }
       },
       resizeIframe: function (iframe) {
         const frameBody = iframe.contentWindow.document.body
