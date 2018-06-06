@@ -60,9 +60,9 @@ class Media extends Model
         $fallback = $fallback ? $this->$fallback : $this->name;
 
         return $metadatas->$name->$language ?? (
-            is_object($metadatas->$name)
-                ? ($fallback ?? '')
-                : ($metadatas->$name ?? $fallback)
+            is_object($metadatas->$name ?? null)
+            ? ($fallback ?? '')
+            : ($metadatas->$name ?? $fallback)
         );
     }
 }
