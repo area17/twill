@@ -4,8 +4,8 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use Analytics;
-use Spatie\Analytics\Exceptions\InvalidConfiguration;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\Analytics\Exceptions\InvalidConfiguration;
 use Spatie\Analytics\Period;
 
 class DashboardController extends Controller
@@ -49,14 +49,14 @@ class DashboardController extends Controller
     {
         return Activity::take(20)->latest()->get()->map(function ($activity) {
             return $this->formatActivity($activity);
-        })->filter();
+        })->filter()->values();
     }
 
     private function getLoggedInUserActivities()
     {
         return Activity::where('causer_id', auth()->user()->id)->take(20)->latest()->get()->map(function ($activity) {
             return $this->formatActivity($activity);
-        })->filter();
+        })->filter()->values();
     }
 
     private function formatActivity($activity)
@@ -131,7 +131,7 @@ class DashboardController extends Controller
                         'data' => $stats['pageViewsData']->reverse()->values()->toArray(),
                         'url' => 'https://analytics.google.com/analytics/web',
                     ],
-                ]
+                ],
             ];
         });
     }
@@ -148,7 +148,7 @@ class DashboardController extends Controller
                 }),
                 'pageViewsData' => $statsByDate->take(7)->map(function ($stat) {
                     return $stat['pageViews'];
-                })
+                }),
             ];
         } elseif ($period === 'yesterday') {
             return [
@@ -160,7 +160,7 @@ class DashboardController extends Controller
                 }),
                 'pageViewsData' => $statsByDate->slice(1)->take(7)->map(function ($stat) {
                     return $stat['pageViews'];
-                })
+                }),
             ];
         } elseif ($period === 'week') {
             $first7stats = $statsByDate->take(7)->all();
@@ -186,7 +186,7 @@ class DashboardController extends Controller
                 }),
                 'pageViewsData' => $statsByDate->slice(1)->take(29)->map(function ($stat) {
                     return $stat['pageViews'];
-                })
+                }),
             ];
         } elseif ($period === 'month') {
             $first30stats = $statsByDate->take(30)->all();
@@ -212,7 +212,7 @@ class DashboardController extends Controller
                 }),
                 'pageViewsData' => $statsByDate->slice(1)->take(29)->map(function ($stat) {
                     return $stat['pageViews'];
-                })
+                }),
             ];
         }
     }
