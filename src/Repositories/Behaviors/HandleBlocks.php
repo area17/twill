@@ -61,8 +61,7 @@ trait HandleBlocks
     private function getBlocks($object, $fields)
     {
         $blocks = collect();
-
-        if (isset($fields['blocks'])) {
+        if (isset($fields['blocks']) && is_array($fields['blocks'])) {
 
             foreach ($fields['blocks'] as $index => $block) {
                 $block = $this->buildBlock($block, $object);
