@@ -2,9 +2,7 @@
 
 @section('appTypeClass', 'body--buckets')
 
-@if($search ?? false)
 @section('globalNavSearch', 'true')
-@endif
 
 @section('content')
     <a17-buckets title="{{ $bucketSourceTitle or 'Available items' }}" empty-buckets="No items featured." empty-source="No items available." :restricted="{!! json_encode($restricted ?? true) !!}">

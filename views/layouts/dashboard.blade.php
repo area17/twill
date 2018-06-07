@@ -6,9 +6,6 @@
 
 @section('appTypeClass', 'body--dashboard')
 
-
-@section('globalNavSearch', false)
-
 @section('primaryNavigation')
   <div class="dashboardSearch" id="searchApp" v-cloak>
     <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" type="dashboard"></a17-search>
