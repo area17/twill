@@ -21,7 +21,7 @@
                     <div class="header__user" id="headerUser" v-cloak>
                         @partialView(($moduleName ?? null), 'navigation._user')
                     </div>
-                    {{-- @hasSection('globalNavSearch') --}}
+                    @hasSection('globalNavSearch')
                       <div class="headerSearch" id="searchApp">
                         <a href="#" class="headerSearch__toggle" @click.prevent="toggleSearch">
                           <span v-svg symbol="search" v-show="!open"></span>
@@ -34,7 +34,7 @@
                           </div>
                         </transition>
                       </div>
-                    {{-- @endif --}}
+                    @endif
                 </div>
             </header>
             @hasSection('primaryNavigation')

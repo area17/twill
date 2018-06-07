@@ -2,9 +2,7 @@
 
 @section('appTypeClass', 'body--listing')
 
-@if($search ?? false)
 @section('globalNavSearch', 'true')
-@endif
 
 @php
     $translate = $translate ?? false;

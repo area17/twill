@@ -2,9 +2,7 @@
 
 @section('appTypeClass', 'body--form')
 
-@if($search ?? false)
 @section('globalNavSearch', 'true')
-@endif
 
 @php
     $editor = $editor ?? false;

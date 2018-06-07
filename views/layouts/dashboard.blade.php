@@ -6,13 +6,14 @@
 
 @section('appTypeClass', 'body--dashboard')
 
-{{-- @if($search ?? false) --}}
+
+@section('globalNavSearch', false)
+
 @section('primaryNavigation')
   <div class="dashboardSearch" id="searchApp" v-cloak>
-    <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" :open="open" :opened="opened"></a17-search>
+    <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" type="dashboard"></a17-search>
   </div>
 @stop
-{{-- @endif --}}
 
 @section('content')
     <div class="dashboard">
