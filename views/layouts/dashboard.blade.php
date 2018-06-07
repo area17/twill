@@ -6,20 +6,20 @@
 
 @section('appTypeClass', 'body--dashboard')
 
-@if($search ?? false)
+{{-- @if($search ?? false) --}}
 @section('primaryNavigation')
   <div class="dashboardSearch" id="searchApp" v-cloak>
-    <a17-search endpoint="http://www.mocky.io/v2/5a7b81d43000004b0028bf3d" type="dashboard"></a17-search>
+    <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" :open="open" :opened="opened"></a17-search>
   </div>
 @stop
-@endif
+{{-- @endif --}}
 
 @section('content')
     <div class="dashboard">
         <a17-shortcut-creator :entities="{{ json_encode($shortcuts ?? []) }}"></a17-shortcut-creator>
 
         <div class="container">
-            @if($facts)
+            @if($facts ?? false)
                 <div class="wrapper wrapper--reverse">
                     <aside class="col col--aside">
                         <a17-stat-feed :facts="{{ json_encode($facts ?? []) }}">
@@ -29,7 +29,7 @@
                     <div class="col col--primary">
             @endif
                 <a17-activity-feed empty-message="{{ __($emptyMessage)  }}"></a17-activity-feed>
-            @if($facts)
+            @if($facts ?? false)
                 </div>
             </div>
             @endif

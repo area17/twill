@@ -4,6 +4,9 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use Analytics;
+use App\Models\Translations\WorkTranslation;
+use App\Models\Work;
+use DB;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Analytics\Exceptions\InvalidConfiguration;
 use Spatie\Analytics\Period;
@@ -43,6 +46,42 @@ class DashboardController extends Controller
             'shortcuts' => $this->getShortcuts($modules),
             'facts' => config('twill.dashboard.analytics.enabled', false) ? $this->getFacts() : null,
         ]);
+    }
+
+    public function search()
+    {
+        $workIds = WorkTranslation::select('work_id')
+            ->where('locale', 'en')
+            ->twillSearch(request('search'))
+            ->limit(3)
+            ->get()->map(function ($workTranslation) {
+            return $workTranslation->work_id;
+        })->values()->toArray();
+
+        $works = Work::whereIn('id', $workIds)->orderBy(DB::raw('FIELD(`id`, ' . implode(',', $workIds) . ')'))->get();
+
+        $results = $works->map(function ($work) {
+
+            try {
+                $author = $work->revisions()->latest()->first()->user->name ?? 'Admin';
+            } catch (\Exception $e) {
+                $author = 'Admin';
+            }
+
+            return [
+                'id' => $work->id,
+                'href' => moduleRoute('works', 'work', 'edit', $work->id),
+                'thumbnail' => $work->cmsImage('cover', 'default', ['w' => 100, 'h' => 100]),
+                'published' => $work->published,
+                'activity' => 'Last edited',
+                'date' => $work->updated_at->toIso8601String(),
+                'title' => $work->title,
+                'author' => $author,
+                'type' => "Work",
+            ];
+        })->toArray();
+
+        return $results;
     }
 
     private function getAllActivities()

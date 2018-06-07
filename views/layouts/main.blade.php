@@ -21,7 +21,7 @@
                     <div class="header__user" id="headerUser" v-cloak>
                         @partialView(($moduleName ?? null), 'navigation._user')
                     </div>
-                    @hasSection('globalNavSearch')
+                    {{-- @hasSection('globalNavSearch') --}}
                       <div class="headerSearch" id="searchApp">
                         <a href="#" class="headerSearch__toggle" @click.prevent="toggleSearch">
                           <span v-svg symbol="search" v-show="!open"></span>
@@ -30,11 +30,11 @@
                         <transition name="fade_search-overlay" @after-enter="afterAnimate">
                           <div class="headerSearch__wrapper" :style="positionStyle" v-show="open" v-cloak>
                             <div class="headerSearch__overlay" :style="positionStyle" @click="toggleSearch"></div>
-                            <a17-search endpoint="http://www.mocky.io/v2/5a7b81d43000004b0028bf3d" :open="open" :opened="opened"></a17-search>
+                            <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" :open="open" :opened="opened"></a17-search>
                           </div>
                         </transition>
                       </div>
-                    @endif
+                    {{-- @endif --}}
                 </div>
             </header>
             @hasSection('primaryNavigation')
