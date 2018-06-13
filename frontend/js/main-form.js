@@ -20,8 +20,6 @@ import a17PageNav from '@/components/PageNav.vue'
 import a17Content from '@/components/Content.vue'
 import a17Repeater from '@/components/Repeater.vue'
 import a17LocationField from '@/components/LocationField.vue'
-import a17Multiselect from '@/components/MultiSelect.vue'
-import a17Singleselect from '@/components/SingleSelect.vue'
 import a17ConnectorField from '@/components/ConnectorField.vue'
 
 // Browser
@@ -77,9 +75,7 @@ store.registerModule('attributes', attributes)
 Vue.component('a17-repeater', a17Repeater)
 Vue.component('a17-browser', a17Browser)
 
-// Form : radios and checkboxes
-Vue.component('a17-multiselect', a17Multiselect)
-Vue.component('a17-singleselect', a17Singleselect)
+// Form : connector fields
 Vue.component('a17-connectorfield', a17ConnectorField)
 
 // Form: map component
