@@ -116,6 +116,11 @@
     &:hover {
       background: $color__ultralight;
     }
+
+    svg {
+      width:100%;
+      height: auto;
+    }
   }
 
   .statFeed__numb {
@@ -123,6 +128,7 @@
     min-width:33.333%;
     position:relative;
     padding:10px 35px 10px 20px;
+    font-weight:600;
   }
 
   .statFeed__item:first-child {

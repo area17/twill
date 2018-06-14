@@ -125,6 +125,7 @@
   .shortcutCreator__sum {
     line-height: 1em;
     @include monospaced-figures(off);
+    font-weight: 600;
   }
 
   @include breakpoint('medium+') {
