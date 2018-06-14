@@ -43,6 +43,15 @@ Text can be set as heading, regular (default), small or tiny
   color:$color__text--light
 }
 
+.f--light-hover {
+  color:$color__text--light;
+  text-decoration:none;
+
+  &:hover {
+    color:$color__text;
+  }
+}
+
 .f--link {
   color:$color__link
 }
