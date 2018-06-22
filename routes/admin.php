@@ -36,7 +36,7 @@ if (config('twill.enabled.buckets')) {
     })->toArray();
 
     foreach ($bucketsRoutes as $bucketSectionKey => $routePrefix) {
-        Route::group(['prefix' => $routePrefix, 'as' => $routePrefix . '.'], function () use ($bucketSectionKey) {
+        Route::group(['prefix' => str_replace(".","/",$routePrefix), 'as' => $routePrefix . '.'], function () use ($bucketSectionKey) {
             Route::get($bucketSectionKey, ['as' => $bucketSectionKey, 'uses' => 'FeaturedController@index']);
             Route::group(['prefix' => $bucketSectionKey, 'as' => $bucketSectionKey . '.'], function () {
                 Route::post('save', ['as' => 'save', 'uses' => 'FeaturedController@save']);
