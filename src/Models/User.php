@@ -42,6 +42,11 @@ class User extends AuthenticatableContract
         ],
     ];
 
+    public function getTitleInBrowserAttribute()
+    {
+        return $this->name;
+    }
+
     public function getRoleValueAttribute()
     {
         if (!empty($this->role)) {
