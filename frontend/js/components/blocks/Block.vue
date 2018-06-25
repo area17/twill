@@ -264,8 +264,11 @@
       border:0 none;
     }
 
-    /deep/ .block__body {
+    /deep/ .input {
+      margin-top: 15px;
+    }
 
+    /deep/ .block__body {
       > .media,
       > .slideshow,
       > .browserField {
