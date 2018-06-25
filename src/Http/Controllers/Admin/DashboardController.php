@@ -159,7 +159,7 @@ class DashboardController extends Controller
                         'figure' => $this->formatStat($stats['stats']['users']),
                         'insight' => round($stats['stats']['bounceRate']) . '% Bounce rate',
                         'trend' => 'up',
-                        'data' => [10, 8, 26, 4, 45, 56, 32, 65, 35, 100, 90, 150],
+                        'data' => $period == 'yesterday' ? [10, 8, 26, 4, 45, 56, 32, 65, 35, 100, 90, 150] : array_map(function ($el) {return $el * rand(2, 3);}, [864, 1100, 978, 1132, 1291, 1143, 1112, 895, 1075, 1043, 888, 1500]),
                         'url' => 'https://analytics.google.com/analytics/web',
                     ],
                     [
@@ -167,7 +167,7 @@ class DashboardController extends Controller
                         'figure' => $this->formatStat($stats['stats']['pageViews']),
                         'insight' => round($stats['stats']['pageviewsPerSession'], 1) . ' Pages / Session',
                         'trend' => 'up',
-                        'data' => [10, 10, 20, 8, 50, 40, 20, 80, 30, 100, 90, 120],
+                        'data' => $period == 'yesterday' ? [10, 10, 20, 8, 50, 40, 20, 80, 30, 100, 90, 120] : [864, 1033, 826, 1018, 1118, 1100, 978, 1132, 1291, 1466, 964, 1500],
                         'url' => 'https://analytics.google.com/analytics/web',
                     ],
                     [
@@ -175,7 +175,7 @@ class DashboardController extends Controller
                         'figure' => 10,
                         'insight' => '3 Unverified',
                         'trend' => 'up',
-                        'data' => [10, 20, 7, 8, 30, 10, 20, 7, 8, 30, 10, 20, 30],
+                        'data' => $period == 'yesterday' ? [10, 20, 7, 8, 30, 10, 20, 7, 8, 30, 10, 20, 30] : array_map(function ($el) {return $el * rand(1, 2);}, [864, 826, 1018, 1118, 1100, 978, 1132, 1291, 1143, 1112, 895, 1500]),
                         'url' => 'https://analytics.google.com/analytics/web',
                     ],
                 ],
