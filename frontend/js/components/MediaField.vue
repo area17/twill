@@ -21,12 +21,9 @@
             media.height }}
           </li>
           <li class="f--small media__crop-link" v-if="cropInfos" @click="openCropMedia">
-            <div class="media__crop-link-col">
-              <span class="f--small f--note hide--xsmall">Cropped:&nbsp;</span>
-            </div>
-            <div class="media__crop-link-col">
-              <span class="f--small f--note hide--xsmall" v-html="cropInfos"></span>
-            </div>
+              <p class="f--small f--note hide--xsmall" v-for="cropInfo in cropInfos">
+                <span v-html="cropInfo"></span>
+              </p>
           </li>
           <li class="f--small">
             <a href="#" @click.prevent="metadatasInfos" v-if="withAddInfo" class="f--link-underlined--o">{{ metadatas.text }}</a>
@@ -216,17 +213,14 @@
         }
       },
       cropInfos: function () {
-        let cropInfos = ''
-        let index = 0
+        let cropInfos = []
         if (this.media.crops) {
           for (let variant in this.media.crops) {
             if (this.media.crops[variant].width + this.media.crops[variant].height) { // crop is not 0x0
-              if (index > 0) {
-                cropInfos += ', '
-              }
-              cropInfos += this.media.crops[variant].width + '&nbsp;&times;&nbsp;' + this.media.crops[variant].height + '&nbsp;'
-              cropInfos += '(' + this.media.crops[variant].name + ')'
-              index++
+              let cropInfo = ''
+              cropInfo += this.media.crops[variant].name + ' crop: '
+              cropInfo += this.media.crops[variant].width + '&nbsp;&times;&nbsp;' + this.media.crops[variant].height
+              cropInfos.push(cropInfo)
             }
           }
         }
@@ -605,16 +599,14 @@
   }
 
   .media__crop-link {
-    display: flex;
-    flex-direction: row;
     text-decoration: none;
     cursor: pointer;
 
-    .media__crop-link-col {
-      display: inline-block;
+    p:first-letter {
+      text-transform: capitalize;
     }
 
-    &:hover .f--small {
+    &:hover .f--small span {
       @include bordered($color__text, false);
     }
 
