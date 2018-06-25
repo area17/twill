@@ -172,7 +172,7 @@ class DashboardController extends Controller
                     ],
                     [
                         'label' => 'Newsletter signup',
-                        'figure' => 10,
+                        'figure' => $period == 'yesterday' ? 10 : 98,
                         'insight' => '3 Unverified',
                         'trend' => 'up',
                         'data' => $period == 'yesterday' ? [10, 20, 7, 8, 30, 10, 20, 7, 8, 30, 10, 20, 30] : array_map(function ($el) {return $el * rand(1, 2);}, [864, 826, 1018, 1118, 1100, 978, 1132, 1291, 1143, 1112, 895, 1500]),
