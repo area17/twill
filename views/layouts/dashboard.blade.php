@@ -2,14 +2,17 @@
 
 @php
     $emptyMessage = $emptyMessage ?? "You don't have any activity yet.";
+    $isDashboard = true;
 @endphp
 
 @section('appTypeClass', 'body--dashboard')
 
 @section('primaryNavigation')
-  <div class="dashboardSearch" id="searchApp" v-cloak>
-    <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" type="dashboard"></a17-search>
-  </div>
+    @if (config('twill.enabled.search', false))
+        <div class="dashboardSearch" id="searchApp" v-cloak>
+          <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" type="dashboard"></a17-search>
+        </div>
+    @endif
 @stop
 
 @section('content')
@@ -23,7 +26,6 @@
                         <a17-stat-feed :facts="{{ json_encode($facts ?? []) }}">
                             Statistics
                         </a17-stat-feed>
-                            <a17-feed :entities="[ { name: 'Garden Museum', url: '/fe/templates/form', type: 'Work' }, { name: 'London Design Festival 2018', url: '/fe/templates/form', type: 'News' }, { name: 'The Hollow Woods: Storytelling', url: '/fe/templates/form', type: 'News' }, { name: 'William Russell: A Collection', url: '/fe/templates/form', type: 'News' }, { name: 'Michael Bierut', url: '/fe/templates/form', type: 'Partner' }, { name: 'Musuem für Film umd Fernsehen', url: '/fe/templates/form', type: 'Work' }, { name: 'Shakespeare in the Park 2017', url: '/fe/templates/form', type: 'News' }, { name: 'Artifact', url: '/fe/templates/form', type: 'News' }, { name: 'Dance Ink (Vol. 8, No. 2)', url: '/fe/templates/form', type: 'Work' } ]">My drafts</a17-feed>
                     </aside>
                     <div class="col col--primary">
             @endif

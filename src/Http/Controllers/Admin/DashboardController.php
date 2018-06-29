@@ -50,38 +50,30 @@ class DashboardController extends Controller
 
     public function search()
     {
-        $workIds = WorkTranslation::select('work_id')
-            ->where('locale', 'en')
-            ->twillSearch(request('search'))
-            ->limit(3)
-            ->get()->map(function ($workTranslation) {
-            return $workTranslation->work_id;
-        })->values()->toArray();
-
-        $works = Work::whereIn('id', $workIds)->orderBy(DB::raw('FIELD(`id`, ' . implode(',', $workIds) . ')'))->get();
-
-        $results = $works->map(function ($work) {
-
-            try {
-                $author = $work->revisions()->latest()->first()->user->name ?? 'Admin';
-            } catch (\Exception $e) {
-                $author = 'Admin';
-            }
-
-            return [
-                'id' => $work->id,
-                'href' => moduleRoute('works', 'work', 'edit', $work->id),
-                'thumbnail' => $work->cmsImage('cover', 'default', ['w' => 100, 'h' => 100]),
-                'published' => $work->published,
-                'activity' => 'Last edited',
-                'date' => $work->updated_at->toIso8601String(),
-                'title' => $work->title,
-                'author' => $author,
-                'type' => "Work",
-            ];
-        })->toArray();
-
-        return $results;
+        // TODO: implement this using dashboard modules config
+        // $results = $items->map(function ($item) {
+        // 
+        //     try {
+        //         $author = $item->revisions()->latest()->first()->user->name ?? 'Admin';
+        //     } catch (\Exception $e) {
+        //         $author = 'Admin';
+        //     }
+        // 
+        //     return [
+        //         'id' => $item->id,
+        //         'href' => moduleRoute('items', 'section', 'edit', $item->id),
+        //         'thumbnail' => $item->cmsImage('cover', 'default', ['w' => 100, 'h' => 100]),
+        //         'published' => $item->published,
+        //         'activity' => 'Last edited',
+        //         'date' => $item->updated_at->toIso8601String(),
+        //         'title' => $item->title,
+        //         'author' => $author,
+        //         'type' => "item",
+        //     ];
+        // })->toArray();
+        // 
+        // return $results;
+        return [];
     }
 
     private function getAllActivities()
@@ -158,26 +150,18 @@ class DashboardController extends Controller
                         'label' => 'Users',
                         'figure' => $this->formatStat($stats['stats']['users']),
                         'insight' => round($stats['stats']['bounceRate']) . '% Bounce rate',
-                        'trend' => 'up',
-                        'data' => $period == 'yesterday' ? [10, 8, 26, 4, 45, 56, 32, 65, 35, 100, 90, 150] : array_map(function ($el) {return $el * rand(2, 3);}, [864, 1100, 978, 1132, 1291, 1143, 1112, 895, 1075, 1043, 888, 1500]),
+                        'trend' => $stats['moreUsers'] ? 'up' : 'down',
+                        'data' => $stats['usersData']->reverse()->values()->toArray(),
                         'url' => 'https://analytics.google.com/analytics/web',
                     ],
                     [
                         'label' => 'Pageviews',
                         'figure' => $this->formatStat($stats['stats']['pageViews']),
                         'insight' => round($stats['stats']['pageviewsPerSession'], 1) . ' Pages / Session',
-                        'trend' => 'up',
-                        'data' => $period == 'yesterday' ? [10, 10, 20, 8, 50, 40, 20, 80, 30, 100, 90, 120] : [864, 1033, 826, 1018, 1118, 1100, 978, 1132, 1291, 1466, 964, 1500],
+                        'trend' => $stats['morePageViews'] ? 'up' : 'down',
+                        'data' => $stats['pageViewsData']->reverse()->values()->toArray(),
                         'url' => 'https://analytics.google.com/analytics/web',
-                    ],
-                    [
-                        'label' => 'Newsletter signup',
-                        'figure' => $period == 'yesterday' ? 10 : 98,
-                        'insight' => '3 Unverified',
-                        'trend' => 'up',
-                        'data' => $period == 'yesterday' ? [10, 20, 7, 8, 30, 10, 20, 7, 8, 30, 10, 20, 30] : array_map(function ($el) {return $el * rand(1, 2);}, [864, 826, 1018, 1118, 1100, 978, 1132, 1291, 1143, 1112, 895, 1500]),
-                        'url' => 'https://analytics.google.com/analytics/web',
-                    ],
+                    ]
                 ],
             ];
         });

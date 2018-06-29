@@ -2,8 +2,6 @@
 
 @section('appTypeClass', 'body--listing')
 
-@section('globalNavSearch', 'true')
-
 @php
     $translate = $translate ?? false;
     $translateTitle = $translateTitle ?? $translate ?? false;
@@ -91,8 +89,8 @@
         @endif
 
         <a17-dialog ref="warningDeleteRow" modal-title="Delete item" confirm-label="Delete">
-            <p class="modal--tiny-title"><strong>Move To Trash</strong></p>
-            <p>The item won't be deleted but moved to Trash.</p>
+            <p class="modal--tiny-title"><strong>Move to trash</strong></p>
+            <p>The item won't be deleted but moved to trash.</p>
         </a17-dialog>
     </div>
 @stop

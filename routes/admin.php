@@ -53,5 +53,8 @@ if (config('twill.enabled.settings')) {
 
 if (config('twill.enabled.dashboard')) {
     Route::name('dashboard')->get('/', 'DashboardController@index');
+}
+
+if (config('twill.enabled.search')) {
     Route::name('search')->get('search', 'DashboardController@search');
 }

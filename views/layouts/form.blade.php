@@ -2,8 +2,6 @@
 
 @section('appTypeClass', 'body--form')
 
-@section('globalNavSearch', 'true')
-
 @php
     $editor = $editor ?? false;
     $translate = $translate ?? false;
@@ -65,16 +63,6 @@
                     </section>
                 </div>
             </div>
-
-            <!-- Move to trash -->
-            {{-- <a17-modal class="modal--tiny modal--form modal--withintro" ref="moveToTrashModal" title="Move To Trash">
-                <p class="modal--tiny-title"><strong>Are you sure ?</strong></p>
-                <p>This change can't be undone.</p>
-                <a17-inputframe>
-                    <a17-button variant="validate">Ok</a17-button> <a17-button variant="aslink" @click="$refs.moveToTrashModal.close()"><span>Cancel</span></a17-button>
-                </a17-inputframe>
-            </a17-modal> --}}
-
             <a17-spinner v-if="loading"></a17-spinner>
         </form>
     </div>

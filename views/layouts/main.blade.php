@@ -8,8 +8,8 @@
             {!! File::exists(public_path("/assets/admin/icons/icons.svg")) ? File::get(public_path("/assets/admin/icons/icons.svg")) : '' !!}
             {!! File::exists(public_path("/assets/admin/icons/icons-files.svg")) ? File::get(public_path("/assets/admin/icons/icons-files.svg")) : '' !!}
         </div>
-        @hasSection('globalNavSearch')
-            @partialView(($moduleName ?? null), 'navigation._overlay_navigation', [ 'search' => true ])
+        @if(config('twill.enabled.search', false))
+            @partialView(($moduleName ?? null), 'navigation._overlay_navigation', ['search' => true])
         @else
             @partialView(($moduleName ?? null), 'navigation._overlay_navigation')
         @endif
@@ -21,7 +21,7 @@
                     <div class="header__user" id="headerUser" v-cloak>
                         @partialView(($moduleName ?? null), 'navigation._user')
                     </div>
-                    @hasSection('globalNavSearch')
+                    @if(config('twill.enabled.search', false) && !($isDashboard ?? false))
                       <div class="headerSearch" id="searchApp">
                         <a href="#" class="headerSearch__toggle" @click.prevent="toggleSearch">
                           <span v-svg symbol="search" v-show="!open"></span>
