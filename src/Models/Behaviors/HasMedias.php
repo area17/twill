@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\CmsToolkit\Models\Behaviors;
+namespace A17\Twill\Models\Behaviors;
 
-use A17\CmsToolkit\Models\Media;
+use A17\Twill\Models\Media;
 use ImageService;
 
 trait HasMedias
@@ -110,9 +110,7 @@ trait HasMedias
         }
 
         if ($media) {
-            $metadatas = (object) json_decode($media->pivot->metadatas);
-            $language = app()->getLocale();
-            return $metadatas->altText->$language ?? (is_object($metadatas->altText) ? ($media->altText ?? '') : ($metadatas->altText ?? $media->altText));
+            return $media->getMetadata('altText', 'alt_text');
         }
 
         return '';
@@ -127,9 +125,7 @@ trait HasMedias
         }
 
         if ($media) {
-            $metadatas = (object) json_decode($media->pivot->metadatas);
-            $language = app()->getLocale();
-            return $metadatas->caption->$language ?? (is_object($metadatas->caption) ? ($media->caption ?? '') : ($metadatas->caption ?? $media->caption));
+            return $media->getMetadata('caption');
         }
 
         return '';
@@ -199,6 +195,17 @@ trait HasMedias
     public function cmsImage($role, $crop = "default", $params = [])
     {
         return $this->image($role, $crop, $params, false, true, false) ?? ImageService::getTransparentFallbackUrl($params);
+    }
+
+    public function defaultCmsImage($params = [])
+    {
+        $media = $this->medias->first();
+
+        if ($media) {
+            return $this->image(null, null, $params, true, true, $media) ?? ImageService::getTransparentFallbackUrl($params);
+        }
+
+        return ImageService::getTransparentFallbackUrl($params);
     }
 
     public function imageObjects($role, $crop = "default")

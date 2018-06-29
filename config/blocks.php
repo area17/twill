@@ -3,7 +3,7 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | CMS Toolkit Block Editor configuration
+    | Twill Block Editor configuration
     |--------------------------------------------------------------------------
     |
     | This array allows you to provide the package with your configuration

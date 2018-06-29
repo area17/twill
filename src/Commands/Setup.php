@@ -1,15 +1,15 @@
 <?php
 
-namespace A17\CmsToolkit\Commands;
+namespace A17\Twill\Commands;
 
 use File;
 use Illuminate\Console\Command;
 
 class Setup extends Command
 {
-    protected $signature = 'cms-toolkit:setup';
+    protected $signature = 'twill:setup';
 
-    protected $description = 'Setup the CMS Toolkit superadmin and publish assets/configs';
+    protected $description = 'Setup Twill superadmin and publish assets/configs';
 
     public function handle()
     {
@@ -35,20 +35,25 @@ class Setup extends Command
         }
 
         $this->call('vendor:publish', [
-            '--provider' => 'A17\CmsToolkit\CmsToolkitServiceProvider',
+            '--provider' => 'A17\Twill\TwillServiceProvider',
+            '--tag' => 'migrations',
+        ]);
+
+        $this->call('vendor:publish', [
+            '--provider' => 'Spatie\Activitylog\ActivitylogServiceProvider',
             '--tag' => 'migrations',
         ]);
     }
 
     private function createSuperAdmin()
     {
-        $this->call('cms-toolkit:superadmin');
+        $this->call('twill:superadmin');
     }
 
     private function publishAssets()
     {
         $this->call('vendor:publish', [
-            '--provider' => 'A17\CmsToolkit\CmsToolkitServiceProvider',
+            '--provider' => 'A17\Twill\TwillServiceProvider',
             '--tag' => 'assets',
         ]);
     }
@@ -56,7 +61,7 @@ class Setup extends Command
     private function publishConfig()
     {
         $this->call('vendor:publish', [
-            '--provider' => 'A17\CmsToolkit\CmsToolkitServiceProvider',
+            '--provider' => 'A17\Twill\TwillServiceProvider',
             '--tag' => 'config',
         ]);
 

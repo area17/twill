@@ -1,9 +1,9 @@
 <?php
 
-namespace A17\CmsToolkit\Repositories;
+namespace A17\Twill\Repositories;
 
-use A17\CmsToolkit\Models\File;
-use A17\CmsToolkit\Repositories\Behaviors\HandleTags;
+use A17\Twill\Models\File;
+use A17\Twill\Repositories\Behaviors\HandleTags;
 use Storage;
 
 class FileRepository extends ModuleRepository
@@ -26,8 +26,8 @@ class FileRepository extends ModuleRepository
         if (($object = $this->model->find($id)) != null) {
             if ($object->canDeleteSafely()) {
                 $storageId = $object->uuid;
-                if ($object->delete() && config('cms-toolkit.file_library.cascade_delete')) {
-                    Storage::disk(config('cms-toolkit.file_library.disk'))->delete($storageId);
+                if ($object->delete() && config('twill.file_library.cascade_delete')) {
+                    Storage::disk(config('twill.file_library.disk'))->delete($storageId);
                 }
             }
         }
@@ -36,7 +36,7 @@ class FileRepository extends ModuleRepository
     public function prepareFieldsBeforeCreate($fields)
     {
         if (!isset($fields['size'])) {
-            $fields['size'] = Storage::disk(config('cms-toolkit.file_library.disk'))->size($fields['uuid']);
+            $fields['size'] = Storage::disk(config('twill.file_library.disk'))->size($fields['uuid']);
         }
 
         return $fields;

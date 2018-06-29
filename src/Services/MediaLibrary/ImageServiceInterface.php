@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Services\MediaLibrary;
+namespace A17\Twill\Services\MediaLibrary;
 
 interface ImageServiceInterface
 {

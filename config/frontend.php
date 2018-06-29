@@ -4,7 +4,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | CMS Toolkit Frontend assets configuration
+    | Twill Frontend assets configuration
     |--------------------------------------------------------------------------
     |
     | This allows you to setup frontend helpers related settings.

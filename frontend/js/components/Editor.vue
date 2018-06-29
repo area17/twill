@@ -87,10 +87,27 @@
         revisions: state => state.revision.all
       })
     },
+    watch: {
+      loading: function (loading) {
+        let self = this
+
+        if (!loading) {
+          self.$nextTick(function () {
+            setTimeout(function () {
+              self.scrollToActive()
+            }, 250)
+          })
+        }
+      }
+    },
     methods: {
       open: function (index) {
         this.getAllPreviews()
-        if (index >= 0) this.selectBlock(index)
+        if (index >= 0) {
+          this.selectBlock(index)
+          this.scrollToActive()
+        }
+
         this.$refs.overlay.open()
       },
       close: function (index) {
@@ -102,6 +119,16 @@
       closeEditor: function () {
         this.unselectBlock()
         html.classList.remove(htmlClass)
+      },
+      scrollToActive: function () {
+        if (!this.hasBlockActive) return
+
+        const activeBlockEl = this.$refs.previews.$refs[this.activeBlock.id]
+        if (activeBlockEl) {
+          const activeScrollTop = activeBlockEl[0].offsetTop
+          const scrollContainer = this.$el.querySelector('.editorPreview__content')
+          scrollContainer.scrollTop = Math.max(0, activeScrollTop - 20)
+        }
       },
       isBlockActive: function (id) {
         if (!this.hasBlockActive) return false
@@ -139,8 +166,16 @@
         this.getPreview(index)
       },
       deleteBlock: function (index) {
-        this.unselectBlock()
-        this.$store.commit(CONTENT.DELETE_BLOCK, index)
+        // open confirm dialog if any
+        if (this.$root.$refs.warningContentEditor) {
+          this.$root.$refs.warningContentEditor.open(() => {
+            this.unselectBlock()
+            this.$store.commit(CONTENT.DELETE_BLOCK, index)
+          })
+        } else {
+          this.unselectBlock()
+          this.$store.commit(CONTENT.DELETE_BLOCK, index)
+        }
       },
       cancelBlock: function () {
         if (this.hasBlockActive) {

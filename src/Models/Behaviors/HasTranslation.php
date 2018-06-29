@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Models\Behaviors;
+namespace A17\Twill\Models\Behaviors;
 
 use Dimsav\Translatable\Translatable;
 
@@ -82,7 +82,10 @@ trait HasTranslation
                 'value' => $translation->locale,
                 'published' => $translation->active ?? false,
             ];
-        });
+        })->sortBy(function($translation) {
+            $localesOrdered = config('translatable.locales');
+            return array_search($translation['value'], $localesOrdered);
+        })->values();
     }
 
     public function translatedAttribute($key)

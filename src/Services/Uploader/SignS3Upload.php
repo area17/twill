@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\CmsToolkit\Services\Uploader;
+namespace A17\Twill\Services\Uploader;
 
-use A17\CmsToolkit\Services\Uploader\SignS3UploadListener;
+use A17\Twill\Services\Uploader\SignS3UploadListener;
 
 class SignS3Upload
 {
@@ -18,8 +18,8 @@ class SignS3Upload
         $policyJson = json_encode($policyObject);
         $policyHeaders = $policyObject["headers"] ?? null;
 
-        $this->bucket = config('filesystems.disks.'. $disk .'.bucket');
-        $this->secret = config('filesystems.disks.'. $disk .'.secret');
+        $this->bucket = config('filesystems.disks.' . $disk . '.bucket');
+        $this->secret = config('filesystems.disks.' . $disk . '.secret');
         $this->endpoint = s3Endpoint($disk);
 
         if ($policyHeaders) {

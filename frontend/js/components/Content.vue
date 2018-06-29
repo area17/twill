@@ -9,8 +9,8 @@
               <button type="button" @click="collapseAllBlocks()" v-if="opened">Collapse all</button>
               <button type="button" @click="expandAllBlocks()" v-else>Expand all</button>
               <button v-if="editor" type="button" @click="openEditor(index)">Open in editor</button>
+              <button type="button" @click="duplicateBlock(index)">Create another</button>
               <button type="button" @click="deleteBlock(index)">Delete</button>
-              <button type="button" @click="duplicateBlock(index)">Duplicate</button>
             </div>
             <button type="button" slot="dropdown-numbers" v-for="n in blocks.length" @click="moveBlock(index, n - 1)" :key="n">{{ n }}</button>
           </a17-block>
@@ -121,7 +121,14 @@
         this.$store.commit(CONTENT.DUPLICATE_BLOCK, index)
       },
       deleteBlock: function (index) {
-        this.$store.commit(CONTENT.DELETE_BLOCK, index)
+        // open confirm dialog if any
+        if (this.$root.$refs.warningContentEditor) {
+          this.$root.$refs.warningContentEditor.open(() => {
+            this.$store.commit(CONTENT.DELETE_BLOCK, index)
+          })
+        } else {
+          this.$store.commit(CONTENT.DELETE_BLOCK, index)
+        }
       },
       collapseAllBlocks: function () {
         this.opened = false

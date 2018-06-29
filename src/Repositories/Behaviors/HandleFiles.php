@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\CmsToolkit\Repositories\Behaviors;
+namespace A17\Twill\Repositories\Behaviors;
 
-use A17\CmsToolkit\Models\File;
+use A17\Twill\Models\File;
 
 trait HandleFiles
 {
@@ -55,7 +55,7 @@ trait HandleFiles
 
                 $locale = $locale ?? config('app.locale');
                 if (in_array($role, $this->model->filesParams ?? [])
-                    || in_array($role, config('cms-toolkit.block_editor.files', []))) {
+                    || in_array($role, config('twill.block_editor.files', []))) {
 
                     collect($filesForRole)->each(function ($file) use (&$files, $role, $locale) {
                         $files->push([

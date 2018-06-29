@@ -1,10 +1,6 @@
-@extends('cms-toolkit::layouts.main')
+@extends('twill::layouts.main')
 
 @section('appTypeClass', 'body--form')
-
-@if($search ?? false)
-@section('globalNavSearch', 'true')
-@endif
 
 @php
     $editor = $editor ?? false;
@@ -67,24 +63,18 @@
                     </section>
                 </div>
             </div>
-
-            <!-- Move to trash -->
-            {{-- <a17-modal class="modal--tiny modal--form modal--withintro" ref="moveToTrashModal" title="Move To Trash">
-                <p class="modal--tiny-title"><strong>Are you sure ?</strong></p>
-                <p>This change can't be undone.</p>
-                <a17-inputframe>
-                    <a17-button variant="validate">Ok</a17-button> <a17-button variant="aslink" @click="$refs.moveToTrashModal.close()"><span>Cancel</span></a17-button>
-                </a17-inputframe>
-            </a17-modal> --}}
-
             <a17-spinner v-if="loading"></a17-spinner>
         </form>
     </div>
     <a17-modal class="modal--browser" ref="browser" mode="medium" :force-close="true">
         <a17-browser></a17-browser>
     </a17-modal>
-    <a17-editor v-if="editor" ref="editor" bg-color="{{ config('cms-toolkit.block_editor.background_color') ?? '#FFFFFF' }}"></a17-editor>
+    <a17-editor v-if="editor" ref="editor" bg-color="{{ config('twill.block_editor.background_color') ?? '#FFFFFF' }}"></a17-editor>
     <a17-previewer ref="preview"></a17-previewer>
+    <a17-dialog ref="warningContentEditor" modal-title="Delete content" confirm-label="Delete">
+        <p class="modal--tiny-title"><strong>Delete content</strong></p>
+        <p>Are you sure ?<br />This change can't be undone.</p>
+    </a17-dialog>
 @stop
 
 @section('initialStore')
@@ -95,7 +85,7 @@
         previewUrl: '{{ $previewUrl or '' }}',
         restoreUrl: '{{ $restoreUrl or '' }}',
         blockPreviewUrl: '{{ $blockPreviewUrl or '' }}',
-        availableRepeaters: {!! json_encode(config('cms-toolkit.block_editor.repeaters')) !!},
+        availableRepeaters: {!! json_encode(config('twill.block_editor.repeaters')) !!},
         repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!},
         fields: [],
         editor: {{ $editor ? 'true' : 'false' }},
@@ -119,7 +109,7 @@
     window.STORE.parentId = {{ $item->parent_id ?? 0 }}
     window.STORE.parents = {!! json_encode($parents ?? [])  !!}
 
-    window.STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('cms-toolkit.block_editor.crops')) !!}
+    window.STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('twill.block_editor.crops')) !!}
     window.STORE.medias.selected = {}
 
     window.STORE.browser = {}

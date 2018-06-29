@@ -1,9 +1,10 @@
 <?php
 
-namespace A17\CmsToolkit\Repositories;
+namespace A17\Twill\Repositories;
 
-use A17\CmsToolkit\Models\Behaviors\Sortable;
-use A17\CmsToolkit\Repositories\Behaviors\HandleDates;
+use A17\Twill\Models\Behaviors\HasMedias;
+use A17\Twill\Models\Behaviors\Sortable;
+use A17\Twill\Repositories\Behaviors\HandleDates;
 use DB;
 use Log;
 use PDO;
@@ -433,7 +434,7 @@ abstract class ModuleRepository
                     $query->whereIn($column, $value);
                 } elseif ($column[0] == '%') {
                     $value && ($value[0] == '!') ? $query->where(substr($column, 1), "not $likeOperator", '%' . substr($value, 1) . '%') : $query->where(substr($column, 1), $likeOperator, '%' . $value . '%');
-                } elseif ($value[0] == '!') {
+                } elseif (isset($value[0]) && $value[0] == '!') {
                     $query->where($column, '<>', substr($value, 1));
                 } elseif ($value !== '') {
                     $query->where($column, $value);
@@ -466,7 +467,9 @@ abstract class ModuleRepository
                 'id' => $relatedElement->id,
                 'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
                 'edit' => moduleRoute($moduleName ?? $relation, $routePrefix ?? '', 'edit', $relatedElement->id),
-            ]; // TODO: add thumbnail if module has medias
+            ] + (classHasTrait($relatedElement, HasMedias::class) ? [
+                'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
+            ] : []);
         })->toArray();
     }
 
@@ -549,10 +552,9 @@ abstract class ModuleRepository
 
     public function addIgnoreFieldsBeforeSave($ignore = [])
     {
-        $this->ignoreFieldsBeforeSave = is_array($ignore) ?
-        array_merge($this->ignoreFieldsBeforeSave, $ignore)
-        : array_merge($this->ignoreFieldsBeforeSave, [$ignore])
-        ;
+        $this->ignoreFieldsBeforeSave = is_array($ignore)
+        ? array_merge($this->ignoreFieldsBeforeSave, $ignore)
+        : array_merge($this->ignoreFieldsBeforeSave, [$ignore]);
     }
 
     public function shouldIgnoreFieldBeforeSave($ignore)
@@ -576,7 +578,7 @@ abstract class ModuleRepository
             $model = ucfirst(str_singular($relation));
         }
 
-        return app(config('cms-toolkit.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
+        return app(config('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
     }
 
     private function getLikeOperator()

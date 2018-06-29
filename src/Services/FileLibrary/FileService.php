@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Services\FileLibrary;
+namespace A17\Twill\Services\FileLibrary;
 
 use Illuminate\Support\Facades\Facade;
 

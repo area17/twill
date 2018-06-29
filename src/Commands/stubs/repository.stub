@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 {{repositoryImports}}
-use A17\CmsToolkit\Repositories\ModuleRepository;
+use A17\Twill\Repositories\ModuleRepository;
 use App\Models\{{modelName}};
 
 class {{repositoryClassName}} extends ModuleRepository

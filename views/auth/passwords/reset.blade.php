@@ -5,7 +5,7 @@ $passwordText = isset($welcome) && $welcome ? 'Choose password' : 'Reset passwor
 <!DOCTYPE html>
 <html dir="ltr" lang="en-US">
     <head>
-        @include('cms-toolkit::partials.head')
+        @include('twill::partials.head')
     </head>
     <body class="env env--{{ app()->environment() }}">
         <div class="a17 a17--login">
@@ -35,7 +35,7 @@ $passwordText = isset($welcome) && $welcome ? 'Choose password' : 'Reset passwor
                     <input class="login__button" type="submit" value="{{ $passwordText }}">
                 </form>
             </section>
-            @include('cms-toolkit::partials.footer')
+            @include('twill::partials.footer')
         </div>
     </body>
 </html>

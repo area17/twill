@@ -34,7 +34,7 @@ if (!function_exists('isActiveNavigation')) {
             return true;
         }
 
-        $urlsAreMatching = ($navigationElement['raw'] ?? false) && Request::url() == $navigationElement['route'];
+        $urlsAreMatching = ($navigationElement['raw'] ?? false) && ends_with(Request::url(), $navigationElement['route']);
 
         return $urlsAreMatching;
     }

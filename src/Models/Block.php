@@ -1,9 +1,9 @@
 <?php
 
-namespace A17\CmsToolkit\Models;
+namespace A17\Twill\Models;
 
-use A17\CmsToolkit\Models\Behaviors\HasFiles;
-use A17\CmsToolkit\Models\Behaviors\HasMedias;
+use A17\Twill\Models\Behaviors\HasFiles;
+use A17\Twill\Models\Behaviors\HasMedias;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class Block extends BaseModel

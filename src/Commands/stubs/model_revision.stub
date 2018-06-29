@@ -2,7 +2,7 @@
 
 namespace App\Models\Revisions;
 
-use A17\CmsToolkit\Models\Revision;
+use A17\Twill\Models\Revision;
 
 class {{modelRevisionClassName}} extends Revision
 {

@@ -2,7 +2,7 @@
 
 namespace App\Models\Slugs;
 
-use A17\CmsToolkit\Models\Model;
+use A17\Twill\Models\Model;
 
 class {{modelSlugClassName}} extends Model
 {

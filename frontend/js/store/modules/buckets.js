@@ -12,7 +12,6 @@ const state = {
    * If buckets.length === 1 an 'add' icon instead of buckets number
    */
   buckets: window.STORE.buckets.items || [],
-  // TBD: this properties are same as datable.js. maybe, they could be refactored and use only one datable global store
   filter: window.STORE.buckets.filter || {},
   page: window.STORE.buckets.page || 1,
   maxPage: window.STORE.buckets.maxPage || 10,

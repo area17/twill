@@ -1,4 +1,4 @@
-@extends('cms-toolkit::layouts.errors')
+@extends('twill::layouts.errors')
 
 @section('content')
   <p>Error 404</p>

@@ -1,10 +1,10 @@
 <?php
 
-namespace A17\CmsToolkit\Http\Controllers\Admin;
+namespace A17\Twill\Http\Controllers\Admin;
 
-use A17\CmsToolkit\Http\Requests\Admin\MediaRequest;
-use A17\CmsToolkit\Services\Uploader\SignS3Upload;
-use A17\CmsToolkit\Services\Uploader\SignS3UploadListener;
+use A17\Twill\Http\Requests\Admin\MediaRequest;
+use A17\Twill\Services\Uploader\SignS3Upload;
+use A17\Twill\Services\Uploader\SignS3UploadListener;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Input;
@@ -13,7 +13,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 {
     protected $moduleName = 'medias';
 
-    protected $namespace = 'A17\CmsToolkit';
+    protected $namespace = 'A17\Twill';
 
     protected $defaultOrders = [
         'id' => 'desc',
@@ -33,7 +33,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         parent::__construct($app, $request);
         $this->removeMiddleware('can:edit');
         $this->middleware('can:edit', ['only' => ['signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
-        $this->endpointType = config('cms-toolkit.media_library.endpoint_type');
+        $this->endpointType = config('twill.media_library.endpoint_type');
     }
 
     public function index($parentModuleId = null)
@@ -117,14 +117,14 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
         $filename = sanitizeFilename($originalFilename);
 
-        $fileDirectory = public_path(config('cms-toolkit.media_library.local_path') . $request->input('unique_folder_name'));
+        $fileDirectory = public_path(config('twill.media_library.local_path') . $request->input('unique_folder_name'));
 
         $request->file('qqfile')->move($fileDirectory, $filename);
 
         list($w, $h) = getimagesize($fileDirectory . '/' . $filename);
 
         $fields = [
-            'uuid' => config('cms-toolkit.media_library.local_path') . $request->input('unique_folder_name') . '/' . $filename,
+            'uuid' => config('twill.media_library.local_path') . $request->input('unique_folder_name') . '/' . $filename,
             'filename' => $originalFilename,
             'width' => $w,
             'height' => $h,
@@ -181,7 +181,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
     public function signS3Upload(Request $request, SignS3Upload $signS3Upload)
     {
-        return $signS3Upload->fromPolicy($request->getContent(), $this, config('cms-toolkit.media_library.disk'));
+        return $signS3Upload->fromPolicy($request->getContent(), $this, config('twill.media_library.disk'));
     }
 
     public function policyIsSigned($signedPolicy)

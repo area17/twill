@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Repositories\Behaviors;
+namespace A17\Twill\Repositories\Behaviors;
 
 use Auth;
 
@@ -48,7 +48,7 @@ trait HandleRevisions
         return $this->hydrateObject($this->model->newInstance(), $fields);
     }
 
-    public function hydrateMultiSelect($object, $fields, $relationship, $model = null)
+    public function hydrateMultiSelect($object, $fields, $relationship, $model = null, $customHydratedRelationship = null)
     {
         $fieldsHasElements = isset($fields[$relationship]) && !empty($fields[$relationship]);
         $relatedElements = $fieldsHasElements ? $fields[$relationship] : [];
@@ -61,7 +61,7 @@ trait HandleRevisions
             $relatedElementsCollection->push($newRelatedElement);
         }
 
-        $object->setRelation($relationship, $relatedElementsCollection);
+        $object->setRelation($customHydratedRelationship ?? $relationship, $relatedElementsCollection);
     }
 
     public function hydrateBrowser($object, $fields, $relationship, $positionAttribute = 'position', $model = null)

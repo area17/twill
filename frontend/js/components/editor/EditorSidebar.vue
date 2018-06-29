@@ -15,17 +15,23 @@
         </span>
       </div>
       <div class="editorSidebar__body">
+        <a17-inputframe label="" :name="`block.${block.id}`"></a17-inputframe>
         <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes" key="`editor_${block.type}_${block.id}`"></component>
       </div>
     </div>
-    <div class="editorSidebar__list" v-if="!hasBlockActive">
-      <h4 class="editorSidebar__title"><slot></slot></h4>
-      <draggable v-model="availableBlocks" :options="{ group: { name: 'editorBlocks',  pull: 'clone', put: false }, handle: '.editorSidebar__button' }" v-if="availableBlocks.length">
-        <div class="editorSidebar__button" :data-title="availableBlock.title" :data-icon="availableBlock.icon" :data-component="availableBlock.component" v-for="availableBlock in availableBlocks" :key="availableBlock.component">
-          <span v-svg :symbol="availableBlock.icon"></span>{{ availableBlock.title }}
-        </div>
-      </draggable>
-    </div>
+    <template v-if="!hasBlockActive">
+      <div class="editorSidebar__list" >
+        <h4 class="editorSidebar__title"><slot></slot></h4>
+        <draggable v-model="availableBlocks" :options="{ group: { name: 'editorBlocks',  pull: 'clone', put: false }, handle: '.editorSidebar__button' }" v-if="availableBlocks.length">
+          <div class="editorSidebar__button" :data-title="availableBlock.title" :data-icon="availableBlock.icon" :data-component="availableBlock.component" v-for="availableBlock in availableBlocks" :key="availableBlock.component">
+            <span v-svg :symbol="availableBlock.icon"></span>{{ availableBlock.title }}
+          </div>
+        </draggable>
+      </div>
+      <div class="editorSidebar__actions">
+        <a17-button @click="saveForm(submitOptions[0].name)" :name="submitOptions[0].name" variant="validate">{{ submitOptions[0].text }}</a17-button>
+      </div>
+    </template>
     <template v-else>
       <div class="editorSidebar__actions">
         <a17-button variant="action" @click="saveBlock()">Done</a17-button>
@@ -37,7 +43,7 @@
 
 <script>
   import { mapState } from 'vuex'
-  import { CONTENT } from '@/store/mutations'
+  import { CONTENT, PUBLICATION } from '@/store/mutations'
 
   import draggableMixin from '@/mixins/draggable'
   import draggable from 'vuedraggable'
@@ -55,6 +61,9 @@
     computed: {
       hasBlockActive: function () {
         return Object.keys(this.activeBlock).length > 0
+      },
+      submitOptions: function () {
+        return this.$store.getters.getSubmitOptions
       },
       ...mapState({
         activeBlock: state => state.content.active,
@@ -96,6 +105,10 @@
       },
       deleteBlock: function (index) {
         this.$emit('delete', index)
+      },
+      saveForm: function (buttonName) {
+        this.$store.commit(PUBLICATION.UPDATE_SAVE_TYPE, buttonName)
+        if (this.$root['submitForm']) this.$root.submitForm()
       }
     },
     mounted: function () {
@@ -140,6 +153,10 @@
     border-radius:2px;
     background:$color__background;
     padding:15px;
+
+    /deep/ .input {
+      margin-top: 15px;
+    }
 
     /deep/ .block__body {
       > .media,
@@ -212,6 +229,11 @@
 
     button + button {
       margin-left:20px;
+    }
+
+    button.button--validate:last-child {
+      width:100%;
+      margin-left:0;
     }
   }
 

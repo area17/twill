@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Http\Controllers\Admin;
+namespace A17\Twill\Http\Controllers\Admin;
 
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -22,7 +22,7 @@ class LoginController extends Controller
 
     public function showLoginForm()
     {
-        return view('cms-toolkit::auth.login');
+        return view('twill::auth.login');
     }
 
     public function logout(Request $request)
@@ -44,6 +44,6 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest', ['except' => 'logout']);
-        $this->redirectTo = config('cms-toolkit.auth_login_redirect_path', '/home');
+        $this->redirectTo = config('twill.auth_login_redirect_path', '/home');
     }
 }

@@ -19,7 +19,7 @@
 @if ($unpack)
     <a17-multiselect
         label="{{ $label }}"
-        @include('cms-toolkit::partials.form.utils._field_name')
+        @include('twill::partials.form.utils._field_name')
         :options="{{ json_encode($options) }}"
         :grid="true"
         :inline="false"
@@ -38,7 +38,7 @@
 @else
     <a17-vselect
         label="{{ $label }}"
-        @include('cms-toolkit::partials.form.utils._field_name')
+        @include('twill::partials.form.utils._field_name')
         :options='{!! json_encode($options) !!}'
         @if ($emptyText ?? false) empty-text="{{ $emptyText }}" @endif
         @if ($placeholder ?? false) placeholder="{{ $placeholder }}" @endif

@@ -1,10 +1,10 @@
 <?php
 
-namespace A17\CmsToolkit\Http\Controllers\Admin;
+namespace A17\Twill\Http\Controllers\Admin;
 
-use A17\CmsToolkit\Http\Requests\Admin\FileRequest;
-use A17\CmsToolkit\Services\Uploader\SignS3Upload;
-use A17\CmsToolkit\Services\Uploader\SignS3UploadListener;
+use A17\Twill\Http\Requests\Admin\FileRequest;
+use A17\Twill\Services\Uploader\SignS3Upload;
+use A17\Twill\Services\Uploader\SignS3UploadListener;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Input;
@@ -13,7 +13,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
 {
     protected $moduleName = 'files';
 
-    protected $namespace = 'A17\CmsToolkit';
+    protected $namespace = 'A17\Twill';
 
     protected $defaultOrders = [
         'id' => 'desc',
@@ -33,7 +33,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         parent::__construct($app, $request);
         $this->removeMiddleware('can:edit');
         $this->middleware('can:edit', ['only' => ['signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
-        $this->endpointType = config('cms-toolkit.file_library.endpoint_type');
+        $this->endpointType = config('twill.file_library.endpoint_type');
     }
 
     public function index($parentModuleId = null)
@@ -104,7 +104,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         $filename = $request->input('qqfilename');
         $cleanFilename = preg_replace("/\s+/i", "-", $filename);
 
-        $fileDirectory = public_path(config('cms-toolkit.file_library.local_path') . $request->input('unique_folder_name'));
+        $fileDirectory = public_path(config('twill.file_library.local_path') . $request->input('unique_folder_name'));
 
         $request->file('qqfile')->move($fileDirectory, $cleanFilename);
 
@@ -161,7 +161,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
 
     public function signS3Upload(Request $request, SignS3Upload $signS3Upload)
     {
-        return $signS3Upload->fromPolicy($request->getContent(), $this, config('cms-toolkit.file_library.disk'));
+        return $signS3Upload->fromPolicy($request->getContent(), $this, config('twill.file_library.disk'));
     }
 
     public function policyIsSigned($signedPolicy)

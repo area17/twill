@@ -143,7 +143,14 @@
           return
         }
 
-        this.deleteSelectedMedias()
+        // Open confirm dialog if any
+        if (this.$root.$refs.warningMediaLibrary) {
+          this.$root.$refs.warningMediaLibrary.open(() => {
+            this.deleteSelectedMedias()
+          })
+        } else {
+          this.deleteSelectedMedias()
+        }
       },
       deleteSelectedMedias: function () {
         if (this.loading) return false

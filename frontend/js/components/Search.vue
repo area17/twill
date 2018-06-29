@@ -230,6 +230,31 @@
     }
   }
 
+  /* Dashboard input */
+  .search--dashboard {
+    .icon--search {
+      color: $color__header--light;
+    }
+
+    .search__input .form__input {
+      background-color: $color__header--sep;
+      color:$color__black--40;
+
+      @include placeholder() {
+        color:$color__black--40;
+      }
+    }
+
+    .search__input .form__input:focus {
+      background-color: $color__f--bg;
+      color:$color__text--forms;
+    }
+
+    .search__input .form__input:focus + .icon--search {
+      color: $color__icons;
+    }
+  }
+
   .icon--search {
     position: absolute;
     top: 13px;

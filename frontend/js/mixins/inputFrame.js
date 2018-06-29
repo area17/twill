@@ -1,5 +1,5 @@
 function arrayToSentence (arr) {
-  var length = arr.length
+  const length = arr.length
   return arr.reduce(function (a, b, c) {
     return a + (c - 1 === length ? ', ' : ' and ') + b
   })
@@ -55,7 +55,7 @@ export default {
     },
     errorMessage () {
       let message = this.error ? this.$store.state.form.errors[this.errorKey][0] : ''
-      return message.endsWith('is required.') ? '' : message
+      return message.endsWith('is required.') && !this.errorKey.startsWith('block') ? '' : message
     },
     error () {
       return this.$store.state.form ? Object.keys(this.$store.state.form.errors).includes(this.errorKey) : false

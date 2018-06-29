@@ -1,10 +1,6 @@
-@extends('cms-toolkit::layouts.main')
+@extends('twill::layouts.main')
 
 @section('appTypeClass', 'body--listing')
-
-@if($search ?? false)
-@section('globalNavSearch', 'true')
-@endif
 
 @php
     $translate = $translate ?? false;
@@ -12,6 +8,7 @@
     $reorder = $reorder ?? false;
     $nested = $nested ?? false;
     $bulkEdit = $bulkEdit ?? true;
+    $create = $create ?? false;
 @endphp
 
 @section('content')
@@ -29,13 +26,13 @@
                         @if (isset(${$filter.'List'}))
                             <a17-vselect
                             name="{{ $filter }}"
-                            :options="{{ json_encode(${$filter.'List'}->map(function($label, $value) {
+                            :options="{{ json_encode(method_exists(${$filter.'List'}, 'map') ? ${$filter.'List'}->map(function($label, $value) {
                                 return [
                                     'value' => $value,
                                     'label' => $label
                                 ];
-                            })->values()->toArray()) }}"
-                            placeholder="All {{ strtolower(str_plural(str_replace_first('f', '', $filter))) }}"
+                            })->values()->toArray() : ${$filter.'List'}) }}"
+                            placeholder="All {{ strtolower(str_plural($filter)) }}"
                             ref="filterDropdown[{{ $loop->index }}]"
                             ></a17-vselect>
                         @endif
@@ -51,7 +48,7 @@
                         @endif
                     @endforelse
 
-                    @if($create ?? false)
+                    @if($create)
                         <div slot="additional-actions">
                             <a17-button variant="validate" size="small" v-on:click="create">Add new</a17-button>
                         </div>
@@ -63,24 +60,38 @@
             @endif
         </div>
 
-        <a17-datatable
-            :draggable="{{ $reorder ? 'true' : 'false' }}"
-            :nested="{{ $nested ? 'true' : 'false' }}"
-            :max-depth="{{ $nestedDepth ?? '1' }}"
-            :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
-            empty-message="There is no item here yet."
-        ></a17-datatable>
+        @if($nested)
+            <a17-nested-datatable
+                :draggable="{{ $reorder ? 'true' : 'false' }}"
+                :max-depth="{{ $nestedDepth ?? '1' }}"
+                :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
+                empty-message="There is no item here yet.">
+            </a17-nested-datatable>
+        @else
+            <a17-datatable
+                :draggable="{{ $reorder ? 'true' : 'false' }}"
+                :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
+                empty-message="There is no item here yet.">
+            </a17-datatable>
+        @endif
 
-        <a17-modal-create
-            ref="editionModal"
-            form-create="{{ $storeUrl }}"
-            v-on:reload="reloadDatas"
-            @if ($customPublishedLabel ?? false) published-label="{{ $customPublishedLabel }}" @endif
-            @if ($customDraftLabel ?? false) draft-label="{{ $customDraftLabel }}" @endif
-        >
-            <a17-langmanager></a17-langmanager>
-            @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
-        </a17-modal-create>
+        @if($create)
+            <a17-modal-create
+                ref="editionModal"
+                form-create="{{ $storeUrl }}"
+                v-on:reload="reloadDatas"
+                @if ($customPublishedLabel ?? false) published-label="{{ $customPublishedLabel }}" @endif
+                @if ($customDraftLabel ?? false) draft-label="{{ $customDraftLabel }}" @endif
+            >
+                <a17-langmanager></a17-langmanager>
+                @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
+            </a17-modal-create>
+        @endif
+
+        <a17-dialog ref="warningDeleteRow" modal-title="Delete item" confirm-label="Delete">
+            <p class="modal--tiny-title"><strong>Move to trash</strong></p>
+            <p>The item won't be deleted but moved to trash.</p>
+        </a17-dialog>
     </div>
 @stop
 
@@ -111,13 +122,13 @@
         defaultMaxPage: {{ $defaultMaxPage ?? 1 }},
         offset: {{ request('offset') ?? $offset ?? 60 }},
         defaultOffset: {{ $defaultOffset ?? 60 }},
-        sortKey: '{{ $reorder ? (request('sortKey') ?? '') : (request('sortKey') ?? 'name') }}',
+        sortKey: '{{ $reorder ? (request('sortKey') ?? '') : (request('sortKey') ?? '') }}',
         sortDir: '{{ request('sortDir') ?? 'asc' }}',
         baseUrl: '{{ rtrim(config('app.url'), '/') . '/' }}',
         localStorageKey: '{{ isset($currentUser) ? $currentUser->id : 0 }}__{{ $moduleName ?? Route::currentRouteName() }}'
     }
 
-    @if ($openCreate ?? false)
+    @if ($create && ($openCreate ?? false))
         window.openCreate = {!! json_encode($openCreate) !!}
     @endif
 @stop

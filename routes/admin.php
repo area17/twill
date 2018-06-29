@@ -1,10 +1,10 @@
 <?php
 
-if (config('cms-toolkit.enabled.users-management')) {
+if (config('twill.enabled.users-management')) {
     Route::module('users', ['except' => ['sort', 'feature']]);
 }
 
-if (config('cms-toolkit.enabled.media-library')) {
+if (config('twill.enabled.media-library')) {
     Route::group(['prefix' => 'media-library', 'as' => 'media-library.'], function () {
         Route::post('sign-s3-upload', ['as' => 'sign-s3-upload', 'uses' => 'MediaLibraryController@signS3Upload']);
         Route::put('medias/single-update', ['as' => 'medias.single-update', 'uses' => 'MediaLibraryController@singleUpdate']);
@@ -15,7 +15,7 @@ if (config('cms-toolkit.enabled.media-library')) {
     });
 }
 
-if (config('cms-toolkit.enabled.file-library')) {
+if (config('twill.enabled.file-library')) {
     Route::group(['prefix' => 'file-library', 'as' => 'file-library.'], function () {
         Route::post('sign-s3-upload', ['as' => 'sign-s3-upload', 'uses' => 'FileLibraryController@signS3Upload']);
         Route::put('files/single-update', ['as' => 'files.single-update', 'uses' => 'FileLibraryController@singleUpdate']);
@@ -26,17 +26,17 @@ if (config('cms-toolkit.enabled.file-library')) {
     });
 }
 
-if (config('cms-toolkit.enabled.block-editor')) {
+if (config('twill.enabled.block-editor')) {
     Route::post('blocks/preview', ['as' => 'blocks.preview', 'uses' => 'BlocksController@preview']);
 }
 
-if (config('cms-toolkit.enabled.buckets')) {
-    $bucketsRoutes = config('cms-toolkit.bucketsRoutes') ?? collect(config('cms-toolkit.buckets'))->mapWithKeys(function ($bucketSection, $bucketSectionKey) {
+if (config('twill.enabled.buckets')) {
+    $bucketsRoutes = config('twill.bucketsRoutes') ?? collect(config('twill.buckets'))->mapWithKeys(function ($bucketSection, $bucketSectionKey) {
         return [$bucketSectionKey => 'featured'];
     })->toArray();
 
     foreach ($bucketsRoutes as $bucketSectionKey => $routePrefix) {
-        Route::group(['prefix' => $routePrefix, 'as' => $routePrefix . '.'], function () use ($bucketSectionKey) {
+        Route::group(['prefix' => str_replace(".","/",$routePrefix), 'as' => $routePrefix . '.'], function () use ($bucketSectionKey) {
             Route::get($bucketSectionKey, ['as' => $bucketSectionKey, 'uses' => 'FeaturedController@index']);
             Route::group(['prefix' => $bucketSectionKey, 'as' => $bucketSectionKey . '.'], function () {
                 Route::post('save', ['as' => 'save', 'uses' => 'FeaturedController@save']);
@@ -46,7 +46,15 @@ if (config('cms-toolkit.enabled.buckets')) {
     }
 }
 
-if (config('cms-toolkit.enabled.settings')) {
+if (config('twill.enabled.settings')) {
     Route::name('settings')->get('/settings/{section}', 'SettingController@index');
     Route::name('settings.update')->post('/settings/{section}', 'SettingController@update');
+}
+
+if (config('twill.enabled.dashboard')) {
+    Route::name('dashboard')->get('/', 'DashboardController@index');
+}
+
+if (config('twill.enabled.search')) {
+    Route::name('search')->get('search', 'DashboardController@search');
 }

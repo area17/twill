@@ -1,28 +1,30 @@
-# Contributing to CMS Toolkit
+# Bug reports and features submission
+To submit an issue or request a feature, please do so on [Github](https://github.com/area17/twill/issues).
 
-## Reporting issues, giving feedback or proposing new features
+If you file a bug report, your issue should contain a title and a clear description of the issue. You should also include as much relevant information as possible and a code sample that demonstrates the issue. The goal of a bug report is to make it easy for yourself - and others - to replicate the bug and develop a fix.
 
-We are using Pipefy to manage this projects through 3 different pipes:
+Remember, bug reports are created in the hope that others with the same problem will be able to collaborate with you on solving it. Do not expect that the bug report will automatically see any activity or that others will jump to fix it. Creating a bug report serves to help yourself and others start on the path of fixing the problem.
 
-- the **dev** pipe, where you can see what is being worked on a part of the current sprint
-- the **roadmap** pipe, where you can see what is currently in our roadmap, wether it's been approved for future development or still being evaluated
-- the **requests** pipe, where you can see and submit requests of all sorts: bug report, feature request, comments...
+# Security vulnerabilities
+If you discover a security vulnerability within Twill, please email us at [security@twill.io](mailto:security@twill.io). All security vulnerabilities will be promptly addressed.
 
-## Versioning scheme
+# Versioning scheme
+Twill's versioning scheme maintains the following convention: `paradigm.major.minor`. Minor releases should never contain breaking changes.
 
-CMS Toolkit's versioning scheme maintains the following convention: `paradigm.major.minor`. Minor releases should never contain breaking changes.
-When referencing the CMS Toolkit from your application, you should always use a version constraint such as `1.0.*`, since major releases of CMS Toolkit do include breaking changes. We will most likely follow SemVer 2.0 (`major.minor.patch`) once we are public to make it easier for applications to update, but because we are going to change name without moving to 2.0, we need to follow this versionning scheme right now, which is actually the one Laravel itself is following. The VERSION file needs to be updated and a Git tag created to properly release a new version.
+When referencing Twill from your application, you should always use a version constraint such as `1.1.*`, since major releases of Twill do include breaking changes.
 
-## Merge requests guidelines
+The `VERSION` file at the root of the project needs to be updated and a Git tag created to properly release a new version.
 
-- For any change, you should create a descriptively named branch from `master` and submit a merge request against `master`. No need for prefixes, but you can use some if they make sense (`fix-`, `hotfix-`, `ticket-number-`.)
+# Which branch?
+All bug fixes should be sent to the latest stable branch (1.1). Bug fixes should never be sent to the master branch unless they fix features that exist only in the upcoming release.
 
-- Send coherent history — make sure each individual commit in your pull request is meaningful. If you had to make a lot of intermediate commits while developing, please [squash them](http://www.git-scm.com/book/en/v2/Git-Tools-Rewriting-History#Changing-Multiple-Commit-Messages) before submitting.
+Minor features that are fully backwards compatible with the current Twill release may be sent to the latest stable branch.
 
-- PHP style: [PSR-2 Coding Standard](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md).
+Major new features should always be sent to the master branch, which contains the upcoming Twill release.
 
-- JavaScript style: [Standard](https://standardjs.com/), [Vue ESLint Essentials](https://github.com/vuejs/eslint-plugin-vue).
+Please send coherent history — make sure each individual commit in your pull request is meaningful. If you had to make a lot of intermediate commits while developing, please [squash them](http://www.git-scm.com/book/en/v2/Git-Tools-Rewriting-History#Changing-Multiple-Commit-Messages) before submitting.
 
-- This is a Laravel package so `master` isn't considered a production branch, in the sense that no one is deploying this standalone, but always as part of a Laravel application, which should use tags to choose a stable version. Hovewer, please avoid committing directly to the `master` branch. Prefer going through a Merge Request and get a review from someone else.
+# Coding style
+- PHP: [PSR-2 Coding Standard](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md).
 
-- If a fix needs to be released quickly and there are some un-released changes already merged on master or if you're not sure master is in a stable state for a new release right now, create your branch from the lastest available tag and submit a merge request again `master`. Once accepted, a new tag should be created using the head of your hotfix branch. This will allows us to release bug fixes while having un-released code in the `master` branch. If you want to read more about this approach, [check this article](https://hackernoon.com/a-branching-and-releasing-strategy-that-fits-github-flow-be1b6c48eca2). If you're not sure what to do anymore, just merge from `master` and submit a merge request against `master`, that's it :). The only case when you need to merge from a tag is in case of an emergency fix. Ping Quentin if you happen to have to do it for the first time!
+- Javascript: [Standard](https://standardjs.com/), [Vue ESLint Essentials](https://github.com/vuejs/eslint-plugin-vue).

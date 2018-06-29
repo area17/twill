@@ -1,9 +1,9 @@
 <?php
 
-namespace A17\CmsToolkit;
+namespace A17\Twill;
 
-use A17\CmsToolkit\Models\Enums\UserRole;
-use A17\CmsToolkit\Models\User;
+use A17\Twill\Models\Enums\UserRole;
+use A17\Twill\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 

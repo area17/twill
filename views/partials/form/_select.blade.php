@@ -10,6 +10,7 @@
     $placeholder = $placeholder ?? false;
     $required = $required ?? false;
     $default = $default ?? false;
+    $searchable = $searchable ?? false;
 
     // do not use for now, but this will allow you to create a new option directly from the form
     $addNew = $addNew ?? false;
@@ -21,8 +22,8 @@
 @if ($unpack ?? false)
     <a17-singleselect
         label="{{ $label }}"
-        @include('cms-toolkit::partials.form.utils._field_name')
-        :options='{!! json_encode($options) !!}'
+        @include('twill::partials.form.utils._field_name')
+        :options='{{ json_encode($options) }}'
         @if ($default) selected="{{ $default }}" @endif
         @if ($required) :required="true" @endif
         @if ($inModal) :in-modal="true" @endif
@@ -42,8 +43,8 @@
 @elseif ($native ?? false)
     <a17-select
         label="{{ $label }}"
-        @include('cms-toolkit::partials.form.utils._field_name')
-        :options='{!! json_encode($options) !!}'
+        @include('twill::partials.form.utils._field_name')
+        :options='{{ json_encode($options) }}'
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
         @if ($default) selected="{{ $default }}" @endif
         @if ($required) :required="true" @endif
@@ -65,8 +66,8 @@
 @else
     <a17-vselect
         label="{{ $label }}"
-        @include('cms-toolkit::partials.form.utils._field_name')
-        :options='{!! json_encode($options) !!}'
+        @include('twill::partials.form.utils._field_name')
+        :options='{{ json_encode($options) }}'
         @if ($emptyText ?? false) empty-text="{{ $emptyText }}" @endif
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
         @if ($default) :selected="{{ json_encode(collect($options)->first(function ($option) use ($default) {
@@ -76,6 +77,7 @@
         @if ($inModal) :in-modal="true" @endif
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
         :has-default-store="true"
+        @if ($searchable) :searchable="true" @endif
         size="large"
         in-store="inputValue"
     >

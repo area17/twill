@@ -1,4 +1,4 @@
-@extends('cms-toolkit::layouts.form')
+@extends('twill::layouts.form')
 
 @section('contentFields')
     {{-- @formField('input', [

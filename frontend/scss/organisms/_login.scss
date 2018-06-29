@@ -10,7 +10,7 @@
   width:400px;
   max-width:calc(100vw - 60px);
   padding-top:30px;
-  padding-bottom:70px;
+  padding-bottom:#{120px - 35px};
 }
 
 .login__heading {
@@ -84,6 +84,7 @@
   border-radius:2px;
   margin-top:44px;
   transition: color .25s linear, border-color .25s linear, background-color .25s linear;
+  margin-bottom:35px;
 
   &:hover,
   &:focus {
@@ -96,7 +97,6 @@
   display:block;
   text-align:center;
   text-decoration:none;
-  margin-top:35px;
   color:$color__text--forms;
 
   .icon {
@@ -120,7 +120,7 @@
   }
 }
 
-.a17--login .footer {
+.login__copyright {
   position:absolute;
   bottom:0;
   width:100%;
@@ -128,8 +128,37 @@
   right:0;
   padding-top:0;
 
-  .container {
-    width:auto;
-    color:$color__text--forms;
+  text-align: center;
+  padding:28px 0;
+
+  a {
+    color:$color__black--70;
+    text-decoration: none;
+
+    &:hover {
+      color:$color__black--50;
+    }
+  }
+
+  svg {
+    position: relative;
+    bottom:-4px;
+    height:24px;
+    width:55px;
+    margin-left:8px;
   }
 }
+
+// .a17--login .footer {
+//   position:absolute;
+//   bottom:0;
+//   width:100%;
+//   left:0;
+//   right:0;
+//   padding-top:0;
+
+//   .container {
+//     width:auto;
+//     color:$color__text--forms;
+//   }
+// }

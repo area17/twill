@@ -1,14 +1,14 @@
 <?php
 
-namespace A17\CmsToolkit\Commands;
+namespace A17\Twill\Commands;
 
-use A17\CmsToolkit\Models\User;
+use A17\Twill\Models\User;
 use Illuminate\Console\Command;
 use Validator;
 
 class CreateSuperAdmin extends Command
 {
-    protected $signature = 'cms-toolkit:superadmin';
+    protected $signature = 'twill:superadmin';
 
     protected $description = "Create the superadmin account";
 

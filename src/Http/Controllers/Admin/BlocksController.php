@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\CmsToolkit\Http\Controllers\Admin;
+namespace A17\Twill\Http\Controllers\Admin;
 
-use A17\CmsToolkit\Repositories\BlockRepository;
+use A17\Twill\Repositories\BlockRepository;
 
 class BlocksController extends Controller
 {
@@ -42,7 +42,7 @@ class BlocksController extends Controller
         });
 
         $renderedBlocks = $blocksCollection->where('parent_id', null)->map(function ($block) use ($blocksCollection) {
-            if (config('cms-toolkit.block_editor.block_preview_render_childs') ?? true) {
+            if (config('twill.block_editor.block_preview_render_childs') ?? true) {
                 $childBlocks = $blocksCollection->where('parent_id', $block->id);
                 $renderedChildViews = $childBlocks->map(function ($childBlock) {
                     $view = $this->getBlockView($childBlock->type);
@@ -57,7 +57,7 @@ class BlocksController extends Controller
             return view($view)->with('block', $block)->render() . ($renderedChildViews ?? '');
         })->implode('');
 
-        $view = view(config('cms-toolkit.block_editor.block_single_layout'));
+        $view = view(config('twill.block_editor.block_single_layout'));
 
         $view->getFactory()->inject('content', $renderedBlocks);
 
@@ -66,9 +66,9 @@ class BlocksController extends Controller
 
     private function getBlockView($blockType)
     {
-        $view = config('cms-toolkit.block_editor.block_views_path') . '.' . $blockType;
+        $view = config('twill.block_editor.block_views_path') . '.' . $blockType;
 
-        $customViews = config('cms-toolkit.block_editor.block_views_mappings');
+        $customViews = config('twill.block_editor.block_views_mappings');
 
         if (array_key_exists($blockType, $customViews)) {
             $view = $customViews[$blockType];

@@ -1,11 +1,11 @@
 <?php
 
-namespace A17\CmsToolkit\Models;
+namespace A17\Twill\Models;
 
-use A17\CmsToolkit\Models\Behaviors\HasMedias;
-use A17\CmsToolkit\Models\Enums\UserRole;
-use A17\CmsToolkit\Notifications\Reset as ResetNotification;
-use A17\CmsToolkit\Notifications\Welcome as WelcomeNotification;
+use A17\Twill\Models\Behaviors\HasMedias;
+use A17\Twill\Models\Enums\UserRole;
+use A17\Twill\Notifications\Reset as ResetNotification;
+use A17\Twill\Notifications\Welcome as WelcomeNotification;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Foundation\Auth\User as AuthenticatableContract;
@@ -41,6 +41,11 @@ class User extends AuthenticatableContract
             ],
         ],
     ];
+
+    public function getTitleInBrowserAttribute()
+    {
+        return $this->name;
+    }
 
     public function getRoleValueAttribute()
     {
@@ -88,25 +93,5 @@ class User extends AuthenticatableContract
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetNotification($token));
-    }
-
-    public function isNotLockedByCurrentUser()
-    {
-        return false;
-    }
-
-    public function isLockedByCurrentUser()
-    {
-        return false;
-    }
-
-    public function isLockable()
-    {
-        return false;
-    }
-
-    public function isLocked()
-    {
-        return false;
     }
 }

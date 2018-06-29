@@ -8,9 +8,9 @@
 @endphp
 
 <a17-inputframe label="{{ $label }}" name="medias.{{ $name }}" @if ($required) :required="true" @endif>
-    @if($max > 1)
+    @if($max > 1 || $max == 0)
         <a17-slideshow
-            @include('cms-toolkit::partials.form.utils._field_name')
+            @include('twill::partials.form.utils._field_name')
             :max="{{ $max }}"
             crop-context="{{ $name }}"
             @if ($required) :required="true" @endif
@@ -20,7 +20,7 @@
         >{{ $note }}</a17-slideshow>
     @else
         <a17-mediafield
-            @include('cms-toolkit::partials.form.utils._field_name')
+            @include('twill::partials.form.utils._field_name')
             crop-context="{{ $name }}"
             @if ($required) :required="true" @endif
             @if (!$withAddInfo) :with-add-info="false" @endif

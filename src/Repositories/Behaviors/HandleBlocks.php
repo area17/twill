@@ -1,8 +1,9 @@
 <?php
 
-namespace A17\CmsToolkit\Repositories\Behaviors;
+namespace A17\Twill\Repositories\Behaviors;
 
-use A17\CmsToolkit\Repositories\BlockRepository;
+use A17\Twill\Models\Behaviors\HasMedias;
+use A17\Twill\Repositories\BlockRepository;
 
 trait HandleBlocks
 {
@@ -60,8 +61,7 @@ trait HandleBlocks
     private function getBlocks($object, $fields)
     {
         $blocks = collect();
-
-        if (isset($fields['blocks'])) {
+        if (isset($fields['blocks']) && is_array($fields['blocks'])) {
 
             foreach ($fields['blocks'] as $index => $block) {
                 $block = $this->buildBlock($block, $object);
@@ -103,7 +103,7 @@ trait HandleBlocks
 
         if ($object->has('blocks')) {
 
-            $blocksConfig = config('cms-toolkit.block_editor');
+            $blocksConfig = config('twill.block_editor');
 
             foreach ($object->blocks as $block) {
                 $isInRepeater = isset($block->parent_id);
@@ -207,8 +207,10 @@ trait HandleBlocks
                 return [
                     'id' => $relatedElement->id,
                     'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
-                    'edit' => moduleRoute($relation, config('cms-toolkit.block_editor.browser_route_prefixes.' . $relation), 'edit', $relatedElement->id),
-                ];
+                    'edit' => moduleRoute($relation, config('twill.block_editor.browser_route_prefixes.' . $relation), 'edit', $relatedElement->id),
+                ] + (classHasTrait($relatedElement, HasMedias::class) ? [
+                    'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
+                ] : []);
             })->toArray();
 
             return [

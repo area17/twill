@@ -1,21 +1,22 @@
 <?php
 
-namespace A17\CmsToolkit;
+namespace A17\Twill;
 
-use A17\CmsToolkit\Commands\CreateSuperAdmin;
-use A17\CmsToolkit\Commands\GenerateBlocks;
-use A17\CmsToolkit\Commands\ModuleMake;
-use A17\CmsToolkit\Commands\RefreshLQIP;
-use A17\CmsToolkit\Commands\Setup;
-use A17\CmsToolkit\Http\ViewComposers\ActiveNavigation;
-use A17\CmsToolkit\Http\ViewComposers\CurrentUser;
-use A17\CmsToolkit\Http\ViewComposers\FilesUploaderConfig;
-use A17\CmsToolkit\Http\ViewComposers\MediasUploaderConfig;
-use A17\CmsToolkit\Models\File;
-use A17\CmsToolkit\Models\Media;
-use A17\CmsToolkit\Models\User;
-use A17\CmsToolkit\Services\FileLibrary\FileService;
-use A17\CmsToolkit\Services\MediaLibrary\ImageService;
+use A17\Twill\Commands\CreateSuperAdmin;
+use A17\Twill\Commands\GenerateBlocks;
+use A17\Twill\Commands\ModuleMake;
+use A17\Twill\Commands\RefreshLQIP;
+use A17\Twill\Commands\Setup;
+use A17\Twill\Http\ViewComposers\ActiveNavigation;
+use A17\Twill\Http\ViewComposers\CurrentUser;
+use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
+use A17\Twill\Http\ViewComposers\MediasUploaderConfig;
+use A17\Twill\Models\Block;
+use A17\Twill\Models\File;
+use A17\Twill\Models\Media;
+use A17\Twill\Models\User;
+use A17\Twill\Services\FileLibrary\FileService;
+use A17\Twill\Services\MediaLibrary\ImageService;
 use Barryvdh\Debugbar\Facade as Debugbar;
 use Barryvdh\Debugbar\ServiceProvider as DebugbarServiceProvider;
 use Cartalyst\Tags\TagsServiceProvider;
@@ -25,10 +26,10 @@ use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 use Lsrur\Inspector\Facade\Inspector;
 use Lsrur\Inspector\InspectorServiceProvider;
-use Sofa\ModelLocking\ServiceProvider as ModelLockingServiceProvider;
+use Spatie\Activitylog\ActivitylogServiceProvider;
 use View;
 
-class CmsToolkitServiceProvider extends ServiceProvider
+class TwillServiceProvider extends ServiceProvider
 {
     protected $providers = [
         RouteServiceProvider::class,
@@ -36,7 +37,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
         ValidationServiceProvider::class,
         TranslatableServiceProvider::class,
         TagsServiceProvider::class,
-        ModelLockingServiceProvider::class,
+        ActivitylogServiceProvider::class,
     ];
 
     public function boot()
@@ -66,9 +67,10 @@ class CmsToolkitServiceProvider extends ServiceProvider
             'users' => User::class,
             'media' => Media::class,
             'files' => File::class,
+            'blocks' => Block::class,
         ]);
 
-        config(['cms-toolkit.version' => trim(file_get_contents(__DIR__ . '/../VERSION'))]);
+        config(['twill.version' => trim(file_get_contents(__DIR__ . '/../VERSION'))]);
     }
 
     public function provides()
@@ -83,22 +85,22 @@ class CmsToolkitServiceProvider extends ServiceProvider
         }
 
         if ($this->app->environment('development', 'local', 'staging')) {
-            if (config('cms-toolkit.debug.use_inspector', false)) {
+            if (config('twill.debug.use_inspector', false)) {
                 $this->app->register(InspectorServiceProvider::class);
             } else {
                 $this->app->register(DebugbarServiceProvider::class);
             }
         }
 
-        if (config('cms-toolkit.enabled.media-library')) {
+        if (config('twill.enabled.media-library')) {
             $this->app->singleton('imageService', function () {
-                return $this->app->make(config('cms-toolkit.media_library.image_service'));
+                return $this->app->make(config('twill.media_library.image_service'));
             });
         }
 
-        if (config('cms-toolkit.enabled.file-library')) {
+        if (config('twill.enabled.file-library')) {
             $this->app->singleton('fileService', function () {
-                return $this->app->make(config('cms-toolkit.file_library.file_service'));
+                return $this->app->make(config('twill.file_library.file_service'));
             });
         }
     }
@@ -107,17 +109,17 @@ class CmsToolkitServiceProvider extends ServiceProvider
     {
         $loader = AliasLoader::getInstance();
 
-        if (config('cms-toolkit.debug.use_inspector', false)) {
+        if (config('twill.debug.use_inspector', false)) {
             $loader->alias('Inspector', Inspector::class);
         } else {
             $loader->alias('Debugbar', Debugbar::class);
         }
 
-        if (config('cms-toolkit.enabled.media-library')) {
+        if (config('twill.enabled.media-library')) {
             $loader->alias('ImageService', ImageService::class);
         }
 
-        if (config('cms-toolkit.enabled.file-library')) {
+        if (config('twill.enabled.file-library')) {
             $loader->alias('FileService', FileService::class);
         }
 
@@ -125,7 +127,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
 
     private function publishConfigs()
     {
-        if (config('cms-toolkit.enabled.users-management')) {
+        if (config('twill.enabled.users-management')) {
             config(['auth.providers.users' => require __DIR__ . '/../config/auth.php']);
             config(['mail.markdown.paths' => array_merge(
                 [__DIR__ . '/../views/emails'],
@@ -133,28 +135,33 @@ class CmsToolkitServiceProvider extends ServiceProvider
             )]);
         }
 
-        $this->publishes([__DIR__ . '/../config/cms-toolkit-publish.php' => config_path('cms-toolkit.php')], 'config');
-        $this->publishes([__DIR__ . '/../config/cms-navigation.php' => config_path('cms-navigation.php')], 'config');
+        config(['activitylog.enabled' => config('twill.enabled.dashboard')]);
+        config(['activitylog.subject_returns_soft_deleted_models' => true]);
+
+        config(['analytics.service_account_credentials_json' => config('twill.dashboard.analytics.service_account_credentials_json', storage_path('app/analytics/service-account-credentials.json'))]);
+
+        $this->publishes([__DIR__ . '/../config/twill-publish.php' => config_path('twill.php')], 'config');
+        $this->publishes([__DIR__ . '/../config/twill-navigation.php' => config_path('twill-navigation.php')], 'config');
     }
 
     private function mergeConfigs()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/cms-toolkit.php', 'cms-toolkit');
+        $this->mergeConfigFrom(__DIR__ . '/../config/twill.php', 'twill');
         $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
-        $this->mergeConfigFrom(__DIR__ . '/../config/frontend.php', 'cms-toolkit.frontend');
-        $this->mergeConfigFrom(__DIR__ . '/../config/debug.php', 'cms-toolkit.debug');
-        $this->mergeConfigFrom(__DIR__ . '/../config/seo.php', 'cms-toolkit.seo');
-        $this->mergeConfigFrom(__DIR__ . '/../config/blocks.php', 'cms-toolkit.block_editor');
-        $this->mergeConfigFrom(__DIR__ . '/../config/enabled.php', 'cms-toolkit.enabled');
-        $this->mergeConfigFrom(__DIR__ . '/../config/imgix.php', 'cms-toolkit.imgix');
-        $this->mergeConfigFrom(__DIR__ . '/../config/media-library.php', 'cms-toolkit.media_library');
-        $this->mergeConfigFrom(__DIR__ . '/../config/file-library.php', 'cms-toolkit.file_library');
+        $this->mergeConfigFrom(__DIR__ . '/../config/frontend.php', 'twill.frontend');
+        $this->mergeConfigFrom(__DIR__ . '/../config/debug.php', 'twill.debug');
+        $this->mergeConfigFrom(__DIR__ . '/../config/seo.php', 'twill.seo');
+        $this->mergeConfigFrom(__DIR__ . '/../config/blocks.php', 'twill.block_editor');
+        $this->mergeConfigFrom(__DIR__ . '/../config/enabled.php', 'twill.enabled');
+        $this->mergeConfigFrom(__DIR__ . '/../config/imgix.php', 'twill.imgix');
+        $this->mergeConfigFrom(__DIR__ . '/../config/media-library.php', 'twill.media_library');
+        $this->mergeConfigFrom(__DIR__ . '/../config/file-library.php', 'twill.file_library');
         $this->mergeConfigFrom(__DIR__ . '/../config/cloudfront.php', 'services');
     }
 
     private function publishMigrations()
     {
-        $migrations = ['CreateTagsTables', 'CreateModelLocksTable', 'CreateBlocksTable'];
+        $migrations = ['CreateTagsTables', 'CreateBlocksTable'];
 
         $optionalMigrations = [
             'CreateUsersTables' => 'users-management',
@@ -169,7 +176,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
             }
 
             foreach ($optionalMigrations as $migration => $feature) {
-                if (config('cms-toolkit.enabled.' . $feature)) {
+                if (config('twill.enabled.' . $feature)) {
                     $this->publishMigration($migration);
                 }
             }
@@ -190,8 +197,8 @@ class CmsToolkitServiceProvider extends ServiceProvider
     {
         $viewPath = __DIR__ . '/../views';
 
-        $this->loadViewsFrom($viewPath, 'cms-toolkit');
-        $this->publishes([$viewPath => resource_path('views/vendor/cms-toolkit')], 'views');
+        $this->loadViewsFrom($viewPath, 'twill');
+        $this->publishes([$viewPath => resource_path('views/vendor/twill')], 'views');
     }
 
     private function registerCommands()
@@ -224,7 +231,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
     {
         list($name) = str_getcsv($expression, ',', '\'');
 
-        $partialNamespace = view()->exists('admin.' . $view . $name) ? 'admin.' : 'cms-toolkit::';
+        $partialNamespace = view()->exists('admin.' . $view . $name) ? 'admin.' : 'twill::';
 
         $view = $partialNamespace . $view . $name;
 
@@ -259,11 +266,11 @@ class CmsToolkitServiceProvider extends ServiceProvider
             $expressionAsArray = str_getcsv($expression, ',', '\'');
 
             list($moduleName, $viewName) = $expressionAsArray;
-            $partialNamespace = 'cms-toolkit::partials';
+            $partialNamespace = 'twill::partials';
 
             $viewModule = "'admin.'.$moduleName.'.{$viewName}'";
             $viewApplication = "'admin.partials.{$viewName}'";
-            $viewModuleToolkit = "'cms-toolkit::'.$moduleName.'.{$viewName}'";
+            $viewModuleTwill = "'twill::'.$moduleName.'.{$viewName}'";
             $view = $partialNamespace . "." . $viewName;
 
             if (!isset($moduleName) || is_null($moduleName)) {
@@ -282,8 +289,8 @@ class CmsToolkitServiceProvider extends ServiceProvider
                 echo \$__env->make($viewModule, array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             } elseif( view()->exists($viewApplication)) {
                 echo \$__env->make($viewApplication, array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
-            } elseif( view()->exists($viewModuleToolkit)) {
-                echo \$__env->make($viewModuleToolkit, array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
+            } elseif( view()->exists($viewModuleTwill)) {
+                echo \$__env->make($viewModuleTwill, array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             } elseif( view()->exists('$view')) {
                 echo \$__env->make('$view', array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             }
@@ -303,21 +310,21 @@ class CmsToolkitServiceProvider extends ServiceProvider
 
     private function addViewComposers()
     {
-        if (config('cms-toolkit.enabled.users-management')) {
-            View::composer(['admin.*', 'cms-toolkit::*'], CurrentUser::class);
+        if (config('twill.enabled.users-management')) {
+            View::composer(['admin.*', 'twill::*'], CurrentUser::class);
         }
 
-        if (config('cms-toolkit.enabled.media-library')) {
-            View::composer('cms-toolkit::layouts.main', MediasUploaderConfig::class);
+        if (config('twill.enabled.media-library')) {
+            View::composer('twill::layouts.main', MediasUploaderConfig::class);
         }
 
-        if (config('cms-toolkit.enabled.file-library')) {
-            View::composer('cms-toolkit::layouts.main', FilesUploaderConfig::class);
+        if (config('twill.enabled.file-library')) {
+            View::composer('twill::layouts.main', FilesUploaderConfig::class);
         }
 
-        View::composer('cms-toolkit::partials.navigation.*', ActiveNavigation::class);
+        View::composer('twill::partials.navigation.*', ActiveNavigation::class);
 
-        View::composer(['admin.*', 'templates.*', 'cms-toolkit::*'], function ($view) {
+        View::composer(['admin.*', 'templates.*', 'twill::*'], function ($view) {
             $with = array_merge([
                 'renderForBlocks' => false,
                 'renderForModal' => false,
@@ -332,7 +339,7 @@ class CmsToolkitServiceProvider extends ServiceProvider
     {
         $translationPath = __DIR__ . '/../lang';
 
-        $this->loadTranslationsFrom($translationPath, 'cms-toolkit');
-        $this->publishes([$translationPath => resource_path('lang/vendor/cms-toolkit')], 'translations');
+        $this->loadTranslationsFrom($translationPath, 'twill');
+        $this->publishes([$translationPath => resource_path('lang/vendor/twill')], 'translations');
     }
 }

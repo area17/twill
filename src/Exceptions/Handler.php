@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Exceptions;
+namespace A17\Twill\Exceptions;
 
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -52,11 +52,11 @@ class Handler extends ExceptionHandler
             return $this->convertValidationExceptionToResponse($e, $request);
         }
 
-        if (config('app.debug', false) && config('cms-toolkit.debug.use_inspector', false)) {
+        if (config('app.debug', false) && config('twill.debug.use_inspector', false)) {
             return Inspector::renderException($e);
         }
 
-        if (config('app.debug', false) && config('cms-toolkit.debug.use_whoops', false)) {
+        if (config('app.debug', false) && config('twill.debug.use_whoops', false)) {
             return $this->renderExceptionWithWhoops($e);
         }
 
@@ -72,13 +72,13 @@ class Handler extends ExceptionHandler
         $statusCode = $this->isHttpException($e) ? $e->getStatusCode() : 500;
         $headers = $this->isHttpException($e) ? $e->getHeaders() : [];
 
-        $isSubdomainAdmin = empty(config('cms-toolkit.admin_app_path')) && $request->getHost() == config('cms-toolkit.admin_app_url');
-        $isSubdirectoryAdmin = !empty(config('cms-toolkit.admin_app_path')) && starts_with($request->path(), config('cms-toolkit.admin_app_path'));
+        $isSubdomainAdmin = empty(config('twill.admin_app_path')) && $request->getHost() == config('twill.admin_app_url');
+        $isSubdirectoryAdmin = !empty(config('twill.admin_app_path')) && starts_with($request->path(), config('twill.admin_app_path'));
 
         if ($isSubdomainAdmin || $isSubdirectoryAdmin) {
-            $view = view()->exists("admin.errors.$statusCode") ? "admin.errors.$statusCode" : "cms-toolkit::errors.$statusCode";
+            $view = view()->exists("admin.errors.$statusCode") ? "admin.errors.$statusCode" : "twill::errors.$statusCode";
         } else {
-            $view = config('cms-toolkit.frontend.views_path') . ".errors.{$statusCode}";
+            $view = config('twill.frontend.views_path') . ".errors.{$statusCode}";
         }
 
         if (view()->exists($view)) {
@@ -106,7 +106,7 @@ class Handler extends ExceptionHandler
             if (app()->environment('local', 'development')) {
                 $handler->setEditor(function ($file, $line) {
                     $translations = array('^' .
-                        config('cms-toolkit.debug.whoops_path_guest') => config('cms-toolkit.debug.whoops_path_host'),
+                        config('twill.debug.whoops_path_guest') => config('twill.debug.whoops_path_host'),
                     );
                     foreach ($translations as $from => $to) {
                         $file = rawurlencode(preg_replace('#' . $from . '#', $to, $file, 1));

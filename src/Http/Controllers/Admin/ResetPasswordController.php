@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\CmsToolkit\Http\Controllers\Admin;
+namespace A17\Twill\Http\Controllers\Admin;
 
-use A17\CmsToolkit\Models\User;
+use A17\Twill\Models\User;
 use DB;
 use Hash;
 use Illuminate\Foundation\Auth\ResetsPasswords;
@@ -31,7 +31,7 @@ class ResetPasswordController extends Controller
         // call exists on the Password repository to check for token expiration (default 1 hour)
         // otherwise redirect to the ask reset link form with error message
         if ($user && Password::getRepository()->exists($user, $token)) {
-            return view('cms-toolkit::auth.passwords.reset')->with([
+            return view('twill::auth.passwords.reset')->with([
                 'token' => $token,
                 'email' => $user->email,
             ]);
@@ -48,7 +48,7 @@ class ResetPasswordController extends Controller
 
         // we don't call exists on the Password repository here because we don't want to expire the token for welcome emails
         if ($user) {
-            return view('cms-toolkit::auth.passwords.reset')->with([
+            return view('twill::auth.passwords.reset')->with([
                 'token' => $token,
                 'email' => $user->email,
                 'welcome' => true,
@@ -88,7 +88,7 @@ class ResetPasswordController extends Controller
      */
     public function __construct()
     {
-        $this->redirectTo = config('cms-toolkit.auth_login_redirect_path', '/home');
+        $this->redirectTo = config('twill.auth_login_redirect_path', '/home');
         $this->middleware('guest');
     }
 }

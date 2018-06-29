@@ -174,7 +174,7 @@
     position:fixed;
     top: 0;
     right: 0;
-    bottom: 0;
+    height: 0;
     left: 0;
     background: rgba(0,0,0,.66);
     z-index: $zindex__modal;
@@ -186,7 +186,7 @@
     overflow-y: auto;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.35s ease, visibility 0s 0.35s;
+    transition: opacity 0.35s ease, visibility 0s 0.35s, height 0s 0.35s;
 
     &.modal--wide {
       background-color: $color__modal--wide;
@@ -302,7 +302,7 @@
       width: calc(100vw - 40px);
       max-width: 350px;
       height: auto;
-      margin-bottom:25vh;
+      margin-bottom:40vh;
     }
 
     .modal__content {
@@ -346,6 +346,7 @@
   .modal--active { // centered into the page
     opacity: 1;
     visibility: visible;
+    height:100%;
     transition: opacity 0.35s;
   }
 

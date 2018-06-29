@@ -2,7 +2,7 @@
   <div class="cropper">
     <header class="cropper__header">
       <ul v-if="multiCrops" class="cropper__breakpoints">
-        <li v-for="(crop, key, index) in currentMedia.crops" :key="key" :class="{ 's--active' : toggleBreakpoint === index }" @click="changeCrop(key, index)">{{ key | capitalize }}</li>
+        <li v-for="(crop, key, index) in cropOptions" :key="key" :class="{ 's--active' : toggleBreakpoint === index }" @click="changeCrop(key, index)">{{ key | capitalize }}</li>
       </ul>
     </header>
     <div class="cropper__content">
@@ -65,7 +65,16 @@
         currentRatioName: this.media.crops[Object.keys(this.media.crops)[0]].name
       }
     },
+    watch: {
+      media: function (newMedia) {
+        this.currentMedia = newMedia
+      }
+    },
     computed: {
+      cropOptions: function () {
+        if (this.allCrops.hasOwnProperty(this.context)) return this.allCrops[this.context]
+        return {}
+      },
       crop: function () {
         return this.currentMedia.crops[this.currentCrop]
       },
@@ -73,7 +82,7 @@
         return Object.keys(this.media.crops).length > 1
       },
       ratiosByContext: function () {
-        const filtered = this.allCrops[this.context][this.currentCrop]
+        const filtered = this.cropOptions[this.currentCrop]
         if (filtered) {
           return filtered
         }
@@ -181,6 +190,7 @@
         data.values = {}
         data.values[this.currentCrop] = this.toOriginalCrop(this.cropper.getData(true))
         data.values[this.currentCrop].name = this.currentRatioName
+
         this.$emit('crop-end', data)
       },
       toNaturalCrop: function (data) {

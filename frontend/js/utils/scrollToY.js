@@ -1,16 +1,16 @@
-var scrollToY = function (options) {
+const scrollToY = function (options) {
   // Doc: https://code.area17.com/mike/a17-js-helpers/wikis/A17-Helpers-scrollToY
 
-  var settings = {
+  const settings = {
     el: document,
     offset: 0,
     duration: 250,
     easing: 'linear'
   }
-  var start = Date.now()
-  var from = 0
-  var isDocument = false
-  var easingEquations = {
+  const start = Date.now()
+  let from = 0
+  let isDocument = false
+  const easingEquations = {
 
     // Easing functions taken from: https://gist.github.com/gre/1650294
     // -
@@ -26,10 +26,10 @@ var scrollToY = function (options) {
     // acceleration until halfway, then deceleration
     easeInOut: function (t) { return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1 }
   }
-  var useRequestAnimationFrame = window.requestAnimationFrame
-  var scrollInterval
+  const useRequestAnimationFrame = window.requestAnimationFrame
+  let scrollInterval
 
-  for (var def in options) {
+  for (let def in options) {
     if (typeof options[def] !== 'undefined') {
       settings[def] = options[def]
     }
@@ -72,9 +72,9 @@ var scrollToY = function (options) {
       settings.el = document.documentElement.scrollTop ? document.documentElement : document.body
       requestAnimationFrame(scroll)
     } else {
-      var currentTime = Date.now()
-      var time = min(1, ((currentTime - start) / settings.duration))
-      var easedT = easingEquations[settings.easing](time)
+      const currentTime = Date.now()
+      const time = min(1, ((currentTime - start) / settings.duration))
+      const easedT = easingEquations[settings.easing](time)
 
       settings.el.scrollTop = (easedT * (settings.offset - from)) + from
 

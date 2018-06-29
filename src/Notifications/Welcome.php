@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Notifications;
+namespace A17\Twill\Notifications;
 
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -9,8 +9,8 @@ class Welcome extends ResetPassword
 {
     public function toMail($notifiable)
     {
-        return (new MailMessage)->markdown('cms-toolkit::emails.html.email', [
-            'url' => url('http://' . config('cms-toolkit.admin_app_url') . route('admin.password.reset.welcome.form', $this->token, false)),
+        return (new MailMessage)->markdown('twill::emails.html.email', [
+            'url' => url('http://' . config('twill.admin_app_url') . route('admin.password.reset.welcome.form', $this->token, false)),
             'actionText' => 'Choose your own password',
             'title' => 'Welcome',
             'copy' => 'You are receiving this email because an account was created for you on ' . config('app.name') . '.',

@@ -7,7 +7,7 @@
     </label>
     <a href="#" v-if="addNew" @click.prevent="openAddModal" class="input__add"><span v-svg symbol="add"></span> <span class="f--link-underlined--o">Add New</span></a>
     <slot></slot>
-    <span v-if="error && errorMessage" class="input__errorMessage f--small">{{ errorMessage }}</span>
+    <span v-if="error && errorMessage" class="input__errorMessage f--small" v-html="errorMessage"></span>
     <span v-if="otherLocalesError" class="input__errorMessage f--small">{{ errorMessageLocales }}</span>
   </div>
 </template>

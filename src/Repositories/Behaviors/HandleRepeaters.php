@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Repositories\Behaviors;
+namespace A17\Twill\Repositories\Behaviors;
 
 use Carbon\Carbon;
 
@@ -75,7 +75,7 @@ trait HandleRepeaters
         $repeatersMedias = [];
         $repeatersFiles = [];
         $relationRepository = $this->getModelRepository($relation, $model);
-        $repeatersConfig = config('cms-toolkit.block_editor.repeaters');
+        $repeatersConfig = config('twill.block_editor.repeaters');
 
         foreach ($object->$relation as $relationItem) {
             $repeaters[] = [

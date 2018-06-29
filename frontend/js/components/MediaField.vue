@@ -4,8 +4,8 @@
       <div class="media__info" v-if="hasMedia">
         <div class="media__img">
           <div class="media__imgFrame">
-            <div class="media__imgCentered" :class="cropThumbnailClass" :style="cropThumbnailStyle">
-              <img v-if="cropSrc || showImg" :src="cropSrc" crossorigin="anonymous" ref="mediaImg" :class="cropThumbnailClass"/>
+            <div class="media__imgCentered" :style="cropThumbnailStyle">
+              <img v-if="cropSrc && showImg" :src="cropSrc" ref="mediaImg" :class="cropThumbnailClass"/>
             </div>
             <div class="media__edit" @click="openMediaLibrary(1, mediaKey, index)">
               <span class="media__edit--button"><span v-svg symbol="edit"></span></span>
@@ -21,12 +21,9 @@
             media.height }}
           </li>
           <li class="f--small media__crop-link" v-if="cropInfos" @click="openCropMedia">
-            <div class="media__crop-link-col">
-              <span class="f--small f--note hide--xsmall">Cropped:&nbsp;</span>
-            </div>
-            <div class="media__crop-link-col">
-              <span class="f--small f--note hide--xsmall" v-html="cropInfos"></span>
-            </div>
+              <p class="f--small f--note hide--xsmall" v-for="cropInfo in cropInfos">
+                <span v-html="cropInfo"></span>
+              </p>
           </li>
           <li class="f--small">
             <a href="#" @click.prevent="metadatasInfos" v-if="withAddInfo" class="f--link-underlined--o">{{ metadatas.text }}</a>
@@ -160,9 +157,8 @@
         canvas: null,
         img: null,
         ctx: null,
-        isDataToUrl: false,
         imgLoaded: false,
-        cropSrc: false,
+        cropSrc: '',
         showImg: false,
         isDestroyed: false,
         naturalDim: {
@@ -173,7 +169,7 @@
           width: null,
           height: null
         },
-        hasMediaChange: false,
+        hasMediaChanged: false,
         metadatas: {
           text: 'Edit info',
           textOpen: 'Edit info',
@@ -185,9 +181,10 @@
     filters: a17VueFilters,
     computed: {
       cropThumbnailStyle: function () {
+        if (this.showImg) return {}
         if (!this.hasMedia) return {}
         if (!this.media.crops) return {}
-        if (!this.cropSrc) return {}
+        if (this.cropSrc.length === 0) return {}
 
         return {
           'backgroundImage': `url(${this.cropSrc})`
@@ -196,7 +193,6 @@
       cropThumbnailClass: function () {
         if (!this.hasMedia) return {}
         if (!this.media.crops) return {}
-        if (!this.isDataToUrl) return {}
         const crop = this.media.crops[Object.keys(this.media.crops)[0]]
         return {
           'media__img--landscape': crop.width / crop.height >= 1,
@@ -217,16 +213,15 @@
         }
       },
       cropInfos: function () {
-        let cropInfos = ''
-        let index = 0
+        let cropInfos = []
         if (this.media.crops) {
           for (let variant in this.media.crops) {
-            if (index > 0) {
-              cropInfos += ', '
+            if (this.media.crops[variant].width + this.media.crops[variant].height) { // crop is not 0x0
+              let cropInfo = ''
+              cropInfo += this.media.crops[variant].name + ' crop: '
+              cropInfo += this.media.crops[variant].width + '&nbsp;&times;&nbsp;' + this.media.crops[variant].height
+              cropInfos.push(cropInfo)
             }
-            cropInfos += this.media.crops[variant].width + '&nbsp;&times;&nbsp;' + this.media.crops[variant].height + '&nbsp;'
-            cropInfos += '(' + this.media.crops[variant].name + ')'
-            index++
           }
         }
         return cropInfos.length > 0 ? cropInfos : null
@@ -250,7 +245,7 @@
     },
     watch: {
       media: function (val, oldVal) {
-        this.hasMediaChange = val !== oldVal
+        this.hasMediaChanged = val !== oldVal
 
         if (this.selectedMedias.hasOwnProperty(this.mediaKey)) {
           // reset isDestroyed status because we changed the media
@@ -261,29 +256,41 @@
     methods: {
       // crop
       canvasCrop () {
-        let crop = this.media.crops[Object.keys(this.media.crops)[0]]
-        if (!crop) return
+        let data = this.media.crops[Object.keys(this.media.crops)[0]]
+        if (!data) return
 
-        crop = cropConversion(crop, this.naturalDim, this.originalDim)
-        const cropWidth = crop.width
-        const cropHeight = crop.height
+        // in case of a 0x0 crop : let's display the full image in the preview
+        if (data.width + data.height === 0) {
+          this.showDefaultThumbnail()
+          return
+        }
 
+        // default src
         let src = this.media.thumbnail
 
         this.$nextTick(() => {
           try {
+            let crop = cropConversion(data, this.naturalDim, this.originalDim)
+            const cropWidth = crop.width
+            const cropHeight = crop.height
             this.canvas.width = cropWidth
             this.canvas.height = cropHeight
             this.ctx.drawImage(this.img, crop.x, crop.y, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight)
             src = this.canvas.toDataURL('image/png')
-            this.isDataToUrl = true
-          } catch (error) {
-            console.error(`An error have occured: ${error}`)
-            this.isDataToUrl = false
-          }
 
-          if (this.cropSrc !== src) {
-            this.cropSrc = src
+            // show data url in the background
+            if (this.cropSrc !== src) {
+              this.showImg = false
+              this.cropSrc = src
+            }
+          } catch (error) {
+            console.error(error)
+
+            // fallback on displaying the thumbnail
+            if (this.cropSrc !== src) {
+              this.showImg = true
+              this.cropSrc = src
+            }
           }
         })
       },
@@ -355,7 +362,7 @@
             })
             this.cropMedia({values: defaultCrops})
           }, (error) => {
-            console.error(`An error have occured: ${error}`)
+            console.error(error)
             this.cropMedia({values: defaultCrops})
           })
         } else {
@@ -395,30 +402,39 @@
         }
 
         if (this.hasMedia) {
+          this.cropSrc = this.media.thumbnail
+
           this.initImg().then(() => {
             imgLoaded()
           }, (error) => {
-            console.error(`An error have occured: ${error}`)
-            this.showImg = true
+            console.error(error)
+            this.showDefaultThumbnail()
 
+            // lets try to load to image tag now
             this.$nextTick(() => {
-              this.$refs.mediaImg.addEventListener('load', () => {
-                this.img = this.$refs.mediaImg
-                imgLoaded()
-              }, {
-                once: true,
-                passive: true,
-                capture: true
-              })
+              // the image tag
+              const imgTag = this.$refs.mediaImg
+              if (imgTag) {
+                imgTag.addEventListener('load', () => {
+                  this.img = imgTag
+                  imgLoaded()
+                }, {
+                  once: true,
+                  passive: true,
+                  capture: true
+                })
 
-              this.$refs.mediaImg.onError = (error) => {
-                console.error(`An error have occured: ${error}`)
+                imgTag.addEventListener('error', (e) => {
+                  console.error(e)
+                  this.showDefaultThumbnail()
+                })
+              } else {
+                this.showImg = false
+                this.cropSrc = this.media.thumbnail
               }
-
-              this.cropSrc = this.media.thumbnail
             })
           })
-          this.hasMediaChange = false
+          this.hasMediaChanged = false
         }
       },
       initImg: function () {
@@ -438,12 +454,18 @@
             capture: true
           })
 
-          this.img.onError = (e) => {
+          // in case of CORS issue or anything else
+          this.img.addEventListener('error', (e) => {
             reject(e)
-          }
+          })
 
+          // try to load the media thumbnail
           this.img.src = this.media.thumbnail
         })
+      },
+      showDefaultThumbnail: function () {
+        this.showImg = true
+        if (this.hasMedia) this.cropSrc = this.media.thumbnail
       },
       openCropMedia: function () {
         this.$refs[this.cropModalName].open()
@@ -478,7 +500,9 @@
       this.init()
     },
     beforeUpdate: function () {
-      if (this.hasMediaChange) this.init()
+      if (this.hasMediaChanged) {
+        this.init()
+      }
     },
     beforeDestroy: function () {
       if (this.isSlide) return // for Slideshows : the medias are deleted when the slideshow component is destroyed (so no need to do it here)
@@ -556,8 +580,7 @@
       display:block;
       max-width:100%;
       max-height:100%;
-      opacity: 0;
-      visibility: hidden;
+      margin:auto;
 
       &.media__img--landscape {
         width: 100%;
@@ -576,16 +599,14 @@
   }
 
   .media__crop-link {
-    display: flex;
-    flex-direction: row;
     text-decoration: none;
     cursor: pointer;
 
-    .media__crop-link-col {
-      display: inline-block;
+    p:first-letter {
+      text-transform: capitalize;
     }
 
-    &:hover .f--small {
+    &:hover .f--small span {
       @include bordered($color__text, false);
     }
 
@@ -613,11 +634,11 @@
     right:0;
     position: absolute;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    background: $color__lighter no-repeat center center;
-    background-size: 100% auto;
-    transition: background-image 350ms cubic-bezier(0.795, 0.125, 0.280, 0.990), background-size 0ms;
+    background-color: $color__lighter;
+    background-size: contain;
+    background-repeat:no-repeat;
+    background-position:center center;
+    transition: background-image 350ms cubic-bezier(0.795, 0.125, 0.280, 0.990), background-size 0ms 350ms;
 
     &:before {
       content: "";
@@ -628,14 +649,6 @@
       right: 0;
       bottom: 0;
       border:1px solid rgba(0,0,0,0.05);
-    }
-
-    &.media__img--landscape {
-      background-size: 100% auto;
-    }
-
-    &.media__img--portrait {
-      background-size: auto 100%;
     }
   }
 

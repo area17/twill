@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\CmsToolkit\Repositories\Behaviors;
+namespace A17\Twill\Repositories\Behaviors;
 
-use A17\CmsToolkit\Models\Media;
+use A17\Twill\Models\Media;
 
 trait HandleMedias
 {
@@ -16,7 +16,7 @@ trait HandleMedias
         $mediasFromFields = $this->getMedias($fields);
 
         $mediasFromFields->each(function ($media) use ($object, $mediasCollection) {
-            $newMedia = Media::withTrashed()->find($media['id']);
+            $newMedia = Media::withTrashed()->find(is_array($media['id']) ? array_first($media['id']) : $media['id']);
             $pivot = $newMedia->newPivot($object, array_except($media, ['id']), 'mediables', true);
             $newMedia->setRelation('pivot', $pivot);
             $mediasCollection->push($newMedia);
@@ -47,8 +47,9 @@ trait HandleMedias
         if (isset($fields['medias'])) {
             foreach ($fields['medias'] as $role => $mediasForRole) {
                 if (in_array($role, array_keys($this->model->mediasParams ?? []))
-                    || in_array($role, array_keys(config('cms-toolkit.block_editor.crops')))) {
+                    || in_array($role, array_keys(config('twill.block_editor.crops')))) {
                     collect($mediasForRole)->each(function ($media) use (&$medias, $role) {
+                        $customMetadatas = $media['metadatas']['custom'] ?? [];
                         if (isset($media['crops'])) {
                             foreach ($media['crops'] as $cropName => $cropData) {
                                 $medias->push([
@@ -60,7 +61,7 @@ trait HandleMedias
                                     'crop_h' => $cropData['height'],
                                     'crop_x' => $cropData['x'],
                                     'crop_y' => $cropData['y'],
-                                    'metadatas' => json_encode($media['metadatas']['custom']),
+                                    'metadatas' => json_encode($customMetadatas),
                                 ]);
                             }
                         } else {
@@ -74,7 +75,7 @@ trait HandleMedias
                                     'crop_h' => null,
                                     'crop_x' => null,
                                     'crop_y' => null,
-                                    'metadatas' => json_encode($media['metadatas']['custom']),
+                                    'metadatas' => json_encode($customMetadatas),
                                 ]);
                             }
                         }

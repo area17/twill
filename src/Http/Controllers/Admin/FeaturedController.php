@@ -1,10 +1,10 @@
 <?php
 
-namespace A17\CmsToolkit\Http\Controllers\Admin;
+namespace A17\Twill\Http\Controllers\Admin;
 
-use A17\CmsToolkit\Models\Feature;
-use A17\CmsToolkit\Repositories\Behaviors\HandleTranslations;
-use App\Http\Controllers\Controller;
+use A17\Twill\Models\Feature;
+use A17\Twill\Repositories\Behaviors\HandleMedias;
+use A17\Twill\Repositories\Behaviors\HandleTranslations;
 use DB;
 use Event;
 
@@ -13,7 +13,7 @@ class FeaturedController extends Controller
     public function index()
     {
         $featuredSectionKey = request()->segment(count(request()->segments()));
-        $featuredSection = config("cms-toolkit.buckets.$featuredSectionKey");
+        $featuredSection = config("twill.buckets.$featuredSectionKey");
         $filters = json_decode(request()->get('filter'), true) ?? [];
 
         $featuredSources = $this->getFeaturedSources($featuredSection, $filters['search'] ?? '');
@@ -46,11 +46,11 @@ class FeaturedController extends Controller
 
         $routePrefix = 'featured';
 
-        if (isset(config('cms-toolkit.bucketsRoutes'))) {
-            $routePrefix =  config('cms-toolkit.bucketsRoutes')[$featuredSectionKey] ?? $routePrefix;
+        if (config('twill.bucketsRoutes') !== null) {
+            $routePrefix = config('twill.bucketsRoutes')[$featuredSectionKey] ?? $routePrefix;
         }
 
-        return view('cms-toolkit::layouts.buckets', [
+        return view('twill::layouts.buckets', [
             'dataSources' => [
                 'selected' => array_first($contentTypes),
                 'content_types' => $contentTypes,
@@ -71,7 +71,7 @@ class FeaturedController extends Controller
 
     private function getFeaturedItemsByBucket($featuredSection, $featuredSectionKey)
     {
-        $bucketRouteConfig = config('cms-toolkit.bucketsRoutes') ?? [$featuredSectionKey => 'featured'];
+        $bucketRouteConfig = config('twill.bucketsRoutes') ?? [$featuredSectionKey => 'featured'];
         return collect($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use ($featuredSectionKey, $bucketRouteConfig) {
             $routePrefix = $bucketRouteConfig[$featuredSectionKey];
             return [
@@ -83,6 +83,9 @@ class FeaturedController extends Controller
                 'toggleFeaturedLabels' => $bucket['starred_items_labels'] ?? [],
                 'children' => Feature::where('bucket_key', $bucketKey)->with('featured')->get()->map(function ($feature) {
                     if (($item = $feature->featured) != null) {
+                        $repository = $this->getRepository($feature->featured_type);
+                        $withImage = classHasTrait($repository, HandleMedias::class);
+
                         return [
                             'id' => $item->id,
                             'name' => $item->titleInBucket ?? $item->title,
@@ -92,7 +95,9 @@ class FeaturedController extends Controller
                                 'label' => ucfirst($feature->featured_type),
                                 'value' => $feature->featured_type,
                             ],
-                        ];
+                        ] + ($withImage ? [
+                            'thumbnail' => $item->defaultCmsImage(['w' => 100, 'h' => 100]),
+                        ] : []);
                     }
                 })->reject(function ($item) {
                     return is_null($item);
@@ -112,6 +117,7 @@ class FeaturedController extends Controller
                 $module = $bucketable['module'];
                 $repository = $this->getRepository($module);
                 $translated = classHasTrait($repository, HandleTranslations::class);
+                $withImage = classHasTrait($repository, HandleMedias::class);
 
                 if ($search) {
                     $searchField = $bucketable['searchField'] ?? ($translated ? 'title' : '%title');
@@ -132,11 +138,11 @@ class FeaturedController extends Controller
                     'name' => $bucketable['name'] ?? ucfirst($module),
                     'items' => $items,
                     'translated' => $translated,
+                    'withImage' => $withImage,
                 ]];
             });
         })->each(function ($bucketables, $bucket) use (&$featuredSources) {
             $bucketables->each(function ($bucketableData, $bucketable) use ($bucket, &$featuredSources) {
-                // $featuredSources[$bucketable]['buckets'][] = $bucket; // not used at the moment because our new components are not supporting restricting items from going into a certain bucket.
                 $featuredSources[$bucketable]['name'] = $bucketableData['name'];
                 $featuredSources[$bucketable]['maxPage'] = $bucketableData['items']->lastPage();
                 $featuredSources[$bucketable]['offset'] = $bucketableData['items']->perPage();
@@ -149,7 +155,11 @@ class FeaturedController extends Controller
                             'label' => $bucketableData['name'],
                             'value' => $bucketable,
                         ],
-                    ] + ($bucketableData['translated'] ? ['languages' => $item->getActiveLanguages()] : []);
+                    ] + ($bucketableData['translated'] ? [
+                        'languages' => $item->getActiveLanguages(),
+                    ] : []) + ($bucketableData['withImage'] ? [
+                        'thumbnail' => $item->defaultCmsImage(['w' => 100, 'h' => 100]),
+                    ] : []);
                 })->toArray();
             });
 
@@ -180,6 +190,6 @@ class FeaturedController extends Controller
 
     private function getRepository($bucketable)
     {
-        return app(config('cms-toolkit.namespace') . "\Repositories\\" . ucfirst(str_singular($bucketable)) . "Repository");
+        return app(config('twill.namespace') . "\Repositories\\" . ucfirst(str_singular($bucketable)) . "Repository");
     }
 }

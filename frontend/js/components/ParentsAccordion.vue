@@ -34,7 +34,7 @@
     },
     computed: {
       currentLabel: function () {
-        var selectedOption = this.options.filter(this.isSameValue)
+        const selectedOption = this.options.filter(this.isSameValue)
         if (selectedOption.length) return selectedOption[0].label
         else return ''
       },
@@ -51,8 +51,7 @@
     },
     methods: {
       isSameValue: function (option) {
-        if (option.value === this.currentValue) return true
-        return false
+        return option.value === this.currentValue
       },
       updateSelected: function (newValue) {
         this.$store.commit(PARENTS.UPDATE_PARENT, newValue)

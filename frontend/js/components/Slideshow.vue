@@ -73,7 +73,7 @@
         return Math.max(0, this.max - this.slides.length)
       },
       addLabel: function () {
-        const itemNames = this.remainingSlides > 1 ? 'up to ' + this.remainingSlides + ' ' + this.itemLabel + 's' : this.remainingSlides + ' ' + this.itemLabel
+        const itemNames = this.itemLabel + 's'
         return 'Attach ' + itemNames
       },
       slides: {
@@ -145,11 +145,11 @@
       display: none;
     }
 
-    .s--in-editor & {
-      @include breakpoint('small+') {
-        display: none;
-      }
-    }
+    // .s--in-editor & {
+    //   @include breakpoint('small+') {
+    //     display: none;
+    //   }
+    // }
   }
 
   .slide {

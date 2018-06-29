@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\CmsToolkit\Http\Controllers\Admin;
+namespace A17\Twill\Http\Controllers\Admin;
 
-use A17\CmsToolkit\Repositories\SettingRepository;
+use A17\Twill\Repositories\SettingRepository;
 use Event;
 use Illuminate\Routing\Controller;
 
@@ -22,7 +22,7 @@ class SettingController extends Controller
             'section' => $section,
             'form_fields' => $this->settings->getFormFields($section),
             'saveUrl' => route('admin.settings.update', $section),
-            'translated' => true,
+            'translate' => true,
         ]) : redirect()->back();
     }
 

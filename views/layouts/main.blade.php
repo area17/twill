@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html dir="ltr" lang="en-US">
     <head>
-        @include('cms-toolkit::partials.head')
+        @include('twill::partials.head')
     </head>
     <body class="env env--{{ app()->environment() }} @yield('appTypeClass')">
         <div class="svg-sprite">
             {!! File::exists(public_path("/assets/admin/icons/icons.svg")) ? File::get(public_path("/assets/admin/icons/icons.svg")) : '' !!}
             {!! File::exists(public_path("/assets/admin/icons/icons-files.svg")) ? File::get(public_path("/assets/admin/icons/icons-files.svg")) : '' !!}
         </div>
-        @hasSection('globalNavSearch')
-            @partialView(($moduleName ?? null), 'navigation._overlay_navigation', [ 'search' => true ])
+        @if(config('twill.enabled.search', false))
+            @partialView(($moduleName ?? null), 'navigation._overlay_navigation', ['search' => true])
         @else
             @partialView(($moduleName ?? null), 'navigation._overlay_navigation')
         @endif
@@ -21,7 +21,7 @@
                     <div class="header__user" id="headerUser" v-cloak>
                         @partialView(($moduleName ?? null), 'navigation._user')
                     </div>
-                    @hasSection('globalNavSearch')
+                    @if(config('twill.enabled.search', false) && !($isDashboard ?? false))
                       <div class="headerSearch" id="searchApp">
                         <a href="#" class="headerSearch__toggle" @click.prevent="toggleSearch">
                           <span v-svg symbol="search" v-show="!open"></span>
@@ -30,7 +30,7 @@
                         <transition name="fade_search-overlay" @after-enter="afterAnimate">
                           <div class="headerSearch__wrapper" :style="positionStyle" v-show="open" v-cloak>
                             <div class="headerSearch__overlay" :style="positionStyle" @click="toggleSearch"></div>
-                            <a17-search endpoint="http://www.mocky.io/v2/5a7b81d43000004b0028bf3d" :open="open" :opened="opened"></a17-search>
+                            <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" :open="open" :opened="opened"></a17-search>
                           </div>
                         </transition>
                       </div>
@@ -47,8 +47,12 @@
             <section class="main">
                 <div class="app" id="app" v-cloak>
                     @yield('content')
-                    @if (config('cms-toolkit.enabled.media-library') || config('cms-toolkit.enabled.file-library'))
+                    @if (config('twill.enabled.media-library') || config('twill.enabled.file-library'))
                         <a17-medialibrary ref="mediaLibrary" :authorized="{{ json_encode(auth()->user()->can('edit')) }}"></a17-medialibrary>
+                        <a17-dialog ref="warningMediaLibrary" modal-title="Delete media" confirm-label="Delete">
+                            <p class="modal--tiny-title"><strong>Delete media</strong></p>
+                            <p>Are you sure ?<br />This change can't be undone.</p>
+                        </a17-dialog>
                     @endif
                     <a17-notif variant="success"></a17-notif>
                     <a17-notif variant="error"></a17-notif>
@@ -60,7 +64,7 @@
                         <span class="loader"><span></span></span>
                     </span>
                 </div>
-                @include('cms-toolkit::partials.footer')
+                @include('twill::partials.footer')
             </section>
         </div>
 
@@ -71,22 +75,22 @@
             window.STORE.medias.types = []
             window.STORE.languages = {!! json_encode(getLanguagesForVueStore($form_fields ?? [], $translate ?? false)) !!}
 
-            @if (config('cms-toolkit.enabled.media-library'))
+            @if (config('twill.enabled.media-library'))
                 window.STORE.medias.types.push({
                     value: 'image',
                     text: 'Images',
-                    total: {{ \A17\CmsToolkit\Models\Media::count() }},
+                    total: {{ \A17\Twill\Models\Media::count() }},
                     endpoint: '{{ route('admin.media-library.medias.index') }}',
                     tagsEndpoint: '{{ route('admin.media-library.medias.tags') }}',
                     uploaderConfig: {!! json_encode($mediasUploaderConfig) !!}
                 })
             @endif
 
-            @if (config('cms-toolkit.enabled.file-library'))
+            @if (config('twill.enabled.file-library'))
                 window.STORE.medias.types.push({
                     value: 'file',
                     text: 'Files',
-                    total: {{ \A17\CmsToolkit\Models\File::count() }},
+                    total: {{ \A17\Twill\Models\File::count() }},
                     endpoint: '{{ route('admin.file-library.files.index') }}',
                     tagsEndpoint: '{{ route('admin.file-library.files.tags') }}',
                     uploaderConfig: {!! json_encode($filesUploaderConfig) !!}

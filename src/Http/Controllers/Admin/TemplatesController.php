@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Http\Controllers\Admin;
+namespace A17\Twill\Http\Controllers\Admin;
 
 class TemplatesController extends Controller
 {

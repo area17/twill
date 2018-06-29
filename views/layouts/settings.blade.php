@@ -1,5 +1,5 @@
-@extends('cms-toolkit::layouts.form', [
-    'contentFieldsetLabel' => 'Edit settings',
+@extends('twill::layouts.form', [
+    'contentFieldsetLabel' => $contentFieldsetLabel ?? 'Edit settings',
 ])
 
 @section('contentFields')

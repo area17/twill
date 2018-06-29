@@ -1,5 +1,5 @@
 <?php
-if (config('cms-toolkit.enabled.users-management')) {
+if (config('twill.enabled.users-management')) {
     Route::get('login', 'LoginController@showLoginForm')->name('login.form');
     Route::post('login', 'LoginController@login')->name('login');
     Route::get('logout', 'LoginController@logout')->name('logout');

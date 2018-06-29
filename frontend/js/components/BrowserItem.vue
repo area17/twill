@@ -117,6 +117,10 @@
 
     img {
       display:block;
+      width: 50px;
+      min-height: 50px;
+      background: $color__border--light;
+      height: auto;
     }
   }
 

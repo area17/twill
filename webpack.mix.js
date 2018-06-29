@@ -82,4 +82,3 @@ if (mix.inProduction()) {
 } else {
   mix.sourceMaps()
 }
-

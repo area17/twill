@@ -1,4 +1,14 @@
 export default {
+  props: {
+    /**
+     * Define if the component can be draggable or not
+     * @type {Boolean}
+     */
+    draggable: {
+      type: Boolean,
+      default: true
+    }
+  },
   data: function () {
     return {
       animation: 150,
@@ -17,7 +27,8 @@ export default {
         ghostClass: this.ghostClass,
         chosenClass: this.chosenClass,
         dragClass: this.dragClass,
-        scrollSensitivity: this.scrollSensitivity
+        scrollSensitivity: this.scrollSensitivity,
+        disabled: !this.draggable
       }
     }
   }

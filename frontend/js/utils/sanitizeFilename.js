@@ -1,4 +1,4 @@
-var truncate = require('truncate-utf8-bytes')
+let truncate = require('truncate-utf8-bytes')
 
 /**
  * Replaces characters in strings that are illegal/unsafe for filenames.
@@ -27,15 +27,15 @@ var truncate = require('truncate-utf8-bytes')
  * @return {String}         Sanitized filename
  */
 
-var illegalRe = /[\/\?<>\\:\*\|":]/g
+let illegalRe = /[\/\?<>\\:\*\|":]/g
 /* eslint-disable no-control-regex */
-var controlRe = /[\x00-\x1f\x80-\x9f]/g
-var reservedRe = /^\.+$/
-var windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i
-var windowsTrailingRe = /[\. ]+$/
+let controlRe = /[\x00-\x1f\x80-\x9f]/g
+let reservedRe = /^\.+$/
+let windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i
+let windowsTrailingRe = /[\. ]+$/
 
 // UTF to ASCII map. Removes accents
-var defaultDiacriticsRemovalap = [
+let defaultDiacriticsRemovalap = [
   {'base': 'A', 'letters': '\u0041\u24B6\uFF21\u00C0\u00C1\u00C2\u1EA6\u1EA4\u1EAA\u1EA8\u00C3\u0100\u0102\u1EB0\u1EAE\u1EB4\u1EB2\u0226\u01E0\u00C4\u01DE\u1EA2\u00C5\u01FA\u01CD\u0200\u0202\u1EA0\u1EAC\u1EB6\u1E00\u0104\u023A\u2C6F'},
   {'base': 'AA', 'letters': '\uA732'},
   {'base': 'AE', 'letters': '\u00C6\u01FC\u01E2'},
@@ -124,17 +124,17 @@ var defaultDiacriticsRemovalap = [
   {'base': 'z', 'letters': '\u007A\u24E9\uFF5A\u017A\u1E91\u017C\u017E\u1E93\u1E95\u01B6\u0225\u0240\u2C6C\uA763'}
 ]
 
-var diacriticsMap = {}
-for (var i = 0; i < defaultDiacriticsRemovalap.length; i++) {
-  var letters = defaultDiacriticsRemovalap[i].letters.split('')
-  for (var j = 0; j < letters.length; j++) {
+let diacriticsMap = {}
+for (let i = 0; i < defaultDiacriticsRemovalap.length; i++) {
+  let letters = defaultDiacriticsRemovalap[i].letters.split('')
+  for (let j = 0; j < letters.length; j++) {
     diacriticsMap[letters[j]] = defaultDiacriticsRemovalap[i].base
   }
 }
 
 function noAccents (string, removeOtherUnicodeCharacters, replacementCharacter) {
   // x00-x7E is the ASCII character range
-  var withoutAccents = string.replace(/[^\u0000-\u007E]/g, function (ch) {
+  let withoutAccents = string.replace(/[^\u0000-\u007E]/g, function (ch) {
     return diacriticsMap[ch] || ch
   })
 
@@ -148,14 +148,14 @@ function noAccents (string, removeOtherUnicodeCharacters, replacementCharacter) 
 }
 
 function sanitize (input, replacement) {
-  var sanitized = noAccents(input, true)
+  let sanitized = noAccents(input, true)
     .replace(illegalRe, replacement)
     .replace(controlRe, replacement)
     .replace(reservedRe, replacement)
     .replace(windowsReservedRe, replacement)
     .replace(windowsTrailingRe, replacement)
 
-  var cleanCharacters = /[^0-9a-zA-Z-.,;_]/g
+  let cleanCharacters = /[^0-9a-zA-Z-.,;_]/g
 
   sanitized = sanitized.replace(cleanCharacters, '')
 
@@ -163,8 +163,8 @@ function sanitize (input, replacement) {
 }
 
 export default function (input, options) {
-  var replacement = (options && options.replacement) || ''
-  var output = sanitize(input, replacement)
+  let replacement = (options && options.replacement) || ''
+  let output = sanitize(input, replacement)
   if (replacement === '') {
     return output
   }

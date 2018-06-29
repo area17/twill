@@ -32,6 +32,7 @@
       </div>
     </div>
     <div class="block__content" :aria-hidden="!visible ? true : null">
+      <a17-inputframe label="" :name="`block.${block.id}`"></a17-inputframe>
       <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes" key="`form_${block.type}_${block.id}`"><!-- dynamic components --></component>
     </div>
   </div>
@@ -263,8 +264,11 @@
       border:0 none;
     }
 
-    /deep/ .block__body {
+    /deep/ .input {
+      margin-top: 15px;
+    }
 
+    /deep/ .block__body {
       > .media,
       > .slideshow,
       > .browserField {

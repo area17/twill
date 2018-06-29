@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Http\Controllers\Front;
+namespace A17\Twill\Http\Controllers\Front;
 
 trait ShowWithPreview
 {

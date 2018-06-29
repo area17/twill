@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Models;
+namespace A17\Twill\Models;
 
 use DB;
 use ImageService;
@@ -51,5 +51,18 @@ class Media extends Model
             'width' => $this->width,
             'height' => $this->height,
         ];
+    }
+
+    public function getMetadata($name, $fallback = null)
+    {
+        $metadatas = (object) json_decode($this->pivot->metadatas);
+        $language = app()->getLocale();
+        $fallback = $fallback ? $this->$fallback : $this->name;
+
+        return $metadatas->$name->$language ?? (
+            is_object($metadatas->$name ?? null)
+            ? ($fallback ?? '')
+            : ($metadatas->$name ?? $fallback)
+        );
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\CmsToolkit\Models\Behaviors;
+namespace A17\Twill\Models\Behaviors;
 
 trait HasRevisions
 {
@@ -14,5 +14,16 @@ trait HasRevisions
         return $query->whereHas('revisions', function ($query) {
             $query->where('user_id', auth()->user()->id);
         });
+    }
+
+    public function revisionsArray()
+    {
+        return $this->revisions->map(function ($revision) {
+            return [
+                'id' => $revision->id,
+                'author' => $revision->user->name ?? 'Unknown',
+                'datetime' => $revision->created_at->toIso8601String(),
+            ];
+        })->toArray();
     }
 }
