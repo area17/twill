@@ -1,3 +1,13 @@
+<p align="center">
+  <a href="https://twill.io" target="_blank">
+    <svg xmlns="http://www.w3.org/2000/svg" width="106" height="44" viewBox="0 0 106 44">
+      <title>Twill</title>
+      <path d="M82 2h10v42H82zM96 2h10v42H96zM51.634 30.79L44.5 15H37l-6.605 15.342L23.5 15H14V7H4v8H0v9h4v20h10V24h3l10 20h7l6.652-15.788L48 44h7l10-20h3v20h10V15H59"></path>
+      <circle cx="73" cy="6" r="5.85"></circle>
+    </svg>
+  </a>
+</p>
+
 # About Twill
 
 Twill is an open-source Laravel package that helps developers rapidly create and deploy a custom content management system that is beautiful, powerful, and flexible. 
@@ -16,7 +26,7 @@ Twill offers:
 * No limits – extend and modify as you see fit
 
 # Learning Twill
-If you use Laravel, you already know Twill. It embraces Laravel to the fullest extent and encourages you to write beautiful code. To get started, read our [documentation](https://twill.io/docs). If you'd like to hire us for implementation or support, [contact us](https://twill.io/contact). We're here to discuss your plans, evaluate your needs, make recommendations, and give you a full walk-thru of Twill. 
+If you use Laravel, you already know Twill. It embraces Laravel to the fullest extent and encourages you to write beautiful code. To get started, read our [documentation](https://twill.io/docs). If you'd like to hire us for implementation or support, [contact us](mailto:hello@twill.io). We're here to discuss your plans, evaluate your needs, make recommendations, and give you a full walk-thru of Twill. 
 
 # Credits
 Over the last 15 years, nearly every engineer at AREA 17 has contributed to Twill in some capacity. However, Twill in its current form as an open source initiative was created by:
@@ -34,7 +44,7 @@ With contributions from Laurens van Heems, Fernando Petrelli, Gilbert Moufflet, 
 We look forward to your contribution to make Twill the best it can be. You can find our contribution guidelines in the Twill [documentation](https://twill.io/docs#contribution-guide).
 
 # Security vulnerabilities
-If you discover a security vulnerability within Twill, please email us at [security@twill.io](security@twill.io). All security vulnerabilities will be promptly addressed.
+If you discover a security vulnerability within Twill, please email us at [security@twill.io](mailto:security@twill.io). All security vulnerabilities will be promptly addressed.
 
 # License
 
