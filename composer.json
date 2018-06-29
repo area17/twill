@@ -1,5 +1,5 @@
 {
-  "name": "a17/laravel-cms-toolkit",
+  "name": "area17/twill",
   "type": "library",
   "license": "Apache-2.0",
   "description": "A collection of Laravel helpers, traits and classes to quickly create custom content management apps for our clients",
@@ -9,7 +9,7 @@
     "laravel",
     "cms"
   ],
-  "homepage": "https://code.area17.com.com/a17/laravel-cms-toolkit",
+  "homepage": "https://twill.io",
   "authors": [
     {
       "name": "Quentin Renard",
