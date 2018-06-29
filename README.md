@@ -1,13 +1,3 @@
-<p align="center">
-  <a href="https://twill.io" target="_blank">
-    <svg xmlns="http://www.w3.org/2000/svg" width="106" height="44" viewBox="0 0 106 44">
-      <title>Twill</title>
-      <path d="M82 2h10v42H82zM96 2h10v42H96zM51.634 30.79L44.5 15H37l-6.605 15.342L23.5 15H14V7H4v8H0v9h4v20h10V24h3l10 20h7l6.652-15.788L48 44h7l10-20h3v20h10V15H59"></path>
-      <circle cx="73" cy="6" r="5.85"></circle>
-    </svg>
-  </a>
-</p>
-
 # About Twill
 
 Twill is an open-source Laravel package that helps developers rapidly create and deploy a custom content management system that is beautiful, powerful, and flexible. 
