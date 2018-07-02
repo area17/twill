@@ -1,19 +1,19 @@
 # About Twill
 
-Twill is an open-source Laravel package that helps developers rapidly create and deploy a custom content management system that is beautiful, powerful, and flexible. 
+Twill is an open source Laravel package that helps developers rapidly create a custom CMS that is beautiful, powerful, and flexible. By standardizing common functions without compromising developer control, Twill makes it easy to deliver a feature-rich admin console that focuses on modern publishing needs.
 
-Crafted by leading product design and development studio [AREA 17](https://area17.com), Twill aims to provide a content management experience that is as enjoyable for developers as it is for publishers. By standardizing common features and functions without sacrificing developer control, Twill makes it easy to rapidly deliver a feature-rich admin console that matches the needs of your application exactly. 
+Twill is an [AREA 17](https://area17.com) product. It was crafted with the belief that content management should be a creative, productive, and enjoyable experience for both publishers and developers.
 
 # Benefits overview
 
 With a vast number of pre-built features and custom-built Vue.js UI components, developers can focus their efforts on the unique aspects of their applications instead of rebuilding standard ones. 
 
-Twill offers:
-* No data lock-in – create your own data models or hook up existing ones with zero constraints
-* No front-end assumptions – use Twill within your Laravel app or take a headless approach 
-* No bloat – turn off features you don’t need
+Built to get out of your way, Twill offers:
+* No lock-in, create your data models or hook existing ones
+* No front-end assumptions, use it within your Laravel app or headless
+* No bloat, turn off features you don’t need
 * No need to write/adapt HTML for the admin UI
-* No limits – extend and modify as you see fit
+* No limits, extend as you see fit
 
 # Learning Twill
 If you use Laravel, you already know Twill. It embraces Laravel to the fullest extent and encourages you to write beautiful code. To get started, read our [documentation](https://twill.io/docs). If you'd like to hire us for implementation or support, [contact us](mailto:hello@twill.io). We're here to discuss your plans, evaluate your needs, make recommendations, and give you a full walk-thru of Twill. 
