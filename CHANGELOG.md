@@ -2,6 +2,41 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 1.1.0 2018-07-05
+
+### Added
+
+- Option to the browser field to disable sorting (228babb)
+- Option to the select form field to enable search (9f49c11)
+- Helper CMS image function that takes the first available attached image (3d573dc)
+- Block editor custom validation rule (57cceae)
+- Allow passing extra data when rendering blocks (e9a5f4d)
+- Save button inside the full screen content editor (615c168)
+- Configuration based CMS dashboard (81e8dfa, b1d17b3, 25f9419, 0ced2cd, 6753027, 4b125aa, b6cef76, c7a0bba)
+- UI warnings when deleting from the media library, listings, and blocks from the block editor (ff8cd77)
+
+### Fixed
+
+- Select options escaping (7180e63)
+- Form error when content revisions have no user anymore (2483120)
+- Support older Debugbar version for Laravel <5.5 (2efc9ff)
+- Slugs management on non translated models in a translated app (5c30e40)
+
+### Improved
+
+- Babel transpilation targeted browsers (13b502a)
+- Refactored nested listing (9454cdf, 3b86512, 4b4ba95, 2358a1f)
+- Refactored cropping logic (79ef4fc, 310fc78)
+- Cleanup and linting (ee65800, d0df756, 2d77eb7, 08d94fd, d8636bc, 5813a82, b6111a2, d495b39, 65fc025)
+- Show thumbnail if available in buckets and browsers (e751272, 4f0ac41)
+- Preview iframe rendering issue on Chrome (b25f457)
+- Relationships sync hydration: allow hydrating a custom relationship name (f9aa631)
+- Bucket screen can now live under the third level of CMS navigation (9069bb8)
+
+### Changed
+
+- Renamed from CMS Toolkit to Twill (a30a33e, eea3abc, d395066, 93da8e2, f409597)
+
 ## 1.0.13 2018-04-20
 
 ### Fixed
