@@ -4,11 +4,12 @@ namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasFiles;
 use A17\Twill\Models\Behaviors\HasMedias;
+use A17\Twill\Models\Behaviors\HasPresenter;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class Block extends BaseModel
 {
-    use HasMedias, HasFiles;
+    use HasMedias, HasFiles, HasPresenter;
 
     public $timestamps = false;
 

@@ -6,6 +6,9 @@ trait HasPresenter
 {
     protected $presenterInstance;
 
+    protected $presenter;
+    protected $presentAdmin;
+
     public function present($presenter = 'presenter')
     {
         if (!$this->$presenter or !class_exists($this->$presenter)) {
@@ -22,5 +25,18 @@ trait HasPresenter
     public function presentAdmin()
     {
         return $this->present('presenterAdmin');
+    }
+
+    public function setPresenter($presenter, $presenterProperty = 'presenter')
+    {
+        if (!$this->$presenterProperty) {
+            $this->$presenterProperty = $presenter;
+        }
+        return $this;
+    }
+
+    public function setPresenterAdmin($presenter)
+    {
+        return $this->setPresenter($presenter, 'presenterAdmin');
     }
 }
