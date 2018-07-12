@@ -34,6 +34,11 @@ class Block extends BaseModel
         return $this->morphTo();
     }
 
+    public function childrens()
+    {
+        return $this->hasMany('A17\Twill\Models\Block', 'parent_id');
+    }
+
     public function input($name)
     {
         return $this->content[$name] ?? null;
