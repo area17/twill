@@ -28,13 +28,11 @@ trait HandleBlocks
                 $newChildBlock = $blockRepository->createForPreview($childBlock);
                 $blocksCollection->push($newChildBlock);
             });
-
         });
 
         $object->setRelation('blocks', $blocksCollection);
 
         return $object;
-
     }
 
     public function afterSaveHandleBlocks($object, $fields)
@@ -48,7 +46,6 @@ trait HandleBlocks
         $blockRepository->bulkDelete($object->blocks()->pluck('id')->toArray());
 
         $this->getBlocks($object, $fields)->each(function ($block) use ($object, $blockRepository) {
-
             $blockCreated = $blockRepository->create($block);
 
             $block['blocks']->each(function ($childBlock) use ($blockCreated, $blockRepository) {
@@ -62,7 +59,6 @@ trait HandleBlocks
     {
         $blocks = collect();
         if (isset($fields['blocks']) && is_array($fields['blocks'])) {
-
             foreach ($fields['blocks'] as $index => $block) {
                 $block = $this->buildBlock($block, $object);
                 $block['position'] = $index + 1;
@@ -102,7 +98,6 @@ trait HandleBlocks
         $fields['blocks'] = null;
 
         if ($object->has('blocks')) {
-
             $blocksConfig = config('twill.block_editor');
 
             foreach ($object->blocks as $block) {
@@ -115,15 +110,15 @@ trait HandleBlocks
                 }
 
                 $blockItem = [
-                    'id' => $block->id,
-                    'type' => $blockTypeConfig['component'],
-                    'title' => $blockTypeConfig['title'],
+                    'id'         => $block->id,
+                    'type'       => $blockTypeConfig['component'],
+                    'title'      => $blockTypeConfig['title'],
                     'attributes' => $blockTypeConfig['attributes'] ?? [],
                 ];
 
                 if ($isInRepeater) {
                     $fields['blocksRepeaters']["blocks-{$block->parent_id}_{$block->child_key}"][] = $blockItem + [
-                        'max' => $blockTypeConfig['max'],
+                        'max'     => $blockTypeConfig['max'],
                         'trigger' => $blockTypeConfig['trigger'],
                     ];
                 } else {
@@ -133,10 +128,10 @@ trait HandleBlocks
                 }
 
                 $fields['blocksFields'][] = collect($block['content'])->filter(function ($value, $key) {
-                    return $key !== "browsers";
+                    return $key !== 'browsers';
                 })->map(function ($value, $key) use ($block) {
                     return [
-                        'name' => "blocks[$block->id][$key]",
+                        'name'  => "blocks[$block->id][$key]",
                         'value' => $value,
                     ];
                 })->filter()->values()->toArray();
@@ -205,9 +200,9 @@ trait HandleBlocks
                 return is_object($value);
             })->map(function ($relatedElement) use ($relation) {
                 return [
-                    'id' => $relatedElement->id,
+                    'id'   => $relatedElement->id,
                     'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
-                    'edit' => moduleRoute($relation, config('twill.block_editor.browser_route_prefixes.' . $relation), 'edit', $relatedElement->id),
+                    'edit' => moduleRoute($relation, config('twill.block_editor.browser_route_prefixes.'.$relation), 'edit', $relatedElement->id),
                 ] + (classHasTrait($relatedElement, HasMedias::class) ? [
                     'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
                 ] : []);

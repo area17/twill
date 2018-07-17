@@ -8,12 +8,12 @@ class FileRequest extends Request
     {
         return config('twill.file_library.endpoint_type') === 'local'
         ? [
-            'qqfilename' => 'required',
-            'qqfile' => 'required',
+            'qqfilename'      => 'required',
+            'qqfile'          => 'required',
             'qqtotalfilesize' => 'required',
         ]
         : [
-            'key' => 'required',
+            'key'  => 'required',
             'name' => 'required',
         ];
     }

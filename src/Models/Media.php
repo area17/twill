@@ -22,7 +22,7 @@ class Media extends Model
 
     public function getDimensionsAttribute()
     {
-        return $this->width . 'x' . $this->height;
+        return $this->width.'x'.$this->height;
     }
 
     public function altTextFrom($filename)
@@ -43,13 +43,13 @@ class Media extends Model
     public function toCmsArray()
     {
         return [
-            'id' => $this->id,
-            'name' => $this->filename,
-            'thumbnail' => ImageService::getCmsUrl($this->uuid, ["h" => "256"]),
-            'original' => ImageService::getRawUrl($this->uuid),
-            'medium' => ImageService::getUrl($this->uuid, ["h" => "430"]),
-            'width' => $this->width,
-            'height' => $this->height,
+            'id'        => $this->id,
+            'name'      => $this->filename,
+            'thumbnail' => ImageService::getCmsUrl($this->uuid, ['h' => '256']),
+            'original'  => ImageService::getRawUrl($this->uuid),
+            'medium'    => ImageService::getUrl($this->uuid, ['h' => '430']),
+            'width'     => $this->width,
+            'height'    => $this->height,
         ];
     }
 

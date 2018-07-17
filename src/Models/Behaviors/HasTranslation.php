@@ -10,7 +10,7 @@ trait HasTranslation
 
     public function getTranslationModelNameDefault()
     {
-        return "App\Models\Translations\\" . class_basename($this) . 'Translation';
+        return "App\Models\Translations\\".class_basename($this).'Translation';
     }
 
     public function scopeWithActiveTranslations($query, $locale = null)
@@ -36,7 +36,7 @@ trait HasTranslation
         $table = $this->getTable();
         $locale = $locale == null ? app()->getLocale() : $locale;
 
-        return $query->join("{$translationTable} as t", "t.{$this->getRelationKey()}", "=", "{$table}.id")
+        return $query->join("{$translationTable} as t", "t.{$this->getRelationKey()}", '=', "{$table}.id")
             ->where($this->getLocaleKey(), $locale)
             ->groupBy("{$table}.id")
             ->groupBy("t.{$orderField}")
@@ -51,7 +51,7 @@ trait HasTranslation
         $table = $this->getTable();
         $locale = $locale == null ? app()->getLocale() : $locale;
 
-        return $query->join("{$translationTable} as t", "t.{$this->getRelationKey()}", "=", "{$table}.id")
+        return $query->join("{$translationTable} as t", "t.{$this->getRelationKey()}", '=', "{$table}.id")
             ->where($this->getLocaleKey(), $locale)
             ->groupBy("{$table}.id")
             ->groupBy("t.{$groupByField}")
@@ -78,12 +78,13 @@ trait HasTranslation
         return $this->translations->map(function ($translation) {
             return [
                 'shortlabel' => strtoupper($translation->locale),
-                'label' => getLanguageLabelFromLocaleCode($translation->locale),
-                'value' => $translation->locale,
-                'published' => $translation->active ?? false,
+                'label'      => getLanguageLabelFromLocaleCode($translation->locale),
+                'value'      => $translation->locale,
+                'published'  => $translation->active ?? false,
             ];
-        })->sortBy(function($translation) {
+        })->sortBy(function ($translation) {
             $localesOrdered = config('translatable.locales');
+
             return array_search($translation['value'], $localesOrdered);
         })->values();
     }
@@ -94,5 +95,4 @@ trait HasTranslation
             return [$translation->locale => $this->translate($translation->locale)->$key];
         });
     }
-
 }

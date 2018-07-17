@@ -49,6 +49,7 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('edit-user', function ($user, $editedUser) {
             $editedUserObject = User::find($editedUser);
+
             return ($user->can('edit') || $user->id == $editedUser) && $editedUserObject->role !== self::SUPERADMIN;
         });
 
@@ -58,12 +59,12 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('publish-user', function ($user) {
             $editedUserObject = User::find(request('id'));
+
             return $user->can('publish') && $user->id !== $editedUserObject->id && $editedUserObject->role !== self::SUPERADMIN;
         });
 
         Gate::define('impersonate', function ($user) {
             return $user->role === self::SUPERADMIN;
         });
-
     }
 }

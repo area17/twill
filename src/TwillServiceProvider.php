@@ -64,13 +64,13 @@ class TwillServiceProvider extends ServiceProvider
         $this->registerAliases();
 
         Relation::morphMap([
-            'users' => User::class,
-            'media' => Media::class,
-            'files' => File::class,
+            'users'  => User::class,
+            'media'  => Media::class,
+            'files'  => File::class,
             'blocks' => Block::class,
         ]);
 
-        config(['twill.version' => trim(file_get_contents(__DIR__ . '/../VERSION'))]);
+        config(['twill.version' => trim(file_get_contents(__DIR__.'/../VERSION'))]);
     }
 
     public function provides()
@@ -122,15 +122,14 @@ class TwillServiceProvider extends ServiceProvider
         if (config('twill.enabled.file-library')) {
             $loader->alias('FileService', FileService::class);
         }
-
     }
 
     private function publishConfigs()
     {
         if (config('twill.enabled.users-management')) {
-            config(['auth.providers.users' => require __DIR__ . '/../config/auth.php']);
+            config(['auth.providers.users' => require __DIR__.'/../config/auth.php']);
             config(['mail.markdown.paths' => array_merge(
-                [__DIR__ . '/../views/emails'],
+                [__DIR__.'/../views/emails'],
                 config('mail.markdown.paths')
             )]);
         }
@@ -140,23 +139,23 @@ class TwillServiceProvider extends ServiceProvider
 
         config(['analytics.service_account_credentials_json' => config('twill.dashboard.analytics.service_account_credentials_json', storage_path('app/analytics/service-account-credentials.json'))]);
 
-        $this->publishes([__DIR__ . '/../config/twill-publish.php' => config_path('twill.php')], 'config');
-        $this->publishes([__DIR__ . '/../config/twill-navigation.php' => config_path('twill-navigation.php')], 'config');
+        $this->publishes([__DIR__.'/../config/twill-publish.php' => config_path('twill.php')], 'config');
+        $this->publishes([__DIR__.'/../config/twill-navigation.php' => config_path('twill-navigation.php')], 'config');
     }
 
     private function mergeConfigs()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/twill.php', 'twill');
-        $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
-        $this->mergeConfigFrom(__DIR__ . '/../config/frontend.php', 'twill.frontend');
-        $this->mergeConfigFrom(__DIR__ . '/../config/debug.php', 'twill.debug');
-        $this->mergeConfigFrom(__DIR__ . '/../config/seo.php', 'twill.seo');
-        $this->mergeConfigFrom(__DIR__ . '/../config/blocks.php', 'twill.block_editor');
-        $this->mergeConfigFrom(__DIR__ . '/../config/enabled.php', 'twill.enabled');
-        $this->mergeConfigFrom(__DIR__ . '/../config/imgix.php', 'twill.imgix');
-        $this->mergeConfigFrom(__DIR__ . '/../config/media-library.php', 'twill.media_library');
-        $this->mergeConfigFrom(__DIR__ . '/../config/file-library.php', 'twill.file_library');
-        $this->mergeConfigFrom(__DIR__ . '/../config/cloudfront.php', 'services');
+        $this->mergeConfigFrom(__DIR__.'/../config/twill.php', 'twill');
+        $this->mergeConfigFrom(__DIR__.'/../config/disks.php', 'filesystems.disks');
+        $this->mergeConfigFrom(__DIR__.'/../config/frontend.php', 'twill.frontend');
+        $this->mergeConfigFrom(__DIR__.'/../config/debug.php', 'twill.debug');
+        $this->mergeConfigFrom(__DIR__.'/../config/seo.php', 'twill.seo');
+        $this->mergeConfigFrom(__DIR__.'/../config/blocks.php', 'twill.block_editor');
+        $this->mergeConfigFrom(__DIR__.'/../config/enabled.php', 'twill.enabled');
+        $this->mergeConfigFrom(__DIR__.'/../config/imgix.php', 'twill.imgix');
+        $this->mergeConfigFrom(__DIR__.'/../config/media-library.php', 'twill.media_library');
+        $this->mergeConfigFrom(__DIR__.'/../config/file-library.php', 'twill.file_library');
+        $this->mergeConfigFrom(__DIR__.'/../config/cloudfront.php', 'services');
     }
 
     private function publishMigrations()
@@ -164,9 +163,9 @@ class TwillServiceProvider extends ServiceProvider
         $migrations = ['CreateTagsTables', 'CreateBlocksTable'];
 
         $optionalMigrations = [
-            'CreateUsersTables' => 'users-management',
-            'CreateFilesTables' => 'file-library',
-            'CreateMediasTables' => 'media-library',
+            'CreateUsersTables'   => 'users-management',
+            'CreateFilesTables'   => 'file-library',
+            'CreateMediasTables'  => 'media-library',
             'CreateFeaturesTable' => 'buckets',
         ];
 
@@ -176,7 +175,7 @@ class TwillServiceProvider extends ServiceProvider
             }
 
             foreach ($optionalMigrations as $migration => $feature) {
-                if (config('twill.enabled.' . $feature)) {
+                if (config('twill.enabled.'.$feature)) {
                     $this->publishMigration($migration);
                 }
             }
@@ -188,14 +187,14 @@ class TwillServiceProvider extends ServiceProvider
         if (!class_exists($migration)) {
             $timestamp = date('Y_m_d_His', time());
             $this->publishes([
-                __DIR__ . '/../migrations/' . snake_case($migration) . '.php' => database_path('migrations/' . $timestamp . '_' . snake_case($migration) . '.php'),
+                __DIR__.'/../migrations/'.snake_case($migration).'.php' => database_path('migrations/'.$timestamp.'_'.snake_case($migration).'.php'),
             ], 'migrations');
         }
     }
 
     private function registerAndPublishViews()
     {
-        $viewPath = __DIR__ . '/../views';
+        $viewPath = __DIR__.'/../views';
 
         $this->loadViewsFrom($viewPath, 'twill');
         $this->publishes([$viewPath => resource_path('views/vendor/twill')], 'views');
@@ -214,33 +213,34 @@ class TwillServiceProvider extends ServiceProvider
 
     private function requireHelpers()
     {
-        require_once __DIR__ . '/Helpers/routes_helpers.php';
-        require_once __DIR__ . '/Helpers/i18n_helpers.php';
-        require_once __DIR__ . '/Helpers/media_library_helpers.php';
-        require_once __DIR__ . '/Helpers/frontend_helpers.php';
-        require_once __DIR__ . '/Helpers/migrations_helpers.php';
-        require_once __DIR__ . '/Helpers/helpers.php';
+        require_once __DIR__.'/Helpers/routes_helpers.php';
+        require_once __DIR__.'/Helpers/i18n_helpers.php';
+        require_once __DIR__.'/Helpers/media_library_helpers.php';
+        require_once __DIR__.'/Helpers/frontend_helpers.php';
+        require_once __DIR__.'/Helpers/migrations_helpers.php';
+        require_once __DIR__.'/Helpers/helpers.php';
     }
 
     private function publishPublicAssets()
     {
-        $this->publishes([__DIR__ . '/../assets' => public_path('assets')], 'assets');
+        $this->publishes([__DIR__.'/../assets' => public_path('assets')], 'assets');
     }
 
     private function includeView($view, $expression)
     {
         list($name) = str_getcsv($expression, ',', '\'');
 
-        $partialNamespace = view()->exists('admin.' . $view . $name) ? 'admin.' : 'twill::';
+        $partialNamespace = view()->exists('admin.'.$view.$name) ? 'admin.' : 'twill::';
 
-        $view = $partialNamespace . $view . $name;
+        $view = $partialNamespace.$view.$name;
 
         $expression = explode(',', $expression);
         array_shift($expression);
-        $expression = "(" . implode(',', $expression) . ")";
-        if ($expression === "()") {
+        $expression = '('.implode(',', $expression).')';
+        if ($expression === '()') {
             $expression = '([])';
         }
+
         return "<?php echo \$__env->make('{$view}', array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render(); ?>";
     }
 
@@ -254,7 +254,7 @@ class TwillServiceProvider extends ServiceProvider
 
         $blade->directive('dumpData', function ($data) {
             return sprintf("<?php (new Illuminate\Support\Debug\Dumper)->dump(%s); exit; ?>",
-                null != $data ? $data : "get_defined_vars()");
+                null != $data ? $data : 'get_defined_vars()');
         });
 
         $blade->directive('formField', function ($expression) use ($blade) {
@@ -262,7 +262,6 @@ class TwillServiceProvider extends ServiceProvider
         });
 
         $blade->directive('partialView', function ($expression) use ($blade) {
-
             $expressionAsArray = str_getcsv($expression, ',', '\'');
 
             list($moduleName, $viewName) = $expressionAsArray;
@@ -271,7 +270,7 @@ class TwillServiceProvider extends ServiceProvider
             $viewModule = "'admin.'.$moduleName.'.{$viewName}'";
             $viewApplication = "'admin.partials.{$viewName}'";
             $viewModuleTwill = "'twill::'.$moduleName.'.{$viewName}'";
-            $view = $partialNamespace . "." . $viewName;
+            $view = $partialNamespace.'.'.$viewName;
 
             if (!isset($moduleName) || is_null($moduleName)) {
                 $viewModule = $viewApplication;
@@ -279,8 +278,8 @@ class TwillServiceProvider extends ServiceProvider
 
             $expression = explode(',', $expression);
             $expression = array_slice($expression, 2);
-            $expression = "(" . implode(',', $expression) . ")";
-            if ($expression === "()") {
+            $expression = '('.implode(',', $expression).')';
+            if ($expression === '()') {
                 $expression = '([])';
             }
 
@@ -299,7 +298,8 @@ class TwillServiceProvider extends ServiceProvider
 
         $blade->directive('pushonce', function ($expression) {
             list($pushName, $pushSub) = explode(':', trim(substr($expression, 1, -1)));
-            $key = '__pushonce_' . $pushName . '_' . str_replace('-', '_', $pushSub);
+            $key = '__pushonce_'.$pushName.'_'.str_replace('-', '_', $pushSub);
+
             return "<?php if(! isset(\$__env->{$key})): \$__env->{$key} = 1; \$__env->startPush('{$pushName}'); ?>";
         });
 
@@ -327,17 +327,16 @@ class TwillServiceProvider extends ServiceProvider
         View::composer(['admin.*', 'templates.*', 'twill::*'], function ($view) {
             $with = array_merge([
                 'renderForBlocks' => false,
-                'renderForModal' => false,
+                'renderForModal'  => false,
             ], $view->getData());
 
             return $view->with($with);
         });
-
     }
 
     private function registerAndPublishTranslations()
     {
-        $translationPath = __DIR__ . '/../lang';
+        $translationPath = __DIR__.'/../lang';
 
         $this->loadTranslationsFrom($translationPath, 'twill');
         $this->publishes([$translationPath => resource_path('lang/vendor/twill')], 'translations');

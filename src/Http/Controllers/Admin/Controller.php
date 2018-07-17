@@ -16,6 +16,5 @@ class Controller extends BaseController
         if (($key = array_search($middleware, array_pluck($this->middleware, 'middleware'))) !== false) {
             unset($this->middleware[$key]);
         }
-
     }
 }

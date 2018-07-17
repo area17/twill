@@ -25,17 +25,16 @@ class CloudfrontCacheService
 
     public static function getClient()
     {
-        $cloudFront = new CloudFrontClient(array(
-            'region' => self::getRegion(),
-            'version' => self::getSdkVersion(),
-            'credentials' => array(
-                'key' => config('services.cloudfront.key'),
+        $cloudFront = new CloudFrontClient([
+            'region'      => self::getRegion(),
+            'version'     => self::getSdkVersion(),
+            'credentials' => [
+                'key'    => config('services.cloudfront.key'),
                 'secret' => config('services.cloudfront.secret'),
-            ),
-        ));
+            ],
+        ]);
 
         return $cloudFront;
-
     }
 
     public function __construct()
@@ -46,7 +45,7 @@ class CloudfrontCacheService
         }
     }
 
-    public function invalidate($urls = ["/*"])
+    public function invalidate($urls = ['/*'])
     {
         if (!$this->hasInProgressInvalidation()) {
             try {
@@ -61,29 +60,28 @@ class CloudfrontCacheService
 
     private function hasInProgressInvalidation()
     {
-        $list = $this->client->listInvalidations(array('DistributionId' => config('services.cloudfront.distribution')))->get('InvalidationList');
+        $list = $this->client->listInvalidations(['DistributionId' => config('services.cloudfront.distribution')])->get('InvalidationList');
         if (isset($list['Items']) && !empty($list['Items'])) {
             return collect($list['Items'])->where('Status', 'InProgress')->count() > 0;
         }
 
         return false;
-
     }
 
-    private function createInvalidationRequest($paths = array())
+    private function createInvalidationRequest($paths = [])
     {
         if (is_object($this->client) && count($paths) > 0) {
             try {
-                $result = $this->client->createInvalidation(array(
-                    'DistributionId' => config('services.cloudfront.distribution'),
-                    'InvalidationBatch' => array(
-                        'Paths' => array(
+                $result = $this->client->createInvalidation([
+                    'DistributionId'    => config('services.cloudfront.distribution'),
+                    'InvalidationBatch' => [
+                        'Paths' => [
                             'Quantity' => count($paths),
-                            'Items' => $paths,
-                        ),
+                            'Items'    => $paths,
+                        ],
                         'CallerReference' => time(),
-                    ),
-                ));
+                    ],
+                ]);
             } catch (\Exception $e) {
                 Log::debug('Cloudfront invalidation request failed');
             }

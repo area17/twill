@@ -30,11 +30,11 @@ class File extends Model
     public function toCmsArray()
     {
         return [
-            'id' => $this->id,
-            'name' => $this->filename,
-            'src' => FileService::getUrl($this->uuid),
+            'id'       => $this->id,
+            'name'     => $this->filename,
+            'src'      => FileService::getUrl($this->uuid),
             'original' => FileService::getUrl($this->uuid),
-            'size' => $this->size,
+            'size'     => $this->size,
         ];
     }
 }

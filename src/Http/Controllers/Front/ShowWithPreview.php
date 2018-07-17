@@ -7,7 +7,7 @@ trait ShowWithPreview
     public function show($slug)
     {
         if (!isset($this->moduleName) || !isset($this->repository)) {
-            throw new \Exception("You should at least provide a module name and inject a repository.");
+            throw new \Exception('You should at least provide a module name and inject a repository.');
         }
 
         if (!isset($this->routeName)) {
@@ -15,17 +15,17 @@ trait ShowWithPreview
         }
 
         if (!isset($this->showViewName)) {
-            $this->showViewName = 'site.' . str_singular($this->moduleName);
+            $this->showViewName = 'site.'.str_singular($this->moduleName);
         }
 
-        if (ends_with(request()->route()->getName(), $this->routeName . '.preview')) {
+        if (ends_with(request()->route()->getName(), $this->routeName.'.preview')) {
             $item = $this->getItemPreview($slug);
         }
 
-        abort_unless($item = ($item ?? $this->getItem($slug)), 404, ucfirst($this->moduleName) . ' not found');
+        abort_unless($item = ($item ?? $this->getItem($slug)), 404, ucfirst($this->moduleName).' not found');
 
         if ($item->redirect) {
-            return redirect()->to(route($this->routeName . '.show', $item->getSlug()));
+            return redirect()->to(route($this->routeName.'.show', $item->getSlug()));
         }
 
         return view($this->showViewName, [

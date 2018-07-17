@@ -25,18 +25,19 @@ trait HasSlug
 
     public function slugs()
     {
-        return $this->hasMany("App\Models\Slugs\\" . $this->getSlugClassName());
+        return $this->hasMany("App\Models\Slugs\\".$this->getSlugClassName());
     }
 
     public function getSlugClass()
     {
-        $slugClassName = "App\Models\Slugs\\" . $this->getSlugClassName();
-        return new $slugClassName;
+        $slugClassName = "App\Models\Slugs\\".$this->getSlugClassName();
+
+        return new $slugClassName();
     }
 
     protected function getSlugClassName()
     {
-        return class_basename($this) . "Slug";
+        return class_basename($this).'Slug';
     }
 
     public function scopeForSlug($query, $slug)
@@ -79,7 +80,6 @@ trait HasSlug
                 $this->disableLocaleSlugs($oldSlug->locale, $oldSlug->id);
             }
         } else {
-
             $this->addOneSlug($slugParams);
         }
     }
@@ -94,9 +94,9 @@ trait HasSlug
             if ($key == 'slug') {
                 $query->where(function ($query) use ($value) {
                     $query->orWhere('slug', $value);
-                    $query->orWhere('slug', $value . '-' . $this->getSuffixSlug());
+                    $query->orWhere('slug', $value.'-'.$this->getSuffixSlug());
                     for ($i = 2; $i <= $this->nb_variation_slug; $i++) {
-                        $query->orWhere('slug', $value . '-' . $i);
+                        $query->orWhere('slug', $value.'-'.$i);
                     }
                 });
             } else {
@@ -129,8 +129,7 @@ trait HasSlug
             ->where($this->getForeignKey(), $this->id)
             ->where('id', '<>', $except_slug_id)
             ->where('locale', $locale)
-            ->update(['active' => 0])
-        ;
+            ->update(['active' => 0]);
     }
 
     private function suffixSlugIfExisting($slugParams)
@@ -152,7 +151,7 @@ trait HasSlug
             }
 
             if (!empty($slugParams['slug'])) {
-                $slugParams['slug'] = $slugBackup . (($i > $this->nb_variation_slug) ? "-" . $this->getSuffixSlug() : "-{$i}");
+                $slugParams['slug'] = $slugBackup.(($i > $this->nb_variation_slug) ? '-'.$this->getSuffixSlug() : "-{$i}");
             }
         }
 
@@ -172,7 +171,7 @@ trait HasSlug
             return $slug->slug;
         }
 
-        return "";
+        return '';
     }
 
     public function getSlugAttribute()
@@ -211,7 +210,7 @@ trait HasSlug
 
                 $slugParam = [
                     'active' => $translation->active,
-                    'slug' => $translation->$slugAttribute ?? $this->$slugAttribute,
+                    'slug'   => $translation->$slugAttribute ?? $this->$slugAttribute,
                     'locale' => $translation->locale,
                 ] + $slugDependenciesAttributes;
 
@@ -248,7 +247,7 @@ trait HasSlug
 
                 $slugParam = [
                     'active' => 1,
-                    'slug' => $this->$slugAttribute,
+                    'slug'   => $this->$slugAttribute,
                     'locale' => $appLocale,
                 ] + $slugDependenciesAttributes;
 
@@ -270,7 +269,7 @@ trait HasSlug
 
     public function getForeignKey()
     {
-        return snake_case(class_basename(get_class($this))) . "_id";
+        return snake_case(class_basename(get_class($this))).'_id';
     }
 
     protected function getSuffixSlug()
@@ -283,18 +282,18 @@ trait HasSlug
         // Make sure string is in UTF-8 and strip invalid UTF-8 characters
         $str = mb_convert_encoding((string) $str, 'UTF-8', mb_list_encodings());
 
-        $defaults = array(
-            'delimiter' => '-',
-            'limit' => null,
-            'lowercase' => true,
-            'replacements' => array(),
+        $defaults = [
+            'delimiter'     => '-',
+            'limit'         => null,
+            'lowercase'     => true,
+            'replacements'  => [],
             'transliterate' => true,
-        );
+        ];
 
         // Merge options
         $options = array_merge($defaults, $options);
 
-        $char_map = array(
+        $char_map = [
             // Latin
             'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'AE', 'Ç' => 'C',
             'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I',
@@ -359,7 +358,7 @@ trait HasSlug
             'Š' => 'S', 'Ū' => 'u', 'Ž' => 'Z',
             'ā' => 'a', 'č' => 'c', 'ē' => 'e', 'ģ' => 'g', 'ī' => 'i', 'ķ' => 'k', 'ļ' => 'l', 'ņ' => 'n',
             'š' => 's', 'ū' => 'u', 'ž' => 'z',
-        );
+        ];
 
         // Make custom replacements
         $str = preg_replace(array_keys($options['replacements']), $options['replacements'], $str);
@@ -373,7 +372,7 @@ trait HasSlug
         $str = preg_replace('/[^\p{L}\p{Nd}]+/u', $options['delimiter'], $str);
 
         // Remove duplicate delimiters
-        $str = preg_replace('/(' . preg_quote($options['delimiter'], '/') . '){2,}/', '$1', $str);
+        $str = preg_replace('/('.preg_quote($options['delimiter'], '/').'){2,}/', '$1', $str);
 
         // Truncate slug to max. characters
         $str = mb_substr($str, 0, ($options['limit'] ? $options['limit'] : mb_strlen($str, 'UTF-8')), 'UTF-8');

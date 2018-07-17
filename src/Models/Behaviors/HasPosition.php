@@ -4,7 +4,6 @@ namespace A17\Twill\Models\Behaviors;
 
 trait HasPosition
 {
-
     protected static function bootHasPosition()
     {
         static::creating(function ($model) {
@@ -19,7 +18,7 @@ trait HasPosition
 
     protected function getCurrentLastPosition()
     {
-        return ((int) static::max('position'));
+        return (int) static::max('position');
     }
 
     public function scopeOrdered($query)

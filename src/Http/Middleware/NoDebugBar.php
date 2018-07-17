@@ -7,7 +7,6 @@ use Illuminate\Foundation\Application;
 
 class NoDebugBar
 {
-
     protected $app;
 
     public function __construct(Application $app)

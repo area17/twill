@@ -53,7 +53,7 @@ abstract class ModuleRepository
         }
 
         foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'getCountByStatusSlug' . class_basename($trait))) {
+            if (method_exists(get_called_class(), $method = 'getCountByStatusSlug'.class_basename($trait))) {
                 if ($count = $this->$method($slug)) {
                     return $count;
                 }
@@ -93,7 +93,7 @@ abstract class ModuleRepository
         $query = $this->model->newQuery();
 
         if ($exceptId) {
-            $query = $query->where($this->model->getTable() . '.id', '<>', $exceptId);
+            $query = $query->where($this->model->getTable().'.id', '<>', $exceptId);
         }
 
         if ($this->model instanceof Sortable) {
@@ -196,6 +196,7 @@ abstract class ModuleRepository
             if (($object = $this->model->find($id)) != null) {
                 $object->update($values);
                 $this->afterUpdateBasic($object, $values);
+
                 return true;
             }
 
@@ -216,6 +217,7 @@ abstract class ModuleRepository
             if (($object = $this->model->find($id)) != null) {
                 $object->delete();
                 $this->afterDelete($object);
+
                 return true;
             }
 
@@ -237,6 +239,7 @@ abstract class ModuleRepository
                 });
             } catch (\Exception $e) {
                 Log::error($e);
+
                 return false;
             }
 
@@ -250,6 +253,7 @@ abstract class ModuleRepository
             if (($object = $this->model->withTrashed()->find($id)) != null) {
                 $object->restore();
                 $this->afterRestore($object);
+
                 return true;
             }
 
@@ -271,6 +275,7 @@ abstract class ModuleRepository
                 });
             } catch (\Exception $e) {
                 Log::error($e);
+
                 return false;
             }
 
@@ -319,7 +324,7 @@ abstract class ModuleRepository
         $fields = $this->cleanupFields(null, $fields);
 
         foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'prepareFieldsBeforeCreate' . class_basename($trait))) {
+            if (method_exists(get_called_class(), $method = 'prepareFieldsBeforeCreate'.class_basename($trait))) {
                 $fields = $this->$method($fields);
             }
         }
@@ -332,7 +337,7 @@ abstract class ModuleRepository
         $fields = $this->cleanupFields($object, $fields);
 
         foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'prepareFieldsBeforeSave' . class_basename($trait))) {
+            if (method_exists(get_called_class(), $method = 'prepareFieldsBeforeSave'.class_basename($trait))) {
                 $fields = $this->$method($object, $fields);
             }
         }
@@ -343,7 +348,7 @@ abstract class ModuleRepository
     public function afterUpdateBasic($object, $fields)
     {
         foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'afterUpdateBasic' . class_basename($trait))) {
+            if (method_exists(get_called_class(), $method = 'afterUpdateBasic'.class_basename($trait))) {
                 $this->$method($object, $fields);
             }
         }
@@ -352,7 +357,7 @@ abstract class ModuleRepository
     public function beforeSave($object, $fields)
     {
         foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'beforeSave' . class_basename($trait))) {
+            if (method_exists(get_called_class(), $method = 'beforeSave'.class_basename($trait))) {
                 $this->$method($object, $fields);
             }
         }
@@ -361,7 +366,7 @@ abstract class ModuleRepository
     public function afterSave($object, $fields)
     {
         foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'afterSave' . class_basename($trait))) {
+            if (method_exists(get_called_class(), $method = 'afterSave'.class_basename($trait))) {
                 $this->$method($object, $fields);
             }
         }
@@ -370,7 +375,7 @@ abstract class ModuleRepository
     public function afterDelete($object)
     {
         foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'afterDelete' . class_basename($trait))) {
+            if (method_exists(get_called_class(), $method = 'afterDelete'.class_basename($trait))) {
                 $this->$method($object);
             }
         }
@@ -379,7 +384,7 @@ abstract class ModuleRepository
     public function afterRestore($object)
     {
         foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'afterRestore' . class_basename($trait))) {
+            if (method_exists(get_called_class(), $method = 'afterRestore'.class_basename($trait))) {
                 $this->$method($object);
             }
         }
@@ -388,7 +393,7 @@ abstract class ModuleRepository
     public function hydrate($object, $fields)
     {
         foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'hydrate' . class_basename($trait))) {
+            if (method_exists(get_called_class(), $method = 'hydrate'.class_basename($trait))) {
                 $object = $this->$method($object, $fields);
             }
         }
@@ -401,7 +406,7 @@ abstract class ModuleRepository
         $fields = $object->attributesToArray();
 
         foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'getFormFields' . class_basename($trait))) {
+            if (method_exists(get_called_class(), $method = 'getFormFields'.class_basename($trait))) {
                 $fields = $this->$method($object, $fields);
             }
         }
@@ -414,7 +419,7 @@ abstract class ModuleRepository
         $likeOperator = $this->getLikeOperator();
 
         foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'filter' . class_basename($trait))) {
+            if (method_exists(get_called_class(), $method = 'filter'.class_basename($trait))) {
                 $this->$method($query, $scopes);
             }
         }
@@ -422,18 +427,18 @@ abstract class ModuleRepository
         unset($scopes['search']);
 
         if (isset($scopes['exceptIds'])) {
-            $query->whereNotIn($this->model->getTable() . '.id', $scopes['exceptIds']);
+            $query->whereNotIn($this->model->getTable().'.id', $scopes['exceptIds']);
             unset($scopes['exceptIds']);
         }
 
         foreach ($scopes as $column => $value) {
-            if (method_exists($this->model, 'scope' . ucfirst($column))) {
+            if (method_exists($this->model, 'scope'.ucfirst($column))) {
                 $query->$column();
             } else {
                 if (is_array($value)) {
                     $query->whereIn($column, $value);
                 } elseif ($column[0] == '%') {
-                    $value && ($value[0] == '!') ? $query->where(substr($column, 1), "not $likeOperator", '%' . substr($value, 1) . '%') : $query->where(substr($column, 1), $likeOperator, '%' . $value . '%');
+                    $value && ($value[0] == '!') ? $query->where(substr($column, 1), "not $likeOperator", '%'.substr($value, 1).'%') : $query->where(substr($column, 1), $likeOperator, '%'.$value.'%');
                 } elseif (isset($value[0]) && $value[0] == '!') {
                     $query->where($column, '<>', substr($value, 1));
                 } elseif ($value !== '') {
@@ -452,7 +457,7 @@ abstract class ModuleRepository
         }
 
         foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'order' . class_basename($trait))) {
+            if (method_exists(get_called_class(), $method = 'order'.class_basename($trait))) {
                 $this->$method($query, $orders);
             }
         }
@@ -464,7 +469,7 @@ abstract class ModuleRepository
     {
         return $object->$relation->map(function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName) {
             return [
-                'id' => $relatedElement->id,
+                'id'   => $relatedElement->id,
                 'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
                 'edit' => moduleRoute($moduleName ?? $relation, $routePrefix ?? '', 'edit', $relatedElement->id),
             ] + (classHasTrait($relatedElement, HasMedias::class) ? [
@@ -527,18 +532,17 @@ abstract class ModuleRepository
     public function addLikeFilterScope($query, &$scopes, $scopeField)
     {
         if (isset($scopes[$scopeField]) && is_string($scopes[$scopeField])) {
-            $query->where($scopeField, $this->getLikeOperator(), '%' . $scopes[$scopeField] . '%');
+            $query->where($scopeField, $this->getLikeOperator(), '%'.$scopes[$scopeField].'%');
             unset($scopes[$scopeField]);
         }
     }
 
     public function searchIn($query, &$scopes, $scopeField, $orFields = [])
     {
-
         if (isset($scopes[$scopeField]) && is_string($scopes[$scopeField])) {
             $query->where(function ($query) use (&$scopes, $scopeField, $orFields) {
                 foreach ($orFields as $field) {
-                    $query->orWhere($field, $this->getLikeOperator(), '%' . $scopes[$scopeField] . '%');
+                    $query->orWhere($field, $this->getLikeOperator(), '%'.$scopes[$scopeField].'%');
                     unset($scopes[$field]);
                 }
             });
@@ -578,7 +582,7 @@ abstract class ModuleRepository
             $model = ucfirst(str_singular($relation));
         }
 
-        return app(config('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
+        return app(config('twill.namespace').'\\Repositories\\'.ucfirst($model).'Repository');
     }
 
     private function getLikeOperator()

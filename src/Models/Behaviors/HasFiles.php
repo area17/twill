@@ -19,6 +19,7 @@ trait HasFiles
         if (!$file) {
             $file = $this->files->first(function ($file) use ($role, $locale) {
                 $localeScope = ($locale === 'fallback') ? true : ($file->pivot->locale === $locale);
+
                 return $file->pivot->role === $role && $localeScope;
             });
         }
@@ -26,8 +27,6 @@ trait HasFiles
         if ($file) {
             return FileService::getUrl($file->uuid);
         }
-
-        return null;
     }
 
     public function filesList($role, $locale = null)
@@ -55,5 +54,4 @@ trait HasFiles
             return $file->pivot->role === $role && $file->pivot->locale === $locale;
         });
     }
-
 }

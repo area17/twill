@@ -7,7 +7,6 @@ use Closure;
 
 class Impersonate
 {
-
     public function handle($request, Closure $next)
     {
         if ($request->session()->has('impersonate')) {

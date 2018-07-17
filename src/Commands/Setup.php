@@ -28,7 +28,7 @@ class Setup extends Command
         ];
 
         foreach ($defaultMigrations as $migration) {
-            $fullPath = database_path('migrations/' . $migration);
+            $fullPath = database_path('migrations/'.$migration);
             if (File::exists($fullPath)) {
                 File::delete($fullPath);
             }
@@ -36,12 +36,12 @@ class Setup extends Command
 
         $this->call('vendor:publish', [
             '--provider' => 'A17\Twill\TwillServiceProvider',
-            '--tag' => 'migrations',
+            '--tag'      => 'migrations',
         ]);
 
         $this->call('vendor:publish', [
             '--provider' => 'Spatie\Activitylog\ActivitylogServiceProvider',
-            '--tag' => 'migrations',
+            '--tag'      => 'migrations',
         ]);
     }
 
@@ -54,7 +54,7 @@ class Setup extends Command
     {
         $this->call('vendor:publish', [
             '--provider' => 'A17\Twill\TwillServiceProvider',
-            '--tag' => 'assets',
+            '--tag'      => 'assets',
         ]);
     }
 
@@ -62,7 +62,7 @@ class Setup extends Command
     {
         $this->call('vendor:publish', [
             '--provider' => 'A17\Twill\TwillServiceProvider',
-            '--tag' => 'config',
+            '--tag'      => 'config',
         ]);
 
         $this->call('vendor:publish', [

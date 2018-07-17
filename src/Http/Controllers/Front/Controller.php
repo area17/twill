@@ -12,7 +12,7 @@ class Controller extends BaseController
 
     public function __construct()
     {
-        $this->seo = new Seo;
+        $this->seo = new Seo();
 
         $this->seo->title = config('twill.seo.site_title');
         $this->seo->description = config('twill.seo.site_desc');
@@ -21,5 +21,4 @@ class Controller extends BaseController
 
         View::share('seo', $this->seo);
     }
-
 }

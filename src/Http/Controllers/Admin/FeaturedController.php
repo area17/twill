@@ -52,45 +52,47 @@ class FeaturedController extends Controller
 
         return view('twill::layouts.buckets', [
             'dataSources' => [
-                'selected' => array_first($contentTypes),
+                'selected'      => array_first($contentTypes),
                 'content_types' => $contentTypes,
             ],
-            'items' => $buckets,
+            'items'  => $buckets,
             'source' => [
                 'content_type' => array_first($contentTypes),
-                'items' => $firstSource['items'],
+                'items'        => $firstSource['items'],
             ],
-            'maxPage' => $firstSource['maxPage'],
-            'offset' => $firstSource['offset'],
-            'bucketSourceTitle' => $featuredSection['sourceHeaderTitle'] ?? null,
+            'maxPage'             => $firstSource['maxPage'],
+            'offset'              => $firstSource['offset'],
+            'bucketSourceTitle'   => $featuredSection['sourceHeaderTitle'] ?? null,
             'bucketsSectionIntro' => $featuredSection['sectionIntroText'] ?? null,
-            'restricted' => $featuredSection['restricted'] ?? true,
-            'saveUrl' => route("admin.$routePrefix.$featuredSectionKey.save"),
+            'restricted'          => $featuredSection['restricted'] ?? true,
+            'saveUrl'             => route("admin.$routePrefix.$featuredSectionKey.save"),
         ]);
     }
 
     private function getFeaturedItemsByBucket($featuredSection, $featuredSectionKey)
     {
         $bucketRouteConfig = config('twill.bucketsRoutes') ?? [$featuredSectionKey => 'featured'];
+
         return collect($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use ($featuredSectionKey, $bucketRouteConfig) {
             $routePrefix = $bucketRouteConfig[$featuredSectionKey];
+
             return [
-                'id' => $bucketKey,
-                'name' => $bucket['name'],
-                'max' => $bucket['max_items'],
-                'acceptedSources' => collect($bucket['bucketables'])->pluck('module'),
-                'withToggleFeatured' => $bucket['with_starred_items'] ?? false,
+                'id'                   => $bucketKey,
+                'name'                 => $bucket['name'],
+                'max'                  => $bucket['max_items'],
+                'acceptedSources'      => collect($bucket['bucketables'])->pluck('module'),
+                'withToggleFeatured'   => $bucket['with_starred_items'] ?? false,
                 'toggleFeaturedLabels' => $bucket['starred_items_labels'] ?? [],
-                'children' => Feature::where('bucket_key', $bucketKey)->with('featured')->get()->map(function ($feature) {
+                'children'             => Feature::where('bucket_key', $bucketKey)->with('featured')->get()->map(function ($feature) {
                     if (($item = $feature->featured) != null) {
                         $repository = $this->getRepository($feature->featured_type);
                         $withImage = classHasTrait($repository, HandleMedias::class);
 
                         return [
-                            'id' => $item->id,
-                            'name' => $item->titleInBucket ?? $item->title,
-                            'edit' => $item->adminEditUrl ?? '',
-                            'starred' => $feature->starred ?? false,
+                            'id'           => $item->id,
+                            'name'         => $item->titleInBucket ?? $item->title,
+                            'edit'         => $item->adminEditUrl ?? '',
+                            'starred'      => $feature->starred ?? false,
                             'content_type' => [
                                 'label' => ucfirst($feature->featured_type),
                                 'value' => $feature->featured_type,
@@ -113,7 +115,6 @@ class FeaturedController extends Controller
 
         collect($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use (&$fetchedModules, $search) {
             return collect($bucket['bucketables'])->mapWithKeys(function ($bucketable) use (&$fetchedModules, $bucketKey, $search) {
-
                 $module = $bucketable['module'];
                 $repository = $this->getRepository($module);
                 $translated = classHasTrait($repository, HandleTranslations::class);
@@ -135,10 +136,10 @@ class FeaturedController extends Controller
                 $fetchedModules[$module] = $items;
 
                 return [$module => [
-                    'name' => $bucketable['name'] ?? ucfirst($module),
-                    'items' => $items,
+                    'name'       => $bucketable['name'] ?? ucfirst($module),
+                    'items'      => $items,
                     'translated' => $translated,
-                    'withImage' => $withImage,
+                    'withImage'  => $withImage,
                 ]];
             });
         })->each(function ($bucketables, $bucket) use (&$featuredSources) {
@@ -148,9 +149,9 @@ class FeaturedController extends Controller
                 $featuredSources[$bucketable]['offset'] = $bucketableData['items']->perPage();
                 $featuredSources[$bucketable]['items'] = $bucketableData['items']->map(function ($item) use ($bucketableData, $bucketable) {
                     return [
-                        'id' => $item->id,
-                        'name' => $item->titleInBucket ?? $item->title,
-                        'edit' => $item->adminEditUrl ?? '',
+                        'id'           => $item->id,
+                        'name'         => $item->titleInBucket ?? $item->title,
+                        'edit'         => $item->adminEditUrl ?? '',
                         'content_type' => [
                             'label' => $bucketableData['name'],
                             'value' => $bucketable,
@@ -162,7 +163,6 @@ class FeaturedController extends Controller
                     ] : []);
                 })->toArray();
             });
-
         });
 
         return $featuredSources;
@@ -175,11 +175,11 @@ class FeaturedController extends Controller
                 Feature::where('bucket_key', $bucketKey)->delete();
                 foreach (($bucketables ?? []) as $position => $bucketable) {
                     Feature::create([
-                        'featured_id' => $bucketable['id'],
+                        'featured_id'   => $bucketable['id'],
                         'featured_type' => $bucketable['type'],
-                        'position' => $position + 1,
-                        'bucket_key' => $bucketKey,
-                        'starred' => $bucketable['starred'] ?? false,
+                        'position'      => $position + 1,
+                        'bucket_key'    => $bucketKey,
+                        'starred'       => $bucketable['starred'] ?? false,
                     ]);
                 }
             });
@@ -190,6 +190,6 @@ class FeaturedController extends Controller
 
     private function getRepository($bucketable)
     {
-        return app(config('twill.namespace') . "\Repositories\\" . ucfirst(str_singular($bucketable)) . "Repository");
+        return app(config('twill.namespace')."\Repositories\\".ucfirst(str_singular($bucketable)).'Repository');
     }
 }

@@ -20,6 +20,7 @@ class ImpersonateController extends Controller
     public function stopImpersonate()
     {
         Auth::user()->stopImpersonating();
+
         return back();
     }
 }

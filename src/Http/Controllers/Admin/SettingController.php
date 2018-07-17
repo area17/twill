@@ -15,14 +15,14 @@ class SettingController extends Controller
 
     public function index($section)
     {
-        return view()->exists('admin.settings.' . $section) ? view('admin.settings.' . $section, [
-            'customForm' => true,
+        return view()->exists('admin.settings.'.$section) ? view('admin.settings.'.$section, [
+            'customForm'    => true,
             'editableTitle' => false,
-            'customTitle' => ucfirst($section) . ' settings',
-            'section' => $section,
-            'form_fields' => $this->settings->getFormFields($section),
-            'saveUrl' => route('admin.settings.update', $section),
-            'translate' => true,
+            'customTitle'   => ucfirst($section).' settings',
+            'section'       => $section,
+            'form_fields'   => $this->settings->getFormFields($section),
+            'saveUrl'       => route('admin.settings.update', $section),
+            'translate'     => true,
         ]) : redirect()->back();
     }
 

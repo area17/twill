@@ -7,7 +7,6 @@ use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignS3UploadListener;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
-use Input;
 
 class FileLibraryController extends ModuleController implements SignS3UploadListener
 {
@@ -21,7 +20,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
 
     protected $defaultFilters = [
         'search' => 'search',
-        'tag' => 'tag_id',
+        'tag'    => 'tag_id',
     ];
 
     protected $perPage = 40;
@@ -55,8 +54,8 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
                 return $this->buildFile($item);
             })->toArray(),
             'maxPage' => $items->lastPage(),
-            'total' => $items->total(),
-            'tags' => $this->repository->getTagsList(),
+            'total'   => $items->total(),
+            'tags'    => $this->repository->getTagsList(),
         ];
     }
 
@@ -66,8 +65,8 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
             'tags' => $item->tags->map(function ($tag) {
                 return $tag->name;
             }),
-            'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
-            'updateUrl' => route('admin.file-library.files.single-update'),
+            'deleteUrl'     => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
+            'updateUrl'     => route('admin.file-library.files.single-update'),
             'updateBulkUrl' => route('admin.file-library.files.bulk-update'),
             'deleteBulkUrl' => route('admin.file-library.files.bulk-delete'),
         ];
@@ -102,16 +101,16 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
     public function storeFile($request)
     {
         $filename = $request->input('qqfilename');
-        $cleanFilename = preg_replace("/\s+/i", "-", $filename);
+        $cleanFilename = preg_replace("/\s+/i", '-', $filename);
 
-        $fileDirectory = public_path(config('twill.file_library.local_path') . $request->input('unique_folder_name'));
+        $fileDirectory = public_path(config('twill.file_library.local_path').$request->input('unique_folder_name'));
 
         $request->file('qqfile')->move($fileDirectory, $cleanFilename);
 
         $fields = [
-            'uuid' => $request->input('unique_folder_name') . '/' . $cleanFilename,
+            'uuid'     => $request->input('unique_folder_name').'/'.$cleanFilename,
             'filename' => $cleanFilename,
-            'size' => $request->input('qqtotalfilesize'),
+            'size'     => $request->input('qqtotalfilesize'),
         ];
 
         return $this->repository->create($fields);
@@ -120,7 +119,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
     public function storeReference($request)
     {
         $fields = [
-            'uuid' => $request->input('key'),
+            'uuid'     => $request->input('key'),
             'filename' => $request->input('name'),
         ];
 
@@ -171,6 +170,6 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
 
     public function policyIsNotValid()
     {
-        return response()->json(["invalid" => true], 500);
+        return response()->json(['invalid' => true], 500);
     }
 }

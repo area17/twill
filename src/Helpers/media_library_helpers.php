@@ -5,7 +5,7 @@ if (!function_exists('s3Enpoint')) {
     {
         $scheme = config("filesystems.disks.{$disk}.use_https") ? 'https://' : '';
 
-        return $scheme . config("filesystems.disks.{$disk}.bucket") . '.' . Storage::disk($disk)->getAdapter()->getClient()->getEndpoint()->getHost();
+        return $scheme.config("filesystems.disks.{$disk}.bucket").'.'.Storage::disk($disk)->getAdapter()->getClient()->getEndpoint()->getHost();
     }
 }
 
@@ -18,7 +18,7 @@ if (!function_exists('bytesToHuman')) {
             $bytes /= 1024;
         }
 
-        return round($bytes, 2) . ' ' . $units[$i];
+        return round($bytes, 2).' '.$units[$i];
     }
 }
 
@@ -34,11 +34,11 @@ if (!function_exists('sanitizeFilename')) {
     {
         $sanitizedFilename = replaceAccents($filename);
 
-        $invalid = array(
-            ' ' => '-',
+        $invalid = [
+            ' '   => '-',
             '%20' => '-',
-            '_' => '-',
-        );
+            '_'   => '-',
+        ];
 
         $sanitizedFilename = str_replace(array_keys($invalid), array_values($invalid), $sanitizedFilename);
 

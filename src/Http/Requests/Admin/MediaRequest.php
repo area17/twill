@@ -9,10 +9,10 @@ class MediaRequest extends Request
         return config('twill.media_library.endpoint_type') === 'local'
         ? [
             'qqfilename' => 'required',
-            'qqfile' => 'required',
+            'qqfile'     => 'required',
         ]
         : [
-            'key' => 'required',
+            'key'  => 'required',
             'name' => 'required',
         ];
     }

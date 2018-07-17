@@ -19,6 +19,7 @@ trait HasBlocks
 
                 $renderedChildViews = $childBlocks->map(function ($childBlock) use ($blockViewMappings, $data) {
                     $view = $this->getBlockView($childBlock->type, $blockViewMappings);
+
                     return view($view, $data)->with('block', $childBlock)->render();
                 })->implode('');
             }
@@ -27,13 +28,13 @@ trait HasBlocks
 
             $view = $this->getBlockView($block->type, $blockViewMappings);
 
-            return view($view, $data)->with('block', $block)->render() . ($renderedChildViews ?? '');
+            return view($view, $data)->with('block', $block)->render().($renderedChildViews ?? '');
         })->implode('');
     }
 
     private function getBlockView($blockType, $blockViewMappings = [])
     {
-        $view = config('twill.block_editor.block_views_path') . '.' . $blockType;
+        $view = config('twill.block_editor.block_views_path').'.'.$blockType;
 
         if (array_key_exists($blockType, $blockViewMappings)) {
             $view = $blockViewMappings[$blockType];

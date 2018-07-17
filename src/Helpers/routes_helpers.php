@@ -3,7 +3,8 @@
 if (!function_exists('moduleRoute')) {
     function moduleRoute($moduleName, $prefix, $action, $parameters = [], $absolute = true)
     {
-        $routeName = 'admin.' . ($prefix ? $prefix . '.' : '') . camel_case($moduleName) . '.' . $action;
+        $routeName = 'admin.'.($prefix ? $prefix.'.' : '').camel_case($moduleName).'.'.$action;
+
         return route($routeName, $parameters, $absolute);
     }
 }
@@ -15,6 +16,7 @@ if (!function_exists('getNavigationUrl')) {
 
         if ($isModule) {
             $action = $element['route'] ?? 'index';
+
             return moduleRoute($key, $prefix, $action);
         } elseif ($element['raw'] ?? false) {
             return !empty($element['route']) ? $element['route'] : '#';
@@ -22,7 +24,6 @@ if (!function_exists('getNavigationUrl')) {
 
         return !empty($element['route']) ? route($element['route'], $element['params'] ?? []) : '#';
     }
-
 }
 
 if (!function_exists('isActiveNavigation')) {

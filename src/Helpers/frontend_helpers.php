@@ -10,15 +10,14 @@ if (!function_exists('revAsset')) {
                 });
 
                 if (isset($manifest[$file])) {
-                    return (rtrim(config('twill.frontend.dist_assets_path'), '/') . '/') . $manifest[$file];
+                    return (rtrim(config('twill.frontend.dist_assets_path'), '/').'/').$manifest[$file];
                 }
-
             } catch (\Exception $e) {
-                return '/' . $file;
+                return '/'.$file;
             }
         }
 
-        return (rtrim(config('twill.frontend.dev_assets_path'), '/') . '/') . $file;
+        return (rtrim(config('twill.frontend.dev_assets_path'), '/').'/').$file;
     }
 }
 
@@ -28,10 +27,11 @@ if (!function_exists('icon')) {
      */
     function icon($name, $opts = [])
     {
-        $title = isset($opts['title']) ? ' title="' . htmlentities($opts['title'], ENT_QUOTES, 'UTF-8') . '" ' : '';
-        $role = isset($opts['role']) ? ' role="' . htmlentities($opts['role'], ENT_QUOTES, 'UTF-8') . '" ' : ' role="presentation" ';
+        $title = isset($opts['title']) ? ' title="'.htmlentities($opts['title'], ENT_QUOTES, 'UTF-8').'" ' : '';
+        $role = isset($opts['role']) ? ' role="'.htmlentities($opts['role'], ENT_QUOTES, 'UTF-8').'" ' : ' role="presentation" ';
         $css_class = isset($opts['css_class']) ? htmlentities($opts['css_class'], ENT_QUOTES, 'UTF-8') : '';
-        $svg_link = config('twill.frontend.svg_sprites_use_hash_only') ? "#icon--$name" : revAsset(config('twill.frontend.svg_sprites_path')) . "#icon--$name";
-        return "<svg class=\"icon--$name $css_class\" $title $role><use xlink:href=\"" . $svg_link . "\"></use></svg>";
+        $svg_link = config('twill.frontend.svg_sprites_use_hash_only') ? "#icon--$name" : revAsset(config('twill.frontend.svg_sprites_path'))."#icon--$name";
+
+        return "<svg class=\"icon--$name $css_class\" $title $role><use xlink:href=\"".$svg_link.'"></use></svg>';
     }
 }

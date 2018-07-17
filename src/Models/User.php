@@ -36,7 +36,7 @@ class User extends AuthenticatableContract
     public $mediasParams = [
         'profile' => [
             'default' => [
-                'name' => 'default',
+                'name'  => 'default',
                 'ratio' => 1,
             ],
         ],
@@ -51,13 +51,11 @@ class User extends AuthenticatableContract
     {
         if (!empty($this->role)) {
             if ($this->role == 'SUPERADMIN') {
-                return "SUPERADMIN";
+                return 'SUPERADMIN';
             }
 
             return UserRole::{$this->role}()->getValue();
         }
-
-        return null;
     }
 
     public function scopePublished($query)

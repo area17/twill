@@ -25,5 +25,4 @@ class Feature extends BaseModel
             return $feature->featured;
         });
     }
-
 }

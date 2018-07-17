@@ -36,10 +36,9 @@ class Install extends Command
             $this->files->makeDirectory($routesPath, 0755, true);
         }
 
-        $stub = $this->files->get(__DIR__ . '/stubs/admin.stub');
+        $stub = $this->files->get(__DIR__.'/stubs/admin.stub');
 
-        $this->files->put($routesPath . '/admin.php', $stub);
-
+        $this->files->put($routesPath.'/admin.php', $stub);
     }
 
     private function addServiceProvider()
@@ -66,8 +65,8 @@ class Install extends Command
             $this->files->makeDirectory($exceptionsPath, 0755, true);
         }
 
-        $stub = $this->files->get(__DIR__ . '/stubs/Handler.stub');
+        $stub = $this->files->get(__DIR__.'/stubs/Handler.stub');
 
-        $this->files->put($exceptionsPath . '/Handler.php', $stub);
+        $this->files->put($exceptionsPath.'/Handler.php', $stub);
     }
 }

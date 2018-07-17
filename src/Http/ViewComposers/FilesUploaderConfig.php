@@ -13,16 +13,16 @@ class FilesUploaderConfig
         $allowedExtensions = config('twill.file_library.allowed_extensions');
 
         $filesUploaderConfig = [
-            'endpointType' => $endpointType,
-            'endpoint' => $endpointType === 'local' ? route('admin.file-library.files.store') : s3Endpoint($libraryDisk),
-            'successEndpoint' => route('admin.file-library.files.store'),
+            'endpointType'      => $endpointType,
+            'endpoint'          => $endpointType === 'local' ? route('admin.file-library.files.store') : s3Endpoint($libraryDisk),
+            'successEndpoint'   => route('admin.file-library.files.store'),
             'signatureEndpoint' => route('admin.file-library.sign-s3-upload'),
-            'endpointBucket' => config('filesystems.disks.' . $libraryDisk . '.bucket', 'none'),
-            'endpointRegion' => config('filesystems.disks.' . $libraryDisk . '.region', 'none'),
-            'accessKey' => config('filesystems.disks.' . $libraryDisk . '.key', 'none'),
-            'csrfToken' => csrf_token(),
-            'acl' => config('twill.file_library.acl'),
-            'filesizeLimit' => config('twill.file_library.filesize_limit'),
+            'endpointBucket'    => config('filesystems.disks.'.$libraryDisk.'.bucket', 'none'),
+            'endpointRegion'    => config('filesystems.disks.'.$libraryDisk.'.region', 'none'),
+            'accessKey'         => config('filesystems.disks.'.$libraryDisk.'.key', 'none'),
+            'csrfToken'         => csrf_token(),
+            'acl'               => config('twill.file_library.acl'),
+            'filesizeLimit'     => config('twill.file_library.filesize_limit'),
             'allowedExtensions' => $allowedExtensions,
         ];
 

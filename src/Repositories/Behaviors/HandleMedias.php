@@ -53,28 +53,28 @@ trait HandleMedias
                         if (isset($media['crops'])) {
                             foreach ($media['crops'] as $cropName => $cropData) {
                                 $medias->push([
-                                    'id' => $media['id'],
-                                    'crop' => $cropName,
-                                    'role' => $role,
-                                    'ratio' => $cropData['name'],
-                                    'crop_w' => $cropData['width'],
-                                    'crop_h' => $cropData['height'],
-                                    'crop_x' => $cropData['x'],
-                                    'crop_y' => $cropData['y'],
+                                    'id'        => $media['id'],
+                                    'crop'      => $cropName,
+                                    'role'      => $role,
+                                    'ratio'     => $cropData['name'],
+                                    'crop_w'    => $cropData['width'],
+                                    'crop_h'    => $cropData['height'],
+                                    'crop_x'    => $cropData['x'],
+                                    'crop_y'    => $cropData['y'],
                                     'metadatas' => json_encode($customMetadatas),
                                 ]);
                             }
                         } else {
                             foreach ($this->getCrops($role) as $cropName => $cropDefinitions) {
                                 $medias->push([
-                                    'id' => $media['id'],
-                                    'crop' => $cropName,
-                                    'role' => $role,
-                                    'ratio' => array_first($cropDefinitions)['name'],
-                                    'crop_w' => null,
-                                    'crop_h' => null,
-                                    'crop_x' => null,
-                                    'crop_y' => null,
+                                    'id'        => $media['id'],
+                                    'crop'      => $cropName,
+                                    'role'      => $role,
+                                    'ratio'     => array_first($cropDefinitions)['name'],
+                                    'crop_w'    => null,
+                                    'crop_h'    => null,
+                                    'crop_x'    => null,
+                                    'crop_y'    => null,
                                     'metadatas' => json_encode($customMetadatas),
                                 ]);
                             }
@@ -106,12 +106,12 @@ trait HandleMedias
                             'default' => [
                                 'caption' => $item->caption,
                                 'altText' => $item->alt_text,
-                                'video' => '',
+                                'video'   => '',
                             ],
                             'custom' => [
                                 'caption' => $caption, // TODO: add caption and alttext to mediables table
                                 'altText' => $altText,
-                                'video' => $video,
+                                'video'   => $video,
                             ],
                         ],
                     ];
@@ -119,11 +119,11 @@ trait HandleMedias
                     foreach ($mediasById->groupBy('pivot.crop') as $crop => $mediaByCrop) {
                         $media = $mediaByCrop->first();
                         $itemForForm['crops'][$crop] = [
-                            'name' => $media->pivot->ratio,
-                            'width' => $media->pivot->crop_w,
+                            'name'   => $media->pivot->ratio,
+                            'width'  => $media->pivot->crop_w,
                             'height' => $media->pivot->crop_h,
-                            'x' => $media->pivot->crop_x,
-                            'y' => $media->pivot->crop_y,
+                            'x'      => $media->pivot->crop_x,
+                            'y'      => $media->pivot->crop_y,
                         ];
                     }
 

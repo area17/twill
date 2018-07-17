@@ -6,7 +6,6 @@ use A17\Twill\Models\Setting;
 
 class SettingRepository
 {
-
     public function __construct(Setting $model)
     {
         $this->model = $model;
@@ -41,7 +40,7 @@ class SettingRepository
             foreach (getLocales() as $locale) {
                 array_set(
                     $settingsTranslated,
-                    $key . '.' . $locale,
+                    $key.'.'.$locale,
                     ['value' => $value[$locale]] + ['active' => true]
                 );
             }

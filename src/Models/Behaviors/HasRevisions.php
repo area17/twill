@@ -6,7 +6,7 @@ trait HasRevisions
 {
     public function revisions()
     {
-        return $this->hasMany("App\Models\Revisions\\" . class_basename($this) . "Revision")->orderBy('created_at', 'desc');
+        return $this->hasMany("App\Models\Revisions\\".class_basename($this).'Revision')->orderBy('created_at', 'desc');
     }
 
     public function scopeMine($query)
@@ -20,8 +20,8 @@ trait HasRevisions
     {
         return $this->revisions->map(function ($revision) {
             return [
-                'id' => $revision->id,
-                'author' => $revision->user->name ?? 'Unknown',
+                'id'       => $revision->id,
+                'author'   => $revision->user->name ?? 'Unknown',
                 'datetime' => $revision->created_at->toIso8601String(),
             ];
         })->toArray();
