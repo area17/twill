@@ -78,7 +78,7 @@ class Handler extends ExceptionHandler
         if ($isSubdomainAdmin || $isSubdirectoryAdmin) {
             $view = view()->exists("admin.errors.$statusCode") ? "admin.errors.$statusCode" : "twill::errors.$statusCode";
         } else {
-            $view = config('twill.frontend.views_path') . ".errors.{$statusCode}";
+            $view = config('twill.frontend.views_path').".errors.{$statusCode}";
         }
 
         if (view()->exists($view)) {
@@ -105,16 +105,17 @@ class Handler extends ExceptionHandler
 
             if (app()->environment('local', 'development')) {
                 $handler->setEditor(function ($file, $line) {
-                    $translations = array('^' .
+                    $translations = ['^'.
                         config('twill.debug.whoops_path_guest') => config('twill.debug.whoops_path_host'),
-                    );
+                    ];
                     foreach ($translations as $from => $to) {
-                        $file = rawurlencode(preg_replace('#' . $from . '#', $to, $file, 1));
+                        $file = rawurlencode(preg_replace('#'.$from.'#', $to, $file, 1));
                     }
-                    return array(
-                        'url' => "subl://open?url=$file&line=$line",
+
+                    return [
+                        'url'  => "subl://open?url=$file&line=$line",
                         'ajax' => false,
-                    );
+                    ];
                 });
             }
         }

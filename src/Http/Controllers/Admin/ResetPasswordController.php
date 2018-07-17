@@ -49,8 +49,8 @@ class ResetPasswordController extends Controller
         // we don't call exists on the Password repository here because we don't want to expire the token for welcome emails
         if ($user) {
             return view('twill::auth.passwords.reset')->with([
-                'token' => $token,
-                'email' => $user->email,
+                'token'   => $token,
+                'email'   => $user->email,
                 'welcome' => true,
             ]);
         }
@@ -77,8 +77,6 @@ class ResetPasswordController extends Controller
                 return User::where('email', $passwordReset->email)->first();
             }
         }
-
-        return null;
     }
 
     /**

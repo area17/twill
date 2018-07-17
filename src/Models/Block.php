@@ -42,6 +42,7 @@ class Block extends BaseModel
     {
         $value = $this->content[$name] ?? null;
         $locale = $forceLocale ?? app()->getLocale();
+
         return $value[$locale] ?? null;
     }
 

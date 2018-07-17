@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class ActiveNavigation
 {
-
     protected $request;
 
     public function __construct(Request $request)
@@ -27,7 +26,7 @@ class ActiveNavigation
 
             if (count($activeMenus) > 2) {
                 $view_active_variables['_primary_active_navigation'] = $activeMenus[2];
-            } else if (count($this->request->route()->parameters()) > 0) {
+            } elseif (count($this->request->route()->parameters()) > 0) {
                 $view_active_variables['_primary_active_navigation'] = array_first($this->request->route()->parameters());
             }
 

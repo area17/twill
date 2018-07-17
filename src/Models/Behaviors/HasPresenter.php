@@ -9,7 +9,7 @@ trait HasPresenter
     public function present($presenter = 'presenter')
     {
         if (!$this->$presenter or !class_exists($this->$presenter)) {
-            throw new \Exception('Please set the Presenter path to your Presenter :' . $presenter . ' FQN');
+            throw new \Exception('Please set the Presenter path to your Presenter :'.$presenter.' FQN');
         }
 
         if (!$this->presenterInstance) {

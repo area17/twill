@@ -8,7 +8,6 @@ use Validator;
 
 class ValidationServiceProvider extends ServiceProvider
 {
-
     public function boot()
     {
         Validator::extend('absolute_or_relative_url', function ($attribute, $value, $parameters, $validator) {
@@ -31,7 +30,7 @@ class ValidationServiceProvider extends ServiceProvider
             foreach ($value as $block) {
                 $cmsBlock = app(BlockRepository::class)->buildFromCmsArray($block, false);
 
-                $rules = config('cms-toolkit.block_editor.blocks.' . $cmsBlock['type'] . '.rules') ?? [];
+                $rules = config('cms-toolkit.block_editor.blocks.'.$cmsBlock['type'].'.rules') ?? [];
 
                 unset($cmsBlock['content']);
 
@@ -44,7 +43,7 @@ class ValidationServiceProvider extends ServiceProvider
                 }
 
                 if (!empty($blockMessages ?? [])) {
-                    $validator->errors()->add('block.' . $block['id'], join('<br>', $blockMessages));
+                    $validator->errors()->add('block.'.$block['id'], implode('<br>', $blockMessages));
                 }
 
                 $blockMessages = [];
@@ -56,6 +55,5 @@ class ValidationServiceProvider extends ServiceProvider
 
     public function register()
     {
-
     }
 }

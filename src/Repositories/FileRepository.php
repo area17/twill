@@ -18,6 +18,7 @@ class FileRepository extends ModuleRepository
     public function filter($query, array $scopes = [])
     {
         $this->searchIn($query, $scopes, 'search', ['filename']);
+
         return parent::filter($query, $scopes);
     }
 

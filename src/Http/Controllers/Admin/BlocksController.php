@@ -46,6 +46,7 @@ class BlocksController extends Controller
                 $childBlocks = $blocksCollection->where('parent_id', $block->id);
                 $renderedChildViews = $childBlocks->map(function ($childBlock) {
                     $view = $this->getBlockView($childBlock->type);
+
                     return view($view)->with('block', $childBlock)->render();
                 })->implode('');
             }
@@ -54,7 +55,7 @@ class BlocksController extends Controller
 
             $view = $this->getBlockView($block->type);
 
-            return view($view)->with('block', $block)->render() . ($renderedChildViews ?? '');
+            return view($view)->with('block', $block)->render().($renderedChildViews ?? '');
         })->implode('');
 
         $view = view(config('twill.block_editor.block_single_layout'));
@@ -66,7 +67,7 @@ class BlocksController extends Controller
 
     private function getBlockView($blockType)
     {
-        $view = config('twill.block_editor.block_views_path') . '.' . $blockType;
+        $view = config('twill.block_editor.block_views_path').'.'.$blockType;
 
         $customViews = config('twill.block_editor.block_views_mappings');
 
@@ -76,5 +77,4 @@ class BlocksController extends Controller
 
         return $view;
     }
-
 }

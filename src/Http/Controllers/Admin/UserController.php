@@ -34,12 +34,12 @@ class UserController extends ModuleController
         'email' => [
             'title' => 'Email',
             'field' => 'email',
-            'sort' => true,
+            'sort'  => true,
         ],
         'role_value' => [
-            'title' => 'Role',
-            'field' => 'role_value',
-            'sort' => true,
+            'title'   => 'Role',
+            'field'   => 'role_value',
+            'sort'    => true,
             'sortKey' => 'role',
         ],
     ];
@@ -59,8 +59,8 @@ class UserController extends ModuleController
         if (config('twill.enabled.users-image')) {
             $this->indexColumns = [
                 'image' => [
-                    'title' => 'Image',
-                    'thumb' => true,
+                    'title'   => 'Image',
+                    'thumb'   => true,
                     'variant' => [
                         'role' => 'profile',
                         'crop' => 'default',
@@ -73,32 +73,32 @@ class UserController extends ModuleController
     protected function indexData($request)
     {
         return [
-            'defaultFilterSlug' => 'published',
-            'create' => $this->getIndexOption('create') && auth()->user()->can('edit-user-role'),
-            'roleList' => collect(UserRole::toArray()),
+            'defaultFilterSlug'  => 'published',
+            'create'             => $this->getIndexOption('create') && auth()->user()->can('edit-user-role'),
+            'roleList'           => collect(UserRole::toArray()),
             'single_primary_nav' => [
                 'users' => [
-                    'title' => 'Users',
+                    'title'  => 'Users',
                     'module' => true,
                 ],
             ],
             'customPublishedLabel' => 'Enabled',
-            'customDraftLabel' => 'Disabled',
+            'customDraftLabel'     => 'Disabled',
         ];
     }
 
     protected function formData($request)
     {
         return [
-            'roleList' => collect(UserRole::toArray()),
+            'roleList'           => collect(UserRole::toArray()),
             'single_primary_nav' => [
                 'users' => [
-                    'title' => 'Users',
+                    'title'  => 'Users',
                     'module' => true,
                 ],
             ],
             'customPublishedLabel' => 'Enabled',
-            'customDraftLabel' => 'Disabled',
+            'customDraftLabel'     => 'Disabled',
         ];
     }
 
@@ -112,12 +112,12 @@ class UserController extends ModuleController
         $statusFilters = [];
 
         array_push($statusFilters, [
-            'name' => 'Active',
-            'slug' => 'published',
+            'name'   => 'Active',
+            'slug'   => 'published',
             'number' => $this->repository->getCountByStatusSlug('published'),
         ], [
-            'name' => 'Disabled',
-            'slug' => 'draft',
+            'name'   => 'Disabled',
+            'slug'   => 'draft',
             'number' => $this->repository->getCountByStatusSlug('draft'),
         ]);
 

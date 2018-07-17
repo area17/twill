@@ -63,8 +63,8 @@ class ModuleMake extends Command
         $this->createViews($moduleName, $translatable);
 
         $this->info("Add Route::module('{$moduleName}'); to your admin routes file.");
-        $this->info("Setup a new CMS menu item in config/twill-navigation.php.");
-        $this->info("Enjoy.");
+        $this->info('Setup a new CMS menu item in config/twill-navigation.php.');
+        $this->info('Enjoy.');
 
         $this->composer->dumpAutoloads();
     }
@@ -78,16 +78,16 @@ class ModuleMake extends Command
         $className = "Create{$tableClassName}Tables";
 
         if (!class_exists($className)) {
-            $migrationName = 'create_' . $table . '_tables';
+            $migrationName = 'create_'.$table.'_tables';
 
-            $migrationPath = $this->laravel->databasePath() . '/migrations';
+            $migrationPath = $this->laravel->databasePath().'/migrations';
 
             $fullPath = $this->laravel['migration.creator']->create($migrationName, $migrationPath);
 
             $stub = str_replace(
                 ['{{table}}', '{{singularTableName}}', '{{tableClassName}}'],
                 [$table, Str::singular($table), $tableClassName],
-                $this->files->get(__DIR__ . '/stubs/migration.stub')
+                $this->files->get(__DIR__.'/stubs/migration.stub')
             );
 
             $this->files->put($fullPath, $stub);
@@ -107,11 +107,11 @@ class ModuleMake extends Command
                 $this->files->makeDirectory(app_path('Models/Translations'));
             }
 
-            $modelTranslationClassName = $modelName . 'Translation';
+            $modelTranslationClassName = $modelName.'Translation';
 
-            $stub = str_replace('{{modelTranslationClassName}}', $modelTranslationClassName, $this->files->get(__DIR__ . '/stubs/model_translation.stub'));
+            $stub = str_replace('{{modelTranslationClassName}}', $modelTranslationClassName, $this->files->get(__DIR__.'/stubs/model_translation.stub'));
 
-            $this->files->put(app_path('Models/Translations/' . $modelTranslationClassName . '.php'), $stub);
+            $this->files->put(app_path('Models/Translations/'.$modelTranslationClassName.'.php'), $stub);
         }
 
         if ($sluggable) {
@@ -119,11 +119,11 @@ class ModuleMake extends Command
                 $this->files->makeDirectory(app_path('Models/Slugs'));
             }
 
-            $modelSlugClassName = $modelName . 'Slug';
+            $modelSlugClassName = $modelName.'Slug';
 
-            $stub = str_replace(['{{modelSlugClassName}}', '{{modelName}}'], [$modelSlugClassName, Str::snake($modelName)], $this->files->get(__DIR__ . '/stubs/model_slug.stub'));
+            $stub = str_replace(['{{modelSlugClassName}}', '{{modelName}}'], [$modelSlugClassName, Str::snake($modelName)], $this->files->get(__DIR__.'/stubs/model_slug.stub'));
 
-            $this->files->put(app_path('Models/Slugs/' . $modelSlugClassName . '.php'), $stub);
+            $this->files->put(app_path('Models/Slugs/'.$modelSlugClassName.'.php'), $stub);
         }
 
         if ($revisionable) {
@@ -131,11 +131,11 @@ class ModuleMake extends Command
                 $this->files->makeDirectory(app_path('Models/Revisions'));
             }
 
-            $modelRevisionClassName = $modelName . 'Revision';
+            $modelRevisionClassName = $modelName.'Revision';
 
-            $stub = str_replace(['{{modelRevisionClassName}}', '{{modelName}}'], [$modelRevisionClassName, Str::snake($modelName)], $this->files->get(__DIR__ . '/stubs/model_revision.stub'));
+            $stub = str_replace(['{{modelRevisionClassName}}', '{{modelName}}'], [$modelRevisionClassName, Str::snake($modelName)], $this->files->get(__DIR__.'/stubs/model_revision.stub'));
 
-            $this->files->put(app_path('Models/Revisions/' . $modelRevisionClassName . '.php'), $stub);
+            $this->files->put(app_path('Models/Revisions/'.$modelRevisionClassName.'.php'), $stub);
         }
 
         $modelClassName = $modelName;
@@ -148,9 +148,9 @@ class ModuleMake extends Command
             }
         }
 
-        $activeModelTraitsString = empty($activeModelTraits) ? '' : 'use ' . rtrim(implode(', ', $activeModelTraits), ', ') . ';';
+        $activeModelTraitsString = empty($activeModelTraits) ? '' : 'use '.rtrim(implode(', ', $activeModelTraits), ', ').';';
 
-        $activeModelTraitsImports = empty($activeModelTraits) ? '' : "use A17\Twill\Models\Behaviors\\" . implode(";\nuse A17\Twill\Models\Behaviors\\", $activeModelTraits) . ";";
+        $activeModelTraitsImports = empty($activeModelTraits) ? '' : "use A17\Twill\Models\Behaviors\\".implode(";\nuse A17\Twill\Models\Behaviors\\", $activeModelTraits).';';
 
         $activeModelImplements = $sortable ? 'implements Sortable' : '';
 
@@ -158,9 +158,9 @@ class ModuleMake extends Command
             $activeModelTraitsImports .= "\nuse A17\Twill\Models\Behaviors\Sortable;";
         }
 
-        $stub = str_replace(['{{modelClassName}}', '{{modelTraits}}', '{{modelImports}}', '{{modelImplements}}'], [$modelClassName, $activeModelTraitsString, $activeModelTraitsImports, $activeModelImplements], $this->files->get(__DIR__ . '/stubs/model.stub'));
+        $stub = str_replace(['{{modelClassName}}', '{{modelTraits}}', '{{modelImports}}', '{{modelImplements}}'], [$modelClassName, $activeModelTraitsString, $activeModelTraitsImports, $activeModelImplements], $this->files->get(__DIR__.'/stubs/model.stub'));
 
-        $this->files->put(app_path('Models/' . $modelClassName . '.php'), $stub);
+        $this->files->put(app_path('Models/'.$modelClassName.'.php'), $stub);
 
         $this->info('Models created successfully! Fill your fillables!');
     }
@@ -171,7 +171,7 @@ class ModuleMake extends Command
             $this->files->makeDirectory(app_path('Repositories'));
         }
 
-        $repositoryClassName = $modelName . 'Repository';
+        $repositoryClassName = $modelName.'Repository';
 
         $activeRepositoryTraits = [];
 
@@ -181,13 +181,13 @@ class ModuleMake extends Command
             }
         }
 
-        $activeRepositoryTraitsString = empty($activeRepositoryTraits) ? '' : 'use ' . (empty($activeRepositoryTraits) ? "" : rtrim(implode(', ', $activeRepositoryTraits), ', ') . ';');
+        $activeRepositoryTraitsString = empty($activeRepositoryTraits) ? '' : 'use '.(empty($activeRepositoryTraits) ? '' : rtrim(implode(', ', $activeRepositoryTraits), ', ').';');
 
-        $activeRepositoryTraitsImports = empty($activeRepositoryTraits) ? '' : "use A17\Twill\Repositories\Behaviors\\" . implode(";\nuse A17\Twill\Repositories\Behaviors\\", $activeRepositoryTraits) . ";";
+        $activeRepositoryTraitsImports = empty($activeRepositoryTraits) ? '' : "use A17\Twill\Repositories\Behaviors\\".implode(";\nuse A17\Twill\Repositories\Behaviors\\", $activeRepositoryTraits).';';
 
-        $stub = str_replace(['{{repositoryClassName}}', '{{modelName}}', '{{repositoryTraits}}', '{{repositoryImports}}'], [$repositoryClassName, $modelName, $activeRepositoryTraitsString, $activeRepositoryTraitsImports], $this->files->get(__DIR__ . '/stubs/repository.stub'));
+        $stub = str_replace(['{{repositoryClassName}}', '{{modelName}}', '{{repositoryTraits}}', '{{repositoryImports}}'], [$repositoryClassName, $modelName, $activeRepositoryTraitsString, $activeRepositoryTraitsImports], $this->files->get(__DIR__.'/stubs/repository.stub'));
 
-        $this->files->put(app_path('Repositories/' . $repositoryClassName . '.php'), $stub);
+        $this->files->put(app_path('Repositories/'.$repositoryClassName.'.php'), $stub);
 
         $this->info('Repository created successfully! Control all the things!');
     }
@@ -198,15 +198,15 @@ class ModuleMake extends Command
             $this->files->makeDirectory(app_path('Http/Controllers/Admin'));
         }
 
-        $controllerClassName = $modelName . 'Controller';
+        $controllerClassName = $modelName.'Controller';
 
         $stub = str_replace(
             ['{{moduleName}}', '{{controllerClassName}}'],
             [$moduleName, $controllerClassName],
-            $this->files->get(__DIR__ . '/stubs/controller.stub')
+            $this->files->get(__DIR__.'/stubs/controller.stub')
         );
 
-        $this->files->put(app_path('Http/Controllers/Admin/' . $controllerClassName . '.php'), $stub);
+        $this->files->put(app_path('Http/Controllers/Admin/'.$controllerClassName.'.php'), $stub);
 
         $this->info('Controller created successfully! Define your index/browser/form endpoints options!');
     }
@@ -217,18 +217,18 @@ class ModuleMake extends Command
             $this->files->makeDirectory(app_path('Http/Requests/Admin'), 0755, true);
         }
 
-        $requestClassName = $modelName . 'Request';
+        $requestClassName = $modelName.'Request';
 
-        $stub = str_replace('{{requestClassName}}', $requestClassName, $this->files->get(__DIR__ . '/stubs/request.stub'));
+        $stub = str_replace('{{requestClassName}}', $requestClassName, $this->files->get(__DIR__.'/stubs/request.stub'));
 
-        $this->files->put(app_path('Http/Requests/Admin/' . $requestClassName . '.php'), $stub);
+        $this->files->put(app_path('Http/Requests/Admin/'.$requestClassName.'.php'), $stub);
 
         $this->info('Form request created successfully! Add some validation rules!');
     }
 
     private function createViews($moduleName = 'items', $translatable = false)
     {
-        $viewsPath = config('view.paths')[0] . '/admin/' . $moduleName;
+        $viewsPath = config('view.paths')[0].'/admin/'.$moduleName;
 
         if (!$this->files->isDirectory($viewsPath)) {
             $this->files->makeDirectory($viewsPath, 0755, true);
@@ -236,7 +236,7 @@ class ModuleMake extends Command
 
         $formView = $translatable ? 'form_translatable' : 'form';
 
-        $this->files->put($viewsPath . '/form.blade.php', $this->files->get(__DIR__ . '/stubs/' . $formView . '.blade.stub'));
+        $this->files->put($viewsPath.'/form.blade.php', $this->files->get(__DIR__.'/stubs/'.$formView.'.blade.stub'));
 
         $this->info('Form view created successfully! Include your form fields using @formField directives!');
     }

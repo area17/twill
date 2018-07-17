@@ -45,7 +45,7 @@ trait HandleRepeaters
             $relationField['position'] = $index + 1;
             if (isset($relationField['id']) && starts_with($relationField['id'], $relation)) {
                 // row already exists, let's update
-                $id = str_replace($relation . '-', '', $relationField['id']);
+                $id = str_replace($relation.'-', '', $relationField['id']);
                 $relationRepository->update($id, $relationField);
                 $currentIdList[] = $id;
             } else {
@@ -79,8 +79,8 @@ trait HandleRepeaters
 
         foreach ($object->$relation as $relationItem) {
             $repeaters[] = [
-                'id' => $relation . '-' . $relationItem->id,
-                'type' => $repeatersConfig[$relation]['component'],
+                'id'    => $relation.'-'.$relationItem->id,
+                'type'  => $repeatersConfig[$relation]['component'],
                 'title' => $repeatersConfig[$relation]['title'],
             ];
 
@@ -90,7 +90,7 @@ trait HandleRepeaters
             if (isset($relatedItemFormFields['translations'])) {
                 foreach ($relatedItemFormFields['translations'] as $key => $values) {
                     $repeatersFields[] = [
-                        'name' => "blocks[$relation-$relationItem->id][$key]",
+                        'name'  => "blocks[$relation-$relationItem->id][$key]",
                         'value' => $values,
                     ];
 
@@ -122,7 +122,7 @@ trait HandleRepeaters
 
             foreach ($itemFields as $key => $value) {
                 $repeatersFields[] = [
-                    'name' => "blocks[$relation-$relationItem->id][$key]",
+                    'name'  => "blocks[$relation-$relationItem->id][$key]",
                     'value' => $value,
                 ];
             }

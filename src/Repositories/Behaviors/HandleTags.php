@@ -10,7 +10,6 @@ trait HandleTags
             if (!$this->shouldIgnoreFieldBeforeSave('tags')) {
                 $object->setTags($fields['tags'] ?? []);
             }
-
         } else {
             if (!$this->shouldIgnoreFieldBeforeSave('bulk_tags')) {
                 $previousCommonTags = $fields['previous_common_tags']->pluck('name')->toArray();
@@ -41,7 +40,7 @@ trait HandleTags
         $tagQuery = $this->getTagsQuery();
 
         if (!empty($query)) {
-            $tagQuery->where('slug', 'like', '%' . $query . '%');
+            $tagQuery->where('slug', 'like', '%'.$query.'%');
         }
 
         if (!empty($ids)) {
@@ -64,5 +63,4 @@ trait HandleTags
             ];
         });
     }
-
 }

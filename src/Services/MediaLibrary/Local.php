@@ -38,11 +38,10 @@ class Local implements ImageServiceInterface
 
     public function getRawUrl($id)
     {
-        return '/' . $id;
+        return '/'.$id;
     }
 
     public function getDimensions($id)
     {
-        return null;
     }
 }

@@ -10,7 +10,7 @@ class CreateSuperAdmin extends Command
 {
     protected $signature = 'twill:superadmin';
 
-    protected $description = "Create the superadmin account";
+    protected $description = 'Create the superadmin account';
 
     public function handle()
     {
@@ -20,20 +20,20 @@ class CreateSuperAdmin extends Command
             $password = $this->ask('Enter a password');
             if ($this->validatePassword($password)) {
                 return User::create([
-                    'name' => "Admin",
-                    'email' => $email,
-                    'password' => bcrypt($password),
-                    'role' => 'SUPERADMIN',
+                    'name'      => 'Admin',
+                    'email'     => $email,
+                    'password'  => bcrypt($password),
+                    'role'      => 'SUPERADMIN',
                     'published' => true,
                 ]);
             } else {
-                $this->error("Your password is not valid");
+                $this->error('Your password is not valid');
             }
         } else {
-            $this->error("Your email is not valid");
+            $this->error('Your email is not valid');
         }
 
-        $this->info("Your account has been created");
+        $this->info('Your account has been created');
     }
 
     private function validateEmail($email)

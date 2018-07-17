@@ -19,6 +19,7 @@ class MediaRepository extends ModuleRepository
     public function filter($query, array $scopes = [])
     {
         $this->searchIn($query, $scopes, 'search', ['alt_text', 'filename', 'caption']);
+
         return parent::filter($query, $scopes);
     }
 
@@ -30,6 +31,7 @@ class MediaRepository extends ModuleRepository
                 if ($object->delete() && config('twill.media_library.cascade_delete')) {
                     Storage::disk(config('twill.media_library.disk'))->delete($storageId);
                 }
+
                 return true;
             }
         }
@@ -50,5 +52,4 @@ class MediaRepository extends ModuleRepository
 
         return $fields;
     }
-
 }

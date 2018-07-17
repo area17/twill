@@ -6,10 +6,9 @@ use Auth;
 
 trait HandleRevisions
 {
-
     public function beforeSaveHandleRevisions($object, $fields)
     {
-        $lastRevisionPayload = json_decode($object->revisions->first()->payload ?? "{}", true);
+        $lastRevisionPayload = json_decode($object->revisions->first()->payload ?? '{}', true);
 
         if ($fields != $lastRevisionPayload) {
             $object->revisions()->create([

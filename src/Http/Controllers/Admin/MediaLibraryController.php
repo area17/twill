@@ -7,7 +7,6 @@ use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignS3UploadListener;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
-use Input;
 
 class MediaLibraryController extends ModuleController implements SignS3UploadListener
 {
@@ -21,7 +20,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
     protected $defaultFilters = [
         'search' => 'search',
-        'tag' => 'tag_id',
+        'tag'    => 'tag_id',
     ];
 
     protected $perPage = 40;
@@ -55,8 +54,8 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
                 return $this->buildMedia($item);
             })->toArray(),
             'maxPage' => $items->lastPage(),
-            'total' => $items->total(),
-            'tags' => $this->repository->getTagsList(),
+            'total'   => $items->total(),
+            'tags'    => $this->repository->getTagsList(),
         ];
     }
 
@@ -66,20 +65,20 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
             'tags' => $item->tags->map(function ($tag) {
                 return $tag->name;
             }),
-            'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
-            'updateUrl' => route('admin.media-library.medias.single-update'),
+            'deleteUrl'     => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
+            'updateUrl'     => route('admin.media-library.medias.single-update'),
             'updateBulkUrl' => route('admin.media-library.medias.bulk-update'),
             'deleteBulkUrl' => route('admin.media-library.medias.bulk-delete'),
-            'metadatas' => [
+            'metadatas'     => [
                 'default' => [
                     'caption' => $item->caption,
                     'altText' => $item->alt_text,
-                    'video' => null,
+                    'video'   => null,
                 ],
                 'custom' => [
                     'caption' => null,
                     'altText' => null,
-                    'video' => null,
+                    'video'   => null,
                 ],
             ],
         ];
@@ -117,17 +116,17 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
         $filename = sanitizeFilename($originalFilename);
 
-        $fileDirectory = public_path(config('twill.media_library.local_path') . $request->input('unique_folder_name'));
+        $fileDirectory = public_path(config('twill.media_library.local_path').$request->input('unique_folder_name'));
 
         $request->file('qqfile')->move($fileDirectory, $filename);
 
-        list($w, $h) = getimagesize($fileDirectory . '/' . $filename);
+        list($w, $h) = getimagesize($fileDirectory.'/'.$filename);
 
         $fields = [
-            'uuid' => config('twill.media_library.local_path') . $request->input('unique_folder_name') . '/' . $filename,
+            'uuid'     => config('twill.media_library.local_path').$request->input('unique_folder_name').'/'.$filename,
             'filename' => $originalFilename,
-            'width' => $w,
-            'height' => $h,
+            'width'    => $w,
+            'height'   => $h,
         ];
 
         return $this->repository->create($fields);
@@ -136,10 +135,10 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     public function storeReference($request)
     {
         $fields = [
-            'uuid' => $request->input('key'),
+            'uuid'     => $request->input('key'),
             'filename' => $request->input('name'),
-            'width' => $request->input('width'),
-            'height' => $request->input('height'),
+            'width'    => $request->input('width'),
+            'height'   => $request->input('height'),
         ];
 
         return $this->repository->create($fields);
@@ -191,6 +190,6 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
     public function policyIsNotValid()
     {
-        return response()->json(["invalid" => true], 500);
+        return response()->json(['invalid' => true], 500);
     }
 }

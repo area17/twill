@@ -15,9 +15,9 @@ class UserRequest extends Request
             case 'POST':
                 {
                     return [
-                        'name' => 'required',
+                        'name'  => 'required',
                         'email' => 'required|email|unique:users,email',
-                        'role' => 'required',
+                        'role'  => 'required',
                     ];
                 }
             case 'PUT':
@@ -30,7 +30,5 @@ class UserRequest extends Request
         }
 
         return [];
-
     }
-
 }

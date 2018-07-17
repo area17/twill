@@ -28,13 +28,13 @@ class BlockRepository extends ModuleRepository
 
     public function buildFromCmsArray($block, $repeater = false)
     {
-        $blocksFromConfig = config('twill.block_editor.' . ($repeater ? 'repeaters' : 'blocks'));
+        $blocksFromConfig = config('twill.block_editor.'.($repeater ? 'repeaters' : 'blocks'));
 
         $block['type'] = collect($blocksFromConfig)->search(function ($blockConfig) use ($block) {
             return $blockConfig['component'] === $block['type'];
         });
 
-        $block['content'] = empty($block['content']) ? new \stdClass : (object) $block['content'];
+        $block['content'] = empty($block['content']) ? new \stdClass() : (object) $block['content'];
 
         if ($block['browsers']) {
             $browsers = collect($block['browsers'])->map(function ($items) {

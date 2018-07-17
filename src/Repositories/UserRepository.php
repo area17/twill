@@ -23,6 +23,7 @@ class UserRepository extends ModuleRepository
         });
         $query->where('role', '<>', 'SUPERADMIN');
         $this->searchIn($query, $scopes, 'search', ['name', 'email', 'role']);
+
         return parent::filter($query, $scopes);
     }
 

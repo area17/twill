@@ -25,11 +25,11 @@ class RouteServiceProvider extends ServiceProvider
     public function map(Router $router)
     {
         $router->group([
-            'namespace' => config('twill.namespace', 'App') . '\Http\Controllers\Admin',
-            'domain' => config('twill.admin_app_url'),
-            'as' => 'admin.',
+            'namespace'  => config('twill.namespace', 'App').'\Http\Controllers\Admin',
+            'domain'     => config('twill.admin_app_url'),
+            'as'         => 'admin.',
             'middleware' => [config('twill.admin_middleware_group', 'web')],
-            'prefix' => rtrim(ltrim(config('twill.admin_app_path'), '/'), '/'),
+            'prefix'     => rtrim(ltrim(config('twill.admin_app_path'), '/'), '/'),
         ], function ($router) {
             $router->group(['middleware' => ['auth', 'impersonate', 'validateBackHistory']], function ($router) {
                 require base_path('routes/admin.php');
@@ -37,36 +37,36 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         $router->group([
-            'namespace' => $this->namespace . '\Admin',
-            'domain' => config('twill.admin_app_url'),
-            'as' => 'admin.',
+            'namespace'  => $this->namespace.'\Admin',
+            'domain'     => config('twill.admin_app_url'),
+            'as'         => 'admin.',
             'middleware' => [config('twill.admin_middleware_group', 'web')],
-            'prefix' => rtrim(ltrim(config('twill.admin_app_path'), '/'), '/'),
+            'prefix'     => rtrim(ltrim(config('twill.admin_app_path'), '/'), '/'),
         ],
             function ($router) {
                 $router->group(['middleware' => ['auth', 'impersonate', 'validateBackHistory']], function ($router) {
-                    require __DIR__ . '/../routes/admin.php';
+                    require __DIR__.'/../routes/admin.php';
                 });
 
                 $router->group(['middleware' => ['noDebugBar']], function ($router) {
-                    require __DIR__ . '/../routes/auth.php';
+                    require __DIR__.'/../routes/auth.php';
                 });
 
                 $router->group(['middleware' => array_merge(['noDebugBar'], (app()->environment('production') ? ['auth'] : []))], function ($router) {
-                    require __DIR__ . '/../routes/templates.php';
+                    require __DIR__.'/../routes/templates.php';
                 });
             }
         );
 
         if (config('twill.templates_on_frontend_domain')) {
             $router->group([
-                'namespace' => $this->namespace . '\Admin',
-                'domain' => config('app.url'),
+                'namespace'  => $this->namespace.'\Admin',
+                'domain'     => config('app.url'),
                 'middleware' => [config('twill.admin_middleware_group', 'web')],
             ],
                 function ($router) {
                     $router->group(['middleware' => array_merge(['noDebugBar'], (app()->environment('production') ? ['auth'] : []))], function ($router) {
-                        require __DIR__ . '/../routes/templates.php';
+                        require __DIR__.'/../routes/templates.php';
                     });
                 }
             );
@@ -97,19 +97,18 @@ class RouteServiceProvider extends ServiceProvider
                 $controllerName = ucfirst(str_plural($moduleName));
             }
 
-            $routePrefix = empty($routePrefix) ? '/' : (starts_with($routePrefix, '/') ? $routePrefix : '/' . $routePrefix);
-            $routePrefix = ends_with($routePrefix, '/') ? $routePrefix : $routePrefix . '/';
+            $routePrefix = empty($routePrefix) ? '/' : (starts_with($routePrefix, '/') ? $routePrefix : '/'.$routePrefix);
+            $routePrefix = ends_with($routePrefix, '/') ? $routePrefix : $routePrefix.'/';
 
-            Route::name($moduleName . '.show')->get($routePrefix . '{slug}', $controllerName . 'Controller@show');
-            Route::name($moduleName . '.preview')->get('/admin-preview' . $routePrefix . '{slug}', $controllerName . 'Controller@show')->middleware(['web', 'auth', 'can:list']);
+            Route::name($moduleName.'.show')->get($routePrefix.'{slug}', $controllerName.'Controller@show');
+            Route::name($moduleName.'.preview')->get('/admin-preview'.$routePrefix.'{slug}', $controllerName.'Controller@show')->middleware(['web', 'auth', 'can:list']);
         });
 
         Route::macro('module', function ($slug, $options = [], $resource_options = [], $resource = true) {
-
             $slugs = explode('.', $slug);
-            $prefixSlug = str_replace('.', "/", $slug);
+            $prefixSlug = str_replace('.', '/', $slug);
             $_slug = Arr::last($slugs);
-            $className = implode("", array_map(function ($s) {
+            $className = implode('', array_map(function ($s) {
                 return ucfirst(str_singular($s));
             }, $slugs));
 
@@ -131,14 +130,14 @@ class RouteServiceProvider extends ServiceProvider
 
             foreach ($customRoutes as $route) {
                 $routeSlug = "{$prefixSlug}/{$route}";
-                $mapping = ['as' => $customRoutePrefix . ".{$route}", 'uses' => "{$className}Controller@{$route}"];
+                $mapping = ['as' => $customRoutePrefix.".{$route}", 'uses' => "{$className}Controller@{$route}"];
 
                 if (in_array($route, ['browser', 'tags'])) {
                     Route::get($routeSlug, $mapping);
                 }
 
                 if (in_array($route, ['status'])) {
-                    Route::get($routeSlug . "/{id}", $mapping);
+                    Route::get($routeSlug.'/{id}', $mapping);
                 }
 
                 if (in_array($route, ['publish', 'feature', 'restore', 'restoreRevision'])) {
@@ -146,7 +145,7 @@ class RouteServiceProvider extends ServiceProvider
                 }
 
                 if (in_array($route, ['preview'])) {
-                    Route::put($routeSlug . "/{id}", $mapping);
+                    Route::put($routeSlug.'/{id}', $mapping);
                 }
 
                 if (in_array($route, ['reorder', 'bulkPublish', 'bulkFeature', 'bulkDelete', 'bulkRestore'])) {
@@ -155,7 +154,7 @@ class RouteServiceProvider extends ServiceProvider
             }
 
             if ($resource) {
-                $customRoutePrefix = !empty($groupPrefix) ? "{$groupPrefix}." : "";
+                $customRoutePrefix = !empty($groupPrefix) ? "{$groupPrefix}." : '';
                 Route::group(['as' => $customRoutePrefix], function () use ($slug, $className, $resource_options) {
                     Route::resource($slug, "{$className}Controller", $resource_options);
                 });

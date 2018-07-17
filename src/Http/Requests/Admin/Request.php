@@ -14,8 +14,8 @@ abstract class Request extends FormRequest
     public function rules()
     {
         switch ($this->method()) {
-            case 'POST':{return $this->rulesForCreate();}
-            case 'PUT':{return $this->rulesForUpdate();}
+            case 'POST':{return $this->rulesForCreate(); }
+            case 'PUT':{return $this->rulesForUpdate(); }
             default:break;
         }
 
@@ -81,5 +81,4 @@ abstract class Request extends FormRequest
 
         return $messages;
     }
-
 }

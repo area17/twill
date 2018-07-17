@@ -25,6 +25,7 @@ class Imgix implements ImageServiceInterface
     public function getUrl($id, array $params = [])
     {
         $defaultParams = config('twill.imgix.default_params');
+
         return $this->urlBuilder->createURL($id, ends_with($id, '.svg') ? [] : array_replace($defaultParams, $params));
     }
 
@@ -41,18 +42,21 @@ class Imgix implements ImageServiceInterface
     public function getLQIPUrl($id, array $params = [])
     {
         $defaultParams = config('twill.imgix.lqip_default_params');
+
         return $this->getUrl($id, array_replace($defaultParams, $params));
     }
 
     public function getSocialUrl($id, array $params = [])
     {
         $defaultParams = config('twill.imgix.social_default_params');
+
         return $this->getUrl($id, array_replace($defaultParams, $params));
     }
 
     public function getCmsUrl($id, array $params = [])
     {
         $defaultParams = config('twill.imgix.cms_default_params');
+
         return $this->getUrl($id, array_replace($defaultParams, $params));
     }
 
@@ -69,19 +73,20 @@ class Imgix implements ImageServiceInterface
             $imageMetadata = json_decode(file_get_contents($url), true);
 
             return [
-                'width' => $imageMetadata['PixelWidth'],
+                'width'  => $imageMetadata['PixelWidth'],
                 'height' => $imageMetadata['PixelHeight'],
             ];
         } catch (\Exception $e) {
             try {
                 list($width, $height) = getimagesize($url);
+
                 return [
-                    'width' => $width,
+                    'width'  => $width,
                     'height' => $height,
                 ];
             } catch (\Exception $e) {
                 return [
-                    'width' => 0,
+                    'width'  => 0,
                     'height' => 0,
                 ];
             }
@@ -91,7 +96,7 @@ class Imgix implements ImageServiceInterface
     protected function getCrop($crop_params)
     {
         if (!empty($crop_params)) {
-            return ['rect' => $crop_params['crop_x'] . ',' . $crop_params['crop_y'] . ',' . $crop_params['crop_w'] . ',' . $crop_params['crop_h']];
+            return ['rect' => $crop_params['crop_x'].','.$crop_params['crop_y'].','.$crop_params['crop_w'].','.$crop_params['crop_h']];
         }
 
         return [];
@@ -114,7 +119,7 @@ class Imgix implements ImageServiceInterface
             $params = ['fp-x' => $fpX, 'fp-y' => $fpY, 'fp-z' => $fpZ];
 
             return array_map(function ($param) {
-                return number_format($param, 4, ".", "");
+                return number_format($param, 4, '.', '');
             }, $params) + ['crop' => 'focalpoint', 'fit' => 'crop'];
         }
 

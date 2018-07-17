@@ -22,13 +22,14 @@ trait HandleDates
                 }
             }
         }
+
         return $fields;
     }
 
     public function prepareDatesField($fields, $f)
     {
         if ($date = Carbon::parse($fields[$f])) {
-            $fields[$f] = $date->format("Y-m-d H:i:s");
+            $fields[$f] = $date->format('Y-m-d H:i:s');
         } else {
             $fields[$f] = null;
         }

@@ -1,4 +1,5 @@
 <?php
+
 if (config('twill.enabled.users-management')) {
     Route::get('login', 'LoginController@showLoginForm')->name('login.form');
     Route::post('login', 'LoginController@login')->name('login');
