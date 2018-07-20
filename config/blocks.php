@@ -14,6 +14,7 @@ return [
     'block_views_path' => 'site.blocks', // path where a view file per block type is stored
     'block_views_mappings' => [], // custom mapping of block types and views
     'block_preview_render_childs' => true, // indicates if childs should be rendered when using repeater in blocks
+    'block_presenter_path' => null, //Allow to set a custom presenter to a block model
     'blocks' => [
         'text' => [
             'title' => 'Body text',

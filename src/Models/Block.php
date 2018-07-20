@@ -29,6 +29,15 @@ class Block extends BaseModel
 
     protected $with = ['medias'];
 
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        if (($presenter = config('twill.block_editor.block_presenter_path')) != null) {
+            $this->presenter = $presenter;
+        }
+    }
+
     public function blockable()
     {
         return $this->morphTo();
