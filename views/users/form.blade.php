@@ -30,6 +30,19 @@
             'label' => 'Profile image'
         ])
     @endif
+    @if(config('twill.enabled.users-description'))
+        @formField('input', [
+            'name' => 'title',
+            'label' => 'Title',
+            'maxlength' => 250
+        ])
+        @formField('input', [
+            'name' => 'description',
+            'rows' => 4,
+            'type' => 'textarea',
+            'label' => 'Description'
+        ])
+    @endif
 @stop
 
 @push('vuexStore')

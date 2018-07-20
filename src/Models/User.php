@@ -25,6 +25,8 @@ class User extends AuthenticatableContract
         'role',
         'published',
         'password',
+        'title',
+        'description',
     ];
 
     protected $dates = [

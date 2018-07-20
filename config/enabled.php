@@ -20,4 +20,5 @@ return [
     'google-login' => false,
     'dashboard' => false,
     'search' => false,
+    'users-description' => false,
 ];
