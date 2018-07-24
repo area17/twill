@@ -60,6 +60,7 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
             'ja' => 'Japanese',
             'ru' => 'Russian',
             'es' => 'Spanish',
+            'pt' => 'Portuguese',
         ];
 
         return $codeToLanguageMappings[$code] ?? $code;
