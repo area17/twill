@@ -53,6 +53,6 @@ if (!function_exists('classHasTrait')) {
 if (!function_exists('getFormFieldsValue')) {
     function getFormFieldsValue($formFields, $name)
     {
-        return array_get($formFields, str_replace(']', '', str_replace('[', '.', $name)));
+        return array_get($formFields, str_replace(']', '', str_replace('[', '.', $name)), '');
     }
 }

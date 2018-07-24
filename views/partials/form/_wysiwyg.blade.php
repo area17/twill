@@ -95,7 +95,7 @@
     @elseif(isset($item->$name) || null !== $formFieldsValue = getFormFieldsValue($form_fields, $name))
         window.STORE.form.fields.push({
             name: '{{ $name }}',
-            value: {!! json_encode($item->$name ?? $formFieldsValue) !!}
+            value: {!! json_encode(isset($item->$name) ? $item->$name : $formFieldsValue) !!}
         })
     @endif
 
