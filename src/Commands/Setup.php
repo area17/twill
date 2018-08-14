@@ -9,13 +9,12 @@ class Setup extends Command
 {
     protected $signature = 'twill:setup';
 
-    protected $description = 'Setup Twill superadmin and publish assets/configs';
+    protected $description = 'Setup Twill superadmin and publish configs';
 
     public function handle()
     {
         $this->publishMigrations();
         $this->call('migrate');
-        $this->publishAssets();
         $this->publishConfig();
         $this->createSuperAdmin();
     }
@@ -48,14 +47,6 @@ class Setup extends Command
     private function createSuperAdmin()
     {
         $this->call('twill:superadmin');
-    }
-
-    private function publishAssets()
-    {
-        $this->call('vendor:publish', [
-            '--provider' => 'A17\Twill\TwillServiceProvider',
-            '--tag' => 'assets',
-        ]);
     }
 
     private function publishConfig()

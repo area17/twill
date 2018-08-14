@@ -46,7 +46,6 @@ class TwillServiceProvider extends ServiceProvider
 
         $this->publishConfigs();
         $this->publishMigrations();
-        $this->publishPublicAssets();
 
         $this->registerCommands();
 
@@ -222,10 +221,6 @@ class TwillServiceProvider extends ServiceProvider
         require_once __DIR__ . '/Helpers/helpers.php';
     }
 
-    private function publishPublicAssets()
-    {
-        $this->publishes([__DIR__ . '/../assets' => public_path('assets')], 'assets');
-    }
 
     private function includeView($view, $expression)
     {
