@@ -51,6 +51,7 @@ class BlocksController extends Controller
             }
 
             $block->childs = $blocksCollection->where('parent_id', $block->id);
+            $block->children = $block->childs;
 
             $view = $this->getBlockView($block->type);
 
