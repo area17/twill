@@ -6,9 +6,6 @@ trait HasPresenter
 {
     protected $presenterInstance;
 
-    protected $presenter;
-    protected $presentAdmin;
-
     public function present($presenter = 'presenter')
     {
         if (!$this->$presenter or !class_exists($this->$presenter)) {

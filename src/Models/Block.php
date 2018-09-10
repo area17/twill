@@ -29,15 +29,6 @@ class Block extends BaseModel
 
     protected $with = ['medias'];
 
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-
-        if (($presenter = config('twill.block_editor.block_presenter_path')) != null) {
-            $this->presenter = $presenter;
-        }
-    }
-
     public function blockable()
     {
         return $this->morphTo();
@@ -68,5 +59,14 @@ class Block extends BaseModel
     public function checkbox($name)
     {
         return isset($this->content[$name]) && ($this->content[$name][0] ?? $this->content[$name] ?? false);
+    }
+
+    public function getPresenterAttribute()
+    {
+        if (($presenter = config('twill.block_editor.block_presenter_path')) != null) {
+            return $presenter;
+        }
+
+        return null;
     }
 }
