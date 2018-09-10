@@ -42,6 +42,7 @@ class DashboardController extends Controller
             ],
             'shortcuts' => $this->getShortcuts($modules),
             'facts' => config('twill.dashboard.analytics.enabled', false) ? $this->getFacts() : null,
+            'drafts' => $this->getDrafts($modules),
         ]);
     }
 
@@ -292,6 +293,25 @@ class DashboardController extends Controller
                 ) : null
             ];
         })->values();
+    }
+
+    private function getDrafts($modules)
+    {
+        return $modules->filter(function ($module) {
+            return ($module['draft'] ?? false);
+        })->map(function ($module) {
+            $repository = $this->getRepository($module['name']);
+
+            $drafts = $repository->draft()->mine()->limit(3)->latest()->get();
+
+            return $drafts->map(function ($draft) use ($module) {
+                return [
+                    'type' => ucfirst($module['label_singular'] ?? str_singular($module['name'])),
+                    'name' => $draft->titleInDashboard ?? $draft->title,
+                    'url' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', $draft->id),
+                ];
+            });
+        })->collapse()->values();
     }
 
     private function getRepository($module)
