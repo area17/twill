@@ -88,7 +88,7 @@ abstract class ModuleRepository
         return $this->model->with($with)->withCount($withCount)->findOrFail($id);
     }
 
-    public function listAll($column = 'name', $orders = [], $exceptId = null)
+    public function listAll($column = 'title', $orders = [], $exceptId = null)
     {
         $query = $this->model->newQuery();
 
