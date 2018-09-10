@@ -156,6 +156,7 @@ class TwillServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/media-library.php', 'twill.media_library');
         $this->mergeConfigFrom(__DIR__ . '/../config/file-library.php', 'twill.file_library');
         $this->mergeConfigFrom(__DIR__ . '/../config/cloudfront.php', 'services');
+        $this->mergeConfigFrom(__DIR__ . '/../config/dashboard.php', 'twill.dashboard');
     }
 
     private function publishMigrations()

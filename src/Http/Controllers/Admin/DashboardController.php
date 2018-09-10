@@ -4,9 +4,6 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use Analytics;
-use App\Models\Translations\WorkTranslation;
-use App\Models\Work;
-use DB;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Analytics\Exceptions\InvalidConfiguration;
 use Spatie\Analytics\Period;
@@ -50,30 +47,35 @@ class DashboardController extends Controller
 
     public function search()
     {
-        // TODO: implement this using dashboard modules config
-        // $results = $items->map(function ($item) {
-        // 
-        //     try {
-        //         $author = $item->revisions()->latest()->first()->user->name ?? 'Admin';
-        //     } catch (\Exception $e) {
-        //         $author = 'Admin';
-        //     }
-        // 
-        //     return [
-        //         'id' => $item->id,
-        //         'href' => moduleRoute('items', 'section', 'edit', $item->id),
-        //         'thumbnail' => $item->cmsImage('cover', 'default', ['w' => 100, 'h' => 100]),
-        //         'published' => $item->published,
-        //         'activity' => 'Last edited',
-        //         'date' => $item->updated_at->toIso8601String(),
-        //         'title' => $item->title,
-        //         'author' => $author,
-        //         'type' => "item",
-        //     ];
-        // })->toArray();
-        // 
-        // return $results;
-        return [];
+        $modules = collect(config('twill.dashboard.modules'));
+
+        return $modules->filter(function ($module) {
+            return ($module['search'] ?? false);
+        })->map(function ($module) {
+            $repository = $this->getRepository($module['name']);
+
+            $found = $repository->cmsSearch(request('search'), $module['search_fields'] ?? ['title'])->take(10);
+
+            return $found->map(function ($item) use ($module) {
+                try {
+                    $author = $item->revisions()->latest()->first()->user->name ?? 'Admin';
+                } catch (\Exception $e) {
+                    $author = 'Admin';
+                }
+
+                return [
+                    'id' => $item->id,
+                    'href' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', $item->id),
+                    'thumbnail' => $item->defaultCmsImage(['w' => 100, 'h' => 100]),
+                    'published' => $item->published,
+                    'activity' => 'Last edited',
+                    'date' => $item->updated_at->toIso8601String(),
+                    'title' => $item->titleInDashboard ?? $item->title,
+                    'author' => $author,
+                    'type' => ucfirst($module['label_singular'] ?? str_singular($module['name'])),
+                ];
+            });
+        })->collapse()->values();
     }
 
     private function getAllActivities()
@@ -161,7 +163,7 @@ class DashboardController extends Controller
                         'trend' => $stats['morePageViews'] ? 'up' : 'down',
                         'data' => $stats['pageViewsData']->reverse()->values()->toArray(),
                         'url' => 'https://analytics.google.com/analytics/web',
-                    ]
+                    ],
                 ],
             ];
         });

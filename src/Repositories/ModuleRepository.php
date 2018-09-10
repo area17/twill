@@ -109,6 +109,17 @@ abstract class ModuleRepository
         return $query->get()->pluck($column, 'id');
     }
 
+    public function cmsSearch($search, $fields = [])
+    {
+        $query = $this->model->latest();
+
+        foreach ($fields as $field) {
+            $query->orWhere($field, $this->getLikeOperator(), "%{$search}%");
+        }
+
+        return $query->get();
+    }
+
     public function firstOrCreate($attributes, $fields)
     {
         return $this->model->where($attributes)->first() ?? $this->create($fields);
