@@ -3,7 +3,7 @@
 @slot('header')
 @component('twill::emails.html.header', ['url' => config('app.url')])
 # {{ config('app.name') }}&nbsp;<span class="envlabel envlabel--{{ app()->environment() }}">{{ app()->environment() }}</span>
-## {{ $title or $actionText }}
+## {{ $title ?? $actionText }}
 @endcomponent
 @endslot
 

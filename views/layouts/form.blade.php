@@ -82,9 +82,9 @@
     window.STORE.form = {
         baseUrl: '{{ $baseUrl ?? '' }}',
         saveUrl: '{{ $saveUrl }}',
-        previewUrl: '{{ $previewUrl or '' }}',
-        restoreUrl: '{{ $restoreUrl or '' }}',
-        blockPreviewUrl: '{{ $blockPreviewUrl or '' }}',
+        previewUrl: '{{ $previewUrl ?? '' }}',
+        restoreUrl: '{{ $restoreUrl ?? '' }}',
+        blockPreviewUrl: '{{ $blockPreviewUrl ?? '' }}',
         availableRepeaters: {!! json_encode(config('twill.block_editor.repeaters')) !!},
         repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!},
         fields: [],

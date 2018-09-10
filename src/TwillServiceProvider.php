@@ -248,7 +248,7 @@ class TwillServiceProvider extends ServiceProvider
         });
 
         $blade->directive('dumpData', function ($data) {
-            return sprintf("<?php (new Illuminate\Support\Debug\Dumper)->dump(%s); exit; ?>",
+            return sprintf("<?php (new Symfony\Component\VarDumper\VarDumper)->dump(%s); exit; ?>",
                 null != $data ? $data : "get_defined_vars()");
         });
 
