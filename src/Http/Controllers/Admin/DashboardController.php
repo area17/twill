@@ -103,7 +103,7 @@ class DashboardController extends Controller
 
         return [
             'id' => $activity->id,
-            'type' => ucfirst($activity->subject_type),
+            'type' => ucfirst($dashboardModule['label_singular'] ?? str_singular($dashboardModule['name'])),
             'date' => $activity->created_at->toIso8601String(),
             'author' => $activity->causer->name ?? 'Unknown',
             'name' => $activity->subject->titleInDashboard ?? $activity->subject->title,
@@ -111,7 +111,7 @@ class DashboardController extends Controller
         ] + (classHasTrait($activity->subject, HasMedias::class) ? [
             'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
         ] : []) + (!$activity->subject->trashed() ? [
-            'edit' => moduleRoute($activity->subject_type, $dashboardModule ? $dashboardModule['routePrefix'] : '', 'edit', $activity->subject_id),
+            'edit' => moduleRoute($dashboardModule['name'], $dashboardModule['routePrefix'] ?? null, 'edit', $activity->subject_id),
         ] : []) + (!is_null($activity->subject->published) ? [
             'published' => $activity->description === 'published' ? true : ($activity->description === 'unpublished' ? false : $activity->subject->published),
         ] : []);
