@@ -9,7 +9,6 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Route;
 use Session;
-use URL;
 
 abstract class ModuleController extends Controller
 {
@@ -164,7 +163,7 @@ abstract class ModuleController extends Controller
         $this->middleware('can:edit', ['only' => ['store', 'edit', 'update']]);
         $this->middleware('can:publish', ['only' => ['publish', 'feature', 'bulkPublish', 'bulkFeature']]);
         $this->middleware('can:reorder', ['only' => ['reorder']]);
-        $this->middleware('can:delete', ['only' => ['destroy', 'bulkDelete', 'restore', 'bulkRestore']]);
+        $this->middleware('can:delete', ['only' => ['destroy', 'bulkDelete', 'restore', 'bulkRestore', 'restoreRevision']]);
     }
 
     public function index($parentModuleId = null)
@@ -255,7 +254,9 @@ abstract class ModuleController extends Controller
             return view()->exists($view);
         });
 
-        return view($view, $this->form($submoduleId ?? $id));
+        $item = $this->repository->getById($submoduleId ?? $id, $this->formWith, $this->formWithCount);
+
+        return view($view, $this->form($item));
     }
 
     public function update($id, $submoduleId = null)
@@ -267,7 +268,12 @@ abstract class ModuleController extends Controller
         $input = $this->request->all();
 
         if (isset($input['cmsSaveType']) && $input['cmsSaveType'] === 'cancel') {
-            return $this->respondWithRedirect(URL::previous());
+            return $this->respondWithRedirect(moduleRoute(
+                $this->moduleName,
+                $this->routePrefix,
+                'edit',
+                ['id' => $id]
+            ));
         } else {
             $formRequest = $this->validateFormRequest();
 
@@ -286,6 +292,15 @@ abstract class ModuleController extends Controller
                         $this->routePrefix,
                         'index',
                         ['openCreate' => true]
+                    ));
+                } elseif ($input['cmsSaveType'] === 'restore') {
+                    session()->flash('status', "Revision restored.");
+
+                    return $this->respondWithRedirect(moduleRoute(
+                        $this->moduleName,
+                        $this->routePrefix,
+                        'edit',
+                        ['id' => $id]
                     ));
                 }
             }
@@ -320,6 +335,34 @@ abstract class ModuleController extends Controller
         return view($previewView, array_replace([
             'item' => $item,
         ], $this->previewData($item)));
+    }
+
+    public function restoreRevision($id)
+    {
+        if (request()->has('revisionId')) {
+            $item = $this->repository->previewForRevision($id, request('revisionId'));
+            $item->id = $id;
+            $item->cmsRestoring = true;
+        } else {
+            abort(404);
+        }
+
+        $this->setBackLink();
+
+        $view = collect([
+            "$this->viewPrefix.form",
+            "twill::$this->moduleName.form",
+            "twill::layouts.form",
+        ])->first(function ($view) {
+            return view()->exists($view);
+        });
+
+        $revision = $item->revisions()->where('id', request('revisionId'))->first();
+        $date = $revision->created_at->toDayDateTimeString();
+
+        session()->flash('restoreMessage', "You are currently editing an older revision of this content (saved by $revision->byUser on $date). Make changes if needed and click restore to save a new revision.");
+
+        return view($view, $this->form($item));
     }
 
     public function publish()
@@ -922,10 +965,8 @@ abstract class ModuleController extends Controller
         return $orders + $defaultOrders;
     }
 
-    protected function form($id)
+    protected function form($item)
     {
-        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
-
         $fullRoutePrefix = 'admin.' . ($this->routePrefix ? $this->routePrefix . '.' : '') . $this->moduleName . '.';
         $previewRouteName = $fullRoutePrefix . 'preview';
         $restoreRouteName = $fullRoutePrefix . 'restoreRevision';

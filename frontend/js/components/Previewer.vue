@@ -109,7 +109,8 @@
         currentRevision: state => state.revision.active,
         activeContent: state => state.revision.activeContent,
         currentContent: state => state.revision.currentContent,
-        revisions: state => state.revision.all
+        revisions: state => state.revision.all,
+        restoreRevisionUrl: state => state.form.restoreUrl
       })
     },
     methods: {
@@ -138,7 +139,7 @@
         if (rootRefs.editor) rootRefs.editor.open()
       },
       restoreRevision: function () {
-        // Do something here
+        window.location.href = this.restoreRevisionUrl + '?revisionId=' + this.currentRevision.id
       },
       resizePreview: function (size) {
         this.activeBreakpoint = parseInt(size)

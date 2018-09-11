@@ -101,7 +101,63 @@
         startDate: '{{ $item->publish_start_date ?? '' }}',
         endDate: '{{ $item->publish_end_date ?? '' }}',
         visibility: '{{ isset($item) && $item->isFillable('public') ? ($item->public ? 'public' : 'private') : false }}',
-        reviewProcess: {!! isset($reviewProcess) ? json_encode($reviewProcess) : '[]' !!}
+        reviewProcess: {!! isset($reviewProcess) ? json_encode($reviewProcess) : '[]' !!},
+        submitOptions: @if($item->cmsRestoring) {
+            draft: [
+                {
+                    name: 'restore',
+                    text: 'Restore as a draft'
+                },
+                {
+                    name: 'restore-close',
+                    text: 'Restore as a draft and close'
+                },
+                {
+                    name: 'restore-new',
+                    text: 'Restore as a draft and create new'
+                },
+                {
+                    name: 'cancel',
+                    text: 'Cancel'
+                }
+            ],
+            live: [
+                {
+                    name: 'restore',
+                    text: 'Restore as published'
+                },
+                {
+                    name: 'restore-close',
+                    text: 'Restore as published and close'
+                },
+                {
+                    name: 'restore-new',
+                    text: 'Restore as published and create new'
+                },
+                {
+                    name: 'cancel',
+                    text: 'Cancel'
+                }
+            ],
+            update: [
+                {
+                    name: 'restore',
+                    text: 'Restore as published'
+                },
+                {
+                    name: 'restore-close',
+                    text: 'Restore as published and close'
+                },
+                {
+                    name: 'restore-new',
+                    text: 'Restore as published and create new'
+                },
+                {
+                    name: 'cancel',
+                    text: 'Cancel'
+                }
+            ]
+        } @else null @endif
     }
 
     window.STORE.revisions = {!! json_encode($revisions ?? []) !!}
