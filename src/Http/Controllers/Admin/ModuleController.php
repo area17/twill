@@ -254,9 +254,7 @@ abstract class ModuleController extends Controller
             return view()->exists($view);
         });
 
-        $item = $this->repository->getById($submoduleId ?? $id, $this->formWith, $this->formWithCount);
-
-        return view($view, $this->form($item));
+        return view($view, $this->form($submoduleId ?? $id));
     }
 
     public function update($id, $submoduleId = null)
@@ -362,7 +360,7 @@ abstract class ModuleController extends Controller
 
         session()->flash('restoreMessage', "You are currently editing an older revision of this content (saved by $revision->byUser on $date). Make changes if needed and click restore to save a new revision.");
 
-        return view($view, $this->form($item));
+        return view($view, $this->form($id, $item));
     }
 
     public function publish()
@@ -965,8 +963,10 @@ abstract class ModuleController extends Controller
         return $orders + $defaultOrders;
     }
 
-    protected function form($item)
+    protected function form($id, $item = null)
     {
+        $item = $item ?? $this->repository->getById($id, $this->formWith, $this->formWithCount);
+
         $fullRoutePrefix = 'admin.' . ($this->routePrefix ? $this->routePrefix . '.' : '') . $this->moduleName . '.';
         $previewRouteName = $fullRoutePrefix . 'preview';
         $restoreRouteName = $fullRoutePrefix . 'restoreRevision';
