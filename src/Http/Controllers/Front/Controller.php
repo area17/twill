@@ -14,7 +14,9 @@ class Controller extends BaseController
 
     public function __construct()
     {
-        app()->singleton(ExceptionHandler::class, TwillHandler::class);
+        if (config('twill.bind_exception_handler', true)) {
+            app()->singleton(ExceptionHandler::class, TwillHandler::class);
+        }
 
         $this->seo = new Seo;
 
