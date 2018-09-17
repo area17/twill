@@ -231,7 +231,7 @@ abstract class ModuleController extends Controller
             return redirect(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
         }
 
-        return $this->redirectToForm($submoduleId ?? $submodule);
+        return $this->redirectToForm($submoduleId ?? $id);
     }
 
     public function edit($id, $submoduleId = null)
