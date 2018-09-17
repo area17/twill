@@ -24,6 +24,7 @@ class RouteServiceProvider extends ServiceProvider
 
     public function map(Router $router)
     {
+        if (file_exists(base_path('routes/admin.php'))) {
             $router->group([
                 'namespace' => config('twill.namespace', 'App') . '\Http\Controllers\Admin',
                 'domain' => config('twill.admin_app_url'),
@@ -35,6 +36,7 @@ class RouteServiceProvider extends ServiceProvider
                     require base_path('routes/admin.php');
                 });
             });
+        }
 
         $router->group([
             'namespace' => $this->namespace . '\Admin',

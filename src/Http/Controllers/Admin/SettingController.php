@@ -4,12 +4,12 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Repositories\SettingRepository;
 use Event;
-use Illuminate\Routing\Controller;
 
 class SettingController extends Controller
 {
     public function __construct(SettingRepository $settings)
     {
+        parent::__construct();
         $this->settings = $settings;
     }
 

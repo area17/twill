@@ -4,9 +4,9 @@ namespace A17\Twill;
 
 use A17\Twill\Commands\CreateSuperAdmin;
 use A17\Twill\Commands\GenerateBlocks;
+use A17\Twill\Commands\Install;
 use A17\Twill\Commands\ModuleMake;
 use A17\Twill\Commands\RefreshLQIP;
-use A17\Twill\Commands\Setup;
 use A17\Twill\Http\ViewComposers\ActiveNavigation;
 use A17\Twill\Http\ViewComposers\CurrentUser;
 use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
@@ -70,11 +70,6 @@ class TwillServiceProvider extends ServiceProvider
         ]);
 
         config(['twill.version' => trim(file_get_contents(__DIR__ . '/../VERSION'))]);
-    }
-
-    public function provides()
-    {
-        return ['Illuminate\Contracts\Debug\ExceptionHandler'];
     }
 
     private function registerProviders()
@@ -156,6 +151,7 @@ class TwillServiceProvider extends ServiceProvider
 
         $this->publishes([__DIR__ . '/../config/twill-publish.php' => config_path('twill.php')], 'config');
         $this->publishes([__DIR__ . '/../config/twill-navigation.php' => config_path('twill-navigation.php')], 'config');
+        $this->publishes([__DIR__ . '/../config/translatable.php' => config_path('translatable.php')], 'config');
     }
 
     private function mergeConfigs()
@@ -219,7 +215,7 @@ class TwillServiceProvider extends ServiceProvider
     private function registerCommands()
     {
         $this->commands([
-            Setup::class,
+            Install::class,
             ModuleMake::class,
             CreateSuperAdmin::class,
             RefreshLQIP::class,
@@ -236,7 +232,6 @@ class TwillServiceProvider extends ServiceProvider
         require_once __DIR__ . '/Helpers/migrations_helpers.php';
         require_once __DIR__ . '/Helpers/helpers.php';
     }
-
 
     private function includeView($view, $expression)
     {
