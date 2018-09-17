@@ -102,7 +102,7 @@
         endDate: '{{ $item->publish_end_date ?? '' }}',
         visibility: '{{ isset($item) && $item->isFillable('public') ? ($item->public ? 'public' : 'private') : false }}',
         reviewProcess: {!! isset($reviewProcess) ? json_encode($reviewProcess) : '[]' !!},
-        submitOptions: @if($item->cmsRestoring) {
+        submitOptions: @if(isset($item) && $item->cmsRestoring) {
             draft: [
                 {
                     name: 'restore',
