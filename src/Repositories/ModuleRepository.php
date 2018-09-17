@@ -113,8 +113,16 @@ abstract class ModuleRepository
     {
         $query = $this->model->latest();
 
+        $translatedAttributes = $this->model->translatedAttributes ?? [];
+
         foreach ($fields as $field) {
-            $query->orWhere($field, $this->getLikeOperator(), "%{$search}%");
+            if (in_array($field, $translatedAttributes)) {
+                $query->orWhereHas('translations', function ($q) use ($field, $search) {
+                    $q->orWhere($field, $this->getLikeOperator(), "%{$search}%");
+                });
+            } else {
+                $query->orWhere($field, $this->getLikeOperator(), "%{$search}%");
+            }
         }
 
         return $query->get();
