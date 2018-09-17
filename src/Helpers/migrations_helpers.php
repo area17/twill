@@ -93,6 +93,6 @@ if (!function_exists('createDefaultRevisionsTableFields')) {
         $table->integer("{$tableNameSingular}_id")->unsigned()->index();
         $table->integer('user_id')->unsigned()->nullable();
         $table->foreign("{$tableNameSingular}_id")->references('id')->on("{$tableNamePlural}")->onDelete('cascade');
-        $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+        $table->foreign('user_id')->references('id')->on(config('twill.users_table', 'twill_users'))->onDelete('set null');
     }
 }

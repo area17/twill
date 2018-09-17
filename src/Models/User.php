@@ -44,8 +44,15 @@ class User extends AuthenticatableContract
                     'ratio' => 1,
                 ],
             ],
-        ]
+        ],
     ];
+
+    public function __construct(array $attributes = [])
+    {
+        $this->table = config('twill.users_table', 'twill_users');
+
+        parent::__construct($attributes);
+    }
 
     public function getTitleInBrowserAttribute()
     {

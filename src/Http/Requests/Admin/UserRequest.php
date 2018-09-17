@@ -16,7 +16,7 @@ class UserRequest extends Request
                 {
                     return [
                         'name' => 'required',
-                        'email' => 'required|email|unique:users,email',
+                        'email' => 'required|email|unique:' . config('twill.users_table', 'twill_users') . ',email',
                         'role' => 'required',
                     ];
                 }

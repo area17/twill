@@ -127,7 +127,22 @@ class TwillServiceProvider extends ServiceProvider
     private function publishConfigs()
     {
         if (config('twill.enabled.users-management')) {
-            config(['auth.providers.users' => require __DIR__ . '/../config/auth.php']);
+            config(['auth.providers.twill_users' => [
+                'driver' => 'eloquent',
+                'model' => User::class,
+            ]]);
+
+            config(['auth.guards.twill_users' => [
+                'driver' => 'session',
+                'provider' => 'twill_users',
+            ]]);
+
+            config(['auth.passwords.twill_users' => [
+                'provider' => 'twill_users',
+                'table' => config('twill.password_resets_table', 'twill_password_resets'),
+                'expire' => 60,
+            ]]);
+
             config(['mail.markdown.paths' => array_merge(
                 [__DIR__ . '/../views/emails'],
                 config('mail.markdown.paths')
@@ -164,7 +179,7 @@ class TwillServiceProvider extends ServiceProvider
         $migrations = ['CreateTagsTables', 'CreateBlocksTable'];
 
         $optionalMigrations = [
-            'CreateUsersTables' => 'users-management',
+            'CreateTwillUsersTables' => 'users-management',
             'CreateFilesTables' => 'file-library',
             'CreateMediasTables' => 'media-library',
             'CreateFeaturesTable' => 'buckets',

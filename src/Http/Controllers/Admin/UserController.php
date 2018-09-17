@@ -74,7 +74,7 @@ class UserController extends ModuleController
     {
         return [
             'defaultFilterSlug' => 'published',
-            'create' => $this->getIndexOption('create') && auth()->user()->can('edit-user-role'),
+            'create' => $this->getIndexOption('create') && auth('twill_users')->user()->can('edit-user-role'),
             'roleList' => collect(UserRole::toArray()),
             'single_primary_nav' => [
                 'users' => [

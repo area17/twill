@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\User;
+use Auth;
 use DB;
 use Hash;
 use Illuminate\Foundation\Auth\ResetsPasswords;
@@ -24,13 +25,23 @@ class ResetPasswordController extends Controller
 
     use ResetsPasswords;
 
+    protected function guard()
+    {
+        return Auth::guard('twill_users');
+    }
+
+    public function broker()
+    {
+        return Password::broker('twill_users');
+    }
+
     public function showResetForm(Request $request, $token = null)
     {
         $user = $this->getUserFromToken($token);
 
         // call exists on the Password repository to check for token expiration (default 1 hour)
         // otherwise redirect to the ask reset link form with error message
-        if ($user && Password::getRepository()->exists($user, $token)) {
+        if ($user && Password::broker('twill_users')->getRepository()->exists($user, $token)) {
             return view('twill::auth.passwords.reset')->with([
                 'token' => $token,
                 'email' => $user->email,
@@ -66,13 +77,13 @@ class ResetPasswordController extends Controller
      */
     private function getUserFromToken($token)
     {
-        $clearToken = DB::table('password_resets')->where('token', $token)->first();
+        $clearToken = DB::table(config('auth.passwords.twill_users.table', 'twill_password_resets'))->where('token', $token)->first();
 
         if ($clearToken) {
             return User::where('email', $clearToken->email)->first();
         }
 
-        foreach (DB::table('password_resets')->get() as $passwordReset) {
+        foreach (DB::table(config('auth.passwords.twill_users.table', 'twill_password_resets'))->get() as $passwordReset) {
             if (Hash::check($token, $passwordReset->token)) {
                 return User::where('email', $passwordReset->email)->first();
             }
@@ -88,7 +99,7 @@ class ResetPasswordController extends Controller
      */
     public function __construct()
     {
-        $this->redirectTo = config('twill.auth_login_redirect_path', '/home');
-        $this->middleware('guest');
+        $this->redirectTo = config('twill.auth_login_redirect_path', '/');
+        $this->middleware('twill_guest');
     }
 }

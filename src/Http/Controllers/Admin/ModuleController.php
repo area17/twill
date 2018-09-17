@@ -843,7 +843,7 @@ abstract class ModuleController extends Controller
                 'editInModal' => 'edit',
             ];
 
-            $authorized = array_key_exists($option, $authorizableOptions) ? auth()->user()->can($authorizableOptions[$option]) : true;
+            $authorized = array_key_exists($option, $authorizableOptions) ? auth('twill_users')->user()->can($authorizableOptions[$option]) : true;
             return ($this->indexOptions[$option] ?? $this->defaultIndexOptions[$option] ?? false) && $authorized;
         });
     }

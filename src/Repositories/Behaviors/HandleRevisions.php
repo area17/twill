@@ -14,7 +14,7 @@ trait HandleRevisions
         if ($fields != $lastRevisionPayload) {
             $object->revisions()->create([
                 'payload' => json_encode($fields),
-                'user_id' => Auth::user()->id ?? null,
+                'user_id' => Auth::guard('twill_users')->user()->id ?? null,
             ]);
         }
 

@@ -88,7 +88,7 @@ class DashboardController extends Controller
 
     private function getLoggedInUserActivities()
     {
-        return Activity::where('causer_id', auth()->user()->id)->take(20)->latest()->get()->map(function ($activity) {
+        return Activity::where('causer_id', auth('twill_users')->user()->id)->take(20)->latest()->get()->map(function ($activity) {
             return $this->formatActivity($activity);
         })->filter()->values();
     }

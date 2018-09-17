@@ -12,7 +12,7 @@ trait HasRevisions
     public function scopeMine($query)
     {
         return $query->whereHas('revisions', function ($query) {
-            $query->where('user_id', auth()->user()->id);
+            $query->where('user_id', auth('twill_users')->user()->id);
         });
     }
 
