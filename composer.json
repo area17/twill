@@ -71,5 +71,12 @@
       "A17\\Twill\\": "src/"
     }
   },
+  "extra": {
+    "laravel": {
+        "providers": [
+            "A17\\Twill\\TwillServiceProvider"
+        ]
+    }
+  },
   "minimum-stability": "stable"
 }
