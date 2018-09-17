@@ -330,9 +330,11 @@ abstract class ModuleController extends Controller
 
         $previewView = $this->previewView ?? ('site.' . str_singular($this->moduleName));
 
-        return view($previewView, array_replace([
+        return view()->exists($previewView) ? view($previewView, array_replace([
             'item' => $item,
-        ], $this->previewData($item)));
+        ], $this->previewData($item))) : view('twill::errors.preview', [
+            'moduleName' => str_singular($this->moduleName),
+        ]);
     }
 
     public function restoreRevision($id)

@@ -46,7 +46,12 @@ class BlocksController extends Controller
                 $childBlocks = $blocksCollection->where('parent_id', $block->id);
                 $renderedChildViews = $childBlocks->map(function ($childBlock) {
                     $view = $this->getBlockView($childBlock->type);
-                    return view($view)->with('block', $childBlock)->render();
+
+                    return view()->exists($view) ? view($view, [
+                        'block' => $childBlock,
+                    ])->render() : view('twill::errors.block', [
+                        'view' => $view,
+                    ])->render();
                 })->implode('');
             }
 
@@ -55,10 +60,19 @@ class BlocksController extends Controller
 
             $view = $this->getBlockView($block->type);
 
-            return view($view)->with('block', $block)->render() . ($renderedChildViews ?? '');
+            return view()->exists($view) ? (view($view, [
+                'block' => $block,
+            ])->render() . ($renderedChildViews ?? '')) : view('twill::errors.block', [
+                'view' => $view,
+            ])->render();
+
         })->implode('');
 
-        $view = view(config('twill.block_editor.block_single_layout'));
+        $view = view()->exists(config('twill.block_editor.block_single_layout'))
+        ? view(config('twill.block_editor.block_single_layout'))
+        : view('twill::errors.block_layout', [
+            'view' => config('twill.block_editor.block_single_layout'),
+        ]);
 
         $view->getFactory()->inject('content', $renderedBlocks);
 
