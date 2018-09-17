@@ -42,6 +42,11 @@ class UserRepository extends ModuleRepository
         return $this->model->where('role', '<>', 'SUPERADMIN')->draft()->count();
     }
 
+    public function getCountForTrash()
+    {
+        return $this->model->where('role', '<>', 'SUPERADMIN')->onlyTrashed()->count();
+    }
+
     public function afterSave($user, $fields)
     {
         $this->sendWelcomeEmail($user);

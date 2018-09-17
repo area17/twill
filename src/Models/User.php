@@ -2,20 +2,21 @@
 
 namespace A17\Twill\Models;
 
-use Session;
-use A17\Twill\Models\Enums\UserRole;
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasPresenter;
-use Illuminate\Foundation\Auth\Access\Authorizable;
+use A17\Twill\Models\Enums\UserRole;
 use A17\Twill\Notifications\Reset as ResetNotification;
 use A17\Twill\Notifications\Welcome as WelcomeNotification;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Foundation\Auth\User as AuthenticatableContract;
+use Illuminate\Notifications\Notifiable;
+use Session;
 
 class User extends AuthenticatableContract
 {
-    use Authenticatable, Authorizable, HasMedias, Notifiable, HasPresenter;
+    use Authenticatable, Authorizable, HasMedias, Notifiable, HasPresenter, SoftDeletes;
 
     public $timestamps = true;
 
@@ -80,6 +81,11 @@ class User extends AuthenticatableContract
     public function scopeDraft($query)
     {
         return $query->wherePublished(false);
+    }
+
+    public function scopeOnlyTrashed($query)
+    {
+        return $query->whereNotNull('deleted_at');
     }
 
     public function setImpersonating($id)

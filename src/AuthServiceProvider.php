@@ -49,7 +49,8 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('edit-user', function ($user, $editedUser) {
             $editedUserObject = User::find($editedUser);
-            return ($user->can('edit') || $user->id == $editedUser) && $editedUserObject->role !== self::SUPERADMIN;
+            return ($user->can('edit') && in_array($user->role_value, [UserRole::ADMIN]) || $user->id == $editedUser)
+                && ($editedUserObject ? $editedUserObject->role !== self::SUPERADMIN : true);
         });
 
         Gate::define('edit-user-role', function ($user) {
