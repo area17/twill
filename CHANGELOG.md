@@ -10,13 +10,14 @@ It's been an exciting first few months for Twill, and along the way, we've been 
 
 - Documentation sources (VuePress project running at [twill.io/docs](https://twill.io/docs))
 - Updated documentation sections:
-	- Local environment requirements and installation/setup
-	- Architecture concepts (modules, blocks, navigation, buckets, media)
-	- Version control and previewing
-	- Dashboard and search setup
-	- Settings setup 
+  - Architecture concepts
+	- Local environment requirements and installation
+  - Configuration
+	- Revisions and previewing
+	- Dashboard
+  - Global search setup
+	- Settings sections 
 	- Imgix source setup
-	- Frontend setup
 - Support for Laravel 5.7  (40210129, f3156836)
 - Default CMS global search implementation (edac38ae, b234170)
 - My drafts module in dashboard (70d89aa1)
