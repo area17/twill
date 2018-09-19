@@ -16,7 +16,7 @@ Built to get out of your way, Twill offers:
 * No limits, extend as you see fit
 
 # Learning Twill
-If you use Laravel, you already know Twill. It embraces Laravel to the fullest extent and encourages you to write beautiful code. To get started, read our [documentation](https://twill.io/docs). If you'd like to hire us for implementation or support, [contact us](mailto:hello@twill.io). We're here to discuss your plans, evaluate your needs, make recommendations, and give you a full walk-thru of Twill. 
+If you use Laravel, you already know Twill. It embraces Laravel to the fullest extent and encourages you to write beautiful code. To get started, read our [documentation](https://twill.io/docs). If you'd like to hire us for implementation or support, [contact us](https://twill.io/contact). We're here to discuss your plans, evaluate your needs, make recommendations, and give you a full walk-thru of Twill. 
 
 # Credits
 Over the last 15 years, nearly every engineer at AREA 17 has contributed to Twill in some capacity. However, Twill in its current form as an open source initiative was created by:
