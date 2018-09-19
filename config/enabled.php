@@ -16,7 +16,7 @@ return [
     'buckets' => true,
     'users-image' => false,
     'site-link' => false,
-    'settings' => false,
+    'settings' => true,
     'google-login' => false,
     'dashboard' => true,
     'search' => true,

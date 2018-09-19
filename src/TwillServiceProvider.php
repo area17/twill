@@ -179,6 +179,7 @@ class TwillServiceProvider extends ServiceProvider
             'CreateFilesTables' => 'file-library',
             'CreateMediasTables' => 'media-library',
             'CreateFeaturesTable' => 'buckets',
+            'CreateSettingsTable' => 'settings',
         ];
 
         if ($this->app->runningInConsole()) {
