@@ -23,7 +23,7 @@
                     @endif
                 @endcan
                 @if (config('twill.enabled.site-link'))
-                    <li class="header__item"><a href="{{ route(config('twill.frontend.home_route_name')) }}" target="_blank">Open live site &#8599;</a></li>
+                    <li class="header__item"><a href="{{ config('app.url') }}" target="_blank">Open live site &#8599;</a></li>
                 @endif
             </ul>
         @endif
