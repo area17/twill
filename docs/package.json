@@ -1,0 +1,14 @@
+{
+    "name": "twill-docs",
+    "scripts": {
+        "dev": "concurrently \"watch 'node generate_readme.js' .sections --wait=2 --interval=0.1\" \"vuepress dev\"",
+        "build": "node generate_readme.js && vuepress build"
+    },
+    "devDependencies": {
+        "concurrently": "^3.6.1",
+        "watch": "^1.0.2"
+    },
+    "dependencies": {
+        "vuepress": "^0.14.3"
+    }
+}

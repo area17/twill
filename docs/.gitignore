@@ -1,0 +1,7 @@
+.vuepress/dist
+.vuepress/docs
+.idea
+node_modules
+
+# generated using npm scripts
+README.md 
