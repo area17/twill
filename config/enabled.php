@@ -21,4 +21,5 @@ return [
     'dashboard' => true,
     'search' => true,
     'users-description' => false,
+    'activitylog' => true,
 ];
