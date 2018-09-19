@@ -329,7 +329,7 @@ abstract class ModuleController extends Controller
             $this->app->setLocale(request('activeLanguage'));
         }
 
-        $previewView = $this->previewView ?? ('site.' . str_singular($this->moduleName));
+        $previewView = $this->previewView ?? (config('twill.frontend.views_path', 'site') . '.' . str_singular($this->moduleName));
 
         return view()->exists($previewView) ? view($previewView, array_replace([
             'item' => $item,
