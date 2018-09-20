@@ -72,10 +72,12 @@ trait HandleRepeaters
     {
         $repeaters = [];
         $repeatersFields = [];
+        $repeatersBrowsers = [];
         $repeatersMedias = [];
         $repeatersFiles = [];
         $relationRepository = $this->getModelRepository($relation, $model);
         $repeatersConfig = config('twill.block_editor.repeaters');
+
 
         foreach ($object->$relation as $relationItem) {
             $repeaters[] = [
@@ -118,7 +120,14 @@ trait HandleRepeaters
                 $repeatersFiles = call_user_func_array('array_merge', $repeatersFiles);
             }
 
+            if (isset($relatedItemFormFields['browsers'])) {
+                foreach ($relatedItemFormFields['browsers'] as $key => $values) {
+                    $repeatersBrowsers["blocks[$relation-$relationItem->id][$key]"] = $values;
+                }
+            }
+
             $itemFields = method_exists($relationItem, 'toRepeaterArray') ? $relationItem->toRepeaterArray() : array_except($relationItem->attributesToArray(), $translatedFields);
+
 
             foreach ($itemFields as $key => $value) {
                 $repeatersFields[] = [
@@ -126,6 +135,7 @@ trait HandleRepeaters
                     'value' => $value,
                 ];
             }
+
         }
 
         $fields['repeaters'][$relation] = $repeaters;
@@ -136,6 +146,9 @@ trait HandleRepeaters
 
         $fields['repeaterFiles'][$relation] = $repeatersFiles;
 
+        $fields['repeaterBrowsers'][$relation] = $repeatersBrowsers;
+
         return $fields;
+
     }
 }
