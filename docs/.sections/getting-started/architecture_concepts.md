@@ -8,9 +8,7 @@ A Twill [CRUD module](#crud-modules-3) is a set of classes and configurations in
 
 A module can be seen as a more feature rich Laravel resource. For non Laravel developer, this is basically a content type (or post type, as often seen in other CMS solutions) with CRUD operations (Create, Read, Update, Delete) as well as custom Twill provided operations like Publish, Feature, Tag, Preview, Restore, Restore revision, Reorder or Bulk edit .
 
-In Twill's UI, a module mainly consists of a listing page and a form page or modal.
-
-Records created under a module can then be associated with another or multiple module's records to create relationships between your content. 
+In Twill's UI, a module mainly consists of a listing page and a form page or modal. Records created under a module can then be associated with another or multiple module's records to create relationships between your content. 
 
 Technically, you will store Twill's module records and their associations in a traditionnal relational database schema following Laravel's migrations and Eloquent model conventions.
 
