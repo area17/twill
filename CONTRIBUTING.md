@@ -11,14 +11,14 @@ If you discover a security vulnerability within Twill, please email us at [secur
 # Versioning scheme
 Twill's versioning scheme maintains the following convention: `paradigm.major.minor`. Minor releases should never contain breaking changes.
 
-When referencing Twill from your application, you should always use a version constraint such as `1.1.*`, since major releases of Twill do include breaking changes.
+When referencing Twill from your application, you should always use a version constraint such as `1.2.*`, since major releases of Twill do include breaking changes.
 
 The `VERSION` file at the root of the project needs to be updated and a Git tag created to properly release a new version.
 
 # Which branch?
-All bug fixes should be sent to the latest stable branch (1.1). Bug fixes should never be sent to the master branch unless they fix features that exist only in the upcoming release.
+All bug fixes should be sent to the latest stable branch (1.2). Bug fixes should never be sent to the master branch unless they fix features that exist only in the upcoming release.
 
-Minor features that are fully backwards compatible with the current Twill release may be sent to the latest stable branch.
+Minor features that are fully backwards compatible with the current Twill release may be sent to the latest stable branch (1.2).
 
 Major new features should always be sent to the master branch, which contains the upcoming Twill release.
 

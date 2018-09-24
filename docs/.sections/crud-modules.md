@@ -910,9 +910,9 @@ This field requires that you provide a `GOOGLE_MAPS_API_KEY` variable in your .e
 
 ### Revisions and previewing
 
-When using the `HasRevisions` trait, Twill's UI give admin users the ability to preview their changes without saving, as well as previewing and comparing older revisions.
+When using the `HasRevisions` trait, Twill's UI give publishers the ability to preview their changes without saving, as well as to preview and compare old revisions.
 
-If you are implementing your site using Laravel routing and Blade templating (ie. traditional server side rendering), you can follow Twill's convention of creating frontend views at `resources/views/site` and naming them according to their corresponding CRUD module name. When admin users try to preview their changes, Twill will render your frontend view within an iframe, passing the previewed record with it's unsaved changes to your view in the `$item` variable.
+If you are implementing your site using Laravel routing and Blade templating (ie. traditional server side rendering), you can follow Twill's convention of creating frontend views at `resources/views/site` and naming them according to their corresponding CRUD module name. When publishers try to preview their changes, Twill will render your frontend view within an iframe, passing the previewed record with it's unsaved changes to your view in the `$item` variable.
 
 If you want to provide Twill with a custom frontend views path, use the `frontend` configuration array of your `config/twill.php` file:
 

@@ -4,26 +4,31 @@ All notable changes to `twill` will be documented in this file.
 
 ## 1.2.0 2018-09-12
 
-It's been an exciting first few months for Twill, and along the way, we've been listening to your [feedback](http://github.com/area17/twill/issues). Today, we're excited to release Twill 1.2 with easier setup, improved documentation, and several improvements. We also happily welcomed our first external contribution from @yanhao-li and a lot of research on extensibility from @IllyaMoskvin!
+It's been an exciting first few months for Twill, and along the way, we've been listening to your [feedback](http://github.com/area17/twill/issues). Today, we're excited to release Twill 1.2 with easier setup, improved documentation, and several improvements. We also happily welcomed our first external contribution from @yanhao-li and a lot of research on extensibility from @IllyaMoskvin! B
+
+[Breaking changes](#changed) have been kept to a minimum and we've provided configuration variables for backward compatibility. 
+
+Reminder: Twill's versioning scheme maintains the following convention: `paradigm.major.minor`, exactly like Laravel. Fun fact: this is called [Romantic Versioning](http://blog.legacyteam.info/2015/12/romver-romantic-versioning/)! When referencing Twill from your application, you should always use a version constraint such as `1.2.*`, since major releases of Twill do include breaking changes.
 
 ### Added
 
+- Support for Laravel 5.7  (40210129, f3156836)
+- Package auto-discovery for Laravel >= 5.5 (1642477)
 - Documentation sources (VuePress project running at [twill.io/docs](https://twill.io/docs))
 - Updated documentation sections:
   - Architecture concepts
-	- Local environment requirements and installation
+  - Local environment requirements and installation
   - Configuration
-	- Revisions and previewing
-	- Dashboard
+  - Revisions and previewing
+  - Dashboard
   - Global search setup
-	- Settings sections 
-	- Imgix source setup
-- Support for Laravel 5.7  (40210129, f3156836)
+  - Settings sections 
+  - Imgix sources setup
 - Default CMS global search implementation (edac38ae, b234170)
 - My drafts module in dashboard (70d89aa1)
-- CMS users optional fields (title, description) (a75cb00b)
-- Package auto-discovery for Laravel >= 5.5 (1642477)
 - Option to enable the activity log when dashboard is disabled (3eb4b2a)
+- Support for browser field in repeaters (f1f68bc)
+- CMS users optional fields (title, description) (a75cb00b)
 
 ### Fixed
 
@@ -35,6 +40,7 @@ It's been an exciting first few months for Twill, and along the way, we've been 
 - CMS users permissions (publishers can't edit other users, admins can create new users) (1dd825c)
 - CMS users profile image cropping parameters (b9e22a6a)
 - Irrelevant error during Twill setup (94589134)
+- Media library console errors on dashboard (e5f959a)
 
 ### Improved
 
@@ -43,13 +49,14 @@ It's been an exciting first few months for Twill, and along the way, we've been 
 - Blocks customization (221a03ed, 145b35b2, a10a3d6f)
 - Dashboard activities labels (15e098dc)
 - Update npm deps (e1a4117c)
+- CRUD module generator output (bd84f41)
 
 ### Changed
 
 - CMS users and their password reset tokens are now stored in `twill_users` and `twill_password_resets` tables by default, with options to provide custom table names in `config/twill.php` for backward compatibility (`twill.users_table` and `twill.password_resets_table`) (c6353e7)
 - Twill's exception handler is bound to all controllers, with an option to opt-out for extensibility (`twill.bind_exception_handler`) (43f27de)
-- Change default column in repository's listAll to title (024be645)
-- Configuration enables dashboard, search and buckets features by default (a02c59c)
+- Change default column in repository's listAll helper function to `title` (from `name`) (024be645)
+- Configuration enables dashboard, search and buckets features by default (a02c59c). You can disable them in the `enabled` configuration array of your `config/twill.php` file.
 
 ## 1.1.0 2018-07-05
 
