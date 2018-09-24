@@ -4,60 +4,6 @@ As mentioned above, Twill's default configuration allows you to get up and runni
 
 Of couse, you can override any of Twill's provided configurations values from the empty `config/twill.php` file that was published in your app when you ran the `twill:install` command.
 
-#### Navigation
-
-The `config/twill-navigation.php` file manages the navigation of your custom admin console. Using Twill's UI, the package provides 3 levels of navigation: global, primary and secondary. This file simply contains a nested array description of your navigation.
-
-Each entry is defined by multiple options.
-The simplest entry has a `title` and a `route` option which is a Laravel route name. A global entry can define a `primary_navigation` array that will contain more entries. A primary entry can define a `secondary_navigation` array that will contain even more entries.
-
-Two other options are provided that are really useful in conjunction with the CRUD modules you'll create in your application: `module` and `can`. `module` is a boolean to indicate if the entry is routing to a module route. By default it will link to the index route of the module you used as your entry key. `can` allows you to display/hide navigation links depending on the current user and permission name you specify.
-
-Example:
-
-```php
-<?php
-
-return [
-    'work' => [
-        'title' => 'Work',
-        'route' => 'admin.work.projects.index',
-        'primary_navigation' => [
-            'projects' => [
-                'title' => 'Projects',
-                'module' => true,
-            ],
-            'clients' => [
-                'title' => 'Clients',
-                'module' => true,
-            ],
-            'industries' => [
-                'title' => 'Industries',
-                'module' => true,
-            ],
-            'studios' => [
-                'title' => 'Studios',
-                'module' => true,
-            ],
-        ],
-    ],
-];
-```
-
-To make it work properly and to get active states automatically in Twill's UI, you should structure your routes in the same way using for example here:
-
-```php
-<?php
-
-Route::group(['prefix' => 'work'], function () {
-    Route::module('projects');
-    Route::module('clients');
-    Route::module('industries');
-    Route::module('studios');
-});
-```
-
-
 #### Global configuration
 
 By default, Twill uses Laravel default application namespace `App`. You  can provide your own using the `namespace` configuration in your `config/twill.php` file:
@@ -397,4 +343,57 @@ Example in a default Laravel 5.7 application's `RouteServiceProvider`:
 Route::middleware('web', 'noDebugBar')
     ->namespace($this->namespace)
     ->group(base_path('routes/web.php'));
+```
+
+### Navigation
+
+The `config/twill-navigation.php` file manages the navigation of your custom admin console. Using Twill's UI, the package provides 3 levels of navigation: global, primary and secondary. This file simply contains a nested array description of your navigation.
+
+Each entry is defined by multiple options.
+The simplest entry has a `title` and a `route` option which is a Laravel route name. A global entry can define a `primary_navigation` array that will contain more entries. A primary entry can define a `secondary_navigation` array that will contain even more entries.
+
+Two other options are provided that are really useful in conjunction with the CRUD modules you'll create in your application: `module` and `can`. `module` is a boolean to indicate if the entry is routing to a module route. By default it will link to the index route of the module you used as your entry key. `can` allows you to display/hide navigation links depending on the current user and permission name you specify.
+
+Example:
+
+```php
+<?php
+
+return [
+    'work' => [
+        'title' => 'Work',
+        'route' => 'admin.work.projects.index',
+        'primary_navigation' => [
+            'projects' => [
+                'title' => 'Projects',
+                'module' => true,
+            ],
+            'clients' => [
+                'title' => 'Clients',
+                'module' => true,
+            ],
+            'industries' => [
+                'title' => 'Industries',
+                'module' => true,
+            ],
+            'studios' => [
+                'title' => 'Studios',
+                'module' => true,
+            ],
+        ],
+    ],
+];
+```
+
+To make it work properly and to get active states automatically in Twill's UI, you should structure your routes in the same way using for example here:
+
+```php
+<?php
+
+Route::group(['prefix' => 'work'], function () {
+    Route::module('projects');
+    Route::module('clients');
+    Route::module('industries');
+    Route::module('studios');
+});
 ```

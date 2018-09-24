@@ -1,7 +1,7 @@
 ### Environment requirements
 Twill is compatible with Laravel `5.3`, `5.4`, `5.5`, `5.6` and `5.7` applications running on PHP 7.
 
-Being a package you add as a dependency to your own application, it shares Laravel's [server requirements](https://laravel.com/docs/5.6/installation#server-requirements), which are satisfied by both [Homestead](https://laravel.com/docs/5.6/homestead) and [Valet](https://laravel.com/docs/5.6/valet) during development, and easily deployed to production using [Forge](https://forge.laravel.com) and [Envoyer](https://envoyer.io) or [Envoy](https://laravel.com/docs/envoy), as well as any other Laravel compatible server configuration and deployment strategy.
+As a dependency to your own application, Twill shares Laravel's [server requirements](https://laravel.com/docs/5.6/installation#server-requirements), which are satisfied by both [Homestead](https://laravel.com/docs/5.6/homestead) and [Valet](https://laravel.com/docs/5.6/valet) during development, and easily deployed to production using [Forge](https://forge.laravel.com) and [Envoyer](https://envoyer.io) or [Envoy](https://laravel.com/docs/envoy), as well as any other Laravel compatible server configuration and deployment strategy.
 
 Twill uses Laravel Mix to build the frontend assets of its UI. To ensures reproducible builds, npm scripts provided by Twill use the [npm `ci`](https://blog.npmjs.org/post/171556855892/introducing-npm-ci-for-faster-more-reliable) command, which is available since npm `5.7`.
 
@@ -72,7 +72,7 @@ Make sure to setup your .env file with your database credentials and to run it w
 :::
 
 Twill's `install` command consists of:
-- creating an `admin.php` routes files in your application's `routes` directory. This is where you will declare your own Twill routes.
+- creating an `admin.php` routes files in your application's `routes` directory. This is where you will declare your own admin console routes.
 - publishing Twill's database migrations to your application's `database/migrations` directory.
 - migrating your database with those new migrations.
 - publishing Twill's configuration files to your application's `config` directory.
@@ -165,7 +165,7 @@ ADMIN_APP_URL=domain.test
 ADMIN_APP_PATH=admin
 ```
 
-When running on 2 different subdomains (which is the default configuration as seen above), you might want to share cookies between both domains so that CMS users can access drafts on the frontend. Use the `SESSION_DOMAIN` variable with your domain, prefixed by a dot, like in the following example:
+When running on 2 different subdomains (which is the default configuration as seen above), you  want to share cookies between both domains so that publishers can access drafts on the frontend. Use the `SESSION_DOMAIN` variable with your domain, prefixed by a dot, like in the following example:
 
 ```bash
 SESSION_DOMAIN=.domain.test
@@ -187,7 +187,7 @@ S3_BUCKET=bucket-name
 IMGIX_SOURCE_HOST=source.imgix.net
 ```
 
-See the [media library's documentation](#media-library-2) for more information.
+See the [media library's configuration documentation](#media-library-2) for more information.
 
 #### A note about the frontend
 

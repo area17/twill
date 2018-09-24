@@ -48,7 +48,7 @@ Follow [Spatie's documentation](https://github.com/spatie/laravel-analytics#how-
 
 ## Global search
 
-By default, Twill's global search input, that is always available in the dashboard and behind the top-right search icon on other Twill's screens, performs a LIKE query on the title attribute only, but you can specify a custom list of attributes to search in for each dashboard enabled module:
+By default, Twill's global search input is always available in the dashboard and behind the top-right search icon on other Twill's screens. By default, the search input performs a LIKE query on the title attribute only. If you like, you can specify a custom list of attributes to search for in each dashboard enabled module:
 
 ```php
 return [
@@ -110,7 +110,7 @@ return $searchResults->map(function ($item) use ($module) {
 ```
 
 ## Featuring content
-Twill's buckets allow you to provide admins with featured content management screens. You can add multiple pages of buckets anywhere you'd like in your CMS navigation and, in each page, multiple buckets with differents rules and accepted modules. In the following example, we will assume that our application has a Guide model and that we want to feature guides on the homepage of our site. Our site's homepage has multiple zones for featured guides: a primary zone, that shows only one featured guide, and a secondary zone, that shows guides in a carousel of maximum 10 items.
+Twill's buckets allow you to provide publishers with featured content management screens. You can add multiple pages of buckets anywhere you'd like in your CMS navigation and, in each page, multiple buckets with differents rules and accepted modules. In the following example, we will assume that our application has a Guide model and that we want to feature guides on the homepage of our site. Our site's homepage has multiple zones for featured guides: a primary zone, that shows only one featured guide, and a secondary zone, that shows guides in a carousel of maximum 10 items.
 
 First, you will need to enable the buckets feature. In `config/twill.php`:
 ```php
@@ -196,7 +196,7 @@ But you might need to split your buckets page between sections of your CMS. For 
 ```
 
 ## Settings sections
-Settings sections are standalone forms that you can add to your Twill's navigation to give admins the ability to manage simple key/value records for you to then use anywhere in your application codebase.
+Settings sections are standalone forms that you can add to your Twill's navigation to give publishers the ability to manage simple key/value records for you to then use anywhere in your application codebase.
 
 Start by enabling the `settings` feature in your `config/twill.php` configuration file `enabled` array. See [Twill's configuration documentation](#enabled-features) for more information.
 
