@@ -67,7 +67,7 @@ class DashboardController extends Controller
                 return [
                     'id' => $item->id,
                     'href' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', $item->id),
-                    'thumbnail' => $item->defaultCmsImage(['w' => 100, 'h' => 100]),
+                    'thumbnail' => method_exists($item, 'defaultCmsImage') ? $item->defaultCmsImage(['w' => 100, 'h' => 100]) : null,
                     'published' => $item->published,
                     'activity' => 'Last edited',
                     'date' => $item->updated_at->toIso8601String(),
