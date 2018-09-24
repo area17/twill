@@ -9,6 +9,17 @@ composer require area17/twill:1.2.*
 
 Twill will automatically register its service provider if you are using Laravel `>=5.5`. 
 
+If you are using Laravel `5.7`, one of Twill's dependencies, [cartalyst/tags](https://github.com/cartalyst/tags), does not support it yet. We have an issue open with them and a [fork](https://github.com/area17/tags) available for you in the meantime. Add the following to your `composer.json` file so that Twill can install our fork until further notice:
+
+```json
+"repositories": [
+  {
+    "type": "vcs",
+    "url": "https://github.com/area17/tags.git"
+  }
+],
+```
+
 If you are using Twill with Laravel `5.3` or `5.4`, add Twill's service provider in your application's `config/app.php` file:
 
 ```php{11}
