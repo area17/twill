@@ -7,6 +7,7 @@ const filters = {
     const p = new RegExp(a.split('').join('|'), 'g')
 
     return value.toString().toLowerCase().trim()
+      .replace(/<\/?[^>]+(>|$)/g, '') // Unwrap HTML tags
       .replace(/\s+/g, '-') // Replace spaces with -
       .replace(p, c =>
         b.charAt(a.indexOf(c))) // Replace special chars
