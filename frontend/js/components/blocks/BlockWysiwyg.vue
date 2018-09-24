@@ -1,5 +1,5 @@
 <template>
-  <div class="block__body block__body--nolabel">
+  <div class="block__body">
     <a17-wysiwyg :name="fieldName('html')" inStore="value"></a17-wysiwyg>
   </div>
 </template>
