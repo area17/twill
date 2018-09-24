@@ -172,7 +172,7 @@
     window.STORE.browser.selected = {}
 
     window.APIKEYS = {
-        'googleMapApi': '{{ config('services.google.maps_api_key') }}'
+        'googleMapApi': '{{ config('twill.google_maps_api_key') }}'
     }
 @stop
 
