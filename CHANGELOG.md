@@ -2,9 +2,9 @@
 
 All notable changes to `twill` will be documented in this file.
 
-## 1.2.0 2018-09-12
+## 1.2.0 2018-09-24
 
-It's been an exciting first few months for Twill, and along the way, we've been listening to your [feedback](http://github.com/area17/twill/issues). Today, we're excited to release Twill 1.2 with easier setup, improved documentation, and several improvements. We also happily welcomed our first external contribution from @yanhao-li and a lot of research on extensibility from @IllyaMoskvin! B
+It's been an exciting first few months for Twill, and along the way, we've been listening to your [feedback](http://github.com/area17/twill/issues). Today, we're excited to release Twill 1.2 with easier setup, improved documentation, and several improvements. We also happily welcomed our first external contribution from @yanhao-li and a lot of research on extensibility from @IllyaMoskvin!
 
 [Breaking changes](#changed) have been kept to a minimum and we've provided configuration variables for backward compatibility. 
 
