@@ -324,6 +324,11 @@
         border-radius: 3px;
         font-family: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,monospace;
       }
+
+      sup {
+        vertical-align: super;
+        font-size: smaller;
+      }
     }
 
     .ql-toolbar.ql-snow {
