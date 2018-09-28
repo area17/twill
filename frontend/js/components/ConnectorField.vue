@@ -1,9 +1,16 @@
 <template>
-<div>
-  <div v-if="open">
-    <slot></slot>
+  <div>
+    <template v-if="!keepAlive">
+      <div v-if="open">
+        <slot></slot>
+      </div>
+    </template>
+    <template v-else>
+      <div v-show="open">
+        <slot></slot>
+      </div>
+    </template>
   </div>
-</div>
 </template>
 
 <script>
@@ -22,6 +29,10 @@
         default: ''
       },
       inModal: {
+        type: Boolean,
+        default: false
+      },
+      keepAlive: {
         type: Boolean,
         default: false
       },

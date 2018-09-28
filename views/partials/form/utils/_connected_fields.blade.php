@@ -1,6 +1,7 @@
 @php
     $isEqual = $isEqual ?? true;
     $inModal = $fieldsInModal ?? false;
+    $keepAlive = $keepAlive ?? false;
 
     // Field values misc updates
     $fieldType = gettype($fieldValues);
@@ -10,6 +11,7 @@
 <a17-connectorfield
     @if ($isEqual) :is-value-equal="true" @else :is-value-equal="false" @endif
     @if ($inModal) :in-modal="true" @endif
+    @if ($keepAlive) :keep-alive="true" @endif
 
     @if ($renderForBlocks) :field-name="fieldName('{{ $fieldName }}')"
     @else field-name="{{ $fieldName }}"
