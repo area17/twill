@@ -25,7 +25,7 @@
     "tinycolor2": "1.4.1",
     "truncate-utf8-bytes": "1.0.2",
     "vue": "^2.5.17",
-    "vue-select": "^2.4.0",
+    "vue-select": "2.5.1",
     "vue-timeago": "^3.4.4",
     "vuedraggable": "2.16.0",
     "vuetrend": "^0.3.2",
