@@ -3,10 +3,12 @@
 namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasMedias;
+use A17\Twill\Models\Behaviors\HasPresenter;
 use A17\Twill\Models\Enums\UserRole;
 use A17\Twill\Notifications\Reset as ResetNotification;
 use A17\Twill\Notifications\Welcome as WelcomeNotification;
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Foundation\Auth\User as AuthenticatableContract;
 use Illuminate\Notifications\Notifiable;
@@ -14,7 +16,7 @@ use Session;
 
 class User extends AuthenticatableContract
 {
-    use Authenticatable, Authorizable, HasMedias, Notifiable;
+    use Authenticatable, Authorizable, HasMedias, Notifiable, HasPresenter, SoftDeletes;
 
     public $timestamps = true;
 
@@ -24,6 +26,8 @@ class User extends AuthenticatableContract
         'role',
         'published',
         'password',
+        'title',
+        'description',
     ];
 
     protected $dates = [
@@ -36,11 +40,20 @@ class User extends AuthenticatableContract
     public $mediasParams = [
         'profile' => [
             'default' => [
-                'name' => 'default',
-                'ratio' => 1,
+                [
+                    'name' => 'default',
+                    'ratio' => 1,
+                ],
             ],
         ],
     ];
+
+    public function __construct(array $attributes = [])
+    {
+        $this->table = config('twill.users_table', 'twill_users');
+
+        parent::__construct($attributes);
+    }
 
     public function getTitleInBrowserAttribute()
     {
@@ -68,6 +81,11 @@ class User extends AuthenticatableContract
     public function scopeDraft($query)
     {
         return $query->wherePublished(false);
+    }
+
+    public function scopeOnlyTrashed($query)
+    {
+        return $query->whereNotNull('deleted_at');
     }
 
     public function setImpersonating($id)

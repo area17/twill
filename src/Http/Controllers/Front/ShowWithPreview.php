@@ -15,7 +15,7 @@ trait ShowWithPreview
         }
 
         if (!isset($this->showViewName)) {
-            $this->showViewName = 'site.' . str_singular($this->moduleName);
+            $this->showViewName = config('twill.frontend.views_path', 'site') . '.' . str_singular($this->moduleName);
         }
 
         if (ends_with(request()->route()->getName(), $this->routeName . '.preview')) {

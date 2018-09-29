@@ -9,9 +9,9 @@ class ImpersonateController extends Controller
 {
     public function impersonate($id, UserRepository $users)
     {
-        if (Auth::user()->can('impersonate')) {
+        if (Auth::guard('twill_users')->user()->can('impersonate')) {
             $user = $users->getById($id);
-            Auth::user()->setImpersonating($user->id);
+            Auth::guard('twill_users')->user()->setImpersonating($user->id);
         }
 
         return back();
@@ -19,7 +19,7 @@ class ImpersonateController extends Controller
 
     public function stopImpersonate()
     {
-        Auth::user()->stopImpersonating();
+        Auth::guard('twill_users')->user()->stopImpersonating();
         return back();
     }
 }

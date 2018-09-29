@@ -88,7 +88,7 @@ abstract class ModuleRepository
         return $this->model->with($with)->withCount($withCount)->findOrFail($id);
     }
 
-    public function listAll($column = 'name', $orders = [], $exceptId = null)
+    public function listAll($column = 'title', $orders = [], $exceptId = null)
     {
         $query = $this->model->newQuery();
 
@@ -107,6 +107,25 @@ abstract class ModuleRepository
         }
 
         return $query->get()->pluck($column, 'id');
+    }
+
+    public function cmsSearch($search, $fields = [])
+    {
+        $query = $this->model->latest();
+
+        $translatedAttributes = $this->model->translatedAttributes ?? [];
+
+        foreach ($fields as $field) {
+            if (in_array($field, $translatedAttributes)) {
+                $query->orWhereHas('translations', function ($q) use ($field, $search) {
+                    $q->orWhere($field, $this->getLikeOperator(), "%{$search}%");
+                });
+            } else {
+                $query->orWhere($field, $this->getLikeOperator(), "%{$search}%");
+            }
+        }
+
+        return $query->get();
     }
 
     public function firstOrCreate($attributes, $fields)

@@ -26,16 +26,12 @@ Self destructing notification showing at the bottom of the page
 
 .notif__inner {
   min-height:60px;
-  line-height:60px;
   text-align:center;
   position:relative;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
 
   @each $name, $point in $breakpoints {
     @include breakpoint('#{$name}') {
-      padding: 0 #{map-get($outer-gutters, $name)};
+      padding: 20px #{map-get($outer-gutters, $name)};
     }
   }
 

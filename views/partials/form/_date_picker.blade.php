@@ -9,7 +9,7 @@
 <a17-datepicker
     label="{{ $label }}"
     @include('twill::partials.form.utils._field_name')
-    place-holder="{{ $placeholder or $label }}"
+    place-holder="{{ $placeholder ?? $label }}"
     @if ($withTime) enable-time @endif
     @if ($allowInput) allow-input @endif
     @if ($allowClear) clear @endif

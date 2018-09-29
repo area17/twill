@@ -31,7 +31,7 @@ class ValidationServiceProvider extends ServiceProvider
             foreach ($value as $block) {
                 $cmsBlock = app(BlockRepository::class)->buildFromCmsArray($block, false);
 
-                $rules = config('cms-toolkit.block_editor.blocks.' . $cmsBlock['type'] . '.rules') ?? [];
+                $rules = config('twill.block_editor.blocks.' . $cmsBlock['type'] . '.rules') ?? [];
 
                 unset($cmsBlock['content']);
 

@@ -9,7 +9,6 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Route;
 use Session;
-use URL;
 
 abstract class ModuleController extends Controller
 {
@@ -110,6 +109,7 @@ abstract class ModuleController extends Controller
 
     public function __construct(Application $app, Request $request)
     {
+        parent::__construct();
         $this->app = $app;
         $this->request = $request;
 
@@ -164,7 +164,7 @@ abstract class ModuleController extends Controller
         $this->middleware('can:edit', ['only' => ['store', 'edit', 'update']]);
         $this->middleware('can:publish', ['only' => ['publish', 'feature', 'bulkPublish', 'bulkFeature']]);
         $this->middleware('can:reorder', ['only' => ['reorder']]);
-        $this->middleware('can:delete', ['only' => ['destroy', 'bulkDelete', 'restore', 'bulkRestore']]);
+        $this->middleware('can:delete', ['only' => ['destroy', 'bulkDelete', 'restore', 'bulkRestore', 'restoreRevision']]);
     }
 
     public function index($parentModuleId = null)
@@ -231,7 +231,7 @@ abstract class ModuleController extends Controller
             return redirect(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
         }
 
-        return $this->redirectToForm($submoduleId ?? $submodule);
+        return $this->redirectToForm($submoduleId ?? $id);
     }
 
     public function edit($id, $submoduleId = null)
@@ -267,7 +267,12 @@ abstract class ModuleController extends Controller
         $input = $this->request->all();
 
         if (isset($input['cmsSaveType']) && $input['cmsSaveType'] === 'cancel') {
-            return $this->respondWithRedirect(URL::previous());
+            return $this->respondWithRedirect(moduleRoute(
+                $this->moduleName,
+                $this->routePrefix,
+                'edit',
+                ['id' => $id]
+            ));
         } else {
             $formRequest = $this->validateFormRequest();
 
@@ -286,6 +291,15 @@ abstract class ModuleController extends Controller
                         $this->routePrefix,
                         'index',
                         ['openCreate' => true]
+                    ));
+                } elseif ($input['cmsSaveType'] === 'restore') {
+                    session()->flash('status', "Revision restored.");
+
+                    return $this->respondWithRedirect(moduleRoute(
+                        $this->moduleName,
+                        $this->routePrefix,
+                        'edit',
+                        ['id' => $id]
                     ));
                 }
             }
@@ -315,11 +329,41 @@ abstract class ModuleController extends Controller
             $this->app->setLocale(request('activeLanguage'));
         }
 
-        $previewView = $this->previewView ?? ('site.' . str_singular($this->moduleName));
+        $previewView = $this->previewView ?? (config('twill.frontend.views_path', 'site') . '.' . str_singular($this->moduleName));
 
-        return view($previewView, array_replace([
+        return view()->exists($previewView) ? view($previewView, array_replace([
             'item' => $item,
-        ], $this->previewData($item)));
+        ], $this->previewData($item))) : view('twill::errors.preview', [
+            'moduleName' => str_singular($this->moduleName),
+        ]);
+    }
+
+    public function restoreRevision($id)
+    {
+        if (request()->has('revisionId')) {
+            $item = $this->repository->previewForRevision($id, request('revisionId'));
+            $item->id = $id;
+            $item->cmsRestoring = true;
+        } else {
+            abort(404);
+        }
+
+        $this->setBackLink();
+
+        $view = collect([
+            "$this->viewPrefix.form",
+            "twill::$this->moduleName.form",
+            "twill::layouts.form",
+        ])->first(function ($view) {
+            return view()->exists($view);
+        });
+
+        $revision = $item->revisions()->where('id', request('revisionId'))->first();
+        $date = $revision->created_at->toDayDateTimeString();
+
+        session()->flash('restoreMessage', "You are currently editing an older revision of this content (saved by $revision->byUser on $date). Make changes if needed and click restore to save a new revision.");
+
+        return view($view, $this->form($id, $item));
     }
 
     public function publish()
@@ -800,7 +844,7 @@ abstract class ModuleController extends Controller
                 'editInModal' => 'edit',
             ];
 
-            $authorized = array_key_exists($option, $authorizableOptions) ? auth()->user()->can($authorizableOptions[$option]) : true;
+            $authorized = array_key_exists($option, $authorizableOptions) ? auth('twill_users')->user()->can($authorizableOptions[$option]) : true;
             return ($this->indexOptions[$option] ?? $this->defaultIndexOptions[$option] ?? false) && $authorized;
         });
     }
@@ -922,9 +966,9 @@ abstract class ModuleController extends Controller
         return $orders + $defaultOrders;
     }
 
-    protected function form($id)
+    protected function form($id, $item = null)
     {
-        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
+        $item = $item ?? $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
         $fullRoutePrefix = 'admin.' . ($this->routePrefix ? $this->routePrefix . '.' : '') . $this->moduleName . '.';
         $previewRouteName = $fullRoutePrefix . 'preview';

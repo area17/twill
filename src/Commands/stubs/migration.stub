@@ -8,20 +8,26 @@ class Create{{tableClassName}}Tables extends Migration
     public function up()
     {
         Schema::create('{{table}}', function (Blueprint $table) {
+            
+            // this will create an id, a "published" column, and soft delete and timestamps columns
             createDefaultTableFields($table);
-            // add some fields
-            // $table->string('title', 200)->nullable();
-            // $table->text('description')->nullable();
-            // use those 2 for publication timeframe
+            
+            // feel free to modify the name of this column, but title is supported by default (you would need to specify the name of the column Twill should consider as your "title" column in your module controller if you change it)
+            $table->string('title', 200)->nullable();
+            
+            // your generated model and form include a description field, to get you started, but feel free to get rid of it if you don't need it
+            $table->text('description')->nullable();
+
+            // add those 2 colums to enable publication timeframe fields (you can use publish_start_date only if you don't need to provide the ability to specify an end date)
             // $table->timestamp('publish_start_date')->nullable();
             // $table->timestamp('publish_end_date')->nullable();
-            // use this one for public/private publication (private doesn't show in listing when using the appropriate scopes)
-            // $table->boolean('public')->default(true);
-            // use this one with the HasPosition trait
+
+
+            // use this column with the HasPosition trait
             // $table->integer('position')->unsigned()->nullable();
         });
 
-        // remove this if you're not going to use any translated field
+        // remove this if you're not going to use any translated field, ie. using the HasTranslation trait. If you do use it, create fields you want translatable in this table instead of the main table above. You do not need to create fields in both tables.
         Schema::create('{{singularTableName}}_translations', function (Blueprint $table) {
             createDefaultTranslationsTableFields($table, '{{singularTableName}}');
             // add some translated fields
@@ -29,12 +35,12 @@ class Create{{tableClassName}}Tables extends Migration
             // $table->text('description')->nullable();
         });
 
-        // remove this if you're not going to use slugs
+        // remove this if you're not going to use slugs, ie. using the HasSlug trait
         Schema::create('{{singularTableName}}_slugs', function (Blueprint $table) {
             createDefaultSlugsTableFields($table, '{{singularTableName}}');
         });
 
-        // remove this if you're not going to use revisions
+        // remove this if you're not going to use revisions, ie. using the HasRevisions trait
         Schema::create('{{singularTableName}}_revisions', function (Blueprint $table) {
             createDefaultRevisionsTableFields($table, '{{singularTableName}}');
         });

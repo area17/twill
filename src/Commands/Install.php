@@ -9,7 +9,7 @@ class Install extends Command
 {
     protected $signature = 'twill:install';
 
-    protected $description = 'Install Twill into a default Laravel application';
+    protected $description = 'Install Twill into your Laravel application';
 
     protected $files;
 
@@ -23,8 +23,10 @@ class Install extends Command
     public function handle()
     {
         $this->addRoutesFile();
-        $this->addServiceProvider();
-        $this->replaceExceptionsHandler();
+        $this->publishMigrations();
+        $this->call('migrate');
+        $this->publishConfig();
+        $this->createSuperAdmin();
         $this->info('All good!');
     }
 
@@ -36,38 +38,36 @@ class Install extends Command
             $this->files->makeDirectory($routesPath, 0755, true);
         }
 
-        $stub = $this->files->get(__DIR__ . '/stubs/admin.stub');
-
-        $this->files->put($routesPath . '/admin.php', $stub);
-
-    }
-
-    private function addServiceProvider()
-    {
-        $fileToReplace = base_path('config/app.php');
-        $lineToReplace = 'A17\Twill\TwillInstallServiceProvider::class,';
-        $newLine = 'A17\Twill\TwillServiceProvider::class,';
-        $this->replaceAndSave($fileToReplace, $lineToReplace, $newLine);
-    }
-
-    private function replaceAndSave($oldFile, $search, $replace, $newFile = null)
-    {
-        $newFile = ($newFile == null) ? $oldFile : $newFile;
-        $file = $this->files->get($oldFile);
-        $replacing = str_replace($search, $replace, $file);
-        $this->files->put($newFile, $replacing);
-    }
-
-    private function replaceExceptionsHandler()
-    {
-        $exceptionsPath = app_path('Exceptions');
-
-        if (!$this->files->exists($exceptionsPath)) {
-            $this->files->makeDirectory($exceptionsPath, 0755, true);
+        if (!$this->files->exists($routesPath . '/admin.php')) {
+            $stub = $this->files->get(__DIR__ . '/stubs/admin.stub');
+            $this->files->put($routesPath . '/admin.php', $stub);
         }
-
-        $stub = $this->files->get(__DIR__ . '/stubs/Handler.stub');
-
-        $this->files->put($exceptionsPath . '/Handler.php', $stub);
     }
+
+    private function publishMigrations()
+    {
+        $this->call('vendor:publish', [
+            '--provider' => 'A17\Twill\TwillServiceProvider',
+            '--tag' => 'migrations',
+        ]);
+
+        $this->call('vendor:publish', [
+            '--provider' => 'Spatie\Activitylog\ActivitylogServiceProvider',
+            '--tag' => 'migrations',
+        ]);
+    }
+
+    private function createSuperAdmin()
+    {
+        $this->call('twill:superadmin');
+    }
+
+    private function publishConfig()
+    {
+        $this->call('vendor:publish', [
+            '--provider' => 'A17\Twill\TwillServiceProvider',
+            '--tag' => 'config',
+        ]);
+    }
+
 }

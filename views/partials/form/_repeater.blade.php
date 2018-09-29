@@ -15,4 +15,8 @@
     @foreach($form_fields['repeaterFiles'][$type] ?? [] as $name => $files)
         window.STORE.medias.selected["{{ $name }}"] = {!! json_encode($files) !!}
     @endforeach
+
+    @foreach($form_fields['repeaterBrowsers'][$type] ?? [] as $name => $fields)
+        window.STORE.browser.selected["{{ $name }}"] = {!! json_encode($fields) !!}
+    @endforeach
 @endpush

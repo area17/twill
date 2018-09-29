@@ -82,9 +82,9 @@
     window.STORE.form = {
         baseUrl: '{{ $baseUrl ?? '' }}',
         saveUrl: '{{ $saveUrl }}',
-        previewUrl: '{{ $previewUrl or '' }}',
-        restoreUrl: '{{ $restoreUrl or '' }}',
-        blockPreviewUrl: '{{ $blockPreviewUrl or '' }}',
+        previewUrl: '{{ $previewUrl ?? '' }}',
+        restoreUrl: '{{ $restoreUrl ?? '' }}',
+        blockPreviewUrl: '{{ $blockPreviewUrl ?? '' }}',
         availableRepeaters: {!! json_encode(config('twill.block_editor.repeaters')) !!},
         repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!},
         fields: [],
@@ -101,7 +101,63 @@
         startDate: '{{ $item->publish_start_date ?? '' }}',
         endDate: '{{ $item->publish_end_date ?? '' }}',
         visibility: '{{ isset($item) && $item->isFillable('public') ? ($item->public ? 'public' : 'private') : false }}',
-        reviewProcess: {!! isset($reviewProcess) ? json_encode($reviewProcess) : '[]' !!}
+        reviewProcess: {!! isset($reviewProcess) ? json_encode($reviewProcess) : '[]' !!},
+        submitOptions: @if(isset($item) && $item->cmsRestoring) {
+            draft: [
+                {
+                    name: 'restore',
+                    text: 'Restore as a draft'
+                },
+                {
+                    name: 'restore-close',
+                    text: 'Restore as a draft and close'
+                },
+                {
+                    name: 'restore-new',
+                    text: 'Restore as a draft and create new'
+                },
+                {
+                    name: 'cancel',
+                    text: 'Cancel'
+                }
+            ],
+            live: [
+                {
+                    name: 'restore',
+                    text: 'Restore as published'
+                },
+                {
+                    name: 'restore-close',
+                    text: 'Restore as published and close'
+                },
+                {
+                    name: 'restore-new',
+                    text: 'Restore as published and create new'
+                },
+                {
+                    name: 'cancel',
+                    text: 'Cancel'
+                }
+            ],
+            update: [
+                {
+                    name: 'restore',
+                    text: 'Restore as published'
+                },
+                {
+                    name: 'restore-close',
+                    text: 'Restore as published and close'
+                },
+                {
+                    name: 'restore-new',
+                    text: 'Restore as published and create new'
+                },
+                {
+                    name: 'cancel',
+                    text: 'Cancel'
+                }
+            ]
+        } @else null @endif
     }
 
     window.STORE.revisions = {!! json_encode($revisions ?? []) !!}
@@ -116,7 +172,7 @@
     window.STORE.browser.selected = {}
 
     window.APIKEYS = {
-        'googleMapApi': '{{ config('services.google.maps_api_key') }}'
+        'googleMapApi': '{{ config('twill.google_maps_api_key') }}'
     }
 @stop
 

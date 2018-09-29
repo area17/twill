@@ -47,9 +47,10 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->role_value, [UserRole::PUBLISHER, UserRole::ADMIN]);
         });
 
-        Gate::define('edit-user', function ($user, $editedUser) {
+        Gate::define('edit-user', function ($user, $editedUser =null) {
             $editedUserObject = User::find($editedUser);
-            return ($user->can('edit') || $user->id == $editedUser) && $editedUserObject->role !== self::SUPERADMIN;
+            return ($user->can('edit') && in_array($user->role_value, [UserRole::ADMIN]) || $user->id == $editedUser)
+                && ($editedUserObject ? $editedUserObject->role !== self::SUPERADMIN : true);
         });
 
         Gate::define('edit-user-role', function ($user) {

@@ -74,7 +74,7 @@ class UserController extends ModuleController
     {
         return [
             'defaultFilterSlug' => 'published',
-            'create' => $this->getIndexOption('create') && auth()->user()->can('edit-user-role'),
+            'create' => $this->getIndexOption('create') && auth('twill_users')->user()->can('edit-user-role'),
             'roleList' => collect(UserRole::toArray()),
             'single_primary_nav' => [
                 'users' => [
@@ -121,6 +121,30 @@ class UserController extends ModuleController
             'number' => $this->repository->getCountByStatusSlug('draft'),
         ]);
 
+        if ($this->getIndexOption('restore')) {
+            array_push($statusFilters, [
+                'name' => 'Trash',
+                'slug' => 'trash',
+                'number' => $this->repository->getCountByStatusSlug('trash'),
+            ]);
+        }
+
         return $statusFilters;
+    }
+
+    protected function getIndexOption($option)
+    {
+        if (in_array($option, ['publish', 'bulkEdit'])) {
+            return auth('twill_users')->user()->can('edit-user-role');
+        }
+
+        return parent::getIndexOption($option);
+    }
+
+    protected function indexItemData($item)
+    {
+        $canEdit = auth('twill_users')->user()->can('edit-user-role') || auth('twill_users')->user()->id === $item->id;
+
+        return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
     }
 }

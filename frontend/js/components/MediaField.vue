@@ -460,7 +460,7 @@
           })
 
           // try to load the media thumbnail
-          this.img.src = this.media.thumbnail
+          this.img.src = this.media.thumbnail + '&no-cache'
         })
       },
       showDefaultThumbnail: function () {

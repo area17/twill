@@ -16,19 +16,22 @@ trait HandleBlocks
         $blocksCollection = collect();
         $blocksFromFields = $this->getBlocks($object, $fields);
         $blockRepository = app(BlockRepository::class);
-
         $blocksFromFields->each(function ($block, $key) use ($blocksCollection, $blockRepository) {
             $newBlock = $blockRepository->createForPreview($block);
             $newBlock->id = $key + 1;
 
-            $blocksCollection->push($newBlock);
+            $childBlocksCollection = collect();
 
-            $block['blocks']->each(function ($childBlock) use ($newBlock, $blocksCollection, $blockRepository) {
+            $block['blocks']->each(function ($childBlock) use ($newBlock, $blocksCollection, $blockRepository, $childBlocksCollection) {
                 $childBlock['parent_id'] = $newBlock->id;
                 $newChildBlock = $blockRepository->createForPreview($childBlock);
                 $blocksCollection->push($newChildBlock);
+                $childBlocksCollection->push($newChildBlock);
             });
 
+            $newBlock->setRelation('children', $childBlocksCollection);
+
+            $blocksCollection->push($newBlock);
         });
 
         $object->setRelation('blocks', $blocksCollection);

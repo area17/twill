@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 
@@ -19,6 +20,11 @@ class LoginController extends Controller
      */
 
     use AuthenticatesUsers;
+
+    protected function guard()
+    {
+        return Auth::guard('twill_users');
+    }
 
     public function showLoginForm()
     {
@@ -43,7 +49,7 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest', ['except' => 'logout']);
-        $this->redirectTo = config('twill.auth_login_redirect_path', '/home');
+        $this->middleware('twill_guest', ['except' => 'logout']);
+        $this->redirectTo = config('twill.auth_login_redirect_path', '/');
     }
 }

@@ -4,9 +4,6 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use Analytics;
-use App\Models\Translations\WorkTranslation;
-use App\Models\Work;
-use DB;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Analytics\Exceptions\InvalidConfiguration;
 use Spatie\Analytics\Period;
@@ -45,35 +42,41 @@ class DashboardController extends Controller
             ],
             'shortcuts' => $this->getShortcuts($modules),
             'facts' => config('twill.dashboard.analytics.enabled', false) ? $this->getFacts() : null,
+            'drafts' => $this->getDrafts($modules),
         ]);
     }
 
     public function search()
     {
-        // TODO: implement this using dashboard modules config
-        // $results = $items->map(function ($item) {
-        // 
-        //     try {
-        //         $author = $item->revisions()->latest()->first()->user->name ?? 'Admin';
-        //     } catch (\Exception $e) {
-        //         $author = 'Admin';
-        //     }
-        // 
-        //     return [
-        //         'id' => $item->id,
-        //         'href' => moduleRoute('items', 'section', 'edit', $item->id),
-        //         'thumbnail' => $item->cmsImage('cover', 'default', ['w' => 100, 'h' => 100]),
-        //         'published' => $item->published,
-        //         'activity' => 'Last edited',
-        //         'date' => $item->updated_at->toIso8601String(),
-        //         'title' => $item->title,
-        //         'author' => $author,
-        //         'type' => "item",
-        //     ];
-        // })->toArray();
-        // 
-        // return $results;
-        return [];
+        $modules = collect(config('twill.dashboard.modules'));
+
+        return $modules->filter(function ($module) {
+            return ($module['search'] ?? false);
+        })->map(function ($module) {
+            $repository = $this->getRepository($module['name']);
+
+            $found = $repository->cmsSearch(request('search'), $module['search_fields'] ?? ['title'])->take(10);
+
+            return $found->map(function ($item) use ($module) {
+                try {
+                    $author = $item->revisions()->latest()->first()->user->name ?? 'Admin';
+                } catch (\Exception $e) {
+                    $author = 'Admin';
+                }
+
+                return [
+                    'id' => $item->id,
+                    'href' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', $item->id),
+                    'thumbnail' => method_exists($item, 'defaultCmsImage') ? $item->defaultCmsImage(['w' => 100, 'h' => 100]) : null,
+                    'published' => $item->published,
+                    'activity' => 'Last edited',
+                    'date' => $item->updated_at->toIso8601String(),
+                    'title' => $item->titleInDashboard ?? $item->title,
+                    'author' => $author,
+                    'type' => ucfirst($module['label_singular'] ?? str_singular($module['name'])),
+                ];
+            });
+        })->collapse()->values();
     }
 
     private function getAllActivities()
@@ -85,7 +88,7 @@ class DashboardController extends Controller
 
     private function getLoggedInUserActivities()
     {
-        return Activity::where('causer_id', auth()->user()->id)->take(20)->latest()->get()->map(function ($activity) {
+        return Activity::where('causer_id', auth('twill_users')->user()->id)->take(20)->latest()->get()->map(function ($activity) {
             return $this->formatActivity($activity);
         })->filter()->values();
     }
@@ -100,7 +103,7 @@ class DashboardController extends Controller
 
         return [
             'id' => $activity->id,
-            'type' => ucfirst($activity->subject_type),
+            'type' => ucfirst($dashboardModule['label_singular'] ?? str_singular($dashboardModule['name'])),
             'date' => $activity->created_at->toIso8601String(),
             'author' => $activity->causer->name ?? 'Unknown',
             'name' => $activity->subject->titleInDashboard ?? $activity->subject->title,
@@ -108,7 +111,7 @@ class DashboardController extends Controller
         ] + (classHasTrait($activity->subject, HasMedias::class) ? [
             'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
         ] : []) + (!$activity->subject->trashed() ? [
-            'edit' => moduleRoute($activity->subject_type, $dashboardModule ? $dashboardModule['routePrefix'] : '', 'edit', $activity->subject_id),
+            'edit' => moduleRoute($dashboardModule['name'], $dashboardModule['routePrefix'] ?? null, 'edit', $activity->subject_id),
         ] : []) + (!is_null($activity->subject->published) ? [
             'published' => $activity->description === 'published' ? true : ($activity->description === 'unpublished' ? false : $activity->subject->published),
         ] : []);
@@ -161,7 +164,7 @@ class DashboardController extends Controller
                         'trend' => $stats['morePageViews'] ? 'up' : 'down',
                         'data' => $stats['pageViewsData']->reverse()->values()->toArray(),
                         'url' => 'https://analytics.google.com/analytics/web',
-                    ]
+                    ],
                 ],
             ];
         });
@@ -290,6 +293,25 @@ class DashboardController extends Controller
                 ) : null
             ];
         })->values();
+    }
+
+    private function getDrafts($modules)
+    {
+        return $modules->filter(function ($module) {
+            return ($module['draft'] ?? false);
+        })->map(function ($module) {
+            $repository = $this->getRepository($module['name']);
+
+            $drafts = $repository->draft()->mine()->limit(3)->latest()->get();
+
+            return $drafts->map(function ($draft) use ($module) {
+                return [
+                    'type' => ucfirst($module['label_singular'] ?? str_singular($module['name'])),
+                    'name' => $draft->titleInDashboard ?? $draft->title,
+                    'url' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', $draft->id),
+                ];
+            });
+        })->collapse()->values();
     }
 
     private function getRepository($module)

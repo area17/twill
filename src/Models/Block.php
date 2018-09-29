@@ -4,11 +4,12 @@ namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasFiles;
 use A17\Twill\Models\Behaviors\HasMedias;
+use A17\Twill\Models\Behaviors\HasPresenter;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class Block extends BaseModel
 {
-    use HasMedias, HasFiles;
+    use HasMedias, HasFiles, HasPresenter;
 
     public $timestamps = false;
 
@@ -33,6 +34,11 @@ class Block extends BaseModel
         return $this->morphTo();
     }
 
+    public function children()
+    {
+        return $this->hasMany('A17\Twill\Models\Block', 'parent_id');
+    }
+
     public function input($name)
     {
         return $this->content[$name] ?? null;
@@ -53,5 +59,14 @@ class Block extends BaseModel
     public function checkbox($name)
     {
         return isset($this->content[$name]) && ($this->content[$name][0] ?? $this->content[$name] ?? false);
+    }
+
+    public function getPresenterAttribute()
+    {
+        if (($presenter = config('twill.block_editor.block_presenter_path')) != null) {
+            return $presenter;
+        }
+
+        return null;
     }
 }

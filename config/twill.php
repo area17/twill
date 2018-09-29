@@ -25,13 +25,32 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Twill Auth configuration
+    | Twill middleware group configuration
     |--------------------------------------------------------------------------
     |
     | Right now this only allows you to redefine the default login redirect path.
     |
      */
+    'admin_middleware_group' => 'web',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Twill users tables configuration
+    |--------------------------------------------------------------------------
+    |
+     */
+    'users_table' => 'twill_users',
+    'password_resets_table' => 'twill_password_resets',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Twill Auth related configuration
+    |--------------------------------------------------------------------------
+    |
+     */
     'auth_login_redirect_path' => '/',
 
     'templates_on_frontend_domain' => false,
+
+    'google_maps_api_key' => env('GOOGLE_MAPS_API_KEY'),
 ];

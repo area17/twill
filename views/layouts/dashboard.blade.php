@@ -20,17 +20,23 @@
         <a17-shortcut-creator :entities="{{ json_encode($shortcuts ?? []) }}"></a17-shortcut-creator>
 
         <div class="container">
-            @if($facts ?? false)
+            @if(($facts ?? false) || (!$drafts->isEmpty()))
                 <div class="wrapper wrapper--reverse">
                     <aside class="col col--aside">
-                        <a17-stat-feed :facts="{{ json_encode($facts ?? []) }}">
-                            Statistics
-                        </a17-stat-feed>
+                        @if($facts ?? false)
+                            <a17-stat-feed :facts="{{ json_encode($facts ?? []) }}">
+                                Statistics
+                            </a17-stat-feed>
+                        @endif
+
+                        @if(!$drafts->isEmpty())
+                            <a17-feed :entities="{{ json_encode($drafts ?? []) }}">My drafts</a17-feed>
+                        @endif
                     </aside>
                     <div class="col col--primary">
             @endif
                 <a17-activity-feed empty-message="{{ __($emptyMessage)  }}"></a17-activity-feed>
-            @if($facts ?? false)
+            @if(($facts ?? false) || (!$drafts->isEmpty()))
                 </div>
             </div>
             @endif

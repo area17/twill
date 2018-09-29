@@ -49,7 +49,7 @@
           maxConnections: 5,
           button: buttonEl,
           retry: {
-            enableAuto: true
+            enableAuto: false
           },
           callbacks: {
             onSubmit: this._onSubmitCallback.bind(this),

@@ -8,7 +8,7 @@ class CurrentUser
 {
     public function compose(View $view)
     {
-        $currentUser = auth()->user();
+        $currentUser = auth('twill_users')->user();
 
         $view->with(compact('currentUser'));
     }

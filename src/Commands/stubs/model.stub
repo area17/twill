@@ -10,7 +10,9 @@ class {{modelClassName}} extends Model {{modelImplements}}
     {{modelTraits}}
 
     protected $fillable = [
-        // 'published',
+        'published',
+        'title',
+        'description',
         // 'position',
         // 'public',
         // 'featured',
@@ -18,19 +20,24 @@ class {{modelClassName}} extends Model {{modelImplements}}
         // 'publish_end_date',
     ];
 
+    // uncomment and modify this as needed if you use the HasTranslation trait
     // public $translatedAttributes = [
     //     'title',
     //     'description',
     //     'active',
     // ];
-
+    
+    // uncomment and modify this as needed if you use the HasSlug trait
     // public $slugAttributes = [
     //     'title',
     // ];
 
-    // public $checkboxes = ['published', 'active'];
+    // add checkbox fields names here (published toggle is itself a checkbox)
+    public $checkboxes = [
+        'published'
+    ];
 
-    // fill this in if you use the HasMedias traits
+    // uncomment and modify this as needed if you use the HasMedias trait
     // public $mediasParams = [
     //     'cover' => [
     //         'default' => [

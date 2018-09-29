@@ -23,4 +23,17 @@ trait HasPresenter
     {
         return $this->present('presenterAdmin');
     }
+
+    public function setPresenter($presenter, $presenterProperty = 'presenter')
+    {
+        if (!$this->$presenterProperty) {
+            $this->$presenterProperty = $presenter;
+        }
+        return $this;
+    }
+
+    public function setPresenterAdmin($presenter)
+    {
+        return $this->setPresenter($presenter, 'presenterAdmin');
+    }
 }

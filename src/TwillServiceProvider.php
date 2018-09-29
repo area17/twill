@@ -4,9 +4,9 @@ namespace A17\Twill;
 
 use A17\Twill\Commands\CreateSuperAdmin;
 use A17\Twill\Commands\GenerateBlocks;
+use A17\Twill\Commands\Install;
 use A17\Twill\Commands\ModuleMake;
 use A17\Twill\Commands\RefreshLQIP;
-use A17\Twill\Commands\Setup;
 use A17\Twill\Http\ViewComposers\ActiveNavigation;
 use A17\Twill\Http\ViewComposers\CurrentUser;
 use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
@@ -72,11 +72,6 @@ class TwillServiceProvider extends ServiceProvider
         config(['twill.version' => trim(file_get_contents(__DIR__ . '/../VERSION'))]);
     }
 
-    public function provides()
-    {
-        return ['Illuminate\Contracts\Debug\ExceptionHandler'];
-    }
-
     private function registerProviders()
     {
         foreach ($this->providers as $provider) {
@@ -127,20 +122,36 @@ class TwillServiceProvider extends ServiceProvider
     private function publishConfigs()
     {
         if (config('twill.enabled.users-management')) {
-            config(['auth.providers.users' => require __DIR__ . '/../config/auth.php']);
+            config(['auth.providers.twill_users' => [
+                'driver' => 'eloquent',
+                'model' => User::class,
+            ]]);
+
+            config(['auth.guards.twill_users' => [
+                'driver' => 'session',
+                'provider' => 'twill_users',
+            ]]);
+
+            config(['auth.passwords.twill_users' => [
+                'provider' => 'twill_users',
+                'table' => config('twill.password_resets_table', 'twill_password_resets'),
+                'expire' => 60,
+            ]]);
+
             config(['mail.markdown.paths' => array_merge(
                 [__DIR__ . '/../views/emails'],
                 config('mail.markdown.paths')
             )]);
         }
 
-        config(['activitylog.enabled' => config('twill.enabled.dashboard')]);
+        config(['activitylog.enabled' => config('twill.enabled.dashboard') ? true : config('twill.enabled.activitylog')]);
         config(['activitylog.subject_returns_soft_deleted_models' => true]);
 
         config(['analytics.service_account_credentials_json' => config('twill.dashboard.analytics.service_account_credentials_json', storage_path('app/analytics/service-account-credentials.json'))]);
 
         $this->publishes([__DIR__ . '/../config/twill-publish.php' => config_path('twill.php')], 'config');
         $this->publishes([__DIR__ . '/../config/twill-navigation.php' => config_path('twill-navigation.php')], 'config');
+        $this->publishes([__DIR__ . '/../config/translatable.php' => config_path('translatable.php')], 'config');
     }
 
     private function mergeConfigs()
@@ -156,6 +167,7 @@ class TwillServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/media-library.php', 'twill.media_library');
         $this->mergeConfigFrom(__DIR__ . '/../config/file-library.php', 'twill.file_library');
         $this->mergeConfigFrom(__DIR__ . '/../config/cloudfront.php', 'services');
+        $this->mergeConfigFrom(__DIR__ . '/../config/dashboard.php', 'twill.dashboard');
     }
 
     private function publishMigrations()
@@ -163,10 +175,11 @@ class TwillServiceProvider extends ServiceProvider
         $migrations = ['CreateTagsTables', 'CreateBlocksTable'];
 
         $optionalMigrations = [
-            'CreateUsersTables' => 'users-management',
+            'CreateTwillUsersTables' => 'users-management',
             'CreateFilesTables' => 'file-library',
             'CreateMediasTables' => 'media-library',
             'CreateFeaturesTable' => 'buckets',
+            'CreateSettingsTable' => 'settings',
         ];
 
         if ($this->app->runningInConsole()) {
@@ -203,7 +216,7 @@ class TwillServiceProvider extends ServiceProvider
     private function registerCommands()
     {
         $this->commands([
-            Setup::class,
+            Install::class,
             ModuleMake::class,
             CreateSuperAdmin::class,
             RefreshLQIP::class,
@@ -220,7 +233,6 @@ class TwillServiceProvider extends ServiceProvider
         require_once __DIR__ . '/Helpers/migrations_helpers.php';
         require_once __DIR__ . '/Helpers/helpers.php';
     }
-
 
     private function includeView($view, $expression)
     {
@@ -248,7 +260,7 @@ class TwillServiceProvider extends ServiceProvider
         });
 
         $blade->directive('dumpData', function ($data) {
-            return sprintf("<?php (new Illuminate\Support\Debug\Dumper)->dump(%s); exit; ?>",
+            return sprintf("<?php (new Symfony\Component\VarDumper\VarDumper)->dump(%s); exit; ?>",
                 null != $data ? $data : "get_defined_vars()");
         });
 
