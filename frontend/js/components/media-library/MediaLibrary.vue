@@ -211,7 +211,8 @@
         // select it
         this.updateSelectedMedias(media.id)
       },
-      updateSelectedMedias: function (id, shift = false) {
+      updateSelectedMedias: function (item, shift = false) {
+        const id = item.id
         const alreadySelectedMedia = this.selectedMedias.filter(function (media) {
           return media.id === id
         })

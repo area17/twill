@@ -13,6 +13,10 @@
       </a>
       <input type="hidden" :name="name" :value="currentItem.id"/>
     </td>
+    <td class="browserItem__cell browserItem__cell--type" v-if="currentItem.hasOwnProperty('edit')">
+    <!--todo: replace edit by type-->
+      <span>{{ currentItem.edit }}</span>
+    </td>
     <td class="browserItem__cell browserItem__cell--icon">
       <a17-button class="bucket__action" icon="close" @click="deleteItem()"><span v-svg symbol="close_icon"></span></a17-button>
     </td>
@@ -124,6 +128,16 @@
       min-height: 50px;
       background: $color__border--light;
       height: auto;
+    }
+  }
+
+  .browserItem__cell--type {
+    width: 150px;
+    span {
+      display: inline-block;
+      width: 150px;
+      white-space: nowrap;
+      overflow: hidden;
     }
   }
 

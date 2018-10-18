@@ -74,7 +74,7 @@
       }
     },
     methods: {
-      open: function (onShow) {
+      open: function (focusable = true) {
         if (this.active && !this.hidden) {
           return
         }
@@ -88,16 +88,18 @@
 
         // auto focus first field
         this.$nextTick(function () {
-          const focusableSelector = 'textarea, input:not([type="hidden"]), select, button[type="submit"]'
-          const focusableNodes = this.$el.querySelectorAll(focusableSelector)
-          const allFocusableNodes = this.$el.querySelectorAll(focusableSelector + ', a, button[type="button"]')
+          if (focusable) {
+            const focusableSelector = 'textarea, input:not([type="hidden"]), select, button[type="submit"]'
+            const focusableNodes = this.$el.querySelectorAll(focusableSelector)
+            const allFocusableNodes = this.$el.querySelectorAll(focusableSelector + ', a, button[type="button"]')
 
-          // Trap focus inside the modal
-          this.firstFocusableEl = this.$el.querySelector('.modal__close')
-          this.lastFocusableEl = allFocusableNodes[allFocusableNodes.length - 1]
+            // Trap focus inside the modal
+            this.firstFocusableEl = this.$el.querySelector('.modal__close')
+            this.lastFocusableEl = allFocusableNodes[allFocusableNodes.length - 1]
 
-          // init focus
-          if (focusableNodes.length) focusableNodes[0].focus()
+            // init focus
+            if (focusableNodes.length) focusableNodes[0].focus()
+          }
           this.$emit('open')
         })
       },

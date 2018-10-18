@@ -2,12 +2,14 @@
   <div class="browserField">
     <table class="browserField__table" v-if="items.length">
       <draggable :element="'tbody'" v-model="items">
-        <a17-browseritem v-for="(item, index) in items" :key="item.id" class="item__content" :name="`${name}_${item.id}`" :draggable="draggable" :item="item" @delete="deleteItem(index)" :max="max"></a17-browseritem>
+        <a17-browseritem v-for="(item, index) in items" :key="item.edit + '_' + item.id" class="item__content"
+                         :name="`${name}_${item.id}`" :draggable="draggable" :item="item" @delete="deleteItem(index)"
+                         :max="max"/>
       </draggable>
     </table>
     <div class="browserField__trigger" v-if="remainingItems">
       <a17-button type="button" variant="ghost" @click="openBrowser">{{ addLabel }}</a17-button>
-      <input type="hidden" :name="name" :value="itemsIds" />
+      <input type="hidden" :name="name" :value="itemsIds"/>
       <span class="browserField__note f--small"><slot></slot></span>
     </div>
   </div>
@@ -44,6 +46,10 @@
       endpoint: {
         type: String,
         default: ''
+      },
+      endpoints: {
+        type: Array,
+        default: () => []
       },
       draggable: {
         type: Boolean,
@@ -103,7 +109,7 @@
       ])
     },
     methods: {
-      deleteAll: function (index) {
+      deleteAll: function () {
         this.$store.commit(BROWSER.DESTROY_ITEMS, {
           name: this.name
         })
@@ -116,13 +122,22 @@
       },
       openBrowser: function () {
         this.$store.commit(BROWSER.UPDATE_BROWSER_CONNECTOR, this.name)
-        this.$store.commit(BROWSER.UPDATE_BROWSER_ENDPOINT, this.endpoint)
-        this.$store.commit(BROWSER.UPDATE_BROWSER_MAX, this.remainingItems)
-        this.$store.commit(BROWSER.UPDATE_BROWSER_TITLE, this.browserTitle)
-        if (this.wide) {
-          this.$root.$refs.browserWide.open()
+        if (this.endpoints.length > 0) {
+          this.$store.commit(BROWSER.UPDATE_BROWSER_ENDPOINTS, this.endpoints)
         } else {
-          this.$root.$refs.browser.open()
+          this.$store.commit(BROWSER.DESTROY_BROWSER_ENDPOINTS)
+          this.$store.commit(BROWSER.UPDATE_BROWSER_ENDPOINT, {
+            value: this.endpoint,
+            label: this.name
+          })
+        }
+        this.$store.commit(BROWSER.UPDATE_BROWSER_MAX, this.max)
+        this.$store.commit(BROWSER.UPDATE_BROWSER_TITLE, this.browserTitle)
+
+        if (this.wide) {
+          this.$root.$refs.browserWide.open(this.endpoints.length <= 0)
+        } else {
+          this.$root.$refs.browser.open(this.endpoints.length <= 0)
         }
       }
     },
@@ -141,16 +156,16 @@
     border-radius: 2px;
     border: 1px solid $color__border;
     overflow-x: hidden;
-    background:$color__background;
+    background: $color__background;
   }
 
   .browserField__trigger {
-    padding:10px;
-    position:relative;
+    padding: 10px;
+    position: relative;
     border-top: 1px solid $color__border--light;
 
     &:first-child {
-      border-top:0 none
+      border-top: 0 none
     }
   }
 
@@ -160,7 +175,7 @@
     position: absolute;
     bottom: 18px;
     right: 15px;
-    display:none;
+    display: none;
 
     @include breakpoint('small+') {
       display: inline-block;

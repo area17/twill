@@ -8,9 +8,15 @@
             <span class="itemlist__progressError" v-else>Upload Error</span>
           </td>
         </tr>
-        <tr class="itemlist__row" v-for="item in items" :key="item.id" :class="{ 's--picked': isSelected(item.id) }" @click.exact.prevent="toggleSelection(item.id)" @click.shift.exact.prevent="shiftToggleSelection(item.id)">
+        <!--TODO: replace edit key by type key-->
+        <tr class="itemlist__row"
+            v-for="item in items"
+            :key="`${item.edit}_${item.id}`"
+            :class="{ 's--picked': isSelected(item, keysToCheck)}"
+            @click.exact.prevent="toggleSelection(item)"
+            @click.shift.exact.prevent="shiftToggleSelection(item)">
           <td class="itemlist__cell itemlist__cell--btn" v-if="item.hasOwnProperty('id')">
-            <a17-checkbox name="item_list" :value="item.id" :initialValue="checkedItems" theme="bold"/>
+            <a17-checkbox name="item_list" :value="item.edit + '_' + item.id" :initialValue="checkedItems" theme="bold"/>
           </td>
           <td class="itemlist__cell itemlist__cell--thumb" v-if="item.hasOwnProperty('thumbnail')">
             <img :src="item.thumbnail" />
@@ -35,6 +41,12 @@
 
   export default {
     name: 'A17Itemlist',
+    props: {
+      keysToCheck: {
+        type: Array,
+        default: () => ['id']
+      }
+    },
     mixins: [mediaItemsMixin],
     filters: a17VueFilters,
     computed: {
@@ -68,7 +80,8 @@
 
         if (this.selectedItems.length) {
           this.selectedItems.forEach(function (item) {
-            checkItemsIds.push(item.id)
+            // tbd: maybe replace edit key with type key
+            checkItemsIds.push(item.edit + '_' + item.id)
           })
         }
 
@@ -163,6 +176,10 @@
   .itemlist__cell--btn {
     width:1px;
     // width:15px + 20px + 10px;
+  }
+
+  .itemlist__cell--type {
+    width: 150px;
   }
 
   // .itemlist__cell--name {
