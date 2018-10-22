@@ -16,7 +16,7 @@ return [
 ];
 ```
 
-You can also change the default variables that controls where Twill's admin console is available:
+You can also change the default variables that control where Twill's admin console is available:
 
 ```php
 <?php
@@ -75,7 +75,7 @@ return [
 
 #### Enabled features
 
-You can opt-in or opt-out from certain Twill's features using the `enabled` array in your `config/twill.php` file. Values presented in the following code snippet are Twill's defaults:
+You can opt-in or opt-out from certain Twill features using the `enabled` array in your `config/twill.php` file. Values presented in the following code snippet are Twill's defaults:
 
 ```php
 <?php
@@ -163,7 +163,7 @@ When using the `s3` endpoint type, uploads are not limited in size.
 
 **Cascading uploads deletions**
 
-By default, Twill will not delete images when deleting from Twill's media library's UI, wether it is on S3 or locally.
+By default, Twill will not delete images when deleting from Twill's media library UI, wether it is on S3 or locally.
 
 You can decide to physically delete uploaded images using the `cascade_delete` option, which is also controlled through the `MEDIA_LIBRARY_CASCADE_DELETE` boolean environment variable:
 
@@ -177,14 +177,14 @@ The `allowed_extensions` configuration option is an array of file extensions tha
 
 **Images url rendering**
 
-To render uploaded images urls, Twill prefered service is [Imgix](https://imgix.com). You can change it using the `MEDIA_LIBRARY_IMAGE_SERVICE` environment variable or the `media_library.image_service` configuration option. 
+To render uploaded image urls, Twill's prefered service is [Imgix](https://imgix.com). You can change it using the `MEDIA_LIBRARY_IMAGE_SERVICE` environment variable or the `media_library.image_service` configuration option. 
 
 A simple local service is available (`A17\Twill\Services\MediaLibrary\Local`) but it will not make use of any cropping or resizing parameters when rendering urls. As noted in the [media library's documentation](#media-library-3), you can implement other third party services (eg. Cloudinary) or open source libraries (eg. Croppa) for that purpose if you do not want or cannot use Imgix for your project.
 
 
 #### Imgix
 
-As noted above, by default, Twill uses and recommends using [Imgix](https://imgix.com) to transforms, optimizes, and intelligently caches your uploaded images. 
+As noted above, by default, Twill uses and recommends using [Imgix](https://imgix.com) to transform, optimize, and intelligently cache your uploaded images. 
 
 Specify your Imgix source url using the `IMGIX_SOURCE_HOST` environment variable or `source_host` configuration option.
 
@@ -194,7 +194,7 @@ IMGIX_SOURCE_HOST=source.imgix.net
 
 By default, Twill will render Imgix urls with the `https` scheme. We do not see any reason why you would do so nowadays, but you can decide to opt-out using the `IMGIX_USE_HTTPS` environment variable or `use_https` configuration option.
 
-Imgix offers the ability to use signed urls to prevent users from accessing images without parameters or different parameters than the one you choose to use in your own application. You can enable that feature in Twill using the `IMGIX_USE_SIGNED_URLS` environment variable or `use_signed_urls` configuration option. If you enable signed urls, Imgix provides you with a signature key. Provide it to Twill using the `IMGIX_SIGN_KEY` environment variable. 
+Imgix offers the ability to use signed urls to prevent users from accessing images without parameters or different parameters than the ones you choose to use in your own application. You can enable that feature in Twill using the `IMGIX_USE_SIGNED_URLS` environment variable or `use_signed_urls` configuration option. If you enable signed urls, Imgix provides you with a signature key. Provide it to Twill using the `IMGIX_SIGN_KEY` environment variable. 
 
 ```bash
 IMGIX_USE_SIGNED_URLS=true
@@ -209,9 +209,9 @@ That's exactly why in the case of the Imgix signature key, we do not say that yo
 Always use environment variables for credentials.
 :::
 
-Finally, Twill's default Imgix configuration includes 4 different image transformation parameters sets that are used by helpers you will find in the [media library's documentation](#media-library-3):
+Finally, Twill's default Imgix configuration includes 4 different image transformation parameter sets that are used by helpers you will find in the [media library's documentation](#media-library-3):
 
-- `default_params`: used by all image url functions in `A17\Twill\Services\MediaLibrary\Imgix` but overrided by the following parameters sets
+- `default_params`: used by all image url functions in `A17\Twill\Services\MediaLibrary\Imgix` but overrided by the following parameter sets
 - `lqip_default_params`: used by the Low Quality Image Placeholder url function
 - `social_default_params`: used by the social image url function (for Facebook, Twitter, ... shares)
 - `cms_default_params`: used by the CMS image url function. This only affects rendering of images in Twill's admin console (eg. in the media library and image fields).
@@ -256,7 +256,7 @@ return [
 
 #### File library
 
-The `file_library` configuration array in `config/twill.php` allows you to provide Twill with your configuration for the file library disk, endpoint type and others options depending on your endpoint type. Most options can be controlled through environment variables, as you can see in the default configuration provided:
+The `file_library` configuration array in `config/twill.php` allows you to provide Twill with your configuration for the file library disk, endpoint type and other options depending on your endpoint type. Most options can be controlled through environment variables, as you can see in the default configuration provided:
 
 ```php
 <?php
@@ -322,7 +322,7 @@ See the [file library's documentation](#file-library-2) for more information.
 
 **Allowed extensions**
 
-The `allowed_extensions` configuration option is an array of file extensions that Twill's file library's uploader will accept. By default, it is empty, all extensions are allowed.
+The `allowed_extensions` configuration option is an array of file extensions that Twill's file library uploader will accept. By default, it is empty, all extensions are allowed.
 
 #### Debug
 
@@ -385,7 +385,7 @@ return [
 ];
 ```
 
-To make it work properly and to get active states automatically in Twill's UI, you should structure your routes in the same way using for example here:
+To make it work properly and to get active states automatically in Twill's UI, you should structure your routes in the same way like the example here:
 
 ```php
 <?php

@@ -110,7 +110,7 @@ return $searchResults->map(function ($item) use ($module) {
 ```
 
 ## Featuring content
-Twill's buckets allow you to provide publishers with featured content management screens. You can add multiple pages of buckets anywhere you'd like in your CMS navigation and, in each page, multiple buckets with differents rules and accepted modules. In the following example, we will assume that our application has a Guide model and that we want to feature guides on the homepage of our site. Our site's homepage has multiple zones for featured guides: a primary zone, that shows only one featured guide, and a secondary zone, that shows guides in a carousel of maximum 10 items.
+Twill's buckets allow you to provide publishers with featured content management screens. You can add multiple pages of buckets anywhere you'd like in your CMS navigation and, in each page, multiple buckets with different rules and accepted modules. In the following example, we will assume that our application has a Guide model and that we want to feature guides on the homepage of our site. Our site's homepage has multiple zones for featured guides: a primary zone, that shows only one featured guide, and a secondary zone, that shows guides in a carousel of maximum 10 items.
 
 First, you will need to enable the buckets feature. In `config/twill.php`:
 ```php
@@ -154,7 +154,7 @@ Then, define your buckets configuration:
 ```
 
 You can allow mixing modules in a single bucket by adding more modules to the `bucketables` array.
-Each `bucketable`should have its [model morph map](https://laravel.com/docs/5.5/eloquent-relationships#polymorphic-relations) defined because features are stored in a polymorphic table.
+Each `bucketable` should have its [model morph map](https://laravel.com/docs/5.5/eloquent-relationships#polymorphic-relations) defined because features are stored in a polymorphic table.
 In your AppServiceProvider, you can do it like the following:
 
 ```php
@@ -186,7 +186,7 @@ return [
 ];
 ```
 
-By default, the buckets page (in our example, only homepage) will live at under the /featured prefix.
+By default, the buckets page (in our example, only homepage) will live under the /featured prefix.
 But you might need to split your buckets page between sections of your CMS. For example if you want to have the homepage bucket page of our example under the /pages prefix in your navigation, you can use another configuration property:
 
 ```php
@@ -218,7 +218,7 @@ In this file, you can use `@formField('input')` Blade directives to add new sett
 @stop
 ```
 
-If your `translatable.locales` configuration array contains multiple languages codes, you can enable the `translated` option on your settings input form fields to make them translatable.
+If your `translatable.locales` configuration array contains multiple language codes, you can enable the `translated` option on your settings input form fields to make them translatable.
 
 At this point, you want to add an entry in your `config/twill-navigation.php` configuration file to show the settings section link:
 
@@ -256,7 +256,7 @@ app(SettingRepository::class)->byKey('site_title', 'section_name');
 ```
 
 ## User management
-Authentication and authorization are provided by default in Laravel. This package simply leverages what Laravel provides and configure the views for you. By default, users can login at `/login` and can also reset their password through that same screen. New users have to reset their password before they can gain access to the admin application. By using the twill configuration file, you can change the default redirect path (`auth_login_redirect_path`) and send users to anywhere in your application following login.
+Authentication and authorization are provided by default in Laravel. This package simply leverages what Laravel provides and configures the views for you. By default, users can login at `/login` and can also reset their password through that same screen. New users have to reset their password before they can gain access to the admin application. By using the twill configuration file, you can change the default redirect path (`auth_login_redirect_path`) and send users to anywhere in your application following login.
 
 #### Roles
 The package currently provides three different roles:
@@ -282,7 +282,7 @@ Publishers have the same permissions as view only users plus:
 - feature
 - upload new images/files to the media/file library
 
-Admin user have the same permissions as publisher users plus:
+Admin users have the same permissions as publisher users plus:
 - full permissions on users
 
 There is also a super admin user that can impersonate other users at `/users/impersonate/{id}`. The super admin can be a useful tool for testing features with different user roles without having to logout/login manually, as well as for debugging issues reported by specific users. You can stop impersonating by going to `/users/impersonate/stop`.

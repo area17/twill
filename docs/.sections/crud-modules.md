@@ -101,19 +101,19 @@ A few CRUD controllers require that your model have a field in the database with
 
 ### Models
 
-Set your fillables to prevent mass-assignement. Very important as we use `request()->all()` in the module controller.
+Set your fillables to prevent mass-assignement. This is very important, as we use `request()->all()` in the module controller.
 
 For fields that should always be saved as null in the database when not sent by the form, use the `nullable` array.
 
 For fields that should always be saved to false in the database when not sent by the form, use the `checkboxes` array. The `published` field is a good example.
 
-Depending on the features you need on your model, include the availables traits and configure their respective options:
+Depending on the features you need on your model, include the available traits and configure their respective options:
 
 - HasPosition: implement the `A17\Twill\Models\Behaviors\Sortable` interface and add a position field to your fillables.
 
 - HasTranslation: add translated fields in the `translatedAttributes` array and in the `fillable` array of the generated translatable model in `App/Models/Translations` (always keep the `active` and `locale` fields).
 
-When using Twill's `HasTranslation` trait on a model, you are actually using the popular `dimsav/translatable` package. A default configuration has been published to your `config` directory when you ran the `twill:install` command. 
+When using Twill's `HasTranslation` trait on a model, you are actually using the popular `dimsav/translatable` package. A default configuration will be automatically published to your `config` directory when you run the `twill:install` command. 
 
 To setup your list of available languages for translated fields, modify the `locales` array in `config/translatable.php`, using ISO 639-1 two-letter languages codes as in the following example:
 
@@ -174,7 +174,7 @@ public $filesParams = ['file_role', ...]; // a list of file roles
 
 ### Repositories
 
-Depending on the model feature, include one or multiple of those traits: `HandleTranslations`, `HandleSlugs`, `HandleMedias`, `HandleFiles`, `HandleRevisions`, `HandleBlocks`, `HandleRepeaters`, `HandleTags`.
+Depending on the model feature, include one or multiple of these traits: `HandleTranslations`, `HandleSlugs`, `HandleMedias`, `HandleFiles`, `HandleRevisions`, `HandleBlocks`, `HandleRepeaters`, `HandleTags`.
 
 Repositories allows you to modify the default behavior of your models by providing some entry points in the form of methods that you might implement:
 
@@ -461,7 +461,7 @@ You can also override all actions and internal functions, checkout the ModuleCon
 ### Form Requests
 Classic Laravel 5 [form request validation](https://laravel.com/docs/5.5/validation#form-request-validation).
 
-You can choose to use different rules for creation and update by implementing the following 2 functions instead of the classic `rules` one :
+You can choose to use different rules for creation and update by implementing the following 2 functions instead of the classic `rules` one:
 
 ```php
 <?php
@@ -910,7 +910,7 @@ This field requires that you provide a `GOOGLE_MAPS_API_KEY` variable in your .e
 
 ### Revisions and previewing
 
-When using the `HasRevisions` trait, Twill's UI give publishers the ability to preview their changes without saving, as well as to preview and compare old revisions.
+When using the `HasRevisions` trait, Twill's UI gives publishers the ability to preview their changes without saving, as well as to preview and compare old revisions.
 
 If you are implementing your site using Laravel routing and Blade templating (ie. traditional server side rendering), you can follow Twill's convention of creating frontend views at `resources/views/site` and naming them according to their corresponding CRUD module name. When publishers try to preview their changes, Twill will render your frontend view within an iframe, passing the previewed record with it's unsaved changes to your view in the `$item` variable.
 
