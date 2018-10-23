@@ -123,6 +123,7 @@
 
     .accordion__dropdown {
       max-height:250px;
+      overflow-y: auto;
     }
 
     .icon {
