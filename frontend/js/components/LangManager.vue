@@ -1,10 +1,24 @@
 <template>
   <div class="languageManager" v-if="languages.length > 1">
-    <div class="languageManager__switcher"><a17-langswitcher :in-modal="true"></a17-langswitcher></div>
-    <a17-dropdown class="languageManager__dropdown" ref="languageManagerDropdown" position="bottom-right" :clickable="true">
-      <button class="languageManager__button" type="button" @click="$refs.languageManagerDropdown.toggle()">{{ currentValue.length }} Live <span v-svg symbol="dropdown_module"></span></button>
-      <div slot="dropdown__content">
-        <a17-checkboxgroup name="langManager" :options="languages" @change="changeValue" :selected="currentValue" :min="1"></a17-checkboxgroup>
+    <div class="languageManager__switcher">
+      <a17-langswitcher :in-modal="true"/>
+    </div>
+    <a17-dropdown class="languageManager__dropdown"
+                  ref="languageManagerDropdown"
+                  position="top-right"
+                  :clickable="true">
+      <button class="languageManager__button"
+              type="button"
+              @click="$refs.languageManagerDropdown.toggle()">
+        {{currentValue.length }} Live <span v-svg symbol="dropdown_module"></span>
+      </button>
+      <div slot="dropdown__content" class="languageManager__dropdown-content">
+        <a17-checkboxgroup name="langManager"
+                           :options="languages"
+                           :selected="currentValue"
+                           :min="1"
+                           @change="changeValue"
+                           />
       </div>
     </a17-dropdown>
   </div>
@@ -66,21 +80,26 @@
     margin: 0 -20px;
     background-color: $color__light;
     position: relative;
-    display:flex;
-    padding:20px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    padding: 20px;
   }
 
   .languageManager__switcher {
-    flex-grow:1;
-    height:35px;
+    height: 35px;
+    overflow: hidden;
+    border: 1px solid #d9d9d9;
+    border-radius: 2px;
   }
 
   .languageManager__button {
     @include btn-reset;
     color: $color--icons;
-    padding:0;
-    height:35px;
-    line-height:35px;
+    padding: 0;
+    margin-left: 15px;
+    height: 35px;
+    line-height: 35px;
 
     &:focus,
     &:hover {
@@ -92,5 +111,10 @@
       margin-left: 5px;
       top: -1px;
     }
+  }
+
+  .languageManager__dropdown-content {
+    max-height: 240px;
+    overflow-y: scroll;
   }
 </style>
