@@ -23,6 +23,15 @@ trait HasMedias
         ])->withTimestamps()->orderBy('mediables.id', 'asc');
     }
 
+    public function hasImage($role, $crop = "default")
+    {
+        $media = $this->medias->first(function ($media) use ($role, $crop) {
+            return $media->pivot->role === $role && $media->pivot->crop === $crop;
+        });
+
+        return !empty($media);
+    }
+
     public function image($role, $crop = "default", $params = [], $has_fallback = false, $cms = false, $media = null)
     {
 
