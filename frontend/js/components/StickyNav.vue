@@ -234,6 +234,15 @@
 
     .button {
       margin-left:20px;
+
+      @include breakpoint('small-') {
+        margin-left: 0;
+        margin-top: 20px;
+      }
+    }
+
+    @include breakpoint('small-') {
+      flex-direction: column;
     }
   }
 
