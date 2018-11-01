@@ -4,6 +4,7 @@ namespace A17\Twill\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\DB;
 
 class Install extends Command
 {
@@ -22,6 +23,14 @@ class Install extends Command
 
     public function handle()
     {
+        //check the database connection before installing
+        try {
+            DB::connection()->getPdo();
+        } catch (\Exception $e) {
+            $this->error('Could not connect to the database, please check your configuration:' . "\n" . $e);
+            return;
+        }
+
         $this->addRoutesFile();
         $this->publishMigrations();
         $this->call('migrate');
