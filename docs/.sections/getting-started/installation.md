@@ -8,16 +8,6 @@ composer require area17/twill:1.2.*
 ```
 
 Twill will automatically register its service provider if you are using Laravel `>=5.5`. 
-
-```json
-"repositories": [
-  {
-    "type": "vcs",
-    "url": "https://github.com/area17/tags.git"
-  }
-],
-```
-
 If you are using Twill with Laravel `5.3` or `5.4`, add Twill's service provider in your application's `config/app.php` file:
 
 ```php{11}
