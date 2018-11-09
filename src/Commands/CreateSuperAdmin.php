@@ -12,41 +12,87 @@ class CreateSuperAdmin extends Command
 
     protected $description = "Create the superadmin account";
 
+    /**
+     * Create super admin account.
+     *
+     * @return void
+     */
     public function handle()
     {
         $this->info("Let's create a superadmin account!");
-        $email = $this->ask('Enter an email');
-        if ($this->validateEmail($email)) {
-            $password = $this->ask('Enter a password');
-            if ($this->validatePassword($password)) {
-                return User::create([
-                    'name' => "Admin",
-                    'email' => $email,
-                    'password' => bcrypt($password),
-                    'role' => 'SUPERADMIN',
-                    'published' => true,
-                ]);
-            } else {
-                $this->error("Your password is not valid");
-            }
-        } else {
-            $this->error("Your email is not valid");
-        }
-
+        $email = $this->setEmail();
+        $password = $this->setPassword();
+        User::create([
+            'name' => "Admin",
+            'email' => $email,
+            'password' => bcrypt($password),
+            'role' => 'SUPERADMIN',
+            'published' => true,
+        ]);
         $this->info("Your account has been created");
     }
 
+    /**
+     * Prompt user to enter email and validate it.
+     *
+     * @return string $email
+     */
+    private function setEmail()
+    {
+        $email = $this->ask('Enter an email');
+        if ($this->validateEmail($email)) {
+            return $email;
+        } else {
+            $this->error("Your email is not valid");
+            $this->setEmail();
+        }
+    }
+
+    /**
+     * Prompt user to enter password, confirm and validate it.
+     *
+     * @return string $password
+     */
+    private function setPassword()
+    {
+        $password = $this->secret('Enter a password');
+        if ($this->validatePassword($password)) {
+            $confirmPassword = $this->secret('Confirm the password');
+            if ($password === $confirmPassword) {
+                return $password;
+            } else {
+                $this->error('Password does not match the confirm password');
+                $this->setPassword();
+            }
+        } else {
+            $this->error("Your password is not valid, at least 6 characters");
+            $this->setPassword();
+        }
+    }
+
+    /**
+     * Determine if the email address given valid.
+     *
+     * @param  string  $email
+     * @return boolean
+     */
     private function validateEmail($email)
     {
         return Validator::make(['email' => $email], [
-            'email' => 'required|email|max:255|unique:users',
-        ]);
+            'email' => 'required|email|max:255|unique:twill_users',
+        ])->passes();
     }
 
+    /**
+     * Determine if the password given valid.
+     *
+     * @param  string  $password
+     * @return boolean
+     */
     private function validatePassword($password)
     {
         return Validator::make(['password' => $password], [
-            'password' => 'required|confirmed|min:6',
-        ]);
+            'password' => 'required|min:6',
+        ])->passes();
     }
 }
