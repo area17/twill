@@ -78,9 +78,9 @@ class CreateSuperAdmin extends Command
      */
     private function validateEmail($email)
     {
-        return !Validator::make(['email' => $email], [
+        return Validator::make(['email' => $email], [
             'email' => 'required|email|max:255|unique:twill_users',
-        ])->fails();
+        ])->passes();
     }
 
     /**
@@ -91,8 +91,8 @@ class CreateSuperAdmin extends Command
      */
     private function validatePassword($password)
     {
-        return !Validator::make(['password' => $password], [
+        return Validator::make(['password' => $password], [
             'password' => 'required|min:6',
-        ])->fails();
+        ])->passes();
     }
 }
