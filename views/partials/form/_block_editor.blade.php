@@ -1,19 +1,17 @@
 @php
     $label = $label ?? twillTrans('twill::lang.fields.block-editor.add-content');
+    $name = $name ?? 'default';
+    $allowedBlocks = generate_list_of_available_blocks($blocks ?? null, $group ?? $groups ?? null);
 @endphp
 
 @unless ($withoutSeparator ?? false)
     <hr/>
-@endif
-<a17-content title="{{ $label }}"></a17-content>
-
-@php
-    $allowedBlocks = generate_list_of_available_blocks($blocks ?? null, $group ?? $groups ?? null);
-@endphp
+@endunless
+<a17-content title="{{ $label }}" section="{{ $name }}"></a17-content>
 
 @push('vuexStore')
-    window['{{ config('twill.js_namespace') }}'].STORE.form.content = {!! json_encode(array_values($allowedBlocks)) !!}
-    window['{{ config('twill.js_namespace') }}'].STORE.form.blocks = {!! json_encode($form_fields['blocks'] ?? []) !!}
+    window['{{ config('twill.js_namespace') }}'].STORE.form.blocks.available['{{ $name }}'] = {!! json_encode(array_values($allowedBlocks)) !!}
+    window['{{ config('twill.js_namespace') }}'].STORE.form.blocks.used['{{ $name }}'] = {!! json_encode($form_fields['blocks'] ?? []) !!}
 
     @foreach($form_fields['blocksFields'] ?? [] as $field)
         window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({!! json_encode($field) !!})
