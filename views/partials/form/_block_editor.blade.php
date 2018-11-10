@@ -10,7 +10,7 @@
 @unless ($withoutSeparator ?? false)
     <hr/>
 @endif
-<a17-content title="Add {{$title}}" section="{{$connectorKey}}"></a17-content>
+<a17-blocks title="Add {{$title}}" section="{{$connectorKey}}"></a17-blocks>
 
 @push('vuexStore')
     {{--window.STORE.form.content = {!! json_encode(array_values($availableBlocks)) !!}--}}

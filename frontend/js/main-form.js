@@ -17,7 +17,7 @@ import a17Langswitcher from '@/components/LangSwitcher.vue'
 import a17Fieldset from '@/components/Fieldset.vue'
 import a17Publisher from '@/components/Publisher.vue'
 import a17PageNav from '@/components/PageNav.vue'
-import a17Content from '@/components/Content.vue'
+import a17Blocks from '@/components/blocks/Blocks.vue'
 import a17Repeater from '@/components/Repeater.vue'
 import a17LocationField from '@/components/LocationField.vue'
 import a17ConnectorField from '@/components/ConnectorField.vue'
@@ -112,7 +112,7 @@ window.vm = new Vue({
     'a17-title-editor': a17TitleEditor,
     'a17-langswitcher': a17Langswitcher,
     'a17-fieldset': a17Fieldset,
-    'a17-content': a17Content,
+    'a17-blocks': a17Blocks,
     'a17-publisher': a17Publisher,
     'a17-page-nav': a17PageNav
   },

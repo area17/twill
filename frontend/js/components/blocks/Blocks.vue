@@ -106,7 +106,7 @@
   import { mapState } from 'vuex'
   import { DraggableMixin, EditorMixin } from '@/mixins/index'
   import draggable from 'vuedraggable'
-  import BlockItem from '@/components/blocks/Block.vue'
+  import BlockItem from '@/components/blocks/BlockItem.vue'
   import BlocksList from '@/components/blocks/BlocksList'
   import BlockModel from '@/components/blocks/BlockModel'
 
