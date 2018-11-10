@@ -1,152 +1,193 @@
 <template>
-  <div class="content">
-    <draggable class="content__container" v-model="blocks" :options="dragOptions">
-      <transition-group name="draggable_list" tag='div'>
-        <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
-          <a17-block :block="block" :index="index" :opened="opened" :closed="closed" @expand="setOpened" ref="blockList">
-            <template v-for="availableBlock in availableBlocks">
-              <button type="button" slot="dropdown-add" v-if="availableBlocks.length" :key="availableBlock.component" @click="addBlock(availableBlock, index + 1)"><span v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
-            </template>
-            <div slot="dropdown-action">
-              <button type="button" @click="collapseAllBlocks()" v-if="opened">{{ $trans('fields.block-editor.collapse-all', 'Collapse all') }}</button>
-              <button type="button" @click="expandAllBlocks()" v-else>{{ $trans('fields.block-editor.expand-all', 'Expand all') }}</button>
-              <button v-if="editor" type="button" @click="openEditor(index)">{{ $trans('fields.block-editor.open-in-editor', 'Open in editor') }}</button>
-              <button type="button" @click="duplicateBlock(index)">{{ $trans('fields.block-editor.create-another', 'Create another') }}</button>
-              <button type="button" @click="deleteBlock(index)">{{ $trans('fields.block-editor.delete', 'Delete') }}</button>
-            </div>
-            <button type="button" slot="dropdown-numbers" v-for="n in blocks.length" @click="moveBlock(index, n - 1)" :key="n">{{ n }}</button>
-          </a17-block>
-        </div>
-      </transition-group>
-    </draggable>
+  <a17-blocks-list :section="section">
+    <div class="content"
+         slot-scope="{ savedBlocks, availableBlocks, reorderBlocks }">
+      <draggable class="content__container"
+                 :value="savedBlocks"
+                 @input="(value) => { reorderBlocks(value) }"
+                 :options="dragOptions">
+        <transition-group name="draggable_list"
+                          tag='div'>
+          <div class="content__item"
+               v-for="(savedBlock, index) in savedBlocks"
+               :key="savedBlock.id">
+            <a17-block-model :section="section"
+                             :block="savedBlock">
+              <a17-block-item slot-scope="{ block, add, move, remove, duplicate }"
+                              ref="blockList"
+                              :block="block"
+                              :index="index"
+                              :expand="savedBlocks.length <= 3"
+                              @expand="checkExpandBlocks"
+                              v-if="availableBlocks.length">
+                <button slot="dropdown-add"
+                        type="button"
+                        v-for="availableBlock in availableBlocks"
+                        :key="availableBlock.component"
+                        @click="handleBlockAdd(add, availableBlock, index + 1)">
+                    <span v-svg
+                          :symbol="availableBlock.icon"></span>
+                  {{ availableBlock.title }}
+                </button>
+                <div slot="dropdown-action">
+                  <button type="button"
+                          v-if="allBlocksExpands"
+                          @click="collapseAllBlocks()">Collapse all
+                  </button>
+                  <button type="button"
+                          v-else
+                          @click="expandAllBlocks()">Expand all
+                  </button>
+                  <button type="button"
+                          v-if="editor"
+                          @click="openEditor(index, section)">Open in editor
+                  </button>
+                  <button type="button"
+                          @click="handleDuplicateBlock(duplicate, index)">Create another
+                  </button>
+                  <button type="button"
+                          @click="handleDeleteBlock(remove, index)">Delete
+                  </button>
+                </div>
+                <button slot="dropdown-numbers"
+                        type="button"
+                        v-for="n in savedBlocks.length"
+                        @click="move(index, n - 1)"
+                        :key="n">{{ n }}
+                </button>
+              </a17-block-item>
+            </a17-block-model>
+          </div>
+        </transition-group>
+      </draggable>
 
-    <div class="content__actions">
-      <a17-dropdown ref="blocksDropdown" position="top-center" :arrow="true" :offset="10" v-if="availableBlocks.length" :maxHeight="430">
-        <a17-button size="small" variant="action" @click="$refs.blocksDropdown.toggle()">{{ title }}</a17-button>
-        <div slot="dropdown__content">
-          <button type="button" v-for="availableBlock in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, -1)"><span class="content__icon" v-svg :symbol="availableBlock.icon"></span>{{ availableBlock.title }}</button>
+      <div class="content__actions">
+        <a17-dropdown ref="blocksDropdown"
+                      position="top-center"
+                      v-if="availableBlocks.length"
+                      :arrow="true"
+                      :offset="10"
+                      :maxHeight="430">
+
+          <a17-button size="small"
+                      variant="action"
+                      @click="$refs.blocksDropdown.toggle()">{{ title }}
+          </a17-button>
+
+          <div slot="dropdown__content">
+            <template v-for="availableBlock in availableBlocks">
+              <a17-block-model :section="section"
+                               :key="availableBlock.component">
+                <button type="button"
+                        slot-scope="{ add }"
+                        :key="availableBlock.component"
+                        @click="handleBlockAdd(add, availableBlock)">
+                  <span class="content__icon"
+                        v-svg
+                        :symbol="availableBlock.icon"></span>
+                  {{ availableBlock.title }}
+                </button>
+              </a17-block-model>
+            </template>
+          </div>
+        </a17-dropdown>
+        <div class="content__secondaryActions">
+          <a href="#"
+             class="f--link f--link-underlined--o"
+             v-if="editor"
+             @click.prevent="openEditor(-1)">Open in editor</a>
         </div>
-      </a17-dropdown>
-      <div class="content__secondaryActions">
-        <a href="#" v-if="editor" class="f--link f--link-underlined--o" @click.prevent="openEditor(-1)">{{ $trans('fields.block-editor.open-in-editor', 'Open in editor') }}</a>
       </div>
     </div>
-  </div>
+  </a17-blocks-list>
 </template>
 
 <script>
   import { mapState } from 'vuex'
-  import { CONTENT } from '@/store/mutations'
-
+  import { DraggableMixin, EditorMixin } from '@/mixins/index'
   import draggable from 'vuedraggable'
-  import draggableMixin from '@/mixins/draggable'
-  import editorMixin from '@/mixins/editor.js'
-  import Block from '@/components/blocks/Block.vue'
+  import BlockItem from '@/components/blocks/Block.vue'
+  import BlocksList from '@/components/blocks/BlocksList'
+  import BlockModel from '@/components/blocks/BlockModel'
 
   export default {
-    name: 'A17Content',
+    name: 'A17Blocks',
     components: {
-      'a17-block': Block,
+      'a17-block-item': BlockItem,
+      'a17-block-model': BlockModel,
+      'a17-blocks-list': BlocksList,
       draggable
     },
-    mixins: [draggableMixin, editorMixin],
+    mixins: [DraggableMixin, EditorMixin],
     props: {
       title: {
         type: String,
         default: ''
+      },
+      section: {
+        type: String,
+        default: 'default'
       }
     },
-    data: function () {
+    data () {
       return {
-        opened: true,
-        closed: false,
+        allBlocksExpands: false,
         handle: '.block__handle' // drag handle
       }
     },
     computed: {
-      blocks: {
-        get () {
-          return this.savedBlocks
-        },
-        set (value) {
-          this.$store.commit(CONTENT.REORDER_BLOCKS, value)
-        }
-      },
       ...mapState({
-        editor: state => state.content.editor,
-        savedBlocks: state => state.content.blocks,
-        availableBlocks: state => state.content.available
+        editor: state => state.content.editor
       })
     },
     methods: {
-      setOpened: function (value) {
-        const allHidden = this.$refs.blockList.every((block) => !block.visible)
-        if (allHidden) {
-          this.opened = false
-          this.closed = true
-        }
-
-        if (value) this.opened = true
+      checkExpandBlocks () {
+        this.allBlocksExpands = this.$refs.blockList.every((blocks) => blocks.visible)
       },
-      addDropdownId: function (index) {
-        return `addBlock${index}Dropdown`
-      },
-      toggleDropdown: function (index) {
-        const dropdownId = this.addDropdownId(index)
-        const dropdown = this.$refs[dropdownId][0]
-        if (dropdown) dropdown.toggle()
-      },
-      moveBlock: function (oldIndex, newIndex) {
-        if (oldIndex !== newIndex) {
-          this.$store.commit(CONTENT.MOVE_BLOCK, {
-            oldIndex: oldIndex,
-            newIndex: newIndex
-          })
-        }
-      },
-      addBlock: function (block, fromIndex) {
-        this.opened = true
-        const newBlock = {
-          title: block.title,
-          type: block.component,
-          icon: block.icon,
-          attributes: block.attributes
-        }
-
-        this.$store.commit(CONTENT.ADD_BLOCK, {
-          block: newBlock,
-          index: fromIndex
+      handleBlockAdd (fn, block, index = -1) {
+        fn(block, index)
+        this.$nextTick(() => {
+          this.checkExpandBlocks()
         })
       },
-      duplicateBlock: function (index) {
-        this.opened = true
-        this.$store.commit(CONTENT.DUPLICATE_BLOCK, index)
+      handleDuplicateBlock (fn, index) {
+        fn(index)
+        this.$nextTick(() => {
+          this.checkExpandBlocks()
+        })
       },
-      deleteBlock: function (index) {
+      handleDeleteBlock (fn, index) {
         // open confirm dialog if any
         if (this.$root.$refs.warningContentEditor) {
           this.$root.$refs.warningContentEditor.open(() => {
-            this.$store.commit(CONTENT.DELETE_BLOCK, index)
+            fn(index)
+            this.$nextTick(() => {
+              this.checkExpandBlocks()
+            })
           })
         } else {
-          this.$store.commit(CONTENT.DELETE_BLOCK, index)
+          fn(index)
+          this.$nextTick(() => {
+            this.checkExpandBlocks()
+          })
         }
       },
-      collapseAllBlocks: function () {
-        this.opened = false
-        this.closed = true
+      collapseAllBlocks () {
+        this.$refs.blockList.forEach(block => {
+          block.visible = false
+        })
+        this.$nextTick(() => {
+          this.checkExpandBlocks()
+        })
       },
-      expandAllBlocks: function () {
-        this.opened = true
-        this.closed = false
+      expandAllBlocks () {
+        this.$refs.blockList.forEach(block => {
+          block.visible = true
+        })
+        this.$nextTick(() => {
+          this.checkExpandBlocks()
+        })
       }
-    },
-    mounted: function () {
-      const self = this
-      // if there are blocks, these should be all collapse by default
-      this.$nextTick(function () {
-        if (self.savedBlocks.length > 3) self.collapseAllBlocks()
-      })
     }
   }
 </script>
@@ -154,46 +195,46 @@
 <style lang="scss" scoped>
 
   .content {
-    margin-top:20px; // margin-top:35px;
+    margin-top: 20px; // margin-top:35px;
   }
 
   .content__container {
-    margin-bottom:20px;
+    margin-bottom: 20px;
 
     + .dropdown {
-      display:inline-block;
+      display: inline-block;
     }
   }
 
   .content__actions {
-    display:flex;
+    display: flex;
   }
 
   .content__secondaryActions {
-    flex-grow:1;
-    text-align:right;
-    margin-left:20px;
-    padding-top:8px;
+    flex-grow: 1;
+    text-align: right;
+    margin-left: 20px;
+    padding-top: 8px;
   }
 
   .content__item {
-    border:1px solid $color__border;
-    border-top:0 none;
+    border: 1px solid $color__border;
+    border-top: 0 none;
 
     &.sortable-ghost {
-      opacity:0.5;
+      opacity: 0.5;
     }
   }
 
   .content__actions button .content__icon {
-    margin-right:0;
-    margin-left:-15px;
+    margin-right: 0;
+    margin-left: -15px;
     min-width: 55px;
     text-align: center;
-    height:40px;
+    height: 40px;
   }
 
   .content__item:first-child {
-    border-top:1px solid $color__border;
+    border-top: 1px solid $color__border;
   }
 </style>
