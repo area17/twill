@@ -78,12 +78,16 @@
 @stop
 
 @section('initialStore')
-
     window.STORE.form = {
         baseUrl: '{{ $baseUrl ?? '' }}',
         saveUrl: '{{ $saveUrl }}',
         previewUrl: '{{ $previewUrl ?? '' }}',
         restoreUrl: '{{ $restoreUrl ?? '' }}',
+        blocks: {
+            available: {},
+            used: {},
+            previewUrl: '{{ $blockPreviewUrl ?? '' }}'
+        },
         blockPreviewUrl: '{{ $blockPreviewUrl ?? '' }}',
         availableRepeaters: {!! json_encode(config('twill.block_editor.repeaters')) !!},
         repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!},
