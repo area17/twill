@@ -48,7 +48,11 @@ const state = {
 const getters = {
   previewsById (state) {
     return id => state.previews[id] ? state.previews[id] : ''
-  }
+  },
+  savedBlocksBySection: state => section => state.used[section],
+  availableBlocksBySection: state => section => state.available[section],
+  activeBlockIndex: (state, getters) => section => getters.savedBlocksBySection(section).findIndex(block => block.id === state.active.id),
+  sections: state => Object.keys(state.available)
 }
 
 function setBlockID () {
