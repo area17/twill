@@ -9,14 +9,14 @@
         <transition-group name="draggable_list"
                           tag='div'>
           <div class="content__item"
-               v-for="(savedBlock, index) in savedBlocks"
+               v-for="savedBlock in savedBlocks"
                :key="savedBlock.id">
             <a17-block-model :section="section"
                              :block="savedBlock">
-              <a17-block-item slot-scope="{ block, add, move, remove, duplicate }"
+              <a17-block-item slot-scope="{ block, blockIndex, add, move, remove, duplicate }"
                               ref="blockList"
                               :block="block"
-                              :index="index"
+                              :index="blockIndex"
                               :expand="savedBlocks.length <= 3"
                               @expand="checkExpandBlocks"
                               v-if="availableBlocks.length">
@@ -24,7 +24,7 @@
                         type="button"
                         v-for="availableBlock in availableBlocks"
                         :key="availableBlock.component"
-                        @click="handleBlockAdd(add, availableBlock, index + 1)">
+                        @click="handleBlockAdd(add, availableBlock, blockIndex + 1)">
                     <span v-svg
                           :symbol="availableBlock.icon"></span>
                   {{ availableBlock.title }}
@@ -40,19 +40,19 @@
                   </button>
                   <button type="button"
                           v-if="editor"
-                          @click="openEditor(index, section)">Open in editor
+                          @click="openEditor(blockIndex, section)">Open in editor
                   </button>
                   <button type="button"
-                          @click="handleDuplicateBlock(duplicate, index)">Create another
+                          @click="handleDuplicateBlock(duplicate)">Create another
                   </button>
                   <button type="button"
-                          @click="handleDeleteBlock(remove, index)">Delete
+                          @click="handleDeleteBlock(remove)">Delete
                   </button>
                 </div>
                 <button slot="dropdown-numbers"
                         type="button"
                         v-for="n in savedBlocks.length"
-                        @click="move(index, n - 1)"
+                        @click="move(n - 1)"
                         :key="n">{{ n }}
                 </button>
               </a17-block-item>
@@ -77,11 +77,12 @@
           <div slot="dropdown__content">
             <template v-for="availableBlock in availableBlocks">
               <a17-block-model :section="section"
+                               :block="availableBlock"
                                :key="availableBlock.component">
                 <button type="button"
-                        slot-scope="{ add }"
+                        slot-scope="{ add, block }"
                         :key="availableBlock.component"
-                        @click="handleBlockAdd(add, availableBlock)">
+                        @click="handleBlockAdd(add, block)">
                   <span class="content__icon"
                         v-svg
                         :symbol="availableBlock.icon"></span>
