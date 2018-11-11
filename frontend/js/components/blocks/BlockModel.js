@@ -1,4 +1,5 @@
 import CONTENT from '@/store/mutations/content'
+import { mapGetters } from 'vuex'
 
 export default {
   props: {
@@ -10,6 +11,15 @@ export default {
       type: String,
       default: 'default'
     }
+  },
+  computed: {
+    blockIndex () {
+      console.log('blockIndex', this.block, this.section)
+      return this.blockIndexBySection(this.block, this.section)
+    },
+    ...mapGetters([
+      'blockIndexBySection'
+    ])
   },
   methods: {
     add (block, index = -1) {
@@ -25,32 +35,33 @@ export default {
         index: index
       })
     },
-    move (oldIndex, newIndex) {
-      if (oldIndex === newIndex) return
+    move (newIndex) {
+      if (this.blockIndex === newIndex) return
       this.$store.commit(CONTENT.MOVE_BLOCK, {
         section: this.section,
-        oldIndex: oldIndex,
+        oldIndex: this.blockIndex,
         newIndex: newIndex
       })
     },
-    duplicate (index) {
+    duplicate () {
       this.$store.commit(CONTENT.DUPLICATE_BLOCK, {
         section: this.section,
-        index: index
+        index: this.blockIndex
       })
     },
-    remove (index) {
+    remove () {
       console.log('delete-block')
       // open confirm dialog if any
       this.$store.commit(CONTENT.DELETE_BLOCK, {
         section: this.section,
-        index: index
+        index: this.blockIndex
       })
     }
   },
   render () {
     return this.$scopedSlots.default({
       block: this.block,
+      blockIndex: this.blockIndex,
       add: this.add,
       remove: this.remove,
       move: this.move,
