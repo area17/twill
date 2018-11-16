@@ -170,7 +170,6 @@
     watch: {
       type: function () {
         this.clearFullMedias()
-        this.clearSelectedMedias()
         this.gridLoaded = false
       }
     },
@@ -301,7 +300,6 @@
         }
       },
       clearFullMedias: function () {
-        this.selectedMedias.splice(0)
         this.fullMedias.splice(0)
       },
       reloadGrid: function () {
