@@ -163,6 +163,17 @@ abstract class ModuleRepository
         return $this->hydrate($object, $fields);
     }
 
+    public function updateOrCreate($attributes, $fields)
+    {
+        $object = $this->model->where($attributes)->first();
+
+        if (!$object) {
+            return $this->create($fields);
+        }
+
+        $this->update($object->id, $fields);
+    }
+
     public function update($id, $fields)
     {
         DB::transaction(function () use ($id, $fields) {

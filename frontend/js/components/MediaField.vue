@@ -71,6 +71,7 @@
         <a17-button class="cropper__button" variant="action" @click="$refs[cropModalName].close()">Update</a17-button>
       </a17-cropper>
     </a17-modal>
+    <input :name="'medias[' + name + '][' + index + ']'" type="hidden" :value="JSON.stringify(media)" />
   </div>
 </template>
 

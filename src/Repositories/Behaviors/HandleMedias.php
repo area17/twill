@@ -46,10 +46,14 @@ trait HandleMedias
 
         if (isset($fields['medias'])) {
             foreach ($fields['medias'] as $role => $mediasForRole) {
+                
                 if (in_array($role, array_keys($this->model->mediasParams ?? []))
-                    || in_array($role, array_keys(config('twill.block_editor.crops')))) {
+                    || in_array($role, array_keys(config('twill.block_editor.crops')))
+                    || in_array($role, array_keys(config('twill.settings.crops')))) {
+                    
                     collect($mediasForRole)->each(function ($media) use (&$medias, $role) {
                         $customMetadatas = $media['metadatas']['custom'] ?? [];
+                
                         if (isset($media['crops'])) {
                             foreach ($media['crops'] as $cropName => $cropData) {
                                 $medias->push([
