@@ -79,7 +79,7 @@ class CreateSuperAdmin extends Command
     private function validateEmail($email)
     {
         return Validator::make(['email' => $email], [
-            'email' => 'required|email|max:255|unique:twill_users',
+            'email' => 'required|email|max:255|unique:' . config('twill.users_table'),
         ])->passes();
     }
 
