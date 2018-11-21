@@ -55,9 +55,11 @@
                         </div>
                     </aside>
                     <section class="col col--primary">
-                        <a17-fieldset title="{{ $contentFieldsetLabel ?? 'Content' }}" id="content" data-sticky-top="publisher">
-                            @yield('contentFields')
-                        </a17-fieldset>
+                        @unless($disableContentFieldset ?? false)
+                            <a17-fieldset title="{{ $contentFieldsetLabel ?? 'Content' }}" id="content" data-sticky-top="publisher">
+                                @yield('contentFields')
+                            </a17-fieldset>
+                        @endunless
 
                         @yield('fieldsets')
                     </section>
