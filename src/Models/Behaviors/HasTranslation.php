@@ -64,7 +64,7 @@ trait HasTranslation
     {
         $locale = $locale ?: $this->locale();
 
-        foreach ($this->translations as $translation) {
+        foreach ($this->translations()->get() as $translation) {
             if ($translation->getAttribute($this->getLocaleKey()) == $locale && $translation->getAttribute('active')) {
                 return true;
             }
@@ -82,7 +82,7 @@ trait HasTranslation
                 'value' => $translation->locale,
                 'published' => $translation->active ?? false,
             ];
-        })->sortBy(function($translation) {
+        })->sortBy(function ($translation) {
             $localesOrdered = config('translatable.locales');
             return array_search($translation['value'], $localesOrdered);
         })->values();
