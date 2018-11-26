@@ -91,7 +91,12 @@ export default {
       if (this.locale) {
         this[this.inStore] = fieldInStore[0].value[this.locale.value]
       } else {
-        this[this.inStore] = fieldInStore[0].value
+        // avoid displaying [object object] as string on field˝
+        if (typeof fieldInStore[0].value === 'object') {
+          this[this.inStore] = Object.values(fieldInStore[0].value)[0]
+        } else {
+          this[this.inStore] = fieldInStore[0].value
+        }
       }
     } else if (this.hasDefaultStore) {
       // init value with the one present into the component itself
