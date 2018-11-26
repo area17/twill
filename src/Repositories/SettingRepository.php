@@ -37,18 +37,22 @@ class SettingRepository
     {
         $section = $section ? ['section' => $section] : [];
 
-        foreach (collect($settingsFields)->except('active_languages')->filter() as $key => $value) {
-            foreach (getLocales() as $locale) {
-                array_set(
-                    $settingsTranslated,
-                    $key . '.' . $locale,
-                    ['value' => $value[$locale]] + ['active' => true]
-                );
+        foreach ($settingsFields as $key => $value) {
+            // field translation is disabled
+            if (is_string($value)) {
+                array_set($settings, $key, ['key' => $key] + $section + ['value' => $value]);
+            } else {
+                foreach (getLocales() as $locale) {
+                    array_set(
+                        $settingsTranslated,
+                        $key . '.' . $locale,
+                        ['value' => $value[$locale]] + ['active' => true]
+                    );
+                }
+                foreach ($settingsTranslated as $key => $values) {
+                    array_set($settings, $key, ['key' => $key] + $section + $values);
+                }
             }
-        }
-
-        foreach ($settingsTranslated as $key => $values) {
-            array_set($settings, $key, ['key' => $key] + $section + $values);
         }
 
         foreach ($settings as $key => $setting) {

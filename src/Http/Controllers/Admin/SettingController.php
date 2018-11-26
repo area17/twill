@@ -32,7 +32,8 @@ class SettingController extends Controller
             return redirect()->back();
         }
 
-        $this->settings->update(request()->except('_token'), $section);
+        $settingFields = collect(request()->except('_token'))->except('active_languages')->filter();
+        $this->settings->update($settingFields, $section);
 
         Event::fire('cms-settings.saved', 'cms-settings.saved');
 
