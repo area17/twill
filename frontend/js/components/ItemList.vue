@@ -189,8 +189,9 @@
 
     img {
       display:block;
-      max-width:50px;
+      width:50px;
       height:auto;
+      background: $color__border--light;
     }
   }
 
