@@ -17,11 +17,7 @@ const getters = {
     let arrayOfIds = []
 
     for (let name in state.selected) {
-      /* TBD: two solutions here
-          1. use uuid on item
-          2. created custom id based on type item (currently used with .edit key)
-       */
-      arrayOfIds[name] = state.selected[name].map((item) => `${item.edit}_${item.id}`)
+      arrayOfIds[name] = state.selected[name].map((item) => `${item.endpointType}_${item.id}`)
     }
 
     return arrayOfIds

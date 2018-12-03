@@ -866,8 +866,8 @@ abstract class ModuleController extends Controller
     {
         $withImage = $this->moduleHas('medias');
 
-        return $items->map(function ($item) {
-            $columnsData = collect($this->browserColumns)->mapWithKeys(function ($column) use ($item) {
+        return $items->map(function ($item) use ($withImage) {
+            $columnsData = collect($this->browserColumns)->mapWithKeys(function ($column) use ($item, $withImage) {
                 return $this->getItemColumnData($item, $column);
             })->toArray();
 
@@ -878,7 +878,10 @@ abstract class ModuleController extends Controller
                 'id' => $item->id,
                 'name' => $name,
                 'edit' => moduleRoute($this->moduleName, $this->routePrefix, 'edit', $item->id),
-            ] + $columnsData;
+                'endpointType' => $this->moduleName,
+            ] + $columnsData + ($withImage && !array_key_exists('thumbnail', $columnsData) ? [
+                'thumbnail' => $item->defaultCmsImage(['w' => 100, 'h' => 100]),
+            ] : []);
         })->toArray();
     }
 

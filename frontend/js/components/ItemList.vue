@@ -8,15 +8,14 @@
             <span class="itemlist__progressError" v-else>Upload Error</span>
           </td>
         </tr>
-        <!--TODO: replace edit key by type key-->
         <tr class="itemlist__row"
             v-for="item in items"
-            :key="`${item.edit}_${item.id}`"
+            :key="`${item.endpointType}_${item.id}`"
             :class="{ 's--picked': isSelected(item, keysToCheck)}"
             @click.exact.prevent="toggleSelection(item)"
             @click.shift.exact.prevent="shiftToggleSelection(item)">
           <td class="itemlist__cell itemlist__cell--btn" v-if="item.hasOwnProperty('id')">
-            <a17-checkbox name="item_list" :value="item.edit + '_' + item.id" :initialValue="checkedItems" theme="bold"/>
+            <a17-checkbox name="item_list" :value="item.endpointType + '_' + item.id" :initialValue="checkedItems" theme="bold"/>
           </td>
           <td class="itemlist__cell itemlist__cell--thumb" v-if="item.hasOwnProperty('thumbnail')">
             <img :src="item.thumbnail" />
@@ -71,7 +70,7 @@
         return Object.keys(firstItem).filter(key => { // exclude columns here
           return ![
             'id', 'name', 'thumbnail', 'src', 'original', 'edit',
-            'crop', 'deleteUrl', 'updateUrl', 'updateBulkUrl', 'deleteBulkUrl'
+            'crop', 'deleteUrl', 'updateUrl', 'updateBulkUrl', 'deleteBulkUrl', 'endpointType'
           ].includes(key) && typeof firstItem[key] === 'string' // only strings
         })
       },
@@ -80,8 +79,7 @@
 
         if (this.selectedItems.length) {
           this.selectedItems.forEach(function (item) {
-            // tbd: maybe replace edit key with type key
-            checkItemsIds.push(item.edit + '_' + item.id)
+            checkItemsIds.push(item.endpointType + '_' + item.id)
           })
         }
 

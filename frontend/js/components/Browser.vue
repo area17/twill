@@ -94,8 +94,7 @@
     },
     methods: {
       updateSelectedItems (item) {
-        // todo: replace edit by type when ready in back
-        const keysToTest = this.multiSources ? ['id', 'edit'] : ['id']
+        const keysToTest = this.multiSources ? ['id', 'endpointType'] : ['id']
         const availableItem = this.fullItems.some(sItem => keysToTest.every(key => sItem[key] === item[key]))
 
         if (!availableItem) return
@@ -128,21 +127,6 @@
           data = {page: this.page}
         }
 
-        // TBD: do we need to not show items already selected ?
-        // if (this.selected[this.connector]) {
-        //   if (this.multiSources) {
-        //     data.except = this.selectedItems.reduce((arr, item) => {
-        //       arr.push({
-        //         type: item.type,
-        //         id: item.id
-        //       })
-        //       return arr
-        //     }, [])
-        //   } else {
-        //     data.except = this.selectedItems.map((item) => item.id)
-        //   }
-        // }
-
         return data
       },
       clearSelectedItems () {
@@ -165,11 +149,6 @@
           if (hardReload) {
             this.clearFullItems()
           }
-
-          // TODO: remove this when type will be implemented in back
-          resp.data['data'].forEach(item => {
-            item.type = this.endpointName
-          })
 
           this.fullItems.push(...resp.data['data'])
 

@@ -13,9 +13,8 @@
       </a>
       <input type="hidden" :name="name" :value="currentItem.id"/>
     </td>
-    <td class="browserItem__cell browserItem__cell--type" v-if="currentItem.hasOwnProperty('edit')">
-    <!--todo: replace edit by type-->
-      <span>{{ currentItem.edit }}</span>
+    <td class="browserItem__cell browserItem__cell--type" v-if="currentItem.hasOwnProperty('endpointType') && showType">
+      <span>{{ currentItem.endpointType }}</span>
     </td>
     <td class="browserItem__cell browserItem__cell--icon">
       <a17-button class="bucket__action" icon="close" @click="deleteItem()"><span v-svg symbol="close_icon"></span></a17-button>
@@ -24,8 +23,6 @@
 </template>
 
 <script>
-  import { BROWSER } from '@/store/mutations'
-
   export default {
     name: 'A17BrowserItem',
     props: {
@@ -43,17 +40,13 @@
           return {}
         }
       },
-      itemLabel: {
-        type: String,
-        default: 'Item'
-      },
-      endpoint: {
-        type: String,
-        default: ''
-      },
       max: {
         type: Number,
         default: 10
+      },
+      showType: {
+        type: Boolean,
+        default: false
       }
     },
     data: function () {
@@ -69,12 +62,6 @@
     methods: {
       deleteItem: function () {
         this.$emit('delete')
-      },
-      openBrowser: function () {
-        this.$store.commit(BROWSER.UPDATE_BROWSER_CONNECTOR, this.name)
-        this.$store.commit(BROWSER.UPDATE_BROWSER_ENDPOINT, this.endpoint)
-        this.$store.commit(BROWSER.UPDATE_BROWSER_MAX, this.max)
-        this.$root.$refs.browser.open()
       }
     }
   }
@@ -132,6 +119,7 @@
   }
 
   .browserItem__cell--type {
+    text-transform: capitalize;
     width: 150px;
     span {
       display: inline-block;
