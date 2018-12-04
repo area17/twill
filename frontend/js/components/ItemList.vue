@@ -16,7 +16,8 @@
             <img :src="item.thumbnail" />
           </td>
           <td class="itemlist__cell itemlist__cell--name" v-if="item.hasOwnProperty('name')">
-            {{ item.name }}
+            <div v-if="item.hasOwnProperty('html')" v-html="item.name"></div>
+            <div v-else>{{ item.name }}</div>
           </td>
           <td class="itemlist__cell" v-for="extraColumn in extraColumns" :class="rowClass(extraColumn)">
             <template v-if="extraColumn === 'size'">{{ item[extraColumn] | uppercase}}</template>
