@@ -52,6 +52,10 @@
       max: {
         type: Number,
         default: 10
+      },
+      wide: {
+        type: Boolean,
+        default: false
       }
     },
     data: function () {
@@ -115,7 +119,11 @@
         this.$store.commit(BROWSER.UPDATE_BROWSER_ENDPOINT, this.endpoint)
         this.$store.commit(BROWSER.UPDATE_BROWSER_MAX, this.remainingItems)
         this.$store.commit(BROWSER.UPDATE_BROWSER_TITLE, this.browserTitle)
-        this.$root.$refs.browser.open()
+        if (this.wide) {
+          this.$root.$refs.browserWide.open()
+        } else {
+          this.$root.$refs.browser.open()
+        }
       }
     },
     beforeDestroy: function () {
