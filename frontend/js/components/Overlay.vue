@@ -42,6 +42,10 @@
       mode: {
         type: String,
         default: ''
+      },
+      customClasses: {
+        type: [String, Array],
+        default: () => []
       }
     },
     data: function () {
@@ -52,6 +56,10 @@
       }
     },
     computed: {
+      toggleClasses () {
+        const customClasses = typeof this.customClasses === 'string' ? [this.customClasses] : this.customClasses
+        return [htmlOverlayClass].concat(customClasses)
+      },
       activeRevision: function () {
         return Object.keys(this.currentRevision).length
       },
@@ -69,7 +77,7 @@
       })
     },
     methods: {
-      open: function (onShow) {
+      open: function () {
         if (this.active && !this.hidden) {
           return
         }
@@ -77,13 +85,13 @@
         this.active = true
         this.hidden = false
 
-        html.classList.add(htmlOverlayClass)
+        this.toggleClasses.forEach(klass => html.classList.add(klass))
 
         window.addEventListener('keyup', this.keyPressed)
         this.$emit('open')
       },
       mask: function () {
-        html.classList.remove(htmlOverlayClass)
+        this.toggleClasses.forEach(klass => html.classList.remove(klass))
 
         window.removeEventListener('keyup', this.keyPressed)
         this.$emit('close')
