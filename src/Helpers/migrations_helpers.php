@@ -12,7 +12,7 @@ if (!function_exists('createDefaultFields')) {
         $table->timestamps();
 
         if ($published) {
-            $table->boolean('published');
+            $table->boolean('published')->default(false);
         }
 
         if ($publishDates) {
