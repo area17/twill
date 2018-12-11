@@ -46,24 +46,23 @@ const state = {
 
 // getters
 const getters = {
-  previewsById (state) {
-    return id => state.previews[id] ? state.previews[id] : ''
-  },
+  previewsById: state => (id) => state.previews[id] ? state.previews[id] : '',
   savedBlocksBySection: state => section => state.used[section],
   availableBlocksBySection: state => section => state.available[section],
-  activeBlockIndex: (state, getters) => section => getters.savedBlocksBySection(section).findIndex(block => block.id === state.active.id),
-  sections: state => Object.keys(state.available),
-  blockIndexBySection: (state, getters) => (block, section) => getters.savedBlocksBySection(section).findIndex(b => b.id === block.id)
-}
-
-function setBlockID () {
-  return Date.now()
+  allSavedBlocks: state => Object.keys(state.used).reduce((acc, section) => acc.concat(state.used[section]), []),
+  allAvailableBlocks: state => Array.from(new Set(Object.keys(state.available).reduce((acc, section) => acc.concat(state.available[section]), []))),
+  blockIndexBySection: (state, getters) => (block, section) => getters.savedBlocksBySection(section).findIndex(b => b.id === block.id),
+  sections: state => Object.keys(state.available).reduce((acc, section) => {
+    acc.push({
+      label: section.charAt(0).toUpperCase() + section.slice(1),
+      value: section
+    })
+    return acc
+  }, [])
 }
 
 const mutations = {
   [CONTENT.ADD_BLOCK] (state, { block, index, section }) {
-    block.id = setBlockID()
-
     // init used section
     if (!state.used[section]) state.used[section] = []
 
@@ -87,16 +86,13 @@ const mutations = {
     if (id) Vue.delete(state.previews, id)
     state.used[section].splice(index, 1)
   },
-  [CONTENT.DUPLICATE_BLOCK] (state, { section, index }) {
-    const clone = Object.assign({}, state.used[section][index])
-    clone.id = setBlockID()
-    state.used[section].splice(index + 1, 0, clone)
+  [CONTENT.DUPLICATE_BLOCK] (state, { section, index, block }) {
+    state.used[section].splice(index + 1, 0, block)
   },
   [CONTENT.REORDER_BLOCKS] (state, { section, value }) {
     state.used[section] = value
   },
   [CONTENT.ACTIVATE_BLOCK] (state, { section, index }) {
-    console.log('ACTIVATE_BLOCK', { section, index }, state.used, state.used[section])
     if (state.used[section] && state.used[section][index]) state.active = state.used[section][index]
     else state.active = {}
   },
@@ -109,7 +105,7 @@ const mutations = {
 }
 
 const getBlockPreview = (block, commit, rootState, callback) => {
-  if (block.hasOwnProperty('id')) {
+  if (block && block.hasOwnProperty('id')) {
     const blockData = buildBlock(block, rootState)
 
     if (rootState.language.all.length > 1) {
@@ -146,19 +142,20 @@ const actions = {
     let block = state.used[section] && index >= 0 ? state.used[section][index] : {}
 
     // refresh preview of the active block
-    if (state.active.hasOwnProperty('id') && index === -1) block = state.active
+    if (state.active && state.active.hasOwnProperty('id') && index === -1) block = state.active
 
     getBlockPreview(block, commit, rootState)
   },
-  [ACTIONS.GET_ALL_PREVIEWS] ({ commit, state, rootState }) {
-    if (state.used.length && !state.loading) {
+  [ACTIONS.GET_ALL_PREVIEWS] ({ commit, state, rootState }, { section }) {
+    if (state.used[section] && state.used[section].length > 0 && !state.loading) {
       commit(CONTENT.UPDATE_PREVIEW_LOADING, true)
       let loadedPreview = 0
+      const previewToload = state.used[section].length
 
-      Object.values(state.used).forEach((block) => {
+      Object.values(state.used[section]).forEach((block) => {
         getBlockPreview(block, commit, rootState, () => {
           loadedPreview++
-          if (loadedPreview === state.blocks.length) commit(CONTENT.UPDATE_PREVIEW_LOADING, true)
+          if (loadedPreview === previewToload) commit(CONTENT.UPDATE_PREVIEW_LOADING, true)
         })
       })
     }
