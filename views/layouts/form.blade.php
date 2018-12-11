@@ -71,6 +71,9 @@
     <a17-modal class="modal--browser" ref="browser" mode="medium" :force-close="true">
         <a17-browser></a17-browser>
     </a17-modal>
+    <a17-modal class="modal--browser" ref="browserWide" mode="wide" :force-close="true">
+        <a17-browser></a17-browser>
+    </a17-modal>
     <a17-editor v-if="editor" ref="editor" bg-color="{{ config('twill.block_editor.background_color') ?? '#FFFFFF' }}"></a17-editor>
     <a17-previewer ref="preview"></a17-previewer>
     <a17-dialog ref="warningContentEditor" modal-title="Delete content" confirm-label="Delete">

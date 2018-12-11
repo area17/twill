@@ -6,6 +6,7 @@
     $note = $note ?? 'Add' . ($max > 1 ? " up to $max ". strtolower($label) : ' one ' . str_singular(strtolower($label)));
     $itemLabel = $itemLabel ?? strtolower($label);
     $sortable = $sortable ?? true;
+    $wide = $wide ?? false;
 @endphp
 
 <a17-inputframe label="{{ $label }}" name="browsers.{{ $name }}">
@@ -13,6 +14,7 @@
         @include('twill::partials.form.utils._field_name')
         item-label="{{ $itemLabel }}"
         :max="{{ $max }}"
+        :wide = " {{ json_encode($wide) }} "
         endpoint="{{ $endpoint }}"
         modal-title="Attach {{ strtolower($label) }}"
         :draggable="{{ json_encode($sortable) }}"
