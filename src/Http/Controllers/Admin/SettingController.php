@@ -32,7 +32,7 @@ class SettingController extends Controller
             return redirect()->back();
         }
 
-        $this->settings->update(request()->except('_token'), $section);
+        $this->settings->saveAll(request()->except('_token'), $section);
 
         Event::fire('cms-settings.saved', 'cms-settings.saved');
 

@@ -167,7 +167,7 @@
     window.STORE.parentId = {{ $item->parent_id ?? 0 }}
     window.STORE.parents = {!! json_encode($parents ?? [])  !!}
 
-    window.STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('twill.block_editor.crops')) !!}
+    window.STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('twill.block_editor.crops') + (config('twill.settings.crops') ?? [])) !!}
     window.STORE.medias.selected = {}
 
     window.STORE.browser = {}
