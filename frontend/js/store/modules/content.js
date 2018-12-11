@@ -52,8 +52,8 @@ const getters = {
   savedBlocksBySection: state => section => state.used[section],
   availableBlocksBySection: state => section => state.available[section],
   activeBlockIndex: (state, getters) => section => getters.savedBlocksBySection(section).findIndex(block => block.id === state.active.id),
-  sections: state => Object.keys(state.available)
-  blockIndexBySection: (state, getters) => (block, section) => getters.savedBlocksBySection(section).findIndex(b => b.id === block.id),
+  sections: state => Object.keys(state.available),
+  blockIndexBySection: (state, getters) => (block, section) => getters.savedBlocksBySection(section).findIndex(b => b.id === block.id)
 }
 
 function setBlockID () {

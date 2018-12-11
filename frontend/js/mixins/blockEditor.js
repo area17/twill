@@ -16,9 +16,9 @@ export default {
     }
   },
   methods: {
-    addAndEditBlock (add, edit, {block, index}) {
+    addAndEditBlock (add, edit, { block, index }) {
       window.PREVSTATE = cloneDeep(this.$store.state)
-      console.log('add-and-edit-block', {block, index})
+      console.log('add-and-edit-block', { block, index })
       add(block, index)
       edit(index)
     },
