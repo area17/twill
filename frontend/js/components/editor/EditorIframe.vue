@@ -1,14 +1,28 @@
 <template>
   <div class="editorIframe">
-    <div class="editorIframe__empty" v-if="preview === ''">
+    <div class="editorIframe__empty"
+         v-if="preview === ''">
       {{ title }}
     </div>
-    <iframe :srcdoc="preview" ref="frame" @load="loadedPreview"></iframe>
+    <template v-else>
+      <iframe v-if="sandbox"
+              ref="frame"
+              :srcdoc="preview"
+              :sandbox="sandboxOptions"
+              scrolling="no"
+              @load="loadedPreview">
+      </iframe>
+      <iframe v-else ref="frame"
+              :srcdoc="preview"
+              scrolling="no"
+              @load="loadedPreview">
+      </iframe>
+    </template>
   </div>
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
+  import { mapGetters } from 'vuex'
 
   export default {
     name: 'A17editoriframe',
@@ -21,34 +35,41 @@
       }
     },
     computed: {
-      preview: function () {
+      preview () {
         return this.previewsById(this.block.id) || ''
       },
-      title: function () {
+      title () {
         return this.block.title || ''
+      },
+      sandboxOptions () {
+        return typeof this.sandbox === 'boolean' ? 'allow-same-origin allow-top-navigation' : this.sandbox.join(' ')
       },
       ...mapGetters([
         'previewsById'
-      ]),
-      ...mapState({
-        savedBlocks: state => state.content.blocks
-      })
+      ])
     },
+    inject: ['sandbox'],
     methods: {
-      setIframeHeight () {
-        if (!this.$refs.frame) return
-        window.requestAnimationFrame(() => {
-          this.$refs.frame.style.height = this.$refs.frame.contentWindow.document.body.scrollHeight + 'px'
-        })
-      },
-      loadedPreview (event) {
+      loadedPreview () {
         if (this.$refs.frame && this.$refs.frame.srcdoc) {
+          this.resize()
           this.$emit('loaded', this.$refs.frame)
-          this.setIframeHeight()
         }
       },
-      handleResize () {
-        this.setIframeHeight()
+      resize () {
+        if (!this.$refs.frame) return
+        const frameBody = this.$refs.frame.contentWindow.document.body
+
+        // no scollbars
+        frameBody.style.overflow = 'hidden'
+
+        // get body extra margin
+        const bodyStyle = window.getComputedStyle(frameBody)
+        const bodyMarginTop = bodyStyle.getPropertyValue('margin-top')
+        const bodyMarginBottom = bodyStyle.getPropertyValue('margin-bottom')
+        const frameHeight = frameBody.scrollHeight + parseInt(bodyMarginTop) + parseInt(bodyMarginBottom)
+
+        this.$refs.frame.height = frameHeight + 'px'
       }
     },
     mounted () {
@@ -64,6 +85,8 @@
 
   .editorIframe {
     cursor: pointer;
+    overflow-y: hidden;
+    padding: 5px;
 
     iframe {
       width: 100%;
@@ -80,7 +103,7 @@
     bottom: 0;
     text-align: center;
     display: flex;
-    flex-wrap: no-wrap;
+    flex-wrap: nowrap;
     align-items: center;
     justify-content: center;
     color: rgba($color__text, 0.5);

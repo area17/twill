@@ -72,6 +72,10 @@
       bgColor: {
         type: String,
         default: '#FFFFFF'
+      },
+      previewSandbox: {
+        type: [Boolean, Array],
+        default: true
       }
     },
     data () {
@@ -89,6 +93,11 @@
       ...mapGetters([
         'savedBlocksBySection'
       ])
+    },
+    provide () {
+      return {
+        sandbox: this.previewSandbox
+      }
     },
     methods: {
       // Section functions
