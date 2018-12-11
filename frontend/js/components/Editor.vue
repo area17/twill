@@ -74,6 +74,10 @@
       bgColor: {
         type: String,
         default: '#FFFFFF'
+      },
+      previewSandbox: {
+        type: [Boolean, Array],
+        default: true
       }
     },
     data () {
@@ -92,6 +96,9 @@
         'savedBlocksBySection'
       ])
     },
+    provide () {
+      return {
+        sandbox: this.previewSandbox
       }
     },
     methods: {

@@ -1,14 +1,28 @@
 <template>
-  <div class="editorIframe" >
-    <div class="editorIframe__empty" v-if="preview === ''">
+  <div class="editorIframe">
+    <div class="editorIframe__empty"
+         v-if="preview === ''">
       {{ title }}
     </div>
-    <iframe :srcdoc="preview" ref="frame" @load="loadedPreview"></iframe>
+    <template v-else>
+      <iframe v-if="sandbox"
+              ref="frame"
+              :srcdoc="preview"
+              :sandbox="sandboxOptions"
+              scrolling="no"
+              @load="loadedPreview">
+      </iframe>
+      <iframe v-else ref="frame"
+              :srcdoc="preview"
+              scrolling="no"
+              @load="loadedPreview">
+      </iframe>
+    </template>
   </div>
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
+  import { mapGetters } from 'vuex'
 
   export default {
     name: 'A17editoriframe',
@@ -21,22 +35,41 @@
       }
     },
     computed: {
-      preview: function () {
+      preview () {
         return this.previewsById(this.block.id) || ''
       },
-      title: function () {
+      title () {
         return this.block.title || ''
+      },
+      sandboxOptions () {
+        return typeof this.sandbox === 'boolean' ? 'allow-same-origin allow-top-navigation' : this.sandbox.join(' ')
       },
       ...mapGetters([
         'previewsById'
-      ]),
-      ...mapState({
-        savedBlocks: state => state.content.blocks
-      })
+      ])
     },
+    inject: ['sandbox'],
     methods: {
-      loadedPreview: function (event) {
-        if (this.$refs.frame && this.$refs.frame.srcdoc) this.$emit('loaded', this.$refs.frame)
+      loadedPreview () {
+        if (this.$refs.frame && this.$refs.frame.srcdoc) {
+          this.resize()
+          this.$emit('loaded', this.$refs.frame)
+        }
+      },
+      resize () {
+        if (!this.$refs.frame) return
+        const frameBody = this.$refs.frame.contentWindow.document.body
+
+        // no scollbars
+        frameBody.style.overflow = 'hidden'
+
+        // get body extra margin
+        const bodyStyle = window.getComputedStyle(frameBody)
+        const bodyMarginTop = bodyStyle.getPropertyValue('margin-top')
+        const bodyMarginBottom = bodyStyle.getPropertyValue('margin-bottom')
+        const frameHeight = frameBody.scrollHeight + parseInt(bodyMarginTop) + parseInt(bodyMarginBottom)
+
+        this.$refs.frame.height = frameHeight + 'px'
       }
     }
   }
@@ -46,7 +79,9 @@
   @import '~styles/setup/_mixins-colors-vars.scss';
 
   .editorIframe {
-    cursor:pointer;
+    cursor: pointer;
+    overflow-y: hidden;
+    padding: 5px;
 
     iframe {
       width: 100%;
@@ -61,19 +96,19 @@
     right: 0;
     top: 0;
     bottom: 0;
-    text-align:center;
+    text-align: center;
     display: flex;
-    flex-wrap:no-wrap;
+    flex-wrap: nowrap;
     align-items: center;
     justify-content: center;
-    color:rgba($color__text, 0.5);
-    background-color:rgba($color_editor--active, 0.05);
-    border:1px solid rgba($color_editor--active, 0.33);
+    color: rgba($color__text, 0.5);
+    background-color: rgba($color_editor--active, 0.05);
+    border: 1px solid rgba($color_editor--active, 0.33);
   }
 
   .editor__preview--dark .editorIframe__empty {
-    color:rgba($color__background, 0.75);
-    background-color:rgba($color_editor--active, 0.2);
-    border:1px solid rgba($color_editor--active, 0.5);
+    color: rgba($color__background, 0.75);
+    background-color: rgba($color_editor--active, 0.2);
+    border: 1px solid rgba($color_editor--active, 0.5);
   }
 </style>
