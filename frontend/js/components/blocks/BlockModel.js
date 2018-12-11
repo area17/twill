@@ -1,11 +1,10 @@
 import CONTENT from '@/store/mutations/content'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
   props: {
     block: {
-      type: Object,
-      default: () => {}
+      type: Object
     },
     section: {
       type: String,
@@ -14,25 +13,42 @@ export default {
   },
   computed: {
     blockIndex () {
-      console.log('blockIndex', this.block, this.section)
-      return this.blockIndexBySection(this.block, this.section)
+      return this.block ? this.blockIndexBySection(this.block, this.section) : 0
     },
+    isActive () {
+      return this.block && Object.keys(this.activeBlock).length > 0 ? this.block.id === this.activeBlock.id : false
+    },
+    ...mapState({
+      activeBlock: state => state.content.active
+    }),
     ...mapGetters([
       'blockIndexBySection'
     ])
   },
   methods: {
     add (block, index = -1) {
-      console.log('BlockList - add block', block)
       this.$store.commit(CONTENT.ADD_BLOCK, {
         section: this.section,
         block: {
+          id: this.setBlockID(),
           title: block.title,
           type: block.component,
           icon: block.icon,
           attributes: block.attributes
         },
         index: index
+      })
+    },
+    edit (index = this.blockIndex) {
+      this.$store.commit(CONTENT.ACTIVATE_BLOCK, {
+        section: this.section,
+        index: index
+      })
+    },
+    unEdit () {
+      this.$store.commit(CONTENT.ACTIVATE_BLOCK, {
+        section: this.section,
+        index: -1
       })
     },
     move (newIndex) {
@@ -44,18 +60,23 @@ export default {
       })
     },
     duplicate () {
+      let block = Object.assign({}, this.block)
+      block.id = this.setBlockID()
       this.$store.commit(CONTENT.DUPLICATE_BLOCK, {
         section: this.section,
-        index: this.blockIndex
+        index: this.blockIndex,
+        block: block
       })
     },
     remove () {
-      console.log('delete-block')
-      // open confirm dialog if any
+      this.unEdit()
       this.$store.commit(CONTENT.DELETE_BLOCK, {
         section: this.section,
         index: this.blockIndex
       })
+    },
+    setBlockID () {
+      return Date.now()
     }
   },
   render () {
@@ -63,6 +84,9 @@ export default {
       block: this.block,
       blockIndex: this.blockIndex,
       add: this.add,
+      edit: this.edit,
+      unEdit: this.unEdit,
+      isActive: this.isActive,
       remove: this.remove,
       move: this.move,
       duplicate: this.duplicate
