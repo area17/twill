@@ -40,7 +40,7 @@
                   </button>
                   <button type="button"
                           v-if="editor"
-                          @click="openEditor(blockIndex, section)">Open in editor
+                          @click="openInEditor(edit, blockIndex, section)">Open in editor
                   </button>
                   <button type="button"
                           @click="handleDuplicateBlock(duplicate)">Create another
@@ -96,7 +96,7 @@
           <a href="#"
              class="f--link f--link-underlined--o"
              v-if="editor"
-             @click.prevent="openEditor(-1)">Open in editor</a>
+             @click.prevent="openEditor(-1, section)">Open in editor</a>
         </div>
       </div>
     </div>
@@ -180,6 +180,10 @@
         this.$nextTick(() => {
           this.checkExpandBlocks()
         })
+      },
+      openInEditor (fn, block, index) {
+        fn()
+        this.openEditor(block, index)
       },
       expandAllBlocks () {
         this.$refs.blockList.forEach(block => {
