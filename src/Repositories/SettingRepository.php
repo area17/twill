@@ -45,7 +45,7 @@ class SettingRepository extends ModuleRepository
     public function saveAll($settingsFields, $section = null)
     {
         $section = $section ? ['section' => $section] : [];
-        
+
         foreach (collect($settingsFields)->except('active_languages', 'medias', 'mediaMeta')->filter() as $key => $value) {
             foreach (getLocales() as $locale) {
                 array_set(
@@ -55,15 +55,15 @@ class SettingRepository extends ModuleRepository
                 );
             }
         }
-        
+
         foreach ($settingsTranslated as $key => $values) {
             array_set($settings, $key, ['key' => $key] + $section + $values);
         }
-        
+
         foreach ($settings as $key => $setting) {
             $this->model->updateOrCreate(['key' => $key] + $section, $setting);
         }
-        
+
         foreach ($settingsFields['medias'] as $role => $mediasList) {            
             $this->updateOrCreate($section + ['key' => $role], $section + [
                 'key' => $role,
