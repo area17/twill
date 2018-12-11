@@ -4,7 +4,7 @@
          slot-scope="{ savedBlocks, availableBlocks, reorderBlocks }">
       <draggable class="content__container"
                  :value="savedBlocks"
-                 @input="(value) => { reorderBlocks(value) }"
+                 @update="reorderBlocks({ oldIndex, newIndex })"
                  :options="dragOptions">
         <transition-group name="draggable_list"
                           tag='div'>
@@ -13,7 +13,7 @@
                :key="savedBlock.id">
             <a17-block-model :section="section"
                              :block="savedBlock">
-              <a17-block-item slot-scope="{ block, blockIndex, add, move, remove, duplicate }"
+              <a17-block-item slot-scope="{ block, blockIndex, add, edit, move, remove, duplicate }"
                               ref="blockList"
                               :block="block"
                               :index="blockIndex"
