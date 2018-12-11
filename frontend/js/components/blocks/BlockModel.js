@@ -60,7 +60,7 @@ export default {
       })
     },
     duplicate () {
-      let block = Object.assign({}, this.block)
+      const block = Object.assign({}, this.block)
       block.id = this.setBlockID()
       this.$store.commit(CONTENT.DUPLICATE_BLOCK, {
         section: this.section,

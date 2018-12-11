@@ -4,21 +4,20 @@ import CONTENT from '@/store/mutations/content'
 export default {
   props: {
     section: {
-      type: [String],
-      default: 'default'
+      type: String
     }
   },
   computed: {
-    hasBlockActive () {
-      return Object.keys(this.activeBlock).length
-    },
     availableBlocks () {
-      return this.availableBlocksBySection(this.section)
+      return this.section ? this.availableBlocksBySection(this.section) : this.allAvailableBlocks
     },
     savedBlocks () {
-      return this.savedBlocksBySection(this.section)
+      return this.section ? this.savedBlocksBySection(this.section) : this.allSavedBlocks
     },
-    hasActiveBlock () {
+    multipleSections () {
+      return this.sections.length > 1
+    },
+    hasBlockActive () {
       return Object.keys(this.activeBlock).length > 0
     },
     ...mapState({
@@ -26,7 +25,8 @@ export default {
     }),
     ...mapGetters(
       [
-        'activeBlockIndex',
+        'allSavedBlocks',
+        'allAvailableBlocks',
         'availableBlocksBySection',
         'savedBlocksBySection',
         'sections'
@@ -39,17 +39,25 @@ export default {
         section: this.section,
         value: value
       })
+    },
+    moveBlock ({ oldIndex, newIndex }) {
+      this.$store.commit(CONTENT.MOVE_BLOCK, {
+        section: this.section,
+        oldIndex,
+        newIndex
+      })
     }
   },
   render () {
     return this.$scopedSlots.default({
-      hasActiveBlock: this.hasActiveBlock,
-      activeBlock: this.activeBlock,
-      activeBlockIndex: this.activeBlockIndex(this.section),
       availableBlocks: this.availableBlocks,
       savedBlocks: this.savedBlocks,
       reorderBlocks: this.reorderBlocks,
-      sections: this.sections
+      moveBlock: this.moveBlock,
+      sections: this.sections,
+      multipleSections: this.multipleSections,
+      hasBlockActive: this.hasBlockActive,
+      activeBlock: this.activeBlock
     })
   }
 }
