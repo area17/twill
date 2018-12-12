@@ -16,7 +16,7 @@
             <img :src="item.thumbnail" />
           </td>
           <td class="itemlist__cell itemlist__cell--name" v-if="item.hasOwnProperty('name')">
-            <div v-if="item.hasOwnProperty('html')" v-html="item.name"></div>
+            <div v-if="item.hasOwnProperty('renderHtml')" v-html="item.name"></div>
             <div v-else>{{ item.name }}</div>
           </td>
           <td class="itemlist__cell" v-for="extraColumn in extraColumns" :class="rowClass(extraColumn)">
