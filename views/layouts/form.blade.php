@@ -8,6 +8,7 @@
     $translateTitle = $translateTitle ?? $translate ?? false;
     $titleFormKey = $titleFormKey ?? 'title';
     $customForm = $customForm ?? false;
+    $controlLanguagesPublication = $controlLanguagesPublication ?? true;
 @endphp
 
 @section('content')
@@ -33,7 +34,7 @@
                     </template>
                 </a17-title-editor>
                 <div slot="actions">
-                    <a17-langswitcher></a17-langswitcher>
+                    <a17-langswitcher :all-published="{{ json_encode(!$controlLanguagesPublication) }}"></a17-langswitcher>
                     <a17-button v-if="editor" type="button" variant="editor" size="small" @click="openEditor(-1)">
                         <span v-svg symbol="editor"></span>Editor
                     </a17-button>
@@ -46,7 +47,7 @@
                 <div class="wrapper wrapper--reverse" v-sticky data-sticky-id="publisher" data-sticky-offset="80">
                     <aside class="col col--aside">
                         <div class="publisher" data-sticky-target="publisher">
-                            <a17-publisher></a17-publisher>
+                            <a17-publisher :show-languages="{{ json_encode($controlLanguagesPublication) }}"></a17-publisher>
                             <a17-page-nav
                                 placeholder="Go to page"
                                 previous-url="{{ $parentPreviousUrl ?? '' }}"

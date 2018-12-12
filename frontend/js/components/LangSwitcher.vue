@@ -5,7 +5,7 @@
     <span class="language__label f--small" v-if="!inModal">Edit in</span>
     <span class="language__toolbar">
       <button type="button" class="language__button" :key="language.value" v-for="language in languages"
-              :class="{ 'selected': language.value === localeValue.value, 'published': language.published }"
+              :class="{ 'selected': language.value === localeValue.value, 'published': allPublished ? true : language.published }"
               @click="onClick(language.value)">{{ language.shortlabel }}</button>
     </span>
   </div>
@@ -25,6 +25,10 @@
         default: false
       },
       toggleOnClick: {
+        type: Boolean,
+        default: false
+      },
+      allPublished: {
         type: Boolean,
         default: false
       }

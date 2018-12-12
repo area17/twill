@@ -33,7 +33,7 @@ class SettingRepository extends ModuleRepository
 
         return $settings->mapWithKeys(function ($setting) {
             $settingValue = [];
-            
+
             foreach ($setting->translations as $translation) {
                 $settingValue[$translation->locale] = $translation->value;
             }
@@ -51,7 +51,11 @@ class SettingRepository extends ModuleRepository
                 array_set(
                     $settingsTranslated,
                     $key . '.' . $locale,
-                    ['value' => $value[$locale] ?? $value] + ['active' => true]
+                    [
+                        'value' => is_array($value)
+                        ? (array_key_exists($locale, $value) ? $value[$locale] : $value)
+                        : $value,
+                    ] + ['active' => true]
                 );
             }
         }
@@ -64,14 +68,14 @@ class SettingRepository extends ModuleRepository
             $this->model->updateOrCreate(['key' => $key] + $section, $setting);
         }
 
-        foreach ($settingsFields['medias'] as $role => $mediasList) {            
+        foreach ($settingsFields['medias'] ?? [] as $role => $mediasList) {
             $this->updateOrCreate($section + ['key' => $role], $section + [
                 'key' => $role,
                 'medias' => [
                     $role => collect($settingsFields['medias'][$role])->map(function ($media) {
                         return json_decode($media, true);
-                    })->values()->filter()->toArray()
-                ]
+                    })->values()->filter()->toArray(),
+                ],
             ]);
         }
     }
@@ -80,5 +84,5 @@ class SettingRepository extends ModuleRepository
     {
         return config('twill.settings.crops')[$role];
     }
-    
+
 }
