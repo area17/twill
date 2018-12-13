@@ -1,5 +1,4 @@
 let mix = require('laravel-mix')
-let webpack = require('webpack')
 
 /*
  |--------------------------------------------------------------------------
@@ -25,23 +24,28 @@ mix.webpackConfig({
       'styles': path.resolve('frontend/scss')
     }
   },
-  plugins: [
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'assets/admin/js/vendor',
-      minChunks: function (module) {
-        // This prevents stylesheet resources with these extensions
-        // from being moved from their original chunk to the vendor chunk
-        if (module.resource && (/^.*\.(css|scss|less)$/).test(module.resource)) {
-          return false
+  optimization: {
+    runtimeChunk: {
+      name: 'assets/admin/js/manifest'
+    },
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test (module, chunks) {
+            // This prevents stylesheet resources with these extensions
+            // from being moved from their original chunk to the vendor chunk
+            if (module.resource && (/^.*\.(css|scss|less)$/).test(module.resource)) {
+              return false
+            }
+            return module.context && module.context.indexOf('node_modules') !== -1
+          },
+          chunks: "initial",
+          name: "assets/admin/js/vendor",
+          enforce: true
         }
-        return module.context && module.context.indexOf('node_modules') !== -1
       }
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'assets/admin/js/manifest',
-      minChunks: Infinity
-    })
-  ],
+    }
+  },
   module: {
     rules: [
       {
@@ -74,7 +78,8 @@ mix.js(
   'public/assets/admin/js'
 ).sass(
   'frontend/scss/app.scss',
-  'public/assets/admin/css'
+  'public/assets/admin/css',
+  { implementation: require('node-sass') }
 )
 
 if (mix.inProduction()) {
