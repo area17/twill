@@ -66,7 +66,7 @@ trait HandleSlugs
         $query = $this->model->where($scopes)->scopes(['published', 'visible']);
 
         foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'getPublishedScopes')) {
+            if (method_exists(get_called_class(), $method = 'getPublishedScopes' . class_basename($trait))) {
                 $query->scopes($this->$method());
             }
         }
