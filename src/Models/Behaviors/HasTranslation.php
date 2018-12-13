@@ -64,7 +64,9 @@ trait HasTranslation
     {
         $locale = $locale ?: $this->locale();
 
-        foreach ($this->translations()->get() as $translation) {
+        $translations = $this->memoizedTranslations ?? ($this->memoizedTranslations = $this->translations()->get());
+
+        foreach ($translations as $translation) {
             if ($translation->getAttribute($this->getLocaleKey()) == $locale && $translation->getAttribute('active')) {
                 return true;
             }
