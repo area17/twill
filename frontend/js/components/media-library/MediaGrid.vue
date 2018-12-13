@@ -7,7 +7,7 @@
       </span>
     </div>
     <div class="mediagrid__item" v-for="item in items" :key="item.id">
-      <span class="mediagrid__button" :class="{ 's--picked': isSelected(item.id), 's--used': isUsed(item.id) }" @click.exact="toggleSelection(item.id)" @click.shift.exact="shiftToggleSelection(item.id)"><img :src="item.thumbnail" class="mediagrid__img" /></span>
+      <span class="mediagrid__button" :class="{ 's--picked': isSelected(item), 's--used': isUsed(item) }" @click.exact="toggleSelection(item)" @click.shift.exact="shiftToggleSelection(item)"><img :src="item.thumbnail" class="mediagrid__img" /></span>
     </div>
   </div>
 </template>

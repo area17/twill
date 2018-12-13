@@ -2,6 +2,7 @@
 .vuepress/docs
 .idea
 node_modules
+!.vuepress/public
 
 # generated using npm scripts
 README.md 

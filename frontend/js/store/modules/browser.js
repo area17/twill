@@ -5,6 +5,8 @@ const state = {
   connector: null,
   title: 'Attach related resources',
   endpoint: '',
+  endpointName: '',
+  endpoints: [],
   max: 0,
   selected: window.STORE.browser.selected || {}
 }
@@ -15,7 +17,7 @@ const getters = {
     let arrayOfIds = []
 
     for (let name in state.selected) {
-      arrayOfIds[name] = state.selected[name].map((item) => item.id)
+      arrayOfIds[name] = state.selected[name].map((item) => `${item.endpointType}_${item.id}`)
     }
 
     return arrayOfIds
@@ -26,9 +28,10 @@ const mutations = {
   [BROWSER.SAVE_ITEMS] (state, items) {
     if (state.connector) {
       if (state.selected[state.connector] && state.selected[state.connector].length) {
-        items.forEach(function (item) {
-          state.selected[state.connector].push(item)
-        })
+        // items.forEach(function (item) {
+        //   state.selected[state.connector].push(item)
+        // })
+        state.selected[state.connector] = items
       } else {
         const newItems = {}
         newItems[state.connector] = items
@@ -68,10 +71,23 @@ const mutations = {
     state.connector = null
   },
   [BROWSER.UPDATE_BROWSER_ENDPOINT] (state, newValue) {
-    if (newValue && newValue !== '') state.endpoint = newValue
+    if (newValue && newValue !== '') {
+      state.endpoint = newValue.value
+      state.endpointName = newValue.label || ''
+    }
   },
   [BROWSER.DESTROY_BROWSER_ENDPOINT] (state) {
     state.endpoint = ''
+    state.endpointName = ''
+  },
+  [BROWSER.UPDATE_BROWSER_ENDPOINTS] (state, endpoints) {
+    if (!endpoints && !endpoints.length > 0) return
+    state.endpoints = endpoints
+    state.endpoint = endpoints[0].value
+    state.endpointName = endpoints[0].label
+  },
+  [BROWSER.DESTROY_BROWSER_ENDPOINTS] (state) {
+    state.endpoints = []
   }
 }
 

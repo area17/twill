@@ -1,6 +1,6 @@
 ## Block editor
 ### Adding blocks
-The block editor form field lets you add content freely to your module. The blocks can be easy added and rearranged.
+The block editor form field lets you add content freely to your module. The blocks can be easily added and rearranged.
 Once a block is created, it can be used/added to any module by adding the corresponding traits.
 
 In order to add a block editor you need to add the `block_editor` field to your module form. e.g.:
@@ -94,7 +94,7 @@ filename: ```config/twill.php```
 ```
 
 Please note the naming convention. If the *block* added is _quote_ then the component should be prefixed with _a17-block-_.
-If you added a block like *my_awesome_block* then you need to make sure that keep the same name as _key_ and the _component name_ with the prefix. e.g.:
+If you added a block like *my_awesome_block* then you will need to keep the same name as _key_ and the _component name_ with the prefix. e.g.:
 ```php
     'block_editor' => [
         'blocks' => [
@@ -109,7 +109,7 @@ If you added a block like *my_awesome_block* then you need to make sure that kee
 ```
 
 
-After having the blocks added and the configuration set it is required to have the traits added inside your module(Laravel Model).
+After having the blocks added and the configuration set it is required to have the traits added inside your module (Laravel Model).
 Add the corresponding traits to your model and repository, respectively `HasBlocks` and `HandleBlocks`.
 
 filename: ```app/Models/Article.php```
@@ -148,7 +148,7 @@ class ArticleRepository extends ModuleRepository
 ```
 
 #### Common Errors
-- Make sure your project have the blocks table migration. If not, you can find the `create_blocks_table` migration in Twill's source in `migrations`.
+- Make sure your project has the blocks table migration. If not, you can find the `create_blocks_table` migration in Twill's source in `migrations`.
 
 - Not running the _twill:blocks_ task.
 
@@ -257,7 +257,7 @@ filename: ```views/admin/articles/form.blade.php```
         ]
 ```
 
-- If you use a different name for the block inside the _repeaters_ section, neither. e. g.:
+- If you use a different name for the block inside the _repeaters_ section, it also won't work, e. g.:
 ```php
         'repeaters' => [
             ...
@@ -277,7 +277,7 @@ filename: ```views/admin/articles/form.blade.php```
 If you are requested to enable the possibility to add a related model, then the browser fields are the match.
 If you have an Article that can have related products.
 
-On the Article(entity) form we have:
+On the Article (entity) form we have:
 
 filename: ```views/admin/articles/form.blade.php```
 ```php
@@ -362,7 +362,7 @@ If you need to swap out a block view for a specific module (let’s say you used
 ]) !!}
 ```
 
-In those Blade view, you will have access to a `$block`variable with a couple of helper function available to retrieve the block content:
+In these Blade views, you will have access to a `$block`variable with a couple of helper functions available to retrieve the block content:
 
 ```php
 {{ $block->input('inputNameYouSpecifiedInTheBlockFormField') }}

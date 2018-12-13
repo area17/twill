@@ -170,7 +170,6 @@
     watch: {
       type: function () {
         this.clearFullMedias()
-        this.clearSelectedMedias()
         this.gridLoaded = false
       }
     },
@@ -212,7 +211,8 @@
         // select it
         this.updateSelectedMedias(media.id)
       },
-      updateSelectedMedias: function (id, shift = false) {
+      updateSelectedMedias: function (item, shift = false) {
+        const id = item.id
         const alreadySelectedMedia = this.selectedMedias.filter(function (media) {
           return media.id === id
         })
@@ -301,7 +301,6 @@
         }
       },
       clearFullMedias: function () {
-        this.selectedMedias.splice(0)
         this.fullMedias.splice(0)
       },
       reloadGrid: function () {

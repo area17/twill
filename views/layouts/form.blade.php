@@ -8,6 +8,7 @@
     $translateTitle = $translateTitle ?? $translate ?? false;
     $titleFormKey = $titleFormKey ?? 'title';
     $customForm = $customForm ?? false;
+    $controlLanguagesPublication = $controlLanguagesPublication ?? true;
 @endphp
 
 @section('content')
@@ -33,7 +34,7 @@
                     </template>
                 </a17-title-editor>
                 <div slot="actions">
-                    <a17-langswitcher></a17-langswitcher>
+                    <a17-langswitcher :all-published="{{ json_encode(!$controlLanguagesPublication) }}"></a17-langswitcher>
                     <a17-button v-if="editor" type="button" variant="editor" size="small" @click="openEditor(-1)">
                         <span v-svg symbol="editor"></span>Editor
                     </a17-button>
@@ -46,7 +47,7 @@
                 <div class="wrapper wrapper--reverse" v-sticky data-sticky-id="publisher" data-sticky-offset="80">
                     <aside class="col col--aside">
                         <div class="publisher" data-sticky-target="publisher">
-                            <a17-publisher></a17-publisher>
+                            <a17-publisher :show-languages="{{ json_encode($controlLanguagesPublication) }}"></a17-publisher>
                             <a17-page-nav
                                 placeholder="Go to page"
                                 previous-url="{{ $parentPreviousUrl ?? '' }}"
@@ -55,9 +56,11 @@
                         </div>
                     </aside>
                     <section class="col col--primary">
-                        <a17-fieldset title="{{ $contentFieldsetLabel ?? 'Content' }}" id="content" data-sticky-top="publisher">
-                            @yield('contentFields')
-                        </a17-fieldset>
+                        @unless($disableContentFieldset ?? false)
+                            <a17-fieldset title="{{ $contentFieldsetLabel ?? 'Content' }}" id="content" data-sticky-top="publisher">
+                                @yield('contentFields')
+                            </a17-fieldset>
+                        @endunless
 
                         @yield('fieldsets')
                     </section>
@@ -67,6 +70,9 @@
         </form>
     </div>
     <a17-modal class="modal--browser" ref="browser" mode="medium" :force-close="true">
+        <a17-browser></a17-browser>
+    </a17-modal>
+    <a17-modal class="modal--browser" ref="browserWide" mode="wide" :force-close="true">
         <a17-browser></a17-browser>
     </a17-modal>
     <a17-editor v-if="editor" ref="editor" bg-color="{{ config('twill.block_editor.background_color') ?? '#FFFFFF' }}"></a17-editor>
@@ -165,7 +171,7 @@
     window.STORE.parentId = {{ $item->parent_id ?? 0 }}
     window.STORE.parents = {!! json_encode($parents ?? [])  !!}
 
-    window.STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('twill.block_editor.crops')) !!}
+    window.STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('twill.block_editor.crops') + (config('twill.settings.crops') ?? [])) !!}
     window.STORE.medias.selected = {}
 
     window.STORE.browser = {}

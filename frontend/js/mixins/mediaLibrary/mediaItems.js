@@ -21,17 +21,17 @@ export default {
     })
   },
   methods: {
-    isSelected: function (id) {
-      return Boolean(this.selectedItems.find(item => item.id === id))
+    isSelected: function (item, keys = ['id']) {
+      return Boolean(this.selectedItems.find(sItem => keys.every(key => sItem[key] === item[key])))
     },
-    isUsed: function (id) {
-      return Boolean(this.usedItems.find(item => item.id === id))
+    isUsed: function (item, keys = ['id']) {
+      return Boolean(this.usedItems.find(uItem => keys.every(key => uItem[key] === item[key])))
     },
-    toggleSelection: function (id) {
-      this.$emit('change', id)
+    toggleSelection: function (item) {
+      this.$emit('change', item)
     },
-    shiftToggleSelection: function (id) {
-      this.$emit('shiftChange', id, true)
+    shiftToggleSelection: function (item) {
+      this.$emit('shiftChange', item, true)
     }
   }
 }

@@ -120,7 +120,7 @@ trait HandleTranslations
         }
     }
 
-    public function getPublishedScopes()
+    public function getPublishedScopesHandleTranslations()
     {
         return ['withActiveTranslations'];
     }

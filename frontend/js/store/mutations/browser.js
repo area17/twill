@@ -8,7 +8,9 @@ export const UPDATE_BROWSER_TITLE = 'updateBrowserTitle'
 export const UPDATE_BROWSER_CONNECTOR = 'updateBrowserConnector'
 export const DESTROY_BROWSER_CONNECTOR = 'destroyBrowserConnector'
 export const UPDATE_BROWSER_ENDPOINT = 'updateBrowserEndpoint'
+export const UPDATE_BROWSER_ENDPOINTS = 'updateBrowserEndpoints'
 export const DESTROY_BROWSER_ENDPOINT = 'destroyBrowserEndpoint'
+export const DESTROY_BROWSER_ENDPOINTS = 'destroyBrowserEndpoints'
 
 export default {
   SAVE_ITEMS,
@@ -20,5 +22,7 @@ export default {
   UPDATE_BROWSER_CONNECTOR,
   DESTROY_BROWSER_CONNECTOR,
   UPDATE_BROWSER_ENDPOINT,
-  DESTROY_BROWSER_ENDPOINT
+  DESTROY_BROWSER_ENDPOINT,
+  UPDATE_BROWSER_ENDPOINTS,
+  DESTROY_BROWSER_ENDPOINTS
 }

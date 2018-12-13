@@ -163,6 +163,17 @@ abstract class ModuleRepository
         return $this->hydrate($object, $fields);
     }
 
+    public function updateOrCreate($attributes, $fields)
+    {
+        $object = $this->model->where($attributes)->first();
+
+        if (!$object) {
+            return $this->create($fields);
+        }
+
+        $this->update($object->id, $fields);
+    }
+
     public function update($id, $fields)
     {
         DB::transaction(function () use ($id, $fields) {
@@ -486,7 +497,23 @@ abstract class ModuleRepository
                 'id' => $relatedElement->id,
                 'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
                 'edit' => moduleRoute($moduleName ?? $relation, $routePrefix ?? '', 'edit', $relatedElement->id),
+                'endpointType' => $relatedElement->getMorphClass(),
             ] + (classHasTrait($relatedElement, HasMedias::class) ? [
+                'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
+            ] : []);
+        })->toArray();
+    }
+
+    public function getFormFieldsForRelatedBrowser($object, $relation)
+    {
+        return $object->getRelated($relation)->map(function ($relatedElement) {
+            return [
+                'id' => $relatedElement->id,
+                'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
+                'endpointType' => $relatedElement->getMorphClass(),
+            ] + (($relatedElement->adminEditUrl ?? null) ? [] : [
+                'edit' => $relatedElement->adminEditUrl,
+            ]) + (classHasTrait($relatedElement, HasMedias::class) ? [
                 'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
             ] : []);
         })->toArray();
@@ -525,6 +552,11 @@ abstract class ModuleRepository
     public function updateBrowser($object, $fields, $relationship, $positionAttribute = 'position')
     {
         $this->updateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute);
+    }
+
+    public function updateRelatedBrowser($object, $fields, $browserName)
+    {
+        $object->sync($fields['browsers'][$browserName] ?? [], $browserName);
     }
 
     public function updateMultiSelect($object, $fields, $relationship)

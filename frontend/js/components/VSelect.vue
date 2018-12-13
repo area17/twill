@@ -166,6 +166,7 @@
       },
       vselectClasses: function () {
         return [
+          this.value ? 'vselect--has-value' : '',
           this.multiple ? 'vselect--multiple' : 'vselect--single',
           this.size === 'small' ? 'vselect--small' : '',
           this.size === 'large' ? 'vselect--large' : '',

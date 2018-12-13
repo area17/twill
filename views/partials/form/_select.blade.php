@@ -94,9 +94,6 @@
 
 @unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
 @push('vuexStore')
-    window.STORE.form.fields.push({
-        name: '{{ $name }}',
-        value: @if(isset($item) && is_numeric($item->$name)) {{ $item->$name }} @else {!! json_encode($item->$name ?? $formFieldsValue) !!} @endif
-    })
+    @include('twill::partials.form.utils._selector_input_store')
 @endpush
 @endunless
