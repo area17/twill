@@ -83,15 +83,16 @@ $height__nav: 60px;
   display: none;
 
   flex-grow: 1;
-  overflow:hidden;
-  position:relative;
+  overflow: hidden;
+  overflow-x: auto;
+  position: relative;
 
   ul {
-    white-space:nowrap;
+    white-space: nowrap;
   }
 
   @include breakpoint('large+') {
-    display:flex;
+    display: flex;
     flex-direction: row;
     flex-wrap: no-wrap;
   }
