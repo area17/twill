@@ -36,7 +36,7 @@ if (!function_exists('createDefaultTranslationsTableFields')) {
         $table->increments('id');
         $table->softDeletes();
         $table->timestamps();
-        $table->string('locale', 6)->index();
+        $table->string('locale', 7)->index();
         $table->boolean('active');
         $table->integer("{$tableNameSingular}_id")->unsigned();
         $table->foreign("{$tableNameSingular}_id", "fk_{$tableNameSingular}_translations_{$tableNameSingular}_id")->references('id')->on($tableNamePlural)->onDelete('CASCADE');
@@ -55,7 +55,7 @@ if (!function_exists('createDefaultSlugsTableFields')) {
         $table->softDeletes();
         $table->timestamps();
         $table->string('slug');
-        $table->string('locale', 6)->index();
+        $table->string('locale', 7)->index();
         $table->boolean('active');
         $table->integer("{$tableNameSingular}_id")->unsigned();
         $table->foreign("{$tableNameSingular}_id", "fk_{$tableNameSingular}_slugs_{$tableNameSingular}_id")->references('id')->on($tableNamePlural)->onDelete('CASCADE')->onUpdate('NO ACTION');
