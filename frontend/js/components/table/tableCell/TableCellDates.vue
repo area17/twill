@@ -52,7 +52,7 @@
         return this.row.hasOwnProperty('publish_start_date') ? this.row.publish_start_date : ''
       },
       endDate: function () {
-        return this.row.hasOwnProperty('publish_end_date') ? this.row.publish_start_date : ''
+        return this.row.hasOwnProperty('publish_end_date') ? this.row.publish_end_date : ''
       }
     },
     filters: a17VueFilters
