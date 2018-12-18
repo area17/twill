@@ -15,7 +15,7 @@
         </span>
       </div>
       <div class="editorSidebar__body">
-        <a17-inputframe label="" :name="`block.${block.id}`"></a17-inputframe>
+        <a17-inputframe size="small" label="" :name="`block.${block.id}`"/>
         <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes" key="`editor_${block.type}_${block.id}`"></component>
       </div>
     </div>
@@ -153,26 +153,6 @@
     border-radius:2px;
     background:$color__background;
     padding:15px;
-
-    /deep/ .input {
-      margin-top: 15px;
-    }
-
-    /deep/ .block__body {
-      > .media,
-      > .slideshow,
-      > .browserField {
-        margin-left:-15px;
-        margin-right:-15px;
-        border:0 none;
-      }
-
-      > .media:last-child,
-      > .slideshow:last-child,
-      > .browserField:last-child {
-        margin-bottom:-15px;
-      }
-    }
   }
 
   .editorSidebar__counter {
@@ -267,6 +247,26 @@
 
       .icon {
         color:$color__text;
+      }
+    }
+  }
+</style>
+
+<style lang="scss">
+  .editorSidebar__body {
+    .block__body {
+      > .media,
+      > .slideshow,
+      > .browserField {
+        margin-left: -15px;
+        margin-right: -15px;
+        border: 0 none;
+      }
+
+      > .media:last-child,
+      > .slideshow:last-child,
+      > .browserField:last-child {
+        margin-bottom: -15px;
       }
     }
   }

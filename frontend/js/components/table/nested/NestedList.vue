@@ -108,9 +108,9 @@
   @import '~styles/setup/_mixins-colors-vars.scss';
 
   .nested-datatable__item {
-    border:1px solid #F2F2F2;
+    border: 1px solid #F2F2F2;
     // padding:10px 0 0 10px;
-    margin-top:-1px;
+    margin-top: -1px;
 
     .nested-datatable__item {
       border-right: 0 none;
@@ -118,15 +118,7 @@
 
     &.sortable-ghost {
       opacity: 1 !important;
-      // overflow:hidden;
-
-      // height:5px;
-      // border: 0 none;
-      background-color:$color__f--bg;
-
-      // /deep/ > .nested-item {
-      //   border: 10px solid $color__drag_bg--ghost;
-      // }
+      background-color: $color__f--bg;
     }
 
     &.sortable-chosen {
@@ -135,19 +127,12 @@
 
     &.sortable-drag {
       display: block;
-      // opacity: 0!important;
-    }
-
-    &.nested-datatable__item--empty {
-      /deep/ > .nested-item {
-        margin-bottom: 0;
-      }
     }
   }
 
   .nested__dropArea {
     // border:1px solid grey;
-    padding:15px 0px 15px 0px;
+    padding: 15px 0px 15px 0px;
 
     * {
       will-change: auto;
@@ -161,53 +146,65 @@
       padding-top: 20px;
       min-height: 20px;
       margin-top: -20px;
-
-      /deep/ .nested-item {
-        margin-bottom: 0;
-      }
     }
   }
 
   .nested-item:hover + .nested__dropArea {
-    background:$color__f--bg;
+    background: $color__f--bg;
 
     .nested-datatable__item {
-      background:white;
+      background: white;
     }
   }
 
   .nested__dropArea--depth > li > div {
     &::after {
-      content:'';
-      display:block;
-      height:6px;
-      border-left:1px solid #D9D9D9;
-      border-bottom:1px solid #D9D9D9;
-      position:absolute;
-      top:calc(50% - 3px);
-      left:20px;
+      content: '';
+      display: block;
+      height: 6px;
+      border-left: 1px solid #D9D9D9;
+      border-bottom: 1px solid #D9D9D9;
+      position: absolute;
+      top: calc(50% - 3px);
+      left: 20px;
       background-color: transparent;
-      width:0;
-      pointer-events:none;
+      width: 0;
+      pointer-events: none;
     }
   }
 
   .nested__dropArea--depth1 > li > div {
-    padding-left:50px;
+    padding-left: 50px;
 
     &::after {
-      width:30px;
+      width: 30px;
     }
   }
 
   @for $i from 2 through 10 {
     .nested__dropArea--depth#{$i} > li > div {
-      padding-left:#{$i * 35px};
+      padding-left: #{$i * 35px};
 
       &::after {
-        width:#{($i * 35px) - 20px};
+        width: #{($i * 35px) - 20px};
       }
     }
   }
 
+</style>
+
+<style lang="scss">
+  .nested__dropArea {
+    &.nested__dropArea--empty {
+      .nested-item {
+        margin-bottom: 0;
+      }
+    }
+
+    &.nested-datatable__item--empty {
+      > .nested-item {
+        margin-bottom: 0;
+      }
+    }
+  }
 </style>
