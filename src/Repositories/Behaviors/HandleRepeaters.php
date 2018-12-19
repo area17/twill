@@ -23,8 +23,12 @@ trait HandleRepeaters
         }
     }
 
-    public function updateRepeater($object, $fields, $repeaterName, $relation, $model = null)
+    public function updateRepeater($object, $fields, $relation, $model = null, $repeaterName = null)
     {
+        if (!$repeaterName) {
+            $repeaterName = $relation;
+        }
+
         $relationFields = $fields['repeaters'][$repeaterName] ?? [];
 
         $relationRepository = $this->getModelRepository($relation, $model);
@@ -68,8 +72,12 @@ trait HandleRepeaters
         }
     }
 
-    public function getFormFieldsForRepeater($object, $fields, $repeaterName, $relation, $model = null)
+    public function getFormFieldsForRepeater($object, $fields, $relation, $model = null, $repeaterName = null)
     {
+        if (!$repeaterName) {
+            $repeaterName = $relation;
+        }
+        
         $repeaters = [];
         $repeatersFields = [];
         $repeatersBrowsers = [];
