@@ -23,9 +23,13 @@ trait HandleRepeaters
         }
     }
 
-    public function updateRepeater($object, $fields, $relation, $model = null)
+    public function updateRepeater($object, $fields, $relation, $model = null, $repeaterName = null)
     {
-        $relationFields = $fields['repeaters'][$relation] ?? [];
+        if (!$repeaterName) {
+            $repeaterName = $relation;
+        }
+
+        $relationFields = $fields['repeaters'][$repeaterName] ?? [];
 
         $relationRepository = $this->getModelRepository($relation, $model);
 
@@ -68,8 +72,12 @@ trait HandleRepeaters
         }
     }
 
-    public function getFormFieldsForRepeater($object, $fields, $relation, $model = null)
+    public function getFormFieldsForRepeater($object, $fields, $relation, $model = null, $repeaterName = null)
     {
+        if (!$repeaterName) {
+            $repeaterName = $relation;
+        }
+        
         $repeaters = [];
         $repeatersFields = [];
         $repeatersBrowsers = [];
@@ -82,8 +90,8 @@ trait HandleRepeaters
         foreach ($object->$relation as $relationItem) {
             $repeaters[] = [
                 'id' => $relation . '-' . $relationItem->id,
-                'type' => $repeatersConfig[$relation]['component'],
-                'title' => $repeatersConfig[$relation]['title'],
+                'type' => $repeatersConfig[$repeaterName]['component'],
+                'title' => $repeatersConfig[$repeaterName]['title'],
             ];
 
             $relatedItemFormFields = $relationRepository->getFormFields($relationItem);
@@ -138,16 +146,15 @@ trait HandleRepeaters
 
         }
 
-        $fields['repeaters'][$relation] = $repeaters;
+        $fields['repeaters'][$repeaterName] = $repeaters;
 
-        $fields['repeaterFields'][$relation] = $repeatersFields;
+        $fields['repeaterFields'][$repeaterName] = $repeatersFields;
 
-        $fields['repeaterMedias'][$relation] = $repeatersMedias;
+        $fields['repeaterMedias'][$repeaterName] = $repeatersMedias;
 
-        $fields['repeaterFiles'][$relation] = $repeatersFiles;
+        $fields['repeaterFiles'][$repeaterName] = $repeatersFiles;
 
-        $fields['repeaterBrowsers'][$relation] = $repeatersBrowsers;
-
+        $fields['repeaterBrowsers'][$repeaterName] = $repeatersBrowsers;
         return $fields;
 
     }
