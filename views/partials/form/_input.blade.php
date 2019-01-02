@@ -7,6 +7,7 @@
     $maxlength = $maxlength ?? false;
     $disabled = $disabled ?? false;
     $readonly = $readonly ?? false;
+    $default = $default ?? false;
     $rows = $rows ?? false;
     $ref = $ref ?? false;
     $onChange = $onChange ?? false;
@@ -32,6 +33,10 @@
             @if ($rows) rows: {{ $rows }}, @endif
             @if ($prefix) prefix: '{{ $prefix }}', @endif
             @if ($inModal) inModal: true, @endif
+            @if ($default)
+                initialValue: '{{ $default }}',
+                hasDefaultStore: true,
+            @endif
             inStore: 'value'
         }"
         @if ($ref) ref="{{ $ref }}" @endif
@@ -53,6 +58,10 @@
         @if ($onChange) v-on:change="{{ $onChange }}{{ $onChangeFullAttribute }}" @endif
         @if ($prefix) prefix="{{ $prefix }}" @endif
         @if ($inModal) :in-modal="true" @endif
+        @if ($default)
+            :initial-value="'{{ $default }}'"
+            :has-default-store="true"
+        @endif
         in-store="value"
     ></a17-textfield>
 @endif

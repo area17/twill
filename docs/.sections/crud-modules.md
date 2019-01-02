@@ -235,7 +235,7 @@ public function getFormFields($object) {
     $fields['browsers']['relationName'] = $this->getFormFieldsForBrowser($object, 'relationName');
 
     // get fields for a repeater
-    $fields = $this->getFormFieldsForRepeater($object, 'relationName');
+    $fields = $this->getFormFieldsForRepeater($object, $fields, 'relationName', 'ModelName', 'repeaterItemName');
 
     // return fields
     return $fields
@@ -291,7 +291,7 @@ public function afterSave($object, $fields) {
     $this->updateBrowser($object, $fields, 'relationName');
     
     // or, to save a hasMany relationship used with the repeater field
-    $this->updateRepeater($object, $fields, 'relationName');
+    $this->updateRepeater($object, $fields, 'relationName', 'ModelName', 'repeaterItemName');
     
     // or, to save a belongToMany relationship used with the repeater field
     $this->updateRepeaterMany($object, $fields, 'relationName', false);

@@ -9,6 +9,7 @@
     $editSource = $editSource ?? false;
     $toolbarOptions = $toolbarOptions ?? false;
     $inModal = $fieldsInModal ?? false;
+    $default = $default ?? false;
 
     // quill.js options
     $activeSyntax = $syntax ?? false;
@@ -60,6 +61,10 @@
             @if ($readonly) readonly: true, @endif
             @if ($editSource) editSource: true, @endif
             @if ($inModal) inModal: true, @endif
+            @if ($default)
+                initialValue: '{{ $default }}',
+                hasDefaultStore: true,
+            @endif
             inStore: 'value'
         }"
     ></a17-locale>
@@ -74,6 +79,10 @@
         @if ($disabled) disabled @endif
         @if ($readonly) readonly @endif
         @if ($editSource) :edit-source='true' @endif
+        @if ($default)
+            :initial-value="'{{ $default }}'"
+            :has-default-store="true"
+        @endif
         @if ($inModal) :in-modal="true" @endif
         in-store="value"
     ></a17-wysiwyg>

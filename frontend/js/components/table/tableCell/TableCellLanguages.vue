@@ -1,12 +1,15 @@
 <template>
   <span>
-    <a v-for="language in languages"
+    <a v-for="language in displayedLanguages"
        :key="language.value"
        :href="editWithLanguage(language)"
        class="tag tag--disabled"
        :class="{ 'tag--enabled' : language.published }"
        @click="editInPlace($event, language)">
       {{ language.shortlabel }}
+    </a>
+    <a v-if="languages.length > 4" :href="editWithLanguage(languages[0])" @click="editInPlace($event, languages[0])" class="more__languages f--small">
+        + {{ languages.length - 4 }} more
     </a>
   </span>
 </template>
@@ -23,6 +26,11 @@
         default: function () {
           return []
         }
+      }
+    },
+    computed: {
+      displayedLanguages: function () {
+        return this.languages.slice(0, 4)
       }
     },
     methods: {
@@ -54,5 +62,10 @@
   /* Languages */
   .tag {
     margin: 0 10px 0 0;
+  }
+
+  .more__languages {
+    color: $color__link-light;
+    text-decoration: none;
   }
 </style>

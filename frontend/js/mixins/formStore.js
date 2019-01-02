@@ -95,7 +95,6 @@ export default {
       }
     } else if (this.hasDefaultStore) {
       // init value with the one present into the component itself
-      // used for select / single-selects
       this.saveIntoStore()
     }
   },
