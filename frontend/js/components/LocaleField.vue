@@ -63,11 +63,10 @@
         const language = this.languages.find(l => l.value === lang)
 
         let attributes = Object.assign({}, this.attributes)
-
         // for textfields set initial values using the initialValues prop
         if (this.initialValues[lang]) {
           attributes.initialValue = this.initialValues[lang]
-        } else {
+        } else if (!attributes.initialValue) {
           attributes.initialValue = ''
         }
 
