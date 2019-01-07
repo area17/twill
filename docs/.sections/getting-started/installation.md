@@ -4,7 +4,7 @@
 Twill is a package for Laravel applications, installable through Composer:
 
 ```bash
-composer require area17/twill:1.2.*
+composer require area17/twill:"1.2.*"
 ```
 
 Twill will automatically register its service provider if you are using Laravel `>=5.5`. 
