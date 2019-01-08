@@ -78,8 +78,7 @@ mix.js(
   'public/assets/admin/js'
 ).sass(
   'frontend/scss/app.scss',
-  'public/assets/admin/css',
-  { implementation: require('node-sass') }
+  'public/assets/admin/css'
 )
 
 if (mix.inProduction()) {
