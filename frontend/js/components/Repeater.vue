@@ -77,7 +77,22 @@
       blocks: {
         get () {
           if (this.savedBlocks.hasOwnProperty(this.name)) {
-            return this.savedBlocks[this.name] || []
+            const blocks = this.savedBlocks[this.name]
+            if (blocks && blocks.length > 0) {
+              const repeaterName = this.name.replace(/(blocks-\d+_)/, '')
+              const titleFieldToMap = this.$store.state.repeaters.availableRepeaters[repeaterName] && this.$store.state.repeaters.availableRepeaters[repeaterName].titleField ? this.$store.state.repeaters.availableRepeaters[repeaterName].titleField : null
+              if (titleFieldToMap) {
+                return blocks.map(block => {
+                  const titleField = this.$store.state.form.fields.find(field => field.name === `blocks[${block.id}][${titleFieldToMap}]`)
+                  if (titleField && titleField.value) block.title = titleField.value
+                  return block
+                })
+              } else {
+                return blocks
+              }
+            } else {
+              return []
+            }
           } else {
             return []
           }
