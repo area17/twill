@@ -6,6 +6,7 @@
     $placeholder = $placeholder ?? false;
     $maxlength = $maxlength ?? false;
     $disabled = $disabled ?? false;
+    $hidden = $hidden ?? false;
     $readonly = $readonly ?? false;
     $default = $default ?? false;
     $rows = $rows ?? false;
@@ -29,6 +30,7 @@
             @if ($placeholder) placeholder: '{{ $placeholder }}', @endif
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
             @if ($disabled) disabled: true, @endif
+            @if ($hidden) hidden: true, @endif
             @if ($readonly) readonly: true, @endif
             @if ($rows) rows: {{ $rows }}, @endif
             @if ($prefix) prefix: '{{ $prefix }}', @endif
@@ -52,6 +54,7 @@
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
         @if ($maxlength) :maxlength="{{ $maxlength }}" @endif
         @if ($disabled) disabled @endif
+        @if ($hidden) hidden @endif
         @if ($readonly) readonly @endif
         @if ($rows) :rows="{{ $rows }}" @endif
         @if ($ref) ref="{{ $ref }}" @endif
