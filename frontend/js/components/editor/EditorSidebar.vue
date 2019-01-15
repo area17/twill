@@ -140,7 +140,7 @@
   }
 
   .editorSidebar__list {
-    height:100%;
+    height: calc(100% - 60px);
   }
 
   .editorSidebar__title {
