@@ -338,6 +338,12 @@ filename: ```views/admin/blocks/products.blade.php```
     ]
 ```
 
+- To render a browser with items selected in the block, you can use the `browserIds` helper to retrieve the selected items' ids, and then you may use Eloquent method like `find` to get the actual records:
+```php
+    $selected_items_ids = $block->browserIds('browserFieldName');
+    $items = Item::find($selected_items_ids);
+```
+
 ### Rendering blocks
 As long as you have access to a model instance that uses the HasBlocks trait in a view, you can call the `renderBlocks` helper on it to render the list of blocks that were created from the CMS. By default, this function will loop over all the blocks and their child blocks and render a Blade view located in `resources/views/site/blocks` with the same name as the block key you specified in your Twill configuration and module form. 
 
