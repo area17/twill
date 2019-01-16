@@ -28,12 +28,15 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
     protected $endpointType;
 
+    protected $customFields;
+
     public function __construct(Application $app, Request $request)
     {
         parent::__construct($app, $request);
         $this->removeMiddleware('can:edit');
         $this->middleware('can:edit', ['only' => ['signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = config('twill.media_library.endpoint_type');
+        $this->customFields = config('twill.media_library.extra_metadatas_fields');
     }
 
     public function index($parentModuleId = null)
@@ -75,7 +78,11 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
                     'caption' => $item->caption,
                     'altText' => $item->alt_text,
                     'video' => null,
-                ],
+                ] + collect($this->customFields)->mapWithKeys(function ($field) use ($item) {
+                    return [
+                        $field['name'] => $item->{$field['name']},
+                    ];
+                })->toArray(),
                 'custom' => [
                     'caption' => null,
                     'altText' => null,
@@ -147,9 +154,10 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
     public function singleUpdate()
     {
+
         $this->repository->update(
             $this->request->input('id'),
-            $this->request->only('alt_text', 'caption', 'tags')
+            array_merge($this->request->only('alt_text', 'caption', 'tags'), $this->getExtraMetadatas()->toArray())
         );
 
         return response()->json([
@@ -161,11 +169,24 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     {
         $ids = explode(',', $this->request->input('ids'));
 
-        $previousCommonTags = $this->repository->getTags(null, $ids);
-        $newTags = array_filter(explode(',', $this->request->input('tags')));
+        $metadatasFromRequest = $this->getExtraMetadatas()->reject(function ($meta) {
+            return is_null($meta);
+        })->toArray();
+
+        $extraMetadatas = array_diff_key($metadatasFromRequest, array_flip((array) request('fieldsRemovedFromBulkEditing', [])));
+
+        if (in_array('tags', request('fieldsRemovedFromBulkEditing', []))) {
+            $this->repository->addIgnoreFieldsBeforeSave('bulk_tags');
+        } else {
+            $previousCommonTags = $this->repository->getTags(null, $ids);
+            $newTags = array_filter(explode(',', $this->request->input('tags')));
+        }
 
         foreach ($ids as $id) {
-            $this->repository->update($id, ['bulk_tags' => $newTags, 'previous_common_tags' => $previousCommonTags]);
+            $this->repository->update($id, [
+                'bulk_tags' => $newTags ?? [],
+                'previous_common_tags' => $previousCommonTags ?? [],
+            ] + $extraMetadatas);
         }
 
         $scopes = $this->filterScope(['id' => $ids]);
@@ -192,5 +213,18 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     public function policyIsNotValid()
     {
         return response()->json(["invalid" => true], 500);
+    }
+
+    private function getExtraMetadatas()
+    {
+        return collect($this->customFields)->mapWithKeys(function ($field) {
+            $fieldInRequest = request($field['name']);
+
+            if (isset($field['type']) && $field['type'] === 'checkbox' && !$fieldInRequest) {
+                return [$field['name'] => false];
+            }
+
+            return [$field['name'] => is_array($fieldInRequest) ? array_first($fieldInRequest) : $fieldInRequest];
+        });
     }
 }
