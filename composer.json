@@ -61,7 +61,9 @@
     "guzzlehttp/guzzle": "^6.2",
     "spatie/once": "^2.0.0",
     "spatie/laravel-analytics": "^3.6",
-    "spatie/laravel-activitylog": "^2.5"
+    "spatie/laravel-activitylog": "^2.5",
+    "pragmarx/google2fa": "^4.0.0",
+    "pragmarx/google2fa-qrcode": "^1.0.2"
   },
   "require-dev": {
     "phpunit/phpunit": "~5.0|~6.0|~7.0"
@@ -74,7 +76,7 @@
   "extra": {
     "laravel": {
         "providers": [
-            "A17\\Twill\\TwillServiceProvider"
+          "A17\\Twill\\TwillServiceProvider"
         ]
     }
   },
