@@ -2,7 +2,7 @@
   "name": "area17/twill",
   "type": "library",
   "license": "Apache-2.0",
-  "description": "A collection of Laravel helpers, traits and classes to quickly create custom content management apps for our clients",
+  "description": "Twill is an open source CMS toolkit for Laravel that helps developers rapidly create a custom admin console that is intuitive, powerful and flexible.",
   "keywords": [
     "A17",
     "twill",
