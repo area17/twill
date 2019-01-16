@@ -28,13 +28,15 @@ class User extends AuthenticatableContract
         'password',
         'title',
         'description',
+        'google_2fa_enabled',
+        'google_2fa_secret',
     ];
 
     protected $dates = [
         'deleted_at',
     ];
 
-    protected $hidden = ['password', 'remember_token'];
+    protected $hidden = ['password', 'remember_token', 'google_2fa_secret'];
     public $checkboxes = ['published'];
 
     public $mediasParams = [
