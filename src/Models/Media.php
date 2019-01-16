@@ -20,6 +20,15 @@ class Media extends Model
         'height',
     ];
 
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $this->fillable = array_merge($this->fillable, collect(config('twill.media_library.extra_metadatas_fields'))->map(function ($field) {
+            return $field['name'];
+        })->toArray());
+    }
+
     public function getDimensionsAttribute()
     {
         return $this->width . 'x' . $this->height;

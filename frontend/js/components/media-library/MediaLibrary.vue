@@ -35,12 +35,12 @@
             </div>
           </a17-filter>
         </div>
-
         <div class="medialibrary__inner">
           <div class="medialibrary__grid">
             <aside class="medialibrary__sidebar">
-              <a17-mediasidebar :medias="selectedMedias" :authorized="authorized" @clear="clearSelectedMedias"
-                                @delete="deleteSelectedMedias" @tagUpdated="reloadTags" :type="currentTypeObject"/>
+              <a17-mediasidebar :medias="selectedMedias" :authorized="authorized" :extraMetadatas="extraMetadatas"
+                                @clear="clearSelectedMedias" @delete="deleteSelectedMedias" @tagUpdated="reloadTags"
+                                :type="currentTypeObject"/>
             </aside>
             <footer class="medialibrary__footer" v-if="selectedMedias.length && showInsert && connector">
               <a17-button v-if="canInsert" variant="action" @click="saveAndClose">{{ btnLabel }}</a17-button>
@@ -119,6 +119,12 @@
       showInsert: {
         type: Boolean,
         default: true
+      },
+      extraMetadatas: {
+        type: Array,
+        default () {
+          return []
+        }
       }
     },
     data: function () {

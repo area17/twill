@@ -136,7 +136,7 @@
       textfieldClasses: function () {
         return {
           'input__field--textarea': this.type === 'textarea',
-          'input__field--small': this.size === 'small',
+          'input__field--small': this.size === 'small' && !this.type === 'textarea',
           's--focus': this.focused,
           's--disabled': this.disabled
         }
