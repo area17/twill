@@ -436,3 +436,26 @@ return [
     ...
 ];
 ```
+
+### Content Editor
+
+You could enable the content editor by providing the `view/site/layouts/block.blade.php` blade file. The layout shoud be a markup yield a `content` section: `@yield('content')` with CSS/JS file included as same as the your main frontend layout, an easy example will be:
+
+```php
+<!doctype html>
+<html>
+    <head>
+        <title>Twill Site</title>
+        <link rel="stylesheet" href="{{ mix('css/app.css', 'assets/front') }}">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+    </head>
+    <body>
+        <div>
+            @yield('content')
+        </div>
+        <script src="{{ mix('js/app.js', 'assets/front') }}"></script>
+    </body>
+</html>
+```
+
+If you would like to specify a custom layout view path, you could set it in `config/twill.php` at `twill.block_editor.block_single_layout`.
