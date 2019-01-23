@@ -825,6 +825,24 @@ You can also rename the content section by passing a `contentFieldsetLabel` prop
 ])
 ```
 
+Similar to the media formField, to make the file field works, you have to include the `HasFiles` trait in your module's [Model](https://twill.io/docs/#models), and include `HandleFiles` trait in your module's [Repository](https://twill.io/docs/#repositories). At last, add the `filesParams` configuration array in your model.
+```php
+public $filesParams = ['file_role', ...]; // a list of file roles
+```
+
+Learn more at [Model](https://twill.io/docs/#models), [Repository](https://twill.io/docs/#repositories).
+
+If you are using the file formField in a block, you just have to define the `files` key in `config/twill.php` and you are all set, put it under `block_editor` key and at the same level as `crops` key:
+```php
+return [
+    'block_editor' => [
+        'crops' => [
+            ...
+        ],
+        'files' => ['file_role1', 'file_role2', ...]
+    ]
+```
+
 #### Map
 ![screenshot](/docs/_media/map.png)
 
