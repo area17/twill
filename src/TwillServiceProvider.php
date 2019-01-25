@@ -157,7 +157,6 @@ class TwillServiceProvider extends ServiceProvider
     private function mergeConfigs()
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/twill.php', 'twill');
-        $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
         $this->mergeConfigFrom(__DIR__ . '/../config/frontend.php', 'twill.frontend');
         $this->mergeConfigFrom(__DIR__ . '/../config/debug.php', 'twill.debug');
         $this->mergeConfigFrom(__DIR__ . '/../config/seo.php', 'twill.seo');
@@ -168,6 +167,7 @@ class TwillServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/file-library.php', 'twill.file_library');
         $this->mergeConfigFrom(__DIR__ . '/../config/cloudfront.php', 'services');
         $this->mergeConfigFrom(__DIR__ . '/../config/dashboard.php', 'twill.dashboard');
+        $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
     }
 
     private function publishMigrations()

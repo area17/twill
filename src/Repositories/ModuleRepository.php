@@ -243,12 +243,13 @@ abstract class ModuleRepository
     public function delete($id)
     {
         return DB::transaction(function () use ($id) {
-            if (($object = $this->model->find($id)) != null) {
+            if (($object = $this->model->find($id)) === null) return false;
+
+            if (!method_exists($object, 'canDeleteSafely') || $object->canDeleteSafely()) {
                 $object->delete();
                 $this->afterDelete($object);
                 return true;
             }
-
             return false;
         }, 3);
     }
@@ -257,13 +258,8 @@ abstract class ModuleRepository
     {
         return DB::transaction(function () use ($ids) {
             try {
-                $query = $this->model->whereIn('id', $ids);
-                $objects = $query->get();
-
-                $query->delete();
-
-                $objects->each(function ($object) {
-                    $this->afterDelete($object);
+                collect($ids)->each(function ($id) {
+                    $this->delete($id);
                 });
             } catch (\Exception $e) {
                 Log::error($e);

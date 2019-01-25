@@ -21,15 +21,11 @@ class FileRepository extends ModuleRepository
         return parent::filter($query, $scopes);
     }
 
-    public function delete($id)
+    public function afterDelete($object)
     {
-        if (($object = $this->model->find($id)) != null) {
-            if ($object->canDeleteSafely()) {
-                $storageId = $object->uuid;
-                if ($object->delete() && config('twill.file_library.cascade_delete')) {
-                    Storage::disk(config('twill.file_library.disk'))->delete($storageId);
-                }
-            }
+        $storageId = $object->uuid;
+        if (config('twill.file_library.cascade_delete')) {
+            Storage::disk(config('twill.file_library.disk'))->delete($storageId);
         }
     }
 
