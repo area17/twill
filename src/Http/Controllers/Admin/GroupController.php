@@ -14,7 +14,7 @@ class GroupController extends ModuleController
 
     protected $indexWith = ['medias'];
 
-    protected $defaultOrders = ['name' => 'asc'];
+    protected $defaultOrders = ['title' => 'asc'];
 
     protected $defaultFilters = [
         'search' => 'search',
@@ -55,13 +55,12 @@ class GroupController extends ModuleController
             'primary_navigation' => [
                 'users' => [
                     'title' => 'Users',
-                    'raw' => true,
-                    'route' => 'users'
+                    'module' => true
                 ],
                 'groups' => [
                     'title' => 'Groups',
-                    'raw' => true,
-                    'route' => 'groups'
+                    'module' => true,
+                    'active' => true
                 ]
             ],
             'customPublishedLabel' => 'Enabled',
@@ -76,13 +75,12 @@ class GroupController extends ModuleController
             'primary_navigation' => [
                 'users' => [
                     'title' => 'Users',
-                    'raw' => true,
-                    'route' => 'users'
+                    'module' => true
                 ],
                 'groups' => [
                     'title' => 'Groups',
-                    'raw' => true,
-                    'route' => 'groups'
+                    'module' => true,
+                    'active' => true
                 ]
             ],
             'customPublishedLabel' => 'Enabled',

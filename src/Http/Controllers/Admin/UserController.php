@@ -79,13 +79,12 @@ class UserController extends ModuleController
             'primary_navigation' => [
                 'users' => [
                     'title' => 'Users',
-                    'raw' => true,
-                    'route' => 'users'
+                    'module' => true,
+                    'active' => true
                 ],
                 'groups' => [
                     'title' => 'Groups',
-                    'raw' => true,
-                    'route' => 'groups'
+                    'module' => true,
                 ]
             ],
             'customPublishedLabel' => 'Enabled',
@@ -100,13 +99,12 @@ class UserController extends ModuleController
             'primary_navigation' => [
                 'users' => [
                     'title' => 'Users',
-                    'raw' => true,
-                    'route' => 'users'
+                    'module' => true,
+                    'active' => true
                 ],
                 'groups' => [
                     'title' => 'Groups',
-                    'raw' => true,
-                    'route' => 'groups'
+                    'module' => true,
                 ]
             ],
             'customPublishedLabel' => 'Enabled',

@@ -10,6 +10,12 @@
         @php
         $primaryNavElements = $primary_navigation;
         $_global_active_navigation = null;
+        foreach($primaryNavElements as $primary_navigation_key => $primary_navigation_element) {
+            if(isset($primary_navigation_element["active"]) && $primary_navigation_element["active"]) {
+                $_primary_active_navigation = $primary_navigation_key;
+                break;  
+            }
+        }
         @endphp
     @else
         @php
