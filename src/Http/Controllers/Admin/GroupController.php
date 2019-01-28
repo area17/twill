@@ -6,11 +6,11 @@ use A17\Twill\Models\Enums\UserRole;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 
-class UserController extends ModuleController
+class GroupController extends ModuleController
 {
     protected $namespace = 'A17\Twill';
 
-    protected $moduleName = 'users';
+    protected $moduleName = 'groups';
 
     protected $indexWith = ['medias'];
 
@@ -18,30 +18,6 @@ class UserController extends ModuleController
 
     protected $defaultFilters = [
         'search' => 'search',
-    ];
-
-    protected $filters = [
-        'role' => 'role',
-    ];
-
-    protected $titleColumnKey = 'name';
-
-    protected $indexColumns = [
-        'name' => [
-            'title' => 'Name',
-            'field' => 'name',
-        ],
-        'email' => [
-            'title' => 'Email',
-            'field' => 'email',
-            'sort' => true,
-        ],
-        'role_value' => [
-            'title' => 'Role',
-            'field' => 'role_value',
-            'sort' => true,
-            'sortKey' => 'role',
-        ],
     ];
 
     protected $indexOptions = [

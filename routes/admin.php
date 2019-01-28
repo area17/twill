@@ -2,6 +2,7 @@
 
 if (config('twill.enabled.users-management')) {
     Route::module('users', ['except' => ['sort', 'feature']]);
+    Route::module('groups', ['except' => ['sort', 'feature']]);
 }
 
 if (config('twill.enabled.media-library')) {
