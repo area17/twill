@@ -76,14 +76,16 @@ class UserController extends ModuleController
             'defaultFilterSlug' => 'published',
             'create' => $this->getIndexOption('create') && auth('twill_users')->user()->can('edit-user-role'),
             'roleList' => collect(UserRole::toArray()),
-            'single_primary_nav' => [
+            'primary_navigation' => [
                 'users' => [
                     'title' => 'Users',
-                    'module' => true,
+                    'raw' => true,
+                    'route' => 'users'
                 ],
                 'groups' => [
                     'title' => 'Groups',
-                    'module' => true
+                    'raw' => true,
+                    'route' => 'groups'
                 ]
             ],
             'customPublishedLabel' => 'Enabled',
@@ -95,14 +97,16 @@ class UserController extends ModuleController
     {
         return [
             'roleList' => collect(UserRole::toArray()),
-            'single_primary_nav' => [
+            'primary_navigation' => [
                 'users' => [
                     'title' => 'Users',
-                    'module' => true,
+                    'raw' => true,
+                    'route' => 'users'
                 ],
                 'groups' => [
                     'title' => 'Groups',
-                    'module' => true
+                    'raw' => true,
+                    'route' => 'groups'
                 ]
             ],
             'customPublishedLabel' => 'Enabled',

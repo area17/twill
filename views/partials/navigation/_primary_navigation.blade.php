@@ -1,10 +1,15 @@
-@if ((isset($_global_active_navigation) && isset(config('twill-navigation.'.$_global_active_navigation)['primary_navigation'])) || isset($single_primary_nav))
+@if ((isset($_global_active_navigation) && isset(config('twill-navigation.'.$_global_active_navigation)['primary_navigation'])) || isset($single_primary_nav) || isset($primary_navigation))
 
     @if (isset($single_primary_nav))
         @php
         $primaryNavElements = $single_primary_nav;
         $_global_active_navigation = null;
         $_primary_active_navigation = array_first(array_keys($single_primary_nav));
+        @endphp
+    @elseif (isset($primary_navigation))
+        @php
+        $primaryNavElements = $primary_navigation;
+        $_global_active_navigation = null;
         @endphp
     @else
         @php
