@@ -865,7 +865,7 @@ This field requires that you provide a `GOOGLE_MAPS_API_KEY` variable in your .e
     'note' => '3 sectors max & at least 1 sector',
     'min' => 1,
     'max' => 3,
-    'inline' => true/false
+    'inline' => true,
     'options' => [
         [
             'value' => 'arts',
