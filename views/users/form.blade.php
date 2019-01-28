@@ -45,30 +45,58 @@
     @endif
 @stop
 
-@section('fieldsets')
+{{-- @section('fieldsets')
     <a17-fieldset title="Permissions" id="permissions">
       @formField('checkboxes', [
-        'name' => 'sectors',
-        'label' => 'Sectors',
-        'note' => '3 sectors max & at least 1 sector',
-        'min' => 1,
-        'max' => 3,
-        'inline' => true,
+        'name' => 'permissions',
+        'label' => '',
+        'min' => 0,
+        'inline' => false,
         'options' => [
             [
-                'value' => 'arts',
-                'label' => 'Arts & Culture'
+                'value' => 'list',
+                'label' => 'List'
             ],
             [
-                'value' => 'finance',
-                'label' => 'Banking & Finance'
+                'value' => 'edit',
+                'label' => 'Edit'
             ],
             [
-                'value' => 'civic',
-                'label' => 'Civic & Public'
+                'value' => 'reorder',
+                'label' => 'Reorder'
             ],
+            [
+                'value' => 'publish',
+                'label' => 'Publish'
+            ],
+            [
+                'value' => 'feature',
+                'label' => 'Feature'
+            ],
+            [
+                'value' => 'delete',
+                'label' => 'Delete'
+            ],
+            [
+                'value' => 'edit-user',
+                'label' => 'Edit User'
+            ],
+            [
+                'value' => 'edit-user-role',
+                'label' => 'Edit User Role'
+            ],
+            [
+                'value' => 'publish-user',
+                'label' => 'Publish User'
+            ]
         ]
     ])
+    </a17-fieldset>
+@stop --}}
+
+@section('fieldsets')
+    <a17-fieldset title="Groups" id="groups">
+
     </a17-fieldset>
 @stop
 
