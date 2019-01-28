@@ -45,6 +45,33 @@
     @endif
 @stop
 
+@section('fieldsets')
+    <a17-fieldset title="Permissions" id="permissions">
+      @formField('checkboxes', [
+        'name' => 'sectors',
+        'label' => 'Sectors',
+        'note' => '3 sectors max & at least 1 sector',
+        'min' => 1,
+        'max' => 3,
+        'inline' => true,
+        'options' => [
+            [
+                'value' => 'arts',
+                'label' => 'Arts & Culture'
+            ],
+            [
+                'value' => 'finance',
+                'label' => 'Banking & Finance'
+            ],
+            [
+                'value' => 'civic',
+                'label' => 'Civic & Public'
+            ],
+        ]
+    ])
+    </a17-fieldset>
+@stop
+
 @push('vuexStore')
     window.STORE.publication.submitOptions = {
         draft: [
