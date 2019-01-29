@@ -46,47 +46,44 @@
 @stop
 
 @section('fieldsets')
-    @php
-        $row = json_encode(json_decode('{"id":2,"name":"Peter","publish_start_date":null,"publish_end_date":null,"edit":"http://admin.guides.dev.a17.io/users/2/edit","delete":"http://admin.guides.dev.a17.io/users/2","published":1,"email":"peter@area17.com","role_value":"Admin"}'), JSON_UNESCAPED_SLASHES);
-        $index = 0;
-        $visibleColumns = '[{"name":"bulk","label":"","visible":true,"optional":false,"sortable":false},{"name":"published","label":"Published","visible":true,"optional":false,"sortable":false},{"name":"name","label":"Name","visible":true,"optional":false,"sortable":false},{"name":"email","label":"Email","visible":true,"optional":true,"sortable":true,"html":false},{"name":"role_value","label":"Role","visible":true,"optional":true,"sortable":true,"html":false}]';
-    @endphp
-    <a17-fieldset title="Guides Permissions" id="permissions">
-        @formField('checkboxes', [
-            'name' => 'permissions',
-            'label' => 'Guides permission',
-            'note' => 'Allow this user to have access to the following sections',
-            'min' => 0,
-            'inline' => false,
-            'options' => [
-            ]
-        ])
-        @foreach ($guides as $key => $guide)
-            @formField('select', [
-                'name' => 'guide' . $key,
-                'label' => $guide->title,
-                'unpack' => true,
+    @foreach($permission_modules as $module_name => $module_items)
+        <a17-fieldset title='{{ ucfirst($module_name) . " Permissions"}}' id='{{ $module_name }}'>
+            @formField('checkboxes', [
+                'name' => 'permissions',
+                'label' => ucfirst($module_name) .' permission',
+                'note' => 'Allow this user to have access to the following sections',
+                'min' => 0,
+                'inline' => false,
                 'options' => [
-                    [
-                        'value' => 'none',
-                        'label' => 'None' 
-                    ],
-                    [
-                        'value' => 'view',
-                        'label' => 'View'
-                    ],
-                    [
-                        'value' => 'edit',
-                        'label' => 'Edit'
-                    ],
-                    [
-                        'value' => 'manage',
-                        'label' => 'Manage'
-                    ],
                 ]
             ])
-        @endforeach
-    </a17-fieldset>
+            @foreach ($module_items as $module_item)
+                @formField('select', [
+                    'name' => 'permission_' . $module_name . 'Id_' . $module_item->id,
+                    'label' => $module_item->title,
+                    'unpack' => true,
+                    'options' => [
+                        [
+                            'value' => null,
+                            'label' => 'Null' 
+                        ],
+                        [
+                            'value' => 'view',
+                            'label' => 'View'
+                        ],
+                        [
+                            'value' => 'edit',
+                            'label' => 'Edit'
+                        ],
+                        [
+                            'value' => 'manage',
+                            'label' => 'Manage'
+                        ],
+                    ]
+                ])
+            @endforeach
+        </a17-fieldset>
+    @endforeach
 @stop
 
 @push('vuexStore')

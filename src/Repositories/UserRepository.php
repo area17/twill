@@ -6,6 +6,7 @@ use A17\Twill\Models\User;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use DB;
 use Password;
+use App\Models\Guide;
 
 class UserRepository extends ModuleRepository
 {
@@ -50,6 +51,7 @@ class UserRepository extends ModuleRepository
     public function afterSave($user, $fields)
     {
         $this->sendWelcomeEmail($user);
+        $this->handleGuidePermissions($user, $fields);
         parent::afterSave($user, $fields);
     }
 
@@ -61,4 +63,15 @@ class UserRepository extends ModuleRepository
             );
         }
     }
+
+    private function handleGuidePermissions($user, $fields)
+    {
+        foreach($fields as $key => $value) {
+            if(starts_with($key, 'guideId')) {
+                $guideId = explode('_', $key)[1];
+                $guide = Guide::find($guideId);
+            }
+        }
+    }
+
 }

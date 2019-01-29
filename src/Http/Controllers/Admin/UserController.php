@@ -93,6 +93,11 @@ class UserController extends ModuleController
 
     protected function formData($request)
     {
+        $permission_modules = collect(config('twill.user_management.permission.enabled_modules', []));
+        $modules_items = $permission_modules->mapWithKeys(function($module){
+            return [$module => $this->getRepositoryByModuleName($module)->get()];
+        });
+
         return [
             'roleList' => collect(UserRole::toArray()),
             'single_primary_nav' => [
@@ -103,7 +108,7 @@ class UserController extends ModuleController
             ],
             'customPublishedLabel' => 'Enabled',
             'customDraftLabel' => 'Disabled',
-            'guides' => $this->guideRepository->get()
+            'permission_modules' => $modules_items
         ];
     }
 
@@ -151,5 +156,10 @@ class UserController extends ModuleController
         $canEdit = auth('twill_users')->user()->can('edit-user-role') || auth('twill_users')->user()->id === $item->id;
 
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
+    }
+
+    protected function getRepositoryByModuleName($module)
+    {
+        return app(config('twill.namespace') . "\Repositories\\" . ucfirst(str_singular($module)) . "Repository");
     }
 }
