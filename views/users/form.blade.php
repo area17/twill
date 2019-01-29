@@ -1,5 +1,5 @@
 @extends('twill::layouts.form', [
-    'contentFieldsetLabel' => 'User settings',
+    'contentFieldsetLabel' => 'Account',
     'editModalTitle' => 'Edit user name'
 ])
 
@@ -45,58 +45,47 @@
     @endif
 @stop
 
-{{-- @section('fieldsets')
-    <a17-fieldset title="Permissions" id="permissions">
-      @formField('checkboxes', [
-        'name' => 'permissions',
-        'label' => '',
-        'min' => 0,
-        'inline' => false,
-        'options' => [
-            [
-                'value' => 'list',
-                'label' => 'List'
-            ],
-            [
-                'value' => 'edit',
-                'label' => 'Edit'
-            ],
-            [
-                'value' => 'reorder',
-                'label' => 'Reorder'
-            ],
-            [
-                'value' => 'publish',
-                'label' => 'Publish'
-            ],
-            [
-                'value' => 'feature',
-                'label' => 'Feature'
-            ],
-            [
-                'value' => 'delete',
-                'label' => 'Delete'
-            ],
-            [
-                'value' => 'edit-user',
-                'label' => 'Edit User'
-            ],
-            [
-                'value' => 'edit-user-role',
-                'label' => 'Edit User Role'
-            ],
-            [
-                'value' => 'publish-user',
-                'label' => 'Publish User'
-            ]
-        ]
-    ])
-    </a17-fieldset>
-@stop --}}
-
 @section('fieldsets')
-    <a17-fieldset title="Groups" id="groups">
-
+    @php
+        $row = json_encode(json_decode('{"id":2,"name":"Peter","publish_start_date":null,"publish_end_date":null,"edit":"http://admin.guides.dev.a17.io/users/2/edit","delete":"http://admin.guides.dev.a17.io/users/2","published":1,"email":"peter@area17.com","role_value":"Admin"}'), JSON_UNESCAPED_SLASHES);
+        $index = 0;
+        $visibleColumns = '[{"name":"bulk","label":"","visible":true,"optional":false,"sortable":false},{"name":"published","label":"Published","visible":true,"optional":false,"sortable":false},{"name":"name","label":"Name","visible":true,"optional":false,"sortable":false},{"name":"email","label":"Email","visible":true,"optional":true,"sortable":true,"html":false},{"name":"role_value","label":"Role","visible":true,"optional":true,"sortable":true,"html":false}]';
+    @endphp
+    <a17-fieldset title="Guides Permissions" id="permissions">
+        @formField('checkboxes', [
+            'name' => 'permissions',
+            'label' => 'Guides permission',
+            'note' => 'Allow this user to have access to the following sections',
+            'min' => 0,
+            'inline' => false,
+            'options' => [
+            ]
+        ])
+        @foreach ($guides as $key => $guide)
+            @formField('select', [
+                'name' => 'guide' . $key,
+                'label' => $guide->title,
+                'unpack' => true,
+                'options' => [
+                    [
+                        'value' => 'none',
+                        'label' => 'None' 
+                    ],
+                    [
+                        'value' => 'view',
+                        'label' => 'View'
+                    ],
+                    [
+                        'value' => 'edit',
+                        'label' => 'Edit'
+                    ],
+                    [
+                        'value' => 'manage',
+                        'label' => 'Manage'
+                    ],
+                ]
+            ])
+        @endforeach
     </a17-fieldset>
 @stop
 
