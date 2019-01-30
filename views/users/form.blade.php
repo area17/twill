@@ -64,7 +64,7 @@
                     'unpack' => true,
                     'options' => [
                         [
-                            'value' => 'None',
+                            'value' => '',
                             'label' => 'None' 
                         ],
                         [

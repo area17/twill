@@ -33,6 +33,17 @@ class UserRepository extends ModuleRepository
         parent::afterUpdateBasic($user, $fields);
     }
 
+    public function getFormFields($user) {
+        // don't forget to call the parent getFormFields function
+        $fields = parent::getFormFields($user);
+        foreach($user->permissions as $permission) {
+            $module = $permission->permissionable()->first();
+            $module_name = lcfirst(class_basename($module));
+            $fields[$module_name . '_' . $module->id . '_permission'] = '"' . $permission->permission_name . '"';
+        }
+        return $fields;
+    }
+
     public function getCountForPublished()
     {
         return $this->model->where('role', '<>', 'SUPERADMIN')->published()->count();
@@ -67,7 +78,7 @@ class UserRepository extends ModuleRepository
     private function handlePermissions($user, $fields)
     {
         foreach($fields as $key => $value) {
-            if(ends_with($key, '_permission')) {
+            if(ends_with($key, '_permission') && $value) {
                 $key = explode('_', $key);
                 $module_name = $key[0];
                 $module_id = $key[1];
