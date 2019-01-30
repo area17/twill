@@ -112,4 +112,9 @@ class User extends AuthenticatableContract
     {
         $this->notify(new ResetNotification($token));
     }
+
+    public function permissions()
+    {
+        return $this->hasMany('A17\Twill\Models\Permission', 'twill_user_id');
+    }
 }

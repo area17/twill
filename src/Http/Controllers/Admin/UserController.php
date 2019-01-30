@@ -97,7 +97,7 @@ class UserController extends ModuleController
         $modules_items = $permission_modules->mapWithKeys(function($module){
             return [$module => $this->getRepositoryByModuleName($module)->get()];
         });
-
+        
         return [
             'roleList' => collect(UserRole::toArray()),
             'single_primary_nav' => [

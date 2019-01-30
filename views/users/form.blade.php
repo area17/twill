@@ -59,13 +59,13 @@
             ])
             @foreach ($module_items as $module_item)
                 @formField('select', [
-                    'name' => 'permission_' . $module_name . 'Id_' . $module_item->id,
+                    'name' => $module_name . '_' . $module_item->id . '_permission',
                     'label' => $module_item->title,
                     'unpack' => true,
                     'options' => [
                         [
-                            'value' => null,
-                            'label' => 'Null' 
+                            'value' => 'None',
+                            'label' => 'None' 
                         ],
                         [
                             'value' => 'view',

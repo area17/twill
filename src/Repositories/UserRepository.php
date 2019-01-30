@@ -3,10 +3,10 @@
 namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\User;
+use A17\Twill\Models\Permission;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use DB;
 use Password;
-use App\Models\Guide;
 
 class UserRepository extends ModuleRepository
 {
@@ -51,7 +51,7 @@ class UserRepository extends ModuleRepository
     public function afterSave($user, $fields)
     {
         $this->sendWelcomeEmail($user);
-        $this->handleGuidePermissions($user, $fields);
+        $this->handlePermissions($user, $fields);
         parent::afterSave($user, $fields);
     }
 
@@ -64,14 +64,31 @@ class UserRepository extends ModuleRepository
         }
     }
 
-    private function handleGuidePermissions($user, $fields)
+    private function handlePermissions($user, $fields)
     {
         foreach($fields as $key => $value) {
-            if(starts_with($key, 'guideId')) {
-                $guideId = explode('_', $key)[1];
-                $guide = Guide::find($guideId);
+            if(ends_with($key, '_permission')) {
+                $key = explode('_', $key);
+                $module_name = $key[0];
+                $module_id = $key[1];
+                $module = $this->getRepositoryByModuleName($module_name)->getById($module_id);
+                $permission = Permission::where([
+                    ['permissionable_type', get_class($module)],
+                    ['permissionable_id', $module->id],
+                    ['twill_user_id', $user->id]
+                ])->first() ?? new Permission;
+                $permission->permission_name = $value;
+                $permission->guard_name = $value;
+                $permission->permissionable()->associate($module);
+                $user->permissions()->save($permission);
+                $permission->save();
             }
         }
+    }
+
+    protected function getRepositoryByModuleName($module)
+    {
+        return app(config('twill.namespace') . "\Repositories\\" . ucfirst(str_singular($module)) . "Repository");
     }
 
 }
