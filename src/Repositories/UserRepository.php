@@ -78,21 +78,31 @@ class UserRepository extends ModuleRepository
     private function handlePermissions($user, $fields)
     {
         foreach($fields as $key => $value) {
-            if(ends_with($key, '_permission') && $value) {
+            if(ends_with($key, '_permission')) {
                 $key = explode('_', $key);
                 $module_name = $key[0];
                 $module_id = $key[1];
                 $module = $this->getRepositoryByModuleName($module_name)->getById($module_id);
+
+                // Qqery existed permission
                 $permission = Permission::where([
                     ['permissionable_type', get_class($module)],
                     ['permissionable_id', $module->id],
                     ['twill_user_id', $user->id]
                 ])->first() ?? new Permission;
-                $permission->permission_name = $value;
-                $permission->guard_name = $value;
-                $permission->permissionable()->associate($module);
-                $user->permissions()->save($permission);
-                $permission->save();
+
+                // only when value is not none, do update or create
+                if ($value) {
+                    $permission->permission_name = $value;
+                    $permission->guard_name = $value;
+                    $permission->permissionable()->associate($module);
+                    $user->permissions()->save($permission);
+                    $permission->save();
+                }
+                //if the existed permission has been set as none, delete it
+                elseif ($permission) {
+                    $permission->delete();
+                }
             }
         }
     }
