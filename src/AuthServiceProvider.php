@@ -23,9 +23,35 @@ class AuthServiceProvider extends ServiceProvider
             }
         });
 
+
         Gate::define('show', function ($user, $module) {
-            return in_array($user->role_value, [UserRole::VIEWONLY, UserRole::PUBLISHER, UserRole::ADMIN]);
+            return in_array($user->modulePermission($module), ["view", "edit", "manage"]);
         });
+
+        // Gate::define('list', function ($user) {
+        //     return in_array($user->role_value, [UserRole::VIEWONLY, UserRole::PUBLISHER, UserRole::ADMIN]);
+        // });
+
+        // Gate::define('edit', function ($user, $module) {
+        //     return in_array($user->modulePermission($module), ["edit", "manage"]);;
+        // });
+
+        // Gate::define('reorder', function ($user) {
+        //     return in_array($user->role_value, [UserRole::PUBLISHER, UserRole::ADMIN]);
+        // });
+
+        // Gate::define('publish', function ($user, $module) {
+        //     return in_array($user->modulePermission($module), ["edit", "manage"]);;
+        // });
+
+        // Gate::define('feature', function ($user, $module) {
+        //     return in_array($user->modulePermission($module), ["edit", "manage"]);
+        // });
+
+        // Gate::define('delete', function ($user, $module) {
+        //     return in_array($user->modulePermission($module), ["edit", "manage"]);
+        // });
+
 
         Gate::define('list', function ($user) {
             return in_array($user->role_value, [UserRole::VIEWONLY, UserRole::PUBLISHER, UserRole::ADMIN]);

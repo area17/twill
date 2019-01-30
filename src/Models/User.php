@@ -117,4 +117,16 @@ class User extends AuthenticatableContract
     {
         return $this->hasMany('A17\Twill\Models\Permission', 'twill_user_id');
     }
+
+    public function modulePermission($module)
+    {
+        $permission = $this->permissions()->where([
+            ['permissionable_type', get_class($module)],
+            ['permissionable_id', $module->id]
+        ])->first();
+
+        $guard_name = $permission ? $permission->guard_name : null;
+        
+        return $guard_name;
+    }
 }
