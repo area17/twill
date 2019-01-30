@@ -23,6 +23,10 @@ class AuthServiceProvider extends ServiceProvider
             }
         });
 
+        Gate::define('show', function ($user, $module) {
+            return in_array($user->role_value, [UserRole::VIEWONLY, UserRole::PUBLISHER, UserRole::ADMIN]);
+        });
+
         Gate::define('list', function ($user) {
             return in_array($user->role_value, [UserRole::VIEWONLY, UserRole::PUBLISHER, UserRole::ADMIN]);
         });
