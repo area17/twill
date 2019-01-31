@@ -25,6 +25,8 @@ abstract class ModuleController extends Controller
 
     protected $repository;
 
+    protected $user;
+
     /*
      * Options of the index view
      */
@@ -119,6 +121,10 @@ abstract class ModuleController extends Controller
         $this->repository = $this->getRepository();
         $this->viewPrefix = $this->getViewPrefix();
         $this->modelTitle = $this->getModelTitle();
+        $this->middleware(function ($request, $next) {
+            $this->user= auth('twill_users')->user();
+            return $next($request);
+        });
         // $this->setMiddlewarePermission();
 
         /*
@@ -569,7 +575,7 @@ abstract class ModuleController extends Controller
             request('offset') ?? $this->perPage ?? 50,
             $forcePagination
         ))->filter(function ($item) {
-            return auth('twill_users')->user()->can('view', $item);
+            return $this->user->can('view-module', $item);
         });
     }
 
@@ -604,7 +610,7 @@ abstract class ModuleController extends Controller
 
             $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
             $itemCanDelete = $this->getIndexOption('delete') && ($item->canDelete ?? true);
-            $canEdit = $this->getIndexOption('edit');
+            $canEdit = $this->getIndexOption('edit') && $this->user->can('edit-module', $item);
 
             return array_replace([
                 'id' => $item->id,
@@ -847,7 +853,7 @@ abstract class ModuleController extends Controller
                 'editInModal' => 'edit',
             ];
 
-            $authorized = array_key_exists($option, $authorizableOptions) ? auth('twill_users')->user()->can($authorizableOptions[$option]) : true;
+            $authorized = array_key_exists($option, $authorizableOptions) ? $this->user->can($authorizableOptions[$option]) : true;
             return ($this->indexOptions[$option] ?? $this->defaultIndexOptions[$option] ?? false) && $authorized;
         });
     }
