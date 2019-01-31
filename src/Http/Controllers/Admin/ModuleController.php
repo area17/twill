@@ -226,7 +226,7 @@ abstract class ModuleController extends Controller
 
     public function show($id, $submoduleId = null)
     {
-        $this->authorize('show', $this->repository->getById($id));
+        $this->authorize('view', $this->repository->getById($id));
         if ($this->getIndexOption('editInModal')) {
             return redirect(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
         }
@@ -236,7 +236,7 @@ abstract class ModuleController extends Controller
 
     public function edit($id, $submoduleId = null)
     {
-        $this->authorize('show', $this->repository->getById($id));
+        $this->authorize('view', $this->repository->getById($id));
         $this->submodule = isset($submoduleId);
         $this->submoduleParentId = $id;
 
@@ -568,7 +568,9 @@ abstract class ModuleController extends Controller
             $this->orderScope(),
             request('offset') ?? $this->perPage ?? 50,
             $forcePagination
-        ));
+        ))->filter(function ($item) {
+            return auth('twill_users')->user()->can('view', $item);
+        });
     }
 
     protected function transformIndexItems($items)
