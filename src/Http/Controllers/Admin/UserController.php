@@ -5,7 +5,6 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Models\Enums\UserRole;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
-use App\Repositories\GuideRepository;
 
 class UserController extends ModuleController
 {
@@ -49,16 +48,13 @@ class UserController extends ModuleController
         'permalink' => false,
     ];
 
-    protected $guideRepository;
-
-    public function __construct(Application $app, Request $request, GuideRepository $guideRepository)
+    public function __construct(Application $app, Request $request)
     {
         parent::__construct($app, $request);
         $this->removeMiddleware('can:edit');
         $this->removeMiddleware('can:publish');
         $this->middleware('can:edit-user,user', ['only' => ['store', 'edit', 'update']]);
         $this->middleware('can:publish-user', ['only' => ['publish']]);
-        $this->guideRepository = $guideRepository;
 
         if (config('twill.enabled.users-image')) {
             $this->indexColumns = [
