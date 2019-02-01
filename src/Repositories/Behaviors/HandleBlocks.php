@@ -196,7 +196,7 @@ trait HandleBlocks
     protected function getBlockBrowsers($block)
     {
         return collect($block['content']['browsers'])->mapWithKeys(function ($ids, $relation) use ($block) {
-            $relationRepository = $this->getModelRepository($relation);
+            $relationRepository = getModelRepository($relation);
             $relatedItems = $relationRepository->get([], ['id' => $ids], [], -1);
             $sortedRelatedItems = array_flip($ids);
 

@@ -53,7 +53,7 @@ trait HandleRevisions
         $fieldsHasElements = isset($fields[$relationship]) && !empty($fields[$relationship]);
         $relatedElements = $fieldsHasElements ? $fields[$relationship] : [];
 
-        $relationRepository = $this->getModelRepository($relationship, $model);
+        $relationRepository = getModelRepository($relationship, $model);
         $relatedElementsCollection = collect();
 
         foreach ($relatedElements as $relatedElement) {
@@ -74,7 +74,7 @@ trait HandleRevisions
         $fieldsHasElements = isset($fields['browsers'][$relationship]) && !empty($fields['browsers'][$relationship]);
         $relatedElements = $fieldsHasElements ? $fields['browsers'][$relationship] : [];
 
-        $relationRepository = $this->getModelRepository($relationship, $model);
+        $relationRepository = getModelRepository($relationship, $model);
         $relatedElementsCollection = collect();
         $position = 1;
 
@@ -92,7 +92,7 @@ trait HandleRevisions
     {
         $relationFields = $fields['repeaters'][$relationship] ?? [];
 
-        $relationRepository = $this->getModelRepository($relationship, $model);
+        $relationRepository = getModelRepository($relationship, $model);
 
         $repeaterCollection = collect();
 

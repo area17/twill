@@ -83,7 +83,7 @@ class UserRepository extends ModuleRepository
                 $key = explode('_', $key);
                 $module_name = $key[0];
                 $module_id = $key[1];
-                $module = $this->getRepositoryByModuleName($module_name)->getById($module_id);
+                $module = getRepositoryByModuleName($module_name)->getById($module_id);
 
                 // Query existed permission
                 $permission = Permission::where([
@@ -106,11 +106,6 @@ class UserRepository extends ModuleRepository
                 }
             }
         }
-    }
-
-    protected function getRepositoryByModuleName($module)
-    {
-        return app(config('twill.namespace') . "\Repositories\\" . ucfirst(str_singular($module)) . "Repository");
     }
 
 }

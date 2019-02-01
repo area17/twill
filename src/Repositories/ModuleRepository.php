@@ -623,15 +623,6 @@ abstract class ModuleRepository
         ];
     }
 
-    protected function getModelRepository($relation, $model = null)
-    {
-        if (!$model) {
-            $model = ucfirst(str_singular($relation));
-        }
-
-        return app(config('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
-    }
-
     private function getLikeOperator()
     {
         if (DB::connection()->getPDO()->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql') {
