@@ -232,7 +232,7 @@ abstract class ModuleController extends Controller
 
     public function show($id, $submoduleId = null)
     {
-        $this->authorize('view', $this->repository->getById($id));
+        $this->authorize('view-module', $this->repository->getById($id));
         if ($this->getIndexOption('editInModal')) {
             return redirect(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
         }
@@ -242,7 +242,7 @@ abstract class ModuleController extends Controller
 
     public function edit($id, $submoduleId = null)
     {
-        $this->authorize('view', $this->repository->getById($id));
+        $this->authorize('view-module', $this->repository->getById($id));
         $this->submodule = isset($submoduleId);
         $this->submoduleParentId = $id;
 
