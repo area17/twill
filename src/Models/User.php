@@ -125,8 +125,6 @@ class User extends AuthenticatableContract
             ['permissionable_id', $module->id]
         ])->first();
 
-        $guard_name = $permission ? $permission->guard_name : null;
-        
-        return $guard_name;
+        return $permission ? $permission->guard_name : null;
     }
 }
