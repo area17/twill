@@ -461,6 +461,7 @@ You can also override all actions and internal functions, checkout the ModuleCon
 ### Form Requests
 Classic Laravel 5 [form request validation](https://laravel.com/docs/5.5/validation#form-request-validation).
 
+Once you generated the module using Twill's CLI module generator, it will also prepare the `App/Http/Requests/Admin/ModuleNameRequest.php` for you to use.
 You can choose to use different rules for creation and update by implementing the following 2 functions instead of the classic `rules` one:
 
 ```php
@@ -500,6 +501,8 @@ $this->messagesForTranslatedFields([
   // translated fields messages
 ]);
 ```
+
+Once you defined the rules in this file, the UI will show the corresponding validation error state or message next to the corresponding form field.
 
 ### Routes
 
