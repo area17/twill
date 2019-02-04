@@ -34,7 +34,6 @@ class UserRepository extends ModuleRepository
     }
 
     public function getFormFields($user) {
-        // don't forget to call the parent getFormFields function
         $fields = parent::getFormFields($user);
         foreach($user->permissions as $permission) {
             $module = $permission->permissionable()->first();

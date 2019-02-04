@@ -125,7 +125,7 @@ abstract class ModuleController extends Controller
             $this->user= auth('twill_users')->user();
             return $next($request);
         });
-        // $this->setMiddlewarePermission();
+        $this->setMiddlewarePermission();
 
         /*
          * Default filters for the index view

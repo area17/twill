@@ -9,6 +9,7 @@
     $titleFormKey = $titleFormKey ?? 'title';
     $customForm = $customForm ?? false;
     $controlLanguagesPublication = $controlLanguagesPublication ?? true;
+    $users = app()->make('A17\Twill\Repositories\UserRepository')->get();
 @endphp
 
 @section('content')
@@ -59,6 +60,36 @@
                         @unless($disableContentFieldset ?? false)
                             <a17-fieldset title="{{ $contentFieldsetLabel ?? 'Content' }}" id="content" data-sticky-top="publisher">
                                 @yield('contentFields')
+                            </a17-fieldset>
+                        @endunless
+
+                        @unless($disablePermissionFieldset ?? false)
+                            <a17-fieldset title="Permissions" id="permissions">
+                                @foreach($users as $user)
+                                    @formField('select', [
+                                        'name' => 'user_' . $user->id . '_permission',
+                                        'label' => $user->name,
+                                        'unpack' => true,
+                                        'options' => [
+                                            [
+                                                'value' => '',
+                                                'label' => 'None' 
+                                            ],
+                                            [
+                                                'value' => 'view',
+                                                'label' => 'View'
+                                            ],
+                                            [
+                                                'value' => 'edit',
+                                                'label' => 'Edit'
+                                            ],
+                                            [
+                                                'value' => 'manage',
+                                                'label' => 'Manage'
+                                            ],
+                                        ]
+                                    ])
+                                @endforeach
                             </a17-fieldset>
                         @endunless
 
