@@ -48,15 +48,7 @@
 @section('fieldsets')
     @foreach($permission_modules as $module_name => $module_items)
         <a17-fieldset title='{{ ucfirst($module_name) . " Permissions"}}' id='{{ $module_name }}'>
-            @formField('checkboxes', [
-                'name' => 'permissions',
-                'label' => ucfirst($module_name) .' permission',
-                'note' => 'Allow this user to have access to the following sections',
-                'min' => 0,
-                'inline' => false,
-                'options' => [
-                ]
-            ])
+            <h2>{{ ucfirst($module_name) .' permission' }}</h2>
             @foreach ($module_items as $module_item)
                 @formField('select', [
                     'name' => $module_name . '_' . $module_item->id . '_permission',

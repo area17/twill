@@ -3,7 +3,7 @@
 if (!function_exists('getRepositoryByModuleName')) {
     function getRepositoryByModuleName($moduleName)
     {
-        return app(config('twill.namespace') . "\Repositories\\" . ucfirst(str_singular($module)) . "Repository");
+        return app(config('twill.namespace') . "\Repositories\\" . ucfirst(str_singular($moduleName)) . "Repository");
     }
 }
 
