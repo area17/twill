@@ -242,7 +242,7 @@ abstract class ModuleController extends Controller
 
     public function edit($id, $submoduleId = null)
     {
-        $this->authorize('view-item', $this->repository->getById($id));
+        $this->authorize('edit-item', $this->repository->getById($id));
         $this->submodule = isset($submoduleId);
         $this->submoduleParentId = $id;
 
@@ -574,9 +574,7 @@ abstract class ModuleController extends Controller
             $this->orderScope(),
             request('offset') ?? $this->perPage ?? 50,
             $forcePagination
-        ))->filter(function ($item) {
-            return $this->user->can('view-item', $item);
-        });
+        ));
     }
 
     protected function transformIndexItems($items)

@@ -11,7 +11,7 @@ trait HandlePermissions
     {
         if (get_class($object) === "A17\Twill\Models\User") {
             foreach($object->permissions as $permission) {
-                $module = $permission->permissionable()->first();
+                $module = $permission->permissionable()->withoutGlobalScope('authorized')->first();
                 $module_name = lcfirst(class_basename($module));
                 $fields[$module_name . '_' . $module->id . '_permission'] = '"' . $permission->name . '"';
             }

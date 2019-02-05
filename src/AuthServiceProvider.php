@@ -40,7 +40,6 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->itemPermissionName($item), ["edit", "manage"]) || in_array($user->role_value, [UserRole::OWNER]);
         });
 
-
         Gate::define('list', function ($user) {
             return in_array($user->role_value, [UserRole::OWNER, UserRole::TEAM]);
         });

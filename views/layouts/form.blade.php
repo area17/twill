@@ -64,33 +64,35 @@
                         @endunless
                         
                         @unless($disablePermissionFieldset ?? false)
-                            <a17-fieldset title="Permissions" id="permissions">
-                                @foreach($users as $user)
-                                    @formField('select', [
-                                        'name' => 'user_' . $user->id . '_permission',
-                                        'label' => $user->name,
-                                        'unpack' => true,
-                                        'options' => [
-                                            [
-                                                'value' => '',
-                                                'label' => 'None' 
-                                            ],
-                                            [
-                                                'value' => 'view',
-                                                'label' => 'View'
-                                            ],
-                                            [
-                                                'value' => 'edit',
-                                                'label' => 'Edit'
-                                            ],
-                                            [
-                                                'value' => 'manage',
-                                                'label' => 'Manage'
-                                            ],
-                                        ]
-                                    ])
-                                @endforeach
-                            </a17-fieldset>
+                            @can('manage-item', $item)
+                                <a17-fieldset title="Permissions" id="permissions">
+                                    @foreach($users as $user)
+                                        @formField('select', [
+                                            'name' => 'user_' . $user->id . '_permission',
+                                            'label' => $user->name,
+                                            'unpack' => true,
+                                            'options' => [
+                                                [
+                                                    'value' => '',
+                                                    'label' => 'None' 
+                                                ],
+                                                [
+                                                    'value' => 'view',
+                                                    'label' => 'View'
+                                                ],
+                                                [
+                                                    'value' => 'edit',
+                                                    'label' => 'Edit'
+                                                ],
+                                                [
+                                                    'value' => 'manage',
+                                                    'label' => 'Manage'
+                                                ],
+                                            ]
+                                        ])
+                                    @endforeach
+                                </a17-fieldset>
+                            @endcan
                         @endunless
 
                         @yield('fieldsets')
