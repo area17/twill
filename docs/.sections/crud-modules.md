@@ -832,7 +832,7 @@ public $filesParams = ['file_role', ...]; // a list of file roles
 
 Learn more at [Model](https://twill.io/docs/#models), [Repository](https://twill.io/docs/#repositories).
 
-If you are using the file formField in a block, you just have to define the `files` key in `config/twill.php` and you are all set, put it under `block_editor` key and at the same level as `crops` key:
+If you are using the file formField in a block, you have to define the `files` key in `config/twill.php` and you are all set, put it under `block_editor` key and at the same level as `crops` key:
 ```php
 return [
     'block_editor' => [
