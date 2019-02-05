@@ -42,11 +42,11 @@ class AuthServiceProvider extends ServiceProvider
 
 
         Gate::define('list', function ($user) {
-            return in_array($user->role_value, [UserRole::OWNER]);
+            return in_array($user->role_value, [UserRole::OWNER, UserRole::TEAM]);
         });
 
         Gate::define('edit', function ($user) {
-            return in_array($user->role_value, [UserRole::OWNER]);
+            return in_array($user->role_value, [UserRole::OWNER, UserRole::TEAM]);
         });
 
         Gate::define('reorder', function ($user) {
