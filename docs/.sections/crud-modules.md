@@ -635,7 +635,7 @@ If the formField is in a static content form, you have to include the `HasMedias
 
 Learn more about how Twill's media configurations work at [Model](https://twill.io/docs/#models), [Repository](https://twill.io/docs/#repositories), [Media Library Role & Crop Params](https://twill.io/docs/#image-rendering-service)
 
-If the formField is used inside a block, you just need to define the `mediasParams` at `config/twill.php` under `crops` key, and you are good to go. You could checkout [Twill Default Configuration](https://twill.io/docs/#default-configuration) and [Rendering Blocks](https://twill.io/docs/#rendering-blocks) for references.
+If the formField is used inside a block, you need to define the `mediasParams` at `config/twill.php` under `crops` key, and you are good to go. You could checkout [Twill Default Configuration](https://twill.io/docs/#default-configuration) and [Rendering Blocks](https://twill.io/docs/#rendering-blocks) for references.
 
 #### Datepicker
 ![screenshot](/docs/_media/datepicker.png)
