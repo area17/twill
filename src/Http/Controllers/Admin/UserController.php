@@ -104,7 +104,8 @@ class UserController extends ModuleController
             ],
             'customPublishedLabel' => 'Enabled',
             'customDraftLabel' => 'Disabled',
-            'permission_modules' => $modules_items
+            'permission_modules' => $modules_items,
+            'disablePermissionFieldset' => true
         ];
     }
 

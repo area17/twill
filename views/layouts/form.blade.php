@@ -62,7 +62,7 @@
                                 @yield('contentFields')
                             </a17-fieldset>
                         @endunless
-
+                        
                         @unless($disablePermissionFieldset ?? false)
                             <a17-fieldset title="Permissions" id="permissions">
                                 @foreach($users as $user)
