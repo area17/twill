@@ -232,7 +232,7 @@ abstract class ModuleController extends Controller
 
     public function show($id, $submoduleId = null)
     {
-        $this->authorize('view-module', $this->repository->getById($id));
+        $this->authorize('view-item', $this->repository->getById($id));
         if ($this->getIndexOption('editInModal')) {
             return redirect(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
         }
@@ -242,7 +242,7 @@ abstract class ModuleController extends Controller
 
     public function edit($id, $submoduleId = null)
     {
-        $this->authorize('view-module', $this->repository->getById($id));
+        $this->authorize('view-item', $this->repository->getById($id));
         $this->submodule = isset($submoduleId);
         $this->submoduleParentId = $id;
 
@@ -575,7 +575,7 @@ abstract class ModuleController extends Controller
             request('offset') ?? $this->perPage ?? 50,
             $forcePagination
         ))->filter(function ($item) {
-            return $this->user->can('view-module', $item);
+            return $this->user->can('view-item', $item);
         });
     }
 
@@ -610,7 +610,7 @@ abstract class ModuleController extends Controller
 
             $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
             $itemCanDelete = $this->getIndexOption('delete') && ($item->canDelete ?? true);
-            $canEdit = $this->getIndexOption('edit') && $this->user->can('edit-module', $item);
+            $canEdit = $this->getIndexOption('edit') && $this->user->can('edit-item', $item);
 
             return array_replace([
                 'id' => $item->id,

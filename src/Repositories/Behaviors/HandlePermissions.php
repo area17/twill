@@ -55,7 +55,7 @@ trait HandlePermissions
                 // Only value existed, do update or create
                 if ($value) {
                     $permission->name = $value;
-                    $permission->permissionable()->associate($object);
+                    $permission->permissionable()->associate($item);
                     $user->permissions()->save($permission);
                     $permission->save();
                 }
