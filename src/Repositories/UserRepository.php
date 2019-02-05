@@ -5,12 +5,13 @@ namespace A17\Twill\Repositories;
 use A17\Twill\Models\User;
 use A17\Twill\Models\Permission;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
+use A17\Twill\Repositories\Behaviors\HandlePermissions;
 use DB;
 use Password;
 
 class UserRepository extends ModuleRepository
 {
-    use HandleMedias;
+    use HandleMedias, HandlePermissions;
 
     public function __construct(User $model)
     {
@@ -33,16 +34,6 @@ class UserRepository extends ModuleRepository
         parent::afterUpdateBasic($user, $fields);
     }
 
-    public function getFormFields($user) {
-        $fields = parent::getFormFields($user);
-        foreach($user->permissions as $permission) {
-            $module = $permission->permissionable()->first();
-            $module_name = lcfirst(class_basename($module));
-            $fields[$module_name . '_' . $module->id . '_permission'] = '"' . $permission->permission_name . '"';
-        }
-        return $fields;
-    }
-
     public function getCountForPublished()
     {
         return $this->model->where('role', '<>', 'SUPERADMIN')->published()->count();
@@ -61,7 +52,6 @@ class UserRepository extends ModuleRepository
     public function afterSave($user, $fields)
     {
         $this->sendWelcomeEmail($user);
-        $this->handlePermissions($user, $fields);
         parent::afterSave($user, $fields);
     }
 
@@ -73,34 +63,4 @@ class UserRepository extends ModuleRepository
             );
         }
     }
-
-    private function handlePermissions($user, $fields)
-    {
-        // For each permission related field apear in the form, create or update them
-        foreach($fields as $key => $value) {
-            if(ends_with($key, '_permission')) {
-                $key = explode('_', $key);
-                $item_name = $key[0];
-                $item_id = $key[1];
-                $item = getRepositoryByModuleName($item_name)->getById($item_id);
-
-                // Query existed permission
-                $permission = $user->itemPermission($item) ?? new Permission;
-
-                // Only value existed, do update or create
-                if ($value) {
-                    $permission->permission_name = $value;
-                    $permission->guard_name = $value;
-                    $permission->permissionable()->associate($item);
-                    $user->permissions()->save($permission);
-                    $permission->save();
-                }
-                // If the existed permission has been set as none, delete the origin permission
-                elseif ($permission) {
-                    $permission->delete();
-                }
-            }
-        }
-    }
-
 }

@@ -9,14 +9,23 @@ trait HandlePermissions
 {
     public function getFormFieldsHandlePermissions($object, $fields)
     {
-        //render the each user's permission towards a specifically guide
-        $users = app()->make(UserRepository::class)->get(["permissions" => function ($query) use ($object) {
-            $query->where([['permissionable_type', get_class($object)], ['permissionable_id', $object->id]]);
-        }]);
-
-        foreach($users as $user) {
-            $permission = $user->permissions->first();
-            $fields['user_' . $user->id . '_permission'] = $permission ? "'" . $permission->guard_name . "'" : "";
+        if (get_class($object) === "A17\Twill\Models\User") {
+            foreach($object->permissions as $permission) {
+                $module = $permission->permissionable()->first();
+                $module_name = lcfirst(class_basename($module));
+                $fields[$module_name . '_' . $module->id . '_permission'] = '"' . $permission->name . '"';
+            }
+        }
+        //render the each user's permission under a item
+        else {
+            $users = app()->make(UserRepository::class)->get(["permissions" => function ($query) use ($object) {
+                $query->where([['permissionable_type', get_class($object)], ['permissionable_id', $object->id]]);
+            }]);
+    
+            foreach($users as $user) {
+                $permission = $user->permissions->first();
+                $fields['user_' . $user->id . '_permission'] = $permission ? "'" . $permission->name . "'" : "";
+            }
         }
 
         return $fields;
@@ -25,16 +34,27 @@ trait HandlePermissions
     public function afterSaveHandlePermissions($object, $fields)
     {
         foreach($fields as $key => $value) {
-            if(starts_with($key, 'user_') && ends_with($key, '_permission')) {
-                $user_id = explode('_', $key)[1];
-                $user = app()->make(UserRepository::class)->getById($user_id);
-                
-                $permission = $user->itemPermission($object) ?? new Permission;
+            if (ends_with($key, '_permission')) {
+
+                // Handle permissions fields on module item page
+                if (starts_with($key, 'user')) {
+                    $user_id = explode('_', $key)[1];
+                    $user = app()->make(UserRepository::class)->getById($user_id);
+                    $item = $object;
+                }
+                // Handle permissions fields on user page
+                else {
+                    $item_name = explode('_', $key)[0];
+                    $item_id = explode('_', $key)[1];
+                    $item = getRepositoryByModuleName($item_name)->getById($item_id);
+                    $user = $object;
+                }
+
+                $permission = $user->itemPermission($item) ?? new Permission;
 
                 // Only value existed, do update or create
                 if ($value) {
-                    $permission->permission_name = $value;
-                    $permission->guard_name = $value;
+                    $permission->name = $value;
                     $permission->permissionable()->associate($object);
                     $user->permissions()->save($permission);
                     $permission->save();
