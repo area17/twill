@@ -125,4 +125,9 @@ class User extends AuthenticatableContract
             ['permissionable_id', $item->id]
         ])->first();
     }
+
+    public function itemPermissionName($item)
+    {
+        return $this->itemPermission($item) ? $this->itemPermission($item)->name : null;
+    }
 }
