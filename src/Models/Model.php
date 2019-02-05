@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 use A17\Twill\Models\Permission;
+use A17\Twill\Models\Enums\UserRole;
 
 abstract class Model extends BaseModel implements TaggableInterface
 {
@@ -30,12 +31,12 @@ abstract class Model extends BaseModel implements TaggableInterface
 
         static::addGlobalScope('authorized', function (Builder $builder) {
             $permission_models = collect(config('twill.user_management.permission.enabled_modules', []))->map(function ($moduleName) {
-                return Str::studly(Str::singular($moduleName));
+                return "App\Models\\" . Str::studly(Str::singular($moduleName));
             });
             
             $model = get_class($builder->getModel());
 
-            if ($permission_models->contains($model)) { 
+            if ($permission_models->contains($model) && !in_array(Auth::user()->role_value, ['SUPERADMIN', UserRole::OWNER])) { 
                 $builder->whereIn('id', Permission::where([
                     ['twill_user_id', Auth::user()->id],
                     ['permissionable_type', $model],
