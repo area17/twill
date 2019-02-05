@@ -80,22 +80,18 @@ class UserRepository extends ModuleRepository
         foreach($fields as $key => $value) {
             if(ends_with($key, '_permission')) {
                 $key = explode('_', $key);
-                $module_name = $key[0];
-                $module_id = $key[1];
-                $module = getRepositoryByModuleName($module_name)->getById($module_id);
+                $item_name = $key[0];
+                $item_id = $key[1];
+                $item = getRepositoryByModuleName($item_name)->getById($item_id);
 
                 // Query existed permission
-                $permission = Permission::where([
-                    ['permissionable_type', get_class($module)],
-                    ['permissionable_id', $module->id],
-                    ['twill_user_id', $user->id]
-                ])->first() ?? new Permission;
+                $permission = $user->itemPermission($item) ?? new Permission;
 
                 // Only value existed, do update or create
                 if ($value) {
                     $permission->permission_name = $value;
                     $permission->guard_name = $value;
-                    $permission->permissionable()->associate($module);
+                    $permission->permissionable()->associate($item);
                     $user->permissions()->save($permission);
                     $permission->save();
                 }

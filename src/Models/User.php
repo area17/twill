@@ -118,13 +118,11 @@ class User extends AuthenticatableContract
         return $this->hasMany('A17\Twill\Models\Permission', 'twill_user_id');
     }
 
-    public function modulePermission($module)
+    public function itemPermission($item)
     {
-        $permission = $this->permissions()->where([
-            ['permissionable_type', get_class($module)],
-            ['permissionable_id', $module->id]
+        return $this->permissions()->where([
+            ['permissionable_type', get_class($item)],
+            ['permissionable_id', $item->id]
         ])->first();
-
-        return $permission ? $permission->guard_name : null;
     }
 }

@@ -24,16 +24,16 @@ class AuthServiceProvider extends ServiceProvider
         });
 
 
-        Gate::define('view-module', function ($user, $module) {
-            return in_array($user->modulePermission($module), ["view", "edit", "manage"]);
+        Gate::define('view-item', function ($user, $item) {
+            return $user->itemPermission($item) && in_array($user->itemPermission($item)->guard_name, ["view", "edit", "manage"]);
         });
 
-        Gate::define('edit-module', function ($user, $module) {
-            return in_array($user->modulePermission($module), ["edit", "manage"]);
+        Gate::define('edit-item', function ($user, $item) {
+            return $user->itemPermission($item) && in_array($user->itemPermission($item)->guard_name, ["edit", "manage"]);
         });
 
-        Gate::define('manage-module', function ($user, $module) {
-            return in_array($user->modulePermission($module), ["manage"]);
+        Gate::define('manage-item', function ($user, $item) {
+            return $user->itemPermission($item) && in_array($user->itemPermission($item)->guard_name, ["manage"]);
         });
 
 
