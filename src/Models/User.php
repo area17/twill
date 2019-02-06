@@ -54,9 +54,11 @@ class User extends AuthenticatableContract
         parent::boot();
 
         // Once a new user is created, add it to Everyone group
-        self::created(function ($model) {
-            $everyoneGroup = Group::where([['name', 'Everyone'], ['deletable', false]])->first();
-            $everyoneGroup->users()->attach($model->id);
+        self::created(function ($user) {
+            if (!in_array($user->role, ["SUPERADMIN", "GUEST"])) {
+                $everyoneGroup = Group::where([['name', 'Everyone'], ['can_delete', false]])->first();
+                $everyoneGroup->users()->attach($user->id);
+            }
         });
     }
 
@@ -128,6 +130,11 @@ class User extends AuthenticatableContract
     public function permissions()
     {
         return $this->hasMany('A17\Twill\Models\Permission', 'twill_user_id');
+    }
+
+    public function groups()
+    {
+        return $this->belongsToMany('A17\Twill\Models\Group', 'group_user', 'twill_user_id', 'group_id');
     }
 
     public function itemPermission($item)

@@ -43,6 +43,13 @@
             'label' => 'Description'
         ])
     @endif
+
+    @formField('browser', [
+      'moduleName' => 'groups',
+      'name' => 'groups',
+      'label' => 'Groups',
+      'max' => 100
+  ])
 @stop
 
 @section('fieldsets')

@@ -84,7 +84,7 @@ class GroupController extends ModuleController
 
     protected function indexItemData($item)
     {
-        $canEdit = auth('twill_users')->user()->can('edit-user-role') || auth('twill_users')->user()->id === $item->id;
+        $canEdit = auth('twill_users')->user()->can('edit-user-role') && ($item->canEdit ?? true);
 
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
     }

@@ -605,11 +605,9 @@ abstract class ModuleController extends Controller
             }
 
             unset($columnsData[$this->titleColumnKey]);
-
             $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
             $itemCanDelete = $this->getIndexOption('delete') && ($item->canDelete ?? true);
-            $canEdit = $this->getIndexOption('edit') && $this->user->can('edit-item', $item) && ($item->canEdit ?? true);
-
+            $canEdit = $this->getIndexOption('edit') && $this->user->can('edit-item', $item);
             return array_replace([
                 'id' => $item->id,
                 'name' => $name,

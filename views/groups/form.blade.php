@@ -15,5 +15,6 @@
         'name' => 'users',
         'notes' => 'Add memebers to the groups',
         'label' => 'Users',
+        'max' => 999
     ])
 @stop

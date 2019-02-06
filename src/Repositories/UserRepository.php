@@ -17,6 +17,14 @@ class UserRepository extends ModuleRepository
         $this->model = $model;
     }
 
+    public function getFormFields($object)
+    {
+        $fields = parent::getFormFields($object);
+        $fields['browsers']['groups'] = $this->getFormFieldsForBrowser($object, 'groups');
+
+        return $fields;
+    }
+
     public function filter($query, array $scopes = [])
     {
         $query->when(isset($scopes['role']), function ($query) use ($scopes) {
@@ -51,6 +59,7 @@ class UserRepository extends ModuleRepository
     public function afterSave($user, $fields)
     {
         $this->sendWelcomeEmail($user);
+        $this->updateBrowser($user, $fields, 'groups');
         parent::afterSave($user, $fields);
     }
 

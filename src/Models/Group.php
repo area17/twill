@@ -17,7 +17,7 @@ class Group extends BaseModel
         'name',
         'description',
         'published',
-        'deletable',
+        'can_delete',
     ];
 
     protected $dates = [
@@ -44,6 +44,11 @@ class Group extends BaseModel
         parent::__construct($attributes);
     }
 
+    public function getTitleInBrowserAttribute()
+    {
+        return $this->name;
+    }
+
     public function scopePublished($query)
     {
         return $query->wherePublished(true);
@@ -62,6 +67,27 @@ class Group extends BaseModel
     public function users()
     {
         return $this->belongsToMany('A17\Twill\Models\User', 'group_user', 'group_id', 'twill_user_id');
+    }
+
+    public function getCanDeleteAttribute()
+    {
+        return $this->attributes["can_delete"];
+    }
+
+    public function getCanEditAttribute()
+    {
+        if ($this->name === "Everyone" && !$this->canDelete) {
+            return false;
+        }
+        return true;
+    }
+
+    public function getCanPublishAttribute()
+    {
+        if ($this->name === "Everyone" && !$this->canDelete) {
+            return false;
+        }
+        return true;
     }
 
 }
