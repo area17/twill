@@ -10,6 +10,7 @@
     $customForm = $customForm ?? false;
     $controlLanguagesPublication = $controlLanguagesPublication ?? true;
     $users = app()->make('A17\Twill\Repositories\UserRepository')->get();
+    $groups = app()->make('A17\Twill\Repositories\GroupRepository')->get();
 @endphp
 
 @section('content')
@@ -69,7 +70,7 @@
 
                         @if($showPermissionFieldset)
                             @can('manage-item', $item)
-                                <a17-fieldset title="Permissions" id="permissions">
+                                <a17-fieldset title="User Permissions" id="permissions">
                                     @foreach($users as $user)
                                         @formField('select', [
                                             'name' => 'user_' . $user->id . '_permission',
@@ -93,6 +94,14 @@
                                                     'label' => 'Manage'
                                                 ],
                                             ]
+                                        ])
+                                    @endforeach
+                                </a17-fieldset>
+                                <a17-fieldset title="Group Permissions" id="permissions">
+                                    @foreach($groups as $group)
+                                        @formField('checkbox', [
+                                            'name' => 'group_' . $group->id,
+                                            'label' => $group->name
                                         ])
                                     @endforeach
                                 </a17-fieldset>

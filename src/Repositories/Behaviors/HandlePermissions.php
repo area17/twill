@@ -3,12 +3,14 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Repositories\UserRepository;
+use A17\Twill\Repositories\GroupRepository;
 use A17\Twill\Models\Permission;
 
 trait HandlePermissions
 {
     public function getFormFieldsHandlePermissions($object, $fields)
     {
+        // User form
         if (get_class($object) === "A17\Twill\Models\User") {
             foreach($object->permissions as $permission) {
                 $module = $permission->permissionable()->withoutGlobalScope('authorized')->first();
@@ -16,16 +18,10 @@ trait HandlePermissions
                 $fields[$module_name . '_' . $module->id . '_permission'] = '"' . $permission->name . '"';
             }
         }
-        //render the each user's permission under a item
+        // Module instance form
         else {
-            $users = app()->make(UserRepository::class)->get(["permissions" => function ($query) use ($object) {
-                $query->where([['permissionable_type', get_class($object)], ['permissionable_id', $object->id]]);
-            }]);
-            
-            foreach($users as $user) {
-                $permission = $user->permissions->first();
-                $fields['user_' . $user->id . '_permission'] = $permission ? "'" . $permission->name . "'" : "";
-            }
+            $fields = $this->renderUserPermissions($object, $fields);
+            $fields = $this->renderGroupPermissions($object, $fields);
         }
         
         return $fields;
@@ -66,4 +62,38 @@ trait HandlePermissions
             }
         }        
     }
+
+    // Render each user's permission under a item
+    protected function renderUserPermissions($object, $fields)
+    {
+        $users = app()->make(UserRepository::class)->get(["permissions" => function ($query) use ($object) {
+            $query->where([['permissionable_type', get_class($object)], ['permissionable_id', $object->id]]);
+        }]);
+        
+        foreach($users as $user) {
+            $permission = $user->permissions->first();
+            $fields['user_' . $user->id . '_permission'] = $permission ? "'" . $permission->name . "'" : "";
+        }
+
+        return $fields;
+    }
+
+    // Render each group's permission under a item
+    protected function renderGroupPermissions($object, $fields)
+    {
+        $groups = app()->make(GroupRepository::class)->get(['users.permissions']);
+        foreach($groups as $group) {
+            $allUsersInGroupAuthorized = $group->users()
+                ->whereDoesntHave('permissions', function ($query) use ($object) {
+                $query->where([
+                    ['permissionable_type', get_class($object)],
+                    ['permissionable_id', $object->id]
+                ]);
+            })->get()->count() === 0;
+
+            $fields['group_' . $group->id] = $allUsersInGroupAuthorized;
+        }
+        return $fields;
+    }
+    
 }
