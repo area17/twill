@@ -63,7 +63,11 @@
                             </a17-fieldset>
                         @endunless
                         
-                        @unless($disablePermissionFieldset ?? false)
+                        @php
+                            $showPermissionFieldset = isset($item) && in_array(str_plural(lcfirst(class_basename($item))), config('twill.user_management.permission.enabled_modules', []));
+                        @endphp
+
+                        @if($showPermissionFieldset)
                             @can('manage-item', $item)
                                 <a17-fieldset title="Permissions" id="permissions">
                                     @foreach($users as $user)
@@ -93,7 +97,7 @@
                                     @endforeach
                                 </a17-fieldset>
                             @endcan
-                        @endunless
+                        @endif
 
                         @yield('fieldsets')
                     </section>
