@@ -6,42 +6,18 @@ use A17\Twill\Models\Enums\UserRole;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 
-class UserController extends ModuleController
+class GroupController extends ModuleController
 {
     protected $namespace = 'A17\Twill';
 
-    protected $moduleName = 'users';
+    protected $moduleName = 'groups';
 
     protected $indexWith = ['medias'];
 
-    protected $defaultOrders = ['name' => 'asc'];
+    protected $defaultOrders = ['title' => 'asc'];
 
     protected $defaultFilters = [
         'search' => 'search',
-    ];
-
-    protected $filters = [
-        'role' => 'role',
-    ];
-
-    protected $titleColumnKey = 'name';
-
-    protected $indexColumns = [
-        'name' => [
-            'title' => 'Name',
-            'field' => 'name',
-        ],
-        'email' => [
-            'title' => 'Email',
-            'field' => 'email',
-            'sort' => true,
-        ],
-        'role_value' => [
-            'title' => 'Role',
-            'field' => 'role_value',
-            'sort' => true,
-            'sortKey' => 'role',
-        ],
     ];
 
     protected $indexOptions = [
@@ -79,12 +55,12 @@ class UserController extends ModuleController
             'primary_navigation' => [
                 'users' => [
                     'title' => 'Users',
-                    'module' => true,
-                    'active' => true
+                    'module' => true
                 ],
                 'groups' => [
                     'title' => 'Groups',
                     'module' => true,
+                    'active' => true
                 ]
             ],
             'customPublishedLabel' => 'Enabled',
@@ -94,28 +70,21 @@ class UserController extends ModuleController
 
     protected function formData($request)
     {
-        $permission_modules = collect(config('twill.user_management.permission.enabled_modules', []));
-        $modules_items = $permission_modules->mapWithKeys(function($module){
-            return [$module => getRepositoryByModuleName($module)->get()];
-        });
-        
         return [
             'roleList' => collect(UserRole::toArray()),
             'primary_navigation' => [
                 'users' => [
                     'title' => 'Users',
-                    'module' => true,
-                    'active' => true
+                    'module' => true
                 ],
                 'groups' => [
                     'title' => 'Groups',
                     'module' => true,
+                    'active' => true
                 ]
             ],
             'customPublishedLabel' => 'Enabled',
             'customDraftLabel' => 'Disabled',
-            'permission_modules' => $modules_items,
-            'disablePermissionFieldset' => true
         ];
     }
 
