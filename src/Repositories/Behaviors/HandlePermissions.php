@@ -12,7 +12,7 @@ trait HandlePermissions
         if (get_class($object) === "A17\Twill\Models\User") {
             foreach($object->permissions as $permission) {
                 $module = $permission->permissionable()->withoutGlobalScope('authorized')->first();
-                $module_name = lcfirst(class_basename($module));
+                $module_name = str_plural(lcfirst(class_basename($module)));
                 $fields[$module_name . '_' . $module->id . '_permission'] = '"' . $permission->name . '"';
             }
         }
@@ -21,13 +21,13 @@ trait HandlePermissions
             $users = app()->make(UserRepository::class)->get(["permissions" => function ($query) use ($object) {
                 $query->where([['permissionable_type', get_class($object)], ['permissionable_id', $object->id]]);
             }]);
-    
+            
             foreach($users as $user) {
                 $permission = $user->permissions->first();
                 $fields['user_' . $user->id . '_permission'] = $permission ? "'" . $permission->name . "'" : "";
             }
         }
-
+        
         return $fields;
     }
 
