@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateGroupsTable extends Migration
 {
@@ -13,13 +14,13 @@ class CreateGroupsTable extends Migration
             $table->text('description')->nullable();
         });
 
-        Scheme::create('users_groups', function (Blueprint $table) {
+        Schema::create('users_groups', function (Blueprint $table) {
            $table->unsignedInteger('twill_user_id');
-           $table->foreign('user_id')
-                 ->references('id')->on('twill_users')
+           $table->foreign('twill_user_id')
+                 ->references('id')->on(config('twill.users_table', 'twill_users'))
                  ->onDelete('cascade');
 
-           $table->unsignedInteger('groups_id');
+           $table->unsignedInteger('group_id');
            $table->foreign('group_id')
                  ->references('id')->on('groups')
                  ->onDelete('cascade');
