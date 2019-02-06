@@ -2,9 +2,9 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
-use A17\Twill\Repositories\UserRepository;
-use A17\Twill\Repositories\GroupRepository;
 use A17\Twill\Models\Permission;
+use A17\Twill\Repositories\GroupRepository;
+use A17\Twill\Repositories\UserRepository;
 
 trait HandlePermissions
 {
@@ -12,7 +12,7 @@ trait HandlePermissions
     {
         // User form
         if (get_class($object) === "A17\Twill\Models\User") {
-            foreach($object->permissions as $permission) {
+            foreach ($object->permissions as $permission) {
                 $module = $permission->permissionable()->withoutGlobalScope('authorized')->first();
                 $module_name = str_plural(lcfirst(class_basename($module)));
                 $fields[$module_name . '_' . $module->id . '_permission'] = '"' . $permission->name . '"';
@@ -23,13 +23,13 @@ trait HandlePermissions
             $fields = $this->renderUserPermissions($object, $fields);
             $fields = $this->renderGroupPermissions($object, $fields);
         }
-        
+
         return $fields;
     }
 
     public function afterSaveHandlePermissions($object, $fields)
     {
-        foreach($fields as $key => $value) {
+        foreach ($fields as $key => $value) {
             if (ends_with($key, '_permission')) {
 
                 // Handle permissions fields on module item page
@@ -58,12 +58,10 @@ trait HandlePermissions
                 elseif ($permission) {
                     $permission->delete();
                 }
-            } 
-            
-            elseif (ends_with($key, '_group_authorized')) {
+            } elseif (ends_with($key, '_group_authorized')) {
                 $this->handleGroupPermissions($object, $fields, $key, $value);
             }
-        }        
+        }
     }
 
     // Render each user's permission under a item
@@ -72,8 +70,8 @@ trait HandlePermissions
         $users = app()->make(UserRepository::class)->get(["permissions" => function ($query) use ($object) {
             $query->where([['permissionable_type', get_class($object)], ['permissionable_id', $object->id]]);
         }]);
-        
-        foreach($users as $user) {
+
+        foreach ($users as $user) {
             $permission = $user->permissions->first();
             $fields['user_' . $user->id . '_permission'] = $permission ? "'" . $permission->name . "'" : "";
         }
@@ -85,22 +83,22 @@ trait HandlePermissions
     protected function renderGroupPermissions($object, $fields)
     {
         $groups = app()->make(GroupRepository::class)->get(['users.permissions']);
-        foreach($groups as $group) {
+        foreach ($groups as $group) {
             $fields[$group->id . '_group_authorized'] = $this->allUsersInGroupAuthorized($group, $object);
         }
         return $fields;
     }
 
-    // After save handle group permissions: 
+    // After save handle group permissions:
     // If one group checked, switch the permission of all users in the group to at least view.
-    // If one group unchecked, switch the permission of all users who have view permissions to none. 
+    // If one group unchecked, switch the permission of all users who have view permissions to none.
     protected function handleGroupPermissions($object, $fields, $key, $value)
     {
         $group = app()->make(GroupRepository::class)->getById(explode('_', $key)[0]);
-        
+
         // The value has changed
         if ($this->allUsersInGroupAuthorized($group, $object) !== $value) {
-            foreach($group->users as $user) {
+            foreach ($group->users as $user) {
                 // Group checked, grant at least view access to all users in the group.
                 if ($value && !$user->itemPermissionName($object)) {
                     $permission = new Permission;
@@ -116,13 +114,14 @@ trait HandlePermissions
         }
     }
 
-    protected function allUsersInGroupAuthorized($group, $object) {
+    protected function allUsersInGroupAuthorized($group, $object)
+    {
         return $group->users()->whereDoesntHave('permissions', function ($query) use ($object) {
             $query->where([
                 ['permissionable_type', get_class($object)],
-                ['permissionable_id', $object->id]
+                ['permissionable_id', $object->id],
             ]);
         })->get()->count() === 0;
     }
-    
+
 }

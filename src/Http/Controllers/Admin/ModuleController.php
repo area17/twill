@@ -114,7 +114,7 @@ abstract class ModuleController extends Controller
         parent::__construct();
         $this->app = $app;
         $this->request = $request;
-        
+
         $this->modelName = $this->getModelName();
         $this->routePrefix = $this->getRoutePrefix();
         $this->namespace = $this->getNamespace();
@@ -122,7 +122,7 @@ abstract class ModuleController extends Controller
         $this->viewPrefix = $this->getViewPrefix();
         $this->modelTitle = $this->getModelTitle();
         $this->middleware(function ($request, $next) {
-            $this->user= auth('twill_users')->user();
+            $this->user = auth('twill_users')->user();
             return $next($request);
         });
         $this->setMiddlewarePermission();
@@ -608,7 +608,7 @@ abstract class ModuleController extends Controller
 
             $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
             $itemCanDelete = $this->getIndexOption('delete') && ($item->canDelete ?? true);
-            $canEdit = $this->getIndexOption('edit') && $this->user->can('edit-item', $item);
+            $canEdit = $this->getIndexOption('edit') && $this->user->can('edit-item', $item) && ($item->canEdit ?? true);
 
             return array_replace([
                 'id' => $item->id,

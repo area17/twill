@@ -3,7 +3,6 @@
 namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\User;
-use A17\Twill\Models\Permission;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandlePermissions;
 use DB;

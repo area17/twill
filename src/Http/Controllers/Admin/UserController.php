@@ -80,12 +80,12 @@ class UserController extends ModuleController
                 'users' => [
                     'title' => 'Users',
                     'module' => true,
-                    'active' => true
+                    'active' => true,
                 ],
                 'groups' => [
                     'title' => 'Groups',
                     'module' => true,
-                ]
+                ],
             ],
             'customPublishedLabel' => 'Enabled',
             'customDraftLabel' => 'Disabled',
@@ -95,22 +95,22 @@ class UserController extends ModuleController
     protected function formData($request)
     {
         $permission_modules = collect(config('twill.user_management.permission.enabled_modules', []));
-        $modules_items = $permission_modules->mapWithKeys(function($module){
+        $modules_items = $permission_modules->mapWithKeys(function ($module) {
             return [$module => getRepositoryByModuleName($module)->get()];
         });
-        
+
         return [
             'roleList' => collect(UserRole::toArray()),
             'primary_navigation' => [
                 'users' => [
                     'title' => 'Users',
                     'module' => true,
-                    'active' => true
+                    'active' => true,
                 ],
                 'groups' => [
                     'title' => 'Groups',
                     'module' => true,
-                ]
+                ],
             ],
             'customPublishedLabel' => 'Enabled',
             'customDraftLabel' => 'Disabled',

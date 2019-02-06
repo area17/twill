@@ -54,7 +54,7 @@ class User extends AuthenticatableContract
         parent::boot();
 
         // Once a new user is created, add it to Everyone group
-        self::created(function($model) {
+        self::created(function ($model) {
             $everyoneGroup = Group::where([['name', 'Everyone'], ['deletable', false]])->first();
             $everyoneGroup->users()->attach($model->id);
         });
@@ -134,7 +134,7 @@ class User extends AuthenticatableContract
     {
         return $this->permissions()->where([
             ['permissionable_type', get_class($item)],
-            ['permissionable_id', $item->id]
+            ['permissionable_id', $item->id],
         ])->first();
     }
 

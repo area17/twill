@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
-use A17\Twill\Models\Enums\UserRole;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 
@@ -47,8 +46,8 @@ class GroupController extends ModuleController
                 'groups' => [
                     'title' => 'Groups',
                     'module' => true,
-                    'active' => true
-                ]
+                    'active' => true,
+                ],
             ],
             'customPublishedLabel' => 'Enabled',
             'customDraftLabel' => 'Disabled',
@@ -65,7 +64,7 @@ class GroupController extends ModuleController
     }
 
     protected function formData($request)
-    {   
+    {
         return [
             'primary_navigation' => [
                 'users' => [
@@ -75,8 +74,8 @@ class GroupController extends ModuleController
                 'groups' => [
                     'title' => 'Groups',
                     'module' => true,
-                    'active' => true
-                ]
+                    'active' => true,
+                ],
             ],
             'customPublishedLabel' => 'Enabled',
             'customDraftLabel' => 'Disabled',

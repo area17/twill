@@ -4,10 +4,8 @@ namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasPresenter;
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model as BaseModel;
-use Session;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Group extends BaseModel
 {
@@ -19,7 +17,7 @@ class Group extends BaseModel
         'name',
         'description',
         'published',
-        'deletable'
+        'deletable',
     ];
 
     protected $dates = [
