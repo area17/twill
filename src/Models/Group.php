@@ -16,7 +16,7 @@ class Group extends BaseModel
     public $timestamps = true;
 
     protected $fillable = [
-        'title',
+        'name',
         'description',
     ];
 
