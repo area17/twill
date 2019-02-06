@@ -53,12 +53,15 @@ trait HandlePermissions
                     $permission->name = $value;
                     $permission->permissionable()->associate($item);
                     $user->permissions()->save($permission);
-                    $permission->save();
                 }
                 // If the existed permission has been set as none, delete the origin permission
                 elseif ($permission) {
                     $permission->delete();
                 }
+            } 
+            
+            elseif (ends_with($key, '_group_authorized')) {
+                $this->handleGroupPermissions($object, $fields, $key, $value);
             }
         }        
     }
@@ -83,17 +86,43 @@ trait HandlePermissions
     {
         $groups = app()->make(GroupRepository::class)->get(['users.permissions']);
         foreach($groups as $group) {
-            $allUsersInGroupAuthorized = $group->users()
-                ->whereDoesntHave('permissions', function ($query) use ($object) {
-                $query->where([
-                    ['permissionable_type', get_class($object)],
-                    ['permissionable_id', $object->id]
-                ]);
-            })->get()->count() === 0;
-
-            $fields['group_' . $group->id] = $allUsersInGroupAuthorized;
+            $fields[$group->id . '_group_authorized'] = $this->allUsersInGroupAuthorized($group, $object);
         }
         return $fields;
+    }
+
+    // After save handle group permissions: 
+    // If one group checked, switch the permission of all users in the group to at least view.
+    // If one group unchecked, switch the permission of all users who have view permissions to none. 
+    protected function handleGroupPermissions($object, $fields, $key, $value)
+    {
+        $group = app()->make(GroupRepository::class)->getById(explode('_', $key)[0]);
+        
+        // The value has changed
+        if ($this->allUsersInGroupAuthorized($group, $object) !== $value) {
+            foreach($group->users as $user) {
+                // Group checked, grant at least view access to all users in the group.
+                if ($value && !$user->itemPermissionName($object)) {
+                    $permission = new Permission;
+                    $permission->name = "view";
+                    $permission->permissionable()->associate($object);
+                    $user->permissions()->save($permission);
+                }
+                // Group unchecked, revoke all users who have view permissions to none.
+                elseif (!$value && $user->itemPermissionName($object) === "view") {
+                    $user->itemPermission($object)->delete();
+                }
+            }
+        }
+    }
+
+    protected function allUsersInGroupAuthorized($group, $object) {
+        return $group->users()->whereDoesntHave('permissions', function ($query) use ($object) {
+            $query->where([
+                ['permissionable_type', get_class($object)],
+                ['permissionable_id', $object->id]
+            ]);
+        })->get()->count() === 0;
     }
     
 }
