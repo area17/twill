@@ -3,30 +3,28 @@
 namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\Group;
-use A17\Twill\Repositories\Behaviors\HandleMedias;
-use DB;
 
 class GroupRepository extends ModuleRepository
 {
-    use HandleMedias;
 
     public function __construct(Group $model)
     {
         $this->model = $model;
     }
 
-    public function getCountForPublished()
+    public function getFormFields($object)
     {
-        return $this->model->published()->count();
+        $fields = parent::getFormFields($object);
+
+        $fields['browsers']['users'] = $this->getFormFieldsForBrowser($object, 'users');
+
+        return $fields;
     }
 
-    public function getCountForDraft()
+    public function afterSave($object, $fields)
     {
-        return $this->model->draft()->count();
-    }
+        $this->updateBrowser($object, $fields, 'users');
 
-    public function getCountForTrash()
-    {
-        return $this->model->onlyTrashed()->count();
+        parent::afterSave($object, $fields);
     }
 }

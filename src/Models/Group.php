@@ -59,4 +59,9 @@ class Group extends BaseModel
         return $query->whereNotNull('deleted_at');
     }
 
+    public function users()
+    {
+        return $this->belongsToMany('A17\Twill\Models\User', 'group_user', 'group_id', 'twill_user_id');
+    }
+
 }

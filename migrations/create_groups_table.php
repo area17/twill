@@ -14,7 +14,7 @@ class CreateGroupsTable extends Migration
             $table->text('description')->nullable();
         });
 
-        Schema::create('users_groups', function (Blueprint $table) {
+        Schema::create('group_user', function (Blueprint $table) {
            $table->unsignedInteger('twill_user_id');
            $table->foreign('twill_user_id')
                  ->references('id')->on(config('twill.users_table', 'twill_users'))
@@ -29,7 +29,7 @@ class CreateGroupsTable extends Migration
 
     public function down()
     {
+        Schema::dropIfExists('group_user');
         Schema::dropIfExists('groups');
-        Schema::dropIfExists('users_groups');
     }
 }
