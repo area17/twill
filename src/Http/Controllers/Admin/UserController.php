@@ -86,6 +86,10 @@ class UserController extends ModuleController
                     'title' => 'Groups',
                     'module' => true,
                 ],
+                'roles' => [
+                    'title' => 'Roles',
+                    'module' => true,
+                ],
             ],
             'customPublishedLabel' => 'Enabled',
             'customDraftLabel' => 'Disabled',
@@ -109,6 +113,10 @@ class UserController extends ModuleController
                 ],
                 'groups' => [
                     'title' => 'Groups',
+                    'module' => true,
+                ],
+                'roles' => [
+                    'title' => 'Roles',
                     'module' => true,
                 ],
             ],

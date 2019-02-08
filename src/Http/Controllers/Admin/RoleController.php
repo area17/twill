@@ -5,11 +5,11 @@ namespace A17\Twill\Http\Controllers\Admin;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 
-class GroupController extends ModuleController
+class RoleController extends ModuleController
 {
     protected $namespace = 'A17\Twill';
 
-    protected $moduleName = 'groups';
+    protected $moduleName = 'roles';
 
     protected $indexWith = ['medias'];
 
@@ -46,11 +46,11 @@ class GroupController extends ModuleController
                 'groups' => [
                     'title' => 'Groups',
                     'module' => true,
-                    'active' => true,
                 ],
                 'roles' => [
                     'title' => 'Roles',
                     'module' => true,
+                    'active' => true,
                 ],
             ],
             'customPublishedLabel' => 'Enabled',
@@ -78,11 +78,11 @@ class GroupController extends ModuleController
                 'groups' => [
                     'title' => 'Groups',
                     'module' => true,
-                    'active' => true,
                 ],
                 'roles' => [
                     'title' => 'Roles',
                     'module' => true,
+                    'active' => true,
                 ],
             ],
             'customPublishedLabel' => 'Enabled',
