@@ -4,7 +4,6 @@ namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasPresenter;
-use A17\Twill\Models\Enums\UserRole;
 use A17\Twill\Models\Group;
 use A17\Twill\Notifications\Reset as ResetNotification;
 use A17\Twill\Notifications\Welcome as WelcomeNotification;
@@ -76,15 +75,10 @@ class User extends AuthenticatableContract
 
     public function getRoleValueAttribute()
     {
-        if (!empty($this->role)) {
-            if ($this->role == 'SUPERADMIN') {
-                return "SUPERADMIN";
-            }
-
-            return UserRole::{$this->role}()->getValue();
+        if ($this->is_superadmin) {
+            return 'SUPERADMIN';
         }
-
-        return null;
+        return $this->role->name;
     }
 
     public function scopePublished($query)

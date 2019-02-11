@@ -30,7 +30,7 @@ class UserRepository extends ModuleRepository
         $query->when(isset($scopes['role']), function ($query) use ($scopes) {
             $query->where('role', $scopes['role']);
         });
-        $query->where('role', '<>', 'SUPERADMIN');
+        $query->where('is_superadmin', '<>', true);
         $this->searchIn($query, $scopes, 'search', ['name', 'email', 'role']);
         return parent::filter($query, $scopes);
     }
@@ -43,17 +43,17 @@ class UserRepository extends ModuleRepository
 
     public function getCountForPublished()
     {
-        return $this->model->where('role', '<>', 'SUPERADMIN')->published()->count();
+        return $this->model->where('is_superadmin', '<>', true)->published()->count();
     }
 
     public function getCountForDraft()
     {
-        return $this->model->where('role', '<>', 'SUPERADMIN')->draft()->count();
+        return $this->model->where('is_superadmin', '<>', true)->draft()->count();
     }
 
     public function getCountForTrash()
     {
-        return $this->model->where('role', '<>', 'SUPERADMIN')->onlyTrashed()->count();
+        return $this->model->where('is_superadmin', '<>', true)->onlyTrashed()->count();
     }
 
     public function afterSave($user, $fields)

@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
-use A17\Twill\Models\Enums\UserRole;
+use A17\Twill\Models\Role;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 
@@ -75,7 +75,7 @@ class UserController extends ModuleController
         return [
             'defaultFilterSlug' => 'published',
             'create' => $this->getIndexOption('create') && auth('twill_users')->user()->can('edit-user-role'),
-            'roleList' => collect(UserRole::toArray()),
+            'roleList' => Role::published(),
             'primary_navigation' => [
                 'users' => [
                     'title' => 'Users',
@@ -104,7 +104,7 @@ class UserController extends ModuleController
         });
 
         return [
-            'roleList' => collect(UserRole::toArray()),
+            'roleList' => Role::published(),
             'primary_navigation' => [
                 'users' => [
                     'title' => 'Users',

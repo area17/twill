@@ -2,17 +2,16 @@
 
 namespace A17\Twill\Models;
 
-use Auth;
 use A17\Twill\Models\Behaviors\HasPresenter;
+use A17\Twill\Models\Permission;
+use Auth;
 use Carbon\Carbon;
 use Cartalyst\Tags\TaggableInterface;
 use Cartalyst\Tags\TaggableTrait;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
-use A17\Twill\Models\Permission;
-use A17\Twill\Models\Enums\UserRole;
+use Illuminate\Support\Str;
 
 abstract class Model extends BaseModel implements TaggableInterface
 {
@@ -33,10 +32,10 @@ abstract class Model extends BaseModel implements TaggableInterface
             $permission_models = collect(config('twill.user_management.permission.enabled_modules', []))->map(function ($moduleName) {
                 return "App\Models\\" . Str::studly(Str::singular($moduleName));
             });
-            
+
             $model = get_class($builder->getModel());
 
-            if ($permission_models->contains($model) && !in_array(Auth::user()->role_value, ['SUPERADMIN', UserRole::OWNER])) { 
+            if ($permission_models->contains($model)) {
                 $builder->whereIn('id', Permission::where([
                     ['twill_user_id', Auth::user()->id],
                     ['permissionable_type', $model],

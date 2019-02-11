@@ -26,8 +26,8 @@ class CreateSuperAdmin extends Command
             'name' => "Admin",
             'email' => $email,
             'password' => bcrypt($password),
-            'role' => 'SUPERADMIN',
             'published' => true,
+            'is_superadmin' => true,
         ]);
         $this->info("Your account has been created");
     }

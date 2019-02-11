@@ -4,7 +4,7 @@
 ])
 
 @php
-    $isSuperAdmin = isset($item->role) ? $item->role === 'SUPERADMIN' : false;
+    $isSuperAdmin = isset($item->role) ? $item->is_superadmin : false;
 @endphp
 
 @section('contentFields')
