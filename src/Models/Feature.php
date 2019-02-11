@@ -23,7 +23,7 @@ class Feature extends BaseModel
     {
         return $query->where('bucket_key', $bucketKey)->get()->map(function ($feature) {
             return $feature->featured;
-        });
+        })->filter();
     }
 
 }
