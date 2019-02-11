@@ -6,7 +6,13 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class Permission extends BaseModel
 {
-    public function permissionable() {
+    protected $fillable = [
+        'guard_name',
+        'display_name',
+    ];
+
+    public function permissionable()
+    {
         return $this->morphTo();
     }
 }

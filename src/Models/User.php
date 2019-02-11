@@ -129,12 +129,17 @@ class User extends AuthenticatableContract
 
     public function permissions()
     {
-        return $this->hasMany('A17\Twill\Models\Permission', 'twill_user_id');
+        return $this->belongsToMany('A17\Twill\Models\Permission', 'permission_twill_user', 'twill_user_id', 'permission_id');
     }
 
     public function groups()
     {
-        return $this->belongsToMany('A17\Twill\Models\Group', 'group_user', 'twill_user_id', 'group_id');
+        return $this->belongsToMany('A17\Twill\Models\Group', 'group_twill_user', 'twill_user_id', 'group_id');
+    }
+
+    public function role()
+    {
+        return $this->belongsTo('A17\Twill\Models\Role');
     }
 
     public function itemPermission($item)
@@ -149,4 +154,8 @@ class User extends AuthenticatableContract
     {
         return $this->itemPermission($item) ? $this->itemPermission($item)->name : null;
     }
+
+    protected $casts = [
+        'is_superadmin' => 'boolean',
+    ];
 }

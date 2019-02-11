@@ -14,9 +14,7 @@ class Role extends BaseModel
 
     protected $fillable = [
         'name',
-        'description',
         'published',
-        'can_delete',
     ];
 
     protected $dates = [
@@ -30,6 +28,21 @@ class Role extends BaseModel
         $this->table = 'roles';
 
         parent::__construct($attributes);
+    }
+
+    public function scopePublished($query)
+    {
+        return $query->wherePublished(true);
+    }
+
+    public function scopeDraft($query)
+    {
+        return $query->wherePublished(false);
+    }
+
+    public function scopeOnlyTrashed($query)
+    {
+        return $query->whereNotNull('deleted_at');
     }
 
 }

@@ -14,7 +14,7 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         Gate::before(function ($user, $ability) {
-            if ($user->role === self::SUPERADMIN) {
+            if ($user->is_superadmin) {
                 return true;
             }
 
@@ -22,7 +22,6 @@ class AuthServiceProvider extends ServiceProvider
                 return false;
             }
         });
-
 
         Gate::define('view-item', function ($user, $item) {
             return in_array($user->itemPermissionName($item), ["view", "edit", "manage"]) || in_array($user->role_value, [UserRole::OWNER]);
@@ -64,7 +63,11 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->role_value, [UserRole::OWNER]);
         });
 
-        Gate::define('edit-user', function ($user, $editedUser =null) {
+        Gate::define('manage-users', function ($user) {
+            return false;
+        });
+
+        Gate::define('edit-user', function ($user, $editedUser = null) {
             $editedUserObject = User::find($editedUser);
             return ($user->can('edit') && in_array($user->role_value, [UserRole::OWNER]) || $user->id == $editedUser)
                 && ($editedUserObject ? $editedUserObject->role !== self::SUPERADMIN : true);

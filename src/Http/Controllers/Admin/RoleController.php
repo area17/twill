@@ -69,6 +69,11 @@ class RoleController extends ModuleController
 
     protected function formData($request)
     {
+        $permission_modules = collect(config('twill.user_management.permission.enabled_modules', []));
+        $modules_items = $permission_modules->mapWithKeys(function ($module) {
+            return [$module => getRepositoryByModuleName($module)->get()];
+        });
+
         return [
             'primary_navigation' => [
                 'users' => [
@@ -87,6 +92,7 @@ class RoleController extends ModuleController
             ],
             'customPublishedLabel' => 'Enabled',
             'customDraftLabel' => 'Disabled',
+            'permission_modules' => $modules_items,
         ];
     }
 

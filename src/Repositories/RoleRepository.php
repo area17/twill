@@ -16,14 +16,14 @@ class RoleRepository extends ModuleRepository
     {
         $fields = parent::getFormFields($object);
 
-        $fields['browsers']['users'] = $this->getFormFieldsForBrowser($object, 'users');
+        // $fields['browsers']['users'] = $this->getFormFieldsForBrowser($object, 'users');
 
         return $fields;
     }
 
     public function afterSave($object, $fields)
     {
-        $this->updateBrowser($object, $fields, 'users');
+        // $this->updateBrowser($object, $fields, 'users');
 
         parent::afterSave($object, $fields);
     }

@@ -12,9 +12,10 @@ class CreateTwillUsersTables extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password', 60)->nullable()->default(null);
-            $table->string('role', 100);
+            $table->unsignedInteger('role_id')->nullable();
             $table->string('title', 255)->nullable();
             $table->text('description')->nullable();
+            $table->boolean('is_superadmin')->default(false);
             $table->rememberToken();
         });
 

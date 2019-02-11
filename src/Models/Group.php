@@ -3,13 +3,12 @@
 namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasMedias;
-use A17\Twill\Models\Behaviors\HasPresenter;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Group extends BaseModel
 {
-    use HasMedias, HasPresenter, SoftDeletes;
+    use HasMedias, SoftDeletes;
 
     public $timestamps = true;
 
