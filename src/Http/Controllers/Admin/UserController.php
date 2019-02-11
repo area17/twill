@@ -75,7 +75,9 @@ class UserController extends ModuleController
         return [
             'defaultFilterSlug' => 'published',
             'create' => $this->getIndexOption('create') && auth('twill_users')->user()->can('edit-user-role'),
-            'roleList' => Role::published(),
+            'roleList' => Role::published()->get()->map(function ($role) {
+                return ['value' => $role->id, 'label' => $role->name];
+            })->toArray(),
             'primary_navigation' => [
                 'users' => [
                     'title' => 'Users',
@@ -104,7 +106,9 @@ class UserController extends ModuleController
         });
 
         return [
-            'roleList' => Role::published(),
+            'roleList' => Role::published()->get()->map(function ($role) {
+                return ['value' => $role->id, 'label' => $role->name];
+            })->toArray(),
             'primary_navigation' => [
                 'users' => [
                     'title' => 'Users',

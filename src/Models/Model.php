@@ -3,15 +3,11 @@
 namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasPresenter;
-use A17\Twill\Models\Permission;
-use Auth;
 use Carbon\Carbon;
 use Cartalyst\Tags\TaggableInterface;
 use Cartalyst\Tags\TaggableTrait;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
 
 abstract class Model extends BaseModel implements TaggableInterface
 {
@@ -28,20 +24,20 @@ abstract class Model extends BaseModel implements TaggableInterface
     {
         parent::boot();
 
-        static::addGlobalScope('authorized', function (Builder $builder) {
-            $permission_models = collect(config('twill.user_management.permission.enabled_modules', []))->map(function ($moduleName) {
-                return "App\Models\\" . Str::studly(Str::singular($moduleName));
-            });
+        // static::addGlobalScope('authorized', function (Builder $builder) {
+        //     $permission_models = collect(config('twill.user_management.permission.enabled_modules', []))->map(function ($moduleName) {
+        //         return "App\Models\\" . Str::studly(Str::singular($moduleName));
+        //     });
 
-            $model = get_class($builder->getModel());
+        //     $model = get_class($builder->getModel());
 
-            if ($permission_models->contains($model)) {
-                $builder->whereIn('id', Permission::where([
-                    ['twill_user_id', Auth::user()->id],
-                    ['permissionable_type', $model],
-                ])->pluck('permissionable_id'));
-            }
-        });
+        //     if ($permission_models->contains($model)) {
+        //         $builder->whereIn('id', Permission::where([
+        //             ['twill_user_id', Auth::user()->id],
+        //             ['permissionable_type', $model],
+        //         ])->pluck('permissionable_id'));
+        //     }
+        // });
     }
 
     public function scopePublishedInListings($query)

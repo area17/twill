@@ -45,4 +45,14 @@ class Role extends BaseModel
         return $query->whereNotNull('deleted_at');
     }
 
+    public function users()
+    {
+        return $this->hasMany('A17\Twill\Models\User');
+    }
+
+    public function permissions()
+    {
+        return $this->belongsToMany('A17\Twill\Models\Permission', 'permission_role', 'role_id', 'permission_id');
+    }
+
 }

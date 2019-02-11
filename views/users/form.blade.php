@@ -16,7 +16,7 @@
     @can('edit-user-role')
         @if(!$isSuperAdmin && ($item->id !== $currentUser->id))
             @formField('select', [
-                'name' => "role",
+                'name' => "role_id",
                 'label' => "Role",
                 'options' => $roleList,
                 'placeholder' => 'Select a role'

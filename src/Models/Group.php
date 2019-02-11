@@ -68,6 +68,11 @@ class Group extends BaseModel
         return $this->belongsToMany('A17\Twill\Models\User', 'group_user', 'group_id', 'twill_user_id');
     }
 
+    public function permissions()
+    {
+        return $this->belongsToMany('A17\Twill\Models\Permission', 'group_permission', 'group_id', 'permission_id');
+    }
+
     public function getCanDeleteAttribute()
     {
         return $this->attributes["can_delete"];
