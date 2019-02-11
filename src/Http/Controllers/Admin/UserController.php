@@ -60,6 +60,7 @@ class UserController extends ModuleController
         $this->removeMiddleware('can:edit');
         $this->removeMiddleware('can:delete');
         $this->removeMiddleware('can:publish');
+        $this->middleware('can:edit-user-role', ['only' => ['index']]);
         $this->middleware('can:edit-user,user', ['only' => ['store', 'edit', 'update', 'destroy', 'bulkDelete', 'restore', 'bulkRestore']]);
         $this->middleware('can:publish-user', ['only' => ['publish']]);
 
