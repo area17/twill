@@ -118,7 +118,7 @@ abstract class ModuleRepository
         foreach ($fields as $field) {
             if (in_array($field, $translatedAttributes)) {
                 $query->orWhereHas('translations', function ($q) use ($field, $search) {
-                    $q->Where($field, $this->getLikeOperator(), "%{$search}%");
+                    $q->where($field, $this->getLikeOperator(), "%{$search}%");
                 });
             } else {
                 $query->orWhere($field, $this->getLikeOperator(), "%{$search}%");
@@ -615,6 +615,7 @@ abstract class ModuleRepository
 
     public function getReservedFields()
     {
+
         return [
             'medias',
             'browsers',
