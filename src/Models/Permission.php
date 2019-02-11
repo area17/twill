@@ -9,6 +9,8 @@ class Permission extends BaseModel
     protected $fillable = [
         'guard_name',
         'display_name',
+        'permissionable_type',
+        'permissionable_id',
     ];
 
     public function permissionable()

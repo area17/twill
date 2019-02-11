@@ -15,7 +15,7 @@ trait HandlePermissions
             foreach ($object->permissions as $permission) {
                 $module = $permission->permissionable()->withoutGlobalScope('authorized')->first();
                 $module_name = str_plural(lcfirst(class_basename($module)));
-                $fields[$module_name . '_' . $module->id . '_permission'] = '"' . $permission->name . '"';
+                $fields[$module_name . '_' . $module->id . '_permission'] = '"' . $permission->guard_name . '"';
             }
         }
         // Module instance form
@@ -46,17 +46,18 @@ trait HandlePermissions
                     $user = $object;
                 }
 
-                $permission = $user->itemPermission($item) ?? new Permission;
-
                 // Only value existed, do update or create
                 if ($value) {
-                    $permission->name = $value;
-                    $permission->permissionable()->associate($item);
+                    $permission = Permission::firstOrCreate([
+                        'guard_name' => $value,
+                        'permissionable_type' => get_class($item),
+                        'permissionable_id' => $item->id,
+                    ]);
                     $user->permissions()->save($permission);
                 }
                 // If the existed permission has been set as none, delete the origin permission
-                elseif ($permission) {
-                    $permission->delete();
+                elseif ($user->itemPermission($item)) {
+                    $user->permissions()->detach($user->itemPermission($item)->id);
                 }
             } elseif (ends_with($key, '_group_authorized')) {
                 $this->handleGroupPermissions($object, $fields, $key, $value);
@@ -73,7 +74,7 @@ trait HandlePermissions
 
         foreach ($users as $user) {
             $permission = $user->permissions->first();
-            $fields['user_' . $user->id . '_permission'] = $permission ? "'" . $permission->name . "'" : "";
+            $fields['user_' . $user->id . '_permission'] = $permission ? "'" . $permission->guard_name . "'" : "";
         }
 
         return $fields;
@@ -102,7 +103,7 @@ trait HandlePermissions
                 // Group checked, grant at least view access to all users in the group.
                 if ($value && !$user->itemPermissionName($object)) {
                     $permission = new Permission;
-                    $permission->name = "view";
+                    $permission->guard_name = "view";
                     $permission->permissionable()->associate($object);
                     $user->permissions()->save($permission);
                 }
