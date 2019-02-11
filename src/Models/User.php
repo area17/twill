@@ -25,7 +25,6 @@ class User extends AuthenticatableContract
         'name',
         'role',
         'published',
-        'password',
         'title',
         'description',
         'google_2fa_enabled',
@@ -73,6 +72,11 @@ class User extends AuthenticatableContract
         }
 
         return null;
+    }
+
+    public function getCanDeleteAttribute()
+    {
+        return auth('twill_users')->user()->id !== $this->id;
     }
 
     public function scopePublished($query)
