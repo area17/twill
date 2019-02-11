@@ -50,12 +50,17 @@ class UserController extends ModuleController
         'permalink' => false,
     ];
 
+    protected $fieldsPermissions = [
+        'role' => 'edit-user-role',
+    ];
+
     public function __construct(Application $app, Request $request)
     {
         parent::__construct($app, $request);
         $this->removeMiddleware('can:edit');
+        $this->removeMiddleware('can:delete');
         $this->removeMiddleware('can:publish');
-        $this->middleware('can:edit-user,user', ['only' => ['store', 'edit', 'update']]);
+        $this->middleware('can:edit-user,user', ['only' => ['store', 'edit', 'update', 'destroy', 'bulkDelete', 'restore', 'bulkRestore']]);
         $this->middleware('can:publish-user', ['only' => ['publish']]);
 
         if (config('twill.enabled.users-image')) {
@@ -158,7 +163,7 @@ class UserController extends ModuleController
 
     protected function getIndexOption($option)
     {
-        if (in_array($option, ['publish', 'bulkEdit'])) {
+        if (in_array($option, ['publish', 'delete', 'restore'])) {
             return auth('twill_users')->user()->can('edit-user-role');
         }
 
@@ -168,7 +173,8 @@ class UserController extends ModuleController
     protected function indexItemData($item)
     {
         $canEdit = auth('twill_users')->user()->can('edit-user-role') || auth('twill_users')->user()->id === $item->id;
-
-        return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
+        return [
+            'edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null,
+        ];
     }
 }
