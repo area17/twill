@@ -59,6 +59,9 @@ class UserRepository extends ModuleRepository
     public function afterSave($user, $fields)
     {
         $this->sendWelcomeEmail($user);
+
+        // Init the groups browser on creating, avoid being overwritten
+        $fields['browsers']['groups'] = $this->getFormFieldsForBrowser($user, 'groups');
         $this->updateBrowser($user, $fields, 'groups');
         parent::afterSave($user, $fields);
     }

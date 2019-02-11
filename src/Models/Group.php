@@ -65,7 +65,7 @@ class Group extends BaseModel
 
     public function users()
     {
-        return $this->belongsToMany('A17\Twill\Models\User', 'group_user', 'group_id', 'twill_user_id');
+        return $this->belongsToMany('A17\Twill\Models\User', 'group_twill_user', 'group_id', 'twill_user_id');
     }
 
     public function permissions()

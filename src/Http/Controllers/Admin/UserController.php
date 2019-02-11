@@ -40,7 +40,7 @@ class UserController extends ModuleController
             'title' => 'Role',
             'field' => 'role_value',
             'sort' => true,
-            'sortKey' => 'role',
+            'sortKey' => 'role_id',
         ],
     ];
 

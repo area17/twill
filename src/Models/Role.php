@@ -15,6 +15,7 @@ class Role extends BaseModel
     protected $fillable = [
         'name',
         'published',
+        'in_everyone_group',
     ];
 
     protected $dates = [
@@ -55,4 +56,7 @@ class Role extends BaseModel
         return $this->belongsToMany('A17\Twill\Models\Permission', 'permission_role', 'role_id', 'permission_id');
     }
 
+    protected $casts = [
+        'in_everyone_group' => 'boolean',
+    ];
 }

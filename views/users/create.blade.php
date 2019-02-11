@@ -10,7 +10,7 @@
     ])
     @can('edit-user-role')
         @formField('select', [
-            'name' => "role",
+            'name' => "role_id",
             'label' => "Role",
             'native' => true,
             'options' => $roleList,
