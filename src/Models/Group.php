@@ -3,12 +3,13 @@
 namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasMedias;
+use A17\Twill\Models\Behaviors\HasPermissions;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Group extends BaseModel
 {
-    use HasMedias, SoftDeletes;
+    use HasMedias, HasPermissions, SoftDeletes;
 
     public $timestamps = true;
 
@@ -66,11 +67,6 @@ class Group extends BaseModel
     public function users()
     {
         return $this->belongsToMany('A17\Twill\Models\User', 'group_twill_user', 'group_id', 'twill_user_id');
-    }
-
-    public function permissions()
-    {
-        return $this->belongsToMany('A17\Twill\Models\Permission', 'group_permission', 'group_id', 'permission_id');
     }
 
     public function getCanDeleteAttribute()

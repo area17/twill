@@ -5,14 +5,13 @@ namespace A17\Twill\Repositories;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Repositories\Behaviors\HandleDates;
-use A17\Twill\Repositories\Behaviors\HandlePermissions;
 use DB;
 use Log;
 use PDO;
 
 abstract class ModuleRepository
 {
-    use HandleDates, HandlePermissions;
+    use HandleDates;
 
     protected $model;
 

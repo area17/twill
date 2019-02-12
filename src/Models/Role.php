@@ -3,12 +3,13 @@
 namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasMedias;
+use A17\Twill\Models\Behaviors\HasPermissions;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Role extends BaseModel
 {
-    use HasMedias, SoftDeletes;
+    use HasMedias, SoftDeletes, HasPermissions;
 
     public $timestamps = true;
 
@@ -49,11 +50,6 @@ class Role extends BaseModel
     public function users()
     {
         return $this->hasMany('A17\Twill\Models\User');
-    }
-
-    public function permissions()
-    {
-        return $this->belongsToMany('A17\Twill\Models\Permission', 'permission_role', 'role_id', 'permission_id');
     }
 
     protected $casts = [

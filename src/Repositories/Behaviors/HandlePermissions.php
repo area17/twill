@@ -15,7 +15,7 @@ trait HandlePermissions
             foreach ($object->permissions as $permission) {
                 $module = $permission->permissionable()->withoutGlobalScope('authorized')->first();
                 $module_name = str_plural(lcfirst(class_basename($module)));
-                $fields[$module_name . '_' . $module->id . '_permission'] = '"' . $permission->guard_name . '"';
+                $fields[$module_name . '_' . $module->id . '_permission'] = '"' . $permission->name . '"';
             }
         }
         // Module instance form
@@ -27,41 +27,61 @@ trait HandlePermissions
         return $fields;
     }
 
+    // public function afterSaveHandlePermissions($object, $fields)
+    // {
+    //     foreach ($fields as $key => $value) {
+    //         if (ends_with($key, '_permission')) {
+
+    //             // Handle permissions fields on module item page
+    //             if (starts_with($key, 'user')) {
+    //                 $user_id = explode('_', $key)[1];
+    //                 $user = app()->make(UserRepository::class)->getById($user_id);
+    //                 $item = $object;
+    //             }
+    //             // Handle permissions fields on user page
+    //             else {
+    //                 $item_name = explode('_', $key)[0];
+    //                 $item_id = explode('_', $key)[1];
+    //                 $item = getRepositoryByModuleName($item_name)->getById($item_id);
+    //                 $user = $object;
+    //             }
+
+    //             // Only value existed, do update or create
+    //             if ($value) {
+    //                 $permission = Permission::firstOrCreate([
+    //                     'name' => $value,
+    //                     'permissionable_type' => get_class($item),
+    //                     'permissionable_id' => $item->id,
+    //                 ]);
+    //                 $user->permissions()->save($permission);
+    //             }
+    //             // If the existed permission has been set as none, delete the origin permission
+    //             elseif ($user->itemPermission($item)) {
+    //                 $user->permissions()->detach($user->itemPermission($item)->id);
+    //             }
+    //         } elseif (ends_with($key, '_group_authorized')) {
+    //             $this->handleGroupPermissions($object, $fields, $key, $value);
+    //         }
+    //     }
+    // }
+
     public function afterSaveHandlePermissions($object, $fields)
     {
-        foreach ($fields as $key => $value) {
-            if (ends_with($key, '_permission')) {
-
-                // Handle permissions fields on module item page
-                if (starts_with($key, 'user')) {
-                    $user_id = explode('_', $key)[1];
-                    $user = app()->make(UserRepository::class)->getById($user_id);
-                    $item = $object;
-                }
-                // Handle permissions fields on user page
-                else {
-                    $item_name = explode('_', $key)[0];
-                    $item_id = explode('_', $key)[1];
-                    $item = getRepositoryByModuleName($item_name)->getById($item_id);
-                    $user = $object;
-                }
-
-                // Only value existed, do update or create
-                if ($value) {
-                    $permission = Permission::firstOrCreate([
-                        'guard_name' => $value,
-                        'permissionable_type' => get_class($item),
-                        'permissionable_id' => $item->id,
-                    ]);
-                    $user->permissions()->save($permission);
-                }
-                // If the existed permission has been set as none, delete the origin permission
-                elseif ($user->itemPermission($item)) {
-                    $user->permissions()->detach($user->itemPermission($item)->id);
-                }
-            } elseif (ends_with($key, '_group_authorized')) {
-                $this->handleGroupPermissions($object, $fields, $key, $value);
-            }
+        //User form page
+        if (get_class($object) === "A17\Twill\Models\User") {
+            $this->handleUserPermissions($object, $fields);
+        }
+        // Group form page
+        elseif (get_class($object) === "A17\Twill\Models\Group") {
+            $this->handleGroupPermissions($object, $fields);
+        }
+        // Role form page
+        elseif (get_class($object) === "A17\Twill\Models\Role") {
+            $this->handleRolePermissions($object, $fields);
+        }
+        // Module item form page
+        else {
+            $this->handleModulePermissions($object, $fields);
         }
     }
 
@@ -74,7 +94,7 @@ trait HandlePermissions
 
         foreach ($users as $user) {
             $permission = $user->permissions->first();
-            $fields['user_' . $user->id . '_permission'] = $permission ? "'" . $permission->guard_name . "'" : "";
+            $fields['user_' . $user->id . '_permission'] = $permission ? "'" . $permission->name . "'" : "";
         }
 
         return $fields;
@@ -90,7 +110,40 @@ trait HandlePermissions
         return $fields;
     }
 
-    // After save handle group permissions:
+    // After save handle permissions form fields on user form
+    protected function handleUserPermissions($object, $fields)
+    {
+
+    }
+
+    // After save handle permissions form fields on role form
+    protected function handleRolePermissions($object, $fields)
+    {
+        foreach ($fields["general-permissions"] as $permissionName) {
+            switch ($permissionName) {
+                case "edit-property-settings":
+                    $object->grantGlobalPermission("edit-settings");
+                    break;
+                case "manage-users":
+                    $object->grantGlobalPermission("edit-users");
+                    break;
+                case "manage-user-roles":
+                    $object->grantGlobalPermission("edit-user-roles");
+                    break;
+                case "manage-user-groups":
+                    $object->grantGlobalPermission("edit-user-groups");
+                    break;
+            }
+        }
+    }
+
+    // After save handle permissions form fields on module form
+    protected function handleModulePermissions($object, $fields)
+    {
+
+    }
+
+    // After save handle permissions form fields on group form:
     // If one group checked, switch the permission of all users in the group to at least view.
     // If one group unchecked, switch the permission of all users who have view permissions to none.
     protected function handleGroupPermissions($object, $fields, $key, $value)
@@ -103,7 +156,7 @@ trait HandlePermissions
                 // Group checked, grant at least view access to all users in the group.
                 if ($value && !$user->itemPermissionName($object)) {
                     $permission = new Permission;
-                    $permission->guard_name = "view";
+                    $permission->name = "view";
                     $permission->permissionable()->associate($object);
                     $user->permissions()->save($permission);
                 }

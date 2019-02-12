@@ -3,6 +3,7 @@
 namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasMedias;
+use A17\Twill\Models\Behaviors\HasPermissions;
 use A17\Twill\Models\Behaviors\HasPresenter;
 use A17\Twill\Models\Group;
 use A17\Twill\Notifications\Reset as ResetNotification;
@@ -16,7 +17,7 @@ use Session;
 
 class User extends AuthenticatableContract
 {
-    use Authenticatable, Authorizable, HasMedias, Notifiable, HasPresenter, SoftDeletes;
+    use Authenticatable, Authorizable, HasMedias, Notifiable, HasPresenter, HasPermissions, SoftDeletes;
 
     public $timestamps = true;
 
@@ -122,11 +123,6 @@ class User extends AuthenticatableContract
         $this->notify(new ResetNotification($token));
     }
 
-    public function permissions()
-    {
-        return $this->belongsToMany('A17\Twill\Models\Permission', 'permission_twill_user', 'twill_user_id', 'permission_id');
-    }
-
     public function groups()
     {
         return $this->belongsToMany('A17\Twill\Models\Group', 'group_twill_user', 'twill_user_id', 'group_id');
@@ -135,19 +131,6 @@ class User extends AuthenticatableContract
     public function role()
     {
         return $this->belongsTo('A17\Twill\Models\Role');
-    }
-
-    public function itemPermission($item)
-    {
-        return $this->permissions()->where([
-            ['permissionable_type', get_class($item)],
-            ['permissionable_id', $item->id],
-        ])->first();
-    }
-
-    public function itemPermissionName($item)
-    {
-        return $this->itemPermission($item) ? $this->itemPermission($item)->name : null;
     }
 
     protected $casts = [

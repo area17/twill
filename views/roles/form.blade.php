@@ -29,7 +29,7 @@
 
     @foreach($permission_modules as $module_name => $module_items)
         @formField('checkboxes', [
-            'name' => $module_name . 'permission',
+            'name' => $module_name . '-permission',
             'label' => ucfirst($module_name) . ' permissions',
             'inline' => false,
             'options' => [

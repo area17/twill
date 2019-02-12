@@ -70,7 +70,11 @@ class AuthServiceProvider extends ServiceProvider
             // return in_array($user->role_value, [UserRole::OWNER]);
         });
 
-        Gate::define('manage-users', function ($user) {
+        Gate::define('edit-settings', function ($user) {
+            return false;
+        });
+
+        Gate::define('edit-users', function ($user) {
             return false;
         });
 
@@ -81,15 +85,18 @@ class AuthServiceProvider extends ServiceProvider
             //     && ($editedUserObject ? $editedUserObject->role !== self::SUPERADMIN : true);
         });
 
-        Gate::define('edit-user-role', function ($user) {
+        Gate::define('edit-user-roles', function ($user) {
+            return false;
+            // return in_array($user->role_value, [UserRole::OWNER]);
+        });
+
+        Gate::define('edit-user-groups', function ($user) {
             return false;
             // return in_array($user->role_value, [UserRole::OWNER]);
         });
 
         Gate::define('publish-user', function ($user) {
             return false;
-            // $editedUserObject = User::find(request('id'));
-            // return $user->can('publish') && $user->id !== $editedUserObject->id && $editedUserObject->role !== self::SUPERADMIN;
         });
 
         Gate::define('impersonate', function ($user) {
