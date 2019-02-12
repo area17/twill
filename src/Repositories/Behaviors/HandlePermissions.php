@@ -55,8 +55,8 @@ trait HandlePermissions
     //                 $user->permissions()->save($permission);
     //             }
     //             // If the existed permission has been set as none, delete the origin permission
-    //             elseif ($user->itemPermission($item)) {
-    //                 $user->permissions()->detach($user->itemPermission($item)->id);
+    //             elseif ($user->permissionByItem($item)) {
+    //                 $user->permissions()->detach($user->permissionByItem($item)->id);
     //             }
     //         } elseif (ends_with($key, '_group_authorized')) {
     //             $this->handleGroupPermissions($object, $fields, $key, $value);
@@ -107,9 +107,26 @@ trait HandlePermissions
     }
 
     // After save handle permissions form fields on user form
-    protected function handleUserPermissions($object, $fields)
+    protected function handleUserPermissions($user, $fields)
     {
+        foreach ($fields as $key => $value) {
+            if (ends_with($key, '_permission')) {
+                $item_name = explode('_', $key)[0];
+                $item_id = explode('_', $key)[1];
+                $item = getRepositoryByModuleName($item_name)->getById($item_id);
 
+                // Only value existed, do update or create
+                if ($value && in_array($value, Permission::$available["item"])) {
+                    $permission = Permission::firstOrCreate([
+                        'name' => $value,
+                        'permissionable_type' => get_class($item),
+                        'permissionable_id' => $item->id,
+                    ]);
+                    $permissions_ids[] = $permission->id;
+                }
+            }
+        }
+        $user->permissions()->sync($permissions_ids);
     }
 
     // After save handle permissions form fields on role form
@@ -137,44 +154,59 @@ trait HandlePermissions
         if ($this->allUsersInGroupAuthorized($group, $object) !== $value) {
             foreach ($group->users as $user) {
                 // Group checked, grant at least view access to all users in the group.
-                if ($value && !$user->itemPermissionName($object)) {
+                if ($value && !$user->permissionNameByItem($object)) {
                     $permission = new Permission;
                     $permission->name = "view";
                     $permission->permissionable()->associate($object);
                     $user->permissions()->save($permission);
                 }
                 // Group unchecked, revoke all users who have view permissions to none.
-                elseif (!$value && $user->itemPermissionName($object) === "view") {
-                    $user->itemPermission($object)->delete();
+                elseif (!$value && $user->permissionNameByItem($object) === "view") {
+                    $user->permissionByItem($object)->delete();
                 }
             }
         }
     }
 
-    // Render each user's permission under a item
-    protected function renderUserPermissions($object, $fields)
+    protected function renderUserPermissions($user, $fields)
     {
-        $users = app()->make(UserRepository::class)->get(["permissions" => function ($query) use ($object) {
-            $query->where([['permissionable_type', get_class($object)], ['permissionable_id', $object->id]]);
-        }]);
-
-        foreach ($users as $user) {
-            $permission = $user->permissions->first();
-            $fields['user_' . $user->id . '_permission'] = $permission ? "'" . $permission->name . "'" : "";
+        foreach ($user->itemPermissions as $permission) {
+            $module = $permission->permissionable()->first();
+            $module_name = str_plural(lcfirst(class_basename($module)));
+            $fields[$module_name . '_' . $module->id . '_permission'] = '"' . $permission->name . '"';
         }
-
         return $fields;
     }
 
-    // Render each group's permission under a item
     protected function renderGroupPermissions($object, $fields)
     {
-        $groups = app()->make(GroupRepository::class)->get(['users.permissions']);
-        foreach ($groups as $group) {
-            $fields[$group->id . '_group_authorized'] = $this->allUsersInGroupAuthorized($group, $object);
-        }
-        return $fields;
+
     }
+
+    // Render each user's permission under a item
+    // protected function renderUserPermissions($object, $fields)
+    // {
+    //     $users = app()->make(UserRepository::class)->get(["permissions" => function ($query) use ($object) {
+    //         $query->where([['permissionable_type', get_class($object)], ['permissionable_id', $object->id]]);
+    //     }]);
+
+    //     foreach ($users as $user) {
+    //         $permission = $user->permissions->first();
+    //         $fields['user_' . $user->id . '_permission'] = $permission ? "'" . $permission->name . "'" : "";
+    //     }
+
+    //     return $fields;
+    // }
+
+    // Render each group's permission under a item
+    // protected function renderGroupPermissions($object, $fields)
+    // {
+    //     $groups = app()->make(GroupRepository::class)->get(['users.permissions']);
+    //     foreach ($groups as $group) {
+    //         $fields[$group->id . '_group_authorized'] = $this->allUsersInGroupAuthorized($group, $object);
+    //     }
+    //     return $fields;
+    // }
 
     protected function renderRolePermissions($object, $fields)
     {

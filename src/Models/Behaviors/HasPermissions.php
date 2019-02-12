@@ -8,20 +8,20 @@ trait HasPermissions
 {
     public function grantGlobalPermission($name)
     {
-        $available_permissions = Permission::$available["global"];
+        $available_permissions = Permission::$available['global'];
         if (in_array($name, $available_permissions)) {
-            $permission = Permission::firstOrCreate([
+            $permission = Permission::where([
                 'name' => $name,
-            ]);
+            ])->first();
             $this->permissions()->save($permission);
         } else {
-            abort(400, "Permission not available on global");
+            abort(400, 'Permission not available on global');
         }
     }
 
     public function grantModulePermission($name, $permissionableType)
     {
-        $available_permissions = Permission::$available["module"];
+        $available_permissions = Permission::$available['module'];
         if (in_array($name, $available_permissions)) {
             $permission = Permission::firstOrCreate([
                 'name' => $name,
@@ -29,13 +29,13 @@ trait HasPermissions
             ]);
             $this->permissions()->save($permission);
         } else {
-            abort(400, "Permission not available on module");
+            abort(400, 'Permission not available on module');
         }
     }
 
     public function grantModuleItemPermission($name, $permissionableItem = null)
     {
-        $available_permissions = Permission::$available["item"];
+        $available_permissions = Permission::$available['item'];
         if (in_array($name, $available_permissions)) {
             $permission = Permission::firstOrCreate([
                 'name' => $name,
@@ -44,22 +44,36 @@ trait HasPermissions
             ]);
             $this->permissions()->save($permission);
         } else {
-            abort(400, "Permission not available on item");
+            abort(400, 'Permission not available on item');
         }
     }
 
     public function permissions()
     {
         // Deal with the situation that twill user's table has been renamed.
-        if (get_class($this) === "A17\Twill\Models\User") {
+        if (get_class($this) === 'A17\Twill\Models\User') {
             return $this->belongsToMany('A17\Twill\Models\Permission', 'permission_twill_user', 'twill_user_id', 'permission_id');
         } else {
             return $this->belongsToMany('A17\Twill\Models\Permission');
         }
-
     }
 
-    public function itemPermission($item)
+    public function globalPermissions()
+    {
+        return $this->permissions()->whereNull(['permissionable_type', 'permissionable_id']);
+    }
+
+    public function itemPermissions()
+    {
+        return $this->permissions()->whereNotNull('permissionable_type')->whereNotNull('permissionable_id');
+    }
+
+    public function modulePermissions()
+    {
+        return $this->permissions()->whereNotNull('permissionable_type')->whereNull('permissionable_id');
+    }
+
+    public function permissionByItem($item)
     {
         return $this->permissions()->where([
             ['permissionable_type', get_class($item)],
@@ -67,8 +81,8 @@ trait HasPermissions
         ])->first();
     }
 
-    public function itemPermissionName($item)
+    public function permissionNameByItem($item)
     {
-        return $this->itemPermission($item) ? $this->itemPermission($item)->name : null;
+        return $this->permissionByItem($item) ? $this->permissionByItem($item)->name : null;
     }
 }

@@ -22,22 +22,22 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('view-item', function ($user, $item) {
             return false;
-            // return in_array($user->itemPermissionName($item), ["view", "edit", "manage"]) || in_array($user->role_value, [UserRole::OWNER]);
+            // return in_array($user->permissionNameByItem($item), ["view", "edit", "manage"]) || in_array($user->role_value, [UserRole::OWNER]);
         });
 
         Gate::define('edit-item', function ($user, $item) {
             return false;
-            // return in_array($user->itemPermissionName($item), ["edit", "manage"]) || in_array($user->role_value, [UserRole::OWNER]);
+            // return in_array($user->permissionNameByItem($item), ["edit", "manage"]) || in_array($user->role_value, [UserRole::OWNER]);
         });
 
         Gate::define('manage-item', function ($user, $item) {
             return false;
-            // return in_array($user->itemPermissionName($item), ["manage"]) || in_array($user->role_value, [UserRole::OWNER]);
+            // return in_array($user->permissionNameByItem($item), ["manage"]) || in_array($user->role_value, [UserRole::OWNER]);
         });
 
         Gate::define('delete-item', function ($user, $item) {
             return false;
-            // return in_array($user->itemPermissionName($item), ["edit", "manage"]) || in_array($user->role_value, [UserRole::OWNER]);
+            // return in_array($user->permissionNameByItem($item), ["edit", "manage"]) || in_array($user->role_value, [UserRole::OWNER]);
         });
 
         Gate::define('list', function ($user) {
