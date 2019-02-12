@@ -9,19 +9,19 @@
         'inline' => false,
         'options' => [
             [
-                'value' => 'edit-property-settings',
+                'value' => 'edit-settings',
                 'label' => 'Edit property settings'
             ],
             [
-                'value' => 'manage-users',
+                'value' => 'edit-users',
                 'label' => 'Manage users'
             ],
             [
-                'value' => 'manage-user-roles',
+                'value' => 'edit-user-roles',
                 'label' => 'Manage user roles'
             ],
             [
-                'value' => 'manage-user-groups',
+                'value' => 'edit-user-groups',
                 'label' => 'Manage user groups'
             ],
         ]
