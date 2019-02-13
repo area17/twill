@@ -15,7 +15,7 @@ trait HasPermissions
             ])->first();
             $this->permissions()->save($permission);
         } else {
-            abort(400, 'Permission not available on global');
+            abort(400, 'grant failed, permission not available on global');
         }
     }
 
@@ -29,11 +29,14 @@ trait HasPermissions
             ]);
             $this->permissions()->save($permission);
         } else {
-            abort(400, 'Permission not available on module');
+            abort(400, 'grant failed, permission not available on module');
         }
     }
 
-    public function grantModuleItemPermission($name, $permissionableItem = null)
+    // First find or create the corresponding permission
+    // If the object doesn't have be given this permission, give it
+    // If the object already have this permission, skip it
+    public function grantModuleItemPermission($name, $permissionableItem)
     {
         $available_permissions = Permission::$available['item'];
         if (in_array($name, $available_permissions)) {
@@ -42,10 +45,38 @@ trait HasPermissions
                 'permissionable_type' => $permissionableItem ? get_class($permissionableItem) : null,
                 'permissionable_id' => $permissionableItem ? $permissionableItem->id : null,
             ]);
-            $this->permissions()->save($permission);
+            if (!$this->permissionsNameByItem($permissionableItem)->contains($name)) {
+                $this->itemPermissions()->save($permission);
+            }
         } else {
-            abort(400, 'Permission not available on item');
+            abort(400, 'grant failed, permission not available on item');
         }
+    }
+
+    public function revokeGlobalPermission($name)
+    {
+        $available_permissions = Permission::$available['global'];
+        if (in_array($name, $available_permissions)) {
+
+        } else {
+            abort(400, 'revoke failed, permission not available on global');
+        }
+    }
+
+    public function revokeModulePermission($name, $permissionableType)
+    {
+        $available_permissions = Permission::$available['module'];
+        if (in_array($name, $available_permissions)) {
+
+        } else {
+            abort(400, 'revoke failed, permission not available on module');
+        }
+    }
+
+    // Revoke all permissions for the item
+    public function revokeModuleItemPermission($permissionableItem)
+    {
+        $this->itemPermissions()->detach();
     }
 
     public function permissions()
@@ -73,16 +104,16 @@ trait HasPermissions
         return $this->permissions()->whereNotNull('permissionable_type')->whereNull('permissionable_id');
     }
 
-    public function permissionByItem($item)
+    public function permissionsByItem($item)
     {
-        return $this->permissions()->where([
+        return $this->itemPermissions()->where([
             ['permissionable_type', get_class($item)],
             ['permissionable_id', $item->id],
-        ])->first();
+        ]);
     }
 
-    public function permissionNameByItem($item)
+    public function permissionsNameByItem($item)
     {
-        return $this->permissionByItem($item) ? $this->permissionByItem($item)->name : null;
+        return $this->permissionsByItem($item)->pluck('name');
     }
 }

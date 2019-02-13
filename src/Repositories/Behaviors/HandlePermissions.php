@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
-use A17\Twill\Models\Permission;
 use A17\Twill\Repositories\GroupRepository;
 use A17\Twill\Repositories\UserRepository;
 
@@ -61,17 +60,13 @@ trait HandlePermissions
                 $item = getRepositoryByModuleName($item_name)->getById($item_id);
 
                 // Only value existed, do update or create
-                if ($value && in_array($value, Permission::$available["item"])) {
-                    $permission = Permission::firstOrCreate([
-                        'name' => $value,
-                        'permissionable_type' => get_class($item),
-                        'permissionable_id' => $item->id,
-                    ]);
-                    $permissions_ids[] = $permission->id;
+                if ($value) {
+                    $user->grantModuleItemPermission($value, $item);
+                } else {
+                    $user->revokeModuleItemPermission($value, $item);
                 }
             }
         }
-        $user->permissions()->sync($permissions_ids);
     }
 
     // After save handle permissions form fields on role form
@@ -90,14 +85,11 @@ trait HandlePermissions
                 $user_id = explode('_', $key)[1];
                 $user = app()->make(UserRepository::class)->getById($user_id);
 
-                // Only value existed, do update or create
-                if ($value && in_array($value, Permission::$available["item"])) {
-                    $permission = Permission::firstOrCreate([
-                        'name' => $value,
-                        'permissionable_type' => get_class($item),
-                        'permissionable_id' => $item->id,
-                    ]);
-                    $permissions_ids[] = $permission->id;
+                // Only if value existed, do update or create
+                if ($value) {
+                    $user->grantModuleItemPermission($value, $item);
+                } else {
+                    $user->revokeModuleItemPermission($item);
                 }
             }
             // Handle group permissions
@@ -105,7 +97,6 @@ trait HandlePermissions
                 $group = app()->make(GroupRepository::class)->getById(explode('_', $key)[0]);
             }
         }
-        $user->permissions()->sync($permissions_ids);
     }
 
     protected function handleGroupPermissions($object, $fields)
@@ -132,7 +123,7 @@ trait HandlePermissions
     //             }
     //             // Group unchecked, revoke all users who have view permissions to none.
     //             elseif (!$value && $user->permissionNameByItem($object) === "view") {
-    //                 $user->permissionByItem($object)->delete();
+    //                 $user->permissionsByItem($object)->delete();
     //             }
     //         }
     //     }
