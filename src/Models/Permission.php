@@ -9,7 +9,7 @@ class Permission extends BaseModel
     public static $available = [
         "global" => ["edit-settings", "edit-users", "edit-user-roles", "edit-user-groups", "manage-modules"],
         "module" => ["list", "reorder", "create", "feature"],
-        "item" => ["view", "publish", "edit", "delete"],
+        "item" => ["view", "publish", "edit", "delete", "manage"],
     ];
 
     protected $fillable = [
