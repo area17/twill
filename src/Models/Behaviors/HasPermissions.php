@@ -91,7 +91,7 @@ trait HasPermissions
 
     public function globalPermissions()
     {
-        return $this->permissions()->whereNull(['permissionable_type', 'permissionable_id']);
+        return $this->permissions()->whereNull('permissionable_type')->whereNull('permissionable_id');
     }
 
     public function itemPermissions()

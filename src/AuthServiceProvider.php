@@ -75,28 +75,32 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('edit-users', function ($user) {
-            return false;
+            return $user->role->globalPermissions()->where("name", "edit-users")->exists();
         });
 
-        Gate::define('edit-user', function ($user, $editedUser = null) {
-            return false;
-            // $editedUserObject = User::find($editedUser);
-            // return ($user->can('edit') && in_array($user->role_value, [UserRole::OWNER]) || $user->id == $editedUser)
-            //     && ($editedUserObject ? $editedUserObject->role !== self::SUPERADMIN : true);
-        });
+        // Deprecated, use edit-users instead
+        // Gate::define('edit-user', function ($user, $editedUser = null) {
+        //     return false;
+        //     $editedUserObject = User::find($editedUser);
+        //     return ($user->can('edit') && in_array($user->role_value, [UserRole::OWNER]) || $user->id == $editedUser)
+        //         && ($editedUserObject ? $editedUserObject->role !== self::SUPERADMIN : true);
+        // });
 
-        Gate::define('edit-user-roles', function ($user) {
-            return false;
-            // return in_array($user->role_value, [UserRole::OWNER]);
+        Gate::define('edit-user-role', function ($user) {
+            return $user->role->globalPermissions()->where("name", "edit-user-role")->exists();
         });
 
         Gate::define('edit-user-groups', function ($user) {
-            return false;
-            // return in_array($user->role_value, [UserRole::OWNER]);
+            return $user->role->globalPermissions()->where("name", "edit-user-groups")->exists();
         });
 
-        Gate::define('publish-user', function ($user) {
-            return false;
+        // Deprecated, use edit-users instead
+        // Gate::define('publish-user', function ($user) {
+        //     return false;
+        // });
+
+        Gate::define('access-user-management', function ($user) {
+            return $user->can('edit-users') || $user->can('edit-user-roles') || $user->can('edit-user-groups');
         });
 
         Gate::define('impersonate', function ($user) {

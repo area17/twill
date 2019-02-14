@@ -165,11 +165,11 @@ abstract class ModuleController extends Controller
 
     protected function setMiddlewarePermission()
     {
-        $this->middleware('can:list', ['only' => ['index', 'show']]);
-        $this->middleware('can:edit', ['only' => ['edit', 'store', 'update']]);
-        $this->middleware('can:publish', ['only' => ['publish', 'feature', 'bulkPublish', 'bulkFeature']]);
-        $this->middleware('can:reorder', ['only' => ['reorder']]);
-        $this->middleware('can:delete', ['only' => ['destroy', 'bulkDelete', 'restore', 'bulkRestore', 'restoreRevision']]);
+        // $this->middleware('can:list', ['only' => ['index', 'show']]);
+        // $this->middleware('can:edit', ['only' => ['edit', 'store', 'update']]);
+        // $this->middleware('can:publish', ['only' => ['publish', 'feature', 'bulkPublish', 'bulkFeature']]);
+        // $this->middleware('can:reorder', ['only' => ['reorder']]);
+        // $this->middleware('can:delete', ['only' => ['destroy', 'bulkDelete', 'restore', 'bulkRestore', 'restoreRevision']]);
     }
 
     public function index($parentModuleId = null)
@@ -232,7 +232,6 @@ abstract class ModuleController extends Controller
 
     public function show($id, $submoduleId = null)
     {
-        $this->authorize('view-item', $this->repository->getById($id));
         if ($this->getIndexOption('editInModal')) {
             return redirect(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
         }
@@ -242,7 +241,6 @@ abstract class ModuleController extends Controller
 
     public function edit($id, $submoduleId = null)
     {
-        $this->authorize('edit-item', $this->repository->getById($id));
         $this->submodule = isset($submoduleId);
         $this->submoduleParentId = $id;
 

@@ -17,8 +17,8 @@
                 'label' => 'Manage users'
             ],
             [
-                'value' => 'edit-user-roles',
-                'label' => 'Manage user roles'
+                'value' => 'edit-user-role',
+                'label' => 'Manage user role'
             ],
             [
                 'value' => 'edit-user-groups',
