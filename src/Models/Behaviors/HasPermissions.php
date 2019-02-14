@@ -8,12 +8,15 @@ trait HasPermissions
 {
     public function grantGlobalPermission($name)
     {
+        dump($name);
         $available_permissions = Permission::$available['global'];
         if (in_array($name, $available_permissions)) {
-            $permission = Permission::where([
+            $permission = Permission::firstOrCreate([
                 'name' => $name,
-            ])->first();
-            $this->permissions()->save($permission);
+            ]);
+            if (!$this->globalPermissions()->where('name', $name)->exists()) {
+                $this->permissions()->save($permission);
+            }
         } else {
             abort(400, 'grant failed, permission not available on global');
         }
@@ -57,7 +60,7 @@ trait HasPermissions
     {
         $available_permissions = Permission::$available['global'];
         if (in_array($name, $available_permissions)) {
-
+            $this->globalPermissions()->detach(Permission::where('name', $name)->first()->id);
         } else {
             abort(400, 'revoke failed, permission not available on global');
         }
@@ -73,10 +76,14 @@ trait HasPermissions
         }
     }
 
-    // Revoke all permissions for the item
-    public function revokeModuleItemPermission($permissionableItem)
+    public function revokeModuleItemPermission($name, $permissionableItem)
     {
-        $this->itemPermissions()->detach();
+        $this->permissionsByItem($permissionableItem)->detach(Permission::where('name', $name)->first()->id);
+    }
+
+    public function revokeModuleItemAllPermissions($permissionableItem)
+    {
+        $this->permissionsByItem($permissionableItem)->detach();
     }
 
     public function permissions()
@@ -115,5 +122,12 @@ trait HasPermissions
     public function permissionsNameByItem($item)
     {
         return $this->permissionsByItem($item)->pluck('name');
+    }
+
+    // Filter all permissions that it's permissionable_type match the moduleName
+    public function permissionsByModuleName($moduleName)
+    {
+        $permissionable_type = config('twill.namespace') . '\\Models\\' . ucfirst($moduleName);
+        return $this->permissions()->where('permissionable_type', $permissionable_type);
     }
 }

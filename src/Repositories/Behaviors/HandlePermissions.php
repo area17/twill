@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Models\Permission;
 use A17\Twill\Repositories\GroupRepository;
 use A17\Twill\Repositories\UserRepository;
 
@@ -63,17 +64,21 @@ trait HandlePermissions
                 if ($value) {
                     $user->grantModuleItemPermission($value, $item);
                 } else {
-                    $user->revokeModuleItemPermission($value, $item);
+                    $user->revokeModuleItemAllPermissions($item);
                 }
             }
         }
     }
 
     // After save handle permissions form fields on role form
-    protected function handleRolePermissions($object, $fields)
+    protected function handleRolePermissions($role, $fields)
     {
-        foreach ($fields["general-permissions"] as $permissionName) {
-            $object->grantGlobalPermission($permissionName);
+        foreach (Permission::$available['global'] as $permissionName) {
+            if (in_array($permissionName, $fields['general-permissions'])) {
+                $role->grantGlobalPermission($permissionName);
+            } else {
+                $role->revokeGlobalPermission($permissionName);
+            }
         }
     }
 
@@ -89,7 +94,7 @@ trait HandlePermissions
                 if ($value) {
                     $user->grantModuleItemPermission($value, $item);
                 } else {
-                    $user->revokeModuleItemPermission($item);
+                    $user->revokeModuleItemAllPermissions($item);
                 }
             }
             // Handle group permissions

@@ -3,7 +3,7 @@
         @if(!empty(config('twill-navigation')))
             <ul class="header__items">
                 @foreach(config('twill-navigation') as $global_navigation_key => $global_navigation_element)
-                    @can($global_navigation_element['can'] ?? 'list')
+                    @can($global_navigation_element['can'] ?? 'list', $global_navigation_key)
                         @if(isActiveNavigation($global_navigation_element, $global_navigation_key, $_global_active_navigation))
                             <li class="header__item s--on">
                         @else
@@ -17,7 +17,7 @@
         @endif
         @if (config('twill.enabled.media-library') || config('twill.enabled.file-library') || config('twill.enabled.site-link'))
             <ul class="header__items">
-                @can('list')
+                @can('access-media-library')
                     @if (config('twill.enabled.media-library') || config('twill.enabled.file-library'))
                         <li class="header__item"><a href="#" data-medialib-btn>Media Library</a></li>
                     @endif

@@ -24,6 +24,14 @@
                 'value' => 'edit-user-groups',
                 'label' => 'Manage user groups'
             ],
+            [
+                'value' => 'manage-modules',
+                'label' => 'Manage all modules'
+            ],
+            [
+                'value' => 'access-media-library',
+                'label' => 'Access media library'
+            ],
         ]
     ])
 
@@ -34,12 +42,24 @@
             'inline' => false,
             'options' => [
                 [
-                    'value' => 'create-destroy-' . $module_name,
-                    'label' => 'Create/destroy ' . $module_name
+                    'value' => 'view ' . $module_name,
+                    'label' => 'View ' . $module_name
                 ],
                 [
-                    'value' => 'manage-all-' . $module_name,
-                    'label' => 'Manage all ' . $module_name
+                    'value' => 'create ' . $module_name,
+                    'label' => 'Create ' . $module_name
+                ],
+                [
+                    'value' => 'destroy ' . $module_name,
+                    'label' => 'Destroy ' . $module_name
+                ],
+                [
+                    'value' => 'edit ' . $module_name,
+                    'label' => 'Edit ' . $module_name
+                ],
+                [
+                    'value' => 'manage ' . $module_name,
+                    'label' => 'Manage ' . $module_name
                 ]
             ]
         ])
