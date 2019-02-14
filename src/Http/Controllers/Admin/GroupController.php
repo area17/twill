@@ -30,8 +30,7 @@ class GroupController extends ModuleController
         parent::__construct($app, $request);
         $this->removeMiddleware('can:edit');
         $this->removeMiddleware('can:publish');
-        $this->middleware('can:edit-user,user', ['only' => ['store', 'edit', 'update']]);
-        $this->middleware('can:publish-user', ['only' => ['publish']]);
+        $this->middleware('can:access-user-management');
     }
 
     protected function indexData($request)
@@ -42,15 +41,18 @@ class GroupController extends ModuleController
                 'users' => [
                     'title' => 'Users',
                     'module' => true,
+                    'can' => 'edit-user-groups',
                 ],
                 'groups' => [
                     'title' => 'Groups',
                     'module' => true,
                     'active' => true,
+                    'can' => 'edit-user-groups',
                 ],
                 'roles' => [
                     'title' => 'Roles',
                     'module' => true,
+                    'can' => 'edit-user-groups',
                 ],
             ],
             'customPublishedLabel' => 'Enabled',
@@ -60,8 +62,8 @@ class GroupController extends ModuleController
 
     protected function getIndexOption($option)
     {
-        if (in_array($option, ['publish', 'bulkEdit'])) {
-            return auth('twill_users')->user()->can('edit-user-role');
+        if (in_array($option, ['publish', 'bulkEdit', 'create'])) {
+            return auth('twill_users')->user()->can('edit-user-groups');
         }
 
         return parent::getIndexOption($option);
@@ -74,15 +76,18 @@ class GroupController extends ModuleController
                 'users' => [
                     'title' => 'Users',
                     'module' => true,
+                    'can' => 'edit-user-groups',
                 ],
                 'groups' => [
                     'title' => 'Groups',
                     'module' => true,
                     'active' => true,
+                    'can' => 'edit-user-groups',
                 ],
                 'roles' => [
                     'title' => 'Roles',
                     'module' => true,
+                    'can' => 'edit-user-groups',
                 ],
             ],
             'customPublishedLabel' => 'Enabled',
@@ -92,7 +97,7 @@ class GroupController extends ModuleController
 
     protected function indexItemData($item)
     {
-        $canEdit = auth('twill_users')->user()->can('edit-user-role') && ($item->canEdit ?? true);
+        $canEdit = auth('twill_users')->user()->can('edit-user-groups') && ($item->canEdit ?? true);
 
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
     }

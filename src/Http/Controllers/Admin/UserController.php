@@ -53,7 +53,7 @@ class UserController extends ModuleController
         parent::__construct($app, $request);
         $this->removeMiddleware('can:edit');
         $this->removeMiddleware('can:publish');
-        $this->middleware('can:access-user-management', ['only' => ['index']]);
+        $this->middleware('can:access-user-management');
 
         if (config('twill.enabled.users-image')) {
             $this->indexColumns = [
@@ -116,14 +116,17 @@ class UserController extends ModuleController
                     'title' => 'Users',
                     'module' => true,
                     'active' => true,
+                    'can' => 'edit-users',
                 ],
                 'groups' => [
                     'title' => 'Groups',
                     'module' => true,
+                    'can' => 'edit-users',
                 ],
                 'roles' => [
                     'title' => 'Roles',
                     'module' => true,
+                    'can' => 'edit-users',
                 ],
             ],
             'customPublishedLabel' => 'Enabled',

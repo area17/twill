@@ -30,8 +30,7 @@ class RoleController extends ModuleController
         parent::__construct($app, $request);
         $this->removeMiddleware('can:edit');
         $this->removeMiddleware('can:publish');
-        $this->middleware('can:edit-user,user', ['only' => ['store', 'edit', 'update']]);
-        $this->middleware('can:publish-user', ['only' => ['publish']]);
+        $this->middleware('can:access-user-management');
     }
 
     protected function indexData($request)
@@ -42,15 +41,18 @@ class RoleController extends ModuleController
                 'users' => [
                     'title' => 'Users',
                     'module' => true,
+                    'can' => 'edit-user-role',
                 ],
                 'groups' => [
                     'title' => 'Groups',
                     'module' => true,
+                    'can' => 'edit-user-role',
                 ],
                 'roles' => [
                     'title' => 'Roles',
                     'module' => true,
                     'active' => true,
+                    'can' => 'edit-user-role',
                 ],
             ],
             'customPublishedLabel' => 'Enabled',
@@ -60,7 +62,7 @@ class RoleController extends ModuleController
 
     protected function getIndexOption($option)
     {
-        if (in_array($option, ['publish', 'bulkEdit'])) {
+        if (in_array($option, ['publish', 'bulkEdit', 'create'])) {
             return auth('twill_users')->user()->can('edit-user-role');
         }
 
@@ -79,15 +81,18 @@ class RoleController extends ModuleController
                 'users' => [
                     'title' => 'Users',
                     'module' => true,
+                    'can' => 'edit-user-role',
                 ],
                 'groups' => [
                     'title' => 'Groups',
                     'module' => true,
+                    'can' => 'edit-user-role',
                 ],
                 'roles' => [
                     'title' => 'Roles',
                     'module' => true,
                     'active' => true,
+                    'can' => 'edit-user-role',
                 ],
             ],
             'customPublishedLabel' => 'Enabled',
