@@ -26,7 +26,7 @@ abstract class Model extends BaseModel implements TaggableInterface
 
         // static::addGlobalScope('authorized', function (Builder $builder) {
         //     $permission_models = collect(config('twill.user_management.permission.enabled_modules', []))->map(function ($moduleName) {
-        //         return "App\Models\\" . Str::studly(Str::singular($moduleName));
+        //         return "App\Models\\" . studly_case(str_singular($moduleName));
         //     });
 
         //     $model = get_class($builder->getModel());

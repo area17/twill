@@ -34,14 +34,6 @@ class AuthServiceProvider extends ServiceProvider
             return $user->role->globalPermissions()->where('name', 'edit-users')->exists();
         });
 
-        // Deprecated, use edit-users instead
-        // Gate::define('edit-user', function ($user, $editedUser = null) {
-        //     return false;
-        //     $editedUserObject = User::find($editedUser);
-        //     return ($user->can('edit') && in_array($user->role_value, [UserRole::OWNER]) || $user->id == $editedUser)
-        //         && ($editedUserObject ? $editedUserObject->role !== self::SUPERADMIN : true);
-        // });
-
         Gate::define('edit-user-role', function ($user) {
             return $user->role->globalPermissions()->where('name', 'edit-user-role')->exists();
         });
@@ -49,11 +41,6 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('edit-user-groups', function ($user) {
             return $user->role->globalPermissions()->where('name', 'edit-user-groups')->exists();
         });
-
-        // Deprecated, use edit-users instead
-        // Gate::define('publish-user', function ($user) {
-        //     return false;
-        // });
 
         Gate::define('access-user-management', function ($user) {
             return $user->can('edit-users') || $user->can('edit-user-roles') || $user->can('edit-user-groups');
@@ -79,33 +66,28 @@ class AuthServiceProvider extends ServiceProvider
 
         // The gate of access module list page.
         Gate::define('list', function ($user, $moduleName) {
-            return $user->permissionsByModuleName($moduleName)->exists()
+            return $user->can('manage-modules')
             || $user->role->permissionsByModuleName($moduleName)->exists()
             || $user->permissionsByModuleName($moduleName)->exists();
         });
 
-        Gate::define('edit', function ($user) {
-            return false;
-            // return in_array($user->role_value, [UserRole::OWNER, UserRole::TEAM]);
-        });
-
         Gate::define('reorder', function ($user) {
-            return false;
+            return $user->can('manage-modules');
             // return in_array($user->role_value, [UserRole::OWNER]);
         });
 
         Gate::define('publish', function ($user) {
-            return false;
+            return $user->can('manage-modules');
             // return in_array($user->role_value, [UserRole::OWNER]);
         });
 
         Gate::define('feature', function ($user) {
-            return false;
+            return $user->can('manage-modules');
             // return in_array($user->role_value, [UserRole::OWNER]);
         });
 
         Gate::define('delete', function ($user) {
-            return false;
+            return $user->can('manage-modules');
             // return in_array($user->role_value, [UserRole::OWNER]);
         });
 
@@ -115,24 +97,24 @@ class AuthServiceProvider extends ServiceProvider
          *
          ***/
 
-        Gate::define('view-item', function ($user, $item) {
-            return false;
-            // return in_array($user->permissionNameByItem($item), ["view", "edit", "manage"]) || in_array($user->role_value, [UserRole::OWNER]);
+        Gate::define('view', function ($user, $item) {
+            return $user->can('manage', $item) || $user->permissionsNameByItem($item)->where('name', 'view')->exists() || $user->group->permissionsNameByItem($item)->where('name', 'view')->exists();
         });
 
-        Gate::define('edit-item', function ($user, $item) {
-            return false;
-            // return in_array($user->permissionNameByItem($item), ["edit", "manage"]) || in_array($user->role_value, [UserRole::OWNER]);
+        Gate::define('publish', function ($user, $item) {
+            return $user->can('manage', $item) || $user->permissionsNameByItem($item)->where('name', 'publish')->exists() || $user->group->permissionsNameByItem($item)->where('name', 'publish')->exists();
         });
 
-        Gate::define('manage-item', function ($user, $item) {
-            return false;
-            // return in_array($user->permissionNameByItem($item), ["manage"]) || in_array($user->role_value, [UserRole::OWNER]);
+        Gate::define('edit', function ($user, $item) {
+            return $user->can('manage', $item) || $user->permissionsNameByItem($item)->where('name', 'edit')->exists() || $user->group->permissionsNameByItem($item)->where('name', 'edit')->exists();
         });
 
-        Gate::define('delete-item', function ($user, $item) {
-            return false;
-            // return in_array($user->permissionNameByItem($item), ["edit", "manage"]) || in_array($user->role_value, [UserRole::OWNER]);
+        Gate::define('delete', function ($user, $item) {
+            return $user->can('manage', $item) || $user->permissionsNameByItem($item)->where('name', 'delete')->exists() || $user->group->permissionsNameByItem($item)->where('name', 'delete')->exists();
+        });
+
+        Gate::define('manage', function ($user, $item) {
+            return $user->can('manage-modules') || $user->permissionsNameByItem($item)->where('name', 'manage')->exists() || $user->group->permissionsNameByItem($item)->where('name', 'manage')->exists();
         });
 
     }

@@ -127,7 +127,7 @@ trait HasPermissions
     // Filter all permissions that it's permissionable_type match the moduleName
     public function permissionsByModuleName($moduleName)
     {
-        $permissionable_type = config('twill.namespace') . '\\Models\\' . ucfirst($moduleName);
-        return $this->permissions()->where('permissionable_type', $permissionable_type);
+        $permissionableType = config('twill.namespace') . '\\Models\\' . studly_case(str_singular($moduleName));
+        return $this->permissions()->where('permissionable_type', $permissionableType);
     }
 }

@@ -33,7 +33,7 @@ trait HandlePermissions
 
     public function afterSaveHandlePermissions($object, $fields)
     {
-        //User form page
+        // User form page
         if (get_class($object) === "A17\Twill\Models\User") {
             $this->handleUserPermissions($object, $fields);
         }
@@ -74,7 +74,7 @@ trait HandlePermissions
     protected function handleRolePermissions($role, $fields)
     {
         foreach (Permission::$available['global'] as $permissionName) {
-            if (in_array($permissionName, $fields['general-permissions'])) {
+            if (isset($fields['general-permissions']) && in_array($permissionName, $fields['general-permissions'])) {
                 $role->grantGlobalPermission($permissionName);
             } else {
                 $role->revokeGlobalPermission($permissionName);
