@@ -86,11 +86,6 @@ class AuthServiceProvider extends ServiceProvider
             // return in_array($user->role_value, [UserRole::OWNER]);
         });
 
-        Gate::define('delete', function ($user) {
-            return $user->can('manage-modules');
-            // return in_array($user->role_value, [UserRole::OWNER]);
-        });
-
         /***
          *
          *    Module item permissions

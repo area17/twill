@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Helpers\FlashLevel;
+use A17\Twill\Models\Permission;
 use Auth;
 use Event;
 use Illuminate\Contracts\Foundation\Application;
@@ -822,9 +823,9 @@ abstract class ModuleController extends Controller
         })->toArray();
     }
 
-    protected function getIndexOption($option)
+    protected function getIndexOption($option, $item = null)
     {
-        return once(function () use ($option) {
+        return function () use ($option) {
             $customOptionNamesMapping = [
                 'store' => 'create',
             ];
@@ -847,9 +848,18 @@ abstract class ModuleController extends Controller
                 'editInModal' => 'edit',
             ];
 
-            $authorized = array_key_exists($option, $authorizableOptions) ? $this->user->can($authorizableOptions[$option]) : true;
+            if (array_key_exists($option, $authorizableOptions)) {
+                if (in_array($authorizableOptions[$option], Permission::$available["module"])) {
+                    $authorized = $this->user->can($authorizableOptions[$option]);
+                } elseif (in_array($authorizableOptions[$option], Permission::$available["item"])) {
+                    $authorized = $this->user->can($authorizableOptions[$option], $item);
+                } else {
+                    $authorized = true;
+                }
+            }
+
             return ($this->indexOptions[$option] ?? $this->defaultIndexOptions[$option] ?? false) && $authorized;
-        });
+        };
     }
 
     protected function getBrowserData($prependScope = [])
