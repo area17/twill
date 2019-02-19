@@ -55,7 +55,7 @@
       <p class="modal--tiny-title"><strong>Are you sure ?</strong></p>
       <p>{{ warningDeleteMessage }}</p>
       <a17-inputframe>
-        <a17-button variant="validate" @click="deleteSelectedMedias">Delete ( {{ mediasIdsToDelete.length }})</a17-button>
+        <a17-button variant="validate" @click="deleteSelectedMedias">Delete ({{ mediasIdsToDelete.length }})</a17-button>
         <a17-button variant="aslink" @click="$refs.warningDelete.close()"><span>Cancel</span></a17-button>
       </a17-inputframe>
     </a17-modal>
