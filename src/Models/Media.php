@@ -59,6 +59,29 @@ class Media extends Model
             'medium' => ImageService::getUrl($this->uuid, ["h" => "430"]),
             'width' => $this->width,
             'height' => $this->height,
+            'tags' => $this->tags->map(function ($tag) {
+                return $tag->name;
+            }),
+            'deleteUrl' => $this->canDeleteSafely() ? moduleRoute('medias', 'media-library', 'destroy', $this->id) : null,
+            'updateUrl' => route('admin.media-library.medias.single-update'),
+            'updateBulkUrl' => route('admin.media-library.medias.bulk-update'),
+            'deleteBulkUrl' => route('admin.media-library.medias.bulk-delete'),
+            'metadatas' => [
+                'default' => [
+                    'caption' => $this->caption,
+                    'altText' => $this->alt_text,
+                    'video' => null,
+                ] + collect(config('twill.media_library.extra_metadatas_fields'))->mapWithKeys(function ($field) {
+                    return [
+                        $field['name'] => $this->{$field['name']},
+                    ];
+                })->toArray(),
+                'custom' => [
+                    'caption' => null,
+                    'altText' => null,
+                    'video' => null,
+                ],
+            ],
         ];
     }
 

@@ -55,40 +55,11 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
         return [
             'items' => $items->map(function ($item) {
-                return $this->buildMedia($item);
+                return $item->toCmsArray();
             })->toArray(),
             'maxPage' => $items->lastPage(),
             'total' => $items->total(),
             'tags' => $this->repository->getTagsList(),
-        ];
-    }
-
-    private function buildMedia($item)
-    {
-        return $item->toCmsArray() + [
-            'tags' => $item->tags->map(function ($tag) {
-                return $tag->name;
-            }),
-            'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
-            'updateUrl' => route('admin.media-library.medias.single-update'),
-            'updateBulkUrl' => route('admin.media-library.medias.bulk-update'),
-            'deleteBulkUrl' => route('admin.media-library.medias.bulk-delete'),
-            'metadatas' => [
-                'default' => [
-                    'caption' => $item->caption,
-                    'altText' => $item->alt_text,
-                    'video' => null,
-                ] + collect($this->customFields)->mapWithKeys(function ($field) use ($item) {
-                    return [
-                        $field['name'] => $item->{$field['name']},
-                    ];
-                })->toArray(),
-                'custom' => [
-                    'caption' => null,
-                    'altText' => null,
-                    'video' => null,
-                ],
-            ],
         ];
     }
 
@@ -194,7 +165,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
         return response()->json([
             'items' => $items->map(function ($item) {
-                return $this->buildMedia($item);
+                return $item->toCmsArray();
             })->toArray(),
             'tags' => $this->repository->getTagsList(),
         ], 200);
