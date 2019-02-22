@@ -156,6 +156,8 @@ class ArticleRepository extends ModuleRepository
 
 - Not using the same name of the block inside the configuration.
 
+- Not running npm run twill-build
+
 ### Adding repeater blocks
 Lets say that it is requested to have an Accordion on Articles, where each item should have a _Header_ and a _Description_.
 This accordion can be moved around along with the rest of the blocks.
