@@ -516,7 +516,7 @@ abstract class ModuleRepository
             ]) + (classHasTrait($relatedElement, HasMedias::class) ? [
                 'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
             ] : []);
-        })->toArray();
+        })->values()->toArray();
     }
 
     public function updateOneToMany($object, $fields, $relationship, $formField, $attribute)
