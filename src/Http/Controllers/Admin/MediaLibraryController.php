@@ -86,7 +86,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
             $media = $this->storeReference($request);
         }
 
-        return response()->json(['media' => $this->buildMedia($media), 'success' => true], 200);
+        return response()->json(['media' => $media->toCmsArray(), 'success' => true], 200);
     }
 
     public function storeFile($request)
