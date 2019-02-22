@@ -128,7 +128,11 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
         $this->repository->update(
             $this->request->input('id'),
-            array_merge($this->request->only('alt_text', 'caption', 'tags'), $this->getExtraMetadatas()->toArray())
+            array_merge([
+                'alt_text' => request('alt_text', null),
+                'caption' => request('caption', null),
+                'tags' => request('tags', null),
+            ], $this->getExtraMetadatas()->toArray())
         );
 
         return response()->json([
