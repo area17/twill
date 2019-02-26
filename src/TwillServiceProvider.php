@@ -227,7 +227,7 @@ class TwillServiceProvider extends ServiceProvider
     private function requireHelpers()
     {
         require_once __DIR__ . '/Helpers/routes_helpers.php';
-        require_once __DIR__ . '/Helpers/repositories_helpers.php';
+        require_once __DIR__ . '/Helpers/modules_helpers.php';
         require_once __DIR__ . '/Helpers/i18n_helpers.php';
         require_once __DIR__ . '/Helpers/media_library_helpers.php';
         require_once __DIR__ . '/Helpers/frontend_helpers.php';

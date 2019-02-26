@@ -6,12 +6,6 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class Permission extends BaseModel
 {
-    public static $available = [
-        'global' => ['edit-settings', 'edit-users', 'edit-user-role', 'edit-user-groups', 'manage-modules', 'access-media-library'],
-        'module' => ['view-module', 'edit-module', 'manage-module'],
-        'item' => ['view-item', 'edit-item', 'manage-item'],
-    ];
-
     protected $fillable = [
         'name',
         'permissionable_type',
@@ -21,5 +15,25 @@ class Permission extends BaseModel
     public function permissionable()
     {
         return $this->morphTo();
+    }
+
+    public static function available($scope)
+    {
+        switch ($scope) {
+            case 'global':
+                return ['edit-settings', 'edit-users', 'edit-user-role', 'edit-user-groups', 'manage-modules', 'access-media-library'];
+                break;
+            case 'module':
+                return ['view-module', 'edit-module', 'manage-module'];
+                break;
+            case 'item':
+                return ['view-item', 'edit-item', 'manage-item'];
+                break;
+        }
+    }
+
+    public static function permissionable_modules()
+    {
+        return getAllModules();
     }
 }

@@ -3,6 +3,7 @@
 namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasPresenter;
+use A17\Twill\Models\Permission;
 use Auth;
 use Carbon\Carbon;
 use Cartalyst\Tags\TaggableInterface;
@@ -26,7 +27,7 @@ abstract class Model extends BaseModel implements TaggableInterface
     {
         parent::boot();
         static::addGlobalScope('accessible', function (Builder $builder) {
-            $permission_models = collect(config('twill.user_management.permission.enabled_modules', []))->map(function ($moduleName) {
+            $permission_models = Permission::permissionable_modules()->map(function ($moduleName) {
                 return "App\Models\\" . studly_case(str_singular($moduleName));
             });
             $model = get_class($builder->getModel());

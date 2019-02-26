@@ -9,7 +9,7 @@ trait HasPermissions
     public function grantGlobalPermission($name)
     {
         dump($name);
-        $available_permissions = Permission::$available['global'];
+        $available_permissions = Permission::available('global');
         if (in_array($name, $available_permissions)) {
             $permission = Permission::firstOrCreate([
                 'name' => $name,
@@ -24,7 +24,7 @@ trait HasPermissions
 
     public function grantModulePermission($name, $permissionableType)
     {
-        $available_permissions = Permission::$available['module'];
+        $available_permissions = Permission::available('module');
         if (in_array($name, $available_permissions)) {
             $permission = Permission::firstOrCreate([
                 'name' => $name,
@@ -41,7 +41,7 @@ trait HasPermissions
     // If the object already have this permission, skip it
     public function grantModuleItemPermission($name, $permissionableItem)
     {
-        $available_permissions = Permission::$available['item'];
+        $available_permissions = Permission::available('item');
         if (in_array($name, $available_permissions)) {
             $permission = Permission::firstOrCreate([
                 'name' => $name,
@@ -58,7 +58,7 @@ trait HasPermissions
 
     public function revokeGlobalPermission($name)
     {
-        $available_permissions = Permission::$available['global'];
+        $available_permissions = Permission::available('global');
         if (in_array($name, $available_permissions)) {
             $this->globalPermissions()->detach(Permission::where('name', $name)->first()->id);
         } else {
@@ -68,7 +68,7 @@ trait HasPermissions
 
     public function revokeModulePermission($name, $permissionableType)
     {
-        $available_permissions = Permission::$available['module'];
+        $available_permissions = Permission::available('module');
         if (in_array($name, $available_permissions)) {
 
         } else {

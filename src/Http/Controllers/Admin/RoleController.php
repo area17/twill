@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Models\Permission;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 
@@ -71,8 +72,7 @@ class RoleController extends ModuleController
 
     protected function formData($request)
     {
-        $permission_modules = collect(config('twill.user_management.permission.enabled_modules', []));
-        $modules_items = $permission_modules->mapWithKeys(function ($module) {
+        $modules_items = Permission::permissionable_modules()->mapWithKeys(function ($module) {
             return [$module => getRepositoryByModuleName($module)->get()];
         });
 
