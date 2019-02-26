@@ -53,7 +53,6 @@ class UserController extends ModuleController
         parent::__construct($app, $request);
         $this->removeMiddleware('can:edit');
         $this->removeMiddleware('can:publish');
-        $this->middleware('can:access-user-management');
 
         if (config('twill.enabled.users-image')) {
             $this->indexColumns = [
@@ -73,7 +72,7 @@ class UserController extends ModuleController
     {
         return [
             'defaultFilterSlug' => 'published',
-            'create' => $this->getIndexOption('create') && auth('twill_users')->user()->can('edit-users'),
+            'create' => $this->getIndexOption('create') && $this->user->can('edit-users'),
             'roleList' => Role::published()->get()->map(function ($role) {
                 return ['value' => $role->id, 'label' => $role->name];
             })->toArray(),
@@ -168,7 +167,7 @@ class UserController extends ModuleController
     protected function getIndexOption($option, $item = null)
     {
         if (in_array($option, ['publish', 'bulkEdit', 'create'])) {
-            return auth('twill_users')->user()->can('edit-users');
+            return $this->user->can('edit-users');
         }
 
         return parent::getIndexOption($option);
@@ -176,7 +175,7 @@ class UserController extends ModuleController
 
     protected function indexItemData($item)
     {
-        $canEdit = auth('twill_users')->user()->can('edit-users');
+        $canEdit = $this->user->can('edit-users') || $this->user->id === $item->id;
 
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
     }

@@ -52,38 +52,40 @@
   ])
 @stop
 
-@section('fieldsets')
-    @foreach($permission_modules as $module_name => $module_items)
-        <a17-fieldset title='{{ ucfirst($module_name) . " Permissions"}}' id='{{ $module_name }}'>
-            <h2>{{ ucfirst($module_name) .' permission' }}</h2>
-            @foreach ($module_items as $module_item)
-                @formField('select', [
-                    'name' => $module_name . '_' . $module_item->id . '_permission',
-                    'label' => $module_item->title,
-                    'unpack' => true,
-                    'options' => [
-                        [
-                            'value' => '',
-                            'label' => 'None' 
-                        ],
-                        [
-                            'value' => 'view-item',
-                            'label' => 'View'
-                        ],
-                        [
-                            'value' => 'edit-item',
-                            'label' => 'Edit'
-                        ],
-                        [
-                            'value' => 'manage-item',
-                            'label' => 'Manage'
-                        ],
-                    ]
-                ])
-            @endforeach
-        </a17-fieldset>
-    @endforeach
-@stop
+@can('edit-users')
+  @section('fieldsets')
+      @foreach($permission_modules as $module_name => $module_items)
+          <a17-fieldset title='{{ ucfirst($module_name) . " Permissions"}}' id='{{ $module_name }}'>
+              <h2>{{ ucfirst($module_name) .' permission' }}</h2>
+              @foreach ($module_items as $module_item)
+                  @formField('select', [
+                      'name' => $module_name . '_' . $module_item->id . '_permission',
+                      'label' => $module_item->title,
+                      'unpack' => true,
+                      'options' => [
+                          [
+                              'value' => '',
+                              'label' => 'None' 
+                          ],
+                          [
+                              'value' => 'view-item',
+                              'label' => 'View'
+                          ],
+                          [
+                              'value' => 'edit-item',
+                              'label' => 'Edit'
+                          ],
+                          [
+                              'value' => 'manage-item',
+                              'label' => 'Manage'
+                          ],
+                      ]
+                  ])
+              @endforeach
+          </a17-fieldset>
+      @endforeach
+  @stop
+@endcan
 
 @push('vuexStore')
     window.STORE.publication.submitOptions = {

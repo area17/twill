@@ -605,7 +605,7 @@ abstract class ModuleController extends Controller
 
             unset($columnsData[$this->titleColumnKey]);
             $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
-            $itemCanDelete = $this->getIndexOption('delete') && ($item->canDelete ?? true);
+            $itemCanDelete = $this->getIndexOption('delete', $item) && ($item->canDelete ?? true);
             $canEdit = $this->getIndexOption('edit', $item) && $this->user->can('edit-item', $item);
             return array_replace([
                 'id' => $item->id,
@@ -834,8 +834,8 @@ abstract class ModuleController extends Controller
                 'list' => 'view-module',
                 'create' => 'edit-module',
                 'edit' => 'edit-item',
-                'publish' => 'edit-module',
-                'feature' => 'edit-module',
+                'publish' => 'edit-item',
+                'feature' => 'edit-item',
                 'reorder' => 'edit-module',
                 'delete' => 'edit-item',
                 'restore' => 'edit-item',
