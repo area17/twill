@@ -3,11 +3,11 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Helpers\FlashLevel;
-use A17\Twill\Models\Permission;
 use Auth;
 use Event;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Route;
 use Session;
 
@@ -606,7 +606,7 @@ abstract class ModuleController extends Controller
             unset($columnsData[$this->titleColumnKey]);
             $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
             $itemCanDelete = $this->getIndexOption('delete') && ($item->canDelete ?? true);
-            $canEdit = $this->getIndexOption('edit') && $this->user->can('edit-item', $item);
+            $canEdit = $this->getIndexOption('edit', $item) && $this->user->can('edit-item', $item);
             return array_replace([
                 'id' => $item->id,
                 'name' => $name,
@@ -825,41 +825,37 @@ abstract class ModuleController extends Controller
 
     protected function getIndexOption($option, $item = null)
     {
-        return function () use ($option) {
+        return once(function () use ($option, $item) {
             $customOptionNamesMapping = [
                 'store' => 'create',
             ];
-
             $option = array_key_exists($option, $customOptionNamesMapping) ? $customOptionNamesMapping[$option] : $option;
-
             $authorizableOptions = [
-                'create' => 'edit',
-                'edit' => 'edit',
-                'publish' => 'publish',
-                'feature' => 'feature',
-                'reorder' => 'reorder',
-                'delete' => 'delete',
-                'restore' => 'delete',
-                'bulkPublish' => 'publish',
-                'bulkRestore' => 'delete',
-                'bulkFeature' => 'feature',
-                'bulkDelete' => 'delete',
-                'bulkEdit' => 'edit',
-                'editInModal' => 'edit',
+                'list' => 'view-module',
+                'create' => 'edit-module',
+                'edit' => 'edit-item',
+                'publish' => 'edit-module',
+                'feature' => 'edit-module',
+                'reorder' => 'edit-module',
+                'delete' => 'edit-item',
+                'restore' => 'edit-item',
+                'bulkPublish' => 'edit-module',
+                'bulkRestore' => 'edit-module',
+                'bulkFeature' => 'edit-module',
+                'bulkDelete' => 'edit-module',
+                'bulkEdit' => 'edit-module',
+                'editInModal' => 'edit-module',
             ];
-
+            $authorized = false;
             if (array_key_exists($option, $authorizableOptions)) {
-                if (in_array($authorizableOptions[$option], Permission::$available["module"])) {
-                    $authorized = $this->user->can($authorizableOptions[$option]);
-                } elseif (in_array($authorizableOptions[$option], Permission::$available["item"])) {
+                if (Str::endsWith($authorizableOptions[$option], '-module')) {
+                    $authorized = $this->user->can($authorizableOptions[$option], $this->moduleName);
+                } elseif (Str::endsWith($authorizableOptions[$option], '-item') && $item) {
                     $authorized = $this->user->can($authorizableOptions[$option], $item);
-                } else {
-                    $authorized = true;
                 }
             }
-
             return ($this->indexOptions[$option] ?? $this->defaultIndexOptions[$option] ?? false) && $authorized;
-        };
+        });
     }
 
     protected function getBrowserData($prependScope = [])

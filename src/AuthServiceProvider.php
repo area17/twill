@@ -65,25 +65,19 @@ class AuthServiceProvider extends ServiceProvider
          ***/
 
         // The gate of access module list page.
-        Gate::define('list', function ($user, $moduleName) {
-            return $user->can('manage-modules')
-            || $user->role->permissionsByModuleName($moduleName)->exists()
+        Gate::define('view-modules', function ($user, $moduleName) {
+            return $user->can('edit-module', $moduleName)
             || $user->permissionsByModuleName($moduleName)->exists();
         });
 
-        Gate::define('reorder', function ($user) {
-            return $user->can('manage-modules');
-            // return in_array($user->role_value, [UserRole::OWNER]);
+        Gate::define('edit-module', function ($user, $moduleName) {
+            return $user->can('manage-module', $moduleName)
+            || $user->permissionsByModuleName($moduleName)->whereNull('permissionable_id')->where('name', 'manage-module')->exists();
         });
 
-        Gate::define('publish', function ($user) {
-            return $user->can('manage-modules');
-            // return in_array($user->role_value, [UserRole::OWNER]);
-        });
-
-        Gate::define('feature', function ($user) {
-            return $user->can('manage-modules');
-            // return in_array($user->role_value, [UserRole::OWNER]);
+        Gate::define('manage-module', function ($user, $moduleName) {
+            return $user->can('manage-modules')
+            || $user->permissionsByModuleName($moduleName)->whereNull('permissionable_id')->where('name', 'manage-module')->exists();
         });
 
         /***
@@ -92,25 +86,40 @@ class AuthServiceProvider extends ServiceProvider
          *
          ***/
 
-        Gate::define('view', function ($user, $item) {
-            return $user->can('manage', $item) || $user->permissionsNameByItem($item)->where('name', 'view')->exists() || $user->group->permissionsNameByItem($item)->where('name', 'view')->exists();
+        Gate::define('view-item', function ($user, $item) {
+            return $user->can('edit-item', $item)
+            || $user->permissionsByItem($item)->where('name', 'view-item')->exists()
+            || $user->groups()->whereHas('permissions', function ($query) use ($item) {
+                $query->where([
+                    ['permissionable_type', get_class($item)],
+                    ['permissionable_id', $item->id],
+                    ['name', 'view-item'],
+                ]);
+            })->exists();
         });
 
-        Gate::define('publish', function ($user, $item) {
-            return $user->can('manage', $item) || $user->permissionsNameByItem($item)->where('name', 'publish')->exists() || $user->group->permissionsNameByItem($item)->where('name', 'publish')->exists();
+        Gate::define('edit-item', function ($user, $item) {
+            return $user->can('manage-item', $item)
+            || $user->permissionsByItem($item)->where('name', 'edit-item')->exists()
+            || $user->groups()->whereHas('permissions', function ($query) use ($item) {
+                $query->where([
+                    ['permissionable_type', get_class($item)],
+                    ['permissionable_id', $item->id],
+                    ['name', 'edit-item'],
+                ]);
+            })->exists();
         });
 
-        Gate::define('edit', function ($user, $item) {
-            return $user->can('manage', $item) || $user->permissionsNameByItem($item)->where('name', 'edit')->exists() || $user->group->permissionsNameByItem($item)->where('name', 'edit')->exists();
+        Gate::define('manage-item', function ($user, $item) {
+            return $user->can('manage-modules')
+            || $user->permissionsByItem($item)->where('name', 'manage-item')->exists()
+            || $user->groups()->whereHas('permissions', function ($query) use ($item) {
+                $query->where([
+                    ['permissionable_type', get_class($item)],
+                    ['permissionable_id', $item->id],
+                    ['name', 'manage-item'],
+                ]);
+            })->exists();
         });
-
-        Gate::define('delete', function ($user, $item) {
-            return $user->can('manage', $item) || $user->permissionsNameByItem($item)->where('name', 'delete')->exists() || $user->group->permissionsNameByItem($item)->where('name', 'delete')->exists();
-        });
-
-        Gate::define('manage', function ($user, $item) {
-            return $user->can('manage-modules') || $user->permissionsNameByItem($item)->where('name', 'manage')->exists() || $user->group->permissionsNameByItem($item)->where('name', 'manage')->exists();
-        });
-
     }
 }

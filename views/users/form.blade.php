@@ -67,15 +67,15 @@
                             'label' => 'None' 
                         ],
                         [
-                            'value' => 'view',
+                            'value' => 'view-item',
                             'label' => 'View'
                         ],
                         [
-                            'value' => 'edit',
+                            'value' => 'edit-item',
                             'label' => 'Edit'
                         ],
                         [
-                            'value' => 'manage',
+                            'value' => 'manage-item',
                             'label' => 'Manage'
                         ],
                     ]

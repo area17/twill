@@ -60,7 +60,7 @@ class GroupController extends ModuleController
         ];
     }
 
-    protected function getIndexOption($option)
+    protected function getIndexOption($option, $item = null)
     {
         if (in_array($option, ['publish', 'bulkEdit', 'create'])) {
             return auth('twill_users')->user()->can('edit-user-groups');

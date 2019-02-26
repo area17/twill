@@ -3,7 +3,7 @@
         <div class="container">
             <ul class="navUnder__list">
                 @foreach(config('twill-navigation.'. $_global_active_navigation . '.primary_navigation.' . $_primary_active_navigation)['secondary_navigation'] as $secondary_navigation_key => $secondary_navigation_element)
-                    @can($secondary_navigation_element['can'] ?? 'list')
+                    @can($secondary_navigation_element['can'] ?? 'view-module', $secondary_navigation_key)
                         @if(isActiveNavigation($secondary_navigation_element, $secondary_navigation_key, $_secondary_active_navigation))
                             <li class="navUnder__item s--on">
                         @else
