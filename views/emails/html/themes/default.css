@@ -12,7 +12,7 @@ $color__darkBlue: #3278B8;
 $color__darkBlue--hover: #2D6CA6;*/
 
 body, body *:not(html):not(style):not(br):not(tr):not(code) {
-    font-family: Inter-UI,-apple-system,-system-ui,system-ui,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;
+    font-family: Inter,-apple-system,-system-ui,system-ui,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;
     box-sizing: border-box;
 }
 
