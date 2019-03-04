@@ -32,8 +32,8 @@ class Permission extends BaseModel
         }
     }
 
-    public static function permissionable_modules()
+    public static function permissionableModules()
     {
-        return getAllModules();
+        return getAllModules()->diff(collect(config('twill.permission.exclude_modules', [])));
     }
 }

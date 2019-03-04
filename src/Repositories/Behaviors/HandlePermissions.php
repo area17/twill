@@ -24,7 +24,7 @@ trait HandlePermissions
             $fields = $this->renderRolePermissions($object, $fields);
         }
         // Module item form page
-        else {
+        elseif (Permission::permissionableModules()->contains(class_basename($object))) {
             $fields = $this->renderModulePermissions($object, $fields);
         }
 
@@ -46,7 +46,7 @@ trait HandlePermissions
             $this->handleRolePermissions($object, $fields);
         }
         // Module item form page
-        else {
+        elseif (Permission::permissionableModules()->contains(class_basename($object))) {
             $this->handleModulePermissions($object, $fields);
         }
     }

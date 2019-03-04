@@ -102,7 +102,7 @@ class UserController extends ModuleController
 
     protected function formData($request)
     {
-        $modules_items = Permission::permissionable_modules()->mapWithKeys(function ($module) {
+        $modules_items = Permission::permissionableModules()->mapWithKeys(function ($module) {
             return [$module => getRepositoryByModuleName($module)->get()];
         });
 
