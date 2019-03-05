@@ -82,6 +82,14 @@ trait HandlePermissions
                 }
             }
         }
+
+        if (isset($fields['groups']) && in_array('include-in-everyone', $fields['groups'])) {
+            $role->in_everyone_group = true;
+            $role->save();
+        } else {
+            $role->in_everyone_group = false;
+            $role->save();
+        }
     }
 
     // After save handle permissions form fields on module form
@@ -172,13 +180,14 @@ trait HandlePermissions
         return $fields;
     }
 
-    protected function renderRolePermissions($object, $fields)
+    protected function renderRolePermissions($role, $fields)
     {
-        $object->permissions()->get();
-        $fields["general-permissions"] = $object->permissions()->where([
+        $role->permissions()->get();
+        $fields["general-permissions"] = $role->permissions()->where([
             "permissionable_type" => null,
             "permissionable_id" => null,
         ])->pluck("name")->toArray();
+        $fields['groups'] = $role->in_everyone_group ? ['include-in-everyone'] : [];
         return $fields;
     }
 

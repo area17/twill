@@ -65,8 +65,8 @@
         ])
     @endforeach
 
-    {{-- @formField('checkboxes', [
-        'name' => 'in_everyone_group',
+    @formField('checkboxes', [
+        'name' => 'groups',
         'label' => 'Groups',
         'inline' => false,
         'options' => [
@@ -75,5 +75,5 @@
                 'label' => 'Include in everyone'
             ]
         ]
-    ]) --}}
+    ])
 @stop
