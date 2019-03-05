@@ -8,7 +8,6 @@ trait HasPermissions
 {
     public function grantGlobalPermission($name)
     {
-        dump($name);
         $available_permissions = Permission::available('global');
         if (in_array($name, $available_permissions)) {
             $permission = Permission::firstOrCreate([

@@ -270,6 +270,9 @@ abstract class ModuleController extends Controller
         $this->submoduleParentId = $id;
 
         $item = $this->repository->getById($submoduleId ?? $id);
+
+        $this->authorize('edit-item', $item);
+
         $input = $this->request->all();
 
         if (isset($input['cmsSaveType']) && $input['cmsSaveType'] === 'cancel') {
@@ -573,7 +576,9 @@ abstract class ModuleController extends Controller
             $this->orderScope(),
             request('offset') ?? $this->perPage ?? 50,
             $forcePagination
-        ));
+        )->filter(function ($item) {
+            return Auth::user()->can('view-item', $item);
+        }));
     }
 
     protected function transformIndexItems($items)

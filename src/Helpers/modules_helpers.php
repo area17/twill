@@ -34,7 +34,7 @@ if (!function_exists('getAllModules')) {
         });
 
         $modules = $moduleRepositories->map(function ($repository) {
-            $modelName = str_replace("Repository", '', str_replace("App\\Repositories\\", "", $repository));
+            $modelName = str_replace("Repository", '', str_replace(config('twill.namespace') . "\\Repositories\\", "", $repository));
             return str_plural(lcfirst($modelName));
         });
 
