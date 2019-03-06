@@ -97,22 +97,22 @@ trait HasPermissions
 
     public function permissionsByModuleName($moduleName)
     {
-        return $this->permissions()->OfModuleName($moduleName);
+        return $this->permissions()->ofModuleName($moduleName);
     }
 
     public function permissionsByItem($item)
     {
-        return $this->permissions()->OfItem($item);
+        return $this->permissions()->ofItem($item);
     }
 
     // Gather all permissions that user has from himself, role and groups. Can be used for user model only.
     public function userAllPermissions()
     {
         if (get_class($this) === 'A17\Twill\Models\User') {
-            $permissions = $this->permissions()->toBase()->union($this->role->permissions());
+            $permissions = $this->permissions()->union($this->role->permissions());
             // Iterate the permissions that user's groups have;
             $this->groups->each(function ($group) use ($permissions) {
-                $permissions->union($group->permissions());
+                $permissions = $permissions->union($group->permissions());
             });
             return $permissions;
         }

@@ -36,9 +36,9 @@ abstract class Model extends BaseModel implements TaggableInterface
         $model = get_class($query->getModel());
         //The current model is an permission-enabled model
         if ($permissionModels->contains($model)) {
-            $allPermissions = Auth::user()->userAllPermissions()->where('permissionable_type', $model);
+            $allPermissions = Auth::user()->userAllPermissions()->ofModel($model);
             // If the user has any module permissions, or global manage all modules permissions, all items will be return
-            if ($allPermissions->whereNull('permissionable_id')->whereIn('name', Permission::available('module'))->exists()) {
+            if ((clone $allPermissions)->module()->whereIn('name', Permission::available('module'))->exists()) {
                 return $query;
             }
             $authorizedItemsIds = $allPermissions->moduleItem()->pluck('permissionable_id');

@@ -84,7 +84,12 @@ class Permission extends BaseModel
 
     public function scopeOfModuleName($query, $moduleName)
     {
-        return $query->where('permissionable_type', getModelByModuleName($moduleName));
+        return $query->ofModel(getModelByModuleName($moduleName));
+    }
+
+    public function scopeOfModel($query, $model)
+    {
+        return $query->where('permissionable_type', $model);
     }
 
 }
