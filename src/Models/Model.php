@@ -8,7 +8,6 @@ use Auth;
 use Carbon\Carbon;
 use Cartalyst\Tags\TaggableInterface;
 use Cartalyst\Tags\TaggableTrait;
-use DB;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -31,33 +30,21 @@ abstract class Model extends BaseModel implements TaggableInterface
 
     public function scopeAccessible($query)
     {
-        $permission_models = Permission::permissionableModules()->map(function ($moduleName) {
+        $permissionModels = Permission::permissionableModules()->map(function ($moduleName) {
             return config('twill.namespace') . "\\Models\\" . studly_case(str_singular($moduleName));
         });
         $model = get_class($query->getModel());
         //The current model is an permission-enabled model
-        if ($permission_models->contains($model)) {
-            $authorizedItemsIds = DB::table('permissions')
-                ->rightJoin('permission_twill_user', 'permissions.id', '=', 'permission_id')
-                ->where([
-                    ['twill_user_id', Auth::user()->id],
-                    ['permissionable_type', $model],
-                ])
-                ->groupBy('permissionable_id')
-                ->select('permissionable_id')
-                ->get()
-                ->pluck('permissionable_id');
-            // $user_permissions = Permission::where('permissionable_type', $model)->whereHas('users', function ($query) {
-            //     $query->where('id', Auth::user()->id);
-            // });
-            // $role_permissions = Permission::where('permissionable_type', $model)->whereHas('roles', function ($query) {
-            //     $query->where('id', Auth::user()->role);
-            // });
-            //get all records of this model that user could access
-            // $authorizedItemsIds = $builder->withoutGlobalScope('accessible')->get()->filter(function ($item) {
-            //     return Auth::user()->can('view-item', $item);
-            // })->pluck('id');
+        if ($permissionModels->contains($model)) {
+            $allPermissions = Auth::user()->userAllPermissions()->where('permissionable_type', $model);
+            // If the user has any module permissions, or global manage all modules permissions, all items will be return
+            if ($allPermissions->whereNull('permissionable_id')->whereIn('name', Permission::available('module'))->exists()) {
+                return $query;
+            }
+
+            $authorizedItemsIds = $allPermissions->where('');
             return $query->whereIn('id', $authorizedItemsIds);
+
         }
         return $query;
     }

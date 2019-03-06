@@ -146,7 +146,7 @@ trait HandlePermissions
 
     protected function renderUserPermissions($user, $fields)
     {
-        foreach ($user->itemPermissions as $permission) {
+        foreach ($user->permissions()->item() as $permission) {
             $module = $permission->permissionable()->first();
             $module_name = str_plural(lcfirst(class_basename($module)));
             $fields[$module_name . '_' . $module->id . '_permission'] = '"' . $permission->name . '"';

@@ -51,4 +51,19 @@ class Permission extends BaseModel
     {
         return $this->belongsToMany('A17\Twill\Models\Group', 'group_permission', 'permission_id', 'group_id');
     }
+
+    public function scopeGlobal($query)
+    {
+        return $query->whereNull('permissionable_type')->whereNull('permissionable_id');
+    }
+
+    public function scopeModule($query)
+    {
+        return $query->whereNotNull('permissionable_type')->whereNull('permissionable_id');
+    }
+
+    public function scopeItem($query)
+    {
+        return $query->whereNotNull('permissionable_type')->whereNotNull('permissionable_id');
+    }
 }

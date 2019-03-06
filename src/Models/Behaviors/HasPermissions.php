@@ -13,7 +13,7 @@ trait HasPermissions
             $permission = Permission::firstOrCreate([
                 'name' => $name,
             ]);
-            if (!$this->globalPermissions()->where('name', $name)->exists()) {
+            if (!$this->permissions()->global()->where('name', $name)->exists()) {
                 $this->permissions()->save($permission);
             }
         } else {
@@ -48,7 +48,7 @@ trait HasPermissions
                 'permissionable_id' => $permissionableItem ? $permissionableItem->id : null,
             ]);
             if (!$this->permissionsNameByItem($permissionableItem)->contains($name)) {
-                $this->itemPermissions()->save($permission);
+                $this->permissions()->item()->save($permission);
             }
         } else {
             abort(400, 'grant failed, permission not available on item');
@@ -59,7 +59,7 @@ trait HasPermissions
     {
         $available_permissions = Permission::available('global');
         if (in_array($name, $available_permissions)) {
-            $this->globalPermissions()->detach(Permission::where('name', $name)->first()->id);
+            $this->permissions()->global()->detach(Permission::where('name', $name)->first()->id);
         } else {
             abort(400, 'revoke failed, permission not available on global');
         }
@@ -95,24 +95,9 @@ trait HasPermissions
         }
     }
 
-    public function globalPermissions()
-    {
-        return $this->permissions()->whereNull('permissionable_type')->whereNull('permissionable_id');
-    }
-
-    public function itemPermissions()
-    {
-        return $this->permissions()->whereNotNull('permissionable_type')->whereNotNull('permissionable_id');
-    }
-
-    public function modulePermissions()
-    {
-        return $this->permissions()->whereNotNull('permissionable_type')->whereNull('permissionable_id');
-    }
-
     public function permissionsByItem($item)
     {
-        return $this->itemPermissions()->where([
+        return $this->permissions()->item()->where([
             ['permissionable_type', get_class($item)],
             ['permissionable_id', $item->id],
         ]);
@@ -128,5 +113,20 @@ trait HasPermissions
     {
         $permissionableType = config('twill.namespace') . '\\Models\\' . studly_case(str_singular($moduleName));
         return $this->permissions()->where('permissionable_type', $permissionableType);
+    }
+
+    // Gather all permissions that user has from himself, role and groups. Can be used for user model only.
+    public function userAllPermissions()
+    {
+        if (get_class($this) === 'A17\Twill\Models\User') {
+            $permissions = $this->permissions()->toBase()->union($this->role->permissions());
+            // Iterate the permissions that user's groups have;
+            $this->groups->each(function ($group) use ($permissions) {
+                $permissions->union($group->permissions());
+            });
+            return $permissions;
+        }
+        // Has no effects for other models
+        return $this;
     }
 }

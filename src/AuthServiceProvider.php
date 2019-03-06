@@ -31,15 +31,15 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('edit-users', function ($user) {
-            return $user->role->globalPermissions()->where('name', 'edit-users')->exists();
+            return $user->role->permissions()->global()->where('name', 'edit-users')->exists();
         });
 
         Gate::define('edit-user-role', function ($user) {
-            return $user->role->globalPermissions()->where('name', 'edit-user-role')->exists();
+            return $user->role->permissions()->global()->where('name', 'edit-user-role')->exists();
         });
 
         Gate::define('edit-user-groups', function ($user) {
-            return $user->role->globalPermissions()->where('name', 'edit-user-groups')->exists();
+            return $user->role->permissions()->global()->where('name', 'edit-user-groups')->exists();
         });
 
         Gate::define('access-user-management', function ($user) {
@@ -47,11 +47,11 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('manage-modules', function ($user) {
-            return $user->role->globalPermissions()->where('name', 'manage-modules')->exists();
+            return $user->role->permissions()->global()->where('name', 'manage-modules')->exists();
         });
 
         Gate::define('access-media-library', function ($user) {
-            return $user->role->globalPermissions()->where('name', 'access-media-library')->exists();
+            return $user->role->permissions()->global()->where('name', 'access-media-library')->exists();
         });
 
         Gate::define('impersonate', function ($user) {
