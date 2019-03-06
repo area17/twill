@@ -149,7 +149,7 @@ trait HandlePermissions
         foreach ($user->permissions()->moduleItem()->get() as $permission) {
             $model = $permission->permissionable()->first();
             $moduleName = getModuleNameByModel($model);
-            $fields[$moduleName . '_' . $module->id . '_permission'] = '"' . $permission->name . '"';
+            $fields[$moduleName . '_' . $model->id . '_permission'] = '"' . $permission->name . '"';
         }
         return $fields;
     }

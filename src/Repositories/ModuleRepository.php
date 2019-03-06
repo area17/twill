@@ -40,7 +40,7 @@ abstract class ModuleRepository
     {
         $query = $this->model->where($scope);
         if (Permission::permissionableModules()->contains(getModuleNameByModel($this->model))) {
-            $query = $query->accessiable();
+            $query = $query->accessible();
         }
         switch ($slug) {
             case 'all':

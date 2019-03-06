@@ -19,7 +19,7 @@ if (!function_exists('getModuleNameByModel')) {
 if (!function_exists('getRepositoryByModuleName')) {
     function getRepositoryByModuleName($moduleName)
     {
-        return getModelRepository(getModelByModuleName($moduleName));
+        return getModelRepository(class_basename(getModelByModuleName($moduleName)));
     }
 }
 
