@@ -8,7 +8,7 @@ use Auth;
 use Carbon\Carbon;
 use Cartalyst\Tags\TaggableInterface;
 use Cartalyst\Tags\TaggableTrait;
-use Illuminate\Database\Eloquent\Builder;
+use DB;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -26,20 +26,40 @@ abstract class Model extends BaseModel implements TaggableInterface
     protected static function boot()
     {
         parent::boot();
-        static::addGlobalScope('accessible', function (Builder $builder) {
-            $permission_models = Permission::permissionableModules()->map(function ($moduleName) {
-                return "App\Models\\" . studly_case(str_singular($moduleName));
-            });
-            $model = get_class($builder->getModel());
-            //The current model is an permission-enabled model
-            if ($permission_models->contains($model)) {
-                //get all records of this model that user could access
-                $authorizedItemsIds = $builder->withoutGlobalScope('accessible')->get()->filter(function ($item) {
-                    return Auth::user()->can('view-item', $item);
-                })->pluck('id');
-                $builder->whereIn('id', $authorizedItemsIds);
-            }
+
+    }
+
+    public function scopeAccessible($query)
+    {
+        $permission_models = Permission::permissionableModules()->map(function ($moduleName) {
+            return config('twill.namespace') . "\\Models\\" . studly_case(str_singular($moduleName));
         });
+        $model = get_class($query->getModel());
+        //The current model is an permission-enabled model
+        if ($permission_models->contains($model)) {
+            $authorizedItemsIds = DB::table('permissions')
+                ->rightJoin('permission_twill_user', 'permissions.id', '=', 'permission_id')
+                ->where([
+                    ['twill_user_id', Auth::user()->id],
+                    ['permissionable_type', $model],
+                ])
+                ->groupBy('permissionable_id')
+                ->select('permissionable_id')
+                ->get()
+                ->pluck('permissionable_id');
+            // $user_permissions = Permission::where('permissionable_type', $model)->whereHas('users', function ($query) {
+            //     $query->where('id', Auth::user()->id);
+            // });
+            // $role_permissions = Permission::where('permissionable_type', $model)->whereHas('roles', function ($query) {
+            //     $query->where('id', Auth::user()->role);
+            // });
+            //get all records of this model that user could access
+            // $authorizedItemsIds = $builder->withoutGlobalScope('accessible')->get()->filter(function ($item) {
+            //     return Auth::user()->can('view-item', $item);
+            // })->pluck('id');
+            return $query->whereIn('id', $authorizedItemsIds);
+        }
+        return $query;
     }
 
     public function scopePublishedInListings($query)

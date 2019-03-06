@@ -572,7 +572,7 @@ abstract class ModuleController extends Controller
     {
         return $this->transformIndexItems($this->repository->get(
             $this->indexWith,
-            $scopes,
+            $scopes + ['accessible' => true],
             $this->orderScope(),
             request('offset') ?? $this->perPage ?? 50,
             $forcePagination

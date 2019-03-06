@@ -12,11 +12,6 @@ class Permission extends BaseModel
         'permissionable_id',
     ];
 
-    public function permissionable()
-    {
-        return $this->morphTo();
-    }
-
     public static function available($scope)
     {
         switch ($scope) {
@@ -35,5 +30,25 @@ class Permission extends BaseModel
     public static function permissionableModules()
     {
         return getAllModules()->diff(collect(config('twill.permission.exclude_modules', [])));
+    }
+
+    public function permissionable()
+    {
+        return $this->morphTo();
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany('A17\Twill\Models\User', 'permission_twill_user', 'permission_id', 'twill_user_id');
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany('A17\Twill\Models\Role', 'permission_role', 'permission_id', 'role_id');
+    }
+
+    public function groups()
+    {
+        return $this->belongsToMany('A17\Twill\Models\Group', 'group_permission', 'permission_id', 'group_id');
     }
 }

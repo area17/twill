@@ -111,7 +111,7 @@ trait HandleRevisions
 
     public function getCountForMine()
     {
-        return $this->model->where($this->countScope)->mine()->count();
+        return $this->model->where($this->countScope)->mine()->accessible()->count();
     }
 
     public function getCountByStatusSlugHandleRevisions($slug)
