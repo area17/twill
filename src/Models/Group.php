@@ -37,6 +37,17 @@ class Group extends BaseModel
         ],
     ];
 
+    public static function getEveryoneGroup()
+    {
+        $everyone_group = new Group;
+        $everyone_group->fill([
+            'name' => 'Everyone',
+            'description' => 'The default group contains all users in the system',
+            'can_delete' => false, 'published' => true,
+        ]);
+        return $everyone_group;
+    }
+
     public function __construct(array $attributes = [])
     {
         $this->table = 'groups';

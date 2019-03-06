@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Models\Group;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 
@@ -105,6 +106,12 @@ class GroupController extends ModuleController
     protected function getRequestFilters()
     {
         return json_decode($this->request->get('filter'), true) ?? ['status' => 'published'];
+    }
+
+    protected function getIndexItems($scopes = [], $forcePagination = false)
+    {
+        $items = parent::getIndexItems($scopes);
+        return $items->prepend(Group::getEveryoneGroup());
     }
 
 }

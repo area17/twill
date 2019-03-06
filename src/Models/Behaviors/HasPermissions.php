@@ -113,7 +113,7 @@ trait HasPermissions
             })->orWhereHas('roles', function ($query) {
                 $query->where('id', $this->role->id);
             })->orWhereHas('groups', function ($query) {
-                $query->whereIn('id', $this->groups->pluck('id'));
+                $query->whereIn('id', $this->groups()->pluck('id'));
             });
             return $permissions;
         }
