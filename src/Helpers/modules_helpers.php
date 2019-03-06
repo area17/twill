@@ -9,6 +9,13 @@ if (!function_exists('getModelByModuleName')) {
     }
 }
 
+if (!function_exists('getModuleNameByModel')) {
+    function getModuleNameByModel($model)
+    {
+        return str_plural(lcfirst(class_basename($model)));
+    }
+}
+
 if (!function_exists('getRepositoryByModuleName')) {
     function getRepositoryByModuleName($moduleName)
     {

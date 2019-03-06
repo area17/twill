@@ -48,7 +48,7 @@ trait HasPermissions
                 'permissionable_id' => $permissionableItem ? $permissionableItem->id : null,
             ]);
             if (!$this->permissionsByItem($permissionableItem)->pluck('name')->contains($name)) {
-                $this->permissions()->item()->save($permission);
+                $this->permissions()->moduleItem()->save($permission);
             }
         } else {
             abort(400, 'grant failed, permission not available on item');

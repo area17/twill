@@ -4,6 +4,7 @@ namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\Sortable;
+use A17\Twill\Models\Permission;
 use A17\Twill\Repositories\Behaviors\HandleDates;
 use DB;
 use Log;
@@ -16,8 +17,6 @@ abstract class ModuleRepository
     protected $model;
 
     protected $ignoreFieldsBeforeSave = [];
-
-    protected $countScope = [];
 
     public function get($with = [], $scopes = [], $orders = [], $perPage = 20, $forcePagination = false)
     {
@@ -39,17 +38,19 @@ abstract class ModuleRepository
 
     public function getCountByStatusSlug($slug, $scope = [])
     {
-        $this->countScope = $scope;
-
+        $query = $this->model->where($scope);
+        if (Permission::permissionableModules()->contains(getModuleNameByModel($this->model))) {
+            $query = $query->accessiable();
+        }
         switch ($slug) {
             case 'all':
-                return $this->getCountForAll();
+                return $query->count();
             case 'published':
-                return $this->getCountForPublished();
+                return $query->published()->count();
             case 'draft':
-                return $this->getCountForDraft();
+                return $query->draft()->count();
             case 'trash':
-                return $this->getCountForTrash();
+                return $query->onlyTrashed()->count();
         }
 
         foreach (class_uses_recursive(get_called_class()) as $trait) {
@@ -61,26 +62,6 @@ abstract class ModuleRepository
         }
 
         return 0;
-    }
-
-    public function getCountForAll()
-    {
-        return $this->model->where($this->countScope)->accessible()->count();
-    }
-
-    public function getCountForPublished()
-    {
-        return $this->model->where($this->countScope)->accessible()->published()->count();
-    }
-
-    public function getCountForDraft()
-    {
-        return $this->model->where($this->countScope)->accessible()->draft()->count();
-    }
-
-    public function getCountForTrash()
-    {
-        return $this->model->where($this->countScope)->accessible()->onlyTrashed()->count();
     }
 
     public function getById($id, $with = [], $withCount = [])

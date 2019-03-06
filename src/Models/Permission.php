@@ -68,7 +68,7 @@ class Permission extends BaseModel
     }
 
     // Item level permissions
-    public function scopeItem($query)
+    public function scopeModuleItem($query)
     {
         return $query->whereNotNull('permissionable_type')->whereNotNull('permissionable_id');
     }

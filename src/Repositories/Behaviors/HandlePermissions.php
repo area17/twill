@@ -146,10 +146,10 @@ trait HandlePermissions
 
     protected function renderUserPermissions($user, $fields)
     {
-        foreach ($user->permissions()->item() as $permission) {
-            $module = $permission->permissionable()->first();
-            $module_name = str_plural(lcfirst(class_basename($module)));
-            $fields[$module_name . '_' . $module->id . '_permission'] = '"' . $permission->name . '"';
+        foreach ($user->permissions()->moduleItem()->get() as $permission) {
+            $model = $permission->permissionable()->first();
+            $moduleName = getModuleNameByModel($model);
+            $fields[$moduleName . '_' . $module->id . '_permission'] = '"' . $permission->name . '"';
         }
         return $fields;
     }

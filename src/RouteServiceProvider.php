@@ -24,7 +24,7 @@ class RouteServiceProvider extends ServiceProvider
 
     public function map(Router $router)
     {
-        if (($patterns=config('twill.admin_route_patterns')) != null) {
+        if (($patterns = config('twill.admin_route_patterns')) != null) {
             if (is_array($patterns)) {
                 foreach ($patterns as $label => $pattern) {
                     Route::pattern($label, $pattern);

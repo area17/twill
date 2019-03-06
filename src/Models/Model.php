@@ -41,7 +41,7 @@ abstract class Model extends BaseModel implements TaggableInterface
             if ($allPermissions->whereNull('permissionable_id')->whereIn('name', Permission::available('module'))->exists()) {
                 return $query;
             }
-            $authorizedItemsIds = $allPermissions->item()->pluck('permissionable_id');
+            $authorizedItemsIds = $allPermissions->moduleItem()->pluck('permissionable_id');
             return $query->whereIn('id', $authorizedItemsIds);
         }
         return $query;
