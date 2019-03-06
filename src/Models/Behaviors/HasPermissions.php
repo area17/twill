@@ -105,18 +105,20 @@ trait HasPermissions
         return $this->permissions()->ofItem($item);
     }
 
-    // Gather all permissions that user has from himself, role and groups. Can be used for user model only.
     public function userAllPermissions()
     {
         if (get_class($this) === 'A17\Twill\Models\User') {
-            $permissions = $this->permissions()->union($this->role->permissions());
-            // Iterate the permissions that user's groups have;
-            $this->groups->each(function ($group) use ($permissions) {
-                $permissions = $permissions->union($group->permissions());
+            $permissions = Permission::whereHas('users', function ($query) {
+                $query->where('id', $this->id);
+            })->orWhereHas('roles', function ($query) {
+                $query->where('id', $this->role->id);
+            })->orWhereHas('groups', function ($query) {
+                $query->whereIn('id', $this->groups->pluck('id'));
             });
             return $permissions;
         }
         // Has no effects for other models
-        return $this;
+        abort(500, "userAllPermissions function only allowed on User model");
     }
+
 }
