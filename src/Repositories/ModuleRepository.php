@@ -65,22 +65,22 @@ abstract class ModuleRepository
 
     public function getCountForAll()
     {
-        return $this->model->where($this->countScope)->count();
+        return $this->model->where($this->countScope)->accessible()->count();
     }
 
     public function getCountForPublished()
     {
-        return $this->model->where($this->countScope)->published()->count();
+        return $this->model->where($this->countScope)->accessible()->published()->count();
     }
 
     public function getCountForDraft()
     {
-        return $this->model->where($this->countScope)->draft()->count();
+        return $this->model->where($this->countScope)->accessible()->draft()->count();
     }
 
     public function getCountForTrash()
     {
-        return $this->model->where($this->countScope)->onlyTrashed()->count();
+        return $this->model->where($this->countScope)->accessible()->onlyTrashed()->count();
     }
 
     public function getById($id, $with = [], $withCount = [])
