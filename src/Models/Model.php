@@ -42,7 +42,7 @@ abstract class Model extends BaseModel implements TaggableInterface
                 return $query;
             }
 
-            $authorizedItemsIds = $allPermissions->where('');
+            $authorizedItemsIds = $allPermissions->item();
             return $query->whereIn('id', $authorizedItemsIds);
 
         }

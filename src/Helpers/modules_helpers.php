@@ -2,10 +2,17 @@
 
 use Illuminate\Filesystem\Filesystem;
 
+if (!function_exists('getModelByModuleName')) {
+    function getModelByModuleName($moduleName)
+    {
+        return config('twill.namespace') . '\\Models\\' . studly_case(str_singular($moduleName));
+    }
+}
+
 if (!function_exists('getRepositoryByModuleName')) {
     function getRepositoryByModuleName($moduleName)
     {
-        return app(config('twill.namespace') . "\Repositories\\" . ucfirst(str_singular($moduleName)) . "Repository");
+        return getModelRepository(getModelByModuleName($moduleName));
     }
 }
 

@@ -47,7 +47,7 @@ trait HasPermissions
                 'permissionable_type' => $permissionableItem ? get_class($permissionableItem) : null,
                 'permissionable_id' => $permissionableItem ? $permissionableItem->id : null,
             ]);
-            if (!$this->permissionsNameByItem($permissionableItem)->contains($name)) {
+            if (!$this->permissionsByItem($permissionableItem)->pluck('name')->contains($name)) {
                 $this->permissions()->item()->save($permission);
             }
         } else {
@@ -95,24 +95,14 @@ trait HasPermissions
         }
     }
 
-    public function permissionsByItem($item)
-    {
-        return $this->permissions()->item()->where([
-            ['permissionable_type', get_class($item)],
-            ['permissionable_id', $item->id],
-        ]);
-    }
-
-    public function permissionsNameByItem($item)
-    {
-        return $this->permissionsByItem($item)->pluck('name');
-    }
-
-    // Filter all permissions that it's permissionable_type match the moduleName
     public function permissionsByModuleName($moduleName)
     {
-        $permissionableType = config('twill.namespace') . '\\Models\\' . studly_case(str_singular($moduleName));
-        return $this->permissions()->where('permissionable_type', $permissionableType);
+        return $this->permissions()->OfModuleName($moduleName);
+    }
+
+    public function permissionsByItem($item)
+    {
+        return $this->permissions()->OfItem($item);
     }
 
     // Gather all permissions that user has from himself, role and groups. Can be used for user model only.

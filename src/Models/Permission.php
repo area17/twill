@@ -37,16 +37,19 @@ class Permission extends BaseModel
         return $this->morphTo();
     }
 
+    // All users have this permission
     public function users()
     {
         return $this->belongsToMany('A17\Twill\Models\User', 'permission_twill_user', 'permission_id', 'twill_user_id');
     }
 
+    // All roles have this permission
     public function roles()
     {
         return $this->belongsToMany('A17\Twill\Models\Role', 'permission_role', 'permission_id', 'role_id');
     }
 
+    // All groups have this permission
     public function groups()
     {
         return $this->belongsToMany('A17\Twill\Models\Group', 'group_permission', 'permission_id', 'group_id');
@@ -66,4 +69,18 @@ class Permission extends BaseModel
     {
         return $query->whereNotNull('permissionable_type')->whereNotNull('permissionable_id');
     }
+
+    public function scopeOfItem($query, $item)
+    {
+        return $query->where([
+            ['permissionable_type', get_class($item)],
+            ['permissionable_id', $item->id],
+        ]);
+    }
+
+    public function scopeOfModuleName($query, $moduleName)
+    {
+        return $query->where('permissionable_type', getModelByModuleName($moduleName));
+    }
+
 }
