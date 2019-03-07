@@ -19,7 +19,7 @@ class Permission extends BaseModel
                 return ['edit-settings', 'edit-users', 'edit-user-role', 'edit-user-groups', 'manage-modules', 'access-media-library'];
                 break;
             case 'module':
-                return ['view-module', 'edit-module', 'manage-module'];
+                return ['access-module-list', 'view-module', 'edit-module', 'manage-module'];
                 break;
             case 'item':
                 return ['view-item', 'edit-item', 'manage-item'];

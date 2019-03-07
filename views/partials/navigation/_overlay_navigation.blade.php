@@ -6,7 +6,7 @@
 
                 <div class="headerMobile__list">
                     @foreach(config('twill-navigation') as $global_navigation_key => $global_navigation_element)
-                        @can($global_navigation_element['can'] ?? 'view-module', $global_navigation_key)
+                        @can($global_navigation_element['can'] ?? 'access-module-list', $global_navigation_key)
                             @if(isActiveNavigation($global_navigation_element, $global_navigation_key, $_global_active_navigation))
                                 <a class="s--on" href="{{ getNavigationUrl($global_navigation_element, $global_navigation_key) }}">{{ $global_navigation_element['title'] }}</a><br />
                             @else
@@ -31,7 +31,7 @@
 
     <button class="ham @if(isset($search) && $search) ham--search @endif" data-ham-btn>
         @foreach(config('twill-navigation') as $global_navigation_key => $global_navigation_element)
-            @can($global_navigation_element['can'] ?? 'view-module', $global_navigation_key)
+            @can($global_navigation_element['can'] ?? 'access-module-list', $global_navigation_key)
                 @if(isActiveNavigation($global_navigation_element, $global_navigation_key, $_global_active_navigation))
                     <span class="ham__label">{{ $global_navigation_element['title'] }}</span>
                 @endif

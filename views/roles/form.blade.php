@@ -42,6 +42,10 @@
             'placeholder' => 'Select a permission',
             'options' => [
                 [
+                    'value' => 'none',
+                    'label' => 'None'
+                ],
+                [
                     'value' => 'view-module',
                     'label' => 'View ' . $module_name
                 ],

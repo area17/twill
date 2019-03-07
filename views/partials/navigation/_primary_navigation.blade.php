@@ -27,7 +27,7 @@
         <div class="container">
             <ul class="nav__list">
                 @foreach($primaryNavElements as $primary_navigation_key => $primary_navigation_element)
-                    @can($primary_navigation_element['can'] ?? 'view-module', $primary_navigation_key)
+                    @can($primary_navigation_element['can'] ?? 'access-module-list', $primary_navigation_key)
                         @if(isActiveNavigation($primary_navigation_element, $primary_navigation_key, $_primary_active_navigation))
                             <li class="nav__item s--on">
                         @else

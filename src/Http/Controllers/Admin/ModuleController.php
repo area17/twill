@@ -175,6 +175,7 @@ abstract class ModuleController extends Controller
 
     public function index($parentModuleId = null)
     {
+        $this->authorize('access-module-list', $this->moduleName);
         $this->submodule = isset($parentModuleId);
         $this->submoduleParentId = $parentModuleId;
 
@@ -840,7 +841,7 @@ abstract class ModuleController extends Controller
             ];
             $option = array_key_exists($option, $customOptionNamesMapping) ? $customOptionNamesMapping[$option] : $option;
             $authorizableOptions = [
-                'list' => 'view-module',
+                'list' => 'access-module-list',
                 'create' => 'edit-module',
                 'edit' => 'edit-item',
                 'publish' => 'edit-item',

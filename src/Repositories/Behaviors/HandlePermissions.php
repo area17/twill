@@ -204,6 +204,8 @@ trait HandlePermissions
             $modulePermission = $role->permissions()->module()->ofModuleName($moduleName)->first();
             if ($modulePermission) {
                 $fields['module_' . $moduleName . '_permissions'] = '"' . $modulePermission->name . '"';
+            } else {
+                $fields['module_' . $moduleName . '_permissions'] = '"none"';
             }
         }
 

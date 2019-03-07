@@ -10,7 +10,7 @@
     $customForm = $customForm ?? false;
     $controlLanguagesPublication = $controlLanguagesPublication ?? true;
     $users = app()->make('A17\Twill\Repositories\UserRepository')->get();
-    $groups = app()->make('A17\Twill\Repositories\GroupRepository')->get();
+    $groups = app()->make('A17\Twill\Repositories\GroupRepository')->get()->prepend('A17\Twill\Models\Group'::getEveryoneGroup());
 @endphp
 
 @section('content')
@@ -99,8 +99,9 @@
                                 </a17-fieldset>
                                 <a17-fieldset title="Group Permissions" id="permissions">
                                     @foreach($groups as $group)
+                                        @php($group_id = $group->name === 'Everyone' ? 'everyone' : $group->id)
                                         @formField('checkbox', [
-                                            'name' => $group->id . '_group_authorized',
+                                            'name' => $group_id . '_group_authorized',
                                             'label' => $group->name
                                         ])
                                     @endforeach
