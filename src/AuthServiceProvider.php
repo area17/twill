@@ -43,7 +43,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('access-user-management', function ($user) {
-            return $user->can('edit-users') || $user->can('edit-user-roles') || $user->can('edit-user-groups');
+            return $user->can('edit-users') || $user->can('edit-user-role') || $user->can('edit-user-groups');
         });
 
         Gate::define('manage-modules', function ($user) {

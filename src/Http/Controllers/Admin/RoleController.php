@@ -31,7 +31,7 @@ class RoleController extends ModuleController
         parent::__construct($app, $request);
         $this->removeMiddleware('can:edit');
         $this->removeMiddleware('can:publish');
-        $this->middleware('can:access-user-management');
+        $this->middleware('can:edit-user-role');
     }
 
     protected function indexData($request)
@@ -42,12 +42,12 @@ class RoleController extends ModuleController
                 'users' => [
                     'title' => 'Users',
                     'module' => true,
-                    'can' => 'edit-user-role',
+                    'can' => 'edit-users',
                 ],
                 'groups' => [
                     'title' => 'Groups',
                     'module' => true,
-                    'can' => 'edit-user-role',
+                    'can' => 'edit-user-groups',
                 ],
                 'roles' => [
                     'title' => 'Roles',

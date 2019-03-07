@@ -74,8 +74,8 @@ trait HandlePermissions
     protected function handleRolePermissions($role, $fields)
     {
         if (isset($fields['general-permissions'])) {
-            foreach ($fields['general-permissions'] as $permissionName) {
-                if (in_array($permissionName, Permission::available('global'))) {
+            foreach (Permission::available('global') as $permissionName) {
+                if (in_array($permissionName, $fields['general-permissions'])) {
                     $role->grantGlobalPermission($permissionName);
                 } else {
                     $role->revokeGlobalPermission($permissionName);

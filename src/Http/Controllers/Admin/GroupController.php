@@ -31,7 +31,7 @@ class GroupController extends ModuleController
         parent::__construct($app, $request);
         $this->removeMiddleware('can:edit');
         $this->removeMiddleware('can:publish');
-        $this->middleware('can:access-user-management');
+        $this->middleware('can:edit-user-groups');
     }
 
     protected function indexData($request)

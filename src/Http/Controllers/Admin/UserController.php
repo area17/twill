@@ -54,6 +54,7 @@ class UserController extends ModuleController
         parent::__construct($app, $request);
         $this->removeMiddleware('can:edit');
         $this->removeMiddleware('can:publish');
+        $this->middleware('can:edit-users', ['except' => ['edit']]);
 
         if (config('twill.enabled.users-image')) {
             $this->indexColumns = [
