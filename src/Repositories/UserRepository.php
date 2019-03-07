@@ -5,13 +5,12 @@ namespace A17\Twill\Repositories;
 use A17\Twill\Models\Group;
 use A17\Twill\Models\User;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
-use A17\Twill\Repositories\Behaviors\HandlePermissions;
 use DB;
 use Password;
 
 class UserRepository extends ModuleRepository
 {
-    use HandleMedias, HandlePermissions;
+    use HandleMedias;
 
     public function __construct(User $model)
     {
