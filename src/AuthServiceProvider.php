@@ -72,12 +72,15 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('edit-module', function ($user, $moduleName) {
             return $user->can('manage-module', $moduleName)
-            || $user->permissions()->ofModuleName($moduleName)->whereNull('permissionable_id')->where('name', 'manage-module')->exists();
+            || $user->permissions()->module()->ofModuleName($moduleName)->where('name', 'manage-module')->exists();
         });
 
         Gate::define('manage-module', function ($user, $moduleName) {
+            if (!isPermissionableModule($moduleName)) {
+                return true;
+            }
             return $user->can('manage-modules')
-            || $user->permissions()->ofModuleName($moduleName)->whereNull('permissionable_id')->where('name', 'manage-module')->exists();
+            || $user->permissions()->module()->ofModuleName($moduleName)->where('name', 'manage-module')->exists();
         });
 
         /***
