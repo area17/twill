@@ -4,7 +4,6 @@ namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\Sortable;
-use A17\Twill\Models\Permission;
 use A17\Twill\Repositories\Behaviors\HandleDates;
 use A17\Twill\Repositories\Behaviors\HandlePermissions;
 use DB;
@@ -40,7 +39,7 @@ abstract class ModuleRepository
     public function getCountByStatusSlug($slug, $scope = [])
     {
         $query = $this->model->where($scope);
-        if (Permission::permissionableModules()->contains(getModuleNameByModel($this->model))) {
+        if (isPermissionableModule(getModuleNameByModel($this->model))) {
             $query = $query->accessible();
         }
         switch ($slug) {

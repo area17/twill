@@ -1,5 +1,6 @@
 <?php
 
+use A17\Twill\Models\Permission;
 use Illuminate\Filesystem\Filesystem;
 
 if (!function_exists('getModelByModuleName')) {
@@ -53,5 +54,12 @@ if (!function_exists('getAllModules')) {
         });
 
         return $modules;
+    }
+}
+
+if (!function_exists('isPermissionableModule')) {
+    function isPermissionableModule($moduleName)
+    {
+        return Permission::permissionableModules()->contains($moduleName);
     }
 }

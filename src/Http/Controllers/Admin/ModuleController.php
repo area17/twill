@@ -3,7 +3,6 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Helpers\FlashLevel;
-use A17\Twill\Models\Permission;
 use Auth;
 use Event;
 use Illuminate\Contracts\Foundation\Application;
@@ -571,7 +570,7 @@ abstract class ModuleController extends Controller
 
     protected function getIndexItems($scopes = [], $forcePagination = false)
     {
-        if (Permission::permissionableModules()->contains($this->moduleName)) {
+        if (isPermissionableModule($this->moduleName)) {
             $scopes = $scopes + ['accessible' => true];
         }
         return $this->transformIndexItems($this->repository->get(

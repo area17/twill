@@ -65,7 +65,7 @@
                         @endunless
                         
                         @php
-                            $showPermissionFieldset = isset($item) && \A17\Twill\Models\Permission::permissionableModules()->contains(str_plural(lcfirst(class_basename($item))));
+                            $showPermissionFieldset = isset($item) && isPermissionableModule(str_plural(lcfirst(class_basename($item))));
                         @endphp
 
                         @if($showPermissionFieldset)
