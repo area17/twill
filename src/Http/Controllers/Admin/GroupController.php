@@ -114,4 +114,13 @@ class GroupController extends ModuleController
         return $items->prepend(Group::getEveryoneGroup());
     }
 
+    protected function getBrowserItems($scopes = [])
+    {
+        // Exclude everyone group from browsers
+
+        return parent::getBrowserItems($scopes)->filter(function ($item) {
+            return $item->name !== Group::getEveryoneGroup()->name && $item->id != null;
+        })->values();
+    }
+
 }

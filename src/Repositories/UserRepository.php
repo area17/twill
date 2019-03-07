@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories;
 
+use A17\Twill\Models\Group;
 use A17\Twill\Models\User;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandlePermissions;
@@ -17,11 +18,21 @@ class UserRepository extends ModuleRepository
         $this->model = $model;
     }
 
-    public function getFormFields($object)
+    public function getFormFields($user)
     {
-        $fields = parent::getFormFields($object);
-        $fields['browsers']['groups'] = $this->getFormFieldsForBrowser($object, 'groups');
-
+        $fields = parent::getFormFields($user);
+        $fields['browsers']['groups'] = $this->getFormFieldsForBrowser($user, 'groups');
+        // Added everyone group to the beginning if the user's role included in everyone group
+        if ($user->role->in_everyone_group) {
+            $everyoneGroup = Group::getEveryoneGroup();
+            array_unshift($fields['browsers']['groups'], [
+                'id' => null,
+                'name' => $everyoneGroup->name,
+                'edit' => null,
+                "endpointType" => "A17\Twill\Models\Group",
+                "thumbnail" => "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+            ]);
+        }
         return $fields;
     }
 
@@ -56,12 +67,21 @@ class UserRepository extends ModuleRepository
         return $this->model->where('is_superadmin', '<>', true)->onlyTrashed()->count();
     }
 
+    public function prepareFieldsBeforeSave($user, $fields)
+    {
+        $fields = parent::prepareFieldsBeforeSave($user, $fields);
+        if ($user->role->in_everyone_group && isset($fields['browsers']['groups'])) {
+            $fields['browsers']['groups'] = array_filter($fields['browsers']['groups'], function ($group) {
+                return $group['id'] && $group['name'] !== 'Everyone';
+            });
+        }
+        return $fields;
+    }
+
     public function afterSave($user, $fields)
     {
         $this->sendWelcomeEmail($user);
 
-        // Init the groups browser on creating, avoid being overwritten
-        $fields['browsers']['groups'] = $this->getFormFieldsForBrowser($user, 'groups');
         $this->updateBrowser($user, $fields, 'groups');
         parent::afterSave($user, $fields);
     }

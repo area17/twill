@@ -43,7 +43,8 @@ class Group extends BaseModel
         $everyone_group->fill([
             'name' => 'Everyone',
             'description' => 'The default group contains all users in the system',
-            'can_delete' => false, 'published' => true,
+            'can_delete' => false,
+            'published' => true,
         ]);
         return $everyone_group;
     }
