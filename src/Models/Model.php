@@ -30,12 +30,8 @@ abstract class Model extends BaseModel implements TaggableInterface
 
     public function scopeAccessible($query)
     {
-        $permissionModels = Permission::permissionableModules()->map(function ($moduleName) {
-            return config('twill.namespace') . "\\Models\\" . studly_case(str_singular($moduleName));
-        });
         $model = get_class($query->getModel());
-        //The current model is an permission-enabled model
-        if ($permissionModels->contains($model)) {
+        if (isPermissionableModule(getModuleNameByModel($model)) && !Auth::user()->is_superadmin) {
             $allPermissions = Auth::user()->userAllPermissions()->ofModel($model);
             // If the user has any module permissions, or global manage all modules permissions, all items will be return
             if ((clone $allPermissions)->module()->whereIn('name', Permission::available('module'))->exists()) {
