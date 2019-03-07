@@ -42,7 +42,7 @@ class GroupController extends ModuleController
                 'users' => [
                     'title' => 'Users',
                     'module' => true,
-                    'can' => 'edit-user-groups',
+                    'can' => 'edit-users',
                 ],
                 'groups' => [
                     'title' => 'Groups',
@@ -53,7 +53,7 @@ class GroupController extends ModuleController
                 'roles' => [
                     'title' => 'Roles',
                     'module' => true,
-                    'can' => 'edit-user-groups',
+                    'can' => 'edit-user-role',
                 ],
             ],
             'customPublishedLabel' => 'Enabled',
@@ -77,7 +77,7 @@ class GroupController extends ModuleController
                 'users' => [
                     'title' => 'Users',
                     'module' => true,
-                    'can' => 'edit-user-groups',
+                    'can' => 'edit-user',
                 ],
                 'groups' => [
                     'title' => 'Groups',
@@ -88,7 +88,7 @@ class GroupController extends ModuleController
                 'roles' => [
                     'title' => 'Roles',
                     'module' => true,
-                    'can' => 'edit-user-groups',
+                    'can' => 'edit-user-roles',
                 ],
             ],
             'customPublishedLabel' => 'Enabled',

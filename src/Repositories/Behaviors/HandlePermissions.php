@@ -11,6 +11,10 @@ trait HandlePermissions
 
     public function getFormFieldsHandlePermissions($object, $fields)
     {
+        if (!Permission::permissionableModules()->contains(getModuleNameByModel($this->model))) {
+            return $fields;
+        }
+
         //User form page
         if (get_class($object) === "A17\Twill\Models\User") {
             $fields = $this->renderUserPermissions($object, $fields);
@@ -33,6 +37,9 @@ trait HandlePermissions
 
     public function afterSaveHandlePermissions($object, $fields)
     {
+        if (!Permission::permissionableModules()->contains(getModuleNameByModel($this->model))) {
+            return;
+        }
         // User form page
         if (get_class($object) === "A17\Twill\Models\User") {
             $this->handleUserPermissions($object, $fields);

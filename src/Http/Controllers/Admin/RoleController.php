@@ -81,18 +81,18 @@ class RoleController extends ModuleController
                 'users' => [
                     'title' => 'Users',
                     'module' => true,
-                    'can' => 'edit-user-role',
+                    'can' => 'edit-users',
                 ],
                 'groups' => [
                     'title' => 'Groups',
                     'module' => true,
-                    'can' => 'edit-user-role',
+                    'can' => 'edit-user-groups',
                 ],
                 'roles' => [
                     'title' => 'Roles',
                     'module' => true,
                     'active' => true,
-                    'can' => 'edit-user-role',
+                    'can' => 'edit-user-roles',
                 ],
             ],
             'customPublishedLabel' => 'Enabled',

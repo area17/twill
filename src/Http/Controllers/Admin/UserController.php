@@ -121,12 +121,12 @@ class UserController extends ModuleController
                 'groups' => [
                     'title' => 'Groups',
                     'module' => true,
-                    'can' => 'edit-users',
+                    'can' => 'edit-user-groups',
                 ],
                 'roles' => [
                     'title' => 'Roles',
                     'module' => true,
-                    'can' => 'edit-users',
+                    'can' => 'edit-user-roles',
                 ],
             ],
             'customPublishedLabel' => 'Enabled',
