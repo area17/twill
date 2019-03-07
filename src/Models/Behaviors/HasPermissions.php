@@ -8,30 +8,39 @@ trait HasPermissions
 {
     public function grantGlobalPermission($name)
     {
-        $available_permissions = Permission::available('global');
-        if (in_array($name, $available_permissions)) {
-            $permission = Permission::firstOrCreate([
-                'name' => $name,
-            ]);
-            if (!$this->permissions()->global()->where('name', $name)->exists()) {
-                $this->permissions()->save($permission);
-            }
-        } else {
-            abort(400, 'grant failed, permission not available on global');
+        $this->checkPermissionAvailable($name, 'global');
+        $permission = Permission::firstOrCreate([
+            'name' => $name,
+        ]);
+        //check the existence to avoid duplicate records on pivot table
+        if (!$this->permissions()->global()->where('name', $name)->exists()) {
+            $this->permissions()->save($permission);
         }
+    }
+
+    public function revokeGlobalPermission($name)
+    {
+        $this->checkPermissionAvailable($name, 'global');
+        $this->permissions()->global()->detach(Permission::where('name', $name)->first()->id);
     }
 
     public function grantModulePermission($name, $permissionableType)
     {
-        $available_permissions = Permission::available('module');
-        if (in_array($name, $available_permissions)) {
-            $permission = Permission::firstOrCreate([
-                'name' => $name,
-                'permissionable_type' => $permissionableType,
-            ]);
-            $this->permissions()->save($permission);
-        } else {
-            abort(400, 'grant failed, permission not available on module');
+        $this->checkPermissionAvailable($name, 'module');
+        $permission = Permission::firstOrCreate([
+            'name' => $name,
+            'permissionable_type' => $permissionableType,
+        ]);
+        $this->permissions()->save($permission);
+
+    }
+
+    public function revokeModulePermission($name, $permissionableType)
+    {
+        $this->checkPermissionAvailable($name, 'module');
+        $permission = Permission::ofModel($permissionableType)->where('name', $name)->first();
+        if ($permission) {
+            $this->permissions()->module()->detach($permission->id);
         }
     }
 
@@ -40,44 +49,25 @@ trait HasPermissions
     // If the object already have this permission, skip it
     public function grantModuleItemPermission($name, $permissionableItem)
     {
-        $available_permissions = Permission::available('item');
-        if (in_array($name, $available_permissions)) {
-            $permission = Permission::firstOrCreate([
-                'name' => $name,
-                'permissionable_type' => $permissionableItem ? get_class($permissionableItem) : null,
-                'permissionable_id' => $permissionableItem ? $permissionableItem->id : null,
-            ]);
-            if (!$this->permissions()->ofItem($permissionableItem)->pluck('name')->contains($name)) {
-                $this->permissions()->moduleItem()->save($permission);
-            }
-        } else {
-            abort(400, 'grant failed, permission not available on item');
-        }
-    }
-
-    public function revokeGlobalPermission($name)
-    {
-        $available_permissions = Permission::available('global');
-        if (in_array($name, $available_permissions)) {
-            $this->permissions()->global()->detach(Permission::where('name', $name)->first()->id);
-        } else {
-            abort(400, 'revoke failed, permission not available on global');
-        }
-    }
-
-    public function revokeModulePermission($name, $permissionableType)
-    {
-        $available_permissions = Permission::available('module');
-        if (in_array($name, $available_permissions)) {
-
-        } else {
-            abort(400, 'revoke failed, permission not available on module');
+        $this->checkPermissionAvailable($name, 'item');
+        $permission = Permission::firstOrCreate([
+            'name' => $name,
+            'permissionable_type' => $permissionableItem ? get_class($permissionableItem) : null,
+            'permissionable_id' => $permissionableItem ? $permissionableItem->id : null,
+        ]);
+        //check the existence to avoid duplicate records on pivot table
+        if (!$this->permissions()->ofItem($permissionableItem)->pluck('name')->contains($name)) {
+            $this->permissions()->moduleItem()->save($permission);
         }
     }
 
     public function revokeModuleItemPermission($name, $permissionableItem)
     {
-        $this->permissions()->ofItem($permissionableItem)->detach(Permission::where('name', $name)->first()->id);
+        $this->checkPermissionAvailable($name, 'item');
+        $permission = Permission::ofItem($permissionableItem)->where('name', $name)->first();
+        if ($permission) {
+            $this->permissions()->ofItem($permissionableItem)->detach($permission->id);
+        }
     }
 
     public function revokeModuleItemAllPermissions($permissionableItem)
@@ -109,6 +99,13 @@ trait HasPermissions
         }
         // Has no effects for other models
         abort(500, "userAllPermissions function only allowed on User model");
+    }
+
+    protected function checkPermissionAvailable($name, $scope)
+    {
+        if (!in_array($name, Permission::available($scope))) {
+            abort(400, 'operation failed, permission ' . $name . ' not available on ' . $scope);
+        }
     }
 
 }

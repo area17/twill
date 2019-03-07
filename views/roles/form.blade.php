@@ -4,7 +4,7 @@
 
 @section('contentFields')
     @formField('checkboxes', [
-        'name' => 'general-permissions',
+        'name' => 'general_permissions',
         'label' => 'General permissions',
         'inline' => false,
         'options' => [
@@ -36,29 +36,21 @@
     ])
 
     @foreach($permission_modules as $module_name => $module_items)
-        @formField('checkboxes', [
-            'name' => $module_name . '-permission',
+        @formField('select', [
+            'name' => 'module_' . $module_name . '_permissions',
             'label' => ucfirst($module_name) . ' permissions',
-            'inline' => false,
+            'placeholder' => 'Select a permission',
             'options' => [
                 [
-                    'value' => 'view ' . $module_name,
+                    'value' => 'view-module',
                     'label' => 'View ' . $module_name
                 ],
                 [
-                    'value' => 'create ' . $module_name,
-                    'label' => 'Create ' . $module_name
-                ],
-                [
-                    'value' => 'destroy ' . $module_name,
-                    'label' => 'Destroy ' . $module_name
-                ],
-                [
-                    'value' => 'edit ' . $module_name,
+                    'value' => 'edit-module',
                     'label' => 'Edit ' . $module_name
                 ],
                 [
-                    'value' => 'manage ' . $module_name,
+                    'value' => 'manage-module',
                     'label' => 'Manage ' . $module_name
                 ]
             ]

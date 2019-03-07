@@ -72,12 +72,25 @@ trait HandlePermissions
     // After save handle permissions form fields on role form
     protected function handleRolePermissions($role, $fields)
     {
-        if (isset($fields['general-permissions'])) {
+        if (isset($fields['general_permissions'])) {
             foreach (Permission::available('global') as $permissionName) {
-                if (in_array($permissionName, $fields['general-permissions'])) {
+                if (in_array($permissionName, $fields['general_permissions'])) {
                     $role->grantGlobalPermission($permissionName);
                 } else {
                     $role->revokeGlobalPermission($permissionName);
+                }
+            }
+        }
+
+        foreach ($fields as $key => $value) {
+            if (starts_with($key, 'module_') && ends_with($key, '_permissions')) {
+                $model = getModelByModuleName(explode('_', $key)[1]);
+                foreach (Permission::available('module') as $permissionName) {
+                    if ($permissionName === $value) {
+                        $role->grantModulePermission($permissionName, $model);
+                    } else {
+                        $role->revokeModulePermission($permissionName, $model);
+                    }
                 }
             }
         }
@@ -182,10 +195,18 @@ trait HandlePermissions
     protected function renderRolePermissions($role, $fields)
     {
         $role->permissions()->get();
-        $fields["general-permissions"] = $role->permissions()->where([
-            "permissionable_type" => null,
-            "permissionable_id" => null,
-        ])->pluck("name")->toArray();
+        $fields['general_permissions'] = $role->permissions()->where([
+            'permissionable_type' => null,
+            'permissionable_id' => null,
+        ])->pluck('name')->toArray();
+
+        foreach (Permission::permissionableModules() as $moduleName) {
+            $modulePermission = $role->permissions()->module()->ofModuleName($moduleName)->first();
+            if ($modulePermission) {
+                $fields['module_' . $moduleName . '_permissions'] = '"' . $modulePermission->name . '"';
+            }
+        }
+
         $fields['groups'] = $role->in_everyone_group ? ['include-in-everyone'] : [];
         return $fields;
     }
