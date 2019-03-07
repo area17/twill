@@ -7,8 +7,6 @@
                         $gate = $global_navigation_key === 'settings' ? 
                         'edit-settings' : 
                         ($global_navigation_element['can'] ?? 'access-module-list');
-                        dump($global_navigation_key);    
-                        dump($gate);
                     @endphp
                     @can($gate, $global_navigation_key )
                         @if(isActiveNavigation($global_navigation_element, $global_navigation_key, $_global_active_navigation))

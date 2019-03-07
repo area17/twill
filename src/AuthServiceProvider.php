@@ -65,7 +65,8 @@ class AuthServiceProvider extends ServiceProvider
          ***/
 
         Gate::define('access-module-list', function ($user, $moduleName) {
-            return $user->permissions()->ofModuleName($moduleName)->exists();
+            return $user->can('view-module', $moduleName)
+            || $user->permissions()->ofModuleName($moduleName)->exists();
         });
 
         // The gate of accessing module list page,

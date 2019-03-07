@@ -23,7 +23,7 @@ trait HandlePermissions
             $fields = $this->renderRolePermissions($object, $fields);
         }
         // Module item form page
-        elseif (isPermissionableModule(class_basename($object))) {
+        elseif (isPermissionableModule(getModuleNameByModel(get_class($object)))) {
             $fields = $this->renderModulePermissions($object, $fields);
         }
 
@@ -179,7 +179,7 @@ trait HandlePermissions
         }]);
 
         foreach ($users as $user) {
-            $permission = $user->permissions->first();
+            $permission = $user->permissions()->moduleItem()->ofItem($object)->first();
             $fields['user_' . $user->id . '_permission'] = $permission ? "'" . $permission->name . "'" : "";
         }
 
