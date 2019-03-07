@@ -16,7 +16,7 @@
     <td class="browserItem__cell browserItem__cell--type" v-if="currentItem.hasOwnProperty('endpointType') && showType">
       <span>{{ currentItem.endpointType }}</span>
     </td>
-    <td class="browserItem__cell browserItem__cell--icon">
+    <td class="browserItem__cell browserItem__cell--icon" v-if="deletable">
       <a17-button class="bucket__action" icon="close" @click="deleteItem()"><span v-svg symbol="close_icon"></span></a17-button>
     </td>
   </tr>
@@ -57,6 +57,9 @@
     computed: {
       currentItem: function () {
         return this.item
+      },
+      deletable: function () {
+        return !this.currentItem.hasOwnProperty('deletable') || this.currentItem.deletable === true
       }
     },
     methods: {

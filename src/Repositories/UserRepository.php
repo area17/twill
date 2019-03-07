@@ -31,6 +31,7 @@ class UserRepository extends ModuleRepository
                 'edit' => null,
                 "endpointType" => "A17\Twill\Models\Group",
                 "thumbnail" => "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+                "deletable" => false,
             ]);
         }
         return $fields;
