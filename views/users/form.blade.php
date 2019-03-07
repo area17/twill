@@ -48,6 +48,7 @@
       'moduleName' => 'groups',
       'name' => 'groups',
       'label' => 'Groups',
+      'sortable' => false,
       'max' => 100
   ])
 @stop
