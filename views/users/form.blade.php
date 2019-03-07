@@ -3,10 +3,6 @@
     'editModalTitle' => 'Edit user name'
 ])
 
-@php
-    $isSuperAdmin = isset($item->role) ? $item->is_superadmin : false;
-@endphp
-
 @section('contentFields')
     @formField('input', [
         'name' => 'email',
@@ -14,14 +10,14 @@
     ])
 
     @can('edit-user-role')
-        @if(!$isSuperAdmin && ($item->id !== $currentUser->id))
+        @unless($item->is_superadmin)
             @formField('select', [
                 'name' => "role_id",
                 'label' => "Role",
                 'options' => $roleList,
                 'placeholder' => 'Select a role'
             ])
-        @endif
+        @endunless
     @endcan
 
     @if(config('twill.enabled.users-image'))
@@ -44,48 +40,52 @@
         ])
     @endif
 
-    @formField('browser', [
-      'moduleName' => 'groups',
-      'name' => 'groups',
-      'label' => 'Groups',
-      'sortable' => false,
-      'max' => 100
-  ])
+    @unless($item->is_superadmin)
+      @formField('browser', [
+        'moduleName' => 'groups',
+        'name' => 'groups',
+        'label' => 'Groups',
+        'sortable' => false,
+        'max' => 100
+      ])
+    @endunless
 @stop
 
 @can('edit-users')
-  @section('fieldsets')
-      @foreach($permission_modules as $module_name => $module_items)
-          <a17-fieldset title='{{ ucfirst($module_name) . " Permissions"}}' id='{{ $module_name }}'>
-              <h2>{{ ucfirst($module_name) .' permission' }}</h2>
-              @foreach ($module_items as $module_item)
-                  @formField('select', [
-                      'name' => $module_name . '_' . $module_item->id . '_permission',
-                      'label' => $module_item->title,
-                      'unpack' => true,
-                      'options' => [
-                          [
-                              'value' => '',
-                              'label' => 'None' 
-                          ],
-                          [
-                              'value' => 'view-item',
-                              'label' => 'View'
-                          ],
-                          [
-                              'value' => 'edit-item',
-                              'label' => 'Edit'
-                          ],
-                          [
-                              'value' => 'manage-item',
-                              'label' => 'Manage'
-                          ],
-                      ]
-                  ])
-              @endforeach
-          </a17-fieldset>
-      @endforeach
-  @stop
+  @unless($item->is_superadmin)
+    @section('fieldsets')
+        @foreach($permission_modules as $module_name => $module_items)
+            <a17-fieldset title='{{ ucfirst($module_name) . " Permissions"}}' id='{{ $module_name }}'>
+                <h2>{{ ucfirst($module_name) .' permission' }}</h2>
+                @foreach ($module_items as $module_item)
+                    @formField('select', [
+                        'name' => $module_name . '_' . $module_item->id . '_permission',
+                        'label' => $module_item->title,
+                        'unpack' => true,
+                        'options' => [
+                            [
+                                'value' => '',
+                                'label' => 'None' 
+                            ],
+                            [
+                                'value' => 'view-item',
+                                'label' => 'View'
+                            ],
+                            [
+                                'value' => 'edit-item',
+                                'label' => 'Edit'
+                            ],
+                            [
+                                'value' => 'manage-item',
+                                'label' => 'Manage'
+                            ],
+                        ]
+                    ])
+                @endforeach
+            </a17-fieldset>
+        @endforeach
+    @stop
+  @endunless
 @endcan
 
 @push('vuexStore')

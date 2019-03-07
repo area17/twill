@@ -20,6 +20,11 @@ class UserRepository extends ModuleRepository
     public function getFormFields($user)
     {
         $fields = parent::getFormFields($user);
+
+        if ($user->is_superadmin) {
+            return $fields;
+        }
+
         $fields['browsers']['groups'] = $this->getFormFieldsForBrowser($user, 'groups');
         // Added everyone group to the beginning if the user's role included in everyone group
         if ($user->role->in_everyone_group) {

@@ -52,7 +52,7 @@ class UserController extends ModuleController
     public function __construct(Application $app, Request $request)
     {
         parent::__construct($app, $request);
-        $this->middleware('can:edit-users', ['except' => ['edit']]);
+        $this->middleware('can:edit-users', ['except' => ['edit', 'update']]);
 
         if (config('twill.enabled.users-image')) {
             $this->indexColumns = [
@@ -185,5 +185,13 @@ class UserController extends ModuleController
             $this->authorize('edit-users');
         }
         return parent::edit($id, $submoduleId);
+    }
+
+    public function update($id, $submoduleId = null)
+    {
+        if ($id !== (string) $this->user->id) {
+            $this->authorize('edit-users');
+        }
+        return parent::update($id, $submoduleId);
     }
 }
