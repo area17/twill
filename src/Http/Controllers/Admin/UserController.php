@@ -52,8 +52,6 @@ class UserController extends ModuleController
     public function __construct(Application $app, Request $request)
     {
         parent::__construct($app, $request);
-        $this->removeMiddleware('can:edit');
-        $this->removeMiddleware('can:publish');
         $this->middleware('can:edit-users', ['except' => ['edit']]);
 
         if (config('twill.enabled.users-image')) {
@@ -126,7 +124,7 @@ class UserController extends ModuleController
                 'roles' => [
                     'title' => 'Roles',
                     'module' => true,
-                    'can' => 'edit-user-roles',
+                    'can' => 'edit-user-role',
                 ],
             ],
             'customPublishedLabel' => 'Enabled',
@@ -176,8 +174,16 @@ class UserController extends ModuleController
 
     protected function indexItemData($item)
     {
-        $canEdit = $this->user->can('edit-users') || $this->user->id === $item->id;
+        $canEdit = $this->user->can('edit-users');
 
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
+    }
+
+    public function edit($id, $submoduleId = null)
+    {
+        if ($id !== (string) $this->user->id) {
+            $this->authorize('edit-users');
+        }
+        return parent::edit($id, $submoduleId);
     }
 }

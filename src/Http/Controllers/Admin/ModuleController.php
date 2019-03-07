@@ -245,6 +245,9 @@ abstract class ModuleController extends Controller
         $this->submodule = isset($submoduleId);
         $this->submoduleParentId = $id;
 
+        $item = $this->repository->getById($submoduleId ?? $id);
+        $this->authorize('edit-item', $item);
+
         if ($this->getIndexOption('editInModal')) {
             return $this->request->ajax()
             ? response()->json($this->modalFormData($submodule ?? $id))

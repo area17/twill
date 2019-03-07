@@ -114,7 +114,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('manage-item', function ($user, $item) {
-            return $user->can('manage-modules')
+            return $user->can('manage-module', getModuleNameByModel(get_class($item)))
             || $user->permissions()->ofItem($item)->where('name', 'manage-item')->exists()
             || $user->groups()->whereHas('permissions', function ($query) use ($item) {
                 $query->where([

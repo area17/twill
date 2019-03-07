@@ -29,8 +29,6 @@ class RoleController extends ModuleController
     public function __construct(Application $app, Request $request)
     {
         parent::__construct($app, $request);
-        $this->removeMiddleware('can:edit');
-        $this->removeMiddleware('can:publish');
         $this->middleware('can:edit-user-role');
     }
 
