@@ -11,6 +11,7 @@ class SettingController extends Controller
     {
         parent::__construct();
         $this->settings = $settings;
+        $this->middleware('can:edit-settings');
     }
 
     public function index($section)

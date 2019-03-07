@@ -27,7 +27,7 @@ class AuthServiceProvider extends ServiceProvider
          ***/
 
         Gate::define('edit-settings', function ($user) {
-            return false;
+            return $user->role->permissions()->global()->where('name', 'edit-settings')->exists();
         });
 
         Gate::define('edit-users', function ($user) {
@@ -67,17 +67,17 @@ class AuthServiceProvider extends ServiceProvider
         // The gate of access module list page.
         Gate::define('view-modules', function ($user, $moduleName) {
             return $user->can('edit-module', $moduleName)
-            || $user->permissionsByModuleName($moduleName)->exists();
+            || $user->permissions()->ofModuleName($moduleName)->exists();
         });
 
         Gate::define('edit-module', function ($user, $moduleName) {
             return $user->can('manage-module', $moduleName)
-            || $user->permissionsByModuleName($moduleName)->whereNull('permissionable_id')->where('name', 'manage-module')->exists();
+            || $user->permissions()->ofModuleName($moduleName)->whereNull('permissionable_id')->where('name', 'manage-module')->exists();
         });
 
         Gate::define('manage-module', function ($user, $moduleName) {
             return $user->can('manage-modules')
-            || $user->permissionsByModuleName($moduleName)->whereNull('permissionable_id')->where('name', 'manage-module')->exists();
+            || $user->permissions()->ofModuleName($moduleName)->whereNull('permissionable_id')->where('name', 'manage-module')->exists();
         });
 
         /***
@@ -88,7 +88,7 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('view-item', function ($user, $item) {
             return $user->can('edit-item', $item)
-            || $user->permissionsByItem($item)->where('name', 'view-item')->exists()
+            || $user->permissions()->ofItem($item)->where('name', 'view-item')->exists()
             || $user->groups()->whereHas('permissions', function ($query) use ($item) {
                 $query->where([
                     ['permissionable_type', get_class($item)],
@@ -100,7 +100,7 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('edit-item', function ($user, $item) {
             return $user->can('manage-item', $item)
-            || $user->permissionsByItem($item)->where('name', 'edit-item')->exists()
+            || $user->permissions()->ofItem($item)->where('name', 'edit-item')->exists()
             || $user->groups()->whereHas('permissions', function ($query) use ($item) {
                 $query->where([
                     ['permissionable_type', get_class($item)],
@@ -112,7 +112,7 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('manage-item', function ($user, $item) {
             return $user->can('manage-modules')
-            || $user->permissionsByItem($item)->where('name', 'manage-item')->exists()
+            || $user->permissions()->ofItem($item)->where('name', 'manage-item')->exists()
             || $user->groups()->whereHas('permissions', function ($query) use ($item) {
                 $query->where([
                     ['permissionable_type', get_class($item)],

@@ -47,7 +47,7 @@ trait HasPermissions
                 'permissionable_type' => $permissionableItem ? get_class($permissionableItem) : null,
                 'permissionable_id' => $permissionableItem ? $permissionableItem->id : null,
             ]);
-            if (!$this->permissionsByItem($permissionableItem)->pluck('name')->contains($name)) {
+            if (!$this->permissions()->ofItem($permissionableItem)->pluck('name')->contains($name)) {
                 $this->permissions()->moduleItem()->save($permission);
             }
         } else {
@@ -77,12 +77,12 @@ trait HasPermissions
 
     public function revokeModuleItemPermission($name, $permissionableItem)
     {
-        $this->permissionsByItem($permissionableItem)->detach(Permission::where('name', $name)->first()->id);
+        $this->permissions()->ofItem($permissionableItem)->detach(Permission::where('name', $name)->first()->id);
     }
 
     public function revokeModuleItemAllPermissions($permissionableItem)
     {
-        $this->permissionsByItem($permissionableItem)->detach();
+        $this->permissions()->ofItem($permissionableItem)->detach();
     }
 
     public function permissions()
@@ -93,16 +93,6 @@ trait HasPermissions
         } else {
             return $this->belongsToMany('A17\Twill\Models\Permission');
         }
-    }
-
-    public function permissionsByModuleName($moduleName)
-    {
-        return $this->permissions()->ofModuleName($moduleName);
-    }
-
-    public function permissionsByItem($item)
-    {
-        return $this->permissions()->ofItem($item);
     }
 
     public function userAllPermissions()

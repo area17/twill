@@ -137,7 +137,7 @@ trait HandlePermissions
     //             }
     //             // Group unchecked, revoke all users who have view permissions to none.
     //             elseif (!$value && $user->permissionNameByItem($object) === "view") {
-    //                 $user->permissionsByItem($object)->delete();
+    //                 $user->permissions()->ofItem($object)->delete();
     //             }
     //         }
     //     }

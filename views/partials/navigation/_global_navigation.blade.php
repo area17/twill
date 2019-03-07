@@ -3,7 +3,7 @@
         @if(!empty(config('twill-navigation')))
             <ul class="header__items">
                 @foreach(config('twill-navigation') as $global_navigation_key => $global_navigation_element)
-                    @can($global_navigation_element['can'] ?? 'view-modules', $global_navigation_key)
+                    @can($global_navigation_key === 'settings' ? 'edit-settings' : ($global_navigation_element['can'] ?? 'view-modules'), $global_navigation_key )
                         @if(isActiveNavigation($global_navigation_element, $global_navigation_key, $_global_active_navigation))
                             <li class="header__item s--on">
                         @else
