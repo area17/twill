@@ -109,15 +109,15 @@ trait HandleRevisions
         $object->setRelation($relationship, $repeaterCollection);
     }
 
-    public function getCountForMine()
+    public function getCountForMine($scope)
     {
-        return $this->model->where($this->countScope)->mine()->accessible()->count();
+        return $this->model->where($scope)->mine()->accessible()->count();
     }
 
-    public function getCountByStatusSlugHandleRevisions($slug)
+    public function getCountByStatusSlugHandleRevisions($slug, $scope)
     {
         if ($slug === 'mine') {
-            return $this->getCountForMine();
+            return $this->getCountForMine($scope);
         }
 
         return false;

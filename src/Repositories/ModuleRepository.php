@@ -55,7 +55,7 @@ abstract class ModuleRepository
 
         foreach (class_uses_recursive(get_called_class()) as $trait) {
             if (method_exists(get_called_class(), $method = 'getCountByStatusSlug' . class_basename($trait))) {
-                if ($count = $this->$method($slug)) {
+                if ($count = $this->$method($slug, $scope)) {
                     return $count;
                 }
             }
