@@ -72,12 +72,12 @@ class AuthServiceProvider extends ServiceProvider
         // The gate of accessing module list page,
         Gate::define('view-module', function ($user, $moduleName) {
             return $user->can('edit-module', $moduleName)
-            || $user->permissions()->ofModuleName($moduleName)->where('name', 'view-module')->exists();
+            || $user->role->permissions()->ofModuleName($moduleName)->where('name', 'view-module')->exists();
         });
 
         Gate::define('edit-module', function ($user, $moduleName) {
             return $user->can('manage-module', $moduleName)
-            || $user->permissions()->module()->ofModuleName($moduleName)->where('name', 'manage-module')->exists();
+            || $user->role->permissions()->module()->ofModuleName($moduleName)->where('name', 'manage-module')->exists();
         });
 
         Gate::define('manage-module', function ($user, $moduleName) {
@@ -85,7 +85,7 @@ class AuthServiceProvider extends ServiceProvider
                 return true;
             }
             return $user->can('manage-modules')
-            || $user->permissions()->module()->ofModuleName($moduleName)->where('name', 'manage-module')->exists();
+            || $user->role->permissions()->module()->ofModuleName($moduleName)->where('name', 'manage-module')->exists();
         });
 
         /***

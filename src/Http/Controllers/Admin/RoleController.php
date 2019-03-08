@@ -90,7 +90,7 @@ class RoleController extends ModuleController
                     'title' => 'Roles',
                     'module' => true,
                     'active' => true,
-                    'can' => 'edit-user-roles',
+                    'can' => 'edit-user-role',
                 ],
             ],
             'customPublishedLabel' => 'Enabled',
