@@ -45,7 +45,7 @@ trait HandlePermissions
             $this->handleRolePermissions($object, $fields);
         }
         // Module item form page
-        elseif (isPermissionableModule(class_basename($object))) {
+        elseif (isPermissionableModule(getModuleNameByModel(get_class($object)))) {
             $this->handleModulePermissions($object, $fields);
         }
     }
@@ -120,9 +120,9 @@ trait HandlePermissions
                 }
             }
             // Handle group permissions
-            elseif (ends_with($key, '_group_authorized')) {
-                $group = app()->make(GroupRepository::class)->getById(explode('_', $key)[0]);
-            }
+            // elseif (ends_with($key, '_group_authorized')) {
+            //     $group = app()->make(GroupRepository::class)->getById(explode('_', $key)[0]);
+            // }
         }
     }
 

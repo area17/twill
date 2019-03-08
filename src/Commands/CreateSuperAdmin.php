@@ -22,13 +22,15 @@ class CreateSuperAdmin extends Command
         $this->info("Let's create a superadmin account!");
         $email = $this->setEmail();
         $password = $this->setPassword();
-        User::create([
+        $user = new User;
+        $user->fill([
             'name' => "Admin",
             'email' => $email,
             'password' => bcrypt($password),
             'published' => true,
-            'is_superadmin' => true,
         ]);
+        $user->is_superadmin = true;
+        $user->save();
         $this->info("Your account has been created");
     }
 
