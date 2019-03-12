@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\Twill\Http\Controllers\Admin;
+namespace Sb4yd3e\Twill\Http\Controllers\Admin;
 
-use A17\Twill\Exceptions\Handler as TwillHandler;
+use Sb4yd3e\Twill\Exceptions\Handler as TwillHandler;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;

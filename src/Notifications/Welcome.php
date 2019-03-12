@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Notifications;
+namespace Sb4yd3e\Twill\Notifications;
 
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;

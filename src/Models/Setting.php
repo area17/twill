@@ -1,10 +1,10 @@
 <?php
 
-namespace A17\Twill\Models;
+namespace Sb4yd3e\Twill\Models;
 
-use A17\Twill\Models\Behaviors\HasTranslation;
-use A17\Twill\Models\Behaviors\HasMedias;
-use A17\Twill\Models\Model;
+use Sb4yd3e\Twill\Models\Behaviors\HasTranslation;
+use Sb4yd3e\Twill\Models\Behaviors\HasMedias;
+use Sb4yd3e\Twill\Models\Model;
 
 class Setting extends Model
 {
@@ -25,6 +25,6 @@ class Setting extends Model
 
     public function getTranslationModelNameDefault()
     {
-        return "A17\Twill\Models\Translations\SettingTranslation";
+        return "Sb4yd3e\Twill\Models\Translations\SettingTranslation";
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Models;
+namespace Sb4yd3e\Twill\Models;
 
 use Illuminate\Database\Eloquent\Model as BaseModel;
 

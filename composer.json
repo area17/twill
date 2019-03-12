@@ -68,13 +68,13 @@
   },
   "autoload": {
     "psr-4": {
-      "A17\\Twill\\": "src/"
+      "Sb4yd3e\\Twill\\": "src/"
     }
   },
   "extra": {
     "laravel": {
         "providers": [
-            "A17\\Twill\\TwillServiceProvider"
+            "Sb4yd3e\\Twill\\TwillServiceProvider"
         ]
     }
   },

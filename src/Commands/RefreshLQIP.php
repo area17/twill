@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\Twill\Commands;
+namespace Sb4yd3e\Twill\Commands;
 
-use A17\Twill\Models\Media;
+use Sb4yd3e\Twill\Models\Media;
 use DB;
 use Illuminate\Console\Command;
 use ImageService;

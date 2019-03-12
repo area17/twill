@@ -3,7 +3,7 @@
 namespace App\Models;
 
 {{modelImports}}
-use A17\Twill\Models\Model;
+use Sb4yd3e\Twill\Models\Model;
 
 class {{modelClassName}} extends Model {{modelImplements}}
 {
@@ -26,7 +26,7 @@ class {{modelClassName}} extends Model {{modelImplements}}
     //     'description',
     //     'active',
     // ];
-    
+
     // uncomment and modify this as needed if you use the HasSlug trait
     // public $slugAttributes = [
     //     'title',

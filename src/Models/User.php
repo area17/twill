@@ -1,12 +1,12 @@
 <?php
 
-namespace A17\Twill\Models;
+namespace Sb4yd3e\Twill\Models;
 
-use A17\Twill\Models\Behaviors\HasMedias;
-use A17\Twill\Models\Behaviors\HasPresenter;
-use A17\Twill\Models\Enums\UserRole;
-use A17\Twill\Notifications\Reset as ResetNotification;
-use A17\Twill\Notifications\Welcome as WelcomeNotification;
+use Sb4yd3e\Twill\Models\Behaviors\HasMedias;
+use Sb4yd3e\Twill\Models\Behaviors\HasPresenter;
+use Sb4yd3e\Twill\Models\Enums\UserRole;
+use Sb4yd3e\Twill\Notifications\Reset as ResetNotification;
+use Sb4yd3e\Twill\Notifications\Welcome as WelcomeNotification;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\Access\Authorizable;

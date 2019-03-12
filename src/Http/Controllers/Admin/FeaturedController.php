@@ -1,10 +1,10 @@
 <?php
 
-namespace A17\Twill\Http\Controllers\Admin;
+namespace Sb4yd3e\Twill\Http\Controllers\Admin;
 
-use A17\Twill\Models\Feature;
-use A17\Twill\Repositories\Behaviors\HandleMedias;
-use A17\Twill\Repositories\Behaviors\HandleTranslations;
+use Sb4yd3e\Twill\Models\Feature;
+use Sb4yd3e\Twill\Repositories\Behaviors\HandleMedias;
+use Sb4yd3e\Twill\Repositories\Behaviors\HandleTranslations;
 use DB;
 use Event;
 

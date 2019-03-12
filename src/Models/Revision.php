@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\Twill\Models;
+namespace Sb4yd3e\Twill\Models;
 
-use A17\Twill\Models\User;
+use Sb4yd3e\Twill\Models\User;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
 abstract class Revision extends BaseModel

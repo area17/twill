@@ -1,22 +1,22 @@
 <?php
 
-namespace A17\Twill;
+namespace Sb4yd3e\Twill;
 
-use A17\Twill\Commands\CreateSuperAdmin;
-use A17\Twill\Commands\GenerateBlocks;
-use A17\Twill\Commands\Install;
-use A17\Twill\Commands\ModuleMake;
-use A17\Twill\Commands\RefreshLQIP;
-use A17\Twill\Http\ViewComposers\ActiveNavigation;
-use A17\Twill\Http\ViewComposers\CurrentUser;
-use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
-use A17\Twill\Http\ViewComposers\MediasUploaderConfig;
-use A17\Twill\Models\Block;
-use A17\Twill\Models\File;
-use A17\Twill\Models\Media;
-use A17\Twill\Models\User;
-use A17\Twill\Services\FileLibrary\FileService;
-use A17\Twill\Services\MediaLibrary\ImageService;
+use Sb4yd3e\Twill\Commands\CreateSuperAdmin;
+use Sb4yd3e\Twill\Commands\GenerateBlocks;
+use Sb4yd3e\Twill\Commands\Install;
+use Sb4yd3e\Twill\Commands\ModuleMake;
+use Sb4yd3e\Twill\Commands\RefreshLQIP;
+use Sb4yd3e\Twill\Http\ViewComposers\ActiveNavigation;
+use Sb4yd3e\Twill\Http\ViewComposers\CurrentUser;
+use Sb4yd3e\Twill\Http\ViewComposers\FilesUploaderConfig;
+use Sb4yd3e\Twill\Http\ViewComposers\MediasUploaderConfig;
+use Sb4yd3e\Twill\Models\Block;
+use Sb4yd3e\Twill\Models\File;
+use Sb4yd3e\Twill\Models\Media;
+use Sb4yd3e\Twill\Models\User;
+use Sb4yd3e\Twill\Services\FileLibrary\FileService;
+use Sb4yd3e\Twill\Services\MediaLibrary\ImageService;
 use Barryvdh\Debugbar\Facade as Debugbar;
 use Barryvdh\Debugbar\ServiceProvider as DebugbarServiceProvider;
 use Cartalyst\Tags\TagsServiceProvider;

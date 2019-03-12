@@ -1,9 +1,9 @@
 <?php
 
-namespace A17\Twill\Repositories;
+namespace Sb4yd3e\Twill\Repositories;
 
-use A17\Twill\Models\Media;
-use A17\Twill\Repositories\Behaviors\HandleTags;
+use Sb4yd3e\Twill\Models\Media;
+use Sb4yd3e\Twill\Repositories\Behaviors\HandleTags;
 use ImageService;
 use Storage;
 

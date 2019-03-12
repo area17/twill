@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Http\Requests\Admin;
+namespace Sb4yd3e\Twill\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 

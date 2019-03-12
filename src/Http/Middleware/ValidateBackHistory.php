@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Http\Middleware;
+namespace Sb4yd3e\Twill\Http\Middleware;
 
 use Closure;
 

@@ -118,8 +118,8 @@ filename: ```app/Models/Article.php```
 
 namespace App\Models;
 
-use A17\Twill\Models\Behaviors\HasBlocks;
-use A17\Twill\Models\Model;
+use Sb4yd3e\Twill\Models\Behaviors\HasBlocks;
+use Sb4yd3e\Twill\Models\Model;
 
 class Article extends Model
 {
@@ -135,8 +135,8 @@ filename: ```app/Repositories/ArticleRepository.php```
 
 namespace App\Repositories;
 
-use A17\Twill\Repositories\Behaviors\HandleBlocks;
-use A17\Twill\Repositories\ModuleRepository;
+use Sb4yd3e\Twill\Repositories\Behaviors\HandleBlocks;
+use Sb4yd3e\Twill\Repositories\ModuleRepository;
 use App\Models\Article;
 
 class ArticleRepository extends ModuleRepository

@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Services\MediaLibrary;
+namespace Sb4yd3e\Twill\Services\MediaLibrary;
 
 use Illuminate\Support\Facades\Facade;
 

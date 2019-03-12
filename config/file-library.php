@@ -15,14 +15,14 @@ return [
     | deleting from the file library.
     | If using the 'local' endpoint type, define a 'local_path' to store files.
     | Supported file services:
-    | - 'A17\Twill\Services\FileLibrary\Disk'
+    | - 'Sb4yd3e\Twill\Services\FileLibrary\Disk'
     |
      */
     'disk' => 'libraries',
     'endpoint_type' => env('FILE_LIBRARY_ENDPOINT_TYPE', 's3'),
     'cascade_delete' => env('FILE_LIBRARY_CASCADE_DELETE', false),
     'local_path' => env('FILE_LIBRARY_LOCAL_PATH'),
-    'file_service' => env('FILE_LIBRARY_FILE_SERVICE', 'A17\Twill\Services\FileLibrary\Disk'),
+    'file_service' => env('FILE_LIBRARY_FILE_SERVICE', 'Sb4yd3e\Twill\Services\FileLibrary\Disk'),
     'acl' => env('FILE_LIBRARY_ACL', 'public-read'),
     'filesize_limit' => env('FILE_LIBRARY_FILESIZE_LIMIT', 50),
     'allowed_extensions' => [],

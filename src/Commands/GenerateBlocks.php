@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Commands;
+namespace Sb4yd3e\Twill\Commands;
 
 use File;
 use Illuminate\Console\Command;

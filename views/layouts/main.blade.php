@@ -79,7 +79,7 @@
                 window.STORE.medias.types.push({
                     value: 'image',
                     text: 'Images',
-                    total: {{ \A17\Twill\Models\Media::count() }},
+                    total: {{ \Sb4yd3e\Twill\Models\Media::count() }},
                     endpoint: '{{ route('admin.media-library.medias.index') }}',
                     tagsEndpoint: '{{ route('admin.media-library.medias.tags') }}',
                     uploaderConfig: {!! json_encode($mediasUploaderConfig) !!}
@@ -90,7 +90,7 @@
                 window.STORE.medias.types.push({
                     value: 'file',
                     text: 'Files',
-                    total: {{ \A17\Twill\Models\File::count() }},
+                    total: {{ \Sb4yd3e\Twill\Models\File::count() }},
                     endpoint: '{{ route('admin.file-library.files.index') }}',
                     tagsEndpoint: '{{ route('admin.file-library.files.tags') }}',
                     uploaderConfig: {!! json_encode($filesUploaderConfig) !!}

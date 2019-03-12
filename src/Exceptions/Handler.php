@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Exceptions;
+namespace Sb4yd3e\Twill\Exceptions;
 
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;

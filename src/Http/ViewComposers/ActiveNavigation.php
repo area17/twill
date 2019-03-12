@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Http\ViewComposers;
+namespace Sb4yd3e\Twill\Http\ViewComposers;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;

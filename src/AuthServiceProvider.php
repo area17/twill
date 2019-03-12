@@ -1,9 +1,9 @@
 <?php
 
-namespace A17\Twill;
+namespace Sb4yd3e\Twill;
 
-use A17\Twill\Models\Enums\UserRole;
-use A17\Twill\Models\User;
+use Sb4yd3e\Twill\Models\Enums\UserRole;
+use Sb4yd3e\Twill\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 

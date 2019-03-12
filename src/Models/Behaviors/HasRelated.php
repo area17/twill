@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\Twill\Models\Behaviors;
+namespace Sb4yd3e\Twill\Models\Behaviors;
 
-use A17\Twill\Models\RelatedItem;
+use Sb4yd3e\Twill\Models\RelatedItem;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait HasRelated

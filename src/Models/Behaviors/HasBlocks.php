@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\Twill\Models\Behaviors;
+namespace Sb4yd3e\Twill\Models\Behaviors;
 
-use A17\Twill\Models\Block;
+use Sb4yd3e\Twill\Models\Block;
 
 trait HasBlocks
 {

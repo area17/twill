@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Http\Controllers\Front;
+namespace Sb4yd3e\Twill\Http\Controllers\Front;
 
 trait ShowWithPreview
 {

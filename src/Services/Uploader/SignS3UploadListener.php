@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Services\Uploader;
+namespace Sb4yd3e\Twill\Services\Uploader;
 
 interface SignS3UploadListener
 {

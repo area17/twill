@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\Twill\Models;
+namespace Sb4yd3e\Twill\Models;
 
-use A17\Twill\Models\Behaviors\HasPresenter;
+use Sb4yd3e\Twill\Models\Behaviors\HasPresenter;
 use Carbon\Carbon;
 use Cartalyst\Tags\TaggableInterface;
 use Cartalyst\Tags\TaggableTrait;

@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\Twill\Services\Uploader;
+namespace Sb4yd3e\Twill\Services\Uploader;
 
-use A17\Twill\Services\Uploader\SignS3UploadListener;
+use Sb4yd3e\Twill\Services\Uploader\SignS3UploadListener;
 
 class SignS3Upload
 {

@@ -243,12 +243,12 @@ return [
 
 Each Blade file you create in `resources/views/admin/settings` creates a new section available for you to add in the `primary_navigation` array of your `config/twill-navigation.php` file.
 
-You can then retrieve the value of a specific setting by its key, which is the name of the form field you defined in your settings form, either by directly using the `A17\Twill\Models\Setting` Eloquent model or by using the provided `byKey` helper in `A17\Twill\Repositories\SettingRepository`:
+You can then retrieve the value of a specific setting by its key, which is the name of the form field you defined in your settings form, either by directly using the `Sb4yd3e\Twill\Models\Setting` Eloquent model or by using the provided `byKey` helper in `Sb4yd3e\Twill\Repositories\SettingRepository`:
 
 ```php
 <?php
 
-use A17\Twill\Repositories\SettingRepository;
+use Sb4yd3e\Twill\Repositories\SettingRepository;
 ...
 
 app(SettingRepository::class)->byKey('site_title');
@@ -311,7 +311,7 @@ In `app/Models/Enums/UserRole.php` (or anywhere else you'd like actually, only t
 ```php
     <?php
 
-    namespace A17\Twill\Models\Enums;
+    namespace Sb4yd3e\Twill\Models\Enums;
 
     use MyCLabs\Enum\Enum;
 
@@ -331,7 +331,7 @@ Finally, in your `AuthServiceProvider` class, redefine [Twill's default permissi
 
     namespace App\Providers;
 
-    use A17\Twill\Models\Enums\UserRole;
+    use Sb4yd3e\Twill\Models\Enums\UserRole;
     use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
     use Illuminate\Support\Facades\Gate;
 

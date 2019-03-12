@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Commands;
+namespace Sb4yd3e\Twill\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
@@ -56,7 +56,7 @@ class Install extends Command
     private function publishMigrations()
     {
         $this->call('vendor:publish', [
-            '--provider' => 'A17\Twill\TwillServiceProvider',
+            '--provider' => 'Sb4yd3e\Twill\TwillServiceProvider',
             '--tag' => 'migrations',
         ]);
 
@@ -74,7 +74,7 @@ class Install extends Command
     private function publishConfig()
     {
         $this->call('vendor:publish', [
-            '--provider' => 'A17\Twill\TwillServiceProvider',
+            '--provider' => 'Sb4yd3e\Twill\TwillServiceProvider',
             '--tag' => 'config',
         ]);
     }

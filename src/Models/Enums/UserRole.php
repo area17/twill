@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Models\Enums;
+namespace Sb4yd3e\Twill\Models\Enums;
 
 use MyCLabs\Enum\Enum;
 

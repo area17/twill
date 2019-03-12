@@ -1,10 +1,10 @@
 <?php
 
-namespace A17\Twill\Repositories;
+namespace Sb4yd3e\Twill\Repositories;
 
-use A17\Twill\Models\Behaviors\HasMedias;
-use A17\Twill\Models\Behaviors\Sortable;
-use A17\Twill\Repositories\Behaviors\HandleDates;
+use Sb4yd3e\Twill\Models\Behaviors\HasMedias;
+use Sb4yd3e\Twill\Models\Behaviors\Sortable;
+use Sb4yd3e\Twill\Repositories\Behaviors\HandleDates;
 use DB;
 use Log;
 use PDO;

@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\Twill\Http\Controllers\Admin;
+namespace Sb4yd3e\Twill\Http\Controllers\Admin;
 
-use A17\Twill\Repositories\SettingRepository;
+use Sb4yd3e\Twill\Repositories\SettingRepository;
 use Event;
 
 class SettingController extends Controller

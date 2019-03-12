@@ -1,11 +1,11 @@
 <?php
 
-namespace A17\Twill;
+namespace Sb4yd3e\Twill;
 
-use A17\Twill\Http\Middleware\Impersonate;
-use A17\Twill\Http\Middleware\NoDebugBar;
-use A17\Twill\Http\Middleware\RedirectIfAuthenticated;
-use A17\Twill\Http\Middleware\ValidateBackHistory;
+use Sb4yd3e\Twill\Http\Middleware\Impersonate;
+use Sb4yd3e\Twill\Http\Middleware\NoDebugBar;
+use Sb4yd3e\Twill\Http\Middleware\RedirectIfAuthenticated;
+use Sb4yd3e\Twill\Http\Middleware\ValidateBackHistory;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
@@ -13,7 +13,7 @@ use Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    protected $namespace = 'A17\Twill\Http\Controllers';
+    protected $namespace = 'Sb4yd3e\Twill\Http\Controllers';
 
     public function boot()
     {

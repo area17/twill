@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\Twill;
+namespace Sb4yd3e\Twill;
 
-use A17\CmsToolkit\Repositories\BlockRepository;
+use Sb4yd3e\CmsToolkit\Repositories\BlockRepository;
 use Illuminate\Support\ServiceProvider;
 use Validator;
 

@@ -1,14 +1,14 @@
 <?php
 
-namespace A17\Twill\Http\Controllers\Admin;
+namespace Sb4yd3e\Twill\Http\Controllers\Admin;
 
-use A17\Twill\Models\Enums\UserRole;
+use Sb4yd3e\Twill\Models\Enums\UserRole;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 
 class UserController extends ModuleController
 {
-    protected $namespace = 'A17\Twill';
+    protected $namespace = 'Sb4yd3e\Twill';
 
     protected $moduleName = 'users';
 

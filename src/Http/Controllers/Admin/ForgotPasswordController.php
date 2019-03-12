@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Http\Controllers\Admin;
+namespace Sb4yd3e\Twill\Http\Controllers\Admin;
 
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Password;

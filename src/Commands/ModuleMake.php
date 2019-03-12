@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Commands;
+namespace Sb4yd3e\Twill\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
@@ -161,12 +161,12 @@ class ModuleMake extends Command
 
         $activeModelTraitsString = empty($activeModelTraits) ? '' : 'use ' . rtrim(implode(', ', $activeModelTraits), ', ') . ';';
 
-        $activeModelTraitsImports = empty($activeModelTraits) ? '' : "use A17\Twill\Models\Behaviors\\" . implode(";\nuse A17\Twill\Models\Behaviors\\", $activeModelTraits) . ";";
+        $activeModelTraitsImports = empty($activeModelTraits) ? '' : "use Sb4yd3e\Twill\Models\Behaviors\\" . implode(";\nuse Sb4yd3e\Twill\Models\Behaviors\\", $activeModelTraits) . ";";
 
         $activeModelImplements = $sortable ? 'implements Sortable' : '';
 
         if ($sortable) {
-            $activeModelTraitsImports .= "\nuse A17\Twill\Models\Behaviors\Sortable;";
+            $activeModelTraitsImports .= "\nuse Sb4yd3e\Twill\Models\Behaviors\Sortable;";
         }
 
         $stub = str_replace(['{{modelClassName}}', '{{modelTraits}}', '{{modelImports}}', '{{modelImplements}}'], [$modelClassName, $activeModelTraitsString, $activeModelTraitsImports, $activeModelImplements], $this->files->get(__DIR__ . '/stubs/model.stub'));
@@ -194,7 +194,7 @@ class ModuleMake extends Command
 
         $activeRepositoryTraitsString = empty($activeRepositoryTraits) ? '' : 'use ' . (empty($activeRepositoryTraits) ? "" : rtrim(implode(', ', $activeRepositoryTraits), ', ') . ';');
 
-        $activeRepositoryTraitsImports = empty($activeRepositoryTraits) ? '' : "use A17\Twill\Repositories\Behaviors\\" . implode(";\nuse A17\Twill\Repositories\Behaviors\\", $activeRepositoryTraits) . ";";
+        $activeRepositoryTraitsImports = empty($activeRepositoryTraits) ? '' : "use Sb4yd3e\Twill\Repositories\Behaviors\\" . implode(";\nuse Sb4yd3e\Twill\Repositories\Behaviors\\", $activeRepositoryTraits) . ";";
 
         $stub = str_replace(['{{repositoryClassName}}', '{{modelName}}', '{{repositoryTraits}}', '{{repositoryImports}}'], [$repositoryClassName, $modelName, $activeRepositoryTraitsString, $activeRepositoryTraitsImports], $this->files->get(__DIR__ . '/stubs/repository.stub'));
 

@@ -54,7 +54,7 @@ And then extend it from your own `app/Exceptions/Handler.php` class:
 
 namespace App\Exceptions;
 
-use A17\Twill\Exceptions\Handler as ExceptionHandler;
+use Sb4yd3e\Twill\Exceptions\Handler as ExceptionHandler;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 
@@ -125,7 +125,7 @@ return [
         'endpoint_type' => env('MEDIA_LIBRARY_ENDPOINT_TYPE', 's3'),
         'cascade_delete' => env('MEDIA_LIBRARY_CASCADE_DELETE', false),
         'local_path' => env('MEDIA_LIBRARY_LOCAL_PATH'),
-        'image_service' => env('MEDIA_LIBRARY_IMAGE_SERVICE', 'A17\Twill\Services\MediaLibrary\Imgix'),
+        'image_service' => env('MEDIA_LIBRARY_IMAGE_SERVICE', 'Sb4yd3e\Twill\Services\MediaLibrary\Imgix'),
         'acl' => env('MEDIA_LIBRARY_ACL', 'private'),
         'filesize_limit' => env('MEDIA_LIBRARY_FILESIZE_LIMIT', 50),
         'allowed_extensions' => ['svg', 'jpg', 'gif', 'png', 'jpeg'],
@@ -179,7 +179,7 @@ The `allowed_extensions` configuration option is an array of file extensions tha
 
 To render uploaded image urls, Twill's prefered service is [Imgix](https://imgix.com). You can change it using the `MEDIA_LIBRARY_IMAGE_SERVICE` environment variable or the `media_library.image_service` configuration option. 
 
-A simple local service is available (`A17\Twill\Services\MediaLibrary\Local`) but it will not make use of any cropping or resizing parameters when rendering urls. As noted in the [media library's documentation](#media-library-3), you can implement other third party services (eg. Cloudinary) or open source libraries (eg. Croppa) for that purpose if you do not want or cannot use Imgix for your project.
+A simple local service is available (`Sb4yd3e\Twill\Services\MediaLibrary\Local`) but it will not make use of any cropping or resizing parameters when rendering urls. As noted in the [media library's documentation](#media-library-3), you can implement other third party services (eg. Cloudinary) or open source libraries (eg. Croppa) for that purpose if you do not want or cannot use Imgix for your project.
 
 
 #### Imgix
@@ -211,7 +211,7 @@ Always use environment variables for credentials.
 
 Finally, Twill's default Imgix configuration includes 4 different image transformation parameter sets that are used by helpers you will find in the [media library's documentation](#media-library-3):
 
-- `default_params`: used by all image url functions in `A17\Twill\Services\MediaLibrary\Imgix` but overrided by the following parameter sets
+- `default_params`: used by all image url functions in `Sb4yd3e\Twill\Services\MediaLibrary\Imgix` but overrided by the following parameter sets
 - `lqip_default_params`: used by the Low Quality Image Placeholder url function
 - `social_default_params`: used by the social image url function (for Facebook, Twitter, ... shares)
 - `cms_default_params`: used by the CMS image url function. This only affects rendering of images in Twill's admin console (eg. in the media library and image fields).
@@ -267,7 +267,7 @@ return [
         'endpoint_type' => env('FILE_LIBRARY_ENDPOINT_TYPE', 's3'),
         'cascade_delete' => env('FILE_LIBRARY_CASCADE_DELETE', false),
         'local_path' => env('FILE_LIBRARY_LOCAL_PATH'),
-        'file_service' => env('FILE_LIBRARY_FILE_SERVICE', 'A17\Twill\Services\FileLibrary\Disk'),
+        'file_service' => env('FILE_LIBRARY_FILE_SERVICE', 'Sb4yd3e\Twill\Services\FileLibrary\Disk'),
         'acl' => env('FILE_LIBRARY_ACL', 'public-read'),
         'filesize_limit' => env('FILE_LIBRARY_FILESIZE_LIMIT', 50),
         'allowed_extensions' => [],

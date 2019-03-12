@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\Twill\Commands;
+namespace Sb4yd3e\Twill\Commands;
 
-use A17\Twill\Models\User;
+use Sb4yd3e\Twill\Models\User;
 use Illuminate\Console\Command;
 use Validator;
 

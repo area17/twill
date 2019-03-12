@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\Twill\Models\Translations;
+namespace Sb4yd3e\Twill\Models\Translations;
 
-use A17\Twill\Models\Model;
+use Sb4yd3e\Twill\Models\Model;
 
 class SettingTranslation extends Model
 {

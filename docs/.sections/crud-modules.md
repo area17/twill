@@ -109,7 +109,7 @@ For fields that should always be saved to false in the database when not sent by
 
 Depending on the features you need on your model, include the available traits and configure their respective options:
 
-- HasPosition: implement the `A17\Twill\Models\Behaviors\Sortable` interface and add a position field to your fillables.
+- HasPosition: implement the `Sb4yd3e\Twill\Models\Behaviors\Sortable` interface and add a position field to your fillables.
 
 - HasTranslation: add translated fields in the `translatedAttributes` array and in the `fillable` array of the generated translatable model in `App/Models/Translations` (always keep the `active` and `locale` fields).
 
@@ -456,7 +456,7 @@ public function hydrate($object, $fields)
     protected $defaultFilters = ['search' => 'title|search'];
 ```
 
-You can also override all actions and internal functions, checkout the ModuleController source in `A17\Twill\Http\Controllers\Admin\ModuleController`.
+You can also override all actions and internal functions, checkout the ModuleController source in `Sb4yd3e\Twill\Http\Controllers\Admin\ModuleController`.
 
 ### Form Requests
 Classic Laravel 5 [form request validation](https://laravel.com/docs/5.5/validation#form-request-validation).

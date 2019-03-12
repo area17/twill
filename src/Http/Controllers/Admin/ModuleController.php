@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\Twill\Http\Controllers\Admin;
+namespace Sb4yd3e\Twill\Http\Controllers\Admin;
 
-use A17\Twill\Helpers\FlashLevel;
+use Sb4yd3e\Twill\Helpers\FlashLevel;
 use Auth;
 use Event;
 use Illuminate\Contracts\Foundation\Application;
@@ -1113,7 +1113,7 @@ abstract class ModuleController extends Controller
 
     protected function moduleHas($behavior)
     {
-        return classHasTrait($this->repository, 'A17\Twill\Repositories\Behaviors\Handle' . ucfirst($behavior));
+        return classHasTrait($this->repository, 'Sb4yd3e\Twill\Repositories\Behaviors\Handle' . ucfirst($behavior));
     }
 
     protected function setBackLink($back_link = null, $params = [])

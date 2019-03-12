@@ -2,7 +2,7 @@
 
 namespace App\Models\Revisions;
 
-use A17\Twill\Models\Revision;
+use Sb4yd3e\Twill\Models\Revision;
 
 class {{modelRevisionClassName}} extends Revision
 {

@@ -21,7 +21,7 @@ If you are using Twill with Laravel `5.3` or `5.4`, add Twill's service provider
     /*
      * Package Service Providers...
      */
-    A17\Twill\TwillServiceProvider::class,
+    Sb4yd3e\Twill\TwillServiceProvider::class,
     ...
 
     /*

@@ -1,10 +1,10 @@
 <?php
 
-namespace A17\Twill\Models;
+namespace Sb4yd3e\Twill\Models;
 
-use A17\Twill\Models\Behaviors\HasFiles;
-use A17\Twill\Models\Behaviors\HasMedias;
-use A17\Twill\Models\Behaviors\HasPresenter;
+use Sb4yd3e\Twill\Models\Behaviors\HasFiles;
+use Sb4yd3e\Twill\Models\Behaviors\HasMedias;
+use Sb4yd3e\Twill\Models\Behaviors\HasPresenter;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class Block extends BaseModel
@@ -36,7 +36,7 @@ class Block extends BaseModel
 
     public function children()
     {
-        return $this->hasMany('A17\Twill\Models\Block', 'parent_id');
+        return $this->hasMany('Sb4yd3e\Twill\Models\Block', 'parent_id');
     }
 
     public function input($name)

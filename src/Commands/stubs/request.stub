@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
-use A17\Twill\Http\Requests\Admin\Request;
+use Sb4yd3e\Twill\Http\Requests\Admin\Request;
 
 class {{requestClassName}} extends Request
 {

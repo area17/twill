@@ -1,10 +1,10 @@
 <?php
 
-namespace A17\Twill\Http\Controllers\Admin;
+namespace Sb4yd3e\Twill\Http\Controllers\Admin;
 
-use A17\Twill\Http\Requests\Admin\FileRequest;
-use A17\Twill\Services\Uploader\SignS3Upload;
-use A17\Twill\Services\Uploader\SignS3UploadListener;
+use Sb4yd3e\Twill\Http\Requests\Admin\FileRequest;
+use Sb4yd3e\Twill\Services\Uploader\SignS3Upload;
+use Sb4yd3e\Twill\Services\Uploader\SignS3UploadListener;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Input;
@@ -13,7 +13,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
 {
     protected $moduleName = 'files';
 
-    protected $namespace = 'A17\Twill';
+    protected $namespace = 'Sb4yd3e\Twill';
 
     protected $defaultOrders = [
         'id' => 'desc',

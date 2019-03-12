@@ -1,9 +1,9 @@
 <?php
 
-namespace A17\Twill\Http\Controllers\Front;
+namespace Sb4yd3e\Twill\Http\Controllers\Front;
 
-use A17\Twill\Exceptions\Handler as TwillHandler;
-use A17\Twill\Http\Controllers\Front\Helpers\Seo;
+use Sb4yd3e\Twill\Exceptions\Handler as TwillHandler;
+use Sb4yd3e\Twill\Http\Controllers\Front\Helpers\Seo;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Routing\Controller as BaseController;
 use View;

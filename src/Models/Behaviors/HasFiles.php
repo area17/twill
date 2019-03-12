@@ -1,9 +1,9 @@
 <?php
 
-namespace A17\Twill\Models\Behaviors;
+namespace Sb4yd3e\Twill\Models\Behaviors;
 
-use A17\Twill\Models\File;
-use A17\Twill\Services\FileLibrary\FileService;
+use Sb4yd3e\Twill\Models\File;
+use Sb4yd3e\Twill\Services\FileLibrary\FileService;
 
 trait HasFiles
 {

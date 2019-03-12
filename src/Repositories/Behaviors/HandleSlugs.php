@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Repositories\Behaviors;
+namespace Sb4yd3e\Twill\Repositories\Behaviors;
 
 trait HandleSlugs
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace A17\Twill\Repositories;
+namespace Sb4yd3e\Twill\Repositories;
 
-use A17\Twill\Models\Block;
-use A17\Twill\Repositories\Behaviors\HandleFiles;
-use A17\Twill\Repositories\Behaviors\HandleMedias;
+use Sb4yd3e\Twill\Models\Block;
+use Sb4yd3e\Twill\Repositories\Behaviors\HandleFiles;
+use Sb4yd3e\Twill\Repositories\Behaviors\HandleMedias;
 
 class BlockRepository extends ModuleRepository
 {

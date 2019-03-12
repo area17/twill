@@ -1,9 +1,9 @@
 <?php
 
-namespace A17\Twill\Repositories;
+namespace Sb4yd3e\Twill\Repositories;
 
-use A17\Twill\Models\Setting;
-use A17\Twill\Repositories\Behaviors\HandleMedias;
+use Sb4yd3e\Twill\Models\Setting;
+use Sb4yd3e\Twill\Repositories\Behaviors\HandleMedias;
 
 class SettingRepository extends ModuleRepository
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Models\Behaviors;
+namespace Sb4yd3e\Twill\Models\Behaviors;
 
 trait HasRevisions
 {

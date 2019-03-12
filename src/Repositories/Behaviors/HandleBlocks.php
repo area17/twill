@@ -1,9 +1,9 @@
 <?php
 
-namespace A17\Twill\Repositories\Behaviors;
+namespace Sb4yd3e\Twill\Repositories\Behaviors;
 
-use A17\Twill\Models\Behaviors\HasMedias;
-use A17\Twill\Repositories\BlockRepository;
+use Sb4yd3e\Twill\Models\Behaviors\HasMedias;
+use Sb4yd3e\Twill\Repositories\BlockRepository;
 
 trait HandleBlocks
 {

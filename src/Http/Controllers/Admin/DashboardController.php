@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\Twill\Http\Controllers\Admin;
+namespace Sb4yd3e\Twill\Http\Controllers\Admin;
 
-use A17\Twill\Models\Behaviors\HasMedias;
+use Sb4yd3e\Twill\Models\Behaviors\HasMedias;
 use Analytics;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Analytics\Exceptions\InvalidConfiguration;

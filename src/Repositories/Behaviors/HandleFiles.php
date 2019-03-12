@@ -1,8 +1,8 @@
 <?php
 
-namespace A17\Twill\Repositories\Behaviors;
+namespace Sb4yd3e\Twill\Repositories\Behaviors;
 
-use A17\Twill\Models\File;
+use Sb4yd3e\Twill\Models\File;
 
 trait HandleFiles
 {
