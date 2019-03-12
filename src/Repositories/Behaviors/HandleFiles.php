@@ -74,17 +74,15 @@ trait HandleFiles
     public function getFormFieldsHandleFiles($object, $fields)
     {
         $fields['files'] = null;
-
         if ($object->has('files')) {
             foreach ($object->files->groupBy('pivot.role') as $role => $filesByRole) {
                 foreach ($filesByRole->groupBy('pivot.locale') as $locale => $filesByLocale) {
-                    $fields['files'][$locale][$role] = $filesByRole->map(function ($file) {
+                    $fields['files'][$locale][$role] = $filesByLocale->map(function ($file) {
                         return $file->toCmsArray();
                     });
                 }
             }
         }
-
         return $fields;
     }
 }
