@@ -185,7 +185,7 @@ class FeaturedController extends Controller
             });
         }, 5);
 
-        Event::fire('cms-buckets.saved', 'cms-buckets.saved');
+        fireCmsEvent('cms-buckets.saved');
     }
 
     private function getRepository($bucketable)
