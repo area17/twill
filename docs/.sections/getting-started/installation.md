@@ -64,7 +64,7 @@ Add the following npm scripts to your project's `package.json`:
 ```json
 "scripts": {
   "twill-build": "rm -f public/hot && npm run twill-copy-blocks && cd vendor/area17/twill && npm ci && npm run prod && cp -R public/* ${INIT_CWD}/public",
-  "twill-copy-blocks": "npm run twill-clean-blocks && mkdir -p resources/assets/js/blocks/ && mkdir -p vendor/area17/twill/frontend/js/components/blocks/customs/ && cp -R resources/assets/js/blocks/* vendor/area17/twill/frontend/js/components/blocks/customs/",
+  "twill-copy-blocks": "npm run twill-clean-blocks && mkdir -p resources/assets/js/blocks/ && mkdir -p vendor/area17/twill/frontend/js/components/blocks/customs/ && cp -R resources/assets/js/blocks vendor/area17/twill/frontend/js/components/blocks/customs/",
   "twill-clean-blocks": "rm -rf vendor/area17/twill/frontend/js/components/blocks/customs/*"
 }
 ```
