@@ -15,7 +15,7 @@
         </span>
       </div>
       <div class="editorSidebar__body">
-        <a17-inputframe size="small" label="" :name="`block.${block.id}`"/>
+        <a17-inputframe label="" :name="`block.${block.id}`"/>
         <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes" key="`editor_${block.type}_${block.id}`"></component>
       </div>
     </div>
@@ -254,6 +254,10 @@
 
 <style lang="scss">
   .editorSidebar__body {
+    .input {
+      margin-top: 15px;
+    }
+    
     .block__body {
       > .media,
       > .slideshow,
