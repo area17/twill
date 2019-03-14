@@ -257,7 +257,7 @@
     .input {
       margin-top: 15px;
     }
-    
+
     .block__body {
       > .media,
       > .slideshow,
