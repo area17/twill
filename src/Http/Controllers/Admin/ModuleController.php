@@ -1199,6 +1199,6 @@ abstract class ModuleController extends Controller
 
     protected function fireEvent($input = [])
     {
-        Event::fire('cms-module.saved', ['cms-module.saved', $input]);
+        fireCmsEvent('cms-module.saved', $input);
     }
 }
