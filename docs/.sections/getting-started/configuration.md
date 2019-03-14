@@ -129,6 +129,7 @@ return [
         'acl' => env('MEDIA_LIBRARY_ACL', 'private'),
         'filesize_limit' => env('MEDIA_LIBRARY_FILESIZE_LIMIT', 50),
         'allowed_extensions' => ['svg', 'jpg', 'gif', 'png', 'jpeg'],
+        'init_alt_text_from_filename' => true,
     ],
 ];
 ```

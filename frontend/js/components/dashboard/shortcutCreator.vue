@@ -158,10 +158,6 @@
     }
   }
 
-  /deep/ .shortcutCreator__btn {
-    position:relative;
-  }
-
   .shortcutCreator__trigger {
     height:$height_btn;
     line-height:$height_btn;
@@ -188,5 +184,13 @@
   button:focus + .shortcutCreator__trigger,
   button:hover + .shortcutCreator__trigger {
     background:$color__action--hover;
+  }
+</style>
+
+<style lang="scss">
+  .shortcutCreator {
+    .shortcutCreator__btn {
+      position: relative;
+    }
   }
 </style>

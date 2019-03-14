@@ -7,11 +7,13 @@
         <div class="container">
           <div class="datatable__stickyInner">
             <div class="datatable__setup">
-              <a17-dropdown class="datatable__setupDropdown" v-if="hideableColumns.length" ref="setupDropdown" position="bottom-right" title="Show" :clickable="true" :offset="-10">
+              <a17-dropdown class="datatable__setupDropdown" v-if="hideableColumns.length" ref="setupDropdown"
+                            position="bottom-right" title="Show" :clickable="true" :offset="-10">
                 <button class="datatable__setupButton" @click="$refs.setupDropdown.toggle()">
                   <span v-svg symbol="preferences"></span></button>
                 <div slot="dropdown__content">
-                  <a17-checkboxgroup name="visibleColumns" :options="checkboxesColumns" :selected="visibleColumnsNames" @change="updateActiveColumns" :min="2"/>
+                  <a17-checkboxgroup name="visibleColumns" :options="checkboxesColumns" :selected="visibleColumnsNames"
+                                     @change="updateActiveColumns" :min="2"/>
                 </div>
               </a17-dropdown>
             </div>
@@ -35,7 +37,8 @@
           <a17-tablehead :columns="visibleColumns" ref="thead"/>
           </thead>
           <template v-if="draggable">
-            <draggable class="datatable__drag" :element="'tbody'" v-model="rows" :options="dragOptions" :draggable="true">
+            <draggable class="datatable__drag" :element="'tbody'" v-model="rows" :options="dragOptions"
+                       :draggable="true">
               <template v-for="(row, index) in rows">
                 <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :key="row.id"/>
               </template>
@@ -54,7 +57,9 @@
             <h4>{{ emptyMessage }}</h4>
           </div>
         </template>
-        <a17-paginate v-if="maxPage > 1 || initialMaxPage > maxPage && !isEmpty" :max="maxPage" :value="page" :offset="offset" :availableOffsets="[initialOffset,initialOffset*3,initialOffset*6]" @changePage="updatePage" @changeOffset="updateOffset"/>
+        <a17-paginate v-if="maxPage > 1 || initialMaxPage > maxPage && !isEmpty" :max="maxPage" :value="page"
+                      :offset="offset" :availableOffsets="[initialOffset,initialOffset*3,initialOffset*6]"
+                      @changePage="updatePage" @changeOffset="updateOffset"/>
       </div>
     </div>
     <a17-spinner v-if="loading">Loading&hellip;</a17-spinner>
@@ -257,10 +262,6 @@
     border: 1px solid $color__border--light;
     border-radius: 2px;
     position: relative;
-
-    /deep/ .table {
-      margin-top: -60px; // hide the other thead
-    }
   }
 
   .datatable__setupDropdown {
@@ -348,6 +349,14 @@
 
     .table__scroller {
       padding-bottom: 50px;
+    }
+  }
+</style>
+
+<style lang="scss">
+  .datatable__table {
+    .table {
+      margin-top: -60px; // hide the other thead
     }
   }
 </style>

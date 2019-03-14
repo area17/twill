@@ -2,7 +2,7 @@
   "name": "area17/twill",
   "type": "library",
   "license": "Apache-2.0",
-  "description": "A collection of Laravel helpers, traits and classes to quickly create custom content management apps for our clients",
+  "description": "Twill is an open source CMS toolkit for Laravel that helps developers rapidly create a custom admin console that is intuitive, powerful and flexible.",
   "keywords": [
     "A17",
     "twill",
@@ -61,7 +61,9 @@
     "guzzlehttp/guzzle": "^6.2",
     "spatie/once": "^2.0.0",
     "spatie/laravel-analytics": "^3.6.0|^3.7.0",
-    "spatie/laravel-activitylog": "^2.5|^3.2"
+    "spatie/laravel-activitylog": "^2.5|^3.2",
+    "pragmarx/google2fa": "^4.0.0",
+    "pragmarx/google2fa-qrcode": "^1.0.2"
   },
   "require-dev": {
     "phpunit/phpunit": "~5.0|~6.0|~7.0"
@@ -74,7 +76,7 @@
   "extra": {
     "laravel": {
         "providers": [
-            "A17\\Twill\\TwillServiceProvider"
+          "A17\\Twill\\TwillServiceProvider"
         ]
     }
   },

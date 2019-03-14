@@ -161,10 +161,6 @@
     justify-content: space-between;
     align-items: center;
     margin-top: 35px;
-
-    /deep/ .input {
-      margin-top: 0;
-    }
   }
 
   .switcher__button {
@@ -257,6 +253,14 @@
   .switcher__button:focus {
     .switcher__switcher::before {
       opacity: 1;
+    }
+  }
+</style>
+
+<style lang="scss">
+  .modalValidation {
+    .input {
+      margin-top: 0;
     }
   }
 </style>

@@ -47,6 +47,21 @@ class UserRepository extends ModuleRepository
         return $this->model->where('role', '<>', 'SUPERADMIN')->onlyTrashed()->count();
     }
 
+    public function prepareFieldsBeforeSave($user, $fields)
+    {
+        $editor = auth('twill_users')->user();
+        $with2faSettings = config('twill.enabled.users-2fa', false) && $editor->id === $user->id;
+
+        if ($with2faSettings
+            && $user->google_2fa_enabled
+            && !($fields['google_2fa_enabled'] ?? false)
+        ) {
+            $fields['google_2fa_secret'] = null;
+        }
+
+        return parent::prepareFieldsBeforeSave($user, $fields);
+    }
+
     public function afterSave($user, $fields)
     {
         $this->sendWelcomeEmail($user);

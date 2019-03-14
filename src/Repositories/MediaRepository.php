@@ -39,7 +39,9 @@ class MediaRepository extends ModuleRepository
 
     public function prepareFieldsBeforeCreate($fields)
     {
-        $fields['alt_text'] = $this->model->altTextFrom($fields['filename']);
+        if (config('twill.media_library.init_alt_text_from_filename', true)) {
+            $fields['alt_text'] = $this->model->altTextFrom($fields['filename']);
+        }
 
         // if we were not able to determine dimensions with the browser File API, let's ask the Image service
         if (!isset($fields['width']) || !isset($fields['height'])) {

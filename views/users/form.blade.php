@@ -1,6 +1,7 @@
 @extends('twill::layouts.form', [
     'contentFieldsetLabel' => 'User settings',
-    'editModalTitle' => 'Edit user name'
+    'editModalTitle' => 'Edit user name',
+    'reloadOnSuccess' => true
 ])
 
 @php
@@ -42,6 +43,38 @@
             'type' => 'textarea',
             'label' => 'Description'
         ])
+    @endif
+    @if($with2faSettings ?? false)
+        @formField('checkbox', [
+            'name' => 'google_2fa_enabled',
+            'label' => '2-factor authentication',
+        ])
+
+        @unless($item->google_2fa_enabled ?? false)
+            @component('twill::partials.form.utils._connected_fields', [
+                'fieldName' => 'google_2fa_enabled',
+                'fieldValues' => true,
+            ])
+                <img style="display: block; margin-left: auto; margin-right: auto;" src="{{ $qrCode }}">
+                <div class="f--regular f--note" style="margin: 20px 0;">Please scan this QR code with a Google Authenticator compatible application and enter your one time password below before submitting. See a list of compatible applications <a href="https://github.com/antonioribeiro/google2fa#google-authenticator-apps" target="_blank" rel="noopener">here</a>.</div>
+                @formField('input', [
+                    'name' => 'verify-code',
+                    'label' => 'One time password',
+                ])
+            @endcomponent
+        @else
+            @component('twill::partials.form.utils._connected_fields', [
+                'fieldName' => 'google_2fa_enabled',
+                'fieldValues' => false,
+            ])
+                @formField('input', [
+                    'name' => 'verify-code',
+                    'label' => 'One time password',
+                    'note' => 'Enter your one time password to disable the 2-factor authentication'
+
+                ])
+            @endcomponent
+        @endunless
     @endif
 @stop
 
