@@ -56,3 +56,11 @@ if (!function_exists('getFormFieldsValue')) {
         return array_get($formFields, str_replace(']', '', str_replace('[', '.', $name)), '');
     }
 }
+
+if (!function_exists('fireCmsEvent')) {
+    function fireCmsEvent($eventName, $input = [])
+    {
+        $method = method_exists(\Illuminate\Events\Dispatcher::class, 'dispatch') ? 'dispatch' : 'fire';
+        Event::$method($eventName, [$eventName, $input]);
+    }
+}
