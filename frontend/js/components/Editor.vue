@@ -4,7 +4,7 @@
       <a17-button class="editor__leave" variant="editor" size="small" @click="openPreview" v-if="revisions.length"><span v-svg symbol="preview" class="hide--xsmall"></span>Preview</a17-button>
       <div class="editor__frame">
         <div class="editor__inner">
-          <div class="editor__sidebar" ref="sidebar">
+          <div class="editor__sidebar" :class="sidebarClass" ref="sidebar">
             <a17-editorsidebar @delete="deleteBlock" @save="saveBlock" @cancel="cancelBlock">Add content</a17-editorsidebar>
           </div>
           <div class="editor__resizer" @mousedown="resize"><span></span></div>
@@ -74,6 +74,11 @@
         return {
           'editor__preview--dark': bgColorObj.getBrightness() < 180,
           'editor__preview--loading': this.loading
+        }
+      },
+      sidebarClass: function () {
+        return {
+          'editor__sidebar--mobile': this.hasBlockActive
         }
       },
       previewStyle: function () {
@@ -289,6 +294,16 @@
     background:$color__border--light;
     width:30vw;
     min-width:400px;
+
+    @include breakpoint('small-') {
+      display: none;
+    }
+  }
+
+  .editor__sidebar--mobile {
+    @include breakpoint('small-') {
+      display: block;
+    }
   }
 
   .editor__resizer {
