@@ -319,10 +319,6 @@
     color:$color__text--light;
   }
 
-  .editor__preview--loading /deep/ .editorPreview {
-    opacity: 0;
-  }
-
   .editor__preview--dark {
     color:$color__background;
   }

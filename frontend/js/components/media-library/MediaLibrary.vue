@@ -1,57 +1,67 @@
 <template>
   <a17-modal :title="modalTitle" mode="wide" ref="modal" @open="opened">
-  <div class="medialibrary">
-    <div class="medialibrary__frame">
-      <div class="medialibrary__header" ref="form">
-        <a17-filter @submit="submitFilter" :clearOption="true" @clear="clearFilters">
-          <ul class="secondarynav secondarynav--desktop" slot="navigation" v-if="types.length">
-            <li class="secondarynav__item" v-for="navType in types" :key="navType.value" :class="{ 's--on': type === navType.value, 's--disabled' : type !== navType.value && strict }">
-              <a href="#" @click.prevent="updateType(navType.value)"><span class="secondarynav__link">{{ navType.text }}</span><span v-if="navType.total > 0" class="secondarynav__number">({{ navType.total }})</span></a>
-            </li>
-          </ul>
+    <div class="medialibrary">
+      <div class="medialibrary__frame">
+        <div class="medialibrary__header" ref="form">
+          <a17-filter @submit="submitFilter" :clearOption="true" @clear="clearFilters">
+            <ul class="secondarynav secondarynav--desktop" slot="navigation" v-if="types.length">
+              <li class="secondarynav__item" v-for="navType in types" :key="navType.value"
+                  :class="{ 's--on': type === navType.value, 's--disabled' : type !== navType.value && strict }">
+                <a href="#" @click.prevent="updateType(navType.value)"><span class="secondarynav__link">{{ navType.text }}</span><span
+                  v-if="navType.total > 0" class="secondarynav__number">({{ navType.total }})</span></a>
+              </li>
+            </ul>
 
-          <div class="secondarynav secondarynav--mobile secondarynav--dropdown" slot="navigation">
-            <a17-dropdown ref="secondaryNavDropdown" position="bottom-left" width="full" :offset="0">
-              <a17-button class="secondarynav__button" variant="dropdown-transparent" size="small" @click="$refs.secondaryNavDropdown.toggle()" v-if="selectedType">
-                <span class="secondarynav__link">{{ selectedType.text }}</span><span class="secondarynav__number">{{ selectedType.total }}</span>
-              </a17-button>
-              <div slot="dropdown__content">
-                <ul>
-                  <li v-for="navType in types" :key="navType.value" class="secondarynav__item">
-                    <a href="#" v-on:click.prevent="updateType(navType.value)"><span class="secondarynav__link">{{ navType.text }}</span><span class="secondarynav__number">{{ navType.total }}</span></a>
-                  </li>
-                </ul>
+            <div class="secondarynav secondarynav--mobile secondarynav--dropdown" slot="navigation">
+              <a17-dropdown ref="secondaryNavDropdown" position="bottom-left" width="full" :offset="0">
+                <a17-button class="secondarynav__button" variant="dropdown-transparent" size="small"
+                            @click="$refs.secondaryNavDropdown.toggle()" v-if="selectedType">
+                  <span class="secondarynav__link">{{ selectedType.text }}</span><span class="secondarynav__number">{{ selectedType.total }}</span>
+                </a17-button>
+                <div slot="dropdown__content">
+                  <ul>
+                    <li v-for="navType in types" :key="navType.value" class="secondarynav__item">
+                      <a href="#" v-on:click.prevent="updateType(navType.value)"><span class="secondarynav__link">{{ navType.text }}</span><span
+                        class="secondarynav__number">{{ navType.total }}</span></a>
+                    </li>
+                  </ul>
+                </div>
+              </a17-dropdown>
+            </div>
+
+            <div slot="hidden-filters">
+              <a17-vselect class="medialibrary__filter-item" ref="filter" name="tag" :options="tags"
+                           placeholder="Filter by tag" :toggleSelectOption="true" maxHeight="175px"/>
+            </div>
+          </a17-filter>
+        </div>
+
+        <div class="medialibrary__inner">
+          <div class="medialibrary__grid">
+            <aside class="medialibrary__sidebar">
+              <a17-mediasidebar :medias="selectedMedias" :authorized="authorized" @clear="clearSelectedMedias"
+                                @delete="deleteSelectedMedias" @tagUpdated="reloadTags" :type="currentTypeObject"/>
+            </aside>
+            <footer class="medialibrary__footer" v-if="selectedMedias.length && showInsert && connector">
+              <a17-button v-if="canInsert" variant="action" @click="saveAndClose">{{ btnLabel }}</a17-button>
+              <a17-button v-else variant="action" :disabled="true">{{ btnLabel }}</a17-button>
+            </footer>
+            <div class="medialibrary__list" ref="list">
+              <a17-uploader v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias"
+                            :type="currentTypeObject"/>
+              <div class="medialibrary__list-items">
+                <a17-itemlist v-if="type === 'file'" :items="fullMedias" :selected-items="selectedMedias"
+                              :used-items="usedMedias" @change="updateSelectedMedias"
+                              @shiftChange="updateSelectedMedias"/>
+                <a17-mediagrid v-else :items="fullMedias" :selected-items="selectedMedias" :used-items="usedMedias"
+                               @change="updateSelectedMedias" @shiftChange="updateSelectedMedias"/>
+                <a17-spinner v-if="loading" class="medialibrary__spinner">Loading&hellip;</a17-spinner>
               </div>
-            </a17-dropdown>
-          </div>
-
-          <div slot="hidden-filters">
-            <a17-vselect class="medialibrary__filter-item" ref="filter" name="tag" :options="tags" placeholder="Filter by tag" :toggleSelectOption="true" maxHeight="175px" />
-          </div>
-        </a17-filter>
-      </div>
-
-      <div class="medialibrary__inner">
-        <div class="medialibrary__grid">
-          <aside class="medialibrary__sidebar">
-            <a17-mediasidebar :medias="selectedMedias" :authorized="authorized" @clear="clearSelectedMedias" @delete="deleteSelectedMedias" @tagUpdated="reloadTags" :type="currentTypeObject" />
-          </aside>
-          <footer class="medialibrary__footer" v-if="selectedMedias.length && showInsert && connector">
-            <a17-button v-if="canInsert" variant="action" @click="saveAndClose">{{ btnLabel }} </a17-button>
-            <a17-button v-else variant="action" :disabled="true">{{ btnLabel }} </a17-button>
-          </footer>
-          <div class="medialibrary__list" ref="list">
-            <a17-uploader v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias" :type="currentTypeObject"/>
-            <div class="medialibrary__list-items">
-              <a17-itemlist v-if="type === 'file'" :items="fullMedias" :selected-items="selectedMedias" :used-items="usedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias"/>
-              <a17-mediagrid v-else :items="fullMedias" :selected-items="selectedMedias" :used-items="usedMedias" @change="updateSelectedMedias" @shiftChange="updateSelectedMedias"/>
-              <a17-spinner v-if="loading" class="medialibrary__spinner">Loading&hellip;</a17-spinner>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
   </a17-modal>
 </template>
 
@@ -411,28 +421,15 @@
     width: 100%;
     min-height: 100%;
     padding: 0;
-    position:relative;
+    position: relative;
   }
 
   .medialibrary__header {
-    background:$color__border--light;
-    border-bottom:1px solid $color__border;
-    padding:0 20px;
+    background: $color__border--light;
+    border-bottom: 1px solid $color__border;
+    padding: 0 20px;
 
     @include breakpoint(small-) {
-      /deep/ .filter__inner {
-        flex-direction: column;
-      }
-
-      /deep/ .filter__search {
-        padding-top: 10px;
-        display: flex;
-      }
-
-      /deep/ .filter__search input {
-        flex-grow: 1;
-      }
-
       .secondarynav {
         padding-bottom: 10px;
       }
@@ -445,7 +442,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    display:flex;
+    display: flex;
     flex-flow: column nowrap;
   }
 
@@ -463,10 +460,10 @@
     bottom: 0;
     width: map-get($width_sidebar, default); // fixed arbitrary width
     color: $color__text--light;
-    padding:10px;
-    overflow:hidden;
-    background:$color__border--light;
-    border-top:1px solid $color__border;
+    padding: 10px;
+    overflow: hidden;
+    background: $color__border--light;
+    border-top: 1px solid $color__border;
 
     > button {
       display: block;
@@ -494,7 +491,7 @@
     width: map-get($width_sidebar, default); // fixed arbitrary width
     padding: 0 0 80px 0; // 80px so we have some room to display the tags dropdown menu under the field
     z-index: 75;
-    background:$color__border--light;
+    background: $color__border--light;
     overflow: auto;
 
     @include breakpoint(small) {
@@ -515,10 +512,10 @@
     position: absolute;
     top: 0;
     left: 0;
-    right:0;
+    right: 0;
     bottom: 0;
     overflow: auto;
-    padding:10px;
+    padding: 10px;
   }
 
   .medialibrary__list-items {
@@ -528,14 +525,9 @@
     min-height: 100%;
   }
 
-  .medialibrary__filter-item {
-    /deep/ .vselect {
-      min-width: 200px;
-    }
-  }
   /* with a sidebar visible */
   .medialibrary__list {
-    right:map-get($width_sidebar, default);
+    right: map-get($width_sidebar, default);
 
     @include breakpoint(small) {
       right: map-get($width_sidebar, small);
@@ -549,5 +541,31 @@
       right: 0;
     }
   }
+</style>
 
+<style lang="scss">
+  @import '~styles/setup/_mixins-colors-vars.scss';
+
+  .medialibrary__filter-item {
+    .vselect {
+      min-width: 200px;
+    }
+  }
+
+  .medialibrary__header {
+    @include breakpoint(small-) {
+      .filter__inner {
+        flex-direction: column;
+      }
+
+      .filter__search {
+        padding-top: 10px;
+        display: flex;
+      }
+
+      .filter__search input {
+        flex-grow: 1;
+      }
+    }
+  }
 </style>
