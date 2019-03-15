@@ -2,7 +2,7 @@
 
 All notable changes to `twill` will be documented in this file.
 
-## 1.2.1 (UNRELEASED)
+## 1.2.1 2019-03-15
 
 ### Added
 - Laravel 5.8 support (#209)
@@ -36,10 +36,16 @@ All notable changes to `twill` will be documented in this file.
 - Fix logged-in admin user privilege escalation (27cd3f8a)
 - Prevent unauthorized users from accessing CMS users listing
 - Fix translated file form field creating duplicate attached files after saving twice
+- Fix uploader showing duplicate on upload error
 
 
 ### Improved
 - Update to Laravel Mix 4 (#113)
+- Address some install and build issues:
+  - Publish compiled assets on install
+  - Provide an experimental artisan based build command `php artisan twill:build`
+  - Move npm documentation down as this is not needed to get started anymore, only when creating custom blocks
+  - Fix npm scripts cp syntax once again, fixing #165
 - Update front language components to support large number of languages (#47) (5e6c22a)
 - Check database connection before twill:install (#66) (30b25be)
 - Improve create super admin command (#68) (8ca8927)
