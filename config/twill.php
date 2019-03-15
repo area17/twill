@@ -30,7 +30,7 @@ return [
     |
     | This value add some patterns for the domain and routes of the admin.
     |
-    */
+     */
     'admin_route_patterns' => [
     ],
 
@@ -43,7 +43,6 @@ return [
     |
      */
     'admin_middleware_group' => 'web',
-
 
     /*
     |--------------------------------------------------------------------------

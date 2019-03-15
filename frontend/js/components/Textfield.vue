@@ -136,7 +136,7 @@
       textfieldClasses: function () {
         return {
           'input__field--textarea': this.type === 'textarea',
-          'input__field--small': this.size === 'small',
+          'input__field--small': this.size === 'small' && !this.type === 'textarea',
           's--focus': this.focused,
           's--disabled': this.disabled
         }
@@ -168,11 +168,6 @@
     watch: {
       initialValue: function () {
         this.updateValue(this.initialValue)
-      },
-      submitting: function () {
-        if (this.submitting) { // The form is about to submit so lets make sure we are saving the textfield
-          this.updateAndSaveValue(this.$refs.input.value)
-        }
       }
     },
     methods: {
@@ -190,12 +185,8 @@
       },
       updateAndSaveValue: function (newValue) {
         this.updateValue(newValue)
-
-        // Only save into the store if something changed from the moment you focused the field
-        if (this.lastSavedValue !== this.value) {
-          this.lastSavedValue = this.value
-          this.saveIntoStore() // see formStore mixin
-        }
+        this.lastSavedValue = this.value
+        this.saveIntoStore() // see formStore mixin
       },
       updateCounter: function (newValue) {
         if (this.maxlength > 0) this.counter = this.maxlength - (newValue ? newValue.toString().length : 0)

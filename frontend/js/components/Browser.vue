@@ -247,14 +247,6 @@
     .browser__sources-select {
       padding: 20px 0;
       margin-right: 15px;
-
-      /deep/ .input {
-        margin-top: 0;
-      }
-
-      /deep/ .vselect__field .dropdown-toggle {
-        height: 35px;
-      }
     }
   }
 
@@ -289,5 +281,16 @@
       padding-bottom: 0;
     }
   }
+</style>
 
+<style lang="scss">
+  .browser .browser__sources .browser__sources-select {
+    .input {
+      margin-top: 0;
+    }
+
+    .vselect__field .dropdown-toggle {
+      height: 35px;
+    }
+  }
 </style>
