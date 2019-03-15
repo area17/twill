@@ -24,28 +24,6 @@ mix.webpackConfig({
       'styles': path.resolve('frontend/scss')
     }
   },
-  optimization: {
-    runtimeChunk: {
-      name: 'assets/admin/js/manifest'
-    },
-    splitChunks: {
-      cacheGroups: {
-        vendor: {
-          test (module, chunks) {
-            // This prevents stylesheet resources with these extensions
-            // from being moved from their original chunk to the vendor chunk
-            if (module.resource && (/^.*\.(css|scss|less)$/).test(module.resource)) {
-              return false
-            }
-            return module.context && module.context.indexOf('node_modules') !== -1
-          },
-          chunks: "initial",
-          name: "assets/admin/js/vendor",
-          enforce: true
-        }
-      }
-    }
-  },
   module: {
     rules: [
       {
@@ -80,6 +58,8 @@ mix.js(
   'frontend/scss/app.scss',
   'public/assets/admin/css'
 )
+
+mix.extract()
 
 if (mix.inProduction()) {
   mix.version()
