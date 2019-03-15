@@ -35,6 +35,7 @@ class Install extends Command
         $this->publishMigrations();
         $this->call('migrate');
         $this->publishConfig();
+        $this->publishAssets();
         $this->createSuperAdmin();
         $this->info('All good!');
     }
@@ -76,6 +77,14 @@ class Install extends Command
         $this->call('vendor:publish', [
             '--provider' => 'A17\Twill\TwillServiceProvider',
             '--tag' => 'config',
+        ]);
+    }
+
+    private function publishAssets()
+    {
+        $this->call('vendor:publish', [
+            '--provider' => 'A17\Twill\TwillServiceProvider',
+            '--tag' => 'assets',
         ]);
     }
 
