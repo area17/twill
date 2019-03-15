@@ -982,3 +982,134 @@ protected function previewData($item)
     ];
 }
 ```
+
+### Nested Module
+
+To create a nested module with parent/child relationships, you should include the `laravel-nestedset` package to your application.
+
+To install the package: `composer require kalnoy/nestedset`
+
+Then add nested set columns to your database table:
+
+For Laravel 5.5 and above users:
+
+```php
+Schema::create('pages', function (Blueprint $table) {
+    ...
+    $table->nestedSet();
+});
+
+// To drop columns
+Schema::table('pages', function (Blueprint $table) {
+    $table->dropNestedSet();
+});
+```
+
+For prior Laravel Versions:
+
+```php
+...
+use Kalnoy\Nestedset\NestedSet;
+
+Schema::create('pages', function (Blueprint $table) {
+    ...
+    NestedSet::columns($table);
+});
+
+// To drop columns
+Schema::table('pages', function (Blueprint $table) {
+    NestedSet::dropColumns($table);
+});
+```
+
+Your model should use the `Kalnoy\Nestedset\NodeTrait` trait to enable nested sets, as well as the `HasPosition` trait and some helper functions to save a new tree organisation from Twill's drag and drop UI:
+
+```php
+use A17\Twill\Models\Behaviors\HasPosition;
+use Kalnoy\Nestedset\NodeTrait;
+...
+
+class Page extends Model {
+    use HasPostion, NodeTrait;
+    ...
+    public static function saveTreeFromIds($nodesArray)
+    {
+        $parentNodes = self::find(array_pluck($nodesArray, 'id'));
+    
+        if (is_array($nodesArray)) {
+            $position = 1;
+            foreach ($nodesArray as $nodeArray) {
+                $node = $parentNodes->where('id', $nodeArray['id'])->first();
+                $node->position = $position++;
+                $node->saveAsRoot();
+            }
+        }
+    
+        $parentNodes = self::find(array_pluck($nodesArray, 'id'));
+    
+        self::rebuildTree($nodesArray, $parentNodes);
+    }
+    
+    public static function rebuildTree($nodesArray, $parentNodes)
+    {
+        if (is_array($nodesArray)) {
+            foreach ($nodesArray as $nodeArray) {
+                $parent = $parentNodes->where('id', $nodeArray['id'])->first();
+                if (isset($nodeArray['children']) && is_array($nodeArray['children'])) {
+                    $position = 1;
+                    $nodes = self::find(array_pluck($nodeArray['children'], 'id'));
+                    foreach ($nodeArray['children'] as $child) {
+                        //append the children to their (old/new)parents
+                        $descendant = $nodes->where('id', $child['id'])->first();
+                        $descendant->position = $position++;
+                        $descendant->parent_id = $parent->id;
+                        $descendant->save();
+                        self::rebuildTree($nodeArray['children'], $nodes);
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+From your module's repository, you'll need to override the `setNewOrder` function:
+
+```php
+public function setNewOrder($ids)
+{
+    DB::transaction(function () use ($ids) {
+        Page::saveTreeFromIds($ids);
+    }, 3);
+}
+```
+
+If you expect your users to create a lot of records, you'll want to move this operation into a queued job.
+
+Finally, to enable Twill's nested listing UI, you'll need to do the following in your module's controller:
+
+```php
+protected $indexOptions = [
+    'reorder' => true,
+];
+
+protected function indexData($request)
+{
+    return [
+        'nested' => true,
+        'nestedDepth' => 2, // this controls the allowed depth in UI
+    ];
+}
+
+protected function transformIndexItems($items)
+{
+    return $items->toTree();
+}
+
+protected function indexItemData($item)
+{
+    return ($item->children ? [
+        'children' => $this->getIndexTableData($item->children),
+    ] : []);
+}
+```
