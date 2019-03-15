@@ -210,7 +210,7 @@ class TwillServiceProvider extends ServiceProvider
     private function publishAssets()
     {
         $this->publishes([
-            __DIR__ . '/../public' => public_path(),
+            __DIR__ . '/../dist' => public_path(),
         ], 'assets');
     }
 
