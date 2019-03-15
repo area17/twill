@@ -62,7 +62,7 @@ class ModuleMake extends Command
         $this->createRequest($modelName);
         $this->createViews($moduleName, $translatable);
 
-        $this->info("Add Route::module('{$moduleName}'); to your admin routes file.\n");
+        $this->info("Add Route::module('{$moduleName}'); to your admin routes file.");
         $this->info("Setup a new CMS menu item in config/twill-navigation.php:");
 
         $navTitle = Str::studly($moduleName);
@@ -88,9 +88,9 @@ class ModuleMake extends Command
 
         $className = "Create{$tableClassName}Tables";
 
-        if (!class_exists($className)) {
-            $migrationName = 'create_' . $table . '_tables';
+        $migrationName = 'create_' . $table . '_tables';
 
+        if (!count(glob(database_path('migrations/*' . $migrationName . '.php')))) {
             $migrationPath = $this->laravel->databasePath() . '/migrations';
 
             $fullPath = $this->laravel['migration.creator']->create($migrationName, $migrationPath);
@@ -103,7 +103,7 @@ class ModuleMake extends Command
 
             $this->files->put($fullPath, $stub);
 
-            $this->info("Migration created successfully! Add some fields!\n");
+            $this->info("Migration created successfully! Add some fields!");
         }
     }
 
@@ -173,7 +173,7 @@ class ModuleMake extends Command
 
         $this->files->put(app_path('Models/' . $modelClassName . '.php'), $stub);
 
-        $this->info("Models created successfully! Fill your fillables!\n");
+        $this->info("Models created successfully! Fill your fillables!");
     }
 
     private function createRepository($modelName = 'Item', $activeTraits = [])
@@ -200,7 +200,7 @@ class ModuleMake extends Command
 
         $this->files->put(app_path('Repositories/' . $repositoryClassName . '.php'), $stub);
 
-        $this->info("Repository created successfully! Control all the things!\n");
+        $this->info("Repository created successfully! Control all the things!");
     }
 
     private function createController($moduleName = 'items', $modelName = 'Item')
@@ -219,7 +219,7 @@ class ModuleMake extends Command
 
         $this->files->put(app_path('Http/Controllers/Admin/' . $controllerClassName . '.php'), $stub);
 
-        $this->info("Controller created successfully! Define your index/browser/form endpoints options!\n");
+        $this->info("Controller created successfully! Define your index/browser/form endpoints options!");
     }
 
     private function createRequest($modelName = 'Item')
@@ -234,7 +234,7 @@ class ModuleMake extends Command
 
         $this->files->put(app_path('Http/Requests/Admin/' . $requestClassName . '.php'), $stub);
 
-        $this->info("Form request created successfully! Add some validation rules!\n");
+        $this->info("Form request created successfully! Add some validation rules!");
     }
 
     private function createViews($moduleName = 'items', $translatable = false)
@@ -249,6 +249,6 @@ class ModuleMake extends Command
 
         $this->files->put($viewsPath . '/form.blade.php', $this->files->get(__DIR__ . '/stubs/' . $formView . '.blade.stub'));
 
-        $this->info("Form view created successfully! Include your form fields using @formField directives!\n");
+        $this->info("Form view created successfully! Include your form fields using @formField directives!");
     }
 }

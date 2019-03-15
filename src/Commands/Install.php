@@ -61,10 +61,12 @@ class Install extends Command
             '--tag' => 'migrations',
         ]);
 
-        $this->call('vendor:publish', [
-            '--provider' => 'Spatie\Activitylog\ActivitylogServiceProvider',
-            '--tag' => 'migrations',
-        ]);
+        if (!class_exists('CreateActivityLogTable')) {
+            $this->call('vendor:publish', [
+                '--provider' => 'Spatie\Activitylog\ActivitylogServiceProvider',
+                '--tag' => 'migrations',
+            ]);
+        }
     }
 
     private function createSuperAdmin()
