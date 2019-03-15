@@ -22,7 +22,7 @@ class CreateRelatedTable extends Migration
             $table->integer('position')->unsigned();
 
             $table->unique(
-                ['subject_id', 'subject_type', 'related_id', 'related_type'],
+                ['subject_id', 'subject_type', 'related_id', 'related_type', 'browser_name'],
                 'related_unique'
             );
         });

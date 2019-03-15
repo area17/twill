@@ -63,8 +63,6 @@
               message: 'Your content can not be added, please retry',
               variant: 'error'
             })
-
-            if (self.$refs.modal) self.$refs.modal.close()
           })
         })
       }

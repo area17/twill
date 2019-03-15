@@ -3,6 +3,7 @@
     $inline = $inline ?? false;
     $default = $default ?? false;
     $inModal = $fieldsInModal ?? false;
+    $disabled = $disabled ?? false;
 @endphp
 
 <a17-singlecheckbox
@@ -10,6 +11,7 @@
     label="{{ $label ?? '' }}"
     :initial-value="{{ $default ? 'true' : 'false' }}"
     @if ($note) note='{{ $note }}' @endif
+    @if ($disabled) disabled @endif
     :has-default-store="true"
     in-store="currentValue"
 ></a17-singlecheckbox>

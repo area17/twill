@@ -47,7 +47,11 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->role_value, [UserRole::PUBLISHER, UserRole::ADMIN]);
         });
 
-        Gate::define('edit-user', function ($user, $editedUser =null) {
+        Gate::define('upload', function ($user) {
+            return in_array($user->role_value, [UserRole::PUBLISHER, UserRole::ADMIN]);
+        });
+
+        Gate::define('edit-user', function ($user, $editedUser = null) {
             $editedUserObject = User::find($editedUser);
             return ($user->can('edit') && in_array($user->role_value, [UserRole::ADMIN]) || $user->id == $editedUser)
                 && ($editedUserObject ? $editedUserObject->role !== self::SUPERADMIN : true);
@@ -59,7 +63,7 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('publish-user', function ($user) {
             $editedUserObject = User::find(request('id'));
-            return $user->can('publish') && $user->id !== $editedUserObject->id && $editedUserObject->role !== self::SUPERADMIN;
+            return $user->can('publish') && ($editedUserObject ? $user->id !== $editedUserObject->id && $editedUserObject->role !== self::SUPERADMIN : false);
         });
 
         Gate::define('impersonate', function ($user) {

@@ -11,11 +11,11 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   @import '~styles/setup/_mixins-colors-vars.scss';
 
   /* With HTML */
-  .tablecell__raw /deep/ a {
+  .tablecell__raw a {
     text-decoration: none;
     cursor: pointer;
     @include bordered;

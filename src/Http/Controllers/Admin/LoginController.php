@@ -2,9 +2,12 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Models\User;
 use Auth;
+use Crypt;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use PragmaRX\Google2FA\Google2FA;
 
 class LoginController extends Controller
 {
@@ -31,6 +34,11 @@ class LoginController extends Controller
         return view('twill::auth.login');
     }
 
+    public function showLogin2FaForm()
+    {
+        return view('twill::auth.2fa');
+    }
+
     public function logout(Request $request)
     {
         $this->guard()->logout();
@@ -40,6 +48,44 @@ class LoginController extends Controller
         $request->session()->regenerate();
 
         return redirect(route('admin.login'));
+    }
+
+    protected function authenticated(Request $request, $user)
+    {
+        if ($user->google_2fa_secret && $user->google_2fa_enabled) {
+            $this->guard()->logout();
+
+            $request->session()->put('2fa:user:id', $user->id);
+
+            return redirect(route('admin.login-2fa.form'));
+        }
+
+        return redirect()->intended($this->redirectTo);
+    }
+
+    public function login2Fa(Request $request)
+    {
+        $userId = $request->session()->get('2fa:user:id');
+
+        $user = User::findOrFail($userId);
+
+        $valid = (new Google2FA)->verifyKey(
+            Crypt::decrypt($user->google_2fa_secret),
+            $request->input('verify-code')
+        );
+
+        if ($valid) {
+            Auth::guard('twill_users')->loginUsingId($userId);
+
+            $request->session()->pull('2fa:user:id');
+
+            return redirect()->intended($this->redirectTo);
+        }
+
+        return redirect(route('admin.login-2fa.form'))->withErrors([
+            'error' => 'Your one time password is invalid.',
+        ]);
+
     }
 
     /**
