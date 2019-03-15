@@ -439,23 +439,22 @@ return [
 
 ### Content Editor
 
-You could enable the content editor by providing the `view/site/layouts/block.blade.php` blade file. The layout shoud be a markup yield a `content` section: `@yield('content')` with CSS/JS file included as same as the your main frontend layout, an easy example will be:
+You can enable the content editor individual block previews by providing a `resources/views/site/layouts/block.blade.php` lade layout file. The layout should be yielding a `content` section: `@yield('content')` with any frontend CSS/JS included exactly like in your main frontend layout. A simple example could be:
 
 ```php
 <!doctype html>
 <html>
     <head>
-        <title>Twill Site</title>
-        <link rel="stylesheet" href="{{ mix('css/app.css', 'assets/front') }}">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <title>#madewithtwill website</title>
+        <link rel="stylesheet" href="/css/app.css">
     </head>
     <body>
         <div>
             @yield('content')
         </div>
-        <script src="{{ mix('js/app.js', 'assets/front') }}"></script>
+        <script src="/js/app.js"></script>
     </body>
 </html>
 ```
 
-If you would like to specify a custom layout view path, you could set it in `config/twill.php` at `twill.block_editor.block_single_layout`.
+If you would like to specify a custom layout view path, you can do so in `config/twill.php` at `twill.block_editor.block_single_layout`. In order to share the most of the layout between your frontend and individual blocks (essentially its assets), you can also create a parent layout and extend it from both.
