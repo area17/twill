@@ -4,6 +4,5 @@ vendor/
 !frontend/scss/vendor
 /node_modules
 assets/dist/*
-mix-manifest.json
 frontend/js/components/blocks/customs/*
 .DS_Store
