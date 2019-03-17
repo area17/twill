@@ -3,8 +3,10 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Enums\UserRole;
+use Auth;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
+use PragmaRX\Google2FAQRCode\Google2FA;
 
 class UserController extends ModuleController
 {
@@ -48,12 +50,18 @@ class UserController extends ModuleController
         'permalink' => false,
     ];
 
+    protected $fieldsPermissions = [
+        'role' => 'edit-user-role',
+    ];
+
     public function __construct(Application $app, Request $request)
     {
         parent::__construct($app, $request);
         $this->removeMiddleware('can:edit');
+        $this->removeMiddleware('can:delete');
         $this->removeMiddleware('can:publish');
-        $this->middleware('can:edit-user,user', ['only' => ['store', 'edit', 'update']]);
+        $this->middleware('can:edit-user-role', ['only' => ['index']]);
+        $this->middleware('can:edit-user,user', ['only' => ['store', 'edit', 'update', 'destroy', 'bulkDelete', 'restore', 'bulkRestore']]);
         $this->middleware('can:publish-user', ['only' => ['publish']]);
 
         if (config('twill.enabled.users-image')) {
@@ -89,6 +97,26 @@ class UserController extends ModuleController
 
     protected function formData($request)
     {
+        $user = Auth::guard('twill_users')->user();
+        $with2faSettings = config('twill.enabled.users-2fa') && $user->id == request('user');
+
+        if ($with2faSettings) {
+            $google2fa = new Google2FA();
+
+            if (is_null($user->google_2fa_secret)) {
+                $secret = $google2fa->generateSecretKey();
+                $user->google_2fa_secret = \Crypt::encrypt($secret);
+                $user->save();
+            }
+
+            $qrCode = $google2fa->getQRCodeInline(
+                config('app.name'),
+                $user->email,
+                \Crypt::decrypt($user->google_2fa_secret),
+                200
+            );
+        }
+
         return [
             'roleList' => collect(UserRole::toArray()),
             'single_primary_nav' => [
@@ -99,6 +127,8 @@ class UserController extends ModuleController
             ],
             'customPublishedLabel' => 'Enabled',
             'customDraftLabel' => 'Disabled',
+            'with2faSettings' => $with2faSettings,
+            'qrCode' => $qrCode ?? null,
         ];
     }
 
@@ -134,7 +164,7 @@ class UserController extends ModuleController
 
     protected function getIndexOption($option)
     {
-        if (in_array($option, ['publish', 'bulkEdit'])) {
+        if (in_array($option, ['publish', 'delete', 'restore'])) {
             return auth('twill_users')->user()->can('edit-user-role');
         }
 
@@ -144,7 +174,8 @@ class UserController extends ModuleController
     protected function indexItemData($item)
     {
         $canEdit = auth('twill_users')->user()->can('edit-user-role') || auth('twill_users')->user()->id === $item->id;
-
-        return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
+        return [
+            'edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null,
+        ];
     }
 }

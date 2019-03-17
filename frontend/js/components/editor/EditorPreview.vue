@@ -1,5 +1,5 @@
 <template>
-  <div class="editorPreview" @mousedown="unselectBlock">
+  <div class="editorPreview" :editorPreviewClass="editorPreviewClass" @mousedown="unselectBlock">
     <div class="editorPreview__empty" v-if="!blocks.length">
       <b>Drag and drop content from the left navigation</b>
     </div>
@@ -59,6 +59,11 @@
       },
       hasBlockActive: function () {
         return Object.keys(this.activeBlock).length
+      },
+      editorPreviewClass () {
+        return {
+          'editorPreview--loading': this.loading
+        }
       },
       ...mapState({
         loading: state => state.content.loading,
@@ -176,6 +181,10 @@
   .editorPreview {
     background-color:inherit;
     color:inherit;
+
+    &.editorPreview--loading {
+      opacity: 0;
+    }
   }
 
   .editorPreview__content {

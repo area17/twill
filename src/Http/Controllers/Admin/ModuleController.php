@@ -107,6 +107,11 @@ abstract class ModuleController extends Controller
      */
     protected $disableEditor = false;
 
+    /*
+     * List of permissions keyed by a request field. Can be used to prevent unauthorized field updates.
+     */
+    protected $fieldsPermissions = [];
+
     public function __construct(Application $app, Request $request)
     {
         parent::__construct();
@@ -1044,6 +1049,14 @@ abstract class ModuleController extends Controller
 
     protected function validateFormRequest()
     {
+        $unauthorizedFields = collect($this->fieldsPermissions)->filter(function ($permission, $field) {
+            return auth('twill_users')->user()->cannot($permission);
+        })->keys();
+
+        $unauthorizedFields->each(function ($field) {
+            $this->request->offsetUnset($field);
+        });
+
         return $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
     }
 
@@ -1186,6 +1199,6 @@ abstract class ModuleController extends Controller
 
     protected function fireEvent($input = [])
     {
-        Event::fire('cms-module.saved', ['cms-module.saved', $input]);
+        fireCmsEvent('cms-module.saved', $input);
     }
 }

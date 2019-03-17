@@ -20,7 +20,7 @@ This will generate a migration file, a model, a repository, a controller, a form
 
 Start by filling in the migration and models using the documentation below.
 
-Add `Route::module('yourPluralModuleName}');` to your admin routes file.
+Add `Route::module('yourPluralModuleName');` to your admin routes file.
 
 Setup a new CMS menu item in `config/twill-navigation.php`.
 
@@ -461,6 +461,7 @@ You can also override all actions and internal functions, checkout the ModuleCon
 ### Form Requests
 Classic Laravel 5 [form request validation](https://laravel.com/docs/5.5/validation#form-request-validation).
 
+Once you generated the module using Twill's CLI module generator, it will also prepare the `App/Http/Requests/Admin/ModuleNameRequest.php` for you to use.
 You can choose to use different rules for creation and update by implementing the following 2 functions instead of the classic `rules` one:
 
 ```php
@@ -500,6 +501,8 @@ $this->messagesForTranslatedFields([
   // translated fields messages
 ]);
 ```
+
+Once you defined the rules in this file, the UI will show the corresponding validation error state or message next to the corresponding form field.
 
 ### Routes
 
@@ -628,6 +631,14 @@ You can also rename the content section by passing a `contentFieldsetLabel` prop
     'note' => 'Minimum image width: 1500px'
 ])
 ```
+
+Right after declaring the media formField in the blade template file, you still need to do a few things to make it works properly.
+
+If the formField is in a static content form, you have to include the `HasMedias` Trait in your module's [Model](https://twill.io/docs/#models) and inlcude `HandleMedias` in your module's [Repository](https://twill.io/docs/#repositories), in addition, you have to uncomment the `$mediasParams` section in your Model file to let the model know about fields you'd like to save from the form.
+
+Learn more about how Twill's media configurations work at [Model](https://twill.io/docs/#models), [Repository](https://twill.io/docs/#repositories), [Media Library Role & Crop Params](https://twill.io/docs/#image-rendering-service)
+
+If the formField is used inside a block, you need to define the `mediasParams` at `config/twill.php` under `crops` key, and you are good to go. You could checkout [Twill Default Configuration](https://twill.io/docs/#default-configuration) and [Rendering Blocks](https://twill.io/docs/#rendering-blocks) for references.
 
 #### Datepicker
 ![screenshot](/docs/_media/datepicker.png)
@@ -825,6 +836,24 @@ You can also rename the content section by passing a `contentFieldsetLabel` prop
 ])
 ```
 
+Similar to the media formField, to make the file field works, you have to include the `HasFiles` trait in your module's [Model](https://twill.io/docs/#models), and include `HandleFiles` trait in your module's [Repository](https://twill.io/docs/#repositories). At last, add the `filesParams` configuration array in your model.
+```php
+public $filesParams = ['file_role', ...]; // a list of file roles
+```
+
+Learn more at [Model](https://twill.io/docs/#models), [Repository](https://twill.io/docs/#repositories).
+
+If you are using the file formField in a block, you have to define the `files` key in `config/twill.php` and you are all set, put it under `block_editor` key and at the same level as `crops` key:
+```php
+return [
+    'block_editor' => [
+        'crops' => [
+            ...
+        ],
+        'files' => ['file_role1', 'file_role2', ...]
+    ]
+```
+
 #### Map
 ![screenshot](/docs/_media/map.png)
 
@@ -865,7 +894,7 @@ This field requires that you provide a `GOOGLE_MAPS_API_KEY` variable in your .e
     'note' => '3 sectors max & at least 1 sector',
     'min' => 1,
     'max' => 3,
-    'inline' => true/false
+    'inline' => true,
     'options' => [
         [
             'value' => 'arts',
@@ -951,5 +980,136 @@ protected function previewData($item)
         'project' => $item,
         'setting_name' => $settingRepository->byKey('setting_name')
     ];
+}
+```
+
+### Nested Module
+
+To create a nested module with parent/child relationships, you should include the `laravel-nestedset` package to your application.
+
+To install the package: `composer require kalnoy/nestedset`
+
+Then add nested set columns to your database table:
+
+For Laravel 5.5 and above users:
+
+```php
+Schema::create('pages', function (Blueprint $table) {
+    ...
+    $table->nestedSet();
+});
+
+// To drop columns
+Schema::table('pages', function (Blueprint $table) {
+    $table->dropNestedSet();
+});
+```
+
+For prior Laravel Versions:
+
+```php
+...
+use Kalnoy\Nestedset\NestedSet;
+
+Schema::create('pages', function (Blueprint $table) {
+    ...
+    NestedSet::columns($table);
+});
+
+// To drop columns
+Schema::table('pages', function (Blueprint $table) {
+    NestedSet::dropColumns($table);
+});
+```
+
+Your model should use the `Kalnoy\Nestedset\NodeTrait` trait to enable nested sets, as well as the `HasPosition` trait and some helper functions to save a new tree organisation from Twill's drag and drop UI:
+
+```php
+use A17\Twill\Models\Behaviors\HasPosition;
+use Kalnoy\Nestedset\NodeTrait;
+...
+
+class Page extends Model {
+    use HasPostion, NodeTrait;
+    ...
+    public static function saveTreeFromIds($nodesArray)
+    {
+        $parentNodes = self::find(array_pluck($nodesArray, 'id'));
+    
+        if (is_array($nodesArray)) {
+            $position = 1;
+            foreach ($nodesArray as $nodeArray) {
+                $node = $parentNodes->where('id', $nodeArray['id'])->first();
+                $node->position = $position++;
+                $node->saveAsRoot();
+            }
+        }
+    
+        $parentNodes = self::find(array_pluck($nodesArray, 'id'));
+    
+        self::rebuildTree($nodesArray, $parentNodes);
+    }
+    
+    public static function rebuildTree($nodesArray, $parentNodes)
+    {
+        if (is_array($nodesArray)) {
+            foreach ($nodesArray as $nodeArray) {
+                $parent = $parentNodes->where('id', $nodeArray['id'])->first();
+                if (isset($nodeArray['children']) && is_array($nodeArray['children'])) {
+                    $position = 1;
+                    $nodes = self::find(array_pluck($nodeArray['children'], 'id'));
+                    foreach ($nodeArray['children'] as $child) {
+                        //append the children to their (old/new)parents
+                        $descendant = $nodes->where('id', $child['id'])->first();
+                        $descendant->position = $position++;
+                        $descendant->parent_id = $parent->id;
+                        $descendant->save();
+                        self::rebuildTree($nodeArray['children'], $nodes);
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+From your module's repository, you'll need to override the `setNewOrder` function:
+
+```php
+public function setNewOrder($ids)
+{
+    DB::transaction(function () use ($ids) {
+        Page::saveTreeFromIds($ids);
+    }, 3);
+}
+```
+
+If you expect your users to create a lot of records, you'll want to move this operation into a queued job.
+
+Finally, to enable Twill's nested listing UI, you'll need to do the following in your module's controller:
+
+```php
+protected $indexOptions = [
+    'reorder' => true,
+];
+
+protected function indexData($request)
+{
+    return [
+        'nested' => true,
+        'nestedDepth' => 2, // this controls the allowed depth in UI
+    ];
+}
+
+protected function transformIndexItems($items)
+{
+    return $items->toTree();
+}
+
+protected function indexItemData($item)
+{
+    return ($item->children ? [
+        'children' => $this->getIndexTableData($item->children),
+    ] : []);
 }
 ```

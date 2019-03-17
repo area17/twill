@@ -180,12 +180,6 @@
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
 
-  // .datePicker {
-  // }
-
-  // .datePicker__group {
-  // }
-
   .datePicker__field {
     display: flex;
   }
@@ -242,23 +236,27 @@
   .flatpickr-wrapper {
     display:block;
   }
+</style>
 
-  /* Mobile bersion */
-  .datePicker__group /deep/ input.flatpickr-input.flatpickr-mobile {
-    width:100%;
+<style lang="scss">
+  /* Mobile version */
+  .datePicker__group input.flatpickr-input.flatpickr-mobile {
+    width: 100%;
     font-family: inherit;
     font-size: inherit;
-    background:transparent;
-    border:0 none;
+    background: transparent;
+    border: 0 none;
     padding: 0 15px;
     -webkit-appearance: none;
 
     &::-webkit-clear-button {
       display: none;
     }
+
     &::-webkit-inner-spin-button {
       display: none;
     }
+
     &::-webkit-calendar-picker-indicator {
       display: none;
     }

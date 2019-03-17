@@ -20,6 +20,15 @@ class Media extends Model
         'height',
     ];
 
+    public function __construct(array $attributes = [])
+    {
+        $this->fillable(array_merge($this->fillable, collect(config('twill.media_library.extra_metadatas_fields'))->map(function ($field) {
+            return $field['name'];
+        })->toArray()));
+
+        parent::__construct($attributes);
+    }
+
     public function getDimensionsAttribute()
     {
         return $this->width . 'x' . $this->height;
@@ -50,6 +59,29 @@ class Media extends Model
             'medium' => ImageService::getUrl($this->uuid, ["h" => "430"]),
             'width' => $this->width,
             'height' => $this->height,
+            'tags' => $this->tags->map(function ($tag) {
+                return $tag->name;
+            }),
+            'deleteUrl' => $this->canDeleteSafely() ? moduleRoute('medias', 'media-library', 'destroy', $this->id) : null,
+            'updateUrl' => route('admin.media-library.medias.single-update'),
+            'updateBulkUrl' => route('admin.media-library.medias.bulk-update'),
+            'deleteBulkUrl' => route('admin.media-library.medias.bulk-delete'),
+            'metadatas' => [
+                'default' => [
+                    'caption' => $this->caption,
+                    'altText' => $this->alt_text,
+                    'video' => null,
+                ] + collect(config('twill.media_library.extra_metadatas_fields'))->mapWithKeys(function ($field) {
+                    return [
+                        $field['name'] => $this->{$field['name']},
+                    ];
+                })->toArray(),
+                'custom' => [
+                    'caption' => null,
+                    'altText' => null,
+                    'video' => null,
+                ],
+            ],
         ];
     }
 
@@ -57,7 +89,7 @@ class Media extends Model
     {
         $metadatas = (object) json_decode($this->pivot->metadatas);
         $language = app()->getLocale();
-        $fallback = $fallback ? $this->$fallback : $this->name;
+        $fallback = $fallback ? $this->$fallback : $this->$name;
 
         return $metadatas->$name->$language ?? (
             is_object($metadatas->$name ?? null)

@@ -461,7 +461,11 @@
           })
 
           // try to load the media thumbnail
-          this.img.src = this.media.thumbnail + '&no-cache'
+          let append = '?'
+          if (this.media.thumbnail.indexOf('?') > -1) {
+            append = '&'
+          }
+          this.img.src = this.media.thumbnail + append + 'no-cache'
         })
       },
       showDefaultThumbnail: function () {
@@ -616,10 +620,6 @@
     }
   }
 
-  // .media__square {
-  //   width:100%;
-  // }
-
   // Image centered in a square option
   .media__imgFrame {
     width:100%;
@@ -763,10 +763,6 @@
     }
   }
 
-  .media__actions-dropDown /deep/ .dropdown__content {
-    margin-top: 10px;
-  }
-
   .media.media--hoverable {
     .media__actions {
       opacity: 0;
@@ -793,5 +789,11 @@
       margin-top:20px;
       margin-bottom:20px;
     }
+  }
+</style>
+
+<style lang="scss">
+  .media .media__actions-dropDown .dropdown__content {
+    margin-top: 10px;
   }
 </style>

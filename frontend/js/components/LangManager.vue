@@ -5,7 +5,7 @@
     </div>
     <a17-dropdown class="languageManager__dropdown"
                   ref="languageManagerDropdown"
-                  position="top-right"
+                  position="bottom-right"
                   :clickable="true">
       <button class="languageManager__button"
               type="button"

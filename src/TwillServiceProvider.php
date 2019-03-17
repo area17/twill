@@ -2,6 +2,7 @@
 
 namespace A17\Twill;
 
+use A17\Twill\Commands\Build;
 use A17\Twill\Commands\CreateSuperAdmin;
 use A17\Twill\Commands\GenerateBlocks;
 use A17\Twill\Commands\Install;
@@ -46,6 +47,7 @@ class TwillServiceProvider extends ServiceProvider
 
         $this->publishConfigs();
         $this->publishMigrations();
+        $this->publishAssets();
 
         $this->registerCommands();
 
@@ -205,6 +207,13 @@ class TwillServiceProvider extends ServiceProvider
         }
     }
 
+    private function publishAssets()
+    {
+        $this->publishes([
+            __DIR__ . '/../dist' => public_path(),
+        ], 'assets');
+    }
+
     private function registerAndPublishViews()
     {
         $viewPath = __DIR__ . '/../views';
@@ -221,6 +230,7 @@ class TwillServiceProvider extends ServiceProvider
             CreateSuperAdmin::class,
             RefreshLQIP::class,
             GenerateBlocks::class,
+            Build::class,
         ]);
     }
 
