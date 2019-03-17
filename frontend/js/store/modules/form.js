@@ -69,7 +69,13 @@ const state = {
    * Is this a custom form (that will let the browser submit the form instead of hooking up the submit event)
    * @type {Bookean}
    */
-  isCustom: window.STORE.form.isCustom || false
+  isCustom: window.STORE.form.isCustom || false,
+  /**
+   * Force reload on successful submit
+   * @type {Bookean}
+   */
+  reloadOnSuccess: window.STORE.form.reloadOnSuccess || false
+
 }
 
 // getters
@@ -280,6 +286,11 @@ const actions = {
       if (successResponse.data.hasOwnProperty('redirect')) {
         window.location.replace(successResponse.data.redirect)
       }
+
+      if (state.reloadOnSuccess) {
+        window.location.reload()
+      }
+
       commit(NOTIFICATION.SET_NOTIF, { message: successResponse.data.message, variant: successResponse.data.variant })
       commit(PUBLICATION.UPDATE_PUBLISH_SUBMIT)
       if (successResponse.data.hasOwnProperty('revisions')) {

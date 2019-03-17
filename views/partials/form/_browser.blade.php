@@ -1,8 +1,8 @@
 @php
     $name = $name ?? $moduleName;
     $label = $label ?? 'Missing browser label';
-    $endpoint = $endpoint ?? moduleRoute($moduleName, $routePrefix ?? null, 'browser', $params ?? [], false);
     $endpoints = $endpoints ?? [];
+    $endpoint = $endpoint ?? (!empty($endpoints) ? null : moduleRoute($moduleName, $routePrefix ?? null, 'browser', $params ?? [], false));
     $max = $max ?? 1;
     $note = $note ?? 'Add' . ($max > 1 ? " up to $max ". strtolower($label) : ' one ' . str_singular(strtolower($label)));
     $itemLabel = $itemLabel ?? strtolower($label);
@@ -15,7 +15,7 @@
         @include('twill::partials.form.utils._field_name')
         item-label="{{ $itemLabel }}"
         :max="{{ $max }}"
-        :wide = " {{ json_encode($wide) }} "
+        :wide="{{ json_encode($wide) }}"
         endpoint="{{ $endpoint }}"
         :endpoints="{{ json_encode($endpoints) }}"
         modal-title="Attach {{ strtolower($label) }}"

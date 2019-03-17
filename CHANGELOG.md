@@ -2,6 +2,65 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 1.2.1 2019-03-15
+
+### Added
+- Laravel 5.8 support (#209)
+- CMS users 2 factor authentication (requires the `php-imagick` extension installed when enabled) (2753b4aa)
+- Media library custom fields (181eabe3)
+- Browser field with multi-types (a0804b7, e6864f4)
+- Medias, select and radio fields support in settings (#87) (5ba1dcd, 8d251f1)
+- Support for default values in input and wysiwyg fields (1b27210)
+- Add option to keep value inside connector field when toggled (d0a92f2)
+- Implement an easy way to check for images existence (#53) (19e6f8f)
+- Provide a way to disable the main content fieldset in forms (862307e)
+- Add wide modal option to browser form field (#105) (389ce5d)
+- Enable HTML rendering in browsers (#100) (f318bb1, 9ff1bc5)
+- Add a way to add pattern for the routes and domain of the admin (fbc4919)
+
+### Fixed
+- Fix medias and files form fields conflicts (#72) (adbfe66)
+- Fix login error state (e55fd55)
+- Fix npm scripts in documentation (5a6d368)
+- Correct documentation typos (#43) (aece0a3)
+- Fix reference to hard-coded twill users table name by using config value (ec9b377)
+- Fix wrong parameter order in fileObject helper (#99) (1746daf)
+- Fix settings for all types of translatable configurations (2570c5f)
+- Fix select field value in settings for codebases with multiple languages (0936899)
+- Update and block vue-select to last version (2.5.1). Update style and logic according to changes in vue-select (b3d200d)
+- Fixed published scopes hook (3bfbfd0)
+- Fix publication timeframe listing column (2eee60e)
+- Fix CMS global search on translated titles (a5b05d3)
+- Fix for non existing crop settings (ca778f6)
+- Fix default locale column length Closes #80 (209e63f)
+- Fix logged-in admin user privilege escalation (27cd3f8a)
+- Prevent unauthorized users from accessing CMS users listing
+- Fix translated file form field creating duplicate attached files after saving twice
+- Fix uploader showing duplicate on upload error
+
+
+### Improved
+- Update to Laravel Mix 4 (#113)
+- Address some install and build issues:
+  - Publish compiled assets on install
+  - Provide an experimental artisan based build command `php artisan twill:build`
+  - Move npm documentation down as this is not needed to get started anymore, only when creating custom blocks
+  - Fix npm scripts cp syntax once again, fixing #165
+- Update front language components to support large number of languages (#47) (5e6c22a)
+- Check database connection before twill:install (#66) (30b25be)
+- Improve create super admin command (#68) (8ca8927)
+- Added default false value to published column on module's default migration (#93) (21e7317)
+- Wysiwyg - Default styling for the superscript (8b0e950)
+- Update image styling in browser items list (b3c1103)
+- Memoize translations to avoid querying the relationship multiple times when checking for active translations (d0b85be, 90c1b78)
+- Languages list in listings – show first 4 only (ad434c7)
+- Allow main nav to scroll on overflow-x (432b463)
+- Add repeaterName parameter to repository repeater relates functions (#129) (aead7aa)
+- Remove unecessary check for empty value before saving text fields into vuex store (e8866e4)
+- Improve usability of the full screen content editor on mobile
+- Various documentation improvements
+
+
 ## 1.2.0 2018-09-24
 
 It's been an exciting first few months for Twill, and along the way, we've been listening to your [feedback](http://github.com/area17/twill/issues). Today, we're excited to release Twill 1.2 with easier setup, improved documentation, and several improvements. We also happily welcomed our first external contribution from @yanhao-li and a lot of research on extensibility from @IllyaMoskvin!

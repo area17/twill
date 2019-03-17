@@ -97,7 +97,7 @@ importedBlocks.keys().map(block => {
   const blockForName = block.replace(/customs\//, '')
   const blockName = blockForName.match(/\w+/)[0].replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase()
   if (blockName !== 'block') {
-    return Vue.component('a17-' + blockName, importedBlocks(block))
+    return Vue.component('a17-' + blockName, importedBlocks(block).default)
   }
 })
 

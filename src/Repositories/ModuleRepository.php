@@ -118,7 +118,7 @@ abstract class ModuleRepository
         foreach ($fields as $field) {
             if (in_array($field, $translatedAttributes)) {
                 $query->orWhereHas('translations', function ($q) use ($field, $search) {
-                    $q->Where($field, $this->getLikeOperator(), "%{$search}%");
+                    $q->where($field, $this->getLikeOperator(), "%{$search}%");
                 });
             } else {
                 $query->orWhere($field, $this->getLikeOperator(), "%{$search}%");
@@ -516,7 +516,7 @@ abstract class ModuleRepository
             ]) + (classHasTrait($relatedElement, HasMedias::class) ? [
                 'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
             ] : []);
-        })->toArray();
+        })->values()->toArray();
     }
 
     public function updateOneToMany($object, $fields, $relationship, $formField, $attribute)
@@ -615,6 +615,7 @@ abstract class ModuleRepository
 
     public function getReservedFields()
     {
+
         return [
             'medias',
             'browsers',
