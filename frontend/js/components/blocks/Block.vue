@@ -301,6 +301,10 @@
       .block__body {
         .input {
           margin-top: 15px;
+
+          .input {
+            margin-top: 0;
+          }
         }
 
         > .media,
