@@ -20,7 +20,7 @@ This will generate a migration file, a model, a repository, a controller, a form
 
 Start by filling in the migration and models using the documentation below.
 
-Add `Route::module('yourPluralModuleName}');` to your admin routes file.
+Add `Route::module('yourPluralModuleName');` to your admin routes file.
 
 Setup a new CMS menu item in `config/twill-navigation.php`.
 
