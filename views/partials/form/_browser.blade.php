@@ -1,8 +1,18 @@
 @php
     $name = $name ?? $moduleName;
     $label = $label ?? 'Missing browser label';
-    $endpoints = $endpoints ?? [];
+
+    $endpointsFromModules = isset($modules) ? collect($modules)->map(function ($module) {
+        return [
+            'label' => $module['label'] ?? ucfirst($module['name']),
+            'value' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'browser', $module['params'] ?? [], false)
+        ];
+    })->toArray() : null;
+
+    $endpoints = $endpoints ?? $endpointsFromModules ?? [];
+
     $endpoint = $endpoint ?? (!empty($endpoints) ? null : moduleRoute($moduleName, $routePrefix ?? null, 'browser', $params ?? [], false));
+
     $max = $max ?? 1;
     $note = $note ?? 'Add' . ($max > 1 ? " up to $max ". strtolower($label) : ' one ' . str_singular(strtolower($label)));
     $itemLabel = $itemLabel ?? strtolower($label);
