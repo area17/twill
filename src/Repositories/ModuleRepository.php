@@ -146,7 +146,7 @@ abstract class ModuleRepository
 
             $fields = $this->prepareFieldsBeforeSave($object, $fields);
 
-            $object->push();
+            $object->save();
 
             $this->afterSave($object, $fields);
 
@@ -185,7 +185,7 @@ abstract class ModuleRepository
 
             $object->fill(array_except($fields, $this->getReservedFields()));
 
-            $object->push();
+            $object->save();
 
             $this->afterSave($object, $fields);
         }, 3);
