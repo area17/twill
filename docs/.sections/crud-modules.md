@@ -233,6 +233,9 @@ public function getFormFields($object) {
 
     // get fields for a browser
     $fields['browsers']['relationName'] = $this->getFormFieldsForBrowser($object, 'relationName');
+    
+    // get fields for browser populated with content not coming from Twill, but for example a third-party API
+    $fields['browsers']['relationName'] = $this->getFormFieldsForApiBrowser($object, 'relationName', 'database_column_title', 'database_column__url');
 
     // get fields for a repeater
     $fields = $this->getFormFieldsForRepeater($object, $fields, 'relationName', 'ModelName', 'repeaterItemName');

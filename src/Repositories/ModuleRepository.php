@@ -519,6 +519,30 @@ abstract class ModuleRepository
         })->values()->toArray();
     }
 
+    /**
+     * Get form fields for browsers populated via third-party content that is not coming from Twill
+     *
+     * @param $object A17\Twill\Models\Model
+     * @param string $relation - name of relationship method
+     * @param string $titleKey - title column in database
+     * @param string $urlKey - url column in database
+     *
+     * @return mixed
+     */
+    public function getFormFieldsForApiBrowser($object, $relation, $titleKey = 'title', $urlKey = 'url')
+    {
+        return $object->$relation->map(function ($relatedElement) use ($relation, $titleKey, $urlKey) {
+            return [
+                    'id' => $relatedElement->id,
+                    'name' => $relatedElement->$titleKey,
+                    'edit' => $relatedElement->$urlKey ?? '',
+                    'endpointType' => null,
+                ] + (classHasTrait($relatedElement, HasMedias::class) ? [
+                    'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
+                ] : []);
+        })->toArray();
+    }
+
     public function updateOneToMany($object, $fields, $relationship, $formField, $attribute)
     {
         if (isset($fields[$formField])) {
