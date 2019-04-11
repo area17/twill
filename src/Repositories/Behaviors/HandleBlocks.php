@@ -16,23 +16,33 @@ trait HandleBlocks
         $blocksCollection = collect();
         $blocksFromFields = $this->getBlocks($object, $fields);
         $blockRepository = app(BlockRepository::class);
-        $blocksFromFields->each(function ($block, $key) use ($blocksCollection, $blockRepository) {
+
+        $fakeBlockId = 1;
+
+        foreach ($blocksFromFields as $block) {
             $newBlock = $blockRepository->createForPreview($block);
-            $newBlock->id = $key + 1;
+
+            $newBlock->id = $fakeBlockId;
+            $fakeBlockId++;
 
             $childBlocksCollection = collect();
 
-            $block['blocks']->each(function ($childBlock) use ($newBlock, $blocksCollection, $blockRepository, $childBlocksCollection) {
+            foreach ($block['blocks'] as $childBlock) {
                 $childBlock['parent_id'] = $newBlock->id;
+
                 $newChildBlock = $blockRepository->createForPreview($childBlock);
+
+                $newChildBlock->id = $fakeBlockId;
+                $fakeBlockId++;
+
                 $blocksCollection->push($newChildBlock);
                 $childBlocksCollection->push($newChildBlock);
-            });
+            }
 
             $newBlock->setRelation('children', $childBlocksCollection);
 
             $blocksCollection->push($newBlock);
-        });
+        }
 
         $object->setRelation('blocks', $blocksCollection);
 
@@ -109,6 +119,7 @@ trait HandleBlocks
             $blocksConfig = config('twill.block_editor');
 
             foreach ($object->blocks as $block) {
+
                 $isInRepeater = isset($block->parent_id);
                 $configKey = $isInRepeater ? 'repeaters' : 'blocks';
                 $blockTypeConfig = $blocksConfig[$configKey][$block->type] ?? null;
