@@ -54,7 +54,7 @@ abstract class ModuleRepository
 
         foreach (class_uses_recursive(get_called_class()) as $trait) {
             if (method_exists(get_called_class(), $method = 'getCountByStatusSlug' . class_basename($trait))) {
-                if ($count = $this->$method($slug)) {
+                if (($count = $this->$method($slug)) !== false) {
                     return $count;
                 }
             }
@@ -65,22 +65,26 @@ abstract class ModuleRepository
 
     public function getCountForAll()
     {
-        return $this->model->where($this->countScope)->count();
+        $query = $this->model->newQuery();
+        return $this->filter($query, $this->countScope)->count();
     }
 
     public function getCountForPublished()
     {
-        return $this->model->where($this->countScope)->published()->count();
+        $query = $this->model->newQuery();
+        return $this->filter($query, $this->countScope)->published()->count();
     }
 
     public function getCountForDraft()
     {
-        return $this->model->where($this->countScope)->draft()->count();
+        $query = $this->model->newQuery();
+        return $this->filter($query, $this->countScope)->draft()->count();
     }
 
     public function getCountForTrash()
     {
-        return $this->model->where($this->countScope)->onlyTrashed()->count();
+        $query = $this->model->newQuery();
+        return $this->filter($query, $this->countScope)->onlyTrashed()->count();
     }
 
     public function getById($id, $with = [], $withCount = [])
