@@ -4,7 +4,6 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Helpers\FlashLevel;
 use Auth;
-use Event;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Route;
@@ -989,6 +988,7 @@ abstract class ModuleController extends Controller
             'moduleName' => $this->moduleName,
             'routePrefix' => $this->routePrefix,
             'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
+            'publish' => $item->canPublish ?? true,
             'translate' => $this->moduleHas('translations'),
             'permalink' => $this->getIndexOption('permalink'),
             'form_fields' => $this->repository->getFormFields($item),
