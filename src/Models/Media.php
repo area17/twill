@@ -89,7 +89,7 @@ class Media extends Model
     {
         $metadatas = (object) json_decode($this->pivot->metadatas);
         $language = app()->getLocale();
-        $fallback = $fallback ? $this->$fallback : $this->name;
+        $fallback = $fallback ? $this->$fallback : $this->$name;
 
         return $metadatas->$name->$language ?? (
             is_object($metadatas->$name ?? null)
