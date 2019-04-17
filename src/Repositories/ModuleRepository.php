@@ -511,7 +511,7 @@ abstract class ModuleRepository
     public function getFormFieldsForRelatedBrowser($object, $relation)
     {
         return $object->getRelated($relation)->map(function ($relatedElement) {
-            return [
+            return ($relatedElement != null) ? [
                 'id' => $relatedElement->id,
                 'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
                 'endpointType' => $relatedElement->getMorphClass(),
@@ -519,7 +519,9 @@ abstract class ModuleRepository
                 'edit' => $relatedElement->adminEditUrl,
             ]) + (classHasTrait($relatedElement, HasMedias::class) ? [
                 'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
-            ] : []);
+            ] : []) : [];
+        })->reject(function ($item) {
+            return empty($item);
         })->values()->toArray();
     }
 
