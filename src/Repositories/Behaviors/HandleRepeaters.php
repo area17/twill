@@ -77,7 +77,7 @@ trait HandleRepeaters
         if (!$repeaterName) {
             $repeaterName = $relation;
         }
-        
+
         $repeaters = [];
         $repeatersFields = [];
         $repeatersBrowsers = [];
@@ -115,8 +115,6 @@ trait HandleRepeaters
             }
 
             if (isset($relatedItemFormFields['files'])) {
-                $repeatersFiles = [];
-
                 collect($relatedItemFormFields['files'])->each(function ($rolesWithFiles, $locale) use (&$repeatersFiles, $relation, $relationItem) {
                     $repeatersFiles[] = collect($rolesWithFiles)->mapWithKeys(function ($files, $role) use ($locale, $relation, $relationItem) {
                         return [
@@ -124,8 +122,6 @@ trait HandleRepeaters
                         ];
                     })->toArray();
                 });
-
-                $repeatersFiles = call_user_func_array('array_merge', $repeatersFiles);
             }
 
             if (isset($relatedItemFormFields['browsers'])) {
@@ -146,16 +142,14 @@ trait HandleRepeaters
 
         }
 
+        $repeatersFiles = call_user_func_array('array_merge', $repeatersFiles);
+        
         $fields['repeaters'][$repeaterName] = $repeaters;
-
         $fields['repeaterFields'][$repeaterName] = $repeatersFields;
-
         $fields['repeaterMedias'][$repeaterName] = $repeatersMedias;
-
         $fields['repeaterFiles'][$repeaterName] = $repeatersFiles;
-
         $fields['repeaterBrowsers'][$repeaterName] = $repeatersBrowsers;
+        
         return $fields;
-
     }
 }
