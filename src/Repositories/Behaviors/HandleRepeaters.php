@@ -142,14 +142,16 @@ trait HandleRepeaters
 
         }
 
-        $repeatersFiles = call_user_func_array('array_merge', $repeatersFiles);
-        
+        if (!empty($repeatersFiles)) {
+            $repeatersFiles = call_user_func_array('array_merge', $repeatersFiles);
+        }
+
         $fields['repeaters'][$repeaterName] = $repeaters;
         $fields['repeaterFields'][$repeaterName] = $repeatersFields;
         $fields['repeaterMedias'][$repeaterName] = $repeatersMedias;
         $fields['repeaterFiles'][$repeaterName] = $repeatersFiles;
         $fields['repeaterBrowsers'][$repeaterName] = $repeatersBrowsers;
-        
+
         return $fields;
     }
 }
