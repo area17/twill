@@ -613,6 +613,59 @@ You can also rename the content section by passing a `contentFieldsetLabel` prop
     'note' => 'Hint message',
 ])
 ```
+WYSIWYG field is based on [Quill](https://quilljs.com/) Rich Text Editor with Snow theme enabled. 
+
+You can add all [toolbar options](https://quilljs.com/docs/modules/toolbar/) from Quill with `toolbarOption` key. You need need to pass value as array of array.
+
+For example, this configuration will render a `wysiwyg` field with all features from Quill and Snow theme.
+
+```
+ @formField('wysiwyg', [
+     'name' => 'case_study',
+     'label' => 'Case study text',
+     'toolbarOptions' => [
+        [
+            ["header" => [2, 3, 4, 5, 6, false]],
+            ["font" => ["serif", "sans-serif", "monospace"]],
+            ["size" => ['small', false, 'large', 'huge']],
+        ],
+        [
+            "bold", "italic", "underline", "strike"
+        ],
+        [
+            ["color" => []],
+            ["background" => []],
+            ["align" => []]
+        ],
+        [
+            ["script" => "super"],
+            ["script" => "sub"]
+        ],
+        [
+            "blockquote", "code-block",
+        ],
+        [
+            ["list" => "ordered"],
+            ["list" => "bullet"],
+            ["indent" => "-1"],
+            ["indent" => "+1"]
+        ],
+        [
+            "link",
+            "image",
+            "video",
+            "formula"
+        ],
+        [
+            "clean"
+        ]
+    ],
+     'placeholder' => 'Case study text',
+     'maxlength' => 200,
+     'editSource' => true,
+     'note' => 'Hint message`',
+ ])
+```
 
 #### Medias
 ![screenshot](/docs/_media/medias.png)
