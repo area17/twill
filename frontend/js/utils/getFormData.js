@@ -83,7 +83,7 @@ export const gatherRepeaters = (rootState) => {
         delete repeaterBlock.type
 
         // and lastly we want to keep the id to update existing items
-        repeaterBlock.id = repeaterItem.id
+        fields.id = repeaterItem.id
 
         return Object.assign(repeaterBlock, fields)
       })
