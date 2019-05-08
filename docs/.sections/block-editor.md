@@ -1,9 +1,35 @@
 ## Block editor
-### Adding blocks
-The block editor form field lets you add content freely to your module. The blocks can be easily added and rearranged.
-Once a block is created, it can be used/added to any module by adding the corresponding traits.
+### Overview
+The block editor is a dynamic interface giving users a lot of flexibility in adding and changing content for a given entry.
 
-In order to add a block editor you need to add the `block_editor` field to your module form. e.g.:
+For instance, if you have a module for creating work case studies (as we do in our demo), you can use the block editor to create and arrange blocks of images and text using an intuitive drag and drop interface.
+
+[//]: # (Screengrab of the block editor, showing the block type list on the left and blocks on the right)
+
+Once set up, the Block Editor makes it easy to add, arrange and update Blocks can be easily added and rearranged.
+
+You can create any number of different block types, each with a unique form that can be accessed directly within the Block Editor.
+
+[//]: # (Screengrab of a block edit form in the block editor)
+
+Below, we describe the process of creating a block editor and connecting it to your module.
+
+Here is an overview of the process, each of which is detailed below.
+
+1. Include the Block Editor in your module
+2. Define Blocks
+3. Generate the block Vue component
+4. Update twill configuration
+5. Use Block traits in your Model and Repository
+
+Before you begin, make sure that you have the blocks table migrated into your database. If you don't, add the `create_blocks_table` migration, which can be found in Twill's source in `migrations`.
+
+Now, let's expand upon those steps:
+
+#### Include the Block Editor in your module
+In order to add a block editor to your module, add the `block_editor` field to your module form. e.g.:
+
+[//]: # (Screengrab of block editor button)
 
 ```php
 @extends('twill::layouts.form')
@@ -18,7 +44,7 @@ In order to add a block editor you need to add the `block_editor` field to your 
 @stop
 ```
 
-By adding the `@formField('block_editor')` you've enabled all the available blocks. To scope the *blocks* that will be displayed you can add a second parameter with the *blocks* key. e.g.:
+By default, adding the `@formField('block_editor')` enables all available blocks for use in your module. To scope the *blocks* available in a given module, you can add a second parameter to the `@formField()` tag with the *blocks* key. e.g.:
 
 ```php
 @formField('block_editor', [
@@ -26,8 +52,9 @@ By adding the `@formField('block_editor')` you've enabled all the available bloc
 ])
 ```
 
-The *blocks* that can be added need to be defined under the `views/admin/blocks` folder.
-The blocks can be defined exactly like a regular form. e.g.:
+#### Define Blocks
+The *blocks* need to be defined under the `views/admin/blocks` folder.
+The blocks can be defined exactly like a regular form. For example, to create a *Quote* block, create the following:
 
 filename: ```admin/blocks/quote.blade.php```
 ```php
@@ -39,6 +66,9 @@ filename: ```admin/blocks/quote.blade.php```
     'rows' => 4
 ])
 ```
+The form can have multiple fields, giving you a great deal of power in content creation.
+
+### Generate the block Vue component
 
 Once the form is created an _artisan_ task needs to be run to generate the _Vue_ component for this block.
 
@@ -53,8 +83,9 @@ All blocks have been generated!
 $
 ```
 
-The task will generate a file inside the folder `resources/assets/js/blocks/`. Do not ignore those files in Git.
+The task will generate a file inside the folder `resources/assets/js/blocks/`. **Do not ignore these files in Git.**
 
+##### Example
 filename: ```resources/assets/js/blocks/BlockQuote.vue```
 
 ```js
@@ -74,8 +105,11 @@ filename: ```resources/assets/js/blocks/BlockQuote.vue```
 
 ```
 
-With that the *block* is ready to be used on the form, it needs to be enabled in the CMS configuration.
-For it a `block_editor` key is required and inside you can define the list of `blocks` available in your project.
+With that, the *block* is ready to be used on the form! Now, you will need to enable it in the CMS configuration.
+
+#### Update twill configuration
+
+In the ```config/twill.php``` file, a `block_editor` array is required; inside the array, define all *blocks* available in your project, including the block title, the icon used when displaying it and the associated vue component you just generated. In this case, it would look like this.
 
 filename: ```config/twill.php```
 
@@ -93,7 +127,8 @@ filename: ```config/twill.php```
     ]
 ```
 
-Please note the naming convention. If the *block* added is _quote_ then the component should be prefixed with _a17-block-_.
+**Please note the naming convention. If the *block* added is _quote_ then the component should be prefixed with _a17-block-_.**
+
 If you added a block like *my_awesome_block* then you will need to keep the same name as _key_ and the _component name_ with the prefix. e.g.:
 ```php
     'block_editor' => [
@@ -108,9 +143,13 @@ If you added a block like *my_awesome_block* then you will need to keep the same
         ]
 ```
 
+Nice!
 
-After having the blocks added and the configuration set it is required to have the traits added inside your module (Laravel Model).
-Add the corresponding traits to your model and repository, respectively `HasBlocks` and `HandleBlocks`.
+#### Use Block traits in your Model and Repository
+
+Now, to handle the block data you must integrate it with your module. *use* the *Blocks* traits in the Model and Repository associated with your module.
+
+In your model use `HasBlocks`:
 
 filename: ```app/Models/Article.php```
 ```php
@@ -128,6 +167,8 @@ class Article extends Model
     ...
 }
 ```
+
+In your repository use `HandleBlocks`:
 
 filename: ```app/Repositories/ArticleRepository.php```
 ```php
@@ -147,6 +188,8 @@ class ArticleRepository extends ModuleRepository
 }
 ```
 
+now run `npm run twill-build` in your terminal, and you are in business!
+
 #### Common Errors
 - Make sure your project has the blocks table migration. If not, you can find the `create_blocks_table` migration in Twill's source in `migrations`.
 
@@ -159,9 +202,9 @@ class ArticleRepository extends ModuleRepository
 - Not running npm run twill-build
 
 ### Adding repeater blocks
-Lets say that it is requested to have an Accordion on Articles, where each item should have a _Header_ and a _Description_.
-This accordion can be moved around along with the rest of the blocks.
-On the Article (module) form we have:
+Let's say that you have an Articles module, and you would like to include an _Accordion_ section, where you would like any number of accordion items, each of which having a _Header_ and a _Description_. You would like the entire accordion to be treated as a block, to be dragged and dropped wherever you need it.
+
+- On the Article (module) form make sure there is a _block_editor_ form field:
 
 filename: ```views/admin/articles/form.blade.php```
 ```php
@@ -185,8 +228,8 @@ filename: ```views/admin/articles/form.blade.php```
   @formField('repeater', ['type' => 'accordion_item'])
 ```
 
+Add it on the config/twill.php
 
-- Add it on the config/twill.php
 ```php
     'block_editor' => [
         'blocks' => [
@@ -217,8 +260,12 @@ filename: ```views/admin/articles/form.blade.php```
       'rows' => 4
   ])
 ```
+- Generate the Vue component by running `php artisan twill:blocks`
 
-- Add it on the config/twill.php on the repeaters section
+- Update config/twill.php
+  - Add the block to the block_editor section
+  - Add the repeater field to the repeaters section
+
 
 ```php
     'block_editor' => [
@@ -275,8 +322,9 @@ filename: ```views/admin/articles/form.blade.php```
 
 - Not adding the *item block* to the _repeaters_ section.
 
+
 ### Adding browser fields
-If you are requested to enable the possibility to add a related model, then the browser fields are the match.
+Perhaps you want to manage some data as its own module, and then grab entries from that module in your Articles. For that case, twill includes a handy `Browser Field`.
 If you have an Article that can have related products.
 
 On the Article (entity) form we have:
@@ -319,7 +367,7 @@ filename: ```views/admin/blocks/products.blade.php```
         ],
 ```
 
-- After that, it is required to add the Route Prefixes. e.g.:
+- After that, add the Route Prefixes. e.g.:
 ```php
     'block_editor' => [
         'blocks' => [
