@@ -462,7 +462,7 @@
 
           // try to load the media thumbnail
           let append = '?';
-          if (this.media.thumbnai.indexOf('?') > -1) {
+          if (this.media.thumbnail.indexOf('?') > -1) {
             append = '&';
           }
           this.img.src = this.media.thumbnail + append + 'no-cache'
