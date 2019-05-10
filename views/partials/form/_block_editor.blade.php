@@ -4,9 +4,23 @@
 <a17-content title="Add content"></a17-content>
 
 @php
-    $availableBlocks = isset($blocks) ? collect($blocks)->map(function ($block) {
-        return config('twill.block_editor.blocks.' . $block);
-    })->filter()->toArray() : config('twill.block_editor.blocks');
+	if (isset($blocks)) {
+		$availableBlocks = collect($blocks)->map(function ($block) {
+			return config('twill.block_editor.blocks.' . $block);
+		})->filter()->toArray();
+	}
+	elseif (isset($group)) {
+		$blocks = config('twill.block_editor.blocks');
+		$availableBlocks = array_filter($blocks, function($val) use(&$group) {
+			if (isset($val['group']) && $val['group'] == $group) {
+				return true;
+			}
+			return false;
+		});
+	}
+	else {
+		$availableBlocks = config('twill.block_editor.blocks');
+	}
 @endphp
 
 @push('vuexStore')
