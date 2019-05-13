@@ -3,7 +3,7 @@
 if (!function_exists('createDefaultFields')) {
     function createDefaultTableFields($table, $softDeletes = true, $published = true, $publishDates = false, $visibility = false)
     {
-        $table->increments('id');
+        $table->increments('id')->unsigned(10);;
 
         if ($softDeletes) {
             $table->softDeletes();
@@ -33,7 +33,7 @@ if (!function_exists('createDefaultTranslationsTableFields')) {
             $tableNamePlural = str_plural($tableNameSingular);
         }
 
-        $table->increments('id');
+        $table->increments('id')->unsigned(10);;
         $table->softDeletes();
         $table->timestamps();
         $table->string('locale', 7)->index();
@@ -51,7 +51,7 @@ if (!function_exists('createDefaultSlugsTableFields')) {
             $tableNamePlural = str_plural($tableNameSingular);
         }
 
-        $table->increments('id');
+        $table->increments('id')->unsigned(10);;
         $table->softDeletes();
         $table->timestamps();
         $table->string('slug');
@@ -87,7 +87,7 @@ if (!function_exists('createDefaultRevisionsTableFields')) {
             $tableNamePlural = str_plural($tableNameSingular);
         }
 
-        $table->increments('id');
+        $table->increments('id')->unsigned(10);;
         $table->timestamps();
         $table->json('payload');
         $table->integer("{$tableNameSingular}_id")->unsigned()->index();
