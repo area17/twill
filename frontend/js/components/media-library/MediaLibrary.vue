@@ -50,7 +50,7 @@
               <a17-uploader v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias"
                             :type="currentTypeObject"/>
               <div class="medialibrary__list-items">
-                <a17-itemlist v-if="type === 'file'" :items="fullMedias" :selected-items="selectedMedias"
+                <a17-itemlist v-if="type && type.startsWith('file')" :items="fullMedias" :selected-items="selectedMedias"
                               :used-items="usedMedias" @change="updateSelectedMedias"
                               @shiftChange="updateSelectedMedias"/>
                 <a17-mediagrid v-else :items="fullMedias" :selected-items="selectedMedias" :used-items="usedMedias"
