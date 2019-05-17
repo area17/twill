@@ -4,7 +4,7 @@ The block editor is a dynamic interface giving users a lot of flexibility in add
 
 For instance, if you have a module for creating work case studies (as we do in our demo), you can use the block editor to create and arrange blocks of images and text using an intuitive drag and drop interface.
 
-[//]: # (Screengrab of the block editor, showing the block type list on the left and blocks on the right)
+![Block editor](/docs/_media/block-editor.png "Logo Title Text 1")
 
 Once set up, the Block Editor makes it easy to add, arrange and update Blocks can be easily added and rearranged.
 
