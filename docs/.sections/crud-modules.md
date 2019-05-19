@@ -37,7 +37,7 @@ return [
 ]
 ```
 
-Depending upon the depth of your module in your navigation, you'll need to wrap your route declaration in one or multiple nested route groups. See more in the [navigation documentation](#navigation).
+Depending upon the depth of your module in your navigation, you'll need to wrap your route declaration in one or multiple nested route groups. See more in the [navigation documentation](https://twill.io/docs/#navigation).
 
 - Setup your form fields in `resources/views/admin/moduleName/form.blade.php`.
 - Setup your index options and columns in your controller if needed.
