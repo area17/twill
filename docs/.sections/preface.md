@@ -2,7 +2,7 @@
 
 ### About Twill
 
-Twill is an open source Laravel package for creating beautiful, powerful, and flexible content management systems. Twill standardizes common functions without compromising developer control, giving developers the ability to deliver a feature-rich admin console that focuses on their exact requirements.
+Twill is an open-source Laravel content management system package. Twill standardizes common functions and offers beautiful out-of-the-box interface components without compromising developer control. We have worked to leverage the power and logic of Laravel to give developers the flexibility to deliver a stable, feature-rich admin console that conforms to their unique requirements.
 
 Twill is an [AREA 17](https://area17.com) product. It was crafted with the belief that content management should be a creative, productive, and enjoyable experience for both publishers and developers.
 
@@ -17,7 +17,6 @@ Built to get out of your way, Twill offers:
 - No need to write/adapt HTML for the admin UI
 - No limits, extend as you see fit
 
-
 ### Feature list
 
 #### CRUD modules
@@ -31,8 +30,8 @@ Built to get out of your way, Twill offers:
 * Content versioning
 
 #### UI Components
-* Large library of plugged in Vue.js form components with tons of options for maximum flexibility and composition
-* Completely abstracted HTML markup. You’ll never have to deal with Bootstrap HTML again, which means you won’t ever have to maintain frontend related code for your CMS
+* Large library of plugged-in Vue.js form components with tons of options for maximum flexibility and composition
+* Completely abstracted HTML markup. You’ll never have to deal with Bootstrap HTML again, which means you won’t ever have to maintain frontend-related code for your CMS
 * Input, text area, rich text area form fields with option to set SEO optimized limits
 * Configurable WYSIWYG built with Quill.js
 * Inline translated fields with independent publication status (no duplication)
