@@ -1,13 +1,15 @@
 ## CRUD modules
 
+CRUD modules are the core concept of the Twill logic. Modules are super-powered Models, with any of our various content management features you want added to them. Features include revision control, slug identification, content translations, ability to control the order of models, and more.
+
 ### CLI Generator
-You can generate all the files needed in your application to create a new CRUD module using Twill's Artisan generator:
+Twill's Artisan generator builds upon core artisan processes, generating all the application files needed to create a new CRUD module:
 
 ```bash
 php artisan twill:module yourPluralModuleName
 ```
 
-The command has a couple of options :
+You can use command options to enable any of the enhanced module features you want for a given model:
 - `--hasBlocks (-B)`,
 - `--hasTranslation (-T)`,
 - `--hasSlug (-S)`,
@@ -16,24 +18,34 @@ The command has a couple of options :
 - `--hasPosition (-P)`
 - `--hasRevisions(-R)`.
 
-This will generate a migration file, a model, a repository, a controller, a form request object and a form view.
+The `twill:module` command will generate a migration file, a model, a repository, a controller, a form request object and a form view.
 
-Start by filling in the migration and models using the documentation below.
+Let's walk through the steps needed to complete the integration of a new module into a Twill application.
 
-Add `Route::module('yourPluralModuleName');` to your admin routes file.
+- Start by filling in the migration and models using the documentation below.
+- Add `Route::module('yourPluralModuleName');` to *routes/admin.php*.
+- Setup a new CMS menu item in `config/twill-navigation.php`.
+```
+<?php
 
-Setup a new CMS menu item in `config/twill-navigation.php`.
+return [
+    'pluralModuleName' => [
+        'title'     => 'Link Text',
+        'module'    => TRUE
+    ]
+    ...
+]
+```
 
-Depending on the depth of your module in your navigation, you'll need to wrap your route declaration in one or multiple nested route groups.
+Depending upon the depth of your module in your navigation, you'll need to wrap your route declaration in one or multiple nested route groups. See more in the [navigation documentation](#navigation).
 
-Setup your form fields in `resources/views/admin/moduleName/form.blade.php`.
-
-Setup your index options and columns in your controller if needed.
+- Setup your form fields in `resources/views/admin/moduleName/form.blade.php`.
+- Setup your index options and columns in your controller if needed.
 
 Enjoy.
 
 ### Migrations
-Generated migrations are regular Laravel migrations. A few helpers are available to create the default fields any CRUD module will use:
+Twill's generated migrations are standard Laravel migrations, enhanced with helpers to create the default fields any CRUD module will use:
 
 ```php
 <?php
@@ -97,23 +109,24 @@ Schema::create('table_name_singular1_table_name_singular2', function (Blueprint 
 });
 ```
 
-A few CRUD controllers require that your model have a field in the database with a specific name: `published`, `publish_start_date`, `publish_end_date`, `public`, and `position`, so stick with those column names if you are going to use publication status, timeframe and reorderable listings.
+**Please follow naming conventions**
+Some _CRUD_ controllers require that your model have a field in the database with a specific name: `published`, `publish_start_date`, `publish_end_date`, `public`, and `position`, so stick with those column names if you are going to use publication status, timeframe and reorderable listings.
 
 ### Models
 
 Set your fillables to prevent mass-assignement. This is very important, as we use `request()->all()` in the module controller.
 
-For fields that should always be saved as null in the database when not sent by the form, use the `nullable` array.
+For fields that should default to *null* in the database when not sent by the form, use the `nullable` array.
 
-For fields that should always be saved to false in the database when not sent by the form, use the `checkboxes` array. The `published` field is a good example.
+For fields that should default to *FALSE* in the database when not sent by the form, use the `checkboxes` array. The `published` field is a good example.
 
-Depending on the features you need on your model, include the available traits and configure their respective options:
+Depending upon the Twill features you need on your model, include the related traits and configure their respective options:
 
 - HasPosition: implement the `A17\Twill\Models\Behaviors\Sortable` interface and add a position field to your fillables.
 
-- HasTranslation: add translated fields in the `translatedAttributes` array and in the `fillable` array of the generated translatable model in `App/Models/Translations` (always keep the `active` and `locale` fields).
+- HasTranslation: add translated fields in the `translatedAttributes` array and in the `fillable` array of the generated translatable model in `App/Models/Translations` **(always keep the `active` and `locale` fields)**.
 
-When using Twill's `HasTranslation` trait on a model, you are actually using the popular `dimsav/translatable` package. A default configuration will be automatically published to your `config` directory when you run the `twill:install` command. 
+Twill's `HasTranslation` trait is a wrapper around the popular [dimsav/translatable](https://github.com/dimsav/laravel-translatable) package. A default configuration will be automatically published to your `config` directory when you run the `twill:install` command. 
 
 To setup your list of available languages for translated fields, modify the `locales` array in `config/translatable.php`, using ISO 639-1 two-letter languages codes as in the following example:
 
@@ -129,7 +142,7 @@ return [
 ];
 ```
 
-- HasSlug: specify the field(s) that is going to be used to create the slug in the `slugAttributes` array
+- HasSlug: specify the field(s) used to create the slug in the `slugAttributes` array
 
 - HasMedias: add the `mediasParams` configuration array:
 
@@ -525,7 +538,6 @@ Route::module('yourPluralModuleName', [], [], false)
 ```
 
 ### Form fields
-
 
 Wrap them into the following in your module `form` view (`resources/views/admin/moduleName/form.blade.php`):
 
