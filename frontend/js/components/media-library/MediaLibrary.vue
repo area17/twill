@@ -31,7 +31,7 @@
 
             <div slot="hidden-filters">
               <a17-vselect class="medialibrary__filter-item" ref="filter" name="tag" :options="tags"
-                           placeholder="Filter by tag" :toggleSelectOption="true" maxHeight="175px"/>
+                           placeholder="Filter by tag" :searchable="true" maxHeight="175px"/>
             </div>
           </a17-filter>
         </div>
@@ -40,7 +40,7 @@
             <aside class="medialibrary__sidebar">
               <a17-mediasidebar :medias="selectedMedias" :authorized="authorized" :extraMetadatas="extraMetadatas"
                                 @clear="clearSelectedMedias" @delete="deleteSelectedMedias" @tagUpdated="reloadTags"
-                                :type="currentTypeObject"/>
+                                :type="currentTypeObject" :translatableMetadatas="translatableMetadatas" />
             </aside>
             <footer class="medialibrary__footer" v-if="selectedMedias.length && showInsert && connector">
               <a17-button v-if="canInsert" variant="action" @click="saveAndClose">{{ btnLabel }}</a17-button>
@@ -121,6 +121,12 @@
         default: true
       },
       extraMetadatas: {
+        type: Array,
+        default () {
+          return []
+        }
+      },
+      translatableMetadatas: {
         type: Array,
         default () {
           return []

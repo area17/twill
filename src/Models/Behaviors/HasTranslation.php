@@ -26,6 +26,10 @@ trait HasTranslation
             return $query->with(['translations' => function ($query) use ($locale) {
                 $query->whereActive(true);
                 $query->whereLocale($locale);
+
+                if (config('translatable.use_property_fallback', false)) {
+                    $query->orWhere('locale', config('translatable.fallback_locale'));
+                }
             }]);
         }
     }

@@ -195,11 +195,11 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         return collect($this->customFields)->mapWithKeys(function ($field) {
             $fieldInRequest = request($field['name']);
 
-            if (isset($field['type']) && $field['type'] === 'checkbox' && !$fieldInRequest) {
-                return [$field['name'] => false];
+            if (isset($field['type']) && $field['type'] === 'checkbox') {
+                return [$field['name'] => $fieldInRequest ? array_first($fieldInRequest) : false];
             }
 
-            return [$field['name'] => is_array($fieldInRequest) ? array_first($fieldInRequest) : $fieldInRequest];
+            return [$field['name'] => $fieldInRequest];
         });
     }
 }

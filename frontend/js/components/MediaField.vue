@@ -58,10 +58,13 @@
       </p>
 
       <!-- Metadatas options -->
-      <div class="media__metadatas--options" :class="{ 's--active' : metadatas.active }" v-if="hasMedia">
+      <div class="media__metadatas--options" :class="{ 's--active' : metadatas.active }" v-if="hasMedia && withAddInfo">
         <a17-mediametadata :name='metadataName' label="Alt Text" id="altText" :media="media" @change="updateMetadata"/>
         <a17-mediametadata v-if="withCaption" :name='metadataName' label="Caption" id="caption" :media="media" @change="updateMetadata"/>
         <a17-mediametadata v-if="withVideoUrl" :name='metadataName' label="Video URL (optional)" id="video" :media="media" @change="updateMetadata"/>
+        <template v-for="field in extraMetadatas" v-if="extraMetadatas.length > 0">
+          <a17-mediametadata v-bind:key="field.name" :type="field.type" :name='metadataName' :label="field.label" :id="field.name" :media="media" @change="updateMetadata"/>
+        </template>
       </div>
     </div>
 
@@ -151,6 +154,12 @@
       activeCrop: {
         type: Boolean,
         default: true
+      },
+      extraMetadatas: {
+        type: Array,
+        default () {
+          return []
+        }
       }
     },
     data: function () {

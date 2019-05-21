@@ -86,7 +86,6 @@ trait HandleRepeaters
         $relationRepository = $this->getModelRepository($relation, $model);
         $repeatersConfig = config('twill.block_editor.repeaters');
 
-
         foreach ($object->$relation as $relationItem) {
             $repeaters[] = [
                 'id' => $relation . '-' . $relationItem->id,
@@ -109,8 +108,18 @@ trait HandleRepeaters
             }
 
             if (isset($relatedItemFormFields['medias'])) {
-                foreach ($relatedItemFormFields['medias'] as $key => $values) {
-                    $repeatersMedias["blocks[$relation-$relationItem->id][$key]"] = $values;
+                if (config('twill.media_library.translated_form_fields', false)) {
+                    collect($relatedItemFormFields['medias'])->each(function ($rolesWithMedias, $locale) use (&$repeatersMedias, $relation, $relationItem) {
+                        $repeatersMedias[] = collect($rolesWithMedias)->mapWithKeys(function ($medias, $role) use ($locale, $relation, $relationItem) {
+                            return [
+                                "blocks[$relation-$relationItem->id][$role][$locale]" => $medias,
+                            ];
+                        })->toArray();
+                    });
+                } else {
+                    foreach ($relatedItemFormFields['medias'] as $key => $values) {
+                        $repeatersMedias["blocks[$relation-$relationItem->id][$key]"] = $values;
+                    }
                 }
             }
 
@@ -131,7 +140,6 @@ trait HandleRepeaters
             }
 
             $itemFields = method_exists($relationItem, 'toRepeaterArray') ? $relationItem->toRepeaterArray() : array_except($relationItem->attributesToArray(), $translatedFields);
-
 
             foreach ($itemFields as $key => $value) {
                 $repeatersFields[] = [

@@ -161,11 +161,21 @@ trait HandleBlocks
                 $medias = $blockFormFields['medias'];
 
                 if ($medias) {
-                    $fields['blocksMedias'][] = collect($medias)->mapWithKeys(function ($value, $key) use ($block) {
-                        return [
-                            "blocks[$block->id][$key]" => $value,
-                        ];
-                    })->filter()->toArray();
+                    if (config('twill.media_library.translated_form_fields', false)) {
+                        $fields['blocksMedias'][] = collect($medias)->mapWithKeys(function ($mediasByLocale, $locale) use ($block) {
+                            return collect($mediasByLocale)->mapWithKeys(function ($value, $key) use ($block, $locale) {
+                                return [
+                                    "blocks[$block->id][$key][$locale]" => $value,
+                                ];
+                            });
+                        })->filter()->toArray();
+                    } else {
+                        $fields['blocksMedias'][] = collect($medias)->mapWithKeys(function ($value, $key) use ($block) {
+                            return [
+                                "blocks[$block->id][$key]" => $value,
+                            ];
+                        })->filter()->toArray();
+                    }
                 }
 
                 $files = $blockFormFields['files'];

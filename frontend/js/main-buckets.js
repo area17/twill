@@ -15,6 +15,7 @@ import A17Notif from '@/plugins/A17Notif'
 
 // Store modules
 import buckets from '@/store/modules/buckets'
+import language from '@/store/modules/language'
 import form from '@/store/modules/form'
 
 // configuration
@@ -22,6 +23,7 @@ Vue.use(A17Config)
 Vue.use(A17Notif)
 
 store.registerModule('buckets', buckets)
+store.registerModule('language', language)
 store.registerModule('form', form)
 
 /* eslint-disable no-new */

@@ -47,7 +47,13 @@ class Block extends BaseModel
     public function translatedInput($name, $forceLocale = null)
     {
         $value = $this->content[$name] ?? null;
-        $locale = $forceLocale ?? app()->getLocale();
+
+        $locale = $forceLocale ?? (
+            config('translatable.use_property_fallback', false) && (!array_key_exists(app()->getLocale(), $value ?? []))
+            ? config('translatable.fallback_locale')
+            : app()->getLocale()
+        );
+
         return $value[$locale] ?? null;
     }
 

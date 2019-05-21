@@ -32,17 +32,27 @@
         </template>
         <template v-else>
           <input type="hidden" name="id" :value="firstMedia.id" />
-          <a17-textfield v-if="isImage" label="Alt text" name="alt_text" :initialValue="firstMedia.metadatas.default.altText" size="small" @focus="focus" @blur="blur" @change="save" />
-          <a17-textfield v-if="isImage" type="textarea" :rows="1" size="small" label="Caption" name="caption" :initialValue="firstMedia.metadatas.default.caption" @focus="focus" @blur="blur" @change="save" />
+          <div class="mediasidebar__langswitcher" v-if="translatableMetadatas.length > 0">
+            <a17-langswitcher :in-modal="true" :all-published="true" />
+          </div>
+
+          <a17-locale type="a17-textfield" v-if="isImage && translatableMetadatas.includes('alt_text')" :attributes="{ label: 'Alt text', name: 'alt_text', type: 'text', size: 'small' }" :initialValues="altValues" @focus="focus" @blur="blur"></a17-locale>
+          <a17-textfield v-else-if="isImage" label="Alt text" name="alt_text" :initialValue="firstMedia.metadatas.default.altText" size="small" @focus="focus" @blur="blur" />
+
+          <a17-locale type="a17-textfield" v-if="isImage && translatableMetadatas.includes('caption')" :attributes="{ type: 'textarea', rows: 1, label: 'Caption', name: 'caption', size: 'small' }" :initialValues="captionValues" @focus="focus" @blur="blur"></a17-locale>
+          <a17-textfield v-else-if="isImage" type="textarea" :rows="1" size="small" label="Caption" name="caption" :initialValue="firstMedia.metadatas.default.caption" @focus="focus" @blur="blur" />
+
           <template v-for="field in singleOnlyMetadatas">
-            <a17-textfield v-bind:key="field.name" v-if="isImage && (field.type == 'text' || !field.type)" :label="field.label" :name="field.name" size="small" :initialValue="firstMedia.metadatas.default[field.name]" type="textarea" :rows="1" @focus="focus" @blur="blur" @change="save" />
+            <a17-locale type="a17-textfield" v-bind:key="field.name" v-if="isImage && (field.type == 'text' || !field.type) && translatableMetadatas.includes(field.name)" :attributes="{ label: field.label, name: field.name, type: 'textarea', rows: 1, size: 'small' }" :initialValues="firstMedia.metadatas.default[field.name]" @focus="focus" @blur="blur" />
+            <a17-textfield v-bind:key="field.name" v-else-if="isImage && (field.type == 'text' || !field.type)" :label="field.label" :name="field.name" size="small" :initialValue="firstMedia.metadatas.default[field.name]" type="textarea" :rows="1" @focus="focus" @blur="blur" />
             <div class="mediasidebar__checkbox" v-if="isImage && (field.type == 'checkbox')" >
               <a17-checkbox v-bind:key="field.name" :label="field.label" :name="field.name" :initialValue="firstMedia.metadatas.default[field.name]" :value="1" @change="blur" />
             </div>
           </template>
         </template>
         <template v-for="field in singleAndMultipleMetadatas">
-          <a17-textfield v-bind:key="field.name" v-if="isImage && (field.type == 'text' || !field.type) && ((hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)) || hasSingleMedia)" :label="field.label" :name="field.name" size="small" :initialValue="hasMultipleMedias ? sharedMetadata(field.name) : firstMedia.metadatas.default[field.name]" type="textarea" :rows="1" @focus="focus" @blur="blur" @change="save" />
+          <a17-locale type="a17-textfield" v-bind:key="field.name" v-if="isImage && (field.type == 'text' || !field.type)&& ((hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)) || hasSingleMedia) && translatableMetadatas.includes(field.name)" :attributes="{ label: field.label, name: field.name, type: 'textarea', rows: 1, size: 'small' }" :initialValues="hasMultipleMedias ? sharedMetadata(field.name) : firstMedia.metadatas.default[field.name]" @focus="focus" @blur="blur" />
+          <a17-textfield v-bind:key="field.name" v-else-if="isImage && (field.type == 'text' || !field.type) && ((hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)) || hasSingleMedia)" :label="field.label" :name="field.name" size="small" :initialValue="hasMultipleMedias ? sharedMetadata(field.name) : firstMedia.metadatas.default[field.name]" type="textarea" :rows="1" @focus="focus" @blur="blur" />
           <div class="mediasidebar__checkbox" v-if="isImage && (field.type == 'checkbox') && ((hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)) || hasSingleMedia)">
             <a17-checkbox v-bind:key="field.name" :label="field.label" :name="field.name" :initialValue="hasMultipleMedias ? sharedMetadata(field.name) : firstMedia.metadatas.default[field.name]" :value="1" @change="blur" />
           </div>
@@ -70,11 +80,13 @@
   import FormDataAsObj from '@/utils/formDataAsObj.js'
   import a17VueFilters from '@/utils/filters.js'
   import a17MediaSidebarUpload from '@/components/media-library/MediaSidebarUpload'
+  import a17Langswitcher from '@/components/LangSwitcher'
 
   export default {
     name: 'A17MediaSidebar',
     components: {
-      'a17-mediasidebar-upload': a17MediaSidebarUpload
+      'a17-mediasidebar-upload': a17MediaSidebarUpload,
+      'a17-langswitcher': a17Langswitcher
     },
     props: {
       medias: {
@@ -89,6 +101,12 @@
         required: true
       },
       extraMetadatas: {
+        type: Array,
+        default () {
+          return []
+        }
+      },
+      translatableMetadatas: {
         type: Array,
         default () {
           return []
@@ -135,6 +153,12 @@
           return media.metadatas.default[name]
         // eslint-disable-next-line eqeqeq
         }).every((val, i, arr) => Array.isArray(val) ? (val[0] == arr[0]) : (val == arr[0])) ? this.firstMedia.metadatas.default[name] : ''
+      },
+      captionValues () {
+        return typeof this.firstMedia.metadatas.default.caption === 'object' ? this.firstMedia.metadatas.default.caption : {}
+      },
+      altValues () {
+        return typeof this.firstMedia.metadatas.default.altText === 'object' ? this.firstMedia.metadatas.default.altText : {}
       },
       mediasIds: function () {
         return this.medias.map(function (media) { return media.id }).join(',')
@@ -389,5 +413,10 @@
 
   .mediasidebar__checkbox {
     margin-top: 16px;
+  }
+
+  .mediasidebar__langswitcher {
+    margin-top: 32px;
+    margin-bottom: 32px;
   }
 </style>
