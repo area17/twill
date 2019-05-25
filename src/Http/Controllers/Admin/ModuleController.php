@@ -245,9 +245,9 @@ abstract class ModuleController extends Controller
     {
         $this->submodule = isset($submoduleId);
         $this->submoduleParentId = $id;
-
+        
         $item = $this->repository->getById($submoduleId ?? $id);
-        $this->authorize('edit-item', $item);
+        $this->authorize('view-item', $item);
 
         if ($this->getIndexOption('editInModal')) {
             return $this->request->ajax()
@@ -616,7 +616,7 @@ abstract class ModuleController extends Controller
             unset($columnsData[$this->titleColumnKey]);
             $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
             $itemCanDelete = $this->getIndexOption('delete', $item) && ($item->canDelete ?? true);
-            $canEdit = $this->getIndexOption('edit', $item) && $this->user->can('edit-item', $item);
+            $canEdit = $this->getIndexOption('edit', $item);
             return array_replace([
                 'id' => $item->id,
                 'name' => $name,
@@ -843,7 +843,7 @@ abstract class ModuleController extends Controller
             $authorizableOptions = [
                 'list' => 'access-module-list',
                 'create' => 'edit-module',
-                'edit' => 'edit-item',
+                'edit' => 'view-item',
                 'publish' => 'edit-item',
                 'feature' => 'edit-item',
                 'reorder' => 'edit-module',
