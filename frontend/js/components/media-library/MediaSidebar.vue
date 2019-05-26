@@ -26,7 +26,7 @@
       <form v-if="hasMedia" ref="form" class="mediasidebar__inner mediasidebar__form" @submit="submit">
         <span class="mediasidebar__loader" v-if="loading"><span class="loader loader--small"><span></span></span></span>
         <a17-vselect v-if="!fieldsRemovedFromBulkEditing.includes('tags')" label="Tags" :key="firstMedia.id + '-' + medias.length" name="tags" :multiple="true" :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small" :endpoint="type.tagsEndpoint" @change="save" maxHeight="175px" />
-        <span v-if="extraMetadatas.length && isImage && hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes('tags')" class="f--tiny f--note f--underlined" @click="removeFieldFromBulkEditing('tags') ">Remove from bulk edit</span>
+        <span v-if="extraMetadatas.length && isImage && hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes('tags')" class="f--tiny f--note f--underlined" @click="removeFieldFromBulkEditing('tags')" data-tooltip-title="Remove this field if you do not want to update it on all selected medias" data-tooltip-theme="default" data-tooltip-placement="top" v-tooltip>Remove from bulk edit</span>
         <template v-if="hasMultipleMedias">
           <input type="hidden" name="ids" :value="mediasIds" />
         </template>
@@ -51,12 +51,12 @@
           </template>
         </template>
         <template v-for="field in singleAndMultipleMetadatas">
-          <a17-locale type="a17-textfield" v-bind:key="field.name" v-if="isImage && (field.type == 'text' || !field.type)&& ((hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)) || hasSingleMedia) && translatableMetadatas.includes(field.name)" :attributes="{ label: field.label, name: field.name, type: 'textarea', rows: 1, size: 'small' }" :initialValues="hasMultipleMedias ? sharedMetadata(field.name) : firstMedia.metadatas.default[field.name]" @focus="focus" @blur="blur" />
-          <a17-textfield v-bind:key="field.name" v-else-if="isImage && (field.type == 'text' || !field.type) && ((hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)) || hasSingleMedia)" :label="field.label" :name="field.name" size="small" :initialValue="hasMultipleMedias ? sharedMetadata(field.name) : firstMedia.metadatas.default[field.name]" type="textarea" :rows="1" @focus="focus" @blur="blur" />
+          <a17-locale type="a17-textfield" v-bind:key="field.name" v-if="isImage && (field.type == 'text' || !field.type)&& ((hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)) || hasSingleMedia) && translatableMetadatas.includes(field.name)" :attributes="{ label: field.label, name: field.name, type: 'textarea', rows: 1, size: 'small' }" :initialValues="sharedMetadata(field.name, 'object')" @focus="focus" @blur="blur" />
+          <a17-textfield v-bind:key="field.name" v-else-if="isImage && (field.type == 'text' || !field.type) && ((hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)) || hasSingleMedia)" :label="field.label" :name="field.name" size="small" :initialValue="sharedMetadata(field.name)" type="textarea" :rows="1" @focus="focus" @blur="blur" />
           <div class="mediasidebar__checkbox" v-if="isImage && (field.type == 'checkbox') && ((hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)) || hasSingleMedia)">
-            <a17-checkbox v-bind:key="field.name" :label="field.label" :name="field.name" :initialValue="hasMultipleMedias ? sharedMetadata(field.name) : firstMedia.metadatas.default[field.name]" :value="1" @change="blur" />
+            <a17-checkbox v-bind:key="field.name" :label="field.label" :name="field.name" :initialValue="sharedMetadata(field.name, 'boolean')" :value="1" @change="blur" />
           </div>
-          <span v-if="isImage && hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)" class="f--tiny f--note f--underlined" @click="removeFieldFromBulkEditing(field.name) ">Remove from bulk edit</span>
+          <span v-if="isImage && hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)" class="f--tiny f--note f--underlined" @click="removeFieldFromBulkEditing(field.name)" data-tooltip-title="Remove this field if you do not want to update it on all selected medias" data-tooltip-theme="default" data-tooltip-placement="top" v-tooltip>Remove from bulk edit</span>
         </template>
       </form>
     </template>
@@ -149,10 +149,16 @@
         }).reduce((allTags, currentTags) => allTags.filter(tag => currentTags.includes(tag)))
       },
       sharedMetadata () {
-        return name => this.medias.map((media) => {
-          return media.metadatas.default[name]
-        // eslint-disable-next-line eqeqeq
-        }).every((val, i, arr) => Array.isArray(val) ? (val[0] == arr[0]) : (val == arr[0])) ? this.firstMedia.metadatas.default[name] : ''
+        return (name, type) => {
+          if (!this.hasMultipleMedias) {
+            return typeof this.firstMedia.metadatas.default[name] === 'object' || type === 'boolean' ? this.firstMedia.metadatas.default[name] : {}
+          }
+
+          return this.medias.map((media) => {
+            return media.metadatas.default[name]
+          // eslint-disable-next-line eqeqeq
+          }).every((val, i, arr) => Array.isArray(val) ? (val[0] == arr[0]) : (val == arr[0])) ? this.firstMedia.metadatas.default[name] : (type === 'object' ? {} : type === 'boolean' ? false : '')
+        }
       },
       captionValues () {
         return typeof this.firstMedia.metadatas.default.caption === 'object' ? this.firstMedia.metadatas.default.caption : {}
@@ -187,10 +193,10 @@
         }
       },
       singleAndMultipleMetadatas: function () {
-        return this.extraMetadatas.filter(m => m.multiple)
+        return this.extraMetadatas.filter(m => m.multiple && !this.translatableMetadatas.includes(m.name))
       },
       singleOnlyMetadatas: function () {
-        return this.extraMetadatas.filter(m => !m.multiple)
+        return this.extraMetadatas.filter(m => !m.multiple || (m.multiple && this.translatableMetadatas.includes(m.name)))
       },
       ...mapState({
         mediasLoading: state => state.mediaLibrary.loading
