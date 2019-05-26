@@ -108,8 +108,14 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
 
         $request->file('qqfile')->move($fileDirectory, $cleanFilename);
 
+        $uuid = $request->input('unique_folder_name') . '/' . $cleanFilename;
+
+        if (config('twill.file_library.prefix_uuid_with_local_path', false)) {
+            $uuid = config('twill.file_library.local_path') . $uuid;
+        }
+
         $fields = [
-            'uuid' => config('twill.file_library.local_path') . $request->input('unique_folder_name') . '/' . $cleanFilename,
+            'uuid' => $uuid,
             'filename' => $cleanFilename,
             'size' => $request->input('qqtotalfilesize'),
         ];
