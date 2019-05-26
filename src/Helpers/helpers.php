@@ -11,6 +11,15 @@ if (!function_exists('ddd')) {
     }
 }
 
+if (!function_exists('dumpUsableSqlQuery')) {
+    function dumpUsableSqlQuery($query)
+    {
+        dd(vsprintf(str_replace('?', '%s', $query->toSql()), array_map(function ($binding) {
+            return is_numeric($binding) ? $binding : "'{$binding}'";
+        }, $query->getBindings())));
+    }
+}
+
 if (!function_exists('classUsesDeep')) {
     function classUsesDeep($class, $autoload = true)
     {
