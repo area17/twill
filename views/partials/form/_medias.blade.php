@@ -1,4 +1,5 @@
 @php
+    $type = $type ?? 'image';
     $max = $max ?? 1;
     $required = $required ?? false;
     $note = $note ?? '';
@@ -11,6 +12,7 @@
     @if($max > 1 || $max == 0)
         <a17-slideshow
             @include('twill::partials.form.utils._field_name')
+            type="{{ $type }}"
             :max="{{ $max }}"
             crop-context="{{ $name }}"
             @if ($required) :required="true" @endif
@@ -21,6 +23,7 @@
     @else
         <a17-mediafield
             @include('twill::partials.form.utils._field_name')
+            type="{{ $type }}"
             crop-context="{{ $name }}"
             @if ($required) :required="true" @endif
             @if (!$withAddInfo) :with-add-info="false" @endif
