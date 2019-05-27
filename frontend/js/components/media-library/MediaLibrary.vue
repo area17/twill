@@ -109,8 +109,10 @@
         default: 'Insert'
       },
       btnLabelType: {
-        type: String,
-        default: ''
+        type: Object,
+        default () {
+          return undefined
+        }
       },
       initialPage: {
         type: Number,
@@ -161,9 +163,12 @@
         return this.modalTitlePrefix
       },
       btnLabel: function () {
-        let labelType = this.btnLabelType ? this.btnLabelType : this.type
+        let labelType = this.type + (this.selectedMedias.length > 1 ? 's' : '')
+        if (this.btnLabelType && this.btnLabelType[labelType] !== undefined) {
+          labelType = this.btnLabelType[labelType]
+        }
         if (this.indexToReplace > -1) return this.btnLabelUpdate + ' ' + labelType
-        return (this.selectedMedias.length > 1 ? this.btnLabelMulti + ' ' + labelType + 's' : this.btnLabelSingle + ' ' + labelType)
+        return (this.selectedMedias.length > 1 ? this.btnLabelMulti + ' ' + labelType : this.btnLabelSingle + ' ' + labelType)
       },
       usedMedias: function () {
         return this.selected[this.connector] || []
