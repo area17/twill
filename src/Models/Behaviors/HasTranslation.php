@@ -10,7 +10,7 @@ trait HasTranslation
 
     public function getTranslationModelNameDefault()
     {
-        return "App\Models\Translations\\" . class_basename($this) . 'Translation';
+        return config('twill.namespace') . "\Models\Translations\\" . class_basename($this) . 'Translation';
     }
 
     public function scopeWithActiveTranslations($query, $locale = null)
