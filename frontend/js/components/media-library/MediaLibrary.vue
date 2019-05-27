@@ -108,6 +108,10 @@
         type: String,
         default: 'Insert'
       },
+      btnLabelType: {
+        type: String,
+        default: ''
+      },
       initialPage: {
         type: Number,
         default: 1
@@ -157,8 +161,9 @@
         return this.modalTitlePrefix
       },
       btnLabel: function () {
-        if (this.indexToReplace > -1) return this.btnLabelUpdate + ' ' + this.type
-        return (this.selectedMedias.length > 1 ? this.btnLabelMulti + ' ' + this.type + 's' : this.btnLabelSingle + ' ' + this.type)
+        let labelType = this.btnLabelType ? this.btnLabelType : this.type
+        if (this.indexToReplace > -1) return this.btnLabelUpdate + ' ' + labelType
+        return (this.selectedMedias.length > 1 ? this.btnLabelMulti + ' ' + labelType + 's' : this.btnLabelSingle + ' ' + labelType)
       },
       usedMedias: function () {
         return this.selected[this.connector] || []
