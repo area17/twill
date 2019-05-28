@@ -150,6 +150,10 @@ trait HandleRepeaters
 
         }
 
+        if (!empty($repeatersMedias) && config('twill.media_library.translated_form_fields', false)) {
+            $repeatersMedias = call_user_func_array('array_merge', $repeatersMedias);
+        }
+
         if (!empty($repeatersFiles)) {
             $repeatersFiles = call_user_func_array('array_merge', $repeatersFiles);
         }
