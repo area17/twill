@@ -21,7 +21,7 @@
                     @endif
                     @if(isset($currentUser))
                         <a href="{{ route('admin.users.index') }}">CMS Users</a><br />
-                        <a href="{{ route('admin.users.edit', $currentUser->id) }}">Settings</a><br />
+                        <a href="{{ route('admin.users.edit', $currentUser->id) }}">Profile</a><br />
                         <a href="{{ route('admin.logout') }}">Logout</a>
                     @endif
                 </div>
