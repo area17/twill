@@ -16,7 +16,7 @@
             @if ($currentUser->can('access-user-management'))
                 <a href="{{ route($user_management_route) }}">CMS Users</a>
             @endif
-            <a href="{{ route('admin.users.edit', $currentUser->id) }}">Settings</a>
+            <a href="{{ route('admin.users.edit', $currentUser->id) }}">Profile</a>
             <a href="{{ route('admin.logout') }}">Logout</a>
         </div>
     </a17-dropdown>
