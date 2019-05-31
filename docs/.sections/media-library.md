@@ -1,13 +1,29 @@
 ## Media library
+Any good CMS should have a media library so that if you have great visuals, you can use them anywhere on your site or app.
+
 ![screenshot](/docs/_media/medialibrary.png)
 
 ### Storage provider
 The media and files libraries currently support S3 and local storage. Head over to the `twill` configuration file to setup your storage disk and configurations. Also check out the S3 direct upload section of this documentation to setup your IAM users and bucket if you want to use S3 as a storage provider.
 
-### Image rendering service
-This package currently ships with only one rendering service, [Imgix](https://www.imgix.com/). It is very simple to implement another one like [Cloudinary](http://cloudinary.com/) or even a local service like [Glide](http://glide.thephpleague.com/) or [Croppa](https://github.com/BKWLD/croppa).
-You would have to implement the `ImageServiceInterface` and modify your `twill` configuration value `media_library.image_service` with your implementation class.
-Here are the methods you would have to implement:
+### Image rendering services
+
+A great media library gives you the ability to place different versions of your imagery in different sizes and shapes depending upon where you want to put it. A rendering service is the engine for this feature.
+
+Twill currently ships with only one rendering service, [Imgix](https://www.imgix.com/). Imgix enables some great features such as basic cropping, focal point cropping, automatic creation of low quality placeholder images (LQIP), social media images, or access your original image.
+
+#### Installing an alternate rendering service
+
+You may want to implement another rendering service like [Cloudinary](http://cloudinary.com/) or even a local service like [Glide](http://glide.thephpleague.com/) or [Croppa](https://github.com/BKWLD/croppa).
+
+After installing the the rendering service of your choice using composer, integration has 2 primary steps.
+
+1. Create a class that implements the `ImageServiceInterface` using your rendering service of choice.
+2. Modify your `twill` configuration value `media_library.image_service` with your implementation class.
+
+##### Creating your implementation class:
+
+Here are the methods you would have to implement in your class.
 
 ```php
 <?php
@@ -24,16 +40,18 @@ public function getSocialFallbackUrl();
 public function getTransparentFallbackUrl();
 ```
 
-$crop_params will be an array with the following keys: crop_x, crop_y, crop_w and crop_y. If the service you are implementing doesn't support focal point cropping, you can call the getUrlWithCrop from your implementation.
+Here's how we implement it [for Imgix](https://github.com/area17/twill/blob/16ec48037efab10c20ffb09728bd885ad9a1aa4a/src/Services/MediaLibrary/Imgix.php).
+
+*$crop_params* will be an array with the following keys: crop_x, crop_y, crop_w and crop_h. If the service you are implementing doesn't support focal point cropping, you can set the `getUrlWithFocalCrop` method to call the standard `getUrlWithCrop` method in your implementation.
 
 ### Role & crop params
-Each of the data models in your application can have different images roles and crop.
+Each _Module_ in your application can have its own predefined image *crops* and *roles*.
 
-For example, roles for a People model could be `profile` and `cover`. This would allow you display different images for your data modal in the design, depending on the current screen.
+A _role_ is a way to define different contexts in which a image might be placed. For example, roles for a `People` model could be `profile` and `cover`. This would allow you to include your People model in list and show a cover image for each, or show an single person model with a profile image. You can associate any number of image roles with your Model.
 
-Crops are complementary or can be used on their own with a single role to define multiple cropping ratios on the same image.
+_Crops_ are more self-explanatory. Twill comes with some pre-defined crop settingsCrops allow you to set different variants of a given image, so crops can be used in combination with _roles_ or they can be used on their own with a single role to define multiple cropping ratios on the same image.
 
-For example, your Person `cover` image could have a `square` crop for mobile screens, but could use a `16/9` crop on larger screens. Those values are editable at your convenience for each model, even if there are already some crops created in the CMS.
+Using the Person example, your `cover` image could have a `square` crop for mobile screens, but could use a `16/9` crop on larger screens. Those values are editable at your convenience for each model, even if there are already some crops created in the CMS.
 
 The only thing you have to do to make it work is to compose your model and repository with the appropriate traits, respectively `HasMedias` and `HandleMedias`, setup your `$mediasParams` configuration and use the `medias` form partial in your form view (more info in the CRUD section).
 
