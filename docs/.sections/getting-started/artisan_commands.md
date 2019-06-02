@@ -8,8 +8,8 @@ After running the migrations, it will then automatically run the `twill:superadm
 
 * `php artisan twill:superadmin` - As noted above, this command will prompt you to create a new superadmin user, requesting a user email address and then a password. Run this command on its own if you need to quickly generate a new superadmin user.
 
-* `php artisan twill:module` - generate a new module for your twill CMS. This command is extremely helpful in bootstrapping the files you will need to content manage new models. It is detailed extensively in the [CRUD Modules section](#cli-generator) of the documentation.
+* `php artisan twill:module {moduleName}` - flags: `{--B|hasBlocks} {--T|hasTranslation} {--S|hasSlug} {--M|hasMedias} {--F|hasFiles} {--P|hasPosition} {--R|hasRevisions}` - generate a new module for your twill CMS. This command is extremely helpful in bootstrapping the files you will need to content manage new models. It is detailed extensively in the [CRUD Modules section](#cli-generator) of the documentation.
 
 * `php artisan twill:blocks` - generate vue components from blade views. It is an essential step the process of enabling [block editing](#block-editor-3) on your site.
 
-* `twill:lqip {--all=0}` - regenerate low-quality image placeholders (lqip) of your media files. This is a strategy deployed in media management to improve initial page load times.
+* `twill:lqip` - flags: ` {--all}` - generate low-quality image placeholders (LQIP) of your media files. This is a strategy deployed in media management to improve initial page load times. The default behavior of this command is to generate LQIP for any media files that do not already have an LQIP alternative. Use the `--all` flag to generate new LQIP for all media files. To learn more about media management, check out the [media library section](#media-library-3) of the documentation.
