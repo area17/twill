@@ -70,10 +70,6 @@ class RoleController extends ModuleController
 
     protected function formData($request)
     {
-        $modules_items = Permission::permissionableModules()->mapWithKeys(function ($module) {
-            return [$module => getRepositoryByModuleName($module)->get()];
-        });
-
         return [
             'primary_navigation' => [
                 'users' => [
@@ -95,7 +91,7 @@ class RoleController extends ModuleController
             ],
             'customPublishedLabel' => 'Enabled',
             'customDraftLabel' => 'Disabled',
-            'permission_modules' => $modules_items,
+            'permission_modules' => Permission::permissionableModuleItems(),
         ];
     }
 

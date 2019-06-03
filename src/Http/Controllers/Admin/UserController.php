@@ -101,10 +101,6 @@ class UserController extends ModuleController
 
     protected function formData($request)
     {
-        $modules_items = Permission::permissionableModules()->mapWithKeys(function ($module) {
-            return [$module => getRepositoryByModuleName($module)->get()];
-        });
-
         return [
             'roleList' => Role::published()->get()->map(function ($role) {
                 return ['value' => $role->id, 'label' => $role->name];
@@ -129,7 +125,7 @@ class UserController extends ModuleController
             ],
             'customPublishedLabel' => 'Enabled',
             'customDraftLabel' => 'Disabled',
-            'permission_modules' => $modules_items,
+            'permission_modules' => Permission::permissionableModuleItems(),
         ];
     }
 

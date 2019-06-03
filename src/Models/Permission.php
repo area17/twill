@@ -29,7 +29,19 @@ class Permission extends BaseModel
 
     public static function permissionableModules()
     {
-        return getAllModules()->diff(collect(config('twill.permission.exclude_modules', [])));
+        return collect(config('twill.permission.modules', []));
+    }
+    
+    public static function permissionableModuleItems()
+    {
+        $modules = self::permissionableModules();
+        $parentModules = $modules->filter(function($module) {
+            
+        });
+
+        return self::permissionableModules()->mapWithKeys(function ($module) {
+            return [$module => getRepositoryByModuleName($module)->get()];
+        });
     }
 
     public function permissionable()
