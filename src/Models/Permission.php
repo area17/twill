@@ -93,6 +93,10 @@ class Permission extends BaseModel
 
     public function scopeOfModuleName($query, $moduleName)
     {
+        // Submodule's permission will inherit from parent module
+        if (strpos($moduleName, '.')) {
+            $moduleName = explode('.', $moduleName)[0];
+        }
         return $query->ofModel(getModelByModuleName($moduleName));
     }
 
