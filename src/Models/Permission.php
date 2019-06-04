@@ -85,6 +85,15 @@ class Permission extends BaseModel
     // All permissions towards a specific item
     public function scopeOfItem($query, $item)
     {
+        $permissionableSubmodule = self::permissionableModules()->filter(function($module) use ($item){
+            return strpos($module, '.') && explode('.', $module)[1] === getModuleNameByModel($item);
+        })->first();
+
+        if ($permissionableSubmodule) {
+            $parentRelation = isset($item->parentRelation) ? $item->parentRelation : str_singular(explode('.', $permissionableSubmodule)[0]);
+            $item = $item->$parentRelation;
+        }
+
         return $query->where([
             ['permissionable_type', get_class($item)],
             ['permissionable_id', $item->id],

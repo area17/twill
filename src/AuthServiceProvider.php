@@ -4,6 +4,7 @@ namespace A17\Twill;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use A17\Twill\Models\Permission;
 
 class AuthServiceProvider extends ServiceProvider
 {
