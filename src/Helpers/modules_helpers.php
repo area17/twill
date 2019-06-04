@@ -46,6 +46,8 @@ if (!function_exists('getModelRepository')) {
 if (!function_exists('isPermissionableModule')) {
     function isPermissionableModule($moduleName)
     {
-        return Permission::permissionableModules()->contains($moduleName);
+        return Permission::permissionableModules()->contains($moduleName) || Permission::permissionableModules()->filter(function($module) use ($moduleName) {
+            return strpos($module, '.') && explode('.', $module)[1] === $moduleName;
+        })->count() > 0;
     }
 }
