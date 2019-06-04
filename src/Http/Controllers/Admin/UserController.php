@@ -125,7 +125,7 @@ class UserController extends ModuleController
             ],
             'customPublishedLabel' => 'Enabled',
             'customDraftLabel' => 'Disabled',
-            'permission_modules' => Permission::permissionableModuleItems(),
+            'permission_modules' => Permission::permissionableParentModuleItems(),
         ];
     }
 

@@ -7,7 +7,7 @@ if (!function_exists('getModelByModuleName')) {
     function getModelByModuleName($moduleName)
     {
         $model = config('twill.namespace') . '\\Models\\' . studly_case(str_singular($moduleName));
-        if (!file_exists($model)) {
+        if (!class_exists($model)) {
             throw new Exception($model . ' not existed');
         }
         return $model;
@@ -36,7 +36,7 @@ if (!function_exists('getModelRepository')) {
         }
         $repository = config('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository";
 
-        if (!file_exists($repository)) {
+        if (!class_exists($repository)) {
             throw new Exception($repository . ' not existed');
         }
         return app($repository);

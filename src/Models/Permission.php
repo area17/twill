@@ -31,15 +31,12 @@ class Permission extends BaseModel
     {
         return collect(config('twill.permission.modules', []));
     }
-    
-    public static function permissionableModuleItems()
-    {
-        $modules = self::permissionableModules();
-        $parentModules = $modules->filter(function($module) {
-            
-        });
 
-        return self::permissionableModules()->mapWithKeys(function ($module) {
+    public static function permissionableParentModuleItems()
+    {
+        return self::permissionableModules()->filter(function($module) {
+            return !strpos($module, '.');
+        })->mapWithKeys(function ($module) {
             return [$module => getRepositoryByModuleName($module)->get()];
         });
     }
