@@ -461,9 +461,9 @@
           })
 
           // try to load the media thumbnail
-          let append = '?';
+          let append = '?'
           if (this.media.thumbnail.indexOf('?') > -1) {
-            append = '&';
+            append = '&'
           }
           this.img.src = this.media.thumbnail + append + 'no-cache'
         })
