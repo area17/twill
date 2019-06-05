@@ -32,8 +32,8 @@
     "vuex": "3.0.1"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.2.1",
     "babel-eslint": "^8.2.3",
-    "babel-preset-stage-2": "^6.24.1",
     "concurrently": "^4.0.1",
     "cross-env": "^5.2.0",
     "eslint": "^4.19.0",
@@ -45,8 +45,10 @@
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
     "eslint-plugin-vue": "^4.5.0",
-    "laravel-mix": "^2.1.14",
+    "laravel-mix": "^4.0.13",
     "logging": "3.2.0",
+    "sass": "^1.15.3",
+    "sass-loader": "7.*",
     "standard": "^11.0.1",
     "svgo": "^1.0.5",
     "svgstore": "^2.0.3",

@@ -16,7 +16,7 @@ trait HasRelated
 
     public function getRelated($browser_name)
     {
-        if ($this->relatedCache[$browser_name] === null) {
+        if (!isset($this->relatedCache[$browser_name]) || $this->relatedCache[$browser_name] === null) {
             $this->loadRelated($browser_name);
         }
 

@@ -59,13 +59,16 @@ $column-spans__even: (
     }
   }
 
-  @include breakpoint('xsmall') {
-    width: calc(100% - #{map-get($inner-gutters, 'xsmall')});
+  &-wrap {
+    @include breakpoint('xsmall') {
+      width: calc(100% - #{map-get($inner-gutters, 'xsmall')});
+    }
+
+    @include breakpoint('medium') {
+      width: calc(100% - #{map-get($inner-gutters, 'medium')});
+    }
   }
 
-  @include breakpoint('medium') {
-    width: calc(100% - #{map-get($inner-gutters, 'medium')});
-  }
 }
 
 .editor .col--double {

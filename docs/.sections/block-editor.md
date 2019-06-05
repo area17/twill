@@ -156,6 +156,8 @@ class ArticleRepository extends ModuleRepository
 
 - Not using the same name of the block inside the configuration.
 
+- Not running npm run twill-build
+
 ### Adding repeater blocks
 Lets say that it is requested to have an Accordion on Articles, where each item should have a _Header_ and a _Description_.
 This accordion can be moved around along with the rest of the blocks.
@@ -338,6 +340,12 @@ filename: ```views/admin/blocks/products.blade.php```
     ]
 ```
 
+- To render a browser with items selected in the block, you can use the `browserIds` helper to retrieve the selected items' ids, and then you may use Eloquent method like `find` to get the actual records:
+```php
+    $selected_items_ids = $block->browserIds('browserFieldName');
+    $items = Item::find($selected_items_ids);
+```
+
 ### Rendering blocks
 As long as you have access to a model instance that uses the HasBlocks trait in a view, you can call the `renderBlocks` helper on it to render the list of blocks that were created from the CMS. By default, this function will loop over all the blocks and their child blocks and render a Blade view located in `resources/views/site/blocks` with the same name as the block key you specified in your Twill configuration and module form. 
 
@@ -436,3 +444,25 @@ return [
     ...
 ];
 ```
+
+### Content Editor
+
+You can enable the content editor individual block previews by providing a `resources/views/site/layouts/block.blade.php` lade layout file. The layout should be yielding a `content` section: `@yield('content')` with any frontend CSS/JS included exactly like in your main frontend layout. A simple example could be:
+
+```php
+<!doctype html>
+<html>
+    <head>
+        <title>#madewithtwill website</title>
+        <link rel="stylesheet" href="/css/app.css">
+    </head>
+    <body>
+        <div>
+            @yield('content')
+        </div>
+        <script src="/js/app.js"></script>
+    </body>
+</html>
+```
+
+If you would like to specify a custom layout view path, you can do so in `config/twill.php` at `twill.block_editor.block_single_layout`. In order to share the most of the layout between your frontend and individual blocks (essentially its assets), you can also create a parent layout and extend it from both.

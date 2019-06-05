@@ -91,8 +91,8 @@ class SignS3Upload
 
     private function signChunkedRequest($policyHeaders, $listener)
     {
-        if (isValidChunckRequest($policyHeaders)) {
-            $signedRequest = array('signature' => signV4ChunkRequest($policyHeaders));
+        if ($this->isValidChunckRequest($policyHeaders)) {
+            $signedRequest = array('signature' => $this->signV4ChunkRequest($policyHeaders));
             return $signedRequest;
         }
 

@@ -2,9 +2,9 @@
   <div class="multibutton">
     <a17-dropdown ref="submitDown" position="bottom-right" width="full" :offset="0">
       <a17-button :type="type" @click="buttonClicked(options[0].name)" :name="options[0].name" variant="validate">{{ options[0].text }}</a17-button>
-      <button class="multibutton__trigger" type="button" @click="$refs.submitDown.toggle()"><span v-svg symbol="dropdown_module"></span></button>
+      <button class="multibutton__trigger" type="button" @click="$refs.submitDown.toggle()" v-if="otherOptions.length"><span v-svg symbol="dropdown_module"></span></button>
 
-      <div slot="dropdown__content">
+      <div slot="dropdown__content" v-if="otherOptions.length">
         <ul>
           <li v-for="option in otherOptions" :key="option.name">
             <button @click="buttonClicked(option.name)" :type="type" :name="option.name">{{ option.text }}</button>

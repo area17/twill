@@ -196,7 +196,7 @@
           this.loadingError(this.loadingMedias[index])
         } else {
           const media = {
-            id: Date.now(),
+            id: this._uploader.methods.getUuid(id),
             name: sanitizeFilename(name),
             progress: 0,
             error: true,

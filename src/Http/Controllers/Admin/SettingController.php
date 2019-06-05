@@ -35,7 +35,7 @@ class SettingController extends Controller
 
         $this->settings->saveAll(request()->except('_token'), $section);
 
-        Event::fire('cms-settings.saved', 'cms-settings.saved');
+        fireCmsEvent('cms-settings.saved');
 
         return redirect()->back();
     }

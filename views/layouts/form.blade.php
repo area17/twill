@@ -142,7 +142,8 @@
         repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!},
         fields: [],
         editor: {{ $editor ? 'true' : 'false' }},
-        isCustom: {{ $customForm ? 'true' : 'false' }}
+        isCustom: {{ $customForm ? 'true' : 'false' }},
+        reloadOnSuccess: {{ ($reloadOnSuccess ?? false) ? 'true' : 'false' }}
     }
 
     window.STORE.publication = {
@@ -229,8 +230,8 @@
     }
 @stop
 
-@push('extra_js')
+@prepend('extra_js')
     <script src="{{ mix('/assets/admin/js/manifest.js') }}"></script>
     <script src="{{ mix('/assets/admin/js/vendor.js') }}"></script>
     <script src="{{ mix('/assets/admin/js/main-form.js') }}"></script>
-@endpush
+@endprepend

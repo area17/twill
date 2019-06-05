@@ -105,19 +105,12 @@ trait HandleMedias
                     $altText = $metadatas['altText'] ?? '';
                     $video = $metadatas['video'] ?? '';
 
-                    $itemForForm = $item->toCmsArray() + [
-                        'metadatas' => [
-                            'default' => [
-                                'caption' => $item->caption,
-                                'altText' => $item->alt_text,
-                                'video' => '',
-                            ],
-                            'custom' => [
-                                'caption' => $caption, // TODO: add caption and alttext to mediables table
-                                'altText' => $altText,
-                                'video' => $video,
-                            ],
-                        ],
+                    $itemForForm = $item->toCmsArray();
+
+                    $itemForForm['metadatas']['custom'] = [
+                        'caption' => $caption,
+                        'altText' => $altText,
+                        'video' => $video,
                     ];
 
                     foreach ($mediasById->groupBy('pivot.crop') as $crop => $mediaByCrop) {

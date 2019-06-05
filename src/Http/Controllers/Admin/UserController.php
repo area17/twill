@@ -6,6 +6,7 @@ use A17\Twill\Models\Permission;
 use A17\Twill\Models\Role;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
+use PragmaRX\Google2FAQRCode\Google2FA;
 
 class UserController extends ModuleController
 {
@@ -47,6 +48,10 @@ class UserController extends ModuleController
 
     protected $indexOptions = [
         'permalink' => false,
+    ];
+
+    protected $fieldsPermissions = [
+        'role' => 'edit-user-role',
     ];
 
     public function __construct(Application $app, Request $request)
@@ -101,6 +106,26 @@ class UserController extends ModuleController
 
     protected function formData($request)
     {
+        $user = Auth::guard('twill_users')->user();
+        $with2faSettings = config('twill.enabled.users-2fa') && $user->id == request('user');
+
+        if ($with2faSettings) {
+            $google2fa = new Google2FA();
+
+            if (is_null($user->google_2fa_secret)) {
+                $secret = $google2fa->generateSecretKey();
+                $user->google_2fa_secret = \Crypt::encrypt($secret);
+                $user->save();
+            }
+
+            $qrCode = $google2fa->getQRCodeInline(
+                config('app.name'),
+                $user->email,
+                \Crypt::decrypt($user->google_2fa_secret),
+                200
+            );
+        }
+
         return [
             'roleList' => Role::published()->get()->map(function ($role) {
                 return ['value' => $role->id, 'label' => $role->name];
@@ -126,6 +151,8 @@ class UserController extends ModuleController
             'customPublishedLabel' => 'Enabled',
             'customDraftLabel' => 'Disabled',
             'permission_modules' => Permission::permissionableParentModuleItems(),
+            'with2faSettings' => $with2faSettings,
+            'qrCode' => $qrCode ?? null,
         ];
     }
 

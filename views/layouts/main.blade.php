@@ -48,7 +48,7 @@
                 <div class="app" id="app" v-cloak>
                     @yield('content')
                     @if (config('twill.enabled.media-library') || config('twill.enabled.file-library'))
-                        <a17-medialibrary ref="mediaLibrary" :authorized="{{ json_encode(auth('twill_users')->user()->can('access-media-library')) }}"></a17-medialibrary>
+                        <a17-medialibrary ref="mediaLibrary" :authorized="{{ json_encode(auth('twill_users')->user()->can('access-media-library')) }}" :extra-metadatas="{{ json_encode(array_values(config('twill.media_library.extra_metadatas_fields', []))) }}"></a17-medialibrary>
                         <a17-dialog ref="warningMediaLibrary" modal-title="Delete media" confirm-label="Delete">
                             <p class="modal--tiny-title"><strong>Delete media</strong></p>
                             <p>Are you sure ?<br />This change can't be undone.</p>

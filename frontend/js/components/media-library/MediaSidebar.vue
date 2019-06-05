@@ -25,14 +25,28 @@
 
       <form v-if="hasMedia" ref="form" class="mediasidebar__inner mediasidebar__form" @submit="submit">
         <span class="mediasidebar__loader" v-if="loading"><span class="loader loader--small"><span></span></span></span>
-        <a17-vselect label="Tags" :key="firstMedia.id + '-' + medias.length" name="tags" :multiple="true" :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small" :endpoint="type.tagsEndpoint" @change="save" maxHeight="175px" />
+        <a17-vselect v-if="!fieldsRemovedFromBulkEditing.includes('tags')" label="Tags" :key="firstMedia.id + '-' + medias.length" name="tags" :multiple="true" :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true" emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small" :endpoint="type.tagsEndpoint" @change="save" maxHeight="175px" />
+        <span v-if="extraMetadatas.length && isImage && hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes('tags')" class="f--tiny f--note f--underlined" @click="removeFieldFromBulkEditing('tags') ">Remove from bulk edit</span>
         <template v-if="hasMultipleMedias">
           <input type="hidden" name="ids" :value="mediasIds" />
         </template>
         <template v-else>
           <input type="hidden" name="id" :value="firstMedia.id" />
           <a17-textfield v-if="isImage" label="Alt text" name="alt_text" :initialValue="firstMedia.metadatas.default.altText" size="small" @focus="focus" @blur="blur" @change="save" />
-          <a17-textfield v-if="isImage" label="Caption" name="caption" :initialValue="firstMedia.metadatas.default.caption" size="small" @focus="focus" @blur="blur" @change="save" />
+          <a17-textfield v-if="isImage" type="textarea" :rows="1" size="small" label="Caption" name="caption" :initialValue="firstMedia.metadatas.default.caption" @focus="focus" @blur="blur" @change="save" />
+          <template v-for="field in singleOnlyMetadatas">
+            <a17-textfield v-bind:key="field.name" v-if="isImage && (field.type == 'text' || !field.type)" :label="field.label" :name="field.name" size="small" :initialValue="firstMedia.metadatas.default[field.name]" type="textarea" :rows="1" @focus="focus" @blur="blur" @change="save" />
+            <div class="mediasidebar__checkbox" v-if="isImage && (field.type == 'checkbox')" >
+              <a17-checkbox v-bind:key="field.name" :label="field.label" :name="field.name" :initialValue="firstMedia.metadatas.default[field.name]" :value="1" @change="blur" />
+            </div>
+          </template>
+        </template>
+        <template v-for="field in singleAndMultipleMetadatas">
+          <a17-textfield v-bind:key="field.name" v-if="isImage && (field.type == 'text' || !field.type) && ((hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)) || hasSingleMedia)" :label="field.label" :name="field.name" size="small" :initialValue="hasMultipleMedias ? sharedMetadata(field.name) : firstMedia.metadatas.default[field.name]" type="textarea" :rows="1" @focus="focus" @blur="blur" @change="save" />
+          <div class="mediasidebar__checkbox" v-if="isImage && (field.type == 'checkbox') && ((hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)) || hasSingleMedia)">
+            <a17-checkbox v-bind:key="field.name" :label="field.label" :name="field.name" :initialValue="hasMultipleMedias ? sharedMetadata(field.name) : firstMedia.metadatas.default[field.name]" :value="1" @change="blur" />
+          </div>
+          <span v-if="isImage && hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)" class="f--tiny f--note f--underlined" @click="removeFieldFromBulkEditing(field.name) ">Remove from bulk edit</span>
         </template>
       </form>
     </template>
@@ -41,7 +55,7 @@
       <p class="modal--tiny-title"><strong>Are you sure ?</strong></p>
       <p>{{ warningDeleteMessage }}</p>
       <a17-inputframe>
-        <a17-button variant="validate" @click="deleteSelectedMedias">Delete ( {{ mediasIdsToDelete.length }})</a17-button>
+        <a17-button variant="validate" @click="deleteSelectedMedias">Delete ({{ mediasIdsToDelete.length }})</a17-button>
         <a17-button variant="aslink" @click="$refs.warningDelete.close()"><span>Cancel</span></a17-button>
       </a17-inputframe>
     </a17-modal>
@@ -73,16 +87,28 @@
       type: {
         type: Object,
         required: true
+      },
+      extraMetadatas: {
+        type: Array,
+        default () {
+          return []
+        }
       }
     },
     data: function () {
       return {
         loading: false,
         focused: false,
-        previousSavedData: {}
+        previousSavedData: {},
+        fieldsRemovedFromBulkEditing: []
       }
     },
     filters: a17VueFilters,
+    watch: {
+      medias: function () {
+        this.fieldsRemovedFromBulkEditing = []
+      }
+    },
     computed: {
       firstMedia: function () {
         return this.hasMedia ? this.medias[0] : null
@@ -103,6 +129,12 @@
         return this.medias.map((media) => {
           return media.tags
         }).reduce((allTags, currentTags) => allTags.filter(tag => currentTags.includes(tag)))
+      },
+      sharedMetadata () {
+        return name => this.medias.map((media) => {
+          return media.metadatas.default[name]
+        // eslint-disable-next-line eqeqeq
+        }).every((val, i, arr) => Array.isArray(val) ? (val[0] == arr[0]) : (val == arr[0])) ? this.firstMedia.metadatas.default[name] : ''
       },
       mediasIds: function () {
         return this.medias.map(function (media) { return media.id }).join(',')
@@ -129,6 +161,12 @@
           'mediasidebar__inner--multi': this.hasMultipleMedias,
           'mediasidebar__inner--single': this.hasSingleMedia
         }
+      },
+      singleAndMultipleMetadatas: function () {
+        return this.extraMetadatas.filter(m => m.multiple)
+      },
+      singleOnlyMetadatas: function () {
+        return this.extraMetadatas.filter(m => !m.multiple)
       },
       ...mapState({
         mediasLoading: state => state.mediaLibrary.loading
@@ -186,6 +224,9 @@
       getFormData: function (form) {
         return FormDataAsObj(form)
       },
+      removeFieldFromBulkEditing: function (name) {
+        this.fieldsRemovedFromBulkEditing.push(name)
+      },
       focus: function () {
         this.focused = true
       },
@@ -196,13 +237,28 @@
         const form = this.$refs.form
         const data = this.getFormData(form)
 
-        // save caption and alt text on the media
         if (this.hasSingleMedia) {
           if (data.hasOwnProperty('alt_text')) this.firstMedia.metadatas.default.altText = data['alt_text']
           else this.firstMedia.metadatas.default.altText = ''
 
           if (data.hasOwnProperty('caption')) this.firstMedia.metadatas.default.caption = data['caption']
           else this.firstMedia.metadatas.default.caption = ''
+
+          this.extraMetadatas.forEach((metadata) => {
+            if (data.hasOwnProperty(metadata.name)) {
+              this.firstMedia.metadatas.default[metadata.name] = data[metadata.name]
+            } else {
+              this.firstMedia.metadatas.default[metadata.name] = ''
+            }
+          })
+        } else {
+          this.singleAndMultipleMetadatas.forEach((metadata) => {
+            if (data.hasOwnProperty(metadata.name)) {
+              this.medias.forEach((media) => {
+                media.metadatas.default[metadata.name] = data[metadata.name]
+              })
+            }
+          })
         }
       },
       save: function () {
@@ -226,6 +282,8 @@
         this.loading = true
 
         let data = this.getFormData(form)
+        data.fieldsRemovedFromBulkEditing = this.fieldsRemovedFromBulkEditing
+
         const url = this.hasMultipleMedias ? this.firstMedia.updateBulkUrl : this.firstMedia.updateUrl // single or multi updates
 
         api.update(url, data, (resp) => {
@@ -327,5 +385,9 @@
     position:absolute;
     top:20px;
     right:20px + 8px + 8px;
+  }
+
+  .mediasidebar__checkbox {
+    margin-top: 16px;
   }
 </style>
