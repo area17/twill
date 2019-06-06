@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use Auth;
 use A17\Twill\Models\Permission;
 use A17\Twill\Models\Role;
 use Illuminate\Contracts\Foundation\Application;
