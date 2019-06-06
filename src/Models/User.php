@@ -23,7 +23,6 @@ class User extends AuthenticatableContract
     protected $fillable = [
         'email',
         'name',
-        'role',
         'published',
         'title',
         'description',
