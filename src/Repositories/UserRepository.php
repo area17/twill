@@ -43,9 +43,6 @@ class UserRepository extends ModuleRepository
 
     public function filter($query, array $scopes = [])
     {
-        $query->when(isset($scopes['role']), function ($query) use ($scopes) {
-            $query->where('role', $scopes['role']);
-        });
         $query->where('is_superadmin', '<>', true);
         $this->searchIn($query, $scopes, 'search', ['name', 'email', 'role']);
         return parent::filter($query, $scopes);

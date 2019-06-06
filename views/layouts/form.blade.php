@@ -65,7 +65,8 @@
                         @endunless
                         
                         @php
-                            $showPermissionFieldset = isset($item) && isPermissionableModule(str_plural(lcfirst(class_basename($item))));
+                            $permissionModuleName = isPermissionableModule(str_plural(lcfirst(class_basename($item))));
+                            $showPermissionFieldset = isset($item) && $permissionModuleName && !strpos($permissionModuleName, '.');
                         @endphp
 
                         @if($showPermissionFieldset)

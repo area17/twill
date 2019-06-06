@@ -44,10 +44,19 @@ if (!function_exists('getModelRepository')) {
 }
 
 if (!function_exists('isPermissionableModule')) {
+    // return the module name if is permissionable module, otherwise return false
     function isPermissionableModule($moduleName)
     {
-        return Permission::permissionableModules()->contains($moduleName) || Permission::permissionableModules()->filter(function($module) use ($moduleName) {
+        $submodule = Permission::permissionableModules()->filter(function($module) use ($moduleName) {
             return strpos($module, '.') && explode('.', $module)[1] === $moduleName;
-        })->count() > 0;
+        })->first();
+
+        if (Permission::permissionableModules()->contains($moduleName)) {
+            return $moduleName;
+        } elseif ($submodule) {
+            return $submodule;
+        } else {
+            return false;
+        }
     }
 }

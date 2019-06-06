@@ -31,12 +31,21 @@ abstract class Model extends BaseModel implements TaggableInterface
     public function scopeAccessible($query)
     {
         $model = get_class($query->getModel());
-        if (isPermissionableModule(getModuleNameByModel($model)) && !Auth::user()->is_superadmin) {
+        $moduleName = isPermissionableModule(getModuleNameByModel($model));
+        if ( $moduleName && !Auth::user()->is_superadmin) {
+            // Get all permissions the logged in user has regards to the model.
             $allPermissions = Auth::user()->userAllPermissions()->ofModel($model);
+
             // If the user has any module permissions, or global manage all modules permissions, all items will be return
             if ((clone $allPermissions)->module()->whereIn('name', Permission::available('module'))->exists()) {
                 return $query;
             }
+
+            // If the module is submodule, skip the scope.
+            if(strpos($moduleName, '.')) {
+                return $query;
+            };
+
             $authorizedItemsIds = $allPermissions->moduleItem()->pluck('permissionable_id');
             return $query->whereIn('id', $authorizedItemsIds);
         }
