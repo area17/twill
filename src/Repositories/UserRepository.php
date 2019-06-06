@@ -80,11 +80,7 @@ class UserRepository extends ModuleRepository
                 return $group['id'] && $group['name'] !== 'Everyone';
             });
         }
-        return $fields;
-    }
 
-    public function prepareFieldsBeforeSave($user, $fields)
-    {
         $editor = auth('twill_users')->user();
         $with2faSettings = config('twill.enabled.users-2fa', false) && $editor->id === $user->id;
 
@@ -95,7 +91,7 @@ class UserRepository extends ModuleRepository
             $fields['google_2fa_secret'] = null;
         }
 
-        return parent::prepareFieldsBeforeSave($user, $fields);
+        return $fields;
     }
 
     public function afterSave($user, $fields)
