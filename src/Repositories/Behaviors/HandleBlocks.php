@@ -126,9 +126,10 @@ trait HandleBlocks
 
                 if ($isInRepeater) {
                     $fields['blocksRepeaters']["blocks-{$block->parent_id}_{$block->child_key}"][] = $blockItem + [
-                        'max' => $blockTypeConfig['max'],
                         'trigger' => $blockTypeConfig['trigger'],
-                    ];
+                    ] + (isset($blockTypeConfig['max']) ? [
+                        'max' => $blockTypeConfig['max']
+                    ] : []);
                 } else {
                     $fields['blocks'][] = $blockItem + [
                         'icon' => $blockTypeConfig['icon'],
