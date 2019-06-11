@@ -7,10 +7,25 @@ use Illuminate\Console\Command;
 
 class GenerateBlocks extends Command
 {
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
     protected $signature = 'twill:blocks';
 
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
     protected $description = "Generate blocks as single file Vue components from blade views";
 
+    /**
+     * Executes the console command.
+     *
+     * @return mixed
+     */
     public function handle()
     {
         $this->info("Starting to scan block views directory...");
@@ -33,6 +48,12 @@ class GenerateBlocks extends Command
         $this->info("All blocks have been generated!");
     }
 
+    /**
+     * Sanitizes the given HTML code by removing redundant spaces and comments.
+     *
+     * @param string $html
+     * @return string
+     */
     private function sanitize($html)
     {
         $search = array(

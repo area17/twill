@@ -7,6 +7,11 @@ use Auth;
 
 class ImpersonateController extends Controller
 {
+    /**
+     * @param int $id
+     * @param UserRepository $users
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function impersonate($id, UserRepository $users)
     {
         if (Auth::guard('twill_users')->user()->can('impersonate')) {
@@ -17,6 +22,9 @@ class ImpersonateController extends Controller
         return back();
     }
 
+    /**
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function stopImpersonate()
     {
         Auth::guard('twill_users')->user()->stopImpersonating();

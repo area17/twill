@@ -1,6 +1,9 @@
 <?php
 
 if (!function_exists('getLocales')) {
+    /**
+     * @return string[]
+     */
     function getLocales()
     {
         return config('translatable.locales') ?? [config('app.locale')];
@@ -8,6 +11,11 @@ if (!function_exists('getLocales')) {
 }
 
 if (!function_exists('getLanguagesForVueStore')) {
+    /**
+     * @param array $form_fields
+     * @param bool $translate
+     * @return array
+     */
     function getLanguagesForVueStore($form_fields = [], $translate = true)
     {
         $manageMultipleLanguages = count(getLocales()) > 1;
@@ -45,6 +53,10 @@ if (!function_exists('getLanguagesForVueStore')) {
 }
 
 if (!function_exists('getLanguageLabelFromLocaleCode')) {
+    /**
+     * @param string $code
+     * @return string
+     */
     function getLanguageLabelFromLocaleCode($code)
     {
         $codeToLanguageMappings = [
@@ -206,7 +218,7 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
 
 /**
  * Converts camelCase string to have spaces between each.
- * @param $camelCaseString
+ * @param string $camelCaseString
  * @return string (ex.: camel case string)
  */
 if (!function_exists('camelCaseToWords')) {

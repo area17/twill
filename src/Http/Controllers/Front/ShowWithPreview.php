@@ -4,6 +4,11 @@ namespace A17\Twill\Http\Controllers\Front;
 
 trait ShowWithPreview
 {
+    /**
+     * @param string $slug
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     * @throws \Exception
+     */
     public function show($slug)
     {
         if (!isset($this->moduleName) || !isset($this->repository)) {
@@ -33,6 +38,10 @@ trait ShowWithPreview
         ] + $this->showData($slug, $item));
     }
 
+    /**
+     * @param string $slug
+     * @return \A17\Twill\Models\Model|null
+     */
     protected function getItem($slug)
     {
         return $this->repository->forSlug(
@@ -43,6 +52,10 @@ trait ShowWithPreview
         );
     }
 
+    /**
+     * @param $slug
+     * @return \A17\Twill\Models\Model|null
+     */
     protected function getItemPreview($slug)
     {
         return $this->repository->forSlugPreview(
@@ -52,6 +65,11 @@ trait ShowWithPreview
         );
     }
 
+    /**
+     * @param string $slug
+     * @param mixed $item
+     * @return array
+     */
     protected function showData($slug, $item)
     {
         return [];

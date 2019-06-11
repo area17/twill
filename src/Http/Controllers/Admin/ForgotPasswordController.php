@@ -20,11 +20,17 @@ class ForgotPasswordController extends Controller
 
     use SendsPasswordResetEmails;
 
+    /**
+     * @return \Illuminate\Contracts\Auth\PasswordBroker
+     */
     public function broker()
     {
         return Password::broker('twill_users');
     }
 
+    /**
+     * @return \Illuminate\View\View
+     */
     public function showLinkRequestForm()
     {
         return view('twill::auth.passwords.email');

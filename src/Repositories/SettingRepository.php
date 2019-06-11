@@ -9,11 +9,19 @@ class SettingRepository extends ModuleRepository
 {
     use HandleMedias;
 
+    /**
+     * @param Setting $model
+     */
     public function __construct(Setting $model)
     {
         $this->model = $model;
     }
 
+    /**
+     * @param string $key
+     * @param string|null $section
+     * @return string|null
+     */
     public function byKey($key, $section = null)
     {
         return $this->model->when($section, function ($query) use ($section) {
@@ -21,6 +29,10 @@ class SettingRepository extends ModuleRepository
         })->where('key', $key)->exists() ? $this->model->where('key', $key)->with('translations')->first()->value : null;
     }
 
+    /**
+     * @param string|null $section
+     * @return array
+     */
     public function getFormFields($section = null)
     {
         $settings = $this->model->when($section, function ($query) use ($section) {
@@ -42,6 +54,11 @@ class SettingRepository extends ModuleRepository
         })->toArray() + ['medias' => $medias];
     }
 
+    /**
+     * @param array $settingsFields
+     * @param string|null $section
+     * @return void
+     */
     public function saveAll($settingsFields, $section = null)
     {
         $section = $section ? ['section' => $section] : [];
@@ -80,6 +97,10 @@ class SettingRepository extends ModuleRepository
         }
     }
 
+    /**
+     * @param string $role
+     * @return array
+     */
     public function getCrops($role)
     {
         return config('twill.settings.crops')[$role];

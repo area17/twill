@@ -32,6 +32,11 @@ use View;
 
 class TwillServiceProvider extends ServiceProvider
 {
+    /**
+     * Service providers to be registered.
+     *
+     * @var string[]
+     */
     protected $providers = [
         RouteServiceProvider::class,
         AuthServiceProvider::class,
@@ -41,6 +46,11 @@ class TwillServiceProvider extends ServiceProvider
         ActivitylogServiceProvider::class,
     ];
 
+    /**
+     * Bootstraps the package services.
+     *
+     * @return void
+     */
     public function boot()
     {
         $this->requireHelpers();
@@ -57,6 +67,11 @@ class TwillServiceProvider extends ServiceProvider
         $this->addViewComposers();
     }
 
+    /**
+     * Registers the package services.
+     *
+     * @return void
+     */
     public function register()
     {
         $this->mergeConfigs();
@@ -74,6 +89,11 @@ class TwillServiceProvider extends ServiceProvider
         config(['twill.version' => trim(file_get_contents(__DIR__ . '/../VERSION'))]);
     }
 
+    /**
+     * Registers the package service providers.
+     *
+     * @return void
+     */
     private function registerProviders()
     {
         foreach ($this->providers as $provider) {
@@ -101,6 +121,11 @@ class TwillServiceProvider extends ServiceProvider
         }
     }
 
+    /**
+     * Registers the package facade aliases.
+     *
+     * @return void
+     */
     private function registerAliases()
     {
         $loader = AliasLoader::getInstance();
@@ -121,6 +146,11 @@ class TwillServiceProvider extends ServiceProvider
 
     }
 
+    /**
+     * Defines the package configuration files for publishing.
+     *
+     * @return void
+     */
     private function publishConfigs()
     {
         if (config('twill.enabled.users-management')) {
@@ -156,6 +186,11 @@ class TwillServiceProvider extends ServiceProvider
         $this->publishes([__DIR__ . '/../config/translatable.php' => config_path('translatable.php')], 'config');
     }
 
+    /**
+     * Merges the package configuration files into the given configuration namespaces.
+     *
+     * @return void
+     */
     private function mergeConfigs()
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/twill.php', 'twill');
@@ -172,6 +207,11 @@ class TwillServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
     }
 
+    /**
+     * Defines the package migration files for publishing.
+     *
+     * @return void
+     */
     private function publishMigrations()
     {
         $migrations = ['CreateTagsTables', 'CreateBlocksTable', 'CreateRelatedTable'];
@@ -197,6 +237,10 @@ class TwillServiceProvider extends ServiceProvider
         }
     }
 
+    /**
+     * @param string $migration
+     * @return void
+     */
     private function publishMigration($migration)
     {
         if (!class_exists($migration)) {
@@ -207,6 +251,9 @@ class TwillServiceProvider extends ServiceProvider
         }
     }
 
+    /**
+     * @return void
+     */
     private function publishAssets()
     {
         $this->publishes([
@@ -214,6 +261,9 @@ class TwillServiceProvider extends ServiceProvider
         ], 'assets');
     }
 
+    /**
+     * @return void
+     */
     private function registerAndPublishViews()
     {
         $viewPath = __DIR__ . '/../views';
@@ -222,6 +272,9 @@ class TwillServiceProvider extends ServiceProvider
         $this->publishes([$viewPath => resource_path('views/vendor/twill')], 'views');
     }
 
+    /**
+     * @return void
+     */
     private function registerCommands()
     {
         $this->commands([
@@ -234,6 +287,9 @@ class TwillServiceProvider extends ServiceProvider
         ]);
     }
 
+    /**
+     * @return void
+     */
     private function requireHelpers()
     {
         require_once __DIR__ . '/Helpers/routes_helpers.php';
@@ -244,6 +300,11 @@ class TwillServiceProvider extends ServiceProvider
         require_once __DIR__ . '/Helpers/helpers.php';
     }
 
+    /**
+     * @param string $view
+     * @param string $expression
+     * @return string
+     */
     private function includeView($view, $expression)
     {
         list($name) = str_getcsv($expression, ',', '\'');
@@ -261,6 +322,11 @@ class TwillServiceProvider extends ServiceProvider
         return "<?php echo \$__env->make('{$view}', array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render(); ?>";
     }
 
+    /**
+     * Defines the package additional Blade Directives.
+     *
+     * @return void
+     */
     private function extendBlade()
     {
         $blade = $this->app['view']->getEngineResolver()->resolve('blade')->getCompiler();
@@ -325,6 +391,11 @@ class TwillServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * Registers the package additional View Composers.
+     *
+     * @return void
+     */
     private function addViewComposers()
     {
         if (config('twill.enabled.users-management')) {
@@ -352,6 +423,11 @@ class TwillServiceProvider extends ServiceProvider
 
     }
 
+    /**
+     * Registers and publishes the package additional translations.
+     *
+     * @return void
+     */
     private function registerAndPublishTranslations()
     {
         $translationPath = __DIR__ . '/../lang';

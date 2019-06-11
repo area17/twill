@@ -6,6 +6,12 @@ use Illuminate\Contracts\View\View;
 
 class FilesUploaderConfig
 {
+    /**
+     * Binds data to the view.
+     *
+     * @param View $view
+     * @return void
+     */
     public function compose(View $view)
     {
         $libraryDisk = config('twill.file_library.disk');

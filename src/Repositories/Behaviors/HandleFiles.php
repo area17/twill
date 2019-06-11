@@ -6,6 +6,11 @@ use A17\Twill\Models\File;
 
 trait HandleFiles
 {
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return \A17\Twill\Models\Model
+     */
     public function hydrateHandleFiles($object, $fields)
     {
         if ($this->shouldIgnoreFieldBeforeSave('files')) {
@@ -27,6 +32,11 @@ trait HandleFiles
         return $object;
     }
 
+    /**
+     * @param \A17\Twill\Models\Behaviors\HasFiles $object
+     * @param array $fields
+     * @return void
+     */
     public function afterSaveHandleFiles($object, $fields)
     {
         if ($this->shouldIgnoreFieldBeforeSave('files')) {
@@ -40,6 +50,10 @@ trait HandleFiles
         });
     }
 
+    /**
+     * @param $fields
+     * @return \Illuminate\Support\Collection
+     */
     private function getFiles($fields)
     {
         $files = collect();
@@ -71,6 +85,11 @@ trait HandleFiles
         return $files;
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return array
+     */
     public function getFormFieldsHandleFiles($object, $fields)
     {
         $fields['files'] = null;

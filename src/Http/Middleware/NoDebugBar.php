@@ -7,14 +7,26 @@ use Illuminate\Foundation\Application;
 
 class NoDebugBar
 {
-
+    /**
+     * @var Application
+     */
     protected $app;
 
+    /**
+     * @param Application $app
+     */
     public function __construct(Application $app)
     {
         $this->app = $app;
     }
 
+    /**
+     * Handles an incoming request.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param Closure $next
+     * @return mixed
+     */
     public function handle($request, Closure $next)
     {
         if ($this->app->environment('development', 'local', 'staging')) {

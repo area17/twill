@@ -9,8 +9,18 @@ use ImageService;
 
 class RefreshLQIP extends Command
 {
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
     protected $signature = 'twill:lqip {--all=0}';
 
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
     protected $description = 'Refresh Low Quality Image Placeholders.';
 
     // TODO: document this and actually think about moving to queuable job after content type updates

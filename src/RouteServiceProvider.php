@@ -15,6 +15,11 @@ class RouteServiceProvider extends ServiceProvider
 {
     protected $namespace = 'A17\Twill\Http\Controllers';
 
+    /**
+     * Bootstraps the package services.
+     *
+     * @return void
+     */
     public function boot()
     {
         $this->registerRouteMiddlewares();
@@ -22,6 +27,10 @@ class RouteServiceProvider extends ServiceProvider
         parent::boot();
     }
 
+    /**
+     * @param Router $router
+     * @return void
+     */
     public function map(Router $router)
     {
         if (($patterns=config('twill.admin_route_patterns')) != null) {
@@ -83,6 +92,11 @@ class RouteServiceProvider extends ServiceProvider
         }
     }
 
+    /**
+     * Register Route middleware.
+     *
+     * @return void
+     */
     private function registerRouteMiddlewares()
     {
         /*
@@ -97,6 +111,11 @@ class RouteServiceProvider extends ServiceProvider
         Route::$middlewareRegisterMethod('validateBackHistory', ValidateBackHistory::class);
     }
 
+    /**
+     * Registers Route macros.
+     *
+     * @return void
+     */
     protected function registerMacros()
     {
         Route::macro('moduleShowWithPreview', function ($moduleName, $routePrefix = null, $controllerName = null) {

@@ -7,6 +7,12 @@ use Illuminate\Notifications\Messages\MailMessage;
 
 class Welcome extends ResetPassword
 {
+    /**
+     * Build the mail representation of the notification.
+     *
+     * @param mixed $notifiable
+     * @return MailMessage
+     */
     public function toMail($notifiable)
     {
         return (new MailMessage)->markdown('twill::emails.html.email', [

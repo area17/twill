@@ -6,6 +6,11 @@ use A17\Twill\Models\Media;
 
 trait HandleMedias
 {
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return \A17\Twill\Models\Model
+     */
     public function hydrateHandleMedias($object, $fields)
     {
         if ($this->shouldIgnoreFieldBeforeSave('medias')) {
@@ -27,6 +32,11 @@ trait HandleMedias
         return $object;
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return void
+     */
     public function afterSaveHandleMedias($object, $fields)
     {
         if ($this->shouldIgnoreFieldBeforeSave('medias')) {
@@ -40,6 +50,10 @@ trait HandleMedias
         });
     }
 
+    /**
+     * @param array $fields
+     * @return \Illuminate\Support\Collection
+     */
     private function getMedias($fields)
     {
         $medias = collect();
@@ -101,6 +115,11 @@ trait HandleMedias
         return $medias;
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return array
+     */
     public function getFormFieldsHandleMedias($object, $fields)
     {
         $fields['medias'] = null;
@@ -124,6 +143,10 @@ trait HandleMedias
         return $fields;
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Collection $medias
+     * @return array
+     */
     private function getMediaFormItems($medias)
     {
         $itemsForForm = [];
@@ -152,6 +175,10 @@ trait HandleMedias
         return $itemsForForm;
     }
 
+    /**
+     * @param string $role
+     * @return array
+     */
     public function getCrops($role)
     {
         return $this->model->mediasParams[$role];

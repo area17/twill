@@ -7,6 +7,11 @@ use A17\Twill\Repositories\BlockRepository;
 
 trait HandleBlocks
 {
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return \A17\Twill\Models\Model|void
+     */
     public function hydrateHandleBlocks($object, $fields)
     {
         if ($this->shouldIgnoreFieldBeforeSave('blocks')) {
@@ -47,9 +52,13 @@ trait HandleBlocks
         $object->setRelation('blocks', $blocksCollection);
 
         return $object;
-
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return void
+     */
     public function afterSaveHandleBlocks($object, $fields)
     {
         if ($this->shouldIgnoreFieldBeforeSave('blocks')) {
@@ -71,6 +80,11 @@ trait HandleBlocks
         });
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return \Illuminate\Support\Collection
+     */
     private function getBlocks($object, $fields)
     {
         $blocks = collect();
@@ -102,6 +116,12 @@ trait HandleBlocks
         return $blocks;
     }
 
+    /**
+     * @param array $block
+     * @param \A17\Twill\Models\Model $object
+     * @param bool $repeater
+     * @return array
+     */
     private function buildBlock($block, $object, $repeater = false)
     {
         $block['blockable_id'] = $object->id;
@@ -110,6 +130,12 @@ trait HandleBlocks
         return app(BlockRepository::class)->buildFromCmsArray($block, $repeater);
     }
 
+
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return array
+     */
     public function getFormFieldsHandleBlocks($object, $fields)
     {
         $fields['blocks'] = null;
@@ -215,6 +241,10 @@ trait HandleBlocks
         return $fields;
     }
 
+    /**
+     * @param \A17\Twill\Models\Block $block
+     * @return array
+     */
     protected function getBlockBrowsers($block)
     {
         return collect($block['content']['browsers'])->mapWithKeys(function ($ids, $relation) use ($block) {

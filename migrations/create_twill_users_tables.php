@@ -5,6 +5,11 @@ use Illuminate\Database\Schema\Blueprint;
 
 class CreateTwillUsersTables extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
         Schema::create(config('twill.users_table', 'twill_users'), function (Blueprint $table) {
@@ -25,6 +30,11 @@ class CreateTwillUsersTables extends Migration
         });
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
         Schema::dropIfExists(config('twill.password_resets_table', 'twill_password_resets'));

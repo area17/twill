@@ -6,11 +6,21 @@ use Illuminate\Foundation\Http\FormRequest;
 
 abstract class Request extends FormRequest
 {
+    /**
+     * Determines if the user is authorized to make this request.
+     *
+     * @return bool
+     */
     public function authorize()
     {
         return true;
     }
 
+    /**
+     * Gets the validation rules that apply to the request.
+     *
+     * @return array
+     */
     public function rules()
     {
         switch ($this->method()) {
@@ -22,6 +32,11 @@ abstract class Request extends FormRequest
         return [];
     }
 
+    /**
+     * Gets the validation rules that apply to the translated fields.
+     *
+     * @return array
+     */
     protected function rulesForTranslatedFields($rules, $fields)
     {
         $locales = getLocales();
@@ -43,6 +58,12 @@ abstract class Request extends FormRequest
         return $rules;
     }
 
+    /**
+     * @param array $rules
+     * @param array $fields
+     * @param string $locale
+     * @return array
+     */
     private function updateRules($rules, $fields, $locale)
     {
         foreach ($fields as $field => $field_rules) {
@@ -61,6 +82,13 @@ abstract class Request extends FormRequest
         return $rules;
     }
 
+    /**
+     * Gets the error messages for the defined validation rules.
+     *
+     * @param array $messages
+     * @param array $fields
+     * @return array
+     */
     protected function messagesForTranslatedFields($messages, $fields)
     {
         foreach (getLocales() as $locale) {
@@ -70,6 +98,12 @@ abstract class Request extends FormRequest
         return $messages;
     }
 
+    /**
+     * @param array $messages
+     * @param array $fields
+     * @param string $locale
+     * @return array
+     */
     private function updateMessages($messages, $fields, $locale)
     {
         foreach ($fields as $field => $message) {
@@ -81,5 +115,4 @@ abstract class Request extends FormRequest
 
         return $messages;
     }
-
 }

@@ -10,24 +10,48 @@ use PragmaRX\Google2FAQRCode\Google2FA;
 
 class UserController extends ModuleController
 {
+    /**
+     * @var string
+     */
     protected $namespace = 'A17\Twill';
 
+    /**
+     * @var string
+     */
     protected $moduleName = 'users';
 
+    /**
+     * @var string[]
+     */
     protected $indexWith = ['medias'];
 
+    /**
+     * @var array
+     */
     protected $defaultOrders = ['name' => 'asc'];
 
+    /**
+     * @var array
+     */
     protected $defaultFilters = [
         'search' => 'search',
     ];
 
+    /**
+     * @var array
+     */
     protected $filters = [
         'role' => 'role',
     ];
 
+    /**
+     * @var string
+     */
     protected $titleColumnKey = 'name';
 
+    /**
+     * @var array
+     */
     protected $indexColumns = [
         'name' => [
             'title' => 'Name',
@@ -46,14 +70,24 @@ class UserController extends ModuleController
         ],
     ];
 
+    /**
+     * @var array
+     */
     protected $indexOptions = [
         'permalink' => false,
     ];
 
+    /**
+     * @var array
+     */
     protected $fieldsPermissions = [
         'role' => 'manage-users',
     ];
 
+    /**
+     * @param Application $app
+     * @param Request $request
+     */
     public function __construct(Application $app, Request $request)
     {
         parent::__construct($app, $request);
@@ -78,6 +112,10 @@ class UserController extends ModuleController
         }
     }
 
+    /**
+     * @param Request $request
+     * @return array
+     */
     protected function indexData($request)
     {
         return [
@@ -95,6 +133,12 @@ class UserController extends ModuleController
         ];
     }
 
+    /**
+     * @param Request $request
+     * @return array
+     * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
+     * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
+     */
     protected function formData($request)
     {
         $user = Auth::guard('twill_users')->user();
@@ -132,11 +176,19 @@ class UserController extends ModuleController
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function getRequestFilters()
     {
         return json_decode($this->request->get('filter'), true) ?? ['status' => 'published'];
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Collection $items
+     * @param array $scopes
+     * @return array
+     */
     public function getIndexTableMainFilters($items, $scopes = [])
     {
         $statusFilters = [];
@@ -162,6 +214,10 @@ class UserController extends ModuleController
         return $statusFilters;
     }
 
+    /**
+     * @param string $option
+     * @return bool
+     */
     protected function getIndexOption($option)
     {
         if (in_array($option, ['publish', 'delete', 'restore'])) {
@@ -171,6 +227,10 @@ class UserController extends ModuleController
         return parent::getIndexOption($option);
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $item
+     * @return array
+     */
     protected function indexItemData($item)
     {
         $canEdit = auth('twill_users')->user()->can('manage-users') || auth('twill_users')->user()->id === $item->id;

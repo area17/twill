@@ -10,6 +10,9 @@ use Event;
 
 class FeaturedController extends Controller
 {
+    /**
+     * @return array|\Illuminate\View\View
+     */
     public function index()
     {
         $featuredSectionKey = request()->segment(count(request()->segments()));
@@ -69,6 +72,11 @@ class FeaturedController extends Controller
         ]);
     }
 
+    /**
+     * @param array $featuredSection
+     * @param string $featuredSectionKey
+     * @return array
+     */
     private function getFeaturedItemsByBucket($featuredSection, $featuredSectionKey)
     {
         $bucketRouteConfig = config('twill.bucketsRoutes') ?? [$featuredSectionKey => 'featured'];
@@ -106,6 +114,11 @@ class FeaturedController extends Controller
         })->values()->toArray();
     }
 
+    /**
+     * @param array $featuredSection
+     * @param mixed|null $search
+     * @return array
+     */
     private function getFeaturedSources($featuredSection, $search = null)
     {
         $fetchedModules = [];
@@ -168,6 +181,9 @@ class FeaturedController extends Controller
         return $featuredSources;
     }
 
+    /**
+     * @return void
+     */
     public function save()
     {
         DB::transaction(function () {
@@ -188,6 +204,10 @@ class FeaturedController extends Controller
         fireCmsEvent('cms-buckets.saved');
     }
 
+    /**
+     * @param string $bucketable
+     * @return \A17\Twill\Repositories\ModuleRepository
+     */
     private function getRepository($bucketable)
     {
         return app(config('twill.namespace') . "\Repositories\\" . ucfirst(str_singular($bucketable)) . "Repository");

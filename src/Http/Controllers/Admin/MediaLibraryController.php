@@ -12,25 +12,50 @@ use Illuminate\Support\Facades\Storage;
 
 class MediaLibraryController extends ModuleController implements SignS3UploadListener
 {
+    /**
+     * @var string
+     */
     protected $moduleName = 'medias';
 
+    /**
+     * @var string
+     */
     protected $namespace = 'A17\Twill';
 
+    /**
+     * @var array
+     */
     protected $defaultOrders = [
         'id' => 'desc',
     ];
 
+    /**
+     * @var array
+     */
     protected $defaultFilters = [
         'search' => 'search',
         'tag' => 'tag_id',
     ];
 
+    /**
+     * @var int
+     */
     protected $perPage = 40;
 
+    /**
+     * @var string
+     */
     protected $endpointType;
 
+    /**
+     * @var array
+     */
     protected $customFields;
 
+    /**
+     * @param Application $app
+     * @param Request $request
+     */
     public function __construct(Application $app, Request $request)
     {
         parent::__construct($app, $request);
@@ -40,6 +65,10 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         $this->customFields = config('twill.media_library.extra_metadatas_fields');
     }
 
+    /**
+     * @param int|null $parentModuleId
+     * @return array
+     */
     public function index($parentModuleId = null)
     {
         if (request()->has('except')) {
@@ -49,6 +78,10 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         return $this->getIndexData($prependScope ?? []);
     }
 
+    /**
+     * @param array $prependScope
+     * @return array
+     */
     public function getIndexData($prependScope = [])
     {
         $scopes = $this->filterScope($prependScope);
@@ -64,6 +97,9 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function getRequestFilters()
     {
         if (request()->has('search')) {
@@ -77,6 +113,10 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         return $requestFilters ?? [];
     }
 
+    /**
+     * @param int|null $parentModuleId
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store($parentModuleId = null)
     {
         $request = app(MediaRequest::class);
@@ -90,6 +130,10 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         return response()->json(['media' => $media->toCmsArray(), 'success' => true], 200);
     }
 
+    /**
+     * @param Request $request
+     * @return \A17\Twill\Models\Media
+     */
     public function storeFile($request)
     {
         $originalFilename = $request->input('qqfilename');
@@ -116,6 +160,10 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         return $this->repository->create($fields);
     }
 
+    /**
+     * @param Request $request
+     * @return \A17\Twill\Models\Media
+     */
     public function storeReference($request)
     {
         $fields = [
@@ -128,9 +176,11 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         return $this->repository->create($fields);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function singleUpdate()
     {
-
         $this->repository->update(
             $this->request->input('id'),
             array_merge([
@@ -145,6 +195,9 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         ], 200);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function bulkUpdate()
     {
         $ids = explode(',', $this->request->input('ids'));
@@ -180,21 +233,36 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         ], 200);
     }
 
+    /**
+     * @param Request $request
+     * @param SignS3Upload $signS3Upload
+     * @return mixed
+     */
     public function signS3Upload(Request $request, SignS3Upload $signS3Upload)
     {
         return $signS3Upload->fromPolicy($request->getContent(), $this, config('twill.media_library.disk'));
     }
 
+    /**
+     * @param mixed $signedPolicy
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function policyIsSigned($signedPolicy)
     {
         return response()->json($signedPolicy, 200);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function policyIsNotValid()
     {
         return response()->json(["invalid" => true], 500);
     }
 
+    /**
+     * @return \Illuminate\Support\Collection
+     */
     private function getExtraMetadatas()
     {
         return collect($this->customFields)->mapWithKeys(function ($field) {

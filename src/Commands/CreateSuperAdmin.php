@@ -8,8 +8,18 @@ use Validator;
 
 class CreateSuperAdmin extends Command
 {
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
     protected $signature = 'twill:superadmin';
 
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
     protected $description = "Create the superadmin account";
 
     /**

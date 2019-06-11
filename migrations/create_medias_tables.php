@@ -5,6 +5,11 @@ use Illuminate\Database\Schema\Blueprint;
 
 class CreateMediasTables extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
         Schema::create('medias', function (Blueprint $table) {
@@ -40,6 +45,11 @@ class CreateMediasTables extends Migration
         });
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
         Schema::dropIfExists('mediables');
