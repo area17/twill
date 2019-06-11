@@ -7,14 +7,25 @@ use Illuminate\Http\Request;
 
 class ActiveNavigation
 {
-
+    /**
+     * @var Request
+     */
     protected $request;
 
+    /**
+     * @param Request $request
+     */
     public function __construct(Request $request)
     {
         $this->request = $request;
     }
 
+    /**
+     * Binds data to the view.
+     *
+     * @param View $view
+     * @return void
+     */
     public function compose(View $view)
     {
         if ($this->request->route()) {

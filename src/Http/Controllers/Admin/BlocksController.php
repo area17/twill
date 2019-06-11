@@ -6,6 +6,12 @@ use A17\Twill\Repositories\BlockRepository;
 
 class BlocksController extends Controller
 {
+    /**
+     * Generates an HTML preview of all blocks defined in the configuration.
+     *
+     * @param BlockRepository $blockRepository
+     * @return string
+     */
     public function preview(BlockRepository $blockRepository)
     {
         $blocksCollection = collect();
@@ -79,6 +85,12 @@ class BlocksController extends Controller
         return html_entity_decode($view);
     }
 
+    /**
+     * Generates a view name for the given block type.
+     *
+     * @param string $blockType
+     * @return string
+     */
     private function getBlockView($blockType)
     {
         $view = config('twill.block_editor.block_views_path') . '.' . $blockType;
@@ -91,5 +103,4 @@ class BlocksController extends Controller
 
         return $view;
     }
-
 }

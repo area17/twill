@@ -1,6 +1,10 @@
 <?php
 
 if (!function_exists('revAsset')) {
+    /**
+     * @param string $file
+     * @return string
+     */
     function revAsset($file)
     {
         if (!app()->environment('local', 'development')) {
@@ -25,6 +29,10 @@ if (!function_exists('revAsset')) {
 if (!function_exists('icon')) {
     /**
      * ARIA roles memo: 'presentation' means merely decoration. Otherwise, use role="img".
+     *
+     * @param string $name
+     * @param array $opts
+     * @return string
      */
     function icon($name, $opts = [])
     {

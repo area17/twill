@@ -8,7 +8,11 @@ use Validator;
 
 class ValidationServiceProvider extends ServiceProvider
 {
-
+    /**
+     * Registers the package additional validation rules.
+     *
+     * @return void
+     */
     public function boot()
     {
         Validator::extend('absolute_or_relative_url', function ($attribute, $value, $parameters, $validator) {
@@ -54,6 +58,9 @@ class ValidationServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * @return void
+     */
     public function register()
     {
 

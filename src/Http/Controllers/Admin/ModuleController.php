@@ -12,21 +12,40 @@ use Session;
 
 abstract class ModuleController extends Controller
 {
-
+    /**
+     * @var Application
+     */
     protected $app;
 
+    /**
+     * @var Request
+     */
     protected $request;
 
+    /**
+     * @var string
+     */
     protected $routePrefix;
 
+    /**
+     * @var string
+     */
     protected $moduleName;
 
+    /**
+     * @var string
+     */
     protected $modelName;
 
+    /**
+     * @var \A17\Twill\Repositories\ModuleRepository
+     */
     protected $repository;
 
-    /*
-     * Options of the index view
+    /**
+     * Options of the index view.
+     *
+     * @var array
      */
     protected $defaultIndexOptions = [
         'create' => true,
@@ -45,73 +64,108 @@ abstract class ModuleController extends Controller
         'editInModal' => false,
     ];
 
-    /*
+    /**
      * Relations to eager load for the index view
+     *
+     * @var array
      */
     protected $indexWith = [];
 
-    /*
-     * Relations to eager load for the form view
+    /**
+     * Relations to eager load for the form view.
+     *
+     * @var array
      */
     protected $formWith = [];
 
-    /*
-     * Relation count to eager load for the form view
+    /**
+     * Relation count to eager load for the form view.
+     *
+     * @var array
      */
     protected $formWithCount = [];
 
-    /*
-     * Additional filters for the index view
+    /**
+     * Additional filters for the index view.
+     *
      * To automatically have your filter added to the index view use the following convention:
      * suffix the key containing the list of items to show in the filter by 'List' and
      * name it the same as the filter you defined in this array.
+     *
      * Example: 'fCategory' => 'category_id' here and 'fCategoryList' in indexData()
      * By default, this will run a where query on the category_id column with the value
      * of fCategory if found in current request parameters. You can intercept this behavior
      * from your repository in the filter() function.
+     *
+     * @var array
      */
     protected $filters = [];
 
-    /*
-     * Default orders for the index view
+    /**
+     * Default orders for the index view.
+     *
+     * @var array
      */
     protected $defaultOrders = [
         'created_at' => 'desc',
     ];
 
+    /**
+     * @var int
+     */
     protected $perPage = 20;
 
-    /*
-     * Name of the index column to use as name column
+    /**
+     * Name of the index column to use as name column.
+     *
+     * @var string
      */
     protected $titleColumnKey = 'title';
 
-    /*
-     * Attribute to use as title in forms
+    /**
+     * Attribute to use as title in forms.
+     *
+     * @var string
      */
     protected $titleFormKey;
 
-    /*
-     * Feature field name if the controller is using the feature route (defaults to "featured")
+    /**
+     * Feature field name if the controller is using the feature route (defaults to "featured").
+     *
+     * @var string
      */
     protected $featureField = 'featured';
 
-    /*
-     * Indicates if this module is edited through a parent module
+    /**
+     * Indicates if this module is edited through a parent module.
+     *
+     * @var bool
      */
     protected $submodule = false;
+
+    /**
+     * @var int|null
+     */
     protected $submoduleParentId = null;
 
-    /*
-     * Can be used in child classes to disable the content editor (full screen block editor)
+    /**
+     * Can be used in child classes to disable the content editor (full screen block editor).
+     *
+     * @var bool
      */
     protected $disableEditor = false;
 
-    /*
+    /**
      * List of permissions keyed by a request field. Can be used to prevent unauthorized field updates.
+     *
+     * @var array
      */
     protected $fieldsPermissions = [];
 
+    /**
+     * @param Application $app
+     * @param Request $request
+     */
     public function __construct(Application $app, Request $request)
     {
         parent::__construct();
@@ -163,6 +217,9 @@ abstract class ModuleController extends Controller
         }
     }
 
+    /**
+     * @return void
+     */
     protected function setMiddlewarePermission()
     {
         $this->middleware('can:list', ['only' => ['index', 'show']]);
@@ -172,6 +229,10 @@ abstract class ModuleController extends Controller
         $this->middleware('can:delete', ['only' => ['destroy', 'bulkDelete', 'restore', 'bulkRestore', 'restoreRevision']]);
     }
 
+    /**
+     * @param int|null $parentModuleId
+     * @return array|\Illuminate\View\View
+     */
     public function index($parentModuleId = null)
     {
         $this->submodule = isset($parentModuleId);
@@ -200,11 +261,18 @@ abstract class ModuleController extends Controller
         return view($view, $indexData);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function browser()
     {
         return response()->json($this->getBrowserData());
     }
 
+    /**
+     * @param int|null $parentModuleId
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store($parentModuleId = null)
     {
         $input = $this->validateFormRequest()->all();
@@ -230,6 +298,11 @@ abstract class ModuleController extends Controller
         ));
     }
 
+    /**
+     * @param int|$id
+     * @param int|null $submoduleId
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function show($id, $submoduleId = null)
     {
         if ($this->getIndexOption('editInModal')) {
@@ -239,6 +312,11 @@ abstract class ModuleController extends Controller
         return $this->redirectToForm($submoduleId ?? $id);
     }
 
+    /**
+     * @param int $id
+     * @param int|null $submoduleId
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function edit($id, $submoduleId = null)
     {
         $this->submodule = isset($submoduleId);
@@ -263,6 +341,11 @@ abstract class ModuleController extends Controller
         return view($view, $this->form($submoduleId ?? $id));
     }
 
+    /**
+     * @param int $id
+     * @param int|null $submoduleId
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update($id, $submoduleId = null)
     {
         $this->submodule = isset($submoduleId);
@@ -321,6 +404,10 @@ abstract class ModuleController extends Controller
         }
     }
 
+    /**
+     * @param int $id
+     * @return \Illuminate\View\View
+     */
     public function preview($id)
     {
         if (request()->has('revisionId')) {
@@ -343,6 +430,10 @@ abstract class ModuleController extends Controller
         ]);
     }
 
+    /**
+     * @param int $id
+     * @return \Illuminate\View\View
+     */
     public function restoreRevision($id)
     {
         if (request()->has('revisionId')) {
@@ -371,6 +462,9 @@ abstract class ModuleController extends Controller
         return view($view, $this->form($id, $item));
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function publish()
     {
         try {
@@ -398,6 +492,9 @@ abstract class ModuleController extends Controller
         );
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function bulkPublish()
     {
         try {
@@ -419,6 +516,11 @@ abstract class ModuleController extends Controller
         );
     }
 
+    /**
+     * @param int $id
+     * @param int|null $submoduleId
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function destroy($id, $submoduleId = null)
     {
         $item = $this->repository->getById($id);
@@ -431,6 +533,9 @@ abstract class ModuleController extends Controller
         return $this->respondWithError($this->modelTitle . ' was not moved to trash. Something wrong happened!');
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function bulkDelete()
     {
         if ($this->repository->bulkDelete(explode(',', request('ids')))) {
@@ -441,6 +546,9 @@ abstract class ModuleController extends Controller
         return $this->respondWithError($this->modelTitle . ' items were not moved to trash. Something wrong happened!');
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function restore()
     {
         if ($this->repository->restore(request('id'))) {
@@ -452,6 +560,9 @@ abstract class ModuleController extends Controller
         return $this->respondWithError($this->modelTitle . ' was not restored. Something wrong happened!');
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function bulkRestore()
     {
         if ($this->repository->bulkRestore(explode(',', request('ids')))) {
@@ -462,6 +573,9 @@ abstract class ModuleController extends Controller
         return $this->respondWithError($this->modelTitle . ' items were not restored. Something wrong happened!');
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function feature()
     {
         if (($id = request('id'))) {
@@ -490,6 +604,9 @@ abstract class ModuleController extends Controller
         return $this->respondWithError($this->modelTitle . ' was not featured. Something wrong happened!');
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function bulkFeature()
     {
         if (($ids = explode(',', request('ids')))) {
@@ -504,6 +621,9 @@ abstract class ModuleController extends Controller
         return $this->respondWithError($this->modelTitle . ' items were not featured. Something wrong happened!');
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function reorder()
     {
         if (($values = request('ids')) && !empty($values)) {
@@ -515,6 +635,9 @@ abstract class ModuleController extends Controller
         return $this->respondWithError($this->modelTitle . ' order was not changed. Something wrong happened!');
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function tags()
     {
         $query = $this->request->input('q');
@@ -525,6 +648,10 @@ abstract class ModuleController extends Controller
         })], 200);
     }
 
+    /**
+     * @param array $prependScope
+     * @return array
+     */
     protected function getIndexData($prependScope = [])
     {
         $scopes = $this->filterScope($prependScope);
@@ -559,11 +686,20 @@ abstract class ModuleController extends Controller
         return array_replace_recursive($data + $options, $this->indexData($this->request));
     }
 
+    /**
+     * @param Request $request
+     * @return array
+     */
     protected function indexData($request)
     {
         return [];
     }
 
+    /**
+     * @param array $scopes
+     * @param bool $forcePagination
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     protected function getIndexItems($scopes = [], $forcePagination = false)
     {
         return $this->transformIndexItems($this->repository->get(
@@ -575,11 +711,19 @@ abstract class ModuleController extends Controller
         ));
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Collection $items
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     protected function transformIndexItems($items)
     {
         return $items;
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Collection $items
+     * @return array
+     */
     protected function getIndexTableData($items)
     {
         $translated = $this->moduleHas('translations');
@@ -630,11 +774,20 @@ abstract class ModuleController extends Controller
         })->toArray();
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $item
+     * @return array
+     */
     protected function indexItemData($item)
     {
         return [];
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $item
+     * @param array $column
+     * @return array
+     */
     protected function getItemColumnData($item, $column)
     {
         if (isset($column['thumb']) && $column['thumb']) {
@@ -681,6 +834,10 @@ abstract class ModuleController extends Controller
         ];
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Collection $items
+     * @return array
+     */
     protected function getIndexTableColumns($items)
     {
         $tableColumns = [];
@@ -757,6 +914,11 @@ abstract class ModuleController extends Controller
         return $tableColumns;
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Collection $items
+     * @param array $scopes
+     * @return array
+     */
     protected function getIndexTableMainFilters($items, $scopes = [])
     {
         $statusFilters = [];
@@ -802,6 +964,11 @@ abstract class ModuleController extends Controller
         return $statusFilters;
     }
 
+    /**
+     * @param string $moduleName
+     * @param string $routePrefix
+     * @return array
+     */
     protected function getIndexUrls($moduleName, $routePrefix)
     {
         return collect([
@@ -824,6 +991,10 @@ abstract class ModuleController extends Controller
         })->toArray();
     }
 
+    /**
+     * @param string $option
+     * @return bool
+     */
     protected function getIndexOption($option)
     {
         return once(function () use ($option) {
@@ -854,6 +1025,10 @@ abstract class ModuleController extends Controller
         });
     }
 
+    /**
+     * @param array $prependScope
+     * @return array
+     */
     protected function getBrowserData($prependScope = [])
     {
         if (request()->has('except')) {
@@ -867,6 +1042,10 @@ abstract class ModuleController extends Controller
         return array_replace_recursive(['data' => $data], $this->indexData($this->request));
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Collection $items
+     * @return array
+     */
     protected function getBrowserTableData($items)
     {
         $withImage = $this->moduleHas('medias');
@@ -890,11 +1069,19 @@ abstract class ModuleController extends Controller
         })->toArray();
     }
 
+    /**
+     * @param array $scopes
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     protected function getBrowserItems($scopes = [])
     {
         return $this->getIndexItems($scopes, true);
     }
 
+    /**
+     * @param array $prepend
+     * @return array
+     */
     protected function filterScope($prepend = [])
     {
         $scope = [];
@@ -943,6 +1130,9 @@ abstract class ModuleController extends Controller
         return $prepend + $scope;
     }
 
+    /**
+     * @return array
+     */
     protected function getRequestFilters()
     {
         if (request()->has('search')) {
@@ -952,6 +1142,9 @@ abstract class ModuleController extends Controller
         return json_decode($this->request->get('filter'), true) ?? [];
     }
 
+    /**
+     * @return array
+     */
     protected function orderScope()
     {
         $orders = [];
@@ -974,6 +1167,11 @@ abstract class ModuleController extends Controller
         return $orders + $defaultOrders;
     }
 
+    /**
+     * @param int $id
+     * @param \A17\Twill\Models\Model|null $item
+     * @return array
+     */
     protected function form($id, $item = null)
     {
         $item = $item ?? $this->repository->getById($id, $this->formWith, $this->formWithCount);
@@ -1008,6 +1206,10 @@ abstract class ModuleController extends Controller
         return array_replace_recursive($data, $this->formData($this->request));
     }
 
+    /**
+     * @param int $id
+     * @return array
+     */
     protected function modalFormData($id)
     {
         $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
@@ -1037,16 +1239,27 @@ abstract class ModuleController extends Controller
         return array_replace_recursive($data, $this->formData($this->request));
     }
 
+    /**
+     * @param Request $request
+     * @return array
+     */
     protected function formData($request)
     {
         return [];
     }
 
+    /**
+     * @param Request $item
+     * @return array
+     */
     protected function previewData($item)
     {
         return [];
     }
 
+    /**
+     * @return \A17\Twill\Http\Requests\Admin\Request
+     */
     protected function validateFormRequest()
     {
         $unauthorizedFields = collect($this->fieldsPermissions)->filter(function ($permission, $field) {
@@ -1060,11 +1273,17 @@ abstract class ModuleController extends Controller
         return $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
     }
 
+    /**
+     * @return string
+     */
     protected function getNamespace()
     {
         return $this->namespace ?? config('twill.namespace');
     }
 
+    /**
+     * @return string
+     */
     protected function getRoutePrefix()
     {
         if ($this->request->route() != null) {
@@ -1075,31 +1294,49 @@ abstract class ModuleController extends Controller
         return '';
     }
 
+    /**
+     * @return string
+     */
     protected function getModelName()
     {
         return $this->modelName ?? ucfirst(str_singular($this->moduleName));
     }
 
+    /**
+     * @return \A17\Twill\Repositories\ModuleRepository
+     */
     protected function getRepository()
     {
         return $this->app->make("$this->namespace\Repositories\\" . $this->modelName . "Repository");
     }
 
+    /**
+     * @return string
+     */
     protected function getViewPrefix()
     {
         return "admin.$this->moduleName";
     }
 
+    /**
+     * @return string
+     */
     protected function getModelTitle()
     {
         return camelCaseToWords($this->modelName);
     }
 
+    /**
+     * @return string
+     */
     protected function getParentModuleForeignKey()
     {
         return str_singular(explode('.', $this->moduleName)[0]) . '_id';
     }
 
+    /**
+     * @return string
+     */
     protected function getPermalinkBaseUrl()
     {
         return request()->getScheme() . '://' . config('app.url') . '/'
@@ -1109,11 +1346,20 @@ abstract class ModuleController extends Controller
             . (isset($this->permalinkBase) && empty($this->permalinkBase) ? '' : '/');
     }
 
+    /**
+     * @param string $baseUrl
+     * @return string
+     */
     protected function getPermalinkPrefix($baseUrl)
     {
         return rtrim(str_replace(['http://', 'https://', '{preview}/', '{language}/'], '', $baseUrl), "/") . '/';
     }
 
+    /**
+     * @param int $id
+     * @param string $action
+     * @return string
+     */
     protected function getModuleRoute($id, $action)
     {
         return moduleRoute(
@@ -1124,11 +1370,20 @@ abstract class ModuleController extends Controller
         );
     }
 
+    /**
+     * @param string $behavior
+     * @return bool
+     */
     protected function moduleHas($behavior)
     {
         return classHasTrait($this->repository, 'A17\Twill\Repositories\Behaviors\Handle' . ucfirst($behavior));
     }
 
+    /**
+     * @param string|null $back_link
+     * @param array $params
+     * @return void
+     */
     protected function setBackLink($back_link = null, $params = [])
     {
         if (!isset($back_link)) {
@@ -1149,17 +1404,30 @@ abstract class ModuleController extends Controller
         }
     }
 
+    /**
+     * @param string|null $fallback
+     * @param array $params
+     * @return string
+     */
     protected function getBackLink($fallback = null, $params = [])
     {
         $back_link = Session::get($this->getBackLinkSessionKey(), $fallback);
         return $back_link ?? moduleRoute($this->moduleName, $this->routePrefix, 'index', $params);
     }
 
+    /**
+     * @return string
+     */
     protected function getBackLinkSessionKey()
     {
         return $this->moduleName . ($this->submodule ? $this->submoduleParentId ?? '' : '') . '_back_link';
     }
 
+    /**
+     * @param int $id
+     * @param array $params
+     * @return \Illuminate\Http\RedirectResponse
+     */
     protected function redirectToForm($id, $params = [])
     {
         Session::put($this->moduleName . '_retain', true);
@@ -1172,11 +1440,19 @@ abstract class ModuleController extends Controller
         ));
     }
 
+    /**
+     * @param string $message
+     * @return \Illuminate\Http\JsonResponse
+     */
     protected function respondWithSuccess($message)
     {
         return $this->respondWithJson($message, FlashLevel::SUCCESS);
     }
 
+    /**
+     * @param string $redirectUrl
+     * @return \Illuminate\Http\JsonResponse
+     */
     protected function respondWithRedirect($redirectUrl)
     {
         return response()->json([
@@ -1184,11 +1460,20 @@ abstract class ModuleController extends Controller
         ]);
     }
 
+    /**
+     * @param string $message
+     * @return \Illuminate\Http\JsonResponse
+     */
     protected function respondWithError($message)
     {
         return $this->respondWithJson($message, FlashLevel::ERROR);
     }
 
+    /**
+     * @param string $message
+     * @param mixed $variant
+     * @return \Illuminate\Http\JsonResponse
+     */
     protected function respondWithJson($message, $variant)
     {
         return response()->json([
@@ -1197,6 +1482,10 @@ abstract class ModuleController extends Controller
         ]);
     }
 
+    /**
+     * @param array $input
+     * @return void
+     */
     protected function fireEvent($input = [])
     {
         fireCmsEvent('cms-module.saved', $input);

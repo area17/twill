@@ -11,6 +11,11 @@ class AuthServiceProvider extends ServiceProvider
 {
     const SUPERADMIN = 'SUPERADMIN';
 
+    /**
+     * Bootstraps the package services.
+     *
+     * @return void
+     */
     public function boot()
     {
         Gate::before(function ($user, $ability) {

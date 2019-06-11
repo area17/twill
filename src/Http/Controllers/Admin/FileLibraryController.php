@@ -11,23 +11,45 @@ use Input;
 
 class FileLibraryController extends ModuleController implements SignS3UploadListener
 {
+    /**
+     * @var string
+     */
     protected $moduleName = 'files';
 
+    /**
+     * @var string
+     */
     protected $namespace = 'A17\Twill';
 
+    /**
+     * @var array
+     */
     protected $defaultOrders = [
         'id' => 'desc',
     ];
 
+    /**
+     * @var array
+     */
     protected $defaultFilters = [
         'search' => 'search',
         'tag' => 'tag_id',
     ];
 
+    /**
+     * @var int
+     */
     protected $perPage = 40;
 
+    /**
+     * @var string
+     */
     protected $endpointType;
 
+    /**
+     * @param Application $app
+     * @param Request $request
+     */
     public function __construct(Application $app, Request $request)
     {
         parent::__construct($app, $request);
@@ -36,6 +58,10 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         $this->endpointType = config('twill.file_library.endpoint_type');
     }
 
+    /**
+     * @param int|null $parentModuleId
+     * @return array
+     */
     public function index($parentModuleId = null)
     {
         if (request()->has('except')) {
@@ -45,6 +71,10 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         return $this->getIndexData($prependScope ?? []);
     }
 
+    /**
+     * @param array $prependScope
+     * @return array
+     */
     public function getIndexData($prependScope = [])
     {
         $scopes = $this->filterScope($prependScope);
@@ -60,6 +90,10 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         ];
     }
 
+    /**
+     * @param \A17\Twill\Models\File $item
+     * @return array
+     */
     private function buildFile($item)
     {
         return $item->toCmsArray() + [
@@ -73,6 +107,9 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function getRequestFilters()
     {
         if (request()->has('search')) {
@@ -86,6 +123,10 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         return $requestFilters ?? [];
     }
 
+    /**
+     * @param int|null $parentModuleId
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store($parentModuleId = null)
     {
         $request = app(FileRequest::class);
@@ -99,6 +140,10 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         return response()->json(['media' => $this->buildFile($file), 'success' => true], 200);
     }
 
+    /**
+     * @param Request $request
+     * @return \A17\Twill\Models\File
+     */
     public function storeFile($request)
     {
         $filename = $request->input('qqfilename');
@@ -117,6 +162,10 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         return $this->repository->create($fields);
     }
 
+    /**
+     * @param Request $request
+     * @return \A17\Twill\Models\File
+     */
     public function storeReference($request)
     {
         $fields = [
@@ -127,6 +176,9 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         return $this->repository->create($fields);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function singleUpdate()
     {
         $this->repository->update(
@@ -137,6 +189,9 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         return response()->json([], 200);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function bulkUpdate()
     {
         $ids = explode(',', $this->request->input('ids'));
@@ -159,16 +214,28 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         ], 200);
     }
 
+    /**
+     * @param Request $request
+     * @param SignS3Upload $signS3Upload
+     * @return mixed
+     */
     public function signS3Upload(Request $request, SignS3Upload $signS3Upload)
     {
         return $signS3Upload->fromPolicy($request->getContent(), $this, config('twill.file_library.disk'));
     }
 
+    /**
+     * @param mixed $signedPolicy
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function policyIsSigned($signedPolicy)
     {
         return response()->json($signedPolicy, 200);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function policyIsNotValid()
     {
         return response()->json(["invalid" => true], 500);

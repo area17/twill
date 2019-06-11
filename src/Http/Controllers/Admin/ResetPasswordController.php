@@ -25,16 +25,27 @@ class ResetPasswordController extends Controller
 
     use ResetsPasswords;
 
+    /**
+     * @return \Illuminate\Contracts\Auth\Guard
+     */
     protected function guard()
     {
         return Auth::guard('twill_users');
     }
 
+    /**
+     * @return \Illuminate\Contracts\Auth\PasswordBroker
+     */
     public function broker()
     {
         return Password::broker('twill_users');
     }
 
+    /**
+     * @param Request $request
+     * @param string|null $token
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function showResetForm(Request $request, $token = null)
     {
         $user = $this->getUserFromToken($token);
@@ -53,6 +64,11 @@ class ResetPasswordController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param string|null $token
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function showWelcomeForm(Request $request, $token = null)
     {
         $user = $this->getUserFromToken($token);
@@ -71,9 +87,14 @@ class ResetPasswordController extends Controller
         ]);
     }
 
-    /*
+    /**
+     * Attempts to find a user with the given token.
+     *
      * Since Laravel 5.4, reset tokens are encrypted, but we support both cases here
      * https://github.com/laravel/framework/pull/16850
+     *
+     * @param string $token
+     * @return \A17\Twill\Models\User|null
      */
     private function getUserFromToken($token)
     {

@@ -7,12 +7,19 @@ use Event;
 
 class SettingController extends Controller
 {
+    /**
+     * @param SettingRepository $settings
+     */
     public function __construct(SettingRepository $settings)
     {
         parent::__construct();
         $this->settings = $settings;
     }
 
+    /**
+     * @param string $section
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function index($section)
     {
         return view()->exists('admin.settings.' . $section) ? view('admin.settings.' . $section, [
@@ -26,6 +33,10 @@ class SettingController extends Controller
         ]) : redirect()->back();
     }
 
+    /**
+     * @param string $section
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update($section)
     {
         if (array_key_exists('cancel', request()->all())) {

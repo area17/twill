@@ -13,16 +13,25 @@ class CloudfrontCacheService
     protected static $defaultRegion = 'us-east-1';
     protected static $defaultSdkVersion = '2016-01-13';
 
+    /**
+     * @return string
+     */
     public static function getSdkVersion()
     {
         return config('services.cloudfront.sdk_version') ?? self::$defaultSdkVersion;
     }
 
+    /**
+     * @return string
+     */
     public static function getRegion()
     {
         return config('services.cloudfront.region') ?? self::$defaultRegion;
     }
 
+    /**
+     * @return CloudFrontClient
+     */
     public static function getClient()
     {
         $cloudFront = new CloudFrontClient(array(
@@ -46,6 +55,10 @@ class CloudfrontCacheService
         }
     }
 
+    /**
+     * @param string[] $urls
+     * @return void
+     */
     public function invalidate($urls = ["/*"])
     {
         if (!$this->hasInProgressInvalidation()) {
@@ -59,6 +72,9 @@ class CloudfrontCacheService
         }
     }
 
+    /**
+     * @return bool
+     */
     private function hasInProgressInvalidation()
     {
         $list = $this->client->listInvalidations(array('DistributionId' => config('services.cloudfront.distribution')))->get('InvalidationList');
@@ -67,9 +83,12 @@ class CloudfrontCacheService
         }
 
         return false;
-
     }
 
+    /**
+     * @param array $paths
+     * @return \Aws\Result
+     */
     private function createInvalidationRequest($paths = array())
     {
         if (is_object($this->client) && count($paths) > 0) {

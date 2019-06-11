@@ -10,6 +10,11 @@ use Spatie\Analytics\Period;
 
 class DashboardController extends Controller
 {
+    /**
+     * Displays the Twill dashboard index.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $modules = collect(config('twill.dashboard.modules'));
@@ -46,6 +51,9 @@ class DashboardController extends Controller
         ]);
     }
 
+    /**
+     * @return array
+     */
     public function search()
     {
         $modules = collect(config('twill.dashboard.modules'));
@@ -79,6 +87,9 @@ class DashboardController extends Controller
         })->collapse()->values();
     }
 
+    /**
+     * @return array
+     */
     private function getAllActivities()
     {
         return Activity::take(20)->latest()->get()->map(function ($activity) {
@@ -86,6 +97,9 @@ class DashboardController extends Controller
         })->filter()->values();
     }
 
+    /**
+     * @return array
+     */
     private function getLoggedInUserActivities()
     {
         return Activity::where('causer_id', auth('twill_users')->user()->id)->take(20)->latest()->get()->map(function ($activity) {
@@ -93,6 +107,10 @@ class DashboardController extends Controller
         })->filter()->values();
     }
 
+    /**
+     * @param \Spatie\Activitylog\Models\Activity $activity
+     * @return array|null
+     */
     private function formatActivity($activity)
     {
         $dashboardModule = config('twill.dashboard.modules.' . $activity->subject_type);
@@ -117,6 +135,9 @@ class DashboardController extends Controller
         ] : []);
     }
 
+    /**
+     * @return array|\Illuminate\Support\Collection
+     */
     private function getFacts()
     {
         try {
@@ -170,6 +191,11 @@ class DashboardController extends Controller
         });
     }
 
+    /**
+     * @param string $period
+     * @param \Illuminate\Database\Query\Builder $statsByDate
+     * @return array
+     */
     private function getPeriodStats($period, $statsByDate)
     {
         if ($period === 'today') {
@@ -251,6 +277,10 @@ class DashboardController extends Controller
         }
     }
 
+    /**
+     * @param int $count
+     * @return string
+     */
     private function formatStat($count)
     {
         if ($count >= 1000) {
@@ -260,6 +290,10 @@ class DashboardController extends Controller
         return $count;
     }
 
+    /**
+     * @param array $modules
+     * @return array
+     */
     private function getShortcuts($modules)
     {
         return $modules->filter(function ($module) {
@@ -295,6 +329,10 @@ class DashboardController extends Controller
         })->values();
     }
 
+    /**
+     * @param array $modules
+     * @return array
+     */
     private function getDrafts($modules)
     {
         return $modules->filter(function ($module) {
@@ -314,6 +352,10 @@ class DashboardController extends Controller
         })->collapse()->values();
     }
 
+    /**
+     * @param string $module
+     * @return \A17\Twill\Repositories\ModuleRepository
+     */
     private function getRepository($module)
     {
         return app(config('twill.namespace') . "\Repositories\\" . ucfirst(str_singular($module)) . "Repository");

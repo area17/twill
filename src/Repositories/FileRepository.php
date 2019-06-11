@@ -10,17 +10,29 @@ class FileRepository extends ModuleRepository
 {
     use HandleTags;
 
+    /**
+     * @param File $model
+     */
     public function __construct(File $model)
     {
         $this->model = $model;
     }
 
+    /**
+     * @param \Illuminate\Database\Query\Builder $query
+     * @param array $scopes
+     * @return \Illuminate\Database\Query\Builder
+     */
     public function filter($query, array $scopes = [])
     {
         $this->searchIn($query, $scopes, 'search', ['filename']);
         return parent::filter($query, $scopes);
     }
 
+    /**
+     * @param int $id
+     * @return void
+     */
     public function delete($id)
     {
         if (($object = $this->model->find($id)) != null) {
@@ -33,6 +45,10 @@ class FileRepository extends ModuleRepository
         }
     }
 
+    /**
+     * @param array $fields
+     * @return array
+     */
     public function prepareFieldsBeforeCreate($fields)
     {
         if (!isset($fields['size'])) {

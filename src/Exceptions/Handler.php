@@ -14,6 +14,11 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Handler extends ExceptionHandler
 {
+    /**
+     * Exceptions excluded from reporting.
+     *
+     * @var string[]
+     */
     protected $dontReport = [
         AuthorizationException::class,
         HttpException::class,
@@ -21,13 +26,26 @@ class Handler extends ExceptionHandler
         ValidationException::class,
     ];
 
+    /**
+     * @var bool
+     */
     protected $isJsonOutputFormat = false;
 
+    /**
+     * @param Exception $e
+     * @return mixed
+     * @throws Exception
+     */
     public function report(Exception $e)
     {
         return parent::report($e);
     }
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param Exception $e
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|string|Response
+     */
     public function render($request, Exception $e)
     {
         $e = $this->prepareException($e);
@@ -63,6 +81,11 @@ class Handler extends ExceptionHandler
         return $this->renderHttpExceptionWithView($request, $e);
     }
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \Exception $e
+     * @return \Illuminate\Http\Response|Response
+     */
     public function renderHttpExceptionWithView($request, $e)
     {
         if (config('app.debug')) {
@@ -92,6 +115,10 @@ class Handler extends ExceptionHandler
         return parent::render($request, $e);
     }
 
+    /**
+     * @param Exception $e
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response|array
+     */
     protected function renderExceptionWithWhoops(Exception $e)
     {
         $this->unsetSensitiveData();
@@ -130,6 +157,8 @@ class Handler extends ExceptionHandler
 
     /**
      * Don't ever display sensitive data in Whoops pages.
+     *
+     * @return void
      */
     protected function unsetSensitiveData()
     {
@@ -140,6 +169,11 @@ class Handler extends ExceptionHandler
         $_ENV = [];
     }
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param AuthenticationException $exception
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
     protected function handleUnauthenticated($request, AuthenticationException $exception)
     {
         if ($request->expectsJson()) {
@@ -149,6 +183,11 @@ class Handler extends ExceptionHandler
         return redirect()->guest(route('admin.login'));
     }
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param ValidationException $exception
+     * @return \Illuminate\Http\JsonResponse
+     */
     protected function invalidJson($request, ValidationException $exception)
     {
         return response()->json($exception->errors(), $exception->status);

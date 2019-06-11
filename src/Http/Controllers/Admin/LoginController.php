@@ -24,21 +24,34 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
+    /**
+     * @return \Illuminate\Contracts\Auth\Guard
+     */
     protected function guard()
     {
         return Auth::guard('twill_users');
     }
 
+    /**
+     * @return \Illuminate\View\View
+     */
     public function showLoginForm()
     {
         return view('twill::auth.login');
     }
 
+    /**
+     * @return \Illuminate\View\View
+     */
     public function showLogin2FaForm()
     {
         return view('twill::auth.2fa');
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function logout(Request $request)
     {
         $this->guard()->logout();
@@ -50,6 +63,11 @@ class LoginController extends Controller
         return redirect(route('admin.login'));
     }
 
+    /**
+     * @param Request $request
+     * @param \Illuminate\Foundation\Auth\User $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
     protected function authenticated(Request $request, $user)
     {
         if ($user->google_2fa_secret && $user->google_2fa_enabled) {
@@ -63,6 +81,13 @@ class LoginController extends Controller
         return redirect()->intended($this->redirectTo);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
+     * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
+     * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
+     */
     public function login2Fa(Request $request)
     {
         $userId = $request->session()->get('2fa:user:id');

@@ -5,6 +5,11 @@ use Illuminate\Database\Schema\Blueprint;
 
 class CreateFilesTables extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
         Schema::create('files', function (Blueprint $table) {
@@ -30,6 +35,11 @@ class CreateFilesTables extends Migration
         });
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
         Schema::dropIfExists('fileables');

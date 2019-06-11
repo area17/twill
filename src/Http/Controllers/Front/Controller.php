@@ -10,6 +10,9 @@ use View;
 
 class Controller extends BaseController
 {
+    /**
+     * @var Seo
+     */
     public $seo;
 
     public function __construct()
@@ -27,5 +30,4 @@ class Controller extends BaseController
 
         View::share('seo', $this->seo);
     }
-
 }

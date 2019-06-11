@@ -18,14 +18,18 @@ class Controller extends BaseController
         if (config('twill.bind_exception_handler', true)) {
             app()->singleton(ExceptionHandler::class, TwillHandler::class);
         }
-
     }
 
+    /**
+     * Attempts to unset the given middleware.
+     *
+     * @param string $middleware
+     * @return void
+     */
     public function removeMiddleware($middleware)
     {
         if (($key = array_search($middleware, array_pluck($this->middleware, 'middleware'))) !== false) {
             unset($this->middleware[$key]);
         }
-
     }
 }
