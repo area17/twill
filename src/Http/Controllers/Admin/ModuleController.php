@@ -999,10 +999,19 @@ abstract class ModuleController extends Controller
             'blockPreviewUrl' => route('admin.blocks.preview'),
             'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
         ] + (Route::has($previewRouteName) ? [
-            'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $item->id),
-        ] : [])
-             + (Route::has($restoreRouteName) ? [
-            'restoreUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'restoreRevision', $item->id),
+            'previewUrl' => moduleRoute(
+                $this->moduleName,
+                $this->routePrefix,
+                'preview',
+                $this->submodule ? [$this->submoduleParentId, $item->id] : [$item->id]
+            ),
+        ] : []) + (Route::has($restoreRouteName) ? [
+            'restoreUrl' => moduleRoute(
+                $this->moduleName,
+                $this->routePrefix,
+                'restoreRevision',
+                $this->submodule ? [$this->submoduleParentId, $item->id] : [$item->id]
+            ),
         ] : []);
 
         return array_replace_recursive($data, $this->formData($this->request));
