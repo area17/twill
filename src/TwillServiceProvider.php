@@ -8,6 +8,7 @@ use A17\Twill\Commands\GenerateBlocks;
 use A17\Twill\Commands\Install;
 use A17\Twill\Commands\ModuleMake;
 use A17\Twill\Commands\RefreshLQIP;
+use A17\Twill\Commands\Update;
 use A17\Twill\Http\ViewComposers\ActiveNavigation;
 use A17\Twill\Http\ViewComposers\CurrentUser;
 use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
@@ -23,6 +24,7 @@ use Barryvdh\Debugbar\ServiceProvider as DebugbarServiceProvider;
 use Cartalyst\Tags\TagsServiceProvider;
 use Dimsav\Translatable\TranslatableServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -225,6 +227,17 @@ class TwillServiceProvider extends ServiceProvider
             'CreateSettingsTable' => 'settings',
         ];
 
+        // The updatesMigrations array must include new migrations that should
+        // be applied after minor and patch updates of Twill in a Laravel codebase.
+        // When releasing a major version of Twill, we can move those up into
+        // the optionalMigrations array above and keep this array empty until
+        // a new migration is needed in a non breaking change version.
+        $updatesMigations = [
+            'AddTwoFactorAuthColumnsToTwillUsers' => 'users-2fa',
+            'ChangeLocaleColumnInTwillFileables' => 'file-library',
+            'AddLocaleColumnToTwillMediables' => 'media-library',
+        ];
+
         if ($this->app->runningInConsole()) {
             foreach ($migrations as $migration) {
                 $this->publishMigration($migration);
@@ -235,6 +248,12 @@ class TwillServiceProvider extends ServiceProvider
                     $this->publishMigration($migration);
                 }
             }
+
+            foreach ($updatesMigations as $migration => $feature) {
+                if (config('twill.enabled.' . $feature)) {
+                    $this->publishMigration($migration, 'twill-updates-migrations');
+                }
+            }
         }
     }
 
@@ -242,13 +261,19 @@ class TwillServiceProvider extends ServiceProvider
      * @param string $migration
      * @return void
      */
-    private function publishMigration($migration)
+    private function publishMigration($migration, $publishKey = 'migrations')
     {
+        $files = new Filesystem;
+
         if (!class_exists($migration)) {
-            $timestamp = date('Y_m_d_His', time());
-            $this->publishes([
-                __DIR__ . '/../migrations/' . snake_case($migration) . '.php' => database_path('migrations/' . $timestamp . '_' . snake_case($migration) . '.php'),
-            ], 'migrations');
+            // Verify that migration doesn't exist
+            $migration_file = database_path('migrations/*_' . snake_case($migration) . '.php');
+            if (empty($files->glob($migration_file))) {
+                $timestamp = date('Y_m_d_His', time());
+                $this->publishes([
+                    __DIR__ . '/../migrations/' . snake_case($migration) . '.php' => database_path('migrations/' . $timestamp . '_' . snake_case($migration) . '.php'),
+                ], $publishKey);
+            }
         }
     }
 
@@ -285,6 +310,7 @@ class TwillServiceProvider extends ServiceProvider
             RefreshLQIP::class,
             GenerateBlocks::class,
             Build::class,
+            Update::class,
         ]);
     }
 
