@@ -8,7 +8,7 @@
     $extraMetadatas = $extraMetadatas ?? false;
 @endphp
 
-@if (config('twill.media_library.translated_form_fields', false))
+@if (config('twill.media_library.translated_form_fields', $translated ?? false) && ($translated ?? true))
     <a17-locale
         type="a17-mediafield-translated"
         :attributes="{
