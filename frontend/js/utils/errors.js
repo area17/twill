@@ -15,4 +15,11 @@ export function globalError (component = null, error) {
       variant: 'warning'
     })
   }
+
+  if (error.response.status === 403) {
+    window.vm.notif({
+      message: 'You don\'t have permission to perform this action.',
+      variant: 'warning'
+    })
+  }
 }

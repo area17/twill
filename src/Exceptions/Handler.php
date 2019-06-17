@@ -5,6 +5,7 @@ namespace A17\Twill\Exceptions;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
@@ -16,6 +17,7 @@ class Handler extends ExceptionHandler
 {
     protected $dontReport = [
         AuthorizationException::class,
+        AccessDeniedHttpException::class,
         HttpException::class,
         ModelNotFoundException::class,
         ValidationException::class,
@@ -50,7 +52,9 @@ class Handler extends ExceptionHandler
             return $this->handleUnauthenticated($request, $e);
         } elseif ($e instanceof ValidationException) {
             return $this->convertValidationExceptionToResponse($e, $request);
-        }
+        } elseif ($e instanceof AccessDeniedHttpException) {
+            return $this->handleAccessDenied($request, $e);
+        } 
 
         if (config('app.debug', false) && config('twill.debug.use_inspector', false)) {
             return Inspector::renderException($e);
@@ -147,6 +151,18 @@ class Handler extends ExceptionHandler
         }
 
         return redirect()->guest(route('admin.login'));
+    }
+
+    protected function handleAccessDenied($request, AccessDeniedHttpException $exception)
+    {
+        if ($request->expectsJson()) {
+            return response()->json(['error' => 'Unauthorized.'], 403);
+        }
+        session()->flash('status', 'You don\'t have permission to perform this action, redirect you back to the previous location');
+        if (back()->getTargetUrl() === url()->current()) {
+            return redirect('/');
+        };
+        return back();
     }
 
     protected function invalidJson($request, ValidationException $exception)
