@@ -72,7 +72,9 @@ class UserRepository extends ModuleRepository
     public function prepareFieldsBeforeSave($user, $fields)
     {
         $fields = parent::prepareFieldsBeforeSave($user, $fields);
-        if ($user->role->in_everyone_group && isset($fields['browsers']['groups'])) {
+        
+        // Do not handle the everyone group
+        if (isset($fields['browsers']['groups'])) {
             $fields['browsers']['groups'] = array_filter($fields['browsers']['groups'], function ($group) {
                 return $group['id'] && $group['name'] !== 'Everyone';
             });
