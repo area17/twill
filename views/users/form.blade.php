@@ -1,14 +1,63 @@
 @extends('twill::layouts.form', [
     'contentFieldsetLabel' => 'Account',
     'editModalTitle' => 'Edit user name',
-    'reloadOnSuccess' => false
+    'reloadOnSuccess' => true
 ])
 
 @section('contentFields')
+<p><strong>Registered at: </strong> {{ $item->activated ? $item->created_at->format('d M Y') : "Pending ({$item->created_at->format('d M Y')})" }}</p>
+    @can('edit-user')
+      @if($item->activated)
+        @formField('input', [
+          'name' => 'reset_password',
+          'type' => 'password',
+          'label' => 'Reset password',
+          'required' => true,
+          'maxlength' => 50,
+        ])
+      @else
+        <br />
+        <a href="#">Resend registration email</a>
+        @formField('checkbox', [
+            'name' => 'register_account_now',
+            'label' => 'Register Account Now'
+        ])
+        @component('twill::partials.form.utils._connected_fields', [
+          'fieldName' => 'register_account_now',
+          'fieldValues' => true,
+          'renderForBlocks' => false
+        ])
+          @formField('input', [
+            'name' => 'new_password',
+            'type' => 'password',
+            'label' => 'New password',
+            'required' => true,
+            'maxlength' => 50,
+          ])
+
+          @formField('checkbox', [
+            'name' => 'require_password_change',
+            'label' => 'Require password change at next login'
+          ])
+        @endcomponent
+      @endif
+    @endcan
+
     @formField('input', [
         'name' => 'email',
         'label' => 'Email'
     ])
+
+    @if($item->activated)
+      @can('edit-user')
+        @formField('input', [
+          'name' => 'subtitle',
+          'type' => 'password',
+          'label' => 'Reset password',
+          'maxlength' => 50,
+        ])
+      @endcan
+    @endif
 
     @can('edit-user-role')
         @unless($item->is_superadmin)
