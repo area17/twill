@@ -5,54 +5,54 @@
 ])
 
 @section('contentFields')
-<p><strong>Registered at: </strong> {{ $item->activated ? $item->created_at->format('d M Y') : "Pending ({$item->created_at->format('d M Y')})" }}</p>
-    @can('edit-user')
-      @if($item->activated)
-        @formField('checkbox', [
-          'name' => 'reset_password',
-          'label' => 'Reset Password'
+  @can('edit-user')
+    <p><strong>Registered at: </strong> {{ $item->activated ? $item->created_at->format('d M Y') : "Pending ({$item->created_at->format('d M Y')})" }}</p>
+    @if($item->activated)
+      @formField('checkbox', [
+        'name' => 'reset_password',
+        'label' => 'Reset Password'
+      ])
+
+      @component('twill::partials.form.utils._connected_fields', [
+        'fieldName' => 'reset_password',
+        'fieldValues' => true,
+        'renderForBlocks' => false
+      ])
+        @formField('input', [
+          'name' => 'new_password',
+          'type' => 'password',
+          'label' => 'Reset password',
+          'required' => true,
+          'maxlength' => 50,
+        ])
+      @endcomponent
+    @else
+      <br />
+      <a href="#">Resend registration email</a>
+      @formField('checkbox', [
+          'name' => 'register_account_now',
+          'label' => 'Register Account Now'
+      ])
+      @component('twill::partials.form.utils._connected_fields', [
+        'fieldName' => 'register_account_now',
+        'fieldValues' => true,
+        'renderForBlocks' => false
+      ])
+        @formField('input', [
+          'name' => 'new_password',
+          'type' => 'password',
+          'label' => 'New password',
+          'required' => true,
+          'maxlength' => 50,
         ])
 
-        @component('twill::partials.form.utils._connected_fields', [
-          'fieldName' => 'reset_password',
-          'fieldValues' => true,
-          'renderForBlocks' => false
-        ])
-          @formField('input', [
-            'name' => 'new_password',
-            'type' => 'password',
-            'label' => 'Reset password',
-            'required' => true,
-            'maxlength' => 50,
-          ])
-        @endcomponent
-      @else
-        <br />
-        <a href="#">Resend registration email</a>
         @formField('checkbox', [
-            'name' => 'register_account_now',
-            'label' => 'Register Account Now'
+          'name' => 'require_password_change',
+          'label' => 'Require password change at next login'
         ])
-        @component('twill::partials.form.utils._connected_fields', [
-          'fieldName' => 'register_account_now',
-          'fieldValues' => true,
-          'renderForBlocks' => false
-        ])
-          @formField('input', [
-            'name' => 'new_password',
-            'type' => 'password',
-            'label' => 'New password',
-            'required' => true,
-            'maxlength' => 50,
-          ])
-
-          @formField('checkbox', [
-            'name' => 'require_password_change',
-            'label' => 'Require password change at next login'
-          ])
-        @endcomponent
-      @endif
-    @endcan
+      @endcomponent
+    @endif
+  @endcan
 
     @formField('input', [
         'name' => 'email',
