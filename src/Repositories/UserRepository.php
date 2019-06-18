@@ -7,6 +7,7 @@ use A17\Twill\Models\User;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use DB;
 use Password;
+use Carbon\Carbon;
 
 class UserRepository extends ModuleRepository
 {
@@ -96,8 +97,24 @@ class UserRepository extends ModuleRepository
     public function afterSave($user, $fields)
     {
         $this->sendWelcomeEmail($user);
-
         $this->updateBrowser($user, $fields, 'groups');
+
+        // If the register account now fields appears in fields
+        if (!empty($fields['register_account_now']) && !empty($fields['new_password'])) {
+            $user->password = bcrypt($fields['new_password']);
+            $user->activated = true;
+            $user->registered_at = Carbon::now();
+            if (isset($fields['require_password_change']) && $fields['require_password_change']) {
+                $user->require_new_password = true;
+            }
+            $user->save();
+        }
+
+        if (!empty($fields['reset_password']) && !empty($fields['new_password'])) {
+            $user->password = bcrypt($fields['new_password']);
+            $user->save();
+        }
+
         parent::afterSave($user, $fields);
     }
 

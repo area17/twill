@@ -8,13 +8,24 @@
 <p><strong>Registered at: </strong> {{ $item->activated ? $item->created_at->format('d M Y') : "Pending ({$item->created_at->format('d M Y')})" }}</p>
     @can('edit-user')
       @if($item->activated)
-        @formField('input', [
+        @formField('checkbox', [
           'name' => 'reset_password',
-          'type' => 'password',
-          'label' => 'Reset password',
-          'required' => true,
-          'maxlength' => 50,
+          'label' => 'Reset Password'
         ])
+
+        @component('twill::partials.form.utils._connected_fields', [
+          'fieldName' => 'reset_password',
+          'fieldValues' => true,
+          'renderForBlocks' => false
+        ])
+          @formField('input', [
+            'name' => 'new_password',
+            'type' => 'password',
+            'label' => 'Reset password',
+            'required' => true,
+            'maxlength' => 50,
+          ])
+        @endcomponent
       @else
         <br />
         <a href="#">Resend registration email</a>
@@ -47,17 +58,6 @@
         'name' => 'email',
         'label' => 'Email'
     ])
-
-    @if($item->activated)
-      @can('edit-user')
-        @formField('input', [
-          'name' => 'subtitle',
-          'type' => 'password',
-          'label' => 'Reset password',
-          'maxlength' => 50,
-        ])
-      @endcan
-    @endif
 
     @can('edit-user-role')
         @unless($item->is_superadmin)
