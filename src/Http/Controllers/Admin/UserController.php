@@ -5,6 +5,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 use Auth;
 use A17\Twill\Models\Permission;
 use A17\Twill\Models\Role;
+use A17\Twill\Models\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use PragmaRX\Google2FAQRCode\Google2FA;
@@ -208,6 +209,7 @@ class UserController extends ModuleController
         if ($id !== (string) $this->user->id) {
             $this->authorize('edit-users');
         }
+
         return parent::edit($id, $submoduleId);
     }
 
@@ -216,6 +218,12 @@ class UserController extends ModuleController
         if ($id !== (string) $this->user->id) {
             $this->authorize('edit-users');
         }
+        
         return parent::update($id, $submoduleId);
+    }
+
+    public function resendRegistrationEmail(User $user)
+    {
+        $user = Auth::user('twill_user');
     }
 }
