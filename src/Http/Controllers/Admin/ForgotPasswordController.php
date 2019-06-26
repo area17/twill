@@ -3,7 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
-use Password;
+use Illuminate\Support\Facades\Password;
 
 class ForgotPasswordController extends Controller
 {

@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 trait HandleRevisions
 {

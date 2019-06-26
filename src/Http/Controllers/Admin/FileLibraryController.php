@@ -7,7 +7,6 @@ use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignS3UploadListener;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
-use Input;
 
 class FileLibraryController extends ModuleController implements SignS3UploadListener
 {

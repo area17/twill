@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Cache;
+
 if (!function_exists('revAsset')) {
     /**
      * @param string $file

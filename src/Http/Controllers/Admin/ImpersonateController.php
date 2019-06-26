@@ -3,7 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Repositories\UserRepository;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class ImpersonateController extends Controller
 {

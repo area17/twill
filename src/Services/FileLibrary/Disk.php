@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Services\FileLibrary;
 
-use Storage;
+use Illuminate\Support\Facades\Storage;
 
 class Disk implements FileServiceInterface
 {

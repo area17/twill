@@ -7,8 +7,6 @@ use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignS3UploadListener;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
-use Input;
-use Illuminate\Support\Facades\Storage;
 
 class MediaLibraryController extends ModuleController implements SignS3UploadListener
 {
@@ -140,7 +138,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
         $filename = sanitizeFilename($originalFilename);
 
-        $fileDirectory =  $request->input('unique_folder_name');
+        $fileDirectory = $request->input('unique_folder_name');
 
         $disk = config('twill.media_library.disk');
 

@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Commands;
 
-use File;
+use Illuminate\Support\Facades\File;
 use Illuminate\Console\Command;
 
 class GenerateBlocks extends Command

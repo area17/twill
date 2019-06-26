@@ -28,7 +28,7 @@ use Illuminate\Support\ServiceProvider;
 use Lsrur\Inspector\Facade\Inspector;
 use Lsrur\Inspector\InspectorServiceProvider;
 use Spatie\Activitylog\ActivitylogServiceProvider;
-use View;
+use Illuminate\Support\Facades\View;
 
 class TwillServiceProvider extends ServiceProvider
 {

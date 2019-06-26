@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Models;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 use ImageService;
 
 class Media extends Model

@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 if (config('twill.enabled.users-management')) {
     Route::module('users', ['except' => ['sort', 'feature']]);
 }

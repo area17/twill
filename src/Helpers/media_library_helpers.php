@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Storage;
+
 if (!function_exists('s3Enpoint')) {
     /**
      * @param string $disk

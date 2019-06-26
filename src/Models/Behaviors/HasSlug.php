@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Models\Behaviors;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 
 trait HasSlug
 {

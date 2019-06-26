@@ -2,8 +2,6 @@
 
 namespace A17\Twill\Services\Uploader;
 
-use A17\Twill\Services\Uploader\SignS3UploadListener;
-
 class SignS3Upload
 {
     private $bucket;

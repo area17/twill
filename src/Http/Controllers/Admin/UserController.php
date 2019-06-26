@@ -3,7 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Enums\UserRole;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use PragmaRX\Google2FAQRCode\Google2FA;

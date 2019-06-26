@@ -3,7 +3,7 @@
 namespace A17\Twill\Services\Cache;
 
 use Aws\CloudFront\CloudFrontClient;
-use Log;
+use Illuminate\Support\Facades\Log;
 
 class CloudfrontCacheService
 {
