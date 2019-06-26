@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Event;
+
 // adding this to have a better debug display in Chrome dev tools when
 // dd'ing during AJAX requests (see Symfony dumper issue in Chrome > 60:
 // https://github.com/symfony/symfony/issues/24688)

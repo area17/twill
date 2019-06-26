@@ -3,12 +3,10 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Helpers\FlashLevel;
-use Auth;
-use Event;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
-use Route;
-use Session;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 
 abstract class ModuleController extends Controller
 {

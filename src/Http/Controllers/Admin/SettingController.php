@@ -3,7 +3,6 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Repositories\SettingRepository;
-use Event;
 
 class SettingController extends Controller
 {

@@ -5,8 +5,8 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Models\Feature;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
-use DB;
-use Event;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 
 class FeaturedController extends Controller
 {

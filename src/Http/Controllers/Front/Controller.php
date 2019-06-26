@@ -6,7 +6,7 @@ use A17\Twill\Exceptions\Handler as TwillHandler;
 use A17\Twill\Http\Controllers\Front\Helpers\Seo;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Routing\Controller as BaseController;
-use View;
+use Illuminate\Support\Facades\View;
 
 class Controller extends BaseController
 {

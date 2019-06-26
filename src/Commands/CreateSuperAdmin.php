@@ -4,7 +4,7 @@ namespace A17\Twill\Commands;
 
 use A17\Twill\Models\User;
 use Illuminate\Console\Command;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class CreateSuperAdmin extends Command
 {

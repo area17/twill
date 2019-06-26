@@ -3,7 +3,7 @@
 namespace A17\Twill\Commands;
 
 use A17\Twill\Models\Media;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Console\Command;
 use ImageService;
 

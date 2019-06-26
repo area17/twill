@@ -2,8 +2,8 @@
 
 namespace A17\Twill\Http\Requests\Admin;
 
-use Auth;
-use Crypt;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use PragmaRX\Google2FA\Google2FA;
 
 class UserRequest extends Request

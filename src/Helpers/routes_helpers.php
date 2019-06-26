@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Request;
+
 if (!function_exists('moduleRoute')) {
     function moduleRoute($moduleName, $prefix, $action, $parameters = [], $absolute = true)
     {
