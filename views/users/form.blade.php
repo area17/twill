@@ -6,8 +6,13 @@
 
 @section('contentFields')
   @can('edit-user')
-    <p><strong>Registered at: </strong> {{ $item->activated ? $item->created_at->format('d M Y') : "Pending ({$item->created_at->format('d M Y')})" }}</p>
+    <p><strong>Registered at: </strong> {{ $item->activated ? $item->registered_at->format('d M Y') : "Pending ({$item->created_at->format('d M Y')})" }}</p>
     @if($item->activated)
+    
+      @if($item->last_login_at)
+        <p><strong>Last login: </strong> {{ $item->last_login_at->format('d M Y, H:i') }}</p>
+      @endif
+
       @formField('checkbox', [
         'name' => 'reset_password',
         'label' => 'Reset Password'

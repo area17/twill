@@ -33,6 +33,8 @@ class User extends AuthenticatableContract
 
     protected $dates = [
         'deleted_at',
+        'registered_at',
+        'last_login_at'
     ];
 
     protected $hidden = ['password', 'remember_token', 'google_2fa_secret'];

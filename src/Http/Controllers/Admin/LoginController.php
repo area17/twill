@@ -5,6 +5,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Models\User;
 use Auth;
 use Crypt;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use PragmaRX\Google2FA\Google2FA;
@@ -59,6 +60,9 @@ class LoginController extends Controller
 
             return redirect(route('admin.login-2fa.form'));
         }
+
+        $user->last_login_at = Carbon::now();
+        $user->save();
 
         return redirect()->intended($this->redirectTo);
     }
