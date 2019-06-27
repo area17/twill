@@ -1,7 +1,7 @@
 @extends('twill::layouts.form', [
     'contentFieldsetLabel' => 'Account',
     'editModalTitle' => 'Edit user name',
-    'reloadOnSuccess' => true
+    'reloadOnSuccess' => false
 ])
 
 @section('contentFields')
@@ -28,7 +28,8 @@
       @endcomponent
     @else
       <br />
-      <a href="#">Resend registration email</a>
+      <a type="submit" href="{{ route('admin.users.resend.registrationEmail', ['user' => $item]) }}">Resend registration email</a>
+
       @formField('checkbox', [
           'name' => 'register_account_now',
           'label' => 'Register Account Now'

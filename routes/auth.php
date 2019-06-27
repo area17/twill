@@ -12,8 +12,6 @@ if (config('twill.enabled.users-management')) {
 
     Route::get('users/impersonate/stop', 'ImpersonateController@stopImpersonate')->name('impersonate.stop');
     Route::get('users/impersonate/{id}', 'ImpersonateController@impersonate')->name('impersonate');
-
-    Route::post('users/{user}/registration-email', 'UserController@resendRegistrationEmail');
 }
 
 if (config('twill.enabled.users-2fa')) {

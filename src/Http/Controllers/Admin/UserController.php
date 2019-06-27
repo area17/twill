@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use Auth;
+use Password;
 use A17\Twill\Models\Permission;
 use A17\Twill\Models\Role;
 use A17\Twill\Models\User;
@@ -224,6 +225,9 @@ class UserController extends ModuleController
 
     public function resendRegistrationEmail(User $user)
     {
-        $user = Auth::user('twill_user');
+        $user->sendWelcomeNotification(
+            Password::broker('twill_users')->getRepository()->create($user)
+        );
+        return redirect()->route('admin.users.edit', ['user' => $user])->with('status', 'Registration email has been sent to the user!');
     }
 }

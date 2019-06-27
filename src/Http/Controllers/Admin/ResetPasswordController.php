@@ -9,6 +9,7 @@ use Hash;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Password;
+use Carbon\Carbon;
 
 class ResetPasswordController extends Controller
 {
@@ -23,7 +24,9 @@ class ResetPasswordController extends Controller
     |
      */
 
-    use ResetsPasswords;
+    use ResetsPasswords {
+        sendResetResponse as traitSendResetResponse;
+    }
 
     protected function guard()
     {
@@ -33,6 +36,18 @@ class ResetPasswordController extends Controller
     public function broker()
     {
         return Password::broker('twill_users');
+    }
+
+    protected function sendResetResponse(Request $request, $response)
+    {
+        $user = User::where('email', $request->input('email'))->first();
+        if (!$user->activated) {
+            $user->activated = true;
+            $user->registered_at = Carbon::now();
+            $user->save();
+        }
+
+        return $this->traitSendResetResponse($request, $response);
     }
 
     public function showResetForm(Request $request, $token = null)
