@@ -3,13 +3,14 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Repositories\BlockRepository;
+use Illuminate\Support\Collection;
 
 class BlocksController extends Controller
 {
     public function preview(BlockRepository $blockRepository)
     {
-        $blocksCollection = collect();
-        $childBlocksList = collect();
+        $blocksCollection = Collection::make();
+        $childBlocksList = Collection::make();
 
         if (request()->has('activeLanguage')) {
             app()->setLocale(request('activeLanguage'));

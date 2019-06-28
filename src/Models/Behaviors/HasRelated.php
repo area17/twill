@@ -4,6 +4,7 @@ namespace A17\Twill\Models\Behaviors;
 
 use A17\Twill\Models\RelatedItem;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Collection;
 
 trait HasRelated
 {
@@ -44,7 +45,7 @@ trait HasRelated
 
         $position = 1;
 
-        collect($items)->map(function ($item) {
+        Collection::make($items)->map(function ($item) {
             return array_only($item, ['endpointType', 'id']);
         })->each(function ($values) use ($browser_name, &$position) {
             RelatedItem::create([

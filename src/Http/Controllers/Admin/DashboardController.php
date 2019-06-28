@@ -5,6 +5,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Models\Behaviors\HasMedias;
 use Psr\Log\LoggerInterface as Logger;
 use Analytics;
+use Illuminate\Support\Collection;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Analytics\Exceptions\InvalidConfiguration;
 use Spatie\Analytics\Period;
@@ -32,7 +33,7 @@ class DashboardController extends Controller
 
     public function index()
     {
-        $modules = collect(config('twill.dashboard.modules'));
+        $modules = Collection::make(config('twill.dashboard.modules'));
 
         return view('twill::layouts.dashboard', [
             'allActivityData' => $this->getAllActivities(),
@@ -68,7 +69,7 @@ class DashboardController extends Controller
 
     public function search()
     {
-        $modules = collect(config('twill.dashboard.modules'));
+        $modules = Collection::make(config('twill.dashboard.modules'));
 
         return $modules->filter(function ($module) {
             return ($module['search'] ?? false);
@@ -150,7 +151,7 @@ class DashboardController extends Controller
             return [];
         }
 
-        $statsByDate = collect($response['rows'] ?? [])->map(function (array $dateRow) {
+        $statsByDate = Collection::make($response['rows'] ?? [])->map(function (array $dateRow) {
             return [
                 'date' => $dateRow[0],
                 'users' => (int) $dateRow[1],
@@ -160,7 +161,7 @@ class DashboardController extends Controller
             ];
         })->reverse()->values();
 
-        return collect([
+        return Collection::make([
             'today',
             'yesterday',
             'week',

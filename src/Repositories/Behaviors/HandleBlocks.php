@@ -4,6 +4,7 @@ namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Repositories\BlockRepository;
+use Illuminate\Support\Collection;
 
 trait HandleBlocks
 {
@@ -13,14 +14,14 @@ trait HandleBlocks
             return;
         }
 
-        $blocksCollection = collect();
+        $blocksCollection = Collection::make();
         $blocksFromFields = $this->getBlocks($object, $fields);
         $blockRepository = app(BlockRepository::class);
         $blocksFromFields->each(function ($block, $key) use ($blocksCollection, $blockRepository) {
             $newBlock = $blockRepository->createForPreview($block);
             $newBlock->id = $key + 1;
 
-            $childBlocksCollection = collect();
+            $childBlocksCollection = Collection::make();
 
             $block['blocks']->each(function ($childBlock) use ($newBlock, $blocksCollection, $blockRepository, $childBlocksCollection) {
                 $childBlock['parent_id'] = $newBlock->id;
@@ -63,14 +64,14 @@ trait HandleBlocks
 
     private function getBlocks($object, $fields)
     {
-        $blocks = collect();
+        $blocks = Collection::make();
         if (isset($fields['blocks']) && is_array($fields['blocks'])) {
 
             foreach ($fields['blocks'] as $index => $block) {
                 $block = $this->buildBlock($block, $object);
                 $block['position'] = $index + 1;
 
-                $childBlocksList = collect();
+                $childBlocksList = Collection::make();
 
                 foreach ($block['blocks'] as $childKey => $childBlocks) {
                     foreach ($childBlocks as $index => $childBlock) {
@@ -136,7 +137,7 @@ trait HandleBlocks
                     ];
                 }
 
-                $fields['blocksFields'][] = collect($block['content'])->filter(function ($value, $key) {
+                $fields['blocksFields'][] = Collection::make($block['content'])->filter(function ($value, $key) {
                     return $key !== "browsers";
                 })->map(function ($value, $key) use ($block) {
                     return [
@@ -150,7 +151,7 @@ trait HandleBlocks
                 $medias = $blockFormFields['medias'];
 
                 if ($medias) {
-                    $fields['blocksMedias'][] = collect($medias)->mapWithKeys(function ($value, $key) use ($block) {
+                    $fields['blocksMedias'][] = Collection::make($medias)->mapWithKeys(function ($value, $key) use ($block) {
                         return [
                             "blocks[$block->id][$key]" => $value,
                         ];
@@ -160,8 +161,8 @@ trait HandleBlocks
                 $files = $blockFormFields['files'];
 
                 if ($files) {
-                    collect($files)->each(function ($rolesWithFiles, $locale) use (&$fields, $block) {
-                        $fields['blocksFiles'][] = collect($rolesWithFiles)->mapWithKeys(function ($files, $role) use ($locale, $block) {
+                    Collection::make($files)->each(function ($rolesWithFiles, $locale) use (&$fields, $block) {
+                        $fields['blocksFiles'][] = Collection::make($rolesWithFiles)->mapWithKeys(function ($files, $role) use ($locale, $block) {
                             return [
                                 "blocks[$block->id][$role][$locale]" => $files,
                             ];
@@ -196,7 +197,7 @@ trait HandleBlocks
 
     protected function getBlockBrowsers($block)
     {
-        return collect($block['content']['browsers'])->mapWithKeys(function ($ids, $relation) use ($block) {
+        return Collection::make($block['content']['browsers'])->mapWithKeys(function ($ids, $relation) use ($block) {
             $relationRepository = $this->getModelRepository($relation);
             $relatedItems = $relationRepository->get([], ['id' => $ids], [], -1);
             $sortedRelatedItems = array_flip($ids);
@@ -205,7 +206,7 @@ trait HandleBlocks
                 $sortedRelatedItems[$item->id] = $item;
             }
 
-            $items = collect(array_values($sortedRelatedItems))->filter(function ($value) {
+            $items = Collection::make(array_values($sortedRelatedItems))->filter(function ($value) {
                 return is_object($value);
             })->map(function ($relatedElement) use ($relation) {
                 return [

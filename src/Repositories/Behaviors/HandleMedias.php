@@ -3,6 +3,7 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Media;
+use Illuminate\Support\Collection;
 
 trait HandleMedias
 {
@@ -12,7 +13,7 @@ trait HandleMedias
             return $object;
         }
 
-        $mediasCollection = collect();
+        $mediasCollection = Collection::make();
         $mediasFromFields = $this->getMedias($fields);
 
         $mediasFromFields->each(function ($media) use ($object, $mediasCollection) {
@@ -42,7 +43,7 @@ trait HandleMedias
 
     private function getMedias($fields)
     {
-        $medias = collect();
+        $medias = Collection::make();
 
         if (isset($fields['medias'])) {
             foreach ($fields['medias'] as $role => $mediasForRole) {
@@ -51,7 +52,7 @@ trait HandleMedias
                     || in_array($role, array_keys(config('twill.block_editor.crops', [])))
                     || in_array($role, array_keys(config('twill.settings.crops', [])))) {
 
-                    collect($mediasForRole)->each(function ($media) use (&$medias, $role) {
+                    Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role) {
                         $customMetadatas = $media['metadatas']['custom'] ?? [];
 
                         if (isset($media['crops'])) {

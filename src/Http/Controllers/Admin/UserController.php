@@ -8,6 +8,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Illuminate\Session\Store as SessionStore;
+use Illuminate\Support\Collection;
 use PragmaRX\Google2FAQRCode\Google2FA;
 
 class UserController extends ModuleController
@@ -104,7 +105,7 @@ class UserController extends ModuleController
         return [
             'defaultFilterSlug' => 'published',
             'create' => $this->getIndexOption('create') && auth('twill_users')->user()->can('edit-user-role'),
-            'roleList' => collect(UserRole::toArray()),
+            'roleList' => Collection::make(UserRole::toArray()),
             'single_primary_nav' => [
                 'users' => [
                     'title' => 'Users',
@@ -139,7 +140,7 @@ class UserController extends ModuleController
         }
 
         return [
-            'roleList' => collect(UserRole::toArray()),
+            'roleList' => Collection::make(UserRole::toArray()),
             'single_primary_nav' => [
                 'users' => [
                     'title' => 'Users',

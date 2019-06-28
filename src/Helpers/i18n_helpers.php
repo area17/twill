@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Collection;
+
 if (!function_exists('getLocales')) {
     function getLocales()
     {
@@ -12,7 +14,7 @@ if (!function_exists('getLanguagesForVueStore')) {
     {
         $manageMultipleLanguages = count(getLocales()) > 1;
         if ($manageMultipleLanguages && $translate) {
-            $allLanguages = collect(config('translatable.locales'))->map(function ($locale, $index) use ($form_fields) {
+            $allLanguages = Collection::make(config('translatable.locales'))->map(function ($locale, $index) use ($form_fields) {
                 return [
                     'shortlabel' => strtoupper($locale),
                     'label' => getLanguageLabelFromLocaleCode($locale),

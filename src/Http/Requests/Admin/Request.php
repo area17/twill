@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Collection;
 
 abstract class Request extends FormRequest
 {
@@ -28,7 +29,7 @@ abstract class Request extends FormRequest
         $localeActive = false;
         foreach ($locales as $locale) {
             if ($this->request->has('languages')) {
-                $languageFromRequest = collect($this->request->get('languages'))->where('value', $locale)->first();
+                $languageFromRequest = Collection::make($this->request->get('languages'))->where('value', $locale)->first();
                 if ($languageFromRequest['published']) {
                     $localeActive = true;
                     $rules = $this->updateRules($rules, $fields, $locale);

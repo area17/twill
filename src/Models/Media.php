@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Models;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use ImageService;
 
@@ -22,7 +23,7 @@ class Media extends Model
 
     public function __construct(array $attributes = [])
     {
-        $this->fillable(array_merge($this->fillable, collect(config('twill.media_library.extra_metadatas_fields'))->map(function ($field) {
+        $this->fillable(array_merge($this->fillable, Collection::make(config('twill.media_library.extra_metadatas_fields'))->map(function ($field) {
             return $field['name'];
         })->toArray()));
 
@@ -71,7 +72,7 @@ class Media extends Model
                     'caption' => $this->caption,
                     'altText' => $this->alt_text,
                     'video' => null,
-                ] + collect(config('twill.media_library.extra_metadatas_fields'))->mapWithKeys(function ($field) {
+                ] + Collection::make(config('twill.media_library.extra_metadatas_fields'))->mapWithKeys(function ($field) {
                     return [
                         $field['name'] => $this->{$field['name']},
                     ];

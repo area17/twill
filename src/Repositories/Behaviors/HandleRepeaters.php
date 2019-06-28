@@ -3,6 +3,7 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 trait HandleRepeaters
 {
@@ -77,7 +78,7 @@ trait HandleRepeaters
         if (!$repeaterName) {
             $repeaterName = $relation;
         }
-        
+
         $repeaters = [];
         $repeatersFields = [];
         $repeatersBrowsers = [];
@@ -117,8 +118,8 @@ trait HandleRepeaters
             if (isset($relatedItemFormFields['files'])) {
                 $repeatersFiles = [];
 
-                collect($relatedItemFormFields['files'])->each(function ($rolesWithFiles, $locale) use (&$repeatersFiles, $relation, $relationItem) {
-                    $repeatersFiles[] = collect($rolesWithFiles)->mapWithKeys(function ($files, $role) use ($locale, $relation, $relationItem) {
+                Collection::make($relatedItemFormFields['files'])->each(function ($rolesWithFiles, $locale) use (&$repeatersFiles, $relation, $relationItem) {
+                    $repeatersFiles[] = Collection::make($rolesWithFiles)->mapWithKeys(function ($files, $role) use ($locale, $relation, $relationItem) {
                         return [
                             "blocks[$relation-$relationItem->id][$role][$locale]" => $files,
                         ];

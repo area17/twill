@@ -3,6 +3,7 @@
 namespace A17\Twill\Services\Cache;
 
 use Aws\CloudFront\CloudFrontClient;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class CloudfrontCacheService
@@ -63,7 +64,7 @@ class CloudfrontCacheService
     {
         $list = $this->client->listInvalidations(array('DistributionId' => config('services.cloudfront.distribution')))->get('InvalidationList');
         if (isset($list['Items']) && !empty($list['Items'])) {
-            return collect($list['Items'])->where('Status', 'InProgress')->count() > 0;
+            return Collection::make($list['Items'])->where('Status', 'InProgress')->count() > 0;
         }
 
         return false;

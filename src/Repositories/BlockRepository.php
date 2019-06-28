@@ -5,6 +5,7 @@ namespace A17\Twill\Repositories;
 use A17\Twill\Models\Block;
 use A17\Twill\Repositories\Behaviors\HandleFiles;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
+use Illuminate\Support\Collection;
 
 class BlockRepository extends ModuleRepository
 {
@@ -30,15 +31,15 @@ class BlockRepository extends ModuleRepository
     {
         $blocksFromConfig = config('twill.block_editor.' . ($repeater ? 'repeaters' : 'blocks'));
 
-        $block['type'] = collect($blocksFromConfig)->search(function ($blockConfig) use ($block) {
+        $block['type'] = Collection::make($blocksFromConfig)->search(function ($blockConfig) use ($block) {
             return $blockConfig['component'] === $block['type'];
         });
 
         $block['content'] = empty($block['content']) ? new \stdClass : (object) $block['content'];
 
         if ($block['browsers']) {
-            $browsers = collect($block['browsers'])->map(function ($items) {
-                return collect($items)->pluck('id');
+            $browsers = Collection::make($block['browsers'])->map(function ($items) {
+                return Collection::make($items)->pluck('id');
             })->toArray();
 
             $block['content']->browsers = $browsers;

@@ -7,6 +7,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Illuminate\Session\Store as SessionStore;
+use Illuminate\Support\Collection;
 
 abstract class ModuleController extends Controller
 {
@@ -208,7 +209,7 @@ abstract class ModuleController extends Controller
             $indexData += ['openCreate' => true];
         }
 
-        $view = collect([
+        $view = Collection::make([
             "$this->viewPrefix.index",
             "twill::$this->moduleName.index",
             "twill::layouts.listing",
@@ -271,7 +272,7 @@ abstract class ModuleController extends Controller
 
         $this->setBackLink();
 
-        $view = collect([
+        $view = Collection::make([
             "$this->viewPrefix.form",
             "twill::$this->moduleName.form",
             "twill::layouts.form",
@@ -374,7 +375,7 @@ abstract class ModuleController extends Controller
 
         $this->setBackLink();
 
-        $view = collect([
+        $view = Collection::make([
             "$this->viewPrefix.form",
             "twill::$this->moduleName.form",
             "twill::layouts.form",
@@ -603,7 +604,7 @@ abstract class ModuleController extends Controller
     {
         $translated = $this->moduleHas('translations');
         return $items->map(function ($item) use ($translated) {
-            $columnsData = collect($this->indexColumns)->mapWithKeys(function ($column) use ($item) {
+            $columnsData = Collection::make($this->indexColumns)->mapWithKeys(function ($column) use ($item) {
                 return $this->getItemColumnData($item, $column);
             })->toArray();
 
@@ -823,7 +824,7 @@ abstract class ModuleController extends Controller
 
     protected function getIndexUrls($moduleName, $routePrefix)
     {
-        return collect([
+        return Collection::make([
             'store',
             'publish',
             'bulkPublish',
@@ -891,7 +892,7 @@ abstract class ModuleController extends Controller
         $withImage = $this->moduleHas('medias');
 
         return $items->map(function ($item) use ($withImage) {
-            $columnsData = collect($this->browserColumns)->mapWithKeys(function ($column) use ($item, $withImage) {
+            $columnsData = Collection::make($this->browserColumns)->mapWithKeys(function ($column) use ($item, $withImage) {
                 return $this->getItemColumnData($item, $column);
             })->toArray();
 
@@ -949,7 +950,7 @@ abstract class ModuleController extends Controller
                     $fieldSplitted = explode('|', $field);
                     if (count($fieldSplitted) > 1) {
                         $requestValue = $requestFilters[$key];
-                        collect($fieldSplitted)->each(function ($scopeKey) use (&$scope, $requestValue) {
+                        Collection::make($fieldSplitted)->each(function ($scopeKey) use (&$scope, $requestValue) {
                             $scope[$scopeKey] = $requestValue;
                         });
                     } else {
@@ -1068,7 +1069,7 @@ abstract class ModuleController extends Controller
 
     protected function validateFormRequest()
     {
-        $unauthorizedFields = collect($this->fieldsPermissions)->filter(function ($permission, $field) {
+        $unauthorizedFields = Collection::make($this->fieldsPermissions)->filter(function ($permission, $field) {
             return auth('twill_users')->user()->cannot($permission);
         })->keys();
 
