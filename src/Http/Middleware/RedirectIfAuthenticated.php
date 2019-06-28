@@ -2,11 +2,24 @@
 
 namespace A17\Twill\Http\Middleware;
 
-use Illuminate\Support\Facades\Auth;
 use Closure;
+use Illuminate\Auth\AuthManager;
 
 class RedirectIfAuthenticated
 {
+    /**
+     * @var AuthManager
+     */
+    protected $authManager;
+
+    /**
+     * @param AuthManager $authManager
+     */
+    public function __construct(AuthManager $authManager)
+    {
+        $this->authManager = $authManager;
+    }
+
     /**
      * Handles an incoming request.
      *
@@ -16,7 +29,7 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = 'twill_users')
     {
-        if (Auth::guard($guard)->check()) {
+        if ($this->authManager->guard($guard)->check()) {
             return redirect(config('twill.auth_login_redirect_path', '/'));
         }
 

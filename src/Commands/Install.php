@@ -3,8 +3,8 @@
 namespace A17\Twill\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\DB;
 
 class Install extends Command
 {
@@ -28,13 +28,20 @@ class Install extends Command
     protected $files;
 
     /**
-     * @param Filesystem $files
+     * @var DatabaseManager
      */
-    public function __construct(Filesystem $files)
+    protected $db;
+
+    /**
+     * @param Filesystem $files
+     * @param DatabaseManager $db
+     */
+    public function __construct(Filesystem $files, DatabaseManager $db)
     {
         parent::__construct();
 
         $this->files = $files;
+        $this->db = $db;
     }
 
     /**
@@ -47,7 +54,7 @@ class Install extends Command
     {
         //check the database connection before installing
         try {
-            DB::connection()->getPdo();
+            $this->db->connection()->getPdo();
         } catch (\Exception $e) {
             $this->error('Could not connect to the database, please check your configuration:' . "\n" . $e);
             return;

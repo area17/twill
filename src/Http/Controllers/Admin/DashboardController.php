@@ -4,12 +4,32 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use Analytics;
+use Psr\Log\LoggerInterface as Logger;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Analytics\Exceptions\InvalidConfiguration;
 use Spatie\Analytics\Period;
 
 class DashboardController extends Controller
 {
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
+     * @var Analytics
+     */
+    protected $analytics;
+
+    /**
+     * @param Logger $logger
+     */
+    public function __construct(Logger $logger)
+    {
+        parent::__construct();
+        $this->logger = $logger;
+    }
+
     /**
      * Displays the Twill dashboard.
      *
@@ -147,7 +167,7 @@ class DashboardController extends Controller
                 ['dimensions' => 'ga:date']
             );
         } catch (InvalidConfiguration $exception) {
-            \Log::error($exception);
+            $this->logger->error($exception);
             return [];
         }
 

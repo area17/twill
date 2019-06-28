@@ -4,18 +4,25 @@ namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\File;
 use A17\Twill\Repositories\Behaviors\HandleTags;
-use Storage;
+use Illuminate\Contracts\Filesystem\Factory as FilesystemManager;
 
 class FileRepository extends ModuleRepository
 {
     use HandleTags;
 
     /**
-     * @param File $model
+     * @var FilesystemManager
      */
-    public function __construct(File $model)
+    protected $filesystemManager;
+
+    /**
+     * @param File $model
+     * @param FilesystemManager $filesystemManager
+     */
+    public function __construct(File $model, FilesystemManager $filesystemManager)
     {
         $this->model = $model;
+        $this->filesystemManager = $filesystemManager;
     }
 
     /**
@@ -37,7 +44,7 @@ class FileRepository extends ModuleRepository
     {
         $storageId = $object->uuid;
         if (config('twill.file_library.cascade_delete')) {
-            Storage::disk(config('twill.file_library.disk'))->delete($storageId);
+            $this->filesystemManager->disk(config('twill.file_library.disk'))->delete($storageId);
         }
     }
 
@@ -48,7 +55,7 @@ class FileRepository extends ModuleRepository
     public function prepareFieldsBeforeCreate($fields)
     {
         if (!isset($fields['size'])) {
-            $fields['size'] = Storage::disk(config('twill.file_library.disk'))->size($fields['uuid']);
+            $fields['size'] = $this->filesystemManager->disk(config('twill.file_library.disk'))->size($fields['uuid']);
         }
 
         return $fields;

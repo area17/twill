@@ -2,8 +2,8 @@
 
 namespace A17\Twill\Commands;
 
-use Illuminate\Support\Facades\File;
 use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
 
 class GenerateBlocks extends Command
 {
@@ -22,6 +22,21 @@ class GenerateBlocks extends Command
     protected $description = "Generate blocks as single file Vue components from blade views";
 
     /**
+     * @var Filesystem
+     */
+    protected $filesystem;
+
+    /**
+     * @param Filesystem $filesystem
+     */
+    public function __construct(Filesystem $filesystem)
+    {
+        parent::__construct();
+
+        $this->filesystem = $filesystem;
+    }
+
+    /**
      * Executes the console command.
      *
      * @return mixed
@@ -29,7 +44,7 @@ class GenerateBlocks extends Command
     public function handle()
     {
         $this->info("Starting to scan block views directory...");
-        collect(File::files(resource_path('views/admin/blocks')))->each(function ($viewFile) {
+        collect($this->filesystem->files(resource_path('views/admin/blocks')))->each(function ($viewFile) {
             $blockName = $viewFile->getBasename('.blade.php');
 
             $vueBlockTemplate = view('admin.blocks.' . $blockName, ['renderForBlocks' => true])->render();
@@ -40,7 +55,7 @@ class GenerateBlocks extends Command
 
             $vueBlockPath = resource_path('assets/js/blocks/') . 'Block' . title_case($blockName) . '.vue';
 
-            File::put($vueBlockPath, $vueBlockContent);
+            $this->filesystem->put($vueBlockPath, $vueBlockContent);
 
             $this->info("Block " . title_case($blockName) . " generated successfully");
         });
