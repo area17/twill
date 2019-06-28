@@ -4,6 +4,7 @@ namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\Setting;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 class SettingRepository extends ModuleRepository
@@ -49,7 +50,7 @@ class SettingRepository extends ModuleRepository
 
         foreach (Collection::make($settingsFields)->except('active_languages', 'medias', 'mediaMeta')->filter() as $key => $value) {
             foreach (getLocales() as $locale) {
-                array_set(
+                Arr::set(
                     $settingsTranslated,
                     $key . '.' . $locale,
                     [
@@ -62,7 +63,7 @@ class SettingRepository extends ModuleRepository
         }
 
         foreach ($settingsTranslated as $key => $values) {
-            array_set($settings, $key, ['key' => $key] + $section + $values);
+            Arr::set($settings, $key, ['key' => $key] + $section + $values);
         }
 
         foreach ($settings as $key => $setting) {
