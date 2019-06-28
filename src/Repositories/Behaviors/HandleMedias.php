@@ -23,7 +23,7 @@ trait HandleMedias
         $mediasFromFields = $this->getMedias($fields);
 
         $mediasFromFields->each(function ($media) use ($object, $mediasCollection) {
-            $newMedia = Media::withTrashed()->find(is_array($media['id']) ? array_first($media['id']) : $media['id']);
+            $newMedia = Media::withTrashed()->find(is_array($media['id']) ? Arr::first($media['id']) : $media['id']);
             $pivot = $newMedia->newPivot($object, Arr::except($media, ['id']), 'mediables', true);
             $newMedia->setRelation('pivot', $pivot);
             $mediasCollection->push($newMedia);
@@ -100,7 +100,7 @@ trait HandleMedias
                                     'crop' => $cropName,
                                     'role' => $role,
                                     'locale' => $locale,
-                                    'ratio' => array_first($cropDefinitions)['name'],
+                                    'ratio' => Arr::first($cropDefinitions)['name'],
                                     'crop_w' => null,
                                     'crop_h' => null,
                                     'crop_x' => null,

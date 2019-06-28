@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 trait HandleTranslations
@@ -27,7 +28,7 @@ trait HandleTranslations
             });
 
             foreach ($locales as $index => $locale) {
-                $submittedLanguage = array_first($submittedLanguages->filter(function ($lang) use ($locale) {
+                $submittedLanguage = Arr::first($submittedLanguages->filter(function ($lang) use ($locale) {
                     return $lang['value'] == $locale;
                 }));
 

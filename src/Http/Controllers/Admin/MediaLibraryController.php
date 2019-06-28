@@ -9,6 +9,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Illuminate\Session\Store as SessionStore;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 class MediaLibraryController extends ModuleController implements SignS3UploadListener
@@ -272,7 +273,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
             $fieldInRequest = request($field['name']);
 
             if (isset($field['type']) && $field['type'] === 'checkbox') {
-                return [$field['name'] => $fieldInRequest ? array_first($fieldInRequest) : false];
+                return [$field['name'] => $fieldInRequest ? Arr::first($fieldInRequest) : false];
             }
 
             return [$field['name'] => $fieldInRequest];
