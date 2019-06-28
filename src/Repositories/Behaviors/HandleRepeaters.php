@@ -3,6 +3,7 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 trait HandleRepeaters
 {
@@ -109,8 +110,8 @@ trait HandleRepeaters
 
             if (isset($relatedItemFormFields['medias'])) {
                 if (config('twill.media_library.translated_form_fields', false)) {
-                    collect($relatedItemFormFields['medias'])->each(function ($rolesWithMedias, $locale) use (&$repeatersMedias, $relation, $relationItem) {
-                        $repeatersMedias[] = collect($rolesWithMedias)->mapWithKeys(function ($medias, $role) use ($locale, $relation, $relationItem) {
+                    Collection::make($relatedItemFormFields['medias'])->each(function ($rolesWithMedias, $locale) use (&$repeatersMedias, $relation, $relationItem) {
+                        $repeatersMedias[] = Collection::make($rolesWithMedias)->mapWithKeys(function ($medias, $role) use ($locale, $relation, $relationItem) {
                             return [
                                 "blocks[$relation-$relationItem->id][$role][$locale]" => $medias,
                             ];
@@ -124,8 +125,8 @@ trait HandleRepeaters
             }
 
             if (isset($relatedItemFormFields['files'])) {
-                collect($relatedItemFormFields['files'])->each(function ($rolesWithFiles, $locale) use (&$repeatersFiles, $relation, $relationItem) {
-                    $repeatersFiles[] = collect($rolesWithFiles)->mapWithKeys(function ($files, $role) use ($locale, $relation, $relationItem) {
+                Collection::make($relatedItemFormFields['files'])->each(function ($rolesWithFiles, $locale) use (&$repeatersFiles, $relation, $relationItem) {
+                    $repeatersFiles[] = Collection::make($rolesWithFiles)->mapWithKeys(function ($files, $role) use ($locale, $relation, $relationItem) {
                         return [
                             "blocks[$relation-$relationItem->id][$role][$locale]" => $files,
                         ];

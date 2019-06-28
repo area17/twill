@@ -3,6 +3,7 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 
 trait HandleRevisions
 {
@@ -54,7 +55,7 @@ trait HandleRevisions
         $relatedElements = $fieldsHasElements ? $fields[$relationship] : [];
 
         $relationRepository = $this->getModelRepository($relationship, $model);
-        $relatedElementsCollection = collect();
+        $relatedElementsCollection = Collection::make();
 
         foreach ($relatedElements as $relatedElement) {
             $newRelatedElement = $relationRepository->getById($relatedElement);
@@ -75,7 +76,7 @@ trait HandleRevisions
         $relatedElements = $fieldsHasElements ? $fields['browsers'][$relationship] : [];
 
         $relationRepository = $this->getModelRepository($relationship, $model);
-        $relatedElementsCollection = collect();
+        $relatedElementsCollection = Collection::make();
         $position = 1;
 
         foreach ($relatedElements as $relatedElement) {
@@ -94,7 +95,7 @@ trait HandleRevisions
 
         $relationRepository = $this->getModelRepository($relationship, $model);
 
-        $repeaterCollection = collect();
+        $repeaterCollection = Collection::make();
 
         foreach ($relationFields as $index => $relationField) {
             $relationField['position'] = $index + 1;

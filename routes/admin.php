@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Collection;
 
 if (config('twill.enabled.users-management')) {
     Route::module('users', ['except' => ['sort', 'feature']]);
@@ -33,7 +34,7 @@ if (config('twill.enabled.block-editor')) {
 }
 
 if (config('twill.enabled.buckets')) {
-    $bucketsRoutes = config('twill.bucketsRoutes') ?? collect(config('twill.buckets'))->mapWithKeys(function ($bucketSection, $bucketSectionKey) {
+    $bucketsRoutes = config('twill.bucketsRoutes') ?? Collection::make(config('twill.buckets'))->mapWithKeys(function ($bucketSection, $bucketSectionKey) {
         return [$bucketSectionKey => 'featured'];
     })->toArray();
 

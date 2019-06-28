@@ -6,6 +6,7 @@ use A17\Twill\Models\Feature;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
 use Illuminate\Database\DatabaseManager as DB;
+use Illuminate\Support\Collection;
 
 class FeaturedController extends Controller
 {
@@ -35,7 +36,7 @@ class FeaturedController extends Controller
 
         $featuredSources = $this->getFeaturedSources($featuredSection, $filters['search'] ?? '');
 
-        $contentTypes = collect($featuredSources)->map(function ($source, $sourceKey) {
+        $contentTypes = Collection::make($featuredSources)->map(function ($source, $sourceKey) {
             return [
                 'label' => $source['name'],
                 'value' => $sourceKey,
@@ -94,13 +95,13 @@ class FeaturedController extends Controller
     private function getFeaturedItemsByBucket($featuredSection, $featuredSectionKey)
     {
         $bucketRouteConfig = config('twill.bucketsRoutes') ?? [$featuredSectionKey => 'featured'];
-        return collect($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use ($featuredSectionKey, $bucketRouteConfig) {
+        return Collection::make($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use ($featuredSectionKey, $bucketRouteConfig) {
             $routePrefix = $bucketRouteConfig[$featuredSectionKey];
             return [
                 'id' => $bucketKey,
                 'name' => $bucket['name'],
                 'max' => $bucket['max_items'],
-                'acceptedSources' => collect($bucket['bucketables'])->pluck('module'),
+                'acceptedSources' => Collection::make($bucket['bucketables'])->pluck('module'),
                 'withToggleFeatured' => $bucket['with_starred_items'] ?? false,
                 'toggleFeaturedLabels' => $bucket['starred_items_labels'] ?? [],
                 'children' => Feature::where('bucket_key', $bucketKey)->with('featured')->get()->map(function ($feature) {
@@ -138,8 +139,8 @@ class FeaturedController extends Controller
         $fetchedModules = [];
         $featuredSources = [];
 
-        collect($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use (&$fetchedModules, $search) {
-            return collect($bucket['bucketables'])->mapWithKeys(function ($bucketable) use (&$fetchedModules, $bucketKey, $search) {
+        Collection::make($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use (&$fetchedModules, $search) {
+            return Collection::make($bucket['bucketables'])->mapWithKeys(function ($bucketable) use (&$fetchedModules, $bucketKey, $search) {
 
                 $module = $bucketable['module'];
                 $repository = $this->getRepository($module);
@@ -201,7 +202,7 @@ class FeaturedController extends Controller
     public function save()
     {
         $this->db->transaction(function () {
-            collect(request('buckets'))->each(function ($bucketables, $bucketKey) {
+            Collection::make(request('buckets'))->each(function ($bucketables, $bucketKey) {
                 Feature::where('bucket_key', $bucketKey)->delete();
                 foreach (($bucketables ?? []) as $position => $bucketable) {
                     Feature::create([

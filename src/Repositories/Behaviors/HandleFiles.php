@@ -3,6 +3,7 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\File;
+use Illuminate\Support\Collection;
 
 trait HandleFiles
 {
@@ -17,7 +18,7 @@ trait HandleFiles
             return $object;
         }
 
-        $filesCollection = collect();
+        $filesCollection = Collection::make();
         $filesFromFields = $this->getFiles($fields);
 
         $filesFromFields->each(function ($file) use ($object, $filesCollection) {
@@ -56,7 +57,7 @@ trait HandleFiles
      */
     private function getFiles($fields)
     {
-        $files = collect();
+        $files = Collection::make();
 
         if (isset($fields['medias'])) {
             foreach ($fields['medias'] as $role => $filesForRole) {
@@ -71,7 +72,7 @@ trait HandleFiles
                 if (in_array($role, $this->model->filesParams ?? [])
                     || in_array($role, config('twill.block_editor.files', []))) {
 
-                    collect($filesForRole)->each(function ($file) use (&$files, $role, $locale) {
+                    Collection::make($filesForRole)->each(function ($file) use (&$files, $role, $locale) {
                         $files->push([
                             'id' => $file['id'],
                             'role' => $role,

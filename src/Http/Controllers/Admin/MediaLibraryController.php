@@ -9,6 +9,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Illuminate\Session\Store as SessionStore;
+use Illuminate\Support\Collection;
 
 class MediaLibraryController extends ModuleController implements SignS3UploadListener
 {
@@ -267,7 +268,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
      */
     private function getExtraMetadatas()
     {
-        return collect($this->customFields)->mapWithKeys(function ($field) {
+        return Collection::make($this->customFields)->mapWithKeys(function ($field) {
             $fieldInRequest = request($field['name']);
 
             if (isset($field['type']) && $field['type'] === 'checkbox') {

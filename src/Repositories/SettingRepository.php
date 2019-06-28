@@ -4,6 +4,7 @@ namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\Setting;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
+use Illuminate\Support\Collection;
 
 class SettingRepository extends ModuleRepository
 {
@@ -63,7 +64,7 @@ class SettingRepository extends ModuleRepository
     {
         $section = $section ? ['section' => $section] : [];
 
-        foreach (collect($settingsFields)->except('active_languages', 'medias', 'mediaMeta')->filter() as $key => $value) {
+        foreach (Collection::make($settingsFields)->except('active_languages', 'medias', 'mediaMeta')->filter() as $key => $value) {
             foreach (getLocales() as $locale) {
                 array_set(
                     $settingsTranslated,
@@ -89,7 +90,7 @@ class SettingRepository extends ModuleRepository
             $this->updateOrCreate($section + ['key' => $role], $section + [
                 'key' => $role,
                 'medias' => [
-                    $role => collect($settingsFields['medias'][$role])->map(function ($media) {
+                    $role => Collection::make($settingsFields['medias'][$role])->map(function ($media) {
                         return json_decode($media, true);
                     })->values()->filter()->toArray(),
                 ],

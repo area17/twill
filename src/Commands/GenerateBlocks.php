@@ -4,6 +4,7 @@ namespace A17\Twill\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
 
 class GenerateBlocks extends Command
 {
@@ -44,7 +45,7 @@ class GenerateBlocks extends Command
     public function handle()
     {
         $this->info("Starting to scan block views directory...");
-        collect($this->filesystem->files(resource_path('views/admin/blocks')))->each(function ($viewFile) {
+        Collection::make($this->filesystem->files(resource_path('views/admin/blocks')))->each(function ($viewFile) {
             $blockName = $viewFile->getBasename('.blade.php');
 
             $vueBlockTemplate = view('admin.blocks.' . $blockName, ['renderForBlocks' => true])->render();
