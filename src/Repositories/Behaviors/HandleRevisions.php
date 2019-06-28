@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
 
@@ -33,7 +34,7 @@ trait HandleRevisions
     {
         $fields = $this->prepareFieldsBeforeSave($object, $fields);
 
-        $object->fill(array_except($fields, $this->getReservedFields()));
+        $object->fill(Arr::except($fields, $this->getReservedFields()));
 
         $object = $this->hydrate($object, $fields);
 

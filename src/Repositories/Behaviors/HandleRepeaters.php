@@ -3,6 +3,7 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 trait HandleRepeaters
@@ -135,7 +136,7 @@ trait HandleRepeaters
                 }
             }
 
-            $itemFields = method_exists($relationItem, 'toRepeaterArray') ? $relationItem->toRepeaterArray() : array_except($relationItem->attributesToArray(), $translatedFields);
+            $itemFields = method_exists($relationItem, 'toRepeaterArray') ? $relationItem->toRepeaterArray() : Arr::except($relationItem->attributesToArray(), $translatedFields);
 
 
             foreach ($itemFields as $key => $value) {
