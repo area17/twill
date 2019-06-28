@@ -9,6 +9,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Illuminate\Session\Store as SessionStore;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 class MediaLibraryController extends ModuleController implements SignS3UploadListener
@@ -207,7 +208,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
                 return [$field['name'] => false];
             }
 
-            return [$field['name'] => is_array($fieldInRequest) ? array_first($fieldInRequest) : $fieldInRequest];
+            return [$field['name'] => is_array($fieldInRequest) ? Arr::first($fieldInRequest) : $fieldInRequest];
         });
     }
 }

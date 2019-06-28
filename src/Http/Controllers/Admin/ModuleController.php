@@ -707,8 +707,8 @@ abstract class ModuleController extends Controller
         $tableColumns = [];
         $visibleColumns = request('columns') ?? false;
 
-        if (isset(array_first($this->indexColumns)['thumb'])
-            && array_first($this->indexColumns)['thumb']
+        if (isset(Arr::first($this->indexColumns)['thumb'])
+            && Arr::first($this->indexColumns)['thumb']
         ) {
             array_push($tableColumns, [
                 'name' => 'thumbnail',

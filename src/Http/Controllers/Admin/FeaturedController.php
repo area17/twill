@@ -6,6 +6,7 @@ use A17\Twill\Models\Feature;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
 use Illuminate\Database\DatabaseManager as DB;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 class FeaturedController extends Controller
@@ -41,13 +42,13 @@ class FeaturedController extends Controller
         })->values()->toArray();
 
         if (request()->has('content_type')) {
-            $source = array_first($featuredSources, function ($source, $sourceKey) {
+            $source = Arr::first($featuredSources, function ($source, $sourceKey) {
                 return $sourceKey == request('content_type');
             });
 
             return [
                 'source' => [
-                    'content_type' => array_first($contentTypes, function ($contentTypeItem) {
+                    'content_type' => Arr::first($contentTypes, function ($contentTypeItem) {
                         return $contentTypeItem['value'] == request('content_type');
                     }),
                     'items' => $source['items'],
@@ -57,7 +58,7 @@ class FeaturedController extends Controller
         }
 
         $buckets = $this->getFeaturedItemsByBucket($featuredSection, $featuredSectionKey);
-        $firstSource = array_first($featuredSources);
+        $firstSource = Arr::first($featuredSources);
 
         $routePrefix = 'featured';
 
@@ -67,12 +68,12 @@ class FeaturedController extends Controller
 
         return view('twill::layouts.buckets', [
             'dataSources' => [
-                'selected' => array_first($contentTypes),
+                'selected' => Arr::first($contentTypes),
                 'content_types' => $contentTypes,
             ],
             'items' => $buckets,
             'source' => [
-                'content_type' => array_first($contentTypes),
+                'content_type' => Arr::first($contentTypes),
                 'items' => $firstSource['items'],
             ],
             'maxPage' => $firstSource['maxPage'],
