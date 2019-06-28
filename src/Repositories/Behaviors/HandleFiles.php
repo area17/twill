@@ -3,6 +3,7 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\File;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 trait HandleFiles
@@ -23,7 +24,7 @@ trait HandleFiles
 
         $filesFromFields->each(function ($file) use ($object, $filesCollection) {
             $newFile = File::withTrashed()->find($file['id']);
-            $pivot = $newFile->newPivot($object, array_except($file, ['id']), 'fileables', true);
+            $pivot = $newFile->newPivot($object, Arr::except($file, ['id']), 'fileables', true);
             $newFile->setRelation('pivot', $pivot);
             $filesCollection->push($newFile);
         });
@@ -47,7 +48,7 @@ trait HandleFiles
         $object->files()->sync([]);
 
         $this->getFiles($fields)->each(function ($file) use ($object) {
-            $object->files()->attach($file['id'], array_except($file, ['id']));
+            $object->files()->attach($file['id'], Arr::except($file, ['id']));
         });
     }
 

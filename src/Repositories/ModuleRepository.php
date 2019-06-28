@@ -6,6 +6,7 @@ use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Repositories\Behaviors\HandleDates;
 use Illuminate\Database\DatabaseManager as DB;
+use Illuminate\Support\Arr;
 use PDO;
 use Psr\Log\LoggerInterface as Logger;
 
@@ -226,7 +227,7 @@ abstract class ModuleRepository
 
             $fields = $this->prepareFieldsBeforeCreate($fields);
 
-            $object = $this->model->create(array_except($fields, $this->getReservedFields()));
+            $object = $this->model->create(Arr::except($fields, $this->getReservedFields()));
 
             $this->beforeSave($object, $original_fields);
 
@@ -248,7 +249,7 @@ abstract class ModuleRepository
     {
         $fields = $this->prepareFieldsBeforeCreate($fields);
 
-        $object = $this->model->newInstance(array_except($fields, $this->getReservedFields()));
+        $object = $this->model->newInstance(Arr::except($fields, $this->getReservedFields()));
 
         return $this->hydrate($object, $fields);
     }
@@ -283,7 +284,7 @@ abstract class ModuleRepository
 
             $fields = $this->prepareFieldsBeforeSave($object, $fields);
 
-            $object->fill(array_except($fields, $this->getReservedFields()));
+            $object->fill(Arr::except($fields, $this->getReservedFields()));
 
             $object->save();
 

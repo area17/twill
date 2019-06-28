@@ -3,6 +3,7 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Media;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 trait HandleMedias
@@ -23,7 +24,7 @@ trait HandleMedias
 
         $mediasFromFields->each(function ($media) use ($object, $mediasCollection) {
             $newMedia = Media::withTrashed()->find(is_array($media['id']) ? array_first($media['id']) : $media['id']);
-            $pivot = $newMedia->newPivot($object, array_except($media, ['id']), 'mediables', true);
+            $pivot = $newMedia->newPivot($object, Arr::except($media, ['id']), 'mediables', true);
             $newMedia->setRelation('pivot', $pivot);
             $mediasCollection->push($newMedia);
         });
@@ -47,7 +48,7 @@ trait HandleMedias
         $object->medias()->sync([]);
 
         $this->getMedias($fields)->each(function ($media) use ($object) {
-            $object->medias()->attach($media['id'], array_except($media, ['id']));
+            $object->medias()->attach($media['id'], Arr::except($media, ['id']));
         });
     }
 
