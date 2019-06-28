@@ -5,11 +5,25 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Models\Feature;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Event;
+use Illuminate\Database\DatabaseManager as DB;
 
 class FeaturedController extends Controller
 {
+    /**
+     * @var DB
+     */
+    protected $db;
+
+    /**
+     * @param DB $db
+     */
+    public function __construct(DB $db)
+    {
+        parent::__construct();
+
+        $this->db = $db;
+    }
+
     public function index()
     {
         $featuredSectionKey = request()->segment(count(request()->segments()));
@@ -170,7 +184,7 @@ class FeaturedController extends Controller
 
     public function save()
     {
-        DB::transaction(function () {
+        $this->db->transaction(function () {
             collect(request('buckets'))->each(function ($bucketables, $bucketKey) {
                 Feature::where('bucket_key', $bucketKey)->delete();
                 foreach (($bucketables ?? []) as $position => $bucketable) {

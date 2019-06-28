@@ -3,15 +3,30 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Repositories\UserRepository;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\AuthManager;
 
 class ImpersonateController extends Controller
 {
+    /**
+     * @var AuthManager
+     */
+    protected $authManager;
+
+    /**
+     * @param AuthManager $authManager
+     */
+    public function __construct(AuthManager $authManager)
+    {
+        parent::__construct();
+
+        $this->authManager = $authManager;
+    }
+
     public function impersonate($id, UserRepository $users)
     {
-        if (Auth::guard('twill_users')->user()->can('impersonate')) {
+        if ($this->authManager->guard('twill_users')->user()->can('impersonate')) {
             $user = $users->getById($id);
-            Auth::guard('twill_users')->user()->setImpersonating($user->id);
+            $this->authManager->guard('twill_users')->user()->setImpersonating($user->id);
         }
 
         return back();
@@ -19,7 +34,7 @@ class ImpersonateController extends Controller
 
     public function stopImpersonate()
     {
-        Auth::guard('twill_users')->user()->stopImpersonating();
+        $this->authManager->guard('twill_users')->user()->stopImpersonating();
         return back();
     }
 }

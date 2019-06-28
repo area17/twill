@@ -4,15 +4,25 @@ namespace A17\Twill\Http\Middleware;
 
 use Closure;
 use Illuminate\Foundation\Application;
+use Barryvdh\Debugbar\LaravelDebugbar;
 
 class NoDebugBar
 {
-
     protected $app;
 
-    public function __construct(Application $app)
+    /**
+     * @var LaravelDebugbar
+     */
+    protected $debugbar;
+
+    /**
+     * @param Application $app
+     * @param LaravelDebugbar $debugbar
+     */
+    public function __construct(Application $app, LaravelDebugbar $debugbar)
     {
         $this->app = $app;
+        $this->debugbar = $debugbar;
     }
 
     public function handle($request, Closure $next)
@@ -22,7 +32,7 @@ class NoDebugBar
                 if (config('twill.debug.use_inspector', false)) {
                     li()->turnOff();
                 } else {
-                    \Debugbar::disable();
+                    $this->debugbar->disable();
                 }
             }
         }

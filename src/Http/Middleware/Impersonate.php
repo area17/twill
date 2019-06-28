@@ -2,16 +2,28 @@
 
 namespace A17\Twill\Http\Middleware;
 
-use Illuminate\Support\Facades\Auth;
 use Closure;
+use Illuminate\Auth\AuthManager;
 
 class Impersonate
 {
+    /**
+     * @var AuthManager
+     */
+    protected $authManager;
+
+    /**
+     * @param AuthManager $authManager
+     */
+    public function __construct(AuthManager $authManager)
+    {
+        $this->authManager = $authManager;
+    }
 
     public function handle($request, Closure $next)
     {
         if ($request->session()->has('impersonate')) {
-            Auth::guard('twill_users')->onceUsingId($request->session()->get('impersonate'));
+            $this->authManager->guard('twill_users')->onceUsingId($request->session()->get('impersonate'));
         }
 
         return $next($request);

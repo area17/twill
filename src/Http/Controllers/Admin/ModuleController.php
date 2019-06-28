@@ -5,15 +5,24 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Helpers\FlashLevel;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Routing\Router;
+use Illuminate\Session\Store as SessionStore;
 
 abstract class ModuleController extends Controller
 {
-
     protected $app;
 
     protected $request;
+
+    /**
+     * @var Router
+     */
+    protected $router;
+
+    /**
+     * @var SessionStore
+     */
+    protected $sessionStore;
 
     protected $routePrefix;
 
@@ -110,11 +119,23 @@ abstract class ModuleController extends Controller
      */
     protected $fieldsPermissions = [];
 
-    public function __construct(Application $app, Request $request)
-    {
+    /**
+     * @param Application $app
+     * @param Request $request
+     * @param Router $router
+     * @param SessionStore $sessionStore
+     */
+    public function __construct(
+        Application $app,
+        Request $request,
+        Router $router,
+        SessionStore $sessionStore
+    ) {
         parent::__construct();
         $this->app = $app;
         $this->request = $request;
+        $this->router = $router;
+        $this->sessionStore = $sessionStore;
 
         $this->setMiddlewarePermission();
 
@@ -214,7 +235,7 @@ abstract class ModuleController extends Controller
 
         $this->fireEvent($input);
 
-        Session::put($this->moduleName . '_retain', true);
+        $this->sessionStore->put($this->moduleName . '_retain', true);
 
         if ($this->getIndexOption('editInModal')) {
             return $this->respondWithSuccess('Content saved. All good!');
@@ -996,10 +1017,10 @@ abstract class ModuleController extends Controller
             'editor' => $this->moduleHas('revisions') && $this->moduleHas('blocks') && !$this->disableEditor,
             'blockPreviewUrl' => route('admin.blocks.preview'),
             'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
-        ] + (Route::has($previewRouteName) ? [
+        ] + ($this->router->has($previewRouteName) ? [
             'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $item->id),
         ] : [])
-             + (Route::has($restoreRouteName) ? [
+             + ($this->router->has($restoreRouteName) ? [
             'restoreUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'restoreRevision', $item->id),
         ] : []);
 
@@ -1130,7 +1151,7 @@ abstract class ModuleController extends Controller
     protected function setBackLink($back_link = null, $params = [])
     {
         if (!isset($back_link)) {
-            if (($back_link = Session::get($this->getBackLinkSessionKey())) == null) {
+            if (($back_link = $this->sessionStore->get($this->getBackLinkSessionKey())) == null) {
                 $back_link = $this->request->headers->get('referer') ?? moduleRoute(
                     $this->moduleName,
                     $this->routePrefix,
@@ -1140,16 +1161,16 @@ abstract class ModuleController extends Controller
             }
         }
 
-        if (!Session::get($this->moduleName . '_retain')) {
-            Session::put($this->getBackLinkSessionKey(), $back_link);
+        if (!$this->sessionStore->get($this->moduleName . '_retain')) {
+            $this->sessionStore->put($this->getBackLinkSessionKey(), $back_link);
         } else {
-            Session::put($this->moduleName . '_retain', false);
+            $this->sessionStore->put($this->moduleName . '_retain', false);
         }
     }
 
     protected function getBackLink($fallback = null, $params = [])
     {
-        $back_link = Session::get($this->getBackLinkSessionKey(), $fallback);
+        $back_link = $this->sessionStore->get($this->getBackLinkSessionKey(), $fallback);
         return $back_link ?? moduleRoute($this->moduleName, $this->routePrefix, 'index', $params);
     }
 
@@ -1160,7 +1181,7 @@ abstract class ModuleController extends Controller
 
     protected function redirectToForm($id, $params = [])
     {
-        Session::put($this->moduleName . '_retain', true);
+        $this->sessionStore->put($this->moduleName . '_retain', true);
 
         return redirect(moduleRoute(
             $this->moduleName,

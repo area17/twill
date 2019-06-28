@@ -4,16 +4,35 @@ namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\User;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
-use DB;
-use Password;
+use Illuminate\Auth\Passwords\PasswordBrokerManager;
+use Illuminate\Database\DatabaseManager as DB;
+use Psr\Log\LoggerInterface as Logger;
 
 class UserRepository extends ModuleRepository
 {
     use HandleMedias;
 
-    public function __construct(User $model)
-    {
+    /**
+     * @var PasswordBrokerManager
+     */
+    protected $passwordBrokerManager;
+
+    /**
+     * @param DB $db
+     * @param Logger $logger
+     * @param PasswordBrokerManager $passwordBrokerManager
+     * @param User $model
+     */
+    public function __construct(
+        DB $db,
+        Logger $logger,
+        PasswordBrokerManager $passwordBrokerManager,
+        User $model
+    ) {
+        parent::__construct($db, $logger);
+
         $this->model = $model;
+        $this->passwordBrokerManager = $passwordBrokerManager;
     }
 
     public function filter($query, array $scopes = [])
@@ -70,9 +89,9 @@ class UserRepository extends ModuleRepository
 
     private function sendWelcomeEmail($user)
     {
-        if (empty($user->password) && $user->published && !DB::table(config('twill.password_resets_table', 'twill_password_resets'))->where('email', $user->email)->exists()) {
+        if (empty($user->password) && $user->published && !$this->db->table(config('twill.password_resets_table', 'twill_password_resets'))->where('email', $user->email)->exists()) {
             $user->sendWelcomeNotification(
-                Password::broker('twill_users')->getRepository()->create($user)
+                $this->passwordBrokerManager->broker('twill_users')->getRepository()->create($user)
             );
         }
     }

@@ -7,6 +7,8 @@ use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignS3UploadListener;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Router;
+use Illuminate\Session\Store as SessionStore;
 
 class FileLibraryController extends ModuleController implements SignS3UploadListener
 {
@@ -27,9 +29,15 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
 
     protected $endpointType;
 
-    public function __construct(Application $app, Request $request)
+    /**
+     * @param Application $app
+     * @param Request $request
+     * @param Router $router
+     * @param SessionStore $sessionStore
+     */
+    public function __construct(Application $app, Request $request, Router $router, SessionStore $sessionStore)
     {
-        parent::__construct($app, $request);
+        parent::__construct($app, $request, $router, $sessionStore);
         $this->removeMiddleware('can:edit');
         $this->middleware('can:edit', ['only' => ['signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = config('twill.file_library.endpoint_type');

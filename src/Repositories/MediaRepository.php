@@ -4,16 +4,27 @@ namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\Media;
 use A17\Twill\Repositories\Behaviors\HandleTags;
+use Illuminate\Contracts\Filesystem\Factory as FilesystemManager;
 use ImageService;
-use Storage;
+
 
 class MediaRepository extends ModuleRepository
 {
     use HandleTags;
 
-    public function __construct(Media $model)
+    /**
+     * @var FilesystemManager
+     */
+    protected $filesystemManager;
+
+    /**
+     * @param Media $model
+     * @param FilesystemManager $filesystemManager
+     */
+    public function __construct(Media $model, FilesystemManager $filesystemManager)
     {
         $this->model = $model;
+        $this->filesystemManager = $filesystemManager;
     }
 
     public function filter($query, array $scopes = [])
@@ -28,7 +39,7 @@ class MediaRepository extends ModuleRepository
             if ($object->canDeleteSafely()) {
                 $storageId = $object->uuid;
                 if ($object->delete() && config('twill.media_library.cascade_delete')) {
-                    Storage::disk(config('twill.media_library.disk'))->delete($storageId);
+                    $this->filesystemManager->disk(config('twill.media_library.disk'))->delete($storageId);
                 }
                 return true;
             }

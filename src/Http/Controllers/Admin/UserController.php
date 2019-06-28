@@ -3,13 +3,20 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Enums\UserRole;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Router;
+use Illuminate\Session\Store as SessionStore;
 use PragmaRX\Google2FAQRCode\Google2FA;
 
 class UserController extends ModuleController
 {
+    /**
+     * @var AuthManager
+     */
+    protected $authManager;
+
     protected $namespace = 'A17\Twill';
 
     protected $moduleName = 'users';
@@ -54,9 +61,23 @@ class UserController extends ModuleController
         'role' => 'edit-user-role',
     ];
 
-    public function __construct(Application $app, Request $request)
-    {
-        parent::__construct($app, $request);
+    /**
+     * UserController constructor.
+     * @param Application $app
+     * @param Request $request
+     * @param Router $router
+     * @param SessionStore $sessionStore
+     * @param AuthManager $authManager
+     */
+    public function __construct(
+        Application $app,
+        Request $request,
+        Router $router,
+        SessionStore $sessionStore,
+        AuthManager $authManager
+    ) {
+        parent::__construct($app, $request, $router, $sessionStore);
+        $this->authManager = $authManager;
         $this->removeMiddleware('can:edit');
         $this->removeMiddleware('can:delete');
         $this->removeMiddleware('can:publish');
@@ -97,7 +118,7 @@ class UserController extends ModuleController
 
     protected function formData($request)
     {
-        $user = Auth::guard('twill_users')->user();
+        $user = $this->authManager->guard('twill_users')->user();
         $with2faSettings = config('twill.enabled.users-2fa') && $user->id == request('user');
 
         if ($with2faSettings) {

@@ -4,13 +4,29 @@ namespace A17\Twill\Commands;
 
 use A17\Twill\Models\User;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Factory as ValidatorFactory;
 
 class CreateSuperAdmin extends Command
 {
     protected $signature = 'twill:superadmin';
 
     protected $description = "Create the superadmin account";
+
+    /**
+     * @var ValidatorFactory
+     */
+    protected $validatorFactory;
+
+    /**
+     * CreateSuperAdmin constructor.
+     * @param ValidatorFactory $validatorFactory
+     */
+    public function __construct(ValidatorFactory $validatorFactory)
+    {
+        parent::__construct();
+
+        $this->validatorFactory = $validatorFactory;
+    }
 
     /**
      * Create super admin account.
@@ -82,7 +98,7 @@ class CreateSuperAdmin extends Command
      */
     private function validateEmail($email)
     {
-        return Validator::make(['email' => $email], [
+        return $this->validatorFactory->make(['email' => $email], [
             'email' => 'required|email|max:255|unique:' . config('twill.users_table'),
         ])->passes();
     }
@@ -95,7 +111,7 @@ class CreateSuperAdmin extends Command
      */
     private function validatePassword($password)
     {
-        return Validator::make(['password' => $password], [
+        return $this->validatorFactory->make(['password' => $password], [
             'password' => 'required|min:6',
         ])->passes();
     }

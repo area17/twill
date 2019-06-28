@@ -18,7 +18,6 @@ class Controller extends BaseController
         if (config('twill.bind_exception_handler', true)) {
             app()->singleton(ExceptionHandler::class, TwillHandler::class);
         }
-
     }
 
     public function removeMiddleware($middleware)

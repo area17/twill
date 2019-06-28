@@ -5,8 +5,8 @@ namespace A17\Twill\Repositories;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Repositories\Behaviors\HandleDates;
-use DB;
-use Log;
+use Illuminate\Database\DatabaseManager as DB;
+use Psr\Log\LoggerInterface as Logger;
 use PDO;
 
 abstract class ModuleRepository
@@ -18,6 +18,26 @@ abstract class ModuleRepository
     protected $ignoreFieldsBeforeSave = [];
 
     protected $countScope = [];
+
+    /**
+     * @var DB
+     */
+    protected $db;
+
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
+     * @param DB $db
+     * @param Logger $logger
+     */
+    public function __construct(DB $db, Logger $logger)
+    {
+        $this->db = $db;
+        $this->logger = $logger;
+    }
 
     public function get($with = [], $scopes = [], $orders = [], $perPage = 20, $forcePagination = false)
     {
@@ -135,7 +155,7 @@ abstract class ModuleRepository
 
     public function create($fields)
     {
-        return DB::transaction(function () use ($fields) {
+        return $this->db->transaction(function () use ($fields) {
             $original_fields = $fields;
 
             $fields = $this->prepareFieldsBeforeCreate($fields);
@@ -176,7 +196,7 @@ abstract class ModuleRepository
 
     public function update($id, $fields)
     {
-        DB::transaction(function () use ($id, $fields) {
+        $this->db->transaction(function () use ($id, $fields) {
             $object = $this->model->findOrFail($id);
 
             $this->beforeSave($object, $fields);
@@ -193,7 +213,7 @@ abstract class ModuleRepository
 
     public function updateBasic($id, $values, $scopes = [])
     {
-        return DB::transaction(function () use ($id, $values, $scopes) {
+        return $this->db->transaction(function () use ($id, $values, $scopes) {
             // apply scopes if no id provided
             if (is_null($id)) {
                 $query = $this->model->query();
@@ -235,14 +255,14 @@ abstract class ModuleRepository
 
     public function setNewOrder($ids)
     {
-        DB::transaction(function () use ($ids) {
+        $this->db->transaction(function () use ($ids) {
             $this->model->setNewOrder($ids);
         }, 3);
     }
 
     public function delete($id)
     {
-        return DB::transaction(function () use ($id) {
+        return $this->db->transaction(function () use ($id) {
             if (($object = $this->model->find($id)) != null) {
                 $object->delete();
                 $this->afterDelete($object);
@@ -255,7 +275,7 @@ abstract class ModuleRepository
 
     public function bulkDelete($ids)
     {
-        return DB::transaction(function () use ($ids) {
+        return $this->db->transaction(function () use ($ids) {
             try {
                 $query = $this->model->whereIn('id', $ids);
                 $objects = $query->get();
@@ -266,7 +286,7 @@ abstract class ModuleRepository
                     $this->afterDelete($object);
                 });
             } catch (\Exception $e) {
-                Log::error($e);
+                $this->logger->error($e);
                 return false;
             }
 
@@ -276,7 +296,7 @@ abstract class ModuleRepository
 
     public function restore($id)
     {
-        return DB::transaction(function () use ($id) {
+        return $this->db->transaction(function () use ($id) {
             if (($object = $this->model->withTrashed()->find($id)) != null) {
                 $object->restore();
                 $this->afterRestore($object);
@@ -289,7 +309,7 @@ abstract class ModuleRepository
 
     public function bulkRestore($ids)
     {
-        return DB::transaction(function () use ($ids) {
+        return $this->db->transaction(function () use ($ids) {
             try {
                 $query = $this->model->withTrashed()->whereIn('id', $ids);
                 $objects = $query->get();
@@ -300,7 +320,7 @@ abstract class ModuleRepository
                     $this->afterRestore($object);
                 });
             } catch (\Exception $e) {
-                Log::error($e);
+                $this->logger->error($e);
                 return false;
             }
 
@@ -615,7 +635,6 @@ abstract class ModuleRepository
 
     public function getReservedFields()
     {
-
         return [
             'medias',
             'browsers',
@@ -635,7 +654,7 @@ abstract class ModuleRepository
 
     private function getLikeOperator()
     {
-        if (DB::connection()->getPDO()->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql') {
+        if ($this->db->connection()->getPDO()->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql') {
             return 'ILIKE';
         }
 

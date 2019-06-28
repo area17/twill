@@ -3,7 +3,7 @@
 namespace A17\Twill\Commands;
 
 use A17\Twill\Models\Media;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Console\Command;
 use ImageService;
 
@@ -13,10 +13,25 @@ class RefreshLQIP extends Command
 
     protected $description = 'Refresh Low Quality Image Placeholders.';
 
+    /**
+     * @var DatabaseManager
+     */
+    protected $db;
+
+    /**
+     * @param DatabaseManager $db
+     */
+    public function __construct(DatabaseManager $db)
+    {
+        parent::__construct();
+
+        $this->db = $db;
+    }
+
     // TODO: document this and actually think about moving to queuable job after content type updates
     public function handle()
     {
-        DB::table('mediables')->orderBy('id')->chunk(100, function ($attached_medias) {
+        $this->db->table('mediables')->orderBy('id')->chunk(100, function ($attached_medias) {
             foreach ($attached_medias as $attached_media) {
                 $uuid = Media::withTrashed()->find($attached_media->media_id, ['uuid'])->uuid;
 
@@ -31,7 +46,7 @@ class RefreshLQIP extends Command
                     $data = file_get_contents($url);
                     $dataUri = 'data:image/gif;base64,' . base64_encode($data);
 
-                    DB::table('mediables')->where('id', $attached_media->id)->update(['lqip_data' => $dataUri]);
+                    $this->db->table('mediables')->where('id', $attached_media->id)->update(['lqip_data' => $dataUri]);
                 }
             }
         });
