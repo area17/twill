@@ -1,7 +1,7 @@
 @extends('twill::layouts.form', [
     'contentFieldsetLabel' => 'Account',
     'editModalTitle' => 'Edit user name',
-    'reloadOnSuccess' => false
+    'reloadOnSuccess' => true
 ])
 
 @section('contentFields')
@@ -13,51 +13,36 @@
         <p><strong>Last login: </strong> {{ $item->last_login_at->format('d M Y, H:i') }}</p>
       @endif
 
+      @php($checkboxLabel = $item->activated ? 'Reset Password' : 'Register Account Now')
       @formField('checkbox', [
         'name' => 'reset_password',
-        'label' => 'Reset Password'
+        'label' => $checkboxLabel
       ])
-
-      @component('twill::partials.form.utils._connected_fields', [
-        'fieldName' => 'reset_password',
-        'fieldValues' => true,
-        'renderForBlocks' => false
-      ])
-        @formField('input', [
-          'name' => 'new_password',
-          'type' => 'password',
-          'label' => 'Reset password',
-          'required' => true,
-          'maxlength' => 50,
-        ])
-      @endcomponent
     @else
       <br />
       <a type="submit" href="{{ route('admin.users.resend.registrationEmail', ['user' => $item]) }}">Resend registration email</a>
+    @endif
+
+    @component('twill::partials.form.utils._connected_fields', [
+      'fieldName' => 'reset_password',
+      'fieldValues' => true,
+      'renderForBlocks' => false
+    ])
+      @php($passwordLabel = $item->activated ? 'Reset Password' : 'New Password')
+      @formField('input', [
+        'name' => 'new_password',
+        'type' => 'password',
+        'label' => $passwordLabel,
+        'required' => true,
+        'maxlength' => 50,
+      ])
 
       @formField('checkbox', [
-          'name' => 'register_account_now',
-          'label' => 'Register Account Now'
+        'name' => 'require_password_change',
+        'label' => 'Require password change at next login'
       ])
-      @component('twill::partials.form.utils._connected_fields', [
-        'fieldName' => 'register_account_now',
-        'fieldValues' => true,
-        'renderForBlocks' => false
-      ])
-        @formField('input', [
-          'name' => 'new_password',
-          'type' => 'password',
-          'label' => 'New password',
-          'required' => true,
-          'maxlength' => 50,
-        ])
+    @endcomponent
 
-        @formField('checkbox', [
-          'name' => 'require_password_change',
-          'label' => 'Require password change at next login'
-        ])
-      @endcomponent
-    @endif
   @endcan
 
     @formField('input', [

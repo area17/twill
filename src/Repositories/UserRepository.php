@@ -99,19 +99,18 @@ class UserRepository extends ModuleRepository
         $this->sendWelcomeEmail($user);
         $this->updateBrowser($user, $fields, 'groups');
 
-        // If the register account now fields appears in fields
-        if (!empty($fields['register_account_now']) && !empty($fields['new_password'])) {
-            $user->password = bcrypt($fields['new_password']);
-            $user->activated = true;
-            $user->registered_at = Carbon::now();
-            if (isset($fields['require_password_change']) && $fields['require_password_change']) {
-                $user->require_new_password = true;
-            }
-            $user->save();
-        }
-
         if (!empty($fields['reset_password']) && !empty($fields['new_password'])) {
             $user->password = bcrypt($fields['new_password']);
+            
+            if (!$user->activate) {
+                $user->activated = true;
+                $user->registered_at = Carbon::now();
+            }
+
+            if (!empty($fields['require_password_change'])) {
+                $user->require_new_password = true;
+            }
+
             $user->save();
         }
 
