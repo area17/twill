@@ -47,7 +47,7 @@ class ActiveNavigation
                 $view_active_variables['_secondary_active_navigation'] = $activeMenus[3] !== 'index' ? $activeMenus[3] : $activeMenus[2];
             }
 
-            $with = array_merge($view_active_variables, array_only($view->getData(), [
+            $with = array_merge($view_active_variables, Arr::only($view->getData(), [
                 '_global_active_navigation',
                 '_primary_active_navigation',
                 '_secondary_active_navigation',
