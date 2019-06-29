@@ -3,9 +3,23 @@
 namespace A17\Twill\Http\ViewComposers;
 
 use Illuminate\Contracts\View\View;
+use Illuminate\Routing\UrlGenerator;
 
 class FilesUploaderConfig
 {
+    /**
+     * @var UrlGenerator
+     */
+    protected $urlGenerator;
+
+    /**
+     * @param UrlGenerator $urlGenerator
+     */
+    public function __construct(UrlGenerator $urlGenerator)
+    {
+        $this->urlGenerator = $urlGenerator;
+    }
+
     public function compose(View $view)
     {
         $libraryDisk = config('twill.file_library.disk');
@@ -14,9 +28,9 @@ class FilesUploaderConfig
 
         $filesUploaderConfig = [
             'endpointType' => $endpointType,
-            'endpoint' => $endpointType === 'local' ? route('admin.file-library.files.store') : s3Endpoint($libraryDisk),
-            'successEndpoint' => route('admin.file-library.files.store'),
-            'signatureEndpoint' => route('admin.file-library.sign-s3-upload'),
+            'endpoint' => $endpointType === 'local' ? $this->urlGenerator->route('admin.file-library.files.store') : s3Endpoint($libraryDisk),
+            'successEndpoint' => $this->urlGenerator->route('admin.file-library.files.store'),
+            'signatureEndpoint' => $this->urlGenerator->route('admin.file-library.sign-s3-upload'),
             'endpointBucket' => config('filesystems.disks.' . $libraryDisk . '.bucket', 'none'),
             'endpointRegion' => config('filesystems.disks.' . $libraryDisk . '.region', 'none'),
             'endpointRoot' => config('filesystems.disks.' . $libraryDisk . '.root', ''),

@@ -4,6 +4,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Repositories\SettingRepository;
 use Illuminate\Routing\Redirector;
+use Illuminate\Routing\UrlGenerator;
 
 class SettingController extends Controller
 {
@@ -18,15 +19,25 @@ class SettingController extends Controller
     protected $redirector;
 
     /**
+     * @var UrlGenerator
+     */
+    protected $urlGenerator;
+
+    /**
      * @param SettingRepository $settings
      * @param Redirector $redirector
+     * @param UrlGenerator $urlGenerator
      */
-    public function __construct(SettingRepository $settings, Redirector $redirector)
-    {
+    public function __construct(
+        SettingRepository $settings,
+        Redirector $redirector,
+        UrlGenerator $urlGenerator
+    ) {
         parent::__construct();
 
         $this->settings = $settings;
         $this->redirector = $redirector;
+        $this->urlGenerator = $urlGenerator;
     }
 
     public function index($section)
@@ -37,7 +48,7 @@ class SettingController extends Controller
             'customTitle' => ucfirst($section) . ' settings',
             'section' => $section,
             'form_fields' => $this->settings->getFormFields($section),
-            'saveUrl' => route('admin.settings.update', $section),
+            'saveUrl' => $this->urlGenerator->route('admin.settings.update', $section),
             'translate' => true,
         ]) : $this->redirector->back();
     }

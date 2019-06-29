@@ -6,6 +6,7 @@ use A17\Twill\Models\Feature;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
 use Illuminate\Database\DatabaseManager as DB;
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
@@ -17,13 +18,20 @@ class FeaturedController extends Controller
     protected $db;
 
     /**
-     * @param DB $db
+     * @var UrlGenerator
      */
-    public function __construct(DB $db)
+    protected $urlGenerator;
+
+    /**
+     * @param DB $db
+     * @param UrlGenerator $urlGenerator
+     */
+    public function __construct(DB $db, UrlGenerator $urlGenerator)
     {
         parent::__construct();
 
         $this->db = $db;
+        $this->urlGenerator = $urlGenerator;
     }
 
     public function index()
@@ -81,7 +89,7 @@ class FeaturedController extends Controller
             'bucketSourceTitle' => $featuredSection['sourceHeaderTitle'] ?? null,
             'bucketsSectionIntro' => $featuredSection['sectionIntroText'] ?? null,
             'restricted' => $featuredSection['restricted'] ?? true,
-            'saveUrl' => route("admin.$routePrefix.$featuredSectionKey.save"),
+            'saveUrl' => $this->urlGenerator->route("admin.$routePrefix.$featuredSectionKey.save"),
         ]);
     }
 

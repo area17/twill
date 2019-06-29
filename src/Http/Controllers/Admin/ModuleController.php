@@ -7,6 +7,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Routing\Router;
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Session\Store as SessionStore;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -31,6 +32,11 @@ abstract class ModuleController extends Controller
      * @var Redirector
      */
     protected $redirector;
+
+    /**
+     * @var UrlGenerator
+     */
+    protected $urlGenerator;
 
     protected $routePrefix;
 
@@ -133,13 +139,15 @@ abstract class ModuleController extends Controller
      * @param Router $router
      * @param SessionStore $sessionStore
      * @param Redirector $redirector
+     * @param UrlGenerator $urlGenerator
      */
     public function __construct(
         Application $app,
         Request $request,
         Router $router,
         SessionStore $sessionStore,
-        Redirector $redirector
+        Redirector $redirector,
+        UrlGenerator $urlGenerator
     ) {
         parent::__construct();
         $this->app = $app;
@@ -147,6 +155,7 @@ abstract class ModuleController extends Controller
         $this->router = $router;
         $this->sessionStore = $sessionStore;
         $this->redirector = $redirector;
+        $this->urlGenerator = $urlGenerator;
 
         $this->setMiddlewarePermission();
 
@@ -1026,7 +1035,7 @@ abstract class ModuleController extends Controller
             'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
             'saveUrl' => $this->getModuleRoute($item->id, 'update'),
             'editor' => $this->moduleHas('revisions') && $this->moduleHas('blocks') && !$this->disableEditor,
-            'blockPreviewUrl' => route('admin.blocks.preview'),
+            'blockPreviewUrl' => $this->urlGenerator->route('admin.blocks.preview'),
             'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
         ] + ($this->router->has($previewRouteName) ? [
             'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $item->id),
@@ -1097,8 +1106,8 @@ abstract class ModuleController extends Controller
 
     protected function getRoutePrefix()
     {
-        if ($this->request->route() != null) {
-            $routePrefix = ltrim(str_replace(config('twill.admin_app_path'), '', $this->request->route()->getPrefix()), "/");
+        if ($this->request->$this->urlGenerator->route() != null) {
+            $routePrefix = ltrim(str_replace(config('twill.admin_app_path'), '', $this->request->$this->urlGenerator->route()->getPrefix()), "/");
             return str_replace("/", ".", $routePrefix);
         }
 
