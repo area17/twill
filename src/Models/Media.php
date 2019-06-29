@@ -4,6 +4,7 @@ namespace A17\Twill\Models;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use ImageService;
 
 class Media extends Model
@@ -38,7 +39,7 @@ class Media extends Model
     public function altTextFrom($filename)
     {
         $filename = pathinfo($filename, PATHINFO_FILENAME);
-        if (ends_with($filename, '@2x')) {
+        if (Str::endsWith($filename, '@2x')) {
             $filename = substr($filename, 0, -2);
         }
 

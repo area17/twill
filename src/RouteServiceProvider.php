@@ -10,6 +10,7 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -109,7 +110,7 @@ class RouteServiceProvider extends ServiceProvider
             }
 
             $routePrefix = empty($routePrefix) ? '/' : (starts_with($routePrefix, '/') ? $routePrefix : '/' . $routePrefix);
-            $routePrefix = ends_with($routePrefix, '/') ? $routePrefix : $routePrefix . '/';
+            $routePrefix = Str::endsWith($routePrefix, '/') ? $routePrefix : $routePrefix . '/';
 
             Route::name($moduleName . '.show')->get($routePrefix . '{slug}', $controllerName . 'Controller@show');
             Route::name($moduleName . '.preview')->get('/admin-preview' . $routePrefix . '{slug}', $controllerName . 'Controller@show')->middleware(['web', 'twill_auth:twill_users', 'can:list']);
