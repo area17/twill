@@ -9,6 +9,7 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Routing\Redirector;
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Validation\ValidationException;
 use Inspector;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -38,14 +39,24 @@ class Handler extends ExceptionHandler
     protected $redirector;
 
     /**
+     * @var UrlGenerator
+     */
+    protected $urlGenerator;
+
+    /**
      * @param Container $container
      * @param Redirector $redirector
+     * @param UrlGenerator $urlGenerator
      */
-    public function __construct(Container $container, Redirector $redirector)
-    {
+    public function __construct(
+        Container $container,
+        Redirector $redirector,
+        UrlGenerator $urlGenerator
+    ) {
         parent::__construct($container);
 
         $this->redirector = $redirector;
+        $this->urlGenerator = $urlGenerator;
     }
 
     /**
@@ -197,7 +208,7 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        return $this->redirector->guest(route('admin.login'));
+        return $this->redirector->guest($this->urlGenerator->route('admin.login'));
     }
 
     /**
