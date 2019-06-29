@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\MediaLibrary;
 
+use Illuminate\Support\Str;
 use Imgix\ShardStrategy;
 use Imgix\UrlBuilder;
 
@@ -33,7 +34,7 @@ class Imgix implements ImageServiceInterface
     public function getUrl($id, array $params = [])
     {
         $defaultParams = config('twill.imgix.default_params');
-        return $this->urlBuilder->createURL($id, ends_with($id, '.svg') ? [] : array_replace($defaultParams, $params));
+        return $this->urlBuilder->createURL($id, Str::endsWith($id, '.svg') ? [] : array_replace($defaultParams, $params));
     }
 
     /**

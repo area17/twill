@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Front;
 
 use Illuminate\Routing\Redirector;
+use Illuminate\Support\Str;
 
 trait ShowWithPreview
 {
@@ -26,7 +27,7 @@ trait ShowWithPreview
             $this->showViewName = config('twill.frontend.views_path', 'site') . '.' . str_singular($this->moduleName);
         }
 
-        if (ends_with(request()->route()->getName(), $this->routeName . '.preview')) {
+        if (Str::endsWith(request()->route()->getName(), $this->routeName . '.preview')) {
             $item = $this->getItemPreview($slug);
         }
 

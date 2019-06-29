@@ -11,6 +11,7 @@ use Illuminate\Routing\UrlGenerator;
 use Illuminate\Session\Store as SessionStore;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 abstract class ModuleController extends Controller
 {
@@ -407,9 +408,9 @@ abstract class ModuleController extends Controller
             $this->fireEvent();
 
             if (isset($input['cmsSaveType'])) {
-                if (ends_with($input['cmsSaveType'], '-close')) {
+                if (Str::endsWith($input['cmsSaveType'], '-close')) {
                     return $this->respondWithRedirect($this->getBackLink());
-                } elseif (ends_with($input['cmsSaveType'], '-new')) {
+                } elseif (Str::endsWith($input['cmsSaveType'], '-new')) {
                     return $this->respondWithRedirect(moduleRoute(
                         $this->moduleName,
                         $this->routePrefix,
