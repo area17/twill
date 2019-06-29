@@ -5,6 +5,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Helpers\FlashLevel;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Routing\Router;
 use Illuminate\Session\Store as SessionStore;
 use Illuminate\Support\Arr;
@@ -31,6 +32,11 @@ abstract class ModuleController extends Controller
      * @var SessionStore
      */
     protected $sessionStore;
+
+    /**
+     * @var Redirector
+     */
+    protected $redirector;
 
     /**
      * @var string
@@ -177,18 +183,21 @@ abstract class ModuleController extends Controller
      * @param Request $request
      * @param Router $router
      * @param SessionStore $sessionStore
+     * @param Redirector $redirector
      */
     public function __construct(
         Application $app,
         Request $request,
         Router $router,
-        SessionStore $sessionStore
+        SessionStore $sessionStore,
+        Redirector $redirector
     ) {
         parent::__construct();
         $this->app = $app;
         $this->request = $request;
         $this->router = $router;
         $this->sessionStore = $sessionStore;
+        $this->redirector = $redirector;
 
         $this->setMiddlewarePermission();
 
@@ -324,7 +333,7 @@ abstract class ModuleController extends Controller
     public function show($id, $submoduleId = null)
     {
         if ($this->getIndexOption('editInModal')) {
-            return redirect(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
+            return $this->redirector->to(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
         }
 
         return $this->redirectToForm($submoduleId ?? $id);
@@ -343,7 +352,7 @@ abstract class ModuleController extends Controller
         if ($this->getIndexOption('editInModal')) {
             return $this->request->ajax()
             ? response()->json($this->modalFormData($submodule ?? $id))
-            : redirect(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
+            : $this->redirector->to(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
         }
 
         $this->setBackLink();
@@ -1451,7 +1460,7 @@ abstract class ModuleController extends Controller
     {
         $this->sessionStore->put($this->moduleName . '_retain', true);
 
-        return redirect(moduleRoute(
+        return $this->redirector->to(moduleRoute(
             $this->moduleName,
             $this->routePrefix,
             'edit',

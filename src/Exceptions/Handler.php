@@ -5,8 +5,10 @@ namespace A17\Twill\Exceptions;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Routing\Redirector;
 use Illuminate\Validation\ValidationException;
 use Inspector;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -29,6 +31,22 @@ class Handler extends ExceptionHandler
      * @var bool
      */
     protected $isJsonOutputFormat = false;
+
+    /**
+     * @var Redirector
+     */
+    protected $redirector;
+
+    /**
+     * @param Container $container
+     * @param Redirector $redirector
+     */
+    public function __construct(Container $container, Redirector $redirector)
+    {
+        parent::__construct($container);
+
+        $this->redirector = $redirector;
+    }
 
     /**
      * @param Exception $e
@@ -179,7 +197,7 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        return redirect()->guest(route('admin.login'));
+        return $this->redirector->guest(route('admin.login'));
     }
 
     /**

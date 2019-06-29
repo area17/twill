@@ -2,14 +2,17 @@
 
 namespace A17\Twill\Http\Controllers\Front;
 
+use Illuminate\Routing\Redirector;
+
 trait ShowWithPreview
 {
     /**
-     * @param string $slug
+     * @param string slug $slug
+     * @param Redirector $redirector
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
      * @throws \Exception
      */
-    public function show($slug)
+    public function show(string $slug, Redirector $redirector)
     {
         if (!isset($this->moduleName) || !isset($this->repository)) {
             throw new \Exception("You should at least provide a module name and inject a repository.");
@@ -30,7 +33,7 @@ trait ShowWithPreview
         abort_unless($item = ($item ?? $this->getItem($slug)), 404, ucfirst($this->moduleName) . ' not found');
 
         if ($item->redirect) {
-            return redirect()->to(route($this->routeName . '.show', $item->getSlug()));
+            return $redirector->to(route($this->routeName . '.show', $item->getSlug()));
         }
 
         return view($this->showViewName, [

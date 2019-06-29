@@ -3,11 +3,12 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\User;
+use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Foundation\Auth\ResetsPasswords;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 
 class ResetPasswordController extends Controller
@@ -24,6 +25,27 @@ class ResetPasswordController extends Controller
      */
 
     use ResetsPasswords;
+
+    /**
+     * @var Redirector
+     */
+    protected $redirector;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @param Redirector $redirector
+     * @return void
+     */
+    public function __construct(Redirector $redirector)
+    {
+        parent::__construct();
+
+        $this->redirector = $redirector;
+
+        $this->redirectTo = config('twill.auth_login_redirect_path', '/');
+        $this->middleware('twill_guest');
+    }
 
     /**
      * @return \Illuminate\Contracts\Auth\Guard
@@ -59,7 +81,7 @@ class ResetPasswordController extends Controller
             ]);
         }
 
-        return redirect(route('admin.password.reset.link'))->withErrors([
+        return $this->redirector->to(route('admin.password.reset.link'))->withErrors([
             'token' => 'Your password reset token has expired or could not be found, please retry.',
         ]);
     }
@@ -82,7 +104,7 @@ class ResetPasswordController extends Controller
             ]);
         }
 
-        return redirect(route('admin.password.reset.link'))->withErrors([
+        return $this->redirector->to(route('admin.password.reset.link'))->withErrors([
             'token' => 'Your password reset token has expired or could not be found, please retry.',
         ]);
     }
@@ -111,16 +133,5 @@ class ResetPasswordController extends Controller
         }
 
         return null;
-    }
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->redirectTo = config('twill.auth_login_redirect_path', '/');
-        $this->middleware('twill_guest');
     }
 }
