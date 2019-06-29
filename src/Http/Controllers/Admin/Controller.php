@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Arr;
 
 class Controller extends BaseController
 {
@@ -28,7 +29,7 @@ class Controller extends BaseController
      */
     public function removeMiddleware($middleware)
     {
-        if (($key = array_search($middleware, array_pluck($this->middleware, 'middleware'))) !== false) {
+        if (($key = array_search($middleware, Arr::pluck($this->middleware, 'middleware'))) !== false) {
             unset($this->middleware[$key]);
         }
     }
