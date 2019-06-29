@@ -7,6 +7,7 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use PragmaRX\Google2FA\Google2FA;
 
 class LoginController extends Controller
@@ -35,18 +36,25 @@ class LoginController extends Controller
     protected $encrypter;
 
     /**
+     * @var Redirector
+     */
+    protected $redirector;
+
+    /**
      * Create a new controller instance.
      *
      * @param AuthManager $authManager
      * @param Encrypter $encrypter
+     * @param Redirector $redirector
      * @return void
      */
-    public function __construct(AuthManager $authManager, Encrypter $encrypter)
+    public function __construct(AuthManager $authManager, Encrypter $encrypter, Redirector $redirector)
     {
         parent::__construct();
 
         $this->authManager = $authManager;
         $this->encrypter = $encrypter;
+        $this->redirector = $redirector;
 
         $this->middleware('twill_guest', ['except' => 'logout']);
         $this->redirectTo = config('twill.auth_login_redirect_path', '/');
@@ -75,7 +83,7 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect(route('admin.login'));
+        return $this->redirector->to(route('admin.login'));
     }
 
     protected function authenticated(Request $request, $user)
@@ -85,10 +93,10 @@ class LoginController extends Controller
 
             $request->session()->put('2fa:user:id', $user->id);
 
-            return redirect(route('admin.login-2fa.form'));
+            return $this->redirector->to(route('admin.login-2fa.form'));
         }
 
-        return redirect()->intended($this->redirectTo);
+        return $this->redirector->intended($this->redirectTo);
     }
 
     public function login2Fa(Request $request)
@@ -107,10 +115,10 @@ class LoginController extends Controller
 
             $request->session()->pull('2fa:user:id');
 
-            return redirect()->intended($this->redirectTo);
+            return $this->redirector->intended($this->redirectTo);
         }
 
-        return redirect(route('admin.login-2fa.form'))->withErrors([
+        return $this->redirector->to(route('admin.login-2fa.form'))->withErrors([
             'error' => 'Your one time password is invalid.',
         ]);
 

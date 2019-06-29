@@ -3,13 +3,30 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Repositories\SettingRepository;
+use Illuminate\Routing\Redirector;
 
 class SettingController extends Controller
 {
-    public function __construct(SettingRepository $settings)
+    /**
+     * @var SettingRepository
+     */
+    protected $settings;
+
+    /**
+     * @var Redirector
+     */
+    protected $redirector;
+
+    /**
+     * @param SettingRepository $settings
+     * @param Redirector $redirector
+     */
+    public function __construct(SettingRepository $settings, Redirector $redirector)
     {
         parent::__construct();
+
         $this->settings = $settings;
+        $this->redirector = $redirector;
     }
 
     public function index($section)
@@ -22,19 +39,19 @@ class SettingController extends Controller
             'form_fields' => $this->settings->getFormFields($section),
             'saveUrl' => route('admin.settings.update', $section),
             'translate' => true,
-        ]) : redirect()->back();
+        ]) : $this->redirector->back();
     }
 
     public function update($section)
     {
         if (array_key_exists('cancel', request()->all())) {
-            return redirect()->back();
+            return $this->redirector->back();
         }
 
         $this->settings->saveAll(request()->except('_token'), $section);
 
         fireCmsEvent('cms-settings.saved');
 
-        return redirect()->back();
+        return $this->redirector->back();
     }
 }
