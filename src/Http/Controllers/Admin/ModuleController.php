@@ -842,7 +842,7 @@ abstract class ModuleController extends Controller
 
         if (isset($column['relationship'])) {
             $field = $column['relationship'] . ucfirst($column['field']);
-            $value = array_get($item, "{$column['relationship']}.{$column['field']}");
+            $value = Arr::get($item, "{$column['relationship']}.{$column['field']}");
         } elseif (isset($column['present']) && $column['present']) {
             $value = $item->presentAdmin()->{$column['field']};
         }

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 
 // adding this to have a better debug display in Chrome dev tools when
@@ -83,7 +84,7 @@ if (!function_exists('getFormFieldsValue')) {
      */
     function getFormFieldsValue($formFields, $name)
     {
-        return array_get($formFields, str_replace(']', '', str_replace('[', '.', $name)), '');
+        return Arr::get($formFields, str_replace(']', '', str_replace('[', '.', $name)), '');
     }
 }
 
