@@ -7,6 +7,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Routing\Redirector;
 use Illuminate\Routing\UrlGenerator;
@@ -44,19 +45,27 @@ class Handler extends ExceptionHandler
     protected $urlGenerator;
 
     /**
+     * @var Application
+     */
+    protected $app;
+
+    /**
      * @param Container $container
      * @param Redirector $redirector
      * @param UrlGenerator $urlGenerator
+     * @param Application $app
      */
     public function __construct(
         Container $container,
         Redirector $redirector,
-        UrlGenerator $urlGenerator
+        UrlGenerator $urlGenerator,
+        Application $app
     ) {
         parent::__construct($container);
 
         $this->redirector = $redirector;
         $this->urlGenerator = $urlGenerator;
+        $this->app = $app;
     }
 
     /**
@@ -158,7 +167,7 @@ class Handler extends ExceptionHandler
         } else {
             $handler = new \Whoops\Handler\PrettyPageHandler();
 
-            if (app()->environment('local', 'development')) {
+            if ($this->app->environment('local', 'development')) {
                 $handler->setEditor(function ($file, $line) {
                     $translations = array('^' .
                         config('twill.debug.whoops_path_guest') => config('twill.debug.whoops_path_host'),

@@ -5,6 +5,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Models\Feature;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
+use Illuminate\Console\Application;
 use Illuminate\Database\DatabaseManager as DB;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Arr;
@@ -23,15 +24,22 @@ class FeaturedController extends Controller
     protected $urlGenerator;
 
     /**
+     * @var Application
+     */
+    protected $app;
+
+    /**
      * @param DB $db
      * @param UrlGenerator $urlGenerator
+     * @param Application $app
      */
-    public function __construct(DB $db, UrlGenerator $urlGenerator)
+    public function __construct(DB $db, UrlGenerator $urlGenerator, Application $app)
     {
         parent::__construct();
 
         $this->db = $db;
         $this->urlGenerator = $urlGenerator;
+        $this->app = $app;
     }
 
     /**
@@ -234,6 +242,6 @@ class FeaturedController extends Controller
      */
     private function getRepository($bucketable)
     {
-        return app(config('twill.namespace') . "\Repositories\\" . ucfirst(str_singular($bucketable)) . "Repository");
+        return $this->app->get(config('twill.namespace') . "\Repositories\\" . ucfirst(str_singular($bucketable)) . "Repository");
     }
 }

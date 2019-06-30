@@ -5,6 +5,7 @@ namespace A17\Twill\Http\Controllers\Front;
 use A17\Twill\Exceptions\Handler as TwillHandler;
 use A17\Twill\Http\Controllers\Front\Helpers\Seo;
 use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Foundation\Application;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\View\Factory as ViewFactory;
 
@@ -16,12 +17,13 @@ class Controller extends BaseController
     public $seo;
 
     /**
+     * @param Application $app
      * @param ViewFactory $view
      */
-    public function __construct(ViewFactory $view)
+    public function __construct(Application $app, ViewFactory $view)
     {
         if (config('twill.bind_exception_handler', true)) {
-            app()->singleton(ExceptionHandler::class, TwillHandler::class);
+            $app->singleton(ExceptionHandler::class, TwillHandler::class);
         }
 
         $this->seo = new Seo;

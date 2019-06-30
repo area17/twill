@@ -3,24 +3,27 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Repositories\BlockRepository;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Collection;
 
 class BlocksController extends Controller
 {
+
     /**
      * Render an HTML preview of a single block.
      * This is used by the full screen content editor.
      *
      * @param BlockRepository $blockRepository
+     * @param Application $app
      * @return string
      */
-    public function preview(BlockRepository $blockRepository)
+    public function preview(BlockRepository $blockRepository, Application $app)
     {
         $blocksCollection = Collection::make();
         $childBlocksList = Collection::make();
 
         if (request()->has('activeLanguage')) {
-            app()->setLocale(request('activeLanguage'));
+            $app->setLocale(request('activeLanguage'));
         }
 
         $block = $blockRepository->buildFromCmsArray(request()->except('activeLanguage'));

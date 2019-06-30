@@ -133,7 +133,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
      */
     public function store($parentModuleId = null)
     {
-        $request = app(MediaRequest::class);
+        $request = $this->app->get(MediaRequest::class);
 
         if ($this->endpointType === 'local') {
             $media = $this->storeFile($request);
