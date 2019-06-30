@@ -29,7 +29,7 @@ class ValidationServiceProvider extends ServiceProvider
 
         Validator::extend('validBlocks', function ($attribute, $value, $parameters, $validator) {
             foreach ($value as $block) {
-                $cmsBlock = app(BlockRepository::class)->buildFromCmsArray($block, false);
+                $cmsBlock = $this->app->get(BlockRepository::class)->buildFromCmsArray($block, false);
 
                 $rules = config('twill.block_editor.blocks.' . $cmsBlock['type'] . '.rules') ?? [];
 

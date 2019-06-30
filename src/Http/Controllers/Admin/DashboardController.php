@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Behaviors\HasMedias;
+use Illuminate\Console\Application;
 use Psr\Log\LoggerInterface as Logger;
 use Analytics;
 use Illuminate\Support\Collection;
@@ -18,17 +19,19 @@ class DashboardController extends Controller
     protected $logger;
 
     /**
-     * @var Analytics
+     * @var Application
      */
-    protected $analytics;
+    protected $app;
 
     /**
      * @param Logger $logger
+     * @param Application $app
      */
-    public function __construct(Logger $logger)
+    public function __construct(Logger $logger, Application $app)
     {
         parent::__construct();
         $this->logger = $logger;
+        $this->app = $app;
     }
 
     public function index()
@@ -337,6 +340,6 @@ class DashboardController extends Controller
 
     private function getRepository($module)
     {
-        return app(config('twill.namespace') . "\Repositories\\" . ucfirst(str_singular($module)) . "Repository");
+        return $this->app->get(config('twill.namespace') . "\Repositories\\" . ucfirst(str_singular($module)) . "Repository");
     }
 }

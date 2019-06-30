@@ -105,7 +105,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
 
     public function store($parentModuleId = null)
     {
-        $request = app(FileRequest::class);
+        $request = $this->app->get(FileRequest::class);
 
         if ($this->endpointType === 'local') {
             $file = $this->storeFile($request);

@@ -150,7 +150,7 @@ abstract class ModuleController extends Controller
         Redirector $redirector,
         UrlGenerator $urlGenerator
     ) {
-        parent::__construct();
+        parent::__construct($app);
         $this->app = $app;
         $this->request = $request;
         $this->router = $router;

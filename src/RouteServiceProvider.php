@@ -18,7 +18,7 @@ class RouteServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        $this->registerRouteMiddlewares();
+        $this->registerRouteMiddlewares($this->app->get('router'));
         $this->registerMacros();
         parent::boot();
     }
@@ -63,7 +63,7 @@ class RouteServiceProvider extends ServiceProvider
                     require __DIR__ . '/../routes/auth.php';
                 });
 
-                $router->group(['middleware' => array_merge(['noDebugBar'], (app()->environment('production') ? ['twill_auth:twill_users'] : []))], function ($router) {
+                $router->group(['middleware' => array_merge(['noDebugBar'], ($this->app->environment('production') ? ['twill_auth:twill_users'] : []))], function ($router) {
                     require __DIR__ . '/../routes/templates.php';
                 });
             }
@@ -76,7 +76,7 @@ class RouteServiceProvider extends ServiceProvider
                 'middleware' => [config('twill.admin_middleware_group', 'web')],
             ],
                 function ($router) {
-                    $router->group(['middleware' => array_merge(['noDebugBar'], (app()->environment('production') ? ['twill_auth:twill_users'] : []))], function ($router) {
+                    $router->group(['middleware' => array_merge(['noDebugBar'], ($this->app->environment('production') ? ['twill_auth:twill_users'] : []))], function ($router) {
                         require __DIR__ . '/../routes/templates.php';
                     });
                 }
@@ -84,13 +84,17 @@ class RouteServiceProvider extends ServiceProvider
         }
     }
 
-    private function registerRouteMiddlewares()
+    /**
+     * @param Router $router
+     * @return void
+     */
+    private function registerRouteMiddlewares(Router $router)
     {
         /*
          * See Laravel 5.4 Changelog https://laravel.com/docs/5.4/upgrade
          * The middleware method of the Illuminate\Routing\Router class has been renamed to aliasMiddleware().
          */
-        $middlewareRegisterMethod = method_exists(app('router'), 'aliasMiddleware') ? 'aliasMiddleware' : 'middleware';
+        $middlewareRegisterMethod = method_exists($router, 'aliasMiddleware') ? 'aliasMiddleware' : 'middleware';
         Route::$middlewareRegisterMethod('noDebugBar', NoDebugBar::class);
         Route::$middlewareRegisterMethod('impersonate', Impersonate::class);
         Route::$middlewareRegisterMethod('twill_auth', \Illuminate\Auth\Middleware\Authenticate::class);
