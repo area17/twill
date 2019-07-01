@@ -9,6 +9,7 @@ use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
+use Illuminate\Routing\ResponseFactory;
 use Illuminate\Routing\Router;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Session\Store as SessionStore;
@@ -60,6 +61,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
      * @param UrlGenerator $urlGenerator
      * @param ViewFactory $viewFactory
      * @param AuthFactory $authFactory
+     * @param ResponseFactory $responseFactory
      */
     public function __construct(
         Application $app,
@@ -69,9 +71,10 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         Redirector $redirector,
         UrlGenerator $urlGenerator,
         ViewFactory $viewFactory,
-        AuthFactory $authFactory
+        AuthFactory $authFactory,
+        ResponseFactory $responseFactory
     ) {
-        parent::__construct($app, $request, $router, $sessionStore, $redirector, $urlGenerator, $viewFactory, $authFactory);
+        parent::__construct($app, $request, $router, $sessionStore, $redirector, $urlGenerator, $viewFactory, $authFactory, $responseFactory);
         $this->removeMiddleware('can:edit');
         $this->middleware('can:edit', ['only' => ['signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = config('twill.file_library.endpoint_type');
@@ -156,7 +159,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
             $file = $this->storeReference($request);
         }
 
-        return response()->json(['media' => $this->buildFile($file), 'success' => true], 200);
+        return $this->responseFactory->json(['media' => $this->buildFile($file), 'success' => true], 200);
     }
 
     /**
@@ -212,7 +215,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
             $this->request->only('tags')
         );
 
-        return response()->json([], 200);
+        return $this->responseFactory->json([], 200);
     }
 
     /**
@@ -232,7 +235,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         $scopes = $this->filterScope(['id' => $ids]);
         $items = $this->getIndexItems($scopes);
 
-        return response()->json([
+        return $this->responseFactory->json([
             'items' => $items->map(function ($item) {
                 return $this->buildFile($item);
             })->toArray(),
@@ -256,7 +259,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
      */
     public function policyIsSigned($signedPolicy)
     {
-        return response()->json($signedPolicy, 200);
+        return $this->responseFactory->json($signedPolicy, 200);
     }
 
     /**
@@ -264,6 +267,6 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
      */
     public function policyIsNotValid()
     {
-        return response()->json(["invalid" => true], 500);
+        return $this->responseFactory->json(["invalid" => true], 500);
     }
 }
