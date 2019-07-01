@@ -711,7 +711,7 @@ abstract class ModuleController extends Controller
             $value = '<a href="';
             $value .= moduleRoute("$this->moduleName.$field", $this->routePrefix, 'index', [$item->id]);
             $value .= '">' . $nestedCount . " " . (strtolower($nestedCount > 1
-                ? str_plural($column['title'])
+                ? Str::plural($column['title'])
                 : Str::singular($column['title']))) . '</a>';
         } else {
             $field = $column['field'];

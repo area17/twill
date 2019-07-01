@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Str;
+
 if (!function_exists('createDefaultFields')) {
     function createDefaultTableFields($table, $softDeletes = true, $published = true, $publishDates = false, $visibility = false)
     {
@@ -30,7 +32,7 @@ if (!function_exists('createDefaultTranslationsTableFields')) {
     function createDefaultTranslationsTableFields($table, $tableNameSingular, $tableNamePlural = null)
     {
         if (!$tableNamePlural) {
-            $tableNamePlural = str_plural($tableNameSingular);
+            $tableNamePlural = Str::plural($tableNameSingular);
         }
 
         $table->increments('id');
@@ -48,7 +50,7 @@ if (!function_exists('createDefaultSlugsTableFields')) {
     function createDefaultSlugsTableFields($table, $tableNameSingular, $tableNamePlural = null)
     {
         if (!$tableNamePlural) {
-            $tableNamePlural = str_plural($tableNameSingular);
+            $tableNamePlural = Str::plural($tableNameSingular);
         }
 
         $table->increments('id');
@@ -66,10 +68,10 @@ if (!function_exists('createDefaultRelationshipTableFields')) {
     function createDefaultRelationshipTableFields($table, $table1NameSingular, $table2NameSingular, $table1NamePlural = null, $table2NamePlural = null)
     {
         if (!$table1NamePlural) {
-            $table1NamePlural = str_plural($table1NameSingular);
+            $table1NamePlural = Str::plural($table1NameSingular);
         }
         if (!$table2NamePlural) {
-            $table2NamePlural = str_plural($table2NameSingular);
+            $table2NamePlural = Str::plural($table2NameSingular);
         }
 
         $table->integer("{$table1NameSingular}_id")->unsigned();
@@ -84,7 +86,7 @@ if (!function_exists('createDefaultRevisionsTableFields')) {
     function createDefaultRevisionsTableFields($table, $tableNameSingular, $tableNamePlural = null)
     {
         if (!$tableNamePlural) {
-            $tableNamePlural = str_plural($tableNameSingular);
+            $tableNamePlural = Str::plural($tableNameSingular);
         }
 
         $table->increments('id');
