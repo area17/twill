@@ -8,6 +8,7 @@ use A17\Twill\Repositories\Behaviors\HandleDates;
 use Illuminate\Database\DatabaseManager as DB;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Psr\Log\LoggerInterface as Logger;
 use PDO;
 
@@ -655,7 +656,7 @@ abstract class ModuleRepository
     protected function getModelRepository($relation, $model = null)
     {
         if (!$model) {
-            $model = ucfirst(str_singular($relation));
+            $model = ucfirst(Str::singular($relation));
         }
 
         return $this->app->get(config('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");

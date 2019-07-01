@@ -63,7 +63,7 @@ class BlocksController extends Controller
 
             $view = $this->getBlockView($block->type);
 
-            return $viewFactory->exists($view) ? (view($view, [
+            return $viewFactory->exists($view) ? ($viewFactory->make($view, [
                 'block' => $block,
             ])->render() . ($renderedChildViews ?? '')) : $viewFactory->make('twill::errors.block', [
                 'view' => $view,

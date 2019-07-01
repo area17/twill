@@ -126,7 +126,7 @@ class RouteServiceProvider extends ServiceProvider
             $prefixSlug = str_replace('.', "/", $slug);
             $_slug = Arr::last($slugs);
             $className = implode("", array_map(function ($s) {
-                return ucfirst(str_singular($s));
+                return ucfirst(Str::singular($s));
             }, $slugs));
 
             $customRoutes = $defaults = ['reorder', 'publish', 'bulkPublish', 'browser', 'feature', 'bulkFeature', 'tags', 'preview', 'restore', 'bulkRestore', 'bulkDelete', 'restoreRevision'];
