@@ -15,6 +15,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\View\Factory as ViewFactory;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 abstract class ModuleController extends Controller
 {
@@ -505,7 +506,7 @@ abstract class ModuleController extends Controller
             $item->id = $id;
             $item->cmsRestoring = true;
         } else {
-            abort(404);
+            throw new NotFoundHttpException();
         }
 
         $this->setBackLink();
