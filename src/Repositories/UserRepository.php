@@ -5,7 +5,9 @@ namespace A17\Twill\Repositories;
 use A17\Twill\Models\User;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
+use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Database\DatabaseManager as DB;
+use Illuminate\Foundation\Application;
 use Psr\Log\LoggerInterface as Logger;
 
 class UserRepository extends ModuleRepository
@@ -18,21 +20,32 @@ class UserRepository extends ModuleRepository
     protected $passwordBrokerManager;
 
     /**
+     * @var AuthFactory
+     */
+    protected $authFactory;
+
+    /**
+     * UserRepository constructor.
      * @param DB $db
      * @param Logger $logger
+     * @param Application $app
      * @param PasswordBrokerManager $passwordBrokerManager
+     * @param AuthFactory $authFactory
      * @param User $model
      */
     public function __construct(
         DB $db,
         Logger $logger,
+        Application $app,
         PasswordBrokerManager $passwordBrokerManager,
+        AuthFactory $authFactory,
         User $model
     ) {
-        parent::__construct($db, $logger);
+        parent::__construct($db, $logger, $app);
 
         $this->model = $model;
         $this->passwordBrokerManager = $passwordBrokerManager;
+        $this->authFactory = $authFactory;
     }
 
     public function filter($query, array $scopes = [])
@@ -68,7 +81,7 @@ class UserRepository extends ModuleRepository
 
     public function prepareFieldsBeforeSave($user, $fields)
     {
-        $editor = auth('twill_users')->user();
+        $editor = $this->authFactory->guard('twill_users')->user();
         $with2faSettings = config('twill.enabled.users-2fa', false) && $editor->id === $user->id;
 
         if ($with2faSettings

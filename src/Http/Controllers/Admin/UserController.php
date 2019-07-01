@@ -4,11 +4,15 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Enums\UserRole;
 use Illuminate\Auth\AuthManager;
+use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Routing\Router;
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Session\Store as SessionStore;
 use Illuminate\Support\Collection;
+use Illuminate\View\Factory as ViewFactory;
 use PragmaRX\Google2FAQRCode\Google2FA;
 
 class UserController extends ModuleController
@@ -63,21 +67,28 @@ class UserController extends ModuleController
     ];
 
     /**
-     * UserController constructor.
      * @param Application $app
      * @param Request $request
      * @param Router $router
      * @param SessionStore $sessionStore
      * @param AuthManager $authManager
+     * @param Redirector $redirector
+     * @param UrlGenerator $urlGenerator
+     * @param ViewFactory $viewFactory
+     * @param AuthFactory $authFactory
      */
     public function __construct(
         Application $app,
         Request $request,
         Router $router,
         SessionStore $sessionStore,
-        AuthManager $authManager
+        AuthManager $authManager,
+        Redirector $redirector,
+        UrlGenerator $urlGenerator,
+        ViewFactory $viewFactory,
+        AuthFactory $authFactory
     ) {
-        parent::__construct($app, $request, $router, $sessionStore);
+        parent::__construct($app, $request, $router, $sessionStore, $redirector, $urlGenerator, $viewFactory, $authFactory);
         $this->authManager = $authManager;
         $this->removeMiddleware('can:edit');
         $this->removeMiddleware('can:delete');
@@ -104,7 +115,7 @@ class UserController extends ModuleController
     {
         return [
             'defaultFilterSlug' => 'published',
-            'create' => $this->getIndexOption('create') && auth('twill_users')->user()->can('edit-user-role'),
+            'create' => $this->getIndexOption('create') && $this->authFactory->guard('twill_users')->user()->can('edit-user-role'),
             'roleList' => Collection::make(UserRole::toArray()),
             'single_primary_nav' => [
                 'users' => [
@@ -187,7 +198,7 @@ class UserController extends ModuleController
     protected function getIndexOption($option)
     {
         if (in_array($option, ['publish', 'delete', 'restore'])) {
-            return auth('twill_users')->user()->can('edit-user-role');
+            return $this->authFactory->guard('twill_users')->user()->can('edit-user-role');
         }
 
         return parent::getIndexOption($option);
@@ -195,7 +206,8 @@ class UserController extends ModuleController
 
     protected function indexItemData($item)
     {
-        $canEdit = auth('twill_users')->user()->can('edit-user-role') || auth('twill_users')->user()->id === $item->id;
+        $user = $this->authFactory->guard('twill_users')->user();
+        $canEdit = $user->can('edit-user-role') || $user->id === $item->id;
         return [
             'edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null,
         ];
