@@ -4,21 +4,26 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Repositories\BlockRepository;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\View\Factory as ViewFactory;
 
 class BlocksController extends Controller
 {
-    public function preview(BlockRepository $blockRepository, Application $app, ViewFactory $viewFactory)
-    {
+    public function preview(
+        BlockRepository $blockRepository,
+        Application $app,
+        ViewFactory $viewFactory,
+        Request $request
+    ) {
         $blocksCollection = Collection::make();
         $childBlocksList = Collection::make();
 
-        if (request()->has('activeLanguage')) {
-            $app->setLocale(request('activeLanguage'));
+        if ($request->has('activeLanguage')) {
+            $app->setLocale($request->get('activeLanguage'));
         }
 
-        $block = $blockRepository->buildFromCmsArray(request()->except('activeLanguage'));
+        $block = $blockRepository->buildFromCmsArray($request->except('activeLanguage'));
 
         foreach ($block['blocks'] as $childKey => $childBlocks) {
             foreach ($childBlocks as $index => $childBlock) {

@@ -4,6 +4,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Repositories\SettingRepository;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\View\Factory as ViewFactory;
@@ -67,13 +68,18 @@ class SettingController extends Controller
             : $this->redirector->back();
     }
 
-    public function update($section)
+    /**
+     * @param mixed $section
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update($section, Request $request)
     {
-        if (array_key_exists('cancel', request()->all())) {
+        if (array_key_exists('cancel', $request->all())) {
             return $this->redirector->back();
         }
 
-        $this->settings->saveAll(request()->except('_token'), $section);
+        $this->settings->saveAll($request->except('_token'), $section);
 
         fireCmsEvent('cms-settings.saved');
 

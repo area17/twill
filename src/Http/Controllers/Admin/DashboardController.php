@@ -5,6 +5,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Models\Behaviors\HasMedias;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\View\Factory as ViewFactory;
 use Psr\Log\LoggerInterface as Logger;
@@ -88,16 +89,20 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function search()
+    /**
+     * @param Request $request
+     * @return Collection
+     */
+    public function search(Request $request)
     {
         $modules = Collection::make(config('twill.dashboard.modules'));
 
         return $modules->filter(function ($module) {
             return ($module['search'] ?? false);
-        })->map(function ($module) {
+        })->map(function ($module) use ($request) {
             $repository = $this->getRepository($module['name']);
 
-            $found = $repository->cmsSearch(request('search'), $module['search_fields'] ?? ['title'])->take(10);
+            $found = $repository->cmsSearch($request->get('search'), $module['search_fields'] ?? ['title'])->take(10);
 
             return $found->map(function ($item) use ($module) {
                 try {

@@ -61,8 +61,8 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
 
     public function index($parentModuleId = null)
     {
-        if (request()->has('except')) {
-            $prependScope['exceptIds'] = request('except');
+        if ($this->request->has('except')) {
+            $prependScope['exceptIds'] = $this->request->get('except');
         }
 
         return $this->getIndexData($prependScope ?? []);
@@ -98,12 +98,12 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
 
     protected function getRequestFilters()
     {
-        if (request()->has('search')) {
-            $requestFilters['search'] = request('search');
+        if ($this->request->has('search')) {
+            $requestFilters['search'] = $this->request->get('search');
         }
 
-        if (request()->has('tag')) {
-            $requestFilters['tag'] = request('tag');
+        if ($this->request->has('tag')) {
+            $requestFilters['tag'] = $this->request->get('tag');
         }
 
         return $requestFilters ?? [];
