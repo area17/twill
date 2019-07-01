@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Helpers\FlashLevel;
+use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
@@ -50,6 +51,11 @@ abstract class ModuleController extends Controller
      * @var ViewFactory
      */
     protected $viewFactory;
+
+    /**
+     * @var AuthFactory
+     */
+    protected $authFactory;
 
     /**
      * @var string
@@ -199,6 +205,7 @@ abstract class ModuleController extends Controller
      * @param Redirector $redirector
      * @param UrlGenerator $urlGenerator
      * @param ViewFactory $viewFactory
+     * @param AuthFactory $authFactory
      */
     public function __construct(
         Application $app,
@@ -207,7 +214,8 @@ abstract class ModuleController extends Controller
         SessionStore $sessionStore,
         Redirector $redirector,
         UrlGenerator $urlGenerator,
-        ViewFactory $viewFactory
+        ViewFactory $viewFactory,
+        AuthFactory $authFactory
     ) {
         parent::__construct($app);
         $this->app = $app;
@@ -217,6 +225,7 @@ abstract class ModuleController extends Controller
         $this->redirector = $redirector;
         $this->urlGenerator = $urlGenerator;
         $this->viewFactory = $viewFactory;
+        $this->authFactory = $authFactory;
 
         $this->setMiddlewarePermission();
 
@@ -1066,7 +1075,7 @@ abstract class ModuleController extends Controller
                 'editInModal' => 'edit',
             ];
 
-            $authorized = array_key_exists($option, $authorizableOptions) ? auth('twill_users')->user()->can($authorizableOptions[$option]) : true;
+            $authorized = array_key_exists($option, $authorizableOptions) ? $this->authFactory->guard('twill_users')->user()->can($authorizableOptions[$option]) : true;
             return ($this->indexOptions[$option] ?? $this->defaultIndexOptions[$option] ?? false) && $authorized;
         });
     }
@@ -1310,7 +1319,7 @@ abstract class ModuleController extends Controller
     protected function validateFormRequest()
     {
         $unauthorizedFields = Collection::make($this->fieldsPermissions)->filter(function ($permission, $field) {
-            return auth('twill_users')->user()->cannot($permission);
+            return $this->authFactory->guard('twill_users')->user()->cannot($permission);
         })->keys();
 
         $unauthorizedFields->each(function ($field) {

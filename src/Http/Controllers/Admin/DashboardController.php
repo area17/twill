@@ -4,6 +4,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use Analytics;
+use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -31,17 +32,24 @@ class DashboardController extends Controller
     protected $viewFactory;
 
     /**
-     * @param Logger $logger
-     * @param Application $app
-     * @param ViewFactory $viewFactory
+     * @var AuthFactory
      */
-    public function __construct(Application $app, Logger $logger, ViewFactory $viewFactory)
+    protected $authFactory;
+
+    /**
+     * @param Application $app
+     * @param Logger $logger
+     * @param ViewFactory $viewFactory
+     * @param AuthFactory $authFactory
+     */
+    public function __construct(Application $app, Logger $logger, ViewFactory $viewFactory, AuthFactory $authFactory)
     {
         parent::__construct($app);
 
         $this->logger = $logger;
         $this->app = $app;
         $this->viewFactory = $viewFactory;
+        $this->authFactory = $authFactory;
     }
 
     /**
@@ -136,7 +144,7 @@ class DashboardController extends Controller
      */
     private function getLoggedInUserActivities()
     {
-        return Activity::where('causer_id', auth('twill_users')->user()->id)->take(20)->latest()->get()->map(function ($activity) {
+        return Activity::where('causer_id', $this->authFactory->guard('twill_users')->user()->id)->take(20)->latest()->get()->map(function ($activity) {
             return $this->formatActivity($activity);
         })->filter()->values();
     }
