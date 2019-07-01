@@ -5,6 +5,7 @@ namespace A17\Twill\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Illuminate\View\Factory as ViewFactory;
 
 class GenerateBlocks extends Command
@@ -62,11 +63,11 @@ class GenerateBlocks extends Command
                 'render' => $this->sanitize($vueBlockTemplate),
             ])->render();
 
-            $vueBlockPath = resource_path('assets/js/blocks/') . 'Block' . title_case($blockName) . '.vue';
+            $vueBlockPath = resource_path('assets/js/blocks/') . 'Block' . Str::title($blockName) . '.vue';
 
             $this->filesystem->put($vueBlockPath, $vueBlockContent);
 
-            $this->info("Block " . title_case($blockName) . " generated successfully");
+            $this->info("Block " . Str::title($blockName) . " generated successfully");
         });
 
         $this->info("All blocks have been generated!");
