@@ -4,10 +4,12 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\User;
 use Illuminate\Auth\AuthManager;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
+use Illuminate\View\Factory as ViewFactory;
 use PragmaRX\Google2FA\Google2FA;
 
 class LoginController extends Controller
@@ -26,6 +28,11 @@ class LoginController extends Controller
     use AuthenticatesUsers;
 
     /**
+     * @var Application
+     */
+    protected $app;
+
+    /**
      * @var AuthManager
      */
     protected $authManager;
@@ -41,20 +48,33 @@ class LoginController extends Controller
     protected $redirector;
 
     /**
+     * @var ViewFactory
+     */
+    protected $viewFactory;
+
+    /**
      * Create a new controller instance.
      *
+     * @param Application $app
      * @param AuthManager $authManager
      * @param Encrypter $encrypter
      * @param Redirector $redirector
+     * @param ViewFactory $viewFactory
      * @return void
      */
-    public function __construct(AuthManager $authManager, Encrypter $encrypter, Redirector $redirector)
-    {
-        parent::__construct();
+    public function __construct(
+        Application $app,
+        AuthManager $authManager,
+        Encrypter $encrypter,
+        Redirector $redirector,
+        ViewFactory $viewFactory
+    ) {
+        parent::__construct($app);
 
         $this->authManager = $authManager;
         $this->encrypter = $encrypter;
         $this->redirector = $redirector;
+        $this->viewFactory = $viewFactory;
 
         $this->middleware('twill_guest', ['except' => 'logout']);
         $this->redirectTo = config('twill.auth_login_redirect_path', '/');
@@ -73,7 +93,7 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
-        return view('twill::auth.login');
+        return $this->viewFactory->make('twill::auth.login');
     }
 
     /**
@@ -81,7 +101,7 @@ class LoginController extends Controller
      */
     public function showLogin2FaForm()
     {
-        return view('twill::auth.2fa');
+        return $this->viewFactory->make('twill::auth.2fa');
     }
 
     /**

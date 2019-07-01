@@ -10,6 +10,7 @@ use Illuminate\Database\DatabaseManager as DB;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\View\Factory as ViewFactory;
 
 class FeaturedController extends Controller
 {
@@ -29,17 +30,23 @@ class FeaturedController extends Controller
     protected $app;
 
     /**
+     * @var ViewFactory
+     */
+    protected $viewFactory;
+
+    /**
      * @param DB $db
      * @param UrlGenerator $urlGenerator
      * @param Application $app
      */
-    public function __construct(DB $db, UrlGenerator $urlGenerator, Application $app)
+    public function __construct(DB $db, UrlGenerator $urlGenerator, Application $app, ViewFactory $viewFactory)
     {
-        parent::__construct();
+        parent::__construct($app);
 
         $this->db = $db;
         $this->urlGenerator = $urlGenerator;
         $this->app = $app;
+        $this->viewFactory = $viewFactory;
     }
 
     /**
@@ -85,7 +92,7 @@ class FeaturedController extends Controller
             $routePrefix = config('twill.bucketsRoutes')[$featuredSectionKey] ?? $routePrefix;
         }
 
-        return view('twill::layouts.buckets', [
+        return $this->viewFactory->make('twill::layouts.buckets', [
             'dataSources' => [
                 'selected' => Arr::first($contentTypes),
                 'content_types' => $contentTypes,

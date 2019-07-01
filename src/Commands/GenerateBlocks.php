@@ -5,6 +5,7 @@ namespace A17\Twill\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
+use Illuminate\View\Factory as ViewFactory;
 
 class GenerateBlocks extends Command
 {
@@ -28,13 +29,20 @@ class GenerateBlocks extends Command
     protected $filesystem;
 
     /**
-     * @param Filesystem $filesystem
+     * @var ViewFactory
      */
-    public function __construct(Filesystem $filesystem)
+    protected $viewFactory;
+
+    /**
+     * @param Filesystem $filesystem
+     * @param ViewFactory $viewFactory
+     */
+    public function __construct(Filesystem $filesystem, ViewFactory $viewFactory)
     {
         parent::__construct();
 
         $this->filesystem = $filesystem;
+        $this->viewFactory = $viewFactory;
     }
 
     /**
@@ -48,9 +56,9 @@ class GenerateBlocks extends Command
         Collection::make($this->filesystem->files(resource_path('views/admin/blocks')))->each(function ($viewFile) {
             $blockName = $viewFile->getBasename('.blade.php');
 
-            $vueBlockTemplate = view('admin.blocks.' . $blockName, ['renderForBlocks' => true])->render();
+            $vueBlockTemplate = $this->viewFactory->make('admin.blocks.' . $blockName, ['renderForBlocks' => true])->render();
 
-            $vueBlockContent = view('twill::blocks.builder', [
+            $vueBlockContent = $this->viewFactory->make('twill::blocks.builder', [
                 'render' => $this->sanitize($vueBlockTemplate),
             ])->render();
 

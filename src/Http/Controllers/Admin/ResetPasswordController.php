@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\User;
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\View\Factory as ViewFactory;
 
 class ResetPasswordController extends Controller
 {
@@ -32,16 +34,24 @@ class ResetPasswordController extends Controller
     protected $redirector;
 
     /**
+     * @var ViewFactory
+     */
+    protected $viewFactory;
+
+    /**
      * Create a new controller instance.
      *
+     * @param Application $app
      * @param Redirector $redirector
+     * @param ViewFactory $viewFactory
      * @return void
      */
-    public function __construct(Redirector $redirector)
+    public function __construct(Application $app, Redirector $redirector, ViewFactory $viewFactory)
     {
-        parent::__construct();
+        parent::__construct($app);
 
         $this->redirector = $redirector;
+        $this->viewFactory = $viewFactory;
 
         $this->redirectTo = config('twill.auth_login_redirect_path', '/');
         $this->middleware('twill_guest');
@@ -75,7 +85,7 @@ class ResetPasswordController extends Controller
         // call exists on the Password repository to check for token expiration (default 1 hour)
         // otherwise redirect to the ask reset link form with error message
         if ($user && Password::broker('twill_users')->getRepository()->exists($user, $token)) {
-            return view('twill::auth.passwords.reset')->with([
+            return $this->viewFactory->make('twill::auth.passwords.reset')->with([
                 'token' => $token,
                 'email' => $user->email,
             ]);
@@ -97,7 +107,7 @@ class ResetPasswordController extends Controller
 
         // we don't call exists on the Password repository here because we don't want to expire the token for welcome emails
         if ($user) {
-            return view('twill::auth.passwords.reset')->with([
+            return $this->viewFactory->make('twill::auth.passwords.reset')->with([
                 'token' => $token,
                 'email' => $user->email,
                 'welcome' => true,
