@@ -10,6 +10,7 @@ use Illuminate\Database\DatabaseManager as DB;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Illuminate\View\Factory as ViewFactory;
 
 class FeaturedController extends Controller
@@ -249,6 +250,6 @@ class FeaturedController extends Controller
      */
     private function getRepository($bucketable)
     {
-        return $this->app->get(config('twill.namespace') . "\Repositories\\" . ucfirst(str_singular($bucketable)) . "Repository");
+        return $this->app->get(config('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($bucketable)) . "Repository");
     }
 }

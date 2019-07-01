@@ -6,6 +6,7 @@ use A17\Twill\Models\Behaviors\HasMedias;
 use Analytics;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Illuminate\View\Factory as ViewFactory;
 use Psr\Log\LoggerInterface as Logger;
 use Spatie\Activitylog\Models\Activity;
@@ -114,7 +115,7 @@ class DashboardController extends Controller
                     'date' => $item->updated_at->toIso8601String(),
                     'title' => $item->titleInDashboard ?? $item->title,
                     'author' => $author,
-                    'type' => ucfirst($module['label_singular'] ?? str_singular($module['name'])),
+                    'type' => ucfirst($module['label_singular'] ?? Str::singular($module['name'])),
                 ];
             });
         })->collapse()->values();
@@ -154,7 +155,7 @@ class DashboardController extends Controller
 
         return [
             'id' => $activity->id,
-            'type' => ucfirst($dashboardModule['label_singular'] ?? str_singular($dashboardModule['name'])),
+            'type' => ucfirst($dashboardModule['label_singular'] ?? Str::singular($dashboardModule['name'])),
             'date' => $activity->created_at->toIso8601String(),
             'author' => $activity->causer->name ?? 'Unknown',
             'name' => $activity->subject->titleInDashboard ?? $activity->subject->title,
@@ -338,7 +339,7 @@ class DashboardController extends Controller
                 'count' => $module['count'] ?? false,
                 'create' => $module['create'] ?? false,
                 'label' => $module['label'] ?? $module['name'],
-                'singular' => $module['label_singular'] ?? str_singular($module['name']),
+                'singular' => $module['label_singular'] ?? Str::singular($module['name']),
             ];
 
             return [
@@ -377,7 +378,7 @@ class DashboardController extends Controller
 
             return $drafts->map(function ($draft) use ($module) {
                 return [
-                    'type' => ucfirst($module['label_singular'] ?? str_singular($module['name'])),
+                    'type' => ucfirst($module['label_singular'] ?? Str::singular($module['name'])),
                     'name' => $draft->titleInDashboard ?? $draft->title,
                     'url' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', $draft->id),
                 ];
@@ -391,6 +392,6 @@ class DashboardController extends Controller
      */
     private function getRepository($module)
     {
-        return $this->app->get(config('twill.namespace') . "\Repositories\\" . ucfirst(str_singular($module)) . "Repository");
+        return $this->app->get(config('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($module)) . "Repository");
     }
 }

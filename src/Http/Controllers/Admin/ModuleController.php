@@ -467,12 +467,12 @@ abstract class ModuleController extends Controller
             $this->app->setLocale(request('activeLanguage'));
         }
 
-        $previewView = $this->previewView ?? (config('twill.frontend.views_path', 'site') . '.' . str_singular($this->moduleName));
+        $previewView = $this->previewView ?? (config('twill.frontend.views_path', 'site') . '.' . Str::singular($this->moduleName));
 
         return $this->viewFactory->exists($previewView) ? $this->viewFactory->make($previewView, array_replace([
             'item' => $item,
         ], $this->previewData($item))) : $this->viewFactory->make('twill::errors.preview', [
-            'moduleName' => str_singular($this->moduleName),
+            'moduleName' => Str::singular($this->moduleName),
         ]);
     }
 
@@ -862,7 +862,7 @@ abstract class ModuleController extends Controller
             $value .= moduleRoute("$this->moduleName.$field", $this->routePrefix, 'index', [$item->id]);
             $value .= '">' . $nestedCount . " " . (strtolower($nestedCount > 1
                 ? str_plural($column['title'])
-                : str_singular($column['title']))) . '</a>';
+                : Str::singular($column['title']))) . '</a>';
         } else {
             $field = $column['field'];
             $value = $item->$field;
@@ -1346,7 +1346,7 @@ abstract class ModuleController extends Controller
      */
     protected function getModelName()
     {
-        return $this->modelName ?? ucfirst(str_singular($this->moduleName));
+        return $this->modelName ?? ucfirst(Str::singular($this->moduleName));
     }
 
     /**
@@ -1378,7 +1378,7 @@ abstract class ModuleController extends Controller
      */
     protected function getParentModuleForeignKey()
     {
-        return str_singular(explode('.', $this->moduleName)[0]) . '_id';
+        return Str::singular(explode('.', $this->moduleName)[0]) . '_id';
     }
 
     /**
