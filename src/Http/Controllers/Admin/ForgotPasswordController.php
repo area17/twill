@@ -2,8 +2,10 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
+use Illuminate\View\Factory as ViewFactory;
 
 class ForgotPasswordController extends Controller
 {
@@ -20,18 +22,33 @@ class ForgotPasswordController extends Controller
 
     use SendsPasswordResetEmails;
 
+    /**
+     * @var PasswordBrokerManager
+     */
     protected $passwordBrokerManager;
+
+    /**
+     * @var ViewFactory
+     */
+    protected $viewFactory;
 
     /**
      * Create a new controller instance.
      *
+     * @param Application $app
+     * @param PasswordBrokerManager $passwordBrokerManager
+     * @param ViewFactory $viewFactory
      * @return void
      */
-    public function __construct(PasswordBrokerManager $passwordBrokerManager)
-    {
-        parent::__construct();
+    public function __construct(
+        Application $app,
+        PasswordBrokerManager $passwordBrokerManager,
+        ViewFactory $viewFactory
+    ) {
+        parent::__construct($app);
 
         $this->passwordBrokerManager = $passwordBrokerManager;
+        $this->viewFactory = $viewFactory;
         $this->middleware('twill_guest');
     }
 
@@ -42,6 +59,6 @@ class ForgotPasswordController extends Controller
 
     public function showLinkRequestForm()
     {
-        return view('twill::auth.passwords.email');
+        return $this->viewFactory->make('twill::auth.passwords.email');
     }
 }

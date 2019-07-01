@@ -3,7 +3,8 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Behaviors\HasMedias;
-use Illuminate\Console\Application;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\View\Factory as ViewFactory;
 use Psr\Log\LoggerInterface as Logger;
 use Analytics;
 use Illuminate\Support\Collection;
@@ -14,31 +15,39 @@ use Spatie\Analytics\Period;
 class DashboardController extends Controller
 {
     /**
-     * @var Logger
-     */
-    protected $logger;
-
-    /**
      * @var Application
      */
     protected $app;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
+     * @var ViewFactory
+     */
+    protected $viewFactory;
+
+    /**
      * @param Logger $logger
      * @param Application $app
+     * @param ViewFactory $viewFactory
      */
-    public function __construct(Logger $logger, Application $app)
+    public function __construct(Application $app, Logger $logger, ViewFactory $viewFactory)
     {
-        parent::__construct();
+        parent::__construct($app);
+
         $this->logger = $logger;
         $this->app = $app;
+        $this->viewFactory = $viewFactory;
     }
 
     public function index()
     {
         $modules = Collection::make(config('twill.dashboard.modules'));
 
-        return view('twill::layouts.dashboard', [
+        return $this->viewFactory->make('twill::layouts.dashboard', [
             'allActivityData' => $this->getAllActivities(),
             'myActivityData' => $this->getLoggedInUserActivities(),
             'tableColumns' => [

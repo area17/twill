@@ -12,6 +12,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Routing\Redirector;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\Factory as ViewFactory;
 use Inspector;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -42,22 +43,30 @@ class Handler extends ExceptionHandler
     protected $app;
 
     /**
+     * @var ViewFactory
+     */
+    protected $viewFactory;
+
+    /**
      * @param Container $container
      * @param Redirector $redirector
      * @param UrlGenerator $urlGenerator
      * @param Application $app
+     * @param ViewFactory $viewFactory
      */
     public function __construct(
         Container $container,
         Redirector $redirector,
         UrlGenerator $urlGenerator,
-        Application $app
+        Application $app,
+        ViewFactory $viewFactory
     ) {
         parent::__construct($container);
 
         $this->redirector = $redirector;
         $this->urlGenerator = $urlGenerator;
         $this->app = $app;
+        $this->viewFactory = $viewFactory;
     }
 
     public function report(Exception $e)
@@ -113,12 +122,12 @@ class Handler extends ExceptionHandler
         $isSubdirectoryAdmin = !empty(config('twill.admin_app_path')) && starts_with($request->path(), config('twill.admin_app_path'));
 
         if ($isSubdomainAdmin || $isSubdirectoryAdmin) {
-            $view = view()->exists("admin.errors.$statusCode") ? "admin.errors.$statusCode" : "twill::errors.$statusCode";
+            $view = $this->viewFactory->exists("admin.errors.$statusCode") ? "admin.errors.$statusCode" : "twill::errors.$statusCode";
         } else {
             $view = config('twill.frontend.views_path') . ".errors.{$statusCode}";
         }
 
-        if (view()->exists($view)) {
+        if ($this->viewFactory->exists($view)) {
             return response()->view($view, ['exception' => $e], $statusCode, $headers);
         }
 

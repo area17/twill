@@ -12,6 +12,7 @@ use Illuminate\Session\Store as SessionStore;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Illuminate\View\Factory as ViewFactory;
 
 abstract class ModuleController extends Controller
 {
@@ -38,6 +39,11 @@ abstract class ModuleController extends Controller
      * @var UrlGenerator
      */
     protected $urlGenerator;
+
+    /**
+     * @var ViewFactory
+     */
+    protected $viewFactory;
 
     protected $routePrefix;
 
@@ -141,6 +147,7 @@ abstract class ModuleController extends Controller
      * @param SessionStore $sessionStore
      * @param Redirector $redirector
      * @param UrlGenerator $urlGenerator
+     * @param ViewFactory $viewFactory
      */
     public function __construct(
         Application $app,
@@ -148,7 +155,8 @@ abstract class ModuleController extends Controller
         Router $router,
         SessionStore $sessionStore,
         Redirector $redirector,
-        UrlGenerator $urlGenerator
+        UrlGenerator $urlGenerator,
+        ViewFactory $viewFactory
     ) {
         parent::__construct($app);
         $this->app = $app;
@@ -157,6 +165,7 @@ abstract class ModuleController extends Controller
         $this->sessionStore = $sessionStore;
         $this->redirector = $redirector;
         $this->urlGenerator = $urlGenerator;
+        $this->viewFactory = $viewFactory;
 
         $this->setMiddlewarePermission();
 
@@ -234,10 +243,10 @@ abstract class ModuleController extends Controller
             "twill::$this->moduleName.index",
             "twill::layouts.listing",
         ])->first(function ($view) {
-            return view()->exists($view);
+            return $this->viewFactory->exists($view);
         });
 
-        return view($view, $indexData);
+        return $this->viewFactory->make($view, $indexData);
     }
 
     public function browser()
@@ -297,10 +306,10 @@ abstract class ModuleController extends Controller
             "twill::$this->moduleName.form",
             "twill::layouts.form",
         ])->first(function ($view) {
-            return view()->exists($view);
+            return $this->viewFactory->exists($view);
         });
 
-        return view($view, $this->form($submoduleId ?? $id));
+        return $this->viewFactory->make($view, $this->form($submoduleId ?? $id));
     }
 
     public function update($id, $submoduleId = null)
@@ -376,9 +385,9 @@ abstract class ModuleController extends Controller
 
         $previewView = $this->previewView ?? (config('twill.frontend.views_path', 'site') . '.' . str_singular($this->moduleName));
 
-        return view()->exists($previewView) ? view($previewView, array_replace([
+        return $this->viewFactory->exists($previewView) ? $this->viewFactory->make($previewView, array_replace([
             'item' => $item,
-        ], $this->previewData($item))) : view('twill::errors.preview', [
+        ], $this->previewData($item))) : $this->viewFactory->make('twill::errors.preview', [
             'moduleName' => str_singular($this->moduleName),
         ]);
     }
@@ -400,7 +409,7 @@ abstract class ModuleController extends Controller
             "twill::$this->moduleName.form",
             "twill::layouts.form",
         ])->first(function ($view) {
-            return view()->exists($view);
+            return $this->viewFactory->exists($view);
         });
 
         $revision = $item->revisions()->where('id', request('revisionId'))->first();
@@ -408,7 +417,7 @@ abstract class ModuleController extends Controller
 
         session()->flash('restoreMessage', "You are currently editing an older revision of this content (saved by $revision->byUser on $date). Make changes if needed and click restore to save a new revision.");
 
-        return view($view, $this->form($id, $item));
+        return $this->viewFactory->make($view, $this->form($id, $item));
     }
 
     public function publish()
