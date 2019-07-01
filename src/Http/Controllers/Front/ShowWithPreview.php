@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Front;
 
+use Illuminate\Config\Repository as Config;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Str;
@@ -15,11 +16,17 @@ trait ShowWithPreview
      * @param Request $request
      * @param Redirector $redirector
      * @param ViewFactory $viewFactory
+     * @param Config $config
      * @return \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      * @throws \Exception
      */
-    public function show(string $slug, Request $request, Redirector $redirector, ViewFactory $viewFactory)
-    {
+    public function show(
+        string $slug,
+        Request $request,
+        Redirector $redirector,
+        ViewFactory $viewFactory,
+        Config $config
+    ) {
         if (!isset($this->moduleName) || !isset($this->repository)) {
             throw new \Exception("You should at least provide a module name and inject a repository.");
         }
@@ -29,7 +36,7 @@ trait ShowWithPreview
         }
 
         if (!isset($this->showViewName)) {
-            $this->showViewName = config('twill.frontend.views_path', 'site') . '.' . Str::singular($this->moduleName);
+            $this->showViewName = $config->get('twill.frontend.views_path', 'site') . '.' . Str::singular($this->moduleName);
         }
 
         if (Str::endsWith($request->route()->getName(), $this->routeName . '.preview')) {

@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Middleware;
 
 use Closure;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Foundation\Application;
 use Barryvdh\Debugbar\LaravelDebugbar;
 
@@ -16,20 +17,27 @@ class NoDebugBar
     protected $debugbar;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @param Application $app
      * @param LaravelDebugbar $debugbar
+     * @param Config $config
      */
-    public function __construct(Application $app, LaravelDebugbar $debugbar)
+    public function __construct(Application $app, LaravelDebugbar $debugbar, Config $config)
     {
         $this->app = $app;
         $this->debugbar = $debugbar;
+        $this->config = $config;
     }
 
     public function handle($request, Closure $next)
     {
         if ($this->app->environment('development', 'local', 'staging')) {
-            if (!config('twill.debug.debug_bar_in_fe')) {
-                if (config('twill.debug.use_inspector', false)) {
+            if (!$this->config->get('twill.debug.debug_bar_in_fe')) {
+                if ($this->config->get('twill.debug.use_inspector', false)) {
                     li()->turnOff();
                 } else {
                     $this->debugbar->disable();

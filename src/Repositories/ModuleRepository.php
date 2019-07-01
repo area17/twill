@@ -5,6 +5,7 @@ namespace A17\Twill\Repositories;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Repositories\Behaviors\HandleDates;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Database\DatabaseManager as DB;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Arr;
@@ -38,15 +39,22 @@ abstract class ModuleRepository
     protected $app;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @param DB $db
      * @param Logger $logger
      * @param Application $app
+     * @param Config $config
      */
-    public function __construct(DB $db, Logger $logger, Application $app)
+    public function __construct(DB $db, Logger $logger, Application $app, Config $config)
     {
         $this->db = $db;
         $this->logger = $logger;
         $this->app = $app;
+        $this->config = $config;
     }
 
     public function get($with = [], $scopes = [], $orders = [], $perPage = 20, $forcePagination = false)
@@ -659,7 +667,7 @@ abstract class ModuleRepository
             $model = ucfirst(Str::singular($relation));
         }
 
-        return $this->app->get(config('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
+        return $this->app->get($this->config->get('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
     }
 
     private function getLikeOperator()

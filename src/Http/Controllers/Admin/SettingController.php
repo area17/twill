@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Repositories\SettingRepository;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
@@ -33,6 +34,7 @@ class SettingController extends Controller
 
     /**
      * @param Application $app
+     * @param Config $config
      * @param SettingRepository $settings
      * @param Redirector $redirector
      * @param UrlGenerator $urlGenerator
@@ -40,12 +42,13 @@ class SettingController extends Controller
      */
     public function __construct(
         Application $app,
+        Config $config,
         SettingRepository $settings,
         Redirector $redirector,
         UrlGenerator $urlGenerator,
         ViewFactory $viewFactory
     ) {
-        parent::__construct($app);
+        parent::__construct($app, $config);
 
         $this->settings = $settings;
         $this->redirector = $redirector;

@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\MediaLibrary;
 
+use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Str;
 use Imgix\ShardStrategy;
 use Imgix\UrlBuilder;
@@ -12,12 +13,28 @@ class Imgix implements ImageServiceInterface
 
     private $urlBuilder;
 
-    public function __construct()
-    {
-        $urlBuilder = new UrlBuilder(config('twill.imgix.source_host'), config('twill.imgix.use_https'), '', ShardStrategy::CRC, false);
+    /**
+     * @var Config
+     */
+    protected $config;
 
-        if (config('twill.imgix.use_signed_urls')) {
-            $urlBuilder->setSignKey(config('twill.imgix.sign_key'));
+    /**
+     * @param Config $config
+     */
+    public function __construct(Config $config)
+    {
+        $this->config = $config;
+
+        $urlBuilder = new UrlBuilder(
+            $this->config->get('twill.imgix.source_host'),
+            $this->config->get('twill.imgix.use_https'),
+            '',
+            ShardStrategy::CRC,
+            false
+        );
+
+        if ($this->config->get('twill.imgix.use_signed_urls')) {
+            $urlBuilder->setSignKey($this->config->get('twill.imgix.sign_key'));
         }
 
         $this->urlBuilder = $urlBuilder;
@@ -25,7 +42,7 @@ class Imgix implements ImageServiceInterface
 
     public function getUrl($id, array $params = [])
     {
-        $defaultParams = config('twill.imgix.default_params');
+        $defaultParams = $this->config->get('twill.imgix.default_params');
         return $this->urlBuilder->createURL($id, Str::endsWith($id, '.svg') ? [] : array_replace($defaultParams, $params));
     }
 
@@ -41,19 +58,19 @@ class Imgix implements ImageServiceInterface
 
     public function getLQIPUrl($id, array $params = [])
     {
-        $defaultParams = config('twill.imgix.lqip_default_params');
+        $defaultParams = $this->config->get('twill.imgix.lqip_default_params');
         return $this->getUrl($id, array_replace($defaultParams, $params));
     }
 
     public function getSocialUrl($id, array $params = [])
     {
-        $defaultParams = config('twill.imgix.social_default_params');
+        $defaultParams = $this->config->get('twill.imgix.social_default_params');
         return $this->getUrl($id, array_replace($defaultParams, $params));
     }
 
     public function getCmsUrl($id, array $params = [])
     {
-        $defaultParams = config('twill.imgix.cms_default_params');
+        $defaultParams = $this->config->get('twill.imgix.cms_default_params');
         return $this->getUrl($id, array_replace($defaultParams, $params));
     }
 

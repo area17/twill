@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Behaviors\HasMedias;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
@@ -39,13 +40,19 @@ class DashboardController extends Controller
 
     /**
      * @param Application $app
+     * @param Config $config
      * @param Logger $logger
      * @param ViewFactory $viewFactory
      * @param AuthFactory $authFactory
      */
-    public function __construct(Application $app, Logger $logger, ViewFactory $viewFactory, AuthFactory $authFactory)
-    {
-        parent::__construct($app);
+    public function __construct(
+        Application $app,
+        Config $config,
+        Logger $logger,
+        ViewFactory $viewFactory,
+        AuthFactory $authFactory
+    ) {
+        parent::__construct($app, $config);
 
         $this->logger = $logger;
         $this->app = $app;
@@ -55,7 +62,7 @@ class DashboardController extends Controller
 
     public function index()
     {
-        $modules = Collection::make(config('twill.dashboard.modules'));
+        $modules = Collection::make($this->config->get('twill.dashboard.modules'));
 
         return $this->viewFactory->make('twill::layouts.dashboard', [
             'allActivityData' => $this->getAllActivities(),
@@ -84,7 +91,7 @@ class DashboardController extends Controller
                 ],
             ],
             'shortcuts' => $this->getShortcuts($modules),
-            'facts' => config('twill.dashboard.analytics.enabled', false) ? $this->getFacts() : null,
+            'facts' => $this->config->get('twill.dashboard.analytics.enabled', false) ? $this->getFacts() : null,
             'drafts' => $this->getDrafts($modules),
         ]);
     }
@@ -95,7 +102,7 @@ class DashboardController extends Controller
      */
     public function search(Request $request)
     {
-        $modules = Collection::make(config('twill.dashboard.modules'));
+        $modules = Collection::make($this->config->get('twill.dashboard.modules'));
 
         return $modules->filter(function ($module) {
             return ($module['search'] ?? false);
@@ -142,7 +149,7 @@ class DashboardController extends Controller
 
     private function formatActivity($activity)
     {
-        $dashboardModule = config('twill.dashboard.modules.' . $activity->subject_type);
+        $dashboardModule = $this->config->get('twill.dashboard.modules.' . $activity->subject_type);
 
         if (!$dashboardModule) {
             return null;
@@ -363,6 +370,6 @@ class DashboardController extends Controller
 
     private function getRepository($module)
     {
-        return $this->app->get(config('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($module)) . "Repository");
+        return $this->app->get($this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($module)) . "Repository");
     }
 }
