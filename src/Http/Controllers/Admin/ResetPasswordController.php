@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\User;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
@@ -42,18 +43,19 @@ class ResetPasswordController extends Controller
      * Create a new controller instance.
      *
      * @param Application $app
+     * @param Config $config
      * @param Redirector $redirector
      * @param ViewFactory $viewFactory
      * @return void
      */
-    public function __construct(Application $app, Redirector $redirector, ViewFactory $viewFactory)
+    public function __construct(Application $app, Config $config, Redirector $redirector, ViewFactory $viewFactory)
     {
-        parent::__construct($app);
+        parent::__construct($app, $config);
 
         $this->redirector = $redirector;
         $this->viewFactory = $viewFactory;
 
-        $this->redirectTo = config('twill.auth_login_redirect_path', '/');
+        $this->redirectTo = $this->config->get('twill.auth_login_redirect_path', '/');
         $this->middleware('twill_guest');
     }
 
@@ -130,13 +132,13 @@ class ResetPasswordController extends Controller
      */
     private function getUserFromToken($token)
     {
-        $clearToken = DB::table(config('auth.passwords.twill_users.table', 'twill_password_resets'))->where('token', $token)->first();
+        $clearToken = DB::table($this->config->get('auth.passwords.twill_users.table', 'twill_password_resets'))->where('token', $token)->first();
 
         if ($clearToken) {
             return User::where('email', $clearToken->email)->first();
         }
 
-        foreach (DB::table(config('auth.passwords.twill_users.table', 'twill_password_resets'))->get() as $passwordReset) {
+        foreach (DB::table($this->config->get('auth.passwords.twill_users.table', 'twill_password_resets'))->get() as $passwordReset) {
             if (Hash::check($token, $passwordReset->token)) {
                 return User::where('email', $passwordReset->email)->first();
             }

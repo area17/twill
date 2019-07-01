@@ -5,7 +5,8 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Models\Feature;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
-use Illuminate\Console\Application;
+use Illuminate\Config\Repository as Config;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\DatabaseManager as DB;
 use Illuminate\Http\Request;
 use Illuminate\Routing\UrlGenerator;
@@ -40,10 +41,17 @@ class FeaturedController extends Controller
      * @param DB $db
      * @param UrlGenerator $urlGenerator
      * @param Application $app
+     * @param ViewFactory $viewFactory
+     * @param Config $config
      */
-    public function __construct(DB $db, UrlGenerator $urlGenerator, Application $app, ViewFactory $viewFactory)
-    {
-        parent::__construct($app);
+    public function __construct(
+        DB $db,
+        UrlGenerator $urlGenerator,
+        Application $app,
+        ViewFactory $viewFactory,
+        Config $config
+    ) {
+        parent::__construct($app, $config);
 
         $this->db = $db;
         $this->urlGenerator = $urlGenerator;
@@ -58,7 +66,7 @@ class FeaturedController extends Controller
     public function index(Request $request)
     {
         $featuredSectionKey = $request->segment(count($request->segments()));
-        $featuredSection = config("twill.buckets.$featuredSectionKey");
+        $featuredSection = $this->config->get("twill.buckets.$featuredSectionKey");
         $filters = json_decode($request->get('filter'), true) ?? [];
 
         $featuredSources = $this->getFeaturedSources($request, $featuredSection, $filters['search'] ?? '');
@@ -91,8 +99,8 @@ class FeaturedController extends Controller
 
         $routePrefix = 'featured';
 
-        if (config('twill.bucketsRoutes') !== null) {
-            $routePrefix = config('twill.bucketsRoutes')[$featuredSectionKey] ?? $routePrefix;
+        if ($this->config->get('twill.bucketsRoutes') !== null) {
+            $routePrefix = $this->config->get('twill.bucketsRoutes')[$featuredSectionKey] ?? $routePrefix;
         }
 
         return $this->viewFactory->make('twill::layouts.buckets', [
@@ -121,7 +129,7 @@ class FeaturedController extends Controller
      */
     private function getFeaturedItemsByBucket($featuredSection, $featuredSectionKey)
     {
-        $bucketRouteConfig = config('twill.bucketsRoutes') ?? [$featuredSectionKey => 'featured'];
+        $bucketRouteConfig = $this->config->get('twill.bucketsRoutes') ?? [$featuredSectionKey => 'featured'];
         return Collection::make($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use ($featuredSectionKey, $bucketRouteConfig) {
             $routePrefix = $bucketRouteConfig[$featuredSectionKey];
             return [
@@ -255,6 +263,6 @@ class FeaturedController extends Controller
      */
     private function getRepository($bucketable)
     {
-        return $this->app->get(config('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($bucketable)) . "Repository");
+        return $this->app->get($this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($bucketable)) . "Repository");
     }
 }

@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\FileLibrary;
 
+use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Filesystem\Factory as FilesystemManager;
 
 class Disk implements FileServiceInterface
@@ -12,11 +13,18 @@ class Disk implements FileServiceInterface
     protected $filesystemManager;
 
     /**
-     * @param FilesystemManager $filesystemManager
+     * @var Config
      */
-    public function __construct(FilesystemManager $filesystemManager)
+    protected $config;
+
+    /**
+     * @param FilesystemManager $filesystemManager
+     * @param Config $config
+     */
+    public function __construct(FilesystemManager $filesystemManager, Config $config)
     {
         $this->filesystemManager = $filesystemManager;
+        $this->config = $config;
     }
 
     /**
@@ -25,6 +33,6 @@ class Disk implements FileServiceInterface
      */
     public function getUrl($id)
     {
-        return $this->filesystemManager->disk(config('twill.file_library.disk'))->url($id);
+        return $this->filesystemManager->disk($this->config->get('twill.file_library.disk'))->url($id);
     }
 }

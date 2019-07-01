@@ -3,12 +3,18 @@
 namespace A17\Twill\Services\Cache;
 
 use Aws\CloudFront\CloudFrontClient;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class CloudfrontCacheService
 {
     protected $client = null;
+
+    /**
+     * @var Config
+     */
+    protected $config;
 
     // Added for backwards compatibility. Should be removed in future releases.
     protected static $defaultRegion = 'us-east-1';
@@ -48,8 +54,13 @@ class CloudfrontCacheService
 
     }
 
-    public function __construct()
+    /**
+     * @param Config $config
+     */
+    public function __construct(Config $config)
     {
+        $this->config = $config;
+
         $client = static::getClient();
         if (is_object($client)) {
             $this->client = $client;
@@ -78,7 +89,7 @@ class CloudfrontCacheService
      */
     private function hasInProgressInvalidation()
     {
-        $list = $this->client->listInvalidations(array('DistributionId' => config('services.cloudfront.distribution')))->get('InvalidationList');
+        $list = $this->client->listInvalidations(array('DistributionId' => $this->config->get('services.cloudfront.distribution')))->get('InvalidationList');
         if (isset($list['Items']) && !empty($list['Items'])) {
             return Collection::make($list['Items'])->where('Status', 'InProgress')->count() > 0;
         }
@@ -95,7 +106,7 @@ class CloudfrontCacheService
         if (is_object($this->client) && count($paths) > 0) {
             try {
                 $result = $this->client->createInvalidation(array(
-                    'DistributionId' => config('services.cloudfront.distribution'),
+                    'DistributionId' => $this->config->get('services.cloudfront.distribution'),
                     'InvalidationBatch' => array(
                         'Paths' => array(
                             'Quantity' => count($paths),

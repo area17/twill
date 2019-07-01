@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Helpers\FlashLevel;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
@@ -214,6 +215,7 @@ abstract class ModuleController extends Controller
      * @param ViewFactory $viewFactory
      * @param AuthFactory $authFactory
      * @param ResponseFactory $responseFactory
+     * @param Config $config
      */
     public function __construct(
         Application $app,
@@ -224,9 +226,10 @@ abstract class ModuleController extends Controller
         UrlGenerator $urlGenerator,
         ViewFactory $viewFactory,
         AuthFactory $authFactory,
-        ResponseFactory $responseFactory
+        ResponseFactory $responseFactory,
+        Config $config
     ) {
-        parent::__construct($app);
+        parent::__construct($app, $config);
         $this->app = $app;
         $this->request = $request;
         $this->router = $router;
@@ -486,7 +489,7 @@ abstract class ModuleController extends Controller
             $this->app->setLocale($this->request->get('activeLanguage'));
         }
 
-        $previewView = $this->previewView ?? (config('twill.frontend.views_path', 'site') . '.' . Str::singular($this->moduleName));
+        $previewView = $this->previewView ?? ($this->config->get('twill.frontend.views_path', 'site') . '.' . Str::singular($this->moduleName));
 
         return $this->viewFactory->exists($previewView) ? $this->viewFactory->make($previewView, array_replace([
             'item' => $item,
@@ -1344,7 +1347,7 @@ abstract class ModuleController extends Controller
      */
     protected function getNamespace()
     {
-        return $this->namespace ?? config('twill.namespace');
+        return $this->namespace ?? $this->config->get('twill.namespace');
     }
 
     /**
@@ -1353,7 +1356,7 @@ abstract class ModuleController extends Controller
     protected function getRoutePrefix()
     {
         if ($this->request->$this->urlGenerator->route() != null) {
-            $routePrefix = ltrim(str_replace(config('twill.admin_app_path'), '', $this->request->$this->urlGenerator->route()->getPrefix()), "/");
+            $routePrefix = ltrim(str_replace($this->config->get('twill.admin_app_path'), '', $this->request->$this->urlGenerator->route()->getPrefix()), "/");
             return str_replace("/", ".", $routePrefix);
         }
 
@@ -1405,7 +1408,7 @@ abstract class ModuleController extends Controller
      */
     protected function getPermalinkBaseUrl()
     {
-        return $this->request->getScheme() . '://' . config('app.url') . '/'
+        return $this->request->getScheme() . '://' . $this->config->get('app.url') . '/'
             . ($this->moduleHas('translations') ? '{language}/' : '')
             . ($this->moduleHas('revisions') ? '{preview}/' : '')
             . ($this->permalinkBase ?? $this->moduleName)

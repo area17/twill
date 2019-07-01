@@ -7,17 +7,27 @@ use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Block;
 use A17\Twill\Repositories\Behaviors\HandleFiles;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
+use Illuminate\Config\Repository as Config;
+use Illuminate\Database\DatabaseManager as DB;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Collection;
+use Psr\Log\LoggerInterface as Logger;
 
 class BlockRepository extends ModuleRepository
 {
     use HandleMedias, HandleFiles;
 
     /**
+     * @param DB $db
+     * @param Logger $logger
+     * @param Application $app
+     * @param Config $config
      * @param Block $model
      */
-    public function __construct(Block $model)
+    public function __construct(DB $db, Logger $logger, Application $app, Config $config, Block $model)
     {
+        parent::__construct($db, $logger, $app, $config);
+
         $this->model = $model;
     }
 
@@ -27,7 +37,7 @@ class BlockRepository extends ModuleRepository
      */
     public function getCrops($role)
     {
-        return config('twill.block_editor.crops')[$role];
+        return $this->config->get('twill.block_editor.crops')[$role];
     }
 
     /**
@@ -47,7 +57,7 @@ class BlockRepository extends ModuleRepository
      */
     public function buildFromCmsArray($block, $repeater = false)
     {
-        $blocksFromConfig = config('twill.block_editor.' . ($repeater ? 'repeaters' : 'blocks'));
+        $blocksFromConfig = $this->config->get('twill.block_editor.' . ($repeater ? 'repeaters' : 'blocks'));
 
         $block['type'] = Collection::make($blocksFromConfig)->search(function ($blockConfig) use ($block) {
             return $blockConfig['component'] === $block['type'];

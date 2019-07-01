@@ -5,6 +5,7 @@ namespace A17\Twill\Exceptions;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
@@ -62,12 +63,18 @@ class Handler extends ExceptionHandler
     protected $responseFactory;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @param Container $container
      * @param Redirector $redirector
      * @param UrlGenerator $urlGenerator
      * @param Application $app
      * @param ViewFactory $viewFactory
      * @param ResponseFactory $responseFactory
+     * @param Config $config
      */
     public function __construct(
         Container $container,
@@ -75,7 +82,8 @@ class Handler extends ExceptionHandler
         UrlGenerator $urlGenerator,
         Application $app,
         ViewFactory $viewFactory,
-        ResponseFactory $responseFactory
+        ResponseFactory $responseFactory,
+        Config $config
     ) {
         parent::__construct($container);
 
@@ -84,6 +92,7 @@ class Handler extends ExceptionHandler
         $this->app = $app;
         $this->viewFactory = $viewFactory;
         $this->responseFactory = $responseFactory;
+        $this->config = $config;
     }
 
     /**
@@ -125,11 +134,11 @@ class Handler extends ExceptionHandler
             return $this->convertValidationExceptionToResponse($e, $request);
         }
 
-        if (config('app.debug', false) && config('twill.debug.use_inspector', false)) {
+        if ($this->config->get('app.debug', false) && $this->config->get('twill.debug.use_inspector', false)) {
             return Inspector::renderException($e);
         }
 
-        if (config('app.debug', false) && config('twill.debug.use_whoops', false)) {
+        if ($this->config->get('app.debug', false) && $this->config->get('twill.debug.use_whoops', false)) {
             return $this->renderExceptionWithWhoops($e);
         }
 
@@ -143,20 +152,20 @@ class Handler extends ExceptionHandler
      */
     public function renderHttpExceptionWithView($request, $e)
     {
-        if (config('app.debug')) {
+        if ($this->config->get('app.debug')) {
             return $this->convertExceptionToResponse($e);
         }
 
         $statusCode = $this->isHttpException($e) ? $e->getStatusCode() : 500;
         $headers = $this->isHttpException($e) ? $e->getHeaders() : [];
 
-        $isSubdomainAdmin = empty(config('twill.admin_app_path')) && $request->getHost() == config('twill.admin_app_url');
-        $isSubdirectoryAdmin = !empty(config('twill.admin_app_path')) && starts_with($request->path(), config('twill.admin_app_path'));
+        $isSubdomainAdmin = empty($this->config->get('twill.admin_app_path')) && $request->getHost() == $this->config->get('twill.admin_app_url');
+        $isSubdirectoryAdmin = !empty($this->config->get('twill.admin_app_path')) && starts_with($request->path(), $this->config->get('twill.admin_app_path'));
 
         if ($isSubdomainAdmin || $isSubdirectoryAdmin) {
             $view = $this->viewFactory->exists("admin.errors.$statusCode") ? "admin.errors.$statusCode" : "twill::errors.$statusCode";
         } else {
-            $view = config('twill.frontend.views_path') . ".errors.{$statusCode}";
+            $view = $this->config->get('twill.frontend.views_path') . ".errors.{$statusCode}";
         }
 
         if ($this->viewFactory->exists($view)) {
@@ -188,7 +197,7 @@ class Handler extends ExceptionHandler
             if ($this->app->environment('local', 'development')) {
                 $handler->setEditor(function ($file, $line) {
                     $translations = array('^' .
-                        config('twill.debug.whoops_path_guest') => config('twill.debug.whoops_path_host'),
+                        $this->config->get('twill.debug.whoops_path_guest') => $this->config->get('twill.debug.whoops_path_host'),
                     );
                     foreach ($translations as $from => $to) {
                         $file = rawurlencode(preg_replace('#' . $from . '#', $to, $file, 1));

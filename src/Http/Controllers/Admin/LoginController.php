@@ -4,6 +4,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\User;
 use Illuminate\Auth\AuthManager;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -56,6 +57,7 @@ class LoginController extends Controller
      * Create a new controller instance.
      *
      * @param Application $app
+     * @param Config $config
      * @param AuthManager $authManager
      * @param Encrypter $encrypter
      * @param Redirector $redirector
@@ -64,12 +66,13 @@ class LoginController extends Controller
      */
     public function __construct(
         Application $app,
+        Config $config,
         AuthManager $authManager,
         Encrypter $encrypter,
         Redirector $redirector,
         ViewFactory $viewFactory
     ) {
-        parent::__construct($app);
+        parent::__construct($app, $config);
 
         $this->authManager = $authManager;
         $this->encrypter = $encrypter;
@@ -77,7 +80,7 @@ class LoginController extends Controller
         $this->viewFactory = $viewFactory;
 
         $this->middleware('twill_guest', ['except' => 'logout']);
-        $this->redirectTo = config('twill.auth_login_redirect_path', '/');
+        $this->redirectTo = $this->config->get('twill.auth_login_redirect_path', '/');
     }
 
     /**

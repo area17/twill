@@ -5,6 +5,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Http\Requests\Admin\MediaRequest;
 use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignS3UploadListener;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
@@ -61,6 +62,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
     /**
      * @param Application $app
+     * @param Config $config
      * @param Request $request
      * @param Router $router
      * @param SessionStore $sessionStore
@@ -72,6 +74,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
      */
     public function __construct(
         Application $app,
+        Config $config,
         Request $request,
         Router $router,
         SessionStore $sessionStore,
@@ -81,11 +84,11 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         AuthFactory $authFactory,
         ResponseFactory $responseFactory
     ) {
-        parent::__construct($app, $request, $router, $sessionStore, $redirector, $urlGenerator, $viewFactory, $authFactory, $responseFactory);
+        parent::__construct($app, $request, $router, $sessionStore, $redirector, $urlGenerator, $viewFactory, $authFactory, $responseFactory, $config);
         $this->removeMiddleware('can:edit');
         $this->middleware('can:edit', ['only' => ['signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
-        $this->endpointType = config('twill.media_library.endpoint_type');
-        $this->customFields = config('twill.media_library.extra_metadatas_fields');
+        $this->endpointType = $this->config->get('twill.media_library.endpoint_type');
+        $this->customFields = $this->config->get('twill.media_library.extra_metadatas_fields');
     }
 
     /**
@@ -165,7 +168,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
         $fileDirectory = $request->input('unique_folder_name');
 
-        $disk = config('twill.media_library.disk');
+        $disk = $this->config->get('twill.media_library.disk');
 
         $request->file('qqfile')->storeAs($fileDirectory, $filename, $disk);
 
@@ -263,7 +266,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
      */
     public function signS3Upload(Request $request, SignS3Upload $signS3Upload)
     {
-        return $signS3Upload->fromPolicy($request->getContent(), $this, config('twill.media_library.disk'));
+        return $signS3Upload->fromPolicy($request->getContent(), $this, $this->config->get('twill.media_library.disk'));
     }
 
     /**

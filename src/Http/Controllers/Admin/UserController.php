@@ -4,6 +4,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Enums\UserRole;
 use Illuminate\Auth\AuthManager;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Routing\ResponseFactory;
@@ -99,6 +100,7 @@ class UserController extends ModuleController
 
     /**
      * @param Application $app
+     * @param Config $config
      * @param Request $request
      * @param Router $router
      * @param SessionStore $sessionStore
@@ -111,6 +113,7 @@ class UserController extends ModuleController
      */
     public function __construct(
         Application $app,
+        Config $config,
         Request $request,
         Router $router,
         SessionStore $sessionStore,
@@ -121,7 +124,7 @@ class UserController extends ModuleController
         AuthFactory $authFactory,
         ResponseFactory $responseFactory
     ) {
-        parent::__construct($app, $request, $router, $sessionStore, $redirector, $urlGenerator, $viewFactory, $authFactory, $responseFactory);
+        parent::__construct($app, $request, $router, $sessionStore, $redirector, $urlGenerator, $viewFactory, $authFactory, $responseFactory, $config);
         $this->authManager = $authManager;
         $this->removeMiddleware('can:edit');
         $this->removeMiddleware('can:delete');
@@ -130,7 +133,7 @@ class UserController extends ModuleController
         $this->middleware('can:edit-user,user', ['only' => ['store', 'edit', 'update', 'destroy', 'bulkDelete', 'restore', 'bulkRestore']]);
         $this->middleware('can:publish-user', ['only' => ['publish']]);
 
-        if (config('twill.enabled.users-image')) {
+        if ($this->config->get('twill.enabled.users-image')) {
             $this->indexColumns = [
                 'image' => [
                     'title' => 'Image',
@@ -174,7 +177,7 @@ class UserController extends ModuleController
     protected function formData($request)
     {
         $user = $this->authManager->guard('twill_users')->user();
-        $with2faSettings = config('twill.enabled.users-2fa') && $user->id == $this->request->get('user');
+        $with2faSettings = $this->config->get('twill.enabled.users-2fa') && $user->id == $this->request->get('user');
 
         if ($with2faSettings) {
             $google2fa = new Google2FA();
@@ -186,7 +189,7 @@ class UserController extends ModuleController
             }
 
             $qrCode = $google2fa->getQRCodeInline(
-                config('app.name'),
+                $this->config->get('app.name'),
                 $user->email,
                 \Crypt::decrypt($user->google_2fa_secret),
                 200

@@ -5,6 +5,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Http\Requests\Admin\FileRequest;
 use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignS3UploadListener;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
@@ -62,6 +63,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
      * @param ViewFactory $viewFactory
      * @param AuthFactory $authFactory
      * @param ResponseFactory $responseFactory
+     * @param Config $config
      */
     public function __construct(
         Application $app,
@@ -72,12 +74,13 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         UrlGenerator $urlGenerator,
         ViewFactory $viewFactory,
         AuthFactory $authFactory,
-        ResponseFactory $responseFactory
+        ResponseFactory $responseFactory,
+        Config $config
     ) {
-        parent::__construct($app, $request, $router, $sessionStore, $redirector, $urlGenerator, $viewFactory, $authFactory, $responseFactory);
+        parent::__construct($app, $request, $router, $sessionStore, $redirector, $urlGenerator, $viewFactory, $authFactory, $responseFactory, $config);
         $this->removeMiddleware('can:edit');
         $this->middleware('can:edit', ['only' => ['signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
-        $this->endpointType = config('twill.file_library.endpoint_type');
+        $this->endpointType = $this->config->get('twill.file_library.endpoint_type');
     }
 
     /**
@@ -172,7 +175,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         $cleanFilename = preg_replace("/\s+/i", "-", $filename);
 
         $fileDirectory = $request->input('unique_folder_name');
-        $disk = config('twill.file_library.disk');
+        $disk = $this->config->get('twill.file_library.disk');
 
         $request->file('qqfile')->storeAs($fileDirectory, $cleanFilename, $disk);
 
@@ -250,7 +253,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
      */
     public function signS3Upload(Request $request, SignS3Upload $signS3Upload)
     {
-        return $signS3Upload->fromPolicy($request->getContent(), $this, config('twill.file_library.disk'));
+        return $signS3Upload->fromPolicy($request->getContent(), $this, $this->config->get('twill.file_library.disk'));
     }
 
     /**

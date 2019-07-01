@@ -3,6 +3,7 @@
 namespace A17\Twill\Commands;
 
 use A17\Twill\Models\Media;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Console\Command;
 use ImageService;
@@ -29,13 +30,20 @@ class RefreshLQIP extends Command
     protected $db;
 
     /**
-     * @param DatabaseManager $db
+     * @var Config
      */
-    public function __construct(DatabaseManager $db)
+    protected $config;
+
+    /**
+     * @param DatabaseManager $db
+     * @param Config $config
+     */
+    public function __construct(DatabaseManager $db, Config $config)
     {
         parent::__construct();
 
         $this->db = $db;
+        $this->config = $config;
     }
 
     // TODO: document this and actually think about moving to queuable job after content type updates
@@ -45,7 +53,7 @@ class RefreshLQIP extends Command
             foreach ($attached_medias as $attached_media) {
                 $uuid = Media::withTrashed()->find($attached_media->media_id, ['uuid'])->uuid;
 
-                $lqip_width = config('lqip.' . $attached_media->mediable_type . '.' . $attached_media->role . '.' . $attached_media->crop);
+                $lqip_width = $this->config->get('lqip.' . $attached_media->mediable_type . '.' . $attached_media->role . '.' . $attached_media->crop);
 
                 if ($lqip_width && (!$attached_media->lqip_data || $this->option('all'))) {
                     $url = ImageService::getLQIPUrl($uuid, [

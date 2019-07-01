@@ -4,8 +4,12 @@ namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\Media;
 use A17\Twill\Repositories\Behaviors\HandleTags;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Filesystem\Factory as FilesystemManager;
+use Illuminate\Database\DatabaseManager as DB;
+use Illuminate\Foundation\Application;
 use ImageService;
+use Psr\Log\LoggerInterface as Logger;
 
 class MediaRepository extends ModuleRepository
 {
@@ -17,11 +21,23 @@ class MediaRepository extends ModuleRepository
     protected $filesystemManager;
 
     /**
+     * @param DB $db
+     * @param Logger $logger
+     * @param Application $app
+     * @param Config $config
      * @param Media $model
      * @param FilesystemManager $filesystemManager
      */
-    public function __construct(Media $model, FilesystemManager $filesystemManager)
-    {
+    public function __construct(
+        DB $db,
+        Logger $logger,
+        Application $app,
+        Config $config,
+        Media $model,
+        FilesystemManager $filesystemManager
+    ) {
+        parent::__construct($db, $logger, $app, $config);
+
         $this->model = $model;
         $this->filesystemManager = $filesystemManager;
     }
@@ -35,14 +51,14 @@ class MediaRepository extends ModuleRepository
     public function afterDelete($object)
     {
         $storageId = $object->uuid;
-        if (config('twill.media_library.cascade_delete')) {
-            $this->filesystemManager->disk(config('twill.media_library.disk'))->delete($storageId);
+        if ($this->config->get('twill.media_library.cascade_delete')) {
+            $this->filesystemManager->disk($this->config->get('twill.media_library.disk'))->delete($storageId);
         }
     }
 
     public function prepareFieldsBeforeCreate($fields)
     {
-        if (config('twill.media_library.init_alt_text_from_filename', true)) {
+        if ($this->config->get('twill.media_library.init_alt_text_from_filename', true)) {
             $fields['alt_text'] = $this->model->altTextFrom($fields['filename']);
         }
 

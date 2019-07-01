@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Commands;
 
+use Illuminate\Config\Repository as Config;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Composer;
@@ -51,15 +52,22 @@ class ModuleMake extends Command
     protected $repositoryTraits;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @param Filesystem $files
      * @param Composer $composer
+     * @param Config $config
      */
-    public function __construct(Filesystem $files, Composer $composer)
+    public function __construct(Filesystem $files, Composer $composer, Config $config)
     {
         parent::__construct();
 
         $this->files = $files;
         $this->composer = $composer;
+        $this->config = $config;
 
         $this->modelTraits = ['HasBlocks', 'HasTranslation', 'HasSlug', 'HasMedias', 'HasFiles', 'HasRevisions', 'HasPosition'];
         $this->repositoryTraits = ['HandleBlocks', 'HandleTranslations', 'HandleSlugs', 'HandleMedias', 'HandleFiles', 'HandleRevisions'];
@@ -319,7 +327,7 @@ class ModuleMake extends Command
      */
     private function createViews($moduleName = 'items', $translatable = false)
     {
-        $viewsPath = config('view.paths')[0] . '/admin/' . $moduleName;
+        $viewsPath = $this->config->get('view.paths')[0] . '/admin/' . $moduleName;
 
         if (!$this->files->isDirectory($viewsPath)) {
             $this->files->makeDirectory($viewsPath, 0755, true);
