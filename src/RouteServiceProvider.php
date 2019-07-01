@@ -126,7 +126,7 @@ class RouteServiceProvider extends ServiceProvider
             }
 
             if ($controllerName === null) {
-                $controllerName = ucfirst(str_plural($moduleName));
+                $controllerName = ucfirst(Str::plural($moduleName));
             }
 
             $routePrefix = empty($routePrefix) ? '/' : (starts_with($routePrefix, '/') ? $routePrefix : '/' . $routePrefix);
