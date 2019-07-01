@@ -91,8 +91,8 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
      */
     public function index($parentModuleId = null)
     {
-        if (request()->has('except')) {
-            $prependScope['exceptIds'] = request('except');
+        if ($this->request->has('except')) {
+            $prependScope['exceptIds'] = $this->request->get('except');
         }
 
         return $this->getIndexData($prependScope ?? []);
@@ -122,12 +122,12 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
      */
     protected function getRequestFilters()
     {
-        if (request()->has('search')) {
-            $requestFilters['search'] = request('search');
+        if ($this->request->has('search')) {
+            $requestFilters['search'] = $this->request->get('search');
         }
 
-        if (request()->has('tag')) {
-            $requestFilters['tag'] = request('tag');
+        if ($this->request->has('tag')) {
+            $requestFilters['tag'] = $this->request->get('tag');
         }
 
         return $requestFilters ?? [];
@@ -204,9 +204,9 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         $this->repository->update(
             $this->request->input('id'),
             array_merge([
-                'alt_text' => request('alt_text', null),
-                'caption' => request('caption', null),
-                'tags' => request('tags', null),
+                'alt_text' => $this->request->get('alt_text', null),
+                'caption' => $this->request->get('caption', null),
+                'tags' => $this->request->get('tags', null),
             ], $this->getExtraMetadatas()->toArray())
         );
 
@@ -226,9 +226,9 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
             return is_null($meta);
         })->toArray();
 
-        $extraMetadatas = array_diff_key($metadatasFromRequest, array_flip((array) request('fieldsRemovedFromBulkEditing', [])));
+        $extraMetadatas = array_diff_key($metadatasFromRequest, array_flip((array) $this->request->get('fieldsRemovedFromBulkEditing', [])));
 
-        if (in_array('tags', request('fieldsRemovedFromBulkEditing', []))) {
+        if (in_array('tags', $this->request->get('fieldsRemovedFromBulkEditing', []))) {
             $this->repository->addIgnoreFieldsBeforeSave('bulk_tags');
         } else {
             $previousCommonTags = $this->repository->getTags(null, $ids);
@@ -286,7 +286,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     private function getExtraMetadatas()
     {
         return Collection::make($this->customFields)->mapWithKeys(function ($field) {
-            $fieldInRequest = request($field['name']);
+            $fieldInRequest = $this->request->get($field['name']);
 
             if (isset($field['type']) && $field['type'] === 'checkbox') {
                 return [$field['name'] => $fieldInRequest ? Arr::first($fieldInRequest) : false];

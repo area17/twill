@@ -171,7 +171,7 @@ class UserController extends ModuleController
     protected function formData($request)
     {
         $user = $this->authManager->guard('twill_users')->user();
-        $with2faSettings = config('twill.enabled.users-2fa') && $user->id == request('user');
+        $with2faSettings = config('twill.enabled.users-2fa') && $user->id == $this->request->get('user');
 
         if ($with2faSettings) {
             $google2fa = new Google2FA();

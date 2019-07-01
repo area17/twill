@@ -301,7 +301,7 @@ abstract class ModuleController extends Controller
             return $indexData + ['replaceUrl' => true];
         }
 
-        if ($this->request->has('openCreate') && request('openCreate')) {
+        if ($this->request->has('openCreate') && $this->request->get('openCreate')) {
             $indexData += ['openCreate' => true];
         }
 
@@ -465,15 +465,15 @@ abstract class ModuleController extends Controller
      */
     public function preview($id)
     {
-        if (request()->has('revisionId')) {
-            $item = $this->repository->previewForRevision($id, request('revisionId'));
+        if ($this->request->has('revisionId')) {
+            $item = $this->repository->previewForRevision($id, $this->request->get('revisionId'));
         } else {
             $formRequest = $this->validateFormRequest();
             $item = $this->repository->preview($id, $formRequest->all());
         }
 
-        if (request()->has('activeLanguage')) {
-            $this->app->setLocale(request('activeLanguage'));
+        if ($this->request->has('activeLanguage')) {
+            $this->app->setLocale($this->request->get('activeLanguage'));
         }
 
         $previewView = $this->previewView ?? (config('twill.frontend.views_path', 'site') . '.' . Str::singular($this->moduleName));
@@ -491,8 +491,8 @@ abstract class ModuleController extends Controller
      */
     public function restoreRevision($id)
     {
-        if (request()->has('revisionId')) {
-            $item = $this->repository->previewForRevision($id, request('revisionId'));
+        if ($this->request->has('revisionId')) {
+            $item = $this->repository->previewForRevision($id, $this->request->get('revisionId'));
             $item->id = $id;
             $item->cmsRestoring = true;
         } else {
@@ -509,7 +509,7 @@ abstract class ModuleController extends Controller
             return $this->viewFactory->exists($view);
         });
 
-        $revision = $item->revisions()->where('id', request('revisionId'))->first();
+        $revision = $item->revisions()->where('id', $this->request->get('revisionId'))->first();
         $date = $revision->created_at->toDayDateTimeString();
 
         session()->flash('restoreMessage', "You are currently editing an older revision of this content (saved by $revision->byUser on $date). Make changes if needed and click restore to save a new revision.");
@@ -523,19 +523,19 @@ abstract class ModuleController extends Controller
     public function publish()
     {
         try {
-            if ($this->repository->updateBasic(request('id'), [
-                'published' => !request('active'),
+            if ($this->repository->updateBasic($this->request->get('id'), [
+                'published' => !$this->request->get('active'),
             ])) {
                 activity()->performedOn(
-                    $this->repository->getById(request('id'))
+                    $this->repository->getById($this->request->get('id'))
                 )->log(
-                    (request('active') ? 'un' : '') . 'published'
+                    ($this->request->get('active') ? 'un' : '') . 'published'
                 );
 
                 $this->fireEvent();
 
                 return $this->respondWithSuccess(
-                    $this->modelTitle . ' ' . (request('active') ? 'un' : '') . 'published!'
+                    $this->modelTitle . ' ' . ($this->request->get('active') ? 'un' : '') . 'published!'
                 );
             }
         } catch (\Exception $e) {
@@ -553,13 +553,13 @@ abstract class ModuleController extends Controller
     public function bulkPublish()
     {
         try {
-            if ($this->repository->updateBasic(explode(',', request('ids')), [
-                'published' => request('publish'),
+            if ($this->repository->updateBasic(explode(',', $this->request->get('ids')), [
+                'published' => $this->request->get('publish'),
             ])) {
                 $this->fireEvent();
 
                 return $this->respondWithSuccess(
-                    $this->modelTitle . ' items ' . (request('publish') ? '' : 'un') . 'published!'
+                    $this->modelTitle . ' items ' . ($this->request->get('publish') ? '' : 'un') . 'published!'
                 );
             }
         } catch (\Exception $e) {
@@ -593,7 +593,7 @@ abstract class ModuleController extends Controller
      */
     public function bulkDelete()
     {
-        if ($this->repository->bulkDelete(explode(',', request('ids')))) {
+        if ($this->repository->bulkDelete(explode(',', $this->request->get('ids')))) {
             $this->fireEvent();
             return $this->respondWithSuccess($this->modelTitle . ' items moved to trash!');
         }
@@ -606,9 +606,9 @@ abstract class ModuleController extends Controller
      */
     public function restore()
     {
-        if ($this->repository->restore(request('id'))) {
+        if ($this->repository->restore($this->request->get('id'))) {
             $this->fireEvent();
-            activity()->performedOn($this->repository->getById(request('id')))->log('restored');
+            activity()->performedOn($this->repository->getById($this->request->get('id')))->log('restored');
             return $this->respondWithSuccess($this->modelTitle . ' restored!');
         }
 
@@ -620,7 +620,7 @@ abstract class ModuleController extends Controller
      */
     public function bulkRestore()
     {
-        if ($this->repository->bulkRestore(explode(',', request('ids')))) {
+        if ($this->repository->bulkRestore(explode(',', $this->request->get('ids')))) {
             $this->fireEvent();
             return $this->respondWithSuccess($this->modelTitle . ' items restored!');
         }
@@ -633,9 +633,9 @@ abstract class ModuleController extends Controller
      */
     public function feature()
     {
-        if (($id = request('id'))) {
-            $featuredField = request('featureField') ?? $this->featureField;
-            $featured = !request('active');
+        if (($id = $this->request->get('id'))) {
+            $featuredField = $this->request->get('featureField') ?? $this->featureField;
+            $featured = !$this->request->get('active');
 
             if ($this->repository->isUniqueFeature()) {
                 if ($featured) {
@@ -649,11 +649,11 @@ abstract class ModuleController extends Controller
             activity()->performedOn(
                 $this->repository->getById($id)
             )->log(
-                (request('active') ? 'un' : '') . 'featured'
+                ($this->request->get('active') ? 'un' : '') . 'featured'
             );
 
             $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' ' . (request('active') ? 'un' : '') . 'featured!');
+            return $this->respondWithSuccess($this->modelTitle . ' ' . ($this->request->get('active') ? 'un' : '') . 'featured!');
         }
 
         return $this->respondWithError($this->modelTitle . ' was not featured. Something wrong happened!');
@@ -664,13 +664,13 @@ abstract class ModuleController extends Controller
      */
     public function bulkFeature()
     {
-        if (($ids = explode(',', request('ids')))) {
-            $featuredField = request('featureField') ?? $this->featureField;
-            $featured = request('feature') ?? true;
+        if (($ids = explode(',', $this->request->get('ids')))) {
+            $featuredField = $this->request->get('featureField') ?? $this->featureField;
+            $featured = $this->request->get('feature') ?? true;
             // we don't need to check if unique feature since bulk operation shouldn't be allowed in this case
             $this->repository->updateBasic($ids, [$featuredField => $featured]);
             $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' items ' . (request('feature') ? '' : 'un') . 'featured!');
+            return $this->respondWithSuccess($this->modelTitle . ' items ' . ($this->request->get('feature') ? '' : 'un') . 'featured!');
         }
 
         return $this->respondWithError($this->modelTitle . ' items were not featured. Something wrong happened!');
@@ -681,7 +681,7 @@ abstract class ModuleController extends Controller
      */
     public function reorder()
     {
-        if (($values = request('ids')) && !empty($values)) {
+        if (($values = $this->request->get('ids')) && !empty($values)) {
             $this->repository->setNewOrder($values);
             $this->fireEvent();
             return $this->respondWithSuccess($this->modelTitle . ' order changed!');
@@ -761,7 +761,7 @@ abstract class ModuleController extends Controller
             $this->indexWith,
             $scopes,
             $this->orderScope(),
-            request('offset') ?? $this->perPage ?? 50,
+            $this->request->get('offset') ?? $this->perPage ?? 50,
             $forcePagination
         ));
     }
@@ -896,7 +896,7 @@ abstract class ModuleController extends Controller
     protected function getIndexTableColumns($items)
     {
         $tableColumns = [];
-        $visibleColumns = request('columns') ?? false;
+        $visibleColumns = $this->request->get('columns') ?? false;
 
         if (isset(Arr::first($this->indexColumns)['thumb'])
             && Arr::first($this->indexColumns)['thumb']
@@ -1086,8 +1086,8 @@ abstract class ModuleController extends Controller
      */
     protected function getBrowserData($prependScope = [])
     {
-        if (request()->has('except')) {
-            $prependScope['exceptIds'] = request('except');
+        if ($this->request->has('except')) {
+            $prependScope['exceptIds'] = $this->request->get('except');
         }
 
         $scopes = $this->filterScope($prependScope);
@@ -1190,8 +1190,8 @@ abstract class ModuleController extends Controller
      */
     protected function getRequestFilters()
     {
-        if (request()->has('search')) {
-            return ['search' => request('search')];
+        if ($this->request->has('search')) {
+            return ['search' => $this->request->get('search')];
         }
 
         return json_decode($this->request->get('filter'), true) ?? [];
@@ -1395,7 +1395,7 @@ abstract class ModuleController extends Controller
      */
     protected function getPermalinkBaseUrl()
     {
-        return request()->getScheme() . '://' . config('app.url') . '/'
+        return $this->request->getScheme() . '://' . config('app.url') . '/'
             . ($this->moduleHas('translations') ? '{language}/' : '')
             . ($this->moduleHas('revisions') ? '{preview}/' : '')
             . ($this->permalinkBase ?? $this->moduleName)
