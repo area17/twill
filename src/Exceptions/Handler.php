@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Routing\Redirector;
+use Illuminate\Routing\ResponseFactory;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\Factory as ViewFactory;
@@ -48,18 +49,25 @@ class Handler extends ExceptionHandler
     protected $viewFactory;
 
     /**
+     * @var ResponseFactory
+     */
+    protected $responseFactory;
+
+    /**
      * @param Container $container
      * @param Redirector $redirector
      * @param UrlGenerator $urlGenerator
      * @param Application $app
      * @param ViewFactory $viewFactory
+     * @param ResponseFactory $responseFactory
      */
     public function __construct(
         Container $container,
         Redirector $redirector,
         UrlGenerator $urlGenerator,
         Application $app,
-        ViewFactory $viewFactory
+        ViewFactory $viewFactory,
+        ResponseFactory $responseFactory
     ) {
         parent::__construct($container);
 
@@ -67,6 +75,7 @@ class Handler extends ExceptionHandler
         $this->urlGenerator = $urlGenerator;
         $this->app = $app;
         $this->viewFactory = $viewFactory;
+        $this->responseFactory = $responseFactory;
     }
 
     public function report(Exception $e)
@@ -128,7 +137,7 @@ class Handler extends ExceptionHandler
         }
 
         if ($this->viewFactory->exists($view)) {
-            return response()->view($view, ['exception' => $e], $statusCode, $headers);
+            return $this->responseFactory->view($view, ['exception' => $e], $statusCode, $headers);
         }
 
         if ($this->isHttpException($e)) {
@@ -167,7 +176,7 @@ class Handler extends ExceptionHandler
 
         $whoops->pushHandler($handler);
 
-        return response(
+        return $this->responseFactory->make(
             $whoops->handleException($e),
             method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500,
             method_exists($e, 'getHeaders') ? $e->getHeaders() : []
@@ -189,7 +198,7 @@ class Handler extends ExceptionHandler
     protected function handleUnauthenticated($request, AuthenticationException $exception)
     {
         if ($request->expectsJson()) {
-            return response()->json(['error' => 'Unauthenticated.'], 401);
+            return $this->responseFactory->json(['error' => 'Unauthenticated.'], 401);
         }
 
         return $this->redirector->guest($this->urlGenerator->route('admin.login'));
@@ -197,6 +206,6 @@ class Handler extends ExceptionHandler
 
     protected function invalidJson($request, ValidationException $exception)
     {
-        return response()->json($exception->errors(), $exception->status);
+        return $this->responseFactory->json($exception->errors(), $exception->status);
     }
 }

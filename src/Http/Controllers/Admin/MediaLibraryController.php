@@ -9,6 +9,7 @@ use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
+use Illuminate\Routing\ResponseFactory;
 use Illuminate\Routing\Router;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Session\Store as SessionStore;
@@ -46,6 +47,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
      * @param UrlGenerator $urlGenerator
      * @param ViewFactory $viewFactory
      * @param AuthFactory $authFactory
+     * @param ResponseFactory $responseFactory
      */
     public function __construct(
         Application $app,
@@ -55,9 +57,10 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         Redirector $redirector,
         UrlGenerator $urlGenerator,
         ViewFactory $viewFactory,
-        AuthFactory $authFactory
+        AuthFactory $authFactory,
+        ResponseFactory $responseFactory
     ) {
-        parent::__construct($app, $request, $router, $sessionStore, $redirector, $urlGenerator, $viewFactory, $authFactory);
+        parent::__construct($app, $request, $router, $sessionStore, $redirector, $urlGenerator, $viewFactory, $authFactory, $responseFactory);
         $this->removeMiddleware('can:edit');
         $this->middleware('can:edit', ['only' => ['signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = config('twill.media_library.endpoint_type');
@@ -111,7 +114,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
             $media = $this->storeReference($request);
         }
 
-        return response()->json(['media' => $media->toCmsArray(), 'success' => true], 200);
+        return $this->responseFactory->json(['media' => $media->toCmsArray(), 'success' => true], 200);
     }
 
     public function storeFile($request)
@@ -160,7 +163,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
             ], $this->getExtraMetadatas()->toArray())
         );
 
-        return response()->json([
+        return $this->responseFactory->json([
             'tags' => $this->repository->getTagsList(),
         ], 200);
     }
@@ -192,7 +195,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         $scopes = $this->filterScope(['id' => $ids]);
         $items = $this->getIndexItems($scopes);
 
-        return response()->json([
+        return $this->responseFactory->json([
             'items' => $items->map(function ($item) {
                 return $item->toCmsArray();
             })->toArray(),
@@ -207,12 +210,12 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
     public function policyIsSigned($signedPolicy)
     {
-        return response()->json($signedPolicy, 200);
+        return $this->responseFactory->json($signedPolicy, 200);
     }
 
     public function policyIsNotValid()
     {
-        return response()->json(["invalid" => true], 500);
+        return $this->responseFactory->json(["invalid" => true], 500);
     }
 
     private function getExtraMetadatas()

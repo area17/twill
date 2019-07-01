@@ -6,6 +6,7 @@ use A17\Twill\Models\Enums\UserRole;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Routing\Router;
@@ -76,6 +77,7 @@ class UserController extends ModuleController
      * @param UrlGenerator $urlGenerator
      * @param ViewFactory $viewFactory
      * @param AuthFactory $authFactory
+     * @param ResponseFactory $responseFactory
      */
     public function __construct(
         Application $app,
@@ -86,9 +88,10 @@ class UserController extends ModuleController
         Redirector $redirector,
         UrlGenerator $urlGenerator,
         ViewFactory $viewFactory,
-        AuthFactory $authFactory
+        AuthFactory $authFactory,
+        ResponseFactory $responseFactory
     ) {
-        parent::__construct($app, $request, $router, $sessionStore, $redirector, $urlGenerator, $viewFactory, $authFactory);
+        parent::__construct($app, $request, $router, $sessionStore, $redirector, $urlGenerator, $viewFactory, $authFactory, $responseFactory);
         $this->authManager = $authManager;
         $this->removeMiddleware('can:edit');
         $this->removeMiddleware('can:delete');

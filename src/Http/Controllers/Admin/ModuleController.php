@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
+use Illuminate\Routing\ResponseFactory;
 use Illuminate\Routing\Router;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Session\Store as SessionStore;
@@ -50,6 +51,11 @@ abstract class ModuleController extends Controller
      * @var AuthFactory
      */
     protected $authFactory;
+
+    /**
+     * @var ResponseFactory
+     */
+    protected $responseFactory;
 
     protected $routePrefix;
 
@@ -155,6 +161,7 @@ abstract class ModuleController extends Controller
      * @param UrlGenerator $urlGenerator
      * @param ViewFactory $viewFactory
      * @param AuthFactory $authFactory
+     * @param ResponseFactory $responseFactory
      */
     public function __construct(
         Application $app,
@@ -164,7 +171,8 @@ abstract class ModuleController extends Controller
         Redirector $redirector,
         UrlGenerator $urlGenerator,
         ViewFactory $viewFactory,
-        AuthFactory $authFactory
+        AuthFactory $authFactory,
+        ResponseFactory $responseFactory
     ) {
         parent::__construct($app);
         $this->app = $app;
@@ -175,6 +183,7 @@ abstract class ModuleController extends Controller
         $this->urlGenerator = $urlGenerator;
         $this->viewFactory = $viewFactory;
         $this->authFactory = $authFactory;
+        $this->responseFactory = $responseFactory;
 
         $this->setMiddlewarePermission();
 
@@ -260,7 +269,7 @@ abstract class ModuleController extends Controller
 
     public function browser()
     {
-        return response()->json($this->getBrowserData());
+        return $this->responseFactory->json($this->getBrowserData());
     }
 
     public function store($parentModuleId = null)
@@ -304,7 +313,7 @@ abstract class ModuleController extends Controller
 
         if ($this->getIndexOption('editInModal')) {
             return $this->request->ajax()
-            ? response()->json($this->modalFormData($submodule ?? $id))
+            ? $this->responseFactory->json($this->modalFormData($submodule ?? $id))
             : $this->redirector->to(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
         }
 
@@ -368,7 +377,7 @@ abstract class ModuleController extends Controller
             }
 
             if ($this->moduleHas('revisions')) {
-                return response()->json([
+                return $this->responseFactory->json([
                     'message' => 'Content saved. All good!',
                     'variant' => FlashLevel::SUCCESS,
                     'revisions' => $item->revisionsArray(),
@@ -578,7 +587,7 @@ abstract class ModuleController extends Controller
         $query = $this->request->input('q');
         $tags = $this->repository->getTags($query);
 
-        return response()->json(['items' => $tags->map(function ($tag) {
+        return $this->responseFactory->json(['items' => $tags->map(function ($tag) {
             return $tag->name;
         })], 200);
     }
@@ -1237,7 +1246,7 @@ abstract class ModuleController extends Controller
 
     protected function respondWithRedirect($redirectUrl)
     {
-        return response()->json([
+        return $this->responseFactory->json([
             'redirect' => $redirectUrl,
         ]);
     }
@@ -1249,7 +1258,7 @@ abstract class ModuleController extends Controller
 
     protected function respondWithJson($message, $variant)
     {
-        return response()->json([
+        return $this->responseFactory->json([
             'message' => $message,
             'variant' => $variant,
         ]);

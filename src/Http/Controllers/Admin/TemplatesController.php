@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Routing\ResponseFactory;
 use Illuminate\View\Factory as ViewFactory;
 
 class TemplatesController extends Controller
@@ -13,14 +14,21 @@ class TemplatesController extends Controller
     protected $viewFactory;
 
     /**
+     * @var ResponseFactory
+     */
+    protected $responseFactory;
+
+    /**
      * @param Application $app
      * @param ViewFactory $viewFactory
+     * @param ResponseFactory $responseFactory
      */
-    public function __construct(Application $app, ViewFactory $viewFactory)
+    public function __construct(Application $app, ViewFactory $viewFactory, ResponseFactory $responseFactory)
     {
         parent::__construct($app);
 
         $this->viewFactory = $viewFactory;
+        $this->responseFactory = $responseFactory;
     }
 
     public function index()
@@ -39,6 +47,6 @@ class TemplatesController extends Controller
             'data' => $this->viewFactory->make('templates.' . $view)->render(),
             'has_more' => (rand(0, 10) > 5),
         ];
-        return response()->json($response);
+        return $this->responseFactory->json($response);
     }
 }
