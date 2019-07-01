@@ -356,7 +356,7 @@ abstract class ModuleController extends Controller
                         ['openCreate' => true]
                     ));
                 } elseif ($input['cmsSaveType'] === 'restore') {
-                    session()->flash('status', "Revision restored.");
+                    $this->sessionStore->flash('status', "Revision restored.");
 
                     return $this->respondWithRedirect(moduleRoute(
                         $this->moduleName,
@@ -424,7 +424,7 @@ abstract class ModuleController extends Controller
         $revision = $item->revisions()->where('id', $this->request->get('revisionId'))->first();
         $date = $revision->created_at->toDayDateTimeString();
 
-        session()->flash('restoreMessage', "You are currently editing an older revision of this content (saved by $revision->byUser on $date). Make changes if needed and click restore to save a new revision.");
+        $this->sessionStore->flash('restoreMessage', "You are currently editing an older revision of this content (saved by $revision->byUser on $date). Make changes if needed and click restore to save a new revision.");
 
         return $this->viewFactory->make($view, $this->form($id, $item));
     }
