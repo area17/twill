@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Str;
 use Illuminate\View\Factory as ViewFactory;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 trait ShowWithPreview
 {
@@ -35,7 +36,11 @@ trait ShowWithPreview
             $item = $this->getItemPreview($slug);
         }
 
-        abort_unless($item = ($item ?? $this->getItem($slug)), 404, ucfirst($this->moduleName) . ' not found');
+        $item = ($item ?? $this->getItem($slug));
+
+        if (!$item) {
+            throw new NotFoundHttpException(ucfirst($this->moduleName) . ' not found');
+        }
 
         if ($item->redirect) {
             return $redirector->to(route($this->routeName . '.show', $item->getSlug()));
