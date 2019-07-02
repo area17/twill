@@ -8,6 +8,7 @@ use Event;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use A17\Twill\Models\Group;
 use Route;
 use Session;
 
@@ -1017,11 +1018,7 @@ abstract class ModuleController extends Controller
             'editor' => $this->moduleHas('revisions') && $this->moduleHas('blocks') && !$this->disableEditor,
             'blockPreviewUrl' => route('admin.blocks.preview'),
             'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
-            'groupUserMap' => [
-                1 => [1, 2, 3],
-                2 => [3, 4, 7],
-                3 => [5, 2, 1, 3, 9]
-            ],
+            'groupUserMapping' => $this->getGroupUserMapping(),
         ] + (Route::has($previewRouteName) ? [
             'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $item->id),
         ] : [])
@@ -1219,6 +1216,13 @@ abstract class ModuleController extends Controller
             'message' => $message,
             'variant' => $variant,
         ]);
+    }
+
+    protected function getGroupUserMapping()
+    {
+        return Group::with('users')->get()->mapWithKeys(function($group) {
+            return [$group->id => $group->users->pluck('id')->toArray()];
+        })->toArray();
     }
 
     protected function fireEvent($input = [])
