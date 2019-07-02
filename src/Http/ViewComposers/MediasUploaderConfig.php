@@ -5,6 +5,7 @@ namespace A17\Twill\Http\ViewComposers;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\View\View;
 use Illuminate\Routing\UrlGenerator;
+use Illuminate\Session\Store as SessionStore;
 
 class MediasUploaderConfig
 {
@@ -19,13 +20,20 @@ class MediasUploaderConfig
     protected $config;
 
     /**
+     * @var SessionStore
+     */
+    protected $sessionStore;
+
+    /**
      * @param UrlGenerator $urlGenerator
      * @param Config $config
+     * @param SessionStore $sessionStore
      */
-    public function __construct(UrlGenerator $urlGenerator, Config $config)
+    public function __construct(UrlGenerator $urlGenerator, Config $config, SessionStore $sessionStore)
     {
         $this->urlGenerator = $urlGenerator;
         $this->config = $config;
+        $this->sessionStore = $sessionStore;
     }
 
     public function compose(View $view)
@@ -43,7 +51,7 @@ class MediasUploaderConfig
             'endpointRegion' => $this->config->get('filesystems.disks.' . $libraryDisk . '.region', 'none'),
             'endpointRoot' => $this->config->get('filesystems.disks.' . $libraryDisk . '.root', ''),
             'accessKey' => $this->config->get('filesystems.disks.' . $libraryDisk . '.key', 'none'),
-            'csrfToken' => csrf_token(),
+            'csrfToken' => $this->sessionStore->token(),
             'acl' => $this->config->get('twill.media_library.acl'),
             'filesizeLimit' => $this->config->get('twill.media_library.filesize_limit'),
             'allowedExtensions' => $allowedExtensions,
