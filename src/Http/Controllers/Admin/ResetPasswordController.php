@@ -47,6 +47,11 @@ class ResetPasswordController extends Controller
             $user->save();
         }
 
+        if ($user->require_new_password) {
+            $user->require_new_password = false;
+            $user->save();
+        }
+
         return $this->traitSendResetResponse($request, $response);
     }
 
