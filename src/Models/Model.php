@@ -38,7 +38,7 @@ abstract class Model extends BaseModel implements TaggableInterface
             $allModelPermissions = (clone $allPermissions)->ofModel($model);
             // If the user has any module permissions, or global manage all modules permissions, all items will be return
             if ($allModelPermissions->module()->whereIn('name', Permission::available('module'))->exists()
-                || $allPermissions->global()->where('name', 'manage-modules')->exists()) {
+                || (clone $allPermissions)->global()->where('name', 'manage-modules')->exists()) {
                 return $query;
             }
 
