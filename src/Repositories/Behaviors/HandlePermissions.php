@@ -72,9 +72,9 @@ trait HandlePermissions
     // After save handle permissions form fields on role form
     protected function handleRolePermissions($role, $fields)
     {
-        if (isset($fields['general_permissions'])) {
+        if (array_key_exists('general_permissions', $fields)) {
             foreach (Permission::available('global') as $permissionName) {
-                if (in_array($permissionName, $fields['general_permissions'])) {
+                if (!empty($fields['general_permissions']) && in_array($permissionName, $fields['general_permissions'])) {
                     $role->grantGlobalPermission($permissionName);
                 } else {
                     $role->revokeGlobalPermission($permissionName);
