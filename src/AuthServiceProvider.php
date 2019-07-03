@@ -97,38 +97,17 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('view-item', function ($user, $item) {
             return $user->can('edit-item', $item)
-            || $user->permissions()->ofItem($item)->where('name', 'view-item')->exists()
-            || $user->groups()->whereHas('permissions', function ($query) use ($item) {
-                $query->where([
-                    ['permissionable_type', get_class($item)],
-                    ['permissionable_id', $item->id],
-                    ['name', 'view-item'],
-                ]);
-            })->exists();
+            || $user->permissions()->ofItem($item)->where('name', 'view-item')->exists();
         });
 
         Gate::define('edit-item', function ($user, $item) {
             return $user->can('manage-item', $item)
-            || $user->permissions()->ofItem($item)->where('name', 'edit-item')->exists()
-            || $user->groups()->whereHas('permissions', function ($query) use ($item) {
-                $query->where([
-                    ['permissionable_type', get_class($item)],
-                    ['permissionable_id', $item->id],
-                    ['name', 'edit-item'],
-                ]);
-            })->exists();
+            || $user->permissions()->ofItem($item)->where('name', 'edit-item')->exists();
         });
 
         Gate::define('manage-item', function ($user, $item) {
             return $user->can('manage-module', getModuleNameByModel(get_class($item)))
-            || $user->permissions()->ofItem($item)->where('name', 'manage-item')->exists()
-            || $user->groups()->whereHas('permissions', function ($query) use ($item) {
-                $query->where([
-                    ['permissionable_type', get_class($item)],
-                    ['permissionable_id', $item->id],
-                    ['name', 'manage-item'],
-                ]);
-            })->exists();
+            || $user->permissions()->ofItem($item)->where('name', 'manage-item')->exists();
         });
     }
 }

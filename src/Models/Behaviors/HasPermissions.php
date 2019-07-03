@@ -92,13 +92,9 @@ trait HasPermissions
                 $query->where('id', $this->id);
             })->orWhereHas('roles', function ($query) {
                 $query->where('id', $this->role->id);
-            })->orWhereHas('groups', function ($query) {
-                $query->whereIn('id', $this->groups()->pluck('id'));
             });
             return $permissions;
         }
-        // Has no effects for other models
-        abort(500, "userAllPermissions function only allowed on User model");
     }
 
     protected function checkPermissionAvailable($name, $scope)
