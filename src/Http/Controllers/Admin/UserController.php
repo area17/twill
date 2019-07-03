@@ -68,19 +68,6 @@ class UserController extends ModuleController
         'role' => 'edit-user-role',
     ];
 
-    /**
-     * @param Application $app
-     * @param Config $config
-     * @param Request $request
-     * @param Router $router
-     * @param SessionStore $sessionStore
-     * @param AuthManager $authManager
-     * @param Redirector $redirector
-     * @param UrlGenerator $urlGenerator
-     * @param ViewFactory $viewFactory
-     * @param AuthFactory $authFactory
-     * @param ResponseFactory $responseFactory
-     */
     public function __construct(
         Application $app,
         Config $config,

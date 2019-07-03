@@ -39,18 +39,6 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
     protected $customFields;
 
-    /**
-     * @param Application $app
-     * @param Config $config
-     * @param Request $request
-     * @param Router $router
-     * @param SessionStore $sessionStore
-     * @param Redirector $redirector
-     * @param UrlGenerator $urlGenerator
-     * @param ViewFactory $viewFactory
-     * @param AuthFactory $authFactory
-     * @param ResponseFactory $responseFactory
-     */
     public function __construct(
         Application $app,
         Config $config,

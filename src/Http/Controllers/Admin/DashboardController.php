@@ -38,13 +38,6 @@ class DashboardController extends Controller
      */
     protected $authFactory;
 
-    /**
-     * @param Application $app
-     * @param Config $config
-     * @param Logger $logger
-     * @param ViewFactory $viewFactory
-     * @param AuthFactory $authFactory
-     */
     public function __construct(
         Application $app,
         Config $config,

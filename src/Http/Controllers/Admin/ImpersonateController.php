@@ -14,11 +14,6 @@ class ImpersonateController extends Controller
      */
     protected $authManager;
 
-    /**
-     * @param Application $app
-     * @param Config $config
-     * @param AuthManager $authManager
-     */
     public function __construct(Application $app, Config $config, AuthManager $authManager)
     {
         parent::__construct($app, $config);

@@ -6,7 +6,6 @@ use Closure;
 
 class ValidateBackHistory
 {
-
     public function handle($request, Closure $next)
     {
         $response = $next($request);

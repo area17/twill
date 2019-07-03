@@ -19,12 +19,6 @@ class TemplatesController extends Controller
      */
     protected $responseFactory;
 
-    /**
-     * @param Application $app
-     * @param Config $config
-     * @param ViewFactory $viewFactory
-     * @param ResponseFactory $responseFactory
-     */
     public function __construct(
         Application $app,
         Config $config,

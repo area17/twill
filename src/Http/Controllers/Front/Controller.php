@@ -12,13 +12,11 @@ use Illuminate\View\Factory as ViewFactory;
 
 class Controller extends BaseController
 {
+    /**
+     * @var Seo
+     */
     public $seo;
 
-    /**
-     * @param Application $app
-     * @param ViewFactory $view
-     * @param Config $config
-     */
     public function __construct(Application $app, ViewFactory $view, Config $config)
     {
         if ($config->get('twill.bind_exception_handler', true)) {

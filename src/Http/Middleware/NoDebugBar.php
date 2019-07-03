@@ -9,6 +9,9 @@ use Barryvdh\Debugbar\LaravelDebugbar;
 
 class NoDebugBar
 {
+    /**
+     * @var Application
+     */
     protected $app;
 
     /**
@@ -21,11 +24,6 @@ class NoDebugBar
      */
     protected $config;
 
-    /**
-     * @param Application $app
-     * @param LaravelDebugbar $debugbar
-     * @param Config $config
-     */
     public function __construct(Application $app, LaravelDebugbar $debugbar, Config $config)
     {
         $this->app = $app;

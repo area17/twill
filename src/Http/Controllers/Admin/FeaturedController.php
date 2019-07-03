@@ -18,52 +18,17 @@ use Illuminate\View\Factory as ViewFactory;
 class FeaturedController extends Controller
 {
     /**
-     * @var DB
-     */
-    protected $db;
-
-    /**
-     * @var UrlGenerator
-     */
-    protected $urlGenerator;
-
-    /**
      * @var Application
      */
     protected $app;
 
-    /**
-     * @var ViewFactory
-     */
-    protected $viewFactory;
-
-    /**
-     * @param DB $db
-     * @param UrlGenerator $urlGenerator
-     * @param Application $app
-     * @param ViewFactory $viewFactory
-     * @param Config $config
-     */
-    public function __construct(
-        DB $db,
-        UrlGenerator $urlGenerator,
-        Application $app,
-        ViewFactory $viewFactory,
-        Config $config
-    ) {
+    public function __construct(Application $app, Config $config)
+    {
         parent::__construct($app, $config);
-
-        $this->db = $db;
-        $this->urlGenerator = $urlGenerator;
         $this->app = $app;
-        $this->viewFactory = $viewFactory;
     }
 
-    /**
-     * @param Request $request
-     * @return array|\Illuminate\Contracts\View\View
-     */
-    public function index(Request $request)
+    public function index(Request $request, ViewFactory $viewFactory, UrlGenerator $urlGenerator)
     {
         $featuredSectionKey = $request->segment(count($request->segments()));
         $featuredSection = $this->config->get("twill.buckets.$featuredSectionKey");
@@ -79,9 +44,7 @@ class FeaturedController extends Controller
         })->values()->toArray();
 
         if ($request->has('content_type')) {
-            $source = Arr::first($featuredSources, function ($source, $sourceKey) use ($request) {
-                return $sourceKey == $request->get('content_type');
-            });
+            $source = $featuredSources[$request->get('content_type')] ?? null;
 
             return [
                 'source' => [
@@ -103,7 +66,7 @@ class FeaturedController extends Controller
             $routePrefix = $this->config->get('twill.bucketsRoutes')[$featuredSectionKey] ?? $routePrefix;
         }
 
-        return $this->viewFactory->make('twill::layouts.buckets', [
+        return $viewFactory->make('twill::layouts.buckets', [
             'dataSources' => [
                 'selected' => Arr::first($contentTypes),
                 'content_types' => $contentTypes,
@@ -118,7 +81,7 @@ class FeaturedController extends Controller
             'bucketSourceTitle' => $featuredSection['sourceHeaderTitle'] ?? null,
             'bucketsSectionIntro' => $featuredSection['sectionIntroText'] ?? null,
             'restricted' => $featuredSection['restricted'] ?? true,
-            'saveUrl' => $this->urlGenerator->route("admin.$routePrefix.$featuredSectionKey.save"),
+            'saveUrl' => $urlGenerator->route("admin.$routePrefix.$featuredSectionKey.save"),
         ]);
     }
 
@@ -232,9 +195,9 @@ class FeaturedController extends Controller
      * @return void
      * @throws \Throwable
      */
-    public function save(Request $request)
+    public function save(Request $request, DB $db)
     {
-        $this->db->transaction(function () use ($request) {
+        $db->transaction(function () use ($request) {
             Collection::make($request->get('buckets'))->each(function ($bucketables, $bucketKey) {
                 Feature::where('bucket_key', $bucketKey)->delete();
                 foreach (($bucketables ?? []) as $position => $bucketable) {

@@ -28,30 +28,14 @@ class ForgotPasswordController extends Controller
      */
     protected $passwordBrokerManager;
 
-    /**
-     * @var ViewFactory
-     */
-    protected $viewFactory;
-
-    /**
-     * Create a new controller instance.
-     *
-     * @param Application $app
-     * @param PasswordBrokerManager $passwordBrokerManager
-     * @param ViewFactory $viewFactory
-     * @param Config $config
-     * @return void
-     */
     public function __construct(
         Application $app,
-        PasswordBrokerManager $passwordBrokerManager,
-        ViewFactory $viewFactory,
-        Config $config
+        Config $config,
+        PasswordBrokerManager $passwordBrokerManager
     ) {
         parent::__construct($app, $config);
 
         $this->passwordBrokerManager = $passwordBrokerManager;
-        $this->viewFactory = $viewFactory;
         $this->middleware('twill_guest');
     }
 
@@ -60,8 +44,12 @@ class ForgotPasswordController extends Controller
         return $this->passwordBrokerManager->broker('twill_users');
     }
 
-    public function showLinkRequestForm()
+    /**
+     * @param ViewFactory $viewFactory
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function showLinkRequestForm(ViewFactory $viewFactory)
     {
-        return $this->viewFactory->make('twill::auth.passwords.email');
+        return $viewFactory->make('twill::auth.passwords.email');
     }
 }

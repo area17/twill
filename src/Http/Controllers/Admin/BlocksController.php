@@ -10,13 +10,6 @@ use Illuminate\View\Factory as ViewFactory;
 
 class BlocksController extends Controller
 {
-    /**
-     * @param BlockRepository $blockRepository
-     * @param Application $app
-     * @param ViewFactory $viewFactory
-     * @param Request $request
-     * @return string
-     */
     public function preview(
         BlockRepository $blockRepository,
         Application $app,

@@ -39,15 +39,6 @@ class ResetPasswordController extends Controller
      */
     protected $viewFactory;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @param Application $app
-     * @param Config $config
-     * @param Redirector $redirector
-     * @param ViewFactory $viewFactory
-     * @return void
-     */
     public function __construct(Application $app, Config $config, Redirector $redirector, ViewFactory $viewFactory)
     {
         parent::__construct($app, $config);
