@@ -32,14 +32,6 @@ class SettingController extends Controller
      */
     protected $viewFactory;
 
-    /**
-     * @param Application $app
-     * @param Config $config
-     * @param SettingRepository $settings
-     * @param Redirector $redirector
-     * @param UrlGenerator $urlGenerator
-     * @param ViewFactory $viewFactory
-     */
     public function __construct(
         Application $app,
         Config $config,

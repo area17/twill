@@ -205,18 +205,6 @@ abstract class ModuleController extends Controller
      */
     protected $fieldsPermissions = [];
 
-    /**
-     * @param Application $app
-     * @param Request $request
-     * @param Router $router
-     * @param SessionStore $sessionStore
-     * @param Redirector $redirector
-     * @param UrlGenerator $urlGenerator
-     * @param ViewFactory $viewFactory
-     * @param AuthFactory $authFactory
-     * @param ResponseFactory $responseFactory
-     * @param Config $config
-     */
     public function __construct(
         Application $app,
         Request $request,

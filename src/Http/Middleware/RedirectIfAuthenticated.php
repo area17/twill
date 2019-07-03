@@ -24,11 +24,6 @@ class RedirectIfAuthenticated
      */
     protected $config;
 
-    /**
-     * @param AuthManager $authManager
-     * @param Redirector $redirector
-     * @param Config $config
-     */
     public function __construct(AuthManager $authManager, Redirector $redirector, Config $config)
     {
         $this->authManager = $authManager;

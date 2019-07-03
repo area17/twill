@@ -21,10 +21,6 @@ class Controller extends BaseController
      */
     protected $config;
 
-    /**
-     * @param Application $app
-     * @param Config $config
-     */
     public function __construct(Application $app, Config $config)
     {
         if ($config->get('twill.bind_exception_handler', true)) {

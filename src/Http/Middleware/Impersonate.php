@@ -12,9 +12,6 @@ class Impersonate
      */
     protected $authManager;
 
-    /**
-     * @param AuthManager $authManager
-     */
     public function __construct(AuthManager $authManager)
     {
         $this->authManager = $authManager;
