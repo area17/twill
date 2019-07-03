@@ -240,10 +240,10 @@
         const groupUserMapping = {!! json_encode($groupUserMapping) !!};
         window.vm.$store.subscribe((mutation, state) => {
             if (mutation.type === 'updateFormField' && mutation.payload.name.endsWith('group_authorized')) {
-                const group = mutation.payload.name.replace('_group_authorized', '');
+                const groupId = mutation.payload.name.replace('_group_authorized', '');
                 const checked = mutation.payload.value;
-                if (!isNaN(group)) {
-                    const users = groupUserMapping[group];
+                if (!isNaN(groupId) || groupId === 'everyone') {
+                    const users = groupUserMapping[groupId];
                     users.forEach(function (userId) {
                         const field = {
                             name: `user_${userId}_permission`,
