@@ -160,7 +160,6 @@ window.vm = new Vue({
       this.unSubscribe = this.$store.subscribe((mutation, state) => {
         if (FORM_MUTATIONS_TO_SUBSCRIBE.includes(mutation.type)) {
           this.isFormUpdated = true
-          this.unSubscribe()
         }
       })
     }
