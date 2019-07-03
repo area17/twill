@@ -3,7 +3,7 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Permission;
-use A17\Twill\Repositories\GroupRepository;
+use A17\Twill\Models\Group;
 use A17\Twill\Repositories\UserRepository;
 
 trait HandlePermissions
@@ -184,9 +184,10 @@ trait HandlePermissions
         }
 
         // Render each group's permission under a item
-        $groups = app()->make(GroupRepository::class)->get(['users.permissions']);
+        $groups = Group::with('users.permissions')->get()->prepend(Group::getEveryoneGroup());
         foreach ($groups as $group) {
-            $fields[$group->id . '_group_authorized'] = $this->allUsersInGroupAuthorized($group, $object);
+            $groupId = $group->name === 'Everyone' && empty($this->id) ? 'everyone' : $group->id;
+            $fields[$groupId . '_group_authorized'] = $this->allUsersInGroupAuthorized($group, $object);
         }
 
         return $fields;
