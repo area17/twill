@@ -5,6 +5,7 @@ namespace A17\Twill\Models;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasPermissions;
 use Illuminate\Database\Eloquent\Model as BaseModel;
+use A17\Twill\Models\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Group extends BaseModel
@@ -78,6 +79,11 @@ class Group extends BaseModel
 
     public function users()
     {
+        if ($this->name === 'Everyone' && empty($this->id)) {
+            return User::whereHas('role', function ($query) {
+                $query->where('in_everyone_group', true);
+            });
+        }
         return $this->belongsToMany('A17\Twill\Models\User', 'group_twill_user', 'group_id', 'twill_user_id');
     }
 

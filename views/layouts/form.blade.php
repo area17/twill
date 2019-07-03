@@ -235,4 +235,25 @@
     <script src="{{ mix('/assets/admin/js/manifest.js') }}"></script>
     <script src="{{ mix('/assets/admin/js/vendor.js') }}"></script>
     <script src="{{ mix('/assets/admin/js/main-form.js') }}"></script>
+
+    <script>
+        const groupUserMapping = {!! json_encode($groupUserMapping) !!};
+        window.vm.$store.subscribe((mutation, state) => {
+            if (mutation.type === 'updateFormField' && mutation.payload.name.endsWith('group_authorized')) {
+                const group = mutation.payload.name.replace('_group_authorized', '');
+                const checked = mutation.payload.value;
+                if (!isNaN(group)) {
+                    const users = groupUserMapping[group];
+                    users.forEach(function (userId) {
+                        const field = {
+                            name: `user_${userId}_permission`,
+                            value: checked ? 'view-item' : ''
+                        };
+                        window.vm.$store.commit('updateFormField', field)
+                    })
+                }
+            }
+        })
+    </script>
 @endprepend
+
