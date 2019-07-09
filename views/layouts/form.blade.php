@@ -245,11 +245,17 @@
                 if (!isNaN(groupId) || groupId === 'everyone') {
                     const users = groupUserMapping[groupId];
                     users.forEach(function (userId) {
-                        const field = {
-                            name: `user_${userId}_permission`,
-                            value: checked ? 'view-item' : ''
-                        };
-                        window.vm.$store.commit('updateFormField', field)
+                        // If the user's permission is <= view, it will be updated
+                        const currentPermission = state['form']['fields'].find(function(e) {
+                            return e.name == `user_${userId}_permission`
+                        }).value;
+                        if (currentPermission === '' || currentPermission === 'view-item') {
+                            const field = {
+                                name: `user_${userId}_permission`,
+                                value: checked ? 'view-item' : ''
+                            };
+                            window.vm.$store.commit('updateFormField', field)
+                        }
                     })
                 }
             }
