@@ -216,7 +216,7 @@ trait HandlePermissions
 
     protected function allUsersInGroupAuthorized($group, $object)
     {
-        return $group->users()->whereDoesntHave('permissions', function ($query) use ($object) {
+        return $group->users()->count() > 0 && $group->users()->whereDoesntHave('permissions', function ($query) use ($object) {
             $query->where([
                 ['permissionable_type', get_class($object)],
                 ['permissionable_id', $object->id],
