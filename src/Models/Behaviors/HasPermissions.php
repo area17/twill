@@ -45,7 +45,7 @@ trait HasPermissions
     }
 
     // First find or create the corresponding permission
-    // If the object doesn't have be given this permission, give it
+    // If the object doesn't have been given this permission, give it
     // If the object already have this permission, skip it
     public function grantModuleItemPermission($name, $permissionableItem)
     {
@@ -57,7 +57,7 @@ trait HasPermissions
         ]);
         //check the existence to avoid duplicate records on pivot table
         if (!$this->permissions()->ofItem($permissionableItem)->pluck('name')->contains($name)) {
-            $this->permissions()->moduleItem()->save($permission);
+            $this->permissions()->sync([$permission->id]);
         }
     }
 

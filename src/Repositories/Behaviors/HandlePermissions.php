@@ -131,31 +131,6 @@ trait HandlePermissions
 
     }
 
-    // After save handle permissions form fields on group form:
-    // If one group checked, switch the permission of all users in the group to at least view.
-    // If one group unchecked, switch the permission of all users who have view permissions to none.
-    // protected function handleGroupPermissions($object, $fields, $key, $value)
-    // {
-    //     $group = app()->make(GroupRepository::class)->getById(explode('_', $key)[0]);
-
-    //     // The value has changed
-    //     if ($this->allUsersInGroupAuthorized($group, $object) !== $value) {
-    //         foreach ($group->users as $user) {
-    //             // Group checked, grant at least view access to all users in the group.
-    //             if ($value && !$user->permissionNameByItem($object)) {
-    //                 $permission = new Permission;
-    //                 $permission->name = "view";
-    //                 $permission->permissionable()->associate($object);
-    //                 $user->permissions()->save($permission);
-    //             }
-    //             // Group unchecked, revoke all users who have view permissions to none.
-    //             elseif (!$value && $user->permissionNameByItem($object) === "view") {
-    //                 $user->permissions()->ofItem($object)->delete();
-    //             }
-    //         }
-    //     }
-    // }
-
     protected function renderUserPermissions($user, $fields)
     {
         foreach ($user->permissions()->moduleItem()->get() as $permission) {
