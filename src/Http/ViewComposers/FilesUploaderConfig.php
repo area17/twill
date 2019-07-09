@@ -19,6 +19,7 @@ class FilesUploaderConfig
             'signatureEndpoint' => route('admin.file-library.sign-s3-upload'),
             'endpointBucket' => config('filesystems.disks.' . $libraryDisk . '.bucket', 'none'),
             'endpointRegion' => config('filesystems.disks.' . $libraryDisk . '.region', 'none'),
+            'endpointRoot' => config('filesystems.disks.' . $libraryDisk . '.root', ''),
             'accessKey' => config('filesystems.disks.' . $libraryDisk . '.key', 'none'),
             'csrfToken' => csrf_token(),
             'acl' => config('twill.file_library.acl'),

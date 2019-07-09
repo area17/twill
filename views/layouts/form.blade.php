@@ -183,8 +183,8 @@
     }
 @stop
 
-@push('extra_js')
+@prepend('extra_js')
     <script src="{{ mix('/assets/admin/js/manifest.js') }}"></script>
     <script src="{{ mix('/assets/admin/js/vendor.js') }}"></script>
     <script src="{{ mix('/assets/admin/js/main-form.js') }}"></script>
-@endpush
+@endprepend
