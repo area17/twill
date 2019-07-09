@@ -64,3 +64,27 @@ if (!function_exists('fireCmsEvent')) {
         Event::$method($eventName, [$eventName, $input]);
     }
 }
+
+if (!function_exists('twill_path')) {
+    function twill_path($path = '')
+    {
+        // Split to separate root namespace
+        preg_match('/(\w*)\W?(.*)/', config('twill.namespace'), $matches);
+
+        // Namespace App is unchanged in config?
+        if ($matches[0] === 'App') {
+            return app_path($path);
+        }
+
+        // If it it still starts with App, use the left part, otherwise use the whole namespace
+        // This can be a problem for those using a completely different app path for the application
+        $left = ($matches[1] === 'App' ? $matches[2] : $matches[0]);
+
+        // Join, fix slashes for the current operating system, and return path
+        return app_path(str_replace(
+            '\\',
+            DIRECTORY_SEPARATOR,
+            $left . (filled($path) ? '\\' . $path : '')
+        ));
+    }
+}
