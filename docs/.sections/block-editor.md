@@ -447,7 +447,7 @@ return [
 
 ### Content Editor
 
-You can enable the content editor individual block previews by providing a `resources/views/site/layouts/block.blade.php` lade layout file. The layout should be yielding a `content` section: `@yield('content')` with any frontend CSS/JS included exactly like in your main frontend layout. A simple example could be:
+You can enable the content editor individual block previews by providing a `resources/views/site/layouts/block.blade.php` blade layout file. The layout should be yielding a `content` section: `@yield('content')` with any frontend CSS/JS included exactly like in your main frontend layout. A simple example could be:
 
 ```php
 <!doctype html>
