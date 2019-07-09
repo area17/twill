@@ -1,7 +1,7 @@
 @extends('twill::layouts.form', [
     'contentFieldsetLabel' => 'Account',
     'editModalTitle' => 'Edit user name',
-    'reloadOnSuccess' => false
+    'reloadOnSuccess' => true
 ])
 
 @section('contentFields')
@@ -13,17 +13,17 @@
         @if($item->last_login_at)
           <p><strong>Last login: </strong> {{ $item->last_login_at->format('d M Y, H:i') }}</p>
         @endif
-
-        @php($checkboxLabel = $item->activated ? 'Reset Password' : 'Register Account Now')
-        @formField('checkbox', [
-          'name' => 'reset_password',
-          'label' => $checkboxLabel
-        ])
       @else
         <br />
         <a type="submit" href="{{ route('admin.users.resend.registrationEmail', ['user' => $item]) }}">Resend registration email</a>
       @endif
 
+      @php($checkboxLabel = $item->activated ? 'Reset Password' : 'Register Account Now')
+      @formField('checkbox', [
+        'name' => 'reset_password',
+        'label' => $checkboxLabel
+      ])
+      
       @component('twill::partials.form.utils._connected_fields', [
         'fieldName' => 'reset_password',
         'fieldValues' => true,
