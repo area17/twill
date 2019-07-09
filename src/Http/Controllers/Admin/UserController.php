@@ -171,7 +171,7 @@ class UserController extends ModuleController
         array_push($statusFilters, [
             'name' => 'Active',
             'slug' => 'published',
-            'number' => $this->repository->getCountByStatusSlug('published'),
+            'number' => $this->repository->getCountByStatusSlug('published', [['is_superadmin', false]]),
         ], [
             'name' => 'Disabled',
             'slug' => 'draft',
