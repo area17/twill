@@ -10,7 +10,7 @@
     $customForm = $customForm ?? false;
     $controlLanguagesPublication = $controlLanguagesPublication ?? true;
     $users = app()->make('A17\Twill\Repositories\UserRepository')->published()->get();
-    $groups = app()->make('A17\Twill\Repositories\GroupRepository')->get()->prepend('A17\Twill\Models\Group'::getEveryoneGroup());
+    $groups = app()->make('A17\Twill\Repositories\GroupRepository')->get();
 @endphp
 
 @section('content')
@@ -100,9 +100,8 @@
                                 </a17-fieldset>
                                 <a17-fieldset title="Group Permissions" id="permissions">
                                     @foreach($groups as $group)
-                                        @php($group_id = $group->name === 'Everyone' ? 'everyone' : $group->id)
                                         @formField('checkbox', [
-                                            'name' => $group_id . '_group_authorized',
+                                            'name' => $group->id . '_group_authorized',
                                             'label' => $group->name
                                         ])
                                     @endforeach
@@ -242,7 +241,7 @@
             if (mutation.type === 'updateFormField' && mutation.payload.name.endsWith('group_authorized')) {
                 const groupId = mutation.payload.name.replace('_group_authorized', '');
                 const checked = mutation.payload.value;
-                if (!isNaN(groupId) || groupId === 'everyone') {
+                if (!isNaN(groupId)) {
                     const users = groupUserMapping[groupId];
                     users.forEach(function (userId) {
                         // If the user's permission is <= view, it will be updated

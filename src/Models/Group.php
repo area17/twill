@@ -72,7 +72,7 @@ class Group extends BaseModel
 
     public function users()
     {
-        if ($this->name === 'Everyone' && empty($this->id)) {
+        if ($this->name === 'Everyone') {
             return User::whereHas('role', function ($query) {
                 $query->where('in_everyone_group', true);
             });

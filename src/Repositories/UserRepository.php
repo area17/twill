@@ -29,10 +29,9 @@ class UserRepository extends ModuleRepository
         $fields['browsers']['groups'] = $this->getFormFieldsForBrowser($user, 'groups');
         // Added everyone group to the beginning if the user's role included in everyone group
         if ($user->role->in_everyone_group) {
-            $everyoneGroup = Group::getEveryoneGroup();
             array_unshift($fields['browsers']['groups'], [
                 'id' => null,
-                'name' => $everyoneGroup->name,
+                'name' => 'Everyone',
                 'edit' => null,
                 "endpointType" => "A17\Twill\Models\Group",
                 "thumbnail" => "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
@@ -77,7 +76,7 @@ class UserRepository extends ModuleRepository
         // Do not handle the everyone group
         if (isset($fields['browsers']['groups'])) {
             $fields['browsers']['groups'] = array_filter($fields['browsers']['groups'], function ($group) {
-                return $group['id'] && $group['name'] !== 'Everyone';
+                return $group['name'] !== 'Everyone';
             });
         }
 

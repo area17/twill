@@ -96,13 +96,8 @@ trait HandlePermissions
             }
         }
 
-        if (isset($fields['groups']) && in_array('include-in-everyone', $fields['groups'])) {
-            $role->in_everyone_group = true;
-            $role->save();
-        } else {
-            $role->in_everyone_group = false;
-            $role->save();
-        }
+        $role->in_everyone_group = isset($fields['groups']) && in_array('include-in-everyone', $fields['groups']);
+        $role->save();
     }
 
     // After save handle permissions form fields on module form
@@ -167,10 +162,9 @@ trait HandlePermissions
         }
 
         // Render each group's permission under a item
-        $groups = Group::with('users.permissions')->get()->prepend(Group::getEveryoneGroup());
+        $groups = Group::with('users.permissions')->get();
         foreach ($groups as $group) {
-            $groupId = $group->name === 'Everyone' && empty($this->id) ? 'everyone' : $group->id;
-            $fields[$groupId . '_group_authorized'] = $this->allUsersInGroupAuthorized($group, $object);
+            $fields[$group->id . '_group_authorized'] = $this->allUsersInGroupAuthorized($group, $object);
         }
 
         return $fields;
