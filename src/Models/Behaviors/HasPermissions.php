@@ -102,6 +102,10 @@ trait HasPermissions
         if (!in_array($name, Permission::available($scope))) {
             abort(400, 'operation failed, permission ' . $name . ' not available on ' . $scope);
         }
+
+        if (get_class($this) === 'A17\Twill\Models\Group' && $name !== 'view-item') {
+            abort(400, 'operation failed, only view-item permission is allowed for group');
+        }
     }
 
 }

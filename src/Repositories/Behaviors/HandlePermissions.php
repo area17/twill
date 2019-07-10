@@ -5,6 +5,7 @@ namespace A17\Twill\Repositories\Behaviors;
 use A17\Twill\Models\Permission;
 use A17\Twill\Models\Group;
 use A17\Twill\Repositories\UserRepository;
+use A17\Twill\Repositories\GroupRepository;
 
 trait HandlePermissions
 {
@@ -119,10 +120,17 @@ trait HandlePermissions
                     $user->revokeModuleItemAllPermissions($item);
                 }
             }
-            // Handle group permissions
-            // elseif (ends_with($key, '_group_authorized')) {
-            //     $group = app()->make(GroupRepository::class)->getById(explode('_', $key)[0]);
-            // }
+            //Handle group permissions
+            elseif (ends_with($key, '_group_authorized')) {
+                $group_id = explode('_', $key)[0];
+                $group = app()->make(GroupRepository::class)->getById($group_id);
+
+                if ($value) {
+                    $group->grantModuleItemPermission('view-item', $item);
+                } else {
+                    $group->revokeModuleItemAllPermissions($item);
+                }
+            }
         }
     }
 
