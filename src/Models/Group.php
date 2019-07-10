@@ -40,14 +40,7 @@ class Group extends BaseModel
 
     public static function getEveryoneGroup()
     {
-        $everyone_group = new Group;
-        $everyone_group->fill([
-            'name' => 'Everyone',
-            'description' => 'The default group contains all users in the system',
-            'can_delete' => false,
-            'published' => true,
-        ]);
-        return $everyone_group;
+        return Group::where('name', 'Everyone')->firstOrFail();
     }
 
     public function __construct(array $attributes = [])
@@ -85,11 +78,6 @@ class Group extends BaseModel
             });
         }
         return $this->belongsToMany('A17\Twill\Models\User', 'group_twill_user', 'group_id', 'twill_user_id');
-    }
-
-    public function getCanDeleteAttribute()
-    {
-        return $this->attributes["can_delete"];
     }
 
     public function getCanEditAttribute()

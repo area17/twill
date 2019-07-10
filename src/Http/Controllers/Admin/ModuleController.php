@@ -1221,13 +1221,8 @@ abstract class ModuleController extends Controller
     protected function getGroupUserMapping()
     {
         return Group::with('users')->get()
-            ->prepend(Group::getEveryoneGroup())
             ->mapWithKeys(function($group) {
-                return [
-                    $group->name === 'Everyone' && empty($this->id) ? 'everyone' : $group->id 
-                    => 
-                    $group->users()->pluck('id')->toArray()
-                ];
+                return [ $group->id => $group->users()->pluck('id')->toArray() ];
             })->toArray();
     }
 

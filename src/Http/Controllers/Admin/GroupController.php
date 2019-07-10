@@ -108,16 +108,17 @@ class GroupController extends ModuleController
 
     protected function getIndexItems($scopes = [], $forcePagination = false)
     {
-        $items = parent::getIndexItems($scopes);
-        return $items->prepend(Group::getEveryoneGroup());
+        //Exclude everyone from all items
+        $items = parent::getIndexItems($scopes, $forcePagination)->where('name', '<>', 'Everyone');
+        $items->prepend(Group::getEveryoneGroup());
+        return $items;
     }
 
     protected function getBrowserItems($scopes = [])
     {
         // Exclude everyone group from browsers
-
         return parent::getBrowserItems($scopes)->filter(function ($item) {
-            return $item->name !== Group::getEveryoneGroup()->name && $item->id != null;
+            return $item !== Group::getEveryoneGroup();
         })->values();
     }
 
