@@ -96,7 +96,16 @@ trait HandlePermissions
             }
         }
 
-        $role->in_everyone_group = isset($fields['groups']) && in_array('include-in-everyone', $fields['groups']);
+        $inEveryoneGroup = isset($fields['groups']) && in_array('include-in-everyone', $fields['groups']);
+
+        if ($inEveryoneGroup) {
+            Group::getEveryoneGroup()->users()->syncWithoutDetaching($role->users()->pluck('id'));
+        } else {
+            Group::getEveryoneGroup()->users()->detach($role->users()->pluck('id'));
+        }
+
+        $role->in_everyone_group = $inEveryoneGroup;
+
         $role->save();
     }
 

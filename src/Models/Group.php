@@ -72,11 +72,6 @@ class Group extends BaseModel
 
     public function users()
     {
-        if ($this->name === 'Everyone') {
-            return User::whereHas('role', function ($query) {
-                $query->where('in_everyone_group', true);
-            });
-        }
         return $this->belongsToMany('A17\Twill\Models\User', 'group_twill_user', 'group_id', 'twill_user_id');
     }
 
