@@ -116,9 +116,20 @@ class User extends AuthenticatableContract
         $this->notify(new ResetNotification($token));
     }
 
+    // The real group relationship
     public function groups()
     {
         return $this->belongsToMany('A17\Twill\Models\Group', 'group_twill_user', 'twill_user_id', 'group_id');
+    }
+
+    // Groups may include everyone group
+    public function allGroups()
+    {
+        $groups = $this->groups;
+        if ($this->role->in_everyone_group) {
+            $groups->prepend(Group::getEveryoneGroup());
+        }
+        return $groups;
     }
 
     public function role()

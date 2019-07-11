@@ -45,8 +45,8 @@ trait HasPermissions
     }
 
     // First find or create the corresponding permission
-    // If the object doesn't have been given this permission, give it
-    // If the object already have this permission, skip it
+    // If the object haven't been given this permission, give it
+    // If the object already had this permission, skip it
     public function grantModuleItemPermission($name, $permissionableItem)
     {
         $this->checkPermissionAvailable($name, 'item');
