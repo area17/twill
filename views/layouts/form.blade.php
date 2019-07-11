@@ -9,7 +9,7 @@
     $titleFormKey = $titleFormKey ?? 'title';
     $customForm = $customForm ?? false;
     $controlLanguagesPublication = $controlLanguagesPublication ?? true;
-    $users = app()->make('A17\Twill\Repositories\UserRepository')->published()->get();
+    $users = app()->make('A17\Twill\Repositories\UserRepository')->published()->where('is_superadmin', false)->get();
     $groups = app()->make('A17\Twill\Repositories\GroupRepository')->get();
 @endphp
 
