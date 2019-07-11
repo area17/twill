@@ -10,6 +10,7 @@ class Permission extends BaseModel
         'name',
         'permissionable_type',
         'permissionable_id',
+        'is_default'
     ];
 
     public static function available($scope)
