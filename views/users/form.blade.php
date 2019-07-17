@@ -1,7 +1,7 @@
 @extends('twill::layouts.form', [
     'contentFieldsetLabel' => 'Account',
     'editModalTitle' => 'Edit user name',
-    'reloadOnSuccess' => true
+    // 'reloadOnSuccess' => true
 ])
 
 @section('contentFields')

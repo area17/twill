@@ -29,17 +29,7 @@ class UserRepository extends ModuleRepository
         }
 
         $fields['browsers']['groups'] = $this->getFormFieldsForBrowser($user, 'groups');
-        // Added everyone group to the beginning if the user's role included in everyone group
-        if ($user->role->in_everyone_group) {
-            array_unshift($fields['browsers']['groups'], [
-                'id' => null,
-                'name' => 'Everyone',
-                'edit' => null,
-                "endpointType" => "A17\Twill\Models\Group",
-                "thumbnail" => "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
-                "deletable" => false,
-            ]);
-        }
+
         return $fields;
     }
 
@@ -74,13 +64,6 @@ class UserRepository extends ModuleRepository
     public function prepareFieldsBeforeSave($user, $fields)
     {
         $fields = parent::prepareFieldsBeforeSave($user, $fields);
-        
-        // Do not handle the everyone group
-        if (isset($fields['browsers']['groups'])) {
-            $fields['browsers']['groups'] = array_filter($fields['browsers']['groups'], function ($group) {
-                return $group['name'] !== 'Everyone';
-            });
-        }
 
         $editor = auth('twill_users')->user();
         $with2faSettings = config('twill.enabled.users-2fa', false) && $editor->id === $user->id;
