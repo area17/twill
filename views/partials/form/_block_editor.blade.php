@@ -1,7 +1,11 @@
+@php
+    $label = $label ?? 'Add content'
+@endphp
+
 @unless ($withoutSeparator ?? false)
     <hr/>
 @endif
-<a17-content title="Add content"></a17-content>
+<a17-content title="{{ $label }}"></a17-content>
 
 @php
     $availableBlocks = isset($blocks) ? collect($blocks)->map(function ($block) {
