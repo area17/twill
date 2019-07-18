@@ -22,19 +22,12 @@ class MediaRepository extends ModuleRepository
         return parent::filter($query, $scopes);
     }
 
-    public function delete($id)
+    public function afterDelete($object)
     {
-        if (($object = $this->model->find($id)) != null) {
-            if ($object->canDeleteSafely()) {
-                $storageId = $object->uuid;
-                if ($object->delete() && config('twill.media_library.cascade_delete')) {
-                    Storage::disk(config('twill.media_library.disk'))->delete($storageId);
-                }
-                return true;
-            }
+        $storageId = $object->uuid;
+        if (config('twill.media_library.cascade_delete')) {
+            Storage::disk(config('twill.media_library.disk'))->delete($storageId);
         }
-
-        return false;
     }
 
     public function prepareFieldsBeforeCreate($fields)

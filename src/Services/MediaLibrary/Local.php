@@ -2,6 +2,9 @@
 
 namespace A17\Twill\Services\MediaLibrary;
 
+use Illuminate\Support\Facades\Storage;
+
+
 class Local implements ImageServiceInterface
 {
     use ImageServiceDefaults;
@@ -38,7 +41,7 @@ class Local implements ImageServiceInterface
 
     public function getRawUrl($id)
     {
-        return '/' . $id;
+        return Storage::disk(config('twill.media_library.disk'))->url($id);
     }
 
     public function getDimensions($id)
