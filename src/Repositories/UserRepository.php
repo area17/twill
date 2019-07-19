@@ -5,6 +5,7 @@ namespace A17\Twill\Repositories;
 use Illuminate\Support\Arr;
 use A17\Twill\Models\Group;
 use A17\Twill\Models\User;
+use A17\Twill\Models\Role;
 use A17\Twill\Models\Permission;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use DB;
@@ -83,6 +84,13 @@ class UserRepository extends ModuleRepository
         $this->sendWelcomeEmail($user);
         $this->updateBrowser($user, $fields, 'groups');
 
+        // When role changed, update it's groups information if needed.
+        if (Role::findOrFail($fields['role_id'])->in_everyone_group) {
+            $user->groups()->syncWithoutDetaching(Group::getEveryoneGroup()->id);
+        } else {
+            $user->groups()->detach(Group::getEveryoneGroup()->id);
+        }
+
         if (!empty($fields['reset_password']) && !empty($fields['new_password'])) {
             $user->password = bcrypt($fields['new_password']);
             
@@ -110,6 +118,7 @@ class UserRepository extends ModuleRepository
         }
     }
 
+    // When the user is added to a new group, grant the user all permissions the group has.
     // public function updateBrowser($object, $fields, $relationship, $positionAttribute = 'position')
     // {
     //     // When the user is added into / removed from a group, grant / revoke all permissions that group has.

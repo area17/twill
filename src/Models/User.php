@@ -123,14 +123,14 @@ class User extends AuthenticatableContract
     }
 
     // Groups may include everyone group
-    public function allGroups()
-    {
-        $groups = $this->groups;
-        if ($this->role->in_everyone_group) {
-            $groups->prepend(Group::getEveryoneGroup());
-        }
-        return $groups;
-    }
+    // public function allGroups()
+    // {
+    //     $groups = $this->groups;
+    //     if ($this->role->in_everyone_group) {
+    //         $groups->prepend(Group::getEveryoneGroup());
+    //     }
+    //     return $groups;
+    // }
 
     public function role()
     {
