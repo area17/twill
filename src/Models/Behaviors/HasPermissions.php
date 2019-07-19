@@ -55,10 +55,9 @@ trait HasPermissions
             'permissionable_type' => $permissionableItem ? get_class($permissionableItem) : null,
             'permissionable_id' => $permissionableItem ? $permissionableItem->id : null,
         ]);
-        //check the existence to avoid duplicate records on pivot table
-        if (!$this->permissions()->ofItem($permissionableItem)->pluck('name')->contains($name)) {
-            $this->permissions()->sync([$permission->id]);
-        }
+        //avoid duplicate records on pivot table
+        $this->revokeModuleItemAllPermissions($permissionableItem);
+        $this->permissions()->attach($permission->id);
     }
 
     public function revokeModuleItemPermission($name, $permissionableItem)
@@ -72,7 +71,7 @@ trait HasPermissions
 
     public function revokeModuleItemAllPermissions($permissionableItem)
     {
-        $this->permissions()->ofItem($permissionableItem)->detach();
+        $this->permissions()->detach(Permission::ofItem($permissionableItem)->pluck('id'));
     }
 
     public function permissions()
