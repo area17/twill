@@ -903,7 +903,7 @@ abstract class ModuleController extends Controller
                 'id' => $item->id,
                 'name' => $name,
                 'edit' => moduleRoute($this->moduleName, $this->routePrefix, 'edit', $item->id),
-                'endpointType' => $this->moduleName,
+                'endpointType' => $item->getMorphClass(),
             ] + $columnsData + ($withImage && !array_key_exists('thumbnail', $columnsData) ? [
                 'thumbnail' => $item->defaultCmsImage(['w' => 100, 'h' => 100]),
             ] : []);

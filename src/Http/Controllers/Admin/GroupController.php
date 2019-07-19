@@ -12,8 +12,6 @@ class GroupController extends ModuleController
 
     protected $moduleName = 'groups';
 
-    protected $indexWith = ['medias'];
-
     protected $defaultOrders = ['name' => 'asc'];
 
     protected $defaultFilters = [

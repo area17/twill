@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Models;
 
-use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasPermissions;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use A17\Twill\Models\User;
@@ -10,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Group extends BaseModel
 {
-    use HasMedias, HasPermissions, SoftDeletes;
+    use HasPermissions, SoftDeletes;
 
     public $timestamps = true;
 
@@ -26,17 +25,6 @@ class Group extends BaseModel
     ];
 
     public $checkboxes = ['published'];
-
-    public $mediasParams = [
-        'profile' => [
-            'default' => [
-                [
-                    'name' => 'default',
-                    'ratio' => 1,
-                ],
-            ],
-        ],
-    ];
 
     public static function getEveryoneGroup()
     {
