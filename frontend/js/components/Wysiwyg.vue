@@ -5,7 +5,7 @@
       <template v-if="editSource">
         <div class="wysiwyg" :class="textfieldClasses" v-show="!activeSource">
           <div class="wysiwyg__editor" ref="editor"></div>
-          <span v-if="showCounter" class="input__limit f--tiny" :class="limitClasses" v-if="hasMaxlength">{{ counter }}</span>
+          <span v-if="shouldShowCounter" class="input__limit f--tiny" :class="limitClasses">{{ counter }}</span>
         </div>
         <div class="form__field form__field--textarea" v-show="activeSource">
           <textarea :placeholder="placeholder" :autofocus="autofocus" v-model="value" :style="textareaHeight"></textarea>
@@ -15,7 +15,7 @@
       <template v-else>
         <div class="wysiwyg" :class="textfieldClasses">
           <div class="wysiwyg__editor" ref="editor"></div>
-          <span v-if="showCounter" class="input__limit f--tiny" :class="limitClasses" v-if="hasMaxlength">{{ counter }}</span>
+          <span v-if="shouldShowCounter" class="input__limit f--tiny" :class="limitClasses">{{ counter }}</span>
         </div>
       </template>
     </div>
@@ -92,6 +92,9 @@
       hasMaxlength: function () {
         return this.maxlength > 0
       },
+      shouldShowCounter: function () {
+        return this.hasMaxlength && this.showCounter
+      },
       limitClasses: function () {
         return {
           'input__limit--red': this.counter < 10
@@ -151,13 +154,11 @@
 
         // update model if text changes
         this.quill.on('text-change', (delta, oldDelta, source) => {
-          if (this.hasMaxlength) {
-            if (this.showCounter) {
-              this.updateCounter(this.getTextLength())
-            }
-            if (this.quill.getLength() > this.maxlength + 1) {
-              this.quill.deleteText(this.maxlength, this.quill.getLength())
-            }
+          if (this.hasMaxlength && this.showCounter) {
+            this.updateCounter(this.getTextLength())
+          }
+          if (this.hasMaxlength && this.quill.getLength() > this.maxlength + 1) {
+            this.quill.deleteText(this.maxlength, this.quill.getLength())
           } else {
             let html = this.$refs.editor.children[0].innerHTML
             if (html === '<p><br></p>') html = ''
