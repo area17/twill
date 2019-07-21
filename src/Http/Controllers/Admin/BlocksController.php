@@ -7,7 +7,8 @@ use A17\Twill\Repositories\BlockRepository;
 class BlocksController extends Controller
 {
     /**
-     * Generates an HTML preview of all blocks defined in the configuration.
+     * Render an HTML preview of a single block.
+     * This is used by the full screen content editor.
      *
      * @param BlockRepository $blockRepository
      * @return string
@@ -86,7 +87,7 @@ class BlocksController extends Controller
     }
 
     /**
-     * Generates a view name for the given block type.
+     * Determines a view name for a given block type.
      *
      * @param string $blockType
      * @return string

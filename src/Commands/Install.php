@@ -113,7 +113,7 @@ class Install extends Command
     }
 
     /**
-     * Publishes the previosly created package configuration files.
+     * Publishes the package configuration files.
      *
      * @return void
      */

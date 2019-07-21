@@ -112,7 +112,7 @@ class ModuleMake extends Command
     }
 
     /**
-     * Creates a new module tables database migration file.
+     * Creates a new module database migration file.
      *
      * @param string $moduleName
      * @return void
@@ -310,7 +310,7 @@ class ModuleMake extends Command
     }
 
     /**
-     * Creates appropriate module view files for displaying in the CMS.
+     * Creates appropriate module Blade view files.
      *
      * @param string $moduleName
      * @param bool $translatable

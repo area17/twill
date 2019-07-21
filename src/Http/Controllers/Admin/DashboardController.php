@@ -11,7 +11,7 @@ use Spatie\Analytics\Period;
 class DashboardController extends Controller
 {
     /**
-     * Displays the Twill dashboard index.
+     * Displays the Twill dashboard.
      *
      * @return \Illuminate\View\View
      */

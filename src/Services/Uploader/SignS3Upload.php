@@ -11,6 +11,7 @@ class SignS3Upload
     private $secret;
 
     private $endpoint;
+
     public function fromPolicy($policy, SignS3UploadListener $listener, $disk = 'libraries')
     {
         $policyObject = json_decode($policy, true);
