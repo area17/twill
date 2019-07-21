@@ -613,59 +613,48 @@ You can also rename the content section by passing a `contentFieldsetLabel` prop
     'note' => 'Hint message',
 ])
 ```
-WYSIWYG field is based on [Quill](https://quilljs.com/) Rich Text Editor with Snow theme enabled. 
+WYSIWYG field is based on [Quill](https://quilljs.com/) Rich Text Editor. 
 
-You can add all [toolbar options](https://quilljs.com/docs/modules/toolbar/) from Quill with `toolbarOption` key. You need need to pass value as array of array.
+You can add all [toolbar options](https://quilljs.com/docs/modules/toolbar/) from Quill with the `toolbarOptions` key.
 
-For example, this configuration will render a `wysiwyg` field with all features from Quill and Snow theme.
+For example, this configuration will render a `wysiwyg` field with almost all features from Quill and Snow theme.
 
 ```
  @formField('wysiwyg', [
-     'name' => 'case_study',
-     'label' => 'Case study text',
-     'toolbarOptions' => [
-        [
-            ["header" => [2, 3, 4, 5, 6, false]],
-            ["font" => ["serif", "sans-serif", "monospace"]],
-            ["size" => ['small', false, 'large', 'huge']],
-        ],
-        [
-            "bold", "italic", "underline", "strike"
-        ],
-        [
-            ["color" => []],
-            ["background" => []],
-            ["align" => []]
-        ],
-        [
-            ["script" => "super"],
-            ["script" => "sub"]
-        ],
-        [
-            "blockquote", "code-block",
-        ],
-        [
-            ["list" => "ordered"],
-            ["list" => "bullet"],
-            ["indent" => "-1"],
-            ["indent" => "+1"]
-        ],
-        [
-            "link",
-            "image",
-            "video",
-            "formula"
-        ],
-        [
-            "clean"
-        ]
+    'name' => 'case_study',
+    'label' => 'Case study text',
+    'toolbarOptions' => [ 
+      ["font" => ["serif", "sans-serif", "monospace"]],
+      ['header' => [2, 3, 4, 5, 6, false]],
+      'bold',
+      'italic',
+      'underline',
+      'strike',
+      ["color" => []],
+      ["background" => []],
+      ["script" => "super"],
+      ["script" => "sub"],
+      "blockquote",
+      "code-block",
+      ['list' => 'ordered'],
+      ['list' => 'bullet'],
+      ['indent' => '-1'],
+      ['indent' => '+1'],
+      ["align" => []],
+      ["direction" => "rtl"],
+      'link',
+      'image',
+      'video',
+      "clean",
     ],
-     'placeholder' => 'Case study text',
-     'maxlength' => 200,
-     'editSource' => true,
-     'note' => 'Hint message`',
+    'placeholder' => 'Case study text',
+    'maxlength' => 200,
+    'editSource' => true,
+    'note' => 'Hint message`',
  ])
 ```
+
+Note that Quill outputs CSS classes in the HTML for certain toolbar modules (indent, font, align, etc.), and that the image module is not integrated with Twill's media library. It outputs the base64 representation of the uploaded image. It is not a recommended way of using and storing images, prefer using one or multiple `medias` form fields or blocks fields for flexible content. This will give you greater control over your frontend output.
 
 #### Medias
 ![screenshot](/docs/_media/medias.png)
