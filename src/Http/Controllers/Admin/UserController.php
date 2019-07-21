@@ -51,7 +51,7 @@ class UserController extends ModuleController
     ];
 
     protected $fieldsPermissions = [
-        'role' => 'edit-user-role',
+        'role' => 'manage-users',
     ];
 
     public function __construct(Application $app, Request $request)
@@ -60,7 +60,7 @@ class UserController extends ModuleController
         $this->removeMiddleware('can:edit');
         $this->removeMiddleware('can:delete');
         $this->removeMiddleware('can:publish');
-        $this->middleware('can:edit-user-role', ['only' => ['index']]);
+        $this->middleware('can:manage-users', ['only' => ['index']]);
         $this->middleware('can:edit-user,user', ['only' => ['store', 'edit', 'update', 'destroy', 'bulkDelete', 'restore', 'bulkRestore']]);
         $this->middleware('can:publish-user', ['only' => ['publish']]);
 
@@ -82,7 +82,7 @@ class UserController extends ModuleController
     {
         return [
             'defaultFilterSlug' => 'published',
-            'create' => $this->getIndexOption('create') && auth('twill_users')->user()->can('edit-user-role'),
+            'create' => $this->getIndexOption('create') && auth('twill_users')->user()->can('manage-users'),
             'roleList' => collect(UserRole::toArray()),
             'single_primary_nav' => [
                 'users' => [
@@ -165,7 +165,7 @@ class UserController extends ModuleController
     protected function getIndexOption($option)
     {
         if (in_array($option, ['publish', 'delete', 'restore'])) {
-            return auth('twill_users')->user()->can('edit-user-role');
+            return auth('twill_users')->user()->can('manage-users');
         }
 
         return parent::getIndexOption($option);
@@ -173,7 +173,7 @@ class UserController extends ModuleController
 
     protected function indexItemData($item)
     {
-        $canEdit = auth('twill_users')->user()->can('edit-user-role') || auth('twill_users')->user()->id === $item->id;
+        $canEdit = auth('twill_users')->user()->can('manage-users') || auth('twill_users')->user()->id === $item->id;
         return [
             'edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null,
         ];
