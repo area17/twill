@@ -118,4 +118,14 @@ class User extends AuthenticatableContract
     {
         $this->notify(new ResetNotification($token));
     }
+
+    public function isSuperAdmin()
+    {
+      return $this->role === 'SUPERADMIN';
+    }
+
+    public function isPublished()
+    {
+      return (bool) $this->published;
+    }
 }
