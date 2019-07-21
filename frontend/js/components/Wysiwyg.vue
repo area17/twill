@@ -368,7 +368,8 @@
     .ql-snow.ql-toolbar {
       padding: 13px 8px;
 
-      button {
+      button,
+      .ql-align {
         width: 24px;
         margin-right: 35px - 6px - 6px - 6px - 6px;
         text-align:center;
@@ -389,6 +390,10 @@
 
     .ql-snow.ql-toolbar .ql-formats {
       border-right:1px solid $color__border--light;
+
+      &:last-child {
+        border-right: none;
+      }
     }
 
     .ql-snow.ql-toolbar,
@@ -425,52 +430,57 @@
     }
 
     /* dropdown style */
-    .ql-toolbar.ql-snow .ql-picker-label {
-      border:0 none;
-      position:relative;
-      padding-right: 30px;
+    .ql-toolbar.ql-snow .ql-header,
+    .ql-toolbar.ql-snow .ql-size,
+    .ql-toolbar.ql-snow .ql-font {
+      .ql-picker-label {
+        border: 0 none;
+        position: relative;
+        /*padding-right: 30px;*/
 
-      &::after {
-        content: " ";
-        position: absolute;
-        top: 50%;
-        right: 1em;
-        z-index: 2;
-        position:absolute;
-        width: 0;
-        height: 0;
-        margin-top: -3px;
-        border-width: 4px 4px 0;
-        border-style: solid;
-        border-color: $color__text transparent transparent;
+        &::after {
+          content: " ";
+          position: absolute;
+          top: 50%;
+          right: 1em;
+          z-index: 2;
+          position: absolute;
+          width: 0;
+          height: 0;
+          margin-top: -3px;
+          border-width: 4px 4px 0;
+          border-style: solid;
+          border-color: $color__text transparent transparent;
+        }
+
+        svg {
+          opacity: 0;
+        }
       }
 
-      svg {
-        opacity:0;
-      }
-    }
-    .ql-toolbar.ql-snow .ql-picker-options {
-      background:rgba($color__background,0.98);
-      border-radius:2px;
-      box-shadow:$box-shadow;
-      padding:10px 0;
-      border:0 none;
-      margin-top:6px;
+      .ql-picker-options {
+        background: rgba($color__background, 0.98);
+        border-radius: 2px;
+        box-shadow: $box-shadow;
+        padding: 10px 0;
+        border: 0 none;
+        margin-top: 6px;
 
-      .ql-picker-item {
-        display:block;
-        color:$color__text--light;
-        padding:0 15px;
-        padding-right:50px;
-        height:40px;
-        line-height: 40px;
-        text-decoration: none;
-        white-space: nowrap;
-        font-family:inherit;
+        .ql-picker-item {
+          display: block;
+          color: $color__text--light;
+          padding: 0 15px;
+          padding-right: 50px;
+          height: 40px;
+          line-height: 40px;
+          text-decoration: none;
+          white-space: nowrap;
+          font-family: inherit;
 
-        &:hover {
-          color:$color__text;
-          background:$color__light;
+          &:hover {
+            color: $color__text;
+            background: $color__light;
+          }
         }
       }
     }
