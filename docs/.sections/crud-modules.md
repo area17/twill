@@ -88,7 +88,7 @@ Schema::create('table_name_singular_revisions', function (Blueprint $table) {
 // related content table, holds many to many association between 2 tables
 Schema::create('table_name_singular1_table_name_singular2', function (Blueprint $table) {
     createDefaultRelationshipTableFields($table, $table1NameSingular, $table2NameSingular)
-    // will add the following inscructions to your migration file 
+    // will add the following inscructions to your migration file
     // $table->integer("{$table1NameSingular}_id")->unsigned();
     // $table->foreign("{$table1NameSingular}_id")->references('id')->on($table1NamePlural)->onDelete('cascade');
     // $table->integer("{$table2NameSingular}_id")->unsigned();
@@ -113,7 +113,7 @@ Depending on the features you need on your model, include the available traits a
 
 - HasTranslation: add translated fields in the `translatedAttributes` array and in the `fillable` array of the generated translatable model in `App/Models/Translations` (always keep the `active` and `locale` fields).
 
-When using Twill's `HasTranslation` trait on a model, you are actually using the popular `dimsav/translatable` package. A default configuration will be automatically published to your `config` directory when you run the `twill:install` command. 
+When using Twill's `HasTranslation` trait on a model, you are actually using the popular `dimsav/translatable` package. A default configuration will be automatically published to your `config` directory when you run the `twill:install` command.
 
 To setup your list of available languages for translated fields, modify the `locales` array in `config/translatable.php`, using ISO 639-1 two-letter languages codes as in the following example:
 
@@ -147,7 +147,7 @@ public $mediasParams = [
         'mobile' => [
             [
                 'name' => 'landscape', // ratio name, multiple allowed
-                'ratio' => 16 / 9, 
+                'ratio' => 16 / 9,
             ],
             [
                 'name' => 'portrait', // ratio name, multiple allowed
@@ -280,22 +280,22 @@ public function prepareFieldsBeforeSave($object, $fields) {
 public function afterSave($object, $fields) {
     // for exemple, to sync a many to many relationship
     $this->updateMultiSelect($object, $fields, 'relationName');
-    
+
     // which will simply run the following for you
     $object->relationName()->sync($fields['relationName'] ?? []);
-    
+
     // or, to save a oneToMany relationship
     $this->updateOneToMany($object, $fields, 'relationName', 'formFieldName', 'relationAttribute')
-    
+
     // or, to save a belongToMany relationship used with the browser field
     $this->updateBrowser($object, $fields, 'relationName');
-    
+
     // or, to save a hasMany relationship used with the repeater field
     $this->updateRepeater($object, $fields, 'relationName', 'ModelName', 'repeaterItemName');
-    
+
     // or, to save a belongToMany relationship used with the repeater field
     $this->updateRepeaterMany($object, $fields, 'relationName', false);
-    
+
     parent::afterSave($object, $fields);
 }
 
@@ -328,7 +328,7 @@ public function hydrate($object, $fields)
 <?php
 
     protected $moduleName = 'yourModuleName';
-    
+
     /*
      * Options of the index view
      */
@@ -354,7 +354,7 @@ public function hydrate($object, $fields)
      * This will be the first column in the listing and will have a link to the form
      */
     protected $titleColumnKey = 'title';
-    
+
     /*
      * Available columns of the index view
      */
@@ -1077,7 +1077,7 @@ class Page extends Model {
     public static function saveTreeFromIds($nodesArray)
     {
         $parentNodes = self::find(array_pluck($nodesArray, 'id'));
-    
+
         if (is_array($nodesArray)) {
             $position = 1;
             foreach ($nodesArray as $nodeArray) {
@@ -1086,12 +1086,12 @@ class Page extends Model {
                 $node->saveAsRoot();
             }
         }
-    
+
         $parentNodes = self::find(array_pluck($nodesArray, 'id'));
-    
+
         self::rebuildTree($nodesArray, $parentNodes);
     }
-    
+
     public static function rebuildTree($nodesArray, $parentNodes)
     {
         if (is_array($nodesArray)) {
@@ -1153,5 +1153,19 @@ protected function indexItemData($item)
     return ($item->children ? [
         'children' => $this->getIndexTableData($item->children),
     ] : []);
+}
+```
+
+When using a browser to browse a nested module, if you expect to select children as well as parents, you will need to add the following function to your module's controller:
+```
+protected function getBrowserItems($scopes = [])
+{
+    return $this->repository->get(
+        $this->indexWith,
+        $scopes,
+        $this->orderScope(),
+        request('offset') ?? $this->perPage ?? 50,
+        true
+    );
 }
 ```
