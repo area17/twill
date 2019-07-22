@@ -377,6 +377,7 @@ public function hydrate($object, $fields)
             'visible' => false, // will be available from the columns settings dropdown
         ],
         'relationName' => [ // relation column
+            // Take a look at the example in the next section fot the implementation of the sort
             'title' => 'Relation name',
             'sort' => true,
             'relationship' => 'relationName',
@@ -457,6 +458,68 @@ public function hydrate($object, $fields)
 ```
 
 You can also override all actions and internal functions, checkout the ModuleController source in `A17\Twill\Http\Controllers\Admin\ModuleController`.
+
+#### Example Sort by Relationship Field.
+
+Let's say we have a controller with certain fields displayed:
+File: `app/Http/Controllers/Admin/PlayController.php`
+
+```php
+    protected $indexColumns = [
+        'image' => [
+            'thumb' => true, // image column
+            'variant' => [
+                'role' => 'featured',
+                'crop' => 'default',
+            ],
+        ],
+        'title' => [ // field column
+            'title' => 'Title',
+            'field' => 'title',
+        ],
+        'festivals' => [ // relation column
+            'title' => 'Festival',
+            'sort' => true,
+            'relationship' => 'festivals',
+            'field' => 'title'
+        ],
+    ];
+```
+
+For creating the Sorting mechanism for the relationship we need to overwrite the order method on the proper repository.
+In there we verify for the parameter sent which per convention should be *relationship + field* in this case `festivalsTitle`.
+Once applied we remove that parameter to avoid the application crash due to not being able to find the field on the table.
+
+File: `app/Repositories/PlayRepository.php`
+
+```php
+  ...
+  public function order($query, array $orders = []) {
+
+      if (array_key_exists('festivalsTitle', $orders)){
+          $sort_method = $orders['festivalsTitle'];
+          //Remove the UNEXISTING column from the orders array
+          unset($orders['festivalsTitle']);
+          $query = $query->orderByFestival($sort_method);
+      }
+      // don't forget to call the parent order function
+      return parent::order($query, $orders);
+  }
+  ...
+```
+
+Then add the custom `sort` scope into your Model, it should be something like this:
+File: `app/Models/Play.php`
+
+```php
+    public function scopeOrderByFestival($query, $sort_method = 'ASC') {
+        return $query
+            ->leftJoin('festivals', 'plays.section_id', '=', 'festivals.id')
+            ->select('plays.*', 'festivals.id', 'festivals.title')
+            ->orderBy('festivals.title', $sort_method);
+    }
+```
+
 
 ### Form Requests
 Classic Laravel 5 [form request validation](https://laravel.com/docs/5.5/validation#form-request-validation).
