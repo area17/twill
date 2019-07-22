@@ -119,41 +119,41 @@ class UserRepository extends ModuleRepository
     }
 
     // When the user is added to a new group, grant the user all permissions the group has.
-    // public function updateBrowser($object, $fields, $relationship, $positionAttribute = 'position')
-    // {
-    //     // When the user is added into / removed from a group, grant / revoke all permissions that group has.
-    //     if ($relationship === 'groups') {
-    //         $currentGroupsIds = $object->groups->pluck('id')->toArray();
-    //         $newGroupsIds = Arr::pluck($fields['browsers']['groups'], 'id');
+    public function updateBrowser($object, $fields, $relationship, $positionAttribute = 'position')
+    {
+        // When the user is added into / removed from a group, grant / revoke all permissions that group has.
+        if ($relationship === 'groups') {
+            $currentGroupsIds = $object->groups->pluck('id')->toArray();
+            $newGroupsIds = Arr::pluck($fields['browsers']['groups'], 'id');
             
-    //         $addedGroupsIds = array_diff($newGroupsIds, $currentGroupsIds);
-    //         $deletedGroupsIds = array_diff($currentGroupsIds, $newGroupsIds);
+            $addedGroupsIds = array_values(array_diff($newGroupsIds, $currentGroupsIds));
+            $deletedGroupsIds = array_values(array_diff($currentGroupsIds, $newGroupsIds));
 
-    //         if (!empty($addedGroupsIds)) {
+            if (!empty($addedGroupsIds)) {
 
-    //             // All Items that the groups can view.
-    //             $addedItems = Permission::whereHas('groups', function ($query) use ($addedGroupsIds) {
-    //                 $query->whereIn('id', $addedGroupsIds);
-    //             })->with('permissionable')->get()->pluck('permissionable');
+                // All Items that the groups can view.
+                $addedItems = Permission::whereHas('groups', function ($query) use ($addedGroupsIds) {
+                    $query->whereIn('id', $addedGroupsIds);
+                })->with('permissionable')->get()->pluck('permissionable');
                 
-    //             foreach($addedItems as $item) {
-    //                 $object->grantModuleItemPermission('view-item', $item);
-    //             }
-    //         }
+                foreach($addedItems as $item) {
+                    $object->grantModuleItemPermission('view-item', $item);
+                }
+            }
 
-    //         if (!empty($deletedGroupsIds)) {
+            if (!empty($deletedGroupsIds)) {
                 
-    //             // All Items that the groups can view.
-    //             $deletedItems = Permission::whereHas('groups', function ($query) use ($deletedGroupsIds) {
-    //                 $query->whereIn('id', $deletedGroupsIds);
-    //             })->with('permissionable')->get()->pluck('permissionable');
+                // All Items that the groups can view.
+                $deletedItems = Permission::whereHas('groups', function ($query) use ($deletedGroupsIds) {
+                    $query->whereIn('id', $deletedGroupsIds);
+                })->with('permissionable')->get()->pluck('permissionable');
 
-    //             foreach($deletedItems as $item) {
-    //                 $object->revokeModuleItemPermission('view-item', $item);
-    //             }
-    //         }
-    //     }
+                foreach($deletedItems as $item) {
+                    $object->revokeModuleItemPermission('view-item', $item);
+                }
+            }
+        }
 
-    //     parent::updateBrowser($object, $fields, $relationship);
-    // }
+        parent::updateBrowser($object, $fields, $relationship);
+    }
 }
