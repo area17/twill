@@ -129,13 +129,13 @@
 @can('edit-users')
   @unless($item->is_superadmin)
     @section('fieldsets')
-        @foreach($permission_modules as $module_name => $module_items)
-            <a17-fieldset title='{{ ucfirst($module_name) . " Permissions"}}' id='{{ $module_name }}'>
-                <h2>{{ ucfirst($module_name) .' permission' }}</h2>
-                @foreach ($module_items as $module_item)
+        @foreach($permissionModules as $moduleName => $moduleItems)
+            <a17-fieldset title='{{ ucfirst($moduleName) . " Permissions"}}' id='{{ $moduleName }}'>
+                <h2>{{ ucfirst($moduleName) .' permission' }}</h2>
+                @foreach ($moduleItems as $moduleItem)
                     @formField('select', [
-                        'name' => $module_name . '_' . $module_item->id . '_permission',
-                        'label' => $module_item->title,
+                        'name' => $moduleName . '_' . $moduleItem->id . '_permission',
+                        'label' => $moduleItem->title,
                         'unpack' => true,
                         'options' => [
                             [
@@ -223,4 +223,27 @@
     @if ($item->id == $currentUser->id)
         window.STORE.publication.withPublicationToggle = false
     @endif
+@endpush
+
+@push('extra_js')
+  <script>
+    const groupPermissionMapping = {!! json_encode($groupPermissionMapping) !!};
+    console.log(groupPermissionMapping);
+    window.vm.$store.subscribe((mutation, state) => {
+        const { type, payload } = mutation;
+        switch (type) {
+          case 'saveSelectedItems':
+            console.log('saveSelectedItems');
+            console.log(payload);
+            break;
+          case 'destroySelectedItem':
+            console.log('destroySelectedItem');
+            console.log(payload);
+            const groupId = payload.index;
+            const permissions = groupPermissionMapping[groupId];
+            console.log(permissions);
+            break;
+        }
+    })
+  </script>
 @endpush

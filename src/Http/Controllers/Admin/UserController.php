@@ -7,6 +7,7 @@ use Password;
 use A17\Twill\Models\Permission;
 use A17\Twill\Models\Role;
 use A17\Twill\Models\User;
+use A17\Twill\Models\Group;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use PragmaRX\Google2FAQRCode\Google2FA;
@@ -153,7 +154,8 @@ class UserController extends ModuleController
             ],
             'customPublishedLabel' => 'Enabled',
             'customDraftLabel' => 'Disabled',
-            'permission_modules' => Permission::permissionableParentModuleItems(),
+            'permissionModules' => Permission::permissionableParentModuleItems(),
+            'groupPermissionMapping' => $this->getGroupPermissionMapping(),
             'with2faSettings' => $with2faSettings,
             'qrCode' => $qrCode ?? null,
         ];
@@ -229,5 +231,13 @@ class UserController extends ModuleController
             Password::broker('twill_users')->getRepository()->create($user)
         );
         return redirect()->route('admin.users.edit', ['user' => $user])->with('status', 'Registration email has been sent to the user!');
+    }
+
+    private function getGroupPermissionMapping()
+    {
+        return Group::with('permissions')->get()
+        ->mapWithKeys(function($group) {
+            return [ $group->id => $group->permissions ];
+        })->toArray();
     }
 }
