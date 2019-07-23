@@ -40,6 +40,17 @@ class UserRepository extends ModuleRepository
         return parent::filter($query, $scopes);
     }
 
+    public function getFormFieldsForBrowser($object, $relation, $routePrefix = null, $titleKey = 'title', $moduleName = null)
+    {
+        $browserFields = parent::getFormFieldsForBrowser($object, $relation, $routePrefix, $titleKey, $moduleName);
+        foreach ($browserFields as $index => $browserField) {
+            if ($browserField['id'] === Group::getEveryoneGroup()->id && $browserField['name'] === Group::getEveryoneGroup()->name) {
+                $browserFields[$index]['deletable'] = false;
+            }
+        }
+        return $browserFields;
+    }
+
     public function afterUpdateBasic($user, $fields)
     {
         $this->sendWelcomeEmail($user);
