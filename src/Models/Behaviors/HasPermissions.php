@@ -84,18 +84,6 @@ trait HasPermissions
         }
     }
 
-    public function userAllPermissions()
-    {
-        if (get_class($this) === 'A17\Twill\Models\User') {
-            $permissions = Permission::whereHas('users', function ($query) {
-                $query->where('id', $this->id);
-            })->orWhereHas('roles', function ($query) {
-                $query->where('id', $this->role->id);
-            });
-            return $permissions;
-        }
-    }
-
     protected function checkPermissionAvailable($name, $scope)
     {
         if (!in_array($name, Permission::available($scope))) {

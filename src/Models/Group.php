@@ -79,4 +79,11 @@ class Group extends BaseModel
         return true;
     }
 
+    public function viewableItems()
+    {
+        return Permission::where('name', 'view-item')->whereHas('groups', function ($query) {
+            $query->where('id', $this->id);
+        })->with('permissionable')->get()->pluck('permissionable');
+    }
+
 }

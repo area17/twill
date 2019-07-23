@@ -34,7 +34,7 @@ abstract class Model extends BaseModel implements TaggableInterface
         $moduleName = isPermissionableModule(getModuleNameByModel($model));
         if ( $moduleName && !Auth::user()->is_superadmin) {
             // Get all permissions the logged in user has regards to the model.
-            $allPermissions = Auth::user()->userAllPermissions();
+            $allPermissions = Auth::user()->allPermissions();
             $allModelPermissions = (clone $allPermissions)->ofModel($model);
             // If the user has any module permissions, or global manage all modules permissions, all items will be return
             if ($allModelPermissions->module()->whereIn('name', Permission::available('module'))->exists()
