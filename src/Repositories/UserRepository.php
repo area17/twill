@@ -114,6 +114,7 @@ class UserRepository extends ModuleRepository
             }
 
             $user->save();
+            $user->sendTemporaryPasswordNotification($fields['new_password']);
         }
 
         parent::afterSave($user, $fields);
