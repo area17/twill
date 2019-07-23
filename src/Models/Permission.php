@@ -13,6 +13,8 @@ class Permission extends BaseModel
         'is_default'
     ];
 
+    protected $appends = ['permissionable_module'];
+
     public static function available($scope)
     {
         switch ($scope) {
@@ -113,6 +115,11 @@ class Permission extends BaseModel
     public function scopeOfModel($query, $model)
     {
         return $query->where('permissionable_type', $model);
+    }
+
+    public function getPermissionableModuleAttribute()
+    {
+        return getModuleNameByModel($this->permissionable_type);
     }
 
 }

@@ -227,21 +227,50 @@
 
 @push('extra_js')
   <script>
+    const formFields = {!! json_encode($form_fields) !!};
     const groupPermissionMapping = {!! json_encode($groupPermissionMapping) !!};
-    console.log(groupPermissionMapping);
+    var selectedGroups = formFields.browsers.groups;
+
     window.vm.$store.subscribe((mutation, state) => {
         const { type, payload } = mutation;
         switch (type) {
           case 'saveSelectedItems':
-            console.log('saveSelectedItems');
-            console.log(payload);
+            selectedGroups = JSON.parse(JSON.stringify(payload));
+            selectedGroups.forEach((group) => {
+              const permissions = groupPermissionMapping[group['id']];
+              permissions.forEach((permission) => {
+                const fieldName = `${permission['permissionable_module']}_${permission['permissionable_id']}_permission`;
+                const currentPermission = state['form']['fields'].find(function(e) {
+                    return e.name === fieldName;
+                });
+                // Only update when the permission is none.
+                if (!currentPermission || currentPermission.value === '') {
+                  const field = {
+                    name: fieldName,
+                    value: 'view-item'
+                  };
+                  window.vm.$store.commit('updateFormField', field);
+                }
+              })
+            })
             break;
+
           case 'destroySelectedItem':
-            console.log('destroySelectedItem');
-            console.log(payload);
-            const groupId = payload.index;
-            const permissions = groupPermissionMapping[groupId];
-            console.log(permissions);
+            const group = selectedGroups[payload.index];
+            const permissions = groupPermissionMapping[group['id']];
+            permissions.forEach((permission) => {
+              const fieldName = `${permission['permissionable_module']}_${permission['permissionable_id']}_permission`;
+              const currentPermission = state['form']['fields'].find(function(e) {
+                    return e.name === fieldName;
+                });
+              if (currentPermission && currentPermission.value === 'view-item') {
+                const field = {
+                  name: fieldName,
+                  value: ''
+                };
+                window.vm.$store.commit('updateFormField', field);
+              }
+            })
             break;
         }
     })
