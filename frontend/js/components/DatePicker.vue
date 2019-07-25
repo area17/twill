@@ -15,6 +15,7 @@
   import InputframeMixin from '@/mixins/inputFrame'
   import FlatPickr from 'flatpickr'
   import 'flatpickr/dist/flatpickr.css'
+  import { Catalan } from 'flatpickr/dist/l10n/cat.js'
 
   export default {
     name: 'A17DatePicker',
@@ -114,7 +115,7 @@
           appendTo: self.staticMode ? self.$refs[self.refs.flatPicker] : undefined,
           enableTime: self.enableTime,
           noCalendar: self.noCalendar,
-          time_24hr: self.time_24hr,
+          time_24hr: true,
           inline: self.inline,
           allowInput: self.allowInput,
           mode: self.mode,
@@ -122,6 +123,7 @@
           hourIncrement: self.hourIncrement,
           minDate: self.minDate,
           maxDate: self.maxDate,
+          locale: Catalan,
           onOpen: function () {
             setTimeout(function () {
               self.flatPicker.set('maxDate', self.maxDate) // in case maxDate changed since last open
