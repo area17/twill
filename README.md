@@ -1,22 +1,11 @@
+# About this version
+Warning: this is a convenient Twill experimental/tweaked/hacky version. DO NOT USE this repo if your intention is to use original Twill!
+
 # About Twill
 
 Twill is an open source Laravel package that helps developers rapidly create a custom CMS that is beautiful, powerful, and flexible. By standardizing common functions without compromising developer control, Twill makes it easy to deliver a feature-rich admin console that focuses on modern publishing needs.
 
 Twill is an [AREA 17](https://area17.com) product. It was crafted with the belief that content management should be a creative, productive, and enjoyable experience for both publishers and developers.
-
-# Benefits overview
-
-With a vast number of pre-built features and custom-built Vue.js UI components, developers can focus their efforts on the unique aspects of their applications instead of rebuilding standard ones. 
-
-Built to get out of your way, Twill offers:
-* No lock-in, create your data models or hook existing ones
-* No front-end assumptions, use it within your Laravel app or headless
-* No bloat, turn off features you don’t need
-* No need to write/adapt HTML for the admin UI
-* No limits, extend as you see fit
-
-# Learning Twill
-If you use Laravel, you already know Twill. It embraces Laravel to the fullest extent and encourages you to write beautiful code. To get started, read our [documentation](https://twill.io/docs). If you'd like to hire us for implementation or support, [contact us](https://twill.io/contact). We're here to discuss your plans, evaluate your needs, make recommendations, and give you a full walk-thru of Twill. 
 
 # Credits
 Over the last 15 years, nearly every engineer at AREA 17 has contributed to Twill in some capacity. However, Twill in its current form as an open source initiative was created by:
@@ -29,12 +18,6 @@ Over the last 15 years, nearly every engineer at AREA 17 has contributed to Twil
 * George Eid, product manager
 
 With contributions from Laurens van Heems, Fernando Petrelli, Gilbert Moufflet, Mubashar Iqbal, Pablo Barrios, Luis Lavena, and Mike Byrne.
-
-# Contributing
-We look forward to your contribution to make Twill the best it can be. You can find our contribution guidelines in the Twill [documentation](https://twill.io/docs#contribution-guide).
-
-# Security vulnerabilities
-If you discover a security vulnerability within Twill, please email us at [security@twill.io](mailto:security@twill.io). All security vulnerabilities will be promptly addressed.
 
 # License
 
