@@ -35,7 +35,7 @@
         ]
     ])
 
-    @foreach($permission_modules as $module_name => $module_items)
+    {{-- @foreach($permission_modules as $module_name => $module_items)
         @formField('select', [
             'name' => 'module_' . $module_name . '_permissions',
             'label' => ucfirst($module_name) . ' permissions',
@@ -59,7 +59,7 @@
                 ]
             ]
         ])
-    @endforeach
+    @endforeach --}}
 
     @formField('checkboxes', [
         'name' => 'groups',
