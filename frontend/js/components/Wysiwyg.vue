@@ -5,6 +5,7 @@
       <template v-if="editSource">
         <div class="wysiwyg" :class="textfieldClasses" v-show="!activeSource">
           <div class="wysiwyg__editor" ref="editor"></div>
+          <span v-if="shouldShowCounter" class="input__limit f--tiny" :class="limitClasses">{{ counter }}</span>
         </div>
         <div class="form__field form__field--textarea" v-show="activeSource">
           <textarea :placeholder="placeholder" :autofocus="autofocus" v-model="value" :style="textareaHeight"></textarea>
@@ -14,6 +15,7 @@
       <template v-else>
         <div class="wysiwyg" :class="textfieldClasses">
           <div class="wysiwyg__editor" ref="editor"></div>
+          <span v-if="shouldShowCounter" class="input__limit f--tiny" :class="limitClasses">{{ counter }}</span>
         </div>
       </template>
     </div>
@@ -47,6 +49,10 @@
       editSource: {
         type: Boolean,
         default: false
+      },
+      showCounter: {
+        type: Boolean,
+        default: true
       },
       type: {
         type: String,
@@ -83,6 +89,17 @@
           's--focus': this.focused
         }
       },
+      hasMaxlength: function () {
+        return this.maxlength > 0
+      },
+      shouldShowCounter: function () {
+        return this.hasMaxlength && this.showCounter
+      },
+      limitClasses: function () {
+        return {
+          'input__limit--red': this.counter < 10
+        }
+      },
       ...mapState({
         baseUrl: state => state.form.baseUrl
       })
@@ -95,6 +112,7 @@
         focused: false,
         activeSource: false,
         quill: null,
+        counter: 0,
         defaultModules: {
           toolbar: ['bold', 'italic', 'underline', 'link'],
           // Complete Toolbar example :
@@ -136,7 +154,10 @@
 
         // update model if text changes
         this.quill.on('text-change', (delta, oldDelta, source) => {
-          if (this.maxlength > 0 && this.quill.getLength() > this.maxlength + 1) {
+          if (this.hasMaxlength && this.showCounter) {
+            this.updateCounter(this.getTextLength())
+          }
+          if (this.hasMaxlength && this.quill.getLength() > this.maxlength + 1) {
             this.quill.deleteText(this.maxlength, this.quill.getLength())
           } else {
             let html = this.$refs.editor.children[0].innerHTML
@@ -207,6 +228,14 @@
         // set editor content
         this.updateEditor(this.value)
         this.saveIntoStore() // see formStore mixin
+      },
+      updateCounter: function (newValue) {
+        if (this.showCounter && this.hasMaxlength) {
+          this.counter = this.maxlength - newValue
+        }
+      },
+      getTextLength: function () {
+        return this.quill.getLength() - 1
       }
     },
     mounted: function () {
@@ -233,6 +262,8 @@
       } else {
         this.initQuill()
       }
+
+      this.updateCounter(this.getTextLength())
     },
     beforeDestroy () {
       this.quill = null
@@ -248,6 +279,23 @@
 <style lang="scss">
   /* Not scoped style here because we want to overwrite default style of the wysiwig */
   @import '~styles/setup/_mixins-colors-vars.scss';
+
+  $height_input: 45px;
+
+  .input__limit {
+    height:$height_input - 2px;
+    line-height:$height_input - 2px;
+    color:$color__text--light;
+    user-select: none;
+    pointer-events:none;
+    position:absolute;
+    right:15px;
+    bottom:0;
+  }
+
+  .input__limit--red {
+    color:red;
+  }
 
   .a17 {
     .ql-toolbar.ql-snow {
