@@ -80,7 +80,7 @@ class ModuleMake extends Command
      */
     public function handle()
     {
-        $moduleName = $this->argument('moduleName');
+        $moduleName = Str::plural(lcfirst($this->argument('moduleName')));
 
         $blockable = $this->option('hasBlocks') ?? false;
         $translatable = $this->option('hasTranslation') ?? false;
