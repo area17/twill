@@ -5,28 +5,26 @@ namespace A17\Twill\Repositories;
 use A17\Twill\Models\Setting;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use Illuminate\Config\Repository as Config;
-use Illuminate\Database\DatabaseManager as DB;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Psr\Log\LoggerInterface as Logger;
 
 class SettingRepository extends ModuleRepository
 {
     use HandleMedias;
 
     /**
-     * @param DB $db
-     * @param Logger $logger
-     * @param Application $app
-     * @param Config $config
-     * @param Setting $model
+     * @var Config
      */
-    public function __construct(DB $db, Logger $logger, Application $app, Config $config, Setting $model)
-    {
-        parent::__construct($db, $logger, $app, $config);
+    protected $config;
 
+    /**
+     * @param Setting $model
+     * @param Config $config
+     */
+    public function __construct(Setting $model, Config $config)
+    {
         $this->model = $model;
+        $this->config = $config;
     }
 
     /**

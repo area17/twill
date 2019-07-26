@@ -25,7 +25,8 @@ class BlocksController extends Controller
         BlockRepository $blockRepository,
         Application $app,
         ViewFactory $viewFactory,
-        Request $request
+        Request $request,
+        Config $config
     ) {
         $blocksCollection = Collection::make();
         $childBlocksList = Collection::make();
@@ -60,11 +61,11 @@ class BlocksController extends Controller
             $blocksCollection->push($newChildBlock);
         });
 
-        $renderedBlocks = $blocksCollection->where('parent_id', null)->map(function ($block) use ($blocksCollection, $viewFactory) {
-            if ($this->config->get('twill.block_editor.block_preview_render_childs') ?? true) {
+        $renderedBlocks = $blocksCollection->where('parent_id', null)->map(function ($block) use ($blocksCollection, $viewFactory, $config) {
+            if ($config->get('twill.block_editor.block_preview_render_childs') ?? true) {
                 $childBlocks = $blocksCollection->where('parent_id', $block->id);
-                $renderedChildViews = $childBlocks->map(function ($childBlock) use ($viewFactory) {
-                    $view = $this->getBlockView($childBlock->type);
+                $renderedChildViews = $childBlocks->map(function ($childBlock) use ($viewFactory, $config) {
+                    $view = $this->getBlockView($childBlock->type, $config);
 
                     return $viewFactory->exists($view) ? $viewFactory->make($view, [
                         'block' => $childBlock,
@@ -77,7 +78,7 @@ class BlocksController extends Controller
             $block->childs = $blocksCollection->where('parent_id', $block->id);
             $block->children = $block->childs;
 
-            $view = $this->getBlockView($block->type);
+            $view = $this->getBlockView($block->type, $config);
 
             return $viewFactory->exists($view) ? ($viewFactory->make($view, [
                 'block' => $block,
@@ -87,10 +88,10 @@ class BlocksController extends Controller
 
         })->implode('');
 
-        $view = $viewFactory->exists($this->config->get('twill.block_editor.block_single_layout'))
-        ? $viewFactory->make($this->config->get('twill.block_editor.block_single_layout'))
+        $view = $viewFactory->exists($config->get('twill.block_editor.block_single_layout'))
+        ? $viewFactory->make($config->get('twill.block_editor.block_single_layout'))
         : $viewFactory->make('twill::errors.block_layout', [
-            'view' => $this->config->get('twill.block_editor.block_single_layout'),
+            'view' => $config->get('twill.block_editor.block_single_layout'),
         ]);
 
         $viewFactory->inject('content', $renderedBlocks);
@@ -102,13 +103,14 @@ class BlocksController extends Controller
      * Determines a view name for a given block type.
      *
      * @param string $blockType
+     * @param Config $config
      * @return string
      */
-    private function getBlockView($blockType)
+    private function getBlockView($blockType, $config)
     {
-        $view = $this->config->get('twill.block_editor.block_views_path') . '.' . $blockType;
+        $view = $config->get('twill.block_editor.block_views_path') . '.' . $blockType;
 
-        $customViews = $this->config->get('twill.block_editor.block_views_mappings');
+        $customViews = $config->get('twill.block_editor.block_views_mappings');
 
         if (array_key_exists($blockType, $customViews)) {
             $view = $customViews[$blockType];

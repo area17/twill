@@ -24,6 +24,11 @@ class DashboardController extends Controller
     protected $app;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @var Logger
      */
     protected $logger;
@@ -45,10 +50,11 @@ class DashboardController extends Controller
         ViewFactory $viewFactory,
         AuthFactory $authFactory
     ) {
-        parent::__construct($app, $config);
+        parent::__construct();
 
-        $this->logger = $logger;
         $this->app = $app;
+        $this->config = $config;
+        $this->logger = $logger;
         $this->viewFactory = $viewFactory;
         $this->authFactory = $authFactory;
     }

@@ -6,17 +6,11 @@ use A17\Twill\Http\Requests\Admin\MediaRequest;
 use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignS3UploadListener;
 use Illuminate\Config\Repository as Config;
-use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Redirector;
 use Illuminate\Routing\ResponseFactory;
-use Illuminate\Routing\Router;
-use Illuminate\Routing\UrlGenerator;
-use Illuminate\Session\Store as SessionStore;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\View\Factory as ViewFactory;
 
 class MediaLibraryController extends ModuleController implements SignS3UploadListener
 {
@@ -64,15 +58,12 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         Application $app,
         Config $config,
         Request $request,
-        Router $router,
-        SessionStore $sessionStore,
-        Redirector $redirector,
-        UrlGenerator $urlGenerator,
-        ViewFactory $viewFactory,
-        AuthFactory $authFactory,
         ResponseFactory $responseFactory
     ) {
-        parent::__construct($app, $request, $router, $sessionStore, $redirector, $urlGenerator, $viewFactory, $authFactory, $responseFactory, $config);
+        parent::__construct($app, $request);
+        $this->responseFactory = $responseFactory;
+        $this->config = $config;
+
         $this->removeMiddleware('can:edit');
         $this->middleware('can:edit', ['only' => ['signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = $this->config->get('twill.media_library.endpoint_type');

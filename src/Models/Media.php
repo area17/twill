@@ -28,7 +28,7 @@ class Media extends Model
             return $field['name'];
         })->toArray()));
 
-        collect(config('twill.media_library.translatable_metadatas_fields'))->each(function ($field) {
+        Collection::make(config('twill.media_library.translatable_metadatas_fields'))->each(function ($field) {
             $this->casts[$field] = 'json';
         });
 

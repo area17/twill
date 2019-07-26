@@ -20,6 +20,11 @@ class FileRepository extends ModuleRepository
     protected $filesystemManager;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @param DB $db
      * @param Logger $logger
      * @param Application $app
@@ -27,18 +32,11 @@ class FileRepository extends ModuleRepository
      * @param File $model
      * @param FilesystemManager $filesystemManager
      */
-    public function __construct(
-        DB $db,
-        Logger $logger,
-        Application $app,
-        Config $config,
-        File $model,
-        FilesystemManager $filesystemManager
-    ) {
-        parent::__construct($db, $logger, $app, $config);
-
+    public function __construct(File $model, FilesystemManager $filesystemManager, Config $config)
+    {
         $this->model = $model;
         $this->filesystemManager = $filesystemManager;
+        $this->config = $config;
     }
 
     /**

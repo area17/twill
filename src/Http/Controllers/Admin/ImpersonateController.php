@@ -4,8 +4,6 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Repositories\UserRepository;
 use Illuminate\Auth\AuthManager;
-use Illuminate\Config\Repository as Config;
-use Illuminate\Contracts\Foundation\Application;
 
 class ImpersonateController extends Controller
 {
@@ -14,9 +12,9 @@ class ImpersonateController extends Controller
      */
     protected $authManager;
 
-    public function __construct(Application $app, Config $config, AuthManager $authManager)
+    public function __construct(AuthManager $authManager)
     {
-        parent::__construct($app, $config);
+        parent::__construct();
 
         $this->authManager = $authManager;
     }

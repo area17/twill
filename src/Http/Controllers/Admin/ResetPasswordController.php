@@ -4,7 +4,6 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\User;
 use Illuminate\Config\Repository as Config;
-use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
@@ -35,16 +34,22 @@ class ResetPasswordController extends Controller
     protected $redirector;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @var ViewFactory
      */
     protected $viewFactory;
 
-    public function __construct(Application $app, Config $config, Redirector $redirector, ViewFactory $viewFactory)
+    public function __construct(Config $config, Redirector $redirector, ViewFactory $viewFactory)
     {
-        parent::__construct($app, $config);
+        parent::__construct();
 
         $this->redirector = $redirector;
         $this->viewFactory = $viewFactory;
+        $this->config = $config;
 
         $this->redirectTo = $this->config->get('twill.auth_login_redirect_path', '/');
         $this->middleware('twill_guest');

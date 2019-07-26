@@ -5,13 +5,14 @@ namespace A17\Twill\Repositories;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Repositories\Behaviors\HandleDates;
-use Illuminate\Config\Repository as Config;
-use Illuminate\Database\DatabaseManager as DB;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use PDO;
-use Psr\Log\LoggerInterface as Logger;
 
 abstract class ModuleRepository
 {
@@ -31,40 +32,6 @@ abstract class ModuleRepository
      * @var array
      */
     protected $countScope = [];
-
-    /**
-     * @var DB
-     */
-    protected $db;
-
-    /**
-     * @var Logger
-     */
-    protected $logger;
-
-    /**
-     * @var Application
-     */
-    protected $app;
-
-    /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
-     * @param DB $db
-     * @param Logger $logger
-     * @param Application $app
-     * @param Config $config
-     */
-    public function __construct(DB $db, Logger $logger, Application $app, Config $config)
-    {
-        $this->db = $db;
-        $this->logger = $logger;
-        $this->app = $app;
-        $this->config = $config;
-    }
 
     /**
      * @param array $with
@@ -238,7 +205,7 @@ abstract class ModuleRepository
      */
     public function create($fields)
     {
-        return $this->db->transaction(function () use ($fields) {
+        return DB::transaction(function () use ($fields) {
             $original_fields = $fields;
 
             $fields = $this->prepareFieldsBeforeCreate($fields);
@@ -293,7 +260,7 @@ abstract class ModuleRepository
      */
     public function update($id, $fields)
     {
-        $this->db->transaction(function () use ($id, $fields) {
+        DB::transaction(function () use ($id, $fields) {
             $object = $this->model->findOrFail($id);
 
             $this->beforeSave($object, $fields);
@@ -316,7 +283,7 @@ abstract class ModuleRepository
      */
     public function updateBasic($id, $values, $scopes = [])
     {
-        return $this->db->transaction(function () use ($id, $values, $scopes) {
+        return DB::transaction(function () use ($id, $values, $scopes) {
             // apply scopes if no id provided
             if (is_null($id)) {
                 $query = $this->model->query();
@@ -362,7 +329,7 @@ abstract class ModuleRepository
      */
     public function setNewOrder($ids)
     {
-        $this->db->transaction(function () use ($ids) {
+        DB::transaction(function () use ($ids) {
             $this->model->setNewOrder($ids);
         }, 3);
     }
@@ -373,7 +340,7 @@ abstract class ModuleRepository
      */
     public function delete($id)
     {
-        return $this->db->transaction(function () use ($id) {
+        return DB::transaction(function () use ($id) {
             if (($object = $this->model->find($id)) === null) {
                 return false;
             }
@@ -393,13 +360,13 @@ abstract class ModuleRepository
      */
     public function bulkDelete($ids)
     {
-        return $this->db->transaction(function () use ($ids) {
+        return DB::transaction(function () use ($ids) {
             try {
-                collect($ids)->each(function ($id) {
+                Collection::make($ids)->each(function ($id) {
                     $this->delete($id);
                 });
             } catch (\Exception $e) {
-                $this->logger->error($e);
+                Log::error($e);
                 return false;
             }
 
@@ -413,7 +380,7 @@ abstract class ModuleRepository
      */
     public function restore($id)
     {
-        return $this->db->transaction(function () use ($id) {
+        return DB::transaction(function () use ($id) {
             if (($object = $this->model->withTrashed()->find($id)) != null) {
                 $object->restore();
                 $this->afterRestore($object);
@@ -430,7 +397,7 @@ abstract class ModuleRepository
      */
     public function bulkRestore($ids)
     {
-        return $this->db->transaction(function () use ($ids) {
+        return DB::transaction(function () use ($ids) {
             try {
                 $query = $this->model->withTrashed()->whereIn('id', $ids);
                 $objects = $query->get();
@@ -441,7 +408,7 @@ abstract class ModuleRepository
                     $this->afterRestore($object);
                 });
             } catch (\Exception $e) {
-                $this->logger->error($e);
+                Log::error($e);
                 return false;
             }
 
@@ -913,7 +880,7 @@ abstract class ModuleRepository
             $model = ucfirst(Str::singular($relation));
         }
 
-        return $this->app->get($this->config->get('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
+        return App::get(Config::get('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
     }
 
     /**
@@ -921,7 +888,7 @@ abstract class ModuleRepository
      */
     private function getLikeOperator()
     {
-        if ($this->db->connection()->getPDO()->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql') {
+        if (DB::connection()->getPDO()->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql') {
             return 'ILIKE';
         }
 

@@ -8,27 +8,24 @@ use A17\Twill\Models\Block;
 use A17\Twill\Repositories\Behaviors\HandleFiles;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use Illuminate\Config\Repository as Config;
-use Illuminate\Database\DatabaseManager as DB;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Collection;
-use Psr\Log\LoggerInterface as Logger;
 
 class BlockRepository extends ModuleRepository
 {
     use HandleMedias, HandleFiles;
 
     /**
-     * @param DB $db
-     * @param Logger $logger
-     * @param Application $app
-     * @param Config $config
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @param Block $model
      */
-    public function __construct(DB $db, Logger $logger, Application $app, Config $config, Block $model)
+    public function __construct(Block $model, Config $config)
     {
-        parent::__construct($db, $logger, $app, $config);
-
         $this->model = $model;
+        $this->config = $config;
     }
 
     /**

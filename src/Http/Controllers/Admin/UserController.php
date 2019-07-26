@@ -3,26 +3,24 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Enums\UserRole;
-use Illuminate\Auth\AuthManager;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Routing\ResponseFactory;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Redirector;
-use Illuminate\Routing\Router;
-use Illuminate\Routing\UrlGenerator;
-use Illuminate\Session\Store as SessionStore;
 use Illuminate\Support\Collection;
-use Illuminate\View\Factory as ViewFactory;
 use PragmaRX\Google2FAQRCode\Google2FA;
 
 class UserController extends ModuleController
 {
     /**
-     * @var AuthManager
+     * @var Config
      */
-    protected $authManager;
+    protected $config;
+
+    /**
+     * @var AuthFactory
+     */
+    protected $authFactory;
 
     /**
      * @var string
@@ -98,21 +96,13 @@ class UserController extends ModuleController
         'role' => 'manage-users',
     ];
 
-    public function __construct(
-        Application $app,
-        Config $config,
-        Request $request,
-        Router $router,
-        SessionStore $sessionStore,
-        AuthManager $authManager,
-        Redirector $redirector,
-        UrlGenerator $urlGenerator,
-        ViewFactory $viewFactory,
-        AuthFactory $authFactory,
-        ResponseFactory $responseFactory
-    ) {
-        parent::__construct($app, $request, $router, $sessionStore, $redirector, $urlGenerator, $viewFactory, $authFactory, $responseFactory, $config);
-        $this->authManager = $authManager;
+    public function __construct(Application $app, Request $request, AuthFactory $authFactory, Config $config)
+    {
+        parent::__construct($app, $request);
+
+        $this->authFactory = $authFactory;
+        $this->config = $config;
+
         $this->removeMiddleware('can:edit');
         $this->removeMiddleware('can:delete');
         $this->removeMiddleware('can:publish');
@@ -163,7 +153,7 @@ class UserController extends ModuleController
      */
     protected function formData($request)
     {
-        $user = $this->authManager->guard('twill_users')->user();
+        $user = $this->authFactory->guard('twill_users')->user();
         $with2faSettings = $this->config->get('twill.enabled.users-2fa') && $user->id == $this->request->get('user');
 
         if ($with2faSettings) {

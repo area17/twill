@@ -22,10 +22,16 @@ class FeaturedController extends Controller
      */
     protected $app;
 
+    /**
+     * @var Config
+     */
+    protected $config;
+
     public function __construct(Application $app, Config $config)
     {
-        parent::__construct($app, $config);
+        parent::__construct();
         $this->app = $app;
+        $this->config = $config;
     }
 
     public function index(Request $request, ViewFactory $viewFactory, UrlGenerator $urlGenerator)

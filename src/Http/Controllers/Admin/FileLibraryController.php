@@ -6,15 +6,10 @@ use A17\Twill\Http\Requests\Admin\FileRequest;
 use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignS3UploadListener;
 use Illuminate\Config\Repository as Config;
-use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Redirector;
 use Illuminate\Routing\ResponseFactory;
-use Illuminate\Routing\Router;
 use Illuminate\Routing\UrlGenerator;
-use Illuminate\Session\Store as SessionStore;
-use Illuminate\View\Factory as ViewFactory;
 
 class FileLibraryController extends ModuleController implements SignS3UploadListener
 {
@@ -56,16 +51,15 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
     public function __construct(
         Application $app,
         Request $request,
-        Router $router,
-        SessionStore $sessionStore,
-        Redirector $redirector,
         UrlGenerator $urlGenerator,
-        ViewFactory $viewFactory,
-        AuthFactory $authFactory,
         ResponseFactory $responseFactory,
         Config $config
     ) {
-        parent::__construct($app, $request, $router, $sessionStore, $redirector, $urlGenerator, $viewFactory, $authFactory, $responseFactory, $config);
+        parent::__construct($app, $request);
+        $this->urlGenerator = $urlGenerator;
+        $this->responseFactory = $responseFactory;
+        $this->config = $config;
+
         $this->removeMiddleware('can:edit');
         $this->middleware('can:edit', ['only' => ['signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = $this->config->get('twill.file_library.endpoint_type');
@@ -169,8 +163,8 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
 
         $uuid = $request->input('unique_folder_name') . '/' . $cleanFilename;
 
-        if (config('twill.file_library.prefix_uuid_with_local_path', false)) {
-            $uuid = config('twill.file_library.local_path') . $uuid;
+        if ($this->config->get('twill.file_library.prefix_uuid_with_local_path', false)) {
+            $uuid = $this->config->get('twill.file_library.local_path') . $uuid;
         }
 
         $fields = [

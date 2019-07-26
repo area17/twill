@@ -6,10 +6,7 @@ use A17\Twill\Models\Media;
 use A17\Twill\Repositories\Behaviors\HandleTags;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Filesystem\Factory as FilesystemManager;
-use Illuminate\Database\DatabaseManager as DB;
-use Illuminate\Foundation\Application;
 use ImageService;
-use Psr\Log\LoggerInterface as Logger;
 
 class MediaRepository extends ModuleRepository
 {
@@ -21,25 +18,19 @@ class MediaRepository extends ModuleRepository
     protected $filesystemManager;
 
     /**
-     * @param DB $db
-     * @param Logger $logger
-     * @param Application $app
-     * @param Config $config
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @param Media $model
      * @param FilesystemManager $filesystemManager
      */
-    public function __construct(
-        DB $db,
-        Logger $logger,
-        Application $app,
-        Config $config,
-        Media $model,
-        FilesystemManager $filesystemManager
-    ) {
-        parent::__construct($db, $logger, $app, $config);
-
+    public function __construct(Media $model, FilesystemManager $filesystemManager, Config $config)
+    {
         $this->model = $model;
         $this->filesystemManager = $filesystemManager;
+        $this->config = $config;
     }
 
     public function filter($query, array $scopes = [])

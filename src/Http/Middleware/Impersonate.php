@@ -3,18 +3,18 @@
 namespace A17\Twill\Http\Middleware;
 
 use Closure;
-use Illuminate\Auth\AuthManager;
+use Illuminate\Contracts\Auth\Factory as AuthFactory;
 
 class Impersonate
 {
     /**
-     * @var AuthManager
+     * @var AuthFactory
      */
-    protected $authManager;
+    protected $authFactory;
 
-    public function __construct(AuthManager $authManager)
+    public function __construct(AuthFactory $authFactory)
     {
-        $this->authManager = $authManager;
+        $this->authFactory = $authFactory;
     }
 
     /**
@@ -27,7 +27,7 @@ class Impersonate
     public function handle($request, Closure $next)
     {
         if ($request->session()->has('impersonate')) {
-            $this->authManager->guard('twill_users')->onceUsingId($request->session()->get('impersonate'));
+            $this->authFactory->guard('twill_users')->onceUsingId($request->session()->get('impersonate'));
         }
 
         return $next($request);

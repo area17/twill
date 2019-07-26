@@ -3,19 +3,20 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Helpers\FlashLevel;
-use Illuminate\Config\Repository as Config;
-use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Redirector;
-use Illuminate\Routing\ResponseFactory;
-use Illuminate\Routing\Router;
-use Illuminate\Routing\UrlGenerator;
-use Illuminate\Session\Store as SessionStore;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Url;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
-use Illuminate\View\Factory as ViewFactory;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 abstract class ModuleController extends Controller
@@ -29,41 +30,6 @@ abstract class ModuleController extends Controller
      * @var Request
      */
     protected $request;
-
-    /**
-     * @var Router
-     */
-    protected $router;
-
-    /**
-     * @var SessionStore
-     */
-    protected $sessionStore;
-
-    /**
-     * @var Redirector
-     */
-    protected $redirector;
-
-    /**
-     * @var UrlGenerator
-     */
-    protected $urlGenerator;
-
-    /**
-     * @var ViewFactory
-     */
-    protected $viewFactory;
-
-    /**
-     * @var AuthFactory
-     */
-    protected $authFactory;
-
-    /**
-     * @var ResponseFactory
-     */
-    protected $responseFactory;
 
     /**
      * @var string
@@ -205,28 +171,11 @@ abstract class ModuleController extends Controller
      */
     protected $fieldsPermissions = [];
 
-    public function __construct(
-        Application $app,
-        Request $request,
-        Router $router,
-        SessionStore $sessionStore,
-        Redirector $redirector,
-        UrlGenerator $urlGenerator,
-        ViewFactory $viewFactory,
-        AuthFactory $authFactory,
-        ResponseFactory $responseFactory,
-        Config $config
-    ) {
-        parent::__construct($app, $config);
+    public function __construct(Application $app, Request $request)
+    {
+        parent::__construct();
         $this->app = $app;
         $this->request = $request;
-        $this->router = $router;
-        $this->sessionStore = $sessionStore;
-        $this->redirector = $redirector;
-        $this->urlGenerator = $urlGenerator;
-        $this->viewFactory = $viewFactory;
-        $this->authFactory = $authFactory;
-        $this->responseFactory = $responseFactory;
 
         $this->setMiddlewarePermission();
 
@@ -311,10 +260,10 @@ abstract class ModuleController extends Controller
             "twill::$this->moduleName.index",
             "twill::layouts.listing",
         ])->first(function ($view) {
-            return $this->viewFactory->exists($view);
+            return View::exists($view);
         });
 
-        return $this->viewFactory->make($view, $indexData);
+        return View::make($view, $indexData);
     }
 
     /**
@@ -322,7 +271,7 @@ abstract class ModuleController extends Controller
      */
     public function browser()
     {
-        return $this->responseFactory->json($this->getBrowserData());
+        return Response::json($this->getBrowserData());
     }
 
     /**
@@ -340,7 +289,7 @@ abstract class ModuleController extends Controller
 
         $this->fireEvent($input);
 
-        $this->sessionStore->put($this->moduleName . '_retain', true);
+        Session::put($this->moduleName . '_retain', true);
 
         if ($this->getIndexOption('editInModal')) {
             return $this->respondWithSuccess('Content saved. All good!');
@@ -362,7 +311,7 @@ abstract class ModuleController extends Controller
     public function show($id, $submoduleId = null)
     {
         if ($this->getIndexOption('editInModal')) {
-            return $this->redirector->to(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
+            return Redirect::to(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
         }
 
         return $this->redirectToForm($submoduleId ?? $id);
@@ -380,8 +329,8 @@ abstract class ModuleController extends Controller
 
         if ($this->getIndexOption('editInModal')) {
             return $this->request->ajax()
-            ? $this->responseFactory->json($this->modalFormData($submodule ?? $id))
-            : $this->redirector->to(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
+            ? Response::json($this->modalFormData($submodule ?? $id))
+            : Redirect::to(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
         }
 
         $this->setBackLink();
@@ -391,10 +340,10 @@ abstract class ModuleController extends Controller
             "twill::$this->moduleName.form",
             "twill::layouts.form",
         ])->first(function ($view) {
-            return $this->viewFactory->exists($view);
+            return View::exists($view);
         });
 
-        return $this->viewFactory->make($view, $this->form($submoduleId ?? $id));
+        return View::make($view, $this->form($submoduleId ?? $id));
     }
 
     /**
@@ -437,7 +386,7 @@ abstract class ModuleController extends Controller
                         ['openCreate' => true]
                     ));
                 } elseif ($input['cmsSaveType'] === 'restore') {
-                    $this->sessionStore->flash('status', "Revision restored.");
+                    Session::flash('status', "Revision restored.");
 
                     return $this->respondWithRedirect(moduleRoute(
                         $this->moduleName,
@@ -449,7 +398,7 @@ abstract class ModuleController extends Controller
             }
 
             if ($this->moduleHas('revisions')) {
-                return $this->responseFactory->json([
+                return Response::json([
                     'message' => 'Content saved. All good!',
                     'variant' => FlashLevel::SUCCESS,
                     'revisions' => $item->revisionsArray(),
@@ -474,14 +423,14 @@ abstract class ModuleController extends Controller
         }
 
         if ($this->request->has('activeLanguage')) {
-            $this->app->setLocale($this->request->get('activeLanguage'));
+            App::setLocale($this->request->get('activeLanguage'));
         }
 
-        $previewView = $this->previewView ?? ($this->config->get('twill.frontend.views_path', 'site') . '.' . Str::singular($this->moduleName));
+        $previewView = $this->previewView ?? (Config::get('twill.frontend.views_path', 'site') . '.' . Str::singular($this->moduleName));
 
-        return $this->viewFactory->exists($previewView) ? $this->viewFactory->make($previewView, array_replace([
+        return View::exists($previewView) ? View::make($previewView, array_replace([
             'item' => $item,
-        ], $this->previewData($item))) : $this->viewFactory->make('twill::errors.preview', [
+        ], $this->previewData($item))) : View::make('twill::errors.preview', [
             'moduleName' => Str::singular($this->moduleName),
         ]);
     }
@@ -507,15 +456,15 @@ abstract class ModuleController extends Controller
             "twill::$this->moduleName.form",
             "twill::layouts.form",
         ])->first(function ($view) {
-            return $this->viewFactory->exists($view);
+            return View::exists($view);
         });
 
         $revision = $item->revisions()->where('id', $this->request->get('revisionId'))->first();
         $date = $revision->created_at->toDayDateTimeString();
 
-        $this->sessionStore->flash('restoreMessage', "You are currently editing an older revision of this content (saved by $revision->byUser on $date). Make changes if needed and click restore to save a new revision.");
+        Session::flash('restoreMessage', "You are currently editing an older revision of this content (saved by $revision->byUser on $date). Make changes if needed and click restore to save a new revision.");
 
-        return $this->viewFactory->make($view, $this->form($id, $item));
+        return View::make($view, $this->form($id, $item));
     }
 
     /**
@@ -699,7 +648,7 @@ abstract class ModuleController extends Controller
         $query = $this->request->input('q');
         $tags = $this->repository->getTags($query);
 
-        return $this->responseFactory->json(['items' => $tags->map(function ($tag) {
+        return Response::json(['items' => $tags->map(function ($tag) {
             return $tag->name;
         })], 200);
     }
@@ -1076,7 +1025,7 @@ abstract class ModuleController extends Controller
                 'editInModal' => 'edit',
             ];
 
-            $authorized = array_key_exists($option, $authorizableOptions) ? $this->authFactory->guard('twill_users')->user()->can($authorizableOptions[$option]) : true;
+            $authorized = array_key_exists($option, $authorizableOptions) ? Auth::guard('twill_users')->user()->can($authorizableOptions[$option]) : true;
             return ($this->indexOptions[$option] ?? $this->defaultIndexOptions[$option] ?? false) && $authorized;
         });
     }
@@ -1251,12 +1200,12 @@ abstract class ModuleController extends Controller
             'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
             'saveUrl' => $this->getModuleRoute($item->id, 'update'),
             'editor' => $this->moduleHas('revisions') && $this->moduleHas('blocks') && !$this->disableEditor,
-            'blockPreviewUrl' => $this->urlGenerator->route('admin.blocks.preview'),
+            'blockPreviewUrl' => Url::route('admin.blocks.preview'),
             'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
-        ] + ($this->router->has($previewRouteName) ? [
+        ] + (Route::has($previewRouteName) ? [
             'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $item->id),
         ] : [])
-             + ($this->router->has($restoreRouteName) ? [
+             + (Route::has($restoreRouteName) ? [
             'restoreUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'restoreRevision', $item->id),
         ] : []);
 
@@ -1320,14 +1269,14 @@ abstract class ModuleController extends Controller
     protected function validateFormRequest()
     {
         $unauthorizedFields = Collection::make($this->fieldsPermissions)->filter(function ($permission, $field) {
-            return $this->authFactory->guard('twill_users')->user()->cannot($permission);
+            return Auth::guard('twill_users')->user()->cannot($permission);
         })->keys();
 
         $unauthorizedFields->each(function ($field) {
             $this->request->offsetUnset($field);
         });
 
-        return $this->app->make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
+        return App::make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
     }
 
     /**
@@ -1335,7 +1284,7 @@ abstract class ModuleController extends Controller
      */
     protected function getNamespace()
     {
-        return $this->namespace ?? $this->config->get('twill.namespace');
+        return $this->namespace ?? Config::get('twill.namespace');
     }
 
     /**
@@ -1343,8 +1292,8 @@ abstract class ModuleController extends Controller
      */
     protected function getRoutePrefix()
     {
-        if ($this->request->$this->urlGenerator->route() != null) {
-            $routePrefix = ltrim(str_replace($this->config->get('twill.admin_app_path'), '', $this->request->$this->urlGenerator->route()->getPrefix()), "/");
+        if ($this->request->route() != null) {
+            $routePrefix = ltrim(str_replace(Config::get('twill.admin_app_path'), '', $this->request->route()->getPrefix()), "/");
             return str_replace("/", ".", $routePrefix);
         }
 
@@ -1364,7 +1313,7 @@ abstract class ModuleController extends Controller
      */
     protected function getRepository()
     {
-        return $this->app->make("$this->namespace\Repositories\\" . $this->modelName . "Repository");
+        return App::make("$this->namespace\Repositories\\" . $this->modelName . "Repository");
     }
 
     /**
@@ -1396,7 +1345,7 @@ abstract class ModuleController extends Controller
      */
     protected function getPermalinkBaseUrl()
     {
-        return $this->request->getScheme() . '://' . $this->config->get('app.url') . '/'
+        return $this->request->getScheme() . '://' . Config::get('app.url') . '/'
             . ($this->moduleHas('translations') ? '{language}/' : '')
             . ($this->moduleHas('revisions') ? '{preview}/' : '')
             . ($this->permalinkBase ?? $this->moduleName)
@@ -1444,7 +1393,7 @@ abstract class ModuleController extends Controller
     protected function setBackLink($back_link = null, $params = [])
     {
         if (!isset($back_link)) {
-            if (($back_link = $this->sessionStore->get($this->getBackLinkSessionKey())) == null) {
+            if (($back_link = Session::get($this->getBackLinkSessionKey())) == null) {
                 $back_link = $this->request->headers->get('referer') ?? moduleRoute(
                     $this->moduleName,
                     $this->routePrefix,
@@ -1454,10 +1403,10 @@ abstract class ModuleController extends Controller
             }
         }
 
-        if (!$this->sessionStore->get($this->moduleName . '_retain')) {
-            $this->sessionStore->put($this->getBackLinkSessionKey(), $back_link);
+        if (!Session::get($this->moduleName . '_retain')) {
+            Session::put($this->getBackLinkSessionKey(), $back_link);
         } else {
-            $this->sessionStore->put($this->moduleName . '_retain', false);
+            Session::put($this->moduleName . '_retain', false);
         }
     }
 
@@ -1468,7 +1417,7 @@ abstract class ModuleController extends Controller
      */
     protected function getBackLink($fallback = null, $params = [])
     {
-        $back_link = $this->sessionStore->get($this->getBackLinkSessionKey(), $fallback);
+        $back_link = Session::get($this->getBackLinkSessionKey(), $fallback);
         return $back_link ?? moduleRoute($this->moduleName, $this->routePrefix, 'index', $params);
     }
 
@@ -1487,9 +1436,9 @@ abstract class ModuleController extends Controller
      */
     protected function redirectToForm($id, $params = [])
     {
-        $this->sessionStore->put($this->moduleName . '_retain', true);
+        Session::put($this->moduleName . '_retain', true);
 
-        return $this->redirector->to(moduleRoute(
+        return Redirect::to(moduleRoute(
             $this->moduleName,
             $this->routePrefix,
             'edit',
@@ -1512,7 +1461,7 @@ abstract class ModuleController extends Controller
      */
     protected function respondWithRedirect($redirectUrl)
     {
-        return $this->responseFactory->json([
+        return Response::json([
             'redirect' => $redirectUrl,
         ]);
     }
@@ -1533,7 +1482,7 @@ abstract class ModuleController extends Controller
      */
     protected function respondWithJson($message, $variant)
     {
-        return $this->responseFactory->json([
+        return Response::json([
             'message' => $message,
             'variant' => $variant,
         ]);

@@ -8,12 +8,20 @@ use Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Database\DatabaseManager as DB;
-use Illuminate\Foundation\Application;
-use Psr\Log\LoggerInterface as Logger;
 
 class UserRepository extends ModuleRepository
 {
     use HandleMedias;
+
+    /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * @var DB
+     */
+    protected $db;
 
     /**
      * @var PasswordBrokerManager
@@ -27,8 +35,6 @@ class UserRepository extends ModuleRepository
 
     /**
      * @param DB $db
-     * @param Logger $logger
-     * @param Application $app
      * @param Config $config
      * @param PasswordBrokerManager $passwordBrokerManager
      * @param AuthFactory $authFactory
@@ -36,18 +42,17 @@ class UserRepository extends ModuleRepository
      */
     public function __construct(
         DB $db,
-        Logger $logger,
-        Application $app,
         Config $config,
         PasswordBrokerManager $passwordBrokerManager,
         AuthFactory $authFactory,
         User $model
     ) {
-        parent::__construct($db, $logger, $app, $config);
 
         $this->model = $model;
         $this->passwordBrokerManager = $passwordBrokerManager;
         $this->authFactory = $authFactory;
+        $this->config = $config;
+        $this->db = $db;
     }
 
     /**
@@ -139,9 +144,9 @@ class UserRepository extends ModuleRepository
         if (empty($user->password)
             && $user->published
             && !$this->db
-                ->table($this->config->get('twill.password_resets_table', 'twill_password_resets'))
-                ->where('email', $user->email)
-                ->exists()
+            ->table($this->config->get('twill.password_resets_table', 'twill_password_resets'))
+            ->where('email', $user->email)
+            ->exists()
         ) {
             $user->sendWelcomeNotification(
                 $this->passwordBrokerManager->broker('twill_users')->getRepository()->create($user)

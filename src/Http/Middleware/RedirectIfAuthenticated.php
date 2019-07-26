@@ -3,16 +3,16 @@
 namespace A17\Twill\Http\Middleware;
 
 use Closure;
-use Illuminate\Auth\AuthManager;
 use Illuminate\Config\Repository as Config;
+use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Routing\Redirector;
 
 class RedirectIfAuthenticated
 {
     /**
-     * @var AuthManager
+     * @var AuthFactory
      */
-    protected $authManager;
+    protected $authFactory;
 
     /**
      * @var Redirector
@@ -24,9 +24,9 @@ class RedirectIfAuthenticated
      */
     protected $config;
 
-    public function __construct(AuthManager $authManager, Redirector $redirector, Config $config)
+    public function __construct(AuthFactory $authFactory, Redirector $redirector, Config $config)
     {
-        $this->authManager = $authManager;
+        $this->authFactory = $authFactory;
         $this->redirector = $redirector;
         $this->config = $config;
     }
@@ -40,7 +40,7 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = 'twill_users')
     {
-        if ($this->authManager->guard($guard)->check()) {
+        if ($this->authFactory->guard($guard)->check()) {
             return $this->redirector->to($this->config->get('twill.auth_login_redirect_path', '/'));
         }
 

@@ -3,8 +3,6 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
-use Illuminate\Config\Repository as Config;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\View\Factory as ViewFactory;
 
@@ -28,12 +26,9 @@ class ForgotPasswordController extends Controller
      */
     protected $passwordBrokerManager;
 
-    public function __construct(
-        Application $app,
-        Config $config,
-        PasswordBrokerManager $passwordBrokerManager
-    ) {
-        parent::__construct($app, $config);
+    public function __construct(PasswordBrokerManager $passwordBrokerManager)
+    {
+        parent::__construct();
 
         $this->passwordBrokerManager = $passwordBrokerManager;
         $this->middleware('twill_guest');
