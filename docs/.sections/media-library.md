@@ -3,6 +3,11 @@ Any good CMS should have a media library so that if you have great visuals, you 
 
 ![screenshot](/docs/_media/medialibrary.png)
 
+Media methods:
+
+`public function imageAsArray($role, $crop = "default", $params = [], $media = null)` for single images
+`public function imagesAsArrays($role, $crop = "default", $params = [])` for multiple images
+
 ### Storage provider
 The media and files libraries currently support S3 and local storage. Head over to the `twill` configuration file to setup your storage disk and configurations. Also check out the S3 direct upload section of this documentation to setup your IAM users and bucket if you want to use S3 as a storage provider.
 
