@@ -1,7 +1,7 @@
 import dateFormat from 'date-fns/format'
 
 const filters = {
-    slugify: function (value) {
+  slugify: function (value) {
     const a = 'àáäâèéëêìíïîòóöôùúüûñçßÿœæŕśńṕẃǵǹḿǘẍźḧ·/_,:;' + 'ąàáäâãåæćęęèéëêìíïîłńòóöôõøśùúüûñçżź'
     const b = 'aaaaeeeeiiiioooouuuuncsyoarsnpwgnmuxzh------' + 'aaaaaaaaceeeeeeiiiilnoooooosuuuunczz'
     const ea = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖŐØÙÚÛÜŰÝÞßàáâãäåæçèéêëìíîïðñòóôõöőøùúûüűýþÿ©ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΊΌΎΉΏΪΫαβγδεζηθικλμνξοπρστυφχψωάέίόύήώςϊΰϋΐŞİĞşığАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюяЄІЇҐєіїґČĎĚŇŘŠŤŮŽčďěňřšťůžĄĆĘŁŃŚŹŻąćęłńśźżĀĒĢĪĶĻŅŪāēģīķļņū'
