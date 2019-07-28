@@ -4,39 +4,19 @@ namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\File;
 use A17\Twill\Repositories\Behaviors\HandleTags;
-use Illuminate\Config\Repository as Config;
-use Illuminate\Contracts\Filesystem\Factory as FilesystemManager;
-use Illuminate\Database\DatabaseManager as DB;
-use Illuminate\Foundation\Application;
-use Psr\Log\LoggerInterface as Logger;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
 
 class FileRepository extends ModuleRepository
 {
     use HandleTags;
 
     /**
-     * @var FilesystemManager
-     */
-    protected $filesystemManager;
-
-    /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
-     * @param DB $db
-     * @param Logger $logger
-     * @param Application $app
-     * @param Config $config
      * @param File $model
-     * @param FilesystemManager $filesystemManager
      */
-    public function __construct(File $model, FilesystemManager $filesystemManager, Config $config)
+    public function __construct(File $model)
     {
         $this->model = $model;
-        $this->filesystemManager = $filesystemManager;
-        $this->config = $config;
     }
 
     /**
@@ -57,8 +37,8 @@ class FileRepository extends ModuleRepository
     public function afterDelete($object)
     {
         $storageId = $object->uuid;
-        if ($this->config->get('twill.file_library.cascade_delete')) {
-            $this->filesystemManager->disk($this->config->get('twill.file_library.disk'))->delete($storageId);
+        if (Config::get('twill.file_library.cascade_delete')) {
+            Storage::disk(Config::get('twill.file_library.disk'))->delete($storageId);
         }
     }
 
@@ -69,7 +49,7 @@ class FileRepository extends ModuleRepository
     public function prepareFieldsBeforeCreate($fields)
     {
         if (!isset($fields['size'])) {
-            $fields['size'] = $this->filesystemManager->disk($this->config->get('twill.file_library.disk'))->size($fields['uuid']);
+            $fields['size'] = Storage::disk(Config::get('twill.file_library.disk'))->size($fields['uuid']);
         }
 
         return $fields;

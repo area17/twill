@@ -4,8 +4,8 @@ namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\Media;
 use A17\Twill\Repositories\Behaviors\HandleTags;
-use Illuminate\Config\Repository as Config;
-use Illuminate\Contracts\Filesystem\Factory as FilesystemManager;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
 use ImageService;
 
 class MediaRepository extends ModuleRepository
@@ -13,24 +13,11 @@ class MediaRepository extends ModuleRepository
     use HandleTags;
 
     /**
-     * @var FilesystemManager
-     */
-    protected $filesystemManager;
-
-    /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
      * @param Media $model
-     * @param FilesystemManager $filesystemManager
      */
-    public function __construct(Media $model, FilesystemManager $filesystemManager, Config $config)
+    public function __construct(Media $model)
     {
         $this->model = $model;
-        $this->filesystemManager = $filesystemManager;
-        $this->config = $config;
     }
 
     public function filter($query, array $scopes = [])
@@ -42,14 +29,14 @@ class MediaRepository extends ModuleRepository
     public function afterDelete($object)
     {
         $storageId = $object->uuid;
-        if ($this->config->get('twill.media_library.cascade_delete')) {
-            $this->filesystemManager->disk($this->config->get('twill.media_library.disk'))->delete($storageId);
+        if (Config::get('twill.media_library.cascade_delete')) {
+            Storage::disk(Config::get('twill.media_library.disk'))->delete($storageId);
         }
     }
 
     public function prepareFieldsBeforeCreate($fields)
     {
-        if ($this->config->get('twill.media_library.init_alt_text_from_filename', true)) {
+        if (Config::get('twill.media_library.init_alt_text_from_filename', true)) {
             $fields['alt_text'] = $this->model->altTextFrom($fields['filename']);
         }
 
