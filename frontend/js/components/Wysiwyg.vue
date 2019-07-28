@@ -154,18 +154,15 @@
 
         // update model if text changes
         this.quill.on('text-change', (delta, oldDelta, source) => {
+          let html = this.$refs.editor.children[0].innerHTML
+          if (html === '<p><br></p>') html = ''
+          this.value = html
+
+          this.$emit('input', this.value)
+          this.$emit('change', this.value)
+
           if (this.hasMaxlength && this.showCounter) {
             this.updateCounter(this.getTextLength())
-          }
-          if (this.hasMaxlength && this.quill.getLength() > this.maxlength + 1) {
-            this.quill.deleteText(this.maxlength, this.quill.getLength())
-          } else {
-            let html = this.$refs.editor.children[0].innerHTML
-            if (html === '<p><br></p>') html = ''
-            this.value = html
-
-            this.$emit('input', this.value)
-            this.$emit('change', this.value)
           }
 
           if (source === 'user') this.textUpdate()
@@ -235,7 +232,8 @@
         }
       },
       getTextLength: function () {
-        return this.quill.getLength() - 1
+        // see https://quilljs.com/docs/api/#getlength
+        return this.quill.getLength() - (this.value.length === 0 ? 2 : 1)
       }
     },
     mounted: function () {
@@ -290,7 +288,7 @@
     pointer-events:none;
     position:absolute;
     right:15px;
-    bottom:0;
+    bottom: 55px;
   }
 
   .input__limit--red {
