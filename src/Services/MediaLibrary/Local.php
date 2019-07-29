@@ -4,7 +4,6 @@ namespace A17\Twill\Services\MediaLibrary;
 
 use Illuminate\Support\Facades\Storage;
 
-
 class Local implements ImageServiceInterface
 {
     use ImageServiceDefaults;

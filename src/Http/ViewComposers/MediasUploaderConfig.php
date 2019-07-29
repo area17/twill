@@ -55,7 +55,7 @@ class MediasUploaderConfig
             'signatureEndpoint' => $this->urlGenerator->route('admin.media-library.sign-s3-upload'),
             'endpointBucket' => $this->config->get('filesystems.disks.' . $libraryDisk . '.bucket', 'none'),
             'endpointRegion' => $this->config->get('filesystems.disks.' . $libraryDisk . '.region', 'none'),
-            'endpointRoot' => $this->config->get('filesystems.disks.' . $libraryDisk . '.root', ''),
+            'endpointRoot' => $endpointType === 'local' ? '' : $this->config->get('filesystems.disks.' . $libraryDisk . '.root', ''),
             'accessKey' => $this->config->get('filesystems.disks.' . $libraryDisk . '.key', 'none'),
             'csrfToken' => $this->sessionStore->token(),
             'acl' => $this->config->get('twill.media_library.acl'),

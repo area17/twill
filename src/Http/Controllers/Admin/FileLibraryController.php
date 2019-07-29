@@ -154,18 +154,22 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
     public function storeFile($request)
     {
         $filename = $request->input('qqfilename');
+
         $cleanFilename = preg_replace("/\s+/i", "-", $filename);
 
         $fileDirectory = $request->input('unique_folder_name');
-        $disk = $this->config->get('twill.file_library.disk');
-
-        $request->file('qqfile')->storeAs($fileDirectory, $cleanFilename, $disk);
 
         $uuid = $request->input('unique_folder_name') . '/' . $cleanFilename;
 
         if ($this->config->get('twill.file_library.prefix_uuid_with_local_path', false)) {
-            $uuid = $this->config->get('twill.file_library.local_path') . $uuid;
+            $prefix = trim($this->config->get('twill.file_library.local_path'), '/ ') . '/';
+            $fileDirectory = $prefix . $fileDirectory;
+            $uuid = $prefix . $uuid;
         }
+
+        $disk = $this->config->get('twill.file_library.disk');
+
+        $request->file('qqfile')->storeAs($fileDirectory, $cleanFilename, $disk);
 
         $fields = [
             'uuid' => $uuid,

@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 class MediaLibraryController extends ModuleController implements SignS3UploadListener
 {
@@ -147,6 +148,14 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
         $fileDirectory = $request->input('unique_folder_name');
 
+        $uuid = $request->input('unique_folder_name') . '/' . $filename;
+
+        if ($this->config->get('twill.media_library.prefix_uuid_with_local_path', false)) {
+            $prefix = trim($this->config->get('twill.media_library.local_path'), '/ ') . '/';
+            $fileDirectory = $prefix . $fileDirectory;
+            $uuid = $prefix . $uuid;
+        }
+
         $disk = $this->config->get('twill.media_library.disk');
 
         $request->file('qqfile')->storeAs($fileDirectory, $filename, $disk);
@@ -156,7 +165,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         list($w, $h) = getimagesize($filePath);
 
         $fields = [
-            'uuid' => $request->input('unique_folder_name') . '/' . $filename,
+            'uuid' => $uuid,
             'filename' => $originalFilename,
             'width' => $w,
             'height' => $h,
