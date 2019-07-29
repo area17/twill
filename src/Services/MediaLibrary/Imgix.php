@@ -4,7 +4,6 @@ namespace A17\Twill\Services\MediaLibrary;
 
 use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Str;
-use Imgix\ShardStrategy;
 use Imgix\UrlBuilder;
 
 class Imgix implements ImageServiceInterface
@@ -32,7 +31,6 @@ class Imgix implements ImageServiceInterface
             $this->config->get('twill.imgix.source_host'),
             $this->config->get('twill.imgix.use_https'),
             '',
-            ShardStrategy::CRC,
             false
         );
 
