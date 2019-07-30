@@ -63,13 +63,15 @@
                                 @yield('contentFields')
                             </a17-fieldset>
                         @endunless
-                        
+
                         @php
-                            $permissionModuleName = isPermissionableModule(str_plural(lcfirst(class_basename($item))));
-                            $showPermissionFieldset = isset($item) && $permissionModuleName && !strpos($permissionModuleName, '.');
+                            if (isset($item)) {
+                                $permissionModuleName = isPermissionableModule(getModuleNameByModel($item));
+                                $showPermissionFieldset = $permissionModuleName && !strpos($permissionModuleName, '.');
+                            }
                         @endphp
 
-                        @if($showPermissionFieldset)
+                        @if($showPermissionFieldset ?? null)
                             @can('manage-item', $item)
                                 <a17-fieldset title="User Permissions" id="permissions">
                                     @foreach($users as $user)
@@ -80,7 +82,7 @@
                                             'options' => [
                                                 [
                                                     'value' => '',
-                                                    'label' => 'None' 
+                                                    'label' => 'None'
                                                 ],
                                                 [
                                                     'value' => 'view-item',
