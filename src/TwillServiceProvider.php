@@ -174,7 +174,7 @@ class TwillServiceProvider extends ServiceProvider
 
     private function publishMigrations()
     {
-        $migrations = ['CreateTagsTables', 'CreateBlocksTable', 'CreateRelatedTable', 'CreatePermissionTables'];
+        $migrations = ['CreateTagsTables', 'CreateBlocksTable', 'CreateRelatedTable'];
 
         $optionalMigrations = [
             'CreateTwillUsersTables' => 'users-management',
@@ -182,6 +182,7 @@ class TwillServiceProvider extends ServiceProvider
             'CreateMediasTables' => 'media-library',
             'CreateFeaturesTable' => 'buckets',
             'CreateSettingsTable' => 'settings',
+            'CreatePermissionTables' => 'permission'
         ];
 
         if ($this->app->runningInConsole()) {
