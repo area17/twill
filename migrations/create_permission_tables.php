@@ -27,7 +27,6 @@ class CreatePermissionTables extends Migration
             createDefaultTableFields($table);
             $table->string('name', 255)->nullable();
             $table->text('description')->nullable();
-            $table->boolean('can_delete')->default(true);
         });
 
         Schema::create('roles', function (Blueprint $table) {
@@ -88,6 +87,7 @@ class CreatePermissionTables extends Migration
 
         $this->seedBasicPermissions();
         $this->seedDefaultRoles();
+        $this->seedDefaultGroup();
     }
 
     /**
@@ -143,5 +143,16 @@ class CreatePermissionTables extends Migration
             ]);
             $role->permissions()->attach(Permission::whereIn("name", $role_permissions)->pluck('id'));
         }
+    }
+
+    private function seedDefaultGroup()
+    {
+        A17\Twill\Models\Group::create(
+            [
+                'name' => 'Everyone',
+                'description' => 'The default everyone group',
+                'published' => true
+            ]
+        );
     }
 }

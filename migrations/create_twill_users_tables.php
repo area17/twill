@@ -16,6 +16,10 @@ class CreateTwillUsersTables extends Migration
             $table->string('title', 255)->nullable();
             $table->text('description')->nullable();
             $table->boolean('is_superadmin')->default(false);
+            $table->boolean('activated')->default(false);
+            $table->dateTime('last_login_at')->nullable();
+            $table->dateTime('registered_at')->nullable();
+            $table->boolean('require_new_password')->default(false);
             $table->rememberToken();
         });
 
