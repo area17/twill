@@ -2,7 +2,7 @@
 
 namespace A17\Twill;
 
-use A17\CmsToolkit\Repositories\BlockRepository;
+use A17\Twill\Repositories\BlockRepository;
 use Illuminate\Support\ServiceProvider;
 use Validator;
 
