@@ -31,13 +31,6 @@ class Group extends BaseModel
         return Group::where('name', 'Everyone')->firstOrFail();
     }
 
-    public function __construct(array $attributes = [])
-    {
-        $this->table = 'groups';
-
-        parent::__construct($attributes);
-    }
-
     public function getTitleInBrowserAttribute()
     {
         return $this->name;
