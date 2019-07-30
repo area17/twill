@@ -35,7 +35,6 @@ class RoleController extends ModuleController
     protected function indexData($request)
     {
         return [
-            'defaultFilterSlug' => 'published',
             'primary_navigation' => [
                 'users' => [
                     'title' => 'Users',
@@ -102,9 +101,5 @@ class RoleController extends ModuleController
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
     }
 
-    protected function getRequestFilters()
-    {
-        return json_decode($this->request->get('filter'), true) ?? ['status' => 'published'];
-    }
 
 }

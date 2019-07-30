@@ -33,7 +33,6 @@ class GroupController extends ModuleController
     protected function indexData($request)
     {
         return [
-            'defaultFilterSlug' => 'published',
             'primary_navigation' => [
                 'users' => [
                     'title' => 'Users',
@@ -97,11 +96,6 @@ class GroupController extends ModuleController
         $canEdit = auth('twill_users')->user()->can('edit-user-groups') && ($item->canEdit ?? true);
 
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
-    }
-
-    protected function getRequestFilters()
-    {
-        return json_decode($this->request->get('filter'), true) ?? ['status' => 'published'];
     }
 
     protected function getIndexItems($scopes = [], $forcePagination = false)
