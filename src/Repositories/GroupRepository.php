@@ -42,7 +42,6 @@ class GroupRepository extends ModuleRepository
             $deletedUsersIds = array_values(array_diff($currentUsersIds, $newUsersIds));
             $viewableItems = $group->viewableItems();
 
-            debug($addedUsersIds);
             if (!empty($addedUsersIds)) {
                 $addedUsers = User::whereIn('id', $addedUsersIds)->get();
 
@@ -55,7 +54,6 @@ class GroupRepository extends ModuleRepository
                 }
             }
 
-            debug($deletedUsersIds);
             if (!empty($deletedUsersIds)) {
                 $deletedUsers = User::whereIn('id', $deletedUsersIds)->get();
 
