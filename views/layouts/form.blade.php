@@ -238,7 +238,7 @@
     <script src="{{ mix('/assets/admin/js/main-form.js') }}"></script>
 
     <script>
-        const groupUserMapping = {!! json_encode($groupUserMapping) !!};
+        const groupUserMapping = {!! isset($groupUserMapping) ? json_encode($groupUserMapping) : '[]' !!};
         window.vm.$store.subscribe((mutation, state) => {
             if (mutation.type === 'updateFormField' && mutation.payload.name.endsWith('group_authorized')) {
                 const groupId = mutation.payload.name.replace('_group_authorized', '');
