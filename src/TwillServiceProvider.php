@@ -182,7 +182,7 @@ class TwillServiceProvider extends ServiceProvider
             'CreateMediasTables' => 'media-library',
             'CreateFeaturesTable' => 'buckets',
             'CreateSettingsTable' => 'settings',
-            'CreatePermissionTables' => 'permission'
+            'SupportPermission' => 'permission'
         ];
 
         if ($this->app->runningInConsole()) {
