@@ -26,13 +26,6 @@ class Role extends BaseModel
 
     public $checkboxes = ['published'];
 
-    public function __construct(array $attributes = [])
-    {
-        $this->table = 'roles';
-
-        parent::__construct($attributes);
-    }
-
     public function scopePublished($query)
     {
         return $query->wherePublished(true);
