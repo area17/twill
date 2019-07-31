@@ -132,7 +132,6 @@ abstract class ModuleController extends Controller
             $this->user = auth('twill_users')->user();
             return $next($request);
         });
-        $this->setMiddlewarePermission();
 
         /*
          * Default filters for the index view
@@ -168,15 +167,6 @@ abstract class ModuleController extends Controller
                 ],
             ];
         }
-    }
-
-    protected function setMiddlewarePermission()
-    {
-        // $this->middleware('can:list', ['only' => ['index', 'show']]);
-        // $this->middleware('can:edit', ['only' => ['edit', 'store', 'update']]);
-        // $this->middleware('can:publish', ['only' => ['publish', 'feature', 'bulkPublish', 'bulkFeature']]);
-        // $this->middleware('can:reorder', ['only' => ['reorder']]);
-        // $this->middleware('can:delete', ['only' => ['destroy', 'bulkDelete', 'restore', 'bulkRestore', 'restoreRevision']]);
     }
 
     public function index($parentModuleId = null)
