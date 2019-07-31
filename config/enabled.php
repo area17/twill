@@ -23,5 +23,5 @@ return [
     'users-description' => false,
     'activitylog' => true,
     'users-2fa' => false,
-    'permission' => true
+    'permission' => false
 ];
