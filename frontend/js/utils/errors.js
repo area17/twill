@@ -9,17 +9,18 @@ export function globalError (component = null, error) {
 
   console.error(errorMessage)
 
-  if (error.response.status === 401) {
-    window.vm.notif({
+  const errorStatusMapping = {
+    401: {
       message: 'Your session has expired, please <a href="' + document.location + '" target="_blank">login in another tab</a>. You can then continue working here.',
       variant: 'warning'
-    })
-  }
-
-  if (error.response.status === 403) {
-    window.vm.notif({
+    },
+    403: {
       message: 'You don\'t have permission to perform this action.',
       variant: 'warning'
-    })
+    }
+  }
+
+  if (errorStatusMapping.hasOwnProperty(error.response.status)) {
+    window.vm.notif(errorStatusMapping[error.response.status])
   }
 }
