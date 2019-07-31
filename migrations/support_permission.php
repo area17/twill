@@ -29,6 +29,7 @@ class SupportPermission extends Migration
             createDefaultTableFields($table);
             $table->string('name', 255)->nullable();
             $table->text('description')->nullable();
+            $table->boolean('is_everyone_group')->default(false);
         });
 
         Schema::create('roles', function (Blueprint $table) {
