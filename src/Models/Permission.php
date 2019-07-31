@@ -2,6 +2,9 @@
 
 namespace A17\Twill\Models;
 
+use A17\Twill\Models\User;
+use A17\Twill\Models\Role;
+use A17\Twill\Models\Group;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class Permission extends BaseModel
@@ -52,19 +55,19 @@ class Permission extends BaseModel
     // All users have this permission
     public function users()
     {
-        return $this->belongsToMany('A17\Twill\Models\User', 'permission_twill_user', 'permission_id', 'twill_user_id');
+        return $this->belongsToMany(User::class, 'permission_twill_user', 'permission_id', 'twill_user_id');
     }
 
     // All roles have this permission
     public function roles()
     {
-        return $this->belongsToMany('A17\Twill\Models\Role', 'permission_role', 'permission_id', 'role_id');
+        return $this->belongsToMany(Role::class, 'permission_role', 'permission_id', 'role_id');
     }
 
     // All groups have this permission
     public function groups()
     {
-        return $this->belongsToMany('A17\Twill\Models\Group', 'group_permission', 'permission_id', 'group_id');
+        return $this->belongsToMany(Group::class, 'group_permission', 'permission_id', 'group_id');
     }
 
     // Global level permissions

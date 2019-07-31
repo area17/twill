@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Foundation\Auth\User as AuthenticatableContract;
 use Illuminate\Notifications\Notifiable;
+use A17\Twill\Models\Role;
+use A17\Twill\Models\Group;
 use Session;
 
 class User extends AuthenticatableContract
@@ -128,12 +130,12 @@ class User extends AuthenticatableContract
 
     public function groups()
     {
-        return $this->belongsToMany('A17\Twill\Models\Group', 'group_twill_user', 'twill_user_id', 'group_id');
+        return $this->belongsToMany(Group::class, 'group_twill_user', 'twill_user_id', 'group_id');
     }
 
     public function role()
     {
-        return $this->belongsTo('A17\Twill\Models\Role');
+        return $this->belongsTo(Role::class);
     }
 
     public function allPermissions()

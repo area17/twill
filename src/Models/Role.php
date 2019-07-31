@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Models;
 
+use A17\Twill\Models\User;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasPermissions;
 use Illuminate\Database\Eloquent\Model as BaseModel;
@@ -49,7 +50,7 @@ class Role extends BaseModel
 
     public function users()
     {
-        return $this->hasMany('A17\Twill\Models\User');
+        return $this->hasMany(User::class);
     }
 
     protected $casts = [
