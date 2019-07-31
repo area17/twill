@@ -1009,6 +1009,7 @@ abstract class ModuleController extends Controller
             'blockPreviewUrl' => route('admin.blocks.preview'),
             'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
             'groupUserMapping' => $this->getGroupUserMapping(),
+            'showPermissionFieldset' => $this->getShowPermissionFieldset($item),
         ] + (Route::has($previewRouteName) ? [
             'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $item->id),
         ] : [])
@@ -1219,5 +1220,11 @@ abstract class ModuleController extends Controller
     protected function fireEvent($input = [])
     {
         fireCmsEvent('cms-module.saved', $input);
+    }
+
+    protected function getShowPermissionFieldset($item)
+    {
+        $permissionModuleName = isPermissionableModule(getModuleNameByModel($item));
+        return $permissionModuleName && !strpos($permissionModuleName, '.');
     }
 }

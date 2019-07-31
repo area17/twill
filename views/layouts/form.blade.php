@@ -64,13 +64,6 @@
                             </a17-fieldset>
                         @endunless
 
-                        @php
-                            if (isset($item)) {
-                                $permissionModuleName = isPermissionableModule(getModuleNameByModel($item));
-                                $showPermissionFieldset = $permissionModuleName && !strpos($permissionModuleName, '.');
-                            }
-                        @endphp
-
                         @if($showPermissionFieldset ?? null)
                             @can('manage-item', $item)
                                 <a17-fieldset title="User Permissions" id="permissions">
