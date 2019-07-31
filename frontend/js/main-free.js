@@ -3,8 +3,6 @@ import store from '@/store'
 
 // General shared behaviors
 import main from '@/main'
-import search from '@/main-search'
-import openMediaLibrary from '@/behaviors/openMediaLibrary'
 
 // Plugins
 import A17Config from '@/plugins/A17Config'
@@ -20,9 +18,6 @@ window.vm = new Vue({
   store, // inject store to all children
   el: '#app',
   components: { },
-  created: function () {
-    openMediaLibrary()
-  }
 })
 
 // DOM Ready general actions
