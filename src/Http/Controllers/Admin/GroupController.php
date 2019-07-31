@@ -100,17 +100,15 @@ class GroupController extends ModuleController
 
     protected function getIndexItems($scopes = [], $forcePagination = false)
     {
-        //Everyone group should always be on top
-        $items = parent::getIndexItems($scopes, $forcePagination)->where('name', '<>', 'Everyone');
-        $items->prepend(Group::getEveryoneGroup());
-        return $items;
+        //Everyone group should always be on the top
+        return parent::getIndexItems($scopes, $forcePagination)->sortByDesc('is_everyone_group')->values();
     }
 
     protected function getBrowserItems($scopes = [])
     {
         // Exclude everyone group from browsers
         return parent::getBrowserItems($scopes)->filter(function ($item) {
-            return $item->name !== 'Everyone';
+            return !$item->isEveryoneGroup();
         })->values();
     }
 

@@ -1,6 +1,8 @@
 <?php
 
 use A17\Twill\Models\Permission;
+use A17\Twill\Models\Role;
+use A17\Twill\Models\Group;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -136,7 +138,7 @@ class SupportPermission extends Migration
         ];
 
         foreach ($roles as $role_name => $role_permissions) {
-            $role = A17\Twill\Models\Role::create([
+            $role = Role::create([
                 'name' => $role_name,
                 'published' => true,
                 'in_everyone_group' => $role_name === 'Guest' ? false : true,
@@ -147,12 +149,15 @@ class SupportPermission extends Migration
 
     private function seedDefaultGroup()
     {
-        A17\Twill\Models\Group::create(
+        $everyoneGroup = Group::create(
             [
                 'name' => 'Everyone',
                 'description' => 'The default everyone group',
                 'published' => true
             ]
         );
+
+        $everyoneGroup->is_everyone_group = true;
+        $everyoneGroup->save();
     }
 }

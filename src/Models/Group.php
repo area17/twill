@@ -17,7 +17,6 @@ class Group extends BaseModel
         'name',
         'description',
         'published',
-        'can_delete',
     ];
 
     protected $dates = [
@@ -28,7 +27,7 @@ class Group extends BaseModel
 
     public static function getEveryoneGroup()
     {
-        return Group::where('name', 'Everyone')->firstOrFail();
+        return Group::where([['is_everyone_group', true], ['name', 'Everyone']])->firstOrFail();
     }
 
     public function getTitleInBrowserAttribute()
@@ -56,20 +55,19 @@ class Group extends BaseModel
         return $this->belongsToMany('A17\Twill\Models\User', 'group_twill_user', 'group_id', 'twill_user_id');
     }
 
+    public function isEveryoneGroup()
+    {
+        return $this->id === $this->getEveryoneGroup()->id;
+    }
+
     public function getCanEditAttribute()
     {
-        if ($this->name === "Everyone" && !$this->canDelete) {
-            return false;
-        }
-        return true;
+        return !$this->isEveryoneGroup();
     }
 
     public function getCanPublishAttribute()
     {
-        if ($this->name === "Everyone" && !$this->canDelete) {
-            return false;
-        }
-        return true;
+        return !$this->isEveryoneGroup();
     }
 
     public function viewableItems()
