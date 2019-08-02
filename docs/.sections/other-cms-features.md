@@ -255,6 +255,65 @@ app(SettingRepository::class)->byKey('site_title');
 app(SettingRepository::class)->byKey('site_title', 'section_name');
 ```
 
+## Custom views
+Along with the rest of the features, Twill includes the ability to create custom views.
+This views don't have the form capability and are completely free for you to customize.
+
+For that you just need to extend your view with the `free layout`.
+
+```php
+    @extends('twill::layouts.free')
+```
+
+#### Example
+In this example you'll see process on how to create a Custom View.
+- Create a route in `routes/admin.php`
+
+```php
+  Route::name('staticView')->get('/static', 'MockController@staticView');
+```
+
+- Add the option to the menu in `config/twill-navigation.php`
+
+```php
+return [
+...
+    'static' => [
+        'title' => 'Static',
+        'route' => 'admin.staticView',
+    ],
+...
+];
+```
+
+- Add a basic controller to handle the request
+
+```php
+namespace App\Http\Controllers\Admin;
+class MockController
+{
+
+    public function staticView()
+    {
+        return view('admin.statics.detail', []);
+    }
+
+}
+```
+
+- And create the view
+
+```sh
+@extends('twill::layouts.free')
+
+@section('contentHTML')
+  MY CUSTOM CONTENT GOES HERE
+@stop
+```
+
+With that you'll have all the section available for rendering your content.
+
+
 ## User management
 Authentication and authorization are provided by default in Laravel. This package simply leverages what Laravel provides and configures the views for you. By default, users can login at `/login` and can also reset their password through that same screen. New users have to reset their password before they can gain access to the admin application. By using the twill configuration file, you can change the default redirect path (`auth_login_redirect_path`) and send users to anywhere in your application following login.
 
