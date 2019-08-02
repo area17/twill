@@ -3,7 +3,11 @@
 @section('appTypeClass', 'body--free')
 
 @section('content')
-    @yield('contentHTML')
+  <div class="free">
+    <div class="container">
+      @yield('contentHTML')
+    </div>
+  </div>
 @stop
 
 @push('extra_js')
