@@ -3,6 +3,7 @@
 namespace A17\Twill\Services\MediaLibrary;
 
 use Illuminate\Config\Repository as Config;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Imgix\UrlBuilder;
 
@@ -95,7 +96,12 @@ class Imgix implements ImageServiceInterface
     public function getSocialUrl($id, array $params = [])
     {
         $defaultParams = $this->config->get('twill.imgix.social_default_params');
-        return $this->getUrl($id, array_replace($defaultParams, $params));
+
+        $cropParams = Arr::has($params, $this->cropParamsKeys) ? $this->getCrop($params) : [];
+
+        $params = Arr::except($params, $this->cropParamsKeys);
+
+        return $this->getUrl($id, array_replace($defaultParams, $params + $cropParams));
     }
 
     /**
@@ -106,7 +112,12 @@ class Imgix implements ImageServiceInterface
     public function getCmsUrl($id, array $params = [])
     {
         $defaultParams = $this->config->get('twill.imgix.cms_default_params');
-        return $this->getUrl($id, array_replace($defaultParams, $params));
+
+        $cropParams = Arr::has($params, $this->cropParamsKeys) ? $this->getCrop($params) : [];
+
+        $params = Arr::except($params, $this->cropParamsKeys);
+
+        return $this->getUrl($id, array_replace($defaultParams, $params + $cropParams));
     }
 
     /**
@@ -156,7 +167,12 @@ class Imgix implements ImageServiceInterface
     protected function getCrop($crop_params)
     {
         if (!empty($crop_params)) {
-            return ['rect' => $crop_params['crop_x'] . ',' . $crop_params['crop_y'] . ',' . $crop_params['crop_w'] . ',' . $crop_params['crop_h']];
+            return ['rect' =>
+                $crop_params['crop_x'] . ',' .
+                $crop_params['crop_y'] . ',' .
+                $crop_params['crop_w'] . ',' .
+                $crop_params['crop_h'],
+            ];
         }
 
         return [];

@@ -3,10 +3,17 @@
 namespace A17\Twill\Models\Behaviors;
 
 use A17\Twill\Models\Media;
+use Illuminate\Support\Arr;
 use ImageService;
 
 trait HasMedias
 {
+    protected $cropParamsKeys = [
+        'crop_x',
+        'crop_y',
+        'crop_w',
+        'crop_h',
+    ];
 
     public function medias()
     {
@@ -58,13 +65,15 @@ trait HasMedias
         }
 
         if ($media) {
-            $crop_params = ['rect' => $media->pivot->crop_x . ',' . $media->pivot->crop_y . ',' . $media->pivot->crop_w . ',' . $media->pivot->crop_h] + $params;
+
+            $crop_params = Arr::only($media->pivot->toArray(), $this->cropParamsKeys);
 
             if ($cms) {
-                return ImageService::getCmsUrl($media->uuid, $crop_params);
+
+                return ImageService::getCmsUrl($media->uuid, $crop_params + $params);
             }
 
-            return ImageService::getUrl($media->uuid, $crop_params);
+            return ImageService::getUrlWithCrop($media->uuid, $crop_params, $params);
         }
 
         if ($has_fallback) {
@@ -209,9 +218,9 @@ trait HasMedias
         $media = $this->findMedia($role, $crop);
 
         if ($media) {
-            $crop_params = ['rect' => $media->pivot->crop_x . ',' . $media->pivot->crop_y . ',' . $media->pivot->crop_w . ',' . $media->pivot->crop_h] + $params;
+            $crop_params = Arr::only($media->pivot->toArray(), $this->cropParamsKeys);
 
-            return ImageService::getSocialUrl($media->uuid, $crop_params);
+            return ImageService::getSocialUrl($media->uuid, $crop_params + $params);
         }
 
         if ($has_fallback) {

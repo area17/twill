@@ -6,6 +6,7 @@ use A17\Twill\Http\Middleware\Impersonate;
 use A17\Twill\Http\Middleware\NoDebugBar;
 use A17\Twill\Http\Middleware\RedirectIfAuthenticated;
 use A17\Twill\Http\Middleware\ValidateBackHistory;
+use A17\Twill\Services\MediaLibrary\Glide;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
@@ -90,6 +91,14 @@ class RouteServiceProvider extends ServiceProvider
                     });
                 }
             );
+        }
+
+        if (config('twill.media_library.image_service') === 'A17\Twill\Services\MediaLibrary\Glide') {
+            $baseUrl = config('twill.glide.base_url');
+
+            $router->get('/' . $baseUrl . '/{path}', function ($path) {
+                return $this->app->get(Glide::class)->render($path);
+            })->where('path', '.*');
         }
     }
 

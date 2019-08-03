@@ -28,6 +28,6 @@ $s3Config = [
 ];
 
 return [
-    config('twill.media_library.disk') => config('twill.media_library.endpoint_type') === 'local' ? $mediaLocalConfig : $s3Config,
-    config('twill.file_library.disk') => config('twill.file_library.endpoint_type') === 'local' ? $fileLocalConfig : $s3Config,
+    'twill_media_library' => config('twill.media_library.endpoint_type') === 'local' ? $mediaLocalConfig : $s3Config,
+    'twill_file_library' => config('twill.file_library.endpoint_type') === 'local' ? $fileLocalConfig : $s3Config,
 ];

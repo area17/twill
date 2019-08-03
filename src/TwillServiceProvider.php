@@ -24,11 +24,11 @@ use Cartalyst\Tags\TagsServiceProvider;
 use Dimsav\Translatable\TranslatableServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Lsrur\Inspector\Facade\Inspector;
 use Lsrur\Inspector\InspectorServiceProvider;
 use Spatie\Activitylog\ActivitylogServiceProvider;
-use Illuminate\Support\Facades\View;
 
 class TwillServiceProvider extends ServiceProvider
 {
@@ -199,9 +199,10 @@ class TwillServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/seo.php', 'twill.seo');
         $this->mergeConfigFrom(__DIR__ . '/../config/blocks.php', 'twill.block_editor');
         $this->mergeConfigFrom(__DIR__ . '/../config/enabled.php', 'twill.enabled');
-        $this->mergeConfigFrom(__DIR__ . '/../config/imgix.php', 'twill.imgix');
-        $this->mergeConfigFrom(__DIR__ . '/../config/media-library.php', 'twill.media_library');
         $this->mergeConfigFrom(__DIR__ . '/../config/file-library.php', 'twill.file_library');
+        $this->mergeConfigFrom(__DIR__ . '/../config/media-library.php', 'twill.media_library');
+        $this->mergeConfigFrom(__DIR__ . '/../config/imgix.php', 'twill.imgix');
+        $this->mergeConfigFrom(__DIR__ . '/../config/glide.php', 'twill.glide');
         $this->mergeConfigFrom(__DIR__ . '/../config/cloudfront.php', 'services');
         $this->mergeConfigFrom(__DIR__ . '/../config/dashboard.php', 'twill.dashboard');
         $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
