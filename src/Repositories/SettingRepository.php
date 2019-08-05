@@ -73,7 +73,7 @@ class SettingRepository extends ModuleRepository
     {
         $section = $section ? ['section' => $section] : [];
 
-        foreach (Collection::make($settingsFields)->except('active_languages', 'medias', 'mediaMeta')->filter() as $key => $value) {
+        foreach (Collection::make($settingsFields)->except('active_languages', 'medias', 'mediaMeta', 'update') as $key => $value) {
             foreach (getLocales() as $locale) {
                 Arr::set(
                     $settingsTranslated,
@@ -87,12 +87,14 @@ class SettingRepository extends ModuleRepository
             }
         }
 
-        foreach ($settingsTranslated as $key => $values) {
-            Arr::set($settings, $key, ['key' => $key] + $section + $values);
-        }
+        if (isset($settingsTranslated) && !empty($settingsTranslated)) {
+            foreach ($settingsTranslated as $key => $values) {
+                Arr::set($settings, $key, ['key' => $key] + $section + $values);
+            }
 
-        foreach ($settings as $key => $setting) {
-            $this->model->updateOrCreate(['key' => $key] + $section, $setting);
+            foreach ($settings as $key => $setting) {
+                $this->model->updateOrCreate(['key' => $key] + $section, $setting);
+            }
         }
 
         foreach ($settingsFields['medias'] ?? [] as $role => $mediasList) {
