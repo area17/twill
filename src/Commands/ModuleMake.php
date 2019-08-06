@@ -82,13 +82,13 @@ class ModuleMake extends Command
     {
         $moduleName = Str::plural(lcfirst($this->argument('moduleName')));
 
-        $blockable = $this->option('hasBlocks') ?? false;
-        $translatable = $this->option('hasTranslation') ?? false;
-        $sluggable = $this->option('hasSlug') ?? false;
-        $mediable = $this->option('hasMedias') ?? false;
-        $fileable = $this->option('hasFiles') ?? false;
-        $sortable = $this->option('hasPosition') ?? false;
-        $revisionable = $this->option('hasRevisions') ?? false;
+        $blockable = $this->checkOption('hasBlocks');
+        $translatable = $this->checkOption('hasTranslation');
+        $sluggable = $this->checkOption('hasSlug');
+        $mediable = $this->checkOption('hasMedias');
+        $fileable = $this->checkOption('hasFiles');
+        $sortable = $this->checkOption('hasPosition');
+        $revisionable = $this->checkOption('hasRevisions');
 
         $activeTraits = [$blockable, $translatable, $sluggable, $mediable, $fileable, $revisionable, $sortable];
 
@@ -338,5 +338,21 @@ class ModuleMake extends Command
         $this->files->put($viewsPath . '/form.blade.php', $this->files->get(__DIR__ . '/stubs/' . $formView . '.blade.stub'));
 
         $this->info("Form view created successfully! Include your form fields using @formField directives!");
+    }
+
+    private function checkOption($option)
+    {
+        $questions = [
+            'hasBlocks' => 'Does this module require blocks?',
+            'hasTranslation' => 'Does this module require translation?',
+            'hasSlug' => 'Does this module require slug?',
+            'hasMedias' => 'Does this module has medias?',
+            'hasFiles' => 'Does this module has files?',
+            'hasPosition' => 'Does this module require position?',
+            'hasRevisions' => 'Does this module require revisions?'
+        ];
+
+        // If option is not provided, ask choice question.
+        return $this->option($option) ? true : 'yes' === $this->choice($questions[$option], ['yes', 'no'], 1);
     }
 }
