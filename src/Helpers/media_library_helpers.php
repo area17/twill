@@ -1,6 +1,6 @@
 <?php
 
-if (!function_exists('s3Enpoint')) {
+if (!function_exists('s3Endpoint')) {
     function s3Endpoint($disk = 'libraries')
     {
         $scheme = config("filesystems.disks.{$disk}.use_https") ? 'https://' : '';
