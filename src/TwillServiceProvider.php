@@ -171,11 +171,6 @@ class TwillServiceProvider extends ServiceProvider
                 'table' => config('twill.password_resets_table', 'twill_password_resets'),
                 'expire' => 60,
             ]]);
-
-            config(['mail.markdown.paths' => array_merge(
-                [__DIR__ . '/../views/emails'],
-                config('mail.markdown.paths')
-            )]);
         }
 
         config(['activitylog.enabled' => config('twill.enabled.dashboard') ? true : config('twill.enabled.activitylog')]);
