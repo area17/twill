@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Url;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -1200,7 +1200,7 @@ abstract class ModuleController extends Controller
             'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
             'saveUrl' => $this->getModuleRoute($item->id, 'update'),
             'editor' => $this->moduleHas('revisions') && $this->moduleHas('blocks') && !$this->disableEditor,
-            'blockPreviewUrl' => Url::route('admin.blocks.preview'),
+            'blockPreviewUrl' => URL::route('admin.blocks.preview'),
             'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
         ] + (Route::has($previewRouteName) ? [
             'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $item->id),
