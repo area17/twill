@@ -94,7 +94,7 @@ class RouteServiceProvider extends ServiceProvider
         }
 
         if (config('twill.media_library.image_service') === 'A17\Twill\Services\MediaLibrary\Glide') {
-            $router->get('/' . config('twill.glide.base_url') . '/{path}', GlideController::class)->where('path', '.*');
+            $router->get('/' . config('twill.glide.base_path') . '/{path}', GlideController::class)->where('path', '.*');
         }
     }
 

@@ -52,16 +52,21 @@ class Glide implements ImageServiceInterface
         $this->app = $app;
         $this->request = $request;
 
+        $baseUrl = join([
+            rtrim($this->config->get('twill.glide.base_url'), '/'),
+            ltrim($this->config->get('twill.glide.base_path'), '/'),
+        ], '/');
+
         $this->server = ServerFactory::create([
             'response' => new LaravelResponseFactory($this->request),
             'source' => $this->config->get('twill.glide.source'),
             'cache' => $this->config->get('twill.glide.cache'),
             'cache_path_prefix' => $this->config->get('twill.glide.cache_path_prefix'),
-            'base_url' => $this->config->get('twill.glide.base_url'),
+            'base_url' => $baseUrl,
         ]);
 
         $this->urlBuilder = UrlBuilderFactory::create(
-            $this->config->get('twill.glide.base_url'),
+            $baseUrl,
             $this->config->get('twill.glide.use_signed_urls') ? $this->config->get('twill.glide.sign_key') : null
         );
     }
@@ -73,7 +78,7 @@ class Glide implements ImageServiceInterface
     public function render($path)
     {
         if ($this->config->get('twill.glide.use_signed_urls')) {
-            SignatureFactory::create($this->config->get('twill.glide.sign_key'))->validateRequest($path, $this->request->all());
+            SignatureFactory::create($this->config->get('twill.glide.sign_key'))->validateRequest($this->config->get('twill.glide.base_path') . '/' . $path, $this->request->all());
         }
 
         return $this->server->getImageResponse($path, $this->request->all());
