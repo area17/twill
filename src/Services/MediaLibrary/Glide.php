@@ -127,7 +127,12 @@ class Glide implements ImageServiceInterface
     public function getLQIPUrl($id, array $params = [])
     {
         $defaultParams = config('twill.glide.lqip_default_params');
-        return $this->getUrl($id, array_replace($defaultParams, $params));
+
+        $cropParams = Arr::has($params, $this->cropParamsKeys) ? $this->getCrop($params) : [];
+
+        $params = Arr::except($params, $this->cropParamsKeys);
+
+        return $this->getUrl($id, array_replace($defaultParams, $params + $cropParams));
     }
 
     /**

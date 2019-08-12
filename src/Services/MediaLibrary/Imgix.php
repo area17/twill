@@ -85,7 +85,12 @@ class Imgix implements ImageServiceInterface
     public function getLQIPUrl($id, array $params = [])
     {
         $defaultParams = $this->config->get('twill.imgix.lqip_default_params');
-        return $this->getUrl($id, array_replace($defaultParams, $params));
+
+        $cropParams = Arr::has($params, $this->cropParamsKeys) ? $this->getCrop($params) : [];
+
+        $params = Arr::except($params, $this->cropParamsKeys);
+
+        return $this->getUrl($id, array_replace($defaultParams, $params + $cropParams));
     }
 
     /**

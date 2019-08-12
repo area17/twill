@@ -4,8 +4,9 @@ namespace A17\Twill\Commands;
 
 use A17\Twill\Models\Media;
 use Illuminate\Config\Repository as Config;
-use Illuminate\Database\DatabaseManager;
 use Illuminate\Console\Command;
+use Illuminate\Database\DatabaseManager;
+use Illuminate\Support\Arr;
 use ImageService;
 
 class RefreshLQIP extends Command
@@ -34,6 +35,13 @@ class RefreshLQIP extends Command
      */
     protected $config;
 
+    protected $cropParamsKeys = [
+        'crop_x',
+        'crop_y',
+        'crop_w',
+        'crop_h',
+    ];
+
     /**
      * @param DatabaseManager $db
      * @param Config $config
@@ -53,13 +61,13 @@ class RefreshLQIP extends Command
             foreach ($attached_medias as $attached_media) {
                 $uuid = Media::withTrashed()->find($attached_media->media_id, ['uuid'])->uuid;
 
-                $lqip_width = $this->config->get('lqip.' . $attached_media->mediable_type . '.' . $attached_media->role . '.' . $attached_media->crop);
+                $lqip_width = $this->config->get('lqip.' . $attached_media->mediable_type . '.' . $attached_media->role . '.' . $attached_media->crop, 30);
 
                 if ($lqip_width && (!$attached_media->lqip_data || $this->option('all'))) {
-                    $url = ImageService::getLQIPUrl($uuid, [
-                        'rect' => $attached_media->crop_x . ',' . $attached_media->crop_y . ',' . $attached_media->crop_w . ',' . $attached_media->crop_h,
-                        'w' => $lqip_width,
-                    ]);
+
+                    $crop_params = Arr::only((array) $attached_media, $this->cropParamsKeys);
+
+                    $url = ImageService::getLQIPUrl($uuid, $crop_params + ['w' => $lqip_width]);
 
                     $data = file_get_contents($url);
                     $dataUri = 'data:image/gif;base64,' . base64_encode($data);
