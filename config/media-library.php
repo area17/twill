@@ -29,4 +29,5 @@ return [
     'allowed_extensions' => ['svg', 'jpg', 'gif', 'png', 'jpeg'],
     'init_alt_text_from_filename' => true,
     'prefix_uuid_with_local_path' => config('twill.file_library.prefix_uuid_with_local_path', false),
+    'translated_form_fields' => false,
 ];

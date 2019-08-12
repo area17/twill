@@ -682,6 +682,8 @@ Learn more about how Twill's media configurations work at [Model](https://twill.
 
 If the formField is used inside a block, you need to define the `mediasParams` at `config/twill.php` under `crops` key, and you are good to go. You could checkout [Twill Default Configuration](https://twill.io/docs/#default-configuration) and [Rendering Blocks](https://twill.io/docs/#rendering-blocks) for references.
 
+If you need medias fields to be translatable (ie. publishers can select different images for each locale), set the `twill.media_library.translated_form_fields` configuration value to `true`.
+
 #### Datepicker
 ![screenshot](/docs/_media/datepicker.png)
 
