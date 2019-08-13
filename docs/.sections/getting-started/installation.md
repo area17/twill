@@ -115,6 +115,13 @@ S3_BUCKET=bucket-name
 IMGIX_SOURCE_HOST=source.imgix.net
 ```
 
+If you are not ready to use those third party services yet, can't use them, or have very limited image rendering needs, Twill also provides a local storage driver as well as a locale image rendering service powered by [Glide](https://glide.thephpleague.com/). The following .env variables should get you up and running:
+
+```bash
+MEDIA_LIBRARY_ENDPOINT_TYPE=local
+MEDIA_LIBRARY_IMAGE_SERVICE=A17\Twill\Services\MediaLibrary\Glide
+```
+
 See the [media library's configuration documentation](#media-library-2) for more information.
 
 #### npm
