@@ -143,6 +143,11 @@ Build Twill's admin console UI assets using:
 npm run twill-build
 ```
 
+:::tip TIP
+On Windows, depending on your configuration, you might want to add the `--script-shell bash` option when running `npm` commands.
+Read more [here](https://github.com/area17/twill/issues/31#issuecomment-437557464).
+:::
+
 If you don't want to store Twill's compiled assets in Git, add the following to your project `.gitignore` :
 ```
 public/assets/admin
