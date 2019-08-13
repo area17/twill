@@ -2,6 +2,57 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 1.2.2 (UNRELEASED)
+
+Contributors in this release: Gilbert Moufflet, Antoine Doury, Jarred Bishop, Yanhao LI, Žiga Pavlin, Bram Mittendorff, Antonio Carlos Ribeiro, Rafael Milewski, Stevan Pavlović, Amr Noman, Antonin Caudron, Riaan Laubscher, Lorren Gordon, Ray Tri, Dmitrii Larionov, Pablo Barrios, Fernando Petrelli, Quentin Renard.
+
+### Added
+- Local image rendering service using Glide 🖼 (6e427fc6, e878b9af, 2a54c030, 0e8adb85)
+- Support for translated medias field and extra metadatas (d16386e5, 484c3c1e, e384dad4, 5b28acf7, 4db1ff45)
+- Support for maxlength counter on WYSIWYG form fields (d6301ff7, 93af3915, c916e760)
+- Support for block groups (57bed474)
+- Configuration option to prefix s3 uploads (#290) (b85df5ac)
+- Helper to dump ready to use SQL queries (87e20508)
+- Option to provide a custom static permalink under the form's title editor (f9c6ed71)
+- `twill:update` command and new database migrations for 1.2.2 (b251ffa0)
+
+### Fixed
+- Fix media and file local libraries: local disk is now defined automatically by Twill, and configured to work seamlessly with Glide (10b9cc7a, 52cabe32, ff1add80, 10aa2c53, 876c93a2)
+- Fix repeaters issues with restoration, update, medias and files fields support (7ec42565, 6425a3fe, c2703b25, 60a239b8, 7e348f4d)
+- Fix #32 markdown based mail notifications in host Laravel apps (c0239ad7)
+- Fix authorization gates conflicts (d2036f29, b08b1218)
+- Fix default Quill.js WYSIWYG theme rendering (e593ac6f)
+- Fix browser when a selected item is deleted (5e085139)
+- Fix global search input misbehavior (31fef7ce)
+- Fix publish button label copy when publishing is not available (82ec2c8d)
+- Fix Twill dev script console errors by disabling host check in hot script (0707f5bc)
+- Fix Twill provided blocks validation rule (cc277f5e)
+- Fix support for custom app namespace (#280) (eb780a5b)
+- Fix canvas rendered cropped image no-cache hack (#261) (ebe4450b)
+- Fix S3 uploader signature function calls (#259) (41828cd5)
+- Fix missing header method exception in ValidateBackHistory middleware (#234) (2ee1080d)
+- Fix media metadata helper issues (1b07f493)
+- Fix some documentation typos (df870b54, a6dda857)
+- Fix some styling bugs (faa4f89e, 77e4d2d0)
+- Fix dashboard settings: activity option was not used (f67ca2ef)
+
+### Improved
+- Automatically format the module name accepted in module generator CLI (3e5d6e99)
+- Forms extensibility improvements (d2f4008c, 7382c64c, f9c6ed71, a06b7a8a)
+- Switch from push() to save() when creating/updating models (661e5cfd)
+- Add more Language code to label mappings (#299) (d842b441)
+- Support more languages in frontend slugify function (2f656287)
+- Update WYSIWYG docs (ff9a8319, 3f675d27)
+- Improve support for translatable.use_property_fallback (15a9331b)
+- Use morphClass consistently in browsers (4ec38c2b)
+- Use module controller defined scopes when counting by status (56a2d3aa)
+- Code quality (replace helpers and facades by dependency injection when possible or fully qualified facades) (6f449ac2, 89687c1f, 9554a0cd, b0a3297c, 358ca416, 86192a16, 21068eb3, d443309d, 05bdfa2a, 80a0f919, 5acb7f1f, 49b2c664, 7625fb33, 1dea3d93, 6972435b, d597f713, 1de922b6, 37b4fd2a, 6092fba0, 6fe254a8, 5044c8ef, f9e2b5cd, c9ef6b52, bcc77308, 2b3f6d3f, df3650a0, a6106b7e, 6b5c49ac, d80ef94c, c889c116, 4f80c83d, 6f4e9c92)
+ 
+### Chore
+- Update composer dependencies (e1dfc11e)
+- Update npm dependencies (06184c0b)
+- Update docs to VuePress 1.0 (72217206)
+
 ## 1.2.1 2019-03-15
 
 ### Added
