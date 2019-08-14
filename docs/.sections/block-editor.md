@@ -378,7 +378,7 @@ In these Blade views, you will have access to a `$block`variable with a couple o
 ```
 
 If the block has a media field, you can refer to the Media Library documentation below to learn about the `HasMedias` trait helpers.
-To give an exemple:
+To give an example:
 
 ```php
 {{ $block->image('mediaFieldName', 'cropNameFromBlocksConfig') }}
