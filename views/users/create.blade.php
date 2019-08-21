@@ -8,7 +8,7 @@
         'name' => 'email',
         'label' => 'Email'
     ])
-    @can('edit-user-role')
+    @can('manage-users')
         @formField('select', [
             'name' => "role",
             'label' => "Role",

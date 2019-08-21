@@ -3,6 +3,7 @@
 @php
     $emptyMessage = $emptyMessage ?? "You don't have any activity yet.";
     $isDashboard = true;
+    $translate = true;
 @endphp
 
 @section('appTypeClass', 'body--dashboard')
