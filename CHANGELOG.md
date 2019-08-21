@@ -4,7 +4,7 @@ All notable changes to `twill` will be documented in this file.
 
 ## 1.2.2 (2019-08-21)
 
-Twill just surpassed 10k [installs](https://packagist.org/packages/area17/twill/stats) and today, version 1.2.2 is available with a significant amount of improvements and bug fixes thanks to the efforts of 19 contributors: Amr Noman, Antoine Doury, Antonin Caudron, Antonio Carlos Ribeiro, Bram Mittendorff, Dmitrii Larionov, Fernando Petrelli, Franca Winter, Gilbert Moufflet, Jarred Bishop, Lorren Gordon, Pablo Barrios, Quentin Renard, Rafael Milewski, Ray Tri, Riaan Laubscher, Stevan Pavlović, Yanhao Li, Žiga Pavlin.
+Twill just surpassed 10k [installs](https://packagist.org/packages/area17/twill/stats) and today, version 1.2.2 is available with a significant amount of improvements and bug fixes thanks to the efforts of 21 contributors: Amr Noman, Antoine Doury, Antonin Caudron, Antonio Carlos Ribeiro, Bram Mittendorff, Daniel Ramos, Dmitrii Larionov, Fernando Petrelli, Franca Winter, Gilbert Moufflet, Jarred Bishop, Lorren Gordon, Nikhil Trivedi, Pablo Barrios, Quentin Renard, Rafael Milewski, Ray Tri, Riaan Laubscher, Stevan Pavlović, Yanhao Li, Žiga Pavlin.
 
 **Glide support for local image rendering**
 
