@@ -48,6 +48,8 @@ class TwillServiceProvider extends ServiceProvider
         ActivitylogServiceProvider::class,
     ];
 
+    private $migrationsCounter = 0;
+
     /**
      * Bootstraps the package services.
      *
@@ -260,12 +262,14 @@ class TwillServiceProvider extends ServiceProvider
     private function publishMigration($migration, $publishKey = null)
     {
         $files = new Filesystem;
+        $this->migrationsCounter += 1;
 
         if (!class_exists($migration)) {
             // Verify that migration doesn't exist
             $migration_file = database_path('migrations/*_' . snake_case($migration) . '.php');
             if (empty($files->glob($migration_file))) {
-                $timestamp = date('Y_m_d_His', time());
+                $timestamp = date('Y_m_d_', time()) . (30000 + $this->migrationsCounter);
+
                 $this->publishes([
                     __DIR__ . '/../migrations/' . snake_case($migration) . '.php' => database_path('migrations/' . $timestamp . '_' . snake_case($migration) . '.php'),
                 ], ['migrations'] + (is_null($publishKey) ? [] : [$publishKey]));
