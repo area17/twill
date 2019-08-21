@@ -257,7 +257,7 @@ class TwillServiceProvider extends ServiceProvider
      * @param string $migration
      * @return void
      */
-    private function publishMigration($migration, $publishKey = 'migrations')
+    private function publishMigration($migration, $publishKey = null)
     {
         $files = new Filesystem;
 
@@ -268,7 +268,7 @@ class TwillServiceProvider extends ServiceProvider
                 $timestamp = date('Y_m_d_His', time());
                 $this->publishes([
                     __DIR__ . '/../migrations/' . snake_case($migration) . '.php' => database_path('migrations/' . $timestamp . '_' . snake_case($migration) . '.php'),
-                ], $publishKey);
+                ], ['migrations'] + (is_null($publishKey) ? [] : [$publishKey]);
             }
         }
     }
