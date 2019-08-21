@@ -2,17 +2,27 @@
 
 namespace A17\Twill\Http\Requests\Admin;
 
-use Auth;
-use Crypt;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use PragmaRX\Google2FA\Google2FA;
 
 class UserRequest extends Request
 {
+    /**
+     * Determines if the user is authorized to make this request.
+     *
+     * @return bool
+     */
     public function authorize()
     {
         return true;
     }
 
+    /**
+     * Gets the validation rules that apply to the request.
+     *
+     * @return array
+     */
     public function rules()
     {
         switch ($this->method()) {
@@ -29,14 +39,14 @@ class UserRequest extends Request
                     return [
                         'name' => 'required',
                         'role' => 'not_in:SUPERADMIN',
-                        'email' => 'required|email|unique:' . config('twill.users_table', 'twill_users') . ',email,' . request('user'),
+                        'email' => 'required|email|unique:' . config('twill.users_table', 'twill_users') . ',email,' . $this->get('user'),
                         'verify-code' => function ($attribute, $value, $fail) {
                             $user = Auth::guard('twill_users')->user();
-                            $with2faSettings = config('twill.enabled.users-2fa') && $user->id == request('user');
+                            $with2faSettings = config('twill.enabled.users-2fa') && $user->id == $this->get('user');
 
                             if ($with2faSettings) {
-                                $userIsEnabling = request('google_2fa_enabled') && !$user->google_2fa_enabled;
-                                $userIsDisabling = !request('google_2fa_enabled') && $user->google_2fa_enabled;
+                                $userIsEnabling = $this->get('google_2fa_enabled') && !$user->google_2fa_enabled;
+                                $userIsDisabling = !$this->get('google_2fa_enabled') && $user->google_2fa_enabled;
 
                                 $shouldValidateOTP = $userIsEnabling || $userIsDisabling;
 

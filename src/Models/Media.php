@@ -2,7 +2,9 @@
 
 namespace A17\Twill\Models;
 
-use DB;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use ImageService;
 
 class Media extends Model
@@ -22,9 +24,13 @@ class Media extends Model
 
     public function __construct(array $attributes = [])
     {
-        $this->fillable(array_merge($this->fillable, collect(config('twill.media_library.extra_metadatas_fields'))->map(function ($field) {
+        $this->fillable(array_merge($this->fillable, Collection::make(config('twill.media_library.extra_metadatas_fields'))->map(function ($field) {
             return $field['name'];
         })->toArray()));
+
+        Collection::make(config('twill.media_library.translatable_metadatas_fields'))->each(function ($field) {
+            $this->casts[$field] = 'json';
+        });
 
         parent::__construct($attributes);
     }
@@ -37,7 +43,7 @@ class Media extends Model
     public function altTextFrom($filename)
     {
         $filename = pathinfo($filename, PATHINFO_FILENAME);
-        if (ends_with($filename, '@2x')) {
+        if (Str::endsWith($filename, '@2x')) {
             $filename = substr($filename, 0, -2);
         }
 
@@ -71,7 +77,7 @@ class Media extends Model
                     'caption' => $this->caption,
                     'altText' => $this->alt_text,
                     'video' => null,
-                ] + collect(config('twill.media_library.extra_metadatas_fields'))->mapWithKeys(function ($field) {
+                ] + Collection::make(config('twill.media_library.extra_metadatas_fields'))->mapWithKeys(function ($field) {
                     return [
                         $field['name'] => $this->{$field['name']},
                     ];
@@ -89,12 +95,33 @@ class Media extends Model
     {
         $metadatas = (object) json_decode($this->pivot->metadatas);
         $language = app()->getLocale();
-        $fallback = $fallback ? $this->$fallback : $this->$name;
 
-        return $metadatas->$name->$language ?? (
-            is_object($metadatas->$name ?? null)
-            ? ($fallback ?? '')
-            : ($metadatas->$name ?? $fallback)
-        );
+        if ($metadatas->$name->$language ?? false) {
+            return $metadatas->$name->$language;
+        }
+
+        $fallbackLocale = config('translatable.fallback_locale');
+
+        if (in_array($name, config('twill.media_library.translatable_metadatas_fields', [])) && config('translatable.use_property_fallback', false) && ($metadatas->$name->$fallbackLocale ?? false)) {
+            return $metadatas->$name->$fallbackLocale;
+        }
+
+        $fallbackValue = $fallback ? $this->$fallback : $this->$name;
+
+        $fallback = $fallback ?? $name;
+
+        if (in_array($fallback, config('twill.media_library.translatable_metadatas_fields', []))) {
+            $fallbackValue = $fallbackValue[$language] ?? '';
+
+            if ($fallbackValue === '' && config('translatable.use_property_fallback', false)) {
+                $fallbackValue = $this->$fallback[config('translatable.fallback_locale')] ?? '';
+            }
+        }
+
+        if (is_object($metadatas->$name ?? null)) {
+            return $fallbackValue ?? '';
+        }
+
+        return $metadatas->$name ?? $fallbackValue ?? '';
     }
 }

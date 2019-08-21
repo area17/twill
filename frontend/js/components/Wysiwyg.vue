@@ -5,6 +5,7 @@
       <template v-if="editSource">
         <div class="wysiwyg" :class="textfieldClasses" v-show="!activeSource">
           <div class="wysiwyg__editor" ref="editor"></div>
+          <span v-if="shouldShowCounter" class="input__limit f--tiny" :class="limitClasses">{{ counter }}</span>
         </div>
         <div class="form__field form__field--textarea" v-show="activeSource">
           <textarea :placeholder="placeholder" :autofocus="autofocus" v-model="value" :style="textareaHeight"></textarea>
@@ -14,6 +15,7 @@
       <template v-else>
         <div class="wysiwyg" :class="textfieldClasses">
           <div class="wysiwyg__editor" ref="editor"></div>
+          <span v-if="shouldShowCounter" class="input__limit f--tiny" :class="limitClasses">{{ counter }}</span>
         </div>
       </template>
     </div>
@@ -47,6 +49,10 @@
       editSource: {
         type: Boolean,
         default: false
+      },
+      showCounter: {
+        type: Boolean,
+        default: true
       },
       type: {
         type: String,
@@ -83,6 +89,17 @@
           's--focus': this.focused
         }
       },
+      hasMaxlength: function () {
+        return this.maxlength > 0
+      },
+      shouldShowCounter: function () {
+        return this.hasMaxlength && this.showCounter
+      },
+      limitClasses: function () {
+        return {
+          'input__limit--red': this.counter < 10
+        }
+      },
       ...mapState({
         baseUrl: state => state.form.baseUrl
       })
@@ -95,6 +112,7 @@
         focused: false,
         activeSource: false,
         quill: null,
+        counter: 0,
         defaultModules: {
           toolbar: ['bold', 'italic', 'underline', 'link'],
           // Complete Toolbar example :
@@ -136,15 +154,15 @@
 
         // update model if text changes
         this.quill.on('text-change', (delta, oldDelta, source) => {
-          if (this.maxlength > 0 && this.quill.getLength() > this.maxlength + 1) {
-            this.quill.deleteText(this.maxlength, this.quill.getLength())
-          } else {
-            let html = this.$refs.editor.children[0].innerHTML
-            if (html === '<p><br></p>') html = ''
-            this.value = html
+          let html = this.$refs.editor.children[0].innerHTML
+          if (html === '<p><br></p>') html = ''
+          this.value = html
 
-            this.$emit('input', this.value)
-            this.$emit('change', this.value)
+          this.$emit('input', this.value)
+          this.$emit('change', this.value)
+
+          if (this.hasMaxlength && this.showCounter) {
+            this.updateCounter(this.getTextLength())
           }
 
           if (source === 'user') this.textUpdate()
@@ -207,6 +225,15 @@
         // set editor content
         this.updateEditor(this.value)
         this.saveIntoStore() // see formStore mixin
+      },
+      updateCounter: function (newValue) {
+        if (this.showCounter && this.hasMaxlength) {
+          this.counter = this.maxlength - newValue
+        }
+      },
+      getTextLength: function () {
+        // see https://quilljs.com/docs/api/#getlength
+        return this.quill.getLength() - (this.value.length === 0 ? 2 : 1)
       }
     },
     mounted: function () {
@@ -233,6 +260,8 @@
       } else {
         this.initQuill()
       }
+
+      this.updateCounter(this.getTextLength())
     },
     beforeDestroy () {
       this.quill = null
@@ -248,6 +277,23 @@
 <style lang="scss">
   /* Not scoped style here because we want to overwrite default style of the wysiwig */
   @import '~styles/setup/_mixins-colors-vars.scss';
+
+  $height_input: 45px;
+
+  .input__limit {
+    height:$height_input - 2px;
+    line-height:$height_input - 2px;
+    color:$color__text--light;
+    user-select: none;
+    pointer-events:none;
+    position:absolute;
+    right:15px;
+    bottom: 55px;
+  }
+
+  .input__limit--red {
+    color:red;
+  }
 
   .a17 {
     .ql-toolbar.ql-snow {
@@ -368,7 +414,8 @@
     .ql-snow.ql-toolbar {
       padding: 13px 8px;
 
-      button {
+      button,
+      .ql-align {
         width: 24px;
         margin-right: 35px - 6px - 6px - 6px - 6px;
         text-align:center;
@@ -389,6 +436,10 @@
 
     .ql-snow.ql-toolbar .ql-formats {
       border-right:1px solid $color__border--light;
+
+      &:last-child {
+        border-right: none;
+      }
     }
 
     .ql-snow.ql-toolbar,
@@ -425,52 +476,57 @@
     }
 
     /* dropdown style */
-    .ql-toolbar.ql-snow .ql-picker-label {
-      border:0 none;
-      position:relative;
-      padding-right: 30px;
+    .ql-toolbar.ql-snow .ql-header,
+    .ql-toolbar.ql-snow .ql-size,
+    .ql-toolbar.ql-snow .ql-font {
+      .ql-picker-label {
+        border: 0 none;
+        position: relative;
+        /*padding-right: 30px;*/
 
-      &::after {
-        content: " ";
-        position: absolute;
-        top: 50%;
-        right: 1em;
-        z-index: 2;
-        position:absolute;
-        width: 0;
-        height: 0;
-        margin-top: -3px;
-        border-width: 4px 4px 0;
-        border-style: solid;
-        border-color: $color__text transparent transparent;
+        &::after {
+          content: " ";
+          position: absolute;
+          top: 50%;
+          right: 1em;
+          z-index: 2;
+          position: absolute;
+          width: 0;
+          height: 0;
+          margin-top: -3px;
+          border-width: 4px 4px 0;
+          border-style: solid;
+          border-color: $color__text transparent transparent;
+        }
+
+        svg {
+          opacity: 0;
+        }
       }
 
-      svg {
-        opacity:0;
-      }
-    }
-    .ql-toolbar.ql-snow .ql-picker-options {
-      background:rgba($color__background,0.98);
-      border-radius:2px;
-      box-shadow:$box-shadow;
-      padding:10px 0;
-      border:0 none;
-      margin-top:6px;
+      .ql-picker-options {
+        background: rgba($color__background, 0.98);
+        border-radius: 2px;
+        box-shadow: $box-shadow;
+        padding: 10px 0;
+        border: 0 none;
+        margin-top: 6px;
 
-      .ql-picker-item {
-        display:block;
-        color:$color__text--light;
-        padding:0 15px;
-        padding-right:50px;
-        height:40px;
-        line-height: 40px;
-        text-decoration: none;
-        white-space: nowrap;
-        font-family:inherit;
+        .ql-picker-item {
+          display: block;
+          color: $color__text--light;
+          padding: 0 15px;
+          padding-right: 50px;
+          height: 40px;
+          line-height: 40px;
+          text-decoration: none;
+          white-space: nowrap;
+          font-family: inherit;
 
-        &:hover {
-          color:$color__text;
-          background:$color__light;
+          &:hover {
+            color: $color__text;
+            background: $color__light;
+          }
         }
       }
     }

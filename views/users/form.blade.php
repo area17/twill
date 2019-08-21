@@ -14,7 +14,7 @@
         'label' => 'Email'
     ])
 
-    @can('edit-user-role')
+    @can('manage-users')
         @if(!$isSuperAdmin && ($item->id !== $currentUser->id))
             @formField('select', [
                 'name' => "role",

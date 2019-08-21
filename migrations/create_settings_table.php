@@ -6,6 +6,11 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateSettingsTable extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
         Schema::create('settings', function (Blueprint $table) {
@@ -22,6 +27,11 @@ class CreateSettingsTable extends Migration
         });
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
         Schema::dropIfExists('setting_translations');

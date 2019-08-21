@@ -4,39 +4,52 @@ namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\File;
 use A17\Twill\Repositories\Behaviors\HandleTags;
-use Storage;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
 
 class FileRepository extends ModuleRepository
 {
     use HandleTags;
 
+    /**
+     * @param File $model
+     */
     public function __construct(File $model)
     {
         $this->model = $model;
     }
 
+    /**
+     * @param \Illuminate\Database\Query\Builder $query
+     * @param array $scopes
+     * @return \Illuminate\Database\Query\Builder
+     */
     public function filter($query, array $scopes = [])
     {
         $this->searchIn($query, $scopes, 'search', ['filename']);
         return parent::filter($query, $scopes);
     }
 
-    public function delete($id)
+    /**
+     * @param A17\Twill\Models\File $object
+     * @return void
+     */
+    public function afterDelete($object)
     {
-        if (($object = $this->model->find($id)) != null) {
-            if ($object->canDeleteSafely()) {
-                $storageId = $object->uuid;
-                if ($object->delete() && config('twill.file_library.cascade_delete')) {
-                    Storage::disk(config('twill.file_library.disk'))->delete($storageId);
-                }
-            }
+        $storageId = $object->uuid;
+        if (Config::get('twill.file_library.cascade_delete')) {
+            Storage::disk(Config::get('twill.file_library.disk'))->delete($storageId);
         }
     }
 
+    /**
+     * @param array $fields
+     * @return array
+     */
     public function prepareFieldsBeforeCreate($fields)
     {
         if (!isset($fields['size'])) {
-            $fields['size'] = Storage::disk(config('twill.file_library.disk'))->size($fields['uuid']);
+            $fields['size'] = Storage::disk(Config::get('twill.file_library.disk'))->size($fields['uuid']);
         }
 
         return $fields;
