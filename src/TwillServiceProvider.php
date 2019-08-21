@@ -216,6 +216,7 @@ class TwillServiceProvider extends ServiceProvider
 
         $optionalMigrations = [
             'CreateTwillUsersTables' => 'users-management',
+            'CreateTwillActivityLogTable' => 'activitylog',
             'CreateFilesTables' => 'file-library',
             'CreateMediasTables' => 'media-library',
             'CreateFeaturesTable' => 'buckets',

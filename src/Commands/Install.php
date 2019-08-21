@@ -101,12 +101,6 @@ class Install extends Command
             '--tag' => 'migrations',
         ]);
 
-        if (!class_exists('CreateActivityLogTable')) {
-            $this->call('vendor:publish', [
-                '--provider' => 'Spatie\Activitylog\ActivitylogServiceProvider',
-                '--tag' => 'migrations',
-            ]);
-        }
     }
 
     /**
