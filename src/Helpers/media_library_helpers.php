@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Storage;
 
-if (!function_exists('s3Enpoint')) {
+if (!function_exists('s3Endpoint')) {
     /**
      * @param string $disk
      * @return string
