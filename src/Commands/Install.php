@@ -101,6 +101,10 @@ class Install extends Command
             '--tag' => 'migrations',
         ]);
 
+        $this->call('vendor:publish', [
+            '--provider' => 'A17\Twill\TwillServiceProvider',
+            '--tag' => 'twill-updates-migrations',
+        ]);
     }
 
     /**
