@@ -36,12 +36,12 @@
     border-color:#e5e5e5;
 }
 
-.twill-doc .content:not(.custom) > h1,
-.twill-doc .content:not(.custom) > h2,
-.twill-doc .content:not(.custom) > h3,
-.twill-doc .content:not(.custom) > h4,
-.twill-doc .content:not(.custom) > h5,
-.twill-doc .content:not(.custom) > h6 {
+.twill-doc .theme-default-content:not(.custom) > h1,
+.twill-doc .theme-default-content:not(.custom) > h2,
+.twill-doc .theme-default-content:not(.custom) > h3,
+.twill-doc .theme-default-content:not(.custom) > h4,
+.twill-doc .theme-default-content:not(.custom) > h5,
+.twill-doc .theme-default-content:not(.custom) > h6 {
     margin-top: -3.1rem;
     padding-top: 6rem;
     margin-bottom: 0;
@@ -104,12 +104,12 @@
     font-size: 1rem;
 }
 
-.twill-doc .content:not(.custom) {
+.twill-doc .theme-default-content:not(.custom) {
     padding-top: 6.25rem;
     padding-bottom: 6.25rem;
 }
 
-.twill-doc .sidebar .sidebar-links {
+.twill-doc .sidebar .sidebar-links:not(.sidebar-group-items) {
     padding: 2rem 0;
 }
 
@@ -129,7 +129,7 @@
 
 .twill-doc .search-box input {
   border-radius:4px;
-  line-height:2.5rem;
+  height:2.5rem;
   border-color:#e5e5e5;
   background-position:0.6rem center;
   color:black;
@@ -171,7 +171,5 @@
 }
 
 .twill-doc .icon.outbound {
-    position: relative;
-    top: 2px;
     margin-left: 5px;
 }

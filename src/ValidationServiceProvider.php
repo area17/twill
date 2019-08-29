@@ -2,13 +2,17 @@
 
 namespace A17\Twill;
 
-use A17\CmsToolkit\Repositories\BlockRepository;
+use A17\Twill\Repositories\BlockRepository;
 use Illuminate\Support\ServiceProvider;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class ValidationServiceProvider extends ServiceProvider
 {
-
+    /**
+     * Registers the package additional validation rules.
+     *
+     * @return void
+     */
     public function boot()
     {
         Validator::extend('absolute_or_relative_url', function ($attribute, $value, $parameters, $validator) {
@@ -29,7 +33,7 @@ class ValidationServiceProvider extends ServiceProvider
 
         Validator::extend('validBlocks', function ($attribute, $value, $parameters, $validator) {
             foreach ($value as $block) {
-                $cmsBlock = app(BlockRepository::class)->buildFromCmsArray($block, false);
+                $cmsBlock = $this->app->get(BlockRepository::class)->buildFromCmsArray($block, false);
 
                 $rules = config('twill.block_editor.blocks.' . $cmsBlock['type'] . '.rules') ?? [];
 
@@ -54,6 +58,9 @@ class ValidationServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * @return void
+     */
     public function register()
     {
 

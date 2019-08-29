@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Services\Uploader;
 
-use A17\Twill\Services\Uploader\SignS3UploadListener;
+use Illuminate\Config\Repository as Config;
 
 class SignS3Upload
 {
@@ -12,14 +12,27 @@ class SignS3Upload
 
     private $endpoint;
 
+    /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * @param Config $config
+     */
+    public function __construct(Config $config)
+    {
+        $this->config = $config;
+    }
+
     public function fromPolicy($policy, SignS3UploadListener $listener, $disk = 'libraries')
     {
         $policyObject = json_decode($policy, true);
         $policyJson = json_encode($policyObject);
         $policyHeaders = $policyObject["headers"] ?? null;
 
-        $this->bucket = config('filesystems.disks.' . $disk . '.bucket');
-        $this->secret = config('filesystems.disks.' . $disk . '.secret');
+        $this->bucket = $this->config->get('filesystems.disks.' . $disk . '.bucket');
+        $this->secret = $this->config->get('filesystems.disks.' . $disk . '.secret');
         $this->endpoint = s3Endpoint($disk);
 
         if ($policyHeaders) {

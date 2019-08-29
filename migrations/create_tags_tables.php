@@ -6,6 +6,11 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateTagsTables extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
         Schema::create('tagged', function (Blueprint $table) {
@@ -25,6 +30,11 @@ class CreateTagsTables extends Migration
         });
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
         Schema::dropIfExists('tagged');

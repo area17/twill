@@ -104,7 +104,7 @@ const mutations = {
     state.published = newValue
   },
   [PUBLICATION.UPDATE_PUBLISH_SUBMIT] (state) {
-    state.publishSubmit = state.published ? 'update' : 'live'
+    state.publishSubmit = (state.published || !state.withPublicationToggle) ? 'update' : 'live'
   },
   [PUBLICATION.UPDATE_PUBLISH_VISIBILITY] (state, newValue) {
     state.visibility = newValue

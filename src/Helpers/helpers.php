@@ -1,9 +1,16 @@
 <?php
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Event;
+
 // adding this to have a better debug display in Chrome dev tools when
 // dd'ing during AJAX requests (see Symfony dumper issue in Chrome > 60:
 // https://github.com/symfony/symfony/issues/24688)
 if (!function_exists('ddd')) {
+    /**
+     * @param mixed ...$args
+     * @return void
+     */
     function ddd(...$args)
     {
         http_response_code(500);
@@ -11,7 +18,21 @@ if (!function_exists('ddd')) {
     }
 }
 
+if (!function_exists('dumpUsableSqlQuery')) {
+    function dumpUsableSqlQuery($query)
+    {
+        dd(vsprintf(str_replace('?', '%s', $query->toSql()), array_map(function ($binding) {
+            return is_numeric($binding) ? $binding : "'{$binding}'";
+        }, $query->getBindings())));
+    }
+}
+
 if (!function_exists('classUsesDeep')) {
+    /**
+     * @param mixed $class
+     * @param bool $autoload
+     * @return array
+     */
     function classUsesDeep($class, $autoload = true)
     {
         $traits = [];
@@ -38,6 +59,11 @@ if (!function_exists('classUsesDeep')) {
 }
 
 if (!function_exists('classHasTrait')) {
+    /**
+     * @param mixed $class
+     * @param string $trait
+     * @return bool
+     */
     function classHasTrait($class, $trait)
     {
         $traits = classUsesDeep($class);
@@ -51,13 +77,23 @@ if (!function_exists('classHasTrait')) {
 }
 
 if (!function_exists('getFormFieldsValue')) {
+    /**
+     * @param array $formFields
+     * @param string $name
+     * @return mixed
+     */
     function getFormFieldsValue($formFields, $name)
     {
-        return array_get($formFields, str_replace(']', '', str_replace('[', '.', $name)), '');
+        return Arr::get($formFields, str_replace(']', '', str_replace('[', '.', $name)), '');
     }
 }
 
 if (!function_exists('fireCmsEvent')) {
+    /**
+     * @param string $eventName
+     * @param array $input
+     * @return void
+     */
     function fireCmsEvent($eventName, $input = [])
     {
         $method = method_exists(\Illuminate\Events\Dispatcher::class, 'dispatch') ? 'dispatch' : 'fire';
@@ -66,6 +102,10 @@ if (!function_exists('fireCmsEvent')) {
 }
 
 if (!function_exists('twill_path')) {
+    /**
+     * @param string $path
+     * @return string
+     */
     function twill_path($path = '')
     {
         // Split to separate root namespace

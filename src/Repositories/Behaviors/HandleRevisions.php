@@ -2,7 +2,9 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
-use Auth;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 
 trait HandleRevisions
 {
@@ -32,7 +34,7 @@ trait HandleRevisions
     {
         $fields = $this->prepareFieldsBeforeSave($object, $fields);
 
-        $object->fill(array_except($fields, $this->getReservedFields()));
+        $object->fill(Arr::except($fields, $this->getReservedFields()));
 
         $object = $this->hydrate($object, $fields);
 
@@ -54,7 +56,7 @@ trait HandleRevisions
         $relatedElements = $fieldsHasElements ? $fields[$relationship] : [];
 
         $relationRepository = $this->getModelRepository($relationship, $model);
-        $relatedElementsCollection = collect();
+        $relatedElementsCollection = Collection::make();
 
         foreach ($relatedElements as $relatedElement) {
             $newRelatedElement = $relationRepository->getById($relatedElement);
@@ -75,7 +77,7 @@ trait HandleRevisions
         $relatedElements = $fieldsHasElements ? $fields['browsers'][$relationship] : [];
 
         $relationRepository = $this->getModelRepository($relationship, $model);
-        $relatedElementsCollection = collect();
+        $relatedElementsCollection = Collection::make();
         $position = 1;
 
         foreach ($relatedElements as $relatedElement) {
@@ -94,7 +96,7 @@ trait HandleRevisions
 
         $relationRepository = $this->getModelRepository($relationship, $model);
 
-        $repeaterCollection = collect();
+        $repeaterCollection = Collection::make();
 
         foreach ($relationFields as $index => $relationField) {
             $relationField['position'] = $index + 1;
@@ -111,7 +113,8 @@ trait HandleRevisions
 
     public function getCountForMine()
     {
-        return $this->model->where($this->countScope)->mine()->count();
+        $query = $this->model->newQuery();
+        return $this->filter($query, $this->countScope)->mine()->count();
     }
 
     public function getCountByStatusSlugHandleRevisions($slug)
