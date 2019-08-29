@@ -3,6 +3,8 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 trait HandleRepeaters
 {
@@ -77,7 +79,7 @@ trait HandleRepeaters
         if (!$repeaterName) {
             $repeaterName = $relation;
         }
-        
+
         $repeaters = [];
         $repeatersFields = [];
         $repeatersBrowsers = [];
@@ -85,7 +87,6 @@ trait HandleRepeaters
         $repeatersFiles = [];
         $relationRepository = $this->getModelRepository($relation, $model);
         $repeatersConfig = config('twill.block_editor.repeaters');
-
 
         foreach ($object->$relation as $relationItem) {
             $repeaters[] = [
@@ -109,23 +110,29 @@ trait HandleRepeaters
             }
 
             if (isset($relatedItemFormFields['medias'])) {
-                foreach ($relatedItemFormFields['medias'] as $key => $values) {
-                    $repeatersMedias["blocks[$relation-$relationItem->id][$key]"] = $values;
+                if (config('twill.media_library.translated_form_fields', false)) {
+                    Collection::make($relatedItemFormFields['medias'])->each(function ($rolesWithMedias, $locale) use (&$repeatersMedias, $relation, $relationItem) {
+                        $repeatersMedias[] = Collection::make($rolesWithMedias)->mapWithKeys(function ($medias, $role) use ($locale, $relation, $relationItem) {
+                            return [
+                                "blocks[$relation-$relationItem->id][$role][$locale]" => $medias,
+                            ];
+                        })->toArray();
+                    });
+                } else {
+                    foreach ($relatedItemFormFields['medias'] as $key => $values) {
+                        $repeatersMedias["blocks[$relation-$relationItem->id][$key]"] = $values;
+                    }
                 }
             }
 
             if (isset($relatedItemFormFields['files'])) {
-                $repeatersFiles = [];
-
-                collect($relatedItemFormFields['files'])->each(function ($rolesWithFiles, $locale) use (&$repeatersFiles, $relation, $relationItem) {
-                    $repeatersFiles[] = collect($rolesWithFiles)->mapWithKeys(function ($files, $role) use ($locale, $relation, $relationItem) {
+                Collection::make($relatedItemFormFields['files'])->each(function ($rolesWithFiles, $locale) use (&$repeatersFiles, $relation, $relationItem) {
+                    $repeatersFiles[] = Collection::make($rolesWithFiles)->mapWithKeys(function ($files, $role) use ($locale, $relation, $relationItem) {
                         return [
                             "blocks[$relation-$relationItem->id][$role][$locale]" => $files,
                         ];
                     })->toArray();
                 });
-
-                $repeatersFiles = call_user_func_array('array_merge', $repeatersFiles);
             }
 
             if (isset($relatedItemFormFields['browsers'])) {
@@ -134,8 +141,7 @@ trait HandleRepeaters
                 }
             }
 
-            $itemFields = method_exists($relationItem, 'toRepeaterArray') ? $relationItem->toRepeaterArray() : array_except($relationItem->attributesToArray(), $translatedFields);
-
+            $itemFields = method_exists($relationItem, 'toRepeaterArray') ? $relationItem->toRepeaterArray() : Arr::except($relationItem->attributesToArray(), $translatedFields);
 
             foreach ($itemFields as $key => $value) {
                 $repeatersFields[] = [
@@ -146,16 +152,20 @@ trait HandleRepeaters
 
         }
 
+        if (!empty($repeatersMedias) && config('twill.media_library.translated_form_fields', false)) {
+            $repeatersMedias = call_user_func_array('array_merge', $repeatersMedias);
+        }
+
+        if (!empty($repeatersFiles)) {
+            $repeatersFiles = call_user_func_array('array_merge', $repeatersFiles);
+        }
+
         $fields['repeaters'][$repeaterName] = $repeaters;
-
         $fields['repeaterFields'][$repeaterName] = $repeatersFields;
-
         $fields['repeaterMedias'][$repeaterName] = $repeatersMedias;
-
         $fields['repeaterFiles'][$repeaterName] = $repeatersFiles;
-
         $fields['repeaterBrowsers'][$repeaterName] = $repeatersBrowsers;
-        return $fields;
 
+        return $fields;
     }
 }

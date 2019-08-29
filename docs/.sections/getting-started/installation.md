@@ -115,6 +115,13 @@ S3_BUCKET=bucket-name
 IMGIX_SOURCE_HOST=source.imgix.net
 ```
 
+If you are not ready to use those third party services yet, can't use them, or have very limited image rendering needs, Twill also provides a local storage driver as well as a locale image rendering service powered by [Glide](https://glide.thephpleague.com/). The following .env variables should get you up and running:
+
+```bash
+MEDIA_LIBRARY_ENDPOINT_TYPE=local
+MEDIA_LIBRARY_IMAGE_SERVICE=A17\Twill\Services\MediaLibrary\Glide
+```
+
 See the [media library's configuration documentation](#media-library-2) for more information.
 
 #### npm
@@ -135,6 +142,11 @@ Build Twill's admin console UI assets using:
 ```bash
 npm run twill-build
 ```
+
+:::tip TIP
+On Windows, depending on your configuration, you might want to add the `--script-shell bash` option when running `npm` commands.
+Read more [here](https://github.com/area17/twill/issues/31#issuecomment-437557464).
+:::
 
 If you don't want to store Twill's compiled assets in Git, add the following to your project `.gitignore` :
 ```

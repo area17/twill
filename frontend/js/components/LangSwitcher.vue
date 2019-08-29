@@ -5,7 +5,7 @@
     <span class="language__label f--small" v-if="!inModal">Edit in</span>
     <span class="language__toolbar">
       <button type="button" class="language__button" :key="language.value" v-for="language in languages"
-              :class="{ 'selected': language.value === localeValue.value, 'published': allPublished ? true : language.published }"
+              :class="{ 'selected': language.value === localeValue.value, 'published': language.published, 'no-state': allPublished }"
               @click="onClick(language.value)">{{ language.shortlabel }}</button>
     </span>
   </div>
@@ -213,5 +213,13 @@
 
   .language__button.published::after {
     background-color: $color__green;
+  }
+
+  .language__button.no-state {
+    padding: 0 18px 0 18px;
+
+    &::after {
+      content: none;
+    }
   }
 </style>

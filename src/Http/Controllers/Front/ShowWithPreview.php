@@ -2,10 +2,31 @@
 
 namespace A17\Twill\Http\Controllers\Front;
 
+use Illuminate\Config\Repository as Config;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
+use Illuminate\Support\Str;
+use Illuminate\View\Factory as ViewFactory;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 trait ShowWithPreview
 {
-    public function show($slug)
-    {
+    /**
+     * @param string $slug
+     * @param Request $request
+     * @param Redirector $redirector
+     * @param ViewFactory $viewFactory
+     * @param Config $config
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
+    public function show(
+        string $slug,
+        Request $request,
+        Redirector $redirector,
+        ViewFactory $viewFactory,
+        Config $config
+    ) {
         if (!isset($this->moduleName) || !isset($this->repository)) {
             throw new \Exception("You should at least provide a module name and inject a repository.");
         }
@@ -15,24 +36,32 @@ trait ShowWithPreview
         }
 
         if (!isset($this->showViewName)) {
-            $this->showViewName = config('twill.frontend.views_path', 'site') . '.' . str_singular($this->moduleName);
+            $this->showViewName = $config->get('twill.frontend.views_path', 'site') . '.' . Str::singular($this->moduleName);
         }
 
-        if (ends_with(request()->route()->getName(), $this->routeName . '.preview')) {
+        if (Str::endsWith($request->route()->getName(), $this->routeName . '.preview')) {
             $item = $this->getItemPreview($slug);
         }
 
-        abort_unless($item = ($item ?? $this->getItem($slug)), 404, ucfirst($this->moduleName) . ' not found');
+        $item = ($item ?? $this->getItem($slug));
 
-        if ($item->redirect) {
-            return redirect()->to(route($this->routeName . '.show', $item->getSlug()));
+        if (!$item) {
+            throw new NotFoundHttpException(ucfirst($this->moduleName) . ' not found');
         }
 
-        return view($this->showViewName, [
+        if ($item->redirect) {
+            return $redirector->to(route($this->routeName . '.show', $item->getSlug()));
+        }
+
+        return $viewFactory->make($this->showViewName, [
             'item' => $item,
         ] + $this->showData($slug, $item));
     }
 
+    /**
+     * @param string $slug
+     * @return \A17\Twill\Models\Model|null
+     */
     protected function getItem($slug)
     {
         return $this->repository->forSlug(
@@ -43,6 +72,10 @@ trait ShowWithPreview
         );
     }
 
+    /**
+     * @param $slug
+     * @return \A17\Twill\Models\Model|null
+     */
     protected function getItemPreview($slug)
     {
         return $this->repository->forSlugPreview(
@@ -52,6 +85,11 @@ trait ShowWithPreview
         );
     }
 
+    /**
+     * @param string $slug
+     * @param mixed $item
+     * @return array
+     */
     protected function showData($slug, $item)
     {
         return [];

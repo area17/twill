@@ -2,6 +2,106 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 1.2.2 (2019-08-21)
+
+Twill just surpassed 10k [installs](https://packagist.org/packages/area17/twill/stats) and today, version 1.2.2 is available with a significant amount of improvements and bug fixes thanks to the efforts of 21 contributors: Amr Noman, Antoine Doury, Antonin Caudron, Antonio Carlos Ribeiro, Bram Mittendorff, Daniel Ramos, Dmitrii Larionov, Fernando Petrelli, Franca Winter, Gilbert Moufflet, Jarred Bishop, Lorren Gordon, Nikhil Trivedi, Pablo Barrios, Quentin Renard, Rafael Milewski, Ray Tri, Riaan Laubscher, Stevan Pavlović, Yanhao Li, Žiga Pavlin.
+
+**Glide support for local image rendering**
+
+[Glide](https://glide.thephpleague.com) is an open source image rendering service that integrates well with Twill and Laravel. It is a self-hosted option for local development and/or production websites and apps that have limited needs for image resizing and cropping. For image-heavy production websites and apps, we still recommend [Imgix](https://imgix.com) or a similar third party service, or at least setting up a CDN on top of your images.
+
+The media and file libraries `local` endpoint type has also been completely reworked to work with Laravel default public storage location. Remember to run `php artisan storage:link` locally and as part of your deployment process if you are using local uploads rather than S3.
+
+To try out Glide on a fresh Twill app, it is as simple as updating 2 environment variables:
+
+```
+MEDIA_LIBRARY_ENDPOINT_TYPE=local
+MEDIA_LIBRARY_IMAGE_SERVICE=A17\Twill\Services\MediaLibrary\Glide
+```
+
+Of course, more configuration variables are available through the new `glide` key of Twill's configuration. See the default configuration [here](https://github.com/area17/twill/blob/1.2/config/glide.php).
+
+**Making repeaters happy again**
+
+Repeaters had a couple of issues that are now fixed in this release:
+
+* repeaters in forms are now updating the initially created database record instead of needlessly creating a new record each time their parent model gets updated
+* repeaters in blocks are now restored correctly when restoring a past revision
+* medias and files fields support has been improved
+
+**Different images per language support**
+
+You can now globally enable the ability for your content editors to provide different images per language in the media form field using the `media_library.translated_form_fields` configuration key (defaults to `false`). The user experience is exactly the same as our other translatable field. When rendering in a template or API, you can fallback to the default language if no image has been selected for the current language.
+
+**Cleaning up internals**
+
+Lead by community member [Stevan Pavlović](https://github.com/stevanpavlovic), an effort to clean Twill internals begins with this release. Laravel helpers and facades are getting replaced by dependency injection or at least, for now, to avoid consequent breaking changes, by fully qualified imports.
+
+**And a lot more in the changelog below!**
+
+**HOW TO UPDATE**
+
+To update, you will need to run `composer update` in your project and then run the new Twill provided artisan command: `twill:update`. This will generates new database migrations and invite you to migrate your database. Those new migrations are safe to run as they check for the existence (or inexistence) of tables and columns in your database before doing anything. If you are upgrading from an earlier version than `1.2`, you will need to update your `composer.json` file first: `"area17/twill": "1.2.*"`.
+
+**NOTE ABOUT UPCOMING LARAVEL 6 AND SEMANTIC VERSIONING**
+
+Laravel 6 upcoming release was [announced](https://laravel-news.com/laravel-v6-announcement) a few weeks ago at [Laracon US](https://laracon.us)! Twill will of course support it soon after the official release, which should happen at the end of August at [Laracon EU](https://laracon.eu) 🤞.
+
+Taylor Otwell also explained why v6 instead of v5.9 since the next release is not a paradigm shift for the framework: Laravel is adopting [semantic versioning](https://semver.org/) (`major.minor.patch`) and for simplicity, we will make that shift as well.
+
+Right now, Laravel and Twill are following [romantic versioning](http://blog.legacyteam.info/2015/12/romver-romantic-versioning/) (`paradigm.major.minor`). This is why Twill 1.2.2 is not just about patches but new features and improvements too. 
+
+Moving forward, once Laravel 6 is released, a release with breaking changes will be considered major, which would mean Twill 2.0.0 right now. A release with new features would be 1.3.0, and patches would be 1.2.3. 
+
+You can start using Composer's [caret version range](https://getcomposer.org/doc/articles/versions.md#caret-version-range-) (`^1.2.2`) now if you'd like to benefit from new features without fearing breaking changes on your next `composer update`! If you'd rather stick to a stricter way of requiring Twill versions (fair enough, we do that in Twill's npm dependencies for your own safety), you will have to update your `composer.json` file to get new features rather than patches only.
+
+### Added
+- Local image rendering service using Glide 🖼 (6e427fc6, e878b9af, 2a54c030, 0e8adb85)
+- Support for translated medias field and extra metadatas (d16386e5, 484c3c1e, e384dad4, 5b28acf7, 4db1ff45)
+- Support for maxlength counter on WYSIWYG form fields (d6301ff7, 93af3915, c916e760)
+- Support for block groups (57bed474)
+- Configuration option to prefix s3 uploads (#290) (b85df5ac)
+- Helper to dump ready to use SQL queries (87e20508)
+- Option to provide a custom static permalink under the form's title editor (f9c6ed71)
+- `twill:update` command and new database migrations for 1.2.2 (b251ffa0)
+
+### Fixed
+- Fix media and file local libraries: local disk is now defined automatically by Twill, and configured to work seamlessly with Glide (10b9cc7a, 52cabe32, ff1add80, 10aa2c53, 876c93a2)
+- Fix repeaters issues with restoration, update, medias and files fields support (7ec42565, 6425a3fe, c2703b25, 60a239b8, 7e348f4d)
+- Fix #32: markdown based mail notifications breaking in host Laravel apps (c0239ad7)
+- Fix authorization gates conflicts (d2036f29, b08b1218)
+- Fix default Quill.js WYSIWYG theme rendering (e593ac6f)
+- Fix browser when a selected item is deleted (5e085139)
+- Fix global search input misbehavior (31fef7ce)
+- Fix publish button label copy when publishing is not available (82ec2c8d)
+- Fix Twill dev script console errors by disabling host check in hot script (0707f5bc)
+- Fix Twill provided blocks validation rule (cc277f5e)
+- Fix support for custom app namespace (#280) (eb780a5b)
+- Fix canvas rendered cropped image no-cache hack (#261) (ebe4450b)
+- Fix S3 uploader signature function calls (#259) (41828cd5)
+- Fix missing header method exception in ValidateBackHistory middleware (#234) (2ee1080d)
+- Fix media metadata helper issues (1b07f493)
+- Fix some documentation typos (df870b54, a6dda857)
+- Fix some styling bugs (faa4f89e, 77e4d2d0)
+- Fix dashboard settings: activity option was not used (f67ca2ef)
+
+### Improved
+- Twill's CLI now automatically format the provided module name to be valid: `article`, `articles`, `Article`, you name it, will now correctly generate file for an `articles` Twill module with the correct stub replacements. (3e5d6e99)
+- Forms extensibility improvements (d2f4008c, 7382c64c, a06b7a8a)
+- Switch from push() to save() when creating/updating models (661e5cfd)
+- Add more Language code to label mappings (#299) (d842b441)
+- Support more languages in frontend slugify function (2f656287)
+- Improved support for Quill.js toolbar modules on the `wysiwyg` form field (e593ac6f, ff9a8319, 3f675d27)
+- Improve support for translatable.use_property_fallback (15a9331b)
+- Use morphClass consistently in browsers (4ec38c2b)
+- Use module controller defined scopes when counting by status (56a2d3aa)
+- Code quality (replace helpers and facades by dependency injection when possible or fully qualified facades) (6f449ac2, 89687c1f, 9554a0cd, b0a3297c, 358ca416, 86192a16, 21068eb3, d443309d, 05bdfa2a, 80a0f919, 5acb7f1f, 49b2c664, 7625fb33, 1dea3d93, 6972435b, d597f713, 1de922b6, 37b4fd2a, 6092fba0, 6fe254a8, 5044c8ef, f9e2b5cd, c9ef6b52, bcc77308, 2b3f6d3f, df3650a0, a6106b7e, 6b5c49ac, d80ef94c, c889c116, 4f80c83d, 6f4e9c92)
+ 
+### Chore
+- Update composer dependencies (e1dfc11e)
+- Update npm dependencies (06184c0b)
+- Update docs to VuePress 1.0 (72217206)
+
 ## 1.2.1 2019-03-15
 
 ### Added

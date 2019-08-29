@@ -2,16 +2,46 @@
 
 namespace A17\Twill\Commands;
 
-use File;
 use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
 class Build extends Command
 {
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
     protected $signature = 'twill:build';
 
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
     protected $description = "Build Twill assets (experimental)";
 
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
+
+    /**
+     * @param Filesystem $filesystem
+     */
+    public function __construct(Filesystem $filesystem)
+    {
+        parent::__construct();
+
+        $this->filesystem = $filesystem;
+    }
+
+    /*
+     * Executes the console command.
+     *
+     * @return mixed
+     */
     public function handle()
     {
         $progressBar = $this->output->createProgressBar(4);
@@ -38,15 +68,18 @@ class Build extends Command
         $progressBar->setMessage("Copying assets...");
         $progressBar->advance();
 
-        File::copyDirectory(base_path('vendor/area17/twill/public'), public_path());
+        $this->filesystem->copyDirectory(base_path('vendor/area17/twill/public'), public_path());
 
-        File::delete(public_path('hot'));
+        $this->filesystem->delete(public_path('hot'));
 
         $this->info('');
         $progressBar->setMessage("Done.");
         $progressBar->finish();
     }
 
+    /**
+     * @return void
+     */
     private function npmInstall()
     {
         $npmInstallProcess = new Process(['npm', 'ci'], base_path('vendor/area17/twill'));
@@ -54,6 +87,9 @@ class Build extends Command
         $npmInstallProcess->mustRun();
     }
 
+    /**
+     * @return void
+     */
     private function npmBuild()
     {
         $npmBuildProcess = new Process(['npm', 'run', 'prod'], base_path('vendor/area17/twill'));
@@ -61,21 +97,24 @@ class Build extends Command
         $npmBuildProcess->mustRun();
     }
 
+    /**
+     * @return void
+     */
     private function copyBlocks()
     {
         $localCustomBlocksPath = resource_path('assets/js/blocks');
         $twillCustomBlocksPath = base_path('vendor/area17/twill/frontend/js/components/blocks/customs');
 
-        if (!File::exists($twillCustomBlocksPath)) {
-            File::makeDirectory($twillCustomBlocksPath);
+        if (!$this->filesystem->exists($twillCustomBlocksPath)) {
+            $this->filesystem->makeDirectory($twillCustomBlocksPath);
         }
 
-        File::cleanDirectory($twillCustomBlocksPath);
+        $this->filesystem->cleanDirectory($twillCustomBlocksPath);
 
-        if (!File::exists($localCustomBlocksPath)) {
-            File::makeDirectory($localCustomBlocksPath);
+        if (!$this->filesystem->exists($localCustomBlocksPath)) {
+            $this->filesystem->makeDirectory($localCustomBlocksPath);
         }
 
-        File::copyDirectory($localCustomBlocksPath, $twillCustomBlocksPath);
+        $this->filesystem->copyDirectory($localCustomBlocksPath, $twillCustomBlocksPath);
     }
 }

@@ -9,6 +9,8 @@
         :locale="language"
         @localize="updateLocale"
         @change="updateValue(language.value, ...arguments)"
+        @blur="$emit('blur')"
+        @focus="$emit('focus')"
       ><slot></slot></component>
     </div>
     </template>
@@ -17,6 +19,8 @@
         :name="attributes.name"
         v-bind="attributesNoLang()"
         @change="updateValue(false, ...arguments)"
+        @blur="$emit('blur')"
+        @focus="$emit('focus')"
       ><slot></slot></component>
     </template>
   </div>
@@ -64,7 +68,7 @@
 
         let attributes = Object.assign({}, this.attributes)
         // for textfields set initial values using the initialValues prop
-        if (this.initialValues[lang]) {
+        if (this.initialValues && typeof this.initialValues === 'object' && this.initialValues[lang]) {
           attributes.initialValue = this.initialValues[lang]
         } else if (!attributes.initialValue) {
           attributes.initialValue = ''

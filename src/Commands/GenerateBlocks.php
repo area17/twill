@@ -2,37 +2,83 @@
 
 namespace A17\Twill\Commands;
 
-use File;
 use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use Illuminate\View\Factory as ViewFactory;
 
 class GenerateBlocks extends Command
 {
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
     protected $signature = 'twill:blocks';
 
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
     protected $description = "Generate blocks as single file Vue components from blade views";
 
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
+
+    /**
+     * @var ViewFactory
+     */
+    protected $viewFactory;
+
+    /**
+     * @param Filesystem $filesystem
+     * @param ViewFactory $viewFactory
+     */
+    public function __construct(Filesystem $filesystem, ViewFactory $viewFactory)
+    {
+        parent::__construct();
+
+        $this->filesystem = $filesystem;
+        $this->viewFactory = $viewFactory;
+    }
+
+    /**
+     * Executes the console command.
+     *
+     * @return mixed
+     */
     public function handle()
     {
         $this->info("Starting to scan block views directory...");
-        collect(File::files(resource_path('views/admin/blocks')))->each(function ($viewFile) {
+        Collection::make($this->filesystem->files(resource_path('views/admin/blocks')))->each(function ($viewFile) {
             $blockName = $viewFile->getBasename('.blade.php');
 
-            $vueBlockTemplate = view('admin.blocks.' . $blockName, ['renderForBlocks' => true])->render();
+            $vueBlockTemplate = $this->viewFactory->make('admin.blocks.' . $blockName, ['renderForBlocks' => true])->render();
 
-            $vueBlockContent = view('twill::blocks.builder', [
+            $vueBlockContent = $this->viewFactory->make('twill::blocks.builder', [
                 'render' => $this->sanitize($vueBlockTemplate),
             ])->render();
 
-            $vueBlockPath = resource_path('assets/js/blocks/') . 'Block' . title_case($blockName) . '.vue';
+            $vueBlockPath = resource_path('assets/js/blocks/') . 'Block' . Str::title($blockName) . '.vue';
 
-            File::put($vueBlockPath, $vueBlockContent);
+            $this->filesystem->put($vueBlockPath, $vueBlockContent);
 
-            $this->info("Block " . title_case($blockName) . " generated successfully");
+            $this->info("Block " . Str::title($blockName) . " generated successfully");
         });
 
         $this->info("All blocks have been generated!");
     }
 
+    /**
+     * Sanitizes the given HTML code by removing redundant spaces and comments.
+     *
+     * @param string $html
+     * @return string
+     */
     private function sanitize($html)
     {
         $search = array(

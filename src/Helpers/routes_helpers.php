@@ -1,6 +1,17 @@
 <?php
 
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Request;
+
 if (!function_exists('moduleRoute')) {
+    /**
+     * @param string $moduleName
+     * @param string $prefix
+     * @param string $action
+     * @param array $parameters
+     * @param bool $absolute
+     * @return string
+     */
     function moduleRoute($moduleName, $prefix, $action, $parameters = [], $absolute = true)
     {
         $routeName = 'admin.' . ($prefix ? $prefix . '.' : '') . camel_case($moduleName) . '.' . $action;
@@ -9,6 +20,12 @@ if (!function_exists('moduleRoute')) {
 }
 
 if (!function_exists('getNavigationUrl')) {
+    /**
+     * @param array $element
+     * @param string $key
+     * @param string|null $prefix
+     * @return string
+     */
     function getNavigationUrl($element, $key, $prefix = null)
     {
         $isModule = $element['module'] ?? false;
@@ -26,6 +43,12 @@ if (!function_exists('getNavigationUrl')) {
 }
 
 if (!function_exists('isActiveNavigation')) {
+    /**
+     * @param array $navigationElement
+     * @param string $navigationKey
+     * @param string $activeNavigationKey
+     * @return bool
+     */
     function isActiveNavigation($navigationElement, $navigationKey, $activeNavigationKey)
     {
         $keysAreMatching = isset($activeNavigationKey) && $navigationKey === $activeNavigationKey;
@@ -34,7 +57,7 @@ if (!function_exists('isActiveNavigation')) {
             return true;
         }
 
-        $urlsAreMatching = ($navigationElement['raw'] ?? false) && ends_with(Request::url(), $navigationElement['route']);
+        $urlsAreMatching = ($navigationElement['raw'] ?? false) && Str::endsWith(Request::url(), $navigationElement['route']);
 
         return $urlsAreMatching;
     }
