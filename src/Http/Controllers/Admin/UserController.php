@@ -39,15 +39,15 @@ class UserController extends ModuleController
             'sort' => true,
             'sortKey' => 'name'
         ],
-        'email' => [
-            'title' => 'Email',
-            'field' => 'email',
-            'sort' => true,
-        ],
         'last_login' => [
             'title' => 'Last Login',
             'field' => 'last_login_column_value',
             'sort' => true
+        ],
+        'email' => [
+            'title' => 'Email',
+            'field' => 'email',
+            'sort' => true,
         ],
         'role_value' => [
             'title' => 'Role',
