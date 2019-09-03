@@ -671,6 +671,7 @@ abstract class ModuleController extends Controller
                 : str_singular($column['title']))) . '</a>';
         } else {
             $field = $column['field'];
+            debug($field);
             $value = $item->$field;
         }
 

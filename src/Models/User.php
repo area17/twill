@@ -147,4 +147,17 @@ class User extends AuthenticatableContract
             });
             return $permissions;
     }
+
+    public function getThumbnailNameAttribute()
+    {
+        return [
+            'thumbnail' => $this->defaultCmsImage(['w' => 100, 'h' => 100]),
+            'name' => $this->name
+        ];
+    }
+
+    public function getLastLoginColumnValueAttribute()
+    {
+        return $this->last_login_at ? $this->last_login_at->format('d M Y, H:i') : 'Pending activation';
+    }
 }
