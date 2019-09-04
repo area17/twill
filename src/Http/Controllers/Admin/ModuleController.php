@@ -701,7 +701,10 @@ abstract class ModuleController extends Controller
                 'visible' => $visibleColumns ? in_array('thumbnail', $visibleColumns) : true,
                 'optional' => true,
                 'sortable' => false,
-            ]);
+            ] + (isset(array_first($this->indexColumns)['variation']) 
+                    ? ['variation' => array_first($this->indexColumns)['variation']] 
+                    : [])
+            );
             array_shift($this->indexColumns);
         }
 

@@ -30,14 +30,13 @@ class UserController extends ModuleController
         'role' => 'role',
     ];
 
-    protected $titleColumnKey = 'thumbnail_name';
+    protected $titleColumnKey = 'name';
 
     protected $indexColumns = [
-        'thumbnail_name' => [
+        'name' => [
             'title' => 'Name',
-            'field' => 'thumbnail_name',
+            'field' => 'name',
             'sort' => true,
-            'sortKey' => 'name'
         ],
         'last_login' => [
             'title' => 'Last Login',
@@ -69,6 +68,21 @@ class UserController extends ModuleController
     {
         parent::__construct($app, $request);
         $this->middleware('can:edit-users', ['except' => ['edit', 'update']]);
+
+        if (config('twill.enabled.users-image')) {
+            $this->indexColumns = [
+                'image' => [
+                    'title' => 'Image',
+                    'thumb' => true,
+                    'variation' => 'rounded',
+                    'variant' => [
+                        'role' => 'profile',
+                        'crop' => 'default',
+                        'shape' => 'rounded'
+                    ]
+                ],
+            ] + $this->indexColumns;
+        }
     }
 
     protected function indexData($request)
