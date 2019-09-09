@@ -447,7 +447,7 @@ public function hydrate($object, $fields)
     // Optional, to specify a different feature field name than the default 'featured'
     protected $featureField = 'featured';
 
-    // Optional, specify number of items per page in the listing view (-1 to disable pagination)
+    // Optional, specify number of items per page in the listing view (-1 to disable pagination). Setting ignored if sorting is enabled
     protected $perPage = 20;
 
     // Optional, specify the default listing order
