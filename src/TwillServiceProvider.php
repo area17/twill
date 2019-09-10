@@ -268,7 +268,7 @@ class TwillServiceProvider extends ServiceProvider
             // Verify that migration doesn't exist
             $migration_file = database_path('migrations/*_' . snake_case($migration) . '.php');
             if (empty($files->glob($migration_file))) {
-                $timestamp = date('Y_m_d_', time()) . (30000 + $this->migrationsCounter);
+                $timestamp = date('Y_m_d_00', time()) . (3000 + $this->migrationsCounter);
                 $migrationSourcePath = __DIR__ . '/../migrations/' . snake_case($migration) . '.php';
                 $migrationOutputPath = database_path('migrations/' . $timestamp . '_' . snake_case($migration) . '.php');
 
