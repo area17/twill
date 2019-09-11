@@ -248,14 +248,6 @@
     }
   }
 
-  // .dropdown__content {
-  // }
-
-  // .dropdown--active {
-  //   .dropdown__content {
-  //   }
-  // }
-
   .dropdown--bottom .dropdown__position {
     top: 100%;
   }
@@ -294,57 +286,6 @@
 
   .dropdown__content {
     max-width:300px;
-
-    /deep/ button {
-      @include btn-reset;
-      width:100%;
-      background:transparent;
-      text-align:left;
-      width:100%;
-    }
-
-    /deep/ a,
-    /deep/ button {
-      display:block;
-      color:$color__text--light;
-      font-size:1em;
-      padding:0 15px;
-      padding-right:50px;
-      height:40px;
-      line-height: 40px;
-      text-decoration: none;
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      border-radius:0;
-
-      &:hover {
-        color:$color__text;
-        background:$color__light;
-      }
-
-      &.dropdown__active {
-        color:$color__text;
-        background:$color__light;
-      }
-
-      .icon {
-        margin-right:10px;
-      }
-    }
-
-    /deep/ .checkboxGroup__item,
-    /deep/ .radioGroup__item {
-      margin:0 -15px;
-      padding-right:50px;
-      padding-left:15px;
-      display:block;
-    }
-
-    /deep/ .checkbox,
-    /deep/ .checkbox label {
-      display:block;
-    }
   }
 
   .dropdown--full .dropdown__position {
@@ -363,11 +304,6 @@
     border-radius:2px;
     box-shadow:$box-shadow;
     max-width:calc(100vw - 10px);
-
-    /deep/ .input {
-      margin-top:0;
-      padding:0 15px;
-    }
   }
 
   .dropdown__scroller {
@@ -433,5 +369,69 @@
     left: 50%;
     margin-left:-25px;
   }
+</style>
 
+<style lang="scss">
+  @import '~styles/setup/_mixins-colors-vars.scss';
+
+  .dropdown {
+    .dropdown__content {
+      button {
+        @include btn-reset;
+        width: 100%;
+        background: transparent;
+        text-align: left;
+      }
+
+       a,
+       button {
+        display: block;
+        color: $color__text--light;
+        font-size: 1em;
+        padding: 0 15px;
+        padding-right: 50px;
+        height: 40px;
+        line-height: 40px;
+        text-decoration: none;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        border-radius: 0;
+
+        &:hover {
+          color: $color__text;
+          background: $color__light;
+        }
+
+        &.dropdown__active {
+          color: $color__text;
+          background: $color__light;
+        }
+
+        .icon {
+          margin-right: 10px;
+        }
+      }
+
+       .checkboxGroup__item,
+       .radioGroup__item {
+        margin: 0 -15px;
+        padding-right: 50px;
+        padding-left: 15px;
+        display: block;
+      }
+
+       .checkbox,
+       .checkbox label {
+        display: block;
+      }
+    }
+
+    .dropdown__inner {
+      .input {
+        margin-top: 0;
+        padding: 0 15px;
+      }
+    }
+  }
 </style>

@@ -4,22 +4,10 @@
 Twill is a package for Laravel applications, installable through Composer:
 
 ```bash
-composer require area17/twill:1.2.*
+composer require area17/twill:"1.2.*"
 ```
 
 Twill will automatically register its service provider if you are using Laravel `>=5.5`. 
-
-If you are using Laravel `5.7`, one of Twill's dependencies, [cartalyst/tags](https://github.com/cartalyst/tags), does not support it yet. We have an issue open with them and a [fork](https://github.com/area17/tags) available for you in the meantime. Add the following to your `composer.json` file so that Twill can install our fork until further notice:
-
-```json
-"repositories": [
-  {
-    "type": "vcs",
-    "url": "https://github.com/area17/tags.git"
-  }
-],
-```
-
 If you are using Twill with Laravel `5.3` or `5.4`, add Twill's service provider in your application's `config/app.php` file:
 
 ```php{11}
@@ -67,60 +55,9 @@ Twill's `install` command consists of:
 - publishing Twill's database migrations to your application's `database/migrations` directory.
 - migrating your database with those new migrations.
 - publishing Twill's configuration files to your application's `config` directory.
+- publishing Twill's assets for the admin console UI.
 - prompting you to create a superadmin user.
 
-#### npm
-
-Add the following npm scripts to your project's `package.json`:
-
-```json
-"scripts": {
-  "twill-build": "npm run twill-copy-blocks && cd vendor/area17/twill && npm ci && npm run prod && cp -R public/* ${INIT_CWD}/public",
-  "twill-copy-blocks": "npm run twill-clean-blocks && mkdir -p resources/assets/js/blocks/ && mkdir -p vendor/area17/twill/frontend/js/components/blocks/customs/ && cp -R resources/assets/js/blocks/ vendor/area17/twill/frontend/js/components/blocks/customs",
-  "twill-clean-blocks": "rm -rf vendor/area17/twill/frontend/js/components/blocks/customs/*"
-}
-```
-
-Build Twill's admin console UI assets using:
-
-```bash
-npm run twill-build
-```
-
-If you don't want to store Twill's compiled assets in Git, add the following to your project `.gitignore` :
-```
-public/assets/admin
-public/mix-manifest.json
-public/hot
-```
-
-If you are working on adding blocks to your application, or contributing to this project, and would like to use Hot Module Reloading to propagate your changes when recompiling your blocks or contributing to Twill itself, install the following dev dependencies to your project's `package.json`:
-
-```json
-"devDependencies": {
-    "concurrently": "^3.5.1",
-    "watch": "^1.0.2"
-}
-```
-
-And the following npm scripts: 
-
-```json
-"scripts": {
-  "twill-dev": "mkdir -p vendor/area17/twill/public && npm run twill-copy-blocks && concurrently \"cd vendor/area17/twill && npm ci && npm run hot\" \"npm run twill-watch\" && npm run twill-clean-blocks",
-  "twill-watch": "concurrently \"watch 'npm run twill-hot' vendor/area17/twill/public --wait=2 --interval=0.1\" \"npm run twill-watch-blocks\"",
-  "twill-hot": "cd vendor/area17/twill && cp -R public/* ${INIT_CWD}/public",
-  "twill-watch-blocks": "watch 'npm run twill-copy-blocks' resources/assets/js/blocks --wait=2 --interval=0.1"
-}
-```
-
-You can now start a Webpack HMR server on Twill's admin console UI assets using:
-
-```bash
-npm run twill-dev
-```
-
-This will refresh your browser tab or hot reload code when possible (keeping state when possible too) on any changes to your compiled blocks or Twill's frontend sources.
 
 #### .env
 
@@ -178,7 +115,74 @@ S3_BUCKET=bucket-name
 IMGIX_SOURCE_HOST=source.imgix.net
 ```
 
+If you are not ready to use those third party services yet, can't use them, or have very limited image rendering needs, Twill also provides a local storage driver as well as a locale image rendering service powered by [Glide](https://glide.thephpleague.com/). The following .env variables should get you up and running:
+
+```bash
+MEDIA_LIBRARY_ENDPOINT_TYPE=local
+MEDIA_LIBRARY_IMAGE_SERVICE=A17\Twill\Services\MediaLibrary\Glide
+```
+
 See the [media library's configuration documentation](#media-library-2) for more information.
+
+#### npm
+
+Once you create custom blocks for your admin console, Twill's assets needs to be recompiled to include your generated Vue components.
+In order to do that, add the following npm scripts to your project's `package.json`:
+
+```json
+"scripts": {
+  "twill-build": "rm -f public/hot && npm run twill-copy-blocks && cd vendor/area17/twill && npm ci && npm run prod && cp -R public/* ${INIT_CWD}/public",
+  "twill-copy-blocks": "npm run twill-clean-blocks && mkdir -p resources/assets/js/blocks/ && cp -R resources/assets/js/blocks/ vendor/area17/twill/frontend/js/components/blocks/customs/",
+  "twill-clean-blocks": "rm -rf vendor/area17/twill/frontend/js/components/blocks/customs"
+}
+```
+
+Build Twill's admin console UI assets using:
+
+```bash
+npm run twill-build
+```
+
+:::tip TIP
+On Windows, depending on your configuration, you might want to add the `--script-shell bash` option when running `npm` commands.
+Read more [here](https://github.com/area17/twill/issues/31#issuecomment-437557464).
+:::
+
+If you don't want to store Twill's compiled assets in Git, add the following to your project `.gitignore` :
+```
+public/assets/admin
+public/mix-manifest.json
+public/hot
+```
+
+If you are working on adding/modifying blocks for your application, or contributing to Twill itself, and would like to use Hot Module Reloading to propagate changes when recompiling blocks or modifying Twill, add and install the following dev dependencies to your project's `package.json`:
+
+```json
+"devDependencies": {
+  "concurrently": "^3.5.1",
+  "watch": "^1.0.2"
+}
+```
+
+And the following npm scripts: 
+
+```json
+"scripts": {
+  "twill-dev": "mkdir -p vendor/area17/twill/public && npm run twill-copy-blocks && concurrently \"cd vendor/area17/twill && npm ci && npm run hot\" \"npm run twill-watch\" && npm run twill-clean-blocks",
+  "twill-watch": "concurrently \"watch 'npm run twill-hot' vendor/area17/twill/public --wait=2 --interval=0.1\" \"npm run twill-watch-blocks\"",
+  "twill-hot": "cd vendor/area17/twill && cp -R public/* ${INIT_CWD}/public",
+  "twill-watch-blocks": "watch 'npm run twill-copy-blocks' resources/assets/js/blocks --wait=2 --interval=0.1"
+}
+```
+
+You can now start a Webpack HMR server on Twill's admin console UI assets using:
+
+```bash
+npm run twill-dev
+```
+
+This will refresh your browser tab or hot reload code when possible (keeping state when possible too) on any changes to your compiled blocks or Twill's frontend sources.
+
 
 #### A note about the frontend
 

@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Models;
 
-use A17\Twill\Models\User;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
 abstract class Revision extends BaseModel

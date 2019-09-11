@@ -119,17 +119,10 @@
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
 
-  // .filter {
-  // }
-
   .filter__inner {
     display:flex;
     justify-content: space-between;
   }
-
-  // .filter__navigation {
-  //   flex-grow:1;
-  // }
 
   .filter__search {
     padding:20px 0;
@@ -183,12 +176,6 @@
     padding:20px 0 0 0;
     border-top:1px solid $color__border;
 
-    /deep/ .input {
-      margin-top:0;
-      margin-bottom:20px;
-      margin-right: 20px;
-    }
-
     button {
       margin-right: 10px;
       margin-bottom:20px;
@@ -198,19 +185,6 @@
   @include breakpoint('small+') {
     .filter__moreInner {
       display:flex;
-
-      /deep/ .input {
-        margin-top:0;
-      }
-
-      /deep/ > div {
-        // flex-grow:1;
-        display:flex;
-      }
-
-      /deep/ > div > * {
-        margin-right:20px;
-      }
     }
   }
 
@@ -239,6 +213,36 @@
   .filter--single {
     .filter__navigation {
       display:none;
+    }
+  }
+</style>
+
+<style lang="scss">
+  @import '~styles/setup/_mixins-colors-vars.scss';
+
+  .filter {
+    .filter__moreInner {
+      .input {
+        margin-top: 0;
+        margin-bottom: 20px;
+        margin-right: 20px;
+      }
+    }
+
+    @include breakpoint('small+') {
+      .filter__moreInner {
+        .input {
+          margin-top: 0;
+        }
+
+        > div {
+          display: flex;
+        }
+
+        > div > * {
+          margin-right: 20px;
+        }
+      }
     }
   }
 </style>

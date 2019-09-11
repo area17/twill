@@ -32,7 +32,8 @@
       </div>
     </div>
     <div class="block__content" :aria-hidden="!visible ? true : null">
-      <a17-inputframe label="" :name="`block.${block.id}`"></a17-inputframe>
+      <!--TBD: is this inputframe required ?-->
+      <a17-inputframe size="small" label="" :name="`block.${block.id}`"/>
       <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes" key="`form_${block.type}_${block.id}`"><!-- dynamic components --></component>
     </div>
   </div>
@@ -263,33 +264,7 @@
       margin:-15px;
       border:0 none;
     }
-
-    /deep/ .input {
-      margin-top: 15px;
-    }
-
-    /deep/ .block__body {
-      > .media,
-      > .slideshow,
-      > .browserField {
-        margin-left:-15px;
-        margin-right:-15px;
-        border:0 none;
-      }
-
-      > .media:last-child,
-      > .slideshow:last-child,
-      > .browserField:last-child {
-        margin-bottom:-15px;
-      }
-    }
   }
-
-  // .block__content {
-  //   /deep/ .input {
-  //     margin-top:15px;
-  //   }
-  // }
 
   // Small blocks (for repeater inside the block editor)
   .block--small {
@@ -313,13 +288,39 @@
       }
     }
 
-    // .block__title {
-    //   font-weight:normal;
-    // }
-
     .block__counter {
       display:none;
     }
   }
 
+</style>
+
+<style lang="scss">
+  .block {
+    .block__content {
+      .block__body {
+        .input {
+          margin-top: 15px;
+
+          .input {
+            margin-top: 0;
+          }
+        }
+
+        > .media,
+        > .slideshow,
+        > .browserField {
+          margin-left: -15px;
+          margin-right: -15px;
+          border: 0 none;
+        }
+
+        > .media:last-child,
+        > .slideshow:last-child,
+        > .browserField:last-child {
+          margin-bottom: -15px;
+        }
+      }
+    }
+  }
 </style>

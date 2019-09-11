@@ -12,6 +12,7 @@ import a17Textfield from '@/components/Textfield.vue'
 import a17HiddenField from '@/components/HiddenField.vue'
 import a17Wysiwyg from '@/components/Wysiwyg.vue'
 import a17MediaField from '@/components/MediaField.vue'
+import a17MediaFieldTranslated from '@/components/MediaFieldTranslated.vue'
 import a17Radio from '@/components/Radio.vue'
 import a17RadioGroup from '@/components/RadioGroup.vue'
 import a17Checkbox from '@/components/Checkbox.vue'
@@ -53,6 +54,7 @@ const A17Config = {
     Vue.component('a17-wysiwyg', a17Wysiwyg)
     Vue.component('a17-inputframe', a17Inputframe)
     Vue.component('a17-mediafield', a17MediaField)
+    Vue.component('a17-mediafield-translated', a17MediaFieldTranslated)
     Vue.component('a17-radio', a17Radio)
     Vue.component('a17-radiogroup', a17RadioGroup)
     Vue.component('a17-checkbox', a17Checkbox)

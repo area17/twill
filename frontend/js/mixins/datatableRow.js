@@ -63,8 +63,8 @@ export default {
         case 'publish_start_date':
           props.startDate = ''
           props.endDate = ''
-          props.textExpired = ''
-          props.textScheduled = ''
+          props.textExpired = 'Expired'
+          props.textScheduled = 'Scheduled'
           break
         default:
           break

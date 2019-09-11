@@ -283,22 +283,6 @@
     }
   }
 
-  .buckets__fieldset {
-    /* override fieldset style */
-
-    /deep/ .fieldset__content {
-      padding: 0;
-    }
-
-    @each $current-color in $colors__bucket--list {
-      $i: index($colors__bucket--list, $current-color);
-      &.buckets__fieldset--#{$i} /deep/ header {
-        color: $color__white;
-        background-color: $current-color;
-      }
-    }
-  }
-
   .buckets__fieldset__header {
     display: flex;
     align-items: center;
@@ -338,17 +322,6 @@
 
     .buckets__filter {
       margin-left: 15px;
-
-      /*Override default search style  */
-
-      /deep/ .filter__search {
-        width: 100%;
-
-        input {
-          width: 100%;
-          min-width: inherit;
-        }
-      }
     }
   }
 
@@ -515,6 +488,37 @@
 
     &.draggable {
       padding-left: 27px;
+    }
+  }
+</style>
+
+<style lang="scss">
+  @import '~styles/setup/_mixins-colors-vars.scss';
+
+  .buckets {
+    .buckets__fieldset {
+      /* override fieldset style */
+
+      .fieldset__content {
+        padding: 0;
+      }
+
+      @each $current-color in $colors__bucket--list {
+        $i: index($colors__bucket--list, $current-color);
+        &.buckets__fieldset--#{$i} header {
+          color: $color__white;
+          background-color: $current-color;
+        }
+      }
+    }
+
+    .filter__search {
+      width: 100%;
+
+      input {
+        width: 100%;
+        min-width: inherit;
+      }
     }
   }
 </style>

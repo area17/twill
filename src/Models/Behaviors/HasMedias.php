@@ -3,14 +3,21 @@
 namespace A17\Twill\Models\Behaviors;
 
 use A17\Twill\Models\Media;
+use Illuminate\Support\Arr;
 use ImageService;
 
 trait HasMedias
 {
+    protected $cropParamsKeys = [
+        'crop_x',
+        'crop_y',
+        'crop_w',
+        'crop_h',
+    ];
 
     public function medias()
     {
-        return $this->morphToMany(Media::class, 'mediable')->withPivot([
+        return $this->morphToMany(Media::class, 'mediable')->withPivot(array_merge([
             'crop',
             'role',
             'crop_w',
@@ -20,26 +27,53 @@ trait HasMedias
             'lqip_data',
             'ratio',
             'metadatas',
-        ])->withTimestamps()->orderBy('mediables.id', 'asc');
+        ], config('twill.media_library.translated_form_fields', false) ? ['locale'] : []))
+            ->withTimestamps()->orderBy('mediables.id', 'asc');
+    }
+
+    private function findMedia($role, $crop = "default")
+    {
+        $media = $this->medias->first(function ($media) use ($role, $crop) {
+            if (config('twill.media_library.translated_form_fields', false)) {
+                $localeScope = $media->pivot->locale === app()->getLocale();
+            }
+
+            return $media->pivot->role === $role && $media->pivot->crop === $crop && ($localeScope ?? true);
+        });
+
+        if (!$media && config('twill.media_library.translated_form_fields', false)) {
+            $media = $this->medias->first(function ($media) use ($role, $crop) {
+                return $media->pivot->role === $role && $media->pivot->crop === $crop;
+            });
+        }
+
+        return $media;
+    }
+
+    public function hasImage($role, $crop = "default")
+    {
+        $media = $this->findMedia($role, $crop);
+
+        return !empty($media);
     }
 
     public function image($role, $crop = "default", $params = [], $has_fallback = false, $cms = false, $media = null)
     {
 
         if (!$media) {
-            $media = $this->medias->first(function ($media) use ($role, $crop) {
-                return $media->pivot->role === $role && $media->pivot->crop === $crop;
-            });
+            $media = $this->findMedia($role, $crop);
         }
 
         if ($media) {
-            $crop_params = ['rect' => $media->pivot->crop_x . ',' . $media->pivot->crop_y . ',' . $media->pivot->crop_w . ',' . $media->pivot->crop_h] + $params;
+
+            $crop_params = Arr::only($media->pivot->toArray(), $this->cropParamsKeys);
 
             if ($cms) {
-                return ImageService::getCmsUrl($media->uuid, $crop_params);
+
+                return ImageService::getCmsUrl($media->uuid, $crop_params + $params);
             }
 
-            return ImageService::getUrl($media->uuid, $crop_params);
+            return ImageService::getUrlWithCrop($media->uuid, $crop_params, $params);
         }
 
         if ($has_fallback) {
@@ -67,9 +101,7 @@ trait HasMedias
     public function imageAsArray($role, $crop = "default", $params = [], $media = null)
     {
         if (!$media) {
-            $media = $this->medias->first(function ($media) use ($role, $crop) {
-                return $media->pivot->role === $role && $media->pivot->crop === $crop;
-            });
+            $media = $this->findMedia($role, $crop);
         }
 
         if ($media) {
@@ -105,7 +137,11 @@ trait HasMedias
     {
         if (!$media) {
             $media = $this->medias->first(function ($media) use ($role) {
-                return $media->pivot->role === $role;
+                if (config('twill.media_library.translated_form_fields', false)) {
+                    $localeScope = $media->pivot->locale === app()->getLocale();
+                }
+
+                return $media->pivot->role === $role && ($localeScope ?? true);;
             });
         }
 
@@ -120,7 +156,11 @@ trait HasMedias
     {
         if (!$media) {
             $media = $this->medias->first(function ($media) use ($role) {
-                return $media->pivot->role === $role;
+                if (config('twill.media_library.translated_form_fields', false)) {
+                    $localeScope = $media->pivot->locale === app()->getLocale();
+                }
+
+                return $media->pivot->role === $role && ($localeScope ?? true);;
             });
         }
 
@@ -135,7 +175,11 @@ trait HasMedias
     {
         if (!$media) {
             $media = $this->medias->first(function ($media) use ($role) {
-                return $media->pivot->role === $role;
+                if (config('twill.media_library.translated_form_fields', false)) {
+                    $localeScope = $media->pivot->locale === app()->getLocale();
+                }
+
+                return $media->pivot->role === $role && ($localeScope ?? true);;
             });
         }
 
@@ -150,16 +194,12 @@ trait HasMedias
 
     public function imageObject($role, $crop = "default")
     {
-        return $this->medias->first(function ($media) use ($role, $crop) {
-            return $media->pivot->role === $role && $media->pivot->crop === $crop;
-        });
+        return $this->findMedia($role, $crop);
     }
 
     public function lowQualityImagePlaceholder($role, $crop = "default", $params = [], $has_fallback = false)
     {
-        $media = $this->medias->first(function ($media) use ($role, $crop) {
-            return $media->pivot->role === $role && $media->pivot->crop === $crop;
-        });
+        $media = $this->findMedia($role, $crop);
 
         if ($media) {
             return $media->pivot->lqip_data ?? ImageService::getTransparentFallbackUrl();
@@ -175,14 +215,12 @@ trait HasMedias
 
     public function socialImage($role, $crop = "default", $params = [], $has_fallback = false)
     {
-        $media = $this->medias->first(function ($media) use ($role, $crop) {
-            return $media->pivot->role === $role && $media->pivot->crop === $crop;
-        });
+        $media = $this->findMedia($role, $crop);
 
         if ($media) {
-            $crop_params = ['rect' => $media->pivot->crop_x . ',' . $media->pivot->crop_y . ',' . $media->pivot->crop_w . ',' . $media->pivot->crop_h] + $params;
+            $crop_params = Arr::only($media->pivot->toArray(), $this->cropParamsKeys);
 
-            return ImageService::getSocialUrl($media->uuid, $crop_params);
+            return ImageService::getSocialUrl($media->uuid, $crop_params + $params);
         }
 
         if ($has_fallback) {

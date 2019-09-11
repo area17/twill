@@ -10,7 +10,7 @@ trait HasTranslation
 
     public function getTranslationModelNameDefault()
     {
-        return "App\Models\Translations\\" . class_basename($this) . 'Translation';
+        return config('twill.namespace') . "\Models\Translations\\" . class_basename($this) . 'Translation';
     }
 
     public function scopeWithActiveTranslations($query, $locale = null)
@@ -21,11 +21,19 @@ trait HasTranslation
             $query->whereHas('translations', function ($query) use ($locale) {
                 $query->whereActive(true);
                 $query->whereLocale($locale);
+
+                if (config('translatable.use_property_fallback', false)) {
+                    $query->orWhere('locale', config('translatable.fallback_locale'));
+                }
             });
 
             return $query->with(['translations' => function ($query) use ($locale) {
                 $query->whereActive(true);
                 $query->whereLocale($locale);
+
+                if (config('translatable.use_property_fallback', false)) {
+                    $query->orWhere('locale', config('translatable.fallback_locale'));
+                }
             }]);
         }
     }
@@ -64,7 +72,9 @@ trait HasTranslation
     {
         $locale = $locale ?: $this->locale();
 
-        foreach ($this->translations as $translation) {
+        $translations = $this->memoizedTranslations ?? ($this->memoizedTranslations = $this->translations()->get());
+
+        foreach ($translations as $translation) {
             if ($translation->getAttribute($this->getLocaleKey()) == $locale && $translation->getAttribute('active')) {
                 return true;
             }
@@ -82,7 +92,7 @@ trait HasTranslation
                 'value' => $translation->locale,
                 'published' => $translation->active ?? false,
             ];
-        })->sortBy(function($translation) {
+        })->sortBy(function ($translation) {
             $localesOrdered = config('translatable.locales');
             return array_search($translation['value'], $localesOrdered);
         })->values();

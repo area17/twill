@@ -8,15 +8,21 @@
             <span class="itemlist__progressError" v-else>Upload Error</span>
           </td>
         </tr>
-        <tr class="itemlist__row" v-for="item in items" :key="item.id" :class="{ 's--picked': isSelected(item.id) }" @click.exact.prevent="toggleSelection(item.id)" @click.shift.exact.prevent="shiftToggleSelection(item.id)">
+        <tr class="itemlist__row"
+            v-for="item in items"
+            :key="`${item.endpointType}_${item.id}`"
+            :class="{ 's--picked': isSelected(item, keysToCheck)}"
+            @click.exact.prevent="toggleSelection(item)"
+            @click.shift.exact.prevent="shiftToggleSelection(item)">
           <td class="itemlist__cell itemlist__cell--btn" v-if="item.hasOwnProperty('id')">
-            <a17-checkbox name="item_list" :value="item.id" :initialValue="checkedItems" theme="bold"/>
+            <a17-checkbox name="item_list" :value="item.endpointType + '_' + item.id" :initialValue="checkedItems" theme="bold"/>
           </td>
           <td class="itemlist__cell itemlist__cell--thumb" v-if="item.hasOwnProperty('thumbnail')">
             <img :src="item.thumbnail" />
           </td>
           <td class="itemlist__cell itemlist__cell--name" v-if="item.hasOwnProperty('name')">
-            {{ item.name }}
+            <div v-if="item.hasOwnProperty('renderHtml')" v-html="item.name"></div>
+            <div v-else>{{ item.name }}</div>
           </td>
           <td class="itemlist__cell" v-for="extraColumn in extraColumns" :class="rowClass(extraColumn)">
             <template v-if="extraColumn === 'size'">{{ item[extraColumn] | uppercase}}</template>
@@ -34,6 +40,12 @@
 
   export default {
     name: 'A17Itemlist',
+    props: {
+      keysToCheck: {
+        type: Array,
+        default: () => ['id']
+      }
+    },
     mixins: [mediaItemsMixin],
     filters: a17VueFilters,
     computed: {
@@ -58,7 +70,7 @@
         return Object.keys(firstItem).filter(key => { // exclude columns here
           return ![
             'id', 'name', 'thumbnail', 'src', 'original', 'edit',
-            'crop', 'deleteUrl', 'updateUrl', 'updateBulkUrl', 'deleteBulkUrl'
+            'crop', 'deleteUrl', 'updateUrl', 'updateBulkUrl', 'deleteBulkUrl', 'endpointType'
           ].includes(key) && typeof firstItem[key] === 'string' // only strings
         })
       },
@@ -67,7 +79,7 @@
 
         if (this.selectedItems.length) {
           this.selectedItems.forEach(function (item) {
-            checkItemsIds.push(item.id)
+            checkItemsIds.push(item.endpointType + '_' + item.id)
           })
         }
 
@@ -164,6 +176,10 @@
     // width:15px + 20px + 10px;
   }
 
+  .itemlist__cell--type {
+    width: 150px;
+  }
+
   // .itemlist__cell--name {
   //   width:40%;
   // }
@@ -173,8 +189,9 @@
 
     img {
       display:block;
-      max-width:50px;
+      width:50px;
       height:auto;
+      background: $color__border--light;
     }
   }
 

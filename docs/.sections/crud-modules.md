@@ -20,7 +20,7 @@ This will generate a migration file, a model, a repository, a controller, a form
 
 Start by filling in the migration and models using the documentation below.
 
-Add `Route::module('yourPluralModuleName}');` to your admin routes file.
+Add `Route::module('yourPluralModuleName');` to your admin routes file.
 
 Setup a new CMS menu item in `config/twill-navigation.php`.
 
@@ -88,7 +88,7 @@ Schema::create('table_name_singular_revisions', function (Blueprint $table) {
 // related content table, holds many to many association between 2 tables
 Schema::create('table_name_singular1_table_name_singular2', function (Blueprint $table) {
     createDefaultRelationshipTableFields($table, $table1NameSingular, $table2NameSingular)
-    // will add the following inscructions to your migration file 
+    // will add the following inscructions to your migration file
     // $table->integer("{$table1NameSingular}_id")->unsigned();
     // $table->foreign("{$table1NameSingular}_id")->references('id')->on($table1NamePlural)->onDelete('cascade');
     // $table->integer("{$table2NameSingular}_id")->unsigned();
@@ -101,19 +101,19 @@ A few CRUD controllers require that your model have a field in the database with
 
 ### Models
 
-Set your fillables to prevent mass-assignement. Very important as we use `request()->all()` in the module controller.
+Set your fillables to prevent mass-assignement. This is very important, as we use `request()->all()` in the module controller.
 
 For fields that should always be saved as null in the database when not sent by the form, use the `nullable` array.
 
 For fields that should always be saved to false in the database when not sent by the form, use the `checkboxes` array. The `published` field is a good example.
 
-Depending on the features you need on your model, include the availables traits and configure their respective options:
+Depending on the features you need on your model, include the available traits and configure their respective options:
 
 - HasPosition: implement the `A17\Twill\Models\Behaviors\Sortable` interface and add a position field to your fillables.
 
 - HasTranslation: add translated fields in the `translatedAttributes` array and in the `fillable` array of the generated translatable model in `App/Models/Translations` (always keep the `active` and `locale` fields).
 
-When using Twill's `HasTranslation` trait on a model, you are actually using the popular `dimsav/translatable` package. A default configuration has been published to your `config` directory when you ran the `twill:install` command. 
+When using Twill's `HasTranslation` trait on a model, you are actually using the popular `dimsav/translatable` package. A default configuration will be automatically published to your `config` directory when you run the `twill:install` command.
 
 To setup your list of available languages for translated fields, modify the `locales` array in `config/translatable.php`, using ISO 639-1 two-letter languages codes as in the following example:
 
@@ -147,7 +147,7 @@ public $mediasParams = [
         'mobile' => [
             [
                 'name' => 'landscape', // ratio name, multiple allowed
-                'ratio' => 16 / 9, 
+                'ratio' => 16 / 9,
             ],
             [
                 'name' => 'portrait', // ratio name, multiple allowed
@@ -174,7 +174,7 @@ public $filesParams = ['file_role', ...]; // a list of file roles
 
 ### Repositories
 
-Depending on the model feature, include one or multiple of those traits: `HandleTranslations`, `HandleSlugs`, `HandleMedias`, `HandleFiles`, `HandleRevisions`, `HandleBlocks`, `HandleRepeaters`, `HandleTags`.
+Depending on the model feature, include one or multiple of these traits: `HandleTranslations`, `HandleSlugs`, `HandleMedias`, `HandleFiles`, `HandleRevisions`, `HandleBlocks`, `HandleRepeaters`, `HandleTags`.
 
 Repositories allows you to modify the default behavior of your models by providing some entry points in the form of methods that you might implement:
 
@@ -235,7 +235,7 @@ public function getFormFields($object) {
     $fields['browsers']['relationName'] = $this->getFormFieldsForBrowser($object, 'relationName');
 
     // get fields for a repeater
-    $fields = $this->getFormFieldsForRepeater($object, 'relationName');
+    $fields = $this->getFormFieldsForRepeater($object, $fields, 'relationName', 'ModelName', 'repeaterItemName');
 
     // return fields
     return $fields
@@ -280,22 +280,22 @@ public function prepareFieldsBeforeSave($object, $fields) {
 public function afterSave($object, $fields) {
     // for exemple, to sync a many to many relationship
     $this->updateMultiSelect($object, $fields, 'relationName');
-    
+
     // which will simply run the following for you
     $object->relationName()->sync($fields['relationName'] ?? []);
-    
+
     // or, to save a oneToMany relationship
     $this->updateOneToMany($object, $fields, 'relationName', 'formFieldName', 'relationAttribute')
-    
+
     // or, to save a belongToMany relationship used with the browser field
     $this->updateBrowser($object, $fields, 'relationName');
-    
+
     // or, to save a hasMany relationship used with the repeater field
-    $this->updateRepeater($object, $fields, 'relationName');
-    
+    $this->updateRepeater($object, $fields, 'relationName', 'ModelName', 'repeaterItemName');
+
     // or, to save a belongToMany relationship used with the repeater field
     $this->updateRepeaterMany($object, $fields, 'relationName', false);
-    
+
     parent::afterSave($object, $fields);
 }
 
@@ -328,7 +328,7 @@ public function hydrate($object, $fields)
 <?php
 
     protected $moduleName = 'yourModuleName';
-    
+
     /*
      * Options of the index view
      */
@@ -354,7 +354,7 @@ public function hydrate($object, $fields)
      * This will be the first column in the listing and will have a link to the form
      */
     protected $titleColumnKey = 'title';
-    
+
     /*
      * Available columns of the index view
      */
@@ -377,6 +377,7 @@ public function hydrate($object, $fields)
             'visible' => false, // will be available from the columns settings dropdown
         ],
         'relationName' => [ // relation column
+            // Take a look at the example in the next section fot the implementation of the sort
             'title' => 'Relation name',
             'sort' => true,
             'relationship' => 'relationName',
@@ -458,10 +459,73 @@ public function hydrate($object, $fields)
 
 You can also override all actions and internal functions, checkout the ModuleController source in `A17\Twill\Http\Controllers\Admin\ModuleController`.
 
+#### Example Sort by Relationship Field.
+
+Let's say we have a controller with certain fields displayed:
+File: `app/Http/Controllers/Admin/PlayController.php`
+
+```php
+    protected $indexColumns = [
+        'image' => [
+            'thumb' => true, // image column
+            'variant' => [
+                'role' => 'featured',
+                'crop' => 'default',
+            ],
+        ],
+        'title' => [ // field column
+            'title' => 'Title',
+            'field' => 'title',
+        ],
+        'festivals' => [ // relation column
+            'title' => 'Festival',
+            'sort' => true,
+            'relationship' => 'festivals',
+            'field' => 'title'
+        ],
+    ];
+```
+
+For creating the Sorting mechanism for the relationship we need to overwrite the order method on the proper repository.
+In there we verify for the parameter sent which per convention should be *relationship + field* in this case `festivalsTitle`.
+Once applied we remove that parameter to avoid the application crash due to not being able to find the field on the table.
+
+File: `app/Repositories/PlayRepository.php`
+
+```php
+  ...
+  public function order($query, array $orders = []) {
+
+      if (array_key_exists('festivalsTitle', $orders)){
+          $sort_method = $orders['festivalsTitle'];
+          //Remove the UNEXISTING column from the orders array
+          unset($orders['festivalsTitle']);
+          $query = $query->orderByFestival($sort_method);
+      }
+      // don't forget to call the parent order function
+      return parent::order($query, $orders);
+  }
+  ...
+```
+
+Then add the custom `sort` scope into your Model, it should be something like this:
+File: `app/Models/Play.php`
+
+```php
+    public function scopeOrderByFestival($query, $sort_method = 'ASC') {
+        return $query
+            ->leftJoin('festivals', 'plays.section_id', '=', 'festivals.id')
+            ->select('plays.*', 'festivals.id', 'festivals.title')
+            ->orderBy('festivals.title', $sort_method);
+    }
+```
+
+
 ### Form Requests
 Classic Laravel 5 [form request validation](https://laravel.com/docs/5.5/validation#form-request-validation).
 
-You can choose to use different rules for creation and update by implementing the following 2 functions instead of the classic `rules` one :
+Once you generated the module using Twill's CLI module generator, it will also prepare the `App/Http/Requests/Admin/ModuleNameRequest.php` for you to use.
+You can choose to use different rules for creation and update by implementing the following 2 functions instead of the classic `rules` one:
 
 ```php
 <?php
@@ -500,6 +564,8 @@ $this->messagesForTranslatedFields([
   // translated fields messages
 ]);
 ```
+
+Once you defined the rules in this file, the UI will show the corresponding validation error state or message next to the corresponding form field.
 
 ### Routes
 
@@ -610,6 +676,48 @@ You can also rename the content section by passing a `contentFieldsetLabel` prop
     'note' => 'Hint message',
 ])
 ```
+WYSIWYG field is based on [Quill](https://quilljs.com/) Rich Text Editor. 
+
+You can add all [toolbar options](https://quilljs.com/docs/modules/toolbar/) from Quill with the `toolbarOptions` key.
+
+For example, this configuration will render a `wysiwyg` field with almost all features from Quill and Snow theme.
+
+```
+ @formField('wysiwyg', [
+    'name' => 'case_study',
+    'label' => 'Case study text',
+    'toolbarOptions' => [ 
+      ["font" => ["serif", "sans-serif", "monospace"]],
+      ['header' => [2, 3, 4, 5, 6, false]],
+      'bold',
+      'italic',
+      'underline',
+      'strike',
+      ["color" => []],
+      ["background" => []],
+      ["script" => "super"],
+      ["script" => "sub"],
+      "blockquote",
+      "code-block",
+      ['list' => 'ordered'],
+      ['list' => 'bullet'],
+      ['indent' => '-1'],
+      ['indent' => '+1'],
+      ["align" => []],
+      ["direction" => "rtl"],
+      'link',
+      'image',
+      'video',
+      "clean",
+    ],
+    'placeholder' => 'Case study text',
+    'maxlength' => 200,
+    'editSource' => true,
+    'note' => 'Hint message`',
+ ])
+```
+
+Note that Quill outputs CSS classes in the HTML for certain toolbar modules (indent, font, align, etc.), and that the image module is not integrated with Twill's media library. It outputs the base64 representation of the uploaded image. It is not a recommended way of using and storing images, prefer using one or multiple `medias` form fields or blocks fields for flexible content. This will give you greater control over your frontend output.
 
 #### Medias
 ![screenshot](/docs/_media/medias.png)
@@ -628,6 +736,16 @@ You can also rename the content section by passing a `contentFieldsetLabel` prop
     'note' => 'Minimum image width: 1500px'
 ])
 ```
+
+Right after declaring the media formField in the blade template file, you still need to do a few things to make it works properly.
+
+If the formField is in a static content form, you have to include the `HasMedias` Trait in your module's [Model](https://twill.io/docs/#models) and inlcude `HandleMedias` in your module's [Repository](https://twill.io/docs/#repositories), in addition, you have to uncomment the `$mediasParams` section in your Model file to let the model know about fields you'd like to save from the form.
+
+Learn more about how Twill's media configurations work at [Model](https://twill.io/docs/#models), [Repository](https://twill.io/docs/#repositories), [Media Library Role & Crop Params](https://twill.io/docs/#image-rendering-service)
+
+If the formField is used inside a block, you need to define the `mediasParams` at `config/twill.php` under `crops` key, and you are good to go. You could checkout [Twill Default Configuration](https://twill.io/docs/#default-configuration) and [Rendering Blocks](https://twill.io/docs/#rendering-blocks) for references.
+
+If you need medias fields to be translatable (ie. publishers can select different images for each locale), set the `twill.media_library.translated_form_fields` configuration value to `true`.
 
 #### Datepicker
 ![screenshot](/docs/_media/datepicker.png)
@@ -825,6 +943,24 @@ You can also rename the content section by passing a `contentFieldsetLabel` prop
 ])
 ```
 
+Similar to the media formField, to make the file field works, you have to include the `HasFiles` trait in your module's [Model](https://twill.io/docs/#models), and include `HandleFiles` trait in your module's [Repository](https://twill.io/docs/#repositories). At last, add the `filesParams` configuration array in your model.
+```php
+public $filesParams = ['file_role', ...]; // a list of file roles
+```
+
+Learn more at [Model](https://twill.io/docs/#models), [Repository](https://twill.io/docs/#repositories).
+
+If you are using the file formField in a block, you have to define the `files` key in `config/twill.php` and you are all set, put it under `block_editor` key and at the same level as `crops` key:
+```php
+return [
+    'block_editor' => [
+        'crops' => [
+            ...
+        ],
+        'files' => ['file_role1', 'file_role2', ...]
+    ]
+```
+
 #### Map
 ![screenshot](/docs/_media/map.png)
 
@@ -865,7 +1001,7 @@ This field requires that you provide a `GOOGLE_MAPS_API_KEY` variable in your .e
     'note' => '3 sectors max & at least 1 sector',
     'min' => 1,
     'max' => 3,
-    'inline' => true/false
+    'inline' => true,
     'options' => [
         [
             'value' => 'arts',
@@ -910,7 +1046,7 @@ This field requires that you provide a `GOOGLE_MAPS_API_KEY` variable in your .e
 
 ### Revisions and previewing
 
-When using the `HasRevisions` trait, Twill's UI give publishers the ability to preview their changes without saving, as well as to preview and compare old revisions.
+When using the `HasRevisions` trait, Twill's UI gives publishers the ability to preview their changes without saving, as well as to preview and compare old revisions.
 
 If you are implementing your site using Laravel routing and Blade templating (ie. traditional server side rendering), you can follow Twill's convention of creating frontend views at `resources/views/site` and naming them according to their corresponding CRUD module name. When publishers try to preview their changes, Twill will render your frontend view within an iframe, passing the previewed record with it's unsaved changes to your view in the `$item` variable.
 
@@ -951,5 +1087,150 @@ protected function previewData($item)
         'project' => $item,
         'setting_name' => $settingRepository->byKey('setting_name')
     ];
+}
+```
+
+### Nested Module
+
+To create a nested module with parent/child relationships, you should include the `laravel-nestedset` package to your application.
+
+To install the package: `composer require kalnoy/nestedset`
+
+Then add nested set columns to your database table:
+
+For Laravel 5.5 and above users:
+
+```php
+Schema::create('pages', function (Blueprint $table) {
+    ...
+    $table->nestedSet();
+});
+
+// To drop columns
+Schema::table('pages', function (Blueprint $table) {
+    $table->dropNestedSet();
+});
+```
+
+For prior Laravel Versions:
+
+```php
+...
+use Kalnoy\Nestedset\NestedSet;
+
+Schema::create('pages', function (Blueprint $table) {
+    ...
+    NestedSet::columns($table);
+});
+
+// To drop columns
+Schema::table('pages', function (Blueprint $table) {
+    NestedSet::dropColumns($table);
+});
+```
+
+Your model should use the `Kalnoy\Nestedset\NodeTrait` trait to enable nested sets, as well as the `HasPosition` trait and some helper functions to save a new tree organisation from Twill's drag and drop UI:
+
+```php
+use A17\Twill\Models\Behaviors\HasPosition;
+use Kalnoy\Nestedset\NodeTrait;
+...
+
+class Page extends Model {
+    use HasPostion, NodeTrait;
+    ...
+    public static function saveTreeFromIds($nodesArray)
+    {
+        $parentNodes = self::find(array_pluck($nodesArray, 'id'));
+
+        if (is_array($nodesArray)) {
+            $position = 1;
+            foreach ($nodesArray as $nodeArray) {
+                $node = $parentNodes->where('id', $nodeArray['id'])->first();
+                $node->position = $position++;
+                $node->saveAsRoot();
+            }
+        }
+
+        $parentNodes = self::find(array_pluck($nodesArray, 'id'));
+
+        self::rebuildTree($nodesArray, $parentNodes);
+    }
+
+    public static function rebuildTree($nodesArray, $parentNodes)
+    {
+        if (is_array($nodesArray)) {
+            foreach ($nodesArray as $nodeArray) {
+                $parent = $parentNodes->where('id', $nodeArray['id'])->first();
+                if (isset($nodeArray['children']) && is_array($nodeArray['children'])) {
+                    $position = 1;
+                    $nodes = self::find(array_pluck($nodeArray['children'], 'id'));
+                    foreach ($nodeArray['children'] as $child) {
+                        //append the children to their (old/new)parents
+                        $descendant = $nodes->where('id', $child['id'])->first();
+                        $descendant->position = $position++;
+                        $descendant->parent_id = $parent->id;
+                        $descendant->save();
+                        self::rebuildTree($nodeArray['children'], $nodes);
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+From your module's repository, you'll need to override the `setNewOrder` function:
+
+```php
+public function setNewOrder($ids)
+{
+    DB::transaction(function () use ($ids) {
+        Page::saveTreeFromIds($ids);
+    }, 3);
+}
+```
+
+If you expect your users to create a lot of records, you'll want to move this operation into a queued job.
+
+Finally, to enable Twill's nested listing UI, you'll need to do the following in your module's controller:
+
+```php
+protected $indexOptions = [
+    'reorder' => true,
+];
+
+protected function indexData($request)
+{
+    return [
+        'nested' => true,
+        'nestedDepth' => 2, // this controls the allowed depth in UI
+    ];
+}
+
+protected function transformIndexItems($items)
+{
+    return $items->toTree();
+}
+
+protected function indexItemData($item)
+{
+    return ($item->children ? [
+        'children' => $this->getIndexTableData($item->children),
+    ] : []);
+}
+```
+
+When using a browser to browse a nested module, if you expect to select children as well as parents, you will need to add the following function to your module's controller:
+```
+protected function getBrowserItems($scopes = [])
+{
+    return $this->repository->get(
+        $this->indexWith,
+        $scopes,
+        $this->orderScope(),
+        request('offset') ?? $this->perPage ?? 50,
+        true
+    );
 }
 ```

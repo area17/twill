@@ -6,7 +6,7 @@ trait HasRevisions
 {
     public function revisions()
     {
-        return $this->hasMany("App\Models\Revisions\\" . class_basename($this) . "Revision")->orderBy('created_at', 'desc');
+        return $this->hasMany(config('twill.namespace') . "\Models\Revisions\\" . class_basename($this) . "Revision")->orderBy('created_at', 'desc');
     }
 
     public function scopeMine($query)

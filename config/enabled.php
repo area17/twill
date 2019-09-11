@@ -22,4 +22,5 @@ return [
     'search' => true,
     'users-description' => false,
     'activitylog' => true,
+    'users-2fa' => false,
 ];

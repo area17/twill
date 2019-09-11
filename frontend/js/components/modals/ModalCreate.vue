@@ -88,11 +88,9 @@
             })
           }, (errorResponse) => {
             self.$store.commit(NOTIFICATION.SET_NOTIF, {
-              message: 'Your content can not be edited, please retry',
+              message: 'Your submission could not be validated, please fix and retry',
               variant: 'error'
             })
-
-            if (self.$refs.modal) self.$refs.modal.close()
           })
         })
       }

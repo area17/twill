@@ -203,10 +203,17 @@ $multiSelectHeight: 45px;
   .vselect {
     .v-select.unsearchable input[type="search"] {
       max-width: none;
+      opacity: 1;
+      min-width: 200px;
+    }
+
+    &.vselect--has-value .v-select.unsearchable input[type="search"] {
+      min-width: 0;
+      width: 0;
     }
 
     .v-select.unsearchable > .dropdown-toggle > .selected-tag + input[type="search"] {
-      max-width: 1px;
+      width: 1px;
     }
   }
 
@@ -305,9 +312,18 @@ $multiSelectHeight: 45px;
   used for tags in the media library
   */
   .vselect--small {
+    .dropdown-toggle {
+      flex-wrap: nowrap;
+    }
+
+    .vs__actions {
+      flex-basis: 27px;
+    }
+
     .spinner {
-      top: 10px;
-      right: 10px;
+      align-self: flex-start;
+      margin-top: 8px;
+      margin-right: 1px;
     }
 
     .dropdown-menu li.no-options {

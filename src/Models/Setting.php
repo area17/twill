@@ -3,11 +3,11 @@
 namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasTranslation;
-use A17\Twill\Models\Model;
+use A17\Twill\Models\Behaviors\HasMedias;
 
 class Setting extends Model
 {
-    use HasTranslation;
+    use HasTranslation, HasMedias;
 
     public $useTranslationFallback = true;
 

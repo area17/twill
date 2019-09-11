@@ -1,6 +1,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="robots" content="noindex,nofollow" />
 
 <title>{{ config('app.name') }}</title>
 
@@ -8,8 +9,8 @@
 <link href="{{ mix('/assets/admin/css/app.css')}}" rel="stylesheet" />
 
 <!-- Fonts -->
-<link href="/assets/admin/fonts/Inter-UI-Regular.woff2" rel="preload" as="font" type="font/woff2" crossorigin>
-<link href="/assets/admin/fonts/Inter-UI-Medium.woff2" rel="preload" as="font" type="font/woff2" crossorigin>
+<link href="/assets/admin/fonts/Inter-Regular.woff2" rel="preload" as="font" type="font/woff2" crossorigin>
+<link href="/assets/admin/fonts/Inter-Medium.woff2" rel="preload" as="font" type="font/woff2" crossorigin>
 
 <!-- head.js -->
 <script>

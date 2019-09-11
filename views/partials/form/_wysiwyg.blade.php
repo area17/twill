@@ -9,6 +9,8 @@
     $editSource = $editSource ?? false;
     $toolbarOptions = $toolbarOptions ?? false;
     $inModal = $fieldsInModal ?? false;
+    $default = $default ?? false;
+    $hideCounter = $hideCounter ?? false;
 
     // quill.js options
     $activeSyntax = $syntax ?? false;
@@ -56,10 +58,15 @@
             @if ($options) options: {!! e(json_encode($options)) !!}, @endif
             @if ($placeholder) placeholder: '{{ $placeholder }}', @endif
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
+            @if ($hideCounter) showCounter: false, @endif
             @if ($disabled) disabled: true, @endif
             @if ($readonly) readonly: true, @endif
             @if ($editSource) editSource: true, @endif
             @if ($inModal) inModal: true, @endif
+            @if ($default)
+                initialValue: '{{ $default }}',
+                hasDefaultStore: true,
+            @endif
             inStore: 'value'
         }"
     ></a17-locale>
@@ -71,9 +78,14 @@
         @if ($options) :options='{!! json_encode($options) !!}' @endif
         @if ($placeholder) placeholder='{{ $placeholder }}' @endif
         @if ($maxlength) :maxlength='{{ $maxlength }}' @endif
+        @if ($hideCounter) :showCounter='false' @endif
         @if ($disabled) disabled @endif
         @if ($readonly) readonly @endif
         @if ($editSource) :edit-source='true' @endif
+        @if ($default)
+            :initial-value="'{{ $default }}'"
+            :has-default-store="true"
+        @endif
         @if ($inModal) :in-modal="true" @endif
         in-store="value"
     ></a17-wysiwyg>
@@ -81,23 +93,6 @@
 
 @unless($renderForBlocks || $renderForModal)
 @push('vuexStore')
-    @if($translated && isset($form_fields['translations']) && isset($form_fields['translations'][$name]))
-        window.STORE.form.fields.push({
-            name: '{{ $name }}',
-            value: {
-                @foreach(getLocales() as $locale)
-                    '{{ $locale }}': {!! json_encode(
-                        $form_fields['translations'][$name][$locale] ?? ''
-                    ) !!}@unless($loop->last),@endif
-                @endforeach
-            }
-        })
-    @elseif(isset($item->$name) || null !== $formFieldsValue = getFormFieldsValue($form_fields, $name))
-        window.STORE.form.fields.push({
-            name: '{{ $name }}',
-            value: {!! json_encode(isset($item->$name) ? $item->$name : $formFieldsValue) !!}
-        })
-    @endif
-
+    @include('twill::partials.form.utils._translatable_input_store')
 @endpush
 @endunless

@@ -7,6 +7,7 @@
     $maxlength = $maxlength ?? false;
     $disabled = $disabled ?? false;
     $readonly = $readonly ?? false;
+    $default = $default ?? false;
     $rows = $rows ?? false;
     $ref = $ref ?? false;
     $onChange = $onChange ?? false;
@@ -32,6 +33,10 @@
             @if ($rows) rows: {{ $rows }}, @endif
             @if ($prefix) prefix: '{{ $prefix }}', @endif
             @if ($inModal) inModal: true, @endif
+            @if ($default)
+                initialValue: '{{ $default }}',
+                hasDefaultStore: true,
+            @endif
             inStore: 'value'
         }"
         @if ($ref) ref="{{ $ref }}" @endif
@@ -53,30 +58,16 @@
         @if ($onChange) v-on:change="{{ $onChange }}{{ $onChangeFullAttribute }}" @endif
         @if ($prefix) prefix="{{ $prefix }}" @endif
         @if ($inModal) :in-modal="true" @endif
+        @if ($default)
+            :initial-value="'{{ $default }}'"
+            :has-default-store="true"
+        @endif
         in-store="value"
     ></a17-textfield>
 @endif
 
 @unless($renderForBlocks || $renderForModal)
 @push('vuexStore')
-
-@if($translated && isset($form_fields['translations']) && isset($form_fields['translations'][$name]))
-    window.STORE.form.fields.push({
-        name: '{{ $name }}',
-        value: {
-            @foreach(getLocales() as $locale)
-                '{{ $locale }}': {!! json_encode(
-                    $form_fields['translations'][$name][$locale] ?? '')
-                !!}@unless($loop->last),@endunless
-            @endforeach
-        }
-    })
-@elseif(isset($item->$name) || null !== $formFieldsValue = getFormFieldsValue($form_fields, $name))
-    window.STORE.form.fields.push({
-        name: '{{ $name }}',
-        value: {!! json_encode(isset($item->$name) ? $item->$name : $formFieldsValue) !!}
-    })
-@endif
-
+    @include('twill::partials.form.utils._translatable_input_store')
 @endpush
 @endunless
