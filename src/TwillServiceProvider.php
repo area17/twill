@@ -90,7 +90,7 @@ class TwillServiceProvider extends ServiceProvider
             'blocks' => Block::class,
         ]);
 
-        config(['twill.version' => trim(file_get_contents(__DIR__ . '/../VERSION'))]);
+        config(['twill.version' => $this->twillVersion()]);
     }
 
     /**
@@ -456,6 +456,18 @@ class TwillServiceProvider extends ServiceProvider
             return $view->with($with);
         });
 
+    }
+
+    /**
+     * @return string
+     */
+    protected function twillVersion(): string
+    {
+        $packages = json_decode(file_get_contents(base_path('vendor/composer/installed.json'))) ?: [];
+
+        $version = optional(collect($packages)->firstWhere('name', 'area17/twill'))->version;
+
+        return $version ?? trim(file_get_contents(__DIR__ . '/../VERSION'));
     }
 
     /**
