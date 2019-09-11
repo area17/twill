@@ -1,4 +1,5 @@
 ## CRUD modules
+Twill bases his bussiness logic in the CRUD Modules. These are Laravel Models but with more features, like Translations, Revisions, etc.
 
 ### CLI Generator
 You can generate all the files needed in your application to create a new CRUD module using Twill's Artisan generator:
@@ -7,7 +8,7 @@ You can generate all the files needed in your application to create a new CRUD m
 php artisan twill:module yourPluralModuleName
 ```
 
-The command has a couple of options :
+The command accepts several options:
 - `--hasBlocks (-B)`,
 - `--hasTranslation (-T)`,
 - `--hasSlug (-S)`,
@@ -16,13 +17,38 @@ The command has a couple of options :
 - `--hasPosition (-P)`
 - `--hasRevisions(-R)`.
 
-This will generate a migration file, a model, a repository, a controller, a form request object and a form view.
+`hasBlocks` means in the CMS you'll be enabled to use the Visual Editor.
+`hasTranslations` means you'll have the ability to add the content in different languages.
+`hasSlug` adds the creation of a "readable" url.
+`hasMedias` let's you upload images
+`hasFiles` same but for attachments, like PDFs, videos, etc.
+`hasRevisions` let's you go back through the history of changes.
+`hasPosition` is used for reordering.
 
-Start by filling in the migration and models using the documentation below.
+The `twill:module` command will generate a migration file, a model, a repository, a controller, a form request object and a form view.
 
-Add `Route::module('yourPluralModuleName');` to your admin routes file.
+With that in place the next thing to do is filling in the migration and models using the documentation below.
+
+Add the route to your admin routes file(`routes/admin.php`).
+
+```php
+<?php
+
+    Route::module('yourPluralModuleName');
+```
 
 Setup a new CMS menu item in `config/twill-navigation.php`.
+
+```php
+return [
+    ...
+    'pluralModuleName' => [
+        'title'     => 'Link Text',
+        'module'    => TRUE
+    ]
+    ...
+]
+```
 
 Depending on the depth of your module in your navigation, you'll need to wrap your route declaration in one or multiple nested route groups.
 
@@ -31,6 +57,22 @@ Setup your form fields in `resources/views/admin/moduleName/form.blade.php`.
 Setup your index options and columns in your controller if needed.
 
 Enjoy.
+
+##### Common Errors:
+
+-When running `php artisan twill:module yourPluralModuleName` sometimes we add a **Singular** Module name, when we meant a **Plural**.
+For example:
+
+```bash
+php artisan twill:module article
+```
+
+instead of
+
+```bash
+php artisan twill:module articles
+```
+
 
 ### Migrations
 Generated migrations are regular Laravel migrations. A few helpers are available to create the default fields any CRUD module will use:
@@ -99,6 +141,40 @@ Schema::create('table_name_singular1_table_name_singular2', function (Blueprint 
 
 A few CRUD controllers require that your model have a field in the database with a specific name: `published`, `publish_start_date`, `publish_end_date`, `public`, and `position`, so stick with those column names if you are going to use publication status, timeframe and reorderable listings.
 
+
+##### Common errors:
+
+- Didn't disable the commented-out lines on the migration file generated.
+For example if you run the `twill:module` with *revisions*(-R or --hasRevisions) and *slugs*(-S or --hasSlugs) you need to uncomment the related code, like:
+
+```php
+        Schema::create('article_slugs', function (Blueprint $table) {
+            createDefaultSlugsTableFields($table, 'article');
+        });
+
+        Schema::create('article_revisions', function (Blueprint $table) {
+            createDefaultRevisionsTableFields($table, 'article');
+        });
+```
+- Not following naming convention.
+This usually happens when you created a module without a trait, let's say *slugs* but you decide to later add it.
+If you don't follow the naming conventions, Twill will not be able to find the proper association table.
+For example:
+```php
+        // CORRECT CONVENTION
+        Schema::create('article_slugs', function (Blueprint $table) {
+            createDefaultSlugsTableFields($table, 'article');
+        });
+```
+
+VS
+
+```php
+        // WRONG CONVENTION
+        Schema::create('slugs_for_articles', function (Blueprint $table) {
+            createDefaultSlugsTableFields($table, 'article');
+        });
+```
 ### Models
 
 Set your fillables to prevent mass-assignement. This is very important, as we use `request()->all()` in the module controller.
@@ -448,6 +524,8 @@ public function hydrate($object, $fields)
     protected $featureField = 'featured';
 
     // Optional, specify number of items per page in the listing view (-1 to disable pagination)
+    // If you are implementing Sortable, this parameter is ignored given reordering it is not implemented
+    // along with pagination.
     protected $perPage = 20;
 
     // Optional, specify the default listing order
@@ -676,7 +754,7 @@ You can also rename the content section by passing a `contentFieldsetLabel` prop
     'note' => 'Hint message',
 ])
 ```
-WYSIWYG field is based on [Quill](https://quilljs.com/) Rich Text Editor. 
+WYSIWYG field is based on [Quill](https://quilljs.com/) Rich Text Editor.
 
 You can add all [toolbar options](https://quilljs.com/docs/modules/toolbar/) from Quill with the `toolbarOptions` key.
 
@@ -686,7 +764,7 @@ For example, this configuration will render a `wysiwyg` field with almost all fe
  @formField('wysiwyg', [
     'name' => 'case_study',
     'label' => 'Case study text',
-    'toolbarOptions' => [ 
+    'toolbarOptions' => [
       ["font" => ["serif", "sans-serif", "monospace"]],
       ['header' => [2, 3, 4, 5, 6, false]],
       'bold',

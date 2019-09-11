@@ -7,7 +7,28 @@ Twill is a package for Laravel applications, installable through Composer:
 composer require area17/twill:"1.2.*"
 ```
 
-Twill will automatically register its service provider if you are using Laravel `>=5.5`. 
+##### Note
+If you are creating an Twill app from scracth you need to:
+
+```bash
+composer create-project laravel/laravel="5.8.*" my-app
+```
+
+If you like Homestead for **development**, you can do
+
+```bash
+cd my-app
+composer require laravel/homestead --dev
+php vendor/bin/homestead make
+```
+
+And now you'll be ready to run the require command.
+
+```bash
+composer require area17/twill:"1.2.*"
+```
+
+Twill will automatically register its service provider if you are using Laravel `>=5.5`.
 If you are using Twill with Laravel `5.3` or `5.4`, add Twill's service provider in your application's `config/app.php` file:
 
 ```php{11}
@@ -38,16 +59,17 @@ If you are using Twill with Laravel `5.3` or `5.4`, add Twill's service provider
 
 #### Artisan
 
-Run the `install` Artisan command: 
+Run the `install` Artisan command:
 
 ```bash
 php artisan twill:install
 ```
 
 :::danger
-This command will migrate your database. 
+This command will migrate your database.
 
 Make sure to setup your .env file with your database credentials and to run it where your database is accessible (ie. inside Vagrant if you are using Laravel Homestead).
+
 :::
 
 Twill's `install` command consists of:
@@ -58,6 +80,22 @@ Twill's `install` command consists of:
 - publishing Twill's assets for the admin console UI.
 - prompting you to create a superadmin user.
 
+##### Common Errors when running the install command:
+-Conneciton Error
+When using Homestead you may receive a `Connection Error`, in this case pay extra attention to the DB variables:
+```
+DB_CONNECTION=mysql
+DB_HOST=192.168.10.55 #Note it is not the usual 127.0.0.1
+DB_PORT=3306
+DB_DATABASE=homestead
+DB_USERNAME=homestead
+DB_PASSWORD=secret
+```
+
+This also applies to external DBs.
+
+-The environment file is invalid!
+Pay attention to the values that contains spaces for example in the name `Twill Demo`, it needs to be added like `"Twill Demo"`
 
 #### .env
 
@@ -102,6 +140,17 @@ SESSION_DOMAIN=.domain.test
 #### Accessing the admin console
 
 At this point, you should be able to login at `admin.domain.test`, `manage.domain.test` or `domain.test/admin` depending on your environment configuration. You should be presented with a dashboard with an empty activities list, a link to open Twill's media library and a dropdown to manage users, your own account and logout.
+
+
+##### Common Errors:
+
+- If you added your domain with the full protocol, make sure you are visiting the admin console with the same protocol.
+For example if in your `.env` file you have:
+```bash
+ADMIN_APP_URL=http://manage.domain.test
+```
+
+The https://manage.domain.test site will not be reacheable.
 
 #### Setting up the media library
 
@@ -164,7 +213,7 @@ If you are working on adding/modifying blocks for your application, or contribut
 }
 ```
 
-And the following npm scripts: 
+And the following npm scripts:
 
 ```json
 "scripts": {

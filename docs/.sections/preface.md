@@ -8,7 +8,7 @@ Twill is an [AREA 17](https://area17.com) product. It was crafted with the belie
 
 ### Benefits overview
 
-With a vast number of pre-built features and custom-built Vue.js UI components, developers can focus their efforts on the unique aspects of their applications instead of rebuilding standard ones. 
+With a vast number of pre-built features and custom-built Vue.js UI components, developers can focus their efforts on the unique aspects of their applications instead of rebuilding standard ones.
 
 Built to get out of your way, Twill offers:
 - No lock-in, create your data models or hook existing ones
@@ -60,7 +60,7 @@ Built to get out of your way, Twill offers:
 
 #### Developer experience
 * Maintain a Laravel application, not a Twill application
-* Support for Laravel 5.3 to 5.7 and will be updated to support all future versions
+* Support for Laravel 5.3 to 5.8 and will be updated to support all future versions
 * Support for both MySQL and PostgreSQL databases
 * No conflict with other Laravel packages – keep building with your tools of choice
 * No specific server requirements, if you can deploy a Laravel application, you can deploy Twill
@@ -121,7 +121,7 @@ Please send coherent history — make sure each individual commit in your pull r
 The Twill software is licensed under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0.html).
 
 #### User interface
-The Twill UI, including but not limited to images, icons, patterns, and derivatives thereof are licensed under the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/). 
+The Twill UI, including but not limited to images, icons, patterns, and derivatives thereof are licensed under the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).
 
 #### Attribution
 By using the Twill UI, you agree that any application which incorporates it shall prominently display the message “Made with Twill” in a legible manner in the footer of the admin console. This message must open a link to Twill.io when clicked or touched. For permission to remove the attribution, contact us at [hello@twill.io](hello@twill.io).
