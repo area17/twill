@@ -27,7 +27,7 @@ public function getTransparentFallbackUrl();
 $crop_params will be an array with the following keys: crop_x, crop_y, crop_w and crop_y. If the service you are implementing doesn't support focal point cropping, you can call the getUrlWithCrop from your implementation.
 
 ### Role & crop params
-Each of the data models in your application can have different images roles and crop.
+Each _Module_ in your application can have its own predefined image *crops* and *roles*.
 
 For example, roles for a People model could be `profile` and `cover`. This would allow you display different images for your data modal in the design, depending on the current screen.
 
@@ -90,6 +90,84 @@ $model->imageCaption($roleName)
 $model->imageObject($roleName)
 ```
 
+##### Example:
+
+For adding images, we need to decide if we are going to use local storage or S3, Imgix or Glide.
+In this example we'll use local storage and Glide:
+
+- In the `config/twill.php`
+
+```php
+    'media_library' => [
+        'disk' => 'libraries',
+        'endpoint_type' => env('MEDIA_LIBRARY_ENDPOINT_TYPE', 'local'),
+        'cascade_delete' => env('MEDIA_LIBRARY_CASCADE_DELETE', false),
+        'local_path' => env('MEDIA_LIBRARY_LOCAL_PATH', 'uploads/'),
+        'image_service' => env('MEDIA_LIBRARY_IMAGE_SERVICE', 'App\Services\Glide'),
+        'acl' => env('MEDIA_LIBRARY_ACL', 'private'),
+        'filesize_limit' => env('MEDIA_LIBRARY_FILESIZE_LIMIT', 50),
+        'allowed_extensions' => ['svg', 'jpg', 'gif', 'png', 'jpeg'],
+        'init_alt_text_from_filename' => true,
+    ],
+```
+
+- And on `.env`
+
+```yml
+MEDIA_LIBRARY_ENDPOINT_TYPE=local
+MEDIA_LIBRARY_LOCAL_PATH=uploads/
+MEDIA_LIBRARY_IMAGE_SERVICE=A17\Twill\Services\MediaLibrary\Glide
+```
+
+Now let's make sure we have the `mediasParams` in the model.
+
+```php
+    public $mediasParams = [
+        'cover' => [
+            'default' => [
+                [
+                    'name' => 'landscape',
+                    'ratio' => 16 / 9,
+                ],
+                [
+                    'name' => 'portrait',
+                    'ratio' => 3 / 4,
+                ],
+            ],
+            'mobile' => [
+                [
+                    'name' => 'mobile',
+                    'ratio' => 1,
+                ],
+            ],
+        ],
+    ];
+```
+
+also, the form field to upload the images `form.blade.php`
+
+```php
+    @formField('medias', [
+        'name' => 'cover',
+        'label' => 'Cover image',
+    ])
+```
+
+##### Common Errors:
+
+- Not adding the `HasMedias` trait to the model.
+
+```php
+use A17\Twill\Models\Behaviors\HasMedias;
+
+class MyModel extends Model
+{
+    ...
+    use ..., HasMedias;
+    ...
+}
+```
+
 ### File library
 The file library is much simpler but also works with S3 and local storage. To associate files to your model, use the `HasFiles` and `HandleFiles` traits, the `$filesParams` configuration and the `files` form partial.
 
@@ -115,6 +193,57 @@ $model->filesList($roleName[, $locale])
  * Returns the file object associated with $roleName.
  */
 $model->fileObject($roleName)
+```
+
+##### Example:
+Adding files to a Model it is similar to Medias.
+For local uploads you need to add
+
+- In the `config/twill.php`
+
+```php
+    'file_library' => [
+        'disk' => 'libraries',
+        'endpoint_type' => env('FILE_LIBRARY_ENDPOINT_TYPE', 'local'),
+        'cascade_delete' => env('FILE_LIBRARY_CASCADE_DELETE', false),
+        'local_path' => env('FILE_LIBRARY_LOCAL_PATH', 'uploads/'),
+        'file_service' => env('FILE_LIBRARY_FILE_SERVICE', 'A17\Twill\Services\FileLibrary\Disk'),
+        'acl' => env('FILE_LIBRARY_ACL', 'public-read'),
+        'filesize_limit' => env('FILE_LIBRARY_FILESIZE_LIMIT', 50),
+        'allowed_extensions' => [],
+    ],
+```
+
+- In the model add the `fileParams`.
+
+```php
+    public $filesParams = ['some_file', 'audio_file'];
+```
+
+also, the form field to upload the images `form.blade.php`
+
+```php
+    @formField('files', [
+        'name' => 'audio_file',
+        'label' => 'Audio',
+        'noTranslate' => true,
+        'max' => 1
+    ])
+```
+
+##### Common Errors:
+
+- Not adding the `HasFiles` trait to the model.
+
+```php
+use A17\Twill\Models\Behaviors\HasFiles;
+
+class MyModel extends Model
+{
+    ...
+    use ..., HasFiles;
+    ...
+}
 ```
 
 ### Imgix and S3 direct uploads
