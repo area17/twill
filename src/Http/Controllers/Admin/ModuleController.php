@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
-use A17\TwYill\Models\Group;
+use A17\Twill\Models\Group;
 use A17\Twill\Helpers\FlashLevel;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
