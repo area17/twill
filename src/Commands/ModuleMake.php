@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Commands;
 
+use Illuminate\Config\Repository as Config;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Composer;
@@ -9,6 +10,11 @@ use Illuminate\Support\Str;
 
 class ModuleMake extends Command
 {
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
     protected $signature = 'twill:module {moduleName}
         {--B|hasBlocks}
         {--T|hasTranslation}
@@ -18,30 +24,63 @@ class ModuleMake extends Command
         {--P|hasPosition}
         {--R|hasRevisions}';
 
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
     protected $description = 'Create a new CMS Module';
 
+    /**
+     * @var Filesystem
+     */
     protected $files;
 
+    /**
+     * @var Composer
+     */
     protected $composer;
 
+    /**
+     * @var string[]
+     */
     protected $modelTraits;
 
+    /**
+     * @var string[]
+     */
     protected $repositoryTraits;
 
-    public function __construct(Filesystem $files, Composer $composer)
+    /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * @param Filesystem $files
+     * @param Composer $composer
+     * @param Config $config
+     */
+    public function __construct(Filesystem $files, Composer $composer, Config $config)
     {
         parent::__construct();
 
         $this->files = $files;
         $this->composer = $composer;
+        $this->config = $config;
 
         $this->modelTraits = ['HasBlocks', 'HasTranslation', 'HasSlug', 'HasMedias', 'HasFiles', 'HasRevisions', 'HasPosition'];
         $this->repositoryTraits = ['HandleBlocks', 'HandleTranslations', 'HandleSlugs', 'HandleMedias', 'HandleFiles', 'HandleRevisions'];
     }
 
+    /**
+     * Executes the console command.
+     *
+     * @return mixed
+     */
     public function handle()
     {
-        $moduleName = $this->argument('moduleName');
+        $moduleName = Str::plural(lcfirst($this->argument('moduleName')));
 
         $blockable = $this->option('hasBlocks') ?? false;
         $translatable = $this->option('hasTranslation') ?? false;
@@ -80,6 +119,13 @@ class ModuleMake extends Command
         $this->composer->dumpAutoloads();
     }
 
+    /**
+     * Creates a new module database migration file.
+     *
+     * @param string $moduleName
+     * @return void
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
     private function createMigration($moduleName = 'items')
     {
         $table = Str::snake($moduleName);
@@ -107,6 +153,17 @@ class ModuleMake extends Command
         }
     }
 
+    /**
+     * Creates new model class files for the given model name and traits.
+     *
+     * @param string $modelName
+     * @param bool $translatable
+     * @param bool $sluggable
+     * @param bool $sortable
+     * @param bool $revisionable
+     * @param array $activeTraits
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
     private function createModels($modelName = 'Item', $translatable = false, $sluggable = false, $sortable = false, $revisionable = false, $activeTraits = [])
     {
         if (!$this->files->isDirectory(twill_path('Models'))) {
@@ -176,6 +233,14 @@ class ModuleMake extends Command
         $this->info("Models created successfully! Fill your fillables!");
     }
 
+    /**
+     * Creates new repository class file for the given model name.
+     *
+     * @param string $modelName
+     * @param array $activeTraits
+     * @return void
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
     private function createRepository($modelName = 'Item', $activeTraits = [])
     {
         if (!$this->files->isDirectory(twill_path('Repositories'))) {
@@ -203,6 +268,14 @@ class ModuleMake extends Command
         $this->info("Repository created successfully! Control all the things!");
     }
 
+    /**
+     * Create a new controller class file for the given module name and model name.
+     *
+     * @param string $moduleName
+     * @param string $modelName
+     * @return void
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
     private function createController($moduleName = 'items', $modelName = 'Item')
     {
         if (!$this->files->isDirectory(twill_path('Http/Controllers/Admin'))) {
@@ -222,6 +295,13 @@ class ModuleMake extends Command
         $this->info("Controller created successfully! Define your index/browser/form endpoints options!");
     }
 
+    /**
+     * Creates a new request class file for the given model name.
+     *
+     * @param string $modelName
+     * @return void
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
     private function createRequest($modelName = 'Item')
     {
         if (!$this->files->isDirectory(twill_path('Http/Requests/Admin'))) {
@@ -237,9 +317,17 @@ class ModuleMake extends Command
         $this->info("Form request created successfully! Add some validation rules!");
     }
 
+    /**
+     * Creates appropriate module Blade view files.
+     *
+     * @param string $moduleName
+     * @param bool $translatable
+     * @return void
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
     private function createViews($moduleName = 'items', $translatable = false)
     {
-        $viewsPath = config('view.paths')[0] . '/admin/' . $moduleName;
+        $viewsPath = $this->config->get('view.paths')[0] . '/admin/' . $moduleName;
 
         if (!$this->files->isDirectory($viewsPath)) {
             $this->files->makeDirectory($viewsPath, 0755, true);

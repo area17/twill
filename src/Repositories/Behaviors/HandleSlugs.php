@@ -77,6 +77,16 @@ trait HandleSlugs
             $item->redirect = true;
         }
 
+        if (!$item && config('translatable.use_property_fallback', false)) {
+            $item = (clone $query)->orWhere(function ($query) {
+                return $query->withActiveTranslations(config('translatable.fallback_locale'));
+            })->forFallbackLocaleSlug($slug)->first();
+
+            if ($item) {
+                $item->redirect = true;
+            }
+        }
+
         return $item;
     }
 

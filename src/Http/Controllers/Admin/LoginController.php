@@ -3,12 +3,15 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\User;
-use Auth;
-use Crypt;
-use Password;
 use Carbon\Carbon;
+use Illuminate\Auth\AuthManager;
+use Illuminate\Config\Repository as Config;
+use Illuminate\Encryption\Encrypter;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
+use Illuminate\View\Factory as ViewFactory;
 use PragmaRX\Google2FA\Google2FA;
 
 class LoginController extends Controller
@@ -26,21 +29,72 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
+    /**
+     * @var AuthManager
+     */
+    protected $authManager;
+
+    /**
+     * @var Encrypter
+     */
+    protected $encrypter;
+
+    /**
+     * @var Redirector
+     */
+    protected $redirector;
+
+    /**
+     * @var ViewFactory
+     */
+    protected $viewFactory;
+
+    public function __construct(
+        Config $config,
+        AuthManager $authManager,
+        Encrypter $encrypter,
+        Redirector $redirector,
+        ViewFactory $viewFactory
+    ) {
+        parent::__construct();
+
+        $this->authManager = $authManager;
+        $this->encrypter = $encrypter;
+        $this->redirector = $redirector;
+        $this->viewFactory = $viewFactory;
+
+        $this->middleware('twill_guest', ['except' => 'logout']);
+        $this->redirectTo = $config->get('twill.auth_login_redirect_path', '/');
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Auth\Guard
+     */
     protected function guard()
     {
-        return Auth::guard('twill_users');
+        return $this->authManager->guard('twill_users');
     }
 
+    /**
+     * @return \Illuminate\View\View
+     */
     public function showLoginForm()
     {
-        return view('twill::auth.login');
+        return $this->viewFactory->make('twill::auth.login');
     }
 
+    /**
+     * @return \Illuminate\View\View
+     */
     public function showLogin2FaForm()
     {
-        return view('twill::auth.2fa');
+        return $this->viewFactory->make('twill::auth.2fa');
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function logout(Request $request)
     {
         $this->guard()->logout();
@@ -49,9 +103,14 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect(route('admin.login'));
+        return $this->redirector->to(route('admin.login'));
     }
 
+    /**
+     * @param Request $request
+     * @param \Illuminate\Foundation\Auth\User $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
     protected function authenticated(Request $request, $user)
     {
         if ($user->google_2fa_secret && $user->google_2fa_enabled) {
@@ -59,7 +118,7 @@ class LoginController extends Controller
 
             $request->session()->put('2fa:user:id', $user->id);
 
-            return redirect(route('admin.login-2fa.form'));
+            return $this->redirector->to(route('admin.login-2fa.form'));
         }
 
         $user->last_login_at = Carbon::now();
@@ -76,6 +135,13 @@ class LoginController extends Controller
         return redirect()->intended($this->redirectTo);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
+     * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
+     * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
+     */
     public function login2Fa(Request $request)
     {
         $userId = $request->session()->get('2fa:user:id');
@@ -83,32 +149,21 @@ class LoginController extends Controller
         $user = User::findOrFail($userId);
 
         $valid = (new Google2FA)->verifyKey(
-            Crypt::decrypt($user->google_2fa_secret),
+            $this->encrypter->decrypt($user->google_2fa_secret),
             $request->input('verify-code')
         );
 
         if ($valid) {
-            Auth::guard('twill_users')->loginUsingId($userId);
+            $this->authManager->guard('twill_users')->loginUsingId($userId);
 
             $request->session()->pull('2fa:user:id');
 
-            return redirect()->intended($this->redirectTo);
+            return $this->redirector->intended($this->redirectTo);
         }
 
-        return redirect(route('admin.login-2fa.form'))->withErrors([
+        return $this->redirector->to(route('admin.login-2fa.form'))->withErrors([
             'error' => 'Your one time password is invalid.',
         ]);
 
-    }
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('twill_guest', ['except' => 'logout']);
-        $this->redirectTo = config('twill.auth_login_redirect_path', '/');
     }
 }

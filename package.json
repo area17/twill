@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "axios": "^0.18.1",
-    "cropperjs": "^1.5.4",
+    "cropperjs": "^1.4.1",
     "date-fns": "1.29.0",
     "fine-uploader": "^5.16.2",
     "fine-uploader-wrappers": "^1.1.0",

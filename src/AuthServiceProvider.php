@@ -9,7 +9,7 @@ use A17\Twill\Models\Permission;
 class AuthServiceProvider extends ServiceProvider
 {
 
-    public function boot()
+    protected function authorize($user, $callback)
     {
         Gate::before(function ($user, $ability) {
             if ($user->is_superadmin) {

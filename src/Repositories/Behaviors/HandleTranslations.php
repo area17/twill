@@ -2,6 +2,9 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+
 trait HandleTranslations
 {
     protected $nullableFields = [];
@@ -16,16 +19,16 @@ trait HandleTranslations
         if (property_exists($this->model, 'translatedAttributes')) {
             $locales = getLocales();
             $localesCount = count($locales);
-            $attributes = collect($this->model->translatedAttributes);
+            $attributes = Collection::make($this->model->translatedAttributes);
 
-            $submittedLanguages = collect($fields['languages'] ?? []);
+            $submittedLanguages = Collection::make($fields['languages'] ?? []);
 
             $atLeastOneLanguageIsPublished = $submittedLanguages->contains(function ($language) {
                 return $language['published'];
             });
 
             foreach ($locales as $index => $locale) {
-                $submittedLanguage = array_first($submittedLanguages->filter(function ($lang) use ($locale) {
+                $submittedLanguage = Arr::first($submittedLanguages->filter(function ($lang) use ($locale) {
                     return $lang['value'] == $locale;
                 }));
 

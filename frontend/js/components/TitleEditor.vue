@@ -7,7 +7,7 @@
         </a>
         <span v-else>{{ customTitle ? customTitle : title }}</span>
       </h2>
-      <a v-if="permalink" :href="fullUrl" target="_blank" class="titleEditor__permalink f--small">
+      <a v-if="permalink || customPermalink" :href="fullUrl" target="_blank" class="titleEditor__permalink f--small">
         <span class="f--note f--external f--underlined--o">{{ visibleUrl | prettierUrl }}</span>
       </a>
 
@@ -59,6 +59,10 @@
       customTitle: {
         type: String,
         default: ''
+      },
+      customPermalink: {
+        type: String,
+        default: ''
       }
     },
     data: function () {
@@ -76,12 +80,12 @@
         return this.title.length > 0 ? 'update' : 'create'
       },
       fullUrl: function () {
-        return this.baseUrl
+        return this.customPermalink || this.baseUrl
           .replace('{language}', this.currentLocale.value)
           .replace('{preview}/', this.published ? '' : 'admin-preview/') + this.permalink
       },
       visibleUrl: function () {
-        return this.baseUrl
+        return this.customPermalink || this.baseUrl
           .replace('{language}', this.currentLocale.value)
           .replace('{preview}/', '') + this.permalink
       },

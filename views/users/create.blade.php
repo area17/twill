@@ -10,7 +10,7 @@
         'label' => 'Email',
         'type' => 'email'
     ])
-    @can('edit-user-role')
+    @can('manage-users')
         @formField('select', [
             'name' => "role_id",
             'label' => "Role",

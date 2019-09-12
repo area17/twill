@@ -2,36 +2,70 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
-use Auth;
-use Password;
 use A17\Twill\Models\Permission;
 use A17\Twill\Models\Role;
 use A17\Twill\Models\User;
 use A17\Twill\Models\Group;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Password;
 use PragmaRX\Google2FAQRCode\Google2FA;
 
 class UserController extends ModuleController
 {
+    /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * @var AuthFactory
+     */
+    protected $authFactory;
+
+    /**
+     * @var string
+     */
     protected $namespace = 'A17\Twill';
 
+    /**
+     * @var string
+     */
     protected $moduleName = 'users';
 
+    /**
+     * @var string[]
+     */
     protected $indexWith = ['medias'];
 
+    /**
+     * @var array
+     */
     protected $defaultOrders = ['name' => 'asc'];
 
+    /**
+     * @var array
+     */
     protected $defaultFilters = [
         'search' => 'search',
     ];
 
+    /**
+     * @var array
+     */
     protected $filters = [
         'role' => 'role',
     ];
 
+    /**
+     * @var string
+     */
     protected $titleColumnKey = 'name';
 
+    /**
+     * @var array
+     */
     protected $indexColumns = [
         'name' => [
             'title' => 'Name',
@@ -56,20 +90,28 @@ class UserController extends ModuleController
         ],
     ];
 
+    /**
+     * @var array
+     */
     protected $indexOptions = [
         'permalink' => false,
     ];
 
+    /**
+     * @var array
+     */
     protected $fieldsPermissions = [
-        'role' => 'edit-user-role',
+        'role' => 'manage-users',
     ];
 
-    public function __construct(Application $app, Request $request)
+    public function __construct(Application $app, Request $request, AuthFactory $authFactory, Config $config)
     {
         parent::__construct($app, $request);
         $this->middleware('can:edit-users', ['except' => ['edit', 'update']]);
+        $this->authFactory = $authFactory;
+        $this->config = $config;
 
-        if (config('twill.enabled.users-image')) {
+        if ($this->config->get('twill.enabled.users-image')) {
             $this->indexColumns = [
                 'image' => [
                     'title' => 'Image',
@@ -85,6 +127,10 @@ class UserController extends ModuleController
         }
     }
 
+    /**
+     * @param Request $request
+     * @return array
+     */
     protected function indexData($request)
     {
         return [
@@ -115,10 +161,16 @@ class UserController extends ModuleController
         ];
     }
 
+    /**
+     * @param Request $request
+     * @return array
+     * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
+     * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
+     */
     protected function formData($request)
     {
-        $user = Auth::guard('twill_users')->user();
-        $with2faSettings = config('twill.enabled.users-2fa') && $user->id == request('user');
+        $user = $this->authFactory->guard('twill_users')->user();
+        $with2faSettings = $this->config->get('twill.enabled.users-2fa') && $user->id == $this->request->get('user');
 
         if ($with2faSettings) {
             $google2fa = new Google2FA();
@@ -130,7 +182,7 @@ class UserController extends ModuleController
             }
 
             $qrCode = $google2fa->getQRCodeInline(
-                config('app.name'),
+                $this->config->get('app.name'),
                 $user->email,
                 \Crypt::decrypt($user->google_2fa_secret),
                 200
@@ -168,6 +220,19 @@ class UserController extends ModuleController
         ];
     }
 
+    /**
+     * @return array
+     */
+    protected function getRequestFilters()
+    {
+        return json_decode($this->request->get('filter'), true) ?? ['status' => 'published'];
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Collection $items
+     * @param array $scopes
+     * @return array
+     */
     public function getIndexTableMainFilters($items, $scopes = [])
     {
         $statusFilters = [];
@@ -193,15 +258,23 @@ class UserController extends ModuleController
         return $statusFilters;
     }
 
-    protected function getIndexOption($option, $item = null)
+    /**
+     * @param string $option
+     * @return bool
+     */
+    protected function getIndexOption($option)
     {
         if (in_array($option, ['publish', 'bulkEdit', 'create'])) {
-            return $this->user->can('edit-users');
+            return $this->authFactory->guard('twill_users')->user()->can('edit-users');
         }
 
         return parent::getIndexOption($option);
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $item
+     * @return array
+     */
     protected function indexItemData($item)
     {
         $canEdit = $this->user->can('edit-users');

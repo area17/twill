@@ -1,7 +1,6 @@
 module.exports = {
   title: 'Twill',
   description: 'Twill — An open source CMS toolkit for Laravel',
-  ga: 'UA-117094786-1',
   base: "/docs/",
   dest: ".vuepress/docs",
   head: [
@@ -26,5 +25,10 @@ module.exports = {
     nav: [
       { text: 'GitHub', link: 'https://github.com/area17/twill' },
     ]
-  }
+  },
+  plugins: [
+    ['@vuepress/google-analytics', {
+      ga: 'UA-117094786-1'
+    }]
+  ]
 }

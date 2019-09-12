@@ -2,7 +2,9 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
-use Auth;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 
 trait HandleRevisions
 {
@@ -32,7 +34,7 @@ trait HandleRevisions
     {
         $fields = $this->prepareFieldsBeforeSave($object, $fields);
 
-        $object->fill(array_except($fields, $this->getReservedFields()));
+        $object->fill(Arr::except($fields, $this->getReservedFields()));
 
         $object = $this->hydrate($object, $fields);
 
@@ -53,8 +55,8 @@ trait HandleRevisions
         $fieldsHasElements = isset($fields[$relationship]) && !empty($fields[$relationship]);
         $relatedElements = $fieldsHasElements ? $fields[$relationship] : [];
 
-        $relationRepository = getModelRepository($relationship, $model);
-        $relatedElementsCollection = collect();
+        $relationRepository = $this->getModelRepository($relationship, $model);
+        $relatedElementsCollection = Collection::make();
 
         foreach ($relatedElements as $relatedElement) {
             $newRelatedElement = $relationRepository->getById($relatedElement);
@@ -74,8 +76,8 @@ trait HandleRevisions
         $fieldsHasElements = isset($fields['browsers'][$relationship]) && !empty($fields['browsers'][$relationship]);
         $relatedElements = $fieldsHasElements ? $fields['browsers'][$relationship] : [];
 
-        $relationRepository = getModelRepository($relationship, $model);
-        $relatedElementsCollection = collect();
+        $relationRepository = $this->getModelRepository($relationship, $model);
+        $relatedElementsCollection = Collection::make();
         $position = 1;
 
         foreach ($relatedElements as $relatedElement) {
@@ -94,7 +96,7 @@ trait HandleRevisions
 
         $relationRepository = getModelRepository($relationship, $model);
 
-        $repeaterCollection = collect();
+        $repeaterCollection = Collection::make();
 
         foreach ($relationFields as $index => $relationField) {
             $relationField['position'] = $index + 1;

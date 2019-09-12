@@ -10,6 +10,7 @@
     $toolbarOptions = $toolbarOptions ?? false;
     $inModal = $fieldsInModal ?? false;
     $default = $default ?? false;
+    $hideCounter = $hideCounter ?? false;
 
     // quill.js options
     $activeSyntax = $syntax ?? false;
@@ -57,6 +58,7 @@
             @if ($options) options: {!! e(json_encode($options)) !!}, @endif
             @if ($placeholder) placeholder: '{{ $placeholder }}', @endif
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
+            @if ($hideCounter) showCounter: false, @endif
             @if ($disabled) disabled: true, @endif
             @if ($readonly) readonly: true, @endif
             @if ($editSource) editSource: true, @endif
@@ -76,6 +78,7 @@
         @if ($options) :options='{!! json_encode($options) !!}' @endif
         @if ($placeholder) placeholder='{{ $placeholder }}' @endif
         @if ($maxlength) :maxlength='{{ $maxlength }}' @endif
+        @if ($hideCounter) :showCounter='false' @endif
         @if ($disabled) disabled @endif
         @if ($readonly) readonly @endif
         @if ($editSource) :edit-source='true' @endif

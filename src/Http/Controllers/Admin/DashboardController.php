@@ -4,17 +4,71 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use Analytics;
+use Illuminate\Config\Repository as Config;
+use Illuminate\Contracts\Auth\Factory as AuthFactory;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use Illuminate\View\Factory as ViewFactory;
+use Psr\Log\LoggerInterface as Logger;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Analytics\Exceptions\InvalidConfiguration;
 use Spatie\Analytics\Period;
 
 class DashboardController extends Controller
 {
+    /**
+     * @var Application
+     */
+    protected $app;
+
+    /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
+     * @var ViewFactory
+     */
+    protected $viewFactory;
+
+    /**
+     * @var AuthFactory
+     */
+    protected $authFactory;
+
+    public function __construct(
+        Application $app,
+        Config $config,
+        Logger $logger,
+        ViewFactory $viewFactory,
+        AuthFactory $authFactory
+    ) {
+        parent::__construct();
+
+        $this->app = $app;
+        $this->config = $config;
+        $this->logger = $logger;
+        $this->viewFactory = $viewFactory;
+        $this->authFactory = $authFactory;
+    }
+
+    /**
+     * Displays the Twill dashboard.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
-        $modules = collect(config('twill.dashboard.modules'));
+        $modules = Collection::make($this->config->get('twill.dashboard.modules'));
 
-        return view('twill::layouts.dashboard', [
+        return $this->viewFactory->make('twill::layouts.dashboard', [
             'allActivityData' => $this->getAllActivities(),
             'myActivityData' => $this->getLoggedInUserActivities(),
             'tableColumns' => [
@@ -41,21 +95,25 @@ class DashboardController extends Controller
                 ],
             ],
             'shortcuts' => $this->getShortcuts($modules),
-            'facts' => config('twill.dashboard.analytics.enabled', false) ? $this->getFacts() : null,
+            'facts' => $this->config->get('twill.dashboard.analytics.enabled', false) ? $this->getFacts() : null,
             'drafts' => $this->getDrafts($modules),
         ]);
     }
 
-    public function search()
+    /**
+     * @param Request $request
+     * @return Collection
+     */
+    public function search(Request $request)
     {
-        $modules = collect(config('twill.dashboard.modules'));
+        $modules = Collection::make($this->config->get('twill.dashboard.modules'));
 
         return $modules->filter(function ($module) {
             return ($module['search'] ?? false);
-        })->map(function ($module) {
+        })->map(function ($module) use ($request) {
             $repository = $this->getRepository($module['name']);
 
-            $found = $repository->cmsSearch(request('search'), $module['search_fields'] ?? ['title'])->take(10);
+            $found = $repository->cmsSearch($request->get('search'), $module['search_fields'] ?? ['title'])->take(10);
 
             return $found->map(function ($item) use ($module) {
                 try {
@@ -73,12 +131,15 @@ class DashboardController extends Controller
                     'date' => $item->updated_at->toIso8601String(),
                     'title' => $item->titleInDashboard ?? $item->title,
                     'author' => $author,
-                    'type' => ucfirst($module['label_singular'] ?? str_singular($module['name'])),
+                    'type' => ucfirst($module['label_singular'] ?? Str::singular($module['name'])),
                 ];
             });
         })->collapse()->values();
     }
 
+    /**
+     * @return array
+     */
     private function getAllActivities()
     {
         return Activity::take(20)->latest()->get()->map(function ($activity) {
@@ -86,24 +147,31 @@ class DashboardController extends Controller
         })->filter()->values();
     }
 
+    /**
+     * @return array
+     */
     private function getLoggedInUserActivities()
     {
-        return Activity::where('causer_id', auth('twill_users')->user()->id)->take(20)->latest()->get()->map(function ($activity) {
+        return Activity::where('causer_id', $this->authFactory->guard('twill_users')->user()->id)->take(20)->latest()->get()->map(function ($activity) {
             return $this->formatActivity($activity);
         })->filter()->values();
     }
 
+    /**
+     * @param \Spatie\Activitylog\Models\Activity $activity
+     * @return array|null
+     */
     private function formatActivity($activity)
     {
-        $dashboardModule = config('twill.dashboard.modules.' . $activity->subject_type);
+        $dashboardModule = $this->config->get('twill.dashboard.modules.' . $activity->subject_type);
 
-        if (!$dashboardModule) {
+        if (!$dashboardModule || !$dashboardModule['activity'] ?? false) {
             return null;
         }
 
         return [
             'id' => $activity->id,
-            'type' => ucfirst($dashboardModule['label_singular'] ?? str_singular($dashboardModule['name'])),
+            'type' => ucfirst($dashboardModule['label_singular'] ?? Str::singular($dashboardModule['name'])),
             'date' => $activity->created_at->toIso8601String(),
             'author' => $activity->causer->name ?? 'Unknown',
             'name' => $activity->subject->titleInDashboard ?? $activity->subject->title,
@@ -117,6 +185,9 @@ class DashboardController extends Controller
         ] : []);
     }
 
+    /**
+     * @return array|\Illuminate\Support\Collection
+     */
     private function getFacts()
     {
         try {
@@ -126,11 +197,11 @@ class DashboardController extends Controller
                 ['dimensions' => 'ga:date']
             );
         } catch (InvalidConfiguration $exception) {
-            \Log::error($exception);
+            $this->logger->error($exception);
             return [];
         }
 
-        $statsByDate = collect($response['rows'] ?? [])->map(function (array $dateRow) {
+        $statsByDate = Collection::make($response['rows'] ?? [])->map(function (array $dateRow) {
             return [
                 'date' => $dateRow[0],
                 'users' => (int) $dateRow[1],
@@ -140,7 +211,7 @@ class DashboardController extends Controller
             ];
         })->reverse()->values();
 
-        return collect([
+        return Collection::make([
             'today',
             'yesterday',
             'week',
@@ -170,6 +241,11 @@ class DashboardController extends Controller
         });
     }
 
+    /**
+     * @param string $period
+     * @param \Illuminate\Database\Query\Builder $statsByDate
+     * @return array
+     */
     private function getPeriodStats($period, $statsByDate)
     {
         if ($period === 'today') {
@@ -251,6 +327,10 @@ class DashboardController extends Controller
         }
     }
 
+    /**
+     * @param int $count
+     * @return string
+     */
     private function formatStat($count)
     {
         if ($count >= 1000) {
@@ -260,6 +340,10 @@ class DashboardController extends Controller
         return $count;
     }
 
+    /**
+     * @param array $modules
+     * @return array
+     */
     private function getShortcuts($modules)
     {
         return $modules->filter(function ($module) {
@@ -271,7 +355,7 @@ class DashboardController extends Controller
                 'count' => $module['count'] ?? false,
                 'create' => $module['create'] ?? false,
                 'label' => $module['label'] ?? $module['name'],
-                'singular' => $module['label_singular'] ?? str_singular($module['name']),
+                'singular' => $module['label_singular'] ?? Str::singular($module['name']),
             ];
 
             return [
@@ -295,6 +379,10 @@ class DashboardController extends Controller
         })->values();
     }
 
+    /**
+     * @param array $modules
+     * @return array
+     */
     private function getDrafts($modules)
     {
         return $modules->filter(function ($module) {
@@ -306,7 +394,7 @@ class DashboardController extends Controller
 
             return $drafts->map(function ($draft) use ($module) {
                 return [
-                    'type' => ucfirst($module['label_singular'] ?? str_singular($module['name'])),
+                    'type' => ucfirst($module['label_singular'] ?? Str::singular($module['name'])),
                     'name' => $draft->titleInDashboard ?? $draft->title,
                     'url' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', $draft->id),
                 ];
@@ -314,8 +402,12 @@ class DashboardController extends Controller
         })->collapse()->values();
     }
 
+    /**
+     * @param string $module
+     * @return \A17\Twill\Repositories\ModuleRepository
+     */
     private function getRepository($module)
     {
-        return app(config('twill.namespace') . "\Repositories\\" . ucfirst(str_singular($module)) . "Repository");
+        return $this->app->get($this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($module)) . "Repository");
     }
 }

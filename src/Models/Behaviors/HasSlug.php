@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Models\Behaviors;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 
 trait HasSlug
 {
@@ -55,6 +55,15 @@ trait HasSlug
         return $query->whereHas('slugs', function ($query) use ($slug) {
             $query->whereSlug($slug);
             $query->whereLocale(app()->getLocale());
+        })->with(['slugs']);
+    }
+
+    public function scopeForFallbackLocaleSlug($query, $slug)
+    {
+        return $query->whereHas('slugs', function ($query) use ($slug) {
+            $query->whereSlug($slug);
+            $query->whereActive(true);
+            $query->whereLocale(config('translatable.fallback_locale'));
         })->with(['slugs']);
     }
 
@@ -168,9 +177,20 @@ trait HasSlug
         }) ?? null;
     }
 
+    public function getFallbackActiveSlug()
+    {
+        return $this->slugs->first(function ($slug) {
+            return $slug->locale === config('translatable.fallback_locale') && $slug->active;
+        }) ?? null;
+    }
+
     public function getSlug($locale = null)
     {
         if (($slug = $this->getActiveSlug($locale)) != null) {
+            return $slug->slug;
+        }
+
+        if (config('translatable.use_property_fallback', false) && (($slug = $this->getFallbackActiveSlug()) != null)) {
             return $slug->slug;
         }
 

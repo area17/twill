@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Models;
 
+use A17\Twill\Models\Role;
+use A17\Twill\Models\Group;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasPermissions;
 use A17\Twill\Models\Behaviors\HasPresenter;
@@ -13,9 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Foundation\Auth\User as AuthenticatableContract;
 use Illuminate\Notifications\Notifiable;
-use A17\Twill\Models\Role;
-use A17\Twill\Models\Group;
-use Session;
+use Illuminate\Support\Facades\Session;
 
 class User extends AuthenticatableContract
 {
@@ -113,14 +113,43 @@ class User extends AuthenticatableContract
         return Session::has('impersonate');
     }
 
+    public function notifyWithCustomMarkdownTheme($instance)
+    {
+        $hostAppMailConfig = config('mail.markdown.paths');
+
+        config([
+            'mail.markdown.paths' => array_merge(
+                [__DIR__ . '/../../views/emails'],
+                $hostAppMailConfig
+            ),
+        ]);
+
+        $this->notify($instance);
+
+        config([
+            'mail.markdown.paths' => $hostAppMailConfig,
+        ]);
+
+    }
+
     public function sendWelcomeNotification($token)
     {
-        $this->notify(new WelcomeNotification($token));
+        $this->notifyWithCustomMarkdownTheme(new WelcomeNotification($token));
     }
 
     public function sendPasswordResetNotification($token)
     {
-        $this->notify(new ResetNotification($token));
+        $this->notifyWithCustomMarkdownTheme(new ResetNotification($token));
+    }
+
+    public function isSuperAdmin()
+    {
+        return $this->role === 'SUPERADMIN';
+    }
+
+    public function isPublished()
+    {
+        return (bool) $this->published;
     }
 
     public function sendTemporaryPasswordNotification($password)
