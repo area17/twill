@@ -7,6 +7,8 @@ use A17\Twill\Models\Role;
 use A17\Twill\Models\User;
 use A17\Twill\Models\Group;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Config\Repository as Config;
+use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Password;
@@ -262,7 +264,7 @@ class UserController extends ModuleController
      * @param string $option
      * @return bool
      */
-    protected function getIndexOption($option)
+    protected function getIndexOption($option, $item = null)
     {
         if (in_array($option, ['publish', 'bulkEdit', 'create'])) {
             return $this->authFactory->guard('twill_users')->user()->can('edit-users');
