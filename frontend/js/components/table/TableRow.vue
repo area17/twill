@@ -96,6 +96,16 @@
     }
   }
 
+  /* Thumb */
+  .tablecell--thumb {
+    width: 1px;
+
+    @include breakpoint(xsmall) { // no thumbnail on smaller screens
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
   /* Spacer */
   .tablecell--spacer {
     width: 1px;

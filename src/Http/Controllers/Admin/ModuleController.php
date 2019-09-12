@@ -241,7 +241,7 @@ abstract class ModuleController extends Controller
     {
         $this->submodule = isset($submoduleId);
         $this->submoduleParentId = $id;
-        
+
         $item = $this->repository->getById($submoduleId ?? $id);
         $this->authorize('view-item', $item);
 
@@ -692,6 +692,16 @@ abstract class ModuleController extends Controller
         $tableColumns = [];
         $visibleColumns = request('columns') ?? false;
 
+        if ($this->getIndexOption('publish')) {
+            array_push($tableColumns, [
+                'name' => 'published',
+                'label' => 'Published',
+                'visible' => true,
+                'optional' => false,
+                'sortable' => false,
+            ]);
+        }
+
         if (isset(array_first($this->indexColumns)['thumb'])
             && array_first($this->indexColumns)['thumb']
         ) {
@@ -701,8 +711,8 @@ abstract class ModuleController extends Controller
                 'visible' => $visibleColumns ? in_array('thumbnail', $visibleColumns) : true,
                 'optional' => true,
                 'sortable' => false,
-            ] + (isset(array_first($this->indexColumns)['variation']) 
-                    ? ['variation' => array_first($this->indexColumns)['variation']] 
+            ] + (isset(array_first($this->indexColumns)['variation'])
+                    ? ['variation' => array_first($this->indexColumns)['variation']]
                     : [])
             );
             array_shift($this->indexColumns);
@@ -712,16 +722,6 @@ abstract class ModuleController extends Controller
             array_push($tableColumns, [
                 'name' => 'featured',
                 'label' => 'Featured',
-                'visible' => true,
-                'optional' => false,
-                'sortable' => false,
-            ]);
-        }
-
-        if ($this->getIndexOption('publish')) {
-            array_push($tableColumns, [
-                'name' => 'published',
-                'label' => 'Published',
                 'visible' => true,
                 'optional' => false,
                 'sortable' => false,

@@ -51,6 +51,7 @@
         return [
           col.name === 'featured' || col.name === 'published' ? 'tablehead__cell--icon' : '',
           col.name === 'thumbnail' ? 'tablehead__cell--thumb' : '',
+          col.name === 'thumbnail' && col.variation && col.variation === 'rounded' ? 'tablehead__cell--thumb-rounded' : '',
           col.name === 'draggable' ? 'tablehead__cell--draggable' : '',
           col.name === 'nested' ? 'tablehead__cell--nested' : '',
           col.name === 'bulk' ? 'tablehead__cell--bulk' : '',
@@ -139,17 +140,27 @@
   }
 
   .tablehead__cell--thumb {
-    width:80px + 20px;
+    width: 80px + 20px;
 
     @include breakpoint(xsmall) { // no thumbnail on smaller screens
-      width:1px;
-      padding-left:0;
-      padding-right:0;
+      width: 1px;
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  .tablehead__cell--thumb-rounded {
+    width: 36px + 20px;
+
+    @include breakpoint(xsmall) { // no thumbnail on smaller screens
+      width: 1px;
+      padding-left: 0;
+      padding-right: 0;
     }
   }
 
   .tablehead__cell--icon {
-    width:20px + 20px;
+    width: 10px + 20px;
   }
 
   .tablehead__cell--bulk {
@@ -175,8 +186,12 @@
       opacity:1;
     }
 
-    &.tablehead__cell--sorted .tablehead__arrow {
-      opacity:1;
+    &.tablehead__cell--sorted {
+      color: $color__text;
+
+      .tablehead__arrow {
+        opacity: 1;
+      }
     }
   }
 
