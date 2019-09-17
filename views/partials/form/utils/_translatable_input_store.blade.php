@@ -1,6 +1,5 @@
-var fieldToStore = window.STORE.form.fields.findIndex(field => (
-    field.name === '{{ $name }}' == -1 ? true : false
-))
+var fieldIndex = window.STORE.form.fields.findIndex(field => field.name === '{{ $name }}')
+var fieldToStore = fieldIndex == -1 ? true : false;
 
 if (fieldToStore) {
     @if($translated && isset($form_fields['translations']) && isset($form_fields['translations'][$name]))
