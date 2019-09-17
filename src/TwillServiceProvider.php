@@ -30,8 +30,6 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use Lsrur\Inspector\Facade\Inspector;
-use Lsrur\Inspector\InspectorServiceProvider;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 
 class TwillServiceProvider extends ServiceProvider
@@ -106,14 +104,6 @@ class TwillServiceProvider extends ServiceProvider
             $this->app->register($provider);
         }
 
-        if ($this->app->environment('development', 'local', 'staging')) {
-            if (config('twill.debug.use_inspector', false)) {
-                $this->app->register(InspectorServiceProvider::class);
-            } else {
-                $this->app->register(DebugbarServiceProvider::class);
-            }
-        }
-
         if (config('twill.enabled.media-library')) {
             $this->app->singleton('imageService', function () {
                 return $this->app->make(config('twill.media_library.image_service'));
@@ -135,12 +125,6 @@ class TwillServiceProvider extends ServiceProvider
     private function registerAliases()
     {
         $loader = AliasLoader::getInstance();
-
-        if (config('twill.debug.use_inspector', false)) {
-            $loader->alias('Inspector', Inspector::class);
-        } else {
-            $loader->alias('Debugbar', Debugbar::class);
-        }
 
         if (config('twill.enabled.media-library')) {
             $loader->alias('ImageService', ImageService::class);

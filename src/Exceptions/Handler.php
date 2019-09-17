@@ -16,7 +16,6 @@ use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\Factory as ViewFactory;
-use Inspector;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Handler extends ExceptionHandler
@@ -133,10 +132,6 @@ class Handler extends ExceptionHandler
             return $this->handleUnauthenticated($request, $e);
         } elseif ($e instanceof ValidationException) {
             return $this->convertValidationExceptionToResponse($e, $request);
-        }
-
-        if ($this->config->get('app.debug', false) && $this->config->get('twill.debug.use_inspector', false)) {
-            return Inspector::renderException($e);
         }
 
         if ($this->config->get('app.debug', false) && $this->config->get('twill.debug.use_whoops', false)) {
