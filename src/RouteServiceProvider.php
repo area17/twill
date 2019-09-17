@@ -4,7 +4,6 @@ namespace A17\Twill;
 
 use A17\Twill\Http\Controllers\Front\GlideController;
 use A17\Twill\Http\Middleware\Impersonate;
-use A17\Twill\Http\Middleware\NoDebugBar;
 use A17\Twill\Http\Middleware\RedirectIfAuthenticated;
 use A17\Twill\Http\Middleware\ValidateBackHistory;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -69,11 +68,11 @@ class RouteServiceProvider extends ServiceProvider
                     require __DIR__ . '/../routes/admin.php';
                 });
 
-                $router->group(['middleware' => ['noDebugBar']], function ($router) {
+                $router->group([], function ($router) {
                     require __DIR__ . '/../routes/auth.php';
                 });
 
-                $router->group(['middleware' => array_merge(['noDebugBar'], ($this->app->environment('production') ? ['twill_auth:twill_users'] : []))], function ($router) {
+                $router->group(['middleware' => $this->app->environment('production') ? ['twill_auth:twill_users'] : []], function ($router) {
                     require __DIR__ . '/../routes/templates.php';
                 });
             }
@@ -86,7 +85,7 @@ class RouteServiceProvider extends ServiceProvider
                 'middleware' => [config('twill.admin_middleware_group', 'web')],
             ],
                 function ($router) {
-                    $router->group(['middleware' => array_merge(['noDebugBar'], ($this->app->environment('production') ? ['twill_auth:twill_users'] : []))], function ($router) {
+                    $router->group(['middleware' => $this->app->environment('production') ? ['twill_auth:twill_users'] : []], function ($router) {
                         require __DIR__ . '/../routes/templates.php';
                     });
                 }
@@ -111,7 +110,6 @@ class RouteServiceProvider extends ServiceProvider
          * The middleware method of the Illuminate\Routing\Router class has been renamed to aliasMiddleware().
          */
         $middlewareRegisterMethod = method_exists($router, 'aliasMiddleware') ? 'aliasMiddleware' : 'middleware';
-        Route::$middlewareRegisterMethod('noDebugBar', NoDebugBar::class);
         Route::$middlewareRegisterMethod('impersonate', Impersonate::class);
         Route::$middlewareRegisterMethod('twill_auth', \Illuminate\Auth\Middleware\Authenticate::class);
         Route::$middlewareRegisterMethod('twill_guest', RedirectIfAuthenticated::class);

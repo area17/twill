@@ -19,8 +19,6 @@ use A17\Twill\Models\Media;
 use A17\Twill\Models\User;
 use A17\Twill\Services\FileLibrary\FileService;
 use A17\Twill\Services\MediaLibrary\ImageService;
-use Barryvdh\Debugbar\Facade as Debugbar;
-use Barryvdh\Debugbar\ServiceProvider as DebugbarServiceProvider;
 use Cartalyst\Tags\TagsServiceProvider;
 use Astrotomic\Translatable\TranslatableServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
