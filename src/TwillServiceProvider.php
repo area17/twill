@@ -22,7 +22,7 @@ use A17\Twill\Services\MediaLibrary\ImageService;
 use Barryvdh\Debugbar\Facade as Debugbar;
 use Barryvdh\Debugbar\ServiceProvider as DebugbarServiceProvider;
 use Cartalyst\Tags\TagsServiceProvider;
-use Dimsav\Translatable\TranslatableServiceProvider;
+use Astrotomic\Translatable\TranslatableServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\AliasLoader;
