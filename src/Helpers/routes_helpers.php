@@ -14,7 +14,7 @@ if (!function_exists('moduleRoute')) {
      */
     function moduleRoute($moduleName, $prefix, $action, $parameters = [], $absolute = true)
     {
-        $routeName = 'admin.' . ($prefix ? $prefix . '.' : '') . camel_case($moduleName) . '.' . $action;
+        $routeName = 'admin.' . ($prefix ? $prefix . '.' : '') . Str::camel($moduleName) . '.' . $action;
         return route($routeName, $parameters, $absolute);
     }
 }

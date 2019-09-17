@@ -10,8 +10,8 @@ use A17\Twill\Http\Middleware\ValidateBackHistory;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -134,7 +134,7 @@ class RouteServiceProvider extends ServiceProvider
                 $controllerName = ucfirst(Str::plural($moduleName));
             }
 
-            $routePrefix = empty($routePrefix) ? '/' : (starts_with($routePrefix, '/') ? $routePrefix : '/' . $routePrefix);
+            $routePrefix = empty($routePrefix) ? '/' : (Str::startsWith($routePrefix, '/') ? $routePrefix : '/' . $routePrefix);
             $routePrefix = Str::endsWith($routePrefix, '/') ? $routePrefix : $routePrefix . '/';
 
             Route::name($moduleName . '.show')->get($routePrefix . '{slug}', $controllerName . 'Controller@show');

@@ -13,6 +13,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Routing\Redirector;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\Factory as ViewFactory;
 use Inspector;
@@ -160,7 +161,7 @@ class Handler extends ExceptionHandler
         $headers = $this->isHttpException($e) ? $e->getHeaders() : [];
 
         $isSubdomainAdmin = empty($this->config->get('twill.admin_app_path')) && $request->getHost() == $this->config->get('twill.admin_app_url');
-        $isSubdirectoryAdmin = !empty($this->config->get('twill.admin_app_path')) && starts_with($request->path(), $this->config->get('twill.admin_app_path'));
+        $isSubdirectoryAdmin = !empty($this->config->get('twill.admin_app_path')) && Str::startsWith($request->path(), $this->config->get('twill.admin_app_path'));
 
         if ($isSubdomainAdmin || $isSubdirectoryAdmin) {
             $view = $this->viewFactory->exists("admin.errors.$statusCode") ? "admin.errors.$statusCode" : "twill::errors.$statusCode";

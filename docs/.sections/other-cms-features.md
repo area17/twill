@@ -103,7 +103,7 @@ return $searchResults->map(function ($item) use ($module) {
         'date' => $item->updated_at->toIso8601String(),
         'title' => $item->title,
         'author' => $author,
-        'type' => str_singular($module['name']),
+        'type' => Str::singular($module['name']),
     ];
 })->values();
 

@@ -4,6 +4,7 @@ namespace A17\Twill\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 abstract class Request extends FormRequest
 {
@@ -69,9 +70,9 @@ abstract class Request extends FormRequest
     {
         foreach ($fields as $field => $field_rules) {
             // allows using validation rule that references other fields even for translated fields
-            if (str_contains($field_rules, $fields)) {
+            if (Str::contains($field_rules, $fields)) {
                 foreach ($fields as $fieldName => $fieldRules) {
-                    if (str_contains($field_rules, $fieldName) && starts_with('required_', $field_rules)) {
+                    if (Str::contains($field_rules, $fieldName) && Str::startsWith('required_', $field_rules)) {
                         $field_rules = str_replace($fieldName, "{$fieldName}.{$locale}", $field_rules);
                     }
                 }

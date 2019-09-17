@@ -14,7 +14,7 @@
         name: '{{ $name }}',
         value: {!! json_encode(isset($item->$name) ? $item->$name : (isset($formFieldsValue)
             ? (is_array($formFieldsValue) && !$translated
-                ? array_first($formFieldsValue, null, '')
+                ? \Illuminate\Support\Arr::first($formFieldsValue, null, '')
                 : $formFieldsValue)
             : '')
         ) !!}

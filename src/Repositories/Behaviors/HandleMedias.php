@@ -4,6 +4,7 @@ namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Media;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 
 trait HandleMedias
@@ -63,7 +64,7 @@ trait HandleMedias
         if (isset($fields['medias'])) {
             foreach ($fields['medias'] as $role => $mediasForRole) {
                 if (config('twill.media_library.translated_form_fields', false)) {
-                    if (str_contains($role, ['[', ']'])) {
+                    if (Str::contains($role, ['[', ']'])) {
                         $start = strpos($role, '[') + 1;
                         $finish = strpos($role, ']', $start);
                         $locale = substr($role, $start, $finish - $start);
