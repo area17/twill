@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Models\Behaviors;
 
-use Dimsav\Translatable\Translatable;
+use Astrotomic\Translatable\Translatable;
 
 trait HasTranslation
 {
