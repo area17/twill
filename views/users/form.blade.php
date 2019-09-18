@@ -5,46 +5,6 @@
 ])
 
 @section('contentFields')
-  @unless($item->is_superadmin)
-    @can('edit-user')
-      <p><strong>Registered at: </strong> {{ $item->activated ? $item->registered_at->format('d M Y') : "Pending ({$item->created_at->format('d M Y')})" }}</p>
-      @if($item->activated)
-      
-        @if($item->last_login_at)
-          <p><strong>Last login: </strong> {{ $item->last_login_at->format('d M Y, H:i') }}</p>
-        @endif
-      @else
-        <br />
-        <a type="submit" href="{{ route('admin.users.resend.registrationEmail', ['user' => $item]) }}">Resend registration email</a>
-      @endif
-
-      @php($checkboxLabel = $item->activated ? 'Reset Password' : 'Register Account Now')
-      @formField('checkbox', [
-        'name' => 'reset_password',
-        'label' => $checkboxLabel
-      ])
-      
-      @component('twill::partials.form.utils._connected_fields', [
-        'fieldName' => 'reset_password',
-        'fieldValues' => true,
-        'renderForBlocks' => false
-      ])
-        @php($passwordLabel = $item->activated ? 'Reset Password' : 'New Password')
-        @formField('input', [
-          'name' => 'new_password',
-          'type' => 'password',
-          'label' => $passwordLabel,
-          'required' => true,
-          'maxlength' => 50,
-        ])
-
-        @formField('checkbox', [
-          'name' => 'require_password_change',
-          'label' => 'Require password change at next login'
-        ])
-      @endcomponent
-    @endcan
-  @endunless
 
     @formField('input', [
         'name' => 'email',
@@ -83,15 +43,16 @@
     @endif
 
     @unless($item->is_superadmin)
-      @formField('browser', [
-        'moduleName' => 'groups',
-        'name' => 'groups',
-        'label' => 'Groups',
-        'sortable' => false,
-        'max' => 100
-      ])
+        @formField('multi_select', [
+            'name' => "groups",
+            'label' => 'Groups',
+            'options' => $groupOptions,
+            'endpoint' => '/group/search',
+            'unpack' => false,
+            'note' => 'Every user belongs to the "Everyone" group'
+        ])
     @endunless
-    
+
     @if($with2faSettings ?? false)
         @formField('checkbox', [
             'name' => 'google_2fa_enabled',
@@ -131,7 +92,7 @@
     @section('fieldsets')
         @foreach($permissionModules as $moduleName => $moduleItems)
             <a17-fieldset title='{{ ucfirst($moduleName) . " Permissions"}}' id='{{ $moduleName }}'>
-                <h2>{{ ucfirst($moduleName) .' permission' }}</h2>
+                {{-- <h2>{{ ucfirst($moduleName) .' permission' }}</h2> --}}
                 @foreach ($moduleItems as $moduleItem)
                     @formField('select', [
                         'name' => $moduleName . '_' . $moduleItem->id . '_permission',
@@ -140,7 +101,7 @@
                         'options' => [
                             [
                                 'value' => '',
-                                'label' => 'None' 
+                                'label' => 'None'
                             ],
                             [
                                 'value' => 'view-item',
@@ -219,7 +180,18 @@
             text: 'Cancel'
           }
         ]
-      }
+    }
+    @unless($item->is_superadmin)
+        @can('edit-user-role')
+            window.STORE.publication.userInfo = {
+                user_name: '{{ $item->name }}',
+                registered_at: '{{ $item->activated ? $item->registered_at->format('d M Y') : "Pending ({$item->created_at->format('d M Y')})" }}',
+                last_login_at: '{{ $item->activated && $item->last_login_at ? $item->last_login_at->format('d M Y, H:i') : null }}',
+                resend_registration_link: '{{ !$item->activated ? route('admin.users.resend.registrationEmail', ['user' => $item]) : null }}',
+                is_activated: {{ $item->activated }}
+            }
+        @endcan
+    @endunless
     @if ($item->id == $currentUser->id)
         window.STORE.publication.withPublicationToggle = false
     @endif

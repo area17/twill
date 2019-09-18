@@ -157,7 +157,7 @@ class UserRepository extends ModuleRepository
     public function afterSave($user, $fields)
     {
         $this->sendWelcomeEmail($user);
-        $this->updateBrowser($user, $fields, 'groups');
+        $this->updateMultiSelect($user, $fields, 'groups');
 
         // When role changed, update it's groups information if needed.
         if (Role::findOrFail($fields['role_id'])->in_everyone_group) {
@@ -168,7 +168,7 @@ class UserRepository extends ModuleRepository
 
         if (!empty($fields['reset_password']) && !empty($fields['new_password'])) {
             $user->password = bcrypt($fields['new_password']);
-            
+
             if (!$user->activate) {
                 $user->activated = true;
                 $user->registered_at = Carbon::now();

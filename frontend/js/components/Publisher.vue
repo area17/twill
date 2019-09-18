@@ -1,6 +1,7 @@
 <template>
   <div class="publisher__wrapper">
       <a17-switcher title="Status" name="publish_state" v-if="withPublicationToggle" :textEnabled="textEnabled" :textDisabled="textDisabled"></a17-switcher>
+      <a17-userinfo v-if="userInfo" :userInfo="userInfo"></a17-userinfo>
       <a17-reviewaccordion  v-if="reviewProcess && reviewProcess.length" :options="reviewProcess" name="review_process" :value="reviewProcessCompleteValues" :open="openStates['A17Reviewaccordion']" @open="openCloseAccordion">Review status</a17-reviewaccordion>
       <a17-radioaccordion  v-if="visibility && visibilityOptions && visibilityOptions.length" :radios="visibilityOptions" name="visibility" :value="visibility" :open="openStates['A17Radioaccordion']" @open="openCloseAccordion" @change="updateVisibility">Visibility</a17-radioaccordion>
       <a17-checkboxaccordion  v-if="languages && showLanguages&& languages.length > 1" :options="languages" name="active_languages" :value="publishedLanguagesValues" :open="openStates['A17Checkboxaccordion']" @open="openCloseAccordion">Languages</a17-checkboxaccordion>
@@ -32,6 +33,7 @@
   import a17PubAccordion from '@/components/PubAccordion.vue'
   import a17ParentsAccordion from '@/components/ParentsAccordion.vue'
   import a17MultiButton from '@/components/MultiButton.vue'
+  import a17UserInfo from '@/components/UserInfo.vue'
 
   import a17VueFilters from '@/utils/filters.js'
 
@@ -45,7 +47,8 @@
       'a17-revaccordion': a17RevisionAccordion,
       'a17-parentaccordion': a17ParentsAccordion,
       'a17-pubaccordion': a17PubAccordion,
-      'a17-multibutton': a17MultiButton
+      'a17-multibutton': a17MultiButton,
+      'a17-userinfo': a17UserInfo
     },
     props: {
       showLanguages: {
@@ -106,7 +109,8 @@
         withPublicationTimeframe: state => state.publication.withPublicationTimeframe,
         visibility: state => state.publication.visibility,
         visibilityOptions: state => state.publication.visibilityOptions,
-        reviewProcess: state => state.publication.reviewProcess
+        reviewProcess: state => state.publication.reviewProcess,
+        userInfo: state => state.publication.userInfo
       }),
       ...mapGetters([
         'publishedLanguages',

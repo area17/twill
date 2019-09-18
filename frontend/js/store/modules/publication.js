@@ -11,6 +11,7 @@ const state = {
   endDate: window.STORE.publication.endDate || null,
   visibility: window.STORE.publication.visibility || false,
   reviewProcess: window.STORE.publication.reviewProcess || [],
+  userInfo: window.STORE.publication.userInfo || null,
   saveType: undefined,
   visibilityOptions: [
     {

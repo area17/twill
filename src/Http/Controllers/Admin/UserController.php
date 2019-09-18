@@ -219,6 +219,7 @@ class UserController extends ModuleController
             'groupPermissionMapping' => $this->getGroupPermissionMapping(),
             'with2faSettings' => $with2faSettings,
             'qrCode' => $qrCode ?? null,
+            'groupOptions' => $this->getGroups()
         ];
     }
 
@@ -316,5 +317,11 @@ class UserController extends ModuleController
         ->mapWithKeys(function($group) {
             return [ $group->id => $group->permissions ];
         })->toArray();
+    }
+
+    private function getGroups()
+    {
+        // Forget first one because it's the "Everyone" group and we don't want to show it inside admin.
+        return Group::with('permissions')->get()->pluck('name','id')->forget(1);
     }
 }
