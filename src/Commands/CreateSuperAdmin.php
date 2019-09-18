@@ -82,7 +82,7 @@ class CreateSuperAdmin extends Command
             return $email;
         } else {
             $this->error("Your email is not valid");
-            $this->setEmail();
+            return $this->setEmail();
         }
     }
 
@@ -100,11 +100,11 @@ class CreateSuperAdmin extends Command
                 return $password;
             } else {
                 $this->error('Password does not match the confirm password');
-                $this->setPassword();
+                return $this->setPassword();
             }
         } else {
             $this->error("Your password is not valid, at least 6 characters");
-            $this->setPassword();
+            return $this->setPassword();
         }
     }
 
