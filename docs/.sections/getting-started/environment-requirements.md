@@ -1,5 +1,5 @@
 ### Environment requirements
-Twill is compatible with Laravel `5.3`, `5.4`, `5.5`, `5.6` and `5.7` applications running on PHP 7.
+Twill is compatible with Laravel `5.3`, `5.4`, `5.5`, `5.6`, `5.7` and `5.8` applications running on PHP 7.
 
 As a dependency to your own application, Twill shares Laravel's [server requirements](https://laravel.com/docs/5.6/installation#server-requirements), which are satisfied by both [Homestead](https://laravel.com/docs/5.6/homestead) and [Valet](https://laravel.com/docs/5.6/valet) during development, and easily deployed to production using [Forge](https://forge.laravel.com) and [Envoyer](https://envoyer.io) or [Envoy](https://laravel.com/docs/envoy), as well as any other Laravel compatible server configuration and deployment strategy.
 
