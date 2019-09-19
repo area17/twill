@@ -26,6 +26,10 @@ class Role extends BaseModel
 
     public $checkboxes = ['published'];
 
+    protected $casts = [
+        'in_everyone_group' => 'boolean',
+    ];
+
     public function scopePublished($query)
     {
         return $query->wherePublished(true);
@@ -46,7 +50,13 @@ class Role extends BaseModel
         return $this->hasMany(User::class);
     }
 
-    protected $casts = [
-        'in_everyone_group' => 'boolean',
-    ];
+    public function getCreatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d M Y');
+    }
+
+    public function getUsersCountAttribute($value)
+    {
+        return $this->users->count() . ' users';
+    }
 }

@@ -32,6 +32,24 @@ class RoleController extends ModuleController
         $this->middleware('can:edit-user-role');
     }
 
+    protected $indexColumns = [
+        'name' => [
+            'title' => 'Name',
+            'field' => 'name',
+            'sort' => true,
+        ],
+        'created_at' => [
+            'title' => 'Date created',
+            'field' => 'created_at',
+            'sort' => true
+        ],
+        'users' => [
+            'title' => 'Users',
+            'field' => 'users_count',
+            'html' => true
+        ]
+    ];
+
     protected function indexData($request)
     {
         return [
