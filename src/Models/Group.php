@@ -60,6 +60,11 @@ class Group extends BaseModel
         return $this->id === $this->getEveryoneGroup()->id;
     }
 
+    public function getCreatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d M Y');
+    }
+
     public function getCanEditAttribute()
     {
         return !$this->isEveryoneGroup();
@@ -68,6 +73,11 @@ class Group extends BaseModel
     public function getCanPublishAttribute()
     {
         return !$this->isEveryoneGroup();
+    }
+
+    public function getUsersCountAttribute($value)
+    {
+        return $this->users->count() . ' users';
     }
 
     public function viewableItems()
