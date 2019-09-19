@@ -39,16 +39,16 @@ class GroupController extends ModuleController
                     'module' => true,
                     'can' => 'edit-users',
                 ],
+                'roles' => [
+                    'title' => 'Roles',
+                    'module' => true,
+                    'can' => 'edit-user-role',
+                ],
                 'groups' => [
                     'title' => 'Groups',
                     'module' => true,
                     'active' => true,
                     'can' => 'edit-user-groups',
-                ],
-                'roles' => [
-                    'title' => 'Roles',
-                    'module' => true,
-                    'can' => 'edit-user-role',
                 ],
             ],
             'customPublishedLabel' => 'Enabled',
