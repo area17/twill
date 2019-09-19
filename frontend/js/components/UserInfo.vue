@@ -32,7 +32,7 @@
       <div class="userInfo__form-row">
         <a17-textfield name="new_password" id="new_password" label="New password" :maxlength="50" note="Must have at least 8 characters" required></a17-textfield>
       </div>
-      <div class="userInfo__form-row">
+      <div v-if="userInfo.is_activated" class="userInfo__form-row">
         <a17-checkbox name="require_password_change" id="require_password_change" label="Require password change at next login"></a17-checkbox>
       </div>
       <div class="userInfo__form-row">
