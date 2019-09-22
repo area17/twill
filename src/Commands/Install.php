@@ -109,7 +109,7 @@ class Install extends Command
      */
     private function createSuperAdmin()
     {
-        $this->call('twill:superadmin');
+        $this->call('twill:superadmin --once');
     }
 
     /**

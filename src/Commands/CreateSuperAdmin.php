@@ -14,7 +14,7 @@ class CreateSuperAdmin extends Command
      *
      * @var string
      */
-    protected $signature = 'twill:superadmin';
+    protected $signature = 'twill:superadmin {--once}';
 
     /**
      * The console command description.
@@ -52,21 +52,25 @@ class CreateSuperAdmin extends Command
      */
     public function handle()
     {
-        $this->info("Let's create a superadmin account!");
-        $email = $this->setEmail();
-        $password = $this->setPassword();
+        if ($this->guardAgainstMultiple()) {
+            $this->info("A super admin account exists.");
+        } else {
+            $this->info("Let's create a superadmin account!");
+            $email = $this->setEmail();
+            $password = $this->setPassword();
 
-        $user = User::create([
-            'name' => "Admin",
-            'email' => $email,
-            'role' => 'SUPERADMIN',
-            'published' => true,
-        ]);
+            $user = User::create([
+                'name' => "Admin",
+                'email' => $email,
+                'role' => 'SUPERADMIN',
+                'published' => true,
+            ]);
 
-        $user->password = bcrypt($password);
-        $user->save();
+            $user->password = bcrypt($password);
+            $user->save();
 
-        $this->info("Your account has been created");
+            $this->info("Your account has been created");
+        }
     }
 
     /**
@@ -131,5 +135,18 @@ class CreateSuperAdmin extends Command
         return $this->validatorFactory->make(['password' => $password], [
             'password' => 'required|min:6',
         ])->passes();
+    }
+
+    /**
+     * Check for existence of a super admin. (option)
+     *
+     * @return boolean
+     */
+    private function guardAgainstMultiple()
+    {
+        if ($this->option('once')) {
+            return User::whereRole('SUPERADMIN')->exists();
+        }
+        return false;
     }
 }
