@@ -19,7 +19,6 @@
 
 <script>
   import { FORM } from '@/store/mutations'
-  import a17Switcher from '@/components/Switcher.vue'
 
   export default {
     name: 'A17ModalValidationButtons',
@@ -56,9 +55,6 @@
         type: String,
         default: 'Draft'
       }
-    },
-    components: {
-      'a17-switcher': a17Switcher
     },
     data: function () {
       return {

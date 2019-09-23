@@ -4,7 +4,7 @@
       <slot></slot>
 
       <ul class="box__filter">
-        <li v-for="(navItem, index) in navFilters"><a href="#" :class="{ 's--on' : navActive === index }" @click.prevent="filterStatus(index, navItem.slug)">{{ navItem.name }}</a></li>
+        <li v-for="(navItem, index) in navFilters" :key="index"><a href="#" :class="{ 's--on' : navActive === index }" @click.prevent="filterStatus(index, navItem.slug)">{{ navItem.name }}</a></li>
       </ul>
     </header>
     <div class="box__body">

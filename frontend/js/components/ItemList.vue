@@ -24,7 +24,10 @@
             <div v-if="item.hasOwnProperty('renderHtml')" v-html="item.name"></div>
             <div v-else>{{ item.name }}</div>
           </td>
-          <td class="itemlist__cell" v-for="extraColumn in extraColumns" :class="rowClass(extraColumn)">
+          <td class="itemlist__cell"
+              v-for="(extraColumn, index) in extraColumns"
+              :key="index"
+              :class="rowClass(extraColumn)">
             <template v-if="extraColumn === 'size'">{{ item[extraColumn] | uppercase}}</template>
             <template v-else>{{ item[extraColumn] }}</template>
           </td>

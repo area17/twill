@@ -99,7 +99,7 @@ window.vm = new Vue({
     filterListing: function (formData) {
       let self = this
       this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
-      this.$store.commit(DATATABLE.UPDATE_DATATABLE_FILTER, formData || {search: ''})
+      this.$store.commit(DATATABLE.UPDATE_DATATABLE_FILTER, formData || { search: '' })
 
       this.$nextTick(function () {
         self.reloadDatas()

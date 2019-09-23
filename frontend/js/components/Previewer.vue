@@ -56,7 +56,7 @@
 </template>
 
 <script>
-  // nb : UI is quite similar to https://github.com/nerijusgood/viewport-resizer
+// nb : UI is quite similar to https://github.com/nerijusgood/viewport-resizer
 
   import { mapState } from 'vuex'
 

@@ -21,7 +21,9 @@
             media.height }}
           </li>
           <li class="f--small media__crop-link" v-if="cropInfos" @click="openCropMedia">
-              <p class="f--small f--note hide--xsmall" v-for="cropInfo in cropInfos">
+              <p class="f--small f--note hide--xsmall"
+                 v-for="(cropInfo, index) in cropInfos"
+                 :key="index">
                 <span v-html="cropInfo"></span>
               </p>
           </li>
@@ -62,8 +64,15 @@
         <a17-mediametadata :name='metadataName' label="Alt Text" id="altText" :media="media" @change="updateMetadata"/>
         <a17-mediametadata v-if="withCaption" :name='metadataName' label="Caption" id="caption" :media="media" @change="updateMetadata"/>
         <a17-mediametadata v-if="withVideoUrl" :name='metadataName' label="Video URL (optional)" id="video" :media="media" @change="updateMetadata"/>
-        <template v-for="field in extraMetadatas" v-if="extraMetadatas.length > 0">
-          <a17-mediametadata v-bind:key="field.name" :type="field.type" :name='metadataName' :label="field.label" :id="field.name" :media="media" @change="updateMetadata"/>
+        <template v-for="field in extraMetadatas">
+          <a17-mediametadata v-if="extraMetadatas.length > 0"
+                             :key="field.name"
+                             :type="field.type"
+                             :name='metadataName'
+                             :label="field.label"
+                             :id="field.name"
+                             :media="media"
+                             @change="updateMetadata"/>
         </template>
       </div>
     </div>
@@ -339,7 +348,7 @@
             // Convert crop for original img values
             crop = cropConversion(crop, this.naturalDim, this.originalDim)
 
-            smarcrops.push(smartCrop.crop(this.img, {width: crop.width, height: crop.height, minScale: 1.0}))
+            smarcrops.push(smartCrop.crop(this.img, { width: crop.width, height: crop.height, minScale: 1.0 }))
 
             let x = Math.floor(center.x - cropWidth / 2)
             let y = Math.floor(center.y - cropHeight / 2)
@@ -370,13 +379,13 @@
               cropVariant.height = crop.height
               index++
             })
-            this.cropMedia({values: defaultCrops})
+            this.cropMedia({ values: defaultCrops })
           }, (error) => {
             console.error(error)
-            this.cropMedia({values: defaultCrops})
+            this.cropMedia({ values: defaultCrops })
           })
         } else {
-          this.cropMedia({values: defaultCrops})
+          this.cropMedia({ values: defaultCrops })
         }
       },
       cropMedia: function (crop) {

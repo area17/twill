@@ -28,7 +28,6 @@
   import VisibilityMixin from '@/mixins/toggleVisibility'
   import LocaleMixin from '@/mixins/locale'
   import { mapState, mapGetters } from 'vuex'
-  import a17Accordion from './Accordion.vue'
   import a17Langswitcher from './LangSwitcher.vue'
   import { LANGUAGE } from '@/store/mutations'
 
@@ -36,7 +35,6 @@
     name: 'A17LangManager',
     mixins: [VisibilityMixin, LocaleMixin],
     components: {
-      'a17-accordion': a17Accordion,
       'a17-langswitcher': a17Langswitcher
     },
     props: {

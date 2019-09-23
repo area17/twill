@@ -124,7 +124,7 @@
         if (data) {
           data.page = this.page
         } else {
-          data = {page: this.page}
+          data = { page: this.page }
         }
 
         return data
@@ -144,7 +144,7 @@
         const list = this.$refs.list
         const formdata = this.getFormData(form)
 
-        this.$http.get(this.endpoint, {params: formdata}).then((resp) => {
+        this.$http.get(this.endpoint, { params: formdata }).then((resp) => {
           // add items here
           if (hardReload) {
             this.clearFullItems()
@@ -160,7 +160,7 @@
             }
           })
         }, function (resp) {
-          // error callback
+        // error callback
         })
       },
       submitFilter () {

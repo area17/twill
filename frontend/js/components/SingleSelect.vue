@@ -4,7 +4,9 @@
       <input type="hidden" :name="name" v-model="value" />
       <div class="singleselector" :class="gridClasses">
         <div class="singleselector__outer">
-          <div class="singleselector__item" v-for="(radio, index) in fullOptions">
+          <div class="singleselector__item"
+               v-for="(radio, index) in fullOptions"
+               :key="index">
             <input class="singleselector__radio" type="radio" :value="radio.value" :name="name + '[' + randKey + ']'" :id="uniqId(radio.value, index)" :disabled="radio.disabled || disabled" :class="{'singleselector__radio--checked': radio.value == selectedValue }">
             <label class="singleselector__label" :for="uniqId(radio.value, index)" @click.prevent="changeRadio(radio.value)">{{ radio.label }}</label>
             <span class="singleselector__bg"></span>

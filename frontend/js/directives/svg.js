@@ -16,7 +16,6 @@ export default {
         // removeSvg(el)
       }
     }
-
     Vue.directive('svg', dir)
   }
 }

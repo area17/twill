@@ -54,7 +54,7 @@ const lineBreakHandle = {
 
 function lineBreakMatcher () {
   const newDelta = new Delta()
-  newDelta.insert({'break': ''})
+  newDelta.insert({ 'break': '' })
   return newDelta
 }
 

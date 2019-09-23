@@ -30,7 +30,7 @@
 </template>
 
 <script>
-  // import ACTIONS from '@/store/actions'
+// import ACTIONS from '@/store/actions'
 
   export default {
     name: 'A17ActivityRow',
@@ -65,15 +65,15 @@
           col.name === 'published' ||
           col.name === 'thumbnail'
       }
-      // toggleFeatured: function () {
-      //   this.$store.dispatch(ACTIONS.TOGGLE_FEATURE, this.row.id)
-      // },
-      // togglePublish: function () {
-      //   this.$store.dispatch(ACTIONS.TOGGLE_PUBLISH, this.row)
-      // },
-      // deleteRow: function () {
-      //   this.$store.dispatch(ACTIONS.DELETE_ROW, this.row.id)
-      // }
+    // toggleFeatured: function () {
+    //   this.$store.dispatch(ACTIONS.TOGGLE_FEATURE, this.row.id)
+    // },
+    // togglePublish: function () {
+    //   this.$store.dispatch(ACTIONS.TOGGLE_PUBLISH, this.row)
+    // },
+    // deleteRow: function () {
+    //   this.$store.dispatch(ACTIONS.DELETE_ROW, this.row.id)
+    // }
     }
   }
 </script>

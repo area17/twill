@@ -181,7 +181,7 @@
         this.cropper.setData(crop)
       },
       test: function () {
-        const crop = this.toNaturalCrop({x: 0, y: 0, width: 380, height: 475})
+        const crop = this.toNaturalCrop({ x: 0, y: 0, width: 380, height: 475 })
         this.cropper.setAspectRatio(0.8)
         this.cropper.setData(crop)
       },
