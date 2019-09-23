@@ -192,7 +192,7 @@
         if (!this.isAjax) return true
 
         loading(true)
-        this.$http.get(this.ajaxUrl, {params: {q: search}}).then((resp) => {
+        this.$http.get(this.ajaxUrl, { params: { q: search } }).then((resp) => {
           if (resp.data.items && resp.data.items.length) {
             if (this.taggable) {
               if (Array.isArray(this.value)) {

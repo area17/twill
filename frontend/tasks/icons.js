@@ -54,7 +54,7 @@ function buildIcon (fileName, iconPath) {
   return svgo.optimize(file).then(function (result) {
     if (result.error) logger.info('Icon error ' + fileName + '.svg : ', result.error)
     else {
-      iconPath.output.icons.push(Object.assign({title}, result.info))
+      iconPath.output.icons.push(Object.assign({ title }, result.info))
       iconPath.output.sprite.add(path.parse(fileName).name, result.data)
     }
   })

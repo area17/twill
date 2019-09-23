@@ -44,7 +44,7 @@
   import bucketMixin from '@/mixins/buckets'
 
   export default {
-    components: {A17Dropdown},
+    components: { A17Dropdown },
     name: 'a17BucketItem',
     props: {
       bucket: {

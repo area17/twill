@@ -40,7 +40,7 @@
     mixins: [TableCellMixin],
     methods: {
       update: function (colName) {
-        this.$emit('update', {row: this.row, col: colName})
+        this.$emit('update', { row: this.row, col: colName })
       }
     }
   }

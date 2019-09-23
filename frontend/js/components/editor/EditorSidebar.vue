@@ -6,7 +6,10 @@
           <a17-dropdown class="f--small" position="bottom-left" :ref="moveDropdown(index)" :maxHeight="270">
             <span class="editorSidebar__counter f--tiny" @click="toggleDropdown(index)">{{ index + 1 }}</span>
             <div slot="dropdown__content">
-              <button type="button" v-for="n in blocks.length" @click="moveBlock(index, n - 1)">{{ n }}</button>
+              <button type="button"
+                      v-for="n in blocks.length"
+                      :key="n"
+                      @click="moveBlock(index, n - 1)">{{ n }}</button>
             </div>
           </a17-dropdown>{{ activeBlock.title }}
         </div>

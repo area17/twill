@@ -40,7 +40,7 @@ export default {
       return this.rows.length <= 0
     },
     isEmptyDatable: function () {
-      return {'datatable__table--empty': this.isEmpty}
+      return { 'datatable__table--empty': this.isEmpty }
     },
     ...mapState({
       columns: state => state.datatable.columns

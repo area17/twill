@@ -21,7 +21,7 @@
 </template>
 
 <script>
-  // Hightly inspired by https://github.com/xiaokaike/vue-color
+// Hightly inspired by https://github.com/xiaokaike/vue-color
   import tinyColor from 'tinycolor2'
   import throttle from 'lodash/throttle'
 

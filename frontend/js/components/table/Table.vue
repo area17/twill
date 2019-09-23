@@ -2,7 +2,9 @@
   <div class="table__scroller" @scroll="updateScroll">
     <table class="table" :class="{'table--sized' : columnsWidth.length }">
       <colgroup v-if="columnsWidth.length">
-        <col v-for="(width, index) in columnsWidth" :style="colWidths[index]" />
+        <col v-for="(width, index) in columnsWidth"
+             :key="index"
+             :style="colWidths[index]" />
       </colgroup>
       <slot>
       </slot>

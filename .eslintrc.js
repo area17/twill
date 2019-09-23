@@ -1,30 +1,15 @@
-// http://eslint.org/docs/user-guide/configuring
-
 module.exports = {
   root: true,
-  parserOptions: {
-    parser: 'babel-eslint',
-    sourceType: 'module'
-  },
   env: {
-    browser: true,
+    node: true
   },
-  // Standard JS : https://github.com/standard/standard
-  // VueJs - Priority A: Essential https://github.com/vuejs/eslint-plugin-vue#bulb-rules
-  extends: [
-    'standard',
-    'plugin:vue/essential'
+  'extends': [
+    'plugin:vue/essential',
+    '@vue/standard'
   ],
-  // required to lint *.vue files
-  plugins: [
-    'vue'
-  ],
-  // add your custom rules here
   'rules': {
-    // no need of v-key in vue v-for loop
-    'vue/require-v-for-key': 'off',
     // indent
-    'indent': ['error', 2, {'SwitchCase' : 1}],
+    'indent': ['error', 2, { 'SwitchCase': 1 }],
     'vue/script-indent': ['error', 2, {
       'baseIndent': 1,
       'switchCase': 1
@@ -35,18 +20,22 @@ module.exports = {
     // allow async-await
     'generator-star-spacing': 0,
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
+    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
   },
   overrides: [
     {
-      files: ["*.vue"],
+      files: ['*.vue'],
       rules: {
-        "indent": "off",
-        "vue/script-indent": ['error', 2, {
+        'indent': 'off',
+        'vue/script-indent': ['error', 2, {
           'baseIndent': 1,
           'switchCase': 1
         }]
       }
     }
-  ]
+  ],
+  parserOptions: {
+    parser: 'babel-eslint'
+  }
 }

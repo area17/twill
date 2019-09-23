@@ -4,7 +4,9 @@
       <transition-group name="draggable_list" tag='div'>
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
           <a17-block :block="block" :index="index" :opened="opened" :closed="closed" @expand="setOpened" ref="blockList">
-            <button type="button" slot="dropdown-add" v-if="availableBlocks.length" v-for="availableBlock in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, index + 1)"><span v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
+            <template v-for="availableBlock in availableBlocks">
+              <button type="button" slot="dropdown-add" v-if="availableBlocks.length" :key="availableBlock.component" @click="addBlock(availableBlock, index + 1)"><span v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
+            </template>
             <div slot="dropdown-action">
               <button type="button" @click="collapseAllBlocks()" v-if="opened">Collapse all</button>
               <button type="button" @click="expandAllBlocks()" v-else>Expand all</button>

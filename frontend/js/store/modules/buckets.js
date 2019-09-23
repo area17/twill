@@ -1,5 +1,5 @@
 import bucketsAPI from '../api/buckets'
-import {BUCKETS, NOTIFICATION} from '../mutations'
+import { BUCKETS, NOTIFICATION } from '../mutations'
 import ACTIONS from '@/store/actions'
 
 const state = {
@@ -60,7 +60,7 @@ const mutations = {
 }
 
 const actions = {
-  [ACTIONS.GET_BUCKETS] ({commit, state}) {
+  [ACTIONS.GET_BUCKETS] ({ commit, state }) {
     bucketsAPI.get({
       content_type: state.dataSources.selected.value,
       page: state.page,
@@ -71,7 +71,7 @@ const actions = {
       commit(BUCKETS.UPDATE_BUCKETS_MAX_PAGE, resp.maxPage)
     })
   },
-  [ACTIONS.SAVE_BUCKETS] ({commit, state}) {
+  [ACTIONS.SAVE_BUCKETS] ({ commit, state }) {
     const buckets = {}
 
     state.buckets.forEach((bucket) => {
@@ -86,10 +86,10 @@ const actions = {
       buckets[bucket.id] = children
     })
 
-    bucketsAPI.save(state.saveUrl, {buckets: buckets}, (successResponse) => {
+    bucketsAPI.save(state.saveUrl, { buckets: buckets }, (successResponse) => {
       commit(NOTIFICATION.SET_NOTIF, {
         message: 'Features saved. All good!',
-        variant: 'success'})
+        variant: 'success' })
     }, (errorResponse) => {
       commit(NOTIFICATION.SET_NOTIF, {
         message: 'Your submission could not be validated, please fix and retry',
