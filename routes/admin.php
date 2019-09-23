@@ -8,7 +8,6 @@ if (config('twill.enabled.users-management')) {
     Route::module('groups', ['except' => ['sort', 'feature', 'search']]);
     Route::module('roles', ['except' => ['sort', 'feature']]);
     Route::name('users.resend.registrationEmail')->get('users/{user}/registration-email', 'UserController@resendRegistrationEmail');
-    Route::get('group/search', ['as' => 'groups.search', 'uses' => 'GroupController@search']);
 }
 
 if (config('twill.enabled.media-library')) {

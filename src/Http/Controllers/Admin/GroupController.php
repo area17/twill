@@ -130,9 +130,4 @@ class GroupController extends ModuleController
         })->values();
     }
 
-    public function search()
-    {
-        return json_encode([]);
-    }
-
 }
