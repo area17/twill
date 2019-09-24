@@ -210,7 +210,6 @@
         if (typeof newValue === 'undefined') newValue = ''
 
         if (this.value !== newValue) {
-          console.warn('updateFromStore - Update UI value : ' + this.name + ' -> ' + newValue)
           this.value = newValue
           this.updateEditor(newValue)
         }

@@ -34,8 +34,8 @@ export default {
         callback(data)
       }
     }, function (resp) {
-      globalError(component, resp)
-      console.log('get request error.')
+      const error = `Get request error.\n${resp}}`
+      globalError(component, error)
     })
   },
 
@@ -43,9 +43,9 @@ export default {
     axios.put(window.CMS_URLS.publish, { id: row.id, active: row.published }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      globalError(component, resp)
+      const error = `Publish request error.\n${resp}}`
+      globalError(component, error)
       if (errorCallback && typeof errorCallback === 'function') errorCallback(resp.response)
-      console.log('publish request error.')
     })
   },
 
@@ -53,8 +53,8 @@ export default {
     axios.put(window.CMS_URLS.feature, { id: row.id, active: row.featured }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      globalError(component, resp)
-      console.log('feature request error.')
+      const error = `Feature request error.\n${resp}}`
+      globalError(component, error)
     })
   },
 
@@ -62,8 +62,8 @@ export default {
     axios.delete(row.delete).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      globalError(component, resp)
-      console.log('delete request error.')
+      const error = `Delete request error.\n${resp}}`
+      globalError(component, error)
     })
   },
 
@@ -71,8 +71,8 @@ export default {
     axios.put(window.CMS_URLS.restore, { id: row.id }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      globalError(component, resp)
-      console.log('restore request error.')
+      const error = `Restore request error.\n${resp}}`
+      globalError(component, error)
     })
   },
 
@@ -80,8 +80,8 @@ export default {
     axios.post(window.CMS_URLS.reorder, { ids: ids }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      globalError(component, resp)
-      console.log('reorder request error.')
+      const error = `Reorder request error.\n${resp}}`
+      globalError(component, error)
     })
   },
 
@@ -89,8 +89,8 @@ export default {
     axios.post(window.CMS_URLS.bulkPublish, { ids: params.ids, publish: params.toPublish }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      globalError(component, resp)
-      console.log('bulk publish request error.')
+      const error = `Bulk publish request error.\n${resp}}`
+      globalError(component, error)
     })
   },
 
@@ -98,8 +98,8 @@ export default {
     axios.post(window.CMS_URLS.bulkFeature, { ids: params.ids, feature: params.toFeature }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      globalError(component, resp)
-      console.log('bulk feature request error.')
+      const error = `Bulk feature request error.\n${resp}}`
+      globalError(component, error)
     })
   },
 
@@ -107,8 +107,8 @@ export default {
     axios.post(window.CMS_URLS.bulkDelete, { ids: ids }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      globalError(component, resp)
-      console.log('bulk delete request error.')
+      const error = `Bulk delete request error.\n${resp}}`
+      globalError(component, error)
     })
   },
 
@@ -116,8 +116,8 @@ export default {
     axios.post(window.CMS_URLS.bulkRestore, { ids: ids }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      globalError(component, resp)
-      console.log('bulk restore request error.')
+      const error = `Bulk restore request error.\n${resp}}`
+      globalError(component, error)
     })
   }
 }

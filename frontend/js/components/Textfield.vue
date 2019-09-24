@@ -175,7 +175,6 @@
         if (typeof newValue === 'undefined') newValue = ''
 
         if (this.value !== newValue) {
-          console.warn('Update UI value : ' + this.name + ' -> ' + newValue)
           this.updateValue(newValue)
         }
       },

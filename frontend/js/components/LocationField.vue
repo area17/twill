@@ -254,10 +254,10 @@
               if (results[1]) {
                 self.address = results[1].formatted_address
               } else {
-                console.info('Geocoding - No results found')
+                console.error('Geocoding - No results found')
               }
             } else {
-              console.warn('Geocoding - Geocoder failed due to: ' + status)
+              console.error('Geocoding - Geocoder failed due to: ' + status)
             }
           })
         }

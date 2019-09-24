@@ -6,9 +6,9 @@ export default {
     axios.put(endpoint, data).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp.data)
     }, function (resp) {
-      globalError('REVISION', resp)
+      const error = `Preview request error.\n${resp}`
+      globalError('REVISION', error)
       if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
-      console.warn('preview request error.')
     })
   }
 }

@@ -27,8 +27,8 @@
 <script>
   import { mapState, mapGetters } from 'vuex'
   import a17VueFilters from '@/utils/filters.js'
-  import a17ModalValidationButtons from '@/components/modals/ModalValidationButtons.vue'
   import langManager from '@/components/LangManager.vue'
+  import a17ModalValidationButtons from '@/components/modals/ModalValidationButtons.vue'
 
   import InputframeMixin from '@/mixins/inputFrame'
   import LocaleMixin from '@/mixins/locale'
