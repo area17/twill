@@ -83,7 +83,7 @@ class Build extends Command
     private function npmInstall()
     {
         $npmInstallProcess = new Process(['npm', 'ci'], base_path('vendor/area17/twill'));
-        $npmInstallProcess->setTty(true);
+        $npmInstallProcess->setTty(Process::isTtySupported());
         $npmInstallProcess->mustRun();
     }
 
@@ -93,7 +93,7 @@ class Build extends Command
     private function npmBuild()
     {
         $npmBuildProcess = new Process(['npm', 'run', 'prod'], base_path('vendor/area17/twill'));
-        $npmBuildProcess->setTty(true);
+        $npmBuildProcess->setTty(Process::isTtySupported());
         $npmBuildProcess->mustRun();
     }
 
