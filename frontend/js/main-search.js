@@ -56,10 +56,6 @@ const vueSearchApp = {
         this.toggleSearch()
       }
     }
-  },
-  mounted: function () {
-  },
-  created: function () {
   }
 }
 

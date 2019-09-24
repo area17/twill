@@ -185,7 +185,6 @@
       cancelBlock: function () {
         if (this.hasBlockActive) {
           if (window.hasOwnProperty('PREVSTATE')) {
-            console.warn('Store - Restore previous Store state')
             this.$store.replaceState(window.PREVSTATE)
           }
           this.getPreview()
@@ -200,7 +199,6 @@
         this.$store.dispatch(ACTIONS.GET_ALL_PREVIEWS)
       },
       getPreview: function (index = -1) {
-        console.warn('Editor - getPreview')
         this.$store.dispatch(ACTIONS.GET_PREVIEW, index)
       },
       selectBlock: function (index) {
@@ -213,7 +211,6 @@
         if (this.isBlockActive(blockId)) this.unselectBlock()
         else {
           // Save current Store and activate
-          console.warn('Store - copy current Store state')
           window.PREVSTATE = cloneDeep(this.$store.state)
           this.$store.commit(CONTENT.ACTIVATE_BLOCK, index)
 
@@ -222,7 +219,6 @@
             this.unSubscribe = this.$store.subscribe((mutation, state) => {
               // Don't trigger a refresh of the preview every single time, just when necessary
               if (PREVIEW.REFRESH_BLOCK_PREVIEW.includes(mutation.type)) {
-                console.log('Editor - store changed : ' + mutation.type)
                 if (PREVIEW.REFRESH_BLOCK_PREVIEW_ALL.includes(mutation.type)) {
                   self.getAllPreviews()
                 } else {

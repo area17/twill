@@ -6,6 +6,15 @@
     $translate = true;
 @endphp
 
+@push('extra_css')
+    <link href="{{ mix('main-dashboard.css', 'twill')}}" rel="preload" as="style"/>
+    <link href="{{ mix('main-dashboard.css', 'twill')}}" rel="stylesheet"/>
+@endpush
+
+@push('extra_js_head')
+    <link href="{{ mix('main-dashboard.js', 'twill')}}" rel="preload" as="script"/>
+@endpush
+
 @section('appTypeClass', 'body--dashboard')
 
 @section('primaryNavigation')
@@ -55,8 +64,7 @@
     window.STORE.datatable.columns = {!! json_encode($tableColumns) !!}
 @stop
 
+
 @push('extra_js')
-    <script src="{{ mix('/assets/admin/js/manifest.js') }}"></script>
-    <script src="{{ mix('/assets/admin/js/vendor.js') }}"></script>
-    <script src="{{ mix('/assets/admin/js/main-dashboard.js') }}"></script>
+    <script src="{{ mix('main-dashboard.js', 'twill') }}"></script>
 @endpush

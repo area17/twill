@@ -70,9 +70,7 @@
     methods: {
       updateFromStore: function (newValue) { // called from the formStore mixin
         if (typeof newValue === 'undefined') newValue = ''
-
         if (this.value !== newValue) {
-          console.warn('Update UI value : ' + this.name + ' -> ' + newValue)
           this.value = newValue
         }
       },
@@ -116,9 +114,6 @@
       padding: 0;
     }
   }
-
-  // .form__field--color {
-  // }
 
   .form__field--colorBtn {
     cursor:pointer;

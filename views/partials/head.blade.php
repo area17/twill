@@ -6,11 +6,16 @@
 <title>{{ config('app.name') }}</title>
 
 {{-- Global styles --}}
-<link href="{{ mix('/assets/admin/css/app.css')}}" rel="stylesheet" />
 
 <!-- Fonts -->
-<link href="/assets/admin/fonts/Inter-Regular.woff2" rel="preload" as="font" type="font/woff2" crossorigin>
-<link href="/assets/admin/fonts/Inter-Medium.woff2" rel="preload" as="font" type="font/woff2" crossorigin>
+{{--<link href="{{mix('twill/assets/fonts/Inter-Regular.woff2', 'twill')}}" rel="preload" as="font" type="font/woff2" crossorigin>--}}
+{{--<link href="{{mix('twill/assets/fonts/Inter-Medium.woff2', 'twill')}}" rel="preload" as="font" type="font/woff2" crossorigin>--}}
+
+<!-- CSS -->
+<link href="{{ mix('chunk-common.css', 'twill')}}" rel="preload" as="style" crossorigin/>
+<link href="{{ mix('chunk-vendors.css', 'twill')}}" rel="preload" as="style" crossorigin/>
+<link href="{{ mix('chunk-common.css', 'twill')}}" rel="stylesheet"/>
+<link href="{{ mix('chunk-vendors.css', 'twill')}}" rel="stylesheet"/>
 
 <!-- head.js -->
 <script>

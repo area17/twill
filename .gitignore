@@ -11,3 +11,7 @@ tests/coverage
 tests/storage
 .phpunit.result.cache
 .php_cs.cache
+test
+dist
+.env.local
+.env.*.local

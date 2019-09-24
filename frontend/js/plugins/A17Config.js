@@ -88,6 +88,11 @@ const A17Config = {
 
           if (this.$root.$refs.mediaLibrary) this.$root.$refs.mediaLibrary.open()
         }
+      },
+      created () {
+        // Global Log App Version
+        // eslint-disable-next-line no-console
+        console.log('\x1b[32m', `Made with ${process.env.VUE_APP_NAME} - v${process.env.VUE_APP_VERSION}`)
       }
     })
 

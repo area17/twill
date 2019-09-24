@@ -2,10 +2,13 @@ const path = require('path')
 const fs = require('fs')
 
 // Define global vue variables
-process.env.VUE_APP_VERSION = fs.readFileSync(path.resolve('VERSION'))
 process.env.VUE_APP_NAME = require('./package').name.toUpperCase()
+process.env.VUE_APP_VERSION = fs.readFileSync(path.resolve('VERSION'), 'UTF-8').replace('\n', '')
 
-// TODO: fix extract font paths in generated css
+// eslint-disable-next-line no-console
+console.log('\x1b[32m', `${process.env.VUE_APP_NAME} - v${process.env.VUE_APP_VERSION}`)
+console.log('\x1b[32m', `🔥 Building frontend application`)
+
 /**
  * For configuration
  * @see: https://github.com/johnagan/clean-webpack-plugin
@@ -35,14 +38,14 @@ const pages = {
 }
 
 module.exports = {
-  // Define default publicPath
-  publicPath: publicPath,
   // Define base outputDir of build
   outputDir: outputDir,
   // Define root asset directory
   assetsDir: assetsDir,
   // Remove sourcemaps for production
   productionSourceMap: false,
+  // Don't generate files with hash name
+  filenameHashing: false,
   css: {
     loaderOptions: {
       // define global settings pass in each components
@@ -103,6 +106,16 @@ module.exports = {
       // Change default manifest name to work with default "mix" Laravel helper
       new WebpackAssetsManifest({
         output: `${publicPath}/mix-manifest.json`
+      }),
+      new WebpackAssetsManifest({
+        output: `${publicPath}/asset-integrity-manifest.json`,
+        publicPath: true,
+        customize (entry, original, manifest, asset) {
+          return {
+            key: entry.value,
+            value: asset
+          }
+        }
       })
     ]
   },
@@ -115,7 +128,13 @@ module.exports = {
     config.resolve.alias
       .set('styles', path.resolve(`${srcDirectory}/scss`))
 
-    // delete HTML related webpack plugins by page
+    /* Delete default copy webpack plugin
+       Because we are in a custom architecture instead of vue-cli project
+       Copying public folder could be confusing with default Laravel architecture
+     */
+    config.plugins.delete('copy')
+
+    // Delete HTML related webpack plugins by page
     Object.keys(pages).forEach(page => {
       config.plugins.delete(`html-${page}`)
       config.plugins.delete(`preload-${page}`)

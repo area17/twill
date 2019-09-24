@@ -103,6 +103,8 @@
             @yield('initialStore')
             @stack('vuexStore')
         </script>
+        <script src="{{ mix('chunk-vendors.js', 'twill') }}"></script>
+        <script src="{{ mix('chunk-common.js', 'twill') }}"></script>
         @stack('extra_js')
     </body>
 </html>

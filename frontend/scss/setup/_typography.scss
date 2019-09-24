@@ -1,38 +1,39 @@
 /* Inter font */
 @font-face {
   font-family: 'Inter';
-  font-style:  normal;
+  font-style: normal;
   font-weight: 400;
   src: url("~fe/fonts/Inter-Regular.woff2") format("woff2"),
-       url("~fe/fonts/Inter-Regular.woff") format("woff");
+  url("~fe/fonts/Inter-Regular.woff") format("woff");
   font-display: swap;
 }
+
 @font-face {
   font-family: 'Inter';
-  font-style:  italic;
+  font-style: italic;
   font-weight: 400;
   src: url("~fe/fonts/Inter-Italic.woff2") format("woff2"),
-       url("~fe/fonts/Inter-Italic.woff") format("woff");
+  url("~fe/fonts/Inter-Italic.woff") format("woff");
   font-display: swap;
 }
 
 @font-face {
   font-family: 'Inter';
-  font-style:  normal;
+  font-style: normal;
   font-weight: 600;
   src: url("~fe/fonts/Inter-Medium.woff2") format("woff2"),
-       url("~fe/fonts/Inter-Medium.woff") format("woff");
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Inter';
-  font-style:  italic;
-  font-weight: 600;
-  src: url("~fe/fonts/Inter-MediumItalic.woff2") format("woff2"),
-       url("~fe/fonts/Inter-MediumItalic.woff") format("woff");
+  url("~fe/fonts/Inter-Medium.woff") format("woff");
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Inter';
+  font-style: italic;
+  font-weight: 600;
+  src: url("~fe/fonts/Inter-MediumItalic.woff2") format("woff2"),
+  url("~fe/fonts/Inter-MediumItalic.woff") format("woff");
+  font-display: swap;
+}
 
 $sans-serif: Inter, -apple-system, -system-ui, system-ui, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
 /*$sans-serif: "Helvetica Neue", Helvetica, Arial, sans-serif;*/

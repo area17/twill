@@ -2,6 +2,7 @@
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use \Illuminate\Support\Str;
 

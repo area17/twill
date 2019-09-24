@@ -48,7 +48,7 @@ store.registerModule('attributes', attributes)
 
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
-window.vm = new Vue({
+window[process.env.VUE_APP_NAME].vm = new Vue({
   store, // inject store to all children
   el: '#app',
   components: {
