@@ -79,7 +79,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .tablehead__cell {
     color:$color__text--light;

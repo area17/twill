@@ -424,7 +424,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   $width_sidebar: (default: 290px, small: 250px, xsmall: 200px);
 
@@ -556,7 +555,6 @@
 </style>
 
 <style lang="scss">
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .medialibrary__filter-item {
     .vselect {

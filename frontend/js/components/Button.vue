@@ -47,7 +47,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   $height_btn: 40px;
   $height_small_btn: 35px;

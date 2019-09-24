@@ -50,7 +50,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .mediasidebar__progress {
     height: 6px;

@@ -276,7 +276,6 @@
 </style>
 <style lang="scss">
   /* Not scoped style here because we want to overwrite default style of the wysiwig */
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   $height_input: 45px;
 

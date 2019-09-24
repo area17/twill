@@ -72,7 +72,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .languageManager {
     margin: 0 -20px;

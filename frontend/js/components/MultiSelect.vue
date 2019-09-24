@@ -82,7 +82,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .multiselector {
     color:$color__text;

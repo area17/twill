@@ -76,7 +76,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .checkboxGroup {
     color:$color__text;

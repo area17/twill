@@ -55,7 +55,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   $toolbar__height: 35px;
   $border__radius: 2px;
