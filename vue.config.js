@@ -1,4 +1,10 @@
 const path = require('path')
+const fs = require('fs')
+
+// Define global vue variables
+process.env.VUE_APP_VERSION = fs.readFileSync(path.resolve('VERSION'))
+process.env.VUE_APP_NAME = require('./package').name.toUpperCase()
+
 // TODO: fix extract font paths in generated css
 /**
  * For configuration
