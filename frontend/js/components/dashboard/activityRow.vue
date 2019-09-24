@@ -79,7 +79,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .activityRow {
     border-bottom:1px solid $color__border--light;

@@ -232,7 +232,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .dropdown {
     display:inherit;
@@ -372,7 +371,6 @@
 </style>
 
 <style lang="scss">
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .dropdown {
     .dropdown__content {

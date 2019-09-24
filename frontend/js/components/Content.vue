@@ -152,7 +152,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .content {
     margin-top:20px; // margin-top:35px;

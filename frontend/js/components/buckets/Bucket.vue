@@ -284,7 +284,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .buckets {
     padding-bottom: 80px;
@@ -380,7 +379,6 @@
 </style>
 
 <style lang="scss">
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .buckets__item {
     position: relative;
@@ -527,7 +525,6 @@
 </style>
 
 <style lang="scss">
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .buckets {
     .buckets__fieldset {

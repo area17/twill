@@ -105,7 +105,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .nested-datatable__item {
     border: 1px solid #F2F2F2;

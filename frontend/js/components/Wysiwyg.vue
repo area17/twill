@@ -278,6 +278,9 @@
   .wysiwyg__button {
     margin-top:20px;
   }
+</style>
+<style lang="scss">
+  /* Not scoped style here because we want to overwrite default style of the wysiwig */
 
   $height_input: 45px;
   .wysiwyg__limit {

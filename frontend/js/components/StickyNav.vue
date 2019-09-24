@@ -143,7 +143,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .stickyNav {
     background-color:rgba($color__border--light, 0.95);

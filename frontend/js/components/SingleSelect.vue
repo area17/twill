@@ -99,7 +99,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .singleselector {
     color:$color__text;

@@ -179,7 +179,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .editorPreview {
     background-color:inherit;

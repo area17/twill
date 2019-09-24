@@ -148,7 +148,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .filter__inner {
     display: flex;
@@ -253,7 +252,6 @@
 </style>
 
 <style lang="scss">
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .filter {
     .filter__moreInner {

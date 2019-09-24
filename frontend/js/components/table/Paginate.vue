@@ -83,7 +83,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .paginate {
     // border-top:1px solid $color__border--light;

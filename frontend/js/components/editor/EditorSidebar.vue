@@ -120,7 +120,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .editorSidebar {
     margin:20px 0 20px 0;
