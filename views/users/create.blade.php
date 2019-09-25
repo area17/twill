@@ -16,6 +16,7 @@
             'label' => "Role",
             'native' => true,
             'options' => $roleList,
+            'default' => $roleList[0]['value'],
             'placeholder' => 'Select a role'
         ])
     @endcan
