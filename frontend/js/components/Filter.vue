@@ -24,6 +24,7 @@
 </template>
 
 <script>
+  import debounce from 'lodash/debounce'
   import FormDataAsObj from '@/utils/formDataAsObj.js'
 
   export default {
@@ -79,7 +80,7 @@
       },
       enter: function (el, done) {
         this.resetHeight()
-        window.addEventListener('resize', this.resetHeight, false)
+        window.addEventListener('resize', this._resize, false)
       },
       afterEnter: function (el) {
         el.style.overflow = 'visible'
@@ -87,7 +88,7 @@
       beforeLeave: function (el) {
         this.resetHeight()
         el.style.overflow = 'hidden'
-        window.removeEventListener('resize', this.resetHeight)
+        window.removeEventListener('resize', this._resize)
       },
       leave: function (el, done) {
         el.style.height = '0px'
@@ -108,8 +109,15 @@
         this.$emit('clear')
       },
       resetHeight: function () {
+        // Return if ref is not set.
+        if (!this.$refs.more) return
+
+        // Set height to the container.
         this.$refs.more.style.height = this.getHeight() + 'px'
-      }
+      },
+      _resize: debounce(function () {
+        this.resetHeight()
+      }, 50)
     },
     beforeMount: function () {
       if (!this.$slots.navigation) this.withNavigation = false
