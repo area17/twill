@@ -17,11 +17,17 @@ trait HandleRepeaters
     public function afterSaveHandleRepeaters($object, $fields)
     {
         if (property_exists($this->model, 'repeaters')) {
-            foreach ($this->model->repeaters as $moduleName) {
-                $relation = $moduleName;
-                $model = Str::studly(Str::singular($moduleName));
-                $repeaterName = Str::singular($moduleName);
-                $this->updateRepeater($object, $fields, $relation, $model, $repeaterName);
+            foreach ($this->model->repeaters as $module) {
+                if (is_string($module)) {
+                    $model = Str::studly(Str::singular($module));
+                    $repeaterName = Str::singular($module);
+                    $this->updateRepeater($object, $fields, $module, $model, $repeaterName);
+                } elseif (is_array($module)) {
+                    $relation = !empty($module['relation']) ? $module['relation'] : key($module);
+                    $model = isset($module['model']) ? $module['model'] : Str::studly(Str::singular(key($module)));
+                    $repeaterName = !empty($module['repeaterName']) ? $module['repeaterName'] : Str::singular(key($module));
+                    $this->updateRepeater($object, $fields, $relation, $model, $repeaterName);
+                }
             }
         }
     }
@@ -34,11 +40,17 @@ trait HandleRepeaters
     public function getFormFieldsHandleRepeaters($object, $fields)
     {
         if (property_exists($this->model, 'repeaters')) {
-            foreach ($this->model->repeaters as $moduleName) {
-                $relation = $moduleName;
-                $model = Str::studly(Str::singular($moduleName));
-                $repeaterName = Str::singular($moduleName);
-                $fields = $this->getFormFieldsForRepeater($object, $fields, $relation, $model, $repeaterName);
+            foreach ($this->model->repeaters as $module) {
+                if (is_string($module)) {
+                    $model = Str::studly(Str::singular($module));
+                    $repeaterName = Str::singular($module);
+                    $fields = $this->getFormFieldsForRepeater($object, $fields, $module, $model, $repeaterName);
+                } elseif (is_array($module)) {
+                    $model = isset($module['model']) ? $module['model'] : Str::studly(Str::singular(key($module)));
+                    $relation = !empty($module['relation']) ? $module['relation'] : key($module);
+                    $repeaterName = !empty($module['repeaterName']) ? $module['repeaterName'] : Str::singular(key($module));
+                    $fields = $this->getFormFieldsForRepeater($object, $fields, $relation, $model, $repeaterName);
+                }
             }
         }
         
