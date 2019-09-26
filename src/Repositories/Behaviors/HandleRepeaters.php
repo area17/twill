@@ -18,7 +18,10 @@ trait HandleRepeaters
     {
         if (property_exists($this->model, 'repeaters')) {
             foreach ($this->model->repeaters as $moduleName) {
-                $this->updateRepeater($object, $fields, $moduleName, Str::studly(Str::singular($moduleName)), Str::singular($moduleName));
+                $relation = $moduleName;
+                $model = Str::studly(Str::singular($moduleName));
+                $repeaterName = Str::singular($moduleName);
+                $this->updateRepeater($object, $fields, $relation, $model, $repeaterName);
             }
         }
     }
@@ -32,7 +35,10 @@ trait HandleRepeaters
     {
         if (property_exists($this->model, 'repeaters')) {
             foreach ($this->model->repeaters as $moduleName) {
-                $fields = $this->getFormFieldsForRepeater($object, $fields, $moduleName, Str::studly(Str::singular($moduleName)), Str::singular($moduleName));
+                $relation = $moduleName;
+                $model = Str::studly(Str::singular($moduleName));
+                $repeaterName = Str::singular($moduleName);
+                $fields = $this->getFormFieldsForRepeater($object, $fields, $relation, $model, $repeaterName);
             }
         }
         
