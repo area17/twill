@@ -1,16 +1,16 @@
 import { PUBLICATION } from '../mutations'
 
 const state = {
-  withPublicationToggle: window.STORE.publication.withPublicationToggle || false,
-  published: window.STORE.publication.published || false,
-  publishSubmit: (window.STORE.publication.published || !window.STORE.publication.withPublicationToggle) ? 'update' : 'live',
-  publishedLabel: window.STORE.publication.publishedLabel || 'Live',
-  draftLabel: window.STORE.publication.draftLabel || 'Draft',
-  withPublicationTimeframe: window.STORE.publication.withPublicationTimeframe || false,
-  startDate: window.STORE.publication.startDate || null,
-  endDate: window.STORE.publication.endDate || null,
-  visibility: window.STORE.publication.visibility || false,
-  reviewProcess: window.STORE.publication.reviewProcess || [],
+  withPublicationToggle: window[process.env.VUE_APP_NAME].STORE.publication.withPublicationToggle || false,
+  published: window[process.env.VUE_APP_NAME].STORE.publication.published || false,
+  publishSubmit: (window[process.env.VUE_APP_NAME].STORE.publication.published || !window[process.env.VUE_APP_NAME].STORE.publication.withPublicationToggle) ? 'update' : 'live',
+  publishedLabel: window[process.env.VUE_APP_NAME].STORE.publication.publishedLabel || 'Live',
+  draftLabel: window[process.env.VUE_APP_NAME].STORE.publication.draftLabel || 'Draft',
+  withPublicationTimeframe: window[process.env.VUE_APP_NAME].STORE.publication.withPublicationTimeframe || false,
+  startDate: window[process.env.VUE_APP_NAME].STORE.publication.startDate || null,
+  endDate: window[process.env.VUE_APP_NAME].STORE.publication.endDate || null,
+  visibility: window[process.env.VUE_APP_NAME].STORE.publication.visibility || false,
+  reviewProcess: window[process.env.VUE_APP_NAME].STORE.publication.reviewProcess || [],
   saveType: undefined,
   visibilityOptions: [
     {
@@ -22,7 +22,7 @@ const state = {
       label: 'Private'
     }
   ],
-  submitOptions: window.STORE.publication.submitOptions || {
+  submitOptions: window[process.env.VUE_APP_NAME].STORE.publication.submitOptions || {
     draft: [
       {
         name: 'save',

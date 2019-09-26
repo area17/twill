@@ -7,7 +7,7 @@ process.env.VUE_APP_VERSION = fs.readFileSync(path.resolve('VERSION'), 'UTF-8').
 
 // eslint-disable-next-line no-console
 console.log('\x1b[32m', `${process.env.VUE_APP_NAME} - v${process.env.VUE_APP_VERSION}`)
-console.log('\x1b[32m', `🔥 Building frontend application`)
+console.log('\x1b[32m', `\n🔥 Building frontend application`)
 
 /**
  * For configuration
@@ -36,6 +36,7 @@ const pages = {
   'main-form': `${srcDirectory}/js/main-form.js`,
   'main-listing': `${srcDirectory}/js/main-listing.js`
 }
+console.log(path.basename())
 
 module.exports = {
   // Define base outputDir of build
@@ -43,9 +44,7 @@ module.exports = {
   // Define root asset directory
   assetsDir: assetsDir,
   // Remove sourcemaps for production
-  productionSourceMap: false,
-  // Don't generate files with hash name
-  filenameHashing: false,
+  // productionSourceMap: false,
   css: {
     loaderOptions: {
       // define global settings pass in each components
@@ -105,15 +104,12 @@ module.exports = {
       }),
       // Change default manifest name to work with default "mix" Laravel helper
       new WebpackAssetsManifest({
-        output: `${publicPath}/mix-manifest.json`
-      }),
-      new WebpackAssetsManifest({
-        output: `${publicPath}/asset-integrity-manifest.json`,
+        output: `${publicPath}/twill-manifest.json`,
         publicPath: true,
         customize (entry, original, manifest, asset) {
+          const search = new RegExp(`${assetsDir.replace(/\//gm, '\/')}\/(css|fonts|js|icons)\/`, 'gm')
           return {
-            key: entry.value,
-            value: asset
+            key: entry.key.replace(search, '')
           }
         }
       })

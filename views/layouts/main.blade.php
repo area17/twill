@@ -5,8 +5,8 @@
     </head>
     <body class="env env--{{ app()->environment() }} @yield('appTypeClass')">
         <div class="svg-sprite">
-            {!! File::exists(public_path("/assets/admin/icons/icons.svg")) ? File::get(public_path("/assets/admin/icons/icons.svg")) : '' !!}
-            {!! File::exists(public_path("/assets/admin/icons/icons-files.svg")) ? File::get(public_path("/assets/admin/icons/icons-files.svg")) : '' !!}
+            {!! File::exists(public_path(twillAsset('icons.svg'))) ? File::get(public_path(twillAsset('icons.svg'))) : '' !!}
+            {!! File::exists(public_path(twillAsset('icons-files.svg'))) ? File::get(public_path(twillAsset('icons-files.svg'))) : '' !!}
         </div>
         @if(config('twill.enabled.search', false))
             @partialView(($moduleName ?? null), 'navigation._overlay_navigation', ['search' => true])
@@ -72,14 +72,15 @@
         </div>
 
         <script>
-            window.STORE = {}
-            window.STORE.form = {}
-            window.STORE.medias = {}
-            window.STORE.medias.types = []
-            window.STORE.languages = {!! json_encode(getLanguagesForVueStore($form_fields ?? [], $translate ?? false)) !!}
+            window['{{config('twill.browser')}}'] = {}
+            window['{{config('twill.browser')}}'].STORE = {}
+            window['{{config('twill.browser')}}'].STORE.form = {}
+            window['{{config('twill.browser')}}'].STORE.medias = {}
+            window['{{config('twill.browser')}}'].STORE.medias.types = []
+            window['{{config('twill.browser')}}'].STORE.languages = {!! json_encode(getLanguagesForVueStore($form_fields ?? [], $translate ?? false)) !!}
 
             @if (config('twill.enabled.media-library'))
-                window.STORE.medias.types.push({
+                window['{{config('twill.browser')}}'].STORE.medias.types.push({
                     value: 'image',
                     text: 'Images',
                     total: {{ \A17\Twill\Models\Media::count() }},
@@ -90,7 +91,7 @@
             @endif
 
             @if (config('twill.enabled.file-library'))
-                window.STORE.medias.types.push({
+                window['{{config('twill.browser')}}'].STORE.medias.types.push({
                     value: 'file',
                     text: 'Files',
                     total: {{ \A17\Twill\Models\File::count() }},
@@ -100,11 +101,12 @@
                 })
             @endif
 
+
             @yield('initialStore')
             @stack('vuexStore')
         </script>
-        <script src="{{ mix('chunk-vendors.js', 'twill') }}"></script>
-        <script src="{{ mix('chunk-common.js', 'twill') }}"></script>
+        <script src="{{ twillAsset('chunk-vendors.js') }}"></script>
+        <script src="{{ twillAsset('chunk-common.js') }}"></script>
         @stack('extra_js')
     </body>
 </html>

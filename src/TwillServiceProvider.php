@@ -7,6 +7,7 @@ use A17\Twill\Commands\CreateSuperAdmin;
 use A17\Twill\Commands\GenerateBlocks;
 use A17\Twill\Commands\Install;
 use A17\Twill\Commands\ModuleMake;
+use A17\Twill\Commands\Publish;
 use A17\Twill\Commands\RefreshLQIP;
 use A17\Twill\Commands\Update;
 use A17\Twill\Http\ViewComposers\ActiveNavigation;
@@ -65,7 +66,7 @@ class TwillServiceProvider extends ServiceProvider
     {
         $this->publishConfigs();
         $this->publishMigrations();
-        $this->publishAssets();
+        $this->publishAssets(); // TBD: Do we need to still publish asset here ?
 
         $this->registerCommands();
 
@@ -309,6 +310,7 @@ class TwillServiceProvider extends ServiceProvider
             GenerateBlocks::class,
             Build::class,
             Update::class,
+            Publish::class
         ]);
     }
 

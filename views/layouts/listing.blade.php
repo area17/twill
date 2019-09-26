@@ -12,13 +12,14 @@
 @endphp
 
 @push('extra_css')
-    <link href="{{ mix('main-listing.css', 'twill')}}" rel="preload" as="style"/>
-    <link href="{{ mix('main-listing.css', 'twill')}}" rel="stylesheet"/>
+    <link href="{{ twillAsset('main-listing.css')}}" rel="preload" as="style" crossorigin/>
+    <link href="{{ twillAsset('main-listing.css')}}" rel="stylesheet" crossorigin/>
 @endpush
 
 @push('extra_js_head')
-    <link href="{{ mix('main-listing.js', 'twill')}}" rel="preload" as="script"/>
+    <link href="{{ twillAsset('main-listing.js')}}" rel="preload" as="script" crossorigin/>
 @endpush
+
 
 @section('content')
     <div class="listing">
@@ -105,7 +106,9 @@
 @stop
 
 @section('initialStore')
-    window.CMS_URLS = {
+    @dd(config('twill_browser'));
+
+    window.{{config('twill_browser')}}.CMS_URLS = {
         index: @if(isset($indexUrl)) '{{ $indexUrl }}' @else window.location.href.split('?')[0] @endif,
         publish: '{{ $publishUrl }}',
         bulkPublish: '{{ $bulkPublishUrl }}',
@@ -117,11 +120,11 @@
         bulkDelete: '{{ $bulkDeleteUrl }}'
     }
 
-    window.STORE.form = {
+    window.{{config('twill_browser')}}.STORE.form = {
         fields: []
     }
 
-    window.STORE.datatable = {
+    window.{{config('twill_browser')}}.STORE.datatable = {
         data: {!! json_encode($tableData) !!},
         columns: {!! json_encode($tableColumns) !!},
         navigation: {!! json_encode($tableMainFilters) !!},
@@ -138,10 +141,10 @@
     }
 
     @if ($create && ($openCreate ?? false))
-        window.openCreate = {!! json_encode($openCreate) !!}
+        window.{{config('twill_browser')}}.openCreate = {!! json_encode($openCreate) !!}
     @endif
 @stop
 
 @push('extra_js')
-    <script src="{{ mix('main-listing.js', 'twill') }}"></script>
+    <script src="{{ twillAsset('main-listing.js') }}"></script>
 @endpush

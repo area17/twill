@@ -28,6 +28,46 @@ if (!function_exists('revAsset')) {
     }
 }
 
+if (!function_exists('twillAsset')) {
+    /**
+     * @param string $file
+     * @return string
+     */
+    function twillAsset($file)
+    {
+        if (!app()->environment('local', 'development')) {
+            try {
+                $manifest = Cache::rememberForever('twill-manifest', function () {
+                    return json_decode(file_get_contents(config('twill.frontend.twill_manifest_path')), true);
+                });
+
+                if (isset($manifest[$file])) {
+                    return $manifest[$file];
+                } else {
+                    throw new Exception('Can\'t find file ' . $file);
+                }
+
+            } catch (\Exception $e) {
+                return '/' . $file;
+            }
+        }
+
+        try {
+            $manifest = json_decode(file_get_contents(config('twill.frontend.twill_manifest_path')), true);
+
+            if (isset($manifest[$file])) {
+                return $manifest[$file];
+            } else {
+                throw new Exception('Can\'t find file ' . $file);
+            }
+
+        } catch (\Exception $e) {
+            return '/' . $file;
+        }
+    }
+}
+
+
 if (!function_exists('icon')) {
     /**
      * ARIA roles memo: 'presentation' means merely decoration. Otherwise, use role="img".

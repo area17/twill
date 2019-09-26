@@ -74,8 +74,8 @@ class MyLink extends Link {
     }
 
     // url starting with the front-end base url wont have target blank
-    if (window.STORE.form.baseUrl) {
-      if (value.startsWith(window.STORE.form.baseUrl)) {
+    if (window[process.env.VUE_APP_NAME].STORE.form.baseUrl) {
+      if (value.startsWith(window[process.env.VUE_APP_NAME].STORE.form.baseUrl)) {
         node.removeAttribute('target')
       }
     }
@@ -98,8 +98,8 @@ class MyLink extends Link {
     }
 
     // url starting with the front-end base url wont have target blank
-    if (window.STORE.form.baseUrl) {
-      if (value.startsWith(window.STORE.form.baseUrl)) {
+    if (window[process.env.VUE_APP_NAME].STORE.form.baseUrl) {
+      if (value.startsWith(window[process.env.VUE_APP_NAME].STORE.form.baseUrl)) {
         this.domNode.removeAttribute('target')
         return
       }
