@@ -32,6 +32,16 @@ class {{modelClassName}} extends Model {{modelImplements}}
     //     'title',
     // ];
 
+    // uncomment and modify this as needed if you use browsers on the form
+    // public $browsers = [
+    //     'yourPluralModuleName',
+    // ];
+
+    // uncomment and modify this as needed if you use repeaters on the form
+    // public $repeaters = [
+    //     'yourPluralModuleName',
+    // ];
+
     // add checkbox fields names here (published toggle is itself a checkbox)
     public $checkboxes = [
         'published'
