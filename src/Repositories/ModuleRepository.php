@@ -527,6 +527,12 @@ abstract class ModuleRepository
      */
     public function afterSave($object, $fields)
     {
+        if (property_exists($this->model, 'browsers')) {
+            foreach ($this->model->browsers as $relationship) {
+                $this->updateBrowser($object, $fields, $relationship);
+            }
+        }
+
         foreach (class_uses_recursive(get_called_class()) as $trait) {
             if (method_exists(get_called_class(), $method = 'afterSave' . class_basename($trait))) {
                 $this->$method($object, $fields);
@@ -583,6 +589,12 @@ abstract class ModuleRepository
     public function getFormFields($object)
     {
         $fields = $object->attributesToArray();
+
+        if (property_exists($this->model, 'browsers')) {
+            foreach ($this->model->browsers as $relationship) {
+                $fields['browsers'][$relationship] = $this->getFormFieldsForBrowser($object, $relationship);
+            }
+        }
 
         foreach (class_uses_recursive(get_called_class()) as $trait) {
             if (method_exists(get_called_class(), $method = 'getFormFields' . class_basename($trait))) {
