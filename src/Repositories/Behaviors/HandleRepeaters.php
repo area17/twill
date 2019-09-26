@@ -9,6 +9,11 @@ use Illuminate\Support\Collection;
 
 trait HandleRepeaters
 {
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return void
+     */
     public function afterSaveHandleRepeaters($object, $fields)
     {
         if (property_exists($this->model, 'repeaters')) {
@@ -18,6 +23,11 @@ trait HandleRepeaters
         }
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return array
+     */
     public function getFormFieldsHandleRepeaters($object, $fields)
     {
         if (property_exists($this->model, 'repeaters')) {
