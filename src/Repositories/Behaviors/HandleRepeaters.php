@@ -4,10 +4,31 @@ namespace A17\Twill\Repositories\Behaviors;
 
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 
 trait HandleRepeaters
 {
+    public function afterSaveHandleRepeaters($object, $fields)
+    {
+        if (property_exists($this->model, 'repeaters')) {
+            foreach ($this->model->repeaters as $moduleName) {
+                $this->updateRepeater($object, $fields, $moduleName, Str::studly(Str::singular($moduleName)), Str::singular($moduleName));
+            }
+        }
+    }
+
+    public function getFormFieldsHandleRepeaters($object, $fields)
+    {
+        if (property_exists($this->model, 'repeaters')) {
+            foreach ($this->model->repeaters as $moduleName) {
+                $fields = $this->getFormFieldsForRepeater($object, $fields, $moduleName, Str::studly(Str::singular($moduleName)), Str::singular($moduleName));
+            }
+        }
+        
+        return $fields;
+    } 
+
     public function updateRepeaterMany($object, $fields, $relation, $keepExisting = true, $model = null)
     {
         $relationFields = $fields['repeaters'][$relation] ?? [];

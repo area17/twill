@@ -528,8 +528,8 @@ abstract class ModuleRepository
     public function afterSave($object, $fields)
     {
         if (property_exists($this->model, 'browsers')) {
-            foreach ($this->model->browsers as $relationship) {
-                $this->updateBrowser($object, $fields, $relationship);
+            foreach ($this->model->browsers as $moduleName) {
+                $this->updateBrowser($object, $fields, $moduleName);
             }
         }
 
