@@ -118,10 +118,7 @@ class Install extends Command
      */
     private function publishAssets()
     {
-        $this->call('vendor:publish', [
-            '--provider' => 'A17\Twill\TwillServiceProvider',
-            '--tag' => 'assets',
-        ]);
+        $this->call('twill:publish');
     }
 
 }

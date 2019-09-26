@@ -3,20 +3,20 @@ import { BUCKETS, NOTIFICATION } from '../mutations'
 import ACTIONS from '@/store/actions'
 
 const state = {
-  saveUrl: window.STORE.buckets.saveUrl || '',
-  dataSources: window.STORE.buckets.dataSources || {},
-  source: window.STORE.buckets.source || {},
+  saveUrl: window[process.env.VUE_APP_NAME].STORE.buckets.saveUrl || '',
+  dataSources: window[process.env.VUE_APP_NAME].STORE.buckets.dataSources || {},
+  source: window[process.env.VUE_APP_NAME].STORE.buckets.source || {},
   /**
    * An array of Object. Each representing a bucket with his data types and current children
    * Buckets action ui is based on buckets length.
    * If buckets.length === 1 an 'add' icon instead of buckets number
    */
-  buckets: window.STORE.buckets.items || [],
-  filter: window.STORE.buckets.filter || {},
-  page: window.STORE.buckets.page || 1,
-  maxPage: window.STORE.buckets.maxPage || 10,
-  offset: window.STORE.buckets.offset || 10,
-  availableOffsets: window.STORE.buckets.availableOffsets || [10, 20, 30]
+  buckets: window[process.env.VUE_APP_NAME].STORE.buckets.items || [],
+  filter: window[process.env.VUE_APP_NAME].STORE.buckets.filter || {},
+  page: window[process.env.VUE_APP_NAME].STORE.buckets.page || 1,
+  maxPage: window[process.env.VUE_APP_NAME].STORE.buckets.maxPage || 10,
+  offset: window[process.env.VUE_APP_NAME].STORE.buckets.offset || 10,
+  availableOffsets: window[process.env.VUE_APP_NAME].STORE.buckets.availableOffsets || [10, 20, 30]
 }
 
 const getters = {

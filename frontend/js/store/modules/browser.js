@@ -8,7 +8,7 @@ const state = {
   endpointName: '',
   endpoints: [],
   max: 0,
-  selected: window.STORE.browser.selected || {}
+  selected: window[process.env.VUE_APP_NAME].STORE.browser.selected || {}
 }
 
 // getters

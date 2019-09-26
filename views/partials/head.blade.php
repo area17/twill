@@ -8,14 +8,14 @@
 {{-- Global styles --}}
 
 <!-- Fonts -->
-{{--<link href="{{mix('twill/assets/fonts/Inter-Regular.woff2', 'twill')}}" rel="preload" as="font" type="font/woff2" crossorigin>--}}
-{{--<link href="{{mix('twill/assets/fonts/Inter-Medium.woff2', 'twill')}}" rel="preload" as="font" type="font/woff2" crossorigin>--}}
+<link href="{{twillAsset('Inter-Regular.woff2')}}" rel="preload" as="font" type="font/woff2" crossorigin>
+<link href="{{twillAsset('Inter-Medium.woff2')}}" rel="preload" as="font" type="font/woff2" crossorigin>
 
 <!-- CSS -->
-<link href="{{ mix('chunk-common.css', 'twill')}}" rel="preload" as="style" crossorigin/>
-<link href="{{ mix('chunk-vendors.css', 'twill')}}" rel="preload" as="style" crossorigin/>
-<link href="{{ mix('chunk-common.css', 'twill')}}" rel="stylesheet"/>
-<link href="{{ mix('chunk-vendors.css', 'twill')}}" rel="stylesheet"/>
+<link href="{{ twillAsset('chunk-common.css')}}" rel="preload" as="style" crossorigin/>
+<link href="{{ twillAsset('chunk-vendors.css')}}" rel="preload" as="style" crossorigin/>
+<link href="{{ twillAsset('chunk-common.css')}}" rel="stylesheet" crossorigin/>
+<link href="{{ twillAsset('chunk-vendors.css')}}" rel="stylesheet" crossorigin/>
 
 <!-- head.js -->
 <script>

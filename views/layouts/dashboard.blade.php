@@ -7,12 +7,12 @@
 @endphp
 
 @push('extra_css')
-    <link href="{{ mix('main-dashboard.css', 'twill')}}" rel="preload" as="style"/>
-    <link href="{{ mix('main-dashboard.css', 'twill')}}" rel="stylesheet"/>
+    <link href="{{ twillAsset('main-dashboard.css')}}" rel="preload" as="style" crossorigin/>
+    <link href="{{ twillAsset('main-dashboard.css')}}" rel="stylesheet" crossorigin/>
 @endpush
 
 @push('extra_js_head')
-    <link href="{{ mix('main-dashboard.js', 'twill')}}" rel="preload" as="script"/>
+    <link href="{{ twillAsset('main-dashboard.js')}}" rel="preload" as="script" crossorigin/>
 @endpush
 
 @section('appTypeClass', 'body--dashboard')
@@ -55,16 +55,16 @@
 @stop
 
 @section('initialStore')
-    window.STORE.datatable = {}
+    window['{{config('twill.browser')}}'].STORE.datatable = {}
 
-    window.STORE.datatable.mine = {!! json_encode($myActivityData) !!}
-    window.STORE.datatable.all = {!! json_encode($allActivityData) !!}
+    window['{{config('twill.browser')}}'].STORE.datatable.mine = {!! json_encode($myActivityData) !!}
+    window['{{config('twill.browser')}}'].STORE.datatable.all = {!! json_encode($allActivityData) !!}
 
-    window.STORE.datatable.data = window.STORE.datatable.all
-    window.STORE.datatable.columns = {!! json_encode($tableColumns) !!}
+    window['{{config('twill.browser')}}'].STORE.datatable.data = window['{{config('twill.browser')}}'].STORE.datatable.all
+    window['{{config('twill.browser')}}'].STORE.datatable.columns = {!! json_encode($tableColumns) !!}
 @stop
 
 
 @push('extra_js')
-    <script src="{{ mix('main-dashboard.js', 'twill') }}"></script>
+    <script src="{{ twillAsset('main-dashboard.js') }}" crossorigin></script>
 @endpush

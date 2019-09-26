@@ -13,19 +13,16 @@ class Publish extends Command
      *
      * @var string
      */
-    protected $signature = 'twill:publish';
+    protected $signature = 'twill:publish
+        {--force|force}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = "Publish Twill assets (experimental)";
+    protected $description = "Publish Twill assets";
 
-    /**
-     * @var Filesystem
-     */
-    protected $filesystem;
 
     /**
      * @param Filesystem $filesystem
@@ -33,8 +30,6 @@ class Publish extends Command
     public function __construct(Filesystem $filesystem)
     {
         parent::__construct();
-
-        $this->filesystem = $filesystem;
     }
 
     /*
@@ -44,9 +39,14 @@ class Publish extends Command
      */
     public function handle()
     {
-        $progressBar = $this->output->createProgressBar(4);
-        $this->filesystem->copyDirectory(base_path('vendor/area17/twill/dist'), public_path());
-        $progressBar->setMessage("Done.");
-        $progressBar->finish();
+        $force = $this->option('force');
+        $options = [
+            '--provider' => 'A17\Twill\TwillServiceProvider'
+        ];
+        if ($force) {
+            $options['--force'] = '--force';
+        }
+
+        $this->call('vendor:publish', $options);
     }
 }
