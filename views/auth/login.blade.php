@@ -1,21 +1,21 @@
 @extends('twill::auth.layout', [
     'route' => route('admin.login'),
-    'screenTitle' => 'Login'
+    'screenTitle' => __('Login')
 ])
 
 @section('form')
     <fieldset class="login__fieldset">
-        <label class="login__label" for="email">Email</label>
+        <label class="login__label" for="email">{{ __('Email') }}</label>
         <input type="email" name="email" id="email" class="login__input" required autofocus tabindex="1" value="{{ old('email') }}" />
     </fieldset>
 
     <fieldset class="login__fieldset">
-        <label class="login__label" for="password">Password</label>
-        <a href="{{ route('admin.password.reset.link') }}" class="login__help f--small" tabindex="5"><span>Forgot password</span></a>
+        <label class="login__label" for="password">{{ __('Password') }}</label>
+        <a href="{{ route('admin.password.reset.link') }}" class="login__help f--small" tabindex="5"><span>{{ __('Forgot password') }}</span></a>
         <input type="password" name="password" id="password" class="login__input" required tabindex="2" />
     </fieldset>
 
-    <input class="login__button" type="submit" value="Login" tabindex="3">
+    <input class="login__button" type="submit" value="{{ __('Login') }}" tabindex="3">
 
     @if (config('twill.enabled.google-login'))
         <a href="#" class="login__google" tabindex="4">
@@ -32,7 +32,7 @@
                         c1.542,0,2.926,0.53,4.014,1.57l3.012-3.012C17.107,2.574,14.73,1.533,11.9,1.533z"/>
                 </svg>
             </span>
-            <span>Sign in with Google</span>
+            <span>{{ __('Sign in with Google') }}</span>
         </a>
     @endif
 @stop
