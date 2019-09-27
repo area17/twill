@@ -4,6 +4,7 @@ namespace A17\Twill\Notifications;
 
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Lang;
 
 class Reset extends ResetPassword
 {
