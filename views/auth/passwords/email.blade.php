@@ -1,13 +1,13 @@
 @extends('twill::auth.layout', [
     'route' => route('admin.password.reset.email'),
-    'screenTitle' => 'Reset password'
+    'screenTitle' => __('Reset Password')
 ])
 
 @section('form')
     <fieldset class="login__fieldset">
-        <label class="login__label" for="email">Email</label>
+        <label class="login__label" for="email">{{ __('Email') }}</label>
         <input type="email" name="email" id="email" class="login__input" required autofocus />
     </fieldset>
 
-    <input class="login__button" type="submit" value="Send password reset link">
+    <input class="login__button" type="submit" value="{{ __('Send password reset link') }}">
 @stop
