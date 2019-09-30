@@ -17,6 +17,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\Factory as ViewFactory;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class Handler extends ExceptionHandler
 {
@@ -116,17 +117,7 @@ class Handler extends ExceptionHandler
 
         $this->isJsonOutputFormat = $request->ajax() || $request->wantsJson();
 
-        /*
-         * See Laravel 5.4 Changelog https://laravel.com/docs/5.4/upgrade
-         * The Illuminate\Http\Exception\HttpResponseException has been renamed to Illuminate\Http\Exceptions\HttpResponseException.
-         * Note that Exceptions is now plural.
-         */
-        $laravel53HttpResponseException = 'Illuminate\Http\Exception\HttpResponseException';
-        $laravel54HttpResponseException = 'Illuminate\Http\Exceptions\HttpResponseException';
-
-        $httpResponseExceptionClass = class_exists($laravel54HttpResponseException) ? $laravel54HttpResponseException : $laravel53HttpResponseException;
-
-        if ($e instanceof $httpResponseExceptionClass) {
+        if ($e instanceof HttpResponseException) {
             return $e->getResponse();
         } elseif ($e instanceof AuthenticationException) {
             return $this->handleUnauthenticated($request, $e);

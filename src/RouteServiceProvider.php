@@ -105,15 +105,10 @@ class RouteServiceProvider extends ServiceProvider
      */
     private function registerRouteMiddlewares(Router $router)
     {
-        /*
-         * See Laravel 5.4 Changelog https://laravel.com/docs/5.4/upgrade
-         * The middleware method of the Illuminate\Routing\Router class has been renamed to aliasMiddleware().
-         */
-        $middlewareRegisterMethod = method_exists($router, 'aliasMiddleware') ? 'aliasMiddleware' : 'middleware';
-        Route::$middlewareRegisterMethod('impersonate', Impersonate::class);
-        Route::$middlewareRegisterMethod('twill_auth', \Illuminate\Auth\Middleware\Authenticate::class);
-        Route::$middlewareRegisterMethod('twill_guest', RedirectIfAuthenticated::class);
-        Route::$middlewareRegisterMethod('validateBackHistory', ValidateBackHistory::class);
+        Route::aliasMiddleware('impersonate', Impersonate::class);
+        Route::aliasMiddleware('twill_auth', \Illuminate\Auth\Middleware\Authenticate::class);
+        Route::aliasMiddleware('twill_guest', RedirectIfAuthenticated::class);
+        Route::aliasMiddleware('validateBackHistory', ValidateBackHistory::class);
     }
 
     /**
