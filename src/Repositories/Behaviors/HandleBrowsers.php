@@ -11,8 +11,8 @@ trait HandleBrowsers
      */
     public function afterSaveHandleBrowsers($object, $fields)
     {
-        if (property_exists($this->model, 'browsers')) {
-            foreach ($this->model->browsers as $module) {
+        if (property_exists($this, 'browsers')) {
+            foreach ($this->browsers as $module) {
                 if (is_string($module)) {
                     $this->updateBrowser($object, $fields, $module, 'position', $module);
                 } elseif (is_array($module)) {
@@ -32,8 +32,8 @@ trait HandleBrowsers
      */
     public function getFormFieldsHandleBrowsers($object, $fields)
     {
-        if (property_exists($this->model, 'browsers')) {
-            foreach ($this->model->browsers as $module) {
+        if (property_exists($this, 'browsers')) {
+            foreach ($this->browsers as $module) {
                 if (is_string($module)) {
                     $fields['browsers'][$module] = $this->getFormFieldsForBrowser($object, $module, null, 'title', null);
                 } elseif (is_array($module)) {

@@ -16,8 +16,8 @@ trait HandleRepeaters
      */
     public function afterSaveHandleRepeaters($object, $fields)
     {
-        if (property_exists($this->model, 'repeaters')) {
-            foreach ($this->model->repeaters as $module) {
+        if (property_exists($this, 'repeaters')) {
+            foreach ($this->repeaters as $module) {
                 if (is_string($module)) {
                     $model = Str::studly(Str::singular($module));
                     $repeaterName = Str::singular($module);
@@ -39,8 +39,8 @@ trait HandleRepeaters
      */
     public function getFormFieldsHandleRepeaters($object, $fields)
     {
-        if (property_exists($this->model, 'repeaters')) {
-            foreach ($this->model->repeaters as $module) {
+        if (property_exists($this, 'repeaters')) {
+            foreach ($this->repeaters as $module) {
                 if (is_string($module)) {
                     $model = Str::studly(Str::singular($module));
                     $repeaterName = Str::singular($module);
