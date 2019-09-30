@@ -1,4 +1,4 @@
-<p align="center"><a href="https://twill.io" target="_blank"><img src="http://cms-toolkit-dev.imgix.net/null47d1f04f-da9b-45f4-86cb-35a74e71c384/twill_logo.svg" width="400"></a></p>
+<p align="center"><a href="https://twill.io" target="_blank"><img src="https://twill.io/logo.svg" width="400"></a></p>
 
 <p align="center">
 <a href="https://packagist.org/packages/area17/twill"><img src="https://poser.pugx.org/area17/twill/d/total.svg" alt="Total Downloads"></a>
