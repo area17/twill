@@ -9,7 +9,7 @@
         <slot name="additional-actions"></slot>
       </div>
     </div>
-    <transition :css='false' :duration="275" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter" @before-leave="beforeLeave" @leave="leave">
+    <transition :css='false' :duration="275" @before-enter="beforeEnter" @enter="enter" @before-leave="beforeLeave" @leave="leave">
       <div class="filter__more" v-show="opened" v-if="withHiddenFilters" :aria-hidden="!opened ? true : null" ref="more">
         <div class="filter__moreInner" ref="moreInner">
           <slot name="hidden-filters"></slot>
@@ -53,7 +53,8 @@
         open: false,
         withHiddenFilters: true,
         withNavigation: true,
-        searchValue: this.initialSearchValue
+        searchValue: this.initialSearchValue,
+        transitionTimeout: null
       }
     },
     computed: {
@@ -79,15 +80,35 @@
         el.style.overflow = 'hidden'
       },
       enter: function (el, done) {
+        // Reset height.
         this.resetHeight()
+
+        // Delete timeout if exists.
+        if (this.transitionTimeout) {
+          clearTimeout(this.transitionTimeout)
+        }
+
+        // Set timeout.
+        this.transitionTimeout = setTimeout(() => {
+          el.style.overflow = 'visible'
+        }, 275)
+
+        // Add resize event.
         window.addEventListener('resize', this._resize, false)
       },
-      afterEnter: function (el) {
-        el.style.overflow = 'visible'
-      },
       beforeLeave: function (el) {
+        // Delete timeout if exists.
+        if (this.transitionTimeout) {
+          clearTimeout(this.transitionTimeout)
+        }
+
+        // Reset height.
         this.resetHeight()
+
+        // Hide content.
         el.style.overflow = 'hidden'
+
+        // Remove resize event.
         window.removeEventListener('resize', this._resize)
       },
       leave: function (el, done) {
