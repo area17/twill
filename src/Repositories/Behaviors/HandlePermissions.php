@@ -73,13 +73,11 @@ trait HandlePermissions
     // After save handle permissions form fields on role form
     protected function handleRolePermissions($role, $fields)
     {
-        if (array_key_exists('general_permissions', $fields)) {
-            foreach (Permission::available('global') as $permissionName) {
-                if (!empty($fields['general_permissions']) && in_array($permissionName, $fields['general_permissions'])) {
-                    $role->grantGlobalPermission($permissionName);
-                } else {
-                    $role->revokeGlobalPermission($permissionName);
-                }
+        foreach (Permission::available('global') as $permissionName) {
+            if (isset($fields[$permissionName]) && $fields[$permissionName] === true) {
+                $role->grantGlobalPermission($permissionName);
+            } else {
+                $role->revokeGlobalPermission($permissionName);
             }
         }
 
@@ -182,10 +180,10 @@ trait HandlePermissions
     protected function renderRolePermissions($role, $fields)
     {
         $role->permissions()->get();
-        $fields['general_permissions'] = $role->permissions()->where([
-            'permissionable_type' => null,
-            'permissionable_id' => null,
-        ])->pluck('name')->toArray();
+
+        foreach($role->permissions()->global()->pluck('name')->toArray() as $permissionName) {
+            $fields[$permissionName] = true;
+        }
 
         foreach (Permission::permissionableModules() as $moduleName) {
             $modulePermission = $role->permissions()->module()->ofModuleName($moduleName)->first();
