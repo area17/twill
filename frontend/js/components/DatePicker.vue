@@ -88,6 +88,10 @@
       clear: {
         type: Boolean,
         default: false
+      },
+      displayFormat: {
+        type: String,
+        default: 'Y-m-d'
       }
     },
     data: function () {
@@ -124,6 +128,7 @@
           minDate: self.minDate,
           maxDate: self.maxDate,
           locale: Catalan,
+          altFormat: self.displayFormat,
           onOpen: function () {
             setTimeout(function () {
               self.flatPicker.set('maxDate', self.maxDate) // in case maxDate changed since last open
