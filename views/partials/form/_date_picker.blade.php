@@ -18,6 +18,7 @@
     @if ($note ?? false) note="{{ $note }}" @endif
     @if ($required ?? false) :required="true" @endif
     @if ($inModal) :in-modal="true" @endif
+    @if ($displayFormat) :display-format="{{ $displayFormat }}" @endif
     in-store="date"
 ></a17-datepicker>
 
