@@ -4,7 +4,6 @@ namespace A17\Twill;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-use A17\Twill\Models\Permission;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -85,7 +84,7 @@ class AuthServiceProvider extends ServiceProvider
          ***/
 
         Gate::define('access-module-list', function ($user, $moduleName) {
-            return $this->authorize($user, function ($user) {
+            return $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('view-module', $moduleName)
                 || $user->permissions()->ofModuleName($moduleName)->exists();
             });
@@ -93,21 +92,21 @@ class AuthServiceProvider extends ServiceProvider
 
         // The gate of accessing module list page,
         Gate::define('view-module', function ($user, $moduleName) {
-            return $this->authorize($user, function ($user) {
+            return $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('edit-module', $moduleName)
                 || $user->role->permissions()->ofModuleName($moduleName)->where('name', 'view-module')->exists();
             });
         });
 
         Gate::define('edit-module', function ($user, $moduleName) {
-            return $this->authorize($user, function ($user) {
+            return $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('manage-module', $moduleName)
                 || $user->role->permissions()->module()->ofModuleName($moduleName)->where('name', 'manage-module')->exists();
             });
         });
 
         Gate::define('manage-module', function ($user, $moduleName) {
-            return $this->authorize($user, function ($user) {
+            return $this->authorize($user, function ($user) use ($moduleName) {
                 if (!isPermissionableModule($moduleName)) {
                     return true;
                 }
@@ -123,21 +122,21 @@ class AuthServiceProvider extends ServiceProvider
          ***/
 
         Gate::define('view-item', function ($user, $item) {
-            return $this->authorize($user, function ($user) {
+            return $this->authorize($user, function ($user) use ($item) {
                 return $user->can('edit-item', $item)
                 || $user->permissions()->ofItem($item)->where('name', 'view-item')->exists();
             });
         });
 
         Gate::define('edit-item', function ($user, $item) {
-            return $this->authorize($user, function ($user) {
+            return $this->authorize($user, function ($user) use ($item) {
                 return $user->can('manage-item', $item)
                 || $user->permissions()->ofItem($item)->where('name', 'edit-item')->exists();
             });
         });
 
         Gate::define('manage-item', function ($user, $item) {
-            return $this->authorize($user, function ($user) {
+            return $this->authorize($user, function ($user) use ($item) {
                 return $user->can('manage-module', getModuleNameByModel(get_class($item)))
                 || $user->permissions()->ofItem($item)->where('name', 'manage-item')->exists();
             });
