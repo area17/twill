@@ -766,11 +766,11 @@ abstract class ModuleController extends Controller
             ] + ($this->getIndexOption('editInModal') ? [
                 'editInModal' => $this->getModuleRoute($item->id, 'edit'),
                 'updateUrl' => $this->getModuleRoute($item->id, 'update'),
-            ] : []) + ($this->getIndexOption('publish') && ($item->canPublish ?? true) ? [
+            ] : []) + ($this->getIndexOption('publish', $item) && ($item->canPublish ?? true) ? [
                 'published' => $item->published,
-            ] : []) + ($this->getIndexOption('feature') && ($item->canFeature ?? true) ? [
+            ] : []) + ($this->getIndexOption('feature', $item) && ($item->canFeature ?? true) ? [
                 'featured' => $item->{$this->featureField},
-            ] : []) + (($this->getIndexOption('restore') && $itemIsTrashed) ? [
+            ] : []) + (($this->getIndexOption('restore', $item) && $itemIsTrashed) ? [
                 'deleted' => true,
             ] : []) + ($translated ? [
                 'languages' => $item->getActiveLanguages(),
@@ -1031,8 +1031,8 @@ abstract class ModuleController extends Controller
             if (array_key_exists($option, $authorizableOptions)) {
                 if (Str::endsWith($authorizableOptions[$option], '-module')) {
                     $authorized = $this->user->can($authorizableOptions[$option], $this->moduleName);
-                } elseif (Str::endsWith($authorizableOptions[$option], '-item') && $item) {
-                    $authorized = $this->user->can($authorizableOptions[$option], $item);
+                } elseif (Str::endsWith($authorizableOptions[$option], '-item')) {
+                    $authorized = $item ? $this->user->can($authorizableOptions[$option], $item) : $this->user->can(Str::replaceLast('-item', '-module', $authorizableOptions[$option]), $this->moduleName);
                 }
             }
             return ($this->indexOptions[$option] ?? $this->defaultIndexOptions[$option] ?? false) && $authorized;
