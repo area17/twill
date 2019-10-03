@@ -463,7 +463,6 @@ class TwillServiceProvider extends ServiceProvider
 
             return $view->with($with);
         });
-        
     }
 
     /**
