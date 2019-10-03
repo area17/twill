@@ -408,6 +408,6 @@ class DashboardController extends Controller
      */
     private function getRepository($module)
     {
-        return $this->app->get($this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($module)) . "Repository");
+        return $this->app->make($this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($module)) . "Repository");
     }
 }
