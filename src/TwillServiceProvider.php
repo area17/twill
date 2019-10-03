@@ -34,6 +34,14 @@ use Spatie\Activitylog\ActivitylogServiceProvider;
 
 class TwillServiceProvider extends ServiceProvider
 {
+
+    /**
+     * The Twill version.
+     *
+     * @var string
+     */
+    const VERSION = '1.2.2';
+
     /**
      * Service providers to be registered.
      *
@@ -90,7 +98,7 @@ class TwillServiceProvider extends ServiceProvider
             'blocks' => Block::class,
         ]);
 
-        config(['twill.version' => trim(file_get_contents(__DIR__ . '/../VERSION'))]);
+        config(['twill.version' => $this->version()]);
     }
 
     /**
@@ -455,7 +463,6 @@ class TwillServiceProvider extends ServiceProvider
 
             return $view->with($with);
         });
-
     }
 
     /**
@@ -469,5 +476,15 @@ class TwillServiceProvider extends ServiceProvider
 
         $this->loadTranslationsFrom($translationPath, 'twill');
         $this->publishes([$translationPath => resource_path('lang/vendor/twill')], 'translations');
+    }
+
+    /**
+     * Get the version number of Twill.
+     *
+     * @return string
+     */
+    public function version()
+    {
+        return static::VERSION;
     }
 }
