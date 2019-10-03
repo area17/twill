@@ -484,7 +484,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @return string
      */
-    public function version(): string
+    public function version()
     {
         return static::VERSION;
     }
