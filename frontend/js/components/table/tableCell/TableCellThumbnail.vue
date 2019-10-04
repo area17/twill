@@ -69,6 +69,13 @@
       display: none;
     }
 
+    a {
+      display: block;
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
     img {
       display: block;
       width: 80px;
@@ -89,6 +96,7 @@
     height: calc(100% - 2px);
     color: $color__background;
     border-radius: 50%;
+    visibility: hidden;
   }
 
   /* Modifiers */
@@ -98,6 +106,10 @@
     height: 36px;
     margin: -8px 0;
     border-radius: 50%;
+
+    .tablecell__thumb-letter {
+      visibility: visible;
+    }
 
     img {
       position: absolute;
