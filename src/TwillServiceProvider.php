@@ -254,6 +254,7 @@ class TwillServiceProvider extends ServiceProvider
         $viewPath = __DIR__ . '/../views';
 
         $this->loadViewsFrom($viewPath, 'twill');
+        $this->loadTranslationsFrom($viewPath . '/lang', 'twill');
         $this->publishes([$viewPath => resource_path('views/vendor/twill')], 'views');
     }
 
