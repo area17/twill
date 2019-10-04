@@ -125,10 +125,6 @@ class Handler extends ExceptionHandler
             return $this->convertValidationExceptionToResponse($e, $request);
         }
 
-        if ($this->config->get('app.debug', false) && $this->config->get('twill.debug.use_whoops', false)) {
-            return $this->renderExceptionWithWhoops($e);
-        }
-
         return $this->renderHttpExceptionWithView($request, $e);
     }
 
@@ -164,60 +160,6 @@ class Handler extends ExceptionHandler
         }
 
         return parent::render($request, $e);
-    }
-
-    /**
-     * @param Exception $e
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response|array
-     */
-    protected function renderExceptionWithWhoops(Exception $e)
-    {
-        $this->unsetSensitiveData();
-
-        $whoops = new \Whoops\Run();
-
-        if ($this->isJsonOutputFormat) {
-            $handler = new \Whoops\Handler\JsonResponseHandler();
-        } else {
-            $handler = new \Whoops\Handler\PrettyPageHandler();
-
-            if ($this->app->environment('local', 'development')) {
-                $handler->setEditor(function ($file, $line) {
-                    $translations = array('^' .
-                        $this->config->get('twill.debug.whoops_path_guest') => $this->config->get('twill.debug.whoops_path_host'),
-                    );
-                    foreach ($translations as $from => $to) {
-                        $file = rawurlencode(preg_replace('#' . $from . '#', $to, $file, 1));
-                    }
-                    return array(
-                        'url' => "subl://open?url=$file&line=$line",
-                        'ajax' => false,
-                    );
-                });
-            }
-        }
-
-        $whoops->pushHandler($handler);
-
-        return $this->responseFactory->make(
-            $whoops->handleException($e),
-            method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500,
-            method_exists($e, 'getHeaders') ? $e->getHeaders() : []
-        );
-    }
-
-    /**
-     * Don't ever display sensitive data in Whoops pages.
-     *
-     * @return void
-     */
-    protected function unsetSensitiveData()
-    {
-        foreach ($_ENV as $key => $value) {
-            unset($_SERVER[$key]);
-        }
-
-        $_ENV = [];
     }
 
     /**
