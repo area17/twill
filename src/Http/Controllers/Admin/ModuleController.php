@@ -211,7 +211,7 @@ abstract class ModuleController extends Controller
         if (!isset($this->indexColumns)) {
             $this->indexColumns = [
                 $this->titleColumnKey => [
-                    'title' => ucfirst($this->titleColumnKey),
+                    'title' => $this->titleColumnKey === 'title' ? __('twill::main.title') : ucfirst($this->titleColumnKey),
                     'field' => $this->titleColumnKey,
                     'sort' => true,
                 ],
@@ -945,7 +945,7 @@ abstract class ModuleController extends Controller
         if ($this->moduleHas('translations')) {
             array_push($tableColumns, [
                 'name' => 'languages',
-                'label' => 'Languages',
+                'label' => __('twill::listing.languages'),
                 'visible' => $visibleColumns ? in_array('languages', $visibleColumns) : true,
                 'optional' => true,
                 'sortable' => false,
@@ -969,14 +969,14 @@ abstract class ModuleController extends Controller
         ] : []) + $scopes;
 
         array_push($statusFilters, [
-            'name' => 'All items',
+            'name' => __('twill::listing.filter.all-items'),
             'slug' => 'all',
             'number' => $this->repository->getCountByStatusSlug('all', $scope),
         ]);
 
         if ($this->moduleHas('revisions') && $this->getIndexOption('create')) {
             array_push($statusFilters, [
-                'name' => 'Mine',
+                'name' => __('twill::listing.filter.mine'),
                 'slug' => 'mine',
                 'number' => $this->repository->getCountByStatusSlug('mine', $scope),
             ]);
@@ -984,11 +984,11 @@ abstract class ModuleController extends Controller
 
         if ($this->getIndexOption('publish')) {
             array_push($statusFilters, [
-                'name' => 'Published',
+                'name' => __('twill::listing.filter.published'),
                 'slug' => 'published',
                 'number' => $this->repository->getCountByStatusSlug('published', $scope),
             ], [
-                'name' => 'Draft',
+                'name' => __('twill::listing.filter.draft'),
                 'slug' => 'draft',
                 'number' => $this->repository->getCountByStatusSlug('draft', $scope),
             ]);
@@ -996,7 +996,7 @@ abstract class ModuleController extends Controller
 
         if ($this->getIndexOption('restore')) {
             array_push($statusFilters, [
-                'name' => 'Trash',
+                'name' => __('twill::listing.filter.trash'),
                 'slug' => 'trash',
                 'number' => $this->repository->getCountByStatusSlug('trash', $scope),
             ]);

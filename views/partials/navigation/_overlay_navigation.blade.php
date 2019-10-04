@@ -20,9 +20,9 @@
                         <a href="#" data-closenav-btn data-medialib-btn>Media Library</a><br />
                     @endif
                     @if(isset($currentUser))
-                        <a href="{{ route('admin.users.index') }}">CMS Users</a><br />
-                        <a href="{{ route('admin.users.edit', $currentUser->id) }}">Settings</a><br />
-                        <a href="{{ route('admin.logout') }}">Logout</a>
+                        <a href="{{ route('admin.users.index') }}">@lang('twill::nav.cms-users')</a><br />
+                        <a href="{{ route('admin.users.edit', $currentUser->id) }}">@lang('twill::nav.settings')</a><br />
+                        <a href="{{ route('admin.logout') }}">@lang('twill::nav.logout')</a>
                     @endif
                 </div>
             </div>
