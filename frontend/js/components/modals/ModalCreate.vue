@@ -2,7 +2,19 @@
   <a17-modal ref="modal" class="modal--form" :title="modalTitle" :forceClose="true">
     <form :action="actionForm" @submit.prevent="submit">
       <slot></slot>
-      <a17-modal-validation :mode="mode" :is-disable="createMode" :active-publish-state="withPublicationToggle" :is-publish="published" published-name="published" :textEnabled="publishedLabel" :textDisabled="draftLabel"></a17-modal-validation>
+      <a17-modal-validation
+        :mode="mode"
+        :is-disable="createMode"
+        :active-publish-state="withPublicationToggle"
+        :is-publish="published"
+        published-name="published"
+        :textEnabled="publishedLabel"
+        :textDisabled="draftLabel"
+        :create-label="createLabel"
+        :create-another-label="createAnotherLabel"
+        :updateLabel="updateLabel"
+      >
+      </a17-modal-validation>
     </form>
   </a17-modal>
 </template>
@@ -27,6 +39,26 @@
       draftLabel: {
         type: String,
         default: 'Draft'
+      },
+      createModalTitle: {
+        type: String,
+        default: 'Add new'
+      },
+      updateModalTitle: {
+        type: String,
+        default: 'Update'
+      },
+      createLabel: {
+        type: String,
+        default: 'Create'
+      },
+      createAnotherLabel: {
+        type: String,
+        default: 'Create and add another'
+      },
+      updateLabel: {
+        type: String,
+        default: 'Update'
       }
     },
     components: {
@@ -40,7 +72,7 @@
         return this.createMode ? this.formCreate : this.action
       },
       modalTitle: function () {
-        return this.createMode ? 'Add new' : 'Update'
+        return this.createMode ? this.createModalTitle : this.updateModalTitle
       },
       published: function () {
         return !this.createMode && !!this.fieldValueByName('published')

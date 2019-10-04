@@ -1,7 +1,7 @@
 @extends('twill::layouts.main')
 
 @php
-    $emptyMessage = $emptyMessage ?? "You don't have any activity yet.";
+    $emptyMessage = $emptyMessage ?? __('twill::dashboard.empty-message');
     $isDashboard = true;
     $translate = true;
 @endphp
@@ -26,7 +26,7 @@
 @section('primaryNavigation')
     @if (config('twill.enabled.search', false))
         <div class="dashboardSearch" id="searchApp" v-cloak>
-            <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" type="dashboard"></a17-search>
+            <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" type="dashboard" placeholder="@lang('twill::dashboard.search-placeholder')"></a17-search>
         </div>
     @endif
 @stop
@@ -50,10 +50,16 @@
                         @endif
                     </aside>
                     <div class="col col--primary">
+<<<<<<< HEAD
                         @endif
                         <a17-activity-feed empty-message="{{ __($emptyMessage)  }}"></a17-activity-feed>
                         @if(($facts ?? false) || (!$drafts->isEmpty()))
                     </div>
+=======
+            @endif
+                <a17-activity-feed empty-message="{{ $emptyMessage }}" all-activity-label="@lang('twill::dashboard.all-activity')" my-activity-label="@lang('twill::dashboard.my-activity')"></a17-activity-feed>
+            @if(($facts ?? false) || (!$drafts->isEmpty()))
+>>>>>>> Updated some places in the UI to use the translation string
                 </div>
             @endif
         </div>

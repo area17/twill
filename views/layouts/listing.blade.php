@@ -68,7 +68,7 @@
 
                     @if($create)
                         <div slot="additional-actions">
-                            <a17-button variant="validate" size="small" v-on:click="create">Add new</a17-button>
+                            <a17-button variant="validate" size="small" v-on:click="create">@lang('twill::listing.add-new-button')</a17-button>
                             @foreach($filterLinks as $link)
                                 <a17-button el="a" href="{{ $link['url'] ?? '#' }}" download="{{ $link['download'] ?? '' }}" rel="{{ $link['rel'] ?? '' }}" target="{{ $link['target'] ?? '' }}" variant="small secondary">{{ $link['label'] }}</a17-button>
                             @endforeach
@@ -92,13 +92,13 @@
                 :draggable="{{ $reorder ? 'true' : 'false' }}"
                 :max-depth="{{ $nestedDepth ?? '1' }}"
                 :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
-                empty-message="There is no item here yet.">
+                empty-message="@lang('twill::listing.listing-empty-message')">
             </a17-nested-datatable>
         @else
             <a17-datatable
                 :draggable="{{ $reorder ? 'true' : 'false' }}"
                 :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
-                empty-message="There is no item here yet.">
+                empty-message="@lang('twill::listing.listing-empty-message')">
             </a17-datatable>
         @endif
 
@@ -107,6 +107,14 @@
                 ref="editionModal"
                 form-create="{{ $storeUrl }}"
                 v-on:reload="reloadDatas"
+                create-modal-title="@lang('twill::modal.create.title')"
+                update-modal-title="@lang('twill::modal.update.title')"
+                published-label="@lang('twill::main.published')"
+                draft-label="@lang('twill::main.draft')"
+                create-label="@lang('twill::modal.create.button')"
+                create-another-label="@lang('twill::modal.create.create-another')"
+                update-label="@lang('twill::modal.update.button')"
+
                 @if ($customPublishedLabel ?? false) published-label="{{ $customPublishedLabel }}" @endif
                 @if ($customDraftLabel ?? false) draft-label="{{ $customDraftLabel }}" @endif
             >
