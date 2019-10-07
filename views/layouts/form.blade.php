@@ -2,6 +2,15 @@
 
 @section('appTypeClass', 'body--form')
 
+@push('extra_css')
+    <link href="{{ twillAsset('main-form.css')}}" rel="preload" as="style" crossorigin/>
+    <link href="{{ twillAsset('main-form.css')}}" rel="stylesheet" crossorigin/>
+@endpush
+
+@push('extra_js_head')
+    <link href="{{ twillAsset('main-form.js')}}" rel="preload" as="script" crossorigin/>
+@endpush
+
 @php
     $editor = $editor ?? false;
     $translate = $translate ?? false;
@@ -89,7 +98,7 @@
 
 @section('initialStore')
 
-    window.STORE.form = {
+    window['{{config('twill.browser')}}'].STORE.form = {
         baseUrl: '{{ $baseUrl ?? '' }}',
         saveUrl: '{{ $saveUrl }}',
         previewUrl: '{{ $previewUrl ?? '' }}',
@@ -103,7 +112,7 @@
         reloadOnSuccess: {{ ($reloadOnSuccess ?? false) ? 'true' : 'false' }}
     }
 
-    window.STORE.publication = {
+    window['{{config('twill.browser')}}'].STORE.publication = {
         withPublicationToggle: {{ json_encode(($publish ?? true) && isset($item) && $item->isFillable('published')) }},
         published: {{ isset($item) && $item->published ? 'true' : 'false' }},
         withPublicationTimeframe: {{ json_encode(($schedule ?? true) && isset($item) && $item->isFillable('publish_start_date')) }},
@@ -171,25 +180,23 @@
         } @else null @endif
     }
 
-    window.STORE.revisions = {!! json_encode($revisions ?? []) !!}
+    window['{{config('twill.browser')}}'].STORE.revisions = {!! json_encode($revisions ?? []) !!}
 
-    window.STORE.parentId = {{ $item->parent_id ?? 0 }}
-    window.STORE.parents = {!! json_encode($parents ?? [])  !!}
+    window['{{config('twill.browser')}}'].STORE.parentId = {{ $item->parent_id ?? 0 }}
+    window['{{config('twill.browser')}}'].STORE.parents = {!! json_encode($parents ?? [])  !!}
 
-    window.STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('twill.block_editor.crops') + (config('twill.settings.crops') ?? [])) !!}
-    window.STORE.medias.selected = {}
+    window['{{config('twill.browser')}}'].STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('twill.block_editor.crops') + (config('twill.settings.crops') ?? [])) !!}
+    window['{{config('twill.browser')}}'].STORE.medias.selected = {}
 
-    window.STORE.browser = {}
-    window.STORE.browser.selected = {}
+    window['{{config('twill.browser')}}'].STORE.browser = {}
+    window['{{config('twill.browser')}}'].STORE.browser.selected = {}
 
-    window.APIKEYS = {
+    window['{{config('twill.browser')}}'].APIKEYS = {
         'googleMapApi': '{{ config('twill.google_maps_api_key') }}'
     }
 @stop
 
 @prepend('extra_js')
     @includeWhen(config('twill.block_editor.inline_blocks_templates', true), 'twill::partials.form.utils._blocks_templates')
-    <script src="{{ mix('/assets/admin/js/manifest.js') }}"></script>
-    <script src="{{ mix('/assets/admin/js/vendor.js') }}"></script>
-    <script src="{{ mix('/assets/admin/js/main-form.js') }}"></script>
+    <script src="{{ twillAsset('main-form.js') }}" crossorigin></script>
 @endprepend

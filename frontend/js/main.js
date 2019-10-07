@@ -14,7 +14,6 @@ const A17Init = function () {
 // User header dropdown
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
-console.log(window[process.env.VUE_APP_NAME])
 if (!window[process.env.VUE_APP_NAME]) {
   window[process.env.VUE_APP_NAME] = {}
 }

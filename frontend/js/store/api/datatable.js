@@ -18,7 +18,7 @@ export default {
   *
   */
   get (params, callback) {
-    axios.get(window.CMS_URLS.index, { params: params }).then(function (resp) {
+    axios.get(window[process.env.VUE_APP_NAME].CMS_URLS.index, { params: params }).then(function (resp) {
       if (resp.data.replaceUrl) {
         const url = resp.request.responseURL
         replaceState(url)
@@ -34,26 +34,35 @@ export default {
         callback(data)
       }
     }, function (resp) {
-      const error = `Get request error.\n${resp}}`
+      const error = {
+        message: `Get request error.`,
+        value: resp
+      }
       globalError(component, error)
     })
   },
 
   togglePublished (row, callback, errorCallback) {
-    axios.put(window.CMS_URLS.publish, { id: row.id, active: row.published }).then(function (resp) {
+    axios.put(window[process.env.VUE_APP_NAME].CMS_URLS.publish, { id: row.id, active: row.published }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      const error = `Publish request error.\n${resp}}`
+      const error = {
+        message: `Publish request error.`,
+        value: resp
+      }
       globalError(component, error)
       if (errorCallback && typeof errorCallback === 'function') errorCallback(resp.response)
     })
   },
 
   toggleFeatured (row, callback) {
-    axios.put(window.CMS_URLS.feature, { id: row.id, active: row.featured }).then(function (resp) {
+    axios.put(window[process.env.VUE_APP_NAME].CMS_URLS.feature, { id: row.id, active: row.featured }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      const error = `Feature request error.\n${resp}}`
+      const error = {
+        message: `Feature request error.`,
+        value: resp
+      }
       globalError(component, error)
     })
   },
@@ -62,16 +71,22 @@ export default {
     axios.delete(row.delete).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      const error = `Delete request error.\n${resp}}`
+      const error = {
+        message: `Delete request error.`,
+        value: resp
+      }
       globalError(component, error)
     })
   },
 
   restore (row, callback) {
-    axios.put(window.CMS_URLS.restore, { id: row.id }).then(function (resp) {
+    axios.put(window[process.env.VUE_APP_NAME].CMS_URLS.restore, { id: row.id }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      const error = `Restore request error.\n${resp}}`
+      const error = {
+        message: `Restore request error.`,
+        value: resp
+      }
       globalError(component, error)
     })
   },
@@ -86,46 +101,61 @@ export default {
   },
 
   reorder (ids, callback) {
-    axios.post(window.CMS_URLS.reorder, { ids: ids }).then(function (resp) {
+    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.reorder, { ids: ids }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      const error = `Reorder request error.\n${resp}}`
+      const error = {
+        message: `Reorder request error.`,
+        value: resp
+      }
       globalError(component, error)
     })
   },
 
   bulkPublish (params, callback) {
-    axios.post(window.CMS_URLS.bulkPublish, { ids: params.ids, publish: params.toPublish }).then(function (resp) {
+    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.bulkPublish, { ids: params.ids, publish: params.toPublish }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      const error = `Bulk publish request error.\n${resp}}`
+      const error = {
+        message: `Bulk publish request error.`,
+        value: resp
+      }
       globalError(component, error)
     })
   },
 
   bulkFeature (params, callback) {
-    axios.post(window.CMS_URLS.bulkFeature, { ids: params.ids, feature: params.toFeature }).then(function (resp) {
+    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.bulkFeature, { ids: params.ids, feature: params.toFeature }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      const error = `Bulk feature request error.\n${resp}}`
+      const error = {
+        message: `Bulk feature request error.`,
+        value: resp
+      }
       globalError(component, error)
     })
   },
 
   bulkDelete (ids, callback) {
-    axios.post(window.CMS_URLS.bulkDelete, { ids: ids }).then(function (resp) {
+    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.bulkDelete, { ids: ids }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      const error = `Bulk delete request error.\n${resp}}`
+      const error = {
+        message: `Bulk delete request error.`,
+        value: resp
+      }
       globalError(component, error)
     })
   },
 
   bulkRestore (ids, callback) {
-    axios.post(window.CMS_URLS.bulkRestore, { ids: ids }).then(function (resp) {
+    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.bulkRestore, { ids: ids }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      const error = `Bulk restore request error.\n${resp}}`
+      const error = {
+        message: `Bulk restore request error.`,
+        value: resp
+      }
       globalError(component, error)
     })
   },

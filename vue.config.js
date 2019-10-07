@@ -1,13 +1,16 @@
 const path = require('path')
 const fs = require('fs')
+const isLaravelCommand = Boolean(process.env.PHP_ENV)
+if (!isLaravelCommand) {
+  // Define global vue variables
+  process.env.VUE_APP_NAME = require('./package').name.toUpperCase()
+  process.env.VUE_APP_VERSION = fs.readFileSync(path.resolve('./VERSION'), 'UTF-8').replace('\n', '')
 
-// Define global vue variables
-process.env.VUE_APP_NAME = require('./package').name.toUpperCase()
-process.env.VUE_APP_VERSION = fs.readFileSync(path.resolve('VERSION'), 'UTF-8').replace('\n', '')
-
-// eslint-disable-next-line no-console
-console.log('\x1b[32m', `${process.env.VUE_APP_NAME} - v${process.env.VUE_APP_VERSION}`)
-console.log('\x1b[32m', `\n🔥 Building frontend application`)
+  // eslint-disable-next-line no-console
+  console.log(path.resolve(`node_modules/vue/dist/vue.esm.js`))
+  console.log('\x1b[32m', `${process.env.VUE_APP_NAME} - v${process.env.VUE_APP_VERSION}`)
+  console.log('\x1b[32m', `\n🔥 Building frontend application`)
+}
 
 /**
  * For configuration
@@ -36,7 +39,6 @@ const pages = {
   'main-form': `${srcDirectory}/js/main-form.js`,
   'main-listing': `${srcDirectory}/js/main-listing.js`
 }
-console.log(path.basename())
 
 module.exports = {
   // Define base outputDir of build
@@ -55,6 +57,12 @@ module.exports = {
   },
   // Define entries points
   pages,
+  devServer: {
+    proxy: {
+      '**': 'http://0.0.0.0:8000/'
+    }
+  },
+  // runtimeCompiler: true,
   configureWebpack: {
     plugins: [
       new CleanWebpackPlugin(),
@@ -123,7 +131,8 @@ module.exports = {
       .set('@', path.resolve(`${srcDirectory}/js`))
     config.resolve.alias
       .set('styles', path.resolve(`${srcDirectory}/scss`))
-
+    config.resolve.alias
+      .set('vue$', path.resolve(`node_modules/vue/dist/vue.esm.js`))
     /* Delete default copy webpack plugin
        Because we are in a custom architecture instead of vue-cli project
        Copying public folder could be confusing with default Laravel architecture

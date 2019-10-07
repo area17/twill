@@ -6,23 +6,26 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
-class Publish extends Command
+class FEPublish extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'twill:publish
-        {--force|force}';
+    protected $signature = 'twill:fe-publish';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = "Publish Twill assets";
+    protected $description = "Publish twill FE build";
 
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
 
     /**
      * @param Filesystem $filesystem
@@ -30,23 +33,21 @@ class Publish extends Command
     public function __construct(Filesystem $filesystem)
     {
         parent::__construct();
+
+        $this->filesystem = $filesystem;
     }
 
     /*
      * Executes the console command.
      *
-     * @return mixed
      */
     public function handle()
     {
-        $force = $this->option('force');
         $options = [
             '--provider' => 'A17\Twill\TwillServiceProvider',
+            '--tag' => 'assets',
             '--force' => '--force'
         ];
-        if ($force) {
-            $options['--force'] = '--force';
-        }
 
         $this->call('vendor:publish', $options);
     }

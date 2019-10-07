@@ -8,7 +8,7 @@
 @stop
 
 @push('vuexStore')
-  window.STORE.publication.submitOptions = {
+  window['{{config('twill.browser')}}'].STORE.publication.submitOptions = {
     update: [
       {
         name: 'update',

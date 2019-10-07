@@ -20,7 +20,6 @@
     <link href="{{ twillAsset('main-listing.js')}}" rel="preload" as="script" crossorigin/>
 @endpush
 
-
 @section('content')
     <div class="listing">
         <div class="listing__nav">
@@ -120,9 +119,8 @@
 @stop
 
 @section('initialStore')
-    @dd(config('twill_browser'));
 
-    window.{{config('twill_browser')}}.CMS_URLS = {
+    window['{{config('twill.browser')}}'].CMS_URLS = {
         index: @if(isset($indexUrl)) '{{ $indexUrl }}' @else window.location.href.split('?')[0] @endif,
         publish: '{{ $publishUrl }}',
         bulkPublish: '{{ $bulkPublishUrl }}',
@@ -136,11 +134,11 @@
         bulkDelete: '{{ $bulkDeleteUrl }}'
     }
 
-    window.{{config('twill_browser')}}.STORE.form = {
+    window['{{config('twill.browser')}}'].STORE.form = {
         fields: []
     }
 
-    window.{{config('twill_browser')}}.STORE.datatable = {
+    window['{{config('twill.browser')}}'].STORE.datatable = {
         data: {!! json_encode($tableData) !!},
         columns: {!! json_encode($tableColumns) !!},
         navigation: {!! json_encode($tableMainFilters) !!},
@@ -157,10 +155,10 @@
     }
 
     @if ($create && ($openCreate ?? false))
-        window.{{config('twill_browser')}}.openCreate = {!! json_encode($openCreate) !!}
+        window['{{config('twill.browser')}}'].openCreate = {!! json_encode($openCreate) !!}
     @endif
 @stop
 
 @push('extra_js')
-    <script src="{{ twillAsset('main-listing.js') }}"></script>
+    <script src="{{ twillAsset('main-listing.js') }}" crossorigin></script>
 @endpush
