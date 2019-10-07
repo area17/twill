@@ -58,7 +58,7 @@
 
 @unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
 @push('vuexStore')
-    window.STORE.form.fields.push({
+    window['{{config('twill.browser')}}'].STORE.form.fields.push({
         name: '{{ $name }}',
         value: {!! json_encode(isset($item) && isset($item->$name) ? Arr::pluck($item->$name, 'id') : $formFieldsValue) !!}
     })

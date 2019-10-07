@@ -28,7 +28,7 @@ export function addSvg (el, binding, vnode) {
   svg.appendChild(title)
 
   // Add the <use> element to <svg>
-  const href = `#${id}`
+  const href = `#icon--${id}`
   const use = document.createElementNS('http://www.w3.org/2000/svg', 'use')
 
   use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', href)

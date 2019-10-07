@@ -8,7 +8,10 @@ export default {
     axios.get(endpoint).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      const error = `Get request error.\n${resp}`
+      const error = {
+        message: `Get request error.`,
+        value: resp
+      }
       globalError(component, error)
       if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
     })
@@ -17,7 +20,10 @@ export default {
     axios.post(endpoint, data).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      const error = `Post request error.\n${resp}`
+      const error = {
+        message: `Post request error.`,
+        value: resp
+      }
       globalError(component, error)
       if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
     })
@@ -26,7 +32,10 @@ export default {
     axios.put(endpoint, data).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      const error = `Save request error.\n${resp}`
+      const error = {
+        message: `Save request error.`,
+        value: resp
+      }
       globalError(component, error)
       if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
     })

@@ -107,7 +107,7 @@ window[process.env.VUE_APP_NAME].vm = new Vue({
     }
   },
   mounted: function () {
-    if (window.openCreate) this.create()
+    if (window[process.env.VUE_APP_NAME].openCreate) this.create()
   },
   created: function () {
     openMediaLibrary()

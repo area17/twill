@@ -42,6 +42,8 @@ import SvgSprite from '@/directives/svg'
 import Tooltip from '@/directives/tooltip'
 import Sticky from '@/directives/sticky'
 
+const isProd = process.env.NODE_ENV === 'production'
+
 const A17Config = {
   install (Vue, opts) {
     // Globals components
@@ -92,7 +94,8 @@ const A17Config = {
     })
 
     // Configurations
-    // Vue.config.productionTip = false
+    Vue.config.productionTip = isProd
+    Vue.config.devtools = true
     Vue.prototype.$http = axios
 
     axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'

@@ -40,7 +40,7 @@
     hide: 'Hide&nbsp;map'
   }
   const GOOGLEMAPURL = 'https://maps.googleapis.com/maps/api/js?libraries=places&key='
-  const APIKEY = window.hasOwnProperty('APIKEYS') && window.APIKEYS.hasOwnProperty('googleMapApi') ? window.APIKEYS.googleMapApi : null
+  const APIKEY = window[process.env.VUE_APP_NAME].hasOwnProperty('APIKEYS') && window[process.env.VUE_APP_NAME].APIKEYS.hasOwnProperty('googleMapApi') ? window[process.env.VUE_APP_NAME].APIKEYS.googleMapApi : null
 
   export default {
     name: 'A17Locationfield',

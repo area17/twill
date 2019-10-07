@@ -6,7 +6,10 @@ export default {
     axios.post(endpoint, data).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp.data)
     }, function (resp) {
-      const error = `Block preview request error. \n${resp}`
+      const error = {
+        message: `Block preview request error.`,
+        value: resp
+      }
       globalError('CONTENT', error)
       if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
     })

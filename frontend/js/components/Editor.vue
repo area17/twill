@@ -184,8 +184,8 @@
       },
       cancelBlock: function () {
         if (this.hasBlockActive) {
-          if (window.hasOwnProperty('PREVSTATE')) {
-            this.$store.replaceState(window.PREVSTATE)
+          if (window[process.env.VUE_APP_NAME].hasOwnProperty('PREVSTATE')) {
+            this.$store.replaceState(window[process.env.VUE_APP_NAME].PREVSTATE)
           }
           this.getPreview()
         }
@@ -211,7 +211,7 @@
         if (this.isBlockActive(blockId)) this.unselectBlock()
         else {
           // Save current Store and activate
-          window.PREVSTATE = cloneDeep(this.$store.state)
+          window[process.env.VUE_APP_NAME].PREVSTATE = cloneDeep(this.$store.state)
           this.$store.commit(CONTENT.ACTIVATE_BLOCK, index)
 
           if (!this.isWatching) {
@@ -234,7 +234,7 @@
         this.isWatching = false
 
         // remove prevstate
-        if (window.hasOwnProperty('PREVSTATE')) delete window.PREVSTATE
+        if (window[process.env.VUE_APP_NAME].hasOwnProperty('PREVSTATE')) delete window[process.env.VUE_APP_NAME].PREVSTATE
 
         if (!this.hasBlockActive) return
         this.$store.commit(CONTENT.ACTIVATE_BLOCK, -1)

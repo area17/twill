@@ -60,16 +60,16 @@
     },
     methods: {
       bulkPublishable: function ($inverse = false) {
-        return window.CMS_URLS.bulkPublish !== '' && this.bulkStatus.canPublish && ($inverse ? this.bulkStatus.published : !this.bulkStatus.published) && !this.bulkStatus.deleted
+        return window[process.env.VUE_APP_NAME].bulkPublish !== '' && this.bulkStatus.canPublish && ($inverse ? this.bulkStatus.published : !this.bulkStatus.published) && !this.bulkStatus.deleted
       },
       bulkFeaturable: function ($inverse = false) {
-        return window.CMS_URLS.bulkFeature !== '' && this.bulkStatus.canFeature && ($inverse ? this.bulkStatus.featured : !this.bulkStatus.featured) && !this.bulkStatus.deleted
+        return window[process.env.VUE_APP_NAME].bulkFeature !== '' && this.bulkStatus.canFeature && ($inverse ? this.bulkStatus.featured : !this.bulkStatus.featured) && !this.bulkStatus.deleted
       },
       bulkDeletable: function () {
-        return window.CMS_URLS.bulkDelete !== '' && !this.bulkStatus.deleted && this.bulkStatus.canDelete
+        return window[process.env.VUE_APP_NAME].bulkDelete !== '' && !this.bulkStatus.deleted && this.bulkStatus.canDelete
       },
       bulkRestorable: function () {
-        return window.CMS_URLS.bulkRestore !== '' && this.bulkStatus.deleted
+        return window[process.env.VUE_APP_NAME].bulkRestore !== '' && this.bulkStatus.deleted
       },
       clearBulkSelect: function () {
         this.$store.commit(DATATABLE.REPLACE_DATATABLE_BULK, [])
