@@ -12,30 +12,36 @@
 @endphp
 
 @push('extra_css')
-    <link href="{{ twillAsset('main-listing.css')}}" rel="preload" as="style" crossorigin/>
+    @if(config('twill.fe_prod'))
+        <link href="{{ twillAsset('main-listing.css')}}" rel="preload" as="style" crossorigin/>
+    @endif
     <link href="{{ twillAsset('main-listing.css')}}" rel="stylesheet" crossorigin/>
 @endpush
 
 @push('extra_js_head')
-    <link href="{{ twillAsset('main-listing.js')}}" rel="preload" as="script" crossorigin/>
+    @if(config('twill.fe_prod'))
+        <link href="{{ twillAsset('main-listing.js')}}" rel="preload" as="script" crossorigin/>
+    @endif
 @endpush
 
 @section('content')
     <div class="listing">
         <div class="listing__nav">
             <div class="container" ref="form">
-                <a17-filter v-on:submit="filterListing" v-bind:closed="hasBulkIds" initial-search-value="{{ $filters['search'] ?? '' }}" :clear-option="true" v-on:clear="clearFiltersAndReloadDatas">
+                <a17-filter v-on:submit="filterListing" v-bind:closed="hasBulkIds"
+                            initial-search-value="{{ $filters['search'] ?? '' }}" :clear-option="true"
+                            v-on:clear="clearFiltersAndReloadDatas">
                     <a17-table-filters slot="navigation"></a17-table-filters>
 
                     @forelse($hiddenFilters as $filter)
                         @if ($loop->first)
                             <div slot="hidden-filters">
-                        @endif
+                                @endif
 
-                        @if (isset(${$filter.'List'}))
-                            <a17-vselect
-                            name="{{ $filter }}"
-                            :options="{{ json_encode(method_exists(${$filter.'List'}, 'map') ? ${$filter.'List'}->map(function($label, $value) {
+                                @if (isset(${$filter.'List'}))
+                                    <a17-vselect
+                                        name="{{ $filter }}"
+                                        :options="{{ json_encode(method_exists(${$filter.'List'}, 'map') ? ${$filter.'List'}->map(function($label, $value) {
                                 return [
                                     'value' => $value,
                                     'label' => $label
@@ -46,7 +52,8 @@
                             ></a17-vselect>
                         @endif
 
-                        @if ($loop->last)
+
+                                @if ($loop->last)
                             </div>
                         @endif
                     @empty
@@ -107,35 +114,35 @@
 @section('initialStore')
 
     window['{{config('twill.browser')}}'].CMS_URLS = {
-        index: @if(isset($indexUrl)) '{{ $indexUrl }}' @else window.location.href.split('?')[0] @endif,
-        publish: '{{ $publishUrl }}',
-        bulkPublish: '{{ $bulkPublishUrl }}',
-        restore: '{{ $restoreUrl }}',
-        bulkRestore: '{{ $bulkRestoreUrl }}',
-        reorder: '{{ $reorderUrl }}',
-        feature: '{{ $featureUrl }}',
-        bulkFeature: '{{ $bulkFeatureUrl }}',
-        bulkDelete: '{{ $bulkDeleteUrl }}'
+    index: @if(isset($indexUrl)) '{{ $indexUrl }}' @else window.location.href.split('?')[0] @endif,
+    publish: '{{ $publishUrl }}',
+    bulkPublish: '{{ $bulkPublishUrl }}',
+    restore: '{{ $restoreUrl }}',
+    bulkRestore: '{{ $bulkRestoreUrl }}',
+    reorder: '{{ $reorderUrl }}',
+    feature: '{{ $featureUrl }}',
+    bulkFeature: '{{ $bulkFeatureUrl }}',
+    bulkDelete: '{{ $bulkDeleteUrl }}'
     }
 
     window['{{config('twill.browser')}}'].STORE.form = {
-        fields: []
+    fields: []
     }
 
     window['{{config('twill.browser')}}'].STORE.datatable = {
-        data: {!! json_encode($tableData) !!},
-        columns: {!! json_encode($tableColumns) !!},
-        navigation: {!! json_encode($tableMainFilters) !!},
-        filter: { status: '{{ $filters['status'] ?? $defaultFilterSlug ?? 'all' }}' },
-        page: {{ request('page') ?? 1 }},
-        maxPage: {{ $maxPage ?? 1 }},
-        defaultMaxPage: {{ $defaultMaxPage ?? 1 }},
-        offset: {{ request('offset') ?? $offset ?? 60 }},
-        defaultOffset: {{ $defaultOffset ?? 60 }},
-        sortKey: '{{ $reorder ? (request('sortKey') ?? '') : (request('sortKey') ?? '') }}',
-        sortDir: '{{ request('sortDir') ?? 'asc' }}',
-        baseUrl: '{{ rtrim(config('app.url'), '/') . '/' }}',
-        localStorageKey: '{{ isset($currentUser) ? $currentUser->id : 0 }}__{{ $moduleName ?? Route::currentRouteName() }}'
+    data: {!! json_encode($tableData) !!},
+    columns: {!! json_encode($tableColumns) !!},
+    navigation: {!! json_encode($tableMainFilters) !!},
+    filter: { status: '{{ $filters['status'] ?? $defaultFilterSlug ?? 'all' }}' },
+    page: {{ request('page') ?? 1 }},
+    maxPage: {{ $maxPage ?? 1 }},
+    defaultMaxPage: {{ $defaultMaxPage ?? 1 }},
+    offset: {{ request('offset') ?? $offset ?? 60 }},
+    defaultOffset: {{ $defaultOffset ?? 60 }},
+    sortKey: '{{ $reorder ? (request('sortKey') ?? '') : (request('sortKey') ?? '') }}',
+    sortDir: '{{ request('sortDir') ?? 'asc' }}',
+    baseUrl: '{{ rtrim(config('app.url'), '/') . '/' }}',
+    localStorageKey: '{{ isset($currentUser) ? $currentUser->id : 0 }}__{{ $moduleName ?? Route::currentRouteName() }}'
     }
 
     @if ($create && ($openCreate ?? false))

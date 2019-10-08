@@ -27,6 +27,7 @@ class FEInstall extends Command
      */
     protected $filesystem;
 
+
     /**
      * @param Filesystem $filesystem
      */
@@ -39,7 +40,7 @@ class FEInstall extends Command
 
     /*
      * Executes the console command.
-     *
+     */
     public function handle()
     {
         $progressBar = $this->output->createProgressBar(1);
@@ -59,39 +60,13 @@ class FEInstall extends Command
      */
     private function npmInstall()
     {
-        $npmInstallProcess = new Process(['npm', 'ci'], base_path('vendor/area17/twill'));
+        $npmInstallProcess = new Process(['npm', 'ci'], base_path(config('twill.vendor_path')));
         $npmInstallProcess->setTty(true);
         $npmInstallProcess->mustRun();
     }
 
-    /**
-     * @return void
-     */
-    private function npmBuild()
+    public static function checkNodeModules()
     {
-        $npmBuildProcess = new Process(['npm', 'run', 'prod'], base_path('vendor/area17/twill'));
-        $npmBuildProcess->setTty(true);
-        $npmBuildProcess->mustRun();
-    }
-
-    /**
-     * @return void
-     */
-    private function copyBlocks()
-    {
-        $localCustomBlocksPath = resource_path('assets/js/blocks');
-        $twillCustomBlocksPath = base_path('vendor/area17/twill/frontend/js/components/blocks/customs');
-
-        if (!$this->filesystem->exists($twillCustomBlocksPath)) {
-            $this->filesystem->makeDirectory($twillCustomBlocksPath);
-        }
-
-        $this->filesystem->cleanDirectory($twillCustomBlocksPath);
-
-        if (!$this->filesystem->exists($localCustomBlocksPath)) {
-            $this->filesystem->makeDirectory($localCustomBlocksPath);
-        }
-
-        $this->filesystem->copyDirectory($localCustomBlocksPath, $twillCustomBlocksPath);
+        return file_exists(config('twill.vendor_path').'/node_modules');
     }
 }

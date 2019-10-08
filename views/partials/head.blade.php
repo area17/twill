@@ -8,12 +8,16 @@
 {{-- Global styles --}}
 
 <!-- Fonts -->
+@if(config('twill.fe_prod'))
 <link href="{{twillAsset('Inter-Regular.woff2')}}" rel="preload" as="font" type="font/woff2" crossorigin>
 <link href="{{twillAsset('Inter-Medium.woff2')}}" rel="preload" as="font" type="font/woff2" crossorigin>
+@endif
 
 <!-- CSS -->
+@if(config('twill.fe_prod'))
 <link href="{{ twillAsset('chunk-common.css')}}" rel="preload" as="style" crossorigin/>
 <link href="{{ twillAsset('chunk-vendors.css')}}" rel="preload" as="style" crossorigin/>
+@endif
 <link href="{{ twillAsset('chunk-common.css')}}" rel="stylesheet" crossorigin/>
 <link href="{{ twillAsset('chunk-vendors.css')}}" rel="stylesheet" crossorigin/>
 

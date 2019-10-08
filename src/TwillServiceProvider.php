@@ -4,6 +4,7 @@ namespace A17\Twill;
 
 use A17\Twill\Commands\Build;
 use A17\Twill\Commands\CreateSuperAdmin;
+use A17\Twill\Commands\FEBuild;
 use A17\Twill\Commands\FEDev;
 use A17\Twill\Commands\FEInstall;
 use A17\Twill\Commands\FEPublish;
@@ -316,6 +317,7 @@ class TwillServiceProvider extends ServiceProvider
             Publish::class,
             FEInstall::class,
             FEDev::class,
+            FEBuild::class,
             FEPublish::class
         ]);
     }

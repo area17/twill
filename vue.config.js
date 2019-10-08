@@ -1,16 +1,15 @@
 const path = require('path')
 const fs = require('fs')
-const isLaravelCommand = Boolean(process.env.PHP_ENV)
-if (!isLaravelCommand) {
-  // Define global vue variables
-  process.env.VUE_APP_NAME = require('./package').name.toUpperCase()
-  process.env.VUE_APP_VERSION = fs.readFileSync(path.resolve('./VERSION'), 'UTF-8').replace('\n', '')
+const isProd = process.env.NODE_ENV === 'production'
 
-  // eslint-disable-next-line no-console
-  console.log(path.resolve(`node_modules/vue/dist/vue.esm.js`))
-  console.log('\x1b[32m', `${process.env.VUE_APP_NAME} - v${process.env.VUE_APP_VERSION}`)
-  console.log('\x1b[32m', `\n🔥 Building frontend application`)
-}
+// const customConfig = require(path.resolve('../../'))
+// Define global vue variables
+process.env.VUE_APP_NAME = require('./package').name.toUpperCase()
+process.env.VUE_APP_VERSION = fs.readFileSync('./VERSION', 'UTF-8').replace('\n', '')
+
+// eslint-disable-next-line no-console
+console.log('\x1b[32m', `${process.env.VUE_APP_NAME} - v${process.env.VUE_APP_VERSION}`)
+console.log('\x1b[32m', `\n🔥 Building frontend application in ${isProd ? 'production' : 'dev'} mode.`)
 
 /**
  * For configuration
@@ -32,7 +31,6 @@ const srcDirectory = 'frontend'
 const publicPath = 'twill'
 const outputDir = `dist`
 const assetsDir = `${publicPath}/assets`
-const isProd = process.env.NODE_ENV === 'production'
 const pages = {
   'main-buckets': `${srcDirectory}/js/main-buckets.js`,
   'main-dashboard': `${srcDirectory}/js/main-dashboard.js`,
@@ -40,7 +38,7 @@ const pages = {
   'main-listing': `${srcDirectory}/js/main-listing.js`
 }
 
-module.exports = {
+const config = {
   // Define base outputDir of build
   outputDir: outputDir,
   // Define root asset directory
@@ -57,11 +55,18 @@ module.exports = {
   },
   // Define entries points
   pages,
-  devServer: {
-    proxy: {
-      '**': 'http://0.0.0.0:8000/'
-    }
-  },
+  // devServer: {
+  //   disableHostCheck: true,
+  //   proxy: 'http://localhost:8000/',
+  //   headers: {
+  //     'Access-Control-Allow-Origin': '*'
+  //   },
+  //   contentBase: path.resolve(Config.publicPath),
+  //   historyApiFallback: true,
+  //   noInfo: true,
+  //   compress: true,
+  //   quiet: true
+  // },
   // runtimeCompiler: true,
   configureWebpack: {
     plugins: [
@@ -147,3 +152,5 @@ module.exports = {
     })
   }
 }
+
+module.exports = config
