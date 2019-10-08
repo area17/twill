@@ -14,12 +14,7 @@ trait HandleFieldsGroups
      */
     public function prepareFieldsBeforeSaveHandleFieldsGroups($object, $fields)
     {
-        foreach ($this->fieldsGroups as $group => $groupFields) {
-            $fields[$group] = json_encode(Arr::only($fields, $groupFields));
-            Arr::forget($fields, $groupFields);
-        }
-
-        return $fields;
+        return $this->handleFieldsGroups($fields);
     }
 
     /**
@@ -27,14 +22,9 @@ trait HandleFieldsGroups
      * @param array $fields
      * @return array
      */
-    public function prepareFieldsBeforeCreateHandleFieldsGroups($object, $fields)
+    public function prepareFieldsBeforeCreateHandleFieldsGroups($fields)
     {
-        foreach ($this->fieldsGroups as $group => $groupFields) {
-            $fields[$group] = json_encode(Arr::only($fields, $groupFields));
-            Arr::forget($fields, $groupFields);
-        }
-
-        return $fields;
+        return $this->handleFieldsGroups($fields);
     }
 
     /**
@@ -46,8 +36,24 @@ trait HandleFieldsGroups
     {
         foreach ($this->fieldsGroups as $group => $groupFields) {
             if ($object->$group) {
-                $fields = array_merge($fields, json_decode($object->$group, true));
+                $decoded_fields = json_decode($object->$group, true);
+                // In case that some field read the value through $item->$name
+                foreach($decoded_fields as $field_name => $field_value) {
+                    $object->setAttribute($field_name, $field_value);
+                }
+                $fields = array_merge($fields, $decoded_fields);
             }
+        }
+
+        return $fields;
+    }
+
+    protected function HandleFieldsGroups($fields) {
+        foreach ($this->fieldsGroups as $group => $groupFields) {
+            $fields[$group] = json_encode(Arr::where(Arr::only($fields, $groupFields), function ($value, $key) {
+                return !empty($value);
+            }));
+            Arr::forget($fields, $groupFields);
         }
 
         return $fields;
