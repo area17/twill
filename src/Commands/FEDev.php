@@ -47,20 +47,14 @@ class FEDev extends Command
      */
     public function handle()
     {
-//        $this->npmDev();
+        if (!FEInstall::checkNodeModules()) {
+            $this->info('Twill frontend dependencies are not installed.');
+            $this->info('Install it right now !');
+            $this->call('twill:fe-install');
+        }
 
-//        dd($this->laravel->publicPath());
-
-        chdir($this->laravel->publicPath());
-
-        $config_path = $this->option('config');
-
-        list($host, $port) = $this->getHostAndPort($config_path);
-        $this->info("Backend started on http://{$host}:{$port}/ as proxy");
-        $binary = ProcessUtils::escapeArgument((new PhpExecutableFinder)->find(false));
-        $base = ProcessUtils::escapeArgument($this->laravel->basePath());
-//        dd($binary, $base);
-        passthru("WEBPACK_DEV=running {$binary} -S {$host}:{$port} {$base}/server.php");
+        config(['twill.fe_prod' => false]);
+        $this->npmDev();
     }
 
     protected function getHostAndPort(string $config_path): array
@@ -97,45 +91,15 @@ class FEDev extends Command
     }
 
     /**
-     * @return void
-     */
-    private function npmInstall()
-    {
-        $npmInstallProcess = new Process(['npm', 'ci'], base_path('vendor/area17/twill'));
-        $npmInstallProcess->setTty(true);
-        $npmInstallProcess->mustRun();
-    }
-
-    /**
      * Start vue-cli-serve command
      *
      * @return void
      */
     private function npmDev()
     {
-        $npmBuildProcess = new Process(['npm', 'run', 'serve'], base_path('vendor/area17/twill'));
-        $npmBuildProcess->setTty(true);
-        $npmBuildProcess->mustRun();
-    }
-
-    /**
-     * @return void
-     */
-    private function copyBlocks()
-    {
-        $localCustomBlocksPath = resource_path('assets/js/blocks');
-        $twillCustomBlocksPath = base_path('vendor/area17/twill/frontend/js/components/blocks/customs');
-
-        if (!$this->filesystem->exists($twillCustomBlocksPath)) {
-            $this->filesystem->makeDirectory($twillCustomBlocksPath);
-        }
-
-        $this->filesystem->cleanDirectory($twillCustomBlocksPath);
-
-        if (!$this->filesystem->exists($localCustomBlocksPath)) {
-            $this->filesystem->makeDirectory($localCustomBlocksPath);
-        }
-
-        $this->filesystem->copyDirectory($localCustomBlocksPath, $twillCustomBlocksPath);
+        $process = new Process(['npm', 'run', 'serve', ''], base_path(config('twill.vendor_path')));
+        $process->setTty(true);
+        $process->setTimeout(3600);
+        $process->mustRun();
     }
 }

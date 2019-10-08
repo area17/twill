@@ -7,12 +7,16 @@
 @endphp
 
 @push('extra_css')
+    @if(config('twill.fe_prod'))
     <link href="{{ twillAsset('main-dashboard.css')}}" rel="preload" as="style" crossorigin/>
+    @endif
     <link href="{{ twillAsset('main-dashboard.css')}}" rel="stylesheet" crossorigin/>
 @endpush
 
 @push('extra_js_head')
+    @if(config('twill.fe_prod'))
     <link href="{{ twillAsset('main-dashboard.js')}}" rel="preload" as="script" crossorigin/>
+    @endif
 @endpush
 
 @section('appTypeClass', 'body--dashboard')
@@ -20,7 +24,7 @@
 @section('primaryNavigation')
     @if (config('twill.enabled.search', false))
         <div class="dashboardSearch" id="searchApp" v-cloak>
-          <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" type="dashboard"></a17-search>
+            <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" type="dashboard"></a17-search>
         </div>
     @endif
 @stop
@@ -44,11 +48,11 @@
                         @endif
                     </aside>
                     <div class="col col--primary">
-            @endif
-                <a17-activity-feed empty-message="{{ __($emptyMessage)  }}"></a17-activity-feed>
-            @if(($facts ?? false) || (!$drafts->isEmpty()))
+                        @endif
+                        <a17-activity-feed empty-message="{{ __($emptyMessage)  }}"></a17-activity-feed>
+                        @if(($facts ?? false) || (!$drafts->isEmpty()))
+                    </div>
                 </div>
-            </div>
             @endif
         </div>
     </div>

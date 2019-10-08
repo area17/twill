@@ -143,5 +143,8 @@ return [
    |--------------------------------------------------------------------------
    |
     */
-    'browser' => 'TWILL'
+    'browser' => 'TWILL',
+    'fe_prod' => true,
+    'fe_dev-server' => 'http://localhost:8000/',
+    'vendor_path' => 'vendor/area17/twill'
 ];

@@ -7,12 +7,16 @@
 @endphp
 
 @push('extra_css')
+    @if(config('twill.fe_prod'))
     <link href="{{ twillAsset('main-buckets.css')}}" rel="preload" as="style" crossorigin/>
+    @endif
     <link href="{{ twillAsset('main-buckets.css')}}" rel="stylesheet" crossorigin/>
 @endpush
 
 @push('extra_js_head')
+    @if(config('twill.fe_prod'))
     <link href="{{ twillAsset('main-buckets.js')}}" rel="preload" as="script" crossorigin/>
+    @endif
 @endpush
 
 @section('content')
