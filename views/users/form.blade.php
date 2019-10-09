@@ -12,14 +12,14 @@
     ])
 
     @can('edit-user-role')
-        @unless($item->is_superadmin)
+        @if($item->id !== $currentUser->id)
             @formField('select', [
                 'name' => "role_id",
                 'label' => "Role",
                 'options' => $roleList,
                 'placeholder' => 'Select a role'
             ])
-        @endunless
+        @endif
     @endcan
 
     @if(config('twill.enabled.users-image'))
@@ -42,16 +42,18 @@
         ])
     @endif
 
-    @unless($item->is_superadmin)
-        @formField('multi_select', [
-            'name' => "groups",
-            'label' => 'Groups',
-            'options' => $groupOptions,
-            'endpoint' => '/group/search',
-            'unpack' => false,
-            'note' => 'Every user belongs to the "Everyone" group'
-        ])
-    @endunless
+    @can('edit-user-groups')
+      @if($item->id !== $currentUser->id)
+          @formField('multi_select', [
+              'name' => "groups",
+              'label' => 'Groups',
+              'options' => $groupOptions,
+              'endpoint' => '/group/search',
+              'unpack' => false,
+              'note' => 'Every user belongs to the "Everyone" group'
+          ])
+      @endif
+    @endcan
 
     @if($with2faSettings ?? false)
         @formField('checkbox', [
