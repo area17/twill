@@ -160,7 +160,7 @@ class UserRepository extends ModuleRepository
         $this->updateMultiSelect($user, $fields, 'groups');
 
         // When role changed, update it's groups information if needed.
-        if (Role::findOrFail($fields['role_id'])->in_everyone_group) {
+        if (isset($fields['role_id']) && Role::findOrFail($fields['role_id'])->in_everyone_group) {
             $user->groups()->syncWithoutDetaching(Group::getEveryoneGroup()->id);
         } else {
             $user->groups()->detach(Group::getEveryoneGroup()->id);

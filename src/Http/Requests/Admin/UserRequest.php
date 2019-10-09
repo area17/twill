@@ -38,7 +38,6 @@ class UserRequest extends Request
                 {
                     return [
                         'name' => 'required',
-                        'role_id' => 'required',
                         'email' => 'required|email|unique:' . config('twill.users_table', 'twill_users') . ',email,' . $this->user,
                         'verify-code' => function ($attribute, $value, $fail) {
                             $user = Auth::guard('twill_users')->user();
