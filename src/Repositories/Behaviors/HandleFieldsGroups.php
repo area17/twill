@@ -48,7 +48,7 @@ trait HandleFieldsGroups
         return $fields;
     }
 
-    protected function HandleFieldsGroups($fields) {
+    protected function handleFieldsGroups($fields) {
         foreach ($this->fieldsGroups as $group => $groupFields) {
             $fields[$group] = json_encode(Arr::where(Arr::only($fields, $groupFields), function ($value, $key) {
                 return !empty($value);
