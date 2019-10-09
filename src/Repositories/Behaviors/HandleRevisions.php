@@ -47,7 +47,10 @@ trait HandleRevisions
 
         $fields = json_decode($object->revisions->where('id', $revisionId)->first()->payload, true);
 
-        return $this->hydrateObject($this->model->newInstance(), $fields);
+        $hydratedObject = $this->hydrateObject($this->model->newInstance(), $fields);
+        $hydratedObject->id = $id;
+
+        return $hydratedObject;
     }
 
     public function hydrateMultiSelect($object, $fields, $relationship, $model = null, $customHydratedRelationship = null)
