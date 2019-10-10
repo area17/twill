@@ -27,7 +27,17 @@ $s3Config = [
     'use_https' => env('S3_UPLOADER_USE_HTTPS', env('S3_USE_HTTPS', env('AWS_USE_HTTPS', true))),
 ];
 
+$azureConfig = [
+    'driver' => 'azure',
+    'key' => env('AZURE_KEY'),
+    'secret' => env('AZURE_SECRET'),
+    'region' => env('AZURE_REGION'),
+    'bucket' => env('AZURE_BUCKET'),
+    'root' => env('AZURE_ROOT'),
+    'use_https' => env('AZURE_UPLOADER_USE_HTTPS', env('AZURE_USE_HTTPS', env('AWS_USE_HTTPS', true))),
+];
+
 return [
-    'twill_media_library' => config('twill.media_library.endpoint_type') === 'local' ? $mediaLocalConfig : $s3Config,
-    'twill_file_library' => config('twill.file_library.endpoint_type') === 'local' ? $fileLocalConfig : $s3Config,
+    'twill_media_library' => config('twill.media_library.endpoint_type') === 'local' ? $mediaLocalConfig : 'azure' ? $azureConfig : $s3Config,
+    'twill_file_library' => config('twill.file_library.endpoint_type') === 'local' ? $fileLocalConfig : 'azure' ? $azureConfig : $s3Config,
 ];
