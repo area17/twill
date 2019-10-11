@@ -65,8 +65,6 @@ class TwillServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->requireHelpers();
-
         $this->publishConfigs();
         $this->publishMigrations();
         $this->publishAssets();
@@ -328,19 +326,6 @@ class TwillServiceProvider extends ServiceProvider
             Build::class,
             Update::class,
         ]);
-    }
-
-    /**
-     * @return void
-     */
-    private function requireHelpers()
-    {
-        require_once __DIR__ . '/Helpers/routes_helpers.php';
-        require_once __DIR__ . '/Helpers/i18n_helpers.php';
-        require_once __DIR__ . '/Helpers/media_library_helpers.php';
-        require_once __DIR__ . '/Helpers/frontend_helpers.php';
-        require_once __DIR__ . '/Helpers/migrations_helpers.php';
-        require_once __DIR__ . '/Helpers/helpers.php';
     }
 
     /**
