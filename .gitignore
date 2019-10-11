@@ -7,3 +7,4 @@ assets/dist/*
 frontend/js/components/blocks/customs/*
 .DS_Store
 public/
+tests/coverage
