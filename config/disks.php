@@ -38,6 +38,14 @@ $azureConfig = [
 ];
 
 return [
-    'twill_media_library' => config('twill.media_library.endpoint_type') === 'local' ? $mediaLocalConfig : 'azure' ? $azureConfig : $s3Config,
-    'twill_file_library' => config('twill.file_library.endpoint_type') === 'local' ? $fileLocalConfig : 'azure' ? $azureConfig : $s3Config,
+    'twill_media_library' => config('twill.media_library.endpoint_type') === 'local'
+        ? $mediaLocalConfig
+        : config('twill.media_library.endpoint_type') === 'azure'
+            ? $azureConfig
+            : $s3Config,
+    'twill_file_library' => config('twill.file_library.endpoint_type') === 'local'
+        ? $fileLocalConfig
+        : config('twill.file_library.endpoint_type') === 'azure'
+            ? $azureConfig
+            : $s3Config,
 ];
