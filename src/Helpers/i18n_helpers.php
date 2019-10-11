@@ -228,7 +228,7 @@ if (!function_exists('camelCaseToWords')) {
     {
         $re = '/(?<=[a-z])(?=[A-Z])/x';
         $a = preg_split($re, $camelCaseString);
-        $words = join($a, " ");
+        $words = join(" ", $a);
         return ucfirst(strtolower($words));
     }
 }
