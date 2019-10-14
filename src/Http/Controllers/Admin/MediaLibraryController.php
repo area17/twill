@@ -3,17 +3,20 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Http\Requests\Admin\MediaRequest;
+use A17\Twill\Services\Uploader\SignAzureUpload;
+use A17\Twill\Services\Uploader\SignAzureUploadListener;
 use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignS3UploadListener;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
-class MediaLibraryController extends ModuleController implements SignS3UploadListener
+class MediaLibraryController extends ModuleController implements SignS3UploadListener, SignAzureUploadListener
 {
     /**
      * @var string
@@ -121,7 +124,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
     /**
      * @param int|null $parentModuleId
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function store($parentModuleId = null)
     {
@@ -191,7 +194,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function singleUpdate()
     {
@@ -210,7 +213,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function bulkUpdate()
     {
@@ -258,8 +261,18 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     }
 
     /**
+     * @param Request $request
+     * @param SignAzureUpload $signAzureUpload
+     * @return mixed
+     */
+    public function signAzureUpload(Request $request, SignAzureUpload $signAzureUpload)
+    {
+        return $signAzureUpload->getSasUrl($request, $this, $this->config->get('twill.media_library.disk'));
+    }
+
+    /**
      * @param mixed $signedPolicy
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function policyIsSigned($signedPolicy)
     {
@@ -267,7 +280,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function policyIsNotValid()
     {
@@ -288,5 +301,22 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
             return [$field['name'] => $fieldInRequest];
         });
+    }
+
+    /**
+     * @param $sasUrl
+     * @return JsonResponse
+     */
+    public function isValidSas($sasUrl)
+    {
+        return $this->responseFactory->json($sasUrl, 200);
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function isNotValidSas()
+    {
+        return $this->responseFactory->json(["invalid" => true], 500);
     }
 }

@@ -3,15 +3,18 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Http\Requests\Admin\FileRequest;
+use A17\Twill\Services\Uploader\SignAzureUpload;
+use A17\Twill\Services\Uploader\SignAzureUploadListener;
 use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignS3UploadListener;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Routing\UrlGenerator;
 
-class FileLibraryController extends ModuleController implements SignS3UploadListener
+class FileLibraryController extends ModuleController implements SignS3UploadListener, SignAzureUploadListener
 {
     /**
      * @var string
@@ -54,7 +57,8 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         UrlGenerator $urlGenerator,
         ResponseFactory $responseFactory,
         Config $config
-    ) {
+    )
+    {
         parent::__construct($app, $request);
         $this->urlGenerator = $urlGenerator;
         $this->responseFactory = $responseFactory;
@@ -104,14 +108,14 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
     private function buildFile($item)
     {
         return $item->toCmsArray() + [
-            'tags' => $item->tags->map(function ($tag) {
-                return $tag->name;
-            }),
-            'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
-            'updateUrl' => $this->urlGenerator->route('admin.file-library.files.single-update'),
-            'updateBulkUrl' => $this->urlGenerator->route('admin.file-library.files.bulk-update'),
-            'deleteBulkUrl' => $this->urlGenerator->route('admin.file-library.files.bulk-delete'),
-        ];
+                'tags' => $item->tags->map(function ($tag) {
+                    return $tag->name;
+                }),
+                'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
+                'updateUrl' => $this->urlGenerator->route('admin.file-library.files.single-update'),
+                'updateBulkUrl' => $this->urlGenerator->route('admin.file-library.files.bulk-update'),
+                'deleteBulkUrl' => $this->urlGenerator->route('admin.file-library.files.bulk-delete'),
+            ];
     }
 
     /**
@@ -243,6 +247,16 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
     }
 
     /**
+     * @param Request $request
+     * @param SignAzureUpload $signAzureUpload
+     * @return mixed
+     */
+    public function signAzureUpload(Request $request, SignAzureUpload $signAzureUpload)
+    {
+        return $signAzureUpload->getSasUrl($request, $this, $this->config->get('twill.file_library.disk'));
+    }
+
+    /**
      * @param mixed $signedPolicy
      * @return \Illuminate\Http\JsonResponse
      */
@@ -255,6 +269,23 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
      * @return \Illuminate\Http\JsonResponse
      */
     public function policyIsNotValid()
+    {
+        return $this->responseFactory->json(["invalid" => true], 500);
+    }
+
+    /**
+     * @param $sasUrl
+     * @return JsonResponse
+     */
+    public function isValidSas($sasUrl)
+    {
+        return $this->responseFactory->json($sasUrl, 200);
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function isNotValidSas()
     {
         return $this->responseFactory->json(["invalid" => true], 500);
     }

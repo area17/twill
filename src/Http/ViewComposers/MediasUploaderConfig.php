@@ -57,7 +57,7 @@ class MediasUploaderConfig
                     : s3Endpoint($libraryDisk),
             'successEndpoint' => $this->urlGenerator->route('admin.media-library.medias.store'),
             'signatureEndpoint' => $endpointType === 'azure'
-                ? $this->urlGenerator->route('admin.file-library.sign-azure-upload')
+                ? $this->urlGenerator->route('admin.media-library.sign-azure-upload')
                 : $this->urlGenerator->route('admin.media-library.sign-s3-upload'),
             'endpointBucket' => $this->config->get('filesystems.disks.' . $libraryDisk . '.bucket', 'none'),
             'endpointRegion' => $this->config->get('filesystems.disks.' . $libraryDisk . '.region', 'none'),
