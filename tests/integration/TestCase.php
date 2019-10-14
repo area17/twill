@@ -13,6 +13,11 @@ use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 class TestCase extends OrchestraTestCase
 {
+    const DATABASE_MEMORY  = ':memory:';
+    const DEFAULT_PASSWORD = 'secret';
+    const DEFAULT_LOCALE   = 'en_US';
+    const DB_CONNECTION    = 'sqlite';
+
     /**
      * @var \Faker\Generator
      */
@@ -27,6 +32,22 @@ class TestCase extends OrchestraTestCase
      * @var \Illuminate\Filesystem\Filesystem
      */
     public $files;
+
+    /**
+     * Create sqlite database, if needed.
+     *
+     * @param $database
+     */
+    protected function createDatabase($database): void
+    {
+        if ($database !== self::DATABASE_MEMORY) {
+            if (file_exists($database)) {
+                unlink($database);
+            }
+
+            touch($database);
+        }
+    }
 
 
     /**
@@ -62,7 +83,7 @@ class TestCase extends OrchestraTestCase
 
         $user->name = $this->faker->name;
         $user->email = $this->faker->email;
-        $user->password = 'secret';
+        $user->password = self::DEFAULT_PASSWORD;
 
         return $user;
     }
@@ -72,7 +93,7 @@ class TestCase extends OrchestraTestCase
      */
     protected function instantiateFaker(): void
     {
-        $this->faker = Faker::create('en_US');
+        $this->faker = Faker::create(self::DEFAULT_LOCALE);
     }
 
     /**
@@ -99,9 +120,11 @@ class TestCase extends OrchestraTestCase
      */
     protected function getEnvironmentSetUp($app)
     {
-        $app['config']->set('database.default', $connection = 'sqlite');
+        $app['config']->set('database.default', $connection = env('DB_CONNECTION', self::DB_CONNECTION));
 
         $app['config']->set('activitylog.database_connection', $connection);
+
+        $app['config']->set('database.connections.' . $connection . '.database', env('DB_DATABASE', self::DATABASE_MEMORY));
 
         $this->boot($app);
 
@@ -117,14 +140,8 @@ class TestCase extends OrchestraTestCase
     {
         $connection = $app['config']['database.default'];
 
-        if ($driver = $app['config']['database.connections.' . $connection . '.driver'] === 'sqlite') {
-            $database = $app['config']['database.connections.' . $connection . '.database'];
-
-            if (file_exists($database)) {
-                unlink($database);
-            }
-
-            touch($database);
+        if ($driver = $app['config']['database.connections.' . $connection . '.driver'] === self::DB_CONNECTION) {
+            $this->createDatabase($app['config']['database.connections.' . $connection . '.database']);
         }
     }
 
