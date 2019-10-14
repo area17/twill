@@ -83,4 +83,11 @@ class CommandsTest extends TestCase
             User::where('email', $this->getSuperAdmin()->email)->first()
         );
     }
+
+    public function testUpdateCommand()
+    {
+        $this->artisan('twill:update');
+
+        $this->assertTrue(true);
+    }
 }
