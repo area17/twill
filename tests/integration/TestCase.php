@@ -13,10 +13,10 @@ use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 class TestCase extends OrchestraTestCase
 {
-    const DATABASE_MEMORY  = ':memory:';
+    const DATABASE_MEMORY = ':memory:';
     const DEFAULT_PASSWORD = 'secret';
-    const DEFAULT_LOCALE   = 'en_US';
-    const DB_CONNECTION    = 'sqlite';
+    const DEFAULT_LOCALE = 'en_US';
+    const DB_CONNECTION = 'sqlite';
 
     /**
      * @var \Faker\Generator
@@ -49,7 +49,6 @@ class TestCase extends OrchestraTestCase
         }
     }
 
-
     /**
      * Setup tests.
      */
@@ -65,7 +64,7 @@ class TestCase extends OrchestraTestCase
     /**
      * @param \Illuminate\Foundation\Application $app
      */
-    private function boot($app)
+    protected function boot($app)
     {
         $this->files = $app->make(Filesystem::class);
 
@@ -108,7 +107,7 @@ class TestCase extends OrchestraTestCase
             AuthServiceProvider::class,
             RouteServiceProvider::class,
             TwillServiceProvider::class,
-            ValidationServiceProvider::class
+            ValidationServiceProvider::class,
         ];
     }
 
@@ -120,11 +119,17 @@ class TestCase extends OrchestraTestCase
      */
     protected function getEnvironmentSetUp($app)
     {
-        $app['config']->set('database.default', $connection = env('DB_CONNECTION', self::DB_CONNECTION));
+        $app['config']->set(
+            'database.default',
+            $connection = env('DB_CONNECTION', self::DB_CONNECTION)
+        );
 
         $app['config']->set('activitylog.database_connection', $connection);
 
-        $app['config']->set('database.connections.' . $connection . '.database', env('DB_DATABASE', self::DATABASE_MEMORY));
+        $app['config']->set(
+            'database.connections.' . $connection . '.database',
+            env('DB_DATABASE', self::DATABASE_MEMORY)
+        );
 
         $this->boot($app);
 
@@ -140,8 +145,17 @@ class TestCase extends OrchestraTestCase
     {
         $connection = $app['config']['database.default'];
 
-        if ($driver = $app['config']['database.connections.' . $connection . '.driver'] === self::DB_CONNECTION) {
-            $this->createDatabase($app['config']['database.connections.' . $connection . '.database']);
+        if (
+            $driver =
+                $app['config'][
+                    'database.connections.' . $connection . '.driver'
+                ] === self::DB_CONNECTION
+        ) {
+            $this->createDatabase(
+                $app['config'][
+                    'database.connections.' . $connection . '.database'
+                ]
+            );
         }
     }
 
@@ -162,7 +176,8 @@ class TestCase extends OrchestraTestCase
      */
     public function getSuperAdmin()
     {
-        return $this->superAdmin = $this->superAdmin ?? $this->makeNewSuperAdmin();
+        return $this->superAdmin =
+            $this->superAdmin ?? $this->makeNewSuperAdmin();
     }
 
     /**
@@ -170,7 +185,10 @@ class TestCase extends OrchestraTestCase
      */
     protected function prepareLaravelDirectory()
     {
-        array_map('unlink', glob($this->getBasePath() . '/database/migrations/*'));
+        array_map(
+            'unlink',
+            glob($this->getBasePath() . '/database/migrations/*')
+        );
 
         if (!file_exists($directory = twill_path('Http/Controllers'))) {
             $this->files->makeDirectory($directory, 744, true);
@@ -183,10 +201,22 @@ class TestCase extends OrchestraTestCase
     public function installTwill()
     {
         $this->artisan('twill:install')
-             ->expectsQuestion('Enter an email', $this->getSuperAdmin()->email)
-             ->expectsQuestion('Enter a password', $this->getSuperAdmin()->password)
-             ->expectsQuestion('Confirm the password', $this->getSuperAdmin()->password)
-        ;
+            ->expectsQuestion('Enter an email', $this->getSuperAdmin()->email)
+            ->expectsQuestion(
+                'Enter a password',
+                $this->getSuperAdmin()->password
+            )
+            ->expectsQuestion(
+                'Confirm the password',
+                $this->getSuperAdmin()->password
+            );
+    }
+
+    public function deleteDirectory(string $param)
+    {
+        if ($this->files->exists($param)) {
+            $this->files->deleteDirectory($param);
+        }
     }
 }
 
