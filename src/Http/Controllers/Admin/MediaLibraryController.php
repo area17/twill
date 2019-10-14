@@ -309,7 +309,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
      */
     public function isValidSas($sasUrl)
     {
-        return $this->responseFactory->json($sasUrl, 200);
+        return response($sasUrl);
     }
 
     /**

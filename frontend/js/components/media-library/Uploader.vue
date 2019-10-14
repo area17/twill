@@ -44,7 +44,6 @@
     methods: {
       initUploader: function () {
         const buttonEl = this.$refs.uploaderBrowseButton
-
         const sharedConfig = {
           debug: true,
           maxConnections: 5,
@@ -114,15 +113,19 @@
                 validation: {
                   ...this.uploaderValidation
                 },
-                objectProperties: {
-                  key: id => {
-                    return this.unique_folder_name + '/' + sanitizeFilename(this._uploader.methods.getName(id))
-                  },
-                  acl: this.uploaderConfig.acl
+                cors: {
+                  expected: true,
+                  sendCredentials: true
+                },
+                blobProperties: {
+                  name: id => {
+                    return new Promise((resolve) => {
+                      resolve(this.unique_folder_name + '/' + sanitizeFilename(this._uploader.methods.getName(id)))
+                    })
+                  }
                 },
                 request: {
-                  endpoint: this.uploaderConfig.endpoint,
-                  accessKey: this.uploaderConfig.accessKey
+                  endpoint: this.uploaderConfig.endpoint
                 },
                 signature: {
                   endpoint: this.uploaderConfig.signatureEndpoint,
