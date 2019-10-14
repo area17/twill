@@ -54,6 +54,7 @@ class TwillServiceProvider extends ServiceProvider
         TranslatableServiceProvider::class,
         TagsServiceProvider::class,
         ActivitylogServiceProvider::class,
+        AzureBlobStorageServiceProvider::class
     ];
 
     private $migrationsCounter = 0;

@@ -50,9 +50,15 @@ class FilesUploaderConfig
 
         $filesUploaderConfig = [
             'endpointType' => $endpointType,
-            'endpoint' => $endpointType === 'local' ? $this->urlGenerator->route('admin.file-library.files.store') : s3Endpoint($libraryDisk),
+            'endpoint' => $endpointType === 'local'
+                ? $this->urlGenerator->route('admin.file-library.files.store')
+                : $endpointType === 'azure'
+                    ? azureEndpoint($libraryDisk)
+                    : s3Endpoint($libraryDisk),
             'successEndpoint' => $this->urlGenerator->route('admin.file-library.files.store'),
-            'signatureEndpoint' => $this->urlGenerator->route('admin.file-library.sign-s3-upload'),
+            'signatureEndpoint' => $endpointType === 'azure'
+                ? $this->urlGenerator->route('admin.file-library.sign-azure-upload')
+                : $this->urlGenerator->route('admin.file-library.sign-s3-upload'),
             'endpointBucket' => $this->config->get('filesystems.disks.' . $libraryDisk . '.bucket', 'none'),
             'endpointRegion' => $this->config->get('filesystems.disks.' . $libraryDisk . '.region', 'none'),
             'endpointRoot' => $endpointType === 'local' ? '' : $this->config->get('filesystems.disks.' . $libraryDisk . '.root', ''),

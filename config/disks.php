@@ -29,11 +29,12 @@ $s3Config = [
 
 $azureConfig = [
     'driver' => 'azure',
-    'key' => env('AZURE_KEY'),
-    'secret' => env('AZURE_SECRET'),
-    'region' => env('AZURE_REGION'),
-    'bucket' => env('AZURE_BUCKET'),
-    'root' => env('AZURE_ROOT'),
+    'account' => [
+        'key' => env('AZURE_ACCOUNT_KEY'),
+        'name' => env('AZURE_ACCOUNT_NAME'),
+    ],
+    'container' => env('AZURE_CONTAINER', 'public'),
+    'endpoint-suffix' => env('AZURE_ENDPOINT_SUFFIX', 'core.windows.net'),
     'use_https' => env('AZURE_UPLOADER_USE_HTTPS', env('AZURE_USE_HTTPS', env('AWS_USE_HTTPS', true))),
 ];
 
