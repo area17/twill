@@ -1,0 +1,10 @@
+# .prettierrc or .prettierrc.yaml
+trailingComma: all
+printWidth: 80
+tabWidth: 4
+useTabs: false
+singleQuote: true
+trailingCommaPHP: php5
+braceStyle: psr-2
+requirePragma: false
+insertPragma: false
