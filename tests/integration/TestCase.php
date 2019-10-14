@@ -172,12 +172,15 @@ class TestCase extends OrchestraTestCase
     /**
      * Get or make a super admin.
      *
+     * @param $force
      * @return \A17\Twill\Models\User|\A17\Twill\Tests\Integration\UserClass
      */
-    public function getSuperAdmin()
+    public function getSuperAdmin($force = false)
     {
         return $this->superAdmin =
-            $this->superAdmin ?? $this->makeNewSuperAdmin();
+            !$this->superAdmin || $force
+                ? $this->makeNewSuperAdmin()
+                : $this->superAdmin;
     }
 
     /**

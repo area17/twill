@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use A17\Twill\Models\User;
 use A17\Twill\Commands\GenerateBlocks;
 
 class CommandsTest extends TestCase
@@ -59,6 +60,27 @@ class CommandsTest extends TestCase
         $this->assertEquals(
             read_file(stubs('blocks/BlockQuote.vue')),
             read_file(resource_path('assets/js/blocks/BlockQuote.vue'))
+        );
+    }
+
+    public function testSuperadminCommand()
+    {
+        $this->artisan('twill:superadmin')
+            ->expectsQuestion(
+                'Enter an email',
+                $this->getSuperAdmin(true)->email
+            )
+            ->expectsQuestion(
+                'Enter a password',
+                $this->getSuperAdmin()->password
+            )
+            ->expectsQuestion(
+                'Confirm the password',
+                $this->getSuperAdmin()->password
+            );
+
+        $this->assertNotNull(
+            User::where('email', $this->getSuperAdmin()->email)->first()
         );
     }
 }
