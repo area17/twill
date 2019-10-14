@@ -13,9 +13,9 @@
 </template>
 
 <script>
-import BlockMixin from '@/mixins/block';
+import BlockMixin from '@/mixins/block'
 
 export default {
-    mixins: [BlockMixin],
-};
+    mixins: [BlockMixin]
+}
 </script>
