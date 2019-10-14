@@ -8,50 +8,50 @@ use Illuminate\Support\Facades\Route;
 class RoutesTest extends TestCase
 {
     const ROUTES = [
-        '/',
-        'blocks/preview',
-        'file-library/files',
-        'file-library/files/bulk-delete',
-        'file-library/files/bulk-update',
-        'file-library/files/single-update',
-        'file-library/files/tags',
-        'file-library/files/{file}',
-        'file-library/sign-s3-upload',
-        'login',
-        'logout',
-        'media-library/medias',
-        'media-library/medias/bulk-delete',
-        'media-library/medias/bulk-update',
-        'media-library/medias/single-update',
-        'media-library/medias/tags',
-        'media-library/medias/{media}',
-        'media-library/sign-s3-upload',
-        'password/email',
-        'password/reset',
-        'password/reset/{token}',
-        'password/welcome/{token}',
-        'search',
-        'settings/{section}',
-        'templates',
-        'templates/xhr/{view}',
-        'templates/{view}',
-        'users',
-        'users/browser',
-        'users/bulkDelete',
-        'users/bulkFeature',
-        'users/bulkPublish',
-        'users/bulkRestore',
-        'users/create',
-        'users/impersonate/stop',
-        'users/impersonate/{id}',
-        'users/preview/{id}',
-        'users/publish',
-        'users/reorder',
-        'users/restore',
-        'users/restoreRevision/{id}',
-        'users/tags',
-        'users/{user}',
-        'users/{user}/edit',
+        'twill',
+        'twill/blocks/preview',
+        'twill/file-library/files',
+        'twill/file-library/files/bulk-delete',
+        'twill/file-library/files/bulk-update',
+        'twill/file-library/files/single-update',
+        'twill/file-library/files/tags',
+        'twill/file-library/files/{file}',
+        'twill/file-library/sign-s3-upload',
+        'twill/login',
+        'twill/logout',
+        'twill/media-library/medias',
+        'twill/media-library/medias/bulk-delete',
+        'twill/media-library/medias/bulk-update',
+        'twill/media-library/medias/single-update',
+        'twill/media-library/medias/tags',
+        'twill/media-library/medias/{media}',
+        'twill/media-library/sign-s3-upload',
+        'twill/password/email',
+        'twill/password/reset',
+        'twill/password/reset/{token}',
+        'twill/password/welcome/{token}',
+        'twill/search',
+        'twill/settings/{section}',
+        'twill/templates',
+        'twill/templates/xhr/{view}',
+        'twill/templates/{view}',
+        'twill/users',
+        'twill/users/browser',
+        'twill/users/bulkDelete',
+        'twill/users/bulkFeature',
+        'twill/users/bulkPublish',
+        'twill/users/bulkRestore',
+        'twill/users/create',
+        'twill/users/impersonate/stop',
+        'twill/users/impersonate/{id}',
+        'twill/users/preview/{id}',
+        'twill/users/publish',
+        'twill/users/reorder',
+        'twill/users/restore',
+        'twill/users/restoreRevision/{id}',
+        'twill/users/tags',
+        'twill/users/{user}',
+        'twill/users/{user}/edit',
     ];
 
     public function testRoutesList()
@@ -69,17 +69,19 @@ class RoutesTest extends TestCase
             }
         }
 
-        return $routes->sort()->unique();
+        return $routes
+            ->sort()
+            ->unique()
+            ->values();
     }
 
-    public function dumpRoutes()
+    /**
+     * dd Routes
+     */
+    public function ddRoutes()
     {
-        // This is only a helper to dump he current list of routes
+        // This is only a helper to dump and die the current list of routes
 
-        dd(
-            $this->getAllRoutes()
-                ->values()
-                ->toArray()
-        );
+        dd($this->getAllRoutes()->toArray());
     }
 }

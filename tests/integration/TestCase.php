@@ -33,6 +33,29 @@ class TestCase extends OrchestraTestCase
      */
     public $files;
 
+    private function configTwillUriPrefix($app)
+    {
+        $app['config']->set('twill.admin_app_path', 'twill');
+    }
+
+    /**
+     * @param $app
+     */
+    protected function configureDatabase($app)
+    {
+        $app['config']->set(
+            'database.default',
+            $connection = env('DB_CONNECTION', self::DB_CONNECTION)
+        );
+
+        $app['config']->set('activitylog.database_connection', $connection);
+
+        $app['config']->set(
+            'database.connections.' . $connection . '.database',
+            env('DB_DATABASE', self::DATABASE_MEMORY)
+        );
+    }
+
     /**
      * Create sqlite database, if needed.
      *
@@ -119,17 +142,9 @@ class TestCase extends OrchestraTestCase
      */
     protected function getEnvironmentSetUp($app)
     {
-        $app['config']->set(
-            'database.default',
-            $connection = env('DB_CONNECTION', self::DB_CONNECTION)
-        );
+        $this->configTwillUriPrefix($app);
 
-        $app['config']->set('activitylog.database_connection', $connection);
-
-        $app['config']->set(
-            'database.connections.' . $connection . '.database',
-            env('DB_DATABASE', self::DATABASE_MEMORY)
-        );
+        $this->configureDatabase($app);
 
         $this->boot($app);
 
