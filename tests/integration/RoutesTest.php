@@ -2,9 +2,6 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Route;
-
 class RoutesTest extends TestCase
 {
     const ROUTES = [
@@ -56,23 +53,7 @@ class RoutesTest extends TestCase
 
     public function testRoutesList()
     {
-        $this->assertEquals(static::ROUTES, $this->getAllRoutes()->toArray());
-    }
-
-    public function getAllRoutes()
-    {
-        $routes = collect();
-
-        foreach (Route::getRoutes()->getIterator() as $route) {
-            if (Str::startsWith($route->action['uses'], 'A17\Twill')) {
-                $routes->push($route->uri);
-            }
-        }
-
-        return $routes
-            ->sort()
-            ->unique()
-            ->values();
+        $this->assertEquals(static::ROUTES, $this->getAllUris()->toArray());
     }
 
     /**
@@ -82,6 +63,6 @@ class RoutesTest extends TestCase
     {
         // This is only a helper to dump and die the current list of routes
 
-        dd($this->getAllRoutes()->toArray());
+        dd($this->getAllUris()->toArray());
     }
 }
