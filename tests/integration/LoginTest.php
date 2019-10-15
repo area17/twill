@@ -31,4 +31,16 @@ class LoginTest extends TestCase
 
         $this->assertStringContainsString('Logout', $crawler->getContent());
     }
+
+    public function testCanLogout()
+    {
+        $this->login();
+
+        $crawler = $this->followingRedirects()->call('GET', '/twill/logout');
+
+        $this->assertStringContainsString(
+            'Forgot password',
+            $crawler->getContent()
+        );
+    }
 }
