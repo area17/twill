@@ -26,7 +26,7 @@ class TestCase extends OrchestraTestCase
     public $faker;
 
     /**
-     * @var \A17\Twill\Models\User
+     * @var \A17\Twill\Tests\Integration\UserClass
      */
     public $superAdmin;
 
@@ -234,6 +234,11 @@ class TestCase extends OrchestraTestCase
             );
     }
 
+    /**
+     * Delete a directory.
+     *
+     * @param string $param
+     */
     public function deleteDirectory(string $param)
     {
         if ($this->files->exists($param)) {
@@ -241,11 +246,28 @@ class TestCase extends OrchestraTestCase
         }
     }
 
-    public function getAllRoutes()
+    /**
+     * Get a collection with all routes.
+     *
+     * @param null $method
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAllRoutes($method = null)
     {
-        return collect(Route::getRoutes());
+        $routes = Route::getRoutes();
+
+        if ($method) {
+            $routes = $routes->get($method);
+        }
+
+        return collect($routes);
     }
 
+    /**
+     * Get a collection with all package uris.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function getAllUris()
     {
         return $this->getAllRoutes()
@@ -256,6 +278,55 @@ class TestCase extends OrchestraTestCase
             ->sort()
             ->unique()
             ->values();
+    }
+
+    /**
+     * Send request to an ajax route.
+     *
+     * @param $uri
+     * @param string $method
+     * @param array $parameters
+     * @param array $cookies
+     * @param array $files
+     * @param array $server
+     * @param null $content
+     * @return \Illuminate\Foundation\Testing\TestResponse
+     */
+    public function ajax(
+        $uri,
+        $method = 'GET',
+        $parameters = [],
+        $cookies = [],
+        $files = [],
+        $server = [],
+        $content = null
+    ) {
+        $server = array_merge($server, [
+            'HTTP_X-Requested-With' => 'XMLHttpRequest',
+        ]);
+
+        return $this->call(
+            $method,
+            $uri,
+            $parameters,
+            $cookies,
+            $files,
+            $server,
+            $content
+        );
+    }
+
+    /**
+     * Login the current SuperUser.
+     *
+     * @return \Illuminate\Foundation\Testing\TestResponse|void
+     */
+    protected function login()
+    {
+        return $this->followingRedirects()->call('POST', '/twill/login', [
+            'email' => $this->getSuperAdmin()->email,
+            'password' => $this->getSuperAdmin()->password,
+        ]);
     }
 }
 
