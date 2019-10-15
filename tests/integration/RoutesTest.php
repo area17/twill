@@ -66,4 +66,3 @@ class RoutesTest extends TestCase
         dd($this->getAllUris()->toArray());
     }
 }
-http: //twill.test/twill/users?sortKey=email&sortDir=asc&page=1&offset=20&columns[]=bulk&columns[]=published&columns[]=name&columns[]=email&columns[]=role_value&filter=%7B%22status%22:%22published%22%7D
