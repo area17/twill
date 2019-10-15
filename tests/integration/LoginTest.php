@@ -20,10 +20,7 @@ class LoginTest extends TestCase
 
     public function testCanLogin()
     {
-        $crawler = $this->followingRedirects()->call('POST', '/twill/login', [
-            'email' => $this->getSuperAdmin()->email,
-            'password' => $this->getSuperAdmin()->password,
-        ]);
+        $crawler = $this->login();
 
         $this->assertStringContainsString(
             'Media Library',

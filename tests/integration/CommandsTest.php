@@ -7,7 +7,7 @@ use A17\Twill\Commands\GenerateBlocks;
 
 class CommandsTest extends TestCase
 {
-    public function testModuleCommand()
+    public function testCanExecuteModuleCommand()
     {
         $this->artisan('twill:module', ['moduleName' => 'Posts']);
 
@@ -20,7 +20,7 @@ class CommandsTest extends TestCase
         );
     }
 
-    public function testBlocksCommand()
+    public function testCanExecuteBlocksCommand()
     {
         $this->deleteDirectory($path = resource_path('views/admin/blocks'));
         $this->deleteDirectory(resource_path('assets/js/blocks'));
@@ -63,7 +63,7 @@ class CommandsTest extends TestCase
         );
     }
 
-    public function testSuperadminCommand()
+    public function testCanExecuteSuperadminCommand()
     {
         $this->artisan('twill:superadmin')
             ->expectsQuestion(
@@ -84,7 +84,7 @@ class CommandsTest extends TestCase
         );
     }
 
-    public function testUpdateCommand()
+    public function testCanExecuteUpdateCommand()
     {
         $this->artisan('twill:update');
 
