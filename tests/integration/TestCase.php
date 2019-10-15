@@ -3,10 +3,12 @@
 namespace A17\Twill\Tests\Integration;
 
 use Faker\Factory as Faker;
+use Illuminate\Support\Str;
 use A17\Twill\AuthServiceProvider;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\RouteServiceProvider;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Contracts\Console\Kernel;
 use A17\Twill\ValidationServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
@@ -33,9 +35,11 @@ class TestCase extends OrchestraTestCase
      */
     public $files;
 
-    private function configTwillUriPrefix($app)
+    private function configTwill($app)
     {
+        $app['config']->set('twill.admin_app_url', '');
         $app['config']->set('twill.admin_app_path', 'twill');
+        $app['config']->set('twill.auth_login_redirect_path', '/twill');
     }
 
     /**
@@ -142,7 +146,7 @@ class TestCase extends OrchestraTestCase
      */
     protected function getEnvironmentSetUp($app)
     {
-        $this->configTwillUriPrefix($app);
+        $this->configTwill($app);
 
         $this->configureDatabase($app);
 
@@ -235,6 +239,23 @@ class TestCase extends OrchestraTestCase
         if ($this->files->exists($param)) {
             $this->files->deleteDirectory($param);
         }
+    }
+
+    public function getAllRoutes()
+    {
+        return collect(Route::getRoutes());
+    }
+
+    public function getAllUris()
+    {
+        return $this->getAllRoutes()
+            ->filter(function ($route) {
+                return Str::startsWith($route->action['uses'], 'A17\Twill');
+            })
+            ->pluck('uri')
+            ->sort()
+            ->unique()
+            ->values();
     }
 }
 

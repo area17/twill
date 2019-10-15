@@ -27,6 +27,7 @@
     <log type="coverage-text" target="php://stdout" showOnlySummary="true" showUncoveredFiles="false"/>
   </logging>
   <php>
+    <env name="APP_KEY" value="base64:DV8kQN5a+4MwAIQ5uk1WNafxO+/Efab0K20uVMDJ2UE="/>
     <env name="APP_ENV" value="testing"/>
     <env name="TELESCOPE_ENABLED" value="false"/>
     <env name="BCRYPT_ROUNDS" value="4"/>
@@ -36,5 +37,6 @@
     <env name="MAIL_DRIVER" value="array"/>
     <env name="DB_CONNECTION" value="sqlite"/>
     <env name="DB_DATABASE" value=":memory:"/>
+    <env name="APP_URL" value="http://twill.test"/>
   </php>
 </phpunit>
