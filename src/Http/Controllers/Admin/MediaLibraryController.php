@@ -69,7 +69,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         $this->config = $config;
 
         $this->removeMiddleware('can:edit');
-        $this->middleware('can:edit', ['only' => ['signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
+        $this->middleware('can:edit', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = $this->config->get('twill.media_library.endpoint_type');
         $this->customFields = $this->config->get('twill.media_library.extra_metadatas_fields');
     }
@@ -179,12 +179,12 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
     /**
      * @param Request $request
-     * @return \A17\Twill\Models\Media
+     * @return Media
      */
     public function storeReference($request)
     {
         $fields = [
-            'uuid' => $request->input('key'),
+            'uuid' => $request->input('key') ?? $request->input('blob'),
             'filename' => $request->input('name'),
             'width' => $request->input('width'),
             'height' => $request->input('height'),

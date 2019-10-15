@@ -65,7 +65,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         $this->config = $config;
 
         $this->removeMiddleware('can:edit');
-        $this->middleware('can:edit', ['only' => ['signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
+        $this->middleware('can:edit', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = $this->config->get('twill.file_library.endpoint_type');
     }
 
@@ -191,7 +191,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
     public function storeReference($request)
     {
         $fields = [
-            'uuid' => $request->input('key'),
+            'uuid' => $request->input('key') ?? $request->input('blob'),
             'filename' => $request->input('name'),
         ];
 
