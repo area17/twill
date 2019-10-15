@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use A17\Twill\Models\User;
+
 class UsersTest extends TestCase
 {
     public function setUp(): void
@@ -18,5 +20,29 @@ class UsersTest extends TestCase
         );
 
         $this->assertJson($crawler->getContent());
+    }
+
+    public function testCanCreateUser()
+    {
+        $data = [
+            'name' => ($name = $this->faker->name),
+            'email' => ($email = $this->faker->email),
+            'role' => 'PUBLISHER',
+            'languages' => [
+                [
+                    'shortlabel' => 'EN',
+                    'label' => 'English',
+                    'value' => 'en',
+                    'disabled' => false,
+                    'published' => true,
+                ],
+            ],
+        ];
+
+        $this->ajax('/twill/users', 'POST', $data);
+
+        $user = User::where('email', $email)->first();
+
+        $this->assertEquals($name, $user->name);
     }
 }
