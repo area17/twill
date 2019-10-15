@@ -8,6 +8,7 @@ use A17\Twill\Services\Uploader\SignAzureUploadListener;
 use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignS3UploadListener;
 use Illuminate\Config\Repository as Config;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -136,11 +137,12 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
 
     /**
      * @param int|null $parentModuleId
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
+     * @throws BindingResolutionException
      */
     public function store($parentModuleId = null)
     {
-        $request = $this->app->get(FileRequest::class);
+        $request = $this->app->make(FileRequest::class);
 
         if ($this->endpointType === 'local') {
             $file = $this->storeFile($request);
@@ -199,7 +201,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function singleUpdate()
     {
@@ -212,7 +214,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function bulkUpdate()
     {
@@ -258,7 +260,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
 
     /**
      * @param mixed $signedPolicy
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function policyIsSigned($signedPolicy)
     {
@@ -266,7 +268,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function policyIsNotValid()
     {

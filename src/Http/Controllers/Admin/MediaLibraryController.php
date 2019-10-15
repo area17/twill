@@ -3,11 +3,13 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Http\Requests\Admin\MediaRequest;
+use A17\Twill\Models\Media;
 use A17\Twill\Services\Uploader\SignAzureUpload;
 use A17\Twill\Services\Uploader\SignAzureUploadListener;
 use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignS3UploadListener;
 use Illuminate\Config\Repository as Config;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -124,12 +126,11 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
     /**
      * @param int|null $parentModuleId
-     * @return JsonResponse
+     * @return
      */
     public function store($parentModuleId = null)
     {
-        $request = $this->app->get(MediaRequest::class);
-
+        $request = $this->app->make(MediaRequest::class);
         if ($this->endpointType === 'local') {
             $media = $this->storeFile($request);
         } else {
@@ -141,7 +142,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
     /**
      * @param Request $request
-     * @return \A17\Twill\Models\Media
+     * @return Media
      */
     public function storeFile($request)
     {
@@ -288,7 +289,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     }
 
     /**
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     private function getExtraMetadatas()
     {
