@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use Carbon\Carbon;
 use Faker\Factory as Faker;
 use Illuminate\Support\Str;
 use A17\Twill\AuthServiceProvider;
@@ -34,6 +35,11 @@ class TestCase extends OrchestraTestCase
      * @var \Illuminate\Filesystem\Filesystem
      */
     public $files;
+
+    /**
+     * @var \Carbon\Carbon
+     */
+    public $now;
 
     private function configTwill($app)
     {
@@ -159,6 +165,8 @@ class TestCase extends OrchestraTestCase
      */
     protected function getEnvironmentSetUp($app)
     {
+        $this->freezeTime();
+
         $this->configureStorage($app);
 
         $this->configTwill($app);
@@ -342,6 +350,11 @@ class TestCase extends OrchestraTestCase
             'email' => $this->getSuperAdmin()->email,
             'password' => $this->getSuperAdmin()->password,
         ]);
+    }
+
+    public function freezeTime()
+    {
+        Carbon::setTestNow($this->now = Carbon::now());
     }
 }
 
