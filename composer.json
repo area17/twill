@@ -59,8 +59,6 @@
     "league/flysystem-aws-s3-v3": "^1.0.13",
     "myclabs/php-enum": "^1.5.0",
     "imgix/imgix-php": "^3.0.0",
-    "lsrur/inspector": "^1.0",
-    "barryvdh/laravel-debugbar": "^2.4|^3.1",
     "guzzlehttp/guzzle": "^6.2",
     "spatie/once": "^2.0.0",
     "spatie/laravel-analytics": "^3.6.0|^3.7.0",
@@ -69,7 +67,9 @@
     "league/glide-laravel": "^1.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "~5.0|~6.0|~7.0"
+    "phpunit/phpunit": "~5.0|~6.0|~7.0",
+    "barryvdh/laravel-debugbar": "^2.4|^3.1",
+    "lsrur/inspector": "^1.0"
   },
   "autoload": {
     "psr-4": {
