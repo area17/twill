@@ -19,6 +19,8 @@ class UsersTest extends TestCase
             '/twill/users?sortKey=email&sortDir=asc&page=1&offset=20&columns[]=bulk&columns[]=published&columns[]=name&columns[]=email&columns[]=role_value&filter=%7B%22status%22:%22published%22%7D'
         );
 
+        $crawler->assertStatus(200);
+
         $this->assertJson($crawler->getContent());
     }
 
@@ -39,7 +41,9 @@ class UsersTest extends TestCase
             ],
         ];
 
-        $this->ajax('/twill/users', 'POST', $data);
+        $crawler = $this->ajax('/twill/users', 'POST', $data);
+
+        $crawler->assertStatus(200);
 
         $user = User::where('email', $email)->first();
 
