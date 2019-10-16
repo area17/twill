@@ -29,7 +29,7 @@ class MediaLibraryTest extends TestCase
         $this->assertJson($crawler->getContent());
     }
 
-    public function testCanUploadMedia()
+    public function createMedia()
     {
         $this->login();
 
@@ -64,5 +64,34 @@ class MediaLibraryTest extends TestCase
         $this->assertFileExists(
             storage_path("app/public/{$localPath}/{$folder}/{$fileName}")
         );
+
+        return $media;
+    }
+
+    public function testCanUploadMedia()
+    {
+        $this->createMedia();
+    }
+
+    public function testCanSingleUpdateMedia()
+    {
+        $media = $this->createMedia();
+
+        $data = [
+            'alt_text' => 'Black Normal 1200x800',
+            'fieldsRemovedFromBulkEditing' => '[]',
+            'id' => $media->id,
+            'tags' => 'avatar',
+        ];
+
+        $crawler = $this->ajax(
+            '/twill/media-library/medias/single-update',
+            'PUT',
+            $data
+        );
+
+        $crawler->assertStatus(200);
+
+        $media->refresh();
     }
 }
