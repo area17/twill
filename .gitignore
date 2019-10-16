@@ -8,3 +8,4 @@ frontend/js/components/blocks/customs/*
 .DS_Store
 public/
 tests/coverage
+tests/storage
