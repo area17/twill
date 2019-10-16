@@ -61,6 +61,19 @@ class TestCase extends OrchestraTestCase
     }
 
     /**
+     * Configure storage path.
+     *
+     * @param $app
+     */
+    private function configureStorage($app)
+    {
+        $app['config']->set(
+            'logging.channels.single.path',
+            __DIR__ . '/../storage/logs'
+        );
+    }
+
+    /**
      * Create sqlite database, if needed.
      *
      * @param $database
@@ -146,6 +159,8 @@ class TestCase extends OrchestraTestCase
      */
     protected function getEnvironmentSetUp($app)
     {
+        $this->configureStorage($app);
+
         $this->configTwill($app);
 
         $this->configureDatabase($app);
