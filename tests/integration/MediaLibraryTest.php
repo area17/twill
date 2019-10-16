@@ -4,7 +4,6 @@ namespace A17\Twill\Tests\Integration;
 
 use A17\Twill\Models\Media;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 
 class MediaLibraryTest extends TestCase
 {
@@ -36,7 +35,7 @@ class MediaLibraryTest extends TestCase
 
         $data = [
             'unique_folder_name' => ($folder = $this->faker->uuid),
-            'qquuid' => $this->faker->uuid,
+            'qquuid' => ($qquuid = $this->faker->uuid),
             'qqfilename' => ($fileName =
                 'file-' . $this->faker->numberBetween(1000, 9999) . '.jpg'),
             'qqtotalfilesize' => strlen(
@@ -55,8 +54,15 @@ class MediaLibraryTest extends TestCase
 
         $this->assertEquals($fileName, $media->filename);
 
+        $this->assertEquals(
+            $this->now->format('Y-m-d H:i'),
+            $media->created_at->format('Y-m-d H:i')
+        );
+
+        $localPath = env('MEDIA_LIBRARY_LOCAL_PATH');
+
         $this->assertFileExists(
-            storage_path("app/public/media-library/{$folder}/{$fileName}")
+            storage_path("app/public/{$localPath}/{$folder}/{$fileName}")
         );
     }
 }
