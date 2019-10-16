@@ -69,7 +69,7 @@ class TestCase extends OrchestraTestCase
     {
         $app['config']->set(
             'logging.channels.single.path',
-            __DIR__ . '/../storage/logs'
+            __DIR__ . '/../storage/logs/laravel.log'
         );
     }
 
