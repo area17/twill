@@ -55,7 +55,7 @@ class MediaLibraryTest extends TestCase
 
         $this->assertEquals($fileName, $media->filename);
 
-        $this->files->exists(
+        $this->assertFileExists(
             storage_path("app/public/media-library/{$folder}/{$fileName}")
         );
     }
