@@ -79,9 +79,9 @@ class MediaLibraryTest extends TestCase
 
         $data = [
             'alt_text' => 'Black Normal 1200x800',
-            'fieldsRemovedFromBulkEditing' => '[]',
+            'fieldsRemovedFromBulkEditing' => [],
             'id' => $media->id,
-            'tags' => 'avatar',
+            'tags' => 'avatar,photo',
         ];
 
         $crawler = $this->ajax(
@@ -93,5 +93,53 @@ class MediaLibraryTest extends TestCase
         $crawler->assertStatus(200);
 
         $media->refresh();
+
+        $this->assertEquals(
+            $this->now->format('Y-m-d H:i'),
+            $media->created_at->format('Y-m-d H:i')
+        );
+
+        $this->assertEquals(
+            $media->tags
+                ->pluck('slug')
+                ->sort()
+                ->toArray(),
+            ['avatar', 'photo']
+        );
+    }
+
+    public function testCanUpdateInBulk()
+    {
+        $medias = collect();
+
+        $medias->push($this->createMedia());
+        $medias->push($this->createMedia());
+        $medias->push($this->createMedia());
+
+        $data = [
+            'ids' => $medias->pluck('id')->implode(','),
+            'fieldsRemovedFromBulkEditing' => [],
+            'tags' => collect(
+                $tagsArray = ['avatar', 'image', 'media', 'photo']
+            )->implode(','),
+        ];
+
+        $crawler = $this->ajax(
+            '/twill/media-library/medias/bulk-update',
+            'PUT',
+            $data
+        );
+
+        $crawler->assertStatus(200);
+
+        $tags = collect(
+            $medias->reduce(function ($carry, $media) use ($medias) {
+                return $carry + $media->tags->pluck('slug')->toArray();
+            }, [])
+        )
+            ->sort()
+            ->toArray();
+
+        $this->assertEquals($tags, $tagsArray);
     }
 }
