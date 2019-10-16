@@ -9,7 +9,7 @@ class AddLocaleColumnToTwillMediables extends Migration
     {
         if (Schema::hasTable('mediables') && !Schema::hasColumn('mediables', 'locale')) {
             Schema::table('mediables', function (Blueprint $table) {
-                $table->string('locale', 7)->index();
+                $table->string('locale', 7)->default($this->getCurrentLocale())->index();
             });
         }
     }
@@ -22,5 +22,10 @@ class AddLocaleColumnToTwillMediables extends Migration
                 $table->dropColumn('locale');
             });
         }
+    }
+
+    function getCurrentLocale()
+    {
+        return getLocales()[0] ?? config('app.locale');
     }
 }
