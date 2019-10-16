@@ -5,6 +5,7 @@ namespace A17\Twill\Tests\Integration;
 class RoutesTest extends TestCase
 {
     const ROUTES = [
+        'storage/media-library/{path}',
         'twill',
         'twill/blocks/preview',
         'twill/file-library/files',
