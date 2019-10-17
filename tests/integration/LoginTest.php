@@ -66,6 +66,19 @@ class LoginTest extends TestCase
             'POST',
             '/twill/login-2fa',
             [
+                'verify-code' => 'INVALID CODE',
+            ]
+        );
+
+        $this->assertStringContainsString(
+            'Your one time password is invalid.',
+            $crawler->getContent()
+        );
+
+        $crawler = $this->followingRedirects()->call(
+            'POST',
+            '/twill/login-2fa',
+            [
                 'verify-code' => (new Google2FA())->getCurrentOtp(
                     $user->google_2fa_secret
                 ),
