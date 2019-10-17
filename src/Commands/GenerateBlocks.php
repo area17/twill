@@ -10,6 +10,9 @@ use Illuminate\View\Factory as ViewFactory;
 
 class GenerateBlocks extends Command
 {
+    const NO_BLOCKS_DEFINED = "There are no blocks defined yet. Please refer to https://twill.io/docs/#block-editor-3 in order to create blocks.";
+    const SCANNING_BLOCKS   = "Starting to scan block views directory...";
+
     /**
      * The name and signature of the console command.
      *
@@ -53,8 +56,15 @@ class GenerateBlocks extends Command
      */
     public function handle()
     {
-        $this->info("Starting to scan block views directory...");
-        Collection::make($this->filesystem->files(resource_path('views/admin/blocks')))->each(function ($viewFile) {
+        if (!$this->filesystem->exists($path = resource_path('views/admin/blocks'))) {
+            $this->error(self::NO_BLOCKS_DEFINED);
+
+            return;
+        }
+
+        $this->info(self::SCANNING_BLOCKS);
+
+        Collection::make($this->filesystem->files($path))->each(function ($viewFile) {
             $blockName = $viewFile->getBasename('.blade.php');
 
             $vueBlockTemplate = $this->viewFactory->make('admin.blocks.' . $blockName, ['renderForBlocks' => true])->render();
@@ -111,5 +121,4 @@ class GenerateBlocks extends Command
 
         return preg_replace($search, $replace, $html);
     }
-
 }
