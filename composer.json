@@ -74,7 +74,15 @@
   "autoload": {
     "psr-4": {
       "A17\\Twill\\": "src/"
-    }
+    },
+    "files": [
+      "src/Helpers/routes_helpers.php",
+      "src/Helpers/i18n_helpers.php",
+      "src/Helpers/media_library_helpers.php",
+      "src/Helpers/frontend_helpers.php",
+      "src/Helpers/migrations_helpers.php",
+      "src/Helpers/helpers.php"
+    ]
   },
   "extra": {
     "laravel": {
