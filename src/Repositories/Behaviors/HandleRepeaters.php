@@ -4,6 +4,7 @@ namespace A17\Twill\Repositories\Behaviors;
 
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 

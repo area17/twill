@@ -208,6 +208,8 @@ class TwillServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/cloudfront.php', 'services');
         $this->mergeConfigFrom(__DIR__ . '/../config/dashboard.php', 'twill.dashboard');
         $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
+        $this->mergeConfigFrom(__DIR__ . '/../config/services.php', 'services');
+        $this->mergeConfigFrom(__DIR__ . '/../config/oauth.php', 'twill.oauth');
     }
 
     private function publishMigrations()
@@ -220,14 +222,19 @@ class TwillServiceProvider extends ServiceProvider
             __DIR__ . '/../migrations/default' => database_path('migrations'),
         ], 'migrations');
 
-        if (config('twill.enabled.users-2fa')) {
-            $this->loadMigrationsFrom(__DIR__ . '/../migrations/optional/users-2fa');
+        $this->publishOptionalMigration('users-2fa');
+        $this->publishOptionalMigration('users-oauth');
+    }
+
+    private function publishOptionalMigration($feature)
+    {
+        if (config('twill.enabled.' . $feature, false)) {
+            $this->loadMigrationsFrom(__DIR__ . '/../migrations/optional/' . $feature);
 
             $this->publishes([
-                __DIR__ . '/../migrations/optional/users-2fa' => database_path('migrations'),
+                __DIR__ . '/../migrations/optional/' . $feature => database_path('migrations'),
             ], 'migrations');
         }
-
     }
 
     /**
@@ -286,6 +293,7 @@ class TwillServiceProvider extends ServiceProvider
         if ($expression === "()") {
             $expression = '([])';
         }
+
         return "<?php echo \$__env->make('{$view}', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render(); ?>";
     }
 
