@@ -4,6 +4,7 @@ namespace A17\Twill;
 
 use A17\Twill\Repositories\BlockRepository;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 
 class ValidationServiceProvider extends ServiceProvider
@@ -16,11 +17,11 @@ class ValidationServiceProvider extends ServiceProvider
     public function boot()
     {
         Validator::extend('absolute_or_relative_url', function ($attribute, $value, $parameters, $validator) {
-            return starts_with($value, '/') || Validator::make([$attribute => $value], [$attribute => 'url'])->passes();
+            return Str::startsWith($value, '/') || Validator::make([$attribute => $value], [$attribute => 'url'])->passes();
         }, 'The :attribute should be a valid url (absolute or relative)');
 
         Validator::extend('relative_or_secure_url', function ($attribute, $value, $parameters) {
-            return starts_with($value, '/') || filter_var($value, FILTER_VALIDATE_URL) !== false && starts_with($value, 'https');
+            return Str::startsWith($value, '/') || filter_var($value, FILTER_VALIDATE_URL) !== false && Str::startsWith($value, 'https');
         }, 'The :attribute should be a valid url (relative or https)');
 
         Validator::extend('web_color', function ($attribute, $value, $parameters, $validator) {

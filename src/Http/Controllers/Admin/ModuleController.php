@@ -299,7 +299,7 @@ abstract class ModuleController extends Controller
             $this->moduleName,
             $this->routePrefix,
             'edit',
-            array_filter([$parentModuleId]) + ['id' => $item->id]
+            array_filter([$parentModuleId]) + [Str::singular($this->moduleName) => $item->id]
         ));
     }
 
@@ -364,7 +364,7 @@ abstract class ModuleController extends Controller
                 $this->moduleName,
                 $this->routePrefix,
                 'edit',
-                ['id' => $id]
+                [Str::singular($this->moduleName) => $id]
             ));
         } else {
             $formRequest = $this->validateFormRequest();
@@ -392,7 +392,7 @@ abstract class ModuleController extends Controller
                         $this->moduleName,
                         $this->routePrefix,
                         'edit',
-                        ['id' => $id]
+                        [Str::singular($this->moduleName) => $id]
                     ));
                 }
             }
@@ -1442,7 +1442,7 @@ abstract class ModuleController extends Controller
             $this->moduleName,
             $this->routePrefix,
             'edit',
-            array_filter($params) + ['id' => $id]
+            array_filter($params) + [Str::singular($this->moduleName) => $id]
         ));
     }
 

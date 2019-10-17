@@ -4,7 +4,7 @@
     $endpoints = $endpoints ?? [];
     $endpoint = $endpoint ?? (!empty($endpoints) ? null : moduleRoute($moduleName, $routePrefix ?? null, 'browser', $params ?? [], false));
     $max = $max ?? 1;
-    $note = $note ?? 'Add' . ($max > 1 ? " up to $max ". strtolower($label) : ' one ' . str_singular(strtolower($label)));
+    $note = $note ?? 'Add' . ($max > 1 ? " up to $max ". strtolower($label) : ' one ' . Str::singular(strtolower($label)));
     $itemLabel = $itemLabel ?? strtolower($label);
     $sortable = $sortable ?? true;
     $wide = $wide ?? false;

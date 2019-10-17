@@ -19,17 +19,15 @@ use A17\Twill\Models\Media;
 use A17\Twill\Models\User;
 use A17\Twill\Services\FileLibrary\FileService;
 use A17\Twill\Services\MediaLibrary\ImageService;
-use Barryvdh\Debugbar\Facade as Debugbar;
-use Barryvdh\Debugbar\ServiceProvider as DebugbarServiceProvider;
 use Cartalyst\Tags\TagsServiceProvider;
-use Dimsav\Translatable\TranslatableServiceProvider;
+use Astrotomic\Translatable\TranslatableServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
-use Lsrur\Inspector\Facade\Inspector;
-use Lsrur\Inspector\InspectorServiceProvider;
+use Illuminate\Support\Str;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 
 class TwillServiceProvider extends ServiceProvider
@@ -110,14 +108,6 @@ class TwillServiceProvider extends ServiceProvider
             $this->app->register($provider);
         }
 
-        if ($this->app->environment('development', 'local', 'staging')) {
-            if (config('twill.debug.use_inspector', false)) {
-                $this->app->register(InspectorServiceProvider::class);
-            } else {
-                $this->app->register(DebugbarServiceProvider::class);
-            }
-        }
-
         if (config('twill.enabled.media-library')) {
             $this->app->singleton('imageService', function () {
                 return $this->app->make(config('twill.media_library.image_service'));
@@ -139,12 +129,6 @@ class TwillServiceProvider extends ServiceProvider
     private function registerAliases()
     {
         $loader = AliasLoader::getInstance();
-
-        if (config('twill.debug.use_inspector', false)) {
-            $loader->alias('Inspector', Inspector::class);
-        } else {
-            $loader->alias('Debugbar', Debugbar::class);
-        }
 
         if (config('twill.enabled.media-library')) {
             $loader->alias('ImageService', ImageService::class);
@@ -272,7 +256,7 @@ class TwillServiceProvider extends ServiceProvider
 
         if (!class_exists($migration)) {
             // Verify that migration doesn't exist
-            $migration_file = database_path('migrations/*_' . snake_case($migration) . '.php');
+            $migration_file = database_path('migrations/*_' . Str::snake($migration) . '.php');
             if (empty($files->glob($migration_file))) {
                 $timestamp = date('Y_m_d_', time()) . (30000 + $this->migrationsCounter);
                 $migrationSourcePath = __DIR__ . '/../migrations/' . snake_case($migration) . '.php';
@@ -347,7 +331,7 @@ class TwillServiceProvider extends ServiceProvider
         if ($expression === "()") {
             $expression = '([])';
         }
-        return "<?php echo \$__env->make('{$view}', array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render(); ?>";
+        return "<?php echo \$__env->make('{$view}', Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render(); ?>";
     }
 
     /**
@@ -397,13 +381,13 @@ class TwillServiceProvider extends ServiceProvider
 
             return "<?php
             if( view()->exists($viewModule)) {
-                echo \$__env->make($viewModule, array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
+                echo \$__env->make($viewModule, Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             } elseif( view()->exists($viewApplication)) {
-                echo \$__env->make($viewApplication, array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
+                echo \$__env->make($viewApplication, Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             } elseif( view()->exists($viewModuleTwill)) {
-                echo \$__env->make($viewModuleTwill, array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
+                echo \$__env->make($viewModuleTwill, Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             } elseif( view()->exists('$view')) {
-                echo \$__env->make('$view', array_except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
+                echo \$__env->make('$view', Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             }
             ?>";
         });
