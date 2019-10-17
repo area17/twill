@@ -157,20 +157,9 @@ class UserController extends ModuleController
         $with2faSettings = $this->config->get('twill.enabled.users-2fa') && $user->id == $request->route('user');;
 
         if ($with2faSettings) {
-            $google2fa = new Google2FA();
+            $user->generate2faSecretKey();
 
-            if (is_null($user->google_2fa_secret)) {
-                $secret = $google2fa->generateSecretKey();
-                $user->google_2fa_secret = \Crypt::encrypt($secret);
-                $user->save();
-            }
-
-            $qrCode = $google2fa->getQRCodeInline(
-                $this->config->get('app.name'),
-                $user->email,
-                \Crypt::decrypt($user->google_2fa_secret),
-                200
-            );
+            $qrCode = $user->get2faQrCode();
         }
 
         return [

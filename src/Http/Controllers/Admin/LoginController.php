@@ -136,7 +136,7 @@ class LoginController extends Controller
         $user = User::findOrFail($userId);
 
         $valid = (new Google2FA)->verifyKey(
-            $this->encrypter->decrypt($user->google_2fa_secret),
+            $user->google_2fa_secret,
             $request->input('verify-code')
         );
 
