@@ -17,10 +17,7 @@
 @push('vuexStore')
     window.STORE.form.fields.push({
         name: '{{ $name }}',
-        value: {
-            'latlng': {!! json_encode($item->$name) !!},
-            'address': ''
-        }
+        value: {!! json_encode($item->$name) !!}
     })
 @endpush
 @endunless
