@@ -261,8 +261,8 @@ class TwillServiceProvider extends ServiceProvider
             $migration_file = database_path('migrations/*_' . Str::snake($migration) . '.php');
             if (empty($files->glob($migration_file))) {
                 $timestamp = date('Y_m_d_', time()) . (30000 + $this->migrationsCounter);
-                $migrationSourcePath = __DIR__ . '/../migrations/' . snake_case($migration) . '.php';
-                $migrationOutputPath = database_path('migrations/' . $timestamp . '_' . snake_case($migration) . '.php');
+                $migrationSourcePath = __DIR__ . '/../migrations/' . Str::snake($migration) . '.php';
+                $migrationOutputPath = database_path('migrations/' . $timestamp . '_' . Str::snake($migration) . '.php');
 
                 $this->publishes([
                     $migrationSourcePath => $migrationOutputPath,
