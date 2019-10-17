@@ -2,6 +2,9 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use A17\Twill\Models\User;
+use PragmaRX\Google2FA\Google2FA;
+
 class LoginTest extends TestCase
 {
     public function testCanRedirectToLogin()
@@ -42,5 +45,29 @@ class LoginTest extends TestCase
             'Forgot password',
             $crawler->getContent()
         );
+    }
+
+    public function testGoogle2FA()
+    {
+        $user = User::where('email', $this->getSuperAdmin()->email)->first();
+
+        $user->generate2faSecretKey();
+
+        $user->update(['google_2fa_enabled' => true]);
+
+        $crawler = $this->login();
+
+        $this->assertStringContainsString(
+            'One-time password',
+            $crawler->getContent()
+        );
+
+        $crawler = $this->followingRedirects()->call('POST', '/twill/login', [
+            'verify-code' => (new Google2FA())->getCurrentOtp(
+                $user->google_2fa_secret
+            ),
+        ]);
+
+        $crawler->assertStatus(200);
     }
 }

@@ -46,6 +46,7 @@ class TestCase extends OrchestraTestCase
         $app['config']->set('twill.admin_app_url', '');
         $app['config']->set('twill.admin_app_path', 'twill');
         $app['config']->set('twill.auth_login_redirect_path', '/twill');
+        $app['config']->set('twill.enabled.users-2fa', true);
     }
 
     /**
