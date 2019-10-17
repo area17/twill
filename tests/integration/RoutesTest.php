@@ -16,6 +16,7 @@ class RoutesTest extends TestCase
         'twill/file-library/files/{file}',
         'twill/file-library/sign-s3-upload',
         'twill/login',
+        'twill/login-2fa',
         'twill/logout',
         'twill/media-library/medias',
         'twill/media-library/medias/bulk-delete',
