@@ -62,12 +62,21 @@ class LoginTest extends TestCase
             $crawler->getContent()
         );
 
-        $crawler = $this->followingRedirects()->call('POST', '/twill/login', [
-            'verify-code' => (new Google2FA())->getCurrentOtp(
-                $user->google_2fa_secret
-            ),
-        ]);
+        $crawler = $this->followingRedirects()->call(
+            'POST',
+            '/twill/login-2fa',
+            [
+                'verify-code' => (new Google2FA())->getCurrentOtp(
+                    $user->google_2fa_secret
+                ),
+            ]
+        );
 
         $crawler->assertStatus(200);
+
+        $this->assertStringContainsString(
+            'Media Library',
+            $crawler->getContent()
+        );
     }
 }
