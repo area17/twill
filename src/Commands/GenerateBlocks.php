@@ -63,7 +63,7 @@ class GenerateBlocks extends Command
                 'render' => $this->sanitize($vueBlockTemplate),
             ])->render();
 
-            $vueBlockPath = resource_path('assets/js/blocks/') . 'Block' . Str::title($blockName) . '.vue';
+            $vueBlockPath = $this->makeDirectory(resource_path('assets/js/blocks/')) . 'Block' . Str::title($blockName) . '.vue';
 
             $this->filesystem->put($vueBlockPath, $vueBlockContent);
 
@@ -71,6 +71,20 @@ class GenerateBlocks extends Command
         });
 
         $this->info("All blocks have been generated!");
+    }
+
+    /**
+     * Recursively make a directory.
+     *
+     * @param string $directory
+     * @return string
+     */
+    public function makeDirectory($directory)
+    {
+        if (!$this->filesystem->exists($directory)) {
+            $this->filesystem->makeDirectory($directory, 0755, true);
+        }
+        return $directory;
     }
 
     /**
