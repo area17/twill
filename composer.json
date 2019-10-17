@@ -49,7 +49,7 @@
     }
   ],
   "require": {
-    "php": "^7.0",
+    "php": "^7.1",
     "ext-json": "*",
     "ext-pdo": "*",
     "laravel/framework": "~5.6.0|~5.7.0|~5.8.0|^6.3",
@@ -67,18 +67,35 @@
     "league/glide-laravel": "^1.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "~5.0|~6.0|~7.0"
+    "phpunit/phpunit": "~5.0|~6.0|~7.0|~8.0",
+    "orchestra/testbench": "~3.3.0|~3.4.0|~3.5.0|~3.6.0|~3.7.0|~3.8.0|^4.0",
+    "phpstan/phpstan": "^0.11.16"
   },
   "autoload": {
     "psr-4": {
-      "A17\\Twill\\": "src/"
-    }
+      "A17\\Twill\\": "src/",
+      "A17\\Twill\\Tests\\Unit\\": "tests/unit",
+      "A17\\Twill\\Tests\\Integration\\": "tests/integration",
+      "App\\": "vendor/orchestra/testbench-core/laravel/app"
+    },
+    "files": [
+      "src/Helpers/routes_helpers.php",
+      "src/Helpers/i18n_helpers.php",
+      "src/Helpers/media_library_helpers.php",
+      "src/Helpers/frontend_helpers.php",
+      "src/Helpers/migrations_helpers.php",
+      "src/Helpers/helpers.php"
+    ]
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit --colors=always",
+    "analyse": "php -d memory_limit=-1 vendor/bin/phpstan analyse src tests"
   },
   "extra": {
     "laravel": {
-        "providers": [
-          "A17\\Twill\\TwillServiceProvider"
-        ]
+      "providers": [
+        "A17\\Twill\\TwillServiceProvider"
+      ]
     }
   },
   "minimum-stability": "stable",
