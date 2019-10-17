@@ -5,7 +5,7 @@ window.STORE.form.fields.push({
            @elseif(isset($formFieldsValue))
                 @if (is_array($formFieldsValue))
                     @php
-                        $formFieldsValue = array_first($formFieldsValue, null, '');
+                        $formFieldsValue = Arr::first($formFieldsValue, null, '');
                     @endphp
                 @endif
                 @if (is_numeric($formFieldsValue)) {{ $formFieldsValue }}
