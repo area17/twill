@@ -52,10 +52,10 @@ class Glide implements ImageServiceInterface
         $this->app = $app;
         $this->request = $request;
 
-        $baseUrl = join([
+        $baseUrl = join('/', [
             rtrim($this->config->get('twill.glide.base_url'), '/'),
             ltrim($this->config->get('twill.glide.base_path'), '/'),
-        ], '/');
+        ]);
 
         $this->server = ServerFactory::create([
             'response' => new LaravelResponseFactory($this->request),
