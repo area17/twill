@@ -18,6 +18,7 @@ cache:
     - $HOME/.composer/cache
 
 before_script:
+  - sudo apt-get -y --reinstall install imagemagick
   - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
 
 script:
