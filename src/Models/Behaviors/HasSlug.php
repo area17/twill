@@ -2,7 +2,9 @@
 
 namespace A17\Twill\Models\Behaviors;
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+
 
 trait HasSlug
 {
@@ -79,7 +81,7 @@ trait HasSlug
         if (in_array($slugParams['locale'], config('twill.slug_utf8_languages', []))) {
             $slugParams['slug'] = $this->getUtf8Slug($slugParams['slug']);
         } else {
-            $slugParams['slug'] = str_slug($slugParams['slug']);
+            $slugParams['slug'] = Str::slug($slugParams['slug']);
         }
 
         //active old slug if already existing or create a new one
@@ -292,7 +294,7 @@ trait HasSlug
 
     public function getForeignKey()
     {
-        return snake_case(class_basename(get_class($this))) . "_id";
+        return Str::snake(class_basename(get_class($this))) . "_id";
     }
 
     protected function getSuffixSlug()

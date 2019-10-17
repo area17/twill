@@ -441,7 +441,7 @@ public function hydrate($object, $fields)
         return [];
     }
 
-    // Optional, if the automatic way is not working for you (default is ucfirst(str_singular($moduleName)))
+    // Optional, if the automatic way is not working for you (default is ucfirst(Str::singular($moduleName)))
     protected $modelName = 'model';
 
     // Optional, to specify a different feature field name than the default 'featured'
@@ -1132,6 +1132,7 @@ Schema::table('pages', function (Blueprint $table) {
 Your model should use the `Kalnoy\Nestedset\NodeTrait` trait to enable nested sets, as well as the `HasPosition` trait and some helper functions to save a new tree organisation from Twill's drag and drop UI:
 
 ```php
+use Illuminate\Support\Arr;
 use A17\Twill\Models\Behaviors\HasPosition;
 use Kalnoy\Nestedset\NodeTrait;
 ...
@@ -1141,7 +1142,7 @@ class Page extends Model {
     ...
     public static function saveTreeFromIds($nodesArray)
     {
-        $parentNodes = self::find(array_pluck($nodesArray, 'id'));
+        $parentNodes = self::find(Arr::pluck($nodesArray, 'id'));
 
         if (is_array($nodesArray)) {
             $position = 1;
@@ -1152,7 +1153,7 @@ class Page extends Model {
             }
         }
 
-        $parentNodes = self::find(array_pluck($nodesArray, 'id'));
+        $parentNodes = self::find(Arr::pluck($nodesArray, 'id'));
 
         self::rebuildTree($nodesArray, $parentNodes);
     }
@@ -1164,7 +1165,7 @@ class Page extends Model {
                 $parent = $parentNodes->where('id', $nodeArray['id'])->first();
                 if (isset($nodeArray['children']) && is_array($nodeArray['children'])) {
                     $position = 1;
-                    $nodes = self::find(array_pluck($nodeArray['children'], 'id'));
+                    $nodes = self::find(Arr::pluck($nodeArray['children'], 'id'));
                     foreach ($nodeArray['children'] as $child) {
                         //append the children to their (old/new)parents
                         $descendant = $nodes->where('id', $child['id'])->first();

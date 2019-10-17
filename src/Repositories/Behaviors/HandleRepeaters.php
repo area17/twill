@@ -4,6 +4,7 @@ namespace A17\Twill\Repositories\Behaviors;
 
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 
 trait HandleRepeaters
@@ -49,7 +50,7 @@ trait HandleRepeaters
 
         foreach ($relationFields as $index => $relationField) {
             $relationField['position'] = $index + 1;
-            if (isset($relationField['id']) && starts_with($relationField['id'], $relation)) {
+            if (isset($relationField['id']) && Str::startsWith($relationField['id'], $relation)) {
                 // row already exists, let's update
                 $id = str_replace($relation . '-', '', $relationField['id']);
                 $relationRepository->update($id, $relationField);

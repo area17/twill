@@ -3,21 +3,6 @@
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 
-// adding this to have a better debug display in Chrome dev tools when
-// dd'ing during AJAX requests (see Symfony dumper issue in Chrome > 60:
-// https://github.com/symfony/symfony/issues/24688)
-if (!function_exists('ddd')) {
-    /**
-     * @param mixed ...$args
-     * @return void
-     */
-    function ddd(...$args)
-    {
-        http_response_code(500);
-        call_user_func_array('dd', $args);
-    }
-}
-
 if (!function_exists('dumpUsableSqlQuery')) {
     function dumpUsableSqlQuery($query)
     {
