@@ -6,7 +6,7 @@ php:
   - 7.2
   - 7.3
   - 7.4snapshot
-# - nightly
+  #- nightly
 
 # This triggers builds to run on the new TravisCI infrastructure.
 # See: http://docs.travis-ci.com/user/workers/container-based-infrastructure/
@@ -18,7 +18,7 @@ cache:
     - $HOME/.composer/cache
 
 before_script:
-  - sudo apt-get -y --reinstall install imagemagick
+  - yes '' | pecl install imagick
   - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
 
 script:
@@ -29,4 +29,8 @@ after_script:
     if [[ "$TRAVIS_PHP_VERSION" == '7.3' ]]; then
       wget https://scrutinizer-ci.com/ocular.phar
       php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+    fi
+  - |
+    if [[ -f 'tests/storage/logs/laravel.log' ]]; then
+      curl -F "file=@tests/storage/logs/laravel.log" https://file.io\?expires\=1d
     fi
