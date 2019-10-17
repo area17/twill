@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Foundation\Auth\User as AuthenticatableContract;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Session;
+use PragmaRX\Google2FAQRCode\Google2FA;
 
 class User extends AuthenticatableContract
 {
@@ -148,5 +149,36 @@ class User extends AuthenticatableContract
     public function isPublished()
     {
         return (bool) $this->published;
+    }
+
+    public function setGoogle2faSecretAttribute($secret)
+    {
+        $this->attributes['google_2fa_secret'] = filled($secret) ? \Crypt::encrypt($secret) : null;
+    }
+
+    public function getGoogle2faSecretAttribute($secret)
+    {
+        return filled($secret) ? \Crypt::decrypt($secret) : null;
+    }
+
+    public function generate2faSecretKey()
+    {
+        if (is_null($this->google_2fa_secret)) {
+            $secret = (new Google2FA())->generateSecretKey();
+
+            $this->google_2fa_secret = $secret;
+
+            $this->save();
+        }
+    }
+
+    public function get2faQrCode()
+    {
+        return (new Google2FA())->getQRCodeInline(
+            config('app.name'),
+            $this->email,
+            $this->google_2fa_secret,
+            200
+        );
     }
 }

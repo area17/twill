@@ -51,7 +51,7 @@ class UserRequest extends Request
                                 $shouldValidateOTP = $userIsEnabling || $userIsDisabling;
 
                                 if ($shouldValidateOTP) {
-                                    $valid = (new Google2FA)->verifyKey(Crypt::decrypt($user->google_2fa_secret), $value ?? '');
+                                    $valid = (new Google2FA)->verifyKey($user->google_2fa_secret, $value ?? '');
 
                                     if (!$valid) {
                                         $fail('Your one time password is invalid.');
