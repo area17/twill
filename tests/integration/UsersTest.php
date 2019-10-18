@@ -102,6 +102,22 @@ class UsersTest extends TestCase
 
     public function testCanImpersonateUser()
     {
+        $this->request('/twill')->assertStatus(200);
+
+        $this->assertStringContainsString(
+            'Admin',
+            $this->crawler->getContent()
+        );
+
         $user = $this->createUser();
+
+        $this->request("/twill/users/impersonate/{$user->id}")->assertStatus(
+            200
+        );
+
+        $this->assertStringContainsString(
+            e($user->name),
+            $this->crawler->getContent()
+        );
     }
 }
