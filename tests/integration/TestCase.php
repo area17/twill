@@ -42,6 +42,11 @@ class TestCase extends OrchestraTestCase
      */
     public $now;
 
+    /**
+     * @var \Illuminate\Foundation\Testing\TestResponse
+     */
+    public $crawler;
+
     private function configTwill($app)
     {
         $app['config']->set('twill.admin_app_url', '');
@@ -340,7 +345,7 @@ class TestCase extends OrchestraTestCase
     ) {
         $request = $followRedirects ? $this->followingRedirects() : $this;
 
-        return $request->call(
+        return $this->crawler = $request->call(
             $method,
             $uri,
             $parameters,
