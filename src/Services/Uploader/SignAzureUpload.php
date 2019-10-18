@@ -28,7 +28,7 @@ class SignAzureUpload
         $this->config = $config;
     }
 
-    public function getSasUrl(Request $request, SignAzureUploadListener $listener, $disk = 'libraries')
+    public function getSasUrl(Request $request, SignUploadListener $listener, $disk = 'libraries')
     {
         try {
             $blobUri = $request->input('bloburi');
@@ -50,9 +50,9 @@ class SignAzureUpload
 
             $path = $this->config->get('filesystems.disks.' . $disk .'.container') . str_replace(azureEndpoint($disk), '', $blobUri);
             $sasUrl = $blobUri . '?' . $this->blobSharedAccessSignatureHelper->generateBlobServiceSharedAccessSignatureToken('b', $path, $permissions, $expire);
-            return $listener->isValidSas($sasUrl);
+            return $listener->uploadIsSigned($sasUrl, false);
         } catch (\Exception $e) {
-            return $listener->isNotValidSas();
+            return $listener->uploadIsNotValid();
         }
     }
 }

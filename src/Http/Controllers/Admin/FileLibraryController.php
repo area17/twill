@@ -4,9 +4,8 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Http\Requests\Admin\FileRequest;
 use A17\Twill\Services\Uploader\SignAzureUpload;
-use A17\Twill\Services\Uploader\SignAzureUploadListener;
 use A17\Twill\Services\Uploader\SignS3Upload;
-use A17\Twill\Services\Uploader\SignS3UploadListener;
+use A17\Twill\Services\Uploader\SignUploadListener;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
@@ -15,7 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Routing\UrlGenerator;
 
-class FileLibraryController extends ModuleController implements SignS3UploadListener, SignAzureUploadListener
+class FileLibraryController extends ModuleController implements SignUploadListener
 {
     /**
      * @var string
@@ -259,35 +258,21 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
     }
 
     /**
-     * @param mixed $signedPolicy
-     * @return JsonResponse
+     * @param $signature
+     * @param bool $isJsonResponse
+     * @return mixed
      */
-    public function policyIsSigned($signedPolicy)
+    public function uploadIsSigned($signature, $isJsonResponse = true)
     {
-        return $this->responseFactory->json($signedPolicy, 200);
+        return $isJsonResponse
+            ? $this->responseFactory->json($signature, 200)
+            : $this->responseFactory->make($signature, 200, ['Content-Type' => 'text/plain']);
     }
 
     /**
      * @return JsonResponse
      */
-    public function policyIsNotValid()
-    {
-        return $this->responseFactory->json(["invalid" => true], 500);
-    }
-
-    /**
-     * @param $sasUrl
-     * @return JsonResponse
-     */
-    public function isValidSas($sasUrl)
-    {
-        return $this->responseFactory->json($sasUrl, 200);
-    }
-
-    /**
-     * @return JsonResponse
-     */
-    public function isNotValidSas()
+    public function uploadIsNotValid()
     {
         return $this->responseFactory->json(["invalid" => true], 500);
     }
