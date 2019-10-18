@@ -823,7 +823,6 @@ abstract class ModuleController extends Controller
                 : Str::singular($column['title']))) . '</a>';
         } else {
             $field = $column['field'];
-            debug($field);
             $value = $item->$field;
         }
 
