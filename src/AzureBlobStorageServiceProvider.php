@@ -38,6 +38,5 @@ class AzureBlobStorageServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
     }
 }
