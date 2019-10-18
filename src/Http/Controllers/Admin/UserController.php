@@ -57,7 +57,7 @@ class UserController extends ModuleController
      * @var array
      */
     protected $filters = [
-        'role' => 'role',
+        'role' => 'role_id',
     ];
 
     /**
