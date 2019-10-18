@@ -47,6 +47,7 @@ class TestCase extends OrchestraTestCase
         $app['config']->set('twill.admin_app_path', 'twill');
         $app['config']->set('twill.auth_login_redirect_path', '/twill');
         $app['config']->set('twill.enabled.users-2fa', true);
+        $app['config']->set('twill.enabled.users-image', true);
     }
 
     /**
@@ -314,6 +315,42 @@ class TestCase extends OrchestraTestCase
      * @param array $files
      * @param array $server
      * @param null $content
+     * @param bool $followRedirects
+     * @return \Illuminate\Foundation\Testing\TestResponse
+     */
+    public function request(
+        $uri,
+        $method = 'GET',
+        $parameters = [],
+        $cookies = [],
+        $files = [],
+        $server = [],
+        $content = null,
+        $followRedirects = true
+    ) {
+        $request = $followRedirects ? $this->followingRedirects() : $this;
+
+        return $request->call(
+            $method,
+            $uri,
+            $parameters,
+            $cookies,
+            $files,
+            $server,
+            $content
+        );
+    }
+
+    /**
+     * Send request to an ajax route.
+     *
+     * @param $uri
+     * @param string $method
+     * @param array $parameters
+     * @param array $cookies
+     * @param array $files
+     * @param array $server
+     * @param null $content
      * @return \Illuminate\Foundation\Testing\TestResponse
      */
     public function ajax(
@@ -329,9 +366,9 @@ class TestCase extends OrchestraTestCase
             'HTTP_X-Requested-With' => 'XMLHttpRequest',
         ]);
 
-        return $this->call(
-            $method,
+        return $this->request(
             $uri,
+            $method,
             $parameters,
             $cookies,
             $files,
