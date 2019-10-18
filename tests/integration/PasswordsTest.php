@@ -25,13 +25,13 @@ class PasswordsTest extends TestCase
     {
         $this->request('/twill/password/email', 'POST', [
             '_token' => csrf_token(),
-            'email' => $this->getSuperAdmin()->email,
+            'email' => $this->superAdmin()->email,
         ]);
 
         Notification::assertSentTo(
             $user = User::where(
                 'email',
-                $email = $this->getSuperAdmin()->email
+                $email = $this->superAdmin()->email
             )->first(),
             Reset::class
         );
@@ -83,7 +83,7 @@ class PasswordsTest extends TestCase
 
         $crawler = $this->request('/twill/password/reset', 'POST', [
             '_token' => csrf_token(),
-            'email' => $this->getSuperAdmin()->email,
+            'email' => $this->superAdmin()->email,
             'password' => ($password = $this->faker->password(50)),
             'password_confirmation' => $password,
             'token' => Notification::token(),
@@ -103,7 +103,7 @@ class PasswordsTest extends TestCase
 
         $crawler = $this->request('/twill/password/reset', 'POST', [
             '_token' => csrf_token(),
-            'email' => $this->getSuperAdmin()->email,
+            'email' => $this->superAdmin()->email,
             'password' => ($password = $this->faker->password(50)),
             'password_confirmation' => $password,
             'token' => Notification::token(),

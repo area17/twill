@@ -6,8 +6,18 @@ use A17\Twill\Models\User;
 
 class UsersTest extends TestCase
 {
-    public function createUser($name, $email)
+    public function setUp(): void
     {
+        parent::setUp();
+
+        $this->login();
+    }
+
+    public function createUser($name = null, $email = null)
+    {
+        $name = $name ?? $this->faker->name;
+        $email = $email ?? $this->faker->email;
+
         $payload = [
             'name' => $name,
             'email' => $email,
@@ -26,13 +36,6 @@ class UsersTest extends TestCase
         $this->ajax('/twill/users', 'POST', $payload)->assertStatus(200);
 
         return User::where('email', $email)->first();
-    }
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->login();
     }
 
     public function testCanListUsers()
@@ -84,7 +87,7 @@ class UsersTest extends TestCase
     {
         $user = User::where(
             'email',
-            $email = $this->getSuperAdmin()->email
+            $email = $this->superAdmin()->email
         )->first();
 
         $user->google_2fa_enabled = true;
@@ -95,5 +98,10 @@ class UsersTest extends TestCase
         $crawler->assertStatus(200);
 
         $this->assertStringContainsString($email, $crawler->getContent());
+    }
+
+    public function testCanImpersonateUser()
+    {
+        $user = $this->createUser();
     }
 }
