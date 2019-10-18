@@ -15,7 +15,7 @@ use Illuminate\Contracts\Console\Kernel;
 use A17\Twill\ValidationServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
-class TestCase extends OrchestraTestCase
+abstract class TestCase extends OrchestraTestCase
 {
     const DATABASE_MEMORY = ':memory:';
     const DEFAULT_PASSWORD = 'secret';
