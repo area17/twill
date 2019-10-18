@@ -875,15 +875,13 @@ abstract class ModuleController extends Controller
             ]);
         }
 
-        if ($this->getIndexOption('publish')) {
-            array_push($tableColumns, [
-                'name' => 'published',
-                'label' => 'Published',
-                'visible' => true,
-                'optional' => false,
-                'sortable' => false,
-            ]);
-        }
+        array_push($tableColumns, [
+            'name' => 'published',
+            'label' => 'Published',
+            'visible' => true,
+            'optional' => false,
+            'sortable' => false,
+        ]);
 
         array_push($tableColumns, [
             'name' => 'name',
