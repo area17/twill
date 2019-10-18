@@ -4,6 +4,7 @@ namespace A17\Twill\Tests\Integration;
 
 use Carbon\Carbon;
 use Faker\Factory as Faker;
+use A17\Twill\Models\User;
 use Illuminate\Support\Str;
 use A17\Twill\AuthServiceProvider;
 use A17\Twill\TwillServiceProvider;
@@ -29,7 +30,7 @@ class TestCase extends OrchestraTestCase
     /**
      * @var \A17\Twill\Tests\Integration\UserClass
      */
-    public $superAdmin;
+    private $superAdmin;
 
     /**
      * @var \Illuminate\Filesystem\Filesystem
@@ -48,6 +49,7 @@ class TestCase extends OrchestraTestCase
         $app['config']->set('twill.auth_login_redirect_path', '/twill');
         $app['config']->set('twill.enabled.users-2fa', true);
         $app['config']->set('twill.enabled.users-image', true);
+        $app['config']->set('twill.auth_login_redirect_path', '/twill');
     }
 
     /**
@@ -121,18 +123,17 @@ class TestCase extends OrchestraTestCase
 
     /**
      * Fake a super admin.
-     *
-     * @return \A17\Twill\Tests\Integration\UserClass
      */
     public function makeNewSuperAdmin()
     {
-        $user = new UserClass();
+        $user = new User();
 
-        $user->name = $this->faker->name;
-        $user->email = $this->faker->email;
-        $user->password = self::DEFAULT_PASSWORD;
+        $user->setAttribute('name', $this->faker->name);
+        $user->setAttribute('email', $this->faker->email);
+        $user->setAttribute('password', self::DEFAULT_PASSWORD);
+        $user->setAttribute('unencrypted_password', self::DEFAULT_PASSWORD);
 
-        return $user;
+        return $this->superAdmin = $user;
     }
 
     /**
@@ -219,7 +220,7 @@ class TestCase extends OrchestraTestCase
      * @param $force
      * @return \A17\Twill\Models\User|\A17\Twill\Tests\Integration\UserClass
      */
-    public function getSuperAdmin($force = false)
+    public function superAdmin($force = false)
     {
         return $this->superAdmin =
             !$this->superAdmin || $force
@@ -248,15 +249,24 @@ class TestCase extends OrchestraTestCase
     public function installTwill()
     {
         $this->artisan('twill:install')
-            ->expectsQuestion('Enter an email', $this->getSuperAdmin()->email)
-            ->expectsQuestion(
-                'Enter a password',
-                $this->getSuperAdmin()->password
-            )
+            ->expectsQuestion('Enter an email', $this->superAdmin()->email)
+            ->expectsQuestion('Enter a password', $this->superAdmin()->password)
             ->expectsQuestion(
                 'Confirm the password',
-                $this->getSuperAdmin()->password
+                $this->superAdmin()->password
             );
+
+        $user = User::where(
+            'email',
+            $email = $this->superAdmin()->email
+        )->first();
+
+        $user->setAttribute(
+            'unencrypted_password',
+            $this->superAdmin->unencrypted_password
+        );
+
+        $this->superAdmin = $user;
     }
 
     /**
@@ -360,7 +370,8 @@ class TestCase extends OrchestraTestCase
         $cookies = [],
         $files = [],
         $server = [],
-        $content = null
+        $content = null,
+        $followRedirects = false
     ) {
         $server = array_merge($server, [
             'HTTP_X-Requested-With' => 'XMLHttpRequest',
@@ -373,7 +384,8 @@ class TestCase extends OrchestraTestCase
             $cookies,
             $files,
             $server,
-            $content
+            $content,
+            $followRedirects
         );
     }
 
@@ -384,23 +396,18 @@ class TestCase extends OrchestraTestCase
      */
     protected function login()
     {
-        return $this->followingRedirects()->call('POST', '/twill/login', [
-            'email' => $this->getSuperAdmin()->email,
-            'password' => $this->getSuperAdmin()->password,
+        $crawler = $this->followingRedirects()->call('POST', '/twill/login', [
+            'email' => $this->superAdmin()->email,
+            'password' => $this->superAdmin()->unencrypted_password,
         ]);
+
+        $crawler->assertStatus(200);
+
+        return $crawler;
     }
 
     public function freezeTime()
     {
         Carbon::setTestNow($this->now = Carbon::now());
     }
-}
-
-class UserClass
-{
-    public $name;
-
-    public $email;
-
-    public $password;
 }

@@ -66,21 +66,15 @@ class CommandsTest extends TestCase
     public function testCanExecuteSuperadminCommand()
     {
         $this->artisan('twill:superadmin')
-            ->expectsQuestion(
-                'Enter an email',
-                $this->getSuperAdmin(true)->email
-            )
-            ->expectsQuestion(
-                'Enter a password',
-                $this->getSuperAdmin()->password
-            )
+            ->expectsQuestion('Enter an email', $this->superAdmin(true)->email)
+            ->expectsQuestion('Enter a password', $this->superAdmin()->password)
             ->expectsQuestion(
                 'Confirm the password',
-                $this->getSuperAdmin()->password
+                $this->superAdmin()->password
             );
 
         $this->assertNotNull(
-            User::where('email', $this->getSuperAdmin()->email)->first()
+            User::where('email', $this->superAdmin()->email)->first()
         );
     }
 

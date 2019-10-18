@@ -49,7 +49,7 @@ class LoginTest extends TestCase
 
     public function testGoogle2FA()
     {
-        $user = User::where('email', $this->getSuperAdmin()->email)->first();
+        $user = User::where('email', $this->superAdmin()->email)->first();
 
         $user->generate2faSecretKey();
 
