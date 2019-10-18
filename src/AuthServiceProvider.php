@@ -101,7 +101,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('edit-module', function ($user, $moduleName) {
             return $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('manage-module', $moduleName)
-                || $user->role->permissions()->module()->ofModuleName($moduleName)->where('name', 'manage-module')->exists();
+                || $user->role->permissions()->module()->ofModuleName($moduleName)->where('name', 'edit-module')->exists();
             });
         });
 
@@ -124,6 +124,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('view-item', function ($user, $item) {
             return $this->authorize($user, function ($user) use ($item) {
                 return $user->can('edit-item', $item)
+                || $user->can('view-module', getModuleNameByModel(get_class($item)))
                 || $user->permissions()->ofItem($item)->where('name', 'view-item')->exists();
             });
         });
@@ -131,6 +132,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('edit-item', function ($user, $item) {
             return $this->authorize($user, function ($user) use ($item) {
                 return $user->can('manage-item', $item)
+                || $user->can('edit-module', getModuleNameByModel(get_class($item)))
                 || $user->permissions()->ofItem($item)->where('name', 'edit-item')->exists();
             });
         });
