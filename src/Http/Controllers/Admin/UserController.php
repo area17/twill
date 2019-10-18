@@ -136,6 +136,7 @@ class UserController extends ModuleController
     protected function indexData($request)
     {
         return [
+            'defaultFilterSlug' => 'published',
             'create' => $this->getIndexOption('create') && $this->user->can('edit-users'),
             'roleList' => Role::published()->get()->map(function ($role) {
                 return ['value' => $role->id, 'label' => $role->name];
