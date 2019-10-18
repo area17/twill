@@ -35,7 +35,7 @@ $azureConfig = [
     ],
     'container' => env('AZURE_CONTAINER', 'public'),
     'endpoint-suffix' => env('AZURE_ENDPOINT_SUFFIX', 'core.windows.net'),
-    'protocol' => env('AZURE_UPLOADER_USE_HTTPS', env('AZURE_USE_HTTPS', true)),
+    'use_https' => env('AZURE_UPLOADER_USE_HTTPS', env('AZURE_USE_HTTPS', true)),
 ];
 
 return [
