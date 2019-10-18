@@ -21,7 +21,7 @@ if (!function_exists('azureEndpoint')) {
      */
     function azureEndpoint($disk = 'libraries')
     {
-        $scheme = config("filesystems.disks.{$disk}.protocol") ? 'https://' : '';
+        $scheme = config("filesystems.disks.{$disk}.use_https") ? 'https://' : '';
         return $scheme . env('AZURE_ACCOUNT_NAME') . '.blob.' . env('AZURE_ENDPOINT_SUFFIX') . '/' . env('AZURE_CONTAINER');
     }
 }
