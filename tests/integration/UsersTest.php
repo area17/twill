@@ -6,7 +6,7 @@ use A17\Twill\Models\User;
 
 class UsersTest extends TestCase
 {
-    private function createUser($name, $email)
+    public function createUser($name, $email)
     {
         $payload = [
             'name' => $name,
@@ -23,7 +23,9 @@ class UsersTest extends TestCase
             ],
         ];
 
-        return $this->ajax('/twill/users', 'POST', $payload);
+        $this->ajax('/twill/users', 'POST', $payload)->assertStatus(200);
+
+        return User::where('email', $email)->first();
     }
 
     public function setUp(): void
@@ -46,12 +48,10 @@ class UsersTest extends TestCase
 
     public function testCanUpdateUser()
     {
-        $this->createUser(
+        $user = $this->createUser(
             $name = $this->faker->name,
             $email = $this->faker->email
         );
-
-        $user = User::where('email', $email)->first();
 
         $payload = [
             'email' => $email,
@@ -72,14 +72,10 @@ class UsersTest extends TestCase
 
     public function testCanCreateUser()
     {
-        $crawler = $this->createUser(
+        $user = $this->createUser(
             $name = $this->faker->name,
             $email = $this->faker->email
         );
-
-        $crawler->assertStatus(200);
-
-        $user = User::where('email', $email)->first();
 
         $this->assertEquals($name, $user->name);
     }
