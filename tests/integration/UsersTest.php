@@ -6,6 +6,31 @@ use A17\Twill\Models\User;
 
 class UsersTest extends TestCase
 {
+    protected function impersonateUser()
+    {
+        $this->request('/twill')->assertStatus(200);
+
+        $this->assertStringContainsString(
+            'Admin',
+            $this->crawler->getContent()
+        );
+
+        $user = $this->createUser();
+
+        $this->request("/twill/users/impersonate/{$user->id}")->assertStatus(
+            200
+        );
+
+        $this->assertStringContainsString(
+            e($user->name),
+            $this->crawler->getContent()
+        );
+
+        $this->assertEquals($user->id, session()->get('impersonate'));
+
+        return $user;
+    }
+
     public function setUp(): void
     {
         parent::setUp();
@@ -91,6 +116,7 @@ class UsersTest extends TestCase
         )->first();
 
         $user->google_2fa_enabled = true;
+
         $user->save();
 
         $crawler = $this->request("/twill/users/{$user->id}/edit");
@@ -102,22 +128,15 @@ class UsersTest extends TestCase
 
     public function testCanImpersonateUser()
     {
-        $this->request('/twill')->assertStatus(200);
+        $this->impersonateUser();
+    }
 
-        $this->assertStringContainsString(
-            'Admin',
-            $this->crawler->getContent()
-        );
+    public function testCanStopImpersonatingUser()
+    {
+        $this->impersonateUser();
 
-        $user = $this->createUser();
+        $this->request('/twill/users/impersonate/stop')->assertStatus(200);
 
-        $this->request("/twill/users/impersonate/{$user->id}")->assertStatus(
-            200
-        );
-
-        $this->assertStringContainsString(
-            e($user->name),
-            $this->crawler->getContent()
-        );
+        $this->assertNull(session()->get('impersonate'));
     }
 }
