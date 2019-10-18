@@ -9,7 +9,16 @@ class CommandsTest extends TestCase
 {
     public function testCanExecuteModuleCommand()
     {
-        $this->artisan('twill:module', ['moduleName' => 'Posts']);
+        $this->artisan('twill:module', [
+            'moduleName' => 'Posts',
+            '--hasBlocks' => true,
+            '--hasTranslation' => true,
+            '--hasSlug' => true,
+            '--hasMedias' => true,
+            '--hasFiles' => true,
+            '--hasPosition' => true,
+            '--hasRevisions' => true,
+        ]);
 
         $this->assertFileExists(
             twill_path('Http/Controllers/Admin/PostController.php')
