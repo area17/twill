@@ -168,6 +168,15 @@ class Glide implements ImageServiceInterface
     }
 
     /**
+     * @param string $id, string $preset
+     * @return string
+     */
+    public function getPresetUrl($id, $preset)
+    {
+        return $this->getRawUrl($id) . '?p=' . $preset;
+    }
+
+    /**
      * @param string $id
      * @return array|null
      */
