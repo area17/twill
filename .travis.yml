@@ -1,4 +1,4 @@
-dist: bionic
+dist: xenial
 language: php
 
 php:
@@ -27,7 +27,6 @@ cache:
 
 before_script:
   - yes '' | pecl install imagick
-  - apt-get install --yes php-gd
   - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
 
 script:
