@@ -55,6 +55,19 @@ class ModulesTest extends TestCase
             '{$config}/twill-navigation.php',
     ];
 
+    private function fakeText(int $max)
+    {
+        /*
+         *  #### PHP 7.4 && PHP 8
+         *  ## Faker is not yet compatible
+         *  ## https://github.com/fzaninotto/Faker/pull/1816/files
+         *
+         *   As soon as it is fixed, replace it by $this->faker->text($x)
+         */
+
+        return Str::random($max);
+    }
+
     /**
      * @return array
      */
@@ -112,16 +125,14 @@ class ModulesTest extends TestCase
                 'pt-BR' => $this->slug_en,
             ],
             'description' => [
-                'en' => ($this->description_en =
-                    '[EN] ' . $this->faker->text(80)),
-                'fr' => ($this->description_fr =
-                    '[FR] ' . $this->faker->text(80)),
+                'en' => ($this->description_en = '[EN] ' . $this->fakeText(80)),
+                'fr' => ($this->description_fr = '[FR] ' . $this->fakeText(80)),
                 'pt-BR' => '',
             ],
             'birthday' => ($this->birthday = now()->format('Y-m-d')),
             'bio' => [
-                'en' => ($this->bio_en = '[EN] ' . $this->faker->text(800)),
-                'fr' => ($this->bio_fr = '[FR] ' . $this->faker->text(800)),
+                'en' => ($this->bio_en = '[EN] ' . $this->fakeText(800)),
+                'fr' => ($this->bio_fr = '[FR] ' . $this->fakeText(800)),
                 'pt-BR' => '',
             ],
             'cmsSaveType' => 'save',
