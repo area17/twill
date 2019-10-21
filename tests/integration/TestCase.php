@@ -246,6 +246,18 @@ abstract class TestCase extends OrchestraTestCase
         if (!file_exists($directory = twill_path('Http/Controllers'))) {
             $this->files->makeDirectory($directory, 744, true);
         }
+
+        if (!file_exists($directory = twill_path('Repositories'))) {
+            $this->files->makeDirectory($directory, 744, true);
+        }
+
+        if (
+            !file_exists(
+                $directory = twill_path('/../resources/views/admin/authors/')
+            )
+        ) {
+            $this->files->makeDirectory($directory, 744, true);
+        }
     }
 
     /**
@@ -331,6 +343,7 @@ abstract class TestCase extends OrchestraTestCase
      * @param array $server
      * @param null $content
      * @param bool $followRedirects
+     *
      * @return \Illuminate\Foundation\Testing\TestResponse
      */
     public function request(
@@ -401,18 +414,81 @@ abstract class TestCase extends OrchestraTestCase
      */
     protected function login()
     {
-        $crawler = $this->followingRedirects()->call('POST', '/twill/login', [
+        $this->request('/twill/login', 'POST', [
             'email' => $this->superAdmin()->email,
             'password' => $this->superAdmin()->unencrypted_password,
-        ]);
+        ])->assertStatus(200);
 
-        $crawler->assertStatus(200);
-
-        return $crawler;
+        return $this->crawler;
     }
 
+    /**
+     * Freeze time.
+     */
     public function freezeTime()
     {
         Carbon::setTestNow($this->now = Carbon::now());
+    }
+
+    /**
+     * Copy all sources to destinations.
+     *
+     * @param array $files
+     */
+    public function copyFiles($files)
+    {
+        collect($files)->each(function ($destination, $source) {
+            $this->files->copy(
+                $this->makeFileName($source),
+                $this->makeFileName($destination)
+            );
+        });
+    }
+
+    /**
+     * Replace placeholders to make a filename.
+     *
+     * @param $file
+     * @return mixed
+     */
+    public function makeFileName($file)
+    {
+        return str_replace(
+            [
+                '{$stubs}',
+                '{$database}',
+                '{$base}',
+                '{$app}',
+                '{$resources}',
+                '{$config}',
+            ],
+            [
+                stubs(),
+                database_path(),
+                base_path(),
+                app_path(),
+                resource_path(),
+                config_path(),
+            ],
+            $file
+        );
+    }
+
+    /**
+     * Migrate database.
+     */
+    public function migrate()
+    {
+        $this->artisan('migrate');
+    }
+
+    /**
+     * Return the contents from current crawler response.
+     *
+     * @return false|string
+     */
+    public function content()
+    {
+        return $this->crawler->getContent();
     }
 }

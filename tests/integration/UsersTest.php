@@ -10,10 +10,7 @@ class UsersTest extends TestCase
     {
         $this->request('/twill')->assertStatus(200);
 
-        $this->assertStringContainsString(
-            'Admin',
-            $this->crawler->getContent()
-        );
+        $this->assertStringContainsString('Admin', $this->content());
 
         $user = $this->createUser();
 
@@ -21,10 +18,7 @@ class UsersTest extends TestCase
             200
         );
 
-        $this->assertStringContainsString(
-            e($user->name),
-            $this->crawler->getContent()
-        );
+        $this->assertStringContainsString(e($user->name), $this->content());
 
         $this->assertEquals($user->id, session()->get('impersonate'));
 
@@ -65,13 +59,11 @@ class UsersTest extends TestCase
 
     public function testCanListUsers()
     {
-        $crawler = $this->ajax(
+        $this->ajax(
             '/twill/users?sortKey=email&sortDir=asc&page=1&offset=20&columns[]=bulk&columns[]=published&columns[]=name&columns[]=email&columns[]=role_value&filter=%7B%22status%22:%22published%22%7D'
-        );
+        )->assertStatus(200);
 
-        $crawler->assertStatus(200);
-
-        $this->assertJson($crawler->getContent());
+        $this->assertJson($this->content());
     }
 
     public function testCanUpdateUser()
@@ -119,11 +111,9 @@ class UsersTest extends TestCase
 
         $user->save();
 
-        $crawler = $this->request("/twill/users/{$user->id}/edit");
+        $this->request("/twill/users/{$user->id}/edit")->assertStatus(200);
 
-        $crawler->assertStatus(200);
-
-        $this->assertStringContainsString($email, $crawler->getContent());
+        $this->assertStringContainsString($email, $this->content());
     }
 
     public function testCanImpersonateUser()

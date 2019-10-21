@@ -42,17 +42,11 @@ class PasswordsTest extends TestCase
             false
         );
 
-        $crawler = $this->request($resetUrl);
+        $this->request($resetUrl);
 
-        $this->assertStringContainsString(
-            'Reset password',
-            $crawler->getContent()
-        );
+        $this->assertStringContainsString('Reset password', $this->content());
 
-        $this->assertStringContainsString(
-            'Confirm password',
-            $crawler->getContent()
-        );
+        $this->assertStringContainsString('Confirm password', $this->content());
     }
 
     public function testNotificationsAreFaked()
@@ -62,18 +56,13 @@ class PasswordsTest extends TestCase
 
     public function testCanShowPasswordResetForm()
     {
-        $crawler = $this->request('/twill/password/reset');
+        $this->request('/twill/password/reset')->assertStatus(200);
 
-        $crawler->assertStatus(200);
-
-        $this->assertStringContainsString(
-            'Reset password',
-            $crawler->getContent()
-        );
+        $this->assertStringContainsString('Reset password', $this->content());
 
         $this->assertStringContainsString(
             'Send password reset link',
-            $crawler->getContent()
+            $this->content()
         );
     }
 
@@ -81,17 +70,17 @@ class PasswordsTest extends TestCase
     {
         $this->sendPasswordResetToAdmin();
 
-        $crawler = $this->request('/twill/password/reset', 'POST', [
+        $this->request('/twill/password/reset', 'POST', [
             '_token' => csrf_token(),
             'email' => $this->superAdmin()->email,
             'password' => ($password = $this->faker->password(50)),
             'password_confirmation' => $password,
             'token' => Notification::token(),
-        ]);
+        ])->assertStatus(200);
 
         $this->assertStringContainsString(
             'Your password has been reset!',
-            $crawler->getContent()
+            $this->content()
         );
     }
 
@@ -101,7 +90,7 @@ class PasswordsTest extends TestCase
 
         DB::table('twill_password_resets')->truncate();
 
-        $crawler = $this->request('/twill/password/reset', 'POST', [
+        $this->request('/twill/password/reset', 'POST', [
             '_token' => csrf_token(),
             'email' => $this->superAdmin()->email,
             'password' => ($password = $this->faker->password(50)),
@@ -111,7 +100,7 @@ class PasswordsTest extends TestCase
 
         $this->assertStringContainsString(
             'Your password reset token has expired or could not be found, please retry.',
-            $crawler->getContent()
+            $this->content()
         );
     }
 }

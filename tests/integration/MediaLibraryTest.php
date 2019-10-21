@@ -16,17 +16,15 @@ class MediaLibraryTest extends TestCase
 
     public function testCanListMedias()
     {
-        $crawler = $this->ajax('/twill/media-library/medias', 'GET', [
+        $this->ajax('/twill/media-library/medias', 'GET', [
             'page' => 1,
             'type' => 'image',
             'except' => [-1],
             'search' => '*',
             'tag' => '',
-        ]);
+        ])->assertStatus(200);
 
-        $crawler->assertStatus(200);
-
-        $this->assertJson($crawler->getContent());
+        $this->assertJson($this->content());
     }
 
     public function createMedia()
@@ -44,11 +42,11 @@ class MediaLibraryTest extends TestCase
             'qqfile' => UploadedFile::fake()->image($fileName),
         ];
 
-        $crawler = $this->ajax('/twill/media-library/medias', 'POST', $data);
+        $this->ajax('/twill/media-library/medias', 'POST', $data)->assertStatus(
+            200
+        );
 
-        $crawler->assertStatus(200);
-
-        $this->assertJson($crawler->getContent());
+        $this->assertJson($this->content());
 
         $media = Media::where('filename', $fileName)->first();
 
