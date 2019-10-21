@@ -9,14 +9,15 @@ use App\Models\Translations\AuthorTranslation;
 class ModulesTest extends TestCase
 {
     protected $name;
-
     protected $name_en;
-
     protected $name_fr;
-
     protected $slug_en;
-
     protected $slug_fr;
+    protected $description_en;
+    protected $description_fr;
+    protected $bio_en;
+    protected $bio_fr;
+    private $birthday;
 
     private $authorFiles = [
         '{$stubs}/modules/authors/2019_10_18_193753_create_authors_tables.php' =>
@@ -57,7 +58,7 @@ class ModulesTest extends TestCase
     /**
      * @return array
      */
-    protected function getData(): array
+    protected function getCreateAuthorData(): array
     {
         $name = $this->name = $this->faker->name;
 
@@ -94,6 +95,68 @@ class ModulesTest extends TestCase
                     'published' => false,
                 ],
             ],
+        ];
+    }
+
+    public function getUpdateAuthorData()
+    {
+        return [
+            'name' => [
+                'en' => $this->name_en,
+                'fr' => $this->name_fr,
+                'pt-BR' => '',
+            ],
+            'slug' => [
+                'en' => $this->slug_en,
+                'fr' => $this->slug_en,
+                'pt-BR' => $this->slug_en,
+            ],
+            'description' => [
+                'en' => ($this->description_en =
+                    '[EN] ' . $this->faker->text(80)),
+                'fr' => ($this->description_fr =
+                    '[FR] ' . $this->faker->text(80)),
+                'pt-BR' => '',
+            ],
+            'birthday' => ($this->birthday = now()->format('Y-m-d')),
+            'bio' => [
+                'en' => ($this->bio_en = '[EN] ' . $this->faker->text(800)),
+                'fr' => ($this->bio_fr = '[FR] ' . $this->faker->text(800)),
+                'pt-BR' => '',
+            ],
+            'cmsSaveType' => 'save',
+            'published' => false,
+            'public' => false,
+            'publish_start_date' => null,
+            'publish_end_date' => null,
+            'languages' => [
+                [
+                    'shortlabel' => 'EN',
+                    'label' => 'English',
+                    'value' => 'en',
+                    'disabled' => false,
+                    'published' => '1',
+                ],
+                [
+                    'shortlabel' => 'FR',
+                    'label' => 'French',
+                    'value' => 'fr',
+                    'disabled' => false,
+                    'published' => '0',
+                ],
+                [
+                    'shortlabel' => 'PT-BR',
+                    'label' => 'pt-BR',
+                    'value' => 'pt-BR',
+                    'disabled' => false,
+                    'published' => '0',
+                ],
+            ],
+            'parent_id' => 0,
+            'medias' => [],
+            'browsers' => [],
+            'blocks' => [],
+            'repeaters' => [],
         ];
     }
 
@@ -142,7 +205,7 @@ class ModulesTest extends TestCase
         $this->request(
             '/twill/personnel/authors',
             'POST',
-            $this->getData()
+            $this->getCreateAuthorData()
         )->assertStatus(200);
 
         $authorTranslation = AuthorTranslation::where('name', $this->name_en)
@@ -152,5 +215,18 @@ class ModulesTest extends TestCase
         $this->assertNotNull($authorTranslation);
 
         $this->assertCount(3, $authorTranslation->author->slugs);
+
+        $this->request(
+            "/twill/personnel/authors/{$authorTranslation->author->id}",
+            'PUT',
+            $this->getUpdateAuthorData()
+        )->assertStatus(200);
+
+        $authorTranslation->author->refresh();
+
+        $this->assertEquals(
+            $authorTranslation->author->birthday,
+            $this->birthday
+        );
     }
 }
