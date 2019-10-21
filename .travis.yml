@@ -1,4 +1,4 @@
-dist: trusty
+dist: bionic
 language: php
 
 php:
@@ -6,7 +6,16 @@ php:
   - 7.2
   - 7.3
   - 7.4snapshot
-  #- nightly
+  - nightly
+
+#### PHP 7.4 && PHP 8
+## Faker is not yet compatible
+## https://github.com/fzaninotto/Faker/pull/1816/files
+
+matrix:
+  allow_failures:
+    - php: nightly
+    - php: 7.4snapshot
 
 # This triggers builds to run on the new TravisCI infrastructure.
 # See: http://docs.travis-ci.com/user/workers/container-based-infrastructure/
