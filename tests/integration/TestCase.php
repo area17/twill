@@ -84,8 +84,12 @@ abstract class TestCase extends OrchestraTestCase
     {
         $app['config']->set(
             'logging.channels.single.path',
-            __DIR__ . '/../storage/logs/laravel.log'
+            $logFile = __DIR__ . '/../storage/logs/laravel.log'
         );
+
+        if (file_exists($logFile)) {
+            unlink($logFile);
+        }
     }
 
     /**
