@@ -1,8 +1,8 @@
 <?php
 
-function stubs($dir)
+function stubs($dir = null)
 {
-    return __DIR__ . "/stubs/{$dir}";
+    return __DIR__ . '/stubs' . ($dir ? "/{$dir}" : '');
 }
 
 function read_file($path)

@@ -9,42 +9,31 @@ class LoginTest extends TestCase
 {
     public function testCanRedirectToLogin()
     {
-        $crawler = $this->followingRedirects()->call('GET', '/twill');
+        $this->request('/twill')->assertStatus(200);
 
         $this->assertSame('http://twill.test/twill/login', url()->full());
 
-        $this->assertStringContainsString(
-            'Forgot password',
-            $crawler->getContent()
-        );
-
-        $crawler->assertStatus(200);
+        $this->assertStringContainsString('Forgot password', $this->content());
     }
 
     public function testCanLogin()
     {
-        $crawler = $this->login();
+        $this->login();
 
-        $this->assertStringContainsString(
-            'Media Library',
-            $crawler->getContent()
-        );
+        $this->assertStringContainsString('Media Library', $this->content());
 
-        $this->assertStringContainsString('Settings', $crawler->getContent());
+        $this->assertStringContainsString('Settings', $this->content());
 
-        $this->assertStringContainsString('Logout', $crawler->getContent());
+        $this->assertStringContainsString('Logout', $this->content());
     }
 
     public function testCanLogout()
     {
         $this->login();
 
-        $crawler = $this->followingRedirects()->call('GET', '/twill/logout');
+        $this->request('/twill/logout');
 
-        $this->assertStringContainsString(
-            'Forgot password',
-            $crawler->getContent()
-        );
+        $this->assertStringContainsString('Forgot password', $this->content());
     }
 
     public function testGoogle2FA()
@@ -55,41 +44,28 @@ class LoginTest extends TestCase
 
         $user->update(['google_2fa_enabled' => true]);
 
-        $crawler = $this->login();
+        $this->login();
 
         $this->assertStringContainsString(
             'One-time password',
-            $crawler->getContent()
+            $this->content()
         );
 
-        $crawler = $this->followingRedirects()->call(
-            'POST',
-            '/twill/login-2fa',
-            [
-                'verify-code' => 'INVALID CODE',
-            ]
-        );
+        $this->request('/twill/login-2fa', 'POST', [
+            'verify-code' => 'INVALID CODE',
+        ]);
 
         $this->assertStringContainsString(
             'Your one time password is invalid.',
-            $crawler->getContent()
+            $this->content()
         );
 
-        $crawler = $this->followingRedirects()->call(
-            'POST',
-            '/twill/login-2fa',
-            [
-                'verify-code' => (new Google2FA())->getCurrentOtp(
-                    $user->google_2fa_secret
-                ),
-            ]
-        );
+        $this->request('/twill/login-2fa', 'POST', [
+            'verify-code' => (new Google2FA())->getCurrentOtp(
+                $user->google_2fa_secret
+            ),
+        ])->assertStatus(200);
 
-        $crawler->assertStatus(200);
-
-        $this->assertStringContainsString(
-            'Media Library',
-            $crawler->getContent()
-        );
+        $this->assertStringContainsString('Media Library', $this->content());
     }
 }
