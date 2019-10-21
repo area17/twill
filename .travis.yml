@@ -15,7 +15,6 @@ php:
 matrix:
   allow_failures:
     - php: nightly
-    - php: 7.4snapshot
 
 # This triggers builds to run on the new TravisCI infrastructure.
 # See: http://docs.travis-ci.com/user/workers/container-based-infrastructure/
@@ -28,6 +27,7 @@ cache:
 
 before_script:
   - yes '' | pecl install imagick
+  - apt-get install --yes php-gd
   - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
 
 script:
