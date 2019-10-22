@@ -3,6 +3,7 @@
 namespace A17\Twill\Tests\Integration;
 
 use Illuminate\Support\Str;
+use A17\Twill\Models\Block;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Translations\AuthorTranslation;
 
@@ -17,7 +18,9 @@ class ModulesTest extends TestCase
     protected $description_fr;
     protected $bio_en;
     protected $bio_fr;
-    private $birthday;
+    protected $birthday;
+    protected $block_id;
+    protected $block_quote;
 
     private $authorFiles = [
         '{$stubs}/modules/authors/2019_10_18_193753_create_authors_tables.php' =>
@@ -55,7 +58,7 @@ class ModulesTest extends TestCase
             '{$config}/twill-navigation.php',
     ];
 
-    private function fakeText(int $max)
+    private function fakeText(int $max = 250)
     {
         /*
          *  #### PHP 7.4 && PHP 8
@@ -65,7 +68,14 @@ class ModulesTest extends TestCase
          *   As soon as it is fixed, replace it by $this->faker->text($x)
          */
 
-        return Str::random($max);
+        $lorem =
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Qualem igitur hominem natura inchoavit? Semovenda est igitur voluptas, non solum ut recta sequamini, sed etiam ut loqui deceat frugaliter. Hoc positum in Phaedro a Platone probavit Epicurus sensitque in omni disputatione id fieri oportere. Summum ením bonum exposuit vacuitatem doloris; Duo Reges: constructio interrete. Tubulo putas dicere? Primum cur ista res digna odio est, nisi quod est turpis? Sed erat aequius Triarium aliquid de dissensione nostra iudicare. Apud ceteros autem philosophos, qui quaesivit aliquid, tacet; Sed quot homines, tot sententiae; Eiuro, inquit adridens, iniquum, hac quidem de re; An eiusdem modi? Nam si beatus umquam fuisset, beatam vitam usque ad illum a Cyro extructum rogum pertulisset. Vestri haec verecundius, illi fortasse constantius. At miser, si in flagitiosa et vitiosa vita afflueret voluptatibus. Quo modo autem philosophus loquitur? Sed ne, dum huic obsequor, vobis molestus sim. Si ad corpus pertinentibus, rationes tuas te video compensare cum istis doloribus, non memoriam corpore perceptarum voluptatum; Stoici autem, quod finem bonorum in una virtute ponunt, similes sunt illorum; Summum ením bonum exposuit vacuitatem doloris; Proclivi currit oratio. Quid in isto egregio tuo officio et tanta fide-sic enim existimo-ad corpus refers? Satis est ad hoc responsum. Confecta res esset. Ac tamen hic mallet non dolere. Quare, quoniam de primis naturae commodis satis dietum est nunc de maioribus consequentibusque videamus. Nec vero sum nescius esse utilitatem in historia, non modo voluptatem. Idem etiam dolorem saepe perpetiuntur, ne, si id non faciant, incidant in maiorem. Scaevola tribunus plebis ferret ad plebem vellentne de ea re quaeri.';
+
+        while (strlen($lorem) < $max) {
+            $lorem .= $lorem;
+        }
+
+        return substr($lorem, 0, strrpos($lorem, ' ')) . '.';
     }
 
     /**
@@ -166,7 +176,28 @@ class ModulesTest extends TestCase
             'parent_id' => 0,
             'medias' => [],
             'browsers' => [],
-            'blocks' => [],
+            'repeaters' => [],
+        ];
+    }
+
+    public function getUpdateAuthorWithBlock()
+    {
+        return $this->getUpdateAuthorData() + [
+            'blocks' => [
+                [
+                    'id' => ($this->block_id = rand(
+                        1570000000000,
+                        1579999999999
+                    )),
+                    'type' => 'a17-block-quote',
+                    'content' => [
+                        'quote' => ($this->block_quote = $this->fakeText()),
+                    ],
+                    'medias' => [],
+                    'browsers' => [],
+                    'blocks' => [],
+                ],
+            ],
             'repeaters' => [],
         ];
     }
@@ -209,10 +240,12 @@ class ModulesTest extends TestCase
         $this->assertStringContainsString('Languages', $this->content());
         $this->assertStringContainsString('Mine', $this->content());
         $this->assertStringContainsString('Add new', $this->content());
+        $this->assertStringContainsString('Publishers', $this->content());
     }
 
     public function testCanCreateAnAuthor()
     {
+        // Create author (name)
         $this->request(
             '/twill/personnel/authors',
             'POST',
@@ -227,6 +260,7 @@ class ModulesTest extends TestCase
 
         $this->assertCount(3, $authorTranslation->author->slugs);
 
+        // Edit author additional fields
         $this->request(
             "/twill/personnel/authors/{$authorTranslation->author->id}",
             'PUT',
@@ -238,6 +272,27 @@ class ModulesTest extends TestCase
         $this->assertEquals(
             $authorTranslation->author->birthday,
             $this->birthday
+        );
+
+        $authorTranslation->refresh();
+
+        $this->assertEquals(
+            $authorTranslation->description,
+            $this->description_en
+        );
+
+        // Add one block
+        $this->request(
+            "/twill/personnel/authors/{$authorTranslation->author->id}",
+            'PUT',
+            $this->getUpdateAuthorWithBlock()
+        )->assertStatus(200);
+
+        $this->assertEquals(1, $authorTranslation->author->blocks->count());
+
+        $this->assertEquals(
+            ['quote' => $this->block_quote],
+            $authorTranslation->author->blocks->first()->content
         );
     }
 }
