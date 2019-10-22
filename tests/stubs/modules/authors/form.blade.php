@@ -20,4 +20,6 @@
         'translated' => true,
         'type' => 'textarea'
     ])
+
+    @formField('block_editor')
 @stop

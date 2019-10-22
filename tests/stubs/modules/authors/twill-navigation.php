@@ -9,6 +9,10 @@ return [
                 'title' => 'Authors',
                 'module' => true,
             ],
+            'publishers' => [
+                'title' => 'Publishers',
+                'module' => true,
+            ],
         ],
     ],
 ];
