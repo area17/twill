@@ -36,7 +36,7 @@ class OauthRequest extends Request
         return [
             'provider' => [
                 'required',
-                Rule::in(config('twill.oauth.enabled', []))
+                Rule::in(config('twill.oauth.providers', []))
             ],
         ];
 
