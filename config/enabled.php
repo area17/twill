@@ -17,7 +17,7 @@ return [
     'users-image' => false,
     'site-link' => false,
     'settings' => true,
-    'google-login' => false,
+    'oauth-login' => false,
     'dashboard' => true,
     'search' => true,
     'users-description' => false,

@@ -195,6 +195,8 @@ class TwillServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/cloudfront.php', 'services');
         $this->mergeConfigFrom(__DIR__ . '/../config/dashboard.php', 'twill.dashboard');
         $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
+        $this->mergeConfigFrom(__DIR__ . '/../config/services.php', 'services');
+        $this->mergeConfigFrom(__DIR__ . '/../config/oauth.php', 'twill.oauth');
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\User;
+use A17\Twill\Http\Requests\Admin\OauthRequest;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Encryption\Encrypter;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\View\Factory as ViewFactory;
 use PragmaRX\Google2FA\Google2FA;
+use Socialite;
 
 class LoginController extends Controller
 {
@@ -153,4 +155,28 @@ class LoginController extends Controller
         ]);
 
     }
+
+    /**
+     * @param string $provider Socialite provider
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function redirectToProvider($provider, OauthRequest $request)
+    {
+
+        return Socialite::driver($provider)->redirect();
+
+    }
+
+    /**
+     * @param string $provider Socialite provider
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function handleProviderCallback($provider, OauthRequest $request)
+    {
+
+        $user = Socialite::driver($provider)->user();
+        // Implement logic to create a new user, login, and redirect
+
+    }
+
 }
