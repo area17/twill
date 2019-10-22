@@ -7,9 +7,10 @@ function stubs($dir = null)
 
 function read_file($path)
 {
-    return str_replace(
-        [' ', "\n", "\r", "\t"],
-        ['', '', '', ''],
-        file_get_contents($path)
-    );
+    return clean_file(file_get_contents($path));
+}
+
+function clean_file($file)
+{
+    return str_replace([' ', "\n", "\r", "\t"], ['', '', '', ''], $file);
 }

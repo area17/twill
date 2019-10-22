@@ -3,8 +3,8 @@
 namespace A17\Twill\Tests\Integration;
 
 use Illuminate\Support\Str;
-use A17\Twill\Models\Block;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Revisions\AuthorRevision;
 use App\Models\Translations\AuthorTranslation;
 
 class ModulesTest extends TestCase
@@ -56,7 +56,35 @@ class ModulesTest extends TestCase
 
         '{$stubs}/modules/authors/twill-navigation.php' =>
             '{$config}/twill-navigation.php',
+
+        '{$stubs}/modules/authors/site.blocks.quote.blade.php' =>
+            '{$resources}/views/site/blocks/quote.blade.php',
+
+        '{$stubs}/modules/authors/site.layouts.block.blade.php' =>
+            '{$resources}/views/site/layouts/block.blade.php',
     ];
+
+    private function loadConfig()
+    {
+        $config = require $this->makeFileName(
+            '{$stubs}/modules/authors/twill.php'
+        );
+
+        config(['twill' => $config + config('twill')]);
+    }
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->copyFiles($this->authorFiles);
+
+        $this->loadConfig();
+
+        $this->migrate();
+
+        $this->login();
+    }
 
     private function fakeText(int $max = 250)
     {
@@ -69,7 +97,7 @@ class ModulesTest extends TestCase
          */
 
         $lorem =
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Qualem igitur hominem natura inchoavit? Semovenda est igitur voluptas, non solum ut recta sequamini, sed etiam ut loqui deceat frugaliter. Hoc positum in Phaedro a Platone probavit Epicurus sensitque in omni disputatione id fieri oportere. Summum ením bonum exposuit vacuitatem doloris; Duo Reges: constructio interrete. Tubulo putas dicere? Primum cur ista res digna odio est, nisi quod est turpis? Sed erat aequius Triarium aliquid de dissensione nostra iudicare. Apud ceteros autem philosophos, qui quaesivit aliquid, tacet; Sed quot homines, tot sententiae; Eiuro, inquit adridens, iniquum, hac quidem de re; An eiusdem modi? Nam si beatus umquam fuisset, beatam vitam usque ad illum a Cyro extructum rogum pertulisset. Vestri haec verecundius, illi fortasse constantius. At miser, si in flagitiosa et vitiosa vita afflueret voluptatibus. Quo modo autem philosophus loquitur? Sed ne, dum huic obsequor, vobis molestus sim. Si ad corpus pertinentibus, rationes tuas te video compensare cum istis doloribus, non memoriam corpore perceptarum voluptatum; Stoici autem, quod finem bonorum in una virtute ponunt, similes sunt illorum; Summum ením bonum exposuit vacuitatem doloris; Proclivi currit oratio. Quid in isto egregio tuo officio et tanta fide-sic enim existimo-ad corpus refers? Satis est ad hoc responsum. Confecta res esset. Ac tamen hic mallet non dolere. Quare, quoniam de primis naturae commodis satis dietum est nunc de maioribus consequentibusque videamus. Nec vero sum nescius esse utilitatem in historia, non modo voluptatem. Idem etiam dolorem saepe perpetiuntur, ne, si id non faciant, incidant in maiorem. Scaevola tribunus plebis ferret ad plebem vellentne de ea re quaeri.';
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Qualem igitur hominem natura inchoavit? Semovenda est igitur voluptas, non solum ut recta sequamini, sed etiam ut loqui deceat frugaliter. Hoc positum in Phaedro a Platone probavit Epicurus sensitque in omni disputatione id fieri oportere. Summum enim bonum exposuit vacuitatem doloris; Duo Reges: constructio interrete. Tubulo putas dicere? Primum cur ista res digna odio est, nisi quod est turpis? Sed erat aequius Triarium aliquid de dissensione nostra iudicare. Apud ceteros autem philosophos, qui quaesivit aliquid, tacet; Sed quot homines, tot sententiae; Eiuro, inquit adridens, iniquum, hac quidem de re; An eiusdem modi? Nam si beatus umquam fuisset, beatam vitam usque ad illum a Cyro extructum rogum pertulisset. Vestri haec verecundius, illi fortasse constantius. At miser, si in flagitiosa et vitiosa vita afflueret voluptatibus. Quo modo autem philosophus loquitur? Sed ne, dum huic obsequor, vobis molestus sim. Si ad corpus pertinentibus, rationes tuas te video compensare cum istis doloribus, non memoriam corpore perceptarum voluptatum; Stoici autem, quod finem bonorum in una virtute ponunt, similes sunt illorum; Summum enim bonum exposuit vacuitatem doloris; Proclivi currit oratio. Quid in isto egregio tuo officio et tanta fide-sic enim existimo-ad corpus refers? Satis est ad hoc responsum. Confecta res esset. Ac tamen hic mallet non dolere. Quare, quoniam de primis naturae commodis satis dietum est nunc de maioribus consequentibusque videamus. Nec vero sum nescius esse utilitatem in historia, non modo voluptatem. Idem etiam dolorem saepe perpetiuntur, ne, si id non faciant, incidant in maiorem. Scaevola tribunus plebis ferret ad plebem vellentne de ea re quaeri.';
 
         while (strlen($lorem) < $max) {
             $lorem .= $lorem;
@@ -141,8 +169,8 @@ class ModulesTest extends TestCase
             ],
             'birthday' => ($this->birthday = now()->format('Y-m-d')),
             'bio' => [
-                'en' => ($this->bio_en = '[EN] ' . $this->fakeText(800)),
-                'fr' => ($this->bio_fr = '[FR] ' . $this->fakeText(800)),
+                'en' => ($this->bio_en = '[EN] ' . $this->fakeText(255)),
+                'fr' => ($this->bio_fr = '[FR] ' . $this->fakeText(255)),
                 'pt-BR' => '',
             ],
             'cmsSaveType' => 'save',
@@ -202,17 +230,6 @@ class ModulesTest extends TestCase
         ];
     }
 
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->copyFiles($this->authorFiles);
-
-        $this->migrate();
-
-        $this->login();
-    }
-
     public function testCanCopyFiles()
     {
         collect($this->authorFiles)->each(function ($destination) {
@@ -240,7 +257,6 @@ class ModulesTest extends TestCase
         $this->assertStringContainsString('Languages', $this->content());
         $this->assertStringContainsString('Mine', $this->content());
         $this->assertStringContainsString('Add new', $this->content());
-        $this->assertStringContainsString('Publishers', $this->content());
     }
 
     public function testCanCreateAnAuthor()
@@ -291,8 +307,68 @@ class ModulesTest extends TestCase
         $this->assertEquals(1, $authorTranslation->author->blocks->count());
 
         $this->assertEquals(
-            ['quote' => $this->block_quote],
+            $block_quote = ['quote' => $this->block_quote],
             $authorTranslation->author->blocks->first()->content
+        );
+
+        // Check if blocks are rendering
+        $this->assertEquals(
+            clean_file(json_encode($block_quote)),
+            clean_file($authorTranslation->author->renderBlocks())
+        );
+
+        // Get browser data
+        $this->request('/twill/personnel/authors/browser')->assertStatus(200);
+
+        $this->assertJson($this->content());
+
+        $data = json_decode($this->content(), true)['data'][0];
+
+        $this->assertEquals(
+            $data['edit'],
+            "http://twill.test/twill/personnel/authors/{$authorTranslation->author->id}/edit"
+        );
+        $this->assertEquals($data['endpointType'], 'App\Models\Author');
+
+        // Test author redirection to edit
+        $this->request(
+            "/twill/personnel/authors/{$authorTranslation->author->id}"
+        )->assertStatus(200);
+
+        $this->assertStringContainsString(
+            clean_file($this->description_en),
+            clean_file($this->content())
+        );
+
+        // Test preview
+
+        // Check revisions
+        $this->assertCount(3, $revisions = AuthorRevision::all());
+
+        // http://twill.test/twill/personnel/authors/restoreRevision/{id}
+    }
+
+    public function testCanViewPreview()
+    {
+        $data = [
+            'id' => 1,
+            'type' => 'a17-block-quote',
+            'content' => [
+                'quote' => ($quote = $this->fakeText(70)),
+            ],
+            'medias' => [],
+            'browsers' => [],
+            'blocks' => [],
+            'activeLanguage' => 'en',
+        ];
+
+        $this->request('/twill/blocks/preview', 'POST', $data)->assertStatus(
+            200
+        );
+
+        $this->assertStringContainsString(
+            clean_file(json_encode(['quote' => $quote])),
+            clean_file($this->content())
         );
     }
 }

@@ -247,21 +247,17 @@ abstract class TestCase extends OrchestraTestCase
             glob($this->getBasePath() . '/database/migrations/*')
         );
 
-        if (!file_exists($directory = twill_path('Http/Controllers'))) {
-            $this->files->makeDirectory($directory, 744, true);
-        }
-
-        if (!file_exists($directory = twill_path('Repositories'))) {
-            $this->files->makeDirectory($directory, 744, true);
-        }
-
-        if (
-            !file_exists(
-                $directory = twill_path('/../resources/views/admin/authors/')
-            )
-        ) {
-            $this->files->makeDirectory($directory, 744, true);
-        }
+        collect([
+            twill_path('Http/Controllers'),
+            twill_path('Repositories'),
+            twill_path('/../resources/views/admin/authors'),
+            twill_path('/../resources/views/site/blocks'),
+            twill_path('/../resources/views/site/layouts'),
+        ])->each(function ($directory) {
+            if (!file_exists($directory)) {
+                $this->files->makeDirectory($directory, 744, true);
+            }
+        });
     }
 
     /**
