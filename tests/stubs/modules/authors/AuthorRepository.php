@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use A17\Twill\Repositories\Behaviors\HandleTags;
 use A17\Twill\Repositories\Behaviors\HandleBlocks;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
 use A17\Twill\Repositories\Behaviors\HandleSlugs;
@@ -18,7 +19,8 @@ class AuthorRepository extends ModuleRepository
         HandleSlugs,
         HandleMedias,
         HandleFiles,
-        HandleRevisions;
+        HandleRevisions,
+        HandleTags;
 
     public function __construct(Author $model)
     {

@@ -19,9 +19,29 @@ class AuthorController extends ModuleController
         'bulkRestore' => true,
         'delete' => true,
         'bulkDelete' => true,
-        'reorder' => false,
+        'reorder' => true,
         'permalink' => true,
         'bulkEdit' => true,
         'editInModal' => false,
     ];
+
+    /*
+     * Available columns of the index view
+     */
+    protected $indexColumns = [
+        'name' => [
+            'field' => 'name',
+            'title' => 'Name',
+            'sort' => true,
+            'visible' => true,
+        ],
+
+        'birthday' => [
+            'field' => 'birthday',
+            'title' => 'Birth day',
+            'sort' => true,
+        ],
+    ];
+
+    protected $titleColumnKey = 'name';
 }

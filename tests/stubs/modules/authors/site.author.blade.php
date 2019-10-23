@@ -1,0 +1,1 @@
+Name: {{ $item->name }}
