@@ -22,5 +22,7 @@ if (config('twill.enabled.users-2fa')) {
     Route::post('login-2fa', 'LoginController@login2Fa')->name('login-2fa');
 }
 
-Route::get('login/oauth/redirect/{provider}', 'LoginController@redirectToProvider')->name('login.redirect');
-Route::get('login/oauth/callback/{provider}', 'LoginController@handleProviderCallback')->name('login.callback');
+if (config('twill.enabled.oauth-login')) {
+    Route::get('login/oauth/redirect/{provider}', 'LoginController@redirectToProvider')->name('login.redirect');
+    Route::get('login/oauth/callback/{provider}', 'LoginController@handleProviderCallback')->name('login.callback');
+}
