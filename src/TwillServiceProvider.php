@@ -206,6 +206,14 @@ class TwillServiceProvider extends ServiceProvider
      */
     private function publishMigrations()
     {
+        // New Process to publish migrations. All of them should be included
+
+        if (config('twill.enabled.oauth-login')) {
+            $this->loadMigrationsFrom(__DIR__ . '/../migrations/oauth');
+        }
+
+        // Old process to publish migrations
+
         $migrations = ['CreateTagsTables', 'CreateBlocksTable', 'CreateRelatedTable'];
 
         $optionalMigrations = [

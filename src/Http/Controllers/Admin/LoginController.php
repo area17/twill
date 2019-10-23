@@ -4,6 +4,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\User;
 use A17\Twill\Http\Requests\Admin\OauthRequest;
+use A17\Twill\Repositories\UserRepository;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Encryption\Encrypter;
@@ -171,11 +172,29 @@ class LoginController extends Controller
      * @param string $provider Socialite provider
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function handleProviderCallback($provider, OauthRequest $request)
+    public function handleProviderCallback($provider, OauthRequest $request, UserRepository $repository)
     {
 
-        $user = Socialite::driver($provider)->user();
-        // Implement logic to create a new user, login, and redirect
+        $oauthUser = Socialite::driver($provider)->user();
+
+        // If the user with that email exists
+        if ($repository->oauthUserExists($oauthUser)) {
+
+            // If that provider has been linked
+            if ($repository->oauthUserLinked($provider, $oauthUser)) {
+                $user = $repository->oauthUpdateProvider($provider, $oauthUser);
+                // Login user and redirect
+            } else {
+                // If not, redirect to a form to ask for a password to link
+                $request->session()->put('oauth:user', $oauthUser);
+                return $this->redirector->to(route('admin.login'));
+            }
+        } else {
+            // If the user doesn't exist, create it
+            $user = $repository->oauthCreateUser($oauthUser);
+
+            // Login user and redirect
+        }
 
     }
 

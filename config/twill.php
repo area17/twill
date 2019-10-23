@@ -52,6 +52,7 @@ return [
      */
     'users_table' => 'twill_users',
     'password_resets_table' => 'twill_password_resets',
+    'users_oauth_table' => 'twill_users_oauth',
 
     /*
     |--------------------------------------------------------------------------
