@@ -247,7 +247,12 @@ abstract class TestCase extends OrchestraTestCase
             glob($this->getBasePath() . '/database/migrations/*')
         );
 
+        $this->files->deleteDirectory(twill_path('/../resources/views/site'));
+
         collect([
+            twill_path('/../resources/views'),
+            twill_path('/../resources/views/admin'),
+            twill_path('/../resources/views/site'),
             twill_path('Http/Controllers'),
             twill_path('Repositories'),
             twill_path('/../resources/views/admin/authors'),
@@ -255,7 +260,7 @@ abstract class TestCase extends OrchestraTestCase
             twill_path('/../resources/views/site/layouts'),
         ])->each(function ($directory) {
             if (!file_exists($directory)) {
-                $this->files->makeDirectory($directory, 744, true);
+                $this->files->makeDirectory($directory, 0755, true);
             }
         });
     }

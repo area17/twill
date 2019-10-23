@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use App\Models\Author;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Revisions\AuthorRevision;
@@ -21,8 +22,10 @@ class ModulesTest extends TestCase
     protected $birthday;
     protected $block_id;
     protected $block_quote;
+    protected $translation;
+    protected $author;
 
-    private $authorFiles = [
+    private $allFiles = [
         '{$stubs}/modules/authors/2019_10_18_193753_create_authors_tables.php' =>
             '{$database}/migrations/2019_10_18_193753_create_authors_tables.php',
 
@@ -64,6 +67,128 @@ class ModulesTest extends TestCase
             '{$resources}/views/site/layouts/block.blade.php',
     ];
 
+    protected function addBlock(): void
+    {
+        // Add one block
+        $this->request(
+            "/twill/personnel/authors/{$this->author->id}",
+            'PUT',
+            $this->getUpdateAuthorWithBlock()
+        )->assertStatus(200);
+
+        $this->assertEquals(1, $this->author->blocks->count());
+
+        $this->assertEquals(
+            $block_quote = ['quote' => $this->block_quote],
+            $this->author->blocks->first()->content
+        );
+
+        // Check if blocks are rendering
+        $this->assertEquals(
+            clean_file(json_encode($block_quote)),
+            clean_file($this->author->renderBlocks())
+        );
+
+        // Get browser data
+        $this->request('/twill/personnel/authors/browser')->assertStatus(200);
+
+        $this->assertJson($this->content());
+
+        $data = json_decode($this->content(), true)['data'][0];
+
+        $this->assertEquals(
+            $data['edit'],
+            "http://twill.test/twill/personnel/authors/{$this->author->id}/edit"
+        );
+
+        $this->assertEquals($data['endpointType'], 'App\Models\Author');
+    }
+
+    protected function assertSomethingWrongHappened()
+    {
+        $this->assertStringContainsString(
+            'Something wrong happened!',
+            $this->content()
+        );
+    }
+
+    protected function assertNothingWrongHappened()
+    {
+        $this->assertStringNotContainsString(
+            'Something wrong happened!',
+            $this->content()
+        );
+    }
+
+    protected function createAuthor($count = 1)
+    {
+        foreach (range(1, $count) as $c) {
+            $this->request(
+                '/twill/personnel/authors',
+                'POST',
+                $this->getCreateAuthorData()
+            )->assertStatus(200);
+        }
+
+        $this->translation = AuthorTranslation::where('name', $this->name_en)
+            ->where('locale', 'en')
+            ->first();
+
+        $this->author = $this->translation->author;
+
+        $this->assertNotNull($this->translation);
+
+        $this->assertCount(3, $this->author->slugs);
+    }
+
+    protected function destroyAuthor()
+    {
+        $this->createAuthor();
+
+        $this->assertNull($this->author->deleted_at);
+
+        $this->request(
+            "/twill/personnel/authors/{$this->author->id}",
+            'DELETE',
+            $this->getUpdateAuthorWithBlock()
+        )->assertStatus(200);
+
+        $this->assertNothingWrongHappened();
+
+        $this->author->refresh();
+
+        $this->assertNotNull($this->author->deleted_at);
+
+        $this->request(
+            '/twill/personnel/authors/9999999',
+            'DELETE',
+            $this->getUpdateAuthorWithBlock()
+        )->assertStatus(404);
+    }
+
+    protected function editoAuthor(): void
+    {
+        // Edit author additional fields
+        $this->request(
+            "/twill/personnel/authors/{$this->author->id}",
+            'PUT',
+            $this->getUpdateAuthorData()
+        )->assertStatus(200);
+
+        $this->assertNothingWrongHappened();
+
+        $this->author->refresh();
+
+        $this->assertEquals($this->author->birthday, $this->birthday);
+
+        $this->translation->refresh();
+
+        $this->assertEquals(
+            $this->translation->description,
+            $this->description_en
+        );
+    }
+
     private function loadConfig()
     {
         $config = require $this->makeFileName(
@@ -77,7 +202,7 @@ class ModulesTest extends TestCase
     {
         parent::setUp();
 
-        $this->copyFiles($this->authorFiles);
+        $this->copyFiles($this->allFiles);
 
         $this->loadConfig();
 
@@ -91,7 +216,7 @@ class ModulesTest extends TestCase
         /*
          *  #### PHP 7.4 && PHP 8
          *  ## Faker is not yet compatible
-         *  ## https://github.com/fzaninotto/Faker/pull/1816/files
+         *  ## https://github.com/fzaninotto/Faker/pull/1816/allFiles
          *
          *   As soon as it is fixed, replace it by $this->faker->text($x)
          */
@@ -232,7 +357,7 @@ class ModulesTest extends TestCase
 
     public function testCanCopyFiles()
     {
-        collect($this->authorFiles)->each(function ($destination) {
+        collect($this->allFiles)->each(function ($destination) {
             $this->assertFileExists($this->makeFileName($destination));
         });
     }
@@ -261,94 +386,100 @@ class ModulesTest extends TestCase
 
     public function testCanCreateAnAuthor()
     {
-        // Create author (name)
+        $this->createAuthor();
+    }
+
+    public function testCanEditAuthor()
+    {
+        $this->createAuthor();
+
+        $this->editoAuthor();
+    }
+
+    public function testCanAddBlock()
+    {
+        $this->createAuthor();
+
+        $this->editoAuthor();
+
+        $this->addBlock();
+    }
+
+    public function testCanRedirectAuthorsToEdit()
+    {
+        $this->createAuthor();
+
         $this->request(
-            '/twill/personnel/authors',
-            'POST',
-            $this->getCreateAuthorData()
-        )->assertStatus(200);
-
-        $authorTranslation = AuthorTranslation::where('name', $this->name_en)
-            ->where('locale', 'en')
-            ->first();
-
-        $this->assertNotNull($authorTranslation);
-
-        $this->assertCount(3, $authorTranslation->author->slugs);
-
-        // Edit author additional fields
-        $this->request(
-            "/twill/personnel/authors/{$authorTranslation->author->id}",
-            'PUT',
-            $this->getUpdateAuthorData()
-        )->assertStatus(200);
-
-        $authorTranslation->author->refresh();
-
-        $this->assertEquals(
-            $authorTranslation->author->birthday,
-            $this->birthday
-        );
-
-        $authorTranslation->refresh();
-
-        $this->assertEquals(
-            $authorTranslation->description,
-            $this->description_en
-        );
-
-        // Add one block
-        $this->request(
-            "/twill/personnel/authors/{$authorTranslation->author->id}",
-            'PUT',
-            $this->getUpdateAuthorWithBlock()
-        )->assertStatus(200);
-
-        $this->assertEquals(1, $authorTranslation->author->blocks->count());
-
-        $this->assertEquals(
-            $block_quote = ['quote' => $this->block_quote],
-            $authorTranslation->author->blocks->first()->content
-        );
-
-        // Check if blocks are rendering
-        $this->assertEquals(
-            clean_file(json_encode($block_quote)),
-            clean_file($authorTranslation->author->renderBlocks())
-        );
-
-        // Get browser data
-        $this->request('/twill/personnel/authors/browser')->assertStatus(200);
-
-        $this->assertJson($this->content());
-
-        $data = json_decode($this->content(), true)['data'][0];
-
-        $this->assertEquals(
-            $data['edit'],
-            "http://twill.test/twill/personnel/authors/{$authorTranslation->author->id}/edit"
-        );
-        $this->assertEquals($data['endpointType'], 'App\Models\Author');
-
-        // Test author redirection to edit
-        $this->request(
-            "/twill/personnel/authors/{$authorTranslation->author->id}"
+            "/twill/personnel/authors/{$this->author->id}"
         )->assertStatus(200);
 
         $this->assertStringContainsString(
             clean_file($this->description_en),
             clean_file($this->content())
         );
-
-        // Test preview
-
-        // Check revisions
-        $this->assertCount(3, $revisions = AuthorRevision::all());
-
-        // http://twill.test/twill/personnel/authors/restoreRevision/{id}
     }
 
-    public function testCanViewPreview()
+    public function testCanStartRestoringRevision()
+    {
+        $this->createAuthor();
+        $this->editoAuthor();
+        $this->addBlock();
+
+        // Check revisions
+        $this->assertCount(3, AuthorRevision::all());
+
+        // Restore revision 1
+        $first = AuthorRevision::first();
+        $last = AuthorRevision::all()->last();
+
+        $this->request(
+            "/twill/personnel/authors/restoreRevision/{$first->id}",
+            'GET',
+            ['revisionId' => $last->id]
+        )->assertStatus(200);
+
+        $this->assertStringContainsString(
+            'You are currently editing an older revision of this content',
+            $this->content()
+        );
+    }
+
+    public function testCanPublishAuthor()
+    {
+        $this->createAuthor();
+
+        // Publishing
+        $this->assertEquals('0', $this->author->published);
+
+        $this->request('/twill/personnel/authors/publish', 'PUT', [
+            'id' => $this->author->id,
+            'active' => false,
+        ])->assertStatus(200);
+
+        $this->assertNothingWrongHappened();
+
+        $this->author->refresh();
+
+        $this->assertEquals('1', $this->author->published);
+    }
+
+    public function testCanDisplayErrorWhenPublishHasWrongData()
+    {
+        $this->request('/twill/personnel/authors/publish', 'PUT')->assertStatus(
+            200
+        );
+
+        $this->assertSomethingWrongHappened();
+    }
+
+    public function testCanRaiseHttpNotFoundOnAnEmptyRestoreRevision()
+    {
+        $this->request(
+            '/twill/personnel/authors/restoreRevision/1'
+        )->assertStatus(404);
+    }
+
+    public function testCanPreviewBlock()
     {
         $data = [
             'id' => 1,
@@ -369,6 +500,149 @@ class ModulesTest extends TestCase
         $this->assertStringContainsString(
             clean_file(json_encode(['quote' => $quote])),
             clean_file($this->content())
+        );
+    }
+
+    public function testCanPreviewAuthor()
+    {
+        $this->createAuthor();
+
+        $this->request(
+            "/twill/personnel/authors/preview/{$this->author->id}",
+            'PUT'
+        )->assertStatus(200);
+
+        $this->assertStringContainsString(
+            'Previews have not been configured on this Twill module, please let the development team know about it.',
+            $this->content()
+        );
+
+        $this->files->copy(
+            $this->makeFileName(
+                '{$stubs}/modules/authors/site.author.blade.php'
+            ),
+            $this->makeFileName('{$resources}/views/site/author.blade.php')
+        );
+
+        $this->request(
+            "/twill/personnel/authors/preview/{$this->author->id}",
+            'PUT',
+            ['activeLanguage' => 'en']
+        )->assertStatus(200);
+
+        $this->assertStringNotContainsString(
+            'Previews have not been configured on this Twill module, please let the development team know about it.',
+            $this->content()
+        );
+    }
+
+    public function testCanDestroyAuthor()
+    {
+        $this->destroyAuthor();
+    }
+
+    public function testCanRestoreAuthor()
+    {
+        $this->destroyAuthor();
+
+        $this->assertNotNull($this->author->deleted_at);
+
+        $this->request('/twill/personnel/authors/restore', 'PUT', [
+            'id' => $this->author->id,
+        ])->assertStatus(200);
+
+        $this->assertNothingWrongHappened();
+
+        $this->author->refresh();
+
+        $this->assertNull($this->author->deleted_at);
+    }
+
+    public function testCanReturnErrorWhenRestoringWrongAuthor()
+    {
+        $this->request('/twill/personnel/authors/restore', 'PUT', [
+            'id' => 999999,
+        ])->assertStatus(200);
+
+        $this->assertSomethingWrongHappened();
+    }
+
+    public function testCanFeatureAuthor()
+    {
+        $this->createAuthor(2);
+
+        $this->assertFalse($this->author->featured);
+
+        $this->request('/twill/personnel/authors/feature', 'PUT', [
+            'id' => $this->author->id,
+            'active' => false,
+        ])->assertStatus(200);
+
+        $this->assertNothingWrongHappened();
+
+        $this->author->refresh();
+
+        $this->assertTrue($this->author->featured);
+    }
+
+    public function testCanReturnErrorWhenFeaturingWrongAuthor()
+    {
+        $this->request('/twill/personnel/authors/feature', 'PUT', [
+            'id' => 999999,
+            'active' => true,
+        ])->assertStatus(404);
+    }
+
+    public function testCanChangeOrder()
+    {
+        $this->createAuthor(2);
+
+        $author1 = Author::ordered()
+            ->get()
+            ->first();
+
+        $author2 = Author::ordered()
+            ->get()
+            ->first();
+
+        $this->assertEquals(1, $author1->position);
+
+        $this->request('/twill/personnel/authors/reorder', 'POST', [
+            'ids' => [$author1->id, $author2->id],
+        ])->assertStatus(200);
+
+        $this->assertNothingWrongHappened();
+
+        $author1->refresh();
+
+        $this->assertEquals(2, $author1->position);
+    }
+
+    public function testCanReturnWhenReorderingWrongAuthor()
+    {
+        $this->request('/twill/personnel/authors/reorder', 'POST', [
+            'ids' => [1, 2],
+        ])->assertStatus(500);
+    }
+
+    public function testCanGetTags()
+    {
+        $this->request('/twill/personnel/authors/tags')->assertStatus(200);
+
+        $this->assertJson($this->content());
+    }
+
+    public function testCanShowIndex()
+    {
+        $this->createAuthor(5);
+
+        $this->ajax('/twill/personnel/authors')->assertStatus(200);
+
+        $this->assertJson($this->content());
+
+        $this->assertEquals(
+            5,
+            count(json_decode($this->content(), true)['tableData'])
         );
     }
 }
