@@ -18,10 +18,11 @@ class CreateTwillUsersOauthTable extends Migration
 
         if (!Schema::hasTable($twillOauthTable)) {
             Schema::create($twillOauthTable, function (Blueprint $table) use ($twillUsersTable) {
+                $table->increments('id');
+                $table->timestamps();
                 $table->string('token')->index();
                 $table->string('provider')->index();
                 $table->string('oauth_id')->index();
-                $table->timestamp('created_at')->nullable();
                 $table->integer('user_id')->unsigned()->index();
                 $table->foreign('user_id', 'fk_twill_users_id')->references('id')->on($twillUsersTable)->onDelete('cascade');
             });
