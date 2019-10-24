@@ -496,4 +496,20 @@ abstract class TestCase extends OrchestraTestCase
     {
         return $this->crawler->getContent();
     }
+
+    public function assertSee($text)
+    {
+        $this->assertStringContainsString(
+            clean_file($text),
+            clean_file($this->content())
+        );
+    }
+
+    public function assertDontSee($text)
+    {
+        $this->assertStringNotContainsString(
+            clean_file($text),
+            clean_file($this->content())
+        );
+    }
 }

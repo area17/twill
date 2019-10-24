@@ -13,18 +13,18 @@ class LoginTest extends TestCase
 
         $this->assertSame('http://twill.test/twill/login', url()->full());
 
-        $this->assertStringContainsString('Forgot password', $this->content());
+        $this->assertSee('Forgot password');
     }
 
     public function testCanLogin()
     {
         $this->login();
 
-        $this->assertStringContainsString('Media Library', $this->content());
+        $this->assertSee('Media Library');
 
-        $this->assertStringContainsString('Settings', $this->content());
+        $this->assertSee('Settings');
 
-        $this->assertStringContainsString('Logout', $this->content());
+        $this->assertSee('Logout');
     }
 
     public function testCanLogout()
@@ -33,7 +33,7 @@ class LoginTest extends TestCase
 
         $this->request('/twill/logout');
 
-        $this->assertStringContainsString('Forgot password', $this->content());
+        $this->assertSee('Forgot password');
     }
 
     public function testGoogle2FA()
@@ -46,19 +46,13 @@ class LoginTest extends TestCase
 
         $this->login();
 
-        $this->assertStringContainsString(
-            'One-time password',
-            $this->content()
-        );
+        $this->assertSee('One-time password');
 
         $this->request('/twill/login-2fa', 'POST', [
             'verify-code' => 'INVALID CODE',
         ]);
 
-        $this->assertStringContainsString(
-            'Your one time password is invalid.',
-            $this->content()
-        );
+        $this->assertSee('Your one time password is invalid.');
 
         $this->request('/twill/login-2fa', 'POST', [
             'verify-code' => (new Google2FA())->getCurrentOtp(
@@ -66,6 +60,6 @@ class LoginTest extends TestCase
             ),
         ])->assertStatus(200);
 
-        $this->assertStringContainsString('Media Library', $this->content());
+        $this->assertSee('Media Library');
     }
 }

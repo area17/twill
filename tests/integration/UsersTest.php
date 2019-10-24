@@ -10,7 +10,7 @@ class UsersTest extends TestCase
     {
         $this->request('/twill')->assertStatus(200);
 
-        $this->assertStringContainsString('Admin', $this->content());
+        $this->assertSee('Admin');
 
         $user = $this->createUser();
 
@@ -18,7 +18,7 @@ class UsersTest extends TestCase
             200
         );
 
-        $this->assertStringContainsString(e($user->name), $this->content());
+        $this->assertSee(e($user->name));
 
         $this->assertEquals($user->id, session()->get('impersonate'));
 
@@ -113,7 +113,7 @@ class UsersTest extends TestCase
 
         $this->request("/twill/users/{$user->id}/edit")->assertStatus(200);
 
-        $this->assertStringContainsString($email, $this->content());
+        $this->assertSee($email);
     }
 
     public function testCanImpersonateUser()

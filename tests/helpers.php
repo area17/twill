@@ -12,5 +12,9 @@ function read_file($path)
 
 function clean_file($file)
 {
-    return str_replace([' ', "\n", "\r", "\t"], ['', '', '', ''], $file);
+    return str_replace(
+        [' ', "\n", "\r", "\t"],
+        ['*', '', '', ''],
+        preg_replace('!\s+!', ' ', $file)
+    );
 }
