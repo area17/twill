@@ -44,9 +44,9 @@ class PasswordsTest extends TestCase
 
         $this->request($resetUrl);
 
-        $this->assertStringContainsString('Reset password', $this->content());
+        $this->assertSee('Reset password');
 
-        $this->assertStringContainsString('Confirm password', $this->content());
+        $this->assertSee('Confirm password');
     }
 
     public function testNotificationsAreFaked()
@@ -58,12 +58,9 @@ class PasswordsTest extends TestCase
     {
         $this->request('/twill/password/reset')->assertStatus(200);
 
-        $this->assertStringContainsString('Reset password', $this->content());
+        $this->assertSee('Reset password');
 
-        $this->assertStringContainsString(
-            'Send password reset link',
-            $this->content()
-        );
+        $this->assertSee('Send password reset link');
     }
 
     public function testCanResetPassword()
@@ -78,10 +75,7 @@ class PasswordsTest extends TestCase
             'token' => Notification::token(),
         ])->assertStatus(200);
 
-        $this->assertStringContainsString(
-            'Your password has been reset!',
-            $this->content()
-        );
+        $this->assertSee('Your password has been reset!');
     }
 
     public function testCanExpireResetPasswordToken()
@@ -98,9 +92,8 @@ class PasswordsTest extends TestCase
             'token' => Notification::token(),
         ]);
 
-        $this->assertStringContainsString(
-            'Your password reset token has expired or could not be found, please retry.',
-            $this->content()
+        $this->assertSee(
+            'Your password reset token has expired or could not be found, please retry.'
         );
     }
 }

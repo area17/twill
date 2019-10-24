@@ -85,7 +85,7 @@ class ModulesTest extends TestCase
         // Check if blocks are rendering
         $this->assertEquals(
             clean_file(json_encode($block_quote)),
-            clean_file($this->author->renderBlocks())
+            clean_file(trim($this->author->renderBlocks()))
         );
 
         // Get browser data
@@ -105,18 +105,12 @@ class ModulesTest extends TestCase
 
     protected function assertSomethingWrongHappened()
     {
-        $this->assertStringContainsString(
-            'Something wrong happened!',
-            $this->content()
-        );
+        $this->assertSee('Something wrong happened!');
     }
 
     protected function assertNothingWrongHappened()
     {
-        $this->assertStringNotContainsString(
-            'Something wrong happened!',
-            $this->content()
-        );
+        $this->assertDontSee('Something wrong happened!');
     }
 
     protected function createAuthor($count = 1)
@@ -378,14 +372,14 @@ class ModulesTest extends TestCase
     {
         $this->request('/twill');
 
-        $this->assertStringContainsString('Personnel', $this->content());
+        $this->assertSee('Personnel');
 
         $this->request('/twill/personnel/authors');
 
-        $this->assertStringContainsString('Name', $this->content());
-        $this->assertStringContainsString('Languages', $this->content());
-        $this->assertStringContainsString('Mine', $this->content());
-        $this->assertStringContainsString('Add new', $this->content());
+        $this->assertSee('Name');
+        $this->assertSee('Languages');
+        $this->assertSee('Mine');
+        $this->assertSee('Add new');
     }
 
     public function testCanCreateAnAuthor()
@@ -417,10 +411,7 @@ class ModulesTest extends TestCase
             "/twill/personnel/authors/{$this->author->id}"
         )->assertStatus(200);
 
-        $this->assertStringContainsString(
-            clean_file($this->description_en),
-            clean_file($this->content())
-        );
+        $this->assertSee($this->description_en);
     }
 
     public function testCanStartRestoringRevision()
@@ -442,9 +433,8 @@ class ModulesTest extends TestCase
             ['revisionId' => $last->id]
         )->assertStatus(200);
 
-        $this->assertStringContainsString(
-            'You are currently editing an older revision of this content',
-            $this->content()
+        $this->assertSee(
+            'You are currently editing an older revision of this content'
         );
     }
 
@@ -501,10 +491,7 @@ class ModulesTest extends TestCase
             200
         );
 
-        $this->assertStringContainsString(
-            clean_file(json_encode(['quote' => $quote])),
-            clean_file($this->content())
-        );
+        $this->assertSee(json_encode(['quote' => $quote]));
     }
 
     public function testCanPreviewAuthor()
@@ -516,9 +503,8 @@ class ModulesTest extends TestCase
             'PUT'
         )->assertStatus(200);
 
-        $this->assertStringContainsString(
-            'Previews have not been configured on this Twill module, please let the development team know about it.',
-            $this->content()
+        $this->assertSee(
+            'Previews have not been configured on this Twill module, please let the development team know about it.'
         );
 
         $this->files->copy(
@@ -534,9 +520,8 @@ class ModulesTest extends TestCase
             ['activeLanguage' => 'en']
         )->assertStatus(200);
 
-        $this->assertStringNotContainsString(
-            'Previews have not been configured on this Twill module, please let the development team know about it.',
-            $this->content()
+        $this->assertDontSee(
+            'Previews have not been configured on this Twill module, please let the development team know about it.'
         );
     }
 
@@ -654,5 +639,21 @@ class ModulesTest extends TestCase
             5,
             count(json_decode($this->content(), true)['tableData'])
         );
+    }
+
+    public function testCanShowEditForm()
+    {
+        $this->createAuthor();
+        $this->editAuthor();
+
+        $this->request(
+            "/twill/personnel/authors/{$this->author->id}/edit"
+        )->assertStatus(200);
+
+        $this->assertSee("label: 'Description'");
+        $this->assertSee("label: 'Bio'");
+        $this->assertSee($this->name_en);
+        $this->assertSee($this->description_en);
+        $this->assertSee($this->bio_en);
     }
 }
