@@ -67,9 +67,8 @@ class ModulesTest extends TestCase
             '{$resources}/views/site/layouts/block.blade.php',
     ];
 
-    protected function addBlock(): void
+    protected function addBlock()
     {
-        // Add one block
         $this->request(
             "/twill/personnel/authors/{$this->author->id}",
             'PUT',
@@ -166,9 +165,8 @@ class ModulesTest extends TestCase
         )->assertStatus(404);
     }
 
-    protected function editoAuthor(): void
+    protected function editAuthor()
     {
-        // Edit author additional fields
         $this->request(
             "/twill/personnel/authors/{$this->author->id}",
             'PUT',
@@ -184,9 +182,13 @@ class ModulesTest extends TestCase
         $this->translation->refresh();
 
         $this->assertEquals(
-            $this->translation->description,
-            $this->description_en
+            $this->description_en,
+            $this->translation->description
         );
+
+        $this->assertEquals($this->bio_en, $this->translation->bio);
+
+        $this->assertTrue($this->translation->active);
     }
 
     private function loadConfig()
@@ -219,6 +221,8 @@ class ModulesTest extends TestCase
          *  ## https://github.com/fzaninotto/Faker/pull/1816/allFiles
          *
          *   As soon as it is fixed, replace it by $this->faker->text($x)
+         *
+         *  TODO
          */
 
         $lorem =
@@ -393,14 +397,14 @@ class ModulesTest extends TestCase
     {
         $this->createAuthor();
 
-        $this->editoAuthor();
+        $this->editAuthor();
     }
 
     public function testCanAddBlock()
     {
         $this->createAuthor();
 
-        $this->editoAuthor();
+        $this->editAuthor();
 
         $this->addBlock();
     }
@@ -422,7 +426,7 @@ class ModulesTest extends TestCase
     public function testCanStartRestoringRevision()
     {
         $this->createAuthor();
-        $this->editoAuthor();
+        $this->editAuthor();
         $this->addBlock();
 
         // Check revisions
@@ -620,6 +624,12 @@ class ModulesTest extends TestCase
 
     public function testCanReturnWhenReorderingWrongAuthor()
     {
+        /**
+         * Should not return Error 500
+         *
+         * TODO
+         */
+
         $this->request('/twill/personnel/authors/reorder', 'POST', [
             'ids' => [1, 2],
         ])->assertStatus(500);

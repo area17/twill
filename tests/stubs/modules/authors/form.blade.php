@@ -1,6 +1,11 @@
 @extends('twill::layouts.form')
 
 @section('contentFields')
+    @formField('medias', [
+        'name' => 'avatar',
+        'label' => 'Avatar',
+    ])
+
     @formField('input', [
         'name' => 'description',
         'label' => 'Description',

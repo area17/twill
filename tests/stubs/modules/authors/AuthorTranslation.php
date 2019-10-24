@@ -7,7 +7,9 @@ use A17\Twill\Models\Model;
 
 class AuthorTranslation extends Model
 {
-    protected $fillable = ['name', 'description', 'active', 'locale'];
+    protected $fillable = ['name', 'description', 'bio', 'active', 'locale'];
+
+    protected $casts = ['active' => 'boolean'];
 
     public function author()
     {
