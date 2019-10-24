@@ -23,9 +23,12 @@ class CreateAuthorsTables extends Migration
             // Featured
             $table->boolean('featured')->default(false);
 
+            // Public
+            $table->boolean('public')->default(false);
+
             // add those 2 colums to enable publication timeframe fields (you can use publish_start_date only if you don't need to provide the ability to specify an end date)
-            // $table->timestamp('publish_start_date')->nullable();
-            // $table->timestamp('publish_end_date')->nullable();
+            $table->timestamp('publish_start_date')->nullable();
+            $table->timestamp('publish_end_date')->nullable();
 
             // use this column with the HasPosition trait
             $table

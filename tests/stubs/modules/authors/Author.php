@@ -32,9 +32,9 @@ class Author extends Model implements Sortable
         'birthday',
         'featured',
         'position',
-        // 'public',
-        // 'publish_start_date',
-        // 'publish_end_date',
+        'public',
+        'publish_start_date',
+        'publish_end_date',
     ];
 
     protected $casts = [

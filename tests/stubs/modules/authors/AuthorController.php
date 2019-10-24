@@ -25,10 +25,16 @@ class AuthorController extends ModuleController
         'editInModal' => false,
     ];
 
-    /*
-     * Available columns of the index view
-     */
     protected $indexColumns = [
+        'avatar' => [
+            'thumb' => true,
+
+            'variant' => [
+                'role' => 'featured',
+                'crop' => 'default',
+            ],
+        ],
+
         'name' => [
             'field' => 'name',
             'title' => 'Name',
