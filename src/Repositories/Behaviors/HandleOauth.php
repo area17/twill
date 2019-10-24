@@ -6,40 +6,64 @@ trait HandleOauth
 {
 
     /**
-     * @param $user
-     * @return boolean
+     * @param $oauthUser
+     * @return A17\Twill\Models\User
      */
-    public function oauthUserExists($user)
+    public function oauthUser($oauthUser)
     {
-        return $this->model->whereEmail($user->email)->exists();
+        return $this->model->whereEmail($oauthUser->email)->first();
     }
 
     /**
-     * @param $user
+     * @param $oauthUser
+     * @param $provider
      * @return boolean
      */
-    public function oauthUserLinked($user)
+    public function oauthIsUserLinked($oauthUser, $provider)
     {
-        return true;
+        $user = $this->model->whereEmail($oauthUser->email)->first();
+
+        return $user->providers()
+            ->where(['provider' => $provider, 'oauth_id' => $oauthUser->id])
+            ->exists();
     }
 
     /**
-     * @param $user
-     * @return boolean
+     * @param $oauthUser
+     * @param $provider
+     * @return A17\Twill\Models\User
      */
-    public function oauthUpdateProvider($user)
+    public function oauthUpdateProvider($oauthUser, $provider)
     {
-        return true;
+        $user = $this->model->whereEmail($oauthUser->email)->first();
+        $provider = $user->providers()
+            ->where(['provider' => $provider, 'oauth_id' => $oauthUser->id])
+            ->first();
+
+        $provider->token = $oauthUser->token;
+        $provider->save();
+
+        return $user;
     }
 
     /**
-     * @param $user
-     * @return boolean
+     * @param $oauthUser
+     * @return A17\Twill\Models\User
      */
-    public function oauthCreateUser($user)
+    public function oauthCreateUser($oauthUser)
     {
-        // Create the user, link it with it's social profile)
-        return true;
+
+        $user = $this->model->firstOrNew([
+            'name' => $oauthUser->name,
+            'email' => $oauthUser->email,
+            'role' => 'VIEWONLY',
+            'published' => true,
+        ]);
+
+        $user->save();
+
+        return $user;
+
     }
 
 }

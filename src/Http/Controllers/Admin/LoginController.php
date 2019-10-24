@@ -172,28 +172,53 @@ class LoginController extends Controller
      * @param string $provider Socialite provider
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function handleProviderCallback($provider, OauthRequest $request, UserRepository $repository)
+    public function handleProviderCallback($provider, OauthRequest $request)
     {
 
         $oauthUser = Socialite::driver($provider)->user();
+        $repository = app(UserRepository::class);
 
         // If the user with that email exists
-        if ($repository->oauthUserExists($oauthUser)) {
+        if ($user = $repository->oauthUser($oauthUser)) {
 
             // If that provider has been linked
-            if ($repository->oauthUserLinked($provider, $oauthUser)) {
-                $user = $repository->oauthUpdateProvider($provider, $oauthUser);
-                // Login user and redirect
+            if ($repository->oauthIsUserLinked($oauthUser, $provider)) {
+                $user = $repository->oauthUpdateProvider($oauthUser, $provider);
+
+                // Login and redirect
+                $this->authManager->guard('twill_users')->login($user);
+                return $this->redirector->intended($this->redirectTo);
             } else {
-                // If not, redirect to a form to ask for a password to link
-                $request->session()->put('oauth:user', $oauthUser);
-                return $this->redirector->to(route('admin.login'));
+                $user->LinkProvider($oauthUser, $provider);
+
+                // Login and redirect
+                $this->authManager->guard('twill_users')->login($user);
+                return  $this->redirector->intended($this->redirectTo);
+
+                // TODO: IMPLEMENT THIS FLOW
+                // if ($user->password) {
+                //     // If the user has a password then redirect to a form to ask for it
+                //     // before linking an oauth account to that email
+
+                //     // $request->session()->put('oauth:user_db', $user);
+                //     // $request->session()->put('oauth:user', $oauthUser);
+                //     // return $this->redirector->to(route('admin.login.requestPassword'));
+                // } else {
+                //     $user->LinkProvider($oauthUser, $provider);
+
+                //     // Login and redirect
+                //     $this->authManager->guard('twill_users')->login($user);
+                //     return  $this->redirector->intended($this->redirectTo);
+                // }
             }
         } else {
             // If the user doesn't exist, create it
             $user = $repository->oauthCreateUser($oauthUser);
+            $user->LinkProvider($oauthUser, $provider);
 
-            // Login user and redirect
+            // Login and redirect
+            $this->authManager->guard('twill_users')->login($user);
+            return $this->redirector->intended($this->redirectTo);
         }
 
     }
