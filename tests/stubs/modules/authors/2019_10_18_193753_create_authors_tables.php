@@ -1,5 +1,6 @@
 <?php
 
+use Kalnoy\Nestedset\NestedSet;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
@@ -57,13 +58,35 @@ class CreateAuthorsTables extends Migration
         Schema::create('author_revisions', function (Blueprint $table) {
             createDefaultRevisionsTableFields($table, 'author');
         });
+
+        Schema::create('author_categories', function (Blueprint $table) {
+            $table->string('name')->nullable();
+
+            // $table->nestedSet(); /// TODO /// This is not working inside tests
+
+            NestedSet::columns($table);
+        });
     }
 
     public function down()
     {
+        /**
+         * BUG in the nestedset package
+         *
+         * TODO
+         */
+        //        Schema::table('author_categories', function (Blueprint $table) {
+        //            $table->dropNestedSet();
+        //        });
+
+        Schema::dropIfExists('author_categories');
+
         Schema::dropIfExists('author_revisions');
+
         Schema::dropIfExists('author_translations');
+
         Schema::dropIfExists('author_slugs');
+
         Schema::dropIfExists('authors');
     }
 }
