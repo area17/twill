@@ -189,27 +189,21 @@ class LoginController extends Controller
                 $this->authManager->guard('twill_users')->login($user);
                 return $this->redirector->intended($this->redirectTo);
             } else {
-                $user->LinkProvider($oauthUser, $provider);
+                if ($user->password) {
+                    // If the user has a password then redirect to a form to ask for it
+                    // before linking a provider to that email
 
-                // Login and redirect
-                $this->authManager->guard('twill_users')->login($user);
-                return  $this->redirector->intended($this->redirectTo);
+                    $request->session()->put('oauth:user_id', $user->id);
+                    $request->session()->put('oauth:user', $oauthUser);
+                    $request->session()->put('oauth:provider', $provider);
+                    return $this->redirector->to(route('admin.login.oauth.showPasswordForm'));
+                } else {
+                    $user->LinkProvider($oauthUser, $provider);
 
-                // TODO: IMPLEMENT THIS FLOW
-                // if ($user->password) {
-                //     // If the user has a password then redirect to a form to ask for it
-                //     // before linking an oauth account to that email
-
-                //     // $request->session()->put('oauth:user_db', $user);
-                //     // $request->session()->put('oauth:user', $oauthUser);
-                //     // return $this->redirector->to(route('admin.login.requestPassword'));
-                // } else {
-                //     $user->LinkProvider($oauthUser, $provider);
-
-                //     // Login and redirect
-                //     $this->authManager->guard('twill_users')->login($user);
-                //     return  $this->redirector->intended($this->redirectTo);
-                // }
+                    // Login and redirect
+                    $this->authManager->guard('twill_users')->login($user);
+                    return  $this->redirector->intended($this->redirectTo);
+                }
             }
         } else {
             // If the user doesn't exist, create it
@@ -219,6 +213,51 @@ class LoginController extends Controller
             // Login and redirect
             $this->authManager->guard('twill_users')->login($user);
             return $this->redirector->intended($this->redirectTo);
+        }
+
+    }
+
+
+    /**
+     * @return \Illuminate\View\View
+     */
+    public function showPasswordForm(Request $request)
+    {
+        $userId = $request->session()->get('oauth:user_id');
+        $user = User::findOrFail($userId);
+
+        return $this->viewFactory->make('twill::auth.oauth-link', [
+            'username' => $user->email,
+            'provider' => $request->session()->get('oauth:provider')
+        ]);
+    }
+
+    /**
+     * @param string $provider Socialite provider
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function linkProvider(Request $request)
+    {
+
+        // If provided credentials are correct
+        if ($this->attemptLogin($request)) {
+            // Load the user
+            $userId = $request->session()->get('oauth:user_id');
+            $user = User::findOrFail($userId);
+
+            // Link the provider and login
+            $user->LinkProvider($request->session()->get('oauth:user'), $request->session()->get('oauth:provider'));
+            $this->authManager->guard('twill_users')->login($user);
+
+            // Remove session variables
+            $request->session()->forget('oauth:user_id');
+            $request->session()->forget('oauth:user');
+            $request->session()->forget('oauth:provider');
+
+            // Redirect
+            return $this->redirector->intended($this->redirectTo);
+        } else {
+            return $this->sendFailedLoginResponse($request);
         }
 
     }
