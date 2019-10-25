@@ -74,13 +74,13 @@
                 :draggable="{{ $reorder ? 'true' : 'false' }}"
                 :max-depth="{{ $nestedDepth ?? '1' }}"
                 :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
-                empty-message="@lang('twill::listing.listing-empty-message')">
+                empty-message="@lang('twill::lang.listing.listing-empty-message')">
             </a17-nested-datatable>
         @else
             <a17-datatable
                 :draggable="{{ $reorder ? 'true' : 'false' }}"
                 :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
-                empty-message="@lang('twill::listing.listing-empty-message')">
+                empty-message="@lang('twill::lang.listing.listing-empty-message')">
             </a17-datatable>
         @endif
 
@@ -89,13 +89,13 @@
                 ref="editionModal"
                 form-create="{{ $storeUrl }}"
                 v-on:reload="reloadDatas"
-                create-modal-title="@lang('twill::modal.create.title')"
-                update-modal-title="@lang('twill::modal.update.title')"
-                published-label="@lang('twill::main.published')"
-                draft-label="@lang('twill::main.draft')"
-                create-label="@lang('twill::modal.create.button')"
-                create-another-label="@lang('twill::modal.create.create-another')"
-                update-label="@lang('twill::modal.update.button')"
+                create-modal-title="@lang('twill::lang.modal.create.title')"
+                update-modal-title="@lang('twill::lang.modal.update.title')"
+                published-label="@lang('twill::lang.main.published')"
+                draft-label="@lang('twill::lang.main.draft')"
+                create-label="@lang('twill::lang.modal.create.button')"
+                create-another-label="@lang('twill::lang.modal.create.create-another')"
+                update-label="@lang('twill::lang.modal.update.button')"
 
                 @if ($customPublishedLabel ?? false) published-label="{{ $customPublishedLabel }}" @endif
                 @if ($customDraftLabel ?? false) draft-label="{{ $customDraftLabel }}" @endif
