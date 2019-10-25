@@ -25,7 +25,7 @@ class SignS3Upload
         $this->config = $config;
     }
 
-    public function fromPolicy($policy, SignS3UploadListener $listener, $disk = 'libraries')
+    public function fromPolicy($policy, SignUploadListener $listener, $disk = 'libraries')
     {
         $policyObject = json_decode($policy, true);
         $policyJson = json_encode($policyObject);
@@ -36,19 +36,19 @@ class SignS3Upload
         $this->endpoint = s3Endpoint($disk);
 
         if ($policyHeaders) {
-            $signedPolicy = $this->signChunkedRequest($policyHeaders, $listener);
+            $signedPolicy = $this->signChunkedRequest($policyHeaders);
         } else {
-            $signedPolicy = $this->signPolicy($policyJson, $listener);
+            $signedPolicy = $this->signPolicy($policyJson);
         }
 
         if ($signedPolicy) {
-            return $listener->policyIsSigned($signedPolicy);
+            return $listener->uploadIsSigned($signedPolicy);
         }
 
-        return $listener->policyIsNotValid();
+        return $listener->uploadIsNotValid();
     }
 
-    private function signPolicy($policyJson, $listener)
+    private function signPolicy($policyJson)
     {
         $policyObject = json_decode($policyJson, true);
 
@@ -102,7 +102,7 @@ class SignS3Upload
         return hash_hmac('sha256', $encodedPolicy, $signingKey);
     }
 
-    private function signChunkedRequest($policyHeaders, $listener)
+    private function signChunkedRequest($policyHeaders)
     {
         if ($this->isValidChunckRequest($policyHeaders)) {
             $signedRequest = array('signature' => $this->signV4ChunkRequest($policyHeaders));
