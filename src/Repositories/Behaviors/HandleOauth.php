@@ -56,7 +56,7 @@ trait HandleOauth
         $user = $this->model->firstOrNew([
             'name' => $oauthUser->name,
             'email' => $oauthUser->email,
-            'role' => 'VIEWONLY',
+            'role' => config('twill.oauth.default_role'),
             'published' => true,
         ]);
 

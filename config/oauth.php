@@ -15,4 +15,14 @@ return [
      */
     'providers' => ['google'],
 
+    /*
+    |--------------------------------------------------------------------------
+    | New user default role
+    |--------------------------------------------------------------------------
+    |
+    | Possible values: VIEWONLY, PUBLISHER, ADMIN
+    |
+     */
+    'default_role' => 'VIEWONLY'
+
 ];
