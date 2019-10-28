@@ -198,7 +198,7 @@ class LoginController extends Controller
                     $request->session()->put('oauth:provider', $provider);
                     return $this->redirector->to(route('admin.login.oauth.showPasswordForm'));
                 } else {
-                    $user->LinkProvider($oauthUser, $provider);
+                    $user->linkProvider($oauthUser, $provider);
 
                     // Login and redirect
                     $this->authManager->guard('twill_users')->login($user);
@@ -208,7 +208,7 @@ class LoginController extends Controller
         } else {
             // If the user doesn't exist, create it
             $user = $repository->oauthCreateUser($oauthUser);
-            $user->LinkProvider($oauthUser, $provider);
+            $user->linkProvider($oauthUser, $provider);
 
             // Login and redirect
             $this->authManager->guard('twill_users')->login($user);
@@ -246,7 +246,7 @@ class LoginController extends Controller
             $user = User::findOrFail($userId);
 
             // Link the provider and login
-            $user->LinkProvider($request->session()->get('oauth:user'), $request->session()->get('oauth:provider'));
+            $user->linkProvider($request->session()->get('oauth:user'), $request->session()->get('oauth:provider'));
             $this->authManager->guard('twill_users')->login($user);
 
             // Remove session variables
