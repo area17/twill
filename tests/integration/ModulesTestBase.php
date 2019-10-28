@@ -2,8 +2,31 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use Illuminate\Support\Str;
+use App\Models\Translations\AuthorTranslation;
+use App\Models\Translations\CategoryTranslation;
+
 abstract class ModulesTestBase extends TestCase
 {
+    public $name;
+    public $name_en;
+    public $name_fr;
+    public $slug_en;
+    public $slug_fr;
+    public $description_en;
+    public $description_fr;
+    public $bio_en;
+    public $bio_fr;
+    public $birthday;
+    public $block_id;
+    public $block_quote;
+    public $translation;
+    public $author;
+    public $title;
+    public $title_en;
+    public $title_fr;
+    public $category;
+
     protected $allFiles = [
         '{$stubs}/modules/authors/2019_10_18_193753_create_authors_tables.php' =>
             '{$database}/migrations/',
@@ -84,10 +107,20 @@ abstract class ModulesTestBase extends TestCase
         $this->login();
     }
 
-    protected function loadConfig()
+    protected function assertSomethingWrongHappened()
+    {
+        $this->assertSee('Something wrong happened!');
+    }
+
+    protected function assertNothingWrongHappened()
+    {
+        $this->assertDontSee('Something wrong happened!');
+    }
+
+    protected function loadConfig($file = null)
     {
         $config = require $this->makeFileName(
-            '{$stubs}/modules/authors/twill.php'
+            $file ?? '{$stubs}/modules/authors/twill.php'
         );
 
         config(['twill' => $config + config('twill')]);
@@ -139,5 +172,304 @@ abstract class ModulesTestBase extends TestCase
             $file,
             str_replace($search, $replace, file_get_contents($file))
         );
+    }
+
+    protected function addBlock()
+    {
+        $this->request(
+            "/twill/personnel/authors/{$this->author->id}",
+            'PUT',
+            $this->getUpdateAuthorWithBlock()
+        )->assertStatus(200);
+
+        $this->assertEquals(1, $this->author->blocks->count());
+
+        $this->assertEquals(
+            $block_quote = ['quote' => $this->block_quote],
+            $this->author->blocks->first()->content
+        );
+
+        // Check if blocks are rendering
+        $this->assertEquals(
+            clean_file(json_encode($block_quote)),
+            clean_file(trim($this->author->renderBlocks()))
+        );
+
+        // Get browser data
+        $this->request('/twill/personnel/authors/browser')->assertStatus(200);
+
+        $this->assertJson($this->content());
+
+        $data = json_decode($this->content(), true)['data'][0];
+
+        $this->assertEquals(
+            $data['edit'],
+            "http://twill.test/twill/personnel/authors/{$this->author->id}/edit"
+        );
+
+        $this->assertEquals($data['endpointType'], 'App\Models\Author');
+    }
+
+    protected function createAuthor($count = 1)
+    {
+        foreach (range(1, $count) as $c) {
+            $this->request(
+                '/twill/personnel/authors',
+                'POST',
+                $this->getCreateAuthorData()
+            )->assertStatus(200);
+        }
+
+        $this->translation = AuthorTranslation::where('name', $this->name_en)
+            ->where('locale', 'en')
+            ->first();
+
+        $this->author = $this->translation->author;
+
+        $this->assertNotNull($this->translation);
+
+        $this->assertCount(3, $this->author->slugs);
+    }
+
+    protected function destroyAuthor()
+    {
+        $this->createAuthor();
+
+        $this->assertNull($this->author->deleted_at);
+
+        $this->request(
+            "/twill/personnel/authors/{$this->author->id}",
+            'DELETE',
+            $this->getUpdateAuthorWithBlock()
+        )->assertStatus(200);
+
+        $this->assertNothingWrongHappened();
+
+        $this->author->refresh();
+
+        $this->assertNotNull($this->author->deleted_at);
+
+        $this->request(
+            '/twill/personnel/authors/9999999',
+            'DELETE',
+            $this->getUpdateAuthorWithBlock()
+        )->assertStatus(404);
+    }
+
+    protected function editAuthor()
+    {
+        $this->request(
+            "/twill/personnel/authors/{$this->author->id}",
+            'PUT',
+            $this->getUpdateAuthorData()
+        )->assertStatus(200);
+
+        $this->assertNothingWrongHappened();
+
+        $this->author->refresh();
+
+        $this->assertEquals($this->author->birthday, $this->birthday);
+
+        $this->translation->refresh();
+
+        $this->assertEquals(
+            $this->description_en,
+            $this->translation->description
+        );
+
+        $this->assertEquals($this->bio_en, $this->translation->bio);
+
+        $this->assertTrue($this->translation->active);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getCreateAuthorData(): array
+    {
+        $name = $this->name = $this->faker->name;
+
+        return [
+            'name' => [
+                'en' => ($this->name_en = '[EN] ' . $name),
+                'fr' => ($this->name_fr = '[FR] ' . $name),
+            ],
+            'slug' => [
+                'en' => ($this->slug_en = Str::slug($this->name_en)),
+                'fr' => ($this->slug_fr = Str::slug($this->name_fr)),
+            ],
+            'published' => false,
+            'languages' => [
+                [
+                    'shortlabel' => 'EN',
+                    'label' => 'English',
+                    'value' => 'en',
+                    'disabled' => false,
+                    'published' => true,
+                ],
+                [
+                    'shortlabel' => 'FR',
+                    'label' => 'French',
+                    'value' => 'fr',
+                    'disabled' => false,
+                    'published' => false,
+                ],
+                [
+                    'shortlabel' => 'PT-BR',
+                    'label' => 'pt-BR',
+                    'value' => 'pt-BR',
+                    'disabled' => false,
+                    'published' => false,
+                ],
+            ],
+        ];
+    }
+
+    public function getUpdateAuthorData()
+    {
+        return [
+            'name' => [
+                'en' => $this->name_en,
+                'fr' => $this->name_fr,
+                'pt-BR' => '',
+            ],
+            'slug' => [
+                'en' => $this->slug_en,
+                'fr' => $this->slug_en,
+                'pt-BR' => $this->slug_en,
+            ],
+            'description' => [
+                'en' => ($this->description_en = '[EN] ' . $this->fakeText(80)),
+                'fr' => ($this->description_fr = '[FR] ' . $this->fakeText(80)),
+                'pt-BR' => '',
+            ],
+            'birthday' => ($this->birthday = now()->format('Y-m-d')),
+            'bio' => [
+                'en' => ($this->bio_en = '[EN] ' . $this->fakeText(255)),
+                'fr' => ($this->bio_fr = '[FR] ' . $this->fakeText(255)),
+                'pt-BR' => '',
+            ],
+            'cmsSaveType' => 'save',
+            'published' => false,
+            'public' => false,
+            'publish_start_date' => null,
+            'publish_end_date' => null,
+            'languages' => [
+                [
+                    'shortlabel' => 'EN',
+                    'label' => 'English',
+                    'value' => 'en',
+                    'disabled' => false,
+                    'published' => '1',
+                ],
+                [
+                    'shortlabel' => 'FR',
+                    'label' => 'French',
+                    'value' => 'fr',
+                    'disabled' => false,
+                    'published' => '0',
+                ],
+                [
+                    'shortlabel' => 'PT-BR',
+                    'label' => 'pt-BR',
+                    'value' => 'pt-BR',
+                    'disabled' => false,
+                    'published' => '0',
+                ],
+            ],
+            'parent_id' => 0,
+            'medias' => [],
+            'browsers' => [],
+            'repeaters' => [],
+        ];
+    }
+
+    public function getUpdateAuthorWithBlock()
+    {
+        return $this->getUpdateAuthorData() + [
+            'blocks' => [
+                [
+                    'id' => ($this->block_id = rand(
+                        1570000000000,
+                        1579999999999
+                    )),
+                    'type' => 'a17-block-quote',
+                    'content' => [
+                        'quote' => ($this->block_quote = $this->fakeText()),
+                    ],
+                    'medias' => [],
+                    'browsers' => [],
+                    'blocks' => [],
+                ],
+            ],
+            'repeaters' => [],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getCreateCategoryData(): array
+    {
+        $category = $this->title = 'Category: ' . $this->faker->name;
+
+        return [
+            'title' => [
+                'en' => ($this->title_en = '[EN] ' . $category),
+                'fr' => ($this->title_fr = '[FR] ' . $category),
+            ],
+            'slug' => [
+                'en' => ($this->slug_en = Str::slug($this->title_en)),
+                'fr' => ($this->slug_fr = Str::slug($this->title_fr)),
+            ],
+            'published' => false,
+            'languages' => [
+                [
+                    'shortlabel' => 'EN',
+                    'label' => 'English',
+                    'value' => 'en',
+                    'disabled' => false,
+                    'published' => true,
+                ],
+                [
+                    'shortlabel' => 'FR',
+                    'label' => 'French',
+                    'value' => 'fr',
+                    'disabled' => false,
+                    'published' => true,
+                ],
+                [
+                    'shortlabel' => 'PT-BR',
+                    'label' => 'pt-BR',
+                    'value' => 'pt-BR',
+                    'disabled' => false,
+                    'published' => false,
+                ],
+            ],
+        ];
+    }
+
+    protected function createCategory($count = 1)
+    {
+        foreach (range(1, $count) as $c) {
+            $this->request(
+                '/twill/categories',
+                'POST',
+                $this->getCreateCategoryData()
+            )->assertStatus(200);
+        }
+
+        $this->translation = CategoryTranslation::where(
+            'title',
+            $this->title_en
+        )
+            ->where('locale', 'en')
+            ->first();
+
+        $this->category = $this->translation->category;
+
+        $this->assertNotNull($this->translation);
+
+        $this->assertCount(3, $this->category->slugs);
     }
 }
