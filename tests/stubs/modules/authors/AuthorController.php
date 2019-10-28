@@ -59,4 +59,14 @@ class AuthorController extends ModuleController
 
         $this->indexOptions['editInModal'] = env('EDIT_IN_MODAL', false);
     }
+
+    public function getIndexOptions()
+    {
+        return $this->indexOptions;
+    }
+
+    public function setIndexOptions($options)
+    {
+        return $this->indexOptions = $options;
+    }
 }
