@@ -102,7 +102,7 @@
 
     window.STORE.publication = {
         withPublicationToggle: {{ json_encode(($publish ?? true) && isset($item) && $item->isFillable('published')) }},
-        published: {{ json_encode(isset($item) ? $item->published : false) }},
+        published: {{ isset($item) && $item->published ? 'true' : 'false' }},
         withPublicationTimeframe: {{ json_encode(($schedule ?? true) && isset($item) && $item->isFillable('publish_start_date')) }},
         publishedLabel: '{{ $customPublishedLabel ?? 'Live' }}',
         draftLabel: '{{ $customDraftLabel ?? 'Draft' }}',

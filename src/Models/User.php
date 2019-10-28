@@ -49,6 +49,8 @@ class User extends AuthenticatableContract
         ],
     ];
 
+    protected $casts = ['published' => 'boolean'];
+
     public function __construct(array $attributes = [])
     {
         $this->table = config('twill.users_table', 'twill_users');
