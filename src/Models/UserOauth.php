@@ -12,6 +12,7 @@ class UserOauth extends BaseModel
     protected $fillable = [
         'token',
         'provider',
+        'avatar',
         'oauth_id',
         'user_id',
     ];

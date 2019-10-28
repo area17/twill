@@ -16,8 +16,10 @@ trait HasOauth
 
     public function linkProvider($oauthUser, $provider)
     {
+
         $provider = new UserOauth([
             'token'    => $oauthUser->token,
+            'avatar'   => $oauthUser->avatar,
             'provider' => $provider,
             'oauth_id' => $oauthUser->id,
         ]);

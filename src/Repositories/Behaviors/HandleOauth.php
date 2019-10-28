@@ -41,6 +41,7 @@ trait HandleOauth
             ->first();
 
         $provider->token = $oauthUser->token;
+        $provider->avatar = $oauthUser->avatar;
         $provider->save();
 
         return $user;
