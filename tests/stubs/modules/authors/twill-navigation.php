@@ -11,4 +11,9 @@ return [
             ],
         ],
     ],
+
+    'categories' => [
+        'title' => 'Categories',
+        'route' => 'admin.categories.index',
+    ],
 ];
