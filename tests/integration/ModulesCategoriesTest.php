@@ -5,7 +5,7 @@ namespace A17\Twill\Tests\Integration;
 use Illuminate\Support\Str;
 use App\Models\Translations\CategoryTranslation;
 
-class ModulesCategoriesTest extends ModulesTest
+class ModulesCategoriesTest extends ModulesTestBase
 {
     public $title;
     public $title_en;

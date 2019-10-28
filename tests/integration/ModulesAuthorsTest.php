@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schema;
 use App\Models\Revisions\AuthorRevision;
 use App\Models\Translations\AuthorTranslation;
 
-class ModulesAuthorsTest extends ModulesTest
+class ModulesAuthorsTest extends ModulesTestBase
 {
     protected $name;
     protected $name_en;
