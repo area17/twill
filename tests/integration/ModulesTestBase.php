@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Tests\Integration;
 
-abstract class ModulesTest extends TestCase
+abstract class ModulesTestBase extends TestCase
 {
     protected $allFiles = [
         '{$stubs}/modules/authors/2019_10_18_193753_create_authors_tables.php' =>
