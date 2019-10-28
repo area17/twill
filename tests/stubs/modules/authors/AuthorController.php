@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Http\Request;
+use Illuminate\Contracts\Foundation\Application;
 use A17\Twill\Http\Controllers\Admin\ModuleController;
 
 class AuthorController extends ModuleController
@@ -50,4 +52,11 @@ class AuthorController extends ModuleController
     ];
 
     protected $titleColumnKey = 'name';
+
+    public function __construct(Application $app, Request $request)
+    {
+        parent::__construct($app, $request);
+
+        $this->indexOptions['editInModal'] = env('EDIT_IN_MODAL', false);
+    }
 }

@@ -30,7 +30,7 @@ abstract class TestCase extends OrchestraTestCase
     /**
      * @var \A17\Twill\Tests\Integration\UserClass
      */
-    private $superAdmin;
+    public $superAdmin;
 
     /**
      * @var \Illuminate\Filesystem\Filesystem
@@ -47,7 +47,24 @@ abstract class TestCase extends OrchestraTestCase
      */
     public $crawler;
 
-    private function configTwill($app)
+    /**
+     * Setup tests.
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->instantiateFaker();
+
+        $this->installTwill();
+    }
+
+    /**
+     * Configure Twill options.
+     *
+     * @param $app
+     */
+    public function configTwill($app)
     {
         $app['config']->set('twill.admin_app_url', '');
         $app['config']->set('twill.admin_app_path', 'twill');
@@ -58,6 +75,8 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
+     * Configure database.
+     *
      * @param $app
      */
     protected function configureDatabase($app)
@@ -80,7 +99,7 @@ abstract class TestCase extends OrchestraTestCase
      *
      * @param $app
      */
-    private function configureStorage($app)
+    public function configureStorage($app)
     {
         $app['config']->set(
             'logging.channels.single.path',
@@ -109,18 +128,23 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * Setup tests.
+     * Login the current SuperUser.
+     *
+     * @return \Illuminate\Foundation\Testing\TestResponse|void
      */
-    public function setUp(): void
+    protected function login()
     {
-        parent::setUp();
+        $this->request('/twill/login', 'POST', [
+            'email' => $this->superAdmin()->email,
+            'password' => $this->superAdmin()->unencrypted_password,
+        ])->assertStatus(200);
 
-        $this->instantiateFaker();
-
-        $this->installTwill();
+        return $this->crawler;
     }
 
     /**
+     * Boot the TestCase.
+     *
      * @param \Illuminate\Foundation\Application $app
      */
     protected function boot($app)
@@ -256,6 +280,7 @@ abstract class TestCase extends OrchestraTestCase
             twill_path('Http/Controllers'),
             twill_path('Repositories'),
             twill_path('/../resources/views/admin/authors'),
+            twill_path('/../resources/views/admin/categories'),
             twill_path('/../resources/views/site/blocks'),
             twill_path('/../resources/views/site/layouts'),
         ])->each(function ($directory) {
@@ -413,21 +438,6 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * Login the current SuperUser.
-     *
-     * @return \Illuminate\Foundation\Testing\TestResponse|void
-     */
-    protected function login()
-    {
-        $this->request('/twill/login', 'POST', [
-            'email' => $this->superAdmin()->email,
-            'password' => $this->superAdmin()->unencrypted_password,
-        ])->assertStatus(200);
-
-        return $this->crawler;
-    }
-
-    /**
      * Freeze time.
      */
     public function freezeTime()
@@ -445,7 +455,7 @@ abstract class TestCase extends OrchestraTestCase
         collect($files)->each(function ($destination, $source) {
             $this->files->copy(
                 $this->makeFileName($source),
-                $this->makeFileName($destination)
+                $this->makeFileName($destination, $source)
             );
         });
     }
@@ -453,12 +463,13 @@ abstract class TestCase extends OrchestraTestCase
     /**
      * Replace placeholders to make a filename.
      *
-     * @param $file
+     * @param string $file
+     * @param null $source
      * @return mixed
      */
-    public function makeFileName($file)
+    public function makeFileName($file, $source = null)
     {
-        return str_replace(
+        $file = str_replace(
             [
                 '{$stubs}',
                 '{$database}',
@@ -477,14 +488,12 @@ abstract class TestCase extends OrchestraTestCase
             ],
             $file
         );
-    }
 
-    /**
-     * Migrate database.
-     */
-    public function migrate()
-    {
-        $this->artisan('migrate');
+        if (filled($source) && !Str::endsWith($file, '.php')) {
+            $file = $file . basename($source);
+        }
+
+        return $file;
     }
 
     /**
