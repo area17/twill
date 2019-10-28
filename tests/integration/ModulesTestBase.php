@@ -122,4 +122,22 @@ abstract class ModulesTestBase extends TestCase
 
         return substr($lorem, 0, strrpos($lorem, ' ')) . '.';
     }
+
+    public function searchReplaceFile($search, $replace, $file)
+    {
+        /**
+         * Usage
+         *
+         *      $this->searchReplaceFile(
+         *          "'editInModal' => false",
+         *          "'editInModal' => true",
+         *          twill_path('Http/Controllers/Admin/AuthorController.php')
+         *      );
+         *
+         */
+        file_put_contents(
+            $file,
+            str_replace($search, $replace, file_get_contents($file))
+        );
+    }
 }

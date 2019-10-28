@@ -42,6 +42,9 @@
     <env name="MEDIA_LIBRARY_IMAGE_SERVICE" value="A17\Twill\Services\MediaLibrary\Glide"/>
     <env name="MEDIA_LIBRARY_LOCAL_PATH" value="media-library"/>
     <env name="MEDIA_LIBRARY_ENDPOINT_TYPE" value="local"/>
+    <env name="FILE_LIBRARY_FILE_SERVICE" value="A17\Twill\Services\MediaLibrary\Glide"/>
+    <env name="FILE_LIBRARY_LOCAL_PATH" value="file-library"/>
+    <env name="FILE_LIBRARY_ENDPOINT_TYPE" value="local"/>
     <env name="IMGIX_SOURCE_HOST" value=""/>
     <env name="IMGIX_USE_HTTPS" value=""/>
     <env name="IMGIX_USE_SIGNED_URLS" value=""/>

@@ -570,6 +570,22 @@ class ModulesAuthorsTest extends ModulesTestBase
         $this->assertSee($this->bio_en);
     }
 
+    public function testCanShowEditFormViaAjax()
+    {
+        putenv('EDIT_IN_MODAL=true');
+
+        $this->createAuthor();
+        $this->editAuthor();
+
+        $this->ajax(
+            "/twill/personnel/authors/{$this->author->id}/edit"
+        )->assertStatus(200);
+
+        $this->assertSee($this->name_en);
+        $this->assertSee($this->description_en);
+        $this->assertSee($this->bio_en);
+    }
+
     public function testCanShowEditFormInModal()
     {
         $this->createAuthor();
