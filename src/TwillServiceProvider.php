@@ -13,6 +13,7 @@ use A17\Twill\Http\ViewComposers\ActiveNavigation;
 use A17\Twill\Http\ViewComposers\CurrentUser;
 use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
 use A17\Twill\Http\ViewComposers\MediasUploaderConfig;
+use A17\Twill\Http\ViewComposers\Localization;
 use A17\Twill\Models\Block;
 use A17\Twill\Models\File;
 use A17\Twill\Models\Media;
@@ -395,6 +396,8 @@ class TwillServiceProvider extends ServiceProvider
 
             return $view->with($with);
         });
+
+        View::composer(['admin.*', 'twill::*'], Localization::class);
     }
 
     /**

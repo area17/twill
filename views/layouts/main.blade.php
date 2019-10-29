@@ -75,7 +75,6 @@
                 @include('twill::partials.footer')
             </section>
         </div>
-
         <script>
             window['{{ config('twill.js_namespace') }}'] = {};
             window['{{ config('twill.js_namespace') }}'].version = '{{ config('twill.version') }}';
@@ -84,6 +83,7 @@
             window['{{ config('twill.js_namespace') }}'].STORE.medias = {};
             window['{{ config('twill.js_namespace') }}'].STORE.medias.types = [];
             window['{{ config('twill.js_namespace') }}'].STORE.languages = {!! json_encode(getLanguagesForVueStore($form_fields ?? [], $translate ?? false)) !!};
+            window['{{ config('twill.js_namespace') }}'].lang = {!! json_encode($lang) !!};
 
             @if (config('twill.enabled.media-library'))
                 window['{{ config('twill.js_namespace') }}'].STORE.medias.types.push({
