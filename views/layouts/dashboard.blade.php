@@ -1,7 +1,7 @@
 @extends('twill::layouts.main')
 
 @php
-    $emptyMessage = $emptyMessage ?? __('twill::dashboard.empty-message');
+    $emptyMessage = $emptyMessage ?? __('twill::lang.dashboard.empty-message');
     $isDashboard = true;
     $translate = true;
 @endphp
