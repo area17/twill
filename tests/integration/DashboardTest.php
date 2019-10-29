@@ -16,13 +16,6 @@ class DashboardTest extends ModulesTestBase
         $this->loadConfig('{$stubs}/modules/dashboard/twill.php'); /// commenting this line it start working
     }
 
-    private function skipOnTravis()
-    {
-        if (!is_null(env('TRAVIS_PHP_VERSION'))) {
-            $this->markTestSkipped('This test cannot be execute on Travis');
-        }
-    }
-
     /**
      * This test produce an unknown failure which happens only on Travis.
      *

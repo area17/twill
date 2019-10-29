@@ -9,12 +9,10 @@ use Illuminate\Support\Str;
 use A17\Twill\AuthServiceProvider;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\RouteServiceProvider;
-use Illuminate\Routing\UrlGenerator;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Contracts\Console\Kernel;
 use A17\Twill\ValidationServiceProvider;
-use Illuminate\Routing\RoutingServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class TestCase extends OrchestraTestCase
@@ -546,6 +544,11 @@ abstract class TestCase extends OrchestraTestCase
         return $this->crawler->getContent();
     }
 
+    /**
+     * Assert can see text.
+     *
+     * @param $text
+     */
     public function assertSee($text)
     {
         $this->assertStringContainsString(
@@ -554,11 +557,26 @@ abstract class TestCase extends OrchestraTestCase
         );
     }
 
+    /**
+     * Assert cannot see text.
+     *
+     * @param $text
+     */
     public function assertDontSee($text)
     {
         $this->assertStringNotContainsString(
             clean_file($text),
             clean_file($this->content())
         );
+    }
+
+    /**
+     * Skip test if running on Travis
+     */
+    public function skipOnTravis()
+    {
+        if (!is_null(env('TRAVIS_PHP_VERSION'))) {
+            $this->markTestSkipped('This test cannot be execute on Travis');
+        }
     }
 }
