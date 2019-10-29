@@ -42,6 +42,8 @@ import SvgSprite from '@/directives/svg'
 import Tooltip from '@/directives/tooltip'
 import Sticky from '@/directives/sticky'
 
+import get from 'lodash/get'
+
 const A17Config = {
   install (Vue, opts) {
     // Globals components
@@ -94,6 +96,9 @@ const A17Config = {
     // Configurations
     Vue.config.productionTip = false
     Vue.prototype.$http = axios
+    Vue.prototype.$trans = function (string) {
+      return get(window.lang, string)
+    }
 
     axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 
