@@ -54,5 +54,8 @@ return [
         'cms-users' => 'CMS Users',
         'settings' => 'Settings',
         'logout' => 'Logout'
+    ],
+    'media-library' => [
+        'title' => 'Media Library'
     ]
 ];

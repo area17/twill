@@ -54,5 +54,8 @@ return [
         'cms-users' => 'ユーザー管理',
         'settings' => '設定',
         'logout' => 'ログアウト'
+    ],
+    'media-library' => [
+        'title' => 'メディアライブラリ'
     ]
 ];

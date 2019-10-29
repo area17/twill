@@ -94,7 +94,9 @@
     props: {
       modalTitlePrefix: {
         type: String,
-        default: 'Media Library'
+        default: function () {
+          return this.$trans('media-library.title')
+        }
       },
       btnLabelSingle: {
         type: String,

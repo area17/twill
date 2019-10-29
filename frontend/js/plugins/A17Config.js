@@ -35,6 +35,7 @@ import a17MediaLibrary from '@/components/media-library/MediaLibrary.vue'
 
 // Plugins
 import VueTimeago from 'vue-timeago'
+import get from 'lodash/get'
 import axios from 'axios'
 
 // Directives
@@ -97,6 +98,9 @@ const A17Config = {
     Vue.config.productionTip = isProd
     Vue.config.devtools = true
     Vue.prototype.$http = axios
+    Vue.prototype.$trans = function (string) {
+      return get(window[process.env.VUE_APP_NAME].lang, string)
+    }
 
     axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 
