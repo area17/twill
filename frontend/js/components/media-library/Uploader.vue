@@ -1,8 +1,8 @@
 <template>
   <div class="uploader">
     <div class="uploader__dropzone" ref="uploaderDropzone">
-      <div class="button" ref="uploaderBrowseButton">Add new</div>
-      <div class="uploader__dropzone--desktop">or drop new files here</div>
+      <div class="button" ref="uploaderBrowseButton">{{ $trans('uploader.upload-btn-label', 'Add new') }}</div>
+      <div class="uploader__dropzone--desktop">{{ $trans('uploader.dropzone-text', 'or drop new files here') }}</div>
     </div>
   </div>
 </template>

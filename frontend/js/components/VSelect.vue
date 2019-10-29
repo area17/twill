@@ -86,7 +86,9 @@
         default: null
       },
       emptyText: {
-        default: 'Sorry, no matching options.'
+        default () {
+          return this.$trans('select.empty-text', 'Sorry, no matching options.')
+        }
       },
       options: {
         default: function () { return [] }

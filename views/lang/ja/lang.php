@@ -56,6 +56,28 @@ return [
         'logout' => 'ログアウト'
     ],
     'media-library' => [
-        'title' => 'メディアライブラリ'
+        'title' => 'メディアライブラリ',
+        'images' => '画像',
+        'files' => 'ファイル',
+        'filter-select-label' => 'ラベルによるフィルター',
+        'sidebar' => [
+            'empty-text' => 'ファイルが選択されていません',
+            'files-selected' => '選択されたファイル',
+            'clear' => 'キャンセル',
+            'dimensions' => 'サイズ'
+        ]
+    ],
+    'filter' => [
+        'search-placeholder'=> '検索',
+        'toggle-label' => 'フィルタ',
+        'apply-btn' => '適用する',
+        'clear-btn' => 'キャンセル'
+    ],
+    'select' => [
+        'empty-text' => '一致するオプションはありません'
+    ],
+    'uploader' => [
+        'dropzone-text' => 'ここに新しいファイルをドロップします',
+        'upload-btn-label' => '追加'
     ]
 ];
