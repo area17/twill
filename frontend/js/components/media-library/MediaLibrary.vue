@@ -95,20 +95,26 @@
       modalTitlePrefix: {
         type: String,
         default: function () {
-          return this.$trans('media-library.title')
+          return this.$trans('media-library.title', 'Media Library')
         }
       },
       btnLabelSingle: {
         type: String,
-        default: 'Insert'
+        default: function () {
+          return this.$trans('media-library.insert', 'Insert')
+        }
       },
       btnLabelUpdate: {
         type: String,
-        default: 'Update'
+        default: function () {
+          return this.$trans('media-library.update', 'Update')
+        }
       },
       btnLabelMulti: {
         type: String,
-        default: 'Insert'
+        default: function () {
+          return this.$trans('media-library.insert', 'Insert')
+        }
       },
       initialPage: {
         type: Number,

@@ -98,8 +98,9 @@ const A17Config = {
     Vue.config.productionTip = isProd
     Vue.config.devtools = true
     Vue.prototype.$http = axios
-    Vue.prototype.$trans = function (string) {
-      return get(window[process.env.VUE_APP_NAME].lang, string)
+
+    Vue.prototype.$trans = function (key, defaultValue) {
+      return get(window[process.env.VUE_APP_NAME].lang, key, defaultValue)
     }
 
     axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'

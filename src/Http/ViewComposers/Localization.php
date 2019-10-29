@@ -28,7 +28,7 @@ class Localization
     {
         $currentLang = Lang::get('twill::lang', [], App::getLocale());
         $fallbackLang = Lang::get('twill::lang', [], config('app.fallback_locale', 'en'));
-        $lang = array_merge($fallbackLang, $currentLang);
+        $lang = array_replace_recursive($fallbackLang, $currentLang);
 
         $view->with(['lang' => $lang]);
     }
