@@ -55,6 +55,23 @@ class ModulesAuthorsTest extends ModulesTestBase
         $this->assertSee($this->description_en);
     }
 
+    public function testCanDisplayDashboard()
+    {
+        $this->request('/twill')->assertStatus(200);
+
+        $this->assertSee('Personnel');
+        $this->assertSee('Categories');
+
+        $this->request('/twill/personnel/authors')->assertStatus(200);
+
+        $this->assertSee('Name');
+        $this->assertSee('Languages');
+        $this->assertSee('Mine');
+        $this->assertSee('Add new');
+
+        $this->request('/twill/categories')->assertStatus(200);
+    }
+
     public function testCanStartRestoringRevision()
     {
         $this->createAuthor();

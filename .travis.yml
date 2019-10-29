@@ -39,6 +39,7 @@ after_script:
       php ocular.phar code-coverage:upload --format=php-clover coverage.clover
     fi
   - |
-    if [[ -f 'tests/storage/logs/laravel.log' ]]; then
-      curl -F "file=@tests/storage/logs/laravel.log" https://file.io\?expires\=1d
+    LOG_FILE=${TRAVIS_BUILD_DIR}/tests/storage/logs/laravel.log
+    if [[ -f "$LOG_FILE" ]]; then
+      cat $LOG_FILE
     fi

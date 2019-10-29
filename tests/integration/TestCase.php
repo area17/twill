@@ -9,10 +9,12 @@ use Illuminate\Support\Str;
 use A17\Twill\AuthServiceProvider;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\RouteServiceProvider;
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Contracts\Console\Kernel;
 use A17\Twill\ValidationServiceProvider;
+use Illuminate\Routing\RoutingServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class TestCase extends OrchestraTestCase
@@ -43,9 +45,48 @@ abstract class TestCase extends OrchestraTestCase
     public $now;
 
     /**
+     * @var \Carbon\Carbon
+     */
+    public $recursiveCounter = 0;
+
+    /**
      * @var \Illuminate\Foundation\Testing\TestResponse
      */
     public $crawler;
+
+    public $paths = [
+        '/../resources/views',
+        '/../resources/views/admin',
+        '/../resources/views/site',
+        'Http/Controllers/Admin',
+        'Http/Requests/Admin',
+        'Models/Revisions',
+        'Models/Slugs',
+        'Models/Translations',
+        'Repositories',
+        '/../resources/views/admin/authors',
+        '/../resources/views/admin/categories',
+        '/../resources/views/site/blocks',
+        '/../resources/views/site/layouts',
+    ];
+
+    protected function deleteAllTwillPaths(): void
+    {
+        collect($this->paths)->each(function ($directory) {
+            if (file_exists($directory = twill_path($directory))) {
+                $this->files->deleteDirectory($directory);
+            }
+        });
+    }
+
+    protected function makeAllTwillPaths(): void
+    {
+        collect($this->paths)->each(function ($directory) {
+            if (!file_exists($directory = twill_path($directory))) {
+                $this->files->makeDirectory($directory, 0755, true);
+            }
+        });
+    }
 
     /**
      * Setup tests.
@@ -106,7 +147,7 @@ abstract class TestCase extends OrchestraTestCase
             $logFile = __DIR__ . '/../storage/logs/laravel.log'
         );
 
-        if (file_exists($logFile)) {
+        if (file_exists($logFile) && is_null(env('TRAVIS_PHP_VERSION'))) {
             unlink($logFile);
         }
     }
@@ -271,23 +312,9 @@ abstract class TestCase extends OrchestraTestCase
             glob($this->getBasePath() . '/database/migrations/*')
         );
 
-        $this->files->deleteDirectory(twill_path('/../resources/views/site'));
+        $this->deleteAllTwillPaths();
 
-        collect([
-            twill_path('/../resources/views'),
-            twill_path('/../resources/views/admin'),
-            twill_path('/../resources/views/site'),
-            twill_path('Http/Controllers'),
-            twill_path('Repositories'),
-            twill_path('/../resources/views/admin/authors'),
-            twill_path('/../resources/views/admin/categories'),
-            twill_path('/../resources/views/site/blocks'),
-            twill_path('/../resources/views/site/layouts'),
-        ])->each(function ($directory) {
-            if (!file_exists($directory)) {
-                $this->files->makeDirectory($directory, 0755, true);
-            }
-        });
+        $this->makeAllTwillPaths();
     }
 
     /**
@@ -342,7 +369,10 @@ abstract class TestCase extends OrchestraTestCase
             $routes = $routes->get($method);
         }
 
-        return collect($routes);
+        return collect($routes)->filter(function ($route) {
+            return Str::startsWith($route->action['uses'], 'A17\Twill') ||
+                Str::startsWith($route->action['uses'], 'App\\');
+        });
     }
 
     /**
@@ -353,13 +383,20 @@ abstract class TestCase extends OrchestraTestCase
     public function getAllUris()
     {
         return $this->getAllRoutes()
-            ->filter(function ($route) {
-                return Str::startsWith($route->action['uses'], 'A17\Twill');
-            })
             ->pluck('uri')
             ->sort()
             ->unique()
             ->values();
+    }
+
+    /**
+     * Get a collection with all package uris.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getUriWithNames()
+    {
+        return $this->getAllRoutes()->pluck('uri', 'action.as');
     }
 
     /**
@@ -373,6 +410,7 @@ abstract class TestCase extends OrchestraTestCase
      * @param array $server
      * @param null $content
      * @param bool $followRedirects
+     * @param bool $allow500
      *
      * @return \Illuminate\Foundation\Testing\TestResponse
      */
@@ -457,6 +495,8 @@ abstract class TestCase extends OrchestraTestCase
                 $this->makeFileName($source),
                 $this->makeFileName($destination, $source)
             );
+
+            usleep(1000 * 100); // 100ms
         });
     }
 
