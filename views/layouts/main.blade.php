@@ -70,13 +70,13 @@
                 @include('twill::partials.footer')
             </section>
         </div>
-
         <script>
             window.STORE = {}
             window.STORE.form = {}
             window.STORE.medias = {}
             window.STORE.medias.types = []
             window.STORE.languages = {!! json_encode(getLanguagesForVueStore($form_fields ?? [], $translate ?? false)) !!}
+            window.lang = {!! json_encode($lang) !!}
 
             @if (config('twill.enabled.media-library'))
                 window.STORE.medias.types.push({
