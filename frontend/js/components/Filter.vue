@@ -5,7 +5,7 @@
 
       <div class="filter__search">
         <input type="search" class="form__input form__input--small" name="search" :value="searchValue" :placeholder="placeholder" @input="onSearchInput" />
-        <a17-button class="filter__toggle" variant="ghost" @click="toggleFilter" v-if="withHiddenFilters" :aria-expanded="opened ?  'true' : 'false'" >Filter <span v-svg symbol="dropdown_module"></span></a17-button>
+        <a17-button class="filter__toggle" variant="ghost" @click="toggleFilter" v-if="withHiddenFilters" :aria-expanded="opened ?  'true' : 'false'" >{{ $trans('filter.toggle-label', 'Filter') }} <span v-svg symbol="dropdown_module"></span></a17-button>
         <slot name="additional-actions"></slot>
       </div>
     </div>
@@ -13,10 +13,8 @@
       <div class="filter__more" v-show="opened" v-if="withHiddenFilters" :aria-hidden="!opened ? true : null" ref="more">
         <div class="filter__moreInner" ref="moreInner">
           <slot name="hidden-filters"></slot>
-          <div class="filter__btns">
-            <a17-button variant="ghost" type="submit">Apply</a17-button>
-            <a17-button v-if="clearOption" variant="ghost" type="button" @click="clear">Clear</a17-button>
-          </div>
+          <a17-button variant="ghost" type="submit">{{ $trans('filter.apply-btn', 'Apply') }}</a17-button>
+          <a17-button v-if="clearOption" variant="ghost" type="button" @click="clear">{{ $trans('filter.clear-btn', 'Clear') }}</a17-button>
         </div>
       </div>
     </transition>
@@ -36,7 +34,9 @@
       },
       placeholder: {
         type: String,
-        default: 'Search'
+        default () {
+          return this.$trans('filter.search-placeholder', 'Search')
+        }
       },
       closed: {
         type: Boolean,

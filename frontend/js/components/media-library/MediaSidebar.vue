@@ -3,15 +3,15 @@
     <a17-mediasidebar-upload v-if="mediasLoading.length"/>
     <template v-else>
       <div class="mediasidebar__inner" :class="containerClasses">
-        <p v-if="!hasMedia" class="f--note">No file selected</p>
-        <p v-if="hasMultipleMedias" class="mediasidebar__info">{{ medias.length }} files selected <a href="#" @click.prevent="clear" >Clear</a></p>
+        <p v-if="!hasMedia" class="f--note">{{ $trans('media-library.sidebar.empty-text', 'No file selected') }}</p>
+        <p v-if="hasMultipleMedias" class="mediasidebar__info">{{ medias.length }} {{ $trans('media-library.sidebar.files-selected', 'files selected') }} <a href="#" @click.prevent="clear" >{{ $trans('media-library.sidebar.clear', 'Clear') }}</a></p>
 
         <template v-if="hasSingleMedia">
           <img v-if="isImage" :src="firstMedia.thumbnail" class="mediasidebar__img" :alt="firstMedia.original" />
           <p class="mediasidebar__name">{{ firstMedia.name }}</p>
           <ul class="mediasidebar__metadatas">
             <li class="f--small" v-if="firstMedia.size" >File size: {{ firstMedia.size | uppercase }}</li>
-            <li class="f--small" v-if="isImage && (firstMedia.width + firstMedia.height)">Dimensions: {{ firstMedia.width }} &times; {{ firstMedia.height }}</li>
+            <li class="f--small" v-if="isImage && (firstMedia.width + firstMedia.height)">{{ $trans('media-library.sidebar.dimensions', 'Dimensions') }}: {{ firstMedia.width }} &times; {{ firstMedia.height }}</li>
           </ul>
         </template>
 

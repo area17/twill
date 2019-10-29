@@ -56,6 +56,28 @@ return [
         'logout' => 'Logout'
     ],
     'media-library' => [
-        'title' => 'Media Library'
+        'title' => 'Media Library',
+        'images' => 'Images',
+        'files' => 'Files',
+        'filter-select-label' => 'Filter by tag',
+        'sidebar' => [
+            'empty-text' => 'No file selected',
+            'files-selected' => 'files selected',
+            'clear' => 'Clear',
+            'dimensions' => 'Dimensions'
+        ]
+    ],
+    'filter' => [
+        'search-placeholder'=> 'Search',
+        'toggle-label' => 'Filter',
+        'apply-btn' => 'Apply',
+        'clear-btn' => 'Clear'
+    ],
+    'select' => [
+        'empty-text' => 'Sorry, no matching options.'
+    ],
+    'uploader' => [
+        'dropzone-text' => 'or drop new files here',
+        'upload-btn-label' => 'Add new'
     ]
 ];

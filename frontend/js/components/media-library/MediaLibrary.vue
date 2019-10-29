@@ -31,7 +31,7 @@
 
             <div slot="hidden-filters">
               <a17-vselect class="medialibrary__filter-item" ref="filter" name="tag" :options="tags"
-                           placeholder="Filter by tag" :searchable="true" maxHeight="175px"/>
+                           :placeholder="$trans('media-library.filter-select-label', 'Filter by tag')" :searchable="true" maxHeight="175px"/>
             </div>
           </a17-filter>
         </div>
