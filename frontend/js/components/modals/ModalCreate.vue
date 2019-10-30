@@ -10,9 +10,6 @@
         published-name="published"
         :textEnabled="publishedLabel"
         :textDisabled="draftLabel"
-        :create-label="createLabel"
-        :create-another-label="createAnotherLabel"
-        :updateLabel="updateLabel"
       >
       </a17-modal-validation>
     </form>
@@ -34,31 +31,15 @@
       },
       publishedLabel: {
         type: String,
-        default: 'Live'
+        default () {
+          return this.$trans('main.published', 'Live');
+        }
       },
       draftLabel: {
         type: String,
-        default: 'Draft'
-      },
-      createModalTitle: {
-        type: String,
-        default: 'Add new'
-      },
-      updateModalTitle: {
-        type: String,
-        default: 'Update'
-      },
-      createLabel: {
-        type: String,
-        default: 'Create'
-      },
-      createAnotherLabel: {
-        type: String,
-        default: 'Create and add another'
-      },
-      updateLabel: {
-        type: String,
-        default: 'Update'
+        default () {
+          return this.$trans('main.draft', 'Draft');
+        }
       }
     },
     components: {
@@ -72,7 +53,7 @@
         return this.createMode ? this.formCreate : this.action
       },
       modalTitle: function () {
-        return this.createMode ? this.createModalTitle : this.updateModalTitle
+        return this.createMode ? this.$trans('main.published', 'Add new') : this.$trans('main.update-modal-title', 'Update')
       },
       published: function () {
         return !this.createMode && !!this.fieldValueByName('published')
