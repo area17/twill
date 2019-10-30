@@ -104,6 +104,7 @@ return [
         'disabled' => 'Disabled',
         'enabled' => 'Enabled',
         'trash' => 'Trash',
+        'user-image' => 'Image',
         'name' => 'Name',
         'email' => 'Email',
         'role' => 'Role',

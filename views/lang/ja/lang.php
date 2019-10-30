@@ -104,6 +104,7 @@ return [
         'disabled' => '無効',
         'enabled' => '有効化',
         'trash' => 'ゴミ',
+        'user-image' => '画像',
         'name' => '名前',
         'email' => '電子メイル',
         'role' => '役割',
