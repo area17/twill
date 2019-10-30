@@ -115,7 +115,7 @@ class UserController extends ModuleController
         if ($this->config->get('twill.enabled.users-image')) {
             $this->indexColumns = [
                 'image' => [
-                    'title' => '画像',
+                    'title' => __('twill::lang.user-management.user-image'),
                     'thumb' => true,
                     'variant' => [
                         'role' => 'profile',
