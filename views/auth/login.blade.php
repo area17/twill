@@ -1,6 +1,6 @@
 @extends('twill::auth.layout', [
     'route' => route('admin.login'),
-    'screenTitle' => __('twill::auth.login-title')
+    'screenTitle' => __('twill::lang.auth.login-title')
 ])
 
 @section('form')
