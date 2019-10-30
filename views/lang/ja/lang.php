@@ -18,8 +18,7 @@ return [
         'version' => '版'
     ],
     'form' => [
-        'content' => 'コンテンツ',
-        'switcher-title' => '状態'
+        'content' => 'コンテンツ'
     ],
     'listing' => [
         'filter' => [
@@ -120,5 +119,8 @@ return [
         'update-and-close' => '更新して閉じる',
         'update-and-create-new' => '更新して新規作成',
         'cancel' => ' キャンセル'
+    ],
+    'publisher' => [
+        'switcher-title' => '状態'
     ]
 ];
