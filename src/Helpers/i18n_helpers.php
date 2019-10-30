@@ -236,3 +236,162 @@ if (!function_exists('camelCaseToWords')) {
         return ucfirst(strtolower($words));
     }
 }
+
+if (!function_exists('getLanguageNativeNameFromCode')) {
+    /**
+     * @param string $code
+     * @return string
+     */
+    function getLanguageNativeNameFromCode($code)
+    {
+        $codeToLanguageMappings = [
+            'ar' => 
+                [
+                    'english_name' => 'Arabic',
+                    'native_name' => 'العربية',
+                ],
+            'bg' => 
+                [
+                    'english_name' => 'Bulgarian',
+                    'native_name' => 'български език',
+                ],
+            'zh-CN' => 
+                [
+                    'english_name' => 'Chinese (Simplified)',
+                    'native_name' => '简体中文',
+                ],
+            'zh-TW' => 
+                [
+                    'english_name' => 'Chinese (Traditional)',
+                    'native_name' => '繁體中文',
+                ],
+            'cs' => 
+                [
+                    'english_name' => 'Czech',
+                    'native_name' => 'čeština',
+                ],
+            'da' => 
+                [
+                    'english_name' => 'Danish',
+                    'native_name' => 'Dansk',
+                ],
+            'nl' => 
+                [
+                    'english_name' => 'Dutch',
+                    'native_name' => 'Nederlands',
+                ],
+            'en' => 
+                [
+                    'english_name' => 'English',
+                    'native_name' => 'English',
+                ],
+            'fi' => 
+                [
+                    'english_name' => 'Finnish',
+                    'native_name' => 'Suomi',
+                ],
+            'fr' => 
+                [
+                    'english_name' => 'French',
+                    'native_name' => 'Français',
+                ],
+            'de' => 
+                [
+                    'english_name' => 'German',
+                    'native_name' => 'Deutsch',
+                ],
+            'el' => 
+                [
+                    'english_name' => 'Greek',
+                    'native_name' => 'Ελληνικά',
+                ],
+            'hu' => 
+                [
+                    'english_name' => 'Hungarian',
+                    'native_name' => 'Magyar',
+                ],
+            'it' => 
+                [
+                    'english_name' => 'Italian',
+                    'native_name' => 'Italiano',
+                ],
+            'ja' => 
+                [
+                    'english_name' => 'Japanese',
+                    'native_name' => '日本語',
+                ],
+            'ko' => 
+                [
+                    'english_name' => 'Korean',
+                    'native_name' => '한국어',
+                ],
+            'no' => 
+                [
+                    'english_name' => 'Norwegian',
+                    'native_name' => 'Norsk',
+                ],
+            'pl' => 
+                [
+                    'english_name' => 'Polish',
+                    'native_name' => 'Polski',
+                ],
+            'pt' => 
+                [
+                    'english_name' => 'Portuguese',
+                    'native_name' => 'Português',
+                ],
+            'pt-BR' => 
+                [
+                    'english_name' => 'Portuguese-Brazil',
+                    'native_name' => 'Português-Brasil',
+                ],
+            'ro' => 
+                [
+                    'english_name' => 'Romanian',
+                    'native_name' => 'Română',
+                ],
+            'ru' => 
+                [
+                    'english_name' => 'Russian',
+                    'native_name' => 'Русский',
+                ],
+            'es' => 
+                [
+                    'english_name' => 'Spanish-Spain',
+                    'native_name' => 'Español-España',
+                ],
+            'es-419' => 
+                [
+                    'english_name' => 'Spanish-Latin America',
+                    'native_name' => 'Español-Latinoamérica',
+                ],
+            'sv' => 
+                [
+                    'english_name' => 'Swedish',
+                    'native_name' => 'Svenska',
+                ],
+            'th' => 
+                [
+                    'english_name' => 'Thai',
+                    'native_name' => 'ไทย',
+                ],
+            'tr' => 
+                [
+                    'english_name' => 'Turkish',
+                    'native_name' => 'Türkçe',
+                ],
+            'uk' => 
+                [
+                    'english_name' => 'Ukrainian',
+                    'native_name' => 'Українська',
+                ],
+            'vn' => 
+                [
+                    'english_name' => 'Vietnamese',
+                    'native_name' => 'Tiếng Việt',
+                ],
+        ];
+
+        return $codeToLanguageMappings[$code]['native_name'] ?? $code ;
+    }
+}

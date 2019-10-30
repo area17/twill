@@ -31,6 +31,7 @@ class User extends AuthenticatableContract
         'description',
         'google_2fa_enabled',
         'google_2fa_secret',
+        'language'
     ];
 
     protected $dates = [

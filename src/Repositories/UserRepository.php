@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories;
 
+use App;
 use A17\Twill\Models\User;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleOauth;
@@ -133,6 +134,12 @@ class UserRepository extends ModuleRepository
     public function afterSave($user, $fields)
     {
         $this->sendWelcomeEmail($user);
+        $language = $fields['language'];
+        if ($language !== App::getLocale()) {
+            $user->language = $language;
+            session()->put('twill_locale', $language);
+            $user->save();
+        }
         parent::afterSave($user, $fields);
     }
 

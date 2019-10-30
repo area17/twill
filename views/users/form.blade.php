@@ -1,7 +1,7 @@
 @extends('twill::layouts.form', [
     'contentFieldsetLabel' => __('twill::lang.user-management.content-fieldset-label'),
     'editModalTitle' => __('twill::lang.user-management.edit-modal-title'),
-    'reloadOnSuccess' => true
+    'reloadOnSuccess' => false
 ])
 
 @php
@@ -44,6 +44,7 @@
             'label' => 'Description'
         ])
     @endif
+
     @if($with2faSettings ?? false)
         @formField('checkbox', [
             'name' => 'google_2fa_enabled',
@@ -76,6 +77,23 @@
             @endcomponent
         @endunless
     @endif
+
+    @formField('select', [
+      'name' => 'language',
+      'label' => 'Language',
+      'placeholder' => 'Select a language',
+      'default' => App::getLocale(),
+      'options' => [
+          [
+              'value' => 'en',
+              'label' => getLanguageNativeNameFromCode('en')
+          ],
+          [
+              'value' => 'ja',
+              'label' => getLanguageNativeNameFromCode('ja')
+          ]
+      ]
+    ])
 @stop
 
 @push('vuexStore')
