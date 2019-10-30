@@ -95,5 +95,8 @@ return [
     'browser' => [
         'attach' => 'Attach',
         'add-label' => 'Add'
+    ],
+    'files' => [
+        'add-label' => 'Add'
     ]
 ];
