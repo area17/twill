@@ -28,7 +28,7 @@
         :wide="{{ json_encode($wide) }}"
         endpoint="{{ $endpoint }}"
         :endpoints="{{ json_encode($endpoints) }}"
-        modal-title="Attach {{ strtolower($label) }}"
+        modal-title="@lang('twill::lang.fields.browser.attach') {{ strtolower($label) }}"
         :draggable="{{ json_encode($sortable) }}"
     >{{ $note }}</a17-browserfield>
 </a17-inputframe>
