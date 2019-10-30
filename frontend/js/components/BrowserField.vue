@@ -75,7 +75,7 @@
         return this.max - this.items.length
       },
       addLabel: function () {
-        return 'Add ' + this.itemLabel
+        return this.$trans('fields.browser.add-label', 'Add') + ' ' + this.itemLabel
       },
       browserTitle: function () {
         return this.modalTitle !== '' ? this.modalTitle : this.addLabel

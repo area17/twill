@@ -91,5 +91,9 @@ return [
             'create-another' => 'Create another',
             'delete' => 'Delete'
         ]
+    ],
+    'browser' => [
+        'attach' => 'Attach',
+        'add-label' => 'Add'
     ]
 ];

@@ -90,6 +90,10 @@ return [
             'open-in-editor' => 'エディターで開く',
             'create-another' => '別のものを作成',
             'delete' => '削除'
+        ],
+        'browser' => [
+            'attach' => '付ける',
+            'add-label' => '追加'
         ]
     ]
 ];
