@@ -79,5 +79,10 @@ return [
     'uploader' => [
         'dropzone-text' => 'or drop new files here',
         'upload-btn-label' => 'Add new'
+    ],
+    'fields' => [
+        'medias' => [
+            'btn-label' => 'Attach image'
+        ]
     ]
 ];
