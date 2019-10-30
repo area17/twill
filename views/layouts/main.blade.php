@@ -83,7 +83,7 @@
             window['{{ config('twill.js_namespace') }}'].STORE.medias = {};
             window['{{ config('twill.js_namespace') }}'].STORE.medias.types = [];
             window['{{ config('twill.js_namespace') }}'].STORE.languages = {!! json_encode(getLanguagesForVueStore($form_fields ?? [], $translate ?? false)) !!};
-            window['{{ config('twill.js_namespace') }}'].lang = {!! json_encode($lang) !!};
+            window['{{ config('twill.js_namespace') }}'].twillLocalization = {!! json_encode($twillLocalization) !!};
 
             @if (config('twill.enabled.media-library'))
                 window['{{ config('twill.js_namespace') }}'].STORE.medias.types.push({

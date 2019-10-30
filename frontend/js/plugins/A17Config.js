@@ -100,7 +100,7 @@ const A17Config = {
     Vue.prototype.$http = axios
 
     Vue.prototype.$trans = function (key, defaultValue) {
-      return get(window[process.env.VUE_APP_NAME].lang, key, defaultValue)
+      return get(window[process.env.VUE_APP_NAME].twillLocalization.lang, key, defaultValue)
     }
 
     axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'

@@ -28,8 +28,13 @@ class Localization
     {
         $currentLang = Lang::get('twill::lang', [], App::getLocale());
         $fallbackLang = Lang::get('twill::lang', [], config('app.fallback_locale', 'en'));
-        $lang = array_replace_recursive($fallbackLang, $currentLang);
-
-        $view->with(['lang' => $lang]);
+        $lang = array_replace_recursive($currentLang, $fallbackLang);
+        $twillLocalization = [
+            'locale' => App::getLocale(),
+            'fallback_locale' => config('app.fallback_locale', 'en'),
+            'lang' => $lang
+        ];
+        
+        $view->with(['twillLocalization' => $twillLocalization]);
     }
 }
