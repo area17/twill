@@ -18,8 +18,7 @@ return [
         'version' => 'Version'
     ],
     'form' => [
-        'content' => 'Content',
-        'switcher-title' => 'Status'
+        'content' => 'Content'
     ],
     'listing' => [
         'filter' => [
@@ -120,5 +119,8 @@ return [
         'update-and-close' => 'Update and close',
         'update-and-create-new' => 'Update and create new',
         'cancel' => 'Cancel'
+    ],
+    'publisher' => [
+        'switcher-title' => 'Status'
     ]
 ];

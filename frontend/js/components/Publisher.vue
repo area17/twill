@@ -1,6 +1,6 @@
 <template>
   <div class="publisher__wrapper">
-      <a17-switcher :title="switcherTitle" name="publish_state" v-if="withPublicationToggle" :textEnabled="textEnabled" :textDisabled="textDisabled"></a17-switcher>
+      <a17-switcher :title="$trans('publisher.switcher-title', 'Status')" name="publish_state" v-if="withPublicationToggle" :textEnabled="textEnabled" :textDisabled="textDisabled"></a17-switcher>
       <slot></slot>
       <a17-reviewaccordion  v-if="reviewProcess && reviewProcess.length" :options="reviewProcess" name="review_process" :value="reviewProcessCompleteValues" :open="openStates['A17Reviewaccordion']" @open="openCloseAccordion">Review status</a17-reviewaccordion>
       <a17-radioaccordion  v-if="visibility && visibilityOptions && visibilityOptions.length" :radios="visibilityOptions" name="visibility" :value="visibility" :open="openStates['A17Radioaccordion']" @open="openCloseAccordion" @change="updateVisibility">Visibility</a17-radioaccordion>
@@ -52,10 +52,6 @@
       showLanguages: {
         type: Boolean,
         default: true
-      },
-      switcherTitle: {
-        type: String,
-        default: 'Status'
       }
     },
     data: function () {
