@@ -137,7 +137,6 @@ class UserRepository extends ModuleRepository
         $language = $fields['language'];
         if ($language !== App::getLocale()) {
             $user->language = $language;
-            session()->put('twill_locale', $language);
             $user->save();
         }
         parent::afterSave($user, $fields);
