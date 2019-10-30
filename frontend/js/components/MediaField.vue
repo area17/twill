@@ -123,7 +123,9 @@
       },
       btnLabel: {
         type: String,
-        default: 'Attach image'
+        default () {
+          return this.$trans('fields.medias.btn-label', 'Attach image')
+        }
       },
       hover: {
         type: Boolean,

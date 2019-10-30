@@ -79,5 +79,10 @@ return [
     'uploader' => [
         'dropzone-text' => 'ここに新しいファイルをドロップします',
         'upload-btn-label' => '追加'
+    ],
+    'fields' => [
+        'medias' => [
+            'btn-label' => '画像を添付'
+        ]
     ]
 ];
