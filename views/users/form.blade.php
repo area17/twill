@@ -1,7 +1,7 @@
 @extends('twill::layouts.form', [
     'contentFieldsetLabel' => __('twill::lang.user-management.content-fieldset-label'),
     'editModalTitle' => __('twill::lang.user-management.edit-modal-title'),
-    'reloadOnSuccess' => false
+    'reloadOnSuccess' => true
 ])
 
 @php

@@ -51,7 +51,7 @@
                     </aside>
                     <div class="col col--primary">
                         @endif
-                        <a17-activity-feed empty-message="{{ $emptyMessage }}" all-activity-label="@lang('twill::lang.dashboard.all-activity')" my-activity-label="@lang('twill::lang.dashboard.my-activity')"></a17-activity-feed>
+                        <a17-activity-feed empty-message="{{ $emptyMessage }}"></a17-activity-feed>
                         @if(($facts ?? false) || (!$drafts->isEmpty()))
                     </div>
                 </div>
