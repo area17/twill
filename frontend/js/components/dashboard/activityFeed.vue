@@ -43,11 +43,11 @@
       return {
         navFilters: [
           {
-            name: 'All activity',
+            name: this.$trans('dashboard.all-activity', 'All activity'),
             slug: 'all'
           },
           {
-            name: 'My activity',
+            name: this.$trans('dashboard.all-activity', 'My activity'),
             slug: 'mine'
           }
         ],

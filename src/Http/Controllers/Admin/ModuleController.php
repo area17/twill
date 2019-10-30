@@ -945,7 +945,7 @@ abstract class ModuleController extends Controller
         if ($this->moduleHas('translations')) {
             array_push($tableColumns, [
                 'name' => 'languages',
-                'label' => __('twill::listing.languages'),
+                'label' => __('twill::lang.listing.languages'),
                 'visible' => $visibleColumns ? in_array('languages', $visibleColumns) : true,
                 'optional' => true,
                 'sortable' => false,
