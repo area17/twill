@@ -2,10 +2,10 @@
   <div class="modalValidation">
     <a17-inputframe>
       <template v-if="mode === 'create'">
-        <a17-button type="submit" name="create" variant="validate" :disabled="isDisabled">{{ createLabel }}</a17-button>
-        <a17-button type="submit" name="create-another" v-if="!isDisabled" variant="aslink-grey"><span>{{ createAnotherLabel }}</span></a17-button>
+        <a17-button type="submit" name="create" variant="validate" :disabled="isDisabled">{{ $trans('modal.create.button', 'Create') }}</a17-button>
+        <a17-button type="submit" name="create-another" v-if="!isDisabled" variant="aslink-grey"><span>{{ $trans('modal.create.create-another', 'Create and add another') }}</span></a17-button>
       </template>
-      <a17-button type="submit" name="update" v-else="" variant="validate" :disabled="isDisabled">{{ updateLabel }}</a17-button>
+      <a17-button type="submit" name="update" v-else="" variant="validate" :disabled="isDisabled">{{ $trans('modal.update.button', 'Update') }}</a17-button>
     </a17-inputframe>
     <label v-if="activePublishState" :for="publishedName" class="switcher__button" :class="switcherClasses">
       <span v-if="isChecked" class="switcher__label">{{ textEnabled }}</span>
@@ -55,18 +55,6 @@
       textDisabled: {
         type: String,
         default: 'Draft'
-      },
-      createLabel: {
-        type: String,
-        default: 'Create'
-      },
-      createAnotherLabel: {
-        type: String,
-        default: 'Create and add another'
-      },
-      updateLabel: {
-        type: String,
-        default: 'Update'
       }
     },
     components: {
