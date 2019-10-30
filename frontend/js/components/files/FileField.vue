@@ -96,7 +96,7 @@
         }
       },
       addLabel: function () {
-        return 'Add ' + this.itemLabel
+        return this.$trans('fields.files.add-label', 'Add') + ' ' + this.itemLabel
       },
       ...mapState({
         selectedFiles: state => state.mediaLibrary.selected

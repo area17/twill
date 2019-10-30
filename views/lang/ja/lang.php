@@ -94,6 +94,9 @@ return [
         'browser' => [
             'attach' => '付ける',
             'add-label' => '追加'
+        ],
+        'files' => [
+            'add-label' => '追加'
         ]
     ]
 ];
