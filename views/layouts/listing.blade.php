@@ -107,14 +107,6 @@
                 ref="editionModal"
                 form-create="{{ $storeUrl }}"
                 v-on:reload="reloadDatas"
-                create-modal-title="@lang('twill::lang.modal.create.title')"
-                update-modal-title="@lang('twill::lang.modal.update.title')"
-                published-label="@lang('twill::lang.main.published')"
-                draft-label="@lang('twill::lang.main.draft')"
-                create-label="@lang('twill::lang.modal.create.button')"
-                create-another-label="@lang('twill::lang.modal.create.create-another')"
-                update-label="@lang('twill::lang.modal.update.button')"
-
                 @if ($customPublishedLabel ?? false) published-label="{{ $customPublishedLabel }}" @endif
                 @if ($customDraftLabel ?? false) draft-label="{{ $customDraftLabel }}" @endif
             >
