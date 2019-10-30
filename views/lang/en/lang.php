@@ -98,5 +98,27 @@ return [
     ],
     'files' => [
         'add-label' => 'Add'
+    ],
+    'user-management' => [
+        'users' => 'Users',
+        'active' => 'Active',
+        'disabled' => 'Disabled',
+        'enabled' => 'Enabled',
+        'trash' => 'Trash',
+        'name' => 'Name',
+        'email' => 'Email',
+        'role' => 'Role',
+        'content-fieldset-label' => 'User settings',
+        'edit-modal-title' => 'Edit user name',
+        'update-disabled-user' => 'Update disabled user',
+        'update-disabled-and-close' => 'Update disabled and close',
+        'update-disabled-user-and-create-new' => 'Update disabled user and create new',
+        'enable-user' => 'Enable user',
+        'enable-user-and-close' => 'Enable user and close',
+        'enable-user-and-create-new' => 'Enable user and create new',
+        'update' => 'Update',
+        'update-and-close' => 'Update and close',
+        'update-and-create-new' => 'Update and create new',
+        'cancel' => 'Cancel'
     ]
 ];

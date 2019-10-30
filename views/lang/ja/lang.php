@@ -98,5 +98,27 @@ return [
         'files' => [
             'add-label' => '追加'
         ]
+    ],
+    'user-management' => [
+        'users' => 'ユーザー',
+        'active' => 'アクティブ',
+        'disabled' => '無効',
+        'enabled' => '有効化',
+        'trash' => 'ゴミ',
+        'name' => '名前',
+        'email' => '電子メイル',
+        'role' => '役割',
+        'content-fieldset-label' => 'ユーザー設定',
+        'edit-modal-title' => 'ユーザー名を編集',
+        'update-disabled-user' => '無効なユーザーを更新',
+        'update-disabled-and-close' => '更新を無効にして閉じる',
+        'update-disabled-user-and-create-new' => '更新無効ユーザーと新規作成',
+        'enable-user' => 'ユーザーを有効にする',
+        'enable-user-and-close' => 'ユーザーを有効にして閉じる',
+        'enable-user-and-create-new' => 'ユーザーを有効にして新規作成',
+        'update' => '更新',
+        'update-and-close' => '更新して閉じる',
+        'update-and-create-new' => '更新して新規作成',
+        'cancel' => ' キャンセル'
     ]
 ];

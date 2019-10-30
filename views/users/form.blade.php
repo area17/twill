@@ -1,6 +1,6 @@
 @extends('twill::layouts.form', [
-    'contentFieldsetLabel' => 'User settings',
-    'editModalTitle' => 'Edit user name',
+    'contentFieldsetLabel' => __('twill::lang.user-management.content-fieldset-label'),
+    'editModalTitle' => __('twill::lang.user-management.edit-modal-title'),
     'reloadOnSuccess' => true
 ])
 
@@ -11,14 +11,14 @@
 @section('contentFields')
     @formField('input', [
         'name' => 'email',
-        'label' => 'Email'
+        'label' => __('twill::lang.user-management.email')
     ])
 
     @can('manage-users')
         @if(!$isSuperAdmin && ($item->id !== $currentUser->id))
             @formField('select', [
                 'name' => "role",
-                'label' => "Role",
+                'label' => __('twill::lang.user-management.role'),
                 'options' => $roleList,
                 'placeholder' => 'Select a role'
             ])
@@ -83,55 +83,55 @@
         draft: [
           {
             name: 'save',
-            text: 'Update disabled user'
+            text: {!! "'" . __('twill::lang.user-management.update-disabled-user') . "'" !!}
           },
           {
             name: 'save-close',
-            text: 'Update disabled and close'
+            text: {!! "'" . __('twill::lang.user-management.update-disabled-and-close') . "'" !!}
           },
           {
             name: 'save-new',
-            text: 'Update disabled user and create new'
+            text: {!! "'" . __('twill::lang.user-management.update-disabled-user-and-create-new') . "'" !!}
           },
           {
             name: 'cancel',
-            text: 'Cancel'
+            text: {!! "'" . __('twill::lang.user-management.cancel') . "'" !!}
           }
         ],
         live: [
           {
             name: 'publish',
-            text: 'Enable user'
+            text: {!! "'" . __('twill::lang.user-management.enable-user') . "'" !!}
           },
           {
             name: 'publish-close',
-            text: 'Enable user and close'
+            text: {!! "'" . __('twill::lang.user-management.enable-user-and-close') . "'" !!}
           },
           {
             name: 'publish-new',
-            text: 'Enable user and create new'
+            text: {!! "'" . __('twill::lang.user-management.enable-user-and-create-new') . "'" !!}
           },
           {
             name: 'cancel',
-            text: 'Cancel'
+            text: {!! "'" . __('twill::lang.user-management.cancel') . "'" !!}
           }
         ],
         update: [
           {
             name: 'update',
-            text: 'Update'
+            text: {!! "'" . __('twill::lang.user-management.update') . "'" !!}
           },
           {
             name: 'update-close',
-            text: 'Update and close'
+            text: {!! "'" . __('twill::lang.user-management.update-and-close') . "'" !!}
           },
           {
             name: 'update-new',
-            text: 'Update and create new'
+            text: {!! "'" . __('twill::lang.user-management.update-and-create-new') . "'" !!}
           },
           {
             name: 'cancel',
-            text: 'Cancel'
+            text: {!! "'" . __('twill::lang.user-management.cancel') . "'" !!}
           }
         ]
       }
