@@ -37,25 +37,17 @@
       emptyMessage: {
         type: String,
         default: 'You don\'t have any activity yet.'
-      },
-      allActivityLabel: {
-        type: String,
-        default: 'All activity'
-      },
-      myActivityLabel: {
-        type: String,
-        default: 'My activity'
       }
     },
     data: function () {
       return {
         navFilters: [
           {
-            name: this.allActivityLabel,
+            name: 'All activity',
             slug: 'all'
           },
           {
-            name: this.myActivityLabel,
+            name: 'My activity',
             slug: 'mine'
           }
         ],
