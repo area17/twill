@@ -83,6 +83,13 @@ return [
     'fields' => [
         'medias' => [
             'btn-label' => 'Attach image'
+        ],
+        'block-editor' => [
+            'collapse-all' => 'Collapse all',
+            'expend-all' => 'Expend all',
+            'open-in-editor' => 'Open in editor',
+            'create-another' => 'Create another',
+            'delete' => 'Delete'
         ]
     ]
 ];

@@ -83,6 +83,13 @@ return [
     'fields' => [
         'medias' => [
             'btn-label' => '画像を添付'
+        ],
+        'block-editor' => [
+            'collapse-all' => 'すべて折りたたむ',
+            'expend-all' => 'すべて展開',
+            'open-in-editor' => 'エディターで開く',
+            'create-another' => '別のものを作成',
+            'delete' => '削除'
         ]
     ]
 ];
