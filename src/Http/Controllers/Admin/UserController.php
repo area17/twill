@@ -64,23 +64,7 @@ class UserController extends ModuleController
     /**
      * @var array
      */
-    protected $indexColumns = [
-        'name' => [
-            'title' => 'Name',
-            'field' => 'name',
-        ],
-        'email' => [
-            'title' => 'Email',
-            'field' => 'email',
-            'sort' => true,
-        ],
-        'role_value' => [
-            'title' => 'Role',
-            'field' => 'role_value',
-            'sort' => true,
-            'sortKey' => 'role',
-        ],
-    ];
+    protected $indexColumns;
 
     /**
      * @var array
@@ -110,10 +94,28 @@ class UserController extends ModuleController
         $this->middleware('can:edit-user,user', ['only' => ['store', 'edit', 'update', 'destroy', 'bulkDelete', 'restore', 'bulkRestore']]);
         $this->middleware('can:publish-user', ['only' => ['publish']]);
 
+        $this->indexColumns = [
+            'name' => [
+                'title' => __('twill::lang.user-management.name'),
+                'field' => 'name',
+            ],
+            'email' => [
+                'title' => __('twill::lang.user-management.email'),
+                'field' => 'email',
+                'sort' => true,
+            ],
+            'role_value' => [
+                'title' => __('twill::lang.user-management.role'),
+                'field' => 'role_value',
+                'sort' => true,
+                'sortKey' => 'role',
+            ],
+        ];
+
         if ($this->config->get('twill.enabled.users-image')) {
             $this->indexColumns = [
                 'image' => [
-                    'title' => 'Image',
+                    'title' => '画像',
                     'thumb' => true,
                     'variant' => [
                         'role' => 'profile',
@@ -136,7 +138,7 @@ class UserController extends ModuleController
             'roleList' => Collection::make(UserRole::toArray()),
             'single_primary_nav' => [
                 'users' => [
-                    'title' => 'Users',
+                    'title' => __('twill::lang.user-management.users'),
                     'module' => true,
                 ],
             ],
@@ -166,12 +168,12 @@ class UserController extends ModuleController
             'roleList' => Collection::make(UserRole::toArray()),
             'single_primary_nav' => [
                 'users' => [
-                    'title' => 'Users',
+                    'title' => __('twill::lang.user-management.users'),
                     'module' => true,
                 ],
             ],
-            'customPublishedLabel' => 'Enabled',
-            'customDraftLabel' => 'Disabled',
+            'customPublishedLabel' => __('twill::lang.user-management.enabled'),
+            'customDraftLabel' => __('twill::lang.user-management.disabled'),
             'with2faSettings' => $with2faSettings,
             'qrCode' => $qrCode ?? null,
         ];
@@ -195,18 +197,18 @@ class UserController extends ModuleController
         $statusFilters = [];
 
         array_push($statusFilters, [
-            'name' => 'Active',
+            'name' => __('twill::lang.user-management.active'),
             'slug' => 'published',
             'number' => $this->repository->getCountByStatusSlug('published'),
         ], [
-            'name' => 'Disabled',
+            'name' => __('twill::lang.user-management.disabled'),
             'slug' => 'draft',
             'number' => $this->repository->getCountByStatusSlug('draft'),
         ]);
 
         if ($this->getIndexOption('restore')) {
             array_push($statusFilters, [
-                'name' => 'Trash',
+                'name' => __('twill::lang.user-management.trash'),
                 'slug' => 'trash',
                 'number' => $this->repository->getCountByStatusSlug('trash'),
             ]);
