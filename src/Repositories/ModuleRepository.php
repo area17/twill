@@ -641,14 +641,14 @@ abstract class ModuleRepository
      */
     public function order($query, array $orders = [])
     {
-        foreach ($orders as $column => $direction) {
-            $query->orderBy($column, $direction);
-        }
-
         foreach (class_uses_recursive(get_called_class()) as $trait) {
             if (method_exists(get_called_class(), $method = 'order' . class_basename($trait))) {
                 $this->$method($query, $orders);
             }
+        }
+
+        foreach ($orders as $column => $direction) {
+            $query->orderBy($column, $direction);
         }
 
         return $query;
