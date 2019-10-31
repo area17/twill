@@ -93,19 +93,19 @@ class UserController extends ModuleController
         $this->middleware('can:manage-users', ['only' => ['index']]);
         $this->middleware('can:edit-user,user', ['only' => ['store', 'edit', 'update', 'destroy', 'bulkDelete', 'restore', 'bulkRestore']]);
         $this->middleware('can:publish-user', ['only' => ['publish']]);
-
+        
         $this->indexColumns = [
             'name' => [
-                'title' => __('twill::lang.user-management.name'),
+                'title' => 'Name',
                 'field' => 'name',
             ],
             'email' => [
-                'title' => __('twill::lang.user-management.email'),
+                'title' => 'Email',
                 'field' => 'email',
                 'sort' => true,
             ],
             'role_value' => [
-                'title' => __('twill::lang.user-management.role'),
+                'title' => 'Role',
                 'field' => 'role_value',
                 'sort' => true,
                 'sortKey' => 'role',
@@ -115,7 +115,7 @@ class UserController extends ModuleController
         if ($this->config->get('twill.enabled.users-image')) {
             $this->indexColumns = [
                 'image' => [
-                    'title' => __('twill::lang.user-management.user-image'),
+                    'title' => 'Image',
                     'thumb' => true,
                     'variant' => [
                         'role' => 'profile',
