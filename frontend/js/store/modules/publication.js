@@ -26,55 +26,55 @@ const state = {
     draft: [
       {
         name: 'save',
-        text: 'Save as draft'
+        text: window.$trans('publisher.save', 'Save as draft')
       },
       {
         name: 'save-close',
-        text: 'Save as draft and close'
+        text: window.$trans('publisher.save-close', 'Save as draft and close')
       },
       {
         name: 'save-new',
-        text: 'Save as draft and create new'
+        text: window.$trans('publisher.save-new', 'Save as draft and create new')
       },
       {
         name: 'cancel',
-        text: 'Cancel'
+        text: window.$trans('publisher.cancel', 'Cancel')
       }
     ],
     live: [
       {
         name: 'publish',
-        text: 'Publish'
+        text: window.$trans('publisher.publish', 'Publish')
       },
       {
         name: 'publish-close',
-        text: 'Publish and close'
+        text: window.$trans('publisher.publish-close', 'Publish and close')
       },
       {
         name: 'publish-new',
-        text: 'Publish and create new'
+        text: window.$trans('publisher.publish-new', 'Publish and create new')
       },
       {
         name: 'cancel',
-        text: 'Cancel'
+        text: window.$trans('publisher.cancel', 'Cancel')
       }
     ],
     update: [
       {
         name: 'update',
-        text: 'Update'
+        text: window.$trans('publisher.update', 'Update')
       },
       {
         name: 'update-close',
-        text: 'Update and close'
+        text: window.$trans('publisher.update-close', 'Update and close')
       },
       {
         name: 'update-new',
-        text: 'Update and create new'
+        text: window.$trans('publisher.update-new', 'Update and create new')
       },
       {
         name: 'cancel',
-        text: 'Cancel'
+        text: window.$trans('publisher.cancel', 'Cancel')
       }
     ]
   }

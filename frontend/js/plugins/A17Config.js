@@ -96,7 +96,7 @@ const A17Config = {
     // Configurations
     Vue.config.productionTip = false
     Vue.prototype.$http = axios
-    Vue.prototype.$trans = function (key, defaultValue) {
+    window.$trans = Vue.prototype.$trans = function (key, defaultValue) {
       return get(window.twillLocalization.lang, key, defaultValue)
     }
 

@@ -122,6 +122,16 @@ return [
         'cancel' => ' キャンセル'
     ],
     'publisher' => [
-        'switcher-title' => '状態'
+        'switcher-title' => '状態',
+        'save' => '下書きとして保存',
+        'save-close' => '下書きとして保存して閉じる',
+        'save-new' => '下書きとして保存して新規作成',
+        'publish' => '公開する',
+        'publish-close' => '公開して閉じる',
+        'publish-new' => '新しい公開と作成',
+        'update' => '更新',
+        'update-close' => '更新して閉じる',
+        'update-new' => '更新して新規作成',
+        'cancel' => 'キャンセル'
     ]
 ];
