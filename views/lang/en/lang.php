@@ -89,14 +89,14 @@ return [
             'open-in-editor' => 'Open in editor',
             'create-another' => 'Create another',
             'delete' => 'Delete'
+        ],
+        'browser' => [
+            'attach' => 'Attach',
+            'add-label' => 'Add'
+        ],
+        'files' => [
+            'add-label' => 'Add'
         ]
-    ],
-    'browser' => [
-        'attach' => 'Attach',
-        'add-label' => 'Add'
-    ],
-    'files' => [
-        'add-label' => 'Add'
     ],
     'user-management' => [
         'users' => 'Users',
