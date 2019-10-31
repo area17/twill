@@ -99,7 +99,7 @@ const A17Config = {
     Vue.config.devtools = true
     Vue.prototype.$http = axios
 
-    Vue.prototype.$trans = function (key, defaultValue) {
+    window.$trans = Vue.prototype.$trans = function (key, defaultValue) {
       return get(window[process.env.VUE_APP_NAME].twillLocalization.lang, key, defaultValue)
     }
 

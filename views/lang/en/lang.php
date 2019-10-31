@@ -122,6 +122,16 @@ return [
         'cancel' => 'Cancel'
     ],
     'publisher' => [
-        'switcher-title' => 'Status'
+        'switcher-title' => 'Status',
+        'save' => 'Save as draft',
+        'save-close' => 'Save as draft and close',
+        'save-new' => 'Save as draft and create new',
+        'publish' => 'Publish',
+        'publish-close' => 'Publish and close',
+        'publish-new' => 'Publish and create new',
+        'update' => 'Update',
+        'update-close' => 'Update and close',
+        'update-new' => 'Update and create new',
+        'cancel' => 'Cancel'
     ]
 ];

@@ -32,13 +32,13 @@
       publishedLabel: {
         type: String,
         default () {
-          return this.$trans('main.published', 'Live');
+          return this.$trans('main.published', 'Live')
         }
       },
       draftLabel: {
         type: String,
         default () {
-          return this.$trans('main.draft', 'Draft');
+          return this.$trans('main.draft', 'Draft')
         }
       }
     },
