@@ -41,8 +41,8 @@ class SignAzureUpload
             }
 
             $this->blobSharedAccessSignatureHelper = new BlobSharedAccessSignatureHelper(
-                $this->config->get('filesystems.disks.' . $disk . '.account.name'),
-                $this->config->get('filesystems.disks.' . $disk . '.account.key')
+                $this->config->get('filesystems.disks.' . $disk . '.name'),
+                $this->config->get('filesystems.disks.' . $disk . '.key')
             );
 
             $now = new DateTime("now", new DateTimeZone("UTC"));
