@@ -759,7 +759,8 @@ If you need medias fields to be translatable (ie. publishers can select differen
 ])
 ```
 
-By default, date_picker allows you to pick date and time. You can disable the time picker element by setting 'withTime' key to false. 
+By default, date_picker allows you to pick date and time. You can disable the time picker element by setting 'withTime' key to false.
+
 List of options: withTime, allowInput, allowClear, minDate, maxDate, required, note. 
 
 
