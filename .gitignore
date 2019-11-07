@@ -9,3 +9,4 @@ frontend/js/components/blocks/customs/*
 public/
 tests/coverage
 tests/storage
+.phpunit.result.cache
