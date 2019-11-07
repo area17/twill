@@ -36,15 +36,19 @@ $azureConfig = [
     'use_https' => env('AZURE_UPLOADER_USE_HTTPS', env('AZURE_USE_HTTPS', true)),
 ];
 
+$mediaConfigByEndpointType = [
+    'local' => $mediaLocalConfig,
+    's3' => $s3Config,
+    'azure' => $azureConfig,
+];
+
+$fileConfigByEndpointType = [
+    'local' => $fileLocalConfig,
+    's3' => $s3Config,
+    'azure' => $azureConfig,
+];
+
 return [
-    'twill_media_library' => config('twill.media_library.endpoint_type') === 'local'
-        ? $mediaLocalConfig
-        : config('twill.media_library.endpoint_type') === 'azure'
-            ? $azureConfig
-            : $s3Config,
-    'twill_file_library' => config('twill.file_library.endpoint_type') === 'local'
-        ? $fileLocalConfig
-        : config('twill.file_library.endpoint_type') === 'azure'
-            ? $azureConfig
-            : $s3Config,
+    'twill_media_library' => $mediaConfigByEndpointType[config('twill.media_library.endpoint_type')],
+    'twill_file_library' => $fileConfigByEndpointType[config('twill.file_library.endpoint_type')],
 ];

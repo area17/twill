@@ -11,20 +11,24 @@ class FileRequest extends Request
      */
     public function rules()
     {
-        return config('twill.file_library.endpoint_type') === 'local'
-            ? [
-                'qqfilename' => 'required',
-                'qqfile' => 'required',
-                'qqtotalfilesize' => 'required',
-            ]
-            : config('twill.file_library.endpoint_type') === 'azure'
-                ? [
+        switch (config('twill.file_library.endpoint_type')) {
+            case 'local':
+                return [
+                    'qqfilename' => 'required',
+                    'qqfile' => 'required',
+                    'qqtotalfilesize' => 'required',
+                ];
+            case 'azure':
+                return [
                     'blob' => 'required',
                     'name' => 'required',
-                ]
-                : [
+                ];
+            case 's3':
+            default:
+                return [
                     'key' => 'required',
                     'name' => 'required',
                 ];
+        }
     }
 }
