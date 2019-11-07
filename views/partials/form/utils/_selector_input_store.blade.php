@@ -9,7 +9,6 @@ window.STORE.form.fields.push({
                     @endphp
                 @endif
                 @if (is_numeric($formFieldsValue)) {{ $formFieldsValue }}
-                @elseif (is_string($formFieldsValue)) '{{ $formFieldsValue }}'
                 @else {!! $formFieldsValue !!}
                 @endif
            @else
