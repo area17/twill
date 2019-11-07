@@ -120,6 +120,16 @@ $height__nav: 60px;
     a .icon {
       color:$color__background;
     }
+
+    .dropdown__inner {
+      a {
+        color: $color__text--light;
+
+        &:hover {
+          color: $color__text;
+        }
+      }
+    }
   }
 
   @include breakpoint('large+') {
