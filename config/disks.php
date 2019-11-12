@@ -1,7 +1,7 @@
 <?php
 
 $localRootPrefix = storage_path('app/public/');
-$localUrlPrefix = request()->getScheme() . '://' . env('APP_URL') . '/storage/';
+$localUrlPrefix = request()->getScheme() . '://' . str_replace(['http://', 'https://'], '',env('APP_URL')) . '/storage/';
 
 $mediaLocalConfig = [
     'driver' => 'local',
