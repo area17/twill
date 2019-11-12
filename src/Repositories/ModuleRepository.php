@@ -880,7 +880,7 @@ abstract class ModuleRepository
             $model = ucfirst(Str::singular($relation));
         }
 
-        return App::get(Config::get('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
+        return App::make(Config::get('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
     }
 
     /**
