@@ -1,14 +1,12 @@
 const path = require('path')
-const fs = require('fs')
 const isProd = process.env.NODE_ENV === 'production'
 
 // const customConfig = require(path.resolve('../../'))
 // Define global vue variables
 process.env.VUE_APP_NAME = require('./package').name.toUpperCase()
-process.env.VUE_APP_VERSION = fs.readFileSync('./VERSION', 'UTF-8').replace('\n', '')
 
 // eslint-disable-next-line no-console
-console.log('\x1b[32m', `${process.env.VUE_APP_NAME} - v${process.env.VUE_APP_VERSION}`)
+console.log('\x1b[32m', `${process.env.VUE_APP_NAME}`)
 console.log('\x1b[32m', `\n🔥 Building frontend application in ${isProd ? 'production' : 'dev'} mode.`)
 
 /**
