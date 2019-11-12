@@ -19,13 +19,12 @@ use A17\Twill\Models\Media;
 use A17\Twill\Models\User;
 use A17\Twill\Services\FileLibrary\FileService;
 use A17\Twill\Services\MediaLibrary\ImageService;
-use Cartalyst\Tags\TagsServiceProvider;
 use Astrotomic\Translatable\TranslatableServiceProvider;
+use Cartalyst\Tags\TagsServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\ActivitylogServiceProvider;
@@ -38,7 +37,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    const VERSION = '1.2.2';
+    const VERSION = '2.0.0';
 
     /**
      * Service providers to be registered.
@@ -51,7 +50,7 @@ class TwillServiceProvider extends ServiceProvider
         ValidationServiceProvider::class,
         TranslatableServiceProvider::class,
         TagsServiceProvider::class,
-        ActivitylogServiceProvider::class
+        ActivitylogServiceProvider::class,
     ];
 
     private $migrationsCounter = 0;
