@@ -188,6 +188,7 @@
 @stop
 
 @prepend('extra_js')
+    @includeWhen(config('twill.block_editor.inline_blocks_templates', true), 'twill::partials.form.utils._blocks_templates')
     <script src="{{ mix('/assets/admin/js/manifest.js') }}"></script>
     <script src="{{ mix('/assets/admin/js/vendor.js') }}"></script>
     <script src="{{ mix('/assets/admin/js/main-form.js') }}"></script>
