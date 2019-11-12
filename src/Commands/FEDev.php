@@ -23,7 +23,7 @@ class FEDev extends Command
      *
      * @var string
      */
-    protected $description = "Build Twill assets (experimental)";
+    protected $description = "Build dev Twill assets (experimental)";
 
     /**
      * @var Filesystem
