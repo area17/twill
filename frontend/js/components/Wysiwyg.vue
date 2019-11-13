@@ -375,6 +375,11 @@
         vertical-align: super;
         font-size: smaller;
       }
+
+      sub {
+        vertical-align: sub;
+        font-size: smaller;
+      }
     }
 
     .ql-toolbar.ql-snow {
