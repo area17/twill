@@ -150,7 +150,7 @@ class RouteServiceProvider extends ServiceProvider
                 return ucfirst(Str::singular($s));
             }, $slugs));
 
-            $customRoutes = $defaults = ['reorder', 'publish', 'bulkPublish', 'browser', 'feature', 'bulkFeature', 'tags', 'preview', 'restore', 'bulkRestore', 'bulkDelete', 'restoreRevision'];
+            $customRoutes = $defaults = ['reorder', 'publish', 'bulkPublish', 'browser', 'feature', 'bulkFeature', 'tags', 'preview', 'restore', 'bulkRestore', 'forceDelete', 'bulkForceDelete', 'bulkDelete', 'restoreRevision'];
 
             if (isset($options['only'])) {
                 $customRoutes = array_intersect($defaults, (array) $options['only']);
@@ -178,7 +178,7 @@ class RouteServiceProvider extends ServiceProvider
                     Route::get($routeSlug . "/{id}", $mapping);
                 }
 
-                if (in_array($route, ['publish', 'feature', 'restore'])) {
+                if (in_array($route, ['publish', 'feature', 'restore', 'forceDelete'])) {
                     Route::put($routeSlug, $mapping);
                 }
 
@@ -186,7 +186,7 @@ class RouteServiceProvider extends ServiceProvider
                     Route::put($routeSlug . "/{id}", $mapping);
                 }
 
-                if (in_array($route, ['reorder', 'bulkPublish', 'bulkFeature', 'bulkDelete', 'bulkRestore'])) {
+                if (in_array($route, ['reorder', 'bulkPublish', 'bulkFeature', 'bulkDelete', 'bulkRestore', 'bulkForceDelete'])) {
                     Route::post($routeSlug, $mapping);
                 }
             }

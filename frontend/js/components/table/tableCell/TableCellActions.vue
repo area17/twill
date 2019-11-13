@@ -25,6 +25,9 @@
       <a v-if="row.hasOwnProperty('deleted')"
          href="#"
          @click.prevent="restoreRow">Restore</a>
+      <a v-if="row.hasOwnProperty('deleted')"
+         href="#"
+         @click.prevent="destroyRow">Destroy</a>
       <a v-else-if="row.delete"
          href="#"
          @click.prevent="deleteRow">Delete</a>

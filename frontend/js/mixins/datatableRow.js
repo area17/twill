@@ -149,6 +149,9 @@ export default {
     restoreRow: function (row) {
       this.$store.dispatch(ACTIONS.RESTORE_ROW, row)
     },
+    destroyRow: function (row) {
+      this.$store.dispatch(ACTIONS.DESTROY_ROW, row)
+    },
     deleteRow: function (row) {
       // open confirm dialog if any
       if (this.$root.$refs.warningDeleteRow) {
