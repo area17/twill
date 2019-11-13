@@ -383,6 +383,48 @@ abstract class ModuleRepository
      * @param mixed $id
      * @return mixed
      */
+    public function forceDelete($id)
+    {
+        return DB::transaction(function () use ($id) {
+            if (($object = $this->model->onlyTrashed()->find($id)) === null) {
+                return false;
+            } else {
+                $object->forceDelete();
+                $this->afterDelete($object);
+                return true;
+            }
+        }, 3);
+    }
+
+    /**
+     * @param mixed $id
+     * @return mixed
+     */
+    public function bulkForceDelete($ids)
+    {
+        return DB::transaction(function () use ($ids) {
+            try {
+                $query = $this->model->onlyTrashed()->whereIn('id', $ids);
+                $objects = $query->get();
+
+                $query->forceDelete();
+
+                $objects->each(function ($object) {
+                    $this->afterDelete($object);
+                });
+            } catch (\Exception $e) {
+                Log::error($e);
+                return false;
+            }
+
+            return true;
+        }, 3);
+    }
+
+    /**
+     * @param mixed $id
+     * @return mixed
+     */
     public function restore($id)
     {
         return DB::transaction(function () use ($id) {

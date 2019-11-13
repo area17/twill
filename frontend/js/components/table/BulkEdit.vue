@@ -16,6 +16,7 @@
                   <button v-if="bulkFeaturable(true)" @click="bulkUnFeature">Unfeature</button>
                   <button v-if="bulkDeletable()" @click="bulkDelete">Delete</button>
                   <button v-if="bulkRestorable()" @click="bulkRestore">Restore</button>
+                  <button v-if="bulkDestroyable()" @click="bulkDestroy">Destroy</button>
                 </li>
               </ul>
             </div>
@@ -71,6 +72,9 @@
       bulkRestorable: function () {
         return window.CMS_URLS.bulkRestore !== '' && this.bulkStatus.deleted
       },
+      bulkDestroyable: function () {
+        return window.CMS_URLS.bulkDestroy !== '' && this.bulkStatus.deleted
+      },
       clearBulkSelect: function () {
         this.$store.commit(DATATABLE.REPLACE_DATATABLE_BULK, [])
       },
@@ -95,6 +99,9 @@
       },
       bulkRestore: function () {
         this.$store.dispatch(ACTIONS.BULK_RESTORE)
+      },
+      bulkDestroy: function () {
+        this.$store.dispatch(ACTIONS.BULK_DESTROY)
       }
     }
   }

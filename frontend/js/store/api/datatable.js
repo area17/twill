@@ -76,6 +76,15 @@ export default {
     })
   },
 
+  destroy (row, callback) {
+    axios.put(window.CMS_URLS.forceDelete, { id: row.id }).then(function (resp) {
+      if (callback && typeof callback === 'function') callback(resp)
+    }, function (resp) {
+      globalError(component, resp)
+      console.log('destroy request error.')
+    })
+  },
+
   reorder (ids, callback) {
     axios.post(window.CMS_URLS.reorder, { ids: ids }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
@@ -118,6 +127,15 @@ export default {
     }, function (resp) {
       globalError(component, resp)
       console.log('bulk restore request error.')
+    })
+  },
+
+  bulkDestroy (ids, callback) {
+    axios.post(window.CMS_URLS.bulkForceDelete, { ids: ids }).then(function (resp) {
+      if (callback && typeof callback === 'function') callback(resp)
+    }, function (resp) {
+      globalError(component, resp)
+      console.log('bulk destroy request error.')
     })
   }
 }

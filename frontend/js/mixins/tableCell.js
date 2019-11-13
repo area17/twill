@@ -2,11 +2,11 @@ export default {
   props: {
     col: {
       type: Object,
-      default: () => {}
+      default: () => { }
     },
     row: {
       type: Object,
-      default: () => {}
+      default: () => { }
     },
     editUrl: {
       type: String,
@@ -34,10 +34,13 @@ export default {
       this.editInPlace()
     },
     editInPlace: function (event, lang) {
-      this.$emit('editInPlace', {event: event, lang: lang})
+      this.$emit('editInPlace', { event: event, lang: lang })
     },
     restoreRow: function () {
       this.$emit('restoreRow', this.row)
+    },
+    destroyRow: function () {
+      this.$emit('destroyRow', this.row)
     },
     deleteRow: function () {
       this.$emit('deleteRow', this.row)

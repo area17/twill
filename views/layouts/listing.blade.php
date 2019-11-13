@@ -111,6 +111,8 @@
         bulkPublish: '{{ $bulkPublishUrl }}',
         restore: '{{ $restoreUrl }}',
         bulkRestore: '{{ $bulkRestoreUrl }}',
+        forceDelete: '{{ $forceDeleteUrl }}',
+        bulkForceDelete: '{{ $bulkForceDeleteUrl }}',
         reorder: '{{ $reorderUrl }}',
         feature: '{{ $featureUrl }}',
         bulkFeature: '{{ $bulkFeatureUrl }}',
