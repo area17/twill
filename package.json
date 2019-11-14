@@ -20,11 +20,13 @@
     "fine-uploader-wrappers": "^1.1.0",
     "flatpickr": "4.3.2",
     "lodash": "^4.17.15",
-    "quill": "1.3.6",
+    "quill": "1.3.7",
     "smartcrop": "^2.0.3",
     "tinycolor2": "1.4.1",
+    "tiptap": "1.26.4",
+    "tiptap-extensions": "1.28.4",
     "truncate-utf8-bytes": "1.0.2",
-    "vue": "^2.5.17",
+    "vue": "^2.6.10",
     "vue-select": "2.5.1",
     "vue-timeago": "^3.4.4",
     "vuedraggable": "2.16.0",
@@ -52,7 +54,7 @@
     "standard": "^11.0.1",
     "svgo": "^1.3.0",
     "svgstore": "^2.0.3",
-    "vue-template-compiler": "^2.5.17",
+    "vue-template-compiler": "2.6.10",
     "watch": "1.0.2"
   }
 }

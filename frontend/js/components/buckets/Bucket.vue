@@ -36,7 +36,7 @@
             </h3>
             <draggable v-if="bucket.children.length > 0" class="buckets__list buckets__draggable" :options="dragOptions" @change="sortBucket($event, index)" :value="bucket.children" :element="'table'" >
               <transition-group name="fade_scale_list" tag='tbody'>
-                <a17-bucket-item v-for="(child, index) in bucket.children" :key="index" :item="child" :restricted="restricted" :draggable="bucket.children.length > 1" :singleBucket="singleBucket" :singleSource="singleSource" :bucket="bucket.id" :buckets="buckets" v-on:add-to-bucket="addToBucket" v-on:remove-from-bucket="deleteFromBucket" v-on:toggle-featured-in-bucket="toggleFeaturedInBucket" :withToggleFeatured="bucket.withToggleFeatured" :toggleFeaturedLabels="bucket.toggleFeaturedLabels"/>
+                <a17-bucket-item v-for="(child, index) in bucket.children" :key="`${child.name}_${index}`" :item="child" :restricted="restricted" :draggable="bucket.children.length > 1" :singleBucket="singleBucket" :singleSource="singleSource" :bucket="bucket.id" :buckets="buckets" v-on:add-to-bucket="addToBucket" v-on:remove-from-bucket="deleteFromBucket" v-on:toggle-featured-in-bucket="toggleFeaturedInBucket" :withToggleFeatured="bucket.withToggleFeatured" :toggleFeaturedLabels="bucket.toggleFeaturedLabels"/>
               </transition-group>
             </draggable>
             <div v-else class="buckets__empty">

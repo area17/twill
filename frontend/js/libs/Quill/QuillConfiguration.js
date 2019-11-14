@@ -1,4 +1,5 @@
 import Quill from 'quill'
+
 let Delta = Quill.import('delta')
 let Break = Quill.import('blots/break')
 let Embed = Quill.import('blots/embed')
