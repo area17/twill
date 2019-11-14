@@ -72,8 +72,8 @@
         </div>
 
         <script>
-            window['{{config('twill.version')}}'] = '{{ config('twill.version') }}';
             window['{{config('twill.browser')}}'] = {};
+            window['{{config('twill.browser')}}'].version = '{{ config('twill.version') }}';
             window['{{config('twill.browser')}}'].STORE = {};
             window['{{config('twill.browser')}}'].STORE.form = {};
             window['{{config('twill.browser')}}'].STORE.medias = {};
