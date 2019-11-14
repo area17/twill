@@ -72,13 +72,13 @@
         </div>
 
         <script>
-            window['{{config('twill.version')}}'] = {{ config('twill.version') }}
-            window['{{config('twill.browser')}}'] = {}
-            window['{{config('twill.browser')}}'].STORE = {}
-            window['{{config('twill.browser')}}'].STORE.form = {}
-            window['{{config('twill.browser')}}'].STORE.medias = {}
-            window['{{config('twill.browser')}}'].STORE.medias.types = []
-            window['{{config('twill.browser')}}'].STORE.languages = {!! json_encode(getLanguagesForVueStore($form_fields ?? [], $translate ?? false)) !!}
+            window['{{config('twill.version')}}'] = '{{ config('twill.version') }}';
+            window['{{config('twill.browser')}}'] = {};
+            window['{{config('twill.browser')}}'].STORE = {};
+            window['{{config('twill.browser')}}'].STORE.form = {};
+            window['{{config('twill.browser')}}'].STORE.medias = {};
+            window['{{config('twill.browser')}}'].STORE.medias.types = [];
+            window['{{config('twill.browser')}}'].STORE.languages = {!! json_encode(getLanguagesForVueStore($form_fields ?? [], $translate ?? false)) !!};
 
             @if (config('twill.enabled.media-library'))
                 window['{{config('twill.browser')}}'].STORE.medias.types.push({
@@ -88,7 +88,7 @@
                     endpoint: '{{ route('admin.media-library.medias.index') }}',
                     tagsEndpoint: '{{ route('admin.media-library.medias.tags') }}',
                     uploaderConfig: {!! json_encode($mediasUploaderConfig) !!}
-                })
+                });
             @endif
 
             @if (config('twill.enabled.file-library'))
@@ -99,7 +99,7 @@
                     endpoint: '{{ route('admin.file-library.files.index') }}',
                     tagsEndpoint: '{{ route('admin.file-library.files.tags') }}',
                     uploaderConfig: {!! json_encode($filesUploaderConfig) !!}
-                })
+                });
             @endif
 
 
