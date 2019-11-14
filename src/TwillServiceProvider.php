@@ -51,7 +51,7 @@ class TwillServiceProvider extends ServiceProvider
         ValidationServiceProvider::class,
         TranslatableServiceProvider::class,
         TagsServiceProvider::class,
-        ActivitylogServiceProvider::class,
+        ActivitylogServiceProvider::class
     ];
 
     private $migrationsCounter = 0;

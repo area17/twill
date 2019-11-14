@@ -763,7 +763,7 @@ abstract class ModuleController extends Controller
                 'publish_start_date' => $item->publish_start_date,
                 'publish_end_date' => $item->publish_end_date,
                 'edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null,
-                'delete' => ($canEdit && $itemCanDelete) ? $this->getModuleRoute($item->id, 'destroy') : null,
+                'delete' => $itemCanDelete ? $this->getModuleRoute($item->id, 'destroy') : null,
             ] + ($this->getIndexOption('editInModal') ? [
                 'editInModal' => $this->getModuleRoute($item->id, 'edit'),
                 'updateUrl' => $this->getModuleRoute($item->id, 'update'),
