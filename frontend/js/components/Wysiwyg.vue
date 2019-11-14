@@ -241,6 +241,7 @@
       }
     },
     mounted: function () {
+      console.log('quill-wysiwyg mounted', this.value, this.initialValue)
       if (this.quill) return
 
       /* global hljs */

@@ -1,10 +1,11 @@
 import Quill from 'quill'
-const Delta = Quill.import('delta')
-const Break = Quill.import('blots/break')
-const Embed = Quill.import('blots/embed')
-const Link = Quill.import('formats/link')
 
 Quill.debug('error')
+
+let Delta = Quill.import('delta')
+let Break = Quill.import('blots/break')
+let Embed = Quill.import('blots/embed')
+let Link = Quill.import('formats/link')
 
 /*
 * Support for shift enter
