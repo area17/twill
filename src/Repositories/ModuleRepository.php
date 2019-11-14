@@ -35,6 +35,11 @@ abstract class ModuleRepository
     protected $countScope = [];
 
     /**
+     * @var array
+     */
+    protected $fieldsGroups = [];
+
+    /**
      * @param array $with
      * @param array $scopes
      * @param array $orders
