@@ -33,6 +33,9 @@ window.vm = new Vue({
   components: {
     'a17-fieldset': a17Fieldset,
     'a17-browser': a17Browser
+  },
+  created: function () {
+    openMediaLibrary()
   }
 })
 
