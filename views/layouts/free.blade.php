@@ -1,11 +1,11 @@
 @extends('twill::layouts.main')
 
-@section('appTypeClass', 'body--free')
+@section('appTypeClass', 'body--custom-page')
 
 @section('content')
-  <div class="free">
+  <div class="custom-page">
     <div class="container">
-      @yield('contentHTML')
+      @yield('customPageContent')
     </div>
   </div>
   <a17-modal class="modal--browser" ref="browser" mode="medium" :force-close="true">
