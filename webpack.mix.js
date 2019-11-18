@@ -54,6 +54,9 @@ mix.js(
 ).js(
   'frontend/js/main-dashboard.js',
   'public/assets/admin/js'
+).js(
+  'frontend/js/main-free.js',
+  'public/assets/admin/js'
 ).sass(
   'frontend/scss/app.scss',
   'public/assets/admin/css'
