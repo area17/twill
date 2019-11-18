@@ -12,7 +12,7 @@ In summary:
 |            | Supported versions | Recommended version |
 |:-----------|:------------------:|:-------------------:|
 | PHP        | >= 7.1             | 7.3                 |
-| Laravel    | >= 5.5             | 6.x                 |
+| Laravel    | >= 5.6             | 6.x                 |
 | npm        | >= 5.7             | 6.12                |
 | MySQL      | >= 5.7             | 5.7                 |
 | PostgreSQL | >= 9.3             | 10                  |
