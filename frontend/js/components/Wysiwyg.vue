@@ -281,11 +281,11 @@
     height:$height_input - 2px;
     line-height:$height_input - 2px;
     color:$color__text--light;
-    user-select: none;
+    user-select:none;
     pointer-events:none;
     position:absolute;
     right:15px;
-    bottom: $height_input + 10px;
+    bottom:0;
   }
 
   .wysiwyg__limit--red {
