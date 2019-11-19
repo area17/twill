@@ -27,6 +27,17 @@ const iconPaths = [
       sprite: svgstore(),
       icons: []
     }
+  },
+  {
+    path: path.resolve('frontend/icons-wysiwyg'),
+    destination: {
+      svg: 'icons-wysiwyg.svg',
+      scss: '_icons-wysiwyg.scss'
+    },
+    output: {
+      sprite: svgstore(),
+      icons: []
+    }
   }
 ]
 const svgo = new SVGO()

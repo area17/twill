@@ -1,5 +1,5 @@
 let mix = require('laravel-mix')
-
+const path = require('path')
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -10,6 +10,14 @@ let mix = require('laravel-mix')
  |
  */
 
+mix.extend('transpileNodeModule', webpackConfig => {
+  const { rules } = webpackConfig.module
+  rules.filter(rule => rule.exclude && rule.exclude.toString() === '/(node_modules|bower_components)/')
+    .forEach(rule => {
+      rule.exclude = /node_modules\/(?!(prosemirror-tables|prosemirror-state|prosemirror-view|prosemirror-transform|prosemirror-utils)\/).*/
+    })
+})
+
 mix.setPublicPath('public')
 
 mix.options({
@@ -17,7 +25,7 @@ mix.options({
   purifyCss: false // Remove unused CSS selectors.
 })
 
-mix.webpackConfig({
+mix.webpackConfig((config) => ({
   resolve: {
     alias: {
       '@': path.resolve('frontend/js'),
@@ -38,7 +46,7 @@ mix.webpackConfig({
       }
     ]
   }
-})
+}))
 
 mix.copyDirectory('frontend/fonts', 'public/assets/admin/fonts')
 
@@ -60,7 +68,7 @@ mix.js(
 ).sass(
   'frontend/scss/app.scss',
   'public/assets/admin/css'
-)
+).transpileNodeModule()
 
 mix.extract()
 
