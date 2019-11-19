@@ -72,6 +72,17 @@ trait HandleBrowsers
     }
     
     /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @param string $relationship
+     * @param string $positionAttribute
+     * @return void
+     */
+    public function updateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute = 'position') {
+        $this->updateBrowser($object, $fields, $relationship, $positionAttribute);
+    }
+    
+    /**
      * @param mixed $object
      * @param array $fields
      * @param string $browserName
