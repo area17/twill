@@ -1,3 +1,11 @@
+<p align="center"><a href="https://twill.io" target="_blank"><img src="https://twill.io/logo.svg" width="400"></a></p>
+
+<p align="center">
+<a href="https://packagist.org/packages/area17/twill"><img src="https://poser.pugx.org/area17/twill/d/total.svg" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/area17/twill"><img src="https://poser.pugx.org/area17/twill/v/stable.svg" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/area17/twill"><img src="https://poser.pugx.org/area17/twill/license.svg" alt="License"></a>
+</p>
+
 # About Twill
 
 Twill is an open source Laravel package that helps developers rapidly create a custom CMS that is beautiful, powerful, and flexible. By standardizing common functions without compromising developer control, Twill makes it easy to deliver a feature-rich admin console that focuses on modern publishing needs.

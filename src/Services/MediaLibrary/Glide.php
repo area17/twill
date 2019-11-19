@@ -63,6 +63,7 @@ class Glide implements ImageServiceInterface
             'cache' => $this->config->get('twill.glide.cache'),
             'cache_path_prefix' => $this->config->get('twill.glide.cache_path_prefix'),
             'base_url' => $baseUrl,
+            'presets' => $this->config->get('twill.glide.presets', [])
         ]);
 
         $this->urlBuilder = UrlBuilderFactory::create(

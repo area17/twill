@@ -5,7 +5,7 @@
       <template v-if="editSource">
         <div class="wysiwyg" :class="textfieldClasses" v-show="!activeSource">
           <div class="wysiwyg__editor" ref="editor"></div>
-          <span v-if="shouldShowCounter" class="input__limit f--tiny" :class="limitClasses">{{ counter }}</span>
+          <span v-if="shouldShowCounter" class="wysiwyg__limit f--tiny" :class="limitClasses">{{ counter }}</span>
         </div>
         <div class="form__field form__field--textarea" v-show="activeSource">
           <textarea :placeholder="placeholder" :autofocus="autofocus" v-model="value" :style="textareaHeight"></textarea>
@@ -15,7 +15,7 @@
       <template v-else>
         <div class="wysiwyg" :class="textfieldClasses">
           <div class="wysiwyg__editor" ref="editor"></div>
-          <span v-if="shouldShowCounter" class="input__limit f--tiny" :class="limitClasses">{{ counter }}</span>
+          <span v-if="shouldShowCounter" class="wysiwyg__limit f--tiny" :class="limitClasses">{{ counter }}</span>
         </div>
       </template>
     </div>
@@ -97,7 +97,7 @@
       },
       limitClasses: function () {
         return {
-          'input__limit--red': this.counter < 10
+          'wysiwyg__limit--red': this.counter < 10
         }
       },
       ...mapState({
@@ -198,6 +198,11 @@
           }
         }
 
+        // check text length
+        if (this.hasMaxlength && this.showCounter) {
+          this.updateCounter(this.getTextLength())
+        }
+
         // emit ready
         this.$emit('ready', this.quill)
       },
@@ -260,8 +265,6 @@
       } else {
         this.initQuill()
       }
-
-      this.updateCounter(this.getTextLength())
     },
     beforeDestroy () {
       this.quill = null
@@ -270,30 +273,31 @@
 </script>
 
 <style lang="scss" scoped>
+  @import '~styles/setup/_mixins-colors-vars.scss';
+
   .wysiwyg__button {
     margin-top:20px;
+  }
+
+  $height_input: 45px;
+  .wysiwyg__limit {
+    height:$height_input - 2px;
+    line-height:$height_input - 2px;
+    color:$color__text--light;
+    user-select:none;
+    pointer-events:none;
+    position:absolute;
+    right:15px;
+    bottom:0;
+  }
+
+  .wysiwyg__limit--red {
+    color:red;
   }
 </style>
 <style lang="scss">
   /* Not scoped style here because we want to overwrite default style of the wysiwig */
   @import '~styles/setup/_mixins-colors-vars.scss';
-
-  $height_input: 45px;
-
-  .input__limit {
-    height:$height_input - 2px;
-    line-height:$height_input - 2px;
-    color:$color__text--light;
-    user-select: none;
-    pointer-events:none;
-    position:absolute;
-    right:15px;
-    bottom: 55px;
-  }
-
-  .input__limit--red {
-    color:red;
-  }
 
   .a17 {
     .ql-toolbar.ql-snow {
@@ -373,6 +377,11 @@
 
       sup {
         vertical-align: super;
+        font-size: smaller;
+      }
+
+      sub {
+        vertical-align: sub;
         font-size: smaller;
       }
     }

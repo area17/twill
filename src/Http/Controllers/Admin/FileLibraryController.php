@@ -3,15 +3,18 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Http\Requests\Admin\FileRequest;
+use A17\Twill\Services\Uploader\SignAzureUpload;
 use A17\Twill\Services\Uploader\SignS3Upload;
-use A17\Twill\Services\Uploader\SignS3UploadListener;
+use A17\Twill\Services\Uploader\SignUploadListener;
 use Illuminate\Config\Repository as Config;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Routing\UrlGenerator;
 
-class FileLibraryController extends ModuleController implements SignS3UploadListener
+class FileLibraryController extends ModuleController implements SignUploadListener
 {
     /**
      * @var string
@@ -54,14 +57,15 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
         UrlGenerator $urlGenerator,
         ResponseFactory $responseFactory,
         Config $config
-    ) {
+    )
+    {
         parent::__construct($app, $request);
         $this->urlGenerator = $urlGenerator;
         $this->responseFactory = $responseFactory;
         $this->config = $config;
 
         $this->removeMiddleware('can:edit');
-        $this->middleware('can:edit', ['only' => ['signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
+        $this->middleware('can:edit', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = $this->config->get('twill.file_library.endpoint_type');
     }
 
@@ -104,14 +108,14 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
     private function buildFile($item)
     {
         return $item->toCmsArray() + [
-            'tags' => $item->tags->map(function ($tag) {
-                return $tag->name;
-            }),
-            'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
-            'updateUrl' => $this->urlGenerator->route('admin.file-library.files.single-update'),
-            'updateBulkUrl' => $this->urlGenerator->route('admin.file-library.files.bulk-update'),
-            'deleteBulkUrl' => $this->urlGenerator->route('admin.file-library.files.bulk-delete'),
-        ];
+                'tags' => $item->tags->map(function ($tag) {
+                    return $tag->name;
+                }),
+                'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
+                'updateUrl' => $this->urlGenerator->route('admin.file-library.files.single-update'),
+                'updateBulkUrl' => $this->urlGenerator->route('admin.file-library.files.bulk-update'),
+                'deleteBulkUrl' => $this->urlGenerator->route('admin.file-library.files.bulk-delete'),
+            ];
     }
 
     /**
@@ -132,11 +136,12 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
 
     /**
      * @param int|null $parentModuleId
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
+     * @throws BindingResolutionException
      */
     public function store($parentModuleId = null)
     {
-        $request = $this->app->get(FileRequest::class);
+        $request = $this->app->make(FileRequest::class);
 
         if ($this->endpointType === 'local') {
             $file = $this->storeFile($request);
@@ -187,7 +192,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
     public function storeReference($request)
     {
         $fields = [
-            'uuid' => $request->input('key'),
+            'uuid' => $request->input('key') ?? $request->input('blob'),
             'filename' => $request->input('name'),
         ];
 
@@ -195,7 +200,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function singleUpdate()
     {
@@ -208,7 +213,7 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function bulkUpdate()
     {
@@ -243,18 +248,31 @@ class FileLibraryController extends ModuleController implements SignS3UploadList
     }
 
     /**
-     * @param mixed $signedPolicy
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @param SignAzureUpload $signAzureUpload
+     * @return mixed
      */
-    public function policyIsSigned($signedPolicy)
+    public function signAzureUpload(Request $request, SignAzureUpload $signAzureUpload)
     {
-        return $this->responseFactory->json($signedPolicy, 200);
+        return $signAzureUpload->getSasUrl($request, $this, $this->config->get('twill.file_library.disk'));
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @param $signature
+     * @param bool $isJsonResponse
+     * @return mixed
      */
-    public function policyIsNotValid()
+    public function uploadIsSigned($signature, $isJsonResponse = true)
+    {
+        return $isJsonResponse
+            ? $this->responseFactory->json($signature, 200)
+            : $this->responseFactory->make($signature, 200, ['Content-Type' => 'text/plain']);
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function uploadIsNotValid()
     {
         return $this->responseFactory->json(["invalid" => true], 500);
     }

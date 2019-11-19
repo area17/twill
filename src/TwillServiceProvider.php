@@ -34,6 +34,14 @@ use Spatie\Activitylog\ActivitylogServiceProvider;
 
 class TwillServiceProvider extends ServiceProvider
 {
+
+    /**
+     * The Twill version.
+     *
+     * @var string
+     */
+    const VERSION = '1.2.2';
+
     /**
      * Service providers to be registered.
      *
@@ -45,7 +53,7 @@ class TwillServiceProvider extends ServiceProvider
         ValidationServiceProvider::class,
         TranslatableServiceProvider::class,
         TagsServiceProvider::class,
-        ActivitylogServiceProvider::class,
+        ActivitylogServiceProvider::class
     ];
 
     private $migrationsCounter = 0;
@@ -57,8 +65,6 @@ class TwillServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->requireHelpers();
-
         $this->publishConfigs();
         $this->publishMigrations();
         $this->publishAssets();
@@ -90,7 +96,7 @@ class TwillServiceProvider extends ServiceProvider
             'blocks' => Block::class,
         ]);
 
-        config(['twill.version' => trim(file_get_contents(__DIR__ . '/../VERSION'))]);
+        config(['twill.version' => $this->version()]);
     }
 
     /**
@@ -323,19 +329,6 @@ class TwillServiceProvider extends ServiceProvider
     }
 
     /**
-     * @return void
-     */
-    private function requireHelpers()
-    {
-        require_once __DIR__ . '/Helpers/routes_helpers.php';
-        require_once __DIR__ . '/Helpers/i18n_helpers.php';
-        require_once __DIR__ . '/Helpers/media_library_helpers.php';
-        require_once __DIR__ . '/Helpers/frontend_helpers.php';
-        require_once __DIR__ . '/Helpers/migrations_helpers.php';
-        require_once __DIR__ . '/Helpers/helpers.php';
-    }
-
-    /**
      * @param string $view
      * @param string $expression
      * @return string
@@ -455,7 +448,6 @@ class TwillServiceProvider extends ServiceProvider
 
             return $view->with($with);
         });
-
     }
 
     /**
@@ -469,5 +461,15 @@ class TwillServiceProvider extends ServiceProvider
 
         $this->loadTranslationsFrom($translationPath, 'twill');
         $this->publishes([$translationPath => resource_path('lang/vendor/twill')], 'translations');
+    }
+
+    /**
+     * Get the version number of Twill.
+     *
+     * @return string
+     */
+    public function version()
+    {
+        return static::VERSION;
     }
 }

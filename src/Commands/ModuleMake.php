@@ -5,6 +5,7 @@ namespace A17\Twill\Commands;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Composer;
 use Illuminate\Support\Str;
 
@@ -22,14 +23,15 @@ class ModuleMake extends Command
         {--M|hasMedias}
         {--F|hasFiles}
         {--P|hasPosition}
-        {--R|hasRevisions}';
+        {--R|hasRevisions}
+        {--all}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create a new CMS Module';
+    protected $description = 'Create a new Twill Module';
 
     /**
      * @var Filesystem
@@ -69,6 +71,16 @@ class ModuleMake extends Command
         $this->composer = $composer;
         $this->config = $config;
 
+        $this->blockable = false;
+        $this->translatable = false;
+        $this->sluggable = false;
+        $this->mediable = false;
+        $this->fileable = false;
+        $this->sortable = false;
+        $this->revisionable = false;
+
+        $this->defaultsAnswserToNo = false;
+
         $this->modelTraits = ['HasBlocks', 'HasTranslation', 'HasSlug', 'HasMedias', 'HasFiles', 'HasRevisions', 'HasPosition'];
         $this->repositoryTraits = ['HandleBlocks', 'HandleTranslations', 'HandleSlugs', 'HandleMedias', 'HandleFiles', 'HandleRevisions'];
     }
@@ -82,24 +94,48 @@ class ModuleMake extends Command
     {
         $moduleName = Str::plural(lcfirst($this->argument('moduleName')));
 
-        $blockable = $this->option('hasBlocks') ?? false;
-        $translatable = $this->option('hasTranslation') ?? false;
-        $sluggable = $this->option('hasSlug') ?? false;
-        $mediable = $this->option('hasMedias') ?? false;
-        $fileable = $this->option('hasFiles') ?? false;
-        $sortable = $this->option('hasPosition') ?? false;
-        $revisionable = $this->option('hasRevisions') ?? false;
+        $enabledOptions = Collection::make($this->options())->only([
+            'hasBlocks',
+            'hasTranslation',
+            'hasSlug',
+            'hasMedias',
+            'hasFiles',
+            'hasPosition',
+            'hasRevisions',
+        ])->filter(function ($enabled) {
+            return $enabled;
+        });
 
-        $activeTraits = [$blockable, $translatable, $sluggable, $mediable, $fileable, $revisionable, $sortable];
+        if (count($enabledOptions) > 0) {
+            $this->defaultsAnswserToNo = true;
+        }
+
+        $this->blockable = $this->checkOption('hasBlocks');
+        $this->translatable = $this->checkOption('hasTranslation');
+        $this->sluggable = $this->checkOption('hasSlug');
+        $this->mediable = $this->checkOption('hasMedias');
+        $this->fileable = $this->checkOption('hasFiles');
+        $this->sortable = $this->checkOption('hasPosition');
+        $this->revisionable = $this->checkOption('hasRevisions');
+
+        $activeTraits = [
+            $this->blockable,
+            $this->translatable,
+            $this->sluggable,
+            $this->mediable,
+            $this->fileable,
+            $this->revisionable,
+            $this->sortable,
+        ];
 
         $modelName = Str::studly(Str::singular($moduleName));
 
         $this->createMigration($moduleName);
-        $this->createModels($modelName, $translatable, $sluggable, $sortable, $revisionable, $activeTraits);
+        $this->createModels($modelName, $activeTraits);
         $this->createRepository($modelName, $activeTraits);
         $this->createController($moduleName, $modelName);
         $this->createRequest($modelName);
-        $this->createViews($moduleName, $translatable);
+        $this->createViews($moduleName);
 
         $this->info("Add Route::module('{$moduleName}'); to your admin routes file.");
         $this->info("Setup a new CMS menu item in config/twill-navigation.php:");
@@ -129,7 +165,6 @@ class ModuleMake extends Command
     private function createMigration($moduleName = 'items')
     {
         $table = Str::snake($moduleName);
-
         $tableClassName = Str::studly($table);
 
         $className = "Create{$tableClassName}Tables";
@@ -147,6 +182,22 @@ class ModuleMake extends Command
                 $this->files->get(__DIR__ . '/stubs/migration.stub')
             );
 
+            if ($this->translatable) {
+                $stub = preg_replace('/{{!hasTranslation}}[\s\S]+?{{\/!hasTranslation}}/', '', $stub);
+            } else {
+                $stub = str_replace([
+                    '{{!hasTranslation}}',
+                    '{{/!hasTranslation}}',
+                ], '', $stub);
+            }
+
+            $stub = $this->renderStubForOption($stub, 'hasTranslation', $this->translatable);
+            $stub = $this->renderStubForOption($stub, 'hasSlug', $this->sluggable);
+            $stub = $this->renderStubForOption($stub, 'hasRevisions', $this->revisionable);
+            $stub = $this->renderStubForOption($stub, 'hasPosition', $this->sortable);
+
+            $stub = preg_replace('/\}\);[\s\S]+?Schema::create/', "});\n\n        Schema::create", $stub);
+
             $this->files->put($fullPath, $stub);
 
             $this->info("Migration created successfully! Add some fields!");
@@ -157,20 +208,16 @@ class ModuleMake extends Command
      * Creates new model class files for the given model name and traits.
      *
      * @param string $modelName
-     * @param bool $translatable
-     * @param bool $sluggable
-     * @param bool $sortable
-     * @param bool $revisionable
      * @param array $activeTraits
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    private function createModels($modelName = 'Item', $translatable = false, $sluggable = false, $sortable = false, $revisionable = false, $activeTraits = [])
+    private function createModels($modelName = 'Item', $activeTraits = [])
     {
         if (!$this->files->isDirectory(twill_path('Models'))) {
             $this->files->makeDirectory(twill_path('Models'));
         }
 
-        if ($translatable) {
+        if ($this->translatable) {
             if (!$this->files->isDirectory(twill_path('Models/Translations'))) {
                 $this->files->makeDirectory(twill_path('Models/Translations'));
             }
@@ -182,7 +229,7 @@ class ModuleMake extends Command
             $this->files->put(twill_path('Models/Translations/' . $modelTranslationClassName . '.php'), $stub);
         }
 
-        if ($sluggable) {
+        if ($this->sluggable) {
             if (!$this->files->isDirectory(twill_path('Models/Slugs'))) {
                 $this->files->makeDirectory(twill_path('Models/Slugs'));
             }
@@ -194,7 +241,7 @@ class ModuleMake extends Command
             $this->files->put(twill_path('Models/Slugs/' . $modelSlugClassName . '.php'), $stub);
         }
 
-        if ($revisionable) {
+        if ($this->revisionable) {
             if (!$this->files->isDirectory(twill_path('Models/Revisions'))) {
                 $this->files->makeDirectory(twill_path('Models/Revisions'));
             }
@@ -220,17 +267,46 @@ class ModuleMake extends Command
 
         $activeModelTraitsImports = empty($activeModelTraits) ? '' : "use A17\Twill\Models\Behaviors\\" . implode(";\nuse A17\Twill\Models\Behaviors\\", $activeModelTraits) . ";";
 
-        $activeModelImplements = $sortable ? 'implements Sortable' : '';
+        $activeModelImplements = $this->sortable ? 'implements Sortable' : '';
 
-        if ($sortable) {
+        if ($this->sortable) {
             $activeModelTraitsImports .= "\nuse A17\Twill\Models\Behaviors\Sortable;";
         }
 
-        $stub = str_replace(['{{modelClassName}}', '{{modelTraits}}', '{{modelImports}}', '{{modelImplements}}'], [$modelClassName, $activeModelTraitsString, $activeModelTraitsImports, $activeModelImplements], $this->files->get(__DIR__ . '/stubs/model.stub'));
+        $stub = str_replace([
+            '{{modelClassName}}',
+            '{{modelTraits}}',
+            '{{modelImports}}',
+            '{{modelImplements}}',
+        ], [
+            $modelClassName,
+            $activeModelTraitsString,
+            $activeModelTraitsImports,
+            $activeModelImplements,
+        ], $this->files->get(__DIR__ . '/stubs/model.stub'));
+
+        $stub = $this->renderStubForOption($stub, 'hasTranslation', $this->translatable);
+        $stub = $this->renderStubForOption($stub, 'hasSlug', $this->sluggable);
+        $stub = $this->renderStubForOption($stub, 'hasMedias', $this->mediable);
+        $stub = $this->renderStubForOption($stub, 'hasPosition', $this->sortable);
 
         $this->files->put(twill_path('Models/' . $modelClassName . '.php'), $stub);
 
         $this->info("Models created successfully! Fill your fillables!");
+    }
+
+    private function renderStubForOption($stub, $option, $enabled)
+    {
+        if ($enabled) {
+            $stub = str_replace([
+                '{{' . $option . '}}',
+                '{{/' . $option . '}}',
+            ], '', $stub);
+        } else {
+            $stub = preg_replace('/{{' . $option . '}}[\s\S]+?{{\/' . $option . '}}/', '', $stub);
+        }
+
+        return $stub;
     }
 
     /**
@@ -321,11 +397,10 @@ class ModuleMake extends Command
      * Creates appropriate module Blade view files.
      *
      * @param string $moduleName
-     * @param bool $translatable
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    private function createViews($moduleName = 'items', $translatable = false)
+    private function createViews($moduleName = 'items')
     {
         $viewsPath = $this->config->get('view.paths')[0] . '/admin/' . $moduleName;
 
@@ -333,10 +408,29 @@ class ModuleMake extends Command
             $this->files->makeDirectory($viewsPath, 0755, true);
         }
 
-        $formView = $translatable ? 'form_translatable' : 'form';
+        $formView = $this->translatable ? 'form_translatable' : 'form';
 
         $this->files->put($viewsPath . '/form.blade.php', $this->files->get(__DIR__ . '/stubs/' . $formView . '.blade.stub'));
 
         $this->info("Form view created successfully! Include your form fields using @formField directives!");
+    }
+
+    private function checkOption($option)
+    {
+        if ($this->option($option) || $this->option('all')) {
+            return true;
+        }
+
+        $questions = [
+            'hasBlocks' => 'Do you need to use the block editor on this module?',
+            'hasTranslation' => 'Do you need to translate content on this module?',
+            'hasSlug' => 'Do you need to generate slugs on this module?',
+            'hasMedias' => 'Do you need to attach images on this module?',
+            'hasFiles' => 'Do you need to attach files on this module?',
+            'hasPosition' => 'Do you need to manage the position of records on this module?',
+            'hasRevisions' => 'Do you need to enable revisions on this module?',
+        ];
+
+        return 'yes' === $this->choice($questions[$option], ['no', 'yes'], $this->defaultsAnswserToNo ? 0 : 1);
     }
 }

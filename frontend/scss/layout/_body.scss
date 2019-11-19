@@ -69,12 +69,17 @@ body {
 
 .body--form,
 .body--dashboard,
+.body--custom-page,
 .body--buckets {
   background-color:$color__border--light;
 
   .appLoader {
     background-color:$color__border--light;
   }
+}
+
+.custom-page {
+  padding-top: 26px;
 }
 
 @each $name, $point in $breakpoints {

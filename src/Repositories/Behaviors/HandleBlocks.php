@@ -5,6 +5,7 @@ namespace A17\Twill\Repositories\Behaviors;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Repositories\BlockRepository;
 use Illuminate\Support\Collection;
+use Schema;
 
 trait HandleBlocks
 {
@@ -248,26 +249,29 @@ trait HandleBlocks
     protected function getBlockBrowsers($block)
     {
         return Collection::make($block['content']['browsers'])->mapWithKeys(function ($ids, $relation) use ($block) {
-            $relationRepository = $this->getModelRepository($relation);
-            $relatedItems = $relationRepository->get([], ['id' => $ids], [], -1);
-            $sortedRelatedItems = array_flip($ids);
+            if (Schema::hasTable(config('twill.related_table', 'related')) && $block->getRelated($relation)->isNotEmpty()) {
+                $items = $this->getFormFieldsForRelatedBrowser($block, $relation);;
+            } else {
+                $relationRepository = $this->getModelRepository($relation);
+                $relatedItems = $relationRepository->get([], ['id' => $ids], [], -1);
+                $sortedRelatedItems = array_flip($ids);
 
-            foreach ($relatedItems as $item) {
-                $sortedRelatedItems[$item->id] = $item;
+                foreach ($relatedItems as $item) {
+                    $sortedRelatedItems[$item->id] = $item;
+                }
+
+                $items = Collection::make(array_values($sortedRelatedItems))->filter(function ($value) {
+                    return is_object($value);
+                })->map(function ($relatedElement) use ($relation) {
+                    return [
+                        'id' => $relatedElement->id,
+                        'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
+                        'edit' => moduleRoute($relation, config('twill.block_editor.browser_route_prefixes.' . $relation), 'edit', $relatedElement->id),
+                    ] + (classHasTrait($relatedElement, HasMedias::class) ? [
+                        'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
+                    ] : []);
+                })->toArray();
             }
-
-            $items = Collection::make(array_values($sortedRelatedItems))->filter(function ($value) {
-                return is_object($value);
-            })->map(function ($relatedElement) use ($relation) {
-                return [
-                    'id' => $relatedElement->id,
-                    'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
-                    'edit' => moduleRoute($relation, config('twill.block_editor.browser_route_prefixes.' . $relation), 'edit', $relatedElement->id),
-                ] + (classHasTrait($relatedElement, HasMedias::class) ? [
-                    'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
-                ] : []);
-            })->toArray();
-
             return [
                 "blocks[$block->id][$relation]" => $items,
             ];

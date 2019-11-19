@@ -6,6 +6,7 @@ use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Repositories\Behaviors\HandleDates;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
+use A17\Twill\Repositories\Behaviors\HandleFieldsGroups;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
@@ -17,8 +18,8 @@ use PDO;
 
 abstract class ModuleRepository
 {
-    use HandleDates, HandleBrowsers;
-
+    use HandleDates, HandleBrowsers, HandleFieldsGroups;
+  
     /**
      * @var \A17\Twill\Models\Model
      */
@@ -33,6 +34,11 @@ abstract class ModuleRepository
      * @var array
      */
     protected $countScope = [];
+
+    /**
+     * @var array
+     */
+    protected $fieldsGroups = [];
 
     /**
      * @param array $with
@@ -642,14 +648,14 @@ abstract class ModuleRepository
      */
     public function order($query, array $orders = [])
     {
-        foreach ($orders as $column => $direction) {
-            $query->orderBy($column, $direction);
-        }
-
         foreach (class_uses_recursive(get_called_class()) as $trait) {
             if (method_exists(get_called_class(), $method = 'order' . class_basename($trait))) {
                 $this->$method($query, $orders);
             }
+        }
+
+        foreach ($orders as $column => $direction) {
+            $query->orderBy($column, $direction);
         }
 
         return $query;
@@ -794,7 +800,7 @@ abstract class ModuleRepository
             $model = ucfirst(Str::singular($relation));
         }
 
-        return App::get(Config::get('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
+        return App::make(Config::get('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
     }
 
     /**
