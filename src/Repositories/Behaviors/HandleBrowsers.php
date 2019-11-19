@@ -79,7 +79,7 @@ trait HandleBrowsers
      */
     public function updateRelatedBrowser($object, $fields, $browserName)
     {
-        $object->sync($fields['browsers'][$browserName] ?? [], $browserName);
+        $object->saveRelated($fields['browsers'][$browserName] ?? [], $browserName);
     }
 
     /**
