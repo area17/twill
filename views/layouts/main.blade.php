@@ -12,6 +12,7 @@
                 {!! File::exists(public_path(twillAsset('icons.svg'))) ? File::get(public_path(twillAsset('icons.svg'))) : '' !!}
                 {!! File::exists(public_path(twillAsset('icons-files.svg'))) ? File::get(public_path(twillAsset('icons-files.svg'))) : '' !!}
             @endif
+            @stack('svg_sprite')
         </div>
         @if(config('twill.enabled.search', false))
             @partialView(($moduleName ?? null), 'navigation._overlay_navigation', ['search' => true])

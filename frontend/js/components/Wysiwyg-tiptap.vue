@@ -19,185 +19,111 @@
           <editor-menu-bar :editor="editor"
                            v-slot="{ commands, isActive }">
             <div class="wysiwyg__menubar">
-              <!--                <button-->
-              <!--                  class="wysiwyg__button"-->
-              <!--                  @click="commands.undo"-->
-              <!--                >-->
-              <!--                  <span v-svg symbol="undo"></span>-->
-              <!--                </button>-->
+              <template v-if="toolbar.header">
+                <div class="wysiwyg__menubar-heading">
+                  <div class="vselect">
+                    <div class="vselect__field">
+                      <v-select
+                        :value="headingValue"
+                        :options="headingOptions"
+                        @input="updateHeadingValue($event, commands)"
+                      >
+                      </v-select>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <wysiwyg-menu-bar-btn icon="undo"
+                                    @btn:click="commands.undo"/>
+              <wysiwyg-menu-bar-btn icon="redo"
+                                    @btn:click="commands.redo"/>
 
-              <!--                <button-->
-              <!--                  class="wysiwyg__button"-->
-              <!--                  @click="commands.redo"-->
-              <!--                >-->
-              <!--                  <span v-svg symbol="redo"></span>-->
-              <!--                </button>-->
+              <wysiwyg-menu-bar-btn icon="bold"
+                                    v-if="toolbar.bold"
+                                    :isActive="isActive.bold()"
+                                    @btn:click="commands.bold"/>
+              <wysiwyg-menu-bar-btn icon="italic"
+                                    v-if="toolbar.italic"
+                                    :isActive="isActive.italic()"
+                                    @btn:click="commands.italic"/>
+              <wysiwyg-menu-bar-btn icon="strike"
+                                    v-if="toolbar.strike"
+                                    :isActive="isActive.strike()"
+                                    @btn:click="commands.strike"/>
+              <wysiwyg-menu-bar-btn icon="underline"
+                                    v-if="toolbar.underline"
+                                    :isActive="isActive.underline()"
+                                    @btn:click="commands.underline"/>
 
-              <button
-                class="wysiwyg__menubar-button"
-                :class="{ 'is-active': isActive.bold() }"
-                @click="commands.bold"
-              >
-                <wysiwyg-icon icon="bold"/>
-              </button>
+              <wysiwyg-menu-bar-btn icon="link"
+                                    v-if="toolbar.link"
+                                    :isActive="isActive.link()"
+                                    @btn:click="commands.link"/>
 
-              <button
-                class="wysiwyg__menubar-button"
-                :class="{ 'is-active': isActive.italic() }"
-                @click="commands.italic"
-              >
-                <wysiwyg-icon icon="italic"/>
-              </button>
+              <wysiwyg-menu-bar-btn icon="ul"
+                                    v-if="toolbar.bullet"
+                                    :isActive="isActive.bullet_list()"
+                                    @btn:click="commands.bullet_list"/>
 
-              <!--                <button-->
-              <!--                  class="wysiwyg__menubar-button"-->
-              <!--                  :class="{ 'is-active': isActive.strike() }"-->
-              <!--                  @click="commands.strike"-->
-              <!--                >-->
-              <!--                  <wysiwyg-icon icon="strike"/>-->
-              <!--                </button>-->
+              <wysiwyg-menu-bar-btn icon="ol"
+                                    v-if="toolbar.ordered"
+                                    :isActive="isActive.ordered_list()"
+                                    @btn:click="commands.ordered_list"/>
 
-              <button
-                class="wysiwyg__menubar-button"
-                :class="{ 'is-active': isActive.underline() }"
-                @click="commands.underline"
-              >
-                <wysiwyg-icon icon="underline"/>
-              </button>
+              <wysiwyg-menu-bar-btn icon="quote"
+                                    v-if="toolbar.blockquote"
+                                    :isActive="isActive.blockquote()"
+                                    @btn:click="commands.blockquote"/>
 
-              <!--                <button-->
-              <!--                  class="wysiwyg__menubar-button"-->
-              <!--                  :class="{ 'is-active': isActive.code() }"-->
-              <!--                  @click="commands.code"-->
-              <!--                >-->
-              <!--                  <span v-svg symbol="code"></span>-->
-              <!--                </button>-->
+              <wysiwyg-menu-bar-btn icon="code"
+                                    v-if="toolbar['code-block']"
+                                    :isActive="isActive.code_block()"
+                                    @btn:click="commands.code_block"/>
 
-              <!--                <button-->
-              <!--                  class="wysiwyg__menubar-button"-->
-              <!--                  :class="{ 'is-active': isActive.paragraph() }"-->
-              <!--                  @click="commands.paragraph"-->
-              <!--                >-->
-              <!--                  <span v-svg symbol="paragraph"></span>-->
-              <!--                </button>-->
+              <wysiwyg-menu-bar-btn icon="code"
+                                    v-if="toolbar['code']"
+                                    :isActive="isActive.code()"
+                                    @btn:click="commands.code"/>
 
-              <!--                <button-->
-              <!--                  class="wysiwyg__menubar-button"-->
-              <!--                  :class="{ 'is-active': isActive.heading({ level: 1 }) }"-->
-              <!--                  @click="commands.heading({ level: 1 })"-->
-              <!--                >-->
-              <!--                  H1-->
-              <!--                </button>-->
+              <template v-if="toolbar.table">
+                <wysiwyg-menu-bar-btn icon="table"
+                                      @btn:click="commands.createTable({rowsCount: 3, colsCount: 3, withHeaderRow: true })"/>
 
-              <!--                <button-->
-              <!--                  class="wysiwyg__menubar-button"-->
-              <!--                  :class="{ 'is-active': isActive.heading({ level: 2 }) }"-->
-              <!--                  @click="commands.heading({ level: 2 })"-->
-              <!--                >-->
-              <!--                  H2-->
-              <!--                </button>-->
+                <div class="wysiwyg__menubar-table-buttons"
+                     v-if="isActive.table()">
 
-              <!--                <button-->
-              <!--                  class="wysiwyg__menubar-button"-->
-              <!--                  :class="{ 'is-active': isActive.heading({ level: 3 }) }"-->
-              <!--                  @click="commands.heading({ level: 3 })"-->
-              <!--                >-->
-              <!--                  H3-->
-              <!--                </button>-->
+                  <wysiwyg-menu-bar-btn icon="delete_table"
+                                        @btn:click="commands.deleteTable"/>
 
-              <!--                <button-->
-              <!--                  class="wysiwyg__menubar-button"-->
-              <!--                  :class="{ 'is-active': isActive.bullet_list() }"-->
-              <!--                  @click="commands.bullet_list"-->
-              <!--                >-->
-              <!--                  <span v-svg symbol="ul"></span>-->
-              <!--                </button>-->
+                  <wysiwyg-menu-bar-btn icon="add_col_before"
+                                        @btn:click="commands.addColumnBefore"/>
 
-              <!--                <button-->
-              <!--                  class="wysiwyg__menubar-button"-->
-              <!--                  :class="{ 'is-active': isActive.ordered_list() }"-->
-              <!--                  @click="commands.ordered_list"-->
-              <!--                >-->
-              <!--                  <span v-svg symbol="ol"></span>-->
-              <!--                </button>-->
+                  <wysiwyg-menu-bar-btn icon="add_col_after"
+                                        @btn:click="commands.addColumnAfter"/>
 
-              <!--                <button-->
-              <!--                  class="wysiwyg__menubar-button"-->
-              <!--                  :class="{ 'is-active': isActive.blockquote() }"-->
-              <!--                  @click="commands.blockquote"-->
-              <!--                >-->
-              <!--                  <span v-svg symbol="quote"></span>-->
-              <!--                </button>-->
+                  <wysiwyg-menu-bar-btn icon="delete_col"
+                                        @btn:click="commands.deleteColumn"/>
 
-              <!--                <button-->
-              <!--                  class="wysiwyg__menubar-button"-->
-              <!--                  :class="{ 'is-active': isActive.code_block() }"-->
-              <!--                  @click="commands.code_block"-->
-              <!--                >-->
-              <!--                  <span v-svg symbol="code"></span>-->
-              <!--                </button>-->
+                  <wysiwyg-menu-bar-btn icon="add_row_before"
+                                        @btn:click="commands.addRowBefore"/>
 
-              <!--                <button-->
-              <!--                  class="wysiwyg__menubar-button"-->
-              <!--                  @click="commands.createTable({rowsCount: 3, colsCount: 3, withHeaderRow: false })"-->
-              <!--                >-->
-              <!--                  <span v-svg symbol="table"></span>-->
-              <!--                </button>-->
+                  <wysiwyg-menu-bar-btn icon="add_row_after"
+                                        @btn:click="commands.addRowAfter"/>
 
-              <!--                <span v-if="isActive.table()">-->
-              <!--                  <button-->
-              <!--                    class="wysiwyg__menubar-button"-->
-              <!--                    @click="commands.deleteTable"-->
-              <!--                  >-->
-              <!--                   <span v-svg symbol="delete_table"></span>-->
-              <!--                  </button>-->
-              <!--                  <button-->
-              <!--                    class="wysiwyg__menubar-button"-->
-              <!--                    @click="commands.addColumnBefore"-->
-              <!--                  >-->
-              <!--                   <span v-svg symbol="add_col_before"></span>-->
-              <!--                  </button>-->
-              <!--                  <button-->
-              <!--                    class="wysiwyg__menubar-button"-->
-              <!--                    @click="commands.addColumnAfter"-->
-              <!--                  >-->
-              <!--                   <span v-svg symbol="add_col_after"></span>-->
-              <!--                  </button>-->
-              <!--                  <button-->
-              <!--                    class="wysiwyg__menubar-button"-->
-              <!--                    @click="commands.deleteColumn"-->
-              <!--                  >-->
-              <!--                   <span v-svg symbol="delete_col"></span>-->
-              <!--                  </button>-->
-              <!--                  <button-->
-              <!--                    class="wysiwyg__menubar-button"-->
-              <!--                    @click="commands.addRowBefore"-->
-              <!--                  >-->
-              <!--                   <span v-svg symbol="add_row_before"></span>-->
-              <!--                  </button>-->
-              <!--                  <button-->
-              <!--                    class="wysiwyg__menubar-button"-->
-              <!--                    @click="commands.addRowAfter"-->
-              <!--                  >-->
-              <!--                   <span v-svg symbol="add_row_after"></span>-->
-              <!--                  </button>-->
-              <!--                  <button-->
-              <!--                    class="wysiwyg__menubar-button"-->
-              <!--                    @click="commands.deleteRow"-->
-              <!--                  >-->
-              <!--                   <span v-svg symbol="delete_row"></span>-->
-              <!--                  </button>-->
-              <!--                  <button-->
-              <!--                    class="wysiwyg__menubar-button"-->
-              <!--                    @click="commands.toggleCellMerge"-->
-              <!--                  >-->
-              <!--                   <span v-svg symbol="combine_cells"></span>-->
-              <!--                  </button>-->
-              <!--                 </span>-->
+                  <wysiwyg-menu-bar-btn icon="delete_row"
+                                        @btn:click="commands.deleteRow"/>
+
+                  <wysiwyg-menu-bar-btn icon="combine_cells"
+                                        @btn:click="commands.toggleCellMerge"/>
+                </div>
+              </template>
             </div>
           </editor-menu-bar>
-          <editor-content class="wysiwyg__content"
-                          :editor="editor"/>
+          <div class="wysiwyg__content"
+               @click="handleEditorContentClick">
+            <editor-content class="wysiwyg__content"
+                            :editor="editor"/>
+          </div>
         </div>
         <span v-if="shouldShowCounter"
               class="input__limit f--tiny"
@@ -230,8 +156,6 @@
     OrderedList,
     BulletList,
     ListItem,
-    TodoItem,
-    TodoList,
     Bold,
     Code,
     Italic,
@@ -245,7 +169,8 @@
     Underline,
     History
   } from 'tiptap-extensions'
-  import WysiwygIcon from '@/components/WysiwygIcon'
+  import WysiwygMenuBarBtn from '@/components/WysiwygMenuBarButton'
+  import extendedVSelect from '@/components/VSelect/ExtendedVSelect.vue'
 
   import { mapState } from 'vuex'
   import debounce from 'lodash/debounce'
@@ -325,13 +250,46 @@
     components: {
       EditorContent,
       EditorMenuBar,
-      'wysiwyg-icon': WysiwygIcon
+      'wysiwyg-menu-bar-btn': WysiwygMenuBarBtn,
+      'v-select': extendedVSelect
     },
     data () {
       return {
         value: this.initialValue,
         editorHeight: 50,
         toolbarHeight: 52,
+        toolbar: this.options.modules.toolbar
+          ? this.options.modules.toolbar
+            .reduce((obj, item) => {
+              if (item.list) {
+                obj[item.list] = true
+                return obj
+              } else if (typeof item === 'object') {
+                return {
+                  ...obj,
+                  ...item
+                }
+              } else {
+                obj[item] = true
+                return obj
+              }
+            }, {})
+          : {
+            bold: true,
+            italic: true,
+            underline: true,
+            link: true
+          },
+        headingOptions: [
+          {
+            label: 'Body',
+            value: 'body'
+          }
+        ],
+        headingValue: {
+          label: 'Body',
+          value: 'body'
+        },
         focused: false,
         activeSource: false,
         counter: 0,
@@ -339,6 +297,44 @@
       }
     },
     methods: {
+      handleEditorContentClick () {
+        if (this.toolbar.header) {
+          this.$nextTick(() => {
+            this.getActiveHeading(this.editor.isActive)
+          })
+        }
+      },
+      getActiveHeading ({ paragraph, heading }) {
+        this.$nextTick(() => {
+          console.log('getActiveHeading')
+          let headingItem = null
+          this.headingOptions.filter(option => option.value !== 'body')
+            .forEach(headingLevel => {
+              console.log('getActiveHeading-heading', headingLevel.value, heading({ level: headingLevel.value }))
+              if (heading({ level: headingLevel.value })) {
+                headingItem = headingLevel
+              }
+            })
+
+          if (headingItem) {
+            this.headingValue = headingItem
+          } else if (paragraph()) {
+            console.log('getActiveHeading-paragragh', paragraph())
+            this.headingValue = this.headingOptions.find(option => option.value === 'body')
+          }
+        })
+      },
+      updateHeadingValue (el, { paragraph, heading }) {
+        this.$nextTick(() => {
+          console.log('updateHeadingValue', el)
+          if (el.value === 'body') {
+            paragraph()
+          } else {
+            console.log(heading({ level: el.value }))
+            heading({ level: el.value })
+          }
+        })
+      },
       updateEditor: function (newValue) {
         if (this.editor) {
           this.editor.setContent(newValue)
@@ -374,39 +370,85 @@
       }
     },
     beforeMount () {
-      const placeholder = this.placeholder || ''
       const content = this.value || ''
+      const extensions = [
+        new History(),
+        new HardBreak()
+      ]
+
+      if (this.placeholder && this.placeholder.length > 0) {
+        extensions.push(new Placeholder({
+          emptyNodeClass: 'is-empty',
+          emptyNodeText: this.placeHolder,
+          showOnlyWhenEditable: true
+        }))
+      }
+
+      if (this.toolbar.ordered || this.toolbar.bullet) {
+        extensions.push(new ListItem())
+      }
+
+      Object.keys(this.toolbar).forEach(tool => {
+        switch (tool) {
+          case 'header':
+            const levels = this.toolbar[tool].filter(level => typeof level === 'number')
+            levels.forEach(level => {
+              this.headingOptions.push({
+                label: `Heading ${level}`,
+                value: level
+              })
+            })
+            extensions.push(new Heading({
+              levels: levels
+            }))
+            break
+          case 'bold':
+            extensions.push(new Bold())
+            break
+          case 'italic':
+            extensions.push(new Italic())
+            break
+          case 'strike':
+            extensions.push(new Strike())
+            break
+          case 'underline':
+            extensions.push(new Underline())
+            break
+          case 'link':
+            extensions.push(new Link())
+            break
+          case 'blockquote':
+            extensions.push(new Blockquote())
+            break
+          case 'bullet':
+            extensions.push(new BulletList())
+            break
+          case 'ordered':
+            extensions.push(new OrderedList())
+            break
+          case 'code':
+            extensions.push(new Code())
+            break
+          case 'code-block':
+            extensions.push(new CodeBlock())
+            break
+          case 'table':
+            extensions.push(new Table({
+              resizable: true
+            }))
+            extensions.push(new TableHeader())
+            extensions.push(new TableCell())
+            extensions.push(new TableRow())
+            break
+        }
+      })
+
       this.editor = new Editor({
-        extensions: [
-          new Blockquote(),
-          new BulletList(),
-          new CodeBlock(),
-          new HardBreak(),
-          new Heading({ levels: [1, 2, 3] }),
-          new ListItem(),
-          new OrderedList(),
-          new TodoItem(),
-          new TodoList(),
-          new Link(),
-          new Bold(),
-          new Code(),
-          new Italic(),
-          new Strike(),
-          new Underline(),
-          new History(),
-          new Table({
-            resizable: true
-          }),
-          new TableHeader(),
-          new TableCell(),
-          new TableRow(),
-          new Placeholder({
-            emptyNodeClass: 'is-empty',
-            emptyNodeText: placeholder,
-            showOnlyWhenEditable: true
-          })
-        ],
+        extensions: extensions,
         content: content,
+        onFocus: () => {
+          this.handleEditorContentClick()
+        },
         onUpdate: ({ getHTML }) => {
           this.value = getHTML()
           this.textUpdate()
@@ -467,7 +509,7 @@
   }
 
   .wysiwyg__menubar {
-    padding: 13px 8px;
+    padding: 5px 8px;
     border-top-left-radius: 2px;
     border-top-right-radius: 2px;
     background-color: $color__f--bg;
@@ -476,19 +518,6 @@
     .s--focus & {
       border-color: $color__fborder--hover;
       border-bottom-color: $color__border--light;
-    }
-
-    .wysiwyg__menubar-button {
-      @include btn-reset;
-      width: 24px;
-      margin-right: 35px - 6px - 6px - 6px - 6px;
-      text-align: center;
-
-      &:hover,
-      &:focus,
-      &.is-active {
-        color: $color__link;
-      }
     }
   }
 
@@ -501,6 +530,16 @@
 
     min-height: 90px;
   }
+
+  .wysiwyg__menubar-table-buttons {
+    display: inline;
+  }
+
+  .wysiwyg__menubar-heading {
+    display: inline-block;
+    max-width: 150px;
+    margin-right: 10px;
+  }
 </style>
 
 <style lang="scss">
@@ -508,6 +547,8 @@
 
   .wysiwyg__content {
     .ProseMirror {
+      color: $color__text;
+
       h1, h2, h3, h4, h5, h6 {
         font-weight: 700;
       }
@@ -579,6 +620,57 @@
       sub {
         vertical-align: sub;
         font-size: smaller;
+      }
+
+      .tableWrapper {
+        margin: 1em 0;
+        overflow-x: auto;
+      }
+
+      table {
+        border-collapse: collapse;
+        table-layout: fixed;
+        width: 100%;
+        margin: 0;
+        overflow: hidden;
+
+        .selectedCell:after {
+          content: "";
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 0;
+          bottom: 0;
+          background: rgba(234, 244, 250, .8);
+          pointer-events: none;
+          z-index: 2;
+        }
+      }
+
+      table td,
+      table th {
+        min-width: 1em;
+        border: 2px solid $color__border;
+        padding: 3px 5px;
+        vertical-align: top;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        position: relative;
+      }
+
+      blockquote {
+        border-left: 3px solid $color__border;
+        color: rgba(0, 0, 0, .8);
+        padding-left: .8rem;
+      }
+
+      p.is-empty:first-child:before {
+        content: attr(data-empty-text);
+        float: left;
+        color: $color__text--light;
+        pointer-events: none;
+        height: 0;
+        font-style: italic;
       }
     }
   }
