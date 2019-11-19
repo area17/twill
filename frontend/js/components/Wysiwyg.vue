@@ -198,6 +198,11 @@
           }
         }
 
+        // check text length
+        if (this.hasMaxlength && this.showCounter) {
+          this.updateCounter(this.getTextLength())
+        }
+
         // emit ready
         this.$emit('ready', this.quill)
       },
@@ -260,8 +265,6 @@
       } else {
         this.initQuill()
       }
-
-      this.updateCounter(this.getTextLength())
     },
     beforeDestroy () {
       this.quill = null
