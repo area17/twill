@@ -9,6 +9,7 @@
     $titleFormKey = $titleFormKey ?? 'title';
     $customForm = $customForm ?? false;
     $controlLanguagesPublication = $controlLanguagesPublication ?? true;
+    $disableContentFieldset = $disableContentFieldset ?? false;
 @endphp
 
 @section('content')
@@ -16,7 +17,7 @@
         <div class="navbar navbar--sticky" data-sticky-top="navbar">
             @php
                 $additionalFieldsets = $additionalFieldsets ?? [];
-                if(!$disableContentFieldset ?? true) {
+                if(!$disableContentFieldset) {
                     array_unshift($additionalFieldsets, [
                         'fieldset' => 'content',
                         'label' => $contentFieldsetLabel ?? 'Content'
@@ -59,7 +60,7 @@
                         </div>
                     </aside>
                     <section class="col col--primary" data-sticky-top="publisher">
-                        @unless($disableContentFieldset ?? false)
+                        @unless($disableContentFieldset)
                             <a17-fieldset title="{{ $contentFieldsetLabel ?? 'Content' }}" id="content">
                                 @yield('contentFields')
                             </a17-fieldset>
