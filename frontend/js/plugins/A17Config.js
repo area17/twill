@@ -10,7 +10,8 @@ import a17Inputframe from '@/components/InputFrame.vue'
 import a17ColorField from '@/components/ColorField.vue'
 import a17Textfield from '@/components/Textfield.vue'
 import a17HiddenField from '@/components/HiddenField.vue'
-import a17Wysiwyg from '@/components/Wysiwyg-tiptap.vue'
+import a17Wysiwyg from '@/components/Wysiwyg.vue'
+import a17WysiwygTipTap from '@/components/Wysiwyg-tiptap.vue'
 import a17MediaField from '@/components/MediaField.vue'
 import a17MediaFieldTranslated from '@/components/MediaFieldTranslated.vue'
 import a17Radio from '@/components/Radio.vue'
@@ -52,6 +53,7 @@ const A17Config = {
     Vue.component('a17-textfield', a17Textfield)
     Vue.component('a17-hiddenfield', a17HiddenField)
     Vue.component('a17-wysiwyg', a17Wysiwyg)
+    Vue.component('a17-wysiwyg-tiptap', a17WysiwygTipTap)
     Vue.component('a17-inputframe', a17Inputframe)
     Vue.component('a17-mediafield', a17MediaField)
     Vue.component('a17-mediafield-translated', a17MediaFieldTranslated)
