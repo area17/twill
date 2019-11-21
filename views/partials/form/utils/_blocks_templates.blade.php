@@ -3,10 +3,12 @@
 </script>
 
 @php
-    $allBlocks = config('twill.block_editor.blocks') + config('twill.block_editor.repeaters');
+    $allBlocks = (config('twill.block_editor.blocks') ?? []) + (config('twill.block_editor.repeaters') ?? []);
 
     $blocksForInlineTemplates = collect($allBlocks)->reject(function ($block) {
         return $block['compiled'] ?? false;
+    })->filter(function ($block, $blockName) {
+        return View::exists($blockName);
     });
 @endphp
 
