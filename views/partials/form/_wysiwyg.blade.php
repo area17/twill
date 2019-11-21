@@ -49,13 +49,6 @@
     @endpushonce
 @endif
 
-
-@if(File::exists(public_path("/assets/admin/icons/icons-wysiwyg.svg")))
-    @pushonce('svg_sprite:wysiwyg')
-    {!!  File::get(public_path("/assets/admin/icons/icons-wysiwyg.svg")) !!}
-    @endpushonce
-@endif
-
 @if($wysiwyg === 'quill')
     @if($translated)
         <a17-locale
