@@ -18,6 +18,7 @@ return [
     'base_path' => env('GLIDE_BASE_PATH', 'img'),
     'use_signed_urls' => env('GLIDE_USE_SIGNED_URLS', false),
     'sign_key' => env('GLIDE_SIGN_KEY'),
+    'driver' => env('GLIDE_DRIVER', 'gd'),
     'default_params' => [
         'fm' => 'jpg',
         'q' => '80',
