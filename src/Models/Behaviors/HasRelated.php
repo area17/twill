@@ -27,7 +27,9 @@ trait HasRelated
 
     public function loadRelated($browser_name)
     {
-        $this->load('relatedItems');
+        if (!isset($this->relatedItems)) {
+            $this->load('relatedItems');
+        }
 
         return $this->relatedCache[$browser_name] = $this->relatedItems
             ->where('browser_name', $browser_name)
@@ -36,7 +38,7 @@ trait HasRelated
             });
     }
 
-    public function sync($items, $browser_name)
+    public function saveRelated($items, $browser_name)
     {
         RelatedItem::where([
             'browser_name' => $browser_name,

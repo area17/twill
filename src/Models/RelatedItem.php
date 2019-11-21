@@ -26,6 +26,6 @@ class RelatedItem extends BaseModel
 
     public function getTable()
     {
-        return 'related';
+        return config('twill.related_table', 'related');
     }
 }

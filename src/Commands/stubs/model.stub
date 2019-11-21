@@ -12,50 +12,48 @@ class {{modelClassName}} extends Model {{modelImplements}}
     protected $fillable = [
         'published',
         'title',
+        'description',{{hasPosition}}
+        'position',{{/hasPosition}}
+    ];
+    {{hasTranslation}}
+    public $translatedAttributes = [
+        'title',
         'description',
-        // 'position',
-        // 'public',
-        // 'featured',
-        // 'publish_start_date',
-        // 'publish_end_date',
+        'active',
     ];
-
-    // uncomment and modify this as needed if you use the HasTranslation trait
-    // public $translatedAttributes = [
-    //     'title',
-    //     'description',
-    //     'active',
-    // ];
-    
-    // uncomment and modify this as needed if you use the HasSlug trait
-    // public $slugAttributes = [
-    //     'title',
-    // ];
-
-    // add checkbox fields names here (published toggle is itself a checkbox)
-    public $checkboxes = [
-        'published'
+    {{/hasTranslation}}{{hasSlug}}
+    public $slugAttributes = [
+        'title',
     ];
-
-    // uncomment and modify this as needed if you use the HasMedias trait
-    // public $mediasParams = [
-    //     'cover' => [
-    //         'default' => [
-    //             [
-    //                 'name' => 'landscape',
-    //                 'ratio' => 16 / 9,
-    //             ],
-    //             [
-    //                 'name' => 'portrait',
-    //                 'ratio' => 3 / 4,
-    //             ],
-    //         ],
-    //         'mobile' => [
-    //             [
-    //                 'name' => 'mobile',
-    //                 'ratio' => 1,
-    //             ],
-    //         ],
-    //     ],
-    // ];
+    {{/hasSlug}}{{hasMedias}}
+    public $mediasParams = [
+        'cover' => [
+            'desktop' => [
+                [
+                    'name' => 'desktop',
+                    'ratio' => 16 / 9,
+                ],
+            ],
+            'mobile' => [
+                [
+                    'name' => 'mobile',
+                    'ratio' => 1,
+                ],
+            ],
+            'flexible' => [
+                [
+                    'name' => 'free',
+                    'ratio' => 0,
+                ],
+                [
+                    'name' => 'landscape',
+                    'ratio' => 16 / 9,
+                ],
+                [
+                    'name' => 'portrait',
+                    'ratio' => 3 / 5,
+                ],
+            ],
+        ],
+    ];{{/hasMedias}}
 }

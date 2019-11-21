@@ -5,6 +5,7 @@ namespace A17\Twill\Repositories;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Repositories\Behaviors\HandleDates;
+use A17\Twill\Repositories\Behaviors\HandleBrowsers;
 use A17\Twill\Repositories\Behaviors\HandleFieldsGroups;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -17,8 +18,8 @@ use PDO;
 
 abstract class ModuleRepository
 {
-    use HandleDates, HandleFieldsGroups;
-
+    use HandleDates, HandleBrowsers, HandleFieldsGroups;
+  
     /**
      * @var \A17\Twill\Models\Model
      */
@@ -662,50 +663,6 @@ abstract class ModuleRepository
 
     /**
      * @param \A17\Twill\Models\Model $object
-     * @param string $relation
-     * @param string|null $routePrefix
-     * @param string $titleKey
-     * @param string|null $moduleName
-     * @return array
-     */
-    public function getFormFieldsForBrowser($object, $relation, $routePrefix = null, $titleKey = 'title', $moduleName = null)
-    {
-        return $object->$relation->map(function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName) {
-            return [
-                'id' => $relatedElement->id,
-                'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
-                'edit' => moduleRoute($moduleName ?? $relation, $routePrefix ?? '', 'edit', $relatedElement->id),
-                'endpointType' => $relatedElement->getMorphClass(),
-            ] + (classHasTrait($relatedElement, HasMedias::class) ? [
-                'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
-            ] : []);
-        })->toArray();
-    }
-
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param string $relation
-     * @return array
-     */
-    public function getFormFieldsForRelatedBrowser($object, $relation)
-    {
-        return $object->getRelated($relation)->map(function ($relatedElement) {
-            return ($relatedElement != null) ? [
-                'id' => $relatedElement->id,
-                'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
-                'endpointType' => $relatedElement->getMorphClass(),
-            ] + (($relatedElement->adminEditUrl ?? null) ? [] : [
-                'edit' => $relatedElement->adminEditUrl,
-            ]) + (classHasTrait($relatedElement, HasMedias::class) ? [
-                'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
-            ] : []) : [];
-        })->reject(function ($item) {
-            return empty($item);
-        })->values()->toArray();
-    }
-
-    /**
-     * @param \A17\Twill\Models\Model $object
      * @param array $fields
      * @param string $relationship
      * @param string $formField
@@ -727,49 +684,6 @@ abstract class ModuleRepository
         } else {
             $object->$relationship()->delete();
         }
-    }
-
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $relationship
-     * @param string $positionAttribute
-     * @return void
-     */
-    public function updateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute = 'position')
-    {
-        $fieldsHasElements = isset($fields['browsers'][$relationship]) && !empty($fields['browsers'][$relationship]);
-        $relatedElements = $fieldsHasElements ? $fields['browsers'][$relationship] : [];
-        $relatedElementsWithPosition = [];
-        $position = 1;
-        foreach ($relatedElements as $relatedElement) {
-            $relatedElementsWithPosition[$relatedElement['id']] = [$positionAttribute => $position++];
-        }
-
-        $object->$relationship()->sync($relatedElementsWithPosition);
-    }
-
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $relationship
-     * @param string $positionAttribute
-     * @return void
-     */
-    public function updateBrowser($object, $fields, $relationship, $positionAttribute = 'position')
-    {
-        $this->updateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute);
-    }
-
-    /**
-     * @param mixed $object
-     * @param array $fields
-     * @param string $browserName
-     * @return void
-     */
-    public function updateRelatedBrowser($object, $fields, $browserName)
-    {
-        $object->sync($fields['browsers'][$browserName] ?? [], $browserName);
     }
 
     /**
