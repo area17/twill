@@ -270,6 +270,47 @@ return [
 ];
 ```
 
+#### Glide
+
+If you prefer to use [Glide](https://glide.thephpleague.com/) over Imgix you can configure glide in your config/twill.php file:
+
+
+```php
+<?php
+return [
+    'glide' => [
+        'source' => env('GLIDE_SOURCE', storage_path('app/public/' . config('twill.media_library.local_path'))),
+        'cache' => env('GLIDE_CACHE', storage_path('app')),
+        'cache_path_prefix' => env('GLIDE_CACHE_PATH_PREFIX', 'glide_cache'),
+        'base_url' => env('GLIDE_BASE_URL', request()->getScheme() . '://' . str_replace(['http://', 'https://'], '', config('app.url'))),
+        'base_path' => env('GLIDE_BASE_PATH', 'img'),
+        'use_signed_urls' => env('GLIDE_USE_SIGNED_URLS', false),
+        'sign_key' => env('GLIDE_SIGN_KEY'),
+        'driver' => env('GLIDE_DRIVER', 'gd'),
+        'default_params' => [
+            'fm' => 'jpg',
+            'q' => '80',
+            'fit' => 'max',
+        ],
+        'lqip_default_params' => [
+            'fm' => 'gif',
+            'blur' => 100,
+            'dpr' => 1,
+        ],
+        'social_default_params' => [
+            'fm' => 'jpg',
+            'w' => 900,
+            'h' => 470,
+            'fit' => 'crop',
+        ],
+        'cms_default_params' => [
+            'q' => '60',
+            'dpr' => '1',
+        ],
+    ]
+];
+```
+
 #### File library
 
 The `file_library` configuration array in `config/twill.php` allows you to provide Twill with your configuration for the file library disk, endpoint type and other options depending on your endpoint type. Most options can be controlled through environment variables, as you can see in the default configuration provided:
