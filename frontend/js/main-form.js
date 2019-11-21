@@ -56,6 +56,7 @@ import attributes from '@/store/modules/attributes'
 // mixins
 import formatPermalink from '@/mixins/formatPermalink'
 import editorMixin from '@/mixins/editor.js'
+import BlockMixin from '@/mixins/block'
 
 // configuration
 Vue.use(A17Config)
@@ -100,6 +101,15 @@ importedBlocks.keys().map(block => {
     return Vue.component('a17-' + blockName, importedBlocks(block).default)
   }
 })
+
+if (typeof window.TWILL_BLOCKS_COMPONENTS !== 'undefined') {
+  window.TWILL_BLOCKS_COMPONENTS.map(blockName => {
+    return Vue.component('a17-block-' + blockName, {
+      template: '#a17-block-' + blockName,
+      mixins: [BlockMixin]
+    })
+  })
+}
 
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
