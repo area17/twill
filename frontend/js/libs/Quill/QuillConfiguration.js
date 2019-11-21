@@ -3,6 +3,7 @@ import Quill from 'quill'
 let Delta = Quill.import('delta')
 let Break = Quill.import('blots/break')
 let Embed = Quill.import('blots/embed')
+let Inline = Quill.import('blots/inline')
 let Link = Quill.import('formats/link')
 
 /*
@@ -55,11 +56,52 @@ const lineBreakHandle = {
 
 function lineBreakMatcher () {
   const newDelta = new Delta()
-  newDelta.insert({'break': ''})
+  newDelta.insert({ 'break': '' })
   return newDelta
 }
 
 Quill.register(SmartBreak)
+
+const anchor = {
+  blotName: 'anchor',
+  tagName: 'SPAN'
+}
+
+class Anchor extends Inline {
+  static create (value) {
+    let node = super.create(value)
+    value = this.sanitize(value)
+    console.log(value)
+    node.setAttribute('id', value)
+    return node
+  }
+
+  static sanitize (id) {
+    return sanitizeAnchor(id) ? id : ''
+  }
+
+  static formats (domNode) {
+    return domNode.getAttribute('id')
+  }
+
+  format (name, value) {
+    if (name !== this.statics.blotName || !value) return super.format(name, value)
+    value = this.constructor.sanitize(value)
+    this.domNode.setAttribute('id', value)
+  }
+}
+
+function sanitizeAnchor (id) {
+  let anchor = document.createElement('span')
+  anchor.className = 'ql-anchor'
+  anchor.id = id.replace(/\s+/g, '-').toLowerCase()
+  return true
+}
+
+Anchor.blotName = anchor.blotName
+Anchor.tagName = anchor.tagName
+
+Quill.register(Anchor)
 
 /* Customize Link */
 class MyLink extends Link {
@@ -120,7 +162,8 @@ function getIcon (shape) {
 const icons = Quill.import('ui/icons') // custom icons
 icons['bold'] = getIcon('bold')
 icons['italic'] = getIcon('italic')
-icons['underline'] = getIcon('underline')
+icons['italic'] = getIcon('italic')
+icons['anchor'] = getIcon('anchor')
 icons['link'] = getIcon('link')
 icons['header']['1'] = getIcon('header')
 icons['header']['2'] = getIcon('header-2')
@@ -160,7 +203,7 @@ const QuillDefaultFormats = [
 ]
 
 function getQuillFormats (toolbarEls) {
-  const formats = [lineBreak.blotName] // Allow linebreak
+  const formats = [lineBreak.blotName, anchor.blotName] // Allow linebreak and anchor
 
   function addFormat (format) {
     if (formats.indexOf(format) > -1 || QuillDefaultFormats.indexOf(format) === -1) return
