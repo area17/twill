@@ -656,6 +656,7 @@
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
         position: relative;
+        width: 80px;
       }
 
       blockquote {
