@@ -206,6 +206,12 @@
         // emit ready
         this.$emit('ready', this.quill)
       },
+      anchorHandler (value) {
+        if (value === true) {
+          value = prompt('Enter Id:')
+        }
+        this.quill.format('anchor', value)
+      },
       updateEditor: function (newValue) {
         // convert string to HTML and update the content silently
         const htmlData = this.quill.clipboard.convert(newValue)
@@ -247,7 +253,10 @@
       this.options.theme = this.options.theme || 'snow'
       this.options.boundary = this.options.boundary || document.body
       this.options.modules = this.options.modules || this.defaultModules
-      this.options.modules.toolbar = this.options.modules.toolbar !== undefined ? this.options.modules.toolbar : this.defaultModules.toolbar
+      const toolbar = {
+        container: this.options.modules.toolbar !== undefined ? this.options.modules.toolbar : this.defaultModules.toolbar,
+        handlers: {}
+      }
       this.options.modules.clipboard = this.options.modules.clipboard !== undefined ? this.options.modules.clipboard : this.defaultModules.clipboard
       this.options.modules.keyboard = this.options.modules.keyboard !== undefined ? this.options.modules.keyboard : this.defaultModules.keyboard
       this.options.modules.syntax = this.options.modules.syntax !== undefined && this.options.modules.syntax ? { highlight: text => hljs.highlightAuto(text).value } : this.defaultModules.syntax
@@ -255,6 +264,14 @@
       this.options.readOnly = this.options.readOnly !== undefined ? this.options.readOnly : this.readonly
       this.options.formats = QuillConfiguration.getFormats(this.options.modules.toolbar) // Formats are based on current toolbar configuration
       this.options.scrollingContainer = null
+
+      // register custom handlers
+      // register anchor toolbar handler
+      if (toolbar.container.includes('anchor')) {
+        toolbar.handlers.anchor = this.anchorHandler
+      }
+
+      this.options.modules.toolbar = toolbar
 
       if (this.options.modules.syntax && typeof hljs === 'undefined') {
         const id = 'highlight-js-script'
@@ -419,6 +436,10 @@
 
     .ql-snow a {
       color: $color__link;
+    }
+
+    .ql-anchor {
+      text-underline: $color__link;
     }
 
     .ql-snow.ql-toolbar {
