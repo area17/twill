@@ -208,7 +208,11 @@
       },
       anchorHandler (value) {
         if (value === true) {
-          value = prompt('Enter Id:')
+          value = prompt('Enter anchor:')
+        } else {
+          let range = this.quill.getSelection()
+          const id = this.quill.getFormat(range).anchor || ''
+          value = prompt('Edit anchor:', id)
         }
         this.quill.format('anchor', value)
       },
@@ -438,8 +442,8 @@
       color: $color__link;
     }
 
-    .ql-anchor {
-      text-underline: $color__link;
+    .ql-editor .ql-anchor {
+      text-decoration: underline $color__link;
     }
 
     .ql-snow.ql-toolbar {

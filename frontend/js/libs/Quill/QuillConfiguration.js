@@ -71,13 +71,13 @@ class Anchor extends Inline {
   static create (value) {
     let node = super.create(value)
     value = this.sanitize(value)
-    console.log(value)
     node.setAttribute('id', value)
+    node.className = 'ql-anchor'
     return node
   }
 
   static sanitize (id) {
-    return sanitizeAnchor(id) ? id : ''
+    return id.replace(/\s+/g, '-').toLowerCase()
   }
 
   static formats (domNode) {
@@ -89,13 +89,6 @@ class Anchor extends Inline {
     value = this.constructor.sanitize(value)
     this.domNode.setAttribute('id', value)
   }
-}
-
-function sanitizeAnchor (id) {
-  let anchor = document.createElement('span')
-  anchor.className = 'ql-anchor'
-  anchor.id = id.replace(/\s+/g, '-').toLowerCase()
-  return true
 }
 
 Anchor.blotName = anchor.blotName
