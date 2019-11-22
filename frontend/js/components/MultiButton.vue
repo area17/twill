@@ -1,17 +1,22 @@
 <template>
   <div class="multibutton">
-    <a17-dropdown ref="submitDown" position="bottom-right" width="full" :offset="0">
-      <a17-button :type="type" @click="buttonClicked(options[0].name)" :name="options[0].name" variant="validate">{{ options[0].text }}</a17-button>
-      <button class="multibutton__trigger" type="button" @click="$refs.submitDown.toggle()" v-if="otherOptions.length"><span v-svg symbol="dropdown_module"></span></button>
+    <div class="multibutton__btns">
+      <a17-dropdown ref="submitDown" position="bottom-right" width="full" :offset="0">
+        <a17-button v-if="isDisabled(options[0])" type="button" variant="validate" :disabled="true">{{ options[0].text }}</a17-button>
+        <a17-button v-else :type="type" @click="buttonClicked(options[0].name)" :name="options[0].name" variant="validate">{{ options[0].text }}</a17-button>
+        <button class="multibutton__trigger" type="button" @click="$refs.submitDown.toggle()" v-if="hasValidOptions"><span v-svg symbol="dropdown_module"></span></button>
 
-      <div slot="dropdown__content" v-if="otherOptions.length">
-        <ul>
-          <li v-for="option in otherOptions" :key="option.name">
-            <button @click="buttonClicked(option.name)" :type="type" :name="option.name">{{ option.text }}</button>
-          </li>
-        </ul>
-      </div>
-    </a17-dropdown>
+        <div slot="dropdown__content" v-if="otherOptions.length">
+          <ul>
+            <li v-for="option in otherOptions" :key="option.name">
+              <button v-if="isDisabled(option)" type="button" disabled>{{ option.text }}</button>
+              <button v-else @click="buttonClicked(option.name)" :type="type" :name="option.name">{{ option.text }}</button>
+            </li>
+          </ul>
+        </div>
+      </a17-dropdown>
+    </div>
+    <p v-if="isDisabled(options[0]) && !hasValidOptions && message" class="multibutton__message">{{ message }}</p>
   </div>
 </template>
 
@@ -21,6 +26,10 @@
     props: {
       type: {
         default: 'button'
+      },
+      message: {
+        type: String,
+        default: ''
       },
       options: {
         default: function () { return [] }
@@ -33,9 +42,22 @@
       otherOptions: function () {
         if (this.options.length) return this.options.slice(1)
         else return []
+      },
+      hasValidOptions: function () {
+        const allValidOptions = this.options.filter(function (opt) {
+          return !opt.hasOwnProperty('disabled') || opt.disabled === false
+        })
+        return Boolean(allValidOptions.length > 0)
       }
     },
     methods: {
+      isDisabled: function (btn) {
+        if (btn.hasOwnProperty('disabled')) {
+          return btn.disabled === true
+        } else {
+          return false
+        }
+      },
       buttonClicked: function (val) {
         this.$emit('button-clicked', val)
       }
@@ -48,7 +70,12 @@
 
   $height_btn: 40px;
 
-  .multibutton {
+  .multibutton__message {
+    margin-top: 10px;
+    color: $color__text--light;
+  }
+
+  .multibutton__btns {
     height:$height_btn;
     position:relative;
     display:block;
