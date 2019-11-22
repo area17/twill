@@ -381,6 +381,12 @@
         width: 100%;
         background: transparent;
         text-align: left;
+
+        &:disabled {
+          cursor: default;
+          pointer-events: none;
+          opacity: .5;
+        }
       }
 
        a,

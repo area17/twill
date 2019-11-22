@@ -132,7 +132,8 @@ window.vm = new Vue({
       isCustom: state => state.form.isCustom
     }),
     ...mapGetters([
-      'getSaveType'
+      'getSaveType',
+      'isEnabledSubmitOption'
     ])
   },
   methods: {
@@ -141,11 +142,20 @@ window.vm = new Vue({
         this.isFormUpdated = false
         this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
         this.unSubscribe()
-        this.$nextTick(() => { // let's wait for the loading state to be properly deployed (used to save wysiwyg fields)
+
+        // let's wait for the loading state to be properly deployed (used to save content of wysiwyg fields)
+        this.$nextTick(() => {
           const saveType = this.getSaveType || document.activeElement.name
-          this.$store.dispatch(ACTIONS.SAVE_FORM, saveType).then(() => {
+
+          // isEnabledSubmitOption is an extra check to test is the form can be submit by making sure the saveType is not disabled
+          if (this.isEnabledSubmitOption(saveType)) {
+            this.$store.dispatch(ACTIONS.SAVE_FORM, saveType).then(() => {
+              this.mutationsSubscribe()
+            })
+          } else {
+            this.$store.commit(FORM.UPDATE_FORM_LOADING, false)
             this.mutationsSubscribe()
-          })
+          }
         })
       }
     },

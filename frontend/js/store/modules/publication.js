@@ -22,59 +22,72 @@ const state = {
       label: 'Private'
     }
   ],
+  submitDisableMessage: window.STORE.publication.submitDisableMessage || '',
   submitOptions: window.STORE.publication.submitOptions || {
     draft: [
       {
         name: 'save',
-        text: 'Save as draft'
+        text: 'Save as draft',
+        disabled: false
       },
       {
         name: 'save-close',
-        text: 'Save as draft and close'
+        text: 'Save as draft and close',
+        disabled: false
       },
       {
         name: 'save-new',
-        text: 'Save as draft and create new'
+        text: 'Save as draft and create new',
+        disabled: false
       },
       {
         name: 'cancel',
-        text: 'Cancel'
+        text: 'Cancel',
+        disabled: false
       }
     ],
     live: [
       {
         name: 'publish',
-        text: 'Publish'
+        text: 'Publish',
+        disabled: false
       },
       {
         name: 'publish-close',
-        text: 'Publish and close'
+        text: 'Publish and close',
+        disabled: false
       },
       {
         name: 'publish-new',
-        text: 'Publish and create new'
+        text: 'Publish and create new',
+        disabled: false
       },
       {
         name: 'cancel',
-        text: 'Cancel'
+        text: 'Cancel',
+        disabled: false
       }
     ],
     update: [
       {
         name: 'update',
-        text: 'Update'
+        text: 'Update',
+        disabled: false
       },
       {
         name: 'update-close',
-        text: 'Update and close'
+        text: 'Update and close',
+        disabled: false
       },
       {
         name: 'update-new',
-        text: 'Update and create new'
+        text: 'Update and create new',
+        disabled: false
       },
       {
         name: 'cancel',
-        text: 'Cancel'
+        text: 'Cancel',
+        disabled: false
       }
     ]
   }
@@ -87,6 +100,20 @@ const getters = {
   },
   getSubmitOptions: state => {
     return (state.published || !state.withPublicationToggle) ? state.submitOptions[state.publishSubmit] : state.submitOptions['draft']
+  },
+  isEnabledSubmitOption: (state, getters) => name => {
+    // default is true (for example on custom form or if we dont have submitOptions setup)
+    let enabled = true
+    let activeOption = {}
+
+    const matches = getters.getSubmitOptions.filter((el) => el.name === name)
+    if (matches.length) activeOption = matches[0]
+
+    if (activeOption.hasOwnProperty('disabled')) {
+      enabled = !activeOption.disabled
+    }
+
+    return enabled
   },
   getSaveType: (state, getters) => {
     return state.saveType || getters.getSubmitOptions[0].name
