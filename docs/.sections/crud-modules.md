@@ -5,25 +5,17 @@ Twill bases his bussiness logic in the CRUD Modules. These are Laravel Models bu
 You can generate all the files needed in your application to create a new CRUD module using Twill's Artisan generator:
 
 ```bash
-php artisan twill:module yourPluralModuleName
+php artisan twill:module moduleName
 ```
 
 The command accepts several options:
-- `--hasBlocks (-B)`,
-- `--hasTranslation (-T)`,
-- `--hasSlug (-S)`,
-- `--hasMedias (-M)`,
-- `--hasFiles (-F)`,
-- `--hasPosition (-P)`
-- `--hasRevisions(-R)`.
-
-`hasBlocks` means in the CMS you'll be enabled to use the Visual Editor.
-`hasTranslations` means you'll have the ability to add the content in different languages.
-`hasSlug` adds the creation of a "readable" url.
-`hasMedias` let's you upload images
-`hasFiles` same but for attachments, like PDFs, videos, etc.
-`hasRevisions` let's you go back through the history of changes.
-`hasPosition` is used for reordering.
+- `--hasBlocks (-B)`, to use the block editor on your module form,
+- `--hasTranslation (-T)`, to add content in multiple languages,
+- `--hasSlug (-S)`, to generate slugs based on one or multiple fields in your model,
+- `--hasMedias (-M)`, to attach images to your records,
+- `--hasFiles (-F)`, to attach files to your records,
+- `--hasPosition (-P)`, to allow manually reordering of records in the listing screen,
+- `--hasRevisions(-R)`, to allow comparing and restoring past revisions of records.
 
 The `twill:module` command will generate a migration file, a model, a repository, a controller, a form request object and a form view.
 
@@ -34,7 +26,7 @@ Add the route to your admin routes file(`routes/admin.php`).
 ```php
 <?php
 
-    Route::module('yourPluralModuleName');
+    Route::module('moduleName');
 ```
 
 Setup a new CMS menu item in `config/twill-navigation.php`.
@@ -42,9 +34,9 @@ Setup a new CMS menu item in `config/twill-navigation.php`.
 ```php
 return [
     ...
-    'pluralModuleName' => [
-        'title'     => 'Link Text',
-        'module'    => TRUE
+    'moduleName' => [
+        'title'     => 'Module name',
+        'module'    => true
     ]
     ...
 ]
@@ -57,21 +49,6 @@ Setup your form fields in `resources/views/admin/moduleName/form.blade.php`.
 Setup your index options and columns in your controller if needed.
 
 Enjoy.
-
-##### Common Errors:
-
--When running `php artisan twill:module yourPluralModuleName` sometimes we add a **Singular** Module name, when we meant a **Plural**.
-For example:
-
-```bash
-php artisan twill:module article
-```
-
-instead of
-
-```bash
-php artisan twill:module articles
-```
 
 
 ### Migrations
