@@ -1,5 +1,5 @@
 ## CRUD modules
-Twill bases his bussiness logic in the CRUD Modules. These are Laravel Models but with more features, like Translations, Revisions, etc.
+Twill core functionnality is the ability to setup what we call modules. A module is set of files that define a content model and its associated business logic in your application. Those module can be configured to enable several features for publishers, from the ability to translate content, to the ability to attach images and more complex data structure to your records.
 
 ### CLI Generator
 You can generate all the files needed in your application to create a new CRUD module using Twill's Artisan generator:
@@ -19,8 +19,6 @@ The command accepts several options:
 
 The `twill:module` command will generate a migration file, a model, a repository, a controller, a form request object and a form view.
 
-With that in place the next thing to do is filling in the migration and models using the documentation below.
-
 Add the route to your admin routes file(`routes/admin.php`).
 
 ```php
@@ -29,7 +27,7 @@ Add the route to your admin routes file(`routes/admin.php`).
     Route::module('moduleName');
 ```
 
-Setup a new CMS menu item in `config/twill-navigation.php`.
+Setup a new CMS navigation item in `config/twill-navigation.php`.
 
 ```php
 return [
@@ -41,6 +39,20 @@ return [
     ...
 ]
 ```
+
+With that in place, after migrating the databse using `php artisan migrate`, you should be able to start creating content. By default, module only have a title and a description, the ability to be published, and any other feature you added through the CLI generator.
+
+If you provided the `hasBlocks` option, you will be able to use the `block_editor` form field in the form of that module (not enabled by default after generating the module).
+
+If you provided the `hasTranslation` option, and have multiple languages specified in your `translatable.php` configuration file, the UI will react automatically and allow publishers to translate content and manage publication at the language level. 
+
+If you provided the `hasSlug` option, slugs will automatically be generated from the title.
+
+If you provided the `hasMedias` or `hasFiles` option, you will be able to add respectively add several `medias` or `files` form fields to the form of that module.
+
+If you provided the `hasPosition` option, publishers will be able to manually order  records from the module's listing screen (after enabling the `reorder` option in the module's controller `indexOptions` array).
+
+If you provided the `hasRevisions` option, each form submission will create a new revision in your database so that publishers can compare and restore them in the CMS UI.
 
 Depending on the depth of your module in your navigation, you'll need to wrap your route declaration in one or multiple nested route groups.
 
@@ -119,39 +131,6 @@ Schema::create('table_name_singular1_table_name_singular2', function (Blueprint 
 A few CRUD controllers require that your model have a field in the database with a specific name: `published`, `publish_start_date`, `publish_end_date`, `public`, and `position`, so stick with those column names if you are going to use publication status, timeframe and reorderable listings.
 
 
-##### Common errors:
-
-- Didn't disable the commented-out lines on the migration file generated.
-For example if you run the `twill:module` with *revisions*(-R or --hasRevisions) and *slugs*(-S or --hasSlugs) you need to uncomment the related code, like:
-
-```php
-        Schema::create('article_slugs', function (Blueprint $table) {
-            createDefaultSlugsTableFields($table, 'article');
-        });
-
-        Schema::create('article_revisions', function (Blueprint $table) {
-            createDefaultRevisionsTableFields($table, 'article');
-        });
-```
-- Not following naming convention.
-This usually happens when you created a module without a trait, let's say *slugs* but you decide to later add it.
-If you don't follow the naming conventions, Twill will not be able to find the proper association table.
-For example:
-```php
-        // CORRECT CONVENTION
-        Schema::create('article_slugs', function (Blueprint $table) {
-            createDefaultSlugsTableFields($table, 'article');
-        });
-```
-
-VS
-
-```php
-        // WRONG CONVENTION
-        Schema::create('slugs_for_articles', function (Blueprint $table) {
-            createDefaultSlugsTableFields($table, 'article');
-        });
-```
 ### Models
 
 Set your fillables to prevent mass-assignement. This is very important, as we use `request()->all()` in the module controller.
