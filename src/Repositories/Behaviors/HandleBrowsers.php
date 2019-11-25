@@ -78,7 +78,8 @@ trait HandleBrowsers
      * @param string $positionAttribute
      * @return void
      */
-    public function updateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute = 'position') {
+    public function updateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute = 'position')
+    {
         $this->updateBrowser($object, $fields, $relationship, $positionAttribute);
     }
 
