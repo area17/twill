@@ -11,6 +11,7 @@
   import { MEDIA_LIBRARY } from '@/store/mutations'
   import qq from 'fine-uploader/lib/dnd'
   import FineUploaderS3 from 'fine-uploader-wrappers/s3'
+  import FineUploaderAzure from 'fine-uploader-wrappers/azure'
   import FineUploaderTraditional from 'fine-uploader-wrappers/traditional'
   import sanitizeFilename from '@/utils/sanitizeFilename.js'
 
@@ -43,7 +44,6 @@
     methods: {
       initUploader: function () {
         const buttonEl = this.$refs.uploaderBrowseButton
-
         const sharedConfig = {
           debug: true,
           maxConnections: 5,
@@ -72,53 +72,91 @@
           }
         }
 
-        this._uploader = this.uploaderConfig.endpointType === 's3' ? new FineUploaderS3({
-          options: {
-            ...sharedConfig,
-            validation: {
-              ...this.uploaderValidation
-            },
-            objectProperties: {
-              key: id => {
-                return this.unique_folder_name + '/' + sanitizeFilename(this._uploader.methods.getName(id))
+        this._uploader = this.uploaderConfig.endpointType === 's3'
+          ? new FineUploaderS3({
+            options: {
+              ...sharedConfig,
+              validation: {
+                ...this.uploaderValidation
               },
-              region: this.uploaderConfig.endpointRegion,
-              bucket: this.uploaderConfig.endpointBucket,
-              acl: this.uploaderConfig.acl
-            },
-            request: {
-              endpoint: this.uploaderConfig.endpoint,
-              accessKey: this.uploaderConfig.accessKey
-            },
-            signature: {
-              endpoint: this.uploaderConfig.signatureEndpoint,
-              version: 4,
-              customHeaders: {
-                'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
-              }
-            },
-            uploadSuccess: {
-              endpoint: this.uploaderConfig.successEndpoint,
-              customHeaders: {
-                'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
-              }
-            }
-          }
-        }) : new FineUploaderTraditional({
-          options: {
-            ...sharedConfig,
-            validation: {
-              ...this.uploaderValidation,
-              sizeLimit: this.uploaderConfig.filesizeLimit * 1048576 // mb to bytes
-            },
-            request: {
-              endpoint: this.uploaderConfig.endpoint,
-              customHeaders: {
-                'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
+              objectProperties: {
+                key: id => {
+                  return this.unique_folder_name + '/' + sanitizeFilename(this._uploader.methods.getName(id))
+                },
+                region: this.uploaderConfig.endpointRegion,
+                bucket: this.uploaderConfig.endpointBucket,
+                acl: this.uploaderConfig.acl
+              },
+              request: {
+                endpoint: this.uploaderConfig.endpoint,
+                accessKey: this.uploaderConfig.accessKey
+              },
+              signature: {
+                endpoint: this.uploaderConfig.signatureEndpoint,
+                version: 4,
+                customHeaders: {
+                  'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
+                }
+              },
+              uploadSuccess: {
+                endpoint: this.uploaderConfig.successEndpoint,
+                customHeaders: {
+                  'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
+                }
               }
             }
-          }
-        })
+          })
+          : this.uploaderConfig.endpointType === 'azure'
+            ? new FineUploaderAzure({
+              options: {
+                ...sharedConfig,
+                validation: {
+                  ...this.uploaderValidation
+                },
+                cors: {
+                  expected: true,
+                  sendCredentials: true
+                },
+                blobProperties: {
+                  name: id => {
+                    return new Promise((resolve) => {
+                      resolve(this.unique_folder_name + '/' + sanitizeFilename(this._uploader.methods.getName(id)))
+                    })
+                  }
+                },
+                request: {
+                  endpoint: this.uploaderConfig.endpoint
+                },
+                signature: {
+                  endpoint: this.uploaderConfig.signatureEndpoint,
+                  version: 4,
+                  customHeaders: {
+                    'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
+                  }
+                },
+                uploadSuccess: {
+                  endpoint: this.uploaderConfig.successEndpoint,
+                  customHeaders: {
+                    'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
+                  }
+                }
+              }
+            })
+            : new FineUploaderTraditional({
+              options: {
+                ...sharedConfig,
+                validation: {
+                  ...this.uploaderValidation,
+                  sizeLimit: this.uploaderConfig.filesizeLimit * 1048576 // mb to bytes
+                },
+                request: {
+                  endpoint: this.uploaderConfig.endpoint,
+                  customHeaders: {
+                    'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
+                  }
+                }
+              }
+            })
       },
       loadingProgress: function (media) {
         this.$store.commit(MEDIA_LIBRARY.PROGRESS_UPLOAD_MEDIA, media)
@@ -268,14 +306,14 @@
   $height_small_btn: 35px;
 
   .uploader {
-    margin:10px;
+    margin: 10px;
   }
 
   .uploader__dropzone {
-    border:1px dashed $color__border--hover;
-    text-align:center;
-    padding:26px 0;
-    color:$color__text--light;
+    border: 1px dashed $color__border--hover;
+    text-align: center;
+    padding: 26px 0;
+    color: $color__text--light;
 
     .button {
       @include btn-reset;

@@ -763,7 +763,7 @@ abstract class ModuleController extends Controller
                 'publish_start_date' => $item->publish_start_date,
                 'publish_end_date' => $item->publish_end_date,
                 'edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null,
-                'delete' => ($canEdit && $itemCanDelete) ? $this->getModuleRoute($item->id, 'destroy') : null,
+                'delete' => $itemCanDelete ? $this->getModuleRoute($item->id, 'destroy') : null,
             ] + ($this->getIndexOption('editInModal') ? [
                 'editInModal' => $this->getModuleRoute($item->id, 'edit'),
                 'updateUrl' => $this->getModuleRoute($item->id, 'update'),
@@ -1200,7 +1200,7 @@ abstract class ModuleController extends Controller
             'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
             'saveUrl' => $this->getModuleRoute($item->id, 'update'),
             'editor' => $this->moduleHas('revisions') && $this->moduleHas('blocks') && !$this->disableEditor,
-            'blockPreviewUrl' => URL::route('admin.blocks.preview'),
+            'blockPreviewUrl' => Route::has('admin.blocks.preview')? URL::route('admin.blocks.preview') : '#',
             'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
         ] + (Route::has($previewRouteName) ? [
             'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $item->id),

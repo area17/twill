@@ -4,10 +4,59 @@ namespace A17\Twill\Repositories\Behaviors;
 
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 
 trait HandleRepeaters
 {
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return void
+     */
+    public function afterSaveHandleRepeaters($object, $fields)
+    {
+        if (property_exists($this, 'repeaters')) {
+            foreach ($this->repeaters as $module) {
+                if (is_string($module)) {
+                    $model = Str::studly(Str::singular($module));
+                    $repeaterName = Str::singular($module);
+                    $this->updateRepeater($object, $fields, $module, $model, $repeaterName);
+                } elseif (is_array($module)) {
+                    $relation = !empty($module['relation']) ? $module['relation'] : key($module);
+                    $model = isset($module['model']) ? $module['model'] : Str::studly(Str::singular(key($module)));
+                    $repeaterName = !empty($module['repeaterName']) ? $module['repeaterName'] : Str::singular(key($module));
+                    $this->updateRepeater($object, $fields, $relation, $model, $repeaterName);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return array
+     */
+    public function getFormFieldsHandleRepeaters($object, $fields)
+    {
+        if (property_exists($this, 'repeaters')) {
+            foreach ($this->repeaters as $module) {
+                if (is_string($module)) {
+                    $model = Str::studly(Str::singular($module));
+                    $repeaterName = Str::singular($module);
+                    $fields = $this->getFormFieldsForRepeater($object, $fields, $module, $model, $repeaterName);
+                } elseif (is_array($module)) {
+                    $model = isset($module['model']) ? $module['model'] : Str::studly(Str::singular(key($module)));
+                    $relation = !empty($module['relation']) ? $module['relation'] : key($module);
+                    $repeaterName = !empty($module['repeaterName']) ? $module['repeaterName'] : Str::singular(key($module));
+                    $fields = $this->getFormFieldsForRepeater($object, $fields, $relation, $model, $repeaterName);
+                }
+            }
+        }
+        
+        return $fields;
+    } 
+
     public function updateRepeaterMany($object, $fields, $relation, $keepExisting = true, $model = null)
     {
         $relationFields = $fields['repeaters'][$relation] ?? [];

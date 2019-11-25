@@ -9,6 +9,7 @@
     $titleFormKey = $titleFormKey ?? 'title';
     $customForm = $customForm ?? false;
     $controlLanguagesPublication = $controlLanguagesPublication ?? true;
+    $disableContentFieldset = $disableContentFieldset ?? false;
 @endphp
 
 @section('content')
@@ -16,10 +17,12 @@
         <div class="navbar navbar--sticky" data-sticky-top="navbar">
             @php
                 $additionalFieldsets = $additionalFieldsets ?? [];
-                array_unshift($additionalFieldsets, [
-                    'fieldset' => 'content',
-                    'label' => $contentFieldsetLabel ?? 'Content'
-                ]);
+                if(!$disableContentFieldset) {
+                    array_unshift($additionalFieldsets, [
+                        'fieldset' => 'content',
+                        'label' => $contentFieldsetLabel ?? 'Content'
+                    ]);
+                }
             @endphp
             <a17-sticky-nav data-sticky-target="navbar" :items="{{ json_encode($additionalFieldsets) }}">
                 <a17-title-editor
@@ -56,9 +59,9 @@
                             ></a17-page-nav>
                         </div>
                     </aside>
-                    <section class="col col--primary">
-                        @unless($disableContentFieldset ?? false)
-                            <a17-fieldset title="{{ $contentFieldsetLabel ?? 'Content' }}" id="content" data-sticky-top="publisher">
+                    <section class="col col--primary" data-sticky-top="publisher">
+                        @unless($disableContentFieldset)
+                            <a17-fieldset title="{{ $contentFieldsetLabel ?? 'Content' }}" id="content">
                                 @yield('contentFields')
                             </a17-fieldset>
                         @endunless
@@ -102,7 +105,7 @@
 
     window.STORE.publication = {
         withPublicationToggle: {{ json_encode(($publish ?? true) && isset($item) && $item->isFillable('published')) }},
-        published: {{ json_encode(isset($item) ? $item->published : false) }},
+        published: {{ isset($item) && $item->published ? 'true' : 'false' }},
         withPublicationTimeframe: {{ json_encode(($schedule ?? true) && isset($item) && $item->isFillable('publish_start_date')) }},
         publishedLabel: '{{ $customPublishedLabel ?? 'Live' }}',
         draftLabel: '{{ $customDraftLabel ?? 'Draft' }}',
