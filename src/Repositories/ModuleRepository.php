@@ -79,7 +79,7 @@ abstract class ModuleRepository
                 return $this->getCountForTrash();
         }
 
-        foreach ($this->traitsMethods() as $method) {
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             if (($count = $this->$method($slug)) !== false) {
                 return $count;
             }
@@ -463,7 +463,7 @@ abstract class ModuleRepository
     {
         $fields = $this->cleanupFields(null, $fields);
 
-        foreach ($this->traitsMethods() as $method) {
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $fields = $this->$method($fields);
         }
 
@@ -479,7 +479,7 @@ abstract class ModuleRepository
     {
         $fields = $this->cleanupFields($object, $fields);
 
-        foreach ($this->traitsMethods() as $method) {
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $fields = $this->$method($object, $fields);
         }
 
@@ -493,7 +493,7 @@ abstract class ModuleRepository
      */
     public function afterUpdateBasic($object, $fields)
     {
-        foreach ($this->traitsMethods() as $method) {
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($object, $fields);
         }
     }
@@ -505,7 +505,7 @@ abstract class ModuleRepository
      */
     public function beforeSave($object, $fields)
     {
-        foreach ($this->traitsMethods() as $method) {
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($object, $fields);
         }
     }
@@ -517,7 +517,7 @@ abstract class ModuleRepository
      */
     public function afterSave($object, $fields)
     {
-        foreach ($this->traitsMethods() as $method) {
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($object, $fields);
         }
     }
@@ -528,7 +528,7 @@ abstract class ModuleRepository
      */
     public function afterDelete($object)
     {
-        foreach ($this->traitsMethods() as $method) {
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($object);
         }
     }
@@ -539,7 +539,7 @@ abstract class ModuleRepository
      */
     public function afterRestore($object)
     {
-        foreach ($this->traitsMethods() as $method) {
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($object);
         }
     }
@@ -551,7 +551,7 @@ abstract class ModuleRepository
      */
     public function hydrate($object, $fields)
     {
-        foreach ($this->traitsMethods() as $method) {
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $object = $this->$method($object, $fields);
         }
 
@@ -566,7 +566,7 @@ abstract class ModuleRepository
     {
         $fields = $object->attributesToArray();
 
-        foreach ($this->traitsMethods() as $method) {
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $fields = $this->$method($object, $fields);
         }
 
@@ -582,7 +582,7 @@ abstract class ModuleRepository
     {
         $likeOperator = $this->getLikeOperator();
 
-        foreach ($this->traitsMethods() as $method) {
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($query, $scopes);
         }
 
@@ -623,7 +623,7 @@ abstract class ModuleRepository
             $query->orderBy($column, $direction);
         }
 
-        foreach ($this->traitsMethods() as $method) {
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($query, $orders);
         }
 
