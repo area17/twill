@@ -46,9 +46,9 @@ trait HandleBrowsers
                 }
             }
         }
-        
+
         return $fields;
-    } 
+    }
 
     /**
      * @param \A17\Twill\Models\Model $object
@@ -70,7 +70,7 @@ trait HandleBrowsers
 
         $object->$relationship()->sync($relatedElementsWithPosition);
     }
-    
+
     /**
      * @param \A17\Twill\Models\Model $object
      * @param array $fields
@@ -81,7 +81,7 @@ trait HandleBrowsers
     public function updateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute = 'position') {
         $this->updateBrowser($object, $fields, $relationship, $positionAttribute);
     }
-    
+
     /**
      * @param mixed $object
      * @param array $fields
@@ -127,7 +127,7 @@ trait HandleBrowsers
                 'id' => $relatedElement->id,
                 'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
                 'endpointType' => $relatedElement->getMorphClass(),
-            ] + (($relatedElement->adminEditUrl ?? null) ? [] : [
+            ] + (empty($relatedElement->adminEditUrl) ? [] : [
                 'edit' => $relatedElement->adminEditUrl,
             ]) + (classHasTrait($relatedElement, HasMedias::class) ? [
                 'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
