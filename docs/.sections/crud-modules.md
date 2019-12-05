@@ -1137,7 +1137,7 @@ use Kalnoy\Nestedset\NodeTrait;
 ...
 
 class Page extends Model {
-    use HasPostion, NodeTrait;
+    use HasPosition, NodeTrait;
     ...
     public static function saveTreeFromIds($nodesArray)
     {
