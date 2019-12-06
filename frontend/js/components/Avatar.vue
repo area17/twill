@@ -1,6 +1,6 @@
 <template>
   <div :class="getClassNames">
-    <img v-if="thumbnail" :src="thumbnail" alt="" />
+    <img v-if="thumbnail" :src="thumbnail" :alt="name" />
     <span class="avatar__letter">{{ getFirstLetter }}</span>
   </div>
 </template>
@@ -9,10 +9,6 @@
   export default {
     name: 'A17Avatar',
     props: {
-      id: {
-        type: Number,
-        default: null
-      },
       name: {
         type: String,
         default: null
@@ -34,7 +30,7 @@
         const colors = ['orange', 'blue', 'purple', 'red']
 
         // Calculate indexColor.
-        const indexColor = (this.id % colors.length)
+        const indexColor = (this.name.length % colors.length)
 
         // Return background class.
         return `avatar--background-${colors[indexColor]}`

@@ -3,9 +3,21 @@
     <div class="titleEditor__preview">
       <h2 class="titleEditor__title" :class="{ 'titleEditor__title-only' : !permalink }">
         <a v-if="editableTitle" @click.prevent="$refs.editModal.open()" href="#">
+          <a17-avatar
+            v-if="thumbnail"
+            :name="title"
+            :thumbnail="thumbnail"
+          />
           <span class="f--underlined--o">{{ title }}</span> <span v-svg symbol="edit"></span>
         </a>
-        <span v-else>{{ customTitle ? customTitle : title }}</span>
+        <span v-else>
+          <a17-avatar
+            v-if="thumbnail"
+            :name="title"
+            :thumbnail="thumbnail"
+          />
+          {{ customTitle ? customTitle : title }}
+        </span>
       </h2>
       <a v-if="permalink || customPermalink" :href="fullUrl" target="_blank" class="titleEditor__permalink f--small">
         <span class="f--note f--external f--underlined--o">{{ visibleUrl | prettierUrl }}</span>
@@ -27,6 +39,7 @@
 <script>
   import { mapState, mapGetters } from 'vuex'
   import a17VueFilters from '@/utils/filters.js'
+  import A17Avatar from '@/components/Avatar.vue'
   import a17ModalValidationButtons from '@/components/modals/ModalValidationButtons.vue'
   import langManager from '@/components/LangManager.vue'
 
@@ -37,6 +50,7 @@
     name: 'A17TitleEditor',
     mixins: [InputframeMixin, LocaleMixin],
     components: {
+      'a17-avatar': A17Avatar,
       'a17-modal-validation': a17ModalValidationButtons,
       'a17-langmanager': langManager
     },
@@ -48,6 +62,10 @@
       warningMessage: {
         type: String,
         default: 'Missing title'
+      },
+      thumbnail: {
+        type: String,
+        default: ''
       },
       name: {
         default: 'title'
