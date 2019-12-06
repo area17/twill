@@ -847,20 +847,26 @@ abstract class ModuleController extends Controller
         $tableColumns = [];
         $visibleColumns = $this->request->get('columns') ?? false;
 
-
-        if (isset(Arr::first($this->indexColumns)['thumb'])
+        // Thumbnails : rounded or regular ones
+        $hasRoundedThumb = (isset(Arr::first($this->indexColumns)['thumb'])
             && Arr::first($this->indexColumns)['thumb']
-        ) {
-            array_push($tableColumns, [
-                'name' => 'thumbnail',
-                'label' => 'Thumbnail',
-                'visible' => $visibleColumns ? in_array('thumbnail', $visibleColumns) : true,
-                'optional' => true,
-                'sortable' => false,
-            ] + (isset(array_first($this->indexColumns)['variation'])
-                    ? ['variation' => array_first($this->indexColumns)['variation']]
-                    : [])
-            );
+            && isset(Arr::first($this->indexColumns)['variation'])
+            && Arr::first($this->indexColumns)['variation'] === 'rounded') ?? false;
+        $hasThumb = (isset(Arr::first($this->indexColumns)['thumb'])
+            && Arr::first($this->indexColumns)['thumb']
+            && !$hasRoundedThumb);
+        $thumb = ($hasRoundedThumb || $hasThumb) ? [
+            'name' => 'thumbnail',
+            'label' => 'Thumbnail',
+            'visible' => $visibleColumns ? in_array('thumbnail', $visibleColumns) : true,
+            'optional' => true,
+            'sortable' => false,
+        ] + (isset(array_first($this->indexColumns)['variation'])
+                ? ['variation' => array_first($this->indexColumns)['variation']]
+                : []) : false;
+
+        if ($hasThumb) {
+            array_push($tableColumns, $thumb);
             array_shift($this->indexColumns);
         }
 
@@ -881,6 +887,12 @@ abstract class ModuleController extends Controller
             'optional' => false,
             'sortable' => false,
         ]);
+
+        // rounded thumb are attached to the name
+        if ($hasRoundedThumb) {
+            array_push($tableColumns, $thumb);
+            array_shift($this->indexColumns);
+        }
 
         array_push($tableColumns, [
             'name' => 'name',
