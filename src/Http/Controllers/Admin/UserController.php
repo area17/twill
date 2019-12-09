@@ -192,6 +192,14 @@ class UserController extends ModuleController
             );
         }
 
+        // Get user thumbnail (fixme because this always return the fallback blank image)
+        if ($this->config->get('twill.enabled.users-image')) {
+            $role = head(array_keys($this->user->mediasParams));
+            $crop = head(array_keys(head($this->user->mediasParams)));
+            $params = ['w' => 100, 'h' => 100];
+            $titleThumbnail = $this->user->cmsImage($role, $crop, $params);
+        }
+
         return [
             'roleList' => Role::published()->get()->map(function ($role) {
                 return ['value' => $role->id, 'label' => $role->name];
@@ -214,7 +222,7 @@ class UserController extends ModuleController
                     'can' => 'edit-user-groups',
                 ],
             ],
-            'titleThumbnail' => method_exists($user, 'defaultCmsImage') ? $user->defaultCmsImage(['w' => 100, 'h' => 100]) : null,
+            'titleThumbnail' => $titleThumbnail ? $titleThumbnail : null,
             'customPublishedLabel' => 'Enabled',
             'customDraftLabel' => 'Disabled',
             'permissionModules' => Permission::permissionableParentModuleItems(),
