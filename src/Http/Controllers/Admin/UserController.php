@@ -172,32 +172,34 @@ class UserController extends ModuleController
      */
     protected function formData($request)
     {
-        $user = $this->authFactory->guard('twill_users')->user();
-        $with2faSettings = $this->config->get('twill.enabled.users-2fa') && $user->id == $this->request->get('user');
+        //The User current logged in
+        $currentUser = $this->authFactory->guard('twill_users')->user();
+        $with2faSettings = $this->config->get('twill.enabled.users-2fa') && $currentUser->id == $this->request->get('user');
 
         if ($with2faSettings) {
             $google2fa = new Google2FA();
 
-            if (is_null($user->google_2fa_secret)) {
+            if (is_null($currentUser->google_2fa_secret)) {
                 $secret = $google2fa->generateSecretKey();
-                $user->google_2fa_secret = \Crypt::encrypt($secret);
-                $user->save();
+                $currentUser->google_2fa_secret = \Crypt::encrypt($secret);
+                $currentUser->save();
             }
 
             $qrCode = $google2fa->getQRCodeInline(
                 $this->config->get('app.name'),
-                $user->email,
-                \Crypt::decrypt($user->google_2fa_secret),
+                $currentUser->email,
+                \Crypt::decrypt($currentUser->google_2fa_secret),
                 200
             );
         }
 
         // Get user thumbnail (fixme because this always return the fallback blank image)
         if ($this->config->get('twill.enabled.users-image')) {
-            $role = head(array_keys($this->user->mediasParams));
-            $crop = head(array_keys(head($this->user->mediasParams)));
+            $user = $this->repository->getById($request->route('user'));
+            $role = head(array_keys($user->mediasParams));
+            $crop = head(array_keys(head($user->mediasParams)));
             $params = ['w' => 100, 'h' => 100];
-            $titleThumbnail = $this->user->cmsImage($role, $crop, $params);
+            $titleThumbnail = $user->cmsImage($role, $crop, $params);
         }
 
         return [
