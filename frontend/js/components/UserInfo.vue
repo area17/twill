@@ -5,13 +5,13 @@
     <div class="userInfo__content">
       <div v-if="userInfo.registered_at" class="userInfo__item">
         <div class="userInfo__row">
-          <span class="userInfo__row-cell">Registered at :</span>
+          <span class="userInfo__row-cell">Registered at</span>
           <span class="userInfo__row-cell userInfo__row-cell--value">{{ userInfo.registered_at }}</span>
         </div>
       </div>
       <div v-if="userInfo.last_login_at" class="userInfo__item">
         <div class="userInfo__row">
-          <span class="userInfo__row-cell">Last login at :</span>
+          <span class="userInfo__row-cell">Last login at</span>
           <span class="userInfo__row-cell userInfo__row-cell--value">{{ userInfo.last_login_at }}</span>
         </div>
       </div>

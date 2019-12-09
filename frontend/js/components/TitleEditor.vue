@@ -2,21 +2,25 @@
   <div class="titleEditor" :class="titleEditorClasses">
     <div class="titleEditor__preview">
       <h2 class="titleEditor__title" :class="{ 'titleEditor__title-only' : !permalink }">
-        <a v-if="editableTitle" @click.prevent="$refs.editModal.open()" href="#">
+        <a v-if="editableTitle" @click.prevent="$refs.editModal.open()" href="#" class="titleEditor__title-wrapper">
           <a17-avatar
             v-if="thumbnail"
             :name="title"
             :thumbnail="thumbnail"
           />
-          <span class="f--underlined--o">{{ title }}</span> <span v-svg symbol="edit"></span>
+          <span class="titleEditor__title">
+            <span class="f--underlined--o">{{ title }}</span> <span v-svg symbol="edit"></span>
+          </span>
         </a>
-        <span v-else>
+        <span v-else class="titleEditor__title-wrapper">
           <a17-avatar
             v-if="thumbnail"
             :name="title"
             :thumbnail="thumbnail"
           />
-          {{ customTitle ? customTitle : title }}
+          <span class="titleEditor__title">
+            {{ customTitle ? customTitle : title }}
+          </span>
         </span>
       </h2>
       <a v-if="permalink || customPermalink" :href="fullUrl" target="_blank" class="titleEditor__permalink f--small">
@@ -168,6 +172,16 @@
 
     .stickyNav.sticky__fixedTop & {
       line-height: 35px;
+    }
+  }
+
+  .titleEditor__title-wrapper {
+    display: flex;
+    align-content: center;
+    align-items: center;
+
+    > .avatar {
+      margin-right: 10px;
     }
   }
 

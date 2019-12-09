@@ -214,6 +214,7 @@ class UserController extends ModuleController
                     'can' => 'edit-user-groups',
                 ],
             ],
+            'titleThumbnail' => method_exists($user, 'defaultCmsImage') ? $user->defaultCmsImage(['w' => 100, 'h' => 100]) : null,
             'customPublishedLabel' => 'Enabled',
             'customDraftLabel' => 'Disabled',
             'permissionModules' => Permission::permissionableParentModuleItems(),

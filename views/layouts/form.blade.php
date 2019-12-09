@@ -26,6 +26,7 @@
             <a17-sticky-nav data-sticky-target="navbar" :items="{{ json_encode($additionalFieldsets) }}">
                 <a17-title-editor
                     name="{{ $titleFormKey }}"
+                    thumbnail="{{ $titleThumbnail ?? '' }}"
                     :editable-title="{{ json_encode($editableTitle ?? true) }}"
                     custom-title="{{ $customTitle ?? '' }}"
                     custom-permalink="{{ $customPermalink ?? '' }}"
