@@ -92,8 +92,7 @@
                                             ],
                                         ]
                                     ])
-                                </a17-fieldset>
-                                <a17-fieldset title="Group Permissions" id="permissions">
+
                                     @foreach($groups as $group)
                                         @formField('checkbox', [
                                             'name' => $group->id . '_group_authorized',

@@ -75,7 +75,7 @@
       gridClasses: function () {
         return [
           this.grid ? `singleselector--grid` : '',
-          this.inline ? `singleselector--inline` : ''
+          this.inline && this.grid === false ? `singleselector--inline` : ''
         ]
       },
       selectedValue: {
@@ -335,6 +335,7 @@
     margin-right:20px;
   }
 
+   /* intable version */
   .multiselectorOuter--intable .singleselector--inline .singleselector__item:last-child {
     margin-right: 0;
   }
