@@ -4,6 +4,7 @@
 @endphp
 <a17-singleselect-table
     @if ($searchable) :searchable="true" @endif
+    @if ($groupAction) :groups="{{ json_encode($groupAction) }}" @endif
 >
     @foreach ($itemsInSelectsTables as $itemInSelectsTables)
         <div class="multiselectorTable__item" data-singleselect-table-filterable="{{ $itemInSelectsTables[$labelKey ?? 'title'] }}">

@@ -73,6 +73,7 @@
                                         'itemsInSelectsTables' => $users,
                                         'labelKey' => 'name',
                                         'name' => 'user_%id%_permission',
+                                        'groupAction' => $groups,
                                         'options' => [
                                             [
                                                 'value' => '',
@@ -93,12 +94,12 @@
                                         ]
                                     ])
 
-                                    @foreach($groups as $group)
+                                    {{-- @foreach($groups as $group)
                                         @formField('checkbox', [
                                             'name' => $group->id . '_group_authorized',
                                             'label' => $group->name
                                         ])
-                                    @endforeach
+                                    @endforeach --}}
                                 </a17-fieldset>
                             @endcan
                         @endif

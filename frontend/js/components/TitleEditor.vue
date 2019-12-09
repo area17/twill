@@ -176,7 +176,7 @@
   }
 
   .titleEditor__title-wrapper {
-    display: flex;
+    display: inline-flex;
     align-content: center;
     align-items: center;
 
