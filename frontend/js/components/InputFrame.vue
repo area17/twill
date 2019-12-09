@@ -28,10 +28,11 @@
     },
     computed: {
       textfieldClasses: function () {
-        return {
-          'input--error': this.error,
-          'input--small': this.size === 'small'
-        }
+        return [
+          this.variant ? `input--${this.variant}` : '',
+          this.size === 'small' ? 'input--small' : '',
+          this.error ? 'input--error' : ''
+        ]
       }
     },
     methods: {
@@ -113,6 +114,21 @@
 
       .singleCheckbox {
         padding:7px 0 8px 0;
+      }
+    }
+  }
+
+  /* Variant input in table */
+  .input--intable {
+    margin-top:0;
+
+    @include breakpoint('large+') {
+      display: flex;
+      align-items: center;
+
+      .input__label {
+        flex-grow: 1;
+        margin-bottom:0;
       }
     }
   }

@@ -94,32 +94,29 @@
     @section('fieldsets')
         @foreach($permissionModules as $moduleName => $moduleItems)
             <a17-fieldset title='{{ ucfirst($moduleName) . " Permissions"}}' id='{{ $moduleName }}'>
-                {{-- <h2>{{ ucfirst($moduleName) .' permission' }}</h2> --}}
-                @foreach ($moduleItems as $moduleItem)
-                    @formField('select', [
-                        'name' => $moduleName . '_' . $moduleItem->id . '_permission',
-                        'label' => $moduleItem->title,
-                        'unpack' => true,
-                        'options' => [
-                            [
-                                'value' => '',
-                                'label' => 'None'
-                            ],
-                            [
-                                'value' => 'view-item',
-                                'label' => 'View'
-                            ],
-                            [
-                                'value' => 'edit-item',
-                                'label' => 'Edit'
-                            ],
-                            [
-                                'value' => 'manage-item',
-                                'label' => 'Manage'
-                            ],
-                        ]
-                    ])
-                @endforeach
+                @formField('select_table', [
+                    'itemsInSelectsTables' => $moduleItems,
+                    'labelKey' => 'title',
+                    'name' => $moduleName . '_%id%_permission',
+                    'options' => [
+                        [
+                            'value' => '',
+                            'label' => 'None'
+                        ],
+                        [
+                            'value' => 'view-item',
+                            'label' => 'View'
+                        ],
+                        [
+                            'value' => 'edit-item',
+                            'label' => 'Edit'
+                        ],
+                        [
+                            'value' => 'manage-item',
+                            'label' => 'Manage'
+                        ],
+                    ]
+                ])
             </a17-fieldset>
         @endforeach
     @stop

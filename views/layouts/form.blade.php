@@ -69,31 +69,29 @@
                         @if($showPermissionFieldset ?? null)
                             @can('manage-item', $item)
                                 <a17-fieldset title="User Permissions" id="permissions">
-                                    @foreach($users as $user)
-                                        @formField('select', [
-                                            'name' => 'user_' . $user->id . '_permission',
-                                            'label' => $user->name,
-                                            'unpack' => true,
-                                            'options' => [
-                                                [
-                                                    'value' => '',
-                                                    'label' => 'None'
-                                                ],
-                                                [
-                                                    'value' => 'view-item',
-                                                    'label' => 'View'
-                                                ],
-                                                [
-                                                    'value' => 'edit-item',
-                                                    'label' => 'Edit'
-                                                ],
-                                                [
-                                                    'value' => 'manage-item',
-                                                    'label' => 'Manage'
-                                                ],
-                                            ]
-                                        ])
-                                    @endforeach
+                                    @formField('select_table', [
+                                        'itemsInSelectsTables' => $users,
+                                        'labelKey' => 'name',
+                                        'name' => 'user_%id%_permission',
+                                        'options' => [
+                                            [
+                                                'value' => '',
+                                                'label' => 'None'
+                                            ],
+                                            [
+                                                'value' => 'view-item',
+                                                'label' => 'View'
+                                            ],
+                                            [
+                                                'value' => 'edit-item',
+                                                'label' => 'Edit'
+                                            ],
+                                            [
+                                                'value' => 'manage-item',
+                                                'label' => 'Manage'
+                                            ],
+                                        ]
+                                    ])
                                 </a17-fieldset>
                                 <a17-fieldset title="Group Permissions" id="permissions">
                                     @foreach($groups as $group)

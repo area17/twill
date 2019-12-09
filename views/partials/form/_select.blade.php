@@ -11,6 +11,9 @@
     $required = $required ?? false;
     $default = $default ?? false;
     $searchable = $searchable ?? false;
+    $inline = $inTable ?? false;
+    $inTable = $inTable ?? false;
+    $inGrid = $inGrid ?? true;
 
     // do not use for now, but this will allow you to create a new option directly from the form
     $addNew = $addNew ?? false;
@@ -27,6 +30,9 @@
         @if ($default) selected="{{ $default }}" @endif
         @if ($required) :required="true" @endif
         @if ($inModal) :in-modal="true" @endif
+        @if ($inline) :inline="true" @endif
+        @if ($inTable) :in-table="true" @endif
+        @if (!$inGrid) :grid="false" @endif
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
         :has-default-store="true"
         in-store="value"
