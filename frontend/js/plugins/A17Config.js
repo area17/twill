@@ -18,7 +18,7 @@ import a17RadioGroup from '@/components/RadioGroup.vue'
 import a17Checkbox from '@/components/Checkbox.vue'
 import a17SingleCheckbox from '@/components/SingleCheckbox.vue'
 import a17CheckboxGroup from '@/components/CheckboxGroup.vue'
-import A17SingleselectPermissions from '@/components/SingleselectPermissions.vue'
+import A17SingleSelectPermissions from '@/components/SingleSelectPermissions.vue'
 import a17Multiselect from '@/components/MultiSelect.vue'
 import a17Singleselect from '@/components/SingleSelect.vue'
 import a17Dropdown from '@/components/Dropdown.vue'
@@ -62,7 +62,7 @@ const A17Config = {
     Vue.component('a17-checkbox', a17Checkbox)
     Vue.component('a17-singlecheckbox', a17SingleCheckbox)
     Vue.component('a17-checkboxgroup', a17CheckboxGroup)
-    Vue.component('a17-singleselect-permissions', A17SingleselectPermissions)
+    Vue.component('a17-singleselect-permissions', A17SingleSelectPermissions)
     Vue.component('a17-multiselect', a17Multiselect)
     Vue.component('a17-singleselect', a17Singleselect)
     Vue.component('a17-select', a17Select)

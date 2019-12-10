@@ -28,7 +28,7 @@
   import a17Filter from './Filter.vue'
 
   export default {
-    name: 'A17SingleselectPermissions',
+    name: 'A17SingleSelectPermissions',
     components: {
       'a17-filter': a17Filter
     },
