@@ -97,7 +97,7 @@
                 @formField('select_permissions', [
                     'itemsInSelectsTables' => $moduleItems,
                     'labelKey' => 'title',
-                    'name' => $moduleName . '_%id%_permission',
+                    'namePattern' => $moduleName . '_%id%_permission',
                     'options' => [
                         [
                             'value' => '',

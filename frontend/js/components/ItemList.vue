@@ -20,7 +20,6 @@
           <td :class="`itemlist__cell itemlist__cell--thumb ${item.endpointType === 'users' ? 'itemlist__cell--thumb-rounded' : ''}`" v-if="item.hasOwnProperty('thumbnail')">
             <template v-if="item.endpointType === 'users'">
               <a17-avatar
-                :id="item.id"
                 :name="item.name"
                 :thumbnail="item.thumbnail"
               />

@@ -80,7 +80,7 @@
                                     @formField('select_permissions', [
                                         'itemsInSelectsTables' => $users,
                                         'labelKey' => 'name',
-                                        'name' => 'user_%id%_permission',
+                                        'namePattern' => 'user_%id%_permission',
                                         'listUser' => true,
                                         'options' => [
                                             [

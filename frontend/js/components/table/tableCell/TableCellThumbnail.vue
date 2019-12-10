@@ -6,7 +6,6 @@
     >
       <template v-if="col.variation === 'rounded'">
         <a17-avatar
-          :id="row.id"
           :name="row.name"
           :thumbnail="row[colName]"
         />

@@ -28,11 +28,18 @@
     },
     computed: {
       textfieldClasses: function () {
-        return [
-          this.variant ? `input--${this.variant}` : '',
+        const classes = [
           this.size === 'small' ? 'input--small' : '',
           this.error ? 'input--error' : ''
         ]
+
+        if (this.variant) {
+          this.variant.split(' ').forEach((val) => {
+            classes.push(`input--${val}`)
+          })
+        }
+
+        return classes
       }
     },
     methods: {
@@ -64,6 +71,14 @@
     color:$color__text;
     margin-bottom:10px;
     position:relative;
+  }
+
+  /* Input with user avatars : specific case */
+  .input--avatar .input__label {
+    padding-left: 36px + 2px;
+    min-height: 36px;
+    line-height: 36px;
+    white-space: nowrap;
   }
 
   .input__note {

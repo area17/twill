@@ -1,10 +1,14 @@
 <template>
   <div :class="outerClasses">
     <a17-inputframe :error="error" :note="note" :label="label" :name="name" :add-new="addNew" :variant="variantInput">
+      <a17-avatar v-if="thumbnail"
+        :name="label"
+        :thumbnail="thumbnail"
+      />
       <input type="hidden" :name="name" v-model="value" />
       <div class="singleselector" :class="gridClasses">
         <div class="singleselector__outer">
-          <div class="singleselector__item" v-for="(radio, index) in fullOptions">
+          <div class="singleselector__item" :key="radio.value" v-for="(radio, index) in fullOptions">
             <input class="singleselector__radio" type="radio" :value="radio.value" :name="name + '[' + randKey + ']'" :id="uniqId(radio.value, index)" :disabled="radio.disabled || disabled" :class="{'singleselector__radio--checked': radio.value == selectedValue }">
             <label class="singleselector__label" :for="uniqId(radio.value, index)" @click.prevent="changeRadio(radio.value)">{{ radio.label }}</label>
             <span class="singleselector__bg"></span>
@@ -25,12 +29,20 @@
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
   import AttributesMixin from '@/mixins/addAttributes'
+  import A17Avatar from '@/components/Avatar.vue'
 
   export default {
     name: 'A17Singleselect',
     mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin],
+    components: {
+      'a17-avatar': A17Avatar
+    },
     props: {
       name: {
+        type: String,
+        default: ''
+      },
+      thumbnail: {
         type: String,
         default: ''
       },
@@ -64,12 +76,16 @@
     },
     computed: {
       variantInput: function () {
-        return this.inTable ? 'intable' : ''
+        return [
+          this.inTable ? 'intable' : '',
+          this.thumbnail ? 'avatar' : ''
+        ].join(' ')
       },
       outerClasses: function () {
         return [
           'multiselectorOuter',
-          this.inTable ? `multiselectorOuter--intable` : ''
+          this.inTable ? `multiselectorOuter--intable` : '',
+          this.thumbnail ? `multiselectorOuter--avatar` : ''
         ]
       },
       gridClasses: function () {
@@ -340,4 +356,14 @@
     margin-right: 0;
   }
 
+  /* with avatars */
+  .multiselectorOuter--avatar {
+    position: relative;
+
+    .avatar {
+      position: absolute;
+      left: -8px;
+      top: 0;
+    }
+  }
 </style>

@@ -72,12 +72,13 @@
         this.emptyHeight = Math.max(120, allItems[0].parentElement.offsetHeight)
 
         if (allItems) {
+          this.empty = true
+
           allItems.forEach((itemEl) => {
             const filterClass = 'multiselectorPermissions__item--hidden'
             const filterValue = itemEl.getAttribute('data-singleselect-permissions-filterable')
 
             if (formData.search) {
-              this.empty = true
               const query = formData.search
               if (filterValue.toUpperCase().includes(query.toUpperCase())) {
                 itemEl.classList.remove(filterClass)
