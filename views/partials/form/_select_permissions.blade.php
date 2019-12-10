@@ -40,5 +40,11 @@
             >
             </a17-singleselect>
         </div>
+
+        @unless((!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
+            @push('vuexStore')
+                @include('twill::partials.form.utils._selector_input_store')
+            @endpush
+        @endunless
     @endforeach
 </a17-singleselect-permissions>
