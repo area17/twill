@@ -9,10 +9,13 @@
     $titleFormKey = $titleFormKey ?? 'title';
     $customForm = $customForm ?? false;
     $controlLanguagesPublication = $controlLanguagesPublication ?? true;
+
+    // Permissions
     $users = app()->make('A17\Twill\Repositories\UserRepository')->published()->where('is_superadmin', false)->get();
     $groups = app()->make('A17\Twill\Repositories\GroupRepository')->get()->map(function ($group) {
         return [
             'name' => $group->id . '_group_authorized',
+            'value' => $group->id,
             'label' => $group->name
         ];
     });
@@ -74,11 +77,11 @@
                         @if($showPermissionFieldset ?? null)
                             @can('manage-item', $item)
                                 <a17-fieldset title="User Permissions" id="permissions">
-                                    @formField('select_table', [
+                                    @formField('select_permissions', [
                                         'itemsInSelectsTables' => $users,
                                         'labelKey' => 'name',
                                         'name' => 'user_%id%_permission',
-                                        'groupAction' => $groups,
+                                        'listUser' => true,
                                         'options' => [
                                             [
                                                 'value' => '',
@@ -98,13 +101,6 @@
                                             ],
                                         ]
                                     ])
-
-                                    {{-- @foreach($groups as $group)
-                                        @formField('checkbox', [
-                                            'name' => $group->id . '_group_authorized',
-                                            'label' => $group->name
-                                        ])
-                                    @endforeach --}}
                                 </a17-fieldset>
                             @endcan
                         @endif
@@ -228,6 +224,10 @@
     window.APIKEYS = {
         'googleMapApi': '{{ config('twill.google_maps_api_key') }}'
     }
+
+    {{-- Permissions --}}
+    window.STORE.groups = {!! isset($groups) ? json_encode($groups) : '[]' !!};
+    window.STORE.groupUserMapping = {!! isset($groupUserMapping) ? json_encode($groupUserMapping) : '[]' !!};
 @stop
 
 @prepend('extra_js')

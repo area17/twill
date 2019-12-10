@@ -94,7 +94,7 @@
     @section('fieldsets')
         @foreach($permissionModules as $moduleName => $moduleItems)
             <a17-fieldset title='{{ ucfirst($moduleName) . " Permissions"}}' id='{{ $moduleName }}'>
-                @formField('select_table', [
+                @formField('select_permissions', [
                     'itemsInSelectsTables' => $moduleItems,
                     'labelKey' => 'title',
                     'name' => $moduleName . '_%id%_permission',

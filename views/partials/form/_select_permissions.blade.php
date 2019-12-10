@@ -1,13 +1,14 @@
 @php
     $searchable = $searchable ?? false;
     $itemsInSelectsTables = $itemsInSelectsTables ?? false;
+    $listUser = $listUser ?? false;
 @endphp
-<a17-singleselect-table
+<a17-singleselect-permissions
     @if ($searchable) :searchable="true" @endif
-    @if ($groupAction) :groups="{{ json_encode($groupAction) }}" @endif
+    @if ($listUser) :list-user="true" @endif
 >
     @foreach ($itemsInSelectsTables as $itemInSelectsTables)
-        <div class="multiselectorTable__item" data-singleselect-table-filterable="{{ $itemInSelectsTables[$labelKey ?? 'title'] }}">
+        <div class="multiselectorPermissions__item" data-singleselect-permissions-filterable="{{ $itemInSelectsTables[$labelKey ?? 'title'] }}">
             @formField('select', [
                 'name' => str_replace("%id%", $itemInSelectsTables->id, $name),
                 'label' => $itemInSelectsTables[$labelKey ?? 'title'],
@@ -18,4 +19,4 @@
             ])
         </div>
     @endforeach
-</a17-singleselect-table>
+</a17-singleselect-permissions>
