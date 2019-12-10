@@ -73,14 +73,6 @@
     position:relative;
   }
 
-  /* Input with user avatars : specific case */
-  .input--avatar .input__label {
-    padding-left: 36px + 2px;
-    min-height: 36px;
-    line-height: 36px;
-    white-space: nowrap;
-  }
-
   .input__note {
     color:$color__text--light;
     display:block;

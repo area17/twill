@@ -1,10 +1,6 @@
 <template>
   <div :class="outerClasses">
     <a17-inputframe :error="error" :note="note" :label="label" :name="name" :add-new="addNew" :variant="variantInput">
-      <a17-avatar v-if="thumbnail"
-        :name="label"
-        :thumbnail="thumbnail"
-      />
       <input type="hidden" :name="name" v-model="value" />
       <div class="singleselector" :class="gridClasses">
         <div class="singleselector__outer">
@@ -42,10 +38,6 @@
         type: String,
         default: ''
       },
-      thumbnail: {
-        type: String,
-        default: ''
-      },
       grid: {
         type: Boolean,
         default: true
@@ -77,15 +69,12 @@
     computed: {
       variantInput: function () {
         return [
-          this.inTable ? 'intable' : '',
-          this.thumbnail ? 'avatar' : ''
+          this.inTable ? 'intable' : ''
         ].join(' ')
       },
       outerClasses: function () {
         return [
-          'multiselectorOuter',
-          this.inTable ? `multiselectorOuter--intable` : '',
-          this.thumbnail ? `multiselectorOuter--avatar` : ''
+          'multiselectorOuter'
         ]
       },
       gridClasses: function () {
@@ -349,21 +338,5 @@
 
   .singleselector--inline .singleselector__item {
     margin-right:20px;
-  }
-
-   /* intable version */
-  .multiselectorOuter--intable .singleselector--inline .singleselector__item:last-child {
-    margin-right: 0;
-  }
-
-  /* with avatars */
-  .multiselectorOuter--avatar {
-    position: relative;
-
-    .avatar {
-      position: absolute;
-      left: -8px;
-      top: 0;
-    }
   }
 </style>

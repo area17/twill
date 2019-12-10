@@ -16,12 +16,22 @@
 >
     @foreach ($itemsInSelectsTables as $itemInSelectsTables)
         <div class="multiselectorPermissions__item" data-singleselect-permissions-filterable="{{ $itemInSelectsTables[$labelKey ?? 'title'] }}">
-            @php $name = str_replace("%id%", $itemInSelectsTables->id, $namePattern); @endphp
+            @php
+                $name = str_replace("%id%", $itemInSelectsTables->id, $namePattern);
+                $default = $default ?? false;
+            @endphp
+            @if ($listUser)
+                <a17-avatar
+                    name="{{ $itemInSelectsTables[$labelKey ?? 'title'] }}"
+                    thumbnail="{{ $itemInSelectsTables->cmsImage('profile', 'default', ['w' => 100, 'h' => 100]) }}"
+                >
+                </a17-avatar>
+            @endif
+            <label for="{{ $name }}">{{ $itemInSelectsTables[$labelKey ?? 'title'] }}</label>
             <a17-singleselect
-                @if ($listUser) thumbnail="{{ $itemInSelectsTables->cmsImage('profile', 'default', ['w' => 100, 'h' => 100]) }}" @endif
-                label="{{ $itemInSelectsTables[$labelKey ?? 'title'] }}"
                 @include('twill::partials.form.utils._field_name')
                 :options='{{ json_encode($options) }}'
+                @if ($default) selected="{{ $default }}" @endif
                 :in-table="true"
                 :inline="true"
                 :grid="false"
@@ -29,7 +39,6 @@
                 in-store="value"
             >
             </a17-singleselect>
-
         </div>
     @endforeach
 </a17-singleselect-permissions>

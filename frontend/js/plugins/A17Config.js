@@ -30,6 +30,7 @@ import a17Slideshow from '@/components/Slideshow.vue'
 import a17BrowserField from '@/components/BrowserField.vue'
 import a17FileField from '@/components/files/FileField.vue'
 import a17DatePicker from '@/components/DatePicker.vue'
+import a17Avatar from '@/components/Avatar.vue'
 
 // Media Library
 import a17MediaLibrary from '@/components/media-library/MediaLibrary.vue'
@@ -74,6 +75,7 @@ const A17Config = {
     Vue.component('a17-datepicker', a17DatePicker)
     Vue.component('a17-filefield', a17FileField)
     Vue.component('a17-colorfield', a17ColorField)
+    Vue.component('a17-avatar', a17Avatar)
 
     // Media Library
     Vue.component('a17-medialibrary', a17MediaLibrary)

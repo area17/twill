@@ -128,7 +128,7 @@
   @import '~styles/setup/_mixins-colors-vars.scss';
 
   .multiselectorPermissions__items {
-    border:1px solid $color__border;
+    border: 1px solid $color__border;
     margin-top: 20px;
   }
 
@@ -146,8 +146,28 @@
   }
 
   .multiselectorPermissions__item {
-    padding: 13.5px 20px;
+    padding-left: 20px;
     border-bottom: 1px solid $color__border--light;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    label {
+      padding: 20px 0;
+      flex-grow: 1;
+    }
+
+    .multiselectorOuter {
+      padding: 13.5px 0;
+    }
+
+    .avatar {
+      margin-left: -8px;
+    }
+
+    .avatar + label {
+      margin-left: 10px;
+    }
 
     &:last-child {
       border-bottom: 0 none;
@@ -187,10 +207,14 @@
     border-radius: 2px;
     color:$color__text--light;
     height: $nativeSelectHeight;
-    min-width: 200px;
+    min-width: 120px;
     text-align: left;
     position: relative;
     margin-left: auto;
+
+    @include breakpoint('large+') {
+      min-width: 200px;
+    }
 
     &::after {
       content:'';
