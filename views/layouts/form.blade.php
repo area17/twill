@@ -10,7 +10,12 @@
     $customForm = $customForm ?? false;
     $controlLanguagesPublication = $controlLanguagesPublication ?? true;
     $users = app()->make('A17\Twill\Repositories\UserRepository')->published()->where('is_superadmin', false)->get();
-    $groups = app()->make('A17\Twill\Repositories\GroupRepository')->get();
+    $groups = app()->make('A17\Twill\Repositories\GroupRepository')->get()->map(function ($group) {
+        return [
+            'name' => $group->id . '_group_authorized',
+            'label' => $group->name
+        ];
+    });
 @endphp
 
 @section('content')
