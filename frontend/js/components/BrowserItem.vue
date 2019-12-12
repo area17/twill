@@ -4,7 +4,15 @@
       <div class="drag__handle--drag"></div>
     </td>
     <td class="browserItem__cell browserItem__cell--thumb" v-if="currentItem.hasOwnProperty('thumbnail')">
-      <a href="#" target="_blank"><img :src="currentItem.thumbnail" /></a>
+      <template v-if="currentItem.endpointType === 'users'">
+        <a17-avatar
+          :name="currentItem.name"
+          :thumbnail="currentItem.thumbnail"
+        />
+      </template>
+      <template v-else>
+        <a href="#" target="_blank"><img :src="currentItem.thumbnail" /></a>
+      </template>
     </td>
     <td class="browserItem__cell browserItem__cell--name">
       <a :href="currentItem.edit" target="_blank">
