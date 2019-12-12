@@ -1,0 +1,33 @@
+.field-rows {
+  margin-top: 35px;
+
+  .fieldset &  {
+    .input {
+      margin-top: 0;
+    }
+
+    .input + .input {
+      border-top: 1px solid $color__border--light;
+    }
+
+    .checkbox__label {
+      height: 60px;
+      line-height: 60px;
+      padding-left: 45px;
+    }
+
+    .checkbox__label:before,
+    .checkbox__icon {
+      top: 21px;
+      left: 15px;
+    }
+  }
+}
+
+.field-rows__title {
+  margin-bottom: 9px;
+}
+
+.field-rows__content {
+  border: 1px solid $color__border;
+}

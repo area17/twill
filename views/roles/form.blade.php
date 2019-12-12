@@ -3,36 +3,39 @@
 ])
 
 @section('contentFields')
-    <br/><h1>General permissions</h1>
-    @formField('checkbox', [
-        'name' => 'edit-settings',
-        'label' => 'Edit property settings'
+    @component('twill::partials.form.utils._field_rows', [
+        'title' => 'General permissions'
     ])
+        @formField('checkbox', [
+            'name' => 'edit-settings',
+            'label' => 'Edit property settings'
+        ])
 
-    @formField('checkbox', [
-        'name' => 'edit-users',
-        'label' => 'Manage users'
-    ])
+        @formField('checkbox', [
+            'name' => 'edit-users',
+            'label' => 'Manage users'
+        ])
 
-    @formField('checkbox', [
-        'name' => 'edit-user-role',
-        'label' => 'Manage user role'
-    ])
+        @formField('checkbox', [
+            'name' => 'edit-user-role',
+            'label' => 'Manage user role'
+        ])
 
-    @formField('checkbox', [
-        'name' => 'edit-user-groups',
-        'label' => 'Manage user groups'
-    ])
+        @formField('checkbox', [
+            'name' => 'edit-user-groups',
+            'label' => 'Manage user groups'
+        ])
 
-    @formField('checkbox', [
-        'name' => 'manage-modules',
-        'label' => 'Manage All Modules'
-    ])
+        @formField('checkbox', [
+            'name' => 'manage-modules',
+            'label' => 'Manage All Modules'
+        ])
 
-    @formField('checkbox', [
-        'name' => 'access-media-library',
-        'label' => 'Access media library'
-    ])
+        @formField('checkbox', [
+            'name' => 'access-media-library',
+            'label' => 'Access media library'
+        ])
+    @endcomponent
 
     @component('twill::partials.form.utils._connected_fields', [
         'fieldName' => 'manage-modules',
@@ -65,15 +68,23 @@
         @endforeach
     @endcomponent
 
-    @formField('checkboxes', [
-        'name' => 'groups',
-        'label' => 'Groups',
-        'inline' => false,
-        'options' => [
-            [
-                'value' => 'include-in-everyone',
-                'label' => 'Include in everyone'
-            ]
-        ]
+    @component('twill::partials.form.utils._field_rows', [
+        'title' => 'Groups'
     ])
+        @formField('checkbox', [
+            'name' => 'include-in-everyone',
+            'label' => 'Include in everyone'
+        ])
+        {{-- @formField('checkboxes', [
+            'name' => 'groups',
+            'label' => 'Groups',
+            'inline' => false,
+            'options' => [
+                [
+                    'value' => 'include-in-everyone',
+                    'label' => 'Include in everyone'
+                ]
+            ]
+        ]) --}}
+    @endcomponent
 @stop
