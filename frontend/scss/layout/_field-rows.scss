@@ -1,26 +1,41 @@
 .field-rows {
   margin-top: 35px;
+}
 
-  .fieldset &  {
+.fieldset .field-rows__content {
+  > .input {
+    margin-top: 0;
+    border-bottom: 1px solid $color__border--light;
+  }
+
+  > .input:last-child {
+    border-bottom: 0 none;
+  }
+
+  // vSelect
+  .vselectOuter {
+    padding: 15px;
+
     .input {
       margin-top: 0;
     }
+  }
 
-    .input + .input {
-      border-top: 1px solid $color__border--light;
-    }
+  .vselectOuter + .vselectOuter {
+    border-top: 1px solid $color__border--light;
+  }
 
-    .checkbox__label {
-      height: 60px;
-      line-height: 60px;
-      padding-left: 45px;
-    }
+  // Checkboxes as rows
+  .checkbox__label {
+    height: 60px;
+    line-height: 60px;
+    padding-left: 45px;
+  }
 
-    .checkbox__label:before,
-    .checkbox__icon {
-      top: 21px;
-      left: 15px;
-    }
+  .checkbox__label:before,
+  .checkbox__icon {
+    top: 21px;
+    left: 15px;
   }
 }
 

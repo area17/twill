@@ -27,45 +27,49 @@
         ])
 
         @formField('checkbox', [
-            'name' => 'manage-modules',
-            'label' => 'Manage All Modules'
-        ])
-
-        @formField('checkbox', [
             'name' => 'access-media-library',
             'label' => 'Access media library'
         ])
     @endcomponent
 
-    @component('twill::partials.form.utils._connected_fields', [
-        'fieldName' => 'manage-modules',
-        'fieldValues' => false,
+    @component('twill::partials.form.utils._field_rows', [
+        'title' => 'Content permissions'
     ])
-        @foreach($permission_modules as $module_name => $module_items)
-            @formField('select', [
-                'name' => 'module_' . $module_name . '_permissions',
-                'label' => ucfirst($module_name) . ' permissions',
-                'placeholder' => 'Select a permission',
-                'options' => [
-                    [
-                        'value' => 'none',
-                        'label' => 'None'
-                    ],
-                    [
-                        'value' => 'view-module',
-                        'label' => 'View ' . $module_name
-                    ],
-                    [
-                        'value' => 'edit-module',
-                        'label' => 'Edit ' . $module_name
-                    ],
-                    [
-                        'value' => 'manage-module',
-                        'label' => 'Manage ' . $module_name
+        @formField('checkbox', [
+            'name' => 'manage-modules',
+            'label' => 'Manage All Modules'
+        ])
+
+        @component('twill::partials.form.utils._connected_fields', [
+            'fieldName' => 'manage-modules',
+            'fieldValues' => false,
+        ])
+            @foreach($permission_modules as $module_name => $module_items)
+                @formField('select', [
+                    'name' => 'module_' . $module_name . '_permissions',
+                    'label' => ucfirst($module_name) . ' permissions',
+                    'placeholder' => 'Select a permission',
+                    'options' => [
+                        [
+                            'value' => 'none',
+                            'label' => 'None'
+                        ],
+                        [
+                            'value' => 'view-module',
+                            'label' => 'View ' . $module_name
+                        ],
+                        [
+                            'value' => 'edit-module',
+                            'label' => 'Edit ' . $module_name
+                        ],
+                        [
+                            'value' => 'manage-module',
+                            'label' => 'Manage ' . $module_name
+                        ]
                     ]
-                ]
-            ])
-        @endforeach
+                ])
+            @endforeach
+        @endcomponent
     @endcomponent
 
     @component('twill::partials.form.utils._field_rows', [
