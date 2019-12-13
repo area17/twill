@@ -1022,6 +1022,7 @@ abstract class ModuleController extends Controller
                 'list' => 'access-module-list',
                 'create' => 'edit-module',
                 'edit' => 'view-item',
+                'permalink' => 'view-item',
                 'publish' => 'edit-item',
                 'feature' => 'edit-item',
                 'reorder' => 'edit-module',
