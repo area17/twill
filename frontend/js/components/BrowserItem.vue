@@ -1,10 +1,10 @@
 <template>
   <tr class="browserItem">
     <td v-if="draggable && max > 1" class="browserItem__cell browserItem__cell--drag">
-      <div class="drag__handle--drag"></div>
+      <div :class="dragClasses"></div>
     </td>
-    <td class="browserItem__cell browserItem__cell--thumb" v-if="currentItem.hasOwnProperty('thumbnail')">
-      <template v-if="currentItem.endpointType === 'users'">
+    <td :class="thumbnailClasses" v-if="hasThumbnail">
+      <template v-if="isUser">
         <a17-avatar
           :name="currentItem.name"
           :thumbnail="currentItem.thumbnail"
@@ -63,6 +63,28 @@
       }
     },
     computed: {
+      hasThumbnail: function () {
+        return Boolean(this.currentItem.hasOwnProperty('thumbnail'))
+      },
+      hasLargeThumbnail: function () {
+        return this.hasThumbnail && !this.isUser
+      },
+      isUser: function () {
+        return Boolean(this.currentItem.endpointType === 'users')
+      },
+      dragClasses: function () {
+        return [
+          'drag__handle--drag',
+          !this.hasLargeThumbnail ? 'drag__handle--drag-small' : ''
+        ]
+      },
+      thumbnailClasses: function () {
+        return [
+          'browserItem__cell',
+          'browserItem__cell--thumb',
+          this.isUser ? 'browserItem__cell--thumb-avatar' : ''
+        ]
+      },
       currentItem: function () {
         return this.item
       },
@@ -97,7 +119,7 @@
   }
 
   .browserItem__cell {
-    padding: 26px 15px 26px 0;
+    padding: 14px 15px 14px 0; // 59px = 14 + 14 + 31
     vertical-align: middle;
   }
 
@@ -129,14 +151,27 @@
     }
   }
 
+  .browserItem__cell--thumb-avatar {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    width:36px;
+
+    img {
+      width: 36px;
+      min-height: 36px;
+    }
+  }
+
   .browserItem__cell--type {
     text-transform: capitalize;
-    width: 150px;
+    width: #{150px + 15px};
+
     span {
       display: inline-block;
       width: 150px;
       white-space: nowrap;
       overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 
@@ -168,6 +203,10 @@
 
   .browserItem__cell--icon {
     width:1px;
+
+    button {
+      display: block;
+    }
   }
 
   .drag__handle--drag {
@@ -178,5 +217,9 @@
     margin-right:auto;
     transition: background 250ms ease;
     @include dragGrid($color__drag, $color__drag_bg);
+  }
+
+  .drag__handle--drag-small {
+    height: 22px;
   }
 </style>

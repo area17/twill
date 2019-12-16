@@ -1,7 +1,7 @@
 <template>
-  <div :class="getClassNames">
+  <div :class="avatarClasses">
     <img v-if="thumbnail" :src="thumbnail" :alt="name" />
-    <span class="avatar__letter">{{ getFirstLetter }}</span>
+    <span class="avatar__letter">{{ nameFirstLetter }}</span>
   </div>
 </template>
 
@@ -19,7 +19,7 @@
       }
     },
     computed: {
-      getClassNames () {
+      avatarClasses () {
         return [
           'avatar',
           this.getBackgroundColor
@@ -35,7 +35,7 @@
         // Return background class.
         return `avatar--background-${colors[indexColor]}`
       },
-      getFirstLetter () {
+      nameFirstLetter () {
         return this.name.charAt(0)
       }
     }
