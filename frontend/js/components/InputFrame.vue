@@ -141,7 +141,6 @@
   }
 
   /* small variant */
-
   .input--small {
     margin-top:16px;
 
