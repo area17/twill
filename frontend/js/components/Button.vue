@@ -1,13 +1,11 @@
-<template>
-  <button :type="type" :class="buttonClasses" :disabled="disabled" @click="onClick">
-    <slot></slot>
-  </button>
-</template>
-
 <script>
   export default {
     name: 'A17Button',
     props: {
+      el: {
+        type: String,
+        default: 'button' // DOM element
+      },
       type: {
         type: String,
         default: 'button'
@@ -42,6 +40,33 @@
       onClick: function (event) {
         this.$emit('click')
       }
+    },
+    render: function (createElement) {
+      const elOpts = {
+        class: this.buttonClasses,
+        attrs: {},
+        on: {
+          click: (event) => {
+            this.onClick(event)
+          }
+        }
+      }
+
+      // button
+      if (this.el === 'button') {
+        elOpts.attrs.type = this.type
+
+        if (this.disabled) {
+          elOpts.attrs.disabled = this.disabled
+        }
+      }
+
+      // a:href
+      if (this.el === 'a' && this.url) {
+        elOpts.attrs.href = this.url
+      }
+
+      return createElement(this.el, elOpts, this.$slots.default)
     }
   }
 </script>
