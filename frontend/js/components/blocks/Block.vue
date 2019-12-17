@@ -297,14 +297,6 @@
   .block {
     .block__content {
       .block__body {
-        .input {
-          // margin-top: 15px;
-
-          .input {
-            margin-top: 0;
-          }
-        }
-
         > .media,
         > .slideshow,
         > .browserField {
