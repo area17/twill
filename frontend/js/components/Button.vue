@@ -79,6 +79,10 @@
 
   .button {
     @include btn-reset;
+    display: inline-flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: baseline;
     border-radius: 2px;
     padding: 0 30px;
     height: $height_btn;
