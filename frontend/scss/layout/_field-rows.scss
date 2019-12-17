@@ -12,11 +12,11 @@
   .field-rows__content {
     > .input {
       margin-top: 0;
-      border-bottom: 1px solid $color__border--light;
+      border-top: 1px solid $color__border--light;
     }
 
-    > .input:last-child {
-      border-bottom: 0 none;
+    > .input:first-child {
+      border-top: 0 none;
     }
 
     // vSelect
@@ -53,6 +53,10 @@
       .singleselector__item + .singleselector__item {
         border-top: 1px solid $color__border--light;
       }
+
+      .singleselector__item:first-child {
+        border-top: 0 none;
+      }
     }
   }
 }
@@ -63,4 +67,98 @@
 
 .field-rows__content {
   border: 1px solid $color__border;
+}
+
+// 2 or 3 cols
+.editorSidebar__body .block__body,
+.block .block__content .block__body,
+.fieldset {
+  .field-rows--2cols .field-rows__content,
+  .field-rows--3cols .field-rows__content {
+    display: flex;
+    flex-wrap: wrap;
+
+    // Radios as rows
+    .multiselectorOuter {
+      width: 100%;
+    }
+
+    .singleselector__outer {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
+}
+
+// 2 cols variant
+.editorSidebar__body .block__body,
+.block .block__content .block__body,
+.fieldset {
+  .field-rows--2cols .field-rows__content {
+    > .input {
+      width: 50%;
+      border-right: 1px solid $color__border--light;
+    }
+
+    > .input:first-child + .input {
+      border-top: 0 none;
+    }
+
+    > .input:nth-child(2n+2) {
+      border-right: 0 none;
+    }
+
+    // Radios as rows
+    .singleselector__outer {
+      .singleselector__item {
+        width: 50%;
+        border-right: 1px solid $color__border--light;
+      }
+
+      .singleselector__item:first-child + .singleselector__item {
+        border-top: 0 none;
+      }
+
+      .singleselector__item:nth-child(2n+2) {
+        border-right: 0 none;
+      }
+    }
+  }
+}
+
+// 3 cols variant
+.editorSidebar__body .block__body,
+.block .block__content .block__body,
+.fieldset {
+  .field-rows--3cols .field-rows__content {
+    > .input {
+      width: 33.3333%;
+      border-right: 1px solid $color__border--light;
+    }
+
+    > .input:first-child + .input,
+    > .input:first-child + .input + .input {
+      border-top: 0 none;
+    }
+
+    > .input:nth-child(3n+3) {
+      border-right: 0 none;
+    }
+
+    // Radios as rows
+    .singleselector__outer {
+      .singleselector__item {
+        width: 33.3333%;
+        border-right: 1px solid $color__border--light;
+      }
+
+      .singleselector__item:first-child + .singleselector__item {
+        border-top: 0 none;
+      }
+
+      .singleselector__item:nth-child(3n+3) {
+        border-right: 0 none;
+      }
+    }
+  }
 }
