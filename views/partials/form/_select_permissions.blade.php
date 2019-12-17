@@ -3,10 +3,11 @@
     $itemsInSelectsTables = $itemsInSelectsTables ?? false;
     $listUser = $listUser ?? false;
 
-    $options = method_exists($options, 'map') ? $options->map(function($label, $value) {
+    $options = method_exists($options, 'map') ? $options->map(function($label, $value, $disabled) {
         return [
             'value' => $value,
-            'label' => $label
+            'label' => $label,
+            'disabled' => $disabled ?? false
         ];
     })->values()->toArray() : $options;
 @endphp
