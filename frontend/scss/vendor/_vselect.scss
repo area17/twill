@@ -10,6 +10,7 @@ $multiSelectHeight: 45px;
     input[type=search]:focus {
       padding: 0 15px;
       @include font-regular;
+      margin: 0;
     }
 
     .spinner {
