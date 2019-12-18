@@ -44,12 +44,19 @@
     },
     computed: {
       buttonClasses: function () {
-        return [
-          `button`,
-          this.size ? `button--${this.size}` : '',
-          this.variant ? `button--${this.variant}` : '',
-          this.icon ? `button--icon button--${this.icon}` : ''
-        ]
+        const classes = [ `button`, this.size ? `button--${this.size}` : '' ]
+
+        if (this.variant) {
+          this.variant.split(' ').forEach((val) => {
+            classes.push(`button--${val}`)
+          })
+        }
+
+        if (this.icon) {
+          classes.push(`button--icon button--${this.icon}`)
+        }
+
+        return classes
       }
     },
     methods: {
