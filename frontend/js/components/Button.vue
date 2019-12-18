@@ -18,6 +18,14 @@
         type: String,
         default: ''
       },
+      download: {
+        type: String,
+        default: ''
+      },
+      rel: {
+        type: String,
+        default: ''
+      },
       variant: {
         type: String,
         default: '' // validate, action, secondary, ghost, aslink, aslink-grey
@@ -75,6 +83,14 @@
 
         if (this.target) {
           elOpts.attrs.target = this.target
+        }
+
+        if (this.download) {
+          elOpts.attrs.download = this.download
+        }
+
+        if (this.rel) {
+          elOpts.attrs.rel = this.rel
         }
       }
 
