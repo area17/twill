@@ -10,6 +10,14 @@
         type: String,
         default: 'button'
       },
+      href: {
+        type: String,
+        default: ''
+      },
+      target: {
+        type: String,
+        default: ''
+      },
       variant: {
         type: String,
         default: '' // validate, action, secondary, ghost, aslink, aslink-grey
@@ -62,8 +70,12 @@
       }
 
       // a:href
-      if (this.el === 'a' && this.url) {
-        elOpts.attrs.href = this.url
+      if (this.el === 'a' && this.href) {
+        elOpts.attrs.href = this.href
+
+        if (this.target) {
+          elOpts.attrs.target = this.target
+        }
       }
 
       return createElement(this.el, elOpts, this.$slots.default)
@@ -86,6 +98,7 @@
     line-height: $height_btn - 2px;
     text-align: center;
     transition: color .2s linear, border-color .2s linear, background-color .2s linear;
+    text-decoration: none;
 
     &:disabled {
       cursor: default;
