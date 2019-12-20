@@ -60,3 +60,29 @@ if (!function_exists('isPermissionableModule')) {
         }
     }
 }
+
+if (!function_exists('updatePermissionOptions')) {
+    // return the module name if is permissionable module, otherwise return false
+    function updatePermissionOptions($options, $user, $item)
+    {
+
+        $permissions = $user->role->permissions()->module()->pluck('name','permissionable_type')->all();
+        if (empty($permissions)) {
+            if ($user->role->permissions()->global()->where('name', 'manage-modules')->first()){
+                $permissions[get_class($item)] = 'manage-item';
+            }
+
+        }
+        if (isset($permissions[get_class($item)])) {
+            $globalPermission = str_replace('-module', '-item', $permissions[get_class($item)]);
+            foreach($options as &$option) {
+                if ($option['value'] != $globalPermission || $globalPermission=='manage-item') {
+                    $option['disabled'] = true;
+                } else {
+                    break;
+                }
+            }
+        }
+        return $options;
+    }
+}

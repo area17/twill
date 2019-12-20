@@ -44,6 +44,13 @@ trait HasPermissions
         }
     }
 
+    public function revokeAllModulePermission($permissionableType)
+    {
+        foreach(Permission::ofModel($permissionableType)->get() as $permission) {
+            $this->permissions()->module()->detach($permission->id);
+        }
+    }
+
     // First find or create the corresponding permission
     // If the object haven't been given this permission, give it
     // If the object already had this permission, skip it

@@ -90,8 +90,13 @@
 @stop
 
 @can('edit-users')
-  @unless($item->is_superadmin)
+  @unless($item->is_superadmin || $item->id == $currentUser->id)
     @section('fieldsets')
+     @component('twill::partials.form.utils._connected_fields', [
+          'fieldName' => 'role_id',
+          'renderForBlocks' => false,
+          'fieldValues' => $item->role_id
+      ])
         @foreach($permissionModules as $moduleName => $moduleItems)
             <a17-fieldset title='{{ ucfirst($moduleName) . " Permissions"}}' id='{{ $moduleName }}'>
                 @formField('select_permissions', [
@@ -119,6 +124,8 @@
                 ])
             </a17-fieldset>
         @endforeach
+    @endcomponent
+
     @stop
   @endunless
 @endcan

@@ -10,6 +10,8 @@
             'disabled' => $disabled ?? false
         ];
     })->values()->toArray() : $options;
+
+    $isUserForm = get_class($item) === "A17\Twill\Models\User";
 @endphp
 <a17-singleselect-permissions
     @if ($searchable) :searchable="true" @endif
@@ -31,7 +33,7 @@
             <label for="{{ $name }}">{{ $itemInSelectsTables[$labelKey ?? 'title'] }}</label>
             <a17-singleselect
                 @include('twill::partials.form.utils._field_name')
-                :options='{{ json_encode($options) }}'
+                :options='{{ json_encode(updatePermissionOptions($options, $isUserForm ? $item : $itemInSelectsTables, $isUserForm ? $itemInSelectsTables : $item)) }}'
                 @if ($default) selected="{{ $default }}" @endif
                 :in-table="true"
                 :inline="true"
