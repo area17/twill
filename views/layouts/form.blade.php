@@ -169,7 +169,62 @@
                     text: 'Cancel'
                 }
             ]
-        } @else null @endif
+        } @else {
+            draft: [
+              {
+                name: 'save',
+                text: 'Save as draft'
+              },
+              {
+                name: 'save-close',
+                text: 'Save as draft and close'
+              },
+              {
+                name: 'save-new',
+                text: 'Save as draft and create new'
+              },
+              {
+                name: 'cancel',
+                text: 'Cancel'
+              }
+            ],
+            live: [
+              {
+                name: 'publish',
+                text: 'Publish'
+              },
+              {
+                name: 'publish-close',
+                text: 'Publish and close'
+              },
+              {
+                name: 'publish-new',
+                text: 'Publish and create new'
+              },
+              {
+                name: 'cancel',
+                text: 'Cancel'
+              }
+            ],
+            update: [
+              {
+                name: 'update',
+                text: 'Update'
+              },
+              {
+                name: 'update-close',
+                text: 'Update and close'
+              },
+              {
+                name: 'update-new',
+                text: 'Update and create new'
+              },
+              {
+                name: 'cancel',
+                text: 'Cancel'
+              }
+            ]
+        } @endif
     }
 
     window.STORE.revisions = {!! json_encode($revisions ?? []) !!}

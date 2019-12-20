@@ -101,6 +101,20 @@ const getters = {
   getSubmitOptions: state => {
     return (state.published || !state.withPublicationToggle) ? state.submitOptions[state.publishSubmit] : state.submitOptions['draft']
   },
+  isEnabledSubmitOption: (state, getters) => name => {
+    // default is true (for example on custom form or if we dont have submitOptions setup)
+    let enabled = true
+    let activeOption = {}
+
+    const matches = getters.getSubmitOptions.filter((el) => el.name === name)
+    if (matches.length) activeOption = matches[0]
+
+    if (activeOption.hasOwnProperty('disabled')) {
+      enabled = !activeOption.disabled
+    }
+
+    return enabled
+  },
   getSaveType: (state, getters) => {
     return state.saveType || getters.getSubmitOptions[0].name
   }
