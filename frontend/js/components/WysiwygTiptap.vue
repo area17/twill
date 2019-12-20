@@ -216,7 +216,9 @@
         type: Object,
         required: false,
         default: function () {
-          return {}
+          return {
+            modules: {}
+          }
         }
       }
     },
