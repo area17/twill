@@ -208,6 +208,8 @@ trait HasSlug
             $slugParams = $this->getSingleSlugParams($locale);
             if ($slugParams != null && !empty($slugParams)) {
                 return $slugParams;
+            } else {
+                return [];   
             }
         }
 
