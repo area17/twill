@@ -1,22 +1,9 @@
 <?php
 
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
-
-// adding this to have a better debug display in Chrome dev tools when
-// dd'ing during AJAX requests (see Symfony dumper issue in Chrome > 60:
-// https://github.com/symfony/symfony/issues/24688)
-if (!function_exists('ddd')) {
-    /**
-     * @param mixed ...$args
-     * @return void
-     */
-    function ddd(...$args)
-    {
-        http_response_code(500);
-        call_user_func_array('dd', $args);
-    }
-}
+use \Illuminate\Support\Str;
 
 if (!function_exists('dumpUsableSqlQuery')) {
     function dumpUsableSqlQuery($query)
@@ -108,23 +95,98 @@ if (!function_exists('twill_path')) {
      */
     function twill_path($path = '')
     {
+        // Is it a full application path?
+        if (Str::startsWith($path, base_path())) {
+            return $path;
+        }
+
         // Split to separate root namespace
-        preg_match('/(\w*)\W?(.*)/', config('twill.namespace'), $matches);
+        preg_match('/(\w*)\W?(.*)/', config('twill.namespace'), $namespaceParts);
+
+        $twillBase = app_path(
+            fix_directory_separator(
+                $namespaceParts[1] == 'App' ? $namespaceParts[2] : $namespaceParts[0]
+            )
+        ) . '/';
+
+        // Remove base path from path
+        if (Str::startsWith($path, $twillBase)) {
+            $path = Str::after($path, $twillBase);
+        }
 
         // Namespace App is unchanged in config?
-        if ($matches[0] === 'App') {
+        if ($namespaceParts[0] === 'App') {
             return app_path($path);
         }
 
         // If it it still starts with App, use the left part, otherwise use the whole namespace
         // This can be a problem for those using a completely different app path for the application
-        $left = ($matches[1] === 'App' ? $matches[2] : $matches[0]);
+        $left = ($namespaceParts[1] === 'App' ? $namespaceParts[2] : $namespaceParts[0]);
 
         // Join, fix slashes for the current operating system, and return path
-        return app_path(str_replace(
-            '\\',
-            DIRECTORY_SEPARATOR,
+        return app_path(fix_directory_separator(
             $left . (filled($path) ? '\\' . $path : '')
         ));
     }
 }
+
+if (!function_exists('make_twill_directory')) {
+    /**
+     * @param string $path
+     * @param bool $recursive
+     * @param \Illuminate\Filesystem\Filesystem|null $fs
+     */
+    function make_twill_directory($path, $recursive = true, $fs = null)
+    {
+        $fs = filled($fs)
+            ? $fs
+            : app(Filesystem::class);
+
+        $path = twill_path($path);
+
+        if (!$fs->isDirectory($path)) {
+            $fs->makeDirectory($path, 0755, $recursive);
+        }
+    }
+}
+
+if (!function_exists('twill_put_stub')) {
+    /**
+     * @param string $path
+     * @param bool $recursive
+     * @param \Illuminate\Filesystem\Filesystem|null $fs
+     */
+    function twill_put_stub($path, $stub, $fs = null)
+    {
+        $fs = filled($fs)
+            ? $fs
+            : app(Filesystem::class);
+
+        $stub = str_replace(
+            'namespace App\\',
+            sprintf('namespace %s\\', config('twill.namespace')),
+            $stub
+        );
+
+        if ($fs->missing($path)) {
+            $fs->put($path, $stub);
+        }
+    }
+}
+
+if (!function_exists('fix_directory_separator')) {
+    /**
+     * @param string $path
+     * @param bool $recursive
+     * @param int $mode
+     */
+    function fix_directory_separator($path)
+    {
+        return str_replace(
+            '\\',
+            DIRECTORY_SEPARATOR,
+            $path
+        );
+    }
+}
+
