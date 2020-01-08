@@ -198,7 +198,7 @@ class ModuleMake extends Command
 
             $stub = preg_replace('/\}\);[\s\S]+?Schema::create/', "});\n\n        Schema::create", $stub);
 
-            $this->files->put($fullPath, $stub);
+            twill_put_stub($fullPath, $stub);
 
             $this->info("Migration created successfully! Add some fields!");
         }
@@ -213,44 +213,36 @@ class ModuleMake extends Command
      */
     private function createModels($modelName = 'Item', $activeTraits = [])
     {
-        if (!$this->files->isDirectory(twill_path('Models'))) {
-            $this->files->makeDirectory(twill_path('Models'));
-        }
+        make_twill_directory('Models');
 
         if ($this->translatable) {
-            if (!$this->files->isDirectory(twill_path('Models/Translations'))) {
-                $this->files->makeDirectory(twill_path('Models/Translations'));
-            }
+            make_twill_directory('Models/Translations');
 
             $modelTranslationClassName = $modelName . 'Translation';
 
             $stub = str_replace('{{modelTranslationClassName}}', $modelTranslationClassName, $this->files->get(__DIR__ . '/stubs/model_translation.stub'));
 
-            $this->files->put(twill_path('Models/Translations/' . $modelTranslationClassName . '.php'), $stub);
+            twill_put_stub(twill_path('Models/Translations/' . $modelTranslationClassName . '.php'), $stub);
         }
 
         if ($this->sluggable) {
-            if (!$this->files->isDirectory(twill_path('Models/Slugs'))) {
-                $this->files->makeDirectory(twill_path('Models/Slugs'));
-            }
+            make_twill_directory('Models/Slugs');
 
             $modelSlugClassName = $modelName . 'Slug';
 
             $stub = str_replace(['{{modelSlugClassName}}', '{{modelName}}'], [$modelSlugClassName, Str::snake($modelName)], $this->files->get(__DIR__ . '/stubs/model_slug.stub'));
 
-            $this->files->put(twill_path('Models/Slugs/' . $modelSlugClassName . '.php'), $stub);
+            twill_put_stub(twill_path('Models/Slugs/' . $modelSlugClassName . '.php'), $stub);
         }
 
         if ($this->revisionable) {
-            if (!$this->files->isDirectory(twill_path('Models/Revisions'))) {
-                $this->files->makeDirectory(twill_path('Models/Revisions'));
-            }
+            make_twill_directory('Models/Revisions');
 
             $modelRevisionClassName = $modelName . 'Revision';
 
             $stub = str_replace(['{{modelRevisionClassName}}', '{{modelName}}'], [$modelRevisionClassName, Str::snake($modelName)], $this->files->get(__DIR__ . '/stubs/model_revision.stub'));
 
-            $this->files->put(twill_path('Models/Revisions/' . $modelRevisionClassName . '.php'), $stub);
+            twill_put_stub(twill_path('Models/Revisions/' . $modelRevisionClassName . '.php'), $stub);
         }
 
         $modelClassName = $modelName;
@@ -290,7 +282,7 @@ class ModuleMake extends Command
         $stub = $this->renderStubForOption($stub, 'hasMedias', $this->mediable);
         $stub = $this->renderStubForOption($stub, 'hasPosition', $this->sortable);
 
-        $this->files->put(twill_path('Models/' . $modelClassName . '.php'), $stub);
+        twill_put_stub(twill_path('Models/' . $modelClassName . '.php'), $stub);
 
         $this->info("Models created successfully! Fill your fillables!");
     }
@@ -319,9 +311,7 @@ class ModuleMake extends Command
      */
     private function createRepository($modelName = 'Item', $activeTraits = [])
     {
-        if (!$this->files->isDirectory(twill_path('Repositories'))) {
-            $this->files->makeDirectory(twill_path('Repositories'));
-        }
+        make_twill_directory('Repositories');
 
         $repositoryClassName = $modelName . 'Repository';
 
@@ -339,7 +329,7 @@ class ModuleMake extends Command
 
         $stub = str_replace(['{{repositoryClassName}}', '{{modelName}}', '{{repositoryTraits}}', '{{repositoryImports}}'], [$repositoryClassName, $modelName, $activeRepositoryTraitsString, $activeRepositoryTraitsImports], $this->files->get(__DIR__ . '/stubs/repository.stub'));
 
-        $this->files->put(twill_path('Repositories/' . $repositoryClassName . '.php'), $stub);
+        twill_put_stub(twill_path('Repositories/' . $repositoryClassName . '.php'), $stub);
 
         $this->info("Repository created successfully! Control all the things!");
     }
@@ -354,9 +344,7 @@ class ModuleMake extends Command
      */
     private function createController($moduleName = 'items', $modelName = 'Item')
     {
-        if (!$this->files->isDirectory(twill_path('Http/Controllers/Admin'))) {
-            $this->files->makeDirectory(twill_path('Http/Controllers/Admin'));
-        }
+        make_twill_directory('Http/Controllers/Admin');
 
         $controllerClassName = $modelName . 'Controller';
 
@@ -366,7 +354,7 @@ class ModuleMake extends Command
             $this->files->get(__DIR__ . '/stubs/controller.stub')
         );
 
-        $this->files->put(twill_path('Http/Controllers/Admin/' . $controllerClassName . '.php'), $stub);
+        twill_put_stub(twill_path('Http/Controllers/Admin/' . $controllerClassName . '.php'), $stub);
 
         $this->info("Controller created successfully! Define your index/browser/form endpoints options!");
     }
@@ -380,15 +368,13 @@ class ModuleMake extends Command
      */
     private function createRequest($modelName = 'Item')
     {
-        if (!$this->files->isDirectory(twill_path('Http/Requests/Admin'))) {
-            $this->files->makeDirectory(twill_path('Http/Requests/Admin'), 0755, true);
-        }
+        make_twill_directory('Http/Requests/Admin');
 
         $requestClassName = $modelName . 'Request';
 
         $stub = str_replace('{{requestClassName}}', $requestClassName, $this->files->get(__DIR__ . '/stubs/request.stub'));
 
-        $this->files->put(twill_path('Http/Requests/Admin/' . $requestClassName . '.php'), $stub);
+        twill_put_stub(twill_path('Http/Requests/Admin/' . $requestClassName . '.php'), $stub);
 
         $this->info("Form request created successfully! Add some validation rules!");
     }
@@ -404,13 +390,11 @@ class ModuleMake extends Command
     {
         $viewsPath = $this->config->get('view.paths')[0] . '/admin/' . $moduleName;
 
-        if (!$this->files->isDirectory($viewsPath)) {
-            $this->files->makeDirectory($viewsPath, 0755, true);
-        }
+        make_twill_directory($viewsPath);
 
         $formView = $this->translatable ? 'form_translatable' : 'form';
 
-        $this->files->put($viewsPath . '/form.blade.php', $this->files->get(__DIR__ . '/stubs/' . $formView . '.blade.stub'));
+        twill_put_stub($viewsPath . '/form.blade.php', $this->files->get(__DIR__ . '/stubs/' . $formView . '.blade.stub'));
 
         $this->info("Form view created successfully! Include your form fields using @formField directives!");
     }
