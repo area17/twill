@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import JsonCSV from 'vue-json-csv'
 import { mapState, mapGetters } from 'vuex'
 import store from '@/store'
 import { FORM } from '@/store/mutations'
@@ -56,6 +57,8 @@ import attributes from '@/store/modules/attributes'
 // mixins
 import formatPermalink from '@/mixins/formatPermalink'
 import editorMixin from '@/mixins/editor.js'
+
+Vue.component('downloadCsv', JsonCSV)
 
 // configuration
 Vue.use(A17Config)
