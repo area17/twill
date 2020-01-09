@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import JsonCSV from 'vue-json-csv'
 import store from '@/store'
 import { DATATABLE, MODALEDITION, FORM } from '@/store/mutations'
 import ACTIONS from '@/store/actions'
@@ -39,6 +40,7 @@ import { FormatPermalinkMixin } from '@/mixins'
 // configuration
 Vue.use(A17Config)
 Vue.use(A17Notif)
+Vue.component('downloadCsv', JsonCSV)
 
 store.registerModule('datatable', datatable)
 store.registerModule('language', language)
