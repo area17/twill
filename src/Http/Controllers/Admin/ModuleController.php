@@ -535,7 +535,7 @@ abstract class ModuleController extends Controller
      */
     public function destroy($id, $submoduleId = null)
     {
-        $item = $this->repository->getById($id);
+        $item = $this->repository->getById($submoduleId ?? $id);
         if ($this->repository->delete($submoduleId ?? $id)) {
             $this->fireEvent();
             activity()->performedOn($item)->log('deleted');
