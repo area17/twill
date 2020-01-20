@@ -32,7 +32,7 @@
                                     'label' => $label
                                 ];
                             })->values()->toArray() : ${$filter.'List'}) }}"
-                            placeholder="All {{ strtolower(Str::plural($filter)) }}"
+                            placeholder="All {{ strtolower(\Illuminate\Support\Str::plural($filter)) }}"
                             ref="filterDropdown[{{ $loop->index }}]"
                             ></a17-vselect>
                         @endif
