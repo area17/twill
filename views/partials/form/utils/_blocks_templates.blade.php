@@ -8,7 +8,7 @@
     $blocksForInlineTemplates = collect($allBlocks)->reject(function ($block) {
         return $block['compiled'] ?? false;
     })->filter(function ($block, $blockName) {
-        return View::exists($blockName);
+        return View::exists('admin.blocks.'.$blockName);
     });
 @endphp
 
