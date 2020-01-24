@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
-    const SUPERADMIN = 'SUPERADMIN';
+    const SUPERADMIN = 'SUPERADMIN'
 
     protected function authorize($user, $callback)
     {
