@@ -25,9 +25,10 @@ cache:
   directories:
     - $HOME/.composer/cache
 
-before_script:
+install:
   - yes '' | pecl install imagick
-  - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
+  - composer validate --strict
+  - travis_retry composer update --no-interaction --prefer-dist
 
 script:
   - vendor/bin/php-cs-fixer --dry-run --config=./.php_cs.travis fix src/ tests/  || travis_terminate 1;
