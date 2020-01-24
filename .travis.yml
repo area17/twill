@@ -25,9 +25,10 @@ cache:
   directories:
     - $HOME/.composer/cache
 
-before_script:
+install:
   - yes '' | pecl install imagick
-  - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
+  - composer validate --strict
+  - travis_retry composer update --no-interaction --prefer-dist
 
 script:
   - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
