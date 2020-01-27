@@ -14,7 +14,7 @@ class CreateBlocksTable extends Migration
     public function up()
     {
         Schema::create('blocks', function (Blueprint $table) {
-            $table->increments('id');
+            $table->{twillIncrementsMethod()}('id');
             $table->integer('blockable_id')->nullable()->unsigned();
             $table->string('blockable_type')->nullable();
             $table->integer('position')->unsigned();
