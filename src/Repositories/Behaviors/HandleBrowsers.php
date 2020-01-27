@@ -12,12 +12,12 @@ trait HandleBrowsers
     public function afterSaveHandleBrowsers($object, $fields)
     {
         if (property_exists($this, 'browsers')) {
-            foreach ($this->browsers as $module) {
+            foreach ($this->browsers as $moduleKey => $module) {
                 if (is_string($module)) {
                     $this->updateBrowser($object, $fields, $module, 'position', $module);
                 } elseif (is_array($module)) {
-                    $browserName = !empty($module['browserName']) ? $module['browserName'] : key($module);
-                    $relation = !empty($module['relation']) ? $module['relation'] : key($module);
+                    $browserName = !empty($module['browserName']) ? $module['browserName'] : $moduleKey;
+                    $relation = !empty($module['relation']) ? $module['relation'] : $moduleKey;
                     $positionAttribute = !empty($module['positionAttribute']) ? $module['positionAttribute'] : 'position';
                     $this->updateBrowser($object, $fields, $relation, $positionAttribute, $browserName);
                 }
@@ -33,22 +33,22 @@ trait HandleBrowsers
     public function getFormFieldsHandleBrowsers($object, $fields)
     {
         if (property_exists($this, 'browsers')) {
-            foreach ($this->browsers as $module) {
+            foreach ($this->browsers as $moduleKey => $module) {
                 if (is_string($module)) {
                     $fields['browsers'][$module] = $this->getFormFieldsForBrowser($object, $module, null, 'title', null);
                 } elseif (is_array($module)) {
-                    $relation = !empty($module['relation']) ? $module['relation'] : key($module);
+                    $relation = !empty($module['relation']) ? $module['relation'] : $moduleKey;
                     $routePrefix = isset($module['routePrefix']) ? $module['routePrefix'] : null;
                     $titleKey = !empty($module['titleKey']) ? $module['titleKey'] : 'title';
                     $moduleName = isset($module['moduleName']) ? $module['moduleName'] : null;
-                    $browserName = !empty($module['browserName']) ? $module['browserName'] : key($module);
+                    $browserName = !empty($module['browserName']) ? $module['browserName'] : $moduleKey;
                     $fields['browsers'][$browserName] = $this->getFormFieldsForBrowser($object, $relation, $routePrefix, $titleKey, $moduleName);
                 }
             }
         }
-        
+
         return $fields;
-    } 
+    }
 
     /**
      * @param \A17\Twill\Models\Model $object
@@ -70,7 +70,7 @@ trait HandleBrowsers
 
         $object->$relationship()->sync($relatedElementsWithPosition);
     }
-    
+
     /**
      * @param \A17\Twill\Models\Model $object
      * @param array $fields
@@ -78,10 +78,11 @@ trait HandleBrowsers
      * @param string $positionAttribute
      * @return void
      */
-    public function updateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute = 'position') {
+    public function updateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute = 'position')
+    {
         $this->updateBrowser($object, $fields, $relationship, $positionAttribute);
     }
-    
+
     /**
      * @param mixed $object
      * @param array $fields
@@ -127,7 +128,7 @@ trait HandleBrowsers
                 'id' => $relatedElement->id,
                 'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
                 'endpointType' => $relatedElement->getMorphClass(),
-            ] + (($relatedElement->adminEditUrl ?? null) ? [] : [
+            ] + (empty($relatedElement->adminEditUrl) ? [] : [
                 'edit' => $relatedElement->adminEditUrl,
             ]) + (classHasTrait($relatedElement, HasMedias::class) ? [
                 'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),

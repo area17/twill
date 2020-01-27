@@ -84,6 +84,7 @@ class FeaturedController extends Controller
             ],
             'maxPage' => $firstSource['maxPage'],
             'offset' => $firstSource['offset'],
+            'bucketSectionLinks' => $featuredSection['sectionIntroLinks'] ?? null,
             'bucketSourceTitle' => $featuredSection['sourceHeaderTitle'] ?? null,
             'bucketsSectionIntro' => $featuredSection['sectionIntroText'] ?? null,
             'restricted' => $featuredSection['restricted'] ?? true,

@@ -1,16 +1,30 @@
-<template>
-  <button :type="type" :class="buttonClasses" :disabled="disabled" @click="onClick">
-    <slot></slot>
-  </button>
-</template>
-
 <script>
   export default {
     name: 'A17Button',
     props: {
+      el: {
+        type: String,
+        default: 'button' // DOM element
+      },
       type: {
         type: String,
         default: 'button'
+      },
+      href: {
+        type: String,
+        default: ''
+      },
+      target: {
+        type: String,
+        default: ''
+      },
+      download: {
+        type: String,
+        default: ''
+      },
+      rel: {
+        type: String,
+        default: ''
       },
       variant: {
         type: String,
@@ -30,18 +44,64 @@
     },
     computed: {
       buttonClasses: function () {
-        return [
-          `button`,
-          this.size ? `button--${this.size}` : '',
-          this.variant ? `button--${this.variant}` : '',
-          this.icon ? `button--icon button--${this.icon}` : ''
-        ]
+        const classes = [ `button`, this.size ? `button--${this.size}` : '' ]
+
+        if (this.variant) {
+          this.variant.split(' ').forEach((val) => {
+            classes.push(`button--${val}`)
+          })
+        }
+
+        if (this.icon) {
+          classes.push(`button--icon button--${this.icon}`)
+        }
+
+        return classes
       }
     },
     methods: {
       onClick: function (event) {
         this.$emit('click')
       }
+    },
+    render: function (createElement) {
+      const elOpts = {
+        class: this.buttonClasses,
+        attrs: {},
+        on: {
+          click: (event) => {
+            this.onClick(event)
+          }
+        }
+      }
+
+      // button
+      if (this.el === 'button') {
+        elOpts.attrs.type = this.type
+
+        if (this.disabled) {
+          elOpts.attrs.disabled = this.disabled
+        }
+      }
+
+      // a:href
+      if (this.el === 'a' && this.href) {
+        elOpts.attrs.href = this.href
+
+        if (this.target) {
+          elOpts.attrs.target = this.target
+        }
+
+        if (this.download) {
+          elOpts.attrs.download = this.download
+        }
+
+        if (this.rel) {
+          elOpts.attrs.rel = this.rel
+        }
+      }
+
+      return createElement(this.el, elOpts, this.$slots.default)
     }
   }
 </script>
@@ -54,12 +114,14 @@
 
   .button {
     @include btn-reset;
+    display: inline-block;
     border-radius: 2px;
     padding: 0 30px;
     height: $height_btn;
     line-height: $height_btn - 2px;
     text-align: center;
     transition: color .2s linear, border-color .2s linear, background-color .2s linear;
+    text-decoration: none;
 
     &:disabled {
       cursor: default;

@@ -2,8 +2,18 @@
 
 @section('appTypeClass', 'body--buckets')
 
+@php
+    $bucketSectionLinks = $bucketSectionLinks ?? [];
+@endphp
+
 @section('content')
-    <a17-buckets title="{{ $bucketSourceTitle ?? 'Available items' }}" empty-buckets="No items featured." empty-source="No items available." :restricted="{!! json_encode($restricted ?? true) !!}">
+    <a17-buckets
+        title="{{ $bucketSourceTitle ?? 'Available items' }}"
+        empty-buckets="No items featured."
+        empty-source="No items available."
+        :restricted="{!! json_encode($restricted ?? true) !!}"
+        :extra-actions="{{ json_encode($bucketSectionLinks) }}"
+    >
         {{ $bucketsSectionIntro ?? 'What would you like to feature today?' }}
     </a17-buckets>
 @stop

@@ -111,6 +111,13 @@ abstract class ModuleController extends Controller
     protected $filters = [];
 
     /**
+     * Additional links to display in the listing filter
+     *
+     * @var array
+     */
+    protected $filterLinks = [];
+
+    /**
      * Default orders for the index view.
      *
      * @var array
@@ -528,7 +535,7 @@ abstract class ModuleController extends Controller
      */
     public function destroy($id, $submoduleId = null)
     {
-        $item = $this->repository->getById($id);
+        $item = $this->repository->getById($submoduleId ?? $id);
         if ($this->repository->delete($submoduleId ?? $id)) {
             $this->fireEvent();
             activity()->performedOn($item)->log('deleted');
@@ -668,6 +675,7 @@ abstract class ModuleController extends Controller
             'tableMainFilters' => $this->getIndexTableMainFilters($items),
             'filters' => json_decode($this->request->get('filter'), true) ?? [],
             'hiddenFilters' => array_keys(Arr::except($this->filters, array_keys($this->defaultFilters))),
+            'filterLinks' => $this->filterLinks ?? [],
             'maxPage' => method_exists($items, 'lastPage') ? $items->lastPage() : 1,
             'defaultMaxPage' => method_exists($items, 'total') ? ceil($items->total() / $this->perPage) : 1,
             'offset' => method_exists($items, 'perPage') ? $items->perPage() : count($items),

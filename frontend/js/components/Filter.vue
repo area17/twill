@@ -174,7 +174,11 @@
     div {
       display:inline-block;
 
-      input, button {
+      button, a {
+        vertical-align: middle;
+      }
+
+      input, button, a {
         margin-left:15px;
       }
     }
