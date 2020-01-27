@@ -233,6 +233,6 @@ class FeaturedController extends Controller
      */
     private function getRepository($bucketable)
     {
-        return $this->app->get($this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($bucketable)) . "Repository");
+        return $this->app->make($this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($bucketable)) . "Repository");
     }
 }
