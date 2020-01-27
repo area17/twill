@@ -2,6 +2,30 @@
 
 use Illuminate\Support\Str;
 
+if (!function_exists('twillIncrementsMethod')) {
+    /**
+     * @return string
+     */
+    function twillIncrementsMethod()
+    {
+        return config('twill.migrations_use_big_integers')
+            ? 'bigIncrements'
+            : 'increments';
+    }
+}
+
+if (!function_exists('twillIntegerMethod')) {
+    /**
+     * @return string
+     */
+    function twillIntegerMethod()
+    {
+        return config('twill.migrations_use_big_integers')
+            ? 'bigInteger'
+            : 'integer';
+    }
+}
+
 if (!function_exists('createDefaultFields')) {
     /**
      * @param \Illuminate\Database\Schema\Blueprint $table
@@ -13,11 +37,7 @@ if (!function_exists('createDefaultFields')) {
      */
     function createDefaultTableFields($table, $softDeletes = true, $published = true, $publishDates = false, $visibility = false)
     {
-        if (config('twill.migrations_use_big_integers')) {
-            $table->bigIncrements('id');
-        } else {
-            $table->increments('id');
-        }
+        $table->{twillIncrementsMethod()}('id');
 
         if ($softDeletes) {
             $table->softDeletes();
@@ -53,13 +73,8 @@ if (!function_exists('createDefaultTranslationsTableFields')) {
             $tableNamePlural = Str::plural($tableNameSingular);
         }
 
-        if (config('twill.migrations_use_big_integers')) {
-            $table->bigIncrements('id');
-            $table->bigInteger("{$tableNameSingular}_id")->unsigned();
-        } else {
-            $table->increments('id');
-            $table->integer("{$tableNameSingular}_id")->unsigned();
-        }
+        $table->{twillIncrementsMethod()}('id');
+        $table->{twillIntegerMethod()}("{$tableNameSingular}_id")->unsigned();
 
         $table->softDeletes();
         $table->timestamps();
@@ -84,13 +99,8 @@ if (!function_exists('createDefaultSlugsTableFields')) {
             $tableNamePlural = Str::plural($tableNameSingular);
         }
 
-        if (config('twill.migrations_use_big_integers')) {
-            $table->bigIncrements('id');
-            $table->bigInteger("{$tableNameSingular}_id")->unsigned();
-        } else {
-            $table->increments('id');
-            $table->integer("{$tableNameSingular}_id")->unsigned();
-        }
+        $table->{twillIncrementsMethod()}('id');
+        $table->{twillIntegerMethod()}("{$tableNameSingular}_id")->unsigned();
 
         $table->softDeletes();
         $table->timestamps();
@@ -119,13 +129,8 @@ if (!function_exists('createDefaultRelationshipTableFields')) {
             $table2NamePlural = Str::plural($table2NameSingular);
         }
 
-        if (config('twill.migrations_use_big_integers')) {
-            $table->bigInteger("{$table1NameSingular}_id")->unsigned();
-            $table->bigInteger("{$table2NameSingular}_id")->unsigned();
-        } else {
-            $table->integer("{$table1NameSingular}_id")->unsigned();
-            $table->integer("{$table2NameSingular}_id")->unsigned();
-        }
+        $table->{twillIntegerMethod()}("{$table1NameSingular}_id")->unsigned();
+        $table->{twillIntegerMethod()}("{$table2NameSingular}_id")->unsigned();
 
         $table->foreign("{$table1NameSingular}_id")->references('id')->on($table1NamePlural)->onDelete('cascade');
         $table->foreign("{$table2NameSingular}_id")->references('id')->on($table2NamePlural)->onDelete('cascade');
@@ -146,15 +151,9 @@ if (!function_exists('createDefaultRevisionsTableFields')) {
             $tableNamePlural = Str::plural($tableNameSingular);
         }
 
-        if (config('twill.migrations_use_big_integers')) {
-            $table->bigIncrements('id');
-            $table->bigInteger("{$tableNameSingular}_id")->unsigned()->index();
-            $table->bigInteger('user_id')->unsigned()->nullable();
-        } else {
-            $table->increments('id');
-            $table->integer("{$tableNameSingular}_id")->unsigned()->index();
-            $table->integer('user_id')->unsigned()->nullable();
-        }
+        $table->{twillIncrementsMethod()}('id');
+        $table->{twillIntegerMethod()}("{$tableNameSingular}_id")->unsigned();
+        $table->{twillIntegerMethod()}('user_id')->unsigned()->nullable();
 
         $table->timestamps();
         $table->json('payload');

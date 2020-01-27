@@ -14,7 +14,7 @@ class CreateTagsTables extends Migration
     public function up()
     {
         Schema::create('tagged', function (Blueprint $table) {
-            $table->increments('id');
+            $table->{twillIncrementsMethod()}('id');
             $table->string('taggable_type');
             $table->integer('taggable_id')->unsigned();
             $table->integer('tag_id')->unsigned();
@@ -22,7 +22,7 @@ class CreateTagsTables extends Migration
         });
 
         Schema::create('tags', function (Blueprint $table) {
-            $table->increments('id');
+            $table->{twillIncrementsMethod()}('id');
             $table->string('namespace');
             $table->string('slug');
             $table->string('name');
