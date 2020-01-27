@@ -189,7 +189,7 @@
       _onSubmitCallback (id, name) {
         this.$emit('clear')
         // each upload session will add upload files with original filenames in a folder named using a uuid
-        this.unique_folder_name = this.uploaderConfig.endpointRoot + (this.unique_folder_name || qq.getUniqueId())
+        this.unique_folder_name = this.unique_folder_name || (this.uploaderConfig.endpointRoot + qq.getUniqueId())
         this._uploader.methods.setParams({ unique_folder_name: this.unique_folder_name }, id)
 
         // determine the image dimensions and add it to params sent on upload success
