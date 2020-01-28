@@ -3,6 +3,7 @@
 namespace A17\Twill\Models\Behaviors;
 
 use Dimsav\Translatable\Translatable;
+use Illuminate\Database\Query\JoinClause;
 
 trait HasTranslation
 {
@@ -41,15 +42,20 @@ trait HasTranslation
     public function scopeOrderByTranslation($query, $orderField, $orderType = 'ASC', $locale = null)
     {
         $translationTable = $this->getTranslationsTable();
+        $localeKey = $this->getLocaleKey();
         $table = $this->getTable();
+        $keyName = $this->getKeyName();
         $locale = $locale == null ? app()->getLocale() : $locale;
 
-        return $query->join("{$translationTable} as t", "t.{$this->getRelationKey()}", "=", "{$table}.id")
-            ->where($this->getLocaleKey(), $locale)
-            ->groupBy("{$table}.id")
-            ->groupBy("t.{$orderField}")
-            ->select("{$table}.*")
-            ->orderBy("t.{$orderField}", $orderType)
+        return $query
+            ->join($translationTable, function (JoinClause $join) use ($translationTable, $localeKey, $table, $keyName) {
+                $join
+                    ->on($translationTable.'.'.$this->getRelationKey(), '=', $table.'.'.$keyName)
+                    ->where($translationTable.'.'.$localeKey, $this->locale());
+            })
+            ->where($translationTable.'.'.$this->getLocaleKey(), $locale)
+            ->orderBy($translationTable.'.'.$orderField, $orderType)
+            ->select($table.'.*')
             ->with('translations');
     }
 
