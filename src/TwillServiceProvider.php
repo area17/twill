@@ -345,7 +345,7 @@ class TwillServiceProvider extends ServiceProvider
         if ($expression === "()") {
             $expression = '([])';
         }
-        return "<?php echo \$__env->make('{$view}', Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render(); ?>";
+        return "<?php echo \$__env->make('{$view}', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render(); ?>";
     }
 
     /**
@@ -395,13 +395,13 @@ class TwillServiceProvider extends ServiceProvider
 
             return "<?php
             if( view()->exists($viewModule)) {
-                echo \$__env->make($viewModule, Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
+                echo \$__env->make($viewModule, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             } elseif( view()->exists($viewApplication)) {
-                echo \$__env->make($viewApplication, Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
+                echo \$__env->make($viewApplication, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             } elseif( view()->exists($viewModuleTwill)) {
-                echo \$__env->make($viewModuleTwill, Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
+                echo \$__env->make($viewModuleTwill, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             } elseif( view()->exists('$view')) {
-                echo \$__env->make('$view', Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
+                echo \$__env->make('$view', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             }
             ?>";
         });
