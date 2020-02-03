@@ -76,4 +76,9 @@ class Block extends BaseModel
 
         return null;
     }
+
+    public function getTable()
+    {
+        return config('twill.blocks_table', 'twill_blocks');
+    }
 }

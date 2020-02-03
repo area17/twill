@@ -9,7 +9,11 @@ trait HasFiles
 {
     public function files()
     {
-        return $this->morphToMany(File::class, 'fileable')->withPivot(['role', 'locale'])->withTimestamps();
+        return $this->morphToMany(
+            File::class,
+            'fileable',
+            config('twill.fileables_table', 'twill_fileables')
+        )->withPivot(['role', 'locale'])->withTimestamps();
     }
 
     private function findFile($role, $locale)

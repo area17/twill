@@ -42,7 +42,7 @@ class BlockRepository extends ModuleRepository
 
     public function hydrate($object, $fields)
     {
-        if (Schema::hasTable(config('twill.related_table', 'related'))) {
+        if (Schema::hasTable(config('twill.related_table', 'twill_related'))) {
             $relatedItems = Collection::make();
 
             Collection::make($fields['browsers'])->each(function ($items, $browserName) use ($object, &$relatedItems) {
@@ -72,7 +72,7 @@ class BlockRepository extends ModuleRepository
      */
     public function afterSave($object, $fields)
     {
-        if (Schema::hasTable(config('twill.related_table', 'related'))) {
+        if (Schema::hasTable(config('twill.related_table', 'twill_related'))) {
             if (isset($fields['browsers'])) {
                 Collection::make($fields['browsers'])->each(function ($items, $browserName) use ($object) {
                     $object->saveRelated($items, $browserName);
@@ -88,7 +88,7 @@ class BlockRepository extends ModuleRepository
         $object->medias()->sync([]);
         $object->files()->sync([]);
 
-        if (Schema::hasTable(config('twill.related_table', 'related'))) {
+        if (Schema::hasTable(config('twill.related_table', 'twill_related'))) {
             $object->relatedItems()->delete();
         }
     }

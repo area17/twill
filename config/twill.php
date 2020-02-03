@@ -46,12 +46,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Twill users tables configuration
+    | Twill default tables naming configuration
     |--------------------------------------------------------------------------
+    |
+    | TODO: In Twill 2.0, all tables will be prefixed by `twill_`.
     |
      */
     'users_table' => 'twill_users',
     'password_resets_table' => 'twill_password_resets',
+    'blocks_table' => 'blocks',
+    'features_table' => 'features',
+    'settings_table' => 'settings',
+    'medias_table' => 'medias',
+    'mediables_table' => 'mediables',
+    'files_table' => 'files',
+    'fileables_table' => 'fileables',
+    'related_table' => 'related',
 
     /*
     |--------------------------------------------------------------------------
@@ -64,6 +74,14 @@ return [
     |
      */
     'migrations_use_big_integers' => true,
+    /*
+    |
+    | Since Twill 2.0, migrations are not published anymore but loaded
+    | automatically in Twill's service provider. Set to false to prevent
+    | this from happening if you need to customize Twill's tables.
+    |
+     */
+    'load_default_migrations' => true,
 
     /*
     |--------------------------------------------------------------------------

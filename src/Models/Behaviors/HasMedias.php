@@ -17,7 +17,11 @@ trait HasMedias
 
     public function medias()
     {
-        return $this->morphToMany(Media::class, 'mediable')->withPivot(array_merge([
+        return $this->morphToMany(
+            Media::class,
+            'mediable',
+            config('twill.mediables_table', 'twill_mediables')
+        )->withPivot(array_merge([
             'crop',
             'role',
             'crop_w',
@@ -28,7 +32,7 @@ trait HasMedias
             'ratio',
             'metadatas',
         ], config('twill.media_library.translated_form_fields', false) ? ['locale'] : []))
-            ->withTimestamps()->orderBy('mediables.id', 'asc');
+            ->withTimestamps()->orderBy(config('twill.mediables_table', 'twill_mediables') . '.id', 'asc');
     }
 
     private function findMedia($role, $crop = "default")

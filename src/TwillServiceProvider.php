@@ -22,7 +22,6 @@ use A17\Twill\Services\MediaLibrary\ImageService;
 use Astrotomic\Translatable\TranslatableServiceProvider;
 use Cartalyst\Tags\TagsServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -211,82 +210,24 @@ class TwillServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
     }
 
-    /**
-     * Defines the package migration files for publishing.
-     *
-     * @return void
-     */
     private function publishMigrations()
     {
-        $migrations = ['CreateTagsTables', 'CreateBlocksTable', 'CreateRelatedTable'];
-
-        $optionalMigrations = [
-            'CreateTwillUsersTables' => 'users-management',
-            'CreateTwillActivityLogTable' => 'activitylog',
-            'CreateFilesTables' => 'file-library',
-            'CreateMediasTables' => 'media-library',
-            'CreateFeaturesTable' => 'buckets',
-            'CreateSettingsTable' => 'settings',
-        ];
-
-        // The updatesMigrations array must include new migrations that should
-        // be applied after minor and patch updates of Twill in a Laravel codebase.
-        // When releasing a major version of Twill, we can move those up into
-        // the optionalMigrations array above and keep this array empty until
-        // a new migration is needed in a non breaking change version.
-        $updatesMigations = [
-            'AddTwoFactorAuthColumnsToTwillUsers' => 'users-2fa',
-            'ChangeLocaleColumnInTwillFileables' => 'file-library',
-            'AddLocaleColumnToTwillMediables' => 'media-library',
-        ];
-
-        if ($this->app->runningInConsole()) {
-            foreach ($migrations as $migration) {
-                $this->publishMigration($migration);
-            }
-
-            foreach ($optionalMigrations as $migration => $feature) {
-                if (config('twill.enabled.' . $feature)) {
-                    $this->publishMigration($migration);
-                }
-            }
-
-            foreach ($updatesMigations as $migration => $feature) {
-                if (config('twill.enabled.' . $feature)) {
-                    $this->publishMigration($migration, 'twill-updates-migrations');
-                }
-            }
+        if (config('twill.load_default_migrations_from_twill', true)) {
+            $this->loadMigrationsFrom(__DIR__ . '/../migrations/default');
         }
-    }
 
-    /**
-     * @param string $migration
-     * @return void
-     */
-    private function publishMigration($migration, $publishKey = null)
-    {
-        $files = new Filesystem;
-        $this->migrationsCounter += 1;
+        $this->publishes([
+            __DIR__ . '/../migrations/default' => database_path('migrations'),
+        ], 'migrations');
 
-        if (!class_exists($migration)) {
-            // Verify that migration doesn't exist
-            $migration_file = database_path('migrations/*_' . Str::snake($migration) . '.php');
-            if (empty($files->glob($migration_file))) {
-                $timestamp = date('Y_m_d_', time()) . (30000 + $this->migrationsCounter);
-                $migrationSourcePath = __DIR__ . '/../migrations/' . Str::snake($migration) . '.php';
-                $migrationOutputPath = database_path('migrations/' . $timestamp . '_' . Str::snake($migration) . '.php');
+        if (config('twill.enabled.users-2fa')) {
+            $this->loadMigrationsFrom(__DIR__ . '/../migrations/optional/users-2fa');
 
-                $this->publishes([
-                    $migrationSourcePath => $migrationOutputPath,
-                ], 'migrations');
-
-                if ($publishKey) {
-                    $this->publishes([
-                        $migrationSourcePath => $migrationOutputPath,
-                    ], $publishKey);
-                }
-            }
+            $this->publishes([
+                __DIR__ . '/../migrations/optional/users-2fa' => database_path('migrations'),
+            ], 'migrations');
         }
+
     }
 
     /**

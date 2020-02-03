@@ -249,7 +249,7 @@ trait HandleBlocks
     protected function getBlockBrowsers($block)
     {
         return Collection::make($block['content']['browsers'])->mapWithKeys(function ($ids, $relation) use ($block) {
-            if (Schema::hasTable(config('twill.related_table', 'related')) && $block->getRelated($relation)->isNotEmpty()) {
+            if (Schema::hasTable(config('twill.related_table', 'twill_related')) && $block->getRelated($relation)->isNotEmpty()) {
                 $items = $this->getFormFieldsForRelatedBrowser($block, $relation);;
             } else {
                 $relationRepository = $this->getModelRepository($relation);
