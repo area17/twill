@@ -50,9 +50,9 @@ trait HandleFieldsGroups
 
     protected function handleFieldsGroups($fields) {
         foreach ($this->fieldsGroups as $group => $groupFields) {
-            $fields[$group] = json_encode(Arr::where(Arr::only($fields, $groupFields), function ($value, $key) {
+            $fields[$group] = Arr::where(Arr::only($fields, $groupFields), function ($value, $key) {
                 return !empty($value);
-            }));
+            });
             Arr::forget($fields, $groupFields);
         }
 
