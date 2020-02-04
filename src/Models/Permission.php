@@ -25,7 +25,7 @@ class Permission extends BaseModel
                 return ['edit-settings', 'edit-users', 'edit-user-role', 'edit-user-groups', 'manage-modules', 'access-media-library'];
                 break;
             case 'module':
-                return ['view-module', 'edit-module', 'manage-module'];
+                return ['view-module', 'edit-module'] + (config('twill.permission.modules')=='roleGroupModule' ? ['manage-module'] : []);
                 break;
             case 'item':
                 return ['view-item', 'edit-item', 'manage-item'];
@@ -43,7 +43,7 @@ class Permission extends BaseModel
         return self::permissionableModules()->filter(function($module) {
             return !strpos($module, '.');
         })->mapWithKeys(function ($module) {
-            return [$module => getRepositoryByModuleName($module)->get()];
+            return [$module => getRepositoryByModuleName($module)->get([], [], [], -1)];
         });
     }
 

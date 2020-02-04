@@ -42,19 +42,6 @@
         ])
     @endif
 
-    @can('edit-user-groups')
-      @if($item->id !== $currentUser->id)
-          @formField('multi_select', [
-              'name' => "groups",
-              'label' => 'Groups',
-              'options' => $groupOptions,
-              'endpoint' => '/group/search',
-              'unpack' => false,
-              'note' => 'Every user belongs to the "Everyone" group'
-          ])
-      @endif
-    @endcan
-
     @if($with2faSettings ?? false)
         @formField('checkbox', [
             'name' => 'google_2fa_enabled',
@@ -87,48 +74,62 @@
             @endcomponent
         @endunless
     @endif
+
+  @if(Config::get('twill.permission.level') != 'role')
+      <hr/>
+      <p>
+      <label>Groups</label><br/><br/>
+        @foreach($item->groups as $group)
+            &nbsp;&dash;&nbsp;{{$group->name}}<br/>
+        @endforeach
+      </p>
+  @endif
 @stop
 
-@can('edit-users')
-  @unless($item->is_superadmin || $item->id == $currentUser->id)
-    @section('fieldsets')
-     @component('twill::partials.form.utils._connected_fields', [
-          'fieldName' => 'role_id',
-          'renderForBlocks' => false,
-          'fieldValues' => $item->role_id
-      ])
-        @foreach($permissionModules as $moduleName => $moduleItems)
-            <a17-fieldset title='{{ ucfirst($moduleName) . " Permissions"}}' id='{{ $moduleName }}'>
-                @formField('select_permissions', [
-                    'itemsInSelectsTables' => $moduleItems,
-                    'labelKey' => 'title',
-                    'namePattern' => $moduleName . '_%id%_permission',
-                    'options' => [
-                        [
-                            'value' => '',
-                            'label' => 'None'
-                        ],
-                        [
-                            'value' => 'view-item',
-                            'label' => 'View'
-                        ],
-                        [
-                            'value' => 'edit-item',
-                            'label' => 'Edit'
-                        ],
-                        [
-                            'value' => 'manage-item',
-                            'label' => 'Manage'
-                        ],
-                    ]
-                ])
-            </a17-fieldset>
-        @endforeach
-    @endcomponent
 
-    @stop
-  @endunless
-@endcan
+@section('fieldsets')
+
+  @if(Config::get('twill.permission.level') == 'roleGroupModule')
+    @can('edit-users')
+      @if($item->is_superadmin || $item->id != $currentUser->id)
+          @component('twill::partials.form.utils._connected_fields', [
+              'fieldName' => 'role_id',
+              'renderForBlocks' => false,
+              'fieldValues' => $item->role_id
+            ])
+            @foreach($permissionModules as $moduleName => $moduleItems)
+                <a17-fieldset title='{{ ucfirst($moduleName) . " Permissions"}}' id='{{ $moduleName }}'>
+                    @formField('select_permissions', [
+                        'itemsInSelectsTables' => $moduleItems,
+                        'labelKey' => 'title',
+                        'namePattern' => $moduleName . '_%id%_permission',
+                        'options' => [
+                            [
+                                'value' => '',
+                                'label' => 'None'
+                            ],
+                            [
+                                'value' => 'view-item',
+                                'label' => 'View'
+                            ],
+                            [
+                                'value' => 'edit-item',
+                                'label' => 'Edit'
+                            ],
+                            [
+                                'value' => 'manage-item',
+                                'label' => 'Manage'
+                            ],
+                        ]
+                    ])
+                </a17-fieldset>
+            @endforeach
+         @endcomponent
+      @endif
+    @endcan
+  @endif
+
+@stop
 
 @push('vuexStore')
     window.STORE.publication.submitOptions = {

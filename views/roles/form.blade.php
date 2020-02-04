@@ -61,25 +61,25 @@
                         [
                             'value' => 'edit-module',
                             'label' => 'Edit ' . $module_name
-                        ],
-                        [
-                            'value' => 'manage-module',
-                            'label' => 'Manage ' . $module_name
-                        ]
+                        ] + (config('twill.permission.level')=='roleGroupModule' ?
+                            [
+                                'value' => 'manage-module',
+                                'label' => 'Manage ' . $moduleName
+                            ] : [])
                     ]
                 ])
             @endforeach
         @endcomponent
     @endcomponent
 
-    @component('twill::partials.form.utils._field_rows', [
+{{--     @component('twill::partials.form.utils._field_rows', [
         'title' => 'Groups'
     ])
         @formField('checkbox', [
             'name' => 'include-in-everyone',
             'label' => 'Include in everyone'
         ])
-        {{-- @formField('checkboxes', [
+        @formField('checkboxes', [
             'name' => 'groups',
             'label' => 'Groups',
             'inline' => false,
@@ -89,6 +89,6 @@
                     'label' => 'Include in everyone'
                 ]
             ]
-        ]) --}}
+        ])
     @endcomponent
-@stop
+ --}}@stop

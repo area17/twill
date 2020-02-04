@@ -65,14 +65,32 @@ if (!function_exists('updatePermissionOptions')) {
     // return the module name if is permissionable module, otherwise return false
     function updatePermissionOptions($options, $user, $item)
     {
-
         $permissions = $user->role->permissions()->module()->pluck('name','permissionable_type')->all();
         if (empty($permissions)) {
             if ($user->role->permissions()->global()->where('name', 'manage-modules')->first()){
                 $permissions[get_class($item)] = 'manage-item';
             }
-
         }
+
+        #looking for group permissions belongs to the user
+        foreach($user->groups as $group) {
+            if (($permission=$group->permissions()->OfItem($item)->first())!= null) {
+                if (isset($permissions[get_class($item)])) {
+                    $scopes = Permission::available('item');
+                    $previous = array_search($permissions[get_class($item)], $scopes);
+                    $current = array_search($permission->name, $scopes);
+                    #check permission level
+                    if ($current > $previous) {
+                        $permissions[get_class($item)] = $permission->name;
+                    }
+
+                } else {
+                    $permissions[get_class($item)] = $permission->name;
+                }
+            }
+        }
+
+        //
         if (isset($permissions[get_class($item)])) {
             $globalPermission = str_replace('-module', '-item', $permissions[get_class($item)]);
             foreach($options as &$option) {
@@ -83,6 +101,47 @@ if (!function_exists('updatePermissionOptions')) {
                 }
             }
         }
+
         return $options;
     }
 }
+
+if (!function_exists('updatePermissionGroupOptions')) {
+    function updatePermissionGroupOptions($options, $item, $group)
+    {
+        return $options;
+    }
+}
+
+if (!function_exists('isUserGroupPermissionItemExists')) {
+    function isUserGroupPermissionItemExists($user, $item, $permission)
+    {
+        foreach($user->groups as $group) {
+            if( in_array($permission, $group->permissions()->OfItem($item)->get()->pluck('name')->all())){
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
+if (!function_exists('isUserGroupPermissionModuleExists')) {
+    function isUserGroupPermissionModuleExists($user, $moduleName, $permission)
+    {
+        foreach($user->groups as $group) {
+            if ($moduleName=='global') {
+                return $group->permissions()->global()->where('name', 'manage-modules')->exists();
+            } else {
+                if( in_array($permission, $group->permissions()->OfModuleName($moduleName)->get()->pluck('name')->all())){
+                    return true;
+                }
+            }
+
+        }
+
+        return false;
+    }
+}
+
+

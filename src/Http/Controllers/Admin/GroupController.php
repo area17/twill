@@ -3,8 +3,9 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Group;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
+use A17\Twill\Models\Permission;
+use Illuminate\Contracts\Foundation\Application;
 
 class GroupController extends ModuleController
 {
@@ -106,6 +107,7 @@ class GroupController extends ModuleController
             ],
             'customPublishedLabel' => 'Enabled',
             'customDraftLabel' => 'Disabled',
+            'permissionModules' => Permission::permissionableParentModuleItems(),
         ];
     }
 

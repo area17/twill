@@ -74,35 +74,37 @@
                             </a17-fieldset>
                         @endunless
 
-                        @if($showPermissionFieldset ?? null)
-                            @can('manage-item', $item)
-                                <a17-fieldset title="User Permissions" id="permissions">
-                                    @formField('select_permissions', [
-                                        'itemsInSelectsTables' => $users,
-                                        'labelKey' => 'name',
-                                        'namePattern' => 'user_%id%_permission',
-                                        'listUser' => true,
-                                        'options' => [
-                                            [
-                                                'value' => '',
-                                                'label' => 'None'
-                                            ],
-                                            [
-                                                'value' => 'view-item',
-                                                'label' => 'View'
-                                            ],
-                                            [
-                                                'value' => 'edit-item',
-                                                'label' => 'Edit'
-                                            ],
-                                            [
-                                                'value' => 'manage-item',
-                                                'label' => 'Manage'
-                                            ],
-                                        ]
-                                    ])
-                                </a17-fieldset>
-                            @endcan
+                        @if(Config::get('twill.permission.level') == 'roleGroupModule')
+                            @if(false) {{-- $showPermissionFieldset ?? null) --}}
+                                @can('manage-item', $item)
+                                    <a17-fieldset title="User Permissions" id="permissions">
+                                        @formField('select_permissions', [
+                                            'itemsInSelectsTables' => $users,
+                                            'labelKey' => 'name',
+                                            'namePattern' => 'user_%id%_permission',
+                                            'listUser' => true,
+                                            'options' => [
+                                                [
+                                                    'value' => '',
+                                                    'label' => 'None'
+                                                ],
+                                                [
+                                                    'value' => 'view-item',
+                                                    'label' => 'View'
+                                                ],
+                                                [
+                                                    'value' => 'edit-item',
+                                                    'label' => 'Edit'
+                                                ],
+                                                [
+                                                    'value' => 'manage-item',
+                                                    'label' => 'Manage'
+                                                ],
+                                            ]
+                                        ])
+                                    </a17-fieldset>
+                                @endcan
+                            @endif
                         @endif
 
                         @yield('fieldsets')

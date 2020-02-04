@@ -12,6 +12,11 @@
     })->values()->toArray() : $options;
 
     $isUserForm = get_class($item) === "A17\Twill\Models\User";
+    if (get_class($item) === "A17\Twill\Models\Group") {
+        $fctUpdatePermissionOptions = "updatePermissionGroupOptions";
+    } else {
+        $fctUpdatePermissionOptions = "updatePermissionOptions";
+    }
 @endphp
 <a17-singleselect-permissions
     @if ($searchable) :searchable="true" @endif
@@ -33,7 +38,7 @@
             <label for="{{ $name }}">{{ $itemInSelectsTables[$labelKey ?? 'title'] }}</label>
             <a17-singleselect
                 @include('twill::partials.form.utils._field_name')
-                :options='{{ json_encode(updatePermissionOptions($options, $isUserForm ? $item : $itemInSelectsTables, $isUserForm ? $itemInSelectsTables : $item)) }}'
+                :options='{{ json_encode($fctUpdatePermissionOptions($options, $isUserForm ? $item : $itemInSelectsTables, $isUserForm ? $itemInSelectsTables : $item)) }}'
                 @if ($default) selected="{{ $default }}" @endif
                 :in-table="true"
                 :inline="true"

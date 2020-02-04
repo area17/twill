@@ -4,6 +4,7 @@ namespace A17\Twill;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Config;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -50,6 +51,10 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('edit-user-groups', function ($user) {
+            if ( !in_array(Config::get('twill.permission.level'),['roleGroup', 'roleGroupModule'])) {
+                return false;
+            }
+
             return $this->authorize($user, function ($user) {
                 return $user->role->permissions()->global()->where('name', 'edit-user-groups')->exists();
             });
@@ -66,7 +71,8 @@ class AuthServiceProvider extends ServiceProvider
                 return self::$cache['manage-modules'];
             }
             return self::$cache['manage-modules'] = $this->authorize($user, function ($user) {
-                return $user->role->permissions()->global()->where('name', 'manage-modules')->exists();
+                return $user->role->permissions()->global()->where('name', 'manage-modules')->exists()
+                || isUserGroupPermissionModuleExists($user, 'global', 'manage-modules');
             });
         });
 
@@ -107,7 +113,8 @@ class AuthServiceProvider extends ServiceProvider
 
             return self::$cache['view-module-'.$moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('edit-module', $moduleName)
-                || $user->role->permissions()->ofModuleName($moduleName)->where('name', 'view-module')->exists();
+                || $user->role->permissions()->ofModuleName($moduleName)->where('name', 'view-module')->exists()
+                || isUserGroupPermissionModuleExists($user, $moduleName, 'view-module');
             });
         });
 
@@ -117,7 +124,8 @@ class AuthServiceProvider extends ServiceProvider
             }
             return self::$cache['edit-module-'.$moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('manage-module', $moduleName)
-                || $user->role->permissions()->module()->ofModuleName($moduleName)->where('name', 'edit-module')->exists();
+                || $user->role->permissions()->module()->ofModuleName($moduleName)->where('name', 'edit-module')->exists()
+                || isUserGroupPermissionModuleExists($user, $moduleName, 'edit-module');
             });
         });
 
@@ -131,7 +139,8 @@ class AuthServiceProvider extends ServiceProvider
                     return true;
                 }
                 return $user->can('manage-modules')
-                || $user->role->permissions()->module()->ofModuleName($moduleName)->where('name', 'manage-module')->exists();
+                || $user->role->permissions()->module()->ofModuleName($moduleName)->where('name', 'manage-module')->exists()
+                || isUserGroupPermissionModuleExists($user, $moduleName, 'manage-module');
             });
         });
 
@@ -150,7 +159,8 @@ class AuthServiceProvider extends ServiceProvider
             return self::$cache[$key] = $this->authorize($user, function ($user) use ($item) {
                 return $user->can('edit-item', $item)
                 || $user->can('view-module', getModuleNameByModel(get_class($item)))
-                || $user->permissions()->ofItem($item)->where('name', 'view-item')->exists();
+                || $user->permissions()->ofItem($item)->where('name', 'view-item')->exists()
+                || isUserGroupPermissionItemExists($user, $item, 'view-item');
             });
         });
 
@@ -162,7 +172,8 @@ class AuthServiceProvider extends ServiceProvider
             return self::$cache[$key] = $this->authorize($user, function ($user) use ($item) {
                 return $user->can('manage-item', $item)
                 || $user->can('edit-module', getModuleNameByModel(get_class($item)))
-                || $user->permissions()->ofItem($item)->where('name', 'edit-item')->exists();
+                || $user->permissions()->ofItem($item)->where('name', 'edit-item')->exists()
+                || isUserGroupPermissionItemExists($user, $item, 'edit-item');
             });
         });
 
@@ -173,7 +184,8 @@ class AuthServiceProvider extends ServiceProvider
             }
             return self::$cache[$key] = $this->authorize($user, function ($user) use ($item) {
                 return $user->can('manage-module', getModuleNameByModel(get_class($item)))
-                || $user->permissions()->ofItem($item)->where('name', 'manage-item')->exists();
+                || $user->permissions()->ofItem($item)->where('name', 'manage-item')->exists()
+                || isUserGroupPermissionItemExists($user, $item, 'manage-item');
             });
         });
     }
