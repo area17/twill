@@ -336,6 +336,10 @@
         font-weight:700;
       }
 
+      b, p b, p strong, strong {
+        font-weight:700;
+      }
+
       p, ul, ol, h1, h2, h3, h4, h5 {
         margin-bottom:1em;
       }

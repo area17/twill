@@ -33,7 +33,7 @@
   font-display: swap;
 }
 
-/*@font-face {
+@font-face {
   font-family: 'Inter';
   font-style:  normal;
   font-weight: 700;
@@ -48,7 +48,7 @@
   src: url("/assets/admin/fonts/Inter-BoldItalic.woff2") format("woff2"),
        url("/assets/admin/fonts/Inter-BoldItalic.woff") format("woff");
   font-display: swap;
-}*/
+}
 
 $sans-serif: Inter, -apple-system, -system-ui, system-ui, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
 /*$sans-serif: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
