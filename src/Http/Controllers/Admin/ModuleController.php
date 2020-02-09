@@ -689,6 +689,7 @@ abstract class ModuleController extends Controller
             'reorder' => $this->getIndexOption('reorder'),
             'create' => $this->getIndexOption('create'),
             'translate' => $this->moduleHas('translations'),
+            'translateTitle' => $this->titleIsTranslatable(),
             'permalink' => $this->getIndexOption('permalink'),
             'bulkEdit' => $this->getIndexOption('bulkEdit'),
             'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
@@ -1390,7 +1391,17 @@ abstract class ModuleController extends Controller
      */
     protected function moduleHas($behavior)
     {
-        return classHasTrait($this->repository, 'A17\Twill\Repositories\Behaviors\Handle' . ucfirst($behavior));
+        return $this->repository->hasBehaviour($behavior);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function titleIsTranslatable()
+    {
+        return $this->repository->isTranslatable(
+            $this->titleColumnKey
+        );
     }
 
     /**
