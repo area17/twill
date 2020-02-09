@@ -16,7 +16,7 @@ trait HandleTranslations
 
     public function prepareFieldsBeforeSaveHandleTranslations($object, $fields)
     {
-        if (property_exists($this->model, 'translatedAttributes')) {
+        if ($this->model->isTranslatable()) {
             $locales = getLocales();
             $localesCount = count($locales);
             $attributes = Collection::make($this->model->translatedAttributes);
@@ -77,7 +77,7 @@ trait HandleTranslations
 
     protected function filterHandleTranslations($query, &$scopes)
     {
-        if (property_exists($this->model, 'translatedAttributes')) {
+        if ($this->model->isTranslatable()) {
             $attributes = $this->model->translatedAttributes;
             $query->whereHas('translations', function ($q) use ($scopes, $attributes) {
                 foreach ($attributes as $attribute) {
@@ -97,7 +97,7 @@ trait HandleTranslations
 
     public function orderHandleTranslations($query, &$orders)
     {
-        if (property_exists($this->model, 'translatedAttributes')) {
+        if ($this->model->isTranslatable()) {
             $attributes = $this->model->translatedAttributes;
             $table = $this->model->getTable();
             $tableTranslation = $this->model->translations()->getRelated()->getTable();

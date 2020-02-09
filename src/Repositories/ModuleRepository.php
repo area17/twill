@@ -163,7 +163,7 @@ abstract class ModuleRepository
             $query = $this->order($query, $orders);
         }
 
-        if (property_exists($this->model, 'translatedAttributes')) {
+        if ($this->model->isTranslatable()) {
             $query = $query->withTranslation();
         }
 
@@ -862,5 +862,28 @@ abstract class ModuleRepository
     public function __call($method, $parameters)
     {
         return $this->model->$method(...$parameters);
+    }
+
+    /**
+     * @param string $behaviour
+     * @return boolean
+     */
+    public function hasBehaviour($behaviour)
+    {
+        $hasBehaviour = classHasTrait($this, 'A17\Twill\Repositories\Behaviors\Handle' . ucfirst($behaviour));
+
+        if (Str::startsWith($behaviour, 'translation')) {
+            $hasBehaviour = $hasBehaviour && $this->getModel()->isTranslatable();
+        }
+
+        return $hasBehaviour;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isTranslatable($column)
+    {
+        return $this->getModel()->isTranslatable($column);
     }
 }

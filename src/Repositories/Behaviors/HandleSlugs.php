@@ -13,7 +13,7 @@ trait HandleSlugs
                     $currentSlug = [];
                     $currentSlug['slug'] = $fields['slug'][$locale];
                     $currentSlug['locale'] = $locale;
-                    $currentSlug['active'] = property_exists($this->model, 'translatedAttributes') ? $object->translate($locale)->active : 1;
+                    $currentSlug['active'] = $this->model->isTranslatable() ? $object->translate($locale)->active : 1;
                     $currentSlug = $this->getSlugParameters($object, $fields, $currentSlug);
                     $object->updateOrNewSlug($currentSlug);
                 }
