@@ -213,6 +213,8 @@ class ModuleMake extends Command
      */
     private function createModels($modelName = 'Item', $activeTraits = [])
     {
+        $modelClassName = $modelName;
+
         if (!$this->files->isDirectory(twill_path('Models'))) {
             $this->files->makeDirectory(twill_path('Models'));
         }
@@ -224,7 +226,11 @@ class ModuleMake extends Command
 
             $modelTranslationClassName = $modelName . 'Translation';
 
-            $stub = str_replace('{{modelTranslationClassName}}', $modelTranslationClassName, $this->files->get(__DIR__ . '/stubs/model_translation.stub'));
+            $stub = str_replace(
+                ['{{modelTranslationClassName}}', '{{modelClassName}}'],
+                [$modelTranslationClassName, $modelClassName],
+                $this->files->get(__DIR__ . '/stubs/model_translation.stub')
+            );
 
             $this->files->put(twill_path('Models/Translations/' . $modelTranslationClassName . '.php'), $stub);
         }
@@ -252,8 +258,6 @@ class ModuleMake extends Command
 
             $this->files->put(twill_path('Models/Revisions/' . $modelRevisionClassName . '.php'), $stub);
         }
-
-        $modelClassName = $modelName;
 
         $activeModelTraits = [];
 
