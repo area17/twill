@@ -4,8 +4,8 @@ namespace A17\Twill\Repositories\Behaviors;
 
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 trait HandleRepeaters
 {
@@ -17,15 +17,15 @@ trait HandleRepeaters
     public function afterSaveHandleRepeaters($object, $fields)
     {
         if (property_exists($this, 'repeaters')) {
-            foreach ($this->repeaters as $module) {
+            foreach ($this->repeaters as $moduleKey => $module) {
                 if (is_string($module)) {
                     $model = Str::studly(Str::singular($module));
                     $repeaterName = Str::singular($module);
                     $this->updateRepeater($object, $fields, $module, $model, $repeaterName);
                 } elseif (is_array($module)) {
-                    $relation = !empty($module['relation']) ? $module['relation'] : key($module);
-                    $model = isset($module['model']) ? $module['model'] : Str::studly(Str::singular(key($module)));
-                    $repeaterName = !empty($module['repeaterName']) ? $module['repeaterName'] : Str::singular(key($module));
+                    $relation = !empty($module['relation']) ? $module['relation'] : $moduleKey;
+                    $model = isset($module['model']) ? $module['model'] : Str::studly(Str::singular($moduleKey));
+                    $repeaterName = !empty($module['repeaterName']) ? $module['repeaterName'] : Str::singular($moduleKey);
                     $this->updateRepeater($object, $fields, $relation, $model, $repeaterName);
                 }
             }
@@ -40,22 +40,22 @@ trait HandleRepeaters
     public function getFormFieldsHandleRepeaters($object, $fields)
     {
         if (property_exists($this, 'repeaters')) {
-            foreach ($this->repeaters as $module) {
+            foreach ($this->repeaters as $moduleKey => $module) {
                 if (is_string($module)) {
                     $model = Str::studly(Str::singular($module));
                     $repeaterName = Str::singular($module);
                     $fields = $this->getFormFieldsForRepeater($object, $fields, $module, $model, $repeaterName);
                 } elseif (is_array($module)) {
-                    $model = isset($module['model']) ? $module['model'] : Str::studly(Str::singular(key($module)));
-                    $relation = !empty($module['relation']) ? $module['relation'] : key($module);
-                    $repeaterName = !empty($module['repeaterName']) ? $module['repeaterName'] : Str::singular(key($module));
+                    $model = isset($module['model']) ? $module['model'] : Str::studly(Str::singular($moduleKey));
+                    $relation = !empty($module['relation']) ? $module['relation'] : $moduleKey;
+                    $repeaterName = !empty($module['repeaterName']) ? $module['repeaterName'] : Str::singular($moduleKey);
                     $fields = $this->getFormFieldsForRepeater($object, $fields, $relation, $model, $repeaterName);
                 }
             }
         }
-        
+
         return $fields;
-    } 
+    }
 
     public function updateRepeaterMany($object, $fields, $relation, $keepExisting = true, $model = null)
     {
@@ -71,6 +71,57 @@ trait HandleRepeaters
         foreach ($relationFields as $relationField) {
             $newRelation = $relationRepository->create($relationField);
             $object->$relation()->attach($newRelation->id);
+        }
+    }
+
+
+    public function updateRepeaterMorphMany($object, $fields, $relation, $morph = null, $model = null)
+    {
+        $relationFields = $fields['repeaters'][$relation] ?? [];
+        $relationRepository = $this->getModelRepository($relation, $model);
+
+        $morph = $morph ?: $relation;
+
+        $morphFieldType = $morph.'_type';
+        $morphFieldId = $morph.'_id';
+
+        // if no relation field submitted, soft deletes all associated rows
+        if (!$relationFields) {
+            $relationRepository->updateBasic(null, [
+                'deleted_at' => Carbon::now(),
+            ], [
+                $morphFieldType => $object->getMorphClass(),
+                $morphFieldId => $object->id,
+            ]);
+        }
+
+        // keep a list of updated and new rows to delete (soft delete?) old rows that were deleted from the frontend
+        $currentIdList = [];
+
+        foreach ($relationFields as $index => $relationField) {
+            $relationField['position'] = $index + 1;
+            if (isset($relationField['id']) && Str::startsWith($relationField['id'], $relation)) {
+                // row already exists, let's update
+                $id = str_replace($relation . '-', '', $relationField['id']);
+                $relationRepository->update($id, $relationField);
+                $currentIdList[] = $id;
+            } else {
+                // new row, let's attach to our object and create
+                unset($relationField['id']);
+                $newRelation = $relationRepository->create($relationField);
+                $object->$relation()->save($newRelation);
+                $currentIdList[] = $newRelation['id'];
+            }
+        }
+
+        foreach ($object->$relation->pluck('id') as $id) {
+            if (!in_array($id, $currentIdList)) {
+                $relationRepository->updateBasic(null, [
+                    'deleted_at' => Carbon::now(),
+                ], [
+                    'id' => $id,
+                ]);
+            }
         }
     }
 

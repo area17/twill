@@ -3,9 +3,9 @@
 namespace A17\Twill;
 
 use A17\Twill\Repositories\BlockRepository;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Validator;
 
 class ValidationServiceProvider extends ServiceProvider
 {
@@ -34,7 +34,7 @@ class ValidationServiceProvider extends ServiceProvider
 
         Validator::extend('validBlocks', function ($attribute, $value, $parameters, $validator) {
             foreach ($value as $block) {
-                $cmsBlock = $this->app->get(BlockRepository::class)->buildFromCmsArray($block, false);
+                $cmsBlock = $this->app->make(BlockRepository::class)->buildFromCmsArray($block, false);
 
                 $rules = config('twill.block_editor.blocks.' . $cmsBlock['type'] . '.rules') ?? [];
 

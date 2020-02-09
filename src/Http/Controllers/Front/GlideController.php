@@ -9,6 +9,6 @@ class GlideController
 {
     public function __invoke($path, Application $app)
     {
-        return $app->get(Glide::class)->render($path);
+        return $app->make(Glide::class)->render($path);
     }
 }

@@ -14,7 +14,7 @@ class CreateFilesTables extends Migration
     public function up()
     {
         Schema::create('files', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
+            $table->{twillIncrementsMethod()}('id');
             $table->timestamps();
             $table->softDeletes();
             $table->string('uuid');
@@ -23,12 +23,12 @@ class CreateFilesTables extends Migration
         });
 
         Schema::create('fileables', function (Blueprint $table) {
-            $table->increments('id');
+            $table->{twillIncrementsMethod()}('id');
             $table->timestamps();
             $table->softDeletes();
-            $table->integer('file_id')->unsigned();
+            $table->{twillIntegerMethod()}('file_id')->unsigned();
             $table->foreign('file_id', 'fk_files_file_id')->references('id')->on('files')->onDelete('cascade')->onUpdate('cascade');
-            $table->integer('fileable_id')->nullable()->unsigned();
+            $table->{twillIntegerMethod()}('fileable_id')->nullable()->unsigned();
             $table->string('fileable_type')->nullable();
             $table->string('role')->nullable();
             $table->string('locale', 6)->index();

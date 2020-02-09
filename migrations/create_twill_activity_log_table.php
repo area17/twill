@@ -13,7 +13,7 @@ class CreateTwillActivityLogTable extends Migration
     {
         if (!Schema::hasTable(config('activitylog.table_name'))) {
             Schema::create(config('activitylog.table_name'), function (Blueprint $table) {
-                $table->increments('id');
+                $table->{twillIncrementsMethod()}('id');
                 $table->string('log_name')->nullable();
                 $table->text('description');
                 $table->integer('subject_id')->nullable();

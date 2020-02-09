@@ -32,7 +32,7 @@
                                     'label' => $label
                                 ];
                             })->values()->toArray() : ${$filter.'List'}) }}"
-                            placeholder="All {{ strtolower(Str::plural($filter)) }}"
+                            placeholder="All {{ strtolower(\Illuminate\Support\Str::plural($filter)) }}"
                             ref="filterDropdown[{{ $loop->index }}]"
                             ></a17-vselect>
                         @endif
@@ -51,6 +51,15 @@
                     @if($create)
                         <div slot="additional-actions">
                             <a17-button variant="validate" size="small" v-on:click="create">Add new</a17-button>
+                            @foreach($filterLinks as $link)
+                                <a17-button el="a" href="{{ $link['url'] ?? '#' }}" download="{{ $link['download'] ?? '' }}" rel="{{ $link['rel'] ?? '' }}" target="{{ $link['target'] ?? '' }}" variant="small secondary">{{ $link['label'] }}</a17-button>
+                            @endforeach
+                        </div>
+                    @elseif(isset($filterLinks) && count($filterLinks))
+                        <div slot="additional-actions">
+                            @foreach($filterLinks as $link)
+                                <a17-button el="a" href="{{ $link['url'] ?? '#' }}" download="{{ $link['download'] ?? '' }}" rel="{{ $link['rel'] ?? '' }}" target="{{ $link['target'] ?? '' }}" variant="small secondary">{{ $link['label'] }}</a17-button>
+                            @endforeach
                         </div>
                     @endif
                 </a17-filter>

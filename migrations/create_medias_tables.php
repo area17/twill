@@ -14,7 +14,7 @@ class CreateMediasTables extends Migration
     public function up()
     {
         Schema::create('medias', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
+            $table->{twillIncrementsMethod()}('id');
             $table->timestamps();
             $table->softDeletes();
             $table->string('uuid');
@@ -26,12 +26,12 @@ class CreateMediasTables extends Migration
         });
 
         Schema::create('mediables', function (Blueprint $table) {
-            $table->increments('id');
+            $table->{twillIncrementsMethod()}('id');
             $table->timestamps();
             $table->softDeletes();
-            $table->integer('mediable_id')->nullable()->unsigned();
+            $table->{twillIntegerMethod()}('mediable_id')->nullable()->unsigned();
             $table->string('mediable_type')->nullable();
-            $table->integer('media_id')->unsigned();
+            $table->{twillIntegerMethod()}('media_id')->unsigned();
             $table->integer('crop_x')->nullable();
             $table->integer('crop_y')->nullable();
             $table->integer('crop_w')->nullable();

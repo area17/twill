@@ -84,6 +84,7 @@ class FeaturedController extends Controller
             ],
             'maxPage' => $firstSource['maxPage'],
             'offset' => $firstSource['offset'],
+            'bucketSectionLinks' => $featuredSection['sectionIntroLinks'] ?? null,
             'bucketSourceTitle' => $featuredSection['sourceHeaderTitle'] ?? null,
             'bucketsSectionIntro' => $featuredSection['sectionIntroText'] ?? null,
             'restricted' => $featuredSection['restricted'] ?? true,
@@ -232,6 +233,6 @@ class FeaturedController extends Controller
      */
     private function getRepository($bucketable)
     {
-        return $this->app->get($this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($bucketable)) . "Repository");
+        return $this->app->make($this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($bucketable)) . "Repository");
     }
 }

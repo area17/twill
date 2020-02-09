@@ -73,9 +73,11 @@ class BlockRepository extends ModuleRepository
     public function afterSave($object, $fields)
     {
         if (Schema::hasTable(config('twill.related_table', 'related'))) {
-            Collection::make($fields['browsers'])->each(function ($items, $browserName) use ($object) {
-                $object->saveRelated($items, $browserName);
-            });
+            if (isset($fields['browsers'])) {
+                Collection::make($fields['browsers'])->each(function ($items, $browserName) use ($object) {
+                    $object->saveRelated($items, $browserName);
+                });
+            }
         }
 
         parent::afterSave($object, $fields);

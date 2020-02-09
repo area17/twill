@@ -3,7 +3,10 @@
     <div class="buckets__page-title">
       <div class="container buckets__page-title-content">
         <h2><slot/></h2>
-        <a17-button variant="validate" @click="save">Publish</a17-button>
+        <div class="buckets__page-title-actions">
+          <a17-button variant="validate" @click="save">Publish</a17-button>
+          <a17-button v-for="link in extraActions" :key="link.url" el="a" :href="link.url" :download="link.download || ''" :target="link.target || ''" :rel="link.rel || ''" variant="secondary">{{ link.label }}</a17-button>
+        </div>
       </div>
     </div>
     <div class="container">
@@ -98,6 +101,11 @@
       restricted: {
         type: Boolean,
         default: true
+      },
+      // Optionnal additionnal actions showing up after the Publish button
+      extraActions: {
+        type: Array,
+        default: function () { return [] }
       }
     },
     components: {
@@ -273,13 +281,24 @@
     background-color: $color__border--light;
     border-bottom: 1px solid $color__border;
     overflow: hidden;
+  }
 
-    .buckets__page-title-content {
-      padding-top: 30px;
-      padding-bottom: 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+  .buckets__page-title-content {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .buckets__page-title-actions {
+    display: flex;
+    flex-wrap: nowrap;
+
+    a,
+    button {
+      margin-left: 20px;
+      vertical-align: middle;
     }
   }
 

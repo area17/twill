@@ -14,7 +14,7 @@ class CreateFeaturesTable extends Migration
     public function up()
     {
         Schema::create('features', function (Blueprint $table) {
-            $table->increments('id');
+            $table->{twillIncrementsMethod()}('id');
             $table->string('featured_id', 36);
             $table->string('featured_type', 255);
             $table->string('bucket_key')->index();
