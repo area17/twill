@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Models;
 
+use Illuminate\Support\Str;
 use A17\Twill\Models\Behaviors\HasPresenter;
 use Carbon\Carbon;
 use Cartalyst\Tags\TaggableInterface;
@@ -83,5 +84,34 @@ abstract class Model extends BaseModel implements TaggableInterface
 
         // The translatedAttributes property must be filled
         return collect($this->translatedAttributes)->isNotEmpty();
+    }
+
+    public function getFillable()
+    {
+        // If the fillable attribute is filled, just use it
+        $fillable = $this->fillable;
+
+        // If fillable is empty
+        // and it's a translation model
+        // and the baseModel was defined
+        // Use the list of translatable attributes on our base model
+        if (
+            blank($fillable) &&
+            Str::contains($class= get_class($this), 'Models\Translations') &&
+            property_exists($class, 'baseModuleModel')
+        ) {
+            $fillable = (new $this->baseModuleModel)->getTranslatedAttributes();
+
+            if (!collect($fillable)->contains('locale')) {
+                $fillable[] = 'locale';
+            }
+        }
+
+        return $fillable;
+    }
+
+    public function getTranslatedAttributes()
+    {
+        return $this->translatedAttributes ?? [];
     }
 }
