@@ -95,13 +95,25 @@
         this.$store.dispatch(ACTIONS.BULK_EXPORT)
       },
       bulkDelete: function () {
-        this.$store.dispatch(ACTIONS.BULK_DELETE)
+        if (this.$root.$refs.warningDestroyRow) {
+          this.$root.$refs.warningDestroyRow.open(() => {
+            this.$store.dispatch(ACTIONS.BULK_DELETE)
+          })
+        } else {
+          this.$store.dispatch(ACTIONS.BULK_DELETE)
+        }
       },
       bulkRestore: function () {
         this.$store.dispatch(ACTIONS.BULK_RESTORE)
       },
       bulkDestroy: function () {
-        this.$store.dispatch(ACTIONS.BULK_DESTROY)
+        if (this.$root.$refs.warningDestroyRow) {
+          this.$root.$refs.warningDestroyRow.open(() => {
+            this.$store.dispatch(ACTIONS.BULK_DESTROY)
+          })
+        } else {
+          this.$store.dispatch(ACTIONS.BULK_DESTROY)
+        }
       }
     }
   }

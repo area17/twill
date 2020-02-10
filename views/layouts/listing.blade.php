@@ -101,6 +101,11 @@
             <p class="modal--tiny-title"><strong>Move to trash</strong></p>
             <p>The item won't be deleted but moved to trash.</p>
         </a17-dialog>
+
+        <a17-dialog ref="warningDestroyRow" modal-title="Destroy item" confirm-label="Destroy">
+            <p class="modal--tiny-title"><strong>Destroy permanently</strong></p>
+            <p>The item won't be able to be restored anymore.</p>
+        </a17-dialog>
     </div>
 @stop
 
