@@ -38,20 +38,19 @@ class AddTwoFactorAuthColumnsToTwillUsers extends Migration
      */
     public function down()
     {
-        if (config('twill.enabled.users-2fa', false)) {
-            $twillUsersTable = config('twill.users_table', 'twill_users');
+        $twillUsersTable = config('twill.users_table', 'twill_users');
 
-            if (Schema::hasTable($twillUsersTable) && Schema::hasColumn($twillUsersTable, 'google_2fa_secret')) {
-                Schema::table($twillUsersTable, function (Blueprint $table) {
-                    $table->dropColumn('google_2fa_secret');
-                });
-            }
+        if (Schema::hasTable($twillUsersTable) && Schema::hasColumn($twillUsersTable, 'google_2fa_secret')) {
+            Schema::table($twillUsersTable, function (Blueprint $table) {
+                $table->dropColumn('google_2fa_secret');
+            });
+        }
 
-            if (Schema::hasTable($twillUsersTable) && Schema::hasColumn($twillUsersTable, 'google_2fa_enabled')) {
-                Schema::table($twillUsersTable, function (Blueprint $table) {
-                    $table->dropColumn('google_2fa_enabled');
-                });
-            }
+        if (Schema::hasTable($twillUsersTable) && Schema::hasColumn($twillUsersTable, 'google_2fa_enabled')) {
+            Schema::table($twillUsersTable, function (Blueprint $table) {
+                $table->dropColumn('google_2fa_enabled');
+            });
         }
     }
+
 }
