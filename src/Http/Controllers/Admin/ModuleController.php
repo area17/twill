@@ -336,7 +336,7 @@ abstract class ModuleController extends Controller
 
         if ($this->getIndexOption('editInModal')) {
             return $this->request->ajax()
-            ? Response::json($this->modalFormData($submodule ?? $id))
+            ? Response::json($this->modalFormData($submoduleId ?? $id))
             : Redirect::to(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
         }
 
