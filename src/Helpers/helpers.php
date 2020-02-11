@@ -168,7 +168,7 @@ if (!function_exists('twill_put_stub')) {
             $stub
         );
 
-        if ($fs->missing($path)) {
+        if (!$fs->exists($path)) {
             $fs->put($path, $stub);
         }
     }
