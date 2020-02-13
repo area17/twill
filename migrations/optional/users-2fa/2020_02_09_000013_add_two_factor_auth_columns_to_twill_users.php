@@ -13,19 +13,22 @@ class AddTwoFactorAuthColumnsToTwillUsers extends Migration
      */
     public function up()
     {
-        $twillUsersTable = config('twill.users_table', 'twill_users');
+        if (config('twill.enabled.users-2fa', false)) {
+            $twillUsersTable = config('twill.users_table', 'twill_users');
 
-        if (Schema::hasTable($twillUsersTable) && !Schema::hasColumn($twillUsersTable, 'google_2fa_secret')) {
-            Schema::table($twillUsersTable, function (Blueprint $table) {
-                $table->string('google_2fa_secret')->nullable();
-            });
+            if (Schema::hasTable($twillUsersTable) && !Schema::hasColumn($twillUsersTable, 'google_2fa_secret')) {
+                Schema::table($twillUsersTable, function (Blueprint $table) {
+                    $table->string('google_2fa_secret')->nullable();
+                });
+            }
+
+            if (Schema::hasTable($twillUsersTable) && !Schema::hasColumn($twillUsersTable, 'google_2fa_enabled')) {
+                Schema::table($twillUsersTable, function (Blueprint $table) {
+                    $table->boolean('google_2fa_enabled')->default(false);
+                });
+            }
         }
 
-        if (Schema::hasTable($twillUsersTable) && !Schema::hasColumn($twillUsersTable, 'google_2fa_enabled')) {
-            Schema::table($twillUsersTable, function (Blueprint $table) {
-                $table->boolean('google_2fa_enabled')->default(false);
-            });
-        }
     }
 
     /**
@@ -49,4 +52,5 @@ class AddTwoFactorAuthColumnsToTwillUsers extends Migration
             });
         }
     }
+
 }

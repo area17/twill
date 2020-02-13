@@ -11,8 +11,6 @@ class Media extends Model
 {
     public $timestamps = true;
 
-    public $table = 'medias';
-
     protected $fillable = [
         'uuid',
         'filename',
@@ -52,7 +50,7 @@ class Media extends Model
 
     public function canDeleteSafely()
     {
-        return DB::table('mediables')->where('media_id', $this->id)->count() === 0;
+        return DB::table(config('twill.mediables_table', 'twill_mediables'))->where('media_id', $this->id)->count() === 0;
     }
 
     public function toCmsArray()
@@ -123,5 +121,10 @@ class Media extends Model
         }
 
         return $metadatas->$name ?? $fallbackValue ?? '';
+    }
+
+    public function getTable()
+    {
+        return config('twill.medias_table', 'twill_medias');
     }
 }

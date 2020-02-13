@@ -26,4 +26,9 @@ class Feature extends BaseModel
         })->filter();
     }
 
+    public function getTable()
+    {
+        return config('twill.features_table', 'twill_features');
+    }
+
 }

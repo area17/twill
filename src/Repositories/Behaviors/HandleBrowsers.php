@@ -2,8 +2,31 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use Illuminate\Support\Str;
+
 trait HandleBrowsers
 {
+    /**
+     * All browsers used in the model, as an array of browser names: 
+     * [
+     *  'books',
+     *  'publications'
+     * ].
+     * 
+     * When only the browser name is given here, its rest information will be inferred from the name.
+     * Each browser's detail can also be override with an array
+     * [
+     *  'books',
+     *  'publication' => [
+     *      'routePrefix' => 'collections',
+     *      'titleKey' => 'name'
+     *  ]
+     * ]
+     *
+     * @var string|array(array)|array(mix(string|array))
+     */
+    protected $browsers = [];
+
     /**
      * @param \A17\Twill\Models\Model $object
      * @param array $fields
@@ -11,17 +34,8 @@ trait HandleBrowsers
      */
     public function afterSaveHandleBrowsers($object, $fields)
     {
-        if (property_exists($this, 'browsers')) {
-            foreach ($this->browsers as $moduleKey => $module) {
-                if (is_string($module)) {
-                    $this->updateBrowser($object, $fields, $module, 'position', $module);
-                } elseif (is_array($module)) {
-                    $browserName = !empty($module['browserName']) ? $module['browserName'] : $moduleKey;
-                    $relation = !empty($module['relation']) ? $module['relation'] : $moduleKey;
-                    $positionAttribute = !empty($module['positionAttribute']) ? $module['positionAttribute'] : 'position';
-                    $this->updateBrowser($object, $fields, $relation, $positionAttribute, $browserName);
-                }
-            }
+        foreach ($this->getBrowsers() as $browser) {
+            $this->updateBrowser($object, $fields, $browser['relation'], $browser['positionAttribute'], $browser['browserName']);
         }
     }
 
@@ -32,19 +46,8 @@ trait HandleBrowsers
      */
     public function getFormFieldsHandleBrowsers($object, $fields)
     {
-        if (property_exists($this, 'browsers')) {
-            foreach ($this->browsers as $moduleKey => $module) {
-                if (is_string($module)) {
-                    $fields['browsers'][$module] = $this->getFormFieldsForBrowser($object, $module, null, 'title', null);
-                } elseif (is_array($module)) {
-                    $relation = !empty($module['relation']) ? $module['relation'] : $moduleKey;
-                    $routePrefix = isset($module['routePrefix']) ? $module['routePrefix'] : null;
-                    $titleKey = !empty($module['titleKey']) ? $module['titleKey'] : 'title';
-                    $moduleName = isset($module['moduleName']) ? $module['moduleName'] : null;
-                    $browserName = !empty($module['browserName']) ? $module['browserName'] : $moduleKey;
-                    $fields['browsers'][$browserName] = $this->getFormFieldsForBrowser($object, $relation, $routePrefix, $titleKey, $moduleName);
-                }
-            }
+        foreach ($this->getBrowsers() as $browser) {
+            $fields['browsers'][$browser['browserName']] = $this->getFormFieldsForBrowser($object, $browser['relation'], $browser['routePrefix'], $browser['titleKey'], $browser['moduleName']);
         }
 
         return $fields;
@@ -136,5 +139,38 @@ trait HandleBrowsers
         })->reject(function ($item) {
             return empty($item);
         })->values()->toArray();
+    }
+
+        /**
+     * Get all browser' detail info from the $browsers attribute. 
+     * The missing information will be inferred by convention of Twill.
+     *
+     * @return Illuminate\Support\Collection
+     */
+    protected function getBrowsers()
+    {
+        return collect($this->browsers)->map(function ($browser, $key) {
+            $browserName = is_string($browser) ? $browser : $key;
+            return [
+                'relation' => !empty($browser['relation']) ? $browser['relation'] : $this->inferRelationFromBrowserName($browserName),
+                'routePrefix' => isset($browser['routePrefix']) ? $browser['routePrefix'] : null,
+                'titleKey' => !empty($browser['titleKey']) ? $browser['titleKey'] : 'title',
+                'moduleName' => isset($browser['moduleName']) ? $browser['moduleName'] : null,
+                'positionAttribute' => !empty($browser['positionAttribute']) ? $browser['positionAttribute'] : 'position',
+                'browserName' => $browserName,
+            ];
+        })->values();
+    }
+
+    /**
+     * The relation name shoud be lower camel case, ex. userGroup, contactOffice
+     *
+     * @param  string $browserName
+     *
+     * @return string
+     */
+    protected function inferRelationFromBrowserName(string $browserName): string
+    {
+        return Str::camel($browserName);
     }
 }

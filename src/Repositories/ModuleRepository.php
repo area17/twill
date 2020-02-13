@@ -6,6 +6,7 @@ use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Repositories\Behaviors\HandleDates;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
+use A17\Twill\Repositories\Behaviors\HandleRepeaters;
 use A17\Twill\Repositories\Behaviors\HandleFieldsGroups;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -18,7 +19,7 @@ use PDO;
 
 abstract class ModuleRepository
 {
-    use HandleDates, HandleBrowsers, HandleFieldsGroups;
+    use HandleDates, HandleBrowsers, HandleRepeaters, HandleFieldsGroups;
 
     /**
      * @var \A17\Twill\Models\Model
@@ -369,6 +370,48 @@ abstract class ModuleRepository
             try {
                 Collection::make($ids)->each(function ($id) {
                     $this->delete($id);
+                });
+            } catch (\Exception $e) {
+                Log::error($e);
+                return false;
+            }
+
+            return true;
+        }, 3);
+    }
+
+    /**
+     * @param mixed $id
+     * @return mixed
+     */
+    public function forceDelete($id)
+    {
+        return DB::transaction(function () use ($id) {
+            if (($object = $this->model->onlyTrashed()->find($id)) === null) {
+                return false;
+            } else {
+                $object->forceDelete();
+                $this->afterDelete($object);
+                return true;
+            }
+        }, 3);
+    }
+
+    /**
+     * @param mixed $id
+     * @return mixed
+     */
+    public function bulkForceDelete($ids)
+    {
+        return DB::transaction(function () use ($ids) {
+            try {
+                $query = $this->model->onlyTrashed()->whereIn('id', $ids);
+                $objects = $query->get();
+
+                $query->forceDelete();
+
+                $objects->each(function ($object) {
+                    $this->afterDelete($object);
                 });
             } catch (\Exception $e) {
                 Log::error($e);

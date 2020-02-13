@@ -2,14 +2,12 @@
 
 namespace A17\Twill\Models;
 
-use Illuminate\Support\Facades\DB;
 use FileService;
+use Illuminate\Support\Facades\DB;
 
 class File extends Model
 {
     public $timestamps = true;
-
-    public $table = 'files';
 
     protected $fillable = [
         'uuid',
@@ -24,7 +22,7 @@ class File extends Model
 
     public function canDeleteSafely()
     {
-        return DB::table('fileables')->where('file_id', $this->id)->count() === 0;
+        return DB::table(config('twill.fileables_table', 'twill_fileables'))->where('file_id', $this->id)->count() === 0;
     }
 
     public function toCmsArray()
@@ -36,5 +34,10 @@ class File extends Model
             'original' => FileService::getUrl($this->uuid),
             'size' => $this->size,
         ];
+    }
+
+    public function getTable()
+    {
+        return config('twill.files_table', 'twill_files');
     }
 }
