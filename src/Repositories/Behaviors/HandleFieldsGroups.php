@@ -36,7 +36,7 @@ trait HandleFieldsGroups
     {
         foreach ($this->fieldsGroups as $group => $groupFields) {
             if ($object->$group) {
-                $decoded_fields = json_decode($object->$group, true);
+                $decoded_fields = json_decode($object->$group, true) ?? [];
                 // In case that some field read the value through $item->$name
                 foreach($decoded_fields as $field_name => $field_value) {
                     $object->setAttribute($field_name, $field_value);
