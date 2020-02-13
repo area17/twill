@@ -10,30 +10,14 @@ trait HandleRevisions
 {
     public function hydrateHandleRevisions($object, $fields)
     {
-        if (property_exists($this, 'browsers')) {
-            foreach ($this->browsers as $moduleKey => $module) {
-                if (is_string($module)) {
-                    $this->hydrateBrowser($object, $fields, $module);
-                } elseif (is_array($module)) {
-                    $relation = !empty($module['relation']) ? $module['relation'] : $moduleKey;
-                    $positionAttribute = !empty($module['positionAttribute']) ? $module['positionAttribute'] : 'position';
-                    $model = isset($module['model']) ? $module['model'] : null;
-                    $this->hydrateBrowser($object, $fields, $relation, $positionAttribute, $model);
-                }
-            }
+        // HandleRepeaters trait => getRepeaters
+        foreach($this->getRepeaters() as $repeater) {
+            $this->hydrateRepeater($object, $fields, $repeater['relation'], $repeater['model']);
         }
 
-        if (property_exists($this, 'repeaters')) {
-            foreach ($this->repeaters as $moduleKey => $module) {
-                if (is_string($module)) {
-                    $model = Str::studly(Str::singular($module));
-                    $this->hydrateRepeater($object, $fields, $module, $model);
-                } elseif (is_array($module)) {
-                    $relation = !empty($module['relation']) ? $module['relation'] : $moduleKey;
-                    $model = isset($module['model']) ? $module['model'] : Str::studly(Str::singular($moduleKey));
-                    $this->hydrateRepeater($object, $fields, $relation, $model);
-                }
-            }
+        // HandleBrowers trait => getBrowsers
+        foreach($this->getBrowsers() as $browser) {
+            $this->hydrateBrowser($object, $fields, $browser['relation'], $browser['positionAttribute'], $browser['model']);
         }
 
         return $object;
