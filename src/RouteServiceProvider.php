@@ -58,7 +58,7 @@ class RouteServiceProvider extends ServiceProvider
         $supportSubdomainRouting = config('twill.support_subdomain_admin_routing', false);
 
         if ($supportSubdomainRouting) {
-            array_push($middlewares, 'supportSubdomainRouting');
+            array_unshift($middlewares, 'supportSubdomainRouting');
         }
 
         $this->mapHostRoutes($router, $groupOptions, $middlewares, $supportSubdomainRouting);
