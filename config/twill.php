@@ -25,6 +25,47 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Admin subdomain routing support
+    |--------------------------------------------------------------------------
+    |
+    | Enabling this allows adding top level keys to Twill's navigation and
+    | dashboard modules configuration, mapping to a subdomain.
+    | This is a very simple way to implement multi-tenant CMS/sites in Twill.
+    | A navigation array looking like the following would expose your CMS on
+    | the 'admin.subdomain1.app-url.test' and 'admin.subdomain2.app-url.test'
+    | urls, with its corresponding links.
+    | [
+    |   'subdomain1' => [
+    |     'module1' => [...],
+    |     ...
+    |   ],
+    |   'subdomain2' => [
+    |     'module2' => [...]
+    |     ...
+    |   ]
+    | ]
+    |
+    | App name can be set per subdomain using the 'twill.app_names'
+    | configuration array. For our example above:
+    | [
+    |   'app_names' => [
+    |     'subdomain1' => 'App 1 name',
+    |     'subdomain2' => 'App 2 name',
+    |   ],
+    | ]
+    |
+    | Subdomain configuration nesting also applies to the dashboard
+    | 'modules' key.
+    |
+    | You can provide a custom 'block_single_layout' per subdomain by
+    | creating a Blade file under resources/views/subdomain/layouts/blocks.
+    |
+     */
+    'support_subdomain_admin_routing' => false,
+    'admin_app_subdomain' => 'admin',
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Admin Route and domain pattern
     |--------------------------------------------------------------------------
     |

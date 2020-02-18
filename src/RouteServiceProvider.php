@@ -5,12 +5,13 @@ namespace A17\Twill;
 use A17\Twill\Http\Controllers\Front\GlideController;
 use A17\Twill\Http\Middleware\Impersonate;
 use A17\Twill\Http\Middleware\RedirectIfAuthenticated;
+use A17\Twill\Http\Middleware\SupportSubdomainRouting;
 use A17\Twill\Http\Middleware\ValidateBackHistory;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -42,41 +43,83 @@ class RouteServiceProvider extends ServiceProvider
             }
         }
 
-        if (file_exists(base_path('routes/admin.php'))) {
-            $router->group([
-                'namespace' => config('twill.namespace', 'App') . '\Http\Controllers\Admin',
-                'domain' => config('twill.admin_app_url'),
-                'as' => 'admin.',
-                'middleware' => [config('twill.admin_middleware_group', 'web')],
-                'prefix' => rtrim(ltrim(config('twill.admin_app_path'), '/'), '/'),
-            ], function ($router) {
-                $router->group(['middleware' => ['twill_auth:twill_users', 'impersonate', 'validateBackHistory']], function ($router) {
-                    require base_path('routes/admin.php');
-                });
-            });
-        }
-
-        $router->group([
-            'namespace' => $this->namespace . '\Admin',
-            'domain' => config('twill.admin_app_url'),
+        $groupOptions = [
             'as' => 'admin.',
             'middleware' => [config('twill.admin_middleware_group', 'web')],
             'prefix' => rtrim(ltrim(config('twill.admin_app_path'), '/'), '/'),
-        ],
-            function ($router) {
-                $router->group(['middleware' => ['twill_auth:twill_users', 'impersonate', 'validateBackHistory']], function ($router) {
-                    require __DIR__ . '/../routes/admin.php';
-                });
+        ];
 
-                $router->group([], function ($router) {
-                    require __DIR__ . '/../routes/auth.php';
-                });
+        $middlewares = [
+            'twill_auth:twill_users',
+            'impersonate',
+            'validateBackHistory',
+        ];
 
-                $router->group(['middleware' => $this->app->environment('production') ? ['twill_auth:twill_users'] : []], function ($router) {
-                    require __DIR__ . '/../routes/templates.php';
+        $supportSubdomainRouting = config('twill.support_subdomain_admin_routing', false);
+
+        if ($supportSubdomainRouting) {
+            array_push($middlewares, 'supportSubdomainRouting');
+        }
+
+        $this->mapHostRoutes($router, $groupOptions, $middlewares, $supportSubdomainRouting);
+        $this->mapInternalRoutes($router, $groupOptions, $middlewares, $supportSubdomainRouting);
+    }
+
+    private function mapHostRoutes($router, $groupOptions, $middlewares, $supportSubdomainRouting)
+    {
+        if (file_exists(base_path('routes/admin.php'))) {
+            $hostRoutes = function ($router) use ($middlewares) {
+                $router->group([
+                    'namespace' => config('twill.namespace', 'App') . '\Http\Controllers\Admin',
+                    'middleware' => $middlewares,
+                ], function ($router) {
+                    require base_path('routes/admin.php');
                 });
+            };
+
+            $router->group($groupOptions + [
+                'domain' => config('twill.admin_app_url'),
+            ], $hostRoutes);
+
+            if ($supportSubdomainRouting) {
+                $router->group($groupOptions + [
+                    'domain' => config('twill.admin_app_subdomain', 'admin') . '.{subdomain}.' . config('app.url'),
+                ], $hostRoutes);
             }
-        );
+        }
+    }
+
+    private function mapInternalRoutes($router, $groupOptions, $middlewares, $supportSubdomainRouting)
+    {
+        $internalRoutes = function ($router) use ($middlewares, $supportSubdomainRouting) {
+            $router->group(['middleware' => $middlewares], function ($router) {
+                require __DIR__ . '/../routes/admin.php';
+            });
+
+            $router->group([
+                'middleware' => $supportSubdomainRouting ? ['supportSubdomainRouting'] : [],
+            ], function ($router) {
+                require __DIR__ . '/../routes/auth.php';
+            });
+
+            $router->group(['middleware' => $this->app->environment('production') ? ['twill_auth:twill_users'] : []], function ($router) {
+                require __DIR__ . '/../routes/templates.php';
+            });
+        };
+
+        $router->group($groupOptions + [
+            'namespace' => $this->namespace . '\Admin',
+        ], function ($router) use ($internalRoutes, $supportSubdomainRouting) {
+            $router->group([
+                'domain' => config('twill.admin_app_url'),
+            ], $internalRoutes);
+
+            if ($supportSubdomainRouting) {
+                $router->group([
+                    'domain' => config('twill.admin_app_subdomain', 'admin') . '.{subdomain}.' . config('app.url'),
+                ], $internalRoutes);
+            }
+        });
 
         if (config('twill.templates_on_frontend_domain')) {
             $router->group([
@@ -105,6 +148,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     private function registerRouteMiddlewares(Router $router)
     {
+        Route::aliasMiddleware('supportSubdomainRouting', SupportSubdomainRouting::class);
         Route::aliasMiddleware('impersonate', Impersonate::class);
         Route::aliasMiddleware('twill_auth', \Illuminate\Auth\Middleware\Authenticate::class);
         Route::aliasMiddleware('twill_guest', RedirectIfAuthenticated::class);
