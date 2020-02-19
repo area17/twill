@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class AddLocaleColumnToTwillMediables extends Migration
+class AddLocaleColumnToTwillDefaultMediables extends Migration
 {
     public function up()
     {
