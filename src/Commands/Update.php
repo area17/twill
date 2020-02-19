@@ -31,6 +31,7 @@ class Update extends Command
         $this->call('vendor:publish', [
             '--provider' => 'A17\Twill\TwillServiceProvider',
             '--tag' => 'assets',
+            '--force' => true,
         ]);
     }
 }
