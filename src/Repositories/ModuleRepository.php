@@ -2,12 +2,11 @@
 
 namespace A17\Twill\Repositories;
 
-use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\Sortable;
-use A17\Twill\Repositories\Behaviors\HandleDates;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
-use A17\Twill\Repositories\Behaviors\HandleRepeaters;
+use A17\Twill\Repositories\Behaviors\HandleDates;
 use A17\Twill\Repositories\Behaviors\HandleFieldsGroups;
+use A17\Twill\Repositories\Behaviors\HandleRepeaters;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
@@ -20,7 +19,7 @@ use PDO;
 abstract class ModuleRepository
 {
     use HandleDates, HandleBrowsers, HandleRepeaters, HandleFieldsGroups;
-  
+
     /**
      * @var \A17\Twill\Models\Model
      */

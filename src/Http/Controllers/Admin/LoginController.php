@@ -56,6 +56,13 @@ class LoginController extends Controller
      */
     protected $viewFactory;
 
+    /**
+     * The path the user should be redirected to.
+     *
+     * @var string
+     */
+    protected $redirectTo;
+
     public function __construct(
         Config $config,
         AuthManager $authManager,

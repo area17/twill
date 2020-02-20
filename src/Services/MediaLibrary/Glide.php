@@ -32,12 +32,12 @@ class Glide implements ImageServiceInterface
     protected $request;
 
     /**
-     * @var League\Glide\Server
+     * @var \League\Glide\Server
      */
     private $server;
 
     /**
-     * @var UrlBuilder
+     * @var \League\Glide\Urls\UrlBuilder
      */
     private $urlBuilder;
 
@@ -75,7 +75,7 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $path
-     * @return StreamedResponse
+     * @return mixed
      */
     public function render($path)
     {
@@ -179,7 +179,7 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @return array|null
+     * @return string
      */
     public function getRawUrl($id)
     {

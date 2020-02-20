@@ -59,6 +59,46 @@ class ModuleMake extends Command
     protected $config;
 
     /**
+     * @var bool
+     */
+    protected $blockable;
+
+    /**
+     * @var bool
+     */
+    protected $translatable;
+
+    /**
+     * @var bool
+     */
+    protected $sluggable;
+
+    /**
+     * @var bool
+     */
+    protected $mediable;
+
+    /**
+     * @var bool
+     */
+    protected $fileable;
+
+    /**
+     * @var bool
+     */
+    protected $sortable;
+
+    /**
+     * @var bool
+     */
+    protected $revisionable;
+
+    /**
+     * @var bool
+     */
+    protected $defaultsAnswserToNo;
+
+    /**
      * @param Filesystem $files
      * @param Composer $composer
      * @param Config $config

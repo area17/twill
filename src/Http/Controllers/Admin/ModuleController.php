@@ -34,6 +34,11 @@ abstract class ModuleController extends Controller
     /**
      * @var string
      */
+    protected $namespace;
+
+    /**
+     * @var string
+     */
     protected $routePrefix;
 
     /**
@@ -45,6 +50,11 @@ abstract class ModuleController extends Controller
      * @var string
      */
     protected $modelName;
+
+    /**
+     * @var string
+     */
+    protected $modelTitle;
 
     /**
      * @var \A17\Twill\Repositories\ModuleRepository
@@ -172,6 +182,41 @@ abstract class ModuleController extends Controller
      * @var bool
      */
     protected $disableEditor = false;
+
+    /**
+     * @var array
+     */
+    protected $indexOptions;
+
+    /**
+     * @var array
+     */
+    protected $indexColumns;
+
+    /**
+     * @var array
+     */
+    protected $browserColumns;
+
+    /**
+     * @var string
+     */
+    protected $permalinkBase;
+
+    /**
+     * @var array
+     */
+    protected $defaultFilters;
+
+    /**
+     * @var string
+     */
+    protected $viewPrefix;
+
+    /**
+     * @var string
+     */
+    protected $previewView;
 
     /**
      * List of permissions keyed by a request field. Can be used to prevent unauthorized field updates.
@@ -1024,7 +1069,7 @@ abstract class ModuleController extends Controller
             'feature',
             'bulkFeature',
             'bulkDelete',
-        ])->mapWithKeys(function ($endpoint) use ($moduleName, $routePrefix) {
+        ])->mapWithKeys(function ($endpoint) {
             return [
                 $endpoint . 'Url' => $this->getIndexOption($endpoint) ? moduleRoute(
                     $this->moduleName, $this->routePrefix, $endpoint,
@@ -1096,7 +1141,7 @@ abstract class ModuleController extends Controller
         $withImage = $this->moduleHas('medias');
 
         return $items->map(function ($item) use ($withImage) {
-            $columnsData = Collection::make($this->browserColumns)->mapWithKeys(function ($column) use ($item, $withImage) {
+            $columnsData = Collection::make($this->browserColumns)->mapWithKeys(function ($column) use ($item) {
                 return $this->getItemColumnData($item, $column);
             })->toArray();
 
@@ -1240,7 +1285,7 @@ abstract class ModuleController extends Controller
             'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
             'saveUrl' => $this->getModuleRoute($item->id, 'update'),
             'editor' => $this->moduleHas('revisions') && $this->moduleHas('blocks') && !$this->disableEditor,
-            'blockPreviewUrl' => Route::has('admin.blocks.preview')? URL::route('admin.blocks.preview') : '#',
+            'blockPreviewUrl' => Route::has('admin.blocks.preview') ? URL::route('admin.blocks.preview') : '#',
             'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
         ] + (Route::has($previewRouteName) ? [
             'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $item->id),

@@ -131,7 +131,7 @@ class MediaLibraryTest extends TestCase
         $crawler->assertStatus(200);
 
         $tags = collect(
-            $medias->reduce(function ($carry, $media) use ($medias) {
+            $medias->reduce(function ($carry, $media) {
                 return $carry + $media->tags->pluck('slug')->toArray();
             }, [])
         )

@@ -147,7 +147,7 @@ class FeaturedController extends Controller
         $featuredSources = [];
 
         Collection::make($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use (&$fetchedModules, $search, $request) {
-            return Collection::make($bucket['bucketables'])->mapWithKeys(function ($bucketable) use (&$fetchedModules, $bucketKey, $search, $request) {
+            return Collection::make($bucket['bucketables'])->mapWithKeys(function ($bucketable) use (&$fetchedModules, $search, $request) {
 
                 $module = $bucketable['module'];
                 $repository = $this->getRepository($module, $bucketable['repository'] ?? null);
@@ -177,7 +177,7 @@ class FeaturedController extends Controller
                 ]];
             });
         })->each(function ($bucketables, $bucket) use (&$featuredSources) {
-            $bucketables->each(function ($bucketableData, $bucketable) use ($bucket, &$featuredSources) {
+            $bucketables->each(function ($bucketableData, $bucketable) use (&$featuredSources) {
                 $featuredSources[$bucketable]['name'] = $bucketableData['name'];
                 $featuredSources[$bucketable]['maxPage'] = $bucketableData['items']->lastPage();
                 $featuredSources[$bucketable]['offset'] = $bucketableData['items']->perPage();

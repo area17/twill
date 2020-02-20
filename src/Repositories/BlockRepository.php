@@ -45,7 +45,7 @@ class BlockRepository extends ModuleRepository
         if (Schema::hasTable(config('twill.related_table', 'twill_related'))) {
             $relatedItems = Collection::make();
 
-            Collection::make($fields['browsers'])->each(function ($items, $browserName) use ($object, &$relatedItems) {
+            Collection::make($fields['browsers'])->each(function ($items, $browserName) use (&$relatedItems) {
                 Collection::make($items)->each(function ($item) use ($browserName, &$relatedItems) {
                     try {
                         $repository = $this->getModelRepository($item['endpointType'] ?? $browserName);

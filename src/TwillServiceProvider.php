@@ -314,11 +314,11 @@ class TwillServiceProvider extends ServiceProvider
                 null != $data ? $data : "get_defined_vars()");
         });
 
-        $blade->directive('formField', function ($expression) use ($blade) {
+        $blade->directive('formField', function ($expression) {
             return $this->includeView('partials.form._', $expression);
         });
 
-        $blade->directive('partialView', function ($expression) use ($blade) {
+        $blade->directive('partialView', function ($expression) {
 
             $expressionAsArray = str_getcsv($expression, ',', '\'');
 

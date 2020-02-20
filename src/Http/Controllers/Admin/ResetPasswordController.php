@@ -39,6 +39,13 @@ class ResetPasswordController extends Controller
     protected $config;
 
     /**
+     * The path the user should be redirected to.
+     *
+     * @var string
+     */
+    protected $redirectTo;
+
+    /**
      * @var ViewFactory
      */
     protected $viewFactory;

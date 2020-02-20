@@ -88,6 +88,8 @@ class SettingRepository extends ModuleRepository
         }
 
         if (isset($settingsTranslated) && !empty($settingsTranslated)) {
+            $settings = [];
+
             foreach ($settingsTranslated as $key => $values) {
                 Arr::set($settings, $key, ['key' => $key] + $section + $values);
             }

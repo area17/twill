@@ -2,17 +2,18 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Models\Behaviors\HasMedias;
 use Illuminate\Support\Str;
 
 trait HandleBrowsers
 {
     /**
-     * All browsers used in the model, as an array of browser names: 
+     * All browsers used in the model, as an array of browser names:
      * [
      *  'books',
      *  'publications'
      * ].
-     * 
+     *
      * When only the browser name is given here, its rest information will be inferred from the name.
      * Each browser's detail can also be override with an array
      * [
@@ -141,8 +142,8 @@ trait HandleBrowsers
         })->values()->toArray();
     }
 
-        /**
-     * Get all browser' detail info from the $browsers attribute. 
+    /**
+     * Get all browser' detail info from the $browsers attribute.
      * The missing information will be inferred by convention of Twill.
      *
      * @return Illuminate\Support\Collection
