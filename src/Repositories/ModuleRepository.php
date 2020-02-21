@@ -20,7 +20,7 @@ use PDO;
 abstract class ModuleRepository
 {
     use HandleDates, HandleBrowsers, HandleRepeaters, HandleFieldsGroups;
-  
+
     /**
      * @var \A17\Twill\Models\Model
      */
@@ -200,9 +200,9 @@ abstract class ModuleRepository
      * @param $fields
      * @return \A17\Twill\Models\Model
      */
-    public function firstOrCreate($attributes, $fields)
+    public function firstOrCreate($attributes, $fields = [])
     {
-        return $this->model->where($attributes)->first() ?? $this->create($fields);
+        return $this->model->where($attributes)->first() ?? $this->create($attributes + $fields);
     }
 
     /**
