@@ -77,7 +77,7 @@ return [
     ],
     'uploader' => [
         'dropzone-text' => 'или притащите файлы сюда',
-        'upload-btn-label' => 'Загрузить'
+        'upload-btn-label' => 'Загрузите'
     ],
     'fields' => [
         'medias' => [
