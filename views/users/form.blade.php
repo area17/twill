@@ -89,6 +89,10 @@
               'label' => getLanguageNativeNameFromCode('en')
           ],
           [
+              'value' => 'ru',
+              'label' => getLanguageNativeNameFromCode('ru')
+          ],
+          [
               'value' => 'ja',
               'label' => getLanguageNativeNameFromCode('ja')
           ]
