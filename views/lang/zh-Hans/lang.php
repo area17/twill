@@ -52,7 +52,8 @@ return [
         'media-library' => '媒体库',
         'cms-users' => '用户',
         'settings' => '设置',
-        'logout' => '注销'
+        'logout' => '注销',
+        'admin' => '管理员'
     ],
     'media-library' => [
         'title' => '媒体库',
