@@ -18,7 +18,8 @@ return [
         'version' => '版本'
     ],
     'form' => [
-        'content' => '内容'
+        'content' => '内容',
+        'editor' => '可视化编辑器'
     ],
     'listing' => [
         'filter' => [
@@ -27,6 +28,16 @@ return [
             'published' => '已发布',
             'draft' => '草稿',
             'trash' => '垃圾箱',
+        ],
+        'dropdown' => [
+            'edit' => '编辑',
+            'unpublish' => '取消发布',
+            'publish' => '发布',
+            'unfeature' => '取消特别展示',
+            'feature' => '特别展示',
+            'restore' => '恢复',
+            'destroy' => '彻底删除',
+            'delete' => '移动到垃圾箱'
         ],
         'add-new-button' => '添加',
         'listing-empty-message' => '没有内容',

@@ -18,7 +18,8 @@ return [
         'version' => 'Version'
     ],
     'form' => [
-        'content' => 'Content'
+        'content' => 'Content',
+        'editor' => 'Editor'
     ],
     'listing' => [
         'filter' => [
@@ -27,6 +28,16 @@ return [
             'published' => 'Published',
             'draft' => 'Draft',
             'trash' => 'Trash',
+        ],
+        'dropdown' => [
+            'edit' => 'Edit',
+            'unpublish' => 'Unpublish',
+            'publish' => 'Publish',
+            'unfeature' => 'Unfeature',
+            'feature' => 'Feature',
+            'restore' => 'Restore',
+            'destroy' => 'Destroy',
+            'delete' => 'Delete'
         ],
         'add-new-button' => 'Add New',
         'listing-empty-message' => 'There is no item here yet.',
