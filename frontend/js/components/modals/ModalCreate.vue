@@ -53,7 +53,7 @@
         return this.createMode ? this.formCreate : this.action
       },
       modalTitle: function () {
-        return this.createMode ? this.$trans('main.published', 'Add new') : this.$trans('main.update-modal-title', 'Update')
+        return this.createMode ? this.$trans('modal.create.title', 'Add new') : this.$trans('modal.update.title', 'Update')
       },
       published: function () {
         return !this.createMode && !!this.fieldValueByName('published')
