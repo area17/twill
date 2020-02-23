@@ -52,7 +52,8 @@ return [
         'media-library' => 'Media Library',
         'cms-users' => 'CMS Users',
         'settings' => 'Settings',
-        'logout' => 'Logout'
+        'logout' => 'Logout',
+        'admin' => 'Admin'
     ],
     'media-library' => [
         'title' => 'Media Library',
