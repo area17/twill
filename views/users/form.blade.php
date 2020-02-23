@@ -83,20 +83,12 @@
       'label' => 'Language',
       'placeholder' => 'Select a language',
       'default' => App::getLocale(),
-      'options' => [
-          [
-              'value' => 'en',
-              'label' => getLanguageNativeNameFromCode('en')
-          ],
-          [
-              'value' => 'ru',
-              'label' => getLanguageNativeNameFromCode('ru')
-          ],
-          [
-              'value' => 'ja',
-              'label' => getLanguageNativeNameFromCode('ja')
-          ]
-      ]
+      'options' => array_map(function($locale) {
+        return [
+          'value' => $locale,
+          'label' => getLanguageLabelFromLocaleCode($locale, true)
+        ];
+      }, ['en', 'zh-Hans', 'ru'])
     ])
 @stop
 

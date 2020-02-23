@@ -59,10 +59,14 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
      * @param string $code
      * @return string
      */
-    function getLanguageLabelFromLocaleCode($code)
+    function getLanguageLabelFromLocaleCode($code, $native = false)
     {
         if (class_exists(Locale::class)) {
-            return Locale::getDisplayLanguage($code);
+            if ($native) {
+                return Locale::getDisplayLanguage($code, $code);
+            } else {
+                return Locale::getDisplayLanguage($code, 'en');
+            }
         }
 
         $codeToLanguageMappings = [
@@ -71,7 +75,7 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
             'af' => 'Afrikaans',
             'sq' => 'Albanian',
             'am' => 'Amharic',
-            'ar' => 'Arabic',
+            'ar' => ['Arabic', 'العربية'],
             'an' => 'Aragonese',
             'hy' => 'Armenian',
             'as' => 'Assamese',
@@ -84,34 +88,34 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
             'bh' => 'Bihari',
             'bi' => 'Bislama',
             'br' => 'Breton',
-            'bg' => 'Bulgarian',
+            'bg' => ['Bulgarian', 'български език'],
             'my' => 'Burmese',
             'be' => 'Byelorussian (Belarusian)',
             'km' => 'Cambodian',
             'ca' => 'Catalan',
             'zh' => 'Chinese',
-            'zh-Hans' => 'Chinese (simplified)',
-            'zh-Hant' => 'Chinese (traditional)',
+            'zh-Hans' => ['Chinese (simplified)', '简体中文'],
+            'zh-Hant' => ['Chinese (traditional)', '繁體中文'],
             'co' => 'Corsican',
             'hr' => 'Croatian',
-            'cs' => 'Czech',
-            'da' => 'Danish',
-            'nl' => 'Dutch',
+            'cs' => ['Czech', 'čeština'],
+            'da' => ['Danish', 'Dansk'],
+            'nl' => ['Dutch', 'Nederlands'],
             'en' => 'English',
             'eo' => 'Esperanto',
             'et' => 'Estonian',
             'fo' => 'Faeroese',
             'fa' => 'Farsi',
-            'fj' => 'Fiji',
+            'fj' => ['Fiji', 'Suomi'],
             'fi' => 'Finnish',
-            'fr' => 'French',
+            'fr' => ['French', 'Français'],
             'fy' => 'Frisian',
             'gd' => 'Gaelic (Scottish)',
             'gv' => 'Gaelic (Manx)',
             'gl' => 'Galician',
             'ka' => 'Georgian',
-            'de' => 'German',
-            'el' => 'Greek',
+            'de' => ['German', 'Deutsch'],
+            'el' => ['Greek', 'Ελληνικά'],
             'kl' => 'Kalaallisut (Greenlandic)',
             'gn' => 'Guarani',
             'gu' => 'Gujarati',
@@ -120,7 +124,7 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
             'he' => 'Hebrew',
             'iw' => 'Hebrew',
             'hi' => 'Hindi',
-            'hu' => 'Hungarian',
+            'hu' => ['Hungarian', 'Magyar'],
             'is' => 'Icelandic',
             'io' => 'Ido',
             'id' => 'Indonesian',
@@ -130,8 +134,8 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
             'iu' => 'Inuktitut',
             'ik' => 'Inupiak',
             'ga' => 'Irish',
-            'it' => 'Italian',
-            'ja' => 'Japanese',
+            'it' => ['Italian', 'Italiano'],
+            'ja' => ['Japanese', '日本語'],
             'jv' => 'Javanese',
             'kn' => 'Kannada',
             'ks' => 'Kashmiri',
@@ -139,7 +143,7 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
             'rw' => 'Kinyarwanda (Ruanda)',
             'ky' => 'Kirghiz',
             'rn' => 'Kirundi (Rundi)',
-            'ko' => 'Korean',
+            'ko' => ['Korean', '한국어'],
             'ku' => 'Kurdish',
             'lo' => 'Laothian',
             'la' => 'Latin',
@@ -163,13 +167,13 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
             'or' => 'Oriya',
             'om' => 'Oromo (Afan, Galla)',
             'ps' => 'Pashto (Pushto)',
-            'pl' => 'Polish',
-            'pt' => 'Portuguese',
+            'pl' => ['Polish', 'Polski'],
+            'pt' => ['Portuguese', 'Português'],
             'pa' => 'Punjabi',
             'qu' => 'Quechua',
             'rm' => 'Rhaeto-Romance',
-            'ro' => 'Romanian',
-            'ru' => 'Russian',
+            'ro' => ['Romanian', 'Română'],
+            'ru' => ['Russian', 'Русский'],
             'sm' => 'Samoan',
             'sg' => 'Sango',
             'sa' => 'Sanskrit',
@@ -185,25 +189,25 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
             'sk' => 'Slovak',
             'sl' => 'Slovenian',
             'so' => 'Somali',
-            'es' => 'Spanish',
+            'es' => ['Spanish', 'Español'],
             'su' => 'Sundanese',
             'sw' => 'Swahili (Kiswahili)',
-            'sv' => 'Swedish',
+            'sv' => ['Swedish', 'Svenska'],
             'tl' => 'Tagalog',
             'tg' => 'Tajik',
             'ta' => 'Tamil',
             'tt' => 'Tatar',
             'te' => 'Telugu',
-            'th' => 'Thai',
+            'th' => ['Thai', 'ไทย'],
             'bo' => 'Tibetan',
             'ti' => 'Tigrinya',
             'to' => 'Tonga',
             'ts' => 'Tsonga',
-            'tr' => 'Turkish',
+            'tr' => ['Turkish', 'Türkçe'],
             'tk' => 'Turkmen',
             'tw' => 'Twi',
             'ug' => 'Uighur',
-            'uk' => 'Ukrainian',
+            'uk' => ['Ukrainian', 'Українська'],
             'ur' => 'Urdu',
             'uz' => 'Uzbek',
             'vi' => 'Vietnamese',
@@ -218,7 +222,14 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
             'zu' => 'Zulu',
         ];
 
-        return $codeToLanguageMappings[$code] ?? $code;
+        if (isset($codeToLanguageMappings[$code])) {
+            $lang = $codeToLanguageMappings[$code];
+            if (is_array($lang) && isset($lang[1]) && $native) {
+                return $lang[1];
+            }
+            return $lang;
+        }
+        return $code;
     }
 }
 
@@ -234,164 +245,5 @@ if (!function_exists('camelCaseToWords')) {
         $a = preg_split($re, $camelCaseString);
         $words = join(" ", $a);
         return ucfirst(strtolower($words));
-    }
-}
-
-if (!function_exists('getLanguageNativeNameFromCode')) {
-    /**
-     * @param string $code
-     * @return string
-     */
-    function getLanguageNativeNameFromCode($code)
-    {
-        $codeToLanguageMappings = [
-            'ar' => 
-                [
-                    'english_name' => 'Arabic',
-                    'native_name' => 'العربية',
-                ],
-            'bg' => 
-                [
-                    'english_name' => 'Bulgarian',
-                    'native_name' => 'български език',
-                ],
-            'zh-CN' => 
-                [
-                    'english_name' => 'Chinese (Simplified)',
-                    'native_name' => '简体中文',
-                ],
-            'zh-TW' => 
-                [
-                    'english_name' => 'Chinese (Traditional)',
-                    'native_name' => '繁體中文',
-                ],
-            'cs' => 
-                [
-                    'english_name' => 'Czech',
-                    'native_name' => 'čeština',
-                ],
-            'da' => 
-                [
-                    'english_name' => 'Danish',
-                    'native_name' => 'Dansk',
-                ],
-            'nl' => 
-                [
-                    'english_name' => 'Dutch',
-                    'native_name' => 'Nederlands',
-                ],
-            'en' => 
-                [
-                    'english_name' => 'English',
-                    'native_name' => 'English',
-                ],
-            'fi' => 
-                [
-                    'english_name' => 'Finnish',
-                    'native_name' => 'Suomi',
-                ],
-            'fr' => 
-                [
-                    'english_name' => 'French',
-                    'native_name' => 'Français',
-                ],
-            'de' => 
-                [
-                    'english_name' => 'German',
-                    'native_name' => 'Deutsch',
-                ],
-            'el' => 
-                [
-                    'english_name' => 'Greek',
-                    'native_name' => 'Ελληνικά',
-                ],
-            'hu' => 
-                [
-                    'english_name' => 'Hungarian',
-                    'native_name' => 'Magyar',
-                ],
-            'it' => 
-                [
-                    'english_name' => 'Italian',
-                    'native_name' => 'Italiano',
-                ],
-            'ja' => 
-                [
-                    'english_name' => 'Japanese',
-                    'native_name' => '日本語',
-                ],
-            'ko' => 
-                [
-                    'english_name' => 'Korean',
-                    'native_name' => '한국어',
-                ],
-            'no' => 
-                [
-                    'english_name' => 'Norwegian',
-                    'native_name' => 'Norsk',
-                ],
-            'pl' => 
-                [
-                    'english_name' => 'Polish',
-                    'native_name' => 'Polski',
-                ],
-            'pt' => 
-                [
-                    'english_name' => 'Portuguese',
-                    'native_name' => 'Português',
-                ],
-            'pt-BR' => 
-                [
-                    'english_name' => 'Portuguese-Brazil',
-                    'native_name' => 'Português-Brasil',
-                ],
-            'ro' => 
-                [
-                    'english_name' => 'Romanian',
-                    'native_name' => 'Română',
-                ],
-            'ru' => 
-                [
-                    'english_name' => 'Russian',
-                    'native_name' => 'Русский',
-                ],
-            'es' => 
-                [
-                    'english_name' => 'Spanish-Spain',
-                    'native_name' => 'Español-España',
-                ],
-            'es-419' => 
-                [
-                    'english_name' => 'Spanish-Latin America',
-                    'native_name' => 'Español-Latinoamérica',
-                ],
-            'sv' => 
-                [
-                    'english_name' => 'Swedish',
-                    'native_name' => 'Svenska',
-                ],
-            'th' => 
-                [
-                    'english_name' => 'Thai',
-                    'native_name' => 'ไทย',
-                ],
-            'tr' => 
-                [
-                    'english_name' => 'Turkish',
-                    'native_name' => 'Türkçe',
-                ],
-            'uk' => 
-                [
-                    'english_name' => 'Ukrainian',
-                    'native_name' => 'Українська',
-                ],
-            'vn' => 
-                [
-                    'english_name' => 'Vietnamese',
-                    'native_name' => 'Tiếng Việt',
-                ],
-        ];
-
-        return $codeToLanguageMappings[$code]['native_name'] ?? $code ;
     }
 }
