@@ -76,7 +76,7 @@ return [
         'empty-text' => 'Нет соответствующих параметров.'
     ],
     'uploader' => [
-        'dropzone-text' => 'или притащите файлы сюда',
+        'dropzone-text' => 'или перетащите сюда файлы.',
         'upload-btn-label' => 'Загрузите'
     ],
     'fields' => [
