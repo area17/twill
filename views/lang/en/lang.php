@@ -57,6 +57,9 @@ return [
             'title' => 'Add new',
             'button' => 'Create',
             'create-another' => 'Create and add another',
+        ],
+        'update' => [
+            'title' => 'Update'
         ]
     ],
     'nav' => [
