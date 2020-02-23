@@ -20,7 +20,7 @@
                 if(!$disableContentFieldset) {
                     array_unshift($additionalFieldsets, [
                         'fieldset' => 'content',
-                        'label' => $contentFieldsetLabel ?? __('twill::form.content')
+                        'label' => $contentFieldsetLabel ?? __('twill::lang.form.content')
                     ]);
                 }
             @endphp
@@ -40,7 +40,7 @@
                 <div slot="actions">
                     <a17-langswitcher :all-published="{{ json_encode(!$controlLanguagesPublication) }}"></a17-langswitcher>
                     <a17-button v-if="editor" type="button" variant="editor" size="small" @click="openEditor(-1)">
-                        <span v-svg symbol="editor"></span>Editor
+                        <span v-svg symbol="editor"></span>@lang('twill::lang.form.editor')
                     </a17-button>
                 </div>
             </a17-sticky-nav>
@@ -61,7 +61,7 @@
                     </aside>
                     <section class="col col--primary" data-sticky-top="publisher">
                         @unless($disableContentFieldset)
-                            <a17-fieldset title="{{ $contentFieldsetLabel ?? __('twill::form.content') }}" id="content">
+                            <a17-fieldset title="{{ $contentFieldsetLabel ?? __('twill::lang.form.content') }}" id="content">
                                 @yield('contentFields')
                             </a17-fieldset>
                         @endunless
