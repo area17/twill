@@ -238,7 +238,7 @@ class ModuleMake extends Command
 
             $stub = preg_replace('/\}\);[\s\S]+?Schema::create/', "});\n\n        Schema::create", $stub);
 
-            twill_put_stub($fullPath, $stub);
+            $this->files->put($fullPath, $stub);
 
             $this->info("Migration created successfully! Add some fields!");
         }
