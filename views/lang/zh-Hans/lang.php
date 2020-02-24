@@ -4,7 +4,7 @@ return [
     'auth' => [
         'email' => '邮箱',
         'password' => '密码',
-        'forget-password' => '忘记密码',
+        'forgot-password' => '忘记密码',
         'login' => '登陆',
         'login-title' => '登陆'
     ],
