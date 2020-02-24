@@ -50,7 +50,7 @@
 
                     @if($create)
                         <div slot="additional-actions">
-                            <a17-button variant="validate" size="small" v-on:click="create">@lang('twill::lang.listing.add-new-button')</a17-button>
+                            <a17-button variant="validate" size="small" v-on:click="create">{{ twillTrans('twill::lang.listing.add-new-button') }}</a17-button>
                             @foreach($filterLinks as $link)
                                 <a17-button el="a" href="{{ $link['url'] ?? '#' }}" download="{{ $link['download'] ?? '' }}" rel="{{ $link['rel'] ?? '' }}" target="{{ $link['target'] ?? '' }}" variant="small secondary">{{ $link['label'] }}</a17-button>
                             @endforeach
@@ -74,13 +74,13 @@
                 :draggable="{{ $reorder ? 'true' : 'false' }}"
                 :max-depth="{{ $nestedDepth ?? '1' }}"
                 :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
-                empty-message="@lang('twill::lang.listing.listing-empty-message')">
+                empty-message="{{ twillTrans('twill::lang.listing.listing-empty-message') }}">
             </a17-nested-datatable>
         @else
             <a17-datatable
                 :draggable="{{ $reorder ? 'true' : 'false' }}"
                 :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
-                empty-message="@lang('twill::lang.listing.listing-empty-message')">
+                empty-message="{{ twillTrans('twill::lang.listing.listing-empty-message') }}">
             </a17-datatable>
         @endif
 

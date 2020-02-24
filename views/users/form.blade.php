@@ -1,6 +1,6 @@
 @extends('twill::layouts.form', [
-    'contentFieldsetLabel' => __('twill::lang.user-management.content-fieldset-label'),
-    'editModalTitle' => __('twill::lang.user-management.edit-modal-title'),
+    'contentFieldsetLabel' => twillTrans('twill::lang.user-management.content-fieldset-label'),
+    'editModalTitle' => twillTrans('twill::lang.user-management.edit-modal-title'),
     'reloadOnSuccess' => true
 ])
 
@@ -11,14 +11,14 @@
 @section('contentFields')
     @formField('input', [
         'name' => 'email',
-        'label' => __('twill::lang.user-management.email')
+        'label' => twillTrans('twill::lang.user-management.email')
     ])
 
     @can('manage-users')
         @if(!$isSuperAdmin && ($item->id !== $currentUser->id))
             @formField('select', [
                 'name' => "role",
-                'label' => __('twill::lang.user-management.role'),
+                'label' => twillTrans('twill::lang.user-management.role'),
                 'options' => $roleList,
                 'placeholder' => 'Select a role'
             ])
@@ -97,55 +97,55 @@
         draft: [
           {
             name: 'save',
-            text: {!! "'" . __('twill::lang.user-management.update-disabled-user') . "'" !!}
+            text: {!! "'" . twillTrans('twill::lang.user-management.update-disabled-user') . "'" !!}
           },
           {
             name: 'save-close',
-            text: {!! "'" . __('twill::lang.user-management.update-disabled-and-close') . "'" !!}
+            text: {!! "'" . twillTrans('twill::lang.user-management.update-disabled-and-close') . "'" !!}
           },
           {
             name: 'save-new',
-            text: {!! "'" . __('twill::lang.user-management.update-disabled-user-and-create-new') . "'" !!}
+            text: {!! "'" . twillTrans('twill::lang.user-management.update-disabled-user-and-create-new') . "'" !!}
           },
           {
             name: 'cancel',
-            text: {!! "'" . __('twill::lang.user-management.cancel') . "'" !!}
+            text: {!! "'" . twillTrans('twill::lang.user-management.cancel') . "'" !!}
           }
         ],
         live: [
           {
             name: 'publish',
-            text: {!! "'" . __('twill::lang.user-management.enable-user') . "'" !!}
+            text: {!! "'" . twillTrans('twill::lang.user-management.enable-user') . "'" !!}
           },
           {
             name: 'publish-close',
-            text: {!! "'" . __('twill::lang.user-management.enable-user-and-close') . "'" !!}
+            text: {!! "'" . twillTrans('twill::lang.user-management.enable-user-and-close') . "'" !!}
           },
           {
             name: 'publish-new',
-            text: {!! "'" . __('twill::lang.user-management.enable-user-and-create-new') . "'" !!}
+            text: {!! "'" . twillTrans('twill::lang.user-management.enable-user-and-create-new') . "'" !!}
           },
           {
             name: 'cancel',
-            text: {!! "'" . __('twill::lang.user-management.cancel') . "'" !!}
+            text: {!! "'" . twillTrans('twill::lang.user-management.cancel') . "'" !!}
           }
         ],
         update: [
           {
             name: 'update',
-            text: {!! "'" . __('twill::lang.user-management.update') . "'" !!}
+            text: {!! "'" . twillTrans('twill::lang.user-management.update') . "'" !!}
           },
           {
             name: 'update-close',
-            text: {!! "'" . __('twill::lang.user-management.update-and-close') . "'" !!}
+            text: {!! "'" . twillTrans('twill::lang.user-management.update-and-close') . "'" !!}
           },
           {
             name: 'update-new',
-            text: {!! "'" . __('twill::lang.user-management.update-and-create-new') . "'" !!}
+            text: {!! "'" . twillTrans('twill::lang.user-management.update-and-create-new') . "'" !!}
           },
           {
             name: 'cancel',
-            text: {!! "'" . __('twill::lang.user-management.cancel') . "'" !!}
+            text: {!! "'" . twillTrans('twill::lang.user-management.cancel') . "'" !!}
           }
         ]
       }

@@ -136,4 +136,14 @@ return [
     'templates_on_frontend_domain' => false,
 
     'google_maps_api_key' => env('GOOGLE_MAPS_API_KEY'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Twill app locale
+    |--------------------------------------------------------------------------
+    |
+     */
+
+     'locale' => 'en',
+     'fallback_locale' => 'en',
 ];

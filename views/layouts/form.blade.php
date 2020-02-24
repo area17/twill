@@ -20,7 +20,7 @@
                 if(!$disableContentFieldset) {
                     array_unshift($additionalFieldsets, [
                         'fieldset' => 'content',
-                        'label' => $contentFieldsetLabel ?? __('twill::lang.form.content')
+                        'label' => $contentFieldsetLabel ?? twillTrans('twill::lang.form.content')
                     ]);
                 }
             @endphp
@@ -40,7 +40,7 @@
                 <div slot="actions">
                     <a17-langswitcher :all-published="{{ json_encode(!$controlLanguagesPublication) }}"></a17-langswitcher>
                     <a17-button v-if="editor" type="button" variant="editor" size="small" @click="openEditor(-1)">
-                        <span v-svg symbol="editor"></span>@lang('twill::lang.form.editor')
+                        <span v-svg symbol="editor"></span>{{ twillTrans('twill::lang.form.editor') }}
                     </a17-button>
                 </div>
             </a17-sticky-nav>
@@ -61,7 +61,7 @@
                     </aside>
                     <section class="col col--primary" data-sticky-top="publisher">
                         @unless($disableContentFieldset)
-                            <a17-fieldset title="{{ $contentFieldsetLabel ?? __('twill::lang.form.content') }}" id="content">
+                            <a17-fieldset title="{{ $contentFieldsetLabel ?? twillTrans('twill::lang.form.content') }}" id="content">
                                 @yield('contentFields')
                             </a17-fieldset>
                         @endunless
@@ -107,8 +107,8 @@
         withPublicationToggle: {{ json_encode(($publish ?? true) && isset($item) && $item->isFillable('published')) }},
         published: {{ isset($item) && $item->published ? 'true' : 'false' }},
         withPublicationTimeframe: {{ json_encode(($schedule ?? true) && isset($item) && $item->isFillable('publish_start_date')) }},
-        publishedLabel: '{{ $customPublishedLabel ?? __('twill::lang.main.published') }}',
-        draftLabel: '{{ $customDraftLabel ?? __('twill::lang.main.draft') }}',
+        publishedLabel: '{{ $customPublishedLabel ?? twillTrans('twill::lang.main.published') }}',
+        draftLabel: '{{ $customDraftLabel ?? twillTrans('twill::lang.main.draft') }}',
         startDate: '{{ $item->publish_start_date ?? '' }}',
         endDate: '{{ $item->publish_end_date ?? '' }}',
         visibility: '{{ isset($item) && $item->isFillable('public') ? ($item->public ? 'public' : 'private') : false }}',

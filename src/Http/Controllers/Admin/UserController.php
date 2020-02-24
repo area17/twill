@@ -138,7 +138,7 @@ class UserController extends ModuleController
             'roleList' => Collection::make(UserRole::toArray()),
             'single_primary_nav' => [
                 'users' => [
-                    'title' => __('twill::lang.user-management.users'),
+                    'title' => twillTrans('twill::lang.user-management.users'),
                     'module' => true,
                 ],
             ],
@@ -168,12 +168,12 @@ class UserController extends ModuleController
             'roleList' => Collection::make(UserRole::toArray()),
             'single_primary_nav' => [
                 'users' => [
-                    'title' => __('twill::lang.user-management.users'),
+                    'title' => twillTrans('twill::lang.user-management.users'),
                     'module' => true,
                 ],
             ],
-            'customPublishedLabel' => __('twill::lang.user-management.enabled'),
-            'customDraftLabel' => __('twill::lang.user-management.disabled'),
+            'customPublishedLabel' => twillTrans('twill::lang.user-management.enabled'),
+            'customDraftLabel' => twillTrans('twill::lang.user-management.disabled'),
             'with2faSettings' => $with2faSettings,
             'qrCode' => $qrCode ?? null,
         ];
@@ -197,18 +197,18 @@ class UserController extends ModuleController
         $statusFilters = [];
 
         array_push($statusFilters, [
-            'name' => __('twill::lang.user-management.active'),
+            'name' => twillTrans('twill::lang.user-management.active'),
             'slug' => 'published',
             'number' => $this->repository->getCountByStatusSlug('published'),
         ], [
-            'name' => __('twill::lang.user-management.disabled'),
+            'name' => twillTrans('twill::lang.user-management.disabled'),
             'slug' => 'draft',
             'number' => $this->repository->getCountByStatusSlug('draft'),
         ]);
 
         if ($this->getIndexOption('restore')) {
             array_push($statusFilters, [
-                'name' => __('twill::lang.user-management.trash'),
+                'name' => twillTrans('twill::lang.user-management.trash'),
                 'slug' => 'trash',
                 'number' => $this->repository->getCountByStatusSlug('trash'),
             ]);
