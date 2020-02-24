@@ -4,7 +4,7 @@ return [
     'auth' => [
         'email' => 'Email',
         'password' => 'Password',
-        'forgot-password' => 'Forgot Password',
+        'forgot-password' => 'Forgot password',
         'login' => 'Login',
         'login-title' => 'Login'
     ],
