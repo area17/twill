@@ -135,7 +135,7 @@ class UserRepository extends ModuleRepository
     {
         $this->sendWelcomeEmail($user);
         $language = $fields['language'];
-        if ($language !== App::getLocale()) {
+        if ($language !== config('twill.locale')) {
             $user->language = $language;
             $user->save();
         }
