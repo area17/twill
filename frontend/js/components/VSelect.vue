@@ -189,7 +189,7 @@
         this.$emit('change', value)
       },
       getOptions: debounce(function (search, loading) {
-        if (!this.isAjax) return true
+        if (!this.isAjax()) return true
 
         loading(true)
         this.$http.get(this.ajaxUrl, { params: { q: search } }).then((resp) => {
