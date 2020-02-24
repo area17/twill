@@ -41,6 +41,9 @@ export default {
     },
     deleteRow: function () {
       this.$emit('deleteRow', this.row)
+    },
+    duplicateRow: function () {
+      this.$emit('duplicateRow', this.row)
     }
   }
 }

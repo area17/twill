@@ -19,7 +19,7 @@ use PDO;
 abstract class ModuleRepository
 {
     use HandleDates, HandleBrowsers, HandleFieldsGroups;
-  
+
     /**
      * @var \A17\Twill\Models\Model
      */
@@ -337,6 +337,27 @@ abstract class ModuleRepository
         DB::transaction(function () use ($ids) {
             $this->model->setNewOrder($ids);
         }, 3);
+    }
+
+    /**
+     * @param mixed $id
+     * @return mixed
+     */
+    public function duplicate($id)
+    {
+        return true;
+
+        // TODO: Implement duplication logic
+
+        // return DB::transaction(function () use ($id) {
+        //     if (($object = $this->model->find($id)) === null) {
+        //         return false;
+        //     }
+
+        //     $object->duplicate();
+        //     $this->afterDuplicate($object);
+        //     return true;
+        // }, 3);
     }
 
     /**

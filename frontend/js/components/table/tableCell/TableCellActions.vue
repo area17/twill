@@ -28,6 +28,9 @@
       <a v-else-if="row.delete"
          href="#"
          @click.prevent="deleteRow">Delete</a>
+      <a v-if="row.hasOwnProperty('duplicate')"
+         href="#"
+         @click.prevent="duplicateRow">Duplicate</a>
     </div>
   </a17-dropdown>
 </template>
