@@ -41,6 +41,7 @@ return [
             'restore' => 'Restore',
             'destroy' => 'Destroy',
             'delete' => 'Delete',
+            'duplicate' => 'Duplicate',
         ],
         'add-new-button' => 'Add new',
         'listing-empty-message' => 'There is no item here yet.',

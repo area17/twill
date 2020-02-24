@@ -103,6 +103,15 @@ export default {
     })
   },
 
+  duplicate (row, callback) {
+    axios.put(row.duplicate).then(function (resp) {
+      if (callback && typeof callback === 'function') callback(resp)
+    }, function (resp) {
+      globalError(component, resp)
+      console.log('duplicate request error.')
+    })
+  },
+
   reorder (ids, callback) {
     axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.reorder, { ids: ids }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)

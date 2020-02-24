@@ -168,6 +168,9 @@ export default {
       } else {
         this.$store.dispatch(ACTIONS.DELETE_ROW, row)
       }
+    },
+    duplicateRow: function (row) {
+      this.$store.dispatch(ACTIONS.DUPLICATE_ROW, row)
     }
   }
 }

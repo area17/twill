@@ -31,6 +31,9 @@
       <a v-else-if="row.delete"
          href="#"
          @click.prevent="deleteRow">{{ $trans('listing.dropdown.delete', 'Delete') }}</a>
+      <a v-if="row.hasOwnProperty('duplicate')"
+         href="#"
+         @click.prevent="duplicateRow">{{ $trans('listing.dropdown.duplicate', 'Duplicate') }}</a>
     </div>
   </a17-dropdown>
 </template>

@@ -78,6 +78,7 @@ abstract class ModuleController extends Controller
         'forceDelete' => true,
         'bulkForceDelete' => true,
         'delete' => true,
+        'duplicate' => false,
         'bulkDelete' => true,
         'reorder' => false,
         'permalink' => true,
@@ -297,6 +298,7 @@ abstract class ModuleController extends Controller
     {
         $this->middleware('can:list', ['only' => ['index', 'show']]);
         $this->middleware('can:edit', ['only' => ['store', 'edit', 'update']]);
+        $this->middleware('can:duplicate', ['only' => ['duplicate']]);
         $this->middleware('can:publish', ['only' => ['publish', 'feature', 'bulkPublish', 'bulkFeature']]);
         $this->middleware('can:reorder', ['only' => ['reorder']]);
         $this->middleware('can:delete', ['only' => ['destroy', 'bulkDelete', 'restore', 'bulkRestore', 'forceDelete', 'bulkForceDelete', 'restoreRevision']]);
@@ -594,6 +596,24 @@ abstract class ModuleController extends Controller
      * @param int|null $submoduleId
      * @return \Illuminate\Http\JsonResponse
      */
+    public function duplicate($id, $submoduleId = null)
+    {
+
+        $item = $this->repository->getById($submoduleId ?? $id);
+        if ($this->repository->duplicate($submoduleId ?? $id)) {
+            $this->fireEvent();
+            activity()->performedOn($item)->log('duplicated');
+            return $this->respondWithSuccess($this->modelTitle . ' duplicated!');
+        }
+
+        return $this->respondWithError($this->modelTitle . ' was not duplicated. Something wrong happened!');
+    }
+
+    /**
+     * @param int $id
+     * @param int|null $submoduleId
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function destroy($id, $submoduleId = null)
     {
         $item = $this->repository->getById($submoduleId ?? $id);
@@ -775,6 +795,7 @@ abstract class ModuleController extends Controller
             'moduleName' => $this->moduleName,
             'reorder' => $this->getIndexOption('reorder'),
             'create' => $this->getIndexOption('create'),
+            'duplicate' => $this->getIndexOption('duplicate'),
             'translate' => $this->moduleHas('translations'),
             'translateTitle' => $this->titleIsTranslatable(),
             'permalink' => $this->getIndexOption('permalink'),
@@ -852,6 +873,7 @@ abstract class ModuleController extends Controller
             $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
             $itemCanDelete = $this->getIndexOption('delete') && ($item->canDelete ?? true);
             $canEdit = $this->getIndexOption('edit');
+            $canDuplicate = $this->getIndexOption('duplicate');
 
             return array_replace([
                 'id' => $item->id,
@@ -859,6 +881,7 @@ abstract class ModuleController extends Controller
                 'publish_start_date' => $item->publish_start_date,
                 'publish_end_date' => $item->publish_end_date,
                 'edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null,
+                'duplicate' => $canDuplicate ? $this->getModuleRoute($item->id, 'duplicate') : null,
                 'delete' => $itemCanDelete ? $this->getModuleRoute($item->id, 'destroy') : null,
             ] + ($this->getIndexOption('editInModal') ? [
                 'editInModal' => $this->getModuleRoute($item->id, 'edit'),
@@ -1114,6 +1137,7 @@ abstract class ModuleController extends Controller
                 'feature' => 'feature',
                 'reorder' => 'reorder',
                 'delete' => 'delete',
+                'duplicate' => 'duplicate',
                 'restore' => 'delete',
                 'forceDelete' => 'delete',
                 'bulkForceDelete' => 'delete',

@@ -343,6 +343,27 @@ abstract class ModuleRepository
      * @param mixed $id
      * @return mixed
      */
+    public function duplicate($id)
+    {
+        return true;
+
+        // TODO: Implement duplication logic
+
+        // return DB::transaction(function () use ($id) {
+        //     if (($object = $this->model->find($id)) === null) {
+        //         return false;
+        //     }
+
+        //     $object->duplicate();
+        //     $this->afterDuplicate($object);
+        //     return true;
+        // }, 3);
+    }
+
+    /**
+     * @param mixed $id
+     * @return mixed
+     */
     public function delete($id)
     {
         return DB::transaction(function () use ($id) {
