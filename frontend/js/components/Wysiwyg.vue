@@ -272,8 +272,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
-
   .wysiwyg__button {
     margin-top:20px;
   }

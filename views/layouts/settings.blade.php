@@ -8,7 +8,7 @@
 @stop
 
 @push('vuexStore')
-  window['{{config('twill.browser')}}'].STORE.publication.submitOptions = {
+  window['{{ config('twill.js_namespace') }}'].STORE.publication.submitOptions = {
     update: [
       {
         name: 'update',

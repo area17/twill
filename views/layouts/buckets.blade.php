@@ -7,15 +7,15 @@
 @endphp
 
 @push('extra_css')
-    @if(config('twill.fe_prod'))
-    <link href="{{ twillAsset('main-buckets.css')}}" rel="preload" as="style" crossorigin/>
+    @if(app()->isProduction())
+        <link href="{{ twillAsset('main-buckets.css') }}" rel="preload" as="style" crossorigin/>
     @endif
-    <link href="{{ twillAsset('main-buckets.css')}}" rel="stylesheet" crossorigin/>
+    <link href="{{ twillAsset('main-buckets.css') }}" rel="stylesheet" crossorigin/>
 @endpush
 
 @push('extra_js_head')
-    @if(config('twill.fe_prod'))
-    <link href="{{ twillAsset('main-buckets.js')}}" rel="preload" as="script" crossorigin/>
+    @if(app()->isProduction())
+        <link href="{{ twillAsset('main-buckets.js') }}" rel="preload" as="script" crossorigin/>
     @endif
 @endpush
 
@@ -32,7 +32,7 @@
 @stop
 
 @section('initialStore')
-    window['{{config('twill.browser')}}'].STORE.buckets = {
+    window['{{ config('twill.js_namespace') }}'].STORE.buckets = {
         saveUrl: {!! json_encode($saveUrl) !!},
         items: {!! json_encode($items) !!},
         source: {!! json_encode($source) !!},

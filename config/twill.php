@@ -138,13 +138,12 @@ return [
     'google_maps_api_key' => env('GOOGLE_MAPS_API_KEY'),
 
     /*
-   |--------------------------------------------------------------------------
-   | Twill FE Application
-   |--------------------------------------------------------------------------
-   |
-    */
-    'browser' => 'TWILL',
-    'fe_prod' => true,
-    'fe_dev-server' => 'http://localhost:8000/',
-    'vendor_path' => 'vendor/area17/twill'
+    |--------------------------------------------------------------------------
+    | Twill FE Application configurqtion
+    |--------------------------------------------------------------------------
+    |
+     */
+    'js_namespace' => 'TWILL',
+    'vendor_path' => 'vendor/area17/twill',
+    'manifest_path' => public_path('twill/twill-manifest.json'),
 ];

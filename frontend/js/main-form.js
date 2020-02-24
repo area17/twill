@@ -102,8 +102,8 @@ importedBlocks.keys().map(block => {
   }
 })
 
-if (typeof window.TWILL_BLOCKS_COMPONENTS !== 'undefined') {
-  window.TWILL_BLOCKS_COMPONENTS.map(blockName => {
+if (typeof window[process.env.VUE_APP_NAME].TWILL_BLOCKS_COMPONENTS !== 'undefined') {
+  window[process.env.VUE_APP_NAME].TWILL_BLOCKS_COMPONENTS.map(blockName => {
     return Vue.component('a17-block-' + blockName, {
       template: '#a17-block-' + blockName,
       mixins: [BlockMixin]

@@ -7,15 +7,15 @@
 @endphp
 
 @push('extra_css')
-    @if(config('twill.fe_prod'))
-    <link href="{{ twillAsset('main-dashboard.css')}}" rel="preload" as="style" crossorigin/>
+    @if(app()->isProduction())
+        <link href="{{ twillAsset('main-dashboard.css') }}" rel="preload" as="style" crossorigin/>
     @endif
-    <link href="{{ twillAsset('main-dashboard.css')}}" rel="stylesheet" crossorigin/>
+    <link href="{{ twillAsset('main-dashboard.css') }}" rel="stylesheet" crossorigin/>
 @endpush
 
 @push('extra_js_head')
-    @if(config('twill.fe_prod'))
-    <link href="{{ twillAsset('main-dashboard.js')}}" rel="preload" as="script" crossorigin/>
+    @if(app()->isProduction())
+        <link href="{{ twillAsset('main-dashboard.js') }}" rel="preload" as="script" crossorigin/>
     @endif
 @endpush
 
@@ -59,13 +59,13 @@
 @stop
 
 @section('initialStore')
-    window['{{config('twill.browser')}}'].STORE.datatable = {}
+    window['{{ config('twill.js_namespace') }}'].STORE.datatable = {}
 
-    window['{{config('twill.browser')}}'].STORE.datatable.mine = {!! json_encode($myActivityData) !!}
-    window['{{config('twill.browser')}}'].STORE.datatable.all = {!! json_encode($allActivityData) !!}
+    window['{{ config('twill.js_namespace') }}'].STORE.datatable.mine = {!! json_encode($myActivityData) !!}
+    window['{{ config('twill.js_namespace') }}'].STORE.datatable.all = {!! json_encode($allActivityData) !!}
 
-    window['{{config('twill.browser')}}'].STORE.datatable.data = window['{{config('twill.browser')}}'].STORE.datatable.all
-    window['{{config('twill.browser')}}'].STORE.datatable.columns = {!! json_encode($tableColumns) !!}
+    window['{{ config('twill.js_namespace') }}'].STORE.datatable.data = window['{{ config('twill.js_namespace') }}'].STORE.datatable.all
+    window['{{ config('twill.js_namespace') }}'].STORE.datatable.columns = {!! json_encode($tableColumns) !!}
 @stop
 
 

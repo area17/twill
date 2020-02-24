@@ -35,38 +35,21 @@ if (!function_exists('twillAsset')) {
      */
     function twillAsset($file)
     {
-        if (!app()->environment('local', 'development')) {
-            try {
-                $manifest = Cache::rememberForever('twill-manifest', function () {
-                    return json_decode(file_get_contents(config('twill.frontend.twill_manifest_path')), true);
-                });
-
-                if (isset($manifest[$file])) {
-                    return $manifest[$file];
-                } else {
-                    throw new Exception('Can\'t find file ' . $file);
-                }
-
-            } catch (\Exception $e) {
-                return '/' . $file;
-            }
-        }
-
         try {
-            $manifest = json_decode(file_get_contents(config('twill.frontend.twill_manifest_path')), true);
+            $manifest = Cache::rememberForever('twill-manifest', function () {
+                return json_decode(file_get_contents(config('twill.manifest_path')), true);
+            });
 
             if (isset($manifest[$file])) {
                 return $manifest[$file];
-            } else {
-                throw new Exception('Can\'t find file ' . $file);
             }
-
         } catch (\Exception $e) {
             return '/' . $file;
         }
+
+        return '/' . $file;
     }
 }
-
 
 if (!function_exists('icon')) {
     /**

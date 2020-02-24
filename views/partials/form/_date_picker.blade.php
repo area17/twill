@@ -23,7 +23,7 @@
 
 @unless($renderForBlocks || $renderForModal || !isset($item->$name))
 @push('vuexStore')
-    window['{{config('twill.browser')}}'].STORE.form.fields.push({
+    window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({
         name: '{{ $name }}',
         value: {!! json_encode(e($item->$name)) !!}
     })

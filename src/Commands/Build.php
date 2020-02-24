@@ -20,7 +20,7 @@ class Build extends Command
      *
      * @var string
      */
-    protected $description = "Build Twill assets (experimental)";
+    protected $description = "Build Twill assets";
 
     /**
      * @var Filesystem
@@ -65,12 +65,9 @@ class Build extends Command
         $this->npmBuild();
 
         $this->info('');
-        $progressBar->setMessage("Copying assets...");
+        $progressBar->setMessage("Publishing assets...");
         $progressBar->advance();
-
-        $this->filesystem->copyDirectory(base_path('vendor/area17/twill/public'), public_path());
-
-        $this->filesystem->delete(public_path('hot'));
+        $this->call('twill:update');
 
         $this->info('');
         $progressBar->setMessage("Done.");
@@ -82,7 +79,7 @@ class Build extends Command
      */
     private function npmInstall()
     {
-        $npmInstallProcess = new Process(['npm', 'ci'], base_path('vendor/area17/twill'));
+        $npmInstallProcess = new Process(['npm', 'ci'], base_path(config('twill.vendor_path')));
         $npmInstallProcess->setTty(Process::isTtySupported());
         $npmInstallProcess->mustRun();
     }
@@ -92,7 +89,7 @@ class Build extends Command
      */
     private function npmBuild()
     {
-        $npmBuildProcess = new Process(['npm', 'run', 'prod'], base_path('vendor/area17/twill'));
+        $npmBuildProcess = new Process(['npm', 'run', 'build'], base_path(config('twill.vendor_path')));
         $npmBuildProcess->setTty(Process::isTtySupported());
         $npmBuildProcess->mustRun();
     }
@@ -103,7 +100,7 @@ class Build extends Command
     private function copyBlocks()
     {
         $localCustomBlocksPath = resource_path('assets/js/blocks');
-        $twillCustomBlocksPath = base_path('vendor/area17/twill/frontend/js/components/blocks/customs');
+        $twillCustomBlocksPath = base_path(config('twill.vendor_path')) . '/frontend/js/components/blocks/customs';
 
         if (!$this->filesystem->exists($twillCustomBlocksPath)) {
             $this->filesystem->makeDirectory($twillCustomBlocksPath);

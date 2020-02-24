@@ -92,11 +92,14 @@ export default {
   },
 
   destroy (row, callback) {
-    axios.put(window.CMS_URLS.forceDelete, { id: row.id }).then(function (resp) {
+    axios.put(window[process.env.VUE_APP_NAME].CMS_URLS.forceDelete, { id: row.id }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      globalError(component, resp)
-      console.log('destroy request error.')
+      const error = {
+        message: `Destroy request error.`,
+        value: resp
+      }
+      globalError(component, error)
     })
   },
 
@@ -161,11 +164,14 @@ export default {
   },
 
   bulkDestroy (ids, callback) {
-    axios.post(window.CMS_URLS.bulkForceDelete, { ids: ids }).then(function (resp) {
+    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.bulkForceDelete, { ids: ids }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      globalError(component, resp)
-      console.log('bulk destroy request error.')
+      const error = {
+        message: `Bulk destroy request error.`,
+        value: resp
+      }
+      globalError(component, error)
     })
   }
 }

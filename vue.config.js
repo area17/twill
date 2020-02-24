@@ -1,7 +1,6 @@
 const path = require('path')
 const isProd = process.env.NODE_ENV === 'production'
 
-// const customConfig = require(path.resolve('../../'))
 // Define global vue variables
 process.env.VUE_APP_NAME = require('./package').name.toUpperCase()
 
@@ -33,7 +32,8 @@ const pages = {
   'main-buckets': `${srcDirectory}/js/main-buckets.js`,
   'main-dashboard': `${srcDirectory}/js/main-dashboard.js`,
   'main-form': `${srcDirectory}/js/main-form.js`,
-  'main-listing': `${srcDirectory}/js/main-listing.js`
+  'main-listing': `${srcDirectory}/js/main-listing.js`,
+  'main-free': `${srcDirectory}/js/main-free.js`
 }
 
 const config = {
@@ -42,10 +42,10 @@ const config = {
   // Define root asset directory
   assetsDir: assetsDir,
   // Remove sourcemaps for production
-  // productionSourceMap: false,
+  productionSourceMap: false,
   css: {
     loaderOptions: {
-      // define global settings pass in each components
+      // define global settings imported in all components
       sass: {
         data: `@import "~styles/setup/_settings.scss";`
       }
@@ -53,19 +53,6 @@ const config = {
   },
   // Define entries points
   pages,
-  // devServer: {
-  //   disableHostCheck: true,
-  //   proxy: 'http://localhost:8000/',
-  //   headers: {
-  //     'Access-Control-Allow-Origin': '*'
-  //   },
-  //   contentBase: path.resolve(Config.publicPath),
-  //   historyApiFallback: true,
-  //   noInfo: true,
-  //   compress: true,
-  //   quiet: true
-  // },
-  // runtimeCompiler: true,
   configureWebpack: {
     plugins: [
       new CleanWebpackPlugin(),
@@ -113,7 +100,6 @@ const config = {
           }
         }
       }),
-      // Change default manifest name to work with default "mix" Laravel helper
       new WebpackAssetsManifest({
         output: `${publicPath}/twill-manifest.json`,
         publicPath: true,
@@ -129,13 +115,13 @@ const config = {
   chainWebpack: config => {
     // Update default vue-cli aliases
     config.resolve.alias
-      .set('fe', path.resolve(`${srcDirectory}`))
+      .set('fonts', path.resolve(`${srcDirectory}/fonts`))
     config.resolve.alias
       .set('@', path.resolve(`${srcDirectory}/js`))
     config.resolve.alias
       .set('styles', path.resolve(`${srcDirectory}/scss`))
-    config.resolve.alias
-      .set('vue$', path.resolve(`node_modules/vue/dist/vue.esm.js`))
+    // config.resolve.alias
+    //   .set('vue$', path.resolve(`node_modules/vue/dist/vue.esm.js`))
     /* Delete default copy webpack plugin
        Because we are in a custom architecture instead of vue-cli project
        Copying public folder could be confusing with default Laravel architecture

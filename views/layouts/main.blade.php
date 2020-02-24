@@ -72,16 +72,16 @@
         </div>
 
         <script>
-            window['{{config('twill.browser')}}'] = {};
-            window['{{config('twill.browser')}}'].version = '{{ config('twill.version') }}';
-            window['{{config('twill.browser')}}'].STORE = {};
-            window['{{config('twill.browser')}}'].STORE.form = {};
-            window['{{config('twill.browser')}}'].STORE.medias = {};
-            window['{{config('twill.browser')}}'].STORE.medias.types = [];
-            window['{{config('twill.browser')}}'].STORE.languages = {!! json_encode(getLanguagesForVueStore($form_fields ?? [], $translate ?? false)) !!};
+            window['{{ config('twill.js_namespace') }}'] = {};
+            window['{{ config('twill.js_namespace') }}'].version = '{{ config('twill.version') }}';
+            window['{{ config('twill.js_namespace') }}'].STORE = {};
+            window['{{ config('twill.js_namespace') }}'].STORE.form = {};
+            window['{{ config('twill.js_namespace') }}'].STORE.medias = {};
+            window['{{ config('twill.js_namespace') }}'].STORE.medias.types = [];
+            window['{{ config('twill.js_namespace') }}'].STORE.languages = {!! json_encode(getLanguagesForVueStore($form_fields ?? [], $translate ?? false)) !!};
 
             @if (config('twill.enabled.media-library'))
-                window['{{config('twill.browser')}}'].STORE.medias.types.push({
+                window['{{ config('twill.js_namespace') }}'].STORE.medias.types.push({
                     value: 'image',
                     text: 'Images',
                     total: {{ \A17\Twill\Models\Media::count() }},
@@ -92,7 +92,7 @@
             @endif
 
             @if (config('twill.enabled.file-library'))
-                window['{{config('twill.browser')}}'].STORE.medias.types.push({
+                window['{{ config('twill.js_namespace') }}'].STORE.medias.types.push({
                     value: 'file',
                     text: 'Files',
                     total: {{ \A17\Twill\Models\File::count() }},

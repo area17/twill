@@ -3,15 +3,15 @@
 @section('appTypeClass', 'body--form')
 
 @push('extra_css')
-    @if(config('twill.fe_prod'))
-    <link href="{{ twillAsset('main-form.css')}}" rel="preload" as="style" crossorigin/>
+    @if(app()->isProduction())
+        <link href="{{ twillAsset('main-form.css') }}" rel="preload" as="style" crossorigin/>
     @endif
-    <link href="{{ twillAsset('main-form.css')}}" rel="stylesheet" crossorigin/>
+    <link href="{{ twillAsset('main-form.css') }}" rel="stylesheet" crossorigin/>
 @endpush
 
 @push('extra_js_head')
-    @if(config('twill.fe_prod'))
-    <link href="{{ twillAsset('main-form.js')}}" rel="preload" as="script" crossorigin/>
+    @if(app()->isProduction())
+        <link href="{{ twillAsset('main-form.js') }}" rel="preload" as="script" crossorigin/>
     @endif
 @endpush
 
@@ -102,7 +102,7 @@
 
 @section('initialStore')
 
-    window['{{config('twill.browser')}}'].STORE.form = {
+    window['{{ config('twill.js_namespace') }}'].STORE.form = {
         baseUrl: '{{ $baseUrl ?? '' }}',
         saveUrl: '{{ $saveUrl }}',
         previewUrl: '{{ $previewUrl ?? '' }}',
@@ -116,7 +116,7 @@
         reloadOnSuccess: {{ ($reloadOnSuccess ?? false) ? 'true' : 'false' }}
     }
 
-    window['{{config('twill.browser')}}'].STORE.publication = {
+    window['{{ config('twill.js_namespace') }}'].STORE.publication = {
         withPublicationToggle: {{ json_encode(($publish ?? true) && isset($item) && $item->isFillable('published')) }},
         published: {{ isset($item) && $item->published ? 'true' : 'false' }},
         withPublicationTimeframe: {{ json_encode(($schedule ?? true) && isset($item) && $item->isFillable('publish_start_date')) }},
@@ -184,18 +184,18 @@
         } @else null @endif
     }
 
-    window['{{config('twill.browser')}}'].STORE.revisions = {!! json_encode($revisions ?? []) !!}
+    window['{{ config('twill.js_namespace') }}'].STORE.revisions = {!! json_encode($revisions ?? []) !!}
 
-    window['{{config('twill.browser')}}'].STORE.parentId = {{ $item->parent_id ?? 0 }}
-    window['{{config('twill.browser')}}'].STORE.parents = {!! json_encode($parents ?? [])  !!}
+    window['{{ config('twill.js_namespace') }}'].STORE.parentId = {{ $item->parent_id ?? 0 }}
+    window['{{ config('twill.js_namespace') }}'].STORE.parents = {!! json_encode($parents ?? [])  !!}
 
-    window['{{config('twill.browser')}}'].STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('twill.block_editor.crops') + (config('twill.settings.crops') ?? [])) !!}
-    window['{{config('twill.browser')}}'].STORE.medias.selected = {}
+    window['{{ config('twill.js_namespace') }}'].STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('twill.block_editor.crops') + (config('twill.settings.crops') ?? [])) !!}
+    window['{{ config('twill.js_namespace') }}'].STORE.medias.selected = {}
 
-    window['{{config('twill.browser')}}'].STORE.browser = {}
-    window['{{config('twill.browser')}}'].STORE.browser.selected = {}
+    window['{{ config('twill.js_namespace') }}'].STORE.browser = {}
+    window['{{ config('twill.js_namespace') }}'].STORE.browser.selected = {}
 
-    window['{{config('twill.browser')}}'].APIKEYS = {
+    window['{{ config('twill.js_namespace') }}'].APIKEYS = {
         'googleMapApi': '{{ config('twill.google_maps_api_key') }}'
     }
 @stop

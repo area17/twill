@@ -4,8 +4,8 @@
     <template v-else>
       <div class="mediasidebar__inner" :class="containerClasses">
         <p v-if="!hasMedia" class="f--note">No file selected</p>
-        <p v-if="hasMultipleMedias" class="mediasidebar__info">{{ medias.length }} files selected <a href="#"
-                                                                                                     @click.prevent="clear">Clear</a>
+        <p v-if="hasMultipleMedias" class="mediasidebar__info">
+          {{ medias.length }} files selected <a href="#" @click.prevent="clear">Clear</a>
         </p>
 
         <template v-if="hasSingleMedia">
@@ -13,8 +13,8 @@
           <p class="mediasidebar__name">{{ firstMedia.name }}</p>
           <ul class="mediasidebar__metadatas">
             <li class="f--small" v-if="firstMedia.size">File size: {{ firstMedia.size | uppercase }}</li>
-            <li class="f--small" v-if="isImage && (firstMedia.width + firstMedia.height)">Dimensions: {{
-              firstMedia.width }} &times; {{ firstMedia.height }}
+            <li class="f--small" v-if="isImage && (firstMedia.width + firstMedia.height)">
+              Dimensions: {{ firstMedia.width }} &times; {{ firstMedia.height }}
             </li>
           </ul>
         </template>
@@ -22,8 +22,8 @@
         <a17-buttonbar class="mediasidebar__buttonbar" v-if="hasMedia">
           <!-- Actions -->
           <a v-if="hasSingleMedia" :href="firstMedia.original" download><span v-svg symbol="download"></span></a>
-          <button v-if="allowDelete && authorized" type="button" @click="deleteSelectedMediasValidation"><span v-svg
-                                                                                                               symbol="trash"></span>
+          <button v-if="allowDelete && authorized" type="button" @click="deleteSelectedMediasValidation">
+            <span v-svg symbol="trash"></span>
           </button>
           <button v-else type="button" class="button--disabled" :data-tooltip-title="warningDeleteMessage" v-tooltip>
             <span v-svg symbol="trash"></span></button>

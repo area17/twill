@@ -79,7 +79,7 @@
 @stop
 
 @push('vuexStore')
-    window['{{config('twill.browser')}}'].STORE.publication.submitOptions = {
+    window['{{ config('twill.js_namespace') }}'].STORE.publication.submitOptions = {
         draft: [
           {
             name: 'save',
@@ -136,6 +136,6 @@
         ]
       }
     @if ($item->id == $currentUser->id)
-        window['{{config('twill.browser')}}'].STORE.publication.withPublicationToggle = false
+        window['{{ config('twill.js_namespace') }}'].STORE.publication.withPublicationToggle = false
     @endif
 @endpush

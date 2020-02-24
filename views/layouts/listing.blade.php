@@ -12,15 +12,15 @@
 @endphp
 
 @push('extra_css')
-    @if(config('twill.fe_prod'))
-        <link href="{{ twillAsset('main-listing.css')}}" rel="preload" as="style" crossorigin/>
+    @if(app()->isProduction())
+        <link href="{{ twillAsset('main-listing.css') }}" rel="preload" as="style" crossorigin/>
     @endif
-    <link href="{{ twillAsset('main-listing.css')}}" rel="stylesheet" crossorigin/>
+    <link href="{{ twillAsset('main-listing.css') }}" rel="stylesheet" crossorigin/>
 @endpush
 
 @push('extra_js_head')
-    @if(config('twill.fe_prod'))
-        <link href="{{ twillAsset('main-listing.js')}}" rel="preload" as="script" crossorigin/>
+    @if(app()->isProduction())
+        <link href="{{ twillAsset('main-listing.js') }}" rel="preload" as="script" crossorigin/>
     @endif
 @endpush
 
@@ -127,7 +127,7 @@
 
 @section('initialStore')
 
-    window['{{config('twill.browser')}}'].CMS_URLS = {
+    window['{{ config('twill.js_namespace') }}'].CMS_URLS = {
         index: @if(isset($indexUrl)) '{{ $indexUrl }}' @else window.location.href.split('?')[0] @endif,
         publish: '{{ $publishUrl }}',
         bulkPublish: '{{ $bulkPublishUrl }}',
@@ -141,11 +141,11 @@
         bulkDelete: '{{ $bulkDeleteUrl }}'
     }
 
-    window['{{config('twill.browser')}}'].STORE.form = {
+    window['{{ config('twill.js_namespace') }}'].STORE.form = {
     fields: []
     }
 
-    window['{{config('twill.browser')}}'].STORE.datatable = {
+    window['{{ config('twill.js_namespace') }}'].STORE.datatable = {
     data: {!! json_encode($tableData) !!},
     columns: {!! json_encode($tableColumns) !!},
     navigation: {!! json_encode($tableMainFilters) !!},
@@ -162,7 +162,7 @@
     }
 
     @if ($create && ($openCreate ?? false))
-        window['{{config('twill.browser')}}'].openCreate = {!! json_encode($openCreate) !!}
+        window['{{ config('twill.js_namespace') }}'].openCreate = {!! json_encode($openCreate) !!}
     @endif
 @stop
 

@@ -4,14 +4,9 @@ namespace A17\Twill;
 
 use A17\Twill\Commands\Build;
 use A17\Twill\Commands\CreateSuperAdmin;
-use A17\Twill\Commands\FEBuild;
-use A17\Twill\Commands\FEDev;
-use A17\Twill\Commands\FEInstall;
-use A17\Twill\Commands\FEPublish;
 use A17\Twill\Commands\GenerateBlocks;
 use A17\Twill\Commands\Install;
 use A17\Twill\Commands\ModuleMake;
-use A17\Twill\Commands\Publish;
 use A17\Twill\Commands\RefreshLQIP;
 use A17\Twill\Commands\Update;
 use A17\Twill\Http\ViewComposers\ActiveNavigation;
@@ -70,7 +65,7 @@ class TwillServiceProvider extends ServiceProvider
 
         $this->publishConfigs();
         $this->publishMigrations();
-        $this->publishAssets(); // TBD: Do we need to still publish asset here ?
+        $this->publishAssets();
 
         $this->registerCommands();
 
@@ -275,11 +270,6 @@ class TwillServiceProvider extends ServiceProvider
             GenerateBlocks::class,
             Build::class,
             Update::class,
-            Publish::class,
-            FEInstall::class,
-            FEDev::class,
-            FEBuild::class,
-            FEPublish::class
         ]);
     }
 
