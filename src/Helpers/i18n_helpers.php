@@ -2,6 +2,14 @@
 
 use Illuminate\Support\Collection;
 
+if (!function_exists('twillTrans')) {
+    function twillTrans($key, $replace = [])
+    {
+        $locale = config('twill.locale', config('twill.fallback_locale', 'en'));
+        return trans($key, $replace, $locale);
+    }
+}
+
 if (!function_exists('getLocales')) {
     /**
      * @return string[]

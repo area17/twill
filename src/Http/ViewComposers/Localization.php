@@ -26,13 +26,13 @@ class Localization
      */
     public function compose(View $view)
     {
-        $currentLang = Lang::get('twill::lang', [], App::getLocale());
-        $fallbackLang = Lang::get('twill::lang', [], config('app.fallback_locale', 'en'));
+        $currentLang = Lang::get('twill::lang', [], config('twill.locale'));
+        $fallbackLang = Lang::get('twill::lang', [], config('twill.fallback_locale', 'en'));
         $lang = array_replace_recursive($fallbackLang, $currentLang);
 
         $twillLocalization = [
-            'locale' => App::getLocale(),
-            'fallback_locale' => config('app.fallback_locale', 'en'),
+            'locale' => config('twill.locale'),
+            'fallback_locale' => config('twill.fallback_locale', 'en'),
             'lang' => $lang
         ];
         

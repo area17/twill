@@ -151,4 +151,12 @@ return [
     'vendor_path' => 'vendor/area17/twill',
     'custom_components_resource_path' => 'assets/js/components',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Twill app locale
+    |--------------------------------------------------------------------------
+    |
+     */
+    'locale' => 'en',
+    'fallback_locale' => 'en',
 ];

@@ -1,7 +1,7 @@
 @extends('twill::layouts.main')
 
 @php
-    $emptyMessage = $emptyMessage ?? __('twill::lang.dashboard.empty-message');
+    $emptyMessage = $emptyMessage ?? twillTrans('twill::lang.dashboard.empty-message');
     $isDashboard = true;
     $translate = true;
 @endphp
@@ -26,7 +26,7 @@
 @section('primaryNavigation')
     @if (config('twill.enabled.search', false))
         <div class="dashboardSearch" id="searchApp" v-cloak>
-            <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" type="dashboard" placeholder="@lang('twill::lang.dashboard.search-placeholder')"></a17-search>
+            <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" type="dashboard" placeholder="{{ twillTrans('twill::lang.dashboard.search-placeholder') }}"></a17-search>
         </div>
     @endif
 @stop

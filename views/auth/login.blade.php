@@ -1,21 +1,21 @@
 @extends('twill::auth.layout', [
     'route' => route('admin.login'),
-    'screenTitle' => __('twill::lang.auth.login-title')
+    'screenTitle' => twillTrans('twill::lang.auth.login-title')
 ])
 
 @section('form')
     <fieldset class="login__fieldset">
-        <label class="login__label" for="email">@lang('twill::lang.auth.email')</label>
+        <label class="login__label" for="email">{{ twillTrans('twill::lang.auth.email') }}</label>
         <input type="email" name="email" id="email" class="login__input" required autofocus tabindex="1" value="{{ old('email') }}" />
     </fieldset>
 
     <fieldset class="login__fieldset">
-        <label class="login__label" for="password">@lang('twill::lang.auth.password')</label>
-        <a href="{{ route('admin.password.reset.link') }}" class="login__help f--small" tabindex="5"><span>@lang('twill::lang.auth.forget-password')</span></a>
+        <label class="login__label" for="password">{{ twillTrans('twill::lang.auth.password') }}</label>
+        <a href="{{ route('admin.password.reset.link') }}" class="login__help f--small" tabindex="5"><span>{{ twillTrans('twill::lang.auth.forget-password') }}</span></a>
         <input type="password" name="password" id="password" class="login__input" required tabindex="2" />
     </fieldset>
 
-    <input class="login__button" type="submit" value="@lang('twill::lang.auth.login')" tabindex="3">
+    <input class="login__button" type="submit" value="{{ twillTrans('twill::lang.auth.login') }}" tabindex="3">
 
     @if (config('twill.enabled.users-oauth', false))
         @foreach(config('twill.oauth.providers', []) as $index => $provider)
