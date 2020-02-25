@@ -4,7 +4,7 @@ return [
     'auth' => [
         'email' => 'Email',
         'password' => 'Пароль',
-        'forget-password' => 'Восстановить пароль',
+        'forgot-password' => 'Восстановить пароль',
         'login' => 'Войти',
         'login-title' => 'Войти'
     ],
@@ -18,7 +18,8 @@ return [
         'version' => 'Версия'
     ],
     'form' => [
-        'content' => 'Содержимое'
+        'content' => 'Содержимое',
+        'editor' => 'Редактор'
     ],
     'listing' => [
         'filter' => [
@@ -27,6 +28,16 @@ return [
             'published' => 'Опубликованные',
             'draft' => 'Черновики',
             'trash' => 'Удаленные',
+        ],
+        'dropdown' => [
+            'edit' => 'Изменить',
+            'unpublish' => 'Отменить публикацию',
+            'publish' => 'Опубликовать',
+            'unfeature' => 'Убрать с выделенных',
+            'feature' => 'Выделить',
+            'restore' => 'Восстановить',
+            'destroy' => 'Уничтожить',
+            'delete' => 'Удалить'
         ],
         'add-new-button' => 'Добавить',
         'listing-empty-message' => 'Ничего нет.',
@@ -46,13 +57,17 @@ return [
             'title' => 'Добавить новый',
             'button' => 'Создать',
             'create-another' => 'Создать и добавить другую',
+        ],
+        'update' => [
+            'title' => 'Обновить'
         ]
     ],
     'nav' => [
         'media-library' => 'Медиа библиотека',
         'cms-users' => 'Пользователи CMS',
         'settings' => 'Настройки',
-        'logout' => 'Выйти'
+        'logout' => 'Выйти',
+        'admin' => 'Администратор'
     ],
     'media-library' => [
         'title' => 'Медиа библиотека',
