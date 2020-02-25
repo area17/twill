@@ -10,25 +10,35 @@ use Illuminate\Support\Str;
 trait HandleRepeaters
 {
     /**
+     * All repeaters used in the model, as an array of repeater names: 
+     * [
+     *  'article_repeater',
+     *  'page_repeater'
+     * ].
+     * 
+     * When only the repeater name is given here, its model and relation will be inferred from the name.
+     * Each repeater's detail can also be override with an array
+     * [
+     *  'article_repeater',
+     *  'page_repeater' => [
+     *      'model' => 'Page',
+     *      'relation' => 'pages'
+     *  ]
+     * ]
+     *
+     * @var string|array(array)|array(mix(string|array))
+     */
+    protected $repeaters = [];
+    
+    /**
      * @param \A17\Twill\Models\Model $object
      * @param array $fields
      * @return void
      */
     public function afterSaveHandleRepeaters($object, $fields)
     {
-        if (property_exists($this, 'repeaters')) {
-            foreach ($this->repeaters as $moduleKey => $module) {
-                if (is_string($module)) {
-                    $model = Str::studly(Str::singular($module));
-                    $repeaterName = Str::singular($module);
-                    $this->updateRepeater($object, $fields, $module, $model, $repeaterName);
-                } elseif (is_array($module)) {
-                    $relation = !empty($module['relation']) ? $module['relation'] : $moduleKey;
-                    $model = isset($module['model']) ? $module['model'] : Str::studly(Str::singular($moduleKey));
-                    $repeaterName = !empty($module['repeaterName']) ? $module['repeaterName'] : Str::singular($moduleKey);
-                    $this->updateRepeater($object, $fields, $relation, $model, $repeaterName);
-                }
-            }
+        foreach ($this->getRepeaters() as $repeater) {
+            $this->updateRepeater($object, $fields, $repeater['relation'], $repeater['model'], $repeater['repeaterName']);
         }
     }
 
@@ -39,21 +49,10 @@ trait HandleRepeaters
      */
     public function getFormFieldsHandleRepeaters($object, $fields)
     {
-        if (property_exists($this, 'repeaters')) {
-            foreach ($this->repeaters as $moduleKey => $module) {
-                if (is_string($module)) {
-                    $model = Str::studly(Str::singular($module));
-                    $repeaterName = Str::singular($module);
-                    $fields = $this->getFormFieldsForRepeater($object, $fields, $module, $model, $repeaterName);
-                } elseif (is_array($module)) {
-                    $model = isset($module['model']) ? $module['model'] : Str::studly(Str::singular($moduleKey));
-                    $relation = !empty($module['relation']) ? $module['relation'] : $moduleKey;
-                    $repeaterName = !empty($module['repeaterName']) ? $module['repeaterName'] : Str::singular($moduleKey);
-                    $fields = $this->getFormFieldsForRepeater($object, $fields, $relation, $model, $repeaterName);
-                }
-            }
+        foreach ($this->getRepeaters() as $repeater) {
+            $fields = $this->getFormFieldsForRepeater($object, $fields, $repeater['relation'], $repeater['model'], $repeater['repeaterName']);
         }
-
+        
         return $fields;
     }
 
@@ -74,6 +73,68 @@ trait HandleRepeaters
         }
     }
 
+
+    public function updateRepeaterMorphMany($object, $fields, $relation, $morph = null, $model = null)
+    {
+        $relationFields = $fields['repeaters'][$relation] ?? [];
+        $relationRepository = $this->getModelRepository($relation, $model);
+
+        $morph = $morph ?: $relation;
+
+        $morphFieldType = $morph.'_type';
+        $morphFieldId = $morph.'_id';
+
+        // if no relation field submitted, soft deletes all associated rows
+        if (!$relationFields) {
+            $relationRepository->updateBasic(null, [
+                'deleted_at' => Carbon::now(),
+            ], [
+                $morphFieldType => $object->getMorphClass(),
+                $morphFieldId => $object->id,
+            ]);
+        }
+
+        // keep a list of updated and new rows to delete (soft delete?) old rows that were deleted from the frontend
+        $currentIdList = [];
+
+        foreach ($relationFields as $index => $relationField) {
+            $relationField['position'] = $index + 1;
+            if (isset($relationField['id']) && Str::startsWith($relationField['id'], $relation)) {
+                // row already exists, let's update
+                $id = str_replace($relation . '-', '', $relationField['id']);
+                $relationRepository->update($id, $relationField);
+                $currentIdList[] = $id;
+            } else {
+                // new row, let's attach to our object and create
+                unset($relationField['id']);
+                $newRelation = $relationRepository->create($relationField);
+                $object->$relation()->save($newRelation);
+                $currentIdList[] = $newRelation['id'];
+            }
+        }
+
+        foreach ($object->$relation->pluck('id') as $id) {
+            if (!in_array($id, $currentIdList)) {
+                $relationRepository->updateBasic(null, [
+                    'deleted_at' => Carbon::now(),
+                ], [
+                    'id' => $id,
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Given relation, model and repeaterName, retrieve the repeater data from request and update the database record.
+     *
+     * @param  object $object
+     * @param  array $fields
+     * @param  string $relation
+     * @param  string $model
+     * @param  string $repeaterName
+     *
+     * @return void
+     */
     public function updateRepeater($object, $fields, $relation, $model = null, $repeaterName = null)
     {
         if (!$repeaterName) {
@@ -123,6 +184,17 @@ trait HandleRepeaters
         }
     }
 
+    /**
+     * Given relation, model and repeaterName, get the necessary fields for rendering a repeater
+     *
+     * @param  object $object
+     * @param  array $fields
+     * @param  string $relation
+     * @param  string $model
+     * @param  string $repeaterName
+     *
+     * @return array
+     */
     public function getFormFieldsForRepeater($object, $fields, $relation, $model = null, $repeaterName = null)
     {
         if (!$repeaterName) {
@@ -216,5 +288,47 @@ trait HandleRepeaters
         $fields['repeaterBrowsers'][$repeaterName] = $repeatersBrowsers;
 
         return $fields;
+    }
+
+    /**
+     * Get all repeaters' model and relation from the $repeaters attribute. 
+     * The missing information will be inferred by convention of Twill.
+     *
+     * @return Illuminate\Support\Collection
+     */
+    protected function getRepeaters()
+    {
+        return collect($this->repeaters)->map(function ($repeater, $key) {
+            $repeaterName = is_string($repeater) ? $repeater : $key;
+            return [
+                'relation' => !empty($repeater['relation']) ? $repeater['relation'] : $this->inferRelationFromRepeaterName($repeaterName),
+                'model' => !empty($repeater['model']) ? $repeater['model'] : $this->inferModelFromRepeaterName($repeaterName),
+                'repeaterName' => $repeaterName
+            ];
+        })->values();
+    }
+
+    /**
+     * The relation name shoud be lower camel case, ex. userGroup, contactOffice
+     *
+     * @param  string $repeaterName
+     *
+     * @return string
+     */
+    protected function inferRelationFromRepeaterName(string $repeaterName): string
+    {
+        return Str::camel($repeaterName);
+    }
+
+    /**
+     * The model name should be singular upper camel case, ex. User, ArticleType
+     *
+     * @param  string $repeaterName
+     *
+     * @return string
+     */
+    protected function inferModelFromRepeaterName(string $repeaterName): string
+    {
+        return Str::studly(Str::singular($repeaterName));
     }
 }

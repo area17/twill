@@ -242,14 +242,14 @@ const actions = {
       })
     }
   },
-  [ACTIONS.SET_DATATABLE_NESTED] ({commit, state, dispatch}) {
+  [ACTIONS.SET_DATATABLE_NESTED] ({ commit, state, dispatch }) {
     // Get all ids and children ids if any
     const ids = deepRemoveFromObj(state.data)
     api.reorder(ids, function (resp) {
-      commit(NOTIFICATION.SET_NOTIF, {message: resp.data.message, variant: resp.data.variant})
+      commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
     })
   },
-  [ACTIONS.SET_DATATABLE] ({commit, state, dispatch}) {
+  [ACTIONS.SET_DATATABLE] ({ commit, state, dispatch }) {
     const ids = state.data.map((row) => row.id)
 
     api.reorder(ids, function (resp) {
@@ -272,6 +272,12 @@ const actions = {
   },
   [ACTIONS.RESTORE_ROW] ({ commit, state, dispatch }, row) {
     api.restore(row, function (resp) {
+      commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
+      dispatch(ACTIONS.GET_DATATABLE)
+    })
+  },
+  [ACTIONS.DESTROY_ROW] ({ commit, state, dispatch }, row) {
+    api.destroy(row, function (resp) {
       commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
       dispatch(ACTIONS.GET_DATATABLE)
     })
@@ -320,6 +326,12 @@ const actions = {
   },
   [ACTIONS.BULK_RESTORE] ({ commit, state, dispatch }) {
     api.bulkRestore(state.bulk.join(), function (resp) {
+      commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
+      dispatch(ACTIONS.GET_DATATABLE)
+    })
+  },
+  [ACTIONS.BULK_DESTROY] ({ commit, state, dispatch }) {
+    api.bulkDestroy(state.bulk.join(), function (resp) {
       commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
       dispatch(ACTIONS.GET_DATATABLE)
     })

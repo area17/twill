@@ -4,8 +4,8 @@ namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Media;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 trait HandleMedias
 {
@@ -25,7 +25,7 @@ trait HandleMedias
 
         $mediasFromFields->each(function ($media) use ($object, $mediasCollection) {
             $newMedia = Media::withTrashed()->find(is_array($media['id']) ? Arr::first($media['id']) : $media['id']);
-            $pivot = $newMedia->newPivot($object, Arr::except($media, ['id']), 'mediables', true);
+            $pivot = $newMedia->newPivot($object, Arr::except($media, ['id']), config('twill.mediables_table', 'twill_mediables'), true);
             $newMedia->setRelation('pivot', $pivot);
             $mediasCollection->push($newMedia);
         });

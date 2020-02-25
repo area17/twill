@@ -61,7 +61,6 @@ class Install extends Command
         }
 
         $this->addRoutesFile();
-        $this->publishMigrations();
         $this->call('migrate');
         $this->publishConfig();
         $this->publishAssets();
@@ -87,19 +86,6 @@ class Install extends Command
             $stub = $this->files->get(__DIR__ . '/stubs/admin.stub');
             $this->files->put($routesPath . '/admin.php', $stub);
         }
-    }
-
-    /**
-     * Publishes the previously created package migration files.
-     *
-     * @return void
-     */
-    private function publishMigrations()
-    {
-        $this->call('vendor:publish', [
-            '--provider' => 'A17\Twill\TwillServiceProvider',
-            '--tag' => 'migrations',
-        ]);
     }
 
     /**
