@@ -134,11 +134,15 @@ class UserRepository extends ModuleRepository
     public function afterSave($user, $fields)
     {
         $this->sendWelcomeEmail($user);
-        $language = $fields['language'];
-        if ($language !== config('twill.locale')) {
-            $user->language = $language;
-            $user->save();
+        
+        if (isset($fields['language'])) {
+            $language = $fields['language'];
+            if ($language !== config('twill.locale')) {
+                $user->language = $language;
+                $user->save();
+            }
         }
+
         parent::afterSave($user, $fields);
     }
 
