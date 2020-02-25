@@ -97,55 +97,55 @@
         draft: [
           {
             name: 'save',
-            text: {!! "'" . twillTrans('twill::lang.user-management.update-disabled-user') . "'" !!}
+            text: {!! json_encode(twillTrans('twill::lang.user-management.update-disabled-user')) !!}
           },
           {
             name: 'save-close',
-            text: {!! "'" . twillTrans('twill::lang.user-management.update-disabled-and-close') . "'" !!}
+            text: {!! json_encode(twillTrans('twill::lang.user-management.update-disabled-and-close')) !!}
           },
           {
             name: 'save-new',
-            text: {!! "'" . twillTrans('twill::lang.user-management.update-disabled-user-and-create-new') . "'" !!}
+            text: {!! json_encode(twillTrans('twill::lang.user-management.update-disabled-user-and-create-new')) !!}
           },
           {
             name: 'cancel',
-            text: {!! "'" . twillTrans('twill::lang.user-management.cancel') . "'" !!}
+            text: {!! json_encode(twillTrans('twill::lang.user-management.cancel')) !!}
           }
         ],
         live: [
           {
             name: 'publish',
-            text: {!! "'" . twillTrans('twill::lang.user-management.enable-user') . "'" !!}
+            text: {!! json_encode(twillTrans('twill::lang.user-management.enable-user')) !!}
           },
           {
             name: 'publish-close',
-            text: {!! "'" . twillTrans('twill::lang.user-management.enable-user-and-close') . "'" !!}
+            text: {!! json_encode(twillTrans('twill::lang.user-management.enable-user-and-close')) !!}
           },
           {
             name: 'publish-new',
-            text: {!! "'" . twillTrans('twill::lang.user-management.enable-user-and-create-new') . "'" !!}
+            text: {!! json_encode(twillTrans('twill::lang.user-management.enable-user-and-create-new')) !!}
           },
           {
             name: 'cancel',
-            text: {!! "'" . twillTrans('twill::lang.user-management.cancel') . "'" !!}
+            text: {!! json_encode(twillTrans('twill::lang.user-management.cancel')) !!}
           }
         ],
         update: [
           {
             name: 'update',
-            text: {!! "'" . twillTrans('twill::lang.user-management.update') . "'" !!}
+            text: {!! json_encode(twillTrans('twill::lang.user-management.update')) !!}
           },
           {
             name: 'update-close',
-            text: {!! "'" . twillTrans('twill::lang.user-management.update-and-close') . "'" !!}
+            text: {!! json_encode(twillTrans('twill::lang.user-management.update-and-close')) !!}
           },
           {
             name: 'update-new',
-            text: {!! "'" . twillTrans('twill::lang.user-management.update-and-create-new') . "'" !!}
+            text: {!! json_encode(twillTrans('twill::lang.user-management.update-and-create-new')) !!}
           },
           {
             name: 'cancel',
-            text: {!! "'" . twillTrans('twill::lang.user-management.cancel') . "'" !!}
+            text: {!! json_encode(twillTrans('twill::lang.user-management.cancel')) !!}
           }
         ]
       }
