@@ -169,6 +169,10 @@ class DashboardController extends Controller
             return null;
         }
 
+        if (is_null($activity->subject)) {
+            return null;
+        }
+
         return [
             'id' => $activity->id,
             'type' => ucfirst($dashboardModule['label_singular'] ?? Str::singular($dashboardModule['name'])),
