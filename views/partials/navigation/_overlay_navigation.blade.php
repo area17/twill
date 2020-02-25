@@ -41,7 +41,7 @@
             <span class="ham__icon">
                 <span class="ham__line"></span>
             </span>
-            <span class="icon icon--close_modal"><svg><title>Close menu</title><use xlink:href="#close_modal"></use></svg></span>
+            <span class="icon icon--close_modal"><svg><title>Close menu</title><use xlink:href="#icon--close_modal"></use></svg></span>
         </span>
     </button>
 @endif

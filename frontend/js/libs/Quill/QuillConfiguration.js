@@ -113,7 +113,7 @@ Quill.register(MyLink)
 
 /* Custom Icons */
 function getIcon (shape) {
-  return '<span class="icon icon--wysiwyg_' + shape + '" aria-hidden="true"><svg><title>' + shape + '</title><use xlink:href="#wysiwyg_' + shape + '"></use></svg></span>'
+  return '<span class="icon icon--wysiwyg_' + shape + '" aria-hidden="true"><svg><title>' + shape + '</title><use xlink:href="#icon--wysiwyg_' + shape + '"></use></svg></span>'
 }
 
 const icons = Quill.import('ui/icons') // custom icons
