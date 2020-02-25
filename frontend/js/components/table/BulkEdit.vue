@@ -95,8 +95,8 @@
         this.$store.dispatch(ACTIONS.BULK_EXPORT)
       },
       bulkDelete: function () {
-        if (this.$root.$refs.warningDestroyRow) {
-          this.$root.$refs.warningDestroyRow.open(() => {
+        if (this.$root.$refs.warningDeleteRow) {
+          this.$root.$refs.warningDeleteRow.open(() => {
             this.$store.dispatch(ACTIONS.BULK_DELETE)
           })
         } else {
