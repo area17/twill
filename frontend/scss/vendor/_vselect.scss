@@ -10,6 +10,7 @@ $multiSelectHeight: 45px;
     input[type=search]:focus {
       padding: 0 15px;
       @include font-regular;
+      margin: 0;
     }
 
     .spinner {
@@ -205,15 +206,18 @@ $multiSelectHeight: 45px;
       max-width: none;
       opacity: 1;
       min-width: 200px;
+      margin: 0;
     }
 
     &.vselect--has-value .v-select.unsearchable input[type="search"] {
       min-width: 0;
       width: 0;
+      margin: 0;
     }
 
     .v-select.unsearchable > .dropdown-toggle > .selected-tag + input[type="search"] {
       width: 1px;
+      margin: 0;
     }
   }
 

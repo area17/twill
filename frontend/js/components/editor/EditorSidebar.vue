@@ -256,10 +256,6 @@
 
 <style lang="scss">
   .editorSidebar__body {
-    .input {
-      margin-top: 15px;
-    }
-
     .block__body {
       > .media,
       > .slideshow,

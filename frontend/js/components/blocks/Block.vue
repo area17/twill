@@ -123,7 +123,7 @@
 
   .block__content {
     display:none;
-    padding:15px;
+    padding:35px 15px;
     background:$color__background;
   }
 
@@ -260,7 +260,7 @@
     > .media,
     > .slideshow,
     > .browserField {
-      margin:-15px;
+      margin:-35px;
       border:0 none;
     }
   }
@@ -298,14 +298,6 @@
   .block {
     .block__content {
       .block__body {
-        .input {
-          margin-top: 15px;
-
-          .input {
-            margin-top: 0;
-          }
-        }
-
         > .media,
         > .slideshow,
         > .browserField {
