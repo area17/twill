@@ -14,6 +14,10 @@ class SupportSubdomainRouting
         $parameter = 'subdomain';
         $subdomain = $request->route()->parameter($parameter) ?? key(config('twill.app_names'));
 
+        if (config('twill.active_subdomain') !== $subdomain) {
+            config(['twill.active_subdomain' => $subdomain]);
+        }
+        
         // Set subdomain as default URL parameter to not have
         // to add it manually when using route helpers
         URL::defaults([$parameter => $subdomain]);

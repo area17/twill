@@ -63,6 +63,7 @@ return [
      */
     'support_subdomain_admin_routing' => false,
     'admin_app_subdomain' => 'admin',
+    'active_subdomain' => null,
 
     /*
     |--------------------------------------------------------------------------
