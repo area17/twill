@@ -143,6 +143,7 @@ return [
     |--------------------------------------------------------------------------
     |
      */
+    'dev_mode' => false,
     'js_namespace' => 'TWILL',
     'vendor_path' => 'vendor/area17/twill',
     'manifest_path' => public_path('twill/twill-manifest.json'),

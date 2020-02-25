@@ -33,8 +33,12 @@ if (!function_exists('twillAsset')) {
      * @param string $file
      * @return string
      */
-    function twillAsset($file)
+    function twillAsset($file, $servedByDevServer = true)
     {
+        if ($servedByDevServer && app()->environment('local', 'development') && config('twill.dev_mode', false)) {
+            return config('twill.dev_mode_url', 'http://localhost:8080') . '/' . $file;
+        }
+
         try {
             $manifest = Cache::rememberForever('twill-manifest', function () {
                 return json_decode(file_get_contents(config('twill.manifest_path')), true);

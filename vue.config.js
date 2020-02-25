@@ -53,6 +53,13 @@ const config = {
   },
   // Define entries points
   pages,
+  devServer: {
+    sockPort: 8080,
+    headers: {
+      "Access-Control-Allow-Origin": "*"
+    }
+  },
+  runtimeCompiler: true,
   configureWebpack: {
     plugins: [
       new CleanWebpackPlugin(),
@@ -120,8 +127,8 @@ const config = {
       .set('@', path.resolve(`${srcDirectory}/js`))
     config.resolve.alias
       .set('styles', path.resolve(`${srcDirectory}/scss`))
-    // config.resolve.alias
-    //   .set('vue$', path.resolve(`node_modules/vue/dist/vue.esm.js`))
+    config.resolve.alias
+      .set('vue$', path.resolve(`node_modules/vue/dist/vue.esm.js`))
     /* Delete default copy webpack plugin
        Because we are in a custom architecture instead of vue-cli project
        Copying public folder could be confusing with default Laravel architecture
