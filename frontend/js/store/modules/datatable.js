@@ -273,7 +273,9 @@ const actions = {
   [ACTIONS.DUPLICATE_ROW] ({ commit, state, dispatch }, row) {
     api.duplicate(row, function (resp) {
       commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
-      dispatch(ACTIONS.GET_DATATABLE)
+      if (resp.data.hasOwnProperty('redirect')) {
+        window.location.replace(resp.data.redirect)
+      }
     })
   },
   [ACTIONS.RESTORE_ROW] ({ commit, state, dispatch }, row) {
