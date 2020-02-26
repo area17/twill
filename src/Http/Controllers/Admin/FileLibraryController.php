@@ -191,8 +191,15 @@ class FileLibraryController extends ModuleController implements SignUploadListen
      */
     public function storeReference($request)
     {
+        $dir_uuid = $request->input('dir_uuid');
+        $unique_folder_name = $request->input('unique_folder_name');
+        $uuid = $request->input('key') ?? $request->input('blob');
+
+        $prefix_path = str_replace($dir_uuid, '', $unique_folder_name);
+        $path = str_replace($prefix_path, '', $uuid);
+
         $fields = [
-            'uuid' => $request->input('key') ?? $request->input('blob'),
+            'uuid' => $path,
             'filename' => $request->input('name'),
         ];
 

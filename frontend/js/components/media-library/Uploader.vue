@@ -184,26 +184,36 @@
       _onAllCompleteCallback (succeeded, failed) {
         // reset folder name for next upload session
         this.unique_folder_name = null
+        this.dirUUID = null
         this.uploadProgress(0)
       },
       _onSubmitCallback (id, name) {
         this.$emit('clear')
         // each upload session will add upload files with original filenames in a folder named using a uuid
-        this.unique_folder_name = this.unique_folder_name || (this.uploaderConfig.endpointRoot + qq.getUniqueId())
-        this._uploader.methods.setParams({ unique_folder_name: this.unique_folder_name }, id)
+        this.dirUUID = this.dirUUID || qq.getUniqueId()
+        this.unique_folder_name = this.unique_folder_name || (this.uploaderConfig.endpointRoot + this.dirUUID)
 
-        // determine the image dimensions and add it to params sent on upload success
-        const imageUrl = URL.createObjectURL(this._uploader.methods.getFile(id))
-        const img = new Image()
+        if (this.type.value === 'image') {
+          // determine the image dimensions and add it to params sent on upload success
+          const imageUrl = URL.createObjectURL(this._uploader.methods.getFile(id))
+          const img = new Image()
 
-        img.onload = () => {
+          img.onload = () => {
+            this._uploader.methods.setParams({
+              width: img.width,
+              height: img.height,
+              unique_folder_name: this.unique_folder_name,
+              dir_uuid: this.dirUUID
+            }, id)
+          }
+
+          img.src = imageUrl
+        } else {
           this._uploader.methods.setParams({
-            width: img.width,
-            height: img.height
+            unique_folder_name: this.unique_folder_name,
+            dir_uuid: this.dirUUID
           }, id)
         }
-
-        img.src = imageUrl
 
         const media = {
           id: this._uploader.methods.getUuid(id),
