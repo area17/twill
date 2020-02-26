@@ -350,13 +350,15 @@ abstract class ModuleRepository
             return false;
         }
 
-        $revision = $object->revisions()->orderBy('created_at', 'desc')->first();
+        if (($revision = $object->revisions()->orderBy('created_at', 'desc')->first()) === null) {
+            return false;
+        }
 
-        $input = collect(json_decode($revision->payload, true))->only(['name', 'slug', 'languages'])->toArray();
+        $revisionInput = json_decode($revision->payload, true);
+        $baseInput = collect($revisionInput)->only(['slug', 'languages'])->filter()->toArray();
+        $newObject = $this->create($baseInput);
 
-        $newObject = $this->create($input);
-
-        $this->update($newObject->id, json_decode($revision->payload, true));
+        $this->update($newObject->id, $revisionInput);
 
         return $newObject;
     }
