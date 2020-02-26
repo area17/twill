@@ -543,12 +543,16 @@ abstract class ModuleController extends Controller
             $this->fireEvent();
             activity()->performedOn($item)->log('duplicated');
 
-            return $this->respondWithRedirect(moduleRoute(
-                $this->moduleName,
-                $this->routePrefix,
-                'edit',
-                array_filter(['id' => $newItem->id])
-            ));
+            return Response::json([
+                'message' => $this->modelTitle . ' duplicated with Success!',
+                'variant' => FlashLevel::SUCCESS,
+                'redirect' => moduleRoute(
+                    $this->moduleName,
+                    $this->routePrefix,
+                    'edit',
+                    array_filter(['id' => $newItem->id])
+                )
+            ]);
         }
 
         return $this->respondWithError($this->modelTitle . ' was not duplicated. Something wrong happened!');
