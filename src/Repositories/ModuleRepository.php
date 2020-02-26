@@ -345,19 +345,20 @@ abstract class ModuleRepository
      */
     public function duplicate($id)
     {
-        return true;
 
-        // TODO: Implement duplication logic
+        if (($object = $this->model->find($id)) === null) {
+            return false;
+        }
 
-        // return DB::transaction(function () use ($id) {
-        //     if (($object = $this->model->find($id)) === null) {
-        //         return false;
-        //     }
+        $revision = $object->revisions()->orderBy('created_at', 'desc')->first();
 
-        //     $object->duplicate();
-        //     $this->afterDuplicate($object);
-        //     return true;
-        // }, 3);
+        $input = collect(json_decode($revision->payload, true))->only(['name', 'slug', 'languages'])->toArray();
+
+        $newObject = $this->create($input);
+
+        $this->update($newObject->id, json_decode($revision->payload, true));
+
+        return $newObject;
     }
 
     /**

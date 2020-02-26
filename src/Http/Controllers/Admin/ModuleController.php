@@ -600,10 +600,16 @@ abstract class ModuleController extends Controller
     {
 
         $item = $this->repository->getById($submoduleId ?? $id);
-        if ($this->repository->duplicate($submoduleId ?? $id)) {
+        if ($newItem = $this->repository->duplicate($submoduleId ?? $id)) {
             $this->fireEvent();
             activity()->performedOn($item)->log('duplicated');
-            return $this->respondWithSuccess($this->modelTitle . ' duplicated!');
+
+            return $this->respondWithRedirect(moduleRoute(
+                $this->moduleName,
+                $this->routePrefix,
+                'edit',
+                array_filter(['id' => $newItem->id])
+            ));
         }
 
         return $this->respondWithError($this->modelTitle . ' was not duplicated. Something wrong happened!');
