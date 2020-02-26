@@ -205,6 +205,7 @@ class LoginController extends Controller
                 $user = $repository->oauthUpdateProvider($oauthUser, $provider);
 
                 // Login and redirect
+                $this->authManager->guard('twill_users')->login($user);
                 return $this->afterAuthentication($request, $user);
             } else {
                 if ($user->password) {
@@ -219,6 +220,7 @@ class LoginController extends Controller
                     $user->linkProvider($oauthUser, $provider);
 
                     // Login and redirect
+                    $this->authManager->guard('twill_users')->login($user);
                     return $this->afterAuthentication($request, $user);
                 }
             }
@@ -253,7 +255,6 @@ class LoginController extends Controller
      */
     public function linkProvider(Request $request)
     {
-
         // If provided credentials are correct
         if ($this->attemptLogin($request)) {
             // Load the user
@@ -262,6 +263,7 @@ class LoginController extends Controller
 
             // Link the provider and login
             $user->linkProvider($request->session()->get('oauth:user'), $request->session()->get('oauth:provider'));
+            $this->authManager->guard('twill_users')->login($user);
 
             // Remove session variables
             $request->session()->forget('oauth:user_id');
