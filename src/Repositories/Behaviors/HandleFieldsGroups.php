@@ -53,6 +53,11 @@ trait HandleFieldsGroups
             $fields[$group] = Arr::where(Arr::only($fields, $groupFields), function ($value, $key) {
                 return !empty($value);
             });
+            
+            if (empty($fields[$group])) {
+                $fields[$group] = null;
+            }
+            
             Arr::forget($fields, $groupFields);
         }
 
