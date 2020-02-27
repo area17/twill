@@ -9,7 +9,7 @@ export default {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
-        message: `Get request error.`,
+        message: 'Get request error.',
         value: resp
       }
       globalError(component, error)
@@ -21,7 +21,7 @@ export default {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
-        message: `Post request error.`,
+        message: 'Post request error.',
         value: resp
       }
       globalError(component, error)
@@ -33,7 +33,7 @@ export default {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
-        message: `Save request error.`,
+        message: 'Save request error.',
         value: resp
       }
       globalError(component, error)

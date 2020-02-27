@@ -7,7 +7,7 @@ export default {
       if (callback && typeof callback === 'function') callback(resp.data)
     }, function (resp) {
       const error = {
-        message: `Block preview request error.`,
+        message: 'Block preview request error.',
         value: resp
       }
       globalError('CONTENT', error)

@@ -12,7 +12,7 @@ const getObject = (container, id, callback) => {
 }
 
 const deepRemoveFromObj = (items, keys = ['id', 'children'], deep = 'children') => {
-  let deepItems = JSON.parse(JSON.stringify(items))
+  const deepItems = JSON.parse(JSON.stringify(items))
   deepItems.forEach((obj) => {
     for (const prop in obj) {
       if (!keys.includes(prop)) {
@@ -58,7 +58,7 @@ const getters = {
     return state.columns.filter(column => column.visible)
   },
   visibleColumnsNames: state => {
-    let onlyActiveColumnsNames = []
+    const onlyActiveColumnsNames = []
 
     if (state.columns.length) {
       state.columns.forEach(function (column) {

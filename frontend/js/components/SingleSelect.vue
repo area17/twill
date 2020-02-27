@@ -63,8 +63,8 @@
     computed: {
       gridClasses: function () {
         return [
-          this.grid ? `singleselector--grid` : '',
-          this.inline ? `singleselector--inline` : ''
+          this.grid ? 'singleselector--grid' : '',
+          this.inline ? 'singleselector--inline' : ''
         ]
       },
       selectedValue: {

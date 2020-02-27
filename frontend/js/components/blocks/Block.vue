@@ -80,8 +80,8 @@
     computed: {
       blockClasses: function () {
         return [
-          this.visible ? `block--open` : '',
-          this.hover ? `block--focus` : '',
+          this.visible ? 'block--open' : '',
+          this.hover ? 'block--focus' : '',
           this.size ? `block--${this.size}` : ''
         ]
       },

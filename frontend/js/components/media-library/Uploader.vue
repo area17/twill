@@ -220,7 +220,7 @@
         const index = this.loadingMedias.findIndex((m) => m.id === this._uploader.methods.getUuid(id))
 
         if (index >= 0) {
-          let media = this.loadingMedias[index]
+          const media = this.loadingMedias[index]
           media.progress = uploadedBytes / totalBytes * 100 || 0
           media.error = false
           this.loadingProgress(media)
@@ -253,7 +253,7 @@
           })
 
           if (index >= 0) {
-            let media = this.loadingMedias[index]
+            const media = this.loadingMedias[index]
             media.progress = 0
             media.error = false
             this.loadingProgress(media)

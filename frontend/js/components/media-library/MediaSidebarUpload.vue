@@ -33,7 +33,7 @@
       loadingProgress: function () {
         const progress = -100 + this.uploadProgress
         return {
-          'transform': 'translateX(' + progress + '%)'
+          transform: 'translateX(' + progress + '%)'
         }
       },
       ...mapState({

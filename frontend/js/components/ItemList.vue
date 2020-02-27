@@ -78,7 +78,7 @@
         })
       },
       checkedItems: function () {
-        let checkItemsIds = []
+        const checkItemsIds = []
 
         if (this.selectedItems.length) {
           this.selectedItems.forEach(function (item) {
@@ -95,7 +95,7 @@
       },
       loadingProgress: function (index) {
         return {
-          'width': this.itemsLoading[index].progress ? this.itemsLoading[index].progress + '%' : '0%'
+          width: this.itemsLoading[index].progress ? this.itemsLoading[index].progress + '%' : '0%'
         }
       }
     }

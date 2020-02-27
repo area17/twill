@@ -35,7 +35,7 @@ export default {
       }
     }, function (resp) {
       const error = {
-        message: `Get request error.`,
+        message: 'Get request error.',
         value: resp
       }
       globalError(component, error)
@@ -47,7 +47,7 @@ export default {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
-        message: `Publish request error.`,
+        message: 'Publish request error.',
         value: resp
       }
       globalError(component, error)
@@ -60,7 +60,7 @@ export default {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
-        message: `Feature request error.`,
+        message: 'Feature request error.',
         value: resp
       }
       globalError(component, error)
@@ -72,7 +72,7 @@ export default {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
-        message: `Delete request error.`,
+        message: 'Delete request error.',
         value: resp
       }
       globalError(component, error)
@@ -84,7 +84,7 @@ export default {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
-        message: `Restore request error.`,
+        message: 'Restore request error.',
         value: resp
       }
       globalError(component, error)
@@ -96,7 +96,7 @@ export default {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
-        message: `Destroy request error.`,
+        message: 'Destroy request error.',
         value: resp
       }
       globalError(component, error)
@@ -108,7 +108,7 @@ export default {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
-        message: `Reorder request error.`,
+        message: 'Reorder request error.',
         value: resp
       }
       globalError(component, error)
@@ -120,7 +120,7 @@ export default {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
-        message: `Bulk publish request error.`,
+        message: 'Bulk publish request error.',
         value: resp
       }
       globalError(component, error)
@@ -132,7 +132,7 @@ export default {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
-        message: `Bulk feature request error.`,
+        message: 'Bulk feature request error.',
         value: resp
       }
       globalError(component, error)
@@ -144,7 +144,7 @@ export default {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
-        message: `Bulk delete request error.`,
+        message: 'Bulk delete request error.',
         value: resp
       }
       globalError(component, error)
@@ -156,7 +156,7 @@ export default {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
-        message: `Bulk restore request error.`,
+        message: 'Bulk restore request error.',
         value: resp
       }
       globalError(component, error)
@@ -168,7 +168,7 @@ export default {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
-        message: `Bulk destroy request error.`,
+        message: 'Bulk destroy request error.',
         value: resp
       }
       globalError(component, error)

@@ -45,7 +45,7 @@
     },
     computed: {
       selectedNav: function () {
-        let self = this
+        const self = this
         const navItem = self.navFilters.filter(function (n) {
           return n.slug === self.navActive
         })

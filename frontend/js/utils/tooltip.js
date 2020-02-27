@@ -137,21 +137,21 @@ export default class Tooltip {
     let left = 0
     let top = 0
     let newPosition = placement
-    let refBoundingRect = reference.getBoundingClientRect()
+    const refBoundingRect = reference.getBoundingClientRect()
 
     // reset class
     this._tooltipNode.classList.remove('tooltip--' + newPosition)
 
     // Calculates : top and left coordinates relative to the refBoundingRect
     // top, right, bottom, left
-    let topCoord = Math.round(refBoundingRect.top - this._tooltipNode.offsetHeight - budge)
-    let topCenteredCoord = Math.round(refBoundingRect.top + (refBoundingRect.height / 2) - (this._tooltipNode.offsetHeight / 2))
+    const topCoord = Math.round(refBoundingRect.top - this._tooltipNode.offsetHeight - budge)
+    const topCenteredCoord = Math.round(refBoundingRect.top + (refBoundingRect.height / 2) - (this._tooltipNode.offsetHeight / 2))
 
-    let rightCoord = Math.round(refBoundingRect.left + refBoundingRect.width + budge)
+    const rightCoord = Math.round(refBoundingRect.left + refBoundingRect.width + budge)
 
-    let bottomCoord = Math.round(refBoundingRect.top + refBoundingRect.height + budge)
-    let leftCoord = Math.round(refBoundingRect.left - this._tooltipNode.offsetWidth - budge)
-    let leftCenteredCoord = Math.round(refBoundingRect.left + (refBoundingRect.width / 2) - (this._tooltipNode.offsetWidth / 2))
+    const bottomCoord = Math.round(refBoundingRect.top + refBoundingRect.height + budge)
+    const leftCoord = Math.round(refBoundingRect.left - this._tooltipNode.offsetWidth - budge)
+    const leftCenteredCoord = Math.round(refBoundingRect.left + (refBoundingRect.width / 2) - (this._tooltipNode.offsetWidth / 2))
 
     if (placement === 'top') {
       left = leftCenteredCoord // horizontally centered

@@ -34,13 +34,13 @@
     computed: {
       checkboxClasses: function () {
         return [
-          this.inline ? `checkboxGroup--inline` : ''
+          this.inline ? 'checkboxGroup--inline' : ''
         ]
       }
     },
     methods: {
       formatValue: function (newVal, oldval) {
-        let self = this
+        const self = this
         if (!newVal) return
         if (!oldval) return
 

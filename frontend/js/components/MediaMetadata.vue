@@ -100,7 +100,7 @@
       }
     },
     mounted: function () {
-      let initialValues = {}
+      const initialValues = {}
       let initialValue = ''
       let index = 0
 
@@ -117,7 +117,7 @@
             initialValues[langVal] = ''
           }
 
-          let field = {}
+          const field = {}
           field.name = this.fieldName
           field.value = initialValues[langVal]
 

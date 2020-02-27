@@ -49,7 +49,7 @@
       nestedStyle (col) {
         return this.columns.find((col) => col.name === 'nested') && col.name === 'draggable' ? {
           'webkit-transform': 'translateX(-' + this.nestedDepth * 80 + 'px)',
-          'transform': 'translateX(-' + this.nestedDepth * 80 + 'px)'
+          transform: 'translateX(-' + this.nestedDepth * 80 + 'px)'
         } : ''
       }
     }

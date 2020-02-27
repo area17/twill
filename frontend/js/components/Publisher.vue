@@ -57,12 +57,12 @@
       return {
         singleOpen: true,
         openStates: {
-          'A17Reviewaccordion': false,
-          'A17Radioaccordion': false,
-          'A17Checkboxaccordion': false,
-          'A17Revisions': false,
-          'A17Pubaccordion': false,
-          'A17Parents': false
+          A17Reviewaccordion: false,
+          A17Radioaccordion: false,
+          A17Checkboxaccordion: false,
+          A17Revisions: false,
+          A17Pubaccordion: false,
+          A17Parents: false
         }
       }
     },
@@ -121,7 +121,7 @@
         if (!this.singleOpen) return
 
         if (isOpen) {
-          for (let prop in this.openStates) {
+          for (const prop in this.openStates) {
             this.openStates[prop] = prop === componentname
           }
         } else {

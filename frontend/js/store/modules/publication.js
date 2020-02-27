@@ -86,7 +86,7 @@ const getters = {
     return state.reviewProcess.filter(reviewProcess => reviewProcess.checked)
   },
   getSubmitOptions: state => {
-    return (state.published || !state.withPublicationToggle) ? state.submitOptions[state.publishSubmit] : state.submitOptions['draft']
+    return (state.published || !state.withPublicationToggle) ? state.submitOptions[state.publishSubmit] : state.submitOptions.draft
   },
   getSaveType: (state, getters) => {
     return state.saveType || getters.getSubmitOptions[0].name

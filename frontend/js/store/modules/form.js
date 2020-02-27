@@ -6,9 +6,8 @@
 
 import api from '../api/form'
 import { getFormData, getFormFields, getModalFormFields } from '@/utils/getFormData.js'
-import { FORM, NOTIFICATION, LANGUAGE, ATTRIBUTES } from '../mutations'
+import { FORM, NOTIFICATION, LANGUAGE, ATTRIBUTES, PUBLICATION, REVISION } from '../mutations'
 import ACTIONS from '@/store/actions'
-import { PUBLICATION, REVISION } from '@/store/mutations'
 
 const getFieldIndex = (stateKey, field) => {
   return stateKey.findIndex(f => f.name === field.name)
@@ -190,7 +189,7 @@ const actions = {
       api.get(endpoint, function (successResponse) {
         commit(FORM.UPDATE_FORM_LOADING, false)
 
-        let data = successResponse.data
+        const data = successResponse.data
 
         if (data.hasOwnProperty('languages')) {
           commit(LANGUAGE.REPLACE_LANGUAGES, data.languages)

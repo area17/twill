@@ -1,8 +1,8 @@
 import Quill from 'quill'
-let Delta = Quill.import('delta')
-let Break = Quill.import('blots/break')
-let Embed = Quill.import('blots/embed')
-let Link = Quill.import('formats/link')
+const Delta = Quill.import('delta')
+const Break = Quill.import('blots/break')
+const Embed = Quill.import('blots/embed')
+const Link = Quill.import('formats/link')
 
 /*
 * Support for shift enter
@@ -36,8 +36,8 @@ const lineBreakHandle = {
   shiftKey: true,
   handler:
     function (range) {
-      let currentLeaf = this.quill.getLeaf(range.index)[0]
-      let nextLeaf = this.quill.getLeaf(range.index + 1)[0]
+      const currentLeaf = this.quill.getLeaf(range.index)[0]
+      const nextLeaf = this.quill.getLeaf(range.index + 1)[0]
 
       this.quill.insertEmbed(range.index, lineBreak.blotName, true, 'user')
 
@@ -54,7 +54,7 @@ const lineBreakHandle = {
 
 function lineBreakMatcher () {
   const newDelta = new Delta()
-  newDelta.insert({ 'break': '' })
+  newDelta.insert({ break: '' })
   return newDelta
 }
 
@@ -63,7 +63,7 @@ Quill.register(SmartBreak)
 /* Customize Link */
 class MyLink extends Link {
   static create (value) {
-    let node = super.create(value)
+    const node = super.create(value)
     value = this.sanitize(value)
     node.setAttribute('href', value)
 
@@ -117,16 +117,16 @@ function getIcon (shape) {
 }
 
 const icons = Quill.import('ui/icons') // custom icons
-icons['bold'] = getIcon('bold')
-icons['italic'] = getIcon('italic')
-icons['underline'] = getIcon('underline')
-icons['link'] = getIcon('link')
-icons['header']['1'] = getIcon('header')
-icons['header']['2'] = getIcon('header-2')
-icons['header']['3'] = getIcon('header-3')
-icons['header']['4'] = getIcon('header-4')
-icons['header']['5'] = getIcon('header-5')
-icons['header']['6'] = getIcon('header-6')
+icons.bold = getIcon('bold')
+icons.italic = getIcon('italic')
+icons.underline = getIcon('underline')
+icons.link = getIcon('link')
+icons.header['1'] = getIcon('header')
+icons.header['2'] = getIcon('header-2')
+icons.header['3'] = getIcon('header-3')
+icons.header['4'] = getIcon('header-4')
+icons.header['5'] = getIcon('header-5')
+icons.header['6'] = getIcon('header-6')
 
 /*
 * ClipBoard manager
@@ -168,7 +168,7 @@ function getQuillFormats (toolbarEls) {
 
   toolbarEls.forEach((el) => {
     if (typeof el === 'object') {
-      for (let property in el) {
+      for (const property in el) {
         addFormat(property)
       }
     }

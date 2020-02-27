@@ -31,7 +31,7 @@ const mutations = {
     state.buckets[payload.index].children.splice(payload.itemIndex, 1)
   },
   [BUCKETS.TOGGLE_FEATURED_IN_BUCKET] (state, payload) {
-    let item = state.buckets[payload.index].children.splice(payload.itemIndex, 1)
+    const item = state.buckets[payload.index].children.splice(payload.itemIndex, 1)
     item[0].starred = !item[0].starred
     state.buckets[payload.index].children.splice(payload.itemIndex, 0, item[0])
   },
@@ -45,7 +45,7 @@ const mutations = {
     state.filter = Object.assign({}, state.filter, filter)
   },
   [BUCKETS.REORDER_BUCKET_LIST] (state, payload) {
-    let item = state.buckets[payload.bucketIndex].children.splice(payload.oldIndex, 1)
+    const item = state.buckets[payload.bucketIndex].children.splice(payload.oldIndex, 1)
     state.buckets[payload.bucketIndex].children.splice(payload.newIndex, 0, item[0])
   },
   [BUCKETS.UPDATE_BUCKETS_DATA_OFFSET] (state, offsetNumber) {
@@ -89,7 +89,8 @@ const actions = {
     bucketsAPI.save(state.saveUrl, { buckets: buckets }, (successResponse) => {
       commit(NOTIFICATION.SET_NOTIF, {
         message: 'Features saved. All good!',
-        variant: 'success' })
+        variant: 'success'
+      })
     }, (errorResponse) => {
       commit(NOTIFICATION.SET_NOTIF, {
         message: 'Your submission could not be validated, please fix and retry',

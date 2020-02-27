@@ -40,8 +40,8 @@
     computed: {
       formatDateLabel: function () {
         let label = ''
-        let scoreStart = compareAsc(this.startDate, new Date())
-        let scoreEnd = this.endDate ? compareAsc(this.endDate, new Date()) : 1
+        const scoreStart = compareAsc(this.startDate, new Date())
+        const scoreEnd = this.endDate ? compareAsc(this.endDate, new Date()) : 1
 
         if (this.startDate && scoreEnd < 0) label = this.textExpired
         else if (scoreStart > 0) label = this.textScheduled

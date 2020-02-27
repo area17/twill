@@ -159,7 +159,7 @@
         return this.dataSources.length === 1
       },
       overrideBucketText: function () {
-        let bucket = this.buckets.find(b => b.id === this.currentBucketID)
+        const bucket = this.buckets.find(b => b.id === this.currentBucketID)
         let bucketName = ''
         let bucketSize = ''
         if (bucket) {
@@ -171,7 +171,7 @@
     },
     methods: {
       addToBucket: function (item, bucket) {
-        let index = this.buckets.findIndex(b => b.id === bucket)
+        const index = this.buckets.findIndex(b => b.id === bucket)
 
         if (!item && index === -1) return
 
@@ -184,7 +184,7 @@
         }
 
         // Use -1 for an unlimited bucket
-        let count = this.buckets[index].children.length
+        const count = this.buckets[index].children.length
 
         if (count > -1 && count < this.buckets[index].max) {
           // Commit before dispatch to prevent ui visual effect timeout
@@ -200,10 +200,10 @@
         }
       },
       deleteFromBucket: function (item, bucket) {
-        let bucketIndex = this.buckets.findIndex(b => b.id === bucket)
+        const bucketIndex = this.buckets.findIndex(b => b.id === bucket)
         if (bucketIndex === -1) return
 
-        let itemIndex = this.buckets[bucketIndex].children.findIndex(c => c.id === item.id && c.content_type.value === item.content_type.value)
+        const itemIndex = this.buckets[bucketIndex].children.findIndex(c => c.id === item.id && c.content_type.value === item.content_type.value)
 
         if (itemIndex === -1) return
 
@@ -214,10 +214,10 @@
         this.$store.commit(BUCKETS.DELETE_FROM_BUCKET, data)
       },
       toggleFeaturedInBucket: function (item, bucket) {
-        let bucketIndex = this.buckets.findIndex(b => b.id === bucket)
+        const bucketIndex = this.buckets.findIndex(b => b.id === bucket)
         if (bucketIndex === -1) return
 
-        let itemIndex = this.buckets[bucketIndex].children.findIndex(c => c.id === item.id && c.content_type.value === item.content_type.value)
+        const itemIndex = this.buckets[bucketIndex].children.findIndex(c => c.id === item.id && c.content_type.value === item.content_type.value)
 
         if (itemIndex === -1) return
 

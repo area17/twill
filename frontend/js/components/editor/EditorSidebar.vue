@@ -111,7 +111,7 @@
       },
       saveForm: function (buttonName) {
         this.$store.commit(PUBLICATION.UPDATE_SAVE_TYPE, buttonName)
-        if (this.$root['submitForm']) this.$root.submitForm()
+        if (this.$root.submitForm) this.$root.submitForm()
       }
     },
     mounted: function () {

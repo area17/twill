@@ -92,7 +92,7 @@
       title: function () {
         // Get the title from the store
         const title = this.fieldValueByName(this.name) ? this.fieldValueByName(this.name) : ''
-        const titleValue = typeof title === 'string' ? title : title[this.currentLocale['value']]
+        const titleValue = typeof title === 'string' ? title : title[this.currentLocale.value]
         return titleValue || this.warningMessage
       },
       permalink: function () {

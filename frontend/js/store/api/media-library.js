@@ -16,7 +16,7 @@ export default {
     }, function (resp) {
       // error callback
       const error = {
-        message: `Media library get error.`,
+        message: 'Media library get error.',
         value: resp
       }
       globalError(component, error)
@@ -30,7 +30,7 @@ export default {
     }, function (resp) {
       // error callback
       const error = {
-        message: `Media library update error.`,
+        message: 'Media library update error.',
         value: resp
       }
       globalError(component, error)
@@ -44,7 +44,7 @@ export default {
     }, function (resp) {
       // error callback
       const error = {
-        message: `Media library delete error.`,
+        message: 'Media library delete error.',
         value: resp
       }
       globalError(component, error)
@@ -58,7 +58,7 @@ export default {
     }, function (resp) {
       // error callback
       const error = {
-        message: `Media library bulk delete error.`,
+        message: 'Media library bulk delete error.',
         value: resp
       }
       globalError(component, error)

@@ -115,7 +115,7 @@
     },
     methods: {
       open: function (previewId = 0) {
-        let self = this
+        const self = this
 
         // reset previewer state
         this.loadedCurrent = false

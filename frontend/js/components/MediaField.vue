@@ -206,7 +206,7 @@
         if (this.cropSrc.length === 0) return {}
 
         return {
-          'backgroundImage': `url(${this.cropSrc})`
+          backgroundImage: `url(${this.cropSrc})`
         }
       },
       cropThumbnailClass: function () {
@@ -232,9 +232,9 @@
         }
       },
       cropInfos: function () {
-        let cropInfos = []
+        const cropInfos = []
         if (this.media.crops) {
-          for (let variant in this.media.crops) {
+          for (const variant in this.media.crops) {
             if (this.media.crops[variant].width + this.media.crops[variant].height) { // crop is not 0x0
               let cropInfo = ''
               cropInfo += this.media.crops[variant].name + ' crop: '
@@ -275,7 +275,7 @@
     methods: {
       // crop
       canvasCrop () {
-        let data = this.media.crops[Object.keys(this.media.crops)[0]]
+        const data = this.media.crops[Object.keys(this.media.crops)[0]]
         if (!data) return
 
         // in case of a 0x0 crop : let's display the full image in the preview
@@ -289,7 +289,7 @@
 
         this.$nextTick(() => {
           try {
-            let crop = cropConversion(data, this.naturalDim, this.originalDim)
+            const crop = cropConversion(data, this.naturalDim, this.originalDim)
             const cropWidth = crop.width
             const cropHeight = crop.height
             this.canvas.width = cropWidth
@@ -314,11 +314,11 @@
         })
       },
       setDefaultCrops: function () {
-        let defaultCrops = {}
-        let smarcrops = []
+        const defaultCrops = {}
+        const smarcrops = []
 
         if (this.allCrops.hasOwnProperty(this.cropContext)) {
-          for (let cropVariant in this.allCrops[this.cropContext]) {
+          for (const cropVariant in this.allCrops[this.cropContext]) {
             const ratio = this.allCrops[this.cropContext][cropVariant][0].ratio
             const width = this.media.width
             const height = this.media.height
@@ -350,8 +350,8 @@
 
             smarcrops.push(smartCrop.crop(this.img, { width: crop.width, height: crop.height, minScale: 1.0 }))
 
-            let x = Math.floor(center.x - cropWidth / 2)
-            let y = Math.floor(center.y - cropHeight / 2)
+            const x = Math.floor(center.x - cropWidth / 2)
+            const y = Math.floor(center.y - cropHeight / 2)
 
             defaultCrops[cropVariant] = {}
             defaultCrops[cropVariant].name = this.allCrops[this.cropContext][cropVariant][0].name || cropVariant

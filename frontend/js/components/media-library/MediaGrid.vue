@@ -21,7 +21,7 @@
     methods: {
       loadingProgress: function (index) {
         return {
-          'width': this.itemsLoading[index].progress ? this.itemsLoading[index].progress + '%' : '0%'
+          width: this.itemsLoading[index].progress ? this.itemsLoading[index].progress + '%' : '0%'
         }
       }
     }

@@ -32,7 +32,7 @@
     },
     methods: {
       loadPreview: function (event) {
-        let self = this
+        const self = this
 
         // disable button and link in preview
         const iframe = event.target

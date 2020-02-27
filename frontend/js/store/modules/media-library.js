@@ -211,8 +211,8 @@ const mutations = {
       if (!mediaToModify.crops) mediaToModify.crops = {}
 
       // save all the crop variants to the media
-      for (let variant in crop.values) {
-        let newValues = {}
+      for (const variant in crop.values) {
+        const newValues = {}
         newValues.name = crop.values[variant].name || variant
         newValues.x = crop.values[variant].x
         newValues.y = crop.values[variant].y

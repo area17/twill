@@ -15,7 +15,7 @@ export default {
       })
       .catch((resp) => {
         const error = {
-          message: `Get Buckets error`,
+          message: 'Get Buckets error',
           value: resp
         }
         globalError(component, error)
@@ -31,7 +31,7 @@ export default {
       .catch((resp) => {
         // error callback
         const error = {
-          message: `Buckets save error.`,
+          message: 'Buckets save error.',
           value: resp
         }
         globalError(component, error)

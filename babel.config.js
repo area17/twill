@@ -1,6 +1,6 @@
 module.exports = {
   presets: [
-    ['@vue/app', {
+    ['@vue/cli-plugin-babel/preset', {
       useBuiltIns: 'entry'
       // polyfills: [
       //   'es6.promise',

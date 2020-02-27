@@ -48,8 +48,8 @@
     computed: {
       gridClasses: function () {
         return [
-          this.grid ? `multiselector--grid` : '',
-          this.inline ? `multiselector--inline` : ''
+          this.grid ? 'multiselector--grid' : '',
+          this.inline ? 'multiselector--inline' : ''
         ]
       }
     },

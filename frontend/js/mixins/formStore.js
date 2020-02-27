@@ -63,7 +63,7 @@ export default {
       else newValue = this[this.inStore]
 
       // The object that is saved
-      let field = {}
+      const field = {}
       field.name = this.getFieldName()
       field.value = newValue
       if (this.locale) field.locale = this.locale.value

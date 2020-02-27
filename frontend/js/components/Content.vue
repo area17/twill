@@ -106,7 +106,7 @@
       },
       addBlock: function (block, fromIndex) {
         this.opened = true
-        let newBlock = {
+        const newBlock = {
           title: block.title,
           type: block.component,
           icon: block.icon,
@@ -142,7 +142,7 @@
       }
     },
     mounted: function () {
-      let self = this
+      const self = this
       // if there are blocks, these should be all collapse by default
       this.$nextTick(function () {
         if (self.savedBlocks.length > 3) self.collapseAllBlocks()

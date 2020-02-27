@@ -7,7 +7,7 @@ export default {
       if (callback && typeof callback === 'function') callback(resp.data)
     }, function (resp) {
       const error = {
-        message: `Preview request error.`,
+        message: 'Preview request error.',
         value: resp
       }
       globalError('REVISION', error)

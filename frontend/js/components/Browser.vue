@@ -150,7 +150,7 @@
             this.clearFullItems()
           }
 
-          this.fullItems.push(...resp.data['data'])
+          this.fullItems.push(...resp.data.data)
 
           // re-listen for scroll position if height changed
           this.$nextTick(() => {

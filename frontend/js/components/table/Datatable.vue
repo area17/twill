@@ -102,7 +102,7 @@
     },
     computed: {
       checkboxesColumns: function () {
-        let checkboxes = []
+        const checkboxes = []
 
         if (this.hideableColumns.length) {
           this.hideableColumns.forEach(function (column) {
@@ -126,9 +126,9 @@
     },
     methods: {
       getColumnWidth: function () {
-        let self = this
-        let newColumnsWidth = []
-        let tds = self.$refs.thead.$el.children
+        const self = this
+        const newColumnsWidth = []
+        const tds = self.$refs.thead.$el.children
 
         for (let index = 0; index < tds.length; index++) {
           newColumnsWidth.push(tds[index].offsetWidth)
@@ -143,12 +143,12 @@
         this.getColumnWidth()
       }, 100),
       initEvents: function () {
-        let self = this
+        const self = this
         window.addEventListener('resize', () => self.resize())
         self.resize()
       },
       disposeEvents: function () {
-        let self = this
+        const self = this
         window.removeEventListener('resize', self.resize())
       },
       updateSort: function (column) {

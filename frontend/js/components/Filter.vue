@@ -119,7 +119,7 @@
         this.open = !this.open
       },
       submitFilter: function () {
-        let formData = FormDataAsObj(this.$refs.form)
+        const formData = FormDataAsObj(this.$refs.form)
         this.$emit('submit', formData)
       },
       onSearchInput: function (event) {

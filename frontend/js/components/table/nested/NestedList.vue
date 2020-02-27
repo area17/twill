@@ -54,7 +54,7 @@
     computed: {
       styleDepth: function () {
         return {
-          'marginLeft': this.depth === 0 ? '0px' : '60px'
+          marginLeft: this.depth === 0 ? '0px' : '60px'
         }
       },
       rows: {

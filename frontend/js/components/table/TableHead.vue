@@ -55,7 +55,7 @@
           col.name === 'nested' ? 'tablehead__cell--nested' : '',
           col.name === 'bulk' ? 'tablehead__cell--bulk' : '',
           col.sortable && this.sortable ? 'tablehead__cell--sortable' : '',
-          col.name === this.sortKey ? `tablehead__cell--sorted` : '',
+          col.name === this.sortKey ? 'tablehead__cell--sorted' : '',
           col.name === this.sortKey && this.sortDir ? `tablehead__cell--sorted${this.sortDir}` : ''
         ]
       },

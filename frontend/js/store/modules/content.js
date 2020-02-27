@@ -57,7 +57,7 @@ function setBlockID () {
 
 const mutations = {
   [CONTENT.ADD_BLOCK] (state, blockInfos) {
-    let block = blockInfos.block
+    const block = blockInfos.block
     block.id = setBlockID()
 
     if (blockInfos.index > -1) {
@@ -81,7 +81,7 @@ const mutations = {
     state.blocks.splice(index, 1)
   },
   [CONTENT.DUPLICATE_BLOCK] (state, index) {
-    let clone = Object.assign({}, state.blocks[index])
+    const clone = Object.assign({}, state.blocks[index])
     clone.id = setBlockID()
 
     state.blocks.splice(index + 1, 0, clone)

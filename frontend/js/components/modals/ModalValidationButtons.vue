@@ -74,7 +74,7 @@
     computed: {
       switcherClasses: function () {
         return [
-          this.isChecked ? `switcher--active` : ''
+          this.isChecked ? 'switcher--active' : ''
         ]
       },
       isChecked: function () {
@@ -124,7 +124,7 @@
       }
     },
     mounted: function () {
-      let self = this
+      const self = this
 
       this.fields = [...this.$parent.$el.querySelectorAll('input, textarea, select')]
 
@@ -138,7 +138,7 @@
       })
     },
     beforeDestroy: function () {
-      let self = this
+      const self = this
 
       if (!this.fields.length) return
 

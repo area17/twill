@@ -36,12 +36,12 @@
     methods: {
       editWithLanguage: function (lang) {
         const langQuery = {}
-        langQuery['lang'] = lang.value
+        langQuery.lang = lang.value
         return this.editWithQuery(langQuery)
       },
       editWithQuery: function (context) {
         const queries = []
-        for (let prop in context) {
+        for (const prop in context) {
           if (context.hasOwnProperty(prop)) {
             queries.push(encodeURIComponent(prop) + '=' + encodeURIComponent(context[prop]))
           }

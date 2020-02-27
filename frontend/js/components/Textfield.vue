@@ -198,14 +198,14 @@
         this.$emit('focus')
       },
       onBlur: function (event) {
-        let newValue = event.target.value
+        const newValue = event.target.value
         this.updateAndSaveValue(newValue)
 
         this.focused = false
         this.$emit('blur', newValue)
       },
       onInput: debounce(function (event) {
-        let newValue = event.target.value
+        const newValue = event.target.value
         this.updateAndSaveValue(newValue)
 
         this.$emit('change', newValue)
@@ -217,7 +217,7 @@
         const minH = 15
 
         if (clone) {
-          let h = clone.scrollHeight
+          const h = clone.scrollHeight
           this.$refs.input.style.minHeight = `${h + minH}px`
         }
       }

@@ -4,7 +4,7 @@
 // <svg class="icon icon--${id}"><title>id</title><use xlink:href="#icon--${id}"></use></svg> if node is already a svg
 
 export function addSvg (el, binding, vnode) {
-  let classNames = ['icon']
+  const classNames = ['icon']
   const id = binding.expression || vnode.data.attrs.symbol
   let svg = el
 

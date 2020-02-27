@@ -47,7 +47,7 @@ const config = {
     loaderOptions: {
       // define global settings imported in all components
       sass: {
-        data: `@import "~styles/setup/_settings.scss";`
+        prependData: `@import "~styles/setup/_settings.scss";`
       }
     }
   },

@@ -1,43 +1,43 @@
 const _EXTENSIONS =
   {
-    'img': {
-      'extensions': [
+    img: {
+      extensions: [
         'gif',
         'png',
         'jpg'
       ],
-      'icon': 'img',
-      'display': 'Image File',
-      'instructions': 'Most Image files are natively recognized by your computer.'
+      icon: 'img',
+      display: 'Image File',
+      instructions: 'Most Image files are natively recognized by your computer.'
     },
-    'tiff': {
-      'extensions': [
+    tiff: {
+      extensions: [
         'tiff',
         'tif'
       ],
-      'icon': 'img',
-      'display': 'TIFF Image',
-      'instructions': 'To read TIFF images, you need <a href=\'http://www.adobe.com/products/photoshop/\' target=\'_blank\'>Adobe Photoshop</a> or similar.'
+      icon: 'img',
+      display: 'TIFF Image',
+      instructions: 'To read TIFF images, you need <a href=\'http://www.adobe.com/products/photoshop/\' target=\'_blank\'>Adobe Photoshop</a> or similar.'
     },
-    'eps': {
-      'extensions': [
+    eps: {
+      extensions: [
         'eps',
         'ps'
       ],
-      'icon': 'eps',
-      'display': 'Postscript File',
-      'instructions': 'To read Postscript files, you need <a href=\'http://www.adobe.com/products/illustrator/\' target=\'_blank\'>Adobe Illustrator</a> or similar.'
+      icon: 'eps',
+      display: 'Postscript File',
+      instructions: 'To read Postscript files, you need <a href=\'http://www.adobe.com/products/illustrator/\' target=\'_blank\'>Adobe Illustrator</a> or similar.'
     },
-    'bmp': {
-      'extensions': [
+    bmp: {
+      extensions: [
         'bmp'
       ],
-      'icon': 'img',
-      'display': 'Bitmap Image',
-      'instructions': 'To read Bitmap images, you need <a href=\'http://www.adobe.com/products/photoshop/\' target=\'_blank\'>Adobe Photoshop</a> or similar.'
+      icon: 'img',
+      display: 'Bitmap Image',
+      instructions: 'To read Bitmap images, you need <a href=\'http://www.adobe.com/products/photoshop/\' target=\'_blank\'>Adobe Photoshop</a> or similar.'
     },
-    'raw': {
-      'extensions': [
+    raw: {
+      extensions: [
         '3fr',
         'arw',
         'srf',
@@ -71,61 +71,61 @@ const _EXTENSIONS =
         'drf',
         'x3f'
       ],
-      'icon': 'img',
-      'display': 'RAW Image',
-      'instructions': 'To read RAW images, you need <a href=\'http://www.adobe.com/products/photoshop/\' target=\'_blank\'>Adobe Photoshop</a> or similar.'
+      icon: 'img',
+      display: 'RAW Image',
+      instructions: 'To read RAW images, you need <a href=\'http://www.adobe.com/products/photoshop/\' target=\'_blank\'>Adobe Photoshop</a> or similar.'
     },
-    'indd': {
-      'extensions': [
+    indd: {
+      extensions: [
         'indd'
       ],
-      'icon': 'indd',
-      'display': 'InDesign Document',
-      'instructions': 'To read InDesign documents, you need <a href=\'http://www.adobe.com/products/indesign/\' target=\'_blank\'>Adobe InDesign</a> or similar.'
+      icon: 'indd',
+      display: 'InDesign Document',
+      instructions: 'To read InDesign documents, you need <a href=\'http://www.adobe.com/products/indesign/\' target=\'_blank\'>Adobe InDesign</a> or similar.'
     },
-    'psd': {
-      'extensions': [
+    psd: {
+      extensions: [
         'psd'
       ],
-      'icon': 'psd',
-      'display': 'Photoshop File',
-      'instructions': 'To read Photoshop files, you need <a href=\'http://www.adobe.com/products/photoshop/\' target=\'_blank\'>Adobe Photoshop</a> or similar.'
+      icon: 'psd',
+      display: 'Photoshop File',
+      instructions: 'To read Photoshop files, you need <a href=\'http://www.adobe.com/products/photoshop/\' target=\'_blank\'>Adobe Photoshop</a> or similar.'
     },
-    'ai': {
-      'extensions': [
+    ai: {
+      extensions: [
         'ai'
       ],
-      'icon': 'ai',
-      'display': 'Illustrator File',
-      'instructions': 'To read Illustrator files, you need <a href=\'http://www.adobe.com/products/illustrator/\' target=\'_blank\'>Adobe Illustrator</a> or similar.'
+      icon: 'ai',
+      display: 'Illustrator File',
+      instructions: 'To read Illustrator files, you need <a href=\'http://www.adobe.com/products/illustrator/\' target=\'_blank\'>Adobe Illustrator</a> or similar.'
     },
-    'indb': {
-      'extensions': [
+    indb: {
+      extensions: [
         'indb'
       ],
-      'icon': 'indd',
-      'display': 'InDesign Book',
-      'instructions': 'To read InDesign books, you need <a href=\'http://www.adobe.com/products/indesign/\' target=\'_blank\'>Adobe InDesign</a> or similar.'
+      icon: 'indd',
+      display: 'InDesign Book',
+      instructions: 'To read InDesign books, you need <a href=\'http://www.adobe.com/products/indesign/\' target=\'_blank\'>Adobe InDesign</a> or similar.'
     },
-    'ase': {
-      'extensions': [
+    ase: {
+      extensions: [
         'ase'
       ],
-      'icon': 'ase',
-      'display': 'Adobe Swatch File',
-      'instructions': 'To read Swatch files, you need <a href=\'http://www.adobe.com/products/creativesuite/\' target=\'_blank\'>Adobe Creative Suite</a> or similar.'
+      icon: 'ase',
+      display: 'Adobe Swatch File',
+      instructions: 'To read Swatch files, you need <a href=\'http://www.adobe.com/products/creativesuite/\' target=\'_blank\'>Adobe Creative Suite</a> or similar.'
     },
-    'snd': {
-      'extensions': [
+    snd: {
+      extensions: [
         'mp3',
         'wav'
       ],
-      'icon': 'snd',
-      'display': 'Audio File',
-      'instructions': 'To listen to Audio files, you need Apple QuickTime, Windows Media Player or similar.'
+      icon: 'snd',
+      display: 'Audio File',
+      instructions: 'To listen to Audio files, you need Apple QuickTime, Windows Media Player or similar.'
     },
-    'vid': {
-      'extensions': [
+    vid: {
+      extensions: [
         'avi',
         'mov',
         'mp4',
@@ -134,255 +134,255 @@ const _EXTENSIONS =
         'wmv',
         'flv'
       ],
-      'icon': 'vid',
-      'display': 'Movie File',
-      'instructions': 'To watch Movie files, you need Apple QuickTime, Windows Media Player or similar.'
+      icon: 'vid',
+      display: 'Movie File',
+      instructions: 'To watch Movie files, you need Apple QuickTime, Windows Media Player or similar.'
     },
-    'fla': {
-      'extensions': [
+    fla: {
+      extensions: [
         'fla'
       ],
-      'icon': 'fla',
-      'display': 'Flash Document',
-      'instructions': 'To read Flash documents, you need <a href=\'http://get.adobe.com/flashplayer/\' target=\'_blank\'>Adobe Flash player</a>.'
+      icon: 'fla',
+      display: 'Flash Document',
+      instructions: 'To read Flash documents, you need <a href=\'http://get.adobe.com/flashplayer/\' target=\'_blank\'>Adobe Flash player</a>.'
     },
-    'swf': {
-      'extensions': [
+    swf: {
+      extensions: [
         'swf'
       ],
-      'icon': 'swf',
-      'display': 'Flash Movie',
-      'instructions': 'To read Flash movies, you need <a href=\'http://get.adobe.com/flashplayer/\' target=\'_blank\'>Adobe Flash player</a>.'
+      icon: 'swf',
+      display: 'Flash Movie',
+      instructions: 'To read Flash movies, you need <a href=\'http://get.adobe.com/flashplayer/\' target=\'_blank\'>Adobe Flash player</a>.'
     },
-    'dcr': {
-      'extensions': [
+    dcr: {
+      extensions: [
         'dcr'
       ],
-      'icon': 'dcr',
-      'display': 'Shockwave Movie',
-      'instructions': 'To read Shockwave movies, you need <a href=\'http://get.adobe.com/flashplayer/\' target=\'_blank\'>Adobe Flash player</a>.'
+      icon: 'dcr',
+      display: 'Shockwave Movie',
+      instructions: 'To read Shockwave movies, you need <a href=\'http://get.adobe.com/flashplayer/\' target=\'_blank\'>Adobe Flash player</a>.'
     },
-    'ae': {
-      'extensions': [
+    ae: {
+      extensions: [
         'ae',
         'aep'
       ],
-      'icon': 'ae',
-      'display': 'After Effect File',
-      'instructions': 'To read After Effect files, you need <a href=\'http://www.adobe.com/products/aftereffects/\' target=\'_blank\'>Adobe After Effects</a>.'
+      icon: 'ae',
+      display: 'After Effect File',
+      instructions: 'To read After Effect files, you need <a href=\'http://www.adobe.com/products/aftereffects/\' target=\'_blank\'>Adobe After Effects</a>.'
     },
-    'pdf': {
-      'extensions': [
+    pdf: {
+      extensions: [
         'pdf'
       ],
-      'icon': 'pdf',
-      'display': 'PDF Document',
-      'instructions': 'To read PDF documents, You need the free <a href=\'http://get.adobe.com/reader/\' target=\'_blank\'>Adobe Acrobat Reader</a> or similar.'
+      icon: 'pdf',
+      display: 'PDF Document',
+      instructions: 'To read PDF documents, You need the free <a href=\'http://get.adobe.com/reader/\' target=\'_blank\'>Adobe Acrobat Reader</a> or similar.'
     },
-    'doc': {
-      'extensions': [
+    doc: {
+      extensions: [
         'doc',
         'docx'
       ],
-      'icon': 'doc',
-      'display': 'Word Document',
-      'instructions': 'To read Word documents, you need <a href=\'http://office.microsoft.com/en-us/word/\' target=\'_blank\'>Microsoft Word</a> or similar.'
+      icon: 'doc',
+      display: 'Word Document',
+      instructions: 'To read Word documents, you need <a href=\'http://office.microsoft.com/en-us/word/\' target=\'_blank\'>Microsoft Word</a> or similar.'
     },
-    'xls': {
-      'extensions': [
+    xls: {
+      extensions: [
         'xls',
         'xlsx'
       ],
-      'icon': 'xls',
-      'display': 'Excel Document',
-      'instructions': 'To read Excel documents, you need <a href=\'http://office.microsoft.com/en-us/excel/\' target=\'_blank\'>Microsoft Excel</a>, or similar.'
+      icon: 'xls',
+      display: 'Excel Document',
+      instructions: 'To read Excel documents, you need <a href=\'http://office.microsoft.com/en-us/excel/\' target=\'_blank\'>Microsoft Excel</a>, or similar.'
     },
-    'ppt': {
-      'extensions': [
+    ppt: {
+      extensions: [
         'ppt',
         'pptx',
         'pps'
       ],
-      'icon': 'ppt',
-      'display': 'Powerpoint Document',
-      'instructions': 'To read PowerPoint documents, you need <a href=\'http://office.microsoft.com/en-us/powerpoint/\' target=\'_blank\'>Microsoft PowerPoint</a>, or similar.'
+      icon: 'ppt',
+      display: 'Powerpoint Document',
+      instructions: 'To read PowerPoint documents, you need <a href=\'http://office.microsoft.com/en-us/powerpoint/\' target=\'_blank\'>Microsoft PowerPoint</a>, or similar.'
     },
-    'pages': {
-      'extensions': [
+    pages: {
+      extensions: [
         'pages'
       ],
-      'icon': 'pages',
-      'display': 'Pages Document',
-      'instructions': 'To read Pages documents, you need <a href=\'http://www.apple.com/iwork/pages/\' target=\'_blank\'>Apple iWorks</a>.'
+      icon: 'pages',
+      display: 'Pages Document',
+      instructions: 'To read Pages documents, you need <a href=\'http://www.apple.com/iwork/pages/\' target=\'_blank\'>Apple iWorks</a>.'
     },
-    'numbers': {
-      'extensions': [
+    numbers: {
+      extensions: [
         'numbers'
       ],
-      'icon': 'numbers',
-      'display': 'Numbers Document',
-      'instructions': 'To read Numbers documents, you need <a href=\'http://www.apple.com/iwork/numbers/\' target=\'_blank\'>Apple iWorks</a>.'
+      icon: 'numbers',
+      display: 'Numbers Document',
+      instructions: 'To read Numbers documents, you need <a href=\'http://www.apple.com/iwork/numbers/\' target=\'_blank\'>Apple iWorks</a>.'
     },
-    'key': {
-      'extensions': [
+    key: {
+      extensions: [
         'key'
       ],
-      'icon': 'key',
-      'display': 'Keynote Document',
-      'instructions': 'To read Keynote Documents, you need <a href=\'http://www.apple.com/iwork/keynote/\' target=\'_blank\'>Apple iWorks</a>.'
+      icon: 'key',
+      display: 'Keynote Document',
+      instructions: 'To read Keynote Documents, you need <a href=\'http://www.apple.com/iwork/keynote/\' target=\'_blank\'>Apple iWorks</a>.'
     },
-    'csv': {
-      'extensions': [
+    csv: {
+      extensions: [
         'csv'
       ],
-      'icon': 'sql',
-      'display': 'CSV File',
-      'instructions': 'CSV files can be opened with a spreadsheet application such as Microsoft Excel or similar.'
+      icon: 'sql',
+      display: 'CSV File',
+      instructions: 'CSV files can be opened with a spreadsheet application such as Microsoft Excel or similar.'
     },
-    'txt': {
-      'extensions': [
+    txt: {
+      extensions: [
         'txt'
       ],
-      'icon': 'txt',
-      'display': 'Text File',
-      'instructions': 'To read TXT files, you need any standard text editor.'
+      icon: 'txt',
+      display: 'Text File',
+      instructions: 'To read TXT files, you need any standard text editor.'
     },
-    'rtf': {
-      'extensions': [
+    rtf: {
+      extensions: [
         'rtf'
       ],
-      'icon': 'txt',
-      'display': 'Rich Text File',
-      'instructions': 'To read RTF files, you need any standard text editor.'
+      icon: 'txt',
+      display: 'Rich Text File',
+      instructions: 'To read RTF files, you need any standard text editor.'
     },
-    'merlin': {
-      'extensions': [
+    merlin: {
+      extensions: [
         'merlin',
         'merlin2'
       ],
-      'icon': 'merlin',
-      'display': 'Merlin File',
-      'instructions': 'To read Merlin files, you need <a href=\'http://projectwizards.net/\' target=\'_blank\'>Merlin</a>.'
+      icon: 'merlin',
+      display: 'Merlin File',
+      instructions: 'To read Merlin files, you need <a href=\'http://projectwizards.net/\' target=\'_blank\'>Merlin</a>.'
     },
-    'oplx': {
-      'extensions': [
+    oplx: {
+      extensions: [
         'oplx'
       ],
-      'icon': 'merlin',
-      'display': 'OmniPlan File',
-      'instructions': 'To read OmniPlan files, you need <a href=\'https://www.omnigroup.com/omniplan\' target=\'_blank\'>OmniPlan</a>.'
+      icon: 'merlin',
+      display: 'OmniPlan File',
+      instructions: 'To read OmniPlan files, you need <a href=\'https://www.omnigroup.com/omniplan\' target=\'_blank\'>OmniPlan</a>.'
     },
-    'zip': {
-      'extensions': [
+    zip: {
+      extensions: [
         'zip',
         'str',
         'tar',
         'gz'
       ],
-      'icon': 'zip',
-      'display': 'Archive',
-      'instructions': 'Most archive formats are natively recognized by your computer.'
+      icon: 'zip',
+      display: 'Archive',
+      instructions: 'Most archive formats are natively recognized by your computer.'
     },
-    'dmg': {
-      'extensions': [
+    dmg: {
+      extensions: [
         'dmg'
       ],
-      'icon': 'dmg',
-      'display': 'DMG Installer',
-      'instructions': 'DMG installers are disc images for Mac used for the installation of applications.'
+      icon: 'dmg',
+      display: 'DMG Installer',
+      instructions: 'DMG installers are disc images for Mac used for the installation of applications.'
     },
-    'fnt': {
-      'extensions': [
+    fnt: {
+      extensions: [
         'fnt',
         'ttf',
         'bmap',
         'afm',
         'otf'
       ],
-      'icon': 'fnt',
-      'display': 'Font',
-      'instructions': 'To open Font packages, you need a font manager application such as FontCreator on a PC or Font Book on a Mac.'
+      icon: 'fnt',
+      display: 'Font',
+      instructions: 'To open Font packages, you need a font manager application such as FontCreator on a PC or Font Book on a Mac.'
     },
-    'suit': {
-      'extensions': [
+    suit: {
+      extensions: [
         'suit'
       ],
-      'icon': 'fnt',
-      'display': 'Font Suitcase',
-      'instructions': 'To open Font Suitcase, you need a Mac.'
+      icon: 'fnt',
+      display: 'Font Suitcase',
+      instructions: 'To open Font Suitcase, you need a Mac.'
     },
-    'html': {
-      'extensions': [
+    html: {
+      extensions: [
         'htm',
         'html',
         'rhtml'
       ],
-      'icon': 'html',
-      'display': 'HTML File',
-      'instructions': 'To read HTML files, you need a standard text editor.'
+      icon: 'html',
+      display: 'HTML File',
+      instructions: 'To read HTML files, you need a standard text editor.'
     },
-    'css': {
-      'extensions': [
+    css: {
+      extensions: [
         'css'
       ],
-      'icon': 'gen',
-      'display': 'Stylesheet',
-      'instructions': 'To read CSS files, you need a standard text editor.'
+      icon: 'gen',
+      display: 'Stylesheet',
+      instructions: 'To read CSS files, you need a standard text editor.'
     },
-    'php': {
-      'extensions': [
+    php: {
+      extensions: [
         'php'
       ],
-      'icon': 'gen',
-      'display': 'PHP File',
-      'instructions': 'To read PHP files, you need a standard text editor.'
+      icon: 'gen',
+      display: 'PHP File',
+      instructions: 'To read PHP files, you need a standard text editor.'
     },
-    'yml': {
-      'extensions': [
+    yml: {
+      extensions: [
         'yml'
       ],
-      'icon': 'sql',
-      'display': 'YAML File',
-      'instructions': 'To read YAML files, you need a standard text editor.'
+      icon: 'sql',
+      display: 'YAML File',
+      instructions: 'To read YAML files, you need a standard text editor.'
     },
-    'sql': {
-      'extensions': [
+    sql: {
+      extensions: [
         'sql'
       ],
-      'icon': 'sql',
-      'display': 'MySql Dump',
-      'instructions': 'To read MySql Dump files, you need <a href=\'http://www.mysql.com/\' target=\'_blank\'>MySQL</a>.'
+      icon: 'sql',
+      display: 'MySql Dump',
+      instructions: 'To read MySql Dump files, you need <a href=\'http://www.mysql.com/\' target=\'_blank\'>MySQL</a>.'
     },
-    'dir': {
-      'extensions': [
+    dir: {
+      extensions: [
         'dir'
       ],
-      'icon': 'dir',
-      'display': 'Folder'
+      icon: 'dir',
+      display: 'Folder'
     },
-    'cut': {
-      'extensions': [
+    cut: {
+      extensions: [
         'cut'
       ],
-      'icon': 'cut',
-      'display': 'Shortcut'
+      icon: 'cut',
+      display: 'Shortcut'
     },
-    'ftr': {
-      'extensions': [
+    ftr: {
+      extensions: [
         'ftr'
       ],
-      'icon': 'ftr',
-      'display': 'Feature'
+      icon: 'ftr',
+      display: 'Feature'
     },
-    'pop': {
-      'extensions': [
+    pop: {
+      extensions: [
         'pop'
       ],
-      'icon': 'pop',
-      'display': 'Popup Window'
+      icon: 'pop',
+      display: 'Popup Window'
     },
-    'link': {
-      'extensions': [
+    link: {
+      extensions: [
         'net',
         'link',
         'com',
@@ -397,29 +397,29 @@ const _EXTENSIONS =
         'es',
         'de'
       ],
-      'icon': 'net',
-      'display': 'Internet Location'
+      icon: 'net',
+      display: 'Internet Location'
     },
-    'site': {
-      'extensions': [
+    site: {
+      extensions: [
         'site'
       ],
-      'icon': 'site',
-      'display': 'Mini Site'
+      icon: 'site',
+      display: 'Mini Site'
     },
-    'slide': {
-      'extensions': [
+    slide: {
+      extensions: [
         'slide'
       ],
-      'icon': 'slide',
-      'display': 'Slideshow'
+      icon: 'slide',
+      display: 'Slideshow'
     },
-    'rss': {
-      'extensions': [
+    rss: {
+      extensions: [
         'rss'
       ],
-      'icon': 'txt',
-      'display': 'RSS Feed'
+      icon: 'txt',
+      display: 'RSS Feed'
     }
   }
 

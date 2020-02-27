@@ -44,7 +44,7 @@
     },
     computed: {
       buttonClasses: function () {
-        const classes = [ `button`, this.size ? `button--${this.size}` : '' ]
+        const classes = ['button', this.size ? `button--${this.size}` : '']
 
         if (this.variant) {
           this.variant.split(' ').forEach((val) => {

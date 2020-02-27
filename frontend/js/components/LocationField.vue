@@ -248,7 +248,7 @@
 
           // reverse geocoding
           geocoder.geocode({
-            'location': location
+            location: location
           }, function (results, status) {
             if (status === 'OK') {
               if (results[1]) {

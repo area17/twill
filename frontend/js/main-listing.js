@@ -97,7 +97,7 @@ window[process.env.VUE_APP_NAME].vm = new Vue({
       this.reloadDatas()
     },
     filterListing: function (formData) {
-      let self = this
+      const self = this
       this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
       this.$store.commit(DATATABLE.UPDATE_DATATABLE_FILTER, formData || { search: '' })
 

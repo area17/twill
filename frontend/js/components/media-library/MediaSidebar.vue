@@ -227,7 +227,7 @@
         }))
       },
       warningDeleteMessage: function () {
-        let prefix = this.hasMultipleMedias ? this.allowDelete ? 'Some files are' : 'This files are' : 'This file is'
+        const prefix = this.hasMultipleMedias ? this.allowDelete ? 'Some files are' : 'This files are' : 'This file is'
         return this.allowDelete ? prefix + ' used and can\'t be deleted. Do you want to delete the others ?' : prefix + ' used and can\'t be deleted.'
       },
       containerClasses: function () {
@@ -312,10 +312,10 @@
         const data = this.getFormData(form)
 
         if (this.hasSingleMedia) {
-          if (data.hasOwnProperty('alt_text')) this.firstMedia.metadatas.default.altText = data['alt_text']
+          if (data.hasOwnProperty('alt_text')) this.firstMedia.metadatas.default.altText = data.alt_text
           else this.firstMedia.metadatas.default.altText = ''
 
-          if (data.hasOwnProperty('caption')) this.firstMedia.metadatas.default.caption = data['caption']
+          if (data.hasOwnProperty('caption')) this.firstMedia.metadatas.default.caption = data.caption
           else this.firstMedia.metadatas.default.caption = ''
 
           this.extraMetadatas.forEach((metadata) => {
@@ -355,7 +355,7 @@
 
         this.loading = true
 
-        let data = this.getFormData(form)
+        const data = this.getFormData(form)
         data.fieldsRemovedFromBulkEditing = this.fieldsRemovedFromBulkEditing
 
         const url = this.hasMultipleMedias ? this.firstMedia.updateBulkUrl : this.firstMedia.updateUrl // single or multi updates

@@ -114,7 +114,7 @@
         return id === this.activeBlock.id
       },
       addBlock: function (block, fromIndex) {
-        let newBlock = {
+        const newBlock = {
           title: block.title,
           type: block.component,
           icon: block.icon,
@@ -152,7 +152,7 @@
         iframe.height = frameHeight + 'px'
       },
       resizeAllIframes: function () {
-        let self = this
+        const self = this
         const iframes = this.$el.querySelectorAll('iframe')
 
         iframes.forEach(function (iframe) {

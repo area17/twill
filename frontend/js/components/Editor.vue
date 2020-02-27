@@ -94,7 +94,7 @@
     },
     watch: {
       loading: function (loading) {
-        let self = this
+        const self = this
 
         if (!loading) {
           self.$nextTick(function () {
@@ -144,7 +144,7 @@
         if (this.$root.$refs.preview) this.$root.$refs.preview.open()
       },
       resize: function () {
-        let self = this
+        const self = this
         window.addEventListener('mousemove', self.resizeSidebar, false)
         window.addEventListener('mouseup', self.stopResizeSidebar, false)
       },
@@ -154,7 +154,7 @@
         if (sidebar) sidebar.style.width = (event.clientX - sidebar.offsetLeft) / windowWidth * 100 + '%'
       },
       stopResizeSidebar: function () {
-        let self = this
+        const self = this
         window.removeEventListener('mousemove', self.resizeSidebar, false)
         window.removeEventListener('mouseup', self.stopResizeSidebar, false)
 
@@ -202,7 +202,7 @@
         this.$store.dispatch(ACTIONS.GET_PREVIEW, index)
       },
       selectBlock: function (index) {
-        let self = this
+        const self = this
 
         // toggle selection
         const blockId = this.getBlockId(index)

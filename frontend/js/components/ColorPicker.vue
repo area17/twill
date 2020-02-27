@@ -77,8 +77,8 @@
       throttle: throttle((fn, data) => {
         fn(data)
       }, 20, {
-        'leading': true,
-        'trailing': false
+        leading: true,
+        trailing: false
       }),
       satHandleChange (event, skip) {
         !skip && event.preventDefault()

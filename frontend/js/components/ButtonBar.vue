@@ -20,7 +20,7 @@
     computed: {
       barClasses: function () {
         return [
-          `buttonbar`,
+          'buttonbar',
           this.variant ? `buttonbar--${this.variant}` : ''
         ]
       }

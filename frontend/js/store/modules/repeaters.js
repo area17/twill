@@ -49,7 +49,7 @@ const mutations = {
     state.repeaters[blockInfos.name].splice(blockInfos.index, 1)
   },
   [FORM.DUPLICATE_FORM_BLOCK] (state, blockInfos) {
-    let clone = Object.assign({}, state.repeaters[blockInfos.name][blockInfos.index])
+    const clone = Object.assign({}, state.repeaters[blockInfos.name][blockInfos.index])
     clone.id = setBlockID()
     state.repeaters[blockInfos.name].splice(blockInfos.index + 1, 0, clone)
   },

@@ -58,7 +58,7 @@
       },
       radioClasses: function () {
         return [
-          this.inline ? `radioGroup--inline` : ''
+          this.inline ? 'radioGroup--inline' : ''
         ]
       }
     },

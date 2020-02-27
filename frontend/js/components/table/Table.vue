@@ -33,7 +33,7 @@
     computed: {
       colWidths: function () {
         return this.columnsWidth.map(function (width) {
-          return { 'width': width ? width + 'px' : '' }
+          return { width: width ? width + 'px' : '' }
         })
       }
     },

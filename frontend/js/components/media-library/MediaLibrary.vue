@@ -170,7 +170,7 @@
         return this.selected[this.connector] || []
       },
       selectedType: function () {
-        let self = this
+        const self = this
         const navItem = self.types.filter(function (t) {
           return t.value === self.type
         })
@@ -246,8 +246,8 @@
 
           if (shift && this.selectedMedias.length > 0) {
             const lastSelectedMedia = this.selectedMedias[this.selectedMedias.length - 1]
-            let lastSelectedMediaIndex = this.fullMedias.findIndex((media) => media.id === lastSelectedMedia.id)
-            let selectedMediaIndex = this.fullMedias.findIndex((media) => media.id === id)
+            const lastSelectedMediaIndex = this.fullMedias.findIndex((media) => media.id === lastSelectedMedia.id)
+            const selectedMediaIndex = this.fullMedias.findIndex((media) => media.id === id)
             if (selectedMediaIndex === -1 && lastSelectedMediaIndex === -1) return
 
             let start = null
@@ -295,7 +295,7 @@
         return data
       },
       clearFilters: function () {
-        let self = this
+        const self = this
         // reset tags
         if (this.$refs.filter) this.$refs.filter.value = null
 
