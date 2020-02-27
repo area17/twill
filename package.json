@@ -9,9 +9,9 @@
     "dist": "npm run build && cp -R public/ dist/"
   },
   "dependencies": {
-    "core-js": "^3.2.1",
-    "axios": "^0.18.1",
-    "cropperjs": "^1.4.1",
+    "axios": "0.19.2",
+    "core-js": "3.6.4",
+    "cropperjs": "1.5.6",
     "date-fns": "1.29.0",
     "fine-uploader": "^5.16.2",
     "fine-uploader-wrappers": "^1.1.0",
@@ -21,26 +21,26 @@
     "smartcrop": "^2.0.3",
     "tinycolor2": "1.4.1",
     "truncate-utf8-bytes": "1.0.2",
-    "vue": "^2.6.10",
+    "vue": "2.6.11",
     "vue-select": "2.5.1",
     "vue-timeago": "^3.4.4",
     "vuedraggable": "2.20.0",
     "vuetrend": "^0.3.2",
-    "vuex": "3.0.1"
+    "vuex": "3.1.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.11.0",
     "@vue/cli-plugin-eslint": "^3.11.0",
     "@vue/cli-service": "^3.11.0",
     "@vue/eslint-config-standard": "^4.0.0",
-    "babel-eslint": "^10.0.1",
+    "babel-eslint": "10.1.0",
     "clean-webpack-plugin": "^3.0.0",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
-    "sass": "^1.18.0",
+    "sass": "1.26.1",
     "sass-loader": "^7.1.0",
-    "svg-spritemap-webpack-plugin": "^3.4.0",
-    "vue-template-compiler": "^2.6.10",
+    "svg-spritemap-webpack-plugin": "3.5.4",
+    "vue-template-compiler": "2.6.11",
     "webpack-assets-manifest": "^3.1.1"
   }
 }
