@@ -1,3 +1,6 @@
+@title('Image')
+@icon('image')
+
 @formField('medias', [
     'name' => 'image',  // role
     'label' => 'Image',

@@ -1,3 +1,6 @@
+@title('Text')
+@icon('text')
+
 @formField('input', [
     'name' => 'title',
     'label' => 'Title',

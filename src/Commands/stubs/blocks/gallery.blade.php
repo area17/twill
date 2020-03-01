@@ -1,3 +1,6 @@
+@title('Gallery')
+@icon('editor')
+
 @formField('select', [
     'name' => 'variation',
     'label' => 'Gallery variation',
