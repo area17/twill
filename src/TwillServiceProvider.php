@@ -10,7 +10,7 @@ use A17\Twill\Commands\Install;
 use A17\Twill\Commands\ModuleMake;
 use A17\Twill\Commands\BlockMake;
 use A17\Twill\Commands\ListIcons;
-use A17\Twill\Commands\ListBlockTypes;
+use A17\Twill\Commands\ListBlocks;
 use A17\Twill\Commands\RefreshLQIP;
 use A17\Twill\Commands\Update;
 use A17\Twill\Http\ViewComposers\ActiveNavigation;
@@ -273,7 +273,7 @@ class TwillServiceProvider extends ServiceProvider
             ModuleMake::class,
             BlockMake::class,
             ListIcons::class,
-            ListBlockTypes::class,
+            ListBlocks::class,
             CreateSuperAdmin::class,
             RefreshLQIP::class,
             GenerateBlocks::class,
