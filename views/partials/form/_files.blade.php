@@ -1,7 +1,7 @@
 @php
     $max = $max ?? 1;
-    $note = $note ?? 'Add' . ($max > 1 ? " up to $max files" : ' one file');
     $itemLabel = $itemLabel ?? strtolower($label);
+    $note = $note ?? 'Add' . ($max > 1 ? " up to $max $itemLabel" : ' one ' . Str::singular($itemLabel));
 @endphp
 
 <a17-locale
