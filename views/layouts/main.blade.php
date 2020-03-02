@@ -109,6 +109,16 @@
 
 
             @yield('initialStore')
+
+            window.STORE = {}
+            window.STORE.form = {}
+            window.STORE.publication = {}
+            window.STORE.medias = {}
+            window.STORE.medias.types = []
+            window.STORE.medias.selected = {}
+            window.STORE.browsers = {}
+            window.STORE.browsers.selected = {}
+
             @stack('vuexStore')
         </script>
         <script src="{{ twillAsset('chunk-vendors.js') }}"></script>

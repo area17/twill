@@ -130,7 +130,7 @@ importedComponents.keys().map(block => {
 
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
-window[process.env.VUE_APP_NAME].vm = new Vue({
+window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
   store, // inject store to all children
   el: '#app',
   mixins: [formatPermalink, editorMixin],
