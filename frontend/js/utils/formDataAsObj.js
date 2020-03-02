@@ -384,7 +384,6 @@ export default function (formNode) {
     let $domNode
     let domNodeValue
     const result = {}
-    let resultLength
 
     for (i = 0; i < $formElements.length; i++) {
       $domNode = $formElements[i]
@@ -433,7 +432,7 @@ export default function (formNode) {
     }
 
     // Check the length of the result.
-    resultLength = getObjLength(result)
+    const resultLength = getObjLength(result)
 
     return resultLength > 0 ? result : false
   }

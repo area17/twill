@@ -42,6 +42,8 @@
   const GOOGLEMAPURL = 'https://maps.googleapis.com/maps/api/js?libraries=places&key='
   const APIKEY = window[process.env.VUE_APP_NAME].hasOwnProperty('APIKEYS') && window[process.env.VUE_APP_NAME].APIKEYS.hasOwnProperty('googleMapApi') ? window[process.env.VUE_APP_NAME].APIKEYS.googleMapApi : null
 
+  /* global google */
+
   export default {
     name: 'A17Locationfield',
     mixins: [InputMixin, InputframeMixin, LocaleMixin, FormStoreMixin],
@@ -204,7 +206,7 @@
       toggleMap: function () {
         this.isMapOpen = !this.isMapOpen
         this.mapMessage = this.isMapOpen ? MAPMESSAGE.hide : MAPMESSAGE.show
-        /* global google */
+
         if (!this.map && typeof google !== 'undefined') {
           this.$nextTick(function () {
             this.initMap()
@@ -239,7 +241,6 @@
         // Create the autocomplete object and associate it with the UI input control.
         this.autocompletePlace = new google.maps.places.Autocomplete(this.$el.querySelector('input[type="search"]'))
         // When a place is selected
-        /* global google */
         google.maps.event.addListener(this.autocompletePlace, 'place_changed', this.onPlaceChanged)
 
         if (this.address === '' && this.lat && this.lng) {
@@ -270,7 +271,6 @@
       }
     },
     mounted: function () {
-      /* global google */
       if (typeof google !== 'undefined') {
         this.initGoogleApi()
       } else {
@@ -283,7 +283,6 @@
       }
     },
     beforeDestroy: function () {
-      /* global google */
       if (typeof google !== 'undefined') google.maps.event.clearListeners(this.autocompletePlace, 'place_changed', this.onPlaceChanged)
     }
   }
