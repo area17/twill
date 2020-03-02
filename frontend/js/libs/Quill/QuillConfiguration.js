@@ -4,6 +4,8 @@ const Break = Quill.import('blots/break')
 const Embed = Quill.import('blots/embed')
 const Link = Quill.import('formats/link')
 
+Quill.debug('error')
+
 /*
 * Support for shift enter
 * @see https://github.com/quilljs/quill/issues/252
