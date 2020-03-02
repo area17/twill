@@ -6,7 +6,8 @@
     "watch": "vue-cli-service build --watch",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint frontend",
-    "prod": "npm run build"
+    "prod": "npm run build",
+    "clean-customs": "rm -rf frontend/js/components/blocks/customs/* && rm -rf frontend/js/components/customs/* && touch frontend/js/components/customs/.keep"
   },
   "dependencies": {
     "axios": "0.19.2",
