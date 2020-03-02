@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html dir="ltr" lang="{{ App::getLocale() }}">
+<html dir="ltr" lang="{{ config('twill.locale', 'en') }}">
     <head>
         @include('twill::partials.head')
     </head>
@@ -78,12 +78,12 @@
         <script>
             window['{{ config('twill.js_namespace') }}'] = {};
             window['{{ config('twill.js_namespace') }}'].version = '{{ config('twill.version') }}';
+            window['{{ config('twill.js_namespace') }}'].twillLocalization = {!! json_encode($twillLocalization) !!};
             window['{{ config('twill.js_namespace') }}'].STORE = {};
             window['{{ config('twill.js_namespace') }}'].STORE.form = {};
             window['{{ config('twill.js_namespace') }}'].STORE.medias = {};
             window['{{ config('twill.js_namespace') }}'].STORE.medias.types = [];
             window['{{ config('twill.js_namespace') }}'].STORE.languages = {!! json_encode(getLanguagesForVueStore($form_fields ?? [], $translate ?? false)) !!};
-            window['{{ config('twill.js_namespace') }}'].twillLocalization = {!! json_encode($twillLocalization) !!};
 
             @if (config('twill.enabled.media-library'))
                 window['{{ config('twill.js_namespace') }}'].STORE.medias.types.push({

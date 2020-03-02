@@ -12,8 +12,8 @@ use A17\Twill\Commands\Update;
 use A17\Twill\Http\ViewComposers\ActiveNavigation;
 use A17\Twill\Http\ViewComposers\CurrentUser;
 use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
-use A17\Twill\Http\ViewComposers\MediasUploaderConfig;
 use A17\Twill\Http\ViewComposers\Localization;
+use A17\Twill\Http\ViewComposers\MediasUploaderConfig;
 use A17\Twill\Models\Block;
 use A17\Twill\Models\File;
 use A17\Twill\Models\Media;
@@ -71,6 +71,7 @@ class TwillServiceProvider extends ServiceProvider
         $this->registerCommands();
 
         $this->registerAndPublishViews();
+        $this->registerAndPublishTranslations();
 
         $this->extendBlade();
         $this->addViewComposers();
@@ -255,7 +256,6 @@ class TwillServiceProvider extends ServiceProvider
         $viewPath = __DIR__ . '/../views';
 
         $this->loadViewsFrom($viewPath, 'twill');
-        $this->loadTranslationsFrom($viewPath . '/lang', 'twill');
         $this->publishes([$viewPath => resource_path('views/vendor/twill')], 'views');
     }
 

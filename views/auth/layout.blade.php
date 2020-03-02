@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html dir="ltr" lang="{{ App::getLocale() }}">
+<html dir="ltr" lang="{{ config('twill.locale', 'en') }}">
     <head>
         @include('twill::partials.head')
     </head>

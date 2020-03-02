@@ -45,6 +45,19 @@
         ])
     @endif
 
+    @formField('select', [
+        'name' => 'language',
+        'label' => 'Language',
+        'placeholder' => 'Select a language',
+        'default' => config('twill.locale', 'en'),
+        'options' => array_map(function($locale) {
+            return [
+                'value' => $locale,
+                'label' => getLanguageLabelFromLocaleCode($locale, true)
+            ];
+        }, ['en', 'zh-Hans', 'ru'])
+    ])
+
     @if($with2faSettings ?? false)
         @formField('checkbox', [
             'name' => 'google_2fa_enabled',
@@ -77,19 +90,6 @@
             @endcomponent
         @endunless
     @endif
-
-    @formField('select', [
-      'name' => 'language',
-      'label' => 'Language',
-      'placeholder' => 'Select a language',
-      'default' => App::getLocale(),
-      'options' => array_map(function($locale) {
-        return [
-          'value' => $locale,
-          'label' => getLanguageLabelFromLocaleCode($locale, true)
-        ];
-      }, ['en', 'zh-Hans', 'ru'])
-    ])
 @stop
 
 @push('vuexStore')

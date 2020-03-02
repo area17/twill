@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddLanguageColumnToTwillUsers extends Migration
+class AddLanguageColumnToTwillDefaultUsers extends Migration
 {
     /**
      * Run the migrations.

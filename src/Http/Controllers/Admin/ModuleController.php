@@ -256,7 +256,7 @@ abstract class ModuleController extends Controller
         if (!isset($this->indexColumns)) {
             $this->indexColumns = [
                 $this->titleColumnKey => [
-                    'title' => $this->titleColumnKey === 'title' ? 'Title' : ucfirst($this->titleColumnKey),
+                    'title' => ucfirst($this->titleColumnKey),
                     'field' => $this->titleColumnKey,
                     'sort' => true,
                 ],
