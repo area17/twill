@@ -345,34 +345,34 @@ trait HandlePermissions
     protected function renderModulePermissions($object, $fields)
     {
         // Render each user's permission under a item
-        $users = app()->make(UserRepository::class)->get(["permissions" => function ($query) use ($object) {
-            $query->where([['permissionable_type', get_class($object)], ['permissionable_id', $object->id]]);
-        }]);
+        // $users = app()->make(UserRepository::class)->get(["permissions" => function ($query) use ($object) {
+        //     $query->where([['permissionable_type', get_class($object)], ['permissionable_id', $object->id]]);
+        // }]);
 
-        foreach ($users as $user) {
-            $defaultPermission = "";
-            $permission = $user->permissions()->moduleItem()->ofItem($object)->first();
-            if (!$permission && $user->role->permissions()->global()->where('name', 'manage-modules')->first()) {
-                $defaultPermission = "'manage-item'";
-            }
+        // foreach ($users as $user) {
+        //     $defaultPermission = "";
+        //     $permission = $user->permissions()->moduleItem()->ofItem($object)->first();
+        //     if (!$permission && $user->role->permissions()->global()->where('name', 'manage-modules')->first()) {
+        //         $defaultPermission = "'manage-item'";
+        //     }
 
-            if(empty($defaultPermission)) {
-                foreach($user->role->permissions()->module()->get() as $p) {
-                    if ($p->permissionable_type==get_class($object) && $p->permissionable_id==null) {
-                        $defaultPermission = "'".str_replace("-module", "-item", $p->name)."'";
-                        break;
-                    }
-                }
-            }
+        //     if(empty($defaultPermission)) {
+        //         foreach($user->role->permissions()->module()->get() as $p) {
+        //             if ($p->permissionable_type==get_class($object) && $p->permissionable_id==null) {
+        //                 $defaultPermission = "'".str_replace("-module", "-item", $p->name)."'";
+        //                 break;
+        //             }
+        //         }
+        //     }
 
-            $fields['user_' . $user->id . '_permission'] = $permission ? "'" . $permission->name . "'" : $defaultPermission;
-        }
+        //     $fields['user_' . $user->id . '_permission'] = $permission ? "'" . $permission->name . "'" : $defaultPermission;
+        // }
 
-        // Render each group's permission under a item
-        $groups = Group::with('users.permissions')->get();
-        foreach ($groups as $group) {
-            $fields[$group->id . '_group_authorized'] = $this->allUsersInGroupAuthorized($group, $object);
-        }
+        // // Render each group's permission under a item
+        // $groups = Group::with('users.permissions')->get();
+        // foreach ($groups as $group) {
+        //     $fields[$group->id . '_group_authorized'] = $this->allUsersInGroupAuthorized($group, $object);
+        // }
 
         return $fields;
     }
