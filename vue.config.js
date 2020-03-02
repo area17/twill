@@ -36,6 +36,33 @@ const pages = {
   'main-free': `${srcDirectory}/js/main-free.js`
 }
 
+const svgConfig = (suffix = null) => {
+  suffix = suffix !== null ? `-${suffix}` : ''
+
+  return {
+    output: {
+      filename: isProd
+        ? `${assetsDir}/icons/icons${suffix}.[contenthash].svg`
+        : `${assetsDir}/icons/icons${suffix}.svg`,
+      chunk: {
+        name: `icons${suffix}`
+      }
+    },
+    sprite: {
+      prefix: 'icon--'
+    },
+    styles: {
+      filename: `~svg-sprite-icons${suffix}.scss`,
+      variables: {
+        sprites: `icons${suffix}-sprites`,
+        sizes: `icons${suffix}-sizes`,
+        variables: `icons${suffix}-variables`,
+        mixin: `icons${suffix}-sprites-mixin`
+      }
+    }
+  }
+}
+
 const config = {
   // Define base outputDir of build
   outputDir: outputDir,
@@ -63,50 +90,8 @@ const config = {
   configureWebpack: {
     plugins: [
       new CleanWebpackPlugin(),
-      new SVGSpritemapPlugin(`${srcDirectory}/icons/**/*.svg`, {
-        output: {
-          filename: isProd
-            ? `${assetsDir}/icons/icons.[contenthash].svg`
-            : `${assetsDir}/icons/icons.svg`,
-          chunk: {
-            name: 'icons'
-          }
-        },
-        sprite: {
-          prefix: 'icon--'
-        },
-        styles: {
-          filename: '~svg-sprite-icons.scss',
-          variables: {
-            sprites: 'icons-sprites',
-            sizes: 'icons-sizes',
-            variables: 'icons-variables',
-            mixin: 'icons-sprites-mixin'
-          }
-        }
-      }),
-      new SVGSpritemapPlugin(`${srcDirectory}/icons-files/**/*.svg`, {
-        output: {
-          filename: isProd
-            ? `${assetsDir}/icons/icons-files.[contenthash].svg`
-            : `${assetsDir}/icons/icons-files.svg`,
-          chunk: {
-            name: 'icons-files'
-          }
-        },
-        sprite: {
-          prefix: 'icon--'
-        },
-        styles: {
-          filename: '~svg-sprite-icons-files.scss',
-          variables: {
-            sprites: 'icons-files-sprites',
-            sizes: 'icons-files-sizes',
-            variables: 'icons-files-variables',
-            mixin: 'icons-files-sprites-mixin'
-          }
-        }
-      }),
+      new SVGSpritemapPlugin(`${srcDirectory}/icons/**/*.svg`, svgConfig()),
+      new SVGSpritemapPlugin(`${srcDirectory}/icons-files/**/*.svg`, svgConfig('files')),
       new WebpackAssetsManifest({
         output: `${publicPath}/twill-manifest.json`,
         publicPath: true,
