@@ -11,7 +11,7 @@ use Illuminate\View\Factory as ViewFactory;
 class GenerateBlocks extends Command
 {
     const NO_BLOCKS_DEFINED = "There are no blocks defined yet. Please refer to https://twill.io/docs/#block-editor-3 in order to create blocks.";
-    const SCANNING_BLOCKS   = "Starting to scan block views directory...";
+    const SCANNING_BLOCKS = "Starting to scan block views directory...";
 
     /**
      * The name and signature of the console command.
@@ -73,7 +73,7 @@ class GenerateBlocks extends Command
                 'render' => $this->sanitize($vueBlockTemplate),
             ])->render();
 
-            $vueBlockPath = $this->makeDirectory(resource_path('assets/js/blocks/')) . 'Block' . Str::title($blockName) . '.vue';
+            $vueBlockPath = $this->makeDirectory(resource_path(config('twill.block_editor.custom_vue_blocks_resource_path', 'assets/js/blocks'))) . '/Block' . Str::title($blockName) . '.vue';
 
             $this->filesystem->put($vueBlockPath, $vueBlockContent);
 

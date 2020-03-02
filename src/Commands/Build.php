@@ -99,7 +99,7 @@ class Build extends Command
      */
     private function copyBlocks()
     {
-        $localCustomBlocksPath = resource_path('assets/js/blocks');
+        $localCustomBlocksPath = resource_path(config('twill.block_editor.custom_vue_blocks_resource_path', 'assets/js/blocks'));
         $twillCustomBlocksPath = base_path(config('twill.vendor_path')) . '/frontend/js/components/blocks/customs';
 
         if (!$this->filesystem->exists($twillCustomBlocksPath)) {
