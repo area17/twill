@@ -89,8 +89,7 @@
     "test:syntax": "vendor/bin/php-cs-fixer --dry-run --rules=-@PSR1 fix src",
     "test": [
       "@test:syntax",
-      "@test:phpunit",
-      "@test:analyse"
+      "@test:phpunit"
     ]
   },
   "extra": {
