@@ -22,59 +22,72 @@ const state = {
       label: 'Private'
     }
   ],
+  submitDisableMessage: window[process.env.VUE_APP_NAME].STORE.publication.submitDisableMessage || '',
   submitOptions: window[process.env.VUE_APP_NAME].STORE.publication.submitOptions || {
     draft: [
       {
         name: 'save',
-        text: window.$trans('publisher.save', 'Save as draft')
+        text: window.$trans('publisher.save', 'Save as draft'),
+        disabled: false
       },
       {
         name: 'save-close',
-        text: window.$trans('publisher.save-close', 'Save as draft and close')
+        text: window.$trans('publisher.save-close', 'Save as draft and close'),
+        disabled: false
       },
       {
         name: 'save-new',
-        text: window.$trans('publisher.save-new', 'Save as draft and create new')
+        text: window.$trans('publisher.save-new', 'Save as draft and create new'),
+        disabled: false
       },
       {
         name: 'cancel',
-        text: window.$trans('publisher.cancel', 'Cancel')
+        text: window.$trans('publisher.cancel', 'Cancel'),
+        disabled: false
       }
     ],
     live: [
       {
         name: 'publish',
-        text: window.$trans('publisher.publish', 'Publish')
+        text: window.$trans('publisher.publish', 'Publish'),
+        disabled: false
       },
       {
         name: 'publish-close',
-        text: window.$trans('publisher.publish-close', 'Publish and close')
+        text: window.$trans('publisher.publish-close', 'Publish and close'),
+        disabled: false
       },
       {
         name: 'publish-new',
-        text: window.$trans('publisher.publish-new', 'Publish and create new')
+        text: window.$trans('publisher.publish-new', 'Publish and create new'),
+        disabled: false
       },
       {
         name: 'cancel',
-        text: window.$trans('publisher.cancel', 'Cancel')
+        text: window.$trans('publisher.cancel', 'Cancel'),
+        disabled: false
       }
     ],
     update: [
       {
         name: 'update',
-        text: window.$trans('publisher.update', 'Update')
+        text: window.$trans('publisher.update', 'Update'),
+        disabled: false
       },
       {
         name: 'update-close',
-        text: window.$trans('publisher.update-close', 'Update and close')
+        text: window.$trans('publisher.update-close', 'Update and close'),
+        disabled: false
       },
       {
         name: 'update-new',
-        text: window.$trans('publisher.update-new', 'Update and create new')
+        text: window.$trans('publisher.update-new', 'Update and create new'),
+        disabled: false
       },
       {
         name: 'cancel',
-        text: window.$trans('publisher.cancel', 'Cancel')
+        text: window.$trans('publisher.cancel', 'Cancel'),
+        disabled: false
       }
     ]
   }
@@ -87,6 +100,20 @@ const getters = {
   },
   getSubmitOptions: state => {
     return (state.published || !state.withPublicationToggle) ? state.submitOptions[state.publishSubmit] : state.submitOptions.draft
+  },
+  isEnabledSubmitOption: (state, getters) => name => {
+    // default is true (for example on custom form or if we dont have submitOptions setup)
+    let enabled = true
+    let activeOption = {}
+
+    const matches = getters.getSubmitOptions.filter((el) => el.name === name)
+    if (matches.length) activeOption = matches[0]
+
+    if (activeOption.hasOwnProperty('disabled')) {
+      enabled = !activeOption.disabled
+    }
+
+    return enabled
   },
   getSaveType: (state, getters) => {
     return state.saveType || getters.getSubmitOptions[0].name

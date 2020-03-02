@@ -32,7 +32,8 @@
         </draggable>
       </div>
       <div class="editorSidebar__actions">
-        <a17-button @click="saveForm(submitOptions[0].name)" :name="submitOptions[0].name" variant="validate">{{ submitOptions[0].text }}</a17-button>
+        <a17-button v-if="isSubmitDisabled(submitOptions[0])" variant="validate" :disabled="true">{{ submitOptions[0].text }}</a17-button>
+        <a17-button v-else @click="saveForm(submitOptions[0].name)" :name="submitOptions[0].name" variant="validate">{{ submitOptions[0].text }}</a17-button>
       </div>
     </template>
     <template v-else>
@@ -75,6 +76,13 @@
       })
     },
     methods: {
+      isSubmitDisabled: function (btn) {
+        if (btn.hasOwnProperty('disabled')) {
+          return btn.disabled === true
+        } else {
+          return false
+        }
+      },
       toggleDropdown: function (index) {
         if (this.blocks.length > 1) {
           const ddName = this.moveDropdown(index)

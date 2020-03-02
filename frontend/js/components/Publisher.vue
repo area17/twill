@@ -12,7 +12,7 @@
         <a href="#" class="publisher__link" @click.prevent="openPreview"><span v-svg symbol="preview"></span><span class="f--link-underlined--o">Preview changes</span></a>
       </div>
       <div class="publisher__item publisher__item--btns">
-        <a17-multibutton @button-clicked="buttonClicked" :options="submitOptions" type="submit"></a17-multibutton>
+        <a17-multibutton @button-clicked="buttonClicked" :options="submitOptions" type="submit" :message="submitDisableMessage"></a17-multibutton>
       </div>
   </div>
   <!-- <div class="publisher__trash">
@@ -107,7 +107,8 @@
         withPublicationTimeframe: state => state.publication.withPublicationTimeframe,
         visibility: state => state.publication.visibility,
         visibilityOptions: state => state.publication.visibilityOptions,
-        reviewProcess: state => state.publication.reviewProcess
+        reviewProcess: state => state.publication.reviewProcess,
+        submitDisableMessage: state => state.publication.submitDisableMessage
       }),
       ...mapGetters([
         'publishedLanguages',
