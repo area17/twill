@@ -2,11 +2,10 @@ const path = require('path')
 const isProd = process.env.NODE_ENV === 'production'
 
 // Define global vue variables
-process.env.VUE_APP_NAME = require('./package').name.toUpperCase()
+process.env.VUE_APP_NAME = process.env.VUE_APP_NAME || require('./package').name.toUpperCase()
 
 // eslint-disable-next-line no-console
-console.log('\x1b[32m', `${process.env.VUE_APP_NAME}`)
-console.log('\x1b[32m', `\n🔥 Building frontend application in ${isProd ? 'production' : 'dev'} mode.`)
+console.log('\x1b[32m', `\n🔥 Building Twill assets in ${isProd ? 'production' : 'dev'} mode.`)
 
 /**
  * For configuration
@@ -25,9 +24,9 @@ const SVGSpritemapPlugin = require('svg-spritemap-webpack-plugin')
 const WebpackAssetsManifest = require('webpack-assets-manifest')
 
 const srcDirectory = 'frontend'
-const publicPath = 'twill'
-const outputDir = `dist`
-const assetsDir = `${publicPath}/assets`
+const outputDir = 'dist'
+const assetsDir = process.env.TWILL_ASSETS_DIR || 'assets/admin'
+
 const pages = {
   'main-buckets': `${srcDirectory}/js/main-buckets.js`,
   'main-dashboard': `${srcDirectory}/js/main-dashboard.js`,
@@ -82,6 +81,8 @@ const config = {
   pages,
   devServer: {
     sockPort: 8080,
+    hot: true,
+    disableHostCheck: true,
     headers: {
       "Access-Control-Allow-Origin": "*"
     }
@@ -93,7 +94,7 @@ const config = {
       new SVGSpritemapPlugin(`${srcDirectory}/icons/**/*.svg`, svgConfig()),
       new SVGSpritemapPlugin(`${srcDirectory}/icons-files/**/*.svg`, svgConfig('files')),
       new WebpackAssetsManifest({
-        output: `${publicPath}/twill-manifest.json`,
+        output: `${assetsDir}/twill-manifest.json`,
         publicPath: true,
         customize (entry, original, manifest, asset) {
           const search = new RegExp(`${assetsDir.replace(/\//gm, '\/')}\/(css|fonts|js|icons)\/`, 'gm')
@@ -102,23 +103,16 @@ const config = {
           }
         }
       })
-    ]
+    ],
+    performance: {
+      hints: false
+    }
   },
   chainWebpack: config => {
     // Update default vue-cli aliases
-    config.resolve.alias
-      .set('fonts', path.resolve(`${srcDirectory}/fonts`))
-    config.resolve.alias
-      .set('@', path.resolve(`${srcDirectory}/js`))
-    config.resolve.alias
-      .set('styles', path.resolve(`${srcDirectory}/scss`))
-    config.resolve.alias
-      .set('vue$', path.resolve(`node_modules/vue/dist/vue.esm.js`))
-    /* Delete default copy webpack plugin
-       Because we are in a custom architecture instead of vue-cli project
-       Copying public folder could be confusing with default Laravel architecture
-     */
-    config.plugins.delete('copy')
+    config.resolve.alias.set('fonts', path.resolve(`${srcDirectory}/fonts`))
+    config.resolve.alias.set('@', path.resolve(`${srcDirectory}/js`))
+    config.resolve.alias.set('styles', path.resolve(`${srcDirectory}/scss`))
 
     // Delete HTML related webpack plugins by page
     Object.keys(pages).forEach(page => {

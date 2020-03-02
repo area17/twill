@@ -17,8 +17,10 @@
     <link href="{{ twillAsset('chunk-vendors.css') }}" rel="preload" as="style" crossorigin/>
 @endif
 
-<link href="{{ twillAsset('chunk-common.css') }}" rel="stylesheet" crossorigin/>
-<link href="{{ twillAsset('chunk-vendors.css' )}}" rel="stylesheet" crossorigin/>
+@unless(config('twill.dev_mode', false))
+    <link href="{{ twillAsset('chunk-common.css') }}" rel="stylesheet" crossorigin/>
+    <link href="{{ twillAsset('chunk-vendors.css' )}}" rel="stylesheet" crossorigin/>
+@endunless
 
 <!-- head.js -->
 <script>

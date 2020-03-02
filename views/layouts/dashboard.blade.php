@@ -10,7 +10,9 @@
     @if(app()->isProduction())
         <link href="{{ twillAsset('main-dashboard.css') }}" rel="preload" as="style" crossorigin/>
     @endif
-    <link href="{{ twillAsset('main-dashboard.css') }}" rel="stylesheet" crossorigin/>
+    @unless(config('twill.dev_mode', false))
+        <link href="{{ twillAsset('main-dashboard.css') }}" rel="stylesheet" crossorigin/>
+    @endunless
 @endpush
 
 @push('extra_js_head')

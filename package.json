@@ -3,10 +3,10 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "watch": "vue-cli-service build --watch",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint frontend",
-    "dist": "npm run build && cp -R public/ dist/",
-    "production": "npm run build"
+    "prod": "npm run build"
   },
   "dependencies": {
     "axios": "0.19.2",

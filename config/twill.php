@@ -143,8 +143,12 @@ return [
     |--------------------------------------------------------------------------
     |
      */
-    'dev_mode' => false,
     'js_namespace' => 'TWILL',
+    'dev_mode' => false,
+    'dev_mode_url' => env('TWILL_DEV_MODE_URL', 'http://localhost:8080'),
+    'public_directory' => env('TWILL_ASSETS_DIR', 'assets/admin'),
+    'manifest_file' => 'twill-manifest.json',
     'vendor_path' => 'vendor/area17/twill',
-    'manifest_path' => public_path('twill/twill-manifest.json'),
+    'custom_components_resource_path' => 'assets/js/components',
+
 ];
