@@ -213,7 +213,7 @@ class TwillServiceProvider extends ServiceProvider
 
     private function publishMigrations()
     {
-        if (config('twill.load_default_migrations_from_twill', true)) {
+        if (config('twill.load_default_migrations', true)) {
             $this->loadMigrationsFrom(__DIR__ . '/../migrations/default');
         }
 
