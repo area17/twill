@@ -75,6 +75,12 @@
                                 previous-url="{{ $parentPreviousUrl ?? '' }}"
                                 next-url="{{ $parentNextUrl ?? '' }}"
                             ></a17-page-nav>
+                            @hasSection('sideFieldset')
+                                <a17-fieldset title="{{ $sideFieldsetLabel ?? 'Options' }}" id="options">
+                                    @yield('sideFieldset')
+                                </a17-fieldset>
+                            @endif
+                            @yield('sideFieldsets')
                         </div>
                     </aside>
                     <section class="col col--primary" data-sticky-top="publisher">
