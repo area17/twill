@@ -41,12 +41,12 @@
                     <aside class="col col--aside">
                         @if($facts ?? false)
                             <a17-stat-feed :facts="{{ json_encode($facts ?? []) }}">
-                                Statistics
+                                {{ twillTrans('twill::lang.dashboard.statitics') }}
                             </a17-stat-feed>
                         @endif
 
                         @if(!$drafts->isEmpty())
-                            <a17-feed :entities="{{ json_encode($drafts ?? []) }}">My drafts</a17-feed>
+                            <a17-feed :entities="{{ json_encode($drafts ?? []) }}">{{ twillTrans('twill::lang.dashboard.my-drafts') }}</a17-feed>
                         @endif
                     </aside>
                     <div class="col col--primary">

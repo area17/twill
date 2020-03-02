@@ -1,5 +1,5 @@
 @php
-    $label = $label ?? 'Add content'
+    $label = $label ?? twillTrans('twill::lang.fields.block-editor.add-content');
 @endphp
 
 @unless ($withoutSeparator ?? false)

@@ -6,20 +6,21 @@ return [
         'password' => '密码',
         'forgot-password' => '忘记密码',
         'login' => '登陆',
-        'login-title' => '登陆'
+        'login-title' => '登陆',
     ],
     'dashboard' => [
         'search-placeholder' => '搜索',
         'empty-message' => '没有新动态',
         'all-activity' => '全部动态',
-        'my-activity' => '我的动态'
+        'my-activity' => '我的动态',
+        'create-new' => '创建新的',
     ],
     'footer' => [
-        'version' => '版本'
+        'version' => '版本',
     ],
     'form' => [
         'content' => '内容',
-        'editor' => '可视化编辑器'
+        'editor' => '可视化编辑器',
     ],
     'listing' => [
         'filter' => [
@@ -37,18 +38,18 @@ return [
             'feature' => '特别展示',
             'restore' => '恢复',
             'destroy' => '彻底删除',
-            'delete' => '移动到垃圾箱'
+            'delete' => '移动到垃圾箱',
         ],
         'add-new-button' => '添加',
         'listing-empty-message' => '没有内容',
-        'languages' => '语言'
+        'languages' => '语言',
     ],
     'main' => [
         'published' => '已发布',
         'draft' => '草稿',
         'create' => '创建',
         'update' => '更新',
-        'title' => '标题'
+        'title' => '标题',
     ],
     'modal' => [
         'title-field' => '标题',
@@ -57,14 +58,14 @@ return [
             'title' => '创建新内容',
             'button' => '创建',
             'create-another' => '继续创建',
-        ]
+        ],
     ],
     'nav' => [
         'media-library' => '媒体库',
         'cms-users' => '用户',
         'settings' => '设置',
         'logout' => '注销',
-        'admin' => '管理员'
+        'admin' => '管理员',
     ],
     'media-library' => [
         'title' => '媒体库',
@@ -75,40 +76,40 @@ return [
             'empty-text' => '没有选中文件',
             'files-selected' => '已选中文件',
             'clear' => '清除',
-            'dimensions' => '尺寸'
-        ]
+            'dimensions' => '尺寸',
+        ],
     ],
     'filter' => [
-        'search-placeholder'=> '搜索',
+        'search-placeholder' => '搜索',
         'toggle-label' => '筛选',
         'apply-btn' => '应用',
-        'clear-btn' => '清除'
+        'clear-btn' => '清除',
     ],
     'select' => [
-        'empty-text' => '请选择选项'
+        'empty-text' => '请选择选项',
     ],
     'uploader' => [
         'dropzone-text' => '或者将文件拖拽至此处',
-        'upload-btn-label' => '上传文件'
+        'upload-btn-label' => '上传文件',
     ],
     'fields' => [
         'medias' => [
-            'btn-label' => '添加图片'
+            'btn-label' => '添加图片',
         ],
         'block-editor' => [
             'collapse-all' => '全部折叠',
             'expend-all' => '全部展开',
             'open-in-editor' => '可视化编辑器',
             'create-another' => '继续创建',
-            'delete' => '删除'
+            'delete' => '删除',
         ],
         'browser' => [
             'attach' => '添加项目',
-            'add-label' => '添加'
+            'add-label' => '添加',
         ],
         'files' => [
-            'add-label' => '添加'
-        ]
+            'add-label' => '添加',
+        ],
     ],
     'user-management' => [
         'users' => '用户',
@@ -131,7 +132,7 @@ return [
         'update' => '更新',
         'update-and-close' => '更新并关闭当前窗口',
         'update-and-create-new' => '更新并创建新用户',
-        'cancel' => '取消'
+        'cancel' => '取消',
     ],
     'publisher' => [
         'switcher-title' => '状态',
@@ -144,6 +145,6 @@ return [
         'update' => '更新',
         'update-close' => '更新并关闭',
         'update-new' => '更新并创建新内容',
-        'cancel' => '取消'
-    ]
+        'cancel' => '取消',
+    ],
 ];

@@ -88,7 +88,7 @@
             @if (config('twill.enabled.media-library'))
                 window['{{ config('twill.js_namespace') }}'].STORE.medias.types.push({
                     value: 'image',
-                    text: '{{ __("twill::lang.media-library.images") }}',
+                    text: '{{ twillTrans("twill::lang.media-library.images") }}',
                     total: {{ \A17\Twill\Models\Media::count() }},
                     endpoint: '{{ route('admin.media-library.medias.index') }}',
                     tagsEndpoint: '{{ route('admin.media-library.medias.tags') }}',
@@ -99,7 +99,7 @@
             @if (config('twill.enabled.file-library'))
                 window['{{ config('twill.js_namespace') }}'].STORE.medias.types.push({
                     value: 'file',
-                    text: '{{ __("twill::lang.media-library.files") }}',
+                    text: '{{ twillTrans("twill::lang.media-library.files") }}',
                     total: {{ \A17\Twill\Models\File::count() }},
                     endpoint: '{{ route('admin.file-library.files.index') }}',
                     tagsEndpoint: '{{ route('admin.file-library.files.tags') }}',

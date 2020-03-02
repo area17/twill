@@ -6,20 +6,23 @@ return [
         'password' => 'Password',
         'forgot-password' => 'Forgot password',
         'login' => 'Login',
-        'login-title' => 'Login'
+        'login-title' => 'Login',
     ],
     'dashboard' => [
         'search-placeholder' => 'Search Everything...',
         'empty-message' => 'You don\'t have any activity yet.',
         'all-activity' => 'All activity',
-        'my-activity' => 'My activity'
+        'my-activity' => 'My activity',
+        'create-new' => 'Create new',
+        'my-drafts' => 'My drafts',
+        'statitics' => 'Statistics',
     ],
     'footer' => [
-        'version' => 'Version'
+        'version' => 'Version',
     ],
     'form' => [
         'content' => 'Content',
-        'editor' => 'Editor'
+        'editor' => 'Editor',
     ],
     'listing' => [
         'filter' => [
@@ -37,18 +40,18 @@ return [
             'feature' => 'Feature',
             'restore' => 'Restore',
             'destroy' => 'Destroy',
-            'delete' => 'Delete'
+            'delete' => 'Delete',
         ],
         'add-new-button' => 'Add New',
         'listing-empty-message' => 'There is no item here yet.',
-        'languages' => 'Languages'
+        'languages' => 'Languages',
     ],
     'main' => [
         'published' => 'Live',
         'draft' => 'Draft',
         'create' => 'Create',
         'update' => 'Update',
-        'title' => 'Title'
+        'title' => 'Title',
     ],
     'modal' => [
         'title-field' => 'Title',
@@ -59,15 +62,15 @@ return [
             'create-another' => 'Create and add another',
         ],
         'update' => [
-            'title' => 'Update'
-        ]
+            'title' => 'Update',
+        ],
     ],
     'nav' => [
         'media-library' => 'Media Library',
         'cms-users' => 'CMS Users',
         'settings' => 'Settings',
         'logout' => 'Logout',
-        'admin' => 'Admin'
+        'admin' => 'Admin',
     ],
     'media-library' => [
         'title' => 'Media Library',
@@ -78,40 +81,43 @@ return [
             'empty-text' => 'No file selected',
             'files-selected' => 'files selected',
             'clear' => 'Clear',
-            'dimensions' => 'Dimensions'
-        ]
+            'dimensions' => 'Dimensions',
+        ],
     ],
     'filter' => [
-        'search-placeholder'=> 'Search',
+        'search-placeholder' => 'Search',
         'toggle-label' => 'Filter',
         'apply-btn' => 'Apply',
-        'clear-btn' => 'Clear'
+        'clear-btn' => 'Clear',
     ],
     'select' => [
-        'empty-text' => 'Sorry, no matching options.'
+        'empty-text' => 'Sorry, no matching options.',
     ],
     'uploader' => [
         'dropzone-text' => 'or drop new files here',
-        'upload-btn-label' => 'Add new'
+        'upload-btn-label' => 'Add new',
     ],
     'fields' => [
         'medias' => [
-            'btn-label' => 'Attach image'
+            'btn-label' => 'Attach image',
         ],
         'block-editor' => [
             'collapse-all' => 'Collapse all',
             'expend-all' => 'Expend all',
             'open-in-editor' => 'Open in editor',
             'create-another' => 'Create another',
-            'delete' => 'Delete'
+            'delete' => 'Delete',
+            'add-content' => 'Add content',
+            'preview' => 'Preview',
+            'loading' => 'Loading',
         ],
         'browser' => [
             'attach' => 'Attach',
-            'add-label' => 'Add'
+            'add-label' => 'Add',
         ],
         'files' => [
-            'add-label' => 'Add'
-        ]
+            'add-label' => 'Add',
+        ],
     ],
     'user-management' => [
         'users' => 'Users',
@@ -134,7 +140,7 @@ return [
         'update' => 'Update',
         'update-and-close' => 'Update and close',
         'update-and-create-new' => 'Update and create new',
-        'cancel' => 'Cancel'
+        'cancel' => 'Cancel',
     ],
     'publisher' => [
         'switcher-title' => 'Status',
@@ -147,6 +153,6 @@ return [
         'update' => 'Update',
         'update-close' => 'Update and close',
         'update-new' => 'Update and create new',
-        'cancel' => 'Cancel'
-    ]
+        'cancel' => 'Cancel',
+    ],
 ];

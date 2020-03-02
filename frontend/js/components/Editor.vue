@@ -1,16 +1,16 @@
 <template>
   <a17-overlay ref="overlay" title="Content editor" @close="closeEditor" @open="openEditor">
     <div class="editor">
-      <a17-button class="editor__leave" variant="editor" size="small" @click="openPreview" v-if="revisions.length"><span v-svg symbol="preview" class="hide--xsmall"></span>Preview</a17-button>
+      <a17-button class="editor__leave" variant="editor" size="small" @click="openPreview" v-if="revisions.length"><span v-svg symbol="preview" class="hide--xsmall"></span>{{ $trans('fields.block-editor.preview', 'Preview') }}</a17-button>
       <div class="editor__frame">
         <div class="editor__inner">
           <div class="editor__sidebar" :class="sidebarClass" ref="sidebar">
-            <a17-editorsidebar @delete="deleteBlock" @save="saveBlock" @cancel="cancelBlock">Add content</a17-editorsidebar>
+            <a17-editorsidebar @delete="deleteBlock" @save="saveBlock" @cancel="cancelBlock">{{ $trans('fields.block-editor.add-content', 'Add content') }}</a17-editorsidebar>
           </div>
           <div class="editor__resizer" @mousedown="resize"><span></span></div>
           <div class="editor__preview" :class="previewClass" :style="previewStyle">
             <a17-editorpreview ref="previews" @select="selectBlock" @delete="deleteBlock" @unselect="unselectBlock" @add="addBlock" />
-            <a17-spinner v-if="loading" :visible="true">Loading&hellip;</a17-spinner>
+            <a17-spinner v-if="loading" :visible="true">{{ $trans('fields.block-editor.loading', 'Loading') }}&hellip;</a17-spinner>
           </div>
         </div>
       </div>

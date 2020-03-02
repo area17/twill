@@ -7,7 +7,7 @@
                         :offset="0">
             <a17-button type="button" class="shortcutCreator__btn" variant="action"
                         @click="$refs.createNewDropdown.toggle()">
-              Create new
+              {{ $trans('dashboard.create-new', 'Create new') }}
               <span class="shortcutCreator__trigger"><span v-svg symbol="dropdown_module"></span></span>
             </a17-button>
             <div slot="dropdown__content">

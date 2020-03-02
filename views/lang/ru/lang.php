@@ -6,20 +6,21 @@ return [
         'password' => 'Пароль',
         'forgot-password' => 'Восстановить пароль',
         'login' => 'Войти',
-        'login-title' => 'Войти'
+        'login-title' => 'Войти',
     ],
     'dashboard' => [
         'search-placeholder' => 'Поиск всего...',
         'empty-message' => 'У вас еще нет активности.',
         'all-activity' => 'Все активность',
-        'my-activity' => 'Моя активность'
+        'my-activity' => 'Моя активность',
+        'create-new' => 'создайте новый',
     ],
     'footer' => [
-        'version' => 'Версия'
+        'version' => 'Версия',
     ],
     'form' => [
         'content' => 'Содержимое',
-        'editor' => 'Редактор'
+        'editor' => 'Редактор',
     ],
     'listing' => [
         'filter' => [
@@ -37,18 +38,18 @@ return [
             'feature' => 'Выделить',
             'restore' => 'Восстановить',
             'destroy' => 'Уничтожить',
-            'delete' => 'Удалить'
+            'delete' => 'Удалить',
         ],
         'add-new-button' => 'Добавить',
         'listing-empty-message' => 'Ничего нет.',
-        'languages' => 'Языки'
+        'languages' => 'Языки',
     ],
     'main' => [
         'published' => 'Опубликован',
         'draft' => 'Черновик',
         'create' => 'Создать',
         'update' => 'Обновить',
-        'title' => 'Заголовок'
+        'title' => 'Заголовок',
     ],
     'modal' => [
         'title-field' => 'Заголовок',
@@ -59,15 +60,15 @@ return [
             'create-another' => 'Создать и добавить другую',
         ],
         'update' => [
-            'title' => 'Обновить'
-        ]
+            'title' => 'Обновить',
+        ],
     ],
     'nav' => [
         'media-library' => 'Медиа библиотека',
         'cms-users' => 'Пользователи CMS',
         'settings' => 'Настройки',
         'logout' => 'Выйти',
-        'admin' => 'Администратор'
+        'admin' => 'Администратор',
     ],
     'media-library' => [
         'title' => 'Медиа библиотека',
@@ -78,40 +79,40 @@ return [
             'empty-text' => 'Файлы не выделены',
             'files-selected' => 'файлов выделено',
             'clear' => 'Снять выделение',
-            'dimensions' => 'Уровни'
-        ]
+            'dimensions' => 'Уровни',
+        ],
     ],
     'filter' => [
-        'search-placeholder'=> 'Поиск',
+        'search-placeholder' => 'Поиск',
         'toggle-label' => 'Фильтр',
         'apply-btn' => 'Применить',
-        'clear-btn' => 'Очистить'
+        'clear-btn' => 'Очистить',
     ],
     'select' => [
-        'empty-text' => 'Нет соответствующих параметров.'
+        'empty-text' => 'Нет соответствующих параметров.',
     ],
     'uploader' => [
         'dropzone-text' => 'или перетащите сюда файлы.',
-        'upload-btn-label' => 'Загрузите'
+        'upload-btn-label' => 'Загрузите',
     ],
     'fields' => [
         'medias' => [
-            'btn-label' => 'Прикрепить изображение'
+            'btn-label' => 'Прикрепить изображение',
         ],
         'block-editor' => [
             'collapse-all' => 'Раскрыть все',
             'expend-all' => 'Скрыть',
             'open-in-editor' => 'Открыть в редакторе',
             'create-another' => 'Создать другой',
-            'delete' => 'Удалить'
+            'delete' => 'Удалить',
         ],
         'browser' => [
             'attach' => 'Прикрепить',
-            'add-label' => 'Добавить'
+            'add-label' => 'Добавить',
         ],
         'files' => [
-            'add-label' => 'Добавить'
-        ]
+            'add-label' => 'Добавить',
+        ],
     ],
     'user-management' => [
         'users' => 'Пользователи',
@@ -134,7 +135,7 @@ return [
         'update' => 'Обновить',
         'update-and-close' => 'Обновить и закрыть',
         'update-and-create-new' => 'Обновить и создать еще',
-        'cancel' => 'Отмена'
+        'cancel' => 'Отмена',
     ],
     'publisher' => [
         'switcher-title' => 'Статус',
@@ -147,6 +148,6 @@ return [
         'update' => 'Обновить',
         'update-close' => 'Обновить и закрыть',
         'update-new' => 'Обновить и создать еще',
-        'cancel' => 'Отмена'
-    ]
+        'cancel' => 'Отмена',
+    ],
 ];

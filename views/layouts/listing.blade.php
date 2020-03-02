@@ -38,24 +38,23 @@
                     @forelse($hiddenFilters as $filter)
                         @if ($loop->first)
                             <div slot="hidden-filters">
-                                @endif
+                        @endif
 
-                                @if (isset(${$filter.'List'}))
-                                    <a17-vselect
-                                        name="{{ $filter }}"
-                                        :options="{{ json_encode(method_exists(${$filter.'List'}, 'map') ? ${$filter.'List'}->map(function($label, $value) {
-                                return [
-                                    'value' => $value,
-                                    'label' => $label
-                                ];
-                            })->values()->toArray() : ${$filter.'List'}) }}"
-                            placeholder="All {{ strtolower(\Illuminate\Support\Str::plural($filter)) }}"
-                            ref="filterDropdown[{{ $loop->index }}]"
+                        @if (isset(${$filter.'List'}))
+                            <a17-vselect
+                                name="{{ $filter }}"
+                                :options="{{ json_encode(method_exists(${$filter.'List'}, 'map') ? ${$filter.'List'}->map(function($label, $value) {
+                                    return [
+                                        'value' => $value,
+                                        'label' => $label
+                                    ];
+                                })->values()->toArray() : ${$filter.'List'}) }}"
+                                placeholder="All {{ strtolower(\Illuminate\Support\Str::plural($filter)) }}"
+                                ref="filterDropdown[{{ $loop->index }}]"
                             ></a17-vselect>
                         @endif
 
-
-                                @if ($loop->last)
+                        @if ($loop->last)
                             </div>
                         @endif
                     @empty
