@@ -1468,7 +1468,7 @@ abstract class ModuleController extends Controller
      */
     protected function moduleHas($behavior)
     {
-        return $this->repository->hasBehaviour($behavior);
+        return $this->repository->hasBehavior($behavior);
     }
 
     /**

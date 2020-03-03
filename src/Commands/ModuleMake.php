@@ -253,6 +253,8 @@ class ModuleMake extends Command
      */
     private function createModels($modelName = 'Item', $activeTraits = [])
     {
+        $modelClassName = $modelName;
+
         make_twill_directory('Models');
 
         if ($this->translatable) {

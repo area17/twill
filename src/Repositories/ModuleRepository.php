@@ -865,18 +865,18 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param string $behaviour
+     * @param string $behavior
      * @return boolean
      */
-    public function hasBehaviour($behaviour)
+    public function hasBehavior($behavior)
     {
-        $hasBehaviour = classHasTrait($this, 'A17\Twill\Repositories\Behaviors\Handle' . ucfirst($behaviour));
+        $hasBehavior = classHasTrait($this, 'A17\Twill\Repositories\Behaviors\Handle' . ucfirst($behavior));
 
-        if (Str::startsWith($behaviour, 'translation')) {
-            $hasBehaviour = $hasBehaviour && $this->getModel()->isTranslatable();
+        if (Str::startsWith($behavior, 'translation')) {
+            $hasBehavior = $hasBehavior && $this->getModel()->isTranslatable();
         }
 
-        return $hasBehaviour;
+        return $hasBehavior;
     }
 
     /**

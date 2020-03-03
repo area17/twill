@@ -2,14 +2,14 @@
 
 namespace A17\Twill\Models;
 
-use Illuminate\Support\Str;
 use A17\Twill\Models\Behaviors\HasPresenter;
+use A17\Twill\Models\Behaviors\IsTranslatable;
 use Carbon\Carbon;
 use Cartalyst\Tags\TaggableInterface;
 use Cartalyst\Tags\TaggableTrait;
-use A17\Twill\Models\Behaviors\IsTranslatable;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 abstract class Model extends BaseModel implements TaggableInterface
 {
@@ -74,13 +74,17 @@ abstract class Model extends BaseModel implements TaggableInterface
         // Use the list of translatable attributes on our base model
         if (
             blank($fillable) &&
-            Str::contains($class= get_class($this), 'Models\Translations') &&
+            Str::contains($class = get_class($this), 'Models\Translations') &&
             property_exists($class, 'baseModuleModel')
         ) {
             $fillable = (new $this->baseModuleModel)->getTranslatedAttributes();
 
             if (!collect($fillable)->contains('locale')) {
                 $fillable[] = 'locale';
+            }
+
+            if (!collect($fillable)->contains('active')) {
+                $fillable[] = 'active';
             }
         }
 
