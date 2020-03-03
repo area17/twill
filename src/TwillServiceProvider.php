@@ -365,6 +365,12 @@ class TwillServiceProvider extends ServiceProvider
         $blade->directive('endpushonce', function () {
             return '<?php $__env->stopPush(); endif; ?>';
         });
+
+        $blade->component('twill::partials.form.utils._fieldset', 'formFieldset');
+        $blade->component('twill::partials.form.utils._columns', 'formColumns');
+        $blade->component('twill::partials.form.utils._collapsed_fields', 'formCollapsedFields');
+        $blade->component('twill::partials.form.utils._connected_ields', 'formConnectedFields');
+        $blade->component('twill::partials.form.utils._inline_checkboxes', 'formInlineCheckboxes');
     }
 
     /**
