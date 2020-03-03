@@ -2,17 +2,13 @@
 
 namespace A17\Twill\Services\Blocks;
 
-use A17\Twill\Commands\Behaviors\Blocks;
-use Illuminate\Config\Repository as Config;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Composer;
 use Illuminate\Support\Str;
 
 class Parser
 {
     /**
-     * @var \Illuminate\Support\Collection
+     * @var \A17\Twill\Services\Blocks\BlockCollection
      */
     protected $blocks;
 
@@ -32,30 +28,81 @@ class Parser
     public function __construct(Filesystem $files)
     {
         $this->files = $files;
-
-        $this->generatePaths()->parseAllBlocks();
     }
 
     public function all()
     {
-        return $this->blocks;
+        return $this->parse()->blocks;
     }
 
-    public function parseAllBlocks()
+    public function parse()
     {
-        $this->blocks = collect($this->paths)->reduce(function ($keep, $path) {
-            return $keep->merge($this->listBlocks($path['path'], $path['source'], $path['type']));
-        }, collect());
+        $this->generatePaths();
+
+        $this->blocks = (new BlockCollection($this->paths))->reduce(function (
+            $keep,
+            $path
+        ) {
+            $this->listBlocks(
+                $path['path'],
+                $path['source'],
+                $path['type']
+            )->each(function ($block) use ($keep) {
+                $keep->push($block);
+
+                return $keep;
+            });
+
+            return $keep;
+        },
+        new BlockCollection());
+
+        $this->blocks = $this->blocks->each(function ($block) {
+            $block->setSource($this->detectCustomSources($block));
+        });
+
+        return $this;
+    }
+
+    public function detectCustomSources($block)
+    {
+        if ($block->source === Block::SOURCE_APP) {
+            if (
+                $this->blocks
+                    ->where('fileName', $block->fileName)
+                    ->where('source', Block::SOURCE_TWILL)
+                    ->isNotEmpty()
+            ) {
+                return Block::SOURCE_CUSTOM;
+            }
+        }
+
+        return $block->source;
     }
 
     public function generatePaths()
     {
         $this->paths = [
-            ['path' => config_path('twill-utils/blocks'), 'source' => 'custom', 'type' => 'block'],
-            ['path' => config_path('twill-utils/repeaters'), 'source' => 'custom', 'type' => 'repeater'],
-            ['path' => __DIR__ . '/../../Commands/stubs/blocks', 'source' => 'twill', 'type' => 'block'],
-            ['path' => __DIR__ . '/../../Commands/stubs/repeaters', 'source' => 'twill', 'type' => 'repeater'],
-            ['path' => resource_path('views/admin/blocks'), 'source' => 'app', 'type' => null],
+            [
+                'path' => __DIR__ . '/../../Commands/stubs/blocks',
+                'source' => Block::SOURCE_TWILL,
+                'type' => 'block',
+            ],
+            [
+                'path' => __DIR__ . '/../../Commands/stubs/repeaters',
+                'source' => Block::SOURCE_TWILL,
+                'type' => 'repeater',
+            ],
+            [
+                'path' => resource_path('views/admin/blocks'),
+                'source' => Block::SOURCE_APP,
+                'type' => null,
+            ],
+            [
+                'path' => resource_path('views/admin/repeaters'),
+                'source' => Block::SOURCE_APP,
+                'type' => 'repeater',
+            ],
         ];
 
         return $this;
@@ -63,43 +110,57 @@ class Parser
 
     public function listBlocks($directory, $source, $type = null)
     {
-        return collect($this->files->files($directory))->map(function ($file) use ($source, $type) {
-            return $this->parseFile($file, $type)->merge(['source' => $source]);
+        return collect($this->files->files($directory))->map(function (
+            $file
+        ) use ($source, $type) {
+            return $this->parseFile($file, $type)->setSource($source);
         });
     }
 
     public function parseFile($file, $type = null)
     {
-        $block = file_get_contents((string) $file);
+        $contents = file_get_contents((string) $file);
 
-        $blockName = Str::before($file->getFilename(),'.blade.php');
+        $name = Str::before($file->getFilename(), '.blade.php');
 
-        [$title, $inferredType] = $this->getProperty('title', $block, $blockName);
-        [$icon] = $this->getProperty('icon', $block, $blockName);
-        [$trigger] = $this->getProperty('trigger', $block, $blockName);
+        [$title, $inferredType] = $this->getProperty('title', $contents, $name);
+        [$icon] = $this->getProperty('icon', $contents, $name);
+        [$trigger] = $this->getProperty('trigger', $contents, $name);
 
-        return collect([
+        return new Block([
             'title' => $title,
             'trigger' => $trigger,
-            'name' => $blockName,
+            'name' => $name,
             'type' => $type ?? $inferredType,
             'icon' => $icon,
+            'new_format' => $this->isUpgradedBlock($contents),
+            'inferred_type' => $inferredType,
+            'file' => $file,
+            'contents' => $contents,
         ]);
     }
 
     public function getProperty($property, $block, $blockName)
     {
-        preg_match("/@{$property}\(\'(.*)\'\)/", $block, $matches);
+        preg_match("/@tw-{$property}\(\'(.*)\'\)/", $block, $matches);
 
         if (filled($matches)) {
             return [$matches[1], 'block'];
         }
 
-        if ($value = config("twill.block_editor.blocks.{$blockName}.{$property}")) {
+        if (
+            $value = config(
+                "twill.block_editor.blocks.{$blockName}.{$property}"
+            )
+        ) {
             return [$value, 'block'];
         }
 
-        if ($value = config("twill.block_editor.repeaters.{$blockName}.{$property}")) {
+        if (
+            $value = config(
+                "twill.block_editor.repeaters.{$blockName}.{$property}"
+            )
+        ) {
             return [$value, 'repeater'];
         }
 
@@ -107,6 +168,15 @@ class Parser
             return [null, null];
         }
 
-        throw new \Exception("Property '{$property}' not found on block {$blockName}.");
+        throw new \Exception(
+            "Property '{$property}' not found on block {$blockName}."
+        );
+    }
+
+    public function isUpgradedBlock($block)
+    {
+        preg_match("/@tw-.*\(\'(.*)\'\)/", $block, $matches);
+
+        return filled($matches);
     }
 }

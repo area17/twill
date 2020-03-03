@@ -2,13 +2,11 @@
 
 namespace A17\Twill\Commands;
 
-use PhpCsFixer\Console\Application;
-use Illuminate\Config\Repository as Config;
-use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Composer;
 use Illuminate\Support\Str;
+use Illuminate\Console\Command;
+use A17\Twill\Services\Blocks\Block;
+use Illuminate\Filesystem\Filesystem;
+use A17\Twill\Services\Blocks\Parser;
 
 class BlockMake extends Command
 {
@@ -17,14 +15,17 @@ class BlockMake extends Command
      *
      * @var string
      */
-    protected $signature = 'twill:make:block {name} {type} {icon}';
-
+    protected $signature =
+        'twill:make:block ' .
+        '{name : Name of the new block.} ' .
+        '{base : Block on which it should be based on.}' .
+        '{icon : Icon to be used on the new block. List icons using the twill:list:icons command.}';
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create a new block ';
+    protected $description = 'Create a new block';
 
     /**
      * @var Filesystem
@@ -32,27 +33,16 @@ class BlockMake extends Command
     protected $files;
 
     /**
-     * @var Composer
-     */
-    protected $composer;
-
-    /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
      * @param Filesystem $files
-     * @param Composer $composer
-     * @param Config $config
+     * @param Parser $blockParser
      */
-    public function __construct(Filesystem $files, Composer $composer, Config $config)
+    public function __construct(Filesystem $files, Parser $blockParser)
     {
         parent::__construct();
 
         $this->files = $files;
-        $this->composer = $composer;
-        $this->config = $config;
+
+        $this->blockParser = $blockParser;
     }
 
     /**
@@ -62,29 +52,52 @@ class BlockMake extends Command
      */
     public function handle()
     {
-        $name = $this->argument('name');
-        $type = $this->argument('type');
-        $icon = $this->argument('icon');
+        $blockName = $this->argument('name');
+        $baseName = $this->argument('base');
+        $iconName = $this->argument('icon');
 
-        if (blank($icon = $this->getIconFile($this->argument('icon'))))
-        {
-            return $this->error("Icon '{$icon}' doesn't exists.");
+        if (blank($blockStub = $this->getBlockByName($baseName))) {
+            $this->error("Block '{$baseName}' doesn't exists.");
+
+            return;
         }
 
-        if (blank($blockStub = $this->getBlockStub($this->argument('type'))))
-        {
-            return $this->error("Block '{$type}' doesn't exists.");
+        if (blank($icon = $this->getIconFile($iconName))) {
+            $this->error("Icon '{$iconName}' doesn't exists.");
+
+            return;
         }
 
-        if (blank($blockFile = $this->getBlockFile($this->argument('name')))) {
-            return $this->error('Aborted.');
+        if (filled($this->getBlockByName($blockName, ['app', 'custom']))) {
+            $this->error("Block '{$blockName}' already exists.");
+
+            return;
         }
 
-        // $this->files->copy($blockStub, $blockFile);
+        $stubFileName = $blockStub->file->getPathName();
 
-        $twill = config('twill');
+        if (!$blockStub->isNewFormat) {
+            $this->error(
+                "The block file '{$stubFileName}' format is the old one."
+            );
+            $this->error('Please upgrade it before using as template.');
 
-        dd($this->printArray($twill));
+            return;
+        }
+
+        $blockIdentifier = (new Block())->makeName($blockName);
+
+        $blockFile = resource_path(
+            "views/admin/blocks/{$blockIdentifier}.blade.php"
+        );
+
+        $this->files->copy($stubFileName, $blockFile);
+
+        $this->info("Block {$blockName} was created at {$blockFile}");
+
+        $this->info(
+            "You can use it already with the identifier '{$blockIdentifier}'"
+        );
     }
 
     public function getBlockFile($name)
@@ -92,7 +105,9 @@ class BlockMake extends Command
         $blockFile = resource_path("views/admin/blocks/{$name}.blade.php");
 
         if ($this->files->exists($blockFile)) {
-            $answer = $this->ask("Local block file ({$blockFile}) exists. Replace it? (yes/no)");
+            $answer = $this->ask(
+                "Local block file ({$blockFile}) exists. Replace it? (yes/no)"
+            );
 
             if (Str::lower($answer) !== 'yes') {
                 return;
@@ -102,24 +117,18 @@ class BlockMake extends Command
         return $blockFile;
     }
 
-    public function getBlockStub($block)
+    public function getBlockByName($block, $sources = [])
     {
-        $block .= '.blade.php';
-
-        return collect($this->files->files(__DIR__ . '/stubs/blocks'))->reduce(function ($keep, $file) use ($block) {
-            if ($keep) {
-                return $keep;
-            }
-
-            return $file->getFilename() === $block ? $file->getPathName() : null;
-        }, null);
+        return $this->blockParser->all()->findByName($block, $sources);
     }
 
     public function getIconFile($icon)
     {
         $icon .= '.svg';
 
-        return collect($this->files->files(__DIR__ . '/../../frontend/icons'))->reduce(function ($keep, $file) use ($icon) {
+        return collect(
+            $this->files->files(__DIR__ . '/../../frontend/icons')
+        )->reduce(function ($keep, $file) use ($icon) {
             if ($keep) {
                 return $keep;
             }
@@ -138,6 +147,8 @@ class BlockMake extends Command
 
         file_put_contents($file = 'test.file.php', $array);
 
-        shell_exec(base_path("vendor/bin/php-cs-fixer fix {$file} --rules=@Symfony"));
+        shell_exec(
+            base_path("vendor/bin/php-cs-fixer fix {$file} --rules=@Symfony")
+        );
     }
 }

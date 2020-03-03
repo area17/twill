@@ -16,7 +16,7 @@ class ListIcons extends Command
      *
      * @var string
      */
-    protected $signature = 'twill:list:icons';
+    protected $signature = 'twill:list:icons {filter? : Filter icons by name}';
 
     /**
      * The console command description.
@@ -40,8 +40,11 @@ class ListIcons extends Command
      * @param Composer $composer
      * @param Config $config
      */
-    public function __construct(Filesystem $files, Composer $composer, Config $config)
-    {
+    public function __construct(
+        Filesystem $files,
+        Composer $composer,
+        Config $config
+    ) {
         parent::__construct();
 
         $this->files = $files;
@@ -55,10 +58,26 @@ class ListIcons extends Command
      */
     public function handle()
     {
-        $icons = collect($this->files->files(__DIR__ . '/../../frontend/icons'))->map(function ($file) {
-            return [Str::before($file->getFilename(),'.svg')];
+        $icons = collect(
+            $this->files->files(__DIR__ . '/../../frontend/icons')
+        )->map(function ($file) {
+            return [
+                'name' => Str::before($file->getFilename(), '.svg'),
+                'url' => route('admin.icons.show', [
+                    'file' => $file->getFilename(),
+                ]),
+            ];
         });
 
-        $this->table(['Icon'],$icons->toArray());
+        if (filled($filter = $this->argument('filter'))) {
+            $icons = $icons->filter(function ($icon) use ($filter) {
+                return Str::contains(
+                    Str::lower($icon['name']),
+                    Str::lower($filter)
+                );
+            });
+        }
+
+        $this->table(['Icon', 'Preview URL'], $icons->toArray());
     }
 }

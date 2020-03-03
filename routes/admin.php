@@ -63,3 +63,5 @@ if (config('twill.enabled.dashboard')) {
 if (config('twill.enabled.search')) {
     Route::name('search')->get('search', 'DashboardController@search');
 }
+
+Route::name('icons.show')->get('/admin/icons/{file}', 'IconsController@show');
