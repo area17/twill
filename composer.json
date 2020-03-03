@@ -12,42 +12,16 @@
   "homepage": "https://twill.io",
   "authors": [
     {
-      "name": "Quentin Renard",
-      "email": "quentin@area17.com",
-      "homepage": "https://area17.com/about/quentin-renard",
-      "role": "Lead backend developer"
-    },
-    {
-      "name": "Antoine Doury",
-      "email": "antoine@area17.com",
-      "homepage": "https://area17.com/about/antoine-doury",
-      "role": "Lead frontend developer"
-    },
-    {
-      "name": "Antonin Caudron",
-      "email": "antonin@area17.com",
-      "homepage": "https://area17.com/about/antonin-caudron",
-      "role": "Frontend developer"
-    },
-    {
-      "name": "Fernando Petrelli",
-      "email": "fernando@area17.com",
-      "homepage": "https://area17.com/about/fernando-petrelli",
-      "role": "Backend developer"
-    },
-    {
-      "name": "Gilbert Moufflet",
-      "email": "gilbert@area17.com",
-      "homepage": "https://area17.com/about/gilbert-moufflet",
-      "role": "Backend developer"
-    },
-    {
-      "name": "Mubashar Iqbal",
-      "email": "me@mubs.me",
-      "homepage": "http://mubs.me/",
-      "role": "Backend developer"
+      "name": "AREA 17",
+      "email": "hello@twill.io",
+      "homepage": "https://area17.com"
     }
   ],
+  "support": {
+    "issues": "https://github.com/ifox/twill/issues/",
+    "docs": "https://twill.io/docs",
+    "chat": "https://spectrum.chat/twill"
+  },
   "require": {
     "php": "^7.1",
     "ext-json": "*",
