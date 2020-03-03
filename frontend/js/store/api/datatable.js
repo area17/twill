@@ -107,8 +107,11 @@ export default {
     axios.put(row.duplicate).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      globalError(component, resp)
-      console.log('duplicate request error.')
+      const error = {
+        message: 'Duplicate request error.',
+        value: resp
+      }
+      globalError(component, error)
     })
   },
 
