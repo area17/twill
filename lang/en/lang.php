@@ -9,7 +9,7 @@ return [
         'login-title' => 'Login',
     ],
     'dashboard' => [
-        'search-placeholder' => 'Search Everything...',
+        'search-placeholder' => 'Search everything...',
         'empty-message' => 'You don\'t have any activity yet.',
         'all-activity' => 'All activity',
         'my-activity' => 'My activity',
@@ -26,7 +26,7 @@ return [
     ],
     'listing' => [
         'filter' => [
-            'all-items' => 'All Items',
+            'all-items' => 'All items',
             'mine' => 'Mine',
             'published' => 'Published',
             'draft' => 'Draft',
@@ -42,7 +42,7 @@ return [
             'destroy' => 'Destroy',
             'delete' => 'Delete',
         ],
-        'add-new-button' => 'Add New',
+        'add-new-button' => 'Add new',
         'listing-empty-message' => 'There is no item here yet.',
         'languages' => 'Languages',
     ],
