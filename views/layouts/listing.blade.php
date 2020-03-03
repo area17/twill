@@ -9,6 +9,8 @@
     $nested = $nested ?? false;
     $bulkEdit = $bulkEdit ?? true;
     $create = $create ?? false;
+
+    $requestFilter = json_decode(request()->get('filter'), true) ?? [];
 @endphp
 
 @push('extra_css')
@@ -41,14 +43,23 @@
                         @endif
 
                         @if (isset(${$filter.'List'}))
+                            @php
+                                $list = ${$filter.'List'};
+                                $options = method_exists($list, 'map') ?
+                                    $list->map(function($label, $value) {
+                                        return [
+                                            'value' => $value,
+                                            'label' => $label,
+                                        ];
+                                    })->values()->toArray() : $list;
+                                $selectedIndex = isset($requestFilter[$filter]) ? array_search($requestFilter[$filter], array_column($options, 'value')) : false;
+                            @endphp
                             <a17-vselect
                                 name="{{ $filter }}"
-                                :options="{{ json_encode(method_exists(${$filter.'List'}, 'map') ? ${$filter.'List'}->map(function($label, $value) {
-                                    return [
-                                        'value' => $value,
-                                        'label' => $label
-                                    ];
-                                })->values()->toArray() : ${$filter.'List'}) }}"
+                                :options="{{ json_encode($options) }}"
+                                @if ($selectedIndex !== false)
+                                    :selected="{{ json_encode($options[$selectedIndex]) }}"
+                                @endif
                                 placeholder="All {{ strtolower(\Illuminate\Support\Str::plural($filter)) }}"
                                 ref="filterDropdown[{{ $loop->index }}]"
                             ></a17-vselect>

@@ -130,6 +130,15 @@ abstract class ModuleController extends Controller
     protected $filterLinks = [];
 
     /**
+     * Filters that are selected by default in the index view.
+     *
+     * Example: 'filter_key' => 'default_filter_value'
+     *
+     * @var array
+     */
+    protected $filtersDefaultOptions = [];
+
+    /**
      * Default orders for the index view.
      *
      * @var array
@@ -249,6 +258,11 @@ abstract class ModuleController extends Controller
                 'search' => ($this->moduleHas('translations') ? '' : '%') . $this->titleColumnKey,
             ];
         }
+
+        /*
+         * Apply any filters that are selected by default
+         */
+        $this->applyFiltersDefaultOptions();
 
         /*
          * Available columns of the index view
@@ -1231,6 +1245,26 @@ abstract class ModuleController extends Controller
         }
 
         return json_decode($this->request->get('filter'), true) ?? [];
+    }
+
+    /**
+     * @return void
+     */
+    protected function applyFiltersDefaultOptions()
+    {
+        if (!count($this->filtersDefaultOptions) || $this->request->has('search')) {
+            return;
+        }
+
+        $filters = $this->getRequestFilters();
+
+        foreach ($this->filtersDefaultOptions as $filterName => $defaultOption) {
+            if (!isset($filters[$filterName])) {
+                $filters[$filterName] = $defaultOption;
+            }
+        }
+
+        $this->request->merge(['filter' => json_encode($filters)]);
     }
 
     /**
