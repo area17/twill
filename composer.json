@@ -22,16 +22,22 @@
     "docs": "https://twill.io/docs",
     "chat": "https://spectrum.chat/twill"
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/jasonmccreary/laravel-nestedset.git"
+    }
+  ],
   "require": {
     "php": "^7.1",
     "ext-json": "*",
     "ext-pdo": "*",
     "astrotomic/laravel-translatable": "^11.5",
-    "cartalyst/tags": "^6.0|^7.0|^8.0|^9.0",
+    "cartalyst/tags": "^6.0|^7.0|^8.0|^9.0|^10.0",
     "doctrine/dbal": "^2.9",
     "guzzlehttp/guzzle": "^6.2",
     "imgix/imgix-php": "^3.0",
-    "laravel/framework": "~5.6|~5.7|~5.8|^6.0",
+    "laravel/framework": "~5.6|~5.7|~5.8|^6.0|^7.0",
     "laravel/socialite": "^4.2",
     "league/flysystem-aws-s3-v3": "^1.0",
     "league/glide-laravel": "^1.0",
@@ -44,7 +50,7 @@
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^2.16",
-    "kalnoy/nestedset": "^5.0",
+    "kalnoy/nestedset": "^5.0|dev-patch-1#5098dbc36aefda0abe4bd515967efda8ac5506be",
     "nunomaduro/larastan": "^0.4.0|^0.5.0",
     "orchestra/testbench": "~3.3|~3.4|~3.5|~3.6|~3.7|~3.8|^4.0",
     "phpunit/phpunit": "~5.0|~6.0|~7.0|~8.0"
