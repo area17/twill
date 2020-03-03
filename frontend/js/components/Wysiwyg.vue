@@ -5,7 +5,7 @@
       <input :name="name" type="hidden" v-model="value"/>
       <template v-if="editSource">
         <div class="wysiwyg" :class="textfieldClasses" v-show="!activeSource">
-          <div class="wysiwyg__editor" ref="editor"></div>
+          <div class="wysiwyg__editor" :class="{ 'wysiwyg__editor--limitHeight' : limitHeight }" ref="editor"></div>
           <span v-if="shouldShowCounter" class="wysiwyg__limit f--tiny" :class="limitClasses">{{ counter }}</span>
         </div>
         <div class="form__field form__field--textarea" v-show="activeSource">
@@ -16,7 +16,7 @@
       </template>
       <template v-else>
         <div class="wysiwyg" :class="textfieldClasses">
-          <div class="wysiwyg__editor" ref="editor"></div>
+          <div class="wysiwyg__editor" :class="{ 'wysiwyg__editor--limitHeight' : limitHeight }" ref="editor"></div>
           <span v-if="shouldShowCounter" class="wysiwyg__limit f--tiny" :class="limitClasses">{{ counter }}</span>
         </div>
       </template>
@@ -70,6 +70,10 @@
       },
       initialValue: {
         default: ''
+      },
+      limitHeight: {
+        type: Boolean,
+        default: false
       },
       options: {
         type: Object,
@@ -210,7 +214,7 @@
         if (value === true) {
           value = prompt('Enter anchor:')
         } else {
-          let range = this.quill.getSelection()
+          const range = this.quill.getSelection()
           const id = this.quill.getFormat(range).anchor || ''
           value = prompt('Edit anchor:', id)
         }
@@ -296,6 +300,11 @@
   .wysiwyg__button {
     margin-top: 20px;
   }
+
+  .wysiwyg__editor--limitHeight {
+    max-height: calc(100vh - 250px);
+    overflow-y: scroll;
+  }
 </style>
 <style lang="scss">
   /* Not scoped style here because we want to overwrite default style of the wysiwig */
@@ -317,8 +326,6 @@
   }
 </style>
 <style lang="scss">
-  @import '~styles/setup/_mixins-colors-vars.scss';
-
   /* Not scoped style here because we want to overwrite default style of the wysiwig */
   .a17 {
     .ql-toolbar.ql-snow {

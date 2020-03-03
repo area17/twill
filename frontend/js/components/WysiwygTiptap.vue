@@ -19,24 +19,18 @@
           <editor-menu-bar :editor="editor"
                            v-slot="{ commands, isActive }">
             <div class="wysiwyg__menubar">
+
               <template v-if="toolbar.header">
-                <div class="wysiwyg__menubar-heading">
-                  <div class="vselect">
-                    <div class="vselect__field">
-                      <v-select
-                        :value="headingValue"
-                        :options="headingOptions"
-                        @input="updateHeadingValue($event, commands)"
-                      >
-                      </v-select>
-                    </div>
-                  </div>
-                </div>
+                <wysiwyg-menu-bar-btn icon="paragraph"
+                                      v-if="toolbar.header"
+                                      :isActive="isActive.paragraph()"
+                                      @btn:click="commands.paragraph"/>
+                <wysiwyg-menu-bar-btn v-for="headingLevel in headingOptions"
+                                      :key="headingLevel"
+                                      :icon="headingLevel > 1 ? `header-${headingLevel}` : 'header'"
+                                      :isActive="isActive.heading({ level: headingLevel })"
+                                      @btn:click="commands.heading({ level: headingLevel })"/>
               </template>
-              <wysiwyg-menu-bar-btn icon="undo"
-                                    @btn:click="commands.undo"/>
-              <wysiwyg-menu-bar-btn icon="redo"
-                                    @btn:click="commands.redo"/>
 
               <wysiwyg-menu-bar-btn icon="bold"
                                     v-if="toolbar.bold"
@@ -54,11 +48,13 @@
                                     v-if="toolbar.underline"
                                     :isActive="isActive.underline()"
                                     @btn:click="commands.underline"/>
-
-              <wysiwyg-menu-bar-btn icon="link"
+              <!-- Disabling link option for now as Tiptap does
+                   not support it by default in the menu bar, only
+                   in the bubble mode. -->
+              <!-- <wysiwyg-menu-bar-btn icon="link"
                                     v-if="toolbar.link"
                                     :isActive="isActive.link()"
-                                    @btn:click="commands.link"/>
+                                    @btn:click="commands.link"/> -->
 
               <wysiwyg-menu-bar-btn icon="ul"
                                     v-if="toolbar.bullet"
@@ -117,10 +113,13 @@
                                         @btn:click="commands.toggleCellMerge"/>
                 </div>
               </template>
+              <wysiwyg-menu-bar-btn icon="undo"
+                                    @btn:click="commands.undo"/>
+              <wysiwyg-menu-bar-btn icon="redo"
+                                    @btn:click="commands.redo"/>
             </div>
           </editor-menu-bar>
-          <div class="wysiwyg__content"
-               @click="handleEditorContentClick">
+          <div class="wysiwyg__contentWrapper" :class="{ 'wysiwyg__contentWrapper--limitHeight' : limitHeight }">
             <editor-content class="wysiwyg__content"
                             :editor="editor"/>
           </div>
@@ -170,7 +169,6 @@
     History
   } from 'tiptap-extensions'
   import WysiwygMenuBarBtn from '@/components/WysiwygMenuBarButton'
-  import extendedVSelect from '@/components/VSelect/ExtendedVSelect.vue'
 
   import { mapState } from 'vuex'
   import debounce from 'lodash/debounce'
@@ -212,6 +210,10 @@
       initialValue: {
         default: ''
       },
+      limitHeight: {
+        type: Boolean,
+        default: false
+      },
       options: {
         type: Object,
         required: false,
@@ -252,8 +254,7 @@
     components: {
       EditorContent,
       EditorMenuBar,
-      'wysiwyg-menu-bar-btn': WysiwygMenuBarBtn,
-      'v-select': extendedVSelect
+      'wysiwyg-menu-bar-btn': WysiwygMenuBarBtn
     },
     data () {
       return {
@@ -282,16 +283,7 @@
             underline: true,
             link: true
           },
-        headingOptions: [
-          {
-            label: 'Body',
-            value: 'body'
-          }
-        ],
-        headingValue: {
-          label: 'Body',
-          value: 'body'
-        },
+        headingOptions: [],
         focused: false,
         activeSource: false,
         counter: 0,
@@ -299,44 +291,6 @@
       }
     },
     methods: {
-      handleEditorContentClick () {
-        if (this.toolbar.header) {
-          this.$nextTick(() => {
-            this.getActiveHeading(this.editor.isActive)
-          })
-        }
-      },
-      getActiveHeading ({ paragraph, heading }) {
-        this.$nextTick(() => {
-          console.log('getActiveHeading')
-          let headingItem = null
-          this.headingOptions.filter(option => option.value !== 'body')
-            .forEach(headingLevel => {
-              console.log('getActiveHeading-heading', headingLevel.value, heading({ level: headingLevel.value }))
-              if (heading({ level: headingLevel.value })) {
-                headingItem = headingLevel
-              }
-            })
-
-          if (headingItem) {
-            this.headingValue = headingItem
-          } else if (paragraph()) {
-            console.log('getActiveHeading-paragragh', paragraph())
-            this.headingValue = this.headingOptions.find(option => option.value === 'body')
-          }
-        })
-      },
-      updateHeadingValue (el, { paragraph, heading }) {
-        this.$nextTick(() => {
-          console.log('updateHeadingValue', el)
-          if (el.value === 'body') {
-            paragraph()
-          } else {
-            console.log(heading({ level: el.value }))
-            heading({ level: el.value })
-          }
-        })
-      },
       updateEditor: function (newValue) {
         if (this.editor) {
           this.editor.setContent(newValue)
@@ -346,7 +300,6 @@
         if (typeof newValue === 'undefined') newValue = ''
 
         if (this.value !== newValue) {
-          console.warn('updateFromStore - Update UI value : ' + this.name + ' -> ' + newValue)
           this.value = newValue
           this.updateEditor(newValue)
         }
@@ -392,65 +345,71 @@
 
       Object.keys(this.toolbar).forEach(tool => {
         switch (tool) {
-          case 'header':
+          case 'header': {
             const levels = this.toolbar[tool].filter(level => typeof level === 'number')
             levels.forEach(level => {
-              this.headingOptions.push({
-                label: `Heading ${level}`,
-                value: level
-              })
+              this.headingOptions.push(level)
             })
             extensions.push(new Heading({
               levels: levels
             }))
             break
-          case 'bold':
+          }
+          case 'bold': {
             extensions.push(new Bold())
             break
-          case 'italic':
+          }
+          case 'italic': {
             extensions.push(new Italic())
             break
-          case 'strike':
+          }
+          case 'strike': {
             extensions.push(new Strike())
             break
-          case 'underline':
+          }
+          case 'underline': {
             extensions.push(new Underline())
             break
-          case 'link':
+          }
+          case 'link': {
             extensions.push(new Link())
             break
-          case 'blockquote':
+          }
+          case 'blockquote': {
             extensions.push(new Blockquote())
             break
-          case 'bullet':
+          }
+          case 'bullet': {
             extensions.push(new BulletList())
             break
-          case 'ordered':
+          }
+          case 'ordered': {
             extensions.push(new OrderedList())
             break
-          case 'code':
+          }
+          case 'code': {
             extensions.push(new Code())
             break
-          case 'code-block':
+          }
+          case 'code-block': {
             extensions.push(new CodeBlock())
             break
-          case 'table':
+          }
+          case 'table': {
             extensions.push(new Table({
-              resizable: true
+              resizable: false
             }))
             extensions.push(new TableHeader())
             extensions.push(new TableCell())
             extensions.push(new TableRow())
             break
+          }
         }
       })
 
       this.editor = new Editor({
         extensions: extensions,
         content: content,
-        onFocus: () => {
-          this.handleEditorContentClick()
-        },
         onUpdate: ({ getHTML }) => {
           this.value = getHTML()
           this.textUpdate()
@@ -467,8 +426,6 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~styles/setup/_mixins-colors-vars.scss';
-
   $height_input: 45px;
 
   .wysiwyg {
@@ -527,10 +484,14 @@
     margin-top: 20px;
   }
 
-  .wysiwyg__content {
+  .wysiwyg__contentWrapper {
     padding: 15px;
-
     min-height: 90px;
+  }
+
+  .wysiwyg__contentWrapper--limitHeight {
+    max-height: calc(100vh - 250px);
+    overflow-y: scroll;
   }
 
   .wysiwyg__menubar-table-buttons {
@@ -545,8 +506,6 @@
 </style>
 
 <style lang="scss">
-  @import '~styles/setup/_mixins-colors-vars.scss';
-
   .wysiwyg__content {
     .ProseMirror {
       color: $color__text;

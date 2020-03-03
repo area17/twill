@@ -11,7 +11,8 @@
     $inModal = $fieldsInModal ?? false;
     $default = $default ?? false;
     $hideCounter = $hideCounter ?? false;
-    $wysiwyg = $wysiwyg ?? 'quill';
+    $type = $type ?? 'quill';
+    $limitHeight = $limitHeight ?? false;
 
     // quill.js options
     $activeSyntax = $syntax ?? false;
@@ -45,54 +46,11 @@
 
 @if($activeSyntax)
     @pushonce('extra_css:wysiwyg')
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/{{$theme}}.min.css">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/{{$theme}}.min.css">
     @endpushonce
 @endif
 
-@if($wysiwyg === 'quill')
-    @if($translated)
-        <a17-locale
-            type="a17-wysiwyg"
-            :attributes="{
-            label: '{{ $label }}',
-            @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
-            @if ($note) note: '{{ $note }}', @endif
-            @if ($options) options: {!! e(json_encode($options)) !!}, @endif
-            @if ($placeholder) placeholder: '{{ $placeholder }}', @endif
-            @if ($maxlength) maxlength: {{ $maxlength }}, @endif
-            @if ($hideCounter) showCounter: false, @endif
-            @if ($disabled) disabled: true, @endif
-            @if ($readonly) readonly: true, @endif
-            @if ($editSource) editSource: true, @endif
-            @if ($inModal) inModal: true, @endif
-            @if ($default)
-                initialValue: '{{ $default }}',
-                hasDefaultStore: true,
-            @endif
-                inStore: 'value'
-            }"
-        ></a17-locale>
-    @else
-        <a17-wysiwyg
-            label="{{ $label }}"
-            @include('twill::partials.form.utils._field_name')
-            @if ($note) note="{{ $note }}" @endif
-            @if ($options) :options='{!! json_encode($options) !!}' @endif
-            @if ($placeholder) placeholder='{{ $placeholder }}' @endif
-            @if ($maxlength) :maxlength='{{ $maxlength }}' @endif
-            @if ($hideCounter) :showCounter='false' @endif
-            @if ($disabled) disabled @endif
-            @if ($readonly) readonly @endif
-            @if ($editSource) :edit-source='true' @endif
-            @if ($default)
-            :initial-value="'{{ $default }}'"
-            :has-default-store="true"
-            @endif
-            @if ($inModal) :in-modal="true" @endif
-            in-store="value"
-        ></a17-wysiwyg>
-    @endif
-@else
+@if($type === 'tiptap')
     @if($translated)
         <a17-locale
             type="a17-wysiwyg-tiptap"
@@ -108,6 +66,7 @@
             @if ($readonly) readonly: true, @endif
             @if ($editSource) editSource: true, @endif
             @if ($inModal) inModal: true, @endif
+            @if ($limitHeight) limitHeight: true, @endif
             @if ($default)
                 initialValue: '{{ $default }}',
                 hasDefaultStore: true,
@@ -127,6 +86,7 @@
             @if ($disabled) disabled @endif
             @if ($readonly) readonly @endif
             @if ($editSource) :edit-source='true' @endif
+            @if ($limitHeight) :limit-height='true' @endif
             @if ($default)
             :initial-value="'{{ $default }}'"
             :has-default-store="true"
@@ -135,6 +95,52 @@
             in-store="value"
         ></a17-wysiwyg-tiptap>
     @endif
+@else
+    @if($translated)
+        <a17-locale
+            type="a17-wysiwyg"
+            :attributes="{
+            label: '{{ $label }}',
+            @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
+            @if ($note) note: '{{ $note }}', @endif
+            @if ($options) options: {!! e(json_encode($options)) !!}, @endif
+            @if ($placeholder) placeholder: '{{ $placeholder }}', @endif
+            @if ($maxlength) maxlength: {{ $maxlength }}, @endif
+            @if ($hideCounter) showCounter: false, @endif
+            @if ($disabled) disabled: true, @endif
+            @if ($readonly) readonly: true, @endif
+            @if ($editSource) editSource: true, @endif
+            @if ($inModal) inModal: true, @endif
+            @if ($limitHeight) limitHeight: true, @endif
+            @if ($default)
+                initialValue: '{{ $default }}',
+                hasDefaultStore: true,
+            @endif
+                inStore: 'value'
+            }"
+        ></a17-locale>
+    @else
+        <a17-wysiwyg
+            label="{{ $label }}"
+            @include('twill::partials.form.utils._field_name')
+            @if ($note) note="{{ $note }}" @endif
+            @if ($options) :options='{!! json_encode($options) !!}' @endif
+            @if ($placeholder) placeholder='{{ $placeholder }}' @endif
+            @if ($maxlength) :maxlength='{{ $maxlength }}' @endif
+            @if ($hideCounter) :showCounter='false' @endif
+            @if ($disabled) disabled @endif
+            @if ($readonly) readonly @endif
+            @if ($editSource) :edit-source='true' @endif
+            @if ($limitHeight) :limit-height='true' @endif
+            @if ($default)
+            :initial-value="'{{ $default }}'"
+            :has-default-store="true"
+            @endif
+            @if ($inModal) :in-modal="true" @endif
+            in-store="value"
+        ></a17-wysiwyg>
+    @endif
+
 @endif
 
 @unless($renderForBlocks || $renderForModal)

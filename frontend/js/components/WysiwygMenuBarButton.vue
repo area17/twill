@@ -8,7 +8,7 @@
           aria-hidden="true">
     <svg>
       <title>{{ icon }}</title>
-      <use :xlink:href="`#wysiwyg_${icon}`"></use>
+      <use :xlink:href="`#icon--wysiwyg_${icon}`"></use>
     </svg>
   </span>
   </button>
@@ -36,7 +36,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
   @import '~styles/setup/icons-wysiwyg';
 
   .wysiwyg__menubar-button {

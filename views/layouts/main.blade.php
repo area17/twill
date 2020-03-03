@@ -37,44 +37,45 @@
                         <transition name="fade_search-overlay" @after-enter="afterAnimate">
                           <div class="headerSearch__wrapper" :style="positionStyle" v-show="open" v-cloak>
                             <div class="headerSearch__overlay" :style="positionStyle" @click="toggleSearch"></div>
-                            <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" :open="open"
-                                        :opened="opened"></a17-search>
-                        </div>
-                    </transition>
+                            <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" :open="open" :opened="opened"></a17-search>
+                          </div>
+                        </transition>
+                      </div>
+                    @endif
                 </div>
+            </header>
+            @hasSection('primaryNavigation')
+                @yield('primaryNavigation')
+            @else
+                @partialView(($moduleName ?? null), 'navigation._primary_navigation')
+                @partialView(($moduleName ?? null), 'navigation._breadcrumb')
+                @partialView(($moduleName ?? null), 'navigation._secondary_navigation')
             @endif
-        </div>
-    </header>
-    @hasSection('primaryNavigation')
-        @yield('primaryNavigation')
-    @else
-        @partialView(($moduleName ?? null), 'navigation._primary_navigation')
-        @partialView(($moduleName ?? null), 'navigation._breadcrumb')
-        @partialView(($moduleName ?? null), 'navigation._secondary_navigation')
-    @endif
-    <section class="main">
-        <div class="app" id="app" v-cloak>
-            @yield('content')
-            @if (config('twill.enabled.media-library') || config('twill.enabled.file-library'))
-                <a17-medialibrary ref="mediaLibrary"
-                                  :authorized="{{ json_encode(auth('twill_users')->user()->can('upload')) }}"
-                                  :extra-metadatas="{{ json_encode(array_values(config('twill.media_library.extra_metadatas_fields', []))) }}"
-                                  :translatable-metadatas="{{ json_encode(array_values(config('twill.media_library.translatable_metadatas_fields', []))) }}"
-                ></a17-medialibrary>
-                <a17-dialog ref="warningMediaLibrary" modal-title="Delete media" confirm-label="Delete">
-                    <p class="modal--tiny-title"><strong>Delete media</strong></p>
-                    <p>Are you sure ?<br/>This change can't be undone.</p>
-                </a17-dialog>
-            @endif
-            <a17-notif variant="success"></a17-notif>
-            <a17-notif variant="error"></a17-notif>
-            <a17-notif variant="info" :auto-hide="false" :important="false"></a17-notif>
-            <a17-notif variant="warning" :auto-hide="false" :important="false"></a17-notif>
-        </div>
-        <div class="appLoader">
+            <section class="main">
+                <div class="app" id="app" v-cloak>
+                    @yield('content')
+                    @if (config('twill.enabled.media-library') || config('twill.enabled.file-library'))
+                        <a17-medialibrary ref="mediaLibrary"
+                                          :authorized="{{ json_encode(auth('twill_users')->user()->can('upload')) }}" :extra-metadatas="{{ json_encode(array_values(config('twill.media_library.extra_metadatas_fields', []))) }}"
+                                          :translatable-metadatas="{{ json_encode(array_values(config('twill.media_library.translatable_metadatas_fields', []))) }}"
+                        ></a17-medialibrary>
+                        <a17-dialog ref="warningMediaLibrary" modal-title="Delete media" confirm-label="Delete">
+                            <p class="modal--tiny-title"><strong>Delete media</strong></p>
+                            <p>Are you sure ?<br />This change can't be undone.</p>
+                        </a17-dialog>
+                    @endif
+                    <a17-notif variant="success"></a17-notif>
+                    <a17-notif variant="error"></a17-notif>
+                    <a17-notif variant="info" :auto-hide="false" :important="false"></a17-notif>
+                    <a17-notif variant="warning" :auto-hide="false" :important="false"></a17-notif>
+                </div>
+                <div class="appLoader">
                     <span>
                         <span class="loader"><span></span></span>
                     </span>
+                </div>
+                @include('twill::partials.footer')
+            </section>
         </div>
         <script>
             window['{{ config('twill.js_namespace') }}'] = {};

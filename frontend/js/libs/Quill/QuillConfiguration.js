@@ -2,11 +2,11 @@ import Quill from 'quill'
 
 Quill.debug('error')
 
-let Delta = Quill.import('delta')
-let Break = Quill.import('blots/break')
-let Embed = Quill.import('blots/embed')
-let Inline = Quill.import('blots/inline')
-let Link = Quill.import('formats/link')
+const Delta = Quill.import('delta')
+const Break = Quill.import('blots/break')
+const Embed = Quill.import('blots/embed')
+const Inline = Quill.import('blots/inline')
+const Link = Quill.import('formats/link')
 
 /*
 * Support for shift enter
@@ -58,7 +58,7 @@ const lineBreakHandle = {
 
 function lineBreakMatcher () {
   const newDelta = new Delta()
-  newDelta.insert({ 'break': '' })
+  newDelta.insert({ break: '' })
   return newDelta
 }
 
@@ -71,7 +71,7 @@ const anchor = {
 
 class Anchor extends Inline {
   static create (value) {
-    let node = super.create(value)
+    const node = super.create(value)
     value = this.sanitize(value)
     node.setAttribute('id', value)
     node.className = 'ql-anchor'
@@ -155,17 +155,17 @@ function getIcon (shape) {
 }
 
 const icons = Quill.import('ui/icons') // custom icons
-icons['bold'] = getIcon('bold')
-icons['italic'] = getIcon('italic')
-icons['italic'] = getIcon('italic')
-icons['anchor'] = getIcon('anchor')
-icons['link'] = getIcon('link')
-icons['header']['1'] = getIcon('header')
-icons['header']['2'] = getIcon('header-2')
-icons['header']['3'] = getIcon('header-3')
-icons['header']['4'] = getIcon('header-4')
-icons['header']['5'] = getIcon('header-5')
-icons['header']['6'] = getIcon('header-6')
+icons.bold = getIcon('bold')
+icons.italic = getIcon('italic')
+icons.italic = getIcon('italic')
+icons.anchor = getIcon('anchor')
+icons.link = getIcon('link')
+icons.header['1'] = getIcon('header')
+icons.header['2'] = getIcon('header-2')
+icons.header['3'] = getIcon('header-3')
+icons.header['4'] = getIcon('header-4')
+icons.header['5'] = getIcon('header-5')
+icons.header['6'] = getIcon('header-6')
 
 /*
 * ClipBoard manager
