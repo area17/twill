@@ -19,7 +19,7 @@ class Create{{tableClassName}}Tables extends Migration
             {{/!hasTranslation}}{{hasPosition}}
             $table->integer('position')->unsigned()->nullable();
             {{/hasPosition}}
-            // add those 2 colums to enable publication timeframe fields (you can use publish_start_date only if you don't need to provide the ability to specify an end date)
+            // add those 2 columns to enable publication timeframe fields (you can use publish_start_date only if you don't need to provide the ability to specify an end date)
             // $table->timestamp('publish_start_date')->nullable();
             // $table->timestamp('publish_end_date')->nullable();
         });

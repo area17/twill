@@ -1,16 +1,16 @@
 import { PUBLICATION } from '../mutations'
 
 const state = {
-  withPublicationToggle: window.STORE.publication.withPublicationToggle || false,
-  published: window.STORE.publication.published || false,
-  publishSubmit: (window.STORE.publication.published || !window.STORE.publication.withPublicationToggle) ? 'update' : 'live',
-  publishedLabel: window.STORE.publication.publishedLabel || 'Live',
-  draftLabel: window.STORE.publication.draftLabel || 'Draft',
-  withPublicationTimeframe: window.STORE.publication.withPublicationTimeframe || false,
-  startDate: window.STORE.publication.startDate || null,
-  endDate: window.STORE.publication.endDate || null,
-  visibility: window.STORE.publication.visibility || false,
-  reviewProcess: window.STORE.publication.reviewProcess || [],
+  withPublicationToggle: window[process.env.VUE_APP_NAME].STORE.publication.withPublicationToggle || false,
+  published: window[process.env.VUE_APP_NAME].STORE.publication.published || false,
+  publishSubmit: (window[process.env.VUE_APP_NAME].STORE.publication.published || !window[process.env.VUE_APP_NAME].STORE.publication.withPublicationToggle) ? 'update' : 'live',
+  publishedLabel: window[process.env.VUE_APP_NAME].STORE.publication.publishedLabel || 'Live',
+  draftLabel: window[process.env.VUE_APP_NAME].STORE.publication.draftLabel || 'Draft',
+  withPublicationTimeframe: window[process.env.VUE_APP_NAME].STORE.publication.withPublicationTimeframe || false,
+  startDate: window[process.env.VUE_APP_NAME].STORE.publication.startDate || null,
+  endDate: window[process.env.VUE_APP_NAME].STORE.publication.endDate || null,
+  visibility: window[process.env.VUE_APP_NAME].STORE.publication.visibility || false,
+  reviewProcess: window[process.env.VUE_APP_NAME].STORE.publication.reviewProcess || [],
   saveType: undefined,
   visibilityOptions: [
     {
@@ -22,59 +22,72 @@ const state = {
       label: 'Private'
     }
   ],
-  submitOptions: window.STORE.publication.submitOptions || {
+  submitDisableMessage: window[process.env.VUE_APP_NAME].STORE.publication.submitDisableMessage || '',
+  submitOptions: window[process.env.VUE_APP_NAME].STORE.publication.submitOptions || {
     draft: [
       {
         name: 'save',
-        text: 'Save as draft'
+        text: window.$trans('publisher.save', 'Save as draft'),
+        disabled: false
       },
       {
         name: 'save-close',
-        text: 'Save as draft and close'
+        text: window.$trans('publisher.save-close', 'Save as draft and close'),
+        disabled: false
       },
       {
         name: 'save-new',
-        text: 'Save as draft and create new'
+        text: window.$trans('publisher.save-new', 'Save as draft and create new'),
+        disabled: false
       },
       {
         name: 'cancel',
-        text: 'Cancel'
+        text: window.$trans('publisher.cancel', 'Cancel'),
+        disabled: false
       }
     ],
     live: [
       {
         name: 'publish',
-        text: 'Publish'
+        text: window.$trans('publisher.publish', 'Publish'),
+        disabled: false
       },
       {
         name: 'publish-close',
-        text: 'Publish and close'
+        text: window.$trans('publisher.publish-close', 'Publish and close'),
+        disabled: false
       },
       {
         name: 'publish-new',
-        text: 'Publish and create new'
+        text: window.$trans('publisher.publish-new', 'Publish and create new'),
+        disabled: false
       },
       {
         name: 'cancel',
-        text: 'Cancel'
+        text: window.$trans('publisher.cancel', 'Cancel'),
+        disabled: false
       }
     ],
     update: [
       {
         name: 'update',
-        text: 'Update'
+        text: window.$trans('publisher.update', 'Update'),
+        disabled: false
       },
       {
         name: 'update-close',
-        text: 'Update and close'
+        text: window.$trans('publisher.update-close', 'Update and close'),
+        disabled: false
       },
       {
         name: 'update-new',
-        text: 'Update and create new'
+        text: window.$trans('publisher.update-new', 'Update and create new'),
+        disabled: false
       },
       {
         name: 'cancel',
-        text: 'Cancel'
+        text: window.$trans('publisher.cancel', 'Cancel'),
+        disabled: false
       }
     ]
   }
@@ -86,7 +99,21 @@ const getters = {
     return state.reviewProcess.filter(reviewProcess => reviewProcess.checked)
   },
   getSubmitOptions: state => {
-    return (state.published || !state.withPublicationToggle) ? state.submitOptions[state.publishSubmit] : state.submitOptions['draft']
+    return (state.published || !state.withPublicationToggle) ? state.submitOptions[state.publishSubmit] : state.submitOptions.draft
+  },
+  isEnabledSubmitOption: (state, getters) => name => {
+    // default is true (for example on custom form or if we dont have submitOptions setup)
+    let enabled = true
+    let activeOption = {}
+
+    const matches = getters.getSubmitOptions.filter((el) => el.name === name)
+    if (matches.length) activeOption = matches[0]
+
+    if (activeOption.hasOwnProperty('disabled')) {
+      enabled = !activeOption.disabled
+    }
+
+    return enabled
   },
   getSaveType: (state, getters) => {
     return state.saveType || getters.getSubmitOptions[0].name

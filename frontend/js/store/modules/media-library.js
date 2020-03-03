@@ -13,12 +13,12 @@ const state = {
    * An object of all crops available for cropper component configuration
    * @type {Object}
    */
-  crops: window.STORE.medias.crops || {},
+  crops: window[process.env.VUE_APP_NAME].STORE.medias.crops || {},
   /**
    * Define types available in medias library
    * @type {Array.<string>}
    */
-  types: window.STORE.medias.types || [],
+  types: window[process.env.VUE_APP_NAME].STORE.medias.types || [],
   /**
    * Current type of media library
    * @type {string}
@@ -43,7 +43,7 @@ const state = {
    * An object of selected medias by usage (connector)
    * @type {Object.<string,Object>}
    */
-  selected: window.STORE.medias.selected || {},
+  selected: window[process.env.VUE_APP_NAME].STORE.medias.selected || {},
   /**
    * An array of current uploading medias. When upload is ended, array is reset
    * @type {Array}
@@ -211,8 +211,8 @@ const mutations = {
       if (!mediaToModify.crops) mediaToModify.crops = {}
 
       // save all the crop variants to the media
-      for (let variant in crop.values) {
-        let newValues = {}
+      for (const variant in crop.values) {
+        const newValues = {}
         newValues.name = crop.values[variant].name || variant
         newValues.x = crop.values[variant].x
         newValues.y = crop.values[variant].y

@@ -44,7 +44,7 @@
   import bucketMixin from '@/mixins/buckets'
 
   export default {
-    components: {A17Dropdown},
+    components: { A17Dropdown },
     name: 'a17BucketItem',
     props: {
       bucket: {
@@ -79,7 +79,7 @@
     mixins: [bucketMixin],
     computed: {
       inBuckets: function () {
-        let self = this
+        const self = this
         let find = false
         self.buckets.forEach(function (bucket) {
           if (bucket.children.find(function (b) {
@@ -93,12 +93,12 @@
       customClasses: function () {
         return {
           ...this.bucketClasses,
-          'draggable': this.draggable
+          draggable: this.draggable
         }
       },
       dropDownBuckets: function () {
-        let checkboxes = []
-        let self = this
+        const checkboxes = []
+        const self = this
         let index = 1
         if (this.buckets.length > 0) {
           this.buckets.forEach(function (bucket) {
@@ -122,8 +122,8 @@
         this.$emit('toggle-featured-in-bucket', this.item, this.bucket)
       },
       selectedBuckets: function () {
-        let selected = []
-        let self = this
+        const selected = []
+        const self = this
         if (this.buckets.length > 0) {
           this.buckets.forEach(function (bucket) {
             if (self.inBucketById(bucket.id)) selected.push(self.slug(bucket.id))
@@ -139,13 +139,13 @@
         return 'bucket-' + this.bucket + '_item-' + this.item.id + '_type-' + this.item.content_type.value + '_inb-' + id
       },
       updateBucket: function (value) {
-        let pattern = 'inb-'
-        let self = this
+        const pattern = 'inb-'
+        const self = this
 
-        let selected = self.selectedBuckets()
+        const selected = self.selectedBuckets()
 
         if (self.restricted) { // when restricted : value is coming from a radio group
-          let index = value.split(pattern)[1]
+          const index = value.split(pattern)[1]
           if (!self.inBucketById(index)) {
             self.$refs.bucketDropdown.toggle()
             self.addToBucket(index)
@@ -155,7 +155,7 @@
 
         selected.forEach(function (select) {
           if (value.indexOf(select) === -1) {
-            let index = select.split(pattern)[1]
+            const index = select.split(pattern)[1]
             self.$refs.bucketDropdown.toggle()
             self.removeFromBucket(index)
           }
@@ -163,7 +163,7 @@
 
         if (Array.isArray(value)) { // when no restricted : values are coming from checkboxes as an array
           value.forEach(function (val) {
-            let index = val.split(pattern)[1]
+            const index = val.split(pattern)[1]
             if (!self.inBucketById(index)) {
               self.$refs.bucketDropdown.toggle()
               self.addToBucket(index)
@@ -176,7 +176,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .drag__handle {
     position: absolute;

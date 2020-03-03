@@ -6,9 +6,8 @@
 
 import api from '../api/form'
 import { getFormData, getFormFields, getModalFormFields } from '@/utils/getFormData.js'
-import { FORM, NOTIFICATION, LANGUAGE, ATTRIBUTES } from '../mutations'
+import { FORM, NOTIFICATION, LANGUAGE, ATTRIBUTES, PUBLICATION, REVISION } from '../mutations'
 import ACTIONS from '@/store/actions'
-import { PUBLICATION, REVISION } from '@/store/mutations'
 
 const getFieldIndex = (stateKey, field) => {
   return stateKey.findIndex(f => f.name === field.name)
@@ -29,12 +28,12 @@ const state = {
    * Form errors after submitting
    * @type {Object}
    */
-  baseUrl: window.STORE.form.baseUrl || '',
+  baseUrl: window[process.env.VUE_APP_NAME].STORE.form.baseUrl || '',
   /**
    * All the fields that need to be saved
    * @type {Array}
    */
-  fields: window.STORE.form.fields || [],
+  fields: window[process.env.VUE_APP_NAME].STORE.form.fields || [],
   /**
    * All the fields that are in the create/edit modals (so these are not mixed with the form)
    * @type {Array}
@@ -44,22 +43,22 @@ const state = {
    * Url to save/update the form
    * @type {String}
    */
-  saveUrl: window.STORE.form.saveUrl || '',
+  saveUrl: window[process.env.VUE_APP_NAME].STORE.form.saveUrl || '',
   /**
    * Url to get a full preview of the form datas
    * @type {String}
    */
-  previewUrl: window.STORE.form.previewUrl || '',
+  previewUrl: window[process.env.VUE_APP_NAME].STORE.form.previewUrl || '',
   /**
    * Url to restore previous form datas
    * @type {String}
    */
-  restoreUrl: window.STORE.form.restoreUrl || '',
+  restoreUrl: window[process.env.VUE_APP_NAME].STORE.form.restoreUrl || '',
   /**
    * Url to get only the preview of a block
    * @type {String}
    */
-  blockPreviewUrl: window.STORE.form.blockPreviewUrl || '',
+  blockPreviewUrl: window[process.env.VUE_APP_NAME].STORE.form.blockPreviewUrl || '',
   /**
    * Form errors after submitting
    * @type {Object}
@@ -69,12 +68,12 @@ const state = {
    * Is this a custom form (that will let the browser submit the form instead of hooking up the submit event)
    * @type {Bookean}
    */
-  isCustom: window.STORE.form.isCustom || false,
+  isCustom: window[process.env.VUE_APP_NAME].STORE.form.isCustom || false,
   /**
    * Force reload on successful submit
    * @type {Bookean}
    */
-  reloadOnSuccess: window.STORE.form.reloadOnSuccess || false
+  reloadOnSuccess: window[process.env.VUE_APP_NAME].STORE.form.reloadOnSuccess || false
 
 }
 
@@ -190,7 +189,7 @@ const actions = {
       api.get(endpoint, function (successResponse) {
         commit(FORM.UPDATE_FORM_LOADING, false)
 
-        let data = successResponse.data
+        const data = successResponse.data
 
         if (data.hasOwnProperty('languages')) {
           commit(LANGUAGE.REPLACE_LANGUAGES, data.languages)

@@ -59,6 +59,46 @@ class ModuleMake extends Command
     protected $config;
 
     /**
+     * @var bool
+     */
+    protected $blockable;
+
+    /**
+     * @var bool
+     */
+    protected $translatable;
+
+    /**
+     * @var bool
+     */
+    protected $sluggable;
+
+    /**
+     * @var bool
+     */
+    protected $mediable;
+
+    /**
+     * @var bool
+     */
+    protected $fileable;
+
+    /**
+     * @var bool
+     */
+    protected $sortable;
+
+    /**
+     * @var bool
+     */
+    protected $revisionable;
+
+    /**
+     * @var bool
+     */
+    protected $defaultsAnswserToNo;
+
+    /**
      * @param Filesystem $files
      * @param Composer $composer
      * @param Config $config
@@ -198,7 +238,7 @@ class ModuleMake extends Command
 
             $stub = preg_replace('/\}\);[\s\S]+?Schema::create/', "});\n\n        Schema::create", $stub);
 
-            twill_put_stub($fullPath, $stub);
+            $this->files->put($fullPath, $stub);
 
             $this->info("Migration created successfully! Add some fields!");
         }
@@ -213,6 +253,8 @@ class ModuleMake extends Command
      */
     private function createModels($modelName = 'Item', $activeTraits = [])
     {
+        $modelClassName = $modelName;
+
         make_twill_directory('Models');
 
         if ($this->translatable) {
@@ -220,7 +262,11 @@ class ModuleMake extends Command
 
             $modelTranslationClassName = $modelName . 'Translation';
 
-            $stub = str_replace('{{modelTranslationClassName}}', $modelTranslationClassName, $this->files->get(__DIR__ . '/stubs/model_translation.stub'));
+            $stub = str_replace(
+                ['{{modelTranslationClassName}}', '{{modelClassName}}'],
+                [$modelTranslationClassName, $modelClassName],
+                $this->files->get(__DIR__ . '/stubs/model_translation.stub')
+            );
 
             twill_put_stub(twill_path('Models/Translations/' . $modelTranslationClassName . '.php'), $stub);
         }
@@ -244,8 +290,6 @@ class ModuleMake extends Command
 
             twill_put_stub(twill_path('Models/Revisions/' . $modelRevisionClassName . '.php'), $stub);
         }
-
-        $modelClassName = $modelName;
 
         $activeModelTraits = [];
 

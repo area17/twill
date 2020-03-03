@@ -86,7 +86,9 @@
         default: null
       },
       emptyText: {
-        default: 'Sorry, no matching options.'
+        default () {
+          return this.$trans('select.empty-text', 'Sorry, no matching options.')
+        }
       },
       options: {
         default: function () { return [] }
@@ -189,10 +191,10 @@
         this.$emit('change', value)
       },
       getOptions: debounce(function (search, loading) {
-        if (!this.isAjax) return true
+        if (!this.isAjax()) return true
 
         loading(true)
-        this.$http.get(this.ajaxUrl, {params: {q: search}}).then((resp) => {
+        this.$http.get(this.ajaxUrl, { params: { q: search } }).then((resp) => {
           if (resp.data.items && resp.data.items.length) {
             if (this.taggable) {
               if (Array.isArray(this.value)) {

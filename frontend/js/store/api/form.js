@@ -8,27 +8,36 @@ export default {
     axios.get(endpoint).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      globalError(component, resp)
+      const error = {
+        message: 'Get request error.',
+        value: resp
+      }
+      globalError(component, error)
       if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
-      console.warn('get request error.')
     })
   },
   post (endpoint, data, callback, errorCallback) {
     axios.post(endpoint, data).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      globalError(component, resp)
+      const error = {
+        message: 'Post request error.',
+        value: resp
+      }
+      globalError(component, error)
       if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
-      console.warn('post request error.')
     })
   },
   put (endpoint, data, callback, errorCallback) {
     axios.put(endpoint, data).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
-      globalError(component, resp)
+      const error = {
+        message: 'Save request error.',
+        value: resp
+      }
+      globalError(component, error)
       if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
-      console.warn('save request error.')
     })
   }
 }

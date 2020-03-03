@@ -3,23 +3,29 @@
     <div class="container" v-if="entities.length">
       <div class="wrapper wrapper--reverse">
         <div class="shortcutCreator__create">
-          <a17-dropdown class="shortcutCreator__dropdown" ref="createNewDropdown" position="bottom-right" width="full" :offset="0">
-            <a17-button type="button" class="shortcutCreator__btn" variant="action" @click="$refs.createNewDropdown.toggle()">
-              Create new
+          <a17-dropdown class="shortcutCreator__dropdown" ref="createNewDropdown" position="bottom-right" width="full"
+                        :offset="0">
+            <a17-button type="button" class="shortcutCreator__btn" variant="action"
+                        @click="$refs.createNewDropdown.toggle()">
+              {{ $trans('dashboard.create-new', 'Create new') }}
               <span class="shortcutCreator__trigger"><span v-svg symbol="dropdown_module"></span></span>
             </a17-button>
             <div slot="dropdown__content">
               <ul>
-                <li v-for="entity in entities" v-if="entity.createUrl"><a :href="entity.createUrl">{{ entity.singular }}</a></li>
+                <template v-for="(entity, index) in entities">
+                  <li :key="index" v-if="entity.createUrl"><a :href="entity.createUrl">{{ entity.singular }}</a></li>
+                </template>
               </ul>
             </div>
           </a17-dropdown>
         </div>
         <div class="shortcutCreator__listing">
-          <a class="shortcutCreator__listingItem" :href="entity.url" v-for="entity in entities" v-if="entity.number">
-            <span class="shortcutCreator__label">{{ entity.label }}</span>
-            <h3 class="shortcutCreator__sum f--heading">{{ entity.number }}</h3>
-          </a>
+          <template v-for="(entity, index) in entities">
+            <a class="shortcutCreator__listingItem" :href="entity.url" v-if="entity.number" :key="index">
+              <span class="shortcutCreator__label">{{ entity.label }}</span>
+              <h3 class="shortcutCreator__sum f--heading">{{ entity.number }}</h3>
+            </a>
+          </template>
         </div>
       </div>
     </div>
@@ -37,15 +43,12 @@
         }
       }
     },
-    computed: {
-    },
-    methods: {
-    }
+    computed: {},
+    methods: {}
   }
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   $height_btn: 40px;
 
@@ -74,15 +77,15 @@
   );
 
   .shortcutCreator {
-    padding:20px 0;
-    width:100%;
-    background-color:$color__border--light;
-    border-bottom:1px solid $color__border;
+    padding: 20px 0;
+    width: 100%;
+    background-color: $color__border--light;
+    border-bottom: 1px solid $color__border;
   }
 
   .shortcutCreator__listing {
-    display:flex;
-    flex-grow:1;
+    display: flex;
+    flex-grow: 1;
     flex-flow: column nowrap;
 
     @include breakpoint('small+') {
@@ -91,35 +94,35 @@
   }
 
   .shortcutCreator__listingItem {
-    text-decoration:none;
-    padding:20px 0 0;
+    text-decoration: none;
+    padding: 20px 0 0;
     @include column-flex($column-spans__item);
 
     @include breakpoint('small+') {
-      padding:5px 0 7px;
+      padding: 5px 0 7px;
     }
 
     &:hover {
-      color:$color__link;
+      color: $color__link;
 
       .shortcutCreator__label::after {
         content: "\2192";
-        font-size:15px;
-        color:inherit;
-        position:absolute;
-        top:0;
+        font-size: 15px;
+        color: inherit;
+        position: absolute;
+        top: 0;
         /*bottom:0em;*/
-        vertical-align:baseline;
+        vertical-align: baseline;
         transform: translateX(50%);
-        font-weight:400;
+        font-weight: 400;
       }
     }
   }
 
   .shortcutCreator__label {
-    padding-bottom:7px;
-    display:block;
-    position:relative;
+    padding-bottom: 7px;
+    display: block;
+    position: relative;
   }
 
   .shortcutCreator__sum {
@@ -130,16 +133,16 @@
 
   @include breakpoint('medium+') {
     .shortcutCreator__listingItem {
-      border-right:1px solid $color__border;
+      border-right: 1px solid $color__border;
 
       &:last-child {
-        border-right:0 none;
+        border-right: 0 none;
       }
     }
   }
 
   .shortcutCreator__create {
-    display:flex;
+    display: flex;
     @include column-flex($column-spans__button);
 
     .dropdown {
@@ -151,24 +154,24 @@
       }
 
       > button:first-child {
-        flex-grow:1;
-        padding-left:0;
-        padding-right:0;
+        flex-grow: 1;
+        padding-left: 0;
+        padding-right: 0;
       }
     }
   }
 
   .shortcutCreator__trigger {
-    height:$height_btn;
-    line-height:$height_btn;
-    text-align:center;
+    height: $height_btn;
+    line-height: $height_btn;
+    text-align: center;
     // border-top-left-radius:0;
     // border-bottom-left-radius:0;
     // border-top-right-radius:2px;
     // border-bottom-right-radius:2px;
     color: $color__background;
     transition: color .2s linear;
-    padding-left:6px;
+    padding-left: 6px;
     // margin-left: -2px;
     // padding:0 10px;
     // position:absolute;
@@ -176,14 +179,14 @@
     // top:0;
 
     .icon {
-      position:relative;
-      top:-2px;
+      position: relative;
+      top: -2px;
     }
   }
 
   button:focus + .shortcutCreator__trigger,
   button:hover + .shortcutCreator__trigger {
-    background:$color__action--hover;
+    background: $color__action--hover;
   }
 </style>
 

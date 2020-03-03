@@ -15,7 +15,11 @@ export default {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       // error callback
-      globalError(component, resp)
+      const error = {
+        message: 'Media library get error.',
+        value: resp
+      }
+      globalError(component, error)
       if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
     })
   },
@@ -25,7 +29,11 @@ export default {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       // error callback
-      globalError(component, resp)
+      const error = {
+        message: 'Media library update error.',
+        value: resp
+      }
+      globalError(component, error)
       if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
     })
   },
@@ -35,7 +43,11 @@ export default {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       // error callback
-      globalError(component, resp)
+      const error = {
+        message: 'Media library delete error.',
+        value: resp
+      }
+      globalError(component, error)
       if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
     })
   },
@@ -45,7 +57,11 @@ export default {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       // error callback
-      globalError(component, resp)
+      const error = {
+        message: 'Media library bulk delete error.',
+        value: resp
+      }
+      globalError(component, error)
       if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
     })
   }

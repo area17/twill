@@ -24,7 +24,10 @@
             <div v-if="item.hasOwnProperty('renderHtml')" v-html="item.name"></div>
             <div v-else>{{ item.name }}</div>
           </td>
-          <td class="itemlist__cell" v-for="extraColumn in extraColumns" :class="rowClass(extraColumn)">
+          <td class="itemlist__cell"
+              v-for="(extraColumn, index) in extraColumns"
+              :key="index"
+              :class="rowClass(extraColumn)">
             <template v-if="extraColumn === 'size'">{{ item[extraColumn] | uppercase}}</template>
             <template v-else>{{ item[extraColumn] }}</template>
           </td>
@@ -75,7 +78,7 @@
         })
       },
       checkedItems: function () {
-        let checkItemsIds = []
+        const checkItemsIds = []
 
         if (this.selectedItems.length) {
           this.selectedItems.forEach(function (item) {
@@ -92,7 +95,7 @@
       },
       loadingProgress: function (index) {
         return {
-          'width': this.itemsLoading[index].progress ? this.itemsLoading[index].progress + '%' : '0%'
+          width: this.itemsLoading[index].progress ? this.itemsLoading[index].progress + '%' : '0%'
         }
       }
     }
@@ -100,7 +103,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .itemlist {
     padding: 10px;

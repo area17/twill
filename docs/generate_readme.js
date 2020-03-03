@@ -7,6 +7,7 @@ const sections = [
  	'getting-started/installation',
  	'getting-started/configuration',
  	'crud-modules',
+  'form-fields',
  	'media-library',
  	'block-editor',
  	'other-cms-features',

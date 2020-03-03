@@ -21,7 +21,7 @@
 </template>
 
 <script>
-  // Hightly inspired by https://github.com/xiaokaike/vue-color
+// Hightly inspired by https://github.com/xiaokaike/vue-color
   import tinyColor from 'tinycolor2'
   import throttle from 'lodash/throttle'
 
@@ -77,8 +77,8 @@
       throttle: throttle((fn, data) => {
         fn(data)
       }, 20, {
-        'leading': true,
-        'trailing': false
+        leading: true,
+        trailing: false
       }),
       satHandleChange (event, skip) {
         !skip && event.preventDefault()

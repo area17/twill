@@ -109,9 +109,10 @@ class FeaturedController extends Controller
                 'acceptedSources' => Collection::make($bucket['bucketables'])->pluck('module'),
                 'withToggleFeatured' => $bucket['with_starred_items'] ?? false,
                 'toggleFeaturedLabels' => $bucket['starred_items_labels'] ?? [],
-                'children' => Feature::where('bucket_key', $bucketKey)->with('featured')->get()->map(function ($feature) {
+                'children' => Feature::where('bucket_key', $bucketKey)->with('featured')->get()->map(function ($feature) use ($bucket) {
                     if (($item = $feature->featured) != null) {
-                        $repository = $this->getRepository($feature->featured_type);
+                        $forModuleRepository = collect($bucket['bucketables'])->where('module', $feature->featured_type)->first()['repository'] ?? null;
+                        $repository = $this->getRepository($feature->featured_type, $forModuleRepository);
                         $withImage = classHasTrait($repository, HandleMedias::class);
 
                         return [
@@ -146,10 +147,10 @@ class FeaturedController extends Controller
         $featuredSources = [];
 
         Collection::make($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use (&$fetchedModules, $search, $request) {
-            return Collection::make($bucket['bucketables'])->mapWithKeys(function ($bucketable) use (&$fetchedModules, $bucketKey, $search, $request) {
+            return Collection::make($bucket['bucketables'])->mapWithKeys(function ($bucketable) use (&$fetchedModules, $search, $request) {
 
                 $module = $bucketable['module'];
-                $repository = $this->getRepository($module);
+                $repository = $this->getRepository($module, $bucketable['repository'] ?? null);
                 $translated = classHasTrait($repository, HandleTranslations::class);
                 $withImage = classHasTrait($repository, HandleMedias::class);
 
@@ -176,7 +177,7 @@ class FeaturedController extends Controller
                 ]];
             });
         })->each(function ($bucketables, $bucket) use (&$featuredSources) {
-            $bucketables->each(function ($bucketableData, $bucketable) use ($bucket, &$featuredSources) {
+            $bucketables->each(function ($bucketableData, $bucketable) use (&$featuredSources) {
                 $featuredSources[$bucketable]['name'] = $bucketableData['name'];
                 $featuredSources[$bucketable]['maxPage'] = $bucketableData['items']->lastPage();
                 $featuredSources[$bucketable]['offset'] = $bucketableData['items']->perPage();
@@ -231,8 +232,8 @@ class FeaturedController extends Controller
      * @param string $bucketable
      * @return \A17\Twill\Repositories\ModuleRepository
      */
-    private function getRepository($bucketable)
+    private function getRepository($bucketable, $forModule = null)
     {
-        return $this->app->make($this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($bucketable)) . "Repository");
+        return $this->app->make($forModule ?: $this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($bucketable)) . "Repository");
     }
 }

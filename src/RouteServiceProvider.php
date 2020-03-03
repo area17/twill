@@ -7,6 +7,7 @@ use A17\Twill\Http\Middleware\Impersonate;
 use A17\Twill\Http\Middleware\RedirectIfAuthenticated;
 use A17\Twill\Http\Middleware\SupportSubdomainRouting;
 use A17\Twill\Http\Middleware\ValidateBackHistory;
+use A17\Twill\Http\Middleware\Localization;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
@@ -53,6 +54,7 @@ class RouteServiceProvider extends ServiceProvider
             'twill_auth:twill_users',
             'impersonate',
             'validateBackHistory',
+            'localization'
         ];
 
         $supportSubdomainRouting = config('twill.support_subdomain_admin_routing', false);
@@ -153,6 +155,7 @@ class RouteServiceProvider extends ServiceProvider
         Route::aliasMiddleware('twill_auth', \Illuminate\Auth\Middleware\Authenticate::class);
         Route::aliasMiddleware('twill_guest', RedirectIfAuthenticated::class);
         Route::aliasMiddleware('validateBackHistory', ValidateBackHistory::class);
+        Route::aliasMiddleware('localization', Localization::class);
     }
 
     /**

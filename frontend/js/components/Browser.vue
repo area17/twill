@@ -124,7 +124,7 @@
         if (data) {
           data.page = this.page
         } else {
-          data = {page: this.page}
+          data = { page: this.page }
         }
 
         return data
@@ -144,13 +144,13 @@
         const list = this.$refs.list
         const formdata = this.getFormData(form)
 
-        this.$http.get(this.endpoint, {params: formdata}).then((resp) => {
+        this.$http.get(this.endpoint, { params: formdata }).then((resp) => {
           // add items here
           if (hardReload) {
             this.clearFullItems()
           }
 
-          this.fullItems.push(...resp.data['data'])
+          this.fullItems.push(...resp.data.data)
 
           // re-listen for scroll position if height changed
           this.$nextTick(() => {
@@ -160,7 +160,7 @@
             }
           })
         }, function (resp) {
-          // error callback
+        // error callback
         })
       },
       submitFilter () {
@@ -198,7 +198,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .browser {
     display: block;

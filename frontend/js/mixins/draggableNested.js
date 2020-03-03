@@ -1,5 +1,3 @@
-const getDepth = ({children}) => 1 + (children && children.length > 0 ? Math.max(...children.map(getDepth)) : 0)
-/* eslint-disable */
 export default {
   props: {
     /**

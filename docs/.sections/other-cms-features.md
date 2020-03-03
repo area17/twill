@@ -424,7 +424,7 @@ Finally, in your `AuthServiceProvider` class, redefine [Twill's default permissi
                 ]);
             });
 
-        Gate::define('edit', function ($user) {
+            Gate::define('edit', function ($user) {
                 return in_array($user->role_value, [
                     UserRole::CUSTOM3,
                     UserRole::ADMIN,

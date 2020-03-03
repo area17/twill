@@ -8,7 +8,6 @@ use A17\Twill\Services\Uploader\SignAzureUpload;
 use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignUploadListener;
 use Illuminate\Config\Repository as Config;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -59,13 +58,22 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
      */
     protected $customFields;
 
+    /**
+     * @var Illuminate\Routing\ResponseFactory
+     */
+    protected $responseFactory;
+
+    /**
+     * @var Illuminate\Config\Repository
+     */
+    protected $config;
+
     public function __construct(
         Application $app,
         Config $config,
         Request $request,
         ResponseFactory $responseFactory
-    )
-    {
+    ) {
         parent::__construct($app, $request);
         $this->responseFactory = $responseFactory;
         $this->config = $config;
@@ -224,7 +232,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
             return is_null($meta);
         })->toArray();
 
-        $extraMetadatas = array_diff_key($metadatasFromRequest, array_flip((array)$this->request->get('fieldsRemovedFromBulkEditing', [])));
+        $extraMetadatas = array_diff_key($metadatasFromRequest, array_flip((array) $this->request->get('fieldsRemovedFromBulkEditing', [])));
 
         if (in_array('tags', $this->request->get('fieldsRemovedFromBulkEditing', []))) {
             $this->repository->addIgnoreFieldsBeforeSave('bulk_tags');
@@ -235,9 +243,9 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
 
         foreach ($ids as $id) {
             $this->repository->update($id, [
-                    'bulk_tags' => $newTags ?? [],
-                    'previous_common_tags' => $previousCommonTags ?? [],
-                ] + $extraMetadatas);
+                'bulk_tags' => $newTags ?? [],
+                'previous_common_tags' => $previousCommonTags ?? [],
+            ] + $extraMetadatas);
         }
 
         $scopes = $this->filterScope(['id' => $ids]);
@@ -279,8 +287,8 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     public function uploadIsSigned($signature, $isJsonResponse = true)
     {
         return $isJsonResponse
-            ? $this->responseFactory->json($signature, 200)
-            : $this->responseFactory->make($signature, 200, ['Content-Type' => 'text/plain']);
+        ? $this->responseFactory->json($signature, 200)
+        : $this->responseFactory->make($signature, 200, ['Content-Type' => 'text/plain']);
     }
 
     /**

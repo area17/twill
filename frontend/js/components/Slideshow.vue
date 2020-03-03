@@ -2,7 +2,7 @@
   <div class="slideshow">
     <draggable class="slideshow__content" v-model="slides" :options="dragOptions" v-if="slides.length">
       <transition-group name="draggable_list" tag='div'>
-        <div class="slide" v-for="(slide, index) in slides" :key="index">
+        <div class="slide" v-for="(slide, index) in slides" :key="slide.id">
             <div class="slide__handle">
               <div class="slide__handle--drag"></div>
             </div>
@@ -114,7 +114,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .slideshow {
     // width: 100%;

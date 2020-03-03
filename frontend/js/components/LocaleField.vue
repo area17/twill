@@ -66,7 +66,7 @@
       attributesPerLang: function (lang) {
         const language = this.languages.find(l => l.value === lang)
 
-        let attributes = Object.assign({}, this.attributes)
+        const attributes = Object.assign({}, this.attributes)
         // for textfields set initial values using the initialValues prop
         if (this.initialValues && typeof this.initialValues === 'object' && this.initialValues[lang]) {
           attributes.initialValue = this.initialValues[lang]
@@ -79,7 +79,7 @@
         return attributes
       },
       attributesNoLang: function () {
-        let attributes = Object.assign({}, this.attributes)
+        const attributes = Object.assign({}, this.attributes)
         // for textfields set initial values using the initialValue prop
         if (this.initialValue) attributes.initialValue = this.initialValue
         return attributes

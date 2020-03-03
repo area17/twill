@@ -2,12 +2,11 @@
 
 namespace A17\Twill\Repositories;
 
-use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\Sortable;
-use A17\Twill\Repositories\Behaviors\HandleDates;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
-use A17\Twill\Repositories\Behaviors\HandleRepeaters;
+use A17\Twill\Repositories\Behaviors\HandleDates;
 use A17\Twill\Repositories\Behaviors\HandleFieldsGroups;
+use A17\Twill\Repositories\Behaviors\HandleRepeaters;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
@@ -20,7 +19,7 @@ use PDO;
 abstract class ModuleRepository
 {
     use HandleDates, HandleBrowsers, HandleRepeaters, HandleFieldsGroups;
-  
+
     /**
      * @var \A17\Twill\Models\Model
      */
@@ -164,7 +163,7 @@ abstract class ModuleRepository
             $query = $this->order($query, $orders);
         }
 
-        if (property_exists($this->model, 'translatedAttributes')) {
+        if ($this->model->isTranslatable()) {
             $query = $query->withTranslation();
         }
 
@@ -200,9 +199,9 @@ abstract class ModuleRepository
      * @param $fields
      * @return \A17\Twill\Models\Model
      */
-    public function firstOrCreate($attributes, $fields)
+    public function firstOrCreate($attributes, $fields = [])
     {
-        return $this->model->where($attributes)->first() ?? $this->create($fields);
+        return $this->model->where($attributes)->first() ?? $this->create($attributes + $fields);
     }
 
     /**
@@ -863,5 +862,28 @@ abstract class ModuleRepository
     public function __call($method, $parameters)
     {
         return $this->model->$method(...$parameters);
+    }
+
+    /**
+     * @param string $behavior
+     * @return boolean
+     */
+    public function hasBehavior($behavior)
+    {
+        $hasBehavior = classHasTrait($this, 'A17\Twill\Repositories\Behaviors\Handle' . ucfirst($behavior));
+
+        if (Str::startsWith($behavior, 'translation')) {
+            $hasBehavior = $hasBehavior && $this->getModel()->isTranslatable();
+        }
+
+        return $hasBehavior;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isTranslatable($column)
+    {
+        return $this->getModel()->isTranslatable($column);
     }
 }

@@ -49,7 +49,7 @@
       nestedStyle (col) {
         return this.columns.find((col) => col.name === 'nested') && col.name === 'draggable' ? {
           'webkit-transform': 'translateX(-' + this.nestedDepth * 80 + 'px)',
-          'transform': 'translateX(-' + this.nestedDepth * 80 + 'px)'
+          transform: 'translateX(-' + this.nestedDepth * 80 + 'px)'
         } : ''
       }
     }
@@ -57,7 +57,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .tablerow {
     position: relative;

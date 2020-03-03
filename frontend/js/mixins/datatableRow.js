@@ -31,7 +31,7 @@ export default {
       return this.row.hasOwnProperty('edit') ? this.row.edit : '#'
     },
     updateUrl: function () {
-      return this.row['updateUrl'] ? this.row['updateUrl'] : '#'
+      return this.row.updateUrl ? this.row.updateUrl : '#'
     },
     ...mapState({
       bulkIds: state => state.datatable.bulk
@@ -42,7 +42,7 @@ export default {
       return TableCellPrefix + colName.toLowerCase()
     },
     currentComponentProps (col) {
-      let props = {
+      const props = {
         col: col || {},
         row: this.row,
         editUrl: this.editUrl,

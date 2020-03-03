@@ -85,15 +85,16 @@ return [
         'users-management' => true,
         'media-library' => true,
         'file-library' => true,
-        'dashboard' => true,
-        'search' => true,
         'block-editor' => true,
         'buckets' => true,
         'users-image' => false,
+        'settings' => true,
+        'dashboard' => true,
+        'search' => true,
         'users-description' => false,
-        'site-link' => false,
-        'settings' => false,
         'activitylog' => true,
+        'users-2fa' => false,
+        'users-oauth' => false,
     ],
 ];
 ```
@@ -121,15 +122,16 @@ The `media_library` configuration array in `config/twill.php` allows you to prov
 
 return [
     'media_library' => [
-        'disk' => 'libraries',
+        'disk' => 'twill_media_library',
         'endpoint_type' => env('MEDIA_LIBRARY_ENDPOINT_TYPE', 's3'),
         'cascade_delete' => env('MEDIA_LIBRARY_CASCADE_DELETE', false),
-        'local_path' => env('MEDIA_LIBRARY_LOCAL_PATH'),
+        'local_path' => env('MEDIA_LIBRARY_LOCAL_PATH', 'uploads'),
         'image_service' => env('MEDIA_LIBRARY_IMAGE_SERVICE', 'A17\Twill\Services\MediaLibrary\Imgix'),
         'acl' => env('MEDIA_LIBRARY_ACL', 'private'),
         'filesize_limit' => env('MEDIA_LIBRARY_FILESIZE_LIMIT', 50),
         'allowed_extensions' => ['svg', 'jpg', 'gif', 'png', 'jpeg'],
         'init_alt_text_from_filename' => true,
+        'prefix_uuid_with_local_path' => config('twill.file_library.prefix_uuid_with_local_path', false),
         'translated_form_fields' => false,
     ],
 ];
@@ -167,11 +169,11 @@ AZURE_CONTAINER=AZURE_CONTAINER
 
 **Local endpoint**
 
-If you want your uploads to be stored on the server where your Laravel application is running, use the `local` endpoint type.  Define the `MEDIA_LIBRARY_LOCAL_PATH` environment variable or the `media_library.local_path` configuration option to provide Twill with your prefered upload path. Always include a trailing slash like in the following example:
+If you want your uploads to be stored on the server where your Laravel application is running, use the `local` endpoint type.  Define the `MEDIA_LIBRARY_LOCAL_PATH` environment variable or the `media_library.local_path` configuration option to provide Twill with your prefered upload path:
 
 ```bash
 MEDIA_LIBRARY_ENDPOINT_TYPE=local
-MEDIA_LIBRARY_LOCAL_PATH=uploads/
+MEDIA_LIBRARY_LOCAL_PATH=uploads
 ```
 
 To avoid running into `too large` errors when uploading to your server, you can choose to limit uploads through Twill using the `MEDIA_LIBRARY_FILESIZE_LIMIT` environment variable or `filesize_limit` configuration option. It is set to 50mb by default. Make sure to setup your PHP and webserver (apache, nginx, ....) to allow for the upload size specified here.
@@ -191,12 +193,16 @@ MEDIA_LIBRARY_CASCADE_DELETE=false
 
 The `allowed_extensions` configuration option is an array of file extensions that Twill's media library's uploader will accept. By default, `svg`, `jpg`, `gif`, `png` and `jpeg` extensions are allowed.
 
-**Images url rendering**
+**Images rendering**
 
-To render uploaded image urls, Twill's prefered service is [Imgix](https://imgix.com). You can change it using the `MEDIA_LIBRARY_IMAGE_SERVICE` environment variable or the `media_library.image_service` configuration option. 
+To render uploaded images, Twill's prefered service is [Imgix](https://imgix.com).
 
-A simple local service is available (`A17\Twill\Services\MediaLibrary\Local`) but it will not make use of any cropping or resizing parameters when rendering urls. As noted in the [media library's documentation](#media-library-3), you can implement other third party services (eg. Cloudinary) or open source libraries (eg. Croppa) for that purpose if you do not want or cannot use Imgix for your project.
+If you do not want or cannot use a third party service, or have very limited image rendering needs, Twill also provides a local image rendering service powered by [Glide](https://glide.thephpleague.com/). The following .env variables should get you up and running:
 
+```bash
+MEDIA_LIBRARY_ENDPOINT_TYPE=local
+MEDIA_LIBRARY_IMAGE_SERVICE=A17\Twill\Services\MediaLibrary\Glide
+```
 
 #### Imgix
 
@@ -279,14 +285,15 @@ The `file_library` configuration array in `config/twill.php` allows you to provi
 
 return [
     'file_library' => [
-        'disk' => 'libraries',
+        'disk' => 'twill_file_library',
         'endpoint_type' => env('FILE_LIBRARY_ENDPOINT_TYPE', 's3'),
         'cascade_delete' => env('FILE_LIBRARY_CASCADE_DELETE', false),
-        'local_path' => env('FILE_LIBRARY_LOCAL_PATH'),
+        'local_path' => env('FILE_LIBRARY_LOCAL_PATH', 'uploads'),
         'file_service' => env('FILE_LIBRARY_FILE_SERVICE', 'A17\Twill\Services\FileLibrary\Disk'),
         'acl' => env('FILE_LIBRARY_ACL', 'public-read'),
         'filesize_limit' => env('FILE_LIBRARY_FILESIZE_LIMIT', 50),
         'allowed_extensions' => [],
+        'prefix_uuid_with_local_path' => false,
     ],
 ];
 ```

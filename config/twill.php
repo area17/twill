@@ -63,6 +63,7 @@ return [
      */
     'support_subdomain_admin_routing' => false,
     'admin_app_subdomain' => 'admin',
+    'active_subdomain' => null,
 
     /*
     |--------------------------------------------------------------------------
@@ -136,4 +137,27 @@ return [
     'templates_on_frontend_domain' => false,
 
     'google_maps_api_key' => env('GOOGLE_MAPS_API_KEY'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Twill FE Application configurqtion
+    |--------------------------------------------------------------------------
+    |
+     */
+    'js_namespace' => 'TWILL',
+    'dev_mode' => false,
+    'dev_mode_url' => env('TWILL_DEV_MODE_URL', 'http://localhost:8080'),
+    'public_directory' => env('TWILL_ASSETS_DIR', 'assets/admin'),
+    'manifest_file' => 'twill-manifest.json',
+    'vendor_path' => 'vendor/area17/twill',
+    'custom_components_resource_path' => 'assets/js/components',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Twill app locale
+    |--------------------------------------------------------------------------
+    |
+     */
+    'locale' => 'en',
+    'fallback_locale' => 'en',
 ];

@@ -1,7 +1,7 @@
 ## Block editor
 ### Adding blocks
-The block editor form field lets you add content freely to your module. The blocks can be easily added and rearranged.
-Once a block is created, it can be used/added to any module by adding the corresponding traits.
+The block editor form field allows you to add content freely to your module. The blocks can be easily added and rearranged.
+Once a block is created, it can be used/added to any module.
 
 In order to add a block editor you need to add the `block_editor` field to your module form. e.g.:
 
@@ -27,7 +27,7 @@ By adding the `@formField('block_editor')` you've enabled all the available bloc
 ```
 
 The *blocks* that can be added need to be defined under the `views/admin/blocks` folder.
-The blocks can be defined exactly like a regular form. e.g.:
+The blocks can be defined exactly like a regular form, but without any Blade layout or section. e.g.:
 
 filename: ```admin/blocks/quote.blade.php```
 ```php
@@ -40,45 +40,66 @@ filename: ```admin/blocks/quote.blade.php```
 ])
 ```
 
-Once the form is created an _artisan_ task needs to be run to generate the _Vue_ component for this block.
+A more complex block could look like the following:
 
-`php artisan twill:blocks`
+filename: ```admin/blocks/media.blade.php```
+```php
+@formField('medias', [
+    'name' => 'image',
+    'label' => 'Images',
+    'withVideoUrl' => false,
+    'max' => 20,
+])
 
-Example output:
-```shell
-$ php artisan twill:blocks
-Starting to scan block views directory...
-Block Quote generated successfully
-All blocks have been generated!
-$
+@formField('files', [
+    'name'  => 'video',
+    'label' => 'Video',
+    'note'  => 'Video will overwrite previously selected images',
+    'max'   => 1
+])
+
+@formField('input', [
+    'name' => 'caption',
+    'label' => 'Caption',
+    'maxlength' => 250,
+    'translated' => true,
+])
+
+@formField('select', [
+    'name' => 'effect',
+    'label' => 'Transition Effect',
+    'placeholder' => 'Select Transition Effect',
+    'default' => 'cut',
+    'options' => [
+        [
+            'value' => 'cut',
+            'label' => 'Cut'
+        ],
+        [
+            'value' => 'fade',
+            'label' => 'Fade In/Out'
+        ]
+    ]
+])
+
+@formField('color', [
+    'name'  => 'bg',
+    'label' => 'Background color',
+    'note'  => 'Default is light grey (#E6E6E6)',
+])
+
+@formField('input', [
+    'name' => 'timing',
+    'label' => 'Timing',
+    'maxlength' => 250,
+    'note' => 'Timing in ms (default is 4000ms)',
+])
 ```
 
-The task will generate a file inside the folder `resources/assets/js/blocks/`. Do not ignore those files in Git.
-
-filename: ```resources/assets/js/blocks/BlockQuote.vue```
-
-```js
-<template>
-    <div class="block__body">
-        <a17-textfield label="Quote text" :name="fieldName('quote')" type="textarea" :maxlength="250" :rows="4" in-store="value" ></a17-textfield>
-    </div>
-</template>
-
-<script>
-  import BlockMixin from '@/mixins/block'
-
-  export default {
-    mixins: [BlockMixin]
-  }
-</script>
-
-```
-
-With that the *block* is ready to be used on the form, it needs to be enabled in the CMS configuration.
+A block needs to be enabled in your Twill configuration.
 For it a `block_editor` key is required and inside you can define the list of `blocks` available in your project.
 
 filename: ```config/twill.php```
-
 ```php
     'block_editor' => [
         'blocks' => [
@@ -88,13 +109,18 @@ filename: ```config/twill.php```
                 'icon' => 'text',
                 'component' => 'a17-block-quote',
             ],
+            'media' => [
+                'title' => 'Media',
+                'icon' => 'image',
+                'component' => 'a17-block-media',
+            ],
             ..
         ]
     ]
 ```
 
-Please note the naming convention. If the *block* added is _quote_ then the component should be prefixed with _a17-block-_.
-If you added a block like *my_awesome_block* then you will need to keep the same name as _key_ and the _component name_ with the prefix. e.g.:
+Please note the naming convention. If the *block* added is `quote` then the component should be prefixed with `a17-block-`.
+If you added a block named *my_awesome_block*, your configuration would look like this:
 ```php
     'block_editor' => [
         'blocks' => [
@@ -108,9 +134,7 @@ If you added a block like *my_awesome_block* then you will need to keep the same
         ]
 ```
 
-
-After having the blocks added and the configuration set it is required to have the traits added inside your module (Laravel Model).
-Add the corresponding traits to your model and repository, respectively `HasBlocks` and `HandleBlocks`.
+Make sure to use blocks traits in your model and repository, respectively `HasBlocks` and `HandleBlocks`.
 
 filename: ```app/Models/Article.php```
 ```php
@@ -147,46 +171,19 @@ class ArticleRepository extends ModuleRepository
 }
 ```
 
-#### Common Errors
-- Make sure your project has the blocks table migration. If not, you can find the `create_blocks_table` migration in Twill's source in `migrations`.
-
-- Not running the _twill:blocks_ task.
-
-- Not adding the *block* to the configuration.
-
-- Not using the same name of the block inside the configuration.
-
-- Not running npm run twill-build
-
 ### Adding repeater blocks
-Lets say that it is requested to have an Accordion on Articles, where each item should have a _Header_ and a _Description_.
-This accordion can be moved around along with the rest of the blocks.
-On the Article (module) form we have:
 
-filename: ```views/admin/articles/form.blade.php```
-```php
-@extends('twill::layouts.form')
+Inside of a block, repeaters can be used too.
 
-@section('contentFields')
-    @formField('input', [
-        'name' => 'description',
-        'label' => 'Description',
-    ])
-...
-    @formField('block_editor')
-@stop
-
-```
-
-- Inside the *container block* file, add a repeater form field:
+- Create a *container* block file, using a repeater form field:
 
   filename: ```admin/blocks/accordion.blade.php```
 ```php
   @formField('repeater', ['type' => 'accordion_item'])
 ```
+You can add other fields before or after your repeater, or even multiple repeaters to the same block.
 
-
-- Add it on the config/twill.php
+- Add your block to the configuration:
 ```php
     'block_editor' => [
         'blocks' => [
@@ -201,9 +198,9 @@ filename: ```views/admin/articles/form.blade.php```
     ]
 ```
 
-- Add the *item block*, the one that will be reapeated inside the *container block*
-  filename: ```admin/blocks/accordion_item.blade.php```
+- Create an *item* block, the one that will be reapeated inside the *container* block
 
+filename: ```admin/blocks/accordion_item.blade.php```
 ```php
   @formField('input', [
       'name' => 'header',
@@ -218,7 +215,7 @@ filename: ```views/admin/articles/form.blade.php```
   ])
 ```
 
-- Add it on the config/twill.php on the repeaters section
+- Add it to the configuration, in the repeaters section
 
 ```php
     'block_editor' => [
@@ -245,7 +242,7 @@ filename: ```views/admin/articles/form.blade.php```
 ```
 
 #### Common errors:
-- If you add the *container block* to the _repeaters_ section inside the config, it won't work, e.g.:
+- If you add the *container* block to the _repeaters_ section inside the config, it won't work, e.g.:
 ```php
         'repeaters' => [
             ...
@@ -273,30 +270,13 @@ filename: ```views/admin/articles/form.blade.php```
         ]
 ```
 
-- Not adding the *item block* to the _repeaters_ section.
+- Not adding the *item* block to the _repeaters_ section.
 
 ### Adding browser fields
-If you are requested to enable the possibility to add a related model, then the browser fields are the match.
-If you have an Article that can have related products.
 
-On the Article (entity) form we have:
+To attach other records to inside of a block, it is possible to use the `browser` field.
 
-filename: ```views/admin/articles/form.blade.php```
-```php
-@extends('twill::layouts.form')
-
-@section('contentFields')
-    @formField('input', [
-        'name' => 'description',
-        'label' => 'Description',
-    ])
-...
-    @formField('block_editor')
-@stop
-
-```
-
-- Add the block editors that will handle the `Browser Field`
+- In a block, use the `browser` field:
 filename: ```views/admin/blocks/products.blade.php```
 ```php
     @formField('browser', [
@@ -308,7 +288,7 @@ filename: ```views/admin/blocks/products.blade.php```
     ])
 ```
 
-- Define the block in the configuration like any other block in the config/twill.php.
+- Define the block in configuration like any other block:
 ```php
     'blocks' => [
         ...
@@ -319,7 +299,7 @@ filename: ```views/admin/blocks/products.blade.php```
         ],
 ```
 
-- After that, it is required to add the Route Prefixes. e.g.:
+- If the module you are browsing is not at the root of your admin, you can use the `browser_route_prefixes` array:
 ```php
     'block_editor' => [
         'blocks' => [
@@ -335,7 +315,7 @@ filename: ```views/admin/blocks/products.blade.php```
                 ...
         ],
         'browser_route_prefixes' => [
-            'products' => 'content',
+            'products' => 'shop',
         ],
     ]
 ```
@@ -390,10 +370,15 @@ To give an example:
 ```php
 return [
     'block_editor' => [
-        'block_single_layout' => 'site.layouts.block',
-        'block_views_path' => 'site.blocks',
-        'block_views_mappings' => [],
-        'block_preview_render_childs' => true,
+        'block_single_layout' => 'site.layouts.block', // layout to use when rendering a single block in the editor
+        'block_views_path' => 'site.blocks', // path where a view file per block type is stored
+        'block_views_mappings' => [], // custom mapping of block types and views
+        'block_preview_render_childs' => true, // indicates if childs should be rendered when using repeater in blocks
+        'block_presenter_path' => null, // allow to set a custom presenter to a block model
+        // Indicates if blocks templates should be inlined in HTML.
+        // When setting to false, make sure to build Twill with your all your custom blocks using php artisan twill:build.
+        'inline_blocks_templates' => true,
+        'custom_vue_blocks_resource_path' => 'assets/js/blocks', // path to custom vue blocks in your resources directory
         'blocks' => [
             'text' => [
                 'title' => 'Body text',
@@ -440,6 +425,7 @@ return [
                 ],
             ],
         ],
+        'repeaters' => [],
     ],
     ...
 ];

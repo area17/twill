@@ -67,8 +67,8 @@
     },
     methods: {
       toggleVisibility: function (value) {
-        let newValue = clone(value)
-        let newFieldValues = clone(this.requiredFieldValues)
+        const newValue = clone(value)
+        const newFieldValues = clone(this.requiredFieldValues)
 
         // sort requiredFieldValues and value if is array, so the order of values is the same
         if (Array.isArray(newFieldValues)) newFieldValues.sort()
@@ -80,7 +80,7 @@
       }
     },
     mounted: function () {
-      let self = this
+      const self = this
       // init show/hide
       this.$nextTick(function () {
         self.toggleVisibility(this.storedValue)

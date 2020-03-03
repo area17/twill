@@ -12,6 +12,7 @@ use A17\Twill\Commands\Update;
 use A17\Twill\Http\ViewComposers\ActiveNavigation;
 use A17\Twill\Http\ViewComposers\CurrentUser;
 use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
+use A17\Twill\Http\ViewComposers\Localization;
 use A17\Twill\Http\ViewComposers\MediasUploaderConfig;
 use A17\Twill\Models\Block;
 use A17\Twill\Models\File;
@@ -70,6 +71,7 @@ class TwillServiceProvider extends ServiceProvider
         $this->registerCommands();
 
         $this->registerAndPublishViews();
+        $this->registerAndPublishTranslations();
 
         $this->extendBlade();
         $this->addViewComposers();
@@ -213,7 +215,7 @@ class TwillServiceProvider extends ServiceProvider
 
     private function publishMigrations()
     {
-        if (config('twill.load_default_migrations_from_twill', true)) {
+        if (config('twill.load_default_migrations', true)) {
             $this->loadMigrationsFrom(__DIR__ . '/../migrations/default');
         }
 
@@ -314,11 +316,11 @@ class TwillServiceProvider extends ServiceProvider
                 null != $data ? $data : "get_defined_vars()");
         });
 
-        $blade->directive('formField', function ($expression) use ($blade) {
+        $blade->directive('formField', function ($expression) {
             return $this->includeView('partials.form._', $expression);
         });
 
-        $blade->directive('partialView', function ($expression) use ($blade) {
+        $blade->directive('partialView', function ($expression) {
 
             $expressionAsArray = str_getcsv($expression, ',', '\'');
 
@@ -363,6 +365,12 @@ class TwillServiceProvider extends ServiceProvider
         $blade->directive('endpushonce', function () {
             return '<?php $__env->stopPush(); endif; ?>';
         });
+
+        $blade->component('twill::partials.form.utils._fieldset', 'formFieldset');
+        $blade->component('twill::partials.form.utils._columns', 'formColumns');
+        $blade->component('twill::partials.form.utils._collapsed_fields', 'formCollapsedFields');
+        $blade->component('twill::partials.form.utils._connected_ields', 'formConnectedFields');
+        $blade->component('twill::partials.form.utils._inline_checkboxes', 'formInlineCheckboxes');
     }
 
     /**
@@ -394,6 +402,8 @@ class TwillServiceProvider extends ServiceProvider
 
             return $view->with($with);
         });
+
+        View::composer(['admin.*', 'twill::*'], Localization::class);
     }
 
     /**

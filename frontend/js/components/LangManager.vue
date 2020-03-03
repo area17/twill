@@ -25,19 +25,17 @@
 </template>
 
 <script>
+  import a17LangSwitcher from './LangSwitcher.vue'
   import VisibilityMixin from '@/mixins/toggleVisibility'
   import LocaleMixin from '@/mixins/locale'
   import { mapState, mapGetters } from 'vuex'
-  import a17Accordion from './Accordion.vue'
-  import a17Langswitcher from './LangSwitcher.vue'
   import { LANGUAGE } from '@/store/mutations'
 
   export default {
     name: 'A17LangManager',
     mixins: [VisibilityMixin, LocaleMixin],
     components: {
-      'a17-accordion': a17Accordion,
-      'a17-langswitcher': a17Langswitcher
+      'a17-langswitcher': a17LangSwitcher
     },
     props: {
       value: {
@@ -74,7 +72,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .languageManager {
     margin: 0 -20px;
@@ -89,8 +86,6 @@
   .languageManager__switcher {
     height: 35px;
     overflow: hidden;
-    border: 1px solid #d9d9d9;
-    border-radius: 2px;
   }
 
   .languageManager__button {
