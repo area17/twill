@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use A17\Twill\Services\Blocks\Block;
 use Illuminate\Filesystem\Filesystem;
-use A17\Twill\Services\Blocks\Parser;
+use A17\Twill\Services\Blocks\BlockCollection;
 
 class BlockMake extends Command
 {
@@ -34,15 +34,15 @@ class BlockMake extends Command
 
     /**
      * @param Filesystem $files
-     * @param Parser $blockParser
+     * @param BlockCollection $blockCollection
      */
-    public function __construct(Filesystem $files, Parser $blockParser)
+    public function __construct(Filesystem $files, BlockCollection $blockCollection)
     {
         parent::__construct();
 
         $this->files = $files;
 
-        $this->blockParser = $blockParser;
+        $this->blockCollection = $blockCollection;
     }
 
     /**
@@ -119,7 +119,7 @@ class BlockMake extends Command
 
     public function getBlockByName($block, $sources = [])
     {
-        return $this->blockParser->all()->findByName($block, $sources);
+        return $this->blockCollection->all()->findByName($block, $sources);
     }
 
     public function getIconFile($icon)
