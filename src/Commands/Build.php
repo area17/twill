@@ -20,7 +20,7 @@ class Build extends Command
      *
      * @var string
      */
-    protected $description = "Build Twill assets with custom blocks";
+    protected $description = "Build Twill assets with custom Vue components/blocks";
 
     /**
      * @var Filesystem
