@@ -110,6 +110,11 @@ class Parser
 
     public function listBlocks($directory, $source, $type = null)
     {
+        if (!$this->files->exists($directory))
+        {
+            return collect();
+        }
+
         return collect($this->files->files($directory))->map(function (
             $file
         ) use ($source, $type) {
@@ -178,5 +183,12 @@ class Parser
         preg_match("/@tw-.*\(\'(.*)\'\)/", $block, $matches);
 
         return filled($matches);
+    }
+
+    public function getAllowedBlocksList()
+    {
+        return $this->all()->mapWithKeys(function ($block) {
+            return $block->legacyArray();
+        });
     }
 }

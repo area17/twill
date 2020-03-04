@@ -4,6 +4,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use \Illuminate\Support\Str;
+use A17\Twill\Services\Blocks\Parser as BlocksParser;
 
 if (!function_exists('dumpUsableSqlQuery')) {
     function dumpUsableSqlQuery($query)
@@ -187,5 +188,32 @@ if (!function_exists('fix_directory_separator')) {
             DIRECTORY_SEPARATOR,
             $path
         );
+    }
+}
+
+if (!function_exists('generate_list_of_allowed_blocks')) {
+    /**
+     * @param array $blocks
+     * @param array $groups
+     */
+    function generate_list_of_allowed_blocks($blocks, $groups)
+    {
+        if (isset($blocks)) {
+            $allowedBlocks = collect($blocks)->mapWithKeys(function ($block) {
+                return [$block => config('twill.block_editor.blocks.' . $block)];
+            })->filter()->toArray();
+        } elseif (isset($group)) {
+            $blocks = config('twill.block_editor.blocks');
+
+            $allowedBlocks = array_filter($blocks, function ($block) use ($group) {
+                return isset($block['group']) && $block['group'] === $group;
+            });
+        } else {
+            $allowedBlocks = config('twill.block_editor.blocks');
+        }
+
+        $allowedBlocks = $allowedBlocks + app(BlocksParser::class)->getAllowedBlocksList()->toArray();
+
+        return $allowedBlocks;
     }
 }

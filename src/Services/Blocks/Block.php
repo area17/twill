@@ -116,4 +116,15 @@ class Block
     {
         return Str::kebab($name);
     }
+
+    public function legacyArray()
+    {
+        return [
+            $this->name => [
+                'title' => $this->title,
+                'icon' => $this->icon,
+                'component' => 'a17-block-'.$this->name,
+            ],
+        ];
+    }
 }
