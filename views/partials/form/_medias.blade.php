@@ -2,6 +2,7 @@
     $max = $max ?? 1;
     $required = $required ?? false;
     $note = $note ?? '';
+    $fieldNote = $fieldNote ?? '';
     $withAddInfo = $withAddInfo ?? true;
     $withVideoUrl = $withVideoUrl ?? true;
     $withCaption = $withCaption ?? true;
@@ -34,7 +35,7 @@
     @endpush
     @endunless
 @else
-    <a17-inputframe label="{{ $label }}" name="medias.{{ $name }}" @if ($required) :required="true" @endif>
+    <a17-inputframe label="{{ $label }}" name="medias.{{ $name }}" @if ($required) :required="true" @endif @if ($fieldNote) note="{{ $fieldNote }}" @endif>
         @if($max > 1 || $max == 0)
             <a17-slideshow
                 @include('twill::partials.form.utils._field_name')

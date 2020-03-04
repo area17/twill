@@ -16,11 +16,12 @@
     $max = $max ?? 1;
     $itemLabel = $itemLabel ?? strtolower($label);
     $note = $note ?? 'Add' . ($max > 1 ? " up to $max ". $itemLabel : ' one ' . Str::singular($itemLabel));
+    $fieldNote = $fieldNote ?? '';
     $sortable = $sortable ?? true;
     $wide = $wide ?? false;
 @endphp
 
-<a17-inputframe label="{{ $label }}" name="browsers.{{ $name }}">
+<a17-inputframe label="{{ $label }}" name="browsers.{{ $name }}" note="{{ $fieldNote }}">
     <a17-browserfield
         @include('twill::partials.form.utils._field_name')
         item-label="{{ $itemLabel }}"
