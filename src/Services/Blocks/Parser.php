@@ -110,8 +110,7 @@ class Parser
 
     public function listBlocks($directory, $source, $type = null)
     {
-        if (!$this->files->exists($directory))
-        {
+        if (!$this->files->exists($directory)) {
             return collect();
         }
 
