@@ -27,7 +27,7 @@ cache:
 
 install:
   - yes '' | pecl install imagick
-  - composer validate
+  - composer validate --strict
   - travis_retry composer update --no-interaction --prefer-dist
 
 script:
