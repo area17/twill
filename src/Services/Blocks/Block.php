@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Blocks;
 
+use Exception;
 use Illuminate\Support\Str;
 
 class Block
@@ -62,6 +63,13 @@ class Block
      */
     public $contents;
 
+    /**
+     * Block constructor.
+     * @param $file
+     * @param $type
+     * @param $source
+     * @throws \Exception
+     */
     public function __construct($file, $type, $source)
     {
         $this->file = $file;
@@ -73,37 +81,29 @@ class Block
         $this->parse();
     }
 
+    /**
+     * @param $data
+     * @return $this
+     */
     public function absorbData($data)
     {
-        if (blank($data)) {
-            return;
+        if (filled($data)) {
+            $this->title = $data['title'];
+            $this->trigger = $data['trigger'];
+            $this->name = $data['name'];
+            $this->type = $data['type'];
+            $this->icon = $data['icon'];
+            $this->isNewFormat = $data['new_format'];
+            $this->inferredType = $data['inferred_type'];
+            $this->contents = $data['contents'];
         }
-
-        $this->title = $data['title'];
-        $this->trigger = $data['trigger'];
-        $this->name = $data['name'];
-        $this->type = $data['type'];
-        $this->icon = $data['icon'];
-        $this->isNewFormat = $data['new_format'];
-        $this->inferredType = $data['inferred_type'];
-        $this->contents = $data['contents'];
-
         return $this;
     }
 
     /**
-     * @param string $path
-     * @return Block
+     * @param $source
+     * @return $this
      */
-    public function setPath(string $path): Block
-    {
-        $this->path = $path;
-
-        $this->parse();
-
-        return $this;
-    }
-
     public function setSource($source)
     {
         $this->source = $source;
@@ -111,6 +111,9 @@ class Block
         return $this;
     }
 
+    /**
+     * @return \Illuminate\Support\Collection
+     */
     public function list()
     {
         return collect([
@@ -125,11 +128,18 @@ class Block
         ]);
     }
 
+    /**
+     * @param $name
+     * @return string
+     */
     public function makeName($name)
     {
         return Str::kebab($name);
     }
 
+    /**
+     * @return array
+     */
     public function legacyArray()
     {
         return [
@@ -141,6 +151,10 @@ class Block
         ];
     }
 
+    /**
+     * @return $this
+     * @throws \Exception
+     */
     public function parse()
     {
         $contents = file_get_contents((string) $this->file->getPathName());
@@ -163,15 +177,22 @@ class Block
             'name' => $name,
             'type' => $type ?? $inferredType,
             'icon' => $icon,
-            'new_format' => $this->isUpgradedBlock($contents),
+            'new_format' => $this->isNewFormat($contents),
             'inferred_type' => $inferredType,
             'contents' => $contents,
         ]);
     }
 
+    /**
+     * @param $property
+     * @param $block
+     * @param $blockName
+     * @return array
+     * @throws \Exception
+     */
     public function parseProperty($property, $block, $blockName)
     {
-        preg_match("/@tw-{$property}\(\'(.*)\'\)/", $block, $matches);
+        preg_match("/@tw-{$property}\('(.*)'\)/", $block, $matches);
 
         if (filled($matches)) {
             return [$matches[1], 'block'];
@@ -197,18 +218,25 @@ class Block
             return [null, null];
         }
 
-        throw new \Exception(
+        throw new Exception(
             "Property '{$property}' not found on block {$blockName}."
         );
     }
 
-    public function isUpgradedBlock($block)
+    /**
+     * @param $block
+     * @return bool
+     */
+    public function isNewFormat($block)
     {
-        preg_match("/@tw-.*\(\'(.*)\'\)/", $block, $matches);
+        preg_match("/@tw-.*\('(.*)'\)/", $block, $matches);
 
         return filled($matches);
     }
 
+    /**
+     * @return string
+     */
     public function getFileName()
     {
         return $this->file->getFileName();
