@@ -70,6 +70,14 @@ Twill's users and their password resets are stored in `twill_users` and `twill_p
 return [
     'users_table' => 'twill_users',
     'password_resets_table' => 'twill_password_resets',
+    'blocks_table' => 'blocks',
+    'features_table' => 'features',
+    'settings_table' => 'settings',
+    'medias_table' => 'medias',
+    'mediables_table' => 'mediables',
+    'files_table' => 'files',
+    'fileables_table' => 'fileables',
+    'related_table' => 'related',
 ];
 ```
 
@@ -347,27 +355,6 @@ See the [file library's documentation](#file-library-2) for more information.
 
 The `allowed_extensions` configuration option is an array of file extensions that Twill's file library uploader will accept. By default, it is empty, all extensions are allowed.
 
-#### Debug
-
-The [Laravel Debug Bar](https://github.com/barryvdh/laravel-debugbar) and [Inspector](https://github.com/lsrur/inspector) packages are installed and registered by Twill, except on production environments.
-
-On `development`, `local` and `staging` environment, Debug Bar is enabled by default. You can use Inspector instead by using the `DEBUG_USE_INSPECTOR` environment variable.
-
-If you do not want to see the Debug Bar on the frontend of your Laravel application but want to keep it in Twill's admin console while developing or on staging servers, use the `DEBUG_BAR_IN_FE` environment variable:
-
-```bash
-DEBUG_BAR_IN_FE=false
-```
-
-And add the `noDebugBar` to your frontend route group middlewares. 
-Example in a default Laravel 5.7 application's `RouteServiceProvider`:
-
-```php
-Route::middleware('web', 'noDebugBar')
-    ->namespace($this->namespace)
-    ->group(base_path('routes/web.php'));
-```
-
 ### Navigation
 
 The `config/twill-navigation.php` file manages the navigation of your custom admin console. Using Twill's UI, the package provides 3 levels of navigation: global, primary and secondary. This file simply contains a nested array description of your navigation.
@@ -383,6 +370,10 @@ Example:
 <?php
 
 return [
+    'pages' => [
+        'title' => 'Pages',
+        'module' => true,
+    ],
     'work' => [
         'title' => 'Work',
         'route' => 'admin.work.projects.index',
@@ -412,6 +403,8 @@ To make it work properly and to get active states automatically in Twill's UI, y
 
 ```php
 <?php
+
+Route::module('pages');
 
 Route::group(['prefix' => 'work'], function () {
     Route::module('projects');
