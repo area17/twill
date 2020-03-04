@@ -123,7 +123,7 @@ class Block
             $this->name => [
                 'title' => $this->title,
                 'icon' => $this->icon,
-                'component' => 'a17-block-'.$this->name,
+                'component' => 'a17-block-' . $this->name,
             ],
         ];
     }
