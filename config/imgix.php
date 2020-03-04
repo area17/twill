@@ -14,6 +14,7 @@ return [
     'use_https' => env('IMGIX_USE_HTTPS', true),
     'use_signed_urls' => env('IMGIX_USE_SIGNED_URLS', false),
     'sign_key' => env('IMGIX_SIGN_KEY'),
+    'add_params_to_svgs' => false,
     'default_params' => [
         'fm' => 'jpg',
         'q' => '80',

@@ -50,7 +50,13 @@ class Imgix implements ImageServiceInterface
     public function getUrl($id, array $params = [])
     {
         $defaultParams = $this->config->get('twill.imgix.default_params');
-        return $this->urlBuilder->createURL($id, Str::endsWith($id, '.svg') ? [] : array_replace($defaultParams, $params));
+        $addParamsToSvgs = config('twill.imgix.add_params_to_svgs', false);
+
+        if (!$addParamsToSvgs && Str::endsWith($id, '.svg')) {
+            return $this->urlBuilder->createURL($id);
+        }
+
+        return $this->urlBuilder->createURL($id, array_replace($defaultParams, $params));
     }
 
     /**
