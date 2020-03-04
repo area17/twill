@@ -59,27 +59,27 @@
         },
         {
             "name": "astrotomic/laravel-translatable",
-            "version": "11.7.1",
+            "version": "v11.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Astrotomic/laravel-translatable.git",
-                "reference": "d454ca5d73515a0878ed8b1f8df7e0510d351d2c"
+                "reference": "8bd84a30381dfd9e2e1f24252b54279899959a7b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Astrotomic/laravel-translatable/zipball/d454ca5d73515a0878ed8b1f8df7e0510d351d2c",
-                "reference": "d454ca5d73515a0878ed8b1f8df7e0510d351d2c",
+                "url": "https://api.github.com/repos/Astrotomic/laravel-translatable/zipball/8bd84a30381dfd9e2e1f24252b54279899959a7b",
+                "reference": "8bd84a30381dfd9e2e1f24252b54279899959a7b",
                 "shasum": ""
             },
             "require": {
-                "illuminate/contracts": "5.8.* || ^6.0",
-                "illuminate/database": "5.8.* || ^6.0",
-                "illuminate/support": "5.8.* || ^6.0",
+                "illuminate/contracts": "5.8.* || ^6.0 || ^7.0",
+                "illuminate/database": "5.8.* || ^6.0 || ^7.0",
+                "illuminate/support": "5.8.* || ^6.0 || ^7.0",
                 "php": ">=7.2"
             },
             "require-dev": {
-                "orchestra/testbench": "3.8.* || ^4.0",
-                "phpunit/phpunit": "^8.0"
+                "orchestra/testbench": "3.8.* || ^4.0 || ^5.0",
+                "phpunit/phpunit": "^8.0 || ^9.0"
             },
             "type": "library",
             "extra": {
@@ -101,7 +101,7 @@
             "authors": [
                 {
                     "name": "Tom Witkowski",
-                    "email": "dev.gummibeer@gmail.com",
+                    "email": "gummibeer@astrotomic.info",
                     "homepage": "https://gummibeer.de",
                     "role": "Developer"
                 },
@@ -113,26 +113,27 @@
                 }
             ],
             "description": "A Laravel package for multilingual models",
+            "homepage": "https://astrotomic.info",
             "keywords": [
                 "database",
                 "language",
                 "laravel",
                 "translation"
             ],
-            "time": "2020-02-27T11:09:11+00:00"
+            "time": "2020-03-03T10:43:26+00:00"
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.133.27",
+            "version": "3.133.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "5527195465ac42cb5127a60b84eb2d8dc3b0d5c9"
+                "reference": "5ef2118011e39504484d70ed738eb8ede7f69287"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/5527195465ac42cb5127a60b84eb2d8dc3b0d5c9",
-                "reference": "5527195465ac42cb5127a60b84eb2d8dc3b0d5c9",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/5ef2118011e39504484d70ed738eb8ede7f69287",
+                "reference": "5ef2118011e39504484d70ed738eb8ede7f69287",
                 "shasum": ""
             },
             "require": {
@@ -203,7 +204,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2020-03-02T19:20:19+00:00"
+            "time": "2020-03-03T19:11:21+00:00"
         },
         {
             "name": "bacon/bacon-qr-code",
@@ -1341,16 +1342,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v6.17.1",
+            "version": "v6.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "32d1ed55dd46dcd706ff2e45bb7965be7320b87d"
+                "reference": "077b895d935b7fbcfb1d1eb34217fa4f80a130d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/32d1ed55dd46dcd706ff2e45bb7965be7320b87d",
-                "reference": "32d1ed55dd46dcd706ff2e45bb7965be7320b87d",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/077b895d935b7fbcfb1d1eb34217fa4f80a130d8",
+                "reference": "077b895d935b7fbcfb1d1eb34217fa4f80a130d8",
                 "shasum": ""
             },
             "require": {
@@ -1483,7 +1484,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2020-02-26T14:23:01+00:00"
+            "time": "2020-03-03T13:14:27+00:00"
         },
         {
             "name": "laravel/socialite",
@@ -2334,16 +2335,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.30.0",
+            "version": "2.31.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "912dff66d2690ca66abddb9b291a1df5f371d3b4"
+                "reference": "bbc0ab53f41a4c6f223c18efcdbd9bc725eb5d2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/912dff66d2690ca66abddb9b291a1df5f371d3b4",
-                "reference": "912dff66d2690ca66abddb9b291a1df5f371d3b4",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/bbc0ab53f41a4c6f223c18efcdbd9bc725eb5d2d",
+                "reference": "bbc0ab53f41a4c6f223c18efcdbd9bc725eb5d2d",
                 "shasum": ""
             },
             "require": {
@@ -2400,7 +2401,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2020-02-07T15:25:46+00:00"
+            "time": "2020-03-01T11:11:58+00:00"
         },
         {
             "name": "opis/closure",
@@ -3262,29 +3263,28 @@
         },
         {
             "name": "spatie/laravel-activitylog",
-            "version": "3.10.0",
+            "version": "3.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-activitylog.git",
-                "reference": "0b16f4e5ac45c14312ffa8bf25db737d92de27cd"
+                "reference": "d12fa93fbd0376a1385cd94a2348553afe12ce54"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-activitylog/zipball/0b16f4e5ac45c14312ffa8bf25db737d92de27cd",
-                "reference": "0b16f4e5ac45c14312ffa8bf25db737d92de27cd",
+                "url": "https://api.github.com/repos/spatie/laravel-activitylog/zipball/d12fa93fbd0376a1385cd94a2348553afe12ce54",
+                "reference": "d12fa93fbd0376a1385cd94a2348553afe12ce54",
                 "shasum": ""
             },
             "require": {
-                "illuminate/config": "^6.0",
-                "illuminate/database": "^6.0",
-                "illuminate/support": "^6.0",
+                "illuminate/config": "^6.0|^7.0",
+                "illuminate/database": "^6.0|^7.0",
+                "illuminate/support": "^6.0|^7.0",
                 "php": "^7.2",
                 "spatie/string": "^2.1"
             },
             "require-dev": {
                 "ext-json": "*",
-                "orchestra/testbench": "^4.0",
-                "phpunit/phpunit": "^8.0"
+                "phpunit/phpunit": "^8.0|^9.0"
             },
             "type": "library",
             "extra": {
@@ -3335,34 +3335,34 @@
                 "spatie",
                 "user"
             ],
-            "time": "2020-02-22T21:16:32+00:00"
+            "time": "2020-03-03T15:18:59+00:00"
         },
         {
             "name": "spatie/laravel-analytics",
-            "version": "3.8.1",
+            "version": "3.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-analytics.git",
-                "reference": "a6f3c72a48950d34436e8338158ba161e8bd77bd"
+                "reference": "77a5af95e468f9a4064ac6179dd03c5752081132"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-analytics/zipball/a6f3c72a48950d34436e8338158ba161e8bd77bd",
-                "reference": "a6f3c72a48950d34436e8338158ba161e8bd77bd",
+                "url": "https://api.github.com/repos/spatie/laravel-analytics/zipball/77a5af95e468f9a4064ac6179dd03c5752081132",
+                "reference": "77a5af95e468f9a4064ac6179dd03c5752081132",
                 "shasum": ""
             },
             "require": {
                 "google/apiclient": "^2.0",
-                "laravel/framework": "^6.0",
+                "laravel/framework": "^6.0|^7.0",
                 "nesbot/carbon": "^2.0",
                 "php": "^7.2",
                 "symfony/cache": "^4.3|^5.0"
             },
             "require-dev": {
                 "league/flysystem": ">=1.0.8",
-                "mockery/mockery": "^1.0",
-                "orchestra/testbench": "^4.0",
-                "phpunit/phpunit": "^8.0"
+                "mockery/mockery": "^1.3",
+                "orchestra/testbench": "^4.0|^5.0",
+                "phpunit/phpunit": "^8.0|^9.0"
             },
             "type": "library",
             "extra": {
@@ -3392,7 +3392,7 @@
                     "role": "Developer"
                 }
             ],
-            "description": "A Laravel 5 package to retrieve Google Analytics data.",
+            "description": "A Laravel package to retrieve Google Analytics data.",
             "homepage": "https://github.com/spatie/laravel-analytics",
             "keywords": [
                 "analytics",
@@ -3402,7 +3402,7 @@
                 "retrieve",
                 "spatie"
             ],
-            "time": "2019-11-23T17:58:20+00:00"
+            "time": "2020-03-03T13:11:12+00:00"
         },
         {
             "name": "spatie/once",
@@ -6033,22 +6033,22 @@
         },
         {
             "name": "kalnoy/nestedset",
-            "version": "v5.0.0",
+            "version": "v5.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lazychaser/laravel-nestedset.git",
-                "reference": "9c0ae248f38289147a5094fa0c5ba9bb9e93104b"
+                "reference": "d4fe17f9abd3414014bda32a5612c9ed24246f99"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lazychaser/laravel-nestedset/zipball/9c0ae248f38289147a5094fa0c5ba9bb9e93104b",
-                "reference": "9c0ae248f38289147a5094fa0c5ba9bb9e93104b",
+                "url": "https://api.github.com/repos/lazychaser/laravel-nestedset/zipball/d4fe17f9abd3414014bda32a5612c9ed24246f99",
+                "reference": "d4fe17f9abd3414014bda32a5612c9ed24246f99",
                 "shasum": ""
             },
             "require": {
-                "illuminate/database": "~5.7.0|~5.8.0|~6.0",
-                "illuminate/events": "~5.7.0|~5.8.0|~6.0",
-                "illuminate/support": "~5.7.0|~5.8.0|~6.0",
+                "illuminate/database": "~5.7.0|~5.8.0|^6.0|^7.0",
+                "illuminate/events": "~5.7.0|~5.8.0|^6.0|^7.0",
+                "illuminate/support": "~5.7.0|~5.8.0|^6.0|^7.0",
                 "php": ">=7.1.3"
             },
             "require-dev": {
@@ -6088,7 +6088,7 @@
                 "nested sets",
                 "nsm"
             ],
-            "time": "2019-09-06T06:18:32+00:00"
+            "time": "2020-03-04T05:33:20+00:00"
         },
         {
             "name": "mockery/mockery",
