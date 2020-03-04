@@ -4,7 +4,7 @@ namespace A17\Twill\Commands;
 
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
-use A17\Twill\Services\Blocks\Parser as BlocksParser;
+use A17\Twill\Services\Blocks\BlockCollection;
 
 class ListBlocks extends Command
 {
@@ -28,11 +28,20 @@ class ListBlocks extends Command
      */
     protected $description = 'List all available Twill blocks';
 
-    public function __construct(BlocksParser $blocksParser)
+    /**
+     * Blocks collection.
+     *
+     * @var BlockCollection
+     */
+    protected $blocks;
+
+    public function __construct(BlockCollection $blocks)
     {
         parent::__construct();
 
-        $this->blocksParser = $blocksParser;
+        $this->blocks = $blocks;
+
+        $this->blocks->parse();
     }
 
     /**
@@ -47,8 +56,7 @@ class ListBlocks extends Command
 
         $typeFiltered = $this->option('blocks') || $this->option('repeaters');
 
-        $blocks = $this->blocksParser
-            ->all()
+        $blocks = $this->blocks
             ->reject(function ($block) use ($sourceFiltered) {
                 return $sourceFiltered && !$this->option($block->source);
             })

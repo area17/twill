@@ -60,16 +60,17 @@ class Block
     /**
      * @var string
      */
-    public $fileName;
-
-    /**
-     * @var string
-     */
     public $contents;
 
-    public function __construct($blockData = [])
+    public function __construct($file, $type, $source)
     {
-        $this->absorbData($blockData);
+        $this->file = $file;
+
+        $this->type = $type;
+
+        $this->source = $source;
+
+        $this->parse();
     }
 
     public function absorbData($data)
@@ -85,10 +86,22 @@ class Block
         $this->icon = $data['icon'];
         $this->isNewFormat = $data['new_format'];
         $this->inferredType = $data['inferred_type'];
-        $this->file = $data['file'];
         $this->contents = $data['contents'];
 
-        $this->fileName = $this->file->getFilename();
+        return $this;
+    }
+
+    /**
+     * @param string $path
+     * @return Block
+     */
+    public function setPath(string $path): Block
+    {
+        $this->path = $path;
+
+        $this->parse();
+
+        return $this;
     }
 
     public function setSource($source)
@@ -126,5 +139,78 @@ class Block
                 'component' => 'a17-block-' . $this->name,
             ],
         ];
+    }
+
+    public function parse()
+    {
+        $contents = file_get_contents((string) $this->file->getPathName());
+
+        $name = Str::before($this->file->getFilename(), '.blade.php');
+
+        [$title, $inferredType] = $this->parseProperty(
+            'title',
+            $contents,
+            $name
+        );
+
+        [$icon] = $this->parseProperty('icon', $contents, $name);
+
+        [$trigger] = $this->parseProperty('trigger', $contents, $name);
+
+        return $this->absorbData([
+            'title' => $title,
+            'trigger' => $trigger,
+            'name' => $name,
+            'type' => $type ?? $inferredType,
+            'icon' => $icon,
+            'new_format' => $this->isUpgradedBlock($contents),
+            'inferred_type' => $inferredType,
+            'contents' => $contents,
+        ]);
+    }
+
+    public function parseProperty($property, $block, $blockName)
+    {
+        preg_match("/@tw-{$property}\(\'(.*)\'\)/", $block, $matches);
+
+        if (filled($matches)) {
+            return [$matches[1], 'block'];
+        }
+
+        if (
+            $value = config(
+                "twill.block_editor.blocks.{$blockName}.{$property}"
+            )
+        ) {
+            return [$value, 'block'];
+        }
+
+        if (
+            $value = config(
+                "twill.block_editor.repeaters.{$blockName}.{$property}"
+            )
+        ) {
+            return [$value, 'repeater'];
+        }
+
+        if ($property !== 'title') {
+            return [null, null];
+        }
+
+        throw new \Exception(
+            "Property '{$property}' not found on block {$blockName}."
+        );
+    }
+
+    public function isUpgradedBlock($block)
+    {
+        preg_match("/@tw-.*\(\'(.*)\'\)/", $block, $matches);
+
+        return filled($matches);
+    }
+
+    public function getFileName()
+    {
+        return $this->file->getFileName();
     }
 }
