@@ -19,7 +19,6 @@ class BlockCollection extends Collection
 
     /**
      * @param mixed $items
-     * @param \Illuminate\Filesystem\Filesystem $fileSystem
      */
     public function __construct($items = [])
     {
@@ -30,10 +29,14 @@ class BlockCollection extends Collection
         $this->parse();
     }
 
+    /**
+     * @param $search
+     * @param array $sources
+     * @return mixed
+     * @throws \Exception
+     */
     public function findByName($search, $sources = [])
     {
-        $block = new Block();
-
         return (new static($this->items))
             ->filter(function ($block) use ($search, $sources) {
                 return $block->name == $search &&
@@ -46,13 +49,22 @@ class BlockCollection extends Collection
             ->first();
     }
 
+    /**
+     * @return \A17\Twill\Services\Blocks\BlockCollection
+     */
     public function getAllowedBlocksList()
     {
-        return $this->mapWithKeys(function ($block) {
+        return $this->mapWithKeys(function (Block $block) {
             return $block->legacyArray();
         });
     }
 
+    /**
+     * @param $directory
+     * @param $source
+     * @param null $type
+     * @return \Illuminate\Support\Collection
+     */
     public function listBlocks($directory, $source, $type = null)
     {
         if (!$this->fileSystem->exists($directory)) {
@@ -66,6 +78,9 @@ class BlockCollection extends Collection
         });
     }
 
+    /**
+     * @return $this
+     */
     public function generatePaths()
     {
         $this->paths = [
@@ -94,12 +109,15 @@ class BlockCollection extends Collection
         return $this;
     }
 
-    public function detectCustomSources($block)
+    /**
+     * @param Block $block
+     * @return string
+     */
+    public function detectCustomSources(Block $block)
     {
         if ($block->source === Block::SOURCE_APP) {
             if (
-                $this->all()
-                    ->where('fileName', $block->getFileName())
+                $this->where('fileName', $block->getFileName())
                     ->where('source', Block::SOURCE_TWILL)
                     ->isNotEmpty()
             ) {
@@ -110,11 +128,14 @@ class BlockCollection extends Collection
         return $block->source;
     }
 
+    /**
+     * @return $this
+     */
     public function parse()
     {
         $this->generatePaths();
 
-        $this->items = collect($this->paths)->reduce(function ($keep, $path) {
+        $this->items = collect($this->paths)->reduce(function (Collection $keep, $path) {
             $this->listBlocks(
                 $path['path'],
                 $path['source'],
@@ -129,7 +150,7 @@ class BlockCollection extends Collection
         }, collect());
 
         $this->items = $this->items
-            ->each(function ($block) {
+            ->each(function (Block $block) {
                 $block->setSource($this->detectCustomSources($block));
             })
             ->toArray();
@@ -137,10 +158,15 @@ class BlockCollection extends Collection
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function toArray()
     {
-        return collect($this->items)->map(function ($block) {
-            return $block->export();
-        })->toArray();
+        return collect($this->items)
+            ->map(function (Block $block) {
+                return $block->export();
+            })
+            ->toArray();
     }
 }
