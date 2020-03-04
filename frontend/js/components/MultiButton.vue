@@ -47,18 +47,16 @@
           return !opt.hasOwnProperty('disabled') || opt.disabled === false
         })
 
-        const bool = Boolean(allValidOptions.length > 0)
+        const hasValidOptions = Boolean(allValidOptions.length > 0)
 
-        if (!bool && this.message) {
+        if (!hasValidOptions && this.message) {
           this.$store.commit(NOTIFICATION.SET_NOTIF, {
             message: this.message,
             variant: 'success'
           })
-        } else {
-          this.$store.commit(NOTIFICATION.CLEAR_NOTIF, 'success')
         }
 
-        return bool
+        return hasValidOptions
       }
     },
     methods: {
