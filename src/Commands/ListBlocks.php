@@ -40,8 +40,6 @@ class ListBlocks extends Command
         parent::__construct();
 
         $this->blocks = $blocks;
-
-        $this->blocks->parse();
     }
 
     /**
@@ -66,7 +64,7 @@ class ListBlocks extends Command
                         !$this->option(Str::plural($block->type)));
             })
             ->map(function ($block) {
-                return $this->colorize($block->list());
+                return $this->colorize($block->export());
             })
             ->sortBy('title');
 
@@ -90,12 +88,13 @@ class ListBlocks extends Command
 
         $headers = $blocks
             ->first()
+            ->export()
             ->keys()
             ->map(function ($key) {
                 return Str::studly($key);
-            });
+            })->toArray();
 
-        $this->table($headers, $blocks);
+        $this->table($headers, $blocks->toArray());
     }
 
     public function colorize($block)
@@ -112,7 +111,7 @@ class ListBlocks extends Command
     {
         if (filled($filter = $this->argument('filter'))) {
             return !$block
-                ->list()
+                ->export()
                 ->reduce(function ($keep, $element) use ($filter) {
                     return $keep ||
                         Str::contains(

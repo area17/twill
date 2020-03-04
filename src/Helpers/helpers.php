@@ -4,7 +4,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use \Illuminate\Support\Str;
-use A17\Twill\Services\Blocks\Parser as BlocksParser;
+use A17\Twill\Services\Blocks\BlockCollection;
 
 if (!function_exists('dumpUsableSqlQuery')) {
     function dumpUsableSqlQuery($query)
@@ -212,7 +212,7 @@ if (!function_exists('generate_list_of_allowed_blocks')) {
             $allowedBlocks = config('twill.block_editor.blocks');
         }
 
-        $allowedBlocks = $allowedBlocks + app(BlocksParser::class)->getAllowedBlocksList()->toArray();
+        $allowedBlocks = $allowedBlocks + app(BlockCollection::class)->getAllowedBlocksList()->toArray();
 
         return $allowedBlocks;
     }

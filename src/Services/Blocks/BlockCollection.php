@@ -13,19 +13,21 @@ class BlockCollection extends Collection
     protected $paths;
 
     /**
-     * @var Filesystem
+     * @var \Illuminate\Filesystem\Filesystem
      */
-    protected $files;
+    protected $fileSystem;
 
     /**
      * @param mixed $items
-     * @param Filesystem $files
+     * @param \Illuminate\Filesystem\Filesystem $fileSystem
      */
-    public function __construct($items = [], Filesystem $files = null)
+    public function __construct($items = [])
     {
         parent::__construct($items);
 
-        $this->files = $files;
+        $this->fileSystem = app(Filesystem::class);
+
+        $this->parse();
     }
 
     public function findByName($search, $sources = [])
@@ -46,18 +48,18 @@ class BlockCollection extends Collection
 
     public function getAllowedBlocksList()
     {
-        return $this->all()->mapWithKeys(function ($block) {
+        return $this->mapWithKeys(function ($block) {
             return $block->legacyArray();
         });
     }
 
     public function listBlocks($directory, $source, $type = null)
     {
-        if (!$this->files->exists($directory)) {
+        if (!$this->fileSystem->exists($directory)) {
             return collect();
         }
 
-        return collect($this->files->files($directory))->map(function (
+        return collect($this->fileSystem->files($directory))->map(function (
             $file
         ) use ($source, $type) {
             return new Block($file, $type, $source);
@@ -133,5 +135,12 @@ class BlockCollection extends Collection
             ->toArray();
 
         return $this;
+    }
+
+    public function toArray()
+    {
+        return collect($this->items)->map(function ($block) {
+            return $block->export();
+        })->toArray();
     }
 }

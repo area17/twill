@@ -114,7 +114,7 @@ class Block
     /**
      * @return \Illuminate\Support\Collection
      */
-    public function list()
+    public function export()
     {
         return collect([
             'title' => $this->title,
