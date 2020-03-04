@@ -109,7 +109,6 @@ const config = {
   // Define entries points
   pages,
   devServer: {
-    sockPort: 8080,
     hot: true,
     disableHostCheck: true,
     headers: {
