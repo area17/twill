@@ -105,6 +105,8 @@ class Build extends Command
 
         if ($disableTimeout) {
             $process->setTimeout(null);
+        } else {
+            $process->setTimeout(config('twill.build_timeout', 300));
         }
 
         $process->mustRun();
@@ -119,16 +121,14 @@ class Build extends Command
         $twillCustomBlocksPath = base_path(config('twill.vendor_path')) . '/frontend/js/components/blocks/customs';
 
         if (!$this->filesystem->exists($twillCustomBlocksPath)) {
-            $this->filesystem->makeDirectory($twillCustomBlocksPath);
+            $this->filesystem->makeDirectory($twillCustomBlocksPath, 0755, true);
         }
 
         $this->filesystem->cleanDirectory($twillCustomBlocksPath);
 
-        if (!$this->filesystem->exists($localCustomBlocksPath)) {
-            $this->filesystem->makeDirectory($localCustomBlocksPath);
+        if ($this->filesystem->exists($localCustomBlocksPath)) {
+            $this->filesystem->copyDirectory($localCustomBlocksPath, $twillCustomBlocksPath);
         }
-
-        $this->filesystem->copyDirectory($localCustomBlocksPath, $twillCustomBlocksPath);
     }
 
     /**
@@ -140,15 +140,13 @@ class Build extends Command
         $twillCustomComponentsPath = base_path(config('twill.vendor_path')) . '/frontend/js/components/customs';
 
         if (!$this->filesystem->exists($twillCustomComponentsPath)) {
-            $this->filesystem->makeDirectory($twillCustomComponentsPath);
+            $this->filesystem->makeDirectory($twillCustomComponentsPath, 0755, true);
         }
 
         $this->filesystem->cleanDirectory($twillCustomComponentsPath);
 
-        if (!$this->filesystem->exists($localCustomComponentsPath)) {
-            $this->filesystem->makeDirectory($localCustomComponentsPath);
+        if ($this->filesystem->exists($localCustomComponentsPath)) {
+            $this->filesystem->copyDirectory($localCustomComponentsPath, $twillCustomComponentsPath);
         }
-
-        $this->filesystem->copyDirectory($localCustomComponentsPath, $twillCustomComponentsPath);
     }
 }
