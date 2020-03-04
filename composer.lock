@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "211e7fd5abfc403b82510ba5b99c4a93",
+    "content-hash": "e9003174a73ca1c332f2f46b89a0cc0e",
     "packages": [
         {
             "name": "anahkiasen/underscore-php",
@@ -6070,6 +6070,7 @@
                     "Kalnoy\\Nestedset\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -8142,9 +8143,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "kalnoy/nestedset": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
