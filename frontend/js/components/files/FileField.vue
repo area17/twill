@@ -1,5 +1,5 @@
 <template>
-  <a17-inputframe :error="error" :label="label" :locale="locale" @localize="updateLocale" :size="size" :name="name">
+  <a17-inputframe :error="error" :label="label" :locale="locale" @localize="updateLocale" :size="size" :name="name" :note="fieldNote">
     <div class="fileField">
       <table class="fileField__list" v-if="items.length">
         <draggable :tag="'tbody'" v-model="items">
@@ -57,6 +57,10 @@
         default: 1
       },
       note: {
+        type: String,
+        default: ''
+      },
+      fieldNote: {
         type: String,
         default: ''
       }

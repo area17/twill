@@ -2,6 +2,7 @@
     $max = $max ?? 1;
     $itemLabel = $itemLabel ?? strtolower($label);
     $note = $note ?? 'Add' . ($max > 1 ? " up to $max $itemLabel" : ' one ' . Str::singular($itemLabel));
+    $fieldNote = $fieldNote ?? '';
 @endphp
 
 <a17-locale
@@ -11,6 +12,7 @@
         itemLabel: '{{ $itemLabel }}',
         @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
         note: '{{ $note }}',
+        fieldNote: '{{ $fieldNote }}',
         max: {{ $max }}
     }"
 ></a17-locale>
