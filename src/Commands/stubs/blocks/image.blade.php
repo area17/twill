@@ -1,5 +1,5 @@
-@tw-title('Image')
-@tw-icon('image')
+@a17-title('Image')
+@a17-icon('image')
 
 @formField('medias', [
     'name' => 'image',  // role
