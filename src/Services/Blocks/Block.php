@@ -192,7 +192,7 @@ class Block
      */
     public function parseProperty($property, $block, $blockName)
     {
-        preg_match("/@tw-{$property}\('(.*)'\)/", $block, $matches);
+        preg_match("/@a17-{$property}\('(.*)'\)/", $block, $matches);
 
         if (filled($matches)) {
             return [$matches[1], 'block'];
@@ -229,7 +229,7 @@ class Block
      */
     public function isNewFormat($block)
     {
-        preg_match("/@tw-.*\('(.*)'\)/", $block, $matches);
+        preg_match("/@a17-.*\('(.*)'\)/", $block, $matches);
 
         return filled($matches);
     }

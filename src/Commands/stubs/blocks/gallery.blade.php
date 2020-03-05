@@ -1,5 +1,5 @@
-@tw-title('Gallery')
-@tw-icon('editor')
+@a17-title('Gallery')
+@a17-icon('editor')
 
 @formField('select', [
     'name' => 'variation',

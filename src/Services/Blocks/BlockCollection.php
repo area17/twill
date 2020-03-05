@@ -37,7 +37,7 @@ class BlockCollection extends Collection
      */
     public function findByName($search, $sources = [])
     {
-        return (new static($this->items))
+        return $this->collection()
             ->filter(function ($block) use ($search, $sources) {
                 return $block->name == $search &&
                     (blank($sources) ||
@@ -117,7 +117,7 @@ class BlockCollection extends Collection
     {
         if ($block->source === Block::SOURCE_APP) {
             if (
-                $this->where('fileName', $block->getFileName())
+                $this->collection()->where('fileName', $block->getFileName())
                     ->where('source', Block::SOURCE_TWILL)
                     ->isNotEmpty()
             ) {
@@ -135,21 +135,23 @@ class BlockCollection extends Collection
     {
         $this->generatePaths();
 
-        $this->items = collect($this->paths)->reduce(function (Collection $keep, $path) {
-            $this->listBlocks(
-                $path['path'],
-                $path['source'],
-                $path['type']
-            )->each(function ($block) use ($keep) {
-                $keep->push($block);
+        $this->items = collect($this->paths)
+            ->reduce(function (Collection $keep, $path) {
+                $this->listBlocks(
+                    $path['path'],
+                    $path['source'],
+                    $path['type']
+                )->each(function ($block) use ($keep) {
+                    $keep->push($block);
+
+                    return $keep;
+                });
 
                 return $keep;
-            });
+            }, collect())
+            ->toArray();
 
-            return $keep;
-        }, collect());
-
-        $this->items = $this->items
+        $this->items = collect($this->items)
             ->each(function (Block $block) {
                 $block->setSource($this->detectCustomSources($block));
             })
@@ -168,5 +170,10 @@ class BlockCollection extends Collection
                 return $block->export();
             })
             ->toArray();
+    }
+
+    public function collection()
+    {
+        return collect($this->items);
     }
 }

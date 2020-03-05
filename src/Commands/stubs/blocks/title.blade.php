@@ -1,5 +1,5 @@
-@tw-title('Title')
-@tw-icon('editor')
+@a17-title('Title')
+@a17-icon('editor')
 
 @formField('input', [
     'name' => 'title',
