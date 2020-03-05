@@ -71,9 +71,9 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
     {
         if (class_exists(Locale::class)) {
             if ($native) {
-                return Locale::getDisplayLanguage($code, $code);
+                return ucfirst(Locale::getDisplayLanguage($code, $code));
             } else {
-                return Locale::getDisplayLanguage($code, 'en');
+                return ucfirst(Locale::getDisplayLanguage($code, 'en'));
             }
         }
 
