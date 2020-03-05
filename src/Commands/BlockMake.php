@@ -36,8 +36,10 @@ class BlockMake extends Command
      * @param Filesystem $files
      * @param BlockCollection $blockCollection
      */
-    public function __construct(Filesystem $files, BlockCollection $blockCollection)
-    {
+    public function __construct(
+        Filesystem $files,
+        BlockCollection $blockCollection
+    ) {
         parent::__construct();
 
         $this->files = $files;
@@ -85,19 +87,58 @@ class BlockMake extends Command
             return;
         }
 
-        $blockIdentifier = (new Block())->makeName($blockName);
+        $blockIdentifier = (new Block(
+            $blockStub->file,
+            $blockStub->type,
+            $blockStub->source
+        ))->makeName($blockName);
 
         $blockFile = resource_path(
             "views/admin/blocks/{$blockIdentifier}.blade.php"
         );
 
-        $this->files->copy($stubFileName, $blockFile);
+        $this->files->put(
+            $blockFile,
+            $this->makeBlock($stubFileName, $blockName, $iconName)
+        );
 
-        $this->info("Block {$blockName} was created at {$blockFile}");
+        $this->info("Block {$blockName} was created.");
+
+        $this->info("File: {$blockFile}");
 
         $this->info(
-            "You can use it already with the identifier '{$blockIdentifier}'"
+            "And it's ready to use: '{$blockIdentifier}'"
         );
+    }
+
+    public function makeBlock($stubFileName, $blockName, $iconName)
+    {
+        $stub = $this->files->get($stubFileName);
+
+        $title = $this->makeBlockTitle($blockName);
+
+        $stub = preg_replace(
+            "/@a17-title\('(.*)'\)/",
+            "@a17-title('{$title}')", $stub
+        );
+
+        $stub = preg_replace(
+            "/@a17-icon\('(.*)'\)/",
+            "@a17-icon('{$iconName}')", $stub
+        );
+
+        return $stub;
+    }
+
+    public function makeBlockTitle($string)
+    {
+        $string = 'quote_extended';
+
+        $string = Str::kebab($string);
+
+        $string = str_replace(['-', '_'], ' ', $string);
+
+        return Str::title($string);
     }
 
     public function getBlockFile($name)
@@ -119,7 +160,7 @@ class BlockMake extends Command
 
     public function getBlockByName($block, $sources = [])
     {
-        return $this->blockCollection->all()->findByName($block, $sources);
+        return $this->blockCollection->findByName($block, $sources);
     }
 
     public function getIconFile($icon)

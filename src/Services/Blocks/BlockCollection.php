@@ -117,7 +117,8 @@ class BlockCollection extends Collection
     {
         if ($block->source === Block::SOURCE_APP) {
             if (
-                $this->collection()->where('fileName', $block->getFileName())
+                $this->collection()
+                    ->where('fileName', $block->getFileName())
                     ->where('source', Block::SOURCE_TWILL)
                     ->isNotEmpty()
             ) {

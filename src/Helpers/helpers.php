@@ -198,22 +198,22 @@ if (!function_exists('generate_list_of_allowed_blocks')) {
      */
     function generate_list_of_allowed_blocks($blocks, $groups)
     {
-        if (isset($blocks)) {
-            $allowedBlocks = collect($blocks)->mapWithKeys(function ($block) {
-                return [$block => config('twill.block_editor.blocks.' . $block)];
-            })->filter()->toArray();
-        } elseif (isset($group)) {
-            $blocks = config('twill.block_editor.blocks');
+//        if (isset($blocks)) {
+//            $allowedBlocks = collect($blocks)->mapWithKeys(function ($block) {
+//                return [$block => config('twill.block_editor.blocks.' . $block)];
+//            })->filter()->toArray();
+//        } elseif (isset($group)) {
+//            $blocks = config('twill.block_editor.blocks');
+//
+//            $allowedBlocks = array_filter($blocks, function ($block) use ($group) {
+//                return isset($block['group']) && $block['group'] === $group;
+//            });
+//        } else {
+//            $allowedBlocks = config('twill.block_editor.blocks');
+//        }
 
-            $allowedBlocks = array_filter($blocks, function ($block) use ($group) {
-                return isset($block['group']) && $block['group'] === $group;
-            });
-        } else {
-            $allowedBlocks = config('twill.block_editor.blocks');
-        }
+        return app(BlockCollection::class)->getAllowedBlocksList()->toArray();
 
-        $allowedBlocks = $allowedBlocks + app(BlockCollection::class)->getAllowedBlocksList()->toArray();
-
-        return $allowedBlocks;
+        //return $allowedBlocks;
     }
 }
