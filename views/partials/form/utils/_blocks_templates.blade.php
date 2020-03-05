@@ -3,24 +3,16 @@
 </script>
 
 @php
-    $allBlocks = (config('twill.block_editor.blocks') ?? []) + (config('twill.block_editor.repeaters') ?? []);
-
-    $blocksForInlineTemplates = collect($allBlocks)->reject(function ($block) {
-        return $block['compiled'] ?? false;
-    })->filter(function ($block, $blockName) {
-        return View::exists('admin.blocks.'.$blockName);
-    });
+    $newBlocks = app(\A17\Twill\Services\Blocks\BlockCollection::class)->all();
 @endphp
 
-@foreach($blocksForInlineTemplates as $blockName => $block)
+@foreach($newBlocks as $block)
     <script>
-        window.TWILL_BLOCKS_COMPONENTS.push('{{ $blockName }}')
+        window.TWILL_BLOCKS_COMPONENTS.push('{{ $block->name }}')
     </script>
-    <script type="text/x-template" id="{{ $block['component'] }}">
+    <script type="text/x-template" id="{{ $block->component }}">
         <div class="block__body">
-            {!! View::make('admin.blocks.' . $blockName, [
-                'renderForBlocks' => true
-            ])->render() !!}
+            {!! $block->render() !!}
         </div>
     </script>
 @endforeach

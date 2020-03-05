@@ -44,6 +44,11 @@ class Block
     public $icon;
 
     /**
+     * @var string
+     */
+    public $component;
+
+    /**
      * @var boolean
      */
     public $isNewFormat;
@@ -96,6 +101,7 @@ class Block
             $this->isNewFormat = $data['new_format'];
             $this->inferredType = $data['inferred_type'];
             $this->contents = $data['contents'];
+            $this->component = "a17-block-{$this->name}";
         }
         return $this;
     }
@@ -125,6 +131,7 @@ class Block
             'source' => $this->source,
             'new_format' => $this->isNewFormat ? 'yes' : '-',
             'file' => $this->file->getFilename(),
+            'component' => $this->component,
         ]);
     }
 
@@ -240,5 +247,24 @@ class Block
     public function getFileName()
     {
         return $this->file->getFileName();
+    }
+
+    /**
+     * @return string
+     * @throws \Symfony\Component\Debug\Exception\FatalThrowableError
+     */
+    public function render()
+    {
+        return BladeCompiler::render(
+            $this->removeSpecialBladeTags($this->contents),
+            [
+                'renderForBlocks' => true,
+            ]
+        );
+    }
+
+    public function removeSpecialBladeTags($contents)
+    {
+        return preg_replace("/@a17-.*\('(.*)'\)/", '', $contents);
     }
 }
