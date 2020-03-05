@@ -21,8 +21,8 @@ class CreateTwillDefaultFilesTables extends Migration
                 $table->{twillIncrementsMethod()}('id');
                 $table->timestamps();
                 $table->softDeletes();
-                $table->string('uuid');
-                $table->string('filename')->nullable();
+                $table->text('uuid');
+                $table->text('filename')->nullable();
                 $table->integer('size')->unsigned();
             });
         }
