@@ -48,8 +48,8 @@
                 @yield('primaryNavigation')
             @else
                 @partialView(($moduleName ?? null), 'navigation._primary_navigation')
-                @partialView(($moduleName ?? null), 'navigation._breadcrumb')
                 @partialView(($moduleName ?? null), 'navigation._secondary_navigation')
+                @partialView(($moduleName ?? null), 'navigation._breadcrumb')
             @endif
             <section class="main">
                 <div class="app" id="app" v-cloak>
