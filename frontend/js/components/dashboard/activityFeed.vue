@@ -47,7 +47,7 @@
             slug: 'all'
           },
           {
-            name: this.$trans('dashboard.all-activity', 'My activity'),
+            name: this.$trans('dashboard.my-activity', 'My activity'),
             slug: 'mine'
           }
         ],
