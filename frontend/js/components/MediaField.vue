@@ -61,8 +61,8 @@
 
       <!-- Metadatas options -->
       <div class="media__metadatas--options" :class="{ 's--active' : metadatas.active }" v-if="hasMedia && withAddInfo">
-        <a17-mediametadata :name='metadataName' label="Alt Text" id="altText" :media="media" @change="updateMetadata"/>
-        <a17-mediametadata v-if="withCaption" :name='metadataName' label="Caption" id="caption" :media="media" @change="updateMetadata"/>
+        <a17-mediametadata :name='metadataName' label="Alt Text" id="altText" :media="media" :maxlength="altTextMaxLength" @change="updateMetadata"/>
+        <a17-mediametadata v-if="withCaption" :name='metadataName' label="Caption" id="caption" :media="media" :maxlength="captionMaxLength" @change="updateMetadata"/>
         <a17-mediametadata v-if="withVideoUrl" :name='metadataName' label="Video URL (optional)" id="video" :media="media" @change="updateMetadata"/>
         <template v-for="field in extraMetadatas">
           <a17-mediametadata v-if="extraMetadatas.length > 0"
@@ -72,6 +72,7 @@
                              :label="field.label"
                              :id="field.name"
                              :media="media"
+                             :maxlength="field.maxlength || 0"
                              @change="updateMetadata"/>
         </template>
       </div>
@@ -95,6 +96,8 @@
   import a17Cropper from '@/components/Cropper.vue'
   import a17MediaMetadata from '@/components/MediaMetadata.vue'
   import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
+  import mediaFieldMixin from '@/mixins/mediaField.js'
+
   import a17VueFilters from '@/utils/filters.js'
   import { cropConversion } from '@/utils/cropper'
   import smartCrop from 'smartcrop'
@@ -107,7 +110,7 @@
       'a17-cropper': a17Cropper,
       'a17-mediametadata': a17MediaMetadata
     },
-    mixins: [mediaLibrayMixin],
+    mixins: [mediaLibrayMixin, mediaFieldMixin],
     props: {
       name: {
         type: String,
@@ -145,32 +148,9 @@
         type: String,
         default: ''
       },
-      // current crop context put in store. eg: slideshow, cover...
-      cropContext: {
-        type: String,
-        default: ''
-      },
-      withAddInfo: {
-        type: Boolean,
-        default: true
-      },
-      withVideoUrl: {
-        type: Boolean,
-        default: true
-      },
-      withCaption: {
-        type: Boolean,
-        default: true
-      },
       activeCrop: {
         type: Boolean,
         default: true
-      },
-      extraMetadatas: {
-        type: Array,
-        default () {
-          return []
-        }
       }
     },
     data: function () {
