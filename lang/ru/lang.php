@@ -13,7 +13,9 @@ return [
         'empty-message' => 'У вас еще нет активности.',
         'all-activity' => 'Все активность',
         'my-activity' => 'Моя активность',
-        'create-new' => 'создайте новый',
+        'create-new' => 'Создать',
+        'my-drafts' => 'Мои черновики',
+        'statitics' => 'Статистика',
     ],
     'footer' => [
         'version' => 'Версия',
@@ -39,6 +41,7 @@ return [
             'restore' => 'Восстановить',
             'destroy' => 'Уничтожить',
             'delete' => 'Удалить',
+            'duplicate' => 'Дублировать',
         ],
         'add-new-button' => 'Добавить',
         'listing-empty-message' => 'Ничего нет.',
@@ -105,6 +108,9 @@ return [
             'open-in-editor' => 'Открыть в редакторе',
             'create-another' => 'Создать другой',
             'delete' => 'Удалить',
+            'add-content' => 'Добавить содержимое',
+            'preview' => 'Предварительный просмотр',
+            'loading' => 'Загрузка',
         ],
         'browser' => [
             'attach' => 'Прикрепить',
