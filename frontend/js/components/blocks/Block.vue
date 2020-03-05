@@ -32,9 +32,9 @@
       </div>
     </div>
     <div class="block__content" :aria-hidden="!visible ? true : null">
-      <!--TBD: is this inputframe required ?-->
-      <a17-inputframe size="small" label="" :name="`block.${block.id}`"/>
       <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes" key="`form_${block.type}_${block.id}`"><!-- dynamic components --></component>
+      <!-- Block validation input frame, to display errors -->
+      <a17-inputframe size="small" label="" :name="`block.${block.id}`"/>
     </div>
   </div>
 </template>

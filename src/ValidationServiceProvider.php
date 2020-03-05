@@ -51,6 +51,7 @@ class ValidationServiceProvider extends ServiceProvider
                 }
 
                 if (!empty($blockMessages ?? [])) {
+                    array_unshift($blockMessages, 'This block has validation issues:');
                     $validator->errors()->add('block.' . $block['id'], join('<br>', $blockMessages));
                 }
 
