@@ -897,7 +897,7 @@ abstract class ModuleRepository
         $hasBehavior = classHasTrait($this, 'A17\Twill\Repositories\Behaviors\Handle' . ucfirst($behavior));
 
         if (Str::startsWith($behavior, 'translation')) {
-            $hasBehavior = $hasBehavior && $this->getModel()->isTranslatable();
+            $hasBehavior = $hasBehavior && $this->model->isTranslatable();
         }
 
         return $hasBehavior;
@@ -908,6 +908,6 @@ abstract class ModuleRepository
      */
     public function isTranslatable($column)
     {
-        return $this->getModel()->isTranslatable($column);
+        return $this->model->isTranslatable($column);
     }
 }
