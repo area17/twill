@@ -612,7 +612,7 @@ abstract class ModuleController extends Controller
                     $this->routePrefix,
                     'edit',
                     array_filter(['id' => $newItem->id])
-                )
+                ),
             ]);
         }
 
@@ -1353,7 +1353,7 @@ abstract class ModuleController extends Controller
             'baseUrl' => $baseUrl,
             'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
             'saveUrl' => $this->getModuleRoute($item->id, 'update'),
-            'editor' => $this->moduleHas('revisions') && $this->moduleHas('blocks') && !$this->disableEditor,
+            'editor' => Config::get('twill.enabled.block-editor') && $this->moduleHas('blocks') && !$this->disableEditor,
             'blockPreviewUrl' => Route::has('admin.blocks.preview') ? URL::route('admin.blocks.preview') : '#',
             'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
         ] + (Route::has($previewRouteName) ? [
