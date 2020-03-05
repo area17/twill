@@ -20,14 +20,14 @@
     </a17-slideshow>
     <a17-mediafield v-else
                     :name="name"
-                    ;cropContext="cropContext"
-                    ;required="required"
-                    ;withAddInfo="withAddInfo"
-                    ;withVideoUrl="withVideoUrl"
-                    ;withCaption="withCaption"
+                    :cropContext="cropContext"
+                    :required="required"
+                    :withAddInfo="withAddInfo"
+                    :withVideoUrl="withVideoUrl"
+                    :withCaption="withCaption"
                     :altTextMaxLength="altTextMaxLength"
                     :captionMaxLength="captionMaxLength"
-                    ;extraMetadatas="extraMetadatas">
+                    :extraMetadatas="extraMetadatas">
       <slot />
     </a17-mediafield>
   </a17-inputframe>
