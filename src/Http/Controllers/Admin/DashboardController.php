@@ -394,7 +394,13 @@ class DashboardController extends Controller
         })->map(function ($module) {
             $repository = $this->getRepository($module['name'], $module['repository'] ?? null);
 
-            $drafts = $repository->draft()->mine()->limit(3)->latest()->get();
+            $query = $repository->draft()->limit(3)->latest();
+
+            if ($repository->hasBehavior('revisions')) {
+                $drafts = $query->mine();
+            }
+
+            $drafts = $query->get();
 
             return $drafts->map(function ($draft) use ($module) {
                 return [
