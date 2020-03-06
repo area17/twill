@@ -30,6 +30,8 @@
   import { mapState } from 'vuex'
   import { LANGUAGE } from '@/store/mutations'
 
+  import cloneDeep from 'lodash/cloneDeep'
+
   export default {
     name: 'A17Locale',
     props: {
@@ -66,7 +68,7 @@
       attributesPerLang: function (lang) {
         const language = this.languages.find(l => l.value === lang)
 
-        const attributes = Object.assign({}, this.attributes)
+        const attributes = cloneDeep(this.attributes)
         // for textfields set initial values using the initialValues prop
         if (this.initialValues && typeof this.initialValues === 'object' && this.initialValues[lang]) {
           attributes.initialValue = this.initialValues[lang]
@@ -79,7 +81,7 @@
         return attributes
       },
       attributesNoLang: function () {
-        const attributes = Object.assign({}, this.attributes)
+        const attributes = cloneDeep(this.attributes)
         // for textfields set initial values using the initialValue prop
         if (this.initialValue) attributes.initialValue = this.initialValue
         return attributes
