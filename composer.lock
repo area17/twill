@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b8afcdb8811addd3213912f7a3c0103e",
+    "content-hash": "6b51a29d0e5174bcb62cbe6f1d5e431b",
     "packages": [
         {
             "name": "anahkiasen/underscore-php",
@@ -1557,16 +1557,16 @@
         },
         {
             "name": "laravel/ui",
-            "version": "v2.0.0",
+            "version": "v2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/ui.git",
-                "reference": "ec838c75ba1886d014c5465b1ecc79b2071f46c7"
+                "reference": "47a0a1dac76f5e73803c86e1f38b2c7e0ae7fa83"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/ui/zipball/ec838c75ba1886d014c5465b1ecc79b2071f46c7",
-                "reference": "ec838c75ba1886d014c5465b1ecc79b2071f46c7",
+                "url": "https://api.github.com/repos/laravel/ui/zipball/47a0a1dac76f5e73803c86e1f38b2c7e0ae7fa83",
+                "reference": "47a0a1dac76f5e73803c86e1f38b2c7e0ae7fa83",
                 "shasum": ""
             },
             "require": {
@@ -1608,7 +1608,7 @@
                 "laravel",
                 "ui"
             ],
-            "time": "2020-03-03T13:43:00+00:00"
+            "time": "2020-03-03T20:16:46+00:00"
         },
         {
             "name": "league/commonmark",
