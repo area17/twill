@@ -2,29 +2,40 @@
 
 All notable changes to `twill` will be documented in this file.
 
-## 2.0.0 (2020-03-06)
+## 2.0.0 (2020-03-07)
+
+> Note: our changelog is complete but we're refining and adding screenshots, check back again soon! We'll also share out on our newsletter and social networks early next week.
 
 ### Changed
 
-#### Laravel 6 support
+#### Laravel 6 and 7 support
 - *@yanhaoli*
 - [`#389`](https://github.com/area17/twill/pull/389) Added support for Laravel 6 [`552ec16a`](https://github.com/area17/twill/commit/552ec16a083b4f19894af4d726b0ed334df82cb2)
 - [`#456`](https://github.com/area17/twill/pull/456) Update migrations_helpers.php [`c36ed855`](https://github.com/area17/twill/commit/c36ed85596f1181d2947480268f9775da0154c66)
+- [`#561`](https://github.com/area17/twill/pull/561) Added support for Laravel 7
 > Added support for laravel 6.0 in composer.json  
 > Fixed the str&array helpers missing errors  
 > Fixed incorrect url generated problem in ModuleController  
 > Removed Inspector  
-> Uses astronomic/translatable
+> Uses astronomic/translatable  
 > Removed laravel-debugbar  
 > Drop support for Laravel 5.6 or lower  
 > Removed deprecated code for supporting laravel version below 56  
 > Removed whoops related config and methods  
 > Removed the ddd funtion.  
+> Add Laravel 7 support  
+> Update composer.lock  
+> Add laravel/ui for Illuminate\Foundation\Auth dependencies  
+> Update testbench for Laravel 7 support  
+> Remove larastan until nunomaduro/larastan#485 is resolved  
+> Update laravel/ui  
+> Allow laravel/ui ^1.0 for Laravel below 7  
+> Make Twill's exception handler compatible with all Laravel versions and let developers deal with error views, providing a quick helper for backward compatibility
 
 #### Migrations loading strategy
 - *@ifox*
 - Fix #365: load migrations from package [`7fced605`](https://github.com/area17/twill/commit/7fced6057183e624b0acdf0805f4513b1d9b9623)
-> See https://github.com/area17/twill/pull/372#issuecomment-537965676
+> See https://github.com/area17/twill/pull/372#issuecomment-537965676  
 > Also prepare for all default tables to be prefixed by twill_
 - Update migrations date for backward compatibility [`ee489635`](https://github.com/area17/twill/commit/ee4896353054f7da4a54a964d78acba025cc8400)
 > If an existing Twill app is migrated, those migrations already exist as they have been published on install. In order to let those execute before the new automatically loaded ones, we set today's date as the timestamp of new ones. Without this change, on a fresh migrate run, loaded migrations would load first (as they were dated using Twill's public release), which would most likely error on published migration that didn't have existence checks in the past.
@@ -123,21 +134,21 @@ All notable changes to `twill` will be documented in this file.
 - [`#533`](https://github.com/area17/twill/pull/533) Validate Composer config in CI [`94362dc5`](https://github.com/area17/twill/commit/94362dc593c8a681e1e9d6a1eb96ae6f65573ee5)
 - Ignore phpunit result cache file [`3d468aa4`](https://github.com/area17/twill/commit/3d468aa431a734686b818311f160b0761d4d8e2e)
 - Initial setup for PHPUnit tests, Travis CI, Scrutinizer CI, Style CI and PHPStan [`c287dc18`](https://github.com/area17/twill/commit/c287dc18bc3abd3970651ab3174c1741af40e30a)
-> Prettier
-> :memory: database
-> Blocks command test
-> superadmin command test
-> update command test
-> routes tests 
-> module tests
-> validation tests
-> impersonate user test
-> passwords tests
-> google2fa test
-> medialibrary tests
-> logout test
-> users test
-> login tests
+> Prettier  
+> :memory: database  
+> Blocks command test  
+> superadmin command test  
+> update command test  
+> routes tests   
+> module tests  
+> validation tests  
+> impersonate user test  
+> passwords tests  
+> google2fa test  
+> medialibrary tests  
+> logout test  
+> users test  
+> login tests  
 - [`18b069f3`](https://github.com/area17/twill/commit/18b069f3f95cf935d3dd42a831feea3f760010ed), [`d0cab04c`](https://github.com/area17/twill/commit/d0cab04c25f6bd78551d1c8652f0807ef1b71d31), [`f6d2e720`](https://github.com/area17/twill/commit/f6d2e72034857f6744266219bbd806efa27f0a3c), [`c13a267a`](https://github.com/area17/twill/commit/c13a267a98738260efae87f578c34f4c8b661c62), [`9f30604d`](https://github.com/area17/twill/commit/9f30604d888b8d446ecf98fbe2322b7e235c986e), [`35749445`](https://github.com/area17/twill/commit/35749445e1199b84aa5971809878b5831ccd1c8e), [`85c2730c`](https://github.com/area17/twill/commit/85c2730c83404ec489a8a3a3d9561b939ee02ef5), [`915053eb`](https://github.com/area17/twill/commit/915053eba1b8e39c799b06623d797cf8030384b3), [`0c753c4f`](https://github.com/area17/twill/commit/0c753c4ffd9ea965afa9271e7177d743965adacc), [`3c7e9a82`](https://github.com/area17/twill/commit/3c7e9a82466451821fcf3d939abedfd0ca036914), [`3956339f`](https://github.com/area17/twill/commit/3956339fb51b0fc03c32557945e224a4c0464261), [`6416e41b`](https://github.com/area17/twill/commit/6416e41bd42a49a40215cb009e34568d52decfcc), [`7cb0ac44`](https://github.com/area17/twill/commit/7cb0ac44dd4268c309caa5033705232b895fda01), [`21436f5c`](https://github.com/area17/twill/commit/21436f5c2d1deddc152f60eb2f51ba62590f370d), [`8f8316bb`](https://github.com/area17/twill/commit/8f8316bbc0e6706283a97e0c8cbd9a0d548d4ed7), [`ff2b37e6`](https://github.com/area17/twill/commit/ff2b37e6fa48f2fc6b0cb00c084600c14ee0f0ef), [`466e2cc0`](https://github.com/area17/twill/commit/466e2cc0381c67b77ac65a1a48d4109cf126cfb0), [`c7ad1b91`](https://github.com/area17/twill/commit/c7ad1b91e55aceda532d226d4648919bef7d0843), [`2dd11547`](https://github.com/area17/twill/commit/2dd11547b4ba0a862c79d8f4e005bf2d4274ca30), [`5d2f7eb0`](https://github.com/area17/twill/commit/5d2f7eb02f1a2ae2ef70198ef07614911eeae68a), [`c6f8a1ec`](https://github.com/area17/twill/commit/c6f8a1ec2b47578bbca697ae72856edf5f4663a0), [`2df4e94d`](https://github.com/area17/twill/commit/2df4e94d9a149652ab9d51e148f997139ad70491), [`6c59927a`](https://github.com/area17/twill/commit/6c59927a16400da8233bdcb101ff8d52b4ecbe21), [`6a92f46b`](https://github.com/area17/twill/commit/6a92f46b833eb9ac81365e91ce351cefbf1857c0), [`5cf42a51`](https://github.com/area17/twill/commit/5cf42a510bbda53f48ddfe4dc87aa0564c474c03), [`5082beb6`](https://github.com/area17/twill/commit/5082beb6b18a90229ab9b68edb89139fd766e575), [`4c5dda9e`](https://github.com/area17/twill/commit/4c5dda9e9beeb6615afa49212a1178900d7798ad), [`57c770db`](https://github.com/area17/twill/commit/57c770db407f0eaf5033aa8e824583398c816e22), [`9599a055`](https://github.com/area17/twill/commit/9599a055d1520354eaf12d72b9f48e896ed3cfdf), [`fc801000`](https://github.com/area17/twill/commit/fc801000ed985cf2291b30c1e282ca60de5d9787), [`10669f1f`](https://github.com/area17/twill/commit/10669f1f7a2d9ce7b309ddfea5540acd12f671e6), [`cc3d5637`](https://github.com/area17/twill/commit/cc3d56378772970b3a6e82933f6cd2d835c81c00), [`0b75750e`](https://github.com/area17/twill/commit/0b75750eb6697b788ba33470c28617591809b12a), [`723f8c08`](https://github.com/area17/twill/commit/723f8c089f1825b6c26dbdbfe4eba53db6378bbe), [`ceb6b39d`](https://github.com/area17/twill/commit/ceb6b39d0e73a2cab75bfc0a1490f1e82772158a), [`90898bbc`](https://github.com/area17/twill/commit/90898bbcb7e6064e385eeb0548c3e11c095ab6f1), [`c86b9700`](https://github.com/area17/twill/commit/c86b97000d8f9ac17a2d7a2b3651974a7582f110), [`2819959f`](https://github.com/area17/twill/commit/2819959f383f288f0af4edd6f5ba32ff824369dc), [`094a9fab`](https://github.com/area17/twill/commit/094a9fabc72ec4559808a9935b417253f8b0256d), [`2c2ea3ec`](https://github.com/area17/twill/commit/2c2ea3ecf4fda3118b4859e7ccb1064cdb13ec8d), [`9639281b`](https://github.com/area17/twill/commit/9639281bbb63ed760a203d99259d6484958fcf60), [`727416e4`](https://github.com/area17/twill/commit/727416e487fc8e0358971dd524ee5b2602724155), [`cb0cb0f7`](https://github.com/area17/twill/commit/cb0cb0f7281872571533d40c9eb918bfad51a0b7), [`6892e5a4`](https://github.com/area17/twill/commit/6892e5a46273b0e2092b434d18f12ca4cb5dd02b), [`acddf89d`](https://github.com/area17/twill/commit/acddf89da092b52a50f69fb443087107d696a250), [`dfab755b`](https://github.com/area17/twill/commit/dfab755b345d184e012dc6f4f43b3ce2f3c5b0a5), [`2df955e9`](https://github.com/area17/twill/commit/2df955e9a77e235cb6dcbd24c6c0ebe9d76dc4d6), [`c4b8b599`](https://github.com/area17/twill/commit/c4b8b5994f3ef03883e645415bcaf56ed7ffd22b), [`18405838`](https://github.com/area17/twill/commit/1840583860af5b312a8ae911937f17cc6d4ae1a5), [`ca929ecd`](https://github.com/area17/twill/commit/ca929ecdcae22dfc79f59a9ce7a1a4cf40356544), [`7fa3a133`](https://github.com/area17/twill/commit/7fa3a133d6c5895e5393a48dccb5a5f7c3e30873), [`708c8ced`](https://github.com/area17/twill/commit/708c8ced1b19a635b1bdb1af02c537383624bb3e), [`8bd24c28`](https://github.com/area17/twill/commit/8bd24c2895da74b32d7dcc291a795be64be7e521), [`28de0782`](https://github.com/area17/twill/commit/28de0782da821b64aa54a2155cf45183e96c21c5), [`42f48b08`](https://github.com/area17/twill/commit/42f48b089400d45567643c8866e5208789e90483), [`12eea8ed`](https://github.com/area17/twill/commit/12eea8ed7c4303dc6016b6e160567c6c691be69f), [`bec7af63`](https://github.com/area17/twill/commit/bec7af63e271206723210ed5c81354955ed2dec1), [`1c8567c5`](https://github.com/area17/twill/commit/1c8567c5f6675a69d09bc51e6c37f59c438c00a2), [`aa61012a`](https://github.com/area17/twill/commit/aa61012a05e53753593bdb949adea46020a20413), [`a80b6e3c`](https://github.com/area17/twill/commit/a80b6e3c828396150a1ac8521b5656de092febfd), [`a85a4255`](https://github.com/area17/twill/commit/a85a4255ffef812a97dcf90cbf3a6623d32c95fa), [`9631e7c5`](https://github.com/area17/twill/commit/9631e7c5f5189290f873be522162aa3d122922d9), [`b1308bad`](https://github.com/area17/twill/commit/b1308bade6ad180062214718c791822927200cab), 
 
 #### OAuth login
