@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Exceptions;
 
-use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Config\Repository as Config;
@@ -10,6 +9,7 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Routing\Redirector;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Routing\UrlGenerator;
@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\Factory as ViewFactory;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -97,21 +97,21 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * @param Exception $e
+     * @param Throwable $e
      * @return mixed
      * @throws Exception
      */
-    public function report(Exception $e)
+    public function report(Throwable $e)
     {
         return parent::report($e);
     }
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @param Exception $e
+     * @param Throwable $e
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|string|Response
      */
-    public function render($request, Exception $e)
+    public function render($request, Throwable $e)
     {
         $e = $this->prepareException($e);
 
