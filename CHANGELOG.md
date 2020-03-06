@@ -43,7 +43,7 @@ All notable changes to `twill` will be documented in this file.
 - Rename default migrations to prevent conflicts in existing codebases [`74173acd`](https://github.com/area17/twill/commit/74173acd0b750243c2d3bab382ed842f36efdce9)
 
 #### Frontend build
-- *@antonin and @ifox*
+- *@m4n1ok and @ifox*
 - Merge branch 'feature/runtime-blocks' [`969e1260`](https://github.com/area17/twill/commit/969e1260a614c057b52260e8b93e7f1fa39793c6)
 - Inline blocks templates to enable a no-build workflow [`d88ab7a0`](https://github.com/area17/twill/commit/d88ab7a0a05e50019d51e5d9398866826eaa1b21)
 > This feature makes `php artisan twill:blocks` obsolete as blocks and repeaters templates are now rendered at runtime and inlined in the html response of all forms. This feature also removes the need to re-build Twill's frontend when creating or updating blocks. This is possible because Twill's blocks Vue components are simple single file components that only have a template and a mixin registration. Blocks components are dynamically registered by Vue using `x-template` scripts that are inlined by Blade.
@@ -184,7 +184,7 @@ All notable changes to `twill` will be documented in this file.
 - Added ability to enable/disable the destroy function. Enabled by default. [`a8addc71`](https://github.com/area17/twill/commit/a8addc7140dbc98b1e0b718683a1a7cf87fc143c)
 
 #### Azure uploads
-- *@antonin*
+- *@m4n1ok*
 - [`#424`](https://github.com/area17/twill/pull/424) Support azure storage [`2129c084`](https://github.com/area17/twill/commit/2129c084bd5cdf14a0617006d0332090f8f9af9c)
 - [`#443`](https://github.com/area17/twill/pull/443) Properly support fileupload for Azure [`d81a5b94`](https://github.com/area17/twill/commit/d81a5b9439661a1c9449f3d25a6bc1946706788a)
 - Read env from config in azure helper [`b7a89f38`](https://github.com/area17/twill/commit/b7a89f3830a25e682a996e25176d10f6ac23059d)
@@ -234,7 +234,7 @@ All notable changes to `twill` will be documented in this file.
 > Enabling this allows adding top level keys to Twill's navigation and dashboard modules configuration, mapping to a subdomain. This is a very simple way to implement multi-tenant CMS/sites in Twill.
 
 #### Tiptap WYSIWYG
-- *@antonin*
+- *@m4n1ok*
 - Complete tiptap based wysiwyg integration [`ae62d294`](https://github.com/area17/twill/commit/ae62d29400ee61e46ab83cf8faad14d39d6ab319)
 - Add default table component in the codebase [`150eb3b1`](https://github.com/area17/twill/commit/150eb3b1eae2160b914d8f1d783cc504c0c06dce)
 - Rename WysiwygTiptap component file name to match Camelcase current naming convention [`754e4cce`](https://github.com/area17/twill/commit/754e4cce663e5fdc5167241c59457095014998c8)
