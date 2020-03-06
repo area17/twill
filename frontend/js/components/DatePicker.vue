@@ -13,6 +13,7 @@
   import randKeyMixin from '@/mixins/randKey'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
+  import { locales, getCurrentLocale, isCurrentLocale24HrFormatted } from '@/utils/locale'
   import FlatPickr from 'flatpickr'
   import 'flatpickr/dist/flatpickr.css'
 
@@ -47,7 +48,7 @@
       },
       time_24hr: {
         type: Boolean,
-        default: false
+        default: isCurrentLocale24HrFormatted()
       },
       inline: {
         type: Boolean,
@@ -107,7 +108,7 @@
     methods: {
       config: function () {
         const self = this
-        return {
+        const config = {
           wrap: true,
           altInput: true,
           static: self.staticMode,
@@ -122,6 +123,7 @@
           hourIncrement: self.hourIncrement,
           minDate: self.minDate,
           maxDate: self.maxDate,
+          altFormat: 'F j, Y ' + ((isCurrentLocale24HrFormatted() && self.enableTime) ? 'H:i' : 'h:i K'),
           onOpen: function () {
             setTimeout(function () {
               self.flatPicker.set('maxDate', self.maxDate) // in case maxDate changed since last open
@@ -140,6 +142,14 @@
             })
           }
         }
+
+        const locale = locales[getCurrentLocale()].flatpickr
+
+        if (locale != null) {
+          config.locale = locale
+        }
+
+        return config
       },
       updateFromStore: function (newValue) { // called from the formStore mixin
         if (newValue !== this.date) {
