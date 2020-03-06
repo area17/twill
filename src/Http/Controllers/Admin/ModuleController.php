@@ -362,7 +362,7 @@ abstract class ModuleController extends Controller
         Session::put($this->moduleName . '_retain', true);
 
         if ($this->getIndexOption('editInModal')) {
-            return $this->respondWithSuccess('Content saved. All good!');
+            return $this->respondWithSuccess(twillTrans('twill::lang.publisher.save-success'));
         }
 
         return $this->respondWithRedirect(moduleRoute(
@@ -456,7 +456,7 @@ abstract class ModuleController extends Controller
                         ['openCreate' => true]
                     ));
                 } elseif ($input['cmsSaveType'] === 'restore') {
-                    Session::flash('status', "Revision restored.");
+                    Session::flash('status', twillTrans('twill::lang.publisher.restore-success'));
 
                     return $this->respondWithRedirect(moduleRoute(
                         $this->moduleName,
@@ -469,13 +469,13 @@ abstract class ModuleController extends Controller
 
             if ($this->moduleHas('revisions')) {
                 return Response::json([
-                    'message' => 'Content saved. All good!',
+                    'message' => twillTrans('twill::lang.publisher.save-success'),
                     'variant' => FlashLevel::SUCCESS,
                     'revisions' => $item->revisionsArray(),
                 ]);
             }
 
-            return $this->respondWithSuccess('Content saved. All good!');
+            return $this->respondWithSuccess(twillTrans('twill::lang.publisher.save-success'));
         }
     }
 
@@ -530,9 +530,9 @@ abstract class ModuleController extends Controller
         });
 
         $revision = $item->revisions()->where('id', $this->request->get('revisionId'))->first();
-        $date = $revision->created_at->toDayDateTimeString();
+        $date = $revision->created_at->isoFormat('LLLL');
 
-        Session::flash('restoreMessage', "You are currently editing an older revision of this content (saved by $revision->byUser on $date). Make changes if needed and click restore to save a new revision.");
+        Session::flash('restoreMessage', twillTrans('twill::lang.publisher.restore-message', ['user' => $revision->byUser, 'date' => $date]));
 
         return View::make($view, $this->form($id, $item));
     }
@@ -982,7 +982,7 @@ abstract class ModuleController extends Controller
         ) {
             array_push($tableColumns, [
                 'name' => 'thumbnail',
-                'label' => 'Thumbnail',
+                'label' => twillTrans('twill::lang.listing.columns.thumbnail'),
                 'visible' => $visibleColumns ? in_array('thumbnail', $visibleColumns) : true,
                 'optional' => true,
                 'sortable' => false,
@@ -993,7 +993,7 @@ abstract class ModuleController extends Controller
         if ($this->getIndexOption('feature')) {
             array_push($tableColumns, [
                 'name' => 'featured',
-                'label' => 'Featured',
+                'label' => twillTrans('twill::lang.listing.columns.featured'),
                 'visible' => true,
                 'optional' => false,
                 'sortable' => false,
@@ -1003,7 +1003,7 @@ abstract class ModuleController extends Controller
         if ($this->getIndexOption('publish')) {
             array_push($tableColumns, [
                 'name' => 'published',
-                'label' => 'Published',
+                'label' => twillTrans('twill::lang.listing.columns.published'),
                 'visible' => true,
                 'optional' => false,
                 'sortable' => false,
@@ -1012,7 +1012,7 @@ abstract class ModuleController extends Controller
 
         array_push($tableColumns, [
             'name' => 'name',
-            'label' => $this->indexColumns[$this->titleColumnKey]['title'] ?? 'Name',
+            'label' => $this->indexColumns[$this->titleColumnKey]['title'] ?? twillTrans('twill::lang.listing.columns.name'),
             'visible' => true,
             'optional' => false,
             'sortable' => $this->getIndexOption('reorder') ? false : ($this->indexColumns[$this->titleColumnKey]['sort'] ?? false),

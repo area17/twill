@@ -8,7 +8,7 @@
           <div class="datatable__stickyInner">
             <div class="datatable__setup">
               <a17-dropdown class="datatable__setupDropdown" v-if="hideableColumns.length" ref="setupDropdown"
-                            position="bottom-right" title="Show" :clickable="true" :offset="-10">
+                            position="bottom-right" :title="$trans('listing.columns.show')" :clickable="true" :offset="-10">
                 <button class="datatable__setupButton" @click="$refs.setupDropdown.toggle()">
                   <span v-svg symbol="preferences"></span></button>
                 <div slot="dropdown__content">
