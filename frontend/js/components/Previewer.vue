@@ -14,7 +14,7 @@
                   {{ currentRevision.datetime | formatDate }} ({{ currentRevision.author }}) <span v-svg symbol="dropdown_module"></span>
                 </template>
                 <template v-else>
-                  Last edited <timeago :auto-update="1" :since="new Date(revisions[0].datetime)"></timeago> <span v-svg symbol="dropdown_module"></span>
+                  Last edited <timeago :auto-update="1" :datetime="new Date(revisions[0].datetime)"></timeago> <span v-svg symbol="dropdown_module"></span>
                 </template>
               </a17-button>
               <div slot="dropdown__content">
