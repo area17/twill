@@ -2,7 +2,7 @@
 
 All notable changes to `twill` will be documented in this file.
 
-## 2.0.0 (2020-03-07)
+## 2.0.0 (2020-03-06)
 
 > Note: our changelog is complete but we're refining and adding screenshots, check back again soon! We'll also share out on our newsletter and social networks early next week.
 
