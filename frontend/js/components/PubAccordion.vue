@@ -10,8 +10,8 @@
       </template>
     </div>
     <div class="accordion__fields">
-      <a17-datepicker name="publish_date" place-holder="Start Date" :initialValue="startDate" :maxDate="endDate" :enableTime="true" :allowInput="true" :staticMode="true" @open="openStartCalendar" @close="closeCalendar" @input="updateStartDate" :clear="true"></a17-datepicker>
-      <a17-datepicker name="end_date" place-holder="End Date" :initialValue="endDate" :minDate="startDate" :enableTime="true" :allowInput="true" :staticMode="true" @open="openEndCalendar" @close="closeCalendar" @input="updateEndDate" :clear="true"></a17-datepicker>
+      <a17-datepicker name="publish_date" :place-holder="$trans('publisher.start-date')" :initialValue="startDate" :maxDate="endDate" :enableTime="true" :allowInput="true" :staticMode="true" @open="openStartCalendar" @close="closeCalendar" @input="updateStartDate" :clear="true"></a17-datepicker>
+      <a17-datepicker name="end_date" :place-holder="$trans('publisher.end-date')" :initialValue="endDate" :minDate="startDate" :enableTime="true" :allowInput="true" :staticMode="true" @open="openEndCalendar" @close="closeCalendar" @input="updateEndDate" :clear="true"></a17-datepicker>
     </div>
   </a17-accordion>
 </template>
@@ -33,7 +33,9 @@
     props: {
       defaultStartDate: {
         type: String,
-        default: 'Immediate'
+        default: function () {
+          return this.$trans('publisher.immediate')
+        }
       },
       defaultEndDate: {
         type: String,

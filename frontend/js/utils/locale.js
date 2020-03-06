@@ -1,6 +1,7 @@
 import { Mandarin } from 'flatpickr/dist/l10n/zh.js'
 import { Russian } from 'flatpickr/dist/l10n/ru.js'
 import { French } from 'flatpickr/dist/l10n/fr.js'
+import { Polish } from 'flatpickr/dist/l10n/pl.js'
 
 export const locales = {
   en: {
@@ -17,6 +18,10 @@ export const locales = {
   fr: {
     'date-fns': require('date-fns/locale/fr'),
     flatpickr: French
+  },
+  pl: {
+    'date-fns': require('date-fns/locale/pl'),
+    flatpickr: Polish
   }
 }
 

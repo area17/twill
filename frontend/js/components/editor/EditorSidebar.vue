@@ -14,7 +14,7 @@
           </a17-dropdown>{{ activeBlock.title }}
         </div>
         <span>
-          <a href="#" @click.prevent="deleteBlock(index)" class="f--small f--note f--underlined">Delete</a>
+          <a href="#" @click.prevent="deleteBlock(index)" class="f--small f--note f--underlined">{{ $trans('editor.delete') }}</a>
         </span>
       </div>
       <div class="editorSidebar__body">
@@ -38,8 +38,8 @@
     </template>
     <template v-else>
       <div class="editorSidebar__actions">
-        <a17-button variant="action" @click="saveBlock()">Done</a17-button>
-        <a17-button variant="secondary" @click="cancelBlock()">Cancel</a17-button>
+        <a17-button variant="action" @click="saveBlock()">{{ $trans('editor.done') }}</a17-button>
+        <a17-button variant="secondary" @click="cancelBlock()">{{ $trans('editor.cancel') }}</a17-button>
       </div>
     </template>
   </div>

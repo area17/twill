@@ -142,55 +142,55 @@
             draft: [
                 {
                     name: 'restore',
-                    text: 'Restore as a draft'
+                    text: '{{ twillTrans('twill::lang.publisher.restore-draft') }}'
                 },
                 {
                     name: 'restore-close',
-                    text: 'Restore as a draft and close'
+                    text: '{{ twillTrans('twill::lang.publisher.restore-draft-close') }}'
                 },
                 {
                     name: 'restore-new',
-                    text: 'Restore as a draft and create new'
+                    text: '{{ twillTrans('twill::lang.publisher.restore-draft-new') }}'
                 },
                 {
                     name: 'cancel',
-                    text: 'Cancel'
+                    text: '{{ twillTrans('twill::lang.publisher.cancel') }}'
                 }
             ],
             live: [
                 {
                     name: 'restore',
-                    text: 'Restore as published'
+                    text: '{{ twillTrans('twill::lang.publisher.restore-live') }}'
                 },
                 {
                     name: 'restore-close',
-                    text: 'Restore as published and close'
+                    text: '{{ twillTrans('twill::lang.publisher.restore-live-close') }}'
                 },
                 {
                     name: 'restore-new',
-                    text: 'Restore as published and create new'
+                    text: '{{ twillTrans('twill::lang.publisher.restore-live-new') }}'
                 },
                 {
                     name: 'cancel',
-                    text: 'Cancel'
+                    text: '{{ twillTrans('twill::lang.publisher.cancel') }}'
                 }
             ],
             update: [
                 {
                     name: 'restore',
-                    text: 'Restore as published'
+                    text: '{{ twillTrans('twill::lang.publisher.restore-live') }}'
                 },
                 {
                     name: 'restore-close',
-                    text: 'Restore as published and close'
+                    text: '{{ twillTrans('twill::lang.publisher.restore-live-close') }}'
                 },
                 {
                     name: 'restore-new',
-                    text: 'Restore as published and create new'
+                    text: '{{ twillTrans('twill::lang.publisher.restore-live-new') }}'
                 },
                 {
                     name: 'cancel',
-                    text: 'Cancel'
+                    text: '{{ twillTrans('twill::lang.publisher.cancel') }}'
                 }
             ]
         } @else null @endif
