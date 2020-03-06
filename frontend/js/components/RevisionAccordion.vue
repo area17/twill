@@ -1,7 +1,7 @@
 <template>
   <a17-accordion :open="open" @toggleVisibility="notifyOpen">
     <span slot="accordion__title"><slot></slot> <span class="f--small f--note">({{ revisions.length }})</span></span>
-    <div slot="accordion__value">Last edited <timeago :auto-update="1" :since="new Date(revisions[0].datetime)"></timeago></div>
+    <div slot="accordion__value">Last edited <timeago :auto-update="1" :datetime="new Date(revisions[0].datetime)"></timeago></div>
     <div class="revaccordion__scroller">
       <ul class="revaccordion__list">
         <li class="revaccordion__item" v-for="(revision, index) in revisions" :key="revision.id">

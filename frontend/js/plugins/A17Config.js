@@ -110,9 +110,12 @@ const A17Config = {
     // Plugins
     Vue.use(VueTimeago, {
       name: 'timeago', // component name
-      locale: 'en-US',
+      locale: window[process.env.VUE_APP_NAME].twillLocalization.locale,
       locales: {
-        'en-US': require('vue-timeago/locales/en-US.json')
+        en: require('date-fns/locale/en'),
+        'zh-Hans': require('date-fns/locale/zh_cn'),
+        ru: require('date-fns/locale/ru'),
+        fr: require('date-fns/locale/fr')
       }
     })
 
