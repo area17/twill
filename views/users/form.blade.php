@@ -55,7 +55,7 @@
                 'value' => $locale,
                 'label' => getLanguageLabelFromLocaleCode($locale, true)
             ];
-        }, ['en', 'zh-Hans', 'ru', 'fr'])
+        }, ['en', 'zh-Hans', 'ru', 'fr', 'pl'])
     ])
 
     @if($with2faSettings ?? false)
