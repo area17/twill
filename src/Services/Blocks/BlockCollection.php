@@ -54,9 +54,11 @@ class BlockCollection extends Collection
      */
     public function getBlocks()
     {
-        return $this->collect()->filter(function ($block) {
-            return $block->type === Block::TYPE_BLOCK;
-        })->values();
+        return $this->collect()
+            ->filter(function ($block) {
+                return $block->type === Block::TYPE_BLOCK;
+            })
+            ->values();
     }
 
     /**
@@ -66,7 +68,7 @@ class BlockCollection extends Collection
     {
         return $this->getBlocks()->map(function (Block $block) {
             return $block->toList();
-        });;
+        });
     }
 
     /**
@@ -207,9 +209,11 @@ class BlockCollection extends Collection
      */
     public function getRepeaters()
     {
-        return $this->collect()->filter(function ($block) {
-            return $block->type === Block::TYPE_REPEATER;
-        })->values();
+        return $this->collect()
+            ->filter(function ($block) {
+                return $block->type === Block::TYPE_REPEATER;
+            })
+            ->values();
     }
 
     /**

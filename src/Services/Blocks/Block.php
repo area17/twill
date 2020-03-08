@@ -180,11 +180,7 @@ class Block
 
         $name = Str::before($this->file->getFilename(), '.blade.php');
 
-        $title = $this->parseProperty(
-            'title',
-            $contents,
-            $name
-        );
+        $title = $this->parseProperty('title', $contents, $name);
 
         $icon = $this->parseProperty('icon', $contents, $name);
 
