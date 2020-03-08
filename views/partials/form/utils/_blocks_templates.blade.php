@@ -1,9 +1,9 @@
 @php
-    $newBlocks = app(\A17\Twill\Services\Blocks\BlockCollection::class)->all();
-
-    $names = collect($newBlocks)->map(function ($block) {
-        return $block->name;
-    })->values()->toJson();
+    $names = app(\A17\Twill\Services\Blocks\BlockCollection::class)
+                ->collect()
+                ->pluck('name')
+                ->values()
+                ->toJson();
 @endphp
 
 <script>
