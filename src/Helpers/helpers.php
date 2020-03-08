@@ -196,7 +196,7 @@ if (!function_exists('generate_list_of_allowed_blocks')) {
      * @param array $blocks
      * @param array $groups
      */
-    function generate_list_of_allowed_blocks($blocks, $groups)
+    function generate_list_of_available_blocks($blocks, $groups)
     {
 //        if (isset($blocks)) {
 //            $allowedBlocks = collect($blocks)->mapWithKeys(function ($block) {
@@ -212,8 +212,10 @@ if (!function_exists('generate_list_of_allowed_blocks')) {
 //            $allowedBlocks = config('twill.block_editor.blocks');
 //        }
 
-        return app(BlockCollection::class)->getAllowedBlocksList()->toArray();
+        return app(BlockCollection::class)->getRenderableBlockList()->toArray();
 
         //return $allowedBlocks;
     }
 }
+
+// {"title":"Quote","icon":"quote","component":"a17-block-quote"}
