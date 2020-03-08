@@ -1,15 +1,16 @@
-<script>
-    window.TWILL_BLOCKS_COMPONENTS = []
-</script>
-
 @php
     $newBlocks = app(\A17\Twill\Services\Blocks\BlockCollection::class)->all();
+
+    $names = collect($newBlocks)->map(function ($block) {
+        return $block->name;
+    })->values()->toJson();
 @endphp
 
+<script>
+    window.TWILL_BLOCKS_COMPONENTS = {!! $names !!}
+</script>
+
 @foreach($newBlocks as $block)
-    <script>
-        window.TWILL_BLOCKS_COMPONENTS.push('{{ $block->name }}')
-    </script>
     <script type="text/x-template" id="{{ $block->component }}">
         <div class="block__body">
             {!! $block->render() !!}

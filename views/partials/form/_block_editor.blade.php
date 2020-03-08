@@ -8,7 +8,7 @@
 <a17-content title="{{ $label }}"></a17-content>
 
 @php
-    $allowedBlocks = generate_list_of_allowed_blocks($blocks ?? null, $groups ?? null);
+    $allowedBlocks = generate_list_of_available_blocks($blocks ?? null, $groups ?? null);
 @endphp
 
 @push('vuexStore')

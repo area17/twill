@@ -106,9 +106,7 @@ class BlockMake extends Command
 
         $this->info("File: {$blockFile}");
 
-        $this->info(
-            "And it's ready to use: '{$blockIdentifier}'"
-        );
+        $this->info("And it's ready to use: '{$blockIdentifier}'");
     }
 
     public function makeBlock($stubFileName, $blockName, $iconName)
@@ -119,12 +117,14 @@ class BlockMake extends Command
 
         $stub = preg_replace(
             "/@a17-title\('(.*)'\)/",
-            "@a17-title('{$title}')", $stub
+            "@a17-title('{$title}')",
+            $stub
         );
 
         $stub = preg_replace(
             "/@a17-icon\('(.*)'\)/",
-            "@a17-icon('{$iconName}')", $stub
+            "@a17-icon('{$iconName}')",
+            $stub
         );
 
         return $stub;
@@ -132,8 +132,6 @@ class BlockMake extends Command
 
     public function makeBlockTitle($string)
     {
-        $string = 'quote_extended';
-
         $string = Str::kebab($string);
 
         $string = str_replace(['-', '_'], ' ', $string);

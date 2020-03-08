@@ -50,11 +50,11 @@ class BlockCollection extends Collection
     }
 
     /**
-     * @return \A17\Twill\Services\Blocks\BlockCollection
+     * @return \Illuminate\Support\Collection
      */
-    public function getAllowedBlocksList()
+    public function getRenderableBlockList()
     {
-        return $this->mapWithKeys(function (Block $block) {
+        return collect($this->all())->mapWithKeys(function (Block $block) {
             return $block->legacyArray();
         });
     }

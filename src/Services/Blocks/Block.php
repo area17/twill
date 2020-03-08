@@ -49,6 +49,11 @@ class Block
     public $component;
 
     /**
+     * @var integer
+     */
+    public $max = 999;
+
+    /**
      * @var boolean
      */
     public $isNewFormat;
@@ -95,6 +100,7 @@ class Block
         if (filled($data)) {
             $this->title = $data['title'];
             $this->trigger = $data['trigger'];
+            $this->max = $data['max'];
             $this->name = $data['name'];
             $this->type = $data['type'];
             $this->icon = $data['icon'];
@@ -150,11 +156,19 @@ class Block
     public function legacyArray()
     {
         return [
-            $this->name => [
-                'title' => $this->title,
-                'icon' => $this->icon,
-                'component' => 'a17-block-' . $this->name,
-            ],
+            $this->name =>
+                $this->type === 'block'
+                    ? [
+                        'title' => $this->title,
+                        'icon' => $this->icon,
+                        'component' => $this->component,
+                    ]
+                    : [
+                        'title' => $this->title,
+                        'trigger' => $this->trigger,
+                        'component' => $this->component,
+                        'max' => $this->max,
+                    ],
         ];
     }
 
@@ -178,9 +192,12 @@ class Block
 
         [$trigger] = $this->parseProperty('trigger', $contents, $name);
 
+        [$max] = $this->parseProperty('max', $contents, $name);
+
         return $this->absorbData([
             'title' => $title,
             'trigger' => $trigger,
+            'max' => (int) $max ?? 999,
             'name' => $name,
             'type' => $type ?? $inferredType,
             'icon' => $icon,
