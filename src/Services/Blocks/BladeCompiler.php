@@ -10,17 +10,29 @@ use Symfony\Component\Debug\Exception\FatalThrowableError;
 
 class BladeCompiler
 {
-    public static function render($string, $data)
+    /**
+     * @param $data
+     * @return mixed
+     */
+    protected static function absorbApplicationEnvironment($data)
     {
-        $php = Blade::compileString($string);
-
         $data['__env'] = app(Factory::class);
 
-        $obLevel = ob_get_level();
-        ob_start();
-        extract($data, EXTR_SKIP);
+        return $data;
+    }
+
+    /**
+     * @param string $php
+     * @param array $data
+     * @throws \Symfony\Component\Debug\Exception\FatalThrowableError
+     */
+    protected static function compile(string $php, array $data)
+    {
+        $obLevel = self::initializeOutputBuffering();
 
         try {
+            extract(self::absorbApplicationEnvironment($data), EXTR_SKIP);
+
             eval('?' . '>' . $php);
         } catch (Exception $e) {
             while (ob_get_level() > $obLevel) {
@@ -33,9 +45,38 @@ class BladeCompiler
             }
             throw new FatalThrowableError($e);
         }
+    }
 
-        $compiled = ob_get_clean();
+    /**
+     * @return false|string
+     */
+    protected static function getRendered()
+    {
+        return ob_get_clean();
+    }
 
-        return $compiled;
+    /**
+     * @return int
+     */
+    protected static function initializeOutputBuffering()
+    {
+        $obLevel = ob_get_level();
+
+        ob_start();
+
+        return $obLevel;
+    }
+
+    /**
+     * @param $string
+     * @param $data
+     * @return false|string
+     * @throws \Symfony\Component\Debug\Exception\FatalThrowableError
+     */
+    public static function render($string, $data)
+    {
+        self::compile(Blade::compileString($string), $data);
+
+        return self::getRendered();
     }
 }
