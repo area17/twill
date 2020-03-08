@@ -212,7 +212,7 @@ if (!function_exists('generate_list_of_allowed_blocks')) {
 //            $allowedBlocks = config('twill.block_editor.blocks');
 //        }
 
-        return app(BlockCollection::class)->getRenderableBlockList()->toArray();
+        return app(BlockCollection::class)->getBlockList()->toArray();
 
         //return $allowedBlocks;
     }

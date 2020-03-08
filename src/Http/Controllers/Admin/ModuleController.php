@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Helpers\FlashLevel;
+use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -1355,6 +1356,7 @@ abstract class ModuleController extends Controller
             'saveUrl' => $this->getModuleRoute($item->id, 'update'),
             'editor' => Config::get('twill.enabled.block-editor') && $this->moduleHas('blocks') && !$this->disableEditor,
             'blockPreviewUrl' => Route::has('admin.blocks.preview') ? URL::route('admin.blocks.preview') : '#',
+            'availableRepeaters' => $this->getRepeaterList()->toJson(),
             'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
         ] + (Route::has($previewRouteName) ? [
             'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $item->id),
@@ -1659,5 +1661,15 @@ abstract class ModuleController extends Controller
     protected function fireEvent($input = [])
     {
         fireCmsEvent('cms-module.saved', $input);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getRepeaterList()
+    {
+        return app(BlockCollection::class)->getRepeaterList()->mapWithKeys(function ($repeater) {
+            return [$repeater['name'] => $repeater];
+        });
     }
 }

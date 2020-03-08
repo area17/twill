@@ -37,7 +37,7 @@ class BlockCollection extends Collection
      */
     public function findByName($search, $sources = [])
     {
-        return $this->collection()
+        return $this->collect()
             ->filter(function ($block) use ($search, $sources) {
                 return $block->name == $search &&
                     (blank($sources) ||
@@ -52,11 +52,21 @@ class BlockCollection extends Collection
     /**
      * @return \Illuminate\Support\Collection
      */
-    public function getRenderableBlockList()
+    public function getBlocks()
     {
-        return collect($this->all())->mapWithKeys(function (Block $block) {
-            return $block->legacyArray();
-        });
+        return $this->collect()->filter(function ($block) {
+            return $block->type === Block::TYPE_BLOCK;
+        })->values();
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function getBlockList()
+    {
+        return $this->getBlocks()->map(function (Block $block) {
+            return $block->toList();
+        });;
     }
 
     /**
@@ -65,7 +75,7 @@ class BlockCollection extends Collection
      * @param null $type
      * @return \Illuminate\Support\Collection
      */
-    public function listBlocks($directory, $source, $type = null)
+    public function readBlocks($directory, $source, $type = null)
     {
         if (!$this->fileSystem->exists($directory)) {
             return collect();
@@ -87,22 +97,27 @@ class BlockCollection extends Collection
             [
                 'path' => __DIR__ . '/../../Commands/stubs/blocks',
                 'source' => Block::SOURCE_TWILL,
-                'type' => 'block',
+                'type' => Block::TYPE_BLOCK,
             ],
             [
                 'path' => __DIR__ . '/../../Commands/stubs/repeaters',
                 'source' => Block::SOURCE_TWILL,
-                'type' => 'repeater',
+                'type' => Block::TYPE_REPEATER,
             ],
             [
                 'path' => resource_path('views/admin/blocks'),
                 'source' => Block::SOURCE_APP,
-                'type' => null,
+                'type' => Block::TYPE_BLOCK,
             ],
             [
                 'path' => resource_path('views/admin/repeaters'),
                 'source' => Block::SOURCE_APP,
-                'type' => 'repeater',
+                'type' => Block::TYPE_REPEATER,
+            ],
+            [
+                'path' => resource_path('views/admin/repeaters'),
+                'source' => Block::SOURCE_APP,
+                'type' => Block::TYPE_REPEATER,
             ],
         ];
 
@@ -117,7 +132,7 @@ class BlockCollection extends Collection
     {
         if ($block->source === Block::SOURCE_APP) {
             if (
-                $this->collection()
+                $this->collect()
                     ->where('fileName', $block->getFileName())
                     ->where('source', Block::SOURCE_TWILL)
                     ->isNotEmpty()
@@ -138,7 +153,7 @@ class BlockCollection extends Collection
 
         $this->items = collect($this->paths)
             ->reduce(function (Collection $keep, $path) {
-                $this->listBlocks(
+                $this->readBlocks(
                     $path['path'],
                     $path['source'],
                     $path['type']
@@ -152,7 +167,7 @@ class BlockCollection extends Collection
             }, collect())
             ->toArray();
 
-        $this->items = collect($this->items)
+        $this->items = $this->collect()
             ->each(function (Block $block) {
                 $block->setSource($this->detectCustomSources($block));
             })
@@ -166,15 +181,44 @@ class BlockCollection extends Collection
      */
     public function toArray()
     {
-        return collect($this->items)
-            ->map(function (Block $block) {
-                return $block->export();
-            })
-            ->toArray();
+        return $this->list()->toArray();
     }
 
-    public function collection()
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function list()
     {
-        return collect($this->items);
+        return $this->collect()->map(function (Block $block) {
+            return $block->toList();
+        });
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function collect()
+    {
+        return collect($this);
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function getRepeaters()
+    {
+        return $this->collect()->filter(function ($block) {
+            return $block->type === Block::TYPE_REPEATER;
+        })->values();
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function getRepeaterList()
+    {
+        return $this->getRepeaters()->map(function (Block $block) {
+            return $block->toList();
+        });
     }
 }

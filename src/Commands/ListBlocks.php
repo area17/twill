@@ -54,7 +54,7 @@ class ListBlocks extends Command
 
         $typeFiltered = $this->option('blocks') || $this->option('repeaters');
 
-        $blocks = $this->blocks
+        $blocks = $this->blocks->collect()
             ->reject(function ($block) use ($sourceFiltered) {
                 return $sourceFiltered && !$this->option($block->source);
             })
@@ -64,7 +64,7 @@ class ListBlocks extends Command
                         !$this->option(Str::plural($block->type)));
             })
             ->map(function ($block) {
-                return $this->colorize($block->export());
+                return $this->colorize($block->toList());
             })
             ->sortBy('title');
 
@@ -88,7 +88,6 @@ class ListBlocks extends Command
 
         $headers = $blocks
             ->first()
-            ->export()
             ->keys()
             ->map(function ($key) {
                 return Str::studly($key);
@@ -99,10 +98,9 @@ class ListBlocks extends Command
 
     public function colorize($block)
     {
-        $block['type'] =
-            $block['type'] === 'repeater'
-                ? $block['type']
-                : "<fg=yellow>{$block['type']}</>";
+        $color = $block['type'] === 'repeater' ? 'green' : 'yellow';
+
+        $block['type'] = "<fg={$color}>{$block['type']}</>";
 
         return $block;
     }

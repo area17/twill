@@ -13,6 +13,10 @@ class Block
 
     const SOURCE_CUSTOM = 'custom';
 
+    const TYPE_BLOCK = 'block';
+
+    const TYPE_REPEATER = 'repeater';
+
     /**
      * @var string
      */
@@ -59,11 +63,6 @@ class Block
     public $isNewFormat;
 
     /**
-     * @var string
-     */
-    public $inferredType;
-
-    /**
      * @var \Symfony\Component\Finder\SplFileInfo
      */
     public $file;
@@ -105,7 +104,6 @@ class Block
             $this->type = $data['type'];
             $this->icon = $data['icon'];
             $this->isNewFormat = $data['new_format'];
-            $this->inferredType = $data['inferred_type'];
             $this->contents = $data['contents'];
             $this->component = "a17-block-{$this->name}";
         }
@@ -126,7 +124,7 @@ class Block
     /**
      * @return \Illuminate\Support\Collection
      */
-    public function export()
+    public function toList()
     {
         return collect([
             'title' => $this->title,
@@ -157,7 +155,7 @@ class Block
     {
         return [
             $this->name =>
-                $this->type === 'block'
+                $this->type === self::TYPE_BLOCK
                     ? [
                         'title' => $this->title,
                         'icon' => $this->icon,
@@ -182,27 +180,26 @@ class Block
 
         $name = Str::before($this->file->getFilename(), '.blade.php');
 
-        [$title, $inferredType] = $this->parseProperty(
+        $title = $this->parseProperty(
             'title',
             $contents,
             $name
         );
 
-        [$icon] = $this->parseProperty('icon', $contents, $name);
+        $icon = $this->parseProperty('icon', $contents, $name);
 
-        [$trigger] = $this->parseProperty('trigger', $contents, $name);
+        $trigger = $this->parseProperty('trigger', $contents, $name);
 
-        [$max] = $this->parseProperty('max', $contents, $name);
+        $max = $this->parseProperty('max', $contents, $name);
 
         return $this->absorbData([
             'title' => $title,
             'trigger' => $trigger,
             'max' => (int) $max ?? 999,
             'name' => $name,
-            'type' => $type ?? $inferredType,
+            'type' => $this->type,
             'icon' => $icon,
             'new_format' => $this->isNewFormat($contents),
-            'inferred_type' => $inferredType,
             'contents' => $contents,
         ]);
     }
@@ -219,7 +216,7 @@ class Block
         preg_match("/@a17-{$property}\('(.*)'\)/", $block, $matches);
 
         if (filled($matches)) {
-            return [$matches[1], 'block'];
+            return $matches[1];
         }
 
         if (
@@ -227,7 +224,7 @@ class Block
                 "twill.block_editor.blocks.{$blockName}.{$property}"
             )
         ) {
-            return [$value, 'block'];
+            return $value;
         }
 
         if (
@@ -235,11 +232,11 @@ class Block
                 "twill.block_editor.repeaters.{$blockName}.{$property}"
             )
         ) {
-            return [$value, 'repeater'];
+            return $value;
         }
 
         if ($property !== 'title') {
-            return [null, null];
+            return null;
         }
 
         throw new Exception(
