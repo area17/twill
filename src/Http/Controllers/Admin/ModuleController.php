@@ -541,7 +541,7 @@ abstract class ModuleController extends Controller
         });
 
         $revision = $item->revisions()->where('id', $this->request->get('revisionId'))->first();
-        $date = $revision->created_at->isoFormat('LLLL');
+        $date = $revision->created_at->toDayDateTimeString();
 
         Session::flash('restoreMessage', twillTrans('twill::lang.publisher.restore-message', ['user' => $revision->byUser, 'date' => $date]));
 
