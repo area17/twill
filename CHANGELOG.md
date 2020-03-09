@@ -4,43 +4,53 @@ All notable changes to `twill` will be documented in this file.
 
 ## 2.0.0 (2020-03-06)
 
-> Note: our changelog is complete but we're refining and adding screenshots, check back again soon! We'll also share out on our newsletter and social networks early next week.
+We're really excited to release Twill 2.0 after a few months of focus to really set the project up for success. We've responded to the community pain points, supporting both Laravel 6 and 7, removing the need to build blocks and assets, improving documentation, introducing automated testing, and many more updates and bug fixes you can read more about below. 
+
+We were also very positively surprised by the number and quality of external contributions. Twill now has [42](https://github.com/area17/twill/graphs/contributors) contributors, twice as much as our previous release, and community members are starting to provide excellent support to other developers from their experience working with it. Thanks a lot to everyone involved! Twill also surpassed [20k](https://packagist.org/packages/area17/twill/stats) installs recently!
+
+We also want to note we understood the concerns shared by the community about our lack of releases in the past few months, and hope that this release will make you love working with Twill even more after patiently waiting for it. Our support for Laravel 6 took time to perfect, with dependencies going deprecated. Our changes to the frontend build or to the repositories traits needed to be challenged in different codebases. Stability is key for our users and it was important for us to take the time to make it right.
+
+We could have tagged Laravel 6 support earlier though, that's entirely true, and that's something we want to address moving forward. We will now commit to releasing at least once every month. We might not want to be as quick as Laravel with a major release every 6 months, but we will be more actively releasing even if it is for a few minor fixes, that's for sure. With that said, we also want to say thank you to all the developers that tested our changes on the master branch during the past few months. It's been incredibly helpful to get feedback and contributions from the community.
+
+We hope you enjoy this release, it is quite a big one. We're already excited about the next one
 
 ### Changed
 
-#### Laravel 6 and 7 support
-- *@yanhaoli*
-- [`#389`](https://github.com/area17/twill/pull/389) Added support for Laravel 6 [`552ec16a`](https://github.com/area17/twill/commit/552ec16a083b4f19894af4d726b0ed334df82cb2)
-- [`#456`](https://github.com/area17/twill/pull/456) Update migrations_helpers.php [`c36ed855`](https://github.com/area17/twill/commit/c36ed85596f1181d2947480268f9775da0154c66)
-- [`#561`](https://github.com/area17/twill/pull/561) Added support for Laravel 7
-> Added support for laravel 6.0 in composer.json  
-> Fixed the str&array helpers missing errors  
-> Fixed incorrect url generated problem in ModuleController  
-> Removed Inspector  
-> Uses astronomic/translatable  
-> Removed laravel-debugbar  
-> Drop support for Laravel 5.6 or lower  
-> Removed deprecated code for supporting laravel version below 56  
-> Removed whoops related config and methods  
-> Removed the ddd funtion.  
-> Add Laravel 7 support  
-> Update composer.lock  
-> Add laravel/ui for Illuminate\Foundation\Auth dependencies  
-> Update testbench for Laravel 7 support  
-> Remove larastan until nunomaduro/larastan#485 is resolved  
-> Update laravel/ui  
-> Allow laravel/ui ^1.0 for Laravel below 7  
-> Make Twill's exception handler compatible with all Laravel versions and let developers deal with error views, providing a quick helper for backward compatibility
+#### Semantic versioning
 
-#### Migrations loading strategy
-- *@ifox*
-- Fix #365: load migrations from package [`7fced605`](https://github.com/area17/twill/commit/7fced6057183e624b0acdf0805f4513b1d9b9623)
+When releasing [Laravel 6](https://laravel-news.com/laravel-v6-announcement) at Laracon US last year, Taylor Otwell explained why v6 instead of v5.9, since it wasn't a "paradigm changing" release for the framework. That was because Laravel adopted [semantic versioning](https://semver.org/) (`major.minor.patch`). For simplicity, and because this is common practice for open source projects, we made that shift as well.
+
+Starting with Twill 2.0.0, major releases are released only when breaking changes are necessary, while minor and patch releases may be released as often as every week. Minor and patch releases should never contain breaking changes.
+
+When referencing Twill from your application, you should always use a version constraint such as `^2.0`, since major releases of Twill do include breaking changes.
+
+> Until  recently, Laravel and Twill were following [romantic versioning](http://blog.legacyteam.info/2015/12/romver-romantic-versioning/) (`paradigm.major.minor`). This is why Twill 1.2.2 was not just about patches but new features and improvements as well. Because today's release includes breaking changes and Twill now follows semantic versionning, we have to tag it as `2.0.0`, even if it is not a paradigm shift at all.
+
+#### Laravel versions support
+
+Twill 2.0 supports Laravel 6 and 7, but does not support Laravel 5.4 and 5.5 anymore. 5.6, 5.7 and 5.8 are still supported.
+
+We've removed all references to deprecated Laravel helpers from Twill, updated dependencies, and deleted some deprecated code from dropping support of 5.4 and 5.5.
+
+We've also migrated from the deprecated dimsav/laravel-translatable to astronomic/laravel-translatable.
+
+We've removed the Debug Bar and Inspector debugging packages as Laravel now ships with Ignition and we feel like developers should be able to pick the tools they prefer.
+
+- [`#389`](https://github.com/area17/twill/pull/389)[`#456`](https://github.com/area17/twill/pull/456) Added support for Laravel 6
+- [`#561`](https://github.com/area17/twill/pull/561) Added support for Laravel 7
+
+#### Database migrations loading strategy
+
+As recommended by [Laravel's documentation](https://laravel.com/docs/7.x/packages#migrations), we've decided to load Twill's database migrations without publishing them. This will allow more flexibility in the future and it avoids pulluting the host application migrations folder. 
+
+A boolean config key has been introduced to control this new behavior: `twill.load_default_migrations`. It defaults to `true` starting with Twill 2.0. 
+
+Even if you are migrating from a Twill 1.x application, you should not have to worry about running those new migrations as they have been modified to always check for existence of tables and columns before doing anything. 
+
+We've also prepared for all tables to be prefixed by `twill_` in the next major release and exposed new config keys to control their names so you can already start using prefixed tables with Twill 2.0.
+
+- Fix #365: load migrations from package [`7fced605`](https://github.com/area17/twill/commit/7fced6057183e624b0acdf0805f4513b1d9b9623) [`ee489635`](https://github.com/area17/twill/commit/ee4896353054f7da4a54a964d78acba025cc8400)
 > See https://github.com/area17/twill/pull/372#issuecomment-537965676  
-> Also prepare for all default tables to be prefixed by twill_
-- Update migrations date for backward compatibility [`ee489635`](https://github.com/area17/twill/commit/ee4896353054f7da4a54a964d78acba025cc8400)
-> If an existing Twill app is migrated, those migrations already exist as they have been published on install. In order to let those execute before the new automatically loaded ones, we set today's date as the timestamp of new ones. Without this change, on a fresh migrate run, loaded migrations would load first (as they were dated using Twill's public release), which would most likely error on published migration that didn't have existence checks in the past.
-- Fix load default migrations config key [`41378f9d`](https://github.com/area17/twill/commit/41378f9dbf4e508ab3432c232106422bf54167ca)
-- Rename default migrations to prevent conflicts in existing codebases [`74173acd`](https://github.com/area17/twill/commit/74173acd0b750243c2d3bab382ed842f36efdce9)
 
 #### Frontend build
 - *@m4n1ok and @ifox*
