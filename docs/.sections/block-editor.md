@@ -1,9 +1,22 @@
 ## Block editor
-### Adding blocks
-The block editor form field allows you to add content freely to your module. The blocks can be easily added and rearranged.
-Once a block is created, it can be used/added to any module.
+### Overview
+The block editor is a dynamic, drag and drop interface giving users a lot of flexibility in adding and changing content for a given entry.
+For instance, if you have a module for creating work case studies (as we do in [our demo](https://demo.twill.io/)), you can use the block editor to create, arrange, and edit blocks of images and text, or anything else you can think of really, as they would appear in a page.
+You can create any number of different block types, each with a unique form that can be accessed directly within the block editor.
 
-In order to add a block editor you need to add the `block_editor` field to your module form. e.g.:
+Below, we describe the process of creating a block editor and connecting it to your module.
+
+Here is an overview of the process, each of which is detailed below.
+
+1. Include the block editor form field in your module's form
+2. Define blocks
+4. Update twill configuration
+5. Make sure you use blocks traits in your Model and Repository
+
+Now, let's expand upon those steps:
+
+#### Include the block editor in your module's form
+In order to add a block editor to your module, add the `block_editor` field to your module form. e.g.:
 
 ```php
 @extends('twill::layouts.form')
@@ -18,7 +31,7 @@ In order to add a block editor you need to add the `block_editor` field to your 
 @stop
 ```
 
-By adding the `@formField('block_editor')` you've enabled all the available blocks. To scope the *blocks* that will be displayed you can add a second parameter with the *blocks* key. e.g.:
+By default, adding the `@formField('block_editor')` directive enables all available *blocks* for use in your module. To scope only certain *blocks* to be available in a given module, you can add a second parameter to the `@formField()` directivee with the *blocks* key. e.g.:
 
 ```php
 @formField('block_editor', [
@@ -26,7 +39,9 @@ By adding the `@formField('block_editor')` you've enabled all the available bloc
 ])
 ```
 
-The *blocks* that can be added need to be defined under the `views/admin/blocks` folder.
+#### Define blocks
+
+The *blocks* need to be defined under the `views/admin/blocks` folder.
 The blocks can be defined exactly like a regular form, but without any Blade layout or section. e.g.:
 
 filename: ```admin/blocks/quote.blade.php```
@@ -96,8 +111,11 @@ filename: ```admin/blocks/media.blade.php```
 ])
 ```
 
-A block needs to be enabled in your Twill configuration.
-For it a `block_editor` key is required and inside you can define the list of `blocks` available in your project.
+With that, the *block* is ready to be used on the form! Now, you will need to enable it in the configuration.
+
+#### Update Twill's configuration
+
+In the `config/twill.php` file, a `block_editor` array is required; inside the array, define all *blocks* available in your project, including the block title, the icon used when displaying it and the associated component name. In this case, it would look like this:
 
 filename: ```config/twill.php```
 ```php
@@ -119,22 +137,28 @@ filename: ```config/twill.php```
     ]
 ```
 
-Please note the naming convention. If the *block* added is `quote` then the component should be prefixed with `a17-block-`.
-If you added a block named *my_awesome_block*, your configuration would look like this:
+**Please note the naming convention. If the *block* added is `quote` then the component should be prefixed with `a17-block-`.**
+
+If you added a block named *awesome_block*, your configuration would look like this:
 ```php
     'block_editor' => [
         'blocks' => [
             ...
-            'my_awesome_block' => [
-                'title' => 'Title for my awesome block',
+            'awesome_block' => [
+                'title' => 'Title for the awesome block',
                 'icon' => 'text',
-                'component' => 'a17-block-my_awesome_block',
+                'component' => 'a17-block-awesome_block',
             ],
             ..
         ]
 ```
 
-Make sure to use blocks traits in your model and repository, respectively `HasBlocks` and `HandleBlocks`.
+#### Use Block traits in your Model and Repository
+
+Now, to handle the block data you must integrate it with your module. *Use* the *Blocks* traits in the Model and Repository associated with your module.
+If you generated that module from the CLI and did not respond no to the question asking you about using blocks, this should already be the case for you.
+
+In your model, use `HasBlocks`:
 
 filename: ```app/Models/Article.php```
 ```php
@@ -152,6 +176,8 @@ class Article extends Model
     ...
 }
 ```
+
+In your repository, use `HandleBlocks`:
 
 filename: ```app/Repositories/ArticleRepository.php```
 ```php
@@ -270,7 +296,7 @@ filename: ```admin/blocks/accordion_item.blade.php```
         ]
 ```
 
-- Not adding the *item* block to the _repeaters_ section.
+- Not adding the *item* block to the _repeaters_ section will also result in failure.
 
 ### Adding browser fields
 
@@ -327,9 +353,14 @@ filename: ```views/admin/blocks/products.blade.php```
 ```
 
 ### Rendering blocks
-As long as you have access to a model instance that uses the HasBlocks trait in a view, you can call the `renderBlocks` helper on it to render the list of blocks that were created from the CMS. By default, this function will loop over all the blocks and their child blocks and render a Blade view located in `resources/views/site/blocks` with the same name as the block key you specified in your Twill configuration and module form. 
 
-In the frontend templates, you can call the `renderBlocks` helper like this:
+When it is time to build a frontend, you will want to render a designed set of blocks, with all blocks in their proper order. When working with a model instance that uses the HasBlocks trait in a view, you can call the `renderBlocks` helper on it. This will render the list of blocks that were created from the CMS. By default, this function will loop over all the blocks and their child blocks. In each case, the function will look for a Blade view to render for a given block. 
+
+Create views for your blocks in the `resources/views/site/blocks` directory. Their filenames should match the block key  specified in your Twill configuration and module form. 
+
+For the `products` block example above, a corresponding view would be `resources/views/site/blocks/products.blade.php`.
+
+You can call the `renderBlocks` helper within a *Blade* file. Such a call would look like this:
 
 ```php
 {!! $item->renderBlocks() !!}
@@ -341,7 +372,7 @@ If you want to render child blocks (when using repeaters) inside the parent bloc
 {!! $work->renderBlocks(false) !!}
 ```
 
-If you need to swap out a block view for a specific module (let’s say you used the same block in 2 modules of the CMS but need different rendering), you can do the following:
+You can also specify alternate blade views for blocks. This can be helpful if you use the same block in 2 different modules of the CMS, but you want to have design flexibility in how each is rendered. To do that, specify the block view file in your call to the renderBlocks helper like this
 
 ```php
 {!! $work->renderBlocks(true, [
@@ -350,20 +381,43 @@ If you need to swap out a block view for a specific module (let’s say you used
 ]) !!}
 ```
 
-In these Blade views, you will have access to a `$block`variable with a couple of helper functions available to retrieve the block content:
+Within these Blade views, you will have access to a `$block`variable with helper functions available to retrieve the block content:
 
 ```php
 {{ $block->input('inputNameYouSpecifiedInTheBlockFormField') }}
 {{ $block->translatedinput('inputNameYouSpecifiedInATranslatedBlockFormField') }}
 ```
 
-If the block has a media field, you can refer to the Media Library documentation below to learn about the `HasMedias` trait helpers.
-To give an example:
+If the block has a media field, you can refer to the Media Library documentation below to learn about the `HasMedias` trait helpers. Here's an example of how a media field could be rendered:
 
 ```php
 {{ $block->image('mediaFieldName', 'cropNameFromBlocksConfig') }}
 {{ $block->images('mediaFieldName', 'cropNameFromBlocksConfig')}}
 ```
+
+### Previewing blocks
+
+At the top right of a form where you enabled a block editor, you will find a blue button labelled "Editor". The idea is to provide a better user experience when working with blocks, where the frontend preview is being immediately rendered next to the form, in a full screen experience.
+
+You can enable the content editor individual block previews by providing a `resources/views/site/layouts/block.blade.php` blade layout file. This file will be treated as a _layout_, so it will need to yield a `content` section: `@yield('content')`. It will also need to include any frontend CSS/JS necessary to give the block the look and feel of the corresponding frontend layout. Here's a simple example:
+
+```php
+<!doctype html>
+<html>
+    <head>
+        <title>#madewithtwill website</title>
+        <link rel="stylesheet" href="/css/app.css">
+    </head>
+    <body>
+        <div>
+            @yield('content')
+        </div>
+        <script src="/js/app.js"></script>
+    </body>
+</html>
+```
+
+If you would like to specify a custom layout view path, you can do so in `config/twill.php` at `twill.block_editor.block_single_layout`. A good way to share assets and structure from the frontend with these individual block previews is to create a parent layout and extend it from your block layout.
 
 ### Default configuration
 
@@ -430,25 +484,3 @@ return [
     ...
 ];
 ```
-
-### Content Editor
-
-You can enable the content editor individual block previews by providing a `resources/views/site/layouts/block.blade.php` blade layout file. The layout should be yielding a `content` section: `@yield('content')` with any frontend CSS/JS included exactly like in your main frontend layout. A simple example could be:
-
-```php
-<!doctype html>
-<html>
-    <head>
-        <title>#madewithtwill website</title>
-        <link rel="stylesheet" href="/css/app.css">
-    </head>
-    <body>
-        <div>
-            @yield('content')
-        </div>
-        <script src="/js/app.js"></script>
-    </body>
-</html>
-```
-
-If you would like to specify a custom layout view path, you can do so in `config/twill.php` at `twill.block_editor.block_single_layout`. In order to share the most of the layout between your frontend and individual blocks (essentially its assets), you can also create a parent layout and extend it from both.

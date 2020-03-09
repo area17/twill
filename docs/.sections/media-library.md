@@ -27,13 +27,13 @@ public function getTransparentFallbackUrl();
 $crop_params will be an array with the following keys: crop_x, crop_y, crop_w and crop_y. If the service you are implementing doesn't support focal point cropping, you can call the getUrlWithCrop from your implementation.
 
 ### Role & crop params
-Each of the data models in your application can have different images roles and crop.
+Each _Module_ in your application can have its own predefined image *crops* and *roles*.
 
-For example, roles for a People model could be `profile` and `cover`. This would allow you display different images for your data modal in the design, depending on the current screen.
+A _role_ is a way to define different contexts in which a image might be placed. For example, roles for a `People` model could be `profile` and `cover`. This would allow you to include your People model in list and show a cover image for each, or show an single person model with a profile image. You can associate any number of image roles with your Model.
 
-Crops are complementary or can be used on their own with a single role to define multiple cropping ratios on the same image.
+_Crops_ are more self-explanatory. Twill comes with some pre-defined crop settings to allow you to set different variants of a given image, so crops can be used in combination with _roles_ or they can be used on their own with a single role to define multiple cropping ratios on the same image.
 
-For example, your Person `cover` image could have a `square` crop for mobile screens, but could use a `16/9` crop on larger screens. Those values are editable at your convenience for each model, even if there are already some crops created in the CMS.
+Using the Person example, your `cover` image could have a `square` crop for mobile screens, but could use a `16/9` crop on larger screens. Those values are editable at your convenience for each model, even if there are already some crops created in the CMS.
 
 The only thing you have to do to make it work is to compose your model and repository with the appropriate traits, respectively `HasMedias` and `HandleMedias`, setup your `$mediasParams` configuration and use the `medias` form partial in your form view (more info in the CRUD section).
 
@@ -88,6 +88,26 @@ $model->imageCaption($roleName)
  * Returns the image object associated with $roleName.
  */
 $model->imageObject($roleName)
+
+/**
+ * Returns the image objects associated with $roleName.
+ */
+$model->imageObjects($roleName)
+
+/**
+ * Returns the image associated with $roleName as an array containing meta information.
+ */
+$model->imageAsArray($roleName[, $cropName, array $params, $media])
+
+/**
+ * Returns the images associated with $roleName as an array containing meta information.
+ */
+$model->imageAsArrays($roleName[, $cropName, array $params])
+
+/**
+ * Checks if an image has been attached for the provided role
+ */
+$model->hasImage($roleName)
 ```
 
 ### File library
