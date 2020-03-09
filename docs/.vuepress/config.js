@@ -1,7 +1,7 @@
 module.exports = {
   title: 'Twill',
   description: 'Twill — An open source CMS toolkit for Laravel',
-  base: "/docs/",
+  base: "/docs/1.x/",
   dest: ".vuepress/docs",
   head: [
     ['link', { rel: 'shortcut icon', href: 'favicon.ico' }],
