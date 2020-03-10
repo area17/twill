@@ -91,7 +91,7 @@ return [
     | Twill default tables naming configuration
     |--------------------------------------------------------------------------
     |
-    | TODO: In Twill 2.0, all tables will be prefixed by `twill_`.
+    | TODO: In Twill 3.0, all tables will be prefixed by `twill_`.
     |
      */
     'users_table' => 'twill_users',

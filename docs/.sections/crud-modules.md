@@ -59,8 +59,7 @@ Depending on the depth of your module in your navigation, you'll need to wrap yo
 You can setup your index options and columns in the generated controller if needed.
 
 ### Migrations
-Generated migrations are regular Laravel migrations. A few helpers are available to create the default fields any CRUD module will use:
-
+Twill's generated migrations are standard Laravel migrations, enhanced with helpers to create the default fields any CRUD module will use:
 ```php
 <?php
 
@@ -129,17 +128,17 @@ A few CRUD controllers require that your model have a field in the database with
 
 Set your fillables to prevent mass-assignement. This is very important, as we use `request()->all()` in the module controller.
 
-For fields that should always be saved as null in the database when not sent by the form, use the `nullable` array.
+For fields that should default as null in the database when not sent by the form, use the `nullable` array.
 
-For fields that should always be saved to false in the database when not sent by the form, use the `checkboxes` array. The `published` field is a good example.
+For fields that should default to false in the database when not sent by the form, use the `checkboxes` array.
 
-Depending on the features you need on your model, include the available traits and configure their respective options:
+Depending upon the Twill features you need on your model, include the related traits and configure their respective options:
 
 - HasPosition: implement the `A17\Twill\Models\Behaviors\Sortable` interface and add a position field to your fillables.
 
 - HasTranslation: add translated fields in the `translatedAttributes` array.
 
-When using Twill's `HasTranslation` trait on a model, you are actually using the popular `astronomic/laravel-translatable` package. A default configuration will be automatically published to your `config` directory when you run the `twill:install` command.
+Twill's `HasTranslation` trait is a wrapper around the popular `astronomic/laravel-translatable` package. A default configuration will be automatically published to your `config` directory when you run the `twill:install` command.
 
 To setup your list of available languages for translated fields, modify the `locales` array in `config/translatable.php`, using ISO 639-1 two-letter languages codes as in the following example:
 
@@ -155,7 +154,7 @@ return [
 ];
 ```
 
-- HasSlug: specify the field(s) that is going to be used to create the slug in the `slugAttributes` array
+- HasSlug: specify the field(s) used to create the slug in the `slugAttributes` array
 
 - HasMedias: add the `mediasParams` configuration array:
 

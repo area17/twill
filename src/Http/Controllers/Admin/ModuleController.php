@@ -611,7 +611,7 @@ abstract class ModuleController extends Controller
                     $this->moduleName,
                     $this->routePrefix,
                     'edit',
-                    array_filter(['id' => $newItem->id])
+                    array_filter([Str::singular($this->moduleName) => $newItem->id])
                 ),
             ]);
         }

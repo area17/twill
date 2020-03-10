@@ -27,7 +27,7 @@ If you have other fields, like attributes, relationships, extra images, file att
 @stop
 
 @section('fieldsets')
-    @formFieldset([ 'id' => 'attributes', 'title' => 'Attributes'])
+    @formFieldset(['id' => 'attributes', 'title' => 'Attributes'])
         @formField('...', [...])
         ...
     @endformFieldset
@@ -35,7 +35,8 @@ If you have other fields, like attributes, relationships, extra images, file att
 ```
 
 The additional fieldsets array passed to the form layout will display a sticky navigation of your fieldset on scroll.
-You can also rename the content section by passing a `contentFieldsetLabel` property to the layout.
+You can also rename the content section by passing a `contentFieldsetLabel` property to the layout, or disable it entirely using
+`'disableContentFieldset' => true`.
 
 ### Input
 ![screenshot](/docs/_media/input.png)
@@ -212,14 +213,14 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
     'name' => 'cover',
     'label' => 'Cover image',
     'note' => 'Also used in listings'
-    'attachmentNote' => 'Minimum image width: 1500px'
+    'fieldNote' => 'Minimum image width: 1500px'
 ])
 
 @formField('medias', [
     'name' => 'slideshow',
     'label' => 'Slideshow',
     'max' => 5,
-    'attachmentNote' => 'Minimum image width: 1500px'
+    'fieldNote' => 'Minimum image width: 1500px'
 ])
 ```
 
@@ -229,8 +230,8 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 | label          | Label of the field                     | string         |               |
 | translated     | Defines if the field is translatable   | true<br/>false | false         |
 | max            | Max number of attached items           | integer        | 1             |
-| note           | Hint message displayed above the field | string         |               |
-| attachmentNote | Hint message displayed in the field    | string         |               |
+| fieldNote      | Hint message displayed above the field | string         |               |
+| note           | Hint message displayed in the field    | string         |               |
 
 
 Right after declaring the `medias` formField in the blade template file, you still need to do a few things to make it works properly.
@@ -682,43 +683,6 @@ protected function formData($request)
 
 When used in a [block](https://twill.io/docs/#adding-blocks), no migration is needed.
 
-
-### Browser
-![screenshot](/docs/_media/browser.png)
-
-```php
-@formFieldset([ 'id' => 'related', 'title' => 'Related'])
-    @formField('browser', [
-        'label' => 'Publications',
-        'max' => 4,
-        'name' => 'publications',
-        'moduleName' => 'publications'
-    ])
-@endformFieldset
-```
-
-### Map
-![screenshot](/docs/_media/map.png)
-
-```php
-@formField('map', [
-    'name' => 'location',
-    'label' => 'Location',
-    'showMap' => false,
-])
-```
-
-This field requires that you provide a `GOOGLE_MAPS_API_KEY` variable in your .env file.
-
-### Color
-
-```php
-@formField('color', [
-    'name' => 'main-color',
-    'label' => 'Main color'
-])
-```
-
 ### Checkboxes
 
 ```php
@@ -794,12 +758,82 @@ See [Block editor](https://twill.io/docs/#block-editor-3)
 | withoutSeparator | Defines if a separator before the block editor container should be rendered | true<br/>false | false         |
 
 
+### Browser
+![screenshot](/docs/_media/browser.png)
+
+```php
+@formField('browser', [
+    'label' => 'Publications',
+    'max' => 4,
+    'name' => 'publications',
+    'moduleName' => 'publications'
+])
+```
+
+Browser fields can be used to save a `belongsToMany` relationship outside of the block editor.
+Checkout this [Spectrum tutorial](https://spectrum.chat/twill/tips-and-tricks/step-by-step-ii-creating-a-twill-app~37c36601-1198-4c53-857a-a2b47c6d11aa) until we update this section to get more info on setting things up.
+When using inside of the block editor, no migration is needed.
+
 ### Repeater
 ![screenshot](/docs/_media/repeater.png)
 
 ```php
-@formFieldset([ 'id' => 'videos', 'title' => 'Videos'])
-    @formField('repeater', ['type' => 'video'])
-@endformFieldset
+@formField('repeater', ['type' => 'video'])
+```
 
+Repeaters fields can be used to save a `hasMany` relationship or a `morphMany` relationship outside of the block editor.
+Checkout this [Github issue](https://github.com/area17/twill/issues/131) until we update this section to get more info on setting things up.
+When using inside of the block editor, no migration is needed.
+
+### Map
+![screenshot](/docs/_media/map.png)
+
+```php
+@formField('map', [
+    'name' => 'location',
+    'label' => 'Location',
+    'showMap' => true,
+])
+```
+
+This field requires that you provide a `GOOGLE_MAPS_API_KEY` variable in your .env file.
+
+A migration to save a `map` field would be:
+
+```php
+Schema::table('posts', function (Blueprint $table) {
+    ...
+    $table->json('location')->nullable();
+    ...
+});
+```
+
+The field used should also be casted as an array in your model:
+
+```php
+public $casts = [
+    'location' => 'array',
+];
+```
+
+When used in a [block](https://twill.io/docs/#adding-blocks), no migration is needed.
+
+
+### Color
+
+```php
+@formField('color', [
+    'name' => 'main_color',
+    'label' => 'Main color'
+])
+```
+
+A migration to save a `color` field would be:
+
+```php
+Schema::table('posts', function (Blueprint $table) {
+    ...
+    $table->string('main_color', 10)->nullable();
+    ...
+});
 ```

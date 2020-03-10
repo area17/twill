@@ -454,3 +454,16 @@ You can use your new permission and existing ones in many places like the `twill
 Also in forms blade files using `@can`, as well as in middleware definitions in routes or controllers, see [Laravel's documentation](https://laravel.com/docs/5.7/authorization#via-middleware) for more info.
 
 You should follow the Laravel documentation regarding [authorization](https://laravel.com/docs/5.3/authorization). It's pretty good. Also if you would like to bring administration of roles and permissions to the admin application, [spatie/laravel-permission](https://github.com/spatie/laravel-permission) would probably be your best friend.
+
+## OAuth login
+
+You can enable the `twill.enabled.users-oauth` feature to let your users login to the CMS using a third party service supported by Laravel Socialite.
+By default, `twill.oauth.providers` only has `google`, but you are free to change it or add more services to it.
+In the case of using Google, you would of course need to provide the following environment variables:
+
+```
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_CALLBACK_URL=https://admin.twill-based-cms.com/login/oauth/callback/google
+```
+
