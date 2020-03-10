@@ -27,7 +27,7 @@ Finally, you will need to migrate your database using `php artisan migrate` . Re
 ### Changed
 
  - [Semantic versioning](#semantic-versioning)
- - [Laravel versions support](#semantic-versioning)
+ - [Laravel versions support](#laravel-versions-support)
  - [Blocks and frontend build workflow](#blocks-and-frontend-build-workflow)
  - [Database migrations loading strategy](#database-migrations-loading-strategy)
  - [Database migrations changes](#database-migrations-changes)
@@ -246,7 +246,7 @@ You can also provide a custom  `block_single_layout`  per subdomain by creating 
 > 
 
 #### Tiptap WYSIWYG
-![enter image description here](https://twill.io/docs/changelogs_media/tables.png)
+![tiptap](https://twill.io/docs/changelogs_media/tables.png)
 In order to provide HTML tables support in the WYSIWYG form field, we've integrated the [Tiptap editor](https://tiptap.scrumpy.io/) with Twill. You can use it by using the new `type` option of the `wysiwyg` form field, with the `tiptap` value. You can then enable the `table` button in your `toolbarOptions`.
 
 [`ae62d294`](https://github.com/area17/twill/commit/ae62d29400ee61e46ab83cf8faad14d39d6ab319)/[`150eb3b1`](https://github.com/area17/twill/commit/150eb3b1eae2160b914d8f1d783cc504c0c06dce)/[`754e4cce`](https://github.com/area17/twill/commit/754e4cce663e5fdc5167241c59457095014998c8)/[`cf25ee82`](https://github.com/area17/twill/commit/cf25ee8242754f1e1536da9b691ab60aa83126ef)/[`e8b450db`](https://github.com/area17/twill/commit/e8b450db4153d9d1436f32db68daf36a85311bf9)/[`6d396a16`](https://github.com/area17/twill/commit/6d396a16cacf36d7cc6840577b67aea5b02c49f1)/[`6bb6e25b`](https://github.com/area17/twill/commit/6bb6e25b060e68ff1e529c58cba4ef0ec38f1be0)/[`5f798ef6`](https://github.com/area17/twill/commit/5f798ef6c6d2fc85b7ac173916b03fd8de21c1a3)/[`bc58e7e3`](https://github.com/area17/twill/commit/bc58e7e3f9db918d58f32034f223897d9fa2f63e)/[`6323071b`](https://github.com/area17/twill/commit/6323071b269011079429e8355674156d0215db3d)/[`584a622e`](https://github.com/area17/twill/commit/584a622e3c2686aaab3e57f6be192eb100ba22ab)
