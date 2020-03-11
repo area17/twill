@@ -1,6 +1,11 @@
+@php
+    $label = $label ?? 'Tags';
+    $note = $note ?? false;
+@endphp
 <a17-vselect
-    label="Tags"
+    label="{{ $label }}"
     name="tags"
+    @if ($note) note="{{ $note }}" @endif
     :multiple="true"
     :searchable="true"
     :taggable="true"
