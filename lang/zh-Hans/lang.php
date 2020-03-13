@@ -17,6 +17,7 @@ return [
     ],
     'footer' => [
         'version' => '版本',
+        'made-with-twill' => 'Made with Twill',
     ],
     'form' => [
         'content' => '内容',
