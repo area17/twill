@@ -77,7 +77,7 @@ return [
         'title' => 'Медиа библиотека',
         'images' => 'Изображения',
         'files' => 'Файлы',
-        'filter-select-label' => 'Фильтровать по тегу',
+        'filter-select-label' => 'Теги',
         'sidebar' => [
             'empty-text' => 'Файлы не выделены',
             'files-selected' => 'файлов выделено',
