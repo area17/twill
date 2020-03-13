@@ -22,21 +22,36 @@
       </div>
       <div class="userInfo__item">
         <button class="userInfo__link" @click="openPasswordModal" type="button">
-          <span class="f--link-underlined--o">{{ userInfo.is_activated ? 'Reset password' : 'Register account now' }}</span>
+          <span
+            class="f--link-underlined--o">{{ userInfo.is_activated ? 'Reset password' : 'Register account now' }}</span>
         </button>
       </div>
     </div>
 
     <!-- Modal : Password -->
-    <a17-modal class="modal--form" ref="passwordModal" :title="userInfo.is_activated ? `Reset password for ${userInfo.user_name}` : `Register account for ${userInfo.user_name}`">
+    <a17-modal class="modal--form" ref="passwordModal"
+               :title="userInfo.is_activated ? `Reset password for ${userInfo.user_name}` : `Register account for ${userInfo.user_name}`">
       <div class="userInfo__form-row">
-        <a17-textfield name="new_password" id="new_password" label="New password" :maxlength="50" note="Must have at least 8 characters" required></a17-textfield>
+        <a17-textfield name="new_password"
+                       id="new_password"
+                       fieldName="new_password"
+                       inStore="value"
+                       label="New password"
+                       :maxlength="50"
+                       note="Must have at least 8 characters"
+                       required
+                       type="password"/>
       </div>
       <div v-if="userInfo.is_activated" class="userInfo__form-row">
-        <a17-checkbox name="require_password_change" id="require_password_change" label="Require password change at next login"></a17-checkbox>
+        <a17-singlecheckbox
+          inStore="value"
+          name="require_password_change"
+          id="require_password_change"
+          fieldName="require_password_change"
+          label="Require password change at next login"/>
       </div>
       <div class="userInfo__form-row">
-        <a17-modal-validation :mode="userInfo.is_activated ? 'Update' : 'Create'"></a17-modal-validation>
+        <a17-modal-validation :mode="userInfo.is_activated ? 'Update' : 'Create'"/>
       </div>
     </a17-modal>
 
