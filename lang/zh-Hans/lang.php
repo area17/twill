@@ -17,6 +17,7 @@ return [
     ],
     'footer' => [
         'version' => '版本',
+        'made-with-twill' => 'Made with Twill',
     ],
     'form' => [
         'content' => '内容',
@@ -66,6 +67,7 @@ return [
         'settings' => '设置',
         'logout' => '注销',
         'admin' => '管理员',
+        'live' => 'Open live site &#8599;',
     ],
     'media-library' => [
         'title' => '媒体库',
@@ -77,6 +79,16 @@ return [
             'files-selected' => '已选中文件',
             'clear' => '清除',
             'dimensions' => '尺寸',
+        ],
+        'modal' => [
+            'delete' => [
+                'title' => 'Delete media',
+                'confirm' => 'Delete'
+            ],
+            'prompt' => [
+                'top-text' => 'Are you sure ?',
+                'bottom-text' => 'This change can\'t be undone.',
+            ],
         ],
     ],
     'filter' => [
