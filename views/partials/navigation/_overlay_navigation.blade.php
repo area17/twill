@@ -17,7 +17,7 @@
                 </div>
                 <div class="headerMobile__list">
                     @if (config('twill.enabled.media-library') || config('twill.enabled.file-library'))
-                        <a href="#" data-closenav-btn data-medialib-btn>Media Library</a><br />
+                        <a href="#" data-closenav-btn data-medialib-btn>{{ twillTrans('twill::lang.nav.media-library') }}</a><br />
                     @endif
                     @if(isset($currentUser))
                         <a href="{{ route('admin.users.index') }}">{{ twillTrans('twill::lang.nav.cms-users') }}</a><br />
