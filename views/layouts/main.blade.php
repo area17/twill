@@ -59,7 +59,7 @@
                                           :authorized="{{ json_encode(auth('twill_users')->user()->can('upload')) }}" :extra-metadatas="{{ json_encode(array_values(config('twill.media_library.extra_metadatas_fields', []))) }}"
                                           :translatable-metadatas="{{ json_encode(array_values(config('twill.media_library.translatable_metadatas_fields', []))) }}"
                         ></a17-medialibrary>
-                        <a17-dialog ref="warningMediaLibrary" modal-title="{{ willTrans('twill::lang.media-library.modal.delete.title') }}" confirm-label="{{ willTrans('twill::lang.media-library.modal.delete.confirm') }}">
+                        <a17-dialog ref="warningMediaLibrary" modal-title="{{ twillTrans('twill::lang.media-library.modal.delete.title') }}" confirm-label="{{ twillTrans('twill::lang.media-library.modal.delete.confirm') }}">
                             <p class="modal--tiny-title"><strong>{{ twillTrans('twill::lang.media-library.modal.delete.title') }}</strong></p>
                             <p>{{ twillTrans('twill::lang.media-library.modal.prompt.top-text') }}<br />{{ twillTrans('twill::lang.media-library.modal.prompt.bottom-text') }}</p>
                         </a17-dialog>
