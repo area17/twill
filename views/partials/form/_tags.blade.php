@@ -11,7 +11,7 @@
 
 @unless($renderForBlocks || $renderForModal || $item->tags->count() === 0)
 @push('vuexStore')
-    window.STORE.form.fields.push({
+    window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({
         name: 'tags',
         value: {!! json_encode($item->tags->map(function ($tag) { return $tag->name; })->toArray()) !!}
     })

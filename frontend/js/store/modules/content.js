@@ -21,22 +21,22 @@ const state = {
    * Define if we want to have a visual editor
    * @type {Boolean}
    */
-  editor: window.STORE.form.editor || false,
+  editor: window[process.env.VUE_APP_NAME].STORE.form.editor || false,
   /**
    * An object with all the blocks available to add
    * @type {Object}
    */
-  available: window.STORE.form.content || {},
+  available: window[process.env.VUE_APP_NAME].STORE.form.content || {},
   /**
    * An array with all the blocks created
    * @type {Array.Object}
    */
-  blocks: window.STORE.form.blocks || [],
+  blocks: window[process.env.VUE_APP_NAME].STORE.form.blocks || [],
   /**
    * An object with all the Html for the previews of the blocks
    * @type {Object.string}
    */
-  previews: window.STORE.form.previews || {},
+  previews: window[process.env.VUE_APP_NAME].STORE.form.previews || {},
   /**
    * Block that is currently being edited in the visual Editor
    * @type {Object}
@@ -57,7 +57,7 @@ function setBlockID () {
 
 const mutations = {
   [CONTENT.ADD_BLOCK] (state, blockInfos) {
-    let block = blockInfos.block
+    const block = blockInfos.block
     block.id = setBlockID()
 
     if (blockInfos.index > -1) {
@@ -81,7 +81,7 @@ const mutations = {
     state.blocks.splice(index, 1)
   },
   [CONTENT.DUPLICATE_BLOCK] (state, index) {
-    let clone = Object.assign({}, state.blocks[index])
+    const clone = Object.assign({}, state.blocks[index])
     clone.id = setBlockID()
 
     state.blocks.splice(index + 1, 0, clone)

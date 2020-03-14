@@ -18,6 +18,7 @@ return [
     // Indicates if blocks templates should be inlined in HTML.
     // When setting to false, make sure to build Twill with your all your custom blocks.
     'inline_blocks_templates' => true,
+    'custom_vue_blocks_resource_path' => 'assets/js/blocks',
     'blocks' => [
         'text' => [
             'title' => 'Body text',

@@ -1,8 +1,16 @@
 <template>
   <a17-inputframe :error="error" :note="note" :label="label" :name="name" :label-for="uniqId">
     <ul class="radioGroup" :class="radioClasses">
-      <li class="radioGroup__item" v-for="(radio, index) in radios">
-        <a17-radio :customClass="'radio__' + radioClass + '--' + (index + 1)" :name="name" :value="radio.value" :label="radio.label" @change="changeValue" :initialValue="currentValue" :disabled="radio.disabled"></a17-radio>
+      <li class="radioGroup__item"
+          v-for="(radio, index) in radios"
+          :key="index">
+        <a17-radio :customClass="'radio__' + radioClass + '--' + (index + 1)"
+                   :name="name"
+                   :value="radio.value"
+                   :label="radio.label"
+                   :initialValue="currentValue"
+                   :disabled="radio.disabled"
+                   @change="changeValue"/>
       </li>
     </ul>
   </a17-inputframe>
@@ -50,7 +58,7 @@
       },
       radioClasses: function () {
         return [
-          this.inline ? `radioGroup--inline` : ''
+          this.inline ? 'radioGroup--inline' : ''
         ]
       }
     },
@@ -75,23 +83,22 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .radioGroup {
-    color:$color__text;
+    color: $color__text;
   }
 
   .radioGroup--inline {
-    display:flex;
+    display: flex;
     flex-flow: row wrap;
-    overflow:hidden;
+    overflow: hidden;
   }
 
   .radioGroup--inline .radioGroup__item {
-    margin-right:20px;
+    margin-right: 20px;
   }
 
   .radioGroup__item {
-    padding:7px 0 8px 0;
+    padding: 7px 0 8px 0;
   }
 </style>

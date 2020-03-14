@@ -28,6 +28,50 @@ if (!function_exists('revAsset')) {
     }
 }
 
+if (!function_exists('twillAsset')) {
+    /**
+     * @param string $file
+     * @return string
+     */
+    function twillAsset($file)
+    {
+        if (app()->environment('local', 'development') && config('twill.dev_mode', false)) {
+            $devServerUrl = config('twill.dev_mode_url', 'http://localhost:8080');
+
+            try {
+                $manifest = json_decode(file_get_contents(
+                    $devServerUrl
+                    . '/'
+                    . config('twill.manifest_file', 'twill-manifest.json')
+                ), true);
+
+            } catch (\Exception $e) {
+                throw new \Exception('Twill dev assets manifest is missing. Make sure you are running the npm run serve command inside Twill.');
+            }
+
+            return $devServerUrl . ($manifest[$file] ?? ('/' . $file));
+        }
+
+        try {
+            $manifest = Cache::rememberForever('twill-manifest', function () {
+                return json_decode(file_get_contents(
+                    public_path(config('twill.public_directory', 'twill'))
+                    . '/'
+                    . config('twill.manifest_file', 'twill-manifest.json')
+                ), true);
+            });
+        } catch (\Exception $e) {
+            throw new \Exception('Twill assets manifest is missing. Make sure you published/updated Twill assets using the "php artisan twill:update" command.');
+        }
+
+        if (isset($manifest[$file])) {
+            return $manifest[$file];
+        }
+
+        return '/' . config('twill.public_directory', 'twill') . '/' . $file;
+    }
+}
+
 if (!function_exists('icon')) {
     /**
      * ARIA roles memo: 'presentation' means merely decoration. Otherwise, use role="img".

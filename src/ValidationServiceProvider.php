@@ -33,6 +33,8 @@ class ValidationServiceProvider extends ServiceProvider
         });
 
         Validator::extend('validBlocks', function ($attribute, $value, $parameters, $validator) {
+            $blockMessages = [];
+
             foreach ($value as $block) {
                 $cmsBlock = $this->app->make(BlockRepository::class)->buildFromCmsArray($block, false);
 
@@ -49,6 +51,7 @@ class ValidationServiceProvider extends ServiceProvider
                 }
 
                 if (!empty($blockMessages ?? [])) {
+                    array_unshift($blockMessages, 'This block has validation issues:');
                     $validator->errors()->add('block.' . $block['id'], join('<br>', $blockMessages));
                 }
 

@@ -48,7 +48,7 @@ store.registerModule('attributes', attributes)
 
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
-window.vm = new Vue({
+window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
   store, // inject store to all children
   el: '#app',
   components: {
@@ -97,9 +97,9 @@ window.vm = new Vue({
       this.reloadDatas()
     },
     filterListing: function (formData) {
-      let self = this
+      const self = this
       this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
-      this.$store.commit(DATATABLE.UPDATE_DATATABLE_FILTER, formData || {search: ''})
+      this.$store.commit(DATATABLE.UPDATE_DATATABLE_FILTER, formData || { search: '' })
 
       this.$nextTick(function () {
         self.reloadDatas()
@@ -107,7 +107,7 @@ window.vm = new Vue({
     }
   },
   mounted: function () {
-    if (window.openCreate) this.create()
+    if (window[process.env.VUE_APP_NAME].openCreate) this.create()
   },
   created: function () {
     openMediaLibrary()

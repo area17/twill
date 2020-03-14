@@ -2,10 +2,10 @@
   <div class="modalValidation">
     <a17-inputframe>
       <template v-if="mode === 'create'">
-        <a17-button type="submit" name="create" variant="validate" :disabled="isDisabled">Create</a17-button>
-        <a17-button type="submit" name="create-another" v-if="!isDisabled" variant="aslink-grey"><span>Create and add another</span></a17-button>
+        <a17-button type="submit" name="create" variant="validate" :disabled="isDisabled">{{ $trans('modal.create.button', 'Create') }}</a17-button>
+        <a17-button type="submit" name="create-another" v-if="!isDisabled" variant="aslink-grey"><span>{{ $trans('modal.create.create-another', 'Create and add another') }}</span></a17-button>
       </template>
-      <a17-button type="submit" name="update" v-else="" variant="validate" :disabled="isDisabled">Update</a17-button>
+      <a17-button type="submit" name="update" v-else="" variant="validate" :disabled="isDisabled">{{ $trans('modal.update.button', 'Update') }}</a17-button>
     </a17-inputframe>
     <label v-if="activePublishState" :for="publishedName" class="switcher__button" :class="switcherClasses">
       <span v-if="isChecked" class="switcher__label">{{ textEnabled }}</span>
@@ -19,7 +19,6 @@
 
 <script>
   import { FORM } from '@/store/mutations'
-  import a17Switcher from '@/components/Switcher.vue'
 
   export default {
     name: 'A17ModalValidationButtons',
@@ -57,9 +56,6 @@
         default: 'Draft'
       }
     },
-    components: {
-      'a17-switcher': a17Switcher
-    },
     data: function () {
       return {
         fields: false,
@@ -78,7 +74,7 @@
     computed: {
       switcherClasses: function () {
         return [
-          this.isChecked ? `switcher--active` : ''
+          this.isChecked ? 'switcher--active' : ''
         ]
       },
       isChecked: function () {
@@ -128,7 +124,7 @@
       }
     },
     mounted: function () {
-      let self = this
+      const self = this
 
       this.fields = [...this.$parent.$el.querySelectorAll('input, textarea, select')]
 
@@ -142,7 +138,7 @@
       })
     },
     beforeDestroy: function () {
-      let self = this
+      const self = this
 
       if (!this.fields.length) return
 
@@ -154,7 +150,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .modalValidation {
     display: flex;

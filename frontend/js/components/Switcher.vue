@@ -53,7 +53,7 @@
     computed: {
       switcherClasses: function () {
         return [
-          this.isChecked ? `switcher--active` : '',
+          this.isChecked ? 'switcher--active' : '',
           this.formatTextEnabled ? `switcher--${this.$options.filters.lowercase(this.formatTextEnabled)}` : ''
         ]
       },
@@ -61,8 +61,8 @@
         return this.published
       },
       formatTextEnabled: function () {
-        let scoreStart = compareAsc(this.startDate, new Date())
-        let scoreEnd = compareAsc(this.endDate, new Date())
+        const scoreStart = compareAsc(this.startDate, new Date())
+        const scoreEnd = compareAsc(this.endDate, new Date())
 
         if (this.endDate && scoreEnd < 0) return this.textExpired
         else if (this.startDate && scoreStart > 0) return this.textScheduled
@@ -90,7 +90,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .switcher {
     height:50px;

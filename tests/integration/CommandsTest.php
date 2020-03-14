@@ -2,8 +2,8 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use A17\Twill\Models\User;
 use A17\Twill\Commands\GenerateBlocks;
+use A17\Twill\Models\User;
 
 class CommandsTest extends TestCase
 {
@@ -32,7 +32,7 @@ class CommandsTest extends TestCase
     public function testCanExecuteBlocksCommand()
     {
         $this->deleteDirectory($path = resource_path('views/admin/blocks'));
-        $this->deleteDirectory(resource_path('assets/js/blocks'));
+        $this->deleteDirectory(resource_path(config('twill.custom_vue_blocks_resource_path', 'assets/js/blocks')));
 
         $this->artisan('twill:blocks')->expectsOutput(
             GenerateBlocks::NO_BLOCKS_DEFINED
@@ -44,7 +44,7 @@ class CommandsTest extends TestCase
             true
         );
         $this->files->makeDirectory(
-            resource_path('assets/js/blocks'),
+            resource_path(config('twill.custom_vue_blocks_resource_path', 'assets/js/blocks')),
             0755,
             true
         );
@@ -63,12 +63,12 @@ class CommandsTest extends TestCase
         );
 
         $this->assertFileExists(
-            resource_path('assets/js/blocks/BlockQuote.vue')
+            resource_path(config('twill.custom_vue_blocks_resource_path', 'assets/js/blocks') . '/BlockQuote.vue')
         );
 
         $this->assertEquals(
             read_file(stubs('blocks/BlockQuote.vue')),
-            read_file(resource_path('assets/js/blocks/BlockQuote.vue'))
+            read_file(resource_path(config('twill.custom_vue_blocks_resource_path', 'assets/js/blocks') . '/BlockQuote.vue'))
         );
     }
 

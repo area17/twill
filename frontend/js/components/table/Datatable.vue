@@ -37,7 +37,7 @@
           <a17-tablehead :columns="visibleColumns" ref="thead"/>
           </thead>
           <template v-if="draggable">
-            <draggable class="datatable__drag" :element="'tbody'" v-model="rows" :options="dragOptions"
+            <draggable class="datatable__drag" :tag="'tbody'" v-model="rows" :options="dragOptions"
                        :draggable="true">
               <template v-for="(row, index) in rows">
                 <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :key="row.id"/>
@@ -102,7 +102,7 @@
     },
     computed: {
       checkboxesColumns: function () {
-        let checkboxes = []
+        const checkboxes = []
 
         if (this.hideableColumns.length) {
           this.hideableColumns.forEach(function (column) {
@@ -126,9 +126,9 @@
     },
     methods: {
       getColumnWidth: function () {
-        let self = this
-        let newColumnsWidth = []
-        let tds = self.$refs.thead.$el.children
+        const self = this
+        const newColumnsWidth = []
+        const tds = self.$refs.thead.$el.children
 
         for (let index = 0; index < tds.length; index++) {
           newColumnsWidth.push(tds[index].offsetWidth)
@@ -143,12 +143,12 @@
         this.getColumnWidth()
       }, 100),
       initEvents: function () {
-        let self = this
+        const self = this
         window.addEventListener('resize', () => self.resize())
         self.resize()
       },
       disposeEvents: function () {
-        let self = this
+        const self = this
         window.removeEventListener('resize', self.resize())
       },
       updateSort: function (column) {
@@ -249,7 +249,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   table {
     width: 100%;

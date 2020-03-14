@@ -43,19 +43,19 @@
     },
     methods: {
       getFieldsetPosition: function () {
-        let self = this
+        const self = this
 
         this.lastScrollPos = window.pageYOffset
 
         this.navItems.forEach(function (item, index) {
           const fieldset = self.fieldset[index]
-          let pos = fieldset ? (fieldset.getBoundingClientRect().top + self.lastScrollPos) : 0
+          const pos = fieldset ? (fieldset.getBoundingClientRect().top + self.lastScrollPos) : 0
 
           Vue.set(item, 'position', pos)
         })
       },
       setActiveItems: function () {
-        let self = this
+        const self = this
         let itemToActivate = 0
 
         // desactivate all fieldset
@@ -71,7 +71,7 @@
         else Vue.set(self.navItems[itemToActivate], 'active', true)
       },
       refresh: function () {
-        let self = this
+        const self = this
 
         self.clickedFieldset = -1
         this.getFieldsetPosition()
@@ -84,7 +84,7 @@
         this.refresh()
       }, 200),
       _scroll: function () {
-        let self = this
+        const self = this
 
         this.lastScrollPos = window.pageYOffset
 
@@ -98,7 +98,7 @@
         self.ticking = true
       },
       scrollToFieldset: function (index) {
-        let self = this
+        const self = this
         const ypos = this.navItems[index].position - this.topOffset + 1
 
         this.dispose()
@@ -124,7 +124,7 @@
       }
     },
     mounted: function () {
-      let self = this
+      const self = this
 
       this.navItems.forEach(function (item, index) {
         const target = document.querySelector('#' + item.fieldset)
@@ -143,7 +143,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .stickyNav {
     background-color:rgba($color__border--light, 0.95);

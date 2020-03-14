@@ -2,11 +2,24 @@
   <div class="slideshow">
     <draggable class="slideshow__content" v-model="slides" :options="dragOptions" v-if="slides.length">
       <transition-group name="draggable_list" tag='div'>
-        <div class="slide" v-for="(slide, index) in slides" :key="index">
+        <div class="slide" v-for="(slide, index) in slides" :key="slide.id">
             <div class="slide__handle">
               <div class="slide__handle--drag"></div>
             </div>
-            <a17-mediafield class="slide__content" :name="`${name}_${slide.id}`" :index="index" :mediaContext="name" :cropContext="cropContext" :hover="hoverable" :isSlide="true" :withAddInfo="withAddInfo" :withCaption="withCaption" :withVideoUrl="withVideoUrl" :extraMetadatas="extraMetadatas"></a17-mediafield>
+            <a17-mediafield class="slide__content"
+                            :name="`${name}_${slide.id}`"
+                            :index="index"
+                            :mediaContext="name"
+                            :cropContext="cropContext"
+                            :hover="hoverable"
+                            :isSlide="true"
+                            :withAddInfo="withAddInfo"
+                            :withCaption="withCaption"
+                            :withVideoUrl="withVideoUrl"
+                            :altTextMaxLength="altTextMaxLength"
+                            :captionMaxLength="captionMaxLength"
+                            :extraMetadatas="extraMetadatas">
+            </a17-mediafield>
         </div>
       </transition-group>
     </draggable>
@@ -23,6 +36,7 @@
 
   import draggableMixin from '@/mixins/draggable'
   import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
+  import mediaFieldMixin from '@/mixins/mediaField.js'
 
   import draggable from 'vuedraggable'
 
@@ -31,15 +45,11 @@
     components: {
       draggable
     },
-    mixins: [draggableMixin, mediaLibrayMixin],
+    mixins: [draggableMixin, mediaLibrayMixin, mediaFieldMixin],
     props: {
       name: {
         type: String,
         required: true
-      },
-      cropContext: {
-        type: String,
-        default: ''
       },
       itemLabel: {
         type: String,
@@ -48,24 +58,6 @@
       max: {
         type: Number,
         default: 10
-      },
-      withAddInfo: {
-        type: Boolean,
-        default: true
-      },
-      withCaption: {
-        type: Boolean,
-        default: true
-      },
-      withVideoUrl: {
-        type: Boolean,
-        default: true
-      },
-      extraMetadatas: {
-        type: Array,
-        default () {
-          return []
-        }
       }
     },
     data: function () {
@@ -114,7 +106,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .slideshow {
     // width: 100%;

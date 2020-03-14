@@ -1,46 +1,71 @@
 ## CRUD modules
+Twill core functionnality is the ability to setup what we call modules. A module is set of files that define a content model and its associated business logic in your application. Those module can be configured to enable several features for publishers, from the ability to translate content, to the ability to attach images and more complex data structure to your records.
 
 ### CLI Generator
 You can generate all the files needed in your application to create a new CRUD module using Twill's Artisan generator:
 
 ```bash
-php artisan twill:module yourPluralModuleName
+php artisan twill:module moduleName
 ```
 
-The command has a couple of options :
-- `--hasBlocks (-B)`,
-- `--hasTranslation (-T)`,
-- `--hasSlug (-S)`,
-- `--hasMedias (-M)`,
-- `--hasFiles (-F)`,
-- `--hasPosition (-P)`
-- `--hasRevisions(-R)`.
+The command accepts several options:
+- `--hasBlocks (-B)`, to use the block editor on your module form
+- `--hasTranslation (-T)`, to add content in multiple languages
+- `--hasSlug (-S)`, to generate slugs based on one or multiple fields in your model
+- `--hasMedias (-M)`, to attach images to your records
+- `--hasFiles (-F)`, to attach files to your records
+- `--hasPosition (-P)`, to allow manually reordering of records in the listing screen
+- `--hasRevisions(-R)`, to allow comparing and restoring past revisions of records
 
-This will generate a migration file, a model, a repository, a controller, a form request object and a form view.
+The `twill:module` command will generate a migration file, a model, a repository, a controller, a form request object and a form view.
 
-Start by filling in the migration and models using the documentation below.
+Add the route to your admin routes file(`routes/admin.php`).
 
-Add `Route::module('yourPluralModuleName');` to your admin routes file.
+```php
+<?php
 
-Setup a new CMS menu item in `config/twill-navigation.php`.
+Route::module('moduleName');
+```
+
+Setup a new CMS navigation item in `config/twill-navigation.php`.
+
+```php
+return [
+    ...
+    'moduleName' => [
+        'title'     => 'Module name',
+        'module'    => true
+    ]
+    ...
+]
+```
+
+With that in place, after migrating the database using `php artisan migrate`, you should be able to start creating content. By default, a module only have a title and a description, the ability to be published, and any other feature you added through the CLI generator.
+
+If you provided the `hasBlocks` option, you will be able to use the `block_editor` form field in the form of that module.
+
+If you provided the `hasTranslation` option, and have multiple languages specified in your `translatable.php` configuration file, the UI will react automatically and allow publishers to translate content and manage publication at the language level. 
+
+If you provided the `hasSlug` option, slugs will automatically be generated from the title field.
+
+If you provided the `hasMedias` or `hasFiles` option, you will be able to respectively add several `medias` or `files` form fields to the form of that module.
+
+If you provided the `hasPosition` option, publishers will be able to manually order  records from the module's listing screen (after enabling the `reorder` option in the module's controller `indexOptions` array).
+
+If you provided the `hasRevisions` option, each form submission will create a new revision in your database so that publishers can compare and restore them in the CMS UI.
 
 Depending on the depth of your module in your navigation, you'll need to wrap your route declaration in one or multiple nested route groups.
 
-Setup your form fields in `resources/views/admin/moduleName/form.blade.php`.
-
-Setup your index options and columns in your controller if needed.
-
-Enjoy.
+You can setup your index options and columns in the generated controller if needed.
 
 ### Migrations
-Generated migrations are regular Laravel migrations. A few helpers are available to create the default fields any CRUD module will use:
-
+Twill's generated migrations are standard Laravel migrations, enhanced with helpers to create the default fields any CRUD module will use:
 ```php
 <?php
 
 // main table, holds all non translated fields
 Schema::create('table_name_plural', function (Blueprint $table) {
-    createDefaultTableFields($table)
+    createDefaultTableFields($table);
     // will add the following inscructions to your migration file
     // $table->increments('id');
     // $table->softDeletes();
@@ -50,7 +75,7 @@ Schema::create('table_name_plural', function (Blueprint $table) {
 
 // translation table, holds translated fields
 Schema::create('table_name_singular_translations', function (Blueprint $table) {
-    createDefaultTranslationsTableFields($table, 'tableNameSingular')
+    createDefaultTranslationsTableFields($table, 'tableNameSingular');
     // will add the following inscructions to your migration file
     // createDefaultTableFields($table);
     // $table->string('locale', 6)->index();
@@ -62,7 +87,7 @@ Schema::create('table_name_singular_translations', function (Blueprint $table) {
 
 // slugs table, holds slugs history
 Schema::create('table_name_singular_slugs', function (Blueprint $table) {
-    createDefaultSlugsTableFields($table, 'tableNameSingular')
+    createDefaultSlugsTableFields($table, 'tableNameSingular');
     // will add the following inscructions to your migration file
     // createDefaultTableFields($table);
     // $table->string('slug');
@@ -87,7 +112,7 @@ Schema::create('table_name_singular_revisions', function (Blueprint $table) {
 
 // related content table, holds many to many association between 2 tables
 Schema::create('table_name_singular1_table_name_singular2', function (Blueprint $table) {
-    createDefaultRelationshipTableFields($table, $table1NameSingular, $table2NameSingular)
+    createDefaultRelationshipTableFields($table, $table1NameSingular, $table2NameSingular);
     // will add the following inscructions to your migration file
     // $table->integer("{$table1NameSingular}_id")->unsigned();
     // $table->foreign("{$table1NameSingular}_id")->references('id')->on($table1NamePlural)->onDelete('cascade');
@@ -103,17 +128,17 @@ A few CRUD controllers require that your model have a field in the database with
 
 Set your fillables to prevent mass-assignement. This is very important, as we use `request()->all()` in the module controller.
 
-For fields that should always be saved as null in the database when not sent by the form, use the `nullable` array.
+For fields that should default as null in the database when not sent by the form, use the `nullable` array.
 
-For fields that should always be saved to false in the database when not sent by the form, use the `checkboxes` array. The `published` field is a good example.
+For fields that should default to false in the database when not sent by the form, use the `checkboxes` array.
 
-Depending on the features you need on your model, include the available traits and configure their respective options:
+Depending upon the Twill features you need on your model, include the related traits and configure their respective options:
 
 - HasPosition: implement the `A17\Twill\Models\Behaviors\Sortable` interface and add a position field to your fillables.
 
-- HasTranslation: add translated fields in the `translatedAttributes` array and in the `fillable` array of the generated translatable model in `App/Models/Translations` (always keep the `active` and `locale` fields).
+- HasTranslation: add translated fields in the `translatedAttributes` array.
 
-When using Twill's `HasTranslation` trait on a model, you are actually using the popular `dimsav/translatable` package. A default configuration will be automatically published to your `config` directory when you run the `twill:install` command.
+Twill's `HasTranslation` trait is a wrapper around the popular `astronomic/laravel-translatable` package. A default configuration will be automatically published to your `config` directory when you run the `twill:install` command.
 
 To setup your list of available languages for translated fields, modify the `locales` array in `config/translatable.php`, using ISO 639-1 two-letter languages codes as in the following example:
 
@@ -129,7 +154,7 @@ return [
 ];
 ```
 
-- HasSlug: specify the field(s) that is going to be used to create the slug in the `slugAttributes` array
+- HasSlug: specify the field(s) used to create the slug in the `slugAttributes` array
 
 - HasMedias: add the `mediasParams` configuration array:
 
@@ -347,6 +372,8 @@ public function hydrate($object, $fields)
         'permalink' => true,
         'bulkEdit' => true,
         'editInModal' => false,
+        'forceDelete' => true,
+        'bulkForceDelete' => true,
     ];
 
     /*
@@ -441,13 +468,15 @@ public function hydrate($object, $fields)
         return [];
     }
 
-    // Optional, if the automatic way is not working for you (default is ucfirst(Str::singular($moduleName)))
+    // Optional, if the automatic way is not working for you (default is ucfirst(str_singular($moduleName)))
     protected $modelName = 'model';
 
     // Optional, to specify a different feature field name than the default 'featured'
     protected $featureField = 'featured';
 
     // Optional, specify number of items per page in the listing view (-1 to disable pagination)
+    // If you are implementing Sortable, this parameter is ignored given reordering is not implemented
+    // along with pagination.
     protected $perPage = 20;
 
     // Optional, specify the default listing order
@@ -459,11 +488,11 @@ public function hydrate($object, $fields)
 
 You can also override all actions and internal functions, checkout the ModuleController source in `A17\Twill\Http\Controllers\Admin\ModuleController`.
 
-#### Example Sort by Relationship Field.
+#### Example: sorting by a relationship field
 
 Let's say we have a controller with certain fields displayed:
-File: `app/Http/Controllers/Admin/PlayController.php`
 
+File: `app/Http/Controllers/Admin/PlayController.php`
 ```php
     protected $indexColumns = [
         'image' => [
@@ -486,19 +515,16 @@ File: `app/Http/Controllers/Admin/PlayController.php`
     ];
 ```
 
-For creating the Sorting mechanism for the relationship we need to overwrite the order method on the proper repository.
-In there we verify for the parameter sent which per convention should be *relationship + field* in this case `festivalsTitle`.
-Once applied we remove that parameter to avoid the application crash due to not being able to find the field on the table.
+To order by the relationship we need to overwrite the order method in the module's repository.
 
 File: `app/Repositories/PlayRepository.php`
-
 ```php
   ...
   public function order($query, array $orders = []) {
 
       if (array_key_exists('festivalsTitle', $orders)){
           $sort_method = $orders['festivalsTitle'];
-          //Remove the UNEXISTING column from the orders array
+          // remove the unexisting column from the orders array
           unset($orders['festivalsTitle']);
           $query = $query->orderByFestival($sort_method);
       }
@@ -508,9 +534,9 @@ File: `app/Repositories/PlayRepository.php`
   ...
 ```
 
-Then add the custom `sort` scope into your Model, it should be something like this:
-File: `app/Models/Play.php`
+Then, add a custom `sort` scope to your model, it could be something like this:
 
+File: `app/Models/Play.php`
 ```php
     public function scopeOrderByFestival($query, $sort_method = 'ASC') {
         return $query
@@ -577,471 +603,14 @@ Route::module('yourModulePluralName');
 
 // You can add an array of only/except action names as a second parameter
 // By default, the following routes are created : 'reorder', 'publish', 'browser', 'bucket', 'feature', 'restore', 'bulkFeature', 'bulkPublish', 'bulkDelete', 'bulkRestore'
-Route::module('yourModulePluralName', ['except' => ['reorder', 'feature', 'bucket', 'browser']])
+Route::module('yourModulePluralName', ['except' => ['reorder', 'feature', 'bucket', 'browser']]);
 
 // You can add an array of only/except action names for the resource controller as a third parameter
 // By default, the following routes are created : 'index', 'store', 'show', 'edit', 'update', 'destroy'
-Route::module('yourModulePluralName', [], ['only' => ['index', 'edit', 'store', 'destroy']])
+Route::module('yourModulePluralName', [], ['only' => ['index', 'edit', 'store', 'destroy']]);
 
 // The last optional parameter disable the resource controller actions on the module
-Route::module('yourPluralModuleName', [], [], false)
-```
-
-### Form fields
-
-
-Wrap them into the following in your module `form` view (`resources/views/admin/moduleName/form.blade.php`):
-
-```php
-@extends('twill::layouts.form')
-@section('contentFields')
-    @formField('...', [...])
-    ...
-@stop
-```
-
-The idea of the `contentFields` section is to contain the most important fields and the block editor as the last field.
-
-If you have attributes, relationships, extra images, file attachments or repeaters, you'll want to add a `fieldsets` section after the `contentFields` section and use the `a17-fieldset` Vue component to create new ones like in the following example:
-
-```php
-@extends('twill::layouts.form', [
-    'additionalFieldsets' => [
-        ['fieldset' => 'attributes', 'label' => 'Attributes'],
-    ]
-])
-
-@section('contentFields')
-    @formField('...', [...])
-    ...
-@stop
-
-@section('fieldsets')
-    <a17-fieldset title="Attributes" id="attributes">
-        @formField('...', [...])
-        ...
-    </a17-fieldset>
-@stop
-```
-
-The additional fieldsets array passed to the form layout will display a sticky navigation of your fieldset on scroll.
-You can also rename the content section by passing a `contentFieldsetLabel` property to the layout.
-
-#### Input
-![screenshot](/docs/_media/input.png)
-
-```php
-@formField('input', [
-    'name' => 'subtitle',
-    'label' => 'Subtitle',
-    'maxlength' => 100,
-    'required' => true,
-    'note' => 'Hint message goes here',
-    'placeholder' => 'Placeholder goes here',
-])
-
-@formField('input', [
-    'translated' => true,
-    'name' => 'subtitle_translated',
-    'label' => 'Subtitle (translated)',
-    'maxlength' => 250,
-    'required' => true,
-    'note' => 'Hint message goes here',
-    'placeholder' => 'Placeholder goes here',
-    'type' => 'textarea',
-    'rows' => 3
-])
-```
-
-#### WYSIWYG
-![screenshot](/docs/_media/wysiwyg.png)
-
-```php
-@formField('wysiwyg', [
-    'name' => 'case_study',
-    'label' => 'Case study text',
-    'toolbarOptions' => ['list-ordered', 'list-unordered'],
-    'placeholder' => 'Case study text',
-    'maxlength' => 200,
-    'note' => 'Hint message',
-])
-
-@formField('wysiwyg', [
-    'name' => 'case_study',
-    'label' => 'Case study text',
-    'toolbarOptions' => [ [ 'header' => [1, 2, false] ], 'list-ordered', 'list-unordered', [ 'indent' => '-1'], [ 'indent' => '+1' ] ],
-    'placeholder' => 'Case study text',
-    'maxlength' => 200,
-    'editSource' => true,
-    'note' => 'Hint message',
-])
-```
-WYSIWYG field is based on [Quill](https://quilljs.com/) Rich Text Editor. 
-
-You can add all [toolbar options](https://quilljs.com/docs/modules/toolbar/) from Quill with the `toolbarOptions` key.
-
-For example, this configuration will render a `wysiwyg` field with almost all features from Quill and Snow theme.
-
-```
- @formField('wysiwyg', [
-    'name' => 'case_study',
-    'label' => 'Case study text',
-    'toolbarOptions' => [ 
-      ["font" => ["serif", "sans-serif", "monospace"]],
-      ['header' => [2, 3, 4, 5, 6, false]],
-      'bold',
-      'italic',
-      'underline',
-      'strike',
-      ["color" => []],
-      ["background" => []],
-      ["script" => "super"],
-      ["script" => "sub"],
-      "blockquote",
-      "code-block",
-      ['list' => 'ordered'],
-      ['list' => 'bullet'],
-      ['indent' => '-1'],
-      ['indent' => '+1'],
-      ["align" => []],
-      ["direction" => "rtl"],
-      'link',
-      'image',
-      'video',
-      "clean",
-    ],
-    'placeholder' => 'Case study text',
-    'maxlength' => 200,
-    'editSource' => true,
-    'note' => 'Hint message`',
- ])
-```
-
-Note that Quill outputs CSS classes in the HTML for certain toolbar modules (indent, font, align, etc.), and that the image module is not integrated with Twill's media library. It outputs the base64 representation of the uploaded image. It is not a recommended way of using and storing images, prefer using one or multiple `medias` form fields or blocks fields for flexible content. This will give you greater control over your frontend output.
-
-#### Medias
-![screenshot](/docs/_media/medias.png)
-
-```php
-@formField('medias', [
-    'name' => 'cover',
-    'label' => 'Cover image',
-    'note' => 'Minimum image width 1300px'
-])
-
-@formField('medias', [
-    'name' => 'slideshow',
-    'label' => 'Slideshow',
-    'max' => 5,
-    'note' => 'Minimum image width: 1500px'
-])
-```
-
-Right after declaring the media formField in the blade template file, you still need to do a few things to make it works properly.
-
-If the formField is in a static content form, you have to include the `HasMedias` Trait in your module's [Model](https://twill.io/docs/#models) and inlcude `HandleMedias` in your module's [Repository](https://twill.io/docs/#repositories), in addition, you have to uncomment the `$mediasParams` section in your Model file to let the model know about fields you'd like to save from the form.
-
-Learn more about how Twill's media configurations work at [Model](https://twill.io/docs/#models), [Repository](https://twill.io/docs/#repositories), [Media Library Role & Crop Params](https://twill.io/docs/#image-rendering-service)
-
-If the formField is used inside a block, you need to define the `mediasParams` at `config/twill.php` under `crops` key, and you are good to go. You could checkout [Twill Default Configuration](https://twill.io/docs/#default-configuration) and [Rendering Blocks](https://twill.io/docs/#rendering-blocks) for references.
-
-If you need medias fields to be translatable (ie. publishers can select different images for each locale), set the `twill.media_library.translated_form_fields` configuration value to `true`.
-
-#### Datepicker
-![screenshot](/docs/_media/datepicker.png)
-
-```php
-@formField('date_picker', [
-    'name' => 'event_date',
-    'label' => 'Event date',
-    'minDate' => '2017-09-10 12:00',
-    'maxDate' => '2017-12-10 12:00'
-])
-```
-
-#### Select
-![screenshot](/docs/_media/select.png)
-
-```php
-@formField('select', [
-    'name' => 'office',
-    'label' => 'Office',
-    'placeholder' => 'Select an office',
-    'options' => [
-        [
-            'value' => 1,
-            'label' => 'New York'
-        ],
-        [
-            'value' => 2,
-            'label' => 'London'
-        ],
-        [
-            'value' => 3,
-            'label' => 'Berlin'
-        ]
-    ]
-])
-```
-
-#### Select unpacked
-![screenshot](/docs/_media/selectunpacked.png)
-
-```php
-@formField('select', [
-    'name' => 'discipline',
-    'label' => 'Discipline',
-    'unpack' => true,
-    'options' => [
-        [
-            'value' => 'arts',
-            'label' => 'Arts & Culture'
-        ],
-        [
-            'value' => 'finance',
-            'label' => 'Banking & Finance'
-        ],
-        [
-            'value' => 'civic',
-            'label' => 'Civic & Public'
-        ],
-        [
-            'value' => 'design',
-            'label' => 'Design & Architecture'
-        ],
-        [
-            'value' => 'education',
-            'label' => 'Education'
-        ],
-        [
-            'value' => 'entertainment',
-            'label' => 'Entertainment'
-        ],
-    ]
-])
-```
-
-#### Multi select
-![screenshot](/docs/_media/multiselect.png)
-
-```php
-@formField('multi_select', [
-    'name' => 'sectors',
-    'label' => 'Sectors',
-    'options' => [
-        [
-            'value' => 'arts',
-            'label' => 'Arts & Culture'
-        ],
-        [
-            'value' => 'finance',
-            'label' => 'Banking & Finance'
-        ],
-        [
-            'value' => 'civic',
-            'label' => 'Civic & Public'
-        ],
-        [
-            'value' => 'design',
-            'label' => 'Design & Architecture'
-        ],
-        [
-            'value' => 'education',
-            'label' => 'Education'
-        ]
-    ]
-])
-
-@formField('multi_select', [
-    'name' => 'sectors_bis',
-    'label' => 'Sectors bis',
-    'min' => 1,
-    'max' => 2,
-    'options' => [
-        [
-            'value' => 'arts',
-            'label' => 'Arts & Culture'
-        ],
-        [
-            'value' => 'finance',
-            'label' => 'Banking & Finance'
-        ],
-        [
-            'value' => 'civic',
-            'label' => 'Civic & Public'
-        ],
-        [
-            'value' => 'design',
-            'label' => 'Design & Architecture'
-        ],
-        [
-            'value' => 'education',
-            'label' => 'Education'
-        ],
-        [
-            'value' => 'entertainment',
-            'label' => 'Entertainment'
-        ],
-    ]
-])
-```
-
-#### Block editor
-![screenshot](/docs/_media/blockeditor.png)
-
-```php
-@formField('block_editor', [
-    'blocks' => ['title', 'quote', 'text', 'image', 'grid', 'test', 'publications', 'news']
-])
-```
-
-#### Repeater
-![screenshot](/docs/_media/repeater.png)
-
-```php
-<a17-fieldset title="Videos" id="videos" :open="true">
-    @formField('repeater', ['type' => 'video'])
-</a17-fieldset>
-```
-
-#### Browser
-![screenshot](/docs/_media/browser.png)
-
-```php
-<a17-fieldset title="Related" id="related" :open="true">
-    @formField('browser', [
-        'label' => 'Publications',
-        'max' => 4,
-        'name' => 'publications',
-        'moduleName' => 'publications'
-    ])
-</a17-fieldset>
-```
-
-#### Files
-![screenshot](/docs/_media/files.png)
-
-```php
-@formField('files', [
-    'name' => 'single_file',
-    'label' => 'Single file',
-    'note' => 'Add one file (per language)'
-])
-
-@formField('files', [
-    'name' => 'single_file_no_translate',
-    'label' => 'Single file (no translate)',
-    'note' => 'Add one file',
-    'noTranslate' => true,
-])
-
-@formField('files', [
-    'name' => 'files',
-    'label' => 'Files',
-    'noTranslate' => true,
-    'max' => 4,
-])
-```
-
-Similar to the media formField, to make the file field works, you have to include the `HasFiles` trait in your module's [Model](https://twill.io/docs/#models), and include `HandleFiles` trait in your module's [Repository](https://twill.io/docs/#repositories). At last, add the `filesParams` configuration array in your model.
-```php
-public $filesParams = ['file_role', ...]; // a list of file roles
-```
-
-Learn more at [Model](https://twill.io/docs/#models), [Repository](https://twill.io/docs/#repositories).
-
-If you are using the file formField in a block, you have to define the `files` key in `config/twill.php` and you are all set, put it under `block_editor` key and at the same level as `crops` key:
-```php
-return [
-    'block_editor' => [
-        'crops' => [
-            ...
-        ],
-        'files' => ['file_role1', 'file_role2', ...]
-    ]
-```
-
-#### Map
-![screenshot](/docs/_media/map.png)
-
-```php
-@formField('map', [
-    'name' => 'location',
-    'label' => 'Location',
-    'showMap' => false,
-])
-```
-
-This field requires that you provide a `GOOGLE_MAPS_API_KEY` variable in your .env file.
-
-#### Color
-
-```php
-@formField('color', [
-    'name' => 'main-color',
-    'label' => 'Main color'
-])
-```
-
-#### Single checkbox
-
-```php
-@formField('checkbox', [
-    'name' => 'featured',
-    'label' => 'Featured'
-])
-```
-
-#### Multiple checkboxes (multi select as checkboxes)
-
-```php
-@formField('checkboxes', [
-    'name' => 'sectors',
-    'label' => 'Sectors',
-    'note' => '3 sectors max & at least 1 sector',
-    'min' => 1,
-    'max' => 3,
-    'inline' => true,
-    'options' => [
-        [
-            'value' => 'arts',
-            'label' => 'Arts & Culture'
-        ],
-        [
-            'value' => 'finance',
-            'label' => 'Banking & Finance'
-        ],
-        [
-            'value' => 'civic',
-            'label' => 'Civic & Public'
-        ],
-    ]
-])
-```
-
-#### Radios
-
-```php
-@formField('radios', [
-    'name' => 'discipline',
-    'label' => 'Discipline',
-    'default' => 'civic',
-    'inline' => true/false,
-    'options' => [
-        [
-            'value' => 'arts',
-            'label' => 'Arts & Culture'
-        ],
-        [
-            'value' => 'finance',
-            'label' => 'Banking & Finance'
-        ],
-        [
-            'value' => 'civic',
-            'label' => 'Civic & Public'
-        ],
-    ]
-])
+Route::module('yourPluralModuleName', [], [], false);
 ```
 
 ### Revisions and previewing
@@ -1096,7 +665,7 @@ To create a nested module with parent/child relationships, you should include th
 
 To install the package: `composer require kalnoy/nestedset`
 
-Then add nested set columns to your database table:
+Then add nested set columns to your database table.
 
 For Laravel 5.5 and above users:
 
@@ -1132,7 +701,6 @@ Schema::table('pages', function (Blueprint $table) {
 Your model should use the `Kalnoy\Nestedset\NodeTrait` trait to enable nested sets, as well as the `HasPosition` trait and some helper functions to save a new tree organisation from Twill's drag and drop UI:
 
 ```php
-use Illuminate\Support\Arr;
 use A17\Twill\Models\Behaviors\HasPosition;
 use Kalnoy\Nestedset\NodeTrait;
 ...

@@ -2,10 +2,14 @@
     $max = $max ?? 1;
     $required = $required ?? false;
     $note = $note ?? '';
+    $fieldNote = $fieldNote ?? '';
     $withAddInfo = $withAddInfo ?? true;
     $withVideoUrl = $withVideoUrl ?? true;
     $withCaption = $withCaption ?? true;
+    $altTextMaxLength = $altTextMaxLength ?? false;
+    $captionMaxLength = $captionMaxLength ?? false;
     $extraMetadatas = $extraMetadatas ?? false;
+    $multiple = $max > 1 || $max == 0;
 @endphp
 
 @if (config('twill.media_library.translated_form_fields', $translated ?? false) && ($translated ?? true))
@@ -16,6 +20,8 @@
             cropContext: '{{ $name }}',
             max: {{ $max }},
             @if ($extraMetadatas) extraMetadatas: {{ json_encode($extraMetadatas) }}, @endif
+            @if ($altTextMaxLength) altTextMaxLength: {{ $altTextMaxLength }}, @endif
+            @if ($captionMaxLength) captionMaxLength: {{ $captionMaxLength }}, @endif
             @if ($required) required: true, @endif
             @if (!$withAddInfo) withAddInfo: false, @endif
             @if (!$withVideoUrl) withVideoUrl: false, @endif
@@ -28,41 +34,31 @@
     @push('vuexStore')
         @foreach(getLocales() as $locale)
             @if (isset($form_fields['medias']) && isset($form_fields['medias'][$locale][$name]))
-                window.STORE.medias.selected["{{ $name }}[{{ $locale }}]"] = {!! json_encode($form_fields['medias'][$locale][$name]) !!}
+                window['{{ config('twill.js_namespace') }}'].STORE.medias.selected["{{ $name }}[{{ $locale }}]"] = {!! json_encode($form_fields['medias'][$locale][$name]) !!}
             @endif
         @endforeach
     @endpush
     @endunless
 @else
-    <a17-inputframe label="{{ $label }}" name="medias.{{ $name }}" @if ($required) :required="true" @endif>
-        @if($max > 1 || $max == 0)
-            <a17-slideshow
-                @include('twill::partials.form.utils._field_name')
-                :max="{{ $max }}"
-                crop-context="{{ $name }}"
-                @if ($extraMetadatas) :extra-metadatas="{{ json_encode($extraMetadatas) }}" @endif
-                @if ($required) :required="true" @endif
-                @if (!$withAddInfo) :with-add-info="false" @endif
-                @if (!$withVideoUrl) :with-video-url="false" @endif
-                @if (!$withCaption) :with-caption="false" @endif
-            >{{ $note }}</a17-slideshow>
-        @else
-            <a17-mediafield
-                @include('twill::partials.form.utils._field_name')
-                crop-context="{{ $name }}"
-                @if ($extraMetadatas) :extra-metadatas="{{ json_encode($extraMetadatas) }}" @endif
-                @if ($required) :required="true" @endif
-                @if (!$withAddInfo) :with-add-info="false" @endif
-                @if (!$withVideoUrl) :with-video-url="false" @endif
-                @if (!$withCaption) :with-caption="false" @endif
-            >{{ $note }}</a17-mediafield>
-        @endif
+    <a17-inputframe label="{{ $label }}" name="medias.{{ $name }}" @if ($required) :required="true" @endif @if ($fieldNote) note="{{ $fieldNote }}" @endif>
+        @if($multiple) <a17-slideshow @else <a17-mediafield @endif
+            @include('twill::partials.form.utils._field_name')
+            crop-context="{{ $name }}"
+            @if($multiple) :max="{{ $max }}" @endif
+            @if ($extraMetadatas) :extra-metadatas="{{ json_encode($extraMetadatas) }}" @endif
+            @if ($required) :required="true" @endif
+            @if (!$withAddInfo) :with-add-info="false" @endif
+            @if (!$withVideoUrl) :with-video-url="false" @endif
+            @if (!$withCaption) :with-caption="false" @endif
+            @if ($altTextMaxLength) alt-text-max-length="{{ $altTextMaxLength }}" @endif
+            @if ($captionMaxLength) caption-max-length="{{ $captionMaxLength }}" @endif
+        >{{ $note }}@if($multiple) </a17-slideshow> @else </a17-mediafield> @endif
     </a17-inputframe>
 
     @unless($renderForBlocks)
     @push('vuexStore')
         @if (isset($form_fields['medias']) && isset($form_fields['medias'][$name]))
-            window.STORE.medias.selected["{{ $name }}"] = {!! json_encode($form_fields['medias'][$name]) !!}
+            window['{{ config('twill.js_namespace') }}'].STORE.medias.selected["{{ $name }}"] = {!! json_encode($form_fields['medias'][$name]) !!}
         @endif
     @endpush
     @endunless

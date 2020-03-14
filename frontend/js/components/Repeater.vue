@@ -123,7 +123,7 @@
       }
     },
     mounted: function () {
-      let self = this
+      const self = this
       // if there are blocks, these should be all collapse by default
       this.$nextTick(function () {
         if (self.savedBlocks.length > 0) self.collapseAllBlocks()
@@ -133,7 +133,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .content {
     margin-top:20px; // margin-top:35px;

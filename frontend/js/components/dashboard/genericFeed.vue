@@ -5,7 +5,8 @@
     </header>
     <div class="box__body">
       <ol class="genericFeed__list" :class="{ 'genericFeed__list--numbered' : hasNumber }">
-        <li v-for="entity in entities">
+        <li v-for="(entity, index) in entities"
+            :key="index">
           <a :href="entity.url" class="genericFeed__item" :target="target(entity)">
             <span class="genericFeed__thumbnails" v-if="entity.thumbnail"><img :src="entity.thumbnail" /></span>
             <span class="genericFeed__label"><span><span class="genericFeed__hover">{{ entity.name }}</span></span></span>
@@ -43,7 +44,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .genericFeed {
   }

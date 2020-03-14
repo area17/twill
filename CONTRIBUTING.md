@@ -9,18 +9,17 @@ Remember, bug reports are created in the hope that others with the same problem 
 If you discover a security vulnerability within Twill, please email us at [security@twill.io](mailto:security@twill.io). All security vulnerabilities will be promptly addressed.
 
 # Versioning scheme
-Twill's versioning scheme maintains the following convention: `paradigm.major.minor`. Minor releases should never contain breaking changes.
 
-When referencing Twill from your application, you should always use a version constraint such as `1.2.*`, since major releases of Twill do include breaking changes.
+Twill follows [Semantic Versioning](https://semver.org/). Major releases are released only when breaking changes are necessary, while minor and patch releases may be released as often as every week. Minor and patch releases should never contain breaking changes.
 
-The `VERSION` file at the root of the project needs to be updated and a Git tag created to properly release a new version.
+When referencing Twill from your application, you should always use a version constraint such as `^2.0`, since major releases of Twill do include breaking changes.
 
 # Which branch?
-All bug fixes should be sent to the latest stable branch (1.2). Bug fixes should never be sent to the master branch unless they fix features that exist only in the upcoming release.
+All bug fixes should be sent to the latest stable branch (`2.x`). Bug fixes should never be sent to the `master` branch unless they fix features that exist only in the upcoming release.
 
-Minor features that are fully backwards compatible with the current Twill release may be sent to the latest stable branch (1.2).
+Minor features that are fully backwards compatible with the current Twill release may be sent to the latest stable branch (`2.x`).
 
-Major new features should always be sent to the master branch, which contains the upcoming Twill release.
+Major new features should always be sent to the `master` branch, which contains the upcoming Twill release.
 
 Please send coherent history — make sure each individual commit in your pull request is meaningful. If you had to make a lot of intermediate commits while developing, please [squash them](http://www.git-scm.com/book/en/v2/Git-Tools-Rewriting-History#Changing-Multiple-Commit-Messages) before submitting.
 

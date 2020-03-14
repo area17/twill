@@ -6,28 +6,19 @@ parameters:
   paths:
     - src
     - routes
-    - migrations
     - config
     - tests
 
   # 8 is the highest level
-  level: 6
+  level: 1
+
+  autoload_directories:
+    - migrations
 
   autoload_files:
-    - migrations/add_locale_column_to_twill_mediables.php
-    - migrations/add_locale_column_to_twill_mediables.php
-    - migrations/add_two_factor_auth_columns_to_twill_users.php
-    - migrations/change_locale_column_in_twill_fileables.php
-    - migrations/create_blocks_table.php
-    - migrations/create_features_table.php
-    - migrations/create_files_tables.php
-    - migrations/create_medias_tables.php
-    - migrations/create_related_table.php
-    - migrations/create_settings_table.php
-    - migrations/create_tags_tables.php
-    - migrations/create_twill_activity_log_table.php
-    - migrations/create_twill_users_tables.php
+    - tests/helpers.php
 
   ignoreErrors:
 
   excludes_analyse:
+    - tests/stubs/*

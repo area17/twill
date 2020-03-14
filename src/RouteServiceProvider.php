@@ -4,6 +4,7 @@ namespace A17\Twill;
 
 use A17\Twill\Http\Controllers\Front\GlideController;
 use A17\Twill\Http\Middleware\Impersonate;
+use A17\Twill\Http\Middleware\Localization;
 use A17\Twill\Http\Middleware\RedirectIfAuthenticated;
 use A17\Twill\Http\Middleware\SupportSubdomainRouting;
 use A17\Twill\Http\Middleware\ValidateBackHistory;
@@ -53,6 +54,7 @@ class RouteServiceProvider extends ServiceProvider
             'twill_auth:twill_users',
             'impersonate',
             'validateBackHistory',
+            'localization',
         ];
 
         $supportSubdomainRouting = config('twill.support_subdomain_admin_routing', false);
@@ -153,6 +155,7 @@ class RouteServiceProvider extends ServiceProvider
         Route::aliasMiddleware('twill_auth', \Illuminate\Auth\Middleware\Authenticate::class);
         Route::aliasMiddleware('twill_guest', RedirectIfAuthenticated::class);
         Route::aliasMiddleware('validateBackHistory', ValidateBackHistory::class);
+        Route::aliasMiddleware('localization', Localization::class);
     }
 
     /**
@@ -187,7 +190,7 @@ class RouteServiceProvider extends ServiceProvider
                 return ucfirst(Str::singular($s));
             }, $slugs));
 
-            $customRoutes = $defaults = ['reorder', 'publish', 'bulkPublish', 'browser', 'feature', 'bulkFeature', 'tags', 'preview', 'restore', 'bulkRestore', 'forceDelete', 'bulkForceDelete', 'bulkDelete', 'restoreRevision'];
+            $customRoutes = $defaults = ['reorder', 'publish', 'bulkPublish', 'browser', 'feature', 'bulkFeature', 'tags', 'preview', 'restore', 'bulkRestore', 'forceDelete', 'bulkForceDelete', 'bulkDelete', 'restoreRevision', 'duplicate'];
 
             if (isset($options['only'])) {
                 $customRoutes = array_intersect($defaults, (array) $options['only']);
@@ -217,6 +220,10 @@ class RouteServiceProvider extends ServiceProvider
 
                 if (in_array($route, ['publish', 'feature', 'restore', 'forceDelete'])) {
                     Route::put($routeSlug, $mapping);
+                }
+
+                if (in_array($route, ['duplicate'])) {
+                    Route::put($routeSlug . "/{id}", $mapping);
                 }
 
                 if (in_array($route, ['preview'])) {

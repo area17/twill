@@ -3,13 +3,9 @@
 namespace App\Models\Translations;
 
 use A17\Twill\Models\Model;
+use App\Models\{{modelClassName}};
 
 class {{modelTranslationClassName}} extends Model
 {
-    protected $fillable = [
-        'title',
-        'description',
-        'active',
-        'locale',
-    ];
+    protected $baseModuleModel = {{modelClassName}}::class;
 }

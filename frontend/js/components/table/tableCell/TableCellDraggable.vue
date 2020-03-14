@@ -12,7 +12,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .tablecell__handle {
     display: none;

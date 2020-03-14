@@ -101,7 +101,7 @@
       },
       cropperWarning: function () {
         return {
-          'cropper__warning': this.cropValues.original.width < this.minCropValues.width || this.cropValues.original.height < this.minCropValues.height
+          cropper__warning: this.cropValues.original.width < this.minCropValues.width || this.cropValues.original.height < this.minCropValues.height
         }
       },
       ...mapState({
@@ -110,10 +110,10 @@
     },
     filters: a17VueFilters,
     mounted: function () {
-      let opts = this.cropperOpts
-      let imageBox = this.$refs.cropImage
-      let imageWrapper = this.$refs.cropWrapper
-      let img = new Image()
+      const opts = this.cropperOpts
+      const imageBox = this.$refs.cropImage
+      const imageWrapper = this.$refs.cropWrapper
+      const img = new Image()
 
       img.addEventListener('load', () => {
         imageWrapper.style.maxWidth = imageWrapper.getBoundingClientRect().width + 'px'
@@ -141,8 +141,8 @@
     },
     methods: {
       initAspectRatio: function () {
-        let filtered = this.ratiosByContext
-        let filter = filtered.find((r) => r.name === this.currentRatioName)
+        const filtered = this.ratiosByContext
+        const filter = filtered.find((r) => r.name === this.currentRatioName)
 
         if (typeof filter !== 'undefined' && filter) {
           this.minCropValues.width = filter.minValues ? filter.minValues.width : 0
@@ -171,7 +171,7 @@
         this.updateCropperValues()
       },
       updateCropperValues: function () {
-        let data = this.cropper.getData(true)
+        const data = this.cropper.getData(true)
         const originalCrop = this.toOriginalCrop(data)
         this.cropValues.original.width = originalCrop.width
         this.cropValues.original.height = originalCrop.height
@@ -181,12 +181,12 @@
         this.cropper.setData(crop)
       },
       test: function () {
-        const crop = this.toNaturalCrop({x: 0, y: 0, width: 380, height: 475})
+        const crop = this.toNaturalCrop({ x: 0, y: 0, width: 380, height: 475 })
         this.cropper.setAspectRatio(0.8)
         this.cropper.setData(crop)
       },
       sendCropperValues: function () {
-        let data = {}
+        const data = {}
         data.values = {}
         data.values[this.currentCrop] = this.toOriginalCrop(this.cropper.getData(true))
         data.values[this.currentCrop].name = this.currentRatioName
@@ -207,7 +207,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   $height_li: 35px;
 

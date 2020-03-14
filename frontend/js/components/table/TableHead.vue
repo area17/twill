@@ -55,7 +55,7 @@
           col.name === 'nested' ? 'tablehead__cell--nested' : '',
           col.name === 'bulk' ? 'tablehead__cell--bulk' : '',
           col.sortable && this.sortable ? 'tablehead__cell--sortable' : '',
-          col.name === this.sortKey ? `tablehead__cell--sorted` : '',
+          col.name === this.sortKey ? 'tablehead__cell--sorted' : '',
           col.name === this.sortKey && this.sortDir ? `tablehead__cell--sorted${this.sortDir}` : ''
         ]
       },
@@ -79,7 +79,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .tablehead__cell {
     color:$color__text--light;

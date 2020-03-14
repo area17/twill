@@ -106,7 +106,7 @@
     },
     methods: {
       config: function () {
-        let self = this
+        const self = this
         return {
           wrap: true,
           altInput: true,
@@ -163,22 +163,21 @@
       }
     },
     mounted: function () {
-      let self = this
-      let el = self.$refs[self.refs.flatPicker]
-      let opts = self.config()
+      const self = this
+      const el = self.$refs[self.refs.flatPicker]
+      const opts = self.config()
       self.flatPicker = new FlatPickr(el, opts)
 
       this.isMobile = self.flatPicker.isMobile
     },
     beforeDestroy: function () {
-      let self = this
+      const self = this
       self.flatPicker.destroy()
     }
   }
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .datePicker__field {
     display: flex;

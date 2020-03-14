@@ -56,7 +56,7 @@
 </template>
 
 <script>
-  // nb : UI is quite similar to https://github.com/nerijusgood/viewport-resizer
+// nb : UI is quite similar to https://github.com/nerijusgood/viewport-resizer
 
   import { mapState } from 'vuex'
 
@@ -115,7 +115,7 @@
     },
     methods: {
       open: function (previewId = 0) {
-        let self = this
+        const self = this
 
         // reset previewer state
         this.loadedCurrent = false
@@ -208,7 +208,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   $height__nav: 80px;
 

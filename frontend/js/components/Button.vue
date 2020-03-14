@@ -44,7 +44,7 @@
     },
     computed: {
       buttonClasses: function () {
-        const classes = [ `button`, this.size ? `button--${this.size}` : '' ]
+        const classes = ['button', this.size ? `button--${this.size}` : '']
 
         if (this.variant) {
           this.variant.split(' ').forEach((val) => {
@@ -107,7 +107,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   $height_btn: 40px;
   $height_small_btn: 35px;

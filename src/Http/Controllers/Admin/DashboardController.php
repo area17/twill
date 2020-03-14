@@ -111,7 +111,7 @@ class DashboardController extends Controller
         return $modules->filter(function ($module) {
             return ($module['search'] ?? false);
         })->map(function ($module) use ($request) {
-            $repository = $this->getRepository($module['name']);
+            $repository = $this->getRepository($module['name'], $module['repository'] ?? null);
 
             $found = $repository->cmsSearch($request->get('search'), $module['search_fields'] ?? ['title'])->take(10);
 
@@ -166,6 +166,10 @@ class DashboardController extends Controller
         $dashboardModule = $this->config->get('twill.dashboard.modules.' . $activity->subject_type);
 
         if (!$dashboardModule || !$dashboardModule['activity'] ?? false) {
+            return null;
+        }
+
+        if (is_null($activity->subject)) {
             return null;
         }
 
@@ -349,7 +353,7 @@ class DashboardController extends Controller
         return $modules->filter(function ($module) {
             return ($module['count'] ?? false) || ($module['create'] ?? false);
         })->map(function ($module) {
-            $repository = $this->getRepository($module['name']);
+            $repository = $this->getRepository($module['name'], $module['repository'] ?? null);
 
             $moduleOptions = [
                 'count' => $module['count'] ?? false,
@@ -388,9 +392,15 @@ class DashboardController extends Controller
         return $modules->filter(function ($module) {
             return ($module['draft'] ?? false);
         })->map(function ($module) {
-            $repository = $this->getRepository($module['name']);
+            $repository = $this->getRepository($module['name'], $module['repository'] ?? null);
 
-            $drafts = $repository->draft()->mine()->limit(3)->latest()->get();
+            $query = $repository->draft()->limit(3)->latest();
+
+            if ($repository->hasBehavior('revisions')) {
+                $drafts = $query->mine();
+            }
+
+            $drafts = $query->get();
 
             return $drafts->map(function ($draft) use ($module) {
                 return [
@@ -406,8 +416,8 @@ class DashboardController extends Controller
      * @param string $module
      * @return \A17\Twill\Repositories\ModuleRepository
      */
-    private function getRepository($module)
+    private function getRepository($module, $forModule = null)
     {
-        return $this->app->make($this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($module)) . "Repository");
+        return $this->app->make($forModule ?: $this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($module)) . "Repository");
     }
 }

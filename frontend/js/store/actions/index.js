@@ -10,6 +10,7 @@ export const SET_DATATABLE_NESTED = 'setDatatableNestedDatas'
 export const SET_DATATABLE = 'setDatatableDatas'
 export const TOGGLE_PUBLISH = 'togglePublishedData'
 export const DELETE_ROW = 'deleteData'
+export const DUPLICATE_ROW = 'duplicateData'
 export const RESTORE_ROW = 'restoreData'
 export const DESTROY_ROW = 'destroyData'
 export const TOGGLE_FEATURE = 'toggleFeaturedData'
@@ -42,6 +43,7 @@ export default {
   SET_DATATABLE,
   TOGGLE_PUBLISH,
   DELETE_ROW,
+  DUPLICATE_ROW,
   RESTORE_ROW,
   DESTROY_ROW,
   TOGGLE_FEATURE,

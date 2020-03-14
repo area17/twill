@@ -36,12 +36,12 @@
     methods: {
       editWithLanguage: function (lang) {
         const langQuery = {}
-        langQuery['lang'] = lang.value
+        langQuery.lang = lang.value
         return this.editWithQuery(langQuery)
       },
       editWithQuery: function (context) {
         const queries = []
-        for (let prop in context) {
+        for (const prop in context) {
           if (context.hasOwnProperty(prop)) {
             queries.push(encodeURIComponent(prop) + '=' + encodeURIComponent(context[prop]))
           }
@@ -57,7 +57,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   /* Languages */
   .tag {

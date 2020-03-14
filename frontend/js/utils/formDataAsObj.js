@@ -7,7 +7,7 @@ export default function (formNode) {
    * Defaults
    */
 
-  let includeEmptyValuedElements = false
+  const includeEmptyValuedElements = false
 
   // Currently matching only '[]'.
   let keyRegex = /[^\[\]]+|\[\]/g // eslint-disable-line
@@ -53,7 +53,7 @@ export default function (formNode) {
    * @return int
    */
   function getLastIntegerKey (o) {
-    let lastKeyIndex = checkForLastNumericKey(o)
+    const lastKeyIndex = checkForLastNumericKey(o)
     if (typeof lastKeyIndex === 'string') {
       return parseInt(lastKeyIndex, 10)
     } else {
@@ -67,7 +67,7 @@ export default function (formNode) {
    * @return int
    */
   function getNextIntegerKey (o) {
-    let lastKeyIndex = checkForLastNumericKey(o)
+    const lastKeyIndex = checkForLastNumericKey(o)
     if (typeof lastKeyIndex === 'string') {
       return parseInt(lastKeyIndex, 10) + 1
     } else {
@@ -245,7 +245,7 @@ export default function (formNode) {
     // We're only interested in multiple selects that have at least one option selected.
     if (isSelectMultiple($domNode)) {
       if ($domNode.options && $domNode.options.length > 0) {
-        let values = []
+        const values = []
         forEach($domNode.options, function ($option) {
           if ($option.selected) {
             values.push($option.value)
@@ -289,7 +289,7 @@ export default function (formNode) {
 
   function processSingleLevelNode ($domNode, arr, domNodeValue, result) {
     // Get the last remaining key.
-    let key = arr[0]
+    const key = arr[0]
 
     // We're only interested in the radio that is checked.
     if (isRadio($domNode)) {
@@ -334,7 +334,7 @@ export default function (formNode) {
   }
 
   function processMultiLevelNode ($domNode, arr, value, result) {
-    let keyName = arr[0]
+    const keyName = arr[0]
 
     if (arr.length > 1) {
       if (keyName === '[]') {
@@ -383,8 +383,7 @@ export default function (formNode) {
     let objKeyNames
     let $domNode
     let domNodeValue
-    let result = {}
-    let resultLength
+    const result = {}
 
     for (i = 0; i < $formElements.length; i++) {
       $domNode = $formElements[i]
@@ -433,7 +432,7 @@ export default function (formNode) {
     }
 
     // Check the length of the result.
-    resultLength = getObjLength(result)
+    const resultLength = getObjLength(result)
 
     return resultLength > 0 ? result : false
   }

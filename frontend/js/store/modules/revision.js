@@ -8,7 +8,7 @@ const state = {
   active: {},
   activeContent: '',
   currentContent: '',
-  all: window.STORE.revisions || []
+  all: window[process.env.VUE_APP_NAME].STORE.revisions || []
 }
 
 // getters
@@ -46,7 +46,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       commit(REVISION.LOADING_REV)
 
-      let formData = getFormData(rootState)
+      const formData = getFormData(rootState)
 
       if (rootState.language.all.length > 1) {
         formData.activeLanguage = rootState.language.active.value
@@ -74,7 +74,7 @@ const actions = {
       if (Object.keys(state.active).length === 0) id = state.all[0].id
       else id = state.active.id
 
-      let revisionData = { revisionId: id }
+      const revisionData = { revisionId: id }
 
       if (rootState.language.all.length > 1) {
         revisionData.activeLanguage = rootState.language.active.value

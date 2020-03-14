@@ -75,7 +75,7 @@
         }
 
         // Look into second extensions level by key
-        for (let ext in Extensions) {
+        for (const ext in Extensions) {
           const index = Extensions[ext].extensions.findIndex((e) => e === itemExt)
           if (index > -1) {
             return Extensions[ext].icon
@@ -90,7 +90,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .fileItem {
     position: relative;

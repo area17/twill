@@ -98,7 +98,7 @@
         return {
           'margin-top': this.isPosition('bottom') ? this.offset + 'px' : '',
           'margin-bottom': this.isPosition('top') ? this.offset + 'px' : '',
-          'transform': this.sideOffset ? 'translateX(' + this.sideOffset + 'px)' : '',
+          transform: this.sideOffset ? 'translateX(' + this.sideOffset + 'px)' : '',
           'max-width': this.currentMaxWidth > 0 && this.width !== 'full' ? this.currentMaxWidth + 'px' : '',
           'min-width': this.minWidth > 0 ? this.minWidth + 'px' : ''
         }
@@ -106,7 +106,7 @@
       innerStyle: function () {
         return {
           'max-height': this.maxHeight > 0 ? this.maxHeight + 'px' : '',
-          'overflow': this.maxHeight > 0 ? 'hidden' : '',
+          overflow: this.maxHeight > 0 ? 'hidden' : '',
           'overflow-y': this.maxHeight > 0 ? 'scroll' : ''
         }
       }
@@ -232,7 +232,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .dropdown {
     display:inherit;
@@ -372,7 +371,6 @@
 </style>
 
 <style lang="scss">
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .dropdown {
     .dropdown__content {
@@ -381,6 +379,12 @@
         width: 100%;
         background: transparent;
         text-align: left;
+
+        &:disabled {
+          cursor: default;
+          pointer-events: none;
+          opacity: .5;
+        }
       }
 
        a,

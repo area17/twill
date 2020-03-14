@@ -18,7 +18,7 @@ class Update extends Command
     public function handle()
     {
         $this->publishAssets();
-        $this->info('You should now also run php artisan migrate to execute any new Twill provided migration.');
+        $this->call('cache:clear');
     }
 
     /**
@@ -31,6 +31,7 @@ class Update extends Command
         $this->call('vendor:publish', [
             '--provider' => 'A17\Twill\TwillServiceProvider',
             '--tag' => 'assets',
+            '--force' => true,
         ]);
     }
 }

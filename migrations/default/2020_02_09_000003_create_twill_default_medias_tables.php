@@ -21,12 +21,12 @@ class CreateTwillDefaultMediasTables extends Migration
                 $table->{twillIncrementsMethod()}('id');
                 $table->timestamps();
                 $table->softDeletes();
-                $table->string('uuid');
-                $table->string('alt_text');
+                $table->text('uuid');
+                $table->text('alt_text')->nullable();
                 $table->integer('width')->unsigned();
                 $table->integer('height')->unsigned();
-                $table->string('caption')->nullable();
-                $table->string('filename')->nullable();
+                $table->text('caption')->nullable();
+                $table->text('filename')->nullable();
             });
         }
 
