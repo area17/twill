@@ -58,16 +58,26 @@ class ListIcons extends Command
      */
     public function handle()
     {
-        $icons = collect(
-            $this->files->files(__DIR__ . '/../../frontend/icons')
-        )->map(function ($file) {
-            return [
-                'name' => Str::before($file->getFilename(), '.svg'),
-                'url' => route('admin.icons.show', [
-                    'file' => $file->getFilename(),
-                ]),
-            ];
-        });
+        $icons = collect(config('twill.block_editor.directories.icons'))->reduce(function (Collection $keep, $path) {
+            if (!$this->files->exists($path)) {
+                $this->error("Directory not found: {$path}");
+                
+                return $keep;
+            }
+
+            $files = collect(
+                $this->files->files($path)
+            )->map(function ($file) {
+                return [
+                    'name' => Str::before($file->getFilename(), '.svg'),
+                    'url' => route('admin.icons.show', [
+                        'file' => $file->getFilename(),
+                    ]),
+                ];
+            });
+
+            return $keep->merge($files);
+        }, collect());
 
         if (filled($filter = $this->argument('filter'))) {
             $icons = $icons->filter(function ($icon) use ($filter) {

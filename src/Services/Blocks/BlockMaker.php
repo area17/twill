@@ -124,6 +124,10 @@ class BlockMaker
         return true;
     }
 
+    /**
+     * @param $iconName
+     * @return bool
+     */
     protected function checkIconFile($iconName)
     {
         if (blank($this->icon = $this->getIconFile($iconName))) {
@@ -446,6 +450,9 @@ class BlockMaker
         return $this;
     }
 
+    /**
+     * @param $message
+     */
     public function info($message)
     {
         if ($this->command) {
@@ -453,6 +460,9 @@ class BlockMaker
         }
     }
 
+    /**
+     * @param $message
+     */
     public function error($message)
     {
         if ($this->command) {

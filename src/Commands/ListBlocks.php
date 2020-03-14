@@ -42,6 +42,28 @@ class ListBlocks extends Command
         $this->blocks = $blocks;
     }
 
+    protected function displayMissingDirectories(): void
+    {
+        $this->blocks->getMissingDirectories()->each(function ($directory) {
+            $this->error("Directory not found: {$directory}");
+        });
+    }
+
+    /**
+     * @param \Illuminate\Support\Collection $blocks
+     * @return mixed
+     */
+    protected function generateHeaders($blocks)
+    {
+        return $blocks
+            ->first()
+            ->keys()
+            ->map(function ($key) {
+                return Str::studly($key);
+            })->toArray()
+        ;
+    }
+
     /**
      * @return \A17\Twill\Services\Blocks\BlockCollection
      */
@@ -80,20 +102,15 @@ class ListBlocks extends Command
     {
         $blocks = $this->getBlocks();
 
+        $this->displayMissingDirectories();
+
         if ($blocks->isEmpty()) {
             $this->error('No blocks found.');
 
             return;
         }
 
-        $headers = $blocks
-            ->first()
-            ->keys()
-            ->map(function ($key) {
-                return Str::studly($key);
-            })->toArray();
-
-        $this->table($headers, $blocks->toArray());
+        $this->table($this->generateHeaders($blocks), $blocks->toArray());
     }
 
     public function colorize($block)

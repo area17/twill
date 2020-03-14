@@ -18,6 +18,11 @@ class BlockCollection extends Collection
     protected $fileSystem;
 
     /**
+     * @var \Illuminate\Support\Collection
+     */
+    private $missingDirectories;
+
+    /**
      * @param mixed $items
      */
     public function __construct($items = [])
@@ -26,7 +31,14 @@ class BlockCollection extends Collection
 
         $this->fileSystem = app(Filesystem::class);
 
+        $this->missingDirectories = collect();
+
         $this->parse();
+    }
+
+    private function addMissingDirectory($directory)
+    {
+        $this->missingDirectories->push($directory);
     }
 
     /**
@@ -72,6 +84,14 @@ class BlockCollection extends Collection
     }
 
     /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function getMissingDirectories()
+    {
+        return $this->missingDirectories;
+    }
+
+    /**
      * @param $directory
      * @param $source
      * @param null $type
@@ -80,6 +100,8 @@ class BlockCollection extends Collection
     public function readBlocks($directory, $source, $type = null)
     {
         if (!$this->fileSystem->exists($directory)) {
+            $this->addMissingDirectory($directory);
+
             return collect();
         }
 
@@ -95,33 +117,7 @@ class BlockCollection extends Collection
      */
     public function generatePaths()
     {
-        $this->paths = [
-            [
-                'path' => __DIR__ . '/../../Commands/stubs/blocks',
-                'source' => Block::SOURCE_TWILL,
-                'type' => Block::TYPE_BLOCK,
-            ],
-            [
-                'path' => __DIR__ . '/../../Commands/stubs/repeaters',
-                'source' => Block::SOURCE_TWILL,
-                'type' => Block::TYPE_REPEATER,
-            ],
-            [
-                'path' => resource_path('views/admin/blocks'),
-                'source' => Block::SOURCE_APP,
-                'type' => Block::TYPE_BLOCK,
-            ],
-            [
-                'path' => resource_path('views/admin/repeaters'),
-                'source' => Block::SOURCE_APP,
-                'type' => Block::TYPE_REPEATER,
-            ],
-            [
-                'path' => resource_path('views/admin/repeaters'),
-                'source' => Block::SOURCE_APP,
-                'type' => Block::TYPE_REPEATER,
-            ],
-        ];
+        $this->paths = collect(config('twill.block_editor.directories.blocks'));
 
         return $this;
     }
