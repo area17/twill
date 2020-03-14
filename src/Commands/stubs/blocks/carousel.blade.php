@@ -1,5 +1,6 @@
 @a17-title('Carousel')
 @a17-icon('flex-grid')
+@a17-group('twill')
 
 @formField('select', [
     'name' => 'variation',

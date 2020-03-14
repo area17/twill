@@ -1,5 +1,6 @@
 @a17-title('Footnote')
 @a17-icon('text')
+@a17-group('twill')
 
 @formField('input', [
     'name' => 'anchor',

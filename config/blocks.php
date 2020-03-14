@@ -70,7 +70,7 @@ return [
     'directories' => [
         'blocks' => [
             [
-                'path' => base_path('vendor/area17/twill/src/Commands/stubs/blocksx'),
+                'path' => base_path('vendor/area17/twill/src/Commands/stubs/blocks'),
                 'source' => A17\Twill\Services\Blocks\Block::SOURCE_TWILL,
                 'type' => A17\Twill\Services\Blocks\Block::TYPE_BLOCK,
             ],

@@ -1,5 +1,6 @@
 @a17-title('Image')
 @a17-icon('image')
+@a17-group('twill')
 
 @formField('medias', [
     'name' => 'image',  // role

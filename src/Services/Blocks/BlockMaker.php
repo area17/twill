@@ -228,6 +228,12 @@ class BlockMaker
         );
 
         $stub = preg_replace(
+            "/@a17-title\('twill'\)/",
+            "@a17-title('app')",
+            $stub
+        );
+
+        $stub = preg_replace(
             "/@a17-icon\('(.*)'\)/",
             "@a17-icon('{$iconName}')",
             $stub

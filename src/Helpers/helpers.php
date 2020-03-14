@@ -195,27 +195,13 @@ if (!function_exists('generate_list_of_allowed_blocks')) {
     /**
      * @param array $blocks
      * @param array $groups
+     * @return array
      */
     function generate_list_of_available_blocks($blocks, $groups)
     {
-//        if (isset($blocks)) {
-//            $allowedBlocks = collect($blocks)->mapWithKeys(function ($block) {
-//                return [$block => config('twill.block_editor.blocks.' . $block)];
-//            })->filter()->toArray();
-//        } elseif (isset($group)) {
-//            $blocks = config('twill.block_editor.blocks');
-//
-//            $allowedBlocks = array_filter($blocks, function ($block) use ($group) {
-//                return isset($block['group']) && $block['group'] === $group;
-//            });
-//        } else {
-//            $allowedBlocks = config('twill.block_editor.blocks');
-//        }
-
-        return app(BlockCollection::class)->getBlockList()->toArray();
-
-        //return $allowedBlocks;
+        return app(BlockCollection::class)->getBlockList()->filter(function ($block) use ($blocks, $groups) {
+            return (filled($blocks) ? collect($blocks)->contains($block['name']) : true)
+                    && (filled($groups) ? collect($groups)->contains($block['group']) : true);
+        })->toArray();
     }
 }
-
-// {"title":"Quote","icon":"quote","component":"a17-block-quote"}

@@ -40,6 +40,11 @@ class Block
     /**
      * @var string
      */
+    public $group;
+
+    /**
+     * @var string
+     */
     public $type;
 
     /**
@@ -101,12 +106,14 @@ class Block
             $this->trigger = $data['trigger'];
             $this->max = $data['max'];
             $this->name = $data['name'];
+            $this->group = $data['group'];
             $this->type = $data['type'];
             $this->icon = $data['icon'];
             $this->isNewFormat = $data['new_format'];
             $this->contents = $data['contents'];
             $this->component = "a17-block-{$this->name}";
         }
+
         return $this;
     }
 
@@ -130,6 +137,7 @@ class Block
             'title' => $this->title,
             'trigger' => $this->trigger,
             'name' => $this->name,
+            'group' => $this->group,
             'type' => $this->type,
             'icon' => $this->icon,
             'source' => $this->source,
@@ -182,6 +190,8 @@ class Block
 
         $title = $this->parseProperty('title', $contents, $name);
 
+        $group = $this->parseProperty('group', $contents, $name);
+
         $icon = $this->parseProperty('icon', $contents, $name);
 
         $trigger = $this->parseProperty('trigger', $contents, $name);
@@ -193,6 +203,7 @@ class Block
             'trigger' => $trigger,
             'max' => (int) $max ?? 999,
             'name' => $name,
+            'group' => $group,
             'type' => $this->type,
             'icon' => $icon,
             'new_format' => $this->isNewFormat($contents),

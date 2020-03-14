@@ -4,6 +4,7 @@ namespace A17\Twill\Commands;
 
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
+use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Blocks\BlockCollection;
 
 class ListBlocks extends Command
@@ -65,7 +66,7 @@ class ListBlocks extends Command
     }
 
     /**
-     * @return \A17\Twill\Services\Blocks\BlockCollection
+     * @return \Illuminate\Support\Collection
      */
     protected function getBlocks()
     {
@@ -76,27 +77,25 @@ class ListBlocks extends Command
 
         $typeFiltered = $this->option('blocks') || $this->option('repeaters');
 
-        $blocks = $this->blocks->collect()
-            ->reject(function ($block) use ($sourceFiltered) {
+        return $this->blocks->collect()
+            ->reject(function (Block $block) use ($sourceFiltered) {
                 return $sourceFiltered && !$this->option($block->source);
             })
-            ->reject(function ($block) use ($typeFiltered) {
+            ->reject(function (Block $block) use ($typeFiltered) {
                 return $this->dontPassTextFilter($block) ||
                     ($typeFiltered &&
                         !$this->option(Str::plural($block->type)));
             })
-            ->map(function ($block) {
+            ->map(function (Block $block) {
                 return $this->colorize($block->toList());
             })
             ->sortBy('title');
-
-        return $blocks;
     }
 
     /**
      * Executes the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function handle()
     {
@@ -122,11 +121,11 @@ class ListBlocks extends Command
         return $block;
     }
 
-    public function dontPassTextFilter($block)
+    public function dontPassTextFilter(Block $block)
     {
         if (filled($filter = $this->argument('filter'))) {
             return !$block
-                ->export()
+                ->toList()
                 ->reduce(function ($keep, $element) use ($filter) {
                     return $keep ||
                         Str::contains(

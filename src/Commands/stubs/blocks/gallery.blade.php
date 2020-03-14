@@ -1,5 +1,6 @@
 @a17-title('Gallery')
 @a17-icon('editor')
+@a17-group('twill')
 
 @formField('select', [
     'name' => 'variation',

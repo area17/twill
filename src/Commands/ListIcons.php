@@ -61,7 +61,7 @@ class ListIcons extends Command
         $icons = collect(config('twill.block_editor.directories.icons'))->reduce(function (Collection $keep, $path) {
             if (!$this->files->exists($path)) {
                 $this->error("Directory not found: {$path}");
-                
+
                 return $keep;
             }
 
