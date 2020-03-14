@@ -90,8 +90,8 @@ class RouteServiceProvider extends ServiceProvider
             $router->group(
                 [
                     'middleware' => $supportSubdomainRouting
-                        ? ['supportSubdomainRouting']
-                        : [],
+                    ? ['supportSubdomainRouting']
+                    : [],
                 ],
                 function ($router) {
                     require __DIR__ . '/../routes/auth.php';
@@ -101,8 +101,8 @@ class RouteServiceProvider extends ServiceProvider
             $router->group(
                 [
                     'middleware' => $this->app->environment('production')
-                        ? ['twill_auth:twill_users']
-                        : [],
+                    ? ['twill_auth:twill_users']
+                    : [],
                 ],
                 function ($router) {
                     require __DIR__ . '/../routes/templates.php';
@@ -126,9 +126,9 @@ class RouteServiceProvider extends ServiceProvider
                     $router->group(
                         [
                             'domain' =>
-                                config('twill.admin_app_subdomain', 'admin') .
-                                '.{subdomain}.' .
-                                config('app.url'),
+                            config('twill.admin_app_subdomain', 'admin') .
+                            '.{subdomain}.' .
+                            config('app.url'),
                         ],
                         $internalRoutes
                     );
@@ -151,8 +151,8 @@ class RouteServiceProvider extends ServiceProvider
                             'middleware' => $this->app->environment(
                                 'production'
                             )
-                                ? ['twill_auth:twill_users']
-                                : [],
+                            ? ['twill_auth:twill_users']
+                            : [],
                         ],
                         function ($router) {
                             require __DIR__ . '/../routes/templates.php';
@@ -221,13 +221,13 @@ class RouteServiceProvider extends ServiceProvider
             }
 
             $routePrefix = empty($routePrefix)
-                ? '/'
-                : (Str::startsWith($routePrefix, '/')
-                    ? $routePrefix
-                    : '/' . $routePrefix);
-            $routePrefix = Str::endsWith($routePrefix, '/')
+            ? '/'
+            : (Str::startsWith($routePrefix, '/')
                 ? $routePrefix
-                : $routePrefix . '/';
+                : '/' . $routePrefix);
+            $routePrefix = Str::endsWith($routePrefix, '/')
+            ? $routePrefix
+            : $routePrefix . '/';
 
             Route::name($moduleName . '.show')->get(
                 $routePrefix . '{slug}',
@@ -310,11 +310,12 @@ class RouteServiceProvider extends ServiceProvider
             }
 
             // Check if name will be a duplicate, and prevent if needed/allowed
-            if (
-                !empty($groupPrefix) &&
-                (blank($lastRouteGroupName) ||
+            if (!empty($groupPrefix) &&
+                (
+                    blank($lastRouteGroupName) ||
                     config('twill.allow_duplicates_on_route_names', true) ||
-                    !Str::endsWith($lastRouteGroupName, ".{$groupPrefix}."))
+                    (!Str::endsWith($lastRouteGroupName, ".{$groupPrefix}."))
+                )
             ) {
                 $customRoutePrefix = "{$groupPrefix}.{$slug}";
                 $resourceCustomGroupPrefix = "{$groupPrefix}.";

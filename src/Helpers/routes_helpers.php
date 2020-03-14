@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Str;
 
 if (!function_exists('moduleRoute')) {
     /**
