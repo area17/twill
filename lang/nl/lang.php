@@ -153,7 +153,7 @@ return [
         'publish-new' => 'Publiceren en nieuwe aanmaken',
         'update' => 'Bijwerken',
         'update-close' => 'Bijwerken en sluiten',
-        'update-new' => 'Bijwerkene en nieuwe aanmaken',
+        'update-new' => 'Bijwerken en nieuwe aanmaken',
         'cancel' => 'Annuleren',
     ],
 ];
