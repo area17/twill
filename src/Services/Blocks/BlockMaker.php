@@ -228,8 +228,8 @@ class BlockMaker
         );
 
         $stub = preg_replace(
-            "/@a17-title\('twill'\)/",
-            "@a17-title('app')",
+            "/@a17-group\('twill'\)/",
+            "@a17-group('app')",
             $stub
         );
 
