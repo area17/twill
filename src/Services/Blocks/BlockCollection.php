@@ -117,7 +117,23 @@ class BlockCollection extends Collection
      */
     public function generatePaths()
     {
-        $this->paths = collect(config('twill.block_editor.directories.blocks'));
+        $this->paths = collect(
+            config('twill.block_editor.directories.source.blocks')
+        )
+            ->map(function ($path) {
+                $path['type'] = Block::TYPE_BLOCK;
+
+                return $path;
+            })
+            ->merge(
+                collect(
+                    config('twill.block_editor.directories.source.repeaters')
+                )->map(function ($path) {
+                    $path['type'] = Block::TYPE_REPEATER;
+
+                    return $path;
+                })
+            );
 
         return $this;
     }

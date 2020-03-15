@@ -2,12 +2,12 @@
 
 namespace A17\Twill\Commands;
 
-use Illuminate\Config\Repository as Config;
-use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Composer;
 use Illuminate\Support\Str;
+use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Config\Repository as Config;
+use Symfony\Component\Finder\SplFileInfo;
 
 class ListIcons extends Command
 {
@@ -37,37 +37,45 @@ class ListIcons extends Command
 
     /**
      * @param Filesystem $files
-     * @param Composer $composer
      * @param Config $config
      */
-    public function __construct(
-        Filesystem $files,
-        Composer $composer,
-        Config $config
-    ) {
+    public function __construct(Filesystem $files, Config $config)
+    {
         parent::__construct();
 
         $this->files = $files;
         $this->config = $config;
     }
 
-    /**
-     * Executes the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
+    private function isAllowed($icon)
     {
-        $icons = collect(config('twill.block_editor.directories.icons'))->reduce(function (Collection $keep, $path) {
+        if (filled($filter = $this->argument('filter'))) {
+            return Str::contains(
+                Str::lower($icon['name']),
+                Str::lower($filter)
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    protected function getIconList()
+    {
+        return collect(
+            config('twill.block_editor.directories.source.icons')
+        )->reduce(function (Collection $keep, $path) {
             if (!$this->files->exists($path)) {
                 $this->error("Directory not found: {$path}");
 
                 return $keep;
             }
 
-            $files = collect(
-                $this->files->files($path)
-            )->map(function ($file) {
+            $files = collect($this->files->files($path))->map(function (
+                SplFileInfo $file
+            ) {
                 return [
                     'name' => Str::before($file->getFilename(), '.svg'),
                     'url' => route('admin.icons.show', [
@@ -78,15 +86,16 @@ class ListIcons extends Command
 
             return $keep->merge($files);
         }, collect());
+    }
 
-        if (filled($filter = $this->argument('filter'))) {
-            $icons = $icons->filter(function ($icon) use ($filter) {
-                return Str::contains(
-                    Str::lower($icon['name']),
-                    Str::lower($filter)
-                );
-            });
-        }
+    /**
+     * Executes the console command.
+     */
+    public function handle()
+    {
+        $icons = $this->getIconList()->filter(function ($icon) {
+            return $this->isAllowed($icon);
+        });
 
         $this->table(['Icon', 'Preview URL'], $icons->toArray());
     }

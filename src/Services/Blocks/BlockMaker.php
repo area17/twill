@@ -3,6 +3,7 @@
 namespace A17\Twill\Services\Blocks;
 
 use SplFileInfo;
+use Mockery\Exception;
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
@@ -263,9 +264,23 @@ class BlockMaker
      */
     protected function makeBlockPath(string $blockIdentifier, $type = 'block')
     {
-        return resource_path(
-            "views/admin/{$type}s/{$blockIdentifier}.blade.php"
+        $destination = config(
+            "twill.block_editor.directories.destination.{$type}s"
         );
+
+        if (!$this->files->exists($destination)) {
+            if (
+                !config('twill.block_editor.directories.destination.make_dir')
+            ) {
+                throw new Exception(
+                    "Destination directory does not exists: {$destination}"
+                );
+            }
+
+            $this->files->makeDirectory($destination, 0755, true);
+        }
+
+        return "{$destination}/{$blockIdentifier}.blade.php";
     }
 
     /**

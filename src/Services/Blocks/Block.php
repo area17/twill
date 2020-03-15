@@ -165,7 +165,10 @@ class Block
     {
         $contents = file_get_contents((string) $this->file->getPathName());
 
-        $this->name = $name = Str::before($this->file->getFilename(), '.blade.php');
+        $this->name = $name = Str::before(
+            $this->file->getFilename(),
+            '.blade.php'
+        );
         $this->title = $this->parseProperty('title', $contents, $name);
         $this->trigger = $this->parseProperty('trigger', $contents, $name);
         $this->max = (int) $this->parseProperty('max', $contents, $name, 999);
@@ -186,8 +189,12 @@ class Block
      * @return array
      * @throws \Exception
      */
-    public function parseProperty($property, $block, $blockName, $default = null)
-    {
+    public function parseProperty(
+        $property,
+        $block,
+        $blockName,
+        $default = null
+    ) {
         preg_match("/@a17-{$property}\('(.*)'\)/", $block, $matches);
 
         if (filled($matches)) {

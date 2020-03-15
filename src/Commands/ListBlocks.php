@@ -61,8 +61,8 @@ class ListBlocks extends Command
             ->keys()
             ->map(function ($key) {
                 return Str::studly($key);
-            })->toArray()
-        ;
+            })
+            ->toArray();
     }
 
     /**
@@ -77,7 +77,8 @@ class ListBlocks extends Command
 
         $typeFiltered = $this->option('blocks') || $this->option('repeaters');
 
-        return $this->blocks->collect()
+        return $this->blocks
+            ->collect()
             ->reject(function (Block $block) use ($sourceFiltered) {
                 return $sourceFiltered && !$this->option($block->source);
             })
@@ -112,6 +113,10 @@ class ListBlocks extends Command
         $this->table($this->generateHeaders($blocks), $blocks->toArray());
     }
 
+    /**
+     * @param $block
+     * @return mixed
+     */
     public function colorize($block)
     {
         $color = $block['type'] === 'repeater' ? 'green' : 'yellow';
@@ -121,6 +126,10 @@ class ListBlocks extends Command
         return $block;
     }
 
+    /**
+     * @param \A17\Twill\Services\Blocks\Block $block
+     * @return bool
+     */
     public function dontPassTextFilter(Block $block)
     {
         if (filled($filter = $this->argument('filter'))) {
