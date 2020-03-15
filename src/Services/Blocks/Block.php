@@ -96,28 +96,6 @@ class Block
     }
 
     /**
-     * @param $data
-     * @return $this
-     */
-    public function absorbData($data)
-    {
-        if (filled($data)) {
-            $this->title = $data['title'];
-            $this->trigger = $data['trigger'];
-            $this->max = $data['max'];
-            $this->name = $data['name'];
-            $this->group = $data['group'];
-            $this->type = $data['type'];
-            $this->icon = $data['icon'];
-            $this->isNewFormat = $data['new_format'];
-            $this->contents = $data['contents'];
-            $this->component = "a17-block-{$this->name}";
-        }
-
-        return $this;
-    }
-
-    /**
      * @param $source
      * @return $this
      */
@@ -168,6 +146,7 @@ class Block
                         'title' => $this->title,
                         'icon' => $this->icon,
                         'component' => $this->component,
+                        'group' => $this->group,
                     ]
                     : [
                         'title' => $this->title,
@@ -186,17 +165,17 @@ class Block
     {
         $contents = file_get_contents((string) $this->file->getPathName());
 
-        return $this->absorbData([
-            'name' => $name = Str::before($this->file->getFilename(), '.blade.php'),
-            'title' => $this->parseProperty('title', $contents, $name),
-            'trigger' => $this->parseProperty('trigger', $contents, $name),
-            'max' => (int) $this->parseProperty('max', $contents, $name, 999),
-            'group' => $this->parseProperty('group', $contents, $name),
-            'type' => $this->type,
-            'icon' => $this->parseProperty('icon', $contents, $name),
-            'new_format' => $this->isNewFormat($contents),
-            'contents' => $contents,
-        ]);
+        $this->name = $name = Str::before($this->file->getFilename(), '.blade.php');
+        $this->title = $this->parseProperty('title', $contents, $name);
+        $this->trigger = $this->parseProperty('trigger', $contents, $name);
+        $this->max = (int) $this->parseProperty('max', $contents, $name, 999);
+        $this->group = $this->parseProperty('group', $contents, $name);
+        $this->icon = $this->parseProperty('icon', $contents, $name);
+        $this->isNewFormat = $this->isNewFormat($contents);
+        $this->contents = $contents;
+        $this->component = "a17-block-{$this->name}";
+
+        return $this;
     }
 
     /**
@@ -235,6 +214,7 @@ class Block
             return $default;
         }
 
+        // Title is mandatory
         throw new Exception(
             "Property '{$property}' not found on block {$blockName}."
         );
@@ -273,6 +253,10 @@ class Block
         );
     }
 
+    /**
+     * @param $contents
+     * @return string
+     */
     public function removeSpecialBladeTags($contents)
     {
         return preg_replace("/@a17-.*\('(.*)'\)/", '', $contents);
