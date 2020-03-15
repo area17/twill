@@ -5,7 +5,6 @@ namespace A17\Twill;
 use A17\Twill\Commands\Build;
 use A17\Twill\Commands\CreateSuperAdmin;
 use A17\Twill\Commands\Dev;
-use A17\Twill\Commands\GenerateBlocks;
 use A17\Twill\Commands\Install;
 use A17\Twill\Commands\ModuleMake;
 use A17\Twill\Commands\BlockMake;
@@ -276,7 +275,6 @@ class TwillServiceProvider extends ServiceProvider
             ListBlocks::class,
             CreateSuperAdmin::class,
             RefreshLQIP::class,
-            GenerateBlocks::class,
             Build::class,
             Update::class,
             Dev::class,
