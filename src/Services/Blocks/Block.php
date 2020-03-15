@@ -135,29 +135,6 @@ class Block
     }
 
     /**
-     * @return array
-     */
-    public function legacyArray()
-    {
-        return [
-            $this->name =>
-                $this->type === self::TYPE_BLOCK
-                    ? [
-                        'title' => $this->title,
-                        'icon' => $this->icon,
-                        'component' => $this->component,
-                        'group' => $this->group,
-                    ]
-                    : [
-                        'title' => $this->title,
-                        'trigger' => $this->trigger,
-                        'component' => $this->component,
-                        'max' => $this->max,
-                    ],
-        ];
-    }
-
-    /**
      * @return $this
      * @throws \Exception
      */
