@@ -186,26 +186,14 @@ class Block
     {
         $contents = file_get_contents((string) $this->file->getPathName());
 
-        $name = Str::before($this->file->getFilename(), '.blade.php');
-
-        $title = $this->parseProperty('title', $contents, $name);
-
-        $group = $this->parseProperty('group', $contents, $name);
-
-        $icon = $this->parseProperty('icon', $contents, $name);
-
-        $trigger = $this->parseProperty('trigger', $contents, $name);
-
-        $max = $this->parseProperty('max', $contents, $name);
-
         return $this->absorbData([
-            'title' => $title,
-            'trigger' => $trigger,
-            'max' => (int) $max ?? 999,
-            'name' => $name,
-            'group' => $group,
+            'name' => $name = Str::before($this->file->getFilename(), '.blade.php'),
+            'title' => $this->parseProperty('title', $contents, $name),
+            'trigger' => $this->parseProperty('trigger', $contents, $name),
+            'max' => (int) $this->parseProperty('max', $contents, $name, 999),
+            'group' => $this->parseProperty('group', $contents, $name),
             'type' => $this->type,
-            'icon' => $icon,
+            'icon' => $this->parseProperty('icon', $contents, $name),
             'new_format' => $this->isNewFormat($contents),
             'contents' => $contents,
         ]);
@@ -215,10 +203,11 @@ class Block
      * @param $property
      * @param $block
      * @param $blockName
+     * @param null $default
      * @return array
      * @throws \Exception
      */
-    public function parseProperty($property, $block, $blockName)
+    public function parseProperty($property, $block, $blockName, $default = null)
     {
         preg_match("/@a17-{$property}\('(.*)'\)/", $block, $matches);
 
@@ -243,7 +232,7 @@ class Block
         }
 
         if ($property !== 'title') {
-            return null;
+            return $default;
         }
 
         throw new Exception(
