@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Commands;
 
-use Illuminate\Console\Command;
 use A17\Twill\Services\Blocks\BlockMaker;
 
 class BlockMake extends Command
@@ -15,8 +14,8 @@ class BlockMake extends Command
     protected $signature =
         'twill:make:block ' .
         '{name : Name of the new block.} ' .
-        '{base : Block on which it should be based on.}' .
-        '{icon : Icon to be used on the new block. List icons using the twill:list:icons command.}';
+        '{base : Block on which the new block should be based.}' .
+        '{icon : Icon for the new block. List icons using the twill:list:icons command.}';
     /**
      * The console command description.
      *
@@ -40,6 +39,14 @@ class BlockMake extends Command
     }
 
     /**
+     * @return \A17\Twill\Services\Blocks\BlockMaker
+     */
+    public function getBlockMaker(): \A17\Twill\Services\Blocks\BlockMaker
+    {
+        return $this->blockMaker;
+    }
+
+    /**
      * Executes the console command.
      *
      * @return mixed
@@ -47,12 +54,14 @@ class BlockMake extends Command
      */
     public function handle()
     {
-        return $this->blockMaker
+        $this->blockMaker
             ->setCommand($this)
             ->make(
                 $this->argument('name'),
                 $this->argument('base'),
                 $this->argument('icon')
             );
+
+        return parent::handle();
     }
 }

@@ -49,6 +49,14 @@ class BlockMaker
     }
 
     /**
+     * @return \A17\Twill\Services\Blocks\BlockCollection
+     */
+    public function getBlockCollection()
+    {
+        return $this->blockCollection;
+    }
+
+    /**
      * Make a new block.
      *
      * @param $blockName
@@ -65,7 +73,6 @@ class BlockMaker
         if (
             !$this->checkBlockStub($baseName) ||
             !$this->checkIconFile($iconName) ||
-            !$this->checkBlockName($blockName) ||
             !$this->checkBlockBaseFormat(
                 $stubFileName = $this->blockBase->file->getPathName()
             )
@@ -141,22 +148,6 @@ class BlockMaker
     }
 
     /**
-     * @param $blockName
-     * @return bool
-     * @throws \Exception
-     */
-    protected function checkBlockName($blockName)
-    {
-        if (filled($this->getBlockByName($blockName, ['app', 'custom']))) {
-            $this->error("Block '{$blockName}' already exists.");
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * @param $blockFile
      * @return bool
      */
@@ -179,6 +170,7 @@ class BlockMaker
             $this->error(
                 "The block file '{$stubFileName}' format is the old one."
             );
+
             $this->error('Please upgrade it before using as template.');
 
             return false;
@@ -333,7 +325,7 @@ class BlockMaker
      * @return \Illuminate\Support\Collection
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function generateRepeaters($baseName, $blockName, $blockBase)
+    public function generateRepeaters($baseName, $blockName, &$blockBase)
     {
         preg_match_all(
             '/@formField(.*\'repeater\'.*\[.*=>.*\'(.*)\'].*)/',
@@ -360,6 +352,19 @@ class BlockMaker
                 // Get the update version of the block stub, to be used on next repeaters
                 $blockBase = $newRepeater['newBlockStub'];
 
+                $oldRepeaterTag = $matches[0][0];
+                $newRepeaterTag = str_replace(
+                    "'{$repeaterName}'",
+                    "'{$newRepeater['newRepeaterName']}'",
+                    $oldRepeaterTag
+                );
+
+                $blockBase = str_replace(
+                    $oldRepeaterTag,
+                    $newRepeaterTag,
+                    $blockBase
+                );
+
                 $repeaters->push($newRepeater);
             }
         }
@@ -384,10 +389,10 @@ class BlockMaker
         $blockBase,
         $blockString
     ) {
+        $baseRepeater = $this->blockCollection->findByName($repeaterName);
+
         return [
-            'baseRepeater' => ($baseRepeater = $this->blockCollection->findByName(
-                $repeaterName
-            )),
+            'baseRepeater' => $baseRepeater,
 
             'newRepeaterName' => ($newRepeaterName =
                 $blockName . Str::after($repeaterName, $baseName)),
@@ -477,7 +482,7 @@ class BlockMaker
     public function info($message)
     {
         if ($this->command) {
-            $this->command->info($message);
+            $this->command->displayInfo($message);
         }
     }
 
@@ -487,7 +492,7 @@ class BlockMaker
     public function error($message)
     {
         if ($this->command) {
-            $this->command->error($message);
+            $this->command->displayError($message);
         }
     }
 }

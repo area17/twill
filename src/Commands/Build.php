@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Commands;
 
-use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 

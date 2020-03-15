@@ -3,7 +3,6 @@
 namespace A17\Twill\Commands;
 
 use Illuminate\Support\Str;
-use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Config\Repository as Config;
@@ -68,7 +67,7 @@ class ListIcons extends Command
             config('twill.block_editor.directories.source.icons')
         )->reduce(function (Collection $keep, $path) {
             if (!$this->files->exists($path)) {
-                $this->error("Directory not found: {$path}");
+                $this->displayError("Directory not found: {$path}");
 
                 return $keep;
             }
@@ -98,5 +97,7 @@ class ListIcons extends Command
         });
 
         $this->table(['Icon', 'Preview URL'], $icons->toArray());
+
+        return parent::handle();
     }
 }

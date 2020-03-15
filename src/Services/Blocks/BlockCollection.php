@@ -33,7 +33,7 @@ class BlockCollection extends Collection
 
         $this->missingDirectories = collect();
 
-        $this->parse();
+        $this->load();
     }
 
     private function addMissingDirectory($directory)
@@ -161,7 +161,7 @@ class BlockCollection extends Collection
     /**
      * @return $this
      */
-    public function parse()
+    public function load()
     {
         $this->generatePaths();
 

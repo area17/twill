@@ -5,7 +5,6 @@ namespace A17\Twill\Commands;
 use A17\Twill\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Config\Repository as Config;
-use Illuminate\Console\Command;
 use Illuminate\Validation\Factory as ValidatorFactory;
 
 class CreateSuperAdmin extends Command

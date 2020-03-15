@@ -3,7 +3,6 @@
 namespace A17\Twill\Commands;
 
 use Illuminate\Support\Str;
-use Illuminate\Console\Command;
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Blocks\BlockCollection;
 
@@ -34,29 +33,31 @@ class ListBlocks extends Command
      *
      * @var BlockCollection
      */
-    protected $blocks;
+    protected $blockCollection;
 
-    public function __construct(BlockCollection $blocks)
+    public function __construct(BlockCollection $blockCollection)
     {
         parent::__construct();
 
-        $this->blocks = $blocks;
+        $this->blockCollection = $blockCollection;
     }
 
     protected function displayMissingDirectories(): void
     {
-        $this->blocks->getMissingDirectories()->each(function ($directory) {
-            $this->error("Directory not found: {$directory}");
-        });
+        $this->blockCollection
+            ->getMissingDirectories()
+            ->each(function ($directory) {
+                $this->error("Directory not found: {$directory}");
+            });
     }
 
     /**
-     * @param \Illuminate\Support\Collection $blocks
+     * @param \Illuminate\Support\Collection $blockCollection
      * @return mixed
      */
-    protected function generateHeaders($blocks)
+    protected function generateHeaders($blockCollection)
     {
-        return $blocks
+        return $blockCollection
             ->first()
             ->keys()
             ->map(function ($key) {
@@ -77,7 +78,7 @@ class ListBlocks extends Command
 
         $typeFiltered = $this->option('blocks') || $this->option('repeaters');
 
-        return $this->blocks
+        return $this->blockCollection
             ->collect()
             ->reject(function (Block $block) use ($sourceFiltered) {
                 return $sourceFiltered && !$this->option($block->source);
@@ -94,23 +95,34 @@ class ListBlocks extends Command
     }
 
     /**
+     * @return \A17\Twill\Services\Blocks\BlockCollection
+     */
+    public function getBlockCollection()
+    {
+        return $this->blockCollection;
+    }
+
+    /**
      * Executes the console command.
      *
      * @return void
      */
     public function handle()
     {
-        $blocks = $this->getBlocks();
+        $blockCollection = $this->getBlocks();
 
         $this->displayMissingDirectories();
 
-        if ($blocks->isEmpty()) {
+        if ($blockCollection->isEmpty()) {
             $this->error('No blocks found.');
 
             return;
         }
 
-        $this->table($this->generateHeaders($blocks), $blocks->toArray());
+        $this->table(
+            $this->generateHeaders($blockCollection),
+            $blockCollection->toArray()
+        );
     }
 
     /**

@@ -3,7 +3,6 @@
 namespace A17\Twill\Commands;
 
 use Illuminate\Config\Repository as Config;
-use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Composer;
