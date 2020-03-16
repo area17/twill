@@ -124,6 +124,12 @@ abstract class ModulesTestBase extends TestCase
         );
 
         config(['twill' => $config + config('twill')]);
+
+        $config = require $this->makeFileName(
+            $file ?? '{$stubs}/modules/authors/translatable.php'
+        );
+
+        config(['translatable' => $config]);
     }
 
     /**

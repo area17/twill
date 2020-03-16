@@ -4,14 +4,6 @@ namespace A17\Twill\Tests\Integration;
 
 class BlocksTest extends ModulesTestBase
 {
-    /**
-     * Setup tests.
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function testCanShowEditForm()
     {
         $this->createAuthor();
