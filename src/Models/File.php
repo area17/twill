@@ -33,6 +33,7 @@ class File extends Model
             'src' => FileService::getUrl($this->uuid),
             'original' => FileService::getUrl($this->uuid),
             'size' => $this->size,
+            'filesizeInMb' => number_format($this->attributes['size'] / 1048576, 2),
         ];
     }
 
