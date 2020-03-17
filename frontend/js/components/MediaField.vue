@@ -151,6 +151,14 @@
       activeCrop: {
         type: Boolean,
         default: true
+      },
+      widthMin: {
+        type: Number,
+        default: 0
+      },
+      heightMin: {
+        type: Number,
+        default: 0
       }
     },
     data: function () {

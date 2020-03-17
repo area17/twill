@@ -3,6 +3,7 @@
     $itemLabel = $itemLabel ?? strtolower($label);
     $note = $note ?? 'Add' . ($max > 1 ? " up to $max $itemLabel" : ' one ' . Str::singular($itemLabel));
     $fieldNote = $fieldNote ?? '';
+    $filesizeMax = $filesizeMax ?? 0;
 @endphp
 
 <a17-locale
@@ -13,7 +14,8 @@
         @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
         note: '{{ $note }}',
         fieldNote: '{{ $fieldNote }}',
-        max: {{ $max }}
+        max: {{ $max }},
+        filesizeMax: {{ $filesizeMax }}
     }"
 ></a17-locale>
 
