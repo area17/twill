@@ -2,11 +2,11 @@
 
 namespace A17\Twill\Repositories;
 
-use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\Sortable;
-use A17\Twill\Repositories\Behaviors\HandleDates;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
+use A17\Twill\Repositories\Behaviors\HandleDates;
 use A17\Twill\Repositories\Behaviors\HandleFieldsGroups;
+use A17\Twill\Repositories\Behaviors\HandleRepeaters;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
@@ -18,8 +18,8 @@ use PDO;
 
 abstract class ModuleRepository
 {
-    use HandleDates, HandleBrowsers, HandleFieldsGroups;
-  
+    use HandleDates, HandleBrowsers, HandleRepeaters, HandleFieldsGroups;
+
     /**
      * @var \A17\Twill\Models\Model
      */
@@ -86,11 +86,9 @@ abstract class ModuleRepository
                 return $this->getCountForTrash();
         }
 
-        foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'getCountByStatusSlug' . class_basename($trait))) {
-                if (($count = $this->$method($slug)) !== false) {
-                    return $count;
-                }
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
+            if (($count = $this->$method($slug)) !== false) {
+                return $count;
             }
         }
 
@@ -165,7 +163,7 @@ abstract class ModuleRepository
             $query = $this->order($query, $orders);
         }
 
-        if (property_exists($this->model, 'translatedAttributes')) {
+        if ($this->model->isTranslatable()) {
             $query = $query->withTranslation();
         }
 
@@ -201,9 +199,9 @@ abstract class ModuleRepository
      * @param $fields
      * @return \A17\Twill\Models\Model
      */
-    public function firstOrCreate($attributes, $fields)
+    public function firstOrCreate($attributes, $fields = [])
     {
-        return $this->model->where($attributes)->first() ?? $this->create($fields);
+        return $this->model->where($attributes)->first() ?? $this->create($attributes + $fields);
     }
 
     /**
@@ -345,6 +343,30 @@ abstract class ModuleRepository
      * @param mixed $id
      * @return mixed
      */
+    public function duplicate($id)
+    {
+
+        if (($object = $this->model->find($id)) === null) {
+            return false;
+        }
+
+        if (($revision = $object->revisions()->orderBy('created_at', 'desc')->first()) === null) {
+            return false;
+        }
+
+        $revisionInput = json_decode($revision->payload, true);
+        $baseInput = collect($revisionInput)->only(['slug', 'languages'])->filter()->toArray();
+        $newObject = $this->create($baseInput);
+
+        $this->update($newObject->id, $revisionInput);
+
+        return $newObject;
+    }
+
+    /**
+     * @param mixed $id
+     * @return mixed
+     */
     public function delete($id)
     {
         return DB::transaction(function () use ($id) {
@@ -371,6 +393,48 @@ abstract class ModuleRepository
             try {
                 Collection::make($ids)->each(function ($id) {
                     $this->delete($id);
+                });
+            } catch (\Exception $e) {
+                Log::error($e);
+                return false;
+            }
+
+            return true;
+        }, 3);
+    }
+
+    /**
+     * @param mixed $id
+     * @return mixed
+     */
+    public function forceDelete($id)
+    {
+        return DB::transaction(function () use ($id) {
+            if (($object = $this->model->onlyTrashed()->find($id)) === null) {
+                return false;
+            } else {
+                $object->forceDelete();
+                $this->afterDelete($object);
+                return true;
+            }
+        }, 3);
+    }
+
+    /**
+     * @param mixed $id
+     * @return mixed
+     */
+    public function bulkForceDelete($ids)
+    {
+        return DB::transaction(function () use ($ids) {
+            try {
+                $query = $this->model->onlyTrashed()->whereIn('id', $ids);
+                $objects = $query->get();
+
+                $query->forceDelete();
+
+                $objects->each(function ($object) {
+                    $this->afterDelete($object);
                 });
             } catch (\Exception $e) {
                 Log::error($e);
@@ -472,10 +536,8 @@ abstract class ModuleRepository
     {
         $fields = $this->cleanupFields(null, $fields);
 
-        foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'prepareFieldsBeforeCreate' . class_basename($trait))) {
-                $fields = $this->$method($fields);
-            }
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
+            $fields = $this->$method($fields);
         }
 
         return $fields;
@@ -490,10 +552,8 @@ abstract class ModuleRepository
     {
         $fields = $this->cleanupFields($object, $fields);
 
-        foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'prepareFieldsBeforeSave' . class_basename($trait))) {
-                $fields = $this->$method($object, $fields);
-            }
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
+            $fields = $this->$method($object, $fields);
         }
 
         return $fields;
@@ -506,10 +566,8 @@ abstract class ModuleRepository
      */
     public function afterUpdateBasic($object, $fields)
     {
-        foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'afterUpdateBasic' . class_basename($trait))) {
-                $this->$method($object, $fields);
-            }
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
+            $this->$method($object, $fields);
         }
     }
 
@@ -520,10 +578,8 @@ abstract class ModuleRepository
      */
     public function beforeSave($object, $fields)
     {
-        foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'beforeSave' . class_basename($trait))) {
-                $this->$method($object, $fields);
-            }
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
+            $this->$method($object, $fields);
         }
     }
 
@@ -534,10 +590,8 @@ abstract class ModuleRepository
      */
     public function afterSave($object, $fields)
     {
-        foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'afterSave' . class_basename($trait))) {
-                $this->$method($object, $fields);
-            }
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
+            $this->$method($object, $fields);
         }
     }
 
@@ -547,10 +601,8 @@ abstract class ModuleRepository
      */
     public function afterDelete($object)
     {
-        foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'afterDelete' . class_basename($trait))) {
-                $this->$method($object);
-            }
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
+            $this->$method($object);
         }
     }
 
@@ -560,10 +612,8 @@ abstract class ModuleRepository
      */
     public function afterRestore($object)
     {
-        foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'afterRestore' . class_basename($trait))) {
-                $this->$method($object);
-            }
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
+            $this->$method($object);
         }
     }
 
@@ -574,10 +624,8 @@ abstract class ModuleRepository
      */
     public function hydrate($object, $fields)
     {
-        foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'hydrate' . class_basename($trait))) {
-                $object = $this->$method($object, $fields);
-            }
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
+            $object = $this->$method($object, $fields);
         }
 
         return $object;
@@ -591,10 +639,8 @@ abstract class ModuleRepository
     {
         $fields = $object->attributesToArray();
 
-        foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'getFormFields' . class_basename($trait))) {
-                $fields = $this->$method($object, $fields);
-            }
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
+            $fields = $this->$method($object, $fields);
         }
 
         return $fields;
@@ -609,10 +655,8 @@ abstract class ModuleRepository
     {
         $likeOperator = $this->getLikeOperator();
 
-        foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'filter' . class_basename($trait))) {
-                $this->$method($query, $scopes);
-            }
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
+            $this->$method($query, $scopes);
         }
 
         unset($scopes['search']);
@@ -648,10 +692,8 @@ abstract class ModuleRepository
      */
     public function order($query, array $orders = [])
     {
-        foreach (class_uses_recursive(get_called_class()) as $trait) {
-            if (method_exists(get_called_class(), $method = 'order' . class_basename($trait))) {
-                $this->$method($query, $orders);
-            }
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
+            $this->$method($query, $orders);
         }
 
         foreach ($orders as $column => $direction) {
@@ -804,6 +846,27 @@ abstract class ModuleRepository
     }
 
     /**
+     * @param string|null $method
+     * @return array
+     */
+    protected function traitsMethods(string $method = null)
+    {
+        $method = $method ?? debug_backtrace()[1]['function'];
+
+        $traits = array_values(class_uses_recursive(get_called_class()));
+
+        $uniqueTraits = array_unique(array_map('class_basename', $traits));
+
+        $methods = array_map(function (string $trait) use ($method) {
+            return $method . $trait;
+        }, $uniqueTraits);
+
+        return array_filter($methods, function (string $method) {
+            return method_exists(get_called_class(), $method);
+        });
+    }
+
+    /**
      * @return string
      */
     private function getLikeOperator()
@@ -823,5 +886,28 @@ abstract class ModuleRepository
     public function __call($method, $parameters)
     {
         return $this->model->$method(...$parameters);
+    }
+
+    /**
+     * @param string $behavior
+     * @return boolean
+     */
+    public function hasBehavior($behavior)
+    {
+        $hasBehavior = classHasTrait($this, 'A17\Twill\Repositories\Behaviors\Handle' . ucfirst($behavior));
+
+        if (Str::startsWith($behavior, 'translation')) {
+            $hasBehavior = $hasBehavior && $this->model->isTranslatable();
+        }
+
+        return $hasBehavior;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isTranslatable($column)
+    {
+        return $this->model->isTranslatable($column);
     }
 }

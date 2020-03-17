@@ -32,7 +32,7 @@
     },
     methods: {
       loadPreview: function (event) {
-        let self = this
+        const self = this
 
         // disable button and link in preview
         const iframe = event.target
@@ -63,7 +63,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .previewerframe {
     width: 100%;

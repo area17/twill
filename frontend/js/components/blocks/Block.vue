@@ -32,9 +32,9 @@
       </div>
     </div>
     <div class="block__content" :aria-hidden="!visible ? true : null">
-      <!--TBD: is this inputframe required ?-->
-      <a17-inputframe size="small" label="" :name="`block.${block.id}`"/>
       <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes" key="`form_${block.type}_${block.id}`"><!-- dynamic components --></component>
+      <!-- Block validation input frame, to display errors -->
+      <a17-inputframe size="small" label="" :name="`block.${block.id}`"/>
     </div>
   </div>
 </template>
@@ -80,8 +80,8 @@
     computed: {
       blockClasses: function () {
         return [
-          this.visible ? `block--open` : '',
-          this.hover ? `block--focus` : '',
+          this.visible ? 'block--open' : '',
+          this.hover ? 'block--focus' : '',
           this.size ? `block--${this.size}` : ''
         ]
       },
@@ -120,11 +120,10 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .block__content {
     display:none;
-    padding:15px;
+    padding:35px 15px;
     background:$color__background;
   }
 
@@ -261,7 +260,7 @@
     > .media,
     > .slideshow,
     > .browserField {
-      margin:-15px;
+      margin:-35px;
       border:0 none;
     }
   }
@@ -299,14 +298,6 @@
   .block {
     .block__content {
       .block__body {
-        .input {
-          margin-top: 15px;
-
-          .input {
-            margin-top: 0;
-          }
-        }
-
         > .media,
         > .slideshow,
         > .browserField {

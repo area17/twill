@@ -51,14 +51,28 @@ class FileLibraryController extends ModuleController implements SignUploadListen
      */
     protected $endpointType;
 
+    /**
+     * @var Illuminate\Routing\UrlGenerator
+     */
+    protected $urlGenerator;
+
+    /**
+     * @var Illuminate\Routing\ResponseFactory
+     */
+    protected $responseFactory;
+
+    /**
+     * @var Illuminate\Config\Repository
+     */
+    protected $config;
+
     public function __construct(
         Application $app,
         Request $request,
         UrlGenerator $urlGenerator,
         ResponseFactory $responseFactory,
         Config $config
-    )
-    {
+    ) {
         parent::__construct($app, $request);
         $this->urlGenerator = $urlGenerator;
         $this->responseFactory = $responseFactory;
@@ -108,14 +122,14 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     private function buildFile($item)
     {
         return $item->toCmsArray() + [
-                'tags' => $item->tags->map(function ($tag) {
-                    return $tag->name;
-                }),
-                'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
-                'updateUrl' => $this->urlGenerator->route('admin.file-library.files.single-update'),
-                'updateBulkUrl' => $this->urlGenerator->route('admin.file-library.files.bulk-update'),
-                'deleteBulkUrl' => $this->urlGenerator->route('admin.file-library.files.bulk-delete'),
-            ];
+            'tags' => $item->tags->map(function ($tag) {
+                return $tag->name;
+            }),
+            'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
+            'updateUrl' => $this->urlGenerator->route('admin.file-library.files.single-update'),
+            'updateBulkUrl' => $this->urlGenerator->route('admin.file-library.files.bulk-update'),
+            'deleteBulkUrl' => $this->urlGenerator->route('admin.file-library.files.bulk-delete'),
+        ];
     }
 
     /**
@@ -265,8 +279,8 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     public function uploadIsSigned($signature, $isJsonResponse = true)
     {
         return $isJsonResponse
-            ? $this->responseFactory->json($signature, 200)
-            : $this->responseFactory->make($signature, 200, ['Content-Type' => 'text/plain']);
+        ? $this->responseFactory->json($signature, 200)
+        : $this->responseFactory->make($signature, 200, ['Content-Type' => 'text/plain']);
     }
 
     /**

@@ -70,9 +70,7 @@
     methods: {
       updateFromStore: function (newValue) { // called from the formStore mixin
         if (typeof newValue === 'undefined') newValue = ''
-
         if (this.value !== newValue) {
-          console.warn('Update UI value : ' + this.name + ' -> ' + newValue)
           this.value = newValue
         }
       },
@@ -105,7 +103,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .form__field {
     display: flex;
@@ -117,9 +114,6 @@
       padding: 0;
     }
   }
-
-  // .form__field--color {
-  // }
 
   .form__field--colorBtn {
     cursor:pointer;

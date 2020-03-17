@@ -22,14 +22,13 @@
     },
     computed: {
       cellWidth () {
-        return this.depth > 0 ? {width: this.depth * 80 - 20 - this.offset + 'px'} : ''
+        return this.depth > 0 ? { width: this.depth * 80 - 20 - this.offset + 'px' } : ''
       }
     }
   }
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .tablecell__nested-depth {
     position: relative;

@@ -4,7 +4,7 @@
       <slot></slot>
 
       <ul class="box__filter">
-        <li v-for="(navItem, index) in navFilters"><a href="#" :class="{ 's--on' : navActive === index }" @click.prevent="filterStatus(index, navItem.slug)">{{ navItem.name }}</a></li>
+        <li v-for="(navItem, index) in navFilters" :key="index"><a href="#" :class="{ 's--on' : navActive === index }" @click.prevent="filterStatus(index, navItem.slug)">{{ navItem.name }}</a></li>
       </ul>
     </header>
     <div class="box__body">
@@ -43,11 +43,11 @@
       return {
         navFilters: [
           {
-            name: 'All activity',
+            name: this.$trans('dashboard.all-activity', 'All activity'),
             slug: 'all'
           },
           {
-            name: 'My activity',
+            name: this.$trans('dashboard.my-activity', 'My activity'),
             slug: 'mine'
           }
         ],
@@ -78,8 +78,8 @@
         // No pagination
         // this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
         // this.$store.commit(DATATABLE.UPDATE_DATATABLE_FILTER_STATUS, slug)
-        if (window.STORE.datatable) {
-          if (window.STORE.datatable.hasOwnProperty(slug)) this.rows = window.STORE.datatable[slug]
+        if (window[process.env.VUE_APP_NAME].STORE.datatable) {
+          if (window[process.env.VUE_APP_NAME].STORE.datatable.hasOwnProperty(slug)) this.rows = window[process.env.VUE_APP_NAME].STORE.datatable[slug]
         }
       }
     }
@@ -87,7 +87,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .activityFeed {
   }

@@ -31,7 +31,7 @@
 
             <div slot="hidden-filters">
               <a17-vselect class="medialibrary__filter-item" ref="filter" name="tag" :options="tags"
-                           placeholder="Filter by tag" :searchable="true" maxHeight="175px"/>
+                           :placeholder="$trans('media-library.filter-select-label', 'Filter by tag')" :searchable="true" maxHeight="175px"/>
             </div>
           </a17-filter>
         </div>
@@ -94,19 +94,27 @@
     props: {
       modalTitlePrefix: {
         type: String,
-        default: 'Media Library'
+        default: function () {
+          return this.$trans('media-library.title', 'Media Library')
+        }
       },
       btnLabelSingle: {
         type: String,
-        default: 'Insert'
+        default: function () {
+          return this.$trans('media-library.insert', 'Insert')
+        }
       },
       btnLabelUpdate: {
         type: String,
-        default: 'Update'
+        default: function () {
+          return this.$trans('media-library.update', 'Update')
+        }
       },
       btnLabelMulti: {
         type: String,
-        default: 'Insert'
+        default: function () {
+          return this.$trans('media-library.insert', 'Insert')
+        }
       },
       initialPage: {
         type: Number,
@@ -170,7 +178,7 @@
         return this.selected[this.connector] || []
       },
       selectedType: function () {
-        let self = this
+        const self = this
         const navItem = self.types.filter(function (t) {
           return t.value === self.type
         })
@@ -246,8 +254,8 @@
 
           if (shift && this.selectedMedias.length > 0) {
             const lastSelectedMedia = this.selectedMedias[this.selectedMedias.length - 1]
-            let lastSelectedMediaIndex = this.fullMedias.findIndex((media) => media.id === lastSelectedMedia.id)
-            let selectedMediaIndex = this.fullMedias.findIndex((media) => media.id === id)
+            const lastSelectedMediaIndex = this.fullMedias.findIndex((media) => media.id === lastSelectedMedia.id)
+            const selectedMediaIndex = this.fullMedias.findIndex((media) => media.id === id)
             if (selectedMediaIndex === -1 && lastSelectedMediaIndex === -1) return
 
             let start = null
@@ -295,7 +303,7 @@
         return data
       },
       clearFilters: function () {
-        let self = this
+        const self = this
         // reset tags
         if (this.$refs.filter) this.$refs.filter.value = null
 
@@ -424,7 +432,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   $width_sidebar: (default: 290px, small: 250px, xsmall: 200px);
 
@@ -556,7 +563,6 @@
 </style>
 
 <style lang="scss">
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .medialibrary__filter-item {
     .vselect {

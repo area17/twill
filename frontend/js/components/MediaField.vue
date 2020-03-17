@@ -21,7 +21,9 @@
             media.height }}
           </li>
           <li class="f--small media__crop-link" v-if="cropInfos" @click="openCropMedia">
-              <p class="f--small f--note hide--xsmall" v-for="cropInfo in cropInfos">
+              <p class="f--small f--note hide--xsmall"
+                 v-for="(cropInfo, index) in cropInfos"
+                 :key="index">
                 <span v-html="cropInfo"></span>
               </p>
           </li>
@@ -59,11 +61,19 @@
 
       <!-- Metadatas options -->
       <div class="media__metadatas--options" :class="{ 's--active' : metadatas.active }" v-if="hasMedia && withAddInfo">
-        <a17-mediametadata :name='metadataName' label="Alt Text" id="altText" :media="media" @change="updateMetadata"/>
-        <a17-mediametadata v-if="withCaption" :name='metadataName' label="Caption" id="caption" :media="media" @change="updateMetadata"/>
+        <a17-mediametadata :name='metadataName' label="Alt Text" id="altText" :media="media" :maxlength="altTextMaxLength" @change="updateMetadata"/>
+        <a17-mediametadata v-if="withCaption" :name='metadataName' label="Caption" id="caption" :media="media" :maxlength="captionMaxLength" @change="updateMetadata"/>
         <a17-mediametadata v-if="withVideoUrl" :name='metadataName' label="Video URL (optional)" id="video" :media="media" @change="updateMetadata"/>
-        <template v-for="field in extraMetadatas" v-if="extraMetadatas.length > 0">
-          <a17-mediametadata v-bind:key="field.name" :type="field.type" :name='metadataName' :label="field.label" :id="field.name" :media="media" @change="updateMetadata"/>
+        <template v-for="field in extraMetadatas">
+          <a17-mediametadata v-if="extraMetadatas.length > 0"
+                             :key="field.name"
+                             :type="field.type"
+                             :name='metadataName'
+                             :label="field.label"
+                             :id="field.name"
+                             :media="media"
+                             :maxlength="field.maxlength || 0"
+                             @change="updateMetadata"/>
         </template>
       </div>
     </div>
@@ -86,6 +96,8 @@
   import a17Cropper from '@/components/Cropper.vue'
   import a17MediaMetadata from '@/components/MediaMetadata.vue'
   import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
+  import mediaFieldMixin from '@/mixins/mediaField.js'
+
   import a17VueFilters from '@/utils/filters.js'
   import { cropConversion } from '@/utils/cropper'
   import smartCrop from 'smartcrop'
@@ -98,7 +110,7 @@
       'a17-cropper': a17Cropper,
       'a17-mediametadata': a17MediaMetadata
     },
-    mixins: [mediaLibrayMixin],
+    mixins: [mediaLibrayMixin, mediaFieldMixin],
     props: {
       name: {
         type: String,
@@ -114,7 +126,9 @@
       },
       btnLabel: {
         type: String,
-        default: 'Attach image'
+        default () {
+          return this.$trans('fields.medias.btn-label', 'Attach image')
+        }
       },
       hover: {
         type: Boolean,
@@ -134,32 +148,9 @@
         type: String,
         default: ''
       },
-      // current crop context put in store. eg: slideshow, cover...
-      cropContext: {
-        type: String,
-        default: ''
-      },
-      withAddInfo: {
-        type: Boolean,
-        default: true
-      },
-      withVideoUrl: {
-        type: Boolean,
-        default: true
-      },
-      withCaption: {
-        type: Boolean,
-        default: true
-      },
       activeCrop: {
         type: Boolean,
         default: true
-      },
-      extraMetadatas: {
-        type: Array,
-        default () {
-          return []
-        }
       }
     },
     data: function () {
@@ -197,7 +188,7 @@
         if (this.cropSrc.length === 0) return {}
 
         return {
-          'backgroundImage': `url(${this.cropSrc})`
+          backgroundImage: `url(${this.cropSrc})`
         }
       },
       cropThumbnailClass: function () {
@@ -223,9 +214,9 @@
         }
       },
       cropInfos: function () {
-        let cropInfos = []
+        const cropInfos = []
         if (this.media.crops) {
-          for (let variant in this.media.crops) {
+          for (const variant in this.media.crops) {
             if (this.media.crops[variant].width + this.media.crops[variant].height) { // crop is not 0x0
               let cropInfo = ''
               cropInfo += this.media.crops[variant].name + ' crop: '
@@ -266,7 +257,7 @@
     methods: {
       // crop
       canvasCrop () {
-        let data = this.media.crops[Object.keys(this.media.crops)[0]]
+        const data = this.media.crops[Object.keys(this.media.crops)[0]]
         if (!data) return
 
         // in case of a 0x0 crop : let's display the full image in the preview
@@ -280,7 +271,7 @@
 
         this.$nextTick(() => {
           try {
-            let crop = cropConversion(data, this.naturalDim, this.originalDim)
+            const crop = cropConversion(data, this.naturalDim, this.originalDim)
             const cropWidth = crop.width
             const cropHeight = crop.height
             this.canvas.width = cropWidth
@@ -305,11 +296,11 @@
         })
       },
       setDefaultCrops: function () {
-        let defaultCrops = {}
-        let smarcrops = []
+        const defaultCrops = {}
+        const smarcrops = []
 
         if (this.allCrops.hasOwnProperty(this.cropContext)) {
-          for (let cropVariant in this.allCrops[this.cropContext]) {
+          for (const cropVariant in this.allCrops[this.cropContext]) {
             const ratio = this.allCrops[this.cropContext][cropVariant][0].ratio
             const width = this.media.width
             const height = this.media.height
@@ -339,10 +330,10 @@
             // Convert crop for original img values
             crop = cropConversion(crop, this.naturalDim, this.originalDim)
 
-            smarcrops.push(smartCrop.crop(this.img, {width: crop.width, height: crop.height, minScale: 1.0}))
+            smarcrops.push(smartCrop.crop(this.img, { width: crop.width, height: crop.height, minScale: 1.0 }))
 
-            let x = Math.floor(center.x - cropWidth / 2)
-            let y = Math.floor(center.y - cropHeight / 2)
+            const x = Math.floor(center.x - cropWidth / 2)
+            const y = Math.floor(center.y - cropHeight / 2)
 
             defaultCrops[cropVariant] = {}
             defaultCrops[cropVariant].name = this.allCrops[this.cropContext][cropVariant][0].name || cropVariant
@@ -370,13 +361,13 @@
               cropVariant.height = crop.height
               index++
             })
-            this.cropMedia({values: defaultCrops})
+            this.cropMedia({ values: defaultCrops })
           }, (error) => {
             console.error(error)
-            this.cropMedia({values: defaultCrops})
+            this.cropMedia({ values: defaultCrops })
           })
         } else {
-          this.cropMedia({values: defaultCrops})
+          this.cropMedia({ values: defaultCrops })
         }
       },
       cropMedia: function (crop) {
@@ -526,7 +517,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   $input-bg: #FCFCFC;
   $input-border: #DFDFDF;

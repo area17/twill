@@ -54,7 +54,7 @@ export default {
       })) + ' language' + (this.errorLocales.length > 1 ? 's' : '') + ' missing details.'
     },
     errorMessage () {
-      let message = this.error ? this.$store.state.form.errors[this.errorKey][0] : ''
+      const message = this.error ? this.$store.state.form.errors[this.errorKey][0] : ''
       return message.endsWith('is required.') && !this.errorKey.startsWith('block') ? '' : message
     },
     error () {

@@ -46,10 +46,10 @@
   import axios from 'axios'
   import htmlClasses from '@/utils/htmlClasses'
   const html = document.documentElement
-  const htmlSearchClasses = [ htmlClasses.search, htmlClasses.overlay ]
-  let CancelToken = axios.CancelToken
+  const htmlSearchClasses = [htmlClasses.search, htmlClasses.overlay]
+  const CancelToken = axios.CancelToken
   let source = CancelToken.source()
-  let firstFocusableEl = document.querySelector('.header .header__title > a')
+  const firstFocusableEl = document.querySelector('.header .header__title > a')
   let lastFocusableEl
 
   export default {
@@ -128,7 +128,7 @@
         }
       },
       setLastFocusElement: function () {
-        let resultsLength = this.searchResults.length
+        const resultsLength = this.searchResults.length
         if (resultsLength) {
           setTimeout(function () {
             lastFocusableEl = document.querySelectorAll('.search__result')[resultsLength - 1]
@@ -138,9 +138,9 @@
         }
       },
       fetchSearchResults: function () {
-        let self = this
-        let data = {
-          'search': this.searchValue
+        const self = this
+        const data = {
+          search: this.searchValue
         }
 
         if (this.loading) {
@@ -191,7 +191,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .search {
     display: block;

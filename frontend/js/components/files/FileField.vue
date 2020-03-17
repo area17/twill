@@ -1,8 +1,8 @@
 <template>
-  <a17-inputframe :error="error" :label="label" :locale="locale" @localize="updateLocale" :size="size" :name="name">
+  <a17-inputframe :error="error" :label="label" :locale="locale" @localize="updateLocale" :size="size" :name="name" :note="fieldNote">
     <div class="fileField">
       <table class="fileField__list" v-if="items.length">
-        <draggable :element="'tbody'" v-model="items">
+        <draggable :tag="'tbody'" v-model="items">
           <a17-fileitem v-for="(item, index) in items" :key="item.id" class="item__content" :name="`${name}_${item.id}`" :draggable="isDraggable" :item="item" @delete="deleteItem(index)"></a17-fileitem>
         </draggable>
       </table>
@@ -59,6 +59,10 @@
       note: {
         type: String,
         default: ''
+      },
+      fieldNote: {
+        type: String,
+        default: ''
       }
     },
     data: () => {
@@ -96,7 +100,7 @@
         }
       },
       addLabel: function () {
-        return 'Add ' + this.itemLabel
+        return this.$trans('fields.files.add-label', 'Add') + ' ' + this.itemLabel
       },
       ...mapState({
         selectedFiles: state => state.mediaLibrary.selected
@@ -125,7 +129,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .fileField {
     // width: 100%;

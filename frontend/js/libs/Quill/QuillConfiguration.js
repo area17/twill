@@ -1,8 +1,12 @@
 import Quill from 'quill'
-let Delta = Quill.import('delta')
-let Break = Quill.import('blots/break')
-let Embed = Quill.import('blots/embed')
-let Link = Quill.import('formats/link')
+
+Quill.debug('error')
+
+const Delta = Quill.import('delta')
+const Break = Quill.import('blots/break')
+const Embed = Quill.import('blots/embed')
+const Inline = Quill.import('blots/inline')
+const Link = Quill.import('formats/link')
 
 /*
 * Support for shift enter
@@ -36,8 +40,8 @@ const lineBreakHandle = {
   shiftKey: true,
   handler:
     function (range) {
-      let currentLeaf = this.quill.getLeaf(range.index)[0]
-      let nextLeaf = this.quill.getLeaf(range.index + 1)[0]
+      const currentLeaf = this.quill.getLeaf(range.index)[0]
+      const nextLeaf = this.quill.getLeaf(range.index + 1)[0]
 
       this.quill.insertEmbed(range.index, lineBreak.blotName, true, 'user')
 
@@ -54,16 +58,50 @@ const lineBreakHandle = {
 
 function lineBreakMatcher () {
   const newDelta = new Delta()
-  newDelta.insert({'break': ''})
+  newDelta.insert({ break: '' })
   return newDelta
 }
 
 Quill.register(SmartBreak)
 
+const anchor = {
+  blotName: 'anchor',
+  tagName: 'SPAN'
+}
+
+class Anchor extends Inline {
+  static create (value) {
+    const node = super.create(value)
+    value = this.sanitize(value)
+    node.setAttribute('id', value)
+    node.className = 'ql-anchor'
+    return node
+  }
+
+  static sanitize (id) {
+    return id.replace(/\s+/g, '-').toLowerCase()
+  }
+
+  static formats (domNode) {
+    return domNode.getAttribute('id')
+  }
+
+  format (name, value) {
+    if (name !== this.statics.blotName || !value) return super.format(name, value)
+    value = this.constructor.sanitize(value)
+    this.domNode.setAttribute('id', value)
+  }
+}
+
+Anchor.blotName = anchor.blotName
+Anchor.tagName = anchor.tagName
+
+Quill.register(Anchor)
+
 /* Customize Link */
 class MyLink extends Link {
   static create (value) {
-    let node = super.create(value)
+    const node = super.create(value)
     value = this.sanitize(value)
     node.setAttribute('href', value)
 
@@ -74,8 +112,8 @@ class MyLink extends Link {
     }
 
     // url starting with the front-end base url wont have target blank
-    if (window.STORE.form.baseUrl) {
-      if (value.startsWith(window.STORE.form.baseUrl)) {
+    if (window[process.env.VUE_APP_NAME].STORE.form.baseUrl) {
+      if (value.startsWith(window[process.env.VUE_APP_NAME].STORE.form.baseUrl)) {
         node.removeAttribute('target')
       }
     }
@@ -98,8 +136,8 @@ class MyLink extends Link {
     }
 
     // url starting with the front-end base url wont have target blank
-    if (window.STORE.form.baseUrl) {
-      if (value.startsWith(window.STORE.form.baseUrl)) {
+    if (window[process.env.VUE_APP_NAME].STORE.form.baseUrl) {
+      if (value.startsWith(window[process.env.VUE_APP_NAME].STORE.form.baseUrl)) {
         this.domNode.removeAttribute('target')
         return
       }
@@ -113,20 +151,21 @@ Quill.register(MyLink)
 
 /* Custom Icons */
 function getIcon (shape) {
-  return '<span class="icon icon--wysiwyg_' + shape + '" aria-hidden="true"><svg><title>' + shape + '</title><use xlink:href="#wysiwyg_' + shape + '"></use></svg></span>'
+  return '<span class="icon icon--wysiwyg_' + shape + '" aria-hidden="true"><svg><title>' + shape + '</title><use xlink:href="#icon--wysiwyg_' + shape + '"></use></svg></span>'
 }
 
 const icons = Quill.import('ui/icons') // custom icons
-icons['bold'] = getIcon('bold')
-icons['italic'] = getIcon('italic')
-icons['underline'] = getIcon('underline')
-icons['link'] = getIcon('link')
-icons['header']['1'] = getIcon('header')
-icons['header']['2'] = getIcon('header-2')
-icons['header']['3'] = getIcon('header-3')
-icons['header']['4'] = getIcon('header-4')
-icons['header']['5'] = getIcon('header-5')
-icons['header']['6'] = getIcon('header-6')
+icons.bold = getIcon('bold')
+icons.italic = getIcon('italic')
+icons.italic = getIcon('italic')
+icons.anchor = getIcon('anchor')
+icons.link = getIcon('link')
+icons.header['1'] = getIcon('header')
+icons.header['2'] = getIcon('header-2')
+icons.header['3'] = getIcon('header-3')
+icons.header['4'] = getIcon('header-4')
+icons.header['5'] = getIcon('header-5')
+icons.header['6'] = getIcon('header-6')
 
 /*
 * ClipBoard manager
@@ -159,7 +198,7 @@ const QuillDefaultFormats = [
 ]
 
 function getQuillFormats (toolbarEls) {
-  const formats = [lineBreak.blotName] // Allow linebreak
+  const formats = [lineBreak.blotName, anchor.blotName] // Allow linebreak and anchor
 
   function addFormat (format) {
     if (formats.indexOf(format) > -1 || QuillDefaultFormats.indexOf(format) === -1) return
@@ -168,7 +207,7 @@ function getQuillFormats (toolbarEls) {
 
   toolbarEls.forEach((el) => {
     if (typeof el === 'object') {
-      for (let property in el) {
+      for (const property in el) {
         addFormat(property)
       }
     }

@@ -2,6 +2,22 @@
 
 @section('appTypeClass', 'body--form')
 
+@push('extra_css')
+    @if(app()->isProduction())
+        <link href="{{ twillAsset('main-form.css') }}" rel="preload" as="style" crossorigin/>
+    @endif
+
+    @unless(config('twill.dev_mode', false))
+        <link href="{{ twillAsset('main-form.css') }}" rel="stylesheet" crossorigin/>
+    @endunless
+@endpush
+
+@push('extra_js_head')
+    @if(app()->isProduction())
+        <link href="{{ twillAsset('main-form.js') }}" rel="preload" as="script" crossorigin/>
+    @endif
+@endpush
+
 @php
     $editor = $editor ?? false;
     $translate = $translate ?? false;
@@ -20,7 +36,7 @@
                 if(!$disableContentFieldset) {
                     array_unshift($additionalFieldsets, [
                         'fieldset' => 'content',
-                        'label' => $contentFieldsetLabel ?? 'Content'
+                        'label' => $contentFieldsetLabel ?? twillTrans('twill::lang.form.content')
                     ]);
                 }
             @endphp
@@ -40,7 +56,7 @@
                 <div slot="actions">
                     <a17-langswitcher :all-published="{{ json_encode(!$controlLanguagesPublication) }}"></a17-langswitcher>
                     <a17-button v-if="editor" type="button" variant="editor" size="small" @click="openEditor(-1)">
-                        <span v-svg symbol="editor"></span>Editor
+                        <span v-svg symbol="editor"></span>{{ twillTrans('twill::lang.form.editor') }}
                     </a17-button>
                 </div>
             </a17-sticky-nav>
@@ -51,17 +67,25 @@
                 <div class="wrapper wrapper--reverse" v-sticky data-sticky-id="publisher" data-sticky-offset="80">
                     <aside class="col col--aside">
                         <div class="publisher" data-sticky-target="publisher">
-                            <a17-publisher :show-languages="{{ json_encode($controlLanguagesPublication) }}"></a17-publisher>
+                            <a17-publisher :show-languages="{{ json_encode($controlLanguagesPublication) }}">
+                                @yield('publisherRows')
+                            </a17-publisher>
                             <a17-page-nav
                                 placeholder="Go to page"
                                 previous-url="{{ $parentPreviousUrl ?? '' }}"
                                 next-url="{{ $parentNextUrl ?? '' }}"
                             ></a17-page-nav>
+                            @hasSection('sideFieldset')
+                                <a17-fieldset title="{{ $sideFieldsetLabel ?? 'Options' }}" id="options">
+                                    @yield('sideFieldset')
+                                </a17-fieldset>
+                            @endif
+                            @yield('sideFieldsets')
                         </div>
                     </aside>
                     <section class="col col--primary" data-sticky-top="publisher">
                         @unless($disableContentFieldset)
-                            <a17-fieldset title="{{ $contentFieldsetLabel ?? 'Content' }}" id="content">
+                            <a17-fieldset title="{{ $contentFieldsetLabel ?? twillTrans('twill::lang.form.content') }}" id="content">
                                 @yield('contentFields')
                             </a17-fieldset>
                         @endunless
@@ -89,7 +113,7 @@
 
 @section('initialStore')
 
-    window.STORE.form = {
+    window['{{ config('twill.js_namespace') }}'].STORE.form = {
         baseUrl: '{{ $baseUrl ?? '' }}',
         saveUrl: '{{ $saveUrl }}',
         previewUrl: '{{ $previewUrl ?? '' }}',
@@ -103,12 +127,13 @@
         reloadOnSuccess: {{ ($reloadOnSuccess ?? false) ? 'true' : 'false' }}
     }
 
-    window.STORE.publication = {
+    window['{{ config('twill.js_namespace') }}'].STORE.publication = {
         withPublicationToggle: {{ json_encode(($publish ?? true) && isset($item) && $item->isFillable('published')) }},
         published: {{ isset($item) && $item->published ? 'true' : 'false' }},
         withPublicationTimeframe: {{ json_encode(($schedule ?? true) && isset($item) && $item->isFillable('publish_start_date')) }},
-        publishedLabel: '{{ $customPublishedLabel ?? 'Live' }}',
-        draftLabel: '{{ $customDraftLabel ?? 'Draft' }}',
+        publishedLabel: '{{ $customPublishedLabel ?? twillTrans('twill::lang.main.published') }}',
+        draftLabel: '{{ $customDraftLabel ?? twillTrans('twill::lang.main.draft') }}',
+        submitDisableMessage: '{{ $submitDisableMessage ?? '' }}',
         startDate: '{{ $item->publish_start_date ?? '' }}',
         endDate: '{{ $item->publish_end_date ?? '' }}',
         visibility: '{{ isset($item) && $item->isFillable('public') ? ($item->public ? 'public' : 'private') : false }}',
@@ -171,25 +196,23 @@
         } @else null @endif
     }
 
-    window.STORE.revisions = {!! json_encode($revisions ?? []) !!}
+    window['{{ config('twill.js_namespace') }}'].STORE.revisions = {!! json_encode($revisions ?? []) !!}
 
-    window.STORE.parentId = {{ $item->parent_id ?? 0 }}
-    window.STORE.parents = {!! json_encode($parents ?? [])  !!}
+    window['{{ config('twill.js_namespace') }}'].STORE.parentId = {{ $item->parent_id ?? 0 }}
+    window['{{ config('twill.js_namespace') }}'].STORE.parents = {!! json_encode($parents ?? [])  !!}
 
-    window.STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('twill.block_editor.crops') + (config('twill.settings.crops') ?? [])) !!}
-    window.STORE.medias.selected = {}
+    window['{{ config('twill.js_namespace') }}'].STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('twill.block_editor.crops') + (config('twill.settings.crops') ?? [])) !!}
+    window['{{ config('twill.js_namespace') }}'].STORE.medias.selected = {}
 
-    window.STORE.browser = {}
-    window.STORE.browser.selected = {}
+    window['{{ config('twill.js_namespace') }}'].STORE.browser = {}
+    window['{{ config('twill.js_namespace') }}'].STORE.browser.selected = {}
 
-    window.APIKEYS = {
+    window['{{ config('twill.js_namespace') }}'].APIKEYS = {
         'googleMapApi': '{{ config('twill.google_maps_api_key') }}'
     }
 @stop
 
 @prepend('extra_js')
     @includeWhen(config('twill.block_editor.inline_blocks_templates', true), 'twill::partials.form.utils._blocks_templates')
-    <script src="{{ mix('/assets/admin/js/manifest.js') }}"></script>
-    <script src="{{ mix('/assets/admin/js/vendor.js') }}"></script>
-    <script src="{{ mix('/assets/admin/js/main-form.js') }}"></script>
+    <script src="{{ twillAsset('main-form.js') }}" crossorigin></script>
 @endprepend

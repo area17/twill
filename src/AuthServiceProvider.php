@@ -67,6 +67,12 @@ class AuthServiceProvider extends ServiceProvider
             });
         });
 
+        Gate::define('duplicate', function ($user) {
+            return $this->authorize($user, function ($user) {
+                return $this->userHasRole($user, [UserRole::PUBLISHER, UserRole::ADMIN]);
+            });
+        });
+
         Gate::define('upload', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole($user, [UserRole::PUBLISHER, UserRole::ADMIN]);

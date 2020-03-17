@@ -3,7 +3,9 @@
     <a17-inputframe :error="error" :note="note" :label="label" :name="name" :add-new="addNew">
       <div class="multiselector" :class="gridClasses">
         <div class="multiselector__outer">
-          <div class="multiselector__item" v-for="(checkbox, index) in fullOptions">
+          <div class="multiselector__item"
+               v-for="(checkbox, index) in fullOptions"
+               :key="index">
             <input class="multiselector__checkbox" :class="{'multiselector__checkbox--checked': checkedValue.includes(checkbox.value) }" type="checkbox" :value="checkbox.value" :name="name +   '[' + randKey + ']'" :id="uniqId(checkbox.value, index)" :disabled="checkbox.disabled || disabled" v-model="checkedValue">
             <label class="multiselector__label" :for="uniqId(checkbox.value, index)" @click.prevent="changeCheckbox(checkbox.value)">
               <span class="multiselector__icon"><span v-svg symbol="check"></span></span>
@@ -46,8 +48,8 @@
     computed: {
       gridClasses: function () {
         return [
-          this.grid ? `multiselector--grid` : '',
-          this.inline ? `multiselector--inline` : ''
+          this.grid ? 'multiselector--grid' : '',
+          this.inline ? 'multiselector--inline' : ''
         ]
       }
     },
@@ -80,7 +82,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .multiselector {
     color:$color__text;

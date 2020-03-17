@@ -57,7 +57,7 @@ class RefreshLQIP extends Command
     // TODO: document this and actually think about moving to queuable job after content type updates
     public function handle()
     {
-        $this->db->table('mediables')->orderBy('id')->chunk(100, function ($attached_medias) {
+        $this->db->table(config('twill.mediables_table', 'twill_mediables'))->orderBy('id')->chunk(100, function ($attached_medias) {
             foreach ($attached_medias as $attached_media) {
                 $uuid = Media::withTrashed()->find($attached_media->media_id, ['uuid'])->uuid;
 
@@ -69,10 +69,13 @@ class RefreshLQIP extends Command
 
                     $url = ImageService::getLQIPUrl($uuid, $crop_params + ['w' => $lqip_width]);
 
-                    $data = file_get_contents($url);
-                    $dataUri = 'data:image/gif;base64,' . base64_encode($data);
-
-                    $this->db->table('mediables')->where('id', $attached_media->id)->update(['lqip_data' => $dataUri]);
+                    try {
+                        $data = file_get_contents($url);
+                        $dataUri = 'data:image/gif;base64,' . base64_encode($data);
+                        $this->db->table(config('twill.mediables_table', 'twill_mediables'))->where('id', $attached_media->id)->update(['lqip_data' => $dataUri]);
+                    } catch (\Exception $e) {
+                        $this->info("LQIP was not generated for " . $uuid);
+                    }
                 }
             }
         });

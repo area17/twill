@@ -2,7 +2,16 @@
   <a17-modal ref="modal" class="modal--form" :title="modalTitle" :forceClose="true">
     <form :action="actionForm" @submit.prevent="submit">
       <slot></slot>
-      <a17-modal-validation :mode="mode" :is-disable="createMode" :active-publish-state="withPublicationToggle" :is-publish="published" published-name="published" :textEnabled="publishedLabel" :textDisabled="draftLabel"></a17-modal-validation>
+      <a17-modal-validation
+        :mode="mode"
+        :is-disable="createMode"
+        :active-publish-state="withPublicationToggle"
+        :is-publish="published"
+        published-name="published"
+        :textEnabled="publishedLabel"
+        :textDisabled="draftLabel"
+      >
+      </a17-modal-validation>
     </form>
   </a17-modal>
 </template>
@@ -22,11 +31,15 @@
       },
       publishedLabel: {
         type: String,
-        default: 'Live'
+        default () {
+          return this.$trans('main.published', 'Live')
+        }
       },
       draftLabel: {
         type: String,
-        default: 'Draft'
+        default () {
+          return this.$trans('main.draft', 'Draft')
+        }
       }
     },
     components: {
@@ -40,7 +53,7 @@
         return this.createMode ? this.formCreate : this.action
       },
       modalTitle: function () {
-        return this.createMode ? 'Add new' : 'Update'
+        return this.createMode ? this.$trans('modal.create.title', 'Add new') : this.$trans('modal.update.title', 'Update')
       },
       published: function () {
         return !this.createMode && !!this.fieldValueByName('published')
@@ -68,7 +81,7 @@
         this.$refs.modal.open()
       },
       submit: function (event) {
-        let self = this
+        const self = this
 
         this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
         const submitMode = document.activeElement.name

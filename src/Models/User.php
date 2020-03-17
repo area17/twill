@@ -4,7 +4,9 @@ namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasPresenter;
+use A17\Twill\Models\Behaviors\HasOauth;
 use A17\Twill\Models\Enums\UserRole;
+use A17\Twill\Models\Behaviors\IsTranslatable;
 use A17\Twill\Notifications\Reset as ResetNotification;
 use A17\Twill\Notifications\Welcome as WelcomeNotification;
 use Illuminate\Auth\Authenticatable;
@@ -17,7 +19,7 @@ use PragmaRX\Google2FAQRCode\Google2FA;
 
 class User extends AuthenticatableContract
 {
-    use Authenticatable, Authorizable, HasMedias, Notifiable, HasPresenter, SoftDeletes;
+    use Authenticatable, Authorizable, HasMedias, Notifiable, HasPresenter, HasOauth, SoftDeletes, IsTranslatable;
 
     public $timestamps = true;
 
@@ -30,6 +32,7 @@ class User extends AuthenticatableContract
         'description',
         'google_2fa_enabled',
         'google_2fa_secret',
+        'language'
     ];
 
     protected $dates = [

@@ -10,13 +10,16 @@ export const SET_DATATABLE_NESTED = 'setDatatableNestedDatas'
 export const SET_DATATABLE = 'setDatatableDatas'
 export const TOGGLE_PUBLISH = 'togglePublishedData'
 export const DELETE_ROW = 'deleteData'
+export const DUPLICATE_ROW = 'duplicateData'
 export const RESTORE_ROW = 'restoreData'
+export const DESTROY_ROW = 'destroyData'
 export const TOGGLE_FEATURE = 'toggleFeaturedData'
 export const BULK_PUBLISH = 'bulkPublishData'
 export const BULK_FEATURE = 'bulkFeatureData'
 export const BULK_EXPORT = 'bulkExportData'
 export const BULK_DELETE = 'bulkDeleteData'
 export const BULK_RESTORE = 'bulkRestoreData'
+export const BULK_DESTROY = 'bulkDestroyData'
 
 /* Form */
 export const REPLACE_FORM = 'replaceFormData'
@@ -40,13 +43,16 @@ export default {
   SET_DATATABLE,
   TOGGLE_PUBLISH,
   DELETE_ROW,
+  DUPLICATE_ROW,
   RESTORE_ROW,
+  DESTROY_ROW,
   TOGGLE_FEATURE,
   BULK_PUBLISH,
   BULK_FEATURE,
   BULK_EXPORT,
   BULK_DELETE,
   BULK_RESTORE,
+  BULK_DESTROY,
   REPLACE_FORM,
   SAVE_FORM,
   UPDATE_FORM_IN_LISTING,

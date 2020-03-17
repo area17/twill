@@ -1,17 +1,17 @@
 @formField('input', [
     'name' => 'name',
-    'label' => 'Name'
+    'label' => twillTrans('twill::lang.user-management.name')
 ])
 
 @unless($item ?? null)
     @formField('input', [
         'name' => 'email',
-        'label' => 'Email'
+        'label' => twillTrans('twill::lang.user-management.email')
     ])
     @can('manage-users')
         @formField('select', [
             'name' => "role",
-            'label' => "Role",
+            'label' => twillTrans('twill::lang.user-management.role'),
             'native' => true,
             'options' => $roleList,
             'placeholder' => 'Select a role'

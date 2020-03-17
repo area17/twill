@@ -10,7 +10,12 @@
               <a17-dropdown ref="statPeriodDropdown" position="bottom-right">
                 <a17-button variant="ghost" @click="$refs.statPeriodDropdown.toggle()">{{ selectedPeriodLabel }} <span v-svg class="statFeed__dropdownIcon" symbol="dropdown_module"></span></a17-button>
                 <div slot="dropdown__content">
-                  <button type="button" v-for="period in periods" v-if="period.value !== selectedPeriod" @click="selectPeriod(period.value)">{{ period.label }}</button>
+                  <template v-for="(period, index) in periods">
+                    <button type="button"
+                            v-if="period.value !== selectedPeriod"
+                            :key="index"
+                            @click="selectPeriod(period.value)">{{ period.label }}</button>
+                  </template>
                 </div>
               </a17-dropdown>
             </div>
@@ -19,7 +24,9 @@
     </header>
     <div class="box__body">
       <template  v-for="(fact, index) in factsForSelectedPeriod">
-      <a :href="fact.url" class="statFeed__item" target="_blank">
+      <a :key="index"
+         :href="fact.url" class="statFeed__item"
+         target="_blank">
         <h3 class="statFeed__numb f--heading" :class="trending(index)">{{ fact.figure }}</h3>
         <div class="statFeed__info">
           <h4 class="statFeed__label">{{ fact.label }}</h4>
@@ -96,7 +103,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .statFeed {
 

@@ -32,7 +32,7 @@ const vueSearchApp = {
   computed: {
     positionStyle: function () {
       return {
-        'top': this.top + 'px'
+        top: this.top + 'px'
       }
     }
   },
@@ -56,10 +56,6 @@ const vueSearchApp = {
         this.toggleSearch()
       }
     }
-  },
-  mounted: function () {
-  },
-  created: function () {
   }
 }
 

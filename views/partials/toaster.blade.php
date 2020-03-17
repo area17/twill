@@ -7,7 +7,7 @@
         <div class="notif__inner">
             <button type="button" class="notif__close" aria-label="alertClose" onclick="this.parentNode.parentNode.remove()">
                 <span class="icon icon--close_modal">
-                    <svg><title>Close</title><use xlink:href="#close_modal"></use></svg>
+                    <svg><title>Close</title><use xlink:href="#icon--close_modal"></use></svg>
                 </span>
             </button>
             {{ session('status') }}

@@ -131,7 +131,7 @@ class FileLibraryTest extends TestCase
         $crawler->assertStatus(200);
 
         $tags = collect(
-            $files->reduce(function ($carry, $file) use ($files) {
+            $files->reduce(function ($carry, $file) {
                 return $carry + $file->tags->pluck('slug')->toArray();
             }, [])
         )

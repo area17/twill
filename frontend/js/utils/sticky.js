@@ -66,7 +66,7 @@ export default class Sticky {
   //
   status = 'top'
   ticking = false
-  anchors = [ 'Top', 'Bottom' ]
+  anchors = ['Top', 'Bottom']
   lastScrollPos = 0
   prevScrollPos = -1
 
@@ -135,7 +135,7 @@ export default class Sticky {
   }
 
   _scroll () {
-    let self = this
+    const self = this
 
     self.lastScrollPos = window.pageYOffset
 

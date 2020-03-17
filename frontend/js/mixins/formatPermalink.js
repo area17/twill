@@ -26,7 +26,7 @@ export default {
 
         const slug = this.$options.filters.slugify(text)
 
-        let field = {
+        const field = {
           name: permalinkRef.attributes ? permalinkRef.attributes.name : permalinkRef.name,
           value: slug
         }

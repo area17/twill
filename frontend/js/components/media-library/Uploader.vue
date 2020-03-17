@@ -1,8 +1,8 @@
 <template>
   <div class="uploader">
     <div class="uploader__dropzone" ref="uploaderDropzone">
-      <div class="button" ref="uploaderBrowseButton">Add new</div>
-      <div class="uploader__dropzone--desktop">or drop new files here</div>
+      <div class="button" ref="uploaderBrowseButton">{{ $trans('uploader.upload-btn-label', 'Add new') }}</div>
+      <div class="uploader__dropzone--desktop">{{ $trans('uploader.dropzone-text', 'or drop new files here') }}</div>
     </div>
   </div>
 </template>
@@ -189,7 +189,7 @@
       _onSubmitCallback (id, name) {
         this.$emit('clear')
         // each upload session will add upload files with original filenames in a folder named using a uuid
-        this.unique_folder_name = this.uploaderConfig.endpointRoot + (this.unique_folder_name || qq.getUniqueId())
+        this.unique_folder_name = this.unique_folder_name || (this.uploaderConfig.endpointRoot + qq.getUniqueId())
         this._uploader.methods.setParams({ unique_folder_name: this.unique_folder_name }, id)
 
         // determine the image dimensions and add it to params sent on upload success
@@ -220,7 +220,7 @@
         const index = this.loadingMedias.findIndex((m) => m.id === this._uploader.methods.getUuid(id))
 
         if (index >= 0) {
-          let media = this.loadingMedias[index]
+          const media = this.loadingMedias[index]
           media.progress = uploadedBytes / totalBytes * 100 || 0
           media.error = false
           this.loadingProgress(media)
@@ -253,7 +253,7 @@
           })
 
           if (index >= 0) {
-            let media = this.loadingMedias[index]
+            const media = this.loadingMedias[index]
             media.progress = 0
             media.error = false
             this.loadingProgress(media)
@@ -301,7 +301,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   $height_small_btn: 35px;
 

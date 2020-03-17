@@ -20,7 +20,7 @@
     computed: {
       barClasses: function () {
         return [
-          `buttonbar`,
+          'buttonbar',
           this.variant ? `buttonbar--${this.variant}` : ''
         ]
       }
@@ -29,7 +29,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   $toolbar__height: 40px;
   $border__radius: 2px;
@@ -105,7 +104,7 @@
 </style>
 
 <style lang="scss">
-  @import '~styles/setup/_mixins-colors-vars.scss';
+
   $toolbar__height: 40px;
   $border__radius: 2px;
 

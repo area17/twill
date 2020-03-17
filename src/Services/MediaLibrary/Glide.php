@@ -32,12 +32,12 @@ class Glide implements ImageServiceInterface
     protected $request;
 
     /**
-     * @var League\Glide\Server
+     * @var \League\Glide\Server
      */
     private $server;
 
     /**
-     * @var UrlBuilder
+     * @var \League\Glide\Urls\UrlBuilder
      */
     private $urlBuilder;
 
@@ -63,7 +63,8 @@ class Glide implements ImageServiceInterface
             'cache' => $this->config->get('twill.glide.cache'),
             'cache_path_prefix' => $this->config->get('twill.glide.cache_path_prefix'),
             'base_url' => $baseUrl,
-            'presets' => $this->config->get('twill.glide.presets', [])
+            'presets' => $this->config->get('twill.glide.presets', []),
+            'driver' => $this->config->get('twill.glide.driver')
         ]);
 
         $this->urlBuilder = UrlBuilderFactory::create(
@@ -74,7 +75,7 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $path
-     * @return StreamedResponse
+     * @return mixed
      */
     public function render($path)
     {
@@ -93,7 +94,13 @@ class Glide implements ImageServiceInterface
     public function getUrl($id, array $params = [])
     {
         $defaultParams = config('twill.glide.default_params');
-        return $this->urlBuilder->getUrl($id, Str::endsWith($id, '.svg') ? [] : array_replace($defaultParams, $params));
+        $addParamsToSvgs = config('twill.glide.add_params_to_svgs', false);
+
+        if (!$addParamsToSvgs && Str::endsWith($id, '.svg')) {
+            return $this->urlBuilder->getUrl($id);
+        }
+
+        return $this->urlBuilder->getUrl($id, array_replace($defaultParams, $params));
     }
 
     /**
@@ -168,8 +175,17 @@ class Glide implements ImageServiceInterface
     }
 
     /**
+     * @param string $id, string $preset
+     * @return string
+     */
+    public function getPresetUrl($id, $preset)
+    {
+        return $this->getRawUrl($id) . '?p=' . $preset;
+    }
+
+    /**
      * @param string $id
-     * @return array|null
+     * @return string
      */
     public function getRawUrl($id)
     {

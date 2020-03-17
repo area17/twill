@@ -34,13 +34,13 @@
     computed: {
       checkboxClasses: function () {
         return [
-          this.inline ? `checkboxGroup--inline` : ''
+          this.inline ? 'checkboxGroup--inline' : ''
         ]
       }
     },
     methods: {
       formatValue: function (newVal, oldval) {
-        let self = this
+        const self = this
         if (!newVal) return
         if (!oldval) return
 
@@ -76,7 +76,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .checkboxGroup {
     color:$color__text;

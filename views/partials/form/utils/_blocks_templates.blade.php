@@ -1,5 +1,5 @@
 <script>
-    window.TWILL_BLOCKS_COMPONENTS = []
+    window['{{ config('twill.js_namespace') }}'].TWILL_BLOCKS_COMPONENTS = []
 </script>
 
 @php
@@ -8,13 +8,13 @@
     $blocksForInlineTemplates = collect($allBlocks)->reject(function ($block) {
         return $block['compiled'] ?? false;
     })->filter(function ($block, $blockName) {
-        return View::exists($blockName);
+        return View::exists('admin.blocks.'.$blockName);
     });
 @endphp
 
 @foreach($blocksForInlineTemplates as $blockName => $block)
     <script>
-        window.TWILL_BLOCKS_COMPONENTS.push('{{ $blockName }}')
+        window['{{ config('twill.js_namespace') }}'].TWILL_BLOCKS_COMPONENTS.push('{{ $blockName }}')
     </script>
     <script type="text/x-template" id="{{ $block['component'] }}">
         <div class="block__body">

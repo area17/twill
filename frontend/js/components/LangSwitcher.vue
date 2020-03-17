@@ -55,7 +55,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   $toolbar__height: 35px;
   $border__radius: 2px;
@@ -86,6 +85,8 @@
     max-width: 480px;
     white-space: nowrap;
     overflow: hidden;
+    border: 1px solid #d9d9d9;
+    border-radius: 2px;
 
     &:hover {
       overflow-x: auto;
@@ -129,7 +130,7 @@
     }
 
     .language--in-modal & {
-      height: $toolbar__height - 2px;
+      height: $toolbar__height;
       max-width: 100%;
     }
 

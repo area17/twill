@@ -8,19 +8,30 @@ class Update extends Command
 {
     protected $signature = 'twill:update';
 
-    protected $description = 'Publish new Twill migrations';
+    protected $description = 'Publish new updated Twill assets';
 
+    /**
+     * Executes the console command.
+     *
+     * @return mixed
+     */
     public function handle()
     {
-        $this->publishMigrations();
-        $this->info('You should now run php artisan migrate.');
+        $this->publishAssets();
+        $this->call('cache:clear');
     }
 
-    private function publishMigrations()
+    /**
+     * Publishes the package frontend assets.
+     *
+     * @return void
+     */
+    private function publishAssets()
     {
         $this->call('vendor:publish', [
             '--provider' => 'A17\Twill\TwillServiceProvider',
-            '--tag' => 'twill-updates-migrations',
+            '--tag' => 'assets',
+            '--force' => true,
         ]);
     }
 }

@@ -14,20 +14,26 @@
          target="_blank">View permalink</a>
       <a v-if="row.hasOwnProperty('edit') && !row.hasOwnProperty('deleted') && row['edit']"
          :href="editUrl"
-         @click="preventEditInPlace($event)">Edit</a>
+         @click="preventEditInPlace($event)">{{ $trans('listing.dropdown.edit', 'Edit') }}</a>
       <a v-if="row.hasOwnProperty('published') && !row.hasOwnProperty('deleted')"
          href="#"
          @click.prevent="update('published')"
-      >{{ row['published'] ? 'Unpublish' : 'Publish' }}</a>
+      >{{ row['published'] ? $trans('listing.dropdown.unpublish', 'Unpublish') : $trans('listing.dropdown.publish', 'Publish') }}</a>
       <a v-if="row.hasOwnProperty('featured') && !row.hasOwnProperty('deleted')"
          href="#"
-         @click.prevent="update('featured')">{{ row['featured'] ? 'Unfeature' : 'Feature' }}</a>
+         @click.prevent="update('featured')">{{ row['featured'] ? $trans('listing.dropdown.unfeature', 'Unfeature') : $trans('listing.dropdown.feature', 'Feature') }}</a>
       <a v-if="row.hasOwnProperty('deleted')"
          href="#"
-         @click.prevent="restoreRow">Restore</a>
+         @click.prevent="restoreRow">{{ $trans('listing.dropdown.restore', 'Restore') }}</a>
+      <a v-if="row.hasOwnProperty('deleted')"
+         href="#"
+         @click.prevent="destroyRow">{{ $trans('listing.dropdown.destroy', 'Destroy') }}</a>
       <a v-else-if="row.delete"
          href="#"
-         @click.prevent="deleteRow">Delete</a>
+         @click.prevent="deleteRow">{{ $trans('listing.dropdown.delete', 'Delete') }}</a>
+      <a v-if="row.hasOwnProperty('duplicate')"
+         href="#"
+         @click.prevent="duplicateRow">{{ $trans('listing.dropdown.duplicate', 'Duplicate') }}</a>
     </div>
   </a17-dropdown>
 </template>
@@ -40,7 +46,7 @@
     mixins: [TableCellMixin],
     methods: {
       update: function (colName) {
-        this.$emit('update', {row: this.row, col: colName})
+        this.$emit('update', { row: this.row, col: colName })
       }
     }
   }

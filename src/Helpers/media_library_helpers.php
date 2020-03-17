@@ -22,10 +22,9 @@ if (!function_exists('azureEndpoint')) {
     function azureEndpoint($disk = 'libraries')
     {
         $scheme = config("filesystems.disks.{$disk}.use_https") ? 'https://' : '';
-        return $scheme . env('AZURE_ACCOUNT_NAME') . '.blob.' . env('AZURE_ENDPOINT_SUFFIX') . '/' . env('AZURE_CONTAINER');
+        return $scheme . config("filesystems.disks.{$disk}.name") . '.blob.' . config("filesystems.disks.{$disk}.endpoint-suffix") . '/' . config("filesystems.disks.{$disk}.container");
     }
 }
-
 
 if (!function_exists('bytesToHuman')) {
     /**

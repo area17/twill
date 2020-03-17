@@ -11,6 +11,7 @@ import a17ColorField from '@/components/ColorField.vue'
 import a17Textfield from '@/components/Textfield.vue'
 import a17HiddenField from '@/components/HiddenField.vue'
 import a17Wysiwyg from '@/components/Wysiwyg.vue'
+import a17WysiwygTipTap from '@/components/WysiwygTiptap.vue'
 import a17MediaField from '@/components/MediaField.vue'
 import a17MediaFieldTranslated from '@/components/MediaFieldTranslated.vue'
 import a17Radio from '@/components/Radio.vue'
@@ -35,12 +36,15 @@ import a17MediaLibrary from '@/components/media-library/MediaLibrary.vue'
 
 // Plugins
 import VueTimeago from 'vue-timeago'
+import get from 'lodash/get'
 import axios from 'axios'
 
 // Directives
 import SvgSprite from '@/directives/svg'
 import Tooltip from '@/directives/tooltip'
 import Sticky from '@/directives/sticky'
+
+const isProd = process.env.NODE_ENV === 'production'
 
 const A17Config = {
   install (Vue, opts) {
@@ -52,6 +56,7 @@ const A17Config = {
     Vue.component('a17-textfield', a17Textfield)
     Vue.component('a17-hiddenfield', a17HiddenField)
     Vue.component('a17-wysiwyg', a17Wysiwyg)
+    Vue.component('a17-wysiwyg-tiptap', a17WysiwygTipTap)
     Vue.component('a17-inputframe', a17Inputframe)
     Vue.component('a17-mediafield', a17MediaField)
     Vue.component('a17-mediafield-translated', a17MediaFieldTranslated)
@@ -92,8 +97,13 @@ const A17Config = {
     })
 
     // Configurations
-    Vue.config.productionTip = false
+    Vue.config.productionTip = isProd
+    Vue.config.devtools = true
     Vue.prototype.$http = axios
+
+    window.$trans = Vue.prototype.$trans = function (key, defaultValue) {
+      return get(window[process.env.VUE_APP_NAME].twillLocalization.lang, key, defaultValue)
+    }
 
     axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 

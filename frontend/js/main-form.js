@@ -72,6 +72,16 @@ store.registerModule('repeaters', repeaters)
 store.registerModule('parents', parents)
 store.registerModule('attributes', attributes)
 
+// Form components
+Vue.component('a17-fieldset', a17Fieldset)
+Vue.component('a17-publisher', a17Publisher)
+Vue.component('a17-title-editor', a17TitleEditor)
+Vue.component('a17-content', a17Content)
+Vue.component('a17-page-nav', a17PageNav)
+Vue.component('a17-langswitcher', a17Langswitcher)
+Vue.component('a17-sticky-nav', a17StickyNav)
+Vue.component('a17-spinner', a17Spinner)
+
 // Browser
 Vue.component('a17-repeater', a17Repeater)
 Vue.component('a17-browser', a17Browser)
@@ -102,8 +112,8 @@ importedBlocks.keys().map(block => {
   }
 })
 
-if (typeof window.TWILL_BLOCKS_COMPONENTS !== 'undefined') {
-  window.TWILL_BLOCKS_COMPONENTS.map(blockName => {
+if (typeof window[process.env.VUE_APP_NAME].TWILL_BLOCKS_COMPONENTS !== 'undefined') {
+  window[process.env.VUE_APP_NAME].TWILL_BLOCKS_COMPONENTS.map(blockName => {
     return Vue.component('a17-block-' + blockName, {
       template: '#a17-block-' + blockName,
       mixins: [BlockMixin]
@@ -111,21 +121,18 @@ if (typeof window.TWILL_BLOCKS_COMPONENTS !== 'undefined') {
   })
 }
 
+// Custom form components
+const importedComponents = require.context('@/components/customs/', true, /\.(js|vue)$/i)
+importedComponents.keys().map(block => {
+  const blockName = block.match(/\w+/)[0].replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase()
+  return Vue.component('a17-' + blockName, importedComponents(block).default)
+})
+
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
-window.vm = new Vue({
+window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
   store, // inject store to all children
   el: '#app',
-  components: {
-    'a17-spinner': a17Spinner,
-    'a17-sticky-nav': a17StickyNav,
-    'a17-title-editor': a17TitleEditor,
-    'a17-langswitcher': a17Langswitcher,
-    'a17-fieldset': a17Fieldset,
-    'a17-content': a17Content,
-    'a17-publisher': a17Publisher,
-    'a17-page-nav': a17PageNav
-  },
   mixins: [formatPermalink, editorMixin],
   data: function () {
     return {
@@ -142,7 +149,8 @@ window.vm = new Vue({
       isCustom: state => state.form.isCustom
     }),
     ...mapGetters([
-      'getSaveType'
+      'getSaveType',
+      'isEnabledSubmitOption'
     ])
   },
   methods: {
@@ -151,11 +159,20 @@ window.vm = new Vue({
         this.isFormUpdated = false
         this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
         this.unSubscribe()
-        this.$nextTick(() => { // let's wait for the loading state to be properly deployed (used to save wysiwyg fields)
+
+        // let's wait for the loading state to be properly deployed (used to save content of wysiwyg fields)
+        this.$nextTick(() => {
           const saveType = this.getSaveType || document.activeElement.name
-          this.$store.dispatch(ACTIONS.SAVE_FORM, saveType).then(() => {
+
+          // isEnabledSubmitOption is an extra check to test is the form can be submit by making sure the saveType is not disabled
+          if (this.isEnabledSubmitOption(saveType)) {
+            this.$store.dispatch(ACTIONS.SAVE_FORM, saveType).then(() => {
+              this.mutationsSubscribe()
+            })
+          } else {
+            this.$store.commit(FORM.UPDATE_FORM_LOADING, false)
             this.mutationsSubscribe()
-          })
+          }
         })
       }
     },

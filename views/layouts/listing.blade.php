@@ -9,13 +9,32 @@
     $nested = $nested ?? false;
     $bulkEdit = $bulkEdit ?? true;
     $create = $create ?? false;
+
+    $requestFilter = json_decode(request()->get('filter'), true) ?? [];
 @endphp
+
+@push('extra_css')
+    @if(app()->isProduction())
+        <link href="{{ twillAsset('main-listing.css') }}" rel="preload" as="style" crossorigin/>
+    @endif
+    @unless(config('twill.dev_mode', false))
+        <link href="{{ twillAsset('main-listing.css') }}" rel="stylesheet" crossorigin/>
+    @endunless
+@endpush
+
+@push('extra_js_head')
+    @if(app()->isProduction())
+        <link href="{{ twillAsset('main-listing.js') }}" rel="preload" as="script" crossorigin/>
+    @endif
+@endpush
 
 @section('content')
     <div class="listing">
         <div class="listing__nav">
             <div class="container" ref="form">
-                <a17-filter v-on:submit="filterListing" v-bind:closed="hasBulkIds" initial-search-value="{{ $filters['search'] ?? '' }}" :clear-option="true" v-on:clear="clearFiltersAndReloadDatas">
+                <a17-filter v-on:submit="filterListing" v-bind:closed="hasBulkIds"
+                            initial-search-value="{{ $filters['search'] ?? '' }}" :clear-option="true"
+                            v-on:clear="clearFiltersAndReloadDatas">
                     <a17-table-filters slot="navigation"></a17-table-filters>
 
                     @forelse($hiddenFilters as $filter)
@@ -24,16 +43,25 @@
                         @endif
 
                         @if (isset(${$filter.'List'}))
+                            @php
+                                $list = ${$filter.'List'};
+                                $options = method_exists($list, 'map') ?
+                                    $list->map(function($label, $value) {
+                                        return [
+                                            'value' => $value,
+                                            'label' => $label,
+                                        ];
+                                    })->values()->toArray() : $list;
+                                $selectedIndex = isset($requestFilter[$filter]) ? array_search($requestFilter[$filter], array_column($options, 'value')) : false;
+                            @endphp
                             <a17-vselect
-                            name="{{ $filter }}"
-                            :options="{{ json_encode(method_exists(${$filter.'List'}, 'map') ? ${$filter.'List'}->map(function($label, $value) {
-                                return [
-                                    'value' => $value,
-                                    'label' => $label
-                                ];
-                            })->values()->toArray() : ${$filter.'List'}) }}"
-                            placeholder="All {{ strtolower(Str::plural($filter)) }}"
-                            ref="filterDropdown[{{ $loop->index }}]"
+                                name="{{ $filter }}"
+                                :options="{{ json_encode($options) }}"
+                                @if ($selectedIndex !== false)
+                                    :selected="{{ json_encode($options[$selectedIndex]) }}"
+                                @endif
+                                placeholder="All {{ strtolower(\Illuminate\Support\Str::plural($filter)) }}"
+                                ref="filterDropdown[{{ $loop->index }}]"
                             ></a17-vselect>
                         @endif
 
@@ -50,7 +78,16 @@
 
                     @if($create)
                         <div slot="additional-actions">
-                            <a17-button variant="validate" size="small" v-on:click="create">Add new</a17-button>
+                            <a17-button variant="validate" size="small" v-on:click="create">{{ twillTrans('twill::lang.listing.add-new-button') }}</a17-button>
+                            @foreach($filterLinks as $link)
+                                <a17-button el="a" href="{{ $link['url'] ?? '#' }}" download="{{ $link['download'] ?? '' }}" rel="{{ $link['rel'] ?? '' }}" target="{{ $link['target'] ?? '' }}" variant="small secondary">{{ $link['label'] }}</a17-button>
+                            @endforeach
+                        </div>
+                    @elseif(isset($filterLinks) && count($filterLinks))
+                        <div slot="additional-actions">
+                            @foreach($filterLinks as $link)
+                                <a17-button el="a" href="{{ $link['url'] ?? '#' }}" download="{{ $link['download'] ?? '' }}" rel="{{ $link['rel'] ?? '' }}" target="{{ $link['target'] ?? '' }}" variant="small secondary">{{ $link['label'] }}</a17-button>
+                            @endforeach
                         </div>
                     @endif
                 </a17-filter>
@@ -65,13 +102,13 @@
                 :draggable="{{ $reorder ? 'true' : 'false' }}"
                 :max-depth="{{ $nestedDepth ?? '1' }}"
                 :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
-                empty-message="There is no item here yet.">
+                empty-message="{{ twillTrans('twill::lang.listing.listing-empty-message') }}">
             </a17-nested-datatable>
         @else
             <a17-datatable
                 :draggable="{{ $reorder ? 'true' : 'false' }}"
                 :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
-                empty-message="There is no item here yet.">
+                empty-message="{{ twillTrans('twill::lang.listing.listing-empty-message') }}">
             </a17-datatable>
         @endif
 
@@ -92,27 +129,35 @@
             <p class="modal--tiny-title"><strong>Move to trash</strong></p>
             <p>The item won't be deleted but moved to trash.</p>
         </a17-dialog>
+
+        <a17-dialog ref="warningDestroyRow" modal-title="Destroy item" confirm-label="Destroy">
+            <p class="modal--tiny-title"><strong>Destroy permanently</strong></p>
+            <p>The item won't be able to be restored anymore.</p>
+        </a17-dialog>
     </div>
 @stop
 
 @section('initialStore')
-    window.CMS_URLS = {
+
+    window['{{ config('twill.js_namespace') }}'].CMS_URLS = {
         index: @if(isset($indexUrl)) '{{ $indexUrl }}' @else window.location.href.split('?')[0] @endif,
         publish: '{{ $publishUrl }}',
         bulkPublish: '{{ $bulkPublishUrl }}',
         restore: '{{ $restoreUrl }}',
         bulkRestore: '{{ $bulkRestoreUrl }}',
+        forceDelete: '{{ $forceDeleteUrl }}',
+        bulkForceDelete: '{{ $bulkForceDeleteUrl }}',
         reorder: '{{ $reorderUrl }}',
         feature: '{{ $featureUrl }}',
         bulkFeature: '{{ $bulkFeatureUrl }}',
         bulkDelete: '{{ $bulkDeleteUrl }}'
     }
 
-    window.STORE.form = {
+    window['{{ config('twill.js_namespace') }}'].STORE.form = {
         fields: []
     }
 
-    window.STORE.datatable = {
+    window['{{ config('twill.js_namespace') }}'].STORE.datatable = {
         data: {!! json_encode($tableData) !!},
         columns: {!! json_encode($tableColumns) !!},
         navigation: {!! json_encode($tableMainFilters) !!},
@@ -129,12 +174,10 @@
     }
 
     @if ($create && ($openCreate ?? false))
-        window.openCreate = {!! json_encode($openCreate) !!}
+        window['{{ config('twill.js_namespace') }}'].openCreate = {!! json_encode($openCreate) !!}
     @endif
 @stop
 
 @push('extra_js')
-    <script src="{{ mix('/assets/admin/js/manifest.js') }}"></script>
-    <script src="{{ mix('/assets/admin/js/vendor.js') }}"></script>
-    <script src="{{ mix('/assets/admin/js/main-listing.js') }}"></script>
+    <script src="{{ twillAsset('main-listing.js') }}" crossorigin></script>
 @endpush

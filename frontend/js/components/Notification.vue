@@ -43,15 +43,15 @@
     },
     computed: {
       message: function () {
-        return this.$store.getters['notifByVariant'](this.variant)
+        return this.$store.getters.notifByVariant(this.variant)
       },
       variantClass: function () {
         return `notif--${this.variant}`
       },
       notifClasses: function () {
         return this.css && Array.isArray(this.css)
-          ? [ ...this.css, this.variantClass ]
-          : [ 'notif', this.variantClass ]
+          ? [...this.css, this.variantClass]
+          : ['notif', this.variantClass]
       },
       show: function () {
         return !this.closed && !!this.message

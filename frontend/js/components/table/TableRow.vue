@@ -11,7 +11,7 @@
     </td>
     <td class="tablecell tablecell--spacer">&nbsp;</td>
     <td class="tablecell tablecell--sticky">
-      <a17-table-cell-actions v-bind="currentComponentProps()" @editInPlace="editInPlace" @update="tableCellUpdate" @restoreRow=" restoreRow" @deleteRow="deleteRow"/>
+      <a17-table-cell-actions v-bind="currentComponentProps()" @editInPlace="editInPlace" @update="tableCellUpdate" @restoreRow=" restoreRow" @destroyRow="destroyRow" @deleteRow="deleteRow" @duplicateRow="duplicateRow"/>
     </td>
   </tr>
 </template>
@@ -49,7 +49,7 @@
       nestedStyle (col) {
         return this.columns.find((col) => col.name === 'nested') && col.name === 'draggable' ? {
           'webkit-transform': 'translateX(-' + this.nestedDepth * 80 + 'px)',
-          'transform': 'translateX(-' + this.nestedDepth * 80 + 'px)'
+          transform: 'translateX(-' + this.nestedDepth * 80 + 'px)'
         } : ''
       }
     }
@@ -57,7 +57,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .tablerow {
     position: relative;

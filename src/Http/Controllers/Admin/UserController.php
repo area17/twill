@@ -136,7 +136,7 @@ class UserController extends ModuleController
             'roleList' => Collection::make(UserRole::toArray()),
             'single_primary_nav' => [
                 'users' => [
-                    'title' => 'Users',
+                    'title' => twillTrans('twill::lang.user-management.users'),
                     'module' => true,
                 ],
             ],
@@ -166,12 +166,12 @@ class UserController extends ModuleController
             'roleList' => Collection::make(UserRole::toArray()),
             'single_primary_nav' => [
                 'users' => [
-                    'title' => 'Users',
+                    'title' => twillTrans('twill::lang.user-management.users'),
                     'module' => true,
                 ],
             ],
-            'customPublishedLabel' => 'Enabled',
-            'customDraftLabel' => 'Disabled',
+            'customPublishedLabel' => twillTrans('twill::lang.user-management.enabled'),
+            'customDraftLabel' => twillTrans('twill::lang.user-management.disabled'),
             'with2faSettings' => $with2faSettings,
             'qrCode' => $qrCode ?? null,
         ];
@@ -195,18 +195,18 @@ class UserController extends ModuleController
         $statusFilters = [];
 
         array_push($statusFilters, [
-            'name' => 'Active',
+            'name' => twillTrans('twill::lang.user-management.active'),
             'slug' => 'published',
             'number' => $this->repository->getCountByStatusSlug('published'),
         ], [
-            'name' => 'Disabled',
+            'name' => twillTrans('twill::lang.user-management.disabled'),
             'slug' => 'draft',
             'number' => $this->repository->getCountByStatusSlug('draft'),
         ]);
 
         if ($this->getIndexOption('restore')) {
             array_push($statusFilters, [
-                'name' => 'Trash',
+                'name' => twillTrans('twill::lang.user-management.trash'),
                 'slug' => 'trash',
                 'number' => $this->repository->getCountByStatusSlug('trash'),
             ]);

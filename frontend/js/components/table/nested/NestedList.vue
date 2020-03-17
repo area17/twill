@@ -3,7 +3,7 @@
              :class="nestedDropAreaClasses"
              v-model="rows"
              :options="draggableOptions"
-             :element="'ul'"
+             :tag="'ul'"
              :component-data="draggableGetComponentData">
     <li class="nested-datatable__item"
         v-for="(row, index) in rows"
@@ -54,7 +54,7 @@
     computed: {
       styleDepth: function () {
         return {
-          'marginLeft': this.depth === 0 ? '0px' : '60px'
+          marginLeft: this.depth === 0 ? '0px' : '60px'
         }
       },
       rows: {
@@ -105,7 +105,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .nested-datatable__item {
     border: 1px solid #F2F2F2;

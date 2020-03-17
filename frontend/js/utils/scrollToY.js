@@ -29,7 +29,7 @@ const scrollToY = function (options) {
   const useRequestAnimationFrame = window.requestAnimationFrame
   let scrollInterval
 
-  for (let def in options) {
+  for (const def in options) {
     if (typeof options[def] !== 'undefined') {
       settings[def] = options[def]
     }
