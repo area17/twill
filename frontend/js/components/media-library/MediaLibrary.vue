@@ -157,9 +157,9 @@
     computed: {
       renderedMediaItems: function () {
         return this.mediaItems.map((item) => {
-          item.disabled = (this.filesizeMax > 0 && item.filesizeInMb > this.filesizeMax)
-            || (this.widthMin > 0 && item.width < this.widthMin)
-            || (this.heightMin > 0 && item.height < this.heightMin)
+          item.disabled = (this.filesizeMax > 0 && item.filesizeInMb > this.filesizeMax) ||
+            (this.widthMin > 0 && item.width < this.widthMin) ||
+            (this.heightMin > 0 && item.height < this.heightMin)
           return item
         })
       },
