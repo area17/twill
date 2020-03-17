@@ -9,6 +9,13 @@ if (!function_exists('s3Endpoint')) {
      */
     function s3Endpoint($disk = 'libraries')
     {
+        // if a custom s3 endpoint is configured explicitly, return it
+        $customEndpoint = config("filesystems.disks.{$disk}.endpoint");
+
+        if ($customEndpoint) {
+            return $customEndpoint;
+        }
+
         $scheme = config("filesystems.disks.{$disk}.use_https") ? 'https://' : '';
         return $scheme . config("filesystems.disks.{$disk}.bucket") . '.' . Storage::disk($disk)->getAdapter()->getClient()->getEndpoint()->getHost();
     }
