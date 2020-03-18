@@ -11,6 +11,9 @@ export const DONE_UPLOAD_MEDIA = 'doneUploadMedia'
 export const ERROR_UPLOAD_MEDIA = 'errorUploadMedia'
 export const DESTROY_SPECIFIC_MEDIA = 'destroyMediasInSelected'
 export const UPDATE_MEDIA_MAX = 'updateMediaMax'
+export const UPDATE_MEDIA_FILESIZE_MAX = 'updateMediaFilesizeMax'
+export const UPDATE_MEDIA_WIDTH_MIN = 'updateMediaWidthMin'
+export const UPDATE_MEDIA_HEIGHT_MIN = 'updateMediaHeightMin'
 export const UPDATE_MEDIA_TYPE = 'updateMediaType'
 export const RESET_MEDIA_TYPE = 'resetMediaType'
 export const SET_MEDIA_CROP = 'setMediaCrop'
@@ -33,6 +36,9 @@ export default {
   ERROR_UPLOAD_MEDIA,
   DESTROY_SPECIFIC_MEDIA,
   UPDATE_MEDIA_MAX,
+  UPDATE_MEDIA_FILESIZE_MAX,
+  UPDATE_MEDIA_WIDTH_MIN,
+  UPDATE_MEDIA_HEIGHT_MIN,
   UPDATE_MEDIA_TYPE,
   RESET_MEDIA_TYPE,
   SET_MEDIA_CROP,

@@ -366,11 +366,22 @@ abstract class ModuleController extends Controller
             return $this->respondWithSuccess('Content saved. All good!');
         }
 
+        if ($parentModuleId) {
+            $params = [
+                Str::singular(explode('.', $this->moduleName)[0]) => $parentModuleId,
+                Str::singular(explode('.', $this->moduleName)[1]) => $item->id,
+            ];
+        } else {
+            $params = [
+                Str::singular($this->moduleName) => $item->id,
+            ];
+        }
+
         return $this->respondWithRedirect(moduleRoute(
             $this->moduleName,
             $this->routePrefix,
             'edit',
-            array_filter([$parentModuleId]) + [Str::singular($this->moduleName) => $item->id]
+            $params
         ));
     }
 
@@ -612,7 +623,7 @@ abstract class ModuleController extends Controller
                     $this->moduleName,
                     $this->routePrefix,
                     'edit',
-                    array_filter(['id' => $newItem->id])
+                    array_filter([Str::singular($this->moduleName) => $newItem->id])
                 ),
             ]);
         }

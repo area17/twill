@@ -50,10 +50,10 @@
               <a17-uploader v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias"
                             :type="currentTypeObject"/>
               <div class="medialibrary__list-items">
-                <a17-itemlist v-if="type === 'file'" :items="fullMedias" :selected-items="selectedMedias"
+                <a17-itemlist v-if="type === 'file'" :items="renderedMediaItems" :selected-items="selectedMedias"
                               :used-items="usedMedias" @change="updateSelectedMedias"
                               @shiftChange="updateSelectedMedias"/>
-                <a17-mediagrid v-else :items="fullMedias" :selected-items="selectedMedias" :used-items="usedMedias"
+                <a17-mediagrid v-else :items="renderedMediaItems" :selected-items="selectedMedias" :used-items="usedMedias"
                                @change="updateSelectedMedias" @shiftChange="updateSelectedMedias"/>
                 <a17-spinner v-if="loading" class="medialibrary__spinner">Loading&hellip;</a17-spinner>
               </div>
@@ -145,7 +145,7 @@
       return {
         loading: false,
         maxPage: 20,
-        fullMedias: [],
+        mediaItems: [],
         selectedMedias: [],
         gridHeight: 0,
         page: this.initialPage,
@@ -155,6 +155,14 @@
       }
     },
     computed: {
+      renderedMediaItems: function () {
+        return this.mediaItems.map((item) => {
+          item.disabled = (this.filesizeMax > 0 && item.filesizeInMb > this.filesizeMax) ||
+            (this.widthMin > 0 && item.width < this.widthMin) ||
+            (this.heightMin > 0 && item.height < this.heightMin)
+          return item
+        })
+      },
       currentTypeObject: function () {
         return this.types.find((type) => {
           return type.value === this.type
@@ -190,6 +198,9 @@
       ...mapState({
         connector: state => state.mediaLibrary.connector,
         max: state => state.mediaLibrary.max,
+        filesizeMax: state => state.mediaLibrary.filesizeMax,
+        widthMin: state => state.mediaLibrary.widthMin,
+        heightMin: state => state.mediaLibrary.heightMin,
         type: state => state.mediaLibrary.type, // image, video, file
         types: state => state.mediaLibrary.types,
         strict: state => state.mediaLibrary.strict,
@@ -199,7 +210,7 @@
     },
     watch: {
       type: function () {
-        this.clearFullMedias()
+        this.clearMediaItems()
         this.gridLoaded = false
       }
     },
@@ -236,7 +247,7 @@
       },
       addMedia: function (media) {
         // add media in first position of the available media
-        this.fullMedias.unshift(media)
+        this.mediaItems.unshift(media)
         this.$store.commit(MEDIA_LIBRARY.INCREMENT_MEDIA_TYPE_TOTAL, this.type)
         // select it
         this.updateSelectedMedias(media.id)
@@ -254,8 +265,8 @@
 
           if (shift && this.selectedMedias.length > 0) {
             const lastSelectedMedia = this.selectedMedias[this.selectedMedias.length - 1]
-            const lastSelectedMediaIndex = this.fullMedias.findIndex((media) => media.id === lastSelectedMedia.id)
-            const selectedMediaIndex = this.fullMedias.findIndex((media) => media.id === id)
+            const lastSelectedMediaIndex = this.mediaItems.findIndex((media) => media.id === lastSelectedMedia.id)
+            const selectedMediaIndex = this.mediaItems.findIndex((media) => media.id === id)
             if (selectedMediaIndex === -1 && lastSelectedMediaIndex === -1) return
 
             let start = null
@@ -268,7 +279,7 @@
               end = lastSelectedMediaIndex
             }
 
-            const selectedMedias = this.fullMedias.slice(start, end)
+            const selectedMedias = this.mediaItems.slice(start, end)
 
             selectedMedias.forEach((media) => {
               if (this.selectedMedias.length >= this.max && this.max > 0) return
@@ -278,7 +289,7 @@
               }
             })
           } else {
-            const mediaToSelect = this.fullMedias.filter(function (media) {
+            const mediaToSelect = this.mediaItems.filter(function (media) {
               return media.id === id
             })
 
@@ -322,16 +333,16 @@
         mediasIds.forEach(() => {
           this.$store.commit(MEDIA_LIBRARY.DECREMENT_MEDIA_TYPE_TOTAL, this.type)
         })
-        this.fullMedias = this.fullMedias.filter((media) => {
+        this.mediaItems = this.mediaItems.filter((media) => {
           return !this.selectedMedias.includes(media) || keepSelectedMedias.includes(media)
         })
         this.selectedMedias = keepSelectedMedias
-        if (this.fullMedias.length <= 40) {
+        if (this.mediaItems.length <= 40) {
           this.reloadGrid()
         }
       },
-      clearFullMedias: function () {
-        this.fullMedias.splice(0)
+      clearMediaItems: function () {
+        this.mediaItems.splice(0)
       },
       reloadGrid: function () {
         this.loading = true
@@ -350,8 +361,8 @@
         api.get(this.endpoint, formdata, (resp) => {
           // add medias here
           resp.data.items.forEach(item => {
-            if (!this.fullMedias.find(media => media.id === item.id)) {
-              this.fullMedias.push(item)
+            if (!this.mediaItems.find(media => media.id === item.id)) {
+              this.mediaItems.push(item)
             }
           })
           this.maxPage = resp.data.maxPage || 1
@@ -376,7 +387,7 @@
         // when changing filters, reset the page to 1
         this.page = 1
 
-        this.clearFullMedias()
+        this.clearMediaItems()
         this.clearSelectedMedias()
 
         if (el.scrollTop === 0) {
