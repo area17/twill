@@ -342,4 +342,19 @@ class ModulesAuthorsTest extends ModulesTestBase
 
         $this->assertSee('v-svg symbol="close_modal"');
     }
+
+    public function testCanSeeRenderedBlocks()
+    {
+        $this->createAuthor();
+        $this->editAuthor();
+
+        $this->request(
+            "/twill/personnel/authors/{$this->author->id}/edit"
+        )->assertStatus(200);
+
+        // Check if it can see a rendered block
+        $this->assertSee(
+            '<script*type="text/x-template"*id="a17-block-quote">'
+        );
+    }
 }
