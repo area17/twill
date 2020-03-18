@@ -8,12 +8,8 @@ class DashboardTest extends ModulesTestBase
     {
         parent::setUp();
 
-        // TODO -- disabled to fix error in Travis
-        //
-
-        $this->skipOnTravis();
-
         $this->loadConfig('{$stubs}/modules/dashboard/twill.php'); /// commenting this line it start working
+        $this->loadConfig('{$stubs}/modules/dashboard/translatable.php'); /// commenting this line it start working
     }
 
     /**
@@ -62,39 +58,4 @@ class DashboardTest extends ModulesTestBase
             $result[0]['date']
         );
     }
-
-    /**
-     * Trying to debug those tests
-     */
-
-    //    public function testCanDisplayDashboard()
-    //    {
-    //        require $this->makeFileName('{$base}/routes/admin.php');
-    //
-    //        dump(
-    //            file_get_contents($this->makeFileName('{$base}/routes/admin.php'))
-    //        );
-    //
-    //        try {
-    //            dump(route('admin.personnel.authors.index'));
-    //        } catch (\Exception $e) {
-    //            dump('route admin.personnel.authors.index NOT FOUND');
-    //        }
-    //
-    //        dump($this->getUriWithNames());
-    //
-    //        $this->request('/twill')->assertStatus(200);
-    //
-    //        $this->assertSee('Personnel');
-    //        $this->assertSee('Categories');
-    //
-    //        $this->request('/twill/personnel/authors')->assertStatus(200);
-    //
-    //        $this->assertSee('Name');
-    //        $this->assertSee('Languages');
-    //        $this->assertSee('Mine');
-    //        $this->assertSee('Add new');
-    //
-    //        $this->request('/twill/categories')->assertStatus(200);
-    //    }
 }
