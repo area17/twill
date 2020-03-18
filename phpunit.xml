@@ -7,8 +7,8 @@
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
-         stopOnError="false"
-         stopOnFailure="false"
+         stopOnError="true"
+         stopOnFailure="true"
          verbose="true"
 >
   <testsuites>
@@ -17,8 +17,11 @@
     </testsuite>
   </testsuites>
   <filter>
-    <whitelist processUncoveredFilesFromWhitelist="true">
+    <whitelist processUncoveredFilesFromWhitelist="false">
       <directory suffix=".php">./src</directory>
+      <exclude>
+        <directory suffix=".blade.php">./tests</directory>
+      </exclude>
     </whitelist>
   </filter>
   <logging>
