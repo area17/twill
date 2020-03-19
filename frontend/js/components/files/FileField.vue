@@ -63,6 +63,10 @@
       fieldNote: {
         type: String,
         default: ''
+      },
+      filesizeMax: {
+        type: Number,
+        default: 0
       }
     },
     data: () => {

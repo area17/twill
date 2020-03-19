@@ -37,8 +37,7 @@
           <a17-tablehead :columns="visibleColumns" ref="thead"/>
           </thead>
           <template v-if="draggable">
-            <draggable class="datatable__drag" :tag="'tbody'" v-model="rows" :options="dragOptions"
-                       :draggable="true">
+            <draggable class="datatable__drag" :tag="'tbody'" v-model="rows" :options="dragOptions">
               <template v-for="(row, index) in rows">
                 <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :key="row.id"/>
               </template>

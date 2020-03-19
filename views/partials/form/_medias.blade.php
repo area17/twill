@@ -10,6 +10,8 @@
     $captionMaxLength = $captionMaxLength ?? false;
     $extraMetadatas = $extraMetadatas ?? false;
     $multiple = $max > 1 || $max == 0;
+    $widthMin = $widthMin ?? 0;
+    $heightMin = $heightMin ?? 0;
 @endphp
 
 @if (config('twill.media_library.translated_form_fields', $translated ?? false) && ($translated ?? true))
@@ -19,6 +21,8 @@
             label: '{{ $label }}',
             cropContext: '{{ $name }}',
             max: {{ $max }},
+            widthMin: {{ $widthMin }},
+            heightMin: {{ $heightMin }},
             @if ($extraMetadatas) extraMetadatas: {{ json_encode($extraMetadatas) }}, @endif
             @if ($altTextMaxLength) altTextMaxLength: {{ $altTextMaxLength }}, @endif
             @if ($captionMaxLength) captionMaxLength: {{ $captionMaxLength }}, @endif
@@ -44,6 +48,8 @@
         @if($multiple) <a17-slideshow @else <a17-mediafield @endif
             @include('twill::partials.form.utils._field_name')
             crop-context="{{ $name }}"
+            :width-min="{{ $widthMin }}"
+            :height-min="{{ $heightMin }}"
             @if($multiple) :max="{{ $max }}" @endif
             @if ($extraMetadatas) :extra-metadatas="{{ json_encode($extraMetadatas) }}" @endif
             @if ($required) :required="true" @endif

@@ -38,7 +38,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    const VERSION = '2.0.0';
+    const VERSION = '2.0.1';
 
     /**
      * Service providers to be registered.
@@ -371,7 +371,7 @@ class TwillServiceProvider extends ServiceProvider
         $blade->component('twill::partials.form.utils._fieldset', 'formFieldset');
         $blade->component('twill::partials.form.utils._columns', 'formColumns');
         $blade->component('twill::partials.form.utils._collapsed_fields', 'formCollapsedFields');
-        $blade->component('twill::partials.form.utils._connected_ields', 'formConnectedFields');
+        $blade->component('twill::partials.form.utils._connected_fields', 'formConnectedFields');
         $blade->component('twill::partials.form.utils._inline_checkboxes', 'formInlineCheckboxes');
     }
 
