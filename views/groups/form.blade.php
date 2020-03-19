@@ -63,7 +63,6 @@
 
 @if(Config::get('twill.permission.level') == 'roleGroupModule')
   @can('edit-user-groups')
-    @if($currentUser->is_superadmin /*|| $item->id != $currentUser->id test user connected if has the psermission to manage group*/)
       @section('fieldsets')
           @foreach($permissionModules as $moduleName => $moduleItems)
               <a17-fieldset title='{{ ucfirst($moduleName) . " Permissions"}}' id='{{ $moduleName }}'>
@@ -93,7 +92,6 @@
               </a17-fieldset>
           @endforeach
       @stop
-    @endif
   @endcan
 
 @endif
