@@ -83,6 +83,8 @@ return [
             'files-selected' => 'filer valgt',
             'clear' => 'Tøm',
             'dimensions' => 'Dimensjoner',
+            'caption' => 'Bildetekst',
+            'alt-text' => 'alt tekst',
         ],
     ],
     'filter' => [
