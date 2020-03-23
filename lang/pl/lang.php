@@ -250,4 +250,15 @@ return [
         'save-success' => 'Strona zapisana pomyślnie.',
         'cancel' => 'Anuluj',
     ],
+    'notifications' => [
+        'welcome' => [
+            'title' => 'Witaj',
+            'content' => 'Otrzymujesz tą wiadomość ponieważ zostało utworzone dla ciebie konto na :name.',
+            'action' => 'Ustaw swoje hasło',
+        ],
+        'reset' => [
+            'content' => 'Otrzymujesz tą wiadomość ponieważ ktoś zgłosił prośbę o zresetowanie hasła dla tego konta. Jeżeli nie byłeś to ty, możesz po prostu zignorować tą wiadomość.',
+            'action' => 'Zresetuj swoje hasło',
+        ],
+    ],
 ];

@@ -248,4 +248,15 @@ return [
         'save-success' => 'Content saved. All good!',
         'cancel' => 'Cancel',
     ],
+    'notifications' => [
+        'welcome' => [
+            'title' => 'Welcome',
+            'content' => 'You are receiving this email because an account was created for you on :name.',
+            'action' => 'Choose your own password',
+        ],
+        'reset' => [
+            'content' => 'You are receiving this email because we received a password reset. If you did not request a password reset, no further action is required.',
+            'action' => 'Reset password',
+        ],
+    ],
 ];
