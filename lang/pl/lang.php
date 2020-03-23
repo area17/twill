@@ -250,6 +250,12 @@ return [
         'save-success' => 'Strona zapisana pomyślnie.',
         'cancel' => 'Anuluj',
     ],
+    'emails' => [
+        'hello' => 'Witaj!',
+        'regards' => 'Pozdrawiamy,',
+        'problems' => 'Jeżeli nie możesz kliknąć przycisku ":actionText", wklej ten link do swojej przeglądarki: [:url](:url)',
+        'all-rights-reserved' => 'Wszelkie prawa zastrzeżone.',
+    ],
     'notifications' => [
         'welcome' => [
             'title' => 'Witaj',
