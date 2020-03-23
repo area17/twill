@@ -22,8 +22,8 @@
 @section('content')
     <a17-buckets
         title="{{ $bucketSourceTitle ?? twillTrans('twill::lang.buckets.source-title') }}"
-        empty-buckets="No items featured."
-        empty-source="No items available."
+        empty-buckets="{{ twillTrans('twill::lang.buckets.none-featured') }}"
+        empty-source="{{ twillTrans('twill::lang.buckets.none-available') }}"
         :restricted="{!! json_encode($restricted ?? true) !!}"
         :extra-actions="{{ json_encode($bucketSectionLinks) }}"
     >
