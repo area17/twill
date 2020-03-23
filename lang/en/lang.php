@@ -4,9 +4,17 @@ return [
     'auth' => [
         'email' => 'Email',
         'password' => 'Password',
+        'password-confirmation' => 'Confirm password',
         'forgot-password' => 'Forgot password',
+        'choose-password' => 'Choose password',
+        'reset-password' => 'Reset password',
+        'reset-send' => 'Send password reset link',
         'login' => 'Login',
+        'back-to-login' => 'Back to Login',
         'login-title' => 'Login',
+        'verify-login' => 'Verify login',
+        'otp' => 'One-time password',
+        'oauth-link-title' => 'Re-enter your password to link :provider to your account',
     ],
     'dashboard' => [
         'search-placeholder' => 'Search everything...',

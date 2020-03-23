@@ -4,9 +4,17 @@ return [
     'auth' => [
         'email' => 'Email',
         'password' => 'Hasło',
+        'password-confirmation' => 'Potwierdź hasło',
         'forgot-password' => 'Zapomniałem hasła',
+        'choose-password' => 'Wybierz hasło',
+        'reset-password' => 'Zresetuj hasło',
+        'reset-send' => 'Wyślij link resetujący hasło',
         'login' => 'Zaloguj się',
+        'back-to-login' => 'Powrót do logowania',
         'login-title' => 'Zaloguj się',
+        'verify-login' => 'Zweryfikuj tożsamość',
+        'otp' => 'Kod jednorazowy',
+        'oauth-link-title' => 'Wprowadź hasło ponownie aby połączyć swoje konto z :provider',
     ],
     'dashboard' => [
         'search-placeholder' => 'Szukaj na całej stronie...',
