@@ -248,6 +248,12 @@ return [
         'save-success' => 'Content saved. All good!',
         'cancel' => 'Cancel',
     ],
+    'emails' => [
+        'hello' => 'Hello!',
+        'regards' => 'Regards,',
+        'problems' => 'If you are having trouble clicking the ":actionText" button, copy and paste the URL below into your web browser: [:url](:url)',
+        'all-rights-reserved' => 'All rights reserved.',
+    ],
     'notifications' => [
         'welcome' => [
             'title' => 'Welcome',
