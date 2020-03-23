@@ -36,6 +36,8 @@ return [
         'intro' => 'Co chciałbyś dzisiaj wyróżnić?',
         'publish' => 'Opublikuj',
         'source-title' => 'Dostępne elementy',
+        'none-featured' => 'Nie wyróżniono żadnych elementów.',
+        'none-available' => 'Nie ma żadnych elementów które mógłbyś wyróżnić.',
     ],
     'listing' => [
         'filter' => [
@@ -66,9 +68,30 @@ return [
         'paginate' => [
             'rows-per-page' => 'Wierszy na stronę:',
         ],
+        'dialogs' => [
+            'delete' => [
+                'title' => 'Usuń element',
+                'confirm' => 'Usuń',
+                'move-to-trash' => 'Przenieś do kosza',
+                'disclaimer' => 'Ten element nie zostanie trwale usunięty, tylko przeniesiony do kosza.',
+            ],
+            'destroy' => [
+                'title' => 'Usuń trwale',
+                'confirm' => 'Usuń',
+                'destroy-permanently' => 'Usuń na zawsze',
+                'disclaimer' => 'Tego elementu nie będzie można przywrócić.',
+            ],
+        ],
+        'bulk-actions' => 'Dostępne akcje',
+        'bulk-clear' => 'Wyczyść wybór',
         'add-new-button' => 'Dodaj nowy',
         'listing-empty-message' => 'Nie dodano tutaj jeszcze żadnych rzeczy.',
         'languages' => 'Języki',
+    ],
+    'dialog' => [
+        'title' => 'Przenieś do kosza',
+        'ok' => 'OK',
+        'cancel' => 'Anuluj',
     ],
     'main' => [
         'published' => 'Opublikowany',

@@ -36,6 +36,8 @@ return [
         'intro' => 'What would you like to feature today?',
         'publish' => 'Publish',
         'source-title' => 'Available items',
+        'none-featured' => 'No items featured.',
+        'none-available' => 'No items available.',
     ],
     'listing' => [
         'filter' => [
@@ -66,9 +68,30 @@ return [
         'paginate' => [
             'rows-per-page' => 'Rows per page:',
         ],
+        'dialogs' => [
+            'delete' => [
+                'title' => 'Delete item',
+                'confirm' => 'Delete',
+                'move-to-trash' => 'Move to trash',
+                'disclaimer' => 'The item won\'t be deleted but moved to trash.'
+            ],
+            'destroy' => [
+                'title' => 'Destroy item',
+                'confirm' => 'Destroy',
+                'destroy-permanently' => 'Destroy permanently',
+                'disclaimer' => 'The item won\'t be able to be restored anymore.',
+            ],
+        ],
+        'bulk-actions' => 'Bulk actions',
+        'bulk-clear' => 'Clear',
         'add-new-button' => 'Add new',
         'listing-empty-message' => 'There is no item here yet.',
         'languages' => 'Languages',
+    ],
+    'dialog' => [
+        'title' => 'Move to Trash',
+        'ok' => 'OK',
+        'cancel' => 'Cancel',
     ],
     'main' => [
         'published' => 'Live',
