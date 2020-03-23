@@ -31,6 +31,14 @@ return [
     'form' => [
         'content' => 'Treść',
         'editor' => 'Edytor',
+        'dialogs' => [
+            'delete' => [
+                'title' => 'Usuń zawartość',
+                'confirm' => 'Usuń',
+                'delete-content' => 'Usuń zawartość',
+                'confirmation' => 'Czy na pewno chcesz to zrobić? <br />Tej zmiany nie można cofnąć.',
+            ],
+        ],
     ],
     'buckets' => [
         'intro' => 'Co chciałbyś dzisiaj wyróżnić?',

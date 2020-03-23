@@ -31,6 +31,14 @@ return [
     'form' => [
         'content' => 'Content',
         'editor' => 'Editor',
+        'dialogs' => [
+            'delete' => [
+                'title' => 'Delete content',
+                'confirm' => 'Delete',
+                'delete-content' => 'Delete content',
+                'confirmation' => 'Are you sure ?<br />This change can\'t be undone.',
+            ],
+        ],
     ],
     'buckets' => [
         'intro' => 'What would you like to feature today?',
