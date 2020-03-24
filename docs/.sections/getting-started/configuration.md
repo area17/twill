@@ -244,7 +244,7 @@ S3_BUCKET=bucket-name
 
 Optionally, you can use the `S3_REGION` variable to specify a region other than S3's default region (`us-east-1`).
 
-If you prefer to use another S3 Compliant Storage such as Minio, provide your application with the following environment variables:
+If you prefer to use another S3 compliant storage such as Minio, provide your application with the following environment variables:
 
 ```bash
 S3_KEY=S3_KEY
