@@ -62,7 +62,7 @@
                             'value' => 'edit-module',
                             'label' => 'Edit ' . $module_name
                         ]
-                    ], (config('twill.permission.level')=='roleGroupModule' ? [['value' => 'manage-module', 'label' => 'Manage ' . $moduleName ]] : []))
+                    ], (config('twill.permission.level')=='roleGroupModule' ? [['value' => 'manage-module', 'label' => 'Manage ' . $module_name ]] : []))
                 ])
             @endforeach
         @endcomponent
