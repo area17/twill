@@ -30,6 +30,7 @@
 
     <!-- Modal : Password -->
     <a17-modal class="modal--form" ref="passwordModal"
+               @hide="hidePasswordModal"
                :title="userInfo.is_activated ? `Reset password for ${userInfo.user_name}` : `Register account for ${userInfo.user_name}`">
       <div class="userInfo__form-row">
         <a17-textfield name="new_password"
@@ -46,6 +47,7 @@
         <a17-singlecheckbox
           inStore="value"
           name="require_password_change"
+          :initialValue="false"
           id="require_password_change"
           fieldName="require_password_change"
           label="Require password change at next login"/>
@@ -62,6 +64,7 @@
   import A17Textfield from '@/components/Textfield.vue'
   import A17Checkbox from '@/components/Checkbox.vue'
   import A17ModalValidation from '@/components/modals/ModalValidationButtons.vue'
+  import { FORM } from '@/store/mutations'
 
   export default {
     name: 'A17UserInfo',
@@ -85,6 +88,16 @@
       openPasswordModal () {
         this.isPasswordModalOpen = true
         this.$refs.passwordModal.open()
+        this.$store.commit(FORM.UPDATE_FORM_FIELD, {
+          name: 'reset_password',
+          value: true
+        })
+      },
+      hidePasswordModal () {
+        this.$store.commit(FORM.UPDATE_FORM_FIELD, {
+          name: 'reset_password',
+          value: false
+        })
       }
     }
   }
