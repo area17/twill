@@ -189,7 +189,7 @@
         ]
     }
     @unless($item->is_superadmin)
-        @can('edit-user-role')
+        @can('edit-users')
             window.STORE.publication.userInfo = {
                 user_name: '{{ $item->name }}',
                 registered_at: '{{ $item->activated ? $item->registered_at->format('d M Y') : "Pending ({$item->created_at->format('d M Y')})" }}',

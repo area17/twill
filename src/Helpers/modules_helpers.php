@@ -65,10 +65,13 @@ if (!function_exists('updatePermissionOptions')) {
     // return the module name if is permissionable module, otherwise return false
     function updatePermissionOptions($options, $user, $item)
     {
-        $permissions = $user->role->permissions()->module()->pluck('name','permissionable_type')->all();
-        if (empty($permissions)) {
-            if ($user->role->permissions()->global()->where('name', 'manage-modules')->first()){
-                $permissions[get_class($item)] = 'manage-item';
+        $permissions = [];
+        if ($user->role) {
+            $permissions = $user->role->permissions()->module()->pluck('name','permissionable_type')->all();
+            if (empty($permissions)) {
+                if ($user->role->permissions()->global()->where('name', 'manage-modules')->first()){
+                    $permissions[get_class($item)] = 'manage-item';
+                }
             }
         }
 

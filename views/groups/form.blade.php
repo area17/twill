@@ -13,7 +13,7 @@
     @formField('browser', [
         'moduleName' => 'users',
         'name' => 'users',
-        'notes' => 'Add memebers to the groups',
+        'notes' => 'Add members to the groups',
         'label' => 'Users',
         'max' => 999
     ])
@@ -48,11 +48,7 @@
                             [
                                 'value' => 'edit-module',
                                 'label' => 'Edit ' . $moduleName
-                            ] + (config('twill.permission.level')=='roleGroupModule' ?
-                            [
-                                'value' => 'manage-module',
-                                'label' => 'Manage ' . $moduleName
-                            ] : [])
+                            ]
                         ]
                     ])
                 @endforeach

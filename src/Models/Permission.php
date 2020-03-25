@@ -25,7 +25,7 @@ class Permission extends BaseModel
                 return ['edit-settings', 'edit-users', 'edit-user-role', 'edit-user-groups', 'manage-modules', 'access-media-library'];
                 break;
             case 'module':
-                return ['view-module', 'edit-module'] + (config('twill.permission.modules')=='roleGroupModule' ? ['manage-module'] : []);
+                return array_merge(['view-module', 'edit-module'], (config('twill.permission.level')=='roleGroupModule' ? ['manage-module'] : []));
                 break;
             case 'item':
                 return ['view-item', 'edit-item', 'manage-item'];

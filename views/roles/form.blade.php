@@ -49,7 +49,7 @@
                     'name' => 'module_' . $module_name . '_permissions',
                     'label' => ucfirst($module_name) . ' permissions',
                     'placeholder' => 'Select a permission',
-                    'options' => [
+                    'options' => array_merge([
                         [
                             'value' => 'none',
                             'label' => 'None'
@@ -61,34 +61,10 @@
                         [
                             'value' => 'edit-module',
                             'label' => 'Edit ' . $module_name
-                        ] + (config('twill.permission.level')=='roleGroupModule' ?
-                            [
-                                'value' => 'manage-module',
-                                'label' => 'Manage ' . $moduleName
-                            ] : [])
-                    ]
+                        ]
+                    ], (config('twill.permission.level')=='roleGroupModule' ? [['value' => 'manage-module', 'label' => 'Manage ' . $moduleName ]] : []))
                 ])
             @endforeach
         @endcomponent
     @endcomponent
-
-{{--     @component('twill::partials.form.utils._field_rows', [
-        'title' => 'Groups'
-    ])
-        @formField('checkbox', [
-            'name' => 'include-in-everyone',
-            'label' => 'Include in everyone'
-        ])
-        @formField('checkboxes', [
-            'name' => 'groups',
-            'label' => 'Groups',
-            'inline' => false,
-            'options' => [
-                [
-                    'value' => 'include-in-everyone',
-                    'label' => 'Include in everyone'
-                ]
-            ]
-        ])
-    @endcomponent
- --}}@stop
+@stop
