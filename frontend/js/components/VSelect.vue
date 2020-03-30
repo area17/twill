@@ -15,6 +15,7 @@
             :on-search="getOptions"
             :taggable="taggable"
             :pushTags="pushTags"
+            :disabled="disabled"
             :transition="transition"
             :requiredValue="required"
             :maxHeight="maxHeight"

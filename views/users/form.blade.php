@@ -54,7 +54,12 @@
                 'fieldValues' => true,
             ])
                 <img style="display: block; margin-left: auto; margin-right: auto;" src="{{ $qrCode }}">
-                <div class="f--regular f--note" style="margin: 20px 0;">Please scan this QR code with a Google Authenticator compatible application and enter your one time password below before submitting. See a list of compatible applications <a href="https://github.com/antonioribeiro/google2fa#google-authenticator-apps" target="_blank" rel="noopener">here</a>.</div>
+                <div class="f--regular f--note" style="margin: 20px 0;">Please scan this QR code with a Google
+                    Authenticator compatible application and enter your one time password below before submitting. See a
+                    list of compatible applications <a
+                        href="https://github.com/antonioribeiro/google2fa#google-authenticator-apps" target="_blank"
+                        rel="noopener">here</a>.
+                </div>
                 @formField('input', [
                     'name' => 'verify-code',
                     'label' => 'One time password',
@@ -75,127 +80,142 @@
         @endunless
     @endif
 
-  @if(Config::get('twill.permission.level') != 'role')
-      <hr/>
-      <p>
-      <label>Groups</label><br/><br/>
-        @foreach($item->groups as $group)
-            &nbsp;&dash;&nbsp;{{$group->name}}<br/>
-        @endforeach
-      </p>
-  @endif
+    @if(Config::get('twill.permission.level') != 'role')
+        @if($item->groups->count())
+            @php
+            $groups = json_encode($item->groups->map(function ($group) {
+                return [
+                    'label' => $group->name,
+                    'value' => $group->id
+                ];
+            }));
+
+            $values = json_encode($item->groups->map(function ($group) {
+                return $group->id;
+            }));
+            @endphp
+            <a17-vselect
+                label="Groups"
+                name="tags"
+                :selected="{{ $groups }}"
+                :options="{{ $groups }}"
+                :multiple="true"
+                :disabled="true"
+            ></a17-vselect>
+        @endif
+    @endif
 @stop
 
 
 @section('fieldsets')
 
-  @if(Config::get('twill.permission.level') == 'roleGroupModule')
-    @can('edit-users')
-      @if($item->is_superadmin || $item->id != $currentUser->id)
-          @component('twill::partials.form.utils._connected_fields', [
-              'fieldName' => 'role_id',
-              'renderForBlocks' => false,
-              'fieldValues' => $item->role_id
-            ])
-            @foreach($permissionModules as $moduleName => $moduleItems)
-                <a17-fieldset title='{{ ucfirst($moduleName) . " Permissions"}}' id='{{ $moduleName }}'>
-                    @formField('select_permissions', [
-                        'itemsInSelectsTables' => $moduleItems,
-                        'labelKey' => 'title',
-                        'namePattern' => $moduleName . '_%id%_permission',
-                        'options' => [
-                            [
-                                'value' => '',
-                                'label' => 'None'
-                            ],
-                            [
-                                'value' => 'view-item',
-                                'label' => 'View'
-                            ],
-                            [
-                                'value' => 'edit-item',
-                                'label' => 'Edit'
-                            ],
-                            [
-                                'value' => 'manage-item',
-                                'label' => 'Manage'
-                            ],
-                        ]
-                    ])
-                </a17-fieldset>
-            @endforeach
-         @endcomponent
-      @endif
-    @endcan
-  @endif
+    @if(Config::get('twill.permission.level') == 'roleGroupModule')
+        @can('edit-users')
+            @if($item->is_superadmin || $item->id != $currentUser->id)
+                @component('twill::partials.form.utils._connected_fields', [
+                    'fieldName' => 'role_id',
+                    'renderForBlocks' => false,
+                    'fieldValues' => $item->role_id
+                  ])
+                    @foreach($permissionModules as $moduleName => $moduleItems)
+                        <a17-fieldset title='{{ ucfirst($moduleName) . " Permissions"}}' id='{{ $moduleName }}'>
+                            @formField('select_permissions', [
+                                'itemsInSelectsTables' => $moduleItems,
+                                'labelKey' => 'title',
+                                'namePattern' => $moduleName . '_%id%_permission',
+                                'options' => [
+                                    [
+                                        'value' => '',
+                                        'label' => 'None'
+                                    ],
+                                    [
+                                        'value' => 'view-item',
+                                        'label' => 'View'
+                                    ],
+                                    [
+                                        'value' => 'edit-item',
+                                        'label' => 'Edit'
+                                    ],
+                                    [
+                                        'value' => 'manage-item',
+                                        'label' => 'Manage'
+                                    ],
+                                ]
+                            ])
+                        </a17-fieldset>
+                    @endforeach
+                @endcomponent
+            @endif
+        @endcan
+    @endif
 
 @stop
 
 @push('vuexStore')
     window.STORE.publication.submitOptions = {
-        draft: [
-          {
-            name: 'save',
-            text: 'Update disabled user'
-          },
-          {
-            name: 'save-close',
-            text: 'Update disabled and close'
-          },
-          {
-            name: 'save-new',
-            text: 'Update disabled user and create new'
-          },
-          {
-            name: 'cancel',
-            text: 'Cancel'
-          }
-        ],
-        live: [
-          {
-            name: 'publish',
-            text: 'Enable user'
-          },
-          {
-            name: 'publish-close',
-            text: 'Enable user and close'
-          },
-          {
-            name: 'publish-new',
-            text: 'Enable user and create new'
-          },
-          {
-            name: 'cancel',
-            text: 'Cancel'
-          }
-        ],
-        update: [
-          {
-            name: 'update',
-            text: 'Update'
-          },
-          {
-            name: 'update-close',
-            text: 'Update and close'
-          },
-          {
-            name: 'update-new',
-            text: 'Update and create new'
-          },
-          {
-            name: 'cancel',
-            text: 'Cancel'
-          }
-        ]
+    draft: [
+    {
+    name: 'save',
+    text: 'Update disabled user'
+    },
+    {
+    name: 'save-close',
+    text: 'Update disabled and close'
+    },
+    {
+    name: 'save-new',
+    text: 'Update disabled user and create new'
+    },
+    {
+    name: 'cancel',
+    text: 'Cancel'
+    }
+    ],
+    live: [
+    {
+    name: 'publish',
+    text: 'Enable user'
+    },
+    {
+    name: 'publish-close',
+    text: 'Enable user and close'
+    },
+    {
+    name: 'publish-new',
+    text: 'Enable user and create new'
+    },
+    {
+    name: 'cancel',
+    text: 'Cancel'
+    }
+    ],
+    update: [
+    {
+    name: 'update',
+    text: 'Update'
+    },
+    {
+    name: 'update-close',
+    text: 'Update and close'
+    },
+    {
+    name: 'update-new',
+    text: 'Update and create new'
+    },
+    {
+    name: 'cancel',
+    text: 'Cancel'
+    }
+    ]
     }
     @unless($item->is_superadmin)
         @can('edit-users')
             window.STORE.publication.userInfo = {
-                user_name: '{{ $item->name }}',
-                registered_at: '{{ $item->activated ? $item->registered_at->format('d M Y') : "Pending ({$item->created_at->format('d M Y')})" }}',
-                last_login_at: '{{ $item->activated && $item->last_login_at ? $item->last_login_at->format('d M Y, H:i') : null }}',
-                resend_registration_link: '{{ !$item->activated ? route('admin.users.resend.registrationEmail', ['user' => $item]) : null }}',
-                is_activated: {{ $item->activated }}
+            user_name: '{{ $item->name }}',
+            registered_at: '{{ $item->activated ? $item->registered_at->format('d M Y') : "Pending ({$item->created_at->format('d M Y')})" }}',
+            last_login_at: '{{ $item->activated && $item->last_login_at ? $item->last_login_at->format('d M Y, H:i') : null }}',
+            resend_registration_link: '{{ !$item->activated ? route('admin.users.resend.registrationEmail', ['user' => $item]) : null }}',
+            is_activated: {{ $item->activated }}
             }
         @endcan
     @endunless
@@ -205,53 +225,53 @@
 @endpush
 
 @push('extra_js')
-  <script>
-    const formFields = {!! json_encode($form_fields) !!};
-    const groupPermissionMapping = {!! json_encode($groupPermissionMapping) !!};
-    var selectedGroups = formFields.browsers.groups;
+    <script>
+        const formFields = {!! json_encode($form_fields) !!};
+        const groupPermissionMapping = {!! json_encode($groupPermissionMapping) !!};
+        var selectedGroups = formFields.browsers.groups
 
-    window.vm.$store.subscribe((mutation, state) => {
-        const { type, payload } = mutation;
-        switch (type) {
-          case 'saveSelectedItems':
-            selectedGroups = JSON.parse(JSON.stringify(payload));
-            selectedGroups.forEach((group) => {
-              const permissions = groupPermissionMapping[group['id']];
-              permissions.forEach((permission) => {
-                const fieldName = `${permission['permissionable_module']}_${permission['permissionable_id']}_permission`;
-                const currentPermission = state['form']['fields'].find(function(e) {
-                    return e.name === fieldName;
-                });
-                // Only update when the permission is none.
-                if (!currentPermission || currentPermission.value === '') {
-                  const field = {
-                    name: fieldName,
-                    value: 'view-item'
-                  };
-                  window.vm.$store.commit('updateFormField', field);
-                }
-              })
-            })
-            break;
+        window.vm.$store.subscribe((mutation, state) => {
+            const { type, payload } = mutation
+            switch (type) {
+                case 'saveSelectedItems':
+                    selectedGroups = JSON.parse(JSON.stringify(payload))
+                    selectedGroups.forEach((group) => {
+                        const permissions = groupPermissionMapping[group['id']]
+                        permissions.forEach((permission) => {
+                            const fieldName = `${permission['permissionable_module']}_${permission['permissionable_id']}_permission`
+                            const currentPermission = state['form']['fields'].find(function (e) {
+                                return e.name === fieldName
+                            })
+                            // Only update when the permission is none.
+                            if (!currentPermission || currentPermission.value === '') {
+                                const field = {
+                                    name: fieldName,
+                                    value: 'view-item'
+                                }
+                                window.vm.$store.commit('updateFormField', field)
+                            }
+                        })
+                    })
+                    break
 
-          case 'destroySelectedItem':
-            const group = selectedGroups[payload.index];
-            const permissions = groupPermissionMapping[group['id']];
-            permissions.forEach((permission) => {
-              const fieldName = `${permission['permissionable_module']}_${permission['permissionable_id']}_permission`;
-              const currentPermission = state['form']['fields'].find(function(e) {
-                    return e.name === fieldName;
-                });
-              if (currentPermission && currentPermission.value === 'view-item') {
-                const field = {
-                  name: fieldName,
-                  value: ''
-                };
-                window.vm.$store.commit('updateFormField', field);
-              }
-            })
-            break;
-        }
-    })
-  </script>
+                case 'destroySelectedItem':
+                    const group = selectedGroups[payload.index]
+                    const permissions = groupPermissionMapping[group['id']]
+                    permissions.forEach((permission) => {
+                        const fieldName = `${permission['permissionable_module']}_${permission['permissionable_id']}_permission`
+                        const currentPermission = state['form']['fields'].find(function (e) {
+                            return e.name === fieldName
+                        })
+                        if (currentPermission && currentPermission.value === 'view-item') {
+                            const field = {
+                                name: fieldName,
+                                value: ''
+                            }
+                            window.vm.$store.commit('updateFormField', field)
+                        }
+                    })
+                    break
+            }
+        })
+    </script>
 @endpush
