@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10.67 10.67" width="16" height="16">
+  <title>Copy</title>
+  <polygon fill="currentColor" points="1 7 1 1 7 1 7 2.67 8 2.67 8 0 0 0 0 8 2.67 8 2.67 7 1 7"/>
+  <path fill="currentColor" d="M8,2.67H2.67v8h8v-8Zm1.67,7h-6v-6h6Z"/>
+</svg>
