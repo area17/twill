@@ -211,7 +211,29 @@ class TwillServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/dashboard.php', 'twill.dashboard');
         $this->mergeConfigFrom(__DIR__ . '/../config/oauth.php', 'twill.oauth');
         $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
+
+        if (config('twill.media_library.endpoint_type') === 'local'
+            && config('twill.media_library.disk') === 'twill_media_library') {
+            $this->setLocalDiskUrl('media');
+        }
+
+        if (config('twill.file_library.endpoint_type') === 'local'
+            && config('twill.file_library.disk') === 'twill_file_library') {
+            $this->setLocalDiskUrl('file');
+        }
+
         $this->mergeConfigFrom(__DIR__ . '/../config/services.php', 'services');
+    }
+
+    private function setLocalDiskUrl($type)
+    {
+        config([
+            'filesystems.disks.twill_' . $type . '_library.url' => request()->getScheme()
+            . '://'
+            . str_replace(['http://', 'https://'], '', config('app.url'))
+            . '/storage/'
+            . trim(config('twill.' . $type . '_library.local_path'), '/ '),
+        ]);
     }
 
     private function publishMigrations()
