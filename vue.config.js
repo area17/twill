@@ -1,3 +1,4 @@
+const fs = require("fs")
 const path = require('path')
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -91,6 +92,13 @@ if (!isProd) {
   }))
 }
 
+// Define npm module resolve order: 1. local (Twill), 2. root (App)
+const appModuleFolder = path.resolve(__dirname, '../../../node_modules') // vendor/area17/twill/
+const resolveModules = ['node_modules']
+if (fs.existsSync(appModuleFolder)) {
+  resolveModules.push(appModuleFolder)
+}
+
 const config = {
   // Define base outputDir of build
   outputDir: outputDir,
@@ -123,7 +131,8 @@ const config = {
         'prosemirror-state' : path.join(__dirname, 'node_modules/prosemirror-state/src/index.js'),
         'prosemirror-view' : path.join(__dirname, 'node_modules/prosemirror-view/src/index.js'),
         'prosemirror-transform' : path.join(__dirname, 'node_modules/prosemirror-transform/src/index.js')
-      }
+      },
+      modules: resolveModules
     },
     plugins,
     performance: {
