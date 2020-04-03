@@ -139,46 +139,13 @@ trait HandlePermissions
             }
         }
 
-        // $inEveryoneGroup = isset($fields['groups']) && in_array('include-in-everyone', $fields['groups']);
-
-        // if ($inEveryoneGroup) {
-        //     Group::getEveryoneGroup()->users()->syncWithoutDetaching($role->users()->pluck('id'));
-        // } else {
-        //     Group::getEveryoneGroup()->users()->detach($role->users()->pluck('id'));
-        // }
-
-        // $role->in_everyone_group = $inEveryoneGroup;
-
         $role->save();
     }
 
     // After save handle permissions form fields on module form
     protected function handleModulePermissions($item, $fields)
     {
-        foreach ($fields as $key => $value) {
-            if (ends_with($key, '_permission') && starts_with($key, 'user')) {
-                $user_id = explode('_', $key)[1];
-                $user = app()->make(UserRepository::class)->getById($user_id);
-
-                // Only if value existed, do update or create
-                if ($value) {
-                    $user->grantModuleItemPermission($value, $item);
-                } else {
-                    $user->revokeModuleItemAllPermissions($item);
-                }
-            }
-            //Handle group permissions
-            elseif (ends_with($key, '_group_authorized')) {
-                $group_id = explode('_', $key)[0];
-                $group = app()->make(GroupRepository::class)->getById($group_id);
-
-                if ($value) {
-                    $group->grantModuleItemPermission('view-item', $item);
-                } else {
-                    $group->revokeModuleItemAllPermissions($item);
-                }
-            }
-        }
+        //...
     }
 
     protected function handleGroupPermissions($group, $fields)
@@ -303,40 +270,7 @@ trait HandlePermissions
                 $moduleName = getModuleNameByModel($model);
                 $fields[$moduleName . '_' . $model->id . '_permission'] = '"' . $permission->name . '"';
             }
-/*
-            #looking for module permissions
-            $globalPermissions = [];
-            foreach($group->permissions()->module()->get() as $permission) {
-                if ($permission->permissionable_type) {
-                    $permissionName = str_replace("-module","-item", $permission->name);
 
-                    $globalPermissions[getModuleNameByModel($permission->permissionable_type)] = $permissionName;
-                }
-            }
-
-            #merge all item permissions
-            $scopes = Permission::available('item');
-            #go through all existing modules
-            foreach(Permission::permissionableParentModuleItems() as $moduleName => $moduleItems) {
-                if (isset($globalPermissions[$moduleName])) {
-                    $permission = $globalPermissions[$moduleName];
-
-                    foreach ($moduleItems as $moduleItem) {
-                        $index = $moduleName . '_' . $moduleItem->id . '_permission';
-                        if( !isset($fields[$index])) {
-                            $fields[$index] = "\"{$permission}\"";
-                        } else {
-                            $current = array_search(str_replace('"',"",$fields[$index]), $scopes);
-                            $global = array_search($permission, $scopes);
-                            #check permission level
-                            if ($global > $current) {
-                                $fields[$index] = "\"{$permission}\"";
-                            }
-                        }
-                    }
-                }
-            }
-*/
         }
 
         return $fields;
@@ -344,35 +278,7 @@ trait HandlePermissions
 
     protected function renderModulePermissions($object, $fields)
     {
-        // Render each user's permission under a item
-        // $users = app()->make(UserRepository::class)->get(["permissions" => function ($query) use ($object) {
-        //     $query->where([['permissionable_type', get_class($object)], ['permissionable_id', $object->id]]);
-        // }]);
-
-        // foreach ($users as $user) {
-        //     $defaultPermission = "";
-        //     $permission = $user->permissions()->moduleItem()->ofItem($object)->first();
-        //     if (!$permission && $user->role->permissions()->global()->where('name', 'manage-modules')->first()) {
-        //         $defaultPermission = "'manage-item'";
-        //     }
-
-        //     if(empty($defaultPermission)) {
-        //         foreach($user->role->permissions()->module()->get() as $p) {
-        //             if ($p->permissionable_type==get_class($object) && $p->permissionable_id==null) {
-        //                 $defaultPermission = "'".str_replace("-module", "-item", $p->name)."'";
-        //                 break;
-        //             }
-        //         }
-        //     }
-
-        //     $fields['user_' . $user->id . '_permission'] = $permission ? "'" . $permission->name . "'" : $defaultPermission;
-        // }
-
-        // // Render each group's permission under a item
-        // $groups = Group::with('users.permissions')->get();
-        // foreach ($groups as $group) {
-        //     $fields[$group->id . '_group_authorized'] = $this->allUsersInGroupAuthorized($group, $object);
-        // }
+        //...
 
         return $fields;
     }

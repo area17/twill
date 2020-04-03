@@ -2,35 +2,36 @@
 
 namespace A17\Twill;
 
+use A17\Twill\Models\File;
+use A17\Twill\Models\User;
+use A17\Twill\Models\Block;
+use A17\Twill\Models\Group;
+use A17\Twill\Models\Media;
 use A17\Twill\Commands\Build;
-use A17\Twill\Commands\CreateSuperAdmin;
-use A17\Twill\Commands\GenerateBlocks;
+use A17\Twill\Commands\Update;
 use A17\Twill\Commands\Install;
 use A17\Twill\Commands\ModuleMake;
 use A17\Twill\Commands\RefreshLQIP;
-use A17\Twill\Commands\Update;
-use A17\Twill\Http\ViewComposers\ActiveNavigation;
+use Illuminate\Support\Facades\View;
+use Illuminate\Filesystem\Filesystem;
+use Lsrur\Inspector\Facade\Inspector;
+use A17\Twill\Commands\GenerateBlocks;
+use Illuminate\Foundation\AliasLoader;
+use Cartalyst\Tags\TagsServiceProvider;
+use Illuminate\Support\ServiceProvider;
+use A17\Twill\Commands\CreateSuperAdmin;
+use Barryvdh\Debugbar\Facade as Debugbar;
 use A17\Twill\Http\ViewComposers\CurrentUser;
-use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
-use A17\Twill\Http\ViewComposers\MediasUploaderConfig;
-use A17\Twill\Models\Block;
-use A17\Twill\Models\File;
-use A17\Twill\Models\Media;
-use A17\Twill\Models\User;
+use Lsrur\Inspector\InspectorServiceProvider;
 use A17\Twill\Services\FileLibrary\FileService;
 use A17\Twill\Services\MediaLibrary\ImageService;
-use Barryvdh\Debugbar\Facade as Debugbar;
-use Barryvdh\Debugbar\ServiceProvider as DebugbarServiceProvider;
-use Cartalyst\Tags\TagsServiceProvider;
+use A17\Twill\Http\ViewComposers\ActiveNavigation;
+use Spatie\Activitylog\ActivitylogServiceProvider;
 use Dimsav\Translatable\TranslatableServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Foundation\AliasLoader;
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\ServiceProvider;
-use Lsrur\Inspector\Facade\Inspector;
-use Lsrur\Inspector\InspectorServiceProvider;
-use Spatie\Activitylog\ActivitylogServiceProvider;
+use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
+use A17\Twill\Http\ViewComposers\MediasUploaderConfig;
+use Barryvdh\Debugbar\ServiceProvider as DebugbarServiceProvider;
 
 class TwillServiceProvider extends ServiceProvider
 {
@@ -88,6 +89,7 @@ class TwillServiceProvider extends ServiceProvider
             'media' => Media::class,
             'files' => File::class,
             'blocks' => Block::class,
+            'groups' => Group::class
         ]);
 
         config(['twill.version' => trim(file_get_contents(__DIR__ . '/../VERSION'))]);
