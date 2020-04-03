@@ -1211,7 +1211,7 @@ abstract class ModuleController extends Controller
             'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
             'publish' => $item->canPublish ?? true,
             'translate' => $this->moduleHas('translations'),
-            'permalink' => $this->getIndexOption('permalink'),
+            'permalink' => $this->getIndexOption('permalink', $item),
             'form_fields' => $this->repository->getFormFields($item),
             'baseUrl' => $baseUrl,
             'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
