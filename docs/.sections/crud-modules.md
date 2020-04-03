@@ -246,7 +246,7 @@ public function order($query, array $orders = []) {
 }
 ```
 
-- for custom form fieds
+- for custom form fields
 
 ```php
 <?php
