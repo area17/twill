@@ -844,7 +844,7 @@ abstract class ModuleRepository
     protected function getModelRepository($relation, $model = null)
     {
         if (!$model) {
-            $model = ucfirst(Str::singular($relation));
+            $model = Str::contains($relation, '\\') ? (new \ReflectionClass($relation))->getShortName() : ucfirst(Str::singular($relation));
         }
 
         return App::make(Config::get('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
