@@ -258,7 +258,7 @@ return [
     'publisher' => [
         'switcher-title' => 'Status',
         'languages' => 'Languages',
-        'langages-published' => 'Live',
+        'languages-published' => 'Live',
         'published-on' => 'Published on',
         'immediate' => 'Immediate',
         'start-date' => 'Start Date',
