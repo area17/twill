@@ -117,7 +117,7 @@ return [
             'create-another' => 'Create and add another',
         ],
         'update' => [
-            'title' => 'Update item',
+            'title' => 'Update',
         ],
     ],
     'lang-manager' => [
