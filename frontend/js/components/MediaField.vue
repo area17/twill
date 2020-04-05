@@ -84,7 +84,7 @@
         <a17-button class="cropper__button" variant="action" @click="$refs[cropModalName].close()">Update</a17-button>
       </a17-cropper>
     </a17-modal>
-    <input :name="'medias[' + name + '][' + index + ']'" type="hidden" :value="JSON.stringify(media)" />
+    <input :name="inputName" type="hidden" :value="JSON.stringify(media)" />
   </div>
 </template>
 
@@ -210,6 +210,13 @@
       },
       mediaKey: function () {
         return this.mediaContext.length > 0 ? this.mediaContext : this.name
+      },
+      inputName: function () {
+        let fieldName = this.name
+        if (this.name.indexOf('[')) {
+          fieldName = this.name.replace(']', '').replace('[', '][')
+        }
+        return 'medias[' + fieldName + '][' + this.index + ']'
       },
       metadataName: function () {
         return 'mediaMeta[' + this.name + '][' + this.media.id + ']'
