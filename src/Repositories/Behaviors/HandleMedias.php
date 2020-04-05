@@ -129,7 +129,7 @@ trait HandleMedias
 
         if ($object->has('medias')) {
             foreach ($object->medias->groupBy('pivot.role') as $role => $mediasByRole) {
-                if (config('twill.media_library.translated_form_fields', false) && !$this->model instanceof \A17\Twill\Models\Setting) {
+                if (config('twill.media_library.translated_form_fields', false)) {
                     foreach ($mediasByRole->groupBy('pivot.locale') as $locale => $mediasByLocale) {
                         foreach ($this->getMediaFormItems($mediasByLocale) as $item) {
                             $fields['medias'][$locale][$role][] = $item;
