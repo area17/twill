@@ -10,6 +10,7 @@ use A17\Twill\Commands\Install;
 use A17\Twill\Commands\ModuleMake;
 use A17\Twill\Commands\RefreshLQIP;
 use A17\Twill\Commands\Update;
+use A17\Twill\Commands\SyncLang;
 use A17\Twill\Http\ViewComposers\ActiveNavigation;
 use A17\Twill\Http\ViewComposers\CurrentUser;
 use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
@@ -296,6 +297,7 @@ class TwillServiceProvider extends ServiceProvider
             Build::class,
             Update::class,
             Dev::class,
+            SyncLang::class,
         ]);
     }
 
