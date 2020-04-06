@@ -21,7 +21,7 @@
     {{-- Footer --}}
     @slot('footer')
         @component('emails.html.footer')
-            &copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
+            &copy; {{ date('Y') }} {{ config('app.name') }}. {{ twillTrans('twill::lang.emails.all-rights-reserved') }}
         @endcomponent
     @endslot
 @endcomponent

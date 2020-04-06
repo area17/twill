@@ -1,5 +1,5 @@
 <template>
-  <a17-overlay ref="overlay" title="Content editor" @close="closeEditor" @open="openEditor">
+  <a17-overlay ref="overlay" :title="$trans('editor.title')" @close="closeEditor" @open="openEditor">
     <div class="editor">
       <a17-button class="editor__leave" variant="editor" size="small" @click="openPreview" v-if="revisions.length"><span v-svg symbol="preview" class="hide--xsmall"></span>{{ $trans('fields.block-editor.preview', 'Preview') }}</a17-button>
       <div class="editor__frame">

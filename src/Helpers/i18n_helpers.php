@@ -77,7 +77,38 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
             }
         }
 
-        $codeToLanguageMappings = [
+        $codeToLanguageMappings = getCodeToLanguageMappings();
+
+        if (isset($codeToLanguageMappings[$code])) {
+            $lang = $codeToLanguageMappings[$code];
+            if (is_array($lang) && isset($lang[1]) && $native) {
+                return $lang[1];
+            }
+            return $lang;
+        }
+        return $code;
+    }
+}
+
+/**
+ * Converts camelCase string to have spaces between each.
+ * @param string $camelCaseString
+ * @return string (ex.: camel case string)
+ */
+if (!function_exists('camelCaseToWords')) {
+    function camelCaseToWords($camelCaseString)
+    {
+        $re = '/(?<=[a-z])(?=[A-Z])/x';
+        $a = preg_split($re, $camelCaseString);
+        $words = join(" ", $a);
+        return ucfirst(strtolower($words));
+    }
+}
+
+if (!function_exists('getCodeToLanguageMappings')) {
+    function getCodeToLanguageMappings()
+    {
+        return [
             'ab' => 'Abkhazian',
             'aa' => 'Afar',
             'af' => 'Afrikaans',
@@ -229,29 +260,5 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
             'yo' => 'Yoruba',
             'zu' => 'Zulu',
         ];
-
-        if (isset($codeToLanguageMappings[$code])) {
-            $lang = $codeToLanguageMappings[$code];
-            if (is_array($lang) && isset($lang[1]) && $native) {
-                return $lang[1];
-            }
-            return $lang;
-        }
-        return $code;
-    }
-}
-
-/**
- * Converts camelCase string to have spaces between each.
- * @param string $camelCaseString
- * @return string (ex.: camel case string)
- */
-if (!function_exists('camelCaseToWords')) {
-    function camelCaseToWords($camelCaseString)
-    {
-        $re = '/(?<=[a-z])(?=[A-Z])/x';
-        $a = preg_split($re, $camelCaseString);
-        $words = join(" ", $a);
-        return ucfirst(strtolower($words));
     }
 }

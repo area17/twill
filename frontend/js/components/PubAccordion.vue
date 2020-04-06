@@ -12,7 +12,7 @@
     <div class="accordion__fields">
       <a17-datepicker
         name="publish_date"
-        place-holder="Start Date"
+        place-holder="$trans('publisher.start-date')"
         :time_24hr="date_24h"
         :altFormat="dateFormat"
         :initialValue="startDate"
@@ -26,7 +26,7 @@
         :clear="true"
       ></a17-datepicker>
       <a17-datepicker name="end_date"
-        place-holder="End Date"
+        place-holder="$trans('publisher.end-date')"
         :time_24hr="date_24h"
         :altFormat="dateFormat"
         :initialValue="endDate"
@@ -60,7 +60,9 @@
     props: {
       defaultStartDate: {
         type: String,
-        default: 'Immediate'
+        default: function () {
+          return this.$trans('publisher.immediate')
+        }
       },
       defaultEndDate: {
         type: String,

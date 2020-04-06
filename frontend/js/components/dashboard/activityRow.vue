@@ -9,7 +9,7 @@
         <template v-if="col.name === 'name'">
           <a :href="row['edit']" class="activityCell__link">{{ row[col.name] }}</a>
           <p class="activityCell__meta f--note">
-            {{ row['activity'] }} <timeago :auto-update="1" :since="new Date(row['date'])"></timeago> by {{ row['author'] }}
+            {{ row['activity'] }} <timeago :auto-update="1" :datetime="new Date(row['date'])"></timeago> by {{ row['author'] }}
             <span class="activityCell__type">{{ row['type'] }}</span>
           </p>
         </template>
