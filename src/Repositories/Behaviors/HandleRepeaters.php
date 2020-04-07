@@ -275,6 +275,15 @@ trait HandleRepeaters
                 ];
             }
 
+            if (isset($relatedItemFormFields['repeaters'])) {
+                foreach ($relatedItemFormFields['repeaters'] as $childRepeaterName => $childRepeaterItems) {
+                    $fields['repeaters']["blocks-$relation-{$relationItem->id}_$childRepeaterName"] = $childRepeaterItems;
+                    $repeatersFields = array_merge($repeatersFields, $relatedItemFormFields['repeaterFields'][$childRepeaterName]);
+                    $repeatersMedias = array_merge($repeatersMedias, $relatedItemFormFields['repeaterMedias'][$childRepeaterName]);
+                    $repeatersFiles = array_merge($repeatersFiles, $relatedItemFormFields['repeaterFiles'][$childRepeaterName]);
+                    $repeatersBrowsers = array_merge($repeatersBrowsers, $relatedItemFormFields['repeaterBrowsers'][$childRepeaterName]);
+                }
+            }
         }
 
         if (!empty($repeatersMedias) && config('twill.media_library.translated_form_fields', false)) {
