@@ -49,17 +49,22 @@ class SettingRepository extends ModuleRepository
             $query->where('section', $section);
         })->with('translations', 'medias')->get();
 
-        $medias = $settings->mapWithKeys(function ($setting) {
-            if (config('twill.media_library.translated_form_fields', false)) {
-                $mediasLocales = [];
+
+        if (config('twill.media_library.translated_form_fields', false)) {
+            $medias = $settings->reduce(function ($carry, $setting) {
                 foreach (getLocales() as $locale) {
-                    $mediasLocales[$locale][$setting->key] = parent::getFormFields($setting)['medias'][$locale][$setting->key] ?? null;
+                    $mediaLocale = parent::getFormFields($setting)['medias'][$locale][$setting->key];
+                    if (!empty($mediaLocale)) {
+                        $carry[$locale][$setting->key] = $mediaLocale;
+                    }
                 }
-                return $mediasLocales;
-            } else {
+                return $carry;
+            });
+        } else {
+            $medias = $settings->mapWithKeys(function ($setting) {
                 return [$setting->key => parent::getFormFields($setting)['medias'][$setting->key] ?? null];
-            }
-        })->filter()->toArray();
+            })->filter()->toArray();
+        }
 
         return $settings->mapWithKeys(function ($setting) {
             $settingValue = [];
