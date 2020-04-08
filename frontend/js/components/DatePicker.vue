@@ -49,6 +49,10 @@
         type: Boolean,
         default: false
       },
+      altFormat: {
+        type: String,
+        default: null
+      },
       inline: {
         type: Boolean,
         default: false
@@ -102,6 +106,12 @@
     computed: {
       uniqId: function (value) {
         return this.name + '-' + this.randKey
+      },
+      altFormatComputed: function () {
+        if (this.altFormat !== null) {
+          return this.altFormat
+        }
+        return 'F j, Y' + (this.enableTime ? (this.time_24hr ? ' H:i' : ' h:i K') : '')
       }
     },
     methods: {
@@ -110,6 +120,7 @@
         return {
           wrap: true,
           altInput: true,
+          altFormat: self.altFormatComputed,
           static: self.staticMode,
           appendTo: self.staticMode ? self.$refs[self.refs.flatPicker] : undefined,
           enableTime: self.enableTime,
