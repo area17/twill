@@ -49,6 +49,10 @@
         type: Boolean,
         default: false
       },
+      altFormat: {
+        type: String,
+        default: 'F j, Y'
+      },
       inline: {
         type: Boolean,
         default: false
@@ -110,6 +114,7 @@
         return {
           wrap: true,
           altInput: true,
+          altFormat: self.altFormat,
           static: self.staticMode,
           appendTo: self.staticMode ? self.$refs[self.refs.flatPicker] : undefined,
           enableTime: self.enableTime,
