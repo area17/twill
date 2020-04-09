@@ -53,9 +53,9 @@ class SettingRepository extends ModuleRepository
         if (config('twill.media_library.translated_form_fields', false)) {
             $medias = $settings->reduce(function ($carry, $setting) {
                 foreach (getLocales() as $locale) {
-                    $mediaLocale = parent::getFormFields($setting)['medias'][$locale][$setting->key];
-                    if (!empty($mediaLocale)) {
-                        $carry[$locale][$setting->key] = $mediaLocale;
+                    if (!empty(parent::getFormFields($setting)['medias'][$locale]) && !empty(parent::getFormFields($setting)['medias'][$locale][$setting->key]))
+                    {
+                        $carry[$locale][$setting->key] = parent::getFormFields($setting)['medias'][$locale][$setting->key];
                     }
                 }
                 return $carry;
