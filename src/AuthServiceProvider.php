@@ -112,13 +112,6 @@ class AuthServiceProvider extends ServiceProvider
             }
 
             return self::$cache['view-module-'.$moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
-                if (isPermissionableModule($moduleName)
-                && ($module=getModelRepository(class_basename(getModelByModuleName($moduleName)))) != null
-                && $module->isPublicItemExists()) {
-                    return true;
-                }
-                // // if(isPublicItemExists)
-                //     return true;
                 return $user->can('edit-module', $moduleName)
                 || $user->role->permissions()->ofModuleName($moduleName)->where('name', 'view-module')->exists()
                 || isUserGroupPermissionModuleExists($user, $moduleName, 'view-module');
