@@ -112,6 +112,13 @@ class AuthServiceProvider extends ServiceProvider
             }
 
             return self::$cache['view-module-'.$moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
+                if (isPermissionableModule($moduleName)
+                && ($module=getModelRepository(class_basename(getModelByModuleName($moduleName)))) != null
+                && $module->isPublicItemExists()) {
+                    return true;
+                }
+                // // if(isPublicItemExists)
+                //     return true;
                 return $user->can('edit-module', $moduleName)
                 || $user->role->permissions()->ofModuleName($moduleName)->where('name', 'view-module')->exists()
                 || isUserGroupPermissionModuleExists($user, $moduleName, 'view-module');
@@ -157,7 +164,8 @@ class AuthServiceProvider extends ServiceProvider
             }
 
             return self::$cache[$key] = $this->authorize($user, function ($user) use ($item) {
-                return $user->can('edit-item', $item)
+                return $item->public
+                || $user->can('edit-item', $item)
                 || $user->can('view-module', getModuleNameByModel(get_class($item)))
                 || $user->permissions()->ofItem($item)->where('name', 'view-item')->exists()
                 || isUserGroupPermissionItemExists($user, $item, 'view-item');

@@ -240,6 +240,10 @@ class UserController extends ModuleController
      */
     protected function getRequestFilters()
     {
+        if ($this->request->has('search')) {
+            return ['search' => $this->request->get('search')];
+        }
+
         return json_decode($this->request->get('filter'), true) ?? ['status' => 'published'];
     }
 

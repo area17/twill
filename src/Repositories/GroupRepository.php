@@ -54,20 +54,27 @@ class GroupRepository extends ModuleRepository
                 }
             }
 
-            if (!empty($deletedUsersIds)) {
-                $deletedUsers = User::whereIn('id', $deletedUsersIds)->get();
+            $this->removeGroupPermissionsOfUser($group, $deletedUsersIds);
+        } else {
+            $this->removeGroupPermissionsOfUser($group, $group->users->pluck('id')->toArray());
+        }
 
-                foreach($deletedUsers as $user) {
-                    foreach($viewableItems as $item) {
-                        $userPermission = $user->permissions()->ofItem($item)->first();
-                        if ($userPermission && $userPermission->name === 'view-item') {
-                            $user->revokeModuleItemAllPermissions($item);
-                        }
+        parent::updateBrowser($group, $fields, $relationship);
+    }
+
+    protected function removeGroupPermissionsOfUser($group, $userIds)
+    {
+        if (!empty($userIds)) {
+            $viewableItems = $group->permissionableItems();
+
+            foreach(User::whereIn('id', $userIds)->get() as $user) {
+                foreach($viewableItems as $item) {
+                    $userPermission = $user->permissions()->ofItem($item)->first();
+                    if ($userPermission) {
+                        $user->revokeModuleItemAllPermissions($item);
                     }
                 }
             }
         }
-
-        parent::updateBrowser($group, $fields, $relationship);
     }
 }

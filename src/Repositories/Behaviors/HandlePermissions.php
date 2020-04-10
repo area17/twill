@@ -188,6 +188,11 @@ trait HandlePermissions
                 }
             }
         }
+
+        //Update the user permissions with refresh users of the group
+        foreach($group->users()->get() as $user) {
+            $this->handleUserPermissions($user, $fields);
+        }
     }
 
     protected function renderUserPermissions($user, $fields)
@@ -314,4 +319,11 @@ trait HandlePermissions
         })->get()->count() === 0;
     }
 
+    public function isPublicItemExists()
+    {
+        if ($this->model->isFillable('public')) {
+            return $this->model->publishedInListings()->exists();
+        }
+        return false;
+    }
 }

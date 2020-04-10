@@ -78,7 +78,7 @@ trait HasPermissions
 
     public function revokeModuleItemAllPermissions($permissionableItem)
     {
-        $this->permissions()->detach(Permission::ofItem($permissionableItem)->pluck('id'));
+        $this->permissions()->detach(Permission::ofItem($permissionableItem)->pluck('id')->toArray());
     }
 
     public function permissions()
