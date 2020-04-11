@@ -157,14 +157,6 @@ class UserRepository extends ModuleRepository
     public function afterSave($user, $fields)
     {
         $this->sendWelcomeEmail($user);
-        $this->updateMultiSelect($user, $fields, 'groups');
-
-        // When role changed, update it's groups information if needed.
-        if (isset($fields['role_id']) && Role::findOrFail($fields['role_id'])->in_everyone_group) {
-            $user->groups()->syncWithoutDetaching(Group::getEveryoneGroup()->id);
-        } else {
-            $user->groups()->detach(Group::getEveryoneGroup()->id);
-        }
 
         if (!empty($fields['reset_password']) && !empty($fields['new_password'])) {
             $user->password = bcrypt($fields['new_password']);

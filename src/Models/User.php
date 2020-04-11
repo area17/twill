@@ -169,12 +169,17 @@ class User extends AuthenticatableContract
 
     public function allPermissions()
     {
-            $permissions = Permission::whereHas('users', function ($query) {
-                $query->where('id', $this->id);
-            })->orWhereHas('roles', function ($query) {
-                $query->where('id', $this->role->id);
-            });
-            return $permissions;
+        $permissions = Permission::whereHas('users', function ($query) {
+            $query->where('id', $this->id);
+        })->orWhereHas('roles', function ($query) {
+            $query->where('id', $this->role->id);
+        })->orWhereHas('groups', function ($query) {
+            $query
+                ->join('group_twill_user', 'groups.id', '=', 'group_twill_user.group_id')
+                ->where('group_twill_user.twill_user_id', $this->id)
+            ;
+        });
+        return $permissions;
     }
 
     public function getLastLoginColumnValueAttribute()
