@@ -87,6 +87,11 @@ class Group extends BaseModel
         })->with('permissionable')->get()->pluck('permissionable');
     }
 
+    public function permissionableIds()
+    {
+        return $this->permissions->pluck('id')->toArray();
+    }
+
     public function permissionableItems()
     {
         return Permission::whereHas('groups', function ($query) {
