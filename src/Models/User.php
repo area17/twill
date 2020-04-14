@@ -162,6 +162,11 @@ class User extends AuthenticatableContract
         return $this->belongsToMany(Group::class, 'group_twill_user', 'twill_user_id', 'group_id');
     }
 
+    public function publishedGroups()
+    {
+        return $this->groups()->published();
+    }
+
     public function role()
     {
         return $this->belongsTo(Role::class);
@@ -177,6 +182,7 @@ class User extends AuthenticatableContract
             $query
                 ->join('group_twill_user', 'groups.id', '=', 'group_twill_user.group_id')
                 ->where('group_twill_user.twill_user_id', $this->id)
+                ->where('published', 1)
             ;
         });
         return $permissions;

@@ -76,7 +76,7 @@ if (!function_exists('updatePermissionOptions')) {
         }
 
         #looking for group permissions belongs to the user
-        foreach($user->groups as $group) {
+        foreach($user->publishedGroups as $group) {
             if (($permission=$group->permissions()->OfItem($item)->first())!= null) {
                 if (isset($permissions[get_class($item)])) {
                     $scopes = Permission::available('item');
@@ -119,8 +119,8 @@ if (!function_exists('updatePermissionGroupOptions')) {
 if (!function_exists('isUserGroupPermissionItemExists')) {
     function isUserGroupPermissionItemExists($user, $item, $permission)
     {
-        foreach($user->groups as $group) {
-            if( in_array($permission, $group->permissions()->OfItem($item)->get()->pluck('name')->all())){
+        foreach($user->publishedGroups as $group) {
+            if (in_array($permission, $group->permissions()->OfItem($item)->get()->pluck('name')->all())){
                 return true;
             }
         }
@@ -132,7 +132,7 @@ if (!function_exists('isUserGroupPermissionItemExists')) {
 if (!function_exists('isUserGroupPermissionModuleExists')) {
     function isUserGroupPermissionModuleExists($user, $moduleName, $permission)
     {
-        foreach($user->groups as $group) {
+        foreach($user->publishedGroups as $group) {
             if ($moduleName=='global') {
                 return $group->permissions()->global()->where('name', 'manage-modules')->exists();
             } else {

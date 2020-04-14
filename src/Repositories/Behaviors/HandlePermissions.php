@@ -246,7 +246,7 @@ trait HandlePermissions
         $itemScopes = Permission::available('item');
 
         #looking for group permissions belongs to the user
-        foreach($user->groups as $group) {
+        foreach($user->publishedGroups as $group) {
             foreach($group->permissions()->moduleItem()->get() as $permission) {
                 $model = $permission->permissionable()->first();
                 $moduleName = getModuleNameByModel($model);
