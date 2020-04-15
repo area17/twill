@@ -63,7 +63,6 @@ class SyncLang extends Command
         }
     }
 
-    // BETA METHOD, NOT STABLE
     private function toCsv()
     {
         if ($this->confirm('This operation will overwrite the lang.csv file, are you sure?')) {
@@ -73,6 +72,10 @@ class SyncLang extends Command
                 $columnIndex = $this->getIndexByCode($code);
                 $translations = $this->files->getRequire($directory . '/lang.php');
                 foreach (Arr::dot($translations) as $key => $translation) {
+                    /***
+                    * Arr::pluck(array_slice($csvArray, 2), 0) => extract translation keys from csv
+                    * Could be optimized to be generated directly from lang folders
+                    ***/ 
                     $rowIndex = array_search($key, Arr::pluck(array_slice($csvArray, 2), 0));
                     if ($rowIndex === FALSE) {
                         $newRow = array_fill(0, count($csvArray[0]), "");
@@ -84,6 +87,8 @@ class SyncLang extends Command
                     }
                 }
             }
+            // Could be optimized: in order to sort by the key, convert to collection then convert back.
+            $csvArray = array_slice($csvArray, 0, 2) + collect(array_slice($csvArray, 2))->sortBy(0)->toArray();
 
             $fp = fopen($this->csvPath, 'w');
 

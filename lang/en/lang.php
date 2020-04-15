@@ -94,6 +94,8 @@ return [
             'files-selected' => 'files selected',
             'clear' => 'Clear',
             'dimensions' => 'Dimensions',
+            'caption' => 'Caption',
+            'alt-text' => 'Alt text',
         ],
     ],
     'filter' => [
