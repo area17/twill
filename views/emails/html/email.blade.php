@@ -8,11 +8,11 @@
 @endslot
 
 {{-- Body --}}
-Hello!
+{{ twillTrans('twill::lang.emails.hello') }}
 
 {{ $copy }}
 
-Regards,<br>
+{{ twillTrans('twill::lang.emails.regards') }}<br>
 {{ config('app.name') }}
 
 {{-- Button --}}
@@ -25,7 +25,7 @@ Regards,<br>
 {{-- Subcopy --}}
 @slot('subcopy')
 @component('twill::emails.html.subcopy')
-If you are having trouble clicking the "{{ $actionText }}" button, copy and paste the URL below into your web browser: [{{ $url }}]({{ $url }})
+{{ twillTrans('twill::lang.emails.problems', ['actionText' => $actionText, 'url' => $url]) }}
 @endcomponent
 @endslot
 
