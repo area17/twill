@@ -212,7 +212,7 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 @formField('medias', [
     'name' => 'cover',
     'label' => 'Cover image',
-    'note' => 'Also used in listings'
+    'note' => 'Also used in listings',
     'fieldNote' => 'Minimum image width: 1500px'
 ])
 
