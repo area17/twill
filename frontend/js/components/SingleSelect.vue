@@ -27,14 +27,10 @@
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
   import AttributesMixin from '@/mixins/addAttributes'
-  import A17Avatar from '@/components/Avatar.vue'
 
   export default {
     name: 'A17Singleselect',
     mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin],
-    components: {
-      'a17-avatar': A17Avatar
-    },
     props: {
       name: {
         type: String,

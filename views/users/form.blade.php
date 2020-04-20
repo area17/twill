@@ -124,7 +124,7 @@
 
     @if(Config::get('twill.permission.level') == 'roleGroupModule')
         @can('edit-users')
-            @if($item->is_superadmin || $item->id != $currentUser->id)
+            @unless($item->is_superadmin || $item->id == $currentUser->id)
                 @component('twill::partials.form.utils._connected_fields', [
                     'fieldName' => 'role_id',
                     'renderForBlocks' => false,
@@ -242,7 +242,7 @@
     <script>
         const formFields = {!! json_encode($form_fields) !!};
         const groupPermissionMapping = {!! json_encode($groupPermissionMapping) !!};
-        var selectedGroups = formFields.browsers.groups
+        var selectedGroups = formFields.browsers ? formFields.browsers.groups : []
 
         window['{{ config('twill.js_namespace') }}'].vm.$store.subscribe((mutation, state) => {
             const { type, payload } = mutation

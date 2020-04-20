@@ -3,13 +3,14 @@
 namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasPermissions;
-use Illuminate\Database\Eloquent\Model as BaseModel;
+use A17\Twill\Models\Behaviors\IsTranslatable;
 use A17\Twill\Models\User;
+use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Group extends BaseModel
 {
-    use HasPermissions, SoftDeletes;
+    use HasPermissions, SoftDeletes, IsTranslatable;
 
     public $timestamps = true;
 

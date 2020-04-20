@@ -3,10 +3,6 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Permission;
-use A17\Twill\Models\Group;
-use A17\Twill\Repositories\UserRepository;
-use A17\Twill\Repositories\GroupRepository;
-use DB;
 
 trait HandlePermissions
 {
@@ -59,7 +55,7 @@ trait HandlePermissions
         foreach ($fields as $key => $value) {
             if (ends_with($key, '_permission')) {
                 //Old permission
-                if (isset($oldFields[$key]) && $oldFields[$key]=='"'.$value.'"') {
+                if (isset($oldFields[$key]) && $oldFields[$key] == '"' . $value . '"') {
                     continue;
                 }
                 $item_name = explode('_', $key)[0];
@@ -93,7 +89,7 @@ trait HandlePermissions
                 $model = getModelByModuleName($moduleName = explode('_', $key)[1]);
 
                 $currentPermission = $role->permissions()
-                    ->where('permissionable_type',$model)
+                    ->where('permissionable_type', $model)
                     ->whereIn('name', $modulePermissions)
                     ->first()
                 ;
@@ -133,7 +129,7 @@ trait HandlePermissions
                 $model = getModelByModuleName($moduleName = explode('_', $key)[1]);
 
                 $currentPermission = $group->permissions()
-                    ->where('permissionable_type',$model)
+                    ->where('permissionable_type', $model)
                     ->whereIn('name', $modulePermissions)
                     ->first()
                 ;
@@ -184,7 +180,7 @@ trait HandlePermissions
                     $fields['module_' . $moduleName . '_permissions'] = '"none"';
                 }
             }
-        } elseif(\Config::get('twill.permission.level') == 'roleGroupModule') {
+        } elseif (\Config::get('twill.permission.level') == 'roleGroupModule') {
             #looking for item permissions
             foreach ($group->permissions()->moduleItem()->get() as $permission) {
                 $model = $permission->permissionable()->first();
@@ -207,7 +203,7 @@ trait HandlePermissions
     {
         $role->permissions()->get();
 
-        foreach($role->permissions()->global()->pluck('name')->toArray() as $permissionName) {
+        foreach ($role->permissions()->global()->pluck('name')->toArray() as $permissionName) {
             $fields[$permissionName] = true;
         }
 
@@ -246,14 +242,19 @@ trait HandlePermissions
         $itemScopes = Permission::available('item');
 
         #looking for group permissions belongs to the user
-        foreach($user->publishedGroups as $group) {
-            foreach($group->permissions()->moduleItem()->get() as $permission) {
+        foreach ($user->publishedGroups as $group) {
+            foreach ($group->permissions()->moduleItem()->get() as $permission) {
                 $model = $permission->permissionable()->first();
+
+                if (!$model) {
+                    continue;
+                }
+
                 $moduleName = getModuleNameByModel($model);
 
                 $index = $moduleName . '_' . $model->id . '_permission';
                 if (isset($fields[$index])) {
-                    $current = array_search(str_replace('"',"",$fields[$index]), $itemScopes);
+                    $current = array_search(str_replace('"', "", $fields[$index]), $itemScopes);
                     $group = array_search($permission->name, $itemScopes);
                     #check permission level
                     if ($group > $current) {
@@ -266,14 +267,14 @@ trait HandlePermissions
         }
 
         #looking for global permissions, if the user has the 'manage-modules' permission
-        $isManageAllModules = ($user->role->permissions()->global()->where('name','manage-modules')->first() != null);
+        $isManageAllModules = $user->is_superadmin || ($user->role->permissions()->global()->where('name', 'manage-modules')->first() != null);
 
         #looking for role module permission
         $globalPermissions = [];
         if (!$isManageAllModules) {
-            foreach($user->role->permissions()->module()->get() as $permission) {
+            foreach ($user->role->permissions()->module()->get() as $permission) {
                 if ($permission->permissionable_type) {
-                    $permissionName = str_replace("-module","-item", $permission->name);
+                    $permissionName = str_replace("-module", "-item", $permission->name);
 
                     $globalPermissions[getModuleNameByModel($permission->permissionable_type)] = $permissionName;
                 }
@@ -282,16 +283,16 @@ trait HandlePermissions
 
         #merge all permissions
         #go through all existing modules
-        foreach(Permission::permissionableParentModuleItems() as $moduleName => $moduleItems) {
+        foreach (Permission::permissionableParentModuleItems() as $moduleName => $moduleItems) {
             if (isset($globalPermissions[$moduleName]) || $isManageAllModules) {
                 $permission = $isManageAllModules ? 'manage-item' : $globalPermissions[$moduleName];
 
                 foreach ($moduleItems as $moduleItem) {
                     $index = $moduleName . '_' . $moduleItem->id . '_permission';
-                    if( !isset($fields[$index])) {
+                    if (!isset($fields[$index])) {
                         $fields[$index] = "\"{$permission}\"";
                     } else {
-                        $current = array_search(str_replace('"',"",$fields[$index]), $itemScopes);
+                        $current = array_search(str_replace('"', "", $fields[$index]), $itemScopes);
                         $global = array_search($permission, $itemScopes);
                         #check permission level
                         if ($global > $current) {

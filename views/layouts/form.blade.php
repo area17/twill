@@ -261,6 +261,8 @@
 @stop
 
 @prepend('extra_js')
+    @includeWhen(config('twill.block_editor.inline_blocks_templates', true), 'twill::partials.form.utils._blocks_templates')
+    <script src="{{ twillAsset('main-form.js') }}" crossorigin></script>
     <script>
         const groupUserMapping = {!! isset($groupUserMapping) ? json_encode($groupUserMapping) : '[]' !!};
         window['{{ config('twill.js_namespace') }}'].vm.$store.subscribe((mutation, state) => {
@@ -286,6 +288,4 @@
             }
         })
     </script>
-    @includeWhen(config('twill.block_editor.inline_blocks_templates', true), 'twill::partials.form.utils._blocks_templates')
-    <script src="{{ twillAsset('main-form.js') }}" crossorigin></script>
 @endprepend

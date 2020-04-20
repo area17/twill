@@ -1,13 +1,13 @@
 @formField('input', [
     'name' => 'name',
-    'label' => twillTrans('twill::lang.user-management.name')
+    'label' => twillTrans('twill::lang.user-management.name'),
     'maxlength' => 70
 ])
 
 @unless($item ?? null)
     @formField('input', [
         'name' => 'email',
-        'label' => twillTrans('twill::lang.user-management.email')
+        'label' => twillTrans('twill::lang.user-management.email'),
         'type' => 'email'
     ])
     @can('edit-user-role')

@@ -2,15 +2,16 @@
 
 namespace A17\Twill\Models;
 
-use A17\Twill\Models\User;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasPermissions;
+use A17\Twill\Models\Behaviors\IsTranslatable;
+use A17\Twill\Models\User;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Role extends BaseModel
 {
-    use HasMedias, SoftDeletes, HasPermissions;
+    use HasMedias, SoftDeletes, HasPermissions, IsTranslatable;
 
     public $timestamps = true;
 

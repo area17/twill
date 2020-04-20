@@ -55,7 +55,7 @@
     },
     computed: {
       emptyStyle: function () {
-        return { 'height': this.emptyHeight + 'px' }
+        return { height: this.emptyHeight + 'px' }
       },
       ...mapGetters([
         'fieldsByName'
@@ -94,7 +94,7 @@
         }
       },
       setUserPermission (fieldName) {
-        let field = {}
+        const field = {}
         field.name = fieldName
         field.value = 'view-item'
         this.$store.commit(FORM.UPDATE_FORM_FIELD, field)

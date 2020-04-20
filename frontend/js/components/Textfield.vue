@@ -233,6 +233,9 @@
       },
       checkFieldValidity: function (el) {
         // Switch based on the type of the field.
+        let pattern = null
+        let re = null
+
         switch (el.type) {
           case 'email':
             // If user didn't type any character, return.
@@ -241,9 +244,10 @@
               return
             }
 
+            pattern = el.pattern
+            re = RegExp(pattern)
+
             // Get pattern and test validity with regex.
-            const pattern = el.pattern
-            const re = RegExp(pattern)
             this.isFieldValid = re.test(this.value)
             break
         }
