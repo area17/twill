@@ -1,7 +1,7 @@
 @extends('twill::layouts.form', [
     'contentFieldsetLabel' => twillTrans('twill::lang.user-management.content-fieldset-label'),
     'editModalTitle' => twillTrans('twill::lang.user-management.edit-modal-title'),
-    // 'reloadOnSuccess' => true
+    'reloadOnSuccess' => true
 ])
 
 @section('contentFields')
