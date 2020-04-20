@@ -2,6 +2,54 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## UNRELEASED
+
+### Fixed
+
+- Fix local disk and Glide base url request scheme resolution [`15a2dbea`](https://github.com/area17/twill/commit/15a2dbea5bbbfb3e77e23e821233d3b3e69d28bc)
+- Fix new listing actions behaviors [`2d1b2eb5`](https://github.com/area17/twill/commit/2d1b2eb53cc11f3f5a41cf7335f2d53d416cb19e)
+- Fix #605 [`fc5b16a9`](https://github.com/area17/twill/commit/fc5b16a9179fcba57d3424ef2456a9efa74ce68f)
+- Fix connected fields component alias [`4b61b78e`](https://github.com/area17/twill/commit/4b61b78e1ab746fbe9975be23993adfd4a6d1391)
+- Fix draggable regression on datatable [`a79e3d2e`](https://github.com/area17/twill/commit/a79e3d2ee95c4f8ef0e08bbc0f14ae8abad9c7c7)
+- :alien: Fix typo in translation [`c0c492c5`](https://github.com/area17/twill/commit/c0c492c5805f2c72a8c89ac1ebfee0c97cfa087d)
+- Fix child module redirect when adding new records in Laravel 6 / 7 [`e60c5066`](https://github.com/area17/twill/commit/e60c50668f548594d114b7cd438fba285853fb3e)
+- Fix date_picker and color form fields not working in settings (#576) [`f66aaa68`](https://github.com/area17/twill/commit/f66aaa6821debdeeb3c7b24633d65d66d444a3d4)
+
+### Improved
+
+- Support checkbox form field in settings [`d62d303f`](https://github.com/area17/twill/commit/d62d303fba5e3ea0e6bcd8e838933bdab0c270cc)
+- Add new options to medias and files form fields [`c564ecc2`](https://github.com/area17/twill/commit/c564ecc23f9191272b72e768e4f50d0aa49bf955)
+- Update tag formField [`0d535710`](https://github.com/area17/twill/commit/0d5357103eb1209393b0e9f4748d02602cad231d)
+
+### Chore
+
+- Update composer deps [`8082d7a2`](https://github.com/area17/twill/commit/8082d7a22bcc99628a22030ba1e5315499586d08)
+- Update distributed assets [`a87aea14`](https://github.com/area17/twill/commit/a87aea14f03207b4226787d2ee1c47ced403bd38)
+- Update docs dependencies [`ff1c7c7a`](https://github.com/area17/twill/commit/ff1c7c7adfd6d5ce339cef42fb5ce5593f4cdc27)
+- Update frontend dependencies and version [`d49df239`](https://github.com/area17/twill/commit/d49df2394f40f1e0719398caa8d5c49bf75aed21)
+
+
+## 2.0.1 (2020-03-10)
+
+### Fixed
+
+- Fix fields not rendering after switching locales (#572) [`4ea1943b`](https://github.com/area17/twill/commit/4ea1943bb08b3ef627bfd982baf79eb8dc2af1a6)
+- Fix duplicate action on Laravel 7 [`a30922b1`](https://github.com/area17/twill/commit/a30922b14d1ff27ea3497bb9b7da271f30f6147d)
+
+### Improved
+
+- Dutch language added [`32197d2c`](https://github.com/area17/twill/commit/32197d2c65dcc3f50debe458a7360d2a5804bac8)
+- Update 2.0 docs [`9c56c171`](https://github.com/area17/twill/commit/9c56c1710d817d88cc30605e408876b00af68fbb)
+- Add build status to README.md [`f6e7be9e`](https://github.com/area17/twill/commit/f6e7be9e0d8e58f13a0d3c518666279ec97cf833)
+
+### Chore
+
+- Update distributed assets [`4e19670c`](https://github.com/area17/twill/commit/4e19670cb62b9baeb37354c3998ce05add97328c)
+- Update 2.0 changelog [`24fa0942`](https://github.com/area17/twill/commit/24fa0942a9185d575f603eb439630e766a7ac6d6)
+- Update CHANGELOG.md [`cb923aa6`](https://github.com/area17/twill/commit/cb923aa6e6c046744e64bbe3f4ec1411b3c25198)
+- Fix changelog release date [`57cd4e3e`](https://github.com/area17/twill/commit/57cd4e3e588d694ccb81b52afd5cb1e3b3a6c40c)
+
+
 ## 2.0.0 (2020-03-06)
 
 We're really excited to release Twill 2.0 after a few months of focus to really set the project up for success. We've responded to the community pain points, supporting both Laravel 6 and 7, removing the need to build blocks and assets, improving documentation, introducing automated testing, and many more updates and bug fixes you can read more about below. 

@@ -9,6 +9,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Routing\Redirector;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Routing\UrlGenerator;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\Factory as ViewFactory;
 
 class Handler extends ExceptionHandler
@@ -91,4 +92,8 @@ class Handler extends ExceptionHandler
         return $this->viewFactory->exists("admin.errors.$statusCode") ? "admin.errors.$statusCode" : "twill::errors.$statusCode";
     }
 
+    protected function invalidJson($request, ValidationException $exception)
+    {
+        return response()->json($exception->errors(), $exception->status);
+    }
 }
