@@ -69,7 +69,7 @@ return [
     'nav' => [
         'media-library' => 'Media Library',
         'cms-users' => 'CMS Users',
-        'settings' => 'Settings',
+        'profile' => 'Profile',
         'logout' => 'Logout',
         'admin' => 'Admin',
     ],
@@ -130,7 +130,7 @@ return [
         'name' => 'Name',
         'email' => 'Email',
         'role' => 'Role',
-        'content-fieldset-label' => 'User settings',
+        'content-fieldset-label' => 'Account',
         'edit-modal-title' => 'Edit user name',
         'update-disabled-user' => 'Update disabled user',
         'update-disabled-and-close' => 'Update disabled and close',

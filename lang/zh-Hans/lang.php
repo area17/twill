@@ -63,7 +63,7 @@ return [
     'nav' => [
         'media-library' => '媒体库',
         'cms-users' => '用户',
-        'settings' => '设置',
+        'profile' => 'Profile',
         'logout' => '注销',
         'admin' => '管理员',
     ],

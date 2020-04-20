@@ -62,7 +62,6 @@
 
 <script>
   import A17Textfield from '@/components/Textfield.vue'
-  import A17Checkbox from '@/components/Checkbox.vue'
   import A17ModalValidation from '@/components/modals/ModalValidationButtons.vue'
   import { FORM } from '@/store/mutations'
 
@@ -70,7 +69,6 @@
     name: 'A17UserInfo',
     components: {
       'a17-textfield': A17Textfield,
-      'a17-checkbox': A17Checkbox,
       'a17-modal-validation': A17ModalValidation
     },
     props: {

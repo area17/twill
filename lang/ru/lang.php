@@ -69,7 +69,7 @@ return [
     'nav' => [
         'media-library' => 'Медиа библиотека',
         'cms-users' => 'Пользователи CMS',
-        'settings' => 'Настройки',
+        'profile' => 'Profile',
         'logout' => 'Выйти',
         'admin' => 'Администратор',
     ],
