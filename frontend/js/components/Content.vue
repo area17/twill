@@ -4,13 +4,15 @@
       <transition-group name="draggable_list" tag='div'>
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
           <a17-block :block="block" :index="index" :opened="opened" :closed="closed" @expand="setOpened" ref="blockList">
-            <button type="button" slot="dropdown-add" v-if="availableBlocks.length" v-for="availableBlock in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, index + 1)"><span v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
+            <template v-for="availableBlock in availableBlocks">
+              <button type="button" slot="dropdown-add" v-if="availableBlocks.length" :key="availableBlock.component" @click="addBlock(availableBlock, index + 1)"><span v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
+            </template>
             <div slot="dropdown-action">
-              <button type="button" @click="collapseAllBlocks()" v-if="opened">Collapse all</button>
-              <button type="button" @click="expandAllBlocks()" v-else>Expand all</button>
-              <button v-if="editor" type="button" @click="openEditor(index)">Open in editor</button>
-              <button type="button" @click="duplicateBlock(index)">Create another</button>
-              <button type="button" @click="deleteBlock(index)">Delete</button>
+              <button type="button" @click="collapseAllBlocks()" v-if="opened">{{ $trans('fields.block-editor.collapse-all', 'Collapse all') }}</button>
+              <button type="button" @click="expandAllBlocks()" v-else>{{ $trans('fields.block-editor.expand-all', 'Expand all') }}</button>
+              <button v-if="editor" type="button" @click="openEditor(index)">{{ $trans('fields.block-editor.open-in-editor', 'Open in editor') }}</button>
+              <button type="button" @click="duplicateBlock(index)">{{ $trans('fields.block-editor.create-another', 'Create another') }}</button>
+              <button type="button" @click="deleteBlock(index)">{{ $trans('fields.block-editor.delete', 'Delete') }}</button>
             </div>
             <button type="button" slot="dropdown-numbers" v-for="n in blocks.length" @click="moveBlock(index, n - 1)" :key="n">{{ n }}</button>
           </a17-block>
@@ -26,7 +28,7 @@
         </div>
       </a17-dropdown>
       <div class="content__secondaryActions">
-        <a href="#" v-if="editor" class="f--link f--link-underlined--o" @click.prevent="openEditor(-1)">Open in editor</a>
+        <a href="#" v-if="editor" class="f--link f--link-underlined--o" @click.prevent="openEditor(-1)">{{ $trans('fields.block-editor.open-in-editor', 'Open in editor') }}</a>
       </div>
     </div>
   </div>
@@ -104,7 +106,7 @@
       },
       addBlock: function (block, fromIndex) {
         this.opened = true
-        let newBlock = {
+        const newBlock = {
           title: block.title,
           type: block.component,
           icon: block.icon,
@@ -140,7 +142,7 @@
       }
     },
     mounted: function () {
-      let self = this
+      const self = this
       // if there are blocks, these should be all collapse by default
       this.$nextTick(function () {
         if (self.savedBlocks.length > 3) self.collapseAllBlocks()
@@ -150,7 +152,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .content {
     margin-top:20px; // margin-top:35px;

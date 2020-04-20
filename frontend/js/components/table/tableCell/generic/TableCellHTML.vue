@@ -12,7 +12,6 @@
 </script>
 
 <style lang="scss">
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   /* With HTML */
   .tablecell__raw a {

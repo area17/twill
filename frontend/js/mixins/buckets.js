@@ -15,8 +15,8 @@ export default {
   computed: {
     bucketClasses: function () {
       return {
-        'selected': this.type !== 'bucket' && this.inBuckets,
-        'single': this.singleBucket
+        selected: this.type !== 'bucket' && this.inBuckets,
+        single: this.singleBucket
       }
     }
   },
@@ -25,11 +25,11 @@ export default {
       this.$emit('add-to-bucket', this.item, bucketId)
     },
     inBucketById: function (id) {
-      let index = this.buckets.findIndex(b => b.id === id)
+      const index = this.buckets.findIndex(b => b.id === id)
 
       if (index === -1) return
 
-      let find = this.buckets[index].children.find((c) => {
+      const find = this.buckets[index].children.find((c) => {
         return c.id === this.item.id && c.content_type.value === this.item.content_type.value
       })
 

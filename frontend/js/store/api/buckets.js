@@ -14,7 +14,11 @@ export default {
         if (callback && typeof callback === 'function') callback(resp.data)
       })
       .catch((resp) => {
-        globalError(component, resp)
+        const error = {
+          message: 'Get Buckets error',
+          value: resp
+        }
+        globalError(component, error)
         if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
       })
   },
@@ -26,7 +30,11 @@ export default {
       })
       .catch((resp) => {
         // error callback
-        globalError(component, resp)
+        const error = {
+          message: 'Buckets save error.',
+          value: resp
+        }
+        globalError(component, error)
         if (errorCallback && typeof errorCallback === 'function') errorCallback(resp)
       })
   }

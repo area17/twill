@@ -31,7 +31,7 @@ export default {
       return this.row.hasOwnProperty('edit') ? this.row.edit : '#'
     },
     updateUrl: function () {
-      return this.row['updateUrl'] ? this.row['updateUrl'] : '#'
+      return this.row.updateUrl ? this.row.updateUrl : '#'
     },
     ...mapState({
       bulkIds: state => state.datatable.bulk
@@ -42,7 +42,7 @@ export default {
       return TableCellPrefix + colName.toLowerCase()
     },
     currentComponentProps (col) {
-      let props = {
+      const props = {
         col: col || {},
         row: this.row,
         editUrl: this.editUrl,
@@ -149,6 +149,16 @@ export default {
     restoreRow: function (row) {
       this.$store.dispatch(ACTIONS.RESTORE_ROW, row)
     },
+    destroyRow: function (row) {
+      // open confirm dialog if any
+      if (this.$root.$refs.warningDestroyRow) {
+        this.$root.$refs.warningDestroyRow.open(() => {
+          this.$store.dispatch(ACTIONS.DESTROY_ROW, row)
+        })
+      } else {
+        this.$store.dispatch(ACTIONS.DESTROY_ROW, row)
+      }
+    },
     deleteRow: function (row) {
       // open confirm dialog if any
       if (this.$root.$refs.warningDeleteRow) {
@@ -158,6 +168,9 @@ export default {
       } else {
         this.$store.dispatch(ACTIONS.DELETE_ROW, row)
       }
+    },
+    duplicateRow: function (row) {
+      this.$store.dispatch(ACTIONS.DUPLICATE_ROW, row)
     }
   }
 }

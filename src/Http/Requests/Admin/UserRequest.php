@@ -3,7 +3,6 @@
 namespace A17\Twill\Http\Requests\Admin;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
 use PragmaRX\Google2FA\Google2FA;
 
 class UserRequest extends Request
@@ -38,10 +37,10 @@ class UserRequest extends Request
                 {
                     return [
                         'name' => 'required',
-                        'email' => 'required|email|unique:' . config('twill.users_table', 'twill_users') . ',email,' . $this->user,
+                        'email' => 'required|email|unique:' . config('twill.users_table', 'twill_users') . ',email,' . $this->route('user'),
                         'verify-code' => function ($attribute, $value, $fail) {
                             $user = Auth::guard('twill_users')->user();
-                            $with2faSettings = config('twill.enabled.users-2fa') && $user->id == $this->user;
+                            $with2faSettings = config('twill.enabled.users-2fa') && $user->id == $this->route('user');
 
                             if ($with2faSettings) {
                                 $userIsEnabling = $this->get('google_2fa_enabled') && !$user->google_2fa_enabled;
@@ -50,7 +49,7 @@ class UserRequest extends Request
                                 $shouldValidateOTP = $userIsEnabling || $userIsDisabling;
 
                                 if ($shouldValidateOTP) {
-                                    $valid = (new Google2FA)->verifyKey(Crypt::decrypt($user->google_2fa_secret), $value ?? '');
+                                    $valid = (new Google2FA)->verifyKey($user->google_2fa_secret, $value ?? '');
 
                                     if (!$valid) {
                                         $fail('Your one time password is invalid.');

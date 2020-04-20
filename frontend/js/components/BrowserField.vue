@@ -1,7 +1,7 @@
 <template>
   <div class="browserField">
     <table class="browserField__table" v-if="items.length">
-      <draggable :element="'tbody'" v-model="items">
+      <draggable :tag="'tbody'" v-model="items">
         <a17-browseritem v-for="(item, index) in items" :key="item.endpointType + '_' + item.id" class="item__content"
                          :name="`${name}_${item.id}`" :draggable="draggable" :item="item" @delete="deleteItem(index)"
                          :max="max"
@@ -75,7 +75,7 @@
         return this.max - this.items.length
       },
       addLabel: function () {
-        return 'Add ' + this.itemLabel
+        return this.$trans('fields.browser.add-label', 'Add') + ' ' + this.itemLabel
       },
       browserTitle: function () {
         return this.modalTitle !== '' ? this.modalTitle : this.addLabel
@@ -149,7 +149,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .browserField {
     // width: 100%;

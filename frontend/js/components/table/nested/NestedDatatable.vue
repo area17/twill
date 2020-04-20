@@ -30,7 +30,6 @@
   import a17Tablehead from './../TableHead.vue'
   import { DATATABLE } from '@/store/mutations/index'
   import NestedList from './NestedList'
-  import draggable from 'vuedraggable'
 
   export default {
     name: 'A17NestedDatatable',
@@ -43,8 +42,7 @@
     components: {
       'a17-table': a17Table,
       'a17-tablehead': a17Tablehead,
-      'a17-nested-list': NestedList,
-      draggable
+      'a17-nested-list': NestedList
     },
     beforeMount: function () {
       function findBulkColumn (column) {
@@ -90,7 +88,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .nested-datatable__table {
     position: relative;

@@ -5,12 +5,12 @@ const state = {
    * An array with all the repeaters created
    * @type {Array.Object}
    */
-  repeaters: window.STORE.form.repeaters || {},
+  repeaters: window[process.env.VUE_APP_NAME].STORE.form.repeaters || {},
   /**
    * An object with all the repeaters available to add
    * @type {Object}
    */
-  availableRepeaters: window.STORE.form.availableRepeaters || {}
+  availableRepeaters: window[process.env.VUE_APP_NAME].STORE.form.availableRepeaters || {}
 }
 
 // getters
@@ -49,7 +49,7 @@ const mutations = {
     state.repeaters[blockInfos.name].splice(blockInfos.index, 1)
   },
   [FORM.DUPLICATE_FORM_BLOCK] (state, blockInfos) {
-    let clone = Object.assign({}, state.repeaters[blockInfos.name][blockInfos.index])
+    const clone = Object.assign({}, state.repeaters[blockInfos.name][blockInfos.index])
     clone.id = setBlockID()
     state.repeaters[blockInfos.name].splice(blockInfos.index + 1, 0, clone)
   },

@@ -1,16 +1,16 @@
 <template>
   <a17-overlay ref="overlay" title="Content editor" @close="closeEditor" @open="openEditor">
     <div class="editor">
-      <a17-button class="editor__leave" variant="editor" size="small" @click="openPreview" v-if="revisions.length"><span v-svg symbol="preview" class="hide--xsmall"></span>Preview</a17-button>
+      <a17-button class="editor__leave" variant="editor" size="small" @click="openPreview" v-if="revisions.length"><span v-svg symbol="preview" class="hide--xsmall"></span>{{ $trans('fields.block-editor.preview', 'Preview') }}</a17-button>
       <div class="editor__frame">
         <div class="editor__inner">
           <div class="editor__sidebar" :class="sidebarClass" ref="sidebar">
-            <a17-editorsidebar @delete="deleteBlock" @save="saveBlock" @cancel="cancelBlock">Add content</a17-editorsidebar>
+            <a17-editorsidebar @delete="deleteBlock" @save="saveBlock" @cancel="cancelBlock">{{ $trans('fields.block-editor.add-content', 'Add content') }}</a17-editorsidebar>
           </div>
           <div class="editor__resizer" @mousedown="resize"><span></span></div>
           <div class="editor__preview" :class="previewClass" :style="previewStyle">
             <a17-editorpreview ref="previews" @select="selectBlock" @delete="deleteBlock" @unselect="unselectBlock" @add="addBlock" />
-            <a17-spinner v-if="loading" :visible="true">Loading&hellip;</a17-spinner>
+            <a17-spinner v-if="loading" :visible="true">{{ $trans('fields.block-editor.loading', 'Loading') }}&hellip;</a17-spinner>
           </div>
         </div>
       </div>
@@ -94,7 +94,7 @@
     },
     watch: {
       loading: function (loading) {
-        let self = this
+        const self = this
 
         if (!loading) {
           self.$nextTick(function () {
@@ -144,7 +144,7 @@
         if (this.$root.$refs.preview) this.$root.$refs.preview.open()
       },
       resize: function () {
-        let self = this
+        const self = this
         window.addEventListener('mousemove', self.resizeSidebar, false)
         window.addEventListener('mouseup', self.stopResizeSidebar, false)
       },
@@ -154,7 +154,7 @@
         if (sidebar) sidebar.style.width = (event.clientX - sidebar.offsetLeft) / windowWidth * 100 + '%'
       },
       stopResizeSidebar: function () {
-        let self = this
+        const self = this
         window.removeEventListener('mousemove', self.resizeSidebar, false)
         window.removeEventListener('mouseup', self.stopResizeSidebar, false)
 
@@ -184,9 +184,8 @@
       },
       cancelBlock: function () {
         if (this.hasBlockActive) {
-          if (window.hasOwnProperty('PREVSTATE')) {
-            console.warn('Store - Restore previous Store state')
-            this.$store.replaceState(window.PREVSTATE)
+          if (window[process.env.VUE_APP_NAME].hasOwnProperty('PREVSTATE')) {
+            this.$store.replaceState(window[process.env.VUE_APP_NAME].PREVSTATE)
           }
           this.getPreview()
         }
@@ -200,11 +199,10 @@
         this.$store.dispatch(ACTIONS.GET_ALL_PREVIEWS)
       },
       getPreview: function (index = -1) {
-        console.warn('Editor - getPreview')
         this.$store.dispatch(ACTIONS.GET_PREVIEW, index)
       },
       selectBlock: function (index) {
-        let self = this
+        const self = this
 
         // toggle selection
         const blockId = this.getBlockId(index)
@@ -213,8 +211,7 @@
         if (this.isBlockActive(blockId)) this.unselectBlock()
         else {
           // Save current Store and activate
-          console.warn('Store - copy current Store state')
-          window.PREVSTATE = cloneDeep(this.$store.state)
+          window[process.env.VUE_APP_NAME].PREVSTATE = cloneDeep(this.$store.state)
           this.$store.commit(CONTENT.ACTIVATE_BLOCK, index)
 
           if (!this.isWatching) {
@@ -222,7 +219,6 @@
             this.unSubscribe = this.$store.subscribe((mutation, state) => {
               // Don't trigger a refresh of the preview every single time, just when necessary
               if (PREVIEW.REFRESH_BLOCK_PREVIEW.includes(mutation.type)) {
-                console.log('Editor - store changed : ' + mutation.type)
                 if (PREVIEW.REFRESH_BLOCK_PREVIEW_ALL.includes(mutation.type)) {
                   self.getAllPreviews()
                 } else {
@@ -238,7 +234,7 @@
         this.isWatching = false
 
         // remove prevstate
-        if (window.hasOwnProperty('PREVSTATE')) delete window.PREVSTATE
+        if (window[process.env.VUE_APP_NAME].hasOwnProperty('PREVSTATE')) delete window[process.env.VUE_APP_NAME].PREVSTATE
 
         if (!this.hasBlockActive) return
         this.$store.commit(CONTENT.ACTIVATE_BLOCK, -1)
@@ -250,7 +246,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   $height__nav: 80px;
 

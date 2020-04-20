@@ -17,11 +17,11 @@ return [
     'users-image' => false,
     'site-link' => false,
     'settings' => true,
-    'google-login' => false,
     'dashboard' => true,
     'search' => true,
     'users-description' => false,
     'activitylog' => true,
     'users-2fa' => false,
-    'permission' => false
+    'users-oauth' => false,
+    'permission' => false,
 ];

@@ -93,11 +93,12 @@
   }
 }
 
-.login__google {
+.login__socialite {
   display:block;
   text-align:center;
   text-decoration:none;
   color:$color__text--forms;
+  margin-bottom:20px;
 
   .icon {
     color:$color__text--forms;

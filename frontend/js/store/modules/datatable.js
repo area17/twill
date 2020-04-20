@@ -12,7 +12,7 @@ const getObject = (container, id, callback) => {
 }
 
 const deepRemoveFromObj = (items, keys = ['id', 'children'], deep = 'children') => {
-  let deepItems = JSON.parse(JSON.stringify(items))
+  const deepItems = JSON.parse(JSON.stringify(items))
   deepItems.forEach((obj) => {
     for (const prop in obj) {
       if (!keys.includes(prop)) {
@@ -28,20 +28,20 @@ const deepRemoveFromObj = (items, keys = ['id', 'children'], deep = 'children') 
 }
 
 const state = {
-  baseUrl: window.STORE.datatable.baseUrl || '',
-  data: window.STORE.datatable.data || [],
-  columns: window.STORE.datatable.columns || [],
-  filter: window.STORE.datatable.filter || {},
-  filtersNav: window.STORE.datatable.navigation || [],
-  page: window.STORE.datatable.page || 1,
-  maxPage: window.STORE.datatable.maxPage || 1,
-  defaultMaxPage: window.STORE.datatable.defaultMaxPage || 1,
-  offset: window.STORE.datatable.offset || 60,
-  defaultOffset: window.STORE.datatable.defaultOffset || 60,
-  sortKey: window.STORE.datatable.sortKey || '',
-  sortDir: window.STORE.datatable.sortDir || 'asc',
+  baseUrl: window[process.env.VUE_APP_NAME].STORE.datatable.baseUrl || '',
+  data: window[process.env.VUE_APP_NAME].STORE.datatable.data || [],
+  columns: window[process.env.VUE_APP_NAME].STORE.datatable.columns || [],
+  filter: window[process.env.VUE_APP_NAME].STORE.datatable.filter || {},
+  filtersNav: window[process.env.VUE_APP_NAME].STORE.datatable.navigation || [],
+  page: window[process.env.VUE_APP_NAME].STORE.datatable.page || 1,
+  maxPage: window[process.env.VUE_APP_NAME].STORE.datatable.maxPage || 1,
+  defaultMaxPage: window[process.env.VUE_APP_NAME].STORE.datatable.defaultMaxPage || 1,
+  offset: window[process.env.VUE_APP_NAME].STORE.datatable.offset || 60,
+  defaultOffset: window[process.env.VUE_APP_NAME].STORE.datatable.defaultOffset || 60,
+  sortKey: window[process.env.VUE_APP_NAME].STORE.datatable.sortKey || '',
+  sortDir: window[process.env.VUE_APP_NAME].STORE.datatable.sortDir || 'asc',
   bulk: [],
-  localStorageKey: window.STORE.datatable.localStorageKey || window.location.pathname,
+  localStorageKey: window[process.env.VUE_APP_NAME].STORE.datatable.localStorageKey || window.location.pathname,
   loading: false,
   updateTracker: 0
 }
@@ -58,7 +58,7 @@ const getters = {
     return state.columns.filter(column => column.visible)
   },
   visibleColumnsNames: state => {
-    let onlyActiveColumnsNames = []
+    const onlyActiveColumnsNames = []
 
     if (state.columns.length) {
       state.columns.forEach(function (column) {
@@ -242,14 +242,14 @@ const actions = {
       })
     }
   },
-  [ACTIONS.SET_DATATABLE_NESTED] ({commit, state, dispatch}) {
+  [ACTIONS.SET_DATATABLE_NESTED] ({ commit, state, dispatch }) {
     // Get all ids and children ids if any
     const ids = deepRemoveFromObj(state.data)
     api.reorder(ids, function (resp) {
-      commit(NOTIFICATION.SET_NOTIF, {message: resp.data.message, variant: resp.data.variant})
+      commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
     })
   },
-  [ACTIONS.SET_DATATABLE] ({commit, state, dispatch}) {
+  [ACTIONS.SET_DATATABLE] ({ commit, state, dispatch }) {
     const ids = state.data.map((row) => row.id)
 
     api.reorder(ids, function (resp) {
@@ -270,8 +270,22 @@ const actions = {
       dispatch(ACTIONS.GET_DATATABLE)
     })
   },
+  [ACTIONS.DUPLICATE_ROW] ({ commit, state, dispatch }, row) {
+    api.duplicate(row, function (resp) {
+      commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
+      if (resp.data.hasOwnProperty('redirect')) {
+        window.location.replace(resp.data.redirect)
+      }
+    })
+  },
   [ACTIONS.RESTORE_ROW] ({ commit, state, dispatch }, row) {
     api.restore(row, function (resp) {
+      commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
+      dispatch(ACTIONS.GET_DATATABLE)
+    })
+  },
+  [ACTIONS.DESTROY_ROW] ({ commit, state, dispatch }, row) {
+    api.destroy(row, function (resp) {
       commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
       dispatch(ACTIONS.GET_DATATABLE)
     })
@@ -320,6 +334,12 @@ const actions = {
   },
   [ACTIONS.BULK_RESTORE] ({ commit, state, dispatch }) {
     api.bulkRestore(state.bulk.join(), function (resp) {
+      commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
+      dispatch(ACTIONS.GET_DATATABLE)
+    })
+  },
+  [ACTIONS.BULK_DESTROY] ({ commit, state, dispatch }) {
+    api.bulkDestroy(state.bulk.join(), function (resp) {
       commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
       dispatch(ACTIONS.GET_DATATABLE)
     })

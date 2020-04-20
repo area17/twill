@@ -4,6 +4,7 @@ namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\File;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 
 trait HandleFiles
@@ -62,7 +63,7 @@ trait HandleFiles
 
         if (isset($fields['medias'])) {
             foreach ($fields['medias'] as $role => $filesForRole) {
-                if (str_contains($role, ['[', ']'])) {
+                if (Str::contains($role, ['[', ']'])) {
                     $start = strpos($role, '[') + 1;
                     $finish = strpos($role, ']', $start);
                     $locale = substr($role, $start, $finish - $start);

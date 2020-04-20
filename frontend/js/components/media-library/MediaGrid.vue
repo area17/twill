@@ -7,7 +7,11 @@
       </span>
     </div>
     <div class="mediagrid__item" v-for="item in items" :key="item.id">
-      <span class="mediagrid__button" :class="{ 's--picked': isSelected(item), 's--used': isUsed(item) }" @click.exact="toggleSelection(item)" @click.shift.exact="shiftToggleSelection(item)"><img :src="item.thumbnail" class="mediagrid__img" /></span>
+      <span class="mediagrid__button" :class="{
+        's--picked': isSelected(item),
+        's--used': isUsed(item),
+        's--disabled': item.disabled
+      }" @click.exact="toggleSelection(item)" @click.shift.exact="shiftToggleSelection(item)"><img :src="item.thumbnail" class="mediagrid__img" /></span>
     </div>
   </div>
 </template>
@@ -21,7 +25,7 @@
     methods: {
       loadingProgress: function (index) {
         return {
-          'width': this.itemsLoading[index].progress ? this.itemsLoading[index].progress + '%' : '0%'
+          width: this.itemsLoading[index].progress ? this.itemsLoading[index].progress + '%' : '0%'
         }
       }
     }
@@ -29,7 +33,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .mediagrid {
     display: block;
@@ -157,6 +160,11 @@
         background-color: $color__translucentBlue;
         opacity: 0.85;
       }
+    }
+
+    &.s--disabled {
+      pointer-events: none;
+      opacity: 0.2;
     }
   }
 

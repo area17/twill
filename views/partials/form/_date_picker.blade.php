@@ -21,11 +21,11 @@
     in-store="date"
 ></a17-datepicker>
 
-@unless($renderForBlocks || $renderForModal || !isset($item->$name))
+@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
 @push('vuexStore')
-    window.STORE.form.fields.push({
+    window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({
         name: '{{ $name }}',
-        value: {!! json_encode(e($item->$name)) !!}
+        value: {!! json_encode(e($item->$name ?? $formFieldsValue)) !!}
     })
 @endpush
 @endunless

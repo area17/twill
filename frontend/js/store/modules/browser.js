@@ -8,15 +8,15 @@ const state = {
   endpointName: '',
   endpoints: [],
   max: 0,
-  selected: window.STORE.browser.selected || {}
+  selected: window[process.env.VUE_APP_NAME].STORE.browser.selected || {}
 }
 
 // getters
 const getters = {
   selectedItemsByIds: state => {
-    let arrayOfIds = []
+    const arrayOfIds = []
 
-    for (let name in state.selected) {
+    for (const name in state.selected) {
       arrayOfIds[name] = state.selected[name].map((item) => `${item.endpointType}_${item.id}`)
     }
 

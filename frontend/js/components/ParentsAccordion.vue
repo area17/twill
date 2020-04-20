@@ -64,7 +64,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .revaccordion__scroller {
     height:100%;

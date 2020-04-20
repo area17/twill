@@ -29,7 +29,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   /* Featuring content */
   .tablecell__feature {

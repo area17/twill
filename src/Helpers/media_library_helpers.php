@@ -10,8 +10,19 @@ if (!function_exists('s3Endpoint')) {
     function s3Endpoint($disk = 'libraries')
     {
         $scheme = config("filesystems.disks.{$disk}.use_https") ? 'https://' : '';
-
         return $scheme . config("filesystems.disks.{$disk}.bucket") . '.' . Storage::disk($disk)->getAdapter()->getClient()->getEndpoint()->getHost();
+    }
+}
+
+if (!function_exists('azureEndpoint')) {
+    /**
+     * @param string $disk
+     * @return string
+     */
+    function azureEndpoint($disk = 'libraries')
+    {
+        $scheme = config("filesystems.disks.{$disk}.use_https") ? 'https://' : '';
+        return $scheme . config("filesystems.disks.{$disk}.name") . '.blob.' . config("filesystems.disks.{$disk}.endpoint-suffix") . '/' . config("filesystems.disks.{$disk}.container");
     }
 }
 

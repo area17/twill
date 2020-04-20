@@ -1,13 +1,15 @@
-export function globalError (component = null, error) {
+export function globalError (component = null, error = { message: '', value: null }) {
   let prefix = ''
 
   if (component && typeof component === 'string') {
-    prefix = '[' + component + ']: '
+    prefix = `${process.env.VUE_APP_NAME} - [${component}]: `
   }
 
-  const errorMessage = prefix + 'An error occured.\n' + error
-
+  const errorMessage = prefix + 'An error occured.\n' + error.message
   console.error(errorMessage)
+  if (error.value) {
+    console.error(error.value)
+  }
 
   const errorStatusMapping = {
     401: {
@@ -20,7 +22,7 @@ export function globalError (component = null, error) {
     }
   }
 
-  if (errorStatusMapping.hasOwnProperty(error.response.status)) {
-    window.vm.notif(errorStatusMapping[error.response.status])
+  if ('response' in error.value && 'status' in error.value.response && errorStatusMapping.hasOwnProperty(error.value.response.status)) {
+    window[process.env.VUE_APP_NAME].vm.notif(errorStatusMapping[error.value.response.status])
   }
 }

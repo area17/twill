@@ -1,54 +1,56 @@
 /* Inter font */
 @font-face {
   font-family: 'Inter';
-  font-style:  normal;
+  font-style: normal;
   font-weight: 400;
-  src: url("/assets/admin/fonts/Inter-Regular.woff2") format("woff2"),
-       url("/assets/admin/fonts/Inter-Regular.woff") format("woff");
+  src: url("~fonts/Inter-Regular.woff2") format("woff2"),
+  url("~fonts/Inter-Regular.woff") format("woff");
   font-display: swap;
 }
+
 @font-face {
   font-family: 'Inter';
-  font-style:  italic;
+  font-style: italic;
   font-weight: 400;
-  src: url("/assets/admin/fonts/Inter-Italic.woff2") format("woff2"),
-       url("/assets/admin/fonts/Inter-Italic.woff") format("woff");
+  src: url("~fonts/Inter-Italic.woff2") format("woff2"),
+  url("~fonts/Inter-Italic.woff") format("woff");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  src: url("~fonts/Inter-Medium.woff2") format("woff2"),
+  url("~fonts/Inter-Medium.woff") format("woff");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: italic;
+  font-weight: 600;
+  src: url("~fonts/Inter-MediumItalic.woff2") format("woff2"),
+  url("~fonts/Inter-MediumItalic.woff") format("woff");
   font-display: swap;
 }
 
 @font-face {
   font-family: 'Inter';
   font-style:  normal;
-  font-weight: 600;
-  src: url("/assets/admin/fonts/Inter-Medium.woff2") format("woff2"),
-       url("/assets/admin/fonts/Inter-Medium.woff") format("woff");
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Inter';
-  font-style:  italic;
-  font-weight: 600;
-  src: url("/assets/admin/fonts/Inter-MediumItalic.woff2") format("woff2"),
-       url("/assets/admin/fonts/Inter-MediumItalic.woff") format("woff");
-  font-display: swap;
-}
-
-/*@font-face {
-  font-family: 'Inter';
-  font-style:  normal;
   font-weight: 700;
-  src: url("/assets/admin/fonts/Inter-Bold.woff2") format("woff2"),
-       url("/assets/admin/fonts/Inter-Bold.woff") format("woff");
+  src: url("~fonts/Inter-Bold.woff2") format("woff2"),
+       url("~fonts/Inter-Bold.woff") format("woff");
   font-display: swap;
 }
 @font-face {
   font-family: 'Inter';
   font-style:  italic;
   font-weight: 700;
-  src: url("/assets/admin/fonts/Inter-BoldItalic.woff2") format("woff2"),
-       url("/assets/admin/fonts/Inter-BoldItalic.woff") format("woff");
+  src: url("~fonts/Inter-BoldItalic.woff2") format("woff2"),
+       url("~fonts/Inter-BoldItalic.woff") format("woff");
   font-display: swap;
-}*/
+}
 
 $sans-serif: Inter, -apple-system, -system-ui, system-ui, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
 /*$sans-serif: "Helvetica Neue", Helvetica, Arial, sans-serif;*/

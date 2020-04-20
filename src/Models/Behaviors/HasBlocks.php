@@ -8,7 +8,7 @@ trait HasBlocks
 {
     public function blocks()
     {
-        return $this->morphMany(Block::class, 'blockable')->orderBy('blocks.position', 'asc');
+        return $this->morphMany(Block::class, 'blockable')->orderBy(config('twill.blocks_table', 'twill_blocks') . '.position', 'asc');
     }
 
     public function renderBlocks($renderChilds = true, $blockViewMappings = [], $data = [])

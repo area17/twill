@@ -38,7 +38,6 @@
 </script>
 
 <style lang="scss"> // beware : not scoped
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .a17spinner {
     display: flex;

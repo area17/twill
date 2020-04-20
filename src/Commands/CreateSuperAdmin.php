@@ -5,6 +5,7 @@ namespace A17\Twill\Commands;
 use A17\Twill\Models\User;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Factory as ValidatorFactory;
 
 class CreateSuperAdmin extends Command
@@ -55,15 +56,18 @@ class CreateSuperAdmin extends Command
         $this->info("Let's create a superadmin account!");
         $email = $this->setEmail();
         $password = $this->setPassword();
+
         $user = new User;
         $user->fill([
             'name' => "Admin",
             'email' => $email,
             'published' => true,
         ]);
-        $user->password = bcrypt($password);
+
+        $user->password = Hash::make($password);
         $user->is_superadmin = true;
         $user->save();
+
         $this->info("Your account has been created");
     }
 
@@ -79,7 +83,7 @@ class CreateSuperAdmin extends Command
             return $email;
         } else {
             $this->error("Your email is not valid");
-            $this->setEmail();
+            return $this->setEmail();
         }
     }
 
@@ -97,11 +101,11 @@ class CreateSuperAdmin extends Command
                 return $password;
             } else {
                 $this->error('Password does not match the confirm password');
-                $this->setPassword();
+                return $this->setPassword();
             }
         } else {
             $this->error("Your password is not valid, at least 6 characters");
-            $this->setPassword();
+            return $this->setPassword();
         }
     }
 

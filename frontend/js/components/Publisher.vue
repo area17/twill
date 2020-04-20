@@ -1,6 +1,7 @@
 <template>
   <div class="publisher__wrapper">
-      <a17-switcher title="Status" name="publish_state" v-if="withPublicationToggle" :textEnabled="textEnabled" :textDisabled="textDisabled"></a17-switcher>
+      <a17-switcher :title="$trans('publisher.switcher-title', 'Status')" name="publish_state" v-if="withPublicationToggle" :textEnabled="textEnabled" :textDisabled="textDisabled"></a17-switcher>
+      <slot></slot>
       <a17-userinfo v-if="userInfo" :userInfo="userInfo"></a17-userinfo>
       <a17-reviewaccordion  v-if="reviewProcess && reviewProcess.length" :options="reviewProcess" name="review_process" :value="reviewProcessCompleteValues" :open="openStates['A17Reviewaccordion']" @open="openCloseAccordion">Review status</a17-reviewaccordion>
       <a17-radioaccordion  v-if="visibility && visibilityOptions && visibilityOptions.length" :radios="visibilityOptions" name="visibility" :value="visibility" :open="openStates['A17Radioaccordion']" @open="openCloseAccordion" @change="updateVisibility">Visibility</a17-radioaccordion>
@@ -12,7 +13,7 @@
         <a href="#" class="publisher__link" @click.prevent="openPreview"><span v-svg symbol="preview"></span><span class="f--link-underlined--o">Preview changes</span></a>
       </div>
       <div class="publisher__item publisher__item--btns">
-        <a17-multibutton @button-clicked="buttonClicked" :options="submitOptions" type="submit"></a17-multibutton>
+        <a17-multibutton @button-clicked="buttonClicked" :options="submitOptions" type="submit" :message="submitDisableMessage"></a17-multibutton>
       </div>
   </div>
   <!-- <div class="publisher__trash">
@@ -60,12 +61,12 @@
       return {
         singleOpen: true,
         openStates: {
-          'A17Reviewaccordion': false,
-          'A17Radioaccordion': false,
-          'A17Checkboxaccordion': false,
-          'A17Revisions': false,
-          'A17Pubaccordion': false,
-          'A17Parents': false
+          A17Reviewaccordion: false,
+          A17Radioaccordion: false,
+          A17Checkboxaccordion: false,
+          A17Revisions: false,
+          A17Pubaccordion: false,
+          A17Parents: false
         }
       }
     },
@@ -110,6 +111,7 @@
         visibility: state => state.publication.visibility,
         visibilityOptions: state => state.publication.visibilityOptions,
         reviewProcess: state => state.publication.reviewProcess,
+        submitDisableMessage: state => state.publication.submitDisableMessage,
         userInfo: state => state.publication.userInfo
       }),
       ...mapGetters([
@@ -125,7 +127,7 @@
         if (!this.singleOpen) return
 
         if (isOpen) {
-          for (let prop in this.openStates) {
+          for (const prop in this.openStates) {
             this.openStates[prop] = prop === componentname
           }
         } else {
@@ -146,7 +148,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   $trigger_height:55px;
 

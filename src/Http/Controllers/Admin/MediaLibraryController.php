@@ -3,17 +3,20 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Http\Requests\Admin\MediaRequest;
+use A17\Twill\Models\Media;
+use A17\Twill\Services\Uploader\SignAzureUpload;
 use A17\Twill\Services\Uploader\SignS3Upload;
-use A17\Twill\Services\Uploader\SignS3UploadListener;
+use A17\Twill\Services\Uploader\SignUploadListener;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
-class MediaLibraryController extends ModuleController implements SignS3UploadListener
+class MediaLibraryController extends ModuleController implements SignUploadListener
 {
     /**
      * @var string
@@ -55,6 +58,16 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
      */
     protected $customFields;
 
+    /**
+     * @var Illuminate\Routing\ResponseFactory
+     */
+    protected $responseFactory;
+
+    /**
+     * @var Illuminate\Config\Repository
+     */
+    protected $config;
+
     public function __construct(
         Application $app,
         Config $config,
@@ -65,7 +78,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
         $this->responseFactory = $responseFactory;
         $this->config = $config;
 
-        $this->middleware('can:access-media-library', ['only' => ['signS3Upload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
+        $this->middleware('can:access-media-library', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = $this->config->get('twill.media_library.endpoint_type');
         $this->customFields = $this->config->get('twill.media_library.extra_metadatas_fields');
     }
@@ -120,12 +133,11 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
     /**
      * @param int|null $parentModuleId
-     * @return \Illuminate\Http\JsonResponse
+     * @return
      */
     public function store($parentModuleId = null)
     {
-        $request = $this->app->get(MediaRequest::class);
-
+        $request = $this->app->make(MediaRequest::class);
         if ($this->endpointType === 'local') {
             $media = $this->storeFile($request);
         } else {
@@ -137,7 +149,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
     /**
      * @param Request $request
-     * @return \A17\Twill\Models\Media
+     * @return Media
      */
     public function storeFile($request)
     {
@@ -175,12 +187,12 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
 
     /**
      * @param Request $request
-     * @return \A17\Twill\Models\Media
+     * @return Media
      */
     public function storeReference($request)
     {
         $fields = [
-            'uuid' => $request->input('key'),
+            'uuid' => $request->input('key') ?? $request->input('blob'),
             'filename' => $request->input('name'),
             'width' => $request->input('width'),
             'height' => $request->input('height'),
@@ -190,7 +202,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function singleUpdate()
     {
@@ -209,7 +221,7 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function bulkUpdate()
     {
@@ -257,24 +269,37 @@ class MediaLibraryController extends ModuleController implements SignS3UploadLis
     }
 
     /**
-     * @param mixed $signedPolicy
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @param SignAzureUpload $signAzureUpload
+     * @return mixed
      */
-    public function policyIsSigned($signedPolicy)
+    public function signAzureUpload(Request $request, SignAzureUpload $signAzureUpload)
     {
-        return $this->responseFactory->json($signedPolicy, 200);
+        return $signAzureUpload->getSasUrl($request, $this, $this->config->get('twill.media_library.disk'));
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @param $signature
+     * @param bool $isJsonResponse
+     * @return mixed
      */
-    public function policyIsNotValid()
+    public function uploadIsSigned($signature, $isJsonResponse = true)
+    {
+        return $isJsonResponse
+        ? $this->responseFactory->json($signature, 200)
+        : $this->responseFactory->make($signature, 200, ['Content-Type' => 'text/plain']);
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function uploadIsNotValid()
     {
         return $this->responseFactory->json(["invalid" => true], 500);
     }
 
     /**
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     private function getExtraMetadatas()
     {

@@ -13,12 +13,12 @@ const state = {
    * An object of all crops available for cropper component configuration
    * @type {Object}
    */
-  crops: window.STORE.medias.crops || {},
+  crops: window[process.env.VUE_APP_NAME].STORE.medias.crops || {},
   /**
    * Define types available in medias library
    * @type {Array.<string>}
    */
-  types: window.STORE.medias.types || [],
+  types: window[process.env.VUE_APP_NAME].STORE.medias.types || [],
   /**
    * Current type of media library
    * @type {string}
@@ -35,6 +35,21 @@ const state = {
    */
   max: 0,
   /**
+   * Define the maximum filesize allowed to attach in a field from the media library
+   * @type {number}
+   */
+  filesizeMax: 0,
+  /**
+   * Define the min image width allowed to attach in a field from the media library
+   * @type {number}
+   */
+  widthMin: 0,
+  /**
+   * Define the min image height allowed to attach in a field from the media library
+   * @type {number}
+   */
+  heightMin: 0,
+  /**
    * Restrict the media library navigation between type
    * @type {Boolean}
    */
@@ -43,7 +58,7 @@ const state = {
    * An object of selected medias by usage (connector)
    * @type {Object.<string,Object>}
    */
-  selected: window.STORE.medias.selected || {},
+  selected: window[process.env.VUE_APP_NAME].STORE.medias.selected || {},
   /**
    * An array of current uploading medias. When upload is ended, array is reset
    * @type {Array}
@@ -173,6 +188,15 @@ const mutations = {
   [MEDIA_LIBRARY.UPDATE_MEDIA_MAX] (state, newValue) {
     state.max = Math.max(0, newValue)
   },
+  [MEDIA_LIBRARY.UPDATE_MEDIA_FILESIZE_MAX] (state, newValue) {
+    state.filesizeMax = Math.max(0, newValue)
+  },
+  [MEDIA_LIBRARY.UPDATE_MEDIA_WIDTH_MIN] (state, newValue) {
+    state.widthMin = Math.max(0, newValue)
+  },
+  [MEDIA_LIBRARY.UPDATE_MEDIA_HEIGHT_MIN] (state, newValue) {
+    state.heightMin = Math.max(0, newValue)
+  },
   [MEDIA_LIBRARY.SET_MEDIA_METADATAS] (state, metadatas) {
     const connector = metadatas.media.context
     const medias = state.selected[connector]
@@ -211,8 +235,8 @@ const mutations = {
       if (!mediaToModify.crops) mediaToModify.crops = {}
 
       // save all the crop variants to the media
-      for (let variant in crop.values) {
-        let newValues = {}
+      for (const variant in crop.values) {
+        const newValues = {}
         newValues.name = crop.values[variant].name || variant
         newValues.x = crop.values[variant].x
         newValues.y = crop.values[variant].y

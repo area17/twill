@@ -44,8 +44,8 @@
   import { mapState, mapGetters } from 'vuex'
   import a17VueFilters from '@/utils/filters.js'
   import A17Avatar from '@/components/Avatar.vue'
-  import a17ModalValidationButtons from '@/components/modals/ModalValidationButtons.vue'
   import langManager from '@/components/LangManager.vue'
+  import a17ModalValidationButtons from '@/components/modals/ModalValidationButtons.vue'
 
   import InputframeMixin from '@/mixins/inputFrame'
   import LocaleMixin from '@/mixins/locale'
@@ -114,7 +114,7 @@
       title: function () {
         // Get the title from the store
         const title = this.fieldValueByName(this.name) ? this.fieldValueByName(this.name) : ''
-        const titleValue = typeof title === 'string' ? title : title[this.currentLocale['value']]
+        const titleValue = typeof title === 'string' ? title : title[this.currentLocale.value]
         return titleValue || this.warningMessage
       },
       permalink: function () {
@@ -144,7 +144,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .titleEditor {
     margin-bottom: 20px;

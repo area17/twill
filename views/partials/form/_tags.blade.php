@@ -1,6 +1,11 @@
+@php
+    $label = $label ?? 'Tags';
+    $note = $note ?? false;
+@endphp
 <a17-vselect
-    label="Tags"
+    label="{{ $label }}"
     name="tags"
+    @if ($note) note="{{ $note }}" @endif
     :multiple="true"
     :searchable="true"
     :taggable="true"
@@ -11,7 +16,7 @@
 
 @unless($renderForBlocks || $renderForModal || $item->tags->count() === 0)
 @push('vuexStore')
-    window.STORE.form.fields.push({
+    window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({
         name: 'tags',
         value: {!! json_encode($item->tags->map(function ($tag) { return $tag->name; })->toArray()) !!}
     })

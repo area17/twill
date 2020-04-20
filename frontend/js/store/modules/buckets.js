@@ -1,22 +1,22 @@
 import bucketsAPI from '../api/buckets'
-import {BUCKETS, NOTIFICATION} from '../mutations'
+import { BUCKETS, NOTIFICATION } from '../mutations'
 import ACTIONS from '@/store/actions'
 
 const state = {
-  saveUrl: window.STORE.buckets.saveUrl || '',
-  dataSources: window.STORE.buckets.dataSources || {},
-  source: window.STORE.buckets.source || {},
+  saveUrl: window[process.env.VUE_APP_NAME].STORE.buckets.saveUrl || '',
+  dataSources: window[process.env.VUE_APP_NAME].STORE.buckets.dataSources || {},
+  source: window[process.env.VUE_APP_NAME].STORE.buckets.source || {},
   /**
    * An array of Object. Each representing a bucket with his data types and current children
    * Buckets action ui is based on buckets length.
    * If buckets.length === 1 an 'add' icon instead of buckets number
    */
-  buckets: window.STORE.buckets.items || [],
-  filter: window.STORE.buckets.filter || {},
-  page: window.STORE.buckets.page || 1,
-  maxPage: window.STORE.buckets.maxPage || 10,
-  offset: window.STORE.buckets.offset || 10,
-  availableOffsets: window.STORE.buckets.availableOffsets || [10, 20, 30]
+  buckets: window[process.env.VUE_APP_NAME].STORE.buckets.items || [],
+  filter: window[process.env.VUE_APP_NAME].STORE.buckets.filter || {},
+  page: window[process.env.VUE_APP_NAME].STORE.buckets.page || 1,
+  maxPage: window[process.env.VUE_APP_NAME].STORE.buckets.maxPage || 10,
+  offset: window[process.env.VUE_APP_NAME].STORE.buckets.offset || 10,
+  availableOffsets: window[process.env.VUE_APP_NAME].STORE.buckets.availableOffsets || [10, 20, 30]
 }
 
 const getters = {
@@ -31,7 +31,7 @@ const mutations = {
     state.buckets[payload.index].children.splice(payload.itemIndex, 1)
   },
   [BUCKETS.TOGGLE_FEATURED_IN_BUCKET] (state, payload) {
-    let item = state.buckets[payload.index].children.splice(payload.itemIndex, 1)
+    const item = state.buckets[payload.index].children.splice(payload.itemIndex, 1)
     item[0].starred = !item[0].starred
     state.buckets[payload.index].children.splice(payload.itemIndex, 0, item[0])
   },
@@ -45,7 +45,7 @@ const mutations = {
     state.filter = Object.assign({}, state.filter, filter)
   },
   [BUCKETS.REORDER_BUCKET_LIST] (state, payload) {
-    let item = state.buckets[payload.bucketIndex].children.splice(payload.oldIndex, 1)
+    const item = state.buckets[payload.bucketIndex].children.splice(payload.oldIndex, 1)
     state.buckets[payload.bucketIndex].children.splice(payload.newIndex, 0, item[0])
   },
   [BUCKETS.UPDATE_BUCKETS_DATA_OFFSET] (state, offsetNumber) {
@@ -60,7 +60,7 @@ const mutations = {
 }
 
 const actions = {
-  [ACTIONS.GET_BUCKETS] ({commit, state}) {
+  [ACTIONS.GET_BUCKETS] ({ commit, state }) {
     bucketsAPI.get({
       content_type: state.dataSources.selected.value,
       page: state.page,
@@ -71,7 +71,7 @@ const actions = {
       commit(BUCKETS.UPDATE_BUCKETS_MAX_PAGE, resp.maxPage)
     })
   },
-  [ACTIONS.SAVE_BUCKETS] ({commit, state}) {
+  [ACTIONS.SAVE_BUCKETS] ({ commit, state }) {
     const buckets = {}
 
     state.buckets.forEach((bucket) => {
@@ -86,10 +86,11 @@ const actions = {
       buckets[bucket.id] = children
     })
 
-    bucketsAPI.save(state.saveUrl, {buckets: buckets}, (successResponse) => {
+    bucketsAPI.save(state.saveUrl, { buckets: buckets }, (successResponse) => {
       commit(NOTIFICATION.SET_NOTIF, {
         message: 'Features saved. All good!',
-        variant: 'success'})
+        variant: 'success'
+      })
     }, (errorResponse) => {
       commit(NOTIFICATION.SET_NOTIF, {
         message: 'Your submission could not be validated, please fix and retry',

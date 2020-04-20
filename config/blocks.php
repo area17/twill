@@ -14,7 +14,11 @@ return [
     'block_views_path' => 'site.blocks', // path where a view file per block type is stored
     'block_views_mappings' => [], // custom mapping of block types and views
     'block_preview_render_childs' => true, // indicates if childs should be rendered when using repeater in blocks
-    'block_presenter_path' => null, //Allow to set a custom presenter to a block model
+    'block_presenter_path' => null, // allow to set a custom presenter to a block model
+    // Indicates if blocks templates should be inlined in HTML.
+    // When setting to false, make sure to build Twill with your all your custom blocks.
+    'inline_blocks_templates' => true,
+    'custom_vue_blocks_resource_path' => 'assets/js/blocks',
     'blocks' => [
         'text' => [
             'title' => 'Body text',

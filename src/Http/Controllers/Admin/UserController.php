@@ -2,13 +2,13 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Models\Group;
 use A17\Twill\Models\Permission;
 use A17\Twill\Models\Role;
 use A17\Twill\Models\User;
-use A17\Twill\Models\Group;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Password;
@@ -77,7 +77,7 @@ class UserController extends ModuleController
         'last_login' => [
             'title' => 'Last Login',
             'field' => 'last_login_column_value',
-            'sort' => true
+            'sort' => true,
         ],
         'email' => [
             'title' => 'Email',
@@ -122,8 +122,8 @@ class UserController extends ModuleController
                     'variant' => [
                         'role' => 'profile',
                         'crop' => 'default',
-                        'shape' => 'rounded'
-                    ]
+                        'shape' => 'rounded',
+                    ],
                 ],
             ] + $this->indexColumns;
         }
@@ -143,7 +143,7 @@ class UserController extends ModuleController
             })->toArray(),
             'primary_navigation' => [
                 'users' => [
-                    'title' => 'Users',
+                    'title' => twillTrans('twill::lang.user-management.users'),
                     'module' => true,
                     'active' => true,
                     'can' => 'edit-users',
@@ -172,25 +172,13 @@ class UserController extends ModuleController
      */
     protected function formData($request)
     {
-        //The User current logged in
         $currentUser = $this->authFactory->guard('twill_users')->user();
         $with2faSettings = $this->config->get('twill.enabled.users-2fa') && $currentUser->id == $this->request->get('user');
 
         if ($with2faSettings) {
-            $google2fa = new Google2FA();
+            $currentUser->generate2faSecretKey();
 
-            if (is_null($currentUser->google_2fa_secret)) {
-                $secret = $google2fa->generateSecretKey();
-                $currentUser->google_2fa_secret = \Crypt::encrypt($secret);
-                $currentUser->save();
-            }
-
-            $qrCode = $google2fa->getQRCodeInline(
-                $this->config->get('app.name'),
-                $currentUser->email,
-                \Crypt::decrypt($currentUser->google_2fa_secret),
-                200
-            );
+            $qrCode = $currentUser->get2faQrCode();
         }
 
         // Get user thumbnail (fixme because this always return the fallback blank image)
@@ -208,7 +196,7 @@ class UserController extends ModuleController
             })->toArray(),
             'primary_navigation' => [
                 'users' => [
-                    'title' => 'Users',
+                    'title' => twillTrans('twill::lang.user-management.users'),
                     'module' => true,
                     'active' => true,
                     'can' => 'edit-users',
@@ -225,13 +213,13 @@ class UserController extends ModuleController
                 ],
             ],
             'titleThumbnail' => $titleThumbnail ? $titleThumbnail : null,
-            'customPublishedLabel' => 'Enabled',
-            'customDraftLabel' => 'Disabled',
+            'customPublishedLabel' => twillTrans('twill::lang.user-management.enabled'),
+            'customDraftLabel' => twillTrans('twill::lang.user-management.disabled'),
             'permissionModules' => Permission::permissionableParentModuleItems(),
             'groupPermissionMapping' => $this->getGroupPermissionMapping(),
             'with2faSettings' => $with2faSettings,
             'qrCode' => $qrCode ?? null,
-            'groupOptions' => $this->getGroups()
+            'groupOptions' => $this->getGroups(),
         ];
     }
 
@@ -257,18 +245,18 @@ class UserController extends ModuleController
         $statusFilters = [];
 
         array_push($statusFilters, [
-            'name' => 'Active',
+            'name' => twillTrans('twill::lang.user-management.active'),
             'slug' => 'published',
             'number' => $this->repository->getCountByStatusSlug('published', [['is_superadmin', false]]),
         ], [
-            'name' => 'Disabled',
+            'name' => twillTrans('twill::lang.user-management.disabled'),
             'slug' => 'draft',
             'number' => $this->repository->getCountByStatusSlug('draft'),
         ]);
 
         if ($this->getIndexOption('restore')) {
             array_push($statusFilters, [
-                'name' => 'Trash',
+                'name' => twillTrans('twill::lang.user-management.trash'),
                 'slug' => 'trash',
                 'number' => $this->repository->getCountByStatusSlug('trash'),
             ]);
@@ -330,14 +318,14 @@ class UserController extends ModuleController
     private function getGroupPermissionMapping()
     {
         return Group::with('permissions')->get()
-        ->mapWithKeys(function($group) {
-            return [ $group->id => $group->permissions ];
-        })->toArray();
+            ->mapWithKeys(function ($group) {
+                return [$group->id => $group->permissions];
+            })->toArray();
     }
 
     private function getGroups()
     {
         // Forget first one because it's the "Everyone" group and we don't want to show it inside admin.
-        return Group::with('permissions')->get()->pluck('name','id')->forget(1);
+        return Group::with('permissions')->get()->pluck('name', 'id')->forget(1);
     }
 }

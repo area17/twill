@@ -11,11 +11,14 @@
         <tr class="itemlist__row"
             v-for="item in items"
             :key="`${item.endpointType}_${item.id}`"
-            :class="{ 's--picked': isSelected(item, keysToCheck)}"
+            :class="{
+              's--picked': isSelected(item, keysToCheck),
+              's--disabled': item.disabled
+            }"
             @click.exact.prevent="toggleSelection(item)"
             @click.shift.exact.prevent="shiftToggleSelection(item)">
           <td class="itemlist__cell itemlist__cell--btn" v-if="item.hasOwnProperty('id')">
-            <a17-checkbox name="item_list" :value="item.endpointType + '_' + item.id" :initialValue="checkedItems" theme="bold"/>
+            <a17-checkbox name="item_list" :value="item.endpointType + '_' + item.id" :initialValue="checkedItems" theme="bold" :disabled="item.disabled" />
           </td>
           <td :class="`itemlist__cell itemlist__cell--thumb ${item.endpointType === 'users' ? 'itemlist__cell--thumb-rounded' : ''}`" v-if="item.hasOwnProperty('thumbnail')">
             <template v-if="item.endpointType === 'users'">
@@ -32,7 +35,10 @@
             <div v-if="item.hasOwnProperty('renderHtml')" v-html="item.name"></div>
             <div v-else>{{ item.name }}</div>
           </td>
-          <td class="itemlist__cell" v-for="extraColumn in extraColumns" :class="rowClass(extraColumn)">
+          <td class="itemlist__cell"
+              v-for="(extraColumn, index) in extraColumns"
+              :key="index"
+              :class="rowClass(extraColumn)">
             <template v-if="extraColumn === 'size'">{{ item[extraColumn] | uppercase}}</template>
             <template v-else>{{ item[extraColumn] }}</template>
           </td>
@@ -82,12 +88,13 @@
         return Object.keys(firstItem).filter(key => { // exclude columns here
           return ![
             'id', 'name', 'thumbnail', 'src', 'original', 'edit',
-            'crop', 'deleteUrl', 'updateUrl', 'updateBulkUrl', 'deleteBulkUrl', 'endpointType'
+            'crop', 'deleteUrl', 'updateUrl', 'updateBulkUrl',
+            'deleteBulkUrl', 'endpointType', 'filesizeInMb'
           ].includes(key) && typeof firstItem[key] === 'string' // only strings
         })
       },
       checkedItems: function () {
-        let checkItemsIds = []
+        const checkItemsIds = []
 
         if (this.selectedItems.length) {
           this.selectedItems.forEach(function (item) {
@@ -104,7 +111,7 @@
       },
       loadingProgress: function (index) {
         return {
-          'width': this.itemsLoading[index].progress ? this.itemsLoading[index].progress + '%' : '0%'
+          width: this.itemsLoading[index].progress ? this.itemsLoading[index].progress + '%' : '0%'
         }
       },
       getFirstLetter (item) {
@@ -115,7 +122,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .itemlist {
     padding: 10px;
@@ -158,6 +164,11 @@
 
     &:hover {
       background-color: $color__f--bg;
+    }
+
+    &.s--disabled {
+      color: $color__button_greyed--bg;
+      pointer-events: none;
     }
   }
 

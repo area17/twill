@@ -13,7 +13,7 @@
 @push('vuexStore')
 
 @if(isset($item->$name))
-    window.STORE.form.fields.push({
+    window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({
         name: '{{ $name }}',
         value: {!! json_encode($item->$name) !!}
     })

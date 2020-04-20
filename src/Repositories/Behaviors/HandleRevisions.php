@@ -3,11 +3,25 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 trait HandleRevisions
 {
+    public function hydrateHandleRevisions($object, $fields)
+    {
+        // HandleRepeaters trait => getRepeaters
+        foreach($this->getRepeaters() as $repeater) {
+            $this->hydrateRepeater($object, $fields, $repeater['relation'], $repeater['model']);
+        }
+
+        // HandleBrowers trait => getBrowsers
+        foreach($this->getBrowsers() as $browser) {
+            $this->hydrateBrowser($object, $fields, $browser['relation'], $browser['positionAttribute'], $browser['model']);
+        }
+
+        return $object;
+    }
 
     public function beforeSaveHandleRevisions($object, $fields)
     {
@@ -47,7 +61,10 @@ trait HandleRevisions
 
         $fields = json_decode($object->revisions->where('id', $revisionId)->first()->payload, true);
 
-        return $this->hydrateObject($this->model->newInstance(), $fields);
+        $hydratedObject = $this->hydrateObject($this->model->newInstance(), $fields);
+        $hydratedObject->id = $id;
+
+        return $hydratedObject;
     }
 
     public function hydrateMultiSelect($object, $fields, $relationship, $model = null, $customHydratedRelationship = null)

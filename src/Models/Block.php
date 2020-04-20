@@ -5,11 +5,12 @@ namespace A17\Twill\Models;
 use A17\Twill\Models\Behaviors\HasFiles;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasPresenter;
+use A17\Twill\Models\Behaviors\HasRelated;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class Block extends BaseModel
 {
-    use HasMedias, HasFiles, HasPresenter;
+    use HasMedias, HasFiles, HasPresenter, HasRelated;
 
     public $timestamps = false;
 
@@ -74,5 +75,10 @@ class Block extends BaseModel
         }
 
         return null;
+    }
+
+    public function getTable()
+    {
+        return config('twill.blocks_table', 'twill_blocks');
     }
 }

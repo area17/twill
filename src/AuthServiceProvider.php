@@ -3,8 +3,8 @@
 namespace A17\Twill;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -51,7 +51,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('edit-user-groups', function ($user) {
-            if ( !in_array(Config::get('twill.permission.level'),['roleGroup', 'roleGroupModule'])) {
+            if (!in_array(Config::get('twill.permission.level'), ['roleGroup', 'roleGroupModule'])) {
                 return false;
             }
 
@@ -95,11 +95,11 @@ class AuthServiceProvider extends ServiceProvider
          ***/
 
         Gate::define('access-module-list', function ($user, $moduleName) {
-            if (isset(self::$cache['access-module-list-'.$moduleName])) {
-                return self::$cache['access-module-list-'.$moduleName];
+            if (isset(self::$cache['access-module-list-' . $moduleName])) {
+                return self::$cache['access-module-list-' . $moduleName];
             }
 
-            return self::$cache['access-module-list-'.$moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
+            return self::$cache['access-module-list-' . $moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('view-module', $moduleName)
                 || $user->permissions()->ofModuleName($moduleName)->exists();
             });
@@ -107,11 +107,11 @@ class AuthServiceProvider extends ServiceProvider
 
         // The gate of accessing module list page,
         Gate::define('view-module', function ($user, $moduleName) {
-            if (isset(self::$cache['view-module-'.$moduleName])) {
-                return self::$cache['view-module-'.$moduleName];
+            if (isset(self::$cache['view-module-' . $moduleName])) {
+                return self::$cache['view-module-' . $moduleName];
             }
 
-            return self::$cache['view-module-'.$moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
+            return self::$cache['view-module-' . $moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('edit-module', $moduleName)
                 || $user->role->permissions()->ofModuleName($moduleName)->where('name', 'view-module')->exists()
                 || isUserGroupPermissionModuleExists($user, $moduleName, 'view-module');
@@ -119,10 +119,10 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('edit-module', function ($user, $moduleName) {
-            if (isset(self::$cache['edit-module-'.$moduleName])) {
-                return self::$cache['edit-module-'.$moduleName];
+            if (isset(self::$cache['edit-module-' . $moduleName])) {
+                return self::$cache['edit-module-' . $moduleName];
             }
-            return self::$cache['edit-module-'.$moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
+            return self::$cache['edit-module-' . $moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('manage-module', $moduleName)
                 || $user->role->permissions()->module()->ofModuleName($moduleName)->where('name', 'edit-module')->exists()
                 || isUserGroupPermissionModuleExists($user, $moduleName, 'edit-module');
@@ -130,11 +130,11 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('manage-module', function ($user, $moduleName) {
-            if (isset(self::$cache['manage-module-'.$moduleName])) {
-                return self::$cache['manage-module-'.$moduleName];
+            if (isset(self::$cache['manage-module-' . $moduleName])) {
+                return self::$cache['manage-module-' . $moduleName];
             }
 
-            return self::$cache['manage-module-'.$moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
+            return self::$cache['manage-module-' . $moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
                 if (!isPermissionableModule($moduleName)) {
                     return true;
                 }
@@ -151,7 +151,7 @@ class AuthServiceProvider extends ServiceProvider
          ***/
 
         Gate::define('view-item', function ($user, $item) {
-            $key = 'view-item-' . str_replace("\\", "-",get_class($item)) . '-'.$item->id;
+            $key = 'view-item-' . str_replace("\\", "-", get_class($item)) . '-' . $item->id;
             if (isset(self::$cache[$key])) {
                 return self::$cache[$key];
             }
@@ -166,7 +166,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('edit-item', function ($user, $item) {
-            $key = 'edit-item-' . str_replace("\\", "-",get_class($item)) . '-'.$item->id;
+            $key = 'edit-item-' . str_replace("\\", "-", get_class($item)) . '-' . $item->id;
             if (isset(self::$cache[$key])) {
                 return self::$cache[$key];
             }
@@ -179,7 +179,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('manage-item', function ($user, $item) {
-            $key = 'manage-item-' . str_replace("\\", "-",get_class($item)) . '-'.$item->id;
+            $key = 'manage-item-' . str_replace("\\", "-", get_class($item)) . '-' . $item->id;
             if (isset(self::$cache[$key])) {
                 return self::$cache[$key];
             }

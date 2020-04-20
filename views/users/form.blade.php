@@ -1,6 +1,6 @@
 @extends('twill::layouts.form', [
-    'contentFieldsetLabel' => 'Account',
-    'editModalTitle' => 'Edit user name',
+    'contentFieldsetLabel' => twillTrans('twill::lang.user-management.content-fieldset-label'),
+    'editModalTitle' => twillTrans('twill::lang.user-management.edit-modal-title'),
     // 'reloadOnSuccess' => true
 ])
 
@@ -8,14 +8,14 @@
 
     @formField('input', [
         'name' => 'email',
-        'label' => 'Email'
+        'label' => twillTrans('twill::lang.user-management.email')
     ])
 
     @can('edit-user-role')
         @if($item->id !== $currentUser->id)
             @formField('select', [
                 'name' => "role_id",
-                'label' => "Role",
+                'label' => twillTrans('twill::lang.user-management.role'),
                 'options' => $roleList,
                 'placeholder' => 'Select a role'
             ])
@@ -41,6 +41,19 @@
             'label' => 'Description'
         ])
     @endif
+
+    @formField('select', [
+        'name' => 'language',
+        'label' => 'Language',
+        'placeholder' => 'Select a language',
+        'default' => config('twill.locale', 'en'),
+        'options' => array_map(function($locale) {
+            return [
+                'value' => $locale,
+                'label' => getLanguageLabelFromLocaleCode($locale, true)
+            ];
+        }, ['en', 'zh-Hans', 'ru', 'fr'])
+    ])
 
     @if($with2faSettings ?? false)
         @formField('checkbox', [
@@ -152,75 +165,76 @@
 @stop
 
 @push('vuexStore')
-    window.STORE.publication.submitOptions = {
-    draft: [
-    {
-    name: 'save',
-    text: 'Update disabled user'
-    },
-    {
-    name: 'save-close',
-    text: 'Update disabled and close'
-    },
-    {
-    name: 'save-new',
-    text: 'Update disabled user and create new'
-    },
-    {
-    name: 'cancel',
-    text: 'Cancel'
-    }
-    ],
-    live: [
-    {
-    name: 'publish',
-    text: 'Enable user'
-    },
-    {
-    name: 'publish-close',
-    text: 'Enable user and close'
-    },
-    {
-    name: 'publish-new',
-    text: 'Enable user and create new'
-    },
-    {
-    name: 'cancel',
-    text: 'Cancel'
-    }
-    ],
-    update: [
-    {
-    name: 'update',
-    text: 'Update'
-    },
-    {
-    name: 'update-close',
-    text: 'Update and close'
-    },
-    {
-    name: 'update-new',
-    text: 'Update and create new'
-    },
-    {
-    name: 'cancel',
-    text: 'Cancel'
-    }
-    ]
+    window['{{ config('twill.js_namespace') }}'].STORE.publication.submitOptions = {
+        draft: [
+          {
+            name: 'save',
+            text: {!! json_encode(twillTrans('twill::lang.user-management.update-disabled-user')) !!}
+          },
+          {
+            name: 'save-close',
+            text: {!! json_encode(twillTrans('twill::lang.user-management.update-disabled-and-close')) !!}
+          },
+          {
+            name: 'save-new',
+            text: {!! json_encode(twillTrans('twill::lang.user-management.update-disabled-user-and-create-new')) !!}
+          },
+          {
+            name: 'cancel',
+            text: {!! json_encode(twillTrans('twill::lang.user-management.cancel')) !!}
+          }
+        ],
+        live: [
+          {
+            name: 'publish',
+            text: {!! json_encode(twillTrans('twill::lang.user-management.enable-user')) !!}
+          },
+          {
+            name: 'publish-close',
+            text: {!! json_encode(twillTrans('twill::lang.user-management.enable-user-and-close')) !!}
+          },
+          {
+            name: 'publish-new',
+            text: {!! json_encode(twillTrans('twill::lang.user-management.enable-user-and-create-new')) !!}
+          },
+          {
+            name: 'cancel',
+            text: {!! json_encode(twillTrans('twill::lang.user-management.cancel')) !!}
+          }
+        ],
+        update: [
+          {
+            name: 'update',
+            text: {!! json_encode(twillTrans('twill::lang.user-management.update')) !!}
+          },
+          {
+            name: 'update-close',
+            text: {!! json_encode(twillTrans('twill::lang.user-management.update-and-close')) !!}
+          },
+          {
+            name: 'update-new',
+            text: {!! json_encode(twillTrans('twill::lang.user-management.update-and-create-new')) !!}
+          },
+          {
+            name: 'cancel',
+            text: {!! json_encode(twillTrans('twill::lang.user-management.cancel')) !!}
+          }
+        ]
     }
     @unless($item->is_superadmin)
         @can('edit-users')
-            window.STORE.publication.userInfo = {
-            user_name: '{{ $item->name }}',
-            registered_at: '{{ $item->activated ? $item->registered_at->format('d M Y') : "Pending ({$item->created_at->format('d M Y')})" }}',
-            last_login_at: '{{ $item->activated && $item->last_login_at ? $item->last_login_at->format('d M Y, H:i') : null }}',
-            resend_registration_link: '{{ !$item->activated ? route('admin.users.resend.registrationEmail', ['user' => $item]) : null }}',
-            is_activated: {{ $item->activated }}
+            window['{{ config('twill.js_namespace') }}'].STORE.publication.userInfo = {
+                user_name: '{{ $item->name }}',
+                registered_at: '{{ $item->activated ? $item->registered_at->format('d M Y') : "Pending ({$item->created_at->format('d M Y')})" }}',
+                last_login_at: '{{ $item->activated && $item->last_login_at ? $item->last_login_at->format('d M Y, H:i') : null }}',
+                resend_registration_link: '{{ !$item->activated ? route('admin.users.resend.registrationEmail', ['user' => $item]) : null }}',
+                is_activated: {{ $item->activated }}
             }
         @endcan
     @endunless
+
     @if ($item->id == $currentUser->id)
-        window.STORE.publication.withPublicationToggle = false
+        window['{{ config('twill.js_namespace') }}'].STORE.publication.withPublicationToggle = false
     @endif
 @endpush
 
@@ -230,7 +244,7 @@
         const groupPermissionMapping = {!! json_encode($groupPermissionMapping) !!};
         var selectedGroups = formFields.browsers.groups
 
-        window.vm.$store.subscribe((mutation, state) => {
+        window['{{ config('twill.js_namespace') }}'].vm.$store.subscribe((mutation, state) => {
             const { type, payload } = mutation
             switch (type) {
                 case 'saveSelectedItems':
@@ -248,7 +262,7 @@
                                     name: fieldName,
                                     value: 'view-item'
                                 }
-                                window.vm.$store.commit('updateFormField', field)
+                                window['{{ config('twill.js_namespace') }}'].vm.$store.commit('updateFormField', field)
                             }
                         })
                     })
@@ -267,7 +281,7 @@
                                 name: fieldName,
                                 value: ''
                             }
-                            window.vm.$store.commit('updateFormField', field)
+                            window['{{ config('twill.js_namespace') }}'].vm.$store.commit('updateFormField', field)
                         }
                     })
                     break

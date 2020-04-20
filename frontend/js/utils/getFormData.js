@@ -27,7 +27,7 @@ export const isBlockField = (name, id) => {
 }
 
 export const stripOutBlockNamespace = (name, id) => {
-  let nameWithoutBlock = name.replace('blocks[' + id + '][', '')
+  const nameWithoutBlock = name.replace('blocks[' + id + '][', '')
   return nameWithoutBlock.match(/]/gi).length > 1 ? nameWithoutBlock.replace(']', '') : nameWithoutBlock.slice(0, -1)
 }
 
@@ -74,11 +74,11 @@ export const gatherRepeaters = (rootState) => {
     return {
       [repeater]: rootState.repeaters.repeaters[repeater].map(repeaterItem => {
         // and for each repeater we build a block for each item
-        let repeaterBlock = buildBlock(repeaterItem, rootState)
+        const repeaterBlock = buildBlock(repeaterItem, rootState)
 
         // we want to inline fields in the repeater object
         // and we don't need the type of component used
-        let fields = repeaterBlock.content
+        const fields = repeaterBlock.content
         delete repeaterBlock.content
         delete repeaterBlock.type
 
@@ -92,7 +92,7 @@ export const gatherRepeaters = (rootState) => {
 }
 
 export const getFormFields = (rootState) => {
-  let fields = rootState.form.fields.filter((field) => {
+  const fields = rootState.form.fields.filter((field) => {
     // we start by filtering out blocks related form fields
     return !field.name.startsWith('blocks[') && !field.name.startsWith('mediaMeta[')
   }).reduce((fields, field) => {
@@ -106,7 +106,7 @@ export const getFormFields = (rootState) => {
 }
 
 export const getModalFormFields = (rootState) => {
-  let fields = rootState.form.modalFields.filter((field) => {
+  const fields = rootState.form.modalFields.filter((field) => {
     // we start by filtering out blocks related form fields
     return !field.name.startsWith('blocks[') && !field.name.startsWith('mediaMeta[')
   }).reduce((fields, field) => {
@@ -120,14 +120,14 @@ export const getModalFormFields = (rootState) => {
 }
 
 export const getFormData = (rootState) => {
-  let fields = getFormFields(rootState)
+  const fields = getFormFields(rootState)
 
   // we can now create our submitted data object out of:
   // - our just created fields object,
   // - publication properties
   // - selected medias and browsers
   // - created blocks and repeaters
-  let data = Object.assign(fields, {
+  const data = Object.assign(fields, {
     cmsSaveType: rootState.form.type,
     published: rootState.publication.published,
     public: rootState.publication.visibility === 'public',

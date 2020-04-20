@@ -4,7 +4,7 @@
         @php
         $primaryNavElements = $single_primary_nav;
         $_global_active_navigation = null;
-        $_primary_active_navigation = array_first(array_keys($single_primary_nav));
+        $_primary_active_navigation = \Illuminate\Support\Arr::first(array_keys($single_primary_nav));
         @endphp
     @elseif (isset($primary_navigation))
         @php

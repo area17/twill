@@ -184,7 +184,6 @@
         if (typeof newValue === 'undefined') newValue = ''
 
         if (this.value !== newValue) {
-          console.warn('Update UI value : ' + this.name + ' -> ' + newValue)
           this.updateValue(newValue)
         }
       },
@@ -208,14 +207,14 @@
         this.$emit('focus')
       },
       onBlur: function (event) {
-        let newValue = event.target.value
+        const newValue = event.target.value
         this.updateAndSaveValue(newValue)
 
         this.focused = false
         this.$emit('blur', newValue)
       },
       onInput: debounce(function (event) {
-        let newValue = event.target.value
+        const newValue = event.target.value
         this.updateAndSaveValue(newValue)
         this.checkFieldValidity(event.target)
 
@@ -228,7 +227,7 @@
         const minH = 15
 
         if (clone) {
-          let h = clone.scrollHeight
+          const h = clone.scrollHeight
           this.$refs.input.style.minHeight = `${h + minH}px`
         }
       },
@@ -269,7 +268,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   $height_input: 45px;
 

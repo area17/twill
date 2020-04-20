@@ -9,7 +9,6 @@
     $note = $note ?? false;
     $placeholder = $placeholder ?? false;
     $required = $required ?? false;
-    $default = $default ?? false;
     $searchable = $searchable ?? false;
     $inTable = $inTable ?? false;
     $inGrid = $inGrid ?? true;
@@ -26,7 +25,7 @@
         label="{{ $label }}"
         @include('twill::partials.form.utils._field_name')
         :options='{{ json_encode($options) }}'
-        @if ($default) selected="{{ $default }}" @endif
+        @if (isset($default)) selected="{{ $default }}" @endif
         @if ($required) :required="true" @endif
         @if ($inModal) :in-modal="true" @endif
         @if ($inTable) :in-table="true" :inline="true" @endif
@@ -50,7 +49,7 @@
         @include('twill::partials.form.utils._field_name')
         :options='{{ json_encode($options) }}'
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
-        @if ($default) selected="{{ $default }}" @endif
+        @if (isset($default)) selected="{{ $default }}" @endif
         @if ($required) :required="true" @endif
         @if ($inModal) :in-modal="true" @endif
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
@@ -74,7 +73,7 @@
         :options='{{ json_encode($options) }}'
         @if ($emptyText ?? false) empty-text="{{ $emptyText }}" @endif
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
-        @if ($default) :selected="{{ json_encode(collect($options)->first(function ($option) use ($default) {
+        @if (isset($default)) :selected="{{ json_encode(collect($options)->first(function ($option) use ($default) {
             return $option['value'] === $default;
         })) }}" @endif
         @if ($required) :required="true" @endif

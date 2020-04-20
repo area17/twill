@@ -49,7 +49,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
 
   .accordion {
     border-bottom:1px solid $color__border--light;
