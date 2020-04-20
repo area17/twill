@@ -149,12 +149,12 @@ class LoginController extends Controller
         if ($user->require_new_password) {
             $this->logout($request);
             $token = Password::broker('twill_users')->getRepository()->create($user);
-            return redirect(route('admin.password.reset.form', $token))->withErrors([
+            return $this->redirector->to(route('admin.password.reset.form', $token))->withErrors([
                 'error' => 'Your password needs to be reset before login',
             ]);
         }
 
-        return redirect()->intended($this->redirectTo);
+        return $this->redirector->intended($this->redirectTo);
     }
 
     /**

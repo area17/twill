@@ -1,6 +1,6 @@
 const state = {
-  groups: window.STORE.groups || [],
-  groupUserMapping: window.STORE.groupUserMapping || []
+  groups: window[process.env.VUE_APP_NAME].STORE.groups || [],
+  groupUserMapping: window[process.env.VUE_APP_NAME].STORE.groupUserMapping || []
 }
 
 export default {

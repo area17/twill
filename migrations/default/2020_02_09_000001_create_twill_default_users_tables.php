@@ -13,21 +13,25 @@ class CreateTwillDefaultUsersTables extends Migration
      */
     public function up()
     {
-        Schema::create(config('twill.users_table', 'twill_users'), function (Blueprint $table) {
-            createDefaultTableFields($table);
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password', 60)->nullable()->default(null);
-            $table->unsignedInteger('role_id')->nullable();
-            $table->string('title', 255)->nullable();
-            $table->text('description')->nullable();
-            $table->boolean('is_superadmin')->default(false);
-            $table->boolean('activated')->default(false);
-            $table->dateTime('last_login_at')->nullable();
-            $table->dateTime('registered_at')->nullable();
-            $table->boolean('require_new_password')->default(false);
-            $table->rememberToken();
-        });
+        $twillUsersTable = config('twill.users_table', 'twill_users');
+
+        if (!Schema::hasTable($twillUsersTable)) {
+            Schema::create($twillUsersTable, function (Blueprint $table) {
+                createDefaultTableFields($table);
+                $table->string('name');
+                $table->string('email')->unique();
+                $table->string('password', 60)->nullable()->default(null);
+                $table->unsignedInteger('role_id')->nullable();
+                $table->string('title', 255)->nullable();
+                $table->text('description')->nullable();
+                $table->boolean('is_superadmin')->default(false);
+                $table->boolean('activated')->default(false);
+                $table->dateTime('last_login_at')->nullable();
+                $table->dateTime('registered_at')->nullable();
+                $table->boolean('require_new_password')->default(false);
+                $table->rememberToken();
+            });
+        }
 
         $twillPasswordResetsTable = config('twill.password_resets_table', 'twill_password_resets');
 

@@ -14,6 +14,7 @@ use Illuminate\View\Factory as ViewFactory;
 
 class Handler extends ExceptionHandler
 {
+
     /**
      * @var Redirector
      */
@@ -63,6 +64,7 @@ class Handler extends ExceptionHandler
     }
 
     /**
+     * Convert an authentication exception into a response.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Illuminate\Auth\AuthenticationException  $exception
