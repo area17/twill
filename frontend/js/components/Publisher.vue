@@ -2,12 +2,12 @@
   <div class="publisher__wrapper">
       <a17-switcher :title="$trans('publisher.switcher-title', 'Status')" name="publish_state" v-if="withPublicationToggle" :textEnabled="textEnabled" :textDisabled="textDisabled"></a17-switcher>
       <slot></slot>
-      <a17-reviewaccordion  v-if="reviewProcess && reviewProcess.length" :options="reviewProcess" name="review_process" :value="reviewProcessCompleteValues" :open="openStates['A17Reviewaccordion']" @open="openCloseAccordion">Review status</a17-reviewaccordion>
-      <a17-radioaccordion  v-if="visibility && visibilityOptions && visibilityOptions.length" :radios="visibilityOptions" name="visibility" :value="visibility" :open="openStates['A17Radioaccordion']" @open="openCloseAccordion" @change="updateVisibility">Visibility</a17-radioaccordion>
+      <a17-reviewaccordion  v-if="reviewProcess && reviewProcess.length" :options="reviewProcess" name="review_process" :value="reviewProcessCompleteValues" :open="openStates['A17Reviewaccordion']" @open="openCloseAccordion">{{ $trans('publisher.review-status') }}</a17-reviewaccordion>
+      <a17-radioaccordion  v-if="visibility && visibilityOptions && visibilityOptions.length" :radios="visibilityOptions" name="visibility" :value="visibility" :open="openStates['A17Radioaccordion']" @open="openCloseAccordion" @change="updateVisibility">{{ $trans('publisher.visibility') }}</a17-radioaccordion>
       <a17-checkboxaccordion  v-if="languages && showLanguages&& languages.length > 1" :options="languages" name="active_languages" :value="publishedLanguagesValues" :open="openStates['A17Checkboxaccordion']" @open="openCloseAccordion">{{ $trans('publisher.languages') }}</a17-checkboxaccordion>
       <a17-pubaccordion :date-display-format="dateDisplayFormat" :date-format="dateFormat" :date_24h="date_24h" :open="openStates['A17Pubaccordion']" @open="openCloseAccordion" v-if="withPublicationTimeframe">{{ $trans('publisher.published-on') }}</a17-pubaccordion>
       <a17-revaccordion v-if="revisions.length" :open="openStates['A17Revisions']" @open="openCloseAccordion" :revisions="revisions">{{ $trans('publisher.revisions') }}</a17-revaccordion>
-      <a17-parentaccordion v-if="parents.length" :open="openStates['A17Parents']" @open="openCloseAccordion" :parents="parents" :value="parentId">Parent page</a17-parentaccordion>
+      <a17-parentaccordion v-if="parents.length" :open="openStates['A17Parents']" @open="openCloseAccordion" :parents="parents" :value="parentId">{{ $trans('publisher.parent-page') }}</a17-parentaccordion>
       <div class="publisher__item" v-if="revisions.length">
         <a href="#" class="publisher__link" @click.prevent="openPreview"><span v-svg symbol="preview"></span><span class="f--link-underlined--o">{{ $trans('publisher.preview') }}</span></a>
       </div>

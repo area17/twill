@@ -251,6 +251,7 @@ return [
         'languages' => 'Languages',
         'languages-published' => 'Live',
         'last-edit' => 'Last edited',
+        'parent-page' => 'Parent page',
         'preview' => 'Preview changes',
         'publish' => 'Publish',
         'publish-close' => 'Publish and close',
@@ -264,6 +265,7 @@ return [
         'restore-live-new' => 'Restore as published and create new',
         'restore-message' => 'You are currently editing an older revision of this content (saved by :user on :date). Make changes if needed and click restore to save a new revision.',
         'restore-success' => 'Revision restored.',
+        'review-status' => 'Review status',
         'revisions' => 'Revisions',
         'save' => 'Save as draft',
         'save-close' => 'Save as draft and close',
@@ -274,6 +276,7 @@ return [
         'update' => 'Update',
         'update-close' => 'Update and close',
         'update-new' => 'Update and create new',
+        'visibility' => 'Visibility',
     ],
     'select' => [
         'empty-text' => 'Sorry, no matching options.',

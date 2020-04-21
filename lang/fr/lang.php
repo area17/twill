@@ -251,6 +251,7 @@ return [
         'languages' => 'Languages',
         'languages-published' => 'Publie',
         'last-edit' => 'Edité le',
+        'parent-page' => 'Page parente',
         'preview' => 'Prévisualiser les changements',
         'publish' => 'Publier',
         'publish-close' => 'Publier et fermer',
@@ -264,6 +265,7 @@ return [
         'restore-live-new' => 'Restaurer avec le statut publié et créer un nouveau',
         'restore-message' => 'Vous modifiez actuellement une ancienne révision de ce contenu (enregistrée par :user le :date). Apportez les modifications nécessaires et cliquez sur restaurer pour enregistrer une nouvelle révision.',
         'restore-success' => 'Révision restaurée.',
+        'review-status' => 'Etat',
         'revisions' => 'Révisions',
         'save' => 'Enregistrer comme brouillon',
         'save-close' => 'Enregistrer comme brouillon et fermer',
@@ -274,6 +276,7 @@ return [
         'update' => 'Mettre à jour',
         'update-close' => 'Mettre à jour et fermer',
         'update-new' => 'Mettre à jour et créer un nouveau',
+        'visibility' => 'Visibilité',
     ],
     'select' => [
         'empty-text' => 'Désolé, aucune correspondance trouvée.',
