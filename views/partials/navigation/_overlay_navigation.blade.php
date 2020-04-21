@@ -17,7 +17,7 @@
                 </div>
                 <div class="headerMobile__list">
                     @if (config('twill.enabled.media-library') || config('twill.enabled.file-library'))
-                        <a href="#" data-closenav-btn data-medialib-btn>Media Library</a><br />
+                        <a href="#" data-closenav-btn data-medialib-btn>{{ twillTrans('twill::lang.nav.media-library') }}</a><br />
                     @endif
                     @if(isset($currentUser))
                         <a href="{{ route('admin.users.index') }}">{{ twillTrans('twill::lang.nav.cms-users') }}</a><br />
@@ -41,7 +41,7 @@
             <span class="ham__icon">
                 <span class="ham__line"></span>
             </span>
-            <span class="icon icon--close_modal"><svg><title>Close menu</title><use xlink:href="#icon--close_modal"></use></svg></span>
+            <span class="icon icon--close_modal"><svg><title>{{ twillTrans('twill::lang.nav.close-menu') }}</title><use xlink:href="#icon--close_modal"></use></svg></span>
         </span>
     </button>
 @endif

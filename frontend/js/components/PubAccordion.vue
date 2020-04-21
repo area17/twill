@@ -6,7 +6,7 @@
         {{ startDate | formatCalendarDate }}
       </template>
       <template v-else>
-        {{ defaultStartDate }}
+        {{ $trans('publisher.' + defaultStartDate, 'Immediate') }}
       </template>
     </div>
     <div class="accordion__fields">
@@ -33,7 +33,7 @@
     props: {
       defaultStartDate: {
         type: String,
-        default: 'Immediate'
+        default: 'immediate'
       },
       defaultEndDate: {
         type: String,

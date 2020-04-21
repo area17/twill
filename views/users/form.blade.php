@@ -20,7 +20,7 @@
                 'name' => "role",
                 'label' => twillTrans('twill::lang.user-management.role'),
                 'options' => $roleList,
-                'placeholder' => 'Select a role'
+                'placeholder' => twillTrans('twill::lang.user-management.select-role', 'Select a role'),
             ])
         @endif
     @endcan
@@ -28,27 +28,27 @@
     @if(config('twill.enabled.users-image'))
         @formField('medias', [
             'name' => 'profile',
-            'label' => 'Profile image'
+            'label' => twillTrans('twill::lang.user-management.profile-image', 'Profile image'),
         ])
     @endif
     @if(config('twill.enabled.users-description'))
         @formField('input', [
             'name' => 'title',
-            'label' => 'Title',
+            'label' => twillTrans('twill::lang.user-management.title', 'Title'),
             'maxlength' => 250
         ])
         @formField('input', [
             'name' => 'description',
             'rows' => 4,
             'type' => 'textarea',
-            'label' => 'Description'
+            'label' => twillTrans('twill::lang.user-management.description', 'Description'),
         ])
     @endif
 
     @formField('select', [
         'name' => 'language',
-        'label' => 'Language',
-        'placeholder' => 'Select a language',
+        'label' => twillTrans('twill::lang.user-management.language', 'Language'),
+        'placeholder' => twillTrans('twill::lang.user-management.select-language', 'Select a language'),
         'default' => config('twill.locale', 'en'),
         'options' => array_map(function($locale) {
             return [

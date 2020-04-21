@@ -72,6 +72,7 @@ return [
         'settings' => 'Settings',
         'logout' => 'Logout',
         'admin' => 'Admin',
+        'close-menu' => 'Close menu',
     ],
     'media-library' => [
         'title' => 'Media Library',
@@ -83,6 +84,8 @@ return [
             'files-selected' => 'files selected',
             'clear' => 'Clear',
             'dimensions' => 'Dimensions',
+            'alt-text' => 'Alt text',
+            'caption' => 'Caption',
         ],
     ],
     'filter' => [
@@ -142,6 +145,12 @@ return [
         'update-and-close' => 'Update and close',
         'update-and-create-new' => 'Update and create new',
         'cancel' => 'Cancel',
+        'profile-image' => 'Profile image',
+        'title' => 'Title',
+        'description' => 'Description',
+        'language' => 'Language',
+        'select-role' => 'Select a role',
+        'select-language' => 'Select a language',
     ],
     'publisher' => [
         'switcher-title' => 'Status',
@@ -155,5 +164,13 @@ return [
         'update-close' => 'Update and close',
         'update-new' => 'Update and create new',
         'cancel' => 'Cancel',
+        'published-on' => 'Published on',
+        'immediate' => 'Immediate',
+        'parent-page' => 'Parent page',
+        'preview-changes' => 'Preview changes',
+        'languages' => 'Languages',
+        'visibility' => 'Visibility',
+        'review-status' => 'Review status',
+        'revisions' => 'Revisions',
     ],
 ];
