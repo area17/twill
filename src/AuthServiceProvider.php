@@ -101,7 +101,7 @@ class AuthServiceProvider extends ServiceProvider
 
             return self::$cache['access-module-list-' . $moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('view-module', $moduleName)
-                || $user->permissions()->ofModuleName($moduleName)->exists();
+                || $user->allPermissions()->ofModuleName($moduleName)->exists();
             });
         });
 
