@@ -67,7 +67,7 @@
                 <div class="wrapper wrapper--reverse" v-sticky data-sticky-id="publisher" data-sticky-offset="80">
                     <aside class="col col--aside">
                         <div class="publisher" data-sticky-target="publisher">
-                            <a17-publisher :date_24h="{{ json_encode($publish24Hr) }}" {!! $publishFormatFns ? "date-format-fns='{$publishFormatFns}'" : '' !!} {!! $publishFormat ? "date-format='{$publishFormat}'" : '' !!} :show-languages="{{ json_encode($controlLanguagesPublication) }}">
+                            <a17-publisher :date_24h="{{ !empty($publish24Hr) ? 'true' : 'false' }}" {!! !empty($publishFormatFns) ? "date-format-fns='{$publishFormatFns}'" : '' !!} {!! !empty($publishFormat) ? "date-format='{$publishFormat}'" : '' !!} :show-languages="{{ json_encode($controlLanguagesPublication) }}">
                                 @yield('publisherRows')
                             </a17-publisher>
                             <a17-page-nav
