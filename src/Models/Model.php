@@ -51,7 +51,7 @@ abstract class Model extends BaseModel implements TaggableInterface
             };
 
             $authorizedItemsIds = $allModelPermissions->moduleItem()->pluck('permissionable_id');
-            return $query->whereIn('id', $authorizedItemsIds);
+            return $query->whereIn($this->getTable() . '.id', $authorizedItemsIds);
         }
         return $query;
     }
