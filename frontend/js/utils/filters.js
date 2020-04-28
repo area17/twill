@@ -36,6 +36,10 @@ const filters = {
 
     return dateFormat(value, 'MMM, DD, YYYY, hh:mm A')
   },
+  formatDateWithFormat: function (value, format) {
+    if (!value) value = new Date()
+    return dateFormat(value, format)
+  },
   formatDatatableDate: function (value) {
     const datepickerFormat = 'MMM DD, YYYY'
     if (!value) value = new Date()

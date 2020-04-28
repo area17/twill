@@ -158,6 +158,20 @@ return [
 ];
 ```
 
+**Publisher date and time format configuration**
+
+To change the format of the publication fields when using `publish_start_date` and `publish_end_date` on your model you can change these keys in `twill.php`.
+
+```php
+<?php
+
+return [
+    'publish_date_24h' => false, // enable 24h format in publisher dates
+    'publish_date_format' => 'd F Y H:i', // format used by publication date pickers
+    'publish_date_display_format' => 'DD MMMM YYYY HH:mm', // format used when displaying the publication date
+];
+```
+
 **Multiple subdomains CMS routing**
 
 ```php

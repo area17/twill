@@ -1361,6 +1361,9 @@ abstract class ModuleController extends Controller
             'routePrefix' => $this->routePrefix,
             'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
             'publish' => $item->canPublish ?? true,
+            'publishDate24Hr' => Config::get('twill.publish_date_24h') ?? false,
+            'publishDateFormat' => Config::get('twill.publish_date_format') ?? null,
+            'publishDateDisplayFormat' => Config::get('twill.publish_date_display_format') ?? null,
             'translate' => $this->moduleHas('translations'),
             'translateTitle' => $this->titleIsTranslatable(),
             'permalink' => $this->getIndexOption('permalink'),
@@ -1518,7 +1521,7 @@ abstract class ModuleController extends Controller
         $appUrl = Config::get('app.url');
 
         if (blank(parse_url($appUrl)['scheme'] ?? null)) {
-            $appUrl =  $this->request->getScheme() . '://' . $appUrl;
+            $appUrl = $this->request->getScheme() . '://' . $appUrl;
         }
 
         return $appUrl . '/'
