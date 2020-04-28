@@ -3,15 +3,15 @@
     <span slot="accordion__title"><slot></slot></span>
     <div slot="accordion__value">
       <template v-if="startDate">
-        {{ startDate | formatCalendarDate }}
+        {{ startDate | formatDateWithFormat(dateFormatFns) }}
       </template>
       <template v-else>
         {{ defaultStartDate }}
       </template>
     </div>
     <div class="accordion__fields">
-      <a17-datepicker name="publish_date" place-holder="Start Date" :initialValue="startDate" :maxDate="endDate" :enableTime="true" :allowInput="true" :staticMode="true" @open="openStartCalendar" @close="closeCalendar" @input="updateStartDate" :clear="true"></a17-datepicker>
-      <a17-datepicker name="end_date" place-holder="End Date" :initialValue="endDate" :minDate="startDate" :enableTime="true" :allowInput="true" :staticMode="true" @open="openEndCalendar" @close="closeCalendar" @input="updateEndDate" :clear="true"></a17-datepicker>
+      <a17-datepicker name="publish_date" place-holder="Start Date" :time_24hr="date_24h" :altFormat="dateFormat" :initialValue="startDate" :maxDate="endDate" :enableTime="true" :allowInput="true" :staticMode="true" @open="openStartCalendar" @close="closeCalendar" @input="updateStartDate" :clear="true"></a17-datepicker>
+      <a17-datepicker name="end_date" place-holder="End Date" :time_24hr="date_24h" :altFormat="dateFormat" :initialValue="endDate" :minDate="startDate" :enableTime="true" :allowInput="true" :staticMode="true" @open="openEndCalendar" @close="closeCalendar" @input="updateEndDate" :clear="true"></a17-datepicker>
     </div>
   </a17-accordion>
 </template>
@@ -38,6 +38,18 @@
       defaultEndDate: {
         type: String,
         default: ''
+      },
+      dateFormatFns: {
+        type: String,
+        default: 'MMM, DD, YYYY, hh:mm A'
+      },
+      dateFormat: {
+        type: String,
+        default: null
+      },
+      date_24h: {
+        type: Boolean,
+        default: false
       }
     },
     filters: a17VueFilters,

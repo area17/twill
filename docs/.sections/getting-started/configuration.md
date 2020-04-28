@@ -158,6 +158,20 @@ return [
 ];
 ```
 
+**Time format configuration**
+
+To change the format of the publication field when setting `publish_start_date` and `publish_end_date` on your Model you can change these keys in `twill.php`.
+
+```php
+<?php
+
+return [
+    'publish_date_format' => 'd F Y H:i', // Format used by Flatpick
+    'publish_date_24h' => true, // Enable the 24h format
+    'publish_date_format_fns' => 'DD MMMM YYYY HH:mm', // Format used by date-fns
+];
+```
+
 **Multiple subdomains CMS routing**
 
 ```php

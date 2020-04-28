@@ -5,7 +5,7 @@
       <a17-reviewaccordion  v-if="reviewProcess && reviewProcess.length" :options="reviewProcess" name="review_process" :value="reviewProcessCompleteValues" :open="openStates['A17Reviewaccordion']" @open="openCloseAccordion">Review status</a17-reviewaccordion>
       <a17-radioaccordion  v-if="visibility && visibilityOptions && visibilityOptions.length" :radios="visibilityOptions" name="visibility" :value="visibility" :open="openStates['A17Radioaccordion']" @open="openCloseAccordion" @change="updateVisibility">Visibility</a17-radioaccordion>
       <a17-checkboxaccordion  v-if="languages && showLanguages&& languages.length > 1" :options="languages" name="active_languages" :value="publishedLanguagesValues" :open="openStates['A17Checkboxaccordion']" @open="openCloseAccordion">Languages</a17-checkboxaccordion>
-      <a17-pubaccordion :open="openStates['A17Pubaccordion']" @open="openCloseAccordion" v-if="withPublicationTimeframe">Published on</a17-pubaccordion>
+      <a17-pubaccordion :date-format-fns="dateFormatFns" :date-format="dateFormat" :date_24h="date_24h" :open="openStates['A17Pubaccordion']" @open="openCloseAccordion" v-if="withPublicationTimeframe">Published on</a17-pubaccordion>
       <a17-revaccordion v-if="revisions.length" :open="openStates['A17Revisions']" @open="openCloseAccordion" :revisions="revisions">Revisions</a17-revaccordion>
       <a17-parentaccordion v-if="parents.length" :open="openStates['A17Parents']" @open="openCloseAccordion" :parents="parents" :value="parentId">Parent page</a17-parentaccordion>
       <div class="publisher__item" v-if="revisions.length">
@@ -52,6 +52,18 @@
       showLanguages: {
         type: Boolean,
         default: true
+      },
+      dateFormat: {
+        type: String,
+        default: null
+      },
+      dateFormatFns: {
+        type: String,
+        default: 'MMM, DD, YYYY, hh:mm A'
+      },
+      date_24h: {
+        type: Boolean,
+        default: false
       }
     },
     data: function () {
