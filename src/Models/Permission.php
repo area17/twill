@@ -5,6 +5,7 @@ namespace A17\Twill\Models;
 use A17\Twill\Models\Role;
 use A17\Twill\Models\Group;
 use Illuminate\Database\Eloquent\Model as BaseModel;
+use Illuminate\Support\Str;
 
 class Permission extends BaseModel
 {
@@ -95,7 +96,7 @@ class Permission extends BaseModel
         })->first();
 
         if ($permissionableSubmodule) {
-            $parentRelation = isset($item->parentRelation) ? $item->parentRelation : str_singular(explode('.', $permissionableSubmodule)[0]);
+            $parentRelation = isset($item->parentRelation) ? $item->parentRelation : Str::singular(explode('.', $permissionableSubmodule)[0]);
             $item = $item->$parentRelation;
         }
 

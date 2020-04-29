@@ -33,7 +33,7 @@ if (!function_exists('getModelRepository')) {
     function getModelRepository($relation, $model = null)
     {
         if (!$model) {
-            $model = ucfirst(str_singular($relation));
+            $model = ucfirst(Str::singular($relation));
         }
         $repository = config('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository";
 
