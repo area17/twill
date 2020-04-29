@@ -4,7 +4,6 @@ namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasPermissions;
 use A17\Twill\Models\Behaviors\IsTranslatable;
-use A17\Twill\Models\User;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -53,7 +52,7 @@ class Group extends BaseModel
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'group_twill_user', 'group_id', 'twill_user_id');
+        return $this->belongsToMany(twillModel('user'), 'group_twill_user', 'group_id', 'twill_user_id');
     }
 
     public function isEveryoneGroup()

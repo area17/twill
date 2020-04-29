@@ -3,7 +3,6 @@
 namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\Group;
-use A17\Twill\Models\User;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleOauth;
 use Carbon\Carbon;
@@ -41,17 +40,15 @@ class UserRepository extends ModuleRepository
      * @param Config $config
      * @param PasswordBrokerManager $passwordBrokerManager
      * @param AuthFactory $authFactory
-     * @param User $model
      */
     public function __construct(
         DB $db,
         Config $config,
         PasswordBrokerManager $passwordBrokerManager,
-        AuthFactory $authFactory,
-        User $model
+        AuthFactory $authFactory
     ) {
-
-        $this->model = $model;
+        $userModel = twillModel('user');
+        $this->model = new $userModel;
         $this->passwordBrokerManager = $passwordBrokerManager;
         $this->authFactory = $authFactory;
         $this->config = $config;

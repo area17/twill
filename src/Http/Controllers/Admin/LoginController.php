@@ -3,7 +3,6 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Http\Requests\Admin\OauthRequest;
-use A17\Twill\Models\User;
 use A17\Twill\Repositories\UserRepository;
 use Carbon\Carbon;
 use Illuminate\Auth\AuthManager;
@@ -168,7 +167,7 @@ class LoginController extends Controller
     {
         $userId = $request->session()->get('2fa:user:id');
 
-        $user = User::findOrFail($userId);
+        $user = twillModel('user')::findOrFail($userId);
 
         $valid = (new Google2FA)->verifyKey(
             $user->google_2fa_secret,

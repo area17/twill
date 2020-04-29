@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Commands;
 
-use A17\Twill\Models\User;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
@@ -57,7 +56,8 @@ class CreateSuperAdmin extends Command
         $email = $this->setEmail();
         $password = $this->setPassword();
 
-        $user = new User;
+        $userModel = twillModel('user');
+        $user = new $userModel;
         $user->fill([
             'name' => "Admin",
             'email' => $email,

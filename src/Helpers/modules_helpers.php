@@ -2,11 +2,12 @@
 
 use A17\Twill\Models\Permission;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Str;
 
 if (!function_exists('getModelByModuleName')) {
     function getModelByModuleName($moduleName)
     {
-        $model = config('twill.namespace') . '\\Models\\' . studly_case(str_singular($moduleName));
+        $model = config('twill.namespace') . '\\Models\\' . Str::studly(Str::singular($moduleName));
         if (!class_exists($model)) {
             throw new Exception($model . ' not existed');
         }
@@ -17,7 +18,7 @@ if (!function_exists('getModelByModuleName')) {
 if (!function_exists('getModuleNameByModel')) {
     function getModuleNameByModel($model)
     {
-        return str_plural(lcfirst(class_basename($model)));
+        return Str::plural(lcfirst(class_basename($model)));
     }
 }
 

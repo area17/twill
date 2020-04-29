@@ -189,3 +189,16 @@ if (!function_exists('fix_directory_separator')) {
         );
     }
 }
+
+if (!function_exists('twillModel')) {
+    function twillModel($model)
+    {
+        switch($model) {
+            case 'user':
+            case 'User':
+                return config('twill.models.user');
+            default:
+                abort(500, 'helpers/twillModel: ' . $model . ' not Exist');
+        }
+    }
+}

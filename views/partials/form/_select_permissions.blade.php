@@ -11,7 +11,7 @@
         ];
     })->values()->toArray() : $options;
 
-    $isUserForm = get_class($item) === "A17\Twill\Models\User";
+    $isUserForm = get_class($item) === twillModel('user');
     if (get_class($item) === "A17\Twill\Models\Group") {
         $fctUpdatePermissionOptions = "updatePermissionGroupOptions";
     } else {

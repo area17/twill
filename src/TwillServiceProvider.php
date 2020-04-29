@@ -19,7 +19,6 @@ use A17\Twill\Models\Block;
 use A17\Twill\Models\File;
 use A17\Twill\Models\Group;
 use A17\Twill\Models\Media;
-use A17\Twill\Models\User;
 use A17\Twill\Services\FileLibrary\FileService;
 use A17\Twill\Services\MediaLibrary\ImageService;
 use Astrotomic\Translatable\TranslatableServiceProvider;
@@ -106,7 +105,7 @@ class TwillServiceProvider extends ServiceProvider
         $this->registerAliases();
 
         Relation::morphMap([
-            'users' => User::class,
+            'users' => config('twill.models.user'),
             'media' => Media::class,
             'files' => File::class,
             'blocks' => Block::class,
@@ -169,7 +168,7 @@ class TwillServiceProvider extends ServiceProvider
         if (config('twill.enabled.users-management')) {
             config(['auth.providers.twill_users' => [
                 'driver' => 'eloquent',
-                'model' => User::class,
+                'model' => twillModel('user'),
             ]]);
 
             config(['auth.guards.twill_users' => [
@@ -212,6 +211,7 @@ class TwillServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/imgix.php', 'twill.imgix');
         $this->mergeConfigFrom(__DIR__ . '/../config/glide.php', 'twill.glide');
         $this->mergeConfigFrom(__DIR__ . '/../config/dashboard.php', 'twill.dashboard');
+        $this->mergeConfigFrom(__DIR__ . '/../config/models.php', 'twill.models');
         $this->mergeConfigFrom(__DIR__ . '/../config/oauth.php', 'twill.oauth');
         $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
 
