@@ -22,6 +22,10 @@ module.exports = {
     ['meta', { name: 'twitter:creator', content: '@twillcms' }]
   ],
   themeConfig: {
+    algolia: {
+      apiKey: 'ef9b333ded0418b96b32e189b183a94e',
+      indexName: 'twill'
+    },
     nav: [
       { text: 'GitHub', link: 'https://github.com/area17/twill' },
     ]
