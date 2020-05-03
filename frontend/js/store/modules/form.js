@@ -113,10 +113,9 @@ const mutations = {
   [FORM.UPDATE_FORM_FIELD] (state, field) {
     let fieldValue = field.locale ? {} : null
     const fieldIndex = getFieldIndex(state.fields, field)
-
     // Update existing form field
     if (fieldIndex !== -1) {
-      if (field.locale) fieldValue = state.fields[fieldIndex].value
+      if (field.locale) fieldValue = state.fields[fieldIndex].value || {}
       // remove existing field
       state.fields.splice(fieldIndex, 1)
     }
@@ -279,7 +278,9 @@ const actions = {
     // - created blocks and repeaters
     const data = getFormData(rootState)
 
-    api.put(state.saveUrl, data, function (successResponse) {
+    const method = rootState.publication.createWithoutModal ? 'post' : 'put'
+
+    api[method](state.saveUrl, data, function (successResponse) {
       commit(FORM.UPDATE_FORM_LOADING, false)
 
       if (successResponse.data.hasOwnProperty('redirect')) {
