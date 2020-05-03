@@ -85,6 +85,7 @@ abstract class ModuleController extends Controller
         'permalink' => true,
         'bulkEdit' => true,
         'editInModal' => false,
+        'skipCreateModal' => false
     ];
 
     /**
@@ -354,6 +355,14 @@ abstract class ModuleController extends Controller
         $input = $this->validateFormRequest()->all();
         $optionalParent = $parentModuleId ? [$this->getParentModuleForeignKey() => $parentModuleId] : [];
 
+        if (isset($input['cmsSaveType']) && $input['cmsSaveType'] === 'cancel') {
+            return $this->respondWithRedirect(moduleRoute(
+                $this->moduleName,
+                $this->routePrefix,
+                'create'
+            ));
+        }
+
         $item = $this->repository->create($input + $optionalParent);
 
         activity()->performedOn($item)->log('created');
@@ -375,6 +384,18 @@ abstract class ModuleController extends Controller
             $params = [
                 Str::singular($this->moduleName) => $item->id,
             ];
+        }
+
+        if (isset($input['cmsSaveType']) && Str::endsWith($input['cmsSaveType'], '-close')) {
+            return $this->respondWithRedirect($this->getBackLink());
+        }
+
+        if (isset($input['cmsSaveType']) && Str::endsWith($input['cmsSaveType'], '-new')) {
+            return $this->respondWithRedirect(moduleRoute(
+                $this->moduleName,
+                $this->routePrefix,
+                'create'
+            ));
         }
 
         return $this->respondWithRedirect(moduleRoute(
@@ -431,6 +452,33 @@ abstract class ModuleController extends Controller
     /**
      * @param int $id
      * @param int|null $submoduleId
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
+    public function create()
+    {
+        if (!$this->getIndexOption('skipCreateModal')) {
+            return Redirect::to(moduleRoute(
+                $this->moduleName,
+                $this->routePrefix,
+                'index',
+                ['openCreate' => true]
+            ));
+        }
+
+        $view = Collection::make([
+            "$this->viewPrefix.form",
+            "twill::$this->moduleName.form",
+            "twill::layouts.form",
+        ])->first(function ($view) {
+            return View::exists($view);
+        });
+
+        return View::make($view, $this->form());
+    }
+
+    /**
+     * @param int $id
+     * @param int|null $submoduleId
      * @return \Illuminate\Http\JsonResponse
      */
     public function update($id, $submoduleId = null)
@@ -461,6 +509,13 @@ abstract class ModuleController extends Controller
                 if (Str::endsWith($input['cmsSaveType'], '-close')) {
                     return $this->respondWithRedirect($this->getBackLink());
                 } elseif (Str::endsWith($input['cmsSaveType'], '-new')) {
+                    if ($this->getIndexOption('skipCreateModal')) {
+                        return $this->respondWithRedirect(moduleRoute(
+                            $this->moduleName,
+                            $this->routePrefix,
+                            'create'
+                        ));
+                    }
                     return $this->respondWithRedirect(moduleRoute(
                         $this->moduleName,
                         $this->routePrefix,
@@ -815,6 +870,7 @@ abstract class ModuleController extends Controller
 
         $options = [
             'moduleName' => $this->moduleName,
+            'skipCreateModal' => $this->getIndexOption('skipCreateModal'),
             'reorder' => $this->getIndexOption('reorder'),
             'create' => $this->getIndexOption('create'),
             'duplicate' => $this->getIndexOption('duplicate'),
@@ -1120,6 +1176,7 @@ abstract class ModuleController extends Controller
     protected function getIndexUrls($moduleName, $routePrefix)
     {
         return Collection::make([
+            'create',
             'store',
             'publish',
             'bulkPublish',
@@ -1171,6 +1228,7 @@ abstract class ModuleController extends Controller
                 'bulkDelete' => 'delete',
                 'bulkEdit' => 'edit',
                 'editInModal' => 'edit',
+                'skipCreateModal' => 'edit'
             ];
 
             $authorized = array_key_exists($option, $authorizableOptions) ? Auth::guard('twill_users')->user()->can($authorizableOptions[$option]) : true;
@@ -1345,9 +1403,14 @@ abstract class ModuleController extends Controller
      * @param \A17\Twill\Models\Model|null $item
      * @return array
      */
-    protected function form($id, $item = null)
+    protected function form($id = null, $item = null)
     {
-        $item = $item ?? $this->repository->getById($id, $this->formWith, $this->formWithCount);
+
+        if (!$item && $id) {
+            $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
+        } elseif (!$item && !$id) {
+            $item = $this->repository->newInstance();
+        }
 
         $fullRoutePrefix = 'admin.' . ($this->routePrefix ? $this->routePrefix . '.' : '') . $this->moduleName . '.';
         $previewRouteName = $fullRoutePrefix . 'preview';
@@ -1367,18 +1430,19 @@ abstract class ModuleController extends Controller
             'translate' => $this->moduleHas('translations'),
             'translateTitle' => $this->titleIsTranslatable(),
             'permalink' => $this->getIndexOption('permalink'),
+            'createWithoutModal' => !$item->id && $this->getIndexOption('skipCreateModal'),
             'form_fields' => $this->repository->getFormFields($item),
             'baseUrl' => $baseUrl,
             'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
-            'saveUrl' => $this->getModuleRoute($item->id, 'update'),
+            'saveUrl' => $item->id ? $this->getModuleRoute($item->id, 'update') : moduleRoute($this->moduleName, '', 'store'),
             'editor' => Config::get('twill.enabled.block-editor') && $this->moduleHas('blocks') && !$this->disableEditor,
             'blockPreviewUrl' => Route::has('admin.blocks.preview') ? URL::route('admin.blocks.preview') : '#',
             'availableRepeaters' => $this->getRepeaterList()->toJson(),
             'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
-        ] + (Route::has($previewRouteName) ? [
+        ] + (Route::has($previewRouteName) && $item->id ? [
             'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $item->id),
         ] : [])
-             + (Route::has($restoreRouteName) ? [
+             + (Route::has($restoreRouteName) && $item->id ? [
             'restoreUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'restoreRevision', $item->id),
         ] : []);
 

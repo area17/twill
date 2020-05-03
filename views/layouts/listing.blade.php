@@ -9,6 +9,7 @@
     $nested = $nested ?? false;
     $bulkEdit = $bulkEdit ?? true;
     $create = $create ?? false;
+    $skipCreateModal = $skipCreateModal ?? false;
 
     $requestFilter = json_decode(request()->get('filter'), true) ?? [];
 @endphp
@@ -78,7 +79,14 @@
 
                     @if($create)
                         <div slot="additional-actions">
-                            <a17-button variant="validate" size="small" v-on:click="create">{{ twillTrans('twill::lang.listing.add-new-button') }}</a17-button>
+                            <a17-button
+                                variant="validate"
+                                size="small"
+                                @if($skipCreateModal) href={{$createUrl}} el="a" @endif
+                                @if(!$skipCreateModal) v-on:click="create" @endif
+                            >
+                                {{ twillTrans('twill::lang.listing.add-new-button') }}
+                            </a17-button>
                             @foreach($filterLinks as $link)
                                 <a17-button el="a" href="{{ $link['url'] ?? '#' }}" download="{{ $link['download'] ?? '' }}" rel="{{ $link['rel'] ?? '' }}" target="{{ $link['target'] ?? '' }}" variant="small secondary">{{ $link['label'] }}</a17-button>
                             @endforeach
@@ -148,6 +156,7 @@
         forceDelete: '{{ $forceDeleteUrl }}',
         bulkForceDelete: '{{ $bulkForceDeleteUrl }}',
         reorder: '{{ $reorderUrl }}',
+        create: '{{ $createUrl }}',
         feature: '{{ $featureUrl }}',
         bulkFeature: '{{ $bulkFeatureUrl }}',
         bulkDelete: '{{ $bulkDeleteUrl }}'
