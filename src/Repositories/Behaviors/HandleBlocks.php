@@ -14,7 +14,7 @@ trait HandleBlocks
      * @param array $fields
      * @return \A17\Twill\Models\Model|void
      */
-    public function hydrateHandleBlocks($object, $fields)
+    public function hydrateHandleBlocks($object, $fields, &$fakeBlockId = 1)
     {
         if ($this->shouldIgnoreFieldBeforeSave('blocks')) {
             return;
@@ -22,9 +22,8 @@ trait HandleBlocks
 
         $blocksCollection = Collection::make();
         $blocksFromFields = $this->getBlocks($object, $fields);
-        $blockRepository = app(BlockRepository::class);
 
-        $fakeBlockId = 1;
+        $blockRepository = app(BlockRepository::class);
 
         foreach ($blocksFromFields as $block) {
             $newBlock = $blockRepository->createForPreview($block);
@@ -32,19 +31,7 @@ trait HandleBlocks
             $newBlock->id = $fakeBlockId;
             $fakeBlockId++;
 
-            $childBlocksCollection = Collection::make();
-
-            foreach ($block['blocks'] as $childBlock) {
-                $childBlock['parent_id'] = $newBlock->id;
-
-                $newChildBlock = $blockRepository->createForPreview($childBlock);
-
-                $newChildBlock->id = $fakeBlockId;
-                $fakeBlockId++;
-
-                $blocksCollection->push($newChildBlock);
-                $childBlocksCollection->push($newChildBlock);
-            }
+            $childBlocksCollection = $this->getChildrenBlocks($block, $blockRepository, $newBlock->id, $fakeBlockId);
 
             $newBlock->setRelation('children', $childBlocksCollection);
 
@@ -54,6 +41,27 @@ trait HandleBlocks
         $object->setRelation('blocks', $blocksCollection);
 
         return $object;
+    }
+
+    protected function getChildrenBlocks($block, $blockRepository, $parentId, &$fakeBlockId)
+    {
+        $childBlocksCollection = Collection::make();
+
+        foreach ($block['blocks'] as $childBlock) {
+            $childBlock['parent_id'] = $parentId;
+
+            $newChildBlock = $blockRepository->createForPreview($childBlock);
+
+            $newChildBlock->id = $fakeBlockId;
+            if (!empty($childBlock['blocks'])) {
+                $childBlockHydrated = $this->hydrateHandleBlocks($newChildBlock, $childBlock, $fakeBlockId);
+                $newChildBlock->setRelation('children', $childBlockHydrated->blocks);
+            }
+            $fakeBlockId++;
+
+            $childBlocksCollection->push($newChildBlock);
+        }
+        return $childBlocksCollection;
     }
 
     /**
@@ -104,7 +112,7 @@ trait HandleBlocks
     private function getBlocks($object, $fields)
     {
         $blocks = Collection::make();
-        if (isset($fields['blocks']) && is_array($fields['blocks'])) {
+        if (isset($fields['blocks']) && is_iterable ($fields['blocks'])) {
 
             foreach ($fields['blocks'] as $index => $block) {
                 $block = $this->buildBlock($block, $object);
@@ -114,7 +122,6 @@ trait HandleBlocks
                 $blocks->push($block);
             }
         }
-
         return $blocks;
     }
 
