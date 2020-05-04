@@ -15,46 +15,49 @@ trait HandleBlocks
      * @param array $fields
      * @return \A17\Twill\Models\Model|void
      */
-    public function hydrateHandleBlocks($object, $fields)
+    public function hydrateHandleBlocks($object, $fields, &$fakeBlockId = 0, $parentId = null, $blocksFromFields = null, $mainCollection = null)
     {
         if ($this->shouldIgnoreFieldBeforeSave('blocks')) {
             return;
         }
 
+        $firstItem = false;
         $blocksCollection = Collection::make();
-        $blocksFromFields = $this->getBlocks($object, $fields);
-        $blockRepository = app(BlockRepository::class);
-
-        $fakeBlockId = 1;
-
-        foreach ($blocksFromFields as $block) {
-            $newBlock = $blockRepository->createForPreview($block);
-
-            $newBlock->id = $fakeBlockId;
-            $fakeBlockId++;
-
-            $childBlocksCollection = Collection::make();
-
-            foreach ($block['blocks'] as $childBlock) {
-                $childBlock['parent_id'] = $newBlock->id;
-
-                $newChildBlock = $blockRepository->createForPreview($childBlock);
-
-                $newChildBlock->id = $fakeBlockId;
-                $fakeBlockId++;
-
-                $blocksCollection->push($newChildBlock);
-                $childBlocksCollection->push($newChildBlock);
-            }
-
-            $newBlock->setRelation('children', $childBlocksCollection);
-
-            $blocksCollection->push($newBlock);
+        if ($mainCollection === null) {
+            $firstItem = true;
+            $mainCollection = Collection::make();
+        }
+        if ($blocksFromFields === null) {
+            $blocksFromFields = $this->getBlocks($object, $fields);
         }
 
-        $object->setRelation('blocks', $blocksCollection);
-
+        $blockRepository = app(BlockRepository::class);
+        $blocksCollection = $this->getChildrenBlocks($blocksFromFields, $blockRepository, $parentId, $fakeBlockId, $mainCollection);
+        $object->setRelation('blocks', $firstItem ? $mainCollection : $blocksCollection);
         return $object;
+    }
+
+    protected function getChildrenBlocks($blocks, $blockRepository, $parentId, &$fakeBlockId, $mainCollection)
+    {
+        $childBlocksCollection = Collection::make();
+
+        foreach ($blocks as $childBlock) {
+            if ($parentId) {
+                $childBlock['parent_id'] = $parentId;
+            }
+            $newChildBlock = $blockRepository->createForPreview($childBlock);
+
+            $fakeBlockId++;
+            $newChildBlock->id = $fakeBlockId;
+            if (!empty($childBlock['blocks'])) {
+                $childBlockHydrated = $this->hydrateHandleBlocks($newChildBlock, $childBlock, $fakeBlockId, $newChildBlock->id, $childBlock['blocks'], $mainCollection);
+                $newChildBlock->setRelation('children', $childBlockHydrated->blocks);
+            }
+
+            $mainCollection->push($newChildBlock);
+            $childBlocksCollection->push($newChildBlock);
+        }
+        return $childBlocksCollection;
     }
 
     /**
@@ -115,7 +118,6 @@ trait HandleBlocks
                 $blocks->push($block);
             }
         }
-
         return $blocks;
     }
 
