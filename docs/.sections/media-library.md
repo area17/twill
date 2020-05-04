@@ -97,7 +97,7 @@ $model->imageObjects($roleName)
 /**
  * Returns the image associated with $roleName as an array containing meta information.
  */
-$model->imageAsArray($roleName[, $cropName, array $params, $media])
+$model->imagesAsArray($roleName[, $cropName, array $params, $media])
 
 /**
  * Returns the images associated with $roleName as an array containing meta information.
