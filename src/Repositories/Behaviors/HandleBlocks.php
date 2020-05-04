@@ -107,7 +107,7 @@ trait HandleBlocks
     private function getBlocks($object, $fields)
     {
         $blocks = Collection::make();
-        if (isset($fields['blocks']) && is_iterable ($fields['blocks'])) {
+        if (isset($fields['blocks']) && is_iterable($fields['blocks'])) {
 
             foreach ($fields['blocks'] as $index => $block) {
                 $block = $this->buildBlock($block, $object);
