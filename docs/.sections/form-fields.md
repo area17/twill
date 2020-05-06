@@ -384,7 +384,7 @@ Schema::table('posts', function (Blueprint $table) {
 // OR
 Schema::table('posts', function (Blueprint $table) {
     ...
-    $table->date_time('event_date')->nullable();
+    $table->dateTime('event_date')->nullable();
     ...
 });
 ```
