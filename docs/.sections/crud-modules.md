@@ -1,5 +1,5 @@
 ## CRUD modules
-Twill core functionnality is the ability to setup what we call modules. A module is set of files that define a content model and its associated business logic in your application. Those module can be configured to enable several features for publishers, from the ability to translate content, to the ability to attach images and more complex data structure to your records.
+Twill core functionnality is the ability to setup what we call modules. A module is a set of files that define a content model and its associated business logic in your application. Modules can be configured to enable several features for publishers, from the ability to translate content, to the ability to attach images and create a more complex data structure in your records.
 
 ### CLI Generator
 You can generate all the files needed in your application to create a new CRUD module using Twill's Artisan generator:

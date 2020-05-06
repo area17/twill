@@ -611,7 +611,7 @@ abstract class ModuleController extends Controller
     {
 
         $item = $this->repository->getById($submoduleId ?? $id);
-        if ($newItem = $this->repository->duplicate($submoduleId ?? $id)) {
+        if ($newItem = $this->repository->duplicate($submoduleId ?? $id, $this->titleColumnKey)) {
             $this->fireEvent();
             activity()->performedOn($item)->log('duplicated');
 
@@ -913,6 +913,8 @@ abstract class ModuleController extends Controller
                 'featured' => $item->{$this->featureField},
             ] : []) + (($this->getIndexOption('restore') && $itemIsTrashed) ? [
                 'deleted' => true,
+            ] : []) + (($this->getIndexOption('forceDelete') && $itemIsTrashed) ? [
+                'destroyable' => true,
             ] : []) + ($translated ? [
                 'languages' => $item->getActiveLanguages(),
             ] : []) + $columnsData, $this->indexItemData($item));
