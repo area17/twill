@@ -102,7 +102,7 @@ $model->imageAsArray($roleName[, $cropName, array $params, $media])
 /**
  * Returns the images associated with $roleName as an array containing meta information.
  */
-$model->imageAsArrays($roleName[, $cropName, array $params])
+$model->imagesAsArrays($roleName[, $cropName, array $params])
 
 /**
  * Checks if an image has been attached for the provided role
