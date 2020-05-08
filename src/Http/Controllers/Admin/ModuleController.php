@@ -1512,7 +1512,13 @@ abstract class ModuleController extends Controller
      */
     protected function getPermalinkBaseUrl()
     {
-        return $this->request->getScheme() . '://' . Config::get('app.url') . '/'
+        $appUrl = Config::get('app.url');
+
+        if (blank(parse_url($appUrl)['scheme'] ?? null)) {
+            $appUrl =  $this->request->getScheme() . '://' . $appUrl;
+        }
+
+        return $appUrl . '/'
             . ($this->moduleHas('translations') ? '{language}/' : '')
             . ($this->moduleHas('revisions') ? '{preview}/' : '')
             . ($this->permalinkBase ?? $this->moduleName)
