@@ -3,9 +3,9 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Helpers\FlashLevel;
-use A17\Twill\Services\Capsules\HasCapsules;
-use A17\Twill\Services\Blocks\BlockCollection;
 use A17\Twill\Models\Behaviors\HasSlug;
+use A17\Twill\Services\Blocks\BlockCollection;
+use A17\Twill\Services\Capsules\HasCapsules;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -443,18 +443,18 @@ abstract class ModuleController extends Controller
     }
 
     /**
-    * @param int $id
-    * @param int|null $submoduleId
-    * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
-    */
+     * @param int $id
+     * @param int|null $submoduleId
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function edit($id, $submoduleId = null)
     {
         $params = $this->request->route()->parameters();
 
         $this->submodule = count($params) > 1;
         $this->submoduleParentId = $this->submodule
-            ? $this->getParentModuleIdFromRequest($this->request) ?? $id
-            : head($params);
+        ? $this->getParentModuleIdFromRequest($this->request) ?? $id
+        : head($params);
 
         $id = last($params);
 
@@ -1636,8 +1636,7 @@ abstract class ModuleController extends Controller
 
     public function getRepositoryClass($model)
     {
-        if (@class_exists($class = "$this->namespace\Repositories\\" . $model . "Repository"))
-        {
+        if (@class_exists($class = "$this->namespace\Repositories\\" . $model . "Repository")) {
             return $class;
         }
 
