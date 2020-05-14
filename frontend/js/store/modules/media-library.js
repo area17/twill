@@ -15,6 +15,11 @@ const state = {
    */
   crops: window[process.env.VUE_APP_NAME].STORE.medias.crops || {},
   /**
+   * Display the file name of images
+   * @type {Object}
+   */
+  showFileName: window[process.env.VUE_APP_NAME].STORE.medias.showFileName || false,
+  /**
    * Define types available in medias library
    * @type {Array.<string>}
    */
