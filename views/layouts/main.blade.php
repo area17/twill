@@ -37,7 +37,7 @@
                         <transition name="fade_search-overlay" @after-enter="afterAnimate">
                           <div class="headerSearch__wrapper" :style="positionStyle" v-show="open" v-cloak>
                             <div class="headerSearch__overlay" :style="positionStyle" @click="toggleSearch"></div>
-                            <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" placeholder="{{ twillTrans('twill::lang.dashboard.search-placeholder') }}" :open="open" :opened="opened"></a17-search>
+                            <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" :open="open" :opened="opened"></a17-search>
                           </div>
                         </transition>
                       </div>
@@ -59,9 +59,9 @@
                                           :authorized="{{ json_encode(auth('twill_users')->user()->can('upload')) }}" :extra-metadatas="{{ json_encode(array_values(config('twill.media_library.extra_metadatas_fields', []))) }}"
                                           :translatable-metadatas="{{ json_encode(array_values(config('twill.media_library.translatable_metadatas_fields', []))) }}"
                         ></a17-medialibrary>
-                        <a17-dialog ref="warningMediaLibrary" modal-title="{{ twillTrans('twill::lang.media-library.modal.delete.title') }}" confirm-label="{{ twillTrans('twill::lang.media-library.modal.delete.confirm') }}">
-                            <p class="modal--tiny-title"><strong>{{ twillTrans('twill::lang.media-library.modal.delete.title') }}</strong></p>
-                            <p>{{ twillTrans('twill::lang.media-library.modal.prompt.top-text') }}<br />{{ twillTrans('twill::lang.media-library.modal.prompt.bottom-text') }}</p>
+                        <a17-dialog ref="warningMediaLibrary" modal-title="Delete media" confirm-label="Delete">
+                            <p class="modal--tiny-title"><strong>Delete media</strong></p>
+                            <p>Are you sure ?<br />This change can't be undone.</p>
                         </a17-dialog>
                     @endif
                     <a17-notif variant="success"></a17-notif>

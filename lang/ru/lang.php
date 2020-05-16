@@ -11,7 +11,7 @@ return [
     'dashboard' => [
         'search-placeholder' => 'Поиск всего...',
         'empty-message' => 'У вас еще нет активности.',
-        'all-activity' => 'Все активность',
+        'all-activity' => 'Вся активность',
         'my-activity' => 'Моя активность',
         'create-new' => 'Создать',
         'my-drafts' => 'Мои черновики',
@@ -19,7 +19,6 @@ return [
     ],
     'footer' => [
         'version' => 'Версия',
-        'made-with-twill' => 'Сделано на Twill',
     ],
     'form' => [
         'content' => 'Содержимое',
@@ -73,7 +72,6 @@ return [
         'settings' => 'Настройки',
         'logout' => 'Выйти',
         'admin' => 'Администратор',
-        'live' => 'Открыть опубликованный сайт &#8599;',
     ],
     'media-library' => [
         'title' => 'Медиа библиотека',
@@ -85,16 +83,6 @@ return [
             'files-selected' => 'файлов выделено',
             'clear' => 'Снять выделение',
             'dimensions' => 'Разрешение',
-        ],
-        'modal' => [
-            'delete' => [
-                'title' => 'Удалить медиафайл',
-                'confirm' => 'Удалить'
-            ],
-            'prompt' => [
-                'top-text' => 'Вы уверены ?',
-                'bottom-text' => 'Это изменение не может быть отменено.',
-            ],
         ],
     ],
     'filter' => [

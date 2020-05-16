@@ -19,7 +19,6 @@ return [
     ],
     'footer' => [
         'version' => 'Versie',
-        'made-with-twill' => 'Made with Twill',
     ],
     'form' => [
         'content' => 'Inhoud',
@@ -73,7 +72,6 @@ return [
         'settings' => 'Instellingen',
         'logout' => 'Uitloggen',
         'admin' => 'Admin',
-        'live' => 'Open live site &#8599;',
     ],
     'media-library' => [
         'title' => 'Mediabibliotheek',
@@ -85,16 +83,6 @@ return [
             'files-selected' => 'bestanden geselecteerd',
             'clear' => 'Leegmaken',
             'dimensions' => 'Dimensies',
-        ],
-        'modal' => [
-            'delete' => [
-                'title' => 'Delete media',
-                'confirm' => 'Delete'
-            ],
-            'prompt' => [
-                'top-text' => 'Are you sure ?',
-                'bottom-text' => 'This change can\'t be undone.',
-            ],
         ],
     ],
     'filter' => [
