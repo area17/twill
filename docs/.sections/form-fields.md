@@ -212,7 +212,7 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 @formField('medias', [
     'name' => 'cover',
     'label' => 'Cover image',
-    'note' => 'Also used in listings'
+    'note' => 'Also used in listings',
     'fieldNote' => 'Minimum image width: 1500px'
 ])
 
@@ -384,7 +384,7 @@ Schema::table('posts', function (Blueprint $table) {
 // OR
 Schema::table('posts', function (Blueprint $table) {
     ...
-    $table->date_time('event_date')->nullable();
+    $table->dateTime('event_date')->nullable();
     ...
 });
 ```

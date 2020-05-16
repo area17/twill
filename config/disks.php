@@ -1,20 +1,17 @@
 <?php
 
 $localRootPrefix = storage_path('app/public/');
-$localUrlPrefix = request()->getScheme() . '://' . str_replace(['http://', 'https://'], '', env('APP_URL')) . '/storage/';
 
 $mediaLocalConfig = [
     'driver' => 'local',
     'visibility' => 'public',
     'root' => $localRootPrefix . trim(config('twill.media_library.local_path'), '/ '),
-    'url' => $localUrlPrefix . trim(config('twill.media_library.local_path'), '/ '),
 ];
 
 $fileLocalConfig = [
     'driver' => 'local',
     'visibility' => 'public',
     'root' => $localRootPrefix . trim(config('twill.file_library.local_path'), '/ '),
-    'url' => $localUrlPrefix . trim(config('twill.file_library.local_path'), '/ '),
 ];
 
 $s3Config = [

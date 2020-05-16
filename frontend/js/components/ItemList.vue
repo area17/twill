@@ -11,11 +11,14 @@
         <tr class="itemlist__row"
             v-for="item in items"
             :key="`${item.endpointType}_${item.id}`"
-            :class="{ 's--picked': isSelected(item, keysToCheck)}"
+            :class="{
+              's--picked': isSelected(item, keysToCheck),
+              's--disabled': item.disabled
+            }"
             @click.exact.prevent="toggleSelection(item)"
             @click.shift.exact.prevent="shiftToggleSelection(item)">
           <td class="itemlist__cell itemlist__cell--btn" v-if="item.hasOwnProperty('id')">
-            <a17-checkbox name="item_list" :value="item.endpointType + '_' + item.id" :initialValue="checkedItems" theme="bold"/>
+            <a17-checkbox name="item_list" :value="item.endpointType + '_' + item.id" :initialValue="checkedItems" theme="bold" :disabled="item.disabled" />
           </td>
           <td class="itemlist__cell itemlist__cell--thumb" v-if="item.hasOwnProperty('thumbnail')">
             <img :src="item.thumbnail" />
@@ -73,7 +76,8 @@
         return Object.keys(firstItem).filter(key => { // exclude columns here
           return ![
             'id', 'name', 'thumbnail', 'src', 'original', 'edit',
-            'crop', 'deleteUrl', 'updateUrl', 'updateBulkUrl', 'deleteBulkUrl', 'endpointType'
+            'crop', 'deleteUrl', 'updateUrl', 'updateBulkUrl',
+            'deleteBulkUrl', 'endpointType', 'filesizeInMb'
           ].includes(key) && typeof firstItem[key] === 'string' // only strings
         })
       },
@@ -145,6 +149,11 @@
 
     &:hover {
       background-color: $color__f--bg;
+    }
+
+    &.s--disabled {
+      color: $color__button_greyed--bg;
+      pointer-events: none;
     }
   }
 

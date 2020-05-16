@@ -234,7 +234,7 @@
           this.loadingError(this.loadingMedias[index])
         } else {
           const media = {
-            id: this._uploader.methods.getUuid(id),
+            id: id ? this._uploader.methods.getUuid(id) : Math.floor(Math.random() * 1000),
             name: sanitizeFilename(name),
             progress: 0,
             error: true,

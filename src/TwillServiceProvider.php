@@ -38,7 +38,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    const VERSION = '2.0.0';
+    const VERSION = '2.0.1';
 
     /**
      * Service providers to be registered.
@@ -211,7 +211,29 @@ class TwillServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/dashboard.php', 'twill.dashboard');
         $this->mergeConfigFrom(__DIR__ . '/../config/oauth.php', 'twill.oauth');
         $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
+
+        if (config('twill.media_library.endpoint_type') === 'local'
+            && config('twill.media_library.disk') === 'twill_media_library') {
+            $this->setLocalDiskUrl('media');
+        }
+
+        if (config('twill.file_library.endpoint_type') === 'local'
+            && config('twill.file_library.disk') === 'twill_file_library') {
+            $this->setLocalDiskUrl('file');
+        }
+
         $this->mergeConfigFrom(__DIR__ . '/../config/services.php', 'services');
+    }
+
+    private function setLocalDiskUrl($type)
+    {
+        config([
+            'filesystems.disks.twill_' . $type . '_library.url' => request()->getScheme()
+            . '://'
+            . str_replace(['http://', 'https://'], '', config('app.url'))
+            . '/storage/'
+            . trim(config('twill.' . $type . '_library.local_path'), '/ '),
+        ]);
     }
 
     private function publishMigrations()
@@ -371,7 +393,7 @@ class TwillServiceProvider extends ServiceProvider
         $blade->component('twill::partials.form.utils._fieldset', 'formFieldset');
         $blade->component('twill::partials.form.utils._columns', 'formColumns');
         $blade->component('twill::partials.form.utils._collapsed_fields', 'formCollapsedFields');
-        $blade->component('twill::partials.form.utils._connected_ields', 'formConnectedFields');
+        $blade->component('twill::partials.form.utils._connected_fields', 'formConnectedFields');
         $blade->component('twill::partials.form.utils._inline_checkboxes', 'formInlineCheckboxes');
     }
 
