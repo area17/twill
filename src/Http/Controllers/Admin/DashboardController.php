@@ -4,6 +4,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use Analytics;
+use Carbon\Carbon;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
@@ -128,7 +129,7 @@ class DashboardController extends Controller
                     'thumbnail' => method_exists($item, 'defaultCmsImage') ? $item->defaultCmsImage(['w' => 100, 'h' => 100]) : null,
                     'published' => $item->published,
                     'activity' => 'Last edited',
-                    'date' => $item->updated_at->toIso8601String(),
+                    'date' => Carbon::parse($item->updated_at)->toIso8601String(),
                     'title' => $item->titleInDashboard ?? $item->title,
                     'author' => $author,
                     'type' => ucfirst($module['label_singular'] ?? Str::singular($module['name'])),
