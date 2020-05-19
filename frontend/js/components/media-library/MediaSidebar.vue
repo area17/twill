@@ -28,7 +28,7 @@
           <button v-else type="button" class="button--disabled" :data-tooltip-title="warningDeleteMessage" v-tooltip>
             <span v-svg symbol="trash"></span></button>
           <button v-if="hasSingleMedia" type="button" @click="replaceMedia">
-            <span v-svg symbol="revision-compare"></span>
+            <span v-svg symbol="replace"></span>
           </button>
         </a17-buttonbar>
       </div>
