@@ -1,6 +1,6 @@
 <template>
   <div class="mediagrid">
-    <div class="mediagrid__item" v-for="(item, index) in itemsLoading" :key="'mediaLoading_' + item.id">
+    <div class="mediagrid__item" v-show="!item.isReplacement" v-for="(item, index) in itemsLoading" :key="'mediaLoading_' + item.id">
       <span class="mediagrid__button s--loading">
         <span class="mediagrid__progress" v-if="!item.error"><span class="mediagrid__progressBar" :style="loadingProgress(index)"></span></span>
         <span class="mediagrid__progressError" v-else>Upload Error</span>
@@ -9,7 +9,7 @@
     <div class="mediagrid__item" :class="{'s--hasFilename': showFileName}" v-for="item in items" :key="item.id">
       <span class="mediagrid__button" :class="{
           's--picked': isSelected(item),
-          's--used': isUsed(item),
+          's--used': isUsed(item) || !!replacingMediaIds[item.id],
           's--disabled': item.disabled
         }"
         @click.exact="toggleSelection(item)"

@@ -18,7 +18,15 @@ export default {
   computed: {
     ...mapState({
       itemsLoading: state => state.mediaLibrary.loading
-    })
+    }),
+    replacingMediaIds: function () {
+      return this.itemsLoading.reduce((agg, curr) => {
+        if (curr.isReplacement) {
+          agg[curr.replacementId] = curr.id
+        }
+        return agg
+      }, {})
+    }
   },
   methods: {
     isSelected: function (item, keys = ['id']) {

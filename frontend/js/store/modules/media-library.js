@@ -156,7 +156,9 @@ const mutations = {
       state.loading.unshift({
         id: media.id,
         name: media.name,
-        progress: media.progress
+        progress: media.progress,
+        replacementId: media.replacementId,
+        isReplacement: media.isReplacement
       })
     }
   },

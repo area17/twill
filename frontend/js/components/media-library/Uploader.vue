@@ -158,6 +158,11 @@
               }
             })
       },
+      replaceMedia: function (id) {
+        this.media_to_replace_id = id
+        const qqinputs = this.$refs.uploaderBrowseButton.querySelectorAll('[name = "qqfile"]')
+        qqinputs[Array.from(qqinputs).length - 1].click()
+      },
       loadingProgress: function (media) {
         this.$store.commit(MEDIA_LIBRARY.PROGRESS_UPLOAD_MEDIA, media)
       },
@@ -190,7 +195,10 @@
         this.$emit('clear')
         // each upload session will add upload files with original filenames in a folder named using a uuid
         this.unique_folder_name = this.unique_folder_name || (this.uploaderConfig.endpointRoot + qq.getUniqueId())
-        this._uploader.methods.setParams({ unique_folder_name: this.unique_folder_name }, id)
+        this._uploader.methods.setParams({
+          unique_folder_name: this.unique_folder_name,
+          media_to_replace_id: this.media_to_replace_id
+        }, id)
 
         // determine the image dimensions and add it to params sent on upload success
         const imageUrl = URL.createObjectURL(this._uploader.methods.getFile(id))
@@ -210,9 +218,12 @@
           name: sanitizeFilename(name),
           progress: 0,
           error: false,
-          errorMessage: null
+          errorMessage: null,
+          isReplacement: !!this.media_to_replace_id,
+          replacementId: this.media_to_replace_id
         }
 
+        this.media_to_replace_id = null
         this.loadingMedias.push(media)
         this.loadingProgress(media)
       },

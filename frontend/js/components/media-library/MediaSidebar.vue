@@ -27,6 +27,9 @@
           </button>
           <button v-else type="button" class="button--disabled" :data-tooltip-title="warningDeleteMessage" v-tooltip>
             <span v-svg symbol="trash"></span></button>
+          <button v-if="hasSingleMedia && isImage" type="button" @click="replaceMedia">
+            <span v-svg symbol="revision-compare"></span>
+          </button>
         </a17-buttonbar>
       </div>
 
@@ -247,6 +250,21 @@
       })
     },
     methods: {
+      replaceMedia: function () {
+        // Open confirm dialog if any
+        if (this.$root.$refs.replaceWarningMediaLibrary) {
+          this.$root.$refs.replaceWarningMediaLibrary.open(() => {
+            this.triggerMediaReplace()
+          })
+        } else {
+          this.triggerMediaReplace()
+        }
+      },
+      triggerMediaReplace: function () {
+        this.$emit('triggerMediaReplace', {
+          id: this.getMediaToReplaceId()
+        })
+      },
       deleteSelectedMediasValidation: function () {
         if (this.loading) return false
 
@@ -256,8 +274,8 @@
         }
 
         // Open confirm dialog if any
-        if (this.$root.$refs.warningMediaLibrary) {
-          this.$root.$refs.warningMediaLibrary.open(() => {
+        if (this.$root.$refs.deleteWarningMediaLibrary) {
+          this.$root.$refs.deleteWarningMediaLibrary.open(() => {
             this.deleteSelectedMedias()
           })
         } else {
@@ -297,6 +315,9 @@
       },
       getFormData: function (form) {
         return FormDataAsObj(form)
+      },
+      getMediaToReplaceId: function () {
+        return this.firstMedia.id
       },
       removeFieldFromBulkEditing: function (name) {
         this.fieldsRemovedFromBulkEditing.push(name)
