@@ -41,14 +41,14 @@
             <aside class="medialibrary__sidebar">
               <a17-mediasidebar :medias="selectedMedias" :authorized="authorized" :extraMetadatas="extraMetadatas"
                                 @clear="clearSelectedMedias" @delete="deleteSelectedMedias" @tagUpdated="reloadTags"
-                                :type="currentTypeObject" :translatableMetadatas="translatableMetadatas" />
+                                :type="currentTypeObject" :translatableMetadatas="translatableMetadatas" @triggerMediaReplace="replaceMedia" />
             </aside>
             <footer class="medialibrary__footer" v-if="selectedMedias.length && showInsert && connector">
               <a17-button v-if="canInsert" variant="action" @click="saveAndClose">{{ btnLabel }}</a17-button>
               <a17-button v-else variant="action" :disabled="true">{{ btnLabel }}</a17-button>
             </footer>
             <div class="medialibrary__list" ref="list">
-              <a17-uploader v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias"
+              <a17-uploader ref="uploader" v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias"
                             :type="currentTypeObject"/>
               <div class="medialibrary__list-items">
                 <a17-itemlist v-if="type === 'file'" :items="renderedMediaItems" :selected-items="selectedMedias"
@@ -218,6 +218,9 @@
       }
     },
     methods: {
+      replaceMedia: function ({ id }) {
+        this.$refs.uploader.replaceMedia(id)
+      },
       open: function () {
         this.$refs.modal.open()
       },
@@ -249,11 +252,21 @@
         this.submitFilter()
       },
       addMedia: function (media) {
-        // add media in first position of the available media
-        this.mediaItems.unshift(media)
-        this.$store.commit(MEDIA_LIBRARY.INCREMENT_MEDIA_TYPE_TOTAL, this.type)
-        // select it
-        this.updateSelectedMedias(media.id)
+        const index = this.mediaItems.findIndex(function (item) {
+          return item.id === media.id
+        })
+
+        // Check of the media item exists i.e replacement
+        if (index > -1) {
+          this.$set(this.mediaItems, index, media)
+          this.selectedMedias.unshift(media)
+        } else {
+          // add media in first position of the available media
+          this.mediaItems.unshift(media)
+          this.$store.commit(MEDIA_LIBRARY.INCREMENT_MEDIA_TYPE_TOTAL, this.type)
+          // select it
+          this.updateSelectedMedias(media.id)
+        }
       },
       updateSelectedMedias: function (item, shift = false) {
         const id = item.id
