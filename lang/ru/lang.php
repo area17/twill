@@ -19,6 +19,7 @@ return [
     ],
     'footer' => [
         'version' => 'Версия',
+        'made-with-twill' => 'Сделано на Twill',
     ],
     'form' => [
         'content' => 'Содержимое',
@@ -65,6 +66,14 @@ return [
         'update' => [
             'title' => 'Обновить',
         ],
+        'delete' => [
+            'title' => 'Удалить',
+            'confirm' => 'Удалить'
+        ],
+        'prompt' => [
+            'top-text' => 'Вы уверены ?',
+            'bottom-text' => 'Это изменение не может быть отменено.',
+        ],
     ],
     'nav' => [
         'media-library' => 'Медиа библиотека',
@@ -72,6 +81,7 @@ return [
         'settings' => 'Настройки',
         'logout' => 'Выйти',
         'admin' => 'Администратор',
+        'live' => 'Открыть опубликованный сайт &#8599;',
     ],
     'media-library' => [
         'title' => 'Медиа библиотека',

@@ -14,9 +14,12 @@ return [
         'all-activity' => '全部动态',
         'my-activity' => '我的动态',
         'create-new' => '创建新的',
+        'my-drafts' => 'My drafts',
+        'statitics' => 'Statistics',
     ],
     'footer' => [
         'version' => '版本',
+        'made-with-twill' => 'Made with Twill',
     ],
     'form' => [
         'content' => '内容',
@@ -39,6 +42,7 @@ return [
             'restore' => '恢复',
             'destroy' => '彻底删除',
             'delete' => '移动到垃圾箱',
+            'duplicate' => 'Duplicate',
         ],
         'add-new-button' => '添加',
         'listing-empty-message' => '没有内容',
@@ -59,6 +63,17 @@ return [
             'button' => '创建',
             'create-another' => '继续创建',
         ],
+        'update' => [
+            'title' => 'Update',
+        ],
+        'delete' => [
+            'title' => 'Delete content',
+            'confirm' => 'Delete'
+        ],
+        'prompt' => [
+            'top-text' => 'Are you sure ?',
+            'bottom-text' => 'This change can\'t be undone.',
+        ],
     ],
     'nav' => [
         'media-library' => '媒体库',
@@ -66,6 +81,7 @@ return [
         'settings' => '设置',
         'logout' => '注销',
         'admin' => '管理员',
+        'live' => 'Open live site &#8599;',
     ],
     'media-library' => [
         'title' => '媒体库',

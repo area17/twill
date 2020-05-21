@@ -19,6 +19,7 @@ return [
     ],
     'footer' => [
         'version' => 'Versão',
+        'made-with-twill' => 'Made with Twill',
     ],
     'form' => [
         'content' => 'Conteúdo',
@@ -65,6 +66,14 @@ return [
         'update' => [
             'title' => 'Atualizar',
         ],
+        'delete' => [
+            'title' => 'Delete content',
+            'confirm' => 'Delete'
+        ],
+        'prompt' => [
+            'top-text' => 'Are you sure ?',
+            'bottom-text' => 'This change can\'t be undone.',
+        ],
     ],
     'nav' => [
         'media-library' => 'Biblioteca multimédia',
@@ -72,6 +81,7 @@ return [
         'settings' => 'Configurações',
         'logout' => 'Sair',
         'admin' => 'Administrador',
+        'live' => 'Open live site &#8599;',
     ],
     'media-library' => [
         'title' => 'Biblioteca multimédia',
