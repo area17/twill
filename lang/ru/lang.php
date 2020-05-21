@@ -11,7 +11,7 @@ return [
     'dashboard' => [
         'search-placeholder' => 'Поиск всего...',
         'empty-message' => 'У вас еще нет активности.',
-        'all-activity' => 'Все активность',
+        'all-activity' => 'Вся активность',
         'my-activity' => 'Моя активность',
         'create-new' => 'Создать',
         'my-drafts' => 'Мои черновики',
@@ -77,12 +77,12 @@ return [
         'title' => 'Медиа библиотека',
         'images' => 'Изображения',
         'files' => 'Файлы',
-        'filter-select-label' => 'Фильтровать по тегу',
+        'filter-select-label' => 'Теги',
         'sidebar' => [
             'empty-text' => 'Файлы не выделены',
             'files-selected' => 'файлов выделено',
             'clear' => 'Снять выделение',
-            'dimensions' => 'Уровни',
+            'dimensions' => 'Разрешение',
         ],
     ],
     'filter' => [
@@ -122,10 +122,10 @@ return [
     ],
     'user-management' => [
         'users' => 'Пользователи',
-        'active' => 'Активный',
-        'disabled' => 'Отключенный',
-        'enabled' => 'Включенный',
-        'trash' => 'Корзина',
+        'active' => 'Активные',
+        'disabled' => 'Отключенные',
+        'enabled' => 'Включенные',
+        'trash' => 'В корзине',
         'user-image' => 'Изображение',
         'name' => 'Имя',
         'email' => 'Email',
