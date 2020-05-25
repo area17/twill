@@ -612,7 +612,7 @@ abstract class ModuleController extends Controller
     {
 
         $item = $this->repository->getById($submoduleId ?? $id);
-        if ($newItem = $this->repository->duplicate($submoduleId ?? $id)) {
+        if ($newItem = $this->repository->duplicate($submoduleId ?? $id, $this->titleColumnKey)) {
             $this->fireEvent();
             activity()->performedOn($item)->log('duplicated');
 
@@ -914,6 +914,8 @@ abstract class ModuleController extends Controller
                 'featured' => $item->{$this->featureField},
             ] : []) + (($this->getIndexOption('restore') && $itemIsTrashed) ? [
                 'deleted' => true,
+            ] : []) + (($this->getIndexOption('forceDelete') && $itemIsTrashed) ? [
+                'destroyable' => true,
             ] : []) + ($translated ? [
                 'languages' => $item->getActiveLanguages(),
             ] : []) + $columnsData, $this->indexItemData($item));
@@ -1360,6 +1362,7 @@ abstract class ModuleController extends Controller
             'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
             'publish' => $item->canPublish ?? true,
             'translate' => $this->moduleHas('translations'),
+            'translateTitle' => $this->titleIsTranslatable(),
             'permalink' => $this->getIndexOption('permalink'),
             'form_fields' => $this->repository->getFormFields($item),
             'baseUrl' => $baseUrl,
@@ -1512,7 +1515,13 @@ abstract class ModuleController extends Controller
      */
     protected function getPermalinkBaseUrl()
     {
-        return $this->request->getScheme() . '://' . Config::get('app.url') . '/'
+        $appUrl = Config::get('app.url');
+
+        if (blank(parse_url($appUrl)['scheme'] ?? null)) {
+            $appUrl =  $this->request->getScheme() . '://' . $appUrl;
+        }
+
+        return $appUrl . '/'
             . ($this->moduleHas('translations') ? '{language}/' : '')
             . ($this->moduleHas('revisions') ? '{preview}/' : '')
             . ($this->permalinkBase ?? $this->moduleName)

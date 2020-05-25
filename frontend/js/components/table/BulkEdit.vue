@@ -47,7 +47,8 @@
             published: status.published && (row.published || false),
             canPublish: status.canPublish && row.hasOwnProperty('published'),
             deleted: status.deleted && (row.deleted || false),
-            canDelete: status.canDelete && row.delete !== null
+            canDelete: status.canDelete && row.delete !== null,
+            canDestroy: status.canDestroy && row.hasOwnProperty('destroyable')
           }
         }, {
           featured: true,
@@ -55,7 +56,8 @@
           published: true,
           canPublish: true,
           deleted: true,
-          canDelete: true
+          canDelete: true,
+          canDestroy: true
         })
       })
     },
@@ -73,7 +75,7 @@
         return window[process.env.VUE_APP_NAME].CMS_URLS.bulkRestore !== '' && this.bulkStatus.deleted
       },
       bulkDestroyable: function () {
-        return window[process.env.VUE_APP_NAME].CMS_URLS.bulkDestroy !== '' && this.bulkStatus.deleted
+        return window[process.env.VUE_APP_NAME].CMS_URLS.bulkDestroy !== '' && this.bulkStatus.deleted && this.bulkStatus.canDestroy
       },
       clearBulkSelect: function () {
         this.$store.commit(DATATABLE.REPLACE_DATATABLE_BULK, [])

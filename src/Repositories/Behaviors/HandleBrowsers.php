@@ -59,9 +59,11 @@ trait HandleBrowsers
      * @param array $fields
      * @param string $relationship
      * @param string $positionAttribute
+     * @param string|null $browserName
+     * @param array $pivotAttributes
      * @return void
      */
-    public function updateBrowser($object, $fields, $relationship, $positionAttribute = 'position', $browserName = null)
+    public function updateBrowser($object, $fields, $relationship, $positionAttribute = 'position', $browserName = null, $pivotAttributes = [])
     {
         $browserName = $browserName ?? $relationship;
         $fieldsHasElements = isset($fields['browsers'][$browserName]) && !empty($fields['browsers'][$browserName]);
@@ -69,7 +71,7 @@ trait HandleBrowsers
         $relatedElementsWithPosition = [];
         $position = 1;
         foreach ($relatedElements as $relatedElement) {
-            $relatedElementsWithPosition[$relatedElement['id']] = [$positionAttribute => $position++];
+            $relatedElementsWithPosition[$relatedElement['id']] = [$positionAttribute => $position++] + $pivotAttributes;
         }
 
         $object->$relationship()->sync($relatedElementsWithPosition);
@@ -153,7 +155,7 @@ trait HandleBrowsers
         return collect($this->browsers)->map(function ($browser, $key) {
             $browserName = is_string($browser) ? $browser : $key;
             $moduleName = !empty($browser['moduleName']) ? $browser['moduleName'] : $this->inferModuleNameFromBrowserName($browserName);
-            
+
             return [
                 'relation' => !empty($browser['relation']) ? $browser['relation'] : $this->inferRelationFromBrowserName($browserName),
                 'routePrefix' => isset($browser['routePrefix']) ? $browser['routePrefix'] : null,
@@ -191,7 +193,7 @@ trait HandleBrowsers
     }
 
     /**
-     * The module name should be plural lower camel case 
+     * The module name should be plural lower camel case
      *
      * @param  mixed $string
      * @param  mixed $browserName

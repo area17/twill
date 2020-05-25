@@ -343,7 +343,7 @@ abstract class ModuleRepository
      * @param mixed $id
      * @return mixed
      */
-    public function duplicate($id)
+    public function duplicate($id, $titleColumnKey = 'title')
     {
 
         if (($object = $this->model->find($id)) === null) {
@@ -355,7 +355,12 @@ abstract class ModuleRepository
         }
 
         $revisionInput = json_decode($revision->payload, true);
-        $baseInput = collect($revisionInput)->only(['slug', 'languages'])->filter()->toArray();
+        $baseInput = collect($revisionInput)->only([
+            $titleColumnKey,
+            'slug',
+            'languages'
+        ])->filter()->toArray();
+
         $newObject = $this->create($baseInput);
 
         $this->update($newObject->id, $revisionInput);

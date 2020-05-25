@@ -244,6 +244,15 @@ S3_BUCKET=bucket-name
 
 Optionally, you can use the `S3_REGION` variable to specify a region other than S3's default region (`us-east-1`).
 
+If you prefer to use another S3 compliant storage such as Minio, provide your application with the following environment variables:
+
+```bash
+S3_KEY=S3_KEY
+S3_SECRET=S3_SECRET
+S3_BUCKET=bucket-name
+S3_ENDPOINT=https://YOUR_S3_DOMAIN
+```
+
 When uploading images to S3, Twill sets the `acl` parameter to `private`. This is because images in your bucket should not be publicly accessible when using a service like [Imgix](https://imgix.com) on top of it. Only Imgix should have read-only access to your bucket, while your application obviously needs to have write access. If you intend to access images uploaded to S3 directly, set the `MEDIA_LIBRARY_ACL` variable or `acl` configuration option to `public-read`.
 
 **Azure endpoint**
