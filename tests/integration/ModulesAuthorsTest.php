@@ -3,8 +3,8 @@
 namespace A17\Twill\Tests\Integration;
 
 use App\Models\Author;
-use Illuminate\Support\Facades\Schema;
 use App\Models\Revisions\AuthorRevision;
+use Illuminate\Support\Facades\Schema;
 
 class ModulesAuthorsTest extends ModulesTestBase
 {
@@ -349,6 +349,8 @@ class ModulesAuthorsTest extends ModulesTestBase
 
         $this->createAuthor();
         $this->editAuthor();
+
+        putenv('EDIT_IN_MODAL=false');
 
         $this->request(
             "/twill/personnel/authors/{$this->author->id}/edit"
