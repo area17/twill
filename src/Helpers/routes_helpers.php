@@ -14,7 +14,25 @@ if (!function_exists('moduleRoute')) {
      */
     function moduleRoute($moduleName, $prefix, $action, $parameters = [], $absolute = true)
     {
-        $routeName = 'admin.' . ($prefix ? $prefix . '.' : '') . Str::camel($moduleName) . '.' . $action;
+        // Fix module name case
+        $moduleName = Str::camel($moduleName);
+
+        // Create base route name
+        $routeName = 'admin.' . ($prefix ? $prefix . '.' : '');
+
+        // Prefix it with module name only if prefix doesn't contains it already
+        if (
+            config('twill.allow_duplicates_on_route_names', true) ||
+            ($prefix !== $moduleName &&
+                !Str::endsWith($prefix, '.' . $moduleName))
+        ) {
+            $routeName .= "{$moduleName}.";
+        }
+
+        //  Add the action name
+        $routeName .= $action;
+
+        // Build the route
         return route($routeName, $parameters, $absolute);
     }
 }
