@@ -182,7 +182,7 @@ abstract class TestCase extends OrchestraTestCase
         $this->request('/twill/login', 'POST', [
             'email' => $this->superAdmin()->email,
             'password' => $this->superAdmin()->unencrypted_password,
-        ])->assertStatus(200);
+        ]);
 
         return $this->crawler;
     }
