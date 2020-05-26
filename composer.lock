@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dded57988e027b82f510eaf3780556e1",
+    "content-hash": "684baa15a30164c337f4c1f2f0b5a8a3",
     "packages": [
         {
             "name": "astrotomic/laravel-translatable",
@@ -5655,16 +5655,16 @@
         },
         {
             "name": "voku/portable-ascii",
-            "version": "1.5.0",
+            "version": "1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/voku/portable-ascii.git",
-                "reference": "2d302cf7dc474d5f7f18b29b03e0e77d408922a4"
+                "reference": "e7f9bd5deff09a57318f9b900ab33a05acfcf4d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/voku/portable-ascii/zipball/2d302cf7dc474d5f7f18b29b03e0e77d408922a4",
-                "reference": "2d302cf7dc474d5f7f18b29b03e0e77d408922a4",
+                "url": "https://api.github.com/repos/voku/portable-ascii/zipball/e7f9bd5deff09a57318f9b900ab33a05acfcf4d3",
+                "reference": "e7f9bd5deff09a57318f9b900ab33a05acfcf4d3",
                 "shasum": ""
             },
             "require": {
@@ -5717,7 +5717,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-05-23T23:15:19+00:00"
+            "time": "2020-05-26T06:40:44+00:00"
         }
     ],
     "packages-dev": [
