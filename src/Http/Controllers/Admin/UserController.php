@@ -5,6 +5,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Models\Group;
 use A17\Twill\Models\Permission;
 use A17\Twill\Models\Role;
+use A17\Twill\Models\User;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
@@ -306,7 +307,7 @@ class UserController extends ModuleController
         return parent::update($id, $submoduleId);
     }
 
-    public function resendRegistrationEmail($user)
+    public function resendRegistrationEmail(User $user)
     {
         $user->sendWelcomeNotification(
             Password::broker('twill_users')->getRepository()->create($user)
