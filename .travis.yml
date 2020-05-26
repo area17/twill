@@ -34,7 +34,7 @@ script:
   - vendor/bin/php-cs-fixer --dry-run --config=./.php_cs.travis fix src/ tests/  || travis_terminate 1;
   - |
     if [[ "$TRAVIS_PHP_VERSION" == '7.1' ]]; then
-      vendor/bin/phpunit --printer=PHPUnit\TextUI\ResultPrinter
+      vendor/bin/phpunit --configuration phpunit-7.1.xml
     else
       vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
     fi
