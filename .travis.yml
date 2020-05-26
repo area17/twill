@@ -32,11 +32,17 @@ install:
 
 script:
   - vendor/bin/php-cs-fixer --dry-run --config=./.php_cs.travis fix src/ tests/  || travis_terminate 1;
-  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+  - |
+    if [[ "$TRAVIS_PHP_VERSION" == '7.1' ]]; then
+      vendor/bin/phpunit --configuration phpunit-7.1.xml
+    else
+      vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+    fi
+
 
 after_script:
   - |
-    if [[ "$TRAVIS_PHP_VERSION" == '7.3' ]]; then
+    if [[ "$TRAVIS_PHP_VERSION" == '7.4' ]]; then
       wget https://scrutinizer-ci.com/ocular.phar
       php ocular.phar code-coverage:upload --format=php-clover coverage.clover
     fi
