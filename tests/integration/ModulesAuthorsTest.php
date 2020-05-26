@@ -363,8 +363,6 @@ class ModulesAuthorsTest extends ModulesTestBase
 
     public function testCanSeeRenderedBlocks()
     {
-        $this->skipOnTravis();
-
         $this->createAuthor();
         $this->editAuthor();
 
