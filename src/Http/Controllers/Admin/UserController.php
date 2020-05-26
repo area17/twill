@@ -307,8 +307,9 @@ class UserController extends ModuleController
         return parent::update($id, $submoduleId);
     }
 
-    public function resendRegistrationEmail(User $user)
+    public function resendRegistrationEmail($userId)
     {
+        $user = twillModel('user')::findOrFail($userId);
         $user->sendWelcomeNotification(
             Password::broker('twill_users')->getRepository()->create($user)
         );
