@@ -90,7 +90,9 @@ class BlocksController extends Controller
         })->implode('');
 
         $view = $viewFactory->exists($config->get('twill.block_editor.block_single_layout'))
-        ? $viewFactory->make($config->get('twill.block_editor.block_single_layout'))
+        ? $viewFactory->make($config->get('twill.block_editor.block_single_layout'), [
+            'block' => $block,
+        ])
         : $viewFactory->make('twill::errors.block_layout', [
             'view' => $config->get('twill.block_editor.block_single_layout'),
         ]);
