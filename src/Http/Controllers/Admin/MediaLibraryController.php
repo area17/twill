@@ -190,12 +190,8 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
 
         if ($this->shouldReplaceMedia($id = $request->input('media_to_replace_id'))) {
             $media = $this->repository->whereId($id)->first();
-            try {
-                Storage::disk($disk)->delete($media->uuid);
-            } catch (Exception $e) {
-
-            }
-            $media->update($fields);
+            Storage::disk($disk)->delete($media->uuid);
+            $media->replace($fields);
             return $media->fresh();
         } else {
             return $this->repository->create($fields);

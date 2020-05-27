@@ -258,6 +258,35 @@
 
         // Check of the media item exists i.e replacement
         if (index > -1) {
+          for (const mediaRole in this.selected) {
+            this.selected[mediaRole].forEach((mediaCrop, index) => {
+              if (media.id === mediaCrop.id) {
+                const crops = []
+
+                for (const crop in mediaCrop.crops) {
+                  crops[crop] = {
+                    height: media.height === mediaCrop.height ? mediaCrop.crops[crop].height : media.height,
+                    name: crop,
+                    width: media.width === mediaCrop.width ? mediaCrop.crops[crop].width : media.width,
+                    x: media.width === mediaCrop.width ? mediaCrop.crops[crop].x : 0,
+                    y: media.height === mediaCrop.height ? mediaCrop.crops[crop].y : 0
+                  }
+                }
+
+                this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIAS, {
+                  index,
+                  media: {
+                    ...media,
+                    width: media.width === mediaCrop.width ? mediaCrop.width : media.width,
+                    height: media.height === mediaCrop.height ? mediaCrop.height : media.height,
+                    crops
+                  },
+                  mediaRole
+                })
+              }
+            })
+          }
+
           this.$set(this.mediaItems, index, media)
           this.selectedMedias.unshift(media)
         } else {
