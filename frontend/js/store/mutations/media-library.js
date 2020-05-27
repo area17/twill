@@ -3,6 +3,7 @@ export const UPDATE_MEDIA_TYPE_TOTAL = 'updateMediaTypeTotal'
 export const INCREMENT_MEDIA_TYPE_TOTAL = 'incrementMediaTypeTotal'
 export const DECREMENT_MEDIA_TYPE_TOTAL = 'decrementMediaTypeTotal'
 export const SAVE_MEDIAS = 'saveSelectedMedias'
+export const UPDATE_MEDIAS = 'updateMedias'
 export const DESTROY_MEDIAS = 'destroySelectedMedias'
 export const REORDER_MEDIAS = 'reorderSelectedMedias'
 export const PROGRESS_UPLOAD = 'progressUpload'
@@ -46,5 +47,6 @@ export default {
   UPDATE_MEDIA_CONNECTOR,
   UPDATE_MEDIA_MODE,
   DESTROY_MEDIA_CONNECTOR,
-  UPDATE_REPLACE_INDEX
+  UPDATE_REPLACE_INDEX,
+  UPDATE_MEDIAS
 }
