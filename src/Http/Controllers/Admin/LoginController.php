@@ -253,7 +253,7 @@ class LoginController extends Controller
     public function showPasswordForm(Request $request)
     {
         $userId = $request->session()->get('oauth:user_id');
-        $user = User::findOrFail($userId);
+        $user = twillModel('user')::findOrFail($userId);
 
         return $this->viewFactory->make('twill::auth.oauth-link', [
             'username' => $user->email,
@@ -271,7 +271,7 @@ class LoginController extends Controller
         if ($this->attemptLogin($request)) {
             // Load the user
             $userId = $request->session()->get('oauth:user_id');
-            $user = User::findOrFail($userId);
+            $user = twillModel('user')::findOrFail($userId);
 
             // Link the provider and login
             $user->linkProvider($request->session()->get('oauth:user'), $request->session()->get('oauth:provider'));
