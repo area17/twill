@@ -58,7 +58,7 @@ trait HandleOauth
         $user = $this->model->firstOrNew([
             'name' => $oauthUser->name,
             'email' => $oauthUser->email,
-            'role_id' => $defaultRole ? $defaultRole->id : null,
+            'role_id' => $defaultRole->id,
             'published' => true,
         ]);
 
