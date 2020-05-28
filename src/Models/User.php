@@ -11,6 +11,7 @@ use A17\Twill\Models\Group;
 use A17\Twill\Models\Role;
 use A17\Twill\Notifications\Reset as ResetNotification;
 use A17\Twill\Notifications\TemporaryPassword as TemporaryPasswordNotification;
+use A17\Twill\Notifications\PasswordResetByAdmin as PasswordResetByAdminNotification;
 use A17\Twill\Notifications\Welcome as WelcomeNotification;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -161,6 +162,11 @@ class User extends AuthenticatableContract
     public function sendTemporaryPasswordNotification($password)
     {
         $this->notify(new TemporaryPasswordNotification($password));
+    }
+
+    public function sendPasswordResetByAdminNotification($password)
+    {
+        $this->notify(new PasswordResetByAdminNotification($password));
     }
 
     public function groups()

@@ -164,10 +164,12 @@ class UserRepository extends ModuleRepository
 
             if (!empty($fields['require_password_change'])) {
                 $user->require_new_password = true;
+                $user->sendTemporaryPasswordNotification($fields['new_password']);
+            } else {
+                $user->sendPasswordResetByAdminNotification($fields['new_password']);
             }
 
             $user->save();
-            $user->sendTemporaryPasswordNotification($fields['new_password']);
         }
 
         parent::afterSave($user, $fields);
