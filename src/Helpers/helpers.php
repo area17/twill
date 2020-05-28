@@ -193,10 +193,21 @@ if (!function_exists('fix_directory_separator')) {
 if (!function_exists('twillModel')) {
     function twillModel($model)
     {
+        if (in_array($model, [])) {
+            
+        } else {
+            abort(500, 'helpers/twillModel: ' . $model . ' not Exist');
+        }
         switch($model) {
             case 'user':
             case 'User':
                 return config('twill.models.user');
+            case 'role':
+            case 'Role':
+                return config('twill.models.role');
+            case 'group':
+            case 'Group':
+                return config('twill.models.group');
             default:
                 abort(500, 'helpers/twillModel: ' . $model . ' not Exist');
         }

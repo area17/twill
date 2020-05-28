@@ -10,4 +10,6 @@ return [
     |
      */
     'user' => A17\Twill\Models\User::class,
+    'role' => A17\Twill\Models\Role::class,
+    'group' => A17\Twill\Models\Group::class,
 ];
