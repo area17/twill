@@ -193,11 +193,6 @@ if (!function_exists('fix_directory_separator')) {
 if (!function_exists('twillModel')) {
     function twillModel($model)
     {
-        if (in_array($model, [])) {
-            
-        } else {
-            abort(500, 'helpers/twillModel: ' . $model . ' not Exist');
-        }
         switch($model) {
             case 'user':
             case 'User':
