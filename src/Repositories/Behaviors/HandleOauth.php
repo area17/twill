@@ -53,11 +53,12 @@ trait HandleOauth
      */
     public function oauthCreateUser($oauthUser)
     {
+        $defaultRole = twillModel('role')::where('name', config('twill.oauth.default_role'))->first();
 
         $user = $this->model->firstOrNew([
             'name' => $oauthUser->name,
             'email' => $oauthUser->email,
-            'role' => config('twill.oauth.default_role'),
+            'role_id' => $defaultRole ? $defaultRole->id : null,
             'published' => true,
         ]);
 

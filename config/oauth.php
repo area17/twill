@@ -17,12 +17,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | New user default role
+    | New user default role name
     |--------------------------------------------------------------------------
     |
-    | Possible values: VIEWONLY, PUBLISHER, ADMIN
+    | Defaults roles: Owner, Administrator, Team, Guest
     |
      */
-    'default_role' => 'VIEWONLY'
+    'default_role' => 'Guest',
 
 ];
