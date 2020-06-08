@@ -12,13 +12,13 @@
             :searchable="searchable"
             :clearSearchOnSelect="clearSearchOnSelect"
             :label="optionsLabel"
-            :on-search="getOptions"
             :taggable="taggable"
             :pushTags="pushTags"
             :transition="transition"
             :requiredValue="required"
             :maxHeight="maxHeight"
             @input="updateValue"
+            @search="getOptions"
           >
             <span slot="no-options">{{ emptyText }}</span>
           </v-select>
