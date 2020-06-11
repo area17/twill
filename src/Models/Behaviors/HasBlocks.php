@@ -2,13 +2,11 @@
 
 namespace A17\Twill\Models\Behaviors;
 
-use A17\Twill\Models\Block;
-
 trait HasBlocks
 {
     public function blocks()
     {
-        return $this->morphMany(Block::class, 'blockable')->orderBy(config('twill.blocks_table', 'twill_blocks') . '.position', 'asc');
+        return $this->morphMany(twillModel('block'), 'blockable')->orderBy(config('twill.blocks_table', 'twill_blocks') . '.position', 'asc');
     }
 
     public function renderBlocks($renderChilds = true, $blockViewMappings = [], $data = [])

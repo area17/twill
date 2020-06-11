@@ -4,7 +4,6 @@ namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\Behaviors\HasFiles;
 use A17\Twill\Models\Behaviors\HasMedias;
-use A17\Twill\Models\Block;
 use A17\Twill\Repositories\Behaviors\HandleFiles;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use Illuminate\Config\Repository as Config;
@@ -22,12 +21,10 @@ class BlockRepository extends ModuleRepository
      */
     protected $config;
 
-    /**
-     * @param Block $model
-     */
-    public function __construct(Block $model, Config $config)
+    public function __construct(Config $config)
     {
-        $this->model = $model;
+        $blockModel = twillModel('block');
+        $this->model = new $blockModel;
         $this->config = $config;
     }
 

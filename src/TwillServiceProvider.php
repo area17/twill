@@ -15,7 +15,6 @@ use A17\Twill\Http\ViewComposers\CurrentUser;
 use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
 use A17\Twill\Http\ViewComposers\Localization;
 use A17\Twill\Http\ViewComposers\MediasUploaderConfig;
-use A17\Twill\Models\Block;
 use A17\Twill\Models\File;
 use A17\Twill\Models\Group;
 use A17\Twill\Models\Media;
@@ -105,10 +104,10 @@ class TwillServiceProvider extends ServiceProvider
         $this->registerAliases();
 
         Relation::morphMap([
-            'users' => config('twill.models.user'),
+            'users' => twillModel('user'),
             'media' => Media::class,
             'files' => File::class,
-            'blocks' => Block::class,
+            'blocks' => twillModel('block'),
             'groups' => Group::class,
         ]);
 

@@ -197,12 +197,19 @@ if (!function_exists('twillModel')) {
             case 'user':
             case 'User':
                 return config('twill.models.user');
+                break;
             case 'role':
             case 'Role':
                 return config('twill.models.role');
+                break;
             case 'group':
             case 'Group':
                 return config('twill.models.group');
+                break;
+            case 'block':
+            case 'Block':
+                return config('twill.models.block');
+                break;
             default:
                 abort(500, 'helpers/twillModel: ' . $model . ' not Exist');
         }
