@@ -9,15 +9,15 @@ trait HandlePermissions
     public function getFormFieldsHandlePermissions($object, $fields)
     {
         //User form page
-        if (get_class($object) === "A17\Twill\Models\User") {
+        if (get_class($object) === twillModel('user')) {
             $fields = $this->renderUserPermissions($object, $fields);
         }
         // Group form page
-        elseif (get_class($object) === "A17\Twill\Models\Group") {
+        elseif (get_class($object) === twillModel('group')) {
             $fields = $this->renderGroupPermissions($object, $fields);
         }
         // Role form page
-        elseif (get_class($object) === "A17\Twill\Models\Role") {
+        elseif (get_class($object) === twillModel('role')) {
             $fields = $this->renderRolePermissions($object, $fields);
         }
         // Module item form page
@@ -31,15 +31,15 @@ trait HandlePermissions
     public function afterSaveHandlePermissions($object, $fields)
     {
         // User form page
-        if (get_class($object) === "A17\Twill\Models\User") {
+        if (get_class($object) === twillModel('user')) {
             $this->handleUserPermissions($object, $fields);
         }
         // Group form page
-        elseif (get_class($object) === "A17\Twill\Models\Group") {
+        elseif (get_class($object) === twillModel('group')) {
             $this->handleGroupPermissions($object, $fields);
         }
         // Role form page
-        elseif (get_class($object) === "A17\Twill\Models\Role") {
+        elseif (get_class($object) === twillModel('role')) {
             $this->handleRolePermissions($object, $fields);
         }
         // Module item form page
