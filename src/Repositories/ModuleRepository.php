@@ -76,7 +76,7 @@ abstract class ModuleRepository
     public function getCountByStatusSlug($slug, $scope = [])
     {
         $query = $this->model->where($scope);
-        if (isPermissionableModule(getModuleNameByModel($this->model))) {
+        if (config('twill.enabled.permission') && isPermissionableModule(getModuleNameByModel($this->model))) {
             $query = $query->accessible();
         }
         switch ($slug) {

@@ -842,7 +842,7 @@ abstract class ModuleController extends Controller
      */
     protected function getIndexItems($scopes = [], $forcePagination = false)
     {
-        if (isPermissionableModule($this->moduleName)) {
+        if (config('twill.enabled.permission') && isPermissionableModule($this->moduleName)) {
             $scopes = $scopes + ['accessible' => true];
         }
         return $this->transformIndexItems($this->repository->get(
