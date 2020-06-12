@@ -11,6 +11,10 @@ class AuthServiceProvider extends ServiceProvider
 
     protected function authorize($user, $callback, $moduleName = null)
     {   
+        if (!config('twill.enabled.permission')) {
+            return true;
+        }
+        
         if ($user->is_superadmin) {
             return true;
         }
