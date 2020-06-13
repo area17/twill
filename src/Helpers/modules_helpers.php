@@ -4,6 +4,28 @@ use A17\Twill\Models\Permission;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
+if (!function_exists('getAllModules')) {
+    function getAllModules()
+    {
+        $repositories = collect(app(FileSystem::class)->glob(app_path('Repositories') . '/*.php'))->map(function ($repository) {
+            $re = "/(?<=Repositories\/).+(?=\.php)/";
+            preg_match($re, $repository, $matches);
+            return config('twill.namespace') . "\\Repositories\\" . $matches[0];
+        });
+        
+        $moduleRepositories = $repositories->filter(function ($repository) {
+            return is_subclass_of($repository, 'A17\Twill\Repositories\ModuleRepository');
+        });
+
+        $modules = $moduleRepositories->map(function ($repository) {
+            $modelName = str_replace("Repository", '', str_replace("App\\Repositories\\", "", $repository));
+            return str_plural(lcfirst($modelName));
+        });
+
+        return $modules;
+    }
+}
+
 if (!function_exists('getModelByModuleName')) {
     function getModelByModuleName($moduleName)
     {

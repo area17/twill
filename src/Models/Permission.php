@@ -35,6 +35,7 @@ class Permission extends BaseModel
 
     public static function permissionableModules()
     {
+        // return getAllModules();
         $config = config('twill.permission.modules');
         // when use permissions for multi-tenants project
         if (config('twill.support_subdomain_admin_routing')
