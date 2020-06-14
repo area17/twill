@@ -27,7 +27,10 @@
         <div class="container">
             <ul class="nav__list">
                 @foreach($primaryNavElements as $primary_navigation_key => $primary_navigation_element)
-                    @can($primary_navigation_element['can'] ?? 'access-module-list', $primary_navigation_key)
+                    @php
+                        $gate = $primary_navigation_element['can'] ?? 'access-module-list';
+                    @endphp
+                    @unless(($primary_navigation_element['module'] ?? false) && Auth::user()->cannot($gate, $primary_navigation_key))
                         @if(isActiveNavigation($primary_navigation_element, $primary_navigation_key, $_primary_active_navigation))
                             <li class="nav__item s--on">
                         @else
@@ -35,7 +38,7 @@
                         @endif
                                 <a href="{{ getNavigationUrl($primary_navigation_element, $primary_navigation_key, $_global_active_navigation) }}">{{ $primary_navigation_element['title'] }}</a>
                             </li>
-                    @endcan
+                    @endunless
                 @endforeach
             </ul>
         </div>
