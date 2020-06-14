@@ -8,7 +8,7 @@
                         'edit-settings' : 
                         ($global_navigation_element['can'] ?? 'access-module-list');
                     @endphp
-                    @can($gate, $global_navigation_key)
+                    @unless (($global_navigation_element['module'] ?? false) && Auth::user()->cannot($gate, $global_navigation_key))
                         @if(isActiveNavigation($global_navigation_element, $global_navigation_key, $_global_active_navigation))
                             <li class="header__item s--on">
                         @else
@@ -16,7 +16,7 @@
                         @endif
                                 <a href="{{ getNavigationUrl($global_navigation_element, $global_navigation_key) }}">{{ $global_navigation_element['title'] }}</a>
                             </li>
-                    @endcan
+                    @endunless
                 @endforeach
             </ul>
         @endif
