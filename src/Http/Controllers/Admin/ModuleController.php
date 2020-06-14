@@ -236,6 +236,8 @@ abstract class ModuleController extends Controller
      */
     protected $fieldsPermissions = [];
 
+    protected $accessControl = true;
+
     public function __construct(Application $app, Request $request)
     {
         parent::__construct();
@@ -300,7 +302,9 @@ abstract class ModuleController extends Controller
      */
     public function index($parentModuleId = null)
     {
-        $this->authorize('access-module-list', $this->moduleName);
+        if ($this->accessControl) {
+            $this->authorize('access-module-list', $this->moduleName);
+        }
         $this->submodule = isset($parentModuleId);
         $this->submoduleParentId = $parentModuleId;
 
