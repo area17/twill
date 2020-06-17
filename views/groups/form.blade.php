@@ -55,6 +55,19 @@
             @endcomponent
         @endcomponent
     @endif
+
+    @if(Config::get('twill.support_subdomain_admin_routing'))
+        @component('twill::partials.form.utils._field_rows', [
+            'title' => 'Subdomain Access'
+        ])
+            @foreach(Config::get('twill.app_names') as $subdomain => $subdomainTitle)
+                @formField('checkbox', [
+                    'name' => $subdomain,
+                    'label' => $subdomainTitle
+                ])
+            @endforeach
+        @endcomponent
+    @endif
 @stop
 
 @if(Config::get('twill.permission.level') == 'roleGroupModule')

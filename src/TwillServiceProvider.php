@@ -253,14 +253,14 @@ class TwillServiceProvider extends ServiceProvider
 
         $this->publishOptionalMigration('users-2fa');
         $this->publishOptionalMigration('users-oauth');
-        $this->publishOptionalMigration('permissions');
+        $this->publishOptionalMigration('permission');
     }
 
     private function publishOptionalMigration($feature)
-    {
+    {        
         if (config('twill.enabled.' . $feature, false)) {
             $this->loadMigrationsFrom(__DIR__ . '/../migrations/optional/' . $feature);
-
+            
             $this->publishes([
                 __DIR__ . '/../migrations/optional/' . $feature => database_path('migrations'),
             ], 'migrations');
