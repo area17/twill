@@ -18,12 +18,8 @@ class AuthServiceProvider extends ServiceProvider
         if ($user->is_superadmin) {
             return true;
         }
-        
+
         if (!$user->published) {
-            return false;
-        }
-        
-        if ($moduleName && !isPermissionableModule($moduleName)) {
             return false;
         }
 
@@ -110,7 +106,7 @@ class AuthServiceProvider extends ServiceProvider
             return self::$cache['access-module-list-' . $moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('view-module', $moduleName)
                 || $user->allPermissions()->ofModuleName($moduleName)->exists();
-            }, $moduleName);
+            });
         });
 
         // The gate of accessing module list page,
@@ -123,7 +119,7 @@ class AuthServiceProvider extends ServiceProvider
                 return $user->can('edit-module', $moduleName)
                 || $user->role->permissions()->ofModuleName($moduleName)->where('name', 'view-module')->exists()
                 || isUserGroupPermissionModuleExists($user, $moduleName, 'view-module');
-            }, $moduleName);
+            });
         });
 
         Gate::define('edit-module', function ($user, $moduleName) {
@@ -134,7 +130,7 @@ class AuthServiceProvider extends ServiceProvider
                 return $user->can('manage-module', $moduleName)
                 || $user->role->permissions()->module()->ofModuleName($moduleName)->where('name', 'edit-module')->exists()
                 || isUserGroupPermissionModuleExists($user, $moduleName, 'edit-module');
-            }, $moduleName);
+            });
         });
 
         Gate::define('manage-module', function ($user, $moduleName) {
@@ -143,10 +139,13 @@ class AuthServiceProvider extends ServiceProvider
             }
 
             return self::$cache['manage-module-' . $moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
+                if (!isPermissionableModule($moduleName)) {
+                    return true;
+                }
                 return $user->can('manage-modules')
                 || $user->role->permissions()->module()->ofModuleName($moduleName)->where('name', 'manage-module')->exists()
                 || isUserGroupPermissionModuleExists($user, $moduleName, 'manage-module');
-            }, $moduleName);
+            });
         });
 
         /***
