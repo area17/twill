@@ -17,6 +17,7 @@ class Group extends BaseModel
         'name',
         'description',
         'published',
+        'subdomains_access',
     ];
 
     protected $dates = [
@@ -24,6 +25,10 @@ class Group extends BaseModel
     ];
 
     public $checkboxes = ['published'];
+
+    protected $casts = [
+        'subdomains_access' => 'array',
+    ];
 
     public static function getEveryoneGroup()
     {

@@ -15,7 +15,7 @@ class AddSubdomainsAccessColumnToGroupsTable extends Migration
     {
         if (Schema::hasTable('groups') && !Schema::hasColumn('groups', 'subdomains_access')) {
             Schema::table('groups', function (Blueprint $table) {
-                $table->string('subdomains_access')->nullable();
+                $table->json('subdomains_access')->nullable();
             });
         }
     }

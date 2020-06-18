@@ -122,6 +122,8 @@ trait HandlePermissions
             }
         }
 
+        $subdomainsAccess = [];
+
         foreach ($fields as $key => $permissionName) {
             //Used for the roleGroup mode
             if (starts_with($key, 'module_') && ends_with($key, '_permissions')) {
@@ -151,8 +153,13 @@ trait HandlePermissions
                 } else {
                     $group->revokeModuleItemAllPermissions($item);
                 }
+            } elseif (starts_with($key, 'subdomain_access_') && $permissionName) {
+                array_push($subdomainsAccess, substr($key, strlen('subdomain_access_')));
             }
         }
+
+        $group->subdomains_access = $subdomainsAccess;
+        $group->save();
     }
 
     protected function renderUserPermissions($user, $fields)
@@ -187,6 +194,10 @@ trait HandlePermissions
                 $moduleName = getModuleNameByModel($model);
                 $fields[$moduleName . '_' . $model->id . '_permission'] = '"' . $permission->name . '"';
             }
+        }
+
+        foreach($group->subdomains_access as $subdomain) {
+            $fields['subdomain_access_' . $subdomain] = true;
         }
 
         return $fields;

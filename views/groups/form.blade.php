@@ -62,7 +62,7 @@
         ])
             @foreach(Config::get('twill.app_names') as $subdomain => $subdomainTitle)
                 @formField('checkbox', [
-                    'name' => $subdomain,
+                    'name' => 'subdomain_access_' . $subdomain,
                     'label' => $subdomainTitle
                 ])
             @endforeach
