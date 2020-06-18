@@ -196,7 +196,7 @@ trait HandlePermissions
             }
         }
 
-        foreach($group->subdomains_access as $subdomain) {
+        foreach($group->subdomains_access ?? [] as $subdomain) {
             $fields['subdomain_access_' . $subdomain] = true;
         }
 
