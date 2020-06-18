@@ -96,7 +96,7 @@ trait HasPermissions
     public function permissions()
     {
         // Deal with the situation that twill user's table has been renamed.
-        if (get_class($this) === twillModel('user')) {
+        if (get_class($this) === 'A17\Twill\Models\User') {
             return $this->belongsToMany('A17\Twill\Models\Permission', 'permission_twill_user', 'twill_user_id', 'permission_id');
         } else {
             return $this->belongsToMany('A17\Twill\Models\Permission');

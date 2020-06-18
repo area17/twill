@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
-    private $twillModules = ['users', 'roles', 'groups', 'medias', 'files', 'blocks', 'features'];
 
     protected function authorize($user, $callback, $moduleName = null)
     {   
@@ -24,11 +23,7 @@ class AuthServiceProvider extends ServiceProvider
             return false;
         }
         
-        //  unauthorize if module is not explicitly defined in permission config, except twill native modules
-        if ($moduleName
-            && !isPermissionableModule($moduleName)
-            && !in_array($moduleName, $this->twillModules)
-            ) {
+        if ($moduleName && !isPermissionableModule($moduleName)) {
             return false;
         }
 
@@ -145,10 +140,6 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('manage-module', function ($user, $moduleName) {
             if (isset(self::$cache['manage-module-' . $moduleName])) {
                 return self::$cache['manage-module-' . $moduleName];
-            }
-
-            if (in_array($moduleName, $this->twillModules)) {
-                return true;
             }
 
             return self::$cache['manage-module-' . $moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
