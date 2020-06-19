@@ -186,12 +186,12 @@ class DashboardController extends Controller
         ] + (classHasTrait($activity->subject, HasMedias::class) ? [
             'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
         ] : []) + (!$activity->subject->trashed() ? [
-            'edit' => moduleRoute(
+            'edit' => $parent && $parentRelationship ? moduleRoute(
                 $dashboardModule['name'],
                 $dashboardModule['routePrefix'] ?? null,
                 'edit',
-                array_merge($parentRelationship ? [$parent ? $parent->id : null] : [], [$activity->subject_id])
-            ),
+                array_merge($parentRelationship ? [$parent->id] : [], [$activity->subject_id])
+            ) : '',
         ] : []) + (!is_null($activity->subject->published) ? [
             'published' => $activity->description === 'published' ? true : ($activity->description === 'unpublished' ? false : $activity->subject->published),
         ] : []);
