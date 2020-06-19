@@ -266,13 +266,13 @@ trait HasSlug
                     $slugDependenciesAttributes[$attribute] = $this->$attribute;
                 }
 
-                if (!isset($this->$slugAttribute)) {
+                if (!isset($slugAttribute)) {
                     throw new \Exception("You must define the field {$slugAttribute} in your model");
                 }
 
                 $slugParam = [
                     'active' => 1,
-                    'slug' => $this->$slugAttribute,
+                    'slug' => $slugAttribute,
                     'locale' => $appLocale,
                 ] + $slugDependenciesAttributes;
 
