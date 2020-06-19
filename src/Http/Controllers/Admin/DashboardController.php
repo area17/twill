@@ -175,6 +175,7 @@ class DashboardController extends Controller
         }
 
         $parentRelationship = $dashboardModule['parentRelationship'] ?? null;
+        $parent = $activity->subject->$parentRelationship;
         return [
             'id' => $activity->id,
             'type' => ucfirst($dashboardModule['label_singular'] ?? Str::singular($dashboardModule['name'])),
@@ -189,7 +190,7 @@ class DashboardController extends Controller
                 $dashboardModule['name'],
                 $dashboardModule['routePrefix'] ?? null,
                 'edit',
-                array_merge($parentRelationship ? [$activity->subject->$parentRelationship->id] : [], [$activity->subject_id])
+                array_merge($parentRelationship ? [$parent ? $parent->id : null] : [], [$activity->subject_id])
             ),
         ] : []) + (!is_null($activity->subject->published) ? [
             'published' => $activity->description === 'published' ? true : ($activity->description === 'unpublished' ? false : $activity->subject->published),
