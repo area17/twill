@@ -74,9 +74,13 @@ trait HandleRepeaters
     }
 
 
-    public function updateRepeaterMorphMany($object, $fields, $relation, $morph = null, $model = null)
+    public function updateRepeaterMorphMany($object, $fields, $relation, $morph = null, $model = null, $repeaterName = null)
     {
-        $relationFields = $fields['repeaters'][$relation] ?? [];
+        if (!$repeaterName) {
+            $repeaterName = $relation;
+        }
+
+        $relationFields = $fields['repeaters'][$repeaterName] ?? [];
         $relationRepository = $this->getModelRepository($relation, $model);
 
         $morph = $morph ?: $relation;

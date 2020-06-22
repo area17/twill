@@ -4,29 +4,54 @@ All notable changes to `twill` will be documented in this file.
 
 ## UNRELEASED
 
+### Added
+- Resolve npm modules from root app (#617) [`360d82c1`](https://github.com/area17/twill/commit/360d82c13daed5a921d5c324d3af7dd2a6945531)  
+  - This change allows requiring node modules from the root project folder. Previously, custom Vue components could only use npm packages installed by Twill itself. With this change, any npm package from the main app can be required. We do this by adding the root `npm_modules` folder to webpack’s module resolver.
+- Support checkbox form field in settings [`d62d303f`](https://github.com/area17/twill/commit/d62d303fba5e3ea0e6bcd8e838933bdab0c270cc)
+- Support date_picker and color form fields in settings (#576) [`f66aaa68`](https://github.com/area17/twill/commit/f66aaa6821debdeeb3c7b24633d65d66d444a3d4)
+- Add new options to medias and files form fields [`c564ecc2`](https://github.com/area17/twill/commit/c564ecc23f9191272b72e768e4f50d0aa49bf955)
+  - filesizeMax, on the files field, to prevent selecting a file which filesize is above provided value in mb
+  - widthMin. on the medias field, to prevent selecting an image which width is below provided value in px
+  - heightMin. on the medias field, to prevent selecting an image which height is below provided value in px
+- Allow 3 columns layout by setting up a middle columns (#638) [`2b2e3e49`](https://github.com/area17/twill/commit/2b2e3e49f4c1e73a96aaa6ce7ffcaa20c084cbd0)
+- Allow browsers to sync extra pivot attributes (#629) [`f33b8825`](https://github.com/area17/twill/commit/f33b88254ef81336316b26aa744e7348d2bfa36e)
+- Provide env variable for configuring custom s3 hosts [`5894ccce`](https://github.com/area17/twill/commit/5894ccce4c4a8dd0e60b3583c6fa3069d1119640)
+- Add ability to provide a custom morphed repeaters name (#679) [`3a118bc3`](https://github.com/area17/twill/commit/3a118bc375a4bbb0045fe553822023a80052c515)
+
 ### Fixed
 
 - Fix local disk and Glide base url request scheme resolution [`15a2dbea`](https://github.com/area17/twill/commit/15a2dbea5bbbfb3e77e23e821233d3b3e69d28bc)
+  - [This commit](https://github.com/area17/twill/commit/876c93a22b660c14a52577019374a5cb3d569c77) introduced an issue by using request() in config. When using php artisan config:cache that request is not coming externally with the appropriate headers.
 - Fix new listing actions behaviors [`2d1b2eb5`](https://github.com/area17/twill/commit/2d1b2eb53cc11f3f5a41cf7335f2d53d416cb19e)
+  - Destroy action was not removed when disabling forceDelete in indexOptions
+  - Duplicate action was showing in trash and was not removed when disabled in indexOptions (which is by default)
+  - Fix bulk destroy integration
 - Fix #605 [`fc5b16a9`](https://github.com/area17/twill/commit/fc5b16a9179fcba57d3424ef2456a9efa74ce68f)
+  - With the simplification of the exception handler in #561 the override of the invalidJson method was dropped by mistake. It is currently necessary as the frontend expects errors only in a validation exception response. In future improvments it would be better to keep the default Laravel response format and update the frontend to read one level deeper.
 - Fix connected fields component alias [`4b61b78e`](https://github.com/area17/twill/commit/4b61b78e1ab746fbe9975be23993adfd4a6d1391)
 - Fix draggable regression on datatable [`a79e3d2e`](https://github.com/area17/twill/commit/a79e3d2ee95c4f8ef0e08bbc0f14ae8abad9c7c7)
-- :alien: Fix typo in translation [`c0c492c5`](https://github.com/area17/twill/commit/c0c492c5805f2c72a8c89ac1ebfee0c97cfa087d)
+- Fix typo in translation [`c0c492c5`](https://github.com/area17/twill/commit/c0c492c5805f2c72a8c89ac1ebfee0c97cfa087d)
 - Fix child module redirect when adding new records in Laravel 6 / 7 [`e60c5066`](https://github.com/area17/twill/commit/e60c50668f548594d114b7cd438fba285853fb3e)
-- Fix date_picker and color form fields not working in settings (#576) [`f66aaa68`](https://github.com/area17/twill/commit/f66aaa6821debdeeb3c7b24633d65d66d444a3d4)
+- Fix filesize limit uploader error display (#614) [`21263a3e`](https://github.com/area17/twill/commit/21263a3e2b67cc708ea8fa8ba4836db92dca7bdb)
+- Fix missing row duplication event handler for nested tables (#615) [`c50b16d2`](https://github.com/area17/twill/commit/c50b16d267e47c66816c8233e26e8056375340d6)
+- Some fixes in russian localization (#586) [`1d03572e`](https://github.com/area17/twill/commit/1d03572e59d68dd5819ef5d7baa2ea3a43c36420)
+- Fix scheme being added twice when APP_URL has the scheme (#651) [`2e5784cc`](https://github.com/area17/twill/commit/2e5784cc4f020607b76a97db5bc87b73915aad4d)
+- Fix translateTitle in a form (#648) [`8f5b0e28`](https://github.com/area17/twill/commit/8f5b0e287760bfc335ee8a091950178edfaa15e4)
+- Fix route name duplicating prefix and module (#591) [`267eec02`](https://github.com/area17/twill/commit/267eec0205b3ae6d2209a1b689cd9434cbdf8bc4)
 
 ### Improved
 
-- Support checkbox form field in settings [`d62d303f`](https://github.com/area17/twill/commit/d62d303fba5e3ea0e6bcd8e838933bdab0c270cc)
-- Add new options to medias and files form fields [`c564ecc2`](https://github.com/area17/twill/commit/c564ecc23f9191272b72e768e4f50d0aa49bf955)
 - Update tag formField [`0d535710`](https://github.com/area17/twill/commit/0d5357103eb1209393b0e9f4748d02602cad231d)
+  - Provide optional parameters for changing label and including a note.
+- Documentation improvements [`ce7c8f95`](https://github.com/area17/twill/commit/ce7c8f9523e71a3ab9caca52d6a6b4580cd900fb) [`2c1a0d29`](https://github.com/area17/twill/commit/2c1a0d29e2fd42a7b41bacc75d2c38c546aea6c7) [`5e223e52`](https://github.com/area17/twill/commit/5e223e52dec7543442d5a3181952aca2dc5902b0) [`8822c21a`](https://github.com/area17/twill/commit/8822c21a836d20bcff28111e0c57165c8c798b86) [`af410508`](https://github.com/area17/twill/commit/af410508986539aabf4dafb290957d641281248a) [`0f7b3a05`](https://github.com/area17/twill/commit/0f7b3a0570a5ff19a1747fb8f070cc71fc9c56db) [`8aead1f3`](https://github.com/area17/twill/commit/8aead1f34e4e54204d8a793fc6cc256bfb7a7430) [`4a090409`](https://github.com/area17/twill/commit/4a0904091b9c4bfc71e954d9911ab3fb79f50b0f) [`e6c313c3`](https://github.com/area17/twill/commit/e6c313c3df50fab566746d507912294d71d19c05) [`3c2c3a1f`](https://github.com/area17/twill/commit/3c2c3a1f73f049958176f0f155a260b31bd3e242)
 
 ### Chore
 
 - Update composer deps [`8082d7a2`](https://github.com/area17/twill/commit/8082d7a22bcc99628a22030ba1e5315499586d08)
-- Update distributed assets [`a87aea14`](https://github.com/area17/twill/commit/a87aea14f03207b4226787d2ee1c47ced403bd38)
+- Update distributed assets [`a87aea14`](https://github.com/area17/twill/commit/a87aea14f03207b4226787d2ee1c47ced403bd38) [`8ca8cb23`](https://github.com/area17/twill/commit/8ca8cb239a8bdf9c7bcfde9ac4524c3355ce1d23) [`63a10782`](https://github.com/area17/twill/commit/63a10782871b4ec96f45dae45c84c364be93c115)
 - Update docs dependencies [`ff1c7c7a`](https://github.com/area17/twill/commit/ff1c7c7adfd6d5ce339cef42fb5ce5593f4cdc27)
-- Update frontend dependencies and version [`d49df239`](https://github.com/area17/twill/commit/d49df2394f40f1e0719398caa8d5c49bf75aed21)
+- Update frontend build and version [`d49df23`](https://github.com/area17/twill/commit/d49df2394f40f1e0719398caa8d5c49bf75aed21)
+- Update npm dependencies [`11711592`](https://github.com/area17/twill/commit/11711592ab8bd5ac8e377c236cba8c5618903f07)
 
 
 ## 2.0.1 (2020-03-10)
