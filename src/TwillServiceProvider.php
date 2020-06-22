@@ -399,6 +399,15 @@ class TwillServiceProvider extends ServiceProvider
         $blade->component('twill::partials.form.utils._collapsed_fields', 'formCollapsedFields');
         $blade->component('twill::partials.form.utils._connected_fields', 'formConnectedFields');
         $blade->component('twill::partials.form.utils._inline_checkboxes', 'formInlineCheckboxes');
+
+        if (method_exists($blade, 'aliasComponent')) {
+            $blade->aliasComponent('twill::partials.form.utils._fieldset', 'formFieldset');
+            $blade->aliasComponent('twill::partials.form.utils._columns', 'formColumns');
+            $blade->aliasComponent('twill::partials.form.utils._collapsed_fields', 'formCollapsedFields');
+            $blade->aliasComponent('twill::partials.form.utils._connected_fields', 'formConnectedFields');
+            $blade->aliasComponent('twill::partials.form.utils._inline_checkboxes', 'formInlineCheckboxes');
+        }
+
     }
 
     /**
