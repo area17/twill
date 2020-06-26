@@ -25,7 +25,8 @@ $s3Config = [
     'bucket' => env('S3_BUCKET', env('AWS_BUCKET')),
     'root' => env('S3_ROOT', env('AWS_ROOT', '')),
     'use_https' => env('S3_UPLOADER_USE_HTTPS', env('S3_USE_HTTPS', env('AWS_USE_HTTPS', true))),
-    'endpoint' => env("S3_ENDPOINT")
+    'endpoint' => env("S3_ENDPOINT"),
+    'use_path_style_endpoint' => env("S3_PATH_STYLE_ENDPOINT", false),
 ];
 
 $azureConfig = [
