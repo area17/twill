@@ -14,8 +14,8 @@ class BlockMake extends Command
     protected $signature =
         'twill:make:block ' .
         '{name : Name of the new block.} ' .
-        '{base : Block on which the new block should be based.}' .
-        '{icon : Icon for the new block. List icons using the twill:list:icons command.}';
+        '{base? : Block on which the new block should be based.}' .
+        '{icon? : Icon for the new block. List icons using the twill:list:icons command.}';
     /**
      * The console command description.
      *
@@ -58,8 +58,8 @@ class BlockMake extends Command
             ->setCommand($this)
             ->make(
                 $this->argument('name'),
-                $this->argument('base'),
-                $this->argument('icon')
+                $this->argument('base') ?? 'text',
+                $this->argument('icon') ?? 'text'
             );
 
         return parent::handle();
