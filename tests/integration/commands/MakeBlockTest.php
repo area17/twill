@@ -2,8 +2,8 @@
 
 namespace A17\Twill\Tests\Integration\Commands;
 
-use A17\Twill\Tests\Integration\TestCase;
 use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
+use A17\Twill\Tests\Integration\TestCase;
 use Symfony\Component\Console\Exception\RuntimeException;
 
 class MakeBlockTest extends TestCase
@@ -21,10 +21,7 @@ class MakeBlockTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $this->artisan('twill:make:block', [
-            'name' => 'SuperQuote',
-            'base' => 'quote',
-        ])->run();
+        $this->artisan('twill:make:block')->run();
     }
 
     public function testCanExecuteModuleCommand()
@@ -44,7 +41,7 @@ class MakeBlockTest extends TestCase
 
         $this->assertFileExists(
             config('twill.block_editor.directories.destination.blocks') .
-                '/super-quote.blade.php'
+            '/super-quote.blade.php'
         );
     }
 
@@ -65,12 +62,12 @@ class MakeBlockTest extends TestCase
 
         $this->assertFileExists(
             config('twill.block_editor.directories.destination.blocks') .
-                '/super-carousel.blade.php'
+            '/super-carousel.blade.php'
         );
 
         $this->assertFileExists(
             config('twill.block_editor.directories.destination.repeaters') .
-                '/super-carousel-item.blade.php'
+            '/super-carousel-item.blade.php'
         );
     }
 
@@ -83,9 +80,9 @@ class MakeBlockTest extends TestCase
         ]);
 
         $this->getCommand($command)
-             ->getBlockMaker()
-             ->getBlockCollection()
-             ->load();
+            ->getBlockMaker()
+            ->getBlockCollection()
+            ->load();
 
         $this->assertExitCodeIsNotGood($pendingCommand->run());
     }
@@ -99,9 +96,9 @@ class MakeBlockTest extends TestCase
         ]);
 
         $this->getCommand($command)
-             ->getBlockMaker()
-             ->getBlockCollection()
-             ->load();
+            ->getBlockMaker()
+            ->getBlockCollection()
+            ->load();
 
         $this->assertExitCodeIsNotGood($pendingCommand->run());
     }
@@ -115,9 +112,9 @@ class MakeBlockTest extends TestCase
         ]);
 
         $this->getCommand($command)
-             ->getBlockMaker()
-             ->getBlockCollection()
-             ->load();
+            ->getBlockMaker()
+            ->getBlockCollection()
+            ->load();
 
         $this->assertExitCodeIsGood($pendingCommand->run());
 
@@ -128,9 +125,9 @@ class MakeBlockTest extends TestCase
         ]);
 
         $this->getCommand($command)
-             ->getBlockMaker()
-             ->getBlockCollection()
-             ->load();
+            ->getBlockMaker()
+            ->getBlockCollection()
+            ->load();
 
         $this->assertExitCodeIsNotGood($pendingCommand->run());
     }
