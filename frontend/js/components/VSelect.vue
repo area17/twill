@@ -18,6 +18,7 @@
             :transition="transition"
             :requiredValue="required"
             :maxHeight="maxHeight"
+            :disabled="disabled"
             @input="updateValue"
           >
             <span slot="no-options">{{ emptyText }}</span>
