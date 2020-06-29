@@ -24,8 +24,8 @@
             widthMin: {{ $widthMin }},
             heightMin: {{ $heightMin }},
             @if ($extraMetadatas) extraMetadatas: {{ json_encode($extraMetadatas) }}, @endif
-            @if ($altTextMaxLength) altTextMaxLength: {{ $altTextMaxLength }}, @endif
-            @if ($captionMaxLength) captionMaxLength: {{ $captionMaxLength }}, @endif
+            @if ($altTextMaxLength) :altTextMaxLength: {{ $altTextMaxLength }}, @endif
+            @if ($captionMaxLength) :captionMaxLength: {{ $captionMaxLength }}, @endif
             @if ($required) required: true, @endif
             @if (!$withAddInfo) withAddInfo: false, @endif
             @if (!$withVideoUrl) withVideoUrl: false, @endif
@@ -56,8 +56,8 @@
             @if (!$withAddInfo) :with-add-info="false" @endif
             @if (!$withVideoUrl) :with-video-url="false" @endif
             @if (!$withCaption) :with-caption="false" @endif
-            @if ($altTextMaxLength) alt-text-max-length="{{ $altTextMaxLength }}" @endif
-            @if ($captionMaxLength) caption-max-length="{{ $captionMaxLength }}" @endif
+            @if ($altTextMaxLength) :alt-text-max-length="{{ $altTextMaxLength }}" @endif
+            @if ($captionMaxLength) :caption-max-length="{{ $captionMaxLength }}" @endif
         >{{ $note }}@if($multiple) </a17-slideshow> @else </a17-mediafield> @endif
     </a17-inputframe>
 
