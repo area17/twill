@@ -53,6 +53,11 @@ class Block
     public $icon;
 
     /**
+     * @var boolean
+     */
+    public $compiled;
+
+    /**
      * @var string
      */
     public $component;
@@ -75,6 +80,11 @@ class Block
     /**
      * @var string
      */
+    public $fileName;
+
+    /**
+     * @var string
+     */
     public $contents;
 
     /**
@@ -91,6 +101,8 @@ class Block
         $this->type = $type;
 
         $this->source = $source;
+
+        $this->fileName = $this->getFilename();
 
         $this->parse();
     }
@@ -118,6 +130,7 @@ class Block
             'group' => $this->group,
             'type' => $this->type,
             'icon' => $this->icon,
+            'compiled' => $this->compiled ? 'yes' : '-',
             'source' => $this->source,
             'new_format' => $this->isNewFormat ? 'yes' : '-',
             'file' => $this->file->getFilename(),
@@ -151,9 +164,10 @@ class Block
         $this->max = (int) $this->parseProperty('max', $contents, $name, 999);
         $this->group = $this->parseProperty('group', $contents, $name);
         $this->icon = $this->parseProperty('icon', $contents, $name);
+        $this->compiled = (boolean) $this->parseProperty('compiled', $contents, $name, false);
+        $this->component = $this->parseProperty('component', $contents, $name, "a17-block-{$this->name}");
         $this->isNewFormat = $this->isNewFormat($contents);
         $this->contents = $contents;
-        $this->component = "a17-block-{$this->name}";
 
         return $this;
     }
@@ -172,7 +186,8 @@ class Block
         $blockName,
         $default = null
     ) {
-        preg_match("/@a17-{$property}\('(.*)'\)/", $block, $matches);
+        $bladeProperty = ucfirst($property);
+        preg_match("/@twillBlock{$bladeProperty}\('(.*)'\)/", $block, $matches);
 
         if (filled($matches)) {
             return $matches[1];
@@ -210,7 +225,7 @@ class Block
      */
     public function isNewFormat($block)
     {
-        preg_match("/@a17-.*\('(.*)'\)/", $block, $matches);
+        preg_match("/@twillBlock.*\('(.*)'\)/", $block, $matches);
 
         return filled($matches);
     }
@@ -243,6 +258,6 @@ class Block
      */
     public function removeSpecialBladeTags($contents)
     {
-        return preg_replace("/@a17-.*\('(.*)'\)/", '', $contents);
+        return preg_replace("/@twillBlock.*\('(.*)'\)/", '', $contents);
     }
 }

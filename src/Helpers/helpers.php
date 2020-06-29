@@ -1,10 +1,10 @@
 <?php
 
+use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use \Illuminate\Support\Str;
-use A17\Twill\Services\Blocks\BlockCollection;
 
 if (!function_exists('dumpUsableSqlQuery')) {
     function dumpUsableSqlQuery($query)
@@ -199,9 +199,30 @@ if (!function_exists('generate_list_of_allowed_blocks')) {
      */
     function generate_list_of_available_blocks($blocks, $groups)
     {
-        return app(BlockCollection::class)->getBlockList()->filter(function ($block) use ($blocks, $groups) {
+        $blockList = app(BlockCollection::class)->getBlockList();
+
+        $hasNonTwillBlock = $blockList->contains(function ($block) {
+            return $block['source'] !== A17\Twill\Services\Blocks\Block::SOURCE_TWILL;
+        });
+
+        return $blockList->filter(function ($block) use ($blocks, $groups, $hasNonTwillBlock) {
+            if ($block['group'] === A17\Twill\Services\Blocks\Block::SOURCE_TWILL) {
+                if (!collect(
+                    config('twill.block_editor.use_twill_blocks')
+                )->contains($block['name'])) {
+                    return false;
+                }
+
+                if ($hasNonTwillBlock) {
+                    if (!collect(config('twill.block_editor.blocks'))->has($block['name'])) {
+                        return false;
+                    }
+                }
+
+            }
+
             return (filled($blocks) ? collect($blocks)->contains($block['name']) : true)
-                    && (filled($groups) ? collect($groups)->contains($block['group']) : true);
+                && (filled($groups) ? collect($groups)->contains($block['group']) : true);
         })->toArray();
     }
 }

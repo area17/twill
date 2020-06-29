@@ -2,8 +2,8 @@
 
 namespace A17\Twill\Services\Blocks;
 
-use Illuminate\Support\Collection;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
 
 class BlockCollection extends Collection
 {
@@ -53,7 +53,7 @@ class BlockCollection extends Collection
             ->filter(function ($block) use ($search, $sources) {
                 return $block->name == $search &&
                     (blank($sources) ||
-                        collect($sources)->contains($block->source));
+                    collect($sources)->contains($block->source));
             })
             ->sortBy(function ($block) {
                 return $block->source === 'app' ? 0 : 1;
@@ -147,9 +147,9 @@ class BlockCollection extends Collection
         if ($block->source === Block::SOURCE_APP) {
             if (
                 $this->collect()
-                    ->where('fileName', $block->getFileName())
-                    ->where('source', Block::SOURCE_TWILL)
-                    ->isNotEmpty()
+                ->where('fileName', $block->getFileName())
+                ->where('source', Block::SOURCE_TWILL)
+                ->isNotEmpty()
             ) {
                 return Block::SOURCE_CUSTOM;
             }

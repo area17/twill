@@ -1,6 +1,6 @@
-@a17-title('Gallery')
-@a17-icon('editor')
-@a17-group('twill')
+@twillBlockTitle('Gallery')
+@twillBlockIcon('editor')
+@twillBlockGroup('twill')
 
 @formField('select', [
     'name' => 'variation',
@@ -15,7 +15,7 @@
 @formField('medias', [
     'name' => 'image',
     'label' => 'Images',
-    'max' => 6,
+    'max' => 20,
     'withVideoUrl' => false,
     'extraMetadatas' => [
         [

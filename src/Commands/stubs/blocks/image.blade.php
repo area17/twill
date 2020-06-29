@@ -1,6 +1,8 @@
-@a17-title('Image')
-@a17-icon('image')
-@a17-group('twill')
+@twillBlockCompiled('true')
+@twillBlockComponent('a17-block-image')
+@twillBlockTitle('Image')
+@twillBlockIcon('image')
+@twillBlockGroup('twill')
 
 @formField('medias', [
     'name' => 'image',  // role

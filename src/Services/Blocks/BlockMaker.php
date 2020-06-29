@@ -2,11 +2,11 @@
 
 namespace A17\Twill\Services\Blocks;
 
-use SplFileInfo;
-use Mockery\Exception;
-use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Str;
+use Mockery\Exception;
+use SplFileInfo;
 
 class BlockMaker
 {
@@ -215,20 +215,32 @@ class BlockMaker
         $title = $this->makeBlockTitle($blockName);
 
         $stub = preg_replace(
-            "/@a17-title\('(.*)'\)/",
-            "@a17-title('{$title}')",
+            "/@twillBlockTitle\('(.*)'\)/",
+            "@twillBlockTitle('{$title}')",
             $stub
         );
 
         $stub = preg_replace(
-            "/@a17-group\('twill'\)/",
-            "@a17-group('app')",
+            "/@twillBlockGroup\('twill'\)/",
+            "@twillBlockGroup('app')",
             $stub
         );
 
         $stub = preg_replace(
-            "/@a17-icon\('(.*)'\)/",
-            "@a17-icon('{$iconName}')",
+            "/@twillBlockIcon\('(.*)'\)/",
+            "@twillBlockIcon('{$iconName}')",
+            $stub
+        );
+
+        $stub = preg_replace(
+            "/@twillBlockCompiled\('(.*)'\)\n/",
+            "",
+            $stub
+        );
+
+        $stub = preg_replace(
+            "/@twillBlockComponent\('(.*)'\)\n/",
+            "",
             $stub
         );
 

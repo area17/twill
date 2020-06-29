@@ -1,11 +1,10 @@
-@a17-title('Footnote')
-@a17-icon('text')
-@a17-group('twill')
+@twillBlockTitle('Footnote')
+@twillBlockIcon('text')
+@twillBlockGroup('twill')
 
 @formField('input', [
     'name' => 'anchor',
     'label' => 'Anchor',
-    'note' => ""
 ])
 
 @formField('wysiwyg', [
@@ -19,5 +18,4 @@
         'link',
         'clean'
     ],
-    'translated' => true
 ])

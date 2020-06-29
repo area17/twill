@@ -1,6 +1,8 @@
-@a17-title('Text')
-@a17-icon('text')
-@a17-group('twill')
+@twillBlockCompiled('true')
+@twillBlockComponent('a17-block-wysiwyg')
+@twillBlockTitle('Body text')
+@twillBlockIcon('text')
+@twillBlockGroup('twill')
 
 @formField('input', [
     'name' => 'title',

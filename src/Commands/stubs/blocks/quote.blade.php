@@ -1,6 +1,6 @@
-@a17-title('Quote')
-@a17-icon('text')
-@a17-group('twill')
+@twillBlockTitle('Quote')
+@twillBlockIcon('text')
+@twillBlockGroup('twill')
 
 @formField('input', [
     'name' => 'quote',
@@ -8,4 +8,9 @@
     'label' => 'Quote text',
     'maxlength' => 250,
     'rows' => 4
+])
+
+@formField('input', [
+    'name' => 'author',
+    'label' => 'Quote author',
 ])

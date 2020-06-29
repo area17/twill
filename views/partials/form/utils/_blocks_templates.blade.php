@@ -1,5 +1,9 @@
 @php
-    $blocks = app(\A17\Twill\Services\Blocks\BlockCollection::class)->collect();
+    $blocks = app(\A17\Twill\Services\Blocks\BlockCollection::class)
+        ->collect()
+        ->reject(function ($block) {
+            return $block->compiled ?? false;
+        });
 
     $names = $blocks->pluck('name')->values()->toJson();
 @endphp
