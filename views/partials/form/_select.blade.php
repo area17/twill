@@ -10,6 +10,7 @@
     $placeholder = $placeholder ?? false;
     $required = $required ?? false;
     $searchable = $searchable ?? false;
+    $disabled = $disabled ?? false;
 
     // do not use for now, but this will allow you to create a new option directly from the form
     $addNew = $addNew ?? false;
@@ -26,6 +27,7 @@
         @if (isset($default)) selected="{{ $default }}" @endif
         @if ($required) :required="true" @endif
         @if ($inModal) :in-modal="true" @endif
+        @if ($disabled) disabled @endif
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
         :has-default-store="true"
         in-store="value"
@@ -48,6 +50,7 @@
         @if (isset($default)) selected="{{ $default }}" @endif
         @if ($required) :required="true" @endif
         @if ($inModal) :in-modal="true" @endif
+        @if ($disabled) disabled @endif
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
         :has-default-store="true"
         size="large"
@@ -73,6 +76,7 @@
             return $option['value'] === $default;
         })) }}" @endif
         @if ($required) :required="true" @endif
+        @if ($disabled) disabled @endif
         @if ($inModal) :in-modal="true" @endif
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
         :has-default-store="true"
