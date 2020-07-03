@@ -8,8 +8,8 @@
     </div>
     <template v-if="requireConfirmation">
       <a17-dialog ref="warningConfirm" modal-title="Confirm" confirm-label="Confirm">
-        <p class="modal--tiny-title"><strong>{{ warningConfirmTitle }}</strong></p>
-        <p>{{ warningConfirmMessage }}</p>
+        <p class="modal--tiny-title"><strong>{{ confirmTitleText }}</strong></p>
+        <p>{{ confirmMessageText }}</p>
       </a17-dialog>
     </template>
   </a17-inputframe>
@@ -17,12 +17,13 @@
 
 <script>
   import randKeyMixin from '@/mixins/randKey'
-  import InputframeMixin from '@/mixins/inputFrame'
   import FormStoreMixin from '@/mixins/formStore'
+  import InputframeMixin from '@/mixins/inputFrame'
+  import ConfirmationMixin from '@/mixins/confirmationMixin'
 
   export default {
     name: 'A17SingleCheckbox',
-    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin],
+    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, ConfirmationMixin],
     props: {
       name: {
         type: String,
@@ -31,18 +32,6 @@
       initialValue: {
         type: Boolean,
         default: true // bold
-      },
-      requireConfirmation: {
-        type: Boolean,
-        default: false
-      },
-      confirmMessageText: {
-        type: String,
-        default: ''
-      },
-      confirmTitleText: {
-        type: String,
-        default: ''
       },
       theme: {
         type: String,
@@ -61,12 +50,6 @@
     computed: {
       uniqId: function () {
         return this.name + '_' + this.randKey
-      },
-      warningConfirmMessage: function () {
-        return this.confirmMessageText || 'Are you sure you want to change this option ?'
-      },
-      warningConfirmTitle: function () {
-        return this.confirmTitleText || 'Confirm selection'
       },
       checkboxClasses: function () {
         return [
