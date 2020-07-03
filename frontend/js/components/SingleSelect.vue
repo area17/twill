@@ -19,6 +19,12 @@
         <slot name="addModal"></slot>
       </a17-modal-add>
     </template>
+    <template v-if="requireConfirmation">
+      <a17-dialog ref="warningConfirm" modal-title="Confirm" confirm-label="Confirm">
+        <p class="modal--tiny-title"><strong>{{ warningConfirmTitle }}</strong></p>
+        <p>{{ warningConfirmMessage }}</p>
+      </a17-dialog>
+    </template>
   </div>
 </template>
 
@@ -33,6 +39,18 @@
     mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin],
     props: {
       name: {
+        type: String,
+        default: ''
+      },
+      requireConfirmation: {
+        type: Boolean,
+        default: false
+      },
+      confirmMessageText: {
+        type: String,
+        default: ''
+      },
+      confirmTitleText: {
         type: String,
         default: ''
       },
@@ -67,6 +85,12 @@
           this.inline ? 'singleselector--inline' : ''
         ]
       },
+      warningConfirmMessage: function () {
+        return this.confirmMessageText || 'Are you sure you want to change this option ?'
+      },
+      warningConfirmTitle: function () {
+        return this.confirmTitleText || 'Confirm selection'
+      },
       selectedValue: {
         get: function () {
           return this.value
@@ -89,7 +113,13 @@
         }
       },
       changeRadio: function (value) {
-        this.selectedValue = value
+        if (this.requireConfirmation) {
+          this.$refs.warningConfirm.open(() => {
+            this.selectedValue = value
+          })
+        } else {
+          this.selectedValue = value
+        }
       },
       uniqId: function (value, index) {
         return this.name + '_' + value + '-' + (this.randKey * (index + 1))

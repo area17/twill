@@ -6,6 +6,12 @@
         <label class="checkbox__label" :for="uniqId" @click.prevent="changeCheckbox">{{ label }} <span class="checkbox__icon"><span v-svg symbol="check"></span></span></label>
       </span>
     </div>
+    <template v-if="requireConfirmation">
+      <a17-dialog ref="warningConfirm" modal-title="Confirm" confirm-label="Confirm">
+        <p class="modal--tiny-title"><strong>{{ warningConfirmTitle }}</strong></p>
+        <p>{{ warningConfirmMessage }}</p>
+      </a17-dialog>
+    </template>
   </a17-inputframe>
 </template>
 
@@ -26,6 +32,18 @@
         type: Boolean,
         default: true // bold
       },
+      requireConfirmation: {
+        type: Boolean,
+        default: false
+      },
+      confirmMessageText: {
+        type: String,
+        default: ''
+      },
+      confirmTitleText: {
+        type: String,
+        default: ''
+      },
       theme: {
         type: String,
         default: '' // bold
@@ -43,6 +61,12 @@
     computed: {
       uniqId: function () {
         return this.name + '_' + this.randKey
+      },
+      warningConfirmMessage: function () {
+        return this.confirmMessageText || 'Are you sure you want to change this option ?'
+      },
+      warningConfirmTitle: function () {
+        return this.confirmTitleText || 'Confirm selection'
       },
       checkboxClasses: function () {
         return [
@@ -68,7 +92,13 @@
         this.checkedValue = newValue
       },
       changeCheckbox: function () {
-        this.checkedValue = !this.checkedValue
+        if (this.requireConfirmation) {
+          this.$refs.warningConfirm.open(() => {
+            this.checkedValue = !this.checkedValue
+          })
+        } else {
+          this.checkedValue = !this.checkedValue
+        }
       }
     }
   }
