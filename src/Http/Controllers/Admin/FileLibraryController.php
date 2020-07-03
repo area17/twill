@@ -39,6 +39,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     protected $defaultFilters = [
         'search' => 'search',
         'tag' => 'tag_id',
+        'unused' => 'unused'
     ];
 
     /**
@@ -143,6 +144,10 @@ class FileLibraryController extends ModuleController implements SignUploadListen
 
         if ($this->request->has('tag')) {
             $requestFilters['tag'] = $this->request->get('tag');
+        }
+
+        if ($this->request->has('unused') && (int) $this->request->unused === 1) {
+            $requestFilters['unused'] = $this->request->get('unused');
         }
 
         return $requestFilters ?? [];
