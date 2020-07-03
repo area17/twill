@@ -32,6 +32,7 @@
             <div slot="hidden-filters">
               <a17-vselect class="medialibrary__filter-item" ref="filter" name="tag" :options="tags"
                            :placeholder="$trans('media-library.filter-select-label', 'Filter by tag')" :searchable="true" maxHeight="175px"/>
+              <a17-checkbox ref="unused" name="unused" :initial-value="0" :value="1" label="Only unused"/>
             </div>
           </a17-filter>
         </div>
@@ -76,6 +77,7 @@
   import a17MediaGrid from './MediaGrid.vue'
   import a17ItemList from '../ItemList.vue'
   import a17Spinner from '@/components/Spinner.vue'
+  import a17Checkbox from '@/components/Checkbox.vue'
 
   import scrollToY from '@/utils/scrollToY.js'
 
@@ -89,7 +91,8 @@
       'a17-uploader': a17Uploader,
       'a17-mediagrid': a17MediaGrid,
       'a17-itemlist': a17ItemList,
-      'a17-spinner': a17Spinner
+      'a17-spinner': a17Spinner,
+      'a17-checkbox': a17Checkbox
     },
     props: {
       modalTitlePrefix: {
@@ -311,12 +314,21 @@
 
         data.type = this.type
 
+        if (Array.isArray(data.unused) && data.unused.length) {
+          data.unused = data.unused[0]
+        }
+
         return data
       },
       clearFilters: function () {
         const self = this
         // reset tags
         if (this.$refs.filter) this.$refs.filter.value = null
+        // reset unused field
+        if (this.$refs.unused) {
+          const input = this.$refs.unused.$el.querySelector('input')
+          input && input.click()
+        }
 
         this.$nextTick(function () {
           self.submitFilter()

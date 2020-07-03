@@ -33,6 +33,12 @@ class Media extends Model
         parent::__construct($attributes);
     }
 
+    public function scopeUnused ($query)
+    {
+        $usedIds = DB::table(config('twill.mediables_table'))->get()->pluck('media_id');
+        return $query->whereNotIn('id', $usedIds->toArray())->get();
+    }
+
     public function getDimensionsAttribute()
     {
         return $this->width . 'x' . $this->height;
