@@ -16,6 +16,9 @@
     $moduleName = $moduleName ?? null;
     $storeUrl = $storeUrl ?? '';
     $inModal = $fieldsInModal ?? false;
+    $confirmMessageText = $confirmMessageText ?? '';
+    $confirmTitleText = $confirmTitleText ?? '';
+    $requireConfirmation = $requireConfirmation ?? false;
 @endphp
 
 <a17-singleselect
@@ -28,7 +31,10 @@
     @if ($required) :required="true" @endif
     @if ($inModal) :in-modal="true" @endif
     @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
+    @if ($confirmMessageText) confirm-message-text="{{ $confirmMessageText }}"  @endif
+    @if ($confirmTitleText) confirm-title-text="{{ $confirmTitleText }}"  @endif
     :has-default-store="true"
+    @if ($requireConfirmation) :require-confirmation="true" @endif
     in-store="value"
 >
     @if($addNew)
