@@ -21,8 +21,8 @@
     </template>
     <template v-if="requireConfirmation">
       <a17-dialog ref="warningConfirm" modal-title="Confirm" confirm-label="Confirm">
-        <p class="modal--tiny-title"><strong>{{ warningConfirmTitle }}</strong></p>
-        <p>{{ warningConfirmMessage }}</p>
+        <p class="modal--tiny-title"><strong>{{ confirmTitleText }}</strong></p>
+        <p>{{ confirmMessageText }}</p>
       </a17-dialog>
     </template>
   </div>
@@ -33,24 +33,13 @@
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
   import AttributesMixin from '@/mixins/addAttributes'
+  import ConfirmationMixin from '@/mixins/confirmationMixin'
 
   export default {
     name: 'A17Singleselect',
-    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin],
+    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin, ConfirmationMixin],
     props: {
       name: {
-        type: String,
-        default: ''
-      },
-      requireConfirmation: {
-        type: Boolean,
-        default: false
-      },
-      confirmMessageText: {
-        type: String,
-        default: ''
-      },
-      confirmTitleText: {
         type: String,
         default: ''
       },
@@ -84,12 +73,6 @@
           this.grid ? 'singleselector--grid' : '',
           this.inline ? 'singleselector--inline' : ''
         ]
-      },
-      warningConfirmMessage: function () {
-        return this.confirmMessageText || 'Are you sure you want to change this option ?'
-      },
-      warningConfirmTitle: function () {
-        return this.confirmTitleText || 'Confirm selection'
       },
       selectedValue: {
         get: function () {
