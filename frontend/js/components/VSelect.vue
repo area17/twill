@@ -12,7 +12,6 @@
             :searchable="searchable"
             :clearSearchOnSelect="clearSearchOnSelect"
             :label="optionsLabel"
-            :on-search="getOptions"
             :taggable="taggable"
             :pushTags="pushTags"
             :transition="transition"
@@ -20,6 +19,7 @@
             :maxHeight="maxHeight"
             :disabled="disabled"
             @input="updateValue"
+            @search="getOptions"
           >
             <span slot="no-options">{{ emptyText }}</span>
           </v-select>

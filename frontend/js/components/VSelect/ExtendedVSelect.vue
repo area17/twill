@@ -1,6 +1,7 @@
 <script>
 // ExtendedVSelect.vue
   import vSelect from 'vue-select'
+  import 'vue-select/dist/vue-select.css'
 
   export default {
     extends: vSelect,
@@ -41,12 +42,6 @@
         return false
       }
     },
-    watch: {
-      search () {
-        this.onSearch(this.search, this.toggleLoading)
-        this.$emit('search', this.search, this.toggleLoading)
-      }
-    },
     methods: {
       /**
        * Toggle the visibility of the dropdown menu.
@@ -82,7 +77,7 @@
       }
     },
     mounted () {
-      if (this.taggable) this.onSearch(this.search, this.toggleLoading)
+      if (this.taggable) this.$emit('search', this.search, this.toggleLoading)
     }
   }
 </script>
