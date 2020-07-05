@@ -6,12 +6,14 @@
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
-         printerClass="NunoMaduro\Collision\Adapters\Phpunit\Printer"
          processIsolation="false"
          stopOnError="false"
          stopOnFailure="false"
          verbose="true"
 >
+  <listeners>
+    <listener class="NunoMaduro\Collision\Adapters\Phpunit\Listener" />
+  </listeners>
   <testsuites>
     <testsuite name="Twill Test Suites">
       <directory suffix="Test.php">./tests</directory>

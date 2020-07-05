@@ -14,9 +14,12 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Contracts\Console\Kernel;
 use A17\Twill\ValidationServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
 
 abstract class TestCase extends OrchestraTestCase
 {
+    use CopyBlocks;
+
     const DATABASE_MEMORY = ':memory:';
     const DEFAULT_PASSWORD = 'secret';
     const DEFAULT_LOCALE = 'en_US';
@@ -95,6 +98,8 @@ abstract class TestCase extends OrchestraTestCase
 
         $this->instantiateFaker();
 
+        $this->copyBlocks();
+
         $this->installTwill();
     }
 
@@ -111,6 +116,7 @@ abstract class TestCase extends OrchestraTestCase
         $app['config']->set('twill.enabled.users-2fa', true);
         $app['config']->set('twill.enabled.users-image', true);
         $app['config']->set('twill.auth_login_redirect_path', '/twill');
+        $app['config']->set('translatable.locales', ['en', 'fr', 'pt-BR']);
     }
 
     /**
@@ -176,7 +182,7 @@ abstract class TestCase extends OrchestraTestCase
         $this->request('/twill/login', 'POST', [
             'email' => $this->superAdmin()->email,
             'password' => $this->superAdmin()->unencrypted_password,
-        ])->assertStatus(200);
+        ]);
 
         return $this->crawler;
     }
@@ -489,12 +495,19 @@ abstract class TestCase extends OrchestraTestCase
     public function copyFiles($files)
     {
         collect($files)->each(function ($destination, $source) {
-            $this->files->copy(
-                $this->makeFileName($source),
-                $this->makeFileName($destination, $source)
-            );
+            collect($destination)->each(function ($destination) use ($source) {
+                $source = $this->makeFileName($source);
 
-            usleep(1000 * 100); // 100ms
+                $destination = $this->makeFileName($destination, $source);
+
+                if (!$this->files->exists($directory = dirname($destination))) {
+                    $this->files->makeDirectory($directory, 0755, true);
+                }
+
+                $this->files->copy($source, $destination);
+
+                usleep(1000 * 100); // 100ms
+            });
         });
     }
 
@@ -515,6 +528,8 @@ abstract class TestCase extends OrchestraTestCase
                 '{$app}',
                 '{$resources}',
                 '{$config}',
+                '{$vendor}',
+                '{$tests}',
             ],
             [
                 stubs(),
@@ -523,11 +538,15 @@ abstract class TestCase extends OrchestraTestCase
                 app_path(),
                 resource_path(),
                 config_path(),
+                base_path('vendor'),
+                __DIR__,
             ],
             $file
         );
 
-        if (filled($source) && !Str::endsWith($file, '.php')) {
+        $extension = pathinfo($file, PATHINFO_EXTENSION);
+
+        if (filled($source) && !Str::endsWith($file, ".{$extension}")) {
             $file = $file . basename($source);
         }
 
@@ -578,5 +597,40 @@ abstract class TestCase extends OrchestraTestCase
         if (!is_null(env('TRAVIS_PHP_VERSION'))) {
             $this->markTestSkipped('This test cannot be execute on Travis');
         }
+    }
+
+    /**
+     * Skip test if running on Travis
+     *
+     * @param int $exitCode
+     * @throws \Exception
+     */
+    public function assertExitCodeIsGood($exitCode)
+    {
+        if ($exitCode !== 0) {
+            throw new \Exception(
+                "Test ended with exit code {$exitCode}. Non-fatal errors possibly happened during tests."
+            );
+        }
+    }
+
+    /**
+     * Skip test if running on Travis
+     *
+     * @param int $exitCode
+     * @throws \Exception
+     */
+    public function assertExitCodeIsNotGood($exitCode)
+    {
+        if ($exitCode === 0) {
+            throw new \Exception(
+                "Test ended with exit code 0, but this wasn't supposed to happen!"
+            );
+        }
+    }
+
+    public function getCommand($commandName)
+    {
+        return $this->app->make(Kernel::class)->all()[$commandName];
     }
 }

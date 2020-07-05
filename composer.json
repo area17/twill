@@ -46,8 +46,9 @@
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^2.16",
     "kalnoy/nestedset": "^5.0",
+    "nunomaduro/collision": "^3.0|^4.2",
     "orchestra/testbench": "~3.3|~3.4|~3.5|~3.6|~3.7|~3.8|^4.0|^5.0",
-    "phpunit/phpunit": "~5.0|~6.0|~7.0|~8.0"
+    "phpunit/phpunit": "~5.0|~6.0|~7.0|~8.0|~9.0"
   },
   "autoload": {
     "psr-4": {
@@ -58,7 +59,7 @@
     }
   },
   "scripts": {
-    "test:phpunit": "vendor/bin/phpunit --colors=always",
+    "test:phpunit": "vendor/bin/phpunit",
     "test:analyse": "php -d memory_limit=-1 vendor/bin/phpstan analyse",
     "test:syntax": "vendor/bin/php-cs-fixer --dry-run --rules=-@PSR1 fix src",
     "test": [

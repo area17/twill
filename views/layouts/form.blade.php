@@ -119,7 +119,7 @@
         previewUrl: '{{ $previewUrl ?? '' }}',
         restoreUrl: '{{ $restoreUrl ?? '' }}',
         blockPreviewUrl: '{{ $blockPreviewUrl ?? '' }}',
-        availableRepeaters: {!! json_encode(config('twill.block_editor.repeaters')) !!},
+        availableRepeaters: {!! $availableRepeaters !!},
         repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!},
         fields: [],
         editor: {{ $editor ? 'true' : 'false' }},

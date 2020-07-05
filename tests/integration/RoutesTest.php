@@ -7,6 +7,7 @@ class RoutesTest extends TestCase
     const ROUTES = [
         'storage/media-library/{path}',
         'twill',
+        'twill/admin/icons/{file}',
         'twill/blocks/preview',
         'twill/categories',
         'twill/categories/browser',
@@ -98,7 +99,14 @@ class RoutesTest extends TestCase
 
     public function testCanListAllRoutes()
     {
-        $this->assertEquals(static::ROUTES, $this->getAllUris()->toArray());
+        $this->assertEquals(
+            collect(static::ROUTES)
+                ->sort()
+                ->toArray(),
+            $this->getAllUris()
+                ->sort()
+                ->toArray()
+        );
     }
 
     /**
