@@ -1,5 +1,5 @@
 <template>
-  <div class="input" :class="textfieldClasses" v-show="isCurrentLocale" :hidden="!isCurrentLocale ?  true : null">
+  <div class="input" :class="textfieldClasses" v-show="isCurrentLocale" :hidden="!isCurrentLocale ? true : null">
     <label class="input__label" :for="labelFor || name" v-if="label">
       {{ label }}<span class="input__required" v-if="required">*</span>
       <span class="input__lang" v-if="hasLocale && languages.length > 1" @click="onClickLocale" data-tooltip-title="Switch language" v-tooltip>{{ displayedLocale }}</span>
@@ -47,6 +47,10 @@
   .input {
     margin-top:35px;
     position: relative;
+  }
+
+  .input:empty {
+    display:none;
   }
 
   .input__add {
