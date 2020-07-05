@@ -345,18 +345,31 @@ class BlockMaker
      * @param $icon
      * @return mixed
      */
-    public function getIconFile($icon)
+    public function getIconFile($icon, $addExtension = true)
     {
-        $icon .= '.svg';
+        if ($addExtension) {
+            $icon .= '.svg';
+        }
 
         return collect(
-            $this->files->files(__DIR__ . '/../../../frontend/icons')
-        )->reduce(function ($keep, SplFileInfo $file) use ($icon) {
+            config('twill.block_editor.directories.source.icons')
+        )->reduce(function ($keep, $path) use ($icon) {
             if ($keep) {
                 return $keep;
             }
 
-            return $file->getFilename() === $icon ? $file->getPathName() : null;
+            if (!$this->files->exists($path)) {
+                return null;
+            }
+
+            return collect($this->files->files($path))->reduce(function ($keep, SplFileInfo $file) use ($icon) {
+                if ($keep) {
+                    return $keep;
+                }
+
+                return $file->getFilename() === $icon ? $file->getPathName() : null;
+            }, null);
+
         }, null);
     }
 

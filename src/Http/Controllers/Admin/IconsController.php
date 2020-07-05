@@ -2,19 +2,20 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Services\Blocks\BlockMaker;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Storage;
 
 class IconsController extends Controller
 {
-    public function __construct(Filesystem $files)
+    public function __construct(Filesystem $files, BlockMaker $blockMaker)
     {
         $this->files = $files;
+        $this->blockMaker = $blockMaker;
     }
 
     public function show($file)
     {
-        $file = __DIR__ . "/../../../../frontend/icons/{$file}";
+        $file = $this->blockMaker->getIconFile($file, false);
 
         if (!$this->files->exists($file)) {
             abort(404);
