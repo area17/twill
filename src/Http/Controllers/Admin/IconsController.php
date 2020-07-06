@@ -4,6 +4,9 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Services\Blocks\BlockMaker;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
+use Str;
+use Symfony\Component\Finder\SplFileInfo;
 
 class IconsController extends Controller
 {
@@ -11,6 +14,36 @@ class IconsController extends Controller
     {
         $this->files = $files;
         $this->blockMaker = $blockMaker;
+    }
+
+    public function index()
+    {
+        $icons = collect(
+            config('twill.block_editor.directories.source.icons')
+        )->reduce(function (Collection $keep, $path) {
+            if (!$this->files->exists($path)) {
+                return $keep;
+            }
+
+            $files = collect($this->files->files($path))->map(function (
+                SplFileInfo $file
+            ) {
+                if (in_array($file->getFilename(), config('twill.internal_icons'))) {
+                    return null;
+                }
+
+                return [
+                    'name' => Str::before($file->getFilename(), '.svg'),
+                    'url' => route('admin.icons.show', [
+                        'file' => $file->getFilename(),
+                    ]),
+                ];
+            })->filter();
+
+            return $keep->merge($files);
+        }, collect());
+
+        return view('twill::blocks.icons', compact('icons'));
     }
 
     public function show($file)
@@ -23,6 +56,7 @@ class IconsController extends Controller
 
         return response()->stream(function () use ($file) {
             echo $this->files->get($file);
-        });
+        }, 200, ["Content-Type" => "image/svg+xml"]);
+
     }
 }
