@@ -156,4 +156,5 @@ return [
         'update-new' => 'Actualizar y creatr nuevo',
         'cancel' => 'Cancelar',
     ],
+
 ];

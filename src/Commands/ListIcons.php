@@ -2,10 +2,10 @@
 
 namespace A17\Twill\Commands;
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Config\Repository as Config;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Symfony\Component\Finder\SplFileInfo;
 
 class ListIcons extends Command
@@ -55,6 +55,10 @@ class ListIcons extends Command
             );
         }
 
+        if (in_array($icon['name'] . '.svg', config('twill.internal_icons'))) {
+            return false;
+        }
+
         return true;
     }
 
@@ -97,6 +101,7 @@ class ListIcons extends Command
         });
 
         $this->table(['Icon', 'Preview URL'], $icons->toArray());
+        $this->info("All icons viewable at: " . route('admin.icons.index'));
 
         return parent::handle();
     }

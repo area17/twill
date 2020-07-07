@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories;
 
+use A17\Twill\Models\Model;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
 use A17\Twill\Repositories\Behaviors\HandleDates;
@@ -844,7 +845,11 @@ abstract class ModuleRepository
     protected function getModelRepository($relation, $model = null)
     {
         if (!$model) {
-            $model = ucfirst(Str::singular($relation));
+            if (class_exists($relation) && (new $relation) instanceof Model) {
+                $model = Str::afterLast($relation, '\\');
+            } else {
+                $model = ucfirst(Str::singular($relation));
+            }
         }
 
         return App::make(Config::get('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");

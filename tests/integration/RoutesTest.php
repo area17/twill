@@ -7,6 +7,7 @@ class RoutesTest extends TestCase
     const ROUTES = [
         'storage/media-library/{path}',
         'twill',
+        'twill/admin/icons',
         'twill/admin/icons/{file}',
         'twill/blocks/preview',
         'twill/categories',

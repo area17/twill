@@ -17,7 +17,7 @@
           <li class="media__name" @click="openMediaLibrary(1, mediaKey, index)"><strong :title="media.name">{{
             media.name }}</strong></li>
           <li class="f--small" v-if="media.size">File size: {{ media.size | uppercase }}</li>
-          <li class="f--small" v-if="media.width + media.height">Original: {{ media.width }}&nbsp;&times;&nbsp;{{
+          <li class="f--small" v-if="media.width + media.height">{{ $trans('fields.medias.original-dimensions') }}: {{ media.width }}&nbsp;&times;&nbsp;{{
             media.height }}
           </li>
           <li class="f--small media__crop-link" v-if="cropInfos" @click="openCropMedia">
@@ -44,10 +44,10 @@
             <a17-button size="icon" variant="icon" @click="$refs.dropDown.toggle()">
               <span v-svg symbol="more-dots"></span></a17-button>
             <div slot="dropdown__content">
-              <a :href="media.original" download><span v-svg symbol="download"></span> Download</a>
-              <button type="button" @click="openCropMedia" v-if="activeCrop"><span v-svg symbol="crop"></span> Crop
+              <a :href="media.original" download><span v-svg symbol="download"></span>{{ $trans('fields.medias.download') }}</a>
+              <button type="button" @click="openCropMedia" v-if="activeCrop"><span v-svg symbol="crop"></span>{{ $trans('fields.medias.crop') }}
               </button>
-              <button type="button" @click="deleteMediaClick"><span v-svg symbol="trash"></span> Delete</button>
+              <button type="button" @click="deleteMediaClick"><span v-svg symbol="trash"></span>{{ $trans('fields.medias.delete') }}</button>
             </div>
           </a17-dropdown>
         </div>
@@ -79,12 +79,12 @@
     </div>
 
     <!-- Crop modal -->
-    <a17-modal class="modal--cropper" :ref="cropModalName" :forceClose="true" title="Edit image crop" mode="medium" v-if="hasMedia && activeCrop">
+    <a17-modal class="modal--cropper" :ref="cropModalName" :forceClose="true" :title="$trans('fields.medias.crop-edit')" mode="medium" v-if="hasMedia && activeCrop">
       <a17-cropper :media="media" v-on:crop-end="cropMedia" :aspectRatio="16 / 9" :context="cropContext" :key="cropperKey">
-        <a17-button class="cropper__button" variant="action" @click="$refs[cropModalName].close()">Update</a17-button>
+        <a17-button class="cropper__button" variant="action" @click="$refs[cropModalName].close()">{{ $trans('fields.medias.crop-save') }}</a17-button>
       </a17-cropper>
     </a17-modal>
-    <input :name="'medias[' + name + '][' + index + ']'" type="hidden" :value="JSON.stringify(media)" />
+    <input :name="inputName" type="hidden" :value="JSON.stringify(media)" />
   </div>
 </template>
 
@@ -180,9 +180,9 @@
         },
         hasMediaChanged: false,
         metadatas: {
-          text: 'Edit info',
-          textOpen: 'Edit info',
-          textClose: 'Close info',
+          text: this.$trans('fields.medias.edit-info'),
+          textOpen: this.$trans('fields.medias.edit-info'),
+          textClose: this.$trans('fields.medias.edit-close'),
           active: false
         }
       }
@@ -211,6 +211,13 @@
       mediaKey: function () {
         return this.mediaContext.length > 0 ? this.mediaContext : this.name
       },
+      inputName: function () {
+        let fieldName = this.name
+        if (this.name.indexOf('[')) {
+          fieldName = this.name.replace(']', '').replace('[', '][')
+        }
+        return 'medias[' + fieldName + '][' + this.index + ']'
+      },
       metadataName: function () {
         return 'mediaMeta[' + this.name + '][' + this.media.id + ']'
       },
@@ -227,7 +234,7 @@
           for (const variant in this.media.crops) {
             if (this.media.crops[variant].width + this.media.crops[variant].height) { // crop is not 0x0
               let cropInfo = ''
-              cropInfo += this.media.crops[variant].name + ' crop: '
+              cropInfo += this.media.crops[variant].name + ' ' + this.$trans('fields.medias.crop-list') + ': '
               cropInfo += this.media.crops[variant].width + '&nbsp;&times;&nbsp;' + this.media.crops[variant].height
               cropInfos.push(cropInfo)
             }
