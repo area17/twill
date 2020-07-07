@@ -29,12 +29,12 @@ export function getCurrentLocale () {
   return window[process.env.VUE_APP_NAME].twillLocalization.locale
 }
 
-export function isCurrentLocale24HrFormatted() {
+export function isCurrentLocale24HrFormatted () {
   return new Intl.DateTimeFormat(getCurrentLocale(), {
     hour: 'numeric'
   }).formatToParts(
     new Date(2020, 0, 1, 13)
-  ).find(part => part.type === 'hour').value.length === 2;
+  ).find(part => part.type === 'hour').value.length === 2
 }
 
 export function getTimeFormatForCurrentLocale () {
