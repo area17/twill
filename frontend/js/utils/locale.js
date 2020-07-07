@@ -2,6 +2,9 @@ import { Mandarin } from 'flatpickr/dist/l10n/zh.js'
 import { Russian } from 'flatpickr/dist/l10n/ru.js'
 import { French } from 'flatpickr/dist/l10n/fr.js'
 import { Polish } from 'flatpickr/dist/l10n/pl.js'
+import { German } from 'flatpickr/dist/l10n/de.js'
+import { Dutch } from 'flatpickr/dist/l10n/nl.js'
+import { Portuguese } from 'flatpickr/dist/l10n/pt.js'
 
 export const locales = {
   en: {
@@ -22,6 +25,18 @@ export const locales = {
   pl: {
     'date-fns': require('date-fns/locale/pl'),
     flatpickr: Polish
+  },
+  de: {
+    'date-fns': require('date-fns/locale/de'),
+    flatpickr: German
+  },
+  nl: {
+    'date-fns': require('date-fns/locale/nl'),
+    flatpickr: Dutch
+  },
+  pt: {
+    'date-fns': require('date-fns/locale/pt'),
+    flatpickr: Portuguese
   }
 }
 

@@ -174,4 +174,14 @@ return [
      */
     'locale' => 'en',
     'fallback_locale' => 'en',
+    'available_user_locales' => [
+        'en',
+        'fr',
+        'pl',
+        'de',
+        'nl',
+        'pt',
+        'zh-Hans',
+        'ru',
+    ],
 ];

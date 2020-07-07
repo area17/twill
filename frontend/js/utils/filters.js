@@ -3,8 +3,10 @@ import dateFormat from 'date-fns/format'
 import { locales, getCurrentLocale, getTimeFormatForCurrentLocale } from '@/utils/locale'
 
 function dateFormatLocale (date, format) {
+  const locale = locales[getCurrentLocale()]
+
   return dateFormat(date, format, {
-    locale: locales[getCurrentLocale()]['date-fns']
+    locale: locale !== undefined && locale.hasOwnProperty('date-fns') ? locale['date-fns'] : require('date-fns/locale/en')
   })
 }
 

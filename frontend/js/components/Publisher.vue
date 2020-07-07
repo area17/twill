@@ -25,6 +25,8 @@
 
   import { PUBLICATION } from '@/store/mutations'
 
+  import { getTimeFormatForCurrentLocale, isCurrentLocale24HrFormatted } from '@/utils/locale'
+
   import a17Switcher from '@/components/Switcher.vue'
   import a17RadioAccordion from '@/components/RadioAccordion.vue'
   import a17ReviewAccordion from '@/components/ReviewAccordion.vue'
@@ -59,11 +61,11 @@
       },
       dateDisplayFormat: {
         type: String,
-        default: 'MMM, DD, YYYY, hh:mm A'
+        default: 'MMM, DD, YYYY, ' + getTimeFormatForCurrentLocale()
       },
       date_24h: {
         type: Boolean,
-        default: false
+        default: isCurrentLocale24HrFormatted()
       }
     },
     data: function () {

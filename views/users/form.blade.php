@@ -55,7 +55,7 @@
                 'value' => $locale,
                 'label' => getLanguageLabelFromLocaleCode($locale, true)
             ];
-        }, ['en', 'zh-Hans', 'ru', 'fr', 'pl'])
+        }, config('twill.available_user_locales', ['en']))
     ])
 
     @if($with2faSettings ?? false)

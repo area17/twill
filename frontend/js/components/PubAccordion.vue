@@ -12,7 +12,7 @@
     <div class="accordion__fields">
       <a17-datepicker
         name="publish_date"
-        place-holder="$trans('publisher.start-date')"
+        :place-holder="$trans('publisher.start-date')"
         :time_24hr="date_24h"
         :altFormat="dateFormat"
         :initialValue="startDate"
@@ -26,7 +26,7 @@
         :clear="true"
       ></a17-datepicker>
       <a17-datepicker name="end_date"
-        place-holder="$trans('publisher.end-date')"
+        :place-holder="$trans('publisher.end-date')"
         :time_24hr="date_24h"
         :altFormat="dateFormat"
         :initialValue="endDate"
@@ -47,6 +47,7 @@
   import { mapState } from 'vuex'
   import { PUBLICATION } from '@/store/mutations'
   import a17VueFilters from '@/utils/filters.js'
+  import { getTimeFormatForCurrentLocale, isCurrentLocale24HrFormatted } from '@/utils/locale'
 
   import a17Accordion from './Accordion.vue'
   import VisibilityMixin from '@/mixins/toggleVisibility'
@@ -70,7 +71,7 @@
       },
       dateDisplayFormat: {
         type: String,
-        default: 'MMM, DD, YYYY, hh:mm A'
+        default: 'MMM, DD, YYYY, ' + getTimeFormatForCurrentLocale()
       },
       dateFormat: {
         type: String,
@@ -78,7 +79,7 @@
       },
       date_24h: {
         type: Boolean,
-        default: false
+        default: isCurrentLocale24HrFormatted()
       }
     },
     filters: a17VueFilters,

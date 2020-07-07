@@ -153,10 +153,10 @@
           }
         }
 
-        const locale = locales[getCurrentLocale()].flatpickr
+        const locale = locales[getCurrentLocale()]
 
-        if (locale != null) {
-          config.locale = locale
+        if (locale !== undefined && locale.hasOwnProperty('flatpickr')) {
+          config.locale = locale.flatpickr
         }
 
         return config
