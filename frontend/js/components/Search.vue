@@ -65,7 +65,9 @@
       },
       placeholder: {
         type: String,
-        default: 'Search everything…'
+        default () {
+          return this.$trans('filter.search-placeholder', 'Search everything...')
+        }
       },
       endpoint: {
         type: String,
