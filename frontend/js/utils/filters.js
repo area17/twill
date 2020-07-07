@@ -46,7 +46,7 @@ const filters = {
   },
   formatDateWithFormat: function (value, format) {
     if (!value) value = new Date()
-    return dateFormat(value, format)
+    return dateFormatLocale(value, format)
   },
   formatDatatableDate: function (value) {
     const datepickerFormat = 'MMM DD, YYYY'
