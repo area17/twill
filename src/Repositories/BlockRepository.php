@@ -101,7 +101,11 @@ class BlockRepository extends ModuleRepository
      */
     public function buildFromCmsArray($block, $repeater = false)
     {
-        $blocksList = app(BlockCollection::class)->getBlockList();
+        if ($repeater) {
+            $blocksList = app(BlockCollection::class)->getRepeaterList();
+        } else {
+            $blocksList = app(BlockCollection::class)->getBlockList();
+        }
 
         $block['type'] = $blocksList->keyBy('name')->search(function ($blockConfig) use ($block) {
             return $blockConfig['component'] === $block['type'];
