@@ -170,7 +170,7 @@ trait HandleBlocks
 
         if ($object->has('blocks')) {
 
-            $blocksList = app(BlockCollection::class)->getBlockList()->keyBy('name');
+            $blocksList = app(BlockCollection::class)->list()->keyBy('name');
 
             foreach ($object->blocks as $block) {
 
