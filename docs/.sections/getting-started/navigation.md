@@ -24,6 +24,12 @@ return [
             'projects' => [
                 'title' => 'Projects',
                 'module' => true,
+                'secondary_navigation' => [
+                    'projectCustomers' => [
+                        'title' => 'Customers',
+                        'module' => true
+                    ],
+                ]
             ],
             'clients' => [
                 'title' => 'Clients',
@@ -50,6 +56,9 @@ To make it work properly and to get active states automatically in Twill's UI, y
 Route::module('pages');
 
 Route::group(['prefix' => 'work'], function () {
+    Route::group(['prefix' => 'projects'], function () {
+        Route::module('projectCustomers');
+    });
     Route::module('projects');
     Route::module('clients');
     Route::module('industries');
