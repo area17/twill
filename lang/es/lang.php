@@ -1,31 +1,60 @@
 <?php
-/*
-|--------------------------------------------------------------------------
-| 5 Steps to Contribute a New Twill Localization at Ease
-|--------------------------------------------------------------------------
-| 1. Find the "lang.csv" under "lang" directory.
-| 2. Import the csv file into a blank Google Sheet.
-| 3. Each column is a language, enter the translation for a column. (tips: feel free to freeze rows and columns).
-| 4. Download the Google Sheet as CSV, replace the original "lang/lang.csv" with the new one.
-| 5. Run the command "php artisan twill:lang" to sync all lang files.
- */
+    /*
+    |--------------------------------------------------------------------------
+    | 5 Steps to Contribute a New Twill Localization at Ease
+    |--------------------------------------------------------------------------
+    | 1. Find the "lang.csv" under "lang" directory.
+    | 2. Import the csv file into a blank Google Sheet.
+    | 3. Each column is a language, enter the translation for a column. (tips: feel free to freeze rows and columns).
+    | 4. Download the Google Sheet as CSV, replace the original "lang/lang.csv" with the new one.
+    | 5. Run the command "php artisan twill:lang" to sync all lang files.
+    */
+
 
 return [
     'auth' => [
         'email' => 'Email',
-        'password' => 'Contraseña',
         'forgot-password' => 'Recuperar contraseña',
         'login' => 'Iniciar sesión',
         'login-title' => 'Iniciar sesión',
+        'password' => 'Contraseña',
     ],
     'dashboard' => [
-        'search-placeholder' => 'Buscar...',
-        'empty-message' => 'Todavía no hay registro de actividades.',
         'all-activity' => 'Todas las actividades',
-        'my-activity' => 'Mi actividad',
         'create-new' => 'Crear nuevo',
+        'empty-message' => 'Todavía no hay registro de actividades.',
+        'my-activity' => 'Mi actividad',
         'my-drafts' => 'Mis borradores',
+        'search-placeholder' => 'Buscar...',
         'statitics' => 'Estadísticas',
+    ],
+    'fields' => [
+        'block-editor' => [
+            'add-content' => 'Agregar contenido',
+            'collapse-all' => 'Colapsar todo',
+            'create-another' => 'Crear otro',
+            'delete' => 'Borrar',
+            'expand-all' => 'Expandir todo',
+            'loading' => 'Cargando',
+            'open-in-editor' => 'Abrir en el editor',
+            'preview' => 'Previsualizar',
+        ],
+        'browser' => [
+            'add-label' => 'Agregar',
+            'attach' => 'Adjuntar',
+        ],
+        'files' => [
+            'add-label' => 'Agregar',
+        ],
+        'medias' => [
+            'btn-label' => 'Adjuntar imagen',
+        ],
+    ],
+    'filter' => [
+        'apply-btn' => 'Aplicar',
+        'clear-btn' => 'Limpiar',
+        'search-placeholder' => 'Buscar',
+        'toggle-label' => 'Filtrar',
     ],
     'footer' => [
         'version' => 'Versión',
@@ -35,71 +64,78 @@ return [
         'editor' => 'Editor',
     ],
     'listing' => [
+        'add-new-button' => 'Agregar nuevo',
+        'dropdown' => [
+            'delete' => 'Borrar',
+            'destroy' => 'Destruir',
+            'duplicate' => 'Duplicar',
+            'edit' => 'Editar',
+            'feature' => 'Destacar',
+            'publish' => 'Publicar',
+            'restore' => 'Restaurar',
+            'unfeature' => 'Unfeature',
+            'unpublish' => 'Despublicar',
+        ],
         'filter' => [
             'all-items' => 'Todos',
+            'draft' => 'Borradores',
             'mine' => 'Mios',
             'published' => 'Publicados',
-            'draft' => 'Borradores',
             'trash' => 'Borrados',
         ],
-        'dropdown' => [
-            'edit' => 'Editar',
-            'unpublish' => 'Despublicar',
-            'publish' => 'Publicar',
-            'unfeature' => 'Unfeature',
-            'feature' => 'Destacar',
-            'restore' => 'Restaurar',
-            'destroy' => 'Destruir',
-            'delete' => 'Borrar',
-            'duplicate' => 'Duplicar',
-        ],
-        'add-new-button' => 'Agregar nuevo',
-        'listing-empty-message' => 'No hay registros para mostrar.',
         'languages' => 'Idiomas',
+        'listing-empty-message' => 'No hay registros para mostrar.',
     ],
     'main' => [
-        'published' => 'Live',
-        'draft' => 'Borrador',
         'create' => 'Crear',
-        'update' => 'Actualizar',
+        'draft' => 'Borrador',
+        'published' => 'Live',
         'title' => 'Título',
+        'update' => 'Actualizar',
+    ],
+    'media-library' => [
+        'files' => 'Archivos',
+        'filter-select-label' => 'Filtrar por etiqueta',
+        'images' => 'Imágenes',
+        'sidebar' => [
+            'clear' => 'Limpiar',
+            'dimensions' => 'Dimensiones',
+            'empty-text' => 'Ningún archivo seleccionado',
+            'files-selected' => 'archivos seleccionados',
+        ],
+        'title' => 'Biblioteca Multimedia',
     ],
     'modal' => [
-        'title-field' => 'Título',
-        'permalink-field' => 'Permalink',
         'create' => [
-            'title' => 'Agregar nuevo',
             'button' => 'Crear',
             'create-another' => 'Crear y agregar otro',
+            'title' => 'Agregar nuevo',
         ],
+        'permalink-field' => 'Permalink',
+        'title-field' => 'Título',
         'update' => [
             'title' => 'Actualizar',
         ],
     ],
     'nav' => [
-        'media-library' => 'Biblioteca Multimedia',
-        'cms-users' => 'Usuarios',
-        'settings' => 'Configuracion',
-        'logout' => 'Logout',
         'admin' => 'Admin',
+        'cms-users' => 'Usuarios',
+        'logout' => 'Logout',
+        'media-library' => 'Biblioteca Multimedia',
+        'settings' => 'Configuracion',
     ],
-    'media-library' => [
-        'title' => 'Biblioteca Multimedia',
-        'images' => 'Imágenes',
-        'files' => 'Archivos',
-        'filter-select-label' => 'Filtrar por etiqueta',
-        'sidebar' => [
-            'empty-text' => 'Ningún archivo seleccionado',
-            'files-selected' => 'archivos seleccionados',
-            'clear' => 'Limpiar',
-            'dimensions' => 'Dimensiones',
-        ],
-    ],
-    'filter' => [
-        'search-placeholder' => 'Buscar',
-        'toggle-label' => 'Filtrar',
-        'apply-btn' => 'Aplicar',
-        'clear-btn' => 'Limpiar',
+    'publisher' => [
+        'cancel' => 'Cancelar',
+        'publish' => 'Publicar',
+        'publish-close' => 'Publicar y cerrar',
+        'publish-new' => 'Publicar y crear nuevo',
+        'save' => 'Guardar como borrador',
+        'save-close' => 'Guardar como borrador y cerrar',
+        'save-new' => 'Guardar como borrador y crear nuevo',
+        'switcher-title' => 'Estado',
+        'update' => 'Actualizar',
+        'update-close' => 'Actualizar y cerrar',
+        'update-new' => 'Actualizar y creatr nuevo',
     ],
     'select' => [
         'empty-text' => 'No hay coincidencias.',
@@ -108,62 +144,27 @@ return [
         'dropzone-text' => 'o arrastre los archivos aquí.',
         'upload-btn-label' => 'Agregar nuevo',
     ],
-    'fields' => [
-        'medias' => [
-            'btn-label' => 'Adjuntar imagen',
-        ],
-        'block-editor' => [
-            'collapse-all' => 'Colapsar todo',
-            'expend-all' => 'Expandir todo',
-            'open-in-editor' => 'Abrir en el editor',
-            'create-another' => 'Crear otro',
-            'delete' => 'Borrar',
-            'add-content' => 'Agregar contenido',
-            'preview' => 'Previsualizar',
-            'loading' => 'Cargando',
-        ],
-        'browser' => [
-            'attach' => 'Adjuntar',
-            'add-label' => 'Agregar',
-        ],
-        'files' => [
-            'add-label' => 'Agregar',
-        ],
-    ],
     'user-management' => [
-        'users' => 'Usuarios',
         'active' => 'Activar',
-        'disabled' => 'Deshabilitar',
-        'enabled' => 'Habilitar',
-        'trash' => 'Borrados',
-        'user-image' => 'Imagen',
-        'name' => 'Nombre',
-        'email' => 'Email',
-        'role' => 'Rol',
+        'cancel' => 'Cancelar',
         'content-fieldset-label' => 'Configuración de Usuario',
+        'disabled' => 'Deshabilitar',
         'edit-modal-title' => 'Editar nombre de usuario',
-        'update-disabled-user' => 'Actualizar usuario deshabilitado',
-        'update-disabled-and-close' => 'Actualizar usuario deshabilitado y cerrar',
-        'update-disabled-user-and-create-new' => 'Actualizar usuario deshabilitado y crear nuevo',
+        'email' => 'Email',
         'enable-user' => 'Habilitar usuario',
         'enable-user-and-close' => 'Habilitar usuario y cerrar',
         'enable-user-and-create-new' => 'Habilitar usuario y crear nuevo',
+        'enabled' => 'Habilitar',
+        'name' => 'Nombre',
+        'role' => 'Rol',
+        'trash' => 'Borrados',
         'update' => 'Actualizar',
         'update-and-close' => 'Actualizar y cerrar',
         'update-and-create-new' => 'Actualizar t crear nuevo',
-        'cancel' => 'Cancelar',
-    ],
-    'publisher' => [
-        'switcher-title' => 'Estado',
-        'save' => 'Guardar como borrador',
-        'save-close' => 'Guardar como borrador y cerrar',
-        'save-new' => 'Guardar como borrador y crear nuevo',
-        'publish' => 'Publicar',
-        'publish-close' => 'Publicar y cerrar',
-        'publish-new' => 'Publicar y crear nuevo',
-        'update' => 'Actualizar',
-        'update-close' => 'Actualizar y cerrar',
-        'update-new' => 'Actualizar y creatr nuevo',
-        'cancel' => 'Cancelar',
+        'update-disabled-and-close' => 'Actualizar usuario deshabilitado y cerrar',
+        'update-disabled-user' => 'Actualizar usuario deshabilitado',
+        'update-disabled-user-and-create-new' => 'Actualizar usuario deshabilitado y crear nuevo',
+        'user-image' => 'Imagen',
+        'users' => 'Usuarios',
     ],
 ];
