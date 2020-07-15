@@ -1,14 +1,15 @@
 <?php
-/*
-|--------------------------------------------------------------------------
-| 5 Steps to Contribute a New Twill Localization at Ease
-|--------------------------------------------------------------------------
-| 1. Find the "lang.csv" under "lang" directory.
-| 2. Import the csv file into a blank Google Sheet.
-| 3. Each column is a language, enter the translation for a column. (tips: feel free to freeze rows and columns).
-| 4. Download the Google Sheet as CSV, replace the original "lang/lang.csv" with the new one.
-| 5. Run the command "php artisan twill:lang" to sync all lang files.
- */
+    /*
+    |--------------------------------------------------------------------------
+    | 5 Steps to Contribute a New Twill Localization at Ease
+    |--------------------------------------------------------------------------
+    | 1. Find the "lang.csv" under "lang" directory.
+    | 2. Import the csv file into a blank Google Sheet.
+    | 3. Each column is a language, enter the translation for a column. (tips: feel free to freeze rows and columns).
+    | 4. Download the Google Sheet as CSV, replace the original "lang/lang.csv" with the new one.
+    | 5. Run the command "php artisan twill:lang" to sync all lang files.
+    */
+
 
 return [
     'auth' => [
@@ -190,11 +191,11 @@ return [
             'caption' => 'Légende',
             'clear' => 'Annuler',
             'dimensions' => 'Dimensions',
-            'empty-text' => 'Aucun fichier sélectionnés',
+            'empty-text' => 'Aucun fichier sélectionné',
             'files-selected' => 'fichiers sélectionnés',
             'tags' => 'Tags',
         ],
-        'title' => 'Médiathèque',
+        'title' => 'Galerie de médias',
         'update' => 'Mettre a jour',
     ],
     'modal' => [
@@ -214,8 +215,9 @@ return [
         'admin' => 'Admin',
         'cms-users' => 'Utilisateurs du CMS',
         'logout' => 'Déconnexion',
-        'media-library' => 'Médiathèque',
+        'media-library' => 'Galerie de médias',
         'settings' => 'Paramètres',
+        'close-menu' => 'Fermer le menu',
     ],
     'notifications' => [
         'reset' => [
@@ -247,11 +249,10 @@ return [
         'cancel' => 'Annuler',
         'current' => 'Active',
         'end-date' => 'Date de fin',
-        'immediate' => 'Immédiatement',
+        'immediate' => 'Maintenant',
         'languages' => 'Languages',
         'languages-published' => 'Publie',
         'last-edit' => 'Edité le',
-        'parent-page' => 'Page parente',
         'preview' => 'Prévisualiser les changements',
         'publish' => 'Publier',
         'publish-close' => 'Publier et fermer',
@@ -265,17 +266,18 @@ return [
         'restore-live-new' => 'Restaurer avec le statut publié et créer un nouveau',
         'restore-message' => 'Vous modifiez actuellement une ancienne révision de ce contenu (enregistrée par :user le :date). Apportez les modifications nécessaires et cliquez sur restaurer pour enregistrer une nouvelle révision.',
         'restore-success' => 'Révision restaurée.',
-        'review-status' => 'Etat',
         'revisions' => 'Révisions',
         'save' => 'Enregistrer comme brouillon',
         'save-close' => 'Enregistrer comme brouillon et fermer',
         'save-new' => 'Enregistrer comme brouillon et créer un nouveau',
         'save-success' => 'Contenu sauvegardé. Tout va bien!',
         'start-date' => 'Date de début',
-        'switcher-title' => 'Status',
+        'switcher-title' => 'Statut',
         'update' => 'Mettre à jour',
         'update-close' => 'Mettre à jour et fermer',
         'update-new' => 'Mettre à jour et créer un nouveau',
+        'parent-page' => 'Page parente',
+        'review-status' => 'Statut de révision',
         'visibility' => 'Visibilité',
     ],
     'select' => [
@@ -291,7 +293,7 @@ return [
         '2fa-disable' => 'Entrez votre mot de passe unique pour désactiver l\'authentification à 2 facteurs',
         'active' => 'Actif',
         'cancel' => 'Annuler',
-        'content-fieldset-label' => 'Paramètre utilisateur',
+        'content-fieldset-label' => 'Paramètres utilisateur',
         'description' => 'Description',
         'disabled' => 'Désactivé',
         'edit-modal-title' => 'Éditer le nom d’utilisateur',

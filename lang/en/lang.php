@@ -1,14 +1,15 @@
 <?php
-/*
-|--------------------------------------------------------------------------
-| 5 Steps to Contribute a New Twill Localization at Ease
-|--------------------------------------------------------------------------
-| 1. Find the "lang.csv" under "lang" directory.
-| 2. Import the csv file into a blank Google Sheet.
-| 3. Each column is a language, enter the translation for a column. (tips: feel free to freeze rows and columns).
-| 4. Download the Google Sheet as CSV, replace the original "lang/lang.csv" with the new one.
-| 5. Run the command "php artisan twill:lang" to sync all lang files.
- */
+    /*
+    |--------------------------------------------------------------------------
+    | 5 Steps to Contribute a New Twill Localization at Ease
+    |--------------------------------------------------------------------------
+    | 1. Find the "lang.csv" under "lang" directory.
+    | 2. Import the csv file into a blank Google Sheet.
+    | 3. Each column is a language, enter the translation for a column. (tips: feel free to freeze rows and columns).
+    | 4. Download the Google Sheet as CSV, replace the original "lang/lang.csv" with the new one.
+    | 5. Run the command "php artisan twill:lang" to sync all lang files.
+    */
+
 
 return [
     'auth' => [
@@ -216,6 +217,7 @@ return [
         'logout' => 'Logout',
         'media-library' => 'Media Library',
         'settings' => 'Settings',
+        'close-menu' => 'Close menu',
     ],
     'notifications' => [
         'reset' => [
@@ -251,7 +253,6 @@ return [
         'languages' => 'Languages',
         'languages-published' => 'Live',
         'last-edit' => 'Last edited',
-        'parent-page' => 'Parent page',
         'preview' => 'Preview changes',
         'publish' => 'Publish',
         'publish-close' => 'Publish and close',
@@ -265,7 +266,6 @@ return [
         'restore-live-new' => 'Restore as published and create new',
         'restore-message' => 'You are currently editing an older revision of this content (saved by :user on :date). Make changes if needed and click restore to save a new revision.',
         'restore-success' => 'Revision restored.',
-        'review-status' => 'Review status',
         'revisions' => 'Revisions',
         'save' => 'Save as draft',
         'save-close' => 'Save as draft and close',
@@ -276,6 +276,8 @@ return [
         'update' => 'Update',
         'update-close' => 'Update and close',
         'update-new' => 'Update and create new',
+        'parent-page' => 'Parent page',
+        'review-status' => 'Review status',
         'visibility' => 'Visibility',
     ],
     'select' => [
