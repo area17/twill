@@ -15,6 +15,11 @@ const state = {
    */
   crops: window[process.env.VUE_APP_NAME].STORE.medias.crops || {},
   /**
+   * Display the file name of images
+   * @type {Object}
+   */
+  showFileName: window[process.env.VUE_APP_NAME].STORE.medias.showFileName || false,
+  /**
    * Define types available in medias library
    * @type {Array.<string>}
    */
@@ -34,6 +39,21 @@ const state = {
    * @type {number}
    */
   max: 0,
+  /**
+   * Define the maximum filesize allowed to attach in a field from the media library
+   * @type {number}
+   */
+  filesizeMax: 0,
+  /**
+   * Define the min image width allowed to attach in a field from the media library
+   * @type {number}
+   */
+  widthMin: 0,
+  /**
+   * Define the min image height allowed to attach in a field from the media library
+   * @type {number}
+   */
+  heightMin: 0,
   /**
    * Restrict the media library navigation between type
    * @type {Boolean}
@@ -172,6 +192,15 @@ const mutations = {
   },
   [MEDIA_LIBRARY.UPDATE_MEDIA_MAX] (state, newValue) {
     state.max = Math.max(0, newValue)
+  },
+  [MEDIA_LIBRARY.UPDATE_MEDIA_FILESIZE_MAX] (state, newValue) {
+    state.filesizeMax = Math.max(0, newValue)
+  },
+  [MEDIA_LIBRARY.UPDATE_MEDIA_WIDTH_MIN] (state, newValue) {
+    state.widthMin = Math.max(0, newValue)
+  },
+  [MEDIA_LIBRARY.UPDATE_MEDIA_HEIGHT_MIN] (state, newValue) {
+    state.heightMin = Math.max(0, newValue)
   },
   [MEDIA_LIBRARY.SET_MEDIA_METADATAS] (state, metadatas) {
     const connector = metadatas.media.context

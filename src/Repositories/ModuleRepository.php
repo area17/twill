@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories;
 
+use A17\Twill\Models\Model;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
 use A17\Twill\Repositories\Behaviors\HandleDates;
@@ -343,7 +344,7 @@ abstract class ModuleRepository
      * @param mixed $id
      * @return mixed
      */
-    public function duplicate($id)
+    public function duplicate($id, $titleColumnKey = 'title')
     {
 
         if (($object = $this->model->find($id)) === null) {
@@ -355,7 +356,12 @@ abstract class ModuleRepository
         }
 
         $revisionInput = json_decode($revision->payload, true);
-        $baseInput = collect($revisionInput)->only(['slug', 'languages'])->filter()->toArray();
+        $baseInput = collect($revisionInput)->only([
+            $titleColumnKey,
+            'slug',
+            'languages'
+        ])->filter()->toArray();
+
         $newObject = $this->create($baseInput);
 
         $this->update($newObject->id, $revisionInput);
@@ -839,7 +845,11 @@ abstract class ModuleRepository
     protected function getModelRepository($relation, $model = null)
     {
         if (!$model) {
-            $model = ucfirst(Str::singular($relation));
+            if (class_exists($relation) && (new $relation) instanceof Model) {
+                $model = Str::afterLast($relation, '\\');
+            } else {
+                $model = ucfirst(Str::singular($relation));
+            }
         }
 
         return App::make(Config::get('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");

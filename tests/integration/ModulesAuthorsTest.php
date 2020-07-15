@@ -3,8 +3,8 @@
 namespace A17\Twill\Tests\Integration;
 
 use App\Models\Author;
-use Illuminate\Support\Facades\Schema;
 use App\Models\Revisions\AuthorRevision;
+use Illuminate\Support\Facades\Schema;
 
 class ModulesAuthorsTest extends ModulesTestBase
 {
@@ -70,6 +70,24 @@ class ModulesAuthorsTest extends ModulesTestBase
         $this->assertSee('Add new');
 
         $this->request('/twill/categories')->assertStatus(200);
+    }
+
+    public function testCanSearchString()
+    {
+        $this->createAuthor(3);
+
+        $this->ajax("/twill/search?search={$this->name_en}")->assertStatus(200);
+
+        $this->assertJson($this->content());
+
+        $result = json_decode($this->content(), true);
+
+        $this->assertGreaterThan(0, count($result));
+
+        $this->assertEquals(
+            $this->now->format('Y-m-d\TH:i:s+00:00'),
+            $result[0]['date']
+        );
     }
 
     public function testCanStartRestoringRevision()
@@ -341,5 +359,22 @@ class ModulesAuthorsTest extends ModulesTestBase
         )->assertStatus(200);
 
         $this->assertSee('v-svg symbol="close_modal"');
+    }
+
+    public function testCanSeeRenderedBlocks()
+    {
+        $this->createAuthor();
+        $this->editAuthor();
+
+        putenv('EDIT_IN_MODAL=false');
+
+        $this->request(
+            "/twill/personnel/authors/{$this->author->id}/edit"
+        )->assertStatus(200);
+
+        // Check if it can see a rendered block
+        $this->assertSee(
+            '<script*type="text/x-template"*id="a17-block-quote">'
+        );
     }
 }

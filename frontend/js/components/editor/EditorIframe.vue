@@ -1,5 +1,5 @@
 <template>
-  <div class="editorIframe" >
+  <div class="editorIframe">
     <div class="editorIframe__empty" v-if="preview === ''">
       {{ title }}
     </div>
@@ -35,9 +35,27 @@
       })
     },
     methods: {
-      loadedPreview: function (event) {
-        if (this.$refs.frame && this.$refs.frame.srcdoc) this.$emit('loaded', this.$refs.frame)
+      setIframeHeight () {
+        if (!this.$refs.frame) return
+        window.requestAnimationFrame(() => {
+          this.$refs.frame.style.height = this.$refs.frame.contentWindow.document.body.scrollHeight + 'px'
+        })
+      },
+      loadedPreview (event) {
+        if (this.$refs.frame && this.$refs.frame.srcdoc) {
+          this.$emit('loaded', this.$refs.frame)
+          this.setIframeHeight()
+        }
+      },
+      handleResize () {
+        this.setIframeHeight()
       }
+    },
+    mounted () {
+      window.addEventListener('resize', this.handleResize)
+    },
+    beforeDestroy () {
+      window.removeEventListener('resize', this.handleResize)
     }
   }
 </script>
@@ -45,7 +63,7 @@
 <style lang="scss" scoped>
 
   .editorIframe {
-    cursor:pointer;
+    cursor: pointer;
 
     iframe {
       width: 100%;
@@ -60,19 +78,19 @@
     right: 0;
     top: 0;
     bottom: 0;
-    text-align:center;
+    text-align: center;
     display: flex;
-    flex-wrap:no-wrap;
+    flex-wrap: no-wrap;
     align-items: center;
     justify-content: center;
-    color:rgba($color__text, 0.5);
-    background-color:rgba($color_editor--active, 0.05);
-    border:1px solid rgba($color_editor--active, 0.33);
+    color: rgba($color__text, 0.5);
+    background-color: rgba($color_editor--active, 0.05);
+    border: 1px solid rgba($color_editor--active, 0.33);
   }
 
   .editor__preview--dark .editorIframe__empty {
-    color:rgba($color__background, 0.75);
-    background-color:rgba($color_editor--active, 0.2);
-    border:1px solid rgba($color_editor--active, 0.5);
+    color: rgba($color__background, 0.75);
+    background-color: rgba($color_editor--active, 0.2);
+    border: 1px solid rgba($color_editor--active, 0.5);
   }
 </style>

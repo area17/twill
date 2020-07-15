@@ -52,8 +52,17 @@ class Glide implements ImageServiceInterface
         $this->app = $app;
         $this->request = $request;
 
+        $baseUrlHost = $this->config->get(
+            'twill.glide.base_url',
+            $this->request->getScheme() . '://' . str_replace(
+                ['http://', 'https://'],
+                '',
+                $this->config->get('app.url')
+            )
+        );
+
         $baseUrl = join('/', [
-            rtrim($this->config->get('twill.glide.base_url'), '/'),
+            rtrim($baseUrlHost, '/'),
             ltrim($this->config->get('twill.glide.base_path'), '/'),
         ]);
 

@@ -18,14 +18,16 @@
     @if ($note ?? false) note="{{ $note }}" @endif
     @if ($required ?? false) :required="true" @endif
     @if ($inModal) :in-modal="true" @endif
+    @if (isset($time24Hr)) time_24hr="{{ $time24Hr ? 'true' : 'false' }}" @endif
+    @if (isset($altFormat)) alt-format="{{ $altFormat }}" @endif
     in-store="date"
 ></a17-datepicker>
 
-@unless($renderForBlocks || $renderForModal || !isset($item->$name))
+@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
 @push('vuexStore')
     window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({
         name: '{{ $name }}',
-        value: {!! json_encode(e($item->$name)) !!}
+        value: {!! json_encode(e($item->$name ?? $formFieldsValue)) !!}
     })
 @endpush
 @endunless

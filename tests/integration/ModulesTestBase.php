@@ -119,11 +119,21 @@ abstract class ModulesTestBase extends TestCase
 
     protected function loadConfig($file = null)
     {
-        $config = require $this->makeFileName(
-            $file ?? '{$stubs}/modules/authors/twill.php'
-        );
+        if (blank($file) || Str::contains($file, 'twill.php')) {
+            $config = require $this->makeFileName(
+                $file ?? '{$stubs}/modules/authors/twill.php'
+            );
 
-        config(['twill' => $config + config('twill')]);
+            config(['twill' => $config + config('twill')]);
+        }
+
+        if (blank($file) || Str::contains($file, 'translatable.php')) {
+            $config = require $this->makeFileName(
+                $file ?? '{$stubs}/modules/authors/translatable.php'
+            );
+
+            config(['translatable' => $config]);
+        }
     }
 
     /**

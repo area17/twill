@@ -25,6 +25,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Admin Title Suffix
+    |--------------------------------------------------------------------------
+    |
+    | This value is added to the title tag of your Admin application.
+    |
+     */
+    'admin_app_title_suffix' => env('ADMIN_APP_TITLE_SUFFIX', 'Admin'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Admin subdomain routing support
     |--------------------------------------------------------------------------
     |
@@ -75,6 +85,14 @@ return [
      */
     'admin_route_patterns' => [
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Prevent the routing system to duplicate prefix and module on route names
+    |--------------------------------------------------------------------------
+    |
+     */
+    'allow_duplicates_on_route_names' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -140,7 +158,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Twill FE Application configurqtion
+    | Twill FE Application configuration
     |--------------------------------------------------------------------------
     |
      */
@@ -152,7 +170,12 @@ return [
     'vendor_path' => 'vendor/area17/twill',
     'custom_components_resource_path' => 'assets/js/components',
     'build_timeout' => 300,
-
+    'internal_icons' => [
+        'content-editor.svg',
+        'close_modal.svg',
+        'edit_large.svg',
+        'google-sign-in.svg',
+    ],
     /*
     |--------------------------------------------------------------------------
     | Twill app locale
@@ -161,4 +184,14 @@ return [
      */
     'locale' => 'en',
     'fallback_locale' => 'en',
+    'available_user_locales' => [
+        'en',
+        'fr',
+        'pl',
+        'de',
+        'nl',
+        'pt',
+        'zh-Hans',
+        'ru',
+    ],
 ];

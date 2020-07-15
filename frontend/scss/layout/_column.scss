@@ -34,10 +34,6 @@ $column-spans__even: (
   flex-wrap: no-wrap;
 }
 
-.col {
-
-}
-
 .col--even {
   @include column-flex($column-spans__even);
 }
@@ -58,23 +54,36 @@ $column-spans__even: (
       margin-left: map-get($inner-gutters, $name);
     }
   }
-
-  &-wrap {
-    @include breakpoint('xsmall') {
-      width: calc(100% - #{map-get($inner-gutters, 'xsmall')});
-    }
-
-    @include breakpoint('medium') {
-      width: calc(100% - #{map-get($inner-gutters, 'medium')});
-    }
-  }
-
 }
 
-.editor .col--double {
+.col--third {
+  flex: 0 0 auto;
   @each $name, $point in $breakpoints {
     @include breakpoint('#{$name}') {
-      width: calc(100% - #{map-get($inner-gutters, $name)});
+      width: calc(33.33333% - #{map-get($inner-gutters, $name)});
+      margin-left: map-get($inner-gutters, $name);
+    }
+  }
+}
+
+.col--double-wrap,
+.col--third-wrap {
+  @include breakpoint('xsmall') {
+    width: calc(100% - #{map-get($inner-gutters, 'xsmall')});
+  }
+
+  @include breakpoint('medium') {
+    width: calc(100% - #{map-get($inner-gutters, 'medium')});
+  }
+}
+
+.editor {
+  .col--double,
+  .col--third {
+    @each $name, $point in $breakpoints {
+      @include breakpoint('#{$name}') {
+        width: calc(100% - #{map-get($inner-gutters, $name)});
+      }
     }
   }
 }

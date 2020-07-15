@@ -5,10 +5,12 @@ export function globalError (component = null, error = { message: '', value: nul
     prefix = `${process.env.VUE_APP_NAME} - [${component}]: `
   }
 
-  const errorMessage = prefix + 'An error occured.\n' + error.message
+  const errorMessage = prefix + error.message
+
   console.error(errorMessage)
-  if (error.value) {
-    console.error(error.value)
+
+  if (error.value && error.value.response) {
+    console.error(error.value.response.data)
   }
 
   if ('response' in error.value && 'status' in error.value.response && error.value.response.status === 401) {

@@ -25,6 +25,12 @@ class File extends Model
         return DB::table(config('twill.fileables_table', 'twill_fileables'))->where('file_id', $this->id)->count() === 0;
     }
 
+    public function scopeUnused ($query)
+    {
+        $usedIds = DB::table(config('twill.fileables_table'))->get()->pluck('file_id');
+        return $query->whereNotIn('id', $usedIds->toArray())->get();
+    }
+
     public function toCmsArray()
     {
         return [
@@ -33,6 +39,7 @@ class File extends Model
             'src' => FileService::getUrl($this->uuid),
             'original' => FileService::getUrl($this->uuid),
             'size' => $this->size,
+            'filesizeInMb' => number_format($this->attributes['size'] / 1048576, 2),
         ];
     }
 

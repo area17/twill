@@ -26,6 +26,7 @@
     $customForm = $customForm ?? false;
     $controlLanguagesPublication = $controlLanguagesPublication ?? true;
     $disableContentFieldset = $disableContentFieldset ?? false;
+    $editModalTitle = ($createWithoutModal ?? false) ? twillTrans('twill::lang.modal.create.title') : null;
 @endphp
 
 @section('content')
@@ -47,6 +48,7 @@
                     custom-title="{{ $customTitle ?? '' }}"
                     custom-permalink="{{ $customPermalink ?? '' }}"
                     slot="title"
+                    @if($createWithoutModal ?? false) :show-modal="true" @endif
                     @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif
                 >
                     <template slot="modal-form">
@@ -67,7 +69,12 @@
                 <div class="wrapper wrapper--reverse" v-sticky data-sticky-id="publisher" data-sticky-offset="80">
                     <aside class="col col--aside">
                         <div class="publisher" data-sticky-target="publisher">
-                            <a17-publisher :show-languages="{{ json_encode($controlLanguagesPublication) }}">
+                            <a17-publisher
+                                {!! !empty($publishDateDisplayFormat) ? "date-display-format='{$publishDateDisplayFormat}'" : '' !!}
+                                {!! !empty($publishDateFormat) ? "date-format='{$publishDateFormat}'" : '' !!}
+                                {!! !empty($publishDate24Hr) && $publishDate24Hr ? ':date_24h="true"' : '' !!}
+                                :show-languages="{{ json_encode($controlLanguagesPublication) }}"
+                            >
                                 @yield('publisherRows')
                             </a17-publisher>
                             <a17-page-nav
@@ -105,9 +112,9 @@
     </a17-modal>
     <a17-editor v-if="editor" ref="editor" bg-color="{{ config('twill.block_editor.background_color') ?? '#FFFFFF' }}"></a17-editor>
     <a17-previewer ref="preview"></a17-previewer>
-    <a17-dialog ref="warningContentEditor" modal-title="Delete content" confirm-label="Delete">
-        <p class="modal--tiny-title"><strong>Delete content</strong></p>
-        <p>Are you sure ?<br />This change can't be undone.</p>
+        <a17-dialog ref="warningContentEditor" modal-title="{{ twillTrans('twill::lang.form.dialogs.delete.title') }}" confirm-label="{{ twillTrans('twill::lang.form.dialogs.delete.confirm') }}">
+        <p class="modal--tiny-title"><strong>{{ twillTrans('twill::lang.form.dialogs.delete.delete-content') }}</strong></p>
+        <p>{!! twillTrans('twill::lang.form.dialogs.delete.confirmation') !!}</p>
     </a17-dialog>
 @stop
 
@@ -119,7 +126,7 @@
         previewUrl: '{{ $previewUrl ?? '' }}',
         restoreUrl: '{{ $restoreUrl ?? '' }}',
         blockPreviewUrl: '{{ $blockPreviewUrl ?? '' }}',
-        availableRepeaters: {!! json_encode(config('twill.block_editor.repeaters')) !!},
+        availableRepeaters: {!! $availableRepeaters !!},
         repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!},
         fields: [],
         editor: {{ $editor ? 'true' : 'false' }},
@@ -130,6 +137,7 @@
     window['{{ config('twill.js_namespace') }}'].STORE.publication = {
         withPublicationToggle: {{ json_encode(($publish ?? true) && isset($item) && $item->isFillable('published')) }},
         published: {{ isset($item) && $item->published ? 'true' : 'false' }},
+        createWithoutModal: '{{ $createWithoutModal ?? 'false' }}',
         withPublicationTimeframe: {{ json_encode(($schedule ?? true) && isset($item) && $item->isFillable('publish_start_date')) }},
         publishedLabel: '{{ $customPublishedLabel ?? twillTrans('twill::lang.main.published') }}',
         draftLabel: '{{ $customDraftLabel ?? twillTrans('twill::lang.main.draft') }}',
@@ -142,55 +150,55 @@
             draft: [
                 {
                     name: 'restore',
-                    text: 'Restore as a draft'
+                    text: '{{ twillTrans('twill::lang.publisher.restore-draft') }}'
                 },
                 {
                     name: 'restore-close',
-                    text: 'Restore as a draft and close'
+                    text: '{{ twillTrans('twill::lang.publisher.restore-draft-close') }}'
                 },
                 {
                     name: 'restore-new',
-                    text: 'Restore as a draft and create new'
+                    text: '{{ twillTrans('twill::lang.publisher.restore-draft-new') }}'
                 },
                 {
                     name: 'cancel',
-                    text: 'Cancel'
+                    text: '{{ twillTrans('twill::lang.publisher.cancel') }}'
                 }
             ],
             live: [
                 {
                     name: 'restore',
-                    text: 'Restore as published'
+                    text: '{{ twillTrans('twill::lang.publisher.restore-live') }}'
                 },
                 {
                     name: 'restore-close',
-                    text: 'Restore as published and close'
+                    text: '{{ twillTrans('twill::lang.publisher.restore-live-close') }}'
                 },
                 {
                     name: 'restore-new',
-                    text: 'Restore as published and create new'
+                    text: '{{ twillTrans('twill::lang.publisher.restore-live-new') }}'
                 },
                 {
                     name: 'cancel',
-                    text: 'Cancel'
+                    text: '{{ twillTrans('twill::lang.publisher.cancel') }}'
                 }
             ],
             update: [
                 {
                     name: 'restore',
-                    text: 'Restore as published'
+                    text: '{{ twillTrans('twill::lang.publisher.restore-live') }}'
                 },
                 {
                     name: 'restore-close',
-                    text: 'Restore as published and close'
+                    text: '{{ twillTrans('twill::lang.publisher.restore-live-close') }}'
                 },
                 {
                     name: 'restore-new',
-                    text: 'Restore as published and create new'
+                    text: '{{ twillTrans('twill::lang.publisher.restore-live-new') }}'
                 },
                 {
                     name: 'cancel',
-                    text: 'Cancel'
+                    text: '{{ twillTrans('twill::lang.publisher.cancel') }}'
                 }
             ]
         } @else null @endif

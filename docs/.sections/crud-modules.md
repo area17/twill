@@ -1,5 +1,5 @@
 ## CRUD modules
-Twill core functionnality is the ability to setup what we call modules. A module is set of files that define a content model and its associated business logic in your application. Those module can be configured to enable several features for publishers, from the ability to translate content, to the ability to attach images and more complex data structure to your records.
+Twill core functionality is the ability to setup what we call modules. A module is a set of files that define a content model and its associated business logic in your application. Modules can be configured to enable several features for publishers, from the ability to translate content, to the ability to attach images and create a more complex data structure in your records.
 
 ### CLI Generator
 You can generate all the files needed in your application to create a new CRUD module using Twill's Artisan generator:
@@ -246,7 +246,7 @@ public function order($query, array $orders = []) {
 }
 ```
 
-- for custom form fieds
+- for custom form fields
 
 ```php
 <?php
@@ -708,43 +708,48 @@ use Kalnoy\Nestedset\NodeTrait;
 class Page extends Model {
     use HasPosition, NodeTrait;
     ...
-    public static function saveTreeFromIds($nodesArray)
+    public static function saveTreeFromIds($nodeTree)
     {
-        $parentNodes = self::find(Arr::pluck($nodesArray, 'id'));
+        $nodeModels = self::all();
+        $nodeArrays = self::flattenTree($nodeTree);
 
-        if (is_array($nodesArray)) {
-            $position = 1;
-            foreach ($nodesArray as $nodeArray) {
-                $node = $parentNodes->where('id', $nodeArray['id'])->first();
-                $node->position = $position++;
-                $node->saveAsRoot();
-            }
-        }
+        foreach ($nodeArrays as $nodeArray) {
+            $nodeModel = $nodeModels->where('id', $nodeArray['id'])->first();
 
-        $parentNodes = self::find(Arr::pluck($nodesArray, 'id'));
-
-        self::rebuildTree($nodesArray, $parentNodes);
-    }
-
-    public static function rebuildTree($nodesArray, $parentNodes)
-    {
-        if (is_array($nodesArray)) {
-            foreach ($nodesArray as $nodeArray) {
-                $parent = $parentNodes->where('id', $nodeArray['id'])->first();
-                if (isset($nodeArray['children']) && is_array($nodeArray['children'])) {
-                    $position = 1;
-                    $nodes = self::find(Arr::pluck($nodeArray['children'], 'id'));
-                    foreach ($nodeArray['children'] as $child) {
-                        //append the children to their (old/new)parents
-                        $descendant = $nodes->where('id', $child['id'])->first();
-                        $descendant->position = $position++;
-                        $descendant->parent_id = $parent->id;
-                        $descendant->save();
-                        self::rebuildTree($nodeArray['children'], $nodes);
-                    }
+            if ($nodeArray['parent_id'] === null) {
+                if (!$nodeModel->isRoot() || $nodeModel->position !== $nodeArray['position']) {
+                    $nodeModel->position = $nodeArray['position'];
+                    $nodeModel->saveAsRoot();
+                }
+            } else {
+                if ($nodeModel->position !== $nodeArray['position'] || $nodeModel->parent_id !== $nodeArray['parent_id']) {
+                    $nodeModel->position = $nodeArray['position'];
+                    $nodeModel->parent_id = $nodeArray['parent_id'];
+                    $nodeModel->save();
                 }
             }
         }
+    }
+
+    public static function flattenTree(array $nodeTree, int $parentId = null)
+    {
+        $nodeArrays = [];
+        $position = 0;
+
+        foreach ($nodeTree as $node) {
+            $nodeArrays[] = [
+                'id' => $node['id'],
+                'position' => $position++,
+                'parent_id' => $parentId,
+            ];
+
+            if (count($node['children']) > 0) {
+                $childArrays = self::flattenTree($node['children'], $node['id']);
+                $nodeArrays = array_merge($nodeArrays, $childArrays);
+            }
+        }
+
+        return $nodeArrays;
     }
 }
 ```

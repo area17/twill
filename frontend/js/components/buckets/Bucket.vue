@@ -6,7 +6,7 @@
           <slot/>
         </h2>
         <div class="buckets__page-title-actions">
-          <a17-button variant="validate" @click="save">Publish</a17-button>
+          <a17-button variant="validate" @click="save">{{ $trans('buckets.publish') }}</a17-button>
           <a17-button v-for="link in extraActions" :key="link.url" el="a" :href="link.url" :download="link.download || ''" :target="link.target || ''" :rel="link.rel || ''" variant="secondary">{{ link.label }}</a17-button>
         </div>
       </div>

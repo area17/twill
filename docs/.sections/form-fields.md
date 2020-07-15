@@ -212,7 +212,7 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 @formField('medias', [
     'name' => 'cover',
     'label' => 'Cover image',
-    'note' => 'Also used in listings'
+    'note' => 'Also used in listings',
     'fieldNote' => 'Minimum image width: 1500px'
 ])
 
@@ -369,6 +369,8 @@ No migration is needed to save `files` form fields.
 | minDate     | Minimum selectable date                                      | string          |               |
 | maxDate     | Maximum selectable date                                      | string          |               |
 | withTime    | Define if the field will display the time selector           | true<br/>false  | true          |
+| time24Hr    | Pick time with a 24h picker instead of AM/PM                 | true<br/>false  | false         |
+| altFormat   | Format used by flatPickr                                     | string          | F j, Y        |
 | note        | Hint message displayed above the field                       | string          |               |
 | required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false  | false         |
 
@@ -384,7 +386,7 @@ Schema::table('posts', function (Blueprint $table) {
 // OR
 Schema::table('posts', function (Blueprint $table) {
     ...
-    $table->date_time('event_date')->nullable();
+    $table->dateTime('event_date')->nullable();
     ...
 });
 ```

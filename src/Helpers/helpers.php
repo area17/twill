@@ -1,5 +1,6 @@
 <?php
 
+use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
@@ -187,5 +188,44 @@ if (!function_exists('fix_directory_separator')) {
             DIRECTORY_SEPARATOR,
             $path
         );
+    }
+}
+
+if (!function_exists('generate_list_of_allowed_blocks')) {
+    /**
+     * @param array $blocks
+     * @param array $groups
+     * @return array
+     */
+    function generate_list_of_available_blocks($blocks, $groups)
+    {
+        $blockList = app(BlockCollection::class)->getBlockList();
+
+        $appBlocksList = $blockList->filter(function ($block) {
+            return $block['source'] !== A17\Twill\Services\Blocks\Block::SOURCE_TWILL;
+        });
+
+        return $blockList->filter(
+            function ($block) use ($blocks, $groups, $appBlocksList) {
+                if ($block['group'] === A17\Twill\Services\Blocks\Block::SOURCE_TWILL) {
+                    if (!collect(
+                        config('twill.block_editor.use_twill_blocks')
+                    )->contains($block['name'])) {
+                        return false;
+                    }
+
+                    if (count($appBlocksList) > 0 && $appBlocksList->contains(
+                        function ($appBlock) use ($block) {
+                            return $appBlock['name'] === $block['name'];
+                        })
+                    ) {
+                        return false;
+                    }
+                }
+
+                return (filled($blocks) ? collect($blocks)->contains($block['name']) : true)
+                    && (filled($groups) ? collect($groups)->contains($block['group']) : true);
+            }
+        )->toArray();
     }
 }

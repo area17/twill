@@ -19,6 +19,12 @@
         <slot name="addModal"></slot>
       </a17-modal-add>
     </template>
+    <template v-if="requireConfirmation">
+      <a17-dialog ref="warningConfirm" modal-title="Confirm" confirm-label="Confirm">
+        <p class="modal--tiny-title"><strong>{{ confirmTitleText }}</strong></p>
+        <p>{{ confirmMessageText }}</p>
+      </a17-dialog>
+    </template>
   </div>
 </template>
 
@@ -27,10 +33,11 @@
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
   import AttributesMixin from '@/mixins/addAttributes'
+  import ConfirmationMixin from '@/mixins/confirmationMixin'
 
   export default {
     name: 'A17Singleselect',
-    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin],
+    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin, ConfirmationMixin],
     props: {
       name: {
         type: String,
@@ -89,7 +96,13 @@
         }
       },
       changeRadio: function (value) {
-        this.selectedValue = value
+        if (this.requireConfirmation) {
+          this.$refs.warningConfirm.open(() => {
+            this.selectedValue = value
+          })
+        } else {
+          this.selectedValue = value
+        }
       },
       uniqId: function (value, index) {
         return this.name + '_' + value + '-' + (this.randKey * (index + 1))

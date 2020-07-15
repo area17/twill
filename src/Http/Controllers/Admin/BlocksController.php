@@ -38,29 +38,18 @@ class BlocksController extends Controller
 
         $block = $blockRepository->buildFromCmsArray($request->except('activeLanguage'));
 
-        foreach ($block['blocks'] as $childKey => $childBlocks) {
-            foreach ($childBlocks as $index => $childBlock) {
-                $childBlock = $blockRepository->buildFromCmsArray($childBlock, true);
-                $childBlock['child_key'] = $childKey;
-                $childBlock['position'] = $index + 1;
-
-                $childBlocksList->push($childBlock);
-            }
-        }
-
+        $childBlocksList = $this->getChildrenBlock($block, $blockRepository);
         $block['blocks'] = $childBlocksList;
+        $block['children'] = $childBlocksList;
 
         $newBlock = $blockRepository->createForPreview($block);
 
-        $newBlock->id = 1;
+        $blockId = 1;
+        $newBlock->id = $blockId;
 
         $blocksCollection->push($newBlock);
 
-        $block['blocks']->each(function ($childBlock) use ($newBlock, $blocksCollection, $blockRepository) {
-            $childBlock['parent_id'] = $newBlock->id;
-            $newChildBlock = $blockRepository->createForPreview($childBlock);
-            $blocksCollection->push($newChildBlock);
-        });
+        $this->getChildrenPreview($block['blocks'], $blocksCollection, $newBlock->id, $blockId, $blockRepository);
 
         $renderedBlocks = $blocksCollection->where('parent_id', null)->map(function ($block) use ($blocksCollection, $viewFactory, $config) {
             if ($config->get('twill.block_editor.block_preview_render_childs') ?? true) {
@@ -90,7 +79,9 @@ class BlocksController extends Controller
         })->implode('');
 
         $view = $viewFactory->exists($config->get('twill.block_editor.block_single_layout'))
-        ? $viewFactory->make($config->get('twill.block_editor.block_single_layout'))
+        ? $viewFactory->make($config->get('twill.block_editor.block_single_layout'), [
+            'block' => $block,
+        ])
         : $viewFactory->make('twill::errors.block_layout', [
             'view' => $config->get('twill.block_editor.block_single_layout'),
         ]);
@@ -98,6 +89,39 @@ class BlocksController extends Controller
         $viewFactory->inject('content', $renderedBlocks);
 
         return html_entity_decode($view);
+    }
+
+    protected function getChildrenBlock($block, $blockRepository)
+    {
+        $childBlocksList = Collection::make();
+        foreach ($block['blocks'] as $childKey => $childBlocks) {
+            foreach ($childBlocks as $index => $childBlock) {
+                $childBlock = $blockRepository->buildFromCmsArray($childBlock, true);
+                $childBlock['child_key'] = $childKey;
+                $childBlock['position'] = $index + 1;
+                if (!empty($childBlock['blocks'])) {
+                    $childBlock['children'] = $this->getChildrenBlock($childBlock, $blockRepository);
+                }
+                $childBlocksList->push($childBlock);
+            }
+        }
+        return $childBlocksList;
+    }
+
+    protected function getChildrenPreview($blocks, $blocksCollection, $parentId, &$blockId, $blockRepository)
+    {
+        $blocks->each(function ($childBlock) use (&$blockId, $parentId, $blocksCollection, $blockRepository) {
+            $childBlock['parent_id'] = $parentId;
+            $blockId++;
+            $newChildBlock = $blockRepository->createForPreview($childBlock);
+            $newChildBlock->id = $blockId;
+            if (!empty($childBlock['children'])) {
+                $childrenCollection = Collection::make();
+                $this->getChildrenPreview($childBlock['children'], $childrenCollection, $newChildBlock->id, $blockId, $blockRepository);
+                $newChildBlock->setRelation('children', $childrenCollection);
+            }
+            $blocksCollection->push($newChildBlock);
+        });
     }
 
     /**

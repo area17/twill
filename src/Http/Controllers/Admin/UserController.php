@@ -140,8 +140,8 @@ class UserController extends ModuleController
                     'module' => true,
                 ],
             ],
-            'customPublishedLabel' => 'Enabled',
-            'customDraftLabel' => 'Disabled',
+            'customPublishedLabel' => twillTrans('twill::lang.user-management.enabled'),
+            'customDraftLabel' => twillTrans('twill::lang.user-management.disabled'),
         ];
     }
 
