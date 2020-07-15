@@ -1,6 +1,6 @@
 <template>
   <div class="slideshow">
-    <div class="slideshow__trigger" v-if="remainingSlides > 0">
+    <div class="slideshow__trigger" v-if="buttonOnTop && remainingSlides > 0">
       <a17-button type="button" variant="ghost" @click="openMediaLibrary(remainingSlides)">{{ addLabel }}</a17-button>
       <span class="slideshow__note f--small"><slot></slot></span>
     </div>
@@ -27,6 +27,10 @@
         </div>
       </transition-group>
     </draggable>
+    <div class="slideshow__trigger" v-if="!buttonOnTop && remainingSlides > 0">
+      <a17-button type="button" variant="ghost" @click="openMediaLibrary(remainingSlides)">{{ addLabel }}</a17-button>
+      <span class="slideshow__note f--small"><slot></slot></span>
+    </div>
   </div>
 </template>
 
@@ -58,6 +62,10 @@
       max: {
         type: Number,
         default: 10
+      },
+      buttonOnTop: {
+        type: Boolean,
+        default: false
       }
     },
     data: function () {

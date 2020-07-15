@@ -10,6 +10,7 @@
                    :cropContext="cropContext"
                    :max="max"
                    :required="required"
+                   :buttonOnTop="buttonOnTop"
                    :withAddInfo="withAddInfo"
                    :withVideoUrl="withVideoUrl"
                    :withCaption="withCaption"
@@ -57,6 +58,10 @@
       max: {
         type: Number,
         default: 1
+      },
+      buttonOnTop: {
+        type: Boolean,
+        default: false
       }
     }
   }
