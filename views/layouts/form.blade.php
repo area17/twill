@@ -19,7 +19,6 @@
 @endpush
 
 @php
-    $editModalTitle = $createWithoutModal ? 'Enter Title' : null;
     $editor = $editor ?? false;
     $translate = $translate ?? false;
     $translateTitle = $translateTitle ?? $translate ?? false;
@@ -27,6 +26,7 @@
     $customForm = $customForm ?? false;
     $controlLanguagesPublication = $controlLanguagesPublication ?? true;
     $disableContentFieldset = $disableContentFieldset ?? false;
+    $editModalTitle = ($createWithoutModal ?? false) ? twillTrans('twill::lang.modal.create.title') : null;
 @endphp
 
 @section('content')
@@ -48,7 +48,7 @@
                     custom-title="{{ $customTitle ?? '' }}"
                     custom-permalink="{{ $customPermalink ?? '' }}"
                     slot="title"
-                    @if($createWithoutModal) :show-modal="true" @endif
+                    @if($createWithoutModal ?? false) :show-modal="true" @endif
                     @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif
                 >
                     <template slot="modal-form">
@@ -137,7 +137,7 @@
     window['{{ config('twill.js_namespace') }}'].STORE.publication = {
         withPublicationToggle: {{ json_encode(($publish ?? true) && isset($item) && $item->isFillable('published')) }},
         published: {{ isset($item) && $item->published ? 'true' : 'false' }},
-        createWithoutModal: '{{ $createWithoutModal }}',
+        createWithoutModal: '{{ $createWithoutModal ?? 'false' }}',
         withPublicationTimeframe: {{ json_encode(($schedule ?? true) && isset($item) && $item->isFillable('publish_start_date')) }},
         publishedLabel: '{{ $customPublishedLabel ?? twillTrans('twill::lang.main.published') }}',
         draftLabel: '{{ $customDraftLabel ?? twillTrans('twill::lang.main.draft') }}',

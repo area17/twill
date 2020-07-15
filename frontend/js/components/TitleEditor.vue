@@ -10,7 +10,7 @@
       <a v-if="(permalink || customPermalink) && !showModal" :href="fullUrl" target="_blank" class="titleEditor__permalink f--small">
         <span class="f--note f--external f--underlined--o">{{ visibleUrl | prettierUrl }}</span>
       </a>
-      <span v-if="showModal" class="f--note f--external f--underlined--o">{{ visibleUrl | prettierUrl }}</span>
+      <span v-if="showModal" class="titleEditor__permalink f--small f--note f--external f--underlined--o">{{ visibleUrl | prettierUrl }}</span>
 
       <!-- Editing modal -->
       <a17-modal class="modal--form" ref="editModal" :title="modalTitle" :forceLock="disabled">

@@ -82,7 +82,7 @@
                             <a17-button
                                 variant="validate"
                                 size="small"
-                                @if($skipCreateModal) href={{$createUrl}} el="a" @endif
+                                @if($skipCreateModal) href={{$createUrl ?? ''}} el="a" @endif
                                 @if(!$skipCreateModal) v-on:click="create" @endif
                             >
                                 {{ twillTrans('twill::lang.listing.add-new-button') }}
@@ -156,7 +156,7 @@
         forceDelete: '{{ $forceDeleteUrl }}',
         bulkForceDelete: '{{ $bulkForceDeleteUrl }}',
         reorder: '{{ $reorderUrl }}',
-        create: '{{ $createUrl }}',
+        create: '{{ $createUrl ?? '' }}',
         feature: '{{ $featureUrl }}',
         bulkFeature: '{{ $bulkFeatureUrl }}',
         bulkDelete: '{{ $bulkDeleteUrl }}'

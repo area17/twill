@@ -210,6 +210,9 @@ return [
             'button' => 'Mettre à jour',
             'title' => 'Mettre à jour',
         ],
+        'done' => [
+            'button' => 'Continuer',
+        ],
     ],
     'nav' => [
         'admin' => 'Admin',

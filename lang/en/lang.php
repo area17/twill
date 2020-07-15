@@ -210,6 +210,9 @@ return [
             'button' => 'Update',
             'title' => 'Update',
         ],
+        'done' => [
+            'button' => 'Done',
+        ],
     ],
     'nav' => [
         'admin' => 'Admin',
