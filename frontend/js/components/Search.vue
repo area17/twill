@@ -23,7 +23,7 @@
               <div class="search__cell">
                 <span class="search__title">{{ item.title }}</span>
                 <p class="f--note">
-                  {{ item.activity }} <timeago :auto-update="1" :since="new Date(item.date)"></timeago> by {{ item.author }}
+                  {{ item.activity }} <timeago :auto-update="1" :datetime="new Date(item.date)"></timeago> by {{ item.author }}
                   <span class="search__type">{{ item.type }}</span>
                 </p>
               </div>
@@ -65,7 +65,9 @@
       },
       placeholder: {
         type: String,
-        default: 'Search everything…'
+        default () {
+          return this.$trans('dashboard.search-placeholder', 'Search everything…')
+        }
       },
       endpoint: {
         type: String,

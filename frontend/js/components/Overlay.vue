@@ -3,7 +3,7 @@
     <div class="overlay__window">
       <header class="overlay__header" v-if="overlayTitle">
         {{ overlayTitle }}
-        <button class="overlay__close" type="button" @click="hide"><span v-svg symbol="close_modal"></span><span class="overlay__closeLabel">Close</span></button>
+        <button class="overlay__close" type="button" @click="hide"><span v-svg symbol="close_modal"></span><span class="overlay__closeLabel">{{ $trans('overlay.close') }}</span></button>
       </header>
       <div class="overlay__content" v-if="active" v-show="!hidden">
         <slot></slot>
@@ -29,7 +29,9 @@
       },
       revisionTitle: {
         type: String,
-        default: 'Revision history'
+        default: function () {
+          return this.$trans('previewer.revision-history')
+        }
       },
       forceClose: {
         type: Boolean,

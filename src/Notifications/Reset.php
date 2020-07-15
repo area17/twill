@@ -17,8 +17,8 @@ class Reset extends ResetPassword
     {
         return (new MailMessage)->markdown('twill::emails.html.email', [
             'url' => route('admin.password.reset.form', $this->token),
-            'actionText' => 'Reset password',
-            'copy' => 'You are receiving this email because we received a password reset. If you did not request a password reset, no further action is required.',
+            'actionText' => twillTrans('twill::lang.notifications.reset.action'),
+            'copy' => twillTrans('twill::lang.notifications.reset.content'),
         ]);
     }
 }

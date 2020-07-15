@@ -2,14 +2,19 @@
 
 namespace A17\Twill;
 
+use A17\Twill\Commands\BlockMake;
 use A17\Twill\Commands\Build;
 use A17\Twill\Commands\CreateSuperAdmin;
 use A17\Twill\Commands\Dev;
 use A17\Twill\Commands\GenerateBlocks;
 use A17\Twill\Commands\Install;
+use A17\Twill\Commands\ListBlocks;
+use A17\Twill\Commands\ListIcons;
 use A17\Twill\Commands\ModuleMake;
+use A17\Twill\Commands\ModuleMakeDeprecated;
 use A17\Twill\Commands\RefreshLQIP;
 use A17\Twill\Commands\Update;
+use A17\Twill\Commands\SyncLang;
 use A17\Twill\Http\ViewComposers\ActiveNavigation;
 use A17\Twill\Http\ViewComposers\CurrentUser;
 use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
@@ -38,7 +43,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    const VERSION = '2.0.1';
+    const VERSION = '2.1.0';
 
     /**
      * Service providers to be registered.
@@ -290,12 +295,17 @@ class TwillServiceProvider extends ServiceProvider
         $this->commands([
             Install::class,
             ModuleMake::class,
+            ModuleMakeDeprecated::class,
+            BlockMake::class,
+            ListIcons::class,
+            ListBlocks::class,
             CreateSuperAdmin::class,
             RefreshLQIP::class,
             GenerateBlocks::class,
             Build::class,
             Update::class,
             Dev::class,
+            SyncLang::class,
         ]);
     }
 
@@ -395,6 +405,15 @@ class TwillServiceProvider extends ServiceProvider
         $blade->component('twill::partials.form.utils._collapsed_fields', 'formCollapsedFields');
         $blade->component('twill::partials.form.utils._connected_fields', 'formConnectedFields');
         $blade->component('twill::partials.form.utils._inline_checkboxes', 'formInlineCheckboxes');
+
+        if (method_exists($blade, 'aliasComponent')) {
+            $blade->aliasComponent('twill::partials.form.utils._fieldset', 'formFieldset');
+            $blade->aliasComponent('twill::partials.form.utils._columns', 'formColumns');
+            $blade->aliasComponent('twill::partials.form.utils._collapsed_fields', 'formCollapsedFields');
+            $blade->aliasComponent('twill::partials.form.utils._connected_fields', 'formConnectedFields');
+            $blade->aliasComponent('twill::partials.form.utils._inline_checkboxes', 'formInlineCheckboxes');
+        }
+
     }
 
     /**

@@ -7,6 +7,7 @@ use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Block;
 use A17\Twill\Repositories\Behaviors\HandleFiles;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
+use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Collection;
 use Log;
@@ -100,9 +101,13 @@ class BlockRepository extends ModuleRepository
      */
     public function buildFromCmsArray($block, $repeater = false)
     {
-        $blocksFromConfig = $this->config->get('twill.block_editor.' . ($repeater ? 'repeaters' : 'blocks'));
+        if ($repeater) {
+            $blocksList = app(BlockCollection::class)->getRepeaterList();
+        } else {
+            $blocksList = app(BlockCollection::class)->getBlockList();
+        }
 
-        $block['type'] = Collection::make($blocksFromConfig)->search(function ($blockConfig) use ($block) {
+        $block['type'] = $blocksList->keyBy('name')->search(function ($blockConfig) use ($block) {
             return $blockConfig['component'] === $block['type'];
         });
 

@@ -32,7 +32,7 @@
 
       <form v-if="hasMedia" ref="form" class="mediasidebar__inner mediasidebar__form" @submit="submit">
         <span class="mediasidebar__loader" v-if="loading"><span class="loader loader--small"><span></span></span></span>
-        <a17-vselect v-if="!fieldsRemovedFromBulkEditing.includes('tags')" label="Tags"
+        <a17-vselect v-if="!fieldsRemovedFromBulkEditing.includes('tags')" :label="$trans('media-library.sidebar.tags')"
                      :key="firstMedia.id + '-' + medias.length" name="tags" :multiple="true"
                      :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true"
                      emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small"
@@ -52,15 +52,15 @@
           </div>
 
           <a17-locale type="a17-textfield" v-if="isImage && translatableMetadatas.includes('alt_text')"
-                      :attributes="{ label: 'Alt text', name: 'alt_text', type: 'text', size: 'small' }"
+                      :attributes="{ label: $trans('media-library.sidebar.alt-text', 'Alt text'), name: 'alt_text', type: 'text', size: 'small' }"
                       :initialValues="altValues" @focus="focus" @blur="blur"></a17-locale>
-          <a17-textfield v-else-if="isImage" label="Alt text" name="alt_text"
+          <a17-textfield v-else-if="isImage" :label="$trans('media-library.sidebar.alt-text', 'Alt text')" name="alt_text"
                          :initialValue="firstMedia.metadatas.default.altText" size="small" @focus="focus" @blur="blur"/>
 
           <a17-locale type="a17-textfield" v-if="isImage && translatableMetadatas.includes('caption')"
-                      :attributes="{ type: 'textarea', rows: 1, label: 'Caption', name: 'caption', size: 'small' }"
+                      :attributes="{ type: 'textarea', rows: 1, label: $trans('media-library.sidebar.caption', 'Caption'), name: 'caption', size: 'small' }"
                       :initialValues="captionValues" @focus="focus" @blur="blur"></a17-locale>
-          <a17-textfield v-else-if="isImage" type="textarea" :rows="1" size="small" label="Caption" name="caption"
+          <a17-textfield v-else-if="isImage" type="textarea" :rows="1" size="small" :label="$trans('media-library.sidebar.caption', 'Caption')" name="caption"
                          :initialValue="firstMedia.metadatas.default.caption" @focus="focus" @blur="blur"/>
 
           <template v-for="field in singleOnlyMetadatas">

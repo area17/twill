@@ -4,7 +4,6 @@ namespace A17\Twill\Commands;
 
 use A17\Twill\Models\Media;
 use Illuminate\Config\Repository as Config;
-use Illuminate\Console\Command;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Arr;
 use ImageService;

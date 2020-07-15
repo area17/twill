@@ -4,6 +4,7 @@ namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Repositories\BlockRepository;
+use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Support\Collection;
 use Schema;
 
@@ -169,13 +170,13 @@ trait HandleBlocks
 
         if ($object->has('blocks')) {
 
-            $blocksConfig = config('twill.block_editor');
+            $blocksList = app(BlockCollection::class)->list()->keyBy('name');
 
             foreach ($object->blocks as $block) {
 
                 $isInRepeater = isset($block->parent_id);
                 $configKey = $isInRepeater ? 'repeaters' : 'blocks';
-                $blockTypeConfig = $blocksConfig[$configKey][$block->type] ?? null;
+                $blockTypeConfig = $blocksList[$block->type] ?? null;
 
                 if (is_null($blockTypeConfig)) {
                     continue;

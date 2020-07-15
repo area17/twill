@@ -198,13 +198,34 @@ class RouteServiceProvider extends ServiceProvider
                 $customRoutes = array_diff($defaults, (array) $options['except']);
             }
 
+            // Get the current route groups
+            $routeGroups = Route::getGroupStack() ?? [];
+
+            // Get the name prefix of the last group
+            $lastRouteGroupName = end($routeGroups)['as'] ?? '';
+
             $groupPrefix = trim(str_replace('/', '.', Route::getLastGroupPrefix()), '.');
 
             if (!empty(config('twill.admin_app_path'))) {
                 $groupPrefix = ltrim(str_replace(config('twill.admin_app_path'), '', $groupPrefix), '.');
             }
 
-            $customRoutePrefix = !empty($groupPrefix) ? "{$groupPrefix}.{$slug}" : "{$slug}";
+            // Check if name will be a duplicate, and prevent if needed/allowed
+            if (!empty($groupPrefix) &&
+                (
+                    blank($lastRouteGroupName) ||
+                    config('twill.allow_duplicates_on_route_names', true) ||
+                    (!Str::endsWith($lastRouteGroupName, ".{$groupPrefix}."))
+                )
+            ) {
+                $customRoutePrefix = "{$groupPrefix}.{$slug}";
+                $resourceCustomGroupPrefix = "{$groupPrefix}.";
+            } else {
+                $customRoutePrefix = $slug;
+
+                // Prevent Laravel from generating route names with duplication
+                $resourceCustomGroupPrefix = '';
+            }
 
             foreach ($customRoutes as $route) {
                 $routeSlug = "{$prefixSlug}/{$route}";
@@ -236,8 +257,7 @@ class RouteServiceProvider extends ServiceProvider
             }
 
             if ($resource) {
-                $customRoutePrefix = !empty($groupPrefix) ? "{$groupPrefix}." : "";
-                Route::group(['as' => $customRoutePrefix], function () use ($slug, $className, $resource_options) {
+                Route::group(['as' => $resourceCustomGroupPrefix], function () use ($slug, $className, $resource_options) {
                     Route::resource($slug, "{$className}Controller", $resource_options);
                 });
             }

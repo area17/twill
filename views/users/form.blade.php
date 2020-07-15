@@ -20,7 +20,7 @@
                 'name' => "role",
                 'label' => twillTrans('twill::lang.user-management.role'),
                 'options' => $roleList,
-                'placeholder' => 'Select a role'
+                'placeholder' => twillTrans('twill::lang.user-management.role-placeholder'),
             ])
         @endif
     @endcan
@@ -28,40 +28,40 @@
     @if(config('twill.enabled.users-image'))
         @formField('medias', [
             'name' => 'profile',
-            'label' => 'Profile image'
+            'label' => twillTrans('twill::lang.user-management.profile-image'),
         ])
     @endif
     @if(config('twill.enabled.users-description'))
         @formField('input', [
             'name' => 'title',
-            'label' => 'Title',
+            'label' => twillTrans('twill::lang.user-management.title'),
             'maxlength' => 250
         ])
         @formField('input', [
             'name' => 'description',
             'rows' => 4,
             'type' => 'textarea',
-            'label' => 'Description'
+            'label' => twillTrans('twill::lang.user-management.description'),
         ])
     @endif
 
     @formField('select', [
         'name' => 'language',
-        'label' => 'Language',
-        'placeholder' => 'Select a language',
+        'label' => twillTrans('twill::lang.user-management.language'),
+        'placeholder' => twillTrans('twill::lang.user-management.language-placeholder'),
         'default' => config('twill.locale', 'en'),
         'options' => array_map(function($locale) {
             return [
                 'value' => $locale,
                 'label' => getLanguageLabelFromLocaleCode($locale, true)
             ];
-        }, ['en', 'zh-Hans', 'ru', 'fr'])
+        }, config('twill.available_user_locales', ['en']))
     ])
 
     @if($with2faSettings ?? false)
         @formField('checkbox', [
             'name' => 'google_2fa_enabled',
-            'label' => '2-factor authentication',
+            'label' => twillTrans('twill::lang.user-management.2fa'),
         ])
 
         @unless($item->google_2fa_enabled ?? false)
@@ -70,10 +70,10 @@
                 'fieldValues' => true,
             ])
                 <img style="display: block; margin-left: auto; margin-right: auto;" src="{{ $qrCode }}">
-                <div class="f--regular f--note" style="margin: 20px 0;">Please scan this QR code with a Google Authenticator compatible application and enter your one time password below before submitting. See a list of compatible applications <a href="https://github.com/antonioribeiro/google2fa#google-authenticator-apps" target="_blank" rel="noopener">here</a>.</div>
+                <div class="f--regular f--note" style="margin: 20px 0;">{!! twillTrans('twill::lang.user-management.2fa-description', ['link' => 'https://github.com/antonioribeiro/google2fa#google-authenticator-apps']) !!}</div>
                 @formField('input', [
                     'name' => 'verify-code',
-                    'label' => 'One time password',
+                    'label' => twillTrans('twill::lang.user-management.otp'),
                 ])
             @endcomponent
         @else
@@ -83,8 +83,8 @@
             ])
                 @formField('input', [
                     'name' => 'verify-code',
-                    'label' => 'One time password',
-                    'note' => 'Enter your one time password to disable the 2-factor authentication'
+                    'label' => twillTrans('twill::lang.user-management.otp'),
+                    'note' => twillTrans('twill::lang.user-management.2fa-disable'),
 
                 ])
             @endcomponent

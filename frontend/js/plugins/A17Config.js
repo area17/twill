@@ -37,12 +37,15 @@ import a17MediaLibrary from '@/components/media-library/MediaLibrary.vue'
 // Plugins
 import VueTimeago from 'vue-timeago'
 import get from 'lodash/get'
+import mapValues from 'lodash/mapValues'
 import axios from 'axios'
 
 // Directives
 import SvgSprite from '@/directives/svg'
 import Tooltip from '@/directives/tooltip'
 import Sticky from '@/directives/sticky'
+
+import { locales } from '@/utils/locale'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -113,10 +116,8 @@ const A17Config = {
     // Plugins
     Vue.use(VueTimeago, {
       name: 'timeago', // component name
-      locale: 'en-US',
-      locales: {
-        'en-US': require('vue-timeago/locales/en-US.json')
-      }
+      locale: window[process.env.VUE_APP_NAME].twillLocalization.locale,
+      locales: mapValues(locales, 'date-fns')
     })
 
     // Directives

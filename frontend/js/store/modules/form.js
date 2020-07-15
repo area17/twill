@@ -297,8 +297,13 @@ const actions = {
       }
     }, function (errorResponse) {
       commit(FORM.UPDATE_FORM_LOADING, false)
-      commit(FORM.SET_FORM_ERRORS, errorResponse.response.data)
-      commit(NOTIFICATION.SET_NOTIF, { message: 'Your submission could not be validated, please fix and retry', variant: 'error' })
+
+      if (errorResponse.response.data.hasOwnProperty('exception')) {
+        commit(NOTIFICATION.SET_NOTIF, { message: 'Your submission could not be processed.', variant: 'error' })
+      } else {
+        commit(FORM.SET_FORM_ERRORS, errorResponse.response.data)
+        commit(NOTIFICATION.SET_NOTIF, { message: 'Your submission could not be validated, please fix and retry', variant: 'error' })
+      }
     })
   }
 }

@@ -43,7 +43,9 @@
     props: {
       modalTitle: {
         type: String,
-        default: 'Update item'
+        default: function () {
+          return this.$trans('modal.update.title')
+        }
       },
       warningMessage: {
         type: String,

@@ -5,8 +5,13 @@
 The media and files libraries currently support S3, Azure and local storage. Head over to the `twill` configuration file to setup your storage disk and configurations. Also check out the direct upload section of this documentation to setup your IAM users and bucket / container if you want to use S3 or Azure as a storage provider.
 
 ### Image rendering service
-This package currently ships with 2 rendering services, [Imgix](https://www.imgix.com/) and [Glide](http://glide.thephpleague.com/). It is very simple to implement another one like [Cloudinary](http://cloudinary.com/) or even another local service like or [Croppa](https://github.com/BKWLD/croppa).
-You would have to implement the `ImageServiceInterface` and modify your `twill` configuration value `media_library.image_service` with your implementation class.
+This package currently ships with 3 rendering services, [Imgix](https://www.imgix.com/), [Glide](http://glide.thephpleague.com/) and a local minimalistic rendering service. It is very simple to implement another one like [Cloudinary](http://cloudinary.com/) or even another local service like or [Croppa](https://github.com/BKWLD/croppa).
+Changing the image rendering service can be done by changing the `MEDIA_LIBRARY_IMAGE_SERVICE` environment variable to one of the following options:
+- `A17\Twill\Services\MediaLibrary\Glide`
+- `A17\Twill\Services\MediaLibrary\Imgix`
+- `A17\Twill\Services\MediaLibrary\Local`
+
+For a custom image service you would have to implement the `ImageServiceInterface` and modify your `twill` configuration value `media_library.image_service` with your implementation class.
 Here are the methods you would have to implement:
 
 ```php

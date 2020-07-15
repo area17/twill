@@ -17,9 +17,9 @@ class Welcome extends ResetPassword
     {
         return (new MailMessage)->markdown('twill::emails.html.email', [
             'url' => route('admin.password.reset.welcome.form', $this->token),
-            'actionText' => 'Choose your own password',
-            'title' => 'Welcome',
-            'copy' => 'You are receiving this email because an account was created for you on ' . config('app.name') . '.',
+            'actionText' => twillTrans('twill::lang.notifications.welcome.action'),
+            'title' => twillTrans('twill::lang.notifications.welcome.title'),
+            'copy' => twillTrans('twill::lang.notifications.welcome.content', ['name' => config('app.name')]),
         ]);
     }
 }

@@ -36,8 +36,8 @@
   import { loadScript } from '@/utils/loader'
 
   const MAPMESSAGE = {
-    show: 'Show&nbsp;map',
-    hide: 'Hide&nbsp;map'
+    show: window.$trans('fields.map.show'),
+    hide: window.$trans('fields.map.hide')
   }
   const GOOGLEMAPURL = 'https://maps.googleapis.com/maps/api/js?libraries=places&key='
   const APIKEY = window[process.env.VUE_APP_NAME].hasOwnProperty('APIKEYS') && window[process.env.VUE_APP_NAME].APIKEYS.hasOwnProperty('googleMapApi') ? window[process.env.VUE_APP_NAME].APIKEYS.googleMapApi : null
