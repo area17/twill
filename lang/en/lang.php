@@ -197,6 +197,7 @@ return [
         ],
         'title' => 'Media Library',
         'update' => 'Update',
+        'unused-filter-label' => 'Show unused images only',
     ],
     'modal' => [
         'create' => [

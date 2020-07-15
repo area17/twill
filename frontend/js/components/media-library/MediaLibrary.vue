@@ -32,7 +32,7 @@
             <div slot="hidden-filters">
               <a17-vselect class="medialibrary__filter-item" ref="filter" name="tag" :options="tags"
                            :placeholder="$trans('media-library.filter-select-label', 'Filter by tag')" :searchable="true" maxHeight="175px"/>
-              <a17-checkbox ref="unused" name="unused" :initial-value="0" :value="1" label="Only unused"/>
+              <a17-checkbox class="medialibrary__filter-item" ref="unused" name="unused" :initial-value="0" :value="1" :label="$trans('media-library.unused-filter-label', 'Show unused images only')"/>
             </div>
           </a17-filter>
         </div>
@@ -591,6 +591,11 @@
     .vselect {
       min-width: 200px;
     }
+  }
+
+  .medialibrary__filter-item.checkbox {
+    margin-top: 8px;
+    margin-right: 45px !important;
   }
 
   .medialibrary__header {
