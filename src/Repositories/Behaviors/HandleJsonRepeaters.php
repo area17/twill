@@ -2,9 +2,8 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
-use Carbon\Carbon;
+use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /**
@@ -18,6 +17,7 @@ use Illuminate\Support\Str;
  * protected $jsonRepeaters = [ 'REPEATER_NAME_1', 'REPEATER_NAME_2', ... ]
  *
  * Names must be the same as the ones you added in your `repeaters` attribute on `config\twill.php`
+ * or the actual filename for self-contained repeaters introduced in 2.1.
  *
  * Supported: Input, WYSIWYG, textarea, browsers.
  * Not supported: Medias, Files, repeaters.
@@ -51,7 +51,7 @@ trait HandleJsonRepeaters
     public function getFormFieldsHandleJsonRepeaters($object, $fields)
     {
 
-        foreach($this->jsonRepeaters as $repeater) {
+        foreach ($this->jsonRepeaters as $repeater) {
             if (isset($fields[$repeater]) && !empty($fields[$repeater])) {
                 $fields = $this->getJsonRepeater($fields, $repeater, $fields[$repeater]);
             }
@@ -60,19 +60,19 @@ trait HandleJsonRepeaters
         return $fields;
     }
 
-    public function getJsonRepeater($fields, $repeaterName, $serializedData) {
+    public function getJsonRepeater($fields, $repeaterName, $serializedData)
+    {
         $repeatersFields = [];
         $repeatersBrowsers = [];
-        $repeatersConfig = config('twill.block_editor.repeaters');
+        $repeatersList = app(BlockCollection::class)->getRepeaterList()->keyBy('name');
 
-
-        foreach($serializedData as $index => $repeaterItem) {
+        foreach ($serializedData as $index => $repeaterItem) {
             $id = $repeaterItem['id'] ?? $index;
 
             $repeaters[] = [
                 'id' => $id,
-                'type' => $repeatersConfig[$repeaterName]['component'],
-                'title' => $repeatersConfig[$repeaterName]['title'],
+                'type' => $repeatersList[$repeaterName]['component'],
+                'title' => $repeatersList[$repeaterName]['title'],
             ];
 
             if (isset($repeaterItem['browsers'])) {
@@ -83,10 +83,10 @@ trait HandleJsonRepeaters
 
             $itemFields = Arr::except($repeaterItem, ['id', 'repeaters', 'files', 'medias', 'browsers', 'blocks']);
 
-            foreach($itemFields as $index => $value) {
+            foreach ($itemFields as $index => $value) {
                 $repeatersFields[] = [
                     'name' => "blocks[$id][$index]",
-                    'value' => $value
+                    'value' => $value,
                 ];
             }
         }
