@@ -114,7 +114,7 @@ return [
         ],
         'block-editor' => [
             'collapse-all' => 'Racchiudi tutto',
-            'expend-all' => 'Espandi tutto',
+            'expand-all' => 'Espandi tutto',
             'open-in-editor' => 'Apri in modifica',
             'create-another' => 'Crea e aggiungi ancora',
             'delete' => 'Elimina',
