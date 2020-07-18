@@ -123,7 +123,7 @@ class SettingRepository extends ModuleRepository
                 }
             } else {
                 $medias =  [
-                    $role => Collection::make($settingsFields['medias'][$role])->mapWithKeys(function ($media, $key) {
+                    $role => Collection::make($settingsFields['medias'][$role])->map(function ($media) {
                         return json_decode($media, true);
                     })->values()->filter()->toArray(),
                 ];
