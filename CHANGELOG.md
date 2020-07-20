@@ -2,6 +2,18 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.1.1 (2020-07-20)
+
+### Fixed
+
+- Fix block editor group parameter update [`121b0166`](https://github.com/area17/twill/commit/121b016653dda342ea36160c9b9a42290000ecc1)
+  - Both `group` and `groups` can be used and receive a string or an array
+- Fix #701: settings forms regression [`053c4ea4`](https://github.com/area17/twill/commit/053c4ea45cbdcc1534fae90972832f519366dc27)
+- Fix skipCreateModal option on submodules [`2474ae56`](https://github.com/area17/twill/commit/2474ae56f55fd50145e489570b5f20656d472d6c)
+- Fix #670: multi select field doesn't prevent user from picking duplicated option [`33e54a43`](https://github.com/area17/twill/commit/33e54a43e8d5fe4be53abe8ec614b29eb3aee691)
+- Remove legacy product requirement on required fields (#697) (#699) [`89469159`](https://github.com/area17/twill/commit/894691590fc0fe2260ce6aa47387e2021b6fe4a7)
+- Fix regression introduced by #620 (#702) [`52b66289`](https://github.com/area17/twill/commit/52b66289e4f7590a2d0d73baa38ab5f63596c923)
+
 ## 2.1.0 (2020-07-15)
 
 ### Added
