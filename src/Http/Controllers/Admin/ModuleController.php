@@ -454,7 +454,7 @@ abstract class ModuleController extends Controller
      * @param int|null $submoduleId
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function create()
+    public function create($parentModuleId = null)
     {
         if (!$this->getIndexOption('skipCreateModal')) {
             return Redirect::to(moduleRoute(
@@ -464,6 +464,8 @@ abstract class ModuleController extends Controller
                 ['openCreate' => true]
             ));
         }
+        $this->submodule = isset($parentModuleId);
+        $this->submoduleParentId = $parentModuleId;
 
         $view = Collection::make([
             "$this->viewPrefix.form",
@@ -1434,7 +1436,7 @@ abstract class ModuleController extends Controller
             'form_fields' => $this->repository->getFormFields($item),
             'baseUrl' => $baseUrl,
             'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
-            'saveUrl' => $item->id ? $this->getModuleRoute($item->id, 'update') : moduleRoute($this->moduleName, $this->routePrefix, 'store'),
+            'saveUrl' => $item->id ? $this->getModuleRoute($item->id, 'update') : moduleRoute($this->moduleName, $this->routePrefix, 'store', [$this->submoduleParentId]),
             'editor' => Config::get('twill.enabled.block-editor') && $this->moduleHas('blocks') && !$this->disableEditor,
             'blockPreviewUrl' => Route::has('admin.blocks.preview') ? URL::route('admin.blocks.preview') : '#',
             'availableRepeaters' => $this->getRepeaterList()->toJson(),
