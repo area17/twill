@@ -126,7 +126,7 @@
         previewUrl: '{{ $previewUrl ?? '' }}',
         restoreUrl: '{{ $restoreUrl ?? '' }}',
         blockPreviewUrl: '{{ $blockPreviewUrl ?? '' }}',
-        availableRepeaters: {!! $availableRepeaters !!},
+        availableRepeaters: {!! $availableRepeaters ?? '{}' !!},
         repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!},
         fields: [],
         editor: {{ $editor ? 'true' : 'false' }},
@@ -137,7 +137,7 @@
     window['{{ config('twill.js_namespace') }}'].STORE.publication = {
         withPublicationToggle: {{ json_encode(($publish ?? true) && isset($item) && $item->isFillable('published')) }},
         published: {{ isset($item) && $item->published ? 'true' : 'false' }},
-        createWithoutModal: '{{ $createWithoutModal ?? 'false' }}',
+        createWithoutModal: {{ isset($createWithoutModal) && $createWithoutModal ? 'true' : 'false' }},
         withPublicationTimeframe: {{ json_encode(($schedule ?? true) && isset($item) && $item->isFillable('publish_start_date')) }},
         publishedLabel: '{{ $customPublishedLabel ?? twillTrans('twill::lang.main.published') }}',
         draftLabel: '{{ $customDraftLabel ?? twillTrans('twill::lang.main.draft') }}',
