@@ -48,9 +48,16 @@ class FileRepository extends ModuleRepository
      */
     public function prepareFieldsBeforeCreate($fields)
     {
-        if (!isset($fields['size'])) {
-            $fields['size'] = Storage::disk(Config::get('twill.file_library.disk'))->size($fields['uuid']);
-        }
+            // if a disk has a root other than / set it'll be re-applied when calculating the file path so we need to strip it here...
+            $diskName = config('twill.file_library.disk');
+            $diskConfig = config('filesystems.disks.'.$diskName);
+            $diskRoot = $diskConfig['root'] ?? false;
+
+            if($diskConfig['driver'] === 's3' && $diskRoot){
+                $fields['uuid'] = ltrim($fields['uuid'], $diskRoot);
+            }
+
+            $fields['size'] = Storage::disk($diskName)->size($fields['uuid']);
 
         return $fields;
     }
