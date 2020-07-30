@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\Relation;
+
 use PDO;
 
 abstract class ModuleRepository
@@ -848,7 +850,12 @@ abstract class ModuleRepository
             if (class_exists($relation) && (new $relation) instanceof Model) {
                 $model = Str::afterLast($relation, '\\');
             } else {
-                $model = ucfirst(Str::singular($relation));
+                $morphedModel = Relation::getMorphedModel($relation);
+                if (class_exists($morphedModel) && (new $morphedModel) instanceof Model) {
+                    $model = (new \ReflectionClass($morphedModel))->getShortName();
+                } else {
+                    $model = ucfirst(Str::singular($relation));
+                }
             }
         }
 
