@@ -240,7 +240,9 @@ class Block
 
         // Title is mandatory
         throw new Exception(
-            "Property '{$property}' not found on block {$blockName}."
+            "Block {$blockName} does not exists or the mandatory property '{$property}' ".
+            "was not found on this block. If you are still using blocks on the twill.php ".
+            "file, please check if the block is present and properly configured."
         );
     }
 
