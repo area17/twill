@@ -368,6 +368,14 @@
         font-weight:700;
       }
 
+      i, p i, li i, em, p em, li em {
+        font-style: italic;
+      }
+
+      u, p u, li u {
+        text-decoration: underline;
+      }
+
       p, ul, ol, h1, h2, h3, h4, h5 {
         margin-bottom: 1em;
       }
