@@ -107,9 +107,13 @@ trait HandleRevisions
         $object->setRelation($relationship, $relatedElementsCollection);
     }
 
-    public function hydrateRepeater($object, $fields, $relationship, $model)
+    public function hydrateRepeater($object, $fields, $relationship, $model, $repeaterName = null)
     {
-        $relationFields = $fields['repeaters'][$relationship] ?? [];
+        if (!$repeaterName) {
+            $repeaterName = $relationship;
+        }
+
+        $relationFields = $fields['repeaters'][$repeaterName] ?? [];
 
         $relationRepository = $this->getModelRepository($relationship, $model);
 
