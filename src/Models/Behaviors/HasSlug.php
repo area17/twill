@@ -2,9 +2,8 @@
 
 namespace A17\Twill\Models\Behaviors;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Str;
 
 trait HasSlug
 {
@@ -27,15 +26,23 @@ trait HasSlug
 
     public function slugs()
     {
-        return $this->hasMany(
-            $this->getNamespace() . "\Slugs\\" . $this->getSlugClassName()
-        );
+        return $this->hasMany($this->getSlugModelClass());
     }
 
     public function getSlugClass()
     {
-        $slugClassName = $this->getNamespace() . "\Slugs\\" . $this->getSlugClassName();
-        return new $slugClassName;
+        return new $this->getSlugModelClass();
+    }
+
+    public function getSlugModelClass()
+    {
+        $slug = $this->getNamespace() . "\Slugs\\" . $this->getSlugClassName();
+
+        if (@class_exists()) {
+            return $slug;
+        }
+
+        return $this->getCapsuleSlugClass(class_basename($this));
     }
 
     protected function getSlugClassName()

@@ -18,6 +18,11 @@ abstract class Model extends BaseModel implements TaggableInterface
 
     public $timestamps = true;
 
+    protected function isTranslationModel()
+    {
+        return Str::endsWith(get_class($this), 'Translation');
+    }
+
     public function scopePublished($query)
     {
         return $query->wherePublished(true);
@@ -75,8 +80,8 @@ abstract class Model extends BaseModel implements TaggableInterface
         // Use the list of translatable attributes on our base model
         if (
             blank($fillable) &&
-            Str::contains($class = get_class($this), 'Models\Translations') &&
-            property_exists($class, 'baseModuleModel')
+            $this->isTranslationModel() &&
+            property_exists($this, 'baseModuleModel')
         ) {
             $fillable = (new $this->baseModuleModel)->getTranslatedAttributes();
 

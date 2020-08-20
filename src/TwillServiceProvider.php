@@ -11,6 +11,7 @@ use A17\Twill\Commands\Install;
 use A17\Twill\Commands\ListBlocks;
 use A17\Twill\Commands\ListIcons;
 use A17\Twill\Commands\ModuleMake;
+use A17\Twill\Services\Capsules\HasCapsules;
 use A17\Twill\Commands\ModuleMakeDeprecated;
 use A17\Twill\Commands\RefreshLQIP;
 use A17\Twill\Commands\SyncLang;
@@ -37,6 +38,7 @@ use Spatie\Activitylog\ActivitylogServiceProvider;
 
 class TwillServiceProvider extends ServiceProvider
 {
+    use HasCapsules;
 
     /**
      * The Twill version.
@@ -57,6 +59,7 @@ class TwillServiceProvider extends ServiceProvider
         TranslatableServiceProvider::class,
         TagsServiceProvider::class,
         ActivitylogServiceProvider::class,
+        CapsulesServiceProvider::class,
     ];
 
     private $migrationsCounter = 0;
@@ -316,7 +319,7 @@ class TwillServiceProvider extends ServiceProvider
      */
     private function includeView($view, $expression)
     {
-        list($name) = str_getcsv($expression, ',', '\'');
+        [$name] = str_getcsv($expression, ',', '\'');
 
         $partialNamespace = view()->exists('admin.' . $view . $name) ? 'admin.' : 'twill::';
 
@@ -358,10 +361,10 @@ class TwillServiceProvider extends ServiceProvider
 
             $expressionAsArray = str_getcsv($expression, ',', '\'');
 
-            list($moduleName, $viewName) = $expressionAsArray;
+            [$moduleName, $viewName] = $expressionAsArray;
             $partialNamespace = 'twill::partials';
 
-            $viewModule = "'admin.'.$moduleName.'.{$viewName}'";
+            $viewModule = "twillViewName($moduleName, '{$viewName}')";
             $viewApplication = "'admin.partials.{$viewName}'";
             $viewModuleTwill = "'twill::'.$moduleName.'.{$viewName}'";
             $view = $partialNamespace . "." . $viewName;
@@ -391,7 +394,7 @@ class TwillServiceProvider extends ServiceProvider
         });
 
         $blade->directive('pushonce', function ($expression) {
-            list($pushName, $pushSub) = explode(':', trim(substr($expression, 1, -1)));
+            [$pushName, $pushSub] = explode(':', trim(substr($expression, 1, -1)));
             $key = '__pushonce_' . $pushName . '_' . str_replace('-', '_', $pushSub);
             return "<?php if(! isset(\$__env->{$key})): \$__env->{$key} = 1; \$__env->startPush('{$pushName}'); ?>";
         });
