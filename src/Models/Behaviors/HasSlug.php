@@ -38,7 +38,7 @@ trait HasSlug
     {
         $slug = $this->getNamespace() . "\Slugs\\" . $this->getSlugClassName();
 
-        if (@class_exists()) {
+        if (@class_exists($slug)) {
             return $slug;
         }
 

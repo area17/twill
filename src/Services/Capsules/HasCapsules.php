@@ -95,20 +95,12 @@ trait HasCapsules
             'formRequest'
         ] = "{$capsule['namespace']}\\Http\Requests\\{$singular}Request";
 
-        $this->setPsr4Autoloader($capsule);
+        $this->registerPsr4Autoloader($capsule);
 
         return $capsule;
     }
 
     public function registerPsr4Autoloader($capsule)
-    {
-        $this->getAutoloader()->setPsr4(
-            $capsule['namespace'] . '\\',
-            $capsule['psr4_path']
-        );
-    }
-
-    public function unregisterPsr4Autoloaders()
     {
         $this->getAutoloader()->setPsr4(
             $capsule['namespace'] . '\\',

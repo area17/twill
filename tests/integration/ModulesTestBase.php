@@ -100,7 +100,7 @@ abstract class ModulesTestBase extends TestCase
 
         $this->copyFiles($this->allFiles);
 
-        $this->loadConfig();
+        $this->loadModulesConfig();
 
         $this->migrate();
 
@@ -110,30 +110,6 @@ abstract class ModulesTestBase extends TestCase
     protected function assertSomethingWrongHappened()
     {
         $this->assertSee('Something wrong happened!');
-    }
-
-    protected function assertNothingWrongHappened()
-    {
-        $this->assertDontSee('Something wrong happened!');
-    }
-
-    protected function loadConfig($file = null)
-    {
-        if (blank($file) || Str::contains($file, 'twill.php')) {
-            $config = require $this->makeFileName(
-                $file ?? '{$stubs}/modules/authors/twill.php'
-            );
-
-            config(['twill' => $config + config('twill')]);
-        }
-
-        if (blank($file) || Str::contains($file, 'translatable.php')) {
-            $config = require $this->makeFileName(
-                $file ?? '{$stubs}/modules/authors/translatable.php'
-            );
-
-            config(['translatable' => $config]);
-        }
     }
 
     /**
