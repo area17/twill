@@ -57,3 +57,18 @@ if (!function_exists('icon')) {
         return "<svg class=\"icon--$name $css_class\" $title $role><use xlink:href=\"" . $svg_link . "\"></use></svg>";
     }
 }
+
+if (!function_exists('twillViewName')) {
+    function twillViewName($module, $suffix)
+    {
+        $view = "'admin.'.$module.'.{$suffix}'";
+
+        if (view()->exists($view)) {
+            return $view;
+        }
+
+        $prefix = app('twill.capsules.manager')->getCapsuleViewPrefix($module);
+
+        return "{$prefix}.{$suffix}";
+    }
+}

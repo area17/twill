@@ -6,7 +6,7 @@ trait HasRevisions
 {
     public function revisions()
     {
-        return $this->hasMany(config('twill.namespace') . "\Models\Revisions\\" . class_basename($this) . "Revision")->orderBy('created_at', 'desc');
+        return $this->hasMany($this->getRevisionModel())->orderBy('created_at', 'desc');
     }
 
     public function scopeMine($query)
@@ -25,5 +25,17 @@ trait HasRevisions
                 'datetime' => $revision->created_at->toIso8601String(),
             ];
         })->toArray();
+    }
+
+    protected function getRevisionModel()
+    {
+        $revision = config('twill.namespace') . "\Models\Revisions\\" . class_basename($this) . "Revision";
+
+        if (@class_exists($revision))
+        {
+            return $revision;
+        }
+
+        return $this->getCapsuleRevisionClass(class_basename($this));
     }
 }

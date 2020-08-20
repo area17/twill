@@ -4,14 +4,21 @@ namespace A17\Twill\Models\Behaviors;
 
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Query\JoinClause;
+use A17\Twill\Services\Capsules\HasCapsules;
 
 trait HasTranslation
 {
-    use Translatable;
+    use Translatable, HasCapsules;
 
     public function getTranslationModelNameDefault()
     {
-        return config('twill.namespace') . "\Models\Translations\\" . class_basename($this) . 'Translation';
+        $repository = config('twill.namespace') . "\Models\Translations\\" . class_basename($this) . 'Translation';
+
+        if (@class_exists($repository)) {
+            return $repository;
+        }
+
+        return $this->getCapsuleTranslationClass(class_basename($this));
     }
 
     public function scopeWithActiveTranslations($query, $locale = null)

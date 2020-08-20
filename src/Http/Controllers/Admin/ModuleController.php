@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Helpers\FlashLevel;
+use A17\Twill\Services\Capsules\HasCapsules;
 use A17\Twill\Services\Blocks\BlockCollection;
 use A17\Twill\Models\Behaviors\HasSlug;
 use Illuminate\Contracts\Foundation\Application;
@@ -23,6 +24,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 abstract class ModuleController extends Controller
 {
+    use HasCapsules;
+
     /**
      * @var Application
      */
@@ -1556,7 +1559,18 @@ abstract class ModuleController extends Controller
             $this->request->offsetUnset($field);
         });
 
-        return App::make("$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request");
+        return App::make($this->getFormRequestClass());
+    }
+
+    public function getFormRequestClass()
+    {
+        $request = "$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request";
+
+        if (@class_exists($request)) {
+            return $request;
+        }
+
+        return $this->getCapsuleFormRequestClass($this->modelName);
     }
 
     /**
@@ -1617,7 +1631,17 @@ abstract class ModuleController extends Controller
      */
     protected function getRepository()
     {
-        return App::make("$this->namespace\Repositories\\" . $this->modelName . "Repository");
+        return App::make($this->getRepositoryClass($this->modelName));
+    }
+
+    public function getRepositoryClass($model)
+    {
+        if (@class_exists($class = "$this->namespace\Repositories\\" . $model . "Repository"))
+        {
+            return $class;
+        }
+
+        return $this->getCapsuleRepositoryClass($model);
     }
 
     /**
@@ -1625,7 +1649,13 @@ abstract class ModuleController extends Controller
      */
     protected function getViewPrefix()
     {
-        return "admin.$this->moduleName";
+        $prefix = "admin.$this->moduleName";
+
+        if (view()->exists("$prefix.form")) {
+            return $prefix;
+        }
+
+        return $this->getCapsuleViewPrefix($this->moduleName);
     }
 
     /**
