@@ -12,7 +12,7 @@
       <a17-nested-item :index="index"
                        :row="row"
                        :columns="columns"/>
-      <a17-nested-list v-if="row.children"
+      <a17-nested-list v-if="row.children && depth < maxDepth"
                        :maxDepth="maxDepth"
                        :depth="depth + 1"
                        :parentId="row.id"
