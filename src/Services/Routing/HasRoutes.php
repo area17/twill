@@ -101,4 +101,21 @@ trait HasRoutes
     {
         return config('twill.support_subdomain_admin_routing', false);
     }
+
+    public function registerCapsuleRoutes($router, $capsule)
+    {
+        if (file_exists($capsule['routes_file'])) {
+            $this->registerRoutes(
+                $router,
+                $this->getRouteGroupOptions(),
+                $this->getRouteMiddleware(),
+                $this->supportSubdomainRouting(),
+                $this->manager->capsuleNamespace(
+                    $capsule['name'],
+                    'controllers'
+                ),
+                $capsule['routes_file']
+            );
+        }
+    }
 }

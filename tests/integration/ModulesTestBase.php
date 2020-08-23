@@ -112,14 +112,6 @@ abstract class ModulesTestBase extends TestCase
         $this->assertSee('Something wrong happened!');
     }
 
-    /**
-     * Migrate database.
-     */
-    public function migrate()
-    {
-        $this->artisan('migrate');
-    }
-
     protected function fakeText(int $max = 250)
     {
         /*

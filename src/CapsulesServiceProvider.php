@@ -14,6 +14,8 @@ class CapsulesServiceProvider extends RouteServiceProvider
 {
     use HasRoutes, HasCapsules;
 
+    protected $manager;
+
     protected function mergeTwillConfig()
     {
         $this->mergeConfigFrom(
@@ -35,18 +37,18 @@ class CapsulesServiceProvider extends RouteServiceProvider
 
     protected function registerConfig()
     {
+        $this->registerManager();
+
         $this->mergeTwillConfig();
 
         $this->registerCapsules();
 
         $this->registerViewPaths();
-
-        $this->registerManager();
     }
 
     public function registerCapsules()
     {
-        $this->getCapsuleList()->map(function ($capsule) {
+        $this->manager->getCapsuleList()->map(function ($capsule) {
             $this->registerCapsule($capsule);
         });
     }
@@ -58,21 +60,11 @@ class CapsulesServiceProvider extends RouteServiceProvider
 
     public function map(Router $router)
     {
-        $this->getCapsuleList()->each(function ($capsule) use ($router) {
-            $this->registerCapsuleRoutes($router, $capsule);
-        });
-    }
-
-    public function registerCapsuleRoutes($router, $capsule)
-    {
-        $this->registerRoutes(
-            $router,
-            $this->getRouteGroupOptions(),
-            $this->getRouteMiddleware(),
-            $this->supportSubdomainRouting(),
-            "{$capsule['namespace']}\Http\Controllers",
-            $capsule['routes_file']
-        );
+        $this->manager
+            ->getCapsuleList()
+            ->each(function ($capsule) use ($router) {
+                $this->registerCapsuleRoutes($router, $capsule);
+            });
     }
 
     public function registerViewPaths()
@@ -84,6 +76,33 @@ class CapsulesServiceProvider extends RouteServiceProvider
 
     public function registerManager()
     {
-        $this->app->instance('twill.capsules.manager', new Manager());
+        $this->app->instance(
+            'twill.capsules.manager',
+            $this->manager = new Manager()
+        );
+    }
+
+    public function testCanMakeCapsule()
+    {
+        $this->assertExitCodeIsGood(
+            $this->artisan('twill:make:capsule', [
+                'moduleName' => 'Cars',
+                '--hasBlocks' => true,
+                '--hasTranslation' => true,
+                '--hasSlug' => true,
+                '--hasMedias' => true,
+                '--hasFiles' => true,
+                '--hasPosition' => true,
+                '--hasRevisions' => true,
+            ])->run()
+        );
+
+        $this->assertFileExists(
+            twill_path('Twill/Capsules/Cars/app/Data/Models/Car.php')
+        );
+
+        $this->assertIsObject(
+            $this->app->make('App\Twill\Capsules\Cars\Data\Models\Car')
+        );
     }
 }

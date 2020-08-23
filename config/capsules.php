@@ -3,7 +3,22 @@
 return [
     'path' => app_path('Twill/Capsules'),
 
+    'namespaces' => [
+        'subdir' => 'app',
+
+        'base' => 'App\Twill\Capsules',
+
+        'models' => 'Data\Models',
+
+        'repositories' => 'Data\Repositories',
+
+        'controllers' => 'Http\Controllers',
+
+        'requests' => 'Http\Requests',
+    ],
+
     'list' => [
+        // ['name' => 'Artists', 'enabled' => true],
         // ['name' => 'Posts', 'enabled' => true],
     ],
 ];
@@ -14,26 +29,52 @@ return [
 //    'modules' => [
 //        'path' => app_path('Twill/Modules'),
 //
-//        'loaded' = true,
+//        'loaded' => true,
 //
 //        'list' => [
 //            [
-//                "name" => "Post",
-//                "enabled" => true,
-//                "psr4_path" => "/app-path/app/Twill/Modules/Post/app",
-//                "namespace" => "App\Twill\Modules\Post",
-//                "root_path" => "/app-path/app/Twill/Modules/Post",
-//                "migrations_dir" => "/app-path/app/Twill/Modules/Post/database/migrations",
-//                "views_dir" => "/app-path/app/Twill/Modules/Post/resources/views",
-//                "view_prefix" => "Post.resources.views.admin",
-//                "routes_file" => "/app-path/app/Twill/Modules/Post/routes/admin.php",
-//                "model" => "App\Twill\Modules\Post\Data\Models\Post",
-//                "translation" => "App\Twill\Modules\Post\Data\Models\PostTranslation",
-//                "slug" => "App\Twill\Modules\Post\Data\Models\PostSlug",
-//                "revision" => "App\Twill\Modules\Post\Data\Models\PostRevision",
-//                "repository" => "App\Twill\Modules\Post\Data\Repositories\PostRepository",
-//                "controller" => "App\Twill\Modules\Post\Http\Controllers\PostController",
-//                "formRequest" => "App\Twill\Modules\Post\Http\Requests\PostRequest",
+//                'name' => 'Posts',
+//                'enabled' => true,
+//                'module' => 'posts',
+//                'plural' => 'Posts',
+//                'singular' => 'Post',
+//                'namespace' => 'App\Twill\Capsules\Posts',
+//                'models' => 'App\Twill\Capsules\Posts\Data\Models',
+//                'model' => 'App\Twill\Capsules\Posts\Data\Models\Post',
+//                'repositories' => 'App\Twill\Capsules\Posts\Data\Repositories',
+//                'controllers' => 'App\Twill\Capsules\Posts\Http\Controllers',
+//                'requests' => 'App\Twill\Capsules\Posts\Http\Requests',
+//                'psr4_path' =>
+//                    '/app-dir/vendor/area17/twill/vendor/orchestra/testbench-core/laravel/app/Twill/Capsules/Posts/app',
+//                'root_path' =>
+//                    '/app-dir/vendor/area17/twill/vendor/orchestra/testbench-core/laravel/app/Twill/Capsules/Posts',
+//                'migrations_dir' =>
+//                    '/app-dir/vendor/area17/twill/vendor/orchestra/testbench-core/laravel/app/Twill/Capsules/Posts/database/migrations',
+//                'views_dir' =>
+//                    '/app-dir/vendor/area17/twill/vendor/orchestra/testbench-core/laravel/app/Twill/Capsules/Posts/resources/views',
+//                'view_prefix' => 'Posts.resources.views.admin',
+//                'routes_file' =>
+//                    '/app-dir/vendor/area17/twill/vendor/orchestra/testbench-core/laravel/app/Twill/Capsules/Posts/routes/admin.php',
+//                'models_dir' =>
+//                    '/app-dir/vendor/area17/twill/vendor/orchestra/testbench-core/laravel/app/Twill/Capsules/Posts/app/Data/Models',
+//                'translation' =>
+//                    'App\Twill\Capsules\Posts\Data\Models\PostTranslation',
+//                'slug' => 'App\Twill\Capsules\Posts\Data\Models\PostSlug',
+//                'revision' =>
+//                    'App\Twill\Capsules\Posts\Data\Models\PostRevision',
+//                'repository' =>
+//                    'App\Twill\Capsules\Posts\Data\Repositories\PostRepository',
+//                'repositories_dir' =>
+//                    '/app-dir/vendor/area17/twill/vendor/orchestra/testbench-core/laravel/app/Twill/Capsules/Posts/app/Data/Repositories',
+//                'controller' =>
+//                    'App\Twill\Capsules\Posts\Http\Controllers\PostController',
+//                'controllers_dir' =>
+//                    '/app-dir/vendor/area17/twill/vendor/orchestra/testbench-core/laravel/app/Twill/Capsules/Posts/app/Http/Controllers',
+//                'formRequest' =>
+//                    'App\Twill\Capsules\Posts\Http\Requests\PostRequest',
+//                'requests_dir' =>
+//                    '/app-dir/vendor/area17/twill/vendor/orchestra/testbench-core/laravel/app/Twill/Capsules/Posts/app/Http/Requests',
 //            ],
 //        ],
-//    ];
+//    ],
+//];
