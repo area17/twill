@@ -11,6 +11,7 @@ use A17\Twill\Commands\Install;
 use A17\Twill\Commands\ListBlocks;
 use A17\Twill\Commands\ListIcons;
 use A17\Twill\Commands\ModuleMake;
+use A17\Twill\Commands\MakeCapsule;
 use A17\Twill\Services\Capsules\HasCapsules;
 use A17\Twill\Commands\ModuleMakeDeprecated;
 use A17\Twill\Commands\RefreshLQIP;
@@ -298,6 +299,7 @@ class TwillServiceProvider extends ServiceProvider
         $this->commands([
             Install::class,
             ModuleMake::class,
+            MakeCapsule::class,
             ModuleMakeDeprecated::class,
             BlockMake::class,
             ListIcons::class,

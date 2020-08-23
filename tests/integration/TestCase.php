@@ -111,6 +111,12 @@ abstract class TestCase extends OrchestraTestCase
     {
         parent::setUp();
 
+        $this->loadConfig();
+
+        $this->freshDatabase();
+
+        $this->cleanDirectories();
+
         $this->instantiateFaker();
 
         $this->copyBlocks();
@@ -264,6 +270,11 @@ abstract class TestCase extends OrchestraTestCase
      */
     protected function getPackageProviders($app)
     {
+        app()->instance(
+            'autoloader',
+            require __DIR__ . '/../../vendor/autoload.php'
+        );
+
         return [
             AuthServiceProvider::class,
             RouteServiceProvider::class,
@@ -731,12 +742,23 @@ abstract class TestCase extends OrchestraTestCase
         try {
             DB::table('twill_users')->truncate();
         } catch (\Exception $exception) {
-
         }
     }
 
     protected function assertNothingWrongHappened()
     {
         $this->assertDontSee('Something wrong happened!');
+    }
+
+    /**
+     * Migrate database.
+     */
+    public function migrate()
+    {
+        $this->artisan('migrate');
+    }
+
+    public function loadConfig()
+    {
     }
 }

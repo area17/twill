@@ -238,3 +238,16 @@ if (!function_exists('generate_list_of_allowed_blocks')) {
         return $sorted;
     }
 }
+
+if (!function_exists('capsule_namespace')) {
+    function capsule_namespace($capsuleName, $type = null) {
+        return app('twill.capsules.manager')->capsuleNamespace($capsuleName, $type);
+    }
+}
+
+
+if (!function_exists('capsule_namespace_to_path')) {
+    function capsule_namespace_to_path($namespace, $capsuleNamespace, $rootPath) {
+        return app('twill.capsules.manager')->capsuleNamespaceToPath($namespace, $capsuleNamespace, $rootPath);
+    }
+}

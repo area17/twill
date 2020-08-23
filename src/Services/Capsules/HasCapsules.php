@@ -48,6 +48,10 @@ trait HasCapsules
 
     public function makeCapsule($capsule, $basePath)
     {
+        $capsule['name'] = Str::studly($capsule['name']);
+
+        $capsule['module'] = Str::camel($capsule['name']);
+
         $capsule['plural'] = $name = $capsule['name'];
 
         $capsule['singular'] = $singular =
@@ -55,15 +59,28 @@ trait HasCapsules
 
         $twillNamespace = config('twill.namespace');
 
-        $capsuleNamespace = "{$twillNamespace}\Twill\Capsules\\{$name}";
+        $capsule[
+            'namespace'
+        ] = $capsuleNamespace = $this->getManager()->capsuleNamespace(
+            $capsule['name']
+        );
 
-        $models = "{$capsuleNamespace}\Data\Models";
+        $capsule['model'] = $capsule['models'] = $models =
+            "{$capsuleNamespace}\\" .
+            config('twill.capsules.namespaces.models');
+        $capsule['repositories'] = $repositories =
+            "{$capsuleNamespace}\\" .
+            config('twill.capsules.namespaces.repositories');
+        $capsule['controllers'] = $controllers =
+            "{$capsuleNamespace}\\" .
+            config('twill.capsules.namespaces.controllers');
+        $capsule['requests'] = $requests =
+            "{$capsuleNamespace}\\" .
+            config('twill.capsules.namespaces.requests');
 
         $capsule['psr4_path'] = "$basePath/{$name}/app";
 
-        $capsule['namespace'] = $capsuleNamespace;
-
-        $capsule['root_path'] = $this->capsuleRootPath($capsule);
+        $capsule['root_path'] = $root = $this->capsuleRootPath($capsule);
 
         $capsule[
             'migrations_dir'
@@ -75,7 +92,9 @@ trait HasCapsules
 
         $capsule['routes_file'] = "{$capsule['root_path']}/routes/admin.php";
 
-        $capsule['model'] = "{$capsuleNamespace}\\Data\Models\\{$singular}";
+        $capsule['model'] = "{$models}\\{$singular}";
+
+        $capsule['models_dir'] = $this->namespaceToPath($capsule, $models);
 
         $capsule['translation'] = "{$models}\\{$singular}Translation";
 
@@ -83,17 +102,23 @@ trait HasCapsules
 
         $capsule['revision'] = "{$models}\\{$singular}Revision";
 
-        $capsule[
-            'repository'
-        ] = "{$capsule['namespace']}\\Data\Repositories\\{$singular}Repository";
+        $capsule['repository'] = "{$repositories}\\{$singular}Repository";
 
-        $capsule[
-            'controller'
-        ] = "{$capsule['namespace']}\\Http\Controllers\\{$singular}Controller";
+        $capsule['repositories_dir'] = $this->namespaceToPath(
+            $capsule,
+            $repositories
+        );
 
-        $capsule[
-            'formRequest'
-        ] = "{$capsule['namespace']}\\Http\Requests\\{$singular}Request";
+        $capsule['controller'] = "{$controllers}\\{$singular}Controller";
+
+        $capsule['controllers_dir'] = $this->namespaceToPath(
+            $capsule,
+            $controllers
+        );
+
+        $capsule['formRequest'] = "{$requests}\\{$singular}Request";
+
+        $capsule['requests_dir'] = $this->namespaceToPath($capsule, $requests);
 
         $this->registerPsr4Autoloader($capsule);
 
@@ -143,5 +168,33 @@ trait HasCapsules
         return $this->getCapsuleByModule(Str::studly($capsule))[
             'view_prefix'
         ] ?? null;
+    }
+
+    public function namespaceToPath($capsule, $namespace)
+    {
+        return $this->capsuleNamespaceToPath(
+            $namespace,
+            $capsule['namespace'],
+            $capsule['root_path']
+        );
+    }
+
+    public function capsuleNamespaceToPath(
+        $namespace,
+        $capsuleNamespace,
+        $rootPath
+    ) {
+        $namespace = Str::after($namespace, $capsuleNamespace . '\\');
+
+        $subdir = config('twill.capsules.namespaces.subdir');
+
+        $subdir = filled($subdir) ? "{$subdir}/" : '';
+
+        return "{$rootPath}/{$subdir}" . str_replace('\\', '/', $namespace);
+    }
+
+    public function getManager()
+    {
+        return $this->manager = $this->manager ?? app('twill.capsules.manager');
     }
 }
