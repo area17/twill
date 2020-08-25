@@ -646,7 +646,7 @@ class ModuleMake extends Command
             return $viewsPath = $this->config->get('view.paths')[0] . '/admin/' . $moduleName;
         }
 
-        $this->makeDir($dir = "{$this->moduleBasePath}/resources/views/admin/{$moduleName}");
+        $this->makeDir($dir = "{$this->moduleBasePath}/resources/views/admin");
 
         return $dir;
     }
