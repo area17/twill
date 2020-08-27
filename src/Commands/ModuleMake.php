@@ -172,7 +172,7 @@ class ModuleMake extends Command
      */
     public function handle()
     {
-        $moduleName = Str::plural(lcfirst($this->argument('moduleName')));
+        $moduleName = Str::camel(Str::plural(lcfirst($this->argument('moduleName'))));
 
         $this->capsule = app('twill.capsules.manager')->makeCapsule(['name' => $moduleName], config("twill.capsules.path"));
 
