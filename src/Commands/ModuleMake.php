@@ -223,6 +223,7 @@ class ModuleMake extends Command
         $this->createRequest($modelName);
         $this->createViews($moduleName);
         $this->createRoutes($moduleName);
+        $this->createSeed($moduleName);
 
         $this->info("Add Route::module('{$moduleName}'); to your admin routes file.");
         $this->info("Setup a new CMS menu item in config/twill-navigation.php:");
@@ -554,6 +555,26 @@ class ModuleMake extends Command
         twill_put_stub($this->capsule['routes_file'], $contents);
 
         $this->info("Routes file created successfully!");
+    }
+
+    /**
+     * Creates a new module database seed file.
+     *
+     * @param string $moduleName
+     * @return void
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    private function createSeed($moduleName = 'items')
+    {
+        $this->makeTwillDirectory($this->capsule['seeds_psr4_path']);
+
+        $stub = $this->files->get(__DIR__ . '/stubs/database_seeder.stub');
+
+        $stub = str_replace('{moduleName}', $this->capsule['plural'], $stub);
+
+        $this->files->put("{$this->capsule['seeds_psr4_path']}/DatabaseSeeder.php", $stub);
+
+        $this->info("Seed created successfully!");
     }
 
     private function checkOption($option)

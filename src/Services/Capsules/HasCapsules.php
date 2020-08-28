@@ -65,6 +65,14 @@ trait HasCapsules
             $capsule['name']
         );
 
+        $capsule[
+            'database_namespace'
+        ] = "$capsuleNamespace\Database";
+
+        $capsule[
+            'seeds_namespace'
+        ] = "{$capsule['database_namespace']}\Seeds";
+
         $capsule['model'] = $capsule['models'] = $models =
             "{$capsuleNamespace}\\" .
             config('twill.capsules.namespaces.models');
@@ -79,6 +87,10 @@ trait HasCapsules
             config('twill.capsules.namespaces.requests');
 
         $capsule['psr4_path'] = "$basePath/{$name}/app";
+
+        $capsule['database_psr4_path'] = "$basePath/{$name}/database";
+
+        $capsule['seeds_psr4_path'] = "{$capsule['database_psr4_path']}/seeds";
 
         $capsule['root_path'] = $root = $this->capsuleRootPath($capsule);
 
@@ -130,6 +142,16 @@ trait HasCapsules
         $this->getAutoloader()->setPsr4(
             $capsule['namespace'] . '\\',
             $capsule['psr4_path']
+        );
+
+        $this->getAutoloader()->setPsr4(
+            $capsule['database_namespace'] . '\\',
+            $capsule['database_psr4_path']
+        );
+
+        $this->getAutoloader()->setPsr4(
+            $capsule['database_namespace'] . '\\Seeds\\',
+            $capsule['database_psr4_path'] . '/seeds'
         );
     }
 
@@ -196,5 +218,23 @@ trait HasCapsules
     public function getManager()
     {
         return $this->manager = $this->manager ?? app('twill.capsules.manager');
+    }
+
+    public function seedCapsules()
+    {
+        $this->getCapsuleList()->each(function ($capsule) {
+            if (filled($seeder = $this->makeCapsuleSeeder($capsule))) {
+                $seeder->__invoke();
+            }
+        });
+    }
+
+    public function makeCapsuleSeeder($capsule)
+    {
+        $seeder = "{$capsule['database_namespace']}\\Seeds\DatabaseSeeder";
+
+        if (class_exists($seeder)) {
+            return app($seeder);
+        }
     }
 }
