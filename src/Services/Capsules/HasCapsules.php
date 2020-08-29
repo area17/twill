@@ -220,11 +220,15 @@ trait HasCapsules
         return $this->manager = $this->manager ?? app('twill.capsules.manager');
     }
 
-    public function seedCapsules()
+    public function seedCapsules($illuminateSeeder)
     {
-        $this->getCapsuleList()->each(function ($capsule) {
-            if (filled($seeder = $this->makeCapsuleSeeder($capsule))) {
-                $seeder->__invoke();
+        $twillSeeder = app(CapsuleSeeder::class);
+
+        $this->getCapsuleList()->each(function ($capsule) use ($twillSeeder, $illuminateSeeder) {
+            if (filled($capsuleSeeder = $this->makeCapsuleSeeder($capsule))) {
+                $twillSeeder->setCommand($illuminateSeeder->command);
+
+                $twillSeeder->call($capsuleSeeder);
             }
         });
     }
@@ -234,7 +238,9 @@ trait HasCapsules
         $seeder = "{$capsule['database_namespace']}\\Seeds\DatabaseSeeder";
 
         if (class_exists($seeder)) {
-            return app($seeder);
+            return $seeder;
         }
+
+        return null;
     }
 }
