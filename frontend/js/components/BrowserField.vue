@@ -53,6 +53,14 @@
         type: String,
         default: ''
       },
+      createUrl: {
+        type: String,
+        default: ''
+      },
+      allowCreate: {
+        type: Boolean,
+        default: false
+      },
       endpoints: {
         type: Array,
         default: () => []
@@ -143,6 +151,8 @@
         }
         this.$store.commit(BROWSER.UPDATE_BROWSER_MAX, this.max)
         this.$store.commit(BROWSER.UPDATE_BROWSER_TITLE, this.browserTitle)
+        this.$store.commit(BROWSER.UPDATE_BROWSER_CREATE_URL, this.createUrl)
+        this.$store.commit(BROWSER.UPDATE_ALLOW_CREATE, this.allowCreate)
 
         if (this.wide) {
           this.$root.$refs.browserWide.open(this.endpoints.length <= 0)

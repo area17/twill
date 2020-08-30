@@ -12,7 +12,19 @@
                        @change="changeBrowserSource"/>
         </div>
         <div class="browser__search">
-          <a17-filter @submit="submitFilter"/>
+          <a17-filter @submit="submitFilter">
+            <div slot="additional-actions">
+              <a17-button
+                variant="validate"
+                size="small"
+                href=""
+                v-on:click="create"
+                v-if="allowCreate"
+              >
+                Create new item
+              </a17-button>
+            </div>
+          </a17-filter>
         </div>
       </div>
       <div class="browser__inner">
@@ -33,7 +45,7 @@
 
 <script>
   import { mapState } from 'vuex'
-  import { BROWSER } from '@/store/mutations'
+  import { BROWSER, MODALEDITION } from '@/store/mutations'
 
   import a17Filter from './Filter.vue'
   import a17ItemList from './ItemList.vue'
@@ -89,10 +101,20 @@
         endpointName: state => state.browser.endpointName,
         endpoints: state => state.browser.endpoints,
         browserTitle: state => state.browser.title,
-        selected: state => state.browser.selected
+        browserCreateUrl: state => state.browser.createUrl,
+        selected: state => state.browser.selected,
+        allowCreate: state => state.browser.allowCreate
       })
     },
     methods: {
+      create: function () {
+        const editionModal = `editionModal-${this.connector}`
+        if (this.$root.$refs[editionModal]) {
+          this.$store.commit(MODALEDITION.UPDATE_MODAL_ACTION, this.browserCreateUrl)
+          this.$store.commit(MODALEDITION.UPDATE_MODAL_MODE, 'create')
+          this.$root.$refs[editionModal].open()
+        }
+      },
       updateSelectedItems (item) {
         const keysToTest = this.multiSources ? ['id', 'endpointType'] : ['id']
         const availableItem = this.fullItems.some(sItem => keysToTest.every(key => sItem[key] === item[key]))

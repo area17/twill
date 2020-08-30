@@ -32,6 +32,10 @@
         type: Boolean,
         default: false
       },
+      fieldsInModal: {
+        type: Boolean,
+        default: false
+      },
       activePublishState: {
         type: Boolean,
         default: false
@@ -66,7 +70,8 @@
     },
     watch: {
       published: function (value) {
-        this.$store.commit(FORM.UPDATE_FORM_FIELD, {
+        const action = this.fieldsInModal ? FORM.UPDATE_MODAL_FIELD : FORM.UPDATE_FORM_FIELD
+        this.$store.commit(action, {
           name: 'published',
           value: value
         })

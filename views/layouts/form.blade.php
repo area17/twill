@@ -110,6 +110,27 @@
     <a17-modal class="modal--browser" ref="browserWide" mode="wide" :force-close="true">
         <a17-browser></a17-browser>
     </a17-modal>
+    @foreach ($browsersWithCreate as $browser)
+        @php
+          $fieldsInModal = $moduleName != $browser['moduleName'];
+          $titleIsTranslatable = count($browser['languages']) > 1;
+          $permalinkPrefix = $browser['permalinkPrefix'];
+        @endphp
+        <a17-modal-create
+            ref="editionModal-{{$browser['browserName']}}"
+            :fields-in-modal=true
+            :close-on-create=true
+            :show-publication="{{ json_encode(\Schema::hasColumn($browser['moduleName'], 'published')) }}"
+            :languages="{{ json_encode($browser['languages']) }}"
+            v-on:reload="reloadList"
+            form-create=""
+            @if ($customPublishedLabel ?? false) published-label="{{ $customPublishedLabel }}" @endif
+            @if ($customDraftLabel ?? false) draft-label="{{ $customDraftLabel }}" @endif
+        >
+            <a17-langmanager></a17-langmanager>
+            @partialView(($browser['moduleName'] ?? $name), 'create', ['renderForModal' => true, 'permalinkPrefix' => $permalinkPrefix, 'translateTitle' => $titleIsTranslatable])
+        </a17-modal-create>
+    @endforeach
     <a17-editor v-if="editor" ref="editor" bg-color="{{ config('twill.block_editor.background_color') ?? '#FFFFFF' }}"></a17-editor>
     <a17-previewer ref="preview"></a17-previewer>
         <a17-dialog ref="warningContentEditor" modal-title="{{ twillTrans('twill::lang.form.dialogs.delete.title') }}" confirm-label="{{ twillTrans('twill::lang.form.dialogs.delete.confirm') }}">

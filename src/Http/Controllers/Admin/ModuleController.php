@@ -1434,6 +1434,7 @@ abstract class ModuleController extends Controller
             'permalink' => $this->getIndexOption('permalink'),
             'createWithoutModal' => !$item->id && $this->getIndexOption('skipCreateModal'),
             'form_fields' => $this->repository->getFormFields($item),
+            'browsersWithCreate' => $this->repository->getBrowsersWithCreate(),
             'baseUrl' => $baseUrl,
             'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
             'saveUrl' => $item->id ? $this->getModuleRoute($item->id, 'update') : moduleRoute($this->moduleName, $this->routePrefix, 'store', [$this->submoduleParentId]),
