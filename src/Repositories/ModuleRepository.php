@@ -2,12 +2,14 @@
 
 namespace A17\Twill\Repositories;
 
-use A17\Twill\Models\Model;
 use A17\Twill\Models\Behaviors\Sortable;
+use A17\Twill\Models\Model;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
 use A17\Twill\Repositories\Behaviors\HandleDates;
 use A17\Twill\Repositories\Behaviors\HandleFieldsGroups;
 use A17\Twill\Repositories\Behaviors\HandleRepeaters;
+use A17\Twill\Services\Capsules\HasCapsules;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
@@ -15,13 +17,11 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Relations\Relation;
-
 use PDO;
 
 abstract class ModuleRepository
 {
-    use HandleDates, HandleBrowsers, HandleRepeaters, HandleFieldsGroups;
+    use HandleDates, HandleBrowsers, HandleRepeaters, HandleFieldsGroups, HasCapsules;
 
     /**
      * @var \A17\Twill\Models\Model
@@ -361,7 +361,7 @@ abstract class ModuleRepository
         $baseInput = collect($revisionInput)->only([
             $titleColumnKey,
             'slug',
-            'languages'
+            'languages',
         ])->filter()->toArray();
 
         $newObject = $this->create($baseInput);
@@ -841,25 +841,45 @@ abstract class ModuleRepository
 
     /**
      * @param string $relation
-     * @param \A17\Twill\Models\Model|null $model
+     * @param \A17\Twill\Models\Model|\A17\Twill\Repositories\ModuleRepository|null $modelOrRepository
      * @return mixed
      */
-    protected function getModelRepository($relation, $model = null)
+    protected function getModelRepository($relation, $modelOrRepository = null)
     {
-        if (!$model) {
+        if (!$modelOrRepository) {
             if (class_exists($relation) && (new $relation) instanceof Model) {
-                $model = Str::afterLast($relation, '\\');
+                $modelOrRepository = Str::afterLast($relation, '\\');
             } else {
                 $morphedModel = Relation::getMorphedModel($relation);
                 if (class_exists($morphedModel) && (new $morphedModel) instanceof Model) {
-                    $model = (new \ReflectionClass($morphedModel))->getShortName();
+                    $modelOrRepository = (new \ReflectionClass($morphedModel))->getShortName();
                 } else {
-                    $model = ucfirst(Str::singular($relation));
+                    $modelOrRepository = ucfirst(Str::singular($relation));
                 }
             }
         }
 
-        return App::make(Config::get('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository");
+        $repository = class_exists($modelOrRepository)
+        ? App::make($modelOrRepository)
+        : $modelOrRepository;
+
+        if ($repository instanceof ModuleRepository) {
+            return $repository;
+        } else {
+            $class = Config::get('twill.namespace') . "\\Repositories\\" . ucfirst($modelOrRepository) . "Repository";
+        }
+
+        if (class_exists($class)) {
+            return App::make($class);
+        }
+
+        $capsule = $this->getCapsuleByModel($modelOrRepository);
+
+        if (blank($capsule)) {
+            throw new \Exception("Repository class not found for model '{$modelOrRepository}'");
+        }
+
+        return App::make($capsule['repository']);
     }
 
     /**
