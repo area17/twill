@@ -33,7 +33,7 @@ trait HasCapsules
     public function getCapsuleByModel($model)
     {
         return $this->getCapsuleList()
-            ->where('singular', $model)
+            ->where('singular', Str::studly($model))
             ->first();
     }
 
