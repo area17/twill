@@ -11,6 +11,7 @@
               <button type="button" @click="collapseAllBlocks()" v-if="opened">{{ $trans('fields.block-editor.collapse-all', 'Collapse all') }}</button>
               <button type="button" @click="expandAllBlocks()" v-else>{{ $trans('fields.block-editor.expand-all', 'Expand all') }}</button>
               <button v-if="editor" type="button" @click="openEditor(index)">{{ $trans('fields.block-editor.open-in-editor', 'Open in editor') }}</button>
+              <button type="button" @click="cloneBlock(index,block)">{{ $trans('fields.block-editor.clone-block', 'Clone block') }}</button>
               <button type="button" @click="duplicateBlock(index)">{{ $trans('fields.block-editor.create-another', 'Create another') }}</button>
               <button type="button" @click="deleteBlock(index)">{{ $trans('fields.block-editor.delete', 'Delete') }}</button>
             </div>
@@ -117,6 +118,37 @@
           block: newBlock,
           index: fromIndex
         })
+      },
+      cloneBlock: function (index, block) {
+        const existingBlocks = this.blocks
+          .map(block => block.id)
+        this.duplicateBlock(index)
+        const newBlockId = this.blocks
+          .map(block => block.id)
+          .filter(block => !existingBlocks.includes(block))
+        const oldBlock = 'blocks[' + block.id + ']'
+        const newBlock = 'blocks[' + newBlockId + ']'
+        const fields = window.TWILL.STORE.form.fields
+        fields
+          .filter(field => field.name.startsWith(oldBlock))
+          .forEach(function (field) {
+            fields.push({
+              name: field.name.replace(oldBlock, newBlock),
+              value: field.value
+            })
+          })
+        const medias = window.TWILL.STORE.medias.selected
+        Object.keys(medias)
+          .filter(key => key.startsWith(oldBlock))
+          .forEach(function (key) {
+            medias[key.replace(oldBlock, newBlock)] = medias[key]
+          })
+        const browsers = window.TWILL.STORE.browser.selected
+        Object.keys(browsers)
+          .filter(key => key.startsWith(oldBlock))
+          .forEach(function (key) {
+            browsers[key.replace(oldBlock, newBlock)] = browsers[key]
+          })
       },
       duplicateBlock: function (index) {
         this.opened = true
