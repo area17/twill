@@ -207,8 +207,11 @@
         img.onload = () => {
           this._uploader.methods.setParams({
             width: img.width,
-            height: img.height
+            height: img.height,
+            unique_folder_name: this.unique_folder_name,
+            media_to_replace_id: this.media_to_replace_id
           }, id)
+          this.media_to_replace_id = null
         }
 
         img.src = imageUrl
@@ -223,7 +226,10 @@
           replacementId: this.media_to_replace_id
         }
 
-        this.media_to_replace_id = null
+        if (this.type.value === 'file') {
+          this.media_to_replace_id = null
+        }
+
         this.loadingMedias.push(media)
         this.loadingProgress(media)
       },
