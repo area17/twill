@@ -41,7 +41,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     protected $defaultFilters = [
         'search' => 'search',
         'tag' => 'tag_id',
-        'unused' => 'unused'
+        'unused' => 'unused',
     ];
 
     /**
@@ -190,7 +190,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
 
         if ($this->shouldReplaceMedia($id = $request->input('media_to_replace_id'))) {
             $media = $this->repository->whereId($id)->first();
-            Storage::disk($disk)->delete($media->uuid);
+            $this->repository->afterDelete($media);
             $media->replace($fields);
             return $media->fresh();
         } else {
@@ -213,6 +213,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
 
         if ($this->shouldReplaceMedia($id = $request->input('media_to_replace_id'))) {
             $media = $this->repository->whereId($id)->first();
+            $this->repository->afterDelete($media);
             $media->update($fields);
             return $media->fresh();
         } else {
