@@ -132,7 +132,7 @@ class LoginController extends Controller
         return $this->afterAuthentication($request, $user);
     }
 
-    private function afterAuthentication(Request $request, $user)
+    protected function afterAuthentication(Request $request, $user)
     {
         if ($user->google_2fa_secret && $user->google_2fa_enabled) {
             $this->guard()->logout();
