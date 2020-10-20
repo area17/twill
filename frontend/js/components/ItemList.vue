@@ -2,38 +2,46 @@
   <div class="itemlist">
     <table class="itemlist__table">
       <tbody>
-        <tr class="itemlist__row" v-for="(item, index) in itemsLoading" :key="item.id" >
+        <tr class="itemlist__row" v-show="!item.isReplacement" v-for="(item, index) in itemsLoading" :key="item.id" >
           <td class="itemlist__cell itemlist__cell--loading" :class="{ 'itemlist__cell--error' : item.error }" :colspan="columnsNumber">
             <span class="itemlist__progress" v-if="!item.error" ><span class="itemlist__progressBar" :style="loadingProgress(index)"></span></span>
             <span class="itemlist__progressError" v-else>Upload Error</span>
           </td>
         </tr>
         <tr class="itemlist__row"
-            v-for="item in items"
+            v-for="(item, index) in allItems"
             :key="`${item.endpointType}_${item.id}`"
             :class="{
               's--picked': isSelected(item, keysToCheck),
-              's--disabled': item.disabled
+              's--disabled': item.disabled || !!replacingMediaIds[item.id]
             }"
             @click.exact.prevent="toggleSelection(item)"
             @click.shift.exact.prevent="shiftToggleSelection(item)">
-          <td class="itemlist__cell itemlist__cell--btn" v-if="item.hasOwnProperty('id')">
-            <a17-checkbox name="item_list" :value="item.endpointType + '_' + item.id" :initialValue="checkedItems" theme="bold" :disabled="item.disabled" />
-          </td>
-          <td class="itemlist__cell itemlist__cell--thumb" v-if="item.hasOwnProperty('thumbnail')">
-            <img :src="item.thumbnail" />
-          </td>
-          <td class="itemlist__cell itemlist__cell--name" v-if="item.hasOwnProperty('name')">
-            <div v-if="item.hasOwnProperty('renderHtml')" v-html="item.name"></div>
-            <div v-else>{{ item.name }}</div>
-          </td>
-          <td class="itemlist__cell"
-              v-for="(extraColumn, index) in extraColumns"
-              :key="index"
-              :class="rowClass(extraColumn)">
-            <template v-if="extraColumn === 'size'">{{ item[extraColumn] | uppercase}}</template>
-            <template v-else>{{ item[extraColumn] }}</template>
-          </td>
+          <template v-if="!item.isReplacement">
+            <td class="itemlist__cell itemlist__cell--btn" v-if="item.hasOwnProperty('id')">
+              <a17-checkbox name="item_list" :value="item.endpointType + '_' + item.id" :initialValue="checkedItems" theme="bold" :disabled="item.disabled" />
+            </td>
+            <td class="itemlist__cell itemlist__cell--thumb" v-if="item.hasOwnProperty('thumbnail')">
+              <img :src="item.thumbnail" />
+            </td>
+            <td class="itemlist__cell itemlist__cell--name" v-if="item.hasOwnProperty('name')">
+              <div v-if="item.hasOwnProperty('renderHtml')" v-html="item.name"></div>
+              <div v-else>{{ item.name }}</div>
+            </td>
+            <td class="itemlist__cell"
+                v-for="(extraColumn, index) in extraColumns"
+                :key="index"
+                :class="rowClass(extraColumn)">
+              <template v-if="extraColumn === 'size'">{{ item[extraColumn] | uppercase}}</template>
+              <template v-else>{{ item[extraColumn] }}</template>
+            </td>
+          </template>
+          <template v-else-if="item.isReplacement">
+            <td class="itemlist__cell itemlist__cell--loading" :class="{ 'itemlist__cell--error' : item.error }" :colspan="columnsNumber">
+              <span class="itemlist__progress" v-if="!item.error" ><span class="itemlist__progressBar" :style="loadingProgress(index, 'allItems')"></span></span>
+              <span class="itemlist__progressError" v-else>Upload Error</span>
+            </td>
+          </template>
         </tr>
       </tbody>
     </table>
@@ -55,6 +63,16 @@
     mixins: [mediaItemsMixin],
     filters: a17VueFilters,
     computed: {
+      allItems: function () {
+        return this.items.map((item) => {
+          if (!this.replacingMediaIds[item.id]) return item
+          else {
+            const loadingItem = this.itemsLoading.find(loadingItem => loadingItem.replacementId === item.id)
+            if (loadingItem) return loadingItem
+            return item
+          }
+        })
+      },
       columnsNumber: function () {
         if (!this.items.length) return 0
 
@@ -97,9 +115,10 @@
       rowClass: function (item) {
         return 'itemlist__cell--' + item
       },
-      loadingProgress: function (index) {
+      loadingProgress: function (index, itemsKey) {
+        const items = itemsKey ? this[itemsKey] : this.itemsLoading
         return {
-          width: this.itemsLoading[index].progress ? this.itemsLoading[index].progress + '%' : '0%'
+          width: items[index].progress ? items[index].progress + '%' : '0%'
         }
       }
     }
