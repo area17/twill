@@ -4,12 +4,12 @@ Twill supports custom Vue components to be used in your forms. To enable this fe
 The path is relative to the laravel resource folde. 
 
 ```
-	return [
-    ...
-    'custom_components_resource_path' => 'js/components/admin',
-    'js_namespace' => 'TWILL',
-    ...
-  ];
+    return [
+        ...
+        'custom_components_resource_path' => 'js/components/admin',
+        'js_namespace' => 'TWILL',
+        ...
+    ];
 ```
 
 Next you will have to run `php artisan twill:build` for the changes to take effect.
