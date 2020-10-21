@@ -332,6 +332,18 @@ const actions = {
       dispatch(ACTIONS.GET_DATATABLE)
     })
   },
+  [ACTIONS.EXPORT] ({ commit, state, dispatch }) {
+    api.export(state.bulk.join(), function (resp) {
+      commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
+      dispatch(ACTIONS.GET_DATATABLE)
+    })
+  },
+  [ACTIONS.BULK_EXPORT] ({ commit, state, dispatch }) {
+    api.bulkExport(state.bulk.join(), function (resp) {
+      commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
+      dispatch(ACTIONS.GET_DATATABLE)
+    })
+  },
   [ACTIONS.BULK_RESTORE] ({ commit, state, dispatch }) {
     api.bulkRestore(state.bulk.join(), function (resp) {
       commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })

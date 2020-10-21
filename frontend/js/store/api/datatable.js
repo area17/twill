@@ -79,6 +79,18 @@ export default {
     })
   },
 
+  export (row, callback) {
+    axios.export(row.export).then(function (resp) {
+      if (callback && typeof callback === 'function') callback(resp)
+    }, function (resp) {
+      const error = {
+        message: 'Export request error.',
+        value: resp
+      }
+      globalError(component, error)
+    })
+  },
+
   restore (row, callback) {
     axios.put(window[process.env.VUE_APP_NAME].CMS_URLS.restore, { id: row.id }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
@@ -157,6 +169,18 @@ export default {
     }, function (resp) {
       const error = {
         message: 'Bulk delete request error.',
+        value: resp
+      }
+      globalError(component, error)
+    })
+  },
+
+  bulkExport (ids, callback) {
+    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.bulkExport, { ids: ids }).then(function (resp) {
+      if (callback && typeof callback === 'function') callback(resp)
+    }, function (resp) {
+      const error = {
+        message: 'Bulk export request error.',
         value: resp
       }
       globalError(component, error)

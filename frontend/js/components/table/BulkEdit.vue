@@ -13,6 +13,7 @@
                   <button v-if="bulkPublishable()" @click="bulkPublish">{{ $trans('listing.dropdown.publish') }}</button>
                   <button v-if="bulkPublishable(true)" @click="bulkUnpublish">{{ $trans('listing.dropdown.unpublish') }}</button>
                   <button v-if="bulkFeaturable()" @click="bulkFeature">{{ $trans('listing.dropdown.feature') }}</button>
+                  <button v-if="bulkExportable()" @click="bulkExport">{{ $trans('listing.dropdown.export') }}</button>
                   <button v-if="bulkFeaturable(true)" @click="bulkUnFeature">{{ $trans('listing.dropdown.unfeature') }}</button>
                   <button v-if="bulkDeletable()" @click="bulkDelete">{{ $trans('listing.dropdown.delete') }}</button>
                   <button v-if="bulkRestorable()" @click="bulkRestore">{{ $trans('listing.dropdown.restore') }}</button>
@@ -48,9 +49,13 @@
             canPublish: status.canPublish && row.hasOwnProperty('published'),
             deleted: status.deleted && (row.deleted || false),
             canDelete: status.canDelete && row.delete !== null,
-            canDestroy: status.canDestroy && row.hasOwnProperty('destroyable')
+            canDestroy: status.canDestroy && row.hasOwnProperty('destroyable'),
+            exported: status.exported && (row.exported || false),
+            canExport: status.canExport && row.export !== null
           }
         }, {
+          exported: true,
+          canExport: true,
           featured: true,
           canFeature: true,
           published: true,
@@ -70,6 +75,9 @@
       },
       bulkDeletable: function () {
         return window[process.env.VUE_APP_NAME].CMS_URLS.bulkDelete !== '' && !this.bulkStatus.deleted && this.bulkStatus.canDelete
+      },
+      bulkExportable: function () {
+        return window[process.env.VUE_APP_NAME].CMS_URLS.bulkExport !== '' && !this.bulkStatus.exported && this.bulkStatus.canExport
       },
       bulkRestorable: function () {
         return window[process.env.VUE_APP_NAME].CMS_URLS.bulkRestore !== '' && this.bulkStatus.deleted
