@@ -80,7 +80,7 @@ export default {
   },
 
   export (row, callback) {
-    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.export, { ids: row.id, responseType: 'blob' }).then(function (resp) {
+    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.export, { ids: row.id, responseType: 'arraybuffer' }).then(function (resp) {
       const blob = new Blob([resp.data], { type: 'application/vnd.ms-excel' })
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
@@ -183,14 +183,32 @@ export default {
   },
 
   bulkExport (ids, callback) {
-    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.bulkExport, { ids: ids, responseType: 'arraybuffer' }).then(function (resp) {
-      const blob = new Blob([resp.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = 'Contact_Export.xlsx'
-      a.click()
-      window.URL.revokeObjectURL(url)
+    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.bulkExport, { ids: ids, responseType: 'blob' }).then(function (resp) {
+      // const blob = new Blob([resp.data], { type: 'application/vnd.ms-excel' })
+      // const url = window.URL.createObjectURL(blob)
+      // const a = document.createElement('a')
+      // a.href = url
+      // a.download = 'Contacts1_Exported.xlsx'
+      // a.click()
+      // window.URL.revokeObjectURL(url)
+      const filename = 'file.xlsx'
+      const blob = new Blob([resp.data], { type: 'application/vnd.ms-excel' })
+
+      if (typeof window.navigator.msSaveBlob !== 'undefined') {
+        // IE workaround for "HTML7007: One or more blob URLs were
+        // revoked by closing the blob for which they were created.
+        // These URLs will no longer resolve as the data backing
+        // the URL has been freed."
+        window.navigator.msSaveBlob(blob, filename)
+      } else {
+        const blobURL = window.URL.createObjectURL(blob)
+        const tempLink = document.createElement('a')
+        tempLink.style.display = 'none'
+        tempLink.href = blobURL
+        tempLink.download = filename
+        tempLink.click()
+        window.URL.revokeObjectURL(blobURL)
+      }
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
