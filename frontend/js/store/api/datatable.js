@@ -14,7 +14,7 @@ export default {
   * page : current page number
   * offset : number of items per page
   * columns: the set of visible columns
-  * filter: the current navigation ("all", "mine", "published", "draft", "trash")
+  * filter: the current navigation ('all', 'mine', 'published', 'draft', 'trash')
   *
   */
   get (params, callback) {
@@ -80,7 +80,14 @@ export default {
   },
 
   export (row, callback) {
-    axios.export(row.export).then(function (resp) {
+    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.export, { ids: row.id, responseType: 'blob' }).then(function (resp) {
+      const blob = new Blob([resp.data], { type: 'application/vnd.ms-excel' })
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'Export table.xlsx'
+      a.click()
+      window.URL.revokeObjectURL(url)
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
@@ -176,7 +183,14 @@ export default {
   },
 
   bulkExport (ids, callback) {
-    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.bulkExport, { ids: ids }).then(function (resp) {
+    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.bulkExport, { ids: ids, responseType: 'arraybuffer' }).then(function (resp) {
+      const blob = new Blob([resp.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'Contact_Export.xlsx'
+      a.click()
+      window.URL.revokeObjectURL(url)
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
