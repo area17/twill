@@ -15,8 +15,10 @@ return [
     'auth' => [
         'back-to-login' => 'Powrót do logowania',
         'choose-password' => 'Wybierz hasło',
+        'email' => 'Adres e-mail',
         'forgot-password' => 'Zapomniałem hasła',
         'login' => 'Zaloguj się',
+        'login-title' => 'Logowanie',
         'oauth-link-title' => 'Wprowadź hasło ponownie aby połączyć swoje konto z :provider',
         'otp' => 'Kod jednorazowy',
         'password' => 'Hasło',
