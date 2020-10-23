@@ -79,25 +79,6 @@ export default {
     })
   },
 
-  export (row, callback) {
-    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.export, { ids: row.id, responseType: 'arraybuffer' }).then(function (resp) {
-      const blob = new Blob([resp.data], { type: 'application/vnd.ms-excel' })
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = 'Export table.xlsx'
-      a.click()
-      window.URL.revokeObjectURL(url)
-      if (callback && typeof callback === 'function') callback(resp)
-    }, function (resp) {
-      const error = {
-        message: 'Export request error.',
-        value: resp
-      }
-      globalError(component, error)
-    })
-  },
-
   restore (row, callback) {
     axios.put(window[process.env.VUE_APP_NAME].CMS_URLS.restore, { id: row.id }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
@@ -182,33 +163,65 @@ export default {
     })
   },
 
-  bulkExport (ids, callback) {
-    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.bulkExport, { ids: ids, responseType: 'blob' }).then(function (resp) {
-      // const blob = new Blob([resp.data], { type: 'application/vnd.ms-excel' })
-      // const url = window.URL.createObjectURL(blob)
-      // const a = document.createElement('a')
-      // a.href = url
-      // a.download = 'Contacts1_Exported.xlsx'
-      // a.click()
-      // window.URL.revokeObjectURL(url)
-      const filename = 'file.xlsx'
+  export (row, callback) {
+    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.export, { ids: row.id, responseType: 'blob' }).then(function (resp) {
       const blob = new Blob([resp.data], { type: 'application/vnd.ms-excel' })
-
-      if (typeof window.navigator.msSaveBlob !== 'undefined') {
-        // IE workaround for "HTML7007: One or more blob URLs were
-        // revoked by closing the blob for which they were created.
-        // These URLs will no longer resolve as the data backing
-        // the URL has been freed."
-        window.navigator.msSaveBlob(blob, filename)
-      } else {
-        const blobURL = window.URL.createObjectURL(blob)
-        const tempLink = document.createElement('a')
-        tempLink.style.display = 'none'
-        tempLink.href = blobURL
-        tempLink.download = filename
-        tempLink.click()
-        window.URL.revokeObjectURL(blobURL)
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'Export table.xlsx'
+      a.click()
+      window.URL.revokeObjectURL(url)
+      if (callback && typeof callback === 'function') callback(resp)
+    }, function (resp) {
+      const error = {
+        message: 'Export request error.',
+        value: resp
       }
+      globalError(component, error)
+    })
+  },
+
+  bulkExport (ids, callback) {
+    const config = {
+      // headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      responseType: 'blob',
+      headers: {
+        Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }
+    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.bulkExport, { ids: ids }, config).then(function (resp) {
+    // axios.post('/storage/contacts_20201023095616.xlsx', { ids: ids }, { responseType: 'blob' }).then(function (resp) {
+      const type = resp.headers['content-type']
+      const blob = new Blob([resp.data], { type: type, encoding: 'UTF-8' })
+      console.log(blob)
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'Contacts_Export.xlsx'
+      a.click()
+      window.URL.revokeObjectURL(url)
+      console.log(resp)
+      // const blob = new Blob([resp.data.data], {
+      //   type: 'application/csv'
+      // })
+      // const filename = 'Contacts_Export.csv'
+      // if (typeof window.navigator.msSaveBlob !== 'undefined') {
+      //   // IE workaround for "HTML7007: One or more blob URLs were
+      //   // revoked by closing the blob for which they were created.
+      //   // These URLs will no longer resolve as the data backing
+      //   // the URL has been freed."
+      //   window.navigator.msSaveBlob(blob, filename)
+      // } else {
+      //   const blobURL = window.URL.createObjectURL(blob)
+      //   const tempLink = document.createElement('a')
+      //   tempLink.style.display = 'none'
+      //   tempLink.href = blobURL
+      //   tempLink.download = filename
+      //   tempLink.click()
+      //   window.URL.revokeObjectURL(blobURL)
+      // }
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
