@@ -164,7 +164,7 @@ export default {
   },
 
   export (row, callback) {
-    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.export, { ids: row.id, responseType: 'blob' }).then(function (resp) {
+    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.export, { id: row.id, responseType: 'blob' }).then(function (resp) {
       const blob = new Blob([resp.data], { type: 'application/vnd.ms-excel' })
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
@@ -184,25 +184,18 @@ export default {
 
   bulkExport (ids, callback) {
     const config = {
-      // headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      responseType: 'blob',
-      headers: {
-        Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
+      responseType: 'blob'
     }
     axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.bulkExport, { ids: ids }, config).then(function (resp) {
     // axios.post('/storage/contacts_20201023095616.xlsx', { ids: ids }, { responseType: 'blob' }).then(function (resp) {
       const type = resp.headers['content-type']
       const blob = new Blob([resp.data], { type: type, encoding: 'UTF-8' })
-      console.log(blob)
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
       a.download = 'Contacts_Export.xlsx'
       a.click()
       window.URL.revokeObjectURL(url)
-      console.log(resp)
       // const blob = new Blob([resp.data.data], {
       //   type: 'application/csv'
       // })
