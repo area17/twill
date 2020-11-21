@@ -42,6 +42,18 @@ return [
         'my-drafts' => 'My drafts',
         'search-placeholder' => 'Search everything...',
         'statitics' => 'Statistics',
+        'activities' => [
+            'created' => 'Created',
+            'updated' => 'Updated',
+            'unpublished' => 'Unpublished',
+            'published' => 'Published'
+        ],
+        'activity-row' => [
+            'edit' => 'Edit',
+            'view-permalink' => 'View Permalink',
+            'by' => 'by'
+        ],
+        'unknown-author' => 'Unknown'
     ],
     'dialog' => [
         'cancel' => 'Cancel',
@@ -223,6 +235,11 @@ return [
         'media-library' => 'Media Library',
         'settings' => 'Settings',
         'close-menu' => 'Close menu',
+    ],
+    'settings' => [
+        'update' => 'Update',
+        'cancel' => 'Cancel',
+        'fieldset-label' => 'Edit settings'
     ],
     'notifications' => [
         'reset' => [
