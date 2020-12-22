@@ -24,7 +24,7 @@ Add the route to your admin routes file(`routes/admin.php`).
 ```php
 <?php
 
-Route::module('moduleName');
+Route::module('moduleNamePlural');
 ```
 
 Setup a new CMS navigation item in `config/twill-navigation.php`.
@@ -33,7 +33,7 @@ Setup a new CMS navigation item in `config/twill-navigation.php`.
 return [
     ...
     'moduleName' => [
-        'title'     => 'Module name',
+        'title'     => 'ModuleNamePlural',
         'module'    => true
     ]
     ...
