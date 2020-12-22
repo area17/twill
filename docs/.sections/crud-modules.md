@@ -5,7 +5,7 @@ Twill core functionality is the ability to setup what we call modules. A module 
 You can generate all the files needed in your application to create a new CRUD module using Twill's Artisan generator:
 
 ```bash
-php artisan twill:module moduleName
+php artisan twill:module moduleNameSingular
 ```
 
 The command accepts several options:
