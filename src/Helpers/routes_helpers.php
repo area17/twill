@@ -17,6 +17,11 @@ if (!function_exists('moduleRoute')) {
         // Fix module name case
         $moduleName = Str::camel($moduleName);
 
+        // Nested module, pass in current parameters for deeply nested modules
+        if (Str::contains($moduleName, '.')) {
+            $parameters = array_merge(Route::current()->parameters(), $parameters);
+        }
+
         // Create base route name
         $routeName = 'admin.' . ($prefix ? $prefix . '.' : '');
 
