@@ -314,11 +314,28 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param int|null $parentModuleId
+     * @param Request $request
+     * @return string|int
+     */
+    protected function getParentModuleIdFromRequest(Request $request)
+    {
+        $moduleParts = explode('.', $this->moduleName);
+
+        if (count($moduleParts) > 1) {
+            $parentModule = Str::singular($moduleParts[count($moduleParts) - 2]);
+
+            return $request->route()->parameters()[$parentModule];
+        }
+    }
+
+    /**
+     * @param Request $request
      * @return array|\Illuminate\View\View
      */
-    public function index($parentModuleId = null)
+    public function index(Request $request)
     {
+        $parentModuleId = $this->getParentModuleIdFromRequest($request);
+
         $this->submodule = isset($parentModuleId);
         $this->submoduleParentId = $parentModuleId;
 
@@ -354,11 +371,13 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param int|null $parentModuleId
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store($parentModuleId = null)
+    public function store(Request $request)
     {
+        $parentModuleId = $this->getParentModuleIdFromRequest($request);
+
         $input = $this->validateFormRequest()->all();
         $optionalParent = $parentModuleId ? [$this->getParentModuleForeignKey() => $parentModuleId] : [];
 
@@ -382,17 +401,6 @@ abstract class ModuleController extends Controller
             return $this->respondWithSuccess(twillTrans('twill::lang.publisher.save-success'));
         }
 
-        if ($parentModuleId) {
-            $params = [
-                Str::singular(explode('.', $this->moduleName)[0]) => $parentModuleId,
-                Str::singular(explode('.', $this->moduleName)[1]) => $item[$this->identifierColumnKey],
-            ];
-        } else {
-            $params = [
-                Str::singular($this->moduleName) => $item[$this->identifierColumnKey],
-            ];
-        }
-
         if (isset($input['cmsSaveType']) && Str::endsWith($input['cmsSaveType'], '-close')) {
             return $this->respondWithRedirect($this->getBackLink());
         }
@@ -409,38 +417,41 @@ abstract class ModuleController extends Controller
             $this->moduleName,
             $this->routePrefix,
             'edit',
-            $params
+            [Str::singular(last(explode('.', $this->moduleName))) => $item->id]
         ));
     }
 
     /**
+     * @param Request $request
      * @param int|$id
-     * @param int|null $submoduleId
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function show($id, $submoduleId = null)
+    public function show(Request $request, $id)
     {
         if ($this->getIndexOption('editInModal')) {
             return Redirect::to(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
         }
 
-        return $this->redirectToForm($submoduleId ?? $id);
+        return $this->redirectToForm($this->getParentModuleIdFromRequest($request) ?? $id);
     }
 
     /**
-     * @param int $id
-     * @param int|null $submoduleId
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function edit($id, $submoduleId = null)
+    public function edit(Request $request)
     {
-        $this->submodule = isset($submoduleId);
-        $this->submoduleParentId = $id;
+        $params = $request->route()->parameters();
+        $this->submodule = count($params) > 1;
+        $this->submoduleParentId = $this->submodule
+            ? $this->getParentModuleIdFromRequest($request)
+            : head($params);
+        $id = last($params);
 
         if ($this->getIndexOption('editInModal')) {
             return $this->request->ajax()
-            ? Response::json($this->modalFormData($submoduleId ?? $id))
-            : Redirect::to(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
+                ? Response::json($this->modalFormData($id))
+                : Redirect::to(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
         }
 
         $this->setBackLink();
@@ -453,15 +464,14 @@ abstract class ModuleController extends Controller
             return View::exists($view);
         });
 
-        return View::make($view, $this->form($submoduleId ?? $id));
+        return View::make($view, $this->form($id));
     }
 
     /**
-     * @param int $id
-     * @param int|null $submoduleId
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function create($parentModuleId = null)
+    public function create(Request $request)
     {
         if (!$this->getIndexOption('skipCreateModal')) {
             return Redirect::to(moduleRoute(
@@ -471,6 +481,9 @@ abstract class ModuleController extends Controller
                 ['openCreate' => true]
             ));
         }
+
+        $parentModuleId = $this->getParentModuleIdFromRequest($request);
+
         $this->submodule = isset($parentModuleId);
         $this->submoduleParentId = $parentModuleId;
 
@@ -486,16 +499,17 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param int $id
-     * @param int|null $submoduleId
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update($id, $submoduleId = null)
+    public function update(Request $request)
     {
-        $this->submodule = isset($submoduleId);
-        $this->submoduleParentId = $id;
+        $id = last($request->route()->parameters());
+        $submoduleParentId = $this->getParentModuleIdFromRequest($request);
+        $this->submodule = isset($submoduleParentId);
+        $this->submoduleParentId = $submoduleParentId;
 
-        $item = $this->repository->getById($submoduleId ?? $id);
+        $item = $this->repository->getById($id);
         $input = $this->request->all();
 
         if (isset($input['cmsSaveType']) && $input['cmsSaveType'] === 'cancel') {
@@ -508,7 +522,7 @@ abstract class ModuleController extends Controller
         } else {
             $formRequest = $this->validateFormRequest();
 
-            $this->repository->update($submoduleId ?? $id, $formRequest->all());
+            $this->repository->update($id, $formRequest->all());
 
             activity()->performedOn($item)->log('updated');
 
@@ -668,15 +682,15 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param int $id
-     * @param int|null $submoduleId
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function duplicate($id, $submoduleId = null)
+    public function duplicate(Request $request)
     {
+        $id = last($request->route()->parameters());
 
-        $item = $this->repository->getById($submoduleId ?? $id);
-        if ($newItem = $this->repository->duplicate($submoduleId ?? $id, $this->titleColumnKey)) {
+        $item = $this->repository->getById($id);
+        if ($newItem = $this->repository->duplicate($id, $this->titleColumnKey)) {
             $this->fireEvent();
             activity()->performedOn($item)->log('duplicated');
 
@@ -696,14 +710,15 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param int $id
-     * @param int|null $submoduleId
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id, $submoduleId = null)
+    public function destroy(Request $request)
     {
-        $item = $this->repository->getById($submoduleId ?? $id);
-        if ($this->repository->delete($submoduleId ?? $id)) {
+        $id = last($request->route()->parameters());
+
+        $item = $this->repository->getById($id);
+        if ($this->repository->delete($id)) {
             $this->fireEvent();
             activity()->performedOn($item)->log('deleted');
             return $this->respondWithSuccess($this->modelTitle . ' moved to trash!');
@@ -1200,7 +1215,9 @@ abstract class ModuleController extends Controller
         ])->mapWithKeys(function ($endpoint) {
             return [
                 $endpoint . 'Url' => $this->getIndexOption($endpoint) ? moduleRoute(
-                    $this->moduleName, $this->routePrefix, $endpoint,
+                    $this->moduleName,
+                    $this->routePrefix,
+                    $endpoint,
                     $this->submodule ? [$this->submoduleParentId] : []
                 ) : null,
             ];
@@ -1414,7 +1431,6 @@ abstract class ModuleController extends Controller
      */
     protected function form($id, $item = null)
     {
-
         if (!$item && $id) {
             $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
         } elseif (!$item && !$id) {
