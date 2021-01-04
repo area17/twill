@@ -1600,7 +1600,9 @@ abstract class ModuleController extends Controller
      */
     protected function getParentModuleForeignKey()
     {
-        return Str::singular(explode('.', $this->moduleName)[0]) . '_id';
+        $moduleParts = explode('.', $this->moduleName);
+
+        return Str::singular($moduleParts[count($moduleParts) - 2]) . '_id';
     }
 
     /**
