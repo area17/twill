@@ -1040,8 +1040,9 @@ abstract class ModuleController extends Controller
         if (isset($column['nested']) && $column['nested']) {
             $field = $column['nested'];
             $nestedCount = $item->{$column['nested']}->count();
+            $module = Str::singular(last(explode('.', $this->moduleName)));
             $value = '<a href="';
-            $value .= moduleRoute("$this->moduleName.$field", $this->routePrefix, 'index', [$item[$this->identifierColumnKey]]);
+            $value .= moduleRoute("$this->moduleName.$field", $this->routePrefix, 'index', [$module => $item[$this->identifierColumnKey]]);
             $value .= '">' . $nestedCount . " " . (strtolower($nestedCount > 1
                 ? Str::plural($column['title'])
                 : Str::singular($column['title']))) . '</a>';
@@ -1465,10 +1466,10 @@ abstract class ModuleController extends Controller
             'availableRepeaters' => $this->getRepeaterList()->toJson(),
             'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
         ] + (Route::has($previewRouteName) && $item[$this->identifierColumnKey] ? [
-            'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', $item[$this->identifierColumnKey]),
+            'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', [$item[$this->identifierColumnKey]]),
         ] : [])
              + (Route::has($restoreRouteName) && $item[$this->identifierColumnKey] ? [
-            'restoreUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'restoreRevision', $item[$this->identifierColumnKey]),
+            'restoreUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'restoreRevision', [$item[$this->identifierColumnKey]]),
         ] : []);
 
         return array_replace_recursive($data, $this->formData($this->request));
@@ -1636,12 +1637,7 @@ abstract class ModuleController extends Controller
      */
     protected function getModuleRoute($id, $action)
     {
-        return moduleRoute(
-            $this->moduleName,
-            $this->routePrefix,
-            $action,
-            array_merge($this->submodule ? [$this->submoduleParentId] : [], [$id])
-        );
+        return moduleRoute($this->moduleName, $this->routePrefix, $action, [$id]);
     }
 
     /**
