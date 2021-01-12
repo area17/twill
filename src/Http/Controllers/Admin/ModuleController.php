@@ -4,6 +4,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Helpers\FlashLevel;
 use A17\Twill\Services\Blocks\BlockCollection;
+use A17\Twill\Models\Behaviors\HasSlug;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -1582,6 +1583,30 @@ abstract class ModuleController extends Controller
     /**
      * @return string
      */
+    protected function getModulePermalinkBase()
+    {
+        $base = '';
+        $moduleParts = explode('.', $this->moduleName);
+
+        foreach ($moduleParts as $index => $name) {
+            if (array_key_last($moduleParts) !== $index) {
+                $singularName = Str::singular($name);
+                $modelClass = config('twill.namespace') . '\\Models\\' . Str::studly($singularName);
+                $model = (new $modelClass)->findOrFail(request()->route()->parameter($singularName));
+                $hasSlug = Arr::has(class_uses($modelClass), HasSlug::class);
+
+                $base .= $name . '/' . ($hasSlug ? $model->slug : $model->id) . '/';
+            } else {
+                $base .= $name;
+            }
+        }
+
+        return $base;
+    }
+
+    /**
+     * @return string
+     */
     protected function getModelName()
     {
         return $this->modelName ?? ucfirst(Str::singular($this->moduleName));
@@ -1635,7 +1660,7 @@ abstract class ModuleController extends Controller
         return $appUrl . '/'
             . ($this->moduleHas('translations') ? '{language}/' : '')
             . ($this->moduleHas('revisions') ? '{preview}/' : '')
-            . ($this->permalinkBase ?? $this->moduleName)
+            . $this->getModulePermalinkBase()
             . (isset($this->permalinkBase) && empty($this->permalinkBase) ? '' : '/');
     }
 
