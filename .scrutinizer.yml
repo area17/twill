@@ -1,3 +1,7 @@
+build:
+  environment:
+    php: 7.4.14
+
 checks:
   php:
     remove_extra_empty_lines: true
