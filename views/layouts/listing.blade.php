@@ -46,7 +46,7 @@
                         @if (isset(${$filter.'List'}))
                             @php
                                 $list = ${$filter.'List'};
-                                $options = method_exists($list, 'map') ?
+                                $options = is_object($list) && method_exists($list, 'map') ?
                                     $list->map(function($label, $value) {
                                         return [
                                             'value' => $value,
