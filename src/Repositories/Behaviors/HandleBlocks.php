@@ -279,7 +279,12 @@ trait HandleBlocks
     {
         return Collection::make($block['content']['browsers'])->mapWithKeys(function ($ids, $relation) use ($block) {
             if (Schema::hasTable(config('twill.related_table', 'twill_related')) && $block->getRelated($relation)->isNotEmpty()) {
-                $items = $this->getFormFieldsForRelatedBrowser($block, $relation);;
+                $items = $this->getFormFieldsForRelatedBrowser($block, $relation);
+                foreach ($items as &$item) {
+                    if (!isset($item['edit'])) {
+                        $item['edit'] = moduleRoute($relation, config('twill.block_editor.browser_route_prefixes.' . $relation), 'edit', $item['id']);
+                    }
+                }
             } else {
                 $relationRepository = $this->getModelRepository($relation);
                 $relatedItems = $relationRepository->get([], ['id' => $ids], [], -1);
