@@ -123,6 +123,8 @@ return [
     'files_table' => 'files',
     'fileables_table' => 'fileables',
     'related_table' => 'related',
+    'tags_table' => 'tags',
+    'tagged_table' => 'tagged',
 
     /*
     |--------------------------------------------------------------------------
