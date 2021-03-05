@@ -97,7 +97,10 @@
     methods: {
       haveChildren: function (children) {
         return {
-          'nested-datatable__item--empty': children.length === 0 && this.depth < this.maxDepth
+          // children may be undefined and not an array
+          // if it's undefined the component wouldn't load anything
+          // without providing a fallback value
+          'nested-datatable__item--empty': (children || []).length === 0 && this.depth < this.maxDepth
         }
       }
     }
