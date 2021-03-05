@@ -149,7 +149,7 @@ return [
 
 Since Twill 2.0, Twill's own UI can be translated using lang files. Users can choose their own prefered languages in their own settings,
 but you might actually want to default to another language than English for all your users.
-You can use the following configuration for exemple to set Twill's default CMS language to French:
+You can use the following configuration for example to set Twill's default CMS language to French:
 
 ```php
 return [
