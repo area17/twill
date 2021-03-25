@@ -2,6 +2,7 @@
 
 
 <p align="center">
+<a href="https://github.com/area17/twill/actions"><img src="https://github.com/area17/twill/actions/workflows/main.yml/badge.svg" alt="Build Status"></a>
 <a href="https://packagist.org/packages/area17/twill"><img src="https://poser.pugx.org/area17/twill/v/stable.svg" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/area17/twill"><img src="https://poser.pugx.org/area17/twill/d/total.svg" alt="Total Downloads"></a>
 <a href="https://packagist.org/packages/area17/twill"><img src="https://poser.pugx.org/area17/twill/license.svg" alt="License"></a>
