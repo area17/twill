@@ -13,4 +13,3 @@ jobs:
           issue-type: pull-request
           commands: |
             build-frontend
-            rebase
