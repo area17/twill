@@ -33,3 +33,4 @@ jobs:
           author_email: quentin@area17.com
           message: "Update distributed assets"
           add: "dist"
+          branch: ${{github.event.client_payload.pull_request.head.ref}}
