@@ -21,10 +21,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run build
-        # TODO: first run is failing because of missing icons sprites
-        run: npm run build
-        continue-on-error: true
-      - name: Run build
         run: npm run build
       - name: Commit changes
         uses: EndBug/add-and-commit@v7
