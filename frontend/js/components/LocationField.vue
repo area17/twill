@@ -64,6 +64,10 @@
         type: Boolean,
         default: false
       },
+      saveExtendedData: {
+        type: Boolean,
+        default: false
+      },
       initialLat: {
         type: Number,
         default: null
@@ -79,6 +83,8 @@
         autocompletePlace: null,
         markers: [],
         address: '',
+        boundingBox: [],
+        types: [],
         beforeFocusAddress: '',
         lat: this.initialLat,
         lng: this.initialLng,
@@ -90,16 +96,28 @@
     computed: {
       value: {
         get () {
-          return {
+          const resp = {
             latlng: this.lat + '|' + this.lng,
             address: this.address
           }
+
+          if (this.saveExtendedData) {
+            resp.boundingBox = this.boundingBox
+            resp.types = this.types
+          }
+
+          return resp
         },
         set (value) {
           const coord = value.latlng.split('|')
           this.lat = parseFloat(coord[0])
           this.lng = parseFloat(coord[coord.length - 1])
           this.address = value.address
+
+          if (this.saveExtendedData) {
+            this.boundingBox = value.boundingBox
+            this.types = value.types
+          }
         }
       },
       textfieldClasses: function () {
@@ -166,6 +184,11 @@
 
           this.address = place.formatted_address
           this.setLatLng(location)
+
+          if (this.saveExtendedData) {
+            this.boundingBox = place.geometry.viewport
+            this.types = place.types
+          }
 
           if (this.map) {
             this.addMarker(location)

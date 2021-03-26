@@ -798,6 +798,13 @@ When using inside of the block editor, no migration is needed.
 ])
 ```
 
+| Option           | Description                                                 | Type/values     | Default value |
+| :--------------- | :---------------------------------------------------------- | :-------------- | :------------ |
+| name             | Name of the field                                           | string          |               |
+| label            | Label of the field                                          | string          |               |
+| showMap          | Enables the visibility of the map                           | true<br />false | true          |
+| saveExtendedData | Enables saving Bounding Box Coordinates and Location types  | true<br />false | false         |
+
 This field requires that you provide a `GOOGLE_MAPS_API_KEY` variable in your .env file.
 
 A migration to save a `map` field would be:
@@ -820,6 +827,31 @@ public $casts = [
 
 When used in a [block](https://twill.io/docs/#adding-blocks), no migration is needed.
 
+#### Example of data stored in the Database:
+Default data:
+
+```javascript
+{
+    "latlng": "48.85661400000001|2.3522219",
+    "address": "Paris, France"
+}
+```
+
+Extended data:
+
+```javascript
+{
+    "latlng": "51.1808302|-2.256022799999999",
+    "address": "Warminster BA12 7LG, United Kingdom",
+    "types": ["point_of_interest", "establishment"],
+    "boundingBox": {
+        "east": -2.25289275,
+        "west": -2.257066149999999,
+        "north": 51.18158853029149,
+        "south": 51.17889056970849
+    }
+}
+```
 
 ### Color
 
