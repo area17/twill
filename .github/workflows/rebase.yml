@@ -1,10 +1,11 @@
 name: On Demand Rebase
 on:
-  repository_dispatch:
-    types: [rebase-command]
+  issue_comment:
+    types: [created]
 jobs:
   rebase:
     name: Rebase
+    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/rebase')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the latest code
