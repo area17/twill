@@ -1,24 +1,18 @@
 name: On Demand Build
 on:
-  issue_comment:
-    types: [created]
+  repository_dispatch:
+    types: [build-frontend-command]
 jobs:
   build:
     name: Build frontend
-    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/build-frontend')
     runs-on: ubuntu-latest
     steps:
-      - name: Setup workflow
-        id: comment-branch
-        uses: xt0rted/pull-request-comment-branch@v1
-        with:
-          repo_token: ${{ secrets.TWILL_PAT_TOKEN }}
       - name: Checkout the latest code
         uses: actions/checkout@v2
-        if: success()
         with:
           token: ${{ secrets.TWILL_PAT_TOKEN }}
-          ref: ${{ steps.comment-branch.outputs.head_ref }}
+          repository: ${{github.event.client_payload.pull_request.head.repo.full_name}}
+          ref: ${{github.event.client_payload.pull_request.head.ref}}
           fetch-depth: 0
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.5
