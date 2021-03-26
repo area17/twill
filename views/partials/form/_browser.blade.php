@@ -1,6 +1,7 @@
 @php
     $name = $name ?? $moduleName;
     $label = $label ?? 'Missing browser label';
+    $browsersWithCreate = $browsersWithCreate ?? [];
 
     $endpointsFromModules = isset($modules) ? collect($modules)->map(function ($module) {
         return [
@@ -11,6 +12,8 @@
 
     $endpoints = $endpoints ?? $endpointsFromModules ?? [];
 
+    $createUrl = moduleRoute($moduleName, $routePrefix ?? null, 'store', []);
+
     $endpoint = $endpoint ?? (!empty($endpoints) ? null : moduleRoute($moduleName, $routePrefix ?? null, 'browser', $params ?? [], false));
 
     $max = $max ?? 1;
@@ -20,6 +23,16 @@
     $sortable = $sortable ?? true;
     $wide = $wide ?? false;
     $buttonOnTop = $buttonOnTop ?? false;
+
+    $allowCreate = collect($browsersWithCreate)->filter(function ($browser) use ($moduleName) {
+        if (is_array($browser)) {
+            return $moduleName === ($browser['moduleName'] ?: $browser['browserName']);
+        } else {
+            return $moduleName === $browser;
+        }
+    })->toArray();
+
+    $allowCreate = !!$allowCreate ?: false;
 @endphp
 
 <a17-inputframe label="{{ $label }}" name="browsers.{{ $name }}" note="{{ $fieldNote }}">
@@ -29,6 +42,8 @@
         :max="{{ $max }}"
         :wide="{{ json_encode($wide) }}"
         endpoint="{{ $endpoint }}"
+        create-url="{{ $createUrl }}"
+        :allow-create="{{ json_encode($allowCreate) }}"
         :endpoints="{{ json_encode($endpoints) }}"
         modal-title="{{ twillTrans('twill::lang.fields.browser.attach') . ' ' . strtolower($label) }}"
         :draggable="{{ json_encode($sortable) }}"

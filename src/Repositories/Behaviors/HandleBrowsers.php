@@ -3,6 +3,7 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Behaviors\HasMedias;
+use Exception;
 use Illuminate\Support\Str;
 
 trait HandleBrowsers
@@ -27,6 +28,18 @@ trait HandleBrowsers
      * @var string|array(array)|array(mix(string|array))
      */
     protected $browsers = [];
+
+    /**
+     *  Adding browsers names activates the create option on the browser
+     *
+     * [
+     *   'books',
+     *   'publications'
+     * ]
+     *
+     *
+     */
+    protected $browsersWithCreate = [];
 
     /**
      * @param \A17\Twill\Models\Model $object
@@ -150,22 +163,41 @@ trait HandleBrowsers
      *
      * @return Illuminate\Support\Collection
      */
-    protected function getBrowsers()
+    protected function getBrowsers($browsers = [])
     {
-        return collect($this->browsers)->map(function ($browser, $key) {
+        $browsers = $browsers ?: $this->browsers;
+        return collect($browsers)->map(function ($browser, $key) {
             $browserName = is_string($browser) ? $browser : $key;
             $moduleName = !empty($browser['moduleName']) ? $browser['moduleName'] : $this->inferModuleNameFromBrowserName($browserName);
+            $browserRepository = $this->getModelRepository($browserName);
 
             return [
                 'relation' => !empty($browser['relation']) ? $browser['relation'] : $this->inferRelationFromBrowserName($browserName),
                 'routePrefix' => isset($browser['routePrefix']) ? $browser['routePrefix'] : null,
                 'titleKey' => !empty($browser['titleKey']) ? $browser['titleKey'] : 'title',
                 'moduleName' => $moduleName,
+                'permalinkPrefix' => getPermalinkBaseUrl($browserRepository, $moduleName),
                 'model' => !empty($browser['model']) ? $browser['model'] : $this->inferModelFromModuleName($moduleName),
                 'positionAttribute' => !empty($browser['positionAttribute']) ? $browser['positionAttribute'] : 'position',
                 'browserName' => $browserName,
+                'languages' => getLanguagesForVueStore([], $browserRepository->hasBehavior('translations', true) ?? false)['all']
             ];
         })->values();
+    }
+
+    /**
+     * Get all browsers that support create
+     *
+     * @return Illuminate\Support\Collection
+     */
+    public function getBrowsersWithCreate()
+    {
+        collect($this->browsersWithCreate)->each(function($item) {
+            if (!is_string($item)) {
+                throw new Exception("All items in browsersWithCreate array should be a string, the module name");
+            }
+        });
+        return $this->getBrowsers($this->browsersWithCreate)->toArray();
     }
 
     /**

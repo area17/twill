@@ -12,6 +12,7 @@ export default {
   methods: {
     formatPermalink: function (newValue) {
       const permalinkRef = this.$refs.permalink
+      const inModal = permalinkRef && permalinkRef.$children[0].inModal
 
       if (!permalinkRef) return
 
@@ -37,8 +38,9 @@ export default {
           field.locale = this.currentLocale.value
         }
 
+        const action = inModal ? FORM.UPDATE_MODAL_FIELD : FORM.UPDATE_FORM_FIELD
         // Update value in the store
-        this.$store.commit(FORM.UPDATE_FORM_FIELD, field)
+        this.$store.commit(action, field)
       }
     }
   }

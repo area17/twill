@@ -14,6 +14,7 @@ import openMediaLibrary from '@/behaviors/openMediaLibrary'
 import a17StickyNav from '@/components/StickyNav.vue'
 import a17TitleEditor from '@/components/TitleEditor.vue'
 import a17Langswitcher from '@/components/LangSwitcher.vue'
+import a17LangManager from '@/components/LangManager.vue'
 import a17Fieldset from '@/components/Fieldset.vue'
 import a17Publisher from '@/components/Publisher.vue'
 import a17PageNav from '@/components/PageNav.vue'
@@ -42,6 +43,8 @@ import a17Spinner from '@/components/Spinner.vue'
 // Add attributes
 import a17ModalAdd from '@/components/modals/ModalAdd.vue'
 
+import ModalCreate from '@/components/modals/ModalCreate.vue'
+
 // Store Modules
 import form from '@/store/modules/form'
 import publication from '@/store/modules/publication'
@@ -52,6 +55,7 @@ import browser from '@/store/modules/browser'
 import repeaters from '@/store/modules/repeaters'
 import parents from '@/store/modules/parents'
 import attributes from '@/store/modules/attributes'
+import modalEdition from '@/store/modules/modal-edition'
 
 // mixins
 import formatPermalink from '@/mixins/formatPermalink'
@@ -72,6 +76,8 @@ store.registerModule('repeaters', repeaters)
 store.registerModule('parents', parents)
 store.registerModule('attributes', attributes)
 
+store.registerModule('modalEdition', modalEdition)
+
 // Form components
 Vue.component('a17-fieldset', a17Fieldset)
 Vue.component('a17-publisher', a17Publisher)
@@ -79,6 +85,7 @@ Vue.component('a17-title-editor', a17TitleEditor)
 Vue.component('a17-content', a17Content)
 Vue.component('a17-page-nav', a17PageNav)
 Vue.component('a17-langswitcher', a17Langswitcher)
+Vue.component('a17-langmanager', a17LangManager)
 Vue.component('a17-sticky-nav', a17StickyNav)
 Vue.component('a17-spinner', a17Spinner)
 
@@ -101,6 +108,7 @@ Vue.component('a17-editor', a17Editor)
 
 // Add attributes
 Vue.component('a17-modal-add', a17ModalAdd)
+Vue.component('a17-modal-create', ModalCreate)
 
 // Blocks
 const importedBlocks = require.context('@/components/blocks/', true, /\.(js|vue)$/i)
@@ -154,6 +162,10 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
     ])
   },
   methods: {
+    reloadList: function () {
+      // reload datas
+      this.$refs.browser.$children[0].reloadList(true)
+    },
     submitForm: function (event) {
       if (!this.loading) {
         this.isFormUpdated = false

@@ -80,3 +80,20 @@ if (!function_exists('isActiveNavigation')) {
         return $urlsAreMatching;
     }
 }
+
+if (!function_exists('getPermalinkUrl'))
+{
+    /**
+     * @return string
+     */
+    function getPermalinkBaseUrl($repository, $moduleName)
+    {
+        $appUrl = config('app.url') .'/'. ($moduleName);
+
+        if (!blank(parse_url($appUrl)['scheme'] ?? null)) {
+            $appUrl = str_replace(['http://', 'https://'], '', $appUrl);
+        }
+
+        return rtrim($appUrl) . '/';
+    }
+}

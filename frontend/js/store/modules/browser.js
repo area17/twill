@@ -5,8 +5,10 @@ const state = {
   connector: null,
   title: 'Attach related resources',
   endpoint: '',
+  createUrl: '',
   endpointName: '',
   endpoints: [],
+  allowCreate: false,
   max: 0,
   selected: window[process.env.VUE_APP_NAME].STORE.browser.selected || {}
 }
@@ -60,6 +62,12 @@ const mutations = {
   },
   [BROWSER.UPDATE_BROWSER_MAX] (state, newValue) {
     state.max = Math.max(0, newValue)
+  },
+  [BROWSER.UPDATE_BROWSER_CREATE_URL] (state, newValue) {
+    state.createUrl = newValue
+  },
+  [BROWSER.UPDATE_ALLOW_CREATE] (state, newValue) {
+    state.allowCreate = newValue
   },
   [BROWSER.UPDATE_BROWSER_CONNECTOR] (state, newValue) {
     if (newValue && newValue !== '') state.connector = newValue
