@@ -145,7 +145,7 @@ const config = {
     config.resolve.alias.set('@', path.resolve(`${srcDirectory}/js`))
     config.resolve.alias.set('styles', path.resolve(`${srcDirectory}/scss`))
 
-    config.resolve.plugin('SVGSpritemapPlugin').before('sass-loader')
+    config.resolve.plugin('SVGSpritemapPlugin').before('mini-css-extract-plugin')
 
     // Delete HTML related webpack plugins by page
     Object.keys(pages).forEach(page => {
