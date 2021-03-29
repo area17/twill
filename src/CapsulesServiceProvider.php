@@ -2,13 +2,11 @@
 
 namespace A17\Twill;
 
-use Illuminate\Routing\Router;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\ServiceProvider;
+use A17\Twill\Services\Capsules\HasCapsules;
 use A17\Twill\Services\Capsules\Manager;
 use A17\Twill\Services\Routing\HasRoutes;
-use A17\Twill\Services\Capsules\HasCapsules;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider;
+use Illuminate\Routing\Router;
 
 class CapsulesServiceProvider extends RouteServiceProvider
 {
@@ -69,9 +67,7 @@ class CapsulesServiceProvider extends RouteServiceProvider
 
     public function registerViewPaths()
     {
-        $this->callAfterResolving('view', function ($view) {
-            $view->addLocation(config('twill.capsules.path'));
-        });
+        $this->app->make('view')->addLocation(config('twill.capsules.path'));
     }
 
     public function registerManager()
