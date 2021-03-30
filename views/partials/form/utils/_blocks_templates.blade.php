@@ -5,7 +5,7 @@
             return $block->compiled ?? false;
         });
 
-    $names = $blocks->pluck('name')->values()->toJson();
+    $names = $blocks->pluck('component')->values()->toJson();
 @endphp
 
 <script>
