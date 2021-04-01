@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Services\Blocks;
 
+use Exception;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 
@@ -195,6 +197,10 @@ class BlockCollection extends Collection
     }
 
     /**
+     * This function will add blocks and repeaters that are only defined in the config
+     *
+     * For compatibility with 2.0.2 and lower
+     *
      * @param Collection $items
      * @param string $type
      * @return void
@@ -227,6 +233,8 @@ class BlockCollection extends Collection
      */
     public function blockFromComponentName($componentName, $blockName, $type, $source)
     {
+        $this->logDeprecatedBlockConfig($blockName, $type);
+
         $file = $this->findFileByComponentName($componentName);
         $block = new Block($file, $type, $source, $blockName);
 
@@ -234,10 +242,22 @@ class BlockCollection extends Collection
     }
 
     /**
+     * @param string $type
+     * @param string $blockName
+     * @return void
+     */
+    public function logDeprecatedBlockConfig($blockName, $type)
+    {
+        $path = $this->paths->filter(function ($path) use ($type) {
+            return $path['source'] === Block::SOURCE_APP && $path['type'] === $type;
+        })->pluck('path')->join(', ', ' or ');
+
+        Log::notice("The {$type} '{$blockName}' appears to be defined in the config 'twill.block_editor.blocks' or 'twill.block_editor.repeaters' only. This will be deprecated in a future release. A {$type} should be defined in its unique view in [{$path}].");
+    }
+
+    /**
      * This function will try to find a view from the a component name
      * (minus the 'a17-block-' namespace).
-     *
-     * For compatibility with 2.0.2 and lower
      *
      * @param string $componentName
      * @return \Symfony\Component\Finder\SplFileInfo
@@ -247,7 +267,13 @@ class BlockCollection extends Collection
         $filename = str_replace('a17-block-', '', $componentName) . '.blade.php';
         $paths = $this->paths->pluck('path')->toArray();
 
-        return iterator_to_array(\Symfony\Component\Finder\Finder::create()->name($filename)->in($paths), false)[0];
+        $files = iterator_to_array(\Symfony\Component\Finder\Finder::create()->name($filename)->in($paths), false);
+
+        if (empty($files)) {
+            throw new Exception("Could not find a view for the block or repeater '{$componentName}'.");
+        }
+
+        return $files[0];
     }
 
     /**
