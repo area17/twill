@@ -187,7 +187,68 @@ class BlockCollection extends Collection
             })
             ->toArray();
 
+        $this
+            ->addBlocksFromConfig(collect(config('twill.block_editor.repeaters')), Block::TYPE_REPEATER)
+            ->addBlocksFromConfig(collect(config('twill.block_editor.blocks')), Block::TYPE_BLOCK);
+
         return $this;
+    }
+
+    /**
+     * @param Collection $items
+     * @param string $type
+     * @return void
+     */
+    public function addBlocksFromConfig(Collection $items, $type)
+    {
+        $items->reject(function ($value, $blockName) use ($type) {
+            return $this->contains(function ($block) use ($blockName, $type) {
+                return $block->name === $blockName && $block->type === $type;
+            }) ? [$blockName, $value] : false;
+        })
+        ->each(function ($block, $blockName) use ($type) {
+            $this->push($this->blockFromComponentName(
+                $block['component'],
+                $blockName,
+                $type,
+                Block::SOURCE_APP
+            ));
+        });
+
+        return $this;
+    }
+
+    /**
+     * @param string $componentName
+     * @param string $blockName
+     * @param string $type
+     * @param string $source
+     * @return Block
+     */
+    public function blockFromComponentName($componentName, $blockName, $type, $source)
+    {
+        $file = $this->findFileByComponentName($componentName);
+        $block = new Block($file, $type, $source);
+        $block->name = $blockName;
+
+        return $block;
+    }
+
+    /**
+     * This function will try to find a view from the a component name
+     * (minus the 'a17-block-' namespace).
+     *
+     * For compatibility with 2.0.2 and lower
+     *
+     * @param string $componentName
+     * @return \Symfony\Component\Finder\SplFileInfo
+     */
+    public function findFileByComponentName($componentName)
+    {
+        $filename = str_replace('a17-block-', '', $componentName) . '.blade.php';
+        $paths = $this->paths->pluck('path')->toArray();
+
+        return iterator_to_array(\Symfony\Component\Finder\Finder::create()->name($filename)->in($paths), false)[0];
     }
 
     /**
