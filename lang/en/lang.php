@@ -63,6 +63,7 @@ return [
     'fields' => [
         'block-editor' => [
             'add-content' => 'Add content',
+            'add-item' => 'Add item',
             'collapse-all' => 'Collapse all',
             'create-another' => 'Create another',
             'delete' => 'Delete',
