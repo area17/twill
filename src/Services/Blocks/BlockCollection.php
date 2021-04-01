@@ -228,8 +228,7 @@ class BlockCollection extends Collection
     public function blockFromComponentName($componentName, $blockName, $type, $source)
     {
         $file = $this->findFileByComponentName($componentName);
-        $block = new Block($file, $type, $source);
-        $block->name = $blockName;
+        $block = new Block($file, $type, $source, $blockName);
 
         return $block;
     }

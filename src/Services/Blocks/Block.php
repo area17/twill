@@ -92,9 +92,10 @@ class Block
      * @param $file
      * @param $type
      * @param $source
+     * @param $name
      * @throws \Exception
      */
-    public function __construct($file, $type, $source)
+    public function __construct($file, $type, $source, $name = null)
     {
         $this->file = $file;
 
@@ -104,7 +105,7 @@ class Block
 
         $this->fileName = $this->getFilename();
 
-        $this->name = $name = Str::before(
+        $this->name = $name ?? Str::before(
             $this->file->getFilename(),
             '.blade.php'
         );
