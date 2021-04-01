@@ -182,10 +182,10 @@ class Block
         $contents = file_get_contents((string) $this->file->getPathName());
 
         $this->title = $this->parseProperty('title', $contents, $this->name);
-        $this->trigger = $this->parseProperty('trigger', $contents, $this->name);
+        $this->trigger = $this->parseProperty('trigger', $contents, $this->name, $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.add-item') : null);
         $this->max = (int) $this->parseProperty('max', $contents, $this->name, 999);
         $this->group = $this->parseProperty('group', $contents, $this->name, 'app');
-        $this->icon = $this->parseProperty('icon', $contents, $this->name);
+        $this->icon = $this->parseProperty('icon', $contents, $this->name, 'text');
         $this->compiled = (boolean) $this->parseProperty('compiled', $contents, $this->name, false);
         $this->component = $this->parseProperty('component', $contents, $this->name, "a17-block-{$this->name}");
         $this->isNewFormat = $this->isNewFormat($contents);
