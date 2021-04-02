@@ -288,7 +288,7 @@ class Block
     public function render()
     {
         return BladeCompiler::render(
-            $this->removeSpecialBladeTags($this->contents),
+            self::removeSpecialBladeTags($this->contents),
             [
                 'renderForBlocks' => true,
             ]
@@ -299,7 +299,7 @@ class Block
      * @param $contents
      * @return string
      */
-    public function removeSpecialBladeTags($contents)
+    public static function removeSpecialBladeTags($contents)
     {
         return preg_replace([
             "/@twillProp.*\('(.*)'\)/",
