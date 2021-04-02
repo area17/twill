@@ -270,7 +270,9 @@ class BlockCollection extends Collection
     public function findFileByComponentName($componentName)
     {
         $filename = str_replace('a17-block-', '', $componentName) . '.blade.php';
-        $paths = $this->paths->pluck('path')->toArray();
+        $paths = $this->paths->pluck('path')->filter(function ($path) {
+            return $this->fileSystem->exists($path);
+        })->toArray();
 
         $files = iterator_to_array(\Symfony\Component\Finder\Finder::create()->name($filename)->in($paths), false);
 
