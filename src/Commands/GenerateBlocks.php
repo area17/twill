@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Commands;
 
+use A17\Twill\Services\Blocks\Block;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
@@ -119,6 +120,6 @@ class GenerateBlocks extends Command
             '',
         );
 
-        return preg_replace($search, $replace, $html);
+        return preg_replace($search, $replace, Block::removeSpecialBladeTags($html));
     }
 }
