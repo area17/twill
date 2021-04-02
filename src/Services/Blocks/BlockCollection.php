@@ -252,7 +252,12 @@ class BlockCollection extends Collection
             return $path['source'] === Block::SOURCE_APP && $path['type'] === $type;
         })->pluck('path')->join(', ', ' or ');
 
-        Log::notice("The {$type} '{$blockName}' appears to be defined in the config 'twill.block_editor.blocks' or 'twill.block_editor.repeaters' only. This will be deprecated in a future release. A {$type} should be defined in its unique view in [{$path}].");
+        Log::notice(
+            "The {$type} '{$blockName}' appears to be defined in the config ".
+            "'twill.block_editor.blocks' or 'twill.block_editor.repeaters' only. ".
+            "This will be deprecated in a future release. A {$type} should be ".
+            "defined in its unique view in [{$path}]."
+        );
     }
 
     /**
