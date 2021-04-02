@@ -235,6 +235,21 @@ class Block
             return $value;
         }
 
+        if ($configBlock = collect(config("twill.block_editor.blocks"))->filter(function ($block) use ($blockName) {
+            return Str::contains($block['component'], $blockName);
+        })->first()) {
+            if ($value = ($configBlock[$property] ?? null)) {
+                return $value;
+            }
+        }
+        if ($configRepeater = collect(config("twill.block_editor.repeaters"))->filter(function ($repeater) use ($blockName) {
+            return Str::contains($repeater['component'], $blockName);
+        })->first()) {
+            if ($value = ($configRepeater[$property] ?? null)) {
+                return $value;
+            }
+        }
+
         if ($property !== 'title') {
             return $default;
         }
