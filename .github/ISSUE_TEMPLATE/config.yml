@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Twill Documentation
+    url: https://twill.io/docs/
+    about: Check out the Twill documentation for answers to common questions
+  - name: Twill Discord
+    url: #
+    about: Ask questions, get help and discuss new things you're building with the Twill community
+  - name: Twill Discussions
+    url: https://github.com/area17/twill/discussions
+    about: Ask questions, request features & discuss
