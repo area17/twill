@@ -107,11 +107,10 @@ class BlockCollection extends Collection
             return collect();
         }
 
-        return collect($this->fileSystem->files($directory))->map(function (
-            $file
-        ) use ($source, $type) {
-            return new Block($file, $type, $source);
-        });
+        return collect($this->fileSystem->files($directory))
+            ->map(function ($file) use ($source, $type) {
+                return new Block($file, $type, $source);
+            });
     }
 
     /**
@@ -188,6 +187,15 @@ class BlockCollection extends Collection
                 $block->setSource($this->detectCustomSources($block));
             })
             ->toArray();
+
+
+        // remove duplicate Twill blocks
+        $appBlocks = $this->collect()->whereIn('source', [Block::SOURCE_APP, Block::SOURCE_CUSTOM]);
+        $this->items = $this->collect()->whereIn('source', Block::SOURCE_TWILL)->filter(function ($item) use ($appBlocks) {
+            return ! $appBlocks->contains(function ($block) use ($item) {
+                return $item->name === $block->name;
+            });
+        })->values()->toArray();
 
         $this
             ->addBlocksFromConfig(collect(config('twill.block_editor.repeaters')), Block::TYPE_REPEATER)
