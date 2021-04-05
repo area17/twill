@@ -191,9 +191,9 @@ class BlockCollection extends Collection
 
         // remove duplicate Twill blocks
         $appBlocks = $this->collect()->whereIn('source', [Block::SOURCE_APP, Block::SOURCE_CUSTOM]);
-        $this->items = $this->collect()->whereIn('source', Block::SOURCE_TWILL)->filter(function ($item) use ($appBlocks) {
+        $this->items = $this->collect()->filter(function ($item) use ($appBlocks) {
             return ! $appBlocks->contains(function ($block) use ($item) {
-                return $item->name === $block->name;
+                return $item->source === Block::SOURCE_TWILL && $item->name === $block->name;
             });
         })->values()->toArray();
 
