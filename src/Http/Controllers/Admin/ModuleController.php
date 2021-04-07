@@ -417,7 +417,7 @@ abstract class ModuleController extends Controller
             $this->moduleName,
             $this->routePrefix,
             'edit',
-            [Str::singular(last(explode('.', $this->moduleName))) => $item->id]
+            [Str::singular(last(explode('.', $this->moduleName))) => $item[$this->identifierColumnKey]]
         ));
     }
 
