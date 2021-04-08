@@ -1660,7 +1660,7 @@ abstract class ModuleController extends Controller
         return $appUrl . '/'
             . ($this->moduleHas('translations') ? '{language}/' : '')
             . ($this->moduleHas('revisions') ? '{preview}/' : '')
-            . $this->getModulePermalinkBase()
+            . ($this->permalinkBase ?? $this->getModulePermalinkBase())
             . (isset($this->permalinkBase) && empty($this->permalinkBase) ? '' : '/');
     }
 
