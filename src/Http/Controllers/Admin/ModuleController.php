@@ -315,7 +315,7 @@ abstract class ModuleController extends Controller
 
     /**
      * @param Request $request
-     * @return string|int
+     * @return string|int|null
      */
     protected function getParentModuleIdFromRequest(Request $request)
     {
@@ -326,15 +326,17 @@ abstract class ModuleController extends Controller
 
             return $request->route()->parameters()[$parentModule];
         }
+
+        return null;
     }
 
     /**
-     * @param Request $request
+     * @param int|null $parentModuleId
      * @return array|\Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index($parentModuleId = null)
     {
-        $parentModuleId = $this->getParentModuleIdFromRequest($request);
+        $parentModuleId = $this->getParentModuleIdFromRequest($this->request) ?? $parentModuleId;
 
         $this->submodule = isset($parentModuleId);
         $this->submoduleParentId = $parentModuleId;
@@ -371,12 +373,12 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param int|null $parentModuleId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store($parentModuleId = null)
     {
-        $parentModuleId = $this->getParentModuleIdFromRequest($request);
+        $parentModuleId = $this->getParentModuleIdFromRequest($this->request) ?? $parentModuleId;
 
         $input = $this->validateFormRequest()->all();
         $optionalParent = $parentModuleId ? [$this->getParentModuleForeignKey() => $parentModuleId] : [];
@@ -424,28 +426,32 @@ abstract class ModuleController extends Controller
     /**
      * @param Request $request
      * @param int|$id
+     * @param int|null $submoduleId
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function show(Request $request, $id)
+    public function show($id, $submoduleId = null)
     {
         if ($this->getIndexOption('editInModal')) {
             return Redirect::to(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
         }
 
-        return $this->redirectToForm($this->getParentModuleIdFromRequest($request) ?? $id);
+        return $this->redirectToForm($this->getParentModuleIdFromRequest($this->request) ?? $submoduleId ?? $id);
     }
 
     /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
-     */
-    public function edit(Request $request)
+    * @param int $id
+    * @param int|null $submoduleId
+    * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+    */
+    public function edit($id, $submoduleId = null)
     {
-        $params = $request->route()->parameters();
+        $params = $this->request->route()->parameters();
+
         $this->submodule = count($params) > 1;
         $this->submoduleParentId = $this->submodule
-            ? $this->getParentModuleIdFromRequest($request)
+            ? $this->getParentModuleIdFromRequest($this->request) ?? $id
             : head($params);
+
         $id = last($params);
 
         if ($this->getIndexOption('editInModal')) {
@@ -468,10 +474,10 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param int $parentModuleId
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function create(Request $request)
+    public function create($parentModuleId = null)
     {
         if (!$this->getIndexOption('skipCreateModal')) {
             return Redirect::to(moduleRoute(
@@ -482,7 +488,7 @@ abstract class ModuleController extends Controller
             ));
         }
 
-        $parentModuleId = $this->getParentModuleIdFromRequest($request);
+        $parentModuleId = $this->getParentModuleIdFromRequest($this->request) ?? $parentModuleId;
 
         $this->submodule = isset($parentModuleId);
         $this->submoduleParentId = $parentModuleId;
@@ -499,15 +505,19 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param int $id
+     * @param int|null $submoduleId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request)
+    public function update($id, $submoduleId = null)
     {
-        $id = last($request->route()->parameters());
-        $submoduleParentId = $this->getParentModuleIdFromRequest($request);
+        $params = $this->request->route()->parameters();
+
+        $submoduleParentId = $this->getParentModuleIdFromRequest($this->request) ?? $id;
         $this->submodule = isset($submoduleParentId);
         $this->submoduleParentId = $submoduleParentId;
+
+        $id = last($params);
 
         $item = $this->repository->getById($id);
         $input = $this->request->all();
@@ -682,12 +692,15 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param int $id
+     * @param int|null $submoduleId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function duplicate(Request $request)
+    public function duplicate($id, $submoduleId = null)
     {
-        $id = last($request->route()->parameters());
+        $params = $this->request->route()->parameters();
+
+        $id = last($params);
 
         $item = $this->repository->getById($id);
         if ($newItem = $this->repository->duplicate($id, $this->titleColumnKey)) {
@@ -710,12 +723,15 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param int $id
+     * @param int|null $submoduleId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Request $request)
+    public function destroy($id, $submoduleId = null)
     {
-        $id = last($request->route()->parameters());
+        $params = $this->request->route()->parameters();
+
+        $id = last($params);
 
         $item = $this->repository->getById($id);
         if ($this->repository->delete($id)) {
