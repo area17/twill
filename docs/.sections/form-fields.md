@@ -466,7 +466,7 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
         ],
     ]
 ])
-``` 
+```
 
 | Option      | Description                                                  | Type/values     | Default value |
 | :---------- | :----------------------------------------------------------- | :-------------- | :------------ |
@@ -597,8 +597,8 @@ Schema::table('posts', function (Blueprint $table) {
 ```php
 public function getSectorsAttribute($value)
 {
-    return collect(json_decode($value))->map(function($item) { 
-        return ['id' => $item]; 
+    return collect(json_decode($value))->map(function($item) {
+        return ['id' => $item];
     })->all();
 }
 
@@ -773,8 +773,10 @@ See [Block editor](https://twill.io/docs/#block-editor-3)
 ```
 
 Browser fields can be used to save a `belongsToMany` relationship outside of the block editor.
+
 Checkout this [Spectrum tutorial](https://spectrum.chat/twill/tips-and-tricks/step-by-step-ii-creating-a-twill-app~37c36601-1198-4c53-857a-a2b47c6d11aa) until we update this section to get more info on setting things up.
-When using inside of the block editor, no migration is needed.
+
+When using inside of the block editor, no migration is needed. Refer to the section titled [Adding browser fields to a block](#adding-browser-fields-to-a-block) for a detailed explanation.
 
 ### Browser with multiple modules
 
@@ -889,8 +891,12 @@ To retrieve the items in the frontend, you can use the following helper, it will
 ```
 
 Repeaters fields can be used to save a `hasMany` relationship or a `morphMany` relationship outside of the block editor.
+
 Checkout this [Github issue](https://github.com/area17/twill/issues/131) until we update this section to get more info on setting things up.
-When using inside of the block editor, no migration is needed.
+
+Repeater blocks share the same Model as Blocks in the block editor. By reading the section on the [block editor](#block-editor-3), you will get a good picture on how to create and define repeater blocks for your project.
+
+When using inside of the block editor, no migration is needed. Refer to the section titled [Adding repeater fields to a block](#adding-repeater-fields-to-a-block) for a detailed explanation.
 
 ### Map
 ![screenshot](/docs/_media/map.png)
