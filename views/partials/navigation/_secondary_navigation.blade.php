@@ -9,7 +9,7 @@
                         @else
                             <li class="navUnder__item">
                         @endif
-                                <a href="{{ getNavigationUrl($secondary_navigation_element, $secondary_navigation_key, $_global_active_navigation . '.' . $_primary_active_navigation) }}">{{ $secondary_navigation_element['title'] }}</a>
+                                <a href="{{ getNavigationUrl($secondary_navigation_element, $secondary_navigation_key, $_global_active_navigation . '.' . $_primary_active_navigation) }}" @if (isset($secondary_navigation_element['target']) && $secondary_navigation_element['target'] == 'external') target="_blank" @endif>{{ $secondary_navigation_element['title'] }}</a>
                             </li>
                     @endcan
                 @endforeach
