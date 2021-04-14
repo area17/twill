@@ -94,7 +94,9 @@ class Install extends Command
      */
     private function createSuperAdmin()
     {
-        $this->call('twill:superadmin');
+        if (!$this->option('no-interaction')) {
+            $this->call('twill:superadmin');
+        }
     }
 
     /**
