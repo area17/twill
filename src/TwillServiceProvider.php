@@ -4,6 +4,8 @@ namespace A17\Twill;
 
 use A17\Twill\Commands\BlockMake;
 use A17\Twill\Commands\Build;
+use A17\Twill\Commands\CapsuleRequire;
+use A17\Twill\Commands\CapsuleInstall;
 use A17\Twill\Commands\CreateSuperAdmin;
 use A17\Twill\Commands\Dev;
 use A17\Twill\Commands\GenerateBlocks;
@@ -311,6 +313,7 @@ class TwillServiceProvider extends ServiceProvider
             Update::class,
             Dev::class,
             SyncLang::class,
+            CapsuleInstall::class
         ]);
     }
 

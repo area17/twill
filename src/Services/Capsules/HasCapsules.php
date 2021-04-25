@@ -15,7 +15,7 @@ trait HasCapsules
 
     public function getCapsuleList()
     {
-        $path = config('twill.capsules.path');
+        $path = $this->getCapsulesPath();
 
         $list = collect(config('twill.capsules.list'));
 
@@ -46,8 +46,28 @@ trait HasCapsules
             ->first();
     }
 
-    public function makeCapsule($capsule, $basePath)
+    /**
+     * @return \Illuminate\Config\Repository|\Illuminate\Contracts\Foundation\Application|mixed
+     */
+    public function getCapsulesPath()
     {
+        return config('twill.capsules.path');
+    }
+
+    /**
+     * @return \Illuminate\Config\Repository|\Illuminate\Contracts\Foundation\Application|mixed
+     */
+    public function getCapsulesSubdir()
+    {
+        $subdir = config('twill.capsules.namespaces.subdir');
+
+        return $subdir;
+    }
+
+    public function makeCapsule($capsule, $basePath = null)
+    {
+        $basePath = $basePath ?? $this->getCapsulesPath();
+
         $capsule['name'] = Str::studly($capsule['name']);
 
         $capsule['module'] = Str::camel($capsule['name']);
@@ -86,7 +106,9 @@ trait HasCapsules
             "{$capsuleNamespace}\\" .
             config('twill.capsules.namespaces.requests');
 
-        $capsule['psr4_path'] = "$basePath/{$name}/app";
+        $capsule['psr4_path'] = "$basePath/{$name}" . (filled($this->getCapsulesSubdir()) ? $this->getCapsulesSubdir().'/' : '');
+
+        $capsule['base_path'] = $basePath;
 
         $capsule['database_psr4_path'] = "$basePath/{$name}/database";
 
@@ -208,7 +230,7 @@ trait HasCapsules
     ) {
         $namespace = Str::after($namespace, $capsuleNamespace . '\\');
 
-        $subdir = config('twill.capsules.namespaces.subdir');
+        $subdir = $this->getCapsulesSubdir();
 
         $subdir = filled($subdir) ? "{$subdir}/" : '';
 
@@ -242,5 +264,10 @@ trait HasCapsules
         }
 
         return null;
+    }
+
+    public function capsuleExists($module)
+    {
+        return filled($this->getCapsuleByModule($module));
     }
 }
