@@ -3,9 +3,9 @@
 namespace A17\Twill\Services\Blocks;
 
 use Exception;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class BlockCollection extends Collection
 {
@@ -188,11 +188,10 @@ class BlockCollection extends Collection
             })
             ->toArray();
 
-
         // remove duplicate Twill blocks
         $appBlocks = $this->collect()->whereIn('source', [Block::SOURCE_APP, Block::SOURCE_CUSTOM]);
         $this->items = $this->collect()->filter(function ($item) use ($appBlocks) {
-            return ! $appBlocks->contains(function ($block) use ($item) {
+            return !$appBlocks->contains(function ($block) use ($item) {
                 return $item->source === Block::SOURCE_TWILL && $item->name === $block->name;
             });
         })->values()->toArray();
@@ -220,14 +219,20 @@ class BlockCollection extends Collection
                 return $block->name === $blockName && $block->type === $type;
             }) ? [$blockName, $value] : false;
         })
-        ->each(function ($block, $blockName) use ($type) {
-            $this->push($this->blockFromComponentName(
-                $block['component'],
-                $blockName,
-                $type,
-                Block::SOURCE_APP
-            ));
-        });
+            ->each(function ($block, $blockName) use ($type) {
+                if ($block['compiled'] ?? false) {
+                    $file = null;
+                } else {
+                    $file = $this->findFileByComponentName($block['component']);
+                }
+
+                $this->push($this->blockFromComponentName(
+                    $file,
+                    $blockName,
+                    $type,
+                    Block::SOURCE_APP
+                ));
+            });
 
         return $this;
     }
@@ -239,11 +244,10 @@ class BlockCollection extends Collection
      * @param string $source
      * @return Block
      */
-    public function blockFromComponentName($componentName, $blockName, $type, $source)
+    public function blockFromComponentName($file, $blockName, $type, $source)
     {
         $this->logDeprecatedBlockConfig($blockName, $type);
 
-        $file = $this->findFileByComponentName($componentName);
         $block = new Block($file, $type, $source, $blockName);
 
         return $block;
@@ -261,9 +265,9 @@ class BlockCollection extends Collection
         })->pluck('path')->join(', ', ' or ');
 
         Log::notice(
-            "The {$type} '{$blockName}' appears to be defined in the config ".
-            "'twill.block_editor.blocks' or 'twill.block_editor.repeaters' only. ".
-            "This will be deprecated in a future release. A {$type} should be ".
+            "The {$type} '{$blockName}' appears to be defined in the config " .
+            "'twill.block_editor.blocks' or 'twill.block_editor.repeaters' only. " .
+            "This will be deprecated in a future release. A {$type} should be " .
             "defined in its unique view in [{$path}]."
         );
     }

@@ -145,7 +145,7 @@ class Block
             'compiled' => $this->compiled ? 'yes' : '-',
             'source' => $this->source,
             'new_format' => $this->isNewFormat ? 'yes' : '-',
-            'file' => $this->file->getFilename(),
+            'file' => $this->getFilename(),
             'component' => $this->component,
             'max' => $this->type === self::TYPE_REPEATER ? $this->max : null,
         ]);
@@ -180,7 +180,7 @@ class Block
      */
     public function parse()
     {
-        $contents = file_get_contents((string) $this->file->getPathName());
+        $contents = $this->file ? file_get_contents((string) $this->file->getPathName()) : '';
 
         $this->title = $this->parseProperty('title', $contents, $this->name);
         $this->trigger = $this->parseProperty('trigger', $contents, $this->name, $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.add-item') : null);
@@ -256,8 +256,8 @@ class Block
 
         // Title is mandatory
         throw new Exception(
-            "Block {$blockName} does not exists or the mandatory property '{$property}' ".
-            "was not found on this block. If you are still using blocks on the twill.php ".
+            "Block {$blockName} does not exists or the mandatory property '{$property}' " .
+            "was not found on this block. If you are still using blocks on the twill.php " .
             "file, please check if the block is present and properly configured."
         );
     }
@@ -278,7 +278,7 @@ class Block
      */
     public function getFileName()
     {
-        return $this->file->getFileName();
+        return $this->file ? $this->file->getFileName() : 'Custom Vue file';
     }
 
     /**
