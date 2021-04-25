@@ -72,7 +72,7 @@ class CapsulesTest extends TestCase
     protected $capsuleModel;
     protected $capsuleClassName;
     protected $capsuleModelName;
-    protected $mananger;
+    protected $manager;
 
     public function setUp(): void
     {
@@ -287,7 +287,8 @@ class CapsulesTest extends TestCase
 
         $this->registerCapsuleRoutes(
             app(Router::class),
-            $this->getCapsuleByModule($this->capsuleName)
+            $this->getCapsuleByModule($this->capsuleName),
+            $this->manager
         );
 
         $this->migrate();
