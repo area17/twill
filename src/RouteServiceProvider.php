@@ -2,6 +2,7 @@
 
 namespace A17\Twill;
 
+use A17\Twill\Services\Capsules\Manager;
 use A17\Twill\Http\Controllers\Front\GlideController;
 use A17\Twill\Http\Middleware\Impersonate;
 use A17\Twill\Http\Middleware\Localization;
@@ -54,6 +55,8 @@ class RouteServiceProvider extends ServiceProvider
             $this->getRouteMiddleware(),
             $this->supportSubdomainRouting()
         );
+
+        $this->registerCapsulesRoutes($router);
     }
 
     private function mapHostRoutes(

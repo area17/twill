@@ -56,15 +56,6 @@ class CapsulesServiceProvider extends RouteServiceProvider
         $this->loadMigrationsFrom($capsule['migrations_dir']);
     }
 
-    public function map(Router $router)
-    {
-        $this->manager
-            ->getCapsuleList()
-            ->each(function ($capsule) use ($router) {
-                $this->registerCapsuleRoutes($router, $capsule);
-            });
-    }
-
     public function registerViewPaths()
     {
         $this->app->make('view')->addLocation(config('twill.capsules.path'));
