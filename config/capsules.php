@@ -4,13 +4,13 @@ return [
     'path' => app_path('Twill/Capsules'),
 
     'namespaces' => [
-        'subdir' => 'app',
+        'subdir' => '',
 
         'base' => 'App\Twill\Capsules',
 
-        'models' => 'Data\Models',
+        'models' => 'Models',
 
-        'repositories' => 'Data\Repositories',
+        'repositories' => 'Repositories',
 
         'controllers' => 'Http\Controllers',
 
@@ -39,9 +39,9 @@ return [
 //                'plural' => 'Posts',
 //                'singular' => 'Post',
 //                'namespace' => 'App\Twill\Capsules\Posts',
-//                'models' => 'App\Twill\Capsules\Posts\Data\Models',
-//                'model' => 'App\Twill\Capsules\Posts\Data\Models\Post',
-//                'repositories' => 'App\Twill\Capsules\Posts\Data\Repositories',
+//                'models' => 'App\Twill\Capsules\Posts\Models',
+//                'model' => 'App\Twill\Capsules\Posts\Models\Post',
+//                'repositories' => 'App\Twill\Capsules\Posts\Repositories',
 //                'controllers' => 'App\Twill\Capsules\Posts\Http\Controllers',
 //                'requests' => 'App\Twill\Capsules\Posts\Http\Requests',
 //                'psr4_path' =>
@@ -58,12 +58,12 @@ return [
 //                'models_dir' =>
 //                    '/app-dir/vendor/area17/twill/vendor/orchestra/testbench-core/laravel/app/Twill/Capsules/Posts/app/Data/Models',
 //                'translation' =>
-//                    'App\Twill\Capsules\Posts\Data\Models\PostTranslation',
-//                'slug' => 'App\Twill\Capsules\Posts\Data\Models\PostSlug',
+//                    'App\Twill\Capsules\Posts\Models\PostTranslation',
+//                'slug' => 'App\Twill\Capsules\Posts\Models\PostSlug',
 //                'revision' =>
-//                    'App\Twill\Capsules\Posts\Data\Models\PostRevision',
+//                    'App\Twill\Capsules\Posts\Models\PostRevision',
 //                'repository' =>
-//                    'App\Twill\Capsules\Posts\Data\Repositories\PostRepository',
+//                    'App\Twill\Capsules\Posts\Repositories\PostRepository',
 //                'repositories_dir' =>
 //                    '/app-dir/vendor/area17/twill/vendor/orchestra/testbench-core/laravel/app/Twill/Capsules/Posts/app/Data/Repositories',
 //                'controller' =>

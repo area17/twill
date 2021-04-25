@@ -85,11 +85,11 @@ class CapsulesServiceProvider extends RouteServiceProvider
         );
 
         $this->assertFileExists(
-            twill_path('Twill/Capsules/Cars/app/Data/Models/Car.php')
+            twill_path('Twill/Capsules/Cars/app/Models/Car.php')
         );
 
         $this->assertIsObject(
-            $this->app->make('App\Twill\Capsules\Cars\Data\Models\Car')
+            $this->app->make('App\Twill\Capsules\Cars\Models\Car')
         );
     }
 }

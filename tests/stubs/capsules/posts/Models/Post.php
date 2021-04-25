@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Twill\Capsules\Posts\Data\Models;
+namespace App\Twill\Capsules\Posts\Models;
 
 use A17\Twill\Models\Behaviors\HasBlocks;
 use A17\Twill\Models\Behaviors\HasTranslation;
