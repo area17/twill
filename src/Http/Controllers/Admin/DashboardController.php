@@ -177,9 +177,9 @@ class DashboardController extends Controller
             'id' => $activity->id,
             'type' => ucfirst($dashboardModule['label_singular'] ?? Str::singular($dashboardModule['name'])),
             'date' => $activity->created_at->toIso8601String(),
-            'author' => $activity->causer->name ?? 'Unknown',
+            'author' => $activity->causer->name ?? twillTrans('twill::lang.dashboard.unkown-author'),
             'name' => $activity->subject->titleInDashboard ?? $activity->subject->title,
-            'activity' => ucfirst($activity->description),
+            'activity' => twillTrans('twill::lang.dashboard.activities.'.$activity->description),
         ] + (classHasTrait($activity->subject, HasMedias::class) ? [
             'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
         ] : []) + (!$activity->subject->trashed() ? [
