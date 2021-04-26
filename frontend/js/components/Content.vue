@@ -128,7 +128,7 @@
           .filter(block => !existingBlocks.includes(block))
         const oldBlock = 'blocks[' + block.id + ']'
         const newBlock = 'blocks[' + newBlockId + ']'
-        const fields = window.TWILL.STORE.form.fields
+        const fields = window[process.env.VUE_APP_NAME].STORE.form.fields
         fields
           .filter(field => field.name.startsWith(oldBlock))
           .forEach(function (field) {
@@ -137,17 +137,23 @@
               value: field.value
             })
           })
-        const medias = window.TWILL.STORE.medias.selected
+        const medias = window[process.env.VUE_APP_NAME].STORE.medias.selected
         Object.keys(medias)
           .filter(key => key.startsWith(oldBlock))
           .forEach(function (key) {
             medias[key.replace(oldBlock, newBlock)] = medias[key]
           })
-        const browsers = window.TWILL.STORE.browser.selected
+        const browsers = window[process.env.VUE_APP_NAME].STORE.browser.selected
         Object.keys(browsers)
           .filter(key => key.startsWith(oldBlock))
           .forEach(function (key) {
             browsers[key.replace(oldBlock, newBlock)] = browsers[key]
+          })
+        const repeaters = window[process.env.VUE_APP_NAME].STORE.form.repeaters
+        Object.keys(repeaters)
+          .filter(key => key.startsWith('blocks-' + block.id))
+          .forEach(function (key) {
+            repeaters[key.replace('blocks-' + block.id, 'blocks-' + newBlockId)] = repeaters[key]
           })
       },
       duplicateBlock: function (index) {
