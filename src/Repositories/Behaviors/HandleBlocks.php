@@ -282,7 +282,12 @@ trait HandleBlocks
                 $items = $this->getFormFieldsForRelatedBrowser($block, $relation);
                 foreach ($items as &$item) {
                     if (!isset($item['edit'])) {
-                        $item['edit'] = moduleRoute($relation, config('twill.block_editor.browser_route_prefixes.' . $relation), 'edit', $item['id']);
+                        $item['edit'] = moduleRoute(
+                            $relation,
+                            config('twill.block_editor.browser_route_prefixes.' . $relation),
+                            'edit',
+                            $item['id']
+                        );
                     }
                 }
             } else {
