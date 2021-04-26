@@ -9,7 +9,6 @@ const sections = [
   'crud-modules',
   'form-fields',
   'block-editor',
-  'custom-components',
   'media-library',
   'artisan',
   'other-cms-features',
