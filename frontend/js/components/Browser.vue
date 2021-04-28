@@ -12,7 +12,11 @@
                        @change="changeBrowserSource"/>
         </div>
         <div class="browser__search">
-          <a17-filter @submit="submitFilter"/>
+          <a17-filter @submit="submitFilter">
+            <div slot="additional-actions">
+              {{ browserNote }}
+            </div>
+          </a17-filter>
         </div>
       </div>
       <div class="browser__inner">
@@ -89,6 +93,7 @@
         endpointName: state => state.browser.endpointName,
         endpoints: state => state.browser.endpoints,
         browserTitle: state => state.browser.title,
+        browserNote: state => state.browser.note,
         selected: state => state.browser.selected
       })
     },
