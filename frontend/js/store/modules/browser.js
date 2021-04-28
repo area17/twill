@@ -4,6 +4,7 @@ import { BROWSER } from '../mutations'
 const state = {
   connector: null,
   title: 'Attach related resources',
+  note: '',
   endpoint: '',
   endpointName: '',
   endpoints: [],
@@ -66,6 +67,9 @@ const mutations = {
   },
   [BROWSER.UPDATE_BROWSER_TITLE] (state, newValue) {
     if (newValue && newValue !== '') state.title = newValue
+  },
+  [BROWSER.UPDATE_BROWSER_NOTE] (state, newValue) {
+    state.note = newValue
   },
   [BROWSER.DESTROY_BROWSER_CONNECTOR] (state) {
     state.connector = null

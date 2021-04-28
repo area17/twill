@@ -45,6 +45,10 @@
         type: String,
         default: ''
       },
+      browserNote: {
+        type: String,
+        default: ''
+      },
       itemLabel: {
         type: String,
         default: 'Item'
@@ -143,6 +147,7 @@
         }
         this.$store.commit(BROWSER.UPDATE_BROWSER_MAX, this.max)
         this.$store.commit(BROWSER.UPDATE_BROWSER_TITLE, this.browserTitle)
+        this.$store.commit(BROWSER.UPDATE_BROWSER_NOTE, this.browserNote)
 
         if (this.wide) {
           this.$root.$refs.browserWide.open(this.endpoints.length <= 0)
