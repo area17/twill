@@ -13,8 +13,10 @@
         </div>
         <div class="browser__search">
           <a17-filter @submit="submitFilter">
-            <div slot="additional-actions">
-              {{ browserNote }}
+            <div slot="additional-actions" v-if="browserNote">
+              <span class="browser__note f--small">
+                {{ browserNote }}
+              </span>
             </div>
           </a17-filter>
         </div>
@@ -284,6 +286,11 @@
     .itemlist {
       padding-bottom: 0;
     }
+  }
+
+  .browser__note {
+    color:$color__text--light;
+    padding-left: 20px;
   }
 </style>
 
