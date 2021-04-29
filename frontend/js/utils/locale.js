@@ -38,7 +38,7 @@ export const locales = {
   pt: {
     'date-fns': require('date-fns/locale/pt'),
     flatpickr: Portuguese
-  }
+  },
   tr: {
     'date-fns': require('date-fns/locale/tr'),
     flatpickr: Turkish
