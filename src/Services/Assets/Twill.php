@@ -20,7 +20,7 @@ class Twill
         }
 
         return asset(
-            '/' . config('twill.public_directory', 'twill') . '/' . $file,
+            '/' . config('twill.public_directory', 'twill') . '/' . $file
         );
     }
 
@@ -36,7 +36,7 @@ class Twill
         }
 
         return base_path(
-            'vendor/area17/twill/dist/assets/admin/twill-manifest.json',
+            'vendor/area17/twill/dist/assets/admin/twill-manifest.json'
         );
     }
 
@@ -52,11 +52,11 @@ class Twill
             $manifest = $this->readJson(
                 $devServerUrl .
                     '/' .
-                    config('twill.manifest_file', 'twill-manifest.json'),
+                    config('twill.manifest_file', 'twill-manifest.json')
             );
         } catch (\Exception $e) {
             throw new \Exception(
-                'Twill dev assets manifest is missing. Make sure you are running the npm run serve command inside Twill.',
+                'Twill dev assets manifest is missing. Make sure you are running the npm run serve command inside Twill.'
             );
         }
 
@@ -74,7 +74,7 @@ class Twill
             });
         } catch (\Exception $e) {
             throw new \Exception(
-                'Twill assets manifest is missing. Make sure you published/updated Twill assets using the "php artisan twill:update" command.',
+                'Twill assets manifest is missing. Make sure you published/updated Twill assets using the "php artisan twill:update" command.'
             );
         }
     }
