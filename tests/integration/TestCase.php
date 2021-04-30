@@ -179,7 +179,7 @@ abstract class TestCase extends OrchestraTestCase
      */
     protected function login()
     {
-        $this->request('/twill/login', 'POST', [
+        $this->httpRequestAssert('/twill/login', 'POST', [
             'email' => $this->superAdmin()->email,
             'password' => $this->superAdmin()->unencrypted_password,
         ]);
@@ -467,7 +467,7 @@ abstract class TestCase extends OrchestraTestCase
             'HTTP_X-Requested-With' => 'XMLHttpRequest',
         ]);
 
-        return $this->request(
+        $response = $this->request(
             $uri,
             $method,
             $parameters,
@@ -477,6 +477,10 @@ abstract class TestCase extends OrchestraTestCase
             $content,
             $followRedirects
         );
+
+        $this->assertLogStatusCode($response);
+
+        return $response;
     }
 
     /**
@@ -632,5 +636,28 @@ abstract class TestCase extends OrchestraTestCase
     public function getCommand($commandName)
     {
         return $this->app->make(Kernel::class)->all()[$commandName];
+    }
+
+    public function httpRequestAssert($url, $method = 'GET', $data = [], $expectedStatusCode = 200)
+    {
+        $response = $this->request(
+            $url,
+            $method,
+            $data
+        );
+
+        $this->assertLogStatusCode($response, $expectedStatusCode);
+
+        $response->assertStatus($expectedStatusCode);
+
+        return $response;
+    }
+
+    public function assertLogStatusCode($response, $expectedStatusCode = 200)
+    {
+        if ($response->getStatusCode() != $expectedStatusCode) {
+            var_dump('------------------- ORIGINAL RESPONSE');
+            var_dump($response->getContent());
+        }
     }
 }

@@ -8,15 +8,13 @@ class UsersTest extends TestCase
 {
     protected function impersonateUser()
     {
-        $this->request('/twill')->assertStatus(200);
+        $this->httpRequestAssert('/twill');
 
         $this->assertSee('Admin');
 
         $user = $this->createUser();
 
-        $this->request("/twill/users/impersonate/{$user->id}")->assertStatus(
-            200
-        );
+        $this->httpRequestAssert("/twill/users/impersonate/{$user->id}");
 
         $this->assertSee(e($user->name));
 
@@ -79,7 +77,7 @@ class UsersTest extends TestCase
             'cmsSaveType' => 'update',
         ];
 
-        $crawler = $this->ajax("/twill/users/{$user->id}", 'PUT', $payload);
+        $crawler = $this->ajax("/twill/users/{$user->id}", 'PUT', $payload)->assertStatus(200);
 
         $crawler->assertStatus(200);
 
@@ -111,7 +109,7 @@ class UsersTest extends TestCase
 
         $user->save();
 
-        $this->request("/twill/users/{$user->id}/edit")->assertStatus(200);
+        $this->httpRequestAssert("/twill/users/{$user->id}/edit");
 
         $this->assertSee($email);
     }
@@ -125,7 +123,7 @@ class UsersTest extends TestCase
     {
         $this->impersonateUser();
 
-        $this->request('/twill/users/impersonate/stop')->assertStatus(200);
+        $this->httpRequestAssert('/twill/users/impersonate/stop');
 
         $this->assertNull(session()->get('impersonate'));
     }
