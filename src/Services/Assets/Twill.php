@@ -16,12 +16,10 @@ class Twill
         $manifest = $this->readManifest();
 
         if (isset($manifest[$file])) {
-            return asset($manifest[$file]);
+            return $manifest[$file];
         }
 
-        return asset(
-            '/' . config('twill.public_directory', 'twill') . '/' . $file
-        );
+        return '/' . config('twill.public_directory', 'twill') . '/' . $file;
     }
 
     public function getManifestFilename()
