@@ -28,13 +28,13 @@ trait HasSlug
     public function slugs()
     {
         return $this->hasMany(
-            __NAMESPACE__ . "\Slugs\\" . $this->getSlugClassName()
+            $this->getNamespace() . "\Slugs\\" . $this->getSlugClassName()
         );
     }
 
     public function getSlugClass()
     {
-        $slugClassName = __NAMESPACE__ . "\Slugs\\" . $this->getSlugClassName();
+        $slugClassName = $this->getNamespace() . "\Slugs\\" . $this->getSlugClassName();
         return new $slugClassName;
     }
 
@@ -419,5 +419,10 @@ trait HasSlug
     public function urlSlugShorter($string)
     {
         return strtolower(trim(preg_replace('~[^0-9a-z]+~i', '-', html_entity_decode(preg_replace('~&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i', '$1', htmlentities($string, ENT_QUOTES, 'UTF-8')), ENT_QUOTES, 'UTF-8')), '-'));
+    }
+
+    public function getNamespace()
+    {
+        return Str::beforeLast(self::class, '\\');
     }
 }
