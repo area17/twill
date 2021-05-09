@@ -6,7 +6,9 @@ use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Repositories\BlockRepository;
 use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Support\Collection;
+use Log;
 use Schema;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 trait HandleBlocks
 {
@@ -282,12 +284,21 @@ trait HandleBlocks
                 $items = $this->getFormFieldsForRelatedBrowser($block, $relation);
                 foreach ($items as &$item) {
                     if (!isset($item['edit'])) {
-                        $item['edit'] = moduleRoute(
-                            $relation,
-                            config('twill.block_editor.browser_route_prefixes.' . $relation),
-                            'edit',
-                            $item['id']
-                        );
+                        try {
+                            $item['edit'] = moduleRoute(
+                                $relation,
+                                config('twill.block_editor.browser_route_prefixes.' . $relation),
+                                'edit',
+                                $item['id']
+                            );
+                        } catch (RouteNotFoundException $e) {
+                            report($e);
+                            Log::notice(
+                                "Twill warning: The url for the \"{$relation}\" browser items can't " .
+                                "be resolved. You might be missing a {$relation} key in your " .
+                                "twill.block_editor.browser_route_prefixes configuration."
+                            );
+                        }
                     }
                 }
             } else {
