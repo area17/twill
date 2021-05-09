@@ -423,6 +423,12 @@ trait HasSlug
 
     public function getNamespace()
     {
-        return Str::beforeLast(self::class, '\\');
+        $pos = mb_strrpos(self::class, '\\');
+
+        if ($pos === false) {
+            return self::class;
+        }
+
+        return Str::substr(self::class, 0, $pos);
     }
 }
