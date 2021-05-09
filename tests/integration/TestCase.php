@@ -179,7 +179,7 @@ abstract class TestCase extends OrchestraTestCase
      */
     protected function login()
     {
-        $this->httpRequestAssert('/twill/login', 'POST', [
+        $this->request('/twill/login', 'POST', [
             'email' => $this->superAdmin()->email,
             'password' => $this->superAdmin()->unencrypted_password,
         ]);
