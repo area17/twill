@@ -3,6 +3,7 @@
 namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\Behaviors\Sortable;
+use A17\Twill\Models\Model;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
 use A17\Twill\Repositories\Behaviors\HandleDates;
 use A17\Twill\Repositories\Behaviors\HandleFieldsGroups;
