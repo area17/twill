@@ -2,11 +2,11 @@
 
 namespace A17\Twill\Commands;
 
-use Illuminate\Support\Facades\File;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Composer;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class ModuleMake extends Command
@@ -146,8 +146,8 @@ class ModuleMake extends Command
             if (!$this->option('force')) {
                 $answer = $this->choice("Capsule path exists ({$dir}). Erase and overwrite?",
                     ['no', 'yes'], $this->defaultsAnswserToNo
-                        ? 0
-                        : 1);
+                    ? 0
+                    : 1);
             }
 
             if ('yes' === ($answer ?? 'no') || $this->option('force')) {
@@ -244,8 +244,12 @@ class ModuleMake extends Command
 
             $this->info("
                 'capsules' => [
-                    'name' => '{$this->capsule['name']}',
-                    'enabled' => true
+                    'list' => [
+                        [
+                            'name' => '{$this->capsule['name']}',
+                            'enabled' => true
+                        ]
+                    ]
                 ]
             ");
         }
@@ -394,7 +398,7 @@ class ModuleMake extends Command
             $activeModelTraitsString,
             $activeModelTraitsImports,
             $activeModelImplements,
-            $this->namespace('models', 'Models')
+            $this->namespace('models', 'Models'),
         ], $this->files->get(__DIR__ . '/stubs/model.stub'));
 
         $stub = $this->renderStubForOption($stub, 'hasTranslation', $this->translatable);
@@ -453,7 +457,7 @@ class ModuleMake extends Command
 
         $stub = str_replace(
             ['{{repositoryClassName}}', '{{modelName}}', '{{repositoryTraits}}', '{{repositoryImports}}', '{{namespace}}', '{{modelClass}}'],
-            [$repositoryClassName, $modelName, $activeRepositoryTraitsString, $activeRepositoryTraitsImports,$this->namespace('repositories', 'Repositories'), $modelClass],
+            [$repositoryClassName, $modelName, $activeRepositoryTraitsString, $activeRepositoryTraitsImports, $this->namespace('repositories', 'Repositories'), $modelClass],
             $this->files->get(__DIR__ . '/stubs/repository.stub')
         );
 
@@ -480,7 +484,7 @@ class ModuleMake extends Command
 
         $stub = str_replace(
             ['{{moduleName}}', '{{controllerClassName}}', '{{namespace}}'],
-            [$moduleName, $controllerClassName,$this->namespace('controllers', 'Http\Controllers\Admin')],
+            [$moduleName, $controllerClassName, $this->namespace('controllers', 'Http\Controllers\Admin')],
             $this->files->get(__DIR__ . '/stubs/controller.stub')
         );
 
@@ -505,8 +509,8 @@ class ModuleMake extends Command
         $requestClassName = $modelName . 'Request';
 
         $stub = str_replace(
-            ['{{requestClassName}}','{{namespace}}'],
-            [$requestClassName,$this->namespace('requests', 'Http\Requests\Admin')],
+            ['{{requestClassName}}', '{{namespace}}'],
+            [$requestClassName, $this->namespace('requests', 'Http\Requests\Admin')],
             $this->files->get(__DIR__ . '/stubs/request.stub')
         );
 
@@ -605,7 +609,7 @@ class ModuleMake extends Command
         }
 
         $this->checkCapsuleDirectory(
-            $this->moduleBasePath = config('twill.capsules.path')."/{$moduleName}"
+            $this->moduleBasePath = config('twill.capsules.path') . "/{$moduleName}"
         );
 
         $this->makeDir($this->moduleBasePath);
@@ -633,8 +637,7 @@ class ModuleMake extends Command
 
         $dir = isset($info['extension']) ? $info['dirname'] : $dir;
 
-        if (!is_dir($dir))
-        {
+        if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
 
@@ -650,8 +653,7 @@ class ModuleMake extends Command
         make_twill_directory($path);
     }
 
-    public function namespace($type, $suffix, $class = null)
-    {
+    public function namespace ($type, $suffix, $class = null) {
         $class = (filled($class) ? "\\$class" : '');
 
         if (!$this->isCapsule) {
