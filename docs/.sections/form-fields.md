@@ -776,39 +776,57 @@ Browser fields can be used to save a `belongsToMany` relationship outside of the
 Checkout this [Spectrum tutorial](https://spectrum.chat/twill/tips-and-tricks/step-by-step-ii-creating-a-twill-app~37c36601-1198-4c53-857a-a2b47c6d11aa) until we update this section to get more info on setting things up.
 When using inside of the block editor, no migration is needed.
 
-### Browser with multiple endpoints / Browser for different entities / MultiBrowser
-![screenshot](/docs/_media/multibrowser.png)
+### Browser with multiple modules
 
+With module names:
+```php
+@formField('browser', [
+    'modules' => [
+        [
+            'name' => 'projects',
+        ],
+        [
+            'name' => 'capabilities',
+            'routePrefix' => 'taxonomies',
+        ],
+        [
+            'name' => 'articles',
+        ],
+    ],
+    'name' => 'related_content',
+    'label' => 'Related content'
+])
+```
+
+With manual endpoints:
 ```php
 @formField('browser', [
     'endpoints' => [
         [
             'label' => 'Projects',
-            'value' => "/projects/browser",
+            'value' => '/projects/browser',
         ],
         [
             'label' => 'Capabilities',
-            'value' => "/capabilities/browser",
+            'value' => '/taxonomies/capabilities/browser',
         ],
         [
             'label' => 'Articles',
-            'value' => "/articles/browser",
+            'value' => '/articles/browser',
         ],
     ],
-    'name' => 'contributions',
-    'label' => 'Contributions',
-    'max' => 1
+    'name' => 'related_content',
+    'label' => 'Related content'
 ])
 ```
 
-MultiBrowser fields doesn't require any migration.
-You can safely use the `RelatedItem` Model.
+When using multiple modules/endpoints, the browser field doesn't require any migration.
+You can safely use the `HasRelated` trait.
 
-In your model add
+In your model add:
 
 ```php
 use A17\Twill\Models\Behaviors\HasRelated;
-use A17\Twill\Models\RelatedItem;
 
 class MyModel extends Model
 {
@@ -817,28 +835,7 @@ class MyModel extends Model
 }
 ```
 
-Then you need to add the `morphMany` association using the `RelatedItem` model and filtering by the browser name you are using in the form.
-
-```php
-<?php
-
-namespace App\Models;
-
-use A17\Twill\Models\Model;
-use A17\Twill\Models\Behaviors\HasRelated;
-use A17\Twill\Models\RelatedItem;
-
-class MyModel extends Model
-{
-    use HasRelated;
-
-    public function contributions()
-    {
-        return $this->morphMany(RelatedItem::class, 'related')->where('browser_name', 'contributions');
-    }
-```
-
-In the repository you need to add the callbacks to save and retrieve data of the MultiBrowser by using the `getFormFieldsForRelatedBrowser` and `updateRelatedBrowser` functions.
+In the repository you need to add the hooks to save and retrieve data of the browser field by using the `getFormFieldsForRelatedBrowser` and `updateRelatedBrowser` functions.
 
 ```php
 <?php
@@ -851,7 +848,7 @@ use App\Models\MyModel;
 class MyModelRepository extends ModuleRepository
 {
 
-    public function __construct(Article $model)
+    public function __construct(MyModel $model)
     {
         $this->model = $model;
     }
@@ -860,7 +857,7 @@ class MyModelRepository extends ModuleRepository
 
     public function afterSave($object, $fields)
     {
-        $this->updateRelatedBrowser($object, $fields, 'contributions');
+        $this->updateRelatedBrowser($object, $fields, 'related_content');
 
         parent::afterSave($object, $fields);
     }
@@ -868,44 +865,21 @@ class MyModelRepository extends ModuleRepository
     public function getFormFields($object)
     {
         $fields = parent::getFormFields($object);
-        $fields['browsers']['contributions'] = $this->getFormFieldsForRelatedBrowser($object, 'contributions');
+        $fields['browsers']['related_content'] = $this->getFormFieldsForRelatedBrowser($object, 'related_content');
 
         return $fields;
     }
 }
 ```
 
-Now you have all you need for handling the MultiBrowser in Twill. And you are ready for displaying the content in the FE.
-
-For retrieving the data for FE you just need a new functions that will filter the association by the browser's name.
-
-Your model should look like this:
+To retrieve the items in the frontend, you can use the following helper, it will return of collection of models in the correct order.
+:
 
 ```php
-<?php
-
-namespace App\Models;
-
-use A17\Twill\Models\Model;
-use A17\Twill\Models\Behaviors\HasRelated;
-use A17\Twill\Models\RelatedItem;
-
-class MyModel extends Model
-{
-    use HasRelated;
-
-    public function recirculation()
-    {
-        return $this->getRelated('contributions');
-    }
-
-    public function contributions()
-    {
-        return $this->morphMany(RelatedItem::class, 'related')->where('browser_name', 'contributions');
-    }
+    $item->getRelated('related_content');
+    // or, in a block
+    $block->getRelated('related_content');
 ```
-
-In the above example you'll iterate over the `$item->recirculation()` in your view to display the data from the MultiBrowser.
 
 ### Repeater
 ![screenshot](/docs/_media/repeater.png)
