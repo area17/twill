@@ -222,10 +222,14 @@ class ModuleMake extends Command
         $this->createController($moduleName, $modelName);
         $this->createRequest($modelName);
         $this->createViews($moduleName);
-        $this->createRoutes($moduleName);
-        $this->createSeed($moduleName);
 
-        $this->info("Add Route::module('{$moduleName}'); to your admin routes file.");
+        if ($this->isCapsule) {
+            $this->createRoutes($moduleName);
+            $this->createSeed($moduleName);
+        } else {
+            $this->info("Add Route::module('{$moduleName}'); to your admin routes file.");
+        }
+
         $this->info("Setup a new CMS menu item in config/twill-navigation.php:");
 
         $navTitle = Str::studly($moduleName);
