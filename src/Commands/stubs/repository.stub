@@ -3,7 +3,7 @@
 namespace {{namespace}};
 
 {{repositoryImports}}
-use A17\Twill\Repositories\ModuleRepository;
+use {{baseRepository}};
 use {{modelClass}};
 
 class {{repositoryClassName}} extends ModuleRepository

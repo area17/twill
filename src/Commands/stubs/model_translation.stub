@@ -2,7 +2,7 @@
 
 namespace {{namespace}};
 
-use A17\Twill\Models\Model;
+use {{baseTranslationModel}};
 use {{modelClassWithNamespace}};
 
 class {{modelTranslationClassName}} extends Model
