@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a question
+    url: https://github.com/area17/twill/discussions
+    about: Ask questions and discuss with other community members
+  - name: Read the docs
+    url: https://twill.io/docs/
+    about: Check out the Twill documentation for answers to common questions
+  - name: Chat with the community
+    url: https://discord.link/twill
+    about: Ask questions, get help and discuss new things you're building with the Twill community
