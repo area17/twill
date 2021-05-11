@@ -337,8 +337,8 @@ class ModuleMake extends Command
             $modelTranslationClassName = $modelName . 'Translation';
 
             $stub = str_replace(
-                ['{{modelTranslationClassName}}', '{{modelClassWithNamespace}}', '{{modelClassName}}', '{{namespace}}'],
-                [$modelTranslationClassName, $modelClassName, $modelName, $this->namespace('models', 'Models\Translations')],
+                ['{{modelTranslationClassName}}', '{{modelClassWithNamespace}}', '{{modelClassName}}', '{{namespace}}', '{{baseTranslationModel}}'],
+                [$modelTranslationClassName, $modelClassName, $modelName, $this->namespace('models', 'Models\Translations'), config('twill.base_translation_model')],
                 $this->files->get(__DIR__ . '/stubs/model_translation.stub')
             );
 
@@ -351,8 +351,8 @@ class ModuleMake extends Command
             $modelSlugClassName = $modelName . 'Slug';
 
             $stub = str_replace(
-                ['{{modelSlugClassName}}', '{{modelClassWithNamespace}}', '{{modelName}}', '{{namespace}}'],
-                [$modelSlugClassName, $modelClassName, Str::snake($modelName), $this->namespace('models', 'Models\Slugs')],
+                ['{{modelSlugClassName}}', '{{modelClassWithNamespace}}', '{{modelName}}', '{{namespace}}', '{{baseSlugModel}}'],
+                [$modelSlugClassName, $modelClassName, Str::snake($modelName), $this->namespace('models', 'Models\Slugs'), config('twill.base_slug_model')],
                 $this->files->get(__DIR__ . '/stubs/model_slug.stub')
             );
 
@@ -365,8 +365,8 @@ class ModuleMake extends Command
             $modelRevisionClassName = $modelName . 'Revision';
 
             $stub = str_replace(
-                ['{{modelRevisionClassName}}', '{{modelClassWithNamespace}}', '{{modelName}}', '{{namespace}}'],
-                [$modelRevisionClassName, $modelClassName, Str::snake($modelName), $this->namespace('models', 'Models\Revisions')],
+                ['{{modelRevisionClassName}}', '{{modelClassWithNamespace}}', '{{modelName}}', '{{namespace}}', '{{baseRevisionModel}}'],
+                [$modelRevisionClassName, $modelClassName, Str::snake($modelName), $this->namespace('models', 'Models\Revisions'), config('twill.base_revision_model')],
                 $this->files->get(__DIR__ . '/stubs/model_revision.stub')
             );
 
@@ -397,12 +397,14 @@ class ModuleMake extends Command
             '{{modelImports}}',
             '{{modelImplements}}',
             '{{namespace}}',
+            '{{baseModel}}',
         ], [
             $modelName,
             $activeModelTraitsString,
             $activeModelTraitsImports,
             $activeModelImplements,
             $this->namespace('models', 'Models'),
+            config('twill.base_model'),
         ], $this->files->get(__DIR__ . '/stubs/model.stub'));
 
         $stub = $this->renderStubForOption($stub, 'hasTranslation', $this->translatable);
@@ -460,8 +462,8 @@ class ModuleMake extends Command
         $activeRepositoryTraitsImports = empty($activeRepositoryTraits) ? '' : "use A17\Twill\Repositories\Behaviors\\" . implode(";\nuse A17\Twill\Repositories\Behaviors\\", $activeRepositoryTraits) . ";";
 
         $stub = str_replace(
-            ['{{repositoryClassName}}', '{{modelName}}', '{{repositoryTraits}}', '{{repositoryImports}}', '{{namespace}}', '{{modelClass}}'],
-            [$repositoryClassName, $modelName, $activeRepositoryTraitsString, $activeRepositoryTraitsImports, $this->namespace('repositories', 'Repositories'), $modelClass],
+            ['{{repositoryClassName}}', '{{modelName}}', '{{repositoryTraits}}', '{{repositoryImports}}', '{{namespace}}', '{{modelClass}}', '{{baseRepository}}'],
+            [$repositoryClassName, $modelName, $activeRepositoryTraitsString, $activeRepositoryTraitsImports, $this->namespace('repositories', 'Repositories'), $modelClass, config('twill.base_repository')],
             $this->files->get(__DIR__ . '/stubs/repository.stub')
         );
 
@@ -487,8 +489,8 @@ class ModuleMake extends Command
         $this->makeTwillDirectory($dir);
 
         $stub = str_replace(
-            ['{{moduleName}}', '{{controllerClassName}}', '{{namespace}}'],
-            [$moduleName, $controllerClassName, $this->namespace('controllers', 'Http\Controllers\Admin')],
+            ['{{moduleName}}', '{{controllerClassName}}', '{{namespace}}', '{{baseController}}'],
+            [$moduleName, $controllerClassName, $this->namespace('controllers', 'Http\Controllers\Admin'), config('twill.base_controller')],
             $this->files->get(__DIR__ . '/stubs/controller.stub')
         );
 
@@ -513,8 +515,8 @@ class ModuleMake extends Command
         $requestClassName = $modelName . 'Request';
 
         $stub = str_replace(
-            ['{{requestClassName}}', '{{namespace}}'],
-            [$requestClassName, $this->namespace('requests', 'Http\Requests\Admin')],
+            ['{{requestClassName}}', '{{namespace}}', '{{baseRequest}}'],
+            [$requestClassName, $this->namespace('requests', 'Http\Requests\Admin'), config('twill.base_request')],
             $this->files->get(__DIR__ . '/stubs/request.stub')
         );
 

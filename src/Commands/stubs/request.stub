@@ -2,7 +2,7 @@
 
 namespace {{namespace}};
 
-use A17\Twill\Http\Requests\Admin\Request;
+use {{baseRequest}};
 
 class {{requestClassName}} extends Request
 {

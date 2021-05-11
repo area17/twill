@@ -196,4 +196,25 @@ return [
         'zh-Hans',
         'ru',
     ],
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Base classes for automatic generation of Modules and Capsules
+    |--------------------------------------------------------------------------
+    |
+     */
+    'base_model' => A17\Twill\Models\Model::class,
+
+    'base_translation_model' => A17\Twill\Models\Model::class,
+
+    'base_slug_model' => A17\Twill\Models\Model::class,
+
+    'base_revision_model' => A17\Twill\Models\Revision::class,
+
+    'base_repository' => A17\Twill\Repositories\ModuleRepository::class,
+
+    'base_controller' => A17\Twill\Http\Controllers\Admin\ModuleController::class,
+
+    'base_request' => A17\Twill\Http\Requests\Admin\Request::class,
 ];

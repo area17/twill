@@ -3,7 +3,7 @@
 namespace {{namespace}};
 
 {{modelImports}}
-use A17\Twill\Models\Model;
+use {{baseModel}};
 
 class {{modelClassName}} extends Model {{modelImplements}}
 {
