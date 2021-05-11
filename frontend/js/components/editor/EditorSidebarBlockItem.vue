@@ -81,11 +81,11 @@
     background: $color__background;
     padding: 15px;
 
-    /deep/ .input {
+    ::v-deep .input {
       margin-top: 15px;
     }
 
-    /deep/ .block__body {
+    ::v-deep .block__body {
       > .media,
       > .slideshow,
       > .browserField {

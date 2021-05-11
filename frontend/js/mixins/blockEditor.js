@@ -18,6 +18,7 @@ export default {
   methods: {
     addAndEditBlock (add, edit, { block, index }) {
       window.PREVSTATE = cloneDeep(this.$store.state)
+      // eslint-disable-next-line
       console.log('add-and-edit-block', { block, index })
       add(block, index)
       edit(index)
@@ -29,6 +30,7 @@ export default {
     },
     cancelBlock (fn, index) {
       if (window.hasOwnProperty('PREVSTATE')) {
+        // eslint-disable-next-line
         console.warn('Store - Restore previous Store state')
         this.$store.replaceState(window.PREVSTATE)
       }
