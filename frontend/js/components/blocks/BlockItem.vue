@@ -123,7 +123,7 @@
 
   .block__content {
     display: none;
-    padding: 15px;
+    padding: 35px 15px;
     background: $color__background;
   }
 
@@ -264,11 +264,11 @@
       border: 0 none;
     }
 
-    ::v-deep .input {
+    ::v-deep(.input) {
       margin-top: 15px;
     }
 
-    ::v-deep .block__body {
+    ::v-deep(.block__body) {
       > .media,
       > .slideshow,
       > .browserField {
