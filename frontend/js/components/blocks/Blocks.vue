@@ -1,14 +1,14 @@
 <template>
   <a17-blocks-list :section="section">
-    <div class="content"
+    <div class="blocks"
          slot-scope="{ savedBlocks, availableBlocks, reorderBlocks }">
-      <draggable class="content__container"
+      <draggable class="blocks__container"
                  :value="savedBlocks"
                  @update="reorderBlocks({ oldIndex, newIndex })"
                  :options="dragOptions">
         <transition-group name="draggable_list"
                           tag='div'>
-          <div class="content__item"
+          <div class="blocks__item"
                v-for="savedBlock in savedBlocks"
                :key="savedBlock.id">
             <a17-block-model :section="section"
@@ -61,7 +61,7 @@
         </transition-group>
       </draggable>
 
-      <div class="content__actions">
+      <div class="blocks__actions">
         <a17-dropdown ref="blocksDropdown"
                       position="top-center"
                       v-if="availableBlocks.length"
@@ -83,7 +83,7 @@
                         slot-scope="{ add, block }"
                         :key="availableBlock.component"
                         @click="handleBlockAdd(add, block)">
-                  <span class="content__icon"
+                  <span class="blocks__icon"
                         v-svg
                         :symbol="availableBlock.icon"></span>
                   {{ availableBlock.title }}
@@ -92,7 +92,7 @@
             </template>
           </div>
         </a17-dropdown>
-        <div class="content__secondaryActions">
+        <div class="blocks__secondaryActions">
           <a href="#"
              class="f--link f--link-underlined--o"
              v-if="editor"
@@ -199,11 +199,11 @@
 
 <style lang="scss" scoped>
 
-  .content {
+  .blocks {
     margin-top: 20px; // margin-top:35px;
   }
 
-  .content__container {
+  .blocks__container {
     margin-bottom: 20px;
 
     + .dropdown {
@@ -211,18 +211,18 @@
     }
   }
 
-  .content__actions {
+  .blocks__actions {
     display: flex;
   }
 
-  .content__secondaryActions {
+  .blocks__secondaryActions {
     flex-grow: 1;
     text-align: right;
     margin-left: 20px;
     padding-top: 8px;
   }
 
-  .content__item {
+  .blocks__item {
     border: 1px solid $color__border;
     border-top: 0 none;
 
@@ -231,7 +231,7 @@
     }
   }
 
-  .content__actions button .content__icon {
+  .blocks__actions button .blocks__icon {
     margin-right: 0;
     margin-left: -15px;
     min-width: 55px;
@@ -239,7 +239,7 @@
     height: 40px;
   }
 
-  .content__item:first-child {
+  .blocks__item:first-child {
     border-top: 1px solid $color__border;
   }
 </style>
