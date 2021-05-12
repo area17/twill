@@ -22,6 +22,7 @@ class Block extends BaseModel
         'type',
         'child_key',
         'parent_id',
+        'name',
     ];
 
     protected $casts = [

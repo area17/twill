@@ -29,7 +29,7 @@ const state = {
   available: window[process.env.VUE_APP_NAME].STORE.form.blocks.available || {},
   /**
    * An array with all the blocks created
-   * @type {Array.Object}
+   * @type {Object.Array}
    */
   used: window[process.env.VUE_APP_NAME].STORE.form.blocks.used || {},
   /**
