@@ -3,17 +3,18 @@
 namespace A17\Twill\Tests\Integration;
 
 use App\Models\Category;
+use Illuminate\Support\Str;
 
 class ModulesCategoriesTest extends ModulesTestBase
 {
     public function testCanDisplayModuleInNavigation()
     {
-        $this->request('/twill');
+        $this->httpRequestAssert('/twill');
 
         $this->assertSee('Personnel');
         $this->assertSee('Categories');
 
-        $this->request('/twill/categories');
+        $this->httpRequestAssert('/twill/categories');
 
         $this->assertSee('Name');
         $this->assertSee('Languages');
@@ -54,7 +55,7 @@ class ModulesCategoriesTest extends ModulesTestBase
         $this->assertEquals(1, $category1->position);
         $this->assertEquals(2, $category2->position);
 
-        $this->request('/twill/categories/reorder', 'POST', [
+        $this->httpRequestAssert('/twill/categories/reorder', 'POST', [
             'ids' => [
                 [
                     'id' => $category2->id,
@@ -65,7 +66,7 @@ class ModulesCategoriesTest extends ModulesTestBase
                     'children' => [],
                 ],
             ],
-        ])->assertStatus(200);
+        ]);
 
         $this->assertNothingWrongHappened();
 
@@ -87,7 +88,7 @@ class ModulesCategoriesTest extends ModulesTestBase
         $category2 = Category::orderBy('position', 'desc')
             ->first();
 
-        $this->request('/twill/categories/reorder', 'POST', [
+        $this->httpRequestAssert('/twill/categories/reorder', 'POST', [
             'ids' => [
                 [
                     'id' => $category2->id,
@@ -99,7 +100,7 @@ class ModulesCategoriesTest extends ModulesTestBase
                     ],
                 ],
             ],
-        ])->assertStatus(200);
+        ]);
 
         $this->assertNothingWrongHappened();
 

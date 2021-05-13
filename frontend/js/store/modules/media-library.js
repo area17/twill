@@ -106,6 +106,13 @@ const mutations = {
       return t
     })
   },
+  [MEDIA_LIBRARY.UPDATE_MEDIAS] (state, { mediaRole, index, media }) {
+    Vue.set(
+      state.selected[mediaRole],
+      index,
+      media
+    )
+  },
   [MEDIA_LIBRARY.SAVE_MEDIAS] (state, medias) {
     if (state.connector) {
       const key = state.connector
@@ -156,7 +163,9 @@ const mutations = {
       state.loading.unshift({
         id: media.id,
         name: media.name,
-        progress: media.progress
+        progress: media.progress,
+        replacementId: media.replacementId,
+        isReplacement: media.isReplacement
       })
     }
   },

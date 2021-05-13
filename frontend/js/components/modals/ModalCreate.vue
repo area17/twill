@@ -97,6 +97,7 @@
             self.$nextTick(function () {
               if (submitMode === 'create-another' && self.$refs.modal) self.$refs.modal.open()
               if (this.mode === 'create') this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
+              this.$store.commit(FORM.REMOVE_FORM_FIELD, 'published')
               this.$emit('reload')
             })
           }, (errorResponse) => {

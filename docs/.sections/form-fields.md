@@ -466,7 +466,7 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
         ],
     ]
 ])
-``` 
+```
 
 | Option      | Description                                                  | Type/values     | Default value |
 | :---------- | :----------------------------------------------------------- | :-------------- | :------------ |
@@ -597,8 +597,8 @@ Schema::table('posts', function (Blueprint $table) {
 ```php
 public function getSectorsAttribute($value)
 {
-    return collect(json_decode($value))->map(function($item) { 
-        return ['id' => $item]; 
+    return collect(json_decode($value))->map(function($item) {
+        return ['id' => $item];
     })->all();
 }
 
@@ -773,8 +773,115 @@ See [Block editor](https://twill.io/docs/#block-editor-3)
 ```
 
 Browser fields can be used to save a `belongsToMany` relationship outside of the block editor.
+
 Checkout this [Spectrum tutorial](https://spectrum.chat/twill/tips-and-tricks/step-by-step-ii-creating-a-twill-app~37c36601-1198-4c53-857a-a2b47c6d11aa) until we update this section to get more info on setting things up.
-When using inside of the block editor, no migration is needed.
+
+When using inside of the block editor, no migration is needed. Refer to the section titled [Adding browser fields to a block](#adding-browser-fields-to-a-block) for a detailed explanation.
+
+### Browser with multiple modules
+
+With module names:
+```php
+@formField('browser', [
+    'modules' => [
+        [
+            'name' => 'projects',
+        ],
+        [
+            'name' => 'capabilities',
+            'routePrefix' => 'taxonomies',
+        ],
+        [
+            'name' => 'articles',
+        ],
+    ],
+    'name' => 'related_content',
+    'label' => 'Related content'
+])
+```
+
+With manual endpoints:
+```php
+@formField('browser', [
+    'endpoints' => [
+        [
+            'label' => 'Projects',
+            'value' => '/projects/browser',
+        ],
+        [
+            'label' => 'Capabilities',
+            'value' => '/taxonomies/capabilities/browser',
+        ],
+        [
+            'label' => 'Articles',
+            'value' => '/articles/browser',
+        ],
+    ],
+    'name' => 'related_content',
+    'label' => 'Related content'
+])
+```
+
+When using multiple modules/endpoints, the browser field doesn't require any migration.
+You can safely use the `HasRelated` trait.
+
+In your model add:
+
+```php
+use A17\Twill\Models\Behaviors\HasRelated;
+
+class MyModel extends Model
+{
+    use HasRelated;
+    ...
+}
+```
+
+In the repository you need to add the hooks to save and retrieve data of the browser field by using the `getFormFieldsForRelatedBrowser` and `updateRelatedBrowser` functions.
+
+```php
+<?php
+
+namespace App\Repositories;
+
+use A17\Twill\Repositories\ModuleRepository;
+use App\Models\MyModel;
+
+class MyModelRepository extends ModuleRepository
+{
+
+    public function __construct(MyModel $model)
+    {
+        $this->model = $model;
+    }
+
+    ...
+
+    public function afterSave($object, $fields)
+    {
+        $this->updateRelatedBrowser($object, $fields, 'related_content');
+
+        parent::afterSave($object, $fields);
+    }
+
+    public function getFormFields($object)
+    {
+        $fields = parent::getFormFields($object);
+        $fields['browsers']['related_content'] = $this->getFormFieldsForRelatedBrowser($object, 'related_content');
+
+        return $fields;
+    }
+}
+```
+
+To retrieve the items in the frontend, you can use the following helper, it will return of collection of models in the correct order.
+:
+
+```php
+    $item->getRelated('related_content');
+    // or, in a block
+    $block->getRelated('related_content');
+```
 
 ### Repeater
 ![screenshot](/docs/_media/repeater.png)
@@ -784,8 +891,12 @@ When using inside of the block editor, no migration is needed.
 ```
 
 Repeaters fields can be used to save a `hasMany` relationship or a `morphMany` relationship outside of the block editor.
+
 Checkout this [Github issue](https://github.com/area17/twill/issues/131) until we update this section to get more info on setting things up.
-When using inside of the block editor, no migration is needed.
+
+Repeater blocks share the same Model as Blocks in the block editor. By reading the section on the [block editor](#block-editor-3), you will get a good picture on how to create and define repeater blocks for your project.
+
+When using inside of the block editor, no migration is needed. Refer to the section titled [Adding repeater fields to a block](#adding-repeater-fields-to-a-block) for a detailed explanation.
 
 ### Map
 ![screenshot](/docs/_media/map.png)
@@ -797,6 +908,13 @@ When using inside of the block editor, no migration is needed.
     'showMap' => true,
 ])
 ```
+
+| Option           | Description                                                 | Type/values     | Default value |
+| :--------------- | :---------------------------------------------------------- | :-------------- | :------------ |
+| name             | Name of the field                                           | string          |               |
+| label            | Label of the field                                          | string          |               |
+| showMap          | Enables the visibility of the map                           | true<br />false | true          |
+| saveExtendedData | Enables saving Bounding Box Coordinates and Location types  | true<br />false | false         |
 
 This field requires that you provide a `GOOGLE_MAPS_API_KEY` variable in your .env file.
 
@@ -820,6 +938,31 @@ public $casts = [
 
 When used in a [block](https://twill.io/docs/#adding-blocks), no migration is needed.
 
+#### Example of data stored in the Database:
+Default data:
+
+```javascript
+{
+    "latlng": "48.85661400000001|2.3522219",
+    "address": "Paris, France"
+}
+```
+
+Extended data:
+
+```javascript
+{
+    "latlng": "51.1808302|-2.256022799999999",
+    "address": "Warminster BA12 7LG, United Kingdom",
+    "types": ["point_of_interest", "establishment"],
+    "boundingBox": {
+        "east": -2.25289275,
+        "west": -2.257066149999999,
+        "north": 51.18158853029149,
+        "south": 51.17889056970849
+    }
+}
+```
 
 ### Color
 

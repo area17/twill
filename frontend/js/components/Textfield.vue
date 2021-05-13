@@ -319,6 +319,7 @@
     user-select:none;
     color:$color__icons;
     pointer-events: none;
+    white-space: nowrap;
   }
 
   .input__limit {

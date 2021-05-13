@@ -22,7 +22,7 @@
                         @else
                             <li class="nav__item">
                         @endif
-                                <a href="{{ getNavigationUrl($primary_navigation_element, $primary_navigation_key, $_global_active_navigation) }}">{{ $primary_navigation_element['title'] }}</a>
+                                <a href="{{ getNavigationUrl($primary_navigation_element, $primary_navigation_key, $_global_active_navigation) }}" @if (isset($primary_navigation_element['target']) && $primary_navigation_element['target'] == 'external') target="_blank" @endif>{{ $primary_navigation_element['title'] }}</a>
                             </li>
                     @endcan
                 @endforeach

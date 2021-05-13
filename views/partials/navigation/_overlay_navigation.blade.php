@@ -10,7 +10,7 @@
                             @if(isActiveNavigation($global_navigation_element, $global_navigation_key, $_global_active_navigation))
                                 <a class="s--on" href="{{ getNavigationUrl($global_navigation_element, $global_navigation_key) }}">{{ $global_navigation_element['title'] }}</a><br />
                             @else
-                                <a href="{{ getNavigationUrl($global_navigation_element, $global_navigation_key) }}">{{ $global_navigation_element['title'] }}</a><br />
+                                <a href="{{ getNavigationUrl($global_navigation_element, $global_navigation_key) }}" @if (isset($global_navigation_element['target']) && $global_navigation_element['target'] == 'external') target="_blank" @endif>{{ $global_navigation_element['title'] }}</a><br />
                             @endif
                         @endcan
                     @endforeach

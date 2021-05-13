@@ -35,9 +35,15 @@ class ModuleMakeDeprecated extends Command
      */
     public function handle()
     {
+        $options = collect($this->options());
+
+        if (!$options['no-interaction']) {
+            $options = $options->except('no-interaction');
+        }
+
         $this->call('twill:make:module', [
             'moduleName' => $this->argument('moduleName'),
-        ] + collect($this->options())->mapWithKeys(function ($value, $key) {
+        ] + $options->mapWithKeys(function ($value, $key) {
             return ["--{$key}" => $value];
         })->toArray());
     }

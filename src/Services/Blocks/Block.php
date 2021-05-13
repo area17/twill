@@ -92,9 +92,10 @@ class Block
      * @param $file
      * @param $type
      * @param $source
+     * @param $name
      * @throws \Exception
      */
-    public function __construct($file, $type, $source)
+    public function __construct($file, $type, $source, $name = null)
     {
         $this->file = $file;
 
@@ -104,7 +105,7 @@ class Block
 
         $this->fileName = $this->getFilename();
 
-        $this->name = $name = Str::before(
+        $this->name = $name ?? Str::before(
             $this->file->getFilename(),
             '.blade.php'
         );
@@ -144,7 +145,7 @@ class Block
             'compiled' => $this->compiled ? 'yes' : '-',
             'source' => $this->source,
             'new_format' => $this->isNewFormat ? 'yes' : '-',
-            'file' => $this->file->getFilename(),
+            'file' => $this->getFilename(),
             'component' => $this->component,
             'max' => $this->type === self::TYPE_REPEATER ? $this->max : null,
         ]);
@@ -179,13 +180,13 @@ class Block
      */
     public function parse()
     {
-        $contents = file_get_contents((string) $this->file->getPathName());
+        $contents = $this->file ? file_get_contents((string) $this->file->getPathName()) : '';
 
         $this->title = $this->parseProperty('title', $contents, $this->name);
-        $this->trigger = $this->parseProperty('trigger', $contents, $this->name);
+        $this->trigger = $this->parseProperty('trigger', $contents, $this->name, $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.add-item') : null);
         $this->max = (int) $this->parseProperty('max', $contents, $this->name, 999);
         $this->group = $this->parseProperty('group', $contents, $this->name, 'app');
-        $this->icon = $this->parseProperty('icon', $contents, $this->name);
+        $this->icon = $this->parseProperty('icon', $contents, $this->name, 'text');
         $this->compiled = (boolean) $this->parseProperty('compiled', $contents, $this->name, false);
         $this->component = $this->parseProperty('component', $contents, $this->name, "a17-block-{$this->name}");
         $this->isNewFormat = $this->isNewFormat($contents);
@@ -234,13 +235,30 @@ class Block
             return $value;
         }
 
+        if ($configBlock = collect(config("twill.block_editor.blocks"))->filter(function ($block) use ($blockName) {
+            return Str::contains($block['component'], $blockName);
+        })->first()) {
+            if ($value = ($configBlock[$property] ?? null)) {
+                return $value;
+            }
+        }
+        if ($configRepeater = collect(config("twill.block_editor.repeaters"))->filter(function ($repeater) use ($blockName) {
+            return Str::contains($repeater['component'], $blockName);
+        })->first()) {
+            if ($value = ($configRepeater[$property] ?? null)) {
+                return $value;
+            }
+        }
+
         if ($property !== 'title') {
             return $default;
         }
 
         // Title is mandatory
         throw new Exception(
-            "Property '{$property}' not found on block {$blockName}."
+            "Block {$blockName} does not exists or the mandatory property '{$property}' " .
+            "was not found on this block. If you are still using blocks on the twill.php " .
+            "file, please check if the block is present and properly configured."
         );
     }
 
@@ -260,7 +278,7 @@ class Block
      */
     public function getFileName()
     {
-        return $this->file->getFileName();
+        return $this->file ? $this->file->getFileName() : 'Custom Vue file';
     }
 
     /**
@@ -270,7 +288,7 @@ class Block
     public function render()
     {
         return BladeCompiler::render(
-            $this->removeSpecialBladeTags($this->contents),
+            self::removeSpecialBladeTags($this->contents),
             [
                 'renderForBlocks' => true,
             ]
@@ -281,7 +299,7 @@ class Block
      * @param $contents
      * @return string
      */
-    public function removeSpecialBladeTags($contents)
+    public static function removeSpecialBladeTags($contents)
     {
         return preg_replace([
             "/@twillProp.*\('(.*)'\)/",

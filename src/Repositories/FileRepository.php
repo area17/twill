@@ -49,7 +49,8 @@ class FileRepository extends ModuleRepository
     public function prepareFieldsBeforeCreate($fields)
     {
         if (!isset($fields['size'])) {
-            $fields['size'] = Storage::disk(Config::get('twill.file_library.disk'))->size($fields['uuid']);
+            $uuid = str_replace(Config::get('filesystems.disks.twill_file_library.root'), '', $fields['uuid']);
+            $fields['size'] = Storage::disk(Config::get('twill.file_library.disk'))->size($uuid);
         }
 
         return $fields;

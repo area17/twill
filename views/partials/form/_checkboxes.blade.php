@@ -1,5 +1,5 @@
 @php
-    $options = method_exists($options, 'map') ? $options->map(function($label, $value) {
+    $options = is_object($options) && method_exists($options, 'map') ? $options->map(function($label, $value) {
         return [
             'value' => $value,
             'label' => $label
@@ -39,7 +39,7 @@
 @push('vuexStore')
     window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({
         name: '{{ $name }}',
-        value: {!! json_encode(isset($item) && isset($item->$name) ? Arr::pluck($item->$name, 'id') : $formFieldsValue) !!}
+        value: {!! json_encode(isset($item) && isset($item->$name) ? (is_string($item->$name) ? json_decode($item->$name) : Arr::pluck($item->$name, 'id')) : $formFieldsValue) !!}
     })
 @endpush
 @endunless

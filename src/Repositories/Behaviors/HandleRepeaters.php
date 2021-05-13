@@ -139,7 +139,7 @@ trait HandleRepeaters
      *
      * @return void
      */
-    public function updateRepeater($object, $fields, $relation, $model = null, $repeaterName = null)
+    public function updateRepeater($object, $fields, $relation, $modelOrRepository = null, $repeaterName = null)
     {
         if (!$repeaterName) {
             $repeaterName = $relation;
@@ -147,7 +147,7 @@ trait HandleRepeaters
 
         $relationFields = $fields['repeaters'][$repeaterName] ?? [];
 
-        $relationRepository = $this->getModelRepository($relation, $model);
+        $relationRepository = $this->getModelRepository($relation, $modelOrRepository);
 
         // if no relation field submitted, soft deletes all associated rows
         if (!$relationFields) {
@@ -194,12 +194,12 @@ trait HandleRepeaters
      * @param  object $object
      * @param  array $fields
      * @param  string $relation
-     * @param  string $model
+     * @param  string $modelOrRepository
      * @param  string $repeaterName
      *
      * @return array
      */
-    public function getFormFieldsForRepeater($object, $fields, $relation, $model = null, $repeaterName = null)
+    public function getFormFieldsForRepeater($object, $fields, $relation, $modelOrRepository = null, $repeaterName = null)
     {
         if (!$repeaterName) {
             $repeaterName = $relation;
@@ -210,7 +210,7 @@ trait HandleRepeaters
         $repeatersBrowsers = [];
         $repeatersMedias = [];
         $repeatersFiles = [];
-        $relationRepository = $this->getModelRepository($relation, $model);
+        $relationRepository = $this->getModelRepository($relation, $modelOrRepository);
         $repeatersList = app(BlockCollection::class)->getRepeaterList()->keyBy('name');
 
         foreach ($object->$relation as $relationItem) {
@@ -275,6 +275,15 @@ trait HandleRepeaters
                 ];
             }
 
+            if (isset($relatedItemFormFields['repeaters'])) {
+                foreach ($relatedItemFormFields['repeaters'] as $childRepeaterName => $childRepeaterItems) {
+                    $fields['repeaters']["blocks-$relation-{$relationItem->id}_$childRepeaterName"] = $childRepeaterItems;
+                    $repeatersFields = array_merge($repeatersFields, $relatedItemFormFields['repeaterFields'][$childRepeaterName]);
+                    $repeatersMedias = array_merge($repeatersMedias, $relatedItemFormFields['repeaterMedias'][$childRepeaterName]);
+                    $repeatersFiles = array_merge($repeatersFiles, $relatedItemFormFields['repeaterFiles'][$childRepeaterName]);
+                    $repeatersBrowsers = array_merge($repeatersBrowsers, $relatedItemFormFields['repeaterBrowsers'][$childRepeaterName]);
+                }
+            }
         }
 
         if (!empty($repeatersMedias) && config('twill.media_library.translated_form_fields', false)) {

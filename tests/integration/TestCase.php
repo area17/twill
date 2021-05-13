@@ -2,19 +2,21 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use A17\Twill\AuthServiceProvider;
+use A17\Twill\Models\User;
+use A17\Twill\RouteServiceProvider;
+use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
+use A17\Twill\TwillServiceProvider;
+use A17\Twill\ValidationServiceProvider;
 use Carbon\Carbon;
 use Faker\Factory as Faker;
-use A17\Twill\Models\User;
-use Illuminate\Support\Str;
-use A17\Twill\AuthServiceProvider;
-use A17\Twill\TwillServiceProvider;
-use A17\Twill\RouteServiceProvider;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Contracts\Console\Kernel;
-use A17\Twill\ValidationServiceProvider;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
-use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
 
 abstract class TestCase extends OrchestraTestCase
 {
@@ -71,6 +73,19 @@ abstract class TestCase extends OrchestraTestCase
         '/../resources/views/site/layouts',
     ];
 
+    public $toDelete = [
+        '{$database}/migrations/',
+        '{$base}/routes/admin.php',
+        '{$app}/Models',
+        '{$app}/Http',
+        '{$app}/Repositories/',
+        '{$resources}/views',
+        '{$database}/migrations',
+        '{$app}/Twill',
+        '{$routes}',
+        '{$config}/twill-navigation.php',
+    ];
+
     protected function deleteAllTwillPaths(): void
     {
         collect($this->paths)->each(function ($directory) {
@@ -95,6 +110,12 @@ abstract class TestCase extends OrchestraTestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        $this->loadConfig();
+
+        $this->freshDatabase();
+
+        $this->cleanDirectories();
 
         $this->instantiateFaker();
 
@@ -153,6 +174,25 @@ abstract class TestCase extends OrchestraTestCase
 
         if (file_exists($logFile) && is_null(env('TRAVIS_PHP_VERSION'))) {
             unlink($logFile);
+        }
+    }
+
+    protected function loadModulesConfig($file = null)
+    {
+        if (blank($file) || Str::contains($file, 'twill.php')) {
+            $config = require $this->makeFileName(
+                $file ?? '{$stubs}/modules/authors/twill.php'
+            );
+
+            config(['twill' => $config + config('twill')]);
+        }
+
+        if (blank($file) || Str::contains($file, 'translatable.php')) {
+            $config = require $this->makeFileName(
+                $file ?? '{$stubs}/modules/authors/translatable.php'
+            );
+
+            config(['translatable' => $config]);
         }
     }
 
@@ -230,6 +270,11 @@ abstract class TestCase extends OrchestraTestCase
      */
     protected function getPackageProviders($app)
     {
+        app()->instance(
+            'autoloader',
+            require __DIR__ . '/../../vendor/autoload.php'
+        );
+
         return [
             AuthServiceProvider::class,
             RouteServiceProvider::class,
@@ -270,9 +315,9 @@ abstract class TestCase extends OrchestraTestCase
 
         if (
             $driver =
-                $app['config'][
-                    'database.connections.' . $connection . '.driver'
-                ] === self::DB_CONNECTION
+            $app['config'][
+                'database.connections.' . $connection . '.driver'
+            ] === self::DB_CONNECTION
         ) {
             $this->createDatabase(
                 $app['config'][
@@ -301,9 +346,9 @@ abstract class TestCase extends OrchestraTestCase
     public function superAdmin($force = false)
     {
         return $this->superAdmin =
-            !$this->superAdmin || $force
-                ? $this->makeNewSuperAdmin()
-                : $this->superAdmin;
+        !$this->superAdmin || $force
+        ? $this->makeNewSuperAdmin()
+        : $this->superAdmin;
     }
 
     /**
@@ -326,6 +371,8 @@ abstract class TestCase extends OrchestraTestCase
      */
     public function installTwill()
     {
+        $this->truncateTwillUsers();
+
         $this->artisan('twill:install')
             ->expectsQuestion('Enter an email', $this->superAdmin()->email)
             ->expectsQuestion('Enter a password', $this->superAdmin()->password)
@@ -375,7 +422,7 @@ abstract class TestCase extends OrchestraTestCase
 
         return collect($routes)->filter(function ($route) {
             return Str::startsWith($route->action['uses'], 'A17\Twill') ||
-                Str::startsWith($route->action['uses'], 'App\\');
+            Str::startsWith($route->action['uses'], 'App\\');
         });
     }
 
@@ -467,7 +514,7 @@ abstract class TestCase extends OrchestraTestCase
             'HTTP_X-Requested-With' => 'XMLHttpRequest',
         ]);
 
-        return $this->request(
+        $response = $this->request(
             $uri,
             $method,
             $parameters,
@@ -477,6 +524,10 @@ abstract class TestCase extends OrchestraTestCase
             $content,
             $followRedirects
         );
+
+        $this->assertLogStatusCode($response);
+
+        return $response;
     }
 
     /**
@@ -511,6 +562,25 @@ abstract class TestCase extends OrchestraTestCase
         });
     }
 
+    public function cleanDirectories()
+    {
+        collect($this->toDelete ?? [])->each(function ($directory) {
+            $file = $this->makeFileName($directory);
+
+            if (is_dir($file)) {
+                File::deleteDirectory($file);
+            }
+
+            if (!is_dir($file) && file_exists($file)) {
+                unlink($file);
+            }
+
+            if (!Str::endsWith($file, '.php')) {
+                File::makeDirectory($file, 0755, true);
+            }
+        });
+    }
+
     /**
      * Replace placeholders to make a filename.
      *
@@ -530,6 +600,7 @@ abstract class TestCase extends OrchestraTestCase
                 '{$config}',
                 '{$vendor}',
                 '{$tests}',
+                '{$routes}',
             ],
             [
                 stubs(),
@@ -540,6 +611,7 @@ abstract class TestCase extends OrchestraTestCase
                 config_path(),
                 base_path('vendor'),
                 __DIR__,
+                base_path('routes'),
             ],
             $file
         );
@@ -632,5 +704,61 @@ abstract class TestCase extends OrchestraTestCase
     public function getCommand($commandName)
     {
         return $this->app->make(Kernel::class)->all()[$commandName];
+    }
+
+    public function httpRequestAssert($url, $method = 'GET', $data = [], $expectedStatusCode = 200)
+    {
+        $response = $this->request(
+            $url,
+            $method,
+            $data
+        );
+
+        $this->assertLogStatusCode($response, $expectedStatusCode);
+
+        $response->assertStatus($expectedStatusCode);
+
+        return $response;
+    }
+
+    public function assertLogStatusCode($response, $expectedStatusCode = 200)
+    {
+        if ($response->getStatusCode() != $expectedStatusCode) {
+            var_dump('------------------- ORIGINAL RESPONSE');
+            var_dump($response->getContent());
+        }
+    }
+
+    public function freshDatabase()
+    {
+        if (file_exists($file = env('DB_DATABASE'))) {
+            unlink($file);
+            touch($file);
+        }
+    }
+
+    protected function truncateTwillUsers(): void
+    {
+        try {
+            DB::table('twill_users')->truncate();
+        } catch (\Exception $exception) {
+        }
+    }
+
+    protected function assertNothingWrongHappened()
+    {
+        $this->assertDontSee('Something wrong happened!');
+    }
+
+    /**
+     * Migrate database.
+     */
+    public function migrate()
+    {
+        $this->artisan('migrate');
+    }
+
+    public function loadConfig()
+    {
     }
 }

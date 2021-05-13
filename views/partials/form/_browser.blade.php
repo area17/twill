@@ -20,6 +20,7 @@
     $sortable = $sortable ?? true;
     $wide = $wide ?? false;
     $buttonOnTop = $buttonOnTop ?? false;
+    $browserNote = $browserNote ?? '';
 @endphp
 
 <a17-inputframe label="{{ $label }}" name="browsers.{{ $name }}" note="{{ $fieldNote }}">
@@ -32,6 +33,7 @@
         :endpoints="{{ json_encode($endpoints) }}"
         modal-title="{{ twillTrans('twill::lang.fields.browser.attach') . ' ' . strtolower($label) }}"
         :draggable="{{ json_encode($sortable) }}"
+        browser-note="{{ $browserNote }}"
         @if ($buttonOnTop) :button-on-top="true" @endif
     >{{ $note }}</a17-browserfield>
 </a17-inputframe>

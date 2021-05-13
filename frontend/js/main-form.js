@@ -103,29 +103,40 @@ Vue.component('a17-editor', a17Editor)
 Vue.component('a17-modal-add', a17ModalAdd)
 
 // Blocks
-const importedBlocks = require.context('@/components/blocks/', true, /\.(js|vue)$/i)
-importedBlocks.keys().map(block => {
-  const blockForName = block.replace(/customs\//, '')
-  const blockName = blockForName.match(/\w+/)[0].replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase()
-  if (blockName !== 'block') {
-    return Vue.component('a17-' + blockName, importedBlocks(block).default)
-  }
-})
+const registerBlockComponent = (name, component) => {
+  return !Vue.options.components[name]
+    ? Vue.component(name, component)
+    : false
+}
 
 if (typeof window[process.env.VUE_APP_NAME].TWILL_BLOCKS_COMPONENTS !== 'undefined') {
-  window[process.env.VUE_APP_NAME].TWILL_BLOCKS_COMPONENTS.map(blockName => {
-    return Vue.component('a17-block-' + blockName, {
-      template: '#a17-block-' + blockName,
+  window[process.env.VUE_APP_NAME].TWILL_BLOCKS_COMPONENTS.map(componentName => {
+    return registerBlockComponent(componentName, {
+      template: '#' + componentName,
       mixins: [BlockMixin]
     })
   })
 }
 
+const extractComponentNameFromContextKey = (contextKey) => `a17-${contextKey.match(/\w+/)[0].replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase()}`
+
+const importedCustomBlocks = require.context('@/components/blocks/customs/', false, /\.(js|vue)$/i)
+importedCustomBlocks.keys().map(block => {
+  const componentName = extractComponentNameFromContextKey(block.replace(/customs\//, ''))
+  return registerBlockComponent(componentName, importedCustomBlocks(block).default)
+})
+
+const importedTwillBlocks = require.context('@/components/blocks/', false, /\.(js|vue)$/i)
+importedTwillBlocks.keys().map(block => {
+  const componentName = extractComponentNameFromContextKey(block)
+  return registerBlockComponent(componentName, importedTwillBlocks(block).default)
+})
+
 // Custom form components
 const importedComponents = require.context('@/components/customs/', true, /\.(js|vue)$/i)
 importedComponents.keys().map(block => {
-  const blockName = block.match(/\w+/)[0].replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase()
-  return Vue.component('a17-' + blockName, importedComponents(block).default)
+  const componentName = extractComponentNameFromContextKey(block)
+  return Vue.component(componentName, importedComponents(block).default)
 })
 
 /* eslint-disable no-new */

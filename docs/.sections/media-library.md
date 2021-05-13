@@ -82,22 +82,22 @@ $model->cmsImage($roleName, $cropName[, array $params, $has_fallback])
 /**
  * Returns the alt text of the image associated with $roleName.
  */
-$model->imageAltText($roleName)
+$model->imageAltText($roleName[, $media])
 
 /**
  * Returns the caption of the image associated with $roleName.
  */
-$model->imageCaption($roleName)
+$model->imageCaption($roleName[, $media])
 
 /**
  * Returns the image object associated with $roleName.
  */
-$model->imageObject($roleName)
+$model->imageObject($roleName[, $cropName])
 
 /**
  * Returns the image objects associated with $roleName.
  */
-$model->imageObjects($roleName)
+$model->imageObjects($roleName[, $cropName])
 
 /**
  * Returns the image associated with $roleName as an array containing meta information.
@@ -112,7 +112,7 @@ $model->imagesAsArrays($roleName[, $cropName, array $params])
 /**
  * Checks if an image has been attached for the provided role
  */
-$model->hasImage($roleName)
+$model->hasImage($roleName[, $cropName])
 ```
 
 ### File library

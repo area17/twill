@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace {{namespace}};
 
-use A17\Twill\Http\Controllers\Admin\ModuleController;
+use {{baseController}};
 
 class {{controllerClassName}} extends ModuleController
 {

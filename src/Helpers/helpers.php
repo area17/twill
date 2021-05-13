@@ -205,7 +205,7 @@ if (!function_exists('generate_list_of_allowed_blocks')) {
             return $block['source'] !== A17\Twill\Services\Blocks\Block::SOURCE_TWILL;
         });
 
-        return $blockList->filter(
+        $finalBlockList = $blockList->filter(
             function ($block) use ($blocks, $groups, $appBlocksList) {
                 if ($block['group'] === A17\Twill\Services\Blocks\Block::SOURCE_TWILL) {
                     if (!collect(
@@ -226,6 +226,28 @@ if (!function_exists('generate_list_of_allowed_blocks')) {
                 return (filled($blocks) ? collect($blocks)->contains($block['name']) : true)
                     && (filled($groups) ? collect($groups)->contains($block['group']) : true);
             }
-        )->toArray();
+        );
+
+        // Sort them by the original definition
+        $sorted = $finalBlockList->sortBy(function($b) use ($blocks) {
+            return collect($blocks)->search(function($id, $key) use ($b) {
+                return $id == $b['name'];
+            });
+        })->values()->toArray();
+
+        return $sorted;
+    }
+}
+
+if (!function_exists('capsule_namespace')) {
+    function capsule_namespace($capsuleName, $type = null) {
+        return app('twill.capsules.manager')->capsuleNamespace($capsuleName, $type);
+    }
+}
+
+
+if (!function_exists('capsule_namespace_to_path')) {
+    function capsule_namespace_to_path($namespace, $capsuleNamespace, $rootPath) {
+        return app('twill.capsules.manager')->capsuleNamespaceToPath($namespace, $capsuleNamespace, $rootPath);
     }
 }

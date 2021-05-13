@@ -100,13 +100,8 @@ class RoutesTest extends TestCase
 
     public function testCanListAllRoutes()
     {
-        $this->assertEquals(
-            collect(static::ROUTES)
-                ->sort()
-                ->toArray(),
-            $this->getAllUris()
-                ->sort()
-                ->toArray()
+        $this->getAllUris()->each(
+            function($uri) { $this->assertContains($uri, collect(static::ROUTES)); }
         );
     }
 
