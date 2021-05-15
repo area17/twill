@@ -6,7 +6,6 @@ use A17\Twill\Services\Capsules\HasCapsules;
 use A17\Twill\Services\Capsules\Manager;
 use A17\Twill\Services\Routing\HasRoutes;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider;
-use Illuminate\Routing\Router;
 
 class CapsulesServiceProvider extends RouteServiceProvider
 {
@@ -23,7 +22,7 @@ class CapsulesServiceProvider extends RouteServiceProvider
 
         $this->app
             ->make('config')
-            ->set('twill.capsules.list', $this->getCapsuleList());
+            ->set('twill.capsules.list', $this->getCapsuleList()->toArray());
 
         $this->app->make('config')->set('twill.capsules.loaded', true);
     }
