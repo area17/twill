@@ -75,7 +75,7 @@ class Handler extends ExceptionHandler
     {
         return $request->expectsJson()
         ? $this->responseFactory->json(['message' => $exception->getMessage()], 401)
-        : $this->redirector->guest($exception->redirectTo() ?? $this->urlGenerator->route('admin.login', Route::current()->parameters());
+        : $this->redirector->guest($exception->redirectTo() ?? $this->urlGenerator->route('admin.login', Route::current()->parameters()));
     }
 
     /**
