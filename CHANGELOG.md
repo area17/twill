@@ -2,6 +2,20 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.2.1 (2021-05-18)
+
+### Fixed
+
+- Capsules without translations: move HasCapsules trait to the base model [`8b730e81`](https://github.com/area17/twill/commit/8b730e81492ecf61f21c835baa87feae87a37bb9)
+
+- Laravel configuration caching: set the capsules list config as an array [`2b5b07a5`](https://github.com/area17/twill/commit/2b5b07a58a77193138c147393e95516df0dd46b3)
+
+### Improved
+
+- Update documentation to reflect Laravel 8 support [`c01c426d`](https://github.com/area17/twill/commit/c01c426d19c63f900d5bdd18f263fcee8fd65958)
+
+- Fix wording and add proper method description [`e1293551`](https://github.com/area17/twill/commit/e1293551239d1283a7cb1c798444083b90dd6ce0)
+
 ## 2.2.0 (2021-05-14)
 
 ### Added
