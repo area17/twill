@@ -4,11 +4,10 @@ namespace A17\Twill\Models\Behaviors;
 
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Query\JoinClause;
-use A17\Twill\Services\Capsules\HasCapsules;
 
 trait HasTranslation
 {
-    use Translatable, HasCapsules;
+    use Translatable;
 
     public function getTranslationModelNameDefault()
     {
