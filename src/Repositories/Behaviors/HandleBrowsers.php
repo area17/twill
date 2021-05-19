@@ -123,7 +123,7 @@ trait HandleBrowsers
      */
     public function getFormFieldsForBrowser($object, $relation, $routePrefix = null, $titleKey = 'title', $moduleName = null)
     {
-        $fields = $object->$relation instanceof BelongsTo ? collect([$object->$relation]) : $object->$relation;
+        $fields = $object->$relation() instanceof BelongsTo ? collect([$object->$relation]) : $object->$relation;
         return $fields->map(function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName) {
             return [
                     'id' => $relatedElement->id,
