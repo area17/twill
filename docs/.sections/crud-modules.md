@@ -355,6 +355,12 @@ public function hydrate($object, $fields)
     protected $moduleName = 'yourModuleName';
 
     /*
+     * The static permalink base to your module. Defaults to /yourModuleName
+     * Set to '' if your module's permalinks are directly off the root, like in a Pages module, for example 
+     */
+    protected $permalinkBase = 'yourModuleName';
+
+    /*
      * Options of the index view
      */
     protected $indexOptions = [
