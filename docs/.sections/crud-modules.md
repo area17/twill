@@ -374,6 +374,7 @@ public function hydrate($object, $fields)
         'editInModal' => false,
         'forceDelete' => true,
         'bulkForceDelete' => true,
+        'duplicate' => true
     ];
 
     /*
