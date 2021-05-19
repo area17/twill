@@ -3,7 +3,6 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Behaviors\HasMedias;
-use A17\Twill\Models\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -124,7 +123,7 @@ trait HandleBrowsers
      */
     public function getFormFieldsForBrowser($object, $relation, $routePrefix = null, $titleKey = 'title', $moduleName = null)
     {
-        $fields = $object->$relation instanceof Model ? collect([$object->$relation]) : $object->$relation;
+        $fields = $object->$relation instanceof BelongsTo ? collect([$object->$relation]) : $object->$relation;
         return $fields->map(function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName) {
             return [
                     'id' => $relatedElement->id,
