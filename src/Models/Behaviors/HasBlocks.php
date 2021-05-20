@@ -16,17 +16,9 @@ trait HasBlocks
         return $this->morphMany(Block::class, 'blockable')->orderBy(config('twill.blocks_table', 'twill_blocks') . '.position', 'asc');
     }
 
-    /**
-     * Returns the rendered Blade views for all attached blocks in their proper order.
-     *
-     * @param bool $renderChilds Include all child blocks in the rendered output.
-     * @param array $blockViewMappings Provide alternate Blade views for blocks. Format: `['block-type' => 'view.path']`.
-     * @param array $data Provide extra data to Blade views.
-     * @return string
-     */
-    public function renderBlocks($renderChilds = true, $blockViewMappings = [], $data = [])
+    public function renderNamedBlocks($name = 'default', $renderChilds = true, $blockViewMappings = [], $data = [])
     {
-        return $this->blocks->where('parent_id', null)->map(function ($block) use ($blockViewMappings, $renderChilds, $data) {
+        return $this->blocks()->named($name)->get()->where('parent_id', null)->map(function ($block) use ($blockViewMappings, $renderChilds, $data) {
             if ($renderChilds) {
                 $childBlocks = $this->blocks->where('parent_id', $block->id);
 
@@ -42,6 +34,19 @@ trait HasBlocks
 
             return view($view, $data)->with('block', $block)->render() . ($renderedChildViews ?? '');
         })->implode('');
+    }
+
+    /**
+     * Returns the rendered Blade views for all attached blocks in their proper order.
+     *
+     * @param bool $renderChilds Include all child blocks in the rendered output.
+     * @param array $blockViewMappings Provide alternate Blade views for blocks. Format: `['block-type' => 'view.path']`.
+     * @param array $data Provide extra data to Blade views.
+     * @return string
+     */
+    public function renderBlocks($renderChilds = true, $blockViewMappings = [], $data = [])
+    {
+        return $this->renderNamedBlocks('default', $renderChilds, $blockViewMappings, $data);
     }
 
     private function getBlockView($blockType, $blockViewMappings = [])
