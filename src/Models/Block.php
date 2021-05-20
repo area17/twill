@@ -33,10 +33,9 @@ class Block extends BaseModel
 
     public function scopeNamed($query, $name = 'default')
     {
-        return $query->whereIn(
-            'name',
-            $name === 'default' ? [$name, null] : [$name]
-        );
+        return $name === 'default' ?
+            $query->where('name', $name)->orWhereNull('name') :
+            $query->where('name', $name);
     }
 
     public function blockable()
