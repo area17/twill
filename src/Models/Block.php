@@ -31,6 +31,14 @@ class Block extends BaseModel
 
     protected $with = ['medias'];
 
+    public function scopeNamed($query, $name = 'default')
+    {
+        return $query->whereIn(
+            'name',
+            $name === 'default' ? [$name, null] : [$name]
+        );
+    }
+
     public function blockable()
     {
         return $this->morphTo();
