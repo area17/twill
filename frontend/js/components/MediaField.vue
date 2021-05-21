@@ -20,7 +20,7 @@
           <li class="f--small" v-if="media.width + media.height">{{ $trans('fields.medias.original-dimensions') }}: {{ media.width }}&nbsp;&times;&nbsp;{{
             media.height }}
           </li>
-          <li class="f--small media__crop-link" v-if="cropInfos" @click="openCropMedia">
+          <li class="f--small media__crop-link" v-if="cropInfos && activeCrop" @click="openCropMedia">
               <p class="f--small f--note hide--xsmall"
                  v-for="(cropInfo, index) in cropInfos"
                  :key="index">
