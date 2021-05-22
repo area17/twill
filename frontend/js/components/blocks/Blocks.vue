@@ -20,33 +20,40 @@
                               :expand="savedBlocks.length <= 3"
                               @expand="checkExpandBlocks"
                               v-if="availableBlocks.length">
-                <button slot="dropdown-add"
-                        type="button"
-                        v-for="availableBlock in availableBlocks"
-                        :key="availableBlock.component"
-                        @click="handleBlockAdd(add, availableBlock, blockIndex + 1)">
-                    <span v-svg
-                          :symbol="availableBlock.icon"></span>
-                  {{ availableBlock.title }}
-                </button>
+                <template v-for="availableBlock in availableBlocks">
+                  <button
+                    type="button"
+                    slot="dropdown-add"
+                    :key="availableBlock.component"
+                    @click="handleBlockAdd(add, availableBlock, blockIndex + 1)">
+                    <span
+                      v-svg
+                      :symbol="availableBlock.icon"></span> {{ availableBlock.title }}
+                    </button>
+                </template>
                 <div slot="dropdown-action">
                   <button type="button"
                           v-if="allBlocksExpands"
-                          @click="collapseAllBlocks()">Collapse all
+                          @click="collapseAllBlocks()">
+                          {{ $trans('fields.block-editor.collapse-all', 'Collapse all') }}
                   </button>
                   <button type="button"
                           v-else
-                          @click="expandAllBlocks()">Expand all
+                          @click="expandAllBlocks()">
+                          {{ $trans('fields.block-editor.expand-all', 'Expand all') }}
                   </button>
                   <button type="button"
                           v-if="editor"
-                          @click="openInEditor(edit, blockIndex, section)">Open in editor
+                          @click="openInEditor(edit, blockIndex, section)">
+                          {{ $trans('fields.block-editor.open-in-editor', 'Open in editor') }}
                   </button>
                   <button type="button"
-                          @click="handleDuplicateBlock(duplicate)">Create another
+                          @click="handleDuplicateBlock(duplicate)">
+                          {{ $trans('fields.block-editor.create-another', 'Create another') }}
                   </button>
                   <button type="button"
-                          @click="handleDeleteBlock(remove)">Delete
+                          @click="handleDeleteBlock(remove)">
+                          {{ $trans('fields.block-editor.delete', 'Delete') }}
                   </button>
                 </div>
                 <button slot="dropdown-numbers"
@@ -96,7 +103,9 @@
           <a href="#"
              class="f--link f--link-underlined--o"
              v-if="editor"
-             @click.prevent="openEditor(-1, section)">Open in editor</a>
+             @click.prevent="openEditor(-1, section)">
+            {{ $trans('fields.block-editor.open-in-editor', 'Open in editor') }}
+          </a>
         </div>
       </div>
     </div>
@@ -198,7 +207,6 @@
 </script>
 
 <style lang="scss" scoped>
-
   .blocks {
     margin-top: 20px; // margin-top:35px;
   }

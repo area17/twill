@@ -35,7 +35,7 @@
         </template>
       </draggable>
       <a17-spinner v-if="loading"
-                   :visible="true">Loading&hellip;
+                   :visible="true">{{ $trans('fields.block-editor.loading', 'Loading') }}&hellip;
       </a17-spinner>
     </div>
   </a17-block-model>

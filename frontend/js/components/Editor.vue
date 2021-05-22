@@ -1,6 +1,6 @@
 <template>
   <a17-overlay ref="overlay"
-               title="Content editor"
+               :title="$trans('editor.title')"
                :customClasses="htmlEditorClass"
                @close="close">
     <a17-block-list :section="section">
@@ -16,7 +16,7 @@
 
         <span class="hide--xsmall"
               v-svg
-              symbol="preview"></span>Preview
+              symbol="preview"></span>{{ $trans('fields.block-editor.preview', 'Preview') }}
         </a17-button>
 
         <div class="editor__frame">
@@ -30,7 +30,7 @@
                                  :blocks="availableBlocks"
                                  :savedBlocksLength="savedBlocks.length"
                                  @section:update="updateSection">
-                Add content
+                {{ $trans('fields.block-editor.add-content', 'Add content') }}
               </a17-editorsidebar>
             </div>
             <div class="editor__resizer"
