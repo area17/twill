@@ -16,7 +16,19 @@ if (!function_exists('getLocales')) {
      */
     function getLocales()
     {
-        return twill_locales() ?? [config('app.locale')];
+        $locales = collect(config('translatable.locales'))->map(function ($locale, $index) {
+            return collect($locale)->map(function ($country) use ($locale, $index) {
+                return is_numeric($index)
+                    ? $locale
+                    : "$index-$country";
+            });
+        })->flatten()->toArray();
+
+        if (blank($locales)) {
+            $locales = [config('app.locale')];
+        }
+
+        return $locales;
     }
 }
 
@@ -30,7 +42,7 @@ if (!function_exists('getLanguagesForVueStore')) {
     {
         $manageMultipleLanguages = count(getLocales()) > 1;
         if ($manageMultipleLanguages && $translate) {
-            $allLanguages = Collection::make(twill_locales())->map(function ($locale, $index) use ($form_fields) {
+            $allLanguages = Collection::make(getLocales())->map(function ($locale, $index) use ($form_fields) {
                 return [
                     'shortlabel' => strtoupper($locale),
                     'label' => getLanguageLabelFromLocaleCode($locale),

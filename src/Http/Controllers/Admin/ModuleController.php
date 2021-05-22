@@ -1159,7 +1159,7 @@ abstract class ModuleController extends Controller
                 'html' => $column['html'] ?? false,
             ]);
         }
-        if ($this->moduleHas('translations') && count(twill_locales()) > 1) {
+        if ($this->moduleHas('translations') && count(getLocales()) > 1) {
             array_push($tableColumns, [
                 'name' => 'languages',
                 'label' => twillTrans('twill::lang.listing.languages'),
