@@ -21,6 +21,8 @@ return [
         // ['name' => 'Artists', 'enabled' => true],
         // ['name' => 'Posts', 'enabled' => true],
     ],
+
+    'capsule_config_prefix' => 'twill.capsule'
 ];
 
 /// To fully override this config:
