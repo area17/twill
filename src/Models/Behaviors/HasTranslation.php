@@ -138,7 +138,7 @@ trait HasTranslation
                 'published' => $translation->active ?? false,
             ];
         })->sortBy(function ($translation) {
-            $localesOrdered = twill_locales();
+            $localesOrdered = getLocales();
             return array_search($translation['value'], $localesOrdered);
         })->values();
     }
