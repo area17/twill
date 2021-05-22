@@ -17,34 +17,33 @@ export default {
   },
   methods: {
     addAndEditBlock (add, edit, { block, index }) {
-      window.PREVSTATE = cloneDeep(this.$store.state)
+      window[process.env.VUE_APP_NAME].PREVSTATE = cloneDeep(this.$store.state)
       // eslint-disable-next-line
       console.log('add-and-edit-block', { block, index })
       add(block, index)
       edit(index)
     },
     saveBlock (fn, index) {
-      if (window.hasOwnProperty('PREVSTATE')) delete window.PREVSTATE
+      if (window[process.env.VUE_APP_NAME].hasOwnProperty('PREVSTATE')) delete window[process.env.VUE_APP_NAME].PREVSTATE
       this.unselectBlock(fn, index)
       this.$emit('block:save', index)
     },
     cancelBlock (fn, index) {
-      if (window.hasOwnProperty('PREVSTATE')) {
-        // eslint-disable-next-line
+      if (window[process.env.VUE_APP_NAME].hasOwnProperty('PREVSTATE')) {
         console.warn('Store - Restore previous Store state')
-        this.$store.replaceState(window.PREVSTATE)
+        this.$store.replaceState(window[process.env.VUE_APP_NAME].PREVSTATE)
       }
       this.unselectBlock(fn, index)
       this.$emit('block:cancel', index)
     },
     selectBlock (fn, index) {
-      window.PREVSTATE = cloneDeep(this.$store.state)
+      window[process.env.VUE_APP_NAME].PREVSTATE = cloneDeep(this.$store.state)
       fn()
       this.$emit('block:select', index)
     },
     unselectBlock (fn, index) {
       fn()
-      if (window.hasOwnProperty('PREVSTATE')) delete window.PREVSTATE
+      if (window[process.env.VUE_APP_NAME].hasOwnProperty('PREVSTATE')) delete window[process.env.VUE_APP_NAME].PREVSTATE
       this.$emit('block:unselect', index)
     },
     moveBlock (index) {
