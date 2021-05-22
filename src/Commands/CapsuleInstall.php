@@ -309,6 +309,8 @@ class CapsuleInstall extends Command
 
     protected function getTempFileName()
     {
+        $this->makeDir($this->capsule['base_path']);
+
         return $this->capsule['base_path'] . '/install.zip';
     }
 
@@ -402,5 +404,12 @@ class CapsuleInstall extends Command
         rename($this->getUnzippedPath(), $destination);
 
         return file_exists($destination);
+    }
+
+    public function makeDir($path)
+    {
+        if (!file_exists($path)) {
+            mkdir($path, 0775, true);
+        }
     }
 }
