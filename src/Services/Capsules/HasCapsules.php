@@ -79,6 +79,8 @@ trait HasCapsules
 
         $twillNamespace = config('twill.namespace');
 
+        $capsule['base_namespace'] = config('twill.capsules.namespaces.base');
+
         $capsule[
             'namespace'
         ] = $capsuleNamespace = $this->getManager()->capsuleNamespace(
@@ -269,5 +271,60 @@ trait HasCapsules
     public function capsuleExists($module)
     {
         return filled($this->getCapsuleByModule($module));
+    }
+
+    public function capsule($string)
+    {
+        if (file_exists($string)) {
+            return $this->getCapsuleByPath($string);
+        }
+
+        if (class_exists($string)) {
+            return $this->getCapsuleByClass($string);
+        }
+
+        return $this->getCapsuleByModule($string);
+    }
+
+    public function getCapsuleByPath($path)
+    {
+        $capsule = $this->getCapsuleList()->first();
+
+        if (!Str::startsWith($path, $capsule['base_path'])) {
+            return null;
+        }
+
+        $name = Str::before(
+            Str::after(Str::after($path, $capsule['base_path']), '/'),
+            '/'
+        );
+
+        $name = "{$capsule['base_path']}/$name";
+
+        return $this->getCapsuleList()
+            ->where('root_path', $name)
+            ->first();
+    }
+
+    public function getCapsuleByClass($class)
+    {
+        $capsule = $this->getCapsuleList()->first();
+
+        $namespace = Str::beforeLast($class, '\\');
+
+        if (!Str::startsWith($class, $capsule['base_namespace'])) {
+            return null;
+        }
+
+        $name = Str::before(
+            Str::after(Str::after($class, $capsule['base_namespace']), '\\'),
+            '\\'
+        );
+
+        $name = "{$capsule['base_namespace']}\\$name";
+
+        return $this->getCapsuleList()
+                    ->where('namespace', $name)
+                    ->first();
     }
 }
