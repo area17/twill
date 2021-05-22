@@ -245,7 +245,6 @@ if (!function_exists('capsule_namespace')) {
     }
 }
 
-
 if (!function_exists('capsule_namespace_to_path')) {
     function capsule_namespace_to_path($namespace, $capsuleNamespace, $rootPath) {
         return capsules()->capsuleNamespaceToPath($namespace, $capsuleNamespace, $rootPath);
@@ -261,5 +260,17 @@ if (!function_exists('capsules')) {
         }
 
         return $manager;
+    }
+}
+
+if (!function_exists('twill_locales')) {
+    function twill_locales() {
+        return $allLanguages = collect(config('translatable.locales'))->map(function ($locale, $index) {
+            return collect($locale)->map(function ($country) use ($locale, $index) {
+                return is_numeric($index)
+                    ? $locale
+                    : "$index-$country";
+            });
+        })->flatten()->toArray();
     }
 }
