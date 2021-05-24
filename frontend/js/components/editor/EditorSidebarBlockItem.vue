@@ -23,7 +23,7 @@
       <span>
           <a href="#"
              class="f--small f--note f--underlined"
-             @click.prevent="deleteBlock">Delete</a>
+             @click.prevent="deleteBlock">{{ $trans('editor.delete') }}</a>
         </span>
     </div>
     <div class="editorSidebar__body">

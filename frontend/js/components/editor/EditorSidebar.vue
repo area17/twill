@@ -23,11 +23,11 @@
               <div class="editorSidebar__actions">
                 <a17-button variant="action"
                             @click="saveBlock(unEdit, blockIndex)">
-                  Done
+                  {{ $trans('editor.done') }}
                 </a17-button>
                 <a17-button variant="secondary"
                             @click="cancelBlock(unEdit, blockIndex)">
-                  Cancel
+                  {{ $trans('editor.cancel') }}
                 </a17-button>
               </div>
             </div>
@@ -39,13 +39,16 @@
     <template v-if="!hasBlockActive">
       <div v-if="multipleSections"
            class="editorSidebar__toggle-section">
-        <a17-vselect v-if="!specificSection" label="Currently editing section:"
-                     selected="default"
-                     size="small"
-                     @change="updateSection"
-                     :options="sections"/>
+        <a17-vselect
+          v-if="!specificSection"
+          :label="$trans('editor.current-dropdown')"
+          :selected="getCurrentSectionLabel(sections)"
+          size="small"
+          @change="updateSection"
+          :options="sections"
+        />
         <template v-else>
-          Currently editing section <b>{{ getCurrentSectionLabel(sections) }}</b>.
+          <span v-html="$trans('editor.current').replace(':name', getCurrentSectionLabel(sections))"/>
         </template>
       </div>
       <div class="editorSidebar__list">
@@ -53,11 +56,8 @@
       </div>
 
       <div class="editorSidebar__actions">
-        <a17-button :name="submitOptions[0].name"
-                    variant="validate"
-                    @click="saveForm(submitOptions[0].name)">
-          {{ submitOptions[0].text }}
-        </a17-button>
+        <a17-button v-if="isSubmitDisabled(submitOptions[0])" variant="validate" :disabled="true">{{ submitOptions[0].text }}</a17-button>
+        <a17-button v-else @click="saveForm(submitOptions[0].name)" :name="submitOptions[0].name" variant="validate">{{ submitOptions[0].text }}</a17-button>
       </div>
     </template>
   </div>
@@ -110,6 +110,13 @@
     methods: {
       getCurrentSectionLabel (sections) {
         return sections.find(section => section.value === this.section).label || ''
+      },
+      isSubmitDisabled: function (btn) {
+        if (btn.hasOwnProperty('disabled')) {
+          return btn.disabled === true
+        } else {
+          return false
+        }
       },
       updateSection (section) {
         this.$emit('section:update', section.value)

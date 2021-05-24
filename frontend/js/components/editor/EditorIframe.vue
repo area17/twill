@@ -52,8 +52,8 @@
     methods: {
       loadedPreview () {
         if (this.$refs.frame && this.$refs.frame.srcdoc) {
-          this.resize()
           this.$emit('loaded', this.$refs.frame)
+          this.resize()
         }
       },
       resize () {
@@ -69,14 +69,16 @@
         const bodyMarginBottom = bodyStyle.getPropertyValue('margin-bottom')
         const frameHeight = frameBody.scrollHeight + parseInt(bodyMarginTop) + parseInt(bodyMarginBottom)
 
-        this.$refs.frame.height = frameHeight + 'px'
+        window.requestAnimationFrame(() => {
+          this.$refs.frame.height = frameHeight + 'px'
+        })
       }
     },
     mounted () {
-      window.addEventListener('resize', this.handleResize)
+      window.addEventListener('resize', this.resize)
     },
     beforeDestroy () {
-      window.removeEventListener('resize', this.handleResize)
+      window.removeEventListener('resize', this.resize)
     }
   }
 </script>
