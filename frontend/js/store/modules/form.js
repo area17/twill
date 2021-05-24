@@ -58,7 +58,7 @@ const state = {
    * Url to get only the preview of a block
    * @type {String}
    */
-  blockPreviewUrl: window[process.env.VUE_APP_NAME].STORE.form.blockPreviewUrl || '',
+  blockPreviewUrl: window[process.env.VUE_APP_NAME].STORE.form.blocks.previewUrl || '',
   /**
    * Form errors after submitting
    * @type {Object}
