@@ -76,6 +76,7 @@ return [
         'title' => 'Content editor',
         'current' => 'Currently editing section <b>:name</b>.',
         'current-dropdown' => 'Currently editing section:',
+        'preview-empty' => 'Drag and drop content from the left navigation',
     ],
     'emails' => [
         'all-rights-reserved' => 'All rights reserved.',
