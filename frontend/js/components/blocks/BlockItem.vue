@@ -40,7 +40,7 @@
       <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes"
                  key="`form_${block.type}_${block.id}`"><!-- dynamic components --></component>
       <!-- Block validation input frame, to display errors -->
-      <a17-inputframe label="" :name="`block.${block.id}`"></a17-inputframe>
+      <a17-inputframe size="small" label="" :name="`block.${block.id}`"></a17-inputframe>
     </div>
   </div>
 </template>
