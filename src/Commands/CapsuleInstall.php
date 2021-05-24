@@ -32,13 +32,9 @@ class CapsuleInstall extends Command
 
     protected $description = 'Install a Twill Capsule';
 
-    protected $repositoryUri;
+    protected $capsules = [];
 
-    protected $capsule;
-
-    protected $capsuleName;
-
-    protected $repositoryUrl;
+    protected $resolved = [];
 
     /**
      * Create a new console command instance.
@@ -55,11 +51,11 @@ class CapsuleInstall extends Command
     /**
      * @return string
      */
-    private function getUnzippedPath(): string
+    private function getUnzippedPath($capsule): string
     {
-        return $this->capsule['base_path'] .
+        return $capsule['capsule']['base_path'] .
             '/' .
-            $this->capsuleName .
+            $capsule['capsule_name'] .
             '-' .
             $this->getBranch();
     }
@@ -75,11 +71,29 @@ class CapsuleInstall extends Command
             return 255;
         }
 
-        $this->configureInstaller();
+        $this->info('Twill Capsule installer');
+        $this->info('----------------------------------------------------------------------------------');
+        $this->info('Resolving dependencies...');
 
-        $this->displayConfigurationSummary();
+        $this->loadBaseCapsule();
 
-        $this->installCapsule();
+        $this->resolveDependencies();
+        
+        if (!$this->canInstall()) {
+            return 1;
+        }
+
+        $installed = $this->capsules->where('can_install', true)->reduce(function ($installed, $capsule) {
+            $this->displayConfigurationSummary($capsule);
+
+            $installed = $installed && $this->installCapsule($capsule);
+        }, true);
+
+        if (!$installed) {
+            $this->info('A fatal error occurred during installation. Aborted.');
+
+            return 1;
+        }
 
         return 0;
     }
@@ -101,38 +115,66 @@ class CapsuleInstall extends Command
         return true;
     }
 
-    protected function configureInstaller()
+    protected function loadBaseCapsule()
     {
-        $capsule = $this->argument('capsule');
+        $capsule = [
+            'module' => $this->argument('capsule'),
+            'branch' => $this->option('branch'),
+            'service' => $this->option('service'),
+            'prefix' => $this->option('service'),
+        ];
 
-        if ($this->isFullUrl($capsule)) {
-            $url = $capsule;
+        $this->loadCapsule($capsule);
+    }
 
-            $capsule = $this->extractRepositoryFromUrl($capsule);
+    public function generateCapsuleData($capsule)
+    {
+        $module = $this->extractModuleName($capsule['module']);
+
+        if ($this->isFullUrl($module)) {
+            $url = $capsule['module'];
+
+            $repository = $this->extractRepositoryFromUrl($capsule['module']);
         } else {
-            $capsule = Str::snake(Str::kebab($capsule));
+            $repository = Str::snake(Str::kebab($capsule['module']));
 
-            if (!Str::contains($capsule, '/')) {
-                $capsule = $this->getAREA17RepositoryPrefix() . "-$capsule";
+            if (!Str::contains($repository, '/')) {
+                $repository = $this->getAREA17RepositoryPrefix() . "-$repository";
             }
 
-            $url = $this->getRepositoryUrlPrefix() . "/$capsule";
+            $url = $this->getRepositoryUrlPrefix() . "/$repository";
+
+            $rawUrl = $this->getServiceRawUrlPrefix($capsule) . "/$repository";
         }
 
-        $this->repositoryUri = $capsule;
+        $capsule['module'] = $module;
 
-        $this->capsuleName = Str::afterLast($capsule, '/');
+        $capsule['repository_uri'] = $repository;
 
-        $this->repositoryUrl = $url;
+        $capsule['capsule_name'] = Str::afterLast($repository, '/');
 
-        $this->name = $this->makeCapsuleName($capsule);
+        $capsule['repository_url'] = $url;
 
-        $this->namespace = Str::studly($this->name);
+        $capsule['repository_raw_url'] = $rawUrl;
 
-        $this->capsule = $this->manager->makeCapsule([
-            'name' => $this->namespace,
+        $capsule['name'] = $this->makeCapsuleName($repository);
+
+        $capsule['namespace'] = Str::studly($module);
+
+        $capsule['capsule'] = $this->manager->makeCapsule([
+            'name' => $module,
             'enabled' => true,
         ]);
+
+        $capsule['config_url'] = $this->makeConfigFile($capsule);
+
+        $capsule['config'] = $this->downloadConfig($capsule);
+
+        $capsule['zip_address'] = $this->getZipAddress($capsule);
+
+        $capsule['temp_file'] = $this->getTempFileName($capsule);
+
+        return $capsule;
     }
 
     protected function isFullUrl($capsule)
@@ -161,12 +203,12 @@ class CapsuleInstall extends Command
         return $this->option('branch');
     }
 
-    protected function getZipAddress()
+    protected function getZipAddress($capsule)
     {
         return sprintf(
             '%s/archive/refs/heads/%s.zip',
-            $this->repositoryUrl,
-            $this->getBranch()
+            $capsule['repository_url'],
+            $capsule['branch']
         );
     }
 
@@ -182,38 +224,54 @@ class CapsuleInstall extends Command
         return $this->option('prefix');
     }
 
+    protected function getServiceUrlPrefix()
+    {
+        return $this->option('prefix');
+    }
+
+    protected function getServiceRawUrlPrefix($capsule)
+    {
+        if ($capsule['service'] === 'github.com') {
+            return 'https://raw.githubusercontent.com';
+        }
+
+        return null;
+    }
+
     public function getService()
     {
         return $this->option('service');
     }
 
-    protected function displayConfigurationSummary()
+    protected function displayConfigurationSummary($capsule)
     {
+        $this->info('');
+        $this->info("Installing Capsule {$capsule['capsule']['name']}...");
+        $this->info('');
         $this->info('Configuration summary');
+        $this->info('----------------------------------------------------------------------------------');
 
-        $this->info('---------------------');
+        $this->info("Name prefix: {$capsule['prefix']}");
 
-        $this->info('Name prefix: ' . $this->getCapsulePrefix());
+        $this->info("Capsule repository URI: {$capsule['repository_uri']}");
 
-        $this->info("Capsule repository URI: {$this->repositoryUri}");
+        $this->info("Capsule name: {$capsule['name']}");
 
-        $this->info("Capsule name: {$this->capsuleName}");
+        $this->info("Name: {$capsule['capsule']['name']}");
 
-        $this->info("Name: {$this->name}");
+        $this->info("Module: {$capsule['module']}");
 
-        $this->info('Module: ' . $this->getModule());
+        $this->info("Namespace: {$capsule['namespace']}");
 
-        $this->info("Namespace: {$this->namespace}");
+        $this->info("Service: {$capsule['service']}");
 
-        $this->info('Service: ' . $this->getService());
+        $this->info("Branch: {$capsule['branch']}");
 
-        $this->info('Branch: ' . $this->getBranch());
+        $this->info("Repository URL: {$capsule['repository_url']}");
 
-        $this->info("Repository URL: {$this->repositoryUrl}");
+        $this->info("Zip URL: {$capsule['zip_address']}");
 
-        $this->info('Zip URL: ' . $this->getZipAddress());
-
-        $this->info('Temporary file: ' . $this->getTempFileName());
+        $this->info("Temporary file: {$capsule['temp_file']}");
     }
 
     protected function getModule()
@@ -221,18 +279,18 @@ class CapsuleInstall extends Command
         return Str::camel($this->name);
     }
 
-    protected function canInstallCapsule()
+    protected function canInstallCapsule($capsule)
     {
-        if ($this->manager->capsuleExists($this->getModule())) {
+        if ($this->manager->capsuleExists($capsule['capsule']['module'])) {
             $this->error('A capsule with this name already exists!');
 
             return false;
         }
 
-        if ($this->directoryExists()) {
+        if (file_exists($capsule['capsule']['root_path'])) {
             $this->error(
                 'Capsule directory already exists: ' .
-                    $this->getCapsuleDirectory()
+                $capsule['capsule']['root_path']
             );
 
             return false;
@@ -241,16 +299,17 @@ class CapsuleInstall extends Command
         return true;
     }
 
-    protected function installCapsule()
+    protected function installCapsule($capsule)
     {
         $installed =
-            $this->canInstallCapsule() &&
-            $this->download() &&
+            $this->canInstallCapsule($capsule) &&
+            $this->download($capsule) &&
             $this->uncompress(
-                $this->getTempFileName(),
-                $this->capsule['base_path']
+                $capsule,
+                $capsule['temp_file'],
+                $capsule['capsule']['base_path']
             ) &&
-            $this->renameToCapsule();
+            $this->renameToCapsule($capsule);
 
         $this->comment('');
 
@@ -260,44 +319,34 @@ class CapsuleInstall extends Command
             $this->comment('Your capsule was installed successfully!');
         }
 
-        return $installed ? 0 : 255;
+        return $installed;
     }
 
-    protected function getCapsuleDirectory()
+    protected function download($capsule)
     {
-        return $this->capsule['root_path'];
-    }
-
-    protected function directoryExists()
-    {
-        return file_exists($this->getCapsuleDirectory());
-    }
-
-    protected function download()
-    {
-        if (!$this->cleanTempFile() || !$this->repositoryExists()) {
+        if (!$this->cleanTempFile($capsule) || !$this->repositoryExists($capsule)) {
             return false;
         }
 
         $this->info('Downloading zip file...');
 
         file_put_contents(
-            $this->getTempFileName(),
-            fopen($this->getZipAddress(), 'r')
+            $capsule['temp_file'],
+            fopen($capsule['zip_address'], 'r')
         );
 
         return true;
     }
 
-    protected function cleanTempFile()
+    protected function cleanTempFile($capsule)
     {
-        if (file_exists($this->getTempFileName())) {
-            unlink($this->getTempFileName());
+        if (file_exists($capsule['temp_file'])) {
+            unlink($capsule['temp_file']);
 
-            if (file_exists($this->getTempFileName())) {
+            if (file_exists($capsule['temp_file'])) {
                 $this->error(
                     'Unable to remove temporary file: ' .
-                        $this->getTempFileName()
+                        $capsule['temp_file']
                 );
 
                 return false;
@@ -307,25 +356,25 @@ class CapsuleInstall extends Command
         return true;
     }
 
-    protected function getTempFileName()
+    protected function getTempFileName($capsule)
     {
-        return $this->capsule['base_path'] . '/install.zip';
+        return $capsule['capsule']['base_path'] . "/{$capsule['capsule']['module']}-install.tmp.zip";
     }
 
-    protected function repositoryExists()
+    protected function repositoryExists($capsule)
     {
         $guzzle = new Client();
 
         try {
             $statusCode = $guzzle
-                ->request('GET', $this->repositoryUrl)
+                ->request('GET', $capsule['repository_url'])
                 ->getStatusCode();
         } catch (Exception $exception) {
             $statusCode = $exception->getCode();
         }
 
         if ($statusCode !== 200) {
-            $this->error('Repository not found: ' . $this->repositoryUrl);
+            $this->error('Repository not found: ' . $capsule['repository_url']);
 
             return false;
         }
@@ -333,7 +382,7 @@ class CapsuleInstall extends Command
         return true;
     }
 
-    protected function uncompress($zip, $directory)
+    protected function uncompress($capsule, $zip, $directory)
     {
         $this->info('Unzipping file...');
 
@@ -384,23 +433,118 @@ class CapsuleInstall extends Command
         return true;
     }
 
-    protected function unzipWithShell($zip, $directory)
+    protected function unzipWithShell($capsule, $zip, $directory)
     {
         $this->info('Unzipping with unzip shell command...');
 
-        chdir($this->capsule['base_path']);
+        chdir($capsule['capsule']['base_path']);
 
         shell_exec('unzip install.zip');
 
-        return file_exists($this->getUnzippedPath());
+        return file_exists($this->getUnzippedPath($capsule));
     }
 
-    public function renameToCapsule()
+    public function renameToCapsule($capsule)
     {
-        $destination = $this->capsule['psr4_path'];
+        $destination = $capsule['capsule']['psr4_path'];
 
-        rename($this->getUnzippedPath(), $destination);
+        rename($this->getUnzippedPath($capsule), $destination);
 
         return file_exists($destination);
+    }
+
+    public function extractModuleName($name)
+    {
+        $name = Str::afterLast($name, '/');
+
+        $name = Str::afterLast($name, 'twill-capsule-');
+
+        return Str::studly($name);
+    }
+
+    public function makeConfigFile($capsule)
+    {
+        return "{$capsule['repository_raw_url']}/{$capsule['branch']}/twill.json";
+    }
+
+    public function downloadConfig($capsule)
+    {
+        $contents = @file_get_contents($capsule['config_url']);
+
+        return json_decode($contents ?? '[]', true) ?? [];
+    }
+
+    public function loadCapsule($capsule)
+    {
+        $capsule = $this->generateCapsuleData($capsule);
+
+        $key = $this->makeCapsuleKey($capsule);
+
+        if (filled($this->capsules[$key] ?? null)) {
+            return;
+        }
+
+        $this->capsules[$key] = $capsule;
+    }
+
+    public function resolveDependencies()
+    {
+        foreach ($this->capsules as $capsule) {
+            if (!($this->resolved[$this->makeCapsuleKey($capsule)] ?? false)) {
+                $this->resolveDependenciesForCapsule($capsule);
+
+                $this->resolveDependencies();
+            }
+        }
+    }
+
+    public function makeCapsuleKey($capsule)
+    {
+        return $capsule['capsule']['root_path'];
+    }
+
+    public function resolveDependenciesForCapsule($capsule)
+    {
+        $this->resolved[$this->makeCapsuleKey($capsule)] = true;
+
+        foreach ($capsule['config']['dependencies']['capsules'] ?? [] as $dependency)
+        {
+            $capsule = [
+                'module' => $dependency['capsule'],
+                'branch' => $dependency['branch'] ?? 'stable',
+                'service' => $dependency['service'] ?? 'github.com',
+                'prefix' => $dependency['prefix'] ?? '',
+            ];
+
+            $this->loadCapsule($capsule);
+        }
+    }
+
+    public function canInstall()
+    {
+        $this->capsules = collect($this->capsules)->map(function ($capsule) {
+            $capsule['can_install'] = $this->canInstallCapsule($capsule);
+
+            if ($capsule['can_install']) {
+                $this->comment("Will install Capsule \"{$capsule['capsule']['name']}\".");
+            }
+
+            return $capsule;
+        });
+
+        $first = $this->capsules->first();
+
+        if (!$first['can_install']) {
+            $this->error('Main Capsule is already installed, aborted.');
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public function manager()
+    {
+        return app('twill.capsules.manager');
     }
 }
