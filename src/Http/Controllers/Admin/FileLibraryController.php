@@ -2,19 +2,16 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
-use A17\Twill\Http\Requests\Admin\FileRequest;
-use A17\Twill\Services\Uploader\SignAzureUpload;
-use A17\Twill\Services\Uploader\SignS3Upload;
-use A17\Twill\Services\Uploader\SignUploadListener;
-use Illuminate\Config\Repository as Config;
-use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\ResponseFactory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\UrlGenerator;
+use Illuminate\Routing\ResponseFactory;
+use Illuminate\Config\Repository as Config;
+use A17\Twill\Http\Requests\Admin\FileRequest;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
-class FileLibraryController extends ModuleController implements SignUploadListener
+class FileLibraryController extends LibraryController
 {
     /**
      * @var string
@@ -22,50 +19,9 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     protected $moduleName = 'files';
 
     /**
-     * @var string
-     */
-    protected $namespace = 'A17\Twill';
-
-    /**
-     * @var array
-     */
-    protected $defaultOrders = [
-        'id' => 'desc',
-    ];
-
-    /**
-     * @var array
-     */
-    protected $defaultFilters = [
-        'search' => 'search',
-        'tag' => 'tag_id',
-        'unused' => 'unused'
-    ];
-
-    /**
-     * @var int
-     */
-    protected $perPage = 40;
-
-    /**
-     * @var string
-     */
-    protected $endpointType;
-
-    /**
      * @var Illuminate\Routing\UrlGenerator
      */
     protected $urlGenerator;
-
-    /**
-     * @var Illuminate\Routing\ResponseFactory
-     */
-    protected $responseFactory;
-
-    /**
-     * @var Illuminate\Config\Repository
-     */
-    protected $config;
 
     public function __construct(
         Application $app,
@@ -82,19 +38,6 @@ class FileLibraryController extends ModuleController implements SignUploadListen
         $this->removeMiddleware('can:edit');
         $this->middleware('can:edit', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = $this->config->get('twill.file_library.endpoint_type');
-    }
-
-    /**
-     * @param int|null $parentModuleId
-     * @return array
-     */
-    public function index($parentModuleId = null)
-    {
-        if ($this->request->has('except')) {
-            $prependScope['exceptIds'] = $this->request->get('except');
-        }
-
-        return $this->getIndexData($prependScope ?? []);
     }
 
     /**
@@ -134,26 +77,6 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     }
 
     /**
-     * @return array
-     */
-    protected function getRequestFilters()
-    {
-        if ($this->request->has('search')) {
-            $requestFilters['search'] = $this->request->get('search');
-        }
-
-        if ($this->request->has('tag')) {
-            $requestFilters['tag'] = $this->request->get('tag');
-        }
-
-        if ($this->request->has('unused') && (int) $this->request->unused === 1) {
-            $requestFilters['unused'] = $this->request->get('unused');
-        }
-
-        return $requestFilters ?? [];
-    }
-
-    /**
      * @param int|null $parentModuleId
      * @return JsonResponse
      * @throws BindingResolutionException
@@ -169,46 +92,6 @@ class FileLibraryController extends ModuleController implements SignUploadListen
         }
 
         return $this->responseFactory->json(['media' => $this->buildFile($file), 'success' => true], 200);
-    }
-
-    /**
-     * @param Request $request
-     * @return \A17\Twill\Models\File
-     */
-    public function storeFile($request)
-    {
-        $filename = $request->input('qqfilename');
-
-        $cleanFilename = preg_replace("/\s+/i", "-", $filename);
-
-        $fileDirectory = $request->input('unique_folder_name');
-
-        $uuid = $request->input('unique_folder_name') . '/' . $cleanFilename;
-
-        if ($this->config->get('twill.file_library.prefix_uuid_with_local_path', false)) {
-            $prefix = trim($this->config->get('twill.file_library.local_path'), '/ ') . '/';
-            $fileDirectory = $prefix . $fileDirectory;
-            $uuid = $prefix . $uuid;
-        }
-
-        $disk = $this->config->get('twill.file_library.disk');
-
-        $request->file('qqfile')->storeAs($fileDirectory, $cleanFilename, $disk);
-
-        $fields = [
-            'uuid' => $uuid,
-            'filename' => $cleanFilename,
-            'size' => $request->input('qqtotalfilesize'),
-        ];
-
-        if ($this->shouldReplaceFile($id = $request->input('media_to_replace_id'))) {
-            $file = $this->repository->whereId($id)->first();
-            $this->repository->afterDelete($file);
-            $file->update($fields);
-            return $file->fresh();
-        } else {
-            return $this->repository->create($fields);
-        }
     }
 
     /**
@@ -268,53 +151,5 @@ class FileLibraryController extends ModuleController implements SignUploadListen
             })->toArray(),
             'tags' => $this->repository->getTagsList(),
         ], 200);
-    }
-
-    /**
-     * @param Request $request
-     * @param SignS3Upload $signS3Upload
-     * @return mixed
-     */
-    public function signS3Upload(Request $request, SignS3Upload $signS3Upload)
-    {
-        return $signS3Upload->fromPolicy($request->getContent(), $this, $this->config->get('twill.file_library.disk'));
-    }
-
-    /**
-     * @param Request $request
-     * @param SignAzureUpload $signAzureUpload
-     * @return mixed
-     */
-    public function signAzureUpload(Request $request, SignAzureUpload $signAzureUpload)
-    {
-        return $signAzureUpload->getSasUrl($request, $this, $this->config->get('twill.file_library.disk'));
-    }
-
-    /**
-     * @param $signature
-     * @param bool $isJsonResponse
-     * @return mixed
-     */
-    public function uploadIsSigned($signature, $isJsonResponse = true)
-    {
-        return $isJsonResponse
-        ? $this->responseFactory->json($signature, 200)
-        : $this->responseFactory->make($signature, 200, ['Content-Type' => 'text/plain']);
-    }
-
-    /**
-     * @return JsonResponse
-     */
-    public function uploadIsNotValid()
-    {
-        return $this->responseFactory->json(["invalid" => true], 500);
-    }
-
-    /**
-     * @return bool
-     */
-    private function shouldReplaceFile($id)
-    {
-        return $this->repository->whereId($id)->exists();
     }
 }
