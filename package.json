@@ -50,8 +50,6 @@
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^6.2.2",
     "prettier": "^1.19.1",
-    "prettier-eslint": "^12.0.0",
-    "prettier-eslint-cli": "^5.0.1",
     "sass": "^1.32.8",
     "sass-loader": "^8.0.2",
     "svg-spritemap-webpack-plugin": "3.8.1",
