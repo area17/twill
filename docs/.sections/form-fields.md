@@ -627,7 +627,7 @@ In this case that it can be implemented as follows:
 php artisan twill:module sectors
 ```
 
-- Create a migration for a pivote table.
+- Create a migration for a pivot table.
 
 ```
 php artisan make:migration create_post_sector_table
