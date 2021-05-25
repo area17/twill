@@ -12,7 +12,8 @@ const sections = [
   'media-library',
   'artisan',
   'other-cms-features',
-  'resources'
+  'resources',
+  'api-documentation'
 ];
 
 const settings = `---
