@@ -71,14 +71,12 @@ class CapsuleInstall extends Command
             return 255;
         }
 
-        $this->info('Twill Capsule installer');
-        $this->info('----------------------------------------------------------------------------------');
-        $this->info('Resolving dependencies...');
+        $this->applicationBanner();
 
         $this->loadBaseCapsule();
 
         $this->resolveDependencies();
-        
+
         if (!$this->canInstall()) {
             return 1;
         }
@@ -86,7 +84,7 @@ class CapsuleInstall extends Command
         $installed = $this->capsules->where('can_install', true)->reduce(function ($installed, $capsule) {
             $this->displayConfigurationSummary($capsule);
 
-            $installed = $installed && $this->installCapsule($capsule);
+            return $installed && $this->installCapsule($capsule);
         }, true);
 
         if (!$installed) {
@@ -269,6 +267,8 @@ class CapsuleInstall extends Command
 
         $this->info("Repository URL: {$capsule['repository_url']}");
 
+        $this->info("Config URL: {$capsule['config_url']}");
+
         $this->info("Zip URL: {$capsule['zip_address']}");
 
         $this->info("Temporary file: {$capsule['temp_file']}");
@@ -301,6 +301,10 @@ class CapsuleInstall extends Command
 
     protected function installCapsule($capsule)
     {
+        if (!$this->ensureBaseDirectoryExists($capsule)) {
+            return false;
+         }
+
         $installed =
             $this->canInstallCapsule($capsule) &&
             $this->download($capsule) &&
@@ -314,17 +318,19 @@ class CapsuleInstall extends Command
         $this->comment('');
 
         if (!$installed) {
-            $this->error('Your capsule was not installed.');
+            $this->error("{$capsule['capsule']['name']} was not installed.");
         } else {
-            $this->comment('Your capsule was installed successfully!');
+            $this->comment("{$capsule['capsule']['name']} was installed successfully!");
         }
+
+        $this->cleanTempFile($capsule);
 
         return $installed;
     }
 
     protected function download($capsule)
     {
-        if (!$this->cleanTempFile($capsule) || !$this->repositoryExists($capsule)) {
+        if (!$this->repositoryExists($capsule)) {
             return false;
         }
 
@@ -469,7 +475,14 @@ class CapsuleInstall extends Command
 
     public function downloadConfig($capsule)
     {
+        $this->info("Reading config file for \"{$capsule['name']}\"...");
+
         $contents = @file_get_contents($capsule['config_url']);
+
+        if (blank($contents))
+        {
+            $this->error("Config file not found: {$capsule['config_url']}");
+        }
 
         return json_decode($contents ?? '[]', true) ?? [];
     }
@@ -489,6 +502,8 @@ class CapsuleInstall extends Command
 
     public function resolveDependencies()
     {
+        $this->info('Resolving dependencies...');
+
         foreach ($this->capsules as $capsule) {
             if (!($this->resolved[$this->makeCapsuleKey($capsule)] ?? false)) {
                 $this->resolveDependenciesForCapsule($capsule);
@@ -546,5 +561,29 @@ class CapsuleInstall extends Command
     public function manager()
     {
         return app('twill.capsules.manager');
+    }
+
+    public function ensureBaseDirectoryExists($capsule)
+    {
+        $path = $capsule['capsule']['base_path'];
+
+        if (!file_exists($path)) {
+            mkdir($path, 0755, true);
+        }
+
+        if (!file_exists($path))
+        {
+            $this->error("Unable to create Capsules directory: $path");
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private function applicationBanner(): void
+    {
+        $this->info('Twill Capsule installer');
+        $this->info('----------------------------------------------------------------------------------');
     }
 }
