@@ -5,7 +5,7 @@ on:
 jobs:
   rebase:
     name: Format
-    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/rebase')
+    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/format')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the latest code
@@ -16,7 +16,6 @@ jobs:
       - name: Prettify code
         uses: creyD/prettier_action@v3.3
         with:
-          prettier_options: --write *.js .*.{js,yml} 'frontend/**/*.{js,vue,scss}'
-          only_changed: True
+          prettier_options: --write *.js .*.{js,yml} frontend/**/*.{js,vue,scss}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
