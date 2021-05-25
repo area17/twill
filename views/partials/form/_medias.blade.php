@@ -63,7 +63,7 @@
             @if ($altTextMaxLength) :alt-text-max-length="{{ $altTextMaxLength }}" @endif
             @if ($captionMaxLength) :caption-max-length="{{ $captionMaxLength }}" @endif
             @if ($buttonOnTop) :button-on-top="true" @endif
-            @if (!$activeCrop) activeCrop: false, @endif
+            @if (!$activeCrop) :active-crop="false" @endif
         >{{ $note }}@if($multiple) </a17-slideshow> @else </a17-mediafield> @endif
     </a17-inputframe>
 
