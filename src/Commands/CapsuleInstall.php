@@ -119,7 +119,7 @@ class CapsuleInstall extends Command
             'module' => $this->argument('capsule'),
             'branch' => $this->option('branch'),
             'service' => $this->option('service'),
-            'prefix' => $this->option('service'),
+            'prefix' => $this->option('prefix'),
         ];
 
         $this->loadCapsule($capsule);
