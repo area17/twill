@@ -145,12 +145,12 @@ trait HandleBrowsers
      * @param string $relation
      * @return array
      */
-    public function getFormFieldsForRelatedBrowser($object, $relation)
+    public function getFormFieldsForRelatedBrowser($object, $relation, $titleKey = 'title')
     {
-        return $object->getRelated($relation)->map(function ($relatedElement) {
+        return $object->getRelated($relation)->map(function ($relatedElement) use ($titleKey) {
             return ($relatedElement != null) ? [
                 'id' => $relatedElement->id,
-                'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
+                'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
                 'endpointType' => $relatedElement->getMorphClass(),
             ] + (empty($relatedElement->adminEditUrl) ? [] : [
                 'edit' => $relatedElement->adminEditUrl,
