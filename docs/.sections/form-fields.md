@@ -226,14 +226,15 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 ])
 ```
 
-| Option         | Description                            | Type/values    | Default value |
-| :------------- | :------------------------------------- | :------------- | :------------ |
-| name           | Name of the field                      | string         |               |
-| label          | Label of the field                     | string         |               |
-| translated     | Defines if the field is translatable   | true<br/>false | false         |
-| max            | Max number of attached items           | integer        | 1             |
-| fieldNote      | Hint message displayed above the field | string         |               |
-| note           | Hint message displayed in the field    | string         |               |
+| Option         | Description                                          | Type/values    | Default value |
+| :------------- | :--------------------------------------------------- | :------------- | :------------ |
+| name           | Name of the field                                    | string         |               |
+| label          | Label of the field                                   | string         |               |
+| translated     | Defines if the field is translatable                 | true<br/>false | false         |
+| max            | Max number of attached items                         | integer        | 1             |
+| fieldNote      | Hint message displayed above the field               | string         |               |
+| note           | Hint message displayed in the field                  | string         |               |
+| buttonOnTop    | Displays the `Attach images` button above the images | true<br/>false | false         |
 
 
 Right after declaring the `medias` formField in the blade template file, you still need to do a few things to make it works properly.
