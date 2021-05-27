@@ -324,6 +324,17 @@ No migration is needed to save `medias` form fields.
 ])
 ```
 
+| Option         | Description                               | Type/values    | Default value |
+| :------------- | :---------------------------------------- | :------------- | :------------ |
+| name           | Name of the field                         | string         |               |
+| label          | Label of the field                        | string         |               |
+| itemLabel      | Label used for the `Add` button           | string         |               |
+| max            | Max number of attached items              | integer        | 1             |
+| fieldNote      | Hint message displayed above the field    | string         |               |
+| note           | Hint message displayed in the field       | string         |               |
+| buttonOnTop    | Displays the `Add` button above the files | true<br/>false | false         |
+
+
 Similar to the media formField, to make the file field works, you have to include the `HasFiles` trait in your module's [Model](https://twill.io/docs/#models), and include `HandleFiles` trait in your module's [Repository](https://twill.io/docs/#repositories). At last, add the `filesParams` configuration array in your model.
 ```php
 public $filesParams = ['file_role', ...]; // a list of file roles
