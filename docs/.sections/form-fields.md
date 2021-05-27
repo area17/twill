@@ -376,7 +376,9 @@ No migration is needed to save `files` form fields.
 | maxDate     | Maximum selectable date                                      | string          |               |
 | withTime    | Define if the field will display the time selector           | true<br/>false  | true          |
 | time24Hr    | Pick time with a 24h picker instead of AM/PM                 | true<br/>false  | false         |
-| altFormat   | Format used by flatPickr                                     | string          | F j, Y        |
+| allowClear  | Adds a button to clear the field                             | true<br/>false  | false         |
+| allowInput  | Allow manually editing the selected date in the field        | true<br/>false  | false         |
+| altFormat   | Format used by [flatpickr](https://flatpickr.js.org/formatting/) | string          | F j, Y        |
 | note        | Hint message displayed above the field                       | string          |               |
 | required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false  | false         |
 
