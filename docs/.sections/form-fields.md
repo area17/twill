@@ -237,9 +237,9 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 | buttonOnTop    | Displays the `Attach images` button above the images | true<br/>false | false         |
 
 
-Right after declaring the `medias` formField in the blade template file, you still need to do a few things to make it works properly.
+Right after declaring the `medias` formField in the blade template file, you still need to do a few things to make it work properly.
 
-If the formField is in a static content form, you have to include the `HasMedias` Trait in your module's [Model](https://twill.io/docs/#models) and inlcude `HandleMedias` in your module's [Repository](https://twill.io/docs/#repositories), in addition, you have to uncomment the `$mediasParams` section in your Model file to let the model know about fields you'd like to save from the form.
+If the formField is in a static content form, you have to include the `HasMedias` Trait in your module's [Model](https://twill.io/docs/#models) and inlcude `HandleMedias` in your module's [Repository](https://twill.io/docs/#repositories). In addition, you have to uncomment the `$mediasParams` section in your Model file to let the model know about fields you'd like to save from the form.
 
 Learn more about how Twill's media configurations work at [Model](https://twill.io/docs/#models), [Repository](https://twill.io/docs/#repositories), [Media Library Role & Crop Params](https://twill.io/docs/#image-rendering-service)
 
