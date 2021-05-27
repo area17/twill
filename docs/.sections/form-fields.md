@@ -73,6 +73,7 @@ You can also rename the content section by passing a `contentFieldsetLabel` prop
 | maxlength   | Max character count of the field                                                                                         | integer                                            |               |
 | note        | Hint message displayed above the field                                                                                   | string                                             |               |
 | placeholder | Text displayed as a placeholder in the field                                                                             | string                                             |               |
+| prefix      | Text displayed as a prefix in the field                                                                                  | string                                             |               |
 | rows        | Sets the number of rows in a textarea                                                                                    | integer                                            | 5             |
 | required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false                                     | false         |
 | disabled    | Disables the field                                                                                                       | true<br />false                                    | false         |
