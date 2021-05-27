@@ -372,15 +372,16 @@ public function hydrate($object, $fields)
         'bulkFeature' => false,
         'restore' => true,
         'bulkRestore' => true,
+        'forceDelete' => true,
+        'bulkForceDelete' => true,
         'delete' => true,
+        'duplicate' => false,
         'bulkDelete' => true,
         'reorder' => false,
         'permalink' => true,
         'bulkEdit' => true,
         'editInModal' => false,
-        'forceDelete' => true,
-        'bulkForceDelete' => true,
-        'duplicate' => true
+        'skipCreateModal' => false,
     ];
 
     /*
