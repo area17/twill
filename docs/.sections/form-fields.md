@@ -482,6 +482,7 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 | label       | Label of the field                                           | string          |               |
 | options     | Array of options for the dropdown, must include _value_ and _label_ | array          |               |
 | unpack      | Defines if the select will be displayed as an open list of options | true<br/>false  | false         |
+| searchable  | Filter the field values while typing                         | true<br/>false  | false         |
 | note        | Hint message displayed above the field                       | string          |               |
 | placeholder | Text displayed as a placeholder in the field                 | string          |               |
 | required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false  | false         |
