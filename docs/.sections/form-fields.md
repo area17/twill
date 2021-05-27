@@ -177,15 +177,16 @@ Note that Quill outputs CSS classes in the HTML for certain toolbar modules (ind
 | :------------- | :----------------------------------------------------------- | :--------------------------------------------------------- | :-------------------------------------- |
 | name           | Name of the field                                            | string                                                     |                                         |
 | label          | Label of the field                                           | string                                                     |                                         |
-| type           | Type of input field                                          | text<br/>texarea<br/>number<br/>email                      | text                                    |
+| type           | Type of wysiwyg field                                        | quill<br/>tiptap                                           | quill                                   |
 | toolbarOptions | Array of options/tools that will be displayed in the editor  | [Quill options](https://quilljs.com/docs/modules/toolbar/) | bold<br/>italic<br />underline<br/>link |
 | editSource     | Displays a button to view source code                        | true<br />false                                            | false                                   |
+| hideCounter    | Hide the character counter displayed at the bottom           | true<br />false                                            | false                                   |
+| limitHeight    | Limit the editor height from growing beyond the viewport     | true<br />false                                            | false                                   |
 | translated     | Defines if the field is translatable                         | true<br/>false                                             | false                                   |
 | maxlength      | Max character count of the field                             | integer                                                    | 255                                     |
 | note           | Hint message displayed above the field                       | string                                                     |                                         |
 | placeholder    | Text displayed as a placeholder in the field                 | string                                                     |                                         |
-| rows           | Sets the number of rows in a textarea                        | integer                                                    |                                         |
-| required       | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false                                             | false                                   |
+| required       | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false | false |
 
 
 A migration to save a `wysiwyg` field would be:
