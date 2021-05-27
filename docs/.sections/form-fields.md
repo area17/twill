@@ -427,6 +427,18 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 ])
 ```
 
+| Option      | Description                                                  | Type/values     | Default value |
+| :---------- | :----------------------------------------------------------- | :-------------- | :------------ |
+| name        | Name of the field                                            | string          |               |
+| label       | Label of the field                                           | string          |               |
+| options     | Array of options for the dropdown, must include _value_ and _label_ | array          |               |
+| unpack      | Defines if the select will be displayed as an open list of options | true<br/>false  | false         |
+| searchable  | Filter the field values while typing                         | true<br/>false  | false         |
+| note        | Hint message displayed above the field                       | string          |               |
+| placeholder | Text displayed as a placeholder in the field                 | string          |               |
+| required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false  | false         |
+
+
 A migration to save a `select` field would be:
 
 ```php
@@ -475,18 +487,6 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
     ]
 ])
 ```
-
-| Option      | Description                                                  | Type/values     | Default value |
-| :---------- | :----------------------------------------------------------- | :-------------- | :------------ |
-| name        | Name of the field                                            | string          |               |
-| label       | Label of the field                                           | string          |               |
-| options     | Array of options for the dropdown, must include _value_ and _label_ | array          |               |
-| unpack      | Defines if the select will be displayed as an open list of options | true<br/>false  | false         |
-| searchable  | Filter the field values while typing                         | true<br/>false  | false         |
-| note        | Hint message displayed above the field                       | string          |               |
-| placeholder | Text displayed as a placeholder in the field                 | string          |               |
-| required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false  | false         |
-
 
 A migration to save the above `select` field would be:
 
