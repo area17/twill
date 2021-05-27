@@ -502,12 +502,14 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 
 
 ### Multi select
-![screenshot](/docs/_media/multiselect.png)
+![screenshot](/docs/_media/multiselectunpacked.png)
 
 ```php
 @formField('multi_select', [
     'name' => 'sectors',
     'label' => 'Sectors',
+    'min' => 1,
+    'max' => 2,
     'options' => [
         [
             'value' => 'arts',
@@ -531,39 +533,6 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
         ]
     ]
 ])
-
-@formField('multi_select', [
-    'name' => 'sectors_bis',
-    'label' => 'Sectors bis',
-    'min' => 1,
-    'max' => 2,
-    'options' => [
-        [
-            'value' => 'arts',
-            'label' => 'Arts & Culture'
-        ],
-        [
-            'value' => 'finance',
-            'label' => 'Banking & Finance'
-        ],
-        [
-            'value' => 'civic',
-            'label' => 'Civic & Public'
-        ],
-        [
-            'value' => 'design',
-            'label' => 'Design & Architecture'
-        ],
-        [
-            'value' => 'education',
-            'label' => 'Education'
-        ],
-        [
-            'value' => 'entertainment',
-            'label' => 'Entertainment'
-        ],
-    ]
-])
 ```
 
 | Option      | Description                                                  | Type/values     | Default value |
@@ -573,6 +542,7 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 | min         | Minimum number of selectable options                         | integer         |               |
 | max         | Maximum number of selectable options                         | integer         |               |
 | options     | Array of options for the dropdown, must include _value_ and _label_ | array           |               |
+| unpack      | Defines if the multi select will be displayed as an open list of options | true<br/>false  | true         |
 | note        | Hint message displayed above the field                       | string          |               |
 | placeholder | Text displayed as a placeholder in the field                 | string          |               |
 | required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false  | false         |
@@ -581,7 +551,7 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 
 There are several ways to implement a `multi_select` form field.
 
-##### Multiselect with static values
+##### Multi select with static values
 Sometimes you just have a set of values that are static.
 
 In this case that it can be implemented as follows:
@@ -624,7 +594,7 @@ protected $casts = [
 ]
 ```
 
-##### Multiselect with dynamic values
+##### Multi select with dynamic values
 
 Sometimes the content for the `multi_select` is coming from another model.
 
