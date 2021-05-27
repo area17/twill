@@ -318,16 +318,8 @@ No migration is needed to save `medias` form fields.
 ])
 
 @formField('files', [
-    'name' => 'single_file_no_translate',
-    'label' => 'Single file (no translate)',
-    'note' => 'Add one file',
-    'noTranslate' => true,
-])
-
-@formField('files', [
     'name' => 'files',
     'label' => 'Files',
-    'noTranslate' => true,
     'max' => 4,
 ])
 ```
