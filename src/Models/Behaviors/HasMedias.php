@@ -111,8 +111,8 @@ trait HasMedias
         $urls = [];
 
         foreach ($medias as $media) {
-            $paramsforcrop = $params[$media->pivot->crop] ?? [];
-            $urls[$media->id][$media->pivot->crop] = $this->image($role, $media->pivot->crop, $paramsforcrop, false, false, $media);
+            $paramsForCrop = $params[$media->pivot->crop] ?? [];
+            $urls[$media->id][$media->pivot->crop] = $this->image($role, $media->pivot->crop, $paramsForCrop, false, false, $media);
         }
 
         return $urls;
@@ -162,8 +162,8 @@ trait HasMedias
         $arrays = [];
 
         foreach ($medias as $media) {
-            $paramsforcrop = $params[$media->pivot->crop] ?? [];
-            $arrays[$media->id][$media->pivot->crop] = $this->imageAsArray($role, $media->pivot->crop, $paramsforcrop, $media);
+            $paramsForCrop = $params[$media->pivot->crop] ?? [];
+            $arrays[$media->id][$media->pivot->crop] = $this->imageAsArray($role, $media->pivot->crop, $paramsForCrop, $media);
         }
 
         return $arrays;
