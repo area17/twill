@@ -30,6 +30,7 @@ export default {
     },
     cancelBlock (fn, index) {
       if (window[process.env.VUE_APP_NAME].hasOwnProperty('PREVSTATE')) {
+        // eslint-disable-next-line
         console.warn('Store - Restore previous Store state')
         this.$store.replaceState(window[process.env.VUE_APP_NAME].PREVSTATE)
       }
