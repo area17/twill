@@ -102,6 +102,22 @@ trait HasMedias
         return $urls;
     }
 
+    public function imagesWithCrops($role, $params = [])
+    {
+        $medias = $this->medias->filter(function ($media) use ($role) {
+            return $media->pivot->role === $role;
+        });
+
+        $urls = [];
+
+        foreach ($medias as $media) {
+            $paramsForCrop = $params[$media->pivot->crop] ?? [];
+            $urls[$media->id][$media->pivot->crop] = $this->image($role, $media->pivot->crop, $paramsForCrop, false, false, $media);
+        }
+
+        return $urls;
+    }
+
     public function imageAsArray($role, $crop = "default", $params = [], $media = null)
     {
         if (!$media) {
@@ -132,6 +148,22 @@ trait HasMedias
 
         foreach ($medias as $media) {
             $arrays[] = $this->imageAsArray($role, $crop, $params, $media);
+        }
+
+        return $arrays;
+    }
+
+    public function imagesAsArraysWithCrops($role, $params = [])
+    {
+        $medias = $this->medias->filter(function ($media) use ($role) {
+            return $media->pivot->role === $role;
+        });
+
+        $arrays = [];
+
+        foreach ($medias as $media) {
+            $paramsForCrop = $params[$media->pivot->crop] ?? [];
+            $arrays[$media->id][$media->pivot->crop] = $this->imageAsArray($role, $media->pivot->crop, $paramsForCrop, $media);
         }
 
         return $arrays;
