@@ -701,14 +701,32 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 See [Multi select](https://twill.io/docs/#multi-select) for more information on how to implement the field with static and dynamic values.
 
 
-### Checkboxes
+### Checkbox
+![screenshot](/docs/_media/checkbox.png)
 
 ```php
 @formField('checkbox', [
     'name' => 'featured',
     'label' => 'Featured'
 ])
+```
 
+| Option              | Description                                             | Type            | Default value |
+| :------------------ | :------------------------------------------------------ | :-------------- | :------------ |
+| name                | Name of the field                                       | string          |               |
+| label               | Label of the field                                      | string          |               |
+| note                | Hint message displayed above the field                  | string          |               |
+| default             | Sets a default value                                    | boolean         | false         |
+| disabled            | Disables the field                                      | boolean         | false         | 
+| requireConfirmation | Displays a confirmation dialog when modifying the field | boolean         | false         |
+| confirmTitleText    | The title of the confirmation dialog                    | string          | 'Confirm selection' |
+| confirmMessageText  | The text of the confirmation dialog                     | string          | 'Are you sure you want to change this option ?' |
+
+
+### Multiple checkboxes
+![screenshot](/docs/_media/checkboxes.png)
+
+```php
 @formField('checkboxes', [
     'name' => 'sectors',
     'label' => 'Sectors',
@@ -732,6 +750,17 @@ See [Multi select](https://twill.io/docs/#multi-select) for more information on 
     ]
 ])
 ```
+
+| Option  | Description                                                         | Type    | Default value |
+| :------ | :------------------------------------------------------------------ | :-------| :------------ |
+| name    | Name of the field                                                   | string  |               |
+| label   | Label of the field                                                  | string  |               |
+| min     | Minimum number of selectable options                                | integer |               |
+| max     | Maximum number of selectable options                                | integer |               |
+| options | Array of options for the dropdown, must include _value_ and _label_ | array   |               |
+| inline  | Defines if the options are displayed on one or multiple lines       | boolean | false         |
+| note    | Hint message displayed above the field                              | string  |               |
+
 
 ### Radios
 
