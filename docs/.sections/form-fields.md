@@ -763,13 +763,14 @@ See [Multi select](https://twill.io/docs/#multi-select) for more information on 
 
 
 ### Radios
+![screenshot](/docs/_media/radios.png)
 
 ```php
 @formField('radios', [
     'name' => 'discipline',
     'label' => 'Discipline',
     'default' => 'civic',
-    'inline' => true/false,
+    'inline' => true,
     'options' => [
         [
             'value' => 'arts',
@@ -786,6 +787,20 @@ See [Multi select](https://twill.io/docs/#multi-select) for more information on 
     ]
 ])
 ```
+
+| Option              | Description                                                         | Type    | Default value |
+| :------------------ | :------------------------------------------------------------------ | :------ | :------------ |
+| name                | Name of the field                                                   | string  |               |
+| label               | Label of the field                                                  | string  |               |
+| note                | Hint message displayed above the field                              | string  |               |
+| options             | Array of options for the dropdown, must include _value_ and _label_ | array   |               |
+| inline              | Defines if the options are displayed on one or multiple lines       | boolean | false         |
+| default             | Sets a default value                                                | string  |               |
+| requireConfirmation | Displays a confirmation dialog when modifying the field             | boolean | false         |
+| confirmTitleText    | The title of the confirmation dialog                                | string  | 'Confirm selection' |
+| confirmMessageText  | The text of the confirmation dialog                                 | string  | 'Are you sure you want to change this option ?' |
+| required            | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean | false |
+
 
 ### Block editor
 ![screenshot](/docs/_media/blockeditor.png)
