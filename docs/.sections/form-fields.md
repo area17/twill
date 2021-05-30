@@ -826,18 +826,37 @@ See [Block editor](https://twill.io/docs/#block-editor-3)
 
 ```php
 @formField('browser', [
+    'moduleName' => 'publications',
+    'name' => 'publications',
     'label' => 'Publications',
     'max' => 4,
-    'name' => 'publications',
-    'moduleName' => 'publications'
 ])
 ```
+
+| Option      | Description                                                                     | Type    | Default value |
+| :---------- | :------------------------------------------------------------------------------ | :-------| :------------ |
+| name        | Name of the field                                                               | string  |               |
+| label       | Label of the field                                                              | string  |               |
+| moduleName  | Name of the module (single related module)                                      | string  |               |
+| modules     | Array of modules (multiple related modules), must include _name_                | array   |               |
+| endpoints   | Array of endpoints (multiple related modules), must include _value_ and _label_ | array   |               |
+| max         | Max number of attached items                                                    | integer | 1             |
+| note        | Hint message displayed in the field                                             | string  |               |
+| fieldNote   | Hint message displayed above the field                                          | string  |               |
+| browserNote | Hint message displayed inside the browser modal                                 | string  |               |
+| itemLabel   | Label used for the `Add` button                                                 | string  |               |
+| buttonOnTop | Displays the `Add` button above the items                                       | boolean | false         |
+| wide        | Expands the browser modal to fill the viewport                                  | boolean | false         |
+| sortable    | Allows manually sorting the attached items                                      | boolean | true          |
+
+<br/>
 
 Browser fields can be used to save a `belongsToMany` relationship outside of the block editor.
 
 Checkout this [Spectrum tutorial](https://spectrum.chat/twill/tips-and-tricks/step-by-step-ii-creating-a-twill-app~37c36601-1198-4c53-857a-a2b47c6d11aa) until we update this section to get more info on setting things up.
 
 When using inside of the block editor, no migration is needed. Refer to the section titled [Adding browser fields to a block](#adding-browser-fields-to-a-block) for a detailed explanation.
+
 
 ### Browser with multiple modules
 
