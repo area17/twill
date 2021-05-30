@@ -1,6 +1,5 @@
 @php
     $note = $note ?? false;
-    $inline = $inline ?? false;
     $default = $default ?? false;
     $inModal = $fieldsInModal ?? false;
     $disabled = $disabled ?? false;
