@@ -993,7 +993,8 @@ When using inside of the block editor, no migration is needed. Refer to the sect
 | :--------------- | :---------------------------------------------------------- | :-------------- | :------------ |
 | name             | Name of the field                                           | string          |               |
 | label            | Label of the field                                          | string          |               |
-| showMap          | Enables the visibility of the map                           | true<br />false | true          |
+| showMap          | Adds a button to toggle the map visibility                  | true<br />false | true          |
+| openMap          | Used with `showMap`, initialize the field with the map open | true<br />false | false          |
 | saveExtendedData | Enables saving Bounding Box Coordinates and Location types  | true<br />false | false         |
 
 This field requires that you provide a `GOOGLE_MAPS_API_KEY` variable in your .env file.
