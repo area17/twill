@@ -1046,6 +1046,7 @@ Extended data:
 ```
 
 ### Color
+![screenshot](/docs/_media/color.png)
 
 ```php
 @formField('color', [
@@ -1053,6 +1054,12 @@ Extended data:
     'label' => 'Main color'
 ])
 ```
+
+| Option  | Description         | Type     | Default value |
+| :------ | :------------------ | :------- | :------------ |
+| name    | Name of the field   | string   |               |
+| label   | Label of the field  | string   |               |
+
 
 A migration to save a `color` field would be:
 
