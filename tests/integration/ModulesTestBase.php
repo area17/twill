@@ -19,6 +19,7 @@ abstract class ModulesTestBase extends TestCase
     public $bio_fr;
     public $birthday;
     public $block_id;
+    public $block_editor_name;
     public $block_quote;
     public $translation;
     public $author;
@@ -160,17 +161,30 @@ abstract class ModulesTestBase extends TestCase
             $this->getUpdateAuthorWithBlock()
         );
 
-        $this->assertEquals(1, $this->author->blocks->count());
+        $this->assertEquals(2, $this->author->blocks->count());
 
+        // Check default block content
         $this->assertEquals(
             $block_quote = ['quote' => $this->block_quote],
             $this->author->blocks->first()->content
+        );
+
+        // Check named block content
+        $this->assertEquals(
+            $block_quote = ['quote' => $this->block_quote],
+            $this->author->blocks()->named($this->block_editor_name)->get()->first()->content
         );
 
         // Check if blocks are rendering
         $this->assertEquals(
             clean_file(json_encode($block_quote)),
             clean_file(trim($this->author->renderBlocks()))
+        );
+
+        // Check if named blocks are rendering
+        $this->assertEquals(
+            clean_file(json_encode($block_quote)),
+            clean_file(trim($this->author->renderNamedBlocks($this->block_editor_name)))
         );
 
         // Get browser data
@@ -367,21 +381,30 @@ abstract class ModulesTestBase extends TestCase
     {
         return $this->getUpdateAuthorData() + [
             'blocks' => [
-                [
-                    'id' => ($this->block_id = rand(
-                        1570000000000,
-                        1579999999999
-                    )),
-                    'type' => 'a17-block-quote',
-                    'content' => [
-                        'quote' => ($this->block_quote = $this->fakeText()),
-                    ],
-                    'medias' => [],
-                    'browsers' => [],
-                    'blocks' => [],
-                ],
+                $this->getAuthorBlock(),
+                $this->getAuthorBlock($this->block_editor_name = 'unique-name')
             ],
             'repeaters' => [],
+        ];
+    }
+
+    public function getAuthorBlock($name = 'default')
+    {
+        $this->block_quote = $this->block_quote ?? $this->fakeText();
+
+        return [
+            'id' => ($this->block_id = rand(
+                1570000000000,
+                1579999999999
+            )),
+            'type' => 'a17-block-quote',
+            'content' => [
+                'quote' => $this->block_quote,
+            ],
+            'medias' => [],
+            'browsers' => [],
+            'blocks' => [],
+            'name' => $name,
         ];
     }
 

@@ -27,7 +27,7 @@
 
   import draggable from 'vuedraggable'
   import draggableMixin from '@/mixins/draggable'
-  import Block from '@/components/blocks/Block.vue'
+  import Block from '@/components/blocks/BlockItem.vue'
 
   export default {
     name: 'A17Repeater',

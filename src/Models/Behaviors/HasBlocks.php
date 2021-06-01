@@ -11,9 +11,9 @@ trait HasBlocks
         return $this->morphMany(Block::class, 'blockable')->orderBy(config('twill.blocks_table', 'twill_blocks') . '.position', 'asc');
     }
 
-    public function renderBlocks($renderChilds = true, $blockViewMappings = [], $data = [])
+    public function renderNamedBlocks($name = 'default', $renderChilds = true, $blockViewMappings = [], $data = [])
     {
-        return $this->blocks->where('parent_id', null)->map(function ($block) use ($blockViewMappings, $renderChilds, $data) {
+        return $this->blocks()->named($name)->get()->where('parent_id', null)->map(function ($block) use ($blockViewMappings, $renderChilds, $data) {
             if ($renderChilds) {
                 $childBlocks = $this->blocks->where('parent_id', $block->id);
 
@@ -29,6 +29,11 @@ trait HasBlocks
 
             return view($view, $data)->with('block', $block)->render() . ($renderedChildViews ?? '');
         })->implode('');
+    }
+
+    public function renderBlocks($renderChilds = true, $blockViewMappings = [], $data = [])
+    {
+        return $this->renderNamedBlocks('default', $renderChilds, $blockViewMappings, $data);
     }
 
     private function getBlockView($blockType, $blockViewMappings = [])

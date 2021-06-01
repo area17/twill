@@ -35,6 +35,7 @@ export const buildBlock = (block, rootState) => {
   return {
     id: block.id,
     type: block.type,
+    name: block.name,
     // retrieve all fields for this block and clean up field names
     content: rootState.form.fields.filter((field) => {
       return isBlockField(field.name, block.id)
@@ -91,6 +92,16 @@ export const gatherRepeaters = (rootState) => {
   }))
 }
 
+export const gatherBlocks = (rootState) => {
+  const used = { ...rootState.content.used }
+  return Object.keys(used).map(name => {
+    return used[name].map(block => {
+      block.name = name
+      return buildBlock(block, rootState)
+    })
+  }).flat()
+}
+
 export const getFormFields = (rootState) => {
   const fields = rootState.form.fields.filter((field) => {
     // we start by filtering out blocks related form fields
@@ -137,9 +148,7 @@ export const getFormData = (rootState) => {
     parent_id: rootState.parents.active,
     medias: gatherSelected(rootState.mediaLibrary.selected),
     browsers: gatherSelected(rootState.browser.selected),
-    blocks: rootState.content.blocks.map(block => {
-      return buildBlock(block, rootState)
-    }),
+    blocks: gatherBlocks(rootState),
     repeaters: gatherRepeaters(rootState)
   })
 
