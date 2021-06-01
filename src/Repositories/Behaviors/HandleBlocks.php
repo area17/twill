@@ -142,6 +142,7 @@ trait HandleBlocks
                 $childBlock = $this->buildBlock($childBlock, $object, true);
                 $childBlock['child_key'] = $childKey;
                 $childBlock['position'] = $index + 1;
+                $childBlock['name'] = $parentBlockFields['name'] ?? 'default';
                 $childBlock['blocks'] = $this->getChildBlocks($object, $childBlock);
 
                 $childBlocksList->push($childBlock);
