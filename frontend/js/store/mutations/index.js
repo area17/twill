@@ -11,7 +11,7 @@ export { default as FORM } from './form'
 export { default as BROWSER } from './browser'
 
 /* content */
-export { default as CONTENT } from './content'
+export { default as BLOCKS } from './blocks'
 
 /* preview */
 export { default as PREVIEW } from './preview'

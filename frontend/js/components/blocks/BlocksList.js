@@ -1,5 +1,5 @@
 import { mapGetters, mapState } from 'vuex'
-import CONTENT from '@/store/mutations/content'
+import { BLOCKS } from '@/store/mutations'
 
 export default {
   props: {
@@ -21,7 +21,7 @@ export default {
       return Object.keys(this.activeBlock).length > 0
     },
     ...mapState({
-      activeBlock: state => state.content.active
+      activeBlock: state => state.blocks.active
     }),
     ...mapGetters(
       [
@@ -35,13 +35,13 @@ export default {
   },
   methods: {
     reorderBlocks (value) {
-      this.$store.commit(CONTENT.REORDER_BLOCKS, {
+      this.$store.commit(BLOCKS.REORDER_BLOCKS, {
         section: this.section,
         value: value
       })
     },
     moveBlock ({ oldIndex, newIndex }) {
-      this.$store.commit(CONTENT.MOVE_BLOCK, {
+      this.$store.commit(BLOCKS.MOVE_BLOCK, {
         section: this.section,
         oldIndex,
         newIndex

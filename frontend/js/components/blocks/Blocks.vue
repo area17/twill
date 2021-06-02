@@ -147,7 +147,7 @@
     },
     computed: {
       ...mapState({
-        editor: state => state.content.editor
+        editor: state => state.blocks.editor
       })
     },
     methods: {

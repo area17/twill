@@ -93,7 +93,7 @@ export const gatherRepeaters = (rootState) => {
 }
 
 export const gatherBlocks = (rootState) => {
-  const used = { ...rootState.content.used }
+  const used = { ...rootState.blocks.used }
   return Object.keys(used).map(name => {
     return used[name].map(block => {
       block.name = name

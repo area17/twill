@@ -1,4 +1,4 @@
-import CONTENT from '@/store/mutations/content'
+import { BLOCKS } from '@/store/mutations'
 import { mapGetters, mapState } from 'vuex'
 
 export default {
@@ -19,7 +19,7 @@ export default {
       return this.block && Object.keys(this.activeBlock).length > 0 ? this.block.id === this.activeBlock.id : false
     },
     ...mapState({
-      activeBlock: state => state.content.active
+      activeBlock: state => state.blocks.active
     }),
     ...mapGetters([
       'blockIndexBySection'
@@ -27,7 +27,7 @@ export default {
   },
   methods: {
     add (block, index = -1) {
-      this.$store.commit(CONTENT.ADD_BLOCK, {
+      this.$store.commit(BLOCKS.ADD_BLOCK, {
         section: this.section,
         block: {
           id: this.setBlockID(),
@@ -40,20 +40,20 @@ export default {
       })
     },
     edit (index = this.blockIndex) {
-      this.$store.commit(CONTENT.ACTIVATE_BLOCK, {
+      this.$store.commit(BLOCKS.ACTIVATE_BLOCK, {
         section: this.section,
         index: index
       })
     },
     unEdit () {
-      this.$store.commit(CONTENT.ACTIVATE_BLOCK, {
+      this.$store.commit(BLOCKS.ACTIVATE_BLOCK, {
         section: this.section,
         index: -1
       })
     },
     move (newIndex) {
       if (this.blockIndex === newIndex) return
-      this.$store.commit(CONTENT.MOVE_BLOCK, {
+      this.$store.commit(BLOCKS.MOVE_BLOCK, {
         section: this.section,
         oldIndex: this.blockIndex,
         newIndex: newIndex
@@ -62,7 +62,7 @@ export default {
     duplicate () {
       const block = Object.assign({}, this.block)
       block.id = this.setBlockID()
-      this.$store.commit(CONTENT.DUPLICATE_BLOCK, {
+      this.$store.commit(BLOCKS.DUPLICATE_BLOCK, {
         section: this.section,
         index: this.blockIndex,
         block: block
@@ -70,7 +70,7 @@ export default {
     },
     remove () {
       this.unEdit()
-      this.$store.commit(CONTENT.DELETE_BLOCK, {
+      this.$store.commit(BLOCKS.DELETE_BLOCK, {
         section: this.section,
         index: this.blockIndex
       })

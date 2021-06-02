@@ -6,8 +6,8 @@
  */
 
 import Vue from 'vue'
-import api from '../api/content'
-import { CONTENT } from '../mutations'
+import api from '../api/blocks'
+import { BLOCKS } from '../mutations'
 import ACTIONS from '@/store/actions'
 import { buildBlock, isBlockEmpty } from '@/utils/getFormData.js'
 
@@ -62,7 +62,7 @@ const getters = {
 }
 
 const mutations = {
-  [CONTENT.ADD_BLOCK] (state, { block, index, section }) {
+  [BLOCKS.ADD_BLOCK] (state, { block, index, section }) {
     // init used section
     if (!state.used[section]) state.used[section] = []
 
@@ -72,7 +72,7 @@ const mutations = {
       state.used[section].push(block) // or add a new blocks at the end of the list
     }
   },
-  [CONTENT.MOVE_BLOCK] (state, { section, newIndex, oldIndex }) {
+  [BLOCKS.MOVE_BLOCK] (state, { section, newIndex, oldIndex }) {
     if (newIndex >= state.used[section].length) {
       let k = newIndex - state.used[section].length
       while ((k--) + 1) {
@@ -81,25 +81,25 @@ const mutations = {
     }
     state.used[section].splice(newIndex, 0, state.used[section].splice(oldIndex, 1)[0])
   },
-  [CONTENT.DELETE_BLOCK] (state, { section, index }) {
+  [BLOCKS.DELETE_BLOCK] (state, { section, index }) {
     const id = state.used[section][index].id
     if (id) Vue.delete(state.previews, id)
     state.used[section].splice(index, 1)
   },
-  [CONTENT.DUPLICATE_BLOCK] (state, { section, index, block }) {
+  [BLOCKS.DUPLICATE_BLOCK] (state, { section, index, block }) {
     state.used[section].splice(index + 1, 0, block)
   },
-  [CONTENT.REORDER_BLOCKS] (state, { section, value }) {
+  [BLOCKS.REORDER_BLOCKS] (state, { section, value }) {
     state.used[section] = value
   },
-  [CONTENT.ACTIVATE_BLOCK] (state, { section, index }) {
+  [BLOCKS.ACTIVATE_BLOCK] (state, { section, index }) {
     if (state.used[section] && state.used[section][index]) state.active = state.used[section][index]
     else state.active = {}
   },
-  [CONTENT.ADD_BLOCK_PREVIEW] (state, data) {
+  [BLOCKS.ADD_BLOCK_PREVIEW] (state, data) {
     Vue.set(state.previews, data.id, data.html)
   },
-  [CONTENT.UPDATE_PREVIEW_LOADING] (state, loading) {
+  [BLOCKS.UPDATE_PREVIEW_LOADING] (state, loading) {
     state.loading = !state.loading
   }
 }
@@ -113,7 +113,7 @@ const getBlockPreview = (block, commit, rootState, callback) => {
     }
 
     if (isBlockEmpty(blockData)) {
-      commit(CONTENT.ADD_BLOCK_PREVIEW, {
+      commit(BLOCKS.ADD_BLOCK_PREVIEW, {
         id: block.id,
         html: ''
       })
@@ -124,7 +124,7 @@ const getBlockPreview = (block, commit, rootState, callback) => {
         rootState.form.blockPreviewUrl,
         blockData,
         data => {
-          commit(CONTENT.ADD_BLOCK_PREVIEW, {
+          commit(BLOCKS.ADD_BLOCK_PREVIEW, {
             id: block.id,
             html: data
           })
@@ -148,14 +148,14 @@ const actions = {
   },
   [ACTIONS.GET_ALL_PREVIEWS] ({ commit, state, rootState }, { section }) {
     if (state.used[section] && state.used[section].length > 0 && !state.loading) {
-      commit(CONTENT.UPDATE_PREVIEW_LOADING, true)
+      commit(BLOCKS.UPDATE_PREVIEW_LOADING, true)
       let loadedPreview = 0
       const previewToload = state.used[section].length
 
       Object.values(state.used[section]).forEach((block) => {
         getBlockPreview(block, commit, rootState, () => {
           loadedPreview++
-          if (loadedPreview === previewToload) commit(CONTENT.UPDATE_PREVIEW_LOADING, true)
+          if (loadedPreview === previewToload) commit(BLOCKS.UPDATE_PREVIEW_LOADING, true)
         })
       })
     }
