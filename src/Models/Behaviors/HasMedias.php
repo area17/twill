@@ -74,7 +74,7 @@ trait HasMedias
     }
 
     /**
-     * Returns the URL of the attached image for a role and crop, with appended parameters.
+     * Returns the URL of the attached image for a role and crop.
      *
      * @param string $role Role name.
      * @param string $crop Crop name.
@@ -111,7 +111,7 @@ trait HasMedias
     }
 
     /**
-     * Returns an array of all associated image URLs for a role and crop, with appended parameters.
+     * Returns an array of URLs of all attached images for a role and crop.
      *
      * @param string $role Role name.
      * @param string $crop Crop name.
@@ -134,10 +134,9 @@ trait HasMedias
     }
 
     /**
-     * Returns an array of image URLs assiociated with a role with appended parameters for each crop.
+     * Returns an array of URLs of all attached images for a role, including all crops.
      *
      * @param string $role Role name.
-     * @param string $crop Crop name.
      * @param array $params Parameters compatible with the current image service, like `w` or `h`.
      * @return array
      */
@@ -158,7 +157,7 @@ trait HasMedias
     }
 
     /**
-     * Returns the image associated with $role as an array containing meta information.
+     * Returns an array of meta information for the image attached for a role and crop.
      *
      * @param string $role Role name.
      * @param string $crop Crop name.
@@ -187,7 +186,7 @@ trait HasMedias
     }
 
     /**
-     * Returns the images associated with $role as an array containing meta information.
+     * Returns an array of meta information for all images attached for a role and crop.
      *
      * @param string $role Role name.
      * @param string $crop Crop name.
@@ -210,7 +209,7 @@ trait HasMedias
     }
 
     /**
-     * Returns the images associated with $roleName as an array containing meta information for each crop.
+     * Returns an array of meta information for all images attached for a role, including all crops.
      *
      * @param string $role Role name.
      * @param array $params Parameters compatible with the current image service, like `w` or `h`.
@@ -233,7 +232,7 @@ trait HasMedias
     }
 
     /**
-     * Returns the alt text of the image associated with a role.
+     * Returns the alt text of the image attached for a role.
      *
      * @param string $role Role name.
      * @param Media $media Provide a media object if you already retrieved one to prevent more SQL queries.
@@ -259,7 +258,7 @@ trait HasMedias
     }
 
     /**
-     * Returns the caption of the image associated with a role.
+     * Returns the caption of the image attached for a role.
      *
      * @param string $role Role name.
      * @param Media $media Provide a media object if you already retrieved one to prevent more SQL queries.
@@ -285,7 +284,7 @@ trait HasMedias
     }
 
     /**
-     * Returns the video URL of the image associated with a role.
+     * Returns the video URL of the image attached for a role.
      *
      * @param string $role Role name.
      * @param Media $media Provide a media object if you already retrieved one to prevent more SQL queries.
@@ -313,7 +312,7 @@ trait HasMedias
     }
 
     /**
-     * Returns the image object associated with a role and crop.
+     * Returns the media object attached for a role and crop.
      *
      * @param string $role Role name.
      * @param string $crop Crop name.
@@ -325,7 +324,7 @@ trait HasMedias
     }
 
     /**
-     * Returns the LQIP base64 encoded string from the database for a role.
+     * Returns the LQIP base64 encoded string for a role.
      * Use this in conjunction with the RefreshLQIP Artisan command.
      *
      * @param string $role Role name.
@@ -333,6 +332,7 @@ trait HasMedias
      * @param array $params Parameters compatible with the current image service, like `w` or `h`.
      * @param bool $has_fallback Indicate that you can provide a fallback. Will return null instead of the default image fallback.
      * @return string
+     * @see \A17\Twill\Commands\RefreshLQIP
      */
     public function lowQualityImagePlaceholder($role, $crop = "default", $params = [], $has_fallback = false)
     {
@@ -351,7 +351,7 @@ trait HasMedias
     }
 
     /**
-     * Returns the URL of the social image for a role.
+     * Returns the URL of the social image for a role and crop.
      *
      * @param string $role Role name.
      * @param string $crop Crop name.
@@ -377,7 +377,7 @@ trait HasMedias
     }
 
     /**
-     * Returns the URL of the CMS image for a role.
+     * Returns the URL of the CMS image for a role and crop.
      *
      * @param string $role Role name.
      * @param string $crop Crop name.
@@ -407,7 +407,7 @@ trait HasMedias
     }
 
     /**
-     * Returns the image objects associated with a role and crop.
+     * Returns the media objects associated with a role and crop.
      *
      * @param string $role Role name.
      * @param string $crop Crop name.
