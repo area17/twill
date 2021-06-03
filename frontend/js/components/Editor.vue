@@ -1,49 +1,62 @@
 <template>
-  <a17-overlay ref="overlay"
-               :title="$trans('editor.title')"
-               :customClasses="htmlEditorClass"
-               @close="close">
+  <a17-overlay
+    ref="overlay"
+    :title="$trans('editor.title')"
+    :customClasses="htmlEditorClass"
+    @close="close"
+  >
     <a17-block-list :section="section">
-
-      <div class="editor"
-           slot-scope="{ availableBlocks, hasBlockActive, savedBlocks, sections, multipleSections, reorderBlocks, moveBlock }">
-
-        <a17-button v-if="revisions.length"
-                    class="editor__leave"
-                    variant="editor"
-                    size="small"
-                    @click="openPreview">
-
-        <span class="hide--xsmall"
-              v-svg
-              symbol="preview"></span>{{ $trans('fields.block-editor.preview', 'Preview') }}
+      <div
+        class="editor"
+        slot-scope="{
+          availableBlocks,
+          hasBlockActive,
+          savedBlocks,
+          sections,
+          multipleSections,
+          reorderBlocks,
+          moveBlock
+        }"
+      >
+        <a17-button
+          v-if="revisions.length"
+          class="editor__leave"
+          variant="editor"
+          size="small"
+          @click="openPreview"
+        >
+          <span class="hide--xsmall" v-svg symbol="preview"></span
+          >{{ $trans('fields.block-editor.preview', 'Preview') }}
         </a17-button>
 
         <div class="editor__frame">
           <div class="editor__inner">
             <div class="editor__sidebar" ref="sidebar">
-              <a17-editorsidebar :section="section"
-                                 :specificSection="specificSection"
-                                 :multipleSections="multipleSections"
-                                 :hasBlockActive="hasBlockActive"
-                                 :sections="sections"
-                                 :blocks="availableBlocks"
-                                 :savedBlocksLength="savedBlocks.length"
-                                 @section:update="updateSection">
+              <a17-editorsidebar
+                :section="section"
+                :specificSection="specificSection"
+                :multipleSections="multipleSections"
+                :hasBlockActive="hasBlockActive"
+                :sections="sections"
+                :blocks="availableBlocks"
+                :savedBlocksLength="savedBlocks.length"
+                @section:update="updateSection"
+              >
                 {{ $trans('fields.block-editor.add-content', 'Add content') }}
               </a17-editorsidebar>
             </div>
-            <div class="editor__resizer"
-                 @mousedown="resize"><span></span></div>
+            <div class="editor__resizer" @mousedown="resize"><span></span></div>
             <div class="editor__preview">
-              <a17-editorpreview ref="previews"
-                                 v-if="editorOpen"
-                                 :section="section"
-                                 :blocks="savedBlocks"
-                                 :hasBlockActive="hasBlockActive"
-                                 :sandbox="previewSandbox"
-                                 :bgColor="bgColor"
-                                 @blocks:move="moveBlock"/>
+              <a17-editorpreview
+                ref="previews"
+                v-if="editorOpen"
+                :section="section"
+                :blocks="savedBlocks"
+                :hasBlockActive="hasBlockActive"
+                :sandbox="previewSandbox"
+                :bgColor="bgColor"
+                @blocks:move="moveBlock"
+              />
             </div>
           </div>
         </div>
@@ -78,7 +91,7 @@
         default: true
       }
     },
-    data () {
+    data() {
       return {
         specificSection: false,
         section: 'default',
@@ -90,26 +103,24 @@
       ...mapState({
         revisions: state => state.revision.all
       }),
-      ...mapGetters([
-        'savedBlocksBySection'
-      ])
+      ...mapGetters(['savedBlocksByName'])
     },
-    provide () {
+    provide() {
       return {
         sandbox: this.previewSandbox
       }
     },
     methods: {
       // Section functions
-      initSection () {
+      initSection() {
         this.updateSection('default', false)
       },
-      updateSection (section, specificSection = false) {
+      updateSection(section, specificSection = false) {
         this.section = section
         this.specificSection = specificSection
       },
       // Editor state functions
-      open (index, section = false) {
+      open(index, section = false) {
         if (section) {
           this.updateSection(section, true)
         }
@@ -118,20 +129,22 @@
 
         this.$refs.overlay.open()
       },
-      close () {
+      close() {
         this.initSection()
         this.editorOpen = false
       },
-      resize () {
+      resize() {
         window.addEventListener('mousemove', this.resizeSidebar, false)
         window.addEventListener('mouseup', this.stopResizeSidebar, false)
       },
-      resizeSidebar (event) {
+      resizeSidebar(event) {
         const sidebar = this.$refs.sidebar
         const windowWidth = window.innerWidth
-        if (sidebar) sidebar.style.width = (event.clientX - sidebar.offsetLeft) / windowWidth * 100 + '%'
+        if (sidebar)
+          sidebar.style.width =
+            ((event.clientX - sidebar.offsetLeft) / windowWidth) * 100 + '%'
       },
-      stopResizeSidebar () {
+      stopResizeSidebar() {
         window.removeEventListener('mousemove', this.resizeSidebar, false)
         window.removeEventListener('mouseup', this.stopResizeSidebar, false)
 
@@ -140,7 +153,7 @@
       },
 
       // Open Revision modal
-      openPreview () {
+      openPreview() {
         if (this.$root.$refs.preview) this.$root.$refs.preview.open()
       }
     }
@@ -148,7 +161,6 @@
 </script>
 
 <style lang="scss" scoped>
-
   $height__nav: 80px;
 
   .editor {

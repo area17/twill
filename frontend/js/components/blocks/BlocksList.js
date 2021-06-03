@@ -9,10 +9,10 @@ export default {
   },
   computed: {
     availableBlocks () {
-      return this.section ? this.availableBlocksBySection(this.section) : this.allAvailableBlocks
+      return this.section ? this.availableBlocksByName(this.section) : this.allAvailableBlocks
     },
     savedBlocks () {
-      return this.section ? this.savedBlocksBySection(this.section) : this.allSavedBlocks
+      return this.section ? this.savedBlocksByName(this.section) : this.allSavedBlocks
     },
     multipleSections () {
       return this.sections.length > 1
@@ -27,8 +27,8 @@ export default {
       [
         'allSavedBlocks',
         'allAvailableBlocks',
-        'availableBlocksBySection',
-        'savedBlocksBySection',
+        'availableBlocksByName',
+        'savedBlocksByName',
         'sections'
       ]
     )

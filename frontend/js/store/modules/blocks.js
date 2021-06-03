@@ -47,11 +47,11 @@ const state = {
 // getters
 const getters = {
   previewsById: state => (id) => state.previews[id] ? state.previews[id] : '',
-  savedBlocksBySection: state => section => state.used[section],
-  availableBlocksBySection: state => section => state.available[section],
+  savedBlocksByName: state => section => state.used[section],
+  availableBlocksByName: state => section => state.available[section],
   allSavedBlocks: state => Object.keys(state.used).reduce((acc, section) => acc.concat(state.used[section]), []),
   allAvailableBlocks: state => Array.from(new Set(Object.keys(state.available).reduce((acc, section) => acc.concat(state.available[section]), []))),
-  blockIndexBySection: (state, getters) => (block, section) => getters.savedBlocksBySection(section).findIndex(b => b.id === block.id),
+  blockIndexBySection: (state, getters) => (block, section) => getters.savedBlocksByName(section).findIndex(b => b.id === block.id),
   sections: state => Object.keys(state.available).reduce((acc, section) => {
     acc.push({
       label: section.charAt(0).toUpperCase() + section.slice(1),
