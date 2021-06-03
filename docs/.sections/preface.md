@@ -60,7 +60,7 @@ Built to get out of your way, Twill offers:
 
 #### Developer experience
 * Maintain a Laravel application, not a Twill application
-* Support for Laravel 5.6 to 6 and will be updated to support all future versions
+* Support for Laravel 5.6 and up – Twill will be updated to support all future versions
 * Support for both MySQL and PostgreSQL databases
 * No conflict with other Laravel packages – keep building with your tools of choice
 * No specific server requirements, if you can deploy a Laravel application, you can deploy Twill

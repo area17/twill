@@ -74,7 +74,7 @@ At this point, you should be able to login at `admin.domain.test`, `manage.domai
 
 #### Setting up the media library
 
-From there, you might want to configure Twill's media library's storage provider and its rendering service. By default, Twill is configured to store uploads on `AWS S3` and to render images via [imgix](https://imgix.com). Provide the following .env variables to get up and running:
+From there, you might want to configure Twill's media library's storage provider and its rendering service. By default, Twill is configured to store uploads on `AWS S3` and to render images via [Imgix](https://imgix.com). Provide the following .env variables to get up and running:
 
 ```bash
 S3_KEY=S3_KEY

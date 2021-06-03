@@ -9,6 +9,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Routing\Redirector;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\Factory as ViewFactory;
 
@@ -74,7 +75,7 @@ class Handler extends ExceptionHandler
     {
         return $request->expectsJson()
         ? $this->responseFactory->json(['message' => $exception->getMessage()], 401)
-        : $this->redirector->guest($exception->redirectTo() ?? $this->urlGenerator->route('admin.login'));
+        : $this->redirector->guest($exception->redirectTo() ?? $this->urlGenerator->route('admin.login', Route::current()->parameters()));
     }
 
     /**

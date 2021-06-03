@@ -13,6 +13,7 @@
     $widthMin = $widthMin ?? 0;
     $heightMin = $heightMin ?? 0;
     $buttonOnTop = $buttonOnTop ?? false;
+    $activeCrop = $activeCrop ?? true;
 @endphp
 
 @if (config('twill.media_library.translated_form_fields', $translated ?? false) && ($translated ?? true))
@@ -32,6 +33,7 @@
             @if (!$withVideoUrl) withVideoUrl: false, @endif
             @if (!$withCaption) withCaption: false, @endif
             @if ($buttonOnTop) buttonOnTop: true, @endif
+            @if (!$activeCrop) activeCrop: false, @endif
             @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
         }"
     ></a17-locale>
@@ -61,6 +63,7 @@
             @if ($altTextMaxLength) :alt-text-max-length="{{ $altTextMaxLength }}" @endif
             @if ($captionMaxLength) :caption-max-length="{{ $captionMaxLength }}" @endif
             @if ($buttonOnTop) :button-on-top="true" @endif
+            @if (!$activeCrop) :active-crop="false" @endif
         >{{ $note }}@if($multiple) </a17-slideshow> @else </a17-mediafield> @endif
     </a17-inputframe>
 

@@ -93,7 +93,7 @@ trait HasRoutes
         ];
 
         if ($this->supportSubdomainRouting()) {
-            array_unshift($middlewares, 'supportSubdomainRouting');
+            array_unshift($middleware, 'supportSubdomainRouting');
         }
 
         return $middleware;

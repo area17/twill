@@ -59,7 +59,6 @@ $model->image($roleName, $cropName[, array $params, $has_fallback, $cms, $media]
 
 /**
  * Returns an array of images URLs assiociated with $roleName and $cropName with appended $params.
- * Use this in conjunction with a media form field with the with_multiple and max option.
  */
 $model->images($roleName, $cropName[, array $params])
 
@@ -110,6 +109,16 @@ $model->imageAsArray($roleName[, $cropName, array $params, $media])
 $model->imagesAsArrays($roleName[, $cropName, array $params])
 
 /**
+ * Returns an array of images URLs assiociated with $roleName with appended $params for each crop.
+ */
+$model->imagesWithCrops($roleName[, array $params])
+
+/**
+ * Returns the images associated with $roleName as an array containing meta information for each crop.
+ */
+$model->imagesAsArraysWithCrops($roleName[, array $params])
+
+/**
  * Checks if an image has been attached for the provided role
  */
 $model->hasImage($roleName[, $cropName])
@@ -132,7 +141,6 @@ $model->file($roleName[, $locale, $file])
 
 /**
  * Returns an array of files URLs assiociated with $roleName.
- * Use this in conjunction with a files form field with the with_multiple and max option.
  */
 $model->filesList($roleName[, $locale])
 

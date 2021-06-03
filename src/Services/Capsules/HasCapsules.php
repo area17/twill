@@ -9,8 +9,8 @@ trait HasCapsules
     protected function getAutoloader()
     {
         return app()->bound('autoloader')
-            ? app('autoloader')
-            : require base_path('vendor/autoload.php');
+        ? app('autoloader')
+        : require base_path('vendor/autoload.php');
     }
 
     public function getCapsuleList()
@@ -75,9 +75,11 @@ trait HasCapsules
         $capsule['plural'] = $name = $capsule['name'];
 
         $capsule['singular'] = $singular =
-            $capsule['singular'] ?? Str::singular($name);
+        $capsule['singular'] ?? Str::singular($name);
 
         $twillNamespace = config('twill.namespace');
+
+        $capsule['base_namespace'] = config('twill.capsules.namespaces.base');
 
         $capsule[
             'namespace'
@@ -85,28 +87,28 @@ trait HasCapsules
             $capsule['name']
         );
 
-        $capsule[
-            'database_namespace'
-        ] = "$capsuleNamespace\Database";
+        $capsule['database_namespace'] = "$capsuleNamespace\Database";
 
-        $capsule[
-            'seeds_namespace'
-        ] = "{$capsule['database_namespace']}\Seeds";
+        $capsule['seeds_namespace'] = "{$capsule['database_namespace']}\Seeds";
 
         $capsule['model'] = $capsule['models'] = $models =
-            "{$capsuleNamespace}\\" .
-            config('twill.capsules.namespaces.models');
+        "{$capsuleNamespace}\\" .
+        config('twill.capsules.namespaces.models');
         $capsule['repositories'] = $repositories =
-            "{$capsuleNamespace}\\" .
-            config('twill.capsules.namespaces.repositories');
+        "{$capsuleNamespace}\\" .
+        config('twill.capsules.namespaces.repositories');
         $capsule['controllers'] = $controllers =
-            "{$capsuleNamespace}\\" .
-            config('twill.capsules.namespaces.controllers');
+        "{$capsuleNamespace}\\" .
+        config('twill.capsules.namespaces.controllers');
         $capsule['requests'] = $requests =
-            "{$capsuleNamespace}\\" .
-            config('twill.capsules.namespaces.requests');
+        "{$capsuleNamespace}\\" .
+        config('twill.capsules.namespaces.requests');
 
-        $capsule['psr4_path'] = "$basePath/{$name}" . (filled($this->getCapsulesSubdir()) ? $this->getCapsulesSubdir().'/' : '');
+        $capsule['psr4_path'] =
+            "$basePath/{$name}" .
+            (filled($this->getCapsulesSubdir())
+            ? $this->getCapsulesSubdir() . '/'
+            : '');
 
         $capsule['base_path'] = $basePath;
 
@@ -153,6 +155,10 @@ trait HasCapsules
         $capsule['formRequest'] = "{$requests}\\{$singular}Request";
 
         $capsule['requests_dir'] = $this->namespaceToPath($capsule, $requests);
+
+        $capsule['config_file'] = "$basePath/{$name}/config.php";
+
+        $capsule['config'] = $this->loadCapsuleConfig($capsule);
 
         $this->registerPsr4Autoloader($capsule);
 
@@ -246,7 +252,10 @@ trait HasCapsules
     {
         $twillSeeder = app(CapsuleSeeder::class);
 
-        $this->getCapsuleList()->each(function ($capsule) use ($twillSeeder, $illuminateSeeder) {
+        $this->getCapsuleList()->each(function ($capsule) use (
+            $twillSeeder,
+            $illuminateSeeder
+        ) {
             if (filled($capsuleSeeder = $this->makeCapsuleSeeder($capsule))) {
                 $twillSeeder->setCommand($illuminateSeeder->command);
 
@@ -269,5 +278,80 @@ trait HasCapsules
     public function capsuleExists($module)
     {
         return filled($this->getCapsuleByModule($module));
+    }
+
+    public function capsule($string)
+    {
+        if (file_exists($string)) {
+            return $this->getCapsuleByPath($string);
+        }
+
+        if (class_exists($string)) {
+            return $this->getCapsuleByClass($string);
+        }
+
+        return $this->getCapsuleByModule($string);
+    }
+
+    public function getCapsuleByPath($path)
+    {
+        $capsule = $this->getCapsuleList()->first();
+
+        if (!Str::startsWith($path, $capsule['base_path'])) {
+            return null;
+        }
+
+        $name = Str::before(
+            Str::after(Str::after($path, $capsule['base_path']), '/'),
+            '/'
+        );
+
+        $name = "{$capsule['base_path']}/$name";
+
+        return $this->getCapsuleList()
+            ->where('root_path', $name)
+            ->first();
+    }
+
+    public function getCapsuleByClass($class)
+    {
+        $capsule = $this->getCapsuleList()->first();
+
+        $namespace = Str::beforeLast($class, '\\');
+
+        if (!Str::startsWith($class, $capsule['base_namespace'])) {
+            return null;
+        }
+
+        $name = Str::before(
+            Str::after(Str::after($class, $capsule['base_namespace']), '\\'),
+            '\\'
+        );
+
+        $name = "{$capsule['base_namespace']}\\$name";
+
+        return $this->getCapsuleList()
+            ->where('namespace', $name)
+            ->first();
+    }
+
+    public function loadCapsuleConfig($capsule)
+    {
+        $config = file_exists($file = $capsule['config_file'] ?? 'MISSING-CONFIG-FILE')
+        ? require $file
+        : [];
+
+        $key =
+            config('twill.capsules.capsule_config_prefix') .
+            ".{$capsule['module']}";
+
+        config([
+            $key => array_replace_recursive(
+                $config ?? [],
+                $capsule['config'] ?? []
+            ),
+        ]);
+
+        return $config;
     }
 }

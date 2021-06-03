@@ -14,6 +14,6 @@ jobs:
           token: ${{ secrets.TWILL_PAT_TOKEN }}
           fetch-depth: 0
       - name: Rebase
-        uses: cirrus-actions/rebase@1.4
+        uses: cirrus-actions/rebase@1.5
         env:
           GITHUB_TOKEN: ${{ secrets.TWILL_PAT_TOKEN }}

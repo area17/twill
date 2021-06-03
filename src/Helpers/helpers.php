@@ -241,13 +241,25 @@ if (!function_exists('generate_list_of_allowed_blocks')) {
 
 if (!function_exists('capsule_namespace')) {
     function capsule_namespace($capsuleName, $type = null) {
-        return app('twill.capsules.manager')->capsuleNamespace($capsuleName, $type);
+        return capsules()->capsuleNamespace($capsuleName, $type);
     }
 }
 
 
 if (!function_exists('capsule_namespace_to_path')) {
     function capsule_namespace_to_path($namespace, $capsuleNamespace, $rootPath) {
-        return app('twill.capsules.manager')->capsuleNamespaceToPath($namespace, $capsuleNamespace, $rootPath);
+        return capsules()->capsuleNamespaceToPath($namespace, $capsuleNamespace, $rootPath);
+    }
+}
+
+if (!function_exists('capsules')) {
+    function capsules($capsule = null) {
+        $manager = app('twill.capsules.manager');
+
+        if (filled($capsule)) {
+            return $manager->capsule($capsule);
+        }
+
+        return $manager;
     }
 }

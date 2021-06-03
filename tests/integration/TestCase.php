@@ -667,12 +667,12 @@ abstract class TestCase extends OrchestraTestCase
     public function skipOnTravis()
     {
         if (!is_null(env('TRAVIS_PHP_VERSION'))) {
-            $this->markTestSkipped('This test cannot be execute on Travis');
+            $this->markTestSkipped('This test cannot be executed on Travis');
         }
     }
 
     /**
-     * Skip test if running on Travis
+     * Assert a successful exit code.
      *
      * @param int $exitCode
      * @throws \Exception
@@ -687,7 +687,7 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * Skip test if running on Travis
+     * Assert a failing exit code.
      *
      * @param int $exitCode
      * @throws \Exception

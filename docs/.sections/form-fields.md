@@ -64,20 +64,21 @@ You can also rename the content section by passing a `contentFieldsetLabel` prop
 ])
 ```
 
-| Option      | Description                                                                                                              | Type/values                              | Default value |
-| :---------- | :------------------------------------------------------------------------------------------------------------------------| :----------------------------------------| :------------ |
-| name        | Name of the field                                                                                                        | string                                   |               |
-| label       | Label of the field                                                                                                       | string                                   |               |
-| type        | Type of input field                                                                                                      | text<br/>texarea<br/>number<br/>password | text          |
-| translated  | Defines if the field is translatable                                                                                     | true<br/>false                           | false         |
-| maxlength   | Max character count of the field                                                                                         | integer                                  |               |
-| note        | Hint message displayed above the field                                                                                   | string                                   |               |
-| placeholder | Text displayed as a placeholder in the field                                                                             | string                                   |               |
-| rows        | Sets the number of rows in a textarea                                                                                    | integer                                  | 5             |
-| required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false                           | false         |
-| disabled    | Disables the field                                                                                                       | true<br />false                          | false         |
-| readonly    | Sets the field as readonly                                                                                               | true<br />false                          | false         |
-| default     | Sets a default value if empty                                                                                            | string                                   |               |
+| Option      | Description                                                                                                              | Type/values                                        | Default value |
+| :---------- | :------------------------------------------------------------------------------------------------------------------------| :------------------------------------------------- | :------------ |
+| name        | Name of the field                                                                                                        | string                                             |               |
+| label       | Label of the field                                                                                                       | string                                             |               |
+| type        | Type of input field                                                                                                      | text<br/>texarea<br/>email<br/>number<br/>password | text          |
+| translated  | Defines if the field is translatable                                                                                     | true<br/>false                                     | false         |
+| maxlength   | Max character count of the field                                                                                         | integer                                            |               |
+| note        | Hint message displayed above the field                                                                                   | string                                             |               |
+| placeholder | Text displayed as a placeholder in the field                                                                             | string                                             |               |
+| prefix      | Text displayed as a prefix in the field                                                                                  | string                                             |               |
+| rows        | Sets the number of rows in a textarea                                                                                    | integer                                            | 5             |
+| required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false                                     | false         |
+| disabled    | Disables the field                                                                                                       | true<br />false                                    | false         |
+| readonly    | Sets the field as readonly                                                                                               | true<br />false                                    | false         |
+| default     | Sets a default value if empty                                                                                            | string                                             |               |
 
 
 A migration to save an `input` field would be:
@@ -176,15 +177,16 @@ Note that Quill outputs CSS classes in the HTML for certain toolbar modules (ind
 | :------------- | :----------------------------------------------------------- | :--------------------------------------------------------- | :-------------------------------------- |
 | name           | Name of the field                                            | string                                                     |                                         |
 | label          | Label of the field                                           | string                                                     |                                         |
-| type           | Type of input field                                          | text<br/>texarea<br/>number<br/>email                      | text                                    |
+| type           | Type of wysiwyg field                                        | quill<br/>tiptap                                           | quill                                   |
 | toolbarOptions | Array of options/tools that will be displayed in the editor  | [Quill options](https://quilljs.com/docs/modules/toolbar/) | bold<br/>italic<br />underline<br/>link |
 | editSource     | Displays a button to view source code                        | true<br />false                                            | false                                   |
+| hideCounter    | Hide the character counter displayed at the bottom           | true<br />false                                            | false                                   |
+| limitHeight    | Limit the editor height from growing beyond the viewport     | true<br />false                                            | false                                   |
 | translated     | Defines if the field is translatable                         | true<br/>false                                             | false                                   |
 | maxlength      | Max character count of the field                             | integer                                                    | 255                                     |
 | note           | Hint message displayed above the field                       | string                                                     |                                         |
 | placeholder    | Text displayed as a placeholder in the field                 | string                                                     |                                         |
-| rows           | Sets the number of rows in a textarea                        | integer                                                    |                                         |
-| required       | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false                                             | false                                   |
+| required       | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false | false |
 
 
 A migration to save a `wysiwyg` field would be:
@@ -224,19 +226,20 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 ])
 ```
 
-| Option         | Description                            | Type/values    | Default value |
-| :------------- | :------------------------------------- | :------------- | :------------ |
-| name           | Name of the field                      | string         |               |
-| label          | Label of the field                     | string         |               |
-| translated     | Defines if the field is translatable   | true<br/>false | false         |
-| max            | Max number of attached items           | integer        | 1             |
-| fieldNote      | Hint message displayed above the field | string         |               |
-| note           | Hint message displayed in the field    | string         |               |
+| Option         | Description                                          | Type/values    | Default value |
+| :------------- | :--------------------------------------------------- | :------------- | :------------ |
+| name           | Name of the field                                    | string         |               |
+| label          | Label of the field                                   | string         |               |
+| translated     | Defines if the field is translatable                 | true<br/>false | false         |
+| max            | Max number of attached items                         | integer        | 1             |
+| fieldNote      | Hint message displayed above the field               | string         |               |
+| note           | Hint message displayed in the field                  | string         |               |
+| buttonOnTop    | Displays the `Attach images` button above the images | true<br/>false | false         |
 
 
-Right after declaring the `medias` formField in the blade template file, you still need to do a few things to make it works properly.
+Right after declaring the `medias` formField in the blade template file, you still need to do a few things to make it work properly.
 
-If the formField is in a static content form, you have to include the `HasMedias` Trait in your module's [Model](https://twill.io/docs/#models) and inlcude `HandleMedias` in your module's [Repository](https://twill.io/docs/#repositories), in addition, you have to uncomment the `$mediasParams` section in your Model file to let the model know about fields you'd like to save from the form.
+If the formField is in a static content form, you have to include the `HasMedias` Trait in your module's [Model](https://twill.io/docs/#models) and inlcude `HandleMedias` in your module's [Repository](https://twill.io/docs/#repositories). In addition, you have to uncomment the `$mediasParams` section in your Model file to let the model know about fields you'd like to save from the form.
 
 Learn more about how Twill's media configurations work at [Model](https://twill.io/docs/#models), [Repository](https://twill.io/docs/#repositories), [Media Library Role & Crop Params](https://twill.io/docs/#image-rendering-service)
 
@@ -315,28 +318,31 @@ No migration is needed to save `medias` form fields.
 ])
 
 @formField('files', [
-    'name' => 'single_file_no_translate',
-    'label' => 'Single file (no translate)',
-    'note' => 'Add one file',
-    'noTranslate' => true,
-])
-
-@formField('files', [
     'name' => 'files',
     'label' => 'Files',
-    'noTranslate' => true,
     'max' => 4,
 ])
 ```
 
-Similar to the media formField, to make the file field works, you have to include the `HasFiles` trait in your module's [Model](https://twill.io/docs/#models), and include `HandleFiles` trait in your module's [Repository](https://twill.io/docs/#repositories). At last, add the `filesParams` configuration array in your model.
+| Option         | Description                               | Type/values    | Default value |
+| :------------- | :---------------------------------------- | :------------- | :------------ |
+| name           | Name of the field                         | string         |               |
+| label          | Label of the field                        | string         |               |
+| itemLabel      | Label used for the `Add` button           | string         |               |
+| max            | Max number of attached items              | integer        | 1             |
+| fieldNote      | Hint message displayed above the field    | string         |               |
+| note           | Hint message displayed in the field       | string         |               |
+| buttonOnTop    | Displays the `Add` button above the files | true<br/>false | false         |
+
+
+Similar to the media formField, to make the file field work, you have to include the `HasFiles` trait in your module's [Model](https://twill.io/docs/#models), and include `HandleFiles` trait in your module's [Repository](https://twill.io/docs/#repositories). At last, add the `filesParams` configuration array in your model.
 ```php
 public $filesParams = ['file_role', ...]; // a list of file roles
 ```
 
 Learn more at [Model](https://twill.io/docs/#models), [Repository](https://twill.io/docs/#repositories).
 
-If you are using the file formField in a block, you have to define the `files` key in `config/twill.php`, put it under `block_editor` key and at the same level as `crops` key:
+If you are using the file formField in a block, you have to define the `files` key in `config/twill.php`. Add it under `block_editor` key and at the same level as `crops` key:
 ```php
 return [
     'block_editor' => [
@@ -370,7 +376,9 @@ No migration is needed to save `files` form fields.
 | maxDate     | Maximum selectable date                                      | string          |               |
 | withTime    | Define if the field will display the time selector           | true<br/>false  | true          |
 | time24Hr    | Pick time with a 24h picker instead of AM/PM                 | true<br/>false  | false         |
-| altFormat   | Format used by flatPickr                                     | string          | F j, Y        |
+| allowClear  | Adds a button to clear the field                             | true<br/>false  | false         |
+| allowInput  | Allow manually editing the selected date in the field        | true<br/>false  | false         |
+| altFormat   | Format used by [flatpickr](https://flatpickr.js.org/formatting/) | string          | F j, Y        |
 | note        | Hint message displayed above the field                       | string          |               |
 | required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false  | false         |
 
@@ -418,6 +426,18 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
     ]
 ])
 ```
+
+| Option      | Description                                                  | Type/values     | Default value |
+| :---------- | :----------------------------------------------------------- | :-------------- | :------------ |
+| name        | Name of the field                                            | string          |               |
+| label       | Label of the field                                           | string          |               |
+| options     | Array of options for the dropdown, must include _value_ and _label_ | array          |               |
+| unpack      | Defines if the select will be displayed as an open list of options | true<br/>false  | false         |
+| searchable  | Filter the field values while typing                         | true<br/>false  | false         |
+| note        | Hint message displayed above the field                       | string          |               |
+| placeholder | Text displayed as a placeholder in the field                 | string          |               |
+| required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false  | false         |
+
 
 A migration to save a `select` field would be:
 
@@ -468,17 +488,6 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 ])
 ```
 
-| Option      | Description                                                  | Type/values     | Default value |
-| :---------- | :----------------------------------------------------------- | :-------------- | :------------ |
-| name        | Name of the field                                            | string          |               |
-| label       | Label of the field                                           | string          |               |
-| options     | Array of options for the dropdown, must include _value_ and _label_ | array          |               |
-| unpack      | Defines if the select will be displayed as an open list of options | true<br/>false  | false         |
-| note        | Hint message displayed above the field                       | string          |               |
-| placeholder | Text displayed as a placeholder in the field                 | string          |               |
-| required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false  | false         |
-
-
 A migration to save the above `select` field would be:
 
 ```php
@@ -493,12 +502,14 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 
 
 ### Multi select
-![screenshot](/docs/_media/multiselect.png)
+![screenshot](/docs/_media/multiselectunpacked.png)
 
 ```php
 @formField('multi_select', [
     'name' => 'sectors',
     'label' => 'Sectors',
+    'min' => 1,
+    'max' => 2,
     'options' => [
         [
             'value' => 'arts',
@@ -522,39 +533,6 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
         ]
     ]
 ])
-
-@formField('multi_select', [
-    'name' => 'sectors_bis',
-    'label' => 'Sectors bis',
-    'min' => 1,
-    'max' => 2,
-    'options' => [
-        [
-            'value' => 'arts',
-            'label' => 'Arts & Culture'
-        ],
-        [
-            'value' => 'finance',
-            'label' => 'Banking & Finance'
-        ],
-        [
-            'value' => 'civic',
-            'label' => 'Civic & Public'
-        ],
-        [
-            'value' => 'design',
-            'label' => 'Design & Architecture'
-        ],
-        [
-            'value' => 'education',
-            'label' => 'Education'
-        ],
-        [
-            'value' => 'entertainment',
-            'label' => 'Entertainment'
-        ],
-    ]
-])
 ```
 
 | Option      | Description                                                  | Type/values     | Default value |
@@ -564,6 +542,7 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 | min         | Minimum number of selectable options                         | integer         |               |
 | max         | Maximum number of selectable options                         | integer         |               |
 | options     | Array of options for the dropdown, must include _value_ and _label_ | array           |               |
+| unpack      | Defines if the multi select will be displayed as an open list of options | true<br/>false  | true         |
 | note        | Hint message displayed above the field                       | string          |               |
 | placeholder | Text displayed as a placeholder in the field                 | string          |               |
 | required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false  | false         |
@@ -572,7 +551,7 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 
 There are several ways to implement a `multi_select` form field.
 
-##### Multiselect with static values
+##### Multi select with static values
 Sometimes you just have a set of values that are static.
 
 In this case that it can be implemented as follows:
@@ -615,7 +594,7 @@ protected $casts = [
 ]
 ```
 
-##### Multiselect with dynamic values
+##### Multi select with dynamic values
 
 Sometimes the content for the `multi_select` is coming from another model.
 
@@ -627,7 +606,7 @@ In this case that it can be implemented as follows:
 php artisan twill:module sectors
 ```
 
-- Create a migration for a pivote table.
+- Create a migration for a pivot table.
 
 ```
 php artisan make:migration create_post_sector_table
@@ -685,14 +664,69 @@ protected function formData($request)
 
 When used in a [block](https://twill.io/docs/#adding-blocks), no migration is needed.
 
-### Checkboxes
+
+### Multi select inline
+![screenshot](/docs/_media/multiselectinline.png)
+
+```php
+@formField('multi_select', [
+    'name' => 'sectors',
+    'label' => 'Sectors',
+    'unpacked' => false,
+    'options' => [
+        [
+            'value' => 'arts',
+            'label' => 'Arts & Culture'
+        ],
+        [
+            'value' => 'finance',
+            'label' => 'Banking & Finance'
+        ],
+        [
+            'value' => 'civic',
+            'label' => 'Civic & Public'
+        ],
+        [
+            'value' => 'design',
+            'label' => 'Design & Architecture'
+        ],
+        [
+            'value' => 'education',
+            'label' => 'Education'
+        ]
+    ]
+])
+```
+
+See [Multi select](https://twill.io/docs/#multi-select) for more information on how to implement the field with static and dynamic values.
+
+
+### Checkbox
+![screenshot](/docs/_media/checkbox.png)
 
 ```php
 @formField('checkbox', [
     'name' => 'featured',
     'label' => 'Featured'
 ])
+```
 
+| Option              | Description                                             | Type            | Default value |
+| :------------------ | :------------------------------------------------------ | :-------------- | :------------ |
+| name                | Name of the field                                       | string          |               |
+| label               | Label of the field                                      | string          |               |
+| note                | Hint message displayed above the field                  | string          |               |
+| default             | Sets a default value                                    | boolean         | false         |
+| disabled            | Disables the field                                      | boolean         | false         | 
+| requireConfirmation | Displays a confirmation dialog when modifying the field | boolean         | false         |
+| confirmTitleText    | The title of the confirmation dialog                    | string          | 'Confirm selection' |
+| confirmMessageText  | The text of the confirmation dialog                     | string          | 'Are you sure you want to change this option ?' |
+
+
+### Multiple checkboxes
+![screenshot](/docs/_media/checkboxes.png)
+
+```php
 @formField('checkboxes', [
     'name' => 'sectors',
     'label' => 'Sectors',
@@ -717,14 +751,26 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 ])
 ```
 
+| Option  | Description                                                         | Type    | Default value |
+| :------ | :------------------------------------------------------------------ | :-------| :------------ |
+| name    | Name of the field                                                   | string  |               |
+| label   | Label of the field                                                  | string  |               |
+| min     | Minimum number of selectable options                                | integer |               |
+| max     | Maximum number of selectable options                                | integer |               |
+| options | Array of options for the dropdown, must include _value_ and _label_ | array   |               |
+| inline  | Defines if the options are displayed on one or multiple lines       | boolean | false         |
+| note    | Hint message displayed above the field                              | string  |               |
+
+
 ### Radios
+![screenshot](/docs/_media/radios.png)
 
 ```php
 @formField('radios', [
     'name' => 'discipline',
     'label' => 'Discipline',
     'default' => 'civic',
-    'inline' => true/false,
+    'inline' => true,
     'options' => [
         [
             'value' => 'arts',
@@ -742,6 +788,20 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 ])
 ```
 
+| Option              | Description                                                         | Type    | Default value |
+| :------------------ | :------------------------------------------------------------------ | :------ | :------------ |
+| name                | Name of the field                                                   | string  |               |
+| label               | Label of the field                                                  | string  |               |
+| note                | Hint message displayed above the field                              | string  |               |
+| options             | Array of options for the dropdown, must include _value_ and _label_ | array   |               |
+| inline              | Defines if the options are displayed on one or multiple lines       | boolean | false         |
+| default             | Sets a default value                                                | string  |               |
+| requireConfirmation | Displays a confirmation dialog when modifying the field             | boolean | false         |
+| confirmTitleText    | The title of the confirmation dialog                                | string  | 'Confirm selection' |
+| confirmMessageText  | The text of the confirmation dialog                                 | string  | 'Are you sure you want to change this option ?' |
+| required            | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean | false |
+
+
 ### Block editor
 ![screenshot](/docs/_media/blockeditor.png)
 
@@ -757,6 +817,7 @@ See [Block editor](https://twill.io/docs/#block-editor-3)
 | Option           | Description                                                  | Type/values    | Default value |
 | :--------------- | :----------------------------------------------------------- | :------------- | :------------ |
 | blocks           | Array of blocks                                              | array          |               |
+| label            | Label used for the button                                    | string         | 'Add Content' |
 | withoutSeparator | Defines if a separator before the block editor container should be rendered | true<br/>false | false         |
 
 
@@ -765,18 +826,37 @@ See [Block editor](https://twill.io/docs/#block-editor-3)
 
 ```php
 @formField('browser', [
+    'moduleName' => 'publications',
+    'name' => 'publications',
     'label' => 'Publications',
     'max' => 4,
-    'name' => 'publications',
-    'moduleName' => 'publications'
 ])
 ```
+
+| Option      | Description                                                                     | Type    | Default value |
+| :---------- | :------------------------------------------------------------------------------ | :-------| :------------ |
+| name        | Name of the field                                                               | string  |               |
+| label       | Label of the field                                                              | string  |               |
+| moduleName  | Name of the module (single related module)                                      | string  |               |
+| modules     | Array of modules (multiple related modules), must include _name_                | array   |               |
+| endpoints   | Array of endpoints (multiple related modules), must include _value_ and _label_ | array   |               |
+| max         | Max number of attached items                                                    | integer | 1             |
+| note        | Hint message displayed in the field                                             | string  |               |
+| fieldNote   | Hint message displayed above the field                                          | string  |               |
+| browserNote | Hint message displayed inside the browser modal                                 | string  |               |
+| itemLabel   | Label used for the `Add` button                                                 | string  |               |
+| buttonOnTop | Displays the `Add` button above the items                                       | boolean | false         |
+| wide        | Expands the browser modal to fill the viewport                                  | boolean | false         |
+| sortable    | Allows manually sorting the attached items                                      | boolean | true          |
+
+<br/>
 
 Browser fields can be used to save a `belongsToMany` relationship outside of the block editor.
 
 Checkout this [Spectrum tutorial](https://spectrum.chat/twill/tips-and-tricks/step-by-step-ii-creating-a-twill-app~37c36601-1198-4c53-857a-a2b47c6d11aa) until we update this section to get more info on setting things up.
 
 When using inside of the block editor, no migration is needed. Refer to the section titled [Adding browser fields to a block](#adding-browser-fields-to-a-block) for a detailed explanation.
+
 
 ### Browser with multiple modules
 
@@ -913,7 +993,8 @@ When using inside of the block editor, no migration is needed. Refer to the sect
 | :--------------- | :---------------------------------------------------------- | :-------------- | :------------ |
 | name             | Name of the field                                           | string          |               |
 | label            | Label of the field                                          | string          |               |
-| showMap          | Enables the visibility of the map                           | true<br />false | true          |
+| showMap          | Adds a button to toggle the map visibility                  | true<br />false | true          |
+| openMap          | Used with `showMap`, initialize the field with the map open | true<br />false | false          |
 | saveExtendedData | Enables saving Bounding Box Coordinates and Location types  | true<br />false | false         |
 
 This field requires that you provide a `GOOGLE_MAPS_API_KEY` variable in your .env file.
@@ -965,6 +1046,7 @@ Extended data:
 ```
 
 ### Color
+![screenshot](/docs/_media/color.png)
 
 ```php
 @formField('color', [
@@ -972,6 +1054,12 @@ Extended data:
     'label' => 'Main color'
 ])
 ```
+
+| Option  | Description         | Type     | Default value |
+| :------ | :------------------ | :------- | :------------ |
+| name    | Name of the field   | string   |               |
+| label   | Label of the field  | string   |               |
+
 
 A migration to save a `color` field would be:
 
