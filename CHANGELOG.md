@@ -2,18 +2,51 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.3.0 (2021-06-03)
+
+### Added
+
+- Configuration system for capsules [#924](https://github.com/area17/twill/pull/924)
+- Automated `belongsTo` browser field relationship [#913](https://github.com/area17/twill/pull/913)
+- Internal API documentation [#929](https://github.com/area17/twill/pull/929)
+- Connected fields array values support [#935](https://github.com/area17/twill/pull/935)
+- Capsules finder methods and helpers [`d30f341d`](https://github.com/area17/twill/commit/d30f341d4fde21bbb696ff6fb7a863041c1f4409)
+- Ability to retrieve all image crops in a single call, as generated URLs or data arrays [#928](https://github.com/area17/twill/pull/928)
+- Ability to disable crops entirely on the `medias` field [#922](https://github.com/area17/twill/pull/922) [`0a153c29`](https://github.com/area17/twill/commit/0a153c29a99108823770402521771d0954ce784e) [`7dbfaef6`](https://github.com/area17/twill/commit/7dbfaef6e0641bf938a1b4676bea3330f862cc21)
+- Support for custom title key in related browsers [#942](https://github.com/area17/twill/pull/942)
+
+### Fixed
+
+- Custom create modal view regression [#920](https://github.com/area17/twill/pull/920)
+- Subdomain routing regression [#908](https://github.com/area17/twill/pull/908)
+- Media Library uploads regression when using Postgres [#941](https://github.com/area17/twill/pull/941)
+- Fix "Unresolvable dependency resolving" problem [#952](https://github.com/area17/twill/pull/952)
+- Ensures app/Twill/Capsules exists during install [`deff0a87`](https://github.com/area17/twill/commit/deff0a87c7612e1c745da993b0f2286f08ee5d55)
+- Fix minor typos in documentation [`3dcf4fa2`](https://github.com/area17/twill/commit/3dcf4fa270ef0e58d6b81399df37bd2dcac3d51a)
+
+### Improved
+
+- Docs: update form fields documentation [#945](https://github.com/area17/twill/pull/945)
+- Docs: add missing docs for $permalinkBase [`1609765b`](https://github.com/area17/twill/commit/1609765b5d47131c9830a01731d13fd495cdf1ce)
+- Docs: add duplicate param to $indexOptions [`d665967d`](https://github.com/area17/twill/commit/d665967d9ae7deb9c6d37f55a6fdde45a8455bec)
+- Docs: add skipCreateModal option to controller docs [`08fd0167`](https://github.com/area17/twill/commit/08fd01672b6e915e7ee6016edae0c852d3f0ae80)
+
+
+### Chores
+
+- Update rebase GitHub Actions version to support forks with branches of the same name [`e08ee215`](https://github.com/area17/twill/commit/e08ee215859f28d989792765bc46ccb5f20afeb9)
+
+
 ## 2.2.1 (2021-05-18)
 
 ### Fixed
 
 - Capsules without translations: move HasCapsules trait to the base model [`8b730e81`](https://github.com/area17/twill/commit/8b730e81492ecf61f21c835baa87feae87a37bb9)
-
 - Laravel configuration caching: set the capsules list config as an array [`2b5b07a5`](https://github.com/area17/twill/commit/2b5b07a58a77193138c147393e95516df0dd46b3)
 
 ### Improved
 
 - Update documentation to reflect Laravel 8 support [`c01c426d`](https://github.com/area17/twill/commit/c01c426d19c63f900d5bdd18f263fcee8fd65958)
-
 - Fix wording and add proper method description [`e1293551`](https://github.com/area17/twill/commit/e1293551239d1283a7cb1c798444083b90dd6ce0)
 
 ## 2.2.0 (2021-05-14)

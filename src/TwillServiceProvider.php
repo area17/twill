@@ -4,7 +4,6 @@ namespace A17\Twill;
 
 use A17\Twill\Commands\BlockMake;
 use A17\Twill\Commands\Build;
-use A17\Twill\Commands\CapsuleRequire;
 use A17\Twill\Commands\CapsuleInstall;
 use A17\Twill\Commands\CreateSuperAdmin;
 use A17\Twill\Commands\Dev;
@@ -12,9 +11,8 @@ use A17\Twill\Commands\GenerateBlocks;
 use A17\Twill\Commands\Install;
 use A17\Twill\Commands\ListBlocks;
 use A17\Twill\Commands\ListIcons;
-use A17\Twill\Commands\ModuleMake;
 use A17\Twill\Commands\MakeCapsule;
-use A17\Twill\Services\Capsules\HasCapsules;
+use A17\Twill\Commands\ModuleMake;
 use A17\Twill\Commands\ModuleMakeDeprecated;
 use A17\Twill\Commands\RefreshLQIP;
 use A17\Twill\Commands\SyncLang;
@@ -28,6 +26,7 @@ use A17\Twill\Models\Block;
 use A17\Twill\Models\File;
 use A17\Twill\Models\Media;
 use A17\Twill\Models\User;
+use A17\Twill\Services\Capsules\HasCapsules;
 use A17\Twill\Services\FileLibrary\FileService;
 use A17\Twill\Services\MediaLibrary\ImageService;
 use Astrotomic\Translatable\TranslatableServiceProvider;
@@ -48,7 +47,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    const VERSION = '2.2.1';
+    const VERSION = '2.3.0';
 
     /**
      * Service providers to be registered.
@@ -313,7 +312,7 @@ class TwillServiceProvider extends ServiceProvider
             Update::class,
             Dev::class,
             SyncLang::class,
-            CapsuleInstall::class
+            CapsuleInstall::class,
         ]);
     }
 
