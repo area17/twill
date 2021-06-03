@@ -41,6 +41,11 @@ return [
         'my-drafts' => 'My drafts',
         'search-placeholder' => 'Search everything...',
         'statitics' => 'Statistics',
+        'search' => [
+            'loading' => 'Loading…',
+            'no-result' => 'No results found.',
+            'last-edit' => 'Last edited',
+        ],
         'activities' => [
             'created' => 'Created',
             'updated' => 'Updated',
@@ -110,6 +115,9 @@ return [
             'edit-close' => 'Close info',
             'edit-info' => 'Edit info',
             'original-dimensions' => 'Original',
+            'alt-text' => 'Alt Text',
+            'caption' => 'Caption',
+            'video-url' => 'Video URL (optional)',
         ],
     ],
     'filter' => [
@@ -143,6 +151,8 @@ return [
         'add-new-button' => 'Add new',
         'bulk-actions' => 'Bulk actions',
         'bulk-clear' => 'Clear',
+        'bulk-selected-item' => 'item selected',
+        'bulk-selected-items' => 'items selected',
         'columns' => [
             'featured' => 'Featured',
             'name' => 'Name',
@@ -187,6 +197,53 @@ return [
         'paginate' => [
             'rows-per-page' => 'Rows per page:',
         ],
+        'reorder' => [
+            'success' => ':modelTitle order changed!',
+            'error' => ':modelTitle order was not changed. Something wrong happened!',
+        ],
+        'restore' => [
+            'success' => ':modelTitle restored!',
+            'error' => ':modelTitle was not restored. Something wrong happened!',
+        ],
+        'bulk-restore' => [
+            'success' => ':modelTitle items restored!',
+            'error' => ':modelTitle items were not restored. Something wrong happened!',
+        ],
+        'force-delete' => [
+            'success' => ':modelTitle destroyed!',
+            'error' => ':modelTitle was not destroyed. Something wrong happened!',
+        ],
+        'bulk-force-delete' => [
+            'success' => ':modelTitle items destroyed!',
+            'error' => ':modelTitle items were not destroyed. Something wrong happened!',
+        ],
+        'delete' => [
+            'success' => ':modelTitle moved to trash!',
+            'error' => ':modelTitle was not moved to trash. Something wrong happened!',
+        ],
+        'bulk-delete' => [
+            'success' => ':modelTitle items moved to trash!',
+            'error' => ':modelTitle items were not moved to trash. Something wrong happened!',
+        ],
+        'duplicate' => [
+            'success' => ':modelTitle duplicated with Success!',
+            'error' => ':modelTitle was not duplicated. Something wrong happened!',
+        ],
+        'publish' => [
+            'unpublished' => ':modelTitle unpublished!',
+            'published' => ':modelTitle published!',
+            'error' => ':modelTitle was not published. Something wrong happened!',
+        ],
+        'featured' => [
+            'unfeatured' => ':modelTitle unfeatured!',
+            'featured' => ':modelTitle featured!',
+            'error' => ':modelTitle was not featured. Something wrong happened!',
+        ],
+        'bulk-featured' => [
+            'unfeatured' => ':modelTitle items unfeatured!',
+            'featured' => ':modelTitle items featured!',
+            'error' => ':modelTitle items were not featured. Something wrong happened!',
+        ],
     ],
     'main' => [
         'create' => 'Create',
@@ -212,6 +269,36 @@ return [
         'title' => 'Media Library',
         'update' => 'Update',
         'unused-filter-label' => 'Show unused only',
+        'no-tags-found' => 'Sorry, no tags found.',
+        'dialogs' => [
+            'delete' => [
+                'delete-media-title' => 'Delete media',
+                'delete-media-desc' => 'Are you sure ?<br />This change can\'t be undone.',
+                'delete-media-confirm' => 'Delete',
+                'title' => 'Are you sure ?',
+                'allow-delete-multiple-medias' => 'Some files are used and can\'t be deleted. Do you want to delete the others ?',
+                'allow-delete-one-media' => 'This file is used and can\'t be deleted. Do you want to delete the others ?',
+                'dont-allow-delete-multiple-medias' => 'This files are used and can\'t be deleted.',
+                'dont-allow-delete-one-media' => 'This file is used and can\'t be deleted.',
+            ],
+            'replace' => [
+                'replace-media-title' => 'Replace media',
+                'replace-media-desc' => 'Are you sure ?<br />This change can\'t be undone.',
+                'replace-media-confirm' => 'Replace',
+            ],
+        ],
+        'types' => [
+            'single' => [
+                'image' => 'image',
+                'video' => 'video',
+                'file' => 'file',
+            ],
+            'multiple' => [
+                'image' => 'images',
+                'video' => 'videos',
+                'file' => 'files',
+            ],
+        ],
     ],
     'modal' => [
         'create' => [
@@ -269,6 +356,7 @@ return [
         'single-view' => 'Single view',
         'title' => 'Preview changes',
         'unsaved' => 'Previewing with your unsaved changes',
+        'drag-and-drop' => 'Drag and drop content from the left navigation',
     ],
     'publisher' => [
         'cancel' => 'Cancel',
