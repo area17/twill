@@ -103,7 +103,7 @@
       ...mapState({
         revisions: state => state.revision.all
       }),
-      ...mapGetters(['savedBlocksByName'])
+      ...mapGetters(['blocksByName'])
     },
     provide() {
       return {

@@ -12,7 +12,7 @@ export default {
       return this.section ? this.availableBlocksByName(this.section) : this.allAvailableBlocks
     },
     savedBlocks () {
-      return this.section ? this.savedBlocksByName(this.section) : this.allSavedBlocks
+      return this.section ? this.blocksByName(this.section) : this.allBlocks
     },
     multipleSections () {
       return this.sections.length > 1
@@ -25,10 +25,10 @@ export default {
     }),
     ...mapGetters(
       [
-        'allSavedBlocks',
+        'allBlocks',
         'allAvailableBlocks',
         'availableBlocksByName',
-        'savedBlocksByName',
+        'blocksByName',
         'sections'
       ]
     )
