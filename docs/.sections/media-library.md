@@ -150,6 +150,8 @@ $model->filesList($roleName[, $locale])
 $model->fileObject($roleName)
 ```
 
+What to do with videos? Typically files like .mp4 videos are uploaded under the "Files" tab in the media library instead of under "Images".
+
 ### Imgix and S3 direct uploads
 
 On AWS, create a IAM user for full access to your S3 bucket and use its credentials in your `.env` file. You can use the following IAM permission:
