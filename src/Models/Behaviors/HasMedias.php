@@ -16,7 +16,7 @@ trait HasMedias
     ];
 
     /**
-     * Defines the one-to-many relationship for media objects
+     * Defines the one-to-many relationship for media objects.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
@@ -60,7 +60,7 @@ trait HasMedias
     }
 
     /**
-     * Checks if an image has been attached for a role and crop
+     * Checks if an image has been attached for a role and crop.
      *
      * @param string $role Role name
      * @param string $crop Crop name
@@ -74,14 +74,14 @@ trait HasMedias
     }
 
     /**
-     * Returns the URL of the attached image for a role and crop, with appended parameters
+     * Returns the URL of the attached image for a role and crop, with appended parameters.
      *
-     * @param string $role Role name
-     * @param string $crop Crop name
-     * @param array $params Parameters compatible with the current image service, like `w` or `h`
+     * @param string $role Role name.
+     * @param string $crop Crop name.
+     * @param array $params Parameters compatible with the current image service, like `w` or `h`.
      * @param bool $has_fallback Indicate that you can provide a fallback. Will return null instead of the default image fallback.
-     * @param bool $cms Indicate that you are displaying this image in the CMS views
-     * @param Media $media Provide a media object if you already retrieved one to prevent more SQL queries
+     * @param bool $cms Indicate that you are displaying this image in the CMS views.
+     * @param Media $media Provide a media object if you already retrieved one to prevent more SQL queries.
      * @return string|null
      */
     public function image($role, $crop = "default", $params = [], $has_fallback = false, $cms = false, $media = null)
@@ -111,11 +111,11 @@ trait HasMedias
     }
 
     /**
-     * Returns an array of all associated image URLs for a role and crop, with appended parameters
+     * Returns an array of all associated image URLs for a role and crop, with appended parameters.
      *
-     * @param string $role Role name
-     * @param string $crop Crop name
-     * @param array $params Parameters compatible with the current image service, like `w` or `h`
+     * @param string $role Role name.
+     * @param string $crop Crop name.
+     * @param array $params Parameters compatible with the current image service, like `w` or `h`.
      * @return array
      */
     public function images($role, $crop = "default", $params = [])
@@ -134,11 +134,11 @@ trait HasMedias
     }
 
     /**
-     * Returns an array of image URLs assiociated with a role with appended parameters for each crop
+     * Returns an array of image URLs assiociated with a role with appended parameters for each crop.
      *
-     * @param string $role Role name
-     * @param string $crop Crop name
-     * @param array $params Parameters compatible with the current image service, like `w` or `h`
+     * @param string $role Role name.
+     * @param string $crop Crop name.
+     * @param array $params Parameters compatible with the current image service, like `w` or `h`.
      * @return array
      */
     public function imagesWithCrops($role, $params = [])
@@ -158,12 +158,12 @@ trait HasMedias
     }
 
     /**
-     * Returns the image associated with $role as an array containing meta information
+     * Returns the image associated with $role as an array containing meta information.
      *
-     * @param string $role Role name
-     * @param string $crop Crop name
-     * @param array $params Parameters compatible with the current image service, like `w` or `h`
-     * @param Media|null $media
+     * @param string $role Role name.
+     * @param string $crop Crop name.
+     * @param array $params Parameters compatible with the current image service, like `w` or `h`.
+     * @param Media $media Provide a media object if you already retrieved one to prevent more SQL queries.
      * @return array
      */
     public function imageAsArray($role, $crop = "default", $params = [], $media = null)
@@ -187,11 +187,11 @@ trait HasMedias
     }
 
     /**
-     * Returns the images associated with $role as an array containing meta information
+     * Returns the images associated with $role as an array containing meta information.
      *
-     * @param string $role Role name
-     * @param string $crop Crop name
-     * @param array $params Parameters compatible with the current image service, like `w` or `h`
+     * @param string $role Role name.
+     * @param string $crop Crop name.
+     * @param array $params Parameters compatible with the current image service, like `w` or `h`.
      * @return array
      */
     public function imagesAsArrays($role, $crop = "default", $params = [])
@@ -210,10 +210,10 @@ trait HasMedias
     }
 
     /**
-     * Returns the images associated with $roleName as an array containing meta information for each crop
+     * Returns the images associated with $roleName as an array containing meta information for each crop.
      *
-     * @param string $role Role name
-     * @param array $params Parameters compatible with the current image service, like `w` or `h`
+     * @param string $role Role name.
+     * @param array $params Parameters compatible with the current image service, like `w` or `h`.
      * @return array
      */
     public function imagesAsArraysWithCrops($role, $params = [])
@@ -233,10 +233,10 @@ trait HasMedias
     }
 
     /**
-     * Returns the alt text of the image associated with a role
+     * Returns the alt text of the image associated with a role.
      *
-     * @param string $role Role name
-     * @param Media $media Provide a media object if you already retrieved one to prevent more SQL queries
+     * @param string $role Role name.
+     * @param Media $media Provide a media object if you already retrieved one to prevent more SQL queries.
      * @return string
      */
     public function imageAltText($role, $media = null)
@@ -259,10 +259,10 @@ trait HasMedias
     }
 
     /**
-     * Returns the caption of the image associated with a role
+     * Returns the caption of the image associated with a role.
      *
-     * @param string $role Role name
-     * @param Media $media Provide a media object if you already retrieved one to prevent more SQL queries
+     * @param string $role Role name.
+     * @param Media $media Provide a media object if you already retrieved one to prevent more SQL queries.
      * @return string
      */
     public function imageCaption($role, $media = null)
@@ -285,10 +285,10 @@ trait HasMedias
     }
 
     /**
-     * Returns the video URL of the image associated with a role
+     * Returns the video URL of the image associated with a role.
      *
-     * @param string $role Role name
-     * @param Media $media Provide a media object if you already retrieved one to prevent more SQL queries
+     * @param string $role Role name.
+     * @param Media $media Provide a media object if you already retrieved one to prevent more SQL queries.
      * @return string
      */
     public function imageVideo($role, $media = null)
@@ -313,10 +313,10 @@ trait HasMedias
     }
 
     /**
-     * Returns the image object associated with a role and crop
+     * Returns the image object associated with a role and crop.
      *
-     * @param string $role Role name
-     * @param string $crop Crop name
+     * @param string $role Role name.
+     * @param string $crop Crop name.
      * @return Media
      */
     public function imageObject($role, $crop = "default")
@@ -328,9 +328,9 @@ trait HasMedias
      * Returns the LQIP base64 encoded string from the database for a role.
      * Use this in conjunction with the RefreshLQIP Artisan command.
      *
-     * @param string $role Role name
-     * @param string $crop Crop name
-     * @param array $params Parameters compatible with the current image service, like `w` or `h`
+     * @param string $role Role name.
+     * @param string $crop Crop name.
+     * @param array $params Parameters compatible with the current image service, like `w` or `h`.
      * @param bool $has_fallback Indicate that you can provide a fallback. Will return null instead of the default image fallback.
      * @return string
      */
@@ -351,11 +351,11 @@ trait HasMedias
     }
 
     /**
-     * Returns the URL of the social image for a role
+     * Returns the URL of the social image for a role.
      *
-     * @param string $role Role name
-     * @param string $crop Crop name
-     * @param array $params Parameters compatible with the current image service, like `w` or `h`
+     * @param string $role Role name.
+     * @param string $crop Crop name.
+     * @param array $params Parameters compatible with the current image service, like `w` or `h`.
      * @param bool $has_fallback Indicate that you can provide a fallback. Will return null instead of the default image fallback.
      * @return string
      */
@@ -377,11 +377,11 @@ trait HasMedias
     }
 
     /**
-     * Returns the URL of the CMS image for a role
+     * Returns the URL of the CMS image for a role.
      *
-     * @param string $role Role name
-     * @param string $crop Crop name
-     * @param array $params Parameters compatible with the current image service, like `w` or `h`
+     * @param string $role Role name.
+     * @param string $crop Crop name.
+     * @param array $params Parameters compatible with the current image service, like `w` or `h`.
      * @return string
      */
     public function cmsImage($role, $crop = "default", $params = [])
@@ -390,9 +390,9 @@ trait HasMedias
     }
 
     /**
-     * Returns the URL of the default CMS image for this model
+     * Returns the URL of the default CMS image for this model.
      *
-     * @param array $params Parameters compatible with the current image service, like `w` or `h`
+     * @param array $params Parameters compatible with the current image service, like `w` or `h`.
      * @return string
      */
     public function defaultCmsImage($params = [])
@@ -407,10 +407,10 @@ trait HasMedias
     }
 
     /**
-     * Returns the image objects associated with a role and crop
+     * Returns the image objects associated with a role and crop.
      *
-     * @param string $role Role name
-     * @param string $crop Crop name
+     * @param string $role Role name.
+     * @param string $crop Crop name.
      * @return \Illuminate\Support\Enumerable
      */
     public function imageObjects($role, $crop = "default")
