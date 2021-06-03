@@ -57,12 +57,14 @@ class CapsulesServiceProvider extends RouteServiceProvider
 
     public function registerViewPaths()
     {
-        if (method_exists($this, 'callAfterResolving')) {
-            $this->callAfterResolving('view', function ($view) {
-                $view->addLocation(config('twill.capsules.path'));
-            });
-        } else {
-            $this->app->make('view')->addLocation(config('twill.capsules.path'));
+        $callback = function ($view) {
+            $view->addLocation(config('twill.capsules.path'));
+        };
+
+        $this->app->afterResolving('view', $callback);
+
+        if ($this->app->resolved('view')) {
+            $callback($this->app->make('view'), $this->app);
         }
     }
 
