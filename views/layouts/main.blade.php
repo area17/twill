@@ -59,13 +59,13 @@
                                           :authorized="{{ json_encode(auth('twill_users')->user()->can('upload')) }}" :extra-metadatas="{{ json_encode(array_values(config('twill.media_library.extra_metadatas_fields', []))) }}"
                                           :translatable-metadatas="{{ json_encode(array_values(config('twill.media_library.translatable_metadatas_fields', []))) }}"
                         ></a17-medialibrary>
-                        <a17-dialog ref="deleteWarningMediaLibrary" modal-title="Delete media" confirm-label="Delete">
-                            <p class="modal--tiny-title"><strong>Delete media</strong></p>
-                            <p>Are you sure ?<br />This change can't be undone.</p>
+                        <a17-dialog ref="deleteWarningMediaLibrary" modal-title="{{ twillTrans("twill::lang.media-library.dialogs.delete.delete-media-title") }}" confirm-label="{{ twillTrans("twill::lang.media-library.dialogs.delete.delete-media-confirm") }}">
+                            <p class="modal--tiny-title"><strong>{{ twillTrans("twill::lang.media-library.dialogs.delete.delete-media-title") }}</strong></p>
+                            <p>{!! twillTrans("twill::lang.media-library.dialogs.delete.delete-media-desc") !!}</p>
                         </a17-dialog>
-                        <a17-dialog ref="replaceWarningMediaLibrary" modal-title="Replace media" confirm-label="Replace">
-                            <p class="modal--tiny-title"><strong>Replace media</strong></p>
-                            <p>Are you sure ?<br />This change can't be undone.</p>
+                        <a17-dialog ref="replaceWarningMediaLibrary" modal-title="{{ twillTrans("twill::lang.media-library.dialogs.replace.replace-media-title") }}" confirm-label="{{ twillTrans("twill::lang.media-library.dialogs.replace.replace-media-confirm") }}">
+                            <p class="modal--tiny-title"><strong>{{ twillTrans("twill::lang.media-library.dialogs.replace.replace-media-title") }}</strong></p>
+                            <p>{!! twillTrans("twill::lang.media-library.dialogs.replace.replace-media-desc") !!}</p>
                         </a17-dialog>
                     @endif
                     <a17-notif variant="success"></a17-notif>
