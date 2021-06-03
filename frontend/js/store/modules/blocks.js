@@ -26,12 +26,12 @@ const state = {
    * An object with all the blocks available to add
    * @type {Object}
    */
-  available: window[process.env.VUE_APP_NAME].STORE.form.blocks.available || {},
+  available: window[process.env.VUE_APP_NAME].STORE.form.availableBlocks || {},
   /**
    * An array with all the blocks created
    * @type {Object.Array}
    */
-  used: window[process.env.VUE_APP_NAME].STORE.form.blocks.used || {},
+  created: window[process.env.VUE_APP_NAME].STORE.form.blocks || {},
   /**
    * An object with all the Html for the previews of the blocks
    * @type {Object.string}
@@ -47,9 +47,9 @@ const state = {
 // getters
 const getters = {
   previewsById: state => (id) => state.previews[id] ? state.previews[id] : '',
-  savedBlocksByName: state => section => state.used[section],
+  savedBlocksByName: state => section => state.created[section],
   availableBlocksByName: state => section => state.available[section],
-  allSavedBlocks: state => Object.keys(state.used).reduce((acc, section) => acc.concat(state.used[section]), []),
+  allSavedBlocks: state => Object.keys(state.created).reduce((acc, section) => acc.concat(state.created[section]), []),
   allAvailableBlocks: state => Array.from(new Set(Object.keys(state.available).reduce((acc, section) => acc.concat(state.available[section]), []))),
   blockIndexBySection: (state, getters) => (block, section) => getters.savedBlocksByName(section).findIndex(b => b.id === block.id),
   sections: state => Object.keys(state.available).reduce((acc, section) => {
@@ -64,36 +64,36 @@ const getters = {
 const mutations = {
   [BLOCKS.ADD_BLOCK] (state, { block, index, section }) {
     // init used section
-    if (!state.used[section]) state.used[section] = []
+    if (!state.created[section]) state.created[section] = []
 
     if (index > -1) {
-      state.used[section].splice(index, 0, block) // add after a certain position
+      state.created[section].splice(index, 0, block) // add after a certain position
     } else {
-      state.used[section].push(block) // or add a new blocks at the end of the list
+      state.created[section].push(block) // or add a new blocks at the end of the list
     }
   },
   [BLOCKS.MOVE_BLOCK] (state, { section, newIndex, oldIndex }) {
-    if (newIndex >= state.used[section].length) {
-      let k = newIndex - state.used[section].length
+    if (newIndex >= state.created[section].length) {
+      let k = newIndex - state.created[section].length
       while ((k--) + 1) {
-        state.used[section].push(undefined)
+        state.created[section].push(undefined)
       }
     }
-    state.used[section].splice(newIndex, 0, state.used[section].splice(oldIndex, 1)[0])
+    state.created[section].splice(newIndex, 0, state.created[section].splice(oldIndex, 1)[0])
   },
   [BLOCKS.DELETE_BLOCK] (state, { section, index }) {
-    const id = state.used[section][index].id
+    const id = state.created[section][index].id
     if (id) Vue.delete(state.previews, id)
-    state.used[section].splice(index, 1)
+    state.created[section].splice(index, 1)
   },
   [BLOCKS.DUPLICATE_BLOCK] (state, { section, index, block }) {
-    state.used[section].splice(index + 1, 0, block)
+    state.created[section].splice(index + 1, 0, block)
   },
   [BLOCKS.REORDER_BLOCKS] (state, { section, value }) {
-    state.used[section] = value
+    state.created[section] = value
   },
   [BLOCKS.ACTIVATE_BLOCK] (state, { section, index }) {
-    if (state.used[section] && state.used[section][index]) state.active = state.used[section][index]
+    if (state.created[section] && state.created[section][index]) state.active = state.created[section][index]
     else state.active = {}
   },
   [BLOCKS.ADD_BLOCK_PREVIEW] (state, data) {
@@ -139,7 +139,7 @@ const getBlockPreview = (block, commit, rootState, callback) => {
 
 const actions = {
   [ACTIONS.GET_PREVIEW] ({ commit, state, rootState }, { section, index = -1 }) {
-    let block = state.used[section] && index >= 0 ? state.used[section][index] : {}
+    let block = state.created[section] && index >= 0 ? state.created[section][index] : {}
 
     // refresh preview of the active block
     if (state.active && state.active.hasOwnProperty('id') && index === -1) block = state.active
@@ -147,12 +147,12 @@ const actions = {
     getBlockPreview(block, commit, rootState)
   },
   [ACTIONS.GET_ALL_PREVIEWS] ({ commit, state, rootState }, { section }) {
-    if (state.used[section] && state.used[section].length > 0 && !state.loading) {
+    if (state.created[section] && state.created[section].length > 0 && !state.loading) {
       commit(BLOCKS.UPDATE_PREVIEW_LOADING, true)
       let loadedPreview = 0
-      const previewToload = state.used[section].length
+      const previewToload = state.created[section].length
 
-      Object.values(state.used[section]).forEach((block) => {
+      Object.values(state.created[section]).forEach((block) => {
         getBlockPreview(block, commit, rootState, () => {
           loadedPreview++
           if (loadedPreview === previewToload) commit(BLOCKS.UPDATE_PREVIEW_LOADING, true)
