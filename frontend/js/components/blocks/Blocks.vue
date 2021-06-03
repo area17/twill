@@ -1,10 +1,9 @@
 <template>
   <a17-blocks-list :section="section">
     <div class="blocks"
-         slot-scope="{ savedBlocks, availableBlocks, reorderBlocks }">
+         slot-scope="{ savedBlocks, availableBlocks }">
       <draggable class="blocks__container"
-                 :value="savedBlocks"
-                 @update="reorderBlocks({ oldIndex, newIndex })"
+                 v-model="blocks"
                  :options="dragOptions">
         <transition-group name="draggable_list"
                           tag='div'>
@@ -113,12 +112,13 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
+  import { mapState, mapGetters } from 'vuex'
   import { DraggableMixin, EditorMixin } from '@/mixins/index'
   import draggable from 'vuedraggable'
   import BlockItem from '@/components/blocks/BlockItem.vue'
   import BlocksList from '@/components/blocks/BlocksList'
   import BlockModel from '@/components/blocks/BlockModel'
+  import { BLOCKS } from '@/store/mutations'
 
   export default {
     name: 'A17Blocks',
@@ -146,6 +146,20 @@
       }
     },
     computed: {
+      blocks: {
+        get() {
+          return this.blocksByName(this.section)
+        },
+        set(value) {
+          this.$store.commit(BLOCKS.REORDER_BLOCKS, {
+            section: this.section,
+            value
+          })
+        }
+      },
+      ...mapGetters([
+        'blocksByName'
+      ]),
       ...mapState({
         editor: state => state.blocks.editor
       })
