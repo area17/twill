@@ -1,8 +1,11 @@
 <template>
   <div class="overlay" :class="overlayClasses">
     <div class="overlay__window">
-      <header class="overlay__header" v-if="overlayTitle">
-        {{ overlayTitle }}
+      <header class="overlay__header">
+        <span v-if="overlayTitle">{{ overlayTitle }}</span>
+        <span class="overlay__header-slot" v-if="$slots['overlay__header']">
+          <slot name="overlay__header"></slot>
+        </span>
         <button class="overlay__close" type="button" @click="hide"><span v-svg symbol="close_modal"></span><span class="overlay__closeLabel">{{ $trans('overlay.close') }}</span></button>
       </header>
       <div class="overlay__content" v-if="active" v-show="!hidden">
@@ -192,6 +195,11 @@
     position:relative;
     font-weight:600;
     text-align:center;
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
     @include font-smoothing();
   }
 

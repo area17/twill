@@ -5,6 +5,18 @@
     :customClasses="htmlEditorClass"
     @close="close"
   >
+    <template v-slot:overlay__header>
+      <a17-dropdown ref="editorDropdown" position="bottom-left" :maxWidth="400" :maxHeight="300">
+            <a17-button class="editorDropdown__trigger" @click="$refs.editorDropdown.toggle()">
+              {{ getCurrentSectionLabel() }} <span v-svg symbol="dropdown_module"></span>
+            </a17-button>
+            <div slot="dropdown__content">
+              <button type="button" class="editorDropdown" @click="updateSection(section.value, true)" v-for="section in sections"  :key="section.value">
+                {{ section.label }}
+              </button>
+            </div>
+          </a17-dropdown>
+    </template>
     <a17-block-list :section="section">
       <div
         class="editor"
@@ -103,7 +115,7 @@
       ...mapState({
         revisions: state => state.revision.all
       }),
-      ...mapGetters(['blocksByName'])
+      ...mapGetters(['blocksByName', 'sections'])
     },
     provide () {
       return {
@@ -118,6 +130,9 @@
       updateSection (section, specificSection = false) {
         this.section = section
         this.specificSection = specificSection
+      },
+      getCurrentSectionLabel () {
+        return this.sections.find(section => section.value === this.section).label || ''
       },
       // Editor state functions
       open (index, section = false) {
@@ -236,5 +251,9 @@
 
   .editor__preview--dark {
     color: $color__background;
+  }
+
+  .editorDropdown__trigger {
+    color: inherit;
   }
 </style>

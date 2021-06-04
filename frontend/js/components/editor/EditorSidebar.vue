@@ -1,9 +1,5 @@
 <template>
-  <div class="editorSidebar"
-       :class="{
-          'editorSidebar--multiple-section': multipleSections,
-          'editorSidebar--specific-section': specificSection
-         }">
+  <div class="editorSidebar">
     <template v-show="hasBlockActive">
       <a17-block-list>
         <div class="editorSidebar__edit-list" slot-scope="{ savedBlocks }">
@@ -37,20 +33,6 @@
     </template>
 
     <template v-if="!hasBlockActive">
-      <div v-if="multipleSections"
-           class="editorSidebar__toggle-section">
-        <a17-vselect
-          v-if="!specificSection"
-          :label="$trans('editor.current-dropdown')"
-          :selected="getCurrentSectionLabel(sections)"
-          size="small"
-          @change="updateSection"
-          :options="sections"
-        />
-        <template v-else>
-          <span v-html="$trans('editor.current').replace(':name', getCurrentSectionLabel(sections))"/>
-        </template>
-      </div>
       <div class="editorSidebar__list">
         <a17-sidebar-block-list :blocks="blocks"/>
       </div>
@@ -108,18 +90,12 @@
       }
     },
     methods: {
-      getCurrentSectionLabel (sections) {
-        return sections.find(section => section.value === this.section).label || ''
-      },
       isSubmitDisabled: function (btn) {
         if (btn.hasOwnProperty('disabled')) {
           return btn.disabled === true
         } else {
           return false
         }
-      },
-      updateSection (section) {
-        this.$emit('section:update', section.value)
       },
       saveForm (buttonName) {
         this.$store.commit(PUBLICATION.UPDATE_SAVE_TYPE, buttonName)
@@ -149,38 +125,6 @@
     bottom: 60px;
     left: 0;
     right: 0;
-
-    .editorSidebar--multiple-section & {
-      top: 110px;
-    }
-
-    .editorSidebar--multiple-section.editorSidebar--specific-section & {
-      top: 70px;
-    }
-  }
-
-  .editorSidebar__toggle-section {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    padding: 0 10px 15px 20px;
-    //border-bottom: 1px solid $color__border--focus;
-
-    .editorSidebar--multiple-section.editorSidebar--specific-section & {
-      margin-top: 16px;
-    }
-
-    &:after {
-      content: '';
-      position: absolute;
-      left: 20px;
-      right: 10px;
-      bottom: 0;
-      height: 1px;
-      background-color: $color__border--focus;
-    }
   }
 
   .editorSidebar__actions {
