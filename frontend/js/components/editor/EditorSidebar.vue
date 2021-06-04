@@ -64,14 +64,6 @@
         type: Object,
         default: () => {}
       },
-      multipleSections: {
-        type: Boolean,
-        default: false
-      },
-      specificSection: {
-        type: Boolean,
-        default: false
-      },
       sections: {
         type: Array,
         default: () => []

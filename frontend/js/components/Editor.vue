@@ -11,7 +11,7 @@
               {{ getCurrentSectionLabel() }} <span v-svg symbol="dropdown_module"></span>
             </a17-button>
             <div slot="dropdown__content">
-              <button type="button" class="editorDropdown" @click="updateSection(section.value, true)" v-for="section in sections"  :key="section.value">
+              <button type="button" class="editorDropdown" @click="updateSection(section.value)" v-for="section in sections"  :key="section.value">
                 {{ section.label }}
               </button>
             </div>
@@ -25,7 +25,6 @@
           hasBlockActive,
           savedBlocks,
           sections,
-          multipleSections,
           reorderBlocks,
           moveBlock
         }"
@@ -46,8 +45,6 @@
             <div class="editor__sidebar" ref="sidebar">
               <a17-editorsidebar
                 :section="section"
-                :specificSection="specificSection"
-                :multipleSections="multipleSections"
                 :hasBlockActive="hasBlockActive"
                 :sections="sections"
                 :blocks="availableBlocks"
@@ -105,7 +102,6 @@
     },
     data () {
       return {
-        specificSection: false,
         section: 'default',
         editorOpen: false,
         htmlEditorClass: htmlClasses.editor
@@ -127,9 +123,8 @@
       initSection () {
         this.updateSection('default', false)
       },
-      updateSection (section, specificSection = false) {
+      updateSection (section) {
         this.section = section
-        this.specificSection = specificSection
       },
       getCurrentSectionLabel () {
         return this.sections.find(section => section.value === this.section).label || ''

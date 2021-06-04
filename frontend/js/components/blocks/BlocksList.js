@@ -14,9 +14,6 @@ export default {
     savedBlocks () {
       return this.section ? this.blocksByName(this.section) : this.allBlocks
     },
-    multipleSections () {
-      return this.sections.length > 1
-    },
     hasBlockActive () {
       return Object.keys(this.activeBlock).length > 0
     },
@@ -55,7 +52,6 @@ export default {
       reorderBlocks: this.reorderBlocks,
       moveBlock: this.moveBlock,
       sections: this.sections,
-      multipleSections: this.multipleSections,
       hasBlockActive: this.hasBlockActive,
       activeBlock: this.activeBlock
     })
