@@ -22,11 +22,20 @@ trait HasPosition
         return ((int) static::max('position'));
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeOrdered($query)
     {
         return $query->orderBy('position');
     }
 
+    /**
+     * @param array $ids
+     * @param int $startOrder
+     * @return void
+     */
     public static function setNewOrder($ids, $startOrder = 1)
     {
         if (!is_array($ids)) {
