@@ -32,6 +32,25 @@ export default {
     })
   },
   methods: {
+    addBlock (block, index = -1) {
+      this.$store.commit(BLOCKS.ADD_BLOCK, {
+        section: block.name,
+        block: {
+          id: Date.now(),
+          title: block.title,
+          type: block.component,
+          icon: block.icon,
+          attributes: block.attributes
+        },
+        index
+      })
+    },
+    removeBlock (block, index = -1) {
+      this.$store.commit(BLOCKS.DELETE_BLOCK, {
+        section: block.name,
+        index
+      })
+    },
     reorderBlocks (value) {
       this.$store.commit(BLOCKS.REORDER_BLOCKS, {
         editorName: this.editorName,
@@ -54,8 +73,9 @@ export default {
       moveBlock: this.moveBlock,
       editorNames: this.editorNames,
       hasBlockActive: this.hasBlockActive,
-      allSavedBlocks: this.allSavedBlocks,
-      activeBlock: this.activeBlock
+      activeBlock: this.activeBlock,
+      addBlock: this.addBlock,
+      removeBlock: this.removeBlock
     })
   }
 }

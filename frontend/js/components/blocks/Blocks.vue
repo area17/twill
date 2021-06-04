@@ -3,6 +3,8 @@
     <div class="blocks">
       <draggable class="blocks__container"
                  :value="savedBlocks"
+                 group="blocks"
+                 @change="e => log(e, addBlock, removeBlock)"
                  @update="({oldIndex, newIndex}) => moveBlock({ oldIndex, newIndex })"
                  :options="dragOptions">
         <transition-group name="draggable_list"
