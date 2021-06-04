@@ -18,22 +18,29 @@ trait HasBlocks
 
     public function renderNamedBlocks($name = 'default', $renderChilds = true, $blockViewMappings = [], $data = [])
     {
-        return $this->blocks()->named($name)->get()->where('parent_id', null)->map(function ($block) use ($blockViewMappings, $renderChilds, $data) {
-            if ($renderChilds) {
-                $childBlocks = $this->blocks->where('parent_id', $block->id);
+        return $this->blocks
+            ->filter(function ($block) use ($name) {
+                return $name === 'default'
+                ? ($block->name === $name || $block->name === null)
+                : $block->name === $name;
+            })
+            ->where('parent_id', null)
+            ->map(function ($block) use ($blockViewMappings, $renderChilds, $data) {
+                if ($renderChilds) {
+                    $childBlocks = $this->blocks->where('parent_id', $block->id);
 
-                $renderedChildViews = $childBlocks->map(function ($childBlock) use ($blockViewMappings, $data) {
-                    $view = $this->getBlockView($childBlock->type, $blockViewMappings);
-                    return view($view, $data)->with('block', $childBlock)->render();
-                })->implode('');
-            }
+                    $renderedChildViews = $childBlocks->map(function ($childBlock) use ($blockViewMappings, $data) {
+                        $view = $this->getBlockView($childBlock->type, $blockViewMappings);
+                        return view($view, $data)->with('block', $childBlock)->render();
+                    })->implode('');
+                }
 
-            $block->childs = $this->blocks->where('parent_id', $block->id);
+                $block->childs = $this->blocks->where('parent_id', $block->id);
 
-            $view = $this->getBlockView($block->type, $blockViewMappings);
+                $view = $this->getBlockView($block->type, $blockViewMappings);
 
-            return view($view, $data)->with('block', $block)->render() . ($renderedChildViews ?? '');
-        })->implode('');
+                return view($view, $data)->with('block', $block)->render() . ($renderedChildViews ?? '');
+            })->implode('');
     }
 
     /**
