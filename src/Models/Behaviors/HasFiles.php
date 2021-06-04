@@ -7,6 +7,11 @@ use A17\Twill\Services\FileLibrary\FileService;
 
 trait HasFiles
 {
+    /**
+     * Defines the many-to-many relationship for file objects.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
     public function files()
     {
         return $this->morphToMany(
@@ -33,6 +38,14 @@ trait HasFiles
         return $file;
     }
 
+    /**
+     * Returns the URL of the attached file for a role.
+     *
+     * @param string $role Role name.
+     * @param string $locale Locale of the file if your site has multiple languages.
+     * @param File $file Provide a file object if you already retrieved one to prevent more SQL queries.
+     * @return string|null
+     */
     public function file($role, $locale = null, $file = null)
     {
 
@@ -47,6 +60,13 @@ trait HasFiles
         return null;
     }
 
+    /**
+     * Returns an array of files URLs assiociated with $roleName.
+     *
+     * @param string $role Role name.
+     * @param string $locale Locale of the file if your site has multiple languages.
+     * @return array
+     */
     public function filesList($role, $locale = null)
     {
         $locale = $locale ?? app()->getLocale();
@@ -64,6 +84,13 @@ trait HasFiles
         return $urls;
     }
 
+    /**
+     * Returns the file object associated with $roleName.
+     *
+     * @param string $role Role name.
+     * @param string $locale Locale of the file if your site has multiple languages.
+     * @return File
+     */
     public function fileObject($role, $locale = null)
     {
         return $this->findFile($role, $locale);
