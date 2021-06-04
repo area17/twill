@@ -42,7 +42,7 @@
         return this.block.title || ''
       },
       sandboxOptions () {
-        return typeof this.sandbox === 'boolean' ? 'allow-same-origin allow-top-navigation' : this.sandbox.join(' ')
+        return typeof this.sandbox === 'boolean' ? 'allow-same-origin allow-top-navigation allow-scripts' : this.sandbox.join(' ')
       },
       ...mapGetters([
         'previewsById'
