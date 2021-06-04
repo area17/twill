@@ -202,6 +202,9 @@
           this.checkExpandBlocks()
         })
       }
+    },
+    mounted () {
+      this.checkExpandBlocks()
     }
   }
 </script>
