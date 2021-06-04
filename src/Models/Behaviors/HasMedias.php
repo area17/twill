@@ -16,9 +16,9 @@ trait HasMedias
     ];
 
     /**
-     * Defines the one-to-many relationship for media objects.
+     * Defines the many-to-many relationship for media objects.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
     public function medias()
     {
@@ -62,8 +62,8 @@ trait HasMedias
     /**
      * Checks if an image has been attached for a role and crop.
      *
-     * @param string $role Role name
-     * @param string $crop Crop name
+     * @param string $role Role name.
+     * @param string $crop Crop name.
      * @return bool
      */
     public function hasImage($role, $crop = "default")
@@ -79,7 +79,7 @@ trait HasMedias
      * @param string $role Role name.
      * @param string $crop Crop name.
      * @param array $params Parameters compatible with the current image service, like `w` or `h`.
-     * @param bool $has_fallback Indicate that you can provide a fallback. Will return null instead of the default image fallback.
+     * @param bool $has_fallback Indicate that you can provide a fallback. Will return `null` instead of the default image fallback.
      * @param bool $cms Indicate that you are displaying this image in the CMS views.
      * @param Media $media Provide a media object if you already retrieved one to prevent more SQL queries.
      * @return string|null
@@ -325,13 +325,13 @@ trait HasMedias
 
     /**
      * Returns the LQIP base64 encoded string for a role.
-     * Use this in conjunction with the RefreshLQIP Artisan command.
+     * Use this in conjunction with the `RefreshLQIP` Artisan command.
      *
      * @param string $role Role name.
      * @param string $crop Crop name.
      * @param array $params Parameters compatible with the current image service, like `w` or `h`.
-     * @param bool $has_fallback Indicate that you can provide a fallback. Will return null instead of the default image fallback.
-     * @return string
+     * @param bool $has_fallback Indicate that you can provide a fallback. Will return `null` instead of the default image fallback.
+     * @return string|null
      * @see \A17\Twill\Commands\RefreshLQIP
      */
     public function lowQualityImagePlaceholder($role, $crop = "default", $params = [], $has_fallback = false)
@@ -356,8 +356,8 @@ trait HasMedias
      * @param string $role Role name.
      * @param string $crop Crop name.
      * @param array $params Parameters compatible with the current image service, like `w` or `h`.
-     * @param bool $has_fallback Indicate that you can provide a fallback. Will return null instead of the default image fallback.
-     * @return string
+     * @param bool $has_fallback Indicate that you can provide a fallback. Will return `null` instead of the default image fallback.
+     * @return string|null
      */
     public function socialImage($role, $crop = "default", $params = [], $has_fallback = false)
     {
