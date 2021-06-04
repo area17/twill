@@ -2,6 +2,12 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.3.1 (2021-06-05)
+
+### Fixed
+
+- Media library upload regressions (hotfix) [#959](https://github.com/area17/twill/pull/959)
+
 ## 2.3.0 (2021-06-03)
 
 ### Added
