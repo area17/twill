@@ -49,28 +49,9 @@ reference in the [HasMedias API documentation](https://twill.io/docs/api/2.x/A17
 ### File library
 The file library is much simpler but also works with S3 and local storage. To associate files to your model, use the `HasFiles` and `HandleFiles` traits, the `$filesParams` configuration and the `files` form field.
 
-When it comes to using those data model files in the frontend site, there are a few methods on the `HasFiles` trait that will help you to retrieve direct URLs:
+When it comes to using those data model files in the frontend site, there are a few methods on the `HasFiles` trait that will help you to retrieve direct URLs. You can find the full
+reference in the [HasFiles API documentation](https://twill.io/docs/api/2.x/A17/Twill/Models/Behaviors/HasFiles.html)
 
-```php
-<?php
-
-/**
- * Returns the url of the associated file for $roleName.
- * Optionally indicate which locale of the file if your site has multiple languages.
- * Optionally provide a $file object if you already retrieved one to prevent more SQL requests.
- */
-$model->file($roleName[, $locale, $file])
-
-/**
- * Returns an array of files URLs assiociated with $roleName.
- */
-$model->filesList($roleName[, $locale])
-
-/**
- * Returns the file object associated with $roleName.
- */
-$model->fileObject($roleName)
-```
 
 ::: tip INFO
 The file library can be used to upload files of any type and to attach those files to records using the `file` form field.
