@@ -91,7 +91,7 @@
         default: true
       }
     },
-    data() {
+    data () {
       return {
         specificSection: false,
         section: 'default',
@@ -105,22 +105,22 @@
       }),
       ...mapGetters(['blocksByName'])
     },
-    provide() {
+    provide () {
       return {
         sandbox: this.previewSandbox
       }
     },
     methods: {
       // Section functions
-      initSection() {
+      initSection () {
         this.updateSection('default', false)
       },
-      updateSection(section, specificSection = false) {
+      updateSection (section, specificSection = false) {
         this.section = section
         this.specificSection = specificSection
       },
       // Editor state functions
-      open(index, section = false) {
+      open (index, section = false) {
         if (section) {
           this.updateSection(section, true)
         }
@@ -129,22 +129,23 @@
 
         this.$refs.overlay.open()
       },
-      close() {
+      close () {
         this.initSection()
         this.editorOpen = false
       },
-      resize() {
+      resize () {
         window.addEventListener('mousemove', this.resizeSidebar, false)
         window.addEventListener('mouseup', this.stopResizeSidebar, false)
       },
-      resizeSidebar(event) {
+      resizeSidebar (event) {
         const sidebar = this.$refs.sidebar
         const windowWidth = window.innerWidth
-        if (sidebar)
+        if (sidebar) {
           sidebar.style.width =
             ((event.clientX - sidebar.offsetLeft) / windowWidth) * 100 + '%'
+        }
       },
-      stopResizeSidebar() {
+      stopResizeSidebar () {
         window.removeEventListener('mousemove', this.resizeSidebar, false)
         window.removeEventListener('mouseup', this.stopResizeSidebar, false)
 
@@ -153,7 +154,7 @@
       },
 
       // Open Revision modal
-      openPreview() {
+      openPreview () {
         if (this.$root.$refs.preview) this.$root.$refs.preview.open()
       }
     }

@@ -147,10 +147,10 @@
     },
     computed: {
       blocks: {
-        get() {
+        get () {
           return this.blocksByName(this.section)
         },
-        set(value) {
+        set (value) {
           this.$store.commit(BLOCKS.REORDER_BLOCKS, {
             section: this.section,
             value
