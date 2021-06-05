@@ -61,7 +61,7 @@ trait HasFiles
     }
 
     /**
-     * Returns an array of files URLs assiociated with $roleName.
+     * Returns an array of URLs of all attached files for a role.
      *
      * @param string $role Role name.
      * @param string $locale Locale of the file if your site has multiple languages.
@@ -85,7 +85,7 @@ trait HasFiles
     }
 
     /**
-     * Returns the file object associated with $roleName.
+     * Returns the file object attached for a role.
      *
      * @param string $role Role name.
      * @param string $locale Locale of the file if your site has multiple languages.
