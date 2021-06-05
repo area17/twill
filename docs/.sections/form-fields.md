@@ -672,7 +672,7 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 @formField('multi_select', [
     'name' => 'sectors',
     'label' => 'Sectors',
-    'unpacked' => false,
+    'unpack' => false,
     'options' => [
         [
             'value' => 'arts',
