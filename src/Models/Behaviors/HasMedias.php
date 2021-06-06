@@ -81,7 +81,7 @@ trait HasMedias
      * @param array $params Parameters compatible with the current image service, like `w` or `h`.
      * @param bool $has_fallback Indicate that you can provide a fallback. Will return `null` instead of the default image fallback.
      * @param bool $cms Indicate that you are displaying this image in the CMS views.
-     * @param Media $media Provide a media object if you already retrieved one to prevent more SQL queries.
+     * @param Media|null $media Provide a media object if you already retrieved one to prevent more SQL queries.
      * @return string|null
      */
     public function image($role, $crop = "default", $params = [], $has_fallback = false, $cms = false, $media = null)
@@ -162,7 +162,7 @@ trait HasMedias
      * @param string $role Role name.
      * @param string $crop Crop name.
      * @param array $params Parameters compatible with the current image service, like `w` or `h`.
-     * @param Media $media Provide a media object if you already retrieved one to prevent more SQL queries.
+     * @param Media|null $media Provide a media object if you already retrieved one to prevent more SQL queries.
      * @return array
      */
     public function imageAsArray($role, $crop = "default", $params = [], $media = null)
@@ -235,7 +235,7 @@ trait HasMedias
      * Returns the alt text of the image attached for a role.
      *
      * @param string $role Role name.
-     * @param Media $media Provide a media object if you already retrieved one to prevent more SQL queries.
+     * @param Media|null $media Provide a media object if you already retrieved one to prevent more SQL queries.
      * @return string
      */
     public function imageAltText($role, $media = null)
@@ -261,7 +261,7 @@ trait HasMedias
      * Returns the caption of the image attached for a role.
      *
      * @param string $role Role name.
-     * @param Media $media Provide a media object if you already retrieved one to prevent more SQL queries.
+     * @param Media|null $media Provide a media object if you already retrieved one to prevent more SQL queries.
      * @return string
      */
     public function imageCaption($role, $media = null)
@@ -287,7 +287,7 @@ trait HasMedias
      * Returns the video URL of the image attached for a role.
      *
      * @param string $role Role name.
-     * @param Media $media Provide a media object if you already retrieved one to prevent more SQL queries.
+     * @param Media|null $media Provide a media object if you already retrieved one to prevent more SQL queries.
      * @return string
      */
     public function imageVideo($role, $media = null)
@@ -316,7 +316,7 @@ trait HasMedias
      *
      * @param string $role Role name.
      * @param string $crop Crop name.
-     * @return Media
+     * @return Media|null
      */
     public function imageObject($role, $crop = "default")
     {
@@ -411,7 +411,7 @@ trait HasMedias
      *
      * @param string $role Role name.
      * @param string $crop Crop name.
-     * @return \Illuminate\Support\Enumerable
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function imageObjects($role, $crop = "default")
     {

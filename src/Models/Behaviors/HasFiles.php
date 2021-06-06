@@ -42,8 +42,8 @@ trait HasFiles
      * Returns the URL of the attached file for a role.
      *
      * @param string $role Role name.
-     * @param string $locale Locale of the file if your site has multiple languages.
-     * @param File $file Provide a file object if you already retrieved one to prevent more SQL queries.
+     * @param string|null $locale Locale of the file if your site has multiple languages.
+     * @param File|null $file Provide a file object if you already retrieved one to prevent more SQL queries.
      * @return string|null
      */
     public function file($role, $locale = null, $file = null)
@@ -64,7 +64,7 @@ trait HasFiles
      * Returns an array of URLs of all attached files for a role.
      *
      * @param string $role Role name.
-     * @param string $locale Locale of the file if your site has multiple languages.
+     * @param string|null $locale Locale of the file if your site has multiple languages.
      * @return array
      */
     public function filesList($role, $locale = null)
@@ -88,8 +88,8 @@ trait HasFiles
      * Returns the file object attached for a role.
      *
      * @param string $role Role name.
-     * @param string $locale Locale of the file if your site has multiple languages.
-     * @return File
+     * @param string|null $locale Locale of the file if your site has multiple languages.
+     * @return File|null
      */
     public function fileObject($role, $locale = null)
     {
