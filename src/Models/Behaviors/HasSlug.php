@@ -47,7 +47,7 @@ trait HasSlug
     /**
      * Returns the fully qualified slug class name for this model.
      *
-     * @return string
+     * @return string|null
      */
     public function getSlugModelClass()
     {
@@ -230,7 +230,7 @@ trait HasSlug
     /**
      * Returns the active slug object for this model.
      *
-     * @param string $locale Locale of the slug if your site has multiple languages.
+     * @param string|null $locale Locale of the slug if your site has multiple languages.
      * @return object|null
      */
     public function getActiveSlug($locale = null)
@@ -255,7 +255,7 @@ trait HasSlug
     /**
      * Returns the active slug string for this model.
      *
-     * @param string $locale Locale of the slug if your site has multiple languages.
+     * @param string|null $locale Locale of the slug if your site has multiple languages.
      * @return string
      */
     public function getSlug($locale = null)
@@ -280,7 +280,7 @@ trait HasSlug
     }
 
     /**
-     * @param string $locale
+     * @param string|null $locale
      * @return array|null
      */
     public function getSlugParams($locale = null)
@@ -330,7 +330,7 @@ trait HasSlug
     }
 
     /**
-     * @param string $locale
+     * @param string|null $locale
      * @return array|null
      */
     public function getSingleSlugParams($locale = null)
