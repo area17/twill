@@ -244,10 +244,12 @@ return [
     ],
     'notifications' => [
         'reset' => [
+            'subject' => ':appName | Reset password',
             'action' => 'Reset password',
             'content' => 'You are receiving this email because we received a password reset. If you did not request a password reset, no further action is required.',
         ],
         'welcome' => [
+            'subject' => ':appName | Welcome',
             'action' => 'Choose your own password',
             'content' => 'You are receiving this email because an account was created for you on :name.',
             'title' => 'Welcome',
