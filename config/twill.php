@@ -165,7 +165,7 @@ return [
     |
      */
     'js_namespace' => 'TWILL',
-    'dev_mode' => false,
+    'dev_mode' => env('TWILL_DEV_MODE', false),
     'dev_mode_url' => env('TWILL_DEV_MODE_URL', 'http://localhost:8080'),
     'public_directory' => env('TWILL_ASSETS_DIR', 'assets/admin'),
     'manifest_file' => 'twill-manifest.json',
