@@ -49,8 +49,6 @@ const getters = {
   previewsById: state => (id) => state.previews[id] ? state.previews[id] : '',
   blocksByName: state => section => state.blocks[section],
   availableBlocksByName: state => section => state.available[section],
-  allBlocks: state => Object.keys(state.blocks).reduce((acc, section) => acc.concat(state.blocks[section]), []),
-  allAvailableBlocks: state => Array.from(new Set(Object.keys(state.available).reduce((acc, section) => acc.concat(state.available[section]), []))),
   blockIndexBySection: (state, getters) => (block, section) => getters.blocksByName(section).findIndex(b => b.id === block.id),
   sections: state => Object.keys(state.available).reduce((acc, section) => {
     acc.push({
