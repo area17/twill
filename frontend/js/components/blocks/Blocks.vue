@@ -154,12 +154,11 @@
       ])
     },
     methods: {
-      setOpened: function (value) {
-        const allHidden = this.$refs.blockList.every((block) => !block.visible)
-        if (allHidden) {
+      setOpened: function () {
+        const allClosed = this.$refs.blockList.every((block) => !block.visible)
+        if (allClosed) {
           this.opened = false
         }
-        if (value) this.opened = true
       },
       collapseAllBlocks: function () {
         this.opened = false
