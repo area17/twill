@@ -4,6 +4,11 @@ namespace A17\Twill\Repositories\Behaviors;
 
 trait HandleSlugs
 {
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return void
+     */
     public function afterSaveHandleSlugs($object, $fields)
     {
         if (property_exists($this->model, 'slugAttributes')) {
@@ -21,16 +26,29 @@ trait HandleSlugs
         }
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @return void
+     */
     public function afterDeleteHandleSlugs($object)
     {
         $object->slugs()->delete();
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @return void
+     */
     public function afterRestoreHandleSlugs($object)
     {
         $object->slugs()->restore();
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return array
+     */
     public function getFormFieldsHandleSlugs($object, $fields)
     {
         unset($fields['slugs']);
@@ -46,6 +64,12 @@ trait HandleSlugs
         return $fields;
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @param array $slug
+     * @return array
+     */
     public function getSlugParameters($object, $fields, $slug)
     {
         $slugParams = $object->getSlugParams($slug['locale']);
@@ -61,6 +85,13 @@ trait HandleSlugs
         return $slug;
     }
 
+    /**
+     * @param array $slug
+     * @param array $with
+     * @param array $withCount
+     * @param array $scopes
+     * @return \A17\Twill\Models\Model
+     */
     public function forSlug($slug, $with = [], $withCount = [], $scopes = [])
     {
         $query = $this->model->where($scopes)->scopes(['published', 'visible']);
@@ -91,6 +122,12 @@ trait HandleSlugs
         return $item;
     }
 
+    /**
+     * @param array $slug
+     * @param array $with
+     * @param array $withCount
+     * @return \A17\Twill\Models\Model
+     */
     public function forSlugPreview($slug, $with = [], $withCount = [])
     {
         return $this->model->forInactiveSlug($slug)->with($with)->withCount($withCount)->first();

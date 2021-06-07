@@ -57,6 +57,14 @@ trait HandleRepeaters
         return $fields;
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @param string $relation
+     * @param bool $keepExisting
+     * @param \A17\Twill\Models\Model|null $model
+     * @return void
+     */
     public function updateRepeaterMany($object, $fields, $relation, $keepExisting = true, $model = null)
     {
         $relationFields = $fields['repeaters'][$relation] ?? [];
@@ -74,6 +82,15 @@ trait HandleRepeaters
         }
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @param string $relation
+     * @param string|null $morph
+     * @param \A17\Twill\Models\Model|null $model
+     * @param string|null $repeaterName
+     * @return void
+     */
     public function updateRepeaterMorphMany($object, $fields, $relation, $morph = null, $model = null, $repeaterName = null)
     {
         if (!$repeaterName) {

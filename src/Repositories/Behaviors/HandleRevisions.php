@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Auth;
 
 trait HandleRevisions
 {
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return \A17\Twill\Models\Model
+     */
     public function hydrateHandleRevisions($object, $fields)
     {
         // HandleRepeaters trait => getRepeaters
@@ -23,6 +28,11 @@ trait HandleRevisions
         return $object;
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return array
+     */
     public function beforeSaveHandleRevisions($object, $fields)
     {
         $lastRevisionPayload = json_decode($object->revisions->first()->payload ?? "{}", true);
@@ -37,6 +47,11 @@ trait HandleRevisions
         return $fields;
     }
 
+    /**
+     * @param int $id
+     * @param array $fields
+     * @return \A17\Twill\Models\Model
+     */
     public function preview($id, $fields)
     {
         $object = $this->model->findOrFail($id);
@@ -44,6 +59,11 @@ trait HandleRevisions
         return $this->hydrateObject($object, $fields);
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return \A17\Twill\Models\Model
+     */
     protected function hydrateObject($object, $fields)
     {
         $fields = $this->prepareFieldsBeforeSave($object, $fields);
@@ -55,6 +75,11 @@ trait HandleRevisions
         return $object;
     }
 
+    /**
+     * @param int $id
+     * @param int $revisionId
+     * @return \A17\Twill\Models\Model
+     */
     public function previewForRevision($id, $revisionId)
     {
         $object = $this->model->findOrFail($id);
@@ -67,6 +92,14 @@ trait HandleRevisions
         return $hydratedObject;
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @param string $relationship
+     * @param \A17\Twill\Models\Model|null $model
+     * @param string|null $customHydratedRelationship
+     * @return void
+     */
     public function hydrateMultiSelect($object, $fields, $relationship, $model = null, $customHydratedRelationship = null)
     {
         $fieldsHasElements = isset($fields[$relationship]) && !empty($fields[$relationship]);
@@ -83,11 +116,27 @@ trait HandleRevisions
         $object->setRelation($customHydratedRelationship ?? $relationship, $relatedElementsCollection);
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @param string $relationship
+     * @param string $positionAttribute
+     * @param \A17\Twill\Models\Model|null $model
+     * @return null
+     */
     public function hydrateBrowser($object, $fields, $relationship, $positionAttribute = 'position', $model = null)
     {
         return $this->hydrateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute, $model);
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @param string $relationship
+     * @param string $positionAttribute
+     * @param \A17\Twill\Models\Model|null $model
+     * @return void
+     */
     public function hydrateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute = 'position', $model = null)
     {
         $fieldsHasElements = isset($fields['browsers'][$relationship]) && !empty($fields['browsers'][$relationship]);
@@ -107,6 +156,14 @@ trait HandleRevisions
         $object->setRelation($relationship, $relatedElementsCollection);
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @param string $relationship
+     * @param \A17\Twill\Models\Model $model
+     * @param string|null $repeaterName
+     * @return void
+     */
     public function hydrateRepeater($object, $fields, $relationship, $model, $repeaterName = null)
     {
         if (!$repeaterName) {
@@ -132,12 +189,19 @@ trait HandleRevisions
         $object->setRelation($relationship, $repeaterCollection);
     }
 
+    /**
+     * @return int
+     */
     public function getCountForMine()
     {
         $query = $this->model->newQuery();
         return $this->filter($query, $this->countScope)->mine()->count();
     }
 
+    /**
+     * @param string $slug
+     * @return int|bool
+     */
     public function getCountByStatusSlugHandleRevisions($slug)
     {
         if ($slug === 'mine') {
