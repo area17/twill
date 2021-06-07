@@ -12,18 +12,18 @@ trait HandleBrowsers
     /**
      * All browsers used in the model, as an array of browser names:
      * [
-     *  'books',
-     *  'publications'
-     * ].
+     *     'books',
+     *     'publications'
+     * ]
      *
-     * When only the browser name is given here, its rest information will be inferred from the name.
-     * Each browser's detail can also be override with an array
+     * When only the browser name is given, the rest of the parameters are inferred from the name.
+     * The parameters can also be overridden with an array:
      * [
-     *  'books',
-     *  'publication' => [
-     *      'routePrefix' => 'collections',
-     *      'titleKey' => 'name'
-     *  ]
+     *     'books',
+     *     'publication' => [
+     *         'routePrefix' => 'collections',
+     *         'titleKey' => 'name'
+     *     ]
      * ]
      *
      * @var array
