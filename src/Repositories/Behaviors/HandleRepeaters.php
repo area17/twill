@@ -337,7 +337,7 @@ trait HandleRepeaters
     }
 
     /**
-     * Get the relation name (shoud be lower camel case, ex. userGroup, contactOffice).
+     * Guess the relation name (shoud be lower camel case, ex. userGroup, contactOffice).
      *
      * @param string $repeaterName
      * @return string
@@ -348,7 +348,7 @@ trait HandleRepeaters
     }
 
     /**
-     * Get the model name (should be singular upper camel case, ex. User, ArticleType).
+     * Guess the model name (should be singular upper camel case, ex. User, ArticleType).
      *
      * @param string $repeaterName
      * @return string
