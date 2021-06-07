@@ -1,7 +1,7 @@
 <template>
   <div class="editorSidebar">
     <template v-show="hasBlockActive">
-      <a17-block-list>
+      <a17-block-list :section="section">
         <div class="editorSidebar__edit-list" slot-scope="{ savedBlocks }">
           <a17-block-model
             :block="savedBlock"
@@ -63,6 +63,10 @@
       activeBlock: {
         type: Object,
         default: () => {}
+      },
+      section: {
+        type: String,
+        required: true
       },
       sections: {
         type: Array,
