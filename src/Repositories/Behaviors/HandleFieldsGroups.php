@@ -9,7 +9,7 @@ trait HandleFieldsGroups
 
     /**
      * @param \A17\Twill\Models\Model $object
-     * @param array $fields
+     * @param array|null $fields
      * @return \A17\Twill\Models\Model
      */
     public function hydrateHandleFieldsGroups($object, $fields)
@@ -22,7 +22,7 @@ trait HandleFieldsGroups
 
         return $object;
     }
-    
+
     /**
      * @param \A17\Twill\Models\Model|null $object
      * @param array $fields
@@ -34,7 +34,6 @@ trait HandleFieldsGroups
     }
 
     /**
-     * @param \A17\Twill\Models\Model|null $object
      * @param array $fields
      * @return array
      */
@@ -69,11 +68,11 @@ trait HandleFieldsGroups
             $fields[$group] = Arr::where(Arr::only($fields, $groupFields), function ($value, $key) {
                 return !empty($value);
             });
-            
+
             if (empty($fields[$group])) {
                 $fields[$group] = null;
             }
-            
+
             Arr::forget($fields, $groupFields);
         }
 
