@@ -55,13 +55,9 @@
         type: Number,
         default: 0
       },
-      expand: {
+      opened: {
         type: Boolean,
         default: true
-      },
-      closed: {
-        type: Boolean,
-        default: false
       },
       size: {
         type: String,
@@ -74,7 +70,7 @@
     },
     data () {
       return {
-        visible: this.expand,
+        visible: true,
         hover: false,
         withMoveDropdown: true,
         withAddDropdown: true
@@ -100,8 +96,8 @@
       }
     },
     watch: {
-      expand: function (visible) {
-        this.visible = visible
+      opened () {
+        this.visible = this.opened
       }
     },
     methods: {

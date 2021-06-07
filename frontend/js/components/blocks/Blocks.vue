@@ -17,8 +17,8 @@
                               ref="blockList"
                               :block="block"
                               :index="blockIndex"
-                              :expand="savedBlocks.length <= 3"
-                              @expand="checkExpandBlocks"
+                              :opened="opened"
+                              @expand="setOpened"
                               v-if="availableBlocks.length">
                 <template v-for="availableBlock in availableBlocks">
                   <button
@@ -33,7 +33,7 @@
                 </template>
                 <div slot="dropdown-action">
                   <button type="button"
-                          v-if="allBlocksExpands"
+                          v-if="opened"
                           @click="collapseAllBlocks()">
                           {{ $trans('fields.block-editor.collapse-all', 'Collapse all') }}
                   </button>
@@ -113,7 +113,7 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
+  import { mapState, mapGetters } from 'vuex'
   import { DraggableMixin, EditorMixin } from '@/mixins/index'
   import draggable from 'vuedraggable'
   import BlockItem from '@/components/blocks/BlockItem.vue'
@@ -141,16 +141,32 @@
     },
     data () {
       return {
-        allBlocksExpands: false,
+        opened: true,
         handle: '.block__handle' // drag handle
       }
     },
     computed: {
       ...mapState({
         editor: state => state.blocks.editor
-      })
+      }),
+      ...mapGetters([
+        'blocksByName'
+      ])
     },
     methods: {
+      setOpened: function (value) {
+        const allHidden = this.$refs.blockList.every((block) => !block.visible)
+        if (allHidden) {
+          this.opened = false
+        }
+        if (value) this.opened = true
+      },
+      collapseAllBlocks: function () {
+        this.opened = false
+      },
+      expandAllBlocks: function () {
+        this.opened = true
+      },
       checkExpandBlocks () {
         this.allBlocksExpands = this.$refs.blockList.every((blocks) => blocks.visible)
       },
@@ -182,29 +198,16 @@
           })
         }
       },
-      collapseAllBlocks () {
-        this.$refs.blockList.forEach(block => {
-          block.visible = false
-        })
-        this.$nextTick(() => {
-          this.checkExpandBlocks()
-        })
-      },
       openInEditor (fn, block, index) {
         fn()
         this.openEditor(block, index)
-      },
-      expandAllBlocks () {
-        this.$refs.blockList.forEach(block => {
-          block.visible = true
-        })
-        this.$nextTick(() => {
-          this.checkExpandBlocks()
-        })
       }
     },
     mounted () {
-      this.checkExpandBlocks()
+      // if there are blocks, these should be all collapse by default
+      this.$nextTick(function () {
+        if (this.blocksByName(this.section).length > 3) this.collapseAllBlocks()
+      })
     }
   }
 </script>
