@@ -13,7 +13,7 @@ export default {
   },
   computed: {
     blockIndex () {
-      return this.block ? this.blockIndexBySection(this.block, this.section) : 0
+      return this.block ? this.getBlockIndex(this.block, this.section) : 0
     },
     isActive () {
       return this.block && Object.keys(this.activeBlock).length > 0 ? this.block.id === this.activeBlock.id : false
@@ -21,9 +21,9 @@ export default {
     ...mapState({
       activeBlock: state => state.blocks.active
     }),
-    ...mapGetters([
-      'blockIndexBySection'
-    ])
+    ...mapGetters({
+      getBlockIndex: 'blockIndex'
+    })
   },
   methods: {
     add (block, index = -1) {

@@ -47,9 +47,9 @@ const state = {
 // getters
 const getters = {
   previewsById: state => (id) => state.previews[id] ? state.previews[id] : '',
-  blocksByName: state => section => state.blocks[section],
-  availableBlocksByName: state => section => state.available[section],
-  blockIndexBySection: (state, getters) => (block, section) => getters.blocksByName(section).findIndex(b => b.id === block.id),
+  blocks: state => section => state.blocks[section],
+  availableBlocks: state => section => state.available[section],
+  blockIndex: (state, getters) => (block, section) => getters.blocks(section).findIndex(b => b.id === block.id),
   sections: state => Object.keys(state.available).reduce((acc, section) => {
     acc.push({
       label: section.charAt(0).toUpperCase() + section.slice(1),

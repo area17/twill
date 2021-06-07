@@ -111,7 +111,10 @@
       ...mapState({
         revisions: state => state.revision.all
       }),
-      ...mapGetters(['blocksByName', 'sections'])
+      ...mapGetters([
+        'blocks',
+        'sections'
+      ])
     },
     provide () {
       return {

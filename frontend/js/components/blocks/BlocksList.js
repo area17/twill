@@ -4,15 +4,16 @@ import { BLOCKS } from '@/store/mutations'
 export default {
   props: {
     section: {
-      type: String
+      type: String,
+      required: true
     }
   },
   computed: {
     availableBlocks () {
-      return this.section ? this.availableBlocksByName(this.section) : this.allAvailableBlocks
+      return this.getAvailableBlocks(this.section)
     },
     savedBlocks () {
-      return this.section ? this.blocksByName(this.section) : this.allBlocks
+      return this.blocks(this.section)
     },
     hasBlockActive () {
       return Object.keys(this.activeBlock).length > 0
@@ -20,15 +21,11 @@ export default {
     ...mapState({
       activeBlock: state => state.blocks.active
     }),
-    ...mapGetters(
-      [
-        'allBlocks',
-        'allAvailableBlocks',
-        'availableBlocksByName',
-        'blocksByName',
-        'sections'
-      ]
-    )
+    ...mapGetters({
+      getAvailableBlocks: 'availableBlocks',
+      blocks: 'blocks',
+      sections: 'sections'
+    })
   },
   methods: {
     reorderBlocks (value) {

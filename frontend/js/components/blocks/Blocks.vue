@@ -150,7 +150,7 @@
         editor: state => state.blocks.editor
       }),
       ...mapGetters([
-        'blocksByName'
+        'blocks'
       ])
     },
     methods: {
@@ -206,7 +206,7 @@
     mounted () {
       // if there are blocks, these should be all collapse by default
       this.$nextTick(function () {
-        if (this.blocksByName(this.section).length > 3) this.collapseAllBlocks()
+        if (this.blocks(this.section).length > 3) this.collapseAllBlocks()
       })
     }
   }
