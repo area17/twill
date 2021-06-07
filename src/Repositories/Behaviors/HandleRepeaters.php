@@ -13,18 +13,18 @@ trait HandleRepeaters
     /**
      * All repeaters used in the model, as an array of repeater names:
      * [
-     *  'article_repeater',
-     *  'page_repeater'
+     *     'article_repeater',
+     *     'page_repeater'
      * ].
      *
-     * When only the repeater name is given here, its model and relation will be inferred from the name.
-     * Each repeater's detail can also be override with an array
+     * When only the repeater name is given, the model and relation are inferred from the name.
+     * The parameters can also be overridden with an array:
      * [
-     *  'article_repeater',
-     *  'page_repeater' => [
-     *      'model' => 'Page',
-     *      'relation' => 'pages'
-     *  ]
+     *     'article_repeater',
+     *     'page_repeater' => [
+     *         'model' => 'Page',
+     *         'relation' => 'pages'
+     *     ]
      * ]
      *
      * @var array
