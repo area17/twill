@@ -61,38 +61,58 @@ const getters = {
 
 const mutations = {
   [BLOCKS.ADD_BLOCK] (state, { block, index, section }) {
-    // init used section
-    if (!state.blocks[section]) state.blocks[section] = []
+    const updated = [...state.blocks[section]] || []
 
     if (index > -1) {
-      state.blocks[section].splice(index, 0, block) // add after a certain position
+      updated.splice(index, 0, block) // add after a certain position
     } else {
-      state.blocks[section].push(block) // or add a new blocks at the end of the list
+      updated.push(block) // or add a new blocks at the end of the list
     }
+
+    Vue.set(state.blocks, section, updated)
   },
   [BLOCKS.MOVE_BLOCK] (state, { section, newIndex, oldIndex }) {
-    if (newIndex >= state.blocks[section].length) {
-      let k = newIndex - state.blocks[section].length
+    const updated = [...state.blocks[section]]
+
+    if (newIndex >= updated.length) {
+      let k = newIndex - updated.length
       while ((k--) + 1) {
-        state.blocks[section].push(undefined)
+        updated.push(undefined)
       }
     }
-    state.blocks[section].splice(newIndex, 0, state.blocks[section].splice(oldIndex, 1)[0])
+
+    updated.splice(newIndex, 0, updated.splice(oldIndex, 1)[0])
+
+    Vue.set(state.blocks, section, updated)
   },
   [BLOCKS.DELETE_BLOCK] (state, { section, index }) {
     const id = state.blocks[section][index].id
-    if (id) Vue.delete(state.previews, id)
-    state.blocks[section].splice(index, 1)
+    const updated = [...state.blocks[section]]
+
+    if (id) {
+      Vue.delete(state.previews, id)
+    }
+
+    updated.splice(index, 1)
+
+    Vue.set(state.blocks, section, updated)
   },
   [BLOCKS.DUPLICATE_BLOCK] (state, { section, index, block }) {
-    state.blocks[section].splice(index + 1, 0, block)
+    const updated = [...state.blocks[section]]
+
+    updated.splice(index + 1, 0, block)
+
+    Vue.set(state.blocks, section, updated)
   },
   [BLOCKS.REORDER_BLOCKS] (state, { section, value }) {
-    state.blocks[section] = value
+    Vue.set(state.blocks, section, value)
   },
   [BLOCKS.ACTIVATE_BLOCK] (state, { section, index }) {
-    if (state.blocks[section] && state.blocks[section][index]) state.active = state.blocks[section][index]
-    else state.active = {}
+    if (state.blocks[section] && state.blocks[section][index]) {
+      state.active = { ...state.blocks[section][index] }
+    } else {
+      state.active = {}
+    }
   },
   [BLOCKS.ADD_BLOCK_PREVIEW] (state, data) {
     Vue.set(state.previews, data.id, data.html)
