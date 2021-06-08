@@ -4,7 +4,7 @@ export default {
   props: {
     section: {
       type: String,
-      default: 'default'
+      required: true
     },
     blocks: {
       type: Array,

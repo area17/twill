@@ -8,7 +8,7 @@
     <template v-slot:overlay__header>
       <a17-dropdown ref="editorDropdown" position="bottom-left" :maxWidth="400" :maxHeight="300">
             <a17-button class="editorDropdown__trigger" @click="$refs.editorDropdown.toggle()">
-              {{ getCurrentSectionLabel() }} <span v-svg symbol="dropdown_module"></span>
+              {{ currentSectionLabel }} <span v-svg symbol="dropdown_module"></span>
             </a17-button>
             <div slot="dropdown__content">
               <button type="button" class="editorDropdown" @click="updateSection(section.value)" v-for="section in sections"  :key="section.value">
@@ -102,19 +102,26 @@
     },
     data () {
       return {
-        section: 'default',
+        section: null,
         editorOpen: false,
         htmlEditorClass: htmlClasses.editor
       }
     },
     computed: {
+      initialSection () {
+        return this.sections[0] && this.sections[0].value
+      },
       ...mapState({
         revisions: state => state.revision.all
       }),
       ...mapGetters([
         'blocks',
         'sections'
-      ])
+      ]),
+      currentSectionLabel () {
+        const current = this.sections && this.sections.find(section => section.value === this.section)
+        return current && current.label
+      }
     },
     provide () {
       return {
@@ -124,18 +131,20 @@
     methods: {
       // Section functions
       initSection () {
-        this.updateSection('default', false)
+        if (!this.section) {
+          const section = (this.sections[0] && this.sections[0].value)
+          this.updateSection(section)
+        }
       },
       updateSection (section) {
-        this.section = section
-      },
-      getCurrentSectionLabel () {
-        return this.sections.find(section => section.value === this.section).label || ''
+        if (this.section !== section) {
+          this.section = section
+        }
       },
       // Editor state functions
       open (index, section = false) {
         if (section) {
-          this.updateSection(section, true)
+          this.updateSection(section)
         }
 
         this.editorOpen = true
@@ -143,7 +152,6 @@
         this.$refs.overlay.open()
       },
       close () {
-        this.initSection()
         this.editorOpen = false
       },
       resize () {
@@ -170,6 +178,9 @@
       openPreview () {
         if (this.$root.$refs.preview) this.$root.$refs.preview.open()
       }
+    },
+    created () {
+      this.initSection()
     }
   }
 </script>

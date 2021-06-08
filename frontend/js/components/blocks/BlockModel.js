@@ -8,7 +8,7 @@ export default {
     },
     section: {
       type: String,
-      default: 'default'
+      required: true
     }
   },
   computed: {
