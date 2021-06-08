@@ -155,7 +155,7 @@
     },
     methods: {
       setOpened: function () {
-        const allClosed = this.$refs.blockList.every((block) => !block.visible)
+        const allClosed = this.$refs.blockList && this.$refs.blockList.every((block) => !block.visible)
         if (allClosed) {
           this.opened = false
         }
