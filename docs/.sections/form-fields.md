@@ -1070,7 +1070,7 @@ Schema::table('posts', function (Blueprint $table) {
     ...
 });
 ```
-### Conditional Fields
+### Conditional fields
 
 You can conditionally display fields based on the values of other fields in your form. For example, if you wanted to display a video embed text field only if the type of article, a radio field, is "video" you'd do something like the following:
 
@@ -1092,7 +1092,7 @@ You can conditionally display fields based on the values of other fields in your
     ]
 ])
 
-@component('twill::partials.form.utils._connected_fields', [
+@formConnectedFields([
     'fieldName' => 'type',
     'fieldValues' => 'video',
     'renderForBlocks' => true/false # (depending on regular form vs block form)
@@ -1101,7 +1101,7 @@ You can conditionally display fields based on the values of other fields in your
         'name' => 'video_embed',
         'label' => 'Video embed'
     ])
-@endcomponent
+@endformConnectedFields
 ```
 Here's an example based on a checkbox field where the value is either true or false:
 
@@ -1111,7 +1111,7 @@ Here's an example based on a checkbox field where the value is either true or fa
     'label' => 'Vertical Story'
 ])
 
-@component('twill::partials.form.utils._connected_fields', [
+@formConnectedFields([
     'fieldName' => 'vertical_article',
     'fieldValues' => true,
     'renderForBlocks' => true/false # (depending on regular form vs block form)
@@ -1120,5 +1120,5 @@ Here's an example based on a checkbox field where the value is either true or fa
         'name' => 'vertical_image',
         'label' => 'Vertical Image',
     ])
-@endcomponent
+@endformConnectedFields
 ```
