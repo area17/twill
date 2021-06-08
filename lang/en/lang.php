@@ -1,14 +1,15 @@
 <?php
-/*
-|--------------------------------------------------------------------------
-| 5 Steps to Contribute a New Twill Localization at Ease
-|--------------------------------------------------------------------------
-| 1. Find the "lang.csv" under "lang" directory.
-| 2. Import the csv file into a blank Google Sheet.
-| 3. Each column is a language, enter the translation for a column. (tips: feel free to freeze rows and columns).
-| 4. Download the Google Sheet as CSV, replace the original "lang/lang.csv" with the new one.
-| 5. Run the command "php artisan twill:lang" to sync all lang files.
- */
+    /*
+    |--------------------------------------------------------------------------
+    | 5 Steps to Contribute a New Twill Localization at Ease
+    |--------------------------------------------------------------------------
+    | 1. Find the "lang.csv" under "lang" directory.
+    | 2. Import the csv file into a blank Google Sheet.
+    | 3. Each column is a language, enter the translation for a column. (tips: feel free to freeze rows and columns).
+    | 4. Download the Google Sheet as CSV, replace the original "lang/lang.csv" with the new one.
+    | 5. Run the command "php artisan twill:lang" to sync all lang files.
+    */
+
 
 return [
     'auth' => [
@@ -81,7 +82,6 @@ return [
     'fields' => [
         'block-editor' => [
             'add-content' => 'Add content',
-            'add-item' => 'Add item',
             'collapse-all' => 'Collapse all',
             'create-another' => 'Create another',
             'delete' => 'Delete',
@@ -89,6 +89,7 @@ return [
             'loading' => 'Loading',
             'open-in-editor' => 'Open in editor',
             'preview' => 'Preview',
+            'add-item' => 'Add item',
         ],
         'browser' => [
             'add-label' => 'Add',
@@ -151,8 +152,6 @@ return [
         'add-new-button' => 'Add new',
         'bulk-actions' => 'Bulk actions',
         'bulk-clear' => 'Clear',
-        'bulk-selected-item' => 'item selected',
-        'bulk-selected-items' => 'items selected',
         'columns' => [
             'featured' => 'Featured',
             'name' => 'Name',
@@ -179,8 +178,8 @@ return [
             'destroy' => 'Destroy',
             'duplicate' => 'Duplicate',
             'edit' => 'Edit',
-            'feature' => 'Feature',
             'publish' => 'Publish',
+            'feature' => 'Feature',
             'restore' => 'Restore',
             'unfeature' => 'Unfeature',
             'unpublish' => 'Unpublish',
@@ -197,6 +196,8 @@ return [
         'paginate' => [
             'rows-per-page' => 'Rows per page:',
         ],
+        'bulk-selected-item' => 'item selected',
+        'bulk-selected-items' => 'items selected',
         'reorder' => [
             'success' => ':modelTitle order changed!',
             'error' => ':modelTitle order was not changed. Something wrong happened!',
@@ -324,22 +325,17 @@ return [
         'settings' => 'Settings',
         'close-menu' => 'Close menu',
     ],
-    'settings' => [
-        'update' => 'Update',
-        'cancel' => 'Cancel',
-        'fieldset-label' => 'Edit settings',
-    ],
     'notifications' => [
         'reset' => [
-            'subject' => ':appName | Reset password',
             'action' => 'Reset password',
             'content' => 'You are receiving this email because we received a password reset. If you did not request a password reset, no further action is required.',
+            'subject' => ':appName | Reset password',
         ],
         'welcome' => [
-            'subject' => ':appName | Welcome',
             'action' => 'Choose your own password',
             'content' => 'You are receiving this email because an account was created for you on :name.',
             'title' => 'Welcome',
+            'subject' => ':appName | Welcome',
         ],
     ],
     'overlay' => [
@@ -432,5 +428,10 @@ return [
         'update-disabled-user-and-create-new' => 'Update disabled user and create new',
         'user-image' => 'Image',
         'users' => 'Users',
+    ],
+    'settings' => [
+        'update' => 'Update',
+        'cancel' => 'Cancel',
+        'fieldset-label' => 'Edit settings',
     ],
 ];
