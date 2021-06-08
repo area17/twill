@@ -107,7 +107,7 @@
         return {
           'max-height': this.maxHeight > 0 ? this.maxHeight + 'px' : '',
           overflow: this.maxHeight > 0 ? 'hidden' : '',
-          'overflow-y': this.maxHeight > 0 ? 'auto' : ''
+          'overflow-y': this.maxHeight > 0 ? 'scroll' : ''
         }
       }
     },
