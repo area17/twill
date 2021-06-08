@@ -157,10 +157,12 @@ const getBlockPreview = (block, commit, rootState, callback) => {
 
 const actions = {
   [ACTIONS.GET_PREVIEW] ({ commit, state, rootState }, { section, index = -1 }) {
-    let block = state.blocks[section] && index >= 0 ? state.blocks[section][index] : {}
+    let block = state.blocks[section] && index >= 0 ? { ...state.blocks[section][index] } : {}
 
     // refresh preview of the active block
-    if (state.active && state.active.hasOwnProperty('id') && index === -1) block = state.active
+    if (state.active && state.active.hasOwnProperty('id') && index === -1) {
+      block = { ...state.active }
+    }
 
     getBlockPreview(block, commit, rootState)
   },
