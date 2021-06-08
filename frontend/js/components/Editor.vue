@@ -48,7 +48,6 @@
                 :hasBlockActive="hasBlockActive"
                 :sections="sections"
                 :blocks="availableBlocks"
-                :savedBlocksLength="savedBlocks.length"
                 @section:update="updateSection"
               >
                 {{ $trans('fields.block-editor.add-content', 'Add content') }}

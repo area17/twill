@@ -15,11 +15,15 @@ export default {
     savedBlocks () {
       return this.blocks(this.section)
     },
+    allSavedBlocks () {
+      return this.used && Object.keys(this.used).reduce((acc, section) => acc.concat(this.used[section]), [])
+    },
     hasBlockActive () {
       return Object.keys(this.activeBlock).length > 0
     },
     ...mapState({
-      activeBlock: state => state.blocks.active
+      activeBlock: state => state.blocks.active,
+      used: state => state.blocks.blocks
     }),
     ...mapGetters({
       getAvailableBlocks: 'availableBlocks',
@@ -50,6 +54,7 @@ export default {
       moveBlock: this.moveBlock,
       sections: this.sections,
       hasBlockActive: this.hasBlockActive,
+      allSavedBlocks: this.allSavedBlocks,
       activeBlock: this.activeBlock
     })
   }

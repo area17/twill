@@ -2,18 +2,18 @@
   <div class="editorSidebar">
     <template v-show="hasBlockActive">
       <a17-block-list :section="section">
-        <div class="editorSidebar__edit-list" slot-scope="{ savedBlocks }">
+        <div class="editorSidebar__edit-list" slot-scope="{ allSavedBlocks }">
           <a17-block-model
             :block="savedBlock"
             :section="section"
-            v-for="savedBlock in savedBlocks"
+            v-for="savedBlock in allSavedBlocks"
             :key="savedBlock.id">
             <div class="editorSidebar__edit-block"
                  slot-scope="{ block, isActive, blockIndex, move, remove, unEdit }">
               <a17-sidebar-block-item :block="block"
                                       v-show="isActive"
                                       :blockIndex="blockIndex"
-                                      :blocksLength="savedBlocksLength"
+                                      :blocksLength="allSavedBlocks.length"
                                       @block:move="move"
                                       @block:delete="deleteBlock(remove)"/>
               <div class="editorSidebar__actions">
