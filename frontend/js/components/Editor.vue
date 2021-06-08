@@ -108,8 +108,9 @@
       }
     },
     computed: {
-      initialSection () {
-        return this.sections[0] && this.sections[0].value
+      currentSectionLabel () {
+        const current = this.sections && this.sections.find(section => section.value === this.section)
+        return current && current.label
       },
       ...mapState({
         revisions: state => state.revision.all
@@ -117,11 +118,7 @@
       ...mapGetters([
         'blocks',
         'sections'
-      ]),
-      currentSectionLabel () {
-        const current = this.sections && this.sections.find(section => section.value === this.section)
-        return current && current.label
-      }
+      ])
     },
     provide () {
       return {
@@ -173,7 +170,6 @@
         // resize all previews
         this.$refs.previews.resizeAllIframes()
       },
-
       // Open Revision modal
       openPreview () {
         if (this.$root.$refs.preview) this.$root.$refs.preview.open()
