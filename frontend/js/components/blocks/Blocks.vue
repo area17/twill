@@ -1,7 +1,6 @@
 <template>
-  <a17-blocks-list :section="section">
-    <div class="blocks"
-         slot-scope="{ savedBlocks, availableBlocks, moveBlock }">
+  <a17-blocks-list :section="section" v-slot="{ savedBlocks, availableBlocks, moveBlock }">
+    <div class="blocks">
       <draggable class="blocks__container"
                  :value="savedBlocks"
                  @update="({oldIndex, newIndex}) => moveBlock({ oldIndex, newIndex })"
@@ -12,9 +11,9 @@
                v-for="savedBlock in savedBlocks"
                :key="savedBlock.id">
             <a17-block-model :section="section"
-                             :block="savedBlock">
-              <a17-block-item slot-scope="{ block, blockIndex, add, edit, move, remove, duplicate }"
-                              ref="blockList"
+                             :block="savedBlock"
+                             v-slot="{ block, blockIndex, add, edit, move, remove, duplicate }">
+              <a17-block-item ref="blockList"
                               :block="block"
                               :index="blockIndex"
                               :opened="opened"
@@ -85,9 +84,9 @@
             <template v-for="availableBlock in availableBlocks">
               <a17-block-model :section="section"
                                :block="availableBlock"
-                               :key="availableBlock.component">
+                               :key="availableBlock.component"
+                               v-slot="{ add, block }">
                 <button type="button"
-                        slot-scope="{ add, block }"
                         :key="availableBlock.component"
                         @click="handleBlockAdd(add, block)">
                   <span class="blocks__icon"

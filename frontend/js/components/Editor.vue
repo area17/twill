@@ -17,18 +17,15 @@
             </div>
           </a17-dropdown>
     </template>
-    <a17-block-list :section="section">
-      <div
-        class="editor"
-        slot-scope="{
-          availableBlocks,
-          hasBlockActive,
-          savedBlocks,
-          sections,
-          reorderBlocks,
-          moveBlock
-        }"
-      >
+    <a17-block-list :section="section" v-slot="{
+      availableBlocks,
+      hasBlockActive,
+      savedBlocks,
+      sections,
+      reorderBlocks,
+      moveBlock
+    }">
+      <div class="editor">
         <a17-button
           v-if="revisions.length"
           class="editor__leave"

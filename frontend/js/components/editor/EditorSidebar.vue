@@ -1,15 +1,15 @@
 <template>
   <div class="editorSidebar">
     <template v-show="hasBlockActive">
-      <a17-block-list :section="section">
-        <div class="editorSidebar__edit-list" slot-scope="{ allSavedBlocks }">
+      <a17-block-list :section="section" v-slot="{ allSavedBlocks }">
+        <div class="editorSidebar__edit-list">
           <a17-block-model
             :block="savedBlock"
             :section="section"
             v-for="savedBlock in allSavedBlocks"
-            :key="savedBlock.id">
-            <div class="editorSidebar__edit-block"
-                 slot-scope="{ block, isActive, blockIndex, move, remove, unEdit }">
+            :key="savedBlock.id"
+            v-slot="{ block, isActive, blockIndex, move, remove, unEdit }">
+            <div class="editorSidebar__edit-block">
               <a17-sidebar-block-item :block="block"
                                       v-show="isActive"
                                       :blockIndex="blockIndex"

@@ -1,9 +1,8 @@
 <template>
-  <a17-block-model :section="section">
+  <a17-block-model :section="section" v-slot="{ add, edit, unEdit }">
     <div class="editorPreview"
          :class="previewClass"
          :style="previewStyle"
-         slot-scope="{ add, edit, unEdit }"
          @mousedown="_unselectBlock(unEdit)">
       <div class="editorPreview__empty"
            v-if="!blocks.length">
@@ -18,9 +17,9 @@
         <template v-for="savedBlock in blocks">
           <a17-block-model :block="savedBlock"
                            :key="savedBlock.id"
-                           :section="section">
-            <a17-editor-block-preview slot-scope="{ block, isActive, blockIndex, move, remove, edit, unEdit }"
-                                      :ref="block.id"
+                           :section="section"
+                           v-slot="{ block, isActive, blockIndex, move, remove, edit, unEdit }">
+            <a17-editor-block-preview :ref="block.id"
                                       :block="block"
                                       :blockIndex="blockIndex"
                                       :blocksLength="blocks.length"
