@@ -152,7 +152,7 @@ $model->fileObject($roleName)
 
 ::: tip INFO
 The file library can be used to upload files of any type and to attach those files to records using the `file` form field.
-For example, you could store video files and render them on your frontend, with a CDN on top of it. We recommand Youtube and Vimeo for regular video embeds, but for muted, decorative, autoplaying videos, .mp4 files in the file library can be a great solution.
+For example, you could store video files and render them on your frontend, with a CDN on top of it. We recommend Youtube and Vimeo for regular video embeds, but for muted, decorative, autoplaying videos, .mp4 files in the file library can be a great solution.
 :::
 
 ### Imgix and S3 direct uploads
