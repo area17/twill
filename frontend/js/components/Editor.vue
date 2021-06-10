@@ -5,7 +5,7 @@
     :customClasses="htmlEditorClass"
     @close="close"
   >
-    <template v-slot:overlay__header>
+    <template v-slot:overlay__header v-if="sections.length > 1">
       <a17-dropdown ref="editorDropdown" position="bottom-left" :maxWidth="400" :maxHeight="300">
             <a17-button class="editorDropdown__trigger" @click="$refs.editorDropdown.toggle()">
               {{ currentSectionLabel }} <span v-svg symbol="dropdown_module"></span>
