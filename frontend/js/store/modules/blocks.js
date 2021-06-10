@@ -47,8 +47,8 @@ const state = {
 // getters
 const getters = {
   previewsById: state => (id) => state.previews[id] ? state.previews[id] : '',
-  blocks: state => section => state.blocks[section],
-  availableBlocks: state => section => state.available[section],
+  blocks: state => section => state.blocks[section] || [],
+  availableBlocks: state => section => state.available[section] || [],
   blockIndex: (state, getters) => (block, section) => getters.blocks(section).findIndex(b => b.id === block.id),
   sections: state => Object.keys(state.available).reduce((acc, section) => {
     acc.push({
@@ -61,7 +61,7 @@ const getters = {
 
 const mutations = {
   [BLOCKS.ADD_BLOCK] (state, { block, index, section }) {
-    const updated = [...state.blocks[section]] || []
+    const updated = state.blocks[section] || []
 
     if (index > -1) {
       updated.splice(index, 0, block) // add after a certain position
@@ -72,7 +72,7 @@ const mutations = {
     Vue.set(state.blocks, section, updated)
   },
   [BLOCKS.MOVE_BLOCK] (state, { section, newIndex, oldIndex }) {
-    const updated = [...state.blocks[section]]
+    const updated = state.blocks[section] || []
 
     if (newIndex >= updated.length) {
       let k = newIndex - updated.length
@@ -87,7 +87,7 @@ const mutations = {
   },
   [BLOCKS.DELETE_BLOCK] (state, { section, index }) {
     const id = state.blocks[section][index].id
-    const updated = [...state.blocks[section]]
+    const updated = state.blocks[section] || []
 
     if (id) {
       Vue.delete(state.previews, id)
@@ -98,7 +98,7 @@ const mutations = {
     Vue.set(state.blocks, section, updated)
   },
   [BLOCKS.DUPLICATE_BLOCK] (state, { section, index, block }) {
-    const updated = [...state.blocks[section]]
+    const updated = state.blocks[section] || []
 
     updated.splice(index + 1, 0, block)
 
