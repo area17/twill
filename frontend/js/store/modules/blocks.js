@@ -83,6 +83,29 @@ const mutations = {
 
     Vue.set(state.blocks, editorName, updated)
   },
+  [BLOCKS.TRAVEL_BLOCK] (state, { block, editorName, newEditorName, index, newIndex }) {
+    console.log('travel', block, editorName, newEditorName, index, newIndex)
+    // add
+    const newBlocks = state.blocks[newEditorName] || []
+
+    if (newIndex > -1) {
+      newBlocks.splice(newIndex, 0, block) // add after a certain position
+    }
+
+    Vue.set(state.blocks, newEditorName, newBlocks)
+
+    // delete
+    const id = state.blocks[editorName][index].id
+    const oldBlocks = state.blocks[editorName] || []
+
+    if (id) {
+      Vue.delete(state.previews, id)
+    }
+
+    oldBlocks.splice(index, 1)
+
+    Vue.set(state.blocks, editorName, oldBlocks)
+  },
   [BLOCKS.DELETE_BLOCK] (state, { editorName, index }) {
     const id = state.blocks[editorName][index].id
     const updated = state.blocks[editorName] || []

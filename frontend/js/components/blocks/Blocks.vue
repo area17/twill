@@ -1,10 +1,11 @@
 <template>
-  <a17-blocks-list :editor-name="editorName" v-slot="{ savedBlocks, availableBlocks, moveBlock }">
+  <a17-blocks-list :editor-name="editorName" v-slot="{ savedBlocks, availableBlocks, moveBlock, travelBlock }">
     <div class="blocks">
       <draggable class="blocks__container"
                  :value="savedBlocks"
                  group="blocks"
-                 @change="e => log(e, addBlock, removeBlock)"
+                 :move="handleOnMove"
+                 @end="e => handleOnEnd(travelBlock)"
                  @update="({oldIndex, newIndex}) => moveBlock({ oldIndex, newIndex })"
                  :options="dragOptions">
         <transition-group name="draggable_list"
@@ -173,6 +174,31 @@
       },
       checkExpandBlocks () {
         this.allBlocksExpands = this.$refs.blockList.every((blocks) => blocks.visible)
+      },
+      handleOnMove (e) {
+        const { draggedContext, relatedContext } = e
+        const { index, element: draggedElement, futureIndex } = draggedContext
+        const { element: relatedElement } = relatedContext
+
+        this.nextMove = {
+          block: draggedElement,
+          editorName: relatedElement.name,
+          newIndex: futureIndex,
+          index
+        }
+      },
+      handleOnEnd (travelFn) {
+        const {
+          block,
+          editorName,
+          newIndex,
+          index
+        } = this.nextMove
+
+        // devrait combiner celle-ci et @update event
+        if (block.name !== editorName) {
+          travelFn && travelFn(block, editorName, index, newIndex)
+        }
       },
       handleBlockAdd (fn, block, index = -1) {
         fn(block, index)
