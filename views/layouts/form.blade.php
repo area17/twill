@@ -132,7 +132,8 @@
         fields: [],
         editor: {{ $editor ? 'true' : 'false' }},
         isCustom: {{ $customForm ? 'true' : 'false' }},
-        reloadOnSuccess: {{ ($reloadOnSuccess ?? false) ? 'true' : 'false' }}
+        reloadOnSuccess: {{ ($reloadOnSuccess ?? false) ? 'true' : 'false' }},
+        editorNames: []
     }
 
     window['{{ config('twill.js_namespace') }}'].STORE.publication = {

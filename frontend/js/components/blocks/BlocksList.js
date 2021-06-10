@@ -23,12 +23,12 @@ export default {
     },
     ...mapState({
       activeBlock: state => state.blocks.active,
-      used: state => state.blocks.blocks
+      used: state => state.blocks.blocks,
+      editorNames: state => state.blocks.editorNames
     }),
     ...mapGetters({
       getAvailableBlocks: 'availableBlocks',
-      blocks: 'blocks',
-      editorNames: 'editorNames'
+      blocks: 'blocks'
     })
   },
   methods: {

@@ -77,7 +77,7 @@
 
           <a17-button size="small"
                       variant="action"
-                      @click="$refs.blocksDropdown.toggle()">{{ title }}
+                      @click="$refs.blocksDropdown.toggle()">{{ trigger }}
           </a17-button>
 
           <div slot="dropdown__content">
@@ -129,6 +129,10 @@
     },
     mixins: [DraggableMixin, EditorMixin],
     props: {
+      trigger: {
+        type: String,
+        default: ''
+      },
       title: {
         type: String,
         default: ''

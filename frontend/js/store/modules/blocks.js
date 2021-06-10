@@ -23,6 +23,11 @@ const state = {
    */
   editor: window[process.env.VUE_APP_NAME].STORE.form.editor || false,
   /**
+   * Array of Object editor names avaialble in this form in value/label pairs
+   * @type {Array}
+   */
+  editorNames: window[process.env.VUE_APP_NAME].STORE.form.editorNames || [],
+  /**
    * An object with all the blocks available to add
    * @type {Object}
    */
@@ -49,14 +54,7 @@ const getters = {
   previewsById: state => (id) => state.previews[id] ? state.previews[id] : '',
   blocks: state => editorName => state.blocks[editorName] || [],
   availableBlocks: state => editorName => state.available[editorName] || [],
-  blockIndex: (state, getters) => (block, editorName) => getters.blocks(editorName).findIndex(b => b.id === block.id),
-  editorNames: state => Object.keys(state.available).reduce((acc, editorName) => {
-    acc.push({
-      label: editorName.charAt(0).toUpperCase() + editorName.slice(1),
-      value: editorName
-    })
-    return acc
-  }, [])
+  blockIndex: (state, getters) => (block, editorName) => getters.blocks(editorName).findIndex(b => b.id === block.id)
 }
 
 const mutations = {

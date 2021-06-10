@@ -109,11 +109,11 @@
         return current && current.label
       },
       ...mapState({
-        revisions: state => state.revision.all
+        revisions: state => state.revision.all,
+        editorNames: state => state.blocks.editorNames
       }),
       ...mapGetters([
-        'blocks',
-        'editorNames'
+        'blocks'
       ])
     },
     provide () {
