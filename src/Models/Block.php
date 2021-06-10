@@ -22,7 +22,7 @@ class Block extends BaseModel
         'type',
         'child_key',
         'parent_id',
-        'name',
+        'editor_name',
     ];
 
     protected $casts = [
@@ -31,11 +31,11 @@ class Block extends BaseModel
 
     protected $with = ['medias'];
 
-    public function scopeNamed($query, $name = 'default')
+    public function scopeEditor($query, $name = 'default')
     {
         return $name === 'default' ?
-            $query->where('name', $name)->orWhereNull('name') :
-            $query->where('name', $name);
+            $query->where('editor_name', $name)->orWhereNull('editor_name') :
+            $query->where('editor_name', $name);
     }
 
     public function blockable()

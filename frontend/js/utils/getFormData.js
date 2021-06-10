@@ -35,7 +35,7 @@ export const buildBlock = (block, rootState) => {
   return {
     id: block.id,
     type: block.type,
-    name: block.name,
+    editor_name: block.name,
     // retrieve all fields for this block and clean up field names
     content: rootState.form.fields.filter((field) => {
       return isBlockField(field.name, block.id)

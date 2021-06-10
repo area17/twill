@@ -21,8 +21,8 @@ trait HasBlocks
         return $this->blocks
             ->filter(function ($block) use ($name) {
                 return $name === 'default'
-                ? ($block->name === $name || $block->name === null)
-                : $block->name === $name;
+                ? ($block->editor_name === $name || $block->editor_name === null)
+                : $block->editor_name === $name;
             })
             ->where('parent_id', null)
             ->map(function ($block) use ($blockViewMappings, $renderChilds, $data) {

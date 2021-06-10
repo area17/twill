@@ -142,7 +142,7 @@ trait HandleBlocks
                 $childBlock = $this->buildBlock($childBlock, $object, true);
                 $childBlock['child_key'] = $childKey;
                 $childBlock['position'] = $index + 1;
-                $childBlock['name'] = $parentBlockFields['name'] ?? 'default';
+                $childBlock['editor_name'] = $parentBlockFields['editor_name'] ?? 'default';
                 $childBlock['blocks'] = $this->getChildBlocks($object, $childBlock);
 
                 $childBlocksList->push($childBlock);
@@ -191,7 +191,7 @@ trait HandleBlocks
                     'id' => $block->id,
                     'type' => $blockTypeConfig['component'],
                     'title' => $blockTypeConfig['title'],
-                    'name' => $block->name ?? 'default',
+                    'name' => $block->editor_name ?? 'default',
                     'attributes' => $blockTypeConfig['attributes'] ?? [],
                 ];
 
@@ -202,7 +202,7 @@ trait HandleBlocks
                         'max' => $blockTypeConfig['max'],
                     ] : []);
                 } else {
-                    $fields['blocks'][$block->name ?? 'default'][] = $blockItem + [
+                    $fields['blocks'][$blockItem['name']][] = $blockItem + [
                         'icon' => $blockTypeConfig['icon'],
                     ];
                 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddNameColumnToBlocksTable extends Migration
+class AddEditorNameColumnToBlocksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,9 +15,9 @@ class AddNameColumnToBlocksTable extends Migration
     {
         $twillBlocksTable = config('twill.blocks_table', 'twill_blocks');
 
-        if (Schema::hasTable($twillBlocksTable) && !Schema::hasColumn($twillBlocksTable, 'name')) {
+        if (Schema::hasTable($twillBlocksTable) && !Schema::hasColumn($twillBlocksTable, 'editor_name')) {
             Schema::table($twillBlocksTable, function (Blueprint $table) {
-                $table->string('name', 60)->nullable();
+                $table->string('editor_name', 60)->nullable();
             });
         }
     }
@@ -31,9 +31,9 @@ class AddNameColumnToBlocksTable extends Migration
     {
         $twillBlocksTable = config('twill.blocks_table', 'twill_blocks');
 
-        if (Schema::hasTable($twillBlocksTable) && Schema::hasColumn($twillBlocksTable, 'name')) {
+        if (Schema::hasTable($twillBlocksTable) && Schema::hasColumn($twillBlocksTable, 'editor_name')) {
             Schema::table($twillBlocksTable, function (Blueprint $table) {
-                $table->dropColumn('name');
+                $table->dropColumn('editor_name');
             });
         }
     }
