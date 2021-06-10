@@ -1,11 +1,11 @@
 <template>
   <div class="editorSidebar">
     <template v-show="hasBlockActive">
-      <a17-block-list :section="section" v-slot="{ allSavedBlocks }">
+      <a17-block-list :editor-name="editorName" v-slot="{ allSavedBlocks }">
         <div class="editorSidebar__edit-list">
           <a17-block-model
             :block="savedBlock"
-            :section="section"
+            :editor-name="editorName"
             v-for="savedBlock in allSavedBlocks"
             :key="savedBlock.id"
             v-slot="{ block, isActive, blockIndex, move, remove, unEdit }">
@@ -64,11 +64,11 @@
         type: Object,
         default: () => {}
       },
-      section: {
+      editorName: {
         type: String,
         required: true
       },
-      sections: {
+      editorNames: {
         type: Array,
         default: () => []
       }

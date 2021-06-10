@@ -1,5 +1,5 @@
 <template>
-  <a17-blocks-list :section="section" v-slot="{ savedBlocks, availableBlocks, moveBlock }">
+  <a17-blocks-list :editor-name="editorName" v-slot="{ savedBlocks, availableBlocks, moveBlock }">
     <div class="blocks">
       <draggable class="blocks__container"
                  :value="savedBlocks"
@@ -10,7 +10,7 @@
           <div class="blocks__item"
                v-for="savedBlock in savedBlocks"
                :key="savedBlock.id">
-            <a17-block-model :section="section"
+            <a17-block-model :editor-name="editorName"
                              :block="savedBlock"
                              v-slot="{ block, blockIndex, add, edit, move, remove, duplicate }">
               <a17-block-item ref="blockList"
@@ -43,7 +43,7 @@
                   </button>
                   <button type="button"
                           v-if="editor"
-                          @click="openInEditor(edit, blockIndex, section)">
+                          @click="openInEditor(edit, blockIndex, editorName)">
                           {{ $trans('fields.block-editor.open-in-editor', 'Open in editor') }}
                   </button>
                   <button type="button"
@@ -82,7 +82,7 @@
 
           <div slot="dropdown__content">
             <template v-for="availableBlock in availableBlocks">
-              <a17-block-model :section="section"
+              <a17-block-model :editor-name="editorName"
                                :block="availableBlock"
                                :key="availableBlock.component"
                                v-slot="{ add, block }">
@@ -102,7 +102,7 @@
           <a href="#"
              class="f--link f--link-underlined--o"
              v-if="editor"
-             @click.prevent="openEditor(-1, section)">
+             @click.prevent="openEditor(-1, editorName)">
             {{ $trans('fields.block-editor.open-in-editor', 'Open in editor') }}
           </a>
         </div>
@@ -133,7 +133,7 @@
         type: String,
         default: ''
       },
-      section: {
+      editorName: {
         type: String,
         required: true
       }
@@ -204,7 +204,7 @@
     mounted () {
       // if there are blocks, these should be all collapse by default
       this.$nextTick(function () {
-        if (this.blocks(this.section) && this.blocks(this.section).length > 3) this.collapseAllBlocks()
+        if (this.blocks(this.editorName) && this.blocks(this.editorName).length > 3) this.collapseAllBlocks()
       })
     }
   }

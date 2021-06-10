@@ -7,7 +7,7 @@
 @unless($withoutSeparator ?? false)
 <hr/>
 @endunless
-<a17-blocks title="{{ $label }}" section="{{ $name }}"></a17-blocks>
+<a17-blocks title="{{ $label }}" editor-name="{{ $name }}"></a17-blocks>
 
 @push('vuexStore')
     window['{{ config('twill.js_namespace') }}'].STORE.form.availableBlocks['{{ $name }}'] = {!! json_encode(array_values($allowedBlocks)) !!}

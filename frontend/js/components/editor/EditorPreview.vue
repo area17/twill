@@ -1,5 +1,5 @@
 <template>
-  <a17-block-model :section="section" v-slot="{ add, edit, unEdit }">
+  <a17-block-model :editor-name="editorName" v-slot="{ add, edit, unEdit }">
     <div class="editorPreview"
          :class="previewClass"
          :style="previewStyle"
@@ -17,7 +17,7 @@
         <template v-for="savedBlock in blocks">
           <a17-block-model :block="savedBlock"
                            :key="savedBlock.id"
-                           :section="section"
+                           :editor-name="editorName"
                            v-slot="{ block, isActive, blockIndex, move, remove, edit, unEdit }">
             <a17-editor-block-preview :ref="block.id"
                                       :block="block"
@@ -153,7 +153,7 @@
       getAllPreviews () {
         this.loading = true
         this.$store.dispatch(ACTIONS.GET_ALL_PREVIEWS, {
-          section: this.section
+          editorName: this.editorName
         })
           .then(() => {
             this.$nextTick(() => {
@@ -164,7 +164,7 @@
       getPreview (index = -1) {
         this.loading = true
         this.$store.dispatch(ACTIONS.GET_PREVIEW, {
-          section: this.section,
+          editorName: this.editorName,
           index: index
         })
           .then(() => {
@@ -204,7 +204,7 @@
       this.dispose()
     },
     watch: {
-      section () {
+      editorName () {
         this.unSubscribe()
         this.getAllPreviews()
       },

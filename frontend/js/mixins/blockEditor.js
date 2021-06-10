@@ -2,7 +2,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 export default {
   props: {
-    section: {
+    editorName: {
       type: String,
       required: true
     },

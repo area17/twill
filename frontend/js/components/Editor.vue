@@ -5,23 +5,23 @@
     :customClasses="htmlEditorClass"
     @close="close"
   >
-    <template v-slot:overlay__header v-if="sections.length > 1">
+    <template v-slot:overlay__header v-if="editorNames.length > 1">
       <a17-dropdown ref="editorDropdown" position="bottom-left" :maxWidth="400" :maxHeight="300">
             <a17-button class="editorDropdown__trigger" @click="$refs.editorDropdown.toggle()">
-              {{ currentSectionLabel }} <span v-svg symbol="dropdown_module"></span>
+              {{ currentEditorLabel }} <span v-svg symbol="dropdown_module"></span>
             </a17-button>
             <div slot="dropdown__content">
-              <button type="button" class="editorDropdown" @click="updateSection(section.value)" v-for="section in sections"  :key="section.value">
-                {{ section.label }}
+              <button type="button" class="editorDropdown" @click="updateEditorName(editorName.value)" v-for="editorName in editorNames"  :key="editorName.value">
+                {{ editorName.label }}
               </button>
             </div>
           </a17-dropdown>
     </template>
-    <a17-block-list :section="section" v-slot="{
+    <a17-block-list :editor-name="editorName" v-slot="{
       availableBlocks,
       hasBlockActive,
       savedBlocks,
-      sections,
+      editorNames,
       reorderBlocks,
       moveBlock
     }">
@@ -41,11 +41,11 @@
           <div class="editor__inner">
             <div class="editor__sidebar" ref="sidebar">
               <a17-editorsidebar
-                :section="section"
+                :editor-name="editorName"
                 :hasBlockActive="hasBlockActive"
-                :sections="sections"
+                :editorNames="editorNames"
                 :blocks="availableBlocks"
-                @section:update="updateSection"
+                @editorName:update="updateEditorName"
               >
                 {{ $trans('fields.block-editor.add-content', 'Add content') }}
               </a17-editorsidebar>
@@ -55,7 +55,7 @@
               <a17-editorpreview
                 ref="previews"
                 v-if="editorOpen"
-                :section="section"
+                :editor-name="editorName"
                 :blocks="savedBlocks"
                 :hasBlockActive="hasBlockActive"
                 :sandbox="previewSandbox"
@@ -98,14 +98,14 @@
     },
     data () {
       return {
-        section: null,
+        editorName: null,
         editorOpen: false,
         htmlEditorClass: htmlClasses.editor
       }
     },
     computed: {
-      currentSectionLabel () {
-        const current = this.sections && this.sections.find(section => section.value === this.section)
+      currentEditorLabel () {
+        const current = this.editorNames && this.editorNames.find(editorName => editorName.value === this.editorName)
         return current && current.label
       },
       ...mapState({
@@ -113,7 +113,7 @@
       }),
       ...mapGetters([
         'blocks',
-        'sections'
+        'editorNames'
       ])
     },
     provide () {
@@ -122,22 +122,22 @@
       }
     },
     methods: {
-      // Section functions
-      initSection () {
-        if (!this.section) {
-          const section = (this.sections[0] && this.sections[0].value)
-          this.updateSection(section)
+      // EditorName functions
+      initEditorName () {
+        if (!this.editorName) {
+          const editorName = (this.editorNames[0] && this.editorNames[0].value)
+          this.updateEditorName(editorName)
         }
       },
-      updateSection (section) {
-        if (this.section !== section) {
-          this.section = section
+      updateEditorName (editorName) {
+        if (this.editorName !== editorName) {
+          this.editorName = editorName
         }
       },
       // Editor state functions
-      open (index, section = false) {
-        if (section) {
-          this.updateSection(section)
+      open (index, editorName = false) {
+        if (editorName) {
+          this.updateEditorName(editorName)
         }
 
         this.editorOpen = true
@@ -172,7 +172,7 @@
       }
     },
     created () {
-      this.initSection()
+      this.initEditorName()
     }
   }
 </script>

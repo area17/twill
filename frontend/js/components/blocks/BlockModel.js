@@ -6,14 +6,14 @@ export default {
     block: {
       type: Object
     },
-    section: {
+    editorName: {
       type: String,
       required: true
     }
   },
   computed: {
     blockIndex () {
-      return this.block ? this.getBlockIndex(this.block, this.section) : 0
+      return this.block ? this.getBlockIndex(this.block, this.editorName) : 0
     },
     isActive () {
       return this.block && Object.keys(this.activeBlock).length > 0 ? this.block.id === this.activeBlock.id : false
@@ -28,7 +28,7 @@ export default {
   methods: {
     add (block, index = -1) {
       this.$store.commit(BLOCKS.ADD_BLOCK, {
-        section: this.section,
+        editorName: this.editorName,
         block: {
           id: this.setBlockID(),
           title: block.title,
@@ -41,20 +41,20 @@ export default {
     },
     edit (index = this.blockIndex) {
       this.$store.commit(BLOCKS.ACTIVATE_BLOCK, {
-        section: this.section,
+        editorName: this.editorName,
         index: index
       })
     },
     unEdit () {
       this.$store.commit(BLOCKS.ACTIVATE_BLOCK, {
-        section: this.section,
+        editorName: this.editorName,
         index: -1
       })
     },
     move (newIndex) {
       if (this.blockIndex === newIndex) return
       this.$store.commit(BLOCKS.MOVE_BLOCK, {
-        section: this.section,
+        editorName: this.editorName,
         oldIndex: this.blockIndex,
         newIndex: newIndex
       })
@@ -63,7 +63,7 @@ export default {
       const block = Object.assign({}, this.block)
       block.id = this.setBlockID()
       this.$store.commit(BLOCKS.DUPLICATE_BLOCK, {
-        section: this.section,
+        editorName: this.editorName,
         index: this.blockIndex,
         block: block
       })
@@ -71,7 +71,7 @@ export default {
     remove () {
       this.unEdit()
       this.$store.commit(BLOCKS.DELETE_BLOCK, {
-        section: this.section,
+        editorName: this.editorName,
         index: this.blockIndex
       })
     },
