@@ -94,7 +94,8 @@ const getters = {
   },
   modalFieldValueByName: (state, getters) => name => { // want to use getters
     return getters.modalFieldsByName(name).length ? getters.modalFieldsByName(name)[0].value : ''
-  }
+  },
+  fieldsByBlockId: (state) => (id) => state.fields.filter((field) => field.name.startsWith(`blocks[${id}]`))
 }
 
 const mutations = {
@@ -106,6 +107,9 @@ const mutations = {
   // ----------- Form fields ----------- //
   [FORM.EMPTY_FORM_FIELDS] (state, status) {
     state.fields = []
+  },
+  [FORM.ADD_FORM_FIELDS] (state, fields) {
+    state.fields = [...state.fields, ...fields]
   },
   [FORM.REPLACE_FORM_FIELDS] (state, fields) {
     state.fields = fields
@@ -132,6 +136,17 @@ const mutations = {
     state.fields.forEach(function (field, index) {
       if (field.name === fieldName) state.fields.splice(index, 1)
     })
+  },
+  [FORM.DUPLICATE_BLOCK_FORM_FIELDS] (state, { fields, oldId, newId }) {
+    const newFields = []
+
+    fields.forEach(field => {
+      newFields.push({
+        name: field.name.replace(oldId, newId),
+        value: field.value
+      })
+    })
+    state.fields = [...state.fields, ...newFields]
   },
   // ----------- Modal fields ----------- //
   [FORM.EMPTY_MODAL_FIELDS] (state, status) {
@@ -306,6 +321,10 @@ const actions = {
         commit(NOTIFICATION.SET_NOTIF, { message: 'Your submission could not be validated, please fix and retry', variant: 'error' })
       }
     })
+  },
+  async [ACTIONS.DUPLICATE_BLOCK] ({ commit, getters }, { block, id }) {
+    const fields = getters.fieldsByBlockId(block.id)
+    commit(FORM.DUPLICATE_BLOCK_FORM_FIELDS, { fields, oldId: block.id, newId: id })
   }
 }
 

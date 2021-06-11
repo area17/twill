@@ -57,14 +57,17 @@ const getters = {
   blockIndex: (state, getters) => (block, editorName) => getters.blocks(editorName).findIndex(b => b.id === block.id)
 }
 
+const setBlockID = () => Date.now()
+
 const mutations = {
   [BLOCKS.ADD_BLOCK] (state, { block, index, editorName }) {
     const updated = state.blocks[editorName] || []
+    const newBlock = { ...block, id: setBlockID(), name: editorName }
 
     if (index > -1) {
-      updated.splice(index, 0, block) // add after a certain position
+      updated.splice(index, 0, newBlock) // add after a certain position
     } else {
-      updated.push(block) // or add a new blocks at the end of the list
+      updated.push(newBlock) // or add a new blocks at the end of the list
     }
 
     Vue.set(state.blocks, editorName, updated)
@@ -118,10 +121,10 @@ const mutations = {
 
     Vue.set(state.blocks, editorName, updated)
   },
-  [BLOCKS.DUPLICATE_BLOCK] (state, { editorName, index, block }) {
+  [BLOCKS.DUPLICATE_BLOCK] (state, { editorName, index, block, id }) {
     const updated = state.blocks[editorName] || []
 
-    updated.splice(index + 1, 0, block)
+    updated.splice(index, 0, { ...block, id, name: editorName })
 
     Vue.set(state.blocks, editorName, updated)
   },
@@ -200,6 +203,21 @@ const actions = {
         })
       })
     }
+  },
+  async [ACTIONS.DUPLICATE_BLOCK] ({ commit, state, rootState }, { editorName, futureIndex, block, id }) {
+    commit(BLOCKS.DUPLICATE_BLOCK, { editorName, index: futureIndex, block, id })
+  },
+  async [ACTIONS.MOVE_BLOCK_TO_EDITOR] ({ commit, dispatch }, { editorName, index, block, futureIndex, id }) {
+    await dispatch(ACTIONS.DUPLICATE_BLOCK, {
+      editorName,
+      futureIndex,
+      block,
+      id
+    })
+    commit(BLOCKS.DELETE_BLOCK, {
+      editorName: block.name,
+      index
+    })
   }
 }
 

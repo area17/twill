@@ -61,11 +61,11 @@ export default {
     },
     duplicate () {
       const block = Object.assign({}, this.block)
-      block.id = this.setBlockID()
       this.$store.commit(BLOCKS.DUPLICATE_BLOCK, {
         editorName: this.editorName,
         index: this.blockIndex,
-        block: block
+        block: block,
+        id: this.setBlockID()
       })
     },
     remove () {

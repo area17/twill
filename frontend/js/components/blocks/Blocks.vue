@@ -1,12 +1,11 @@
 <template>
-  <a17-blocks-list :editor-name="editorName" v-slot="{ savedBlocks, availableBlocks, moveBlock, travelBlock }">
+  <a17-blocks-list :editor-name="editorName" v-slot="{ savedBlocks, availableBlocks, moveBlock, moveBlockToEditor, cloneBlock }">
     <div class="blocks">
       <draggable class="blocks__container"
                  :value="savedBlocks"
                  group="blocks"
                  :move="handleOnMove"
-                 @end="e => handleOnEnd(travelBlock)"
-                 @update="({oldIndex, newIndex}) => moveBlock({ oldIndex, newIndex })"
+                 @end="e => handleOnEnd(moveBlock, moveBlockToEditor)"
                  :options="dragOptions">
         <transition-group name="draggable_list"
                           tag='div'>
@@ -48,6 +47,10 @@
                           v-if="editor"
                           @click="openInEditor(edit, blockIndex, editorName)">
                           {{ $trans('fields.block-editor.open-in-editor', 'Open in editor') }}
+                  </button>
+                  <button type="button"
+                          @click="handleClone(cloneBlock, blockIndex, block)">
+                          {{ $trans('fields.block-editor.clone-block', 'Clone block') }}
                   </button>
                   <button type="button"
                           @click="handleDuplicateBlock(duplicate)">
@@ -156,7 +159,8 @@
         editor: state => state.blocks.editor
       }),
       ...mapGetters([
-        'blocks'
+        'blocks',
+        'fieldsByBlockId'
       ])
     },
     methods: {
@@ -187,7 +191,7 @@
           index
         }
       },
-      handleOnEnd (travelFn) {
+      handleOnEnd (moveFn, moveBlockToEditorFn) {
         const {
           block,
           editorName,
@@ -195,10 +199,14 @@
           index
         } = this.nextMove
 
-        // devrait combiner celle-ci et @update event
         if (block.name !== editorName) {
-          travelFn && travelFn(block, editorName, index, newIndex)
+          moveBlockToEditorFn && moveBlockToEditorFn(block, editorName, index, newIndex)
+        } else {
+          moveFn && moveFn({ oldIndex: index, newIndex })
         }
+      },
+      handleClone (cloneFn, blockIndex, block) {
+        cloneFn && cloneFn({ block, index: blockIndex + 1 })
       },
       handleBlockAdd (fn, block, index = -1) {
         fn(block, index)

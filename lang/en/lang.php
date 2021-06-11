@@ -85,6 +85,8 @@ return [
     'fields' => [
         'block-editor' => [
             'add-content' => 'Add content',
+            'add-item' => 'Add item',
+            'clone-block' => 'Clone block',
             'collapse-all' => 'Collapse all',
             'create-another' => 'Create another',
             'delete' => 'Delete',
@@ -92,7 +94,6 @@ return [
             'loading' => 'Loading',
             'open-in-editor' => 'Open in editor',
             'preview' => 'Preview',
-            'add-item' => 'Add item',
         ],
         'browser' => [
             'add-label' => 'Add',
