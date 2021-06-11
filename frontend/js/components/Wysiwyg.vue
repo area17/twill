@@ -9,7 +9,7 @@
           <span v-if="shouldShowCounter" class="wysiwyg__limit f--tiny" :class="limitClasses">{{ counter }}</span>
         </div>
         <div class="form__field form__field--textarea" v-show="activeSource">
-          <textarea :placeholder="placeholder" :autofocus="autofocus" v-model="value"
+          <textarea :placeholder="placeholder" :autofocus="autofocus" v-model="value" @change="updateSourcecode"
                     :style="textareaHeight"></textarea>
         </div>
         <a17-button variant="ghost" @click="toggleSourcecode" class="wysiwyg__button">Source code</a17-button>
@@ -240,6 +240,9 @@
         this.editorHeight = (Math.max(50, this.$refs.editor.clientHeight) + this.toolbarHeight - 1) + 'px'
         this.activeSource = !this.activeSource
 
+        this.updateSourcecode()
+      },
+      updateSourcecode: function () {
         // set editor content
         this.updateEditor(this.value)
         this.saveIntoStore() // see formStore mixin
