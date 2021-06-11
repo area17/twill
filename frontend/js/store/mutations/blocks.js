@@ -7,7 +7,6 @@ export const REORDER_BLOCKS = 'reorderBlocks'
 export const ACTIVATE_BLOCK = 'activateBlock'
 export const ADD_BLOCK_PREVIEW = 'addBlockPreview'
 export const UPDATE_PREVIEW_LOADING = 'updateBlockPreviewLoading'
-export const TRAVEL_BLOCK = 'travelBlock'
 
 export default {
   ADD_BLOCK,
@@ -17,6 +16,5 @@ export default {
   REORDER_BLOCKS,
   ACTIVATE_BLOCK,
   ADD_BLOCK_PREVIEW,
-  UPDATE_PREVIEW_LOADING,
-  TRAVEL_BLOCK
+  UPDATE_PREVIEW_LOADING
 }
