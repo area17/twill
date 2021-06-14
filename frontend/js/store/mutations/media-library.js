@@ -23,6 +23,7 @@ export const UPDATE_MEDIA_CONNECTOR = 'updateMediaConnector'
 export const UPDATE_MEDIA_MODE = 'updateMediaMode'
 export const DESTROY_MEDIA_CONNECTOR = 'destroyMediaConnector'
 export const UPDATE_REPLACE_INDEX = 'updateReplaceIndex'
+export const ADD_MEDIAS = 'addMedias'
 
 export default {
   UPDATE_MEDIA_TYPE_TOTAL,
@@ -48,5 +49,6 @@ export default {
   UPDATE_MEDIA_MODE,
   DESTROY_MEDIA_CONNECTOR,
   UPDATE_REPLACE_INDEX,
-  UPDATE_MEDIAS
+  UPDATE_MEDIAS,
+  ADD_MEDIAS
 }
