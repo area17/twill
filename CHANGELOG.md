@@ -2,6 +2,14 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 1.2.3 (2021-06-15)
+
+Twill 1.2.3 is backporting a fix introduced in 2.4.0, which is addressing a security vulnerability on the CMS logout action.
+
+### Fixed
+
+- 🚨 Fix logout security vulnerability [`c6612ca3`](https://github.com/area17/twill/commit/c6612ca3)
+
 ## 1.2.2 (2019-08-21)
 
 Twill just surpassed 10k [installs](https://packagist.org/packages/area17/twill/stats) and today, version 1.2.2 is available with a significant amount of improvements and bug fixes thanks to the efforts of 21 contributors: Amr Noman, Antoine Doury, Antonin Caudron, Antonio Carlos Ribeiro, Bram Mittendorff, Daniel Ramos, Dmitrii Larionov, Fernando Petrelli, Franca Winter, Gilbert Moufflet, Jarred Bishop, Lorren Gordon, Nikhil Trivedi, Pablo Barrios, Quentin Renard, Rafael Milewski, Ray Tri, Riaan Laubscher, Stevan Pavlović, Yanhao Li, Žiga Pavlin.
