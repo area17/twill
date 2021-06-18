@@ -19,7 +19,6 @@
             :transition="transition"
             :requiredValue="required"
             :maxHeight="maxHeight"
-            :disabled="disabled"
             @input="updateValue"
           >
             <span slot="no-options">{{ emptyText }}</span>
@@ -43,7 +42,6 @@
   import AttributesMixin from '@/mixins/addAttributes'
   import extendedVSelect from '@/components/VSelect/ExtendedVSelect.vue' // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
   // import vSelect from 'vue-select' // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
-
   export default {
     name: 'A17VueSelect',
     mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin],
@@ -147,7 +145,6 @@
                 if (typeof this.value[0] === 'object') {
                   return this.value.map(e => e.value)
                 }
-
                 return this.value.join(',')
               }
             }
@@ -189,12 +186,10 @@
         // see formStore mixin
         this.value = value
         this.saveIntoStore()
-
         this.$emit('change', value)
       },
       getOptions: debounce(function (search, loading) {
         if (!this.isAjax()) return true
-
         loading(true)
         this.$http.get(this.ajaxUrl, { params: { q: search } }).then((resp) => {
           if (resp.data.items && resp.data.items.length) {
