@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -10,10 +11,13 @@ trait HandleRevisions
 {
     public function hydrateHandleRevisions($object, $fields)
     {
-        // HandleRepeaters trait => getRepeaters
-        foreach($this->getRepeaters() as $repeater) {
-            $this->hydrateRepeater($object, $fields, $repeater['relation'], $repeater['model']);
-        }
+        foreach($this->getBrowsers() as $browser) {
+            $relation = $browser['relation'];
+
+            //hydrate only if BelongsToMany
+            if($object->$relation() instanceof BelongsToMany) {
+                $this->hydrateBrowser($object, $fields, $relation, $browser['positionAttribute'], $browser['model']);
+            }
 
         // HandleBrowers trait => getBrowsers
         foreach($this->getBrowsers() as $browser) {
