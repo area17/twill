@@ -16,13 +16,13 @@ class SupportPermission extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('permissions') 
-            && !Schema::hasTable('groups') 
-            && !Schema::hasTable('roles') 
-            && !Schema::hasTable('permission_twill_user') 
-            && !Schema::hasTable('group_twill_user') 
-            && !Schema::hasTable('group_permission') 
-            && !Schema::hasTable('permission_role') 
+        if (!Schema::hasTable('permissions')
+            && !Schema::hasTable('groups')
+            && !Schema::hasTable('roles')
+            && !Schema::hasTable('permission_twill_user')
+            && !Schema::hasTable('group_twill_user')
+            && !Schema::hasTable('group_permission')
+            && !Schema::hasTable('permission_role')
         ) {
             Schema::create('permissions', function (Blueprint $table) {
                 createDefaultTableFields($table);
@@ -47,52 +47,52 @@ class SupportPermission extends Migration
             });
 
             Schema::create('permission_twill_user', function (Blueprint $table) {
-                $table->unsignedInteger('twill_user_id');
-                $table->foreign('twill_user_id')
-                    ->references('id')->on(config('twill.users_table', 'twill_users'))
+                $table->foreignId('twill_user_id')
+                    ->nullable()
+                    ->constrained(config('twill.users_table', 'twill_users'))
                     ->onDelete('cascade');
 
-                $table->unsignedInteger('permission_id');
-                $table->foreign('permission_id')
-                    ->references('id')->on('permissions')
+                $table->foreignId('permission_id')
+                    ->nullable()
+                    ->constrained('permissions')
                     ->onDelete('cascade');
             });
 
             Schema::create('group_twill_user', function (Blueprint $table) {
-                $table->unsignedInteger('twill_user_id');
-                $table->foreign('twill_user_id')
-                    ->references('id')->on(config('twill.users_table', 'twill_users'))
+                $table->foreignId('twill_user_id')
+                    ->nullable()
+                    ->constrained(config('twill.users_table', 'twill_users'))
                     ->onDelete('cascade');
 
-                $table->unsignedInteger('group_id');
-                $table->foreign('group_id')
-                    ->references('id')->on('groups')
+                $table->foreignId('group_id')
+                    ->nullable()
+                    ->constrained('groups')
                     ->onDelete('cascade');
 
                 $table->integer('position')->unsigned()->nullable();
             });
 
             Schema::create('group_permission', function (Blueprint $table) {
-                $table->unsignedInteger('permission_id');
-                $table->foreign('permission_id')
-                    ->references('id')->on('permissions')
+                $table->foreignId('permission_id')
+                    ->nullable()
+                    ->constrained('permissions')
                     ->onDelete('cascade');
 
-                $table->unsignedInteger('group_id');
-                $table->foreign('group_id')
-                    ->references('id')->on('groups')
+                $table->foreignId('group_id')
+                    ->nullable()
+                    ->constrained('groups')
                     ->onDelete('cascade');
             });
 
             Schema::create('permission_role', function (Blueprint $table) {
-                $table->unsignedInteger('permission_id');
-                $table->foreign('permission_id')
-                    ->references('id')->on('permissions')
+                $table->foreignId('permission_id')
+                    ->nullable()
+                    ->constrained('permissions')
                     ->onDelete('cascade');
 
-                $table->unsignedInteger('role_id');
-                $table->foreign('role_id')
-                    ->references('id')->on('roles')
+                $table->foreignId('role_id')
+                    ->nullable()
+                    ->constrained('roles')
                     ->onDelete('cascade');
             });
 
@@ -134,7 +134,6 @@ class SupportPermission extends Migration
                 'is_default' => true,
             ]);
         }
-
     }
 
     private function seedDefaultRoles()
