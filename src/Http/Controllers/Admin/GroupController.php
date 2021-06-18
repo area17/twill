@@ -131,5 +131,4 @@ class GroupController extends ModuleController
             return !$item->isEveryoneGroup();
         })->values();
     }
-
 }

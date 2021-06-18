@@ -118,6 +118,4 @@ class RoleController extends ModuleController
 
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
     }
-
-
 }
