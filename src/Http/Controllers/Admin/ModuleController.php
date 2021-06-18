@@ -1124,7 +1124,7 @@ abstract class ModuleController extends Controller
             && !$hasRoundedThumb);
         $thumb = ($hasRoundedThumb || $hasThumb) ? [
             'name' => 'thumbnail',
-            'label' => twillTrans('twill::lang.listing.columns.thumbnail'),,
+            'label' => twillTrans('twill::lang.listing.columns.thumbnail'),
             'visible' => $visibleColumns ? in_array('thumbnail', $visibleColumns) : true,
             'optional' => true,
             'sortable' => false,
