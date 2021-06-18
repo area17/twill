@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use Illuminate\Support\Str;
 use A17\Twill\Models\Permission;
 
 trait HandlePermissions
@@ -53,9 +54,9 @@ trait HandlePermissions
     {
         $oldFields = \Session::get("user-{$user->id}");
         foreach ($fields as $key => $value) {
-            if (ends_with($key, '_permission')) {
+            if (Str::endsWith($key, '_permission')) {
                 //Old permission
-                if (isset($oldFields[$key]) && $oldFields[$key] == '"' . $value . '"') {
+                if (isset($oldFields[$key]) && $oldFields[$key] == $value) {
                     continue;
                 }
                 $item_name = explode('_', $key)[0];
@@ -84,7 +85,7 @@ trait HandlePermissions
         }
 
         foreach ($fields as $key => $permissionName) {
-            if (starts_with($key, 'module_') && ends_with($key, '_permissions')) {
+            if (Str::startsWith($key, 'module_') && Str::endsWith($key, '_permissions')) {
                 $modulePermissions = Permission::available('module');
                 $model = getModelByModuleName($moduleName = explode('_', $key)[1]);
 
@@ -124,9 +125,11 @@ trait HandlePermissions
 
         $subdomainsAccess = [];
 
+
+
         foreach ($fields as $key => $permissionName) {
             //Used for the roleGroup mode
-            if (starts_with($key, 'module_') && ends_with($key, '_permissions')) {
+            if (Str::startsWith($key, 'module_') && Str::endsWith($key, '_permissions')) {
                 $modulePermissions = Permission::available('module');
                 $model = getModelByModuleName($moduleName = explode('_', $key)[1]);
 
@@ -142,7 +145,7 @@ trait HandlePermissions
                         $group->grantModulePermission($permissionName, $model);
                     }
                 }
-            } elseif (ends_with($key, '_permission')) {
+            } elseif (Str::endsWith($key, '_permission')) {
                 $item_name = explode('_', $key)[0];
                 $item_id = explode('_', $key)[1];
                 $item = getRepositoryByModuleName($item_name)->getById($item_id);
@@ -153,7 +156,7 @@ trait HandlePermissions
                 } else {
                     $group->revokeModuleItemAllPermissions($item);
                 }
-            } elseif (starts_with($key, 'subdomain_access_') && $permissionName) {
+            } elseif (Str::startsWith($key, 'subdomain_access_') && $permissionName) {
                 array_push($subdomainsAccess, substr($key, strlen('subdomain_access_')));
             }
         }
@@ -168,7 +171,7 @@ trait HandlePermissions
         foreach ($user->permissions()->moduleItem()->get() as $permission) {
             $model = $permission->permissionable()->first();
             $moduleName = getModuleNameByModel($model);
-            $fields[$moduleName . '_' . $model->id . '_permission'] = '"' . $permission->name . '"';
+            $fields[$moduleName . '_' . $model->id . '_permission'] = $permission->name;
         }
 
         \Session::put("user-{$user->id}", $fields = $this->getUserPermissionsFields($user, $fields));
@@ -182,9 +185,9 @@ trait HandlePermissions
             foreach (Permission::permissionableModules() as $moduleName) {
                 $modulePermission = $group->permissions()->module()->ofModuleName($moduleName)->first();
                 if ($modulePermission) {
-                    $fields['module_' . $moduleName . '_permissions'] = '"' . $modulePermission->name . '"';
+                    $fields['module_' . $moduleName . '_permissions'] = $modulePermission->name;
                 } else {
-                    $fields['module_' . $moduleName . '_permissions'] = '"none"';
+                    $fields['module_' . $moduleName . '_permissions'] = 'none';
                 }
             }
         } elseif (\Config::get('twill.permission.level') == 'roleGroupModule') {
@@ -192,11 +195,11 @@ trait HandlePermissions
             foreach ($group->permissions()->moduleItem()->get() as $permission) {
                 $model = $permission->permissionable()->first();
                 $moduleName = getModuleNameByModel($model);
-                $fields[$moduleName . '_' . $model->id . '_permission'] = '"' . $permission->name . '"';
+                $fields[$moduleName . '_' . $model->id . '_permission'] = $permission->name;
             }
         }
 
-        foreach($group->subdomains_access ?? [] as $subdomain) {
+        foreach ($group->subdomains_access ?? [] as $subdomain) {
             $fields['subdomain_access_' . $subdomain] = true;
         }
 
@@ -221,9 +224,9 @@ trait HandlePermissions
         foreach (Permission::permissionableModules() as $moduleName) {
             $modulePermission = $role->permissions()->module()->ofModuleName($moduleName)->first();
             if ($modulePermission) {
-                $fields['module_' . $moduleName . '_permissions'] = '"' . $modulePermission->name . '"';
+                $fields['module_' . $moduleName . '_permissions'] = $modulePermission->name;
             } else {
-                $fields['module_' . $moduleName . '_permissions'] = '"none"';
+                $fields['module_' . $moduleName . '_permissions'] = 'none';
             }
         }
 
@@ -265,14 +268,14 @@ trait HandlePermissions
 
                 $index = $moduleName . '_' . $model->id . '_permission';
                 if (isset($fields[$index])) {
-                    $current = array_search(str_replace('"', "", $fields[$index]), $itemScopes);
+                    $current = array_search($fields[$index], $itemScopes);
                     $group = array_search($permission->name, $itemScopes);
                     #check permission level
                     if ($group > $current) {
                         $fields[$index] = "\"{$permission->name}\"";
                     }
                 } else {
-                    $fields[$index] = '"' . $permission->name . '"';
+                    $fields[$index] = $permission->name;
                 }
             }
         }
@@ -303,7 +306,7 @@ trait HandlePermissions
                     if (!isset($fields[$index])) {
                         $fields[$index] = "\"{$permission}\"";
                     } else {
-                        $current = array_search(str_replace('"', "", $fields[$index]), $itemScopes);
+                        $current = array_search($fields[$index], $itemScopes);
                         $global = array_search($permission, $itemScopes);
                         #check permission level
                         if ($global > $current) {
