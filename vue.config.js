@@ -30,7 +30,7 @@ const WebpackAssetsManifest = require('webpack-assets-manifest')
 const WebpackNotifierPlugin = require('webpack-notifier')
 
 const srcDirectory = 'frontend'
-const outputDir = 'dist'
+const outputDir = isProd ? 'dist' : (process.env.TWILL_DEV_ASSETS_PATH || 'dist')
 const assetsDir = process.env.TWILL_ASSETS_DIR || 'assets/admin'
 
 const pages = {
