@@ -8,19 +8,7 @@
 <a17-content title="{{ $label }}"></a17-content>
 
 @php
-    if (isset($blocks)) {
-        $allowedBlocks = collect($blocks)->mapWithKeys(function ($block) {
-            return [$block => config('twill.block_editor.blocks.' . $block)];
-        })->filter()->toArray();
-    } elseif (isset($group)) {
-        $blocks = config('twill.block_editor.blocks');
-
-        $allowedBlocks = array_filter($blocks, function ($block) use ($group) {
-            return isset($block['group']) && $block['group'] === $group;
-        });
-    } else {
-        $allowedBlocks = config('twill.block_editor.blocks');
-    }
+    $allowedBlocks = generate_list_of_available_blocks($blocks ?? null, $group ?? $groups ?? null);
 @endphp
 
 @push('vuexStore')

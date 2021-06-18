@@ -9,7 +9,7 @@
         <template v-if="col.name === 'name'">
           <a :href="row['edit']" class="activityCell__link">{{ row[col.name] }}</a>
           <p class="activityCell__meta f--note">
-            {{ row['activity'] }} <timeago :auto-update="1" :since="new Date(row['date'])"></timeago> by {{ row['author'] }}
+            {{ row['activity'] }} <timeago :auto-update="1" :datetime="new Date(row['date'])"></timeago> {{ $trans('dashboard.activity-row.by', 'by') }} {{ row['author'] }}
             <span class="activityCell__type">{{ row['type'] }}</span>
           </p>
         </template>
@@ -19,8 +19,8 @@
       <a17-dropdown ref="activityRowSetupDropdown" position="bottom-right">
         <a17-button variant="icon" @click="$refs.activityRowSetupDropdown.toggle()"><span v-svg symbol="more-dots"></span></a17-button>
         <div slot="dropdown__content">
-          <a v-if="row.hasOwnProperty('permalink')" :href="row['permalink']" target="_blank">View Permalink</a>
-          <a v-if="row.hasOwnProperty('edit')" :href="row['edit']">Edit</a>
+          <a v-if="row.hasOwnProperty('permalink')" :href="row['permalink']" target="_blank">{{ $trans('dashboard.activity-row.view-permalink', 'View Permalink') }}</a>
+          <a v-if="row.hasOwnProperty('edit')" :href="row['edit']">{{ $trans('dashboard.activity-row.edit', 'Edit') }}</a>
           <!-- <a v-if="row.hasOwnProperty('published')" href="#" @click.prevent="togglePublish">{{ row['published'] ? 'Unpublish' : 'Publish' }}</a> -->
           <!-- <a href="#" @click.prevent="deleteRow">Delete</a> -->
         </div>

@@ -23,9 +23,10 @@
           </span>
         </span>
       </h2>
-      <a v-if="permalink || customPermalink" :href="fullUrl" target="_blank" class="titleEditor__permalink f--small">
+      <a v-if="(permalink || customPermalink) && !showModal" :href="fullUrl" target="_blank" class="titleEditor__permalink f--small">
         <span class="f--note f--external f--underlined--o">{{ visibleUrl | prettierUrl }}</span>
       </a>
+      <span v-if="showModal" class="titleEditor__permalink f--small f--note f--external f--underlined--o">{{ visibleUrl | prettierUrl }}</span>
 
       <!-- Editing modal -->
       <a17-modal class="modal--form" ref="editModal" :title="modalTitle" :forceLock="disabled">
@@ -61,7 +62,9 @@
     props: {
       modalTitle: {
         type: String,
-        default: 'Update item'
+        default: function () {
+          return this.$trans('modal.update.title')
+        }
       },
       warningMessage: {
         type: String,
@@ -70,6 +73,10 @@
       thumbnail: {
         type: String,
         default: ''
+      },
+      showModal: {
+        type: Boolean,
+        default: false
       },
       name: {
         default: 'title'
@@ -92,6 +99,9 @@
         disabled: false
       }
     },
+    mounted: function () {
+      this.showModal && this.$refs.editModal.open()
+    },
     computed: {
       titleEditorClasses: function () {
         return {
@@ -99,6 +109,7 @@
         }
       },
       mode: function () {
+        if (this.showModal) return 'done'
         return this.title.length > 0 ? 'update' : 'create'
       },
       fullUrl: function () {

@@ -198,7 +198,7 @@ class Glide implements ImageServiceInterface
      */
     public function getRawUrl($id)
     {
-        return $this->urlBuilder->getUrL($id);
+        return $this->urlBuilder->getUrl($id);
     }
 
     /**
@@ -207,7 +207,7 @@ class Glide implements ImageServiceInterface
      */
     public function getDimensions($id)
     {
-        $url = $this->urlBuilder->getUrL($id);
+        $url = $this->urlBuilder->getUrl($id);
 
         try {
             list($w, $h) = getimagesize($url);

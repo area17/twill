@@ -8,7 +8,7 @@ Twill is an [AREA 17](https://area17.com) product. It was crafted with the belie
 
 ### Benefits overview
 
-With Twill's vast number of pre-built features and associated library of Vue.js UI components, developers can focus their efforts on the unique aspects of their applications instead of rebuilding standard ones. 
+With Twill's vast number of pre-built features and associated library of Vue.js UI components, developers can focus their efforts on the unique aspects of their applications instead of rebuilding standard ones.
 
 Built to get out of your way, Twill offers:
 - No lock-in, create your own data models or hook existing ones
@@ -60,7 +60,7 @@ Built to get out of your way, Twill offers:
 
 #### Developer experience
 * Maintain a Laravel application, not a Twill application
-* Support for Laravel 5.6 to 6 and will be updated to support all future versions
+* Support for Laravel 5.6 and up – Twill will be updated to support all future versions
 * Support for both MySQL and PostgreSQL databases
 * No conflict with other Laravel packages – keep building with your tools of choice
 * No specific server requirements, if you can deploy a Laravel application, you can deploy Twill
@@ -73,11 +73,11 @@ Built to get out of your way, Twill offers:
 
 #### CRUD modules
 
-A Twill [CRUD module](#crud-modules-3) is a set of classes and configurations in your Laravel application that enable your publishers to manage a certain type of content. The structure of a CRUD module is completely up to you. 
+A Twill [CRUD module](#crud-modules-3) is a set of classes and configurations in your Laravel application that enable your publishers to manage a certain type of content. The structure of a CRUD module is completely up to you.
 
 Another way to think of a CRUD module is as a feature rich Laravel resource. In other words (and for the non-Laravel developer), a CRUD module is basically a content type (or post type, as sometimes called by other CMS solutions) with CRUD operations (Create, Read, Update, Delete), as well as custom Twill-provided operations like: Publish, Feature, Tag, Preview, Restore, Restore revision, Reorder or Bulk edit. Using Twill's media library, images and files can be attached to modules records. Also, using Twill's block editor, a rich editing experience of a module's record can be offered to publishers.
 
-In Twill's UI, a CRUD module most often consists of a listing page and a form page or modal. Records created under a module can then be associated with other modules' records to create relationships between your content. Records of your Twill modules and any associations are stored in a traditional relational database schema, following Laravel's migrations and Eloquent model conventions. 
+In Twill's UI, a CRUD module most often consists of a listing page and a form page or modal. Records created under a module can then be associated with other modules' records to create relationships between your content. Records of your Twill modules and any associations are stored in a traditional relational database schema, following Laravel's migrations and Eloquent model conventions.
 
 Twill's CRUD modules features are enabled using PHP traits you include in your Eloquent models and Twill repositories, as well as various configuration variables, and a bunch of conventions to follow. Further guidance is documented in the [CRUD modules](#crud-modules-3) section.
 
@@ -97,43 +97,43 @@ While possibilities for composition are endless, we’ve identified four standar
 
 #### CRUD listings
 
-One of the benefits of Twill is the ability to fully customize CRUD listing views. At minimum, you’ll want to include the key information for each data record so that publishers can have an at-a-glance view without having to click into a record. You can also set up a default view and give each publisher the ability to customize the columns and the number of records per pagination page. 
+One of the benefits of Twill is the ability to fully customize CRUD listing views. At minimum, you’ll want to include the key information for each data record so that publishers can have an at-a-glance view without having to click into a record. You can also set up a default view and give each publisher the ability to customize the columns and the number of records per pagination page.
 
-In certain cases, you may require nested CRUD modules. For example, if you are building a handbook website, the parent CRUD would be the handbooks and then within each handbook there are pages (child CRUD). In this case, the listing will be the parent CRUD and for each record, you’d include a column to access the child CRUDs for each. 
+In certain cases, you may require nested CRUD modules. For example, if you are building a handbook website, the parent CRUD would be the handbooks and then within each handbook there are pages (child CRUD). In this case, the listing will be the parent CRUD and for each record, you’d include a column to access the child CRUDs for each.
 
 #### CMS navigation
 
 One of the benefits of Twill is the ability to fully customize the navigation as needed to make it easy and intuitive for publishers to navigate through the CMS and perform their regular production duties. Twill has three levels of navigation:
 
-- Main navigation: we recommend that the main navigation reflects the frontend organization, in that way, it is intuitive for publishers. Additionally, the main navigation includes transversal items such as media library and global settings. 
+- Main navigation: we recommend that the main navigation reflects the frontend organization, in that way, it is intuitive for publishers. Additionally, the main navigation includes transversal items such as media library and global settings.
 
-- Secondary navigation: we recommend that you group all entities, attributes, pages, and possibly buckets (see below) under each main navigation item. For example, if you have a section called “Our work” then the secondary navigation will include: case studies (entity), sectors (attribute), how we work (page), featured (buckets), etc. 
+- Secondary navigation: we recommend that you group all entities, attributes, pages, and possibly buckets (see below) under each main navigation item. For example, if you have a section called “Our work” then the secondary navigation will include: case studies (entity), sectors (attribute), how we work (page), featured (buckets), etc.
 
-- Tertiary navigation: in certain cases, you will need a third level of navigation, however we recommend that you only use it when absolutely necessary, otherwise content may be too buried. You also have the option to turn the tertiary navigation into a breadcrumb. 
+- Tertiary navigation: in certain cases, you will need a third level of navigation, however we recommend that you only use it when absolutely necessary, otherwise content may be too buried. You also have the option to turn the tertiary navigation into a breadcrumb.
 
 
 #### Block editor
 
-Central to the Twill experience is the block editor, giving publishers full control of how they construct the content of a record. A block is a composition of form fields made available to publshers in Twill's block editor form field. 
+Central to the Twill experience is the block editor, giving publishers full control of how they construct the content of a record. A block is a composition of form fields made available to publshers in Twill's block editor form field.
 
-Generally speaking, with a standard CMS, all content is managed through fixed forms. While in a Twill CMS some of the content may be fixed (such as title, subtitle, intro, required content, etc.), when using the block editor, the content is constructed by adding and reordering blocks of content. This gives you maximum flexibility to build narrative experiences on the front end. 
+Generally speaking, with a standard CMS, all content is managed through fixed forms. While in a Twill CMS some of the content may be fixed (such as title, subtitle, intro, required content, etc.), when using the block editor, the content is constructed by adding and reordering blocks of content. This gives you maximum flexibility to build narrative experiences on the front end.
 
-For example, let’s say you’re building a blog. Your blog post form may require fixed content such as the title, short description, author, etc. But then you can use the block editor for the body of the post, allowing the publisher to add standardized blocks for text, images, quotes, slideshows, videos, related content, embeds, etc. and reorder them as needed. 
+For example, let’s say you’re building a blog. Your blog post form may require fixed content such as the title, short description, author, etc. But then you can use the block editor for the body of the post, allowing the publisher to add standardized blocks for text, images, quotes, slideshows, videos, related content, embeds, etc. and reorder them as needed.
 
-A block can include any combination of fields, including repeater fields and even data pulled from a third party service. Each block also can contain additional options so that a single block can be displayed according to different variations. This obviates the need to create a new block every time you need a different display of your content, and allows you to match the build of the page to the content, context or design required. For example, you can have a media block that may alternatively include a video or an image, be displayed at small, medium or large, or displayed inline with content or full screen. 
+A block can include any combination of fields, including repeater fields and even data pulled from a third party service. Each block also can contain additional options so that a single block can be displayed according to different variations. This obviates the need to create a new block every time you need a different display of your content, and allows you to match the build of the page to the content, context or design required. For example, you can have a media block that may alternatively include a video or an image, be displayed at small, medium or large, or displayed inline with content or full screen.
 
-To keep page-building as simple as possible, we recommend that you keep blocks to a minimum – ideally no more than 8 blocks, if possible. When adding a new block, consider: is this a unique block or simply block options? Publishers will prefer switching an option using existing content rather than having to create another block and copy and paste. 
+To keep page-building as simple as possible, we recommend that you keep blocks to a minimum – ideally no more than 8 blocks, if possible. When adding a new block, consider: is this a unique block or simply block options? Publishers will prefer switching an option using existing content rather than having to create another block and copy and paste.
 
 
 It is also important that you work with a designer early on to discuss the block strategy and make sure your content works well no matter how your publishers arrange it. Can all the blocks work in any combination or are there restrictions? If the latter, you can create form validations to block publishers from arranging blocks in certain contexts.
 
 #### Buckets
 
-Buckets are used to feature content. While the name might be boring, your publishers will love them! 
+Buckets are used to feature content. While the name might be boring, your publishers will love them!
 
-The functionality is made up of two parts: an entity navigator and buckets. The entity navigator gives access to the entities, including search and filters. Buckets represent your feature areas. For example, let’s say you have a homepage with main features (such as a hero display pointing your users to 2-3 pages), secondary features (such as a grid of content), and tertiary features. You would create three buckets for each of these feature sections. Then, your publishers can simply drag the desired entity to the bucket they want it featured in. 
+The functionality is made up of two parts: an entity navigator and buckets. The entity navigator gives access to the entities, including search and filters. Buckets represent your feature areas. For example, let’s say you have a homepage with main features (such as a hero display pointing your users to 2-3 pages), secondary features (such as a grid of content), and tertiary features. You would create three buckets for each of these feature sections. Then, your publishers can simply drag the desired entity to the bucket they want it featured in.
 
-You can also associate rules for your buckets. For example, let’s say you only want three main features and five secondary features – but unlimited tertiary features. You can add those restrictions and when the publishers try to add more than the limit, they will be informed they need to remove an entity before they can add another. 
+You can also associate rules for your buckets. For example, let’s say you only want three main features and five secondary features – but unlimited tertiary features. You can add those restrictions and when the publishers try to add more than the limit, they will be informed they need to remove an entity before they can add another.
 
 
 While buckets are primarily used for featuring, they can also be used for any purpose. For example, if you have a website that has different navigation for different market locations (e.g. USA, Europe, Asia), you can use buckets to manage this.
@@ -154,6 +154,9 @@ Over the last 15 years, nearly every engineer at AREA 17 has contributed to Twil
 Additional contributors include [Laurens van Heems](https://area17.com/about/laurens-van-heems), [Fernando Petrelli](https://area17.com/about/fernando-petrelli), [Gilbert Moufflet](https://area17.com/about/gilbert-moufflet), [Mubashar Iqbal](https://area17.com/about/mubashar-iqbal), [Pablo Barrios](https://area17.com/about/pablo-barrios), [Luis Lavena](https://area17.com/about/luis-lavena), and [Mike Byrne](https://area17.com/about/mike-byrne).
 
 ### Contribution guide
+
+#### Code of Conduct
+Twill is dedicated to building a welcoming, diverse, safe community. We expect everyone participating in the Twill community to abide by our [Code of Conduct](https://github.com/area17/twill/blob/master/CODE_OF_CONDUCT.md). Please read it. Please follow it.
 
 #### Bug reports and features submission
 To submit an issue or request a feature, please do so on [Github](https://github.com/area17/twill/issues).
@@ -190,7 +193,7 @@ Please send coherent history — make sure each individual commit in your pull r
 The Twill software is licensed under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0.html).
 
 #### User interface
-The Twill UI, including but not limited to images, icons, patterns, and derivatives thereof are licensed under the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/). 
+The Twill UI, including but not limited to images, icons, patterns, and derivatives thereof are licensed under the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).
 
 #### Attribution
 By using the Twill UI, you agree that any application which incorporates it shall prominently display the message “Made with Twill” in a legible manner in the footer of the admin console. This message must open a link to Twill.io when clicked or touched. For permission to remove the attribution, contact us at [hello@twill.io](hello@twill.io).

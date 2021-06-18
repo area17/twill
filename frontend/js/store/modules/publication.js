@@ -12,6 +12,7 @@ const state = {
   visibility: window[process.env.VUE_APP_NAME].STORE.publication.visibility || false,
   reviewProcess: window[process.env.VUE_APP_NAME].STORE.publication.reviewProcess || [],
   userInfo: window[process.env.VUE_APP_NAME].STORE.publication.userInfo || null,
+  createWithoutModal: window[process.env.VUE_APP_NAME].STORE.publication.createWithoutModal || false,
   saveType: undefined,
   visibilityOptions: [
     {
@@ -100,6 +101,9 @@ const getters = {
     return state.reviewProcess.filter(reviewProcess => reviewProcess.checked)
   },
   getSubmitOptions: state => {
+    if (state.createWithoutModal) {
+      return state.submitOptions.draft
+    }
     return (state.published || !state.withPublicationToggle) ? state.submitOptions[state.publishSubmit] : state.submitOptions.draft
   },
   isEnabledSubmitOption: (state, getters) => name => {

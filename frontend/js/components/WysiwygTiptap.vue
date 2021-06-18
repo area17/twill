@@ -134,6 +134,7 @@
           <textarea :placeholder="placeholder"
                     :autofocus="autofocus"
                     v-model="value"
+                    @change="updateSourcecode"
                     :style="textareaHeight"></textarea>
         </div>
         <a17-button variant="ghost"
@@ -311,6 +312,9 @@
         this.editorHeight = (Math.max(50, this.$refs.editor.clientHeight) + this.toolbarHeight - 1) + 'px'
         this.activeSource = !this.activeSource
 
+        this.updateSourcecode()
+      },
+      updateSourcecode: function () {
         // set editor content
         this.updateEditor(this.value)
         this.saveIntoStore() // see formStore mixin

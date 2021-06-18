@@ -14,7 +14,7 @@ class CreateSuperAdmin extends Command
      *
      * @var string
      */
-    protected $signature = 'twill:superadmin';
+    protected $signature = 'twill:superadmin {email?} {password?}';
 
     /**
      * The console command description.
@@ -78,6 +78,9 @@ class CreateSuperAdmin extends Command
      */
     private function setEmail()
     {
+        if (filled($email = $this->argument('email'))) {
+            return $email;
+        }
         $email = $this->ask('Enter an email');
         if ($this->validateEmail($email)) {
             return $email;
@@ -94,6 +97,9 @@ class CreateSuperAdmin extends Command
      */
     private function setPassword()
     {
+        if (filled($email = $this->argument('password'))) {
+            return $email;
+        }
         $password = $this->secret('Enter a password');
         if ($this->validatePassword($password)) {
             $confirmPassword = $this->secret('Confirm the password');

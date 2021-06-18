@@ -20,20 +20,20 @@
   "support": {
     "issues": "https://github.com/ifox/twill/issues/",
     "docs": "https://twill.io/docs",
-    "chat": "https://spectrum.chat/twill"
+    "chat": "https://discord.link/twill"
   },
   "require": {
-    "php": "^7.1",
+    "php": "^7.1|^8.0",
     "ext-json": "*",
     "ext-pdo": "*",
     "astrotomic/laravel-translatable": "^11.5",
-    "cartalyst/tags": "^6.0|^7.0|^8.0|^9.0|^10.0",
+    "cartalyst/tags": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
     "doctrine/dbal": "^2.9",
-    "guzzlehttp/guzzle": "^6.2",
+    "guzzlehttp/guzzle": "^6.2|^7.0",
     "imgix/imgix-php": "^3.0",
-    "laravel/framework": "~5.6|~5.7|~5.8|^6.0|^7.0",
-    "laravel/socialite": "^4.2",
-    "laravel/ui": "^1.0|^2.0",
+    "laravel/framework": "~5.6|~5.7|~5.8|^6.0|^7.0|^8.0",
+    "laravel/socialite": "^4.2|^5.0",
+    "laravel/ui": "^1.0|^2.0|^3.0",
     "league/flysystem-aws-s3-v3": "^1.0",
     "league/glide-laravel": "^1.0",
     "matthewbdaly/laravel-azure-storage": "^1.3",
@@ -46,8 +46,9 @@
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^2.16",
     "kalnoy/nestedset": "^5.0",
-    "orchestra/testbench": "~3.3|~3.4|~3.5|~3.6|~3.7|~3.8|^4.0|^5.0",
-    "phpunit/phpunit": "~5.0|~6.0|~7.0|~8.0"
+    "nunomaduro/collision": "^3.0|^4.2|^5.0",
+    "orchestra/testbench": "~3.3|~3.4|~3.5|~3.6|~3.7|~3.8|^4.0|^5.0|^6.0",
+    "phpunit/phpunit": "~5.0|~6.0|~7.0|~8.0|~9.0"
   },
   "autoload": {
     "psr-4": {
@@ -58,7 +59,7 @@
     }
   },
   "scripts": {
-    "test:phpunit": "vendor/bin/phpunit --colors=always",
+    "test:phpunit": "vendor/bin/phpunit",
     "test:analyse": "php -d memory_limit=-1 vendor/bin/phpstan analyse",
     "test:syntax": "vendor/bin/php-cs-fixer --dry-run --rules=-@PSR1 fix src",
     "test": [

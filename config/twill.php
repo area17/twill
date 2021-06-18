@@ -25,6 +25,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Admin Title Suffix
+    |--------------------------------------------------------------------------
+    |
+    | This value is added to the title tag of your Admin application.
+    |
+     */
+    'admin_app_title_suffix' => env('ADMIN_APP_TITLE_SUFFIX', 'Admin'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Admin subdomain routing support
     |--------------------------------------------------------------------------
     |
@@ -78,6 +88,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Prevent the routing system to duplicate prefix and module on route names
+    |--------------------------------------------------------------------------
+    |
+     */
+    'allow_duplicates_on_route_names' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Twill middleware group configuration
     |--------------------------------------------------------------------------
     |
@@ -105,6 +123,8 @@ return [
     'files_table' => 'files',
     'fileables_table' => 'fileables',
     'related_table' => 'related',
+    'tags_table' => 'tags',
+    'tagged_table' => 'tagged',
 
     /*
     |--------------------------------------------------------------------------
@@ -140,19 +160,24 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Twill FE Application configurqtion
+    | Twill FE Application configuration
     |--------------------------------------------------------------------------
     |
      */
     'js_namespace' => 'TWILL',
-    'dev_mode' => false,
+    'dev_mode' => env('TWILL_DEV_MODE', false),
     'dev_mode_url' => env('TWILL_DEV_MODE_URL', 'http://localhost:8080'),
     'public_directory' => env('TWILL_ASSETS_DIR', 'assets/admin'),
     'manifest_file' => 'twill-manifest.json',
     'vendor_path' => 'vendor/area17/twill',
     'custom_components_resource_path' => 'assets/js/components',
     'build_timeout' => 300,
-
+    'internal_icons' => [
+        'content-editor.svg',
+        'close_modal.svg',
+        'edit_large.svg',
+        'google-sign-in.svg',
+    ],
     /*
     |--------------------------------------------------------------------------
     | Twill app locale
@@ -161,4 +186,35 @@ return [
      */
     'locale' => 'en',
     'fallback_locale' => 'en',
+    'available_user_locales' => [
+        'en',
+        'fr',
+        'pl',
+        'de',
+        'nl',
+        'pt',
+        'zh-Hans',
+        'ru',
+    ],
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Base classes for automatic generation of Modules and Capsules
+    |--------------------------------------------------------------------------
+    |
+     */
+    'base_model' => A17\Twill\Models\Model::class,
+
+    'base_translation_model' => A17\Twill\Models\Model::class,
+
+    'base_slug_model' => A17\Twill\Models\Model::class,
+
+    'base_revision_model' => A17\Twill\Models\Revision::class,
+
+    'base_repository' => A17\Twill\Repositories\ModuleRepository::class,
+
+    'base_controller' => A17\Twill\Http\Controllers\Admin\ModuleController::class,
+
+    'base_request' => A17\Twill\Http\Requests\Admin\Request::class,
 ];

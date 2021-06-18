@@ -3,6 +3,7 @@
 namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasPresenter;
+use A17\Twill\Services\Capsules\HasCapsules;
 use A17\Twill\Models\Behaviors\IsTranslatable;
 use A17\Twill\Models\Permission;
 use Auth;
@@ -10,14 +11,20 @@ use Carbon\Carbon;
 use Cartalyst\Tags\TaggableInterface;
 use Cartalyst\Tags\TaggableTrait;
 use Illuminate\Database\Eloquent\Model as BaseModel;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 abstract class Model extends BaseModel implements TaggableInterface
 {
-    use HasPresenter, SoftDeletes, TaggableTrait, IsTranslatable;
+    use HasPresenter, SoftDeletes, TaggableTrait, IsTranslatable, HasCapsules;
 
     public $timestamps = true;
+
+    protected function isTranslationModel()
+    {
+        return Str::endsWith(get_class($this), 'Translation');
+    }
 
     public function scopePublished($query)
     {
@@ -108,8 +115,8 @@ abstract class Model extends BaseModel implements TaggableInterface
         // Use the list of translatable attributes on our base model
         if (
             blank($fillable) &&
-            Str::contains($class = get_class($this), 'Models\Translations') &&
-            property_exists($class, 'baseModuleModel')
+            $this->isTranslationModel() &&
+            property_exists($this, 'baseModuleModel')
         ) {
             $fillable = (new $this->baseModuleModel)->getTranslatedAttributes();
 
@@ -128,5 +135,24 @@ abstract class Model extends BaseModel implements TaggableInterface
     public function getTranslatedAttributes()
     {
         return $this->translatedAttributes ?? [];
+    }
+
+    protected static function bootTaggableTrait()
+    {
+        static::$tagsModel = Tag::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function tags(): MorphToMany
+    {
+        return $this->morphToMany(
+            static::$tagsModel,
+            'taggable',
+            config('twill.tagged_table', 'tagged'),
+            'taggable_id',
+            'tag_id'
+        );
     }
 }

@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Models;
 
+use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -33,6 +34,12 @@ class Media extends Model
         parent::__construct($attributes);
     }
 
+    public function scopeUnused ($query)
+    {
+        $usedIds = DB::table(config('twill.mediables_table'))->get()->pluck('media_id');
+        return $query->whereNotIn('id', $usedIds->toArray())->get();
+    }
+
     public function getDimensionsAttribute()
     {
         return $this->width . 'x' . $this->height;
@@ -51,6 +58,11 @@ class Media extends Model
     public function canDeleteSafely()
     {
         return DB::table(config('twill.mediables_table', 'twill_mediables'))->where('media_id', $this->id)->count() === 0;
+    }
+
+    public function isReferenced()
+    {
+        return DB::table(config('twill.mediables_table', 'twill_mediables'))->where('media_id', $this->id)->count() > 0;
     }
 
     public function toCmsArray()
@@ -121,6 +133,30 @@ class Media extends Model
         }
 
         return $metadatas->$name ?? $fallbackValue ?? '';
+    }
+
+    public function replace($fields)
+    {
+        $prevHeight = $this->height;
+        $prevWidth = $this->width;
+
+        if ($this->update($fields) && $this->isReferenced())
+        {
+            DB::table(config('twill.mediables_table', 'twill_mediables'))->where('media_id', $this->id)->get()->each(function ($mediable) use ($prevWidth, $prevHeight) {
+                
+                if ($prevWidth != $this->width) {
+                    $mediable->crop_x = 0;
+                    $mediable->crop_w = $this->width;
+                }
+
+                if ($prevHeight != $this->height) {
+                    $mediable->crop_y = 0;
+                    $mediable->crop_h = $this->height;
+                }
+
+                DB::table(config('twill.mediables_table', 'twill_mediables'))->where('id', $mediable->id)->update((array)$mediable);
+            });
+        }
     }
 
     public function getTable()

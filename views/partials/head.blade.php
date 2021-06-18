@@ -3,7 +3,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
 <meta name="robots" content="noindex,nofollow" />
 
-<title>{{ config('app.name') }}</title>
+<title>{{ config('app.name') }} {{ config('twill.admin_app_title_suffix') }}</title>
 
 <!-- Fonts -->
 @if(app()->isProduction())

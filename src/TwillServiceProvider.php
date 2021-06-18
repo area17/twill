@@ -2,13 +2,20 @@
 
 namespace A17\Twill;
 
+use A17\Twill\Commands\BlockMake;
 use A17\Twill\Commands\Build;
+use A17\Twill\Commands\CapsuleInstall;
 use A17\Twill\Commands\CreateSuperAdmin;
 use A17\Twill\Commands\Dev;
 use A17\Twill\Commands\GenerateBlocks;
 use A17\Twill\Commands\Install;
+use A17\Twill\Commands\ListBlocks;
+use A17\Twill\Commands\ListIcons;
+use A17\Twill\Commands\MakeCapsule;
 use A17\Twill\Commands\ModuleMake;
+use A17\Twill\Commands\ModuleMakeDeprecated;
 use A17\Twill\Commands\RefreshLQIP;
+use A17\Twill\Commands\SyncLang;
 use A17\Twill\Commands\Update;
 use A17\Twill\Http\ViewComposers\ActiveNavigation;
 use A17\Twill\Http\ViewComposers\CurrentUser;
@@ -20,6 +27,8 @@ use A17\Twill\Models\Block;
 use A17\Twill\Models\File;
 use A17\Twill\Models\Group;
 use A17\Twill\Models\Media;
+use A17\Twill\Models\User;
+use A17\Twill\Services\Capsules\HasCapsules;
 use A17\Twill\Services\FileLibrary\FileService;
 use A17\Twill\Services\MediaLibrary\ImageService;
 use Astrotomic\Translatable\TranslatableServiceProvider;
@@ -33,13 +42,14 @@ use Spatie\Activitylog\ActivitylogServiceProvider;
 
 class TwillServiceProvider extends ServiceProvider
 {
+    use HasCapsules;
 
     /**
      * The Twill version.
      *
      * @var string
      */
-    const VERSION = '2.0.1';
+    const VERSION = '2.3.1';
 
     /**
      * Service providers to be registered.
@@ -53,6 +63,7 @@ class TwillServiceProvider extends ServiceProvider
         TranslatableServiceProvider::class,
         TagsServiceProvider::class,
         ActivitylogServiceProvider::class,
+        CapsulesServiceProvider::class,
     ];
 
     private $migrationsCounter = 0;
@@ -156,7 +167,6 @@ class TwillServiceProvider extends ServiceProvider
         if (config('twill.enabled.file-library')) {
             $loader->alias('FileService', FileService::class);
         }
-
     }
 
     /**
@@ -242,7 +252,6 @@ class TwillServiceProvider extends ServiceProvider
 
     private function publishMigrations()
     {
-
         if (config('twill.load_default_migrations', true)) {
             $this->loadMigrationsFrom(__DIR__ . '/../migrations/default');
         }
@@ -257,10 +266,10 @@ class TwillServiceProvider extends ServiceProvider
     }
 
     private function publishOptionalMigration($feature)
-    {        
+    {
         if (config('twill.enabled.' . $feature, false)) {
             $this->loadMigrationsFrom(__DIR__ . '/../migrations/optional/' . $feature);
-            
+
             $this->publishes([
                 __DIR__ . '/../migrations/optional/' . $feature => database_path('migrations'),
             ], 'migrations');
@@ -296,12 +305,19 @@ class TwillServiceProvider extends ServiceProvider
         $this->commands([
             Install::class,
             ModuleMake::class,
+            MakeCapsule::class,
+            ModuleMakeDeprecated::class,
+            BlockMake::class,
+            ListIcons::class,
+            ListBlocks::class,
             CreateSuperAdmin::class,
             RefreshLQIP::class,
             GenerateBlocks::class,
             Build::class,
             Update::class,
             Dev::class,
+            SyncLang::class,
+            CapsuleInstall::class,
         ]);
     }
 
@@ -312,7 +328,7 @@ class TwillServiceProvider extends ServiceProvider
      */
     private function includeView($view, $expression)
     {
-        list($name) = str_getcsv($expression, ',', '\'');
+        [$name] = str_getcsv($expression, ',', '\'');
 
         $partialNamespace = view()->exists('admin.' . $view . $name) ? 'admin.' : 'twill::';
 
@@ -342,8 +358,10 @@ class TwillServiceProvider extends ServiceProvider
         });
 
         $blade->directive('dumpData', function ($data) {
-            return sprintf("<?php (new Symfony\Component\VarDumper\VarDumper)->dump(%s); exit; ?>",
-                null != $data ? $data : "get_defined_vars()");
+            return sprintf(
+                "<?php (new Symfony\Component\VarDumper\VarDumper)->dump(%s); exit; ?>",
+                null != $data ? $data : "get_defined_vars()"
+            );
         });
 
         $blade->directive('formField', function ($expression) {
@@ -351,13 +369,12 @@ class TwillServiceProvider extends ServiceProvider
         });
 
         $blade->directive('partialView', function ($expression) {
-
             $expressionAsArray = str_getcsv($expression, ',', '\'');
 
-            list($moduleName, $viewName) = $expressionAsArray;
+            [$moduleName, $viewName] = $expressionAsArray;
             $partialNamespace = 'twill::partials';
 
-            $viewModule = "'admin.'.$moduleName.'.{$viewName}'";
+            $viewModule = "twillViewName($moduleName, '{$viewName}')";
             $viewApplication = "'admin.partials.{$viewName}'";
             $viewModuleTwill = "'twill::'.$moduleName.'.{$viewName}'";
             $view = $partialNamespace . "." . $viewName;
@@ -387,7 +404,7 @@ class TwillServiceProvider extends ServiceProvider
         });
 
         $blade->directive('pushonce', function ($expression) {
-            list($pushName, $pushSub) = explode(':', trim(substr($expression, 1, -1)));
+            [$pushName, $pushSub] = explode(':', trim(substr($expression, 1, -1)));
             $key = '__pushonce_' . $pushName . '_' . str_replace('-', '_', $pushSub);
             return "<?php if(! isset(\$__env->{$key})): \$__env->{$key} = 1; \$__env->startPush('{$pushName}'); ?>";
         });
@@ -401,6 +418,14 @@ class TwillServiceProvider extends ServiceProvider
         $blade->component('twill::partials.form.utils._collapsed_fields', 'formCollapsedFields');
         $blade->component('twill::partials.form.utils._connected_fields', 'formConnectedFields');
         $blade->component('twill::partials.form.utils._inline_checkboxes', 'formInlineCheckboxes');
+
+        if (method_exists($blade, 'aliasComponent')) {
+            $blade->aliasComponent('twill::partials.form.utils._fieldset', 'formFieldset');
+            $blade->aliasComponent('twill::partials.form.utils._columns', 'formColumns');
+            $blade->aliasComponent('twill::partials.form.utils._collapsed_fields', 'formCollapsedFields');
+            $blade->aliasComponent('twill::partials.form.utils._connected_fields', 'formConnectedFields');
+            $blade->aliasComponent('twill::partials.form.utils._inline_checkboxes', 'formInlineCheckboxes');
+        }
     }
 
     /**

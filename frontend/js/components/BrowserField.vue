@@ -1,5 +1,10 @@
 <template>
   <div class="browserField">
+    <div class="browserField__trigger" v-if="buttonOnTop && remainingItems">
+      <a17-button type="button" variant="ghost" @click="openBrowser">{{ addLabel }}</a17-button>
+      <input type="hidden" :name="name" :value="itemsIds"/>
+      <span class="browserField__note f--small"><slot></slot></span>
+    </div>
     <table class="browserField__table" v-if="items.length">
       <draggable :tag="'tbody'" v-model="items">
         <a17-browseritem v-for="(item, index) in items" :key="item.endpointType + '_' + item.id" class="item__content"
@@ -8,7 +13,7 @@
                          :showType="endpoints.length > 0" />
       </draggable>
     </table>
-    <div class="browserField__trigger" v-if="remainingItems">
+    <div class="browserField__trigger" v-if="!buttonOnTop && remainingItems">
       <a17-button type="button" variant="ghost" @click="openBrowser">{{ addLabel }}</a17-button>
       <input type="hidden" :name="name" :value="itemsIds"/>
       <span class="browserField__note f--small"><slot></slot></span>
@@ -40,6 +45,10 @@
         type: String,
         default: ''
       },
+      browserNote: {
+        type: String,
+        default: ''
+      },
       itemLabel: {
         type: String,
         default: 'Item'
@@ -61,6 +70,10 @@
         default: 10
       },
       wide: {
+        type: Boolean,
+        default: false
+      },
+      buttonOnTop: {
         type: Boolean,
         default: false
       }
@@ -134,6 +147,7 @@
         }
         this.$store.commit(BROWSER.UPDATE_BROWSER_MAX, this.max)
         this.$store.commit(BROWSER.UPDATE_BROWSER_TITLE, this.browserTitle)
+        this.$store.commit(BROWSER.UPDATE_BROWSER_NOTE, this.browserNote)
 
         if (this.wide) {
           this.$root.$refs.browserWide.open(this.endpoints.length <= 0)

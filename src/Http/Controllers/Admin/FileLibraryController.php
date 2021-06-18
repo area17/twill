@@ -39,6 +39,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     protected $defaultFilters = [
         'search' => 'search',
         'tag' => 'tag_id',
+        'unused' => 'unused',
     ];
 
     /**
@@ -144,6 +145,10 @@ class FileLibraryController extends ModuleController implements SignUploadListen
             $requestFilters['tag'] = $this->request->get('tag');
         }
 
+        if ($this->request->has('unused') && (int) $this->request->unused === 1) {
+            $requestFilters['unused'] = $this->request->get('unused');
+        }
+
         return $requestFilters ?? [];
     }
 
@@ -195,7 +200,14 @@ class FileLibraryController extends ModuleController implements SignUploadListen
             'size' => $request->input('qqtotalfilesize'),
         ];
 
-        return $this->repository->create($fields);
+        if ($this->shouldReplaceFile($id = $request->input('media_to_replace_id'))) {
+            $file = $this->repository->whereId($id)->first();
+            $this->repository->afterDelete($file);
+            $file->update($fields);
+            return $file->fresh();
+        } else {
+            return $this->repository->create($fields);
+        }
     }
 
     /**
@@ -209,7 +221,14 @@ class FileLibraryController extends ModuleController implements SignUploadListen
             'filename' => $request->input('name'),
         ];
 
-        return $this->repository->create($fields);
+        if ($this->shouldReplaceFile($id = $request->input('media_to_replace_id'))) {
+            $file = $this->repository->whereId($id)->first();
+            $this->repository->afterDelete($file);
+            $file->update($fields);
+            return $file->fresh();
+        } else {
+            return $this->repository->create($fields);
+        }
     }
 
     /**
@@ -288,5 +307,13 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     public function uploadIsNotValid()
     {
         return $this->responseFactory->json(["invalid" => true], 500);
+    }
+
+    /**
+     * @return bool
+     */
+    private function shouldReplaceFile($id)
+    {
+        return is_numeric($id) ? $this->repository->whereId($id)->exists() : false;
     }
 }

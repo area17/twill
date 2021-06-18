@@ -3,6 +3,8 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Behaviors\HasMedias;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 trait HandleBrowsers
@@ -48,7 +50,10 @@ trait HandleBrowsers
     public function getFormFieldsHandleBrowsers($object, $fields)
     {
         foreach ($this->getBrowsers() as $browser) {
-            $fields['browsers'][$browser['browserName']] = $this->getFormFieldsForBrowser($object, $browser['relation'], $browser['routePrefix'], $browser['titleKey'], $browser['moduleName']);
+            $relation = $browser['relation'];
+            if (!empty($object->$relation)) {
+                $fields['browsers'][$browser['browserName']] = $this->getFormFieldsForBrowser($object, $relation, $browser['routePrefix'], $browser['titleKey'], $browser['moduleName']);
+            }
         }
 
         return $fields;
@@ -59,20 +64,30 @@ trait HandleBrowsers
      * @param array $fields
      * @param string $relationship
      * @param string $positionAttribute
+     * @param string|null $browserName
+     * @param array $pivotAttributes
      * @return void
      */
-    public function updateBrowser($object, $fields, $relationship, $positionAttribute = 'position', $browserName = null)
+    public function updateBrowser($object, $fields, $relationship, $positionAttribute = 'position', $browserName = null, $pivotAttributes = [])
     {
         $browserName = $browserName ?? $relationship;
         $fieldsHasElements = isset($fields['browsers'][$browserName]) && !empty($fields['browsers'][$browserName]);
         $relatedElements = $fieldsHasElements ? $fields['browsers'][$browserName] : [];
+
         $relatedElementsWithPosition = [];
         $position = 1;
+
         foreach ($relatedElements as $relatedElement) {
-            $relatedElementsWithPosition[$relatedElement['id']] = [$positionAttribute => $position++];
+            $relatedElementsWithPosition[$relatedElement['id']] = [$positionAttribute => $position++] + $pivotAttributes;
         }
 
-        $object->$relationship()->sync($relatedElementsWithPosition);
+        if ($object->$relationship() instanceof BelongsTo) {
+            $foreignKey = $object->$relationship()->getForeignKeyName();
+            $id = Arr::get($relatedElements, '0.id', null);
+            $object->update([$foreignKey => $id]);
+        } else {
+            $object->$relationship()->sync($relatedElementsWithPosition);
+        }
     }
 
     /**
@@ -108,16 +123,21 @@ trait HandleBrowsers
      */
     public function getFormFieldsForBrowser($object, $relation, $routePrefix = null, $titleKey = 'title', $moduleName = null)
     {
-        return $object->$relation->map(function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName) {
-            return [
-                'id' => $relatedElement->id,
-                'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
-                'edit' => moduleRoute($moduleName ?? $relation, $routePrefix ?? '', 'edit', $relatedElement->id),
-                'endpointType' => $relatedElement->getMorphClass(),
-            ] + (classHasTrait($relatedElement, HasMedias::class) ? [
-                'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
-            ] : []);
-        })->toArray();
+        if (!empty($object->$relation)) {
+            $fields = $object->$relation() instanceof BelongsTo ? collect([$object->$relation]) : $object->$relation;
+            return $fields->map(function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName) {
+                return [
+                    'id' => $relatedElement->id,
+                    'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
+                    'edit' => moduleRoute($moduleName ?? $relation, $routePrefix ?? '', 'edit', $relatedElement->id),
+                    'endpointType' => $relatedElement->getMorphClass(),
+                ] + (classHasTrait($relatedElement, HasMedias::class) ? [
+                    'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
+                ] : []);
+            })->toArray();
+        }
+
+        return [];
     }
 
     /**
@@ -125,12 +145,12 @@ trait HandleBrowsers
      * @param string $relation
      * @return array
      */
-    public function getFormFieldsForRelatedBrowser($object, $relation)
+    public function getFormFieldsForRelatedBrowser($object, $relation, $titleKey = 'title')
     {
-        return $object->getRelated($relation)->map(function ($relatedElement) {
+        return $object->getRelated($relation)->map(function ($relatedElement) use ($titleKey) {
             return ($relatedElement != null) ? [
                 'id' => $relatedElement->id,
-                'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
+                'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
                 'endpointType' => $relatedElement->getMorphClass(),
             ] + (empty($relatedElement->adminEditUrl) ? [] : [
                 'edit' => $relatedElement->adminEditUrl,
@@ -153,7 +173,7 @@ trait HandleBrowsers
         return collect($this->browsers)->map(function ($browser, $key) {
             $browserName = is_string($browser) ? $browser : $key;
             $moduleName = !empty($browser['moduleName']) ? $browser['moduleName'] : $this->inferModuleNameFromBrowserName($browserName);
-            
+
             return [
                 'relation' => !empty($browser['relation']) ? $browser['relation'] : $this->inferRelationFromBrowserName($browserName),
                 'routePrefix' => isset($browser['routePrefix']) ? $browser['routePrefix'] : null,
@@ -191,7 +211,7 @@ trait HandleBrowsers
     }
 
     /**
-     * The module name should be plural lower camel case 
+     * The module name should be plural lower camel case
      *
      * @param  mixed $string
      * @param  mixed $browserName

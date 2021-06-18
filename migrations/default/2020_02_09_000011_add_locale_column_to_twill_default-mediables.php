@@ -16,9 +16,11 @@ class AddLocaleColumnToTwillDefaultMediables extends Migration
 
     public function down()
     {
-        if (Schema::hasTable(config('twill.mediables_table', 'twill_mediables')) && Schema::hasColumn(config('twill.mediables_table', 'twill_mediables'), 'locale')) {
-            Schema::table(config('twill.mediables_table', 'twill_mediables'), function (Blueprint $table) {
-                $table->dropIndex('mediables_locale_index');
+        $twillMediablesTable = config('twill.mediables_table', 'twill_mediables');
+
+        if (Schema::hasTable($twillMediablesTable) && Schema::hasColumn($twillMediablesTable, 'locale')) {
+            Schema::table($twillMediablesTable, function (Blueprint $table) use ($twillMediablesTable) {
+                $table->dropIndex($twillMediablesTable . '_locale_index');
                 $table->dropColumn('locale');
             });
         }

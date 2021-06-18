@@ -11,7 +11,13 @@ trait HasTranslation
 
     public function getTranslationModelNameDefault()
     {
-        return config('twill.namespace') . "\Models\Translations\\" . class_basename($this) . 'Translation';
+        $repository = config('twill.namespace') . "\Models\Translations\\" . class_basename($this) . 'Translation';
+
+        if (@class_exists($repository)) {
+            return $repository;
+        }
+
+        return $this->getCapsuleTranslationClass(class_basename($this));
     }
 
     public function scopeWithActiveTranslations($query, $locale = null)

@@ -1,8 +1,16 @@
+@php
+    $colClassAttr = (isset($middle)) ? 'col--third col--third-wrap' : 'col--double col--double-wrap';
+@endphp
 <div class="wrapper">
-    <div class="col--double col--double-wrap">
+    <div class="{{ $colClassAttr }}">
       {{ $left }}
     </div>
-    <div class="col--double col--double-wrap">
+    @isset($middle)
+    <div class="{{ $colClassAttr }}">
+      {{ $middle }}
+    </div>
+    @endisset
+    <div class="{{ $colClassAttr }}">
       {{ $right }}
     </div>
 </div>

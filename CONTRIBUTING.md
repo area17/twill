@@ -1,3 +1,6 @@
+# Code of Conduct
+Twill is dedicated to building a welcoming, diverse, safe community. We expect everyone participating in the Twill community to abide by our [Code of Conduct](CODE_OF_CONDUCT.md). Please read it. Please follow it.
+
 # Bug reports and features submission
 To submit an issue or request a feature, please do so on [Github](https://github.com/area17/twill/issues).
 

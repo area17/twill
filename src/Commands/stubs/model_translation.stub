@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Models\Translations;
+namespace {{namespace}};
 
-use A17\Twill\Models\Model;
-use App\Models\{{modelClassName}};
+use {{baseTranslationModel}};
+use {{modelClassWithNamespace}};
 
 class {{modelTranslationClassName}} extends Model
 {

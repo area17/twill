@@ -1,5 +1,5 @@
 @php
-    $options = method_exists($options, 'map') ? $options->map(function($label, $value) {
+    $options = is_object($options) && method_exists($options, 'map') ? $options->map(function($label, $value) {
         return [
             'value' => $value,
             'label' => $label
@@ -12,6 +12,7 @@
     $searchable = $searchable ?? false;
     $inTable = $inTable ?? false;
     $inGrid = $inGrid ?? true;
+    $disabled = $disabled ?? false;
 
     // do not use for now, but this will allow you to create a new option directly from the form
     $addNew = $addNew ?? false;
@@ -30,6 +31,7 @@
         @if ($inModal) :in-modal="true" @endif
         @if ($inTable) :in-table="true" :inline="true" @endif
         @if (!$inGrid) :grid="false" @endif
+        @if ($disabled) disabled @endif
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
         :has-default-store="true"
         in-store="value"
@@ -52,6 +54,7 @@
         @if (isset($default)) selected="{{ $default }}" @endif
         @if ($required) :required="true" @endif
         @if ($inModal) :in-modal="true" @endif
+        @if ($disabled) disabled @endif
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
         :has-default-store="true"
         size="large"
@@ -77,6 +80,7 @@
             return $option['value'] === $default;
         })) }}" @endif
         @if ($required) :required="true" @endif
+        @if ($disabled) disabled @endif
         @if ($inModal) :in-modal="true" @endif
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
         :has-default-store="true"

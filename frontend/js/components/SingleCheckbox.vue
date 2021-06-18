@@ -6,17 +6,24 @@
         <label class="checkbox__label" :for="uniqId" @click.prevent="changeCheckbox">{{ label }} <span class="checkbox__icon"><span v-svg symbol="check"></span></span></label>
       </span>
     </div>
+    <template v-if="requireConfirmation">
+      <a17-dialog ref="warningConfirm" modal-title="Confirm" confirm-label="Confirm">
+        <p class="modal--tiny-title"><strong>{{ confirmTitleText }}</strong></p>
+        <p>{{ confirmMessageText }}</p>
+      </a17-dialog>
+    </template>
   </a17-inputframe>
 </template>
 
 <script>
   import randKeyMixin from '@/mixins/randKey'
-  import InputframeMixin from '@/mixins/inputFrame'
   import FormStoreMixin from '@/mixins/formStore'
+  import InputframeMixin from '@/mixins/inputFrame'
+  import ConfirmationMixin from '@/mixins/confirmationMixin'
 
   export default {
     name: 'A17SingleCheckbox',
-    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin],
+    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, ConfirmationMixin],
     props: {
       name: {
         type: String,
@@ -68,7 +75,13 @@
         this.checkedValue = newValue
       },
       changeCheckbox: function () {
-        this.checkedValue = !this.checkedValue
+        if (this.requireConfirmation) {
+          this.$refs.warningConfirm.open(() => {
+            this.checkedValue = !this.checkedValue
+          })
+        } else {
+          this.checkedValue = !this.checkedValue
+        }
       }
     }
   }

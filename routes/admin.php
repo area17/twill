@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Route;
 
 if (config('twill.enabled.users-management')) {
     Route::module('users', ['except' => ['sort', 'feature']]);
@@ -66,3 +66,6 @@ if (config('twill.enabled.dashboard')) {
 if (config('twill.enabled.search')) {
     Route::name('search')->get('search', 'DashboardController@search');
 }
+
+Route::name('icons.index')->get('/admin/icons', 'IconsController@index');
+Route::name('icons.show')->get('/admin/icons/{file}', 'IconsController@show');

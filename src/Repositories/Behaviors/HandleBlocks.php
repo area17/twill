@@ -4,8 +4,11 @@ namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Repositories\BlockRepository;
+use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Support\Collection;
+use Log;
 use Schema;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 trait HandleBlocks
 {
@@ -14,46 +17,49 @@ trait HandleBlocks
      * @param array $fields
      * @return \A17\Twill\Models\Model|void
      */
-    public function hydrateHandleBlocks($object, $fields)
+    public function hydrateHandleBlocks($object, $fields, &$fakeBlockId = 0, $parentId = null, $blocksFromFields = null, $mainCollection = null)
     {
         if ($this->shouldIgnoreFieldBeforeSave('blocks')) {
             return;
         }
 
+        $firstItem = false;
         $blocksCollection = Collection::make();
-        $blocksFromFields = $this->getBlocks($object, $fields);
-        $blockRepository = app(BlockRepository::class);
-
-        $fakeBlockId = 1;
-
-        foreach ($blocksFromFields as $block) {
-            $newBlock = $blockRepository->createForPreview($block);
-
-            $newBlock->id = $fakeBlockId;
-            $fakeBlockId++;
-
-            $childBlocksCollection = Collection::make();
-
-            foreach ($block['blocks'] as $childBlock) {
-                $childBlock['parent_id'] = $newBlock->id;
-
-                $newChildBlock = $blockRepository->createForPreview($childBlock);
-
-                $newChildBlock->id = $fakeBlockId;
-                $fakeBlockId++;
-
-                $blocksCollection->push($newChildBlock);
-                $childBlocksCollection->push($newChildBlock);
-            }
-
-            $newBlock->setRelation('children', $childBlocksCollection);
-
-            $blocksCollection->push($newBlock);
+        if ($mainCollection === null) {
+            $firstItem = true;
+            $mainCollection = Collection::make();
+        }
+        if ($blocksFromFields === null) {
+            $blocksFromFields = $this->getBlocks($object, $fields);
         }
 
-        $object->setRelation('blocks', $blocksCollection);
-
+        $blockRepository = app(BlockRepository::class);
+        $blocksCollection = $this->getChildrenBlocks($blocksFromFields, $blockRepository, $parentId, $fakeBlockId, $mainCollection);
+        $object->setRelation('blocks', $firstItem ? $mainCollection : $blocksCollection);
         return $object;
+    }
+
+    protected function getChildrenBlocks($blocks, $blockRepository, $parentId, &$fakeBlockId, $mainCollection)
+    {
+        $childBlocksCollection = Collection::make();
+
+        foreach ($blocks as $childBlock) {
+            if ($parentId) {
+                $childBlock['parent_id'] = $parentId;
+            }
+            $newChildBlock = $blockRepository->createForPreview($childBlock);
+
+            $fakeBlockId++;
+            $newChildBlock->id = $fakeBlockId;
+            if (!empty($childBlock['blocks'])) {
+                $childBlockHydrated = $this->hydrateHandleBlocks($newChildBlock, $childBlock, $fakeBlockId, $newChildBlock->id, $childBlock['blocks'], $mainCollection);
+                $newChildBlock->setRelation('children', $childBlockHydrated->blocks);
+            }
+
+            $mainCollection->push($newChildBlock);
+            $childBlocksCollection->push($newChildBlock);
+        }
+        return $childBlocksCollection;
     }
 
     /**
@@ -114,7 +120,6 @@ trait HandleBlocks
                 $blocks->push($block);
             }
         }
-
         return $blocks;
     }
 
@@ -169,13 +174,13 @@ trait HandleBlocks
 
         if ($object->has('blocks')) {
 
-            $blocksConfig = config('twill.block_editor');
+            $blocksList = app(BlockCollection::class)->list()->keyBy('name');
 
             foreach ($object->blocks as $block) {
 
                 $isInRepeater = isset($block->parent_id);
                 $configKey = $isInRepeater ? 'repeaters' : 'blocks';
-                $blockTypeConfig = $blocksConfig[$configKey][$block->type] ?? null;
+                $blockTypeConfig = $blocksList[$block->type] ?? null;
 
                 if (is_null($blockTypeConfig)) {
                     continue;
@@ -276,7 +281,26 @@ trait HandleBlocks
     {
         return Collection::make($block['content']['browsers'])->mapWithKeys(function ($ids, $relation) use ($block) {
             if (Schema::hasTable(config('twill.related_table', 'twill_related')) && $block->getRelated($relation)->isNotEmpty()) {
-                $items = $this->getFormFieldsForRelatedBrowser($block, $relation);;
+                $items = $this->getFormFieldsForRelatedBrowser($block, $relation);
+                foreach ($items as &$item) {
+                    if (!isset($item['edit'])) {
+                        try {
+                            $item['edit'] = moduleRoute(
+                                $relation,
+                                config('twill.block_editor.browser_route_prefixes.' . $relation),
+                                'edit',
+                                $item['id']
+                            );
+                        } catch (RouteNotFoundException $e) {
+                            report($e);
+                            Log::notice(
+                                "Twill warning: The url for the \"{$relation}\" browser items can't " .
+                                "be resolved. You might be missing a {$relation} key in your " .
+                                "twill.block_editor.browser_route_prefixes configuration."
+                            );
+                        }
+                    }
+                }
             } else {
                 $relationRepository = $this->getModelRepository($relation);
                 $relatedItems = $relationRepository->get([], ['id' => $ids], [], -1);

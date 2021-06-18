@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Commands;
 
+use A17\Twill\Services\Blocks\Block;
+use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
@@ -64,21 +66,36 @@ class GenerateBlocks extends Command
 
         $this->info(self::SCANNING_BLOCKS);
 
-        Collection::make($this->filesystem->files($path))->each(function ($viewFile) {
-            $blockName = $viewFile->getBasename('.blade.php');
+        $blocks = new BlockCollection();
+        $blocks
+            ->collect()
+            ->where('compiled', true)
+            ->whereIn('source', [Block::SOURCE_APP, Block::SOURCE_CUSTOM])
+            ->map(function ($block) {
+                $blockName = str_replace('a17-block-', '', $block->component);
+                $basename = str_replace('.blade.php', '', $block->fileName);
 
-            $vueBlockTemplate = $this->viewFactory->make('admin.blocks.' . $blockName, ['renderForBlocks' => true])->render();
+                $vueBlockTemplate = $this->viewFactory->make('admin.blocks.' . $basename, ['renderForBlocks' => true])->render();
 
-            $vueBlockContent = $this->viewFactory->make('twill::blocks.builder', [
-                'render' => $this->sanitize($vueBlockTemplate),
-            ])->render();
+                $vueBlockContent = $this->viewFactory->make('twill::blocks.builder', [
+                    'render' => $this->sanitize($vueBlockTemplate),
+                ])->render();
 
-            $vueBlockPath = $this->makeDirectory(resource_path(config('twill.block_editor.custom_vue_blocks_resource_path', 'assets/js/blocks'))) . '/Block' . Str::title($blockName) . '.vue';
+                $vueBlockPath = $this->makeDirectory(resource_path(config('twill.block_editor.custom_vue_blocks_resource_path', 'assets/js/blocks'))) . '/Block' . Str::title($blockName) . '.vue';
 
-            $this->filesystem->put($vueBlockPath, $vueBlockContent);
+                $write = !$this->filesystem->exists($vueBlockPath);
 
-            $this->info("Block " . Str::title($blockName) . " generated successfully");
-        });
+                if (!$write) {
+                    $write = $this->confirm("[$vueBlockPath] exists, overwrite?", false);
+                }
+
+                if ($write) {
+                    $this->filesystem->put($vueBlockPath, $vueBlockContent);
+                    $this->info("Block " . Str::title($blockName) . " generated successfully");
+                } else {
+                    $this->info("Skipping block " .  Str::title($blockName) . ".");
+                }
+            });
 
         $this->info("All blocks have been generated!");
     }
@@ -119,6 +136,6 @@ class GenerateBlocks extends Command
             '',
         );
 
-        return preg_replace($search, $replace, $html);
+        return preg_replace($search, $replace, Block::removeSpecialBladeTags($html));
     }
 }

@@ -115,9 +115,9 @@ class LoginController extends Controller
     {
         $this->guard()->logout();
 
-        $request->session()->flush();
+        $request->session()->invalidate();
 
-        $request->session()->regenerate();
+        $request->session()->regenerateToken();
 
         return $this->redirector->to(route('admin.login'));
     }

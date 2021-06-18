@@ -159,8 +159,8 @@ class UserController extends ModuleController
                     'can' => 'edit-user-groups',
                 ],
             ],
-            'customPublishedLabel' => 'Enabled',
-            'customDraftLabel' => 'Disabled',
+            'customPublishedLabel' => twillTrans('twill::lang.user-management.enabled'),
+            'customDraftLabel' => twillTrans('twill::lang.user-management.disabled'),
         ];
     }
 

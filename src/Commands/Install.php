@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Commands;
 
-use Illuminate\Console\Command;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Filesystem\Filesystem;
 
@@ -95,7 +94,9 @@ class Install extends Command
      */
     private function createSuperAdmin()
     {
-        $this->call('twill:superadmin');
+        if (!$this->option('no-interaction')) {
+            $this->call('twill:superadmin');
+        }
     }
 
     /**

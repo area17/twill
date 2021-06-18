@@ -5,8 +5,13 @@
 The media and files libraries currently support S3, Azure and local storage. Head over to the `twill` configuration file to setup your storage disk and configurations. Also check out the direct upload section of this documentation to setup your IAM users and bucket / container if you want to use S3 or Azure as a storage provider.
 
 ### Image rendering service
-This package currently ships with 2 rendering services, [Imgix](https://www.imgix.com/) and [Glide](http://glide.thephpleague.com/). It is very simple to implement another one like [Cloudinary](http://cloudinary.com/) or even another local service like or [Croppa](https://github.com/BKWLD/croppa).
-You would have to implement the `ImageServiceInterface` and modify your `twill` configuration value `media_library.image_service` with your implementation class.
+This package currently ships with 3 rendering services, [Imgix](https://www.imgix.com/), [Glide](http://glide.thephpleague.com/) and a local minimalistic rendering service. It is very simple to implement another one like [Cloudinary](http://cloudinary.com/) or even another local service like or [Croppa](https://github.com/BKWLD/croppa).
+Changing the image rendering service can be done by changing the `MEDIA_LIBRARY_IMAGE_SERVICE` environment variable to one of the following options:
+- `A17\Twill\Services\MediaLibrary\Glide`
+- `A17\Twill\Services\MediaLibrary\Imgix`
+- `A17\Twill\Services\MediaLibrary\Local`
+
+For a custom image service you would have to implement the `ImageServiceInterface` and modify your `twill` configuration value `media_library.image_service` with your implementation class.
 Here are the methods you would have to implement:
 
 ```php
@@ -54,7 +59,6 @@ $model->image($roleName, $cropName[, array $params, $has_fallback, $cms, $media]
 
 /**
  * Returns an array of images URLs assiociated with $roleName and $cropName with appended $params.
- * Use this in conjunction with a media form field with the with_multiple and max option.
  */
 $model->images($roleName, $cropName[, array $params])
 
@@ -77,22 +81,22 @@ $model->cmsImage($roleName, $cropName[, array $params, $has_fallback])
 /**
  * Returns the alt text of the image associated with $roleName.
  */
-$model->imageAltText($roleName)
+$model->imageAltText($roleName[, $media])
 
 /**
  * Returns the caption of the image associated with $roleName.
  */
-$model->imageCaption($roleName)
+$model->imageCaption($roleName[, $media])
 
 /**
  * Returns the image object associated with $roleName.
  */
-$model->imageObject($roleName)
+$model->imageObject($roleName[, $cropName])
 
 /**
  * Returns the image objects associated with $roleName.
  */
-$model->imageObjects($roleName)
+$model->imageObjects($roleName[, $cropName])
 
 /**
  * Returns the image associated with $roleName as an array containing meta information.
@@ -102,16 +106,26 @@ $model->imageAsArray($roleName[, $cropName, array $params, $media])
 /**
  * Returns the images associated with $roleName as an array containing meta information.
  */
-$model->imageAsArrays($roleName[, $cropName, array $params])
+$model->imagesAsArrays($roleName[, $cropName, array $params])
+
+/**
+ * Returns an array of images URLs assiociated with $roleName with appended $params for each crop.
+ */
+$model->imagesWithCrops($roleName[, array $params])
+
+/**
+ * Returns the images associated with $roleName as an array containing meta information for each crop.
+ */
+$model->imagesAsArraysWithCrops($roleName[, array $params])
 
 /**
  * Checks if an image has been attached for the provided role
  */
-$model->hasImage($roleName)
+$model->hasImage($roleName[, $cropName])
 ```
 
 ### File library
-The file library is much simpler but also works with S3 and local storage. To associate files to your model, use the `HasFiles` and `HandleFiles` traits, the `$filesParams` configuration and the `files` form partial.
+The file library is much simpler but also works with S3 and local storage. To associate files to your model, use the `HasFiles` and `HandleFiles` traits, the `$filesParams` configuration and the `files` form field.
 
 When it comes to using those data model files in the frontend site, there are a few methods on the `HasFiles` trait that will help you to retrieve direct URLs:
 
@@ -127,7 +141,6 @@ $model->file($roleName[, $locale, $file])
 
 /**
  * Returns an array of files URLs assiociated with $roleName.
- * Use this in conjunction with a files form field with the with_multiple and max option.
  */
 $model->filesList($roleName[, $locale])
 
@@ -136,6 +149,11 @@ $model->filesList($roleName[, $locale])
  */
 $model->fileObject($roleName)
 ```
+
+::: tip INFO
+The file library can be used to upload files of any type and to attach those files to records using the `file` form field.
+For example, you could store video files and render them on your frontend, with a CDN on top of it. We recommend Youtube and Vimeo for regular video embeds, but for muted, decorative, autoplaying videos, .mp4 files in the file library can be a great solution.
+:::
 
 ### Imgix and S3 direct uploads
 

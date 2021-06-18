@@ -32,6 +32,7 @@
             <div slot="hidden-filters">
               <a17-vselect class="medialibrary__filter-item" ref="filter" name="tag" :options="tags"
                            :placeholder="$trans('media-library.filter-select-label', 'Filter by tag')" :searchable="true" maxHeight="175px"/>
+              <a17-checkbox class="medialibrary__filter-item" ref="unused" name="unused" :initial-value="0" :value="1" :label="$trans('media-library.unused-filter-label', 'Show unused only')"/>
             </div>
           </a17-filter>
         </div>
@@ -40,14 +41,14 @@
             <aside class="medialibrary__sidebar">
               <a17-mediasidebar :medias="selectedMedias" :authorized="authorized" :extraMetadatas="extraMetadatas"
                                 @clear="clearSelectedMedias" @delete="deleteSelectedMedias" @tagUpdated="reloadTags"
-                                :type="currentTypeObject" :translatableMetadatas="translatableMetadatas" />
+                                :type="currentTypeObject" :translatableMetadatas="translatableMetadatas" @triggerMediaReplace="replaceMedia" />
             </aside>
             <footer class="medialibrary__footer" v-if="selectedMedias.length && showInsert && connector">
               <a17-button v-if="canInsert" variant="action" @click="saveAndClose">{{ btnLabel }}</a17-button>
               <a17-button v-else variant="action" :disabled="true">{{ btnLabel }}</a17-button>
             </footer>
             <div class="medialibrary__list" ref="list">
-              <a17-uploader v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias"
+              <a17-uploader ref="uploader" v-if="authorized" @loaded="addMedia" @clear="clearSelectedMedias"
                             :type="currentTypeObject"/>
               <div class="medialibrary__list-items">
                 <a17-itemlist v-if="type === 'file'" :items="renderedMediaItems" :selected-items="selectedMedias"
@@ -76,6 +77,7 @@
   import a17MediaGrid from './MediaGrid.vue'
   import a17ItemList from '../ItemList.vue'
   import a17Spinner from '@/components/Spinner.vue'
+  import a17Checkbox from '@/components/Checkbox.vue'
 
   import scrollToY from '@/utils/scrollToY.js'
 
@@ -89,7 +91,8 @@
       'a17-uploader': a17Uploader,
       'a17-mediagrid': a17MediaGrid,
       'a17-itemlist': a17ItemList,
-      'a17-spinner': a17Spinner
+      'a17-spinner': a17Spinner,
+      'a17-checkbox': a17Checkbox
     },
     props: {
       modalTitlePrefix: {
@@ -179,8 +182,17 @@
         return this.modalTitlePrefix
       },
       btnLabel: function () {
-        if (this.indexToReplace > -1) return this.btnLabelUpdate + ' ' + this.type
-        return (this.selectedMedias.length > 1 ? this.btnLabelMulti + ' ' + this.type + 's' : this.btnLabelSingle + ' ' + this.type)
+        let type = this.$trans('media-library.types.single.' + this.type, this.type)
+
+        if (this.indexToReplace > -1) {
+          return this.btnLabelUpdate + ' ' + type
+        } else {
+          if (this.selectedMedias.length > 1) {
+            type = this.$trans('media-library.types.multiple.' + this.type, this.type)
+          }
+
+          return this.btnLabelSingle + ' ' + type
+        }
       },
       usedMedias: function () {
         return this.selected[this.connector] || []
@@ -215,6 +227,9 @@
       }
     },
     methods: {
+      replaceMedia: function ({ id }) {
+        this.$refs.uploader.replaceMedia(id)
+      },
       open: function () {
         this.$refs.modal.open()
       },
@@ -246,11 +261,50 @@
         this.submitFilter()
       },
       addMedia: function (media) {
-        // add media in first position of the available media
-        this.mediaItems.unshift(media)
-        this.$store.commit(MEDIA_LIBRARY.INCREMENT_MEDIA_TYPE_TOTAL, this.type)
-        // select it
-        this.updateSelectedMedias(media.id)
+        const index = this.mediaItems.findIndex(function (item) {
+          return item.id === media.id
+        })
+
+        // Check of the media item exists i.e replacement
+        if (index > -1) {
+          for (const mediaRole in this.selected) {
+            this.selected[mediaRole].forEach((mediaCrop, index) => {
+              if (media.id === mediaCrop.id) {
+                const crops = []
+
+                for (const crop in mediaCrop.crops) {
+                  crops[crop] = {
+                    height: media.height === mediaCrop.height ? mediaCrop.crops[crop].height : media.height,
+                    name: crop,
+                    width: media.width === mediaCrop.width ? mediaCrop.crops[crop].width : media.width,
+                    x: media.width === mediaCrop.width ? mediaCrop.crops[crop].x : 0,
+                    y: media.height === mediaCrop.height ? mediaCrop.crops[crop].y : 0
+                  }
+                }
+
+                this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIAS, {
+                  index,
+                  media: {
+                    ...media,
+                    width: media.width === mediaCrop.width ? mediaCrop.width : media.width,
+                    height: media.height === mediaCrop.height ? mediaCrop.height : media.height,
+                    crops
+                  },
+                  mediaRole
+                })
+              }
+            })
+          }
+
+          this.$set(this.mediaItems, index, media)
+          this.selectedMedias.unshift(media)
+        } else {
+          // add media in first position of the available media
+          this.mediaItems.unshift(media)
+          this.$store.commit(MEDIA_LIBRARY.INCREMENT_MEDIA_TYPE_TOTAL, this.type)
+          // select it
+          this.updateSelectedMedias(media.id)
+        }
       },
       updateSelectedMedias: function (item, shift = false) {
         const id = item.id
@@ -311,12 +365,21 @@
 
         data.type = this.type
 
+        if (Array.isArray(data.unused) && data.unused.length) {
+          data.unused = data.unused[0]
+        }
+
         return data
       },
       clearFilters: function () {
         const self = this
         // reset tags
         if (this.$refs.filter) this.$refs.filter.value = null
+        // reset unused field
+        if (this.$refs.unused) {
+          const input = this.$refs.unused.$el.querySelector('input')
+          input && input.click()
+        }
 
         this.$nextTick(function () {
           self.submitFilter()
@@ -579,6 +642,11 @@
     .vselect {
       min-width: 200px;
     }
+  }
+
+  .medialibrary__filter-item.checkbox {
+    margin-top: 8px;
+    margin-right: 45px !important;
   }
 
   .medialibrary__header {

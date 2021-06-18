@@ -1,5 +1,5 @@
 @php
-    $options = method_exists($options, 'map') ? $options->map(function($label, $value) {
+    $options = is_object($options) && method_exists($options, 'map') ? $options->map(function($label, $value) {
         return [
             'value' => $value,
             'label' => $label
@@ -39,7 +39,7 @@
     <a17-vselect
         label="{{ $label }}"
         @include('twill::partials.form.utils._field_name')
-        :options='{!! json_encode($options) !!}'
+        :options="{{ json_encode($options) }}"
         @if ($emptyText ?? false) empty-text="{{ $emptyText }}" @endif
         @if ($placeholder ?? false) placeholder="{{ $placeholder }}" @endif
         @if ($inModal) :in-modal="true" @endif

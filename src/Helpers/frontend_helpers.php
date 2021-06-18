@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Cache;
+use A17\Twill\Services\Assets\Twill as TwillAssets;
 
 if (!function_exists('revAsset')) {
     /**
@@ -35,40 +36,7 @@ if (!function_exists('twillAsset')) {
      */
     function twillAsset($file)
     {
-        if (app()->environment('local', 'development') && config('twill.dev_mode', false)) {
-            $devServerUrl = config('twill.dev_mode_url', 'http://localhost:8080');
-
-            try {
-                $manifest = json_decode(file_get_contents(
-                    $devServerUrl
-                    . '/'
-                    . config('twill.manifest_file', 'twill-manifest.json')
-                ), true);
-
-            } catch (\Exception $e) {
-                throw new \Exception('Twill dev assets manifest is missing. Make sure you are running the npm run serve command inside Twill.');
-            }
-
-            return $devServerUrl . ($manifest[$file] ?? ('/' . $file));
-        }
-
-        try {
-            $manifest = Cache::rememberForever('twill-manifest', function () {
-                return json_decode(file_get_contents(
-                    public_path(config('twill.public_directory', 'twill'))
-                    . '/'
-                    . config('twill.manifest_file', 'twill-manifest.json')
-                ), true);
-            });
-        } catch (\Exception $e) {
-            throw new \Exception('Twill assets manifest is missing. Make sure you published/updated Twill assets using the "php artisan twill:update" command.');
-        }
-
-        if (isset($manifest[$file])) {
-            return $manifest[$file];
-        }
-
-        return '/' . config('twill.public_directory', 'twill') . '/' . $file;
+        return app(TwillAssets::class)->asset($file);
     }
 }
 
@@ -87,5 +55,20 @@ if (!function_exists('icon')) {
         $css_class = isset($opts['css_class']) ? htmlentities($opts['css_class'], ENT_QUOTES, 'UTF-8') : '';
         $svg_link = config('twill.frontend.svg_sprites_use_hash_only') ? "#icon--$name" : revAsset(config('twill.frontend.svg_sprites_path')) . "#icon--$name";
         return "<svg class=\"icon--$name $css_class\" $title $role><use xlink:href=\"" . $svg_link . "\"></use></svg>";
+    }
+}
+
+if (!function_exists('twillViewName')) {
+    function twillViewName($module, $suffix)
+    {
+        $view = "admin.{$module}.{$suffix}";
+
+        if (view()->exists($view)) {
+            return $view;
+        }
+
+        $prefix = app('twill.capsules.manager')->getCapsuleViewPrefix($module);
+
+        return "{$prefix}.{$suffix}";
     }
 }

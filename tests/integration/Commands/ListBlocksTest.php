@@ -1,0 +1,57 @@
+<?php
+
+namespace A17\Twill\Tests\Integration\Commands;
+
+use A17\Twill\Tests\Integration\TestCase;
+use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
+
+class ListBlocksTest extends TestCase
+{
+    use CopyBlocks;
+
+    protected $allFiles = [];
+
+    public function setup(): void
+    {
+        parent::setUp();
+
+        $this->copyBlocks();
+    }
+
+    public function testCanListAllBlocks()
+    {
+        $this->execute();
+
+        $this->assertFileExists(
+            resource_path('views/admin/blocks/carousel.blade.php')
+        );
+    }
+
+    public function testCanFilter()
+    {
+        $this->execute([
+            'filter' => 'text',
+        ]);
+    }
+
+    public function testWorksFineWithZeroBlocks()
+    {
+        $this->execute([
+            'filter' => 'there-are-no-blocks-here',
+        ]);
+    }
+
+    public function execute($parameters = [])
+    {
+        $pendingCommand = $this->artisan(
+            $command = 'twill:list:blocks',
+            $parameters
+        );
+
+        $this->getCommand($command)
+            ->getBlockCollection()
+            ->load();
+
+        $this->assertExitCodeIsGood($pendingCommand->run());
+    }
+}

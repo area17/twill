@@ -41,6 +41,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     protected $defaultFilters = [
         'search' => 'search',
         'tag' => 'tag_id',
+        'unused' => 'unused',
     ];
 
     /**
@@ -128,6 +129,10 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
             $requestFilters['tag'] = $this->request->get('tag');
         }
 
+        if ($this->request->has('unused') && (int) $this->request->unused === 1) {
+            $requestFilters['unused'] = $this->request->get('unused');
+        }
+
         return $requestFilters ?? [];
     }
 
@@ -182,7 +187,14 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
             'height' => $h,
         ];
 
-        return $this->repository->create($fields);
+        if ($this->shouldReplaceMedia($id = $request->input('media_to_replace_id'))) {
+            $media = $this->repository->whereId($id)->first();
+            $this->repository->afterDelete($media);
+            $media->replace($fields);
+            return $media->fresh();
+        } else {
+            return $this->repository->create($fields);
+        }
     }
 
     /**
@@ -198,7 +210,14 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
             'height' => $request->input('height'),
         ];
 
-        return $this->repository->create($fields);
+        if ($this->shouldReplaceMedia($id = $request->input('media_to_replace_id'))) {
+            $media = $this->repository->whereId($id)->first();
+            $this->repository->afterDelete($media);
+            $media->update($fields);
+            return $media->fresh();
+        } else {
+            return $this->repository->create($fields);
+        }
     }
 
     /**
@@ -312,5 +331,13 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
 
             return [$field['name'] => $fieldInRequest];
         });
+    }
+
+    /**
+     * @return bool
+     */
+    private function shouldReplaceMedia($id)
+    {
+        return is_numeric($id) ? $this->repository->whereId($id)->exists() : false;
     }
 }
