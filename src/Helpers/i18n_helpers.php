@@ -73,7 +73,7 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
             if ($native) {
                 return ucfirst(Locale::getDisplayLanguage($code, $code));
             } else {
-                return ucfirst(Locale::getDisplayLanguage($code, 'en'));
+                return ucfirst(Locale::getDisplayLanguage($code, config('twill.locale', config('twill.fallback_locale', 'en'))));
             }
         }
 
