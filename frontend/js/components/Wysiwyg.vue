@@ -202,6 +202,12 @@
           }
         }
 
+        // set Quill direction
+        if(this.dirLocale === 'rtl') {
+          editor.format('direction', 'rtl');
+          editor.format('align', 'right');
+        }
+
         // check text length
         if (this.hasMaxlength && this.showCounter) {
           this.updateCounter(this.getTextLength())
