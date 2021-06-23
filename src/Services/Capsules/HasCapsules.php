@@ -162,6 +162,8 @@ trait HasCapsules
 
         $this->registerPsr4Autoloader($capsule);
 
+        $this->autoloadConfigFiles($capsule);
+
         return $capsule;
     }
 
@@ -353,5 +355,20 @@ trait HasCapsules
         ]);
 
         return $config;
+    }
+
+    public function autoloadConfigFiles($capsule)
+    {
+        $files = $capsule['config']['autoload']['files'] ?? null;
+
+        if (blank($files)) {
+            return;
+        }
+
+        collect($files)->each(function ($file) {
+           if (file_exists($file)) {
+               require_once $file;
+           }
+        });
     }
 }
