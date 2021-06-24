@@ -16,7 +16,6 @@ trait HandleRevisions
             $this->hydrateRepeater($object, $fields, $repeater['relation'], $repeater['model']);
         }
 
-
         // HandleBrowers trait => getBrowsers
         foreach($this->getBrowsers() as $browser) {
             //hydrate only if BelongsToMany
