@@ -1114,27 +1114,29 @@ abstract class ModuleController extends Controller
         $tableColumns = [];
         $visibleColumns = $this->request->get('columns') ?? false;
 
-        // Thumbnails : rounded or regular ones
-        $hasRoundedThumb = (isset(Arr::first($this->indexColumns)['thumb'])
-            && Arr::first($this->indexColumns)['thumb']
-            && isset(Arr::first($this->indexColumns)['variation'])
-            && Arr::first($this->indexColumns)['variation'] === 'rounded') ?? false;
-        $hasThumb = (isset(Arr::first($this->indexColumns)['thumb'])
-            && Arr::first($this->indexColumns)['thumb']
-            && !$hasRoundedThumb);
-        $thumb = ($hasRoundedThumb || $hasThumb) ? [
-            'name' => 'thumbnail',
-            'label' => twillTrans('twill::lang.listing.columns.thumbnail'),
-            'visible' => $visibleColumns ? in_array('thumbnail', $visibleColumns) : true,
-            'optional' => true,
-            'sortable' => false,
-        ] + (isset(Arr::first($this->indexColumns)['variation'])
-            ? ['variation' => Arr::first($this->indexColumns)['variation']]
-            : []) : false;
+        if (isset(Arr::first($this->indexColumns)['thumb']) && Arr::first($this->indexColumns)['thumb']) {
+            // Thumbnails : rounded or regular ones
+            $hasRoundedThumb = (isset(Arr::first($this->indexColumns)['thumb'])
+                && Arr::first($this->indexColumns)['thumb']
+                && isset(Arr::first($this->indexColumns)['variation'])
+                && Arr::first($this->indexColumns)['variation'] === 'rounded') ?? false;
+            $hasThumb = (isset(Arr::first($this->indexColumns)['thumb'])
+                && Arr::first($this->indexColumns)['thumb']
+                && !$hasRoundedThumb);
+            $thumb = ($hasRoundedThumb || $hasThumb) ? [
+                'name' => 'thumbnail',
+                'label' => twillTrans('twill::lang.listing.columns.thumbnail'),
+                'visible' => $visibleColumns ? in_array('thumbnail', $visibleColumns) : true,
+                'optional' => true,
+                'sortable' => false,
+            ] + (isset(Arr::first($this->indexColumns)['variation'])
+                ? ['variation' => Arr::first($this->indexColumns)['variation']]
+                : []) : false;
 
-        if ($hasThumb) {
-            array_push($tableColumns, $thumb);
-            array_shift($this->indexColumns);
+            if ($hasThumb) {
+                array_push($tableColumns, $thumb);
+                array_shift($this->indexColumns);
+            }
         }
 
         if ($this->getIndexOption('feature')) {
@@ -1147,16 +1149,18 @@ abstract class ModuleController extends Controller
             ]);
         }
 
-        array_push($tableColumns, [
-            'name' => 'published',
-            'label' => twillTrans('twill::lang.listing.columns.published'),
-            'visible' => true,
-            'optional' => false,
-            'sortable' => false,
-        ]);
+        if ($this->getIndexOption('publish')) {
+            array_push($tableColumns, [
+                'name' => 'published',
+                'label' => twillTrans('twill::lang.listing.columns.published'),
+                'visible' => true,
+                'optional' => false,
+                'sortable' => false,
+            ]);
+        }
 
         // rounded thumb are attached to the name
-        if ($hasRoundedThumb) {
+        if (isset($hasRoundedThumb) && $hasRoundedThumb) {
             array_push($tableColumns, $thumb);
             array_shift($this->indexColumns);
         }
