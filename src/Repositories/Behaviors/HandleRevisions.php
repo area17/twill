@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -97,9 +98,11 @@ trait HandleRevisions
         $relatedElementsCollection = Collection::make();
         $position = 1;
 
+        $tableName = $object->$relationship() instanceof BelongsTo ? $object->$relationship->getTable() :$object->$relationship()->getTable();
+
         foreach ($relatedElements as $relatedElement) {
             $newRelatedElement = $relationRepository->getById($relatedElement['id']);
-            $pivot = $newRelatedElement->newPivot($object, [$positionAttribute => $position++], $object->$relationship()->getTable(), true);
+            $pivot = $newRelatedElement->newPivot($object, [$positionAttribute => $position++], $tableName, true);
             $newRelatedElement->setRelation('pivot', $pivot);
             $relatedElementsCollection->push($newRelatedElement);
         }
