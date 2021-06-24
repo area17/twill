@@ -277,21 +277,28 @@ class Glide implements ImageServiceInterface
     private function getOriginalMediaUrl($id)
     {
         if (!Str::endsWith($id, $this->config->get('twill.glide.original_media_for_extensions'))) {
-            return false;
+            return null;
         }
 
         $libraryDisk = $this->config->get('twill.media_library.disk');
         $endpointType = $this->config->get('twill.media_library.endpoint_type');
-        $localPath = $this->config->get('twill.media_library.local_path');
-        $appUrl = $this->config->get('app.url');
+        $localMediaLibraryUrl = $this->config->get('filesystems.disks.twill_media_library.url');
+
+        /** @var string $endpoint */
+        $endpoint;
 
         switch ($endpointType) {
             case 'local':
-                return $appUrl . '/storage/' . $localPath;
+                $endpoint = $localMediaLibraryUrl;
+                break;
             case 's3':
-                return s3Endpoint($libraryDisk) . '/';
+                $endpoint = s3Endpoint($libraryDisk);
+                break;
             case 'azure':
-                return azureEndpoint($libraryDisk). '/';
+                $endpoint = azureEndpoint($libraryDisk);
+                break;
         }
+
+        return $endpoint . '/' . $id;
     }
 }
