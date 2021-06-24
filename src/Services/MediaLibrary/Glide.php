@@ -276,13 +276,15 @@ class Glide implements ImageServiceInterface
      */
     private function getOriginalMediaUrl($id)
     {
-        if (!Str::endsWith($id, $this->config->get('twill.glide.original_media_for_extensions'))) {
-            return null;
-        }
-
         $libraryDisk = $this->config->get('twill.media_library.disk');
         $endpointType = $this->config->get('twill.media_library.endpoint_type');
         $localMediaLibraryUrl = $this->config->get('filesystems.disks.twill_media_library.url');
+        $originalMediaForExtensions = $this->config->get('twill.glide.original_media_for_extensions');
+        $addParamsToSvgs = $this->config->get('twill.glide.add_params_to_svgs', false);
+
+        if ((Str::endsWith($id, '.svg') && $addParamsToSvgs) || !Str::endsWith($id, $originalMediaForExtensions)) {
+            return null;
+        }
 
         /** @var string $endpoint */
         $endpoint;
