@@ -9,8 +9,9 @@
                   :required="required">
     <div class="wysiwyg__outer">
       <div class="wysiwyg"
-           :class="textfieldClasses"
-           v-show="!activeSource">
+          :class="textfieldClasses"
+          v-show="!activeSource"
+          :dir="dirLocale">
         <input :name="name"
                type="hidden"
                v-model="value"/>
@@ -469,6 +470,11 @@
     &.s--disabled {
       @include disabledState;
     }
+  }
+
+  .wysiwyg[dir='rtl'] .wysiwyg__editor {
+    direction: rtl;
+    text-align: right;
   }
 
   .wysiwyg__menubar {
