@@ -30,7 +30,7 @@ const WebpackAssetsManifest = require('webpack-assets-manifest')
 const WebpackNotifierPlugin = require('webpack-notifier')
 
 const srcDirectory = 'frontend'
-const partialsDirectory = '../views/partials'
+const partialsDirectory = path.join(__dirname, 'views/partials')
 const outputDir = isProd ? 'dist' : (process.env.TWILL_DEV_ASSETS_PATH || 'dist')
 const assetsDir = process.env.TWILL_ASSETS_DIR || 'assets/admin'
 
