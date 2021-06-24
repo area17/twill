@@ -249,6 +249,29 @@ abstract class ModuleController extends Controller
      */
     protected $fieldsPermissions = [];
 
+    /**
+     * Array of customizable label translation keys
+     *
+     * @var array
+     */
+    protected $labels = [];
+
+    /**
+     * Default label translation keys that can be overridden in the labels array
+     *
+     * @var array
+     */
+    protected $defaultLabels = [
+        'published' => 'twill::lang.main.published',
+        'draft' => 'twill::lang.main.draft',
+        'listing' => [
+            'filter' => [
+                'published' => 'twill::lang.listing.filter.published',
+                'draft' => 'twill::lang.listing.filter.draft',
+            ],
+        ],
+    ];
+
     public function __construct(Application $app, Request $request)
     {
         parent::__construct();
@@ -261,6 +284,7 @@ abstract class ModuleController extends Controller
         $this->repository = $this->getRepository();
         $this->viewPrefix = $this->getViewPrefix();
         $this->modelTitle = $this->getModelTitle();
+        $this->labels = array_merge($this->defaultLabels, $this->labels);
         $this->middleware(function ($request, $next) {
             $this->user = auth('twill_users')->user();
             return $next($request);
@@ -1230,11 +1254,11 @@ abstract class ModuleController extends Controller
         }
 
         array_push($statusFilters, [
-            'name' => twillTrans('twill::lang.listing.filter.published'),
+            'name' => $this->getTransLabel('listing.filter.published'),
             'slug' => 'published',
             'number' => $this->repository->getCountByStatusSlug('published', $scope),
         ], [
-            'name' => twillTrans('twill::lang.listing.filter.draft'),
+            'name' => $this->getTransLabel('listing.filter.draft'),
             'slug' => 'draft',
             'number' => $this->repository->getCountByStatusSlug('draft', $scope),
         ]);
@@ -1516,6 +1540,8 @@ abstract class ModuleController extends Controller
             'publishDate24Hr' => Config::get('twill.publish_date_24h') ?? false,
             'publishDateFormat' => Config::get('twill.publish_date_format') ?? null,
             'publishDateDisplayFormat' => Config::get('twill.publish_date_display_format') ?? null,
+            'publishedLabel' => $this->getTransLabel('published'),
+            'draftLabel' => $this->getTransLabel('draft'),
             'translate' => $this->moduleHas('translations'),
             'translateTitle' => $this->titleIsTranslatable(),
             'permalink' => $this->getIndexOption('permalink', $item),
@@ -1910,5 +1936,17 @@ abstract class ModuleController extends Controller
         return app(BlockCollection::class)->getRepeaterList()->mapWithKeys(function ($repeater) {
             return [$repeater['name'] => $repeater];
         });
+    }
+
+    /**
+     * Get translation key from labels array and attemps to return a translated string
+     *
+     * @param string $key
+     * @param array $replace
+     * @return \Illuminate\Contracts\Translation\Translator|string|array|null
+     */
+    protected function getTransLabel($key, $replace = [])
+    {
+        return twillTrans(Arr::has($this->labels, $key) ? Arr::get($this->labels, $key) : $key, $replace);
     }
 }

@@ -25,10 +25,40 @@ class GroupController extends ModuleController
         'permalink' => false,
     ];
 
+    protected $labels = [
+        'published' => 'twill::lang.permissions.groups.published',
+        'draft' => 'twill::lang.permissions.groups.draft',
+        'listing' => [
+            'filter' => [
+                'published' => 'twill::lang.permissions.groups.published',
+                'draft' => 'twill::lang.permissions.groups.draft',
+            ],
+        ],
+    ];
+
     public function __construct(Application $app, Request $request)
     {
         parent::__construct($app, $request);
         $this->middleware('can:edit-user-groups');
+
+        $this->primaryNavigation = [
+            'users' => [
+                'title' => twillTrans('twill::lang.user-management.users'),
+                'module' => true,
+                'can' => 'edit-users',
+            ],
+            'roles' => [
+                'title' => twillTrans('twill::lang.permissions.roles.title'),
+                'module' => true,
+                'can' => 'edit-user-role',
+            ],
+            'groups' => [
+                'title' => twillTrans('twill::lang.permissions.groups.title'),
+                'module' => true,
+                'active' => true,
+                'can' => 'edit-user-groups',
+            ],
+        ];
     }
 
     protected $indexColumns = [
@@ -52,26 +82,7 @@ class GroupController extends ModuleController
     protected function indexData($request)
     {
         return [
-            'primary_navigation' => [
-                'users' => [
-                    'title' => 'Users',
-                    'module' => true,
-                    'can' => 'edit-users',
-                ],
-                'roles' => [
-                    'title' => 'Roles',
-                    'module' => true,
-                    'can' => 'edit-user-role',
-                ],
-                'groups' => [
-                    'title' => 'Groups',
-                    'module' => true,
-                    'active' => true,
-                    'can' => 'edit-user-groups',
-                ],
-            ],
-            'customPublishedLabel' => 'Enabled',
-            'customDraftLabel' => 'Disabled',
+            'primary_navigation' => $this->primaryNavigation,
         ];
     }
 
@@ -87,26 +98,7 @@ class GroupController extends ModuleController
     protected function formData($request)
     {
         return [
-            'primary_navigation' => [
-                'users' => [
-                    'title' => 'Users',
-                    'module' => true,
-                    'can' => 'edit-users',
-                ],
-                'roles' => [
-                    'title' => 'Roles',
-                    'module' => true,
-                    'can' => 'edit-user-role',
-                ],
-                'groups' => [
-                    'title' => 'Groups',
-                    'module' => true,
-                    'active' => true,
-                    'can' => 'edit-user-groups',
-                ]
-            ],
-            'customPublishedLabel' => 'Enabled',
-            'customDraftLabel' => 'Disabled',
+            'primary_navigation' => $this->primaryNavigation,
             'permissionModules' => Permission::permissionableParentModuleItems(),
         ];
     }

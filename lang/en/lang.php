@@ -342,6 +342,18 @@ return [
     'overlay' => [
         'close' => 'Close',
     ],
+    'permissions' => [
+        'groups' => [
+            'title' => 'Groups',
+            'published' => 'Enabled',
+            'draft' => 'Disabled',
+        ],
+        'roles' => [
+            'title' => 'Roles',
+            'published' => 'Enabled',
+            'draft' => 'Disabled',
+        ],
+    ],
     'previewer' => [
         'compare-view' => 'Compare view',
         'current-revision' => 'Current',

@@ -106,6 +106,17 @@ class UserController extends ModuleController
         'role' => 'manage-users',
     ];
 
+    protected $labels = [
+        'published' => 'twill::lang.user-management.enabled',
+        'draft' => 'twill::lang.user-management.disabled',
+        'listing' => [
+            'filter' => [
+                'published' => 'twill::lang.user-management.enabled',
+                'draft' => 'twill::lang.user-management.disabled',
+            ],
+        ],
+    ];
+
     public function __construct(Application $app, Request $request, AuthFactory $authFactory, Config $config)
     {
         parent::__construct($app, $request);
@@ -127,6 +138,25 @@ class UserController extends ModuleController
                 ],
             ] + $this->indexColumns;
         }
+
+        $this->primaryNavigation = [
+            'users' => [
+                'title' => twillTrans('twill::lang.user-management.users'),
+                'module' => true,
+                'active' => true,
+                'can' => 'edit-users',
+            ],
+            'roles' => [
+                'title' => twillTrans('twill::lang.permissions.roles.title'),
+                'module' => true,
+                'can' => 'edit-user-role',
+            ],
+            'groups' => [
+                'title' => twillTrans('twill::lang.permissions.groups.title'),
+                'module' => true,
+                'can' => 'edit-user-groups',
+            ],
+        ];
     }
 
     /**
@@ -141,26 +171,7 @@ class UserController extends ModuleController
             'roleList' => Role::published()->get()->map(function ($role) {
                 return ['value' => $role->id, 'label' => $role->name];
             })->toArray(),
-            'primary_navigation' => [
-                'users' => [
-                    'title' => twillTrans('twill::lang.user-management.users'),
-                    'module' => true,
-                    'active' => true,
-                    'can' => 'edit-users',
-                ],
-                'roles' => [
-                    'title' => 'Roles',
-                    'module' => true,
-                    'can' => 'edit-user-role',
-                ],
-                'groups' => [
-                    'title' => 'Groups',
-                    'module' => true,
-                    'can' => 'edit-user-groups',
-                ],
-            ],
-            'customPublishedLabel' => twillTrans('twill::lang.user-management.enabled'),
-            'customDraftLabel' => twillTrans('twill::lang.user-management.disabled'),
+            'primary_navigation' => $this->primaryNavigation,
         ];
     }
 
@@ -194,27 +205,8 @@ class UserController extends ModuleController
             'roleList' => Role::published()->get()->map(function ($role) {
                 return ['value' => $role->id, 'label' => $role->name];
             })->toArray(),
-            'primary_navigation' => [
-                'users' => [
-                    'title' => twillTrans('twill::lang.user-management.users'),
-                    'module' => true,
-                    'active' => true,
-                    'can' => 'edit-users',
-                ],
-                'roles' => [
-                    'title' => 'Roles',
-                    'module' => true,
-                    'can' => 'edit-user-role',
-                ],
-                'groups' => [
-                    'title' => 'Groups',
-                    'module' => true,
-                    'can' => 'edit-user-groups',
-                ],
-            ],
+            'primary_navigation' => $this->primaryNavigation,
             'titleThumbnail' => $titleThumbnail ? $titleThumbnail : null,
-            'customPublishedLabel' => twillTrans('twill::lang.user-management.enabled'),
-            'customDraftLabel' => twillTrans('twill::lang.user-management.disabled'),
             'permissionModules' => Permission::permissionableParentModuleItems(),
             'groupPermissionMapping' => $this->getGroupPermissionMapping(),
             'with2faSettings' => $with2faSettings,
