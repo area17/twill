@@ -1,9 +1,11 @@
 <template>
-  <a17-blocks-list :editor-name="editorName" v-slot="{ savedBlocks, availableBlocks, moveBlock }">
+  <a17-blocks-list :editor-name="editorName" v-slot="{ savedBlocks, availableBlocks, moveBlock, moveBlockToEditor, cloneBlock }">
     <div class="blocks">
       <draggable class="blocks__container"
                  :value="savedBlocks"
-                 @update="({oldIndex, newIndex}) => moveBlock({ oldIndex, newIndex })"
+                 group="blocks"
+                 :move="handleOnMove"
+                 @end="e => handleOnEnd(moveBlock, moveBlockToEditor)"
                  :options="dragOptions">
         <transition-group name="draggable_list"
                           tag='div'>
@@ -45,6 +47,10 @@
                           v-if="editor"
                           @click="openInEditor(edit, blockIndex, editorName)">
                           {{ $trans('fields.block-editor.open-in-editor', 'Open in editor') }}
+                  </button>
+                  <button type="button"
+                          @click="handleClone(cloneBlock, blockIndex, block)">
+                          {{ $trans('fields.block-editor.clone-block', 'Clone block') }}
                   </button>
                   <button type="button"
                           @click="handleDuplicateBlock(duplicate)">
@@ -153,7 +159,8 @@
         editor: state => state.blocks.editor
       }),
       ...mapGetters([
-        'blocks'
+        'blocks',
+        'fieldsByBlockId'
       ])
     },
     methods: {
@@ -171,6 +178,35 @@
       },
       checkExpandBlocks () {
         this.allBlocksExpands = this.$refs.blockList.every((blocks) => blocks.visible)
+      },
+      handleOnMove (e) {
+        const { draggedContext, relatedContext } = e
+        const { index, element: draggedElement, futureIndex } = draggedContext
+        const { element: relatedElement } = relatedContext
+
+        this.nextMove = {
+          block: draggedElement,
+          editorName: relatedElement.name,
+          newIndex: futureIndex,
+          index
+        }
+      },
+      handleOnEnd (moveFn, moveBlockToEditorFn) {
+        const {
+          block,
+          editorName,
+          newIndex,
+          index
+        } = this.nextMove
+
+        if (block.name !== editorName) {
+          moveBlockToEditorFn && moveBlockToEditorFn(block, editorName, index, newIndex)
+        } else {
+          moveFn && moveFn({ oldIndex: index, newIndex })
+        }
+      },
+      handleClone (cloneFn, blockIndex, block) {
+        cloneFn && cloneFn({ block, index: blockIndex + 1 })
       },
       handleBlockAdd (fn, block, index = -1) {
         fn(block, index)
