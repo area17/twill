@@ -18,7 +18,6 @@ trait HandleRevisions
 
         // HandleBrowers trait => getBrowsers
         foreach($this->getBrowsers() as $browser) {
-            //hydrate only if BelongsToMany
             $this->hydrateBrowser($object, $fields, $browser['relation'], $browser['positionAttribute'], $browser['model']);
         }
 
