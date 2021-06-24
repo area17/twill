@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -11,16 +11,15 @@ trait HandleRevisions
 {
     public function hydrateHandleRevisions($object, $fields)
     {
-        foreach($this->getBrowsers() as $browser) {
-            $relation = $browser['relation'];
+        // HandleRepeaters trait => getRepeaters
+        foreach($this->getRepeaters() as $repeater) {
+            $this->hydrateRepeater($object, $fields, $repeater['relation'], $repeater['model']);
+        }
 
-            //hydrate only if BelongsToMany
-            if($object->$relation() instanceof BelongsToMany) {
-                $this->hydrateBrowser($object, $fields, $relation, $browser['positionAttribute'], $browser['model']);
-            }
 
         // HandleBrowers trait => getBrowsers
         foreach($this->getBrowsers() as $browser) {
+            //hydrate only if BelongsToMany
             $this->hydrateBrowser($object, $fields, $browser['relation'], $browser['positionAttribute'], $browser['model']);
         }
 
@@ -101,9 +100,11 @@ trait HandleRevisions
         $relatedElementsCollection = Collection::make();
         $position = 1;
 
+        $tableName = $object->$relationship() instanceof BelongsTo ? $object->getTable() :$object->$relationship()->getTable();
+
         foreach ($relatedElements as $relatedElement) {
             $newRelatedElement = $relationRepository->getById($relatedElement['id']);
-            $pivot = $newRelatedElement->newPivot($object, [$positionAttribute => $position++], $object->$relationship()->getTable(), true);
+            $pivot = $newRelatedElement->newPivot($object, [$positionAttribute => $position++], $tableName, true);
             $newRelatedElement->setRelation('pivot', $pivot);
             $relatedElementsCollection->push($newRelatedElement);
         }
