@@ -3,7 +3,7 @@
     $itemsInSelectsTables = $itemsInSelectsTables ?? false;
     $listUser = $listUser ?? false;
 
-    $options = method_exists($options, 'map') ? $options->map(function($label, $value, $disabled) {
+    $options = (is_object($options) || is_string($options)) && method_exists($options, 'map') ? $options->map(function($label, $value, $disabled) {
         return [
             'value' => $value,
             'label' => $label,
