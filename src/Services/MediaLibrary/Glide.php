@@ -103,13 +103,9 @@ class Glide implements ImageServiceInterface
     public function getUrl($id, array $params = [])
     {
         $defaultParams = config('twill.glide.default_params');
-        $addParamsToSvgs = config('twill.glide.add_params_to_svgs', false);
 
-        if (!$addParamsToSvgs && Str::endsWith($id, '.svg')) {
-            return $this->urlBuilder->getUrl($id);
-        }
-
-        return $this->urlBuilder->getUrl($id, array_replace($defaultParams, $params));
+        return $this->getOriginalMediaUrl($id) ??
+            $this->urlBuilder->getUrl($id, array_replace($defaultParams, $params));
     }
 
     /**
@@ -198,11 +194,7 @@ class Glide implements ImageServiceInterface
      */
     public function getRawUrl($id)
     {
-        if (Str::endsWith($id, '.svg')) {
-            return $this->getMediaUrl() . $id;
-        }
-            
-        return $this->urlBuilder->getUrl($id);
+        return $this->getOriginalMediaUrl($id) ?? $this->urlBuilder->getUrl($id);
     }
 
     /**
@@ -279,10 +271,15 @@ class Glide implements ImageServiceInterface
     }
 
     /**
+     * @param string $id 
      * @return string
      */
-    private function getMediaUrl()
+    private function getOriginalMediaUrl($id)
     {
+        if (!Str::endsWith($id, $this->config->get('twill.glide.original_media_for_extensions'))) {
+            return false;
+        }
+
         $libraryDisk = $this->config->get('twill.media_library.disk');
         $endpointType = $this->config->get('twill.media_library.endpoint_type');
         $localPath = $this->config->get('twill.media_library.local_path');
