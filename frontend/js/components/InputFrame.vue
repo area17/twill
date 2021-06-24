@@ -1,5 +1,6 @@
 <template>
   <div class="input" :dir="dirLocale" :class="textfieldClasses" v-show="isCurrentLocale" :hidden="!isCurrentLocale ? true : null">
+    test dirLocale : {{ dirLocale }}
     <label class="input__label" :for="labelFor || name" v-if="label">
       {{ label }}<span class="input__required" v-if="required">*</span>
       <span class="input__lang" v-if="hasLocale && languages.length > 1" @click="onClickLocale" :data-tooltip-title="$trans('fields.generic.switch-language')" v-tooltip>{{ displayedLocale }}</span>

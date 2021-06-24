@@ -203,9 +203,9 @@
         }
 
         // set Quill direction
-        if(this.dirLocale === 'rtl') {
-          editor.format('direction', 'rtl');
-          editor.format('align', 'right');
+        if (this.dirLocale === 'rtl') {
+          this.quill.format('direction', 'rtl')
+          this.quill.format('align', 'right')
         }
 
         // check text length

@@ -36,11 +36,11 @@ export default {
         ur : Urdu
         yi : Yiddish
       */
-      const rtlLocales = ['ar','arc','dv','fa','ha','he','khw','ks','ku','ps','ur','yi']
+      const rtlLocales = ['ar', 'arc', 'dv', 'fa', 'ha', 'he', 'khw', 'ks', 'ku', 'ps', 'ur', 'yi']
       if (this.hasLocale) return rtlLocales.includes(this.locale.shortlabel.toLowerCase())
       else return false
     },
-    dirLocale: function() {
+    dirLocale: function () {
       return (this.isLocaleRTL ? 'rtl' : 'auto')
     },
     displayedLocale: function () {
