@@ -93,7 +93,7 @@ abstract class ModuleRepository
         }
 
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
-            if (($count = $this->$method($slug)) !== false) {
+            if (($count = $this->$method($slug, $scope)) !== false) {
                 return $count;
             }
         }

@@ -319,4 +319,21 @@ trait HandlePermissions
 
         return $fields;
     }
+
+    public function getCountByStatusSlugHandlePermissions($slug, $scope = [])
+    {
+        $query = $this->model->where($scope);
+
+        if ($this->model::class === twillModel('user')) {
+            if ($slug === 'activated') {
+                return $query->activated()->count();
+            }
+
+            if ($slug === 'pending') {
+                return $query->pending()->count();
+            }
+        }
+
+        return false;
+    }
 }

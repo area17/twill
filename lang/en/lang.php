@@ -414,6 +414,8 @@ return [
         '2fa-description' => 'Please scan this QR code with a Google Authenticator compatible application and enter your one time password below before submitting. See a list of compatible applications <a href=":link" target="_blank" rel="noopener">here</a>.',
         '2fa-disable' => 'Enter your one time password to disable the 2-factor authentication',
         'active' => 'Active',
+        'pending' => 'Pending',
+        'activation-pending' => 'Pending activation',
         'user-image' => 'Image',
         'content-fieldset-label' => 'Account',
         'cancel' => 'Cancel',

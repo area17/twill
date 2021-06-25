@@ -166,7 +166,7 @@ class UserController extends ModuleController
     protected function indexData($request)
     {
         return [
-            'defaultFilterSlug' => 'published',
+            'defaultFilterSlug' => 'activated',
             'create' => $this->getIndexOption('create') && $this->user->can('edit-users'),
             'roleList' => Role::published()->get()->map(function ($role) {
                 return ['value' => $role->id, 'label' => $role->name];
@@ -224,7 +224,7 @@ class UserController extends ModuleController
             return ['search' => $this->request->get('search')];
         }
 
-        return json_decode($this->request->get('filter'), true) ?? ['status' => 'published'];
+        return json_decode($this->request->get('filter'), true) ?? ['status' => 'activated'];
     }
 
     /**
@@ -238,8 +238,12 @@ class UserController extends ModuleController
 
         array_push($statusFilters, [
             'name' => twillTrans('twill::lang.user-management.active'),
-            'slug' => 'published',
-            'number' => $this->repository->getCountByStatusSlug('published', [['is_superadmin', false]]),
+            'slug' => 'activated',
+            'number' => $this->repository->getCountByStatusSlug('activated', [['is_superadmin', false]]),
+        ], [
+            'name' => twillTrans('twill::lang.user-management.pending'),
+            'slug' => 'pending',
+            'number' => $this->repository->getCountByStatusSlug('pending', [['is_superadmin', false]]),
         ], [
             'name' => twillTrans('twill::lang.user-management.disabled'),
             'slug' => 'draft',
@@ -279,6 +283,28 @@ class UserController extends ModuleController
         $canEdit = $this->user->can('edit-users');
 
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
+    }
+
+    protected function filterScope($prepend = [])
+    {
+        $scope = [];
+
+        $requestFilters = $this->getRequestFilters();
+
+        if (array_key_exists('status', $requestFilters)) {
+            switch ($requestFilters['status']) {
+                case 'activated':
+                    $scope['activated'] = true;
+                    break;
+                case 'pending':
+                    $scope['pending'] = true;
+                    break;
+            }
+
+            unset($requestFilters['status']);
+        }
+
+        return parent::filterScope($prepend + $scope);
     }
 
     public function edit($id, $submoduleId = null)
