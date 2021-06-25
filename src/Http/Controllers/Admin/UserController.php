@@ -300,8 +300,6 @@ class UserController extends ModuleController
                     $scope['pending'] = true;
                     break;
             }
-
-            unset($requestFilters['status']);
         }
 
         return parent::filterScope($prepend + $scope);
