@@ -5,6 +5,7 @@ namespace A17\Twill\Repositories;
 use A17\Twill\Models\Group;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleOauth;
+use A17\Twill\Repositories\Behaviors\HandleUserPermissions;
 use Carbon\Carbon;
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Illuminate\Config\Repository as Config;
@@ -13,7 +14,7 @@ use Illuminate\Database\DatabaseManager as DB;
 
 class UserRepository extends ModuleRepository
 {
-    use HandleMedias, HandleOauth;
+    use HandleMedias, HandleOauth, HandleUserPermissions;
 
     /**
      * @var Config

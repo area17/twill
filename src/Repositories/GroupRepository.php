@@ -2,12 +2,12 @@
 
 namespace A17\Twill\Repositories;
 
-use Illuminate\Support\Arr;
 use A17\Twill\Models\Group;
-use A17\Twill\Models\User;
+use A17\Twill\Repositories\Behaviors\HandleGroupPermissions;
 
 class GroupRepository extends ModuleRepository
 {
+    use HandleGroupPermissions;
 
     public function __construct(Group $model)
     {

@@ -7,7 +7,6 @@ use A17\Twill\Models\Model;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
 use A17\Twill\Repositories\Behaviors\HandleDates;
 use A17\Twill\Repositories\Behaviors\HandleFieldsGroups;
-use A17\Twill\Repositories\Behaviors\HandlePermissions;
 use A17\Twill\Repositories\Behaviors\HandleRepeaters;
 use A17\Twill\Services\Capsules\HasCapsules;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -22,7 +21,7 @@ use PDO;
 
 abstract class ModuleRepository
 {
-    use HandleDates, HandleBrowsers, HandleRepeaters, HandleFieldsGroups, HasCapsules, HandlePermissions;
+    use HandleDates, HandleBrowsers, HandleRepeaters, HandleFieldsGroups, HasCapsules;
 
     /**
      * @var \A17\Twill\Models\Model
