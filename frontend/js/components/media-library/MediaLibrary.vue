@@ -378,7 +378,7 @@
         // reset unused field
         if (this.$refs.unused) {
           const input = this.$refs.unused.$el.querySelector('input')
-          input && input.click()
+          input && input.checked && input.click()
         }
 
         this.$nextTick(function () {
