@@ -80,3 +80,36 @@ if (!function_exists('isActiveNavigation')) {
         return $urlsAreMatching;
     }
 }
+
+if (!function_exists('moduleRouteExists')) {
+    /**
+     * @param string $moduleName
+     * @param string $prefix
+     * @param string $action
+     * @param array $parameters
+     * @param bool $absolute
+     * @return bool
+     */
+    function moduleRouteExists($moduleName, $prefix, $action)
+    {
+        // Fix module name case
+        $moduleName = Str::camel($moduleName);
+
+        // Create base route name
+        $routeName = 'admin.' . ($prefix ? $prefix . '.' : '');
+
+        // Prefix it with module name only if prefix doesn't contains it already
+        if (
+            config('twill.allow_duplicates_on_route_names', true) ||
+            ($prefix !== $moduleName &&
+                !Str::endsWith($prefix, '.' . $moduleName))
+        ) {
+            $routeName .= "{$moduleName}.";
+        }
+
+        //  Add the action name
+        $routeName .= $action;
+
+        return Route::has($routeName);
+    }
+}

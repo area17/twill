@@ -90,7 +90,7 @@ class File extends Model
                     'titleKey' => $model->titleKey,
                     'model'=>$model,
                     'module'=>$module,
-                    'edit' => moduleRoute($module, config('twill.block_editor.browser_route_prefixes.' . $module), 'edit', $model->id),
+                    'edit' => moduleRouteExists($module,config('twill.module_route_prefixes.' . $module),'edit', $model->id ) ? moduleRoute($module, config('twill.module_route_prefixes.' . $module), 'edit', $model->id) : null,
                 ] : [];
 
             }
@@ -102,7 +102,7 @@ class File extends Model
                 'titleKey' => $item->titleKey,
                 'model'=>$item,
                 'module'=>$module,
-                'edit' => moduleRoute($module, config('twill.block_editor.browser_route_prefixes.' . $module), 'edit', $item->id),
+                'edit' => moduleRouteExists($module,config('twill.module_route_prefixes.' . $module),'edit', $item->id ) ? moduleRoute($module, config('twill.module_route_prefixes.' . $module), 'edit', $item->id) : null,
             ];
 
         })->filter()->values()->toArray();

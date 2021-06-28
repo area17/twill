@@ -194,4 +194,14 @@ return [
         'zh-Hans',
         'ru',
     ],
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Module route prefixes
+    |--------------------------------------------------------------------------
+    |
+    | Used to link modules referenced by medias and files and that have route prefixes
+    |
+     */
+    'module_route_prefixes' => [
+    ],
 ];
