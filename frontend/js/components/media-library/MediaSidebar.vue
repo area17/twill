@@ -19,6 +19,13 @@
           </ul>
         </template>
 
+        <template v-if="showMediaReferences && hasSingleMedia && firstMedia.owners.length >= 1">
+          <p v-if="firstMedia.owners.length >= 1" class="mediasidebar__reference_label">{{ $trans('media-library.sidebar.references', 'References') }}</p>
+          <ul  class="mediasidebar__metadatas usage">
+            <li class="f--small" :style="(index)" v-for="(item, index) in firstMedia.owners" :key="'mediaowner_' + item.id"><a :href="item.edit" target="_blank">{{ item.name }}</a></li>
+          </ul>
+        </template>
+
         <a17-buttonbar class="mediasidebar__buttonbar" v-if="hasMedia">
           <!-- Actions -->
           <a v-if="hasSingleMedia" :href="firstMedia.original" download><span v-svg symbol="download"></span></a>
@@ -243,7 +250,8 @@
         return this.extraMetadatas.filter(m => !m.multiple || (m.multiple && this.translatableMetadatas.includes(m.name)))
       },
       ...mapState({
-        mediasLoading: state => state.mediaLibrary.loading
+        mediasLoading: state => state.mediaLibrary.loading,
+        showMediaReferences: state => state.mediaLibrary.showMediaReferences
       })
     },
     methods: {

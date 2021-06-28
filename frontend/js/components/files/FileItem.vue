@@ -1,26 +1,37 @@
 <template>
-  <tr class="fileItem">
-    <td v-if="draggable" class="fileItem__cell fileItem__cell--drag">
-      <div class="drag__handle--drag"></div>
-    </td>
-    <td class="fileItem__cell fileItem__cell--extension" v-if="currentItem.hasOwnProperty('extension')">
-      <a href="#" target="_blank"><span v-svg :symbol="getSvgIconName()"></span></a>
-    </td>
-    <td class="fileItem__cell fileItem__cell--name">
-      <span v-if="currentItem.hasOwnProperty('thumbnail')"><img :src="currentItem.thumbnail"/></span>
-      <a :href="currentItem.hasOwnProperty('original') ? currentItem.original : '#'" download><span class="f--link-underlined--o">{{ currentItem.name }}</span></a>
-      <input type="hidden" :name="name" :value="currentItem.id"/>
-    </td>
-    <td class=" fileItem__cell fileItem__cell--size" v-if="currentItem.hasOwnProperty('size')">{{ currentItem.size }}</td>
-    <td class="fileItem__cell">
-      <a17-button class="bucket__action" icon="close" @click="deleteItem()"><span v-svg symbol="close_icon"></span>
-      </a17-button>
-    </td>
-  </tr>
+  <div>
+    <tr class="fileItem">
+      <td v-if="draggable" class="fileItem__cell fileItem__cell--drag">
+        <div class="drag__handle--drag"></div>
+      </td>
+      <td class="fileItem__cell fileItem__cell--extension" v-if="currentItem.hasOwnProperty('extension')">
+        <a href="#" target="_blank"><span v-svg :symbol="getSvgIconName()"></span></a>
+      </td>
+      <td class="fileItem__cell fileItem__cell--name">
+        <span v-if="currentItem.hasOwnProperty('thumbnail')"><img :src="currentItem.thumbnail"/></span>
+        <a :href="currentItem.hasOwnProperty('original') ? currentItem.original : '#'" download><span class="f--link-underlined--o">{{ currentItem.name }}</span></a>
+        <input type="hidden" :name="name" :value="currentItem.id"/>
+      </td>
+      <td class=" fileItem__cell fileItem__cell--size" v-if="currentItem.hasOwnProperty('size')">{{ currentItem.size }}</td>
+      <td class="fileItem__cell">
+        <a17-button class="bucket__action" icon="close" @click="deleteItem()"><span v-svg symbol="close_icon"></span>
+        </a17-button>
+      </td>
+    </tr>
+    <tr v-if="showMediaReferences && currentItem.owners.length >= 1" class="fileItem fileReferences">
+      <td class="fileItem">
+        <ul class="fileItem_references">
+          <li class="media__name"><strong>{{ $trans('media-library.sidebar.references', 'References') }}</strong></li>
+          <li class="f--small" :style="(index)" v-for="(item, index) in currentItem.owners" :key="'fileowner_' + item.id"><a :href="item.edit" target="_blank">{{ item.name }}</a></li>
+        </ul>
+      </td>
+    </tr>
+  </div>
 </template>
 
 <script>
   import Extensions from './Extensions'
+  import { mapState } from 'vuex'
 
   export default {
     name: 'a17FileItem',
@@ -60,7 +71,10 @@
     computed: {
       currentItem: function () {
         return this.item
-      }
+      },
+      ...mapState({
+        showMediaReferences: state => state.mediaLibrary.showMediaReferences
+      })
     },
     methods: {
       deleteItem: function () {
@@ -184,5 +198,12 @@
     margin-right:auto;
     transition: background 250ms ease;
     @include dragGrid($color__drag, $color__drag_bg);
+  }
+
+  .fileItem_references {
+    padding: 5px 15px;
+    flex-grow: 1;
+    color: $color__text--light;
+    overflow: hidden;
   }
 </style>

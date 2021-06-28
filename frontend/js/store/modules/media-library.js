@@ -78,7 +78,12 @@ const state = {
    * An index used when mediaLibrary is open to replace a file
    * @type {number}
    */
-  indexToReplace: -1
+  indexToReplace: -1,
+  /**
+   * Displays where an image, file or record is being referenced
+   * @type {Boolean}
+   */
+  showMediaReferences: window[process.env.VUE_APP_NAME].STORE.medias.showMediaReferences || false
 }
 
 // getters

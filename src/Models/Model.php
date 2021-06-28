@@ -17,6 +17,13 @@ abstract class Model extends BaseModel implements TaggableInterface
 
     public $timestamps = true;
 
+    /**
+     * Key of the index column to use as title column.
+     *
+     * @var string
+     */
+    public $titleKey = 'title';
+
     public function scopePublished($query)
     {
         return $query->wherePublished(true);
