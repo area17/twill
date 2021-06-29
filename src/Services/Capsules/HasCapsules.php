@@ -122,6 +122,8 @@ trait HasCapsules
             'migrations_dir'
         ] = "{$capsule['root_path']}/database/migrations";
 
+        $capsule['lang_dir'] = "{$capsule['root_path']}/resources/lang";
+
         $capsule['views_dir'] = "{$capsule['root_path']}/resources/views";
 
         $capsule['view_prefix'] = "{$name}.resources.views.admin";

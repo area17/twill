@@ -49,6 +49,7 @@ class CapsulesServiceProvider extends RouteServiceProvider
     protected function registerCapsule($capsule)
     {
         $this->loadMigrationsFrom($capsule['migrations_dir']);
+        $this->loadTranslationsFrom($capsule['lang_dir'], 'twill:capsules:' . $capsule['module']);
     }
 
     public function registerViewPaths()
