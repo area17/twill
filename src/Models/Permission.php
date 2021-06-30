@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 /**
  * Permission model
  *
- * @property-read string $permissionable_module
+ * @property-read string $permissionableModule
  * @method static Builder global() Get global scope permissions.
  * @method static Builder module() Get module scope permissions.
  * @method static Builder moduleItem() Get module item scope permissions.
@@ -66,13 +66,30 @@ class Permission extends BaseModel
     {
         switch ($scope) {
             case Permission::SCOPE_GLOBAL:
-                return ['edit-settings', 'edit-users', 'edit-user-role', 'edit-user-groups', 'manage-modules', 'access-media-library'];
+                return [
+                    'edit-settings',
+                    'edit-users',
+                    'edit-user-role',
+                    'edit-user-groups',
+                    'manage-modules',
+                    'access-media-library'
+                ];
                 break;
             case Permission::SCOPE_MODULE:
-                return array_merge(['view-module', 'edit-module'], (config('twill.permission.level')=='roleGroupModule' ? ['manage-module'] : []));
+                return array_merge(
+                    [
+                        'view-module',
+                        'edit-module'
+                    ],
+                    (config('twill.permission.level') === 'roleGroupModule' ? ['manage-module'] : [])
+                );
                 break;
             case Permission::SCOPE_ITEM:
-                return ['view-item', 'edit-item', 'manage-item'];
+                return [
+                    'view-item',
+                    'edit-item',
+                    'manage-item'
+                ];
                 break;
         }
     }
