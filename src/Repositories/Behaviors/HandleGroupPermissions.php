@@ -2,36 +2,64 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Models\Group;
+use A17\Twill\Models\Model;
 use Illuminate\Support\Str;
 use A17\Twill\Models\Permission;
 
 trait HandleGroupPermissions
 {
+    /**
+     * Retrieve group permissions fields
+     *
+     * @param Model|Group $object
+     * @param array $fields
+     * @return array
+     */
     public function getFormFieldsHandleGroupPermissions($object, $fields)
     {
-        $fields = $this->renderGroupPermissions($object, $fields);
+        if (\Config::get('twill.permission.level') == 'roleGroup') {
+            foreach (Permission::permissionableModules() as $moduleName) {
+                $modulePermission = $object->permissions()->module()->ofModuleName($moduleName)->first();
+                if ($modulePermission) {
+                    $fields['module_' . $moduleName . '_permissions'] = $modulePermission->name;
+                } else {
+                    $fields['module_' . $moduleName . '_permissions'] = 'none';
+                }
+            }
+        } elseif (\Config::get('twill.permission.level') == 'roleGroupModule') {
+            #looking for item permissions
+            foreach ($object->permissions()->moduleItem()->get() as $permission) {
+                $model = $permission->permissionable()->first();
+                $moduleName = getModuleNameByModel($model);
+                $fields[$moduleName . '_' . $model->id . '_permission'] = $permission->name;
+            }
+        }
+
+        foreach ($object->subdomains_access ?? [] as $subdomain) {
+            $fields['subdomain_access_' . $subdomain] = true;
+        }
 
         return $fields;
     }
 
+    /**
+     * Function executed after save on group form
+     *
+     * @param Model|Group $object
+     * @param array $fields
+     */
     public function afterSaveHandleGroupPermissions($object, $fields)
-    {
-        $this->handleGroupPermissions($object, $fields);
-    }
-
-    protected function handleGroupPermissions($group, $fields)
     {
         foreach (Permission::available(Permission::SCOPE_GLOBAL) as $permissionName) {
             if (isset($fields[$permissionName]) && $fields[$permissionName] === true) {
-                $group->grantGlobalPermission($permissionName);
+                $object->grantGlobalPermission($permissionName);
             } else {
-                $group->revokeGlobalPermission($permissionName);
+                $object->revokeGlobalPermission($permissionName);
             }
         }
 
         $subdomainsAccess = [];
-
-
 
         foreach ($fields as $key => $permissionName) {
             //Used for the roleGroup mode
@@ -39,16 +67,16 @@ trait HandleGroupPermissions
                 $modulePermissions = Permission::available(Permission::SCOPE_MODULE);
                 $model = getModelByModuleName($moduleName = explode('_', $key)[1]);
 
-                $currentPermission = $group->permissions()
+                $currentPermission = $object->permissions()
                     ->where('permissionable_type', $model)
                     ->whereIn('name', $modulePermissions)
                     ->first()
                 ;
 
                 if (!$currentPermission || $permissionName != $currentPermission->name) {
-                    $group->revokeAllModulePermission($model);
+                    $object->revokeAllModulePermission($model);
                     if (in_array($permissionName, $modulePermissions)) {
-                        $group->grantModulePermission($permissionName, $model);
+                        $object->grantModulePermission($permissionName, $model);
                     }
                 }
             } elseif (Str::endsWith($key, '_permission')) {
@@ -58,45 +86,16 @@ trait HandleGroupPermissions
 
                 // Only permissionName existed, do update or create
                 if ($permissionName) {
-                    $group->grantModuleItemPermission($permissionName, $item);
+                    $object->grantModuleItemPermission($permissionName, $item);
                 } else {
-                    $group->revokeModuleItemAllPermissions($item);
+                    $object->revokeModuleItemAllPermissions($item);
                 }
             } elseif (Str::startsWith($key, 'subdomain_access_') && $permissionName) {
                 array_push($subdomainsAccess, substr($key, strlen('subdomain_access_')));
             }
         }
 
-        $group->subdomains_access = $subdomainsAccess;
-        $group->save();
-    }
-
-    protected function renderGroupPermissions($group, $fields)
-    {
-        $fields = [];
-
-        if (\Config::get('twill.permission.level') == 'roleGroup') {
-            foreach (Permission::permissionableModules() as $moduleName) {
-                $modulePermission = $group->permissions()->module()->ofModuleName($moduleName)->first();
-                if ($modulePermission) {
-                    $fields['module_' . $moduleName . '_permissions'] = $modulePermission->name;
-                } else {
-                    $fields['module_' . $moduleName . '_permissions'] = 'none';
-                }
-            }
-        } elseif (\Config::get('twill.permission.level') == 'roleGroupModule') {
-            #looking for item permissions
-            foreach ($group->permissions()->moduleItem()->get() as $permission) {
-                $model = $permission->permissionable()->first();
-                $moduleName = getModuleNameByModel($model);
-                $fields[$moduleName . '_' . $model->id . '_permission'] = $permission->name;
-            }
-        }
-
-        foreach ($group->subdomains_access ?? [] as $subdomain) {
-            $fields['subdomain_access_' . $subdomain] = true;
-        }
-
-        return $fields;
+        $object->subdomains_access = $subdomainsAccess;
+        $object->save();
     }
 }

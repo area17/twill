@@ -2,66 +2,79 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Models\User;
+use A17\Twill\Models\Model;
 use Illuminate\Support\Str;
 use A17\Twill\Models\Permission;
 
 trait HandleUserPermissions
 {
+    /**
+     * Retrieve user permissions fields
+     *
+     * @param Model|User $object
+     * @param array $fields
+     * @return array
+     */
     public function getFormFieldsHandleUserPermissions($object, $fields)
     {
-        $fields = $this->renderUserPermissions($object, $fields);
+         foreach ($object->permissions()->moduleItem()->get() as $permission) {
+            $model = $permission->permissionable()->first();
+            $moduleName = getModuleNameByModel($model);
+            $fields[$moduleName . '_' . $model->id . '_permission'] = $permission->name;
+        }
+
+        \Session::put("user-{$object->id}", $fields = $this->getUserPermissionsFields($object, $fields));
 
         return $fields;
     }
 
+    /**
+     * Function executed after save on user form
+     *
+     * @param Model|User $object
+     * @param array $fields
+     */
     public function afterSaveHandleUserPermissions($object, $fields)
     {
-        $this->handleUserPermissions($object, $fields);
-    }
+        $oldFields = \Session::get("user-{$object->id}");
 
-    // After save handle permissions form fields on user form
-    protected function handleUserPermissions($user, $fields)
-    {
-        $oldFields = \Session::get("user-{$user->id}");
         foreach ($fields as $key => $value) {
             if (Str::endsWith($key, '_permission')) {
-                //Old permission
+                // Old permission
                 if (isset($oldFields[$key]) && $oldFields[$key] == $value) {
                     continue;
                 }
+
                 $item_name = explode('_', $key)[0];
                 $item_id = explode('_', $key)[1];
                 $item = getRepositoryByModuleName($item_name)->getById($item_id);
 
                 // Only value existed, do update or create
                 if ($value) {
-                    $user->grantModuleItemPermission($value, $item);
+                    $object->grantModuleItemPermission($value, $item);
                 } else {
-                    $user->revokeModuleItemAllPermissions($item);
+                    $object->revokeModuleItemAllPermissions($item);
                 }
             }
         }
     }
 
-    protected function renderUserPermissions($user, $fields)
-    {
-        #looking for user permissions
-        foreach ($user->permissions()->moduleItem()->get() as $permission) {
-            $model = $permission->permissionable()->first();
-            $moduleName = getModuleNameByModel($model);
-            $fields[$moduleName . '_' . $model->id . '_permission'] = $permission->name;
-        }
-
-        \Session::put("user-{$user->id}", $fields = $this->getUserPermissionsFields($user, $fields));
-        return $fields;
-    }
-
+    /**
+     * Get user permissions fields
+     *
+     * @param Model|User $user
+     * @param array $fields
+     * @return void
+     */
     protected function getUserPermissionsFields($user, $fields)
     {
         $itemScopes = Permission::available(Permission::SCOPE_ITEM);
 
-        #looking for group permissions belongs to the user
+        // looking for group permissions that belongs to the user
         foreach ($user->publishedGroups as $group) {
+
+            // get each permissions that belongs to a module from this group
             foreach ($group->permissions()->moduleItem()->get() as $permission) {
                 $model = $permission->permissionable()->first();
 
@@ -70,12 +83,13 @@ trait HandleUserPermissions
                 }
 
                 $moduleName = getModuleNameByModel($model);
-
                 $index = $moduleName . '_' . $model->id . '_permission';
+
                 if (isset($fields[$index])) {
                     $current = array_search($fields[$index], $itemScopes);
                     $group = array_search($permission->name, $itemScopes);
-                    #check permission level
+
+                    // check that group permission is greater that current permission level
                     if ($group > $current) {
                         $fields[$index] = $permission->name;
                     }
@@ -85,7 +99,7 @@ trait HandleUserPermissions
             }
         }
 
-        #looking for global permissions, if the user has the 'manage-modules' permission
+        // looking for global permissions, if the user has the 'manage-modules' permission
         $isManageAllModules = $user->is_superadmin || ($user->role->permissions()->global()->where('name', 'manage-modules')->first() != null);
 
         #looking for role module permission
@@ -125,6 +139,13 @@ trait HandleUserPermissions
         return $fields;
     }
 
+    /**
+     * Retrieve count of user for 'activated' and 'pending' status slug
+     *
+     * @param string $slug
+     * @param array $scope
+     * @return int|boolean
+     */
     public function getCountByStatusSlugHandleUserPermissions($slug, $scope = [])
     {
         $query = $this->model->where($scope);
