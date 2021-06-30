@@ -18,7 +18,8 @@ trait HasFiles
             File::class,
             'fileable',
             config('twill.fileables_table', 'twill_fileables')
-        )->withPivot(['role', 'locale'])->withTimestamps();
+        )->withPivot(['role', 'locale'])
+            ->withTimestamps()->orderBy(config('twill.fileables_table', 'twill_fileables') . '.id', 'asc');
     }
 
     private function findFile($role, $locale)
