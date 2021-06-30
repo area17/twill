@@ -3,96 +3,16 @@
 namespace A17\Twill\Models\Behaviors;
 
 use A17\Twill\Models\Permission;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 trait HasPermissions
 {
-    public function grantGlobalPermission($name)
-    {
-        $this->checkPermissionAvailable($name, Permission::SCOPE_GLOBAL);
-        $permission = Permission::firstOrCreate([
-            'name' => $name,
-        ]);
-        //check the existence to avoid duplicate records on pivot table
-        if (!$this->permissions()->global()->where('name', $name)->exists()) {
-            $this->permissions()->save($permission);
-        }
-    }
-
-    public function revokeGlobalPermission($name)
-    {
-        $this->checkPermissionAvailable($name, Permission::SCOPE_GLOBAL);
-        $this->permissions()->global()->detach(Permission::where('name', $name)->first()->id);
-    }
-
-    public function grantModulePermission($name, $permissionableType)
-    {
-        $this->checkPermissionAvailable($name, Permission::SCOPE_MODULE);
-        $permission = Permission::firstOrCreate([
-            'name' => $name,
-            'permissionable_type' => $permissionableType,
-        ]);
-        $this->permissions()->save($permission);
-
-    }
-
-    public function revokeModulePermission($name, $permissionableType)
-    {
-        $this->checkPermissionAvailable($name, Permission::SCOPE_MODULE);
-        $permission = Permission::ofModel($permissionableType)->where('name', $name)->first();
-        if ($permission) {
-            $this->permissions()->module()->detach($permission->id);
-        }
-    }
-
-    public function revokeAllModulePermission($permissionableType)
-    {
-        foreach(Permission::ofModel($permissionableType)->get() as $permission) {
-            $this->permissions()->module()->detach($permission->id);
-        }
-    }
-
-    // First find or create the corresponding permission
-    // If the object haven't been given this permission, give it
-    // If the object already had this permission, skip it
-    public function grantModuleItemPermission($name, $permissionableItem)
-    {
-        $this->checkPermissionAvailable($name, Permission::SCOPE_ITEM);
-        $permission = Permission::firstOrCreate([
-            'name' => $name,
-            'permissionable_type' => $permissionableItem ? get_class($permissionableItem) : null,
-            'permissionable_id' => $permissionableItem ? $permissionableItem->id : null,
-        ]);
-        //avoid duplicate records on pivot table
-        $this->revokeModuleItemAllPermissions($permissionableItem);
-        $this->permissions()->attach($permission->id);
-    }
-
-    public function revokeModuleItemPermission($name, $permissionableItem)
-    {
-        $this->checkPermissionAvailable($name, Permission::SCOPE_ITEM);
-        $permission = Permission::ofItem($permissionableItem)->where('name', $name)->first();
-        if ($permission) {
-            $this->permissions()->ofItem($permissionableItem)->detach($permission->id);
-        }
-    }
-
-    public function revokeModuleItemAllPermissions($permissionableItem)
-    {
-        $this->removePermissions(Permission::ofItem($permissionableItem)->pluck('id')->toArray());
-    }
-
-    public function revokeAllPermissions()
-    {
-        $this->removePermissions($this->permissions->pluck('id')->toArray());
-    }
-
-    public function removePermissions($permissionableIds)
-    {
-        if (!empty($permissionableIds)) {
-            $this->permissions()->detach($permissionableIds);
-        }
-    }
-
+    /**
+     * Permissions relationship
+     *
+     * @return BelongsToMany|Collection|Permission[]
+     */
     public function permissions()
     {
         // Deal with the situation that twill user's table has been renamed.
@@ -103,11 +23,185 @@ trait HasPermissions
         }
     }
 
-    protected function checkPermissionAvailable($name, $scope)
+    /**
+     * Add global permission to item, after making sure the permission is
+     * valid
+     *
+     * @param string $name
+     * @return void
+     */
+    public function grantGlobalPermission($name)
     {
-        if (!in_array($name, Permission::available($scope))) {
-            abort(400, 'operation failed, permission ' . $name . ' not available on ' . $scope);
+        $this->checkPermissionAvailable($name, Permission::SCOPE_GLOBAL);
+
+        $permission = Permission::firstOrCreate(['name' => $name,]);
+
+        // check the existence to avoid duplicate records on pivot table
+        if (!$this->permissions()->global()->where('name', $name)->exists()) {
+            $this->permissions()->save($permission);
         }
     }
 
+    /**
+     * Revoke global permission from the item, after making sure the permission is
+     * valid
+     *
+     * @param string $name
+     * @return void
+     */
+    public function revokeGlobalPermission($name)
+    {
+        $this->checkPermissionAvailable($name, Permission::SCOPE_GLOBAL);
+
+        $this->permissions()->global()->detach(Permission::where('name', $name)->first()->id);
+    }
+
+
+    /**
+     * Add module permission to item, after making sure the permission is
+     * valid
+     *
+     * @param string $name
+     * @param string|object $permissionableType
+     * @return void
+     */
+    public function grantModulePermission($name, $permissionableType)
+    {
+        $this->checkPermissionAvailable($name, Permission::SCOPE_MODULE);
+
+        $permission = Permission::firstOrCreate([
+            'name' => $name,
+            'permissionable_type' => $permissionableType,
+        ]);
+
+        $this->permissions()->save($permission);
+
+    }
+
+    /**
+     * Revoke module permission from the item, after making sure the permission is
+     * valid
+     *
+     * @param string $name
+     * @param string|object $permissionableType
+     * @return void
+     */
+    public function revokeModulePermission($name, $permissionableType)
+    {
+        $this->checkPermissionAvailable($name, Permission::SCOPE_MODULE);
+        $permission = Permission::ofModel($permissionableType)->where('name', $name)->first();
+        if ($permission) {
+            $this->permissions()->module()->detach($permission->id);
+        }
+    }
+
+
+    /**
+     * Revoke all module permissions from the item
+     *
+     * @param string|object $permissionableType
+     * @return void
+     */
+    public function revokeAllModulePermission($permissionableType)
+    {
+        foreach(Permission::ofModel($permissionableType)->get() as $permission) {
+            $this->permissions()->module()->detach($permission->id);
+        }
+    }
+
+    /**
+     * Add module item permission, after making sure the permission is
+     * valid
+     *
+     * @param string $name
+     * @param object $permissionableItem
+     * @return void
+     */
+    public function grantModuleItemPermission($name, $permissionableItem)
+    {
+        // First find or create the corresponding permission
+        // If the object haven't been given this permission, give it
+        // If the object already had this permission, skip it
+        $this->checkPermissionAvailable($name, Permission::SCOPE_ITEM);
+
+        $permission = Permission::firstOrCreate([
+            'name' => $name,
+            'permissionable_type' => $permissionableItem ? get_class($permissionableItem) : null,
+            'permissionable_id' => $permissionableItem ? $permissionableItem->id : null,
+        ]);
+
+        $this->revokeModuleItemAllPermissions($permissionableItem);
+        $this->permissions()->attach($permission->id);
+    }
+
+    /**
+     * Revoke module item permissions, after making sure the permission is
+     * valid
+     *
+     * @param string $name
+     * @param object $permissionableItem
+     * @return void
+     */
+    public function revokeModuleItemPermission($name, $permissionableItem)
+    {
+        $this->checkPermissionAvailable($name, Permission::SCOPE_ITEM);
+
+        $permission = Permission::ofItem($permissionableItem)->where('name', $name)->first();
+        if ($permission) {
+            $this->permissions()->ofItem($permissionableItem)->detach($permission->id);
+        }
+    }
+
+    /**
+     * Revoke all module item permissions
+     *
+     * @param object $permissionableItem
+     * @return void
+     */
+    public function revokeModuleItemAllPermissions($permissionableItem)
+    {
+        $this->removePermissions(Permission::ofItem($permissionableItem)->pluck('id')->toArray());
+    }
+
+    /**
+     * Revoke all permissions
+     *
+     * @param object $permissionableItem
+     * @return void
+     */
+    public function revokeAllPermissions()
+    {
+        $this->removePermissions($this->permissions->pluck('id')->toArray());
+    }
+
+    /**
+     * Revoke all permissions from a list of permission ids
+     *
+     * @param int[] $permissionableIds
+     * @return void
+     */
+    public function removePermissions($permissionableIds)
+    {
+        if (!empty($permissionableIds)) {
+            $this->permissions()->detach($permissionableIds);
+        }
+    }
+
+    /**
+     * Check if a permission is available for a particular scope
+     *
+     * @see Permission::SCOPE_GLOBAL
+     * @see Permission::SCOPE_MODULE
+     * @see Permission::SCOPE_ITEM
+     *
+     * @param string $name
+     * @param string $scope
+     * @return void
+     */
+    protected function checkPermissionAvailable($name, $scope)
+    {
+        if (!in_array($name, Permission::available($scope))) {
+            abort(400, 'Operation failed, permission ' . $name . ' not available on ' . $scope);
+        }
+    }
 }
