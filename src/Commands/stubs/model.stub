@@ -30,7 +30,7 @@ class {{modelClassName}} extends Model {{modelImplements}}
         'cover' => [
             'default' => [
                 [
-                    'name' => 'desktop',
+                    'name' => 'default',
                     'ratio' => 16 / 9,
                 ],
             ],
