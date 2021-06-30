@@ -223,7 +223,6 @@ class Permission extends BaseModel
      */
     public function scopeOfModel(Builder $query, $model)
     {
-        dd($model);
         return $query->where('permissionable_type', $model);
     }
 
