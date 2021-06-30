@@ -28,7 +28,7 @@ class {{modelClassName}} extends Model {{modelImplements}}
     {{/hasSlug}}{{hasMedias}}
     public $mediasParams = [
         'cover' => [
-            'desktop' => [
+            'default' => [
                 [
                     'name' => 'desktop',
                     'ratio' => 16 / 9,
