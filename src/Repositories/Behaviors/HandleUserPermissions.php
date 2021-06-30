@@ -77,7 +77,7 @@ trait HandleUserPermissions
                     $group = array_search($permission->name, $itemScopes);
                     #check permission level
                     if ($group > $current) {
-                        $fields[$index] = "\"{$permission->name}\"";
+                        $fields[$index] = $permission->name;
                     }
                 } else {
                     $fields[$index] = $permission->name;
