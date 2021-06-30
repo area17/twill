@@ -21,7 +21,7 @@ trait HandleGroupPermissions
 
     protected function handleGroupPermissions($group, $fields)
     {
-        foreach (Permission::available('global') as $permissionName) {
+        foreach (Permission::available(Permission::SCOPE_GLOBAL) as $permissionName) {
             if (isset($fields[$permissionName]) && $fields[$permissionName] === true) {
                 $group->grantGlobalPermission($permissionName);
             } else {
@@ -36,7 +36,7 @@ trait HandleGroupPermissions
         foreach ($fields as $key => $permissionName) {
             //Used for the roleGroup mode
             if (Str::startsWith($key, 'module_') && Str::endsWith($key, '_permissions')) {
-                $modulePermissions = Permission::available('module');
+                $modulePermissions = Permission::available(Permission::SCOPE_MODULE);
                 $model = getModelByModuleName($moduleName = explode('_', $key)[1]);
 
                 $currentPermission = $group->permissions()

@@ -8,7 +8,7 @@ trait HasPermissions
 {
     public function grantGlobalPermission($name)
     {
-        $this->checkPermissionAvailable($name, 'global');
+        $this->checkPermissionAvailable($name, Permission::SCOPE_GLOBAL);
         $permission = Permission::firstOrCreate([
             'name' => $name,
         ]);
@@ -20,13 +20,13 @@ trait HasPermissions
 
     public function revokeGlobalPermission($name)
     {
-        $this->checkPermissionAvailable($name, 'global');
+        $this->checkPermissionAvailable($name, Permission::SCOPE_GLOBAL);
         $this->permissions()->global()->detach(Permission::where('name', $name)->first()->id);
     }
 
     public function grantModulePermission($name, $permissionableType)
     {
-        $this->checkPermissionAvailable($name, 'module');
+        $this->checkPermissionAvailable($name, Permission::SCOPE_MODULE);
         $permission = Permission::firstOrCreate([
             'name' => $name,
             'permissionable_type' => $permissionableType,
@@ -37,7 +37,7 @@ trait HasPermissions
 
     public function revokeModulePermission($name, $permissionableType)
     {
-        $this->checkPermissionAvailable($name, 'module');
+        $this->checkPermissionAvailable($name, Permission::SCOPE_MODULE);
         $permission = Permission::ofModel($permissionableType)->where('name', $name)->first();
         if ($permission) {
             $this->permissions()->module()->detach($permission->id);
@@ -56,7 +56,7 @@ trait HasPermissions
     // If the object already had this permission, skip it
     public function grantModuleItemPermission($name, $permissionableItem)
     {
-        $this->checkPermissionAvailable($name, 'item');
+        $this->checkPermissionAvailable($name, Permission::SCOPE_ITEM);
         $permission = Permission::firstOrCreate([
             'name' => $name,
             'permissionable_type' => $permissionableItem ? get_class($permissionableItem) : null,
@@ -69,7 +69,7 @@ trait HasPermissions
 
     public function revokeModuleItemPermission($name, $permissionableItem)
     {
-        $this->checkPermissionAvailable($name, 'item');
+        $this->checkPermissionAvailable($name, Permission::SCOPE_ITEM);
         $permission = Permission::ofItem($permissionableItem)->where('name', $name)->first();
         if ($permission) {
             $this->permissions()->ofItem($permissionableItem)->detach($permission->id);

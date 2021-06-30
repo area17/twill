@@ -1,8 +1,8 @@
 <?php
 
+use Illuminate\Support\Str;
 use A17\Twill\Models\Permission;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 
 if (!function_exists('getAllModules')) {
     function getAllModules()
@@ -12,7 +12,7 @@ if (!function_exists('getAllModules')) {
             preg_match($re, $repository, $matches);
             return config('twill.namespace') . "\\Repositories\\" . $matches[0];
         });
-        
+
         $moduleRepositories = $repositories->filter(function ($repository) {
             return is_subclass_of($repository, 'A17\Twill\Repositories\ModuleRepository');
         });
@@ -102,7 +102,7 @@ if (!function_exists('updatePermissionOptions')) {
         foreach($user->publishedGroups as $group) {
             if (($permission=$group->permissions()->OfItem($item)->first())!= null) {
                 if (isset($permissions[get_class($item)])) {
-                    $scopes = Permission::available('item');
+                    $scopes = Permission::available(Permission::SCOPE_ITEM);
                     $previous = array_search($permissions[get_class($item)], $scopes);
                     $current = array_search($permission->name, $scopes);
                     #check permission level

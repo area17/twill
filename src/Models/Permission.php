@@ -9,6 +9,30 @@ use Illuminate\Support\Str;
 
 class Permission extends BaseModel
 {
+    /**
+     * Constant that represents a list of permissions that belongs to the global scope.
+     *
+     * @var string
+     * @see Permission::available($scope)
+     */
+    const SCOPE_GLOBAL = 'global';
+
+    /**
+     * Constant that represents a list of permissions that belongs to the module scope.
+     *
+     * @var string
+     * @see Permission::available($scope)
+     */
+    const SCOPE_MODULE = 'module';
+
+    /**
+     * Constant that represents a list of permissions that belongs to the module item scope.
+     *
+     * @var string
+     * @see Permission::available($scope)
+     */
+    const SCOPE_ITEM = 'item';
+
     protected $fillable = [
         'name',
         'permissionable_type',

@@ -22,7 +22,7 @@ trait HandleRolePermissions
     // After save handle permissions form fields on role form
     protected function handleRolePermissions($role, $fields)
     {
-        foreach (Permission::available('global') as $permissionName) {
+        foreach (Permission::available(Permission::SCOPE_GLOBAL) as $permissionName) {
             if (isset($fields[$permissionName]) && $fields[$permissionName] === true) {
                 $role->grantGlobalPermission($permissionName);
             } else {
@@ -32,7 +32,7 @@ trait HandleRolePermissions
 
         foreach ($fields as $key => $permissionName) {
             if (Str::startsWith($key, 'module_') && Str::endsWith($key, '_permissions')) {
-                $modulePermissions = Permission::available('module');
+                $modulePermissions = Permission::available(Permission::SCOPE_MODULE);
                 $model = getModelByModuleName($moduleName = explode('_', $key)[1]);
 
                 $currentPermission = $role->permissions()

@@ -1,11 +1,11 @@
 <?php
 
-use A17\Twill\Models\Permission;
 use A17\Twill\Models\Role;
 use A17\Twill\Models\Group;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use A17\Twill\Models\Permission;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class SupportPermission extends Migration
 {
@@ -121,7 +121,7 @@ class SupportPermission extends Migration
     private function seedBasicPermissions()
     {
         // Seed default global permissions
-        $global_permissions = Permission::available('global');
+        $global_permissions = Permission::available(Permission::SCOPE_GLOBAL);
 
         foreach ($global_permissions as $permission) {
             $displayName = implode(' ', array_map(function ($word) {
@@ -140,8 +140,8 @@ class SupportPermission extends Migration
     {
         // Default roles and their permissions
         $roles = [
-            'Owner' => Permission::available('global'),
-            'Administrator' => array_diff(Permission::available('global'), ["edit-user-roles", "manage-modules"]),
+            'Owner' => Permission::available(Permission::SCOPE_GLOBAL),
+            'Administrator' => array_diff(Permission::available(Permission::SCOPE_GLOBAL), ["edit-user-roles", "manage-modules"]),
             'Team' => [],
             'Guest' => [],
         ];

@@ -58,7 +58,7 @@ trait HandleUserPermissions
 
     protected function getUserPermissionsFields($user, $fields)
     {
-        $itemScopes = Permission::available('item');
+        $itemScopes = Permission::available(Permission::SCOPE_ITEM);
 
         #looking for group permissions belongs to the user
         foreach ($user->publishedGroups as $group) {
