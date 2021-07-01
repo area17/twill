@@ -66,15 +66,19 @@ const state = {
   errors: {},
   /**
    * Is this a custom form (that will let the browser submit the form instead of hooking up the submit event)
-   * @type {Bookean}
+   * @type {Boolean}
    */
   isCustom: window[process.env.VUE_APP_NAME].STORE.form.isCustom || false,
   /**
    * Force reload on successful submit
-   * @type {Bookean}
+   * @type {Boolean}
    */
-  reloadOnSuccess: window[process.env.VUE_APP_NAME].STORE.form.reloadOnSuccess || false
-
+  reloadOnSuccess: window[process.env.VUE_APP_NAME].STORE.form.reloadOnSuccess || false,
+  /**
+   * Prevent submitting the form before the input value is pushed into the store
+   * @type {Boolean}
+   */
+  preventSubmit: false
 }
 
 // getters
@@ -102,6 +106,12 @@ const mutations = {
     if (newValue && newValue !== '') {
       state.permalink = newValue
     }
+  },
+  [FORM.PREVENT_SUBMIT] (state) {
+    state.preventSubmit = true
+  },
+  [FORM.ALLOW_SUBMIT] (state) {
+    state.preventSubmit = false
   },
   // ----------- Form fields ----------- //
   [FORM.EMPTY_FORM_FIELDS] (state, status) {
