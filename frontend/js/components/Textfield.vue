@@ -204,11 +204,18 @@
         this.focused = false
         this.$emit('blur', newValue)
       },
-      onInput: debounce(function (event) {
+      onInput: function (event) {
+        this.preventSubmit() // see formStore mixin
+
+        this._onInputInternal(event)
+      },
+      _onInputInternal: debounce(function (event) {
         const newValue = event.target.value
         this.updateAndSaveValue(newValue)
 
         this.$emit('change', newValue)
+
+        this.allowSubmit() // see formStore mixin
       }, 250),
       resizeTextarea: function () {
         if (this.type !== 'textarea') return
