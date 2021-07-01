@@ -81,6 +81,8 @@
         this.$refs.modal.open()
       },
       submit: function (event) {
+        if (this.$store.state.form.preventSubmit) return
+
         if (this._isSubmitting) return
         this._isSubmitting = true
 
