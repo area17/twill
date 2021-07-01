@@ -166,6 +166,8 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
   },
   methods: {
     submitForm: function (event) {
+      if (this.$store.state.form.preventSubmit) return
+
       if (!this.loading) {
         this.isFormUpdated = false
         this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
