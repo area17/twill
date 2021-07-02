@@ -895,14 +895,66 @@ See [Block editor](https://twill.io/docs/#block-editor-3)
 
 <br/>
 
-Browser fields can be used to save a `belongsToMany` relationship outside of the block editor.
+Browser fields can be used inside as well as outside the block editor.
 
-Checkout this [Spectrum tutorial](https://spectrum.chat/twill/tips-and-tricks/step-by-step-ii-creating-a-twill-app~37c36601-1198-4c53-857a-a2b47c6d11aa) until we update this section to get more info on setting things up.
+Inside the block editor, no migration is needed when using browsers. Refer to the section titled [Adding browser fields to a block](#adding-browser-fields-to-a-block) for a detailed explanation.
 
-When using inside of the block editor, no migration is needed. Refer to the section titled [Adding browser fields to a block](#adding-browser-fields-to-a-block) for a detailed explanation.
+Outside the block editor, browser fields are used to save `belongsToMany` relationships. The relationships can be stored in Twill's own `related` table or in a custom pivot table.
 
+#### Using browser fields as related items
 
-### Browser with multiple modules
+The following example demonstrates how to use a browser field to attach `Authors` to `Articles`. 
+
+- Update the `Article` model to add the `HasRelated` trait:
+
+```php
+use A17\Twill\Models\Behaviors\HasRelated;
+
+class Article extends Model
+{
+    use HasRelated;
+
+    /* ... */
+}
+```
+
+- Update `ArticleRepository` to add the `HandleRelatedBrowsers` trait. Then, define the browser field in the `$relatedBrowsers` property:
+
+```php
+use A17\Twill\Repositories\Behaviors\HandleRelatedBrowsers;
+
+class ArticleRepository extends ModuleRepository
+{
+    use HandleRelatedBrowsers;
+    
+    /* ... */
+
+    public function __construct(Article $model)
+    {
+        $this->relatedBrowsers = ['authors'];
+        $this->model = $model;
+    }
+}
+```
+
+- Add the browser field to `resources/views/admin/articles/form.blade.php`:
+
+```php
+@extends('twill::layouts.form')
+
+@section('contentFields')
+    ...
+
+    @formField('browser', [
+        'moduleName' => 'authors',
+        'name' => 'authors',
+        'label' => 'Authors',
+        'max' => 4,
+    ])
+@stop
+```
+
+#### Browser with multiple modules
 
 With module names:
 ```php
