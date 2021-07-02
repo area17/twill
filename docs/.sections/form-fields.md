@@ -954,110 +954,64 @@ class ArticleRepository extends ModuleRepository
 @stop
 ```
 
-#### Browser with multiple modules
+#### Multiple modules as related items
 
-With module names:
-```php
-@formField('browser', [
-    'modules' => [
-        [
-            'name' => 'projects',
-        ],
-        [
-            'name' => 'capabilities',
-            'routePrefix' => 'taxonomies',
-        ],
-        [
-            'name' => 'articles',
-        ],
-    ],
-    'name' => 'related_content',
-    'label' => 'Related content'
-])
-```
+You can use the same approach to handle polymorphic relationships through Twill's `related` table.
 
-With manual endpoints:
-```php
-@formField('browser', [
-    'endpoints' => [
-        [
-            'label' => 'Projects',
-            'value' => '/projects/browser',
-        ],
-        [
-            'label' => 'Capabilities',
-            'value' => '/taxonomies/capabilities/browser',
-        ],
-        [
-            'label' => 'Articles',
-            'value' => '/articles/browser',
-        ],
-    ],
-    'name' => 'related_content',
-    'label' => 'Related content'
-])
-```
-
-When using multiple modules/endpoints, the browser field doesn't require any migration.
-You can safely use the `HasRelated` trait.
-
-In your model add:
+- Update `ArticleRepository`:
 
 ```php
-use A17\Twill\Models\Behaviors\HasRelated;
+use A17\Twill\Repositories\Behaviors\HandleRelatedBrowsers;
 
-class MyModel extends Model
+class ArticleRepository extends ModuleRepository
 {
-    use HasRelated;
-    ...
-}
-```
+    use HandleRelatedBrowsers;
+    
+    /* ... */
 
-In the repository you need to add the hooks to save and retrieve data of the browser field by using the `getFormFieldsForRelatedBrowser` and `updateRelatedBrowser` functions.
-
-```php
-<?php
-
-namespace App\Repositories;
-
-use A17\Twill\Repositories\ModuleRepository;
-use App\Models\MyModel;
-
-class MyModelRepository extends ModuleRepository
-{
-
-    public function __construct(MyModel $model)
+    public function __construct(Article $model)
     {
+        $this->relatedBrowsers = ['collaborators'];
         $this->model = $model;
     }
-
-    ...
-
-    public function afterSave($object, $fields)
-    {
-        $this->updateRelatedBrowser($object, $fields, 'related_content');
-
-        parent::afterSave($object, $fields);
-    }
-
-    public function getFormFields($object)
-    {
-        $fields = parent::getFormFields($object);
-        $fields['browsers']['related_content'] = $this->getFormFieldsForRelatedBrowser($object, 'related_content');
-
-        return $fields;
-    }
 }
 ```
 
-To retrieve the items in the frontend, you can use the following helper, it will return of collection of models in the correct order.
-:
+- Add the browser field to `resources/views/admin/articles/form.blade.php`:
+
+```php
+@extends('twill::layouts.form')
+
+@section('contentFields')
+    ...
+
+    @formField('browser', [
+        'modules' => [
+            ['name' => 'authors', 'label' => 'Authors'],
+            ['name' => 'editors', 'label' => 'Editors'],
+        ],
+        'name' => 'collaborators',
+        'label' => 'Collaborators',
+        'max' => 4,
+    ])
+@stop
+```
+
+#### Working with related items
+
+To retrieve the items in the frontend, you can use the `getRelated` method on models and blocks. It will return of collection of related models in the correct order:
 
 ```php
     $item->getRelated('related_content');
-    // or, in a block
+
+    // or, in a block:
+
     $block->getRelated('related_content');
 ```
+
+#### Using browser fields and custom pivot tables
+
+Checkout this [Spectrum tutorial](https://spectrum.chat/twill/tips-and-tricks/step-by-step-ii-creating-a-twill-app~37c36601-1198-4c53-857a-a2b47c6d11aa) that walks through the entire process of using browser fields with custom pivot tables.
 
 ### Repeater
 ![screenshot](/docs/_media/repeater.png)
