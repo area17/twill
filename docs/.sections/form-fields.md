@@ -971,13 +971,104 @@ To retrieve the items in the frontend, you can use the following helper, it will
 @formField('repeater', ['type' => 'video'])
 ```
 
-Repeaters fields can be used to save a `hasMany` relationship or a `morphMany` relationship outside of the block editor.
+Repeater fields can be used inside as well as outside the block editor.
 
-Checkout this [Github issue](https://github.com/area17/twill/issues/131) until we update this section to get more info on setting things up.
+Inside the block editor, repeater blocks share the same model as regular blocks. By reading the section on the [block editor](#block-editor-3) first, you will get a good overview of how to create and define repeater blocks for your project. No migration is needed when using repeater blocks. Refer to the section titled [Adding repeater fields to a block](#adding-repeater-fields-to-a-block) for a detailed explanation.
 
-Repeater blocks share the same Model as Blocks in the block editor. By reading the section on the [block editor](#block-editor-3), you will get a good picture on how to create and define repeater blocks for your project.
+Outside the block editor, repeater fields are used to save `hasMany` or `morphMany` relationships.
 
-When using inside of the block editor, no migration is needed. Refer to the section titled [Adding repeater fields to a block](#adding-repeater-fields-to-a-block) for a detailed explanation.
+#### Using repeater fields
+
+The following example demonstrates how to define a relationship between `Team` and `TeamMember` modules to implement a `team-member` repeater field.
+
+#### Create the modules
+
+```
+php artisan twill:make:module Team
+php artisan twill:make:module TeamMember
+```
+
+Make sure to enable the `position` feature on the `TeamMember` module.
+
+#### Update the `create_team_members_tables` migration
+
+Add the `team_id` foreign key used for the `TeamMember—Team` relationship:
+
+```php
+class CreateTeamMembersTables extends Migration
+{
+    public function up()
+    {
+        Schema::create('team_members', function (Blueprint $table) {
+            /* ... */
+
+            $table->foreignId('team_id')
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+        });
+    }
+}
+```
+
+#### Run the migrations
+
+```
+php artisan migrate
+```
+
+#### Update the `Team` model
+
+Define the `members` relationship. The results should be ordered by position:
+
+```php
+class Team extends Model
+{
+    /* ... */
+
+    public function members()
+    {
+        return $this->hasMany(TeamMember::class)->orderBy('position');
+    }
+}
+```
+
+#### Add the repeater Blade template
+
+Create file `resources/views/admin/repeaters/team-member.blade.php`:
+
+```php
+@twillRepeaterTitle('Team Member')
+@twillRepeaterTrigger('Add member')
+@twillRepeaterGroup('app')
+
+@formField('input', [
+    'name' => 'title',
+    'label' => 'Title',
+    'required' => true,
+])
+
+...
+```
+
+#### Add the repeater field to the form
+
+Update file `resources/views/admin/teams/form.blade.php`:
+
+```php
+@extends('twill::layouts.form')
+
+@section('contentFields')
+    ...
+
+    @formField('repeater', ['type' => 'team-member'])
+@stop
+```
+
+#### Finishing up
+
+Add the `Team` module to your `twill-navigation.php` config and you are done!
+
 
 ### Map
 ![screenshot](/docs/_media/map.png)
