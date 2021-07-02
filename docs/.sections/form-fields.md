@@ -987,14 +987,40 @@ class ArticleRepository extends ModuleRepository
 
     @formField('browser', [
         'modules' => [
-            ['name' => 'authors', 'label' => 'Authors'],
-            ['name' => 'editors', 'label' => 'Editors'],
+            [
+              'label' => 'Authors',
+              'name' => 'authors',
+            ],
+            [
+              'label' => 'Editors',
+              'name' => 'editors',
+            ],
         ],
         'name' => 'collaborators',
         'label' => 'Collaborators',
         'max' => 4,
     ])
 @stop
+```
+
+- Alternatively, you can use manual endpoints instead of module names:
+
+```php
+    @formField('browser', [
+        'endpoints' => [
+            [
+              'label' => 'Authors',
+              'value' => '/authors/browser',
+            ],
+            [
+              'label' => 'Editors',
+              'value' => '/editors/browser',
+            ],
+        ],
+        'name' => 'collaborators',
+        'label' => 'Collaborators',
+        'max' => 4,
+    ])
 ```
 
 #### Working with related items
