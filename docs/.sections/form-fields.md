@@ -979,7 +979,7 @@ Outside the block editor, repeater fields are used to save `hasMany` or `morphMa
 
 #### Using repeater fields
 
-The following example demonstrates how to define a relationship between `Team` and `TeamMember` modules to implement a `team-member` repeater field.
+The following example demonstrates how to define a relationship between `Team` and `TeamMember` modules to implement a `team-member` repeater.
 
 #### Create the modules
 
@@ -1067,7 +1067,7 @@ Update file `resources/views/admin/teams/form.blade.php`:
 
 #### Finishing up
 
-Add the `Team` module to your `twill-navigation.php` config and you are done!
+Add both modules to your `admin.php` routes. Add the `Team` module to your `twill-navigation.php` config and you are done!
 
 
 ### Map
