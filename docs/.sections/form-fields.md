@@ -1033,6 +1033,30 @@ class Team extends Model
 }
 ```
 
+#### Update `TeamRepository` 
+
+Override the `afterSave` and `getFormFields` methods to process the repeater field:
+
+```php
+class TeamRepository extends ModuleRepository
+{
+    /* ... */
+
+    public function afterSave($object, $fields)
+    {
+        $this->updateRepeater($object, $fields, 'members', 'TeamMember', 'team-member');
+        parent::afterSave($object, $fields);
+    }
+
+    public function getFormFields($object)
+    {
+        $fields = parent::getFormFields($object);
+        $fields = $this->getFormFieldsForRepeater($object, $fields, 'members', 'TeamMember', 'team-member');
+        return $fields;
+    }
+}
+```
+
 #### Add the repeater Blade template
 
 Create file `resources/views/admin/repeaters/team-member.blade.php`:
