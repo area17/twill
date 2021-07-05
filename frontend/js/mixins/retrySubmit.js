@@ -23,6 +23,8 @@ export default {
     retrySubmit: function () {
       if (this.submitForm) {
         this.submitForm()
+      } else if (this.submit) {
+        this.submit()
       }
     }
   }
