@@ -22,9 +22,9 @@ export default {
   methods: {
     retrySubmit: function () {
       if (this.submitForm) {
-        this.submitForm()
+        this.submitForm() // @see main-form.js
       } else if (this.submit) {
-        this.submit()
+        this.submit() // @see ModalCreate.vue & ModalAdd.vue
       }
     }
   }

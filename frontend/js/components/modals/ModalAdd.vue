@@ -37,7 +37,7 @@
       open: function () {
         if (this.$refs.modal) this.$refs.modal.open()
       },
-      submit: function (event) {
+      submit: function () {
         if (this.isSubmitPrevented) {
           this.shouldRetrySubmitWhenAllowed = true
           return
