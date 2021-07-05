@@ -11,9 +11,11 @@
   import { NOTIFICATION, FORM } from '@/store/mutations'
   import ACTIONS from '@/store/actions'
   import a17ModalValidationButtons from './ModalValidationButtons.vue'
+  import retrySubmitMixin from '@/mixins/retrySubmit'
 
   export default {
     name: 'A17ModalAdd',
+    mixins: [retrySubmitMixin],
     props: {
       name: {
         type: String,
@@ -36,7 +38,10 @@
         if (this.$refs.modal) this.$refs.modal.open()
       },
       submit: function (event) {
-        if (this.$store.state.form.isSubmitPrevented) return
+        if (this.isSubmitPrevented) {
+          this.shouldRetrySubmitWhenAllowed = true
+          return
+        }
 
         if (this._isSubmitting) return
         this._isSubmitting = true
