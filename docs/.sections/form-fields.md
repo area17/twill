@@ -918,22 +918,12 @@ class Article extends Model
 }
 ```
 
-- Update `ArticleRepository` to add the `HandleRelatedBrowsers` trait. Then, define the browser field in the `$relatedBrowsers` property:
+- Update `ArticleRepository` to add the browser field to the `$relatedBrowsers` property:
 
 ```php
-use A17\Twill\Repositories\Behaviors\HandleRelatedBrowsers;
-
 class ArticleRepository extends ModuleRepository
 {
-    use HandleRelatedBrowsers;
-    
-    /* ... */
-
-    public function __construct(Article $model)
-    {
-        $this->relatedBrowsers = ['authors'];
-        $this->model = $model;
-    }
+    protected $relatedBrowsers = ['authors'];
 }
 ```
 
