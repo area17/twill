@@ -150,14 +150,24 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
       unSubscribe: function () {
         return null
       },
-      isFormUpdated: false
+      isFormUpdated: false,
+      shouldRetrySubmitWhenAllowed: false
+    }
+  },
+  watch: {
+    isSubmitPrevented: function (isSubmitPrevented) {
+      if (!isSubmitPrevented && this.shouldRetrySubmitWhenAllowed) {
+        this.shouldRetrySubmitWhenAllowed = false
+        this.submitForm()
+      }
     }
   },
   computed: {
     ...mapState({
       loading: state => state.form.loading,
       editor: state => state.content.editor,
-      isCustom: state => state.form.isCustom
+      isCustom: state => state.form.isCustom,
+      isSubmitPrevented: state => state.form.isSubmitPrevented
     }),
     ...mapGetters([
       'getSaveType',
@@ -166,7 +176,10 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
   },
   methods: {
     submitForm: function (event) {
-      if (this.$store.state.form.preventSubmit) return
+      if (this.isSubmitPrevented) {
+        this.shouldRetrySubmitWhenAllowed = true
+        return
+      }
 
       if (!this.loading) {
         this.isFormUpdated = false
