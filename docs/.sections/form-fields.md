@@ -981,18 +981,14 @@ Outside the block editor, repeater fields are used to save `hasMany` or `morphMa
 
 The following example demonstrates how to define a relationship between `Team` and `TeamMember` modules to implement a `team-member` repeater.
 
-#### Create the modules
+- Create the modules. Make sure to enable the `position` feature on the `TeamMember` module:
 
 ```
 php artisan twill:make:module Team
-php artisan twill:make:module TeamMember
+php artisan twill:make:module TeamMember -P
 ```
 
-Make sure to enable the `position` feature on the `TeamMember` module.
-
-#### Update the `create_team_members_tables` migration
-
-Add the `team_id` foreign key used for the `TeamMember—Team` relationship:
+- Update the `create_team_members_tables` migration. Add the `team_id` foreign key used for the `TeamMember—Team` relationship:
 
 ```php
 class CreateTeamMembersTables extends Migration
@@ -1011,15 +1007,13 @@ class CreateTeamMembersTables extends Migration
 }
 ```
 
-#### Run the migrations
+- Run the migrations:
 
 ```
 php artisan migrate
 ```
 
-#### Update the `Team` model
-
-Define the `members` relationship. The results should be ordered by position:
+- Update the `Team` model. Define the `members` relationship. The results should be ordered by position:
 
 ```php
 class Team extends Model
@@ -1033,9 +1027,7 @@ class Team extends Model
 }
 ```
 
-#### Update the `TeamMember` model
-
-Add `team_id` to the `fillable` array:
+- Update the `TeamMember` model. Add `team_id` to the `fillable` array:
 
 ```php
 class TeamMember extends Model
@@ -1047,9 +1039,7 @@ class TeamMember extends Model
 }
 ```
 
-#### Update `TeamRepository` 
-
-Override the `afterSave` and `getFormFields` methods to process the repeater field:
+- Update `TeamRepository`. Override the `afterSave` and `getFormFields` methods to process the repeater field:
 
 ```php
 class TeamRepository extends ModuleRepository
@@ -1071,7 +1061,7 @@ class TeamRepository extends ModuleRepository
 }
 ```
 
-#### Add the repeater Blade template
+- Add the repeater Blade template:
 
 Create file `resources/views/admin/repeaters/team-member.blade.php`:
 
@@ -1089,7 +1079,7 @@ Create file `resources/views/admin/repeaters/team-member.blade.php`:
 ...
 ```
 
-#### Add the repeater field to the form
+- Add the repeater field to the form:
 
 Update file `resources/views/admin/teams/form.blade.php`:
 
@@ -1103,7 +1093,7 @@ Update file `resources/views/admin/teams/form.blade.php`:
 @stop
 ```
 
-#### Finishing up
+- Finishing up:
 
 Add both modules to your `admin.php` routes. Add the `Team` module to your `twill-navigation.php` config and you are done!
 
