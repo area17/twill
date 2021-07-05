@@ -1033,6 +1033,20 @@ class Team extends Model
 }
 ```
 
+#### Update the `TeamMember` model
+
+Add `team_id` to the `fillable` array:
+
+```php
+class TeamMember extends Model
+{
+    protected $fillable = [
+        /* ... */
+        'team_id',
+    ];
+}
+```
+
 #### Update `TeamRepository` 
 
 Override the `afterSave` and `getFormFields` methods to process the repeater field:
