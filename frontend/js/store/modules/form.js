@@ -75,10 +75,10 @@ const state = {
    */
   reloadOnSuccess: window[process.env.VUE_APP_NAME].STORE.form.reloadOnSuccess || false,
   /**
-   * Prevent submitting the form before the input value is pushed into the store
+   * Determines if the form should prevent submitting before an input value is pushed into the store
    * @type {Boolean}
    */
-  preventSubmit: false
+  isSubmitPrevented: false
 }
 
 // getters
@@ -108,10 +108,10 @@ const mutations = {
     }
   },
   [FORM.PREVENT_SUBMIT] (state) {
-    state.preventSubmit = true
+    state.isSubmitPrevented = true
   },
   [FORM.ALLOW_SUBMIT] (state) {
-    state.preventSubmit = false
+    state.isSubmitPrevented = false
   },
   // ----------- Form fields ----------- //
   [FORM.EMPTY_FORM_FIELDS] (state, status) {
