@@ -57,6 +57,7 @@ import attributes from '@/store/modules/attributes'
 import formatPermalink from '@/mixins/formatPermalink'
 import editorMixin from '@/mixins/editor.js'
 import BlockMixin from '@/mixins/block'
+import retrySubmitMixin from '@/mixins/retrySubmit'
 
 // configuration
 Vue.use(A17Config)
@@ -144,30 +145,20 @@ importedComponents.keys().map(block => {
 window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
   store, // inject store to all children
   el: '#app',
-  mixins: [formatPermalink, editorMixin],
+  mixins: [formatPermalink, editorMixin, retrySubmitMixin],
   data: function () {
     return {
       unSubscribe: function () {
         return null
       },
-      isFormUpdated: false,
-      shouldRetrySubmitWhenAllowed: false
-    }
-  },
-  watch: {
-    isSubmitPrevented: function (isSubmitPrevented) {
-      if (!isSubmitPrevented && this.shouldRetrySubmitWhenAllowed) {
-        this.shouldRetrySubmitWhenAllowed = false
-        this.submitForm()
-      }
+      isFormUpdated: false
     }
   },
   computed: {
     ...mapState({
       loading: state => state.form.loading,
       editor: state => state.content.editor,
-      isCustom: state => state.form.isCustom,
-      isSubmitPrevented: state => state.form.isSubmitPrevented
+      isCustom: state => state.form.isCustom
     }),
     ...mapGetters([
       'getSaveType',
