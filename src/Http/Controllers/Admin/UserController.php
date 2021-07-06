@@ -206,7 +206,7 @@ class UserController extends ModuleController
                 return ['value' => $role->id, 'label' => $role->name];
             })->toArray(),
             'primary_navigation' => $this->primaryNavigation,
-            'titleThumbnail' => $titleThumbnail ? $titleThumbnail : null,
+            'titleThumbnail' => $titleThumbnail ?? null,
             'permissionModules' => Permission::permissionableParentModuleItems(),
             'groupPermissionMapping' => $this->getGroupPermissionMapping(),
             'with2faSettings' => $with2faSettings,
