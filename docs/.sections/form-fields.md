@@ -951,19 +951,9 @@ You can use the same approach to handle polymorphic relationships through Twill'
 - Update `ArticleRepository`:
 
 ```php
-use A17\Twill\Repositories\Behaviors\HandleRelatedBrowsers;
-
 class ArticleRepository extends ModuleRepository
 {
-    use HandleRelatedBrowsers;
-    
-    /* ... */
-
-    public function __construct(Article $model)
-    {
-        $this->relatedBrowsers = ['collaborators'];
-        $this->model = $model;
-    }
+    protected $relatedBrowsers = ['collaborators'];
 }
 ```
 
@@ -1018,11 +1008,11 @@ class ArticleRepository extends ModuleRepository
 To retrieve the items in the frontend, you can use the `getRelated` method on models and blocks. It will return of collection of related models in the correct order:
 
 ```php
-    $item->getRelated('related_content');
+    $item->getRelated('collaborators');
 
     // or, in a block:
 
-    $block->getRelated('related_content');
+    $block->getRelated('collaborators');
 ```
 
 #### Using browser fields and custom pivot tables
