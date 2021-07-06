@@ -98,7 +98,6 @@
             if (self.$refs.modal) self.$refs.modal.close()
 
             self.$nextTick(function () {
-              this._isSubmitting = false
               if (submitMode === 'create-another' && self.$refs.modal) self.$refs.modal.open()
               if (this.mode === 'create') this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
               this.$store.commit(FORM.REMOVE_FORM_FIELD, 'published')
@@ -108,6 +107,10 @@
             self.$store.commit(NOTIFICATION.SET_NOTIF, {
               message: 'Your submission could not be validated, please fix and retry',
               variant: 'error'
+            })
+          }).finally(() => {
+            self.$nextTick(function () {
+              self._isSubmitting = false
             })
           })
         })
