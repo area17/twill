@@ -150,7 +150,7 @@ trait HandleUserPermissions
     {
         $query = $this->model->where($scope);
 
-        if ($this->model::class === twillModel('user')) {
+        if (get_class($this->model) === twillModel('user')) {
             if ($slug === 'activated') {
                 return $query->activated()->count();
             }
