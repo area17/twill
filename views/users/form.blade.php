@@ -69,7 +69,7 @@
                 'fieldName' => 'google_2fa_enabled',
                 'fieldValues' => true,
             ])
-                <img style="display: block; margin-left: auto; margin-right: auto;" src="{{ $qrCode }}">
+                <img style="display: block; margin-left: auto; margin-right: auto; max-height: 300px;" src="{{ $qrCode }}">
                 <div class="f--regular f--note" style="margin: 20px 0;">{!! twillTrans('twill::lang.user-management.2fa-description', ['link' => 'https://github.com/antonioribeiro/google2fa#google-authenticator-apps']) !!}</div>
                 @formField('input', [
                     'name' => 'verify-code',
