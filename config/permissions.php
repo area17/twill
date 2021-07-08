@@ -4,7 +4,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Twill permission
+    | Twill permissions
     |--------------------------------------------------------------------------
     |
     | This allows you to set up the level of management of the permissions.
