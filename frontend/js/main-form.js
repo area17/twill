@@ -57,6 +57,7 @@ import attributes from '@/store/modules/attributes'
 import formatPermalink from '@/mixins/formatPermalink'
 import editorMixin from '@/mixins/editor.js'
 import BlockMixin from '@/mixins/block'
+import retrySubmitMixin from '@/mixins/retrySubmit'
 
 // configuration
 Vue.use(A17Config)
@@ -144,7 +145,7 @@ importedComponents.keys().map(block => {
 window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
   store, // inject store to all children
   el: '#app',
-  mixins: [formatPermalink, editorMixin],
+  mixins: [formatPermalink, editorMixin, retrySubmitMixin],
   data: function () {
     return {
       unSubscribe: function () {
@@ -165,7 +166,12 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
     ])
   },
   methods: {
-    submitForm: function (event) {
+    submitForm: function () {
+      if (this.isSubmitPrevented) {
+        this.shouldRetrySubmitWhenAllowed = true
+        return
+      }
+
       if (!this.loading) {
         this.isFormUpdated = false
         this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
