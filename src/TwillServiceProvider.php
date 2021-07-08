@@ -38,6 +38,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\ActivitylogServiceProvider;
+use PragmaRX\Google2FAQRCode\Google2FA as Google2FAQRCode;
 
 class TwillServiceProvider extends ServiceProvider
 {
@@ -492,9 +493,8 @@ class TwillServiceProvider extends ServiceProvider
             return;
         }
 
-        try {
-            (new User())->get2faQrCode();
-        } catch (Exception $e) {
+        if (blank((new Google2FAQRCode())->getQrCodeService()))
+        {
             throw new Exception(
                 "Twill ERROR: As you have 2FA enabled, you also need to install a QRCode service package, please check https://github.com/antonioribeiro/google2fa-qrcode#built-in-qrcode-rendering-services"
             );
