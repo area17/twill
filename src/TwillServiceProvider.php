@@ -2,6 +2,7 @@
 
 namespace A17\Twill;
 
+use Exception;
 use A17\Twill\Commands\BlockMake;
 use A17\Twill\Commands\Build;
 use A17\Twill\Commands\CapsuleInstall;
@@ -86,6 +87,8 @@ class TwillServiceProvider extends ServiceProvider
 
         $this->extendBlade();
         $this->addViewComposers();
+
+        $this->check2FA();
     }
 
     /**
@@ -477,5 +480,24 @@ class TwillServiceProvider extends ServiceProvider
     public function version()
     {
         return static::VERSION;
+    }
+
+    /**
+     * In case 2FA is enabled, we need to check if a QRCode compatible package is
+     * installed.
+     */
+    public function check2FA()
+    {
+        if (!config('twill.enabled.users-2fa')) {
+            return;
+        }
+
+        try {
+            (new User())->get2faQrCode();
+        } catch (Exception $e) {
+            throw new Exception(
+                "Twill ERROR: As you have 2FA enabled, you also need to install a QRCode service package, please check https://github.com/antonioribeiro/google2fa-qrcode#built-in-qrcode-rendering-services"
+            );
+        }
     }
 }
