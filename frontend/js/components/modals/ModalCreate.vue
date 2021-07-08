@@ -81,6 +81,9 @@
         this.$refs.modal.open()
       },
       submit: function (event) {
+        if (this._isSubmitting) return
+        this._isSubmitting = true
+
         const self = this
 
         this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
@@ -104,6 +107,10 @@
             self.$store.commit(NOTIFICATION.SET_NOTIF, {
               message: 'Your submission could not be validated, please fix and retry',
               variant: 'error'
+            })
+          }).finally(() => {
+            self.$nextTick(function () {
+              self._isSubmitting = false
             })
           })
         })

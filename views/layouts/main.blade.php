@@ -4,17 +4,7 @@
         @include('twill::partials.head')
     </head>
     <body class="env env--{{ app()->environment() }} @yield('appTypeClass')">
-        <div class="svg-sprite">
-            @if(config('twill.dev_mode', false))
-                {!! file_get_contents(twillAsset('icons.svg')) !!}
-                {!! file_get_contents(twillAsset('icons-files.svg')) !!}
-                {!! file_get_contents(twillAsset('icons-wysiwyg.svg')) !!}
-            @else
-                {!! File::exists(public_path(twillAsset('icons.svg'))) ? File::get(public_path(twillAsset('icons.svg'))) : '' !!}
-                {!! File::exists(public_path(twillAsset('icons-files.svg'))) ? File::get(public_path(twillAsset('icons-files.svg'))) : '' !!}
-                {!! File::exists(public_path(twillAsset('icons-wysiwyg.svg'))) ? File::get(public_path(twillAsset('icons-wysiwyg.svg'))) : '' !!}
-            @endif
-        </div>
+        @include('twill::partials.icons.svg-sprite')
         @if(config('twill.enabled.search', false))
             @partialView(($moduleName ?? null), 'navigation._overlay_navigation', ['search' => true])
         @else
