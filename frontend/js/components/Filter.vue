@@ -1,5 +1,5 @@
 <template>
-  <form class="filter" :class="{ 'filter--opened' : opened, 'filter--single' : !withNavigation, 'filter--withHiddenFilters' : withHiddenFilters }" @submit.prevent="submitFilter" ref="form">
+  <form class="filter" :class="{ 'filter--opened' : opened, 'filter--single' : !withNavigation, 'filter--full' : !withNavigation && fullWidth, 'filter--withHiddenFilters' : withHiddenFilters }" @submit.prevent="submitFilter" ref="form">
     <div class="filter__inner">
       <div class="filter__navigation"><slot name="navigation"></slot></div>
 
@@ -43,6 +43,10 @@
         default: false
       },
       clearOption: {
+        type: Boolean,
+        default: false
+      },
+      fullWidth: {
         type: Boolean,
         default: false
       }
@@ -196,6 +200,18 @@
         input {
           flex-grow:1;
         }
+      }
+    }
+  }
+
+  .filter--full {
+    .filter__search {
+      display:flex;
+      width: 100%;
+
+      > div {
+        display:flex;
+        flex-direction: row-reverse;
       }
     }
   }
