@@ -60,14 +60,19 @@ if (!function_exists('getModelRepository')) {
         $repository = config('twill.namespace') . "\\Repositories\\" . ucfirst($model) . "Repository";
 
         if (!class_exists($repository)) {
-            throw new Exception($repository . ' not existed');
+            throw new Exception($repository . ' not found');
         }
         return app($repository);
     }
 }
 
 if (!function_exists('isPermissionableModule')) {
-    // return the module name if is permissionable module, otherwise return false
+    /**
+     * Return the module name if the module is permissionable, otherwise return false
+     *
+     * @param string $moduleName
+     * @return string|boolean
+     */
     function isPermissionableModule($moduleName)
     {
         $submodule = Permission::permissionableModules()->filter(function($module) use ($moduleName) {
@@ -85,10 +90,10 @@ if (!function_exists('isPermissionableModule')) {
 }
 
 if (!function_exists('updatePermissionOptions')) {
-    // return the module name if is permissionable module, otherwise return false
     function updatePermissionOptions($options, $user, $item)
     {
         $permissions = [];
+
         if ($user->role) {
             $permissions = $user->role->permissions()->module()->pluck('name','permissionable_type')->all();
             if (empty($permissions)) {
@@ -98,14 +103,15 @@ if (!function_exists('updatePermissionOptions')) {
             }
         }
 
-        #looking for group permissions belongs to the user
+        // looking for group permissions belonging to the user
         foreach($user->publishedGroups as $group) {
-            if (($permission=$group->permissions()->OfItem($item)->first())!= null) {
+            if (($permission=$group->permissions()->ofItem($item)->first())!= null) {
                 if (isset($permissions[get_class($item)])) {
                     $scopes = Permission::available(Permission::SCOPE_ITEM);
                     $previous = array_search($permissions[get_class($item)], $scopes);
                     $current = array_search($permission->name, $scopes);
-                    #check permission level
+
+                    // check permission level
                     if ($current > $previous) {
                         $permissions[get_class($item)] = $permission->name;
                     }
@@ -116,7 +122,6 @@ if (!function_exists('updatePermissionOptions')) {
             }
         }
 
-        //
         if (isset($permissions[get_class($item)])) {
             $globalPermission = str_replace('-module', '-item', $permissions[get_class($item)]);
             foreach($options as &$option) {
@@ -143,7 +148,7 @@ if (!function_exists('isUserGroupPermissionItemExists')) {
     function isUserGroupPermissionItemExists($user, $item, $permission)
     {
         foreach($user->publishedGroups as $group) {
-            if (in_array($permission, $group->permissions()->OfItem($item)->get()->pluck('name')->all())){
+            if (in_array($permission, $group->permissions()->ofItem($item)->get()->pluck('name')->all())){
                 return true;
             }
         }
