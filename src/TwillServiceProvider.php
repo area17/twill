@@ -24,6 +24,7 @@ use A17\Twill\Http\ViewComposers\Localization;
 use A17\Twill\Http\ViewComposers\MediasUploaderConfig;
 use A17\Twill\Models\Block;
 use A17\Twill\Models\File;
+use A17\Twill\Models\Group;
 use A17\Twill\Models\Media;
 use A17\Twill\Models\User;
 use A17\Twill\Services\Capsules\HasCapsules;
@@ -94,6 +95,7 @@ class TwillServiceProvider extends ServiceProvider
     private function requireHelpers()
     {
         require_once __DIR__ . '/Helpers/routes_helpers.php';
+        require_once __DIR__ . '/Helpers/modules_helpers.php';
         require_once __DIR__ . '/Helpers/i18n_helpers.php';
         require_once __DIR__ . '/Helpers/media_library_helpers.php';
         require_once __DIR__ . '/Helpers/frontend_helpers.php';
@@ -118,6 +120,7 @@ class TwillServiceProvider extends ServiceProvider
             'media' => Media::class,
             'files' => File::class,
             'blocks' => Block::class,
+            'groups' => Group::class,
         ]);
 
         config(['twill.version' => $this->version()]);
@@ -176,7 +179,7 @@ class TwillServiceProvider extends ServiceProvider
         if (config('twill.enabled.users-management')) {
             config(['auth.providers.twill_users' => [
                 'driver' => 'eloquent',
-                'model' => User::class,
+                'model' => twillModel('user'),
             ]]);
 
             config(['auth.guards.twill_users' => [
@@ -219,6 +222,7 @@ class TwillServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/imgix.php', 'twill.imgix');
         $this->mergeConfigFrom(__DIR__ . '/../config/glide.php', 'twill.glide');
         $this->mergeConfigFrom(__DIR__ . '/../config/dashboard.php', 'twill.dashboard');
+        $this->mergeConfigFrom(__DIR__ . '/../config/models.php', 'twill.models');
         $this->mergeConfigFrom(__DIR__ . '/../config/oauth.php', 'twill.oauth');
         $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
 
@@ -258,6 +262,7 @@ class TwillServiceProvider extends ServiceProvider
 
         $this->publishOptionalMigration('users-2fa');
         $this->publishOptionalMigration('users-oauth');
+        $this->publishOptionalMigration('permission');
     }
 
     private function publishOptionalMigration($feature)
