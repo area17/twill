@@ -11,6 +11,21 @@ class AuthServiceProvider extends ServiceProvider
 {
     const SUPERADMIN = 'SUPERADMIN';
 
+    const ABILITY_ALIASES = [
+        'list' => [],
+        'edit' => [],
+        'reorder' => [],
+        'publish' => [],
+        'feature' => [],
+        'delete' => [],
+        'duplicate' => [],
+        'upload' => ['access-media-library'],
+        'manage-users' => [],
+        'edit-user' => [],
+        'publish-user' => [],
+        'impersonate' => [],
+    ];
+
     protected function authorize($user, $callback)
     {
         if (!$user->isPublished()) {
@@ -29,57 +44,66 @@ class AuthServiceProvider extends ServiceProvider
         return in_array($user->role_value, $roles);
     }
 
+    protected function define($ability, $callback)
+    {
+        collect($ability)
+            ->concat(static::ABILITY_ALIASES[$ability] ?? [])
+            ->each(function ($alias) use ($callback) {
+                Gate::define($alias, $callback);
+            });
+    }
+
     public function boot()
     {
-        Gate::define('list', function ($user) {
+        $this->define('list', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole($user, [UserRole::VIEWONLY, UserRole::PUBLISHER, UserRole::ADMIN]);
             });
         });
 
-        Gate::define('edit', function ($user) {
+        $this->define('edit', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole($user, [UserRole::PUBLISHER, UserRole::ADMIN]);
             });
         });
 
-        Gate::define('reorder', function ($user) {
+        $this->define('reorder', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole($user, [UserRole::PUBLISHER, UserRole::ADMIN]);
             });
         });
 
-        Gate::define('publish', function ($user) {
+        $this->define('publish', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole($user, [UserRole::PUBLISHER, UserRole::ADMIN]);
             });
         });
 
-        Gate::define('feature', function ($user) {
+        $this->define('feature', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole($user, [UserRole::PUBLISHER, UserRole::ADMIN]);
             });
         });
 
-        Gate::define('delete', function ($user) {
+        $this->define('delete', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole($user, [UserRole::PUBLISHER, UserRole::ADMIN]);
             });
         });
 
-        Gate::define('duplicate', function ($user) {
+        $this->define('duplicate', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole($user, [UserRole::PUBLISHER, UserRole::ADMIN]);
             });
         });
 
-        Gate::define('upload', function ($user) {
+        $this->define('upload', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole($user, [UserRole::PUBLISHER, UserRole::ADMIN]);
             });
         });
 
-        Gate::define('manage-users', function ($user) {
+        $this->define('manage-users', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole($user, [UserRole::ADMIN]);
             });
@@ -87,7 +111,7 @@ class AuthServiceProvider extends ServiceProvider
 
         // As an admin, I can edit users, except superadmins
         // As a non-admin, I can edit myself only
-        Gate::define('edit-user', function ($user, $editedUser = null) {
+        $this->define('edit-user', function ($user, $editedUser = null) {
             return $this->authorize($user, function ($user) use ($editedUser) {
                 $editedUserObject = User::find($editedUser);
                 return ($this->userHasRole($user, [UserRole::ADMIN]) || $user->id == $editedUser)
@@ -95,16 +119,15 @@ class AuthServiceProvider extends ServiceProvider
             });
         });
 
-        Gate::define('publish-user', function ($user) {
+        $this->define('publish-user', function ($user) {
             return $this->authorize($user, function ($user) {
                 $editedUserObject = User::find(request('id'));
                 return $this->userHasRole($user, [UserRole::ADMIN]) && ($editedUserObject ? $user->id !== $editedUserObject->id && $editedUserObject->role !== self::SUPERADMIN : false);
             });
         });
 
-        Gate::define('impersonate', function ($user) {
+        $this->define('impersonate', function ($user) {
             return $user->role === self::SUPERADMIN;
         });
-
     }
 }
