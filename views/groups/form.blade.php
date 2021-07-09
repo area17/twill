@@ -18,7 +18,7 @@
         'max' => 999
     ])
 
-    @if(Config::get('twill.permission.level') == 'roleGroup')
+    @if(Config::get('twill.permissions-management.level') == 'roleGroup')
         @component('twill::partials.form.utils._field_rows', [
             'title' => 'Content permissions'
         ])
@@ -70,7 +70,7 @@
     @endif
 @stop
 
-@if(Config::get('twill.permission.level') == 'roleGroupModule')
+@if(Config::get('twill.permissions-management.level') == 'roleGroupModule')
   @can('edit-user-groups')
       @section('fieldsets')
           @foreach($permissionModules as $moduleName => $moduleItems)
