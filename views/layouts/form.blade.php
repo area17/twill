@@ -108,7 +108,7 @@
                             </a17-fieldset>
                         @endunless
 
-                        @if(Config::get('twill.permissions-management.level') == 'roleGroupModule')
+                        @if(Config::get('twill.permissions.level') == 'roleGroupModule')
                             @if(false) {{-- $showPermissionFieldset ?? null) --}}
                                 @can('manage-item', $item)
                                     <a17-fieldset title="User Permissions" id="permissions">

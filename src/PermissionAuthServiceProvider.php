@@ -11,7 +11,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
 
     protected function authorize($user, $callback, $moduleName = null)
     {
-        if (!config('twill.enabled.permission')) {
+        if (!config('twill.enabled.permissions-management')) {
             return true;
         }
 
@@ -55,7 +55,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('edit-user-groups', function ($user) {
-            if (!in_array(Config::get('twill.permission.level'), ['roleGroup', 'roleGroupModule'])) {
+            if (!in_array(Config::get('twill.permissions.level'), ['roleGroup', 'roleGroupModule'])) {
                 return false;
             }
 
