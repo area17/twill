@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 
 if (config('twill.enabled.users-management')) {
     Route::module('users', ['except' => ['sort', 'feature']]);
+    Route::module('groups', ['except' => ['sort', 'feature', 'search']]);
+    Route::module('roles', ['except' => ['sort', 'feature']]);
+    Route::name('users.resend.registrationEmail')->get('users/{user}/registration-email', 'UserController@resendRegistrationEmail');
 }
 
 if (config('twill.enabled.media-library')) {
