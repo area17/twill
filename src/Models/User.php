@@ -126,6 +126,14 @@ class User extends AuthenticatableContract
         return $query->whereNotNull('deleted_at');
     }
 
+    public function scopeNotSuperAdmin($query)
+    {
+        if (config('twill.enabled.permissions-management')) {
+            return $query->where('is_superadmin', '<>', true);
+        }
+        return $query->where('role', '<>', 'SUPERADMIN');
+    }
+
     public function setImpersonating($id)
     {
         Session::put('impersonate', $id);

@@ -124,7 +124,7 @@ class UserRepository extends ModuleRepository
      */
     public function getCountForPublished()
     {
-        return $this->model->where('role', '<>', 'SUPERADMIN')->published()->count();
+        return $this->model->notSuperAdmin()->published()->count();
     }
 
     /**
@@ -132,7 +132,7 @@ class UserRepository extends ModuleRepository
      */
     public function getCountForDraft()
     {
-        return $this->model->where('role', '<>', 'SUPERADMIN')->draft()->count();
+        return $this->model->notSuperAdmin()->draft()->count();
     }
 
     /**
@@ -140,7 +140,7 @@ class UserRepository extends ModuleRepository
      */
     public function getCountForTrash()
     {
-        return $this->model->where('role', '<>', 'SUPERADMIN')->onlyTrashed()->count();
+        return $this->model->notSuperAdmin()->onlyTrashed()->count();
     }
 
     /**
