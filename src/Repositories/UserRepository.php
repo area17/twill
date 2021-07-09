@@ -3,8 +3,11 @@
 namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\User;
+use A17\Twill\Models\Group;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleOauth;
+use A17\Twill\Repositories\Behaviors\HandleUserPermissions;
+use Carbon\Carbon;
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
@@ -12,7 +15,7 @@ use Illuminate\Database\DatabaseManager as DB;
 
 class UserRepository extends ModuleRepository
 {
-    use HandleMedias, HandleOauth;
+    use HandleMedias, HandleOauth, HandleUserPermissions;
 
     /**
      * @var Config
@@ -39,21 +42,37 @@ class UserRepository extends ModuleRepository
      * @param Config $config
      * @param PasswordBrokerManager $passwordBrokerManager
      * @param AuthFactory $authFactory
-     * @param User $model
+     * @param User|null $model
      */
     public function __construct(
         DB $db,
         Config $config,
         PasswordBrokerManager $passwordBrokerManager,
         AuthFactory $authFactory,
-        User $model
+        $model = null
     ) {
-
+        if (is_null($model)) {
+            $userModel = twillModel('user');
+            $model = new $userModel;
+        }
         $this->model = $model;
         $this->passwordBrokerManager = $passwordBrokerManager;
         $this->authFactory = $authFactory;
         $this->config = $config;
         $this->db = $db;
+    }
+
+    public function getFormFields($user)
+    {
+        $fields = parent::getFormFields($user);
+
+        if ($user->is_superadmin) {
+            return $fields;
+        }
+
+        $fields['browsers']['groups'] = $this->getFormFieldsForBrowser($user, 'groups');
+
+        return $fields;
     }
 
     /**
@@ -63,12 +82,31 @@ class UserRepository extends ModuleRepository
      */
     public function filter($query, array $scopes = [])
     {
-        $query->when(isset($scopes['role']), function ($query) use ($scopes) {
-            $query->where('role', $scopes['role']);
-        });
-        $query->where('role', '<>', 'SUPERADMIN');
-        $this->searchIn($query, $scopes, 'search', ['name', 'email', 'role']);
+        if (config('twill.enabled.permissions-management')) {
+            $query->where('is_superadmin', '<>', true);
+            $this->searchIn($query, $scopes, 'search', ['name', 'email']);
+        } else {
+            $query->when(isset($scopes['role']), function ($query) use ($scopes) {
+                $query->where('role', $scopes['role']);
+            });
+            $query->where('role', '<>', 'SUPERADMIN');
+            $this->searchIn($query, $scopes, 'search', ['name', 'email', 'role']);
+        }
         return parent::filter($query, $scopes);
+    }
+
+    public function getFormFieldsForBrowser($object, $relation, $routePrefix = null, $titleKey = 'title', $moduleName = null)
+    {
+        $browserFields = parent::getFormFieldsForBrowser($object, $relation, $routePrefix, $titleKey, $moduleName);
+
+        if (config('twill.enabled.permissions-management')) {
+            foreach ($browserFields as $index => $browserField) {
+                if ($browserField['id'] === Group::getEveryoneGroup()->id && $browserField['name'] === Group::getEveryoneGroup()->name) {
+                    $browserFields[$index]['deletable'] = false;
+                }
+            }
+        }
+        return $browserFields;
     }
 
     /**
@@ -133,6 +171,25 @@ class UserRepository extends ModuleRepository
     public function afterSave($user, $fields)
     {
         $this->sendWelcomeEmail($user);
+
+        if (!empty($fields['reset_password']) && !empty($fields['new_password'])) {
+            $user->password = bcrypt($fields['new_password']);
+
+            if (!$user->activate) {
+                $user->activated = true;
+                $user->registered_at = Carbon::now();
+            }
+
+            if (!empty($fields['require_password_change'])) {
+                $user->require_new_password = true;
+                $user->sendTemporaryPasswordNotification($fields['new_password']);
+            } else {
+                $user->sendPasswordResetByAdminNotification($fields['new_password']);
+            }
+
+            $user->save();
+        }
+
         parent::afterSave($user, $fields);
     }
 
