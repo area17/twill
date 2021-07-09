@@ -489,7 +489,7 @@ class TwillServiceProvider extends ServiceProvider
      */
     public function check2FA()
     {
-        if (!config('twill.enabled.users-2fa')) {
+        if (!$this->app->runningInConsole() || !config('twill.enabled.users-2fa')) {
             return;
         }
 
