@@ -81,7 +81,7 @@ class Permission extends BaseModel
                         'view-module',
                         'edit-module'
                     ],
-                    (config('twill.permission.level') === 'roleGroupModule' ? ['manage-module'] : [])
+                    (config('twill.permissions.level') === 'roleGroupModule' ? ['manage-module'] : [])
                 );
                 break;
             case Permission::SCOPE_ITEM:
@@ -101,7 +101,7 @@ class Permission extends BaseModel
      */
     public static function permissionableModules()
     {
-        return collect(config('twill.permission.modules', []));
+        return collect(config('twill.permissions.modules', []));
     }
 
     /**

@@ -18,7 +18,7 @@ trait HandleGroupPermissions
      */
     public function getFormFieldsHandleGroupPermissions($object, $fields)
     {
-        if (Config::get('twill.permission.level') == 'roleGroup') {
+        if (Config::get('twill.permissions.level') == 'roleGroup') {
             foreach (Permission::permissionableModules() as $moduleName) {
                 $modulePermission = $object->permissions()->module()->ofModuleName($moduleName)->first();
                 if ($modulePermission) {
@@ -27,7 +27,7 @@ trait HandleGroupPermissions
                     $fields['module_' . $moduleName . '_permissions'] = 'none';
                 }
             }
-        } elseif (Config::get('twill.permission.level') == 'roleGroupModule') {
+        } elseif (Config::get('twill.permissions.level') == 'roleGroupModule') {
             // looking for item permissions
             foreach ($object->permissions()->moduleItem()->get() as $permission) {
                 $model = $permission->permissionable()->first();
