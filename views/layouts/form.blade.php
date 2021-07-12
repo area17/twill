@@ -28,15 +28,16 @@
     $disableContentFieldset = $disableContentFieldset ?? false;
     $editModalTitle = ($createWithoutModal ?? false) ? twillTrans('twill::lang.modal.create.title') : null;
 
-    // Permissions
-    $users = app()->make('A17\Twill\Repositories\UserRepository')->published()->where('is_superadmin', false)->get();
-    $groups = app()->make('A17\Twill\Repositories\GroupRepository')->get()->map(function ($group) {
-        return [
-            'name' => $group->id . '_group_authorized',
-            'value' => $group->id,
-            'label' => $group->name
-        ];
-    });
+    if (config('twill.enabled.permissions-management')) {
+        $users = app()->make('A17\Twill\Repositories\UserRepository')->published()->notSuperAdmin()->get();
+        $groups = app()->make('A17\Twill\Repositories\GroupRepository')->get()->map(function ($group) {
+            return [
+                'name' => $group->id . '_group_authorized',
+                'value' => $group->id,
+                'label' => $group->name
+            ];
+        });
+    }
 @endphp
 
 @section('content')
@@ -108,7 +109,10 @@
                             </a17-fieldset>
                         @endunless
 
-                        @if(Config::get('twill.permissions.level') == 'roleGroupModule')
+                        @if(
+                            config('twill.enabled.permissions-management') &&
+                            Config::get('twill.permissions.level') == 'roleGroupModule'
+                        )
                             @if(false) {{-- $showPermissionFieldset ?? null) --}}
                                 @can('manage-item', $item)
                                     <a17-fieldset title="User Permissions" id="permissions">
@@ -183,8 +187,8 @@
         published: {{ isset($item) && $item->published ? 'true' : 'false' }},
         createWithoutModal: {{ isset($createWithoutModal) && $createWithoutModal ? 'true' : 'false' }},
         withPublicationTimeframe: {{ json_encode(($schedule ?? true) && isset($item) && $item->isFillable('publish_start_date')) }},
-        publishedLabel: '{{ $publishedLabel }}',
-        draftLabel: '{{ $draftLabel }}',
+        publishedLabel: '{{ $publishedLabel ?? '' }}',
+        draftLabel: '{{ $draftLabel ?? '' }}',
         submitDisableMessage: '{{ $submitDisableMessage ?? '' }}',
         startDate: '{{ $item->publish_start_date ?? '' }}',
         endDate: '{{ $item->publish_end_date ?? '' }}',
