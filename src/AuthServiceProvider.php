@@ -12,15 +12,15 @@ class AuthServiceProvider extends ServiceProvider
     const SUPERADMIN = 'SUPERADMIN';
 
     const ABILITY_ALIASES = [
-        'list' => [],
-        'edit' => [],
+        'list' => ['access-module-list'],
+        'edit' => ['view-item', 'edit-item', 'edit-module', 'edit-settings'],
         'reorder' => [],
         'publish' => [],
         'feature' => [],
         'delete' => [],
         'duplicate' => [],
         'upload' => ['access-media-library'],
-        'manage-users' => ['edit-users', 'edit-user-role', 'access-user-management'],
+        'manage-users' => ['edit-users', 'edit-user-role', 'edit-user-groups',  'access-user-management'],
         'edit-user' => [],
         'publish-user' => [],
         'impersonate' => [],
@@ -61,7 +61,7 @@ class AuthServiceProvider extends ServiceProvider
             });
         });
 
-        $this->define('edit', function ($user) {
+        $this->define('edit', function ($user, $item=null) {
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole($user, [UserRole::PUBLISHER, UserRole::ADMIN]);
             });
