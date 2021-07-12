@@ -74,6 +74,15 @@ class User extends AuthenticatableContract
         parent::__construct($attributes);
     }
 
+    public static function getRoleColumnName()
+    {
+        if (config('twill.enabled.permissions-management')) {
+            return 'role_id';
+        }
+
+        return 'role';
+    }
+
     public function getTitleInBrowserAttribute()
     {
         return $this->name;
@@ -180,7 +189,7 @@ class User extends AuthenticatableContract
 
     public function isSuperAdmin()
     {
-        return $this->role === 'SUPERADMIN';
+        return $this->is_superadmin || $this->role === 'SUPERADMIN';
     }
 
     public function isPublished()
