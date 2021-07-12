@@ -2,9 +2,9 @@
 
 namespace A17\Twill\Commands;
 
-use A17\Twill\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Config\Repository as Config;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Factory as ValidatorFactory;
 
 class CreateSuperAdmin extends Command
@@ -56,14 +56,16 @@ class CreateSuperAdmin extends Command
         $email = $this->setEmail();
         $password = $this->setPassword();
 
-        $user = User::create([
+        $userModel = twillModel('user');
+        $user = new $userModel;
+        $user->fill([
             'name' => "Admin",
             'email' => $email,
-            'role' => 'SUPERADMIN',
             'published' => true,
         ]);
 
         $user->password = Hash::make($password);
+        $user->is_superadmin = true;
         $user->save();
 
         $this->info("Your account has been created");
