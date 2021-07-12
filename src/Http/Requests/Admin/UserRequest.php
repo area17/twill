@@ -27,14 +27,25 @@ class UserRequest extends Request
         switch ($this->method()) {
             case 'POST':
                 {
+                    if (config('twill.enabled.permissions-management')) {
+                        $roleKeyValue = ['role_id' => 'required'];
+                    } else {
+                        $roleKeyValue = ['role' => 'required|not_in:SUPERADMIN'];
+                    }
+
                     return [
                         'name' => 'required',
                         'email' => 'required|email|unique:' . config('twill.users_table', 'twill_users') . ',email',
-                        'role_id' => 'required',
-                    ];
+                    ] + $roleKeyValue;
                 }
             case 'PUT':
                 {
+                    if (config('twill.enabled.permissions-management')) {
+                        $roleKeyValue = [];
+                    } else {
+                        $roleKeyValue = ['role' => 'not_in:SUPERADMIN'];
+                    }
+
                     return [
                         'name' => 'required',
                         'email' => 'required|email|unique:' . config('twill.users_table', 'twill_users') . ',email,' . $this->route('user'),
@@ -57,7 +68,7 @@ class UserRequest extends Request
                                 }
                             }
                         },
-                    ];
+                    ] + $roleKeyValue;
                 }
             default:break;
         }
