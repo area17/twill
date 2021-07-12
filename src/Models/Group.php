@@ -16,9 +16,9 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
  * @property-read boolean $canEdit Check if the group is editable (ie. not the Everyone group)
  * @property-read boolean $canPublish Check if the group is publishable (ie. not the Everyone group)
  * @property-read string $usersCount Formatted number of users in this group (ie. '123 users')
- * @method Builder published() Get published groups
- * @method Builder draft() Get draft groups
- * @method Builder onlyTrashed() Get trashed groups
+ * @method static Builder published() Get published groups
+ * @method static Builder draft() Get draft groups
+ * @method static Builder onlyTrashed() Get trashed groups
  */
 class Group extends BaseModel
 {

@@ -17,9 +17,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *
  * @property-read string $createdAt Date of creation
  * @property-read string $usersCount Formatted number of users in this role (ie. '123 users')
- * @method Builder published() Get published roles
- * @method Builder draft() Get draft roles
- * @method Builder onlyTrashed() Get trashed roles
+ * @method static Builder published() Get published roles
+ * @method static Builder draft() Get draft roles
+ * @method static Builder onlyTrashed() Get trashed roles
  */
 class Role extends BaseModel
 {
