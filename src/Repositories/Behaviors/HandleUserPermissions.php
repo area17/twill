@@ -18,7 +18,11 @@ trait HandleUserPermissions
      */
     public function getFormFieldsHandleUserPermissions($object, $fields)
     {
-         foreach ($object->permissions()->moduleItem()->get() as $permission) {
+        if (!config('twill.enabled.permissions-management')) {
+            return $fields;
+        }
+
+        foreach ($object->permissions()->moduleItem()->get() as $permission) {
             $model = $permission->permissionable()->first();
             $moduleName = getModuleNameByModel($model);
             $fields[$moduleName . '_' . $model->id . '_permission'] = $permission->name;
@@ -37,6 +41,10 @@ trait HandleUserPermissions
      */
     public function afterSaveHandleUserPermissions($object, $fields)
     {
+        if (!config('twill.enabled.permissions-management')) {
+            return;
+        }
+
         $oldFields = \Session::get("user-{$object->id}");
 
         foreach ($fields as $key => $value) {
@@ -69,6 +77,10 @@ trait HandleUserPermissions
      */
     protected function getUserPermissionsFields($user, $fields)
     {
+        if (!config('twill.enabled.permissions-management')) {
+            return $fields;
+        }
+
         $itemScopes = Permission::available(Permission::SCOPE_ITEM);
 
         // looking for group permissions that belongs to the user
@@ -148,6 +160,10 @@ trait HandleUserPermissions
      */
     public function getCountByStatusSlugHandleUserPermissions($slug, $scope = [])
     {
+        if (!config('twill.enabled.permissions-management')) {
+            return false;
+        }
+
         $query = $this->model->where($scope);
 
         if (get_class($this->model) === twillModel('user')) {

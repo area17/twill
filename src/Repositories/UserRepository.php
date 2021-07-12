@@ -70,7 +70,9 @@ class UserRepository extends ModuleRepository
             return $fields;
         }
 
-        $fields['browsers']['groups'] = $this->getFormFieldsForBrowser($user, 'groups');
+        if (config('twill.enabled.permissions-management')) {
+            $fields['browsers']['groups'] = $this->getFormFieldsForBrowser($user, 'groups');
+        }
 
         return $fields;
     }
