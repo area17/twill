@@ -27,11 +27,9 @@ class UserRequest extends Request
         switch ($this->method()) {
             case 'POST':
                 {
-                    if (config('twill.enabled.permissions-management')) {
-                        $roleKeyValue = ['role_id' => 'required'];
-                    } else {
-                        $roleKeyValue = ['role' => 'required|not_in:SUPERADMIN'];
-                    }
+                    $roleKeyValue = config('twill.enabled.permissions-management') ?
+                        ['role_id' => 'required'] :
+                        ['role' => 'required|not_in:SUPERADMIN'];
 
                     return [
                         'name' => 'required',
@@ -40,11 +38,8 @@ class UserRequest extends Request
                 }
             case 'PUT':
                 {
-                    if (config('twill.enabled.permissions-management')) {
-                        $roleKeyValue = [];
-                    } else {
-                        $roleKeyValue = ['role' => 'not_in:SUPERADMIN'];
-                    }
+                    $roleKeyValue = config('twill.enabled.permissions-management') ?
+                        [] : ['role' => 'not_in:SUPERADMIN'];
 
                     return [
                         'name' => 'required',

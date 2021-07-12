@@ -998,6 +998,7 @@ abstract class ModuleController extends Controller
         if (config('twill.enabled.permissions-management') && isPermissionableModule($this->moduleName)) {
             $scopes = $scopes + ['accessible' => true];
         }
+
         return $this->transformIndexItems($this->repository->get(
             $this->indexWith,
             $scopes,
@@ -1912,14 +1913,14 @@ abstract class ModuleController extends Controller
 
     protected function getGroupUserMapping()
     {
-        if (!config('twill.enabled.permissions-management')) {
-            return [];
+        if (config('twill.enabled.permissions-management')) {
+            return Group::with('users')->get()
+                ->mapWithKeys(function ($group) {
+                    return [$group->id => $group->users()->pluck('id')->toArray()];
+                })->toArray();
         }
 
-        return Group::with('users')->get()
-            ->mapWithKeys(function ($group) {
-                return [$group->id => $group->users()->pluck('id')->toArray()];
-            })->toArray();
+        return [];
     }
 
     /**
@@ -1933,12 +1934,12 @@ abstract class ModuleController extends Controller
 
     protected function getShowPermissionFieldset($item)
     {
-        if (!config('twill.enabled.permissions-management')) {
-            return false;
+        if (config('twill.enabled.permissions-management')) {
+            $permissionModuleName = isPermissionableModule(getModuleNameByModel($item));
+            return $permissionModuleName && !strpos($permissionModuleName, '.');
         }
 
-        $permissionModuleName = isPermissionableModule(getModuleNameByModel($item));
-        return $permissionModuleName && !strpos($permissionModuleName, '.');
+        return false;
     }
 
     /**

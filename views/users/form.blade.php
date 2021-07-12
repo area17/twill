@@ -88,10 +88,7 @@
         @endunless
     @endif
 
-    @if(
-        config('twill.enabled.permissions-management') &&
-        Config::get('twill.permissions.level') != 'role'
-    )
+    @if(config('twill.enabled.permissions-management') && Config::get('twill.permissions.level') != 'role')
         @if($item->groups->count())
             @php
             $groups = json_encode($item->groups->map(function ($group) {
@@ -120,10 +117,7 @@
 
 @section('fieldsets')
 
-    @if(
-        config('twill.enabled.permissions-management') &&
-        Config::get('twill.permissions.level') == 'roleGroupModule'
-    )
+    @if(config('twill.enabled.permissions-management') && Config::get('twill.permissions.level') == 'roleGroupModule')
         @can('edit-users')
             @unless($item->is_superadmin || $item->id == $currentUser->id)
                 @component('twill::partials.form.utils._connected_fields', [

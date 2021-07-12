@@ -15,16 +15,16 @@ trait HasPermissions
      */
     public function permissions()
     {
-        if (!config('twill.enabled.permissions-management')) {
-            return null;
+        if (config('twill.enabled.permissions-management')) {
+            // Deal with the situation that twill user's table has been renamed.
+            if (get_class($this) === twillModel('user')) {
+                return $this->belongsToMany('A17\Twill\Models\Permission', 'permission_twill_user', 'twill_user_id', 'permission_id');
+            } else {
+                return $this->belongsToMany('A17\Twill\Models\Permission');
+            }
         }
 
-        // Deal with the situation that twill user's table has been renamed.
-        if (get_class($this) === twillModel('user')) {
-            return $this->belongsToMany('A17\Twill\Models\Permission', 'permission_twill_user', 'twill_user_id', 'permission_id');
-        } else {
-            return $this->belongsToMany('A17\Twill\Models\Permission');
-        }
+        return null;
     }
 
     /**

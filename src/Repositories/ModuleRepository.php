@@ -79,9 +79,7 @@ abstract class ModuleRepository
     {
         $query = $this->model->where($scope);
 
-        if (config('twill.enabled.permissions-management') &&
-            isPermissionableModule(getModuleNameByModel($this->model))
-        ) {
+        if (config('twill.enabled.permissions-management') && isPermissionableModule(getModuleNameByModel($this->model))) {
             $query = $query->accessible();
         }
 

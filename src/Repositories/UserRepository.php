@@ -103,7 +103,9 @@ class UserRepository extends ModuleRepository
 
         if (config('twill.enabled.permissions-management')) {
             foreach ($browserFields as $index => $browserField) {
-                if ($browserField['id'] === Group::getEveryoneGroup()->id && $browserField['name'] === Group::getEveryoneGroup()->name) {
+                if ($browserField['id'] === Group::getEveryoneGroup()->id &&
+                    $browserField['name'] === Group::getEveryoneGroup()->name
+                ) {
                     $browserFields[$index]['deletable'] = false;
                 }
             }
