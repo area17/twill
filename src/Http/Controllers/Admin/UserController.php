@@ -358,7 +358,7 @@ class UserController extends ModuleController
             })->toArray();
         }
 
-        return UserRole::toArray();
+        return collect(UserRole::toArray());
     }
 
     private function getPermissionModules()
