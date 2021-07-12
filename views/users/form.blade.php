@@ -14,7 +14,7 @@
     @can('edit-user-role')
         @if($item->id !== $currentUser->id)
             @formField('select', [
-                'name' => "role_id",
+                'name' => $item->getRoleColumnName(),
                 'label' => twillTrans('twill::lang.user-management.role'),
                 'options' => $roleList,
                 'placeholder' => twillTrans('twill::lang.user-management.role-placeholder'),
@@ -88,7 +88,10 @@
         @endunless
     @endif
 
-    @if(Config::get('twill.permissions.level') != 'role')
+    @if(
+        config('twill.enabled.permissions-management') &&
+        Config::get('twill.permissions.level') != 'role'
+    )
         @if($item->groups->count())
             @php
             $groups = json_encode($item->groups->map(function ($group) {
@@ -117,7 +120,10 @@
 
 @section('fieldsets')
 
-    @if(Config::get('twill.permissions.level') == 'roleGroupModule')
+    @if(
+        config('twill.enabled.permissions-management') &&
+        Config::get('twill.permissions.level') == 'roleGroupModule'
+    )
         @can('edit-users')
             @unless($item->is_superadmin || $item->id == $currentUser->id)
                 @component('twill::partials.form.utils._connected_fields', [
@@ -236,7 +242,7 @@
 @push('extra_js')
     <script>
         const formFields = {!! json_encode($form_fields) !!};
-        const groupPermissionMapping = {!! json_encode($groupPermissionMapping) !!};
+        const groupPermissionMapping = {!! json_encode($groupPermissionMapping ?? []) !!};
         var selectedGroups = formFields.browsers ? formFields.browsers.groups : []
 
         window['{{ config('twill.js_namespace') }}'].vm.$store.subscribe((mutation, state) => {
