@@ -3,8 +3,8 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Http\Requests\Admin\OauthRequest;
-use A17\Twill\Models\User;
 use A17\Twill\Repositories\UserRepository;
+use Carbon\Carbon;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Encryption\Encrypter;
@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Password;
 use Illuminate\View\Factory as ViewFactory;
 use PragmaRX\Google2FA\Google2FA;
 use Socialite;
@@ -131,7 +132,7 @@ class LoginController extends Controller
         return $this->afterAuthentication($request, $user);
     }
 
-    private function afterAuthentication(Request $request, $user)
+    protected function afterAuthentication(Request $request, $user)
     {
         if ($user->google_2fa_secret && $user->google_2fa_enabled) {
             $this->guard()->logout();
@@ -139,6 +140,17 @@ class LoginController extends Controller
             $request->session()->put('2fa:user:id', $user->id);
 
             return $this->redirector->to(route('admin.login-2fa.form'));
+        }
+
+        $user->last_login_at = Carbon::now();
+        $user->save();
+
+        if ($user->require_new_password) {
+            $this->logout($request);
+            $token = Password::broker('twill_users')->getRepository()->create($user);
+            return $this->redirector->to(route('admin.password.reset.form', $token))->withErrors([
+                'error' => 'Your password needs to be reset before login',
+            ]);
         }
 
         return $this->redirector->intended($this->redirectTo);
@@ -155,7 +167,7 @@ class LoginController extends Controller
     {
         $userId = $request->session()->get('2fa:user:id');
 
-        $user = User::findOrFail($userId);
+        $user = twillModel('user')::findOrFail($userId);
 
         $valid = (new Google2FA)->verifyKey(
             $user->google_2fa_secret,
@@ -241,7 +253,7 @@ class LoginController extends Controller
     public function showPasswordForm(Request $request)
     {
         $userId = $request->session()->get('oauth:user_id');
-        $user = User::findOrFail($userId);
+        $user = twillModel('user')::findOrFail($userId);
 
         return $this->viewFactory->make('twill::auth.oauth-link', [
             'username' => $user->email,
@@ -259,7 +271,7 @@ class LoginController extends Controller
         if ($this->attemptLogin($request)) {
             // Load the user
             $userId = $request->session()->get('oauth:user_id');
-            $user = User::findOrFail($userId);
+            $user = twillModel('user')::findOrFail($userId);
 
             // Link the provider and login
             $user->linkProvider($request->session()->get('oauth:user'), $request->session()->get('oauth:provider'));
