@@ -3,7 +3,6 @@
 namespace A17\Twill\Http\Requests\Admin;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
 use PragmaRX\Google2FA\Google2FA;
 
 class UserRequest extends Request
@@ -31,14 +30,13 @@ class UserRequest extends Request
                     return [
                         'name' => 'required',
                         'email' => 'required|email|unique:' . config('twill.users_table', 'twill_users') . ',email',
-                        'role' => 'required|not_in:SUPERADMIN',
+                        'role_id' => 'required',
                     ];
                 }
             case 'PUT':
                 {
                     return [
                         'name' => 'required',
-                        'role' => 'not_in:SUPERADMIN',
                         'email' => 'required|email|unique:' . config('twill.users_table', 'twill_users') . ',email,' . $this->route('user'),
                         'verify-code' => function ($attribute, $value, $fail) {
                             $user = Auth::guard('twill_users')->user();
