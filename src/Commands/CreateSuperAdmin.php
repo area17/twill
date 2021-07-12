@@ -56,16 +56,21 @@ class CreateSuperAdmin extends Command
         $email = $this->setEmail();
         $password = $this->setPassword();
 
+        if (config('twill.enabled.permissions-management')) {
+            $roleKeyValue = ['is_superadmin' => true];
+        } else {
+            $roleKeyValue = ['role' => 'SUPERADMIN'];
+        }
+
         $userModel = twillModel('user');
         $user = new $userModel;
         $user->fill([
             'name' => "Admin",
             'email' => $email,
             'published' => true,
-        ]);
+        ] + $roleKeyValue);
 
         $user->password = Hash::make($password);
-        $user->is_superadmin = true;
         $user->save();
 
         $this->info("Your account has been created");
