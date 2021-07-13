@@ -164,11 +164,11 @@ trait HandleUserPermissions
 
         if (get_class($this->model) === twillModel('user')) {
             if ($slug === 'activated') {
-                return $query->activated()->count();
+                return $query->notSuperAdmin()->activated()->count();
             }
 
             if ($slug === 'pending') {
-                return $query->pending()->count();
+                return $query->notSuperAdmin()->pending()->count();
             }
         }
 
