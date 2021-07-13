@@ -195,7 +195,7 @@ if (!function_exists('twillModel')) {
     function twillModel($model)
     {
         return config("twill.models.$model")
-            ?? abort(500, "helpers/twillModel: $model not Exist");
+            ?? abort(500, "helpers/twillModel: '$model' model is not configured");
     }
 }
 
