@@ -189,7 +189,11 @@ class User extends AuthenticatableContract
 
     public function isSuperAdmin()
     {
-        return $this->is_superadmin || $this->role === 'SUPERADMIN';
+        if (config('twill.enabled.permissions-management')) {
+            return $this->is_superadmin;
+        }
+
+        return $this->role === 'SUPERADMIN';
     }
 
     public function isPublished()
