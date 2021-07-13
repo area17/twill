@@ -358,7 +358,9 @@ class UserController extends ModuleController
             })->toArray();
         }
 
-        return collect(UserRole::toArray());
+        return collect(UserRole::toArray())->map(function ($item, $key) {
+            return ['value' => $key, 'label' => $item];
+        })->values()->toArray();
     }
 
     private function getPermissionModules()
