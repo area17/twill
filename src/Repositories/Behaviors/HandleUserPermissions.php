@@ -160,10 +160,6 @@ trait HandleUserPermissions
      */
     public function getCountByStatusSlugHandleUserPermissions($slug, $scope = [])
     {
-        if (!config('twill.enabled.permissions-management')) {
-            return false;
-        }
-
         $query = $this->model->where($scope);
 
         if (get_class($this->model) === twillModel('user')) {
