@@ -16,7 +16,7 @@
             @formField('select', [
                 'name' => $item->getRoleColumnName(),
                 'label' => twillTrans('twill::lang.user-management.role'),
-                'options' => $roleList,
+                'options' => $roleList ?? [],
                 'placeholder' => twillTrans('twill::lang.user-management.role-placeholder'),
             ])
         @endif
