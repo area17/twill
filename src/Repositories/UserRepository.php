@@ -42,20 +42,15 @@ class UserRepository extends ModuleRepository
      * @param Config $config
      * @param PasswordBrokerManager $passwordBrokerManager
      * @param AuthFactory $authFactory
-     * @param User|null $model
      */
     public function __construct(
         DB $db,
         Config $config,
         PasswordBrokerManager $passwordBrokerManager,
-        AuthFactory $authFactory,
-        $model = null
+        AuthFactory $authFactory
     ) {
-        if (is_null($model)) {
-            $userModel = twillModel('user');
-            $model = new $userModel;
-        }
-        $this->model = $model;
+        $userModel = twillModel('user');
+        $this->model = new $userModel;
         $this->passwordBrokerManager = $passwordBrokerManager;
         $this->authFactory = $authFactory;
         $this->config = $config;

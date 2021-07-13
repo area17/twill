@@ -23,16 +23,12 @@ class BlockRepository extends ModuleRepository
     protected $config;
 
     /**
-     * @param Block|null $model
      * @param Config $config
      */
-    public function __construct($model=null, Config $config)
+    public function __construct(Config $config)
     {
-        if (is_null($model)) {
-            $blockModel = twillModel('block');
-            $model = new $blockModel;
-        }
-        $this->model = $model;
+        $blockModel = twillModel('block');
+        $this->model = new $blockModel;
         $this->config = $config;
     }
 
