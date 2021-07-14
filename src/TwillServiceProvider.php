@@ -228,6 +228,10 @@ class TwillServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/oauth.php', 'twill.oauth');
         $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
 
+        if (config('twill.enabled.permissions-management')) {
+            $this->mergeConfigFrom(__DIR__ . '/../config/permissions.php', 'twill.permissions');
+        }
+
         if (config('twill.media_library.endpoint_type') === 'local'
             && config('twill.media_library.disk') === 'twill_media_library') {
             $this->setLocalDiskUrl('media');
