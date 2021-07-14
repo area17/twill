@@ -25,8 +25,6 @@ class PermissionAuthServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        // dd(Config::get('twill.permissions'));
-
         /***
          *
          *    Global permissions
