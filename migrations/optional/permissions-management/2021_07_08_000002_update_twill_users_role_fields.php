@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateTwillDefaultUsersTable extends Migration
+class UpdateTwillUsersRoleFields extends Migration
 {
     /**
      * Run the migrations.
@@ -17,10 +17,9 @@ class UpdateTwillDefaultUsersTable extends Migration
 
         if (Schema::hasTable($twillUsersTable)) {
             Schema::table($twillUsersTable, function (Blueprint $table) {
-                $table->boolean('activated')->default(false);
-                $table->dateTime('last_login_at')->nullable();
-                $table->dateTime('registered_at')->nullable();
-                $table->boolean('require_new_password')->default(false);
+                $table->unsignedInteger('role_id')->nullable();
+                $table->boolean('is_superadmin')->default(false);
+                // $table->dropColumn('role');
             });
         }
     }
@@ -36,10 +35,9 @@ class UpdateTwillDefaultUsersTable extends Migration
 
         if (Schema::hasTable($twillUsersTable)) {
             Schema::table($twillUsersTable, function (Blueprint $table) {
-                $table->dropColumn('activated');
-                $table->dropColumn('last_login_at');
-                $table->dropColumn('registered_at');
-                $table->dropColumn('require_new_password');
+                $table->dropColumn('role_id');
+                $table->dropColumn('is_superadmin');
+                // $table->string('role', 100);
             });
         }
     }
