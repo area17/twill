@@ -8,13 +8,10 @@ use Illuminate\Support\Facades\Gate;
 
 class PermissionAuthServiceProvider extends ServiceProvider
 {
+    protected static $cache = [];
 
     protected function authorize($user, $callback, $moduleName = null)
     {
-        if (!config('twill.enabled.permissions-management')) {
-            return true;
-        }
-
         if ($user->is_superadmin) {
             return true;
         }
@@ -26,10 +23,10 @@ class PermissionAuthServiceProvider extends ServiceProvider
         return $callback($user);
     }
 
-    protected static $cache = [];
-
     public function boot()
     {
+        // dd(Config::get('twill.permissions'));
+
         /***
          *
          *    Global permissions
