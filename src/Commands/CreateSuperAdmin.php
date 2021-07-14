@@ -6,6 +6,7 @@ use Illuminate\Config\Repository as Config;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Factory as ValidatorFactory;
+use Carbon\Carbon;
 
 class CreateSuperAdmin extends Command
 {
@@ -70,6 +71,8 @@ class CreateSuperAdmin extends Command
             $user->role = 'SUPERADMIN';
         }
 
+        $user->activated = true;
+        $user->registered_at = Carbon::now();
         $user->password = Hash::make($password);
         $user->save();
 
