@@ -2,6 +2,7 @@
 
 use A17\Twill\Models\Role;
 use A17\Twill\Models\User;
+use A17\Twill\Models\Group;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -57,10 +58,14 @@ class UpdateTwillUsersRoleFields extends Migration
             'VIEWONLY' => Role::where(['name' => 'Guest'])->first(),
         ];
 
-        User::chunk(100, function ($users) use ($roleMap) {
+        $defaultGroup = Group::where(['is_everyone_group' => true])->first();
+
+        User::chunk(100, function ($users) use ($roleMap, $defaultGroup) {
             foreach ($users as $user) {
                 if ($user->role === 'SUPERADMIN') {
                     $user->is_superadmin = true;
+                } else {
+                    $user->groups()->attach($defaultGroup->id);
                 }
 
                 if ($newRole = $roleMap[$user->role] ?? false) {
