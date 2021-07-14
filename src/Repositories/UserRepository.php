@@ -121,6 +121,14 @@ class UserRepository extends ModuleRepository
     /**
      * @return int
      */
+    public function getCountForAll()
+    {
+        return $this->model->notSuperAdmin()->count();
+    }
+
+    /**
+     * @return int
+     */
     public function getCountForPublished()
     {
         return $this->model->notSuperAdmin()->published()->count();

@@ -249,14 +249,14 @@ class UserController extends ModuleController
         ], [
             'name' => twillTrans('twill::lang.user-management.disabled'),
             'slug' => 'draft',
-            'number' => $this->repository->getCountByStatusSlug('draft'),
+            'number' => $this->repository->getCountByStatusSlug('draft', [$roleScope]),
         ]);
 
         if ($this->getIndexOption('restore')) {
             array_push($statusFilters, [
                 'name' => twillTrans('twill::lang.user-management.trash'),
                 'slug' => 'trash',
-                'number' => $this->repository->getCountByStatusSlug('trash'),
+                'number' => $this->repository->getCountByStatusSlug('trash', [$roleScope]),
             ]);
         }
 
