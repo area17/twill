@@ -36,7 +36,7 @@ abstract class Model extends BaseModel implements TaggableInterface
         $model = get_class($query->getModel());
         $moduleName = isPermissionableModule(getModuleNameByModel($model));
 
-        if ($moduleName && !Auth::user()->is_superadmin) {
+        if ($moduleName && !Auth::user()->isSuperAdmin()) {
             // Get all permissions the logged in user has regards to the model.
             $allPermissions = Auth::user()->allPermissions();
             $allModelPermissions = (clone $allPermissions)->ofModel($model);

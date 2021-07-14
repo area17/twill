@@ -61,7 +61,7 @@ class UserRepository extends ModuleRepository
     {
         $fields = parent::getFormFields($user);
 
-        if ($user->is_superadmin) {
+        if ($user->isSuperAdmin()) {
             return $fields;
         }
 

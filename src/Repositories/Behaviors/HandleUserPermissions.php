@@ -112,7 +112,7 @@ trait HandleUserPermissions
         }
 
         // looking for global permissions, if the user has the 'manage-modules' permission
-        $isManageAllModules = $user->is_superadmin || ($user->role->permissions()->global()->where('name', 'manage-modules')->first() != null);
+        $isManageAllModules = $user->isSuperAdmin() || ($user->role->permissions()->global()->where('name', 'manage-modules')->first() != null);
 
         // looking for role module permission
         $globalPermissions = [];

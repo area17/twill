@@ -232,14 +232,20 @@ class UserController extends ModuleController
     {
         $statusFilters = [];
 
+        if (config('twill.enabled.permissions-management')) {
+            $roleScope = ['is_superadmin', false];
+        } else {
+            $roleScope = ['role', '<>', 'SUPERADMIN'];
+        }
+
         array_push($statusFilters, [
             'name' => twillTrans('twill::lang.user-management.active'),
             'slug' => 'activated',
-            'number' => $this->repository->getCountByStatusSlug('activated', [['is_superadmin', false]]),
+            'number' => $this->repository->getCountByStatusSlug('activated', [$roleScope]),
         ], [
             'name' => twillTrans('twill::lang.user-management.pending'),
             'slug' => 'pending',
-            'number' => $this->repository->getCountByStatusSlug('pending', [['is_superadmin', false]]),
+            'number' => $this->repository->getCountByStatusSlug('pending', [$roleScope]),
         ], [
             'name' => twillTrans('twill::lang.user-management.disabled'),
             'slug' => 'draft',

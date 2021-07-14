@@ -119,7 +119,7 @@
 
     @if(config('twill.enabled.permissions-management') && Config::get('twill.permissions.level') == 'roleGroupModule')
         @can('edit-users')
-            @unless($item->is_superadmin || $item->id == $currentUser->id)
+            @unless($item->isSuperAdmin() || $item->id == $currentUser->id)
                 @component('twill::partials.form.utils._connected_fields', [
                     'fieldName' => 'role_id',
                     'renderForBlocks' => false,
@@ -216,7 +216,7 @@
           }
         ]
     }
-    @unless($item->is_superadmin)
+    @unless($item->isSuperAdmin())
         @can('edit-users')
             window['{{ config('twill.js_namespace') }}'].STORE.publication.userInfo = {
                 user_name: '{{ $item->name }}',
