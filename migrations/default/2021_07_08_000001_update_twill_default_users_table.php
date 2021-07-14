@@ -1,5 +1,6 @@
 <?php
 
+use A17\Twill\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -22,6 +23,8 @@ class UpdateTwillDefaultUsersTable extends Migration
                 $table->dateTime('registered_at')->nullable();
                 $table->boolean('require_new_password')->default(false);
             });
+
+            $this->seedNewFields();
         }
     }
 
@@ -42,5 +45,22 @@ class UpdateTwillDefaultUsersTable extends Migration
                 $table->dropColumn('require_new_password');
             });
         }
+    }
+
+    private function seedNewFields()
+    {
+        User::chunk(100, function ($users) {
+            foreach ($users as $user) {
+                if (!empty($user->password)) {
+                    $user->activated = true;
+                }
+
+                if (!empty($user->created_at)) {
+                    $user->registered_at = $user->created_at;
+                }
+
+                $user->save();
+            }
+        });
     }
 }
