@@ -1342,7 +1342,7 @@ abstract class ModuleController extends Controller
                 'bulkDelete' => 'edit-module',
                 'bulkEdit' => 'edit-module',
                 'editInModal' => 'edit-module',
-                'skipCreateModal' => 'edit',
+                'skipCreateModal' => 'edit-module',
             ];
             $authorized = false;
             if (array_key_exists($option, $authorizableOptions)) {
