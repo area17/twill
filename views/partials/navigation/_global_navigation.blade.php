@@ -4,11 +4,11 @@
             <ul class="header__items">
                 @foreach(config('twill-navigation') as $global_navigation_key => $global_navigation_element)
                     @php
-                        $gate = $global_navigation_key === 'settings' ? 
-                        'edit-settings' : 
-                        ($global_navigation_element['can'] ?? 'access-module-list');
+                        $is_settings = $global_navigation_key === 'settings';
+                        $is_module = $is_settings || ($global_navigation_element['module'] ?? false);
+                        $gate = $is_settings ? 'edit-settings' : ($global_navigation_element['can'] ?? 'access-module-list');
                     @endphp
-                    @unless (($global_navigation_element['module'] ?? false) && Auth::user()->cannot($gate, $global_navigation_key))
+                    @unless ($is_module && Auth::user()->cannot($gate, $global_navigation_key))
                         @if(isActiveNavigation($global_navigation_element, $global_navigation_key, $_global_active_navigation))
                             <li class="header__item s--on">
                         @else
