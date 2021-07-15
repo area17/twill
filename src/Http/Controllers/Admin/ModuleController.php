@@ -99,6 +99,33 @@ abstract class ModuleController extends Controller
     ];
 
     /**
+     * Options of the index view and the corresponding auth gates.
+     *
+     * @var array
+     */
+    protected $authorizableOptions = [
+        'list' => 'access-module-list',
+        'create' => 'edit-module',
+        'edit' => 'view-item',
+        'permalink' => 'view-item',
+        'publish' => 'edit-item',
+        'feature' => 'edit-item',
+        'reorder' => 'edit-module',
+        'delete' => 'edit-item',
+        'duplicate' => 'edit-item',
+        'restore' => 'edit-item',
+        'forceDelete' => 'edit-item',
+        'bulkForceDelete' => 'edit-module',
+        'bulkPublish' => 'edit-module',
+        'bulkRestore' => 'edit-module',
+        'bulkFeature' => 'edit-module',
+        'bulkDelete' => 'edit-module',
+        'bulkEdit' => 'edit-module',
+        'editInModal' => 'edit-module',
+        'skipCreateModal' => 'edit-module',
+    ];
+
+    /**
      * Relations to eager load for the index view
      *
      * @var array
@@ -337,6 +364,18 @@ abstract class ModuleController extends Controller
     }
 
     /**
+     * Match an option name to a gate name if needed, then authorize it.
+     *
+     * @return void
+     */
+    protected function authorizeOption($option, $arguments = [])
+    {
+        $gate = $this->authorizableOptions[$option] ?? $option;
+
+        $this->authorize($gate, $arguments);
+    }
+
+    /**
      * @return void
      */
     protected function setMiddlewarePermission()
@@ -372,7 +411,8 @@ abstract class ModuleController extends Controller
      */
     public function index($parentModuleId = null)
     {
-        $this->authorize('access-module-list', $this->moduleName);
+        $this->authorizeOption('list', $this->moduleName);
+
         $parentModuleId = $this->getParentModuleIdFromRequest($this->request) ?? $parentModuleId;
 
         $this->submodule = isset($parentModuleId);
@@ -492,7 +532,7 @@ abstract class ModuleController extends Controller
         $id = last($params);
 
         $item = $this->repository->getById($submoduleId ?? $id);
-        $this->authorize('view-item', $item);
+        $this->authorizeOption('edit', $item);
 
         if ($this->getIndexOption('editInModal')) {
             return $this->request->ajax()
@@ -561,7 +601,7 @@ abstract class ModuleController extends Controller
 
         $item = $this->repository->getById($id);
 
-        $this->authorize('edit-item', $item);
+        $this->authorizeOption('edit', $item);
 
         $input = $this->request->all();
 
@@ -1323,35 +1363,18 @@ abstract class ModuleController extends Controller
                 'store' => 'create',
             ];
             $option = array_key_exists($option, $customOptionNamesMapping) ? $customOptionNamesMapping[$option] : $option;
-            $authorizableOptions = [
-                'list' => 'access-module-list',
-                'create' => 'edit-module',
-                'edit' => 'view-item',
-                'permalink' => 'view-item',
-                'publish' => 'edit-item',
-                'feature' => 'edit-item',
-                'reorder' => 'edit-module',
-                'delete' => 'edit-item',
-                'duplicate' => 'edit-item',
-                'restore' => 'edit-item',
-                'forceDelete' => 'edit-item',
-                'bulkForceDelete' => 'edit-module',
-                'bulkPublish' => 'edit-module',
-                'bulkRestore' => 'edit-module',
-                'bulkFeature' => 'edit-module',
-                'bulkDelete' => 'edit-module',
-                'bulkEdit' => 'edit-module',
-                'editInModal' => 'edit-module',
-                'skipCreateModal' => 'edit-module',
-            ];
             $authorized = false;
-            if (array_key_exists($option, $authorizableOptions)) {
-                if (Str::endsWith($authorizableOptions[$option], '-module')) {
-                    $authorized = $this->user->can($authorizableOptions[$option], $this->moduleName);
-                } elseif (Str::endsWith($authorizableOptions[$option], '-item')) {
-                    $authorized = $item ? $this->user->can($authorizableOptions[$option], $item) : $this->user->can(Str::replaceLast('-item', '-module', $authorizableOptions[$option]), $this->moduleName);
+
+            if (array_key_exists($option, $this->authorizableOptions)) {
+                if (Str::endsWith($this->authorizableOptions[$option], '-module')) {
+                    $authorized = $this->user->can($this->authorizableOptions[$option], $this->moduleName);
+                } elseif (Str::endsWith($this->authorizableOptions[$option], '-item')) {
+                    $authorized = $item ?
+                        $this->user->can($this->authorizableOptions[$option], $item) :
+                        $this->user->can(Str::replaceLast('-item', '-module', $this->authorizableOptions[$option]), $this->moduleName);
                 }
             }
+
             return ($this->indexOptions[$option] ?? $this->defaultIndexOptions[$option] ?? false) && $authorized;
         });
     }
