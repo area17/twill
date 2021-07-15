@@ -12,14 +12,14 @@ class AuthServiceProvider extends ServiceProvider
     const SUPERADMIN = 'SUPERADMIN';
 
     const ABILITY_ALIASES = [
-        'list' => ['access-module-list'],
+        'list' => ['access-module-list', 'access-media-library'],
         'edit' => ['view-item', 'edit-item', 'edit-module', 'edit-settings'],
         'reorder' => [],
         'publish' => [],
         'feature' => [],
         'delete' => [],
         'duplicate' => [],
-        'upload' => ['access-media-library'],
+        'upload' => [],
         'manage-users' => ['edit-users', 'edit-user-role', 'edit-user-groups',  'access-user-management'],
         'edit-user' => [],
         'publish-user' => [],
