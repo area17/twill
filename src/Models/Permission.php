@@ -72,7 +72,8 @@ class Permission extends BaseModel
                     'edit-user-role',
                     'edit-user-groups',
                     'manage-modules',
-                    'access-media-library'
+                    'access-media-library',
+                    'edit-media-library'
                 ];
                 break;
             case Permission::SCOPE_MODULE:

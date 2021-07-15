@@ -81,6 +81,12 @@ class PermissionAuthServiceProvider extends ServiceProvider
             });
         });
 
+        Gate::define('edit-media-library', function ($user) {
+            return $this->authorize($user, function ($user) {
+                return $user->role->permissions()->global()->where('name', 'edit-media-library')->exists();
+            });
+        });
+
         Gate::define('impersonate', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $user->is_superadmin;

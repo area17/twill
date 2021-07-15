@@ -19,7 +19,7 @@ class AuthServiceProvider extends ServiceProvider
         'feature' => [],
         'delete' => [],
         'duplicate' => [],
-        'upload' => [],
+        'upload' => ['edit-media-library'],
         'manage-users' => ['edit-users', 'edit-user-role', 'edit-user-groups',  'access-user-management'],
         'edit-user' => [],
         'publish-user' => [],

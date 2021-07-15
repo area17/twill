@@ -30,6 +30,11 @@
             'name' => 'access-media-library',
             'label' => 'Access media library'
         ])
+
+        @formField('checkbox', [
+            'name' => 'edit-media-library',
+            'label' => 'Upload to media library'
+        ])
     @endcomponent
 
     @component('twill::partials.form.utils._field_rows', [

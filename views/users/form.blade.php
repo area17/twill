@@ -22,12 +22,15 @@
         @endif
     @endcan
 
-    @if(config('twill.enabled.users-image'))
-        @formField('medias', [
-            'name' => 'profile',
-            'label' => twillTrans('twill::lang.user-management.profile-image'),
-        ])
-    @endif
+    @can('edit-media-library')
+        @if(config('twill.enabled.users-image'))
+            @formField('medias', [
+                'name' => 'profile',
+                'label' => twillTrans('twill::lang.user-management.profile-image'),
+            ])
+        @endif
+    @endcan
+
     @if(config('twill.enabled.users-description'))
         @formField('input', [
             'name' => 'title',
