@@ -7,13 +7,8 @@ use A17\Twill\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class PermissionsTest extends TestCase
+class PermissionsTest extends PermissionsTestBase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function configTwill($app)
     {
         parent::configTwill($app);
@@ -32,11 +27,6 @@ class PermissionsTest extends TestCase
         $user->save();
 
         return $user;
-    }
-
-    public function loginUser($user)
-    {
-        $this->loginAs($user->email, $user->email);
     }
 
     public function testDoesNotCrash()
