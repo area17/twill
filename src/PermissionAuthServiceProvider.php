@@ -69,6 +69,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
             if (isset(self::$cache['manage-modules'])) {
                 return self::$cache['manage-modules'];
             }
+
             return self::$cache['manage-modules'] = $this->authorize($user, function ($user) {
                 return $user->role->permissions()->global()->where('name', 'manage-modules')->exists()
                 || isUserGroupPermissionModuleExists($user, 'global', 'manage-modules');
@@ -127,6 +128,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
             if (isset(self::$cache['edit-module-' . $moduleName])) {
                 return self::$cache['edit-module-' . $moduleName];
             }
+
             return self::$cache['edit-module-' . $moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('manage-module', $moduleName)
                 || $user->role->permissions()->module()->ofModuleName($moduleName)->where('name', 'edit-module')->exists()
@@ -175,6 +177,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
             if (isset(self::$cache[$key])) {
                 return self::$cache[$key];
             }
+
             return self::$cache[$key] = $this->authorize($user, function ($user) use ($item) {
                 return $user->can('manage-item', $item)
                 || $user->can('edit-module', getModuleNameByModel(get_class($item)))
@@ -188,6 +191,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
             if (isset(self::$cache[$key])) {
                 return self::$cache[$key];
             }
+
             return self::$cache[$key] = $this->authorize($user, function ($user) use ($item) {
                 return $user->can('manage-module', getModuleNameByModel(get_class($item)))
                 || $user->permissions()->ofItem($item)->where('name', 'manage-item')->exists()

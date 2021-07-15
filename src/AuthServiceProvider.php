@@ -11,16 +11,24 @@ class AuthServiceProvider extends ServiceProvider
 {
     const SUPERADMIN = 'SUPERADMIN';
 
+    /**
+     * Map between the legacy gates and the new gates from PermissionAuthServiceProvider.
+     * The new gates are being used in the code now and the old gates are kept for
+     * backward compatibility.
+     */
     const ABILITY_ALIASES = [
         'list' => ['access-module-list', 'access-media-library'],
-        'edit' => ['view-item', 'edit-item', 'edit-module', 'edit-settings'],
+        'edit' => [
+            'view-item', 'view-module', 'edit-item', 'edit-module', 'edit-settings',
+            'manage-item', 'manage-module', 'manage-modules'
+        ],
         'reorder' => [],
         'publish' => [],
         'feature' => [],
         'delete' => [],
         'duplicate' => [],
         'upload' => ['edit-media-library'],
-        'manage-users' => ['edit-users', 'edit-user-role', 'edit-user-groups',  'access-user-management'],
+        'manage-users' => ['edit-users', 'edit-user-role', 'edit-user-groups', 'access-user-management'],
         'edit-user' => [],
         'publish-user' => [],
         'impersonate' => [],
