@@ -309,6 +309,8 @@ class UserController extends ModuleController
 
     public function edit($id, $submoduleId = null)
     {
+        $this->authorizableOptions['edit'] = 'edit-user';
+
         if ($id !== (string) $this->user->id) {
             $this->authorize('edit-users');
         }
@@ -318,6 +320,8 @@ class UserController extends ModuleController
 
     public function update($id, $submoduleId = null)
     {
+        $this->authorizableOptions['edit'] = 'edit-user';
+
         if ($id !== (string) $this->user->id) {
             $this->authorize('edit-users');
         }
