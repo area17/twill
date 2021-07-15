@@ -19,7 +19,7 @@ trait HasPosition
 
     protected function getCurrentLastPosition()
     {
-        return ((int) static::max('position'));
+        return ((int) static::max("{$this->getTable()}.position"));
     }
 
     /**
@@ -28,7 +28,7 @@ trait HasPosition
      */
     public function scopeOrdered($query)
     {
-        return $query->orderBy('position');
+        return $query->orderBy("{$this->getTable()}.position");
     }
 
     /**
