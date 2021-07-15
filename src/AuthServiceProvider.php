@@ -113,9 +113,8 @@ class AuthServiceProvider extends ServiceProvider
         // As a non-admin, I can edit myself only
         $this->define('edit-user', function ($user, $editedUser = null) {
             return $this->authorize($user, function ($user) use ($editedUser) {
-                $editedUserObject = User::find($editedUser);
-                return ($this->userHasRole($user, [UserRole::ADMIN]) || $user->id == $editedUser)
-                    && ($editedUserObject ? $editedUserObject->role !== self::SUPERADMIN : true);
+                return ($this->userHasRole($user, [UserRole::ADMIN]) || $user->id == $editedUser->id)
+                    && ($editedUser ? $editedUser->role !== self::SUPERADMIN : true);
             });
         });
 
