@@ -43,15 +43,15 @@ class PermissionsLegacyTest extends PermissionsTestBase
     public function testViewOnlyPermissions()
     {
         $admin = $this->createUser('ADMIN');
-
-        $this->loginUser($guest = $this->createUser('VIEWONLY'));
+        $guest = $this->createUser('VIEWONLY');
 
         // User is logged in
+        $this->loginUser($guest);
         $this->httpRequestAssert('/twill');
         $this->assertSee($guest->name);
 
         // User can access the Media Library
-        $this->httpRequestAssert('/twill/media-library/medias?page=1&type=image');
+        $this->httpRequestAssert('/twill/media-library/medias?page=1&type=image', 'GET', [], 200);
 
         // User can't upload medias
         $this->httpRequestAssert('/twill/media-library/medias', 'POST', [], 403);
@@ -66,18 +66,19 @@ class PermissionsLegacyTest extends PermissionsTestBase
         $this->httpRequestAssert("/twill/users/{$admin->id}/edit", 'GET', [], 403);
 
         // User can access own profile
-        $this->httpRequestAssert("/twill/users/{$guest->id}/edit");
+        $this->httpRequestAssert("/twill/users/{$guest->id}/edit", 'GET', [], 200);
 
 
         $author = $this->createAuthor();
 
         // User can access authors list
-        $this->httpRequestAssert("/twill/personnel/authors");
+        $this->httpRequestAssert("/twill/personnel/authors", 'GET', [], 200);
 
         // User can't access author details
         $this->httpRequestAssert("/twill/personnel/authors/{$author->id}/edit", 'GET', [], 403);
 
         // User can't create authors
-        $this->httpRequestAssert('/twill/media-library/medias', 'POST', [], 403);
+        $this->httpRequestAssert('/twill/personnel/authors', 'POST', [], 403);
+    }
     }
 }
