@@ -7,7 +7,7 @@
         <input type="search" class="form__input form__input--small" name="search" :value="searchValue" :placeholder="placeholder" @input="onSearchInput" />
         <a17-button class="filter__toggle" variant="ghost" @click="toggleFilter" v-if="withHiddenFilters" :aria-expanded="opened ?  'true' : 'false'" >{{ $trans('filter.toggle-label', 'Filter') }} <span v-svg symbol="dropdown_module"></span></a17-button>
         <slot name="additional-actions"></slot>
-        <!-- Fix for Sarafi: the hidden submit button enables form submission by pressing Enter... -->
+        <!-- Fix for Safari: the hidden submit button enables form submission by pressing Enter... -->
         <button class="visually-hidden" aria-hidden="true" type="submit">{{ $trans('filter.apply-btn', 'Apply') }}</button>
       </div>
     </div>
