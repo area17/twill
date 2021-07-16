@@ -71,6 +71,9 @@ abstract class PermissionsTestBase extends TestCase
 
         $this->copyFiles($this->allFiles);
 
+        $this->files->makeDirectory(resource_path('views/admin/settings'));
+        $this->files->put(resource_path('views/admin/settings/seo.blade.php'), '');
+
         $this->migrate();
     }
 
