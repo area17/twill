@@ -3,6 +3,7 @@
 namespace A17\Twill\Tests\Integration;
 
 use A17\Twill\Models\User;
+use App\Repositories\AuthorRepository;
 use Illuminate\Support\Facades\Hash;
 
 class PermissionsLegacyTest extends PermissionsTestBase
@@ -27,6 +28,16 @@ class PermissionsLegacyTest extends PermissionsTestBase
         $user->save();
 
         return $user;
+    }
+
+    public function createAuthor()
+    {
+        $author = app(AuthorRepository::class)->create([
+            'published' => true,
+            'name' => $this->faker->name,
+        ]);
+
+        return $author;
     }
 
     public function testViewOnlyPermissions()
@@ -56,5 +67,17 @@ class PermissionsLegacyTest extends PermissionsTestBase
 
         // User can access own profile
         $this->httpRequestAssert("/twill/users/{$guest->id}/edit");
+
+
+        $author = $this->createAuthor();
+
+        // User can access authors list
+        $this->httpRequestAssert("/twill/personnel/authors");
+
+        // User can't access author details
+        $this->httpRequestAssert("/twill/personnel/authors/{$author->id}/edit", 'GET', [], 403);
+
+        // User can't create authors
+        $this->httpRequestAssert('/twill/media-library/medias', 'POST', [], 403);
     }
 }
