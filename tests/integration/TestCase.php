@@ -293,7 +293,6 @@ abstract class TestCase extends OrchestraTestCase
         );
 
         return [
-            AuthServiceProvider::class,
             RouteServiceProvider::class,
             TwillServiceProvider::class,
             ValidationServiceProvider::class,
