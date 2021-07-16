@@ -455,6 +455,8 @@ abstract class ModuleController extends Controller
      */
     public function store($parentModuleId = null)
     {
+        $this->authorizeOption('edit', $this->moduleName);
+
         $parentModuleId = $this->getParentModuleIdFromRequest($this->request) ?? $parentModuleId;
 
         $input = $this->validateFormRequest()->all();
