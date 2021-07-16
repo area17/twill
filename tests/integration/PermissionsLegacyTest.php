@@ -123,5 +123,47 @@ class PermissionsLegacyTest extends PermissionsTestBase
         // User can create authors
         $this->httpRequestAssert('/twill/personnel/authors', 'POST', [], 200);
     }
+
+    public function testAdminPermissions()
+    {
+        $guest = $this->createUser('VIEWONLY');
+        $publisher = $this->createUser('PUBLISHER');
+        $admin = $this->createUser('ADMIN');
+
+        // User is logged in
+        $this->loginUser($admin);
+        $this->httpRequestAssert('/twill');
+        $this->assertSee($admin->name);
+
+        // User can access the Media Library
+        $this->httpRequestAssert('/twill/media-library/medias?page=1&type=image', 'GET', [], 200);
+
+        // User can upload medias
+        $this->httpRequestAssert('/twill/media-library/medias', 'POST', [], 200);
+
+        // User can access settings
+        $this->httpRequestAssert('/twill/settings/seo', 'GET', [], 200);
+
+        // User can access users list
+        $this->httpRequestAssert("/twill/users", 'GET', [], 200);
+
+        // User can access other profiles
+        $this->httpRequestAssert("/twill/users/{$guest->id}/edit", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/users/{$publisher->id}/edit", 'GET', [], 200);
+
+        // User can access own profile
+        $this->httpRequestAssert("/twill/users/{$admin->id}/edit", 'GET', [], 200);
+
+
+        $author = $this->createAuthor();
+
+        // User can access authors list
+        $this->httpRequestAssert("/twill/personnel/authors", 'GET', [], 200);
+
+        // User can access author details
+        $this->httpRequestAssert("/twill/personnel/authors/{$author->id}/edit", 'GET', [], 200);
+
+        // User can create authors
+        $this->httpRequestAssert('/twill/personnel/authors', 'POST', [], 200);
     }
 }
