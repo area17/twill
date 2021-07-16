@@ -8,12 +8,14 @@ use Illuminate\Support\Facades\Hash;
 
 class PermissionsLegacyTest extends PermissionsTestBase
 {
-    public function configTwill($app)
+    protected function getPackageProviders($app)
     {
-        parent::configTwill($app);
-
+        // This config must be set before loading TwillServiceProvider to select
+        // between AuthServiceProvider and PermissionAuthServiceProvider
         $app['config']->set('twill.enabled.permissions-management', false);
         $app['config']->set('twill.enabled.settings', true);
+
+        return parent::getPackageProviders($app);
     }
 
     public function createUser($role)
