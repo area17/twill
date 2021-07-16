@@ -24,6 +24,7 @@ class PermissionsTest extends PermissionsTestBase
         $user = User::make([
             'name' => $this->faker->name,
             'email' => $this->faker->email,
+            'published' => true,
         ]);
         $user->password = Hash::make($user->email);
         $user->role_id = $role->id;
@@ -43,6 +44,12 @@ class PermissionsTest extends PermissionsTestBase
         return $role;
     }
 
+    public function attachRolePermission(&$role, $permissionName)
+    {
+        $permission = Permission::whereName($permissionName)->first();
+        $role->permissions()->attach($permission->id);
+    }
+
     public function testRolePermissions()
     {
         $role = $this->createRole('Tester');
@@ -53,5 +60,9 @@ class PermissionsTest extends PermissionsTestBase
         $this->httpRequestAssert('/twill');
         $this->assertSee($user->name);
 
+        // User can access settings if permitted
+        $this->httpRequestAssert('/twill/settings/seo', 'GET', [], 403);
+        $this->attachRolePermission($role, 'edit-settings');
+        $this->httpRequestAssert('/twill/settings/seo', 'GET', [], 200);
     }
 }
