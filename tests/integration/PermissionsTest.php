@@ -44,7 +44,7 @@ class PermissionsTest extends PermissionsTestBase
         return $role;
     }
 
-    public function attachRolePermission(&$role, $permissionName)
+    public function attachRolePermission($role, $permissionName)
     {
         $permission = Permission::whereName($permissionName)->first();
         $role->permissions()->attach($permission->id);
