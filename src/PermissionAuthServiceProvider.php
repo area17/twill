@@ -43,6 +43,12 @@ class PermissionAuthServiceProvider extends ServiceProvider
             });
         });
 
+        Gate::define('edit-user', function ($user, $editedUser) {
+            return $this->authorize($user, function ($user) use ($editedUser) {
+                return ($user->id === $editedUser->id) || $user->can('edit-users');
+            });
+        });
+
         Gate::define('edit-user-role', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $user->role->permissions()->global()->where('name', 'edit-user-role')->exists();

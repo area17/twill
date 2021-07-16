@@ -311,20 +311,12 @@ class UserController extends ModuleController
     {
         $this->authorizableOptions['edit'] = 'edit-user';
 
-        if ($id !== (string) $this->user->id) {
-            $this->authorize('edit-users');
-        }
-
         return parent::edit($id, $submoduleId);
     }
 
     public function update($id, $submoduleId = null)
     {
         $this->authorizableOptions['edit'] = 'edit-user';
-
-        if ($id !== (string) $this->user->id) {
-            $this->authorize('edit-users');
-        }
 
         return parent::update($id, $submoduleId);
     }
