@@ -455,7 +455,7 @@ abstract class ModuleController extends Controller
      */
     public function store($parentModuleId = null)
     {
-        $this->authorizeOption('edit', $this->moduleName);
+        $this->authorizeOption('create', $this->moduleName);
 
         $parentModuleId = $this->getParentModuleIdFromRequest($this->request) ?? $parentModuleId;
 
