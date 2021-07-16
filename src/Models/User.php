@@ -112,7 +112,7 @@ class User extends AuthenticatableContract
 
     public function scopeActivated($query)
     {
-        return $query->whereActivated(true);
+        return $query->whereActivated(true)->published();
     }
 
     public function scopePending($query)
