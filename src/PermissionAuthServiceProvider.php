@@ -128,7 +128,6 @@ class PermissionAuthServiceProvider extends ServiceProvider
             if (self::$useCache && isset(self::$cache['access-module-list-' . $moduleName])) {
                 return self::$cache['access-module-list-' . $moduleName];
             }
-            // die('access-module-list');
 
             return self::$cache['access-module-list-' . $moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('view-module', $moduleName)
@@ -141,7 +140,6 @@ class PermissionAuthServiceProvider extends ServiceProvider
             if (self::$useCache && isset(self::$cache['view-module-' . $moduleName])) {
                 return self::$cache['view-module-' . $moduleName];
             }
-            // die('view-module');
 
             return self::$cache['view-module-' . $moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('edit-module', $moduleName)
@@ -154,7 +152,6 @@ class PermissionAuthServiceProvider extends ServiceProvider
             if (self::$useCache && isset(self::$cache['edit-module-' . $moduleName])) {
                 return self::$cache['edit-module-' . $moduleName];
             }
-            // die('edit-module');
 
             return self::$cache['edit-module-' . $moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('manage-module', $moduleName)
@@ -167,7 +164,6 @@ class PermissionAuthServiceProvider extends ServiceProvider
             if (self::$useCache && isset(self::$cache['manage-module-' . $moduleName])) {
                 return self::$cache['manage-module-' . $moduleName];
             }
-            // die('manage-module');
 
             return self::$cache['manage-module-' . $moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
                 if (!isPermissionableModule($moduleName)) {
