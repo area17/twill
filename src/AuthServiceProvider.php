@@ -63,7 +63,7 @@ class AuthServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        $this->define('list', function ($user) {
+        $this->define('list', function ($user, $item=null) {
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole($user, [UserRole::VIEWONLY, UserRole::PUBLISHER, UserRole::ADMIN]);
             });
