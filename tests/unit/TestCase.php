@@ -19,7 +19,6 @@ abstract class TestCase extends OrchestraTestCase
     protected function getPackageProviders($app)
     {
         return [
-            AuthServiceProvider::class,
             RouteServiceProvider::class,
             TwillServiceProvider::class,
             ValidationServiceProvider::class,

@@ -77,21 +77,25 @@ abstract class ModuleRepository
      */
     public function getCountByStatusSlug($slug, $scope = [])
     {
-        $this->countScope = $scope;
+        $query = $this->model->where($scope);
+
+        if (config('twill.enabled.permissions-management') && isPermissionableModule(getModuleNameByModel($this->model))) {
+            $query = $query->accessible();
+        }
 
         switch ($slug) {
             case 'all':
-                return $this->getCountForAll();
+                return $query->count();
             case 'published':
-                return $this->getCountForPublished();
+                return $query->published()->count();
             case 'draft':
-                return $this->getCountForDraft();
+                return $query->draft()->count();
             case 'trash':
-                return $this->getCountForTrash();
+                return $query->onlyTrashed()->count();
         }
 
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
-            if (($count = $this->$method($slug)) !== false) {
+            if (($count = $this->$method($slug, $scope)) !== false) {
                 return $count;
             }
         }
@@ -100,6 +104,7 @@ abstract class ModuleRepository
     }
 
     /**
+     * @deprecated To be removed in Twill 3.0
      * @return int
      */
     public function getCountForAll()
@@ -109,6 +114,7 @@ abstract class ModuleRepository
     }
 
     /**
+     * @deprecated To be removed in Twill 3.0
      * @return int
      */
     public function getCountForPublished()
@@ -118,6 +124,7 @@ abstract class ModuleRepository
     }
 
     /**
+     * @deprecated To be removed in Twill 3.0
      * @return int
      */
     public function getCountForDraft()
@@ -127,6 +134,7 @@ abstract class ModuleRepository
     }
 
     /**
+     * @deprecated To be removed in Twill 3.0
      * @return int
      */
     public function getCountForTrash()

@@ -96,6 +96,7 @@ class RoutesTest extends TestCase
         'twill/users/tags',
         'twill/users/{user}',
         'twill/users/{user}/edit',
+        'twill/users/{user}/registration-email',
     ];
 
     public function testCanListAllRoutes()

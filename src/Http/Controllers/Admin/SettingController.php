@@ -47,6 +47,7 @@ class SettingController extends Controller
 
         $this->config = $config;
         $this->settings = $settings;
+        $this->middleware('can:edit-settings');
         $this->redirector = $redirector;
         $this->urlGenerator = $urlGenerator;
         $this->viewFactory = $viewFactory;

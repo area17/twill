@@ -17,12 +17,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | New user default role
+    | New user default role name (legacy)
     |--------------------------------------------------------------------------
     |
     | Possible values: VIEWONLY, PUBLISHER, ADMIN
     |
      */
-    'default_role' => 'VIEWONLY'
+    'default_role' => 'VIEWONLY',
+
+    /*
+    |--------------------------------------------------------------------------
+    | New user default role name (permissions-manager)
+    |--------------------------------------------------------------------------
+    |
+    | Defaults roles: Owner, Administrator, Team, Guest
+    |
+     */
+    'permissions_default_role' => 'Guest',
 
 ];

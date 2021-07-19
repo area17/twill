@@ -120,6 +120,7 @@ return [
     'nav' => [
         'admin' => 'Administrador',
         'cms-users' => 'Usuários do CMS',
+        'profile' => 'Profile',
         'logout' => 'Sair',
         'media-library' => 'Biblioteca de mídias',
         'settings' => 'Configurações',
