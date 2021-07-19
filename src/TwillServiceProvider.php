@@ -184,11 +184,14 @@ class TwillServiceProvider extends ServiceProvider
                 'provider' => 'twill_users',
             ]]);
 
-            config(['auth.passwords.twill_users' => [
-                'provider' => 'twill_users',
-                'table' => config('twill.password_resets_table', 'twill_password_resets'),
-                'expire' => 60,
-            ]]);
+            if (blank(config('auth.passwords.twill_users'))) {
+                config(['auth.passwords.twill_users' => [
+                    'provider' => 'twill_users',
+                    'table' => config('twill.password_resets_table', 'twill_password_resets'),
+                    'expire' => 60,
+                    'throttle' => 60,
+                ]]);
+            }
         }
 
         config(['activitylog.enabled' => config('twill.enabled.dashboard') ? true : config('twill.enabled.activitylog')]);
