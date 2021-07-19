@@ -4,8 +4,8 @@ namespace A17\Twill\Tests\Integration;
 
 use A17\Twill\Models\Role;
 use A17\Twill\Models\User;
-use A17\Twill\Models\Permission;
 use Illuminate\Support\Facades\Hash;
+use App\Repositories\AuthorRepository;
 use A17\Twill\PermissionAuthServiceProvider;
 
 class PermissionsTest extends PermissionsTestBase
@@ -18,6 +18,8 @@ class PermissionsTest extends PermissionsTestBase
         // between AuthServiceProvider and PermissionAuthServiceProvider
         $app['config']->set('twill.enabled.permissions-management', true);
         $app['config']->set('twill.enabled.settings', true);
+
+        $app['config']->set('twill.permissions.modules', ['authors']);
 
         return parent::getPackageProviders($app);
     }
@@ -47,14 +49,31 @@ class PermissionsTest extends PermissionsTestBase
         return $role;
     }
 
+    public function createAuthor()
+    {
+        $author = app(AuthorRepository::class)->create([
+            'published' => true,
+            'name' => ['en' => $this->faker->name],
+        ]);
+
+        return $author;
+    }
+
     public function attachRolePermission($role, $permissionName)
     {
-        $permission = Permission::whereName($permissionName)->first();
-        $role->permissions()->attach($permission->id);
+        $role->grantGlobalPermission($permissionName);
+    }
+
+    public function attachRoleModulePermission($role, $module, $permissionName)
+    {
+        $role->grantModulePermission($permissionName, getModelByModuleName($module));
     }
 
     public function testRolePermissions()
     {
+        $tempRole = $this->createRole('Temporary');
+        $tempUser = $this->createUser($tempRole);
+
         $role = $this->createRole('Tester');
         $user = $this->createUser($role);
 
@@ -103,5 +122,14 @@ class PermissionsTest extends PermissionsTestBase
 
         // User can't access groups list (feature is not enabled)
         $this->httpRequestAssert("/twill/groups", 'GET', [], 403);
+
+
+        $author = $this->createAuthor();
+
+        // User can access authors list if permitted
+        $this->httpRequestAssert("/twill/personnel/authors", 'GET', [], 403);
+        $this->attachRoleModulePermission($role, 'authors', 'view-module');
+        $this->httpRequestAssert("/twill/personnel/authors", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/personnel/authors", 'GET', [], 200);
     }
 }

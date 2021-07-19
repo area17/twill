@@ -36,7 +36,7 @@ class PermissionsLegacyTest extends PermissionsTestBase
     {
         $author = app(AuthorRepository::class)->create([
             'published' => true,
-            'name' => $this->faker->name,
+            'name' => ['en' => $this->faker->name],
         ]);
 
         return $author;
