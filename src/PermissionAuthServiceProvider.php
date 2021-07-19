@@ -10,6 +10,14 @@ class PermissionAuthServiceProvider extends ServiceProvider
 {
     protected static $cache = [];
 
+    /**
+     * For compatibility with legacy AuthServiceProvider
+     */
+    protected function define($ability, $callback)
+    {
+        Gate::define($ability, $callback);
+    }
+
     protected function authorize($user, $callback, $moduleName = null)
     {
         if ($user->is_superadmin) {
@@ -31,31 +39,31 @@ class PermissionAuthServiceProvider extends ServiceProvider
          *
          ***/
 
-        Gate::define('edit-settings', function ($user) {
+        $this->define('edit-settings', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $user->role->permissions()->global()->where('name', 'edit-settings')->exists();
             });
         });
 
-        Gate::define('edit-users', function ($user) {
+        $this->define('edit-users', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $user->role->permissions()->global()->where('name', 'edit-users')->exists();
             });
         });
 
-        Gate::define('edit-user', function ($user, $editedUser) {
+        $this->define('edit-user', function ($user, $editedUser) {
             return $this->authorize($user, function ($user) use ($editedUser) {
                 return ($user->id === $editedUser->id) || $user->can('edit-users');
             });
         });
 
-        Gate::define('edit-user-role', function ($user) {
+        $this->define('edit-user-role', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $user->role->permissions()->global()->where('name', 'edit-user-role')->exists();
             });
         });
 
-        Gate::define('edit-user-groups', function ($user) {
+        $this->define('edit-user-groups', function ($user) {
             if (!in_array(Config::get('twill.permissions.level'), ['roleGroup', 'roleGroupModule'])) {
                 return false;
             }
@@ -65,13 +73,13 @@ class PermissionAuthServiceProvider extends ServiceProvider
             });
         });
 
-        Gate::define('access-user-management', function ($user) {
+        $this->define('access-user-management', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $user->can('edit-users') || $user->can('edit-user-role') || $user->can('edit-user-groups');
             });
         });
 
-        Gate::define('manage-modules', function ($user) {
+        $this->define('manage-modules', function ($user) {
             if (isset(self::$cache['manage-modules'])) {
                 return self::$cache['manage-modules'];
             }
@@ -82,19 +90,19 @@ class PermissionAuthServiceProvider extends ServiceProvider
             });
         });
 
-        Gate::define('access-media-library', function ($user) {
+        $this->define('access-media-library', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $user->role->permissions()->global()->where('name', 'access-media-library')->exists();
             });
         });
 
-        Gate::define('edit-media-library', function ($user) {
+        $this->define('edit-media-library', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $user->role->permissions()->global()->where('name', 'edit-media-library')->exists();
             });
         });
 
-        Gate::define('impersonate', function ($user) {
+        $this->define('impersonate', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $user->is_superadmin;
             });
@@ -106,7 +114,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
          *
          ***/
 
-        Gate::define('access-module-list', function ($user, $moduleName) {
+        $this->define('access-module-list', function ($user, $moduleName) {
             if (isset(self::$cache['access-module-list-' . $moduleName])) {
                 return self::$cache['access-module-list-' . $moduleName];
             }
@@ -118,7 +126,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
         });
 
         // The gate of accessing module list page,
-        Gate::define('view-module', function ($user, $moduleName) {
+        $this->define('view-module', function ($user, $moduleName) {
             if (isset(self::$cache['view-module-' . $moduleName])) {
                 return self::$cache['view-module-' . $moduleName];
             }
@@ -130,7 +138,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
             });
         });
 
-        Gate::define('edit-module', function ($user, $moduleName) {
+        $this->define('edit-module', function ($user, $moduleName) {
             if (isset(self::$cache['edit-module-' . $moduleName])) {
                 return self::$cache['edit-module-' . $moduleName];
             }
@@ -142,7 +150,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
             });
         });
 
-        Gate::define('manage-module', function ($user, $moduleName) {
+        $this->define('manage-module', function ($user, $moduleName) {
             if (isset(self::$cache['manage-module-' . $moduleName])) {
                 return self::$cache['manage-module-' . $moduleName];
             }
@@ -163,7 +171,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
          *
          ***/
 
-        Gate::define('view-item', function ($user, $item) {
+        $this->define('view-item', function ($user, $item) {
             $key = 'view-item-' . str_replace("\\", "-", get_class($item)) . '-' . $item->id;
             if (isset(self::$cache[$key])) {
                 return self::$cache[$key];
@@ -178,7 +186,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
             });
         });
 
-        Gate::define('edit-item', function ($user, $item) {
+        $this->define('edit-item', function ($user, $item) {
             $key = 'edit-item-' . str_replace("\\", "-", get_class($item)) . '-' . $item->id;
             if (isset(self::$cache[$key])) {
                 return self::$cache[$key];
@@ -192,7 +200,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
             });
         });
 
-        Gate::define('manage-item', function ($user, $item) {
+        $this->define('manage-item', function ($user, $item) {
             $key = 'manage-item-' . str_replace("\\", "-", get_class($item)) . '-' . $item->id;
             if (isset(self::$cache[$key])) {
                 return self::$cache[$key];
