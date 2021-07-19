@@ -54,9 +54,11 @@ class PermissionsLegacyTest extends PermissionsTestBase
 
         // User can access the Media Library
         $this->httpRequestAssert('/twill/media-library/medias?page=1&type=image', 'GET', [], 200);
+        $this->httpRequestAssert('/twill/file-library/files?page=1', 'GET', [], 200);
 
         // User can't upload medias
         $this->httpRequestAssert('/twill/media-library/medias', 'POST', [], 403);
+        $this->httpRequestAssert('/twill/file-library/files', 'POST', [], 403);
 
         // User can't access settings
         $this->httpRequestAssert('/twill/settings/seo', 'GET', [], 403);
@@ -96,9 +98,11 @@ class PermissionsLegacyTest extends PermissionsTestBase
 
         // User can access the Media Library
         $this->httpRequestAssert('/twill/media-library/medias?page=1&type=image', 'GET', [], 200);
+        $this->httpRequestAssert('/twill/file-library/files?page=1', 'GET', [], 200);
 
         // User can upload medias
         $this->httpRequestAssert('/twill/media-library/medias', 'POST', [], 200);
+        $this->httpRequestAssert('/twill/file-library/files', 'POST', [], 200);
 
         // User can access settings
         $this->httpRequestAssert('/twill/settings/seo', 'GET', [], 200);
@@ -139,9 +143,11 @@ class PermissionsLegacyTest extends PermissionsTestBase
 
         // User can access the Media Library
         $this->httpRequestAssert('/twill/media-library/medias?page=1&type=image', 'GET', [], 200);
+        $this->httpRequestAssert('/twill/file-library/files?page=1', 'GET', [], 200);
 
         // User can upload medias
         $this->httpRequestAssert('/twill/media-library/medias', 'POST', [], 200);
+        $this->httpRequestAssert('/twill/file-library/files', 'POST', [], 200);
 
         // User can access settings
         $this->httpRequestAssert('/twill/settings/seo', 'GET', [], 200);
