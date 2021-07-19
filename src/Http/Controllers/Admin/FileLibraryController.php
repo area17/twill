@@ -79,6 +79,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
         $this->responseFactory = $responseFactory;
         $this->config = $config;
 
+        $this->middleware('can:access-media-library', ['only' => ['index']]);
         $this->middleware('can:edit-media-library', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = $this->config->get('twill.file_library.endpoint_type');
     }
