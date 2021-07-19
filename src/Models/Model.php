@@ -33,6 +33,10 @@ abstract class Model extends BaseModel implements TaggableInterface
 
     public function scopeAccessible($query)
     {
+        if (!config('twill.enabled.permissions-management')) {
+            return $query;
+        }
+
         $model = get_class($query->getModel());
         $moduleName = isPermissionableModule(getModuleNameByModel($model));
 
