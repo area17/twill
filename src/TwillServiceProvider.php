@@ -132,8 +132,11 @@ class TwillServiceProvider extends ServiceProvider
      */
     private function registerProviders()
     {
-        $this->providers[] = config('twill.enabled.permissions-management') ?
-            PermissionAuthServiceProvider::class : AuthServiceProvider::class;
+        // select auth service provider implementation
+        $this->providers[] = config('twill.custom_auth_service_provider') ?: (
+            config('twill.enabled.permissions-management') ?
+                PermissionAuthServiceProvider::class : AuthServiceProvider::class
+        );
 
         foreach ($this->providers as $provider) {
             $this->app->register($provider);
