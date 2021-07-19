@@ -64,5 +64,12 @@ class PermissionsTest extends PermissionsTestBase
         $this->httpRequestAssert('/twill/settings/seo', 'GET', [], 403);
         $this->attachRolePermission($role, 'edit-settings');
         $this->httpRequestAssert('/twill/settings/seo', 'GET', [], 200);
+
+        // User can access media library & files if permitted
+        $this->httpRequestAssert('/twill/media-library/medias?page=1&type=image', 'GET', [], 403);
+        $this->httpRequestAssert('/twill/file-library/files?page=1', 'GET', [], 403);
+        $this->attachRolePermission($role, 'access-media-library');
+        $this->httpRequestAssert('/twill/media-library/medias?page=1&type=image', 'GET', [], 200);
+        $this->httpRequestAssert('/twill/file-library/files?page=1', 'GET', [], 200);
     }
 }
