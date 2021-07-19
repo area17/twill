@@ -8,7 +8,17 @@ use Illuminate\Support\Facades\Gate;
 
 class PermissionAuthServiceProvider extends ServiceProvider
 {
+    protected static $useCache = true;
+
     protected static $cache = [];
+
+    /**
+     * Disable gate caching for integration tests
+     */
+    public static function disableCache()
+    {
+        self::$useCache = false;
+    }
 
     /**
      * For compatibility with legacy AuthServiceProvider
@@ -115,9 +125,10 @@ class PermissionAuthServiceProvider extends ServiceProvider
          ***/
 
         $this->define('access-module-list', function ($user, $moduleName) {
-            if (isset(self::$cache['access-module-list-' . $moduleName])) {
+            if (self::$useCache && isset(self::$cache['access-module-list-' . $moduleName])) {
                 return self::$cache['access-module-list-' . $moduleName];
             }
+            // die('access-module-list');
 
             return self::$cache['access-module-list-' . $moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('view-module', $moduleName)
@@ -127,9 +138,10 @@ class PermissionAuthServiceProvider extends ServiceProvider
 
         // The gate of accessing module list page,
         $this->define('view-module', function ($user, $moduleName) {
-            if (isset(self::$cache['view-module-' . $moduleName])) {
+            if (self::$useCache && isset(self::$cache['view-module-' . $moduleName])) {
                 return self::$cache['view-module-' . $moduleName];
             }
+            // die('view-module');
 
             return self::$cache['view-module-' . $moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('edit-module', $moduleName)
@@ -139,9 +151,10 @@ class PermissionAuthServiceProvider extends ServiceProvider
         });
 
         $this->define('edit-module', function ($user, $moduleName) {
-            if (isset(self::$cache['edit-module-' . $moduleName])) {
+            if (self::$useCache && isset(self::$cache['edit-module-' . $moduleName])) {
                 return self::$cache['edit-module-' . $moduleName];
             }
+            // die('edit-module');
 
             return self::$cache['edit-module-' . $moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('manage-module', $moduleName)
@@ -151,9 +164,10 @@ class PermissionAuthServiceProvider extends ServiceProvider
         });
 
         $this->define('manage-module', function ($user, $moduleName) {
-            if (isset(self::$cache['manage-module-' . $moduleName])) {
+            if (self::$useCache && isset(self::$cache['manage-module-' . $moduleName])) {
                 return self::$cache['manage-module-' . $moduleName];
             }
+            // die('manage-module');
 
             return self::$cache['manage-module-' . $moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
                 if (!isPermissionableModule($moduleName)) {
@@ -173,7 +187,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
 
         $this->define('view-item', function ($user, $item) {
             $key = 'view-item-' . str_replace("\\", "-", get_class($item)) . '-' . $item->id;
-            if (isset(self::$cache[$key])) {
+            if (self::$useCache && isset(self::$cache[$key])) {
                 return self::$cache[$key];
             }
 
@@ -188,7 +202,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
 
         $this->define('edit-item', function ($user, $item) {
             $key = 'edit-item-' . str_replace("\\", "-", get_class($item)) . '-' . $item->id;
-            if (isset(self::$cache[$key])) {
+            if (self::$useCache && isset(self::$cache[$key])) {
                 return self::$cache[$key];
             }
 
@@ -202,7 +216,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
 
         $this->define('manage-item', function ($user, $item) {
             $key = 'manage-item-' . str_replace("\\", "-", get_class($item)) . '-' . $item->id;
-            if (isset(self::$cache[$key])) {
+            if (self::$useCache && isset(self::$cache[$key])) {
                 return self::$cache[$key];
             }
 

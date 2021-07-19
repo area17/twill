@@ -6,11 +6,14 @@ use A17\Twill\Models\Role;
 use A17\Twill\Models\User;
 use A17\Twill\Models\Permission;
 use Illuminate\Support\Facades\Hash;
+use A17\Twill\PermissionAuthServiceProvider;
 
 class PermissionsTest extends PermissionsTestBase
 {
     protected function getPackageProviders($app)
     {
+        PermissionAuthServiceProvider::disableCache();
+
         // This config must be set before loading TwillServiceProvider to select
         // between AuthServiceProvider and PermissionAuthServiceProvider
         $app['config']->set('twill.enabled.permissions-management', true);
