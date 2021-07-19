@@ -34,6 +34,15 @@ class AuthServiceProvider extends ServiceProvider
         'impersonate' => [],
     ];
 
+    protected function define($ability, $callback)
+    {
+        collect($ability)
+            ->concat(static::ABILITY_ALIASES[$ability] ?? [])
+            ->each(function ($alias) use ($callback) {
+                Gate::define($alias, $callback);
+            });
+    }
+
     protected function authorize($user, $callback)
     {
         if (!$user->isPublished()) {
@@ -50,15 +59,6 @@ class AuthServiceProvider extends ServiceProvider
     protected function userHasRole($user, $roles)
     {
         return in_array($user->role_value, $roles);
-    }
-
-    protected function define($ability, $callback)
-    {
-        collect($ability)
-            ->concat(static::ABILITY_ALIASES[$ability] ?? [])
-            ->each(function ($alias) use ($callback) {
-                Gate::define($alias, $callback);
-            });
     }
 
     public function boot()
