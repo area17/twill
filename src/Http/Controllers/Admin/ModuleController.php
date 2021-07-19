@@ -376,6 +376,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
+     * @deprecated To be removed in Twill 3.0
      * @return void
      */
     protected function setMiddlewarePermission()

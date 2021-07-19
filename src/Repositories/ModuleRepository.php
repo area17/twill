@@ -104,6 +104,7 @@ abstract class ModuleRepository
     }
 
     /**
+     * @deprecated To be removed in Twill 3.0
      * @return int
      */
     public function getCountForAll()
@@ -113,6 +114,7 @@ abstract class ModuleRepository
     }
 
     /**
+     * @deprecated To be removed in Twill 3.0
      * @return int
      */
     public function getCountForPublished()
@@ -122,6 +124,7 @@ abstract class ModuleRepository
     }
 
     /**
+     * @deprecated To be removed in Twill 3.0
      * @return int
      */
     public function getCountForDraft()
@@ -131,6 +134,7 @@ abstract class ModuleRepository
     }
 
     /**
+     * @deprecated To be removed in Twill 3.0
      * @return int
      */
     public function getCountForTrash()
