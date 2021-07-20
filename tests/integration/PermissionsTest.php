@@ -59,7 +59,7 @@ class PermissionsTest extends PermissionsTestBase
         $target->revokeGlobalPermission($permissionName);
     }
 
-    public function withModulePermissions($target, $module, $permissionName, $callback)
+    public function withModulePermission($target, $module, $permissionName, $callback)
     {
         $model = getModelByModuleName($module);
 
@@ -68,6 +68,15 @@ class PermissionsTest extends PermissionsTestBase
         $callback();
 
         $target->revokeModulePermission($permissionName, $model);
+    }
+
+    public function withItemPermission($target, $item, $permissionName, $callback)
+    {
+        $target->grantModuleItemPermission($permissionName, $item);
+
+        $callback();
+
+        $target->revokeModuleItemPermission($permissionName, $item);
     }
 
     public function testRolePermissions()
@@ -134,19 +143,19 @@ class PermissionsTest extends PermissionsTestBase
 
         // User can access items list if permitted
         $this->httpRequestAssert("/twill/posts", 'GET', [], 403);
-        $this->withModulePermissions($role, 'posts', 'view-module', function () {
+        $this->withModulePermission($role, 'posts', 'view-module', function () {
             $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
         });
 
         // User can access item details if permitted
         $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
-        $this->withModulePermissions($role, 'posts', 'edit-module', function () use ($post) {
+        $this->withModulePermission($role, 'posts', 'edit-module', function () use ($post) {
             $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
         });
 
         // User can create items if permitted
         $this->httpRequestAssert('/twill/posts', 'POST', [], 403);
-        $this->withModulePermissions($role, 'posts', 'edit-module', function () {
+        $this->withModulePermission($role, 'posts', 'edit-module', function () {
             $this->httpRequestAssert('/twill/posts', 'POST', [], 200);
         });
 
@@ -183,20 +192,85 @@ class PermissionsTest extends PermissionsTestBase
 
         // User can access items list if permitted
         $this->httpRequestAssert("/twill/posts", 'GET', [], 403);
-        $this->withModulePermissions($group, 'posts', 'view-module', function () {
+        $this->withModulePermission($group, 'posts', 'view-module', function () {
             $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
         });
 
         // User can access item details if permitted
         $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
-        $this->withModulePermissions($group, 'posts', 'edit-module', function () use ($post) {
+        $this->withModulePermission($group, 'posts', 'edit-module', function () use ($post) {
             $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
         });
 
         // User can create items if permitted
         $this->httpRequestAssert('/twill/posts', 'POST', [], 403);
-        $this->withModulePermissions($group, 'posts', 'edit-module', function () {
+        $this->withModulePermission($group, 'posts', 'edit-module', function () {
             $this->httpRequestAssert('/twill/posts', 'POST', [], 200);
+        });
+    }
+
+    public function testModulePermissions()
+    {
+        app('config')->set('twill.permissions.level', 'roleGroupModule');
+
+        $role = $this->createRole('Tester');
+        $group = $this->createGroup('Beta');
+        $user = $this->createUser($role, $group);
+
+        // User is logged in
+        $this->loginUser($user);
+        $this->httpRequestAssert('/twill');
+        $this->assertSee($user->name);
+
+
+        $post = $this->createPost();
+
+        // User role can manage module if permitted
+        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
+        $this->httpRequestAssert('/twill/posts', 'POST', [], 403);
+        $this->withModulePermission($role, 'posts', 'manage-module', function () use ($post) {
+            $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
+            $this->httpRequestAssert('/twill/posts', 'POST', [], 200);
+        });
+
+        // User group can access items list if permitted
+        $this->httpRequestAssert("/twill/posts", 'GET', [], 403);
+        $this->withItemPermission($group, $post, 'view-item', function () {
+            $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
+        });
+
+        // User group can access item details if permitted
+        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
+        $this->withItemPermission($group, $post, 'edit-item', function () use ($post) {
+            $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
+        });
+    }
+
+    public function testUserModulePermissions()
+    {
+        app('config')->set('twill.permissions.level', 'roleGroupModule');
+
+        $role = $this->createRole('Tester');
+        $user = $this->createUser($role);
+
+        // User is logged in
+        $this->loginUser($user);
+        $this->httpRequestAssert('/twill');
+        $this->assertSee($user->name);
+
+
+        $post = $this->createPost();
+
+        // User can access items list if permitted
+        $this->httpRequestAssert("/twill/posts", 'GET', [], 403);
+        $this->withItemPermission($user, $post, 'view-item', function () {
+            $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
+        });
+
+        // User can access item details if permitted
+        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
+        $this->withItemPermission($user, $post, 'edit-item', function () use ($post) {
+            $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
         });
     }
 }
