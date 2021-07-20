@@ -130,5 +130,19 @@ class PermissionsTest extends PermissionsTestBase
         $this->withRoleModulePermission($role, 'posts', 'edit-module', function () use ($post) {
             $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
         });
+
+        // User can create items if permitted
+        $this->httpRequestAssert('/twill/posts', 'POST', [], 403);
+        $this->withRoleModulePermission($role, 'posts', 'edit-module', function () {
+            $this->httpRequestAssert('/twill/posts', 'POST', [], 200);
+        });
+
+        // User can manage modules if permitted
+        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
+        $this->httpRequestAssert('/twill/posts', 'POST', [], 403);
+        $this->withRolePermission($role, 'manage-modules', function () use ($post) {
+            $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
+            $this->httpRequestAssert('/twill/posts', 'POST', [], 200);
+        });
     }
 }

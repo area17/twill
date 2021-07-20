@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Gate;
 
 class PermissionAuthServiceProvider extends ServiceProvider
 {
-    protected static $useCache = true;
-
     protected static $cache = [];
+
+    protected static $useCache = true;
 
     /**
      * Disable gate caching for integration tests
@@ -153,9 +153,6 @@ class PermissionAuthServiceProvider extends ServiceProvider
             if (self::$useCache && isset(self::$cache['edit-module-' . $moduleName])) {
                 return self::$cache['edit-module-' . $moduleName];
             }
-
-            // dump('** edit-module **');
-            // dump($user->role->permissions()->get()->toArray());
 
             return self::$cache['edit-module-' . $moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('manage-module', $moduleName)
