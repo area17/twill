@@ -19,6 +19,12 @@ trait HandleGroupPermissions
     public function getFormFieldsHandleGroupPermissions($object, $fields)
     {
         if (config('twill.permissions.level') == 'roleGroup') {
+            // Add active global permissions
+            foreach ($object->permissions()->global()->get()->pluck('name') as $permissionName) {
+                $fields[$permissionName] = true;
+            }
+
+            // Add active module permissions
             foreach (Permission::permissionableModules() as $moduleName) {
                 $modulePermission = $object->permissions()->module()->ofModuleName($moduleName)->first();
                 if ($modulePermission) {
@@ -28,7 +34,7 @@ trait HandleGroupPermissions
                 }
             }
         } elseif (config('twill.permissions.level') == 'roleGroupModule') {
-            // looking for item permissions
+            // Add active item permissions
             foreach ($object->permissions()->moduleItem()->get() as $permission) {
                 $model = $permission->permissionable()->first();
                 $moduleName = getModuleNameByModel($model);
@@ -36,6 +42,7 @@ trait HandleGroupPermissions
             }
         }
 
+        // Add active subdomain permissions
         foreach ($object->subdomains_access ?? [] as $subdomain) {
             $fields['subdomain_access_' . $subdomain] = true;
         }
@@ -51,6 +58,7 @@ trait HandleGroupPermissions
      */
     public function afterSaveHandleGroupPermissions($object, $fields)
     {
+        // Assign global permissions
         foreach (Permission::available(Permission::SCOPE_GLOBAL) as $permissionName) {
             if (isset($fields[$permissionName]) && $fields[$permissionName] === true) {
                 $object->grantGlobalPermission($permissionName);
@@ -61,8 +69,8 @@ trait HandleGroupPermissions
 
         $subdomainsAccess = [];
 
+        // Assign item permissions + subdomain permission
         foreach ($fields as $key => $permissionName) {
-            // Used for the roleGroup mode
             if (Str::startsWith($key, 'module_') && Str::endsWith($key, '_permissions')) {
                 $modulePermissions = Permission::available(Permission::SCOPE_MODULE);
                 $model = getModelByModuleName($moduleName = explode('_', $key)[1]);
