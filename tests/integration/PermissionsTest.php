@@ -3,9 +3,6 @@
 namespace A17\Twill\Tests\Integration;
 
 use A17\Twill\Models\Role;
-use A17\Twill\Models\User;
-use Illuminate\Support\Facades\Hash;
-use App\Repositories\AuthorRepository;
 use A17\Twill\PermissionAuthServiceProvider;
 
 class PermissionsTest extends PermissionsTestBase
@@ -17,21 +14,14 @@ class PermissionsTest extends PermissionsTestBase
         // This config must be set before loading TwillServiceProvider to select
         // between AuthServiceProvider and PermissionAuthServiceProvider
         $app['config']->set('twill.enabled.permissions-management', true);
-        $app['config']->set('twill.enabled.settings', true);
-
-        $app['config']->set('twill.permissions.modules', ['authors']);
+        $app['config']->set('twill.permissions.modules', ['posts']);
 
         return parent::getPackageProviders($app);
     }
 
     public function createUser($role)
     {
-        $user = User::make([
-            'name' => $this->faker->name,
-            'email' => $this->faker->email,
-            'published' => true,
-        ]);
-        $user->password = Hash::make($user->email);
+        $user = $this->makeUser();
         $user->role_id = $role->id;
         $user->save();
 
@@ -47,16 +37,6 @@ class PermissionsTest extends PermissionsTestBase
         ]);
 
         return $role;
-    }
-
-    public function createAuthor()
-    {
-        $author = app(AuthorRepository::class)->create([
-            'published' => true,
-            'name' => ['en' => $this->faker->name],
-        ]);
-
-        return $author;
     }
 
     public function attachRolePermission($role, $permissionName)
@@ -124,12 +104,11 @@ class PermissionsTest extends PermissionsTestBase
         $this->httpRequestAssert("/twill/groups", 'GET', [], 403);
 
 
-        $author = $this->createAuthor();
+        $post = $this->createPost();
 
         // User can access authors list if permitted
-        $this->httpRequestAssert("/twill/personnel/authors", 'GET', [], 403);
-        $this->attachRoleModulePermission($role, 'authors', 'view-module');
-        $this->httpRequestAssert("/twill/personnel/authors", 'GET', [], 200);
-        $this->httpRequestAssert("/twill/personnel/authors", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/posts", 'GET', [], 403);
+        $this->attachRoleModulePermission($role, 'posts', 'view-module');
+        $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
     }
 }

@@ -2,10 +2,6 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use A17\Twill\Models\User;
-use App\Repositories\AuthorRepository;
-use Illuminate\Support\Facades\Hash;
-
 class PermissionsLegacyTest extends PermissionsTestBase
 {
     protected function getPackageProviders($app)
@@ -13,33 +9,17 @@ class PermissionsLegacyTest extends PermissionsTestBase
         // This config must be set before loading TwillServiceProvider to select
         // between AuthServiceProvider and PermissionAuthServiceProvider
         $app['config']->set('twill.enabled.permissions-management', false);
-        $app['config']->set('twill.enabled.settings', true);
 
         return parent::getPackageProviders($app);
     }
 
     public function createUser($role)
     {
-        $user = User::make([
-            'name' => $this->faker->name,
-            'email' => $this->faker->email,
-            'role' => $role,
-            'published' => true,
-        ]);
-        $user->password = Hash::make($user->email);
+        $user = $this->makeUser();
+        $user->role = $role;
         $user->save();
 
         return $user;
-    }
-
-    public function createAuthor()
-    {
-        $author = app(AuthorRepository::class)->create([
-            'published' => true,
-            'name' => ['en' => $this->faker->name],
-        ]);
-
-        return $author;
     }
 
     public function testViewOnlyPermissions()
@@ -73,16 +53,16 @@ class PermissionsLegacyTest extends PermissionsTestBase
         $this->httpRequestAssert("/twill/users/{$guest->id}/edit", 'GET', [], 200);
 
 
-        $author = $this->createAuthor();
+        $post = $this->createPost();
 
-        // User can access authors list
-        $this->httpRequestAssert("/twill/personnel/authors", 'GET', [], 200);
+        // User can access items list
+        $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
 
-        // User can't access author details
-        $this->httpRequestAssert("/twill/personnel/authors/{$author->id}/edit", 'GET', [], 403);
+        // User can't access item details
+        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
 
-        // User can't create authors
-        $this->httpRequestAssert('/twill/personnel/authors', 'POST', [], 403);
+        // User can't create items
+        $this->httpRequestAssert('/twill/posts', 'POST', [], 403);
     }
 
     public function testPublisherPermissions()
@@ -118,16 +98,16 @@ class PermissionsLegacyTest extends PermissionsTestBase
         $this->httpRequestAssert("/twill/users/{$publisher->id}/edit", 'GET', [], 200);
 
 
-        $author = $this->createAuthor();
+        $post = $this->createPost();
 
-        // User can access authors list
-        $this->httpRequestAssert("/twill/personnel/authors", 'GET', [], 200);
+        // User can access items list
+        $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
 
-        // User can access author details
-        $this->httpRequestAssert("/twill/personnel/authors/{$author->id}/edit", 'GET', [], 200);
+        // User can access item details
+        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
 
-        // User can create authors
-        $this->httpRequestAssert('/twill/personnel/authors', 'POST', [], 200);
+        // User can create items
+        $this->httpRequestAssert('/twill/posts', 'POST', [], 200);
     }
 
     public function testAdminPermissions()
@@ -163,15 +143,15 @@ class PermissionsLegacyTest extends PermissionsTestBase
         $this->httpRequestAssert("/twill/users/{$admin->id}/edit", 'GET', [], 200);
 
 
-        $author = $this->createAuthor();
+        $post = $this->createPost();
 
-        // User can access authors list
-        $this->httpRequestAssert("/twill/personnel/authors", 'GET', [], 200);
+        // User can access items list
+        $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
 
-        // User can access author details
-        $this->httpRequestAssert("/twill/personnel/authors/{$author->id}/edit", 'GET', [], 200);
+        // User can access item details
+        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
 
-        // User can create authors
-        $this->httpRequestAssert('/twill/personnel/authors', 'POST', [], 200);
+        // User can create items
+        $this->httpRequestAssert('/twill/posts', 'POST', [], 200);
     }
 }

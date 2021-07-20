@@ -2,67 +2,27 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use App\Repositories\PostRepository;
+use A17\Twill\Models\User;
+use Illuminate\Support\Facades\Hash;
+
 abstract class PermissionsTestBase extends TestCase
 {
     protected $allFiles = [
-        '{$stubs}/modules/authors/2019_10_18_193753_create_authors_tables.php' =>
-            '{$database}/migrations/',
+        // posts module
+        '{$stubs}/permissions/posts/2021_07_20_132405_create_posts_tables.php' => '{$database}/migrations/',
+        '{$stubs}/permissions/posts/Post.php' => '{$app}/Models/',
+        '{$stubs}/permissions/posts/PostController.php' => '{$app}/Http/Controllers/Admin/',
+        '{$stubs}/permissions/posts/PostRepository.php' => '{$app}/Repositories/',
+        '{$stubs}/permissions/posts/PostRequest.php' => '{$app}/Http/Requests/Admin/',
+        '{$stubs}/permissions/posts/form.blade.php' => '{$resources}/views/admin/posts/',
 
-        '{$stubs}/modules/authors/admin.php' => '{$base}/routes/admin.php',
-
-        '{$stubs}/modules/authors/Author.php' => '{$app}/Models/',
-
-        '{$stubs}/modules/authors/AuthorController.php' =>
-            '{$app}/Http/Controllers/Admin/',
-
-        '{$stubs}/modules/authors/AuthorTranslation.php' =>
-            '{$app}/Models/Translations/',
-
-        '{$stubs}/modules/authors/AuthorRevision.php' =>
-            '{$app}/Models/Revisions/',
-
-        '{$stubs}/modules/authors/AuthorSlug.php' => '{$app}/Models/Slugs/',
-
-        '{$stubs}/modules/authors/AuthorRepository.php' =>
-            '{$app}/Repositories/',
-
-        '{$stubs}/modules/authors/AuthorRequest.php' =>
-            '{$app}/Http/Requests/Admin/',
-
-        '{$stubs}/modules/authors/form.blade.php' =>
-            '{$resources}/views/admin/authors/',
-
-        '{$stubs}/modules/authors/translatable.php' => '{$config}/',
-
-        '{$stubs}/modules/authors/twill-navigation.php' => '{$config}/',
-
-        // ------------------------------------------
-
-        '{$stubs}/modules/categories/2019_10_24_174613_create_categories_tables.php' =>
-            '{$database}/migrations/',
-
-        '{$stubs}/modules/categories/Category.php' => '{$app}/Models/',
-
-        '{$stubs}/modules/categories/CategoryController.php' =>
-            '{$app}/Http/Controllers/Admin/',
-
-        '{$stubs}/modules/categories/CategoryTranslation.php' =>
-            '{$app}/Models/Translations/',
-
-        '{$stubs}/modules/categories/CategoryRevision.php' =>
-            '{$app}/Models/Revisions/',
-
-        '{$stubs}/modules/categories/CategorySlug.php' =>
-            '{$app}/Models/Slugs/',
-
-        '{$stubs}/modules/categories/CategoryRepository.php' =>
-            '{$app}/Repositories/',
-
-        '{$stubs}/modules/categories/CategoryRequest.php' =>
-            '{$app}/Http/Requests/Admin/',
-
-        '{$stubs}/modules/categories/form.blade.php' =>
-            '{$resources}/views/admin/categories/',
+        // general
+        '{$stubs}/permissions/settings/seo.blade.php' => '{$resources}/views/admin/settings/',
+        '{$stubs}/permissions/admin.php' => '{$base}/routes/admin.php',
+        '{$stubs}/permissions/translatable.php' => '{$config}/',
+        '{$stubs}/permissions/twill-navigation.php' => '{$config}/',
+        '{$stubs}/permissions/twill.php' => '{$config}/',
     ];
 
     public function setUp(): void
@@ -71,14 +31,32 @@ abstract class PermissionsTestBase extends TestCase
 
         $this->copyFiles($this->allFiles);
 
-        $this->files->makeDirectory(resource_path('views/admin/settings'));
-        $this->files->put(resource_path('views/admin/settings/seo.blade.php'), '');
-
         $this->migrate();
     }
 
     public function loginUser($user)
     {
         $this->loginAs($user->email, $user->email);
+    }
+
+    public function makeUser()
+    {
+        $user = User::make([
+            'name' => $this->faker->name,
+            'email' => $this->faker->email,
+            'published' => true,
+        ]);
+
+        $user->password = Hash::make($user->email);
+
+        return $user;
+    }
+
+    public function createPost()
+    {
+        return app(PostRepository::class)->create([
+            'title' => $this->faker->name,
+            'published' => true,
+        ]);
     }
 }
