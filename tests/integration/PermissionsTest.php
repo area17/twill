@@ -39,14 +39,24 @@ class PermissionsTest extends PermissionsTestBase
         return $role;
     }
 
-    public function attachRolePermission($role, $permissionName)
+    public function withRolePermission($role, $permissionName, $callback)
     {
         $role->grantGlobalPermission($permissionName);
+
+        $callback();
+
+        $role->revokeGlobalPermission($permissionName);
     }
 
-    public function attachRoleModulePermission($role, $module, $permissionName)
+    public function withRoleModulePermission($role, $module, $permissionName, $callback)
     {
-        $role->grantModulePermission($permissionName, getModelByModuleName($module));
+        $model = getModelByModuleName($module);
+
+        $role->grantModulePermission($permissionName, $model);
+
+        $callback();
+
+        $role->revokeModulePermission($permissionName, $model);
     }
 
     public function testRolePermissions()
@@ -64,22 +74,25 @@ class PermissionsTest extends PermissionsTestBase
 
         // User can access settings if permitted
         $this->httpRequestAssert('/twill/settings/seo', 'GET', [], 403);
-        $this->attachRolePermission($role, 'edit-settings');
-        $this->httpRequestAssert('/twill/settings/seo', 'GET', [], 200);
+        $this->withRolePermission($role, 'edit-settings', function () {
+            $this->httpRequestAssert('/twill/settings/seo', 'GET', [], 200);
+        });
 
         // User can access media library & files if permitted
         $this->httpRequestAssert('/twill/media-library/medias?page=1&type=image', 'GET', [], 403);
         $this->httpRequestAssert('/twill/file-library/files?page=1', 'GET', [], 403);
-        $this->attachRolePermission($role, 'access-media-library');
-        $this->httpRequestAssert('/twill/media-library/medias?page=1&type=image', 'GET', [], 200);
-        $this->httpRequestAssert('/twill/file-library/files?page=1', 'GET', [], 200);
+        $this->withRolePermission($role, 'access-media-library', function () {
+            $this->httpRequestAssert('/twill/media-library/medias?page=1&type=image', 'GET', [], 200);
+            $this->httpRequestAssert('/twill/file-library/files?page=1', 'GET', [], 200);
+        });
 
         // User can edit media library & files if permitted
         $this->httpRequestAssert('/twill/media-library/medias', 'POST', [], 403);
         $this->httpRequestAssert('/twill/file-library/files', 'POST', [], 403);
-        $this->attachRolePermission($role, 'edit-media-library');
-        $this->httpRequestAssert('/twill/media-library/medias', 'POST', [], 200);
-        $this->httpRequestAssert('/twill/file-library/files', 'POST', [], 200);
+        $this->withRolePermission($role, 'edit-media-library', function () {
+            $this->httpRequestAssert('/twill/media-library/medias', 'POST', [], 200);
+            $this->httpRequestAssert('/twill/file-library/files', 'POST', [], 200);
+        });
 
         // User can access own profile
         $this->httpRequestAssert("/twill/users/{$user->id}/edit", 'GET', [], 200);
@@ -87,18 +100,18 @@ class PermissionsTest extends PermissionsTestBase
         // User can't access other profiles
         $this->httpRequestAssert("/twill/users/{$tempUser->id}/edit", 'GET', [], 403);
 
-        // User can access users list if permitted
+        // User can access & edit users list if permitted
         $this->httpRequestAssert("/twill/users", 'GET', [], 403);
-        $this->attachRolePermission($role, 'edit-users');
-        $this->httpRequestAssert("/twill/users", 'GET', [], 200);
-
-        // User can edit other profiles if permitted
-        $this->httpRequestAssert("/twill/users/{$tempUser->id}/edit", 'GET', [], 200);
+        $this->withRolePermission($role, 'edit-users', function () use ($tempUser) {
+            $this->httpRequestAssert("/twill/users", 'GET', [], 200);
+            $this->httpRequestAssert("/twill/users/{$tempUser->id}/edit", 'GET', [], 200);
+        });
 
         // User can access roles list if permitted
         $this->httpRequestAssert("/twill/roles", 'GET', [], 403);
-        $this->attachRolePermission($role, 'edit-user-role');
-        $this->httpRequestAssert("/twill/roles", 'GET', [], 200);
+        $this->withRolePermission($role, 'edit-user-role', function () {
+            $this->httpRequestAssert("/twill/roles", 'GET', [], 200);
+        });
 
         // User can't access groups list (feature is not enabled)
         $this->httpRequestAssert("/twill/groups", 'GET', [], 403);
@@ -108,12 +121,14 @@ class PermissionsTest extends PermissionsTestBase
 
         // User can access items list if permitted
         $this->httpRequestAssert("/twill/posts", 'GET', [], 403);
-        $this->attachRoleModulePermission($role, 'posts', 'view-module');
-        $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
+        $this->withRoleModulePermission($role, 'posts', 'view-module', function () {
+            $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
+        });
 
         // User can access item details if permitted
         $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
-        $this->attachRoleModulePermission($role, 'posts', 'edit-module');
-        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
+        $this->withRoleModulePermission($role, 'posts', 'edit-module', function () use ($post) {
+            $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
+        });
     }
 }
