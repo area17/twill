@@ -106,9 +106,14 @@ class PermissionsTest extends PermissionsTestBase
 
         $post = $this->createPost();
 
-        // User can access authors list if permitted
+        // User can access items list if permitted
         $this->httpRequestAssert("/twill/posts", 'GET', [], 403);
         $this->attachRoleModulePermission($role, 'posts', 'view-module');
         $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
+
+        // User can access item details if permitted
+        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
+        $this->attachRoleModulePermission($role, 'posts', 'edit-module');
+        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
     }
 }

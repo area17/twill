@@ -106,8 +106,8 @@ abstract class ModuleController extends Controller
     protected $authorizableOptions = [
         'list' => 'access-module-list',
         'create' => 'edit-module',
-        'edit' => 'view-item',
-        'permalink' => 'view-item',
+        'edit' => 'edit-item',
+        'permalink' => 'edit-item',
         'publish' => 'edit-item',
         'feature' => 'edit-item',
         'reorder' => 'edit-module',
