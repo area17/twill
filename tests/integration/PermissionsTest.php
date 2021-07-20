@@ -72,6 +72,8 @@ class PermissionsTest extends PermissionsTestBase
 
     public function testRolePermissions()
     {
+        app('config')->set('twill.permissions.level', 'role');
+
         $tempRole = $this->createRole('Temporary');
         $tempUser = $this->createUser($tempRole);
 
@@ -153,6 +155,47 @@ class PermissionsTest extends PermissionsTestBase
         $this->httpRequestAssert('/twill/posts', 'POST', [], 403);
         $this->withGlobalPermission($role, 'manage-modules', function () use ($post) {
             $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
+            $this->httpRequestAssert('/twill/posts', 'POST', [], 200);
+        });
+    }
+
+    public function testGroupPermissions()
+    {
+        app('config')->set('twill.permissions.level', 'roleGroup');
+
+        $role = $this->createRole('Tester');
+        $group = $this->createGroup('Beta');
+        $user = $this->createUser($role, $group);
+
+        // User is logged in
+        $this->loginUser($user);
+        $this->httpRequestAssert('/twill');
+        $this->assertSee($user->name);
+
+        // User can access groups list if permitted
+        $this->httpRequestAssert("/twill/groups", 'GET', [], 403);
+        $this->withGlobalPermission($role, 'edit-user-groups', function () {
+            $this->httpRequestAssert("/twill/groups", 'GET', [], 200);
+        });
+
+
+        $post = $this->createPost();
+
+        // User can access items list if permitted
+        $this->httpRequestAssert("/twill/posts", 'GET', [], 403);
+        $this->withModulePermissions($group, 'posts', 'view-module', function () {
+            $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
+        });
+
+        // User can access item details if permitted
+        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
+        $this->withModulePermissions($group, 'posts', 'edit-module', function () use ($post) {
+            $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
+        });
+
+        // User can create items if permitted
+        $this->httpRequestAssert('/twill/posts', 'POST', [], 403);
+        $this->withModulePermissions($group, 'posts', 'edit-module', function () {
             $this->httpRequestAssert('/twill/posts', 'POST', [], 200);
         });
     }
