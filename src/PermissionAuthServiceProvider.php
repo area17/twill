@@ -90,7 +90,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
         });
 
         $this->define('manage-modules', function ($user) {
-            if (isset(self::$cache['manage-modules'])) {
+            if (self::$useCache && isset(self::$cache['manage-modules'])) {
                 return self::$cache['manage-modules'];
             }
 
