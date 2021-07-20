@@ -102,7 +102,8 @@ class PermissionAuthServiceProvider extends ServiceProvider
 
         $this->define('access-media-library', function ($user) {
             return $this->authorize($user, function ($user) {
-                return $user->role->permissions()->global()->where('name', 'access-media-library')->exists();
+                return $user->can('edit-media-library')
+                || $user->role->permissions()->global()->where('name', 'access-media-library')->exists();
             });
         });
 
@@ -152,6 +153,9 @@ class PermissionAuthServiceProvider extends ServiceProvider
             if (self::$useCache && isset(self::$cache['edit-module-' . $moduleName])) {
                 return self::$cache['edit-module-' . $moduleName];
             }
+
+            // dump('** edit-module **');
+            // dump($user->role->permissions()->get()->toArray());
 
             return self::$cache['edit-module-' . $moduleName] = $this->authorize($user, function ($user) use ($moduleName) {
                 return $user->can('manage-module', $moduleName)
