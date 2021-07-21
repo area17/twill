@@ -84,8 +84,7 @@ class ResetPasswordController extends Controller
     protected function sendResetResponse(Request $request, $response)
     {
         $user = User::where('email', $request->input('email'))->first();
-        if (!$user->activated) {
-            $user->activated = true;
+        if (!$user->isActivated()) {
             $user->registered_at = Carbon::now();
             $user->save();
         }

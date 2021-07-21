@@ -186,8 +186,7 @@ class UserRepository extends ModuleRepository
         if (!empty($fields['reset_password']) && !empty($fields['new_password'])) {
             $user->password = bcrypt($fields['new_password']);
 
-            if (!$user->activate) {
-                $user->activated = true;
+            if (!$user->isActivated()) {
                 $user->registered_at = Carbon::now();
             }
 

@@ -112,12 +112,12 @@ class User extends AuthenticatableContract
 
     public function scopeActivated($query)
     {
-        return $query->whereActivated(true)->published();
+        return $query->whereNotNull('registered_at')->published();
     }
 
     public function scopePending($query)
     {
-        return $query->whereActivated(false)->published();
+        return $query->whereNotNull('registered_at')->published();
     }
 
     public function scopePublished($query)
@@ -201,6 +201,11 @@ class User extends AuthenticatableContract
         return (bool) $this->published;
     }
 
+    public function isActivated()
+    {
+        return (bool) $this->registered_at;
+    }
+
     public function sendTemporaryPasswordNotification($password)
     {
         $this->notify(new TemporaryPasswordNotification($password));
@@ -244,7 +249,9 @@ class User extends AuthenticatableContract
 
     public function getLastLoginColumnValueAttribute()
     {
-        return $this->last_login_at ? $this->last_login_at->format('d M Y, H:i') : ($this->activated ? '&mdash;' : twillTrans('twill::lang.user-management.activation-pending'));
+        return $this->last_login_at ?
+            $this->last_login_at->format('d M Y, H:i') :
+            ($this->isActivated() ? '&mdash;' : twillTrans('twill::lang.user-management.activation-pending'));
     }
 
     public function setGoogle2faSecretAttribute($secret)

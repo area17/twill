@@ -71,7 +71,6 @@ class CreateSuperAdmin extends Command
             $user->role = 'SUPERADMIN';
         }
 
-        $user->activated = true;
         $user->registered_at = Carbon::now();
         $user->password = Hash::make($password);
         $user->save();

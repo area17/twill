@@ -223,10 +223,10 @@
         @can('edit-users')
             window['{{ config('twill.js_namespace') }}'].STORE.publication.userInfo = {
                 user_name: '{{ $item->name }}',
-                registered_at: '{{ $item->activated ? $item->registered_at->format('d M Y') : "Pending ({$item->created_at->format('d M Y')})" }}',
-                last_login_at: '{{ $item->activated && $item->last_login_at ? $item->last_login_at->format('d M Y, H:i') : null }}',
-                resend_registration_link: '{{ !$item->activated ? route('admin.users.resend.registrationEmail', ['user' => $item]) : null }}',
-                is_activated: {{ $item->activated }}
+                registered_at: '{{ $item->isActivated() ? $item->registered_at->format('d M Y') : "Pending ({$item->created_at->format('d M Y')})" }}',
+                last_login_at: '{{ $item->isActivated() && $item->last_login_at ? $item->last_login_at->format('d M Y, H:i') : null }}',
+                resend_registration_link: '{{ !$item->isActivated() ? route('admin.users.resend.registrationEmail', ['user' => $item]) : null }}',
+                is_activated: {{ json_encode($item->isActivated()) }}
             }
         @endcan
     @endunless

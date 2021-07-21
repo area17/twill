@@ -18,7 +18,6 @@ class UpdateTwillDefaultUsersTable extends Migration
 
         if (Schema::hasTable($twillUsersTable)) {
             Schema::table($twillUsersTable, function (Blueprint $table) {
-                $table->boolean('activated')->default(false);
                 $table->dateTime('last_login_at')->nullable();
                 $table->dateTime('registered_at')->nullable();
                 $table->boolean('require_new_password')->default(false);
@@ -39,7 +38,6 @@ class UpdateTwillDefaultUsersTable extends Migration
 
         if (Schema::hasTable($twillUsersTable)) {
             Schema::table($twillUsersTable, function (Blueprint $table) {
-                $table->dropColumn('activated');
                 $table->dropColumn('last_login_at');
                 $table->dropColumn('registered_at');
                 $table->dropColumn('require_new_password');
@@ -52,10 +50,6 @@ class UpdateTwillDefaultUsersTable extends Migration
         User::chunk(100, function ($users) {
             foreach ($users as $user) {
                 if (!empty($user->password)) {
-                    $user->activated = true;
-                }
-
-                if (!empty($user->created_at)) {
                     $user->registered_at = $user->created_at;
                 }
 
