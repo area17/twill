@@ -658,17 +658,17 @@ abstract class ModuleController extends Controller
 
                 $this->fireEvent();
 
-                return $this->respondWithSuccess(
-                    $this->modelTitle . ' ' . ($this->request->get('active') ? 'un' : '') . 'published!'
-                );
+                if ($this->request->get('active')) {
+                    return $this->respondWithSuccess(twillTrans('twill::lang.listing.publish.unpublished', ['modelTitle' => $this->modelTitle]));
+                } else {
+                    return $this->respondWithSuccess(twillTrans('twill::lang.listing.publish.published', ['modelTitle' => $this->modelTitle]));
+                }
             }
         } catch (\Exception $e) {
             \Log::error($e);
         }
 
-        return $this->respondWithError(
-            $this->modelTitle . ' was not published. Something wrong happened!'
-        );
+        return $this->respondWithError(twillTrans('twill::lang.listing.publish.error', ['modelTitle' => $this->modelTitle]));
     }
 
     /**
@@ -712,7 +712,7 @@ abstract class ModuleController extends Controller
             activity()->performedOn($item)->log('duplicated');
 
             return Response::json([
-                'message' => $this->modelTitle . ' duplicated with Success!',
+                'message' => twillTrans('twill::lang.listing.duplicate.success', ['modelTitle' => $this->modelTitle]),
                 'variant' => FlashLevel::SUCCESS,
                 'redirect' => moduleRoute(
                     $this->moduleName,
@@ -723,7 +723,7 @@ abstract class ModuleController extends Controller
             ]);
         }
 
-        return $this->respondWithError($this->modelTitle . ' was not duplicated. Something wrong happened!');
+        return $this->respondWithError(twillTrans('twill::lang.listing.duplicate.error', ['modelTitle' => $this->modelTitle]));
     }
 
     /**
@@ -741,10 +741,10 @@ abstract class ModuleController extends Controller
         if ($this->repository->delete($id)) {
             $this->fireEvent();
             activity()->performedOn($item)->log('deleted');
-            return $this->respondWithSuccess($this->modelTitle . ' moved to trash!');
+            return $this->respondWithSuccess(twillTrans('twill::lang.listing.delete.success', ['modelTitle' => $this->modelTitle]));
         }
 
-        return $this->respondWithError($this->modelTitle . ' was not moved to trash. Something wrong happened!');
+        return $this->respondWithError(twillTrans('twill::lang.listing.delete.error', ['modelTitle' => $this->modelTitle]));
     }
 
     /**
@@ -754,10 +754,10 @@ abstract class ModuleController extends Controller
     {
         if ($this->repository->bulkDelete(explode(',', $this->request->get('ids')))) {
             $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' items moved to trash!');
+            return $this->respondWithSuccess(twillTrans('twill::lang.listing.bulk-delete.success', ['modelTitle' => $this->modelTitle]));
         }
 
-        return $this->respondWithError($this->modelTitle . ' items were not moved to trash. Something wrong happened!');
+        return $this->respondWithError(twillTrans('twill::lang.listing.bulk-delete.error', ['modelTitle' => $this->modelTitle]));
     }
 
     /**
@@ -767,10 +767,10 @@ abstract class ModuleController extends Controller
     {
         if ($this->repository->forceDelete($this->request->get('id'))) {
             $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' destroyed!');
+            return $this->respondWithSuccess(twillTrans('twill::lang.listing.force-delete.success', ['modelTitle' => $this->modelTitle]));
         }
 
-        return $this->respondWithError($this->modelTitle . ' was not destroyed. Something wrong happened!');
+        return $this->respondWithError(twillTrans('twill::lang.listing.force-delete.error', ['modelTitle' => $this->modelTitle]));
     }
 
     /**
@@ -780,10 +780,10 @@ abstract class ModuleController extends Controller
     {
         if ($this->repository->bulkForceDelete(explode(',', $this->request->get('ids')))) {
             $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' items destroyed!');
+            return $this->respondWithSuccess(twillTrans('twill::lang.listing.bulk-force-delete.success', ['modelTitle' => $this->modelTitle]));
         }
 
-        return $this->respondWithError($this->modelTitle . ' items were not destroyed. Something wrong happened!');
+        return $this->respondWithError(twillTrans('twill::lang.listing.bulk-force-delete.error', ['modelTitle' => $this->modelTitle]));
     }
 
     /**
@@ -794,10 +794,10 @@ abstract class ModuleController extends Controller
         if ($this->repository->restore($this->request->get('id'))) {
             $this->fireEvent();
             activity()->performedOn($this->repository->getById($this->request->get('id')))->log('restored');
-            return $this->respondWithSuccess($this->modelTitle . ' restored!');
+            return $this->respondWithSuccess(twillTrans('twill::lang.listing.restore.success', ['modelTitle' => $this->modelTitle]));
         }
 
-        return $this->respondWithError($this->modelTitle . ' was not restored. Something wrong happened!');
+        return $this->respondWithError(twillTrans('twill::lang.listing.restore.error', ['modelTitle' => $this->modelTitle]));
     }
 
     /**
@@ -807,10 +807,10 @@ abstract class ModuleController extends Controller
     {
         if ($this->repository->bulkRestore(explode(',', $this->request->get('ids')))) {
             $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' items restored!');
+            return $this->respondWithSuccess(twillTrans('twill::lang.listing.bulk-restore.success', ['modelTitle' => $this->modelTitle]));
         }
 
-        return $this->respondWithError($this->modelTitle . ' items were not restored. Something wrong happened!');
+        return $this->respondWithError(twillTrans('twill::lang.listing.bulk-restore.error', ['modelTitle' => $this->modelTitle]));
     }
 
     /**
@@ -838,10 +838,15 @@ abstract class ModuleController extends Controller
             );
 
             $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' ' . ($this->request->get('active') ? 'un' : '') . 'featured!');
+
+            if ($this->request->get('active')) {
+                return $this->respondWithSuccess(twillTrans('twill::lang.listing.featured.unfeatured', ['modelTitle' => $this->modelTitle]));
+            } else {
+                return $this->respondWithSuccess(twillTrans('twill::lang.listing.featured.featured', ['modelTitle' => $this->modelTitle]));
+            }
         }
 
-        return $this->respondWithError($this->modelTitle . ' was not featured. Something wrong happened!');
+        return $this->respondWithError(twillTrans('twill::lang.listing.featured.error', ['modelTitle' => $this->modelTitle]));
     }
 
     /**
@@ -855,10 +860,15 @@ abstract class ModuleController extends Controller
             // we don't need to check if unique feature since bulk operation shouldn't be allowed in this case
             $this->repository->updateBasic($ids, [$featuredField => $featured]);
             $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' items ' . ($this->request->get('feature') ? '' : 'un') . 'featured!');
+
+            if ($this->request->get('feature')) {
+                return $this->respondWithSuccess(twillTrans('twill::lang.listing.bulk-featured.featured', ['modelTitle' => $this->modelTitle]));
+            } else {
+                return $this->respondWithSuccess(twillTrans('twill::lang.listing.bulk-featured.unfeatured', ['modelTitle' => $this->modelTitle]));
+            }
         }
 
-        return $this->respondWithError($this->modelTitle . ' items were not featured. Something wrong happened!');
+        return $this->respondWithError(twillTrans('twill::lang.listing.bulk-featured.error', ['modelTitle' => $this->modelTitle]));
     }
 
     /**
@@ -869,10 +879,10 @@ abstract class ModuleController extends Controller
         if (($values = $this->request->get('ids')) && !empty($values)) {
             $this->repository->setNewOrder($values);
             $this->fireEvent();
-            return $this->respondWithSuccess($this->modelTitle . ' order changed!');
+            return $this->respondWithSuccess(twillTrans('twill::lang.listing.reorder.success', ['modelTitle' => $this->modelTitle]));
         }
 
-        return $this->respondWithError($this->modelTitle . ' order was not changed. Something wrong happened!');
+        return $this->respondWithError(twillTrans('twill::lang.listing.reorder.error', ['modelTitle' => $this->modelTitle]));
     }
 
     /**
@@ -1149,7 +1159,7 @@ abstract class ModuleController extends Controller
                 'html' => $column['html'] ?? false,
             ]);
         }
-        if ($this->moduleHas('translations') && count(config('translatable.locales')) > 1) {
+        if ($this->moduleHas('translations') && count(getLocales()) > 1) {
             array_push($tableColumns, [
                 'name' => 'languages',
                 'label' => twillTrans('twill::lang.listing.languages'),

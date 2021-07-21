@@ -315,6 +315,6 @@ class FileLibraryController extends ModuleController implements SignUploadListen
      */
     private function shouldReplaceFile($id)
     {
-        return isset($id) ? $this->repository->whereId($id)->exists() : false;
+        return is_numeric($id) ? $this->repository->whereId($id)->exists() : false;
     }
 }

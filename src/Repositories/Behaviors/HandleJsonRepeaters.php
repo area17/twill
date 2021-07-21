@@ -7,7 +7,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 /**
- *
  * Save repeaters in a json column instead of a new model.
  *
  * This trait is not intended to replace main repeaters but to give a quick
@@ -21,16 +20,15 @@ use Illuminate\Support\Str;
  *
  * Supported: Input, WYSIWYG, textarea, browsers.
  * Not supported: Medias, Files, repeaters.
- *
  */
 
 trait HandleJsonRepeaters
 {
 
     /**
-     * @param \A17\Twill\Models\Model $object
+     * @param \A17\Twill\Models\Model|null $object
      * @param array $fields
-     * @return string[]
+     * @return array
      */
     public function prepareFieldsBeforeSaveHandleJsonRepeaters($object, $fields)
     {
@@ -44,9 +42,9 @@ trait HandleJsonRepeaters
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
+     * @param \A17\Twill\Models\Model|null $object
      * @param array $fields
-     * @return string[]
+     * @return array
      */
     public function getFormFieldsHandleJsonRepeaters($object, $fields)
     {
@@ -60,6 +58,12 @@ trait HandleJsonRepeaters
         return $fields;
     }
 
+    /**
+     * @param array $fields
+     * @param string $repeaterName
+     * @param array $serializedData
+     * @return array
+     */
     public function getJsonRepeater($fields, $repeaterName, $serializedData)
     {
         $repeatersFields = [];

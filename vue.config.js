@@ -30,7 +30,8 @@ const WebpackAssetsManifest = require('webpack-assets-manifest')
 const WebpackNotifierPlugin = require('webpack-notifier')
 
 const srcDirectory = 'frontend'
-const outputDir = 'dist'
+const partialsDirectory = '../views/partials'
+const outputDir = isProd ? 'dist' : (process.env.TWILL_DEV_ASSETS_PATH || 'dist')
 const assetsDir = process.env.TWILL_ASSETS_DIR || 'assets/admin'
 
 const pages = {
@@ -46,9 +47,7 @@ const svgConfig = (suffix = null) => {
 
   return {
     output: {
-      filename: isProd
-        ? `${assetsDir}/icons/icons${suffix}.[contenthash].svg`
-        : `${assetsDir}/icons/icons${suffix}.svg`,
+      filename: `${partialsDirectory}/icons/icons${suffix}-svg.blade.php`,
       chunk: {
         name: `icons${suffix}`
       }

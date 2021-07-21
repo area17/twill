@@ -36,7 +36,7 @@ trait HandleFiles
     }
 
     /**
-     * @param \A17\Twill\Models\Behaviors\HasFiles $object
+     * @param \A17\Twill\Models\Model $object
      * @param array $fields
      * @return void
      */
@@ -54,7 +54,7 @@ trait HandleFiles
     }
 
     /**
-     * @param $fields
+     * @param array $fields
      * @return \Illuminate\Support\Collection
      */
     private function getFiles($fields)

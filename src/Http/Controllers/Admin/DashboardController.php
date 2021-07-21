@@ -127,7 +127,7 @@ class DashboardController extends Controller
                     'href' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', $item->id),
                     'thumbnail' => method_exists($item, 'defaultCmsImage') ? $item->defaultCmsImage(['w' => 100, 'h' => 100]) : null,
                     'published' => $item->published,
-                    'activity' => 'Last edited',
+                    'activity' => twillTrans('twill::lang.dashboard.search.last-edit'),
                     'date' => $item->updated_at->toIso8601String(),
                     'title' => $item->titleInDashboard ?? $item->title,
                     'author' => $author,

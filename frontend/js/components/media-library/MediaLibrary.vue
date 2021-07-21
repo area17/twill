@@ -182,8 +182,17 @@
         return this.modalTitlePrefix
       },
       btnLabel: function () {
-        if (this.indexToReplace > -1) return this.btnLabelUpdate + ' ' + this.type
-        return (this.selectedMedias.length > 1 ? this.btnLabelMulti + ' ' + this.type + 's' : this.btnLabelSingle + ' ' + this.type)
+        let type = this.$trans('media-library.types.single.' + this.type, this.type)
+
+        if (this.indexToReplace > -1) {
+          return this.btnLabelUpdate + ' ' + type
+        } else {
+          if (this.selectedMedias.length > 1) {
+            type = this.$trans('media-library.types.multiple.' + this.type, this.type)
+          }
+
+          return this.btnLabelSingle + ' ' + type
+        }
       },
       usedMedias: function () {
         return this.selected[this.connector] || []
@@ -369,7 +378,7 @@
         // reset unused field
         if (this.$refs.unused) {
           const input = this.$refs.unused.$el.querySelector('input')
-          input && input.click()
+          input && input.checked && input.click()
         }
 
         this.$nextTick(function () {

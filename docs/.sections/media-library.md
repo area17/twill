@@ -42,113 +42,21 @@ Using the Person example, your `cover` image could have a `square` crop for mobi
 
 The only thing you have to do to make it work is to compose your model and repository with the appropriate traits, respectively `HasMedias` and `HandleMedias`, setup your `$mediasParams` configuration and use the `medias` form partial in your form view (more info in the CRUD section).
 
-When it comes to using those data model images in the frontend site, there are a few methods on the `HasMedias` trait that will help you to retrieve them for each of your layouts:
+When it comes to using those data model images in the frontend site, there are a few methods on the `HasMedias` trait that will help you to retrieve them for each of your layouts. You can find the full
+reference in the [HasMedias API documentation](https://twill.io/docs/api/2.x/A17/Twill/Models/Behaviors/HasMedias.html)
 
-```php
-<?php
-
-/**
- * Returns the url of the associated image for $roleName and $cropName.
- * Optionally add params compatible with the current image service in use like w or h.
- * Optionally indicate that you can provide a fallback so that this method will return null
- * instead of the fallback image.
- * Optionally indicate that you are displaying this image in the CMS views.
- * Optionally provide a $media object if you already retrieved one to prevent more SQL requests.
- */
-$model->image($roleName, $cropName[, array $params, $has_fallback, $cms, $media])
-
-/**
- * Returns an array of images URLs assiociated with $roleName and $cropName with appended $params.
- */
-$model->images($roleName, $cropName[, array $params])
-
-/**
- * Returns the image for $roleName and $cropName with default social image params and $params appended
- */
-$model->socialImage($roleName, $cropName[, array $params, $has_fallback])
-
-/**
- * Returns the lqip base64 encoded string from the database for $roleName and $cropName.
- * Use this in conjunction with the RefreshLQIP Artisan command.
- */
-$model->lowQualityImagePlaceholder($roleName, $cropName[, array $params, $has_fallback])
-
-/**
- * Returns the image for $roleName and $cropName with default CMS image params and $params appended.
- */
-$model->cmsImage($roleName, $cropName[, array $params, $has_fallback])
-
-/**
- * Returns the alt text of the image associated with $roleName.
- */
-$model->imageAltText($roleName[, $media])
-
-/**
- * Returns the caption of the image associated with $roleName.
- */
-$model->imageCaption($roleName[, $media])
-
-/**
- * Returns the image object associated with $roleName.
- */
-$model->imageObject($roleName[, $cropName])
-
-/**
- * Returns the image objects associated with $roleName.
- */
-$model->imageObjects($roleName[, $cropName])
-
-/**
- * Returns the image associated with $roleName as an array containing meta information.
- */
-$model->imageAsArray($roleName[, $cropName, array $params, $media])
-
-/**
- * Returns the images associated with $roleName as an array containing meta information.
- */
-$model->imagesAsArrays($roleName[, $cropName, array $params])
-
-/**
- * Returns an array of images URLs assiociated with $roleName with appended $params for each crop.
- */
-$model->imagesWithCrops($roleName[, array $params])
-
-/**
- * Returns the images associated with $roleName as an array containing meta information for each crop.
- */
-$model->imagesAsArraysWithCrops($roleName[, array $params])
-
-/**
- * Checks if an image has been attached for the provided role
- */
-$model->hasImage($roleName[, $cropName])
-```
 
 ### File library
-The file library is much simpler but also works with S3 and local storage. To associate files to your model, use the `HasFiles` and `HandleFiles` traits, the `$filesParams` configuration and the `files` form partial.
+The file library is much simpler but also works with S3 and local storage. To associate files to your model, use the `HasFiles` and `HandleFiles` traits, the `$filesParams` configuration and the `files` form field.
 
-When it comes to using those data model files in the frontend site, there are a few methods on the `HasFiles` trait that will help you to retrieve direct URLs:
+When it comes to using those data model files in the frontend site, there are a few methods on the `HasFiles` trait that will help you to retrieve direct URLs. You can find the full
+reference in the [HasFiles API documentation](https://twill.io/docs/api/2.x/A17/Twill/Models/Behaviors/HasFiles.html)
 
-```php
-<?php
 
-/**
- * Returns the url of the associated file for $roleName.
- * Optionally indicate which locale of the file if your site has multiple languages.
- * Optionally provide a $file object if you already retrieved one to prevent more SQL requests.
- */
-$model->file($roleName[, $locale, $file])
-
-/**
- * Returns an array of files URLs assiociated with $roleName.
- */
-$model->filesList($roleName[, $locale])
-
-/**
- * Returns the file object associated with $roleName.
- */
-$model->fileObject($roleName)
-```
+::: tip INFO
+The file library can be used to upload files of any type and to attach those files to records using the `file` form field.
+For example, you could store video files and render them on your frontend, with a CDN on top of it. We recommend Youtube and Vimeo for regular video embeds, but for muted, decorative, autoplaying videos, .mp4 files in the file library can be a great solution.
+:::
 
 ### Imgix and S3 direct uploads
 

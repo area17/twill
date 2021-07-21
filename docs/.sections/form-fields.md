@@ -379,6 +379,8 @@ No migration is needed to save `files` form fields.
 | allowClear  | Adds a button to clear the field                             | true<br/>false  | false         |
 | allowInput  | Allow manually editing the selected date in the field        | true<br/>false  | false         |
 | altFormat   | Format used by [flatpickr](https://flatpickr.js.org/formatting/) | string          | F j, Y        |
+| hourIncrement  | Time picker hours increment        | number  | 1         |
+| minuteIncrement  | Time picker minutes increment        | number  | 30         |
 | note        | Hint message displayed above the field                       | string          |               |
 | required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false  | false         |
 
@@ -392,6 +394,47 @@ Schema::table('posts', function (Blueprint $table) {
     ...
 });
 // OR
+Schema::table('posts', function (Blueprint $table) {
+    ...
+    $table->dateTime('event_date')->nullable();
+    ...
+});
+```
+
+When used in a [block](https://twill.io/docs/#adding-blocks), no migration is needed.
+
+### Timepicker
+
+```php
+@formField('time_picker', [
+    'name' => 'event_time',
+    'label' => 'Event time',
+])
+```
+
+| Option      | Description                                                  | Type/values     | Default value |
+| :---------- | :----------------------------------------------------------- | :-------------- | :------------ |
+| name        | Name of the field                                            | string          |               |
+| label       | Label of the field                                           | string          |               |
+| time24Hr    | Pick time with a 24h picker instead of AM/PM                 | true<br/>false  | false         |
+| allowClear  | Adds a button to clear the field                             | true<br/>false  | false         |
+| allowInput  | Allow manually editing the selected date in the field        | true<br/>false  | false         |
+| hourIncrement  | Time picker hours increment        | number  | 1         |
+| minuteIncrement  | Time picker minutes increment        | number  | 30         |
+| altFormat   | Format used by [flatpickr](https://flatpickr.js.org/formatting/) | string          | h:i        |
+| note        | Hint message displayed above the field                       | string          |               |
+| required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false  | false         |
+
+
+A migration to save a `time_picker` field would be:
+
+```php
+Schema::table('posts', function (Blueprint $table) {
+    ...
+    $table->time('event_time')->nullable();
+    ...
+});
+// OR, if you are merging with a date field
 Schema::table('posts', function (Blueprint $table) {
     ...
     $table->dateTime('event_date')->nullable();
@@ -543,6 +586,7 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 | max         | Maximum number of selectable options                         | integer         |               |
 | options     | Array of options for the dropdown, must include _value_ and _label_ | array           |               |
 | unpack      | Defines if the multi select will be displayed as an open list of options | true<br/>false  | true         |
+| searchable  | Filter the field values while typing                         | true<br/>false  | false         |
 | note        | Hint message displayed above the field                       | string          |               |
 | placeholder | Text displayed as a placeholder in the field                 | string          |               |
 | required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false  | false         |
@@ -672,7 +716,7 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 @formField('multi_select', [
     'name' => 'sectors',
     'label' => 'Sectors',
-    'unpacked' => false,
+    'unpack' => false,
     'options' => [
         [
             'value' => 'arts',
@@ -851,117 +895,129 @@ See [Block editor](https://twill.io/docs/#block-editor-3)
 
 <br/>
 
-Browser fields can be used to save a `belongsToMany` relationship outside of the block editor.
+Browser fields can be used inside as well as outside the block editor.
 
-Checkout this [Spectrum tutorial](https://spectrum.chat/twill/tips-and-tricks/step-by-step-ii-creating-a-twill-app~37c36601-1198-4c53-857a-a2b47c6d11aa) until we update this section to get more info on setting things up.
+Inside the block editor, no migration is needed when using browsers. Refer to the section titled [Adding browser fields to a block](#adding-browser-fields-to-a-block) for a detailed explanation.
 
-When using inside of the block editor, no migration is needed. Refer to the section titled [Adding browser fields to a block](#adding-browser-fields-to-a-block) for a detailed explanation.
+Outside the block editor, browser fields are used to save `belongsToMany` relationships. The relationships can be stored in Twill's own `related` table or in a custom pivot table.
 
+#### Using browser fields as related items
 
-### Browser with multiple modules
+The following example demonstrates how to use a browser field to attach `Authors` to `Articles`. 
 
-With module names:
-```php
-@formField('browser', [
-    'modules' => [
-        [
-            'name' => 'projects',
-        ],
-        [
-            'name' => 'capabilities',
-            'routePrefix' => 'taxonomies',
-        ],
-        [
-            'name' => 'articles',
-        ],
-    ],
-    'name' => 'related_content',
-    'label' => 'Related content'
-])
-```
-
-With manual endpoints:
-```php
-@formField('browser', [
-    'endpoints' => [
-        [
-            'label' => 'Projects',
-            'value' => '/projects/browser',
-        ],
-        [
-            'label' => 'Capabilities',
-            'value' => '/taxonomies/capabilities/browser',
-        ],
-        [
-            'label' => 'Articles',
-            'value' => '/articles/browser',
-        ],
-    ],
-    'name' => 'related_content',
-    'label' => 'Related content'
-])
-```
-
-When using multiple modules/endpoints, the browser field doesn't require any migration.
-You can safely use the `HasRelated` trait.
-
-In your model add:
+- Update the `Article` model to add the `HasRelated` trait:
 
 ```php
 use A17\Twill\Models\Behaviors\HasRelated;
 
-class MyModel extends Model
+class Article extends Model
 {
     use HasRelated;
-    ...
+
+    /* ... */
 }
 ```
 
-In the repository you need to add the hooks to save and retrieve data of the browser field by using the `getFormFieldsForRelatedBrowser` and `updateRelatedBrowser` functions.
+- Update `ArticleRepository` to add the browser field to the `$relatedBrowsers` property:
 
 ```php
-<?php
-
-namespace App\Repositories;
-
-use A17\Twill\Repositories\ModuleRepository;
-use App\Models\MyModel;
-
-class MyModelRepository extends ModuleRepository
+class ArticleRepository extends ModuleRepository
 {
-
-    public function __construct(MyModel $model)
-    {
-        $this->model = $model;
-    }
-
-    ...
-
-    public function afterSave($object, $fields)
-    {
-        $this->updateRelatedBrowser($object, $fields, 'related_content');
-
-        parent::afterSave($object, $fields);
-    }
-
-    public function getFormFields($object)
-    {
-        $fields = parent::getFormFields($object);
-        $fields['browsers']['related_content'] = $this->getFormFieldsForRelatedBrowser($object, 'related_content');
-
-        return $fields;
-    }
+    protected $relatedBrowsers = ['authors'];
 }
 ```
 
-To retrieve the items in the frontend, you can use the following helper, it will return of collection of models in the correct order.
-:
+- Add the browser field to `resources/views/admin/articles/form.blade.php`:
 
 ```php
-    $item->getRelated('related_content');
-    // or, in a block
-    $block->getRelated('related_content');
+@extends('twill::layouts.form')
+
+@section('contentFields')
+    ...
+
+    @formField('browser', [
+        'moduleName' => 'authors',
+        'name' => 'authors',
+        'label' => 'Authors',
+        'max' => 4,
+    ])
+@stop
 ```
+
+#### Multiple modules as related items
+
+You can use the same approach to handle polymorphic relationships through Twill's `related` table.
+
+- Update `ArticleRepository`:
+
+```php
+class ArticleRepository extends ModuleRepository
+{
+    protected $relatedBrowsers = ['collaborators'];
+}
+```
+
+- Add the browser field to `resources/views/admin/articles/form.blade.php`:
+
+```php
+@extends('twill::layouts.form')
+
+@section('contentFields')
+    ...
+
+    @formField('browser', [
+        'modules' => [
+            [
+              'label' => 'Authors',
+              'name' => 'authors',
+            ],
+            [
+              'label' => 'Editors',
+              'name' => 'editors',
+            ],
+        ],
+        'name' => 'collaborators',
+        'label' => 'Collaborators',
+        'max' => 4,
+    ])
+@stop
+```
+
+- Alternatively, you can use manual endpoints instead of module names:
+
+```php
+    @formField('browser', [
+        'endpoints' => [
+            [
+              'label' => 'Authors',
+              'value' => '/authors/browser',
+            ],
+            [
+              'label' => 'Editors',
+              'value' => '/editors/browser',
+            ],
+        ],
+        'name' => 'collaborators',
+        'label' => 'Collaborators',
+        'max' => 4,
+    ])
+```
+
+#### Working with related items
+
+To retrieve the items in the frontend, you can use the `getRelated` method on models and blocks. It will return of collection of related models in the correct order:
+
+```php
+    $item->getRelated('collaborators');
+
+    // or, in a block:
+
+    $block->getRelated('collaborators');
+```
+
+#### Using browser fields and custom pivot tables
+
+Checkout this [Spectrum tutorial](https://spectrum.chat/twill/tips-and-tricks/step-by-step-ii-creating-a-twill-app~37c36601-1198-4c53-857a-a2b47c6d11aa) that walks through the entire process of using browser fields with custom pivot tables.
 
 ### Repeater
 ![screenshot](/docs/_media/repeater.png)
@@ -970,13 +1026,132 @@ To retrieve the items in the frontend, you can use the following helper, it will
 @formField('repeater', ['type' => 'video'])
 ```
 
-Repeaters fields can be used to save a `hasMany` relationship or a `morphMany` relationship outside of the block editor.
+Repeater fields can be used inside as well as outside the block editor.
 
-Checkout this [Github issue](https://github.com/area17/twill/issues/131) until we update this section to get more info on setting things up.
+Inside the block editor, repeater blocks share the same model as regular blocks. By reading the section on the [block editor](#block-editor-3) first, you will get a good overview of how to create and define repeater blocks for your project. No migration is needed when using repeater blocks. Refer to the section titled [Adding repeater fields to a block](#adding-repeater-fields-to-a-block) for a detailed explanation.
 
-Repeater blocks share the same Model as Blocks in the block editor. By reading the section on the [block editor](#block-editor-3), you will get a good picture on how to create and define repeater blocks for your project.
+Outside the block editor, repeater fields are used to save `hasMany` or `morphMany` relationships.
 
-When using inside of the block editor, no migration is needed. Refer to the section titled [Adding repeater fields to a block](#adding-repeater-fields-to-a-block) for a detailed explanation.
+#### Using repeater fields
+
+The following example demonstrates how to define a relationship between `Team` and `TeamMember` modules to implement a `team-member` repeater.
+
+- Create the modules. Make sure to enable the `position` feature on the `TeamMember` module:
+
+```
+php artisan twill:make:module Team
+php artisan twill:make:module TeamMember -P
+```
+
+- Update the `create_team_members_tables` migration. Add the `team_id` foreign key used for the `TeamMember—Team` relationship:
+
+```php
+class CreateTeamMembersTables extends Migration
+{
+    public function up()
+    {
+        Schema::create('team_members', function (Blueprint $table) {
+            /* ... */
+
+            $table->foreignId('team_id')
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+        });
+    }
+}
+```
+
+- Run the migrations:
+
+```
+php artisan migrate
+```
+
+- Update the `Team` model. Define the `members` relationship. The results should be ordered by position:
+
+```php
+class Team extends Model
+{
+    /* ... */
+
+    public function members()
+    {
+        return $this->hasMany(TeamMember::class)->orderBy('position');
+    }
+}
+```
+
+- Update the `TeamMember` model. Add `team_id` to the `fillable` array:
+
+```php
+class TeamMember extends Model
+{
+    protected $fillable = [
+        /* ... */
+        'team_id',
+    ];
+}
+```
+
+- Update `TeamRepository`. Override the `afterSave` and `getFormFields` methods to process the repeater field:
+
+```php
+class TeamRepository extends ModuleRepository
+{
+    /* ... */
+
+    public function afterSave($object, $fields)
+    {
+        $this->updateRepeater($object, $fields, 'members', 'TeamMember', 'team-member');
+        parent::afterSave($object, $fields);
+    }
+
+    public function getFormFields($object)
+    {
+        $fields = parent::getFormFields($object);
+        $fields = $this->getFormFieldsForRepeater($object, $fields, 'members', 'TeamMember', 'team-member');
+        return $fields;
+    }
+}
+```
+
+- Add the repeater Blade template:
+
+Create file `resources/views/admin/repeaters/team-member.blade.php`:
+
+```php
+@twillRepeaterTitle('Team Member')
+@twillRepeaterTrigger('Add member')
+@twillRepeaterGroup('app')
+
+@formField('input', [
+    'name' => 'title',
+    'label' => 'Title',
+    'required' => true,
+])
+
+...
+```
+
+- Add the repeater field to the form:
+
+Update file `resources/views/admin/teams/form.blade.php`:
+
+```php
+@extends('twill::layouts.form')
+
+@section('contentFields')
+    ...
+
+    @formField('repeater', ['type' => 'team-member'])
+@stop
+```
+
+- Finishing up:
+
+Add both modules to your `admin.php` routes. Add the `Team` module to your `twill-navigation.php` config and you are done!
+
 
 ### Map
 ![screenshot](/docs/_media/map.png)
@@ -1069,4 +1244,56 @@ Schema::table('posts', function (Blueprint $table) {
     $table->string('main_color', 10)->nullable();
     ...
 });
+```
+### Conditional fields
+
+You can conditionally display fields based on the values of other fields in your form. For example, if you wanted to display a video embed text field only if the type of article, a radio field, is "video" you'd do something like the following:
+
+```php
+@formField('radios', [
+    'name' => 'type',
+    'label' => 'Article type',
+    'default' => 'long_form',
+    'inline' => true,
+    'options' => [
+        [
+            'value' => 'long_form',
+            'label' => 'Long form article'
+        ],
+        [
+            'value' => 'video',
+            'label' => 'Video article'
+        ]
+    ]
+])
+
+@formConnectedFields([
+    'fieldName' => 'type',
+    'fieldValues' => 'video',
+    'renderForBlocks' => true/false # (depending on regular form vs block form)
+])
+    @formField('input', [
+        'name' => 'video_embed',
+        'label' => 'Video embed'
+    ])
+@endformConnectedFields
+```
+Here's an example based on a checkbox field where the value is either true or false:
+
+```php
+@formField('checkbox', [
+    'name' => 'vertical_article',
+    'label' => 'Vertical Story'
+])
+
+@formConnectedFields([
+    'fieldName' => 'vertical_article',
+    'fieldValues' => true,
+    'renderForBlocks' => true/false # (depending on regular form vs block form)
+])
+    @formField('medias', [
+        'name' => 'vertical_image',
+        'label' => 'Vertical Image',
+    ])
+@endformConnectedFields
 ```
