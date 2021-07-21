@@ -7,21 +7,26 @@ export function globalError (component = null, error = { message: '', value: nul
 
   const errorMessage = prefix + error.message
 
+  const statusCode = error?.value?.response?.status ?? error?.response?.status ?? null
+
   console.error(errorMessage)
 
-  if (error.value && error.value.response) {
-    console.error(error.value.response.data)
+  if (error?.value && error.value?.response) {
+    console.error(error.value.response?.data)
   }
 
-  const errorStatusMapping = {
-    401: {
+  // Error 401 = session expired / not authenticated
+  // Error 419 = CSRF token mismatched
+  if (statusCode === 401 || statusCode === 419) {
+    window[process.env.VUE_APP_NAME].vm.notif({
       message: 'Your session has expired, please <a href="' + document.location + '" target="_blank">login in another tab</a>. You can then continue working here.',
       variant: 'warning'
-    },
-    403: {
+    })
+  } else if (statusCode === 403) {
+    window[process.env.VUE_APP_NAME].vm.notif({
       message: 'You don\'t have permission to perform this action.',
       variant: 'warning'
-    }
+    })
   }
 
   if ('response' in error.value && 'status' in error.value.response && errorStatusMapping.hasOwnProperty(error.value.response.status)) {

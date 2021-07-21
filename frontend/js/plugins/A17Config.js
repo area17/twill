@@ -36,6 +36,9 @@ import a17Avatar from '@/components/Avatar.vue'
 // Media Library
 import a17MediaLibrary from '@/components/media-library/MediaLibrary.vue'
 
+// Error handler
+import { globalError } from '@/utils/errors'
+
 // Plugins
 import VueTimeago from 'vue-timeago'
 import get from 'lodash/get'
@@ -116,6 +119,12 @@ const A17Config = {
     }
 
     axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+
+    axios.interceptors.response.use((response) => response, (error) => {
+      globalError('CONTENT', error)
+
+      return Promise.reject(error)
+    })
 
     // Plugins
     Vue.use(VueTimeago, {

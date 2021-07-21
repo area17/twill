@@ -4,18 +4,18 @@
     <div class="wysiwyg__outer" :class="textfieldClasses">
       <input :name="name" type="hidden" v-model="value"/>
       <template v-if="editSource">
-        <div class="wysiwyg" :class="textfieldClasses" v-show="!activeSource">
+        <div class="wysiwyg" :class="textfieldClasses" v-show="!activeSource" :dir="dirLocale">
           <div class="wysiwyg__editor" :class="{ 'wysiwyg__editor--limitHeight' : limitHeight }" ref="editor"></div>
           <span v-if="shouldShowCounter" class="wysiwyg__limit f--tiny" :class="limitClasses">{{ counter }}</span>
         </div>
-        <div class="form__field form__field--textarea" v-show="activeSource">
+        <div class="form__field form__field--textarea" v-show="activeSource"  :dir="dirLocale">
           <textarea :placeholder="placeholder" :autofocus="autofocus" v-model="value" @change="updateSourcecode"
                     :style="textareaHeight"></textarea>
         </div>
         <a17-button variant="ghost" @click="toggleSourcecode" class="wysiwyg__button">Source code</a17-button>
       </template>
       <template v-else>
-        <div class="wysiwyg" :class="textfieldClasses">
+        <div class="wysiwyg" :class="textfieldClasses" :dir="dirLocale">
           <div class="wysiwyg__editor" :class="{ 'wysiwyg__editor--limitHeight' : limitHeight }" ref="editor"></div>
           <span v-if="shouldShowCounter" class="wysiwyg__limit f--tiny" :class="limitClasses">{{ counter }}</span>
         </div>
@@ -202,6 +202,12 @@
           }
         }
 
+        // set Quill direction
+        if (this.dirLocale === 'rtl') {
+          this.quill.format('direction', 'rtl')
+          this.quill.format('align', 'right')
+        }
+
         // check text length
         if (this.hasMaxlength && this.showCounter) {
           this.updateCounter(this.getTextLength())
@@ -327,6 +333,13 @@
   .wysiwyg__limit--red {
     color: red;
   }
+
+  /* RTL Direction */
+  .wysiwyg[dir='rtl'] .wysiwyg__limit {
+    left:15px;
+    right:auto;
+  }
+
 </style>
 <style lang="scss">
   /* Not scoped style here because we want to overwrite default style of the wysiwig */
@@ -359,6 +372,11 @@
       &:focus {
         background: $color__background;
       }
+    }
+
+    *[dir='rtl'] .ql-editor {
+      direction: rtl;
+      text-align: right;
     }
 
     /* Default content styling */
