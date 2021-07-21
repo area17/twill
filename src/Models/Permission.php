@@ -69,7 +69,7 @@ class Permission extends BaseModel
                 return [
                     'edit-settings',
                     'edit-users',
-                    'edit-user-role',
+                    'edit-user-roles',
                     'edit-user-groups',
                     'manage-modules',
                     'access-media-library',

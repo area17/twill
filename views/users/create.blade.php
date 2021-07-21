@@ -11,7 +11,7 @@
         'type' => 'email'
     ])
 
-    @can('edit-user-role')
+    @can('edit-user-roles')
         @php $userModel = twillModel('user') @endphp
 
         @formField('select', [

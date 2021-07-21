@@ -129,7 +129,7 @@ class PermissionsTest extends PermissionsTestBase
 
         // User can edit roles if permitted
         $this->httpRequestAssert("/twill/roles", 'GET', [], 403);
-        $this->withGlobalPermission($role, 'edit-user-role', function () use ($tempRole) {
+        $this->withGlobalPermission($role, 'edit-user-roles', function () use ($tempRole) {
             $this->httpRequestAssert("/twill/roles", 'GET', [], 200);
             $this->httpRequestAssert("/twill/roles/{$tempRole->id}/edit", 'GET', [], 200);
         });

@@ -11,7 +11,7 @@
         'label' => twillTrans('twill::lang.user-management.email')
     ])
 
-    @can('edit-user-role')
+    @can('edit-user-roles')
         @if($item->id !== $currentUser->id)
             @formField('select', [
                 'name' => $item->getRoleColumnName(),

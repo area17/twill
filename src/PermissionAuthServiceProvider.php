@@ -67,9 +67,9 @@ class PermissionAuthServiceProvider extends ServiceProvider
             });
         });
 
-        $this->define('edit-user-role', function ($user) {
+        $this->define('edit-user-roles', function ($user) {
             return $this->authorize($user, function ($user) {
-                return $user->role->permissions()->global()->where('name', 'edit-user-role')->exists();
+                return $user->role->permissions()->global()->where('name', 'edit-user-roles')->exists();
             });
         });
 
@@ -85,7 +85,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
 
         $this->define('access-user-management', function ($user) {
             return $this->authorize($user, function ($user) {
-                return $user->can('edit-users') || $user->can('edit-user-role') || $user->can('edit-user-groups');
+                return $user->can('edit-users') || $user->can('edit-user-roles') || $user->can('edit-user-groups');
             });
         });
 

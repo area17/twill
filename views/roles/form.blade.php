@@ -17,8 +17,8 @@
         ])
 
         @formField('checkbox', [
-            'name' => 'edit-user-role',
-            'label' => 'Manage user role'
+            'name' => 'edit-user-roles',
+            'label' => 'Manage user roles'
         ])
 
         @formField('checkbox', [

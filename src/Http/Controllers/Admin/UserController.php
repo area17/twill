@@ -146,7 +146,7 @@ class UserController extends ModuleController
             'roles' => [
                 'title' => twillTrans('twill::lang.permissions.roles.title'),
                 'module' => true,
-                'can' => 'edit-user-role',
+                'can' => 'edit-user-roles',
             ],
             'groups' => [
                 'title' => twillTrans('twill::lang.permissions.groups.title'),

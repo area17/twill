@@ -40,7 +40,7 @@ class RoleController extends ModuleController
     public function __construct(Application $app, Request $request)
     {
         parent::__construct($app, $request);
-        $this->middleware('can:edit-user-role');
+        $this->middleware('can:edit-user-roles');
 
         $this->primaryNavigation = [
             'users' => [
@@ -52,7 +52,7 @@ class RoleController extends ModuleController
                 'title' => twillTrans('twill::lang.permissions.roles.title'),
                 'module' => true,
                 'active' => true,
-                'can' => 'edit-user-role',
+                'can' => 'edit-user-roles',
             ],
             'groups' => [
                 'title' => twillTrans('twill::lang.permissions.groups.title'),
@@ -90,7 +90,7 @@ class RoleController extends ModuleController
     protected function getIndexOption($option, $item = null)
     {
         if (in_array($option, ['publish', 'bulkEdit', 'create'])) {
-            return auth('twill_users')->user()->can('edit-user-role');
+            return auth('twill_users')->user()->can('edit-user-roles');
         }
 
         return parent::getIndexOption($option);
@@ -106,7 +106,7 @@ class RoleController extends ModuleController
 
     protected function indexItemData($item)
     {
-        $canEdit = auth('twill_users')->user()->can('edit-user-role') && ($item->canEdit ?? true);
+        $canEdit = auth('twill_users')->user()->can('edit-user-roles') && ($item->canEdit ?? true);
 
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
     }

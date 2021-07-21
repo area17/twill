@@ -2,7 +2,7 @@
     $user_management_route = 'admin.users.index';
     if ($currentUser->can('edit-users')) {
         $user_management_route = 'admin.users.index';
-    } elseif ($currentUser->can('edit-user-role')) {
+    } elseif ($currentUser->can('edit-user-roles')) {
         $user_management_route = 'admin.roles.index';
     } elseif ($currentUser->can('edit-user-groups')) {
         $user_management_route = 'admin.groups.index';
