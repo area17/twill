@@ -28,8 +28,4 @@ export function globalError (component = null, error = { message: '', value: nul
       variant: 'warning'
     })
   }
-
-  if ('response' in error.value && 'status' in error.value.response && errorStatusMapping.hasOwnProperty(error.value.response.status)) {
-    window[process.env.VUE_APP_NAME].vm.notif(errorStatusMapping[error.value.response.status])
-  }
 }
