@@ -91,8 +91,6 @@ class PermissionsTest extends PermissionsTestBase
 
         // User is logged in
         $this->loginUser($user);
-        $this->httpRequestAssert('/twill');
-        $this->assertSee($user->name);
 
         // User can access settings if permitted
         $this->httpRequestAssert('/twill/settings/seo', 'GET', [], 403);
@@ -179,8 +177,6 @@ class PermissionsTest extends PermissionsTestBase
 
         // User is logged in
         $this->loginUser($user);
-        $this->httpRequestAssert('/twill');
-        $this->assertSee($user->name);
 
         // User role can edit groups if permitted
         $this->httpRequestAssert("/twill/groups", 'GET', [], 403);
@@ -222,8 +218,6 @@ class PermissionsTest extends PermissionsTestBase
 
         // User is logged in
         $this->loginUser($user);
-        $this->httpRequestAssert('/twill');
-        $this->assertSee($user->name);
 
 
         $post = $this->createPost();
@@ -258,8 +252,6 @@ class PermissionsTest extends PermissionsTestBase
 
         // User is logged in
         $this->loginUser($user);
-        $this->httpRequestAssert('/twill');
-        $this->assertSee($user->name);
 
 
         $post = $this->createPost();

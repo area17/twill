@@ -37,6 +37,10 @@ abstract class PermissionsTestBase extends TestCase
     public function loginUser($user)
     {
         $this->loginAs($user->email, $user->email);
+
+        $this->httpRequestAssert('/twill');
+
+        $this->assertSee($user->name);
     }
 
     public function makeUser()

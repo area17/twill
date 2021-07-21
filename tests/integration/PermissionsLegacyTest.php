@@ -29,8 +29,6 @@ class PermissionsLegacyTest extends PermissionsTestBase
 
         // User is logged in
         $this->loginUser($guest);
-        $this->httpRequestAssert('/twill');
-        $this->assertSee($guest->name);
 
         // User can access the Media Library
         $this->httpRequestAssert('/twill/media-library/medias?page=1&type=image', 'GET', [], 200);
@@ -73,8 +71,6 @@ class PermissionsLegacyTest extends PermissionsTestBase
 
         // User is logged in
         $this->loginUser($publisher);
-        $this->httpRequestAssert('/twill');
-        $this->assertSee($publisher->name);
 
         // User can access the Media Library
         $this->httpRequestAssert('/twill/media-library/medias?page=1&type=image', 'GET', [], 200);
@@ -118,8 +114,6 @@ class PermissionsLegacyTest extends PermissionsTestBase
 
         // User is logged in
         $this->loginUser($admin);
-        $this->httpRequestAssert('/twill');
-        $this->assertSee($admin->name);
 
         // User can access the Media Library
         $this->httpRequestAssert('/twill/media-library/medias?page=1&type=image', 'GET', [], 200);
