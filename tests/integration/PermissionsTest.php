@@ -122,20 +122,21 @@ class PermissionsTest extends PermissionsTestBase
         // User can't access other profiles
         $this->httpRequestAssert("/twill/users/{$tempUser->id}/edit", 'GET', [], 403);
 
-        // User can access & edit users list if permitted
+        // User can edit users if permitted
         $this->httpRequestAssert("/twill/users", 'GET', [], 403);
         $this->withGlobalPermission($role, 'edit-users', function () use ($tempUser) {
             $this->httpRequestAssert("/twill/users", 'GET', [], 200);
             $this->httpRequestAssert("/twill/users/{$tempUser->id}/edit", 'GET', [], 200);
         });
 
-        // User can access roles list if permitted
+        // User can edit roles if permitted
         $this->httpRequestAssert("/twill/roles", 'GET', [], 403);
-        $this->withGlobalPermission($role, 'edit-user-role', function () {
+        $this->withGlobalPermission($role, 'edit-user-role', function () use ($tempRole) {
             $this->httpRequestAssert("/twill/roles", 'GET', [], 200);
+            $this->httpRequestAssert("/twill/roles/{$tempRole->id}/edit", 'GET', [], 200);
         });
 
-        // User can't access groups list (feature is not enabled)
+        // User can't access groups list (feature not enabled with `twill.permissions.level` === 'role')
         $this->httpRequestAssert("/twill/groups", 'GET', [], 403);
 
 
@@ -147,13 +148,13 @@ class PermissionsTest extends PermissionsTestBase
             $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
         });
 
-        // User can access item details if permitted
+        // User can edit item if permitted
         $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
         $this->withModulePermission($role, 'posts', 'edit-module', function () use ($post) {
             $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
         });
 
-        // User can create items if permitted
+        // User can create item if permitted
         $this->httpRequestAssert('/twill/posts', 'POST', [], 403);
         $this->withModulePermission($role, 'posts', 'edit-module', function () {
             $this->httpRequestAssert('/twill/posts', 'POST', [], 200);
@@ -181,28 +182,30 @@ class PermissionsTest extends PermissionsTestBase
         $this->httpRequestAssert('/twill');
         $this->assertSee($user->name);
 
-        // User can access groups list if permitted
+        // User role can edit groups if permitted
         $this->httpRequestAssert("/twill/groups", 'GET', [], 403);
-        $this->withGlobalPermission($role, 'edit-user-groups', function () {
+        $this->httpRequestAssert("/twill/groups/{$group->id}/edit", 'GET', [], 403);
+        $this->withGlobalPermission($role, 'edit-user-groups', function () use ($group) {
             $this->httpRequestAssert("/twill/groups", 'GET', [], 200);
+            $this->httpRequestAssert("/twill/groups/{$group->id}/edit", 'GET', [], 200);
         });
 
 
         $post = $this->createPost();
 
-        // User can access items list if permitted
+        // User group can access items list if permitted
         $this->httpRequestAssert("/twill/posts", 'GET', [], 403);
         $this->withModulePermission($group, 'posts', 'view-module', function () {
             $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
         });
 
-        // User can access item details if permitted
+        // User group can edit item if permitted
         $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
         $this->withModulePermission($group, 'posts', 'edit-module', function () use ($post) {
             $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
         });
 
-        // User can create items if permitted
+        // User group can create item if permitted
         $this->httpRequestAssert('/twill/posts', 'POST', [], 403);
         $this->withModulePermission($group, 'posts', 'edit-module', function () {
             $this->httpRequestAssert('/twill/posts', 'POST', [], 200);
@@ -239,7 +242,7 @@ class PermissionsTest extends PermissionsTestBase
             $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
         });
 
-        // User group can access item details if permitted
+        // User group can edit item if permitted
         $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
         $this->withItemPermission($group, $post, 'edit-item', function () use ($post) {
             $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
@@ -267,7 +270,7 @@ class PermissionsTest extends PermissionsTestBase
             $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
         });
 
-        // User can access item details if permitted
+        // User can edit item if permitted
         $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
         $this->withItemPermission($user, $post, 'edit-item', function () use ($post) {
             $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
