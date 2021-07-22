@@ -112,7 +112,7 @@ class GroupController extends ModuleController
 
     protected function getIndexItems($scopes = [], $forcePagination = false)
     {
-        //Everyone group should always be on the top
+        // Everyone group should always be on top
         return parent::getIndexItems($scopes, $forcePagination)->sortByDesc('is_everyone_group')->values();
     }
 
