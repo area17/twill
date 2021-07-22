@@ -45,7 +45,25 @@ trait HandleUserPermissions
             return;
         }
 
-        $oldFields = \Session::get("user-{$object->id}");
+        $this->addOrRemoveUserToEveryoneGroup($object);
+
+        $this->updateUserItemPermissions($object, $fields);
+    }
+
+    private function addOrRemoveUserToEveryoneGroup($user)
+    {
+        $everyoneGroup = twillModel('group')::getEveryoneGroup();
+
+        if ($user->role->in_everyone_group) {
+            $user->groups()->syncWithoutDetaching([$everyoneGroup->id]);
+        } else {
+            $user->groups()->detach([$everyoneGroup->id]);
+        }
+    }
+
+    private function updateUserItemPermissions($user, $fields)
+    {
+        $oldFields = \Session::get("user-{$user->id}");
 
         foreach ($fields as $key => $value) {
             if (Str::endsWith($key, '_permission')) {
@@ -60,9 +78,9 @@ trait HandleUserPermissions
 
                 // Only value existed, do update or create
                 if ($value) {
-                    $object->grantModuleItemPermission($value, $item);
+                    $user->grantModuleItemPermission($value, $item);
                 } else {
-                    $object->revokeModuleItemAllPermissions($item);
+                    $user->revokeModuleItemAllPermissions($item);
                 }
             }
         }
