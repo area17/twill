@@ -64,7 +64,9 @@ class UpdateTwillUsersRoleFields extends Migration
             foreach ($users as $user) {
                 if ($user->role === 'SUPERADMIN') {
                     $user->is_superadmin = true;
-                } else {
+                }
+
+                if (!in_array($user->role, ['SUPERADMIN', 'VIEWONLY'])) {
                     $user->groups()->attach($defaultGroup->id);
                 }
 
