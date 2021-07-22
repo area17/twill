@@ -117,7 +117,7 @@ class User extends AuthenticatableContract
 
     public function scopePending($query)
     {
-        return $query->whereNotNull('registered_at')->published();
+        return $query->whereNull('registered_at')->published();
     }
 
     public function scopePublished($query)
