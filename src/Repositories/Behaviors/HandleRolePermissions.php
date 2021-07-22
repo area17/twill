@@ -43,11 +43,30 @@ trait HandleRolePermissions
      */
     public function afterSaveHandleRolePermissions($object, $fields)
     {
+        $this->addOrRemoveUsersToEveryoneGroup($object);
+
+        $this->updateRolePermissions($object, $fields);
+    }
+
+    private function addOrRemoveUsersToEveryoneGroup($role)
+    {
+        $everyoneGroup = twillModel('group')::getEveryoneGroup();
+        $roleUserIds = $role->users->pluck('id')->toArray();
+
+        if ($role->in_everyone_group) {
+            $everyoneGroup->users()->syncWithoutDetaching($roleUserIds);
+        } else {
+            $everyoneGroup->users()->detach($roleUserIds);
+        }
+    }
+
+    private function updateRolePermissions($role, $fields)
+    {
         foreach (Permission::available(Permission::SCOPE_GLOBAL) as $permissionName) {
             if (isset($fields[$permissionName]) && $fields[$permissionName] === true) {
-                $object->grantGlobalPermission($permissionName);
+                $role->grantGlobalPermission($permissionName);
             } else {
-                $object->revokeGlobalPermission($permissionName);
+                $role->revokeGlobalPermission($permissionName);
             }
         }
 
@@ -56,21 +75,20 @@ trait HandleRolePermissions
                 $modulePermissions = Permission::available(Permission::SCOPE_MODULE);
                 $model = getModelByModuleName($moduleName = explode('_', $key)[1]);
 
-                $currentPermission = $object->permissions()
+                $currentPermission = $role->permissions()
                     ->where('permissionable_type', $model)
                     ->whereIn('name', $modulePermissions)
-                    ->first()
-                ;
+                    ->first();
 
                 if (!$currentPermission || $permissionName != $currentPermission->name) {
-                    $object->revokeAllModulePermission($model);
+                    $role->revokeAllModulePermission($model);
                     if (in_array($permissionName, $modulePermissions)) {
-                        $object->grantModulePermission($permissionName, $model);
+                        $role->grantModulePermission($permissionName, $model);
                     }
                 }
             }
         }
 
-        $object->save();
+        $role->save();
     }
 }

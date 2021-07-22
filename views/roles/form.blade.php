@@ -72,4 +72,13 @@
             @endforeach
         @endcomponent
     @endcomponent
+
+    @component('twill::partials.form.utils._field_rows', [
+        'title' => 'Groups'
+    ])
+        @formField('checkbox', [
+            'name' => 'in_everyone_group',
+            'label' => 'Include in "Everyone"'
+        ])
+    @endcomponent
 @stop
