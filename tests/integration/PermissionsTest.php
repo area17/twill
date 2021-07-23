@@ -5,6 +5,7 @@ namespace A17\Twill\Tests\Integration;
 use A17\Twill\Models\Role;
 use A17\Twill\Models\Group;
 use A17\Twill\PermissionAuthServiceProvider;
+use Illuminate\Support\Facades\Mail;
 
 class PermissionsTest extends PermissionsTestBase
 {
@@ -272,5 +273,53 @@ class PermissionsTest extends PermissionsTestBase
         $this->withItemPermission($user, $post, 'edit-item', function () use ($post) {
             $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
         });
+    }
+
+    public function testEveryoneGroup()
+    {
+        Mail::fake();
+
+        app('config')->set('twill.permissions.level', 'roleGroupModule');
+
+        $everyoneGroup = Group::getEveryoneGroup();
+
+        $userRole = $this->createRole('Tester');
+        $userRole->grantGlobalPermission('edit-users');
+        $userRole->grantGlobalPermission('edit-user-roles');
+        $user = $this->createUser($userRole);
+
+        // User is logged in
+        $this->loginUser($user);
+
+        // Everyone group is empty
+        $everyoneGroup->users()->detach();
+        $this->assertEquals(0, $everyoneGroup->users()->count());
+
+        $newRole = $this->createRole('New Role');
+
+        // A new user with a role in Everyone group is automatically added to the group
+        $this->httpRequestAssert('/twill/users', 'POST', [
+            'name' => 'Bob',
+            'email' => 'bob@test.test',
+            'role_id' => $newRole->id,
+            'published' => true,
+        ], 200);
+        $this->assertEquals(1, $everyoneGroup->users()->count());
+
+        // Removing a role from Everyone group removes all users from the group
+        $this->httpRequestAssert("/twill/roles/{$newRole->id}", 'PUT', [
+            'name' => 'Tester',
+            'published' => true,
+            'in_everyone_group' => false,
+        ], 200);
+        $this->assertEquals(0, $everyoneGroup->users()->count());
+
+        // Adding a role in Everyone group adds all users to the group
+        $this->httpRequestAssert("/twill/roles/{$newRole->id}", 'PUT', [
+            'name' => 'Tester',
+            'published' => true,
+            'in_everyone_group' => true,
+        ], 200);
+        $this->assertEquals(1, $everyoneGroup->users()->count());
     }
 }
