@@ -10,12 +10,11 @@ class PermissionsTest extends PermissionsTestBase
 {
     protected function getPackageProviders($app)
     {
-        PermissionAuthServiceProvider::disableCache();
-
         // This config must be set before loading TwillServiceProvider to select
         // between AuthServiceProvider and PermissionAuthServiceProvider
         $app['config']->set('twill.enabled.permissions-management', true);
-        $app['config']->set('twill.permissions.modules', ['posts']);
+
+        PermissionAuthServiceProvider::disableCache();
 
         return parent::getPackageProviders($app);
     }
