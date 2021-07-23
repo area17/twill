@@ -186,6 +186,12 @@ class PermissionsTest extends PermissionsTestBase
             $this->httpRequestAssert("/twill/groups/{$group->id}/edit", 'GET', [], 200);
         });
 
+        // User role can't edit Everyone group
+        $this->withGlobalPermission($role, 'edit-user-groups', function () {
+            $everyoneGroup = Group::getEveryoneGroup();
+            $this->httpRequestAssert("/twill/groups/{$everyoneGroup->id}/edit", 'GET', [], 403);
+        });
+
 
         $post = $this->createPost();
 

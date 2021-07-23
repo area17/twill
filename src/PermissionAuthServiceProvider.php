@@ -83,6 +83,12 @@ class PermissionAuthServiceProvider extends ServiceProvider
             });
         });
 
+        $this->define('edit-group', function ($user, $editedGroup) {
+            return $this->authorize($user, function ($user) use ($editedGroup) {
+                return !$editedGroup->isEveryoneGroup() && $user->can('edit-user-groups');
+            });
+        });
+
         $this->define('access-user-management', function ($user) {
             return $this->authorize($user, function ($user) {
                 return $user->can('edit-users') || $user->can('edit-user-roles') || $user->can('edit-user-groups');

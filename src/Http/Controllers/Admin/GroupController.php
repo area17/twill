@@ -123,4 +123,18 @@ class GroupController extends ModuleController
             return !$item->isEveryoneGroup();
         })->values();
     }
+
+    public function edit($id, $submoduleId = null)
+    {
+        $this->authorizableOptions['edit'] = 'edit-group';
+
+        return parent::edit($id, $submoduleId);
+    }
+
+    public function update($id, $submoduleId = null)
+    {
+        $this->authorizableOptions['edit'] = 'edit-group';
+
+        return parent::update($id, $submoduleId);
+    }
 }
