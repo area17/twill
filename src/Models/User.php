@@ -160,7 +160,7 @@ class User extends AuthenticatableContract
 
     public function notifyWithCustomMarkdownTheme($instance)
     {
-        $hostAppMailConfig = config('mail.markdown.paths');
+        $hostAppMailConfig = config('mail.markdown.paths') ?? [];
 
         config([
             'mail.markdown.paths' => array_merge(
