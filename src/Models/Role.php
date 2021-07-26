@@ -4,11 +4,13 @@ namespace A17\Twill\Models;
 
 use A17\Twill\Models\User;
 use A17\Twill\Models\Behaviors\HasMedias;
+use A17\Twill\Models\Behaviors\HasPermissions;
+use A17\Twill\Models\Behaviors\IsTranslatable;
+use A17\Twill\Models\Behaviors\HasPosition;
+use A17\Twill\Models\Behaviors\Sortable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use A17\Twill\Models\Behaviors\HasPermissions;
-use A17\Twill\Models\Behaviors\IsTranslatable;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -21,9 +23,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @method static Builder draft() Get draft roles
  * @method static Builder onlyTrashed() Get trashed roles
  */
-class Role extends BaseModel
+class Role extends BaseModel implements Sortable
 {
-    use HasMedias, SoftDeletes, HasPermissions, IsTranslatable;
+    use HasMedias, SoftDeletes, HasPermissions, IsTranslatable, HasPosition;
 
     public $timestamps = true;
 
@@ -31,6 +33,7 @@ class Role extends BaseModel
         'name',
         'published',
         'in_everyone_group',
+        'position',
     ];
 
     protected $dates = [

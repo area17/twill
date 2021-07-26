@@ -110,4 +110,13 @@ class RoleController extends ModuleController
 
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
     }
+
+    public function index($parentModuleId = null)
+    {
+        // Superadmins can reorder groups to determine the access-level of each one.
+        // A given group can't edit other groups with a higher access-level.
+        $this->indexOptions['reorder'] = auth('twill_users')->user()->isSuperAdmin();
+
+        return parent::index($parentModuleId);
+    }
 }

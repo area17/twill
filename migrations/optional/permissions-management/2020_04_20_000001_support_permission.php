@@ -44,6 +44,7 @@ class SupportPermission extends Migration
                 createDefaultTableFields($table);
                 $table->string('name', 255)->nullable();
                 $table->boolean('in_everyone_group')->default(true);
+                $table->integer('position')->unsigned()->nullable();
             });
 
             Schema::create('permission_twill_user', function (Blueprint $table) {
@@ -146,11 +147,14 @@ class SupportPermission extends Migration
             'Guest' => [],
         ];
 
+        $position = 1;
+
         foreach ($roles as $role_name => $role_permissions) {
             $role = Role::create([
                 'name' => $role_name,
                 'published' => true,
                 'in_everyone_group' => $role_name === 'Guest' ? false : true,
+                'position' => $position++,
             ]);
             $role->permissions()->attach(Permission::whereIn("name", $role_permissions)->pluck('id'));
         }
