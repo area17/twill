@@ -87,6 +87,13 @@ class RoleController extends ModuleController
         ];
     }
 
+    protected function getIndexItems($scopes = [], $forcePagination = false)
+    {
+        $scopes = $scopes + ['accessible' => true];
+
+        return parent::getIndexItems($scopes, $forcePagination);
+    }
+
     protected function getIndexOption($option, $item = null)
     {
         if (in_array($option, ['publish', 'bulkEdit', 'create'])) {
@@ -118,5 +125,19 @@ class RoleController extends ModuleController
         $this->indexOptions['reorder'] = auth('twill_users')->user()->isSuperAdmin();
 
         return parent::index($parentModuleId);
+    }
+
+    public function edit($id, $submoduleId = null)
+    {
+        $this->authorizableOptions['edit'] = 'edit-role';
+
+        return parent::edit($id, $submoduleId);
+    }
+
+    public function update($id, $submoduleId = null)
+    {
+        $this->authorizableOptions['edit'] = 'edit-role';
+
+        return parent::update($id, $submoduleId);
     }
 }

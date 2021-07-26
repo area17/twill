@@ -47,6 +47,22 @@ class Role extends BaseModel implements Sortable
     ];
 
     /**
+     * Scope accessible roles.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeAccessible($query)
+    {
+        $currentUser = auth('twill_users')->user();
+
+        if ($currentUser->isSuperAdmin()) {
+            return $query;
+        }
+        return $query->where('position', '>=', $currentUser->role->position);
+    }
+
+    /**
      * Scope published roles.
      *
      * @param Builder $query

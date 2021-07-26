@@ -73,6 +73,12 @@ class PermissionAuthServiceProvider extends ServiceProvider
             });
         });
 
+        $this->define('edit-role', function ($user, $editedRole) {
+            return $this->authorize($user, function ($user) use ($editedRole) {
+                return ($editedRole->position >= $user->role->position) && $user->can('edit-user-roles');
+            });
+        });
+
         $this->define('edit-user-groups', function ($user) {
             if (!in_array(Config::get('twill.permissions.level'), ['roleGroup', 'roleGroupModule'])) {
                 return false;
