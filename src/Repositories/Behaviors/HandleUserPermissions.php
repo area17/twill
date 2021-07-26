@@ -180,6 +180,10 @@ trait HandleUserPermissions
     {
         $query = $this->model->where($scope);
 
+        if (config('twill.enabled.permissions-management')) {
+            $query = $query->accessible();
+        }
+
         if (get_class($this->model) === twillModel('user')) {
             if ($slug === 'activated') {
                 return $query->notSuperAdmin()->activated()->count();
