@@ -124,4 +124,14 @@ class Role extends BaseModel implements Sortable
     {
         return $this->users->count() . ' users';
     }
+
+    /**
+     * Return the roles that are considered accessible for the current role
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getAccessibleRolesAttribute()
+    {
+        return static::where('position', '>=', $this->position)->get();
+    }
 }

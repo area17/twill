@@ -82,8 +82,7 @@ class User extends AuthenticatableContract
             return $query;
         }
 
-        $accessibleRoleIds = Role::where('position', '>=', $currentUser->role->position)
-            ->pluck('id')->toarray();
+        $accessibleRoleIds = $currentUser->role->accessibleRoles->pluck('id')->toArray();
 
         return $query->whereIn('role_id', $accessibleRoleIds);
     }
