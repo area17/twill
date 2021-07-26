@@ -63,7 +63,8 @@ class PermissionAuthServiceProvider extends ServiceProvider
 
         $this->define('edit-user', function ($user, $editedUser) {
             return $this->authorize($user, function ($user) use ($editedUser) {
-                return ($user->id === $editedUser->id) || $user->can('edit-users');
+                return ($user->id === $editedUser->id)
+                    || ($editedUser->role->position >= $user->role->position && $user->can('edit-users'));
             });
         });
 

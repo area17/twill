@@ -74,6 +74,20 @@ class User extends AuthenticatableContract
         parent::__construct($attributes);
     }
 
+    public function scopeAccessible($query)
+    {
+        $currentUser = auth('twill_users')->user();
+
+        if (!config('twill.enabled.permissions-management') || $currentUser->isSuperAdmin()) {
+            return $query;
+        }
+
+        $accessibleRoleIds = Role::where('position', '>=', $currentUser->role->position)
+            ->pluck('id')->toarray();
+
+        return $query->whereIn('role_id', $accessibleRoleIds);
+    }
+
     public static function getRoleColumnName()
     {
         if (config('twill.enabled.permissions-management')) {

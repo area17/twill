@@ -174,6 +174,20 @@ class UserController extends ModuleController
     }
 
     /**
+     * @param array $scopes
+     * @param bool $forcePagination
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    protected function getIndexItems($scopes = [], $forcePagination = false)
+    {
+        if (config('twill.enabled.permissions-management')) {
+            $scopes = $scopes + ['accessible' => true];
+        }
+
+        return parent::getIndexItems($scopes, $forcePagination);
+    }
+
+    /**
      * @param Request $request
      * @return array
      * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
