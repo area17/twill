@@ -83,11 +83,11 @@ class PermissionsTest extends PermissionsTestBase
     {
         app('config')->set('twill.permissions.level', 'role');
 
-        $tempRole = $this->createRole('Temporary');
-        $tempUser = $this->createUser($tempRole);
-
         $role = $this->createRole('Tester');
         $user = $this->createUser($role);
+
+        $tempRole = $this->createRole('Temporary');
+        $tempUser = $this->createUser($tempRole);
 
         // User is logged in
         $this->loginUser($user);
@@ -322,4 +322,5 @@ class PermissionsTest extends PermissionsTestBase
         ], 200);
         $this->assertEquals(1, $everyoneGroup->users()->count());
     }
+
 }
