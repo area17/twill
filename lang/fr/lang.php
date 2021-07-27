@@ -54,6 +54,8 @@ return [
             'published' => 'Publié',
             'featured' => 'Mis en avant',
             'unfeatured' => 'N\'est plus mis en avant',
+            'restored' => 'Restauré',
+            'deleted' => 'Supprimé',
         ],
         'activity-row' => [
             'edit' => 'Editer',
