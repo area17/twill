@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use A17\Twill\Models\User;
 use A17\Twill\Models\Role;
 use A17\Twill\Models\Group;
 use A17\Twill\PermissionAuthServiceProvider;
@@ -323,4 +324,78 @@ class PermissionsTest extends PermissionsTestBase
         $this->assertEquals(1, $everyoneGroup->users()->count());
     }
 
+    public function testRoleBasedAccessLevel()
+    {
+        app('config')->set('twill.permissions.level', 'roleGroupModule');
+
+        Role::truncate();
+        User::truncate();
+
+        list($role1, $role2, $role3) = collect([1, 2, 3])->map(function ($i) {
+            $role = $this->createRole("Role $i");
+            $role->position = $i;
+            $role->save();
+
+            $role->grantGlobalPermission('edit-users');
+            $role->grantGlobalPermission('edit-user-roles');
+
+            return $role;
+        })->all();
+
+        $userRole1 = $this->createUser($role1);
+        $userRole2_A = $this->createUser($role2);
+        $userRole2_B = $this->createUser($role2);
+        $userRole3 = $this->createUser($role3);
+
+        $this->assertEquals(3, Role::count());
+        $this->assertEquals(4, User::count());
+
+
+        // User is logged in
+        $this->loginUser($userRole2_A);
+
+        // User can't edit higher level roles
+        $this->httpRequestAssert("/twill/roles/{$role1->id}/edit", 'GET', [], 403);
+
+        // User can edit equal or lower level roles
+        $this->httpRequestAssert("/twill/roles/{$role2->id}/edit", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/roles/{$role3->id}/edit", 'GET', [], 200);
+
+        // User can't edit higher level users
+        $this->httpRequestAssert("/twill/users/{$userRole1->id}/edit", 'GET', [], 403);
+
+        // User can edit equal or lower level users
+        $this->httpRequestAssert("/twill/users/{$userRole2_B->id}/edit", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/users/{$userRole3->id}/edit", 'GET', [], 200);
+
+        // User can't assign higher level roles
+        $this->httpRequestAssert("/twill/users", 'POST', [
+            'name' => 'Test',
+            'email' => 'test@test.test',
+            'role_id' => $role1->id,
+            'published' => true,
+        ]);
+        $this->assertSee('The selected role id is invalid');
+        $this->assertEquals(4, User::count());
+
+        // User can assign equal level roles
+        $this->httpRequestAssert("/twill/users", 'POST', [
+            'name' => 'Test',
+            'email' => 'test@test.test',
+            'role_id' => $role2->id,
+            'published' => true,
+        ]);
+        $this->assertDontSee('The selected role id is invalid');
+        $this->assertEquals(5, User::count());
+
+        // User can assign lower level roles
+        $this->httpRequestAssert("/twill/users", 'POST', [
+            'name' => 'Test2',
+            'email' => 'test2@test.test',
+            'role_id' => $role3->id,
+            'published' => true,
+        ]);
+        $this->assertDontSee('The selected role id is invalid');
+        $this->assertEquals(6, User::count());
+    }
 }
