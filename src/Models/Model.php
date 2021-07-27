@@ -28,7 +28,7 @@ abstract class Model extends BaseModel implements TaggableInterface
 
     public function scopePublished($query)
     {
-        return $query->wherePublished(true);
+        return $query->where("{$this->getTable()}.published", true);
     }
 
     public function scopeAccessible($query)
@@ -65,7 +65,8 @@ abstract class Model extends BaseModel implements TaggableInterface
     public function scopePublishedInListings($query)
     {
         if ($this->isFillable('public')) {
-            $query->wherePublic(true);
+            $query->where("{$this->getTable()}.public", true);
+
         }
 
         return $query->published()->visible();
@@ -75,12 +76,12 @@ abstract class Model extends BaseModel implements TaggableInterface
     {
         if ($this->isFillable('publish_start_date')) {
             $query->where(function ($query) {
-                $query->whereNull('publish_start_date')->orWhere('publish_start_date', '<=', Carbon::now());
+                $query->whereNull("{$this->getTable()}.publish_start_date")->orWhere("{$this->getTable()}.publish_start_date", '<=', Carbon::now());
             });
 
             if ($this->isFillable('publish_end_date')) {
                 $query->where(function ($query) {
-                    $query->whereNull('publish_end_date')->orWhere('publish_end_date', '>=', Carbon::now());
+                    $query->whereNull("{$this->getTable()}.publish_end_date")->orWhere("{$this->getTable()}.publish_end_date", '>=', Carbon::now());
                 });
             }
         }
@@ -95,12 +96,12 @@ abstract class Model extends BaseModel implements TaggableInterface
 
     public function scopeDraft($query)
     {
-        return $query->wherePublished(false);
+        return $query->where("{$this->getTable()}.published", false);
     }
 
     public function scopeOnlyTrashed($query)
     {
-        return $query->whereNotNull('deleted_at');
+        return $query->whereNotNull("{$this->getTable()}.deleted_at");
     }
 
     public function getFillable()

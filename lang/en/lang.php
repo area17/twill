@@ -54,6 +54,8 @@ return [
             'published' => 'Published',
             'featured' => 'Featured',
             'unfeatured' => 'Unfeatured',
+            'restored' => 'Restored',
+            'deleted' => 'Deleted',
         ],
         'activity-row' => [
             'edit' => 'Edit',
