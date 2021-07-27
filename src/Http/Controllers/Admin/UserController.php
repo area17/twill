@@ -332,6 +332,12 @@ class UserController extends ModuleController
     {
         $this->authorizableOptions['edit'] = 'edit-user';
 
+        // Users can't assign roles above their own
+        if ($selectedRole = request()->get('role_id')) {
+            $accessibleRoleIds = auth('twill_users')->user()->role->accessibleRoles->pluck('id');
+            abort_if(! $accessibleRoleIds->contains($selectedRole), 403);
+        }
+
         return parent::update($id, $submoduleId);
     }
 
@@ -369,7 +375,7 @@ class UserController extends ModuleController
     private function getRoleList()
     {
         if (config('twill.enabled.permissions-management')) {
-            return Role::published()->get()->map(function ($role) {
+            return Role::accessible()->published()->get()->map(function ($role) {
                 return ['value' => $role->id, 'label' => $role->name];
             })->toArray();
         }
