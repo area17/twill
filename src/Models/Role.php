@@ -47,7 +47,7 @@ class Role extends BaseModel implements Sortable
     ];
 
     /**
-     * Scope accessible roles.
+     * Scope accessible roles for the current user.
      *
      * @param Builder $query
      * @return Builder
@@ -59,7 +59,10 @@ class Role extends BaseModel implements Sortable
         if ($currentUser->isSuperAdmin()) {
             return $query;
         }
-        return $query->where('position', '>=', $currentUser->role->position);
+
+        $accessibleRoleIds = $currentUser->role->accessibleRoles->pluck('id')->toArray();
+
+        return $query->whereIn('id', $accessibleRoleIds);
     }
 
     /**
@@ -126,7 +129,7 @@ class Role extends BaseModel implements Sortable
     }
 
     /**
-     * Return the roles that are considered accessible for the current role
+     * Return the roles that are considered accessible for this role
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */

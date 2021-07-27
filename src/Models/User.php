@@ -74,6 +74,12 @@ class User extends AuthenticatableContract
         parent::__construct($attributes);
     }
 
+    /**
+     * Scope accessible users for the current user.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
     public function scopeAccessible($query)
     {
         $currentUser = auth('twill_users')->user();
