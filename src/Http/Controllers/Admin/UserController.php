@@ -332,12 +332,6 @@ class UserController extends ModuleController
     {
         $this->authorizableOptions['edit'] = 'edit-user';
 
-        // Users can't assign roles above their own
-        if ($selectedRole = request()->get('role_id')) {
-            $accessibleRoleIds = auth('twill_users')->user()->role->accessibleRoles->pluck('id');
-            abort_if(! $accessibleRoleIds->contains($selectedRole), 403);
-        }
-
         return parent::update($id, $submoduleId);
     }
 

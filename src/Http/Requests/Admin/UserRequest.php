@@ -3,7 +3,10 @@
 namespace A17\Twill\Http\Requests\Admin;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use PragmaRX\Google2FA\Google2FA;
+use A17\Twill\Models\Role;
+use A17\Twill\Models\User;
 
 class UserRequest extends Request
 {
@@ -27,20 +30,13 @@ class UserRequest extends Request
         switch ($this->method()) {
             case 'POST':
                 {
-                    $roleKeyValue = config('twill.enabled.permissions-management') ?
-                        ['role_id' => 'required'] :
-                        ['role' => 'required|not_in:SUPERADMIN'];
-
                     return [
                         'name' => 'required',
                         'email' => 'required|email|unique:' . config('twill.users_table', 'twill_users') . ',email',
-                    ] + $roleKeyValue;
+                    ] + $this->getRoleValidator(['required']);
                 }
             case 'PUT':
                 {
-                    $roleKeyValue = config('twill.enabled.permissions-management') ?
-                        [] : ['role' => 'not_in:SUPERADMIN'];
-
                     return [
                         'name' => 'required',
                         'email' => 'required|email|unique:' . config('twill.users_table', 'twill_users') . ',email,' . $this->route('user'),
@@ -63,13 +59,27 @@ class UserRequest extends Request
                                 }
                             }
                         },
-                    ] + $roleKeyValue;
+                    ] + $this->getRoleValidator();
                 }
             default:break;
         }
 
         return [];
-
     }
 
+    /**
+     * @return array
+     */
+    private function getRoleValidator($baseRule = [])
+    {
+        if (config('twill.enabled.permissions-management')) {
+            // Users can't assign roles above their own
+            $accessibleRoleIds = Role::accessible()->get()->pluck('id')->toArray();
+            $baseRule[] = Rule::in($accessibleRoleIds);
+        } else {
+            $baseRule[] = 'not_in:SUPERADMIN';
+        }
+
+        return [User::getRoleColumnName() => $baseRule];
+    }
 }
