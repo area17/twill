@@ -101,6 +101,7 @@ class UserRepository extends ModuleRepository
                 if ($browserField['id'] === Group::getEveryoneGroup()->id &&
                     $browserField['name'] === Group::getEveryoneGroup()->name
                 ) {
+                    $browserFields[$index]['edit'] = false;
                     $browserFields[$index]['deletable'] = false;
                 }
             }
