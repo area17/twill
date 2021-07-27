@@ -83,35 +83,45 @@
                     'name' => 'verify-code',
                     'label' => twillTrans('twill::lang.user-management.otp'),
                     'note' => twillTrans('twill::lang.user-management.2fa-disable'),
-
                 ])
             @endcomponent
         @endunless
     @endif
 
     @if(config('twill.enabled.permissions-management') && Config::get('twill.permissions.level') != 'role')
-        @if($item->groups->count())
-            @php
-            $groups = json_encode($item->groups->map(function ($group) {
-                return [
-                    'label' => $group->name,
-                    'value' => $group->id
-                ];
-            }));
+        @can('edit-user-groups')
+            @formField('browser', [
+                'moduleName' => 'groups',
+                'name' => 'groups',
+                'label' => 'Groups',
+                'note' => '',
+                'max' => 999,
+            ])
+        @else
+            @if($item->groups->count())
+                @php
+                    $groups = json_encode($item->groups->map(function ($group) {
+                        return [
+                            'label' => $group->name,
+                            'value' => $group->id
+                        ];
+                    }));
 
-            $values = json_encode($item->groups->map(function ($group) {
-                return $group->id;
-            }));
-            @endphp
-            <a17-vselect
-                label="Groups"
-                name="tags"
-                :selected="{{ $groups }}"
-                :options="{{ $groups }}"
-                :multiple="true"
-                :disabled="true"
-            ></a17-vselect>
-        @endif
+                    $values = json_encode($item->groups->map(function ($group) {
+                        return $group->id;
+                    }));
+                @endphp
+
+                <a17-vselect
+                    label="Groups"
+                    name="groups_readonly"
+                    :selected="{{ $groups }}"
+                    :options="{{ $groups }}"
+                    :multiple="true"
+                    :disabled="true"
+                ></a17-vselect>
+            @endif
+        @endcan
     @endif
 @stop
 

@@ -200,6 +200,10 @@ class UserRepository extends ModuleRepository
             $user->save();
         }
 
+        if (auth('twill_users')->user()->can('edit-user-groups')) {
+            $this->updateBrowser($user, $fields, 'groups');
+        }
+
         parent::afterSave($user, $fields);
     }
 

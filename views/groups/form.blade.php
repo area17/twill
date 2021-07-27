@@ -13,8 +13,8 @@
     @formField('browser', [
         'moduleName' => 'users',
         'name' => 'users',
-        'notes' => 'Add members to the groups',
         'label' => 'Users',
+        'note' => '',
         'max' => 999
     ])
 
