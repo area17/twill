@@ -109,8 +109,8 @@
                             </a17-fieldset>
                         @endunless
 
-                        @if(config('twill.enabled.permissions-management') && Config::get('twill.permissions.level') == 'roleGroupModule')
-                            @if(false) {{-- $showPermissionFieldset ?? null) --}}
+                        @if(config('twill.enabled.permissions-management') && config('twill.permissions.level') === 'roleGroupModule')
+                            @if($showPermissionFieldset ?? null)
                                 @can('manage-item', $item)
                                     <a17-fieldset title="User Permissions" id="permissions">
                                         @formField('select_permissions', [
