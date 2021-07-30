@@ -6,6 +6,7 @@ use A17\Twill\Models\User;
 use A17\Twill\Models\Role;
 use A17\Twill\Models\Group;
 use A17\Twill\PermissionAuthServiceProvider;
+use App\Repositories\PostRepository;
 use Illuminate\Support\Facades\Mail;
 
 class PermissionsTest extends PermissionsTestBase
@@ -415,5 +416,71 @@ class PermissionsTest extends PermissionsTestBase
         ]);
         $this->assertDontSee('The selected role id is invalid');
         $this->assertEquals(6, User::count());
+    }
+
+    public function testHandlePermissionsGetFormFields()
+    {
+        app('config')->set('twill.permissions.level', 'roleGroupModule');
+
+        User::truncate();
+        Role::truncate();
+        Group::truncate();
+
+        $managerRole = $this->createRole('Manager');
+        $managerRole->grantGlobalPermission('manage-modules');
+        $manager = $this->createUser($managerRole);
+
+        $viewerRole = $this->createRole('Viewer');
+        $viewer = $this->createUser($viewerRole);
+        $alpha = $this->createGroup('Alpha');
+        $beta = $this->createGroup('Beta');
+        $viewer->groups()->attach($alpha);
+        $viewer->groups()->attach($beta);
+
+        $this->assertEquals(2, User::count());
+        $this->assertEquals(2, Role::count());
+        $this->assertEquals(2, Group::count());
+        $this->assertEquals(2, $viewer->groups->count());
+
+        $this->loginUser($manager);
+
+
+        $post = $this->createPost();
+
+        // Manager has highest permission
+        $fields = app(PostRepository::class)->getFormFields($post);
+        $this->assertEquals('manage-item', $fields['user_1_permission']);
+
+        // Viewer has no permission
+        $this->assertEquals('', $fields['user_2_permission']);
+
+
+        $viewer->grantModuleItemPermission('view-item', $post);
+
+        // Viewer has view-item permission
+        $fields = app(PostRepository::class)->getFormFields($post);
+        $this->assertEquals('view-item', $fields['user_2_permission']);
+
+
+        $alpha->grantModuleItemPermission('edit-item', $post);
+
+        // Viewer has edit-item permission through group
+        $fields = app(PostRepository::class)->getFormFields($post);
+        $this->assertEquals('edit-item', $fields['user_2_permission']);
+
+
+        $beta->grantModuleItemPermission('manage-item', $post);
+
+        // Viewer has manage-item permission through other group
+        $fields = app(PostRepository::class)->getFormFields($post);
+        $this->assertEquals('manage-item', $fields['user_2_permission']);
+
+
+        $viewer->groups()->detach($beta);
+        $viewer->role->grantModulePermission('manage-module', 'App\\Models\\Post');
+
+        // Viewer has manage-item permission through role
+        $fields = app(PostRepository::class)->getFormFields($post);
+        $this->assertEquals('manage-item', $fields['user_2_permission']);
     }
 }
