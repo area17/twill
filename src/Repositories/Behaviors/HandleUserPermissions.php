@@ -152,14 +152,14 @@ trait HandleUserPermissions
                 foreach ($moduleItems as $moduleItem) {
                     $index = $moduleName . '_' . $moduleItem->id . '_permission';
                     if (!isset($fields[$index])) {
-                        $fields[$index] = "\"{$permission}\"";
+                        $fields[$index] = "{$permission}";
                     } else {
                         $current = array_search($fields[$index], $itemScopes);
                         $global = array_search($permission, $itemScopes);
 
                         // check permission level
                         if ($global > $current) {
-                            $fields[$index] = "\"{$permission}\"";
+                            $fields[$index] = "{$permission}";
                         }
                     }
                 }
