@@ -81,7 +81,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
         });
 
         $this->define('edit-user-groups', function ($user) {
-            if (!in_array(Config::get('twill.permissions.level'), ['roleGroup', 'roleGroupModule'])) {
+            if (!in_array(Config::get('twill.permissions.level'), ['roleGroup', 'roleGroupItem'])) {
                 return false;
             }
 

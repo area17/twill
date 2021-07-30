@@ -218,7 +218,7 @@ class PermissionsTest extends PermissionsTestBase
 
     public function testModulePermissions()
     {
-        app('config')->set('twill.permissions.level', 'roleGroupModule');
+        app('config')->set('twill.permissions.level', 'roleGroupItem');
 
         $role = $this->createRole('Tester');
         $group = $this->createGroup('Beta');
@@ -262,7 +262,7 @@ class PermissionsTest extends PermissionsTestBase
 
     public function testUserModulePermissions()
     {
-        app('config')->set('twill.permissions.level', 'roleGroupModule');
+        app('config')->set('twill.permissions.level', 'roleGroupItem');
 
         $role = $this->createRole('Tester');
         $user = $this->createUser($role);
@@ -299,7 +299,7 @@ class PermissionsTest extends PermissionsTestBase
     {
         Mail::fake();
 
-        app('config')->set('twill.permissions.level', 'roleGroupModule');
+        app('config')->set('twill.permissions.level', 'roleGroupItem');
 
         $everyoneGroup = Group::getEveryoneGroup();
 
@@ -345,7 +345,7 @@ class PermissionsTest extends PermissionsTestBase
 
     public function testRoleBasedAccessLevel()
     {
-        app('config')->set('twill.permissions.level', 'roleGroupModule');
+        app('config')->set('twill.permissions.level', 'roleGroupItem');
 
         Role::truncate();
         User::truncate();
@@ -420,7 +420,7 @@ class PermissionsTest extends PermissionsTestBase
 
     public function testHandlePermissionsGetFormFields()
     {
-        app('config')->set('twill.permissions.level', 'roleGroupModule');
+        app('config')->set('twill.permissions.level', 'roleGroupItem');
 
         User::truncate();
         Role::truncate();
@@ -486,7 +486,7 @@ class PermissionsTest extends PermissionsTestBase
 
     public function testHandlePermissionsAfterSave()
     {
-        app('config')->set('twill.permissions.level', 'roleGroupModule');
+        app('config')->set('twill.permissions.level', 'roleGroupItem');
 
         User::truncate();
         Role::truncate();

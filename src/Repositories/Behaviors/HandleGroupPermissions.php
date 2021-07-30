@@ -33,7 +33,7 @@ trait HandleGroupPermissions
                     $fields['module_' . $moduleName . '_permissions'] = 'none';
                 }
             }
-        } elseif (config('twill.permissions.level') == 'roleGroupModule') {
+        } elseif (config('twill.permissions.level') == 'roleGroupItem') {
             // Add active item permissions
             foreach ($object->permissions()->moduleItem()->get() as $permission) {
                 $model = $permission->permissionable()->first();

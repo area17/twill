@@ -70,7 +70,7 @@
     @endif
 @stop
 
-@if(Config::get('twill.permissions.level') == 'roleGroupModule')
+@if(Config::get('twill.permissions.level') == 'roleGroupItem')
   @can('edit-user-groups')
       @section('fieldsets')
           @foreach($permissionModules as $moduleName => $moduleItems)

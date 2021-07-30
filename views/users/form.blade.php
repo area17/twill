@@ -128,7 +128,7 @@
 
 @section('fieldsets')
 
-    @if(config('twill.enabled.permissions-management') && Config::get('twill.permissions.level') == 'roleGroupModule')
+    @if(config('twill.enabled.permissions-management') && Config::get('twill.permissions.level') == 'roleGroupItem')
         @can('edit-users')
             @unless($item->isSuperAdmin() || $item->id == $currentUser->id)
                 @component('twill::partials.form.utils._connected_fields', [

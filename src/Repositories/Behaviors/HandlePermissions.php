@@ -130,7 +130,7 @@ trait HandlePermissions
     private function shouldProcessPermissions($moduleName)
     {
         return config('twill.enabled.permissions-management')
-            && config('twill.permissions.level') === 'roleGroupModule'
+            && config('twill.permissions.level') === 'roleGroupItem'
             && isPermissionableModule($moduleName);
     }
 

@@ -12,7 +12,7 @@ return [
     | Three levels exists
     | - role: this manages the access of modules based on the role of a user.
     | - roleGroup: this manages the access of modules for a group of users.
-    | - roleGroupModule: this manages the permission of items within a module.
+    | - roleGroupItem: this manages the permission of items within a module.
     |
      */
 
