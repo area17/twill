@@ -483,4 +483,52 @@ class PermissionsTest extends PermissionsTestBase
         $fields = app(PostRepository::class)->getFormFields($post);
         $this->assertEquals('manage-item', $fields['user_2_permission']);
     }
+
+    public function testHandlePermissionsAfterSave()
+    {
+        app('config')->set('twill.permissions.level', 'roleGroupModule');
+
+        User::truncate();
+        Role::truncate();
+
+        $managerRole = $this->createRole('Manager');
+        $managerRole->grantGlobalPermission('manage-modules');
+        $manager = $this->createUser($managerRole);
+
+        $viewerRole = $this->createRole('Viewer');
+        $viewerRole->grantModulePermission('view-module', 'App\\Models\\Post');
+        $viewer = $this->createUser($viewerRole);
+
+        $this->assertEquals(2, User::count());
+        $this->assertEquals(2, Role::count());
+
+        $this->loginUser($manager);
+
+
+        $post = $this->createPost();
+
+        // Viewer has no direct view-item permission
+        $this->assertEquals(0, $viewer->permissions()->ofItem($post)->count());
+
+        // Viewer has view-item permission through role
+        $fields = app(PostRepository::class)->getFormFields($post);
+        $this->assertEquals('view-item', $fields['user_2_permission']);
+
+
+        app(PostRepository::class)->update($post->id, array_merge($fields, [
+            'user_2_permission' => 'view-item',
+        ]));
+
+        // Viewer has no direct view-item permission — nothing changed
+        $this->assertEquals(0, $viewer->permissions()->ofItem($post)->count());
+
+
+        app(PostRepository::class)->update($post->id, array_merge($fields, [
+            'user_2_permission' => 'edit-item',
+        ]));
+
+        // Viewer has direct edit-item permission
+        $this->assertEquals(1, $viewer->permissions()->ofItem($post)->count());
+        $this->assertEquals('edit-item', $viewer->permissions()->ofItem($post)->first()->name);
+    }
 }
