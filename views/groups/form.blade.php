@@ -18,7 +18,7 @@
         'max' => 999
     ])
 
-    @if(Config::get('twill.permissions.level') == 'roleGroup')
+    @if(config('twill.permissions.level') == 'roleGroup')
         @component('twill::partials.form.utils._field_rows', [
             'title' => 'Content permissions'
         ])
@@ -56,11 +56,11 @@
         @endcomponent
     @endif
 
-    @if(Config::get('twill.support_subdomain_admin_routing'))
+    @if(config('twill.support_subdomain_admin_routing'))
         @component('twill::partials.form.utils._field_rows', [
             'title' => 'Subdomain Access'
         ])
-            @foreach(Config::get('twill.app_names') as $subdomain => $subdomainTitle)
+            @foreach(config('twill.app_names') as $subdomain => $subdomainTitle)
                 @formField('checkbox', [
                     'name' => 'subdomain_access_' . $subdomain,
                     'label' => $subdomainTitle
@@ -70,7 +70,7 @@
     @endif
 @stop
 
-@if(Config::get('twill.permissions.level') == 'roleGroupItem')
+@if(config('twill.permissions.level') == 'roleGroupItem')
   @can('edit-user-groups')
       @section('fieldsets')
           @foreach($permissionModules as $moduleName => $moduleItems)

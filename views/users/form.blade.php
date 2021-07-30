@@ -88,7 +88,7 @@
         @endunless
     @endif
 
-    @if(config('twill.enabled.permissions-management') && Config::get('twill.permissions.level') != 'role')
+    @if(config('twill.enabled.permissions-management') && config('twill.permissions.level') != 'role')
         @can('edit-user-groups')
             @formField('browser', [
                 'moduleName' => 'groups',
@@ -128,7 +128,7 @@
 
 @section('fieldsets')
 
-    @if(config('twill.enabled.permissions-management') && Config::get('twill.permissions.level') == 'roleGroupItem')
+    @if(config('twill.enabled.permissions-management') && config('twill.permissions.level') == 'roleGroupItem')
         @can('edit-users')
             @unless($item->isSuperAdmin() || $item->id == $currentUser->id)
                 @component('twill::partials.form.utils._connected_fields', [
