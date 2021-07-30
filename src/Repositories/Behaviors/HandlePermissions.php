@@ -11,7 +11,7 @@ trait HandlePermissions
     /**
      * Retrieve user-item permissions fields
      *
-     * @param Model|User $object
+     * @param Model $object
      * @param array $fields
      * @return array
      */
