@@ -3,6 +3,7 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Session;
 use A17\Twill\Models\Permission;
 
 trait HandlePermissions
@@ -29,6 +30,8 @@ trait HandlePermissions
                 return ["user_{$user->id}_permission" => $permissionName];
             }
         )->toArray();
+
+        $this->storePermissionFields($moduleName, $object, $userItemPermissions);
 
         return $fields + $userItemPermissions;
     }
@@ -104,7 +107,26 @@ trait HandlePermissions
             return;
         }
 
-        // ...
+        $oldItemPermissions = $this->recallPermissionFields($moduleName, $object);
+
+        foreach ($fields as $key => $value) {
+            if (!Str::endsWith($key, '_permission')) {
+                continue;
+            }
+
+            if (isset($oldItemPermissions[$key]) && $oldItemPermissions[$key] === $value) {
+                continue;
+            }
+
+            $userId = explode('_', $key)[1];
+            $user = twillModel('user')::find($userId);
+
+            if ($value) {
+                $user->grantModuleItemPermission($value, $object);
+            } else {
+                $user->revokeModuleItemAllPermissions($object);
+            }
+        }
     }
 
     private function shouldProcessPermissions($moduleName)
@@ -112,5 +134,15 @@ trait HandlePermissions
         return config('twill.enabled.permissions-management')
             && config('twill.permissions.level') === 'roleGroupModule'
             && isPermissionableModule($moduleName);
+    }
+
+    private function storePermissionFields($moduleName, $object, $permissionFields)
+    {
+        Session::put("{$moduleName}_{$object->id}_item_permissions", $permissionFields);
+    }
+
+    private function recallPermissionFields($moduleName, $object)
+    {
+        return Session::get("{$moduleName}_{$object->id}_item_permissions") ?: [];
     }
 }
