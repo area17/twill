@@ -241,12 +241,21 @@ class PermissionsTest extends PermissionsTestBase
         $this->httpRequestAssert("/twill/posts", 'GET', [], 403);
         $this->withItemPermission($group, $post, 'view-item', function () {
             $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
+            $this->assertDontSee("a17-singleselect-permissions");
         });
 
         // User group can edit item if permitted
         $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
         $this->withItemPermission($group, $post, 'edit-item', function () use ($post) {
             $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
+            $this->assertDontSee("a17-singleselect-permissions");
+        });
+
+        // User group can manage item if permitted
+        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
+        $this->withItemPermission($group, $post, 'manage-item', function () use ($post) {
+            $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
+            $this->assertSee("a17-singleselect-permissions");
         });
     }
 
@@ -267,12 +276,21 @@ class PermissionsTest extends PermissionsTestBase
         $this->httpRequestAssert("/twill/posts", 'GET', [], 403);
         $this->withItemPermission($user, $post, 'view-item', function () {
             $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
+            $this->assertDontSee("a17-singleselect-permissions");
         });
 
         // User can edit item if permitted
         $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
         $this->withItemPermission($user, $post, 'edit-item', function () use ($post) {
             $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
+            $this->assertDontSee("a17-singleselect-permissions");
+        });
+
+        // User can manage item if permitted
+        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
+        $this->withItemPermission($user, $post, 'manage-item', function () use ($post) {
+            $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
+            $this->assertSee("a17-singleselect-permissions");
         });
     }
 
