@@ -18,6 +18,9 @@
       <div class="multiselectorPermissions__empty" v-if="empty" :style="emptyStyle">
         <h4>{{ emptyMessage }}</h4>
       </div>
+      <div class="multiselectorPermissions__empty" v-if="allHidden" :style="emptyStyle">
+        <h4>{{ allHiddenMessage }}</h4>
+      </div>
     </div>
   </div>
 </template>
@@ -44,11 +47,16 @@
       emptyMessage: {
         type: String,
         default: 'No results found. Please try another search'
+      },
+      allHiddenMessage: {
+        type: String,
+        default: 'Use the search box to find items'
       }
     },
     data: function () {
       return {
         empty: false,
+        allHidden: false,
         activeGroups: [],
         emptyHeight: 120
       }
@@ -65,17 +73,42 @@
         groupUserMapping: state => state.permissions.groupUserMapping
       })
     },
-    methods: {
-      submitFilter (formData) {
-        // filter the list with an ol'good querySelectorAll
-        const allItems = this.$el.querySelectorAll('[data-singleselect-permissions-filterable]')
-        this.emptyHeight = Math.max(120, allItems[0].parentElement.offsetHeight)
+    mounted () {
+      if (!this.listUser) {
+        const allItems = this.$el.querySelectorAll('[data-singleselect-permissions-field]')
+        const filterClass = 'multiselectorPermissions__item--hidden'
 
-        if (allItems) {
-          this.empty = true
+        if (allItems.length) {
+          let hiddenItemsCount = 0
 
           allItems.forEach((itemEl) => {
-            const filterClass = 'multiselectorPermissions__item--hidden'
+            const fieldName = itemEl.getAttribute('data-singleselect-permissions-field')
+            const fieldValue = this.fieldsByName(fieldName)
+            const permission = fieldValue.length ? fieldValue[0].value : ''
+
+            if (!permission) {
+              itemEl.classList.add(filterClass)
+              hiddenItemsCount++
+            }
+          })
+
+          if (hiddenItemsCount === allItems.length) {
+            this.allHidden = true
+          }
+        }
+      }
+    },
+    methods: {
+      submitFilter (formData) {
+        const allItems = this.$el.querySelectorAll('[data-singleselect-permissions-filterable]')
+        const filterClass = 'multiselectorPermissions__item--hidden'
+
+        if (allItems.length) {
+          this.emptyHeight = Math.max(120, allItems[0].parentElement.offsetHeight)
+          this.empty = true
+          this.allHidden = false
+
+          allItems.forEach((itemEl) => {
             const filterValue = itemEl.getAttribute('data-singleselect-permissions-filterable')
 
             if (formData.search) {

@@ -23,11 +23,16 @@
     @if ($listUser) :list-user="true" @endif
 >
     @foreach ($itemsInSelectsTables as $itemInSelectsTables)
-        <div class="multiselectorPermissions__item" data-singleselect-permissions-filterable="{{ $itemInSelectsTables[$labelKey ?? 'title'] }}">
-            @php
-                $name = str_replace("%id%", $itemInSelectsTables->id, $namePattern);
-                $default = $default ?? false;
-            @endphp
+        @php
+            $name = str_replace("%id%", $itemInSelectsTables->id, $namePattern);
+            $default = $default ?? false;
+        @endphp
+
+        <div
+            class="multiselectorPermissions__item"
+            data-singleselect-permissions-filterable="{{ $itemInSelectsTables[$labelKey ?? 'title'] }}"
+            data-singleselect-permissions-field="{{ $name }}"
+        >
             @if ($listUser)
                 <a17-avatar
                     name="{{ $itemInSelectsTables[$labelKey ?? 'title'] }}"
