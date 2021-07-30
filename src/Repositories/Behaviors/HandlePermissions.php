@@ -44,22 +44,20 @@ trait HandlePermissions
 
         $allPermissionNames = collect([]);
 
-        // Role-module permission
+        // Role-Module permission
         if ($modulePermission = $user->role->permissions()->ofModuleName($moduleName)->first()) {
             $allPermissionNames->push(str_replace('-module', '-item', $modulePermission->name));
         }
 
-        // Group-module permissions
+        // Group-Item permissions
         $userGroups = $user->groups()->where('is_everyone_group', false)->get();
-        if ($userGroups->count() > 0) {
-            $groupPermissionNames = $userGroups->map(function ($group) use ($moduleName) {
-                return $group->permissions()->ofModuleName($moduleName)->first();
-            })->filter()->pluck('name')->toArray();
-
-            $allPermissionNames->concat($groupPermissionNames);
+        foreach($userGroups as $group) {
+            if ($permission = $group->permissions()->ofItem($item)->first()) {
+                $allPermissionNames->push($permission->name);
+            }
         }
 
-        // Item permission
+        // User-Item permission
         if ($itemPermission = $user->permissions()->ofItem($item)->first()) {
             $allPermissionNames->push($itemPermission->name);
         }
