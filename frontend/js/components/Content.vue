@@ -5,7 +5,10 @@
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
           <a17-block :block="block" :index="index" :opened="opened" :closed="closed" @expand="setOpened" ref="blockList">
             <template v-for="availableBlock in availableBlocks">
-              <button type="button" slot="dropdown-add" v-if="availableBlocks.length" :key="availableBlock.component" @click="addBlock(availableBlock, index + 1)"><span v-svg :symbol="availableBlock.icon"></span> {{ availableBlock.title }}</button>
+              <button class="content__addButton" type="button" slot="dropdown-add" v-if="availableBlocks.length" :key="availableBlock.component" @click="addBlock(availableBlock, index + 1)">
+                <span class="content__icon" v-svg :symbol="availableBlock.icon"></span>
+                <span class="content__title">{{ availableBlock.title }}</span>
+              </button>
             </template>
             <div slot="dropdown-action">
               <button type="button" @click="collapseAllBlocks()" v-if="opened">{{ $trans('fields.block-editor.collapse-all', 'Collapse all') }}</button>
@@ -24,7 +27,10 @@
       <a17-dropdown ref="blocksDropdown" position="top-center" :arrow="true" :offset="10" v-if="availableBlocks.length" :maxHeight="430">
         <a17-button size="small" variant="action" @click="$refs.blocksDropdown.toggle()">{{ title }}</a17-button>
         <div slot="dropdown__content">
-          <button type="button" v-for="availableBlock in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, -1)"><span class="content__icon" v-svg :symbol="availableBlock.icon"></span>{{ availableBlock.title }}</button>
+          <button class="content__addButton" type="button" v-for="availableBlock in availableBlocks" :key="availableBlock.component" @click="addBlock(availableBlock, -1)">
+            <span class="content__icon" v-svg :symbol="availableBlock.icon"></span>
+            <span class="content__title">{{ availableBlock.title }}</span>
+          </button>
         </div>
       </a17-dropdown>
       <div class="content__secondaryActions">
@@ -185,15 +191,26 @@
     }
   }
 
-  .content__actions button .content__icon {
-    margin-right:0;
-    margin-left:-15px;
-    min-width: 55px;
-    text-align: center;
-    height:40px;
-  }
-
   .content__item:first-child {
     border-top:1px solid $color__border;
+  }
+
+  .content__addButton {
+    display: flex !important;
+    align-items: center;
+
+    .content__icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0;
+      margin-left: -15px;
+      min-width: 55px;
+      height: 40px;
+    }
+
+    .content__title {
+      flex-grow: 1;
+    }
   }
 </style>
