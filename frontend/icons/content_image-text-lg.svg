@@ -1,8 +1,8 @@
 <svg width="46" height="18" viewBox="0 0 46 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="26.25" y="0.25" width="19.5" height="0.5" stroke="#666666" stroke-width="0.5"/>
-<rect x="26.25" y="4.25" width="19.5" height="0.5" stroke="#666666" stroke-width="0.5"/>
-<rect x="26.25" y="8.25" width="19.5" height="0.5" stroke="#666666" stroke-width="0.5"/>
-<rect x="26.25" y="12.25" width="19.5" height="0.5" stroke="#666666" stroke-width="0.5"/>
-<rect x="26.25" y="16.25" width="12.5" height="0.5" stroke="#666666" stroke-width="0.5"/>
-<rect x="0.5" y="0.5" width="20" height="17" rx="0.5" stroke="#666666"/>
+<rect x="26.25" y="0.25" width="19.5" height="0.5" stroke="currentColor" stroke-width="0.5"/>
+<rect x="26.25" y="4.25" width="19.5" height="0.5" stroke="currentColor" stroke-width="0.5"/>
+<rect x="26.25" y="8.25" width="19.5" height="0.5" stroke="currentColor" stroke-width="0.5"/>
+<rect x="26.25" y="12.25" width="19.5" height="0.5" stroke="currentColor" stroke-width="0.5"/>
+<rect x="26.25" y="16.25" width="12.5" height="0.5" stroke="currentColor" stroke-width="0.5"/>
+<rect x="0.5" y="0.5" width="20" height="17" rx="0.5" stroke="currentColor"/>
 </svg>

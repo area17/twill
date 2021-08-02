@@ -1,8 +1,8 @@
 <svg width="26" height="10" viewBox="0 0 26 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="15.0455" y="0.136364" width="10.6364" height="0.272727" stroke="#666666" stroke-width="0.272727"/>
-<rect x="15.0455" y="2.318" width="10.6364" height="0.272727" stroke="#666666" stroke-width="0.272727"/>
-<rect x="15.0455" y="4.50013" width="10.6364" height="0.272727" stroke="#666666" stroke-width="0.272727"/>
-<rect x="15.0455" y="6.68177" width="10.6364" height="0.272727" stroke="#666666" stroke-width="0.272727"/>
-<rect x="15.0455" y="8.86341" width="6.81818" height="0.272727" stroke="#666666" stroke-width="0.272727"/>
-<rect x="1.22729" y="0.5" width="10.4545" height="8.81818" rx="0.5" stroke="#666666"/>
+<rect x="15.0455" y="0.136364" width="10.6364" height="0.272727" stroke="currentColor" stroke-width="0.272727"/>
+<rect x="15.0455" y="2.318" width="10.6364" height="0.272727" stroke="currentColor" stroke-width="0.272727"/>
+<rect x="15.0455" y="4.50013" width="10.6364" height="0.272727" stroke="currentColor" stroke-width="0.272727"/>
+<rect x="15.0455" y="6.68177" width="10.6364" height="0.272727" stroke="currentColor" stroke-width="0.272727"/>
+<rect x="15.0455" y="8.86341" width="6.81818" height="0.272727" stroke="currentColor" stroke-width="0.272727"/>
+<rect x="1.22729" y="0.5" width="10.4545" height="8.81818" rx="0.5" stroke="currentColor"/>
 </svg>
