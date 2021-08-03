@@ -23,13 +23,16 @@
       </div>
     </div>
     <template v-if="!hasBlockActive">
-      <div class="editorSidebar__list" >
+      <div class="editorSidebar__list">
         <h4 class="editorSidebar__title"><slot></slot></h4>
-        <draggable v-model="availableBlocks" :options="{ group: { name: 'editorBlocks',  pull: 'clone', put: false }, handle: '.editorSidebar__button' }" v-if="availableBlocks.length">
-          <div class="editorSidebar__button" :data-title="availableBlock.title" :data-icon="availableBlock.icon" :data-component="availableBlock.component" v-for="availableBlock in availableBlocks" :key="availableBlock.component">
-            <span v-svg :symbol="availableBlock.icon"></span>{{ availableBlock.title }}
-          </div>
-        </draggable>
+        <div class="editorSidebar__listItems">
+          <draggable v-model="availableBlocks" :options="{ group: { name: 'editorBlocks',  pull: 'clone', put: false }, handle: '.editorSidebar__button' }" v-if="availableBlocks.length">
+            <div class="editorSidebar__button" :data-title="availableBlock.title" :data-icon="availableBlock.icon" :data-component="availableBlock.component" v-for="availableBlock in availableBlocks" :key="availableBlock.component">
+              <span v-svg :symbol="iconSymbol(availableBlock.icon)"></span>
+              <span class="editorSidebar__buttonLabel">{{ availableBlock.title }}</span>
+            </div>
+          </draggable>
+        </div>
       </div>
       <div class="editorSidebar__actions">
         <a17-button v-if="isSubmitDisabled(submitOptions[0])" variant="validate" :disabled="true">{{ submitOptions[0].text }}</a17-button>
@@ -120,6 +123,14 @@
       saveForm: function (buttonName) {
         this.$store.commit(PUBLICATION.UPDATE_SAVE_TYPE, buttonName)
         if (this.$root.submitForm) this.$root.submitForm()
+      },
+      iconSymbol: function (icon) {
+        // New icons with `content_` prefix have small and large variations.
+        // Small icons are used in the dropdown and large icons here, in the editor:
+        if (icon.startsWith('content_') && !icon.endsWith('-lg')) {
+          return `${icon}-lg`
+        }
+        return icon
       }
     },
     mounted: function () {
@@ -128,7 +139,6 @@
 </script>
 
 <style lang="scss" scoped>
-
   .editorSidebar {
     margin:20px 0 20px 0;
     // height:100%;
@@ -151,6 +161,12 @@
 
   .editorSidebar__list {
     height: calc(100% - 60px);
+  }
+
+  .editorSidebar__listItems > div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
 
   .editorSidebar__title {
@@ -229,25 +245,32 @@
 
   .editorSidebar__button {
     @include btn-reset;
-    cursor:move;
-    display:block;
-    width:100%;
-    text-align:left;
-    background:$color__background;
-    border-radius: $border-radius;
+    @include font-tiny-btn;
+    cursor: move;
+    display: flex;
+    flex-direction: column;
+    width: calc(50% - 5px);
+    height: 100px;
+    padding: 0 20px;
     margin-bottom: 10px;
-    height:60px;
-    line-height:60px;
-    padding:0 20px;
-    border:1px solid $color__border;
-    color:$color__text--light;
+    background: $color__background;
+    border-radius: $border-radius;
+    border: 1px solid $color__border;
+    color: $color__text--light;
+    text-align: center;
 
     .icon {
-      margin-left:-20px;
-      min-width:65px;
-      text-align:center;
-      color:$color__icons;
-      height:60px - 2px;
+      flex-grow: 1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $color__icons;
+    }
+
+    .editorSidebar__buttonLabel {
+      width: 100%;
+      padding-bottom: 4px;
     }
 
     &:hover,
@@ -278,6 +301,13 @@
       > .browserField:last-child {
         margin-bottom: -15px;
       }
+    }
+  }
+
+  .editorPreview__content {
+    .editorSidebar__button {
+      // use full width instead of half for buttons being dragged to the content area
+      width: 100%;
     }
   }
 </style>
