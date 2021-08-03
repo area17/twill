@@ -125,9 +125,10 @@
         if (this.$root.submitForm) this.$root.submitForm()
       },
       iconSymbol: function (icon) {
-        // New icons with `content_` prefix have small and large variations.
-        // Small icons are used in the dropdown and large icons here, in the editor:
-        if (icon.startsWith('content_') && !icon.endsWith('-lg')) {
+        // Some of the new icons have two variations: small and large.
+        // Small formats are used by default in the dropdown, and
+        // large formats are used in the sidebar if available.
+        if (document.querySelector(`#icon--${icon}-lg`)) {
           return `${icon}-lg`
         }
         return icon
