@@ -133,8 +133,6 @@
         }
         return icon
       }
-    },
-    mounted: function () {
     }
   }
 </script>
