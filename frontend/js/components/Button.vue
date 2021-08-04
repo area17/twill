@@ -344,6 +344,32 @@
     }
   }
 
+  .button--outline,
+  .button--tertiary {
+    transition: color .1s linear, border-color .1s linear, background-color .1s linear;
+    border: 1px solid $color__button_outline;
+    background: transparent;
+    color: $color__text;
+
+    &:focus,
+    &:hover {
+      border-color: $color__text;
+      background: $color__text;
+      color: $color__white;
+    }
+
+    &:active {
+      border-color: $color__text;
+      background: $color__text;
+      color: $color__white;
+    }
+
+    &:disabled {
+      opacity: .5;
+      pointer-events: none;
+    }
+  }
+
   /* ----- Icon buttons ----- */
 
   .button--icon {
