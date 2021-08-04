@@ -15,7 +15,7 @@
       </transition-group>
     </draggable>
     <div class="content__trigger">
-      <a17-button :class="triggerClass" :variant="triggerVariant" :size="triggerSize" @click="addBlock()" v-if="hasRemainingBlocks && blockType.trigger">{{ blockType.trigger }}</a17-button>
+      <a17-button :class="triggerClass" :variant="triggerVariant" @click="addBlock()" v-if="hasRemainingBlocks && blockType.trigger">{{ blockType.trigger }}</a17-button>
       <div class="content__note f--note f--small"><slot></slot></div>
     </div>
   </div>
@@ -44,6 +44,10 @@
       name: {
         type: String,
         required: true
+      },
+      buttonAsLink: {
+        type: Boolean,
+        default: false
       }
     },
     data: function () {
@@ -54,10 +58,10 @@
     },
     computed: {
       triggerVariant: function () {
-        return this.inContentEditor ? 'aslink' : 'action'
-      },
-      triggerSize: function () {
-        return this.inContentEditor ? 'small' : ''
+        if (this.buttonAsLink) {
+          return 'aslink'
+        }
+        return this.inContentEditor ? 'outline' : 'action'
       },
       triggerClass: function () {
         return this.inContentEditor ? 'content__button' : ''
@@ -164,10 +168,13 @@
   }
 
   .content__button {
+    margin-top:-5px;
+  }
+
+  .button--aslink {
     display:block;
     width:100%;
     text-align:center;
-    margin-top:-5px;
   }
 
   .content__note {
