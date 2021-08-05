@@ -494,6 +494,12 @@ class ModuleMake extends Command
             $this->files->get(__DIR__ . '/stubs/controller.stub')
         );
 
+        if ($this->sluggable) {
+            $stub = preg_replace('/{{!hasSlug}}[\s\S]+?{{\/!hasSlug}}/', '', $stub);
+        } else {
+            $stub = str_replace(['{{!hasSlug}}', '{{/!hasSlug}}'], '', $stub);
+        }
+
         twill_put_stub(twill_path("{$dir}/" . $controllerClassName . '.php'), $stub);
 
         $this->info("Controller created successfully! Define your index/browser/form endpoints options!");

@@ -7,4 +7,9 @@ use {{baseController}};
 class {{controllerClassName}} extends ModuleController
 {
     protected $moduleName = '{{moduleName}}';
+    {{!hasSlug}}
+    protected $indexOptions = [
+        'permalink' => false
+    ];
+    {{/!hasSlug}}
 }
