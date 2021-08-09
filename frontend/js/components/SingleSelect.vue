@@ -51,6 +51,10 @@
         type: Boolean,
         default: false
       },
+      border: {
+        type: Boolean,
+        default: false
+      },
       selected: {
         default: ''
       },
@@ -71,7 +75,8 @@
       gridClasses: function () {
         return [
           this.grid ? 'singleselector--grid' : '',
-          this.inline ? 'singleselector--inline' : ''
+          this.inline ? 'singleselector--inline' : '',
+          this.border ? 'singleselector--border' : ''
         ]
       },
       selectedValue: {
@@ -327,12 +332,57 @@
 
   /* inline version */
   .singleselector--inline .singleselector__outer {
-    display:flex;
-    flex-flow: row wrap;
-    overflow:hidden;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: hidden;
   }
 
   .singleselector--inline .singleselector__item {
     margin-right:20px;
+  }
+
+  /* border version */
+  .singleselector--border {
+    border: 1px solid $color__border;
+    background-clip: padding-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 2px;
+    padding: 7px 15px;
+  }
+
+  .singleselector--border.singleselector--inline {
+    padding: 0 15px;
+
+    .singleselector__outer {
+      box-sizing: border-box;
+      overflow: hidden;
+      margin-bottom: -1px;
+      margin-right: -1px;
+    }
+
+    .singleselector__item {
+      padding: 0;
+      height: 50%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .singleselector__label {
+      padding-left: 25px;
+      color: $color__text--light;
+      height: 50px;
+      line-height: 50px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .singleselector__label::before,
+    .singleselector__label::after {
+      top: 50%;
+      margin-top: -9px;
+    }
   }
 </style>

@@ -10,6 +10,7 @@
     $required = $required ?? false;
     $default = $default ?? false;
     $inline = $inline ?? false;
+    $border = $border ?? false;
 
     // do not use for now, but this will allow you to create a new option directly from the form
     $addNew = $addNew ?? false;
@@ -28,6 +29,7 @@
     @if ($default) selected="{{ $default }}" @endif
     :grid="false"
     @if ($inline) :inline="true" @endif
+    @if ($border) :border="true" @endif
     @if ($required) :required="true" @endif
     @if ($inModal) :in-modal="true" @endif
     @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
