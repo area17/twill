@@ -8,6 +8,7 @@
 
     $note = $note ?? false;
     $inline = $inline ?? false;
+    $border = $border ?? false;
 
     // do not use for now, but this will allow you to create a new option directly from the form
     $addNew = $addNew ?? false;
@@ -22,6 +23,7 @@
     :options="{{ json_encode($options) }}"
     :grid="false"
     :inline='{{ $inline ? 'true' : 'false' }}'
+    :border='{{ $border ? 'true' : 'false' }}'
     @if ($min ?? false) :min="{{ $min }}" @endif
     @if ($max ?? false) :max="{{ $max }}" @endif
     @if ($inModal) :in-modal="true" @endif

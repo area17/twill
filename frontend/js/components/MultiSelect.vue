@@ -43,13 +43,18 @@
       inline: {
         type: Boolean,
         default: false
+      },
+      border: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {
       gridClasses: function () {
         return [
           this.grid ? 'multiselector--grid' : '',
-          this.inline ? 'multiselector--inline' : ''
+          this.inline ? 'multiselector--inline' : '',
+          this.border ? 'multiselector--border' : ''
         ]
       }
     },
@@ -292,12 +297,55 @@
 
   /* inline version */
   .multiselector--inline .multiselector__outer {
-    display:flex;
-    flex-flow: row wrap;
-    overflow:hidden;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: hidden;
   }
 
   .multiselector--inline .multiselector__item {
     margin-right:20px;
+  }
+
+  /* border version */
+  .multiselector--border {
+    border: 1px solid $color__border;
+    background-clip: padding-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 2px;
+    padding: 7px 15px;
+  }
+
+  .multiselector--border.multiselector--inline {
+    padding: 0 15px;
+
+    .multiselector__outer {
+      box-sizing: border-box;
+      overflow: hidden;
+      margin-bottom: -1px;
+      margin-right: -1px;
+    }
+
+    .multiselector__item {
+      padding: 0;
+      height: 50%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .multiselector__label {
+      padding-left: 25px;
+      height: 50px;
+      line-height: 50px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+
+      .multiselector__icon {
+        top: 50%;
+        margin-top: -9px;
+      }
+    }
   }
 </style>
