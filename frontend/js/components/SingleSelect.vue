@@ -371,7 +371,6 @@
 
     .singleselector__label {
       padding-left: 25px;
-      color: $color__text--light;
       height: 50px;
       line-height: 50px;
       white-space: nowrap;
