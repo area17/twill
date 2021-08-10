@@ -2,6 +2,16 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use App\Models\Article;
+use App\Models\Author;
+use App\Models\Bio;
+use App\Models\Book;
+use App\Repositories\ArticleRepository;
+use App\Repositories\AuthorRepository;
+use App\Repositories\BioRepository;
+use App\Repositories\BookRepository;
+use A17\Twill\Models\RelatedItem;
+
 class BrowsersTest extends TestCase
 {
     protected $allFiles = [
@@ -38,7 +48,7 @@ class BrowsersTest extends TestCase
        '{$stubs}/browsers/books-form.blade.php' => '{$resources}/views/admin/books/',
 
        '{$stubs}/browsers/twill-navigation.php' => '{$config}',
-       '{$stubs}/browsers/admin.php' => '{$routes}',
+       '{$stubs}/browsers/admin.php' => '{$base}/routes/admin.php',
     ];
 
     public function setUp(): void
@@ -47,15 +57,132 @@ class BrowsersTest extends TestCase
 
         $this->copyFiles($this->allFiles);
 
-        $this->loadModulesConfig();
-
         $this->migrate();
 
         $this->login();
     }
 
-    public function testItWorksDummy()
+    public function createAuthors()
     {
-        $this->assertEquals('yes', 'yes');
+        $this->assertEquals(0, Author::count());
+
+        $authors = [
+            app(AuthorRepository::class)->create([
+                'title' => 'Alice',
+                'published' => true,
+            ]),
+            app(AuthorRepository::class)->create([
+                'title' => 'Bob',
+                'published' => true,
+            ]),
+            app(AuthorRepository::class)->create([
+                'title' => 'Charlie',
+                'published' => true,
+            ]),
+        ];
+
+        $this->assertEquals(3, Author::count());
+
+        return collect($authors);
+    }
+
+    public function createArticle()
+    {
+        $item = app(ArticleRepository::class)->create([
+            'title' => 'Lorem ipsum dolor sit amet',
+            'published' => true,
+        ]);
+
+        $this->assertEquals(1, Article::count());
+
+        return $item;
+    }
+
+    public function createBio()
+    {
+        $item = app(BioRepository::class)->create([
+            'title' => 'Lorem ipsum dolor sit amet',
+            'published' => true,
+        ]);
+
+        $this->assertEquals(1, Bio::count());
+
+        return $item;
+    }
+
+    public function createBook()
+    {
+        $item = app(BookRepository::class)->create([
+            'title' => 'Lorem ipsum dolor sit amet',
+            'published' => true,
+        ]);
+
+        $this->assertEquals(1, Book::count());
+
+        return $item;
+    }
+
+    public function testBrowserBelongsToMany()
+    {
+        $authors = $this->createAuthors();
+
+        $article = $this->createArticle();
+
+        $this->httpRequestAssert("/twill/articles/{$article->id}", 'PUT', [
+            'browsers' => [
+                'authors' => $authors->map(function ($author) {
+                    return ['id' => $author->id];
+                }),
+            ],
+        ]);
+
+        $this->assertEquals(3, Article::first()->authors->count());
+        $this->assertEquals(
+            $authors->pluck('id')->sort()->toArray(),
+            Article::first()->authors->pluck('id')->sort()->toArray()
+        );
+    }
+
+    public function testBrowserBelongsTo()
+    {
+        $authors = $this->createAuthors();
+
+        $bio = $this->createBio();
+
+        $this->httpRequestAssert("/twill/bios/{$bio->id}", 'PUT', [
+            'browsers' => [
+                'author' => [
+                    ['id' => $authors[0]->id],
+                ],
+            ],
+        ]);
+
+        $this->assertNotEmpty(Bio::first()->author);
+        $this->assertEquals($authors[0]->id, Bio::first()->author->id);
+    }
+
+    public function testBrowserRelated()
+    {
+        $authors = $this->createAuthors();
+
+        $book = $this->createBook();
+
+        $this->httpRequestAssert("/twill/books/{$book->id}", 'PUT', [
+            'browsers' => [
+                'authors' => $authors->map(function ($author) {
+                    return [
+                        'id' => $author->id,
+                        'endpointType' => '\\App\\Models\\Author',
+                    ];
+                }),
+            ],
+        ]);
+
+        $this->assertEquals(3, RelatedItem::count());
+        $this->assertEquals(3, Book::first()->getRelated('authors')->count());
+        $this->assertEquals(
+            $authors->pluck('id')->sort()->toArray(),
+            Book::first()->getRelated('authors')->pluck('id')->sort()->toArray()
+        );
     }
 }
