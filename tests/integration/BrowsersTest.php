@@ -187,6 +187,27 @@ class BrowsersTest extends TestCase
         $this->assertSee('This is an article');
     }
 
+    public function testBrowserBelongsToManyRestoreRevisions()
+    {
+        $authors = $this->createAuthors();
+
+        $article = $this->createArticle();
+
+        $this->httpRequestAssert("/twill/articles/{$article->id}", 'PUT', [
+            'browsers' => [
+                'authors' => $authors->map(function ($author) {
+                    return ['id' => $author->id];
+                }),
+            ],
+        ]);
+
+        // User can restore revisions
+        $this->httpRequestAssert("/twill/articles/restoreRevision/{$article->id}", 'GET', [
+            'revisionId' => Article::first()->revisions->last()->id,
+        ]);
+        $this->assertSee('You are currently editing an older revision of this content');
+    }
+
     public function testBrowserBelongsTo()
     {
         $authors = $this->createAuthors();
@@ -244,6 +265,27 @@ class BrowsersTest extends TestCase
             'revisionId' => Bio::first()->revisions->last()->id,
         ]);
         $this->assertSee('This is a bio');
+    }
+
+    public function testBrowserBelongsToRestoreRevisions()
+    {
+        $authors = $this->createAuthors();
+
+        $bio = $this->createBio();
+
+        $this->httpRequestAssert("/twill/bios/{$bio->id}", 'PUT', [
+            'browsers' => [
+                'author' => [
+                    ['id' => $authors[0]->id],
+                ],
+            ],
+        ]);
+
+        // User can restore revisions
+        $this->httpRequestAssert("/twill/bios/restoreRevision/{$bio->id}", 'GET', [
+            'revisionId' => Bio::first()->revisions->last()->id,
+        ]);
+        $this->assertSee('You are currently editing an older revision of this content');
     }
 
     public function testBrowserRelated()
@@ -316,5 +358,29 @@ class BrowsersTest extends TestCase
             'revisionId' => Book::first()->revisions->last()->id,
         ]);
         $this->assertSee('This is a book');
+    }
+
+    public function testBrowserRelatedRestoreRevisions()
+    {
+        $authors = $this->createAuthors();
+
+        $book = $this->createBook();
+
+        $this->httpRequestAssert("/twill/books/{$book->id}", 'PUT', [
+            'browsers' => [
+                'authors' => $authors->map(function ($author) {
+                    return [
+                        'id' => $author->id,
+                        'endpointType' => '\\App\\Models\\Author',
+                    ];
+                }),
+            ],
+        ]);
+
+        // User can preview revisions
+        $this->httpRequestAssert("/twill/books/restoreRevision/{$book->id}", 'GET', [
+            'revisionId' => Book::first()->revisions->last()->id,
+        ]);
+        $this->assertSee('You are currently editing an older revision of this content');
     }
 }
