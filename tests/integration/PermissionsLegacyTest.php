@@ -22,6 +22,13 @@ class PermissionsLegacyTest extends PermissionsTestBase
         return $user;
     }
 
+    // FIXME — this is needed for the new admin routes to take effect in the next test,
+    // because files are copied in `setUp()` after the app is initialized.
+    public function testDummy()
+    {
+        $this->assertTrue(true);
+    }
+
     public function testViewOnlyPermissions()
     {
         $admin = $this->createUser('ADMIN');
