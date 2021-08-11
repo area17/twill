@@ -166,6 +166,27 @@ class BrowsersTest extends TestCase
         $this->assertSee('This is an article');
     }
 
+    public function testBrowserBelongsToManyPreviewRevisions()
+    {
+        $authors = $this->createAuthors();
+
+        $article = $this->createArticle();
+
+        $this->httpRequestAssert("/twill/articles/{$article->id}", 'PUT', [
+            'browsers' => [
+                'authors' => $authors->map(function ($author) {
+                    return ['id' => $author->id];
+                }),
+            ],
+        ]);
+
+        // User can preview revisions
+        $this->httpRequestAssert("/twill/articles/preview/{$article->id}", 'PUT', [
+            'revisionId' => Article::first()->revisions->last()->id,
+        ]);
+        $this->assertSee('This is an article');
+    }
+
     public function testBrowserBelongsTo()
     {
         $authors = $this->createAuthors();
@@ -201,6 +222,27 @@ class BrowsersTest extends TestCase
 
         // User can preview
         $this->httpRequestAssert("/twill/bios/preview/{$bio->id}", 'PUT', []);
+        $this->assertSee('This is a bio');
+    }
+
+    public function testBrowserBelongsToPreviewRevisions()
+    {
+        $authors = $this->createAuthors();
+
+        $bio = $this->createBio();
+
+        $this->httpRequestAssert("/twill/bios/{$bio->id}", 'PUT', [
+            'browsers' => [
+                'author' => [
+                    ['id' => $authors[0]->id],
+                ],
+            ],
+        ]);
+
+        // User can preview revisions
+        $this->httpRequestAssert("/twill/bios/preview/{$bio->id}", 'PUT', [
+            'revisionId' => Bio::first()->revisions->last()->id,
+        ]);
         $this->assertSee('This is a bio');
     }
 
@@ -249,6 +291,30 @@ class BrowsersTest extends TestCase
 
         // User can preview
         $this->httpRequestAssert("/twill/books/preview/{$book->id}", 'PUT', []);
+        $this->assertSee('This is a book');
+    }
+
+    public function testBrowserRelatedPreviewRevisions()
+    {
+        $authors = $this->createAuthors();
+
+        $book = $this->createBook();
+
+        $this->httpRequestAssert("/twill/books/{$book->id}", 'PUT', [
+            'browsers' => [
+                'authors' => $authors->map(function ($author) {
+                    return [
+                        'id' => $author->id,
+                        'endpointType' => '\\App\\Models\\Author',
+                    ];
+                }),
+            ],
+        ]);
+
+        // User can preview revisions
+        $this->httpRequestAssert("/twill/books/preview/{$book->id}", 'PUT', [
+            'revisionId' => Book::first()->revisions->last()->id,
+        ]);
         $this->assertSee('This is a book');
     }
 }
