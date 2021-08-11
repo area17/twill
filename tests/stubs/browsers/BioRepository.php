@@ -10,7 +10,7 @@ class BioRepository extends ModuleRepository
 {
     use HandleRevisions;
 
-    protected $browsers = ['author'];
+    protected $browsers = ['writer'];
 
     public function __construct(Bio $model)
     {

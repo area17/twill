@@ -2,12 +2,12 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use App\Models\Article;
-use App\Models\Author;
+use App\Models\Letter;
+use App\Models\Writer;
 use App\Models\Bio;
 use App\Models\Book;
-use App\Repositories\ArticleRepository;
-use App\Repositories\AuthorRepository;
+use App\Repositories\LetterRepository;
+use App\Repositories\WriterRepository;
 use App\Repositories\BioRepository;
 use App\Repositories\BookRepository;
 use A17\Twill\Models\RelatedItem;
@@ -15,43 +15,43 @@ use A17\Twill\Models\RelatedItem;
 class BrowsersTest extends TestCase
 {
     protected $allFiles = [
-       '{$stubs}/browsers/2021_08_10_0001_create_authors_tables.php' => '{$database}/migrations/',
-       '{$stubs}/browsers/Author.php' => '{$app}/Models/',
-       '{$stubs}/browsers/AuthorController.php' => '{$app}/Http/Controllers/Admin/',
-       '{$stubs}/browsers/AuthorRepository.php' => '{$app}/Repositories/',
-       '{$stubs}/browsers/AuthorRequest.php' => '{$app}/Http/Requests/Admin/',
-       '{$stubs}/browsers/authors-form.blade.php' => '{$resources}/views/admin/authors/',
+       '{$stubs}/browsers/2021_08_10_0001_create_writers_tables_for_browsers.php' => '{$database}/migrations/',
+       '{$stubs}/browsers/Writer.php' => '{$app}/Models/',
+       '{$stubs}/browsers/WriterController.php' => '{$app}/Http/Controllers/Admin/',
+       '{$stubs}/browsers/WriterRepository.php' => '{$app}/Repositories/',
+       '{$stubs}/browsers/WriterRequest.php' => '{$app}/Http/Requests/Admin/',
+       '{$stubs}/browsers/writers-form.blade.php' => '{$resources}/views/admin/writers/form.blade.php',
 
-       '{$stubs}/browsers/2021_08_10_0002_create_articles_tables.php' => '{$database}/migrations/',
-       '{$stubs}/browsers/2021_08_10_0003_create_article_author_table.php' => '{$database}/migrations/',
-       '{$stubs}/browsers/Article.php' => '{$app}/Models/',
-       '{$stubs}/browsers/ArticleController.php' => '{$app}/Http/Controllers/Admin/',
-       '{$stubs}/browsers/ArticleRepository.php' => '{$app}/Repositories/',
-       '{$stubs}/browsers/ArticleRequest.php' => '{$app}/Http/Requests/Admin/',
-       '{$stubs}/browsers/ArticleRevision.php' => '{$app}/Models/Revisions/',
-       '{$stubs}/browsers/articles-form.blade.php' => '{$resources}/views/admin/articles/',
-       '{$stubs}/browsers/articles-view.blade.php' => '{$resources}/views/site/article.blade.php',
+       '{$stubs}/browsers/2021_08_10_0002_create_letters_tables_for_browsers.php' => '{$database}/migrations/',
+       '{$stubs}/browsers/2021_08_10_0003_create_letter_writer_table_for_browsers.php' => '{$database}/migrations/',
+       '{$stubs}/browsers/Letter.php' => '{$app}/Models/',
+       '{$stubs}/browsers/LetterController.php' => '{$app}/Http/Controllers/Admin/',
+       '{$stubs}/browsers/LetterRepository.php' => '{$app}/Repositories/',
+       '{$stubs}/browsers/LetterRequest.php' => '{$app}/Http/Requests/Admin/',
+       '{$stubs}/browsers/LetterRevision.php' => '{$app}/Models/Revisions/',
+       '{$stubs}/browsers/letters-form.blade.php' => '{$resources}/views/admin/letters/form.blade.php',
+       '{$stubs}/browsers/letters-view.blade.php' => '{$resources}/views/site/letter.blade.php',
 
-       '{$stubs}/browsers/2021_08_10_0004_create_bios_tables.php' => '{$database}/migrations/',
+       '{$stubs}/browsers/2021_08_10_0004_create_bios_tables_for_browsers.php' => '{$database}/migrations/',
        '{$stubs}/browsers/Bio.php' => '{$app}/Models/',
        '{$stubs}/browsers/BioController.php' => '{$app}/Http/Controllers/Admin/',
        '{$stubs}/browsers/BioRepository.php' => '{$app}/Repositories/',
        '{$stubs}/browsers/BioRequest.php' => '{$app}/Http/Requests/Admin/',
        '{$stubs}/browsers/BioRevision.php' => '{$app}/Models/Revisions/',
-       '{$stubs}/browsers/bios-form.blade.php' => '{$resources}/views/admin/bios/',
+       '{$stubs}/browsers/bios-form.blade.php' => '{$resources}/views/admin/bios/form.blade.php',
        '{$stubs}/browsers/bios-view.blade.php' => '{$resources}/views/site/bio.blade.php',
 
-       '{$stubs}/browsers/2021_08_10_0005_create_books_tables.php' => '{$database}/migrations/',
+       '{$stubs}/browsers/2021_08_10_0005_create_books_tables_for_browsers.php' => '{$database}/migrations/',
        '{$stubs}/browsers/Book.php' => '{$app}/Models/',
        '{$stubs}/browsers/BookController.php' => '{$app}/Http/Controllers/Admin/',
        '{$stubs}/browsers/BookRepository.php' => '{$app}/Repositories/',
        '{$stubs}/browsers/BookRequest.php' => '{$app}/Http/Requests/Admin/',
        '{$stubs}/browsers/BookRevision.php' => '{$app}/Models/Revisions/',
-       '{$stubs}/browsers/books-form.blade.php' => '{$resources}/views/admin/books/',
+       '{$stubs}/browsers/books-form.blade.php' => '{$resources}/views/admin/books/form.blade.php',
        '{$stubs}/browsers/books-view.blade.php' => '{$resources}/views/site/book.blade.php',
 
-       '{$stubs}/browsers/twill-navigation.php' => '{$config}',
-       '{$stubs}/browsers/admin.php' => '{$base}/routes/admin.php',
+       '{$stubs}/browsers/twill-navigation.php' => '{$config}/',
+       '{$stubs}/browsers/admin.php' => '{$routes}/',
     ];
 
     public function setUp(): void
@@ -65,42 +65,42 @@ class BrowsersTest extends TestCase
         $this->login();
     }
 
-    public function createAuthors()
+    public function createWriters()
     {
-        $this->assertEquals(0, Author::count());
+        $this->assertEquals(0, Writer::count());
 
-        $authors = collect(['Alice', 'Bob', 'Charlie'])->map(function ($name) {
-            return app(AuthorRepository::class)->create([
+        $writers = collect(['Alice', 'Bob', 'Charlie'])->map(function ($name) {
+            return app(WriterRepository::class)->create([
                 'title' => $name,
                 'published' => true,
             ]);
         });
 
-        $this->assertEquals(3, Author::count());
+        $this->assertEquals(3, Writer::count());
 
-        return $authors;
+        return $writers;
     }
 
-    public function createArticle()
+    public function createLetter()
     {
-        $item = app(ArticleRepository::class)->create([
+        $item = app(LetterRepository::class)->create([
             'title' => 'Lorem ipsum dolor sit amet',
             'published' => true,
         ]);
 
-        $this->assertEquals(1, Article::count());
+        $this->assertEquals(1, Letter::count());
 
         return $item;
     }
 
-    public function createArticleWithAuthors($authors)
+    public function createLetterWithWriters($writers)
     {
-        $item = $this->createArticle();
+        $item = $this->createLetter();
 
-        $this->httpRequestAssert("/twill/articles/{$item->id}", 'PUT', [
+        $this->httpRequestAssert("/twill/letters/{$item->id}", 'PUT', [
             'browsers' => [
-                'authors' => $authors->map(function ($author) {
-                    return ['id' => $author->id];
+                'writers' => $writers->map(function ($writer) {
+                    return ['id' => $writer->id];
                 }),
             ],
         ]);
@@ -120,14 +120,14 @@ class BrowsersTest extends TestCase
         return $item;
     }
 
-    public function createBioWithAuthor($author)
+    public function createBioWithWriter($writer)
     {
         $item = $this->createBio();
 
         $this->httpRequestAssert("/twill/bios/{$item->id}", 'PUT', [
             'browsers' => [
-                'author' => [
-                    ['id' => $author->id],
+                'writer' => [
+                    ['id' => $writer->id],
                 ],
             ],
         ]);
@@ -147,16 +147,16 @@ class BrowsersTest extends TestCase
         return $item;
     }
 
-    public function createBookWithAuthors($authors)
+    public function createBookWithWriters($writers)
     {
         $item = $this->createBook();
 
         $this->httpRequestAssert("/twill/books/{$item->id}", 'PUT', [
             'browsers' => [
-                'authors' => $authors->map(function ($author) {
+                'writers' => $writers->map(function ($writer) {
                     return [
-                        'id' => $author->id,
-                        'endpointType' => '\\App\\Models\\Author',
+                        'id' => $writer->id,
+                        'endpointType' => '\\App\\Models\\Writer',
                     ];
                 }),
             ],
@@ -166,65 +166,65 @@ class BrowsersTest extends TestCase
 
     public function testBrowserBelongsToMany()
     {
-        $authors = $this->createAuthors();
-        $article = $this->createArticleWithAuthors($authors);
+        $writers = $this->createWriters();
+        $letter = $this->createLetterWithWriters($writers);
 
-        // User can attach authors
-        $this->assertEquals(3, Article::first()->authors->count());
+        // User can attach writers
+        $this->assertEquals(3, Letter::first()->writers->count());
         $this->assertEquals(
-            $authors->pluck('id')->sort()->toArray(),
-            Article::first()->authors->pluck('id')->sort()->toArray()
+            $writers->pluck('id')->sort()->toArray(),
+            Letter::first()->writers->pluck('id')->sort()->toArray()
         );
     }
 
     public function testBrowserBelongsToManyPreview()
     {
-        $authors = $this->createAuthors();
-        $article = $this->createArticleWithAuthors($authors);
+        $writers = $this->createWriters();
+        $letter = $this->createLetterWithWriters($writers);
 
         // User can preview
-        $this->httpRequestAssert("/twill/articles/preview/{$article->id}", 'PUT', []);
-        $this->assertSee('This is an article');
+        $this->httpRequestAssert("/twill/letters/preview/{$letter->id}", 'PUT', []);
+        $this->assertSee('This is an letter');
     }
 
     public function testBrowserBelongsToManyPreviewRevisions()
     {
-        $authors = $this->createAuthors();
-        $article = $this->createArticleWithAuthors($authors);
+        $writers = $this->createWriters();
+        $letter = $this->createLetterWithWriters($writers);
 
         // User can preview revisions
-        $this->httpRequestAssert("/twill/articles/preview/{$article->id}", 'PUT', [
-            'revisionId' => Article::first()->revisions->last()->id,
+        $this->httpRequestAssert("/twill/letters/preview/{$letter->id}", 'PUT', [
+            'revisionId' => Letter::first()->revisions->last()->id,
         ]);
-        $this->assertSee('This is an article');
+        $this->assertSee('This is an letter');
     }
 
     public function testBrowserBelongsToManyRestoreRevisions()
     {
-        $authors = $this->createAuthors();
-        $article = $this->createArticleWithAuthors($authors);
+        $writers = $this->createWriters();
+        $letter = $this->createLetterWithWriters($writers);
 
         // User can restore revisions
-        $this->httpRequestAssert("/twill/articles/restoreRevision/{$article->id}", 'GET', [
-            'revisionId' => Article::first()->revisions->last()->id,
+        $this->httpRequestAssert("/twill/letters/restoreRevision/{$letter->id}", 'GET', [
+            'revisionId' => Letter::first()->revisions->last()->id,
         ]);
         $this->assertSee('You are currently editing an older revision of this content');
     }
 
     public function testBrowserBelongsTo()
     {
-        $authors = $this->createAuthors();
-        $bio = $this->createBioWithAuthor($authors[0]);
+        $writers = $this->createWriters();
+        $bio = $this->createBioWithWriter($writers[0]);
 
-        // User can attach authors
-        $this->assertNotEmpty(Bio::first()->author);
-        $this->assertEquals($authors[0]->id, Bio::first()->author->id);
+        // User can attach writers
+        $this->assertNotEmpty(Bio::first()->writer);
+        $this->assertEquals($writers[0]->id, Bio::first()->writer->id);
     }
 
     public function testBrowserBelongsToPreview()
     {
-        $authors = $this->createAuthors();
-        $bio = $this->createBioWithAuthor($authors[0]);
+        $writers = $this->createWriters();
+        $bio = $this->createBioWithWriter($writers[0]);
 
         // User can preview
         $this->httpRequestAssert("/twill/bios/preview/{$bio->id}", 'PUT', []);
@@ -233,8 +233,8 @@ class BrowsersTest extends TestCase
 
     public function testBrowserBelongsToPreviewRevisions()
     {
-        $authors = $this->createAuthors();
-        $bio = $this->createBioWithAuthor($authors[0]);
+        $writers = $this->createWriters();
+        $bio = $this->createBioWithWriter($writers[0]);
 
         // User can preview revisions
         $this->httpRequestAssert("/twill/bios/preview/{$bio->id}", 'PUT', [
@@ -245,8 +245,8 @@ class BrowsersTest extends TestCase
 
     public function testBrowserBelongsToRestoreRevisions()
     {
-        $authors = $this->createAuthors();
-        $bio = $this->createBioWithAuthor($authors[0]);
+        $writers = $this->createWriters();
+        $bio = $this->createBioWithWriter($writers[0]);
 
         // User can restore revisions
         $this->httpRequestAssert("/twill/bios/restoreRevision/{$bio->id}", 'GET', [
@@ -257,22 +257,22 @@ class BrowsersTest extends TestCase
 
     public function testBrowserRelated()
     {
-        $authors = $this->createAuthors();
-        $book = $this->createBookWithAuthors($authors);
+        $writers = $this->createWriters();
+        $book = $this->createBookWithWriters($writers);
 
-        // User can attach authors
+        // User can attach writers
         $this->assertEquals(3, RelatedItem::count());
-        $this->assertEquals(3, Book::first()->getRelated('authors')->count());
+        $this->assertEquals(3, Book::first()->getRelated('writers')->count());
         $this->assertEquals(
-            $authors->pluck('id')->sort()->toArray(),
-            Book::first()->getRelated('authors')->pluck('id')->sort()->toArray()
+            $writers->pluck('id')->sort()->toArray(),
+            Book::first()->getRelated('writers')->pluck('id')->sort()->toArray()
         );
     }
 
     public function testBrowserRelatedPreview()
     {
-        $authors = $this->createAuthors();
-        $book = $this->createBookWithAuthors($authors);
+        $writers = $this->createWriters();
+        $book = $this->createBookWithWriters($writers);
 
         // User can preview
         $this->httpRequestAssert("/twill/books/preview/{$book->id}", 'PUT', []);
@@ -281,8 +281,8 @@ class BrowsersTest extends TestCase
 
     public function testBrowserRelatedPreviewRevisions()
     {
-        $authors = $this->createAuthors();
-        $book = $this->createBookWithAuthors($authors);
+        $writers = $this->createWriters();
+        $book = $this->createBookWithWriters($writers);
 
         // User can preview revisions
         $this->httpRequestAssert("/twill/books/preview/{$book->id}", 'PUT', [
@@ -293,8 +293,8 @@ class BrowsersTest extends TestCase
 
     public function testBrowserRelatedRestoreRevisions()
     {
-        $authors = $this->createAuthors();
-        $book = $this->createBookWithAuthors($authors);
+        $writers = $this->createWriters();
+        $book = $this->createBookWithWriters($writers);
 
         // User can restore revisions
         $this->httpRequestAssert("/twill/books/restoreRevision/{$book->id}", 'GET', [

@@ -1,12 +1,12 @@
 <?php
 
 return [
-    'authors' => [
-        'title' => 'Authors',
+    'writers' => [
+        'title' => 'Writers',
         'module' => true,
     ],
-    'articles' => [
-        'title' => 'Articles',
+    'letters' => [
+        'title' => 'Letters',
         'module' => true,
     ],
     'bios' => [

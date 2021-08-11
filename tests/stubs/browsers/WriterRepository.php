@@ -3,11 +3,11 @@
 namespace App\Repositories;
 
 use A17\Twill\Repositories\ModuleRepository;
-use App\Models\Author;
+use App\Models\Writer;
 
-class AuthorRepository extends ModuleRepository
+class WriterRepository extends ModuleRepository
 {
-    public function __construct(Author $model)
+    public function __construct(Writer $model)
     {
         $this->model = $model;
     }

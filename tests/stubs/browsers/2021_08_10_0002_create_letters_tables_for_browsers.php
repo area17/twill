@@ -3,24 +3,24 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateBooksTables extends Migration
+class CreateLettersTablesForBrowsers extends Migration
 {
     public function up()
     {
-        Schema::create('books', function (Blueprint $table) {
+        Schema::create('letters', function (Blueprint $table) {
             createDefaultTableFields($table);
             $table->string('title', 200)->nullable();
             $table->text('description')->nullable();
         });
 
-        Schema::create('book_revisions', function (Blueprint $table) {
-            createDefaultRevisionsTableFields($table, 'book');
+        Schema::create('letter_revisions', function (Blueprint $table) {
+            createDefaultRevisionsTableFields($table, 'letter');
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('book_revisions');
-        Schema::dropIfExists('books');
+        Schema::dropIfExists('letter_revisions');
+        Schema::dropIfExists('letters');
     }
 }

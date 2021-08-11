@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use A17\Twill\Http\Controllers\Admin\ModuleController;
 
-class ArticleController extends ModuleController
+class WriterController extends ModuleController
 {
-    protected $moduleName = 'articles';
+    protected $moduleName = 'writers';
 }

@@ -8,9 +8,9 @@
     ])
 
     @formField('browser', [
-        'moduleName' => 'authors',
-        'name' => 'author',
-        'label' => 'Author',
+        'moduleName' => 'writers',
+        'name' => 'writer',
+        'label' => 'Writer',
         'max' => 1,
     ])
 @stop

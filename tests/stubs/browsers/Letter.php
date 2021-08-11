@@ -5,7 +5,7 @@ namespace App\Models;
 use A17\Twill\Models\Behaviors\HasRevisions;
 use A17\Twill\Models\Model;
 
-class Article extends Model
+class Letter extends Model
 {
     use HasRevisions;
 
@@ -15,8 +15,8 @@ class Article extends Model
         'description',
     ];
 
-    public function authors()
+    public function writers()
     {
-        return $this->belongsToMany(Author::class);
+        return $this->belongsToMany(Writer::class);
     }
 }

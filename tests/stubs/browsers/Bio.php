@@ -13,11 +13,11 @@ class Bio extends Model
         'published',
         'title',
         'description',
-        'author_id',
+        'writer_id',
     ];
 
-    public function author()
+    public function writer()
     {
-        return $this->belongsTo(Author::class);
+        return $this->belongsTo(Writer::class);
     }
 }

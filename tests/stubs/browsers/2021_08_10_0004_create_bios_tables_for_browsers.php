@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateBiosTables extends Migration
+class CreateBiosTablesForBrowsers extends Migration
 {
     public function up()
     {
@@ -11,7 +11,7 @@ class CreateBiosTables extends Migration
             createDefaultTableFields($table);
             $table->string('title', 200)->nullable();
             $table->text('description')->nullable();
-            $table->foreignId('author_id')->nullable()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('writer_id')->nullable()->onUpdate('cascade')->onDelete('cascade');
         });
 
         Schema::create('bio_revisions', function (Blueprint $table) {
