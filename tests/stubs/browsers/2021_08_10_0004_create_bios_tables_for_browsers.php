@@ -11,7 +11,8 @@ class CreateBiosTablesForBrowsers extends Migration
             createDefaultTableFields($table);
             $table->string('title', 200)->nullable();
             $table->text('description')->nullable();
-            $table->foreignId('writer_id')->nullable()->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedBigInteger('writer_id')->nullable();
+            $table->foreign('writer_id')->references('id')->on('writers');
         });
 
         Schema::create('bio_revisions', function (Blueprint $table) {
