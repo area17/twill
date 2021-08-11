@@ -7,7 +7,6 @@ use A17\Twill\Models\Role;
 use A17\Twill\Models\Group;
 use A17\Twill\PermissionAuthServiceProvider;
 use App\Repositories\PostingRepository;
-use Illuminate\Support\Facades\Mail;
 
 class PermissionsTest extends PermissionsTestBase
 {
@@ -304,8 +303,6 @@ class PermissionsTest extends PermissionsTestBase
 
     public function testEveryoneGroup()
     {
-        Mail::fake();
-
         app('config')->set('twill.permissions.level', 'roleGroupItem');
 
         $everyoneGroup = Group::getEveryoneGroup();

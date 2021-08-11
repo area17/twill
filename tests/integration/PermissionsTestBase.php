@@ -5,6 +5,7 @@ namespace A17\Twill\Tests\Integration;
 use App\Repositories\PostingRepository;
 use A17\Twill\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 abstract class PermissionsTestBase extends TestCase
 {
@@ -32,6 +33,8 @@ abstract class PermissionsTestBase extends TestCase
         $this->copyFiles($this->allFiles);
 
         $this->migrate();
+
+        Mail::fake();
     }
 
     public function loginUser($user)
