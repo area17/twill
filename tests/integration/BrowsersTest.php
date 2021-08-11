@@ -145,6 +145,21 @@ class BrowsersTest extends TestCase
             $authors->pluck('id')->sort()->toArray(),
             Article::first()->authors->pluck('id')->sort()->toArray()
         );
+    }
+
+    public function testBrowserBelongsToManyPreview()
+    {
+        $authors = $this->createAuthors();
+
+        $article = $this->createArticle();
+
+        $this->httpRequestAssert("/twill/articles/{$article->id}", 'PUT', [
+            'browsers' => [
+                'authors' => $authors->map(function ($author) {
+                    return ['id' => $author->id];
+                }),
+            ],
+        ]);
 
         // User can preview
         $this->httpRequestAssert("/twill/articles/preview/{$article->id}", 'PUT', []);
@@ -168,6 +183,21 @@ class BrowsersTest extends TestCase
 
         $this->assertNotEmpty(Bio::first()->author);
         $this->assertEquals($authors[0]->id, Bio::first()->author->id);
+    }
+
+    public function testBrowserBelongsToPreview()
+    {
+        $authors = $this->createAuthors();
+
+        $bio = $this->createBio();
+
+        $this->httpRequestAssert("/twill/bios/{$bio->id}", 'PUT', [
+            'browsers' => [
+                'author' => [
+                    ['id' => $authors[0]->id],
+                ],
+            ],
+        ]);
 
         // User can preview
         $this->httpRequestAssert("/twill/bios/preview/{$bio->id}", 'PUT', []);
@@ -198,6 +228,24 @@ class BrowsersTest extends TestCase
             $authors->pluck('id')->sort()->toArray(),
             Book::first()->getRelated('authors')->pluck('id')->sort()->toArray()
         );
+    }
+
+    public function testBrowserRelatedPreview()
+    {
+        $authors = $this->createAuthors();
+
+        $book = $this->createBook();
+
+        $this->httpRequestAssert("/twill/books/{$book->id}", 'PUT', [
+            'browsers' => [
+                'authors' => $authors->map(function ($author) {
+                    return [
+                        'id' => $author->id,
+                        'endpointType' => '\\App\\Models\\Author',
+                    ];
+                }),
+            ],
+        ]);
 
         // User can preview
         $this->httpRequestAssert("/twill/books/preview/{$book->id}", 'PUT', []);
