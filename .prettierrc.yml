@@ -10,7 +10,7 @@ vueIndentScriptAndStyle: true
 
 # php
 phpVersion: '7.4'
-trailingCommaPHP: false
+trailingCommaPHP: true
 braceStyle: 'psr-2'
 
 overrides:
