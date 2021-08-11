@@ -30,6 +30,7 @@ class BrowsersTest extends TestCase
        '{$stubs}/browsers/ArticleRequest.php' => '{$app}/Http/Requests/Admin/',
        '{$stubs}/browsers/ArticleRevision.php' => '{$app}/Models/Revisions/',
        '{$stubs}/browsers/articles-form.blade.php' => '{$resources}/views/admin/articles/',
+       '{$stubs}/browsers/articles-view.blade.php' => '{$resources}/views/site/article.blade.php',
 
        '{$stubs}/browsers/2021_08_10_0004_create_bios_tables.php' => '{$database}/migrations/',
        '{$stubs}/browsers/Bio.php' => '{$app}/Models/',
@@ -38,6 +39,7 @@ class BrowsersTest extends TestCase
        '{$stubs}/browsers/BioRequest.php' => '{$app}/Http/Requests/Admin/',
        '{$stubs}/browsers/BioRevision.php' => '{$app}/Models/Revisions/',
        '{$stubs}/browsers/bios-form.blade.php' => '{$resources}/views/admin/bios/',
+       '{$stubs}/browsers/bios-view.blade.php' => '{$resources}/views/site/bio.blade.php',
 
        '{$stubs}/browsers/2021_08_10_0005_create_books_tables.php' => '{$database}/migrations/',
        '{$stubs}/browsers/Book.php' => '{$app}/Models/',
@@ -46,6 +48,7 @@ class BrowsersTest extends TestCase
        '{$stubs}/browsers/BookRequest.php' => '{$app}/Http/Requests/Admin/',
        '{$stubs}/browsers/BookRevision.php' => '{$app}/Models/Revisions/',
        '{$stubs}/browsers/books-form.blade.php' => '{$resources}/views/admin/books/',
+       '{$stubs}/browsers/books-view.blade.php' => '{$resources}/views/site/book.blade.php',
 
        '{$stubs}/browsers/twill-navigation.php' => '{$config}',
        '{$stubs}/browsers/admin.php' => '{$base}/routes/admin.php',
@@ -128,6 +131,7 @@ class BrowsersTest extends TestCase
 
         $article = $this->createArticle();
 
+        // User can attach authors
         $this->httpRequestAssert("/twill/articles/{$article->id}", 'PUT', [
             'browsers' => [
                 'authors' => $authors->map(function ($author) {
@@ -141,6 +145,10 @@ class BrowsersTest extends TestCase
             $authors->pluck('id')->sort()->toArray(),
             Article::first()->authors->pluck('id')->sort()->toArray()
         );
+
+        // User can preview
+        $this->httpRequestAssert("/twill/articles/preview/{$article->id}", 'PUT', []);
+        $this->assertSee('This is an article');
     }
 
     public function testBrowserBelongsTo()
@@ -149,6 +157,7 @@ class BrowsersTest extends TestCase
 
         $bio = $this->createBio();
 
+        // User can attach authors
         $this->httpRequestAssert("/twill/bios/{$bio->id}", 'PUT', [
             'browsers' => [
                 'author' => [
@@ -159,6 +168,10 @@ class BrowsersTest extends TestCase
 
         $this->assertNotEmpty(Bio::first()->author);
         $this->assertEquals($authors[0]->id, Bio::first()->author->id);
+
+        // User can preview
+        $this->httpRequestAssert("/twill/bios/preview/{$bio->id}", 'PUT', []);
+        $this->assertSee('This is a bio');
     }
 
     public function testBrowserRelated()
@@ -167,6 +180,7 @@ class BrowsersTest extends TestCase
 
         $book = $this->createBook();
 
+        // User can attach authors
         $this->httpRequestAssert("/twill/books/{$book->id}", 'PUT', [
             'browsers' => [
                 'authors' => $authors->map(function ($author) {
@@ -184,5 +198,9 @@ class BrowsersTest extends TestCase
             $authors->pluck('id')->sort()->toArray(),
             Book::first()->getRelated('authors')->pluck('id')->sort()->toArray()
         );
+
+        // User can preview
+        $this->httpRequestAssert("/twill/books/preview/{$book->id}", 'PUT', []);
+        $this->assertSee('This is a book');
     }
 }
