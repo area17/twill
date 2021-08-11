@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'posts' => [
-        'title' => 'Posts',
+    'postings' => [
+        'title' => 'Postings',
         'module' => true,
     ],
     'settings' => [

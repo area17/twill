@@ -6,7 +6,7 @@ use A17\Twill\Models\User;
 use A17\Twill\Models\Role;
 use A17\Twill\Models\Group;
 use A17\Twill\PermissionAuthServiceProvider;
-use App\Repositories\PostRepository;
+use App\Repositories\PostingRepository;
 use Illuminate\Support\Facades\Mail;
 
 class PermissionsTest extends PermissionsTestBase
@@ -140,32 +140,32 @@ class PermissionsTest extends PermissionsTestBase
         $this->httpRequestAssert("/twill/groups", 'GET', [], 403);
 
 
-        $post = $this->createPost();
+        $posting = $this->createPosting();
 
         // User can access items list if permitted
-        $this->httpRequestAssert("/twill/posts", 'GET', [], 403);
-        $this->withModulePermission($role, 'posts', 'view-module', function () {
-            $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/postings", 'GET', [], 403);
+        $this->withModulePermission($role, 'postings', 'view-module', function () {
+            $this->httpRequestAssert("/twill/postings", 'GET', [], 200);
         });
 
         // User can edit item if permitted
-        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
-        $this->withModulePermission($role, 'posts', 'edit-module', function () use ($post) {
-            $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 403);
+        $this->withModulePermission($role, 'postings', 'edit-module', function () use ($posting) {
+            $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 200);
         });
 
         // User can create item if permitted
-        $this->httpRequestAssert('/twill/posts', 'POST', [], 403);
-        $this->withModulePermission($role, 'posts', 'edit-module', function () {
-            $this->httpRequestAssert('/twill/posts', 'POST', [], 200);
+        $this->httpRequestAssert('/twill/postings', 'POST', [], 403);
+        $this->withModulePermission($role, 'postings', 'edit-module', function () {
+            $this->httpRequestAssert('/twill/postings', 'POST', [], 200);
         });
 
         // User can manage modules if permitted
-        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
-        $this->httpRequestAssert('/twill/posts', 'POST', [], 403);
-        $this->withGlobalPermission($role, 'manage-modules', function () use ($post) {
-            $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
-            $this->httpRequestAssert('/twill/posts', 'POST', [], 200);
+        $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 403);
+        $this->httpRequestAssert('/twill/postings', 'POST', [], 403);
+        $this->withGlobalPermission($role, 'manage-modules', function () use ($posting) {
+            $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 200);
+            $this->httpRequestAssert('/twill/postings', 'POST', [], 200);
         });
     }
 
@@ -195,24 +195,24 @@ class PermissionsTest extends PermissionsTestBase
         });
 
 
-        $post = $this->createPost();
+        $posting = $this->createPosting();
 
         // User group can access items list if permitted
-        $this->httpRequestAssert("/twill/posts", 'GET', [], 403);
-        $this->withModulePermission($group, 'posts', 'view-module', function () {
-            $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/postings", 'GET', [], 403);
+        $this->withModulePermission($group, 'postings', 'view-module', function () {
+            $this->httpRequestAssert("/twill/postings", 'GET', [], 200);
         });
 
         // User group can edit item if permitted
-        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
-        $this->withModulePermission($group, 'posts', 'edit-module', function () use ($post) {
-            $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 403);
+        $this->withModulePermission($group, 'postings', 'edit-module', function () use ($posting) {
+            $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 200);
         });
 
         // User group can create item if permitted
-        $this->httpRequestAssert('/twill/posts', 'POST', [], 403);
-        $this->withModulePermission($group, 'posts', 'edit-module', function () {
-            $this->httpRequestAssert('/twill/posts', 'POST', [], 200);
+        $this->httpRequestAssert('/twill/postings', 'POST', [], 403);
+        $this->withModulePermission($group, 'postings', 'edit-module', function () {
+            $this->httpRequestAssert('/twill/postings', 'POST', [], 200);
         });
     }
 
@@ -228,34 +228,34 @@ class PermissionsTest extends PermissionsTestBase
         $this->loginUser($user);
 
 
-        $post = $this->createPost();
+        $posting = $this->createPosting();
 
         // User role can manage module if permitted
-        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
-        $this->httpRequestAssert('/twill/posts', 'POST', [], 403);
-        $this->withModulePermission($role, 'posts', 'manage-module', function () use ($post) {
-            $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
-            $this->httpRequestAssert('/twill/posts', 'POST', [], 200);
+        $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 403);
+        $this->httpRequestAssert('/twill/postings', 'POST', [], 403);
+        $this->withModulePermission($role, 'postings', 'manage-module', function () use ($posting) {
+            $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 200);
+            $this->httpRequestAssert('/twill/postings', 'POST', [], 200);
         });
 
         // User group can access items list if permitted
-        $this->httpRequestAssert("/twill/posts", 'GET', [], 403);
-        $this->withItemPermission($group, $post, 'view-item', function () {
-            $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/postings", 'GET', [], 403);
+        $this->withItemPermission($group, $posting, 'view-item', function () {
+            $this->httpRequestAssert("/twill/postings", 'GET', [], 200);
             $this->assertDontSee("a17-singleselect-permissions");
         });
 
         // User group can edit item if permitted
-        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
-        $this->withItemPermission($group, $post, 'edit-item', function () use ($post) {
-            $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 403);
+        $this->withItemPermission($group, $posting, 'edit-item', function () use ($posting) {
+            $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 200);
             $this->assertDontSee("a17-singleselect-permissions");
         });
 
         // User group can manage item if permitted
-        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
-        $this->withItemPermission($group, $post, 'manage-item', function () use ($post) {
-            $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 403);
+        $this->withItemPermission($group, $posting, 'manage-item', function () use ($posting) {
+            $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 200);
             $this->assertSee("a17-singleselect-permissions");
         });
     }
@@ -271,26 +271,26 @@ class PermissionsTest extends PermissionsTestBase
         $this->loginUser($user);
 
 
-        $post = $this->createPost();
+        $posting = $this->createPosting();
 
         // User can access items list if permitted
-        $this->httpRequestAssert("/twill/posts", 'GET', [], 403);
-        $this->withItemPermission($user, $post, 'view-item', function () {
-            $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/postings", 'GET', [], 403);
+        $this->withItemPermission($user, $posting, 'view-item', function () {
+            $this->httpRequestAssert("/twill/postings", 'GET', [], 200);
             $this->assertDontSee("a17-singleselect-permissions");
         });
 
         // User can edit item if permitted
-        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
-        $this->withItemPermission($user, $post, 'edit-item', function () use ($post) {
-            $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 403);
+        $this->withItemPermission($user, $posting, 'edit-item', function () use ($posting) {
+            $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 200);
             $this->assertDontSee("a17-singleselect-permissions");
         });
 
         // User can manage item if permitted
-        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
-        $this->withItemPermission($user, $post, 'manage-item', function () use ($post) {
-            $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 403);
+        $this->withItemPermission($user, $posting, 'manage-item', function () use ($posting) {
+            $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 200);
             $this->assertSee("a17-singleselect-permissions");
         });
     }
@@ -445,42 +445,42 @@ class PermissionsTest extends PermissionsTestBase
         $this->loginUser($manager);
 
 
-        $post = $this->createPost();
+        $posting = $this->createPosting();
 
         // Manager has highest permission
-        $fields = app(PostRepository::class)->getFormFields($post);
+        $fields = app(PostingRepository::class)->getFormFields($posting);
         $this->assertEquals('manage-item', $fields['user_1_permission']);
 
         // Viewer has no permission
         $this->assertEquals('', $fields['user_2_permission']);
 
 
-        $viewer->grantModuleItemPermission('view-item', $post);
+        $viewer->grantModuleItemPermission('view-item', $posting);
 
         // Viewer has view-item permission
-        $fields = app(PostRepository::class)->getFormFields($post);
+        $fields = app(PostingRepository::class)->getFormFields($posting);
         $this->assertEquals('view-item', $fields['user_2_permission']);
 
 
-        $alpha->grantModuleItemPermission('edit-item', $post);
+        $alpha->grantModuleItemPermission('edit-item', $posting);
 
         // Viewer has edit-item permission through group
-        $fields = app(PostRepository::class)->getFormFields($post);
+        $fields = app(PostingRepository::class)->getFormFields($posting);
         $this->assertEquals('edit-item', $fields['user_2_permission']);
 
 
-        $beta->grantModuleItemPermission('manage-item', $post);
+        $beta->grantModuleItemPermission('manage-item', $posting);
 
         // Viewer has manage-item permission through other group
-        $fields = app(PostRepository::class)->getFormFields($post);
+        $fields = app(PostingRepository::class)->getFormFields($posting);
         $this->assertEquals('manage-item', $fields['user_2_permission']);
 
 
         $viewer->groups()->detach($beta);
-        $viewer->role->grantModulePermission('manage-module', 'App\\Models\\Post');
+        $viewer->role->grantModulePermission('manage-module', 'App\\Models\\Posting');
 
         // Viewer has manage-item permission through role
-        $fields = app(PostRepository::class)->getFormFields($post);
+        $fields = app(PostingRepository::class)->getFormFields($posting);
         $this->assertEquals('manage-item', $fields['user_2_permission']);
     }
 
@@ -496,7 +496,7 @@ class PermissionsTest extends PermissionsTestBase
         $manager = $this->createUser($managerRole);
 
         $viewerRole = $this->createRole('Viewer');
-        $viewerRole->grantModulePermission('view-module', 'App\\Models\\Post');
+        $viewerRole->grantModulePermission('view-module', 'App\\Models\\Posting');
         $viewer = $this->createUser($viewerRole);
 
         $this->assertEquals(2, User::count());
@@ -505,30 +505,30 @@ class PermissionsTest extends PermissionsTestBase
         $this->loginUser($manager);
 
 
-        $post = $this->createPost();
+        $posting = $this->createPosting();
 
         // Viewer has no direct view-item permission
-        $this->assertEquals(0, $viewer->permissions()->ofItem($post)->count());
+        $this->assertEquals(0, $viewer->permissions()->ofItem($posting)->count());
 
         // Viewer has view-item permission through role
-        $fields = app(PostRepository::class)->getFormFields($post);
+        $fields = app(PostingRepository::class)->getFormFields($posting);
         $this->assertEquals('view-item', $fields['user_2_permission']);
 
 
-        app(PostRepository::class)->update($post->id, array_merge($fields, [
+        app(PostingRepository::class)->update($posting->id, array_merge($fields, [
             'user_2_permission' => 'view-item',
         ]));
 
         // Viewer has no direct view-item permission — nothing changed
-        $this->assertEquals(0, $viewer->permissions()->ofItem($post)->count());
+        $this->assertEquals(0, $viewer->permissions()->ofItem($posting)->count());
 
 
-        app(PostRepository::class)->update($post->id, array_merge($fields, [
+        app(PostingRepository::class)->update($posting->id, array_merge($fields, [
             'user_2_permission' => 'edit-item',
         ]));
 
         // Viewer has direct edit-item permission
-        $this->assertEquals(1, $viewer->permissions()->ofItem($post)->count());
-        $this->assertEquals('edit-item', $viewer->permissions()->ofItem($post)->first()->name);
+        $this->assertEquals(1, $viewer->permissions()->ofItem($posting)->count());
+        $this->assertEquals('edit-item', $viewer->permissions()->ofItem($posting)->first()->name);
     }
 }

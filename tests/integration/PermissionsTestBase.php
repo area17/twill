@@ -2,20 +2,20 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use App\Repositories\PostRepository;
+use App\Repositories\PostingRepository;
 use A17\Twill\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 abstract class PermissionsTestBase extends TestCase
 {
     protected $allFiles = [
-        // posts module
-        '{$stubs}/permissions/posts/2021_07_20_132405_create_posts_tables.php' => '{$database}/migrations/',
-        '{$stubs}/permissions/posts/Post.php' => '{$app}/Models/',
-        '{$stubs}/permissions/posts/PostController.php' => '{$app}/Http/Controllers/Admin/',
-        '{$stubs}/permissions/posts/PostRepository.php' => '{$app}/Repositories/',
-        '{$stubs}/permissions/posts/PostRequest.php' => '{$app}/Http/Requests/Admin/',
-        '{$stubs}/permissions/posts/form.blade.php' => '{$resources}/views/admin/posts/',
+        // postings module
+        '{$stubs}/permissions/postings/2021_07_20_132405_create_postings_tables.php' => '{$database}/migrations/',
+        '{$stubs}/permissions/postings/Posting.php' => '{$app}/Models/',
+        '{$stubs}/permissions/postings/PostingController.php' => '{$app}/Http/Controllers/Admin/',
+        '{$stubs}/permissions/postings/PostingRepository.php' => '{$app}/Repositories/',
+        '{$stubs}/permissions/postings/PostingRequest.php' => '{$app}/Http/Requests/Admin/',
+        '{$stubs}/permissions/postings/form.blade.php' => '{$resources}/views/admin/postings/',
 
         // general
         '{$stubs}/permissions/settings/seo.blade.php' => '{$resources}/views/admin/settings/',
@@ -56,9 +56,9 @@ abstract class PermissionsTestBase extends TestCase
         return $user;
     }
 
-    public function createPost()
+    public function createPosting()
     {
-        return app(PostRepository::class)->create([
+        return app(PostingRepository::class)->create([
             'title' => $this->faker->name,
             'published' => true,
         ]);

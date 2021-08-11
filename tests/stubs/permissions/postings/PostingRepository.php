@@ -3,11 +3,11 @@
 namespace App\Repositories;
 
 use A17\Twill\Repositories\ModuleRepository;
-use App\Models\Post;
+use App\Models\Posting;
 
-class PostRepository extends ModuleRepository
+class PostingRepository extends ModuleRepository
 {
-    public function __construct(Post $model)
+    public function __construct(Posting $model)
     {
         $this->model = $model;
     }

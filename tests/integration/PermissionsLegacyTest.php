@@ -51,16 +51,16 @@ class PermissionsLegacyTest extends PermissionsTestBase
         $this->httpRequestAssert("/twill/users/{$guest->id}/edit", 'GET', [], 200);
 
 
-        $post = $this->createPost();
+        $posting = $this->createPosting();
 
         // User can access items list
-        $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/postings", 'GET', [], 200);
 
         // User can't access item details
-        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 403);
+        $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 403);
 
         // User can't create items
-        $this->httpRequestAssert('/twill/posts', 'POST', [], 403);
+        $this->httpRequestAssert('/twill/postings', 'POST', [], 403);
     }
 
     public function testPublisherPermissions()
@@ -94,16 +94,16 @@ class PermissionsLegacyTest extends PermissionsTestBase
         $this->httpRequestAssert("/twill/users/{$publisher->id}/edit", 'GET', [], 200);
 
 
-        $post = $this->createPost();
+        $posting = $this->createPosting();
 
         // User can access items list
-        $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/postings", 'GET', [], 200);
 
         // User can access item details
-        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 200);
 
         // User can create items
-        $this->httpRequestAssert('/twill/posts', 'POST', [], 200);
+        $this->httpRequestAssert('/twill/postings', 'POST', [], 200);
     }
 
     public function testAdminPermissions()
@@ -137,15 +137,15 @@ class PermissionsLegacyTest extends PermissionsTestBase
         $this->httpRequestAssert("/twill/users/{$admin->id}/edit", 'GET', [], 200);
 
 
-        $post = $this->createPost();
+        $posting = $this->createPosting();
 
         // User can access items list
-        $this->httpRequestAssert("/twill/posts", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/postings", 'GET', [], 200);
 
         // User can access item details
-        $this->httpRequestAssert("/twill/posts/{$post->id}/edit", 'GET', [], 200);
+        $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 200);
 
         // User can create items
-        $this->httpRequestAssert('/twill/posts', 'POST', [], 200);
+        $this->httpRequestAssert('/twill/postings', 'POST', [], 200);
     }
 }

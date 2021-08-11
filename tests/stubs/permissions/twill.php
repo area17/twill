@@ -5,6 +5,6 @@ return [
         'settings' => true,
     ],
     'permissions' => [
-        'modules' => ['posts'],
+        'modules' => ['postings'],
     ],
 ];
