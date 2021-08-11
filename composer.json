@@ -44,7 +44,7 @@
     "spatie/once": "^2.0"
   },
   "require-dev": {
-    "friendsofphp/php-cs-fixer": "^2.16",
+    "friendsofphp/php-cs-fixer": "^3.0.2",
     "kalnoy/nestedset": "^5.0",
     "nunomaduro/collision": "^3.0|^4.2|^5.0",
     "orchestra/testbench": "~3.3|~3.4|~3.5|~3.6|~3.7|~3.8|^4.0|^5.0|^6.0",
@@ -61,7 +61,7 @@
   "scripts": {
     "test:phpunit": "vendor/bin/phpunit",
     "test:analyse": "php -d memory_limit=-1 vendor/bin/phpstan analyse",
-    "test:syntax": "vendor/bin/php-cs-fixer --dry-run --rules=-@PSR1 fix src",
+    "test:syntax": "vendor/bin/php-cs-fixer fix src",
     "test": [
       "@test:syntax",
       "@test:phpunit"
