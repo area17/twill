@@ -2,14 +2,14 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use App\Models\Letter;
-use App\Models\Writer;
 use App\Models\Bio;
 use App\Models\Book;
-use App\Repositories\LetterRepository;
-use App\Repositories\WriterRepository;
+use App\Models\Letter;
+use App\Models\Writer;
 use App\Repositories\BioRepository;
 use App\Repositories\BookRepository;
+use App\Repositories\LetterRepository;
+use App\Repositories\WriterRepository;
 use A17\Twill\Models\RelatedItem;
 
 class BrowsersTest extends TestCase
@@ -51,7 +51,7 @@ class BrowsersTest extends TestCase
        '{$stubs}/browsers/books-view.blade.php' => '{$resources}/views/site/book.blade.php',
 
        '{$stubs}/browsers/twill-navigation.php' => '{$config}/',
-       '{$stubs}/browsers/admin.php' => '{$routes}/',
+       '{$stubs}/browsers/admin.php' => '{$base}/routes/admin.php',
     ];
 
     public function setUp(): void
@@ -162,6 +162,13 @@ class BrowsersTest extends TestCase
             ],
         ]);
         return $item;
+    }
+
+    // FIXME — this is needed for the new admin routes to take effect in the next test,
+    // because files are copied in `setUp()` after the app is initialized.
+    public function testDummy()
+    {
+        $this->assertTrue(true);
     }
 
     public function testBrowserBelongsToMany()
