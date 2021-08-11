@@ -69,24 +69,16 @@ class BrowsersTest extends TestCase
     {
         $this->assertEquals(0, Author::count());
 
-        $authors = [
-            app(AuthorRepository::class)->create([
-                'title' => 'Alice',
+        $authors = collect(['Alice', 'Bob', 'Charlie'])->map(function ($name) {
+            return app(AuthorRepository::class)->create([
+                'title' => $name,
                 'published' => true,
-            ]),
-            app(AuthorRepository::class)->create([
-                'title' => 'Bob',
-                'published' => true,
-            ]),
-            app(AuthorRepository::class)->create([
-                'title' => 'Charlie',
-                'published' => true,
-            ]),
-        ];
+            ]);
+        });
 
         $this->assertEquals(3, Author::count());
 
-        return collect($authors);
+        return $authors;
     }
 
     public function createArticle()
@@ -97,6 +89,21 @@ class BrowsersTest extends TestCase
         ]);
 
         $this->assertEquals(1, Article::count());
+
+        return $item;
+    }
+
+    public function createArticleWithAuthors($authors)
+    {
+        $item = $this->createArticle();
+
+        $this->httpRequestAssert("/twill/articles/{$item->id}", 'PUT', [
+            'browsers' => [
+                'authors' => $authors->map(function ($author) {
+                    return ['id' => $author->id];
+                }),
+            ],
+        ]);
 
         return $item;
     }
@@ -113,6 +120,21 @@ class BrowsersTest extends TestCase
         return $item;
     }
 
+    public function createBioWithAuthor($author)
+    {
+        $item = $this->createBio();
+
+        $this->httpRequestAssert("/twill/bios/{$item->id}", 'PUT', [
+            'browsers' => [
+                'author' => [
+                    ['id' => $author->id],
+                ],
+            ],
+        ]);
+
+        return $item;
+    }
+
     public function createBook()
     {
         $item = app(BookRepository::class)->create([
@@ -125,21 +147,29 @@ class BrowsersTest extends TestCase
         return $item;
     }
 
-    public function testBrowserBelongsToMany()
+    public function createBookWithAuthors($authors)
     {
-        $authors = $this->createAuthors();
+        $item = $this->createBook();
 
-        $article = $this->createArticle();
-
-        // User can attach authors
-        $this->httpRequestAssert("/twill/articles/{$article->id}", 'PUT', [
+        $this->httpRequestAssert("/twill/books/{$item->id}", 'PUT', [
             'browsers' => [
                 'authors' => $authors->map(function ($author) {
-                    return ['id' => $author->id];
+                    return [
+                        'id' => $author->id,
+                        'endpointType' => '\\App\\Models\\Author',
+                    ];
                 }),
             ],
         ]);
+        return $item;
+    }
 
+    public function testBrowserBelongsToMany()
+    {
+        $authors = $this->createAuthors();
+        $article = $this->createArticleWithAuthors($authors);
+
+        // User can attach authors
         $this->assertEquals(3, Article::first()->authors->count());
         $this->assertEquals(
             $authors->pluck('id')->sort()->toArray(),
@@ -150,16 +180,7 @@ class BrowsersTest extends TestCase
     public function testBrowserBelongsToManyPreview()
     {
         $authors = $this->createAuthors();
-
-        $article = $this->createArticle();
-
-        $this->httpRequestAssert("/twill/articles/{$article->id}", 'PUT', [
-            'browsers' => [
-                'authors' => $authors->map(function ($author) {
-                    return ['id' => $author->id];
-                }),
-            ],
-        ]);
+        $article = $this->createArticleWithAuthors($authors);
 
         // User can preview
         $this->httpRequestAssert("/twill/articles/preview/{$article->id}", 'PUT', []);
@@ -169,16 +190,7 @@ class BrowsersTest extends TestCase
     public function testBrowserBelongsToManyPreviewRevisions()
     {
         $authors = $this->createAuthors();
-
-        $article = $this->createArticle();
-
-        $this->httpRequestAssert("/twill/articles/{$article->id}", 'PUT', [
-            'browsers' => [
-                'authors' => $authors->map(function ($author) {
-                    return ['id' => $author->id];
-                }),
-            ],
-        ]);
+        $article = $this->createArticleWithAuthors($authors);
 
         // User can preview revisions
         $this->httpRequestAssert("/twill/articles/preview/{$article->id}", 'PUT', [
@@ -190,16 +202,7 @@ class BrowsersTest extends TestCase
     public function testBrowserBelongsToManyRestoreRevisions()
     {
         $authors = $this->createAuthors();
-
-        $article = $this->createArticle();
-
-        $this->httpRequestAssert("/twill/articles/{$article->id}", 'PUT', [
-            'browsers' => [
-                'authors' => $authors->map(function ($author) {
-                    return ['id' => $author->id];
-                }),
-            ],
-        ]);
+        $article = $this->createArticleWithAuthors($authors);
 
         // User can restore revisions
         $this->httpRequestAssert("/twill/articles/restoreRevision/{$article->id}", 'GET', [
@@ -211,18 +214,9 @@ class BrowsersTest extends TestCase
     public function testBrowserBelongsTo()
     {
         $authors = $this->createAuthors();
-
-        $bio = $this->createBio();
+        $bio = $this->createBioWithAuthor($authors[0]);
 
         // User can attach authors
-        $this->httpRequestAssert("/twill/bios/{$bio->id}", 'PUT', [
-            'browsers' => [
-                'author' => [
-                    ['id' => $authors[0]->id],
-                ],
-            ],
-        ]);
-
         $this->assertNotEmpty(Bio::first()->author);
         $this->assertEquals($authors[0]->id, Bio::first()->author->id);
     }
@@ -230,16 +224,7 @@ class BrowsersTest extends TestCase
     public function testBrowserBelongsToPreview()
     {
         $authors = $this->createAuthors();
-
-        $bio = $this->createBio();
-
-        $this->httpRequestAssert("/twill/bios/{$bio->id}", 'PUT', [
-            'browsers' => [
-                'author' => [
-                    ['id' => $authors[0]->id],
-                ],
-            ],
-        ]);
+        $bio = $this->createBioWithAuthor($authors[0]);
 
         // User can preview
         $this->httpRequestAssert("/twill/bios/preview/{$bio->id}", 'PUT', []);
@@ -249,16 +234,7 @@ class BrowsersTest extends TestCase
     public function testBrowserBelongsToPreviewRevisions()
     {
         $authors = $this->createAuthors();
-
-        $bio = $this->createBio();
-
-        $this->httpRequestAssert("/twill/bios/{$bio->id}", 'PUT', [
-            'browsers' => [
-                'author' => [
-                    ['id' => $authors[0]->id],
-                ],
-            ],
-        ]);
+        $bio = $this->createBioWithAuthor($authors[0]);
 
         // User can preview revisions
         $this->httpRequestAssert("/twill/bios/preview/{$bio->id}", 'PUT', [
@@ -270,16 +246,7 @@ class BrowsersTest extends TestCase
     public function testBrowserBelongsToRestoreRevisions()
     {
         $authors = $this->createAuthors();
-
-        $bio = $this->createBio();
-
-        $this->httpRequestAssert("/twill/bios/{$bio->id}", 'PUT', [
-            'browsers' => [
-                'author' => [
-                    ['id' => $authors[0]->id],
-                ],
-            ],
-        ]);
+        $bio = $this->createBioWithAuthor($authors[0]);
 
         // User can restore revisions
         $this->httpRequestAssert("/twill/bios/restoreRevision/{$bio->id}", 'GET', [
@@ -291,21 +258,9 @@ class BrowsersTest extends TestCase
     public function testBrowserRelated()
     {
         $authors = $this->createAuthors();
-
-        $book = $this->createBook();
+        $book = $this->createBookWithAuthors($authors);
 
         // User can attach authors
-        $this->httpRequestAssert("/twill/books/{$book->id}", 'PUT', [
-            'browsers' => [
-                'authors' => $authors->map(function ($author) {
-                    return [
-                        'id' => $author->id,
-                        'endpointType' => '\\App\\Models\\Author',
-                    ];
-                }),
-            ],
-        ]);
-
         $this->assertEquals(3, RelatedItem::count());
         $this->assertEquals(3, Book::first()->getRelated('authors')->count());
         $this->assertEquals(
@@ -317,19 +272,7 @@ class BrowsersTest extends TestCase
     public function testBrowserRelatedPreview()
     {
         $authors = $this->createAuthors();
-
-        $book = $this->createBook();
-
-        $this->httpRequestAssert("/twill/books/{$book->id}", 'PUT', [
-            'browsers' => [
-                'authors' => $authors->map(function ($author) {
-                    return [
-                        'id' => $author->id,
-                        'endpointType' => '\\App\\Models\\Author',
-                    ];
-                }),
-            ],
-        ]);
+        $book = $this->createBookWithAuthors($authors);
 
         // User can preview
         $this->httpRequestAssert("/twill/books/preview/{$book->id}", 'PUT', []);
@@ -339,19 +282,7 @@ class BrowsersTest extends TestCase
     public function testBrowserRelatedPreviewRevisions()
     {
         $authors = $this->createAuthors();
-
-        $book = $this->createBook();
-
-        $this->httpRequestAssert("/twill/books/{$book->id}", 'PUT', [
-            'browsers' => [
-                'authors' => $authors->map(function ($author) {
-                    return [
-                        'id' => $author->id,
-                        'endpointType' => '\\App\\Models\\Author',
-                    ];
-                }),
-            ],
-        ]);
+        $book = $this->createBookWithAuthors($authors);
 
         // User can preview revisions
         $this->httpRequestAssert("/twill/books/preview/{$book->id}", 'PUT', [
@@ -363,21 +294,9 @@ class BrowsersTest extends TestCase
     public function testBrowserRelatedRestoreRevisions()
     {
         $authors = $this->createAuthors();
+        $book = $this->createBookWithAuthors($authors);
 
-        $book = $this->createBook();
-
-        $this->httpRequestAssert("/twill/books/{$book->id}", 'PUT', [
-            'browsers' => [
-                'authors' => $authors->map(function ($author) {
-                    return [
-                        'id' => $author->id,
-                        'endpointType' => '\\App\\Models\\Author',
-                    ];
-                }),
-            ],
-        ]);
-
-        // User can preview revisions
+        // User can restore revisions
         $this->httpRequestAssert("/twill/books/restoreRevision/{$book->id}", 'GET', [
             'revisionId' => Book::first()->revisions->last()->id,
         ]);
