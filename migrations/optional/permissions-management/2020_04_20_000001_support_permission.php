@@ -48,52 +48,60 @@ class SupportPermission extends Migration
             });
 
             Schema::create('permission_twill_user', function (Blueprint $table) {
-                $table->foreignId('twill_user_id')
-                    ->nullable()
-                    ->constrained(config('twill.users_table', 'twill_users'))
+                $table->bigInteger('twill_user_id')->nullable();
+                $table->foreign('twill_user_id')
+                    ->references('id')
+                    ->on(config('twill.users_table', 'twill_users'))
                     ->onDelete('cascade');
 
-                $table->foreignId('permission_id')
-                    ->nullable()
-                    ->constrained('permissions')
+                $table->bigInteger('permission_id')->nullable();
+                $table->foreign('permission_id')
+                    ->references('id')
+                    ->on('permissions')
                     ->onDelete('cascade');
             });
 
             Schema::create('group_twill_user', function (Blueprint $table) {
-                $table->foreignId('twill_user_id')
-                    ->nullable()
-                    ->constrained(config('twill.users_table', 'twill_users'))
+                $table->bigInteger('twill_user_id')->nullable();
+                $table->foreign('twill_user_id')
+                    ->references('id')
+                    ->on(config('twill.users_table', 'twill_users'))
                     ->onDelete('cascade');
 
-                $table->foreignId('group_id')
-                    ->nullable()
-                    ->constrained('groups')
+                $table->bigInteger('group_id')->nullable();
+                $table->foreign('group_id')
+                    ->references('id')
+                    ->on('groups')
                     ->onDelete('cascade');
 
                 $table->integer('position')->unsigned()->nullable();
             });
 
             Schema::create('group_permission', function (Blueprint $table) {
-                $table->foreignId('permission_id')
-                    ->nullable()
-                    ->constrained('permissions')
+                $table->bigInteger('permission_id')->nullable();
+                $table->foreign('permission_id')
+                    ->references('id')
+                    ->on('permissions')
                     ->onDelete('cascade');
 
-                $table->foreignId('group_id')
-                    ->nullable()
-                    ->constrained('groups')
+                $table->bigInteger('group_id')->nullable();
+                $table->foreign('group_id')
+                    ->references('id')
+                    ->on('groups')
                     ->onDelete('cascade');
             });
 
             Schema::create('permission_role', function (Blueprint $table) {
-                $table->foreignId('permission_id')
-                    ->nullable()
-                    ->constrained('permissions')
+                $table->bigInteger('permission_id')->nullable();
+                $table->foreign('permission_id')
+                    ->references('id')
+                    ->on('permissions')
                     ->onDelete('cascade');
 
-                $table->foreignId('role_id')
-                    ->nullable()
-                    ->constrained('roles')
+                $table->bigInteger('role_id')->nullable();
+                $table->foreign('role_id')
+                    ->references('id')
+                    ->on('roles')
                     ->onDelete('cascade');
             });
 
