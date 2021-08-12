@@ -97,18 +97,19 @@ trait HandleBrowsers
         }
     }
 
-    private function updateBelongsToInverseBrowser($object, $relationship, $relatedElements)
+    private function updateBelongsToInverseBrowser($object, $relationship, $updatedElements)
     {
         $foreignKey = $object->$relationship()->getForeignKeyName();
         $relatedModel = $object->$relationship()->getRelated();
 
-        $object->$relationship->each(function ($item) use ($foreignKey) {
+        $related = $this->getRelatedElementsAsCollection($object, $relationship);
+        $related->each(function ($item) use ($foreignKey) {
             $item->update([$foreignKey => null]);
         });
 
         $object->$relationship()->saveMany(
-            collect($relatedElements)->map(function ($related) use ($relatedModel) {
-                return $relatedModel->find($related['id']);
+            collect($updatedElements)->map(function ($updated) use ($relatedModel) {
+                return $relatedModel->find($updated['id']);
             })
         );
     }
@@ -146,9 +147,7 @@ trait HandleBrowsers
      */
     public function getFormFieldsForBrowser($object, $relation, $routePrefix = null, $titleKey = 'title', $moduleName = null)
     {
-        $fields = collect(
-            $object->$relation instanceof EloquentModel ? [$object->$relation] : $object->$relation
-        );
+        $fields = $this->getRelatedElementsAsCollection($object, $relation);
 
         if ($fields->isNotEmpty()) {
             return $fields->map(function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName) {
@@ -243,5 +242,12 @@ trait HandleBrowsers
     protected function inferModuleNameFromBrowserName(string $browserName): string
     {
         return Str::camel(Str::plural($browserName));
+    }
+
+    private function getRelatedElementsAsCollection($object, $relation)
+    {
+        return collect(
+            $object->$relation instanceof EloquentModel ? [$object->$relation] : $object->$relation
+        );
     }
 }
