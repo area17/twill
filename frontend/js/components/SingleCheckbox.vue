@@ -1,6 +1,6 @@
 <template>
   <a17-inputframe :error="error" :note="note" :name="name">
-    <div class="singleCheckbox">
+    <div class="singleCheckbox" :class="wrapperClasses">
       <span class="checkbox">
         <input type="checkbox" class="checkbox__input" :class="checkboxClasses" value="true" :name="name + '[' + randKey + ']'" :id="uniqId" :disabled="disabled" :checked="checkedValue">
         <label class="checkbox__label" :for="uniqId" @click.prevent="changeCheckbox">{{ label }} <span class="checkbox__icon"><span v-svg symbol="check"></span></span></label>
@@ -40,6 +40,10 @@
       disabled: {
         type: Boolean,
         default: false
+      },
+      border: {
+        type: Boolean,
+        default: false
       }
     },
     data: function () {
@@ -50,6 +54,11 @@
     computed: {
       uniqId: function () {
         return this.name + '_' + this.randKey
+      },
+      wrapperClasses: function () {
+        return [
+          this.border ? 'singleCheckbox--border' : ''
+        ]
       },
       checkboxClasses: function () {
         return [
@@ -197,6 +206,31 @@
     // .checkbox__input:checked + .checkbox__label .checkbox__icon,
     .checkbox__input--checked + .checkbox__label .checkbox__icon {
       opacity: 0;
+    }
+  }
+
+  /* border version */
+  .singleCheckbox--border {
+    border: 1px solid $color__border;
+    background-clip: padding-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 2px;
+    padding: 0 15px;
+
+    .checkbox__label {
+      padding-left: 25px;
+      height: 50px;
+      line-height: 50px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .checkbox__label::before,
+    .checkbox__icon {
+      top: 50%;
+      margin-top: -9px;
     }
   }
 </style>

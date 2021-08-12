@@ -33,6 +33,10 @@
       disabled: {
         type: Boolean,
         default: false
+      },
+      border: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {
