@@ -12,10 +12,15 @@ class CreateWritersTablesForBrowsers extends Migration
             $table->string('title', 200)->nullable();
             $table->text('description')->nullable();
         });
+
+        Schema::create('writer_revisions', function (Blueprint $table) {
+            createDefaultRevisionsTableFields($table, 'writer');
+        });
     }
 
     public function down()
     {
+        Schema::dropIfExists('writer_revisions');
         Schema::dropIfExists('writers');
     }
 }

@@ -20,7 +20,9 @@ class BrowsersTest extends TestCase
        '{$stubs}/browsers/WriterController.php' => '{$app}/Http/Controllers/Admin/',
        '{$stubs}/browsers/WriterRepository.php' => '{$app}/Repositories/',
        '{$stubs}/browsers/WriterRequest.php' => '{$app}/Http/Requests/Admin/',
+       '{$stubs}/browsers/WriterRevision.php' => '{$app}/Models/Revisions/',
        '{$stubs}/browsers/writers-form.blade.php' => '{$resources}/views/admin/writers/form.blade.php',
+       '{$stubs}/browsers/writers-view.blade.php' => '{$resources}/views/site/writer.blade.php',
 
        '{$stubs}/browsers/2021_08_10_0002_create_letters_tables_for_browsers.php' => '{$database}/migrations/',
        '{$stubs}/browsers/2021_08_10_0003_create_letter_writer_table_for_browsers.php' => '{$database}/migrations/',
