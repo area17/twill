@@ -338,7 +338,7 @@
   /* grid or columns in editor */
   .s--in-editor .singleselector--grid .singleselector__item,
   .s--in-editor .singleselector--columns .singleselector__item {
-      width: 100% !important; // override inline styles, if any (@see itemStyle)
+    width: 100% !important; // override inline styles, if any (@see itemStyle)
   }
 
   /* inline version */
