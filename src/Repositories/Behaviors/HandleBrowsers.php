@@ -101,17 +101,19 @@ trait HandleBrowsers
     {
         $foreignKey = $object->$relationship()->getForeignKeyName();
         $relatedModel = $object->$relationship()->getRelated();
-
         $related = $this->getRelatedElementsAsCollection($object, $relationship);
-        $related->each(function ($item) use ($foreignKey) {
-            $item->update([$foreignKey => null]);
-        });
 
-        $object->$relationship()->saveMany(
-            collect($updatedElements)->map(function ($updated) use ($relatedModel) {
-                return $relatedModel->find($updated['id']);
-            })
-        );
+        $relatedModel
+            ->whereIn('id', $related->pluck('id'))
+            ->update([$foreignKey => null]);
+
+        $updated = $relatedModel
+            ->whereIn('id', collect($updatedElements)->pluck('id'))
+            ->get();
+
+        if ($updated->isNotEmpty()) {
+            $object->$relationship()->saveMany($updated);
+        }
     }
 
     /**
