@@ -6,6 +6,7 @@ use A17\Twill\Models\Behaviors\HasMedias;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
@@ -87,7 +88,9 @@ trait HandleBrowsers
             $foreignKey = $object->$relationship()->getForeignKeyName();
             $id = Arr::get($relatedElements, '0.id', null);
             $object->update([$foreignKey => $id]);
-        } elseif ($object->$relationship() instanceof HasMany) {
+        } elseif ($object->$relationship() instanceof HasOne ||
+                  $object->$relationship() instanceof HasMany
+        ) {
             $this->updateBelongsToInverseBrowser($object, $relationship, $relatedElements);
         } else {
             $object->$relationship()->sync($relatedElementsWithPosition);
