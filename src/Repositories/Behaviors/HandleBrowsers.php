@@ -3,6 +3,7 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Behaviors\HasMedias;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -123,7 +124,9 @@ trait HandleBrowsers
      */
     public function getFormFieldsForBrowser($object, $relation, $routePrefix = null, $titleKey = 'title', $moduleName = null)
     {
-        $fields = collect($object->$relation);
+        $fields = collect(
+            $object->$relation instanceof EloquentModel ? [$object->$relation] : $object->$relation
+        );
 
         if ($fields->isNotEmpty()) {
             return $fields->map(function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName) {
