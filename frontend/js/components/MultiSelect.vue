@@ -5,7 +5,9 @@
         <div class="multiselector__outer">
           <div class="multiselector__item"
                v-for="(checkbox, index) in fullOptions"
-               :key="index">
+               :key="index"
+               :style="itemStyle"
+            >
             <input class="multiselector__checkbox" :class="{'multiselector__checkbox--checked': checkedValue.includes(checkbox.value) }" type="checkbox" :value="checkbox.value" :name="name +   '[' + randKey + ']'" :id="uniqId(checkbox.value, index)" :disabled="checkbox.disabled || disabled" v-model="checkedValue">
             <label class="multiselector__label" :for="uniqId(checkbox.value, index)" @click.prevent="changeCheckbox(checkbox.value)">
               <span class="multiselector__icon"><span v-svg symbol="check"></span></span>
@@ -40,6 +42,10 @@
         type: Boolean,
         default: true
       },
+      columns: {
+        type: Number,
+        default: 0
+      },
       inline: {
         type: Boolean,
         default: false
@@ -51,11 +57,27 @@
     },
     computed: {
       gridClasses: function () {
+        if (this.columns >= 1) {
+          return [
+            'multiselector--columns',
+            this.grid ? 'multiselector--grid' : ''
+          ]
+        }
+
         return [
           this.grid ? 'multiselector--grid' : '',
           this.inline ? 'multiselector--inline' : '',
           this.border ? 'multiselector--border' : ''
         ]
+      },
+      itemStyle: function () {
+        if (this.columns >= 1) {
+          return {
+            width: `${100 / this.columns}%`
+          }
+        }
+
+        return {}
       }
     },
     methods: {
@@ -190,8 +212,9 @@
     border-color: $color__fborder--active;
   }
 
-  /* grid version */
-  .multiselector--grid {
+  /* grid + columns shared styles */
+  .multiselector--grid,
+  .multiselector--columns {
     border:1px solid $color__border;
     background-clip: padding-box;
     box-sizing: border-box;
@@ -249,7 +272,10 @@
       top:50%;
       margin-top:-8px;
     }
+  }
 
+  /* grid version */
+  .multiselector--grid {
     .multiselector__bg {
       display:block;
       position:absolute;
@@ -274,25 +300,10 @@
     }
   }
 
-  /* Grid in editor */
-  .s--in-editor .multiselector--grid .multiselector__item {
-      width:100%;
-
-      @include breakpoint('small') {
-        width:100%
-      }
-
-      @include breakpoint('medium') {
-        width:100%
-      }
-
-      @include breakpoint('large') {
-        width:100%
-      }
-
-      @include breakpoint('large+') {
-        width:100%
-      }
+  /* grid or columns in editor */
+  .s--in-editor .multiselector--grid .multiselector__item,
+  .s--in-editor .multiselector--columns .multiselector__item {
+    width: 100% !important; // override inline styles, if any (@see itemStyle)
   }
 
   /* inline version */
