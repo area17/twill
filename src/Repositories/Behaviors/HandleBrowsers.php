@@ -5,6 +5,7 @@ namespace A17\Twill\Repositories\Behaviors;
 use A17\Twill\Models\Behaviors\HasMedias;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
@@ -86,9 +87,27 @@ trait HandleBrowsers
             $foreignKey = $object->$relationship()->getForeignKeyName();
             $id = Arr::get($relatedElements, '0.id', null);
             $object->update([$foreignKey => $id]);
+        } elseif ($object->$relationship() instanceof HasMany) {
+            $this->updateBelongsToInverseBrowser($object, $relationship, $relatedElements);
         } else {
             $object->$relationship()->sync($relatedElementsWithPosition);
         }
+    }
+
+    private function updateBelongsToInverseBrowser($object, $relationship, $relatedElements)
+    {
+        $foreignKey = $object->$relationship()->getForeignKeyName();
+        $relatedModel = $object->$relationship()->getRelated();
+
+        $object->$relationship->each(function ($item) use ($foreignKey) {
+            $item->update([$foreignKey => null]);
+        });
+
+        $object->$relationship()->saveMany(
+            collect($relatedElements)->map(function ($related) use ($relatedModel) {
+                return $relatedModel->find($related['id']);
+            })
+        );
     }
 
     /**
