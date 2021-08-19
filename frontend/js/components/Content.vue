@@ -206,6 +206,7 @@
       margin-right: 0;
       margin-left: -15px;
       min-width: 55px;
+      width: 55px;
       height: 40px;
     }
 
