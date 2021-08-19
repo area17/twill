@@ -205,7 +205,7 @@
         this.$emit('blur', newValue)
       },
       onInput: function (event) {
-        this.preventSubmit() // see formStore mixin
+        this.preventSubmit()
 
         this._onInputInternal(event)
       },
@@ -215,7 +215,7 @@
 
         this.$emit('change', newValue)
 
-        this.allowSubmit() // see formStore mixin
+        this.allowSubmit()
       }, 250),
       resizeTextarea: function () {
         if (this.type !== 'textarea') return
