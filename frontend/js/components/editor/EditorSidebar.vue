@@ -27,7 +27,7 @@
         <h4 class="editorSidebar__title"><slot></slot></h4>
         <div class="editorSidebar__listItems">
           <draggable v-model="availableBlocks" :options="{ group: { name: 'editorBlocks',  pull: 'clone', put: false }, handle: '.editorSidebar__button' }" v-if="availableBlocks.length">
-            <div class="editorSidebar__button" :data-title="availableBlock.title" :data-icon="availableBlock.icon" :data-component="availableBlock.component" v-for="availableBlock in availableBlocks" :key="availableBlock.component">
+            <div :class="editorSidebarButtonClass(availableBlock.icon)" :data-title="availableBlock.title" :data-icon="availableBlock.icon" :data-component="availableBlock.component" v-for="availableBlock in availableBlocks" :key="availableBlock.component">
               <span v-svg :symbol="iconSymbol(availableBlock.icon)"></span>
               <span class="editorSidebar__buttonLabel">{{ availableBlock.title }}</span>
             </div>
@@ -128,10 +128,16 @@
         // Some of the new icons have two variations: small and large.
         // Small formats are used by default in the dropdown, and
         // large formats are used in the sidebar if available.
-        if (document.querySelector(`#icon--${icon}-lg`)) {
-          return `${icon}-lg`
-        }
-        return icon
+        return this.hasLgIconVariation(icon) ? `${icon}-lg` : icon
+      },
+      editorSidebarButtonClass: function (icon) {
+        return [
+          'editorSidebar__button',
+          !this.hasLgIconVariation(icon) ? 'is-upscaled' : ''
+        ]
+      },
+      hasLgIconVariation: function (icon) {
+        return Boolean(document.querySelector(`#icon--${icon}-lg`))
       }
     }
   }
