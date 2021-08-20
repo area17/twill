@@ -48,6 +48,7 @@
                     custom-title="{{ $customTitle ?? '' }}"
                     custom-permalink="{{ $customPermalink ?? '' }}"
                     custom-localized-permalinkbase="{{ $localizedPermalinkBase ?? '' }}"
+                    localized-custom-permalink="{{ $localizedCustomPermalink ?? '' }}"
                     slot="title"
                     @if($createWithoutModal ?? false) :show-modal="true" @endif
                     @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif
