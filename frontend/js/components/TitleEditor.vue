@@ -70,6 +70,10 @@
       customPermalink: {
         type: String,
         default: ''
+      },
+      customLocalizedPermalinkbase: {
+        type: String,
+        default: ''
       }
     },
     data: function () {
@@ -107,7 +111,8 @@
         return titleValue || this.warningMessage
       },
       permalink: function () {
-        return this.fieldValueByName('slug')[this.currentLocale.value]
+        const customLocalizedPermalinkbase = this.customLocalizedPermalinkbase.length > 0 ? JSON.parse(this.customLocalizedPermalinkbase) : {}
+        return Object.keys(customLocalizedPermalinkbase).length > 0 ? customLocalizedPermalinkbase[this.currentLocale.value].concat(this.fieldValueByName('slug')[this.currentLocale.value]) : this.fieldValueByName('slug')[this.currentLocale.value]
       },
       ...mapState({
         baseUrl: state => state.form.baseUrl,
