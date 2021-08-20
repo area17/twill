@@ -156,11 +156,14 @@
     },
     computed: {
       ...mapState({
-        editor: state => state.blocks.editor
+        editor: state => state.blocks.editor,
+        editorNames: state => state.blocks.editorNames
+
       }),
       ...mapGetters([
         'blocks',
-        'fieldsByBlockId'
+        'fieldsByBlockId',
+        'availableBlocks'
       ])
     },
     methods: {
@@ -200,7 +203,9 @@
         } = this.nextMove
 
         if (block.name !== editorName) {
-          moveBlockToEditorFn && moveBlockToEditorFn(block, editorName, index, newIndex)
+          if (this.checkIfBlockTypeIsAvailable(editorName, block.type)) {
+            moveBlockToEditorFn && moveBlockToEditorFn(block, editorName, index, newIndex)
+          }
         } else {
           moveFn && moveFn({ oldIndex: index, newIndex })
         }
@@ -235,6 +240,12 @@
             this.checkExpandBlocks()
           })
         }
+      },
+      checkIfBlockTypeIsAvailable (editorName, type) {
+        const availableBlocks = JSON.parse(JSON.stringify(this.availableBlocks(editorName)))
+        const blockTypes = availableBlocks.map(block => block.component)
+
+        return blockTypes.indexOf(type) !== -1
       },
       openInEditor (fn, block, index) {
         fn()
