@@ -233,6 +233,7 @@ trait HandleRepeaters
                 'id' => $relation . '-' . $relationItem->id,
                 'type' => $repeatersList[$repeaterName]['component'],
                 'title' => $repeatersList[$repeaterName]['title'],
+                'titleField' => $repeatersList[$repeaterName]['titleField'],
             ];
 
             $relatedItemFormFields = $relationRepository->getFormFields($relationItem);

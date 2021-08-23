@@ -25,6 +25,11 @@ class Block
     /**
      * @var string
      */
+    public $titleField;
+
+    /**
+     * @var string
+     */
     public $trigger;
 
     /**
@@ -137,6 +142,7 @@ class Block
     {
         return collect([
             'title' => $this->title,
+            'titleField' => $this->titleField,
             'trigger' => $this->trigger,
             'name' => $this->name,
             'group' => $this->group,
@@ -183,6 +189,7 @@ class Block
         $contents = $this->file ? file_get_contents((string) $this->file->getPathName()) : '';
 
         $this->title = $this->parseProperty('title', $contents, $this->name);
+        $this->titleField = $this->parseProperty('titleField', $contents, $this->name);
         $this->trigger = $this->parseProperty('trigger', $contents, $this->name, $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.add-item') : null);
         $this->max = (int) $this->parseProperty('max', $contents, $this->name, 999);
         $this->group = $this->parseProperty('group', $contents, $this->name, 'app');
