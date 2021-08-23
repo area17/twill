@@ -172,7 +172,7 @@ abstract class ModulesTestBase extends TestCase
         // Check named block content
         $this->assertEquals(
             $block_quote = ['quote' => $this->block_quote],
-            $this->author->blocks()->named($this->block_editor_name)->get()->first()->content
+            $this->author->blocks()->editor($this->block_editor_name)->get()->first()->content
         );
 
         // Check if blocks are rendering
@@ -404,7 +404,7 @@ abstract class ModulesTestBase extends TestCase
             'medias' => [],
             'browsers' => [],
             'blocks' => [],
-            'name' => $name,
+            'editor_name' => $name,
         ];
     }
 
