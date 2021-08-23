@@ -10,7 +10,7 @@
           </div>
         </a17-dropdown>
         <span class="block__counter f--tiny" v-else>{{ index + 1 }}</span>
-        <span class="block__title">{{ block.title }}</span>
+        <span class="block__title">{{ blockTitle }}</span>
       </div>
       <div class="block__actions">
         <slot name="block-actions"/>
@@ -40,6 +40,7 @@
 </template>
 
 <script>
+  import { mapState, mapGetters } from 'vuex'
   import a17VueFilters from '@/utils/filters.js'
 
   export default {
@@ -78,6 +79,23 @@
     },
     filters: a17VueFilters,
     computed: {
+      titleFieldValue: function () {
+        const fieldValue = this.blockFieldValue(this.block.titleField)
+        if (!fieldValue) return null
+
+        if (typeof fieldValue === 'object') {
+          return fieldValue[this.currentLocale.value]
+        }
+
+        return fieldValue
+      },
+      blockTitle: function () {
+        const title = this.block.title || ''
+        const suffix = this.titleFieldValue || ''
+        const separator = title && suffix ? ' — ' : ''
+
+        return `${title}${separator}${suffix}`
+      },
       blockClasses: function () {
         return [
           this.visible ? 'block--open' : '',
@@ -93,7 +111,13 @@
       },
       addDropdown: function () {
         return `add${this.block.id}Dropdown`
-      }
+      },
+      ...mapState({
+        currentLocale: state => state.language.active
+      }),
+      ...mapGetters([
+        'fieldValueByName'
+      ])
     },
     watch: {
       opened: function () {
@@ -110,6 +134,17 @@
       },
       componentName: function (id) {
         return 'blocks[' + id + ']'
+      },
+      blockFieldName: function (fieldName) {
+        if (!fieldName) return ''
+
+        return `blocks[${this.block.id}][${fieldName}]`
+      },
+      blockFieldValue: function (fieldName) {
+        if (!fieldName) return null
+
+        const blockFieldName = this.blockFieldName(fieldName)
+        return this.fieldValueByName(blockFieldName)
       }
     },
     beforeMount: function () {
