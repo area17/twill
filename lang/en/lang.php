@@ -74,7 +74,6 @@ return [
         'delete' => 'Delete',
         'done' => 'Done',
         'title' => 'Content editor',
-        'preview-empty' => 'Drag and drop content from the left navigation',
     ],
     'emails' => [
         'all-rights-reserved' => 'All rights reserved.',
