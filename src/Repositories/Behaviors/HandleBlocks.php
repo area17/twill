@@ -193,6 +193,7 @@ trait HandleBlocks
                     'id' => $block->id,
                     'type' => $blockTypeConfig['component'],
                     'title' => $blockTypeConfig['title'],
+                    'titleField' => $blockTypeConfig['titleField'],
                     'attributes' => $blockTypeConfig['attributes'] ?? [],
                 ];
 
