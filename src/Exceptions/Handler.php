@@ -5,7 +5,7 @@ namespace A17\Twill\Exceptions;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Container\Container;
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use App\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Routing\Redirector;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Routing\UrlGenerator;
