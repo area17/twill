@@ -4,6 +4,7 @@ namespace A17\Twill\Tests\Integration;
 
 use A17\Twill\AuthServiceProvider;
 use A17\Twill\Models\User;
+use App\Exceptions\SnAppException;
 use A17\Twill\RouteServiceProvider;
 use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
 use A17\Twill\TwillServiceProvider;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 abstract class TestCase extends OrchestraTestCase
 {
@@ -122,6 +124,8 @@ abstract class TestCase extends OrchestraTestCase
         $this->copyBlocks();
 
         $this->installTwill();
+
+        $this->ensureAppExceptionHandlerExists();
     }
 
     /**
@@ -760,5 +764,15 @@ abstract class TestCase extends OrchestraTestCase
 
     public function loadConfig()
     {
+    }
+
+    public function ensureAppExceptionHandlerExists()
+    {
+        $stubPath = __DIR__.'/../../tests/stubs/classes/AppExceptionHandler.php';
+        $filePath = __DIR__.'/../../vendor/orchestra/testbench-core/laravel/app/Exceptions/Handler.php';
+
+        if (!file_exists($filePath)) {
+            file_put_contents($filePath, file_get_contents($stubPath));
+        }
     }
 }
