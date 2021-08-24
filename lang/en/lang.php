@@ -237,6 +237,12 @@ return [
             'published' => ':modelTitle published!',
             'error' => ':modelTitle was not published. Something wrong happened!',
         ],
+        'bulk-publish' => [
+            'unpublished' => ':modelTitle items unpublished!',
+            'published' => ':modelTitle items published!',
+            'error' =>
+                ':modelTitle items were not published. Something wrong happened!',
+        ],
         'featured' => [
             'unfeatured' => ':modelTitle unfeatured!',
             'featured' => ':modelTitle featured!',
