@@ -104,7 +104,7 @@
         return Object.keys(this.currentRevision).length
       },
       ...mapState({
-        editor: state => state.content.editor,
+        editor: state => state.blocks.editor,
         loading: state => state.revision.loading,
         currentRevision: state => state.revision.active,
         activeContent: state => state.revision.activeContent,

@@ -1,8 +1,11 @@
 <template>
   <div class="overlay" :class="overlayClasses">
     <div class="overlay__window">
-      <header class="overlay__header" v-if="overlayTitle">
-        {{ overlayTitle }}
+      <header class="overlay__header">
+        <span v-if="overlayTitle">{{ overlayTitle }}</span>
+        <span class="overlay__header-slot" v-if="$slots['overlay__header']">
+          <slot name="overlay__header"></slot>
+        </span>
         <button class="overlay__close" type="button" @click="hide"><span v-svg symbol="close_modal"></span><span class="overlay__closeLabel">{{ $trans('overlay.close') }}</span></button>
       </header>
       <div class="overlay__content" v-if="active" v-show="!hidden">
@@ -44,6 +47,10 @@
       mode: {
         type: String,
         default: ''
+      },
+      customClasses: {
+        type: [String, Array],
+        default: () => []
       }
     },
     data: function () {
@@ -54,6 +61,10 @@
       }
     },
     computed: {
+      toggleClasses () {
+        const customClasses = typeof this.customClasses === 'string' ? [this.customClasses] : this.customClasses
+        return [htmlOverlayClass].concat(customClasses)
+      },
       activeRevision: function () {
         return Object.keys(this.currentRevision).length
       },
@@ -71,7 +82,7 @@
       })
     },
     methods: {
-      open: function (onShow) {
+      open: function () {
         if (this.active && !this.hidden) {
           return
         }
@@ -79,13 +90,13 @@
         this.active = true
         this.hidden = false
 
-        html.classList.add(htmlOverlayClass)
+        this.toggleClasses.forEach(klass => html.classList.add(klass))
 
         window.addEventListener('keyup', this.keyPressed)
         this.$emit('open')
       },
       mask: function () {
-        html.classList.remove(htmlOverlayClass)
+        this.toggleClasses.forEach(klass => html.classList.remove(klass))
 
         window.removeEventListener('keyup', this.keyPressed)
         this.$emit('close')
@@ -184,6 +195,11 @@
     position:relative;
     font-weight:600;
     text-align:center;
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
     @include font-smoothing();
   }
 

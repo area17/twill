@@ -16,6 +16,33 @@ trait HasBlocks
         return $this->morphMany(Block::class, 'blockable')->orderBy(config('twill.blocks_table', 'twill_blocks') . '.position', 'asc');
     }
 
+    public function renderNamedBlocks($name = 'default', $renderChilds = true, $blockViewMappings = [], $data = [])
+    {
+        return $this->blocks
+            ->filter(function ($block) use ($name) {
+                return $name === 'default'
+                ? ($block->editor_name === $name || $block->editor_name === null)
+                : $block->editor_name === $name;
+            })
+            ->where('parent_id', null)
+            ->map(function ($block) use ($blockViewMappings, $renderChilds, $data) {
+                if ($renderChilds) {
+                    $childBlocks = $this->blocks->where('parent_id', $block->id);
+
+                    $renderedChildViews = $childBlocks->map(function ($childBlock) use ($blockViewMappings, $data) {
+                        $view = $this->getBlockView($childBlock->type, $blockViewMappings);
+                        return view($view, $data)->with('block', $childBlock)->render();
+                    })->implode('');
+                }
+
+                $block->childs = $this->blocks->where('parent_id', $block->id);
+
+                $view = $this->getBlockView($block->type, $blockViewMappings);
+
+                return view($view, $data)->with('block', $block)->render() . ($renderedChildViews ?? '');
+            })->implode('');
+    }
+
     /**
      * Returns the rendered Blade views for all attached blocks in their proper order.
      *
@@ -26,22 +53,7 @@ trait HasBlocks
      */
     public function renderBlocks($renderChilds = true, $blockViewMappings = [], $data = [])
     {
-        return $this->blocks->where('parent_id', null)->map(function ($block) use ($blockViewMappings, $renderChilds, $data) {
-            if ($renderChilds) {
-                $childBlocks = $this->blocks->where('parent_id', $block->id);
-
-                $renderedChildViews = $childBlocks->map(function ($childBlock) use ($blockViewMappings, $data) {
-                    $view = $this->getBlockView($childBlock->type, $blockViewMappings);
-                    return view($view, $data)->with('block', $childBlock)->render();
-                })->implode('');
-            }
-
-            $block->childs = $this->blocks->where('parent_id', $block->id);
-
-            $view = $this->getBlockView($block->type, $blockViewMappings);
-
-            return view($view, $data)->with('block', $block)->render() . ($renderedChildViews ?? '');
-        })->implode('');
+        return $this->renderNamedBlocks('default', $renderChilds, $blockViewMappings, $data);
     }
 
     private function getBlockView($blockType, $blockViewMappings = [])
