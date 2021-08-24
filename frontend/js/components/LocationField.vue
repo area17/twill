@@ -202,6 +202,22 @@
         // see formStore mixin
         this.saveIntoStore()
       },
+      onClick: function (event) {
+        const latlng = event.latLng
+
+        this.clearMarkers()
+        this.clearLatLng()
+
+        this.address = [latlng.lat(), latlng.lng()].join(',')
+        this.setLatLng(latlng)
+
+        if (this.map) {
+          this.addMarker(latlng)
+        }
+
+        // see formStore mixin
+        this.saveIntoStore()
+      },
       clearMarkers: function () {
         for (let i = 0; i < this.markers.length; i++) {
           if (this.markers[i]) {
@@ -258,6 +274,8 @@
         if (preset) {
           this.addMarker(new google.maps.LatLng(this.lat, this.lng))
         }
+
+        this.map.addListener('click', this.onClick)
       },
       initGeocoder: function () {
         const self = this
