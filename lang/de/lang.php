@@ -77,14 +77,14 @@ return [
             'unpublish' => 'Veröffentlichung aufheben',
         ],
         'filter' => [
-            'all-items' => 'Alle Ressourcen',
+            'all-items' => 'Alle Einträge',
             'draft' => 'Entwurf',
             'mine' => 'Meine',
             'published' => 'Veröffentlicht',
             'trash' => 'Papierkorb',
         ],
         'languages' => 'Sprachen',
-        'listing-empty-message' => 'Es existieren hier noch keine Ressourcen',
+        'listing-empty-message' => 'Noch keine Einträge vorhanden.',
     ],
     'main' => [
         'create' => 'Erstellen',
@@ -108,7 +108,7 @@ return [
     'modal' => [
         'create' => [
             'button' => 'Erstellen',
-            'create-another' => 'Erstellen und noch etwas hinzufügen',
+            'create-another' => 'Erstellen und weiteren Eintrag hinzufügen',
             'title' => 'Neu erstellen',
         ],
         'permalink-field' => 'Permalink',
