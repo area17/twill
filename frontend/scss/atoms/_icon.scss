@@ -16,21 +16,11 @@ SVG Icons (see svg.js)
 @import '~svg-spritemap-webpack-plugin/svg-sprite-icons';
 @import '~svg-spritemap-webpack-plugin/svg-sprite-icons-files';
 
-$icon-upscale-factor: 1.8;
-
 @each $name, $icon in $icons-sizes {
   .icon--#{$name},
   .icon--#{$name} svg {
     width: map_get($icon, 'width');
     height: map_get($icon, 'height');
-  }
-
-  .is-upscaled {
-    .icon--#{$name},
-    .icon--#{$name} svg {
-      width: map_get($icon, 'width') * $icon-upscale-factor;
-      height: map_get($icon, 'height') * $icon-upscale-factor;
-    }
   }
 }
 
@@ -39,14 +29,6 @@ $icon-upscale-factor: 1.8;
   .icon--#{$name} svg {
     width: map_get($icon, 'width');
     height: map_get($icon, 'height');
-  }
-
-  .is-upscaled {
-    .icon--#{$name},
-    .icon--#{$name} svg {
-      width: map_get($icon, 'width') * $icon-upscale-factor;
-      height: map_get($icon, 'height') * $icon-upscale-factor;
-    }
   }
 }
 
