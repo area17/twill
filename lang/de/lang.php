@@ -25,7 +25,7 @@ return [
         'empty-message' => 'Sie haben noch keine Aktivitäten.',
         'my-activity' => 'Meine Aktivitäten',
         'my-drafts' => 'Meine Entwürfe',
-        'search-placeholder' => 'Alles durchsuchen ...',
+        'search-placeholder' => 'Alle Inhalte durchsuchen...',
         'statitics' => 'Statistiken',
     ],
     'fields' => [
@@ -77,8 +77,8 @@ return [
             'unpublish' => 'Veröffentlichung aufheben',
         ],
         'filter' => [
-            'all-items' => 'Alle Einträge',
-            'draft' => 'Entwurf',
+            'all-items' => 'Alle',
+            'draft' => 'Entwürfe',
             'mine' => 'Meine',
             'published' => 'Veröffentlicht',
             'trash' => 'Papierkorb',
