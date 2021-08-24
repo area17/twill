@@ -138,7 +138,7 @@ return [
         'update-new' => 'Aktualisieren und neu erstellen',
     ],
     'select' => [
-        'empty-text' => 'Entschuldige, keine treffenden Optionen',
+        'empty-text' => 'Leider keine passenden Optionen gefunden',
     ],
     'uploader' => [
         'dropzone-text' => 'oder neue Dateien hier ablegen',
