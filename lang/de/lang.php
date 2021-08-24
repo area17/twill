@@ -22,7 +22,7 @@ return [
     'dashboard' => [
         'all-activity' => 'Alle aktivitäten',
         'create-new' => 'Neu erstellen',
-        'empty-message' => 'Du hast noch keine Aktivitäten.',
+        'empty-message' => 'Sie haben noch keine Aktivitäten.',
         'my-activity' => 'Meine Aktivitäten',
         'my-drafts' => 'Meine Entwürfe',
         'search-placeholder' => 'Alles durchsuchen ...',
