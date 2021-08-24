@@ -47,7 +47,7 @@ return [
             'add-label' => 'Hinzufügen',
         ],
         'medias' => [
-            'btn-label' => 'Bild anhängen',
+            'btn-label' => 'Hinzufügen',
         ],
     ],
     'filter' => [
@@ -99,11 +99,11 @@ return [
         'images' => 'Bilder',
         'sidebar' => [
             'clear' => 'Zurücksetzen',
-            'dimensions' => 'Dimensionen',
+            'dimensions' => 'Format',
             'empty-text' => 'Keine Datei ausgewählt',
             'files-selected' => 'Dateien ausgewählt',
         ],
-        'title' => 'Medienverzeichnis',
+        'title' => 'Medien',
     ],
     'modal' => [
         'create' => [
@@ -121,7 +121,7 @@ return [
         'admin' => 'Admin',
         'cms-users' => 'CMS-Benutzer',
         'logout' => 'Abmelden',
-        'media-library' => 'Medienverzeichnis',
+        'media-library' => 'Medien',
         'settings' => 'Einstellungen',
     ],
     'publisher' => [
