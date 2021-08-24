@@ -13,7 +13,7 @@
 
 return [
     'auth' => [
-        'email' => 'Email',
+        'email' => 'E-Mail',
         'forgot-password' => 'Passwort vergessen',
         'login' => 'Anmelden',
         'login-title' => 'Anmelden',
@@ -150,7 +150,7 @@ return [
         'content-fieldset-label' => 'Benutzer Einstellungen',
         'disabled' => 'Deaktiviert',
         'edit-modal-title' => 'Benutzername bearbeiten',
-        'email' => 'Email',
+        'email' => 'E-Mail',
         'enable-user' => 'Benutzer aktivieren',
         'enable-user-and-close' => 'Benutzer aktivieren und schließen',
         'enable-user-and-create-new' => 'Benutzer aktivieren und neu erstellen',
