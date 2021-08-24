@@ -52,7 +52,7 @@ return [
     ],
     'filter' => [
         'apply-btn' => 'Anwenden',
-        'clear-btn' => 'Leeren',
+        'clear-btn' => 'Zurücksetzen',
         'search-placeholder' => 'Suchen',
         'toggle-label' => 'Filter',
     ],
@@ -98,7 +98,7 @@ return [
         'filter-select-label' => 'Nach Tags filtern',
         'images' => 'Bilder',
         'sidebar' => [
-            'clear' => 'Leeren',
+            'clear' => 'Zurücksetzen',
             'dimensions' => 'Dimensionen',
             'empty-text' => 'Keine Datei ausgewählt',
             'files-selected' => 'Dateien ausgewählt',
