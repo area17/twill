@@ -125,9 +125,9 @@
         if (this.$root.submitForm) this.$root.submitForm()
       },
       iconSymbol: function (icon) {
-        // Some of the new icons have two variations: small and large.
-        // Small formats are used by default in the dropdown, and
-        // large formats are used in the sidebar if available.
+        // Future block editor icons will have two variations: small and large.
+        // Small formats will be used by default in the dropdown, and large
+        // formats (named with `-lg` suffix) will be used in the sidebar.
         return this.hasLgIconVariation(icon) ? `${icon}-lg` : icon
       },
       hasLgIconVariation: function (icon) {
@@ -250,7 +250,7 @@
     flex-direction: column;
     width: calc(50% - 5px);
     height: 100px;
-    padding: 0 20px;
+    padding: 8px 20px;
     margin-bottom: 10px;
     background: $color__background;
     border-radius: $border-radius;
@@ -269,7 +269,7 @@
 
     .editorSidebar__buttonLabel {
       width: 100%;
-      padding-bottom: 4px;
+      line-height: 1;
     }
 
     &:hover,
