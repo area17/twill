@@ -20,7 +20,7 @@ return [
         'password' => 'Passwort',
     ],
     'dashboard' => [
-        'all-activity' => 'Alle aktivitäten',
+        'all-activity' => 'Alle Aktivitäten',
         'create-new' => 'Neu erstellen',
         'empty-message' => 'Sie haben noch keine Aktivitäten.',
         'my-activity' => 'Meine Aktivitäten',
@@ -119,7 +119,7 @@ return [
     ],
     'nav' => [
         'admin' => 'Admin',
-        'cms-users' => 'CMS Benutzer',
+        'cms-users' => 'CMS-Benutzer',
         'logout' => 'Abmelden',
         'media-library' => 'Medienverzeichnis',
         'settings' => 'Einstellungen',
@@ -147,7 +147,7 @@ return [
     'user-management' => [
         'active' => 'Aktiv',
         'cancel' => 'Abbrechen',
-        'content-fieldset-label' => 'Benutzer Einstellungen',
+        'content-fieldset-label' => 'Benutzer-Einstellungen',
         'disabled' => 'Deaktiviert',
         'edit-modal-title' => 'Benutzername bearbeiten',
         'email' => 'E-Mail',
