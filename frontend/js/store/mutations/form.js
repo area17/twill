@@ -1,3 +1,6 @@
+export const PREVENT_SUBMIT = 'preventSubmit'
+export const ALLOW_SUBMIT = 'allowSubmit'
+
 /* form */
 export const UPDATE_FORM_PERMALINK = 'updateFormPermalink'
 export const UPDATE_FORM_FIELD = 'updateFormField'
@@ -23,6 +26,8 @@ export const REMOVE_MODAL_FIELD = 'removeModalField'
 export const REPLACE_MODAL_FIELDS = 'replaceModalField'
 
 export default {
+  PREVENT_SUBMIT,
+  ALLOW_SUBMIT,
   UPDATE_FORM_PERMALINK,
   UPDATE_FORM_FIELD,
   REMOVE_FORM_FIELD,

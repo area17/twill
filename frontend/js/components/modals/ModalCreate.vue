@@ -21,9 +21,11 @@
   import { NOTIFICATION, FORM, DATATABLE, LANGUAGE } from '@/store/mutations'
   import ACTIONS from '@/store/actions'
   import a17ModalValidationButtons from './ModalValidationButtons.vue'
+  import retrySubmitMixin from '@/mixins/retrySubmit'
 
   export default {
     name: 'A17ModalCreate',
+    mixins: [retrySubmitMixin],
     props: {
       formCreate: {
         type: String,
@@ -80,7 +82,12 @@
 
         this.$refs.modal.open()
       },
-      submit: function (event) {
+      submit: function () {
+        if (this.isSubmitPrevented) {
+          this.shouldRetrySubmitWhenAllowed = true
+          return
+        }
+
         if (this._isSubmitting) return
         this._isSubmitting = true
 
