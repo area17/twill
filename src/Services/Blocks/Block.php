@@ -28,6 +28,11 @@ class Block
     public $titleField;
 
     /**
+     * @var boolean
+     */
+    public $hideTitlePrefix;
+
+    /**
      * @var string
      */
     public $trigger;
@@ -143,6 +148,7 @@ class Block
         return collect([
             'title' => $this->title,
             'titleField' => $this->titleField,
+            'hideTitlePrefix' => $this->hideTitlePrefix,
             'trigger' => $this->trigger,
             'name' => $this->name,
             'group' => $this->group,
@@ -189,7 +195,6 @@ class Block
         $contents = $this->file ? file_get_contents((string) $this->file->getPathName()) : '';
 
         $this->title = $this->parseProperty('title', $contents, $this->name);
-        $this->titleField = $this->parseProperty('titleField', $contents, $this->name);
         $this->trigger = $this->parseProperty('trigger', $contents, $this->name, $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.add-item') : null);
         $this->max = (int) $this->parseProperty('max', $contents, $this->name, 999);
         $this->group = $this->parseProperty('group', $contents, $this->name, 'app');
@@ -198,6 +203,11 @@ class Block
         $this->component = $this->parseProperty('component', $contents, $this->name, "a17-block-{$this->name}");
         $this->isNewFormat = $this->isNewFormat($contents);
         $this->contents = $contents;
+
+        $this->parseMixedProperty('titleField', $contents, $this->name, function ($value, $options) {
+            $this->titleField = $value;
+            $this->hideTitlePrefix = (boolean) ($options['hidePrefix'] ?? false);
+        });
 
         return $this;
     }

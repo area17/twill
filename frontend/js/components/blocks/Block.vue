@@ -94,6 +94,9 @@
         const suffix = this.titleFieldValue || ''
         const separator = title && suffix ? ' — ' : ''
 
+        if (this.block.hideTitlePrefix) {
+          return `${suffix}`
+        }
         return `${title}${separator}${suffix}`
       },
       blockClasses: function () {

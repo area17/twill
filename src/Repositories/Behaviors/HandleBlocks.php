@@ -194,6 +194,7 @@ trait HandleBlocks
                     'type' => $blockTypeConfig['component'],
                     'title' => $blockTypeConfig['title'],
                     'titleField' => $blockTypeConfig['titleField'],
+                    'hideTitlePrefix' => $blockTypeConfig['hideTitlePrefix'],
                     'attributes' => $blockTypeConfig['attributes'] ?? [],
                 ];
 
