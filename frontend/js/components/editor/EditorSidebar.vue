@@ -96,13 +96,21 @@
       saveForm (buttonName) {
         this.$store.commit(PUBLICATION.UPDATE_SAVE_TYPE, buttonName)
         if (this.$root.submitForm) this.$root.submitForm()
+      },
+      iconSymbol: function (icon) {
+        // Future block editor icons will have two variations: small and large.
+        // Small formats will be used by default in the dropdown, and large
+        // formats (named with `-lg` suffix) will be used in the sidebar.
+        return this.hasLgIconVariation(icon) ? `${icon}-lg` : icon
+      },
+      hasLgIconVariation: function (icon) {
+        return Boolean(document.querySelector(`#icon--${icon}-lg`))
       }
     }
   }
 </script>
 
 <style lang="scss" scoped>
-
   .editorSidebar {
     margin: 20px 0 20px 0;
     // height:100%;

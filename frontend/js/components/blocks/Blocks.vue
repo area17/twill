@@ -23,14 +23,19 @@
                               v-if="availableBlocks.length">
                 <template v-for="availableBlock in availableBlocks">
                   <button
+                    class="blocks__addButton"
                     type="button"
                     slot="dropdown-add"
                     :key="availableBlock.component"
-                    @click="handleBlockAdd(add, availableBlock, blockIndex + 1)">
+                    @click="handleBlockAdd(add, availableBlock, blockIndex + 1)"
+                  >
                     <span
+                      class="blocks__icon"
                       v-svg
-                      :symbol="availableBlock.icon"></span> {{ availableBlock.title }}
-                    </button>
+                      :symbol="availableBlock.icon"
+                    ></span>
+                    <span class="blocks__title">{{ availableBlock.title }}</span>
+                  </button>
                 </template>
                 <div slot="dropdown-action">
                   <button type="button"
@@ -92,13 +97,18 @@
                                :block="availableBlock"
                                :key="availableBlock.component"
                                v-slot="{ add, block }">
-                <button type="button"
-                        :key="availableBlock.component"
-                        @click="handleBlockAdd(add, block)">
-                  <span class="blocks__icon"
-                        v-svg
-                        :symbol="availableBlock.icon"></span>
-                  {{ availableBlock.title }}
+                <button
+                  class="blocks__addButton"
+                  type="button"
+                  :key="availableBlock.component"
+                  @click="handleBlockAdd(add, block)"
+                >
+                  <span
+                    class="blocks__icon"
+                    v-svg
+                    :symbol="availableBlock.icon"
+                  ></span>
+                  <span class="blocks__title">{{ availableBlock.title }}</span>
                 </button>
               </a17-block-model>
             </template>
@@ -294,15 +304,27 @@
     }
   }
 
-  .blocks__actions button .blocks__icon {
-    margin-right: 0;
-    margin-left: -15px;
-    min-width: 55px;
-    text-align: center;
-    height: 40px;
-  }
-
   .blocks__item:first-child {
     border-top: 1px solid $color__border;
+  }
+
+  .blocks__addButton {
+    display: flex !important;
+    align-items: center;
+
+    .blocks__icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0;
+      margin-left: -15px;
+      min-width: 55px;
+      width: 55px;
+      height: 40px;
+    }
+
+    .blocks__title {
+      flex-grow: 1;
+    }
   }
 </style>
