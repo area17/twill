@@ -558,6 +558,14 @@
       text-decoration: underline $color__link;
     }
 
+    // Ensure pasting content do not make editor scroll to the top
+    .ql-clipboard {
+      position: fixed;
+      display: none;
+      left: 50%;
+      top: 50%;
+    }
+
     .ql-snow.ql-toolbar {
       padding: 13px 8px;
 
