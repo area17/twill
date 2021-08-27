@@ -1026,6 +1026,14 @@ Checkout this [Spectrum tutorial](https://spectrum.chat/twill/tips-and-tricks/st
 @formField('repeater', ['type' => 'video'])
 ```
 
+| Option       | Description                                   | Type    | Default value  |
+| :----------- | :-------------------------------------------- | :-------| :------------- |
+| type         | Type of repeater items                        | string  |                |
+| name         | Name of the field                             | string  | same as `type` |
+| buttonAsLink | Displays the `Add` button as a centered link  | boolean | false          |
+
+<br/>
+
 Repeater fields can be used inside as well as outside the block editor.
 
 Inside the block editor, repeater blocks share the same model as regular blocks. By reading the section on the [block editor](#block-editor-3) first, you will get a good overview of how to create and define repeater blocks for your project. No migration is needed when using repeater blocks. Refer to the section titled [Adding repeater fields to a block](#adding-repeater-fields-to-a-block) for a detailed explanation.

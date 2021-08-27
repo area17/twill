@@ -1,10 +1,12 @@
 @php
     $name = $name ?? $type;
+    $buttonAsLink = $buttonAsLink ?? false;
 @endphp
 
 <a17-repeater
     type="{{ $type }}"
     @if ($renderForBlocks) :name="repeaterName('{{ $name }}')" @else name="{{ $name }}" @endif
+    @if ($buttonAsLink) :button-as-link="true" @endif
 ></a17-repeater>
 
 @push('vuexStore')
