@@ -24,6 +24,16 @@ return [
     'admin_app_path' => env('ADMIN_APP_PATH', ''),
 
     /*
+   |--------------------------------------------------------------------------
+   | Application Admin Route Name
+   |--------------------------------------------------------------------------
+   |
+   | This value is added to the admin route names of your Admin application.
+   |
+    */
+    'admin_route_name_prefix' => env('ADMIN_ROUTE_NAME_PREFIX', 'admin.'),
+
+    /*
     |--------------------------------------------------------------------------
     | Application Admin Title Suffix
     |--------------------------------------------------------------------------
