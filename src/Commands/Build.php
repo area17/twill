@@ -89,10 +89,10 @@ class Build extends Command
         $progressBar->advance();
 
         if ($this->option('hot')) {
-            $this->startWatcher('resources/assets/js/**/*.vue', 'php artisan twill:build --copyOnly');
+            $this->startWatcher(resource_path('assets/js/**/*.vue'), 'php artisan twill:build --copyOnly');
             $this->runProcessInTwill(['npm', 'run', 'serve'], true);
         } elseif ($this->option('watch')) {
-            $this->startWatcher('resources/assets/js/**/*.vue', 'php artisan twill:build --copyOnly');
+            $this->startWatcher(resource_path('assets/js/**/*.vue'), 'php artisan twill:build --copyOnly');
             $this->runProcessInTwill(['npm', 'run', 'watch'], true);
         } else {
             $this->runProcessInTwill(['npm', 'run', 'build']);
