@@ -476,6 +476,7 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 | label       | Label of the field                                           | string          |               |
 | options     | Array of options for the dropdown, must include _value_ and _label_ | array          |               |
 | unpack      | Defines if the select will be displayed as an open list of options | true<br/>false  | false         |
+| columns     | Aligns the options on a grid with a given number of columns  | integer         | 0 (off)       |
 | searchable  | Filter the field values while typing                         | true<br/>false  | false         |
 | note        | Hint message displayed above the field                       | string          |               |
 | placeholder | Text displayed as a placeholder in the field                 | string          |               |
@@ -586,6 +587,7 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 | max         | Maximum number of selectable options                         | integer         |               |
 | options     | Array of options for the dropdown, must include _value_ and _label_ | array           |               |
 | unpack      | Defines if the multi select will be displayed as an open list of options | true<br/>false  | true         |
+| columns     | Aligns the options on a grid with a given number of columns  | integer         | 0 (off)       |
 | searchable  | Filter the field values while typing                         | true<br/>false  | false         |
 | note        | Hint message displayed above the field                       | string          |               |
 | placeholder | Text displayed as a placeholder in the field                 | string          |               |
@@ -765,6 +767,7 @@ See [Multi select](https://twill.io/docs/#multi-select) for more information on 
 | requireConfirmation | Displays a confirmation dialog when modifying the field | boolean         | false         |
 | confirmTitleText    | The title of the confirmation dialog                    | string          | 'Confirm selection' |
 | confirmMessageText  | The text of the confirmation dialog                     | string          | 'Are you sure you want to change this option ?' |
+| border              | Draws a border around the field                         | boolean         | false         |
 
 
 ### Multiple checkboxes
@@ -804,6 +807,8 @@ See [Multi select](https://twill.io/docs/#multi-select) for more information on 
 | options | Array of options for the dropdown, must include _value_ and _label_ | array   |               |
 | inline  | Defines if the options are displayed on one or multiple lines       | boolean | false         |
 | note    | Hint message displayed above the field                              | string  |               |
+| border  | Draws a border around the field                                     | boolean | false         |
+| columns | Aligns the options on a grid with a given number of columns         | integer | 0 (off)       |
 
 
 ### Radios
@@ -844,6 +849,8 @@ See [Multi select](https://twill.io/docs/#multi-select) for more information on 
 | confirmTitleText    | The title of the confirmation dialog                                | string  | 'Confirm selection' |
 | confirmMessageText  | The text of the confirmation dialog                                 | string  | 'Are you sure you want to change this option ?' |
 | required            | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean | false |
+| border              | Draws a border around the field                                     | boolean | false         |
+| columns             | Aligns the options on a grid with a given number of columns         | integer | 0 (off)       |
 
 
 ### Block editor
