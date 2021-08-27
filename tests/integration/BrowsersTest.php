@@ -20,7 +20,9 @@ class BrowsersTest extends TestCase
        '{$stubs}/browsers/WriterController.php' => '{$app}/Http/Controllers/Admin/',
        '{$stubs}/browsers/WriterRepository.php' => '{$app}/Repositories/',
        '{$stubs}/browsers/WriterRequest.php' => '{$app}/Http/Requests/Admin/',
+       '{$stubs}/browsers/WriterRevision.php' => '{$app}/Models/Revisions/',
        '{$stubs}/browsers/writers-form.blade.php' => '{$resources}/views/admin/writers/form.blade.php',
+       '{$stubs}/browsers/writers-view.blade.php' => '{$resources}/views/site/writer.blade.php',
 
        '{$stubs}/browsers/2021_08_10_0002_create_letters_tables_for_browsers.php' => '{$database}/migrations/',
        '{$stubs}/browsers/2021_08_10_0003_create_letter_writer_table_for_browsers.php' => '{$database}/migrations/',
@@ -133,6 +135,30 @@ class BrowsersTest extends TestCase
         ]);
 
         return $item;
+    }
+
+    public function createWriterWithbios()
+    {
+        $writers = $this->createWriters();
+
+        $bios = collect([1, 2])->map(function ($i) {
+            return app(BioRepository::class)->create([
+                'title' => 'Lorem ipsum dolor sit amet',
+                'published' => true,
+            ]);
+        });
+
+        $this->httpRequestAssert("/twill/writers/{$writers[0]->id}", 'PUT', [
+            'browsers' => [
+                'bios' => $bios->map(function ($writer) {
+                    return ['id' => $writer->id];
+                }),
+            ],
+        ]);
+
+        $this->assertEquals(2, Bio::count());
+
+        return $writers[0]->refresh();
     }
 
     public function createBook()
@@ -306,6 +332,49 @@ class BrowsersTest extends TestCase
         // User can restore revisions
         $this->httpRequestAssert("/twill/books/restoreRevision/{$book->id}", 'GET', [
             'revisionId' => Book::first()->revisions->last()->id,
+        ]);
+        $this->assertSee('You are currently editing an older revision of this content');
+    }
+
+    public function testBrowserHasMany()
+    {
+        $writer = $this->createWriterWithBios();
+
+        // User can attach bios
+        $this->assertEquals(2, Bio::count());
+        $this->assertEquals(2, $writer->bios()->count());
+        Bio::all()->each(function ($bio) use ($writer) {
+            $this->assertEquals($writer->id, $bio->writer_id);
+        });
+    }
+
+    public function testBrowserHasManyPreview()
+    {
+        $writer = $this->createWriterWithBios();
+
+        // User can preview
+        $this->httpRequestAssert("/twill/writers/preview/{$writer->id}", 'PUT', []);
+        $this->assertSee('This is a writer');
+    }
+
+    public function testBrowserHasManyPreviewRevisions()
+    {
+        $writer = $this->createWriterWithBios();
+
+        // User can preview revisions
+        $this->httpRequestAssert("/twill/writers/preview/{$writer->id}", 'PUT', [
+            'revisionId' => $writer->revisions->last()->id,
+        ]);
+        $this->assertSee('This is a writer');
+    }
+
+    public function testBrowserHasManyRestoreRevisions()
+    {
+        $writer = $this->createWriterWithBios();
+
+        // User can restore revisions
+        $this->httpRequestAssert("/twill/writers/restoreRevision/{$writer->id}", 'GET', [
+            'revisionId' => $writer->revisions->last()->id,
         ]);
         $this->assertSee('You are currently editing an older revision of this content');
     }
