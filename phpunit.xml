@@ -29,6 +29,7 @@
       <file>tests/integration/RoutesTest.php</file>
       <file>tests/integration/PasswordsTest.php</file>
       <file>tests/integration/CapsulesTest.php</file>
+      <file>tests/integration/BrowsersTest.php</file>
     </testsuite>
   </testsuites>
   <filter>

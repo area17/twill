@@ -147,7 +147,7 @@ trait HandleRevisions
         $relatedElementsCollection = Collection::make();
         $position = 1;
 
-        $tableName = $object->$relationship() instanceof BelongsTo ? $object->$relationship->getTable() :$object->$relationship()->getTable();
+        $tableName = $relationRepository->model->getTable();
 
         foreach ($relatedElements as $relatedElement) {
             $newRelatedElement = $relationRepository->getById($relatedElement['id']);
