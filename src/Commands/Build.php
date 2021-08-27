@@ -89,8 +89,10 @@ class Build extends Command
         $progressBar->advance();
 
         if ($this->option('hot')) {
+            $this->startWatcher('resources/assets/js/**/*.vue', 'php artisan twill:build --copyOnly');
             $this->runProcessInTwill(['npm', 'run', 'serve'], true);
         } elseif ($this->option('watch')) {
+            $this->startWatcher('resources/assets/js/**/*.vue', 'php artisan twill:build --copyOnly');
             $this->runProcessInTwill(['npm', 'run', 'watch'], true);
         } else {
             $this->runProcessInTwill(['npm', 'run', 'build']);
@@ -103,6 +105,26 @@ class Build extends Command
             $this->info('');
             $progressBar->setMessage("Done.");
             $progressBar->finish();
+        }
+    }
+
+    /**
+     * @return void
+     */
+    private function startWatcher($pattern, $command)
+    {
+        $chokidarPath = base_path("node_modules/.bin/chokidar");
+        $chokidarCommand = [$chokidarPath, $pattern, "-c", $command];
+
+        if ($this->filesystem->exists($chokidarPath)) {
+            $process = new Process($chokidarCommand, base_path());
+            $process->setTty(Process::isTtySupported());
+            $process->setTimeout(null);
+            $process->start();
+        } else {
+            $this->warn("The `chokidar-cli` package is required to watch custom blocks & components in development. You can install it by running:\n");
+            $this->warn("    npm install --save-dev chokidar-cli\n");
+            sleep(2);
         }
     }
 
