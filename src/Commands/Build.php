@@ -12,7 +12,7 @@ class Build extends Command
      *
      * @var string
      */
-    protected $signature = 'twill:build {--noInstall} {--hot} {--watch}';
+    protected $signature = 'twill:build {--noInstall} {--hot} {--watch} {--copyOnly}';
 
     /**
      * The console command description.
@@ -42,6 +42,18 @@ class Build extends Command
      * @return mixed
      */
     public function handle()
+    {
+        if ($this->option("copyOnly")) {
+            return $this->copyCustoms();
+        }
+
+        return $this->fullBuild();
+    }
+
+    /*
+     * @return void
+     */
+    private function fullBuild()
     {
         $progressBar = $this->output->createProgressBar(5);
         $progressBar->setFormat("%current%/%max% [%bar%] %message%");
@@ -109,6 +121,17 @@ class Build extends Command
         }
 
         $process->mustRun();
+    }
+
+    /*
+     * @return void
+     */
+    private function copyCustoms()
+    {
+        $this->info("Copying custom blocks & components...");
+        $this->copyBlocks();
+        $this->copyComponents();
+        $this->info("Done.");
     }
 
     /**
