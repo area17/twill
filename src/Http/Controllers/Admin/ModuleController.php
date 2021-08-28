@@ -681,18 +681,16 @@ abstract class ModuleController extends Controller
                 'published' => $this->request->get('publish'),
             ])) {
                 $this->fireEvent();
-
-                return $this->respondWithSuccess(
-                    $this->modelTitle . ' items ' . ($this->request->get('publish') ? '' : 'un') . 'published!'
-                );
+                if ($this->request->get('publish')) {
+                    return $this->respondWithSuccess(twillTrans('twill::lang.listing.bulk-publish.published', ['modelTitle' => $this->modelTitle]));
+                } else {
+                    return $this->respondWithSuccess(twillTrans('twill::lang.listing.bulk-publish.unpublished', ['modelTitle' => $this->modelTitle]));
+                }
             }
         } catch (\Exception $e) {
             \Log::error($e);
         }
-
-        return $this->respondWithError(
-            $this->modelTitle . ' items were not published. Something wrong happened!'
-        );
+        return $this->respondWithError(twillTrans('twill::lang.listing.bulk-publish.error', ['modelTitle' => $this->modelTitle]));
     }
 
     /**
