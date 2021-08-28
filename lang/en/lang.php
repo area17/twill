@@ -84,8 +84,6 @@ return [
     'fields' => [
         'block-editor' => [
             'add-content' => 'Add content',
-            'add-item' => 'Add item',
-            'clone-block' => 'Clone block',
             'collapse-all' => 'Collapse all',
             'create-another' => 'Create another',
             'delete' => 'Delete',
@@ -93,6 +91,8 @@ return [
             'loading' => 'Loading',
             'open-in-editor' => 'Open in editor',
             'preview' => 'Preview',
+            'add-item' => 'Add item',
+            'clone-block' => 'Clone block',
         ],
         'browser' => [
             'add-label' => 'Add',
@@ -238,12 +238,6 @@ return [
             'published' => ':modelTitle published!',
             'error' => ':modelTitle was not published. Something wrong happened!',
         ],
-        'bulk-publish' => [
-            'unpublished' => ':modelTitle items unpublished!',
-            'published' => ':modelTitle items published!',
-            'error' =>
-                ':modelTitle items were not published. Something wrong happened!',
-        ],
         'featured' => [
             'unfeatured' => ':modelTitle unfeatured!',
             'featured' => ':modelTitle featured!',
@@ -253,6 +247,11 @@ return [
             'unfeatured' => ':modelTitle items unfeatured!',
             'featured' => ':modelTitle items featured!',
             'error' => ':modelTitle items were not featured. Something wrong happened!',
+        ],
+        'bulk-publish' => [
+            'unpublished' => ':modelTitle items unpublished!',
+            'published' => ':modelTitle items published!',
+            'error' => ':modelTitle items were not published. Something wrong happened!',
         ],
     ],
     'main' => [

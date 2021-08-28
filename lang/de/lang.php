@@ -19,8 +19,7 @@ return [
         'forgot-password' => 'Passwort vergessen',
         'login' => 'Anmelden',
         'login-title' => 'Anmelden',
-        'oauth-link-title' =>
-            'Geben Sie Ihr Passwort erneut ein, um ihr Konto mit :provider zu verknüpfen',
+        'oauth-link-title' => 'Geben Sie Ihr Passwort erneut ein, um ihr Konto mit :provider zu verknüpfen',
         'otp' => 'Einmal-Passwort',
         'password' => 'Passwort',
         'password-confirmation' => 'Passwort bestätigen',
@@ -79,8 +78,7 @@ return [
     'emails' => [
         'all-rights-reserved' => 'Alle Rechte vorbehalten.',
         'hello' => 'Hallo.',
-        'problems' =>
-            'Wenn Sie Probleme damit haben, die Schaltfläche ":actionText" zu klicken, kopieren Sie die folgende URL und fügen Sie sie in die Adresszeile Ihres Browsers ein: [:url](:url)',
+        'problems' => 'Wenn Sie Probleme damit haben, die Schaltfläche ":actionText" zu klicken, kopieren Sie die folgende URL und fügen Sie sie in die Adresszeile Ihres Browsers ein: [:url](:url)',
         'regards' => 'Mit freundlichen Grüßen,',
     ],
     'fields' => [
@@ -139,8 +137,7 @@ return [
         'dialogs' => [
             'delete' => [
                 'confirm' => 'Löschen',
-                'confirmation' =>
-                    'Sind Sie sicher?<br />Die Aktion kann nicht rückgängig gemacht werden.',
+                'confirmation' => 'Sind Sie sicher?<br />Die Aktion kann nicht rückgängig gemacht werden.',
                 'delete-content' => 'Inhalt löschen',
                 'title' => 'Inhalt löschen',
             ],
@@ -167,16 +164,14 @@ return [
         'dialogs' => [
             'delete' => [
                 'confirm' => 'Löschen',
-                'disclaimer' =>
-                    'Der Eintrag wird nicht gelöscht, sondern in den Papierkorb verschoben.',
+                'disclaimer' => 'Der Eintrag wird nicht gelöscht, sondern in den Papierkorb verschoben.',
                 'move-to-trash' => 'In den Papierkorb verschieben',
                 'title' => 'Eintrag löschen',
             ],
             'destroy' => [
                 'confirm' => 'Vernichten',
                 'destroy-permanently' => 'Dauerhaft vernichten',
-                'disclaimer' =>
-                    'Der Eintrag ist danach nicht mehr wiederherstellbar.',
+                'disclaimer' => 'Der Eintrag ist danach nicht mehr wiederherstellbar.',
                 'title' => 'Eintrag vernichten',
             ],
         ],
@@ -207,67 +202,55 @@ return [
         'bulk-selected-items' => 'Einträge ausgewählt',
         'reorder' => [
             'success' => 'Reihenfolge aktualisiert',
-            'error' =>
-                'Etwas ist schief gelaufen: Reihenfolge konnte nicht aktualisiert werden.',
+            'error' => 'Etwas ist schief gelaufen: Reihenfolge konnte nicht aktualisiert werden.',
         ],
         'restore' => [
             'success' => 'Eintrag wiederhergestellt',
-            'error' =>
-                'Etwas ist schief gelaufen: Eintrag konnte nicht wiederhergestellt werden.',
+            'error' => 'Etwas ist schief gelaufen: Eintrag konnte nicht wiederhergestellt werden.',
         ],
         'bulk-restore' => [
             'success' => 'Einträge wiederhergestellt',
-            'error' =>
-                'Etwas ist schief gelaufen: Einträge konnten nicht wiederhergestellt werden.',
+            'error' => 'Etwas ist schief gelaufen: Einträge konnten nicht wiederhergestellt werden.',
         ],
         'force-delete' => [
             'success' => 'Eintrag vernichtet',
-            'error' =>
-                'Etwas ist schief gelaufen: Eintrag konnte nicht vernichtet werden.',
+            'error' => 'Etwas ist schief gelaufen: Eintrag konnte nicht vernichtet werden.',
         ],
         'bulk-force-delete' => [
             'success' => 'Einträge vernichtet',
-            'error' =>
-                'Etwas ist schief gelaufen: Einträge konnten nicht vernichtet werden.',
+            'error' => 'Etwas ist schief gelaufen: Einträge konnten nicht vernichtet werden.',
         ],
         'delete' => [
             'success' => 'Eintrag in den Papierkorb verschoben',
-            'error' =>
-                'Etwas ist schief gelaufen: Eintrag konnte nicht in den Papierkorb verschoben werden.',
+            'error' => 'Etwas ist schief gelaufen: Eintrag konnte nicht in den Papierkorb verschoben werden.',
         ],
         'bulk-delete' => [
             'success' => 'Einträge in den Papierkorb verschoben',
-            'error' =>
-                'Etwas ist schief gelaufen: Einträge konnten nicht in den Papierkorb verschoben werden.',
+            'error' => 'Etwas ist schief gelaufen: Einträge konnten nicht in den Papierkorb verschoben werden.',
         ],
         'duplicate' => [
             'success' => 'Eintrag erfolgreich dupliziert',
-            'error' =>
-                'Etwas ist schief gelaufen: Eintrag konnte nicht dupliziert werden.',
+            'error' => 'Etwas ist schief gelaufen: Eintrag konnte nicht dupliziert werden.',
         ],
         'publish' => [
             'unpublished' => 'Veröffentlichung des Eintrags aufgehoben',
             'published' => 'Eintrag veröffentlicht',
-            'error' =>
-                'Etwas ist schief gelaufen: Eintrag konnte nicht veröffentlicht werden.',
-        ],
-        'bulk-publish' => [
-            'unpublished' => 'Veröffentlichung der Einträge aufgehoben',
-            'published' => 'Einträge veröffentlicht',
-            'error' =>
-                'Etwas ist schief gelaufen: Einträge konnten nicht veröffentlicht werden.',
+            'error' => 'Etwas ist schief gelaufen: Eintrag konnte nicht veröffentlicht werden.',
         ],
         'featured' => [
             'unfeatured' => 'Hervorhebung des Eintrags aufgehoben',
             'featured' => 'Eintrag hervorgehoben',
-            'error' =>
-                'Etwas ist schief gelaufen: Eintrag konnte nicht hervorgehoben werden.',
+            'error' => 'Etwas ist schief gelaufen: Eintrag konnte nicht hervorgehoben werden.',
         ],
         'bulk-featured' => [
             'unfeatured' => 'Hervorhebung der Einträge aufgehoben',
             'featured' => 'Einträge hervorgehoben',
-            'error' =>
-                'Etwas ist schief gelaufen: Einträge konnten nicht hervorgehoben werden.',
+            'error' => 'Etwas ist schief gelaufen: Einträge konnten nicht hervorgehoben werden.',
+        ],
+        'bulk-publish' => [
+            'unpublished' => 'Veröffentlichung der Einträge aufgehoben',
+            'published' => 'Einträge veröffentlicht',
+            'error' => 'Etwas ist schief gelaufen: Einträge konnten nicht veröffentlicht werden.',
         ],
     ],
     'main' => [
@@ -298,23 +281,17 @@ return [
         'dialogs' => [
             'delete' => [
                 'delete-media-title' => 'Medien löschen',
-                'delete-media-desc' =>
-                    'Sind Sie sicher?<br />Die Aktion kann nicht rückgängig gemacht werden.',
+                'delete-media-desc' => 'Sind Sie sicher?<br />Die Aktion kann nicht rückgängig gemacht werden.',
                 'delete-media-confirm' => 'Löschen',
                 'title' => 'Sind Sie sicher?',
-                'allow-delete-multiple-medias' =>
-                    'Einige Dateien werden verwendet und können nicht gelöscht werden. Möchten Sie die anderen löschen?',
-                'allow-delete-one-media' =>
-                    'Diese Datei wird verwendet und kann nicht gelöscht werden. Möchten Sie die anderen löschen?',
-                'dont-allow-delete-multiple-medias' =>
-                    'Diese Dateien werden verwendet und können nicht gelöscht werden.',
-                'dont-allow-delete-one-media' =>
-                    'Diese Datei wird verwendet und kann nicht gelöscht werden.',
+                'allow-delete-multiple-medias' => 'Einige Dateien werden verwendet und können nicht gelöscht werden. Möchten Sie die anderen löschen?',
+                'allow-delete-one-media' => 'Diese Datei wird verwendet und kann nicht gelöscht werden. Möchten Sie die anderen löschen?',
+                'dont-allow-delete-multiple-medias' => 'Diese Dateien werden verwendet und können nicht gelöscht werden.',
+                'dont-allow-delete-one-media' => 'Diese Datei wird verwendet und kann nicht gelöscht werden.',
             ],
             'replace' => [
                 'replace-media-title' => 'Medien ersetzen',
-                'replace-media-desc' =>
-                    'Sind Sie sicher?<br />Die Aktion kann nicht rückgängig gemacht werden.',
+                'replace-media-desc' => 'Sind Sie sicher?<br />Die Aktion kann nicht rückgängig gemacht werden.',
                 'replace-media-confirm' => 'Ersetzen',
             ],
         ],
@@ -358,14 +335,12 @@ return [
     'notifications' => [
         'reset' => [
             'action' => 'Reset password',
-            'content' =>
-                'You are receiving this email because we received a password reset. If you did not request a password reset, no further action is required.',
+            'content' => 'You are receiving this email because we received a password reset. If you did not request a password reset, no further action is required.',
             'subject' => ':appName | Reset password',
         ],
         'welcome' => [
             'action' => 'Choose your own password',
-            'content' =>
-                'You are receiving this email because an account was created for you on :name.',
+            'content' => 'You are receiving this email because an account was created for you on :name.',
             'title' => 'Welcome',
             'subject' => ':appName | Welcome',
         ],
@@ -405,8 +380,7 @@ return [
         'restore-live' => 'Als veröffentlicht wiederherstellen',
         'restore-live-close' => 'Als veröffentlicht wiederherstellen und schließen',
         'restore-live-new' => 'Als veröffentlicht wiederherstellen und weiteren erstellen',
-        'restore-message' =>
-            'Sie bearbeiten eine ältere Version dieses Eintrags (gespeichert von :user am :date). Nehmen Sie bei Bedarf Änderungen vor und klicken Sie auf Wiederherstellen, um eine neue Version zu speichern.',
+        'restore-message' => 'Sie bearbeiten eine ältere Version dieses Eintrags (gespeichert von :user am :date). Nehmen Sie bei Bedarf Änderungen vor und klicken Sie auf Wiederherstellen, um eine neue Version zu speichern.',
         'restore-success' => 'Revision wiederhergestellt',
         'revisions' => 'Revisionen',
         'save' => 'Als Entwurf speichern',
@@ -431,10 +405,8 @@ return [
     ],
     'user-management' => [
         '2fa' => '2-Faktor-Authentifizierung',
-        '2fa-description' =>
-            'Bitte scannen Sie diesen QR-Code mit Google Authenticator oder einer kompatiblen Anwendung und geben Sie vor dem Absenden Ihr Einmal-Passwort ein. Eine Liste der kompatiblen Anwendungen finden Sie <a href=":link" target="_blank" rel="noopener">hier</a>.',
-        '2fa-disable' =>
-            'Geben Sie Ihr Einmal-Passwort ein, um die 2-Faktor-Authentifizierung zu deaktivieren.',
+        '2fa-description' => 'Bitte scannen Sie diesen QR-Code mit Google Authenticator oder einer kompatiblen Anwendung und geben Sie vor dem Absenden Ihr Einmal-Passwort ein. Eine Liste der kompatiblen Anwendungen finden Sie <a href=":link" target="_blank" rel="noopener">hier</a>.',
+        '2fa-disable' => 'Geben Sie Ihr Einmal-Passwort ein, um die 2-Faktor-Authentifizierung zu deaktivieren.',
         'active' => 'Aktiv',
         'cancel' => 'Abbrechen',
         'content-fieldset-label' => 'Benutzer-Einstellungen',
@@ -444,8 +416,7 @@ return [
         'email' => 'E-Mail',
         'enable-user' => 'Benutzer aktivieren',
         'enable-user-and-close' => 'Benutzer aktivieren und schließen',
-        'enable-user-and-create-new' =>
-            'Benutzer aktivieren und weiteren erstellen',
+        'enable-user-and-create-new' => 'Benutzer aktivieren und weiteren erstellen',
         'enabled' => 'Aktiviert',
         'language' => 'Sprache',
         'language-placeholder' => 'Sprache auswählen',
@@ -459,11 +430,9 @@ return [
         'update' => 'Aktualisieren',
         'update-and-close' => 'Aktualisieren und schließen',
         'update-and-create-new' => 'Aktualisieren und weiteren erstellen',
-        'update-disabled-and-close' =>
-            'Deaktivierten aktualisieren und schließen',
+        'update-disabled-and-close' => 'Deaktivierten aktualisieren und schließen',
         'update-disabled-user' => 'Deaktivierten Benutzer aktualisieren',
-        'update-disabled-user-and-create-new' =>
-            'Deaktivierten Benutzer aktualisieren und weiteren erstellen',
+        'update-disabled-user-and-create-new' => 'Deaktivierten Benutzer aktualisieren und weiteren erstellen',
         'user-image' => 'Bild',
         'users' => 'Benutzer',
     ],
