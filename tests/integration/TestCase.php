@@ -122,6 +122,8 @@ abstract class TestCase extends OrchestraTestCase
         $this->copyBlocks();
 
         $this->installTwill();
+
+        $this->ensureAppExceptionHandlerExists();
     }
 
     /**
@@ -760,5 +762,22 @@ abstract class TestCase extends OrchestraTestCase
 
     public function loadConfig()
     {
+    }
+
+    public function ensureAppExceptionHandlerExists()
+    {
+        $stubPath = __DIR__.'/../../tests/stubs/classes/AppExceptionHandler.php';
+
+        $filePath = __DIR__.'/../../vendor/orchestra/testbench-core/laravel/app/Exceptions/Handler.php';
+
+        $dir = dirname($filePath);
+
+        if (!file_exists($filePath)) {
+            if (!file_exists($dir)) {
+                mkdir($dir, 0755, true);
+            }
+
+            file_put_contents($filePath, file_get_contents($stubPath));
+        }
     }
 }
