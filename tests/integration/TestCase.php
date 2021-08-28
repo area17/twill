@@ -4,7 +4,6 @@ namespace A17\Twill\Tests\Integration;
 
 use A17\Twill\AuthServiceProvider;
 use A17\Twill\Models\User;
-use App\Exceptions\SnAppException;
 use A17\Twill\RouteServiceProvider;
 use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
 use A17\Twill\TwillServiceProvider;
@@ -18,7 +17,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 abstract class TestCase extends OrchestraTestCase
 {
