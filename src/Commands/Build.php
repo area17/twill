@@ -113,17 +113,23 @@ class Build extends Command
      */
     private function startWatcher($pattern, $command)
     {
-        $chokidarPath = base_path("node_modules/.bin/chokidar");
+        $chokidarPath = base_path(config('twill.vendor_path')) . '/node_modules/.bin/chokidar';
         $chokidarCommand = [$chokidarPath, $pattern, "-c", $command];
 
         if ($this->filesystem->exists($chokidarPath)) {
             $process = new Process($chokidarCommand, base_path());
             $process->setTty(Process::isTtySupported());
             $process->setTimeout(null);
-            $process->start();
+
+            try {
+                $process->start();
+            } catch(\Exception $e) {
+                $this->warn("Could not start the chokidar watcher ({$e->getMessage()})\n");
+            }
         } else {
-            $this->warn("The `chokidar-cli` package is required to watch custom blocks & components in development. You can install it by running:\n");
-            $this->warn("    npm install --save-dev chokidar-cli\n");
+            $this->warn("The `chokidar-cli` package was not found. It is required to watch custom blocks & components in development. You can install it by running:\n");
+            $this->warn("    php artisan twill:dev\n");
+            $this->warn("without the `--noInstall` option.\n");
             sleep(2);
         }
     }
