@@ -113,6 +113,10 @@ class Build extends Command
      */
     private function startWatcher($pattern, $command)
     {
+        if (empty($this->filesystem->glob($pattern))) {
+            return;
+        }
+
         $chokidarPath = base_path(config('twill.vendor_path')) . '/node_modules/.bin/chokidar';
         $chokidarCommand = [$chokidarPath, $pattern, "-c", $command];
 
