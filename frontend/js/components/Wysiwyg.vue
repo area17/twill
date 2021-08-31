@@ -313,6 +313,10 @@
       this.options.formats = QuillConfiguration.getFormats(this.options.modules.toolbar) // Formats are based on current toolbar configuration
       this.options.bounds = this.$refs.editor
 
+      // Ensure pasting content do not make editor scroll to the top
+      // @see https://github.com/quilljs/quill/issues/1374#issuecomment-545112021
+      this.options.scrollingContainer = 'html'
+
       // register custom handlers
       // register anchor toolbar handler
       if (toolbar.container.includes('anchor')) {
@@ -559,11 +563,9 @@
     }
 
     // Ensure pasting content do not make editor scroll to the top
+    // @see https://github.com/quilljs/quill/issues/1374#issuecomment-545112021
     .ql-clipboard {
       position: fixed;
-      display: none;
-      left: 50%;
-      top: 50%;
     }
 
     .ql-snow.ql-toolbar {
