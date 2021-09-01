@@ -32,12 +32,12 @@ All notable changes to `twill` will be documented in this file.
 
 
 ### Fixed
-- Prevent submitting a form before saving an input into the store [`#1030`](https://github.com/area17/twill/oull/1030)
+- Prevent submitting a form before saving an input into the store [`#1030`](https://github.com/area17/twill/pull/1030)
 - Prevent multiple submit events in add/create modals [`3dfb0c8f`](https://github.com/area17/twill/commit/3dfb0c8fe0e410e81d922facc1b2465aeb784c44) [`cb38ba53`](https://github.com/area17/twill/commit/cb38ba53f71bed61ec09b955b9d738306163afde) [`40248552`](https://github.com/area17/twill/commit/402485521520682bf9cfe1e5dcee0974ca8fe540)
 - Fix incorrect position of link edit options in wysiwyg editor when height limit is set [`f8276462`](https://github.com/area17/twill/commit/f8276462)
 - Ensure pasting content in quill do not make editor scroll to the top [`07f7aa00`](https://github.com/area17/twill/commit/07f7aa00)[`51302a15`](https://github.com/area17/twill/commit/51302a15)
 - Safari form submit issue in Filter component [`29a1f227`](https://github.com/area17/twill/commit/29a1f227) [`91390ac2`](https://github.com/area17/twill/commit/91390ac2)
-- Support revisions preview and restore with belongsTo browsers [`#984`](https://github.com/area17/twill/oull/984) [`#1085`](https://github.com/area17/twill/oull/1085)
+- Support revisions preview and restore with belongsTo browsers [`#984`](https://github.com/area17/twill/pull/984) [`#1085`](https://github.com/area17/twill/pull/1085)
 - Toggle media library unused checkbox on clear only if active [`d73ff3eb`](https://github.com/area17/twill/commit/d73ff3ebfe77657f505d158e9431e392f29886b1)
 - Order files by fileable id [`d7df01bf`](https://github.com/area17/twill/commit/d7df01bfcbf1cfe646b0259de020a3aa1f5de600)
 - Register capsules routes before Twill internal routes [`c1acb981`](https://github.com/area17/twill/commit/c1acb981b3ef2a9e12d835db99dfd1a9b9429abe)
