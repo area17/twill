@@ -38,7 +38,7 @@ class Handler extends ExceptionHandler
         $adminAppUrl = parse_url(config('twill.admin_app_url'));
 
         $isSubdomainAdmin = !$usesAdminPath && $adminAppUrl['host'] == Request::getHost();
-        $isSubdirectoryAdmin = $usesAdminPath && Str::starts_with(Request::path(), config('twill.admin_app_path'));
+        $isSubdirectoryAdmin = $usesAdminPath && Str::startsWith(Request::path(), config('twill.admin_app_path'));
 
         return $this->getTwillErrorView($e->getStatusCode(), !($isSubdomainAdmin || $isSubdirectoryAdmin));
     }
