@@ -2,6 +2,12 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.5.1 (2021-09-02)
+
+### Fixed
+
+- Twill custom error views and ability to extend its exceptions handler [`312b44`](https://github.com/area17/twill/commit/312b446cc6f4826bf6f9d703e02fb6b96bbb2a9f)[`c16d2e`](https://github.com/area17/twill/commit/c16d2e9374dbe5c225a97910e5b228a549b887de)
+
 ## 2.5.0 (2021-09-01)
 
 ### Added
