@@ -3,9 +3,12 @@
 namespace A17\Twill\Exceptions;
 
 use Illuminate\Auth\AuthenticationException;
-use App\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class Handler extends ExceptionHandler
 {
@@ -24,6 +27,23 @@ class Handler extends ExceptionHandler
     }
 
     /**
+     * Get the view used to render HTTP exceptions.
+     *
+     * @param  \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface  $e
+     * @return string
+     */
+    protected function getHttpExceptionView(HttpExceptionInterface $e)
+    {
+        $usesAdminPath = !empty(config('twill.admin_app_path'));
+        $adminAppUrl = parse_url(config('twill.admin_app_url'));
+
+        $isSubdomainAdmin = !$usesAdminPath && $adminAppUrl['host'] == Request::getHost();
+        $isSubdirectoryAdmin = $usesAdminPath && Str::starts_with(Request::path(), config('twill.admin_app_path'));
+
+        return $this->getTwillErrorView($e->getStatusCode(), !($isSubdomainAdmin || $isSubdirectoryAdmin));
+    }
+
+    /**
      * Get the Twill error view used to render a specified HTTP status code.
      *
      * @param  integer $statusCode
@@ -32,10 +52,14 @@ class Handler extends ExceptionHandler
     protected function getTwillErrorView($statusCode, $frontend = false)
     {
         if ($frontend) {
-            return config('twill.frontend.views_path') . ".errors.$statusCode";
+            $view = config('twill.frontend.views_path') . ".errors.$statusCode";
+
+            return view()->exists($view)? $view : "errors::{$statusCode}";
         }
 
-        return view()->exists("admin.errors.$statusCode") ? "admin.errors.$statusCode" : "twill::errors.$statusCode";
+        $view = "admin.errors.$statusCode";
+
+        return view()->exists($view) ? $view : "twill::errors.$statusCode";
     }
 
     protected function invalidJson($request, ValidationException $exception)
