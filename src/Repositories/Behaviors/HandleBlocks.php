@@ -115,7 +115,6 @@ trait HandleBlocks
     {
         $blocks = Collection::make();
         if (isset($fields['blocks']) && is_array($fields['blocks'])) {
-
             foreach ($fields['blocks'] as $index => $block) {
                 $block = $this->buildBlock($block, $object);
                 $block['position'] = $index + 1;
@@ -143,6 +142,7 @@ trait HandleBlocks
                 $childBlock = $this->buildBlock($childBlock, $object, true);
                 $childBlock['child_key'] = $childKey;
                 $childBlock['position'] = $index + 1;
+                $childBlock['editor_name'] = $parentBlockFields['editor_name'] ?? 'default';
                 $childBlock['blocks'] = $this->getChildBlocks($object, $childBlock);
 
                 $childBlocksList->push($childBlock);
@@ -176,11 +176,9 @@ trait HandleBlocks
         $fields['blocks'] = null;
 
         if ($object->has('blocks')) {
-
             $blocksList = app(BlockCollection::class)->list()->keyBy('name');
 
             foreach ($object->blocks as $block) {
-
                 $isInRepeater = isset($block->parent_id);
                 $configKey = $isInRepeater ? 'repeaters' : 'blocks';
                 $blockTypeConfig = $blocksList[$block->type] ?? null;
@@ -193,6 +191,9 @@ trait HandleBlocks
                     'id' => $block->id,
                     'type' => $blockTypeConfig['component'],
                     'title' => $blockTypeConfig['title'],
+                    'name' => $block->editor_name ?? 'default',
+                    'titleField' => $blockTypeConfig['titleField'],
+                    'hideTitlePrefix' => $blockTypeConfig['hideTitlePrefix'],
                     'attributes' => $blockTypeConfig['attributes'] ?? [],
                 ];
 
@@ -203,7 +204,7 @@ trait HandleBlocks
                         'max' => $blockTypeConfig['max'],
                     ] : []);
                 } else {
-                    $fields['blocks'][] = $blockItem + [
+                    $fields['blocks'][$blockItem['name']][] = $blockItem + [
                         'icon' => $blockTypeConfig['icon'],
                     ];
                 }

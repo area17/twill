@@ -213,12 +213,19 @@
         this.focused = false
         this.$emit('blur', newValue)
       },
-      onInput: debounce(function (event) {
+      onInput: function (event) {
+        this.preventSubmit()
+
+        this._onInputInternal(event)
+      },
+      _onInputInternal: debounce(function (event) {
         const newValue = event.target.value
         this.updateAndSaveValue(newValue)
         this.checkFieldValidity(event.target)
 
         this.$emit('change', newValue)
+
+        this.allowSubmit()
       }, 250),
       resizeTextarea: function () {
         if (this.type !== 'textarea') return

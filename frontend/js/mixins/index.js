@@ -1,5 +1,7 @@
 export { default as AddAttributesMixin } from './addAttributes'
 export { default as BlockMixin } from './block'
+export { default as BlockItemMixin } from './blockItem'
+export { default as BlockEditorMixin } from './blockEditor'
 export { default as BucketsMixin } from './buckets'
 export { default as CheckBoxesMixin } from './checkboxes'
 export { default as CropperMixin } from './cropper'

@@ -1,4 +1,4 @@
-/* content */
+/* blocks */
 export const ADD_BLOCK = 'addBlock'
 export const MOVE_BLOCK = 'moveBlock'
 export const DELETE_BLOCK = 'deleteBlock'

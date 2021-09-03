@@ -243,8 +243,13 @@
           this.updateEditor(newValue)
         }
       },
-      textUpdate: debounce(function () {
-        this.saveIntoStore() // see formStore mixin
+      textUpdate: function () {
+        this.preventSubmit()
+        this._textUpdateInternal()
+      },
+      _textUpdateInternal: debounce(function () {
+        this.saveIntoStore()
+        this.allowSubmit()
       }, 600),
       toggleSourcecode: function () {
         this.editorHeight = (Math.max(50, this.$refs.editor.clientHeight) + this.toolbarHeight - 1) + 'px'
@@ -307,6 +312,10 @@
       this.options.readOnly = this.options.readOnly !== undefined ? this.options.readOnly : this.readonly
       this.options.formats = QuillConfiguration.getFormats(this.options.modules.toolbar) // Formats are based on current toolbar configuration
       this.options.bounds = this.$refs.editor
+
+      // Ensure pasting content do not make editor scroll to the top
+      // @see https://github.com/quilljs/quill/issues/1374#issuecomment-545112021
+      this.options.scrollingContainer = 'html'
 
       // register custom handlers
       // register anchor toolbar handler
@@ -551,6 +560,12 @@
 
     .ql-editor .ql-anchor {
       text-decoration: underline $color__link;
+    }
+
+    // Ensure pasting content do not make editor scroll to the top
+    // @see https://github.com/quilljs/quill/issues/1374#issuecomment-545112021
+    .ql-clipboard {
+      position: fixed;
     }
 
     .ql-snow.ql-toolbar {

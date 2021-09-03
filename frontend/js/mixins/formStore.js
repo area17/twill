@@ -71,6 +71,12 @@ export default {
       // in Modal or in Form
       if (this.inModal) this.$store.commit(FORM.UPDATE_MODAL_FIELD, field)
       else this.$store.commit(FORM.UPDATE_FORM_FIELD, field)
+    },
+    preventSubmit: function () {
+      this.$store.commit(FORM.PREVENT_SUBMIT)
+    },
+    allowSubmit: function () {
+      this.$store.commit(FORM.ALLOW_SUBMIT)
     }
   },
   beforeMount: function () {

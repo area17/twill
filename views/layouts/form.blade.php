@@ -164,19 +164,21 @@
 @stop
 
 @section('initialStore')
-
     window['{{ config('twill.js_namespace') }}'].STORE.form = {
         baseUrl: '{{ $baseUrl ?? '' }}',
         saveUrl: '{{ $saveUrl }}',
         previewUrl: '{{ $previewUrl ?? '' }}',
         restoreUrl: '{{ $restoreUrl ?? '' }}',
+        availableBlocks: {},
+        blocks: {},
         blockPreviewUrl: '{{ $blockPreviewUrl ?? '' }}',
         availableRepeaters: {!! $availableRepeaters ?? '{}' !!},
         repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!},
         fields: [],
         editor: {{ $editor ? 'true' : 'false' }},
         isCustom: {{ $customForm ? 'true' : 'false' }},
-        reloadOnSuccess: {{ ($reloadOnSuccess ?? false) ? 'true' : 'false' }}
+        reloadOnSuccess: {{ ($reloadOnSuccess ?? false) ? 'true' : 'false' }},
+        editorNames: []
     }
 
     window['{{ config('twill.js_namespace') }}'].STORE.publication = {

@@ -8,7 +8,7 @@
     'required' => $required ?? false,
     'inModal' => $fieldsInModal ?? false,
     'time24Hr' => $time24Hr ?? false,
-    'altFormat' => $altFormat ?? (($time24Hr ?? false) ? 'H:i' : 'h:i'),
+    'altFormat' => $altFormat ?? (($time24Hr ?? false) ? 'H:i' : 'h:i K'),
     'timeOnly' => true,
     'withTime' => true,
     'hourIncrement' => $hourncrement ?? null,

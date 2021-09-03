@@ -31,6 +31,7 @@
       <file>tests/integration/CapsulesTest.php</file>
       <file>tests/integration/PermissionsLegacyTest.php</file>
       <file>tests/integration/PermissionsTest.php</file>
+      <file>tests/integration/BrowsersTest.php</file>
     </testsuite>
   </testsuites>
   <filter>
