@@ -2,7 +2,7 @@ export default ({ Vue }) => {
   Vue.mixin({
     computed: {
       $title () {
-        return 'Documentation – Twill'
+        return this.$page.title + ' – Twill'
       }
     }
   })
