@@ -143,7 +143,7 @@ class BrowsersTest extends TestCase
 
         $bios = collect([1, 2])->map(function ($i) {
             return app(BioRepository::class)->create([
-                'title' => 'Lorem ipsum dolor sit amet',
+                'title' => 'Biography ' . $i,
                 'published' => true,
             ]);
         });
@@ -378,9 +378,21 @@ class BrowsersTest extends TestCase
     {
         $writer = $this->createWriterWithBios();
 
-        // User can preview
-        $this->httpRequestAssert("/twill/writers/preview/{$writer->id}", 'PUT', []);
+        // User can preview modifications
+        $this->httpRequestAssert("/twill/writers/preview/{$writer->id}", 'PUT', [
+            'browsers' => [
+                'bios' => [
+                    [
+                        'id' => 2,
+                        'name' => 'Biography 2',
+                        'endpointType' => 'App\\Models\\Writer',
+                        'edit' => '',
+                    ],
+                ],
+            ],
+        ]);
         $this->assertSee('This is a writer');
+        $this->assertSee('Bios: Biography 2');
     }
 
     public function testBrowserHasManyPreviewRevisions()
@@ -389,9 +401,10 @@ class BrowsersTest extends TestCase
 
         // User can preview revisions
         $this->httpRequestAssert("/twill/writers/preview/{$writer->id}", 'PUT', [
-            'revisionId' => $writer->revisions->last()->id,
+            'revisionId' => $writer->revisions->first()->id,
         ]);
         $this->assertSee('This is a writer');
+        $this->assertSee('No bios');
     }
 
     public function testBrowserHasManyRestoreRevisions()
