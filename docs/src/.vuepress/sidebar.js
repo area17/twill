@@ -8,7 +8,7 @@ module.exports = [
         "children": [
           {
             "title": "About Twill",
-            "path": "/preface/about-twill.html",
+            "path": "/preface/",
             "collapsable": true
           },
           {
@@ -55,7 +55,7 @@ module.exports = [
         "children": [
           {
             "title": "Environment requirements",
-            "path": "/getting-started/environment-requirements.html",
+            "path": "/getting-started/",
             "collapsable": true
           },
           {
@@ -80,6 +80,11 @@ module.exports = [
         "title": "CRUD modules",
         "path": "/crud-modules/",
         "children": [
+          {
+            "title": "CRUD Modules",
+            "path": "/crud-modules/",
+            "collapsable": true
+          },
           {
             "title": "CLI Generator",
             "path": "/crud-modules/cli-generator.html",
@@ -132,6 +137,11 @@ module.exports = [
         "title": "Form fields",
         "path": "/form-fields/",
         "children": [
+          {
+            "title": "Form Fields",
+            "path": "/form-fields/",
+            "collapsable": true
+          },
           {
             "title": "Input",
             "path": "/form-fields/input.html",
@@ -235,8 +245,8 @@ module.exports = [
         "path": "/block-editor/",
         "children": [
           {
-            "title": "Overview",
-            "path": "/block-editor/overview.html",
+            "title": "Block editor overview",
+            "path": "/block-editor/",
             "collapsable": true
           },
           {
@@ -286,6 +296,11 @@ module.exports = [
         "title": "Media library",
         "path": "/media-library/",
         "children": [
+          {
+            "title": "Media library",
+            "path": "/media-library/",
+            "collapsable": true
+          },
           {
             "title": "Storage provider",
             "path": "/media-library/storage-provider.html",
@@ -370,13 +385,7 @@ module.exports = [
       {
         "title": "Resources",
         "path": "/resources/",
-        "children": [
-          {
-            "title": "Other useful packages",
-            "path": "/resources/other-useful-packages.html",
-            "collapsable": true
-          }
-        ],
+        "children": [],
         "collapsable": true
       },
       {
