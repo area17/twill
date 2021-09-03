@@ -43,7 +43,7 @@ abstract class PermissionsTestBase extends TestCase
 
         $this->httpRequestAssert('/twill');
 
-        $this->assertSee($user->name);
+        $this->assertSee('Logout');
     }
 
     public function makeUser()
