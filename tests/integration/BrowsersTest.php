@@ -259,9 +259,21 @@ class BrowsersTest extends TestCase
         $writers = $this->createWriters();
         $bio = $this->createBioWithWriter($writers[0]);
 
-        // User can preview
-        $this->httpRequestAssert("/twill/bios/preview/{$bio->id}", 'PUT', []);
+        // User can preview modifications
+        $this->httpRequestAssert("/twill/bios/preview/{$bio->id}", 'PUT', [
+            'browsers' => [
+                'writer' => [
+                    [
+                        'id' => 3,
+                        'name' => 'Charlie',
+                        'endpointType' => 'App\\Models\\Writer',
+                        'edit' => '',
+                    ],
+                ],
+            ],
+        ]);
         $this->assertSee('This is a bio');
+        $this->assertSee('Writer: Charlie');
     }
 
     public function testBrowserBelongsToPreviewRevisions()
@@ -271,9 +283,10 @@ class BrowsersTest extends TestCase
 
         // User can preview revisions
         $this->httpRequestAssert("/twill/bios/preview/{$bio->id}", 'PUT', [
-            'revisionId' => Bio::first()->revisions->last()->id,
+            'revisionId' => Bio::first()->revisions->first()->id,
         ]);
         $this->assertSee('This is a bio');
+        $this->assertSee('No writer');
     }
 
     public function testBrowserBelongsToRestoreRevisions()
