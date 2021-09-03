@@ -5,4 +5,4 @@ src/.vuepress/dist
 !src/.vuepress/public
 
 # generated using npm scripts
-README.md
+/README.md
