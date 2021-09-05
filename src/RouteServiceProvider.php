@@ -41,8 +41,6 @@ class RouteServiceProvider extends ServiceProvider
     public function map(Router $router)
     {
         $this->registerRoutePatterns();
-        
-        $this->registerCapsulesRoutes($router);
 
         $this->mapInternalRoutes(
             $router,
@@ -50,6 +48,8 @@ class RouteServiceProvider extends ServiceProvider
             $this->getRouteMiddleware(),
             $this->supportSubdomainRouting()
         );
+        
+        $this->registerCapsulesRoutes($router);
 
         $this->mapHostRoutes(
             $router,
