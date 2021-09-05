@@ -17,6 +17,7 @@ class Update extends Command
     {
         $this->publishAssets();
         $this->call('cache:clear');
+        $this->call('view:clear');
     }
 
     /**
