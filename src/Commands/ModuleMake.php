@@ -443,7 +443,7 @@ class ModuleMake extends Command
     {
         $modelsDir = $this->isCapsule ? $this->capsule['repositories_dir'] : 'Repositories';
 
-        $modelClass = $this->isCapsule ? $this->capsule['model'] : "App\Models\\{$this->capsule['singular']}";
+        $modelClass = $this->isCapsule ? $this->capsule['model'] : config('twill.namespace') . "\Models\\{$this->capsule['singular']}";
 
         $this->makeTwillDirectory($modelsDir);
 
