@@ -7,9 +7,30 @@ use {{baseController}};
 class {{controllerClassName}} extends ModuleController
 {
     protected $moduleName = '{{moduleName}}';
-    {{!hasSlug}}
+
     protected $indexOptions = [
-        'permalink' => false
-    ];
-    {{/!hasSlug}}
+        {{permalinkOption}}
+        {{reorderOption}}
+    ];{{hasNesting}}
+
+    protected function indexData($request)
+    {
+        return [
+            'nested' => true,
+            'nestedDepth' => 1, // controls the allowed depth in UI
+        ];
+    }
+
+    protected function transformIndexItems($items)
+    {
+        return $items->toTree();
+    }
+
+    protected function indexItemData($item)
+    {
+        return ($item->children ? [
+            'children' => $this->getIndexTableData($item->children),
+        ] : []);
+    }
+    {{/hasNesting}}
 }
