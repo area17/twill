@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use Kalnoy\Nestedset\NestedSetServiceProvider;
 
 abstract class TestCase extends OrchestraTestCase
 {
@@ -280,6 +281,7 @@ abstract class TestCase extends OrchestraTestCase
             RouteServiceProvider::class,
             TwillServiceProvider::class,
             ValidationServiceProvider::class,
+            NestedSetServiceProvider::class,
         ];
     }
 
