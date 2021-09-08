@@ -203,6 +203,7 @@ return [
         'de',
         'nl',
         'pt',
+        'tr',
         'zh-Hans',
         'ru',
     ],
