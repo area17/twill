@@ -18,6 +18,7 @@ class MakeModuleTest extends TestCase
                 '--hasFiles' => true,
                 '--hasPosition' => true,
                 '--hasRevisions' => true,
+                '--hasNesting' => true,
             ])->run()
         );
 
