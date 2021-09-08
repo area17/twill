@@ -24,6 +24,7 @@ class ModuleMake extends Command
         {--F|hasFiles}
         {--P|hasPosition}
         {--R|hasRevisions}
+        {--N|hasNesting}
         {--all}';
 
     /**
@@ -96,6 +97,11 @@ class ModuleMake extends Command
     /**
      * @var bool
      */
+    protected $nestable;
+
+    /**
+     * @var bool
+     */
     protected $defaultsAnswserToNo;
 
     /**
@@ -133,11 +139,12 @@ class ModuleMake extends Command
         $this->fileable = false;
         $this->sortable = false;
         $this->revisionable = false;
+        $this->nestable = false;
 
         $this->defaultsAnswserToNo = false;
 
-        $this->modelTraits = ['HasBlocks', 'HasTranslation', 'HasSlug', 'HasMedias', 'HasFiles', 'HasRevisions', 'HasPosition'];
-        $this->repositoryTraits = ['HandleBlocks', 'HandleTranslations', 'HandleSlugs', 'HandleMedias', 'HandleFiles', 'HandleRevisions'];
+        $this->modelTraits = ['HasBlocks', 'HasTranslation', 'HasSlug', 'HasMedias', 'HasFiles', 'HasRevisions', 'HasPosition', 'HasNesting'];
+        $this->repositoryTraits = ['HandleBlocks', 'HandleTranslations', 'HandleSlugs', 'HandleMedias', 'HandleFiles', 'HandleRevisions', 'HandleNesting'];
     }
 
     protected function checkCapsuleDirectory($dir)
@@ -184,6 +191,7 @@ class ModuleMake extends Command
             'hasFiles',
             'hasPosition',
             'hasRevisions',
+            'hasNesting',
         ])->filter(function ($enabled) {
             return $enabled;
         });
@@ -199,6 +207,11 @@ class ModuleMake extends Command
         $this->fileable = $this->checkOption('hasFiles');
         $this->sortable = $this->checkOption('hasPosition');
         $this->revisionable = $this->checkOption('hasRevisions');
+        $this->nestable = $this->checkOption('hasNesting');
+
+        if ($this->nestable) {
+            $this->sortable = true;
+        }
 
         $activeTraits = [
             $this->blockable,
@@ -208,6 +221,7 @@ class ModuleMake extends Command
             $this->fileable,
             $this->revisionable,
             $this->sortable,
+            $this->nestable,
         ];
 
         $modelName = Str::studly(Str::singular($moduleName));
@@ -262,6 +276,11 @@ class ModuleMake extends Command
 
         $this->info("Enjoy.");
 
+        if ($this->nestable && !class_exists('\Kalnoy\Nestedset\NestedSet')) {
+            $this->warn("\nTo support module nesting, you must install the `kalnoy/nestedset` package:");
+            $this->warn("\n    composer require kalnoy/nestedset\n");
+        }
+
         $this->composer->dumpAutoloads();
     }
 
@@ -307,6 +326,7 @@ class ModuleMake extends Command
             $stub = $this->renderStubForOption($stub, 'hasSlug', $this->sluggable);
             $stub = $this->renderStubForOption($stub, 'hasRevisions', $this->revisionable);
             $stub = $this->renderStubForOption($stub, 'hasPosition', $this->sortable);
+            $stub = $this->renderStubForOption($stub, 'hasNesting', $this->nestable);
 
             $stub = preg_replace('/\}\);[\s\S]+?Schema::create/', "});\n\n        Schema::create", $stub);
 
@@ -494,11 +514,29 @@ class ModuleMake extends Command
             $this->files->get(__DIR__ . '/stubs/controller.stub')
         );
 
-        if ($this->sluggable) {
-            $stub = preg_replace('/{{!hasSlug}}[\s\S]+?{{\/!hasSlug}}/', '', $stub);
-        } else {
-            $stub = str_replace(['{{!hasSlug}}', '{{/!hasSlug}}'], '', $stub);
+        $permalinkOption = '';
+        $reorderOption = '';
+
+        if (!$this->sluggable) {
+            $permalinkOption = "'permalink' => false,";
         }
+
+        if ($this->nestable) {
+            $reorderOption = "'reorder' => true,";
+
+            $stub = str_replace(['{{hasNesting}}', '{{/hasNesting}}'], '', $stub);
+        } else {
+            $stub = preg_replace('/{{hasNesting}}[\s\S]+?{{\/hasNesting}}/', '', $stub);
+        }
+
+        $stub = str_replace(
+            ['{{permalinkOption}}', '{{reorderOption}}'],
+            [$permalinkOption, $reorderOption],
+            $stub
+        );
+
+        // Remove lines including only whitespace, leave true empty lines untouched
+        $stub = preg_replace('/^[\s]+\n/m', '', $stub);
 
         twill_put_stub(twill_path("{$dir}/" . $controllerClassName . '.php'), $stub);
 
@@ -607,6 +645,7 @@ class ModuleMake extends Command
             'hasFiles' => 'Do you need to attach files on this module?',
             'hasPosition' => 'Do you need to manage the position of records on this module?',
             'hasRevisions' => 'Do you need to enable revisions on this module?',
+            'hasNesting' => 'Do you need to enable nesting on this module?',
         ];
 
         return 'yes' === $this->choice($questions[$option], ['no', 'yes'], $this->defaultsAnswserToNo ? 0 : 1);
