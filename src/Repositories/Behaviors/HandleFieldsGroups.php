@@ -67,7 +67,9 @@ trait HandleFieldsGroups
                         $decoded_fields[$group . $this->fieldsGroupsFormFieldNameSeparator . $field_name] = $field_value;
                         unset($decoded_fields[$field_name]);
 
-                        $object->setAttribute($group . $this->fieldsGroupsFormFieldNameSeparator . $field_name, $field_value);
+                        if (!is_array($field_value)) {
+                            $object->setAttribute($group . $this->fieldsGroupsFormFieldNameSeparator . $field_name, $field_value);
+                        }
                     } else {
                         $object->setAttribute($field_name, $field_value);
                     }
