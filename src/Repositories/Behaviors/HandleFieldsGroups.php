@@ -128,7 +128,7 @@ trait HandleFieldsGroups
     {
         $casts = $object->getCasts();
         if ($this->model->isTranslatable()) {
-            $casts = $casts + (new ($this->model->getTranslationModelNameDefault()))->getCasts();
+            $casts = $casts + app()->make($this->model->getTranslationModelNameDefault())->getCasts();
         }
 
         return $casts;
