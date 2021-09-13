@@ -45,6 +45,11 @@ abstract class ModuleRepository
     protected $fieldsGroups = [];
 
     /**
+     * @var string|null
+     */
+    public $fieldsGroupsFormFieldNameSeparator = null;
+
+    /**
      * @param array $with
      * @param array $scopes
      * @param array $orders
