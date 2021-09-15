@@ -144,7 +144,7 @@ class ModuleMake extends Command
         $this->defaultsAnswserToNo = false;
 
         $this->modelTraits = ['HasBlocks', 'HasTranslation', 'HasSlug', 'HasMedias', 'HasFiles', 'HasRevisions', 'HasPosition', 'HasNesting'];
-        $this->repositoryTraits = ['HandleBlocks', 'HandleTranslations', 'HandleSlugs', 'HandleMedias', 'HandleFiles', 'HandleRevisions', 'HandleNesting'];
+        $this->repositoryTraits = ['HandleBlocks', 'HandleTranslations', 'HandleSlugs', 'HandleMedias', 'HandleFiles', 'HandleRevisions', '', 'HandleNesting'];
     }
 
     protected function checkCapsuleDirectory($dir)
@@ -477,6 +477,8 @@ class ModuleMake extends Command
             }
         }
 
+        $activeRepositoryTraits = array_filter($activeRepositoryTraits);
+
         $activeRepositoryTraitsString = empty($activeRepositoryTraits) ? '' : 'use ' . (empty($activeRepositoryTraits) ? "" : rtrim(implode(', ', $activeRepositoryTraits), ', ') . ';');
 
         $activeRepositoryTraitsImports = empty($activeRepositoryTraits) ? '' : "use A17\Twill\Repositories\Behaviors\\" . implode(";\nuse A17\Twill\Repositories\Behaviors\\", $activeRepositoryTraits) . ";";
@@ -648,7 +650,13 @@ class ModuleMake extends Command
             'hasNesting' => 'Do you need to enable nesting on this module?',
         ];
 
-        return 'yes' === $this->choice($questions[$option], ['no', 'yes'], $this->defaultsAnswserToNo ? 0 : 1);
+        $defaultAnswers = [
+            'hasNesting' => 0,
+        ];
+
+        $currentDefaultAnswer = $this->defaultsAnswserToNo ? 0 : ($defaultAnswers[$option] ?? 1);
+
+        return 'yes' === $this->choice($questions[$option], ['no', 'yes'], $currentDefaultAnswer);
     }
 
     public function createCapsulePath($moduleName, $modelName)
