@@ -2,14 +2,20 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
-use Illuminate\Support\Facades\DB;
+use A17\Twill\Jobs\ReorderNestedModuleItems;
 
 trait HandleNesting
 {
+    /**
+     * The Laravel queue name to be used for the reordering operation.
+     *
+     * @var string
+     */
+    protected $reorderNestedModuleItemsJobQueue = 'default';
+
     public function setNewOrder($ids)
     {
-        DB::transaction(function () use ($ids) {
-            $this->model->saveTreeFromIds($ids);
-        }, 3);
+        ReorderNestedModuleItems::dispatch($this->model, $ids)
+            ->onQueue($this->reorderNestedModuleItemsJobQueue);
     }
 }
