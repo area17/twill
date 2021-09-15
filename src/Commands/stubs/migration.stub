@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class Create{{tableClassName}}Tables extends Migration
 {
@@ -23,6 +24,7 @@ class Create{{tableClassName}}Tables extends Migration
             // $table->timestamp('publish_start_date')->nullable();
             // $table->timestamp('publish_end_date')->nullable();{{hasNesting}}
 
+            // this will create the required columns to support nesting for this module
             $table->nestedSet();{{/hasNesting}}
         });
 
