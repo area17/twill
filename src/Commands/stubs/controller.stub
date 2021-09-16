@@ -13,6 +13,8 @@ class {{controllerClassName}} extends ModuleController
         {{reorderOption}}
     ];{{hasNesting}}
 
+    protected $showOnlyParentItemsInBrowsers = true;
+
     protected function indexData($request)
     {
         return [
@@ -31,6 +33,21 @@ class {{controllerClassName}} extends ModuleController
         return ($item->children ? [
             'children' => $this->getIndexTableData($item->children),
         ] : []);
+    }
+
+    protected function getBrowserItems($scopes = [])
+    {
+        if ($this->showOnlyParentItemsInBrowsers) {
+            return $this->getIndexItems($scopes, true);
+        }
+
+        return $this->repository->get(
+            $this->indexWith,
+            $scopes,
+            $this->orderScope(),
+            request('offset') ?? $this->perPage ?? 50,
+            true
+        );
     }
     {{/hasNesting}}
 }
