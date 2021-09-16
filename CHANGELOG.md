@@ -2,6 +2,21 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.5.2 (2021-09-16)
+
+### Fixed
+
+- 🚨 Fix XSS security vulnerability [#1157](https://github.com/area17/twill/pull/1157) [`2dd77b15`](https://github.com/area17/twill/commit/2dd77b15)
+- Hydrate related browsers on preview [#1130](https://github.com/area17/twill/pull/1130) 
+- Use configured namespace when generating model class in repository [`80e1b590`](https://github.com/area17/twill/commit/80e1b590)
+- Translation key typo on the dashboard [`c630d0d1`](https://github.com/area17/twill/commit/c630d0d1)
+
+### Improved
+
+- Call `view:clear` when updating assets with `twill:update` [`c5b96010`](https://github.com/area17/twill/commit/c5b96010)
+- Add security policy file [`55b2dfd63`](https://github.com/area17/twill/commit/55b2dfd63)
+
+
 ## 2.5.1 (2021-09-02)
 
 ### Fixed
