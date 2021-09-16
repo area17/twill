@@ -2,6 +2,14 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 1.2.4 (2021-09-16)
+
+Twill 1.2.4 is backporting a fix introduced in 2.5.2, which is addressing a security vulnerability.
+
+### Fixed
+
+- 🚨 Fix XSS security vulnerability [#1158](https://github.com/area17/twill/pull/1158) [`404dbd74`](https://github.com/area17/twill/commit/404dbd74)
+
 ## 1.2.3 (2021-06-15)
 
 Twill 1.2.3 is backporting a fix introduced in 2.4.0, which is addressing a security vulnerability on the CMS logout action.
