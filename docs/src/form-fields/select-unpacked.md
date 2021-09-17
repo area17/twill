@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Select Unpacked
 
-![screenshot](/docs/_media/selectunpacked.png)
+![screenshot](/_media/selectunpacked.png)
 
 ```php
 @formField('select', [
@@ -50,4 +50,4 @@ Schema::table('posts', function (Blueprint $table) {
 });
 ```
 
-When used in a [block](https://twill.io/docs/#adding-blocks), no migration is needed.
+When used in a [block](/block-editor/creating-a-block-editor.html), no migration is needed.

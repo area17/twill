@@ -33,7 +33,7 @@ By default, adding the `@formField('block_editor')` directive enables all availa
 
 Blocks and Repeaters are built on the same Block model and are created and defined in their respective folders. By default, Twill will look for Blade templates in `views/admin/blocks` for blocks and `views/admin/repeaters` for repeaters.
 
-Note: Prior to Twill version 2.2, Blocks (and Repeaters) needed to be defined in the configuration file – this is no longer necessary and not recommended. This change is backward compatible, so your existing configuration should work as it used to. Defining blocks in the configuration file will be deprecated in a future release (see the section below [Legacy configuration](#legacy-configuration-2-2)).
+Note: Prior to Twill version 2.2, Blocks (and Repeaters) needed to be defined in the configuration file – this is no longer necessary and not recommended. This change is backward compatible, so your existing configuration should work as it used to. Defining blocks in the configuration file will be deprecated in a future release (see the section below [Legacy configuration](/block-editor/legacy-configuration-2-2.html).
 
 Blocks (and Repeaters) are exactly like a regular form, without any Blade layout or section. The templates take special annotations to add further customization. The title annotation is mandatory and Twill will throw an error if it is not defined.
 

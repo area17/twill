@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # WYSIWYG
 
-![screenshot](/docs/_media/wysiwyg.png)
+![screenshot](/_media/wysiwyg.png)
 
 ```php
 @formField('wysiwyg', [
@@ -97,4 +97,4 @@ Schema::table('article_translations', function (Blueprint $table) {
     ...
 });
 ```
-When used in a [block](https://twill.io/docs/#adding-blocks), no migration is needed.
+When used in a [block](/block-editor/creating-a-block-editor.html), no migration is needed.

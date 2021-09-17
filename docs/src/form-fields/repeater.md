@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Repeater
 
-![screenshot](/docs/_media/repeater.png)
+![screenshot](/_media/repeater.png)
 
 ```php
 @formField('repeater', ['type' => 'video'])
@@ -20,7 +20,7 @@ pageClass: twill-doc
 
 Repeater fields can be used inside as well as outside the block editor.
 
-Inside the block editor, repeater blocks share the same model as regular blocks. By reading the section on the [block editor](#block-editor-3) first, you will get a good overview of how to create and define repeater blocks for your project. No migration is needed when using repeater blocks. Refer to the section titled [Adding repeater fields to a block](#adding-repeater-fields-to-a-block) for a detailed explanation.
+Inside the block editor, repeater blocks share the same model as regular blocks. By reading the section on the [block editor](/block-editor/) first, you will get a good overview of how to create and define repeater blocks for your project. No migration is needed when using repeater blocks. Refer to the section titled [Adding repeater fields to a block](/block-editor/adding-repeater-fields-to-a-block.html) for a detailed explanation.
 
 Outside the block editor, repeater fields are used to save `hasMany` or `morphMany` relationships.
 

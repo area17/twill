@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Multi Select
 
-![screenshot](/docs/_media/multiselectunpacked.png)
+![screenshot](/_media/multiselectunpacked.png)
 
 ```php
 @formField('multi_select', [
@@ -104,7 +104,7 @@ Sometimes the content for the `multi_select` is coming from another model.
 
 In this case that it can be implemented as follows:
 
-- Create a Sectors [module](https://twill.io/docs/#cli-generator)
+- Create a Sectors [module](/crud-modules/cli-generator.html)
 
 ```
 php artisan twill:module sectors
@@ -166,4 +166,4 @@ protected function formData($request)
 ])
 ```
 
-When used in a [block](https://twill.io/docs/#adding-blocks), no migration is needed.
+When used in a [block](/block-editor/creating-a-block-editor.html), no migration is needed.

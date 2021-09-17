@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Input
 
-![screenshot](/docs/_media/input.png)
+![screenshot](/_media/input.png)
 
 ```php
 @formField('input', [
@@ -73,4 +73,4 @@ Schema::table('articles', function (Blueprint $table) {
 });
 ```
 
-When used in a [block](https://twill.io/docs/#adding-blocks), no migration is needed.
+When used in a [block](/block-editor/creating-a-block-editor.html), no migration is needed.

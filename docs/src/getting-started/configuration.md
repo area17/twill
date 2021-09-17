@@ -355,7 +355,7 @@ That's exactly why in the case of the Imgix signature key, we do not say that yo
 Always use environment variables for credentials.
 :::
 
-Finally, Twill's default Imgix configuration includes 4 different image transformation parameter sets that are used by helpers you will find in the [media library's documentation](#media-library-3):
+Finally, Twill's default Imgix configuration includes 4 different image transformation parameter sets that are used by helpers you will find in the [media library's documentation](/media-library/):
 
 - `default_params`: used by all image url functions in `A17\Twill\Services\MediaLibrary\Imgix` but overridden by the following parameter sets
 - `lqip_default_params`: used by the Low Quality Image Placeholder url function
@@ -464,7 +464,7 @@ FILE_LIBRARY_CASCADE_DELETE=false
 
 Twill's provided service for files creates direct urls to the disk they were uploaded to (ie. S3 urls or urls on your domain depending on your endpoint type). You can change the default service using the `FILE_LIBRARY_IMAGE_SERVICE` environment variable or the `file_library.image_service` configuration option.
 
-See the [file library's documentation](#file-library-2) for more information.
+See the [file library's documentation](/media-library/file-library.html) for more information.
 
 
 **Allowed extensions**

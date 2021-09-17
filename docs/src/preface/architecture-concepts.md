@@ -6,13 +6,13 @@ pageClass: twill-doc
 
 #### CRUD modules
 
-A Twill [CRUD module](#crud-modules-3) is a set of classes and configurations in your Laravel application that enable your publishers to manage a certain type of content. The structure of a CRUD module is completely up to you.
+A Twill [CRUD module](/crud-modules/) is a set of classes and configurations in your Laravel application that enable your publishers to manage a certain type of content. The structure of a CRUD module is completely up to you.
 
 Another way to think of a CRUD module is as a feature rich Laravel resource. In other words (and for the non-Laravel developer), a CRUD module is basically a content type (or post type, as sometimes called by other CMS solutions) with CRUD operations (Create, Read, Update, Delete), as well as custom Twill-provided operations like: Publish, Feature, Tag, Preview, Restore, Restore revision, Reorder or Bulk edit. Using Twill's media library, images and files can be attached to modules records. Also, using Twill's block editor, a rich editing experience of a module's record can be offered to publishers.
 
 In Twill's UI, a CRUD module most often consists of a listing page and a form page or modal. Records created under a module can then be associated with other modules' records to create relationships between your content. Records of your Twill modules and any associations are stored in a traditional relational database schema, following Laravel's migrations and Eloquent model conventions.
 
-Twill's CRUD modules features are enabled using PHP traits you include in your Eloquent models and Twill repositories, as well as various configuration variables, and a bunch of conventions to follow. Further guidance is documented in the [CRUD modules](#crud-modules-3) section.
+Twill's CRUD modules features are enabled using PHP traits you include in your Eloquent models and Twill repositories, as well as various configuration variables, and a bunch of conventions to follow. Further guidance is documented in the [CRUD modules](/crud-modules/) section.
 
 A Twill module can be modified however you like – you can include countless types of content fields, and change the organization and structure according to the needs of the module and your product. Setup is simple: you just need to compose a form using all of Twill's available form fields.
 
@@ -26,7 +26,7 @@ While possibilities for composition are endless, we’ve identified four standar
 
 - Pages: Pages are unstructured data models most often used for static content, such as an About page. Rather than being separated into listing and detail screens, pages are manually organized into parent/child relationships. Combined with the [kalnoy/nestedset](https://github.com/lazychaser/laravel-nestedset) package, a Twill module can be configured to show and make parent/child relationships manageable on a module's records.
 
-- Elements: Elements are modules or snippets of content that are added to an entity, page, or screen. Examples include the ability to manage footer text or create a global alert that can be turned on/off, etc. Twill offers developers the ability to quickly create [settings sections](#settings-sections) to manage elements. A Twill module could also be configured to manage any sort of standalone element or content composition. There's nothing wrong with having a database table with a single record if that is what your product require, so you should feel free to create a Twill module to have a custom form for a single record. You can use a Laravel seeder or migration to initialize your admin console with those records.
+- Elements: Elements are modules or snippets of content that are added to an entity, page, or screen. Examples include the ability to manage footer text or create a global alert that can be turned on/off, etc. Twill offers developers the ability to quickly create [settings sections](/settings-sections/) to manage elements. A Twill module could also be configured to manage any sort of standalone element or content composition. There's nothing wrong with having a database table with a single record if that is what your product require, so you should feel free to create a Twill module to have a custom form for a single record. You can use a Laravel seeder or migration to initialize your admin console with those records.
 
 #### CRUD listings
 

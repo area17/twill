@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Multi Select Inline
 
-![screenshot](/docs/_media/multiselectinline.png)
+![screenshot](/_media/multiselectinline.png)
 
 ```php
 @formField('multi_select', [
@@ -36,4 +36,4 @@ pageClass: twill-doc
 ])
 ```
 
-See [Multi select](https://twill.io/docs/#multi-select) for more information on how to implement the field with static and dynamic values.
+See [Multi select](/form-fields/multi-select.html) for more information on how to implement the field with static and dynamic values.

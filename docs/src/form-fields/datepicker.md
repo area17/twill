@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Datepicker
 
-![screenshot](/docs/_media/datepicker.png)
+![screenshot](/_media/datepicker.png)
 
 ```php
 @formField('date_picker', [
@@ -48,4 +48,4 @@ Schema::table('posts', function (Blueprint $table) {
 });
 ```
 
-When used in a [block](https://twill.io/docs/#adding-blocks), no migration is needed.
+When used in a [block](/block-editor/creating-a-block-editor.html), no migration is needed.

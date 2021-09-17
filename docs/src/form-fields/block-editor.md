@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Block Editor
 
-![screenshot](/docs/_media/blockeditor.png)
+![screenshot](/_media/blockeditor.png)
 
 ```php
 @formField('block_editor', [
@@ -12,7 +12,7 @@ pageClass: twill-doc
 ])
 ```
 
-See [Block editor](https://twill.io/docs/#block-editor-3)
+See [Block editor](/block-editor/)
 
 
 | Option           | Description                                                  | Type/values    | Default value |

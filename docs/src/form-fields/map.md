@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Map
 
-![screenshot](/docs/_media/map.png)
+![screenshot](/_media/map.png)
 
 ```php
 @formField('map', [
@@ -42,7 +42,7 @@ public $casts = [
 ];
 ```
 
-When used in a [block](https://twill.io/docs/#adding-blocks), no migration is needed.
+When used in a [block](/block-editor/creating-a-block-editor.html), no migration is needed.
 
 #### Example of data stored in the Database:
 Default data:

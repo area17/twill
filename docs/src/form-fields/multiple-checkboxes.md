@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Multiple Checkboxes
 
-![screenshot](/docs/_media/checkboxes.png)
+![screenshot](/_media/checkboxes.png)
 
 ```php
 @formField('checkboxes', [
