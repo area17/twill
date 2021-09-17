@@ -9,390 +9,322 @@ module.exports = [
           {
             "title": "About Twill",
             "path": "/preface/",
-            "collapsable": true
           },
           {
-            "title": "Benefits overview",
+            "title": "Benefits Overview",
             "path": "/preface/benefits-overview.html",
-            "collapsable": true
           },
           {
-            "title": "Feature list",
+            "title": "Feature List",
             "path": "/preface/feature-list.html",
-            "collapsable": true
           },
           {
-            "title": "Architecture concepts",
+            "title": "Architecture Concepts",
             "path": "/preface/architecture-concepts.html",
-            "collapsable": true
           },
           {
             "title": "Credits",
             "path": "/preface/credits.html",
-            "collapsable": true
           },
           {
-            "title": "Contribution guide",
+            "title": "Contribution Guide",
             "path": "/preface/contribution-guide.html",
-            "collapsable": true
           },
           {
             "title": "Licensing",
             "path": "/preface/licensing.html",
-            "collapsable": true
           },
           {
-            "title": "1.x documentation",
+            "title": "1.x Documentation",
             "path": "/preface/1-x-documentation.html",
-            "collapsable": true
           }
         ],
         "collapsable": true
       },
       {
-        "title": "Getting started",
+        "title": "Getting Started",
         "path": "/getting-started/",
         "children": [
           {
-            "title": "Environment requirements",
+            "title": "Environment Requirements",
             "path": "/getting-started/",
-            "collapsable": true
           },
           {
             "title": "Installation",
             "path": "/getting-started/installation.html",
-            "collapsable": true
           },
           {
             "title": "Configuration",
             "path": "/getting-started/configuration.html",
-            "collapsable": true
           },
           {
             "title": "Navigation",
             "path": "/getting-started/navigation.html",
-            "collapsable": true
           }
         ],
         "collapsable": true
       },
       {
-        "title": "CRUD modules",
+        "title": "Modules",
         "path": "/crud-modules/",
         "children": [
           {
             "title": "CRUD Modules",
             "path": "/crud-modules/",
-            "collapsable": true
           },
           {
             "title": "CLI Generator",
             "path": "/crud-modules/cli-generator.html",
-            "collapsable": true
           },
           {
             "title": "Migrations",
             "path": "/crud-modules/migrations.html",
-            "collapsable": true
           },
           {
             "title": "Models",
             "path": "/crud-modules/models.html",
-            "collapsable": true
           },
           {
             "title": "Repositories",
             "path": "/crud-modules/repositories.html",
-            "collapsable": true
           },
           {
             "title": "Controllers",
             "path": "/crud-modules/controllers.html",
-            "collapsable": true
           },
           {
             "title": "Form Requests",
             "path": "/crud-modules/form-requests.html",
-            "collapsable": true
           },
           {
             "title": "Routes",
             "path": "/crud-modules/routes.html",
-            "collapsable": true
           },
           {
-            "title": "Revisions and previewing",
+            "title": "Revisions and Previewing",
             "path": "/crud-modules/revisions-and-previewing.html",
-            "collapsable": true
           },
           {
             "title": "Nested Module",
             "path": "/crud-modules/nested-module.html",
-            "collapsable": true
           }
         ],
         "collapsable": true
       },
       {
-        "title": "Form fields",
+        "title": "Form Fields",
         "path": "/form-fields/",
         "children": [
           {
             "title": "Form Fields",
             "path": "/form-fields/",
-            "collapsable": true
           },
           {
             "title": "Input",
             "path": "/form-fields/input.html",
-            "collapsable": true
           },
           {
             "title": "WYSIWYG",
             "path": "/form-fields/wysiwyg.html",
-            "collapsable": true
           },
           {
             "title": "Medias",
             "path": "/form-fields/medias.html",
-            "collapsable": true
           },
           {
             "title": "Files",
             "path": "/form-fields/files.html",
-            "collapsable": true
           },
           {
             "title": "Datepicker",
             "path": "/form-fields/datepicker.html",
-            "collapsable": true
           },
           {
             "title": "Timepicker",
             "path": "/form-fields/timepicker.html",
-            "collapsable": true
           },
           {
             "title": "Select",
             "path": "/form-fields/select.html",
-            "collapsable": true
           },
           {
-            "title": "Select unpacked",
+            "title": "Select Unpacked",
             "path": "/form-fields/select-unpacked.html",
-            "collapsable": true
           },
           {
-            "title": "Multi select",
+            "title": "Multi Select",
             "path": "/form-fields/multi-select.html",
-            "collapsable": true
           },
           {
-            "title": "Multi select inline",
+            "title": "Multi Select Inline",
             "path": "/form-fields/multi-select-inline.html",
-            "collapsable": true
           },
           {
             "title": "Checkbox",
             "path": "/form-fields/checkbox.html",
-            "collapsable": true
           },
           {
-            "title": "Multiple checkboxes",
+            "title": "Multiple Checkboxes",
             "path": "/form-fields/multiple-checkboxes.html",
-            "collapsable": true
           },
           {
             "title": "Radios",
             "path": "/form-fields/radios.html",
-            "collapsable": true
           },
           {
-            "title": "Block editor",
+            "title": "Block Editor",
             "path": "/form-fields/block-editor.html",
-            "collapsable": true
           },
           {
             "title": "Browser",
             "path": "/form-fields/browser.html",
-            "collapsable": true
           },
           {
             "title": "Repeater",
             "path": "/form-fields/repeater.html",
-            "collapsable": true
           },
           {
             "title": "Map",
             "path": "/form-fields/map.html",
-            "collapsable": true
           },
           {
             "title": "Color",
             "path": "/form-fields/color.html",
-            "collapsable": true
           },
           {
-            "title": "Conditional fields",
+            "title": "Conditional Fields",
             "path": "/form-fields/conditional-fields.html",
-            "collapsable": true
           }
         ],
         "collapsable": true
       },
       {
-        "title": "Block editor",
+        "title": "Block Editor",
         "path": "/block-editor/",
         "children": [
           {
-            "title": "Block editor overview",
+            "title": "Overview",
             "path": "/block-editor/",
-            "collapsable": true
           },
           {
-            "title": "Creating a block editor",
+            "title": "Creating a Block Editor",
             "path": "/block-editor/creating-a-block-editor.html",
-            "collapsable": true
           },
           {
-            "title": "Adding repeater fields to a block",
+            "title": "Adding Repeater Fields to a Block",
             "path": "/block-editor/adding-repeater-fields-to-a-block.html",
-            "collapsable": true
           },
           {
-            "title": "Adding browser fields to a block",
+            "title": "Adding Browser Fields to a Block",
             "path": "/block-editor/adding-browser-fields-to-a-block.html",
-            "collapsable": true
           },
           {
-            "title": "Rendering blocks",
+            "title": "Rendering Blocks",
             "path": "/block-editor/rendering-blocks.html",
-            "collapsable": true
           },
           {
-            "title": "Previewing blocks",
+            "title": "Previewing Blocks",
             "path": "/block-editor/previewing-blocks.html",
-            "collapsable": true
           },
           {
-            "title": "Development workflow",
+            "title": "Development Workflow",
             "path": "/block-editor/development-workflow.html",
-            "collapsable": true
           },
           {
-            "title": "Default configuration",
+            "title": "Default Configuration",
             "path": "/block-editor/default-configuration.html",
-            "collapsable": true
           },
           {
-            "title": "Legacy configuration (< 2.2)",
+            "title": "Legacy Configuration (< 2.2)",
             "path": "/block-editor/legacy-configuration-2-2.html",
-            "collapsable": true
           }
         ],
         "collapsable": true
       },
       {
-        "title": "Media library",
+        "title": "Media Library",
         "path": "/media-library/",
         "children": [
           {
-            "title": "Media library",
+            "title": "Media Library",
             "path": "/media-library/",
-            "collapsable": true
           },
           {
-            "title": "Storage provider",
+            "title": "Storage Provider",
             "path": "/media-library/storage-provider.html",
-            "collapsable": true
           },
           {
-            "title": "Image rendering service",
+            "title": "Image Rendering Service",
             "path": "/media-library/image-rendering-service.html",
-            "collapsable": true
           },
           {
-            "title": "Role & crop params",
+            "title": "Role & Crop Params",
             "path": "/media-library/role-crop-params.html",
-            "collapsable": true
           },
           {
-            "title": "File library",
+            "title": "File Library",
             "path": "/media-library/file-library.html",
-            "collapsable": true
           },
           {
-            "title": "Imgix and S3 direct uploads",
+            "title": "Imgix and S3 Direct Uploads",
             "path": "/media-library/imgix-and-s3-direct-uploads.html",
-            "collapsable": true
           },
           {
-            "title": "Imgix and local uploads",
+            "title": "Imgix and Local Uploads",
             "path": "/media-library/imgix-and-local-uploads.html",
-            "collapsable": true
           }
         ],
         "collapsable": true
       },
       {
-        "title": "Artisan commands",
+        "title": "Artisan Commands",
         "path": "/artisan-commands/",
         "children": [],
-        "collapsable": true
       },
       {
         "title": "Dashboard",
         "path": "/dashboard/",
         "children": [],
-        "collapsable": true
       },
       {
-        "title": "Global search",
+        "title": "Global Search",
         "path": "/global-search/",
         "children": [],
-        "collapsable": true
       },
       {
-        "title": "Featuring content",
+        "title": "Featuring Content",
         "path": "/featuring-content/",
         "children": [],
-        "collapsable": true
       },
       {
-        "title": "Settings sections",
+        "title": "Settings Sections",
         "path": "/settings-sections/",
         "children": [],
-        "collapsable": true
       },
       {
-        "title": "Custom CMS pages",
+        "title": "Custom CMS Pages",
         "path": "/custom-cms-pages/",
         "children": [],
-        "collapsable": true
       },
       {
-        "title": "User management",
+        "title": "User Management",
         "path": "/user-management/",
         "children": [],
-        "collapsable": true
       },
       {
-        "title": "OAuth login",
+        "title": "OAuth Login",
         "path": "/oauth-login/",
         "children": [],
-        "collapsable": true
       },
       {
         "title": "Resources",
         "path": "/resources/",
         "children": [],
-        "collapsable": true
       },
       {
         "title": "API Documentation",
         "path": "/api-documentation/",
         "children": [],
-        "collapsable": true
       }
     ],
     "collapsable": false
