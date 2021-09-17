@@ -226,5 +226,7 @@ return [
 
     'base_controller' => A17\Twill\Http\Controllers\Admin\ModuleController::class,
 
+    'base_nested_controller' => A17\Twill\Http\Controllers\Admin\NestedModuleController::class,
+
     'base_request' => A17\Twill\Http\Requests\Admin\Request::class,
 ];
