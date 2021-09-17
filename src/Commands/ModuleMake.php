@@ -510,9 +510,13 @@ class ModuleMake extends Command
 
         $this->makeTwillDirectory($dir);
 
+        $baseController = config(
+            $this->nestable ? 'twill.base_nested_controller' : 'twill.base_controller'
+        );
+
         $stub = str_replace(
             ['{{moduleName}}', '{{controllerClassName}}', '{{namespace}}', '{{baseController}}'],
-            [$moduleName, $controllerClassName, $this->namespace('controllers', 'Http\Controllers\Admin'), config('twill.base_controller')],
+            [$moduleName, $controllerClassName, $this->namespace('controllers', 'Http\Controllers\Admin'), $baseController],
             $this->files->get(__DIR__ . '/stubs/controller.stub')
         );
 

@@ -2,7 +2,7 @@
 
 namespace {{namespace}};
 
-use {{baseController}};
+use {{baseController}} as ModuleController;
 
 class {{controllerClassName}} extends ModuleController
 {
@@ -15,39 +15,6 @@ class {{controllerClassName}} extends ModuleController
 
     protected $showOnlyParentItemsInBrowsers = true;
 
-    protected function indexData($request)
-    {
-        return [
-            'nested' => true,
-            'nestedDepth' => 1, // controls the allowed depth in UI
-        ];
-    }
-
-    protected function transformIndexItems($items)
-    {
-        return $items->toTree();
-    }
-
-    protected function indexItemData($item)
-    {
-        return ($item->children ? [
-            'children' => $this->getIndexTableData($item->children),
-        ] : []);
-    }
-
-    protected function getBrowserItems($scopes = [])
-    {
-        if ($this->showOnlyParentItemsInBrowsers) {
-            return $this->getIndexItems($scopes, true);
-        }
-
-        return $this->repository->get(
-            $this->indexWith,
-            $scopes,
-            $this->orderScope(),
-            request('offset') ?? $this->perPage ?? 50,
-            true
-        );
-    }
+    protected $nestedItemsDepth = 1;
     {{/hasNesting}}
 }
