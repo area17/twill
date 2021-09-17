@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Development workflow
 ---
 
-# Development workflow
-
+# Development Workflow
 
 As of verison 2.2, it is not necessary to rebuild Twill's frontend when working with blocks anymore. Their templates are now dynamically rendered in Blade and loaded at runtime by Vue. (For <2.1.x users, it means you do not need to run `php artisan twill:blocks` and `npm run twill-build` after creating or updating a block. Just reload the page to see your changes after saving your Blade file!)
 

@@ -1,9 +1,8 @@
 ---
 pageClass: twill-doc
-title: Resources
 ---
 
-# Other useful packages
+# Other Useful Packages
 
 - [laravel/scout](https://laravel.com/docs/5.3/scout) provide full text search on your Eloquent models.
 - [laravel/passport](https://laravel.com/docs/5.3/passport) makes API authentication a breeze.
@@ -18,4 +17,3 @@ title: Resources
 - [flynsarmy/csv-seeder](https://github.com/Flynsarmy/laravel-csv-seeder) allows CSV based database seeds.
 - [ufirst/lang-import-export](https://github.com/ufirstgroup/laravel-lang-import-export)  provides artisan commands to import and export language files from and to CSV
 - [nikaia/translation-sheet](https://github.com/nikaia/translation-sheet) allows translating Laravel languages files using a Google Spreadsheet.
-

@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Adding browser fields to a block
 ---
 
-# Adding browser fields to a block
-
+# Adding Browser Fields to a Block
 
 To attach other records inside of a block, it is possible to use the `browser` field.
 

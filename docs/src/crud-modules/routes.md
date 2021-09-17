@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Routes
 ---
 
 # Routes
-
 
 A router macro is available to create module routes quicker:
 ```php

@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Contribution guide
 ---
 
-# Contribution guide
-
+# Contribution Guide
 
 #### Code of Conduct
 Twill is dedicated to building a welcoming, diverse, safe community. We expect everyone participating in the Twill community to abide by our [Code of Conduct](https://github.com/area17/twill/blob/main/CODE_OF_CONDUCT.md). Please read it. Please follow it.

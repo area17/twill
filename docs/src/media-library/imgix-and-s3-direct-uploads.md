@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Imgix and S3 direct uploads
 ---
 
-# Imgix and S3 direct uploads
-
+# Imgix and S3 Direct Uploads
 
 On AWS, create a IAM user for full access to your S3 bucket and use its credentials in your `.env` file. You can use the following IAM permission:
 

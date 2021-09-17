@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Revisions and previewing
 ---
 
-# Revisions and previewing
-
+# Revisions and Previewing
 
 When using the `HasRevisions` trait, Twill's UI gives publishers the ability to preview their changes without saving, as well as to preview and compare old revisions.
 

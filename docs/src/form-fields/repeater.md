@@ -1,6 +1,5 @@
 ---
 pageClass: twill-doc
-title: Repeater
 ---
 
 # Repeater
@@ -161,4 +160,3 @@ In Twill >= 2.5, you can use the `@twillRepeaterTitleField` directive to include
     'required' => true,
 ])
 ```
-

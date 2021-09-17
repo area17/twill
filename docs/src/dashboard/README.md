@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Dashboard
 ---
 
 # Dashboard
-
 
 Once you have created and configured multiple CRUD modules in your Twill's admin console, you can configure Twill's dashboard in `config/twill.php`.
 

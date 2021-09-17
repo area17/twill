@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Default configuration
 ---
 
-# Default configuration
-
+# Default Configuration
 
 ```php
 return [

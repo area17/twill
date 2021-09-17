@@ -1,6 +1,5 @@
 ---
 pageClass: twill-doc
-title: Input
 ---
 
 # Input
@@ -75,4 +74,3 @@ Schema::table('articles', function (Blueprint $table) {
 ```
 
 When used in a [block](https://twill.io/docs/#adding-blocks), no migration is needed.
-

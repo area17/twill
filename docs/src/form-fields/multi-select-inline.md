@@ -1,9 +1,8 @@
 ---
 pageClass: twill-doc
-title: Multi select inline
 ---
 
-# Multi select inline
+# Multi Select Inline
 
 ![screenshot](/docs/_media/multiselectinline.png)
 
@@ -38,4 +37,3 @@ title: Multi select inline
 ```
 
 See [Multi select](https://twill.io/docs/#multi-select) for more information on how to implement the field with static and dynamic values.
-

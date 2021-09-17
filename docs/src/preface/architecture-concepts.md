@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Architecture concepts
 ---
 
-# Architecture concepts
-
+# Architecture Concepts
 
 #### CRUD modules
 
@@ -46,7 +44,6 @@ One of the benefits of Twill is the ability to fully customize the navigation as
 
 - Tertiary navigation: in certain cases, you will need a third level of navigation, however we recommend that you only use it when absolutely necessary, otherwise content may be too buried. You also have the option to turn the tertiary navigation into a breadcrumb.
 
-
 #### Block editor
 
 Central to the Twill experience is the block editor, giving publishers full control of how they construct the content of a record. A block is a composition of form fields made available to publshers in Twill's block editor form field.
@@ -72,5 +69,3 @@ You can also associate rules for your buckets. For example, let’s say you only
 
 
 While buckets are primarily used for featuring, they can also be used for any purpose. For example, if you have a website that has different navigation for different market locations (e.g. USA, Europe, Asia), you can use buckets to manage this.
-
-

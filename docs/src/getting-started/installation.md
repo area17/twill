@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Installation
 ---
 
 # Installation
-
 
 #### Composer
 Twill is a package for Laravel applications, installable through Composer:
@@ -104,6 +102,3 @@ See the [media library's configuration documentation](#media-library-2) for more
 On your frontend domain (`domain.test`), nothing changed, and that's ok! Twill does not make any assumptions regarding how you might want to build your own applications. It is up to you to setup Laravel routes that queries content created through Twill's admin console. You can decide to use server side rendering with Laravel's Blade templating and/or to define API endpoints to build your frontend application using any client side solution (eg. Vue, React, Angular, ...).
 
 On a clean Laravel install, you should still see Laravel's welcome screen. If you installed Twill on an existing Laravel application, your setup should not be affected. Do not hesitate to reach out on [Github](https://github.com/area17/twill/issues) if you have a specific use case or any trouble using Twill with your existing application.
-
-
-

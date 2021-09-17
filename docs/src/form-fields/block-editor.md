@@ -1,9 +1,8 @@
 ---
 pageClass: twill-doc
-title: Block editor
 ---
 
-# Block editor
+# Block Editor
 
 ![screenshot](/docs/_media/blockeditor.png)
 
@@ -21,4 +20,3 @@ See [Block editor](https://twill.io/docs/#block-editor-3)
 | blocks           | Array of blocks                                              | array          |               |
 | label            | Label used for the button                                    | string         | 'Add Content' |
 | withoutSeparator | Defines if a separator before the block editor container should be rendered | true<br/>false | false         |
-

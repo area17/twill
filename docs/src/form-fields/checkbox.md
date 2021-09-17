@@ -1,6 +1,5 @@
 ---
 pageClass: twill-doc
-title: Checkbox
 ---
 
 # Checkbox
@@ -25,4 +24,3 @@ title: Checkbox
 | confirmTitleText    | The title of the confirmation dialog                    | string          | 'Confirm selection' |
 | confirmMessageText  | The text of the confirmation dialog                     | string          | 'Are you sure you want to change this option ?' |
 | border              | Draws a border around the field                         | boolean         | false         |
-

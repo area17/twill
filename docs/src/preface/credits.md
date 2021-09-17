@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Credits
 ---
 
 # Credits
-
 
 Over the last 15 years, nearly every engineer at AREA 17 has contributed to Twill in some capacity. The current iteration of Twill as an open source initiative was created by:
 

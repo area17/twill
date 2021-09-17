@@ -1,8 +1,7 @@
 ---
 pageClass: twill-doc
-title: Media library
 ---
 
-# Media library
+# Media Library
 
 ![screenshot](/docs/_media/medialibrary.png)

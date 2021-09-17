@@ -1,9 +1,8 @@
 ---
 pageClass: twill-doc
-title: User management
 ---
 
-# User management
+# User Management
 
 Authentication and authorization are provided by default in Laravel. This package simply leverages what Laravel provides and configures the views for you. By default, users can login at `/login` and can also reset their password through that same screen. New users have to reset their password before they can gain access to the admin application. By using the twill configuration file, you can change the default redirect path (`auth_login_redirect_path`) and send users to anywhere in your application following login.
 

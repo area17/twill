@@ -1,9 +1,8 @@
 ---
 pageClass: twill-doc
-title: Featuring content
 ---
 
-# Featuring content
+# Featuring Content
 
 Twill's buckets allow you to provide publishers with featured content management screens. You can add multiple pages of buckets anywhere you'd like in your CMS navigation and, in each page, multiple buckets with different rules and accepted modules. In the following example, we will assume that our application has a Guide model and that we want to feature guides on the homepage of our site. Our site's homepage has multiple zones for featured guides: a primary zone, that shows only one featured guide, and a secondary zone, that shows guides in a carousel of maximum 10 items.
 

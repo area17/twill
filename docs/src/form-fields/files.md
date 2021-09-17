@@ -1,6 +1,5 @@
 ---
 pageClass: twill-doc
-title: Files
 ---
 
 # Files
@@ -51,4 +50,3 @@ return [
 ```
 
 No migration is needed to save `files` form fields.
-

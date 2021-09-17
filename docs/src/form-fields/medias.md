@@ -1,6 +1,5 @@
 ---
 pageClass: twill-doc
-title: Medias
 ---
 
 # Medias
@@ -102,4 +101,3 @@ Then, add the form field to the `form.blade.php` file.
 ```
 
 No migration is needed to save `medias` form fields.
-

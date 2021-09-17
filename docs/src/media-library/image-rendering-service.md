@@ -1,9 +1,8 @@
 ---
 pageClass: twill-doc
-title: Image rendering service
 ---
 
-# Image rendering service
+# Image Rendering Service
 
 This package currently ships with 3 rendering services, [Imgix](https://www.imgix.com/), [Glide](http://glide.thephpleague.com/) and a local minimalistic rendering service. It is very simple to implement another one like [Cloudinary](http://cloudinary.com/) or even another local service like or [Croppa](https://github.com/BKWLD/croppa).
 Changing the image rendering service can be done by changing the `MEDIA_LIBRARY_IMAGE_SERVICE` environment variable to one of the following options:

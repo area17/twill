@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Legacy configuration (< 2.2)
 ---
 
-# Legacy configuration (< 2.2)
-
+# Legacy Configuration (< 2.2)
 
 #### Twill prior to version 2.2
 
@@ -90,6 +88,3 @@ If you added a block named *awesome_block*, your configuration would look like t
 ```
 
 - Not adding the *item* block to the _repeaters_ section will also result in failure.
-
-
-

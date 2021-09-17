@@ -1,9 +1,8 @@
 ---
 pageClass: twill-doc
-title: Custom CMS pages
 ---
 
-# Custom CMS pages
+# Custom CMS Pages
 
 Twill includes the ability to create fully custom pages that includes your navigation, by extending the `twill::layouts.free` layout in a view located in your `resources/views/admin` folder.
 
@@ -79,4 +78,3 @@ You can use Twill's Vue components if you need on those custom pages, for exampl
   <a17-button variant="validate" v-on:click="alert('from Twill Vue button');">Button variant: validate</a17-button>
 @stop
 ```
-

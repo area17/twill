@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Timepicker
 ---
 
 # Timepicker
-
 
 ```php
 @formField('time_picker', [
@@ -44,4 +42,3 @@ Schema::table('posts', function (Blueprint $table) {
 ```
 
 When used in a [block](https://twill.io/docs/#adding-blocks), no migration is needed.
-

@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Global search
 ---
 
-# Global search
-
+# Global Search
 
 By default, Twill's global search input is always available in the dashboard and behind the top-right search icon on other Twill's screens. By default, the search input performs a LIKE query on the title attribute only. If you like, you can specify a custom list of attributes to search for in each dashboard enabled module:
 
@@ -64,5 +62,4 @@ return $searchResults->map(function ($item) use ($module) {
         'type' => Str::singular($module['name']),
     ];
 })->values();
-
 ```

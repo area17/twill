@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Adding repeater fields to a block
 ---
 
-# Adding repeater fields to a block
-
+# Adding Repeater Fields to a Block
 
 Inside a block, repeaters can be used too.
 

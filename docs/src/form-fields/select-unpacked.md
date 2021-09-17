@@ -1,9 +1,8 @@
 ---
 pageClass: twill-doc
-title: Select unpacked
 ---
 
-# Select unpacked
+# Select Unpacked
 
 ![screenshot](/docs/_media/selectunpacked.png)
 
@@ -52,4 +51,3 @@ Schema::table('posts', function (Blueprint $table) {
 ```
 
 When used in a [block](https://twill.io/docs/#adding-blocks), no migration is needed.
-

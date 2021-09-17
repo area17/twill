@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Feature list
 ---
 
-# Feature list
-
+# Feature List
 
 #### CRUD modules
 * Enhanced Laravel “resources” models

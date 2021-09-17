@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Navigation
 ---
 
 # Navigation
-
 
 The `config/twill-navigation.php` file manages the navigation of your custom admin console. Using Twill's UI, the package provides 3 levels of navigation: global, primary and secondary. This file simply contains a nested array description of your navigation.
 
@@ -71,6 +69,3 @@ Route::group(['prefix' => 'work'], function () {
     Route::module('studios');
 });
 ```
-
-
-

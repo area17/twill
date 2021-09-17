@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Repositories
 ---
 
 # Repositories
-
 
 Depending on the model feature, include one or multiple of these traits: `HandleTranslations`, `HandleSlugs`, `HandleMedias`, `HandleFiles`, `HandleRevisions`, `HandleBlocks`, `HandleRepeaters`, `HandleTags`.
 

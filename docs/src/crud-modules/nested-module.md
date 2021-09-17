@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Nested Module
 ---
 
 # Nested Module
-
 
 To create a nested module with parent/child relationships, you should include the `laravel-nestedset` package to your application.
 
@@ -153,6 +151,3 @@ protected function getBrowserItems($scopes = [])
     );
 }
 ```
-
-
-

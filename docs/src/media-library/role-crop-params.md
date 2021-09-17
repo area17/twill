@@ -1,9 +1,8 @@
 ---
 pageClass: twill-doc
-title: Role & crop params
 ---
 
-# Role & crop params
+# Role & Crop Params
 
 Each _Module_ in your application can have its own predefined image *crops* and *roles*.
 
@@ -17,4 +16,3 @@ The only thing you have to do to make it work is to compose your model and repos
 
 When it comes to using those data model images in the frontend site, there are a few methods on the `HasMedias` trait that will help you to retrieve them for each of your layouts. You can find the full
 reference in the [HasMedias API documentation](https://twill.io/docs/api/2.x/A17/Twill/Models/Behaviors/HasMedias.html)
-

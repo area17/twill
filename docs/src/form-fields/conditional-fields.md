@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Conditional fields
 ---
 
-# Conditional fields
-
+# Conditional Fields
 
 You can conditionally display fields based on the values of other fields in your form. For example, if you wanted to display a video embed text field only if the type of article, a radio field, is "video" you'd do something like the following:
 
@@ -56,6 +54,3 @@ Here's an example based on a checkbox field where the value is either true or fa
     ])
 @endformConnectedFields
 ```
-
-
-

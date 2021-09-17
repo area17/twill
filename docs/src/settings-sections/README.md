@@ -1,9 +1,8 @@
 ---
 pageClass: twill-doc
-title: Settings sections
 ---
 
-# Settings sections
+# Settings Sections
 
 Settings sections are standalone forms that you can add to your Twill's navigation to give publishers the ability to manage simple key/value records for you to then use anywhere in your application codebase.
 

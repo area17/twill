@@ -1,9 +1,8 @@
 ---
 pageClass: twill-doc
-title: Multiple checkboxes
 ---
 
-# Multiple checkboxes
+# Multiple Checkboxes
 
 ![screenshot](/docs/_media/checkboxes.png)
 
@@ -43,4 +42,3 @@ title: Multiple checkboxes
 | note    | Hint message displayed above the field                              | string  |               |
 | border  | Draws a border around the field                                     | boolean | false         |
 | columns | Aligns the options on a grid with a given number of columns         | integer | 0 (off)       |
-

@@ -1,9 +1,8 @@
 ---
 pageClass: twill-doc
-title: Multi select
 ---
 
-# Multi select
+# Multi Select
 
 ![screenshot](/docs/_media/multiselectunpacked.png)
 
@@ -168,4 +167,3 @@ protected function formData($request)
 ```
 
 When used in a [block](https://twill.io/docs/#adding-blocks), no migration is needed.
-

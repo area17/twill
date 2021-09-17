@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Models
 ---
 
 # Models
-
 
 Set your fillables to prevent mass-assignement. This is very important, as we use `request()->all()` in the module controller.
 
@@ -75,4 +73,3 @@ public $filesParams = ['file_role', ...]; // a list of file roles
 ```
 
 - HasRevisions: no options
-

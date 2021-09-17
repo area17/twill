@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Previewing blocks
 ---
 
-# Previewing blocks
-
+# Previewing Blocks
 
 At the top right of a form where you enabled a block editor, you will find a blue button labeled "Editor". The idea is to provide a better user experience when working with blocks, where the frontend preview is being immediately rendered next to the form, in a full-screen experience.
 

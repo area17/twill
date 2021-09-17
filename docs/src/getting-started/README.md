@@ -1,9 +1,8 @@
 ---
 pageClass: twill-doc
-title: Getting started
 ---
 
-# Environment requirements
+# Environment Requirements
 
 Twill is compatible with Laravel versions `5.6` to `8`, running on PHP 7.1 and above.
 

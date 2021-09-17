@@ -1,6 +1,5 @@
 ---
 pageClass: twill-doc
-title: Radios
 ---
 
 # Radios
@@ -44,4 +43,3 @@ title: Radios
 | required            | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean | false |
 | border              | Draws a border around the field                                     | boolean | false         |
 | columns             | Aligns the options on a grid with a given number of columns         | integer | 0 (off)       |
-

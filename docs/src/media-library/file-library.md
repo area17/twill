@@ -1,9 +1,8 @@
 ---
 pageClass: twill-doc
-title: File library
 ---
 
-# File library
+# File Library
 
 The file library is much simpler but also works with S3 and local storage. To associate files to your model, use the `HasFiles` and `HandleFiles` traits, the `$filesParams` configuration and the `files` form field.
 

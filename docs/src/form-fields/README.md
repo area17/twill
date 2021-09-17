@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Form fields
 ---
 
-# Form fields
-
+# Form Fields
 
 Your module `form` view should look something like this (`resources/views/admin/moduleName/form.blade.php`):
 

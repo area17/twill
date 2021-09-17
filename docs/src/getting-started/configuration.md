@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Configuration
 ---
 
 # Configuration
-
 
 As mentioned above, Twill's default configuration allows you to get up and running quickly by providing environment variables.
 
@@ -472,6 +470,3 @@ See the [file library's documentation](#file-library-2) for more information.
 **Allowed extensions**
 
 The `allowed_extensions` configuration option is an array of file extensions that Twill's file library uploader will accept. By default, it is empty, all extensions are allowed.
-
-
-

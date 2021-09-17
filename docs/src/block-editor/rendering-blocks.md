@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Rendering blocks
 ---
 
-# Rendering blocks
-
+# Rendering Blocks
 
 When it is time to build a frontend, you will want to render a designed set of blocks, with all blocks in their proper order. When working with a model instance that uses the HasBlocks trait in a view, you can call the `renderBlocks` helper on it. This will render the list of blocks that were created from the CMS. By default, this function will loop over all the blocks and their child blocks. In each case, the function will look for a Blade view to render for a given block.
 

@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Creating a block editor
 ---
 
-# Creating a block editor
-
+# Creating a Block Editor
 
 #### Include the block editor in your module's form
 

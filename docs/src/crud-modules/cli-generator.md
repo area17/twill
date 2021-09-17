@@ -1,6 +1,5 @@
 ---
 pageClass: twill-doc
-title: CLI Generator
 ---
 
 # CLI Generator

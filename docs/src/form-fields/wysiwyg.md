@@ -1,6 +1,5 @@
 ---
 pageClass: twill-doc
-title: WYSIWYG
 ---
 
 # WYSIWYG

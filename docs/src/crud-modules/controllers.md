@@ -1,10 +1,8 @@
 ---
 pageClass: twill-doc
-title: Controllers
 ---
 
 # Controllers
-
 
 ```php
 <?php
@@ -210,4 +208,3 @@ File: `app/Models/Play.php`
             ->orderBy('festivals.title', $sort_method);
     }
 ```
-
