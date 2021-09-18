@@ -99,16 +99,12 @@ export default {
       } else {
         this[this.inStore] = fieldInStore[0].value
       }
-    } else if (this.hasDefaultStore) {
-      // init value with the one present into the component itself
-      this.saveIntoStore()
     }
   },
   beforeDestroy: function () {
     if (this.inStore !== '') {
       // Delete form field from store because the field has been removed
       if (this.inModal) this.$store.commit(FORM.REMOVE_MODAL_FIELD, this.getFieldName())
-      else this.$store.commit(FORM.REMOVE_FORM_FIELD, this.getFieldName())
     }
   }
 }
