@@ -139,7 +139,8 @@ protected function indexItemData($item)
 ```
 
 When using a browser to browse a nested module, if you expect to select children as well as parents, you will need to add the following function to your module's controller:
-```
+
+```php
 protected function getBrowserItems($scopes = [])
 {
     return $this->repository->get(

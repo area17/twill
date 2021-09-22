@@ -24,7 +24,7 @@ Inside the block editor, repeater blocks share the same model as regular blocks.
 
 Outside the block editor, repeater fields are used to save `hasMany` or `morphMany` relationships.
 
-#### Using repeater fields
+## Using repeater fields
 
 The following example demonstrates how to define a relationship between `Team` and `TeamMember` modules to implement a `team-member` repeater.
 
@@ -144,7 +144,7 @@ Update file `resources/views/admin/teams/form.blade.php`:
 
 Add both modules to your `admin.php` routes. Add the `Team` module to your `twill-navigation.php` config and you are done!
 
-#### Dynamic repeater titles
+## Dynamic repeater titles
 
 In Twill >= 2.5, you can use the `@twillRepeaterTitleField` directive to include the value of a given field in the title of the repeater items. This directive also accepts a `hidePrefix` option to hide the generic repeater title:
 

@@ -8,7 +8,7 @@ Depending on the model feature, include one or multiple of these traits: `Handle
 
 Repositories allows you to modify the default behavior of your models by providing some entry points in the form of methods that you might implement:
 
-- for filtering:
+#### Filtering
 
 ```php
 <?php
@@ -39,7 +39,7 @@ public function filter($query, array $scopes = []) {
 }
 ```
 
-- for custom ordering:
+#### Custom ordering
 
 ```php
 <?php
@@ -51,7 +51,7 @@ public function order($query, array $orders = []) {
 }
 ```
 
-- for custom form fields
+#### Custom form fields
 
 ```php
 <?php
@@ -73,7 +73,7 @@ public function getFormFields($object) {
 
 ```
 
-- for custom field preparation before create action
+#### Custom field preparation before create action
 
 
 ```php
@@ -87,7 +87,7 @@ public function prepareFieldsBeforeCreate($fields) {
 
 ```
 
-- for custom field preparation before save action
+#### Custom field preparation before save action
 
 
 ```php
@@ -101,7 +101,7 @@ public function prepareFieldsBeforeSave($object, $fields) {
 
 ```
 
-- for after save actions (like attaching a relationship)
+#### After save actions (like attaching a relationship)
 
 ```php
 <?php
@@ -128,10 +128,9 @@ public function afterSave($object, $fields) {
 
     parent::afterSave($object, $fields);
 }
-
 ```
 
-- for hydrating the model for preview of revisions
+#### Hydrating the model for preview of revisions
 
 ```php
 <?php

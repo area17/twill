@@ -6,13 +6,13 @@ pageClass: twill-doc
 
 Authentication and authorization are provided by default in Laravel. This package simply leverages what Laravel provides and configures the views for you. By default, users can login at `/login` and can also reset their password through that same screen. New users have to reset their password before they can gain access to the admin application. By using the twill configuration file, you can change the default redirect path (`auth_login_redirect_path`) and send users to anywhere in your application following login.
 
-#### Roles
+## Roles
 The package currently provides three different roles:
 - view only
 - publisher
 - admin
 
-#### Permissions
+## Permissions
 Default permissions are as follows. To learn how permissions can be modified or extended, see the next section.
 
 View only users are able to:
@@ -35,7 +35,8 @@ Admin users have the same permissions as publisher users plus:
 
 There is also a super admin user that can impersonate other users at `/users/impersonate/{id}`. The super admin can be a useful tool for testing features with different user roles without having to logout/login manually, as well as for debugging issues reported by specific users. You can stop impersonating by going to `/users/impersonate/stop`.
 
-#### Extending user roles and permissions
+## Extending user roles and permissions
+
 You can create or modify new permissions for existing roles by using the Gate façade in your `AuthServiceProvider`. The `can` middleware, provided by default in Laravel, is very easy to use, either through route definition or controller constructor.
 
 To create new user roles, you could extend the default enum UserRole by overriding it using Composer autoloading. In `composer.json`:

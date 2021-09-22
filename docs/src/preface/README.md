@@ -2,8 +2,13 @@
 pageClass: twill-doc
 ---
 
-# About Twill
+# Benefits Overview
 
-Twill is an open source Laravel package that helps developers rapidly create a custom CMS that is beautiful, powerful, and flexible. By standardizing common functions without compromising developer control, Twill makes it easy to deliver a feature-rich admin console that focuses on modern publishing needs.
+With Twill's vast number of pre-built features and associated library of Vue.js UI components, developers can focus their efforts on the unique aspects of their applications instead of rebuilding standard ones.
 
-Twill is an [AREA 17](https://area17.com) product. It was crafted with the belief that content management should be a creative, productive, and enjoyable experience for both publishers and developers.
+Built to get out of your way, Twill offers:
+- No lock-in, create your own data models or hook existing ones
+- No front-end assumptions, use it within your Laravel app or as a headless CMS
+- No bloat, turn off features you don’t need
+- No need to write/adapt HTML for the admin UI
+- No limits, extend as you see fit

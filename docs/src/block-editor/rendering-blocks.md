@@ -42,5 +42,5 @@ If the block has a media field, you can refer to the Media Library documentation
 
 ```php
 {{ $block->image('mediaFieldName', 'cropNameFromBlocksConfig') }}
-{{ $block->images('mediaFieldName', 'cropNameFromBlocksConfig')}}
+{{ $block->images('mediaFieldName', 'cropNameFromBlocksConfig') }}
 ```

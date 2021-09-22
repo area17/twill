@@ -7,6 +7,7 @@ pageClass: twill-doc
 Twill includes the ability to create fully custom pages that includes your navigation, by extending the `twill::layouts.free` layout in a view located in your `resources/views/admin` folder.
 
 #### Example
+
 - Create a route in `routes/admin.php`
 
 ```php

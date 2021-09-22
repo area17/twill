@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Feature List
 
-#### CRUD modules
+## CRUD modules
 * Enhanced Laravel “resources” models
 * Command line generator and conventions to speed up creating new ones
 * Based on PHP traits and regular Laravel concepts (migrations, models, controllers, form requests, repositories, Blade views)
@@ -14,7 +14,7 @@ pageClass: twill-doc
 * Support for all Eloquent ORM relationships (1-1, 1-n, n-n, polymorphic)
 * Content versioning
 
-#### UI Components
+## UI Components
 * Large library of plugged-in Vue.js form components with tons of options for maximum flexibility and composition
 * Completely abstracted HTML markup. You’ll never have to deal with Bootstrap HTML again, which means you won’t ever have to maintain frontend-related code for your CMS
 * Input, text area, rich text area form fields with option to set SEO optimized limits
@@ -26,7 +26,7 @@ pageClass: twill-doc
 * Flexible content block editor (dynamically composable from all form components)
 * Custom content blocks per content type
 
-#### Media library
+## Media library
 * Media/files library with S3 and imgix integration (3rd party services are swappable)
 * Image selector with smart cropping
 * Ability to set custom image requirements and cropping parameters per content type
@@ -35,14 +35,14 @@ pageClass: twill-doc
 * Metadata editing (alternative text, caption)
 * Multi fields search (filename, alternative text, tags, dimensions…)
 
-#### Configuration based features
+## Configuration based features
 * User authentication, authorization and management
 * Fully configurable CMS navigation, with three levels of hierarchy and breadcrumbs for limitless content structure
 * Configurable CMS dashboard with quick access links, activity log and Google Analytics integration
 * Configurable CMS global search
 * Intuitive content featuring, using a bucket UI. Put any of your content types in "buckets" to manage any layout of featured content or other concepts like localization
 
-#### Developer experience
+## Developer experience
 * Maintain a Laravel application, not a Twill application
 * Support for Laravel 5.6 and up – Twill will be updated to support all future versions
 * Support for both MySQL and PostgreSQL databases

@@ -55,7 +55,8 @@ pageClass: twill-doc
 
 There are several ways to implement a `multi_select` form field.
 
-##### Multi select with static values
+## Multi select with static values
+
 Sometimes you just have a set of values that are static.
 
 In this case that it can be implemented as follows:
@@ -98,7 +99,7 @@ protected $casts = [
 ]
 ```
 
-##### Multi select with dynamic values
+## Multi select with dynamic values
 
 Sometimes the content for the `multi_select` is coming from another model.
 

@@ -39,7 +39,7 @@ Inside the block editor, no migration is needed when using browsers. Refer to th
 
 Outside the block editor, browser fields are used to save `belongsToMany` relationships. The relationships can be stored in Twill's own `related` table or in a custom pivot table.
 
-#### Using browser fields as related items
+## Using browser fields as related items
 
 The following example demonstrates how to use a browser field to attach `Authors` to `Articles`. 
 
@@ -82,7 +82,7 @@ class ArticleRepository extends ModuleRepository
 @stop
 ```
 
-#### Multiple modules as related items
+## Multiple modules as related items
 
 You can use the same approach to handle polymorphic relationships through Twill's `related` table.
 
@@ -141,7 +141,7 @@ class ArticleRepository extends ModuleRepository
     ])
 ```
 
-#### Working with related items
+## Working with related items
 
 To retrieve the items in the frontend, you can use the `getRelated` method on models and blocks. It will return of collection of related models in the correct order:
 
@@ -153,6 +153,6 @@ To retrieve the items in the frontend, you can use the `getRelated` method on mo
     $block->getRelated('collaborators');
 ```
 
-#### Using browser fields and custom pivot tables
+## Using browser fields and custom pivot tables
 
 Checkout this [Spectrum tutorial](https://spectrum.chat/twill/tips-and-tricks/step-by-step-ii-creating-a-twill-app~37c36601-1198-4c53-857a-a2b47c6d11aa) that walks through the entire process of using browser fields with custom pivot tables.

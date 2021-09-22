@@ -12,9 +12,13 @@ For fields that should default to false in the database when not sent by the for
 
 Depending upon the Twill features you need on your model, include the related traits and configure their respective options:
 
-- HasPosition: implement the `A17\Twill\Models\Behaviors\Sortable` interface and add a position field to your fillables.
+#### HasPosition
 
-- HasTranslation: add translated fields in the `translatedAttributes` array.
+Implement the `A17\Twill\Models\Behaviors\Sortable` interface and add a position field to your fillables.
+
+#### HasTranslation
+
+Add translated fields in the `translatedAttributes` array.
 
 Twill's `HasTranslation` trait is a wrapper around the popular `astronomic/laravel-translatable` package. A default configuration will be automatically published to your `config` directory when you run the `twill:install` command.
 
@@ -32,9 +36,13 @@ return [
 ];
 ```
 
-- HasSlug: specify the field(s) used to create the slug in the `slugAttributes` array
+#### HasSlug
 
-- HasMedias: add the `mediasParams` configuration array:
+Specify the field(s) used to create the slug in the `slugAttributes` array.
+
+#### HasMedias
+
+Add the `mediasParams` configuration array:
 
 ```php
 <?php
@@ -64,7 +72,9 @@ public $mediasParams = [
 ];
 ```
 
-- HasFiles: add the `filesParams` configuration array
+#### HasFiles: 
+
+Add the `filesParams` configuration array:
 
 ```php
 <?php
@@ -72,4 +82,6 @@ public $mediasParams = [
 public $filesParams = ['file_role', ...]; // a list of file roles
 ```
 
-- HasRevisions: no options
+#### HasRevisions
+
+No options.

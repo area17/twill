@@ -2,7 +2,9 @@
 pageClass: twill-doc
 ---
 
-# Other Useful Packages
+# Resources
+
+#### Other Useful Packages
 
 - [laravel/scout](https://laravel.com/docs/5.3/scout) provide full text search on your Eloquent models.
 - [laravel/passport](https://laravel.com/docs/5.3/passport) makes API authentication a breeze.

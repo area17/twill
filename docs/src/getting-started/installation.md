@@ -4,14 +4,15 @@ pageClass: twill-doc
 
 # Installation
 
-#### Composer
+## Composer
+
 Twill is a package for Laravel applications, installable through Composer:
 
 ```bash
 composer require area17/twill:"^2.0"
 ```
 
-#### Artisan
+## Artisan
 
 Run the `install` Artisan command: 
 
@@ -32,7 +33,7 @@ Twill's `install` command consists of:
 - publishing Twill's assets for the admin console UI.
 - prompting you to create a superadmin user.
 
-#### .env
+## .env
 
 By default, Twill's admin console is available at `admin.domain.test`. This is assuming that your .env `APP_URL` variable does not include a scheme (`http`/`https`):
 
@@ -72,11 +73,11 @@ When running on 2 different subdomains (which is the default configuration as se
 SESSION_DOMAIN=.domain.test
 ```
 
-#### Accessing the admin console
+## Accessing the admin console
 
 At this point, you should be able to login at `admin.domain.test`, `manage.domain.test` or `domain.test/admin` depending on your environment configuration. You should be presented with a dashboard with an empty activities list, a link to open Twill's media library and a dropdown to manage users, your own account and logout.
 
-#### Setting up the media library
+## Setting up the media library
 
 From there, you might want to configure Twill's media library's storage provider and its rendering service. By default, Twill is configured to store uploads on `AWS S3` and to render images via [Imgix](https://imgix.com). Provide the following .env variables to get up and running:
 
@@ -97,7 +98,7 @@ MEDIA_LIBRARY_IMAGE_SERVICE=A17\Twill\Services\MediaLibrary\Glide
 
 See the [media library's configuration documentation](/media-library/) for more information.
 
-#### A note about the frontend
+## A note about the frontend
 
 On your frontend domain (`domain.test`), nothing changed, and that's ok! Twill does not make any assumptions regarding how you might want to build your own applications. It is up to you to setup Laravel routes that queries content created through Twill's admin console. You can decide to use server side rendering with Laravel's Blade templating and/or to define API endpoints to build your frontend application using any client side solution (eg. Vue, React, Angular, ...).
 

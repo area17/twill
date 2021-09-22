@@ -45,6 +45,7 @@ public $casts = [
 When used in a [block](/block-editor/creating-a-block-editor.html), no migration is needed.
 
 #### Example of data stored in the Database:
+
 Default data:
 
 ```javascript

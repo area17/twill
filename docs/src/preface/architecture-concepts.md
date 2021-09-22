@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Architecture Concepts
 
-#### CRUD modules
+## CRUD modules
 
 A Twill [CRUD module](/crud-modules/) is a set of classes and configurations in your Laravel application that enable your publishers to manage a certain type of content. The structure of a CRUD module is completely up to you.
 
@@ -16,7 +16,7 @@ Twill's CRUD modules features are enabled using PHP traits you include in your E
 
 A Twill module can be modified however you like – you can include countless types of content fields, and change the organization and structure according to the needs of the module and your product. Setup is simple: you just need to compose a form using all of Twill's available form fields.
 
-#### Recommended CRUD content types
+## Recommended content types
 
 While possibilities for composition are endless, we’ve identified four standard content types:
 
@@ -28,13 +28,13 @@ While possibilities for composition are endless, we’ve identified four standar
 
 - Elements: Elements are modules or snippets of content that are added to an entity, page, or screen. Examples include the ability to manage footer text or create a global alert that can be turned on/off, etc. Twill offers developers the ability to quickly create [settings sections](/settings-sections/) to manage elements. A Twill module could also be configured to manage any sort of standalone element or content composition. There's nothing wrong with having a database table with a single record if that is what your product require, so you should feel free to create a Twill module to have a custom form for a single record. You can use a Laravel seeder or migration to initialize your admin console with those records.
 
-#### CRUD listings
+## CRUD listings
 
 One of the benefits of Twill is the ability to fully customize CRUD listing views. At minimum, you’ll want to include the key information for each data record so that publishers can have an at-a-glance view without having to click into a record. You can also set up a default view and give each publisher the ability to customize the columns and the number of records per pagination page.
 
 In certain cases, you may require nested CRUD modules. For example, if you are building a handbook website, the parent CRUD would be the handbooks and then within each handbook there are pages (child CRUD). In this case, the listing will be the parent CRUD and for each record, you’d include a column to access the child CRUDs for each.
 
-#### CMS navigation
+## CMS navigation
 
 One of the benefits of Twill is the ability to fully customize the navigation as needed to make it easy and intuitive for publishers to navigate through the CMS and perform their regular production duties. Twill has three levels of navigation:
 
@@ -44,7 +44,7 @@ One of the benefits of Twill is the ability to fully customize the navigation as
 
 - Tertiary navigation: in certain cases, you will need a third level of navigation, however we recommend that you only use it when absolutely necessary, otherwise content may be too buried. You also have the option to turn the tertiary navigation into a breadcrumb.
 
-#### Block editor
+## Block editor
 
 Central to the Twill experience is the block editor, giving publishers full control of how they construct the content of a record. A block is a composition of form fields made available to publshers in Twill's block editor form field.
 
@@ -59,7 +59,7 @@ To keep page-building as simple as possible, we recommend that you keep blocks t
 
 It is also important that you work with a designer early on to discuss the block strategy and make sure your content works well no matter how your publishers arrange it. Can all the blocks work in any combination or are there restrictions? If the latter, you can create form validations to block publishers from arranging blocks in certain contexts.
 
-#### Buckets
+## Buckets
 
 Buckets are used to feature content. While the name might be boring, your publishers will love them!
 
