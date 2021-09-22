@@ -1,5 +1,5 @@
 <template>
-  <a17-block-model :editor-name="editorName" v-slot="{ add, edit, unEdit }">
+  <a17-blockeditor-model :editor-name="editorName" v-slot="{ add, edit, unEdit }">
     <div class="editorPreview"
          :class="previewClass"
          :style="previewStyle"
@@ -15,7 +15,7 @@
                  @add="onAdd(add, edit, $event)"
                  @update="onUpdate">
         <template v-for="savedBlock in blocks">
-          <a17-block-model :block="savedBlock"
+          <a17-blockeditor-model :block="savedBlock"
                            :key="savedBlock.id"
                            :editor-name="editorName"
                            v-slot="{ block, isActive, blockIndex, move, remove, edit, unEdit }">
@@ -30,21 +30,21 @@
                                       @block:move="move"
                                       @block:delete="deleteBlock(remove)"
                                       @scroll-to="scrollToActive"/>
-          </a17-block-model>
+          </a17-blockeditor-model>
         </template>
       </draggable>
       <a17-spinner v-if="loading"
                    :visible="true">{{ $trans('fields.block-editor.loading', 'Loading') }}&hellip;
       </a17-spinner>
     </div>
-  </a17-block-model>
+  </a17-blockeditor-model>
 </template>
 
 <script>
   import { DraggableMixin, BlockEditorMixin } from '@/mixins'
 
   import A17EditorBlockPreview from '@/components/editor/EditorPreviewBlockItem'
-  import A17BlockModel from '@/components/blocks/BlockModel'
+  import A17BlockEditorModel from '@/components/blocks/BlockEditorModel'
   import A17Spinner from '@/components/Spinner.vue'
 
   import { PREVIEW } from '@/store/mutations/index'
@@ -73,7 +73,7 @@
     components: {
       draggable,
       'a17-editor-block-preview': A17EditorBlockPreview,
-      'a17-block-model': A17BlockModel,
+      'a17-blockeditor-model': A17BlockEditorModel,
       'a17-spinner': A17Spinner
     },
     data () {
