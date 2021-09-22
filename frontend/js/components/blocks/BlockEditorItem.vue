@@ -38,7 +38,7 @@
     </div>
     <div class="block__content" :aria-hidden="!visible ? true : null">
       <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes"
-                 key="`form_${block.type}_${block.id}`"><!-- dynamic components --></component>
+                 :key="`form_${block.type}_${block.id}`"><!-- dynamic components --></component>
       <!-- Block validation input frame, to display errors -->
       <a17-inputframe size="small" label="" :name="`block.${block.id}`"></a17-inputframe>
     </div>
@@ -50,7 +50,7 @@
   import a17VueFilters from '@/utils/filters.js'
 
   export default {
-    name: 'A17BlockItem',
+    name: 'A17BlockEditorItem',
     props: {
       index: {
         type: Number,

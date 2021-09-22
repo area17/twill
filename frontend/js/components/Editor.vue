@@ -17,7 +17,7 @@
             </div>
           </a17-dropdown>
     </template>
-    <a17-block-list :editor-name="editorName" v-slot="{
+    <a17-blocks-list :editor-name="editorName" v-slot="{
       availableBlocks,
       hasBlockActive,
       savedBlocks,
@@ -66,7 +66,7 @@
           </div>
         </div>
       </div>
-    </a17-block-list>
+    </a17-blocks-list>
   </a17-overlay>
 </template>
 
@@ -84,7 +84,7 @@
     components: {
       'a17-editorsidebar': A17EditorSidebar,
       'a17-editorpreview': A17EditorPreview,
-      'a17-block-list': A17BlocksList
+      'a17-blocks-list': A17BlocksList
     },
     props: {
       bgColor: {
