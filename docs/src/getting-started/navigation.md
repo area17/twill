@@ -11,7 +11,7 @@ The simplest entry has a `title` and a `route` option which is a Laravel route n
 
 Two other options are provided that are really useful in conjunction with the CRUD modules you'll create in your application: `module` and `can`. `module` is a boolean to indicate if the entry is routing to a module route. By default it will link to the index route of the module you used as your entry key. `can` allows you to display/hide navigation links depending on the current user and permission name you specify.
 
-Example:
+#### Example
 
 ```php
 <?php

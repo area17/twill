@@ -43,7 +43,7 @@ If the formField is used inside a block, you need to define the `mediasParams` a
 
 If you need medias fields to be translatable (ie. publishers can select different images for each locale), set the `twill.media_library.translated_form_fields` configuration value to `true`.
 
-##### Example:
+##### Example
 
 To add a `medias` form field in a form, first add `$mediaParams` to the model.
 

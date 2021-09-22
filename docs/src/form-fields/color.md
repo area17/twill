@@ -18,7 +18,6 @@ pageClass: twill-doc
 | name    | Name of the field   | string   |               |
 | label   | Label of the field  | string   |               |
 
-
 A migration to save a `color` field would be:
 
 ```php

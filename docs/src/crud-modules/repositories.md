@@ -70,7 +70,6 @@ public function getFormFields($object) {
     // return fields
     return $fields
 }
-
 ```
 
 #### Custom field preparation before create action
@@ -84,7 +83,6 @@ public function prepareFieldsBeforeCreate($fields) {
     // don't forget to call the parent prepareFieldsBeforeCreate function
     return parent::prepareFieldsBeforeCreate($fields);
 }
-
 ```
 
 #### Custom field preparation before save action
@@ -98,7 +96,6 @@ public function prepareFieldsBeforeSave($object, $fields) {
     // don't forget to call the parent prepareFieldsBeforeSave function
     return parent:: prepareFieldsBeforeSave($object, $fields);
 }
-
 ```
 
 #### After save actions (like attaching a relationship)

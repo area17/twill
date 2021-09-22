@@ -14,7 +14,6 @@ pageClass: twill-doc
 
 See [Block editor](/block-editor/)
 
-
 | Option           | Description                                                  | Type/values    | Default value |
 | :--------------- | :----------------------------------------------------------- | :------------- | :------------ |
 | blocks           | Array of blocks                                              | array          |               |

@@ -26,6 +26,7 @@ pageClass: twill-doc
     'note' => 'Hint message',
 ])
 ```
+
 By default, the WYSIWYG field is based on [Quill](https://quilljs.com/).
 
 You can add all [toolbar options](https://quilljs.com/docs/modules/toolbar/) from Quill with the `toolbarOptions` key.
@@ -63,7 +64,6 @@ For example, this configuration will render a `wysiwyg` field with almost all fe
 ```
 
 Note that Quill outputs CSS classes in the HTML for certain toolbar modules (indent, font, align, etc.), and that the image module is not integrated with Twill's media library. It outputs the base64 representation of the uploaded image. It is not a recommended way of using and storing images, prefer using one or multiple `medias` form fields or blocks fields for flexible content. This will give you greater control over your frontend output.
-
 
 | Option         | Description                                                  | Type/values                                                | Default value                           |
 | :------------- | :----------------------------------------------------------- | :--------------------------------------------------------- | :-------------------------------------- |
