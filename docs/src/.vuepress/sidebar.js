@@ -7,12 +7,8 @@ module.exports = [
         "path": "/preface/",
         "children": [
           {
-            "title": "About Twill",
-            "path": "/preface/",
-          },
-          {
             "title": "Benefits Overview",
-            "path": "/preface/benefits-overview.html",
+            "path": "/preface/",
           },
           {
             "title": "Feature List",
