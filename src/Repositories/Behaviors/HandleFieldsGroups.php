@@ -63,7 +63,7 @@ trait HandleFieldsGroups
 
                 // In case that some field read the value through $item->$name
                 foreach ($decoded_fields as $field_name => $field_value) {
-                    if ($this->fieldsGroupsFormFieldNameSeparator !== null) {
+                    if ($this->fieldsGroupsFormFieldNamesAutoPrefix) {
                         $decoded_fields[$group . $this->fieldsGroupsFormFieldNameSeparator . $field_name] = $field_value;
                         unset($decoded_fields[$field_name]);
 
@@ -84,7 +84,7 @@ trait HandleFieldsGroups
     protected function handleFieldsGroups($fields)
     {
         foreach ($this->fieldsGroups as $group => $groupFields) {
-            if ($this->fieldsGroupsFormFieldNameSeparator !== null) {
+            if ($this->fieldsGroupsFormFieldNamesAutoPrefix) {
                 $groupFields = array_map(function ($field_name) use ($group) {
                     return $group . $this->fieldsGroupsFormFieldNameSeparator . $field_name;
                 }, $groupFields);
@@ -94,7 +94,7 @@ trait HandleFieldsGroups
                 return !empty($value);
             });
 
-            if ($this->fieldsGroupsFormFieldNameSeparator !== null) {
+            if ($this->fieldsGroupsFormFieldNamesAutoPrefix) {
                 $fieldsGroupWithGroupSeparator = [];
                 foreach ($fields[$group] as $key => $value) {
                     $fieldsGroupWithGroupSeparator[Str::replaceFirst($group . $this->fieldsGroupsFormFieldNameSeparator, '', $key)] = $value;
@@ -102,7 +102,7 @@ trait HandleFieldsGroups
                 $fields[$group] = $fieldsGroupWithGroupSeparator;
             }
 
-            if (in_array($group, $this->model->translatedAttributes) && is_array($fields[$group])) {
+            if (in_array($group, $this->model->getTranslatedAttributes()) && is_array($fields[$group])) {
                 $fieldForTranslationTrait = [];
                 foreach ($fields[$group] as $field => $translatedValues) {
                     foreach ($translatedValues as $locale => $value) {
