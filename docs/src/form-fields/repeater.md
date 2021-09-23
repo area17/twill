@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Repeater
 
-![screenshot](/_media/repeater.png)
+![screenshot](/docs/_media/repeater.png)
 
 ```php
 @formField('repeater', ['type' => 'video'])

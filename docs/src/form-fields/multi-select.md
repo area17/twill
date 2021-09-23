@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Multi Select
 
-![screenshot](/_media/multiselectunpacked.png)
+![screenshot](/docs/_media/multiselectunpacked.png)
 
 ```php
 @formField('multi_select', [

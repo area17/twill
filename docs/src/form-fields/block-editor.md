@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Block Editor
 
-![screenshot](/_media/blockeditor.png)
+![screenshot](/docs/_media/blockeditor.png)
 
 ```php
 @formField('block_editor', [

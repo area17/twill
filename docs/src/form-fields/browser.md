@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Browser
 
-![screenshot](/_media/browser.png)
+![screenshot](/docs/_media/browser.png)
 
 ```php
 @formField('browser', [

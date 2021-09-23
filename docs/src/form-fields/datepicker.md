@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Datepicker
 
-![screenshot](/_media/datepicker.png)
+![screenshot](/docs/_media/datepicker.png)
 
 ```php
 @formField('date_picker', [

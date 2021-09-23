@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Input
 
-![screenshot](/_media/input.png)
+![screenshot](/docs/_media/input.png)
 
 ```php
 @formField('input', [

@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Color
 
-![screenshot](/_media/color.png)
+![screenshot](/docs/_media/color.png)
 
 ```php
 @formField('color', [

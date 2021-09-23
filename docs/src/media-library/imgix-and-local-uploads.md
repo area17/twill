@@ -6,4 +6,4 @@ pageClass: twill-doc
 
 When setting up an Imgix source for local uploads, choose the `Web Folder` source type and specify your domain in the `Base URL` settings.
 
-![screenshot](/_media/imgix_source.png)
+![screenshot](/docs/_media/imgix_source.png)

@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Files
 
-![screenshot](/_media/files.png)
+![screenshot](/docs/_media/files.png)
 
 ```php
 @formField('files', [

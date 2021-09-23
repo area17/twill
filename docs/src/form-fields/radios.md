@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Radios
 
-![screenshot](/_media/radios.png)
+![screenshot](/docs/_media/radios.png)
 
 ```php
 @formField('radios', [

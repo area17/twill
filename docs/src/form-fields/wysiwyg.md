@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # WYSIWYG
 
-![screenshot](/_media/wysiwyg.png)
+![screenshot](/docs/_media/wysiwyg.png)
 
 ```php
 @formField('wysiwyg', [

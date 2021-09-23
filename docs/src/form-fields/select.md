@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Select
 
-![screenshot](/_media/select.png)
+![screenshot](/docs/_media/select.png)
 
 ```php
 @formField('select', [
