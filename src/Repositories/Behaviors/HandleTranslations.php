@@ -81,11 +81,10 @@ trait HandleTranslations
             foreach ($object->translations as $translation) {
                 foreach ($object->translatedAttributes as $attribute) {
                     unset($fields[$attribute]);
-
                     if (array_key_exists($attribute, $this->fieldsGroups) && is_array($translation->{$attribute})) {
                         foreach ($this->fieldsGroups[$attribute] as $field_name) {
                             if (isset($translation->{$attribute}[$field_name])) {
-                                if ($this->fieldsGroupsFormFieldNameSeparator !== null) {
+                                if ($this->fieldsGroupsFormFieldNamesAutoPrefix) {
                                     $fields['translations'][$attribute . $this->fieldsGroupsFormFieldNameSeparator . $field_name][$translation->locale] = $translation->{$attribute}[$field_name];
                                 } else {
                                     $fields['translations'][$field_name][$translation->locale] = $translation->{$attribute}[$field_name];

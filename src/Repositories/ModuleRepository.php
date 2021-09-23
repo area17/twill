@@ -45,9 +45,14 @@ abstract class ModuleRepository
     protected $fieldsGroups = [];
 
     /**
+     * @var bool
+     */
+    public $fieldsGroupsFormFieldNamesAutoPrefix = false;
+
+    /**
      * @var string|null
      */
-    public $fieldsGroupsFormFieldNameSeparator = null;
+    public $fieldsGroupsFormFieldNameSeparator = '_';
 
     /**
      * @param array $with
