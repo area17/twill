@@ -86,7 +86,7 @@ trait HandleSlugs
     }
 
     /**
-     * @param array $slug
+     * @param string $slug
      * @param array $with
      * @param array $withCount
      * @param array $scopes
@@ -123,7 +123,7 @@ trait HandleSlugs
     }
 
     /**
-     * @param array $slug
+     * @param string $slug
      * @param array $with
      * @param array $withCount
      * @return \A17\Twill\Models\Model
