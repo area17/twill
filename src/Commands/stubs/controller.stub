@@ -2,9 +2,9 @@
 
 namespace {{namespace}};
 
-use {{baseController}} as ModuleController;
+use {{baseController}} as BaseModuleController;
 
-class {{controllerClassName}} extends ModuleController
+class {{controllerClassName}} extends BaseModuleController
 {
     protected $moduleName = '{{moduleName}}';
 
