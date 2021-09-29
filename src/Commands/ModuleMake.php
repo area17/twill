@@ -251,15 +251,17 @@ class ModuleMake extends Command
             $this->info("Add Route::module('{$moduleName}'); to your admin routes file.");
         }
 
-        $this->info("Setup a new CMS menu item in config/twill-navigation.php:");
+        $this->info("\nSetup a new CMS menu item in config/twill-navigation.php:");
 
-        $navTitle = Str::studly($moduleName);
+        $navModuleName = $this->isSingleton ? strtolower($modelName) : $moduleName;
+        $navTitle = $this->isSingleton ? $modelName : Str::studly($moduleName);
+        $navType = $this->isSingleton ? 'singleton' : 'module';
 
         $this->info("
-            '{$moduleName}' => [
+            '{$navModuleName}' => [
                 'title' => '{$navTitle}',
-                'module' => true
-            ]
+                '{$navType}' => true,
+            ],
         ");
 
         if ($this->isCapsule) {
@@ -279,11 +281,14 @@ class ModuleMake extends Command
             ");
         }
 
-        $this->info("Migrate your database.\n");
-
         if ($this->isSingleton) {
-            $this->info("To seed your singleton module, run:");
+            $this->info("Migrate your database:");
+            $this->info("    php artisan migrate\n");
+
+            $this->info("Then seed your singleton module:");
             $this->info("    php artisan db:seed {$modelName}Seeder\n");
+        } else {
+            $this->info("Migrate your database.\n");
         }
 
         $this->info("Enjoy.");
