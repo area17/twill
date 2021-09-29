@@ -110,6 +110,11 @@ class ModuleMake extends Command
     protected $isCapsule = false;
 
     /**
+     * @var bool
+     */
+    protected $isSingleton = false;
+
+    /**
      * @var string
      */
     protected $moduleBasePath;
@@ -238,8 +243,10 @@ class ModuleMake extends Command
         $this->createViews($moduleName);
 
         if ($this->isCapsule) {
-            $this->createRoutes($moduleName);
-            $this->createSeed($moduleName);
+            $this->createCapsuleRoutes($moduleName);
+            $this->createCapsuleSeed($moduleName);
+        } elseif ($this->isSingleton) {
+            $this->createSingletonSeed($modelName);
         } else {
             $this->info("Add Route::module('{$moduleName}'); to your admin routes file.");
         }
@@ -273,6 +280,11 @@ class ModuleMake extends Command
         }
 
         $this->info("Migrate your database.\n");
+
+        if ($this->isSingleton) {
+            $this->info("To seed your singleton module, run:");
+            $this->info("    php artisan db:seed {$modelName}Seeder\n");
+        }
 
         $this->info("Enjoy.");
 
@@ -508,6 +520,8 @@ class ModuleMake extends Command
 
         $dir = $this->isCapsule ? $this->capsule['controllers_dir'] : 'Http/Controllers/Admin';
 
+        $baseController = $this->isSingleton ? config('twill.base_singleton_controller') : config('twill.base_controller');
+
         $this->makeTwillDirectory($dir);
 
         $baseController = config(
@@ -602,7 +616,7 @@ class ModuleMake extends Command
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function createRoutes()
+    public function createCapsuleRoutes()
     {
         $this->makeDir($this->capsule['routes_file']);
 
@@ -618,17 +632,17 @@ class ModuleMake extends Command
     }
 
     /**
-     * Creates a new module database seed file.
+     * Creates a new capsule database seed file.
      *
      * @param string $moduleName
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    private function createSeed($moduleName = 'items')
+    private function createCapsuleSeed($moduleName = 'items')
     {
         $this->makeTwillDirectory($this->capsule['seeds_psr4_path']);
 
-        $stub = $this->files->get(__DIR__ . '/stubs/database_seeder.stub');
+        $stub = $this->files->get(__DIR__ . '/stubs/database_seeder_capsule.stub');
 
         $stub = str_replace('{moduleName}', $this->capsule['plural'], $stub);
 
@@ -637,8 +651,48 @@ class ModuleMake extends Command
         $this->info("Seed created successfully!");
     }
 
+    /**
+     * Creates a new singleton module database seed file.
+     *
+     * @param string $moduleName
+     * @return void
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    private function createSingletonSeed($modelName = 'Item')
+    {
+        $repositoryName = $modelName . 'Repository';
+        $seederName = $modelName . 'Seeder';
+
+        $dir = $this->databasePath('seeders');
+
+        $this->makeTwillDirectory($dir);
+
+        $stub = $this->files->get(__DIR__ . '/stubs/database_seeder_singleton.stub');
+
+        $stub = $this->replaceVariables([
+            'seederClassName' => $seederName,
+            'modelClassName' => $modelName,
+            'repositoryClassName' => $repositoryName,
+        ], $stub);
+
+        $stub = $this->replaceConditionals([
+            'hasTranslations' => $this->translatable,
+            '!hasTranslations' => !$this->translatable,
+        ], $stub);
+
+        $stub = $this->removeEmptyLinesWithOnlySpaces($stub);
+
+        $this->files->put("{$dir}/{$seederName}.php", $stub);
+
+        $this->info("Seed created successfully!");
+    }
+
     private function checkOption($option)
     {
+        if (!$this->hasOption($option)) {
+            return false;
+        }
+
         if ($this->option($option) || $this->option('all')) {
             return true;
         }
@@ -735,5 +789,61 @@ class ModuleMake extends Command
         $this->makeDir($dir = "{$this->moduleBasePath}/resources/views/admin");
 
         return $dir;
+    }
+
+    /**
+     * @param array $variables
+     * @param string $stub
+     * @param array|null $delimiters
+     * @return string
+     */
+    public function replaceVariables($variables, $stub, $delimiters = null)
+    {
+        $delimiters = $delimiters ?: ['{{', '}}'];
+
+        foreach ($variables as $key => $value) {
+            $key = "{$delimiters[0]}{$key}{$delimiters[1]}";
+
+            $stub = str_replace($key, $value, $stub);
+        }
+
+        return $stub;
+    }
+
+    /**
+     * @param array $variables
+     * @param string $stub
+     * @param array|null $delimiters
+     * @return string
+     */
+    public function replaceConditionals($conditionals, $stub, $delimiters = null)
+    {
+        $delimiters = $delimiters ?: ['{{', '}}'];
+
+        foreach ($conditionals as $key => $value) {
+            $start = "{$delimiters[0]}{$key}{$delimiters[1]}";
+            $end = "{$delimiters[0]}\/{$key}{$delimiters[1]}";
+
+            if ((bool)$value) {
+                // replace delimiters only
+                $stub = preg_replace("/$start/", '', $stub);
+                $stub = preg_replace("/$end/", '', $stub);
+            } else {
+                // replace delimiters and everything between
+                $anything = '[\s\S]+?';
+                $stub = preg_replace("/{$start}{$anything}{$end}/", '', $stub);
+            }
+        }
+
+        return $stub;
+    }
+
+    /**
+     * @param string $stub
+     * @return string
+     */
+    public function removeEmptyLinesWithOnlySpaces($stub)
+    {
+        return preg_replace('/^ +\n/m', '', $stub);
     }
 }

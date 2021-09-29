@@ -229,5 +229,7 @@ return [
 
     'base_nested_controller' => A17\Twill\Http\Controllers\Admin\NestedModuleController::class,
 
+    'base_singleton_controller' => A17\Twill\Http\Controllers\Admin\SingletonModuleController::class,
+
     'base_request' => A17\Twill\Http\Requests\Admin\Request::class,
 ];
