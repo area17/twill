@@ -172,6 +172,11 @@
 
         this.address = newValue
         this.$emit('change', newValue)
+
+        const latlng = newValue.match(/^(-?\d+(?:\.\d+)?),+ *(-?\d+(?:\.\d+)?)$/)
+        if (latlng) {
+          this.onLatLngEntered(latlng[1], latlng[2]);
+        }
       },
       onPlaceChanged: function () {
         const place = this.autocompletePlace.getPlace()
@@ -213,6 +218,23 @@
 
         if (this.map) {
           this.addMarker(latlng)
+        }
+
+        // see formStore mixin
+        this.saveIntoStore()
+      },
+      onLatLngEntered: function (lat, lng) {
+        const latlng = new google.maps.LatLng(lat, lng)
+
+        this.clearMarkers()
+        this.clearLatLng()
+
+        this.address = [latlng.lat(), latlng.lng()].join(',')
+        this.setLatLng(latlng)
+
+        if (this.map) {
+          this.addMarker(latlng)
+          this.map.setCenter(latlng)
         }
 
         // see formStore mixin
