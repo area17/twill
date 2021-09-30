@@ -17,7 +17,6 @@ trait TwillModel
 {
     use SoftDeletes;
     use HasPresenter;
-    use SoftDeletes;
     use TaggableTrait;
     use IsTranslatable;
     use HasCapsules;
