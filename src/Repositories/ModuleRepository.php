@@ -25,7 +25,7 @@ abstract class ModuleRepository
     use HandleDates, HandleBrowsers, HandleRelatedBrowsers, HandleRepeaters, HandleFieldsGroups, HasCapsules;
 
     /**
-     * @var \A17\Twill\Models\Model
+     * @var \A17\Twill\Models\ModelInterface&\Illuminate\Database\Eloquent\Model
      */
     protected $model;
 
