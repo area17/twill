@@ -30,13 +30,21 @@ trait TwillModel
         return Str::endsWith(get_class($this), 'Translation');
     }
 
-    /** @inheritDoc */
+    /**
+     * @param Builder $query
+     *
+     * @return Builder
+     */
     public function scopePublished(Builder $query): Builder
     {
         return $query->where("{$this->getTable()}.published", true);
     }
 
-    /** @inheritDoc */
+    /**
+     * @param Builder $query
+     *
+     * @return Builder
+     */
     public function scopePublishedInListings(Builder $query): Builder
     {
         if ($this->isFillable('public')) {
@@ -46,7 +54,11 @@ trait TwillModel
         return $query->published()->visible();
     }
 
-    /** @inheritDoc */
+    /**
+     * @param Builder $query
+     *
+     * @return Builder
+     */
     public function scopeVisible(Builder $query): Builder
     {
         if ($this->isFillable('publish_start_date')) {
@@ -64,25 +76,39 @@ trait TwillModel
         return $query;
     }
 
-    /** @inheritDoc */
+    /**
+     * @param Carbon $value
+     *
+     * @return void
+     */
     public function setPublishStartDateAttribute($value): void
     {
         $this->attributes['publish_start_date'] = $value ?? Carbon::now();
     }
 
-    /** @inheritDoc */
+    /**
+     * @param Builder $query
+     *
+     * @return Builder
+     */
     public function scopeDraft(Builder $query): Builder
     {
         return $query->where("{$this->getTable()}.published", false);
     }
 
-    /** @inheritDoc */
+    /**
+     * @param Builder $query
+     *
+     * @return Builder
+     */
     public function scopeOnlyTrashed(Builder $query): Builder
     {
         return $query->whereNotNull("{$this->getTable()}.deleted_at");
     }
 
-    /** @inheritDoc */
+    /**
+     * @return array
+     */
     public function getFillable(): array
     {
         // If the fillable attribute is filled, just use it
@@ -108,19 +134,25 @@ trait TwillModel
         return $fillable;
     }
 
-    /** @inheritDoc */
+    /**
+     * @return array
+     */
     public function getTranslatedAttributes(): array
     {
         return $this->translatedAttributes ?? [];
     }
 
-    /** @inheritDoc */
+    /**
+     * @return void
+     */
     protected static function bootTaggableTrait(): void
     {
         static::$tagsModel = Tag::class;
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     */
     public function tags(): MorphToMany
     {
         return $this->morphToMany(

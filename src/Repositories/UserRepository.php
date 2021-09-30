@@ -72,7 +72,7 @@ class UserRepository extends ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $user
+     * @param \A17\Twill\Models\ModelInterface $user
      * @param array $fields
      */
     public function afterUpdateBasic($user, $fields)
@@ -106,7 +106,7 @@ class UserRepository extends ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $user
+     * @param \A17\Twill\Models\ModelInterface $user
      * @param array $fields
      * @return string[]
      */
