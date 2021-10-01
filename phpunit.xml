@@ -18,6 +18,7 @@
       <file>tests/integration/Commands/ListIconsTest.php</file>
       <file>tests/integration/Commands/MakeBlockTest.php</file>
       <file>tests/integration/Commands/MakeModuleTest.php</file>
+      <file>tests/integration/Commands/MakeSingletonTest.php</file>
       <file>tests/integration/Commands/SuperadminTest.php</file>
       <file>tests/integration/Commands/UpdateTest.php</file>
       <file>tests/integration/FileLibraryTest.php</file>
@@ -31,6 +32,7 @@
       <file>tests/integration/CapsulesTest.php</file>
       <file>tests/integration/BrowsersTest.php</file>
       <file>tests/integration/NestedModuleTest.php</file>
+      <file>tests/integration/SingletonModuleTest.php</file>
     </testsuite>
   </testsuites>
   <filter>
