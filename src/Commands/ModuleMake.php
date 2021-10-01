@@ -277,7 +277,7 @@ class ModuleMake extends Command
             $this->info("    'capsules' => [");
             $this->info("        'list' => [");
             $this->info("            [");
-            $this->info("                ,'name' => '{$this->capsule['name']}',");
+            $this->info("                'name' => '{$this->capsule['name']}',");
             $this->info("                'enabled' => true,");
             $this->info("            ],");
             $this->info("        ],");
@@ -660,7 +660,7 @@ class ModuleMake extends Command
     /**
      * Creates a new singleton module database seed file.
      *
-     * @param string $moduleName
+     * @param string $modelName
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
