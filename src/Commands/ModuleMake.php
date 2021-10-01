@@ -184,7 +184,17 @@ class ModuleMake extends Command
      */
     public function handle()
     {
+        // e.g. newsItems
         $moduleName = Str::camel(Str::plural(lcfirst($this->argument('moduleName'))));
+
+        // e.g. newsItem
+        $singularModuleName = Str::camel(lcfirst($this->argument('moduleName')));
+
+        // e.g. NewsItems
+        $moduleTitle = Str::studly($moduleName);
+
+        // e.g. NewsItem
+        $modelName = Str::studly(Str::singular($moduleName));
 
         $this->capsule = app('twill.capsules.manager')->makeCapsule(['name' => $moduleName], config("twill.capsules.path"));
 
@@ -229,11 +239,8 @@ class ModuleMake extends Command
             $this->nestable,
         ];
 
-        $modelName = Str::studly(Str::singular($moduleName));
-
-        $this->createCapsuleNamespace(Str::studly($moduleName), $modelName);
-
-        $this->createCapsulePath(Str::studly($moduleName), $modelName);
+        $this->createCapsuleNamespace($moduleTitle, $modelName);
+        $this->createCapsulePath($moduleTitle, $modelName);
 
         $this->createMigration($moduleName);
         $this->createModels($modelName, $activeTraits);
@@ -247,45 +254,39 @@ class ModuleMake extends Command
             $this->createCapsuleSeed($moduleName);
         } elseif ($this->isSingleton) {
             $this->createSingletonSeed($modelName);
+            $this->info("\nAdd to routes/admin.php:\n");
+            $this->info("    Route::singleton('{$singularModuleName}');\n");
+
         } else {
-            $this->info("Add Route::module('{$moduleName}'); to your admin routes file.");
+            $this->info("\nAdd to routes/admin.php:\n");
+            $this->info("    Route::module('{$moduleName}');\n");
         }
 
-        $this->info("\nSetup a new CMS menu item in config/twill-navigation.php:");
-
-        $navModuleName = $this->isSingleton ? strtolower($modelName) : $moduleName;
-        $navTitle = $this->isSingleton ? $modelName : Str::studly($moduleName);
+        $navModuleName = $this->isSingleton ? $singularModuleName : $moduleName;
+        $navTitle = $this->isSingleton ? $modelName : $moduleTitle;
         $navType = $this->isSingleton ? 'singleton' : 'module';
 
-        $this->info("
-            '{$navModuleName}' => [
-                'title' => '{$navTitle}',
-                '{$navType}' => true,
-            ],
-        ");
+        $this->info("Setup a new CMS menu item in config/twill-navigation.php:\n");
+        $this->info("    '{$navModuleName}' => [");
+        $this->info("        'title' => '{$navTitle}',");
+        $this->info("        '{$navType}' => true,");
+        $this->info("    ],\n");
 
         if ($this->isCapsule) {
-            $this->info("Setup your new Capsule on config/twill.php:");
-
-            $navTitle = Str::studly($moduleName);
-
-            $this->info("
-                'capsules' => [
-                    'list' => [
-                        [
-                            'name' => '{$this->capsule['name']}',
-                            'enabled' => true
-                        ]
-                    ]
-                ]
-            ");
+            $this->info("Setup your new Capsule in config/twill.php:\n");
+            $this->info("    'capsules' => [");
+            $this->info("        'list' => [");
+            $this->info("            [");
+            $this->info("                ,'name' => '{$this->capsule['name']}',");
+            $this->info("                'enabled' => true,");
+            $this->info("            ],");
+            $this->info("        ],");
+            $this->info("    ],\n");
         }
 
         if ($this->isSingleton) {
-            $this->info("Migrate your database:");
+            $this->info("Migrate your database & seed your singleton module:\n");
             $this->info("    php artisan migrate\n");
-
-            $this->info("Then seed your singleton module:");
             $this->info("    php artisan db:seed {$modelName}Seeder\n");
         } else {
             $this->info("Migrate your database.\n");
