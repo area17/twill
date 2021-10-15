@@ -98,6 +98,19 @@
                             @endforeach
                         </div>
                     @endif
+                    <div slot="additional-actions">
+                        @foreach($additionalTableActions as $additionalTableAction)
+                            <a17-button
+                                variant="{{ $additionalTableAction['variant'] }}"
+                                size="{{ $additionalTableAction['size'] }}"
+                                el="{{ $additionalTableAction['type'] ?? 'button' }}"
+                                href="{{ $additionalTableAction['link'] }}"
+                                target="{{ $additionalTableAction['target'] ?? '_self' }}"
+                            >
+                                {{ $additionalTableAction['name'] }}
+                            </a17-button>
+                        @endforeach
+                    </div>
                 </a17-filter>
             </div>
             @if($bulkEdit)
