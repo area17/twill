@@ -1472,6 +1472,7 @@ abstract class ModuleController extends Controller
         $restoreRouteName = $fullRoutePrefix . 'restoreRevision';
 
         $baseUrl = $item->urlWithoutSlug ?? $this->getPermalinkBaseUrl();
+        $localizedPermalinkBase = $this->getLocalizedPermalinkBase();
 
         $data = [
             'item' => $item,
@@ -1488,6 +1489,7 @@ abstract class ModuleController extends Controller
             'createWithoutModal' => !$item[$this->identifierColumnKey] && $this->getIndexOption('skipCreateModal'),
             'form_fields' => $this->repository->getFormFields($item),
             'baseUrl' => $baseUrl,
+            'localizedPermalinkBase'=>$localizedPermalinkBase,
             'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
             'saveUrl' => $item[$this->identifierColumnKey] ? $this->getModuleRoute($item[$this->identifierColumnKey], 'update') : moduleRoute($this->moduleName, $this->routePrefix, 'store', [$this->submoduleParentId]),
             'editor' => Config::get('twill.enabled.block-editor') && $this->moduleHas('blocks') && !$this->disableEditor,
@@ -1698,8 +1700,16 @@ abstract class ModuleController extends Controller
         return $appUrl . '/'
             . ($this->moduleHas('translations') ? '{language}/' : '')
             . ($this->moduleHas('revisions') ? '{preview}/' : '')
-            . ($this->permalinkBase ?? $this->getModulePermalinkBase())
-            . (isset($this->permalinkBase) && empty($this->permalinkBase) ? '' : '/');
+            . (empty($this->getLocalizedPermalinkBase()) ? ($this->permalinkBase ?? $this->getModulePermalinkBase()) : '')
+            . (((isset($this->permalinkBase) && empty($this->permalinkBase)) || !empty($this->getLocalizedPermalinkBase())) ? '' : '/');
+    }
+
+    /**
+     * @return array
+     */
+    protected function getLocalizedPermalinkBase()
+    {
+        return [];
     }
 
     /**
