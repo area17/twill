@@ -101,10 +101,10 @@
                     <div slot="additional-actions">
                         @foreach($additionalTableActions as $additionalTableAction)
                             <a17-button
-                                variant="{{ $additionalTableAction['variant'] }}"
-                                size="{{ $additionalTableAction['size'] }}"
+                                variant="{{ $additionalTableAction['variant'] ?? 'primary' }}"
+                                size="{{ $additionalTableAction['size'] ?? 'small' }}"
                                 el="{{ $additionalTableAction['type'] ?? 'button' }}"
-                                href="{{ $additionalTableAction['link'] }}"
+                                href="{{ $additionalTableAction['link'] ?? '#' }}"
                                 target="{{ $additionalTableAction['target'] ?? '_self' }}"
                             >
                                 {{ $additionalTableAction['name'] }}
