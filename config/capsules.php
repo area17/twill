@@ -22,7 +22,8 @@ return [
         // ['name' => 'Posts', 'enabled' => true],
     ],
 
-    'capsule_config_prefix' => 'twill.capsule'
+    'capsule_config_prefix' => 'twill.capsule',
+    'capsule_config_prefix_repository' => env('CAPSULE_PREFIX_REPOSITORY', 'area7')
 ];
 
 /// To fully override this config:
