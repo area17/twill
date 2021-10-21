@@ -148,7 +148,7 @@ class CapsuleInstall extends Command
 
     protected function getRepositoryPrefix()
     {
-        $prefix = Config::get('twill.capsules.capsule_config_prefix_repository');
+        $prefix = Config::get('twill.capsules.capsule_repository_prefix');
 
         if (filled($capsule = $this->getCapsulePrefix())) {
             $prefix .= '/' . $this->getCapsulePrefix();

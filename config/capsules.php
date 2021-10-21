@@ -23,7 +23,7 @@ return [
     ],
 
     'capsule_config_prefix' => 'twill.capsule',
-    'capsule_config_prefix_repository' => env('CAPSULE_PREFIX_REPOSITORY', 'area7')
+    'capsule_repository_prefix' => env('CAPSULE_REPOSITORY_PREFIX', 'area17')
 ];
 
 /// To fully override this config:
