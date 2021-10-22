@@ -15,7 +15,5 @@ class PostsCapsuleServiceProvider extends ServiceProvider
 
     public function register(): void
     {
-        $b = 'f';
-        parent::register();
     }
 }
