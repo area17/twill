@@ -374,7 +374,7 @@ abstract class TestCase extends OrchestraTestCase
 
     public function copyTestFiles(): void
     {
-        if ($this->allFiles !== null) {
+        if (isset($this->allFiles)) {
             $this->copyFiles($this->allFiles);
         }
     }
