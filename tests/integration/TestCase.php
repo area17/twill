@@ -6,6 +6,7 @@ use A17\Twill\AuthServiceProvider;
 use A17\Twill\Models\User;
 use A17\Twill\RouteServiceProvider;
 use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
+use A17\Twill\Tests\Providers\ConfigInjectingProvider;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\ValidationServiceProvider;
 use Carbon\Carbon;
@@ -121,6 +122,8 @@ abstract class TestCase extends OrchestraTestCase
         $this->instantiateFaker();
 
         $this->copyBlocks();
+
+        $this->copyTestFiles();
 
         $this->installTwill();
     }
@@ -278,6 +281,7 @@ abstract class TestCase extends OrchestraTestCase
 
         return [
             AuthServiceProvider::class,
+            ConfigInjectingProvider::class,
             RouteServiceProvider::class,
             TwillServiceProvider::class,
             ValidationServiceProvider::class,
@@ -366,6 +370,13 @@ abstract class TestCase extends OrchestraTestCase
         $this->deleteAllTwillPaths();
 
         $this->makeAllTwillPaths();
+    }
+
+    public function copyTestFiles(): void
+    {
+        if ($this->allFiles !== null) {
+            $this->copyFiles($this->allFiles);
+        }
     }
 
     /**

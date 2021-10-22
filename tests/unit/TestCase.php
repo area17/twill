@@ -3,6 +3,7 @@
 namespace A17\Twill\Tests\Unit;
 
 use A17\Twill\AuthServiceProvider;
+use A17\Twill\Tests\Providers\ConfigInjectingProvider;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\RouteServiceProvider;
 use A17\Twill\ValidationServiceProvider;
@@ -20,6 +21,7 @@ abstract class TestCase extends OrchestraTestCase
     {
         return [
             AuthServiceProvider::class,
+            ConfigInjectingProvider::class,
             RouteServiceProvider::class,
             TwillServiceProvider::class,
             ValidationServiceProvider::class,

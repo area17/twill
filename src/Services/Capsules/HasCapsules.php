@@ -191,10 +191,6 @@ trait HasCapsules
         $rootPath = $this->capsuleRootPath($capsule);
         $capsuleName = $capsule['name'];
 
-        if ($capsule['name'] !== 'ContactFormSubmissions') {
-            return;
-        }
-
         $serviceProviderName = $capsuleName . 'CapsuleServiceProvider';
 
         if (File::exists($rootPath . '/' . $serviceProviderName . '.php')) {
