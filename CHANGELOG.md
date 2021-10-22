@@ -2,6 +2,26 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## UNRELEASED
+
+### Fixed
+
+- Support attribute casting on model and translations with JSON field groups [`#1151`](https://github.com/area17/twill/pull/1151)
+- Support dynamic repeater titles with JSON repeaters [`#1171`](https://github.com/area17/twill/pull/1171)
+- Fix admin HTTP exception views detection [`#1213`](https://github.com/area17/twill/pull/1213)
+
+### Improved
+
+- Add capsule_repository_prefix configuration [`#1209`](https://github.com/area17/twill/pull/1209)
+- Update repeater field documentation [`#1165`](https://github.com/area17/twill/pull/1165)
+- Update docblock annotations [`#1167`](https://github.com/area17/twill/pull/1167/files)
+- Support custom port in dev_mode_url configuration [`#1163`](https://github.com/area17/twill/pull/1163)
+
+### Chores
+
+- Update npm dependencies in /docs [`377e5e0`](https://github.com/area17/twill/commit/377e5e0b27916861caa448ef899ea0e3fbeff648)
+
+
 ## 2.5.2 (2021-09-16)
 
 ### Fixed
