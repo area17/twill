@@ -1613,6 +1613,11 @@ abstract class ModuleController extends Controller
             if (array_key_last($moduleParts) !== $index) {
                 $singularName = Str::singular($name);
                 $modelClass = config('twill.namespace') . '\\Models\\' . Str::studly($singularName);
+
+                if(!@class_exists($modelClass)) {
+                    $modelClass = $this->getCapsuleByModule($name)['model'];
+                }
+
                 $model = (new $modelClass)->findOrFail(request()->route()->parameter($singularName));
                 $hasSlug = Arr::has(class_uses($modelClass), HasSlug::class);
 
