@@ -30,7 +30,7 @@ return [
     | TwicPics API Version
     |--------------------------------------------------------------------------
     |
-    | The URL parameter to select the TwiPics Manipulations API.
+    | The API version used for image manipulations parameters.
     |
     | @see https://www.twicpics.com/docs/api/basics
     |

@@ -49,7 +49,6 @@ class AbstractParamsProcessorTest extends TestCase
         $this->assertEquals([
             'custom' => 'THIS_IS_A_CUSTOM_VALUE'
         ], $processedParams);
-
     }
 }
 
