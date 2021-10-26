@@ -13,6 +13,9 @@
 >
   <testsuites>
     <testsuite name="Twill Test Suites">
+      <file>tests/unit/ValidationTest.php</file>
+      <file>tests/unit/MediaLibrary/AbstractParamsProcessorTest.php</file>
+      <file>tests/unit/MediaLibrary/TwicPicsParamsProcessorTest.php</file>
       <file>tests/integration/Commands/BuildTest.php</file>
       <file>tests/integration/Commands/ListBlocksTest.php</file>
       <file>tests/integration/Commands/ListIconsTest.php</file>
