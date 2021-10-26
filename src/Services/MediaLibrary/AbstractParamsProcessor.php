@@ -79,7 +79,7 @@ abstract class AbstractParamsProcessor
      * will remain untouched.
      *
      * @param string $key
-     * @param string $value
+     * @param mixed $value
      * @return void
      */
     protected function handleParam($key, $value)
