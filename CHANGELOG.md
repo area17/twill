@@ -4,14 +4,20 @@ All notable changes to `twill` will be documented in this file.
 
 ## UNRELEASED
 
+### Added
+
+- Add option `--hasNesting` to generate modules with nested items in the listing view [`#1140`](https://github.com/area17/twill/pull/1140)
+
 ### Fixed
 
 - Support attribute casting on model and translations with JSON field groups [`#1151`](https://github.com/area17/twill/pull/1151)
 - Support dynamic repeater titles with JSON repeaters [`#1171`](https://github.com/area17/twill/pull/1171)
 - Fix admin HTTP exception views detection [`#1213`](https://github.com/area17/twill/pull/1213)
+- Prevent conflicts with built-in Vue component names [`#1164`](https://github.com/area17/twill/pull/1164)
 
 ### Improved
 
+- Update routes mapping order to allow overrides [`#1133`](https://github.com/area17/twill/pull/1133)
 - Add capsule_repository_prefix configuration [`#1209`](https://github.com/area17/twill/pull/1209)
 - Update repeater field documentation [`#1165`](https://github.com/area17/twill/pull/1165)
 - Update docblock annotations [`#1167`](https://github.com/area17/twill/pull/1167/files)
