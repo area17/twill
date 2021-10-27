@@ -670,7 +670,7 @@ protected function previewData($item)
 
 ### Nested Module
 
-Modules can be visually nested within the listing view:
+Module items can be visually nested within the listing view:
 
 ![screenshot](/docs/_media/nested-module.png)
 
@@ -686,6 +686,56 @@ This feature requires the `laravel-nestedset` package, which can be installed vi
 
 ```
 composer require kalnoy/nestedset
+```
+
+#### Working with nested items
+
+A few accessors and methods are available to work with nested item slugs:
+
+```php
+// Get the combined slug for all ancestors of an item in the current locale:
+$slug = $item->ancestorsSlug;
+
+// for a specific locale:
+$slug = $item->getAncestorsSlug($lang);
+
+// Get the combined slug for an item including all ancestors:
+$slug = $item->nestedSlug;
+
+// for a specific locale:
+$slug = $item->getNestedSlug($lang);
+```
+
+To include all ancestor slugs in the permalink of an item in the CMS, you can dynamically set the `$permalinkBase` property from the `form()` method of your module controller:
+
+```php
+class PageController extends ModuleController
+{
+    //...
+
+    protected function form($id, $item = null)
+    {
+        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
+
+        $this->permalinkBase = $item->ancestorsSlug;
+
+        return parent::form($id, $item);
+    }
+}
+```
+
+To implement routing for nested items, you can combine the `forNestedSlug()` method from `HandleNesting` with a wildcard route parameter:
+
+```php
+// file: routes/web.php
+
+Route::get('{slug}', function ($slug) {
+    $page = app(PageRepository::class)->forNestedSlug($slug);
+
+    abort_unless($page, 404);
+
+    return view('site.page', ['page' => $page]);
+})->where('slug', '.*');
 ```
 
 For more information on how to work with nested items in your application, you can refer to the 
