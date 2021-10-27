@@ -19,7 +19,7 @@ return [
         'forgot-password' => 'Şifrenizi Mi Unuttunuz',
         'login' => 'Giriş Yap',
         'login-title' => 'Giriş Yap',
-        'oauth-link-title' => 'Şifrenizi Yeniden Girin',
+        'oauth-link-title' => ':provider Hesabınızın Şifresini Yeniden Girin',
         'otp' => 'Tek Seferlik Şifre',
         'password' => 'Şifre',
         'password-confirmation' => 'Şifre Tekrar',
