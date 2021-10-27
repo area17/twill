@@ -8,6 +8,48 @@ trait HasNesting
 {
     use NodeTrait;
 
+    /**
+     * Returns the combined slug for this item including all ancestors.
+     *
+     * @param string|null $locale
+     * @return string
+     */
+    public function getNestedSlug($locale = null)
+    {
+        return collect([$this->getAncestorsSlug($locale), $this->getSlug($locale)])
+            ->filter()
+            ->implode('/');
+    }
+
+    /**
+     * @return string
+     */
+    public function getNestedSlugAttribute()
+    {
+        return $this->getNestedSlug();
+    }
+
+    /**
+     * Returns the combined slug for all ancestors of this item.
+     *
+     * @param string|null $locale
+     * @return string
+     */
+    public function getAncestorsSlug($locale = null)
+    {
+        return collect($this->ancestors ?? [])
+            ->map(function ($i) use ($locale) { return $i->getSlug($locale); })
+            ->implode('/');
+    }
+
+    /**
+     * @return string
+     */
+    public function getAncestorsSlugAttribute()
+    {
+        return $this->getAncestorsSlug();
+    }
+
     public static function saveTreeFromIds($nodeTree)
     {
         $nodeModels = self::all();
