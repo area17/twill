@@ -90,7 +90,7 @@ trait HandleSlugs
      * @param array $with
      * @param array $withCount
      * @param array $scopes
-     * @return \A17\Twill\Models\Model
+     * @return \A17\Twill\Models\Model|null
      */
     public function forSlug($slug, $with = [], $withCount = [], $scopes = [])
     {
