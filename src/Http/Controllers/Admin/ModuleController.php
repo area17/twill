@@ -901,16 +901,7 @@ abstract class ModuleController extends Controller
      */
     public function additionalTableActions()
     {
-        return [
-//            'exportAction' => [ // Action name.
-//                'name' => 'Export Newsletter List', // Button action title.
-//                'variant' => 'primary', // Button style variant. Available variants; primary, secondary, action, editor, validate, aslink, aslink-grey, warning, ghost, outline, tertiary
-//                'size' => 'small', // Button size. Available sizes; small
-//                'link' => route('newsletter.export'), // Button action link.
-//                'target' => '', // Leave it blank for self.
-//                'type' => 'a', // Leave it blank for "button".
-//            ]
-        ];
+        return [];
     }
 
     /**
