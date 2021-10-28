@@ -1094,12 +1094,9 @@ abstract class ModuleController extends Controller
 
             $relation = $item->{$column['relationship']}();
 
-            if($relation instanceof BelongsToMany) {
-                $value = implode(', ', Arr::pluck($relation->get(), $column['field']));
-            }
-            else {
-                $value = Arr::get($item, "{$column['relationship']}.{$column['field']}");
-            }
+            $value = collect($relation->get())
+                ->pluck($column['field'])
+                ->join(', ');
         } elseif (isset($column['present']) && $column['present']) {
             $value = $item->presentAdmin()->{$column['field']};
         }
