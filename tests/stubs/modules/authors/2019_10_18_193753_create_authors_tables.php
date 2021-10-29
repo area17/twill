@@ -57,6 +57,10 @@ class CreateAuthorsTables extends Migration
         Schema::create('author_revisions', function (Blueprint $table) {
             createDefaultRevisionsTableFields($table, 'author');
         });
+
+        Schema::create('author_category', function (Blueprint $table) {
+            createDefaultRelationshipTableFields($table, 'author', 'category');
+        });
     }
 
     public function down()
