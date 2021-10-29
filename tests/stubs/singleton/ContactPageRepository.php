@@ -9,13 +9,13 @@ use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleFiles;
 use A17\Twill\Repositories\Behaviors\HandleRevisions;
 use A17\Twill\Repositories\ModuleRepository;
-use App\Models\Contactpage;
+use App\Models\ContactPage;
 
-class ContactpageRepository extends ModuleRepository
+class ContactPageRepository extends ModuleRepository
 {
     use HandleBlocks, HandleTranslations, HandleSlugs, HandleMedias, HandleFiles, HandleRevisions;
 
-    public function __construct(Contactpage $model)
+    public function __construct(ContactPage $model)
     {
         $this->model = $model;
     }

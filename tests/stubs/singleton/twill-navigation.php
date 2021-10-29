@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'contactpage' => [
+    'contactPage' => [
         'title' => 'Contact Page',
         'singleton' => true,
     ],

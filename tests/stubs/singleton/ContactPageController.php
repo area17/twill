@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use A17\Twill\Http\Controllers\Admin\SingletonModuleController as BaseModuleController;
 
-class ContactpageController extends BaseModuleController
+class ContactPageController extends BaseModuleController
 {
-    protected $moduleName = 'contactpages';
+    protected $moduleName = 'contactPages';
 }
