@@ -2,20 +2,20 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use App\Repositories\ContactpageRepository;
+use App\Repositories\ContactPageRepository;
 
 class SingletonModuleTest extends TestCase
 {
     protected $allFiles = [
-        '{$stubs}/singleton/2021_09_30_202102_create_contactpages_tables.php' => '{$database}/migrations/',
-        '{$stubs}/singleton/Contactpage.php' => '{$app}/Models/',
-        '{$stubs}/singleton/ContactpageController.php' => '{$app}/Http/Controllers/Admin/',
-        '{$stubs}/singleton/ContactpageRepository.php' => '{$app}/Repositories/',
-        '{$stubs}/singleton/ContactpageRequest.php' => '{$app}/Http/Requests/Admin/',
-        '{$stubs}/singleton/ContactpageRevision.php' => '{$app}/Models/Revisions/',
-        '{$stubs}/singleton/ContactpageSlug.php' => '{$app}/Models/Slugs/',
-        '{$stubs}/singleton/ContactpageTranslation.php' => '{$app}/Models/Translations/',
-        '{$stubs}/singleton/form.blade.php' => '{$resources}/views/admin/contactpages/form.blade.php',
+        '{$stubs}/singleton/2021_09_30_202102_create_contact_pages_tables.php' => '{$database}/migrations/',
+        '{$stubs}/singleton/ContactPage.php' => '{$app}/Models/',
+        '{$stubs}/singleton/ContactPageController.php' => '{$app}/Http/Controllers/Admin/',
+        '{$stubs}/singleton/ContactPageRepository.php' => '{$app}/Repositories/',
+        '{$stubs}/singleton/ContactPageRequest.php' => '{$app}/Http/Requests/Admin/',
+        '{$stubs}/singleton/ContactPageRevision.php' => '{$app}/Models/Revisions/',
+        '{$stubs}/singleton/ContactPageSlug.php' => '{$app}/Models/Slugs/',
+        '{$stubs}/singleton/ContactPageTranslation.php' => '{$app}/Models/Translations/',
+        '{$stubs}/singleton/form.blade.php' => '{$resources}/views/admin/contactPages/form.blade.php',
         '{$stubs}/singleton/twill-navigation.php' => '{$config}/',
         '{$stubs}/singleton/admin.php' => '{$base}/routes/admin.php',
     ];
@@ -31,9 +31,9 @@ class SingletonModuleTest extends TestCase
         $this->login();
     }
 
-    public function createContactpage()
+    public function createContactPage()
     {
-        app(ContactpageRepository::class)->create([
+        app(ContactPageRepository::class)->create([
             'title' => [
                 'en' => 'Lorem ipsum',
                 'fr' => 'Nullam elementum',
@@ -55,46 +55,46 @@ class SingletonModuleTest extends TestCase
 
     public function testSingletonNavigationItem()
     {
-        $this->createContactpage();
+        $this->createContactPage();
 
         $this->httpRequestAssert('/twill', 'GET');
 
         $this->assertSee('Contact Page');
 
-        $this->assertSee('http://twill.test/twill/contactpage');
+        $this->assertSee('http://twill.test/twill/contactPage');
     }
 
     public function testSingletonRouteIsDefined()
     {
-        $this->createContactpage();
+        $this->createContactPage();
 
-        $this->httpRequestAssert('/twill/contactpage', 'GET');
+        $this->httpRequestAssert('/twill/contactPage', 'GET');
 
-        $this->assertSee('This is the contactpage form');
+        $this->assertSee('This is the ContactPage form');
     }
 
     public function testSingletonRouteRequiresOneRecord()
     {
-        $this->httpRequestAssert('/twill/contactpage', 'GET', [], 500);
+        $this->httpRequestAssert('/twill/contactPage', 'GET', [], 500);
 
-        $this->assertSee("Contactpage is missing");
+        $this->assertSee("ContactPage is missing");
     }
 
     public function testSingletonModuleHasNoIndex()
     {
-        $this->createContactpage();
+        $this->createContactPage();
 
-        $this->httpRequestAssert('/twill/contactpages', 'GET', [], 500);
+        $this->httpRequestAssert('/twill/contactPages', 'GET', [], 500);
 
-        $this->assertSee('Contactpage as no index');
+        $this->assertSee('ContactPage as no index');
     }
 
     public function testSingletonModuleHasStandardRoutes()
     {
-        $this->createContactpage();
+        $this->createContactPage();
 
-        $this->httpRequestAssert('/twill/contactpages/1/edit', 'GET');
+        $this->httpRequestAssert('/twill/contactPages/1/edit', 'GET');
 
-        $this->assertSee('This is the contactpage form');
+        $this->assertSee('This is the ContactPage form');
     }
 }

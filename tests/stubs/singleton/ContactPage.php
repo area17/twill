@@ -10,7 +10,7 @@ use A17\Twill\Models\Behaviors\HasFiles;
 use A17\Twill\Models\Behaviors\HasRevisions;
 use A17\Twill\Models\Model;
 
-class Contactpage extends Model
+class ContactPage extends Model
 {
     use HasBlocks, HasTranslation, HasSlug, HasMedias, HasFiles, HasRevisions;
 
