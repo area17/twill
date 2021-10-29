@@ -1614,7 +1614,7 @@ abstract class ModuleController extends Controller
                 $singularName = Str::singular($name);
                 $modelClass = config('twill.namespace') . '\\Models\\' . Str::studly($singularName);
 
-                if(!@class_exists($modelClass)) {
+                if(!class_exists($modelClass)) {
                     $modelClass = $this->getCapsuleByModule($name)['model'];
                 }
 
