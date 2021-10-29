@@ -256,7 +256,6 @@ class ModuleMake extends Command
             $this->createSingletonSeed($modelName);
             $this->info("\nAdd to routes/admin.php:\n");
             $this->info("    Route::singleton('{$singularModuleName}');\n");
-
         } else {
             $this->info("\nAdd to routes/admin.php:\n");
             $this->info("    Route::module('{$moduleName}');\n");
@@ -526,13 +525,15 @@ class ModuleMake extends Command
 
         $dir = $this->isCapsule ? $this->capsule['controllers_dir'] : 'Http/Controllers/Admin';
 
-        $baseController = $this->isSingleton ? config('twill.base_singleton_controller') : config('twill.base_controller');
+        if ($this->isSingleton) {
+            $baseController = config('twill.base_singleton_controller');
+        } elseif ($this->nestable) {
+            $baseController = config('twill.base_nested_controller');
+        } else {
+            $baseController = config('twill.base_controller');
+        }
 
         $this->makeTwillDirectory($dir);
-
-        $baseController = config(
-            $this->nestable ? 'twill.base_nested_controller' : 'twill.base_controller'
-        );
 
         $stub = str_replace(
             ['{{moduleName}}', '{{controllerClassName}}', '{{namespace}}', '{{baseController}}'],
