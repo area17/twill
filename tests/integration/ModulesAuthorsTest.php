@@ -3,6 +3,7 @@
 namespace A17\Twill\Tests\Integration;
 
 use App\Models\Author;
+use App\Models\Category;
 use App\Models\Revisions\AuthorRevision;
 use Illuminate\Support\Facades\Schema;
 
@@ -313,6 +314,26 @@ class ModulesAuthorsTest extends ModulesTestBase
         $this->assertEquals(
             5,
             count(json_decode($this->content(), true)['tableData'])
+        );
+    }
+
+    public function testCanShowAuthorRelationshipColumn()
+    {
+        $this->createAuthor(1);
+        $author = Author::first();
+
+        $this->createCategory(2);
+        $categories = Category::all();
+
+        $author->categories()->attach($categories);
+
+        $this->ajax('/twill/personnel/authors')->assertStatus(200);
+
+        $content = json_decode($this->content(), true);
+
+        $this->assertEquals(
+            $content['tableData'][0]['categoriesTitle'],
+            $categories->pluck('title')->join(', ')
         );
     }
 
