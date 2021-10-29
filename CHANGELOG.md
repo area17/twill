@@ -6,7 +6,9 @@ All notable changes to `twill` will be documented in this file.
 
 ### Added
 
-- Add option `--hasNesting` to generate modules with nested items in the listing view [`#1140`](https://github.com/area17/twill/pull/1140)
+- New artisan command `twill:make:singleton` to generate single-record modules [`#1178`](https://github.com/area17/twill/pull/1178)
+- New option `--hasNesting` to generate modules with nested items in the listing view [`#1140`](https://github.com/area17/twill/pull/1140)
+- Turkish language support [`#1134`](https://github.com/area17/twill/pull/1134)
 
 ### Fixed
 
@@ -14,18 +16,21 @@ All notable changes to `twill` will be documented in this file.
 - Support dynamic repeater titles with JSON repeaters [`#1171`](https://github.com/area17/twill/pull/1171)
 - Fix admin HTTP exception views detection [`#1213`](https://github.com/area17/twill/pull/1213)
 - Prevent conflicts with built-in Vue component names [`#1164`](https://github.com/area17/twill/pull/1164)
+- Add fallback to capsule model in permalink base [`#1216`](https://github.com/area17/twill/pull/1216)
 
 ### Improved
 
 - Update routes mapping order to allow overrides [`#1133`](https://github.com/area17/twill/pull/1133)
-- Add capsule_repository_prefix configuration [`#1209`](https://github.com/area17/twill/pull/1209)
+- Handle many-to-many relations in index columns [`#1174`](https://github.com/area17/twill/pull/1174)
+- Add `capsule_repository_prefix` configuration [`#1209`](https://github.com/area17/twill/pull/1209)
 - Update repeater field documentation [`#1165`](https://github.com/area17/twill/pull/1165)
 - Update docblock annotations [`#1167`](https://github.com/area17/twill/pull/1167/files)
-- Support custom port in dev_mode_url configuration [`#1163`](https://github.com/area17/twill/pull/1163)
+- Support custom port in `dev_mode_url` configuration [`#1163`](https://github.com/area17/twill/pull/1163)
+- Support additional table actions in module listing [`#1202`](https://github.com/area17/twill/pull/1202)
 
 ### Chores
 
-- Update npm dependencies in /docs [`377e5e0`](https://github.com/area17/twill/commit/377e5e0b27916861caa448ef899ea0e3fbeff648)
+- Update npm dependencies in documentation [`377e5e0`](https://github.com/area17/twill/commit/377e5e0b27916861caa448ef899ea0e3fbeff648)
 
 
 ## 2.5.2 (2021-09-16)
