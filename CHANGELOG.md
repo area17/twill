@@ -7,7 +7,8 @@ All notable changes to `twill` will be documented in this file.
 ### Added
 
 - New artisan command `twill:make:singleton` to generate single-record modules [`#1178`](https://github.com/area17/twill/pull/1178)
-- New option `--hasNesting` to generate modules with nested items in the listing view [`#1140`](https://github.com/area17/twill/pull/1140)
+- New option `--hasNesting` to generate modules with nested items in the listing view [`#1140`](https://github.com/area17/twill/pull/1140) [`#1222`](https://github.com/area17/twill/pull/1222)
+- TwicPics image service [`#1217`](https://github.com/area17/twill/pull/1217)
 - Turkish language support [`#1134`](https://github.com/area17/twill/pull/1134)
 
 ### Fixed
@@ -17,6 +18,7 @@ All notable changes to `twill` will be documented in this file.
 - Fix admin HTTP exception views detection [`#1213`](https://github.com/area17/twill/pull/1213)
 - Prevent conflicts with built-in Vue component names [`#1164`](https://github.com/area17/twill/pull/1164)
 - Add fallback to capsule model in permalink base [`#1216`](https://github.com/area17/twill/pull/1216)
+- Add `doctrine/dbal` 3.0 support [`#1226`](https://github.com/area17/twill/pull/1226)
 
 ### Improved
 
