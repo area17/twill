@@ -47,6 +47,8 @@ jobs:
             laravel: 6.*
           - dbal: ^3.0
             laravel: 7.*
+          - dbal: ^2.12
+            laravel: 8.*
 
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
