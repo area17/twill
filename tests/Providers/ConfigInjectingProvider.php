@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 
 class ConfigInjectingProvider extends ServiceProvider
 {
-    public static array $configToInject = [];
+    public static $configToInject = [];
 
     public function register(): void
     {
