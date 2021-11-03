@@ -71,7 +71,7 @@
         type: String,
         default: ''
       },
-      customLocalizedPermalinkbase: {
+      localizedPermalinkbase: {
         type: String,
         default: ''
       },
@@ -119,8 +119,8 @@
         return Object.keys(localizedCustomPermalink).length > 0 ? localizedCustomPermalink[this.currentLocale.value] : (this.customPermalink ? this.customPermalink : false)
       },
       permalink: function () {
-        const customLocalizedPermalinkbase = this.customLocalizedPermalinkbase.length > 0 ? JSON.parse(this.customLocalizedPermalinkbase) : {}
-        return Object.keys(customLocalizedPermalinkbase).length > 0 ? customLocalizedPermalinkbase[this.currentLocale.value].concat(this.fieldValueByName('slug')[this.currentLocale.value]) : this.fieldValueByName('slug')[this.currentLocale.value]
+        const localizedPermalinkbase = this.localizedPermalinkbase.length > 0 ? JSON.parse(this.localizedPermalinkbase) : {}
+        return Object.keys(localizedPermalinkbase).length > 0 ? ((this.currentLocale.value in localizedPermalinkbase) ? localizedPermalinkbase[this.currentLocale.value].concat('/',this.fieldValueByName('slug')[this.currentLocale.value]) : this.fieldValueByName('slug')[this.currentLocale.value] ): this.fieldValueByName('slug')[this.currentLocale.value]
       },
       ...mapState({
         baseUrl: state => state.form.baseUrl,
