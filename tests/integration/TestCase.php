@@ -6,7 +6,6 @@ use A17\Twill\AuthServiceProvider;
 use A17\Twill\Models\User;
 use A17\Twill\RouteServiceProvider;
 use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
-use A17\Twill\Tests\Providers\ConfigInjectingProvider;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\ValidationServiceProvider;
 use Carbon\Carbon;
@@ -281,7 +280,6 @@ abstract class TestCase extends OrchestraTestCase
 
         return [
             AuthServiceProvider::class,
-            ConfigInjectingProvider::class,
             RouteServiceProvider::class,
             TwillServiceProvider::class,
             ValidationServiceProvider::class,
