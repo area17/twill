@@ -769,7 +769,7 @@ For more information on how to work with nested items in your application, you c
 
 #### Parent-child modules
 
-Parent-child modules are 2 distinct modules, where items of the child module are attached to items of the parent modules (e.g. Issues can contain Articles):
+Parent-child modules are 2 distinct modules, where items of the child module are attached to items of the parent module (e.g. Issues can contain Articles):
 
 ![parent-child modules](/docs/_media/nested-parent-index.png)
 
