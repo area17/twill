@@ -120,7 +120,7 @@
       },
       permalink: function () {
         const localizedPermalinkbase = this.localizedPermalinkbase.length > 0 ? JSON.parse(this.localizedPermalinkbase) : {}
-        return Object.keys(localizedPermalinkbase).length > 0 ? ((this.currentLocale.value in localizedPermalinkbase) ? localizedPermalinkbase[this.currentLocale.value].concat('/',this.fieldValueByName('slug')[this.currentLocale.value]) : this.fieldValueByName('slug')[this.currentLocale.value] ): this.fieldValueByName('slug')[this.currentLocale.value]
+        return Object.keys(localizedPermalinkbase).length > 0 ? ((this.currentLocale.value in localizedPermalinkbase) ? localizedPermalinkbase[this.currentLocale.value].concat('/', this.fieldValueByName('slug')[this.currentLocale.value]) : this.fieldValueByName('slug')[this.currentLocale.value]) : this.fieldValueByName('slug')[this.currentLocale.value]
       },
       ...mapState({
         baseUrl: state => state.form.baseUrl,
