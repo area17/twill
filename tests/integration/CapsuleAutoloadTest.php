@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use A17\Twill\Tests\Providers\ConfigInjectingProvider;
 use App\Twill\Capsules\Posts\PostsCapsuleServiceProvider;
 
 class CapsuleAutoloadTest extends TestCase
@@ -50,19 +49,23 @@ class CapsuleAutoloadTest extends TestCase
 
     public function setUp(): void
     {
-        // Inject config before the setup.
-        ConfigInjectingProvider::$configToInject = [
+        parent::setUp();
+
+        $this->manager = app('twill.capsules.manager');
+    }
+
+    public function getPackageProviders($app)
+    {
+        config()->set([
             'twill.capsules.list' => [
                 [
                     'name' => 'Posts',
                     'enabled' => true,
                 ],
             ],
-        ];
+        ]);
 
-        parent::setUp();
-
-        $this->manager = app('twill.capsules.manager');
+        return parent::getPackageProviders($app);
     }
 
     public function testStubCapsuleIsLoaded(): void
