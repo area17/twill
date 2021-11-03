@@ -688,11 +688,17 @@ protected function previewData($item)
 }
 ```
 
-### Nested Module
+### Nested Modules
 
-Module items can be visually nested within the listing view:
+Out of the box, Twill supports 2 kinds of nested modules: [self-nested](#self-nested-modules) and [parent-child](#parent-child-modules).
 
-![screenshot](/docs/_media/nested-module.png)
+#### Self-nested modules
+
+Self-nested modules allow items to be nested within other items of the same module (e.g. Pages can contain other Pages):
+
+![self-nested module](/docs/_media/nested-module.png)
+
+#### Creating self-nested modules
 
 You can enable nesting when creating a new module with the `--hasNesting` or `-N` option:
 
@@ -708,7 +714,7 @@ This feature requires the `laravel-nestedset` package, which can be installed vi
 composer require kalnoy/nestedset
 ```
 
-#### Working with nested items
+#### Working with self-nested items
 
 A few accessors and methods are available to work with nested item slugs:
 
