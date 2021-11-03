@@ -760,3 +760,198 @@ Route::get('{slug}', function ($slug) {
 
 For more information on how to work with nested items in your application, you can refer to the 
 [laravel-nestedset package documentation](https://github.com/lazychaser/laravel-nestedset#retrieving-nodes).
+
+#### Parent-child modules
+
+Parent-child modules are 2 distinct modules, where items of the child module are attached to items of the parent modules (e.g. Issues can contain Articles):
+
+![parent-child modules](/docs/_media/nested-parent-index.png)
+
+Items of the child module can't be created independently.
+
+#### Creating parent-child modules
+
+We'll use the `slug` and `position` features in this example but you can customize as needed:
+
+```
+php artisan twill:module issues -SP
+php artisan twill:module issueArticles -SP
+```
+
+Add the `issue_id` foreign key to the child module's migration:
+
+```php
+class CreateIssueArticlesTables extends Migration
+{
+    public function up()
+    {
+        Schema::create('issue_articles', function (Blueprint $table) {
+            // ...
+            $table->unsignedBigInteger('issue_id')->nullable();
+            $table->foreign('issue_id')->references('id')->on('issues');
+        });
+        
+        // ...
+    }
+}
+```
+
+Run the migrations:
+
+```
+php artisan migrate
+```
+
+Update the child model. Add the `issue_id` fillable and the relationship to the parent model:
+
+```php
+class IssueArticle extends Model implements Sortable
+{
+    // ...
+
+    protected $fillable = [
+        // ...
+        'issue_id',
+    ];
+    
+    public function issue()
+    {
+        return $this->belongsTo(Issue::class);
+    }
+}
+```
+
+Update the parent model. Add the relationship to the child model:
+
+```php
+class Issue extends Model implements Sortable
+{
+    // ...
+
+    public function articles()
+    {
+        return $this->hasMany(IssueArticle::class);
+    }
+}
+```
+
+Update the child controller. Set the `$moduleName` and `$modelName` properties, then override the `getParentModuleForeignKey()` method:
+
+```php
+class IssueArticleController extends BaseModuleController
+{
+    protected $moduleName = 'issues.articles';
+
+    protected $modelName = 'IssueArticle';
+
+    protected function getParentModuleForeignKey()
+    {
+        return 'issue_id';
+    }
+}
+```
+
+Update the parent controller. Set the `$indexColumns` property to include a new `Articles` column. This will be a link to the child module items, for each parent.
+
+```php
+class IssueController extends BaseModuleController
+{
+    protected $moduleName = 'issues';
+
+    protected $indexColumns = [
+        'title' => [
+            'title' => 'Title',
+            'field' => 'title',
+        ],
+        'articles' => [
+            'title' => 'Articles',
+            'nested' => 'articles',
+        ],
+    ];
+}
+```
+
+Add both modules to `routes/admin.php`:
+
+```php
+Route::module('issues');
+Route::module('issues.articles');
+```
+
+Then, add the parent module to `config/twill-navigation.php`:
+
+```php
+return [
+    'issues' => [
+        'title' => 'Issues',
+        'module' => true,
+    ],
+];
+```
+
+#### Using breadcrumbs for easier navigation
+
+In the child module controller, override the `indexData()` method to add the breadcrumbs to the index view:
+
+```php
+class IssueArticleController extends BaseModuleController
+{
+    // ...
+
+    protected function indexData($request)
+    {
+        $issue = app(IssueRepository::class)->getById(request('issue'));
+
+        return [
+            'breadcrumb' => [
+                [
+                    'label' => 'Issues',
+                    'url' => moduleRoute('issues', '', 'index'),
+                ],
+                [
+                    'label' => $issue->title,
+                    'url' => moduleRoute('issues', '', 'edit', $issue->id),
+                ],
+                [
+                    'label' => 'Articles',
+                ],
+            ],
+        ];
+    }
+}
+```
+
+![child module index](/docs/_media/nested-child-index.png)
+
+<br>
+
+Then, override the `formData()` method to do the same in the form view:
+
+```php
+    protected function formData($request)
+    {
+        $issue = app(IssueRepository::class)->getById(request('issue'));
+
+        return [
+            'breadcrumb' => [
+                [
+                    'label' => 'Issues',
+                    'url' => moduleRoute('issues', '', 'index'),
+                ],
+                [
+                    'label' => $issue->title,
+                    'url' => moduleRoute('issues', '', 'edit', $issue->id),
+                ],
+                [
+                    'label' => 'Articles',
+                    'url' => moduleRoute('issues.articles', '', 'index'),
+                ],
+                [
+                    'label' => 'Edit',
+                ],
+            ],
+        ];
+    }
+```
+
+![nested child form](/docs/_media/nested-child-form.png)
