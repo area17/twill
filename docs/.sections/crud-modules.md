@@ -884,7 +884,7 @@ Route::module('issues');
 Route::module('issues.articles');
 ```
 
-Then, add the parent module to `config/twill-navigation.php`:
+Add the parent module to `config/twill-navigation.php`:
 
 ```php
 return [
@@ -893,6 +893,16 @@ return [
         'module' => true,
     ],
 ];
+```
+
+Then, rename and move the `articles/` views folder inside of the parent `issues/` folder:
+```
+resources/views/admin/
+└── issues
+    ├── articles
+    │   └── form.blade.php
+    └── form.blade.php
+...
 ```
 
 #### Using breadcrumbs for easier navigation
