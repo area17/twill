@@ -107,7 +107,7 @@
       },
       limitClasses: function () {
         return {
-          'wysiwyg__limit--red': this.counter < 10
+          'wysiwyg__limit--red': this.counter < (this.maxlength * 0.1)
         }
       },
       ...mapState({
