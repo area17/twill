@@ -6,10 +6,12 @@ All notable changes to `twill` will be documented in this file.
 
 ### Added
 
-- New artisan command `twill:make:singleton` to generate single-record modules [`#1178`](https://github.com/area17/twill/pull/1178)
-- New option `--hasNesting` to generate modules with nested items in the listing view [`#1140`](https://github.com/area17/twill/pull/1140) [`#1222`](https://github.com/area17/twill/pull/1222)
+- Artisan command `twill:make:singleton` to generate single-record modules [`#1178`](https://github.com/area17/twill/pull/1178)
+- Option `--hasNesting` to generate self-nested modules [`#1140`](https://github.com/area17/twill/pull/1140) [`#1222`](https://github.com/area17/twill/pull/1222)
 - TwicPics image service [`#1217`](https://github.com/area17/twill/pull/1217)
 - Turkish language support [`#1134`](https://github.com/area17/twill/pull/1134)
+- Support for translated permalinks in the title editor [`#1092`](https://github.com/area17/twill/pull/1092)
+- Support for capsule service providers [`#1212`](https://github.com/area17/twill/pull/1212)
 
 ### Fixed
 
