@@ -6,7 +6,7 @@
                 <a href="{{ route('admin.users.index') }}">CMS Users</a>
             @endcan
             <a href="{{ route('admin.users.edit', $currentUser->id) }}">Settings</a>
-            <a href="{{ route('admin.logout') }}">Logout</a>
+            <a href="#" data-logout-btn>Logout</a>
         </div>
     </a17-dropdown>
 @endif

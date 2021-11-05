@@ -2,11 +2,13 @@
 import Vue from 'vue'
 import navToggle from '@/behaviors/navToggle'
 import showEnvLine from '@/behaviors/showEnvLine'
+import logoutButton from '@/behaviors/logoutButton'
 import search from '@/main-search'
 
 const A17Init = function () {
   navToggle()
   showEnvLine()
+  logoutButton()
 }
 
 // User header dropdown
