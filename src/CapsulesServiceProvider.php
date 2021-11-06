@@ -11,6 +11,8 @@ class CapsulesServiceProvider extends RouteServiceProvider
 {
     use HasRoutes, HasCapsules;
 
+    public static $capsulesBootstrapped = false;
+
     protected $manager;
 
     protected function mergeTwillConfig()
@@ -22,7 +24,7 @@ class CapsulesServiceProvider extends RouteServiceProvider
 
         $this->app
             ->make('config')
-            ->set('twill.capsules.list', $this->getCapsuleList()->toArray());
+            ->set('twill.capsules.list', $this->getCapsuleList(true)->toArray());
 
         $this->app->make('config')->set('twill.capsules.loaded', true);
     }
