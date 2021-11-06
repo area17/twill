@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Capsules;
 
+use A17\Twill\CapsulesServiceProvider;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
@@ -14,21 +15,36 @@ trait HasCapsules
             : require base_path('vendor/autoload.php');
     }
 
-    public function getCapsuleList()
+    /**
+     * While there are more classes using HasCapsules, only the
+     * @see CapsulesServiceProvider should be the one trying to bootstrap.
+     */
+    public function getCapsuleList(bool $shouldBootstrap = false)
     {
         $path = $this->getCapsulesPath();
 
         $list = collect(config('twill.capsules.list'));
 
-        if (config('twill.capsules.loaded')) {
-            return $list;
+        if (!config('twill.capsules.loaded')) {
+            $list = $list
+                ->where('enabled', true)
+                ->map(function ($capsule) use ($path) {
+                    return $this->makeCapsule($capsule, $path);
+                });
         }
 
-        return $list
-            ->where('enabled', true)
-            ->map(function ($capsule) use ($path) {
-                return $this->makeCapsule($capsule, $path);
-            });
+        // We know that the config of capsules is now ready (it might be cached already using config:cache).
+        // What we still have to do is bootstrap them if not yet done, this needs to happen only once.
+        if ($shouldBootstrap && !CapsulesServiceProvider::$capsulesBootstrapped) {
+            $list
+                ->where('enabled', true)
+                ->each(function ($capsule) use ($path) {
+                    $this->bootstrapCapsule($capsule);
+                });
+            CapsulesServiceProvider::$capsulesBootstrapped = true;
+        }
+
+        return $list;
     }
 
     public function getCapsuleByModel($model)
@@ -60,12 +76,10 @@ trait HasCapsules
      */
     public function getCapsulesSubdir()
     {
-        $subdir = config('twill.capsules.namespaces.subdir');
-
-        return $subdir;
+        return config('twill.capsules.namespaces.subdir');
     }
 
-    public function makeCapsule($capsule, $basePath = null)
+    public function makeCapsule($capsule, $basePath = null): array
     {
         $basePath = $basePath ?? $this->getCapsulesPath();
 
@@ -159,13 +173,14 @@ trait HasCapsules
 
         $capsule['config'] = $this->loadCapsuleConfig($capsule);
 
-        $this->registerPsr4Autoloader($capsule);
-
-        $this->autoloadConfigFiles($capsule);
-
-        $this->registerServiceProvider($capsule);
-
         return $capsule;
+    }
+
+    public function bootstrapCapsule($capsule): void
+    {
+        $this->registerPsr4Autoloader($capsule);
+        $this->autoloadConfigFiles($capsule);
+        $this->registerServiceProvider($capsule);
     }
 
     public function registerPsr4Autoloader($capsule)
