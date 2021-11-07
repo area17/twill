@@ -31,7 +31,7 @@
     "doctrine/dbal": "^2.12|^3.0",
     "guzzlehttp/guzzle": "^6.2|^7.0",
     "imgix/imgix-php": "^3.0",
-    "laravel/framework": "~5.6|~5.7|~5.8|^6.0|^7.0|^8.0",
+    "laravel/framework": "~5.6|~5.7|~5.8|^6.0|^7.0|^8.0|9.x-dev",
     "laravel/socialite": "^4.2|^5.0",
     "laravel/ui": "^1.0|^2.0|^3.0",
     "league/flysystem-aws-s3-v3": "^1.0",
