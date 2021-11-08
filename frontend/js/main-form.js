@@ -19,6 +19,7 @@ import a17Publisher from '@/components/Publisher.vue'
 import a17PageNav from '@/components/PageNav.vue'
 import a17Blocks from '@/components/blocks/Blocks.vue'
 import a17Repeater from '@/components/Repeater.vue'
+import a17RepeaterArray from '@/components/RepeaterArray.vue'
 import a17LocationField from '@/components/LocationField.vue'
 import a17ConnectorField from '@/components/ConnectorField.vue'
 
@@ -85,6 +86,7 @@ Vue.component('a17-spinner', a17Spinner)
 
 // Browser
 Vue.component('a17-repeater', a17Repeater)
+Vue.component('a17-repeater_array', a17RepeaterArray)
 Vue.component('a17-browser', a17Browser)
 
 // Form : connector fields
