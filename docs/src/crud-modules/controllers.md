@@ -208,3 +208,24 @@ File: `app/Models/Play.php`
             ->orderBy('festivals.title', $sort_method);
     }
 ```
+
+#### Additional table actions
+
+You can override the `additionalTableActions()` method to add custom actions in your module's listing view:
+
+File: `app/Http/Controllers/Admin/NewsletterController.php`
+```php
+    public function additionalTableActions()
+    {
+        return [
+            'exportAction' => [ // Action name.
+                'name' => 'Export Newsletter List', // Button action title.
+                'variant' => 'primary', // Button style variant. Available variants; primary, secondary, action, editor, validate, aslink, aslink-grey, warning, ghost, outline, tertiary
+                'size' => 'small', // Button size. Available sizes; small
+                'link' => route('newsletter.export'), // Button action link.
+                'target' => '', // Leave it blank for self.
+                'type' => 'a', // Leave it blank for "button".
+            ]
+        ];
+    }
+```

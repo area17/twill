@@ -101,8 +101,8 @@ module.exports = [
             "path": "/crud-modules/revisions-and-previewing.html",
           },
           {
-            "title": "Nested Module",
-            "path": "/crud-modules/nested-module.html",
+            "title": "Nested Modules",
+            "path": "/crud-modules/nested-modules.html",
           }
         ],
         "collapsable": true

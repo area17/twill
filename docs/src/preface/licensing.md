@@ -14,4 +14,4 @@ The Twill UI, including but not limited to images, icons, patterns, and derivati
 
 ## Attribution
 
-By using the Twill UI, you agree that any application which incorporates it shall prominently display the message “Made with Twill” in a legible manner in the footer of the admin console. This message must open a link to Twill.io when clicked or touched. For permission to remove the attribution, contact us at [hello@twill.io](hello@twill.io).
+By using the Twill UI, you agree that any application which incorporates it shall prominently display the message “Made with Twill” in a legible manner in the footer of the admin console. This message must open a link to Twill.io when clicked or touched. For permission to remove the attribution, contact us at [hello@twill.io](mailto:hello@twill.io).

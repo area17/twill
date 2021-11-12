@@ -18,6 +18,7 @@ The command accepts several options:
 - `--hasFiles (-F)`, to attach files to your records
 - `--hasPosition (-P)`, to allow manually reordering of records in the listing screen
 - `--hasRevisions(-R)`, to allow comparing and restoring past revisions of records
+- `--hasNesting(-N)`, to enable nested items in the module listing (see [Nested Module](/crud-modules/nested-modules.html))
 
 The `twill:module` command will generate a migration file, a model, a repository, a controller, a form request object and a form view.
 
