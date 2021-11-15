@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Services\Capsules;
 
-use A17\Twill\CapsulesServiceProvider;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
