@@ -15,11 +15,7 @@ trait HasCapsules
             : require base_path('vendor/autoload.php');
     }
 
-    /**
-     * While there are more classes using HasCapsules, only the
-     * @see CapsulesServiceProvider should be the one trying to bootstrap.
-     */
-    public function getCapsuleList(bool $shouldBootstrap = false)
+    public function getCapsuleList()
     {
         $path = $this->getCapsulesPath();
 
@@ -31,17 +27,6 @@ trait HasCapsules
                 ->map(function ($capsule) use ($path) {
                     return $this->makeCapsule($capsule, $path);
                 });
-        }
-
-        // We know that the config of capsules is now ready (it might be cached already using config:cache).
-        // What we still have to do is bootstrap them if not yet done, this needs to happen only once.
-        if ($shouldBootstrap && !CapsulesServiceProvider::$capsulesBootstrapped) {
-            $list
-                ->where('enabled', true)
-                ->each(function ($capsule) use ($path) {
-                    $this->bootstrapCapsule($capsule);
-                });
-            CapsulesServiceProvider::$capsulesBootstrapped = true;
         }
 
         return $list;
