@@ -6,7 +6,7 @@ All notable changes to `twill` will be documented in this file.
 
 ### Fixed
 
-- 🚨 Fix CSRF vulnerability in logout method [#1241](https://github.com/area17/twill/pull/1241)
+- 🚨 Fix CSRF vulnerability in logout method [#1241](https://github.com/area17/twill/pull/1241) [`ef9cac78`](https://github.com/area17/twill/commit/ef9cac78)
 
 ## 1.2.4 (2021-09-16)
 
