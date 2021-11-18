@@ -22,6 +22,7 @@ All notable changes to `twill` will be documented in this file.
 - Prevent conflicts with built-in Vue component names [`#1164`](https://github.com/area17/twill/pull/1164)
 - Add fallback to capsule model in permalink base [`#1216`](https://github.com/area17/twill/pull/1216)
 - Add `doctrine/dbal` 3.0 support [`#1226`](https://github.com/area17/twill/pull/1226)
+- Ensure capsule autoloading when config is cached [`#1242`](https://github.com/area17/twill/pull/1242)
 
 ### Improved
 
@@ -30,6 +31,7 @@ All notable changes to `twill` will be documented in this file.
 - Add `capsule_repository_prefix` configuration [`#1209`](https://github.com/area17/twill/pull/1209)
 - Support custom port in `dev_mode_url` configuration [`#1163`](https://github.com/area17/twill/pull/1163)
 - Support additional table actions in module listing [`#1202`](https://github.com/area17/twill/pull/1202)
+- Update nested module count pluralisation [`#1251`](https://github.com/area17/twill/pull/1251)
 - Update german translations [`#1235`](https://github.com/area17/twill/pull/1235)
 - Update docblock annotations [`#1167`](https://github.com/area17/twill/pull/1167/files)
 - Update documentation [`#1165`](https://github.com/area17/twill/pull/1165) [`#1244`](https://github.com/area17/twill/pull/1244) [`#1236`](https://github.com/area17/twill/pull/1236)
