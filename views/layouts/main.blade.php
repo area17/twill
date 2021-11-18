@@ -71,7 +71,7 @@
             </section>
         </div>
 
-        <form class="visually-hidden" method="POST" action="{{ route('admin.logout') }}" data-logout-form>
+        <form style="display: none" method="POST" action="{{ route('admin.logout') }}" data-logout-form>
             @csrf
         </form>
 
