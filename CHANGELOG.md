@@ -15,7 +15,7 @@ All notable changes to `twill` will be documented in this file.
 
 ### Fixed
 
-- 🚨 Fix CSRF vulnerability in logout method [#1240](https://github.com/area17/twill/pull/1240)
+- 🚨 Fix CSRF vulnerability in logout method [`#1240`](https://github.com/area17/twill/pull/1240) [`29041f07`](https://github.com/area17/twill/commit/29041f07)
 - Support attribute casting on model and translations with JSON field groups [`#1151`](https://github.com/area17/twill/pull/1151)
 - Support dynamic repeater titles with JSON repeaters [`#1171`](https://github.com/area17/twill/pull/1171)
 - Fix admin HTTP exception views detection [`#1213`](https://github.com/area17/twill/pull/1213)
@@ -30,9 +30,9 @@ All notable changes to `twill` will be documented in this file.
 - Add `capsule_repository_prefix` configuration [`#1209`](https://github.com/area17/twill/pull/1209)
 - Support custom port in `dev_mode_url` configuration [`#1163`](https://github.com/area17/twill/pull/1163)
 - Support additional table actions in module listing [`#1202`](https://github.com/area17/twill/pull/1202)
-- Update german translations [#1235](https://github.com/area17/twill/pull/1235)
+- Update german translations [`#1235`](https://github.com/area17/twill/pull/1235)
 - Update docblock annotations [`#1167`](https://github.com/area17/twill/pull/1167/files)
-- Update documentation [`#1165`](https://github.com/area17/twill/pull/1165) [#1244](https://github.com/area17/twill/pull/1244) [#1236](https://github.com/area17/twill/pull/1236)
+- Update documentation [`#1165`](https://github.com/area17/twill/pull/1165) [`#1244`](https://github.com/area17/twill/pull/1244) [`#1236`](https://github.com/area17/twill/pull/1236)
 
 ### Chores
 
