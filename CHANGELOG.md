@@ -31,6 +31,7 @@ All notable changes to `twill` will be documented in this file.
 - Add `capsule_repository_prefix` configuration [`#1209`](https://github.com/area17/twill/pull/1209)
 - Support custom port in `dev_mode_url` configuration [`#1163`](https://github.com/area17/twill/pull/1163)
 - Support additional table actions in module listing [`#1202`](https://github.com/area17/twill/pull/1202)
+- Show red input count only if above 90% capacity [`#1237`](https://github.com/area17/twill/pull/1237)
 - Update nested module count pluralisation [`#1251`](https://github.com/area17/twill/pull/1251)
 - Update german translations [`#1235`](https://github.com/area17/twill/pull/1235)
 - Update docblock annotations [`#1167`](https://github.com/area17/twill/pull/1167/files)
