@@ -79,7 +79,7 @@
         return this.currentMedia.crops[this.currentCrop] || {}
       },
       multiCrops: function () {
-        return Object.keys(this.media.crops).length > 1
+        return Object.keys(this.cropOptions).length > 1
       },
       ratiosByContext: function () {
         const filtered = this.cropOptions[this.currentCrop]
