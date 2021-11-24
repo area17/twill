@@ -270,30 +270,9 @@
       getTextLength: function () {
         // see https://quilljs.com/docs/api/#getlength
         return this.quill.getLength() - (this.value.length === 0 ? 2 : 1)
-      },
-      preventEditorScroll: function () {
-        // see https://github.com/quilljs/quill/issues/482
-        this.$nextTick(() => {
-          const tooltips = document.querySelectorAll('.ql-tooltip')
-          tooltips.forEach((tooltip) => {
-            const action = tooltip.querySelector('.ql-action')
-            let scrollPosition
-            action.addEventListener('mouseover', () => {
-              scrollPosition = this.$refs.editorcontainer.scrollTop
-            })
-            tooltip.addEventListener('mouseup', (event) => {
-              setTimeout(() => {
-                this.$refs.editorcontainer.scrollTop = scrollPosition
-              }, 0)
-              event.preventDefault()
-              event.stopPropagation()
-            })
-          })
-        })
       }
     },
     mounted: function () {
-      this.preventEditorScroll()
 
       if (this.quill) return
 
