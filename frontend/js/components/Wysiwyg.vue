@@ -273,7 +273,6 @@
       }
     },
     mounted: function () {
-
       if (this.quill) return
 
       /* global hljs */
