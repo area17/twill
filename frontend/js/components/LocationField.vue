@@ -29,6 +29,7 @@
 
 <script>
   import isEqual from 'lodash/isEqual'
+  import debounce from 'lodash/debounce'
   import InputMixin from '@/mixins/input'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
@@ -223,7 +224,7 @@
         // see formStore mixin
         this.saveIntoStore()
       },
-      onLatLngEntered: function (lat, lng) {
+      onLatLngEntered: debounce(function (lat, lng) {
         const latlng = new google.maps.LatLng(lat, lng)
 
         this.clearMarkers()
@@ -239,7 +240,7 @@
 
         // see formStore mixin
         this.saveIntoStore()
-      },
+      }, 600),
       clearMarkers: function () {
         for (let i = 0; i < this.markers.length; i++) {
           if (this.markers[i]) {
