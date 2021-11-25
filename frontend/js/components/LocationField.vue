@@ -69,6 +69,10 @@
         type: Boolean,
         default: false
       },
+      autoDetectLatLngValue: {
+        type: Boolean,
+        default: false
+      },
       initialLat: {
         type: Number,
         default: null
@@ -174,9 +178,12 @@
         this.address = newValue
         this.$emit('change', newValue)
 
-        const latlng = newValue.match(/^(-?\d+(?:\.\d+)?),+ *(-?\d+(?:\.\d+)?)$/)
-        if (latlng) {
-          this.onLatLngEntered(latlng[1], latlng[2])
+        if (this.autoDetectLatLngValue) {
+          const latlng = newValue.match(/^(-?\d+(?:\.\d+)?),+ *(-?\d+(?:\.\d+)?)$/)
+
+          if (latlng) {
+            this.onLatLngEntered(latlng[1], latlng[2])
+          }
         }
       },
       onPlaceChanged: function () {
