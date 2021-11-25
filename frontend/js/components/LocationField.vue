@@ -175,7 +175,7 @@
 
         const latlng = newValue.match(/^(-?\d+(?:\.\d+)?),+ *(-?\d+(?:\.\d+)?)$/)
         if (latlng) {
-          this.onLatLngEntered(latlng[1], latlng[2]);
+          this.onLatLngEntered(latlng[1], latlng[2])
         }
       },
       onPlaceChanged: function () {
