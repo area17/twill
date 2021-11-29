@@ -23,6 +23,9 @@ All notable changes to `twill` will be documented in this file.
 - Add fallback to capsule model in permalink base [`#1216`](https://github.com/area17/twill/pull/1216)
 - Add `doctrine/dbal` 3.0 support [`#1226`](https://github.com/area17/twill/pull/1226)
 - Ensure capsule autoloading when config is cached [`#1242`](https://github.com/area17/twill/pull/1242)
+- Fix edit link feature regression in Quill WYSIWYG [`#1270`](https://github.com/area17/twill/pull/1270)
+- Remove references to deprecated Symfony class [`#1269`](https://github.com/area17/twill/pull/1269)
+- Prevent undefined route errors in IconsController [`#1268`](https://github.com/area17/twill/pull/1268)
 
 ### Improved
 
