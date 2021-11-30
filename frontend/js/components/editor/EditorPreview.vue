@@ -128,10 +128,8 @@
           this.unSubscribe()
           this.blockSelectIndex = index
           this._unSubscribeInternal = this.$store.subscribe((mutation) => {
-            // console.log('mutation', mutation)
             // Don't trigger a refresh of the preview every single time, just when necessary
             if (PREVIEW.REFRESH_BLOCK_PREVIEW.includes(mutation.type)) {
-              // console.log('Editor - store changed : ' + mutation.type)
               if (PREVIEW.REFRESH_BLOCK_PREVIEW_ALL.includes(mutation.type)) {
                 this.getAllPreviews()
               } else {
