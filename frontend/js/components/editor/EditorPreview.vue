@@ -80,9 +80,6 @@
       return {
         loading: false,
         blockSelectIndex: -1,
-        unSubscribe: function () {
-          return null
-        },
         handle: '.editorPreview__dragger' // Drag handle override
       }
     },
@@ -126,9 +123,11 @@
         if (fn) {
           this.selectBlock(fn, index)
         }
+
         if (this.blockSelectIndex !== index) {
+          this.unSubscribe()
           this.blockSelectIndex = index
-          this.unSubscribe = this.$store.subscribe((mutation) => {
+          this._unSubscribeInternal = this.$store.subscribe((mutation) => {
             // console.log('mutation', mutation)
             // Don't trigger a refresh of the preview every single time, just when necessary
             if (PREVIEW.REFRESH_BLOCK_PREVIEW.includes(mutation.type)) {
@@ -143,10 +142,16 @@
         }
       },
       _unselectBlock (fn, index = this.blockSelectIndex) {
+        this.unSubscribe()
         this.getPreview(index)
         this.unselectBlock(fn, index)
         this.blockSelectIndex = -1
         this.unSubscribe()
+      unSubscribe () {
+        if (!this._unSubscribeInternal) return
+
+        this._unSubscribeInternal()
+        this._unSubscribeInternal = null
       },
 
       // Previews management
