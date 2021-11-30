@@ -28,7 +28,7 @@
                                       @block:select="_selectBlock(edit, blockIndex)"
                                       @block:unselect="_unselectBlock(unEdit, blockIndex)"
                                       @block:move="move"
-                                      @block:delete="deleteBlock(remove)"
+                                      @block:delete="_deleteBlock(remove)"
                                       @scroll-to="scrollToActive"/>
           </a17-blockeditor-model>
         </template>
@@ -146,7 +146,11 @@
         this.getPreview(index)
         this.unselectBlock(fn, index)
         this.blockSelectIndex = -1
+      },
+      _deleteBlock (fn) {
         this.unSubscribe()
+        this.deleteBlock(fn)
+      },
       unSubscribe () {
         if (!this._unSubscribeInternal) return
 
