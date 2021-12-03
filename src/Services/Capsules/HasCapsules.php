@@ -38,9 +38,8 @@ trait HasCapsules
                 ];
             });
 
-        $list = $list->merge($composerCapsules);
-
         return $list
+            ->merge($composerCapsules)
             ->where('enabled', true)
             ->map(function ($capsule) use ($path) {
                 return $this->makeCapsule($capsule, $path);
