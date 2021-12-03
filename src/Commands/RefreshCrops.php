@@ -4,6 +4,7 @@ namespace A17\Twill\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Database\DatabaseManager;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use A17\Twill\Models\Media;
@@ -131,11 +132,7 @@ class RefreshCrops extends Command
             $this->warn("");
         }
 
-        foreach ($mediables->get()->groupBy('locale') as $locale => $localeItems) {
-            foreach ($localeItems->groupBy('mediable_id') as $mediableId => $items) {
-                $this->processMediables($items);
-            }
-        }
+        $this->processMediables($mediables);
 
         $this->printSummary();
     }
@@ -170,23 +167,32 @@ class RefreshCrops extends Command
     }
 
     /**
-     * Process a set of mediable items for the same locale and mediable_id.
+     * Process a set of mediable items.
      *
-     * @param Collection $mediables
+     * @param Builder $mediables
      * @return void
      */
-    protected function processMediables($mediables)
+    protected function processMediables(Builder $mediables)
     {
-        foreach ($mediables->groupBy('media_id') as $mediaId => $items) {
-            $existingCrops = $items->keyBy('crop')->keys();
-            $allCrops = $this->crops->keys();
+        // Handle locales separately because not all items have a 1-1 match in other locales
+        foreach ($mediables->get()->groupBy('locale') as $locale => $itemsByLocale) {
 
-            if ($cropsToCreate = $allCrops->diff($existingCrops)->all()) {
-                $this->createCrops($cropsToCreate, $items[0]);
-            }
+            // Group items by mediable_id to get related crops
+            foreach ($itemsByLocale->groupBy('mediable_id') as $mediableId => $itemsByMediableId) {
 
-            if ($cropsToDelete = $existingCrops->diff($allCrops)->all()) {
-                $this->deleteCrops($cropsToDelete, $items[0]);
+                // Then, group by media_id to handle slideshows (multiple entries for one role)
+                foreach ($itemsByMediableId->groupBy('media_id') as $mediaId => $items) {
+                    $existingCrops = $items->keyBy('crop')->keys();
+                    $allCrops = $this->crops->keys();
+
+                    if ($cropsToCreate = $allCrops->diff($existingCrops)->all()) {
+                        $this->createCrops($cropsToCreate, $items[0]);
+                    }
+
+                    if ($cropsToDelete = $existingCrops->diff($allCrops)->all()) {
+                        $this->deleteCrops($cropsToDelete, $items[0]);
+                    }
+                }
             }
         }
     }
