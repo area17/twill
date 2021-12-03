@@ -6,12 +6,20 @@ class Manager
 {
     use HasCapsules;
 
-    function capsuleNamespace($capsuleName, $type = null)
+    function capsuleNamespace($capsule, $type = null)
     {
-        $base = config('twill.capsules.namespaces.base');
-
         $type = config("twill.capsules.namespaces.{$type}");
 
-        return "{$base}\\{$capsuleName}" . (filled($type) ? "\\{$type}" : '');
+        if ($capsule['composer'] === true) {
+            $composer = json_decode(file_get_contents(__DIR__ . '/../../../../../' . $capsule['fullName'] . '/composer.json'), true);
+
+            $baseNamespace = array_keys($composer['autoload']['psr-4'])[0];
+            return rtrim($baseNamespace, '\\') . (filled($type) ? "\\{$type}" : '');
+        }
+
+        $base = config('twill.capsules.namespaces.base');
+
+
+        return "{$base}\\{$capsule['name']}" . (filled($type) ? "\\{$type}" : '');
     }
 }

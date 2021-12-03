@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Capsules;
 
+use Composer\InstalledVersions;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
@@ -23,6 +24,21 @@ trait HasCapsules
         if (config('twill.capsules.loaded')) {
             return $list;
         }
+
+        $composerCapsules = collect(InstalledVersions::getInstalledPackagesByType('twill-capsule'))
+            ->unique()
+            ->map(function ($fullName): array {
+                [$vendorName, $packageName] = explode('/', $fullName, 2);
+
+                return [
+                    'name' => $packageName,
+                    'fullName' => $fullName,
+                    'enabled' => true,
+                    'composer' => true,
+                ];
+            });
+
+        $list = $list->merge($composerCapsules);
 
         return $list
             ->where('enabled', true)
@@ -67,6 +83,12 @@ trait HasCapsules
 
     public function makeCapsule($capsule, $basePath = null)
     {
+        $capsule['composer'] = $capsule['composer'] ?? false;
+
+        if ($capsule['composer'] === true) {
+            $basePath =  __DIR__ . '/../../../vendor/' . $capsule['fullName'];
+        }
+
         $basePath = $basePath ?? $this->getCapsulesPath();
 
         $capsule['name'] = Str::studly($capsule['name']);
@@ -82,9 +104,7 @@ trait HasCapsules
 
         $capsule['base_namespace'] = config('twill.capsules.namespaces.base');
 
-        $capsule['namespace'] = $capsuleNamespace = $this->getManager()->capsuleNamespace(
-            $capsule['name']
-        );
+        $capsule['namespace'] = $capsuleNamespace = $this->getManager()->capsuleNamespace($capsule);
 
         $capsule['database_namespace'] = "$capsuleNamespace\Database";
 
@@ -159,13 +179,18 @@ trait HasCapsules
 
         $capsule['config'] = $this->loadCapsuleConfig($capsule);
 
-        $this->registerPsr4Autoloader($capsule);
-
-        $this->autoloadConfigFiles($capsule);
-
-        $this->registerServiceProvider($capsule);
-
         return $capsule;
+    }
+
+    public function bootstrapCapsule($capsule): void
+    {
+        if ($capsule['composer'] === false) {
+            $this->registerPsr4Autoloader($capsule);
+        }
+        $this->autoloadConfigFiles($capsule);
+        if ($capsule['composer'] === false) {
+            $this->registerServiceProvider($capsule);
+        }
     }
 
     public function registerPsr4Autoloader($capsule)
@@ -200,6 +225,10 @@ trait HasCapsules
 
     public function capsuleRootPath($capsule)
     {
+        if ($capsule['composer'] === true) {
+            return __DIR__ . '/../../../../../' . $capsule['fullName'];
+        }
+
         return config('twill.capsules.path') . '/' . $capsule['name'] ?? null;
     }
 
