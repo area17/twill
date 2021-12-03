@@ -19,7 +19,7 @@ class CapsuleInstall extends Command
      */
     protected $signature = 'twill:capsule:install
                                {capsule : Capsule name (posts) in plural, Github repository (area17/capsule-posts) or full URL of the Capsule git repository}
-                               {--require : Require as a Composer package. Can receive maitainer updates.}
+                               {--require : Require as a Composer package. Can receive maintainer updates.}
                                {--copy : Copy Capsule code. Cannot receive updates.}
                                {--branch=stable : Repository branch}
                                {--prefix=twill-capsule : Capsule repository name prefix}
