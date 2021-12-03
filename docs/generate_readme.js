@@ -7,6 +7,7 @@ const sections = [
   'getting-started/configuration',
   'getting-started/navigation',
   'crud-modules',
+  'capsules',
   'form-fields',
   'block-editor',
   'media-library',
