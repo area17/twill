@@ -133,7 +133,7 @@ class RefreshCrops extends Command
 
         foreach ($mediables->get()->groupBy('locale') as $locale => $localeItems) {
             foreach ($localeItems->groupBy('mediable_id') as $mediableId => $items) {
-                $this->processMediables($mediableId, $items, $locale);
+                $this->processMediables($items);
             }
         }
 
@@ -170,97 +170,92 @@ class RefreshCrops extends Command
     }
 
     /**
-     * Process a set of mediables.
+     * Process a set of mediable items for the same locale and mediable_id.
      *
-     * @param int $mediableId
      * @param Collection $mediables
-     * @param string $locale
      * @return void
      */
-    protected function processMediables($mediableId, $mediables, $locale)
+    protected function processMediables($mediables)
     {
         foreach ($mediables->groupBy('media_id') as $mediaId => $items) {
             $existingCrops = $items->keyBy('crop')->keys();
             $allCrops = $this->crops->keys();
 
             if ($cropsToCreate = $allCrops->diff($existingCrops)->all()) {
-                $this->createCrops($cropsToCreate, $mediableId, $mediaId, $locale);
+                $this->createCrops($cropsToCreate, $items[0]);
             }
 
             if ($cropsToDelete = $existingCrops->diff($allCrops)->all()) {
-                $this->deleteCrops($cropsToDelete, $mediableId, $mediaId);
+                $this->deleteCrops($cropsToDelete, $items[0]);
             }
         }
     }
 
     /**
-     * Create crops for a given item, media and locale.
+     * Create missing crops for a given mediable item, preserving existing metadata.
      *
-     * @param string[] $crops
-     * @param int $mediableId
-     * @param int $mediaId
-     * @param string $locale
+     * @param string[] $crops List of crop names to create.
+     * @param object $baseItem Base mediable object from which to pull information.
      * @return void
      */
-    protected function createCrops($crops, $mediableId, $mediaId, $locale)
+    protected function createCrops($crops, $baseItem)
     {
         $this->cropsCreated += count($crops);
 
         if ($this->isDryRun) {
             $cropNames = collect($crops)->join(', ');
             $noun = Str::plural('crop', count($crops));
-            $this->info("Create {$noun} `$cropNames` for mediable_id=`$mediableId` and media_id=`$mediaId`");
+            $this->info("Create {$noun} `{$cropNames}` for mediable_id=`{$baseItem->mediable_id}` and media_id=`{$baseItem->media_id}`");
             return;
         }
 
         foreach ($crops as $crop) {
             $ratio = $this->crops[$crop][0];
-            $cropParams = $this->getCropParams($mediaId, $ratio['ratio']);
+            $cropParams = $this->getCropParams($baseItem->media_id, $ratio['ratio']);
 
             $this->db
                 ->table(config('twill.mediables_table', 'twill_mediables'))
                 ->insert([
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
-                    'mediable_id' => $mediableId,
-                    'mediable_type' => $this->modelName,
-                    'media_id' => $mediaId,
-                    'role' => $this->roleName,
+                    'mediable_id' => $baseItem->mediable_id,
+                    'mediable_type' => $baseItem->mediable_type,
+                    'media_id' => $baseItem->media_id,
+                    'role' => $baseItem->role,
                     'crop' => $crop,
                     'lqip_data' => null,
                     'ratio' => $ratio['name'],
-                    'metadatas' => '{"video": null, "altText": null, "caption": null}',
-                    'locale' => $locale,
+                    'metadatas' => $baseItem->metadatas,
+                    'locale' => $baseItem->locale,
                 ] + $cropParams);
         }
     }
 
     /**
-     * Delete unused crops for a given item and media.
+     * Delete unused crops for a given mediable item.
      *
-     * @param string[] $crops
-     * @param int $mediableId
-     * @param int $mediaId
+     * @param string[] $crops List of crop names to create.
+     * @param object $baseItem Base mediable object from which to pull information.
      * @return void
      */
-    protected function deleteCrops($crops, $mediableId, $mediaId)
+    protected function deleteCrops($crops, $baseItem)
     {
         $this->cropsDeleted += count($crops);
 
         if ($this->isDryRun) {
             $cropNames = collect($crops)->join(', ');
             $noun = Str::plural('crop', count($crops));
-            $this->info("Delete {$noun} `$cropNames` for mediable_id=`$mediableId` and media_id=`$mediaId`");
+            $this->info("Delete {$noun} `$cropNames` for mediable_id=`$baseItem->mediable_id` and media_id=`$baseItem->media_id`");
             return;
         }
 
         $this->db
             ->table(config('twill.mediables_table', 'twill_mediables'))
             ->where([
-                'mediable_type' => $this->modelName,
-                'mediable_id' => $mediableId,
-                'media_id' => $mediaId,
-                'role' => $this->roleName,
+                'mediable_type' => $baseItem->mediable_type,
+                'mediable_id' => $baseItem->mediable_id,
+                'media_id' => $baseItem->media_id,
+                'role' => $baseItem->role,
             ])
             ->whereIn('crop', $crops)
             ->delete();
