@@ -145,6 +145,7 @@ class RefreshCropsTest extends TestCase
             ])
             ->assertExitCode(1);
     }
+
     public function testCanDoDryRun()
     {
         $this->createAuthor();
@@ -352,5 +353,24 @@ class RefreshCropsTest extends TestCase
         // generated default crop
         $imageData = $author2->imageAsArray('avatar', 'default');
         $this->assertEquals(16/9, $imageData['width'] / $imageData['height']);
+    }
+
+    public function testPreservesMetadataForGeneratedCrops()
+    {
+        $this->createAuthor();
+        $this->createMedia();
+        $this->createMediable([
+            'crop' => 'default',
+            'metadatas' => '{"video": "/video.mp4", "altText": "Lorem ipsum", "caption": "Lorem ipsum"}',
+        ]);
+
+        $this->artisan('twill:refresh-crops', [
+                'modelName' => 'App\Models\Author',
+                'roleName' => 'avatar',
+            ])
+            ->assertExitCode(0);
+
+        $mediables = $this->mediables()->get();
+        $this->assertEquals($mediables[0]->metadatas, $mediables[1]->metadatas);
     }
 }
