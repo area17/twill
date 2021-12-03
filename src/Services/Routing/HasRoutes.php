@@ -113,7 +113,7 @@ trait HasRoutes
                 $this->getRouteMiddleware(),
                 $this->supportSubdomainRouting(),
                 $manager->capsuleNamespace(
-                    $capsule['name'],
+                    $capsule,
                     'controllers'
                 ),
                 $capsule['routes_file']
