@@ -359,7 +359,7 @@ class Block
 
     /**
      * @return string
-     * @throws \Symfony\Component\Debug\Exception\FatalThrowableError
+     * @throws \Throwable
      */
     public function render()
     {

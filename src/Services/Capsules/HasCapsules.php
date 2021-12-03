@@ -21,29 +21,29 @@ trait HasCapsules
 
         $list = collect(config('twill.capsules.list'));
 
-        if (config('twill.capsules.loaded')) {
-            return $list;
+        if (!config('twill.capsules.loaded')) {
+            $composerCapsules = collect(InstalledVersions::getInstalledPackagesByType('twill-capsule'))
+                ->unique()
+                ->map(function ($fullName): array {
+                    [$vendorName, $packageName] = explode('/', $fullName, 2);
+
+                    return [
+                        'name' => $packageName,
+                        'fullName' => $fullName,
+                        'enabled' => true,
+                        'composer' => true,
+                    ];
+                });
+
+            $list = $list
+                ->merge($composerCapsules)
+                ->where('enabled', true)
+                ->map(function ($capsule) use ($path) {
+                    return $this->makeCapsule($capsule, $path);
+                });
         }
 
-        $composerCapsules = collect(InstalledVersions::getInstalledPackagesByType('twill-capsule'))
-            ->unique()
-            ->map(function ($fullName): array {
-                [$vendorName, $packageName] = explode('/', $fullName, 2);
-
-                return [
-                    'name' => $packageName,
-                    'fullName' => $fullName,
-                    'enabled' => true,
-                    'composer' => true,
-                ];
-            });
-
-        return $list
-            ->merge($composerCapsules)
-            ->where('enabled', true)
-            ->map(function ($capsule) use ($path) {
-                return $this->makeCapsule($capsule, $path);
-            });
+        return $list;
     }
 
     public function getCapsuleByModel($model)
@@ -75,12 +75,10 @@ trait HasCapsules
      */
     public function getCapsulesSubdir()
     {
-        $subdir = config('twill.capsules.namespaces.subdir');
-
-        return $subdir;
+        return config('twill.capsules.namespaces.subdir');
     }
 
-    public function makeCapsule($capsule, $basePath = null)
+    public function makeCapsule($capsule, $basePath = null): array
     {
         $capsule['composer'] = $capsule['composer'] ?? false;
 

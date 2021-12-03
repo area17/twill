@@ -15,13 +15,17 @@ All notable changes to `twill` will be documented in this file.
 
 ### Fixed
 
-- 🚨 Fix CSRF vulnerability in logout method [#1240](https://github.com/area17/twill/pull/1240)
+- 🚨 Fix CSRF vulnerability in logout method [`#1240`](https://github.com/area17/twill/pull/1240) [`29041f07`](https://github.com/area17/twill/commit/29041f07)
 - Support attribute casting on model and translations with JSON field groups [`#1151`](https://github.com/area17/twill/pull/1151)
 - Support dynamic repeater titles with JSON repeaters [`#1171`](https://github.com/area17/twill/pull/1171)
 - Fix admin HTTP exception views detection [`#1213`](https://github.com/area17/twill/pull/1213)
 - Prevent conflicts with built-in Vue component names [`#1164`](https://github.com/area17/twill/pull/1164)
 - Add fallback to capsule model in permalink base [`#1216`](https://github.com/area17/twill/pull/1216)
 - Add `doctrine/dbal` 3.0 support [`#1226`](https://github.com/area17/twill/pull/1226)
+- Ensure capsule autoloading when config is cached [`#1242`](https://github.com/area17/twill/pull/1242)
+- Fix edit link feature regression in Quill WYSIWYG [`#1270`](https://github.com/area17/twill/pull/1270)
+- Remove references to deprecated Symfony class [`#1269`](https://github.com/area17/twill/pull/1269)
+- Prevent undefined route errors in IconsController [`#1268`](https://github.com/area17/twill/pull/1268)
 
 ### Improved
 
@@ -30,9 +34,11 @@ All notable changes to `twill` will be documented in this file.
 - Add `capsule_repository_prefix` configuration [`#1209`](https://github.com/area17/twill/pull/1209)
 - Support custom port in `dev_mode_url` configuration [`#1163`](https://github.com/area17/twill/pull/1163)
 - Support additional table actions in module listing [`#1202`](https://github.com/area17/twill/pull/1202)
-- Update german translations [#1235](https://github.com/area17/twill/pull/1235)
+- Show red input count only if above 90% capacity [`#1237`](https://github.com/area17/twill/pull/1237)
+- Update nested module count pluralisation [`#1251`](https://github.com/area17/twill/pull/1251)
+- Update german translations [`#1235`](https://github.com/area17/twill/pull/1235)
 - Update docblock annotations [`#1167`](https://github.com/area17/twill/pull/1167/files)
-- Update documentation [`#1165`](https://github.com/area17/twill/pull/1165) [#1244](https://github.com/area17/twill/pull/1244) [#1236](https://github.com/area17/twill/pull/1236)
+- Update documentation [`#1165`](https://github.com/area17/twill/pull/1165) [`#1244`](https://github.com/area17/twill/pull/1244) [`#1236`](https://github.com/area17/twill/pull/1236)
 
 ### Chores
 
