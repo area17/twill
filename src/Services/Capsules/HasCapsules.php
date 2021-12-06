@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Capsules;
 
+use A17\Twill\Exceptions\ComposerCapsulesNotSupportedException;
 use Composer\InstalledVersions;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -83,6 +84,10 @@ trait HasCapsules
         $capsule['composer'] = $capsule['composer'] ?? false;
 
         if ($capsule['composer'] === true) {
+            if (class_exists(InstalledVersions::class) === false) {
+                throw new ComposerCapsulesNotSupportedException('Composer >2.1 is required to use Composer installed capsules');
+            }
+
             $basePath =  InstalledVersions::getInstallPath($capsule['fullName']);
         }
 
