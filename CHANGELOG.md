@@ -8,10 +8,12 @@ All notable changes to `twill` will be documented in this file.
 
 - Artisan command `twill:make:singleton` to generate single-record modules [`#1178`](https://github.com/area17/twill/pull/1178)
 - Option `--hasNesting` to generate self-nested modules [`#1140`](https://github.com/area17/twill/pull/1140) [`#1222`](https://github.com/area17/twill/pull/1222)
+- Artisan command `twill:refresh-crops` to generate missing crops [`#1289`](https://github.com/area17/twill/pull/1289) [`8b1e4f6d`](https://github.com/area17/twill/commit/8b1e4f6d)
 - TwicPics image service [`#1217`](https://github.com/area17/twill/pull/1217)
 - Turkish language support [`#1134`](https://github.com/area17/twill/pull/1134)
 - Support for translated permalinks in the title editor [`#1092`](https://github.com/area17/twill/pull/1092)
 - Support for capsule service providers [`#1212`](https://github.com/area17/twill/pull/1212)
+- Auto detect latitude-longitude value in location field [`#1275`](https://github.com/area17/twill/pull/1275) [`#1170`](https://github.com/area17/twill/pull/1170)
 
 ### Fixed
 
@@ -26,6 +28,8 @@ All notable changes to `twill` will be documented in this file.
 - Fix edit link feature regression in Quill WYSIWYG [`#1270`](https://github.com/area17/twill/pull/1270)
 - Remove references to deprecated Symfony class [`#1269`](https://github.com/area17/twill/pull/1269)
 - Prevent undefined route errors in IconsController [`#1268`](https://github.com/area17/twill/pull/1268)
+- Fix typo in `twill:capsule:install` command [`#1290`](https://github.com/area17/twill/pull/1290)
+- Initialize undefined crops in cropper UI using first available ratio [`#1258`](https://github.com/area17/twill/pull/1258)
 
 ### Improved
 
@@ -35,6 +39,7 @@ All notable changes to `twill` will be documented in this file.
 - Support custom port in `dev_mode_url` configuration [`#1163`](https://github.com/area17/twill/pull/1163)
 - Support additional table actions in module listing [`#1202`](https://github.com/area17/twill/pull/1202)
 - Show red input count only if above 90% capacity [`#1237`](https://github.com/area17/twill/pull/1237)
+- Collapse repeater blocks on page load [`#1296`](https://github.com/area17/twill/pull/1296)
 - Update nested module count pluralisation [`#1251`](https://github.com/area17/twill/pull/1251)
 - Update german translations [`#1235`](https://github.com/area17/twill/pull/1235)
 - Update docblock annotations [`#1167`](https://github.com/area17/twill/pull/1167/files)
@@ -43,6 +48,13 @@ All notable changes to `twill` will be documented in this file.
 ### Chores
 
 - Update npm dependencies in documentation [`377e5e0`](https://github.com/area17/twill/commit/377e5e0b27916861caa448ef899ea0e3fbeff648)
+
+
+## 2.5.3 (2021-11-26)
+
+### Fixed
+
+- 🚨 Fix CSRF vulnerability in logout method [`6ced7fd8`](https://github.com/area17/twill/commit/6ced7fd8) [`7477f4a3`](https://github.com/area17/twill/commit/7477f4a3) [`01150269`](https://github.com/area17/twill/commit/01150269) [`5cded9fc`](https://github.com/area17/twill/commit/5cded9fc) [`ac770b87`](https://github.com/area17/twill/commit/ac770b87)
 
 
 ## 2.5.2 (2021-09-16)
@@ -65,6 +77,7 @@ All notable changes to `twill` will be documented in this file.
 ### Fixed
 
 - Twill custom error views and ability to extend its exceptions handler [`312b44`](https://github.com/area17/twill/commit/312b446cc6f4826bf6f9d703e02fb6b96bbb2a9f)[`c16d2e`](https://github.com/area17/twill/commit/c16d2e9374dbe5c225a97910e5b228a549b887de)
+
 
 ## 2.5.0 (2021-09-01)
 
