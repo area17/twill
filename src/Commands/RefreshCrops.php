@@ -312,7 +312,12 @@ class RefreshCrops extends Command
         $height = $this->mediaCache[$mediaId]->height;
         $originalRatio = $width / $height;
 
-        if ($originalRatio <= $ratio) {
+        if ($ratio === 0) {
+            $crop_w = $width;
+            $crop_h = $height;
+            $crop_x = 0;
+            $crop_y = 0;
+        } elseif ($originalRatio <= $ratio) {
             $crop_w = $width;
             $crop_h = $width / $ratio;
             $crop_x = 0;
