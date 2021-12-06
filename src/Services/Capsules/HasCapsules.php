@@ -83,7 +83,7 @@ trait HasCapsules
         $capsule['composer'] = $capsule['composer'] ?? false;
 
         if ($capsule['composer'] === true) {
-            $basePath =  __DIR__ . '/../../../vendor/' . $capsule['fullName'];
+            $basePath =  InstalledVersions::getInstallPath($capsule['fullName']);
         }
 
         $basePath = $basePath ?? $this->getCapsulesPath();
@@ -223,7 +223,7 @@ trait HasCapsules
     public function capsuleRootPath($capsule)
     {
         if ($capsule['composer'] === true) {
-            return __DIR__ . '/../../../../../' . $capsule['fullName'];
+            return InstalledVersions::getInstallPath($capsule['fullName']);
         }
 
         return config('twill.capsules.path') . '/' . $capsule['name'] ?? null;
