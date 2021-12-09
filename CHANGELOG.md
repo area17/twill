@@ -9,7 +9,7 @@ All notable changes to `twill` will be documented in this file.
 - Artisan command `twill:make:singleton` to generate single-record modules [`#1178`](https://github.com/area17/twill/pull/1178)
 - Option `--hasNesting` to generate self-nested modules [`#1140`](https://github.com/area17/twill/pull/1140) [`#1222`](https://github.com/area17/twill/pull/1222)
 - Artisan command `twill:refresh-crops` to generate missing crops [`#1289`](https://github.com/area17/twill/pull/1289) [`8b1e4f6d`](https://github.com/area17/twill/commit/8b1e4f6d)
-- TwicPics image service [`#1217`](https://github.com/area17/twill/pull/1217)
+- TwicPics image service [`#1217`](https://github.com/area17/twill/pull/1217) [`ce15c4a5`](https://github.com/area17/twill/commit/ce15c4a5)
 - Turkish language support [`#1134`](https://github.com/area17/twill/pull/1134)
 - Support for translated permalinks in the title editor [`#1092`](https://github.com/area17/twill/pull/1092)
 - Support for capsule service providers [`#1212`](https://github.com/area17/twill/pull/1212)
