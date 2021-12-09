@@ -1,7 +1,8 @@
 <?php
 
-namespace A17\Twill\Tests\Unit;
+namespace A17\Twill\Tests\Unit\MediaLibrary;
 
+use A17\Twill\Tests\Unit\TestCase;
 use A17\Twill\Services\MediaLibrary\TwicPicsParamsProcessor;
 
 class TwicPicsParamsProcessorTest extends TestCase
