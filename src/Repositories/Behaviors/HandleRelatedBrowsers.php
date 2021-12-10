@@ -25,6 +25,7 @@ trait HandleRelatedBrowsers
      *  'publication' => [
      *      'relation' => 'magazine',
      *      'model' => 'Magazine'
+     *      'titleKey' => 'name'
      *  ]
      * ]
      *
