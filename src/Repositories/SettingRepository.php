@@ -36,7 +36,7 @@ class SettingRepository extends ModuleRepository
     {
         return $this->model->when($section, function ($query) use ($section) {
             $query->where('section', $section);
-        })->where('key', $key)->exists() ? $this->model->where('key', $key)->with('translations')->first()->value : null;
+        })->where('key', $key)->exists() ? $this->model->where('key', $key)->with('translations')->where('section', $section)->first()->value : null;
     }
 
     /**
