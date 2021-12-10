@@ -52,7 +52,7 @@ trait HandleRelatedBrowsers
     public function getFormFieldsHandleRelatedBrowsers($object, $fields)
     {
         foreach ($this->getRelatedBrowsers() as $browser) {
-            $fields['browsers'][$browser['browserName']] = $this->getFormFieldsForRelatedBrowser($object, $browser['relation']);
+            $fields['browsers'][$browser['browserName']] = $this->getFormFieldsForRelatedBrowser($object, $browser['relation'], $browser['titleKey']);
         }
 
         return $fields;
@@ -74,6 +74,7 @@ trait HandleRelatedBrowsers
                 'relation' => !empty($browser['relation']) ? $browser['relation'] : $this->inferRelationFromBrowserName($browserName),
                 'model' => !empty($browser['model']) ? $browser['model'] : $this->inferModelFromModuleName($moduleName),
                 'browserName' => $browserName,
+                'titleKey' => $browser['titleKey'] ?? 'title',
             ];
         })->values();
     }
