@@ -1098,6 +1098,13 @@ abstract class ModuleController extends Controller
             $value = $item->presentAdmin()->{$column['field']};
         }
 
+        if (isset($column['relatedBrowser']) && $column['relatedBrowser']) {
+            $field = 'relatedBrowser' . ucfirst($column['relatedBrowser']) . ucfirst($column['field']);
+            $value = $item->getRelated($column['relatedBrowser'])
+                ->pluck($column['field'])
+                ->join(', ');
+        }
+
         return [
             "$field" => $value,
         ];
@@ -1156,9 +1163,15 @@ abstract class ModuleController extends Controller
         unset($this->indexColumns[$this->titleColumnKey]);
 
         foreach ($this->indexColumns as $column) {
-            $columnName = isset($column['relationship'])
-            ? $column['relationship'] . ucfirst($column['field'])
-            : (isset($column['nested']) ? $column['nested'] : $column['field']);
+            if (isset($column['relationship'])) {
+                $columnName = $column['relationship'] . ucfirst($column['field']);
+            } elseif (isset($column['nested'])) {
+                $columnName = $column['nested'];
+            } elseif (isset($column['relatedBrowser'])) {
+                $columnName = 'relatedBrowser' . ucfirst($column['relatedBrowser']) . ucfirst($column['field']);
+            } else {
+                $columnName = $column['field'];
+            }
 
             array_push($tableColumns, [
                 'name' => $columnName,
