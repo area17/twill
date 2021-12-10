@@ -15,7 +15,12 @@ trait HandleBlocks
     /**
      * @param \A17\Twill\Models\Model $object
      * @param array $fields
-     * @return \A17\Twill\Models\Model|void
+     * @param int $fakeBlockId
+     * @param int|null $parentId
+     * @param \Illuminate\Support\Collection|null $blocksFromFields
+     * @param \Illuminate\Support\Collection|null $mainCollection
+     * @param int|null $mainCollection|void
+     * @return \A17\Twill\Models\Model
      */
     public function hydrateHandleBlocks($object, $fields, &$fakeBlockId = 0, $parentId = null, $blocksFromFields = null, $mainCollection = null)
     {
@@ -86,7 +91,6 @@ trait HandleBlocks
      *
      * @param  \A17\Twill\Repositories\BlockRepository $blockRepository
      * @param  array $blockFields
-     *
      * @return \A17\Twill\Models\Block $blockCreated
      */
     private function createBlock(BlockRepository $blockRepository, $blockFields)
@@ -128,7 +132,6 @@ trait HandleBlocks
      *
      * @param  \A17\Twill\Models\Model $object
      * @param  array $parentBlockFields
-     *
      * @return \Illuminate\Support\Collection
      */
     private function getChildBlocks($object, $parentBlockFields)

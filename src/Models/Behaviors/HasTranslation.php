@@ -9,6 +9,11 @@ trait HasTranslation
 {
     use Translatable;
 
+    /**
+     * Returns the fully qualified translation class name for this model.
+     *
+     * @return string|null
+     */
     public function getTranslationModelNameDefault()
     {
         $repository = config('twill.namespace') . "\Models\Translations\\" . class_basename($this) . 'Translation';
@@ -20,6 +25,11 @@ trait HasTranslation
         return $this->getCapsuleTranslationClass(class_basename($this));
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string|null $locale
+     * @return \Illuminate\Database\Eloquent\Builder|null
+     */
     public function scopeWithActiveTranslations($query, $locale = null)
     {
         if (method_exists($query->getModel(), 'translations')) {
@@ -45,6 +55,13 @@ trait HasTranslation
         }
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $orderField
+     * @param string $orderType
+     * @param string|null $locale
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeOrderByTranslation($query, $orderField, $orderType = 'ASC', $locale = null)
     {
         $translationTable = $this->getTranslationsTable();
@@ -65,6 +82,13 @@ trait HasTranslation
             ->with('translations');
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $orderRawString
+     * @param string $groupByField
+     * @param string|null $locale
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeOrderByRawByTranslation($query, $orderRawString, $groupByField, $locale = null)
     {
         $translationTable = $this->getTranslationsTable();
@@ -80,6 +104,12 @@ trait HasTranslation
             ->with('translations');
     }
 
+    /**
+     * Checks if this model has active translations.
+     *
+     * @param string|null $locale
+     * @return bool
+     */
     public function hasActiveTranslation($locale = null)
     {
         $locale = $locale ?: $this->locale();
@@ -95,6 +125,9 @@ trait HasTranslation
         return false;
     }
 
+    /**
+     * @return Illuminate\Support\Collection
+     */
     public function getActiveLanguages()
     {
         return $this->translations->map(function ($translation) {
@@ -105,11 +138,17 @@ trait HasTranslation
                 'published' => $translation->active ?? false,
             ];
         })->sortBy(function ($translation) {
-            $localesOrdered = config('translatable.locales');
+            $localesOrdered = getLocales();
             return array_search($translation['value'], $localesOrdered);
         })->values();
     }
 
+    /**
+     * Returns all translations for a given attribute.
+     *
+     * @param string $key
+     * @return Illuminate\Support\Collection
+     */
     public function translatedAttribute($key)
     {
         return $this->translations->mapWithKeys(function ($translation) use ($key) {

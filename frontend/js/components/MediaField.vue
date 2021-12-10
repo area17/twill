@@ -61,9 +61,9 @@
 
       <!-- Metadatas options -->
       <div class="media__metadatas--options" :class="{ 's--active' : metadatas.active }" v-if="hasMedia && withAddInfo">
-        <a17-mediametadata :name='metadataName' label="Alt Text" id="altText" :media="media" :maxlength="altTextMaxLength" @change="updateMetadata"/>
-        <a17-mediametadata v-if="withCaption" :name='metadataName' label="Caption" id="caption" :media="media" :maxlength="captionMaxLength" @change="updateMetadata"/>
-        <a17-mediametadata v-if="withVideoUrl" :name='metadataName' label="Video URL (optional)" id="video" :media="media" @change="updateMetadata"/>
+        <a17-mediametadata :name='metadataName' :label="$trans('fields.medias.alt-text', 'Alt Text')" id="altText" :media="media" :maxlength="altTextMaxLength" @change="updateMetadata"/>
+        <a17-mediametadata v-if="withCaption" :name='metadataName' :label="$trans('fields.medias.caption', 'Caption')" id="caption" :media="media" :maxlength="captionMaxLength" @change="updateMetadata"/>
+        <a17-mediametadata v-if="withVideoUrl" :name='metadataName' :label="$trans('fields.medias.video-url', 'Video URL (optional)')" id="video" :media="media" @change="updateMetadata"/>
         <template v-for="field in extraMetadatas">
           <a17-mediametadata v-if="extraMetadatas.length > 0"
                              :key="field.name"

@@ -245,7 +245,6 @@ if (!function_exists('capsule_namespace')) {
     }
 }
 
-
 if (!function_exists('capsule_namespace_to_path')) {
     function capsule_namespace_to_path($namespace, $capsuleNamespace, $rootPath) {
         return capsules()->capsuleNamespaceToPath($namespace, $capsuleNamespace, $rootPath);

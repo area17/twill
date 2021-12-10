@@ -12,21 +12,21 @@ trait HandleBrowsers
     /**
      * All browsers used in the model, as an array of browser names:
      * [
-     *  'books',
-     *  'publications'
-     * ].
-     *
-     * When only the browser name is given here, its rest information will be inferred from the name.
-     * Each browser's detail can also be override with an array
-     * [
-     *  'books',
-     *  'publication' => [
-     *      'routePrefix' => 'collections',
-     *      'titleKey' => 'name'
-     *  ]
+     *     'books',
+     *     'publications'
      * ]
      *
-     * @var string|array(array)|array(mix(string|array))
+     * When only the browser name is given, the rest of the parameters are inferred from the name.
+     * The parameters can also be overridden with an array:
+     * [
+     *     'books',
+     *     'publication' => [
+     *         'routePrefix' => 'collections',
+     *         'titleKey' => 'name'
+     *     ]
+     * ]
+     *
+     * @var array
      */
     protected $browsers = [];
 
@@ -103,7 +103,7 @@ trait HandleBrowsers
     }
 
     /**
-     * @param mixed $object
+     * @param \A17\Twill\Models\Model $object
      * @param array $fields
      * @param string $browserName
      * @return void
@@ -166,7 +166,7 @@ trait HandleBrowsers
      * Get all browser' detail info from the $browsers attribute.
      * The missing information will be inferred by convention of Twill.
      *
-     * @return Illuminate\Support\Collection
+     * @return \Illuminate\Support\Collection
      */
     protected function getBrowsers()
     {
@@ -187,10 +187,9 @@ trait HandleBrowsers
     }
 
     /**
-     * The relation name shoud be lower camel case, ex. userGroup, contactOffice
+     * Guess the browser's relation name (shoud be lower camel case, ex. userGroup, contactOffice).
      *
-     * @param  string $browserName
-     *
+     * @param string $browserName
      * @return string
      */
     protected function inferRelationFromBrowserName(string $browserName): string
@@ -199,10 +198,9 @@ trait HandleBrowsers
     }
 
     /**
-     * The model name should be singular upper camel case, ex. User, ArticleType
+     * Guess the module's model name (should be singular upper camel case, ex. User, ArticleType).
      *
-     * @param  string $moduleName
-     *
+     * @param string $moduleName
      * @return string
      */
     protected function inferModelFromModuleName(string $moduleName): string
@@ -211,11 +209,9 @@ trait HandleBrowsers
     }
 
     /**
-     * The module name should be plural lower camel case
+     * Guess the browser's module name (should be plural lower camel case, ex. userGroups, contactOffices).
      *
-     * @param  mixed $string
-     * @param  mixed $browserName
-     *
+     * @param string $browserName
      * @return string
      */
     protected function inferModuleNameFromBrowserName(string $browserName): string

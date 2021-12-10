@@ -36,6 +36,9 @@
         if (this.$refs.modal) this.$refs.modal.open()
       },
       submit: function (event) {
+        if (this._isSubmitting) return
+        this._isSubmitting = true
+
         const self = this
 
         this.$store.commit(FORM.UPDATE_FORM_LOADING, true)

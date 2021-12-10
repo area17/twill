@@ -20,6 +20,29 @@ export default {
         return true
       }
     },
+    isLocaleRTL: function () {
+      /* List of RTL locales */
+      /*
+        ar : Arabic
+        arc : Aramaic
+        dv : Divehi
+        fa : Persian
+        ha : Hausa
+        he : Hebrew
+        khw : Khowar
+        ks : Kashmiri
+        ku : Kurdish
+        ps : Pashto
+        ur : Urdu
+        yi : Yiddish
+      */
+      const rtlLocales = ['ar', 'arc', 'dv', 'fa', 'ha', 'he', 'khw', 'ks', 'ku', 'ps', 'ur', 'yi']
+      if (this.hasLocale) return rtlLocales.includes(this.locale.shortlabel.toLowerCase())
+      else return false
+    },
+    dirLocale: function () {
+      return (this.isLocaleRTL ? 'rtl' : 'auto')
+    },
     displayedLocale: function () {
       if (this.hasLocale) return this.locale.shortlabel
       else return false

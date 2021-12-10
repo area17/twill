@@ -9,8 +9,9 @@
                   :required="required">
     <div class="wysiwyg__outer">
       <div class="wysiwyg"
-           :class="textfieldClasses"
-           v-show="!activeSource">
+          :class="textfieldClasses"
+          v-show="!activeSource"
+          :dir="dirLocale">
         <input :name="name"
                type="hidden"
                v-model="value"/>
@@ -134,6 +135,7 @@
           <textarea :placeholder="placeholder"
                     :autofocus="autofocus"
                     v-model="value"
+                    @change="updateSourcecode"
                     :style="textareaHeight"></textarea>
         </div>
         <a17-button variant="ghost"
@@ -311,6 +313,9 @@
         this.editorHeight = (Math.max(50, this.$refs.editor.clientHeight) + this.toolbarHeight - 1) + 'px'
         this.activeSource = !this.activeSource
 
+        this.updateSourcecode()
+      },
+      updateSourcecode: function () {
         // set editor content
         this.updateEditor(this.value)
         this.saveIntoStore() // see formStore mixin
@@ -465,6 +470,11 @@
     &.s--disabled {
       @include disabledState;
     }
+  }
+
+  .wysiwyg[dir='rtl'] .wysiwyg__editor {
+    direction: rtl;
+    text-align: right;
   }
 
   .wysiwyg__menubar {

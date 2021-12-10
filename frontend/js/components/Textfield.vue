@@ -1,6 +1,6 @@
 <template>
   <a17-inputframe :error="error" :note="note" :label="label" :locale="locale" @localize="updateLocale" :size="size" :name="name" :label-for="uniqId" :required="required">
-    <div class="input__field" :class="textfieldClasses">
+    <div class="input__field" :class="textfieldClasses" :dir="dirLocale">
       <span class="input__prefix" v-if="hasPrefix">{{ prefix }}</span>
       <textarea v-if="type === 'textarea'" ref="clone" :rows="rows" class="input__clone" disabled="true" v-model="value"></textarea>
       <textarea v-if="type === 'textarea'"
@@ -364,5 +364,11 @@
       height:$height_input - 10px - 2px;
       line-height:$height_input - 10px - 2px;
     }
+  }
+
+  /* RTL Direction */
+  .input__field--textarea[dir='rtl'] .input__limit {
+    left:15px;
+    right:auto;
   }
 </style>

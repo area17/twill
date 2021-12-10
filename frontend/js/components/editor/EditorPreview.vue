@@ -1,7 +1,7 @@
 <template>
   <div class="editorPreview" :editorPreviewClass="editorPreviewClass" @mousedown="unselectBlock">
     <div class="editorPreview__empty" v-if="!blocks.length">
-      <b>Drag and drop content from the left navigation</b>
+      <b>{{ $trans('previewer.drag-and-drop', 'Drag and drop content from the left navigation') }}</b>
     </div>
     <draggable class="editorPreview__content" v-model="blocks" :options="{ group: 'editorBlocks', handle: handle }" @add="onAdd" @update="onUpdate">
       <div class="editorPreview__item" :class="{ 'editorPreview__item--active' : isBlockActive(block.id), 'editorPreview__item--hover' : activeItem === index }" v-for="(block, index) in blocks" :ref="block.id" :key="block.id" @mousedown.stop >

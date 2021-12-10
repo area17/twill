@@ -30,10 +30,10 @@
             </a>
           </li>
           <li class="search__no-result" v-show="loading">
-            Loading…
+            {{ $trans('dashboard.search.loading', 'Loading…') }}
           </li>
           <li class="search__no-result" v-show="readyToShowResult && !searchResults.length && !loading">
-            No results found.
+            {{ $trans('dashboard.search.no-result', 'No results found.') }}
           </li>
         </ul>
       </div>

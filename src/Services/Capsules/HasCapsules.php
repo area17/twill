@@ -122,6 +122,8 @@ trait HasCapsules
             'migrations_dir'
         ] = "{$capsule['root_path']}/database/migrations";
 
+        $capsule['lang_dir'] = "{$capsule['root_path']}/resources/lang";
+
         $capsule['views_dir'] = "{$capsule['root_path']}/resources/views";
 
         $capsule['view_prefix'] = "{$name}.resources.views.admin";
@@ -161,6 +163,8 @@ trait HasCapsules
         $capsule['config'] = $this->loadCapsuleConfig($capsule);
 
         $this->registerPsr4Autoloader($capsule);
+
+        $this->autoloadConfigFiles($capsule);
 
         return $capsule;
     }
@@ -353,5 +357,20 @@ trait HasCapsules
         ]);
 
         return $config;
+    }
+
+    public function autoloadConfigFiles($capsule)
+    {
+        $files = $capsule['config']['autoload']['files'] ?? null;
+
+        if (blank($files)) {
+            return;
+        }
+
+        collect($files)->each(function ($file) {
+           if (file_exists($file)) {
+               require_once $file;
+           }
+        });
     }
 }

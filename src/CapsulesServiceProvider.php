@@ -29,17 +29,13 @@ class CapsulesServiceProvider extends RouteServiceProvider
 
     public function register()
     {
-        $this->registerConfig();
+        $this->registerManager();
+        $this->mergeTwillConfig();
     }
 
-    protected function registerConfig()
+    public function boot()
     {
-        $this->registerManager();
-
-        $this->mergeTwillConfig();
-
         $this->registerCapsules();
-
         $this->registerViewPaths();
     }
 
@@ -53,18 +49,21 @@ class CapsulesServiceProvider extends RouteServiceProvider
     protected function registerCapsule($capsule)
     {
         $this->loadMigrationsFrom($capsule['migrations_dir']);
+        $this->loadTranslationsFrom($capsule['lang_dir'], 'twill:capsules:' . $capsule['module']);
     }
 
     public function registerViewPaths()
     {
-        $callback = function ($view) {
-            $view->addLocation(config('twill.capsules.path'));
-        };
+        if (file_exists(config('twill.capsules.path'))) {
+            $callback = function ($view) {
+                $view->addLocation(config('twill.capsules.path'));
+            };
 
-        $this->app->afterResolving('view', $callback);
+            $this->app->afterResolving('view', $callback);
 
-        if ($this->app->resolved('view')) {
-            $callback($this->app->make('view'), $this->app);
+            if ($this->app->resolved('view')) {
+                $callback($this->app->make('view'), $this->app);
+            }
         }
     }
 

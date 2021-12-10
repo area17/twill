@@ -9,11 +9,20 @@ trait HandleTranslations
 {
     protected $nullableFields = [];
 
+    /**
+     * @param array $fields
+     * @return array
+     */
     public function prepareFieldsBeforeCreateHandleTranslations($fields)
     {
         return $this->prepareFieldsBeforeSaveHandleTranslations(null, $fields);
     }
 
+    /**
+     * @param \A17\Twill\Models\Model|null $object
+     * @param array $fields
+     * @return array
+     */
     public function prepareFieldsBeforeSaveHandleTranslations($object, $fields)
     {
         if ($this->model->isTranslatable()) {
@@ -59,6 +68,11 @@ trait HandleTranslations
         return $fields;
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return array
+     */
     public function getFormFieldsHandleTranslations($object, $fields)
     {
         unset($fields['translations']);
@@ -95,6 +109,11 @@ trait HandleTranslations
         }
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param array $orders
+     * @return void
+     */
     public function orderHandleTranslations($query, &$orders)
     {
         if ($this->model->isTranslatable()) {
@@ -123,6 +142,9 @@ trait HandleTranslations
         }
     }
 
+    /**
+     * @return array
+     */
     public function getPublishedScopesHandleTranslations()
     {
         return ['withActiveTranslations'];

@@ -24,16 +24,31 @@ trait HasSlug
         });
     }
 
+    /**
+     * Defines the one-to-many relationship for slug objects.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function slugs()
     {
         return $this->hasMany($this->getSlugModelClass());
     }
 
+    /**
+     * Returns an instance of the slug class for this model.
+     *
+     * @return object
+     */
     public function getSlugClass()
     {
         return new $this->getSlugModelClass();
     }
 
+    /**
+     * Returns the fully qualified slug class name for this model.
+     *
+     * @return string|null
+     */
     public function getSlugModelClass()
     {
         $slug = $this->getNamespace() . "\Slugs\\" . $this->getSlugClassName();
@@ -50,6 +65,11 @@ trait HasSlug
         return class_basename($this) . "Slug";
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $slug
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeForSlug($query, $slug)
     {
         return $query->whereHas('slugs', function ($query) use ($slug) {
@@ -59,6 +79,11 @@ trait HasSlug
         })->with(['slugs']);
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $slug
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeForInactiveSlug($query, $slug)
     {
         return $query->whereHas('slugs', function ($query) use ($slug) {
@@ -67,6 +92,11 @@ trait HasSlug
         })->with(['slugs']);
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $slug
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeForFallbackLocaleSlug($query, $slug)
     {
         return $query->whereHas('slugs', function ($query) use ($slug) {
@@ -76,6 +106,10 @@ trait HasSlug
         })->with(['slugs']);
     }
 
+    /**
+     * @param bool $restoring
+     * @return void
+     */
     public function setSlugs($restoring = false)
     {
         foreach ($this->getSlugParams() as $slugParams) {
@@ -83,6 +117,11 @@ trait HasSlug
         }
     }
 
+    /**
+     * @param array $slugParams
+     * @param bool $restoring
+     * @return void
+     */
     public function updateOrNewSlug($slugParams, $restoring = false)
     {
         if (in_array($slugParams['locale'], config('twill.slug_utf8_languages', []))) {
@@ -104,6 +143,10 @@ trait HasSlug
         }
     }
 
+    /**
+     * @param array $slugParams
+     * @return object|null
+     */
     public function getExistingSlug($slugParams)
     {
         $query = DB::table($this->getSlugsTable())->where($this->getForeignKey(), $this->id);
@@ -143,6 +186,11 @@ trait HasSlug
         $this->disableLocaleSlugs($slugParams['locale'], $id);
     }
 
+    /**
+     * @param string $locale
+     * @param int $except_slug_id
+     * @return void
+     */
     public function disableLocaleSlugs($locale, $except_slug_id = 0)
     {
         DB::table($this->getSlugsTable())
@@ -179,6 +227,12 @@ trait HasSlug
         return $slugParams['slug'];
     }
 
+    /**
+     * Returns the active slug object for this model.
+     *
+     * @param string|null $locale Locale of the slug if your site has multiple languages.
+     * @return object|null
+     */
     public function getActiveSlug($locale = null)
     {
         return $this->slugs->first(function ($slug) use ($locale) {
@@ -186,6 +240,11 @@ trait HasSlug
         }) ?? null;
     }
 
+    /**
+     * Returns the fallback active slug object for this model.
+     *
+     * @return object|null
+     */
     public function getFallbackActiveSlug()
     {
         return $this->slugs->first(function ($slug) {
@@ -193,6 +252,12 @@ trait HasSlug
         }) ?? null;
     }
 
+    /**
+     * Returns the active slug string for this model.
+     *
+     * @param string|null $locale Locale of the slug if your site has multiple languages.
+     * @return string
+     */
     public function getSlug($locale = null)
     {
         if (($slug = $this->getActiveSlug($locale)) != null) {
@@ -206,11 +271,18 @@ trait HasSlug
         return "";
     }
 
+    /**
+     * @return string
+     */
     public function getSlugAttribute()
     {
         return $this->getSlug();
     }
 
+    /**
+     * @param string|null $locale
+     * @return array|null
+     */
     public function getSlugParams($locale = null)
     {
         if (count(getLocales()) === 1 || !isset($this->translations)) {
@@ -257,6 +329,10 @@ trait HasSlug
         return $locale == null ? $slugParams : null;
     }
 
+    /**
+     * @param string|null $locale
+     * @return array|null
+     */
     public function getSingleSlugParams($locale = null)
     {
         $slugParams = [];
@@ -294,11 +370,21 @@ trait HasSlug
         return $locale == null ? $slugParams : null;
     }
 
+    /**
+     * Returns the database table name for this model's slugs.
+     *
+     * @return string
+     */
     public function getSlugsTable()
     {
         return $this->slugs()->getRelated()->getTable();
     }
 
+    /**
+     * Returns the database foreign key column name for this model.
+     *
+     * @return string
+     */
     public function getForeignKey()
     {
         return Str::snake(class_basename(get_class($this))) . "_id";
@@ -309,6 +395,13 @@ trait HasSlug
         return $this->id;
     }
 
+    /**
+     * Generate a URL friendly slug from a UTF-8 string.
+     *
+     * @param string $str
+     * @param array $options
+     * @return string
+     */
     public function getUtf8Slug($str, $options = [])
     {
         // Make sure string is in UTF-8 and strip invalid UTF-8 characters
@@ -423,11 +516,22 @@ trait HasSlug
         return $options['lowercase'] ? mb_strtolower($str, 'UTF-8') : $str;
     }
 
+    /**
+     * Generate a URL friendly slug from a given string.
+     *
+     * @param string $string
+     * @return string
+     */
     public function urlSlugShorter($string)
     {
         return strtolower(trim(preg_replace('~[^0-9a-z]+~i', '-', html_entity_decode(preg_replace('~&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i', '$1', htmlentities($string, ENT_QUOTES, 'UTF-8')), ENT_QUOTES, 'UTF-8')), '-'));
     }
 
+    /**
+     * Returns the fully qualified namespace for this model.
+     *
+     * @return string
+     */
     public function getNamespace()
     {
         $pos = mb_strrpos(self::class, '\\');

@@ -4,11 +4,22 @@ namespace A17\Twill\Models\Behaviors;
 
 trait HasRevisions
 {
+    /**
+     * Defines the one-to-many relationship for revisions.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function revisions()
     {
         return $this->hasMany($this->getRevisionModel())->orderBy('created_at', 'desc');
     }
 
+    /**
+     * Scope a query to only include the current user's revisions.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeMine($query)
     {
         return $query->whereHas('revisions', function ($query) {
@@ -16,6 +27,11 @@ trait HasRevisions
         });
     }
 
+    /**
+     * Returns an array of revisions for the CMS views.
+     *
+     * @return array
+     */
     public function revisionsArray()
     {
         return $this->revisions->map(function ($revision) {

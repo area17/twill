@@ -44,7 +44,8 @@
         @if ($placeholder ?? false) placeholder="{{ $placeholder }}" @endif
         @if ($inModal) :in-modal="true" @endif
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
-        @if ($endpoint ?? false) :searchable="true" endpoint="{{ $endpoint }}" @endif
+        @if ($searchable ?? $endpoint ?? false) :searchable="true" @endif
+        @if ($endpoint ?? false) endpoint="{{ $endpoint }}" @endif
         :multiple="true"
         in-store="inputValue"
     >
