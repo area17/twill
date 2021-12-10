@@ -2,32 +2,6 @@
 
 All notable changes to `twill` will be documented in this file.
 
-## 2.4.0 (2021-06-15)
-
-### Added
-
-- Add support for browsers using HasRelated behavior [`580faa47`](https://github.com/area17/twill/commit/580faa474057a816dfaf7d873b3eba6c728872c0)
-- Allow `dev_mode` to be set in `.env` [`95874a1a`](https://github.com/area17/twill/commit/95874a1a8c7169b7062647b41b0391c8ce8c09f0)
-- Add custom subject to notifications [`f137b213`](https://github.com/area17/twill/commit/f137b2133aaa2b8e8dee3c68a440b444c959efcf)
-
-### Fixed
-
-- 🚨 Fix logout security vulnerability [`e84abd4f`](https://github.com/area17/twill/commit/e84abd4fbbe27f08bf94e020dd27bdba622014da)
-- Update capsule provider booting and registration (fixing view:cache) [`5a086a32`](https://github.com/area17/twill/commit/5a086a32d04e3889731ce547aa6b673e883ab1ce)
-- Save wysiwyg sourcecode value into store on change [`83d3eb62`](https://github.com/area17/twill/commit/83d3eb621984a5b26e165d044d53cbcb094999f6) [`8d9a3d21`](https://github.com/area17/twill/commit/8d9a3d21422271621807d6073bdbfdb41fc1277e) [`c4911046`](https://github.com/area17/twill/commit/c4911046d1d8964e83176005fa9ec1bee33c512c) [`4aebb3e3`](https://github.com/area17/twill/commit/4aebb3e3a76c09613af3ee660585a63bbff45914)
-
-### Improved
-
-- Move some hard coded texts to lang file [`20534801`](https://github.com/area17/twill/commit/205348017eb516effade55aaabcf9fd3650f8821)
-- Adds docs with examples for conditional fields [`33717de7`](https://github.com/area17/twill/commit/33717de7927203a6ab4af9d5e7464da99591f457) [`908fb63f`](https://github.com/area17/twill/commit/908fb63fb850aa51e52c9e8a530010192298a7c4) [`05aef80c`](https://github.com/area17/twill/commit/05aef80c11cca915954c9d3d908352476912915b)
-- Fix typo in multi select inline example [`8abefe1c`](https://github.com/area17/twill/commit/8abefe1c372543d641b6fb63aeac1a8122c428b9)
-
-## 2.3.1 (2021-06-05)
-
-### Fixed
-
-- Media library upload regressions (hotfix) [#959](https://github.com/area17/twill/pull/959)
-
 ## 2.3.0 (2021-06-03)
 
 ### Added
