@@ -2,7 +2,9 @@
 
 namespace A17\Twill\Models\Behaviors;
 
+use A17\Twill\Helpers\TwillBlock;
 use A17\Twill\Models\Block;
+use Illuminate\Support\Str;
 
 trait HasBlocks
 {
@@ -13,7 +15,10 @@ trait HasBlocks
      */
     public function blocks()
     {
-        return $this->morphMany(Block::class, 'blockable')->orderBy(config('twill.blocks_table', 'twill_blocks') . '.position', 'asc');
+        return $this->morphMany(Block::class, 'blockable')->orderBy(
+            config('twill.blocks_table', 'twill_blocks') . '.position',
+            'asc'
+        );
     }
 
     public function renderNamedBlocks($name = 'default', $renderChilds = true, $blockViewMappings = [], $data = [])
@@ -21,8 +26,8 @@ trait HasBlocks
         return $this->blocks
             ->filter(function ($block) use ($name) {
                 return $name === 'default'
-                ? ($block->editor_name === $name || $block->editor_name === null)
-                : $block->editor_name === $name;
+                    ? ($block->editor_name === $name || $block->editor_name === null)
+                    : $block->editor_name === $name;
             })
             ->where('parent_id', null)
             ->map(function ($block) use ($blockViewMappings, $renderChilds, $data) {
@@ -31,6 +36,11 @@ trait HasBlocks
 
                     $renderedChildViews = $childBlocks->map(function ($childBlock) use ($blockViewMappings, $data) {
                         $view = $this->getBlockView($childBlock->type, $blockViewMappings);
+
+                        if ($class = $this->getBlockClass($view, $childBlock, $data)) {
+                            $data = $class->getData();
+                        }
+
                         return view($view, $data)->with('block', $childBlock)->render();
                     })->implode('');
                 }
@@ -39,8 +49,23 @@ trait HasBlocks
 
                 $view = $this->getBlockView($block->type, $blockViewMappings);
 
+                if ($class = $this->getBlockClass($view, $block, $data)) {
+                    $data = $class->getData();
+                }
+
                 return view($view, $data)->with('block', $block)->render() . ($renderedChildViews ?? '');
             })->implode('');
+    }
+
+    private function getBlockClass(string $view, Block $block, array $data): ?TwillBlock
+    {
+        $exploded = explode('.', $view);
+        $transformed = Str::studly(array_pop($exploded)) . 'Block';
+        $className = "\App\Twill\Block\\$transformed";
+        if (class_exists($className)) {
+            return new $className($block, $data);
+        }
+        return null;
     }
 
     /**
