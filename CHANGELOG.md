@@ -30,6 +30,8 @@ All notable changes to `twill` will be documented in this file.
 - Prevent undefined route errors in IconsController [`#1268`](https://github.com/area17/twill/pull/1268)
 - Fix typo in `twill:capsule:install` command [`#1290`](https://github.com/area17/twill/pull/1290)
 - Initialize undefined crops in cropper UI using first available ratio [`#1258`](https://github.com/area17/twill/pull/1258)
+- Fix `byKey()` setting query when passing `section` argument [`#1303`](https://github.com/area17/twill/pull/1303)
+- Remove duplicate test stub class [`#1311`](https://github.com/area17/twill/pull/1311)
 
 ### Improved
 
@@ -41,6 +43,7 @@ All notable changes to `twill` will be documented in this file.
 - Show red input count only if above 90% capacity [`#1237`](https://github.com/area17/twill/pull/1237)
 - Collapse repeater blocks on page load [`#1296`](https://github.com/area17/twill/pull/1296)
 - Update nested module count pluralisation [`#1251`](https://github.com/area17/twill/pull/1251)
+- Support `titleKey` parameter in `relatedBrowsers` configuration [`#1301`](https://github.com/area17/twill/pull/1301)
 - Update german translations [`#1235`](https://github.com/area17/twill/pull/1235)
 - Update docblock annotations [`#1167`](https://github.com/area17/twill/pull/1167/files)
 - Update documentation [`#1165`](https://github.com/area17/twill/pull/1165) [`#1244`](https://github.com/area17/twill/pull/1244) [`#1236`](https://github.com/area17/twill/pull/1236)
