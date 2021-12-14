@@ -32,6 +32,8 @@ All notable changes to `twill` will be documented in this file.
 - Initialize undefined crops in cropper UI using first available ratio [`#1258`](https://github.com/area17/twill/pull/1258)
 - Fix `byKey()` setting query when passing `section` argument [`#1303`](https://github.com/area17/twill/pull/1303)
 - Remove duplicate test stub class [`#1311`](https://github.com/area17/twill/pull/1311)
+- Fix destroy action on single nested items [`#1304`](https://github.com/area17/twill/pull/1304)
+- Prevent multiple AJAX requests in Block Editor previews [`#1282`](https://github.com/area17/twill/pull/1282)
 
 ### Improved
 
@@ -44,6 +46,7 @@ All notable changes to `twill` will be documented in this file.
 - Collapse repeater blocks on page load [`#1296`](https://github.com/area17/twill/pull/1296)
 - Update nested module count pluralisation [`#1251`](https://github.com/area17/twill/pull/1251)
 - Support `titleKey` parameter in `relatedBrowsers` configuration [`#1301`](https://github.com/area17/twill/pull/1301)
+- Update `HasSlug` to use Eloquent instead of DB facade [`#1309`](https://github.com/area17/twill/pull/1309)
 - Update german translations [`#1235`](https://github.com/area17/twill/pull/1235)
 - Update docblock annotations [`#1167`](https://github.com/area17/twill/pull/1167/files)
 - Update documentation [`#1165`](https://github.com/area17/twill/pull/1165) [`#1244`](https://github.com/area17/twill/pull/1244) [`#1236`](https://github.com/area17/twill/pull/1236)
