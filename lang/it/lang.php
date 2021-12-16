@@ -11,9 +11,6 @@
     */
 
 return [
-    'pages' => 'pagina',
-    'posts' => 'posti',
-    'template-settings' => 'Impostazioni',
     'auth' => [
         'email' => 'Email',
         'forgot-password' => 'Password dimenticata?',
