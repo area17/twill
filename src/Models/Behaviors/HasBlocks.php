@@ -37,7 +37,7 @@ trait HasBlocks
                     $renderedChildViews = $childBlocks->map(function ($childBlock) use ($blockViewMappings, $data) {
                         $view = $this->getBlockView($childBlock->type, $blockViewMappings);
 
-                        if ($class = $this->getBlockClass($view, $childBlock, $data)) {
+                        if ($class = TwillBlock::getBlockClass($view, $childBlock, $data)) {
                             $data = $class->getData();
                         }
 
@@ -49,23 +49,12 @@ trait HasBlocks
 
                 $view = $this->getBlockView($block->type, $blockViewMappings);
 
-                if ($class = $this->getBlockClass($view, $block, $data)) {
+                if ($class = TwillBlock::getBlockClass($view, $block, $data)) {
                     $data = $class->getData();
                 }
 
                 return view($view, $data)->with('block', $block)->render() . ($renderedChildViews ?? '');
             })->implode('');
-    }
-
-    private function getBlockClass(string $view, Block $block, array $data): ?TwillBlock
-    {
-        $exploded = explode('.', $view);
-        $transformed = Str::studly(array_pop($exploded)) . 'Block';
-        $className = "\App\Twill\Block\\$transformed";
-        if (class_exists($className)) {
-            return new $className($block, $data);
-        }
-        return null;
     }
 
     /**

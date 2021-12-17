@@ -3,6 +3,7 @@
 namespace A17\Twill\Helpers;
 
 use A17\Twill\Models\Block;
+use Illuminate\Support\Str;
 
 abstract class TwillBlock
 {
@@ -17,6 +18,17 @@ abstract class TwillBlock
 
     public function getData(): array
     {
-        return [];
+        return $this->data;
+    }
+
+    public static function getBlockClass(string $view, Block $block, array $data): ?TwillBlock
+    {
+        $exploded = explode('.', $view);
+        $transformed = Str::studly(array_pop($exploded)) . 'Block';
+        $className = "\App\Twill\Block\\$transformed";
+        if (class_exists($className)) {
+            return new $className($block, $data);
+        }
+        return null;
     }
 }
