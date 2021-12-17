@@ -1,5 +1,5 @@
 @if(app()->environment(['development', 'local']))
-    @if ($error)
+    @if (!empty($error))
         <h2>An error occured trying to render preview:</h2>
         <p>{{$error}}</p>
     @else
