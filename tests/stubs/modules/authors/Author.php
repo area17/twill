@@ -81,4 +81,9 @@ class Author extends Model implements Sortable
     {
         return $this->hasMany(AuthorRevision::class);
     }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class);
+    }
 }

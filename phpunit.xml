@@ -13,13 +13,18 @@
 >
   <testsuites>
     <testsuite name="Twill Test Suites">
+      <file>tests/unit/ValidationTest.php</file>
+      <file>tests/unit/MediaLibrary/AbstractParamsProcessorTest.php</file>
+      <file>tests/unit/MediaLibrary/TwicPicsParamsProcessorTest.php</file>
       <file>tests/integration/Commands/BuildTest.php</file>
       <file>tests/integration/Commands/ListBlocksTest.php</file>
       <file>tests/integration/Commands/ListIconsTest.php</file>
       <file>tests/integration/Commands/MakeBlockTest.php</file>
       <file>tests/integration/Commands/MakeModuleTest.php</file>
+      <file>tests/integration/Commands/MakeSingletonTest.php</file>
       <file>tests/integration/Commands/SuperadminTest.php</file>
       <file>tests/integration/Commands/UpdateTest.php</file>
+      <file>tests/integration/Commands/RefreshCropsTest.php</file>
       <file>tests/integration/FileLibraryTest.php</file>
       <file>tests/integration/LoginTest.php</file>
       <file>tests/integration/MediaLibraryTest.php</file>
@@ -29,6 +34,9 @@
       <file>tests/integration/RoutesTest.php</file>
       <file>tests/integration/PasswordsTest.php</file>
       <file>tests/integration/CapsulesTest.php</file>
+      <file>tests/integration/BrowsersTest.php</file>
+      <file>tests/integration/NestedModuleTest.php</file>
+      <file>tests/integration/SingletonModuleTest.php</file>
     </testsuite>
   </testsuites>
   <filter>

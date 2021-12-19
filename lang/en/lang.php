@@ -92,6 +92,7 @@ return [
             'open-in-editor' => 'Open in editor',
             'preview' => 'Preview',
             'add-item' => 'Add item',
+            'clone-block' => 'Clone block',
         ],
         'browser' => [
             'add-label' => 'Add',
@@ -246,6 +247,11 @@ return [
             'unfeatured' => ':modelTitle items unfeatured!',
             'featured' => ':modelTitle items featured!',
             'error' => ':modelTitle items were not featured. Something wrong happened!',
+        ],
+        'bulk-publish' => [
+            'unpublished' => ':modelTitle items unpublished!',
+            'published' => ':modelTitle items published!',
+            'error' => ':modelTitle items were not published. Something wrong happened!',
         ],
     ],
     'main' => [

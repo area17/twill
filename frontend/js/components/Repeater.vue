@@ -3,19 +3,19 @@
     <draggable class="content__content" v-model="blocks" :options="dragOptions">
       <transition-group name="draggable_list" tag='div'>
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
-          <a17-block :block="block" :index="index" :size="blockSize" :opened="opened" @open="setOpened">
+          <a17-blockeditor-item :block="block" :index="index" :size="blockSize" :opened="opened" @open="setOpened">
             <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)"  v-if="hasRemainingBlocks"><span v-svg symbol="add"></span></a17-button>
             <div slot="dropdown-action">
               <button type="button" @click="collapseAllBlocks()">Collapse All</button>
               <button type="button" @click="deleteBlock(index)">Delete</button>
               <button type="button" @click="duplicateBlock(index)" v-if="hasRemainingBlocks">Duplicate</button>
             </div>
-          </a17-block>
+          </a17-blockeditor-item>
         </div>
       </transition-group>
     </draggable>
     <div class="content__trigger">
-      <a17-button :class="triggerClass" :variant="triggerVariant" :size="triggerSize" @click="addBlock()" v-if="hasRemainingBlocks && blockType.trigger">{{ blockType.trigger }}</a17-button>
+      <a17-button :class="triggerClass" :variant="triggerVariant" @click="addBlock()" v-if="hasRemainingBlocks && blockType.trigger">{{ blockType.trigger }}</a17-button>
       <div class="content__note f--note f--small"><slot></slot></div>
     </div>
   </div>
@@ -27,12 +27,12 @@
 
   import draggable from 'vuedraggable'
   import draggableMixin from '@/mixins/draggable'
-  import Block from '@/components/blocks/Block.vue'
+  import BlockEditorItem from '@/components/blocks/BlockEditorItem.vue'
 
   export default {
     name: 'A17Repeater',
     components: {
-      'a17-block': Block,
+      'a17-blockeditor-item': BlockEditorItem,
       draggable
     },
     mixins: [draggableMixin],
@@ -44,6 +44,10 @@
       name: {
         type: String,
         required: true
+      },
+      buttonAsLink: {
+        type: Boolean,
+        default: false
       }
     },
     data: function () {
@@ -54,10 +58,10 @@
     },
     computed: {
       triggerVariant: function () {
-        return this.inContentEditor ? 'aslink' : 'action'
-      },
-      triggerSize: function () {
-        return this.inContentEditor ? 'small' : ''
+        if (this.buttonAsLink) {
+          return 'aslink'
+        }
+        return this.inContentEditor ? 'outline' : 'action'
       },
       triggerClass: function () {
         return this.inContentEditor ? 'content__button' : ''
@@ -124,9 +128,8 @@
     },
     mounted: function () {
       const self = this
-      // if there are blocks, these should be all collapse by default
       this.$nextTick(function () {
-        if (self.savedBlocks.length > 0) self.collapseAllBlocks()
+        self.collapseAllBlocks()
       })
     }
   }
@@ -164,10 +167,13 @@
   }
 
   .content__button {
+    margin-top:-5px;
+  }
+
+  .button--aslink {
     display:block;
     width:100%;
     text-align:center;
-    margin-top:-5px;
   }
 
   .content__note {

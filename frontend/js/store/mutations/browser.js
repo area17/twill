@@ -12,6 +12,7 @@ export const UPDATE_BROWSER_ENDPOINT = 'updateBrowserEndpoint'
 export const UPDATE_BROWSER_ENDPOINTS = 'updateBrowserEndpoints'
 export const DESTROY_BROWSER_ENDPOINT = 'destroyBrowserEndpoint'
 export const DESTROY_BROWSER_ENDPOINTS = 'destroyBrowserEndpoints'
+export const ADD_BROWSERS = 'addBrowsers'
 
 export default {
   SAVE_ITEMS,
@@ -26,5 +27,6 @@ export default {
   UPDATE_BROWSER_ENDPOINT,
   DESTROY_BROWSER_ENDPOINT,
   UPDATE_BROWSER_ENDPOINTS,
-  DESTROY_BROWSER_ENDPOINTS
+  DESTROY_BROWSER_ENDPOINTS,
+  ADD_BROWSERS
 }

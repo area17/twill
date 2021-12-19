@@ -1,6 +1,6 @@
 {
   "name": "@area17/twill",
-  "version": "2.4.0",
+  "version": "2.5.2",
   "private": true,
   "scripts": {
     "inspect": "vue-cli-service inspect --mode production",
@@ -39,6 +39,7 @@
     "@vue/cli-service": "^4.5.12",
     "@vue/eslint-config-standard": "^5.1.0",
     "babel-eslint": "10.1.0",
+    "chokidar-cli": "^3.0.0",
     "clean-webpack-plugin": "^3.0.0",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.22.1",

@@ -29,6 +29,7 @@
 
 <script>
   import isEqual from 'lodash/isEqual'
+  import debounce from 'lodash/debounce'
   import InputMixin from '@/mixins/input'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
@@ -65,6 +66,10 @@
         default: false
       },
       saveExtendedData: {
+        type: Boolean,
+        default: false
+      },
+      autoDetectLatLngValue: {
         type: Boolean,
         default: false
       },
@@ -172,6 +177,14 @@
 
         this.address = newValue
         this.$emit('change', newValue)
+
+        if (this.autoDetectLatLngValue) {
+          const latlng = newValue.match(/^(-?\d+(?:\.\d+)?),+ *(-?\d+(?:\.\d+)?)$/)
+
+          if (latlng) {
+            this.onLatLngEntered(latlng[1], latlng[2])
+          }
+        }
       },
       onPlaceChanged: function () {
         const place = this.autocompletePlace.getPlace()
@@ -202,6 +215,39 @@
         // see formStore mixin
         this.saveIntoStore()
       },
+      onClick: function (event) {
+        const latlng = event.latLng
+
+        this.clearMarkers()
+        this.clearLatLng()
+
+        this.address = [latlng.lat(), latlng.lng()].join(',')
+        this.setLatLng(latlng)
+
+        if (this.map) {
+          this.addMarker(latlng)
+        }
+
+        // see formStore mixin
+        this.saveIntoStore()
+      },
+      onLatLngEntered: debounce(function (lat, lng) {
+        const latlng = new google.maps.LatLng(lat, lng)
+
+        this.clearMarkers()
+        this.clearLatLng()
+
+        this.address = [latlng.lat(), latlng.lng()].join(',')
+        this.setLatLng(latlng)
+
+        if (this.map) {
+          this.addMarker(latlng)
+          this.map.setCenter(latlng)
+        }
+
+        // see formStore mixin
+        this.saveIntoStore()
+      }, 600),
       clearMarkers: function () {
         for (let i = 0; i < this.markers.length; i++) {
           if (this.markers[i]) {
@@ -258,6 +304,8 @@
         if (preset) {
           this.addMarker(new google.maps.LatLng(this.lat, this.lng))
         }
+
+        this.map.addListener('click', this.onClick)
       },
       initGeocoder: function () {
         const self = this

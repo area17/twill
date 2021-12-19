@@ -77,6 +77,8 @@ trait HandleJsonRepeaters
                 'id' => $id,
                 'type' => $repeatersList[$repeaterName]['component'],
                 'title' => $repeatersList[$repeaterName]['title'],
+                'titleField' => $repeatersList[$repeaterName]['titleField'],
+                'hideTitlePrefix' => $repeatersList[$repeaterName]['hideTitlePrefix'],
             ];
 
             if (isset($repeaterItem['browsers'])) {

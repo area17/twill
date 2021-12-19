@@ -245,6 +245,8 @@ Learn more about how Twill's media configurations work at [Model](https://twill.
 
 If the formField is used inside a block, you need to define the `mediasParams` at `config/twill.php` under `crops` key, and you are good to go. You could checkout [Twill Default Configuration](https://twill.io/docs/#default-configuration) and [Rendering Blocks](https://twill.io/docs/#rendering-blocks) for references.
 
+If the formField is used inside a repeater, you need to define the `mediasParams` at `config/twill.php` under `block_editor.crops`.
+
 If you need medias fields to be translatable (ie. publishers can select different images for each locale), set the `twill.media_library.translated_form_fields` configuration value to `true`.
 
 ##### Example:
@@ -476,6 +478,7 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 | label       | Label of the field                                           | string          |               |
 | options     | Array of options for the dropdown, must include _value_ and _label_ | array          |               |
 | unpack      | Defines if the select will be displayed as an open list of options | true<br/>false  | false         |
+| columns     | Aligns the options on a grid with a given number of columns  | integer         | 0 (off)       |
 | searchable  | Filter the field values while typing                         | true<br/>false  | false         |
 | note        | Hint message displayed above the field                       | string          |               |
 | placeholder | Text displayed as a placeholder in the field                 | string          |               |
@@ -586,6 +589,7 @@ When used in a [block](https://twill.io/docs/#adding-blocks), no migration is ne
 | max         | Maximum number of selectable options                         | integer         |               |
 | options     | Array of options for the dropdown, must include _value_ and _label_ | array           |               |
 | unpack      | Defines if the multi select will be displayed as an open list of options | true<br/>false  | true         |
+| columns     | Aligns the options on a grid with a given number of columns  | integer         | 0 (off)       |
 | searchable  | Filter the field values while typing                         | true<br/>false  | false         |
 | note        | Hint message displayed above the field                       | string          |               |
 | placeholder | Text displayed as a placeholder in the field                 | string          |               |
@@ -765,6 +769,7 @@ See [Multi select](https://twill.io/docs/#multi-select) for more information on 
 | requireConfirmation | Displays a confirmation dialog when modifying the field | boolean         | false         |
 | confirmTitleText    | The title of the confirmation dialog                    | string          | 'Confirm selection' |
 | confirmMessageText  | The text of the confirmation dialog                     | string          | 'Are you sure you want to change this option ?' |
+| border              | Draws a border around the field                         | boolean         | false         |
 
 
 ### Multiple checkboxes
@@ -804,6 +809,8 @@ See [Multi select](https://twill.io/docs/#multi-select) for more information on 
 | options | Array of options for the dropdown, must include _value_ and _label_ | array   |               |
 | inline  | Defines if the options are displayed on one or multiple lines       | boolean | false         |
 | note    | Hint message displayed above the field                              | string  |               |
+| border  | Draws a border around the field                                     | boolean | false         |
+| columns | Aligns the options on a grid with a given number of columns         | integer | 0 (off)       |
 
 
 ### Radios
@@ -844,6 +851,8 @@ See [Multi select](https://twill.io/docs/#multi-select) for more information on 
 | confirmTitleText    | The title of the confirmation dialog                                | string  | 'Confirm selection' |
 | confirmMessageText  | The text of the confirmation dialog                                 | string  | 'Are you sure you want to change this option ?' |
 | required            | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean | false |
+| border              | Draws a border around the field                                     | boolean | false         |
+| columns             | Aligns the options on a grid with a given number of columns         | integer | 0 (off)       |
 
 
 ### Block editor
@@ -1026,6 +1035,14 @@ Checkout this [Spectrum tutorial](https://spectrum.chat/twill/tips-and-tricks/st
 @formField('repeater', ['type' => 'video'])
 ```
 
+| Option       | Description                                   | Type    | Default value  |
+| :----------- | :-------------------------------------------- | :-------| :------------- |
+| type         | Type of repeater items                        | string  |                |
+| name         | Name of the field                             | string  | same as `type` |
+| buttonAsLink | Displays the `Add` button as a centered link  | boolean | false          |
+
+<br/>
+
 Repeater fields can be used inside as well as outside the block editor.
 
 Inside the block editor, repeater blocks share the same model as regular blocks. By reading the section on the [block editor](#block-editor-3) first, you will get a good overview of how to create and define repeater blocks for your project. No migration is needed when using repeater blocks. Refer to the section titled [Adding repeater fields to a block](#adding-repeater-fields-to-a-block) for a detailed explanation.
@@ -1151,6 +1168,23 @@ Update file `resources/views/admin/teams/form.blade.php`:
 - Finishing up:
 
 Add both modules to your `admin.php` routes. Add the `Team` module to your `twill-navigation.php` config and you are done!
+
+#### Dynamic repeater titles
+
+In Twill >= 2.5, you can use the `@twillRepeaterTitleField` directive to include the value of a given field in the title of the repeater items. This directive also accepts a `hidePrefix` option to hide the generic repeater title:
+
+```php
+@twillRepeaterTitle('Person')
+@twillRepeaterTitleField('name', ['hidePrefix' => true])
+@twillRepeaterTrigger('Add person')
+@twillRepeaterGroup('app')
+
+@formField('input', [
+    'name' => 'name',
+    'label' => 'Name',
+    'required' => true,
+])
+```
 
 
 ### Map

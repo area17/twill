@@ -5,6 +5,7 @@ namespace A17\Twill\Commands;
 use Exception;
 use GuzzleHttp\Client;
 use A17\Twill\Models\User;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use A17\Twill\Services\Capsules\Manager;
@@ -16,9 +17,9 @@ class CapsuleInstall extends Command
      *
      * @var string
      */
-    protected $signature = 'twill:capsule:install 
+    protected $signature = 'twill:capsule:install
                                {capsule : Capsule name (posts) in plural, Github repository (area17/capsule-posts) or full URL of the Capsule git repository}
-                               {--require : Require as a Composer package. Can receive maitainer updates.} 
+                               {--require : Require as a Composer package. Can receive maintainer updates.}
                                {--copy : Copy Capsule code. Cannot receive updates.}
                                {--branch=stable : Repository branch}
                                {--prefix=twill-capsule : Capsule repository name prefix}
@@ -113,7 +114,7 @@ class CapsuleInstall extends Command
             $capsule = Str::snake(Str::kebab($capsule));
 
             if (!Str::contains($capsule, '/')) {
-                $capsule = $this->getAREA17RepositoryPrefix() . "-$capsule";
+                $capsule = $this->getRepositoryPrefix() . "-$capsule";
             }
 
             $url = $this->getRepositoryUrlPrefix() . "/$capsule";
@@ -145,9 +146,9 @@ class CapsuleInstall extends Command
         return 'https://' . $this->getService();
     }
 
-    protected function getAREA17RepositoryPrefix()
+    protected function getRepositoryPrefix()
     {
-        $prefix = 'area17';
+        $prefix = Config::get('twill.capsules.capsule_repository_prefix');
 
         if (filled($capsule = $this->getCapsulePrefix())) {
             $prefix .= '/' . $this->getCapsulePrefix();

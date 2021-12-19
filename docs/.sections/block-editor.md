@@ -51,6 +51,7 @@ Blocks (and Repeaters) are exactly like a regular form, without any Blade layout
 
 Available annotations:
   - Provide a title with `@twillPropTitle` or `@twillBlockTitle` or `@twillRepeaterTitle` (mandatory)
+  - Provide a dynamic title with `@twillPropTitleField` or `@twillBlockTitleField` or `@twillRepeaterTitleField`
   - Provide an icon with `@twillPropIcon` or `@twillBlockIcon` or `@twillRepeaterIcon`
   - Provide a group with `@twillPropGroup` or `@twillBlockGroup` or `@twillRepeaterGroup` (defaults to `app`)
   - Provide a repeater trigger label with `@twillPropTrigger` or `@twillRepeaterTrigger`
@@ -134,6 +135,25 @@ filename: ```views/admin/blocks/media.blade.php```
 ```
 
 With that, the *block* is ready to be used on the form!
+
+##### Dynamic block titles
+
+In Twill >= 2.5, you can use the `@twillBlockTitleField` directive to include the value of a given field in the title area of the blocks. This directive also accepts a `hidePrefix` option to hide the generic block title:
+
+```php
+@twillBlockTitle('Section')
+@twillBlockTitleField('title', ['hidePrefix' => true])
+@twillBlockIcon('text')
+@twillBlockGroup('app')
+
+@formField('input', [
+    'name' => 'title',
+    'label' => 'Title',
+    'required' => true,
+])
+
+...
+```
 
 ##### Create a block from an existing block template
 

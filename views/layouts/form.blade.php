@@ -47,6 +47,8 @@
                     :editable-title="{{ json_encode($editableTitle ?? true) }}"
                     custom-title="{{ $customTitle ?? '' }}"
                     custom-permalink="{{ $customPermalink ?? '' }}"
+                    localized-permalinkbase="{{ json_encode($localizedPermalinkBase ?? '') }}"
+                    localized-custom-permalink="{{ json_encode($localizedCustomPermalink ?? '') }}"
                     slot="title"
                     @if($createWithoutModal ?? false) :show-modal="true" @endif
                     @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif
@@ -119,19 +121,21 @@
 @stop
 
 @section('initialStore')
-
     window['{{ config('twill.js_namespace') }}'].STORE.form = {
         baseUrl: '{{ $baseUrl ?? '' }}',
         saveUrl: '{{ $saveUrl }}',
         previewUrl: '{{ $previewUrl ?? '' }}',
         restoreUrl: '{{ $restoreUrl ?? '' }}',
+        availableBlocks: {},
+        blocks: {},
         blockPreviewUrl: '{{ $blockPreviewUrl ?? '' }}',
         availableRepeaters: {!! $availableRepeaters ?? '{}' !!},
         repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!},
         fields: [],
         editor: {{ $editor ? 'true' : 'false' }},
         isCustom: {{ $customForm ? 'true' : 'false' }},
-        reloadOnSuccess: {{ ($reloadOnSuccess ?? false) ? 'true' : 'false' }}
+        reloadOnSuccess: {{ ($reloadOnSuccess ?? false) ? 'true' : 'false' }},
+        editorNames: []
     }
 
     window['{{ config('twill.js_namespace') }}'].STORE.publication = {
