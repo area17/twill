@@ -2,6 +2,32 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.4.0 (2021-06-15)
+
+### Added
+
+- Add support for browsers using HasRelated behavior [`580faa47`](https://github.com/area17/twill/commit/580faa474057a816dfaf7d873b3eba6c728872c0)
+- Allow `dev_mode` to be set in `.env` [`95874a1a`](https://github.com/area17/twill/commit/95874a1a8c7169b7062647b41b0391c8ce8c09f0)
+- Add custom subject to notifications [`f137b213`](https://github.com/area17/twill/commit/f137b2133aaa2b8e8dee3c68a440b444c959efcf)
+
+### Fixed
+
+- 🚨 Fix logout security vulnerability [`e84abd4f`](https://github.com/area17/twill/commit/e84abd4fbbe27f08bf94e020dd27bdba622014da)
+- Update capsule provider booting and registration (fixing view:cache) [`5a086a32`](https://github.com/area17/twill/commit/5a086a32d04e3889731ce547aa6b673e883ab1ce)
+- Save wysiwyg sourcecode value into store on change [`83d3eb62`](https://github.com/area17/twill/commit/83d3eb621984a5b26e165d044d53cbcb094999f6) [`8d9a3d21`](https://github.com/area17/twill/commit/8d9a3d21422271621807d6073bdbfdb41fc1277e) [`c4911046`](https://github.com/area17/twill/commit/c4911046d1d8964e83176005fa9ec1bee33c512c) [`4aebb3e3`](https://github.com/area17/twill/commit/4aebb3e3a76c09613af3ee660585a63bbff45914)
+
+### Improved
+
+- Move some hard coded texts to lang file [`20534801`](https://github.com/area17/twill/commit/205348017eb516effade55aaabcf9fd3650f8821)
+- Adds docs with examples for conditional fields [`33717de7`](https://github.com/area17/twill/commit/33717de7927203a6ab4af9d5e7464da99591f457) [`908fb63f`](https://github.com/area17/twill/commit/908fb63fb850aa51e52c9e8a530010192298a7c4) [`05aef80c`](https://github.com/area17/twill/commit/05aef80c11cca915954c9d3d908352476912915b)
+- Fix typo in multi select inline example [`8abefe1c`](https://github.com/area17/twill/commit/8abefe1c372543d641b6fb63aeac1a8122c428b9)
+
+## 2.3.1 (2021-06-05)
+
+### Fixed
+
+- Media library upload regressions (hotfix) [#959](https://github.com/area17/twill/pull/959)
+
 ## 2.3.0 (2021-06-03)
 
 ### Added
@@ -468,7 +494,6 @@ It is now possible to automatically save and retrieve multiple form fields in a 
 [`5564e488`](https://github.com/area17/twill/commit/5564e48801d97e28c350c2250b0b3f36efa54444)/[`#452`](https://github.com/area17/twill/pull/452)/[`657e83cf`](https://github.com/area17/twill/commit/657e83cf7191f44a81a6051c04ff9a9c62cac8e1)/[`#501`](https://github.com/area17/twill/pull/501)/[`b48793af`](https://github.com/area17/twill/commit/b48793af5ea9ef8e3e54761f58402786a54881ba)/[`#541`](https://github.com/area17/twill/pull/541)/[`74926425`](https://github.com/area17/twill/commit/7492642564e65e84646e3d9f930227bdc2400540)/[`6437a073`](https://github.com/area17/twill/commit/6437a0732ff1983196ab716395d18677cab3bc45)/[`84176e44`](https://github.com/area17/twill/commit/84176e448e47d63339bf2ffa3ac9224f3ca5dc42)
 
 #### Azure uploads
-
 A new `endpoint_type` to support Azure storage of all uploads, exactly like when working with S3.
 
 [`#424`](https://github.com/area17/twill/pull/424)/[`2129c084`](https://github.com/area17/twill/commit/2129c084bd5cdf14a0617006d0332090f8f9af9c)/[`#443`](https://github.com/area17/twill/pull/443)/[`d81a5b94`](https://github.com/area17/twill/commit/d81a5b9439661a1c9449f3d25a6bc1946706788a)/[`b7a89f38`](https://github.com/area17/twill/commit/b7a89f3830a25e682a996e25176d10f6ac23059d)/[`4bf2e133`](https://github.com/area17/twill/commit/4bf2e133e9841b12f92f955ab0440fed0769f202)
@@ -546,7 +571,6 @@ You can also provide a custom  `block_single_layout`  per subdomain by creating 
 > 
 
 #### Tiptap WYSIWYG
-
 ![tiptap](https://twill.io/docs/changelogs_media/tables.png)
 In order to provide HTML tables support in the WYSIWYG form field, we've integrated the [Tiptap editor](https://tiptap.scrumpy.io/) with Twill. You can use it by using the new `type` option of the `wysiwyg` form field, with the `tiptap` value. You can then enable the `table` button in your `toolbarOptions`.
 
