@@ -246,7 +246,7 @@
       },
       limitClasses: function () {
         return {
-          'input__limit--red': this.counter < 10
+          'input__limit--red': this.counter < (this.maxlength * 0.1)
         }
       },
       ...mapState({
@@ -306,8 +306,13 @@
           this.updateEditor(newValue)
         }
       },
-      textUpdate: debounce(function () {
-        this.saveIntoStore() // see formStore mixin
+      textUpdate: function () {
+        this.preventSubmit()
+        this._textUpdateInternal()
+      },
+      _textUpdateInternal: debounce(function () {
+        this.saveIntoStore()
+        this.allowSubmit()
       }, 600),
       toggleSourcecode: function () {
         this.editorHeight = (Math.max(50, this.$refs.editor.clientHeight) + this.toolbarHeight - 1) + 'px'

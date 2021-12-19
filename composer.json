@@ -28,7 +28,7 @@
     "ext-pdo": "*",
     "astrotomic/laravel-translatable": "^11.5",
     "cartalyst/tags": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
-    "doctrine/dbal": "^2.9",
+    "doctrine/dbal": "^2.12|^3.0",
     "guzzlehttp/guzzle": "^6.2|^7.0",
     "imgix/imgix-php": "^3.0",
     "laravel/framework": "~5.6|~5.7|~5.8|^6.0|^7.0|^8.0",
@@ -49,7 +49,7 @@
     "nunomaduro/collision": "^3.0|^4.2|^5.0",
     "orchestra/testbench": "~3.3|~3.4|~3.5|~3.6|~3.7|~3.8|^4.0|^5.0|^6.0",
     "phpunit/phpunit": "~5.0|~6.0|~7.0|~8.0|~9.0",
-    "chillerlan/php-qrcode": "~1.0|~1.0|~3.0|~4.0"
+    "chillerlan/php-qrcode": "~2.0|~3.0|~4.0"
   },
   "autoload": {
     "psr-4": {

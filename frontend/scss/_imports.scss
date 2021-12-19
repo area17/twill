@@ -22,15 +22,6 @@
 
 @import 'setup/design-grids';
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ icons image-map */
-
-//@import '../icons/icons';
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ icon classes */
-
-@import 'setup/icons';
-@import 'setup/icons-files';
-
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ placeholders */
 
 @import 'setup/placeholders';
@@ -97,3 +88,7 @@
 @import 'state/overlay';
 @import 'state/nav';
 @import 'state/env';
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ utilities */
+
+@import 'utilities/utilities';

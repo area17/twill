@@ -17,7 +17,7 @@ import a17Langswitcher from '@/components/LangSwitcher.vue'
 import a17Fieldset from '@/components/Fieldset.vue'
 import a17Publisher from '@/components/Publisher.vue'
 import a17PageNav from '@/components/PageNav.vue'
-import a17Content from '@/components/Content.vue'
+import a17Blocks from '@/components/blocks/Blocks.vue'
 import a17Repeater from '@/components/Repeater.vue'
 import a17LocationField from '@/components/LocationField.vue'
 import a17ConnectorField from '@/components/ConnectorField.vue'
@@ -45,7 +45,7 @@ import a17ModalAdd from '@/components/modals/ModalAdd.vue'
 // Store Modules
 import form from '@/store/modules/form'
 import publication from '@/store/modules/publication'
-import content from '@/store/modules/content'
+import blocks from '@/store/modules/blocks'
 import language from '@/store/modules/language'
 import revision from '@/store/modules/revision'
 import browser from '@/store/modules/browser'
@@ -57,6 +57,7 @@ import attributes from '@/store/modules/attributes'
 import formatPermalink from '@/mixins/formatPermalink'
 import editorMixin from '@/mixins/editor.js'
 import BlockMixin from '@/mixins/block'
+import retrySubmitMixin from '@/mixins/retrySubmit'
 
 // configuration
 Vue.use(A17Config)
@@ -64,7 +65,7 @@ Vue.use(A17Notif)
 
 store.registerModule('form', form)
 store.registerModule('publication', publication)
-store.registerModule('content', content)
+store.registerModule('blocks', blocks)
 store.registerModule('language', language)
 store.registerModule('revision', revision)
 store.registerModule('browser', browser)
@@ -76,7 +77,7 @@ store.registerModule('attributes', attributes)
 Vue.component('a17-fieldset', a17Fieldset)
 Vue.component('a17-publisher', a17Publisher)
 Vue.component('a17-title-editor', a17TitleEditor)
-Vue.component('a17-content', a17Content)
+Vue.component('a17-blocks', a17Blocks)
 Vue.component('a17-page-nav', a17PageNav)
 Vue.component('a17-langswitcher', a17Langswitcher)
 Vue.component('a17-sticky-nav', a17StickyNav)
@@ -144,7 +145,7 @@ importedComponents.keys().map(block => {
 window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
   store, // inject store to all children
   el: '#app',
-  mixins: [formatPermalink, editorMixin],
+  mixins: [formatPermalink, editorMixin, retrySubmitMixin],
   data: function () {
     return {
       unSubscribe: function () {
@@ -156,7 +157,7 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
   computed: {
     ...mapState({
       loading: state => state.form.loading,
-      editor: state => state.content.editor,
+      editor: state => state.blocks.editor,
       isCustom: state => state.form.isCustom
     }),
     ...mapGetters([
@@ -165,7 +166,12 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
     ])
   },
   methods: {
-    submitForm: function (event) {
+    submitForm: function () {
+      if (this.isSubmitPrevented) {
+        this.shouldRetrySubmitWhenAllowed = true
+        return
+      }
+
       if (!this.loading) {
         this.isFormUpdated = false
         this.$store.commit(FORM.UPDATE_FORM_LOADING, true)

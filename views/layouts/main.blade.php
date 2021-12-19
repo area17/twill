@@ -71,6 +71,11 @@
                 @include('twill::partials.footer')
             </section>
         </div>
+
+        <form style="display: none" method="POST" action="{{ route('admin.logout') }}" data-logout-form>
+            @csrf
+        </form>
+
         <script>
             window['{{ config('twill.js_namespace') }}'] = {};
             window['{{ config('twill.js_namespace') }}'].version = '{{ config('twill.version') }}';

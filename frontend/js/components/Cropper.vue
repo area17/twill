@@ -76,10 +76,10 @@
         return {}
       },
       crop: function () {
-        return this.currentMedia.crops[this.currentCrop]
+        return this.currentMedia.crops[this.currentCrop] || {}
       },
       multiCrops: function () {
-        return Object.keys(this.media.crops).length > 1
+        return Object.keys(this.cropOptions).length > 1
       },
       ratiosByContext: function () {
         const filtered = this.cropOptions[this.currentCrop]
@@ -154,7 +154,9 @@
       },
       changeCrop: function (cropName, index) {
         this.currentCrop = cropName
-        this.currentRatioName = this.crop.name
+        // If the current crop doesn't exist on the current media, the cropper will
+        // be set at the center of the image, using the first available ratio.
+        this.currentRatioName = this.crop.name || this.cropOptions[cropName][0].name
         this.toggleBreakpoint = index
 
         this.updateCrop()

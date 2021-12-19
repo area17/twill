@@ -3,7 +3,10 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Behaviors\HasMedias;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
@@ -51,7 +54,7 @@ trait HandleBrowsers
     {
         foreach ($this->getBrowsers() as $browser) {
             $relation = $browser['relation'];
-            if (!empty($object->$relation)) {
+            if (collect($object->$relation)->isNotEmpty()) {
                 $fields['browsers'][$browser['browserName']] = $this->getFormFieldsForBrowser($object, $relation, $browser['routePrefix'], $browser['titleKey'], $browser['moduleName']);
             }
         }
@@ -85,8 +88,31 @@ trait HandleBrowsers
             $foreignKey = $object->$relationship()->getForeignKeyName();
             $id = Arr::get($relatedElements, '0.id', null);
             $object->update([$foreignKey => $id]);
+        } elseif ($object->$relationship() instanceof HasOne ||
+                  $object->$relationship() instanceof HasMany
+        ) {
+            $this->updateBelongsToInverseBrowser($object, $relationship, $relatedElements);
         } else {
             $object->$relationship()->sync($relatedElementsWithPosition);
+        }
+    }
+
+    private function updateBelongsToInverseBrowser($object, $relationship, $updatedElements)
+    {
+        $foreignKey = $object->$relationship()->getForeignKeyName();
+        $relatedModel = $object->$relationship()->getRelated();
+        $related = $this->getRelatedElementsAsCollection($object, $relationship);
+
+        $relatedModel
+            ->whereIn('id', $related->pluck('id'))
+            ->update([$foreignKey => null]);
+
+        $updated = $relatedModel
+            ->whereIn('id', collect($updatedElements)->pluck('id'))
+            ->get();
+
+        if ($updated->isNotEmpty()) {
+            $object->$relationship()->saveMany($updated);
         }
     }
 
@@ -123,8 +149,9 @@ trait HandleBrowsers
      */
     public function getFormFieldsForBrowser($object, $relation, $routePrefix = null, $titleKey = 'title', $moduleName = null)
     {
-        if (!empty($object->$relation)) {
-            $fields = $object->$relation() instanceof BelongsTo ? collect([$object->$relation]) : $object->$relation;
+        $fields = $this->getRelatedElementsAsCollection($object, $relation);
+
+        if ($fields->isNotEmpty()) {
             return $fields->map(function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName) {
                 return [
                     'id' => $relatedElement->id,
@@ -217,5 +244,12 @@ trait HandleBrowsers
     protected function inferModuleNameFromBrowserName(string $browserName): string
     {
         return Str::camel(Str::plural($browserName));
+    }
+
+    private function getRelatedElementsAsCollection($object, $relation)
+    {
+        return collect(
+            $object->$relation instanceof EloquentModel ? [$object->$relation] : $object->$relation
+        );
     }
 }

@@ -1,0 +1,43 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use App\Repositories\{{repositoryClassName}};
+use App\Models\{{modelClassName}};
+
+class {{seederClassName}} extends Seeder
+{
+    /**
+     * Create the database record for this singleton module.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        if ({{modelClassName}}::count() > 0) {
+            return;
+        }
+
+        {{hasTranslations}}
+        app({{repositoryClassName}}::class)->create([
+            'title' => [
+                'en' => '{{modelClassName}}',
+                // add other languages here
+            ],
+            'description' => [
+                'en' => '',
+                // add other languages here
+            ],
+            'published' => false,
+        ]);
+        {{/hasTranslations}}
+        {{!hasTranslations}}
+        app({{repositoryClassName}}::class)->create([
+            'title' => '{{modelClassName}}',
+            'description' => '',
+            'published' => false,
+        ]);
+        {{/!hasTranslations}}
+    }
+}

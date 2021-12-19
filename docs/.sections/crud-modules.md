@@ -16,6 +16,7 @@ The command accepts several options:
 - `--hasFiles (-F)`, to attach files to your records
 - `--hasPosition (-P)`, to allow manually reordering of records in the listing screen
 - `--hasRevisions(-R)`, to allow comparing and restoring past revisions of records
+- `--hasNesting(-N)`, to enable nested items in the module listing (see [Nested Module](#nested-module))
 
 The `twill:module` command will generate a migration file, a model, a repository, a controller, a form request object and a form view.
 
@@ -554,6 +555,26 @@ File: `app/Models/Play.php`
     }
 ```
 
+#### Additional table actions
+
+You can override the `additionalTableActions()` method to add custom actions in your module's listing view:
+
+File: `app/Http/Controllers/Admin/NewsletterController.php`
+```php
+    public function additionalTableActions()
+    {
+        return [
+            'exportAction' => [ // Action name.
+                'name' => 'Export Newsletter List', // Button action title.
+                'variant' => 'primary', // Button style variant. Available variants; primary, secondary, action, editor, validate, aslink, aslink-grey, warning, ghost, outline, tertiary
+                'size' => 'small', // Button size. Available sizes; small
+                'link' => route('newsletter.export'), // Button action link.
+                'target' => '', // Leave it blank for self.
+                'type' => 'a', // Leave it blank for "button".
+            ]
+        ];
+    }
+```
 
 ### Form Requests
 Classic Laravel 5 [form request validation](https://laravel.com/docs/5.5/validation#form-request-validation).
@@ -667,152 +688,286 @@ protected function previewData($item)
 }
 ```
 
-### Nested Module
+### Nested Modules
 
-To create a nested module with parent/child relationships, you should include the `laravel-nestedset` package to your application.
+Out of the box, Twill supports 2 kinds of nested modules: [self-nested](#self-nested-modules) and [parent-child](#parent-child-modules).
 
-To install the package: `composer require kalnoy/nestedset`
+#### Self-nested modules
 
-Then add nested set columns to your database table.
+Self-nested modules allow items to be nested within other items of the same module (e.g. Pages can contain other Pages):
 
-For Laravel 5.5 and above users:
+![self-nested module](/docs/_media/nested-module.png)
 
-```php
-Schema::create('pages', function (Blueprint $table) {
-    ...
-    $table->nestedSet();
-});
+#### Creating self-nested modules
 
-// To drop columns
-Schema::table('pages', function (Blueprint $table) {
-    $table->dropNestedSet();
-});
+You can enable nesting when creating a new module with the `--hasNesting` or `-N` option:
+
+```
+php artisan twill:module:make -N pages
 ```
 
-For prior Laravel Versions:
+This will prefill some options and methods in your module's controller and use the supporting traits on your model and repository.
 
-```php
-...
-use Kalnoy\Nestedset\NestedSet;
+This feature requires the `laravel-nestedset` package, which can be installed via composer:
 
-Schema::create('pages', function (Blueprint $table) {
-    ...
-    NestedSet::columns($table);
-});
-
-// To drop columns
-Schema::table('pages', function (Blueprint $table) {
-    NestedSet::dropColumns($table);
-});
+```
+composer require kalnoy/nestedset
 ```
 
-Your model should use the `Kalnoy\Nestedset\NodeTrait` trait to enable nested sets, as well as the `HasPosition` trait and some helper functions to save a new tree organisation from Twill's drag and drop UI:
+#### Working with self-nested items
+
+A few accessors and methods are available to work with nested item slugs:
 
 ```php
-use A17\Twill\Models\Behaviors\HasPosition;
-use Kalnoy\Nestedset\NodeTrait;
-...
+// Get the combined slug for all ancestors of an item in the current locale:
+$slug = $item->ancestorsSlug;
 
-class Page extends Model {
-    use HasPosition, NodeTrait;
-    ...
-    public static function saveTreeFromIds($nodeTree)
+// for a specific locale:
+$slug = $item->getAncestorsSlug($lang);
+
+// Get the combined slug for an item including all ancestors:
+$slug = $item->nestedSlug;
+
+// for a specific locale:
+$slug = $item->getNestedSlug($lang);
+```
+
+To include all ancestor slugs in the permalink of an item in the CMS, you can dynamically set the `$permalinkBase` property from the `form()` method of your module controller:
+
+```php
+class PageController extends ModuleController
+{
+    //...
+
+    protected function form($id, $item = null)
     {
-        $nodeModels = self::all();
-        $nodeArrays = self::flattenTree($nodeTree);
+        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
-        foreach ($nodeArrays as $nodeArray) {
-            $nodeModel = $nodeModels->where('id', $nodeArray['id'])->first();
+        $this->permalinkBase = $item->ancestorsSlug;
 
-            if ($nodeArray['parent_id'] === null) {
-                if (!$nodeModel->isRoot() || $nodeModel->position !== $nodeArray['position']) {
-                    $nodeModel->position = $nodeArray['position'];
-                    $nodeModel->saveAsRoot();
-                }
-            } else {
-                if ($nodeModel->position !== $nodeArray['position'] || $nodeModel->parent_id !== $nodeArray['parent_id']) {
-                    $nodeModel->position = $nodeArray['position'];
-                    $nodeModel->parent_id = $nodeArray['parent_id'];
-                    $nodeModel->save();
-                }
-            }
-        }
-    }
-
-    public static function flattenTree(array $nodeTree, int $parentId = null)
-    {
-        $nodeArrays = [];
-        $position = 0;
-
-        foreach ($nodeTree as $node) {
-            $nodeArrays[] = [
-                'id' => $node['id'],
-                'position' => $position++,
-                'parent_id' => $parentId,
-            ];
-
-            if (count($node['children']) > 0) {
-                $childArrays = self::flattenTree($node['children'], $node['id']);
-                $nodeArrays = array_merge($nodeArrays, $childArrays);
-            }
-        }
-
-        return $nodeArrays;
+        return parent::form($id, $item);
     }
 }
 ```
 
-From your module's repository, you'll need to override the `setNewOrder` function:
+To implement routing for nested items, you can combine the `forNestedSlug()` method from `HandleNesting` with a wildcard route parameter:
 
 ```php
-public function setNewOrder($ids)
+// file: routes/web.php
+
+Route::get('{slug}', function ($slug) {
+    $page = app(PageRepository::class)->forNestedSlug($slug);
+
+    abort_unless($page, 404);
+
+    return view('site.page', ['page' => $page]);
+})->where('slug', '.*');
+```
+
+For more information on how to work with nested items in your application, you can refer to the 
+[laravel-nestedset package documentation](https://github.com/lazychaser/laravel-nestedset#retrieving-nodes).
+
+#### Parent-child modules
+
+Parent-child modules are 2 distinct modules, where items of the child module are attached to items of the parent module (e.g. Issues can contain Articles):
+
+![parent-child modules](/docs/_media/nested-parent-index.png)
+
+Items of the child module can't be created independently.
+
+#### Creating parent-child modules
+
+We'll use the `slug` and `position` features in this example but you can customize as needed:
+
+```
+php artisan twill:module issues -SP
+php artisan twill:module issueArticles -SP
+```
+
+Add the `issue_id` foreign key to the child module's migration:
+
+```php
+class CreateIssueArticlesTables extends Migration
 {
-    DB::transaction(function () use ($ids) {
-        Page::saveTreeFromIds($ids);
-    }, 3);
+    public function up()
+    {
+        Schema::create('issue_articles', function (Blueprint $table) {
+            // ...
+            $table->unsignedBigInteger('issue_id')->nullable();
+            $table->foreign('issue_id')->references('id')->on('issues');
+        });
+        
+        // ...
+    }
 }
 ```
 
-If you expect your users to create a lot of records, you'll want to move this operation into a queued job.
+Run the migrations:
 
-Finally, to enable Twill's nested listing UI, you'll need to do the following in your module's controller:
+```
+php artisan migrate
+```
+
+Update the child model. Add the `issue_id` fillable and the relationship to the parent model:
 
 ```php
-protected $indexOptions = [
-    'reorder' => true,
-];
-
-protected function indexData($request)
+class IssueArticle extends Model implements Sortable
 {
-    return [
-        'nested' => true,
-        'nestedDepth' => 2, // this controls the allowed depth in UI
+    // ...
+
+    protected $fillable = [
+        // ...
+        'issue_id',
+    ];
+    
+    public function issue()
+    {
+        return $this->belongsTo(Issue::class);
+    }
+}
+```
+
+Update the parent model. Add the relationship to the child model:
+
+```php
+class Issue extends Model implements Sortable
+{
+    // ...
+
+    public function articles()
+    {
+        return $this->hasMany(IssueArticle::class);
+    }
+}
+```
+
+Update the child controller. Set the `$moduleName` and `$modelName` properties, then override the `getParentModuleForeignKey()` method:
+
+```php
+class IssueArticleController extends BaseModuleController
+{
+    protected $moduleName = 'issues.articles';
+
+    protected $modelName = 'IssueArticle';
+
+    protected function getParentModuleForeignKey()
+    {
+        return 'issue_id';
+    }
+}
+```
+
+Update the parent controller. Set the `$indexColumns` property to include a new `Articles` column. This will be a link to the child module items, for each parent.
+
+```php
+class IssueController extends BaseModuleController
+{
+    protected $moduleName = 'issues';
+
+    protected $indexColumns = [
+        'title' => [
+            'title' => 'Title',
+            'field' => 'title',
+        ],
+        'articles' => [
+            'title' => 'Articles',
+            'nested' => 'articles',
+        ],
     ];
 }
+```
 
-protected function transformIndexItems($items)
-{
-    return $items->toTree();
-}
+Add both modules to `routes/admin.php`:
 
-protected function indexItemData($item)
+```php
+Route::module('issues');
+Route::module('issues.articles');
+```
+
+Add the parent module to `config/twill-navigation.php`:
+
+```php
+return [
+    'issues' => [
+        'title' => 'Issues',
+        'module' => true,
+    ],
+];
+```
+
+Then, rename and move the `articles/` views folder inside of the parent `issues/` folder:
+```
+resources/views/admin/
+└── issues
+    ├── articles
+    │   └── form.blade.php
+    └── form.blade.php
+...
+```
+
+#### Using breadcrumbs for easier navigation
+
+In the child module controller, override the `indexData()` method to add the breadcrumbs to the index view:
+
+```php
+class IssueArticleController extends BaseModuleController
 {
-    return ($item->children ? [
-        'children' => $this->getIndexTableData($item->children),
-    ] : []);
+    // ...
+
+    protected function indexData($request)
+    {
+        $issue = app(IssueRepository::class)->getById(request('issue'));
+
+        return [
+            'breadcrumb' => [
+                [
+                    'label' => 'Issues',
+                    'url' => moduleRoute('issues', '', 'index'),
+                ],
+                [
+                    'label' => $issue->title,
+                    'url' => moduleRoute('issues', '', 'edit', $issue->id),
+                ],
+                [
+                    'label' => 'Articles',
+                ],
+            ],
+        ];
+    }
 }
 ```
 
-When using a browser to browse a nested module, if you expect to select children as well as parents, you will need to add the following function to your module's controller:
+![child module index](/docs/_media/nested-child-index.png)
+
+<br>
+
+Then, override the `formData()` method to do the same in the form view:
+
+```php
+    protected function formData($request)
+    {
+        $issue = app(IssueRepository::class)->getById(request('issue'));
+
+        return [
+            'breadcrumb' => [
+                [
+                    'label' => 'Issues',
+                    'url' => moduleRoute('issues', '', 'index'),
+                ],
+                [
+                    'label' => $issue->title,
+                    'url' => moduleRoute('issues', '', 'edit', $issue->id),
+                ],
+                [
+                    'label' => 'Articles',
+                    'url' => moduleRoute('issues.articles', '', 'index'),
+                ],
+                [
+                    'label' => 'Edit',
+                ],
+            ],
+        ];
+    }
 ```
-protected function getBrowserItems($scopes = [])
-{
-    return $this->repository->get(
-        $this->indexWith,
-        $scopes,
-        $this->orderScope(),
-        request('offset') ?? $this->perPage ?? 50,
-        true
-    );
-}
-```
+
+![nested child form](/docs/_media/nested-child-form.png)

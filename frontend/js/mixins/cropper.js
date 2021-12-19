@@ -1,6 +1,6 @@
 export default {
   props: {
-    // Cropper options @see: https://github.com/fengyuanchen/cropperjs/blob/master/README.md#options
+    // Cropper options @see: https://github.com/fengyuanchen/cropperjs/blob/main/README.md#options
     aspectRatio: {
       type: Number,
       default: null

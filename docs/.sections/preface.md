@@ -156,7 +156,7 @@ Additional contributors include [Laurens van Heems](https://area17.com/about/lau
 ### Contribution guide
 
 #### Code of Conduct
-Twill is dedicated to building a welcoming, diverse, safe community. We expect everyone participating in the Twill community to abide by our [Code of Conduct](https://github.com/area17/twill/blob/master/CODE_OF_CONDUCT.md). Please read it. Please follow it.
+Twill is dedicated to building a welcoming, diverse, safe community. We expect everyone participating in the Twill community to abide by our [Code of Conduct](https://github.com/area17/twill/blob/main/CODE_OF_CONDUCT.md). Please read it. Please follow it.
 
 #### Bug reports and features submission
 To submit an issue or request a feature, please do so on [Github](https://github.com/area17/twill/issues).
@@ -175,11 +175,11 @@ Twill follows [Semantic Versioning](https://semver.org/). Major releases are rel
 When referencing Twill from your application, you should always use a version constraint such as `^2.0`, since major releases of Twill do include breaking changes.
 
 #### Which branch?
-All bug fixes should be sent to the latest stable branch (`2.x`). Bug fixes should never be sent to the `master` branch unless they fix features that exist only in the upcoming release.
+All bug fixes should be sent to the latest stable branch (`2.x`). Bug fixes should never be sent to the `main` branch unless they fix features that exist only in the upcoming release.
 
 Minor features that are fully backwards compatible with the current Twill release may be sent to the latest stable branch (`2.x`).
 
-Major new features should always be sent to the `master` branch, which contains the upcoming Twill release.
+Major new features should always be sent to the `main` branch, which contains the upcoming Twill release.
 
 Please send coherent history — make sure each individual commit in your pull request is meaningful. If you had to make a lot of intermediate commits while developing, please [squash them](http://www.git-scm.com/book/en/v2/Git-Tools-Rewriting-History#Changing-Multiple-Commit-Messages) before submitting.
 
@@ -196,7 +196,7 @@ The Twill software is licensed under the [Apache 2.0 license](https://www.apache
 The Twill UI, including but not limited to images, icons, patterns, and derivatives thereof are licensed under the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).
 
 #### Attribution
-By using the Twill UI, you agree that any application which incorporates it shall prominently display the message “Made with Twill” in a legible manner in the footer of the admin console. This message must open a link to Twill.io when clicked or touched. For permission to remove the attribution, contact us at [hello@twill.io](hello@twill.io).
+By using the Twill UI, you agree that any application which incorporates it shall prominently display the message “Made with Twill” in a legible manner in the footer of the admin console. This message must open a link to Twill.io when clicked or touched. For permission to remove the attribution, contact us at [hello@twill.io](mailto:hello@twill.io).
 
 ### 1.x documentation
 Documentation for Twill versions below 2.0 is available for reference [here](/docs/1.x).

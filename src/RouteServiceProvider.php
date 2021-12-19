@@ -42,16 +42,16 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->registerRoutePatterns();
 
-        $this->mapHostRoutes(
+        $this->registerCapsulesRoutes($router);
+
+        $this->mapInternalRoutes(
             $router,
             $this->getRouteGroupOptions(),
             $this->getRouteMiddleware(),
             $this->supportSubdomainRouting()
         );
-        
-        $this->registerCapsulesRoutes($router);
 
-        $this->mapInternalRoutes(
+        $this->mapHostRoutes(
             $router,
             $this->getRouteGroupOptions(),
             $this->getRouteMiddleware(),
@@ -389,6 +389,20 @@ class RouteServiceProvider extends ServiceProvider
                     }
                 );
             }
+        });
+
+        Route::macro('singleton', function (
+            $slug,
+            $options = [],
+            $resource_options = [],
+            $resource = true
+        ) {
+            $pluralSlug = Str::plural($slug);
+            $modelName = Str::studly($slug);
+
+            Route::module($pluralSlug, $options, $resource_options, $resource);
+
+            Route::get($slug, $modelName . 'Controller@editSingleton')->name($slug);
         });
     }
 }
