@@ -34,15 +34,15 @@ class SettingRepository extends ModuleRepository
      */
     public function byKey($key, $section = null)
     {
-        $settingsExists = $this->model->when($section, function ($query) use ($section) {
+        $settingQuery = $this->model->when($section, function ($query) use ($section) {
             $query->where('section', $section);
-        })->where('key', $key)->exists();
+        })->where('key', $key);
 
-        if($settingsExists){
-            $value = is_null($section) ? $this->model->where('key', $key)->with('translations')->first()->value : $this->model->where('key', $key)->with('translations')->where('section', $section)->first()->value;
+        if ($settingQuery->exists()) {
+            return $settingQuery->with('translations')->first()->value;
         }
 
-        return $value ?? null;
+        return null;
     }
 
     /**
