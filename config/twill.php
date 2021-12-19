@@ -195,6 +195,7 @@ return [
         'pt',
         'zh-Hans',
         'ru',
+        'ar'
     ],
 
 
