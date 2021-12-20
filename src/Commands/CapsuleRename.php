@@ -64,7 +64,7 @@ class CapsuleRename extends Command
         if (!$this->capsule) {
             $this->error('Capsule not found');
 
-            return Command::FAILURE;
+            return 1;
         }
 
         $this->replaceFile('Controller', 'controllers_dir');
@@ -83,7 +83,7 @@ class CapsuleRename extends Command
 
         $this->renameCapsuleDirectory();
 
-        return Command::SUCCESS;
+        return 0;
     }
 
     private function replaceFile($type, $directory)
