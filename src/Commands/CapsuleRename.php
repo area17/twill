@@ -107,25 +107,25 @@ class CapsuleRename extends Command
             $newFile
         );
 
-        $this->filesystem->replaceInFile(
+        $this->replaceInFile(
             $this->currentName,
             $this->newName,
             $newFile
         );
 
-        $this->filesystem->replaceInFile(
+        $this->replaceInFile(
             Str::singular($this->currentName),
             Str::singular($this->newName),
             $newFile
         );
 
-        $this->filesystem->replaceInFile(
+        $this->replaceInFile(
             lcfirst($this->currentName),
             lcfirst($this->newName),
             $newFile
         );
 
-        $this->filesystem->replaceInFile(
+        $this->replaceInFile(
             strtolower(Str::snake(Str::singular($this->currentName))),
             strtolower(Str::snake(Str::singular($this->newName))),
             $newFile
@@ -134,7 +134,7 @@ class CapsuleRename extends Command
 
     private function replaceRoutes()
     {
-        $this->filesystem->replaceInFile(
+        $this->replaceInFile(
             lcfirst($this->currentName),
             lcfirst($this->newName),
             $this->capsule['routes_file']
@@ -143,7 +143,7 @@ class CapsuleRename extends Command
 
     private function replaceSeeder()
     {
-        $this->filesystem->replaceInFile(
+        $this->replaceInFile(
             $this->currentName,
             $this->newName,
             $this->capsule['seeds_psr4_path'] . '/DatabaseSeeder.php'
@@ -187,5 +187,18 @@ class CapsuleRename extends Command
         $newCapsulePath = $this->capsule['base_path'] . '/' . $this->newName;
 
         $this->filesystem->move($this->capsule['root_path'], $newCapsulePath);
+    }
+
+    /**
+     * Replace a given string within a given file.
+     *
+     * @param  array|string  $search
+     * @param  array|string  $replace
+     * @param  string  $path
+     * @return void
+     */
+    private function replaceInFile($search, $replace, $path)
+    {
+        file_put_contents($path, str_replace($search, $replace, file_get_contents($path)));
     }
 }
