@@ -53,11 +53,13 @@ All notable changes to `twill` will be documented in this file.
 - Update german translations [`#1235`](https://github.com/area17/twill/pull/1235)
 - Update italian translations [`#1312`](https://github.com/area17/twill/pull/1312)
 - Update docblock annotations [`#1167`](https://github.com/area17/twill/pull/1167/files)
-- Update documentation [`#1165`](https://github.com/area17/twill/pull/1165) [`#1244`](https://github.com/area17/twill/pull/1244) [`#1236`](https://github.com/area17/twill/pull/1236)
+- Update documentation [`#1165`](https://github.com/area17/twill/pull/1165) [`#1244`](https://github.com/area17/twill/pull/1244) [`#1236`](https://github.com/area17/twill/pull/1236) 
+- Add pagination and a few more quality of life updates to the documentation [`#1131`](https://github.com/area17/twill/pull/1131)
 
 ### Chores
 
 - Update npm dependencies in documentation [`377e5e0`](https://github.com/area17/twill/commit/377e5e0b27916861caa448ef899ea0e3fbeff648)
+- Bump axios from 0.21.1 to 0.21.2 [`#1327`](https://github.com/area17/twill/pull/1327)
 
 
 ## 2.5.3 (2021-11-26)
