@@ -29,7 +29,6 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        require_once __DIR__ . '/Helpers/routes_helpers.php';
         $this->registerRouteMiddlewares($this->app->get('router'));
         $this->registerMacros();
         parent::boot();
@@ -291,9 +290,9 @@ class RouteServiceProvider extends ServiceProvider
                 );
             }
 
-            $lastRouteGroupName = lastRouteGroupName();
+            $lastRouteGroupName = RouteServiceProvider::lastRouteGroupName();
 
-            $groupPrefix = twillRouteGroupPrefix();
+            $groupPrefix = RouteServiceProvider::twillRouteGroupPrefix();
 
             // Check if name will be a duplicate, and prevent if needed/allowed
             if (!empty($groupPrefix) &&
@@ -385,9 +384,9 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::module($pluralSlug, $options, $resource_options, $resource);
 
-            $lastRouteGroupName = lastRouteGroupName();
+            $lastRouteGroupName = RouteServiceProvider::lastRouteGroupName();
 
-            $groupPrefix = twillRouteGroupPrefix();
+            $groupPrefix = RouteServiceProvider::twillRouteGroupPrefix();
 
             // Check if name will be a duplicate, and prevent if needed/allowed
             if (
@@ -404,5 +403,35 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::get($slug, $modelName . 'Controller@editSingleton')->name($singletonRouteName);
         });
+    }
+
+    public static function lastRouteGroupName()
+    {
+        // Get the current route groups
+        $routeGroups = Route::getGroupStack() ?? [];
+
+        // Get the name prefix of the last group
+        return end($routeGroups)['as'] ?? '';
+    }
+
+    public static function twillRouteGroupPrefix()
+    {
+        $groupPrefix = trim(
+            str_replace('/', '.', Route::getLastGroupPrefix()),
+            '.'
+        );
+
+        if (!empty(config('twill.admin_app_path'))) {
+            $groupPrefix = ltrim(
+                str_replace(
+                    config('twill.admin_app_path'),
+                    '',
+                    $groupPrefix
+                ),
+                '.'
+            );
+        }
+
+        return $groupPrefix;
     }
 }
