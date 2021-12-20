@@ -157,7 +157,7 @@ if (!function_exists('createDefaultRevisionsTableFields')) {
 
         $table->timestamps();
         $table->json('payload');
-        $table->foreign("{$tableNameSingular}_id")->references('id')->on("{$tableNamePlural}")->onDelete('cascade');
+        $table->foreign("{$tableNameSingular}_id", "fk_{$tableNameSingular}_revisions_{$tableNameSingular}_id")->references('id')->on($tableNamePlural)->onDelete('CASCADE');
         $table->foreign('user_id')->references('id')->on(config('twill.users_table', 'twill_users'))->onDelete('set null');
     }
 }

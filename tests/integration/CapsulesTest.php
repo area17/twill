@@ -238,6 +238,24 @@ class CapsulesTest extends TestCase
         $this->assertEquals('1', $model->published);
     }
 
+    public function testCanRenameCapsule()
+    {
+        $this->assertExitCodeIsGood(
+            $this->artisan('twill:capsule:rename', [
+                'currentName' => $this->capsuleName,
+                'newName' => 'SomeCapsuleNames',
+            ])->run()
+        );
+
+        $this->assertFileExists(
+            twill_path('Twill/Capsules/SomeCapsuleNames/Models/SomeCapsuleName.php')
+        );
+
+        $this->assertIsObject(
+            $this->app->make('App\Twill\Capsules\SomeCapsuleNames\Models\SomeCapsuleName')
+        );
+    }
+
     public function makeCapsule()
     {
         $this->artisan("twill:make:capsule {$this->capsuleName} --all --force");

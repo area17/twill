@@ -1,0 +1,98 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class Rename{{tableClassName}}Tables extends Migration
+{
+    public function up()
+    {
+        Schema::rename('{{table}}', '{{newTable}}');
+
+        if (Schema::hasTable('{{singularTableName}}_translations')) {
+            Schema::table('{{singularTableName}}_translations', function(Blueprint $table) {
+                $table->dropForeign('fk_{{singularTableName}}_translations_{{singularTableName}}_id');
+                $table->renameColumn('{{singularTableName}}_id', '{{newSingularTableName}}_id');
+
+                $table->foreign(
+                    '{{newSingularTableName}}_id',
+                    "fk_{{newSingularTableName}}_translations_{{newSingularTableName}}_id"
+                )->references('id')->on('{{newTable}}')->onDelete('cascade');
+            });
+
+            Schema::rename('{{singularTableName}}_translations', '{{newSingularTableName}}_translations');
+        }
+
+        if (Schema::hasTable('{{singularTableName}}_slugs')) {
+            Schema::table('{{singularTableName}}_slugs', function(Blueprint $table) {
+                $table->dropForeign('fk_{{singularTableName}}_slugs_{{singularTableName}}_id');
+                $table->renameColumn('{{singularTableName}}_id', '{{newSingularTableName}}_id');
+                $table->foreign(
+                    '{{newSingularTableName}}_id',
+                    "fk_{{newSingularTableName}}_slugs_{{newSingularTableName}}_id"
+                )->references('id')->on('{{newTable}}')->onDelete('cascade');
+            });
+
+            Schema::rename('{{singularTableName}}_slugs', '{{newSingularTableName}}_slugs');
+        }
+
+        if (Schema::hasTable('{{singularTableName}}_revisions')) {
+            Schema::table('{{singularTableName}}_revisions', function(Blueprint $table) {
+                $table->dropForeign('fk_{{singularTableName}}_revisions_{{singularTableName}}_id');
+                $table->renameColumn('{{singularTableName}}_id', '{{newSingularTableName}}_id');
+                $table->foreign(
+                    '{{newSingularTableName}}_id',
+                    "fk_{{newSingularTableName}}_revisions_{{newSingularTableName}}_id"
+                )->references('id')->on('{{newTable}}')->onDelete('cascade');
+            });
+
+            Schema::rename('{{singularTableName}}_revisions', '{{newSingularTableName}}_revisions');
+        }
+    }
+
+    public function down()
+    {
+        Schema::rename('{{newTable}}', '{{table}}');
+
+        if (Schema::hasTable('{{newSingularTableName}}_translations')) {
+            Schema::table('{{newSingularTableName}}_translations', function(Blueprint $table) {
+                $table->dropForeign('fk_{{newSingularTableName}}_translations_{{newSingularTableName}}_id');
+                $table->renameColumn('{{newSingularTableName}}_id', '{{singularTableName}}_id');
+
+                $table->foreign(
+                    '{{singularTableName}}_id',
+                    "fk_{{singularTableName}}_translations_{{singularTableName}}_id"
+                )->references('id')->on('{{table}}')->onDelete('cascade');
+            });
+
+            Schema::rename('{{newSingularTableName}}_translations', '{{singularTableName}}_translations');
+        }
+
+        if (Schema::hasTable('{{newSingularTableName}}_slugs')) {
+            Schema::table('{{newSingularTableName}}_slugs', function(Blueprint $table) {
+                $table->dropForeign('fk_{{newSingularTableName}}_slugs_{{newSingularTableName}}_id');
+                $table->renameColumn('{{newSingularTableName}}_id', '{{singularTableName}}_id');
+                $table->foreign(
+                    '{{singularTableName}}_id',
+                    "fk_{{singularTableName}}_slugs_{{singularTableName}}_id"
+                )->references('id')->on('{{table}}')->onDelete('cascade');
+            });
+
+            Schema::rename('{{newSingularTableName}}_slugs', '{{singularTableName}}_slugs');
+        }
+
+        if (Schema::hasTable('{{newSingularTableName}}_revisions')) {
+            Schema::table('{{newSingularTableName}}_revisions', function(Blueprint $table) {
+                $table->dropForeign("fk_{{newSingularTableName}}_revisions_{{newSingularTableName}}_id");
+                $table->renameColumn('{{newSingularTableName}}_id', '{{singularTableName}}_id');
+                $table->foreign(
+                    '{{singularTableName}}_id',
+                    "fk_{{singularTableName}}_revisions_{{singularTableName}}_id"
+                )->references('id')->on('{{table}}')->onDelete('cascade');
+            });
+
+            Schema::rename('{{newSingularTableName}}_revisions', '{{singularTableName}}_revisions');
+        }
+    }
+}
