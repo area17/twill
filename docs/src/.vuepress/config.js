@@ -28,8 +28,9 @@ module.exports = {
     editLinks: true,
     editLinkText: 'Edit this page on GitHub',
     algolia: {
-      apiKey: 'ef9b333ded0418b96b32e189b183a94e',
-      indexName: 'twill'
+      apiKey: '9360cb12e45076d95f77b63549021a6d',
+      indexName: 'twill',
+      appId: '89HNJPXALF',
     },
     nav: [
       { text: 'GitHub', link: 'https://github.com/area17/twill' },
