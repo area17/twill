@@ -290,18 +290,12 @@ class RouteServiceProvider extends ServiceProvider
                 );
             }
 
-            $lastRouteGroupName = RouteServiceProvider::lastRouteGroupName();
+            $lastRouteGroupName = RouteServiceProvider::getLastRouteGroupName();
 
-            $groupPrefix = RouteServiceProvider::twillRouteGroupPrefix();
+            $groupPrefix = RouteServiceProvider::getGroupPrefix();
 
             // Check if name will be a duplicate, and prevent if needed/allowed
-            if (!empty($groupPrefix) &&
-                (
-                    blank($lastRouteGroupName) ||
-                    config('twill.allow_duplicates_on_route_names', true) ||
-                    (!Str::endsWith($lastRouteGroupName, ".{$groupPrefix}."))
-                )
-            ) {
+            if (RouteServiceProvider::shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)) {
                 $customRoutePrefix = "{$groupPrefix}.{$slug}";
                 $resourceCustomGroupPrefix = "{$groupPrefix}.";
             } else {
@@ -384,18 +378,12 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::module($pluralSlug, $options, $resource_options, $resource);
 
-            $lastRouteGroupName = RouteServiceProvider::lastRouteGroupName();
+            $lastRouteGroupName = RouteServiceProvider::getLastRouteGroupName();
 
-            $groupPrefix = RouteServiceProvider::twillRouteGroupPrefix();
+            $groupPrefix = RouteServiceProvider::getGroupPrefix();
 
             // Check if name will be a duplicate, and prevent if needed/allowed
-            if (
-                !empty($groupPrefix) &&
-                (blank($lastRouteGroupName) ||
-                    config('twill.allow_duplicates_on_route_names', true) ||
-                    (!Str::endsWith($lastRouteGroupName, ".{$groupPrefix}."))
-                )
-            ) {
+            if (RouteServiceProvider::shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)) {
                 $singletonRouteName = "{$groupPrefix}.{$slug}";
             } else {
                 $singletonRouteName = $slug;
@@ -405,7 +393,14 @@ class RouteServiceProvider extends ServiceProvider
         });
     }
 
-    public static function lastRouteGroupName()
+    public static function shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)
+    {
+        return !empty($groupPrefix) && (blank($lastRouteGroupName) ||
+            config('twill.allow_duplicates_on_route_names', true) ||
+            (!Str::endsWith($lastRouteGroupName, ".{$groupPrefix}.")));
+    }
+
+    public static function getLastRouteGroupName()
     {
         // Get the current route groups
         $routeGroups = Route::getGroupStack() ?? [];
@@ -414,7 +409,7 @@ class RouteServiceProvider extends ServiceProvider
         return end($routeGroups)['as'] ?? '';
     }
 
-    public static function twillRouteGroupPrefix()
+    public static function getGroupPrefix()
     {
         $groupPrefix = trim(
             str_replace('/', '.', Route::getLastGroupPrefix()),
