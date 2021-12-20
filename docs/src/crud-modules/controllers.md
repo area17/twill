@@ -77,6 +77,11 @@ pageClass: twill-doc
             'title' => 'Field title',
             'field' => 'presenterMethod',
             'present' => true,
+        ],
+        'relatedBrowserFieldName' => [ // related browser column
+            'title' => 'Field title',
+            'field' => 'relatedFieldToDisplay',
+            'relatedBrowser' => 'browserName',
         ]
     ];
 
