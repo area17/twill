@@ -17,6 +17,7 @@ use A17\Twill\Commands\MakeSingleton;
 use A17\Twill\Commands\ModuleMake;
 use A17\Twill\Commands\ModuleMakeDeprecated;
 use A17\Twill\Commands\RefreshLQIP;
+use A17\Twill\Commands\RefreshCrops;
 use A17\Twill\Commands\SyncLang;
 use A17\Twill\Commands\Update;
 use A17\Twill\Http\ViewComposers\ActiveNavigation;
@@ -317,6 +318,7 @@ class TwillServiceProvider extends ServiceProvider
             ListBlocks::class,
             CreateSuperAdmin::class,
             RefreshLQIP::class,
+            RefreshCrops::class,
             GenerateBlocks::class,
             Build::class,
             Update::class,

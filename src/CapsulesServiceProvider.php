@@ -11,6 +11,8 @@ class CapsulesServiceProvider extends RouteServiceProvider
 {
     use HasRoutes, HasCapsules;
 
+    public static $capsulesBootstrapped = false;
+
     protected $manager;
 
     protected function mergeTwillConfig()
@@ -31,6 +33,7 @@ class CapsulesServiceProvider extends RouteServiceProvider
     {
         $this->registerManager();
         $this->mergeTwillConfig();
+        $this->bootCapsules();
     }
 
     public function boot()
@@ -44,6 +47,23 @@ class CapsulesServiceProvider extends RouteServiceProvider
         $this->manager->getCapsuleList()->map(function ($capsule) {
             $this->registerCapsule($capsule);
         });
+    }
+
+    /*
+     * Boot the capsules so their psr, config and service providers are booted.
+     *
+     * @see HasCapsules::bootstrapCapsule
+     */
+    public function bootCapsules()
+    {
+        if (!self::$capsulesBootstrapped) {
+            $this->getCapsuleList()
+                ->where('enabled', true)
+                ->each(function ($capsule) {
+                    $this->bootstrapCapsule($capsule);
+                });
+            self::$capsulesBootstrapped = true;
+        }
     }
 
     protected function registerCapsule($capsule)

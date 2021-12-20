@@ -1080,9 +1080,7 @@ abstract class ModuleController extends Controller
             $module = Str::singular(last(explode('.', $this->moduleName)));
             $value = '<a href="';
             $value .= moduleRoute("$this->moduleName.$field", $this->routePrefix, 'index', [$module => $item[$this->identifierColumnKey]]);
-            $value .= '">' . $nestedCount . " " . (strtolower($nestedCount > 1
-                ? Str::plural($column['title'])
-                : Str::singular($column['title']))) . '</a>';
+            $value .= '">' . $nestedCount . " " . (strtolower(Str::plural($column['title'], $nestedCount))) . '</a>';
         } else {
             $field = $column['field'];
             $value = $item->$field;
@@ -1098,6 +1096,13 @@ abstract class ModuleController extends Controller
                 ->join(', ');
         } elseif (isset($column['present']) && $column['present']) {
             $value = $item->presentAdmin()->{$column['field']};
+        }
+
+        if (isset($column['relatedBrowser']) && $column['relatedBrowser']) {
+            $field = 'relatedBrowser' . ucfirst($column['relatedBrowser']) . ucfirst($column['field']);
+            $value = $item->getRelated($column['relatedBrowser'])
+                ->pluck($column['field'])
+                ->join(', ');
         }
 
         return [
@@ -1158,9 +1163,15 @@ abstract class ModuleController extends Controller
         unset($this->indexColumns[$this->titleColumnKey]);
 
         foreach ($this->indexColumns as $column) {
-            $columnName = isset($column['relationship'])
-            ? $column['relationship'] . ucfirst($column['field'])
-            : (isset($column['nested']) ? $column['nested'] : $column['field']);
+            if (isset($column['relationship'])) {
+                $columnName = $column['relationship'] . ucfirst($column['field']);
+            } elseif (isset($column['nested'])) {
+                $columnName = $column['nested'];
+            } elseif (isset($column['relatedBrowser'])) {
+                $columnName = 'relatedBrowser' . ucfirst($column['relatedBrowser']) . ucfirst($column['field']);
+            } else {
+                $columnName = $column['field'];
+            }
 
             array_push($tableColumns, [
                 'name' => $columnName,

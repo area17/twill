@@ -20,15 +20,15 @@ trait HasCapsules
 
         $list = collect(config('twill.capsules.list'));
 
-        if (config('twill.capsules.loaded')) {
-            return $list;
+        if (!config('twill.capsules.loaded')) {
+            $list = $list
+                ->where('enabled', true)
+                ->map(function ($capsule) use ($path) {
+                    return $this->makeCapsule($capsule, $path);
+                });
         }
 
-        return $list
-            ->where('enabled', true)
-            ->map(function ($capsule) use ($path) {
-                return $this->makeCapsule($capsule, $path);
-            });
+        return $list;
     }
 
     public function getCapsuleByModel($model)
@@ -60,12 +60,10 @@ trait HasCapsules
      */
     public function getCapsulesSubdir()
     {
-        $subdir = config('twill.capsules.namespaces.subdir');
-
-        return $subdir;
+        return config('twill.capsules.namespaces.subdir');
     }
 
-    public function makeCapsule($capsule, $basePath = null)
+    public function makeCapsule($capsule, $basePath = null): array
     {
         $basePath = $basePath ?? $this->getCapsulesPath();
 
@@ -159,13 +157,14 @@ trait HasCapsules
 
         $capsule['config'] = $this->loadCapsuleConfig($capsule);
 
-        $this->registerPsr4Autoloader($capsule);
-
-        $this->autoloadConfigFiles($capsule);
-
-        $this->registerServiceProvider($capsule);
-
         return $capsule;
+    }
+
+    public function bootstrapCapsule($capsule): void
+    {
+        $this->registerPsr4Autoloader($capsule);
+        $this->autoloadConfigFiles($capsule);
+        $this->registerServiceProvider($capsule);
     }
 
     public function registerPsr4Autoloader($capsule)
