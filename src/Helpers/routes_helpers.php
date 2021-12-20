@@ -12,7 +12,7 @@ if (!function_exists('moduleRoute')) {
      * @param bool $absolute
      * @return string
      */
-    function moduleRoute($moduleName, $prefix, $action='', $parameters = [], $absolute = true)
+    function moduleRoute($moduleName, $prefix, $action = '', $parameters = [], $absolute = true)
     {
         // Fix module name case
         $moduleName = Str::camel($moduleName);
@@ -65,7 +65,6 @@ if (!function_exists('getNavigationUrl')) {
 
         return !empty($element['route']) ? route($element['route'], $element['params'] ?? []) : '#';
     }
-
 }
 
 if (!function_exists('isActiveNavigation')) {
