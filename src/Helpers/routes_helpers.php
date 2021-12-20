@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Route;
 
 if (!function_exists('moduleRoute')) {
     /**
@@ -12,7 +13,7 @@ if (!function_exists('moduleRoute')) {
      * @param bool $absolute
      * @return string
      */
-    function moduleRoute($moduleName, $prefix, $action='', $parameters = [], $absolute = true)
+    function moduleRoute($moduleName, $prefix, $action = '', $parameters = [], $absolute = true)
     {
         // Fix module name case
         $moduleName = Str::camel($moduleName);
@@ -65,7 +66,6 @@ if (!function_exists('getNavigationUrl')) {
 
         return !empty($element['route']) ? route($element['route'], $element['params'] ?? []) : '#';
     }
-
 }
 
 if (!function_exists('isActiveNavigation')) {
@@ -86,5 +86,39 @@ if (!function_exists('isActiveNavigation')) {
         $urlsAreMatching = ($navigationElement['raw'] ?? false) && Str::endsWith(Request::url(), $navigationElement['route']);
 
         return $urlsAreMatching;
+    }
+}
+
+if (!function_exists('twillRouteGroupPrefix')) {
+    function twillRouteGroupPrefix()
+    {
+        $groupPrefix = trim(
+            str_replace('/', '.', Route::getLastGroupPrefix()),
+            '.'
+        );
+
+        if (!empty(config('twill.admin_app_path'))) {
+            $groupPrefix = ltrim(
+                str_replace(
+                    config('twill.admin_app_path'),
+                    '',
+                    $groupPrefix
+                ),
+                '.'
+            );
+        }
+
+        return $groupPrefix;
+    }
+}
+
+if (!function_exists('lastRouteGroupName')) {
+    function lastRouteGroupName()
+    {
+        // Get the current route groups
+        $routeGroups = Route::getGroupStack() ?? [];
+
+        // Get the name prefix of the last group
+        return end($routeGroups)['as'] ?? '';
     }
 }
