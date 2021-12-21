@@ -22,6 +22,8 @@ The command accepts several options:
 
 The `twill:module` command will generate a migration file, a model, a repository, a controller, a form request object and a form view.
 
+With the `twill:make:singleton` command you can generate a singleton module.
+
 Add the route to your admin routes file(`routes/admin.php`).
 
 ```php
