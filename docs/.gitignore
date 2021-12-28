@@ -1,8 +1,8 @@
-.vuepress/dist
-.vuepress/docs
 .idea
 node_modules
-!.vuepress/public
+docs
+src/.vuepress/dist
+!src/.vuepress/public
 
 # generated using npm scripts
-README.md 
+/README.md

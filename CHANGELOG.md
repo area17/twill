@@ -14,6 +14,7 @@ All notable changes to `twill` will be documented in this file.
 - Support for translated permalinks in the title editor [`#1092`](https://github.com/area17/twill/pull/1092)
 - Support for capsule service providers [`#1212`](https://github.com/area17/twill/pull/1212)
 - Auto detect latitude-longitude value in location field [`#1275`](https://github.com/area17/twill/pull/1275) [`#1170`](https://github.com/area17/twill/pull/1170)
+- Adds the ability to display an indexColumn selected from a relatedBrowser [`#1302`](https://github.com/area17/twill/pull/1302)
 
 ### Fixed
 
@@ -34,6 +35,8 @@ All notable changes to `twill` will be documented in this file.
 - Remove duplicate test stub class [`#1311`](https://github.com/area17/twill/pull/1311)
 - Fix destroy action on single nested items [`#1304`](https://github.com/area17/twill/pull/1304)
 - Prevent multiple AJAX requests in Block Editor previews [`#1282`](https://github.com/area17/twill/pull/1282)
+- Fix singleton routing for primary and secondary navigation support [`#1325`](https://github.com/area17/twill/pull/1325)
+- Use case insensitive like operator in filterHandleTranslations for PostgresSQL support [`#1322`](https://github.com/area17/twill/pull/1322)
 
 ### Improved
 
@@ -48,12 +51,15 @@ All notable changes to `twill` will be documented in this file.
 - Support `titleKey` parameter in `relatedBrowsers` configuration [`#1301`](https://github.com/area17/twill/pull/1301)
 - Update `HasSlug` to use Eloquent instead of DB facade [`#1309`](https://github.com/area17/twill/pull/1309)
 - Update german translations [`#1235`](https://github.com/area17/twill/pull/1235)
+- Update italian translations [`#1312`](https://github.com/area17/twill/pull/1312)
 - Update docblock annotations [`#1167`](https://github.com/area17/twill/pull/1167/files)
-- Update documentation [`#1165`](https://github.com/area17/twill/pull/1165) [`#1244`](https://github.com/area17/twill/pull/1244) [`#1236`](https://github.com/area17/twill/pull/1236)
+- Update documentation [`#1165`](https://github.com/area17/twill/pull/1165) [`#1244`](https://github.com/area17/twill/pull/1244) [`#1236`](https://github.com/area17/twill/pull/1236) 
+- Add pagination and a few more quality of life updates to the documentation [`#1131`](https://github.com/area17/twill/pull/1131)
 
 ### Chores
 
 - Update npm dependencies in documentation [`377e5e0`](https://github.com/area17/twill/commit/377e5e0b27916861caa448ef899ea0e3fbeff648)
+- Bump axios from 0.21.1 to 0.21.2 [`#1327`](https://github.com/area17/twill/pull/1327)
 
 
 ## 2.5.3 (2021-11-26)
