@@ -28,7 +28,7 @@
                                       @block:select="_selectBlock(edit, blockIndex)"
                                       @block:unselect="_unselectBlock(unEdit, blockIndex)"
                                       @block:move="move"
-                                      @block:delete="deleteBlock(remove)"
+                                      @block:delete="_deleteBlock(remove)"
                                       @scroll-to="scrollToActive"/>
           </a17-blockeditor-model>
         </template>
@@ -80,9 +80,6 @@
       return {
         loading: false,
         blockSelectIndex: -1,
-        unSubscribe: function () {
-          return null
-        },
         handle: '.editorPreview__dragger' // Drag handle override
       }
     },
@@ -126,13 +123,13 @@
         if (fn) {
           this.selectBlock(fn, index)
         }
+
         if (this.blockSelectIndex !== index) {
+          this.unSubscribe()
           this.blockSelectIndex = index
-          this.unSubscribe = this.$store.subscribe((mutation) => {
-            // console.log('mutation', mutation)
+          this._unSubscribeInternal = this.$store.subscribe((mutation) => {
             // Don't trigger a refresh of the preview every single time, just when necessary
             if (PREVIEW.REFRESH_BLOCK_PREVIEW.includes(mutation.type)) {
-              // console.log('Editor - store changed : ' + mutation.type)
               if (PREVIEW.REFRESH_BLOCK_PREVIEW_ALL.includes(mutation.type)) {
                 this.getAllPreviews()
               } else {
@@ -143,10 +140,20 @@
         }
       },
       _unselectBlock (fn, index = this.blockSelectIndex) {
+        this.unSubscribe()
         this.getPreview(index)
         this.unselectBlock(fn, index)
         this.blockSelectIndex = -1
+      },
+      _deleteBlock (fn) {
         this.unSubscribe()
+        this.deleteBlock(fn)
+      },
+      unSubscribe () {
+        if (!this._unSubscribeInternal) return
+
+        this._unSubscribeInternal()
+        this._unSubscribeInternal = null
       },
 
       // Previews management

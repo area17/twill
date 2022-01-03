@@ -109,7 +109,7 @@ trait HandleTranslations
             $query->whereHas('translations', function ($q) use ($scopes, $attributes) {
                 foreach ($attributes as $attribute) {
                     if (isset($scopes[$attribute]) && is_string($scopes[$attribute])) {
-                        $q->where($attribute, 'like', '%' . $scopes[$attribute] . '%');
+                        $q->where($attribute, $this->getLikeOperator(), '%' . $scopes[$attribute] . '%');
                     }
                 }
             });
