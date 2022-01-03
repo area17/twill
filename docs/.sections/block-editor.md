@@ -237,7 +237,7 @@ Inside a block, repeaters can be used too.
 ```
 You can add other fields before or after your repeater, or even multiple repeaters to the same block.
 
-- Create an *item* block, the one that will be reapeated inside the *container* block
+- Create an *item* block, the one that will be repeated inside the *container* block
 
 filename: ```views/admin/repeaters/accordion_item.blade.php```
 ```php
@@ -348,6 +348,40 @@ If the block has a media field, you can refer to the Media Library documentation
 ```php
 {{ $block->image('mediaFieldName', 'cropNameFromBlocksConfig') }}
 {{ $block->images('mediaFieldName', 'cropNameFromBlocksConfig')}}
+```
+
+#### Modifying block data
+
+Sometimes it can be useful to abstract some PHP you would usually put at the top of the blade file. This will keep your 
+blade files cleaner and allow for easier logic writing.
+
+For this you can use Block classes!
+
+To do this create a file named after your block. (ex. for `hero_header_with_menu.blade.php` your class will be `HeroHeaderWithMenuBlock`)
+
+The file needs to be in `app/Twill/Block` and has to extend `TwillBlock`.
+
+```php
+<?php
+
+namespace App\Twill\Block;
+
+use A17\Twill\Helpers\TwillBlock;
+
+class HeroHeaderWithMenuBlock extends TwillBlock
+{
+    public function getData(): array
+    {
+        $image = $this->block->imageAsArray('heading', 'desktop');
+        $ctaTarget = $this->block->getRelated('call_to_action_target')->first()->getSlug();
+
+        return array_merge(
+            parent::getData(),
+            'image' => $image,
+            'linkSlug' => $ctaTarget,
+        );
+    }
+}
 ```
 
 ### Previewing blocks
