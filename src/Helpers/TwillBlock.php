@@ -7,8 +7,15 @@ use Illuminate\Support\Str;
 
 abstract class TwillBlock
 {
-    public array $data;
-    public Block $block;
+    /**
+     * @var array
+     */
+    public $data;
+
+    /**
+     * @var \A17\Twill\Models\Block
+     */
+    public $block;
 
     public function __construct(Block $block, array $data)
     {
