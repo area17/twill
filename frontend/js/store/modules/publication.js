@@ -100,9 +100,6 @@ const getters = {
     return state.reviewProcess.filter(reviewProcess => reviewProcess.checked)
   },
   getSubmitOptions: state => {
-    if (state.createWithoutModal) {
-      return state.submitOptions.draft
-    }
     return (state.published || !state.withPublicationToggle) ? state.submitOptions[state.publishSubmit] : state.submitOptions.draft
   },
   isEnabledSubmitOption: (state, getters) => name => {
