@@ -4,6 +4,8 @@ All notable changes to `twill` will be documented in this file.
 
 ## UNRELEASED
 
+## 2.6.0 (2021-12-21)
+
 ### Added
 
 - Artisan command `twill:make:singleton` to generate single-record modules [`#1178`](https://github.com/area17/twill/pull/1178)
