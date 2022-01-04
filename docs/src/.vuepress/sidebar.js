@@ -262,6 +262,10 @@ module.exports = [
             "path": "/media-library/file-library.html",
           },
           {
+            "title": "Custom metadata",
+            "path": "/media-library/custom-metadata.html",
+          },
+          {
             "title": "Imgix and S3 Direct Uploads",
             "path": "/media-library/imgix-and-s3-direct-uploads.html",
           },
