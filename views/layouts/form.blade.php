@@ -144,6 +144,8 @@
         createWithoutModal: {{ isset($createWithoutModal) && $createWithoutModal ? 'true' : 'false' }},
         withPublicationTimeframe: {{ json_encode(($schedule ?? true) && isset($item) && $item->isFillable('publish_start_date')) }},
         publishedLabel: '{{ $customPublishedLabel ?? twillTrans('twill::lang.main.published') }}',
+        expiredLabel: '{{twillTrans('twill::lang.publisher.expired')}}',
+        scheduledLabel: '{{twillTrans('twill::lang.publisher.scheduled')}}',
         draftLabel: '{{ $customDraftLabel ?? twillTrans('twill::lang.main.draft') }}',
         submitDisableMessage: '{{ $submitDisableMessage ?? '' }}',
         startDate: '{{ $item->publish_start_date ?? '' }}',

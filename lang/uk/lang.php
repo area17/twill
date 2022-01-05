@@ -60,7 +60,6 @@ return [
         'activity-row' => [
             'edit' => 'Редагувати',
             'view-permalink' => 'Переглянути Постійне посилання',
-            'by' => '',
         ],
         'unknown-author' => 'Невідомий',
     ],

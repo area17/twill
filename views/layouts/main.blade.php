@@ -82,6 +82,10 @@
             window['{{ config('twill.js_namespace') }}'].twillLocalization = {!! json_encode($twillLocalization) !!};
             window['{{ config('twill.js_namespace') }}'].STORE = {};
             window['{{ config('twill.js_namespace') }}'].STORE.form = {};
+            window['{{ config('twill.js_namespace') }}'].STORE.options = {
+                publishDate24Hr: {{config('twill.publish_date_24h') ? 'true' : 'false'}},
+                publishDateDisplayFormat: '{{config('twill.publish_date_display_format')}}',
+            };
             window['{{ config('twill.js_namespace') }}'].STORE.medias = {};
             window['{{ config('twill.js_namespace') }}'].STORE.medias.types = [];
             window['{{ config('twill.js_namespace') }}'].STORE.languages = {!! json_encode(getLanguagesForVueStore($form_fields ?? [], $translate ?? false)) !!};
