@@ -1182,6 +1182,22 @@ abstract class ModuleController extends Controller
                 'html' => $column['html'] ?? false,
             ]);
         }
+
+        // @todo: This feels weird, must be a better way? This is copied from how it is approached in the blade file.
+        if ($this->repository->createForPreview([])->isFillable('publish_start_date')) {
+            // @todo: BEFORE MERGE: Is there any reason to use array_push over this?
+            // It is faster this way as noted by the docs: https://www.php.net/manual/en/function.array-push.php
+            // Note: If you use array_push() to add one element to the array, it's better to
+            // use $array[] = because in that way there is no overhead of calling a function.
+            $tableColumns[] = [
+                'name' => 'publish_start_date',
+                'label' => twillTrans('twill::lang.listing.columns.published'),
+                'visible' => true,
+                'optional' => true,
+                'sortable' => true,
+            ];
+        }
+
         if ($this->moduleHas('translations') && count(getLocales()) > 1) {
             array_push($tableColumns, [
                 'name' => 'languages',
