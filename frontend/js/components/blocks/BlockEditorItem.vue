@@ -127,6 +127,11 @@
         this.visible = this.opened
       }
     },
+    created () {
+      if (this.isNew) {
+        this.toggleExpand()
+      }
+    },
     methods: {
       toggleExpand () {
         this.visible = !this.visible

@@ -190,7 +190,7 @@
         this.opened = true
       },
       checkExpandBlocks () {
-        this.allBlocksExpands = this.$refs.blockList.every((blocks) => blocks.visible)
+        this.$refs.blockList[this.$refs.blockList.length - 1].toggleExpand()
       },
       handleOnMove (e) {
         const { draggedContext, relatedContext } = e
