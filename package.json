@@ -1,6 +1,6 @@
 {
   "name": "@area17/twill",
-  "version": "2.5.2",
+  "version": "2.6.0",
   "private": true,
   "scripts": {
     "inspect": "vue-cli-service inspect --mode production",
@@ -12,7 +12,7 @@
     "clean-customs": "rm -rf frontend/js/components/blocks/customs/* && rm -rf frontend/js/components/customs/* && touch frontend/js/components/customs/.keep"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "core-js": "^3.9.1",
     "cropperjs": "1.5.6",
     "date-fns": "1.29.0",
