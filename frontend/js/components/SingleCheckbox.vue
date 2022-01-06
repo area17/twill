@@ -3,7 +3,11 @@
     <div class="singleCheckbox" :class="wrapperClasses">
       <span class="checkbox">
         <input type="checkbox" class="checkbox__input" :class="checkboxClasses" value="true" :name="name + '[' + randKey + ']'" :id="uniqId" :disabled="disabled" :checked="checkedValue">
-        <label class="checkbox__label" :for="uniqId" @click.prevent="changeCheckbox">{{ label }} <span class="checkbox__icon"><span v-svg symbol="check"></span></span></label>
+        <label class="checkbox__label" :for="uniqId" @click.prevent="changeCheckbox">{{ label }}
+          <span class="checkbox__icon"><span v-svg symbol="check"></span></span>
+          <br />
+          <span class="f--small" v-if="note">{{ note }}</span>
+        </label>
       </span>
     </div>
     <template v-if="requireConfirmation">
