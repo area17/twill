@@ -71,12 +71,9 @@ class RefreshLQIP extends Command
 
                     $url = ImageService::getLQIPUrl($uuid, $crop_params + ['w' => $lqip_width]);
 
-                    if ($imageService === Glide::class) {
-                        // Glide is a local imaging service so we should make sure we also utilize the local url.
-                        // This solution might not work at all in some cases.
-                        // I feel like this is not optimal and we could maybe directly use the glide api in this case
-                        // but maybe that is not worth the effort (for now).
-                        $url = url($url);
+                    if (($imageService === Glide::class) && !config('twill.glide.base_url')) {
+                        $this->error('Cannot generate LQIP. Missing glide base url. Please set GLIDE_BASE_URL in your .env');
+                        return;
                     }
 
                     try {
