@@ -22,8 +22,6 @@ The command accepts several options:
 
 The `twill:module` command will generate a migration file, a model, a repository, a controller, a form request object and a form view.
 
-With the `twill:make:singleton` command you can generate a singleton module.
-
 Add the route to your admin routes file(`routes/admin.php`).
 
 ```php
@@ -62,3 +60,36 @@ If you provided the `hasRevisions` option, each form submission will create a ne
 Depending on the depth of your module in your navigation, you'll need to wrap your route declaration in one or multiple nested route groups.
 
 You can setup your index options and columns in the generated controller if needed.
+
+## Singleton
+
+With the `twill:make:singleton` command you can generate a singleton module.
+
+A singleton is similar to a module, except that of a singleton only one model can exist in the database.
+
+A singleton can be used for a homepage or for example a contact page.
+
+The functionalities are exactly the same as that of regular modules. But they are registered a bit different.
+
+After generating your singleton via the command mentioned above:
+
+Add the route to your admin routes file(`routes/admin.php`).
+
+```php
+<?php
+
+Route::singleton('moduleName');
+```
+
+Setup a new CMS navigation item in `config/twill-navigation.php`.
+
+```php
+return [
+    ...
+    'moduleName' => [
+        'title'     => 'Module name',
+        'singleton' => true,
+    ]
+    ...
+]
+```
