@@ -271,7 +271,7 @@ class Glide implements ImageServiceInterface
     }
 
     /**
-     * @param string $id 
+     * @param string $id
      * @return string
      */
     private function getOriginalMediaUrl($id)
@@ -285,9 +285,6 @@ class Glide implements ImageServiceInterface
         if ((Str::endsWith($id, '.svg') && $addParamsToSvgs) || !Str::endsWith($id, $originalMediaForExtensions)) {
             return null;
         }
-
-        /** @var string $endpoint */
-        $endpoint;
 
         switch ($endpointType) {
             case 'local':

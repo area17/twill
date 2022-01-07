@@ -4,7 +4,7 @@ namespace A17\Twill\Models\Behaviors;
 
 use A17\Twill\Models\Media;
 use Illuminate\Support\Arr;
-use ImageService;
+use A17\Twill\Services\MediaLibrary\ImageService;
 
 trait HasMedias
 {

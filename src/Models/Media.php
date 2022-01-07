@@ -2,11 +2,10 @@
 
 namespace A17\Twill\Models;
 
-use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use ImageService;
+use A17\Twill\Services\MediaLibrary\ImageService;
 
 class Media extends Model
 {
@@ -78,6 +77,7 @@ class Media extends Model
             'tags' => $this->tags->map(function ($tag) {
                 return $tag->name;
             }),
+            'lqip_data' => $this->pivot->lqip_data ?? null,
             'deleteUrl' => $this->canDeleteSafely() ? moduleRoute('medias', 'media-library', 'destroy', $this->id) : null,
             'updateUrl' => route('admin.media-library.medias.single-update'),
             'updateBulkUrl' => route('admin.media-library.medias.bulk-update'),
@@ -143,7 +143,7 @@ class Media extends Model
         if ($this->update($fields) && $this->isReferenced())
         {
             DB::table(config('twill.mediables_table', 'twill_mediables'))->where('media_id', $this->id)->get()->each(function ($mediable) use ($prevWidth, $prevHeight) {
-                
+
                 if ($prevWidth != $this->width) {
                     $mediable->crop_x = 0;
                     $mediable->crop_w = $this->width;
