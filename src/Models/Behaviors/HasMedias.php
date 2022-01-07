@@ -6,7 +6,7 @@ use A17\Twill\Exceptions\MediaCropNotFoundException;
 use A17\Twill\Models\Media;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use ImageService;
+use A17\Twill\Services\MediaLibrary\ImageService;
 
 trait HasMedias
 {

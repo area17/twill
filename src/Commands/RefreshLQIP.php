@@ -3,10 +3,11 @@
 namespace A17\Twill\Commands;
 
 use A17\Twill\Models\Media;
+use A17\Twill\Services\MediaLibrary\Glide;
+use A17\Twill\Services\MediaLibrary\ImageService;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Arr;
-use ImageService;
 
 class RefreshLQIP extends Command
 {
@@ -66,14 +67,24 @@ class RefreshLQIP extends Command
 
                     $crop_params = Arr::only((array) $attached_media, $this->cropParamsKeys);
 
+                    $imageService = config('twill.media_library.image_service');
+
                     $url = ImageService::getLQIPUrl($uuid, $crop_params + ['w' => $lqip_width]);
+
+                    if ($imageService === Glide::class) {
+                        // Glide is a local imaging service so we should make sure we also utilize the local url.
+                        // This solution might not work at all in some cases.
+                        // I feel like this is not optimal and we could maybe directly use the glide api in this case
+                        // but maybe that is not worth the effort (for now).
+                        $url = url($url);
+                    }
 
                     try {
                         $data = file_get_contents($url);
                         $dataUri = 'data:image/gif;base64,' . base64_encode($data);
                         $this->db->table(config('twill.mediables_table', 'twill_mediables'))->where('id', $attached_media->id)->update(['lqip_data' => $dataUri]);
                     } catch (\Exception $e) {
-                        $this->info("LQIP was not generated for " . $uuid);
+                        $this->info("LQIP was not generated for $uuid because {$e->getMessage()}");
                     }
                 }
             }
