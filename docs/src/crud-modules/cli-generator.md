@@ -93,3 +93,6 @@ return [
     ...
 ]
 ```
+
+If you receive an error when visiting the module, you might have forgotton to run the seeder that is mentioned when
+generating the singleton. `php artisan db:seed ModuleNameSeeder`
