@@ -7,6 +7,10 @@ export default {
     isOpen: {
       type: Boolean,
       default: false
+    },
+    errorKey: {
+      type: String,
+      default: null
     }
   },
   data: function () {

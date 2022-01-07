@@ -38,6 +38,7 @@
     </div>
     <div class="block__content" :aria-hidden="!visible ? true : null">
       <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes"
+                 :errorKey="getErrorKey()"
                  :key="`form_${block.type}_${block.id}`"><!-- dynamic components --></component>
       <!-- Block validation input frame, to display errors -->
       <a17-inputframe size="small" label="" :name="`block.${block.id}`"></a17-inputframe>
@@ -63,6 +64,14 @@
       size: {
         type: String,
         default: '' // small
+      },
+      isRepeater: {
+        type: Boolean,
+        default: false
+      },
+      fieldName: {
+        type: String,
+        default: ''
       },
       block: {
         type: Object,
@@ -134,6 +143,13 @@
       },
       componentName (id) {
         return 'blocks[' + id + ']'
+      },
+      getErrorKey () {
+        if (this.isRepeater) {
+          return 'repeaters.' + this.fieldName + '.' + this.index
+        }
+
+        return this.blockFieldName()
       },
       blockFieldName: function (fieldName) {
         if (!fieldName) return ''

@@ -3,7 +3,7 @@
     <draggable class="content__content" v-model="blocks" :options="dragOptions">
       <transition-group name="draggable_list" tag='div'>
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
-          <a17-blockeditor-item :block="block" :index="index" :size="blockSize" :opened="opened" @open="setOpened">
+          <a17-blockeditor-item :fieldName="name" is-repeater :block="block" :index="index" :size="blockSize" :opened="opened" @open="setOpened">
             <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)"  v-if="hasRemainingBlocks"><span v-svg symbol="add"></span></a17-button>
             <div slot="dropdown-action">
               <button type="button" @click="collapseAllBlocks()">Collapse All</button>

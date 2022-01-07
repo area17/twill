@@ -1,5 +1,5 @@
 <template>
-  <a17-inputframe :error="error" :note="note" :label="label" :locale="locale" @localize="updateLocale" :size="size" :name="name" :label-for="uniqId" :required="required">
+  <a17-inputframe :custom-error-key="customErrorKey" :error="error" :note="note" :label="label" :locale="locale" @localize="updateLocale" :size="size" :name="name" :label-for="uniqId" :required="required">
     <div class="input__field" :class="textfieldClasses" :dir="dirLocale">
       <span class="input__prefix" v-if="hasPrefix">{{ prefix }}</span>
       <textarea v-if="type === 'textarea'" ref="clone" :rows="rows" class="input__clone" disabled="true" v-model="value"></textarea>

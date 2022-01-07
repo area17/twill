@@ -47,6 +47,7 @@
         label="{{ $label }}"
         @include('twill::partials.form.utils._field_name')
         type="{{ $type }}"
+        :customErrorKey="this.errorKey"
         @if ($required) :required="true" @endif
         @if ($note) note="{{ $note }}" @endif
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif

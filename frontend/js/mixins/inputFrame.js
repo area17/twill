@@ -22,10 +22,17 @@ export default {
     note: {
       type: String,
       default: ''
+    },
+    customErrorKey: {
+      type: String,
+      default: null
     }
   },
   computed: {
     errorKey () {
+      if (this.customErrorKey !== null) {
+        return this.customErrorKey + '.' + this.name.split('[').pop().replace('[', '').replace(']', '')
+      }
       return this.hasLocale ? (this.name.replace('[', '.').replace(']', '')) : this.name
     },
     errorLocales () {
