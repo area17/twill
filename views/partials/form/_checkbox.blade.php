@@ -1,14 +1,3 @@
-@php
-    $note = $note ?? false;
-    $default = $default ?? false;
-    $inModal = $fieldsInModal ?? false;
-    $disabled = $disabled ?? false;
-    $border = $border ?? false;
-    $confirmMessageText = $confirmMessageText ?? '';
-    $confirmTitleText = $confirmTitleText ?? '';
-    $requireConfirmation = $requireConfirmation ?? false;
-@endphp
-
 <a17-singlecheckbox
     @include('twill::partials.form.utils._field_name')
     label="{{ $label ?? '' }}"

@@ -2,6 +2,7 @@
 
 namespace A17\Twill;
 
+use A17\Twill\View\Components\Checkbox;
 use Exception;
 use A17\Twill\Commands\BlockMake;
 use A17\Twill\Commands\Build;
@@ -36,9 +37,9 @@ use Astrotomic\Translatable\TranslatableServiceProvider;
 use Cartalyst\Tags\TagsServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use PragmaRX\Google2FAQRCode\Google2FA as Google2FAQRCode;
 
@@ -118,6 +119,10 @@ class TwillServiceProvider extends ServiceProvider
 
         $this->registerProviders();
         $this->registerAliases();
+
+        // @todo: We can also just share the directory instead of manually
+        // defining them one by one.
+        Blade::component('twill-checkbox', Checkbox::class);
 
         Relation::morphMap([
             'users' => User::class,

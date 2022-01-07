@@ -474,7 +474,10 @@ abstract class ModuleController extends Controller
             return View::exists($view);
         });
 
-        return View::make($view, $this->form($id));
+        // @todo: So this is not really ideal, maybe we can use
+        // views::share or something to make the required data available
+        // to the blade components?
+        return View::make($view, $this->form($id) + ['form' => $this->form($id)]);
     }
 
     /**
