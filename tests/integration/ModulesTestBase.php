@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use A17\Twill\Models\Model;
 use Illuminate\Support\Str;
 use App\Models\Translations\AuthorTranslation;
 use App\Models\Translations\CategoryTranslation;
@@ -202,7 +203,7 @@ abstract class ModulesTestBase extends TestCase
         $this->assertEquals($data['endpointType'], 'App\Models\Author');
     }
 
-    protected function createAuthor($count = 1)
+    protected function createAuthor($count = 1): Model
     {
         foreach (range(1, $count) as $c) {
             $this->httpRequestAssert(
@@ -221,6 +222,8 @@ abstract class ModulesTestBase extends TestCase
         $this->assertNotNull($this->translation);
 
         $this->assertCount(3, $this->author->slugs);
+
+        return $this->author;
     }
 
     protected function destroyAuthor()

@@ -4,6 +4,7 @@ namespace A17\Twill\Models\Behaviors;
 
 use A17\Twill\Exceptions\MediaCropNotFoundException;
 use A17\Twill\Models\Media;
+use A17\Twill\Models\Model;
 use Illuminate\Support\Arr;
 use ImageService;
 
@@ -15,6 +16,16 @@ trait HasMedias
         'crop_w',
         'crop_h',
     ];
+
+    public static function bootHasMedias(): void
+    {
+        self::deleted(static function (Model $model) {
+            if ($model->isForceDeleting()) {
+                /** @var \A17\Twill\Models\Behaviors\HasMedias $model */
+                $model->medias()->detach();
+            }
+        });
+    }
 
     /**
      * Defines the many-to-many relationship for media objects.
