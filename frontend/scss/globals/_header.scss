@@ -83,8 +83,7 @@ $height__nav: 60px;
   display: none;
 
   flex-grow: 1;
-  overflow: hidden;
-  overflow-x: auto;
+  overflow: visible;
   position: relative;
 
   ul {

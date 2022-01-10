@@ -21,6 +21,7 @@ if (!window[process.env.VUE_APP_NAME]) {
   window[process.env.VUE_APP_NAME] = {}
 }
 window[process.env.VUE_APP_NAME].vheader = new Vue({ el: '#headerUser' })
+window[process.env.VUE_APP_NAME].vmenu = new Vue({ el: '#headerMenu' })
 
 // Search
 /* eslint-disable no-new */

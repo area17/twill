@@ -57,6 +57,11 @@ Header overlay that is showing on smaller devices
 .headerMobile__list {
   padding-top:35px;
 
+  &--mobile {
+    padding-top: 0;
+    padding-left: 15px;
+  }
+
   > a {
     line-height:30px;
     height:30px;
