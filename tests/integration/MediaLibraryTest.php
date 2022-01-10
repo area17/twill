@@ -157,6 +157,12 @@ class MediaLibraryTest extends ModulesTestBase
         $this->assertEquals(0, $media->unused()->count());
         $this->assertFalse($media->refresh()->canDeleteSafely());
 
+        // Check we cannot remove it via the api.
+        $this->deleteJson(route('admin.media-library.medias.destroy', ['media' => $media]))->assertJson([
+            'message' => 'Media was not moved to trash. Something wrong happened!',
+            'variant' => 'error'
+        ]);
+
         // Delete the author and make sure media is still used.
         $author->delete();
         $media->refresh();
@@ -164,6 +170,12 @@ class MediaLibraryTest extends ModulesTestBase
         $this->assertCount(1, $author->medias);
         $this->assertEquals(0, $media->unused()->count());
         $this->assertFalse($media->refresh()->canDeleteSafely());
+
+        // Check we continue to be unable to remove.
+        $this->deleteJson(route('admin.media-library.medias.destroy', ['media' => $media]))->assertJson([
+            'message' => 'Media was not moved to trash. Something wrong happened!',
+            'variant' => 'error'
+        ]);
 
         // Force Delete the author and make sure media is still used.
         $this->assertTrue($author->forceDelete());
@@ -173,6 +185,11 @@ class MediaLibraryTest extends ModulesTestBase
         $this->assertTrue($media->refresh()->canDeleteSafely());
 
         // Finally delete the media.
-        $this->assertTrue($media->forceDelete());
+        $this->deleteJson(route('admin.media-library.medias.destroy', ['media' => $media]))->assertJson([
+            'message' => 'Media moved to trash!',
+            'variant' => 'success'
+        ]);
+
+        $this->assertEquals(0, $media->count());
     }
 }
