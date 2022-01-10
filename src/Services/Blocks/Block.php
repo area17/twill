@@ -276,7 +276,7 @@ class Block
 
                 return $callback($value, $options);
             }
-        };
+        }
 
         $value = $this->parseProperty($property, $block, $blockName, null);
 
@@ -378,9 +378,9 @@ class Block
     public static function removeSpecialBladeTags($contents)
     {
         return preg_replace([
-            "/@twillProp.*\((.*)\)/sU",
-            "/@twillBlock.*\((.*)\)/sU",
-            "/@twillRepeater.*\((.*)\)/sU",
+            "/@twillProp.*\((?:'|\")(.*)(?:'|\")\)/sU",
+            "/@twillBlock.*\((?:'|\")(.*)(?:'|\")\)/sU",
+            "/@twillRepeater.*\((?:'|\")(.*)(?:'|\")\)/sU",
         ], '', $contents);
     }
 }
