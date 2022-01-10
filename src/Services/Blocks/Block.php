@@ -231,7 +231,7 @@ class Block
         $bladeProperty = ucfirst($property);
 
         foreach (['twillProp', 'twillBlock', 'twillRepeater'] as $pattern) {
-            preg_match("/@{$pattern}{$bladeProperty}\('(.*)'\)/", $block, $matches);
+            preg_match("/@{$pattern}{$bladeProperty}\((?:'|\")(.*)(?:'|\")\)/", $block, $matches);
 
             if (filled($matches)) {
                 return $matches[1];
