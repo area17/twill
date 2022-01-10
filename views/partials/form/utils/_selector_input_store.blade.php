@@ -13,6 +13,10 @@ window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({
                 @else {!! $formFieldsValue === null ? "''" : $formFieldsValue !!}
                 @endif
            @else
-            ''
+                @if(is_bool($default))
+                    {{ $default ? 'true' : 'false'}}
+                @else
+                    {{ $default ?? '' }}
+                @endif
            @endif
 })
