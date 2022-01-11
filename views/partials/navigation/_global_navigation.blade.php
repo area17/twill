@@ -36,10 +36,10 @@
                                     <div slot="dropdown__content">
                                         @foreach($global_navigation_element['primary_navigation'] as $primary_navigation_key => $primary_navigation_element)
                                             @can($primary_navigation_element['can'] ?? 'list')
-                                                @if(isActiveNavigation($primary_navigation_element, $primary_navigation_key, $_primary_active_navigation))
-                                                @else
-                                                @endif
-                                                    <a href="{{ getNavigationUrl($primary_navigation_element, $primary_navigation_key, $_global_active_navigation) }}" @if (isset($primary_navigation_element['target']) && $primary_navigation_element['target'] == 'external') target="_blank" @endif>{{ $primary_navigation_element['title'] }}</a>
+                                                @php
+                                                  $active = isActiveNavigation($primary_navigation_element, $primary_navigation_key, $_primary_active_navigation ?? '');
+                                                @endphp
+                                                <a class="@if($active) active @endif" href="{{ getNavigationUrl($primary_navigation_element, $primary_navigation_key, $global_navigation_key) }}" @if (isset($primary_navigation_element['target']) && $primary_navigation_element['target'] == 'external') target="_blank" @endif>{{ $primary_navigation_element['title'] }}</a>
                                             @endcan
                                         @endforeach
                                     </div>

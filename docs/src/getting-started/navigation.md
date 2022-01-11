@@ -69,3 +69,10 @@ Route::group(['prefix' => 'work'], function () {
     Route::module('studios');
 });
 ```
+
+## Submenu
+
+Optionally you can add `'submenu' => true` above a `primary_navigation` which will remove the items from the primary
+navigation bar and make it into a dropdown instead.
+
+Note: When using submenu the top level item will not be clickable.

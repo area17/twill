@@ -23,10 +23,10 @@
                             <div class="headerMobile__list headerMobile__list--mobile">
                                 @foreach($global_navigation_element['primary_navigation'] as $primary_navigation_key => $primary_navigation_element)
                                     @can($primary_navigation_element['can'] ?? 'list')
-                                        @if(isActiveNavigation($primary_navigation_element, $primary_navigation_key, $_primary_active_navigation))
+                                        @if(isActiveNavigation($primary_navigation_element, $primary_navigation_key, $_primary_active_navigation ?? ''))
                                             <a class="s--on" href="{{ getNavigationUrl($primary_navigation_element, $primary_navigation_key, $_global_active_navigation) }}" @if (isset($primary_navigation_element['target']) && $primary_navigation_element['target'] == 'external') target="_blank" @endif>{{ $primary_navigation_element['title'] }}</a><br />
                                         @else
-                                            <a href="{{ getNavigationUrl($primary_navigation_element, $primary_navigation_key, $_global_active_navigation) }}" @if (isset($primary_navigation_element['target']) && $primary_navigation_element['target'] == 'external') target="_blank" @endif>{{ $primary_navigation_element['title'] }}</a><br />
+                                            <a href="{{ getNavigationUrl($primary_navigation_element, $primary_navigation_key, $global_navigation_key) }}" @if (isset($primary_navigation_element['target']) && $primary_navigation_element['target'] == 'external') target="_blank" @endif>{{ $primary_navigation_element['title'] }}</a><br />
                                         @endif
                                     @endcan
                                 @endforeach
