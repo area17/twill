@@ -101,15 +101,7 @@ class BlockRepository extends ModuleRepository
      */
     public function buildFromCmsArray($block, $repeater = false)
     {
-        if ($repeater) {
-            $blocksList = app(BlockCollection::class)->getRepeaterList();
-        } else {
-            $blocksList = app(BlockCollection::class)->getBlockList();
-        }
-
-        $block['type'] = $blocksList->keyBy('name')->search(function ($blockConfig) use ($block) {
-            return $blockConfig['component'] === $block['type'];
-        });
+        $block['type'] = $this->getBlockTypeForCmsName($block, $repeater);
 
         $block['content'] = empty($block['content']) ? new \stdClass : (object) $block['content'];
 
@@ -122,5 +114,17 @@ class BlockRepository extends ModuleRepository
         }
 
         return $block;
+    }
+
+    public function getBlockTypeForCmsName(array $block, bool $repeater = false): ?string {
+        if ($repeater) {
+            $blocksList = app(BlockCollection::class)->getRepeaterList();
+        } else {
+            $blocksList = app(BlockCollection::class)->getBlockList();
+        }
+
+        return $blocksList->keyBy('name')->search(function ($blockConfig) use ($block) {
+            return $blockConfig['component'] === $block['type'];
+        });
     }
 }

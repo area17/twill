@@ -3,39 +3,51 @@
 namespace A17\Twill\Helpers;
 
 use A17\Twill\Models\Block;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 abstract class TwillBlock
 {
     /**
      * @var array
+     *
+     * The validation rules for this block.
      */
-    public $data;
+    protected $rules = [];
 
-    /**
-     * @var \A17\Twill\Models\Block
-     */
-    public $block;
-
-    public function __construct(Block $block, array $data)
+    public function __construct()
     {
-        $this->data = $data;
-        $this->block = $block;
     }
 
-    public function getData(): array
+    public function getData(Block $block, array $data): array
     {
-        return $this->data;
+        return $data;
     }
 
-    public static function getBlockClass(string $view, Block $block, array $data): ?TwillBlock
+    public function validate(array $formData): void
     {
-        $exploded = explode('.', $view);
-        $transformed = Str::studly(array_pop($exploded)) . 'Block';
+        if (!empty($this->rules)) {
+            Validator::validate($formData, $this->rules);
+        }
+
+        return;
+    }
+
+    public static function getBlockClassForName(string $name): ?TwillBlock
+    {
+        $transformed = Str::studly($name) . 'Block';
         $className = "\App\Twill\Block\\$transformed";
         if (class_exists($className)) {
-            return new $className($block, $data);
+            return new $className();
         }
+
         return null;
+    }
+
+    public static function getBlockClassForView(string $view): ?TwillBlock
+    {
+        $exploded = explode('.', $view);
+
+        return self::getBlockClassForName(array_pop($exploded));
     }
 }

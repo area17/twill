@@ -37,7 +37,7 @@ trait HasBlocks
                     $renderedChildViews = $childBlocks->map(function ($childBlock) use ($blockViewMappings, $data) {
                         $view = $this->getBlockView($childBlock->type, $blockViewMappings);
 
-                        if ($class = TwillBlock::getBlockClass($view, $childBlock, $data)) {
+                        if ($class = TwillBlock::getBlockClassForView($view, $childBlock, $data)) {
                             $data = $class->getData();
                         }
 
@@ -49,7 +49,7 @@ trait HasBlocks
 
                 $view = $this->getBlockView($block->type, $blockViewMappings);
 
-                if ($class = TwillBlock::getBlockClass($view, $block, $data)) {
+                if ($class = TwillBlock::getBlockClassForView($view, $block, $data)) {
                     $data = $class->getData();
                 }
 

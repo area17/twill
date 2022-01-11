@@ -37,7 +37,10 @@ export default {
 
       Object.keys(this.$store.state.form.errors).forEach((error) => {
         if (error.substr(0, error.indexOf('.')) === errorKeyWithoutLocale) {
-          locales.push(error.substr(error.indexOf('.') + 1, error.length))
+          const cleaned = error.substr(error.indexOf('.') + 1, error.length)
+          if (cleaned.length === 2) {
+            locales.push(cleaned)
+          }
         }
       }, [])
 

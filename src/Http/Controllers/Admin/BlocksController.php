@@ -77,7 +77,7 @@ class BlocksController extends Controller
 
                     $view = $this->getBlockView($block->type, $config);
 
-                    if ($class = TwillBlock::getBlockClass($view, $block, $data)) {
+                    if ($class = TwillBlock::getBlockClassForView($view, $block, $data)) {
                         $data = $class->getData();
                     }
 

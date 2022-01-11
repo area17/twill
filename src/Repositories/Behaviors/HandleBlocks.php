@@ -2,10 +2,12 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Helpers\TwillBlock;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Repositories\BlockRepository;
 use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
 use Log;
 use Schema;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
@@ -80,8 +82,30 @@ trait HandleBlocks
 
         $blockRepository = app(BlockRepository::class);
 
+        $validationExceptions = [];
+
+        foreach ($fields['blocks'] ?? [] as $block) {
+            if ($helper = TwillBlock::getBlockClassForName(app(BlockRepository::class)->getBlockTypeForCmsName($block)
+            )) {
+                try {
+                    $helper->validate($block['content']);
+                } catch (ValidationException $e) {
+                    foreach ($e->errors() as $key => $errors) {
+                        $cmsErrorKey = implode('][', explode('.', $key));
+                        $explodedKey = explode('.', $key);
+                        $validationExceptions['blocks.' . array_pop($explodedKey)] = [__('Block has validation errors')];
+                        $validationExceptions['blocks.' . $block['id'] . '[' . $cmsErrorKey . ']'] = $errors;
+                    }
+                }
+            }
+        }
+
+        if (!empty($validationExceptions)) {
+            throw ValidationException::withMessages($validationExceptions);
+        }
+
         $blockRepository->bulkDelete($object->blocks()->pluck('id')->toArray());
-        $this->getBlocks($object, $fields)->each(function ($block) use ($object, $blockRepository) {
+        $this->getBlocks($object, $fields)->each(function ($block) use ($blockRepository) {
             $this->createBlock($blockRepository, $block);
         });
     }
@@ -163,7 +187,11 @@ trait HandleBlocks
         $block['blockable_id'] = $object->id;
         $block['blockable_type'] = $object->getMorphClass();
 
-        return app(BlockRepository::class)->buildFromCmsArray($block, $repeater);
+        $block = app(BlockRepository::class)->buildFromCmsArray($block, $repeater);
+
+        $block['helper'] = TwillBlock::getBlockClassForName($block['type']);
+
+        return $block;
     }
 
     /**
