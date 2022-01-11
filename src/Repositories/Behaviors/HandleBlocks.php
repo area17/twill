@@ -7,6 +7,7 @@ use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Repositories\BlockRepository;
 use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Log;
 use Schema;
@@ -82,26 +83,21 @@ trait HandleBlocks
 
         $blockRepository = app(BlockRepository::class);
 
-        $validationExceptions = [];
+        $validator = Validator::make([], []);
 
         foreach ($fields['blocks'] ?? [] as $block) {
-            if ($helper = TwillBlock::getBlockClassForName(app(BlockRepository::class)->getBlockTypeForCmsName($block)
-            )) {
+            $helper = TwillBlock::getBlockClassForName(app(BlockRepository::class)->getBlockTypeForCmsName($block));
+            if ($helper) {
                 try {
-                    $helper->validate($block['content']);
+                    $helper->validate($block['content'], $block['id']);
                 } catch (ValidationException $e) {
-                    foreach ($e->errors() as $key => $errors) {
-                        $cmsErrorKey = implode('][', explode('.', $key));
-                        $explodedKey = explode('.', $key);
-                        $validationExceptions['blocks.' . array_pop($explodedKey)] = [__('Block has validation errors')];
-                        $validationExceptions['blocks.' . $block['id'] . '[' . $cmsErrorKey . ']'] = $errors;
-                    }
+                    $validator->errors()->merge($e->errors());
                 }
             }
         }
 
-        if (!empty($validationExceptions)) {
-            throw ValidationException::withMessages($validationExceptions);
+        if ($validator->errors()->isNotEmpty()) {
+            throw new ValidationException($validator);
         }
 
         $blockRepository->bulkDelete($object->blocks()->pluck('id')->toArray());
