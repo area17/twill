@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Blocks;
 
+use A17\Twill\Helpers\TwillBlock;
 use Exception;
 use Illuminate\Support\Str;
 
@@ -98,6 +99,21 @@ class Block
     public $contents;
 
     /**
+     * @var string
+     */
+    private $rules = [];
+
+    /**
+     * @var string
+     */
+    private $rulesForTranslatedFields = [];
+
+    /**
+     * @var TwillBlock
+     */
+    private $helper;
+
+    /**
      * Block constructor.
      * @param $file
      * @param $type
@@ -159,6 +175,9 @@ class Block
             'new_format' => $this->isNewFormat ? 'yes' : '-',
             'file' => $this->getFilename(),
             'component' => $this->component,
+            'rules' => $this->getRules(),
+            'rulesForTranslatedFields' => $this->getRulesForTranslatedFields(),
+            'helper' => $this->helper(),
             'max' => $this->type === self::TYPE_REPEATER ? $this->max : null,
         ]);
     }
@@ -204,12 +223,57 @@ class Block
         $this->isNewFormat = $this->isNewFormat($contents);
         $this->contents = $contents;
 
+        $this->parseArrayProperty('ValidationRules', $contents, $this->name, function ($value) {
+            $this->rules = $value ?? [];
+        });
+
+        $this->parseArrayProperty('ValidationRulesForTranslatedFields', $contents, $this->name, function ($value) {
+            $this->rulesForTranslatedFields = $value ?? [];
+        });
+
         $this->parseMixedProperty('titleField', $contents, $this->name, function ($value, $options) {
             $this->titleField = $value;
             $this->hideTitlePrefix = (boolean) ($options['hidePrefix'] ?? false);
         });
 
         return $this;
+    }
+
+    public function helper(): ?TwillBlock {
+        if (!$this->helper) {
+            $this->helper = TwillBlock::getBlockClassForName($this->name);
+        }
+        return $this->helper;
+    }
+
+    /**
+     * Checks both the blade file or helper class for validation rules. Returns in order the first one with data.
+     */
+    public function getRules(): array {
+        if (!empty($this->rules)) {
+            return $this->rules;
+        }
+
+        if ($this->helper) {
+            return $this->helper->getRules();
+        }
+
+        return [];
+    }
+
+    /**
+     * Checks both the blade file or helper class for validation rules. Returns in order the first one with data.
+     */
+    public function getRulesForTranslatedFields(): array {
+        if (!empty($this->rulesForTranslatedFields)) {
+            return $this->rulesForTranslatedFields;
+        }
+
+        if ($this->helper) {
+            return $this->helper->getRulesForTranslatedFields();
+        }
+
+        return [];
     }
 
     /**
@@ -239,6 +303,28 @@ class Block
         }
 
         return $this->parsePropertyFallback($property, $blockName, $default);
+    }
+
+    /**
+     * Parse an array property directive in the form of `@twillTypeProperty([...])`
+     * and pass the result to a given callback.
+     *
+     * @param string $property
+     * @param string $block
+     * @param string $blockName
+     * @param Callable $callback  Should have the following signature: `function (array $value)`
+     * @return void
+     * @throws \Exception
+     */
+    public function parseArrayProperty(
+        $property,
+        $block,
+        $blockName,
+        $callback
+    ): void {
+        $this->parseMixedProperty($property, $block, $blockName, function($value) use ($callback) {
+            $callback($value);
+        });
     }
 
     /**
@@ -287,7 +373,7 @@ class Block
      * @param $property
      * @param $blockName
      * @param null $default
-     * @return array
+     * @return mixed
      * @throws \Exception
      */
     private function parsePropertyFallback(

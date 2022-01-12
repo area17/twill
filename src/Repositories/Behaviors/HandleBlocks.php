@@ -4,6 +4,7 @@ namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Helpers\TwillBlock;
 use A17\Twill\Models\Behaviors\HasMedias;
+use A17\Twill\Models\Model;
 use A17\Twill\Repositories\BlockRepository;
 use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Support\Collection;
@@ -22,17 +23,21 @@ trait HandleBlocks
      * @param int|null $parentId
      * @param \Illuminate\Support\Collection|null $blocksFromFields
      * @param \Illuminate\Support\Collection|null $mainCollection
-     * @param int|null $mainCollection|void
-     * @return \A17\Twill\Models\Model
+     * @return \A17\Twill\Models\Model|null
      */
-    public function hydrateHandleBlocks($object, $fields, &$fakeBlockId = 0, $parentId = null, $blocksFromFields = null, $mainCollection = null)
-    {
+    public function hydrateHandleBlocks(
+        $object,
+        $fields,
+        &$fakeBlockId = 0,
+        $parentId = null,
+        $blocksFromFields = null,
+        $mainCollection = null
+    ) {
         if ($this->shouldIgnoreFieldBeforeSave('blocks')) {
-            return;
+            return null;
         }
 
         $firstItem = false;
-        $blocksCollection = Collection::make();
         if ($mainCollection === null) {
             $firstItem = true;
             $mainCollection = Collection::make();
@@ -42,7 +47,13 @@ trait HandleBlocks
         }
 
         $blockRepository = app(BlockRepository::class);
-        $blocksCollection = $this->getChildrenBlocks($blocksFromFields, $blockRepository, $parentId, $fakeBlockId, $mainCollection);
+        $blocksCollection = $this->getChildrenBlocks(
+            $blocksFromFields,
+            $blockRepository,
+            $parentId,
+            $fakeBlockId,
+            $mainCollection
+        );
         $object->setRelation('blocks', $firstItem ? $mainCollection : $blocksCollection);
         return $object;
     }
@@ -60,7 +71,14 @@ trait HandleBlocks
             $fakeBlockId++;
             $newChildBlock->id = $fakeBlockId;
             if (!empty($childBlock['blocks'])) {
-                $childBlockHydrated = $this->hydrateHandleBlocks($newChildBlock, $childBlock, $fakeBlockId, $newChildBlock->id, $childBlock['blocks'], $mainCollection);
+                $childBlockHydrated = $this->hydrateHandleBlocks(
+                    $newChildBlock,
+                    $childBlock,
+                    $fakeBlockId,
+                    $newChildBlock->id,
+                    $childBlock['blocks'],
+                    $mainCollection
+                );
                 $newChildBlock->setRelation('children', $childBlockHydrated->blocks);
             }
 
@@ -75,7 +93,7 @@ trait HandleBlocks
      * @param array $fields
      * @return void
      */
-    public function afterSaveHandleBlocks($object, $fields)
+    public function afterSaveHandleBlocks(Model $object, array $fields): void
     {
         if ($this->shouldIgnoreFieldBeforeSave('blocks')) {
             return;
@@ -86,10 +104,16 @@ trait HandleBlocks
         $validator = Validator::make([], []);
 
         foreach ($fields['blocks'] ?? [] as $block) {
-            $helper = TwillBlock::getBlockClassForName(app(BlockRepository::class)->getBlockTypeForCmsName($block));
+            $blockArray = app(BlockRepository::class)->buildFromCmsArray($block);
+            $helper = TwillBlock::getBlockClassForName($blockArray['type']);
             if ($helper) {
                 try {
-                    $helper->validate($block['content'], $block['id']);
+                    $this->validate(
+                        $block['content'],
+                        $block['id'],
+                        $helper->getRules(),
+                        $helper->getRulesForTranslatedFields()
+                    );
                 } catch (ValidationException $e) {
                     $validator->errors()->merge($e->errors());
                 }
@@ -106,11 +130,40 @@ trait HandleBlocks
         });
     }
 
+    private function validate(array $formData, int $id, array $basicRules, array $translatedFieldRules): void
+    {
+        $finalValidator = Validator::make([], []);
+        foreach ($translatedFieldRules as $field => $rules) {
+            foreach (config('translatable.locales') as $locale) {
+                $data = $formData[$field][$locale] ?? null;
+                $validator = Validator::make([$field => $data], [$field => $rules]);
+                foreach ($validator->messages()->getMessages() as $key => $errors) {
+                    foreach ($errors as $error) {
+                        $finalValidator->getMessageBag()->add("blocks.$id" . "[$key][$locale]", $error);
+                        $finalValidator->getMessageBag()->add("blocks.$locale", 'Failed');
+                    }
+                }
+            }
+        }
+        foreach ($basicRules as $field => $rules) {
+            $validator = Validator::make([$field => $formData[$field] ?? null], [$field => $rules]);
+            foreach ($validator->messages()->getMessages() as $key => $errors) {
+                foreach ($errors as $error) {
+                    $finalValidator->getMessageBag()->add("blocks[$id][$key]", $error);
+                }
+            }
+        }
+
+        if ($finalValidator->errors()->isNotEmpty()) {
+            throw new ValidationException($finalValidator);
+        }
+    }
+
     /**
      * Create a block from formFields, and recursively create it's child blocks
      *
-     * @param  \A17\Twill\Repositories\BlockRepository $blockRepository
-     * @param  array $blockFields
+     * @param \A17\Twill\Repositories\BlockRepository $blockRepository
+     * @param array $blockFields
      * @return \A17\Twill\Models\Block $blockCreated
      */
     private function createBlock(BlockRepository $blockRepository, $blockFields)
@@ -149,8 +202,8 @@ trait HandleBlocks
     /**
      * Recursively generate child blocks from the fields of a block
      *
-     * @param  \A17\Twill\Models\Model $object
-     * @param  array $parentBlockFields
+     * @param \A17\Twill\Models\Model $object
+     * @param array $parentBlockFields
      * @return \Illuminate\Support\Collection
      */
     private function getChildBlocks($object, $parentBlockFields)
