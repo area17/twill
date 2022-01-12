@@ -1,4 +1,4 @@
-import attributes from '@/store/modules/attributes'
+import config from '@/store/modules/config'
 import dateFormat from 'date-fns/format'
 
 import { locales, getCurrentLocale, getTimeFormatForCurrentLocale } from '@/utils/locale'
@@ -52,7 +52,7 @@ const filters = {
     return dateFormatLocale(value, format)
   },
   formatDatatableDate: function (value) {
-    const datepickerFormat = attributes.state.options.publishDateDisplayFormat
+    const datepickerFormat = config.state.publishDateDisplayFormat
     if (!value) value = new Date()
     return dateFormatLocale(value, datepickerFormat)
   },

@@ -82,7 +82,7 @@
             window['{{ config('twill.js_namespace') }}'].twillLocalization = {!! json_encode($twillLocalization) !!};
             window['{{ config('twill.js_namespace') }}'].STORE = {};
             window['{{ config('twill.js_namespace') }}'].STORE.form = {};
-            window['{{ config('twill.js_namespace') }}'].STORE.options = {
+            window['{{ config('twill.js_namespace') }}'].STORE.config = {
                 publishDate24Hr: {{config('twill.publish_date_24h') ? 'true' : 'false'}},
                 publishDateDisplayFormat: '{{config('twill.publish_date_display_format')}}',
             };

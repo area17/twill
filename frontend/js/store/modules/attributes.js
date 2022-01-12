@@ -8,10 +8,7 @@ import Vue from 'vue'
 import { ATTRIBUTES } from '../mutations'
 
 const state = {
-  options: {
-    publishDate24Hr: window[process.env.VUE_APP_NAME].STORE.options.publishDate24Hr,
-    publishDateDisplayFormat: window[process.env.VUE_APP_NAME].STORE.options.publishDateDisplayFormat
-  }
+  options: {}
 }
 
 // getters
