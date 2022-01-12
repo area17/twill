@@ -265,7 +265,9 @@
     mounted () {
       // if there are blocks, these should be all collapse by default
       this.$nextTick(function () {
-        if (this.blocks(this.editorName) && this.blocks(this.editorName).length > 3) this.collapseAllBlocks()
+        if (this.blocks(this.editorName) && this.blocks(this.editorName).length < 4) {
+          this.$refs.blockList.forEach((block) => block.toggleExpand())
+        }
       })
     }
   }
