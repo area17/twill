@@ -53,10 +53,10 @@ class BlocksController extends Controller
         $this->getChildrenPreview($block['blocks'], $blocksCollection, $newBlock->id, $blockId, $blockRepository);
 
         $renderedBlocks = $blocksCollection->where('parent_id', null)
-            ->map(function ($block) use ($blocksCollection, $viewFactory, $config) {
+            ->map(function ($blockToRender) use ($block, $blocksCollection, $viewFactory, $config) {
                 try {
                     if ($config->get('twill.block_editor.block_preview_render_childs') ?? true) {
-                        $childBlocks = $blocksCollection->where('parent_id', $block->id);
+                        $childBlocks = $blocksCollection->where('parent_id', $blockToRender->id);
                         $renderedChildViews = $childBlocks->map(function ($childBlock) use ($viewFactory, $config) {
                             $view = $this->getBlockView($childBlock->type, $config);
 
@@ -68,18 +68,16 @@ class BlocksController extends Controller
                         })->implode('');
                     }
 
-                    $block->childs = $blocksCollection->where('parent_id', $block->id);
-                    $block->children = $block->childs;
+                    $blockToRender->childs = $blocksCollection->where('parent_id', $blockToRender->id);
+                    $blockToRender->children = $blockToRender->childs;
 
                     $data = [
-                        'block' => $block,
+                        'block' => $blockToRender,
                     ];
 
-                    $view = $this->getBlockView($block->type, $config);
+                    $view = $this->getBlockView($blockToRender->type, $config);
 
-                    if ($class = TwillBlock::getBlockClassForView($view, $block, $data)) {
-                        $data = $class->getData();
-                    }
+                    $data = $block['instance']->getData($data);
 
                     $error = '';
 

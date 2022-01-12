@@ -104,19 +104,23 @@ trait HandleBlocks
         $validator = Validator::make([], []);
 
         foreach ($fields['blocks'] ?? [] as $block) {
-            $blockArray = app(BlockRepository::class)->buildFromCmsArray($block);
-            $helper = TwillBlock::getBlockClassForName($blockArray['type']);
-            if ($helper) {
-                try {
-                    $this->validate(
-                        $block['content'],
-                        $block['id'],
-                        $helper->getRules(),
-                        $helper->getRulesForTranslatedFields()
-                    );
-                } catch (ValidationException $e) {
-                    $validator->errors()->merge($e->errors());
-                }
+            $blockCmsData = app(BlockRepository::class)->buildFromCmsArray($block);
+
+            /** @var \A17\Twill\Services\Blocks\Block $blockInstance */
+            $blockInstance = $blockCmsData['instance'];
+
+            // Figure out if the class has translations.
+            $handleTranslations = property_exists($object, 'translatedattributes');
+
+            try {
+                $this->validate(
+                    $block['content'],
+                    $block['id'],
+                    $blockInstance->getRules(),
+                    $handleTranslations ? $blockInstance->getRulesForTranslatedFields() : []
+                );
+            } catch (ValidationException $e) {
+                $validator->errors()->merge($e->errors());
             }
         }
 
@@ -236,11 +240,7 @@ trait HandleBlocks
         $block['blockable_id'] = $object->id;
         $block['blockable_type'] = $object->getMorphClass();
 
-        $block = app(BlockRepository::class)->buildFromCmsArray($block, $repeater);
-
-        $block['helper'] = TwillBlock::getBlockClassForName($block['type']);
-
-        return $block;
+        return app(BlockRepository::class)->buildFromCmsArray($block, $repeater);
     }
 
     /**
@@ -257,7 +257,6 @@ trait HandleBlocks
 
             foreach ($object->blocks as $block) {
                 $isInRepeater = isset($block->parent_id);
-                $configKey = $isInRepeater ? 'repeaters' : 'blocks';
                 $blockTypeConfig = $blocksList[$block->type] ?? null;
 
                 if (is_null($blockTypeConfig)) {

@@ -2,9 +2,8 @@
 
 namespace A17\Twill\Models\Behaviors;
 
-use A17\Twill\Helpers\TwillBlock;
 use A17\Twill\Models\Block;
-use Illuminate\Support\Str;
+use A17\Twill\Services\Blocks\Block as BlockConfig;
 
 trait HasBlocks
 {
@@ -35,11 +34,9 @@ trait HasBlocks
                     $childBlocks = $this->blocks->where('parent_id', $block->id);
 
                     $renderedChildViews = $childBlocks->map(function ($childBlock) use ($blockViewMappings, $data) {
-                        $view = $this->getBlockView($childBlock->type, $blockViewMappings);
-
-                        if ($class = TwillBlock::getBlockClassForView($view, $childBlock, $data)) {
-                            $data = $class->getData();
-                        }
+                        $class = BlockConfig::getForType($childBlock->type);
+                        $view = $class->getBlockView($blockViewMappings);
+                        $data = $class->getData($data);
 
                         return view($view, $data)->with('block', $childBlock)->render();
                     })->implode('');
@@ -47,11 +44,9 @@ trait HasBlocks
 
                 $block->childs = $this->blocks->where('parent_id', $block->id);
 
-                $view = $this->getBlockView($block->type, $blockViewMappings);
-
-                if ($class = TwillBlock::getBlockClassForView($view, $block, $data)) {
-                    $data = $class->getData();
-                }
+                $class = BlockConfig::getForType($block->type);
+                $view = $class->getBlockView($blockViewMappings);
+                $data = $class->getData($data);
 
                 return view($view, $data)->with('block', $block)->render() . ($renderedChildViews ?? '');
             })->implode('');
@@ -68,16 +63,5 @@ trait HasBlocks
     public function renderBlocks($renderChilds = true, $blockViewMappings = [], $data = [])
     {
         return $this->renderNamedBlocks('default', $renderChilds, $blockViewMappings, $data);
-    }
-
-    private function getBlockView($blockType, $blockViewMappings = [])
-    {
-        $view = config('twill.block_editor.block_views_path') . '.' . $blockType;
-
-        if (array_key_exists($blockType, $blockViewMappings)) {
-            $view = $blockViewMappings[$blockType];
-        }
-
-        return $view;
     }
 }

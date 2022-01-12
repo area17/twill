@@ -8,7 +8,6 @@ use A17\Twill\Models\Block;
 use A17\Twill\Repositories\Behaviors\HandleFiles;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Services\Blocks\Block as BlockConfig;
-use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Collection;
 use Log;
@@ -102,9 +101,11 @@ class BlockRepository extends ModuleRepository
      */
     public function buildFromCmsArray($block, $repeater = false)
     {
-        $blockInstance = $this->getBlockInstanceForBlockData($block, $repeater);
+        $blockInstance = BlockConfig::getForComponent($block['type'], $repeater);
 
-        $block['type'] = $blockInstance['name'];
+        $block['type'] = $blockInstance->name;
+
+        $block['instance'] = $blockInstance;
 
         $block['content'] = empty($block['content']) ? new \stdClass : (object) $block['content'];
 
@@ -117,18 +118,5 @@ class BlockRepository extends ModuleRepository
         }
 
         return $block;
-    }
-
-    public function getBlockInstanceForBlockData(array $block, bool $repeater = false): Collection
-    {
-        if ($repeater) {
-            $blocksList = app(BlockCollection::class)->getRepeaterList();
-        } else {
-            $blocksList = app(BlockCollection::class)->getBlockList();
-        }
-
-        return $blocksList->first(function(Collection $blockConfig) use ($block) {
-            return $blockConfig['component'] === $block['type'];
-        });
     }
 }

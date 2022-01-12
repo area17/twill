@@ -2,10 +2,12 @@
 
 namespace A17\Twill\Services\Blocks;
 
-use A17\Twill\Helpers\TwillBlock;
 use Exception;
 use Illuminate\Support\Str;
 
+/**
+ * @todo(3.x): This is not really a service, and we should move this to another location.
+ */
 class Block
 {
     const SOURCE_APP = 'app';
@@ -101,17 +103,60 @@ class Block
     /**
      * @var string
      */
-    private $rules = [];
+    public $rules = [];
 
     /**
      * @var string
      */
-    private $rulesForTranslatedFields = [];
+    public $rulesForTranslatedFields = [];
 
     /**
-     * @var TwillBlock
+     * Make a block instance out of arguments.
+     *
+     * @param $file
+     * @param $type
+     * @param $source
+     * @param $name
+     * @return static
      */
-    private $helper;
+    public static function make($file, $type, $source, $name = null): self {
+        $name = $name ?? Str::before(
+                $file->getFilename(),
+                '.blade.php'
+            );
+
+        $transformed = Str::studly($name) . 'Block';
+        $className = "\App\Twill\Block\\$transformed";
+        if (class_exists($className)) {
+            return new $className($file, $type, $source, $name);
+        }
+
+        return new self($file, $type, $source, $name);
+    }
+
+    public static function getForType(string $type, bool $repeater = false): self {
+        if ($repeater) {
+            $blocksList = app(BlockCollection::class)->getRepeaterList();
+        } else {
+            $blocksList = app(BlockCollection::class)->getBlockList();
+        }
+
+        return $blocksList->first(function(self $blockConfig) use ($type) {
+            return $blockConfig->name === $type;
+        });
+    }
+
+    public static function getForComponent(string $type, bool $repeater = false): self {
+        if ($repeater) {
+            $blocksList = app(BlockCollection::class)->getRepeaterList();
+        } else {
+            $blocksList = app(BlockCollection::class)->getBlockList();
+        }
+
+        return $blocksList->first(function(self $blockConfig) use ($type) {
+            return $blockConfig->component === $type;
+        });
+    }
 
     /**
      * Block constructor.
@@ -156,6 +201,11 @@ class Block
         return $this;
     }
 
+    public function getData(array $data): array
+    {
+        return $data;
+    }
+
     /**
      * @return \Illuminate\Support\Collection
      */
@@ -177,7 +227,6 @@ class Block
             'component' => $this->component,
             'rules' => $this->getRules(),
             'rulesForTranslatedFields' => $this->getRulesForTranslatedFields(),
-            'helper' => $this->helper(),
             'max' => $this->type === self::TYPE_REPEATER ? $this->max : null,
         ]);
     }
@@ -239,41 +288,18 @@ class Block
         return $this;
     }
 
-    public function helper(): ?TwillBlock {
-        if (!$this->helper) {
-            $this->helper = TwillBlock::getBlockClassForName($this->name);
-        }
-        return $this->helper;
-    }
-
     /**
      * Checks both the blade file or helper class for validation rules. Returns in order the first one with data.
      */
     public function getRules(): array {
-        if (!empty($this->rules)) {
-            return $this->rules;
-        }
-
-        if ($this->helper) {
-            return $this->helper->getRules();
-        }
-
-        return [];
+        return $this->rules;
     }
 
     /**
      * Checks both the blade file or helper class for validation rules. Returns in order the first one with data.
      */
     public function getRulesForTranslatedFields(): array {
-        if (!empty($this->rulesForTranslatedFields)) {
-            return $this->rulesForTranslatedFields;
-        }
-
-        if ($this->helper) {
-            return $this->helper->getRulesForTranslatedFields();
-        }
-
-        return [];
+        return $this->rulesForTranslatedFields;
     }
 
     /**
@@ -468,5 +494,16 @@ class Block
             "/@twillBlock.*\((.*)\)/sU",
             "/@twillRepeater.*\((.*)\)/sU",
         ], '', $contents);
+    }
+
+    public function getBlockView($blockViewMappings = [])
+    {
+        $view = config('twill.block_editor.block_views_path') . '.' . $this->name;
+
+        if (array_key_exists($this->name, $blockViewMappings)) {
+            $view = $blockViewMappings[$this->name];
+        }
+
+        return $view;
     }
 }

@@ -80,9 +80,7 @@ class BlockCollection extends Collection
      */
     public function getBlockList()
     {
-        return $this->getBlocks()->map(function (Block $block) {
-            return $block->toList();
-        });
+        return $this->getBlocks();
     }
 
     /**
@@ -338,8 +336,6 @@ class BlockCollection extends Collection
      */
     public function getRepeaterList()
     {
-        return $this->getRepeaters()->map(function (Block $block) {
-            return $block->toList();
-        });
+        return $this->getRepeaters();
     }
 }

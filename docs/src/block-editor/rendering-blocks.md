@@ -45,23 +45,19 @@ If the block has a media field, you can refer to the Media Library documentation
 {{ $block->images('mediaFieldName', 'cropNameFromBlocksConfig') }}
 ```
 
-#### Modifying block data
+## Modifying block data
 
-Sometimes it can be useful to abstract some PHP you would usually put at the top of the blade file. This will keep your
-blade files cleaner and allow for easier logic writing.
+Sometimes it can be useful to abstract some PHP you would usually put at the top of the blade file.
+This will keep your blade files cleaner and allow for easier logic writing.
 
-For this you can use Block classes!
-
-To do this create a file named after your block. (ex. for `hero_header_with_menu.blade.php` your class will be `HeroHeaderWithMenuBlock`)
-
-The file needs to be in `app/Twill/Block` and has to extend `TwillBlock`.
+See [Block classes documentation](/block-editor/block-classes.html) for more details about the block class.
 
 ```php
 <?php
 
 namespace App\Twill\Block;
 
-use A17\Twill\Helpers\TwillBlock;
+use A17\Twill\Services\Blocks\Block;
 
 class HeroHeaderWithMenuBlock extends TwillBlock
 {
