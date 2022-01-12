@@ -273,11 +273,11 @@ class Block
         $this->contents = $contents;
 
         $this->parseArrayProperty('ValidationRules', $contents, $this->name, function ($value) {
-            $this->rules = $value ?? [];
+            $this->rules = $value ?? $this->rules;
         });
 
         $this->parseArrayProperty('ValidationRulesForTranslatedFields', $contents, $this->name, function ($value) {
-            $this->rulesForTranslatedFields = $value ?? [];
+            $this->rulesForTranslatedFields = $value ?? $this->rulesForTranslatedFields;
         });
 
         $this->parseMixedProperty('titleField', $contents, $this->name, function ($value, $options) {
