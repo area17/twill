@@ -66,7 +66,7 @@ trait HasMedias
             });
         }
 
-        if ($foundMedia && !$media && !app()->environment('production')) {
+        if ($foundMedia && !$media && config('app.debug')) {
             // In this case we found the media but not the crop because our result is still empty.
             throw new MediaCropNotFoundException($crop);
         }
