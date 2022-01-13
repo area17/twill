@@ -423,7 +423,7 @@ abstract class ModuleController extends Controller
             $this->moduleName,
             $this->routePrefix,
             'edit',
-            [Str::singular(last(explode('.', $this->moduleName))) => $item[$this->identifierColumnKey]]
+            [Str::singular(last(explode('.', $this->moduleName))) => $this->getItemIdentifier($item)]
         ));
     }
 
@@ -1014,17 +1014,19 @@ abstract class ModuleController extends Controller
             $canEdit = $this->getIndexOption('edit');
             $canDuplicate = $this->getIndexOption('duplicate');
 
+            $itemId = $this->getItemIdentifier($item);
+
             return array_replace([
-                'id' => $item[$this->identifierColumnKey],
+                'id' => $itemId,
                 'name' => $name,
                 'publish_start_date' => $item->publish_start_date,
                 'publish_end_date' => $item->publish_end_date,
-                'edit' => $canEdit ? $this->getModuleRoute($item[$this->identifierColumnKey], 'edit') : null,
-                'duplicate' => $canDuplicate ? $this->getModuleRoute($item[$this->identifierColumnKey], 'duplicate') : null,
-                'delete' => $itemCanDelete ? $this->getModuleRoute($item[$this->identifierColumnKey], 'destroy') : null,
+                'edit' => $canEdit ? $this->getModuleRoute($itemId, 'edit') : null,
+                'duplicate' => $canDuplicate ? $this->getModuleRoute($itemId, 'duplicate') : null,
+                'delete' => $itemCanDelete ? $this->getModuleRoute($itemId, 'destroy') : null,
             ] + ($this->getIndexOption('editInModal') ? [
-                'editInModal' => $this->getModuleRoute($item[$this->identifierColumnKey], 'edit'),
-                'updateUrl' => $this->getModuleRoute($item[$this->identifierColumnKey], 'update'),
+                'editInModal' => $this->getModuleRoute($itemId, 'edit'),
+                'updateUrl' => $this->getModuleRoute($itemId, 'update'),
             ] : []) + ($this->getIndexOption('publish') && ($item->canPublish ?? true) ? [
                 'published' => $item->published,
             ] : []) + ($this->getIndexOption('feature') && ($item->canFeature ?? true) ? [
@@ -1079,7 +1081,7 @@ abstract class ModuleController extends Controller
             $nestedCount = $item->{$column['nested']}->count();
             $module = Str::singular(last(explode('.', $this->moduleName)));
             $value = '<a href="';
-            $value .= moduleRoute("$this->moduleName.$field", $this->routePrefix, 'index', [$module => $item[$this->identifierColumnKey]]);
+            $value .= moduleRoute("$this->moduleName.$field", $this->routePrefix, 'index', [$module => $this->getItemIdentifier($item)]);
             $value .= '">' . $nestedCount . " " . (strtolower(Str::plural($column['title'], $nestedCount))) . '</a>';
         } else {
             $field = $column['field'];
@@ -1108,6 +1110,15 @@ abstract class ModuleController extends Controller
         return [
             "$field" => $value,
         ];
+    }
+
+    /**
+     * @param \A17\Twill\Models\Model $item
+     * @return int|string
+     */
+    protected function getItemIdentifier($item)
+    {
+        return $item->{$this->identifierColumnKey};
     }
 
     /**
@@ -1349,9 +1360,9 @@ abstract class ModuleController extends Controller
             unset($columnsData[$this->titleColumnKey]);
 
             return [
-                'id' => $item[$this->identifierColumnKey],
+                'id' => $this->getItemIdentifier($item),
                 'name' => $name,
-                'edit' => moduleRoute($this->moduleName, $this->routePrefix, 'edit', $item[$this->identifierColumnKey]),
+                'edit' => moduleRoute($this->moduleName, $this->routePrefix, 'edit', $this->getItemIdentifier($item)),
                 'endpointType' => $this->repository->getMorphClass(),
             ] + $columnsData + ($withImage && !array_key_exists('thumbnail', $columnsData) ? [
                 'thumbnail' => $item->defaultCmsImage(['w' => 100, 'h' => 100]),
@@ -1497,6 +1508,8 @@ abstract class ModuleController extends Controller
         $baseUrl = $item->urlWithoutSlug ?? $this->getPermalinkBaseUrl();
         $localizedPermalinkBase = $this->getLocalizedPermalinkBase();
 
+        $itemId = $this->getItemIdentifier($item);
+
         $data = [
             'item' => $item,
             'moduleName' => $this->moduleName,
@@ -1509,21 +1522,21 @@ abstract class ModuleController extends Controller
             'translate' => $this->moduleHas('translations'),
             'translateTitle' => $this->titleIsTranslatable(),
             'permalink' => $this->getIndexOption('permalink'),
-            'createWithoutModal' => !$item[$this->identifierColumnKey] && $this->getIndexOption('skipCreateModal'),
+            'createWithoutModal' => !$itemId && $this->getIndexOption('skipCreateModal'),
             'form_fields' => $this->repository->getFormFields($item),
             'baseUrl' => $baseUrl,
             'localizedPermalinkBase'=>$localizedPermalinkBase,
             'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
-            'saveUrl' => $item[$this->identifierColumnKey] ? $this->getModuleRoute($item[$this->identifierColumnKey], 'update') : moduleRoute($this->moduleName, $this->routePrefix, 'store', [$this->submoduleParentId]),
+            'saveUrl' => $itemId ? $this->getModuleRoute($itemId, 'update') : moduleRoute($this->moduleName, $this->routePrefix, 'store', [$this->submoduleParentId]),
             'editor' => Config::get('twill.enabled.block-editor') && $this->moduleHas('blocks') && !$this->disableEditor,
             'blockPreviewUrl' => Route::has('admin.blocks.preview') ? URL::route('admin.blocks.preview') : '#',
             'availableRepeaters' => $this->getRepeaterList()->toJson(),
             'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
-        ] + (Route::has($previewRouteName) && $item[$this->identifierColumnKey] ? [
-            'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', [$item[$this->identifierColumnKey]]),
+        ] + (Route::has($previewRouteName) && $itemId ? [
+            'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', [$itemId]),
         ] : [])
-             + (Route::has($restoreRouteName) && $item[$this->identifierColumnKey] ? [
-            'restoreUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'restoreRevision', [$item[$this->identifierColumnKey]]),
+             + (Route::has($restoreRouteName) && $itemId ? [
+            'restoreUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'restoreRevision', [$itemId]),
         ] : []);
 
         return array_replace_recursive($data, $this->formData($this->request));
