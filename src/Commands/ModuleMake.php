@@ -603,7 +603,7 @@ class ModuleMake extends Command
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    private function createViews($moduleName = 'items')
+    private function createViews(string $moduleName = 'items'): void
     {
         $viewsPath = $this->viewPath($moduleName);
 
@@ -614,6 +614,11 @@ class ModuleMake extends Command
         twill_put_stub($viewsPath . '/form.blade.php', $this->files->get(__DIR__ . '/stubs/' . $formView . '.blade.stub'));
 
         $this->info("Form view created successfully! Include your form fields using @formField directives!");
+
+        if($this->confirm("Do you also want to generate the preview file?")) {
+            $previewViewsPath = $this->previewViewPath();
+            twill_put_stub($previewViewsPath . '/' . Str::singular($moduleName) . '.blade.php', $this->files->get(__DIR__ . '/stubs/preview_module.blade.stub'));
+        }
     }
 
     /**
@@ -787,13 +792,24 @@ class ModuleMake extends Command
         return $this->capsule[$type] . $class;
     }
 
-    public function viewPath($moduleName)
+    public function viewPath(string $moduleName): string
     {
         if (!$this->isCapsule) {
-            return $viewsPath = $this->config->get('view.paths')[0] . '/admin/' . $moduleName;
+            return $this->config->get('view.paths')[0] . '/admin/' . $moduleName;
         }
 
         $this->makeDir($dir = "{$this->moduleBasePath}/resources/views/admin");
+
+        return $dir;
+    }
+
+    public function previewViewPath(): string
+    {
+        if (!$this->isCapsule) {
+            return $this->config->get('view.paths')[0] . '/site/';
+        }
+
+        $this->makeDir($dir = "{$this->moduleBasePath}/resources/views");
 
         return $dir;
     }
