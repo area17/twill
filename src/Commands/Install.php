@@ -2,8 +2,12 @@
 
 namespace A17\Twill\Commands;
 
+use _PHPStan_71572f9a1\Nette\DI\Definitions\AccessorDefinition;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class Install extends Command
 {
@@ -12,7 +16,7 @@ class Install extends Command
      *
      * @var string
      */
-    protected $signature = 'twill:install';
+    protected $signature = 'twill:install {preset?}';
 
     /**
      * The console command description.
@@ -59,12 +63,57 @@ class Install extends Command
             return;
         }
 
-        $this->addRoutesFile();
+        if (filled($preset = $this->argument('preset'))) {
+            if ($this->presetExists($preset)) {
+                if ($this->confirm(
+                    'Are you sure to install this preset? This can overwrite your models, config and routes.'
+                )) {
+                    $this->installPreset($preset);
+                } else {
+                    $this->warn('Cancelled.');
+                }
+            } else {
+                $this->error("Could not find preset: $preset, available presets are: 'blog'");
+            }
+        } else {
+            $this->addRoutesFile();
+            $this->call('migrate');
+            $this->publishConfig();
+            $this->publishAssets();
+            $this->createSuperAdmin();
+            $this->info('All good!');
+        }
+    }
+
+    private function presetExists(string $preset): bool
+    {
+        return in_array($preset, ['blog'], true);
+    }
+
+    private function installPreset(string $preset): void
+    {
+        $this->info("Installing $preset preset");
+
+        $storage = Storage::build([
+            'driver' => 'local',
+            'root' => __DIR__ . '/../../examples/' . $preset,
+        ]);
+        $appPathStorage = Storage::build([
+            'driver' => 'local',
+            'root' => base_path(),
+        ]);
+
+        foreach ($storage->allDirectories() as $directory) {
+            if ($appPathStorage->makeDirectory($directory)) {
+                foreach ($storage->files($directory) as $file) {
+                    $appPathStorage->put($file, $storage->get($file));
+                }
+            }
+        }
+
         $this->call('migrate');
-        $this->publishConfig();
-        $this->publishAssets();
         $this->createSuperAdmin();
-        $this->info('All good!');
+        $this->info('Finished installing preset!');
     }
 
     /**
