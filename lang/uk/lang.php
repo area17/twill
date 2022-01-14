@@ -387,7 +387,7 @@ return [
         'update-close' => 'Оновити і закрити',
         'update-new' => 'Оновити і створити ще',
         'parent-page' => 'Батьківська сторінка',
-        'review-status' => 'Статус огляду ',
+        'review-status' => 'Статус огляду',
         'visibility' => 'Видимість',
     ],
     'select' => [

@@ -127,9 +127,6 @@ return [
     'publisher' => [
         'cancel' => 'Annuleren',
         'publish' => 'Publiceren',
-        'scheduled' => 'Gepland',
-        'expired' => 'Vervallen',
-        'publish-on' => 'Publiceer op',
         'publish-close' => 'Publiceren en sluiten',
         'publish-new' => 'Publiceren en nieuwe aanmaken',
         'save' => 'Opslaan als concept',

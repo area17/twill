@@ -374,7 +374,6 @@ return [
         'publish' => 'Publish',
         'scheduled' => 'Scheduled',
         'expired' => 'Expired',
-        'publish-on' => 'Publish on',
         'publish-close' => 'Publish and close',
         'publish-new' => 'Publish and create new',
         'published-on' => 'Published on',
