@@ -11,9 +11,6 @@
       <div class="publisher__item" v-if="revisions.length">
         <a href="#" class="publisher__link" @click.prevent="openPreview"><span v-svg symbol="preview"></span><span class="f--link-underlined--o">{{ $trans('publisher.preview') }}</span></a>
       </div>
-      <div class="publisher__item publisher__unsaved-changes" v-if="hasUnsavedChanges">
-        <span v-svg symbol="edit"></span> {{ $trans('publisher.unsaved-changes') }}
-      </div>
       <div class="publisher__item publisher__item--btns">
         <a17-multibutton @button-clicked="buttonClicked" :options="submitOptions" type="submit" :message="submitDisableMessage"></a17-multibutton>
       </div>
