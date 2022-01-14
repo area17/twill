@@ -156,6 +156,10 @@ module.exports = [
             "path": "/form-fields/multi-select-inline.html",
           },
           {
+            "title": "Tags",
+            "path": "/form-fields/tags.html",
+          },
+          {
             "title": "Checkbox",
             "path": "/form-fields/checkbox.html",
           },
