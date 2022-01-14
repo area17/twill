@@ -2,11 +2,8 @@
 
 namespace A17\Twill\Commands;
 
-use _PHPStan_71572f9a1\Nette\DI\Definitions\AccessorDefinition;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class Install extends Command
