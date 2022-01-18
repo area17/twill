@@ -240,7 +240,8 @@ class CapsulesTest extends TestCase
 
     public function makeCapsule()
     {
-        $this->artisan("twill:make:capsule {$this->capsuleName} --all --force");
+        $this->artisan("twill:make:capsule {$this->capsuleName} --all --force")
+            ->expectsConfirmation('Do you also want to generate the preview file?', 'no');
 
         $this->registerCapsuleRoutes(
             app(Router::class),

@@ -156,10 +156,13 @@ class ModuleMake extends Command
     {
         if (file_exists($dir)) {
             if (!$this->option('force')) {
-                $answer = $this->choice("Capsule path exists ({$dir}). Erase and overwrite?",
-                    ['no', 'yes'], $this->defaultsAnswserToNo
+                $answer = $this->choice(
+                    "Capsule path exists ({$dir}). Erase and overwrite?",
+                    ['no', 'yes'],
+                    $this->defaultsAnswserToNo
                     ? 0
-                    : 1);
+                    : 1
+                );
             }
 
             if ('yes' === ($answer ?? 'no') || $this->option('force')) {
@@ -615,7 +618,7 @@ class ModuleMake extends Command
 
         $this->info("Form view created successfully! Include your form fields using @formField directives!");
 
-        if($this->confirm("Do you also want to generate the preview file?")) {
+        if ($this->confirm("Do you also want to generate the preview file?")) {
             $previewViewsPath = $this->previewViewPath();
             twill_put_stub($previewViewsPath . '/' . Str::singular($moduleName) . '.blade.php', $this->files->get(__DIR__ . '/stubs/preview_module.blade.stub'));
         }
@@ -782,7 +785,8 @@ class ModuleMake extends Command
         make_twill_directory($path);
     }
 
-    public function namespace ($type, $suffix, $class = null) {
+    public function namespace($type, $suffix, $class = null)
+    {
         $class = (filled($class) ? "\\$class" : '');
 
         if (!$this->isCapsule) {
