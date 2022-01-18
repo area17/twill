@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use App\Repositories\ContactPageRepository;
+use App\Repositories\Twill\ContactPageRepository;
 
 class SingletonModuleTest extends TestCase
 {
@@ -10,14 +10,14 @@ class SingletonModuleTest extends TestCase
         '{$stubs}/singleton/2021_09_30_202102_create_contact_pages_tables.php' => '{$database}/migrations/',
         '{$stubs}/singleton/ContactPage.php' => '{$app}/Models/',
         '{$stubs}/singleton/ContactPageController.php' => '{$app}/Http/Controllers/Twill/',
-        '{$stubs}/singleton/ContactPageRepository.php' => '{$app}/Repositories/',
+        '{$stubs}/singleton/ContactPageRepository.php' => '{$app}/Repositories/Twill/',
         '{$stubs}/singleton/ContactPageRequest.php' => '{$app}/Http/Requests/Twill/',
         '{$stubs}/singleton/ContactPageRevision.php' => '{$app}/Models/Revisions/',
         '{$stubs}/singleton/ContactPageSlug.php' => '{$app}/Models/Slugs/',
         '{$stubs}/singleton/ContactPageTranslation.php' => '{$app}/Models/Translations/',
         '{$stubs}/singleton/form.blade.php' => '{$resources}/views/twill/admin/contactPages/form.blade.php',
         '{$stubs}/singleton/twill-navigation.php' => '{$config}/',
-        '{$stubs}/singleton/twill.php' => '{$base}/routes/twill.php',
+        '{$stubs}/singleton/admin.php' => '{$base}/routes/twill.php',
     ];
 
     public function setUp(): void

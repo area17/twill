@@ -593,7 +593,7 @@ We also namespaced our inline javascript variables to prevent any conflict in th
 
 Finally, to help custom workflows, maintainers and contributors, we made everything configurable:
 - `manifest_file`, which defaults to `twill-manifest.json`
-- `public_directory`, which defaults to `assets/admin`, like in previous versions, and can now be controlled through the `TWILL_ASSETS_DIR` environment variable
+- `public_directory`, which defaults to `assets/twill`, like in previous versions, and can now be controlled through the `TWILL_ASSETS_DIR` environment variable
 - `dev_mode`, which defaults to `false`
 - `dev_mode_url`, which defaults to  [http://localhost:8080](http://localhost:8080/)  and can be controlled through the `TWILL_DEV_MODE_URL` environment variable.
 

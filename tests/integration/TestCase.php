@@ -79,7 +79,7 @@ abstract class TestCase extends OrchestraTestCase
         '{$base}/routes/twill.php',
         '{$app}/Models',
         '{$app}/Http',
-        '{$app}/Repositories/',
+        '{$app}/Repositories/Twill/',
         '{$resources}/views',
         '{$database}/migrations',
         '{$app}/Twill',

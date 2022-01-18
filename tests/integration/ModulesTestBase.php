@@ -32,7 +32,7 @@ abstract class ModulesTestBase extends TestCase
         '{$stubs}/modules/authors/2019_10_18_193753_create_authors_tables.php' =>
             '{$database}/migrations/',
 
-        '{$stubs}/modules/authors/twill.php' => '{$base}/routes/twill.php',
+        '{$stubs}/modules/authors/admin.php' => '{$base}/routes/twill.php',
 
         '{$stubs}/modules/authors/Author.php' => '{$app}/Models/',
 
@@ -48,7 +48,7 @@ abstract class ModulesTestBase extends TestCase
         '{$stubs}/modules/authors/AuthorSlug.php' => '{$app}/Models/Slugs/',
 
         '{$stubs}/modules/authors/AuthorRepository.php' =>
-            '{$app}/Repositories/',
+            '{$app}/Repositories/Twill/',
 
         '{$stubs}/modules/authors/AuthorRequest.php' =>
             '{$app}/Http/Requests/Twill/',
@@ -86,7 +86,7 @@ abstract class ModulesTestBase extends TestCase
             '{$app}/Models/Slugs/',
 
         '{$stubs}/modules/categories/CategoryRepository.php' =>
-            '{$app}/Repositories/',
+            '{$app}/Repositories/Twill/',
 
         '{$stubs}/modules/categories/CategoryRequest.php' =>
             '{$app}/Http/Requests/Twill/',

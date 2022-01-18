@@ -23,7 +23,7 @@ if (!function_exists('moduleRoute')) {
         }
 
         // Create base route name
-        $routeName = 'admin.' . ($prefix ? $prefix . '.' : '');
+        $routeName = 'twill.' . ($prefix ? $prefix . '.' : '');
 
         // Prefix it with module name only if prefix doesn't contains it already
         if (

@@ -81,7 +81,7 @@ class ListIcons extends Command
             ) {
                 return [
                     'name' => Str::before($file->getFilename(), '.svg'),
-                    'url' => route('admin.icons.show', [
+                    'url' => route('twill.icons.show', [
                         'file' => $file->getFilename(),
                     ]),
                 ];
@@ -101,7 +101,7 @@ class ListIcons extends Command
         });
 
         $this->table(['Icon', 'Preview URL'], $icons->toArray());
-        $this->info("All icons viewable at: " . route('admin.icons.index'));
+        $this->info("All icons viewable at: " . route('twill.icons.index'));
 
         return parent::handle();
     }

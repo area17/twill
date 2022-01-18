@@ -6,7 +6,7 @@ use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Carbon;
 use A17\Twill\Tests\Integration\TestCase;
 use A17\Twill\Repositories\MediaRepository;
-use App\Repositories\AuthorRepository;
+use App\Repositories\Twill\AuthorRepository;
 
 class RefreshCropsTest extends TestCase
 {
@@ -17,7 +17,7 @@ class RefreshCropsTest extends TestCase
 
     protected $allFiles = [
         '{$stubs}/modules/authors/Author.php' => '{$app}/Models/',
-        '{$stubs}/modules/authors/AuthorRepository.php' => '{$app}/Repositories/',
+        '{$stubs}/modules/authors/AuthorRepository.php' => '{$app}/Repositories/Twill/',
         '{$stubs}/modules/authors/AuthorTranslation.php' => '{$app}/Models/Translations/',
         '{$stubs}/modules/authors/AuthorSlug.php' => '{$app}/Models/Slugs/',
         '{$stubs}/modules/authors/AuthorRevision.php' => '{$app}/Models/Revisions/',

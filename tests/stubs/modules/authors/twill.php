@@ -97,6 +97,6 @@ return [
 
         'analytics' => ['enabled' => false],
 
-        'search_endpoint' => 'admin.search',
+        'search_endpoint' => 'twill.search',
     ],
 ];

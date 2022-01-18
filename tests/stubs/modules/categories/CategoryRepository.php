@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Twill;
 
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;

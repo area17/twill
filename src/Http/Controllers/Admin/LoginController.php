@@ -118,7 +118,7 @@ class LoginController extends Controller
 
         $request->session()->regenerateToken();
 
-        return $this->redirector->to(route('admin.login'));
+        return $this->redirector->to(route('twill.login'));
     }
 
     /**
@@ -138,7 +138,7 @@ class LoginController extends Controller
 
             $request->session()->put('2fa:user:id', $user->id);
 
-            return $this->redirector->to(route('admin.login-2fa.form'));
+            return $this->redirector->to(route('twill.login-2fa.form'));
         }
 
         return $this->redirector->intended($this->redirectTo);
@@ -170,7 +170,7 @@ class LoginController extends Controller
             return $this->redirector->intended($this->redirectTo);
         }
 
-        return $this->redirector->to(route('admin.login-2fa.form'))->withErrors([
+        return $this->redirector->to(route('twill.login-2fa.form'))->withErrors([
             'error' => 'Your one time password is invalid.',
         ]);
     }
@@ -215,7 +215,7 @@ class LoginController extends Controller
                     $request->session()->put('oauth:user_id', $user->id);
                     $request->session()->put('oauth:user', $oauthUser);
                     $request->session()->put('oauth:provider', $provider);
-                    return $this->redirector->to(route('admin.login.oauth.showPasswordForm'));
+                    return $this->redirector->to(route('twill.login.oauth.showPasswordForm'));
                 } else {
                     $user->linkProvider($oauthUser, $provider);
 

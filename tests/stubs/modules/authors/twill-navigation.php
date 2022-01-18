@@ -3,7 +3,7 @@
 return [
     'personnel' => [
         'title' => 'Personnel',
-        'route' => 'admin.personnel.authors.index',
+        'route' => 'twill.personnel.authors.index',
         'primary_navigation' => [
             'authors' => [
                 'title' => 'Authors',
@@ -14,6 +14,6 @@ return [
 
     'categories' => [
         'title' => 'Categories',
-        'route' => 'admin.categories.index',
+        'route' => 'twill.categories.index',
     ],
 ];

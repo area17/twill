@@ -75,7 +75,7 @@ class GenerateBlocks extends Command
                 $blockName = str_replace('a17-block-', '', $block->component);
                 $basename = str_replace('.blade.php', '', $block->fileName);
 
-                $vueBlockTemplate = $this->viewFactory->make('admin.blocks.' . $basename, ['renderForBlocks' => true])->render();
+                $vueBlockTemplate = $this->viewFactory->make('twill.admin.blocks.' . $basename, ['renderForBlocks' => true])->render();
 
                 $vueBlockContent = $this->viewFactory->make('twill::blocks.builder', [
                     'render' => $this->sanitize($vueBlockTemplate),

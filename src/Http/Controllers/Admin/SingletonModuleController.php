@@ -25,6 +25,6 @@ abstract class SingletonModuleController extends ModuleController
 
         Session::put('pages_back_link', url()->current());
 
-        return view("admin.{$this->moduleName}.form", $this->form($item->id));
+        return view("twill.admin.{$this->moduleName}.form", $this->form($item->id));
     }
 }

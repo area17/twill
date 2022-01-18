@@ -3,7 +3,7 @@
 namespace A17\Twill\Tests\Integration;
 
 use App\Models\Node;
-use App\Repositories\NodeRepository;
+use App\Repositories\Twill\NodeRepository;
 use App\Http\Controllers\Twill\NodeController;
 
 class NestedModuleTest extends TestCase
@@ -12,10 +12,10 @@ class NestedModuleTest extends TestCase
        '{$stubs}/nested_module/2021_09_16_230238_create_nodes_tables.php' => '{$database}/migrations/',
        '{$stubs}/nested_module/Node.php' => '{$app}/Models/',
        '{$stubs}/nested_module/NodeController.php' => '{$app}/Http/Controllers/Twill/',
-       '{$stubs}/nested_module/NodeRepository.php' => '{$app}/Repositories/',
+       '{$stubs}/nested_module/NodeRepository.php' => '{$app}/Repositories/Twill/',
        '{$stubs}/nested_module/NodeRequest.php' => '{$app}/Http/Requests/Twill/',
        '{$stubs}/nested_module/form.blade.php' => '{$resources}/views/twill/admin/books/form.blade.php',
-       '{$stubs}/nested_module/twill.php' => '{$base}/routes/twill.php',
+       '{$stubs}/nested_module/admin.php' => '{$base}/routes/twill.php',
     ];
 
     public function setUp(): void
