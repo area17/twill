@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Form Fields
 
-Your module `form` view should look something like this (`resources/views/admin/moduleName/form.blade.php`):
+Your module `form` view should look something like this (`resources/views/twill/admin/moduleName/form.blade.php`):
 
 ```php
 @extends('twill::layouts.form')

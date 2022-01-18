@@ -32,12 +32,12 @@ abstract class ModulesTestBase extends TestCase
         '{$stubs}/modules/authors/2019_10_18_193753_create_authors_tables.php' =>
             '{$database}/migrations/',
 
-        '{$stubs}/modules/authors/admin.php' => '{$base}/routes/admin.php',
+        '{$stubs}/modules/authors/twill.php' => '{$base}/routes/twill.php',
 
         '{$stubs}/modules/authors/Author.php' => '{$app}/Models/',
 
         '{$stubs}/modules/authors/AuthorController.php' =>
-            '{$app}/Http/Controllers/Admin/',
+            '{$app}/Http/Controllers/Twill/',
 
         '{$stubs}/modules/authors/AuthorTranslation.php' =>
             '{$app}/Models/Translations/',
@@ -51,10 +51,10 @@ abstract class ModulesTestBase extends TestCase
             '{$app}/Repositories/',
 
         '{$stubs}/modules/authors/AuthorRequest.php' =>
-            '{$app}/Http/Requests/Admin/',
+            '{$app}/Http/Requests/Twill/',
 
         '{$stubs}/modules/authors/form.blade.php' =>
-            '{$resources}/views/admin/authors/',
+            '{$resources}/views/twill/admin/authors/',
 
         '{$stubs}/modules/authors/translatable.php' => '{$config}/',
 
@@ -74,7 +74,7 @@ abstract class ModulesTestBase extends TestCase
         '{$stubs}/modules/categories/Category.php' => '{$app}/Models/',
 
         '{$stubs}/modules/categories/CategoryController.php' =>
-            '{$app}/Http/Controllers/Admin/',
+            '{$app}/Http/Controllers/Twill/',
 
         '{$stubs}/modules/categories/CategoryTranslation.php' =>
             '{$app}/Models/Translations/',
@@ -89,10 +89,10 @@ abstract class ModulesTestBase extends TestCase
             '{$app}/Repositories/',
 
         '{$stubs}/modules/categories/CategoryRequest.php' =>
-            '{$app}/Http/Requests/Admin/',
+            '{$app}/Http/Requests/Twill/',
 
         '{$stubs}/modules/categories/form.blade.php' =>
-            '{$resources}/views/admin/categories/',
+            '{$resources}/views/twill/admin/categories/',
     ];
 
     public function setUp(): void
@@ -143,7 +143,7 @@ abstract class ModulesTestBase extends TestCase
          *      $this->searchReplaceFile(
          *          "'editInModal' => false",
          *          "'editInModal' => true",
-         *          twill_path('Http/Controllers/Admin/AuthorController.php')
+         *          twill_path('Http/Controllers/Twill/AuthorController.php')
          *      );
          *
          */

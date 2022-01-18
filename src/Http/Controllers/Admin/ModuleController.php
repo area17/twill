@@ -1598,7 +1598,7 @@ abstract class ModuleController extends Controller
 
     public function getFormRequestClass()
     {
-        $request = "$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request";
+        $request = "$this->namespace\Http\Requests\Twill\\" . $this->modelName . "Request";
 
         if (@class_exists($request)) {
             return $request;
@@ -1675,7 +1675,11 @@ abstract class ModuleController extends Controller
 
     public function getRepositoryClass($model)
     {
-        if (@class_exists($class = "$this->namespace\Repositories\\" . $model . "Repository")) {
+        $prefix = '';
+        if ($this->namespace !== 'A17\Twill') {
+            $prefix = "\Twill";
+        }
+        if (@class_exists($class = "$this->namespace\Repositories$prefix\\" . $model . "Repository")) {
             return $class;
         }
 
@@ -1687,7 +1691,7 @@ abstract class ModuleController extends Controller
      */
     protected function getViewPrefix()
     {
-        $prefix = "admin.$this->moduleName";
+        $prefix = "twill.admin.$this->moduleName";
 
         if (view()->exists("$prefix.form")) {
             return $prefix;

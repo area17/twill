@@ -8,7 +8,7 @@ To attach other records inside of a block, it is possible to use the `browser` f
 
 - In a block, use the `browser` field:
 
-filename: ```views/admin/blocks/products.blade.php```
+filename: ```views/twill/admin/blocks/products.blade.php```
 ```php
     @twillBlockTitle('Products')
 

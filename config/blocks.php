@@ -64,14 +64,14 @@ return [
                     'source' => A17\Twill\Services\Blocks\Block::SOURCE_TWILL,
                 ],
                 [
-                    'path' => resource_path('views/admin/blocks'),
+                    'path' => resource_path('views/twill/admin/blocks'),
                     'source' => A17\Twill\Services\Blocks\Block::SOURCE_APP,
                 ],
             ],
 
             'repeaters' => [
                 [
-                    'path' => resource_path('views/admin/repeaters'),
+                    'path' => resource_path('views/twill/admin/repeaters'),
                     'source' => A17\Twill\Services\Blocks\Block::SOURCE_APP,
                 ],
                 [
@@ -82,16 +82,16 @@ return [
 
             'icons' => [
                 base_path('vendor/area17/twill/frontend/icons'),
-                resource_path('views/admin/icons'),
+                resource_path('views/twill/admin/icons'),
             ],
         ],
 
         'destination' => [
             'make_dir' => true,
 
-            'blocks' => resource_path('views/admin/blocks'),
+            'blocks' => resource_path('views/twill/admin/blocks'),
 
-            'repeaters' => resource_path('views/admin/repeaters'),
+            'repeaters' => resource_path('views/twill/admin/repeaters'),
         ],
     ],
 ];

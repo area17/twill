@@ -23,7 +23,7 @@ class ListBlocksTest extends TestCase
         $this->execute();
 
         $this->assertFileExists(
-            resource_path('views/admin/blocks/carousel.blade.php')
+            resource_path('views/twill/admin/blocks/carousel.blade.php')
         );
     }
 
