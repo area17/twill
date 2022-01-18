@@ -24,6 +24,7 @@
       <file>tests/integration/Commands/MakeSingletonTest.php</file>
       <file>tests/integration/Commands/SuperadminTest.php</file>
       <file>tests/integration/Commands/UpdateTest.php</file>
+      <file>tests/integration/Commands/RefreshCropsTest.php</file>
       <file>tests/integration/FileLibraryTest.php</file>
       <file>tests/integration/LoginTest.php</file>
       <file>tests/integration/MediaLibraryTest.php</file>

@@ -31,7 +31,7 @@ class LoginTest extends TestCase
     {
         $this->login();
 
-        $this->httpRequestAssert('/twill/logout');
+        $this->httpRequestAssert('/twill/logout', 'POST');
 
         $this->assertSee('Forgot password');
     }

@@ -3,20 +3,44 @@
     <draggable class="content__content" v-model="blocks" :options="dragOptions">
       <transition-group name="draggable_list" tag='div'>
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
-          <a17-blockeditor-item :block="block" :index="index" :size="blockSize" :opened="opened" @open="setOpened">
-            <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)"  v-if="hasRemainingBlocks"><span v-svg symbol="add"></span></a17-button>
+          <a17-blockeditor-item
+              ref="blockList"
+              :block="block"
+              :index="index"
+              :size="blockSize"
+              :opened="opened"
+              @expand="setOpened">
+            <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)"
+                        v-if="hasRemainingBlocks"><span v-svg symbol="add"></span></a17-button>
             <div slot="dropdown-action">
-              <button type="button" @click="collapseAllBlocks()">Collapse All</button>
-              <button type="button" @click="deleteBlock(index)">Delete</button>
-              <button type="button" @click="duplicateBlock(index)" v-if="hasRemainingBlocks">Duplicate</button>
+              <button type="button" @click="collapseAllBlocks()" v-if="opened">
+                {{ $trans('fields.block-editor.collapse-all', 'Collapse all') }}
+              </button>
+              <button v-else type="button" @click="expandAllBlocks()">
+                {{ $trans('fields.block-editor.expand-all', 'Expand all') }}
+              </button>
+              <button type="button" @click="duplicateBlock(index)" v-if="hasRemainingBlocks">
+                {{ $trans('fields.block-editor.clone-block', 'Clone block') }}
+              </button>
+              <button type="button" @click="deleteBlock(index)">
+                {{ $trans('fields.block-editor.delete', 'Delete') }}
+              </button>
             </div>
           </a17-blockeditor-item>
         </div>
       </transition-group>
     </draggable>
     <div class="content__trigger">
-      <a17-button :class="triggerClass" :variant="triggerVariant" @click="addBlock()" v-if="hasRemainingBlocks && blockType.trigger">{{ blockType.trigger }}</a17-button>
-      <div class="content__note f--note f--small"><slot></slot></div>
+      <a17-button
+          v-if="hasRemainingBlocks && blockType.trigger"
+          :class="triggerClass"
+          :variant="triggerVariant"
+          @click="addBlock()">
+        {{ blockType.trigger }}
+      </a17-button>
+      <div class="content__note f--note f--small">
+        <slot></slot>
+      </div>
     </div>
   </div>
 </template>
@@ -100,8 +124,8 @@
       })
     },
     methods: {
-      setOpened: function (value) {
-        this.opened = value
+      setOpened: function () {
+        this.opened = true
       },
       addBlock: function () {
         this.opened = true
@@ -124,13 +148,15 @@
       },
       collapseAllBlocks: function () {
         this.opened = false
+      },
+      expandAllBlocks: function () {
+        this.opened = true
       }
     },
     mounted: function () {
       const self = this
-      // if there are blocks, these should be all collapse by default
       this.$nextTick(function () {
-        if (self.savedBlocks.length > 0) self.collapseAllBlocks()
+        self.collapseAllBlocks()
       })
     }
   }
@@ -139,46 +165,46 @@
 <style lang="scss" scoped>
 
   .content {
-    margin-top:20px; // margin-top:35px;
+    margin-top: 20px; // margin-top:35px;
   }
 
   .content__content {
-    margin-bottom:20px;
+    margin-bottom: 20px;
 
     + .dropdown {
-      display:inline-block;
+      display: inline-block;
     }
   }
 
   .content__item {
-    border:1px solid $color__border;
-    border-top:0 none;
+    border: 1px solid $color__border;
+    border-top: 0 none;
 
     &.sortable-ghost {
-      opacity:0.5;
+      opacity: 0.5;
     }
   }
 
   .content__item:first-child {
-    border-top:1px solid $color__border;
+    border-top: 1px solid $color__border;
   }
 
   .content__trigger {
-    display:flex;
+    display: flex;
   }
 
   .content__button {
-    margin-top:-5px;
+    margin-top: -5px;
   }
 
   .button--aslink {
-    display:block;
-    width:100%;
-    text-align:center;
+    display: block;
+    width: 100%;
+    text-align: center;
   }
 
   .content__note {
-    flex-grow:1;
-    text-align:right;
+    flex-grow: 1;
+    text-align: right;
   }
 </style>

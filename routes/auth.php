@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 if (config('twill.enabled.users-management')) {
     Route::get('login', 'LoginController@showLoginForm')->name('login.form');
     Route::post('login', 'LoginController@login')->name('login');
-    Route::get('logout', 'LoginController@logout')->name('logout');
+    Route::post('logout', 'LoginController@logout')->name('logout');
 
     Route::get('password/reset', 'ForgotPasswordController@showLinkRequestForm')->name('password.reset.link');
     Route::post('password/email', 'ForgotPasswordController@sendResetLinkEmail')->name('password.reset.email');
