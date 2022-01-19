@@ -78,7 +78,7 @@ class CreateSuperAdmin extends Command
             return;
         }
 
-        $this->info("Your account has been created");
+        $this->error('Failed creating user. Things you can check: Database permissions, run migrations');
     }
 
     /**
