@@ -14,14 +14,14 @@ composer require area17/twill:"^2.0"
 
 ## Artisan
 
-Run the `install` Artisan command: 
+Run the `install` Artisan command:
 
 ```bash
 php artisan twill:install
 ```
 
 :::danger
-This command will migrate your database. 
+This command will migrate your database.
 
 Make sure to setup your .env file with your database credentials and to run it where your database is accessible (ie. inside Vagrant if you are using Laravel Homestead).
 :::
@@ -33,6 +33,24 @@ Twill's `install` command consists of:
 - publishing Twill's assets for the admin console UI.
 - prompting you to create a superadmin user.
 
+## Example setup
+
+If this is your first time using Twill or you just want to experiment with a Twill installation you can use the demo
+setup to quickly get started.
+
+The demo setup is a blog. It comes with:
+
+- A blog module
+- A categories module
+- A blade based frontend
+- 2 example blocks to use in the block builder
+
+The install command is the same as above. Except that you pass the parameter `blog` to install it.
+
+```bash
+php artisan twill:install blog
+```
+
 ## .env
 
 By default, Twill's admin console is available at `admin.domain.test`. This is assuming that your .env `APP_URL` variable does not include a scheme (`http`/`https`):
@@ -41,9 +59,9 @@ By default, Twill's admin console is available at `admin.domain.test`. This is a
 APP_URL=domain.test
 ```
 
-In development, make sure that the `admin` subdomain is available and pointing to your app's `public` directory. 
+In development, make sure that the `admin` subdomain is available and pointing to your app's `public` directory.
 
-If you are a Valet user, this is already done for you (any subdomain is linked to the same directory as the linked domain). 
+If you are a Valet user, this is already done for you (any subdomain is linked to the same directory as the linked domain).
 
 If you are a Homestead user, make sure to add the subdomain to your `/etc/hosts` file too:
 
