@@ -62,9 +62,7 @@ class Install extends Command
 
         if (filled($preset = $this->argument('preset'))) {
             if ($this->presetExists($preset)) {
-                if ($this->confirm(
-                    'Are you sure to install this preset? This can overwrite your models, config and routes.'
-                )) {
+                if ($this->confirm('Are you sure to install this preset? This can overwrite your models, config and routes.')) {
                     $this->installPreset($preset);
                 } else {
                     $this->warn('Cancelled.');
@@ -89,6 +87,15 @@ class Install extends Command
 
     private function installPreset(string $preset): void
     {
+        $this->info("Checking preset requirements");
+        if (!$this->meetsPresetRequirements($preset)) {
+            $this->error('Cancelling installation as requirements are missing');
+            exit(1);
+        }
+
+        // First publish the config as we overwrite it later.
+        $this->publishConfig();
+
         $this->info("Installing $preset preset");
 
         $storage = Storage::build([
@@ -109,6 +116,7 @@ class Install extends Command
         }
 
         $this->call('migrate');
+        $this->publishAssets();
         $this->createSuperAdmin();
         $this->info('Finished installing preset!');
     }
@@ -171,4 +179,15 @@ class Install extends Command
         ]);
     }
 
+    private function meetsPresetRequirements(string $preset)
+    {
+        if ($preset === 'blog') {
+            if (!\Composer\InstalledVersions::isInstalled('kalnoy/nestedset')) {
+                $this->warn('Missing nestedset, please install it using "composer require kalnoy/nestedset"');
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
