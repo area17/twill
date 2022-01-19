@@ -18,5 +18,5 @@ Route::get('/blogs/{slug}', static function (string $blogSlug) {
     if (!$blog || !$blog->published()) {
         abort(404);
     }
-    return view('site.blog', ['blog' => $blog]);
+    return view('site.blog', ['item' => $blog]);
 })->name('blog.detail');
