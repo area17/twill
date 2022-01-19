@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use Kalnoy\Nestedset\NestedSetServiceProvider;
 
 abstract class TestCase extends OrchestraTestCase
 {
@@ -120,6 +121,8 @@ abstract class TestCase extends OrchestraTestCase
         $this->instantiateFaker();
 
         $this->copyBlocks();
+
+        $this->copyTestFiles();
 
         $this->installTwill();
     }
@@ -296,6 +299,7 @@ abstract class TestCase extends OrchestraTestCase
             RouteServiceProvider::class,
             TwillServiceProvider::class,
             ValidationServiceProvider::class,
+            NestedSetServiceProvider::class,
         ];
     }
 
@@ -380,6 +384,13 @@ abstract class TestCase extends OrchestraTestCase
         $this->deleteAllTwillPaths();
 
         $this->makeAllTwillPaths();
+    }
+
+    public function copyTestFiles(): void
+    {
+        if (isset($this->allFiles)) {
+            $this->copyFiles($this->allFiles);
+        }
     }
 
     /**

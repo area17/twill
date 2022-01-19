@@ -90,7 +90,7 @@ class Build extends Command
 
         if ($this->option('hot')) {
             $this->startWatcher(resource_path('assets/js/**/*.vue'), 'php artisan twill:build --copyOnly');
-            $this->runProcessInTwill(['npm', 'run', 'serve'], true);
+            $this->runProcessInTwill(['npm', 'run', 'serve', '--', "--port={$this->getDevPort()}"], true);
         } elseif ($this->option('watch')) {
             $this->startWatcher(resource_path('assets/js/**/*.vue'), 'php artisan twill:build --copyOnly');
             $this->runProcessInTwill(['npm', 'run', 'watch'], true);
@@ -106,6 +106,16 @@ class Build extends Command
             $progressBar->setMessage("Done.");
             $progressBar->finish();
         }
+    }
+
+    /**
+     * @return string
+     */
+    private function getDevPort()
+    {
+        preg_match('/^.*:(\d+)/', config('twill.dev_mode_url'), $matches);
+
+        return $matches[1] ?? '8080';
     }
 
     /**

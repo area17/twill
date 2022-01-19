@@ -3,6 +3,7 @@
     $openMap = $openMap ?? false;
     $inModal = $fieldsInModal ?? false;
     $saveExtendedData = $saveExtendedData ?? false;
+    $autoDetectLatLngValue = $autoDetectLatLngValue ?? false;
 @endphp
 
 <a17-locationfield
@@ -12,6 +13,7 @@
     @if ($openMap) open-map @endif
     @if ($inModal) :in-modal="true" @endif
     @if ($saveExtendedData) :save-extended-data="true" @endif
+    @if ($autoDetectLatLngValue) auto-detect-lat-lng-value @endif
     in-store="value"
 ></a17-locationfield>
 

@@ -25,7 +25,7 @@
                 <a href="{{ route($user_management_route) }}">{{ twillTrans('twill::lang.nav.cms-users') }}</a>
             @endif
             <a href="{{ route('admin.users.edit', $currentUser->id) }}">{{ twillTrans('twill::lang.nav.profile') }}</a>
-            <a href="{{ route('admin.logout') }}">{{ twillTrans('twill::lang.nav.logout') }}</a>
+            <a href="#" data-logout-btn>{{ twillTrans('twill::lang.nav.logout') }}</a>
         </div>
     </a17-dropdown>
 @endif

@@ -154,7 +154,7 @@
       },
       limitClasses: function () {
         return {
-          'input__limit--red': this.counter < 10
+          'input__limit--red': this.counter < (this.maxlength * 0.1)
         }
       },
       validityClasses: function () {

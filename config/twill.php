@@ -208,6 +208,8 @@ return [
         'pt',
         'zh-Hans',
         'ru',
+        'tr',
+        'ar'
     ],
 
 
@@ -228,6 +230,10 @@ return [
     'base_repository' => A17\Twill\Repositories\ModuleRepository::class,
 
     'base_controller' => A17\Twill\Http\Controllers\Admin\ModuleController::class,
+
+    'base_nested_controller' => A17\Twill\Http\Controllers\Admin\NestedModuleController::class,
+
+    'base_singleton_controller' => A17\Twill\Http\Controllers\Admin\SingletonModuleController::class,
 
     'base_request' => A17\Twill\Http\Requests\Admin\Request::class,
 ];

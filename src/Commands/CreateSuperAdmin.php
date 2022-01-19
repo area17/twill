@@ -58,7 +58,7 @@ class CreateSuperAdmin extends Command
         $password = $this->setPassword();
 
         $userModel = twillModel('user');
-        $user = new $userModel;
+        $user = new $userModel();
         $user->fill([
             'name' => "Admin",
             'email' => $email,
@@ -73,7 +73,10 @@ class CreateSuperAdmin extends Command
 
         $user->registered_at = Carbon::now();
         $user->password = Hash::make($password);
-        $user->save();
+        if ($user->save()) {
+            $this->info('Your account has been created');
+            return;
+        }
 
         $this->info("Your account has been created");
     }

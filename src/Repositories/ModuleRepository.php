@@ -46,6 +46,16 @@ abstract class ModuleRepository
     protected $fieldsGroups = [];
 
     /**
+     * @var bool
+     */
+    public $fieldsGroupsFormFieldNamesAutoPrefix = false;
+
+    /**
+     * @var string|null
+     */
+    public $fieldsGroupsFormFieldNameSeparator = '_';
+
+    /**
      * @param array $with
      * @param array $scopes
      * @param array $orders
@@ -918,7 +928,7 @@ abstract class ModuleRepository
     /**
      * @return string
      */
-    private function getLikeOperator()
+    protected function getLikeOperator()
     {
         if (DB::connection()->getPDO()->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql') {
             return 'ILIKE';

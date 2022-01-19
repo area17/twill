@@ -22,7 +22,7 @@
                     @if(isset($currentUser))
                         <a href="{{ route('admin.users.index') }}">{{ twillTrans('twill::lang.nav.cms-users') }}</a><br />
                         <a href="{{ route('admin.users.edit', $currentUser->id) }}">{{ twillTrans('twill::lang.nav.profile') }}</a><br />
-                        <a href="{{ route('admin.logout') }}">{{ twillTrans('twill::lang.nav.logout') }}</a>
+                        <a href="#" data-logout-btn>{{ twillTrans('twill::lang.nav.logout') }}</a>
                     @endif
                 </div>
             </div>

@@ -13,9 +13,11 @@ use A17\Twill\Commands\Install;
 use A17\Twill\Commands\ListBlocks;
 use A17\Twill\Commands\ListIcons;
 use A17\Twill\Commands\MakeCapsule;
+use A17\Twill\Commands\MakeSingleton;
 use A17\Twill\Commands\ModuleMake;
 use A17\Twill\Commands\ModuleMakeDeprecated;
 use A17\Twill\Commands\RefreshLQIP;
+use A17\Twill\Commands\RefreshCrops;
 use A17\Twill\Commands\SyncLang;
 use A17\Twill\Commands\Update;
 use A17\Twill\Http\ViewComposers\ActiveNavigation;
@@ -50,7 +52,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    const VERSION = '2.5.1';
+    const VERSION = '2.6.0';
 
     /**
      * Service providers to be registered.
@@ -233,6 +235,7 @@ class TwillServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/media-library.php', 'twill.media_library');
         $this->mergeConfigFrom(__DIR__ . '/../config/imgix.php', 'twill.imgix');
         $this->mergeConfigFrom(__DIR__ . '/../config/glide.php', 'twill.glide');
+        $this->mergeConfigFrom(__DIR__ . '/../config/twicpics.php', 'twill.twicpics');
         $this->mergeConfigFrom(__DIR__ . '/../config/dashboard.php', 'twill.dashboard');
         $this->mergeConfigFrom(__DIR__ . '/../config/models.php', 'twill.models');
         $this->mergeConfigFrom(__DIR__ . '/../config/oauth.php', 'twill.oauth');
@@ -322,12 +325,14 @@ class TwillServiceProvider extends ServiceProvider
             Install::class,
             ModuleMake::class,
             MakeCapsule::class,
+            MakeSingleton::class,
             ModuleMakeDeprecated::class,
             BlockMake::class,
             ListIcons::class,
             ListBlocks::class,
             CreateSuperAdmin::class,
             RefreshLQIP::class,
+            RefreshCrops::class,
             GenerateBlocks::class,
             Build::class,
             Update::class,

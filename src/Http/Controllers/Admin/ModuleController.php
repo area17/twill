@@ -979,6 +979,14 @@ abstract class ModuleController extends Controller
     }
 
     /**
+     * @return array
+     */
+    public function additionalTableActions()
+    {
+        return [];
+    }
+
+    /**
      * @param array $prependScope
      * @return array
      */
@@ -1015,6 +1023,7 @@ abstract class ModuleController extends Controller
             'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
             'baseUrl' => $baseUrl,
             'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
+            'additionalTableActions' => $this->additionalTableActions(),
         ];
 
         return array_replace_recursive($data + $options, $this->indexData($this->request));
@@ -1156,9 +1165,7 @@ abstract class ModuleController extends Controller
             $module = Str::singular(last(explode('.', $this->moduleName)));
             $value = '<a href="';
             $value .= moduleRoute("$this->moduleName.$field", $this->routePrefix, 'index', [$module => $item[$this->identifierColumnKey]]);
-            $value .= '">' . $nestedCount . " " . (strtolower($nestedCount > 1
-                ? Str::plural($column['title'])
-                : Str::singular($column['title']))) . '</a>';
+            $value .= '">' . $nestedCount . " " . (strtolower(Str::plural($column['title'], $nestedCount))) . '</a>';
         } else {
             $field = $column['field'];
             $value = $item->$field;
@@ -1166,9 +1173,21 @@ abstract class ModuleController extends Controller
 
         if (isset($column['relationship'])) {
             $field = $column['relationship'] . ucfirst($column['field']);
-            $value = Arr::get($item, "{$column['relationship']}.{$column['field']}");
+
+            $relation = $item->{$column['relationship']}();
+
+            $value = collect($relation->get())
+                ->pluck($column['field'])
+                ->join(', ');
         } elseif (isset($column['present']) && $column['present']) {
             $value = $item->presentAdmin()->{$column['field']};
+        }
+
+        if (isset($column['relatedBrowser']) && $column['relatedBrowser']) {
+            $field = 'relatedBrowser' . ucfirst($column['relatedBrowser']) . ucfirst($column['field']);
+            $value = $item->getRelated($column['relatedBrowser'])
+                ->pluck($column['field'])
+                ->join(', ');
         }
 
         return [
@@ -1247,9 +1266,15 @@ abstract class ModuleController extends Controller
         unset($this->indexColumns[$this->titleColumnKey]);
 
         foreach ($this->indexColumns as $column) {
-            $columnName = isset($column['relationship'])
-            ? $column['relationship'] . ucfirst($column['field'])
-            : (isset($column['nested']) ? $column['nested'] : $column['field']);
+            if (isset($column['relationship'])) {
+                $columnName = $column['relationship'] . ucfirst($column['field']);
+            } elseif (isset($column['nested'])) {
+                $columnName = $column['nested'];
+            } elseif (isset($column['relatedBrowser'])) {
+                $columnName = 'relatedBrowser' . ucfirst($column['relatedBrowser']) . ucfirst($column['field']);
+            } else {
+                $columnName = $column['field'];
+            }
 
             array_push($tableColumns, [
                 'name' => $columnName,
@@ -1560,6 +1585,7 @@ abstract class ModuleController extends Controller
         $restoreRouteName = $fullRoutePrefix . 'restoreRevision';
 
         $baseUrl = $item->urlWithoutSlug ?? $this->getPermalinkBaseUrl();
+        $localizedPermalinkBase = $this->getLocalizedPermalinkBase();
 
         $data = [
             'item' => $item,
@@ -1578,6 +1604,7 @@ abstract class ModuleController extends Controller
             'createWithoutModal' => !$item[$this->identifierColumnKey] && $this->getIndexOption('skipCreateModal'),
             'form_fields' => $this->repository->getFormFields($item),
             'baseUrl' => $baseUrl,
+            'localizedPermalinkBase'=>$localizedPermalinkBase,
             'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
             'saveUrl' => $item[$this->identifierColumnKey] ? $this->getModuleRoute($item[$this->identifierColumnKey], 'update') : moduleRoute($this->moduleName, $this->routePrefix, 'store', [$this->submoduleParentId]),
             'editor' => Config::get('twill.enabled.block-editor') && $this->moduleHas('blocks') && !$this->disableEditor,
@@ -1707,6 +1734,11 @@ abstract class ModuleController extends Controller
             if (array_key_last($moduleParts) !== $index) {
                 $singularName = Str::singular($name);
                 $modelClass = config('twill.namespace') . '\\Models\\' . Str::studly($singularName);
+
+                if(!class_exists($modelClass)) {
+                    $modelClass = $this->getCapsuleByModule($name)['model'];
+                }
+
                 $model = (new $modelClass)->findOrFail(request()->route()->parameter($singularName));
                 $hasSlug = Arr::has(class_uses($modelClass), HasSlug::class);
 
@@ -1790,8 +1822,16 @@ abstract class ModuleController extends Controller
         return $appUrl . '/'
             . ($this->moduleHas('translations') ? '{language}/' : '')
             . ($this->moduleHas('revisions') ? '{preview}/' : '')
-            . ($this->permalinkBase ?? $this->getModulePermalinkBase())
-            . (isset($this->permalinkBase) && empty($this->permalinkBase) ? '' : '/');
+            . (empty($this->getLocalizedPermalinkBase()) ? ($this->permalinkBase ?? $this->getModulePermalinkBase()) : '')
+            . (((isset($this->permalinkBase) && empty($this->permalinkBase)) || !empty($this->getLocalizedPermalinkBase())) ? '' : '/');
+    }
+
+    /**
+     * @return array
+     */
+    protected function getLocalizedPermalinkBase()
+    {
+        return [];
     }
 
     /**
