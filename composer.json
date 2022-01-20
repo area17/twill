@@ -52,7 +52,11 @@
   },
   "autoload": {
     "psr-4": {
-      "A17\\Twill\\": "src/",
+      "A17\\Twill\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
       "A17\\Twill\\Tests\\Unit\\": "tests/unit",
       "A17\\Twill\\Tests\\Integration\\": "tests/integration",
       "App\\": "vendor/orchestra/testbench-core/laravel/app"
