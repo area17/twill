@@ -5,8 +5,6 @@ namespace A17\Twill\Tests\Integration;
 use App\Models\Author;
 use App\Models\Category;
 use App\Models\Revisions\AuthorRevision;
-use App\Models\Slugs\AuthorSlug;
-use App\Models\Translations\AuthorTranslation;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
