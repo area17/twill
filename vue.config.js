@@ -106,6 +106,7 @@ const config = {
   // Remove sourcemaps for production
   productionSourceMap: false,
   css: {
+    extract: true,
     loaderOptions: {
       // define global settings imported in all components
       sass: {
