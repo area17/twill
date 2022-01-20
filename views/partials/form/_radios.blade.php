@@ -43,13 +43,12 @@
 >
     @if($addNew)
         <div slot="addModal">
-            {{-- unset($note, $options, $required, $default, $inline, $addNew, $inModal); --}}
             @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
         </div>
     @endif
 </a17-singleselect>
 
-@unless($renderForBlocks || $renderForModal)
+@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name, $default)))
 @push('vuexStore')
     @include('twill::partials.form.utils._selector_input_store')
 @endpush

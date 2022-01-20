@@ -8,15 +8,11 @@ window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({
                         $formFieldsValue = Arr::first($formFieldsValue, null, '');
                     @endphp
                 @endif
-                @if (is_numeric($formFieldsValue)) {{ $formFieldsValue }}
+                @if (is_bool($formFieldsValue)) {{ $formFieldsValue ? 'true' : 'false' }}
+                @elseif(is_string($formFieldsValue)) '{{ $formFieldsValue }}'
                 @elseif(is_string($formFieldsValue)) '{{ $formFieldsValue }}'
                 @else {!! $formFieldsValue === null ? "''" : $formFieldsValue !!}
                 @endif
            @else
-                @if(is_bool($default))
-                    {{ $default ? 'true' : 'false'}}
-                @else
-                    {{ $default ?? '' }}
-                @endif
            @endif
 })
