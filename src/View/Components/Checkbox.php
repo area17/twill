@@ -2,17 +2,8 @@
 
 namespace A17\Twill\View\Components;
 
-use Illuminate\View\Component;
-
-class Checkbox extends Component
+class Checkbox extends TwillFormComponent
 {
-    public $name;
-    /**
-     * @var \A17\Twill\Models\Model
-     */
-    public $item;
-    public $label;
-    public $form_fields;
     public $note;
     public $default;
     public $fieldsInModal;
@@ -25,7 +16,7 @@ class Checkbox extends Component
     public function __construct(
         $name,
         $label,
-        $form,
+        $form = [],
         $note = false,
         $default = false,
         $fieldsInModal = false,
@@ -35,10 +26,7 @@ class Checkbox extends Component
         $confirmTitleText = false,
         $requireConfirmation = false
     ) {
-        $this->item = $form['item'];
-        $this->name = $name;
-        $this->label = $label;
-        $this->form_fields = $form['form_fields'];
+        parent::__construct($name, $label, $form);
         $this->note = $note;
         $this->default = $default;
         $this->fieldsInModal = $fieldsInModal;

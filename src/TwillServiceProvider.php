@@ -174,7 +174,6 @@ class TwillServiceProvider extends ServiceProvider
         if (config('twill.enabled.file-library')) {
             $loader->alias('FileService', FileService::class);
         }
-
     }
 
     /**
@@ -346,6 +345,29 @@ class TwillServiceProvider extends ServiceProvider
 
         $view = $partialNamespace . $view . $name;
 
+        $bladeComponents = Blade::getClassComponentAliases();
+        if (array_key_exists('twill-' . $name, $bladeComponents)) {
+            $parsedContent = eval("return [{$expression}];");
+
+            $attributes = [];
+
+            $parsedContent[1]['form'] = '';
+
+            foreach ($parsedContent[1] as $attribute => $value) {
+                $attributes[] = ':' . $attribute . '="$' . $attribute . '"';
+            }
+
+            $attributes = join(' ', $attributes);
+
+            return '<?php $data = '.var_export($parsedContent[1], true).'; ?>' .
+                '<?php $data["form"] = $form; ?>' .
+                '<?php $name = "'.$name.'"; ?>' .
+                '<?php $attributes = \''.$attributes.'\'; ?>' .
+                '<?php echo Blade::render("<x-twill-$name $attributes />", $data); ?>';
+        }
+
+        // Legacy behaviour.
+        // @TODO: Not sure if we should keep this.
         $expression = explode(',', $expression);
         array_shift($expression);
         $expression = "(" . implode(',', $expression) . ")";
@@ -379,7 +401,6 @@ class TwillServiceProvider extends ServiceProvider
         });
 
         $blade->directive('partialView', function ($expression) {
-
             $expressionAsArray = str_getcsv($expression, ',', '\'');
 
             [$moduleName, $viewName] = $expressionAsArray;
@@ -437,7 +458,6 @@ class TwillServiceProvider extends ServiceProvider
             $blade->aliasComponent('twill::partials.form.utils._connected_fields', 'formConnectedFields');
             $blade->aliasComponent('twill::partials.form.utils._inline_checkboxes', 'formInlineCheckboxes');
         }
-
     }
 
     /**
