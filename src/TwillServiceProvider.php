@@ -40,6 +40,7 @@ use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use PragmaRX\Google2FAQRCode\Google2FA as Google2FAQRCode;
 
@@ -120,9 +121,12 @@ class TwillServiceProvider extends ServiceProvider
         $this->registerProviders();
         $this->registerAliases();
 
-        // @todo: We can also just share the directory instead of manually
-        // defining them one by one.
-        Blade::component('twill-checkbox', Checkbox::class);
+        // Only works as of laravel 7.
+        if ($this->supportsBladeComponents()) {
+            // @todo: We can also just share the directory instead of manually
+            // defining them one by one.
+            Blade::component('twill-checkbox', Checkbox::class);
+        }
 
         Relation::morphMap([
             'users' => User::class,
@@ -132,6 +136,10 @@ class TwillServiceProvider extends ServiceProvider
         ]);
 
         config(['twill.version' => $this->version()]);
+    }
+
+    private function supportsBladeComponents(): bool {
+        return (int)explode('.', app()->version())[0] >= 7;
     }
 
     /**
@@ -345,25 +353,27 @@ class TwillServiceProvider extends ServiceProvider
 
         $view = $partialNamespace . $view . $name;
 
-        $bladeComponents = Blade::getClassComponentAliases();
-        if (array_key_exists('twill-' . $name, $bladeComponents)) {
-            $parsedContent = eval("return [{$expression}];");
+        if ($this->supportsBladeComponents()) {
+            $bladeComponents = Blade::getClassComponentAliases();
+            if (array_key_exists('twill-' . $name, $bladeComponents)) {
+                $parsedContent = eval("return [{$expression}];");
 
-            $attributes = [];
+                $attributes = [];
 
-            $parsedContent[1]['form'] = '';
+                $parsedContent[1]['form'] = '';
 
-            foreach ($parsedContent[1] as $attribute => $value) {
-                $attributes[] = ':' . $attribute . '="$' . $attribute . '"';
+                foreach ($parsedContent[1] as $attribute => $value) {
+                    $attributes[] = ':' . $attribute . '="$' . $attribute . '"';
+                }
+
+                $attributes = join(' ', $attributes);
+
+                return '<?php $data = ' . var_export($parsedContent[1], true) . '; ?>' .
+                    '<?php $data["form"] = $form; ?>' .
+                    '<?php $name = "' . $name . '"; ?>' .
+                    '<?php $attributes = \'' . $attributes . '\'; ?>' .
+                    '<?php echo Blade::render("<x-twill-$name $attributes />", $data); ?>';
             }
-
-            $attributes = join(' ', $attributes);
-
-            return '<?php $data = '.var_export($parsedContent[1], true).'; ?>' .
-                '<?php $data["form"] = $form; ?>' .
-                '<?php $name = "'.$name.'"; ?>' .
-                '<?php $attributes = \''.$attributes.'\'; ?>' .
-                '<?php echo Blade::render("<x-twill-$name $attributes />", $data); ?>';
         }
 
         // Legacy behaviour.
