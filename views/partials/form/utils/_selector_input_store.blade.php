@@ -9,7 +9,7 @@ window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({
                     @endphp
                 @endif
                 @if (is_bool($formFieldsValue)) {{ $formFieldsValue ? 'true' : 'false' }}
-                @elseif(is_string($formFieldsValue)) '{{ $formFieldsValue }}'
+                @elseif(is_numeric($formFieldsValue)) {{ $formFieldsValue }}
                 @elseif(is_string($formFieldsValue)) '{{ $formFieldsValue }}'
                 @else {!! $formFieldsValue === null ? "''" : $formFieldsValue !!}
                 @endif
