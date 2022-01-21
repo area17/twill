@@ -366,7 +366,7 @@ class TwillServiceProvider extends ServiceProvider
                     $attributes[] = ':' . $attribute . '="$' . $attribute . '"';
                 }
 
-                $attributes = join(' ', $attributes);
+                $attributes = implode(' ', $attributes);
 
                 return '<?php $data = ' . var_export($parsedContent[1], true) . '; ?>' .
                     '<?php $data["form"] = $form; ?>' .
