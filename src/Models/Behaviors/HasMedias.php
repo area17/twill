@@ -4,7 +4,7 @@ namespace A17\Twill\Models\Behaviors;
 
 use A17\Twill\Exceptions\MediaCropNotFoundException;
 use A17\Twill\Models\Media;
-use A17\Twill\Models\Model;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use ImageService;
 
