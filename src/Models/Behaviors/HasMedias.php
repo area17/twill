@@ -2,7 +2,9 @@
 
 namespace A17\Twill\Models\Behaviors;
 
+use A17\Twill\Exceptions\MediaCropNotFoundException;
 use A17\Twill\Models\Media;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use ImageService;
 
@@ -14,6 +16,16 @@ trait HasMedias
         'crop_w',
         'crop_h',
     ];
+
+    public static function bootHasMedias(): void
+    {
+        self::deleted(static function (Model $model) {
+            if ($model->isForceDeleting()) {
+                /** @var \A17\Twill\Models\Behaviors\HasMedias $model */
+                $model->medias()->detach();
+            }
+        });
+    }
 
     /**
      * Defines the many-to-many relationship for media objects.
@@ -42,18 +54,32 @@ trait HasMedias
 
     private function findMedia($role, $crop = "default")
     {
-        $media = $this->medias->first(function ($media) use ($role, $crop) {
+        $foundMedia = false;
+        $media = $this->medias->first(function ($media) use ($role, $crop, &$foundMedia) {
             if (config('twill.media_library.translated_form_fields', false)) {
                 $localeScope = $media->pivot->locale === app()->getLocale();
             }
 
-            return $media->pivot->role === $role && $media->pivot->crop === $crop && ($localeScope ?? true);
+            if (!$foundMedia) {
+                $foundMedia = $media->pivot->role === $role && ($localeScope ?? true);
+            }
+
+            return $foundMedia && $media->pivot->crop === $crop;
         });
 
         if (!$media && config('twill.media_library.translated_form_fields', false)) {
-            $media = $this->medias->first(function ($media) use ($role, $crop) {
-                return $media->pivot->role === $role && $media->pivot->crop === $crop;
+            $media = $this->medias->first(function ($media) use ($role, $crop, &$foundMedia) {
+                if (!$foundMedia) {
+                    $foundMedia = $media->pivot->role === $role;
+                }
+
+                return $foundMedia && $media->pivot->crop === $crop;
             });
+        }
+
+        if ($foundMedia && !$media && config('app.debug')) {
+            // In this case we found the media but not the crop because our result is still empty.
+            throw new MediaCropNotFoundException($crop);
         }
 
         return $media;
