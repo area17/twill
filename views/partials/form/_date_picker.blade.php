@@ -20,7 +20,7 @@
     @if ($note ?? false) note="{{ $note }}" @endif
     @if ($required ?? false) :required="true" @endif
     @if ($inModal) :in-modal="true" @endif
-    @if (isset($time24Hr)) time_24hr="{{ $time24Hr ? 'true' : 'false' }}" @endif
+    @if (isset($time24Hr)) :time_24hr="{{ $time24Hr ? 'true' : 'false' }}" @endif
     @if (isset($altFormat)) alt-format="{{ $altFormat }}" @endif
     @if (isset($hourIncrement)) :hour-increment="{{ $hourIncrement }}" @endif
     @if (isset($minuteIncrement)) :minute-increment="{{ $minuteIncrement }}" @endif
