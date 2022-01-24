@@ -42,7 +42,6 @@
   import InputframeMixin from '@/mixins/inputFrame'
   import AttributesMixin from '@/mixins/addAttributes'
   import extendedVSelect from '@/components/VSelect/ExtendedVSelect.vue'
-  import _ from 'lodash'
   // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
   // import vSelect from 'vue-select' // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
 
@@ -174,7 +173,7 @@
               if (typeof o.value === 'number') {
                 return o.value === parseInt(value)
               }
-              return o.value === _.unescape(String(value))
+              return o.value === String(value)
             })
           }
         }
