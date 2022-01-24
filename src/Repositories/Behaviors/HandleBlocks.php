@@ -139,7 +139,7 @@ trait HandleBlocks
 
         foreach ($parentBlockFields['blocks'] as $childKey => $childBlocks) {
             foreach ($childBlocks as $index => $childBlock) {
-                $childBlock = $this->buildBlock($childBlock, $object, true);
+                $childBlock = $this->buildBlock($childBlock, $object, $childBlock['is_repeater'] ?? true);
                 $childBlock['child_key'] = $childKey;
                 $childBlock['position'] = $index + 1;
                 $childBlock['editor_name'] = $parentBlockFields['editor_name'] ?? 'default';
@@ -180,7 +180,6 @@ trait HandleBlocks
 
             foreach ($object->blocks as $block) {
                 $isInRepeater = isset($block->parent_id);
-                $configKey = $isInRepeater ? 'repeaters' : 'blocks';
                 $blockTypeConfig = $blocksList[$block->type] ?? null;
 
                 if (is_null($blockTypeConfig)) {
@@ -197,16 +196,24 @@ trait HandleBlocks
                     'attributes' => $blockTypeConfig['attributes'] ?? [],
                 ];
 
-                if ($isInRepeater) {
+                if ($isInRepeater && $blockTypeConfig['type'] !== 'block') {
                     $fields['blocksRepeaters']["blocks-{$block->parent_id}_{$block->child_key}"][] = $blockItem + [
-                        'trigger' => $blockTypeConfig['trigger'],
-                    ] + (isset($blockTypeConfig['max']) ? [
-                        'max' => $blockTypeConfig['max'],
-                    ] : []);
+                            'trigger' => $blockTypeConfig['trigger'],
+                        ] + (isset($blockTypeConfig['max']) ? [
+                            'max' => $blockTypeConfig['max'],
+                        ] : []);
                 } else {
-                    $fields['blocks'][$blockItem['name']][] = $blockItem + [
-                        'icon' => $blockTypeConfig['icon'],
-                    ];
+                    // $isInRepeater is not the correct word.
+                    if ($isInRepeater) {
+                        $fields['blocks']["blocks-{$block->parent_id}_{$block->child_key}"][] = $blockItem + [
+                                'icon' => $blockTypeConfig['icon'],
+                            ];
+                    }
+                    else {
+                        $fields['blocks'][$blockItem['name']][] = $blockItem + [
+                                'icon' => $blockTypeConfig['icon'],
+                            ];
+                    }
                 }
 
                 $fields['blocksFields'][] = Collection::make($block['content'])->filter(function ($value, $key) {
