@@ -77,7 +77,6 @@ class Media extends Model
             'tags' => $this->tags->map(function ($tag) {
                 return $tag->name;
             }),
-            'lqip_data' => $this->pivot->lqip_data ?? null,
             'deleteUrl' => $this->canDeleteSafely() ? moduleRoute('medias', 'media-library', 'destroy', $this->id) : null,
             'updateUrl' => route('admin.media-library.medias.single-update'),
             'updateBulkUrl' => route('admin.media-library.medias.bulk-update'),
