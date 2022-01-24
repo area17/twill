@@ -20,7 +20,7 @@ trait HasMedias
     public static function bootHasMedias(): void
     {
         self::deleted(static function (Model $model) {
-            if ($model->isForceDeleting()) {
+            if (!method_exists($model, 'isForceDeleting') || $model->isForceDeleting()) {
                 /** @var \A17\Twill\Models\Behaviors\HasMedias $model */
                 $model->medias()->detach();
             }
