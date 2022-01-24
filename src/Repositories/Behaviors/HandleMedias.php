@@ -91,7 +91,6 @@ trait HandleMedias
                                     'crop_h' => $cropData['height'],
                                     'crop_x' => $cropData['x'],
                                     'crop_y' => $cropData['y'],
-                                    'lqip_data' => $media['lqip_data'] ?? null,
                                     'metadatas' => json_encode($customMetadatas),
                                 ]);
                             }
@@ -107,7 +106,6 @@ trait HandleMedias
                                     'crop_h' => null,
                                     'crop_x' => null,
                                     'crop_y' => null,
-                                    'lqip_data' => $media['lqip_data'] ?? null,
                                     'metadatas' => json_encode($customMetadatas),
                                 ]);
                             }
