@@ -107,7 +107,7 @@ class BlockCollection extends Collection
 
         return collect($this->fileSystem->files($directory))
             ->map(function ($file) use ($source, $type) {
-                return new Block($file, $type, $source);
+                return Block::make($file, $type, $source);
             });
     }
 
@@ -246,9 +246,7 @@ class BlockCollection extends Collection
     {
         $this->logDeprecatedBlockConfig($blockName, $type);
 
-        $block = new Block($file, $type, $source, $blockName);
-
-        return $block;
+        return Block::make($file, $type, $source, $blockName);
     }
 
     /**

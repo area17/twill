@@ -35,10 +35,13 @@ export default {
 
       const locales = []
 
+      const supportedLanguages = this.$store.state.language.all.map(lang => lang.value)
+
       Object.keys(this.$store.state.form.errors).forEach((error) => {
         if (error.substr(0, error.indexOf('.')) === errorKeyWithoutLocale) {
           const cleaned = error.substr(error.indexOf('.') + 1, error.length)
-          if (cleaned.length === 2) {
+
+          if (supportedLanguages.includes(cleaned)) {
             locales.push(cleaned)
           }
         }

@@ -36,7 +36,7 @@ trait HasBlocks
                     $renderedChildViews = $childBlocks->map(function ($childBlock) use ($blockViewMappings, $data) {
                         $class = BlockConfig::getForType($childBlock->type);
                         $view = $class->getBlockView($blockViewMappings);
-                        $data = $class->getData($data);
+                        $data = $class->getData($data, $childBlock);
 
                         return view($view, $data)->with('block', $childBlock)->render();
                     })->implode('');
@@ -46,7 +46,7 @@ trait HasBlocks
 
                 $class = BlockConfig::getForType($block->type);
                 $view = $class->getBlockView($blockViewMappings);
-                $data = $class->getData($data);
+                $data = $class->getData($data, $block);
 
                 return view($view, $data)->with('block', $block)->render() . ($renderedChildViews ?? '');
             })->implode('');

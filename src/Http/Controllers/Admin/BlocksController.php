@@ -31,7 +31,6 @@ class BlocksController extends Controller
         Config $config
     ) {
         $blocksCollection = Collection::make();
-        $childBlocksList = Collection::make();
 
         if ($request->has('activeLanguage')) {
             $app->setLocale($request->get('activeLanguage'));
@@ -77,7 +76,7 @@ class BlocksController extends Controller
 
                     $view = $this->getBlockView($blockToRender->type, $config);
 
-                    $data = $block['instance']->getData($data);
+                    $data = $block['instance']->getData($data, $blockToRender);
 
                     $error = '';
 

@@ -201,7 +201,7 @@ class Block
         return $this;
     }
 
-    public function getData(array $data): array
+    public function getData(array $data, \A17\Twill\Models\Block $block): array
     {
         return $data;
     }

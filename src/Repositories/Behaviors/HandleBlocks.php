@@ -110,7 +110,7 @@ trait HandleBlocks
             $blockInstance = $blockCmsData['instance'];
 
             // Figure out if the class has translations.
-            $handleTranslations = property_exists($object, 'translatedattributes');
+            $handleTranslations = property_exists($object, 'translatedAttributes');
 
             try {
                 $this->validate(

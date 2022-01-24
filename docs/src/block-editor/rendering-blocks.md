@@ -59,18 +59,20 @@ namespace App\Twill\Block;
 
 use A17\Twill\Services\Blocks\Block;
 
-class HeroHeaderWithMenuBlock extends TwillBlock
+class ImagesBlock extends Block
 {
-    public function getData(): array
+    public function getData(array $data, \A17\Twill\Models\Block $block): array
     {
-        $image = $this->block->imageAsArray('heading', 'desktop');
-        $ctaTarget = $this->block->getRelated('call_to_action_target')->first()->getSlug();
+        $data = parent::getData($data, $block);
 
-        return array_merge(
-            parent::getData(),
-            'image' => $image,
-            'linkSlug' => $ctaTarget,
-        );
+        foreach ($block->imagesAsArrays('blog_image', 'desktop') as $imageData) {
+            $data['images'][] = [
+                'src' => $imageData['src'],
+                'alt' => $imageData['alt']
+            ];
+        }
+
+        return $data;
     }
 }
 ```
