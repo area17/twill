@@ -18,7 +18,7 @@
     }
   ],
   "support": {
-    "issues": "https://github.com/ifox/twill/issues/",
+    "issues": "https://github.com/area17/twill/issues/",
     "docs": "https://twill.io/docs",
     "chat": "https://discord.link/twill"
   },
@@ -75,7 +75,8 @@
       ]
     }
   },
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "config": {
     "sort-packages": true
   }
