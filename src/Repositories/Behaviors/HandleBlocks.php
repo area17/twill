@@ -306,8 +306,12 @@ trait HandleBlocks
                     }
                 }
             } else {
-                $relationRepository = $this->getModelRepository($relation);
-                $relatedItems = $relationRepository->get([], ['id' => $ids], [], -1);
+                try {
+                    $relationRepository = $this->getModelRepository($relation);
+                    $relatedItems = $relationRepository->get([], ['id' => $ids], [], -1);
+                } catch (\Throwable $th) {
+                    $relatedItems = collect();
+                }
                 $sortedRelatedItems = array_flip($ids);
 
                 foreach ($relatedItems as $item) {
