@@ -84,7 +84,7 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
           coverage: none
         env:
-          COMPOSER_TOKEN: ${{ secrets.TWILL_PAT_TOKEN }}
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup problem matchers
         run: |
