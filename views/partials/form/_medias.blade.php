@@ -1,20 +1,22 @@
-@php
-    $max = $max ?? 1;
-    $required = $required ?? false;
-    $note = $note ?? '';
-    $fieldNote = $fieldNote ?? '';
-    $withAddInfo = $withAddInfo ?? true;
-    $withVideoUrl = $withVideoUrl ?? true;
-    $withCaption = $withCaption ?? true;
-    $altTextMaxLength = $altTextMaxLength ?? false;
-    $captionMaxLength = $captionMaxLength ?? false;
-    $extraMetadatas = $extraMetadatas ?? false;
-    $multiple = $max > 1 || $max == 0;
-    $widthMin = $widthMin ?? 0;
-    $heightMin = $heightMin ?? 0;
-    $buttonOnTop = $buttonOnTop ?? false;
-    $activeCrop = $activeCrop ?? true;
-@endphp
+@unless(\A17\Twill\TwillServiceProvider::supportsBladeComponents())
+    @php
+        $max = $max ?? 1;
+        $required = $required ?? false;
+        $note = $note ?? '';
+        $fieldNote = $fieldNote ?? '';
+        $withAddInfo = $withAddInfo ?? true;
+        $withVideoUrl = $withVideoUrl ?? true;
+        $withCaption = $withCaption ?? true;
+        $altTextMaxLength = $altTextMaxLength ?? false;
+        $captionMaxLength = $captionMaxLength ?? false;
+        $extraMetadatas = $extraMetadatas ?? false;
+        $multiple = $max > 1 || $max == 0;
+        $widthMin = $widthMin ?? 0;
+        $heightMin = $heightMin ?? 0;
+        $buttonOnTop = $buttonOnTop ?? false;
+        $activeCrop = $activeCrop ?? true;
+    @endphp
+@endunless
 
 @if (config('twill.media_library.translated_form_fields', $translated ?? false) && ($translated ?? true))
     <a17-locale

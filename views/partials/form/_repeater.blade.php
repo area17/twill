@@ -1,7 +1,9 @@
-@php
-    $name = $name ?? $type;
-    $buttonAsLink = $buttonAsLink ?? false;
-@endphp
+@unless(\A17\Twill\TwillServiceProvider::supportsBladeComponents())
+    @php
+        $name = $name ?? $type;
+        $buttonAsLink = $buttonAsLink ?? false;
+    @endphp
+@endunless
 
 <a17-repeater
     type="{{ $type }}"

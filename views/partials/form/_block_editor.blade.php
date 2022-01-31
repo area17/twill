@@ -1,16 +1,18 @@
-@php
-    $trigger = $trigger ?? $label ?? twillTrans('twill::lang.fields.block-editor.add-content');
-    $name = $name ?? 'default';
-    $title = $title ?? Str::title($name);
-    $allowedBlocks = generate_list_of_available_blocks($blocks ?? null, $group ?? $groups ?? null);
+@unless(\A17\Twill\TwillServiceProvider::supportsBladeComponents())
+    @php
+        $trigger = $trigger ?? $label ?? twillTrans('twill::lang.fields.block-editor.add-content');
+        $name = $name ?? 'default';
+        $title = $title ?? Str::title($name);
+        $allowedBlocks = generate_list_of_available_blocks($blocks ?? null, $group ?? $groups ?? null);
 
-    $editorName = [
-        'label' => $title,
-        'value' => $name,
-    ];
-@endphp
+        $editorName = [
+            'label' => $title,
+            'value' => $name,
+        ];
+    @endphp
+@endunless
 
-@unless($withoutSeparator ?? false)
+@unless($withoutSeparator)
 <hr/>
 @endunless
 <a17-blocks title="{{ $title }}" trigger="{{ $trigger }}" editor-name="{{ $name }}"></a17-blocks>

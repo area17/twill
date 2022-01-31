@@ -474,10 +474,8 @@ abstract class ModuleController extends Controller
             return View::exists($view);
         });
 
-        // @todo: So this is not really ideal, maybe we can use
-        // views::share or something to make the required data available
-        // to the blade components?
-        return View::make($view, $this->form($id) + ['form' => $this->form($id)]);
+        View::share('form', $this->form($id));
+        return View::make($view, $this->form($id));
     }
 
     /**
@@ -508,6 +506,7 @@ abstract class ModuleController extends Controller
             return View::exists($view);
         });
 
+        View::share('form', $this->form(null));
         return View::make($view, $this->form(null));
     }
 
@@ -641,6 +640,7 @@ abstract class ModuleController extends Controller
 
         Session::flash('restoreMessage', twillTrans('twill::lang.publisher.restore-message', ['user' => $revision->byUser, 'date' => $date]));
 
+        View::share('form', $this->form($id, $item));
         return View::make($view, $this->form($id, $item));
     }
 

@@ -1,10 +1,12 @@
-@php
-    $showMap = $showMap ?? true;
-    $openMap = $openMap ?? false;
-    $inModal = $fieldsInModal ?? false;
-    $saveExtendedData = $saveExtendedData ?? false;
-    $autoDetectLatLngValue = $autoDetectLatLngValue ?? false;
-@endphp
+@unless(\A17\Twill\TwillServiceProvider::supportsBladeComponents())
+    @php
+        $showMap = $showMap ?? true;
+        $openMap = $openMap ?? false;
+        $inModal = $fieldsInModal ?? false;
+        $saveExtendedData = $saveExtendedData ?? false;
+        $autoDetectLatLngValue = $autoDetectLatLngValue ?? false;
+    @endphp
+@endunless
 
 <a17-locationfield
     label="{{ $label }}"

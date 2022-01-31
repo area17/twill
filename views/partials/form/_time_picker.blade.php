@@ -1,3 +1,4 @@
+{{-- Obsolete with dropping laravel 6 as we use the date picker directly via the component. --}}
 @formField('date_picker', [
     'label' => $label,
     'name' => $name,
@@ -11,6 +12,6 @@
     'altFormat' => $altFormat ?? (($time24Hr ?? false) ? 'H:i' : 'h:i K'),
     'timeOnly' => true,
     'withTime' => true,
-    'hourIncrement' => $hourncrement ?? null,
+    'hourIncrement' => $hourIncrement ?? null,
     'minuteIncrement' => $minuteIncrement ?? null,
 ])

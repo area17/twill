@@ -1,27 +1,29 @@
-@php
-    $note = $note ?? false;
-    $options = is_object($options) && method_exists($options, 'map') ? $options->map(function($label, $value) {
-        return [
-            'value' => $value,
-            'label' => $label
-        ];
-    })->values()->toArray() : $options;
+@unless(\A17\Twill\TwillServiceProvider::supportsBladeComponents())
+    @php
+        $note = $note ?? false;
+        $options = is_object($options) && method_exists($options, 'map') ? $options->map(function($label, $value) {
+            return [
+                'value' => $value,
+                'label' => $label
+            ];
+        })->values()->toArray() : $options;
 
-    $required = $required ?? false;
-    $default = $default ?? false;
-    $inline = $inline ?? false;
-    $border = $border ?? false;
-    $columns = $columns ?? 0;
+        $required = $required ?? false;
+        $default = $default ?? false;
+        $inline = $inline ?? false;
+        $border = $border ?? false;
+        $columns = $columns ?? 0;
 
-    // do not use for now, but this will allow you to create a new option directly from the form
-    $addNew = $addNew ?? false;
-    $moduleName = $moduleName ?? null;
-    $storeUrl = $storeUrl ?? '';
-    $inModal = $fieldsInModal ?? false;
-    $confirmMessageText = $confirmMessageText ?? '';
-    $confirmTitleText = $confirmTitleText ?? '';
-    $requireConfirmation = $requireConfirmation ?? false;
-@endphp
+        // do not use for now, but this will allow you to create a new option directly from the form
+        $addNew = $addNew ?? false;
+        $moduleName = $moduleName ?? null;
+        $storeUrl = $storeUrl ?? '';
+        $inModal = $fieldsInModal ?? false;
+        $confirmMessageText = $confirmMessageText ?? '';
+        $confirmTitleText = $confirmTitleText ?? '';
+        $requireConfirmation = $requireConfirmation ?? false;
+    @endphp
+@endunless
 
 <a17-singleselect
     label="{{ $label }}"

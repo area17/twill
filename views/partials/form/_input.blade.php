@@ -1,21 +1,23 @@
-@php
-    $type = $type ?? 'text';
-    $translated = $translated ?? false;
-    $required = $required ?? false;
-    $note = $note ?? false;
-    $placeholder = $placeholder ?? false;
-    $maxlength = $maxlength ?? false;
-    $disabled = $disabled ?? false;
-    $readonly = $readonly ?? false;
-    $default = $default ?? false;
-    $rows = $rows ?? false;
-    $ref = $ref ?? false;
-    $onChange = $onChange ?? false;
-    $onChangeAttribute = $onChangeAttribute ?? false;
-    $onChangeFullAttribute = $onChangeAttribute ? "('".$onChangeAttribute."', ...arguments)" : "";
-    $prefix = $prefix ?? false;
-    $inModal = $fieldsInModal ?? false;
-@endphp
+@unless(\A17\Twill\TwillServiceProvider::supportsBladeComponents())
+    @php
+        $type = $type ?? 'text';
+        $translated = $translated ?? false;
+        $required = $required ?? false;
+        $note = $note ?? false;
+        $placeholder = $placeholder ?? false;
+        $maxlength = $maxlength ?? false;
+        $disabled = $disabled ?? false;
+        $readonly = $readonly ?? false;
+        $default = $default ?? false;
+        $rows = $rows ?? false;
+        $ref = $ref ?? false;
+        $onChange = $onChange ?? false;
+        $onChangeAttribute = $onChangeAttribute ?? false;
+        $onChangeFullAttribute = $onChangeAttribute ? "('".$onChangeAttribute."', ...arguments)" : "";
+        $prefix = $prefix ?? false;
+        $inModal = $fieldsInModal ?? false;
+    @endphp
+@endunless
 
 @if($translated)
     <a17-locale
