@@ -23,7 +23,7 @@ class Checkbox extends TwillFormComponent
         $border = false,
         $confirmMessageText = false,
         $confirmTitleText = false,
-        $requireConfirmation = false,
+        $requireConfirmation = false
     ) {
         parent::__construct($name, $label);
         $this->note = $note;
