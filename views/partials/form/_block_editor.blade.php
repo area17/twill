@@ -5,6 +5,8 @@
         $title = $title ?? Str::title($name);
         $allowedBlocks = generate_list_of_available_blocks($blocks ?? null, $group ?? $groups ?? null);
 
+        $withoutSeparator = $withoutSeparator ?? false;
+
         $editorName = [
             'label' => $title,
             'value' => $name,

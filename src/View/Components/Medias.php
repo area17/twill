@@ -35,7 +35,7 @@ class Medias extends TwillFormComponent
         $widthMin = 0,
         $heightMin = 0,
         $buttonOnTop = false,
-        $activeCrop = true,
+        $activeCrop = true
     )
     {
         parent::__construct($name, $label);

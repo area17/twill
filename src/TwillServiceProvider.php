@@ -138,7 +138,7 @@ class TwillServiceProvider extends ServiceProvider
     }
 
     public static function supportsBladeComponents(): bool {
-        return (int)explode('.', app()->version())[0] >= 7;
+        return (int)explode('.', app()->version())[0] >= 8;
     }
 
     /**
