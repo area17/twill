@@ -16,9 +16,10 @@ All notable changes to `twill` will be documented in this file.
 - Ensure correct button messages when skipping modal on new content creation [`#1324`](https://github.com/area17/twill/issues/1324)
 - Allow media to be deleted when used model is removed [`#1160`](https://github.com/area17/twill/issues/1160)
 - Ensure default values are set for radios in the vuex store [`#1100`](https://github.com/area17/twill/issues/1100)
-- Ensure lqip data is always available [`#1352`](https://github.com/area17/twill/issues/1352)
+- Ensure LQIP data is always available [`#1352`](https://github.com/area17/twill/issues/1352)
 - Add typecasting to select dropdown for settings support [`#1203`](https://github.com/area17/twill/issues/1203)
 - Block clones references [`#1410`](https://github.com/area17/twill/pull/1410)
+- Move development specific autoload components [`#1391`](https://github.com/area17/twill/pull/1391)
 
 ### Documentation
 
