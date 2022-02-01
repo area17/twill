@@ -2,6 +2,7 @@
 
 namespace A17\Twill;
 
+use A17\Twill\Commands\UpgradeCommand;
 use Exception;
 use A17\Twill\Commands\BlockMake;
 use A17\Twill\Commands\Build;
@@ -313,6 +314,7 @@ class TwillServiceProvider extends ServiceProvider
             MakeCapsule::class,
             MakeSingleton::class,
             ModuleMakeDeprecated::class,
+            UpgradeCommand::class,
             BlockMake::class,
             ListIcons::class,
             ListBlocks::class,
