@@ -12,7 +12,10 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     // Refactoring for Twill 2.6 to Twill 3.0.
     $parameters = $containerConfigurator->parameters();
     $parameters->set(Option::PATHS, [
-        __DIR__ . '/app',
+        getcwd() . '/app',
+        getcwd() . '/resources',
+        getcwd() . '/routes',
+        getcwd() . '/config',
     ]);
 
     $services = $containerConfigurator->services();

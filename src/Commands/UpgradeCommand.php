@@ -20,6 +20,17 @@ class UpgradeCommand extends Command
 
     public function handle()
     {
+        $this->fsAsStorage = Storage::build([
+            'driver' => 'local',
+            'root' => app()->basePath(),
+        ]);
+
+        if (!$this->fsAsStorage->exists('vendor/bin/rector')) {
+            $this->error('Rector is not installed, please install it using:');
+            $this->info('composer require rector/rector --dev');
+            $this->line('Then rerun the command.');
+            exit(1);
+        }
         if (config('app.env') === 'production') {
             $this->error('Do not run this on production.');
             exit(1);
@@ -33,21 +44,13 @@ class UpgradeCommand extends Command
             exit(1);
         }
 
-        $this->fsAsStorage = Storage::build([
-            'driver' => 'local',
-            'root' => app()->basePath(),
-        ]);
-
         $this->moveRoutesFile();
         $this->moveResourcesAdminFolder();
         $this->moveRepositoriesToSubdirectory();
         $this->moveControllerAdminDirectories();
 
         $this->dumpAutoloader();
-        $this->runRector('app');
-        $this->runRector('resources');
-        $this->runRector('routes');
-        $this->runRector('config');
+        $this->runRector();
     }
 
     protected function moveRoutesFile(): void
@@ -102,9 +105,14 @@ class UpgradeCommand extends Command
 
     protected function dumpAutoloader(): void
     {
+        sleep(1);
         $this->info('Dumping composer autoloader');
         $process = new \Symfony\Component\Process\Process(
-            ['composer', 'dump-autoload']
+            ['composer', 'dump-autoload'],
+            null,
+            null,
+            null,
+            null
         );
         $process->run();
 
@@ -115,23 +123,27 @@ class UpgradeCommand extends Command
         }
     }
 
-    protected function runRector(string $directory): void
+    protected function runRector(): void
     {
-        $this->info('Running rector refactoring in ' . $directory);
+        $this->info('Running rector refactorings');
 
         $process = new \Symfony\Component\Process\Process(
-            ['php', 'vendor/bin/rector', 'process', $directory, '--config=vendor/area17/twill/rector.php']
+            ['php', 'vendor/bin/rector', 'process', '--config=vendor/area17/twill/rector.php'],
+            null,
+            null,
+            null,
+            null
         );
         $process->run();
 
         if (!$process->isSuccessful()) {
-            $this->error('Failed running rector in ' . $directory);
+            $this->error('Failed running rector');
             $this->error($process->getOutput());
             $this->error($process->getErrorOutput());
             exit(1);
         }
 
-        $this->info('Successfully ran refactorings in ' . $directory);
+        $this->info('Successfully ran refactorings');
         $this->info($process->getOutput());
     }
 }
