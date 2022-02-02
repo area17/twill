@@ -206,6 +206,7 @@ return [
         'zh-Hans',
         'ru',
         'tr',
+        'bs',
         'ar'
     ],
 

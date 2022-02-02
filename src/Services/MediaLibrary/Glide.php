@@ -262,16 +262,14 @@ class Glide implements ImageServiceInterface
             $fpY = number_format($fpY, 0, ".", "");
             $fpZ = number_format($fpZ, 4, ".", "");
 
-            $params = ['fit' => 'crop-' . $fpX . '-' . $fpY . '-' . $fpZ];
-
-            return $params;
+            return ['fit' => 'crop-' . $fpX . '-' . $fpY . '-' . $fpZ];
         }
 
         return [];
     }
 
     /**
-     * @param string $id 
+     * @param string $id
      * @return string
      */
     private function getOriginalMediaUrl($id)
@@ -286,9 +284,6 @@ class Glide implements ImageServiceInterface
             return null;
         }
 
-        /** @var string $endpoint */
-        $endpoint;
-
         switch ($endpointType) {
             case 'local':
                 $endpoint = $localMediaLibraryUrl;
@@ -299,6 +294,8 @@ class Glide implements ImageServiceInterface
             case 'azure':
                 $endpoint = azureEndpoint($libraryDisk);
                 break;
+            default:
+                $endpoint = '';
         }
 
         return $endpoint . '/' . $id;
