@@ -2,12 +2,13 @@
 
 namespace A17\Twill\Commands;
 
+use A17\Twill\Commands\Traits\HandlesPresets;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Storage;
 
 class Install extends Command
 {
+    use HandlesPresets;
     /**
      * The name and signature of the console command.
      *
@@ -68,7 +69,7 @@ class Install extends Command
                     $this->warn('Cancelled.');
                 }
             } else {
-                $this->error("Could not find preset: $preset, available presets are: 'blog'");
+                $this->error("Could not find preset: $preset");
             }
         } else {
             $this->addRoutesFile();
@@ -80,40 +81,9 @@ class Install extends Command
         }
     }
 
-    private function presetExists(string $preset): bool
-    {
-        return in_array($preset, ['blog'], true);
-    }
-
     private function installPreset(string $preset): void
     {
-        $this->info("Checking preset requirements");
-        if (!$this->meetsPresetRequirements($preset)) {
-            $this->error('Cancelling installation as requirements are missing');
-            exit(1);
-        }
-
-        // First publish the config as we overwrite it later.
-        $this->publishConfig();
-
-        $this->info("Installing $preset preset");
-
-        $storage = Storage::build([
-            'driver' => 'local',
-            'root' => __DIR__ . '/../../examples/' . $preset,
-        ]);
-        $appPathStorage = Storage::build([
-            'driver' => 'local',
-            'root' => base_path(),
-        ]);
-
-        foreach ($storage->allDirectories() as $directory) {
-            if ($appPathStorage->makeDirectory($directory)) {
-                foreach ($storage->files($directory) as $file) {
-                    $appPathStorage->put($file, $storage->get($file));
-                }
-            }
-        }
+        $this->installPresetFiles($preset);
 
         $this->call('migrate');
         $this->publishAssets();
@@ -177,17 +147,5 @@ class Install extends Command
             '--provider' => 'A17\Twill\TwillServiceProvider',
             '--tag' => 'assets',
         ]);
-    }
-
-    private function meetsPresetRequirements(string $preset)
-    {
-        if ($preset === 'blog') {
-            if (!\Composer\InstalledVersions::isInstalled('kalnoy/nestedset')) {
-                $this->warn('Missing nestedset, please install it using "composer require kalnoy/nestedset"');
-                return false;
-            }
-        }
-
-        return true;
     }
 }
