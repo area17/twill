@@ -178,7 +178,7 @@ class MediaLibraryTest extends ModulesTestBase
         $this->assertFalse($media->delete());
 
         // Check we continue to be unable to remove.
-        $this->deleteJson(route('admin.media-library.medias.destroy', ['media' => $media]))->assertJson([
+        $this->deleteJson(route('twill.media-library.medias.destroy', ['media' => $media]))->assertJson([
             'message' => 'Media was not moved to trash. Something wrong happened!',
             'variant' => 'error'
         ]);
@@ -191,7 +191,7 @@ class MediaLibraryTest extends ModulesTestBase
         $this->assertTrue($media->refresh()->canDeleteSafely());
 
         // Finally delete the media.
-        $this->deleteJson(route('admin.media-library.medias.destroy', ['media' => $media]))->assertJson([
+        $this->deleteJson(route('twill.media-library.medias.destroy', ['media' => $media]))->assertJson([
             'message' => 'Media moved to trash!',
             'variant' => 'success'
         ]);
