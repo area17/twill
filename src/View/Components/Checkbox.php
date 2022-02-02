@@ -16,6 +16,8 @@ class Checkbox extends TwillFormComponent
     public function __construct(
         $name,
         $label,
+        $renderForBlocks = false,
+        $renderForModal = false,
         $note = false,
         $default = false,
         $fieldsInModal = false,
@@ -25,7 +27,7 @@ class Checkbox extends TwillFormComponent
         $confirmTitleText = false,
         $requireConfirmation = false
     ) {
-        parent::__construct($name, $label);
+        parent::__construct($name, $label, $renderForBlocks, $renderForModal);
         $this->note = $note;
         $this->default = $default;
         $this->fieldsInModal = $fieldsInModal;

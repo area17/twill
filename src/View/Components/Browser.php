@@ -24,6 +24,8 @@ class Browser extends TwillFormComponent
     public function __construct(
         $label,
         $name = null,
+        $renderForBlocks = false,
+        $renderForModal = false,
         $moduleName = null,
         $modules = [],
         $endpoints = [],
@@ -40,7 +42,7 @@ class Browser extends TwillFormComponent
         $params = []
     ) {
         $name = $name ?? $moduleName;
-        parent::__construct($name, $label);
+        parent::__construct($name, $label, $renderForBlocks, $renderForModal);
         $this->name = $name;
         $this->moduleName = $moduleName;
         $this->modules = $modules;

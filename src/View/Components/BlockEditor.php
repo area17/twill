@@ -17,6 +17,8 @@ class BlockEditor extends TwillFormComponent
     public function __construct(
         $label = null,
         $name = 'default',
+        $renderForBlocks = false,
+        $renderForModal = false,
         $trigger = null,
         $title = null,
         $blocks = [],
@@ -24,7 +26,7 @@ class BlockEditor extends TwillFormComponent
         $group = null,
         $withoutSeparator = false
     ) {
-        parent::__construct($name, $label);
+        parent::__construct($name, $label, $renderForBlocks, $renderForModal);
         $this->trigger = $trigger ?? $label ?? twillTrans('twill::lang.fields.block-editor.add-content');
         $this->blocks = $blocks;
         $this->groups = $groups;

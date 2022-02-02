@@ -22,6 +22,8 @@ class Medias extends TwillFormComponent
     public function __construct(
         $name,
         $label,
+        $renderForBlocks = false,
+        $renderForModal = false,
         $max = 1,
         $required = false,
         $note = null,
@@ -38,7 +40,7 @@ class Medias extends TwillFormComponent
         $activeCrop = true
     )
     {
-        parent::__construct($name, $label);
+        parent::__construct($name, $label, $renderForBlocks, $renderForModal);
         $this->max = $max;
         $this->required = $required;
         $this->note = $note;

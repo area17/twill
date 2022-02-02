@@ -13,13 +13,15 @@ class Map extends TwillFormComponent
     public function __construct(
         $name,
         $label,
+        $renderForBlocks = false,
+        $renderForModal = false,
         $showMap = true,
         $openMap = false,
         $fieldsInModal = false,
         $saveExtendedData = false,
         $autoDetectLatLngValue = false
     ) {
-        parent::__construct($name, $label);
+        parent::__construct($name, $label, $renderForBlocks, $renderForModal);
         $this->showMap = $showMap;
         $this->openMap = $openMap;
         $this->inModal = $fieldsInModal ?? false;

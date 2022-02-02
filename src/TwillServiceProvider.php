@@ -370,6 +370,12 @@ class TwillServiceProvider extends ServiceProvider
             $php .= 'foreach(array_keys($data) as $attribute) {';
             $php .= '  $attributes .= " :$attribute=\'$" . $attribute . "\'";';
             $php .= '}' . PHP_EOL;
+            $php .= 'if ($renderForBlocks ?? false) {';
+            $php .= '  $attributes .= " :render-for-blocks=\'true\'";';
+            $php .= '}';
+            $php .= 'if ($renderForModal ?? false) {';
+            $php .= '  $attributes .= " :render-for-modal=\'true\'";';
+            $php .= '}';
             $php .= '$name = "' . $name . '";';
             $php .= 'echo Blade::render("<x-twill::$name $attributes />", $data); ?>';
 

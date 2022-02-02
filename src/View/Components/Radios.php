@@ -23,11 +23,15 @@ class Radios extends FieldWithOptions
         $storeUrl = null,
         $fieldsInModal = null,
         $inline = false,
-        $border = false
+        $border = false,
+        $renderForBlocks = false,
+        $renderForModal = false
     ) {
         parent::__construct(
             $name,
             $label,
+            $renderForBlocks,
+            $renderForModal,
             $options,
             $unpack,
             $columns,
@@ -39,7 +43,7 @@ class Radios extends FieldWithOptions
             $moduleName,
             $storeUrl,
             $default,
-            $fieldsInModal
+            $fieldsInModal,
         );
 
         $this->inline = $inline;

@@ -14,13 +14,18 @@ abstract class TwillFormComponent extends Component
     public $item;
     public $label;
     public $form_fields;
+    public $renderForBlocks;
+    public $renderForModal;
 
     public function __construct(
         $name,
-        $label
+        $label,
+        $renderForBlocks = false,
+        $renderForModal = false
     ) {
         // This can be null. In that case the field might be used outside of a form and we have no shared $form.
         $form = View::shared("form");
+        $this->renderForBlocks = $renderForBlocks;
         $this->item = $form['item'] ?? null;
         $this->form_fields = $form['form_fields'] ?? [];
         $this->name = $name;

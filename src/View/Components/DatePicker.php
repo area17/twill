@@ -20,6 +20,8 @@ class DatePicker extends TwillFormComponent
     public function __construct(
         $name,
         $label,
+        $renderForBlocks = false,
+        $renderForModal = false,
         $withTime = true,
         $allowInput = false,
         $allowClear = false,
@@ -33,7 +35,7 @@ class DatePicker extends TwillFormComponent
         $hourIncrement = null,
         $minuteIncrement = null
     ) {
-        parent::__construct($name, $label);
+        parent::__construct($name, $label, $renderForBlocks, $renderForModal);
         $this->withTime = $withTime;
         $this->allowInput = $allowInput;
         $this->allowClear = $allowClear;

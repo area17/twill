@@ -26,6 +26,8 @@ class Wysiwyg extends TwillFormComponent
     public function __construct(
         $name,
         $label,
+        $renderForBlocks = false,
+        $renderForModal = false,
         $translated = false,
         $required = false,
         $maxlength = null,
@@ -45,7 +47,7 @@ class Wysiwyg extends TwillFormComponent
         $customTheme = 'github',
         $customOptions = null
     ) {
-        parent::__construct($name, $label);
+        parent::__construct($name, $label, $renderForBlocks, $renderForModal);
         $this->translated = $translated;
         $this->required = $required;
         $this->maxlength = $maxlength;

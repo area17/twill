@@ -25,6 +25,8 @@ abstract class FieldWithOptions extends TwillFormComponent
     public function __construct(
         $name,
         $label,
+        $renderForBlocks = false,
+        $renderForModal = false,
         $options = [],
         $unpack = false,
         $columns = 0,
@@ -40,7 +42,9 @@ abstract class FieldWithOptions extends TwillFormComponent
     ) {
         parent::__construct(
             $name,
-            $label
+            $label,
+            $renderForBlocks,
+            $renderForModal
         );
 
         $this->options = $options;

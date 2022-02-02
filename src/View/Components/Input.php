@@ -23,7 +23,7 @@ class Input extends TwillFormComponent
     public function __construct(
         $name,
         $label,
-        $type = 'text',
+        $type = null,
         $translated = false,
         $required = false,
         $note = null,
@@ -37,9 +37,11 @@ class Input extends TwillFormComponent
         $onChange = null,
         $onChangeAttribute = null,
         $prefix = null,
-        $inModal = false
+        $inModal = false,
+        $renderForBlocks = false,
+        $renderForModal = false
     ) {
-        parent::__construct($name, $label);
+        parent::__construct($name, $label, $renderForBlocks, $renderForModal);
 
         $this->type = $type;
         $this->translated = $translated;

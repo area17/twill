@@ -12,6 +12,8 @@ class Checkboxes extends FieldWithOptions
     public function __construct(
         $name,
         $label,
+        $renderForBlocks = false,
+        $renderForModal = false,
         $options = [],
         $unpack = false,
         $columns = 0,
@@ -32,6 +34,8 @@ class Checkboxes extends FieldWithOptions
         parent::__construct(
             $name,
             $label,
+            $renderForBlocks,
+            $renderForModal,
             $options,
             $unpack,
             $columns,
