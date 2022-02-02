@@ -12,13 +12,10 @@ parameters:
   # 8 is the highest level
   level: 1
 
-  autoload_directories:
+  databaseMigrationsPath:
     - migrations
-
-  autoload_files:
-    - tests/helpers.php
 
   ignoreErrors:
 
-  excludes_analyse:
-    - tests/stubs/*
+  excludePaths:
+    - tests/*
