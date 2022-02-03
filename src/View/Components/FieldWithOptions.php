@@ -37,7 +37,7 @@ abstract class FieldWithOptions extends TwillFormComponent
         $addNew = false,
         $moduleName = null,
         $storeUrl = null,
-        $default = false,
+        $default = null,
         $fieldsInModal = null
     ) {
         parent::__construct(

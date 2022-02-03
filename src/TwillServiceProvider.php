@@ -362,7 +362,7 @@ class TwillServiceProvider extends ServiceProvider
             if ($expression === "") {
                 $expression = '[]';
             }
-            $expression = addslashes($expression);
+            $expression = str_replace("'", "\\'", $expression);
 
             $php = '<?php' . PHP_EOL;
             $php .= "\$data = eval('return $expression;');";
