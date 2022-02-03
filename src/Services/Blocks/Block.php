@@ -367,12 +367,14 @@ class Block
     public function render()
     {
         View::share('TwillUntilConsumed', ['renderForBlocks' => true]);
-        return BladeCompiler::render(
+        $block = BladeCompiler::render(
             self::removeSpecialBladeTags($this->contents),
             [
                 'renderForBlocks' => true,
             ]
         );
+        View::share('TwillUntilConsumed', []);
+        return $block;
     }
 
     /**

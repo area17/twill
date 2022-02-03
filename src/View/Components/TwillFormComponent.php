@@ -32,8 +32,6 @@ abstract class TwillFormComponent extends Component
         $this->label = $label;
 
         $shared = View::shared('TwillUntilConsumed', []);
-        // UnShare.
-        View::share('TwillUntilConsumed', []);
         foreach ($shared as $key => $value) {
             $this->{$key} = $value;
         }

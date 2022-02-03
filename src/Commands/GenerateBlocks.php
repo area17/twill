@@ -78,6 +78,7 @@ class GenerateBlocks extends Command
 
                 View::share('TwillUntilConsumed', ['renderForBlocks' => true]);
                 $vueBlockTemplate = $this->viewFactory->make('admin.blocks.' . $basename, ['renderForBlocks' => true])->render();
+                View::share('TwillUntilConsumed', []);
 
                 $vueBlockContent = $this->viewFactory->make('twill::blocks.builder', [
                     'render' => $this->sanitize($vueBlockTemplate),
