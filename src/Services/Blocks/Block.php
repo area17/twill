@@ -3,6 +3,7 @@
 namespace A17\Twill\Services\Blocks;
 
 use Exception;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 
 class Block
@@ -365,6 +366,7 @@ class Block
      */
     public function render()
     {
+        View::share('TwillUntilConsumed', ['renderForBlocks' => true]);
         return BladeCompiler::render(
             self::removeSpecialBladeTags($this->contents),
             [

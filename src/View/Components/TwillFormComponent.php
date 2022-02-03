@@ -30,5 +30,12 @@ abstract class TwillFormComponent extends Component
         $this->form_fields = $form['form_fields'] ?? [];
         $this->name = $name;
         $this->label = $label;
+
+        $shared = View::shared('TwillUntilConsumed', []);
+        // UnShare.
+        View::share('TwillUntilConsumed', []);
+        foreach ($shared as $key => $value) {
+            $this->{$key} = $value;
+        }
     }
 }
