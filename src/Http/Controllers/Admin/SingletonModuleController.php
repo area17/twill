@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\View;
 
 abstract class SingletonModuleController extends ModuleController
 {
@@ -25,6 +26,7 @@ abstract class SingletonModuleController extends ModuleController
 
         Session::put('pages_back_link', url()->current());
 
+        View::share('form', $this->form($item->id));
         return view("admin.{$this->moduleName}.form", $this->form($item->id));
     }
 }
