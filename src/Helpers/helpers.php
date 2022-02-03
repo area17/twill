@@ -225,8 +225,8 @@ if (!function_exists('generate_list_of_allowed_blocks')) {
                     }
                 }
 
-                return (filled($blocks) ? collect($blocks)->contains($block['name']) : true)
-                    && (filled($groups) ? collect($groups)->contains($block['group']) : true);
+                return (filled($blocks) ? collect($blocks)->contains($block->name) : true)
+                    && (filled($groups) ? collect($groups)->contains($block->group) : true);
             }
         );
 
