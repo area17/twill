@@ -23,7 +23,7 @@ class Input extends TwillFormComponent
     public function __construct(
         $name,
         $label,
-        $type = null,
+        $type = 'text',
         $translated = false,
         $required = false,
         $note = null,
