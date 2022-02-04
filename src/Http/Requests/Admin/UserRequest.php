@@ -60,7 +60,7 @@ class UserRequest extends Request
                                 }
                             }
                         },
-                        'force-disabling-2fa' => function ($attribute, $value, $fail) {
+                        'force-2fa-disable-challenge' => function ($attribute, $value, $fail) {
                             $user = User::findOrFail($this->route('user'));
                             $isForceDisabling2FA = !$this->get('google_2fa_enabled') && $user->google_2fa_enabled;
 

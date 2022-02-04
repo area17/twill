@@ -103,7 +103,7 @@
                 'fieldValues' => false,
             ])
                 @formField('input', [
-                    'name' => 'force-disabling-2fa',
+                    'name' => 'force-2fa-disable-challenge',
                     'label' => twillTrans('twill::lang.user-management.force-2fa-disable'),
                     'note' => twillTrans('twill::lang.user-management.force-2fa-disable-description'),
                     'placeholder' => twillTrans('twill::lang.user-management.force-2fa-disable-challenge', ['user' => $item->email])
