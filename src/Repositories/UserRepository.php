@@ -122,6 +122,12 @@ class UserRepository extends ModuleRepository
             $fields['google_2fa_secret'] = null;
         }
 
+        if ($this->config->get('twill.enabled.users-2fa', false)
+            && ($fields['force-disabling-2fa'] ?? false)) {
+            $user->google_2fa_enabled = false;
+            $user->google_2fa_secret = null;
+        }
+
         return parent::prepareFieldsBeforeSave($user, $fields);
     }
 
