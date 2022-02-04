@@ -90,6 +90,28 @@
             @endcomponent
         @endunless
     @endif
+
+    @can('manage-users')
+        @if(config('twill.enabled.users-2fa') && $item->google_2fa_enabled && ($item->id !== $currentUser->id))
+            @formField('checkbox', [
+                'name' => 'google_2fa_enabled',
+                'label' => twillTrans('twill::lang.user-management.2fa'),
+            ])
+
+            @component('twill::partials.form.utils._connected_fields', [
+                'fieldName' => 'google_2fa_enabled',
+                'fieldValues' => false,
+            ])
+                @formField('input', [
+                    'name' => 'force-disabling-2fa',
+                    'label' => twillTrans('twill::lang.user-management.force-2fa-disable'),
+                    'note' => twillTrans('twill::lang.user-management.force-2fa-disable-description'),
+                    'placeholder' => twillTrans('twill::lang.user-management.force-2fa-challenge', ['user' => $item->email])
+                ])
+            @endcomponent
+        @endif
+    @endcan
+
 @stop
 
 @push('vuexStore')

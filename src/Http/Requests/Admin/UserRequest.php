@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Http\Requests\Admin;
 
+use A17\Twill\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use PragmaRX\Google2FA\Google2FA;
@@ -56,6 +57,18 @@ class UserRequest extends Request
                                     if (!$valid) {
                                         $fail('Your one time password is invalid.');
                                     }
+                                }
+                            }
+                        },
+                        'force-disabling-2fa' => function ($attribute, $value, $fail) {
+                            $user = User::findOrFail($this->route('user'));
+                            $isForceDisabling2FA = !$this->get('google_2fa_enabled') && $user->google_2fa_enabled;
+
+                            if ($isForceDisabling2FA) {
+                                $challenge = twillTrans('twill::lang.user-management.force-2fa-challenge', ['user' => $user->email]);
+
+                                if ($value !== $challenge) {
+                                    $fail('Challenge mismatch');
                                 }
                             }
                         },
