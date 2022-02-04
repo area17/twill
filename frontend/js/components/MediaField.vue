@@ -523,10 +523,6 @@
       if (this.hasMediaChanged) {
         this.init()
       }
-    },
-    beforeDestroy: function () {
-      if (this.isSlide) return // for Slideshows : the medias are deleted when the slideshow component is destroyed (so no need to do it here)
-      if (!this.isDestroyed) this.deleteMedia()
     }
   }
 </script>

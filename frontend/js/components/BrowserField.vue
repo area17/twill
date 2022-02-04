@@ -155,9 +155,6 @@
           this.$root.$refs.browser.open(this.endpoints.length <= 0)
         }
       }
-    },
-    beforeDestroy: function () {
-      this.deleteAll()
     }
   }
 </script>
