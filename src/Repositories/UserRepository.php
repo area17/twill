@@ -123,7 +123,7 @@ class UserRepository extends ModuleRepository
         }
 
         if ($this->config->get('twill.enabled.users-2fa', false)
-            && ($fields['force-disabling-2fa'] ?? false)) {
+            && ($fields['force-2fa-disable-challenge'] ?? false)) {
             $user->google_2fa_enabled = false;
             $user->google_2fa_secret = null;
         }
