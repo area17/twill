@@ -66,12 +66,12 @@ class UpgradeCommand extends Command
 
     protected function moveResourcesAdminFolder(): void
     {
-        if ($this->fsAsStorage->exists('resources/views/twill')) {
-            $this->warn('Not moving resources/views/admin, resources/views/twill already exists.');
+        if ($this->fsAsStorage->exists('resources/views/twill/admin')) {
+            $this->warn('Not moving resources/views/admin, resources/views/twill/admin already exists.');
             return;
         }
-        $this->info('Moving resources/views/admin/* to resources/views/twill/*');
-        $this->fsAsStorage->move('resources/views/admin', 'resources/views/twill');
+        $this->info('Moving resources/views/admin/* to resources/views/twill/admin*');
+        $this->fsAsStorage->move('resources/views/admin', 'resources/views/twill/admin');
         $this->newLine();
     }
 
