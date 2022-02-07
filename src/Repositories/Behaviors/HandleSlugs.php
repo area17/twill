@@ -13,7 +13,7 @@ trait HandleSlugs
     {
         if (property_exists($this->model, 'slugAttributes')) {
             foreach (getLocales() as $locale) {
-                if (isset($fields['slug']) && isset($fields['slug'][$locale]) && !empty($fields['slug'][$locale])) {
+                if (isset($fields['slug'])) {
                     $object->disableLocaleSlugs($locale);
                     $currentSlug = [];
                     $currentSlug['slug'] = $fields['slug'][$locale];
@@ -80,6 +80,10 @@ trait HandleSlugs
             } elseif (isset($slugParams[$param])) {
                 $slug[$param] = $slugParams[$param];
             }
+        }
+
+        if ($slug["slug"] === null) {
+            $slug['slug'] = $slugParams['slug'];
         }
 
         return $slug;
