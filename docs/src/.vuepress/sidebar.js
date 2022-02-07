@@ -190,6 +190,10 @@ module.exports = [
           {
             "title": "Conditional Fields",
             "path": "/form-fields/conditional-fields.html",
+          },
+          {
+            "title": "Field grouping",
+            "path": "/form-fields/field-grouping.html",
           }
         ],
         "collapsable": true
