@@ -122,13 +122,21 @@ class DashboardController extends Controller
                     $author = 'Admin';
                 }
 
+                $date = null;
+                if ($item->updated_at) {
+                    $date = $item->updated_at->toIso8601String();
+                }
+                elseif ($item->created_at) {
+                    $date = $item->created_at->toIso8601String();
+                }
+
                 return [
                     'id' => $item->id,
                     'href' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', $item->id),
                     'thumbnail' => method_exists($item, 'defaultCmsImage') ? $item->defaultCmsImage(['w' => 100, 'h' => 100]) : null,
                     'published' => $item->published,
                     'activity' => twillTrans('twill::lang.dashboard.search.last-edit'),
-                    'date' => $item->updated_at->toIso8601String(),
+                    'date' => $date,
                     'title' => $item->titleInDashboard ?? $item->title,
                     'author' => $author,
                     'type' => ucfirst($module['label_singular'] ?? Str::singular($module['name'])),
