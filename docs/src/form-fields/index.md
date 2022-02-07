@@ -34,12 +34,21 @@ like in the following example:
 @stop
 
 @section('fieldsets')
-    @formFieldset(['id' => 'attributes', 'title' => 'Attributes'])
+    @formFieldset(['id' => 'attributes', 'title' => 'Attributes', 'open' => false])
         @formField('...', [...])
         ...
     @endformFieldset
 @stop
 ```
+
+You can use the following arguments when defining a `formFieldset`
+
+| Option      | Description                                                                  | Type/values    | Default value |
+|:------------|:-----------------------------------------------------------------------------|:---------------|:--------------|
+| id          | The id of the fieldset, this should match the value in `additionalFieldsets` | string         |               |
+| title       | The title of the fieldset                                                    | string         |               |
+| open        | If the fieldset should be open by default                                    | boolean        | false         |
+
 
 The additional fieldsets array passed to the form layout will display a sticky navigation of your fieldset on scroll.
 You can also rename the content section by passing a `contentFieldsetLabel` property to the layout, or disable it
