@@ -9,7 +9,6 @@ use A17\Twill\Models\Model;
 use A17\Twill\Repositories\BlockRepository;
 use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Session;
 use Log;
 use Schema;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
