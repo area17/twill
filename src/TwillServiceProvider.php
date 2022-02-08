@@ -109,15 +109,14 @@ class TwillServiceProvider extends ServiceProvider
 
     /**
      * Registers the package services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->mergeConfigs();
 
         $this->registerProviders();
         $this->registerAliases();
+        $this->registerFacades();
 
         Relation::morphMap([
             'users' => User::class,
@@ -129,12 +128,16 @@ class TwillServiceProvider extends ServiceProvider
         config(['twill.version' => $this->version()]);
     }
 
+    private function registerFacades(): void {
+        $this->app->bind('twill_util', function() {
+            return new TwillUtil();
+        });
+    }
+
     /**
      * Registers the package service providers.
-     *
-     * @return void
      */
-    private function registerProviders()
+    private function registerProviders(): void
     {
         foreach ($this->providers as $provider) {
             $this->app->register($provider);
