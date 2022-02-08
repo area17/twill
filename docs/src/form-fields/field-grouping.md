@@ -101,7 +101,25 @@ In the repository file you can setup the following parameters:
 
 ```php
 public $fieldsGroupsFormFieldNamesAutoPrefix = true;
-public $fieldsGroupsFormFieldNameSeparator = '_'; // Default
+public $fieldsGroupsFormFieldNameSeparator = '.'; // Default is _
 ```
 
-This will automatically 
+This will automatically group/ungroup these fields based on the separator:
+
+```php
+@formField('input', [
+    'name' => 'external_link.link_target',
+    'label' => 'Link target',
+    'translated' => true
+])
+@formField('input', [
+    'name' => 'external_link.link_url',
+    'label' => 'Link url',
+    'translated' => true
+])
+@formField('input', [
+    'name' => 'external_link.link_label',
+    'label' => 'Link label',
+    'translated' => true
+])
+```
