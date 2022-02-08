@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Session;
 class TwillUtil
 {
     private const SESSION_FIELD = 'twill_util';
+
     private const REPEATER_ID_INDEX = 'repeater_ids';
+    private const BLOCK_ID_INDEX = 'block_ids';
 
     public function hasRepeaterIdFor(int $frontEndId): ?int {
         return $this->getFromTempStore(self::REPEATER_ID_INDEX, $frontEndId);
@@ -23,15 +25,26 @@ class TwillUtil
         return $this;
     }
 
-    private function getFromTempStore(string $key, int $frontendId): ?int {
-        $data = Session::get(self::SESSION_FIELD . '.' . $key, []);
+    public function hasBlockIdFor(int $frontEndId): ?int {
+        return $this->getFromTempStore(self::BLOCK_ID_INDEX, $frontEndId);
+    }
 
-        return $data[$frontendId] ?? null;
+    public function registerBlockId(int $frontEndId, int $dbId): self
+    {
+        $this->pushToTempStore(self::BLOCK_ID_INDEX, $frontEndId, $dbId);
+
+        return $this;
+    }
+
+    private function getFromTempStore(string $key, int $frontendId): ?int {
+        $data = Session::get(self::SESSION_FIELD, []);
+
+        return $data[$key][$frontendId] ?? null;
     }
 
     private function pushToTempStore(string $key, int $frontendId, int $dbId): void
     {
-        $sessionData = Session::get(self::SESSION_FIELD . '.' . $key, []);
+        $sessionData = Session::get(self::SESSION_FIELD, []);
 
         $keyData = $sessionData[$key] ?? [];
         $keyData[$frontendId] = $dbId;

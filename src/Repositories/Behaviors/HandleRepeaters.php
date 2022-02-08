@@ -196,7 +196,6 @@ trait HandleRepeaters
         // keep a list of updated and new rows to delete (soft delete?) old rows that were deleted from the frontend
         $currentIdList = [];
 
-
         foreach ($relationFields as $index => $relationField) {
             $relationField['position'] = $index + 1;
             // If the relation is not an "existing" one try to match it with our session.
@@ -208,7 +207,7 @@ trait HandleRepeaters
             }
 
             // Set the active data based on the parent.
-            if (!isset($relationField['languages'])) {
+            if (!isset($relationField['languages']) && isset($relationField['active'])) {
                 foreach ($relationField['active'] as $langCode => $active) {
                     // Add the languages field.
                     $relationField['languages'][] = [
