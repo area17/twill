@@ -38,6 +38,11 @@ class Blog extends Model {
         'external_link'
     ];
 }
+
+## Update your Translation model and add the cast
+public $casts = [
+    'external_link' => 'array',
+];
 ```
 
 ### Non translatable
