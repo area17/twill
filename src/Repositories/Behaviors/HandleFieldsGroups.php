@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Models\Behaviors\HasTranslation;
+use Astrotomic\Translatable\Contracts\Translatable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
@@ -53,7 +55,39 @@ trait HandleFieldsGroups
     public function getFormFieldsHandleFieldsGroups($object, $fields)
     {
         foreach ($this->fieldsGroups as $group => $groupFields) {
-            if ($object->$group) {
+            /** @var \A17\Twill\Models\Model|HasTranslation $object */
+            $isTranslatable = $object->implementsTrait(HasTranslation::class) &&
+                in_array($group, $object->getTranslatedAttributes(), true);
+
+            if ($isTranslatable) {
+                $values = $object->translatedAttribute($group);
+
+                $translatedData = [];
+
+                foreach ($values as $langCode => $data) {
+                    $decoded_fields = is_array($data) ? $data : (json_decode($data, true) ?? []);
+
+                    foreach ($decoded_fields as $field_name => $field_value) {
+                        if ($this->fieldsGroupsFormFieldNamesAutoPrefix) {
+                            $decoded_fields[$group . $this->fieldsGroupsFormFieldNameSeparator . $field_name] = $field_value;
+                            unset($decoded_fields[$field_name]);
+
+                            if (!is_array($field_value)) {
+                                $translatedData[$group . $this->fieldsGroupsFormFieldNameSeparator . $field_name][$langCode] = $field_value;
+                            }
+                        } else {
+                            $translatedData[$field_name][$langCode] = $field_value;
+                        }
+                    }
+                }
+
+                foreach ($translatedData as $key => $value) {
+                    $object->setAttribute($key, $value);
+                }
+
+                $fields = array_merge($fields, $translatedData);
+            }
+            else if ($object->$group) {
                 $casts = $this->getModelCasts($object);
                 if (array_key_exists($group, $casts) && $casts[$group] === 'array') {
                     $decoded_fields = $object->$group;

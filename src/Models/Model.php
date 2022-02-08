@@ -109,6 +109,10 @@ abstract class Model extends BaseModel implements TaggableInterface
         static::$tagsModel = Tag::class;
     }
 
+    public function implementsTrait(string $trait): bool  {
+        return isset(class_uses_recursive($this)[$trait]);
+    }
+
     /**
      * {@inheritdoc}
      */
