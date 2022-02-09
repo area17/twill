@@ -371,7 +371,7 @@ All notable changes to `twill` will be documented in this file.
 - **Self-contained blocks** (#597) [`1e95b0ac`](https://github.com/area17/twill/commit/1e95b0ac) [`9ae502a4`](https://github.com/area17/twill/commit/9ae502a46ed31f82ebda5426dbff5f56228e2d25) [`948985ef`](https://github.com/area17/twill/commit/948985ef22d70a08287ccdf7583ca802f6182833) [`66fa7c5e`](https://github.com/area17/twill/commit/66fa7c5e16c0ce34f0edc1aab74a52ef0d232401) [`c00759ee`](https://github.com/area17/twill/commit/c00759ee7cad76aea16ec7f04c693ba1cd046b9d)
   - This change allows defining blocks without adding them to the `twill.block_editor` configuration
   - This is backwards compatible with blocks already defined in configuration
-  - Repeaters are now created in a dedicated folder: `views/twill/admin/repeaters` by default, but your existing repeaters in the `views/twill/admin/blocks` file will still work
+  - Repeaters are now created in a dedicated folder: `views/twill/repeaters` by default, but your existing repeaters in the `views/twill/blocks` file will still work
   - Annotations are now supported in blocks and repeaters Blade files:
     - Provide a title with `@twillPropTitle` or `@twillBlockTitle` or `@twillRepeaterTitle`
     - Provide an icon with `@twillPropIcon` or `@twillBlockIcon` or `@twillRepeaterIcon`

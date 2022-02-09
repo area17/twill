@@ -14,7 +14,7 @@ class NestedModuleTest extends TestCase
        '{$stubs}/nested_module/NodeController.php' => '{$app}/Http/Controllers/Twill/',
        '{$stubs}/nested_module/NodeRepository.php' => '{$app}/Repositories/',
        '{$stubs}/nested_module/NodeRequest.php' => '{$app}/Http/Requests/Twill/',
-       '{$stubs}/nested_module/form.blade.php' => '{$resources}/views/twill/admin/books/form.blade.php',
+       '{$stubs}/nested_module/form.blade.php' => '{$resources}/views/twill/books/form.blade.php',
        '{$stubs}/nested_module/admin.php' => '{$base}/routes/twill.php',
     ];
 

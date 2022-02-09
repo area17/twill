@@ -15,7 +15,7 @@ class SingletonModuleTest extends TestCase
         '{$stubs}/singleton/ContactPageRevision.php' => '{$app}/Models/Revisions/',
         '{$stubs}/singleton/ContactPageSlug.php' => '{$app}/Models/Slugs/',
         '{$stubs}/singleton/ContactPageTranslation.php' => '{$app}/Models/Translations/',
-        '{$stubs}/singleton/form.blade.php' => '{$resources}/views/twill/admin/contactPages/form.blade.php',
+        '{$stubs}/singleton/form.blade.php' => '{$resources}/views/twill/contactPages/form.blade.php',
         '{$stubs}/singleton/twill-navigation.php' => '{$config}/',
         '{$stubs}/singleton/admin.php' => '{$base}/routes/twill.php',
     ];

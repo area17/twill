@@ -211,7 +211,7 @@ return [
 
 Then, rename and move the `articles/` views folder inside of the parent `issues/` folder:
 ```
-resources/views/twill/admin/
+resources/views/twill/
 └── issues
     ├── articles
     │   └── form.blade.php

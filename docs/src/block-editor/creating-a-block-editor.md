@@ -31,7 +31,7 @@ By default, adding the `@formField('block_editor')` directive enables all availa
 
 #### Create and define blocks
 
-Blocks and Repeaters are built on the same Block model and are created and defined in their respective folders. By default, Twill will look for Blade templates in `views/twill/admin/blocks` for blocks and `views/twill/admin/repeaters` for repeaters.
+Blocks and Repeaters are built on the same Block model and are created and defined in their respective folders. By default, Twill will look for Blade templates in `views/twill/blocks` for blocks and `views/twill/repeaters` for repeaters.
 
 Note: Prior to Twill version 2.2, Blocks (and Repeaters) needed to be defined in the configuration file – this is no longer necessary and not recommended. This change is backward compatible, so your existing configuration should work as it used to. Defining blocks in the configuration file will be deprecated in a future release (see the section below [Legacy configuration](/block-editor/legacy-configuration-2-2.html).
 
@@ -49,7 +49,7 @@ Available annotations:
 
 e.g.:
 
-filename: ```views/twill/admin/blocks/quote.blade.php```
+filename: ```views/twill/blocks/quote.blade.php```
 ```php
 @twillBlockTitle('Quote')
 @twillBlockIcon('text')
@@ -65,7 +65,7 @@ filename: ```views/twill/admin/blocks/quote.blade.php```
 
 A more complex example would look like this:
 
-filename: ```views/twill/admin/blocks/media.blade.php```
+filename: ```views/twill/blocks/media.blade.php```
 ```php
 @twillBlockTitle('Media')
 @twillBlockIcon('image')
@@ -147,7 +147,7 @@ In Twill >= 2.5, you can use the `@twillBlockTitleField` directive to include th
 
 Using `php artisan twill:make:block {name} {baseBlock} {icon}`, you can generate a new block based on a provided block as a base.
 
-This example would create `views/twill/admin/blocks/exceptional-media.blade.php` from `views/twill/admin/blocks/media.blade.php`:
+This example would create `views/twill/blocks/exceptional-media.blade.php` from `views/twill/blocks/media.blade.php`:
 
 ```
 $ php artisan twill:make:block ExceptionalMedia media image

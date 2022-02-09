@@ -1692,7 +1692,7 @@ abstract class ModuleController extends Controller
      */
     protected function getViewPrefix()
     {
-        $prefix = "twill.admin.$this->moduleName";
+        $prefix = "twill.$this->moduleName";
 
         if (view()->exists("$prefix.form")) {
             return $prefix;

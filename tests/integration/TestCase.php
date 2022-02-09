@@ -68,8 +68,8 @@ abstract class TestCase extends OrchestraTestCase
         'Models/Slugs',
         'Models/Translations',
         'Repositories',
-        '/../resources/views/twill/admin/authors',
-        '/../resources/views/twill/admin/categories',
+        '/../resources/views/twill/authors',
+        '/../resources/views/twill/categories',
         '/../resources/views/site/blocks',
         '/../resources/views/site/layouts',
     ];

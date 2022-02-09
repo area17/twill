@@ -55,7 +55,7 @@ abstract class ModulesTestBase extends TestCase
             '{$app}/Http/Requests/Twill/',
 
         '{$stubs}/modules/authors/form.blade.php' =>
-            '{$resources}/views/twill/admin/authors/',
+            '{$resources}/views/twill/authors/',
 
         '{$stubs}/modules/authors/translatable.php' => '{$config}/',
 
@@ -93,7 +93,7 @@ abstract class ModulesTestBase extends TestCase
             '{$app}/Http/Requests/Twill/',
 
         '{$stubs}/modules/categories/form.blade.php' =>
-            '{$resources}/views/twill/admin/categories/',
+            '{$resources}/views/twill/categories/',
     ];
 
     public function setUp(): void

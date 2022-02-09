@@ -65,7 +65,7 @@ class ArticleRepository extends ModuleRepository
 }
 ```
 
-- Add the browser field to `resources/views/twill/admin/articles/form.blade.php`:
+- Add the browser field to `resources/views/twill/articles/form.blade.php`:
 
 ```php
 @extends('twill::layouts.form')
@@ -95,7 +95,7 @@ class ArticleRepository extends ModuleRepository
 }
 ```
 
-- Add the browser field to `resources/views/twill/admin/articles/form.blade.php`:
+- Add the browser field to `resources/views/twill/articles/form.blade.php`:
 
 ```php
 @extends('twill::layouts.form')

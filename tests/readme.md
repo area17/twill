@@ -15,7 +15,7 @@ cp $HOME/code/area17/twill-app/app/Models/Revisions/CategoryRevision.php tests/s
 cp $HOME/code/area17/twill-app/app/Models/Slugs/CategorySlug.php tests/stubs/modules/categories
 cp $HOME/code/area17/twill-app/app/Repositories/CategoryRepository.php tests/stubs/modules/categories
 cp $HOME/code/area17/twill-app/app/Http/Requests/Twill/CategoryRequest.php tests/stubs/modules/categories
-cp $HOME/code/area17/twill-app/resources/views/twill/admin/categories/form.blade.php tests/stubs/modules/categories/
+cp $HOME/code/area17/twill-app/resources/views/twill/categories/form.blade.php tests/stubs/modules/categories/
 cp $HOME/code/area17/twill-app/config/translatable.php tests/stubs/modules/categories
 cp $HOME/code/area17/twill-app/config/twill-navigation.php tests/stubs/modules/categories
 cp tests/stubs/modules/authors/site.author.blade.php tests/stubs/modules/categories/site.category.blade.php
