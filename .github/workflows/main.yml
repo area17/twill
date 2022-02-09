@@ -103,8 +103,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer install --prefer-dist --no-interaction
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "doctrine/dbal:${{ matrix.dbal }}" --no-interaction --no-update
+          composer install --prefer-dist --no-interaction
 
       - name: Execute tests
         run: vendor/bin/phpunit
