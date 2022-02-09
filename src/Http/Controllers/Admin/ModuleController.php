@@ -1680,11 +1680,7 @@ abstract class ModuleController extends Controller
 
     public function getRepositoryClass($model)
     {
-        $prefix = '';
-        if ($this->namespace !== 'A17\Twill') {
-            $prefix = "\Twill";
-        }
-        if (@class_exists($class = "$this->namespace\Repositories$prefix\\" . $model . "Repository")) {
+        if (@class_exists($class = "$this->namespace\Repositories\\" . $model . "Repository")) {
             return $class;
         }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Twill;
+namespace App\Repositories;
 
 use A17\Twill\Repositories\Behaviors\HandleTags;
 use A17\Twill\Repositories\Behaviors\HandleBlocks;

@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use App\Repositories\Twill\ContactPageRepository;
+use App\Repositories\ContactPageRepository;
 
 class SingletonModuleTest extends TestCase
 {
@@ -10,7 +10,7 @@ class SingletonModuleTest extends TestCase
         '{$stubs}/singleton/2021_09_30_202102_create_contact_pages_tables.php' => '{$database}/migrations/',
         '{$stubs}/singleton/ContactPage.php' => '{$app}/Models/',
         '{$stubs}/singleton/ContactPageController.php' => '{$app}/Http/Controllers/Twill/',
-        '{$stubs}/singleton/ContactPageRepository.php' => '{$app}/Repositories/Twill/',
+        '{$stubs}/singleton/ContactPageRepository.php' => '{$app}/Repositories/',
         '{$stubs}/singleton/ContactPageRequest.php' => '{$app}/Http/Requests/Twill/',
         '{$stubs}/singleton/ContactPageRevision.php' => '{$app}/Models/Revisions/',
         '{$stubs}/singleton/ContactPageSlug.php' => '{$app}/Models/Slugs/',

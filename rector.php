@@ -23,8 +23,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(RenameViews::class)->configure(['path' =>  getcwd()]);
     $services->set(RenameNamespaceRector::class)->configure([
         'App\Http\Controllers\Admin' => 'App\Http\Controllers\Twill',
-        'App\Http\Requests\Admin' => 'App\Http\Requests\Twill',
-        'App\Repositories' => 'App\Repositories\Twill',
+        'App\Http\Requests\Admin' => 'App\Http\Requests\Twill'
     ]);
 };
 

@@ -49,7 +49,7 @@ abstract class ModulesTestBase extends TestCase
         '{$stubs}/modules/authors/AuthorSlug.php' => '{$app}/Models/Slugs/',
 
         '{$stubs}/modules/authors/AuthorRepository.php' =>
-            '{$app}/Repositories/Twill/',
+            '{$app}/Repositories/',
 
         '{$stubs}/modules/authors/AuthorRequest.php' =>
             '{$app}/Http/Requests/Twill/',
@@ -87,7 +87,7 @@ abstract class ModulesTestBase extends TestCase
             '{$app}/Models/Slugs/',
 
         '{$stubs}/modules/categories/CategoryRepository.php' =>
-            '{$app}/Repositories/Twill/',
+            '{$app}/Repositories/',
 
         '{$stubs}/modules/categories/CategoryRequest.php' =>
             '{$app}/Http/Requests/Twill/',

@@ -46,7 +46,6 @@ class UpgradeCommand extends Command
 
         $this->moveRoutesFile();
         $this->moveResourcesAdminFolder();
-        $this->moveRepositoriesToSubdirectory();
         $this->moveControllerAdminDirectories();
 
         $this->dumpAutoloader();
@@ -72,21 +71,6 @@ class UpgradeCommand extends Command
         }
         $this->info('Moving resources/views/admin/* to resources/views/twill/admin*');
         $this->fsAsStorage->move('resources/views/admin', 'resources/views/twill/admin');
-        $this->newLine();
-    }
-
-    protected function moveRepositoriesToSubdirectory(): void
-    {
-        if ($this->fsAsStorage->exists('app/Repositories/Twill')) {
-            $this->warn('Not moving app/Repositories, app/Repositories/Twill already exists.');
-            return;
-        }
-        $this->info('Moving app/Repositories/* to app/Repositories/Twill/*');
-        $this->fsAsStorage->makeDirectory('app/Repositories/Twill');
-        foreach ($this->fsAsStorage->files('app/Repositories') as $file) {
-            $this->fsAsStorage->move($file, Str::replaceFirst('app/Repositories/', 'app/Repositories/Twill/', $file));
-        }
-
         $this->newLine();
     }
 

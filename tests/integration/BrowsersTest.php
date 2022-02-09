@@ -6,10 +6,10 @@ use App\Models\Bio;
 use App\Models\Book;
 use App\Models\Letter;
 use App\Models\Writer;
-use App\Repositories\Twill\BioRepository;
-use App\Repositories\Twill\BookRepository;
-use App\Repositories\Twill\LetterRepository;
-use App\Repositories\Twill\WriterRepository;
+use App\Repositories\BioRepository;
+use App\Repositories\BookRepository;
+use App\Repositories\LetterRepository;
+use App\Repositories\WriterRepository;
 use A17\Twill\Models\RelatedItem;
 
 class BrowsersTest extends TestCase
@@ -18,7 +18,7 @@ class BrowsersTest extends TestCase
        '{$stubs}/browsers/2021_08_10_0001_create_writers_tables_for_browsers.php' => '{$database}/migrations/',
        '{$stubs}/browsers/Writer.php' => '{$app}/Models/',
        '{$stubs}/browsers/WriterController.php' => '{$app}/Http/Controllers/Twill/',
-       '{$stubs}/browsers/WriterRepository.php' => '{$app}/Repositories/Twill/',
+       '{$stubs}/browsers/WriterRepository.php' => '{$app}/Repositories/',
        '{$stubs}/browsers/WriterRequest.php' => '{$app}/Http/Requests/Twill/',
        '{$stubs}/browsers/WriterRevision.php' => '{$app}/Models/Revisions/',
        '{$stubs}/browsers/writers-form.blade.php' => '{$resources}/views/twill/admin/writers/form.blade.php',
@@ -28,7 +28,7 @@ class BrowsersTest extends TestCase
        '{$stubs}/browsers/2021_08_10_0003_create_letter_writer_table_for_browsers.php' => '{$database}/migrations/',
        '{$stubs}/browsers/Letter.php' => '{$app}/Models/',
        '{$stubs}/browsers/LetterController.php' => '{$app}/Http/Controllers/Twill/',
-       '{$stubs}/browsers/LetterRepository.php' => '{$app}/Repositories/Twill/',
+       '{$stubs}/browsers/LetterRepository.php' => '{$app}/Repositories/',
        '{$stubs}/browsers/LetterRequest.php' => '{$app}/Http/Requests/Twill/',
        '{$stubs}/browsers/LetterRevision.php' => '{$app}/Models/Revisions/',
        '{$stubs}/browsers/letters-form.blade.php' => '{$resources}/views/twill/admin/letters/form.blade.php',
@@ -37,7 +37,7 @@ class BrowsersTest extends TestCase
        '{$stubs}/browsers/2021_08_10_0004_create_bios_tables_for_browsers.php' => '{$database}/migrations/',
        '{$stubs}/browsers/Bio.php' => '{$app}/Models/',
        '{$stubs}/browsers/BioController.php' => '{$app}/Http/Controllers/Twill/',
-       '{$stubs}/browsers/BioRepository.php' => '{$app}/Repositories/Twill/',
+       '{$stubs}/browsers/BioRepository.php' => '{$app}/Repositories/',
        '{$stubs}/browsers/BioRequest.php' => '{$app}/Http/Requests/Twill/',
        '{$stubs}/browsers/BioRevision.php' => '{$app}/Models/Revisions/',
        '{$stubs}/browsers/bios-form.blade.php' => '{$resources}/views/twill/admin/bios/form.blade.php',
@@ -46,7 +46,7 @@ class BrowsersTest extends TestCase
        '{$stubs}/browsers/2021_08_10_0005_create_books_tables_for_browsers.php' => '{$database}/migrations/',
        '{$stubs}/browsers/Book.php' => '{$app}/Models/',
        '{$stubs}/browsers/BookController.php' => '{$app}/Http/Controllers/Twill/',
-       '{$stubs}/browsers/BookRepository.php' => '{$app}/Repositories/Twill/',
+       '{$stubs}/browsers/BookRepository.php' => '{$app}/Repositories/',
        '{$stubs}/browsers/BookRequest.php' => '{$app}/Http/Requests/Twill/',
        '{$stubs}/browsers/BookRevision.php' => '{$app}/Models/Revisions/',
        '{$stubs}/browsers/books-form.blade.php' => '{$resources}/views/twill/admin/books/form.blade.php',

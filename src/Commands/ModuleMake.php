@@ -478,7 +478,7 @@ class ModuleMake extends Command
      */
     private function createRepository($modelName = 'Item', $activeTraits = [])
     {
-        $repositoriesDir = $this->isCapsule ? $this->capsule['repositories_dir'] : 'Repositories/Twill';
+        $repositoriesDir = $this->isCapsule ? $this->capsule['repositories_dir'] : 'Repositories';
 
         $modelClass = $this->isCapsule ? $this->capsule['model'] : config('twill.namespace') . "\Models\\{$this->capsule['singular']}";
 
@@ -502,7 +502,7 @@ class ModuleMake extends Command
 
         $stub = str_replace(
             ['{{repositoryClassName}}', '{{modelName}}', '{{repositoryTraits}}', '{{repositoryImports}}', '{{namespace}}', '{{modelClass}}', '{{baseRepository}}'],
-            [$repositoryClassName, $modelName, $activeRepositoryTraitsString, $activeRepositoryTraitsImports, $this->namespace('repositories', 'Repositories\Twill'), $modelClass, config('twill.base_repository')],
+            [$repositoryClassName, $modelName, $activeRepositoryTraitsString, $activeRepositoryTraitsImports, $this->namespace('repositories', 'Repositories'), $modelClass, config('twill.base_repository')],
             $this->files->get(__DIR__ . '/stubs/repository.stub')
         );
 

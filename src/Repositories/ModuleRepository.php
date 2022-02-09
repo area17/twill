@@ -880,7 +880,7 @@ abstract class ModuleRepository
         if ($repository instanceof ModuleRepository) {
             return $repository;
         } else {
-            $class = Config::get('twill.namespace') . "\\Repositories\Twill\\" . ucfirst($modelOrRepository) . "Repository";
+            $class = Config::get('twill.namespace') . "\\Repositories\\" . ucfirst($modelOrRepository) . "Repository";
         }
 
         if (class_exists($class)) {
