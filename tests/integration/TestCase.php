@@ -389,14 +389,24 @@ abstract class TestCase extends OrchestraTestCase
     {
         $this->truncateTwillUsers();
 
-        $this->artisan('twill:install ' . $this->example ?? '')
-            ->expectsConfirmation('Are you sure to install this preset? This can overwrite your models, config and routes.', 'yes')
-            ->expectsQuestion('Enter an email', $this->superAdmin()->email)
-            ->expectsQuestion('Enter a password', $this->superAdmin()->password)
-            ->expectsQuestion(
-                'Confirm the password',
-                $this->superAdmin()->password
-            );
+        if ($this->example) {
+            $this->artisan('twill:install ' . $this->example)
+                ->expectsConfirmation('Are you sure to install this preset? This can overwrite your models, config and routes.', 'yes')
+                ->expectsQuestion('Enter an email', $this->superAdmin()->email)
+                ->expectsQuestion('Enter a password', $this->superAdmin()->password)
+                ->expectsQuestion(
+                    'Confirm the password',
+                    $this->superAdmin()->password
+                );
+        } else {
+            $this->artisan('twill:install')
+                ->expectsQuestion('Enter an email', $this->superAdmin()->email)
+                ->expectsQuestion('Enter a password', $this->superAdmin()->password)
+                ->expectsQuestion(
+                    'Confirm the password',
+                    $this->superAdmin()->password
+                );
+        }
 
         $user = User::where(
             'email',
