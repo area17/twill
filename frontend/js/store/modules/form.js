@@ -8,6 +8,7 @@ import api from '../api/form'
 import { getFormData, getFormFields, getModalFormFields } from '@/utils/getFormData.js'
 import { FORM, NOTIFICATION, LANGUAGE, ATTRIBUTES, PUBLICATION, REVISION } from '../mutations'
 import ACTIONS from '@/store/actions'
+import cloneDeep from 'lodash/cloneDeep'
 
 const getFieldIndex = (stateKey, field) => {
   return stateKey.findIndex(f => f.name === field.name)
@@ -153,7 +154,7 @@ const mutations = {
     fields.forEach(field => {
       newFields.push({
         name: field.name.replace(oldId, newId),
-        value: field.value
+        value: cloneDeep(field.value)
       })
     })
     state.fields = [...state.fields, ...newFields]

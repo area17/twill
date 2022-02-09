@@ -3,7 +3,7 @@ name: Tests
 on:
   push:
     branches:
-      - 2.x
+      - 3.x
   pull_request:
 
 jobs:
@@ -13,38 +13,22 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        php: [8.0, 7.4, 7.3, 7.2, 7.1]
-        laravel: [8.*, 7.*, 6.*, 5.8.*]
+        php: [8.1, 8.0, 7.4]
+        laravel: [9.*, 8.*, 7.*]
         dbal: [^2.12, ^3.0]
         stability: [prefer-stable]
         include:
+          - laravel: 9.*
+            testbench: 7.*
           - laravel: 8.*
             testbench: 6.*
           - laravel: 7.*
             testbench: 5.*
-          - laravel: 6.*
-            testbench: 4.*
-          - laravel: 5.8.*
-            testbench: 3.8.*
         exclude:
-          - laravel: 8.*
-            php: 7.2
-          - laravel : 8.*
-            php : 7.1
           - laravel: 7.*
             php: 8.0
           - laravel : 7.*
             php : 7.1
-          - laravel: 6.*
-            php: 8.0
-          - laravel : 6.*
-            php : 7.1
-          - laravel: 5.8.*
-            php: 8.0
-          - dbal: ^3.0
-            laravel: 5.8.*
-          - dbal: ^3.0
-            laravel: 6.*
           - dbal: ^3.0
             laravel: 7.*
           - dbal: ^2.12

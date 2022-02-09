@@ -4,6 +4,34 @@ All notable changes to `twill` will be documented in this file.
 
 ## UNRELEASED
 
+### Added
+
+- When in debug mode and a crop is missing an exception will be shown [`#1351`](https://github.com/area17/twill/issues/1351)
+- When admin account creation failed, and error is now shown [`#1114`](https://github.com/area17/twill/issues/1114)
+
+### Fixed
+
+- Fixed regression where slugs were not checked if unique [`#1381`](https://github.com/area17/twill/discussions/1381)
+- Repeater Collapse All only works once [`#1330`](https://github.com/area17/twill/issues/1330)
+- Ensure correct button messages when skipping modal on new content creation [`#1324`](https://github.com/area17/twill/issues/1324)
+- Allow media to be deleted when used model is removed [`#1160`](https://github.com/area17/twill/issues/1160)
+- Ensure default values are set for radios in the vuex store [`#1100`](https://github.com/area17/twill/issues/1100)
+- Ensure LQIP data is always available [`#1352`](https://github.com/area17/twill/issues/1352)
+- Add typecasting to select dropdown for settings support [`#1203`](https://github.com/area17/twill/issues/1203)
+- Block clones references [`#1410`](https://github.com/area17/twill/pull/1410)
+- Move development specific autoload components [`#1391`](https://github.com/area17/twill/pull/1391)
+
+### Documentation
+
+- Added documentation for permalinks [`#903`](https://github.com/area17/twill/issues/903) [`#1092`](https://github.com/area17/twill/pull/1092)
+- Added documentation for custom media metadata [`#1031`](https://github.com/area17/twill/issues/1031)
+- Added documentation for singleton modules [`#1231`](https://github.com/area17/twill/issues/1231)
+
+### Translations
+
+- Added Arabic translations [`#1323`](https://github.com/area17/twill/pull/1323)
+- Added Bosnian translations [`#1374`](https://github.com/area17/twill/pull/1374)
+
 ## 2.6.0 (2021-12-21)
 
 ### Added
