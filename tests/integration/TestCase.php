@@ -34,6 +34,11 @@ abstract class TestCase extends OrchestraTestCase
     public $faker;
 
     /**
+     * @var string|null
+     */
+    public $example;
+
+    /**
      * @var \A17\Twill\Tests\Integration\UserClass
      */
     public $superAdmin;
@@ -384,7 +389,8 @@ abstract class TestCase extends OrchestraTestCase
     {
         $this->truncateTwillUsers();
 
-        $this->artisan('twill:install')
+        $this->artisan('twill:install ' . $this->example ?? '')
+            ->expectsConfirmation('Are you sure to install this preset? This can overwrite your models, config and routes.', 'yes')
             ->expectsQuestion('Enter an email', $this->superAdmin()->email)
             ->expectsQuestion('Enter a password', $this->superAdmin()->password)
             ->expectsQuestion(
