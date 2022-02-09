@@ -1,5 +1,4 @@
 const state = {
-  publishDate24Hr: window[process.env.VUE_APP_NAME].STORE.config.publishDate24Hr,
   publishDateDisplayFormat: window[process.env.VUE_APP_NAME].STORE.config.publishDateDisplayFormat
 }
 

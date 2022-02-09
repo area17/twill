@@ -52,7 +52,7 @@ const filters = {
     return dateFormatLocale(value, format)
   },
   formatDatatableDate: function (value) {
-    const datepickerFormat = config.state.publishDateDisplayFormat
+    const datepickerFormat = config.state.publishDateDisplayFormat.length > 0 ? config.state.publishDateDisplayFormat : 'MMM DD, YYYY'
     if (!value) value = new Date()
     return dateFormatLocale(value, datepickerFormat)
   },
