@@ -25,10 +25,6 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "git@github.com:area17/laravel-translatable.git"
-    },
-    {
-      "type": "vcs",
       "url": "git@github.com:ifox/tags.git"
     },
     {
