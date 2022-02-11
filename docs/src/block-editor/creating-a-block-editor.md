@@ -43,7 +43,8 @@ Available annotations:
   - Provide an icon with `@twillPropIcon` or `@twillBlockIcon` or `@twillRepeaterIcon`
   - Provide a group with `@twillPropGroup` or `@twillBlockGroup` or `@twillRepeaterGroup` (defaults to `app`)
   - Provide a repeater trigger label with `@twillPropTrigger` or `@twillRepeaterTrigger`
-  - Provide a repeater max items with `@twillPropMax` or `@twillRepeaterMax`
+  - Provide a repeater max items with `@twillPropMax` or `@twillRepeaterMax`, `@twillRepeaterMax` can also be defined from
+the formField. See [Repeater form field](/form-fields/repeater.html)
   - Define a block or repeater as compiled with `@twillPropCompiled` or `@twillBlockCompiled` or `@twillRepeaterCompiled`
   - Define a block or repeater component with `@twillPropComponent` or `@twillBlockComponent` or `@twillRepeaterComponent`
 
