@@ -72,11 +72,6 @@
       buttonAsLink: {
         type: Boolean,
         default: false
-      },
-      max: {
-        type: [Number, null],
-        required: false,
-        default: null
       }
     },
     data: function () {
@@ -102,14 +97,7 @@
         return typeof this.$parent.repeaterName !== 'undefined'
       },
       hasRemainingBlocks: function () {
-        let max = null
-        console.log(this.max)
-        if (this.max && this.max > 0) {
-          max = this.max
-        } else if (this.blockType.hasOwnProperty('max')) {
-          max = this.blockType.max
-        }
-        return !max || (max > this.blocks.length)
+        return !this.blockType.hasOwnProperty('max') || (this.blockType.max > this.blocks.length)
       },
       blockType: function () {
         return this.availableBlocks[this.type] ? this.availableBlocks[this.type] : {}
