@@ -30,6 +30,7 @@ pageClass: twill-doc
 | minuteIncrement  | Time picker minutes increment        | number  | 30         |
 | note        | Hint message displayed above the field                       | string          |               |
 | required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false  | false         |
+| disabled            | Disables the field                                      | boolean         | false         | 
 
 
 A migration to save a `date_picker` field would be:
