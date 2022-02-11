@@ -285,6 +285,16 @@ module.exports = [
         "collapsable": true
       },
       {
+        "title": "Guides",
+        "path": "/guides/",
+        "children": [
+          {
+            "title": "Adding fields to the create modal",
+            "path": "/guides/adding-fields-to-the-create-modal.html",
+          }
+        ],
+      },
+      {
         "title": "Artisan Commands",
         "path": "/artisan-commands/",
         "children": [],
