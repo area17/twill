@@ -29,7 +29,6 @@ use A17\Twill\Models\Block;
 use A17\Twill\Models\File;
 use A17\Twill\Models\Media;
 use A17\Twill\Models\User;
-use A17\Twill\Services\Capsules\HasCapsules;
 use A17\Twill\Services\FileLibrary\FileService;
 use A17\Twill\Services\MediaLibrary\ImageService;
 use Astrotomic\Translatable\TranslatableServiceProvider;
@@ -38,14 +37,11 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use PragmaRX\Google2FAQRCode\Google2FA as Google2FAQRCode;
 
 class TwillServiceProvider extends ServiceProvider
 {
-    use HasCapsules;
-
     /**
      * The Twill version.
      *
@@ -118,6 +114,8 @@ class TwillServiceProvider extends ServiceProvider
 
         $this->registerProviders();
         $this->registerAliases();
+
+        $this->app->bind(TwillCapsules::class);
 
         Relation::morphMap([
             'users' => User::class,

@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Models\Behaviors;
 
+use A17\Twill\Facades\TwillCapsules;
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Query\JoinClause;
 
@@ -22,7 +23,7 @@ trait HasTranslation
             return $repository;
         }
 
-        return $this->getCapsuleTranslationClass(class_basename($this));
+        return TwillCapsules::getCapsuleForModel(class_basename($this))->getTranslationModel();
     }
 
     /**

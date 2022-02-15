@@ -76,7 +76,10 @@
     "laravel": {
       "providers": [
         "A17\\Twill\\TwillServiceProvider"
-      ]
+      ],
+      "aliases": {
+        "TwillCapsules": "A17\\Twill\\Facades\\TwillCapsules"
+      }
     }
   },
   "minimum-stability": "stable",

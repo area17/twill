@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Services\Routing;
 
+use A17\Twill\Facades\TwillCapsules;
+use A17\Twill\Helpers\Capsule;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 use A17\Twill\Services\Capsules\Manager;
@@ -104,30 +106,24 @@ trait HasRoutes
         return config('twill.support_subdomain_admin_routing', false);
     }
 
-    public function registerCapsuleRoutes($router, $capsule, $manager)
+    public function registerCapsuleRoutes($router, Capsule $capsule): void
     {
-        if (file_exists($capsule['routes_file'])) {
+        if ($capsule->routesFileExists()) {
             $this->registerRoutes(
                 $router,
                 $this->getRouteGroupOptions(),
                 $this->getRouteMiddleware(),
                 $this->supportSubdomainRouting(),
-                $manager->capsuleNamespace(
-                    $capsule['name'],
-                    'controllers'
-                ),
-                $capsule['routes_file']
+                $capsule->getControllersNamespace(),
+                $capsule->getRoutesFile()
             );
         }
     }
 
-    protected function registerCapsulesRoutes(Router $router)
+    protected function registerCapsulesRoutes(Router $router): void
     {
-        $manager = (new Manager());
-
-        $manager->getCapsuleList()
-                ->each(function ($capsule) use ($router, $manager) {
-                    $this->registerCapsuleRoutes($router, $capsule, $manager);
-                });
+        TwillCapsules::getRegisteredCapsules()->each(function (Capsule $capsule) use ($router) {
+            $this->registerCapsuleRoutes($router, $capsule);
+        });
     }
 }

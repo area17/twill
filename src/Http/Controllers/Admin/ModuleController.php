@@ -2,10 +2,11 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Exceptions\NoCapsuleFoundException;
+use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Helpers\FlashLevel;
 use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Services\Blocks\BlockCollection;
-use A17\Twill\Services\Capsules\HasCapsules;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -24,8 +25,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 abstract class ModuleController extends Controller
 {
-    use HasCapsules;
-
     /**
      * @var Application
      */
@@ -1604,7 +1603,7 @@ abstract class ModuleController extends Controller
             return $request;
         }
 
-        return $this->getCapsuleFormRequestClass($this->modelName);
+        return TwillCapsules::getCapsuleForModel($this->modelName)->getFormRequestClass();
     }
 
     /**
@@ -1679,13 +1678,10 @@ abstract class ModuleController extends Controller
             return $class;
         }
 
-        return $this->getCapsuleRepositoryClass($model);
+        return TwillCapsules::getCapsuleForModel($model)->getRepositoryClass();
     }
 
-    /**
-     * @return string
-     */
-    protected function getViewPrefix()
+    protected function getViewPrefix(): ?string
     {
         $prefix = "admin.$this->moduleName";
 
@@ -1693,7 +1689,12 @@ abstract class ModuleController extends Controller
             return $prefix;
         }
 
-        return $this->getCapsuleViewPrefix($this->moduleName);
+        try {
+            return TwillCapsules::getCapsuleForModel($this->modelName)->getViewPrefix();
+        }
+        catch (NoCapsuleFoundException $e) {
+            return null;
+        }
     }
 
     /**

@@ -2,15 +2,15 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use A17\Twill\Facades\TwillCapsules;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Schema;
 use A17\Twill\Services\Routing\HasRoutes;
-use A17\Twill\Services\Capsules\HasCapsules;
 use Illuminate\Routing\Router;
 
 class CapsulesTest extends TestCase
 {
-    use HasCapsules, HasRoutes;
+    use HasRoutes;
 
     protected $capsules = [
         'posts',
@@ -244,8 +244,7 @@ class CapsulesTest extends TestCase
 
         $this->registerCapsuleRoutes(
             app(Router::class),
-            $this->getCapsuleByModule($this->capsuleName),
-            $this->manager
+            TwillCapsules::getCapsuleForModule($this->capsuleName)
         );
 
         $this->migrate();

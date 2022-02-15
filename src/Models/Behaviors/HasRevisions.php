@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Models\Behaviors;
 
+use A17\Twill\Facades\TwillCapsules;
+
 trait HasRevisions
 {
     /**
@@ -52,6 +54,6 @@ trait HasRevisions
             return $revision;
         }
 
-        return $this->getCapsuleRevisionClass(class_basename($this));
+        return TwillCapsules::getCapsuleForModel(class_basename($this))->getRevisionModel();
     }
 }
