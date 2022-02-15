@@ -25,6 +25,7 @@
             max: {{ $max }},
             widthMin: {{ $widthMin }},
             heightMin: {{ $heightMin }},
+            note: '{{ $fieldNote }}',
             @if ($extraMetadatas) extraMetadatas: {{ json_encode($extraMetadatas) }}, @endif
             @if ($altTextMaxLength) :altTextMaxLength: {{ $altTextMaxLength }}, @endif
             @if ($captionMaxLength) :captionMaxLength: {{ $captionMaxLength }}, @endif
