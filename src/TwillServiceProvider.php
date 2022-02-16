@@ -2,6 +2,7 @@
 
 namespace A17\Twill;
 
+use A17\Twill\Commands\MakeSingletonCapsule;
 use Exception;
 use A17\Twill\Commands\BlockMake;
 use A17\Twill\Commands\Build;
@@ -309,6 +310,7 @@ class TwillServiceProvider extends ServiceProvider
             Install::class,
             ModuleMake::class,
             MakeCapsule::class,
+            MakeSingletonCapsule::class,
             MakeSingleton::class,
             ModuleMakeDeprecated::class,
             BlockMake::class,

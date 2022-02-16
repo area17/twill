@@ -2,14 +2,14 @@
 
 namespace A17\Twill\Commands;
 
-class MakeCapsule extends ModuleMake
+class MakeSingletonCapsule extends MakeCapsule
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'twill:make:capsule {moduleName} {--packageDirectory=} {--packageNamespace=}
+    protected $signature = 'twill:make:singleton-capsule {moduleName} {--packageDirectory=} {--packageNamespace=}
         {--B|hasBlocks}
         {--T|hasTranslation}
         {--S|hasSlug}
@@ -26,20 +26,10 @@ class MakeCapsule extends ModuleMake
      *
      * @var string
      */
-    protected $description = 'Create a new Twill Capsule';
-
-    /**
-     * @var null
-     */
-    protected $capsulesDirectory = null;
-
-    /**
-     * @var null
-     */
-    protected $namespace = null;
+    protected $description = 'Create a new Twill Singleton capsule';
 
     /**
      * @var bool
      */
-    protected $isCapsule = true;
+    protected $isSingleton = true;
 }

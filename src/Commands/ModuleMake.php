@@ -3,6 +3,7 @@
 namespace A17\Twill\Commands;
 
 use A17\Twill\Facades\TwillCapsules;
+use A17\Twill\Helpers\Capsule;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
@@ -126,6 +127,13 @@ class ModuleMake extends Command
     protected $capsule;
 
     /**
+     * If true we save to flat directories.
+     *
+     * @var bool
+     */
+    protected $customDirs = false;
+
+    /**
      * @param Filesystem $files
      * @param Composer $composer
      * @param Config $config
@@ -218,7 +226,20 @@ class ModuleMake extends Command
         // e.g. NewsItem
         $modelName = Str::studly(Str::singular($moduleName));
 
-        $this->capsule = TwillCapsules::makeProjectCapsule($moduleTitle);
+        if ($this->isCapsule && $this->option('packageDirectory') && $this->option('packageNamespace')) {
+            $dir = base_path() . '/' . $this->option('packageDirectory') . '/src/Twill/Capsules/' . $moduleTitle;
+            if (!$this->confirm('Creating capsule in ' . $dir, true)) {
+                exit(1);
+            }
+            $this->customDirs = true;
+            $this->capsule = new Capsule(
+                $moduleTitle,
+                $this->option('packageNamespace') . '\\Twill\\Capsules',
+                $dir
+            );
+        } elseif ($this->isCapsule) {
+            $this->capsule = TwillCapsules::makeProjectCapsule($moduleTitle);
+        }
 
         $enabledOptions = Collection::make($this->options())->only([
             'hasBlocks',
@@ -272,8 +293,13 @@ class ModuleMake extends Command
         $this->createViews($moduleName);
 
         if ($this->isCapsule) {
-            $this->createCapsuleRoutes($moduleName);
-            $this->createCapsuleSeed($moduleName);
+            if ($this->isSingleton) {
+                $this->createCapsuleSingletonSeeder();
+            }
+            else {
+                $this->createCapsuleSeed();
+            }
+            $this->createCapsuleRoutes();
         } elseif ($this->isSingleton) {
             $this->createSingletonSeed($modelName);
             $this->info("\nAdd to routes/admin.php:\n");
@@ -287,30 +313,32 @@ class ModuleMake extends Command
         $navTitle = $this->isSingleton ? $modelName : $moduleTitle;
         $navType = $this->isSingleton ? 'singleton' : 'module';
 
-        $this->info("Setup a new CMS menu item in config/twill-navigation.php:\n");
-        $this->info("    '{$navModuleName}' => [");
-        $this->info("        'title' => '{$navTitle}',");
-        $this->info("        '{$navType}' => true,");
-        $this->info("    ],\n");
-
-        if ($this->isCapsule) {
-            $this->info("Setup your new Capsule in config/twill.php:\n");
-            $this->info("    'capsules' => [");
-            $this->info("        'list' => [");
-            $this->info("            [");
-            $this->info("                'name' => '{$this->capsule->name}',");
-            $this->info("                'enabled' => true,");
-            $this->info("            ],");
-            $this->info("        ],");
+        if (!$this->customDirs) {
+            $this->info("Setup a new CMS menu item in config/twill-navigation.php:\n");
+            $this->info("    '{$navModuleName}' => [");
+            $this->info("        'title' => '{$navTitle}',");
+            $this->info("        '{$navType}' => true,");
             $this->info("    ],\n");
-        }
 
-        if ($this->isSingleton) {
-            $this->info("Migrate your database & seed your singleton module:\n");
-            $this->info("    php artisan migrate\n");
-            $this->info("    php artisan db:seed {$modelName}Seeder\n");
-        } else {
-            $this->info("Migrate your database.\n");
+            if ($this->isCapsule) {
+                $this->info("Setup your new Capsule in config/twill.php:\n");
+                $this->info("    'capsules' => [");
+                $this->info("        'list' => [");
+                $this->info("            [");
+                $this->info("                'name' => '{$this->capsule->name}',");
+                $this->info("                'enabled' => true,");
+                $this->info("            ],");
+                $this->info("        ],");
+                $this->info("    ],\n");
+            }
+
+            if ($this->isSingleton) {
+                $this->info("Migrate your database & seed your singleton module:\n");
+                $this->info("    php artisan migrate\n");
+                $this->info("    php artisan db:seed {$modelName}Seeder\n");
+            } else {
+                $this->info("Migrate your database.\n");
+            }
         }
 
         $this->info("Enjoy.");
@@ -334,8 +362,6 @@ class ModuleMake extends Command
     {
         $table = Str::snake($moduleName);
         $tableClassName = Str::studly($table);
-
-        $className = "Create{$tableClassName}Tables";
 
         $migrationName = 'create_' . $table . '_tables';
 
@@ -391,7 +417,7 @@ class ModuleMake extends Command
         $this->makeTwillDirectory($modelsDir);
 
         if ($this->translatable) {
-            $this->makeTwillDirectory($baseDir = $this->isCapsule ? $modelsDir : "{$modelsDir}/Translations");
+            $this->makeTwillDirectory($baseDir = $this->isCapsule ? $this->capsule->getModelsDir() : "$modelsDir/Translations");
 
             $modelTranslationClassName = $modelName . 'Translation';
 
@@ -413,11 +439,11 @@ class ModuleMake extends Command
                 $this->files->get(__DIR__ . '/stubs/model_translation.stub')
             );
 
-            twill_put_stub(twill_path("{$baseDir}/" . $modelTranslationClassName . '.php'), $stub);
+            $this->putTwillStub(twill_path("$baseDir/" . $modelTranslationClassName . '.php'), $stub);
         }
 
         if ($this->sluggable) {
-            $this->makeTwillDirectory($baseDir = $this->isCapsule ? $modelsDir : "{$modelsDir}/Slugs");
+            $this->makeTwillDirectory($baseDir = $this->isCapsule ? $this->capsule->getModelsDir() : "$modelsDir/Slugs");
 
             $modelSlugClassName = $modelName . 'Slug';
 
@@ -439,11 +465,11 @@ class ModuleMake extends Command
                 $this->files->get(__DIR__ . '/stubs/model_slug.stub')
             );
 
-            twill_put_stub(twill_path("{$baseDir}/" . $modelSlugClassName . '.php'), $stub);
+            $this->putTwillStub(twill_path("$baseDir/" . $modelSlugClassName . '.php'), $stub);
         }
 
         if ($this->revisionable) {
-            $this->makeTwillDirectory($baseDir = $this->isCapsule ? $modelsDir : "{$modelsDir}/Revisions");
+            $this->makeTwillDirectory($baseDir = $this->isCapsule ? $this->capsule->getModelsDir() : "$modelsDir/Revisions");
 
             $modelRevisionClassName = $modelName . 'Revision';
 
@@ -465,7 +491,7 @@ class ModuleMake extends Command
                 $this->files->get(__DIR__ . '/stubs/model_revision.stub')
             );
 
-            twill_put_stub(twill_path("{$baseDir}/" . $modelRevisionClassName . '.php'), $stub);
+            $this->putTwillStub(twill_path("$baseDir/" . $modelRevisionClassName . '.php'), $stub);
         }
 
         $activeModelTraits = [];
@@ -513,7 +539,7 @@ class ModuleMake extends Command
         $stub = $this->renderStubForOption($stub, 'hasMedias', $this->mediable);
         $stub = $this->renderStubForOption($stub, 'hasPosition', $this->sortable);
 
-        twill_put_stub(twill_path("{$modelsDir}/" . $modelName . '.php'), $stub);
+        $this->putTwillStub(twill_path("$modelsDir/" . $modelName . '.php'), $stub);
 
         $this->info("Models created successfully! Fill your fillables!");
     }
@@ -594,7 +620,7 @@ class ModuleMake extends Command
             $this->files->get(__DIR__ . '/stubs/repository.stub')
         );
 
-        twill_put_stub(twill_path("{$modelsDir}/" . $repositoryClassName . '.php'), $stub);
+        $this->putTwillStub(twill_path("{$modelsDir}/" . $repositoryClassName . '.php'), $stub);
 
         $this->info("Repository created successfully! Control all the things!");
     }
@@ -658,7 +684,7 @@ class ModuleMake extends Command
         // Remove lines including only whitespace, leave true empty lines untouched
         $stub = preg_replace('/^[\s]+\n/m', '', $stub);
 
-        twill_put_stub(twill_path("{$dir}/" . $controllerClassName . '.php'), $stub);
+        $this->putTwillStub(twill_path("$dir/" . $controllerClassName . '.php'), $stub);
 
         $this->info("Controller created successfully! Define your index/browser/form endpoints options!");
     }
@@ -684,7 +710,7 @@ class ModuleMake extends Command
             $this->files->get(__DIR__ . '/stubs/request.stub')
         );
 
-        twill_put_stub(twill_path("{$dir}/" . $requestClassName . '.php'), $stub);
+        $this->putTwillStub(twill_path("{$dir}/" . $requestClassName . '.php'), $stub);
 
         $this->info("Form request created successfully! Add some validation rules!");
     }
@@ -704,7 +730,7 @@ class ModuleMake extends Command
 
         $formView = $this->translatable ? 'form_translatable' : 'form';
 
-        twill_put_stub(
+        $this->putTwillStub(
             $viewsPath . '/form.blade.php',
             $this->files->get(__DIR__ . '/stubs/' . $formView . '.blade.stub')
         );
@@ -719,17 +745,19 @@ class ModuleMake extends Command
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function createCapsuleRoutes()
+    public function createCapsuleRoutes(): void
     {
         $this->makeDir($this->capsule->getRoutesFile());
+
+        $stubFile = $this->isSingleton ? 'routes_singleton_admin.stub' : 'routes_admin.stub';
 
         $contents = str_replace(
             '{{moduleName}}',
             $this->capsule->getModule(),
-            $this->files->get(__DIR__ . '/stubs/routes_admin.stub')
+            $this->files->get(__DIR__ . '/stubs/' . $stubFile)
         );
 
-        twill_put_stub($this->capsule->getRoutesFile(), $contents);
+        $this->putTwillStub($this->capsule->getRoutesFile(), $contents);
 
         $this->info("Routes file created successfully!");
     }
@@ -741,13 +769,13 @@ class ModuleMake extends Command
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    private function createCapsuleSeed($moduleName = 'items')
+    private function createCapsuleSeed(): void
     {
-        $this->makeTwillDirectory($this->capsule->getSeedsPsr4Path());
+        $this->makeDir($this->capsule->getSeedsPsr4Path());
 
         $stub = $this->files->get(__DIR__ . '/stubs/database_seeder_capsule.stub');
 
-        $stub = str_replace('{moduleName}', $this->capsule->getPlural(), $stub);
+        $stub = str_replace('{namespace}', $this->capsule->getSeedsNamespace(), $stub);
 
         $this->files->put("{$this->capsule->getSeedsPsr4Path()}/DatabaseSeeder.php", $stub);
 
@@ -773,8 +801,43 @@ class ModuleMake extends Command
         $stub = $this->files->get(__DIR__ . '/stubs/database_seeder_singleton.stub');
 
         $stub = $this->replaceVariables([
+            'seederNamespace' => 'Database\\Seeders',
             'seederClassName' => $seederName,
+            'modelClass' => "App\\Models\\$modelName",
             'modelClassName' => $modelName,
+            'repositoryClass' => "App\\Repositories\\$repositoryName",
+            'repositoryClassName' => $repositoryName,
+        ], $stub);
+
+        $stub = $this->replaceConditionals([
+            'hasTranslations' => $this->translatable,
+            '!hasTranslations' => !$this->translatable,
+        ], $stub);
+
+        $stub = $this->removeEmptyLinesWithOnlySpaces($stub);
+
+        $this->files->put("{$dir}/{$seederName}.php", $stub);
+
+        $this->info("Seed created successfully!");
+    }
+
+    private function createCapsuleSingletonSeeder(): void {
+        $modelName = $this->capsule->getSingular();
+        $repositoryName = $this->capsule->getSingular() . 'Repository';
+        $seederName = $this->capsule->getSingular() . 'Seeder';
+
+        $dir = $this->databasePath('seeders');
+
+        $this->makeTwillDirectory($dir);
+
+        $stub = $this->files->get(__DIR__ . '/stubs/database_seeder_singleton.stub');
+
+        $stub = $this->replaceVariables([
+            'seederNamespace' => $this->capsule->getDatabaseNamespace() . '\\Seeders',
+            'seederClassName' => $seederName,
+            'modelClass' => $this->capsule->getModelNamespace() . "\\$modelName",
+            'modelClassName' => $modelName,
+            'repositoryClass' => $this->capsule->getRepositoryClass(),
             'repositoryClassName' => $repositoryName,
         ], $stub);
 
@@ -829,7 +892,7 @@ class ModuleMake extends Command
         }
 
         $this->checkCapsuleDirectory(
-            $this->moduleBasePath = config('twill.capsules.path') . "/{$moduleName}"
+            $this->moduleBasePath = $this->capsule->getPsr4Path()
         );
 
         $this->makeDir($this->moduleBasePath);
@@ -848,7 +911,7 @@ class ModuleMake extends Command
             return database_path($path);
         }
 
-        return "{$this->moduleBasePath}/database" . (filled($path) ? "/{$path}" : '');
+        return $this->capsule->getDatabasePsr4Path() . ($path ? '/' . $path : '');
     }
 
     public function makeDir($dir)
@@ -870,7 +933,28 @@ class ModuleMake extends Command
 
     public function makeTwillDirectory($path)
     {
-        make_twill_directory($path);
+        if ($this->customDirs) {
+            $this->makeDir($path);
+        }
+        else {
+            make_twill_directory($path);
+        }
+    }
+
+    public function putTwillStub(string $path, string $stub): void
+    {
+        if ($this->customDirs) {
+            $stub = str_replace(
+                'namespace App\\',
+                sprintf('namespace %s\\', config('twill.namespace')),
+                $stub
+            );
+
+            file_put_contents($path, $stub);
+        }
+        else {
+            twill_put_stub($path, $stub);
+        }
     }
 
     public function namespace($type, $suffix, $class = null)
