@@ -572,7 +572,7 @@ class ModuleMake extends Command
 
         $modelClass = $this->isCapsule ? $this->capsule->getModel() : config(
                 'twill.namespace'
-            ) . "\Models\\{$this->capsule->getSingular()}";
+            ) . "\Models\\{$modelName}";
 
         $this->makeTwillDirectory($modelsDir);
 
