@@ -121,11 +121,16 @@ class TwillCapsules
     ): string {
         $namespace = Str::after($namespace, $capsuleNamespace . '\\');
 
-        $subdir = config('twill.capsules.namespaces.subdir');
+        return "$rootPath/{$this->getProjectCapsulesSubdirectory()}" . str_replace('\\', '/', $namespace);
+    }
 
-        $subdir = filled($subdir) ? "{$subdir}/" : '';
+    public function getProjectCapsulesPath() {
+        return config("twill.capsules.path") . $this->getProjectCapsulesSubdirectory();
+    }
 
-        return "{$rootPath}/{$subdir}" . str_replace('\\', '/', $namespace);
+    private function getProjectCapsulesSubdirectory(): string {
+        $subdirectory = config('twill.capsules.namespaces.subdir');
+        return filled($subdirectory) ? "$subdirectory/" : '';
     }
 
     public function getAutoloader()
