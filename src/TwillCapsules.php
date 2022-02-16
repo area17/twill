@@ -124,7 +124,8 @@ class TwillCapsules
         return "$rootPath/{$this->getProjectCapsulesSubdirectory()}" . str_replace('\\', '/', $namespace);
     }
 
-    public function getProjectCapsulesPath() {
+    public function getProjectCapsulesPath(): string
+    {
         return config("twill.capsules.path") . $this->getProjectCapsulesSubdirectory();
     }
 

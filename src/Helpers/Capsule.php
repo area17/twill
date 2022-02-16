@@ -3,6 +3,7 @@
 namespace A17\Twill\Helpers;
 
 use A17\Twill\Facades\TwillRoutes;
+use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
@@ -77,6 +78,7 @@ class Capsule
         }
 
         $this->registerRoutes();
+        $this->loadTranslations();
 
         $this->loaded = true;
     }
@@ -126,6 +128,18 @@ class Capsule
 
     public function registerRoutes(): void {
         TwillRoutes::registerCapsuleRoutes(App::get('router'), $this);
+    }
+
+    public function loadTranslations(): void {
+        $callback = function (Translator $translator) {
+            $translator->addNamespace($this->getLanguagesPath(), 'twill:capsules:' . $this->getModule());
+        };
+
+        App()->afterResolving('translator', $callback);
+
+        if (app()->resolved('translator')) {
+            $callback(App::make('translator'));
+        }
     }
 
     public function getBasePath(string $path): string
