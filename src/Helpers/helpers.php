@@ -1,10 +1,12 @@
 <?php
 
+use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Services\Blocks\BlockCollection;
+use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
-use \Illuminate\Support\Str;
+use Illuminate\Support\Str;
 
 if (!function_exists('dumpUsableSqlQuery')) {
     function dumpUsableSqlQuery($query)
@@ -85,7 +87,7 @@ if (!function_exists('fireCmsEvent')) {
      */
     function fireCmsEvent($eventName, $input = [])
     {
-        $method = method_exists(\Illuminate\Events\Dispatcher::class, 'dispatch') ? 'dispatch' : 'fire';
+        $method = method_exists(Dispatcher::class, 'dispatch') ? 'dispatch' : 'fire';
         Event::$method($eventName, [$eventName, $input]);
     }
 }
@@ -241,25 +243,19 @@ if (!function_exists('generate_list_of_allowed_blocks')) {
 }
 
 if (!function_exists('capsule_namespace')) {
+    /**
+     * @deprecated use TwillCapsules::capsuleNamespace instead
+     */
     function capsule_namespace($capsuleName, $type = null) {
-        return capsules()->capsuleNamespace($capsuleName, $type);
+        return TwillCapsules::capsuleNamespace($capsuleName, $type);
     }
 }
 
 if (!function_exists('capsule_namespace_to_path')) {
+    /**
+     * @deprecated use TwillCapsules::capsuleNamespaceToPath instead
+     */
     function capsule_namespace_to_path($namespace, $capsuleNamespace, $rootPath) {
-        return capsules()->capsuleNamespaceToPath($namespace, $capsuleNamespace, $rootPath);
-    }
-}
-
-if (!function_exists('capsules')) {
-    function capsules($capsule = null) {
-        $manager = app('twill.capsules.manager');
-
-        if (filled($capsule)) {
-            return $manager->capsule($capsule);
-        }
-
-        return $manager;
+        return TwillCapsules::capsuleNamespaceToPath($namespace, $capsuleNamespace, $rootPath);
     }
 }

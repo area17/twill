@@ -1,23 +1,19 @@
 <?php
 
-namespace A17\Twill\Services\Routing;
+namespace A17\Twill;
 
-use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Helpers\Capsule;
-use Illuminate\Routing\Router;
-use Illuminate\Support\Facades\Route;
-use A17\Twill\Services\Capsules\Manager;
 
-trait HasRoutes
+class TwillRoutes
 {
-    protected function registerRoutes(
+    public function registerRoutes(
         $router,
         $groupOptions,
         $middlewares,
         $supportSubdomainRouting,
         $namespace,
         $routesFile
-    ) {
+    ): void {
         if (file_exists($routesFile)) {
             $hostRoutes = function ($router) use (
                 $middlewares,
@@ -56,7 +52,7 @@ trait HasRoutes
         }
     }
 
-    public function registerRoutePatterns()
+    public function registerRoutePatterns(): void
     {
         if (($patterns = config('twill.admin_route_patterns')) != null) {
             if (is_array($patterns)) {
@@ -70,18 +66,16 @@ trait HasRoutes
     /**
      * @return array
      */
-    protected function getRouteGroupOptions(): array
+    public function getRouteGroupOptions(): array
     {
-        $groupOptions = [
+        return [
             'as' => config('twill.admin_route_name_prefix', 'admin.'),
             'middleware' => [config('twill.admin_middleware_group', 'web')],
             'prefix' => rtrim(ltrim(config('twill.admin_app_path'), '/'), '/'),
         ];
-
-        return $groupOptions;
     }
 
-    public function getRouteMiddleware($middleware = null)
+    public function getRouteMiddleware($middleware = null): array
     {
         if (is_array($middleware)) {
             return $middleware;
@@ -118,12 +112,5 @@ trait HasRoutes
                 $capsule->getRoutesFile()
             );
         }
-    }
-
-    protected function registerCapsulesRoutes(Router $router): void
-    {
-        TwillCapsules::getRegisteredCapsules()->each(function (Capsule $capsule) use ($router) {
-            $this->registerCapsuleRoutes($router, $capsule);
-        });
     }
 }

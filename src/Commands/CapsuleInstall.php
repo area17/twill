@@ -4,11 +4,8 @@ namespace A17\Twill\Commands;
 
 use Exception;
 use GuzzleHttp\Client;
-use A17\Twill\Models\User;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
-use A17\Twill\Services\Capsules\Manager;
 
 class CapsuleInstall extends Command
 {
@@ -40,18 +37,6 @@ class CapsuleInstall extends Command
     protected $capsuleName;
 
     protected $repositoryUrl;
-
-    /**
-     * Create a new console command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->manager = new Manager();
-    }
 
     /**
      * @return string

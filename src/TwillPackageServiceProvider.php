@@ -2,51 +2,65 @@
 
 namespace A17\Twill;
 
-use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use ReflectionClass;
 
 abstract class TwillPackageServiceProvider extends ServiceProvider
 {
-//    public function registerCapsule(string $name): void {
-//        $config = Config::get('twill-navigation', []);
-//
-//        $config[$name] = [
-//            'title' => $name,
-//            'module' => true,
-//        ];
-//
-//        Config::set('twill-navigation', $config);
-//    }
+    protected $autoRegisterCapsules = true;
 
+    public function boot(): void {
+        if ($this->autoRegisterCapsules) {
+            $this->registerCapsules('Twill/Capsules');
+        }
+    }
 
-//    public function boot(): void
-//    {
-//        $this->loadRoutesFrom($this->getPackageDirectory() . '/routes/admin.php');
-//    }
+    protected function registerCapsule(string $name): void {
+        $namespace = $this->getCapsuleNamespace();
 
-//    protected function getCapsuleName(): string
-//    {
-//        return str_replace('ServiceProvider', '', $this->getClassName());
-//    }
-//
-//    protected function getClassName(): string {
-//        $provider = explode('\\', get_class($this));
-//
-//        return array_pop($provider);
-//    }
-//
-//    protected function getPackageDirectory(): string
-//    {
-//        $class = new ReflectionClass(get_class($this));
-//
-//        $path = Str::replaceLast('/' . $this->getClassName() . '.php', '', $class->getFileName());
-//
-//        if (Str::endsWith($path, '/src')) {
-//            $path = Str::replaceLast('/src', '', $path);
-//        }
-//
-//        return $path;
-//    }
+        $namespace .= '\\Twill\\Capsules\\' . $name;
+
+        $dir = $this->getPackageDirectory() . '/src/Twill/Capsules/' . $name;
+
+        \A17\Twill\Facades\TwillCapsules::registerPackageCapsule($name, $namespace, $dir);
+    }
+
+    protected function registerCapsules(string $directory): void {
+        $storage = Storage::build([
+            'driver' => 'local',
+            'root' => $this->getPackageDirectory() . '/src/' . $directory,
+        ]);
+
+        foreach ($storage->directories() as $capsuleName) {
+            $this->registerCapsule($capsuleName);
+        }
+    }
+
+    protected function getClassName(): string {
+        $provider = explode('\\', get_class($this));
+
+        return array_pop($provider);
+    }
+
+    protected function getCapsuleNamespace(): string {
+        $provider = explode('\\', get_class($this));
+        array_pop($provider);
+
+        return implode('\\', $provider);
+    }
+
+    protected function getPackageDirectory(): string
+    {
+        $class = new ReflectionClass(get_class($this));
+
+        $path = Str::replaceLast('/' . $this->getClassName() . '.php', '', $class->getFileName());
+
+        if (Str::endsWith($path, '/src')) {
+            $path = Str::replaceLast('/src', '', $path);
+        }
+
+        return $path;
+    }
 }

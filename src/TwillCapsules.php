@@ -2,26 +2,18 @@
 
 namespace A17\Twill;
 
-use A17\Twill\Exceptions\CapsuleWithNameAlreadyExistsException;
 use A17\Twill\Exceptions\NoCapsuleFoundException;
 use A17\Twill\Helpers\Capsule;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class TwillCapsules
 {
     /**
      * @var \A17\Twill\Helpers\Capsule[]
      */
-    public static $registeredCapsules = [];
+    public $registeredCapsules = [];
 
-    /**
-     * @var bool
-     */
-    public static $isLoaded = false;
-
-    /**
-     * @throws \A17\Twill\Exceptions\CapsuleWithNameAlreadyExistsException
-     */
     public function registerPackageCapsule(
         string $name,
         string $namespace,
@@ -29,13 +21,24 @@ class TwillCapsules
         string $singular = null,
         bool $enabled = true
     ): Capsule {
-        if (isset(self::$registeredCapsules[$name])) {
-            throw new CapsuleWithNameAlreadyExistsException();
-        }
+        $capsule = new Capsule($name, $namespace, $path, $singular, $enabled, true);
 
-        self::$registeredCapsules[$name] = new Capsule($name, $namespace, $path, $singular, $enabled, true);
+        $this->registerCapsule($capsule);
 
-        return self::$registeredCapsules[$name];
+        return $this->registeredCapsules[$name];
+    }
+
+    public function registerCapsule(Capsule $capsule): void
+    {
+        $this->registeredCapsules[$capsule->name] = $capsule;
+    }
+
+    /**
+     * Generates a non package capsule object.
+     */
+    public function makeProjectCapsule(string $name): Capsule
+    {
+        return new Capsule($name, $this->capsuleNamespace($name), config("twill.capsules.path") . '/' . $name);
     }
 
     /**
@@ -71,13 +74,13 @@ class TwillCapsules
     }
 
     /**
-     * @return Capsule[]
+     * @return Collection<Capsule>
      */
     public function getRegisteredCapsules(): Collection
     {
         $this->loadProjectCapsules();
 
-        return collect(self::$registeredCapsules);
+        return collect($this->registeredCapsules);
     }
 
     public function loadProjectCapsules(): void
@@ -86,23 +89,24 @@ class TwillCapsules
 
         $list = collect(config('twill.capsules.list'));
 
-        if (!self::$isLoaded) {
-            $list
-                ->where('enabled', true)
-                ->map(function ($capsule) use ($path) {
-                    self::$registeredCapsules[$capsule['name']] = new Capsule(
+        $list
+            ->where('enabled', true)
+            ->map(function ($capsule) use ($path) {
+                $this->registerCapsule(
+                    new Capsule(
                         $capsule['name'],
                         $this->capsuleNamespace($capsule['name']),
                         $path . '/' . $capsule['name'],
                         $capsule['singular'] ?? null,
                         $capsule['enabled'] ?? true
-                    );
-                });
-        }
+                    )
+                );
+            });
     }
 
-    private function capsuleNamespace($capsuleName, $type = null): string
+    public function capsuleNamespace($capsuleName, $type = null): string
     {
+        // @todo: Read from capsules to get this data.
         $base = config('twill.capsules.namespaces.base');
 
         $type = config("twill.capsules.namespaces.$type");
@@ -110,7 +114,22 @@ class TwillCapsules
         return "$base\\$capsuleName" . (filled($type) ? "\\$type" : '');
     }
 
-    public function getAutoloader() {
+    public function capsuleNamespaceToPath(
+        $namespace,
+        $capsuleNamespace,
+        $rootPath
+    ): string {
+        $namespace = Str::after($namespace, $capsuleNamespace . '\\');
+
+        $subdir = config('twill.capsules.namespaces.subdir');
+
+        $subdir = filled($subdir) ? "{$subdir}/" : '';
+
+        return "{$rootPath}/{$subdir}" . str_replace('\\', '/', $namespace);
+    }
+
+    public function getAutoloader()
+    {
         return app()->bound('autoloader')
             ? app('autoloader')
             : require base_path('vendor/autoload.php');

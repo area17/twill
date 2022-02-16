@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Helpers;
 
-use A17\Twill\Facades\TwillCapsules;
+use A17\Twill\Facades\TwillRoutes;
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
@@ -67,7 +67,6 @@ class Capsule
 
     public function boot(): void
     {
-        $this->registerPsr4Autoloader();
         $this->autoloadConfigFiles();
         $this->registerServiceProvider();
         $this->registerViews();
@@ -76,25 +75,10 @@ class Capsule
         if ($this->packageCapsule) {
             $this->registerConfig();
         }
-    }
 
-    public function registerPsr4Autoloader(): void
-    {
-        //@todo: Inst this working without this.
-        TwillCapsules::getAutoloader()->setPsr4(
-            $this->namespace . '\\',
-            $this->getPsr4Path()
-        );
+        $this->registerRoutes();
 
-        TwillCapsules::getAutoloader()->setPsr4(
-            $this->getDatabaseNamespace() . '\\',
-            $this->getDatabasePsr4Path()
-        );
-
-        TwillCapsules::getAutoloader()->setPsr4(
-            $this->getSeedsNamespace() . '\\',
-            $this->getSeedsPsr4Path()
-        );
+        $this->loaded = true;
     }
 
     public function registerServiceProvider(): void
@@ -138,6 +122,10 @@ class Capsule
         if (app()->resolved('migrator')) {
             $callback(App::make('migrator'));
         }
+    }
+
+    public function registerRoutes(): void {
+        TwillRoutes::registerCapsuleRoutes(App::get('router'), $this);
     }
 
     public function getBasePath(string $path): string
@@ -335,5 +323,9 @@ class Capsule
         ];
 
         Config::set('twill-navigation', $config);
+    }
+
+    public function getType(): string {
+        return '';
     }
 }

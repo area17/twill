@@ -3,15 +3,13 @@
 namespace A17\Twill\Tests\Integration;
 
 use A17\Twill\Facades\TwillCapsules;
+use A17\Twill\Facades\TwillRoutes;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Schema;
-use A17\Twill\Services\Routing\HasRoutes;
 use Illuminate\Routing\Router;
 
 class CapsulesTest extends TestCase
 {
-    use HasRoutes;
-
     protected $capsules = [
         'posts',
         'artists',
@@ -37,13 +35,11 @@ class CapsulesTest extends TestCase
 
         parent::setUp();
 
-        $this->manager = app('twill.capsules.manager');
-
         $this->login();
 
         app()->setLocale('en');
 
-        $this->makeCapsule($this->capsuleName);
+        $this->makeCapsule();
     }
 
     public function loadConfig($file = null)
@@ -242,7 +238,7 @@ class CapsulesTest extends TestCase
     {
         $this->artisan("twill:make:capsule {$this->capsuleName} --all --force");
 
-        $this->registerCapsuleRoutes(
+        TwillRoutes::registerCapsuleRoutes(
             app(Router::class),
             TwillCapsules::getCapsuleForModule($this->capsuleName)
         );

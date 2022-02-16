@@ -13,4 +13,9 @@ class CapsulesServiceProvider extends RouteServiceProvider
             'twill.capsules'
         );
     }
+
+    public function boot(): void
+    {
+        \A17\Twill\Facades\TwillCapsules::loadProjectCapsules();
+    }
 }

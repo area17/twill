@@ -78,7 +78,8 @@
         "A17\\Twill\\TwillServiceProvider"
       ],
       "aliases": {
-        "TwillCapsules": "A17\\Twill\\Facades\\TwillCapsules"
+        "TwillCapsules": "A17\\Twill\\Facades\\TwillCapsules",
+        "TwillRoutes": "A17\\Twill\\Facades\\TwillRoutes"
       }
     }
   },

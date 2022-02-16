@@ -2,14 +2,12 @@
 
 namespace A17\Twill;
 
-use A17\Twill\Services\Capsules\Manager;
 use A17\Twill\Http\Controllers\Front\GlideController;
 use A17\Twill\Http\Middleware\Impersonate;
 use A17\Twill\Http\Middleware\Localization;
 use A17\Twill\Http\Middleware\RedirectIfAuthenticated;
 use A17\Twill\Http\Middleware\SupportSubdomainRouting;
 use A17\Twill\Http\Middleware\ValidateBackHistory;
-use A17\Twill\Services\Routing\HasRoutes;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
@@ -18,8 +16,6 @@ use Illuminate\Support\Str;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    use HasRoutes;
-
     protected $namespace = 'A17\Twill\Http\Controllers';
 
     /**
@@ -31,6 +27,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->registerRouteMiddlewares($this->app->get('router'));
         $this->registerMacros();
+        $this->app->bind(TwillRoutes::class);
         parent::boot();
     }
 
@@ -40,22 +37,20 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map(Router $router)
     {
-        $this->registerRoutePatterns();
-
-        $this->registerCapsulesRoutes($router);
+        \A17\Twill\Facades\TwillRoutes::registerRoutePatterns();
 
         $this->mapInternalRoutes(
             $router,
-            $this->getRouteGroupOptions(),
-            $this->getRouteMiddleware(),
-            $this->supportSubdomainRouting()
+            \A17\Twill\Facades\TwillRoutes::getRouteGroupOptions(),
+            \A17\Twill\Facades\TwillRoutes::getRouteMiddleware(),
+            \A17\Twill\Facades\TwillRoutes::supportSubdomainRouting()
         );
 
         $this->mapHostRoutes(
             $router,
-            $this->getRouteGroupOptions(),
-            $this->getRouteMiddleware(),
-            $this->supportSubdomainRouting()
+            \A17\Twill\Facades\TwillRoutes::getRouteGroupOptions(),
+            \A17\Twill\Facades\TwillRoutes::getRouteMiddleware(),
+            \A17\Twill\Facades\TwillRoutes::supportSubdomainRouting()
         );
     }
 
@@ -66,7 +61,7 @@ class RouteServiceProvider extends ServiceProvider
         $supportSubdomainRouting,
         $namespace = null
     ) {
-        $this->registerRoutes(
+        \A17\Twill\Facades\TwillRoutes::registerRoutes(
             $router,
             $groupOptions,
             $middlewares,
