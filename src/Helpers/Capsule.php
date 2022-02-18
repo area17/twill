@@ -88,7 +88,6 @@ class Capsule
         $serviceProviderName = $this->name . 'CapsuleServiceProvider';
 
         if (File::exists($this->path . '/' . $serviceProviderName . '.php')) {
-            // @todo: test.
             App::register($this->namespace . '\\' . $serviceProviderName);
         }
     }
@@ -181,17 +180,17 @@ class Capsule
 
     public function getDatabasePsr4Path(): string
     {
-        return $this->path . '/database';
+        return $this->path . '/Database';
     }
 
     public function getSeedsNamespace(): string
     {
-        return $this->namespace . '\\Seeds\\Database';
+        return $this->namespace . '\\Database\\Seeds';
     }
 
     public function getSeedsPsr4Path(): string
     {
-        return $this->getDatabasePsr4Path() . '/seeds';
+        return $this->getDatabasePsr4Path() . '/Seeds';
     }
 
     public function getMigrationsPath(): string

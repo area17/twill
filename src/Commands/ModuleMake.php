@@ -237,7 +237,7 @@ class ModuleMake extends Command
             $this->customDirs = true;
             $this->capsule = new Capsule(
                 $moduleTitle,
-                $this->option('packageNamespace') . '\\Twill\\Capsules',
+                $this->option('packageNamespace') . '\\Twill\\Capsules\\' . $moduleTitle,
                 $dir
             );
         } elseif ($this->isCapsule) {
