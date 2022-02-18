@@ -10,17 +10,17 @@ You can enable the content editor individual block previews by providing a `reso
 
 ```php
 <!doctype html>
-<html>
-    <head>
-        <title>#madewithtwill website</title>
-        <link rel="stylesheet" href="/css/app.css">
-    </head>
-    <body>
-        <div>
-            @yield('content')
-        </div>
-        <script src="/js/app.js"></script>
-    </body>
+<html lang="en">
+<head>
+    <title>#madewithtwill website</title>
+    <link rel="stylesheet" href="{{mix('css/app.css')}}">
+</head>
+<body>
+<div>
+    @yield('content')
+</div>
+<script src="{{mix('js/app.js')}}"></script>
+</body>
 </html>
 ```
 
