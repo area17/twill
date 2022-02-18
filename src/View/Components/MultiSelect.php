@@ -23,7 +23,7 @@ class MultiSelect extends FieldWithOptions
         $moduleName = null,
         $default = false,
         $storeUrl = null,
-        $fieldsInModal = null,
+        $fieldsInModal = false,
         $min = null,
         $max = null
     ) {
@@ -53,7 +53,7 @@ class MultiSelect extends FieldWithOptions
     {
         return view('twill::partials.form._multi_select', [
             'options' => $this->getOptions(),
-            'inModal' => $this->inModal()
+            'inModal' => $this->isInModal()
         ]);
     }
 }

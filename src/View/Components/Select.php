@@ -8,7 +8,7 @@ class Select extends FieldWithOptions
     {
         return view('twill::partials.form._select', [
             'options' => $this->options,
-            'inModal' => $this->inModal()
+            'inModal' => $this->isInModal()
         ]);
     }
 }

@@ -21,7 +21,7 @@ class Radios extends FieldWithOptions
         $moduleName = null,
         $default = false,
         $storeUrl = null,
-        $fieldsInModal = null,
+        $fieldsInModal = false,
         $inline = false,
         $border = false,
         $renderForBlocks = false,
@@ -54,7 +54,7 @@ class Radios extends FieldWithOptions
     {
         return view('twill::partials.form._radios', [
             'options' => $this->getOptions(),
-            'inModal' => $this->inModal()
+            'inModal' => $this->isInModal()
         ]);
     }
 }

@@ -24,7 +24,7 @@ class Checkboxes extends FieldWithOptions
         $addNew = false,
         $moduleName = null,
         $storeUrl = null,
-        $fieldsInModal = null,
+        $fieldsInModal = false,
         $default = false,
         $min = null,
         $max = null,
@@ -60,7 +60,7 @@ class Checkboxes extends FieldWithOptions
     {
         return view('twill::partials.form._checkboxes', [
             'options' => $this->getOptions(),
-            'inModal' => $this->inModal()
+            'inModal' => $this->isInModal()
         ]);
     }
 }

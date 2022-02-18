@@ -38,7 +38,7 @@ abstract class FieldWithOptions extends TwillFormComponent
         $moduleName = null,
         $storeUrl = null,
         $default = null,
-        $fieldsInModal = null
+        $fieldsInModal = false
     ) {
         parent::__construct(
             $name,
@@ -65,7 +65,7 @@ abstract class FieldWithOptions extends TwillFormComponent
         $this->requireConfirmation = null;
     }
 
-    public function inModal(): bool {
+    public function isInModal(): bool {
         return $this->fieldsInModal ?? false;
     }
 
