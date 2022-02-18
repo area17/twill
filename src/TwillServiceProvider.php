@@ -2,6 +2,7 @@
 
 namespace A17\Twill;
 
+use A17\Twill\Commands\GeneratePackageCommand;
 use A17\Twill\Commands\MakeSingletonCapsule;
 use Exception;
 use A17\Twill\Commands\BlockMake;
@@ -325,6 +326,7 @@ class TwillServiceProvider extends ServiceProvider
             Dev::class,
             SyncLang::class,
             CapsuleInstall::class,
+            GeneratePackageCommand::class
         ]);
     }
 

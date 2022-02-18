@@ -1,0 +1,18 @@
+Your package has been generated!
+
+You can now add it to your project's composer json repositories to work on it:
+
+"repositories": [
+    {
+        "type": "path",
+        "url": "{{path}}"
+    },
+],
+
+Then you can require it: composer require {{vendor}}/{{name}}
+
+By default the package has no functionality, you can add a first capsule using (Replace YourModel with the model you want to use):
+
+php artisan twill:make:singleton-capsule YourModel --all --packageDirectory={{path}} --packageNamespace={{namespace}}\\YourModel
+
+Enjoy!
