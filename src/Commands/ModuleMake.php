@@ -756,7 +756,7 @@ class ModuleMake extends Command
 
         $contents = str_replace(
             '{{moduleName}}',
-            $this->capsule->getModule(),
+            $this->isSingleton ? lcfirst($this->capsule->getSingular()) : $this->capsule->getModule(),
             $this->files->get(__DIR__ . '/stubs/' . $stubFile)
         );
 
@@ -829,14 +829,14 @@ class ModuleMake extends Command
         $repositoryName = $this->capsule->getSingular() . 'Repository';
         $seederName = $this->capsule->getSingular() . 'Seeder';
 
-        $dir = $this->databasePath('seeders');
+        $dir = $this->capsule->getSeedsPsr4Path();
 
         $this->makeTwillDirectory($dir);
 
         $stub = $this->files->get(__DIR__ . '/stubs/database_seeder_singleton.stub');
 
         $stub = $this->replaceVariables([
-            'seederNamespace' => $this->capsule->getDatabaseNamespace() . '\\Seeders',
+            'seederNamespace' => $this->capsule->getDatabaseNamespace() . '\\Seeds',
             'seederClassName' => $seederName,
             'modelClass' => $this->capsule->getModelNamespace() . "\\$modelName",
             'modelClassName' => $modelName,

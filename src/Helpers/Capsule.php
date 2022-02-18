@@ -330,9 +330,9 @@ class Capsule
     {
         $config = Config::get('twill-navigation', []);
 
-        $config[$this->name] = [
+        $config[lcfirst($this->getSingular())] = [
             'title' => $this->name,
-            'module' => true,
+            'singleton' => true,
         ];
 
         Config::set('twill-navigation', $config);
