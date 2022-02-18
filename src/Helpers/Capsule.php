@@ -3,6 +3,7 @@
 namespace A17\Twill\Helpers;
 
 use A17\Twill\Facades\TwillRoutes;
+use A17\Twill\Http\Controllers\Admin\SingletonModuleController;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Support\Facades\App;
@@ -330,12 +331,24 @@ class Capsule
     {
         $config = Config::get('twill-navigation', []);
 
-        $config[lcfirst($this->getSingular())] = [
-            'title' => $this->name,
-            'singleton' => true,
-        ];
+        if ($this->isSingleton()) {
+            $config[lcfirst($this->getSingular())] = [
+                'title' => $this->name,
+                'singleton' => true,
+            ];
+        }
+        else {
+            $config[$this->name] = [
+                'title' => $this->name,
+                'module' => true,
+            ];
+        }
 
         Config::set('twill-navigation', $config);
+    }
+
+    public function isSingleton(): bool {
+        return is_subclass_of($this->getControllerClass(), SingletonModuleController::class);
     }
 
     public function getType(): string {
