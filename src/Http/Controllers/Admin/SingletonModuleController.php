@@ -20,11 +20,21 @@ abstract class SingletonModuleController extends ModuleController
         $item = app($model)->first();
 
         if (!$item) {
-            throw new \Exception("{$this->getModelName()} is missing");
+            $this->seed();
+            return $this->editSingleton();
         }
 
         Session::put('pages_back_link', url()->current());
 
         return view("admin.{$this->moduleName}.form", $this->form($item->id));
+    }
+
+    private function seed(): void {
+        $seederName = '\\Database\\Seeders\\' . $this->getModelName() . 'Seeder';
+        if (!class_exists($seederName)) {
+            throw new \Exception("$seederName is missing");
+        }
+        $seeder = new $seederName();
+        $seeder->run();
     }
 }
