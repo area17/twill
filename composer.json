@@ -22,18 +22,12 @@
     "docs": "https://twill.io/docs",
     "chat": "https://discord.link/twill"
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "git@github.com:ifox/tags.git"
-    }
-  ],
   "require": {
     "php": "^7.1|^8.0",
     "ext-json": "*",
     "ext-pdo": "*",
     "astrotomic/laravel-translatable": "^11.5",
-    "cartalyst/tags": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|dev-laravel-9-support",
+    "cartalyst/tags": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
     "doctrine/dbal": "^2.12|^3.0",
     "guzzlehttp/guzzle": "^6.2|^7.0",
     "imgix/imgix-php": "^3.0",
