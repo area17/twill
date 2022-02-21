@@ -120,6 +120,9 @@ trait HandleRepeaters
 
         foreach ($relationFields as $index => $relationField) {
             $relationField['position'] = $index + 1;
+            $relationField[$morphFieldId] = $object->id;
+            $relationField[$morphFieldType] = $object->getMorphClass();
+
             if (isset($relationField['id']) && Str::startsWith($relationField['id'], $relation)) {
                 // row already exists, let's update
                 $id = str_replace($relation . '-', '', $relationField['id']);
