@@ -4,6 +4,7 @@
                   :locale="locale"
                   @localize="updateLocale"
                   :size="size"
+                  :note="note"
                   :name="name">
     <a17-slideshow v-if="max > 1 || max === 0"
                    :name="name"

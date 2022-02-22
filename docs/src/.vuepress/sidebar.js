@@ -156,6 +156,10 @@ module.exports = [
             "path": "/form-fields/multi-select-inline.html",
           },
           {
+            "title": "Tags",
+            "path": "/form-fields/tags.html",
+          },
+          {
             "title": "Checkbox",
             "path": "/form-fields/checkbox.html",
           },
@@ -190,6 +194,10 @@ module.exports = [
           {
             "title": "Conditional Fields",
             "path": "/form-fields/conditional-fields.html",
+          },
+          {
+            "title": "Field grouping",
+            "path": "/form-fields/field-grouping.html",
           }
         ],
         "collapsable": true
