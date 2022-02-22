@@ -11,7 +11,7 @@ class GlideController
     {
         /** @var \Symfony\Component\HttpFoundation\StreamedResponse $res */
         $res = $app->make(Glide::class)->render($path);
-        $res->headers->add(['Access-Control-Allow-Origin' => '*']);
+        $res->headers->add(['Access-Control-Allow-Origin' => config('twill.glide.cors_access_control_allow_origin')]);
         return $res;
     }
 }
