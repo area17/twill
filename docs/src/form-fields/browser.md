@@ -22,6 +22,7 @@ pageClass: twill-doc
 | moduleName  | Name of the module (single related module)                                      | string  |               |
 | modules     | Array of modules (multiple related modules), must include _name_                | array   |               |
 | endpoints   | Array of endpoints (multiple related modules), must include _value_ and _label_ | array   |               |
+| params      | Array of query params (key => value) to be passed to the browser endpoint       | array   |               |
 | max         | Max number of attached items                                                    | integer | 1             |
 | note        | Hint message displayed in the field                                             | string  |               |
 | fieldNote   | Hint message displayed above the field                                          | string  |               |
