@@ -4,14 +4,15 @@
       <transition-group name="draggable_list" tag='div'>
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
           <a17-blockeditor-item
-              ref="blockList"
-              :block="block"
-              :index="index"
-              :size="blockSize"
-              :opened="opened"
-              @expand="setOpened">
-            <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)"
-                        v-if="hasRemainingBlocks"><span v-svg symbol="add"></span></a17-button>
+            ref="blockList"
+            :block="block"
+            :index="index"
+            :size="blockSize"
+            :opened="opened"
+          >
+            <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)" v-if="hasRemainingBlocks">
+              <span v-svg symbol="add"></span>
+            </a17-button>
             <div slot="dropdown-action">
               <button type="button" @click="collapseAllBlocks()" v-if="opened">
                 {{ $trans('fields.block-editor.collapse-all', 'Collapse all') }}
@@ -32,10 +33,11 @@
     </draggable>
     <div class="content__trigger">
       <a17-button
-          v-if="hasRemainingBlocks && blockType.trigger"
-          :class="triggerClass"
-          :variant="triggerVariant"
-          @click="addBlock()">
+        v-if="hasRemainingBlocks && blockType.trigger"
+        :class="triggerClass"
+        :variant="triggerVariant"
+        @click="addBlock()"
+      >
         {{ blockType.trigger }}
       </a17-button>
       <div class="content__note f--note f--small">
@@ -135,11 +137,7 @@
       })
     },
     methods: {
-      setOpened: function () {
-        this.opened = true
-      },
       addBlock: function () {
-        this.opened = true
         this.$store.commit(FORM.ADD_FORM_BLOCK, { type: this.type, name: this.name })
       },
       duplicateBlock: function (index) {
