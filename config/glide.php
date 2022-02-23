@@ -20,7 +20,6 @@ return [
     'sign_key' => env('GLIDE_SIGN_KEY'),
     'driver' => env('GLIDE_DRIVER', 'gd'),
     'add_params_to_svgs' => false,
-    'cors_access_control_allow_origin' => '*',
     'default_params' => [
         'fm' => 'jpg',
         'q' => '80',
