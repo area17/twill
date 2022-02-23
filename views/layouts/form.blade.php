@@ -45,6 +45,7 @@
                 <a17-title-editor
                     name="{{ $titleFormKey }}"
                     :editable-title="{{ json_encode($editableTitle ?? true) }}"
+                    :control-languages-publication="{{ json_encode($controlLanguagesPublication) }}"
                     custom-title="{{ $customTitle ?? '' }}"
                     custom-permalink="{{ $customPermalink ?? '' }}"
                     localized-permalinkbase="{{ json_encode($localizedPermalinkBase ?? '') }}"
