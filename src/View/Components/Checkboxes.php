@@ -59,7 +59,7 @@ class Checkboxes extends FieldWithOptions
     public function render()
     {
         return view('twill::partials.form._checkboxes', [
-            'options' => $this->getOptions(),
+            'options' => $this->options,
             'inModal' => $this->isInModal()
         ]);
     }

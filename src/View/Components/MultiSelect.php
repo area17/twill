@@ -52,7 +52,7 @@ class MultiSelect extends FieldWithOptions
     public function render()
     {
         return view('twill::partials.form._multi_select', [
-            'options' => $this->getOptions(),
+            'options' => $this->options,
             'inModal' => $this->isInModal()
         ]);
     }

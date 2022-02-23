@@ -53,7 +53,7 @@ class Radios extends FieldWithOptions
     public function render()
     {
         return view('twill::partials.form._radios', [
-            'options' => $this->getOptions(),
+            'options' => $this->options,
             'inModal' => $this->isInModal()
         ]);
     }

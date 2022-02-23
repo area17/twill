@@ -48,6 +48,7 @@ abstract class FieldWithOptions extends TwillFormComponent
         );
 
         $this->options = $options;
+        $this->options = $this->getOptions();
         $this->unpack = $unpack;
         $this->columns = $columns;
         $this->searchable = $searchable;
@@ -65,7 +66,8 @@ abstract class FieldWithOptions extends TwillFormComponent
         $this->requireConfirmation = null;
     }
 
-    public function isInModal(): bool {
+    public function isInModal(): bool
+    {
         return $this->fieldsInModal ?? false;
     }
 
