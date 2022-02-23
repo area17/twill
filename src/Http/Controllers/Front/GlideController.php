@@ -9,9 +9,6 @@ class GlideController
 {
     public function __invoke($path, Application $app)
     {
-        /** @var \Symfony\Component\HttpFoundation\StreamedResponse $res */
-        $res = $app->make(Glide::class)->render($path);
-        $res->headers->add(['Access-Control-Allow-Origin' => '*']);
-        return $res;
+        return $app->make(Glide::class)->render($path);
     }
 }
