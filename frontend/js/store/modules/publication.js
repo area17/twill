@@ -12,6 +12,7 @@ const state = {
   visibility: window[process.env.VUE_APP_NAME].STORE.publication.visibility || false,
   reviewProcess: window[process.env.VUE_APP_NAME].STORE.publication.reviewProcess || [],
   createWithoutModal: window[process.env.VUE_APP_NAME].STORE.publication.createWithoutModal || false,
+  hasUnsavedChanges: false,
   saveType: undefined,
   visibilityOptions: [
     {
@@ -157,6 +158,9 @@ const mutations = {
   },
   [PUBLICATION.UPDATE_SAVE_TYPE] (state, newValue) {
     state.saveType = newValue
+  },
+  [PUBLICATION.UPDATE_HAS_UNSAVED_CHANGES] (state, newValue) {
+    state.hasUnsavedChanges = newValue
   }
 }
 
