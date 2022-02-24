@@ -223,6 +223,10 @@ class DashboardController extends Controller
             ];
         })->reverse()->values();
 
+        if ($statsByDate->isEmpty()) {
+            return [];
+        }
+
         return Collection::make([
             'today',
             'yesterday',
@@ -255,7 +259,7 @@ class DashboardController extends Controller
 
     /**
      * @param string $period
-     * @param \Illuminate\Database\Query\Builder $statsByDate
+     * @param \Illuminate\Support\Collection $statsByDate
      * @return array
      */
     private function getPeriodStats($period, $statsByDate)
