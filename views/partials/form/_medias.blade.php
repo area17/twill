@@ -25,6 +25,7 @@
             max: {{ $max }},
             widthMin: {{ $widthMin }},
             heightMin: {{ $heightMin }},
+            note: '{{ $fieldNote }}',
             @if ($extraMetadatas) extraMetadatas: {{ json_encode($extraMetadatas) }}, @endif
             @if ($altTextMaxLength) :altTextMaxLength: {{ $altTextMaxLength }}, @endif
             @if ($captionMaxLength) :captionMaxLength: {{ $captionMaxLength }}, @endif
@@ -36,7 +37,9 @@
             @if (!$activeCrop) activeCrop: false, @endif
             @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
         }"
-    ></a17-locale>
+    >
+        {{ $note }}
+    </a17-locale>
 
     @unless($renderForBlocks)
     @push('vuexStore')
