@@ -6,6 +6,7 @@ pageClass: twill-doc
 
 ![screenshot](/docs/_media/input.png)
 
+
 ```php
 @formField('input', [
     'name' => 'subtitle',
@@ -28,6 +29,13 @@ pageClass: twill-doc
     'rows' => 3
 ])
 ```
+
+::: details Alternative using Blade-x components
+```html
+<x-twill::input name="subtitle" label="Subtitle" :maxlength="100" :required="true" note="Hint message goes here" placeholder="Placeholder goes here" />
+<x-twill::input name="subtitle_translated" label="Subtitle Translated" :maxlength="100" :required="true" type="textarea" :rows="3" :translated="true"/>
+```
+:::
 
 | Option      | Description                                                                                                              | Type/values                                        | Default value |
 | :---------- | :------------------------------------------------------------------------------------------------------------------------| :------------------------------------------------- | :------------ |
