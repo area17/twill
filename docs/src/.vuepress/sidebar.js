@@ -295,6 +295,10 @@ module.exports = [
           {
             "title": "Prefill block editor from template",
             "path": "/guides/prefill-block-editor-from-template.html",
+          },
+          {
+            "title": "Building a multilingual site with Twill and Laravel Localization",
+            "path": "/guides/building_a_multilingual_site_with_twill_and_laravel_localization.html",
           }
         ],
       },
