@@ -20,8 +20,11 @@ abstract class SingletonModuleController extends ModuleController
         $item = app($model)->first();
 
         if (!$item) {
-            $this->seed();
-            return $this->editSingleton();
+            if (config('twill.auto_seed_singletons', false)) {
+                $this->seed();
+                return $this->editSingleton();
+            }
+            throw new \Exception("$model is not seeded");
         }
 
         Session::put('pages_back_link', url()->current());
@@ -29,7 +32,8 @@ abstract class SingletonModuleController extends ModuleController
         return view("admin.{$this->moduleName}.form", $this->form($item->id));
     }
 
-    private function seed(): void {
+    private function seed(): void
+    {
         $seederName = '\\Database\\Seeders\\' . $this->getModelName() . 'Seeder';
         if (!class_exists($seederName)) {
             throw new \Exception("$seederName is missing");
