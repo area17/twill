@@ -23,7 +23,6 @@ publication controll in the create modal [`#1468`](https://github.com/area17/twi
 - Ensure default values are set for radios in the vuex store [`#1100`](https://github.com/area17/twill/issues/1100)
 - Ensure LQIP data is always available [`#1352`](https://github.com/area17/twill/issues/1352)
 - Add typecasting to select dropdown for settings support [`#1203`](https://github.com/area17/twill/issues/1203)
-- Block clones references [`#1410`](https://github.com/area17/twill/pull/1410)
 - Move development specific autoload components [`#1391`](https://github.com/area17/twill/pull/1391)
 - Repeaters no longer expand when adding a new item [`#1461`](https://github.com/area17/twill/pull/1461)
 - Notes are now rendered in media fields [`#1443`](https://github.com/area17/twill/pull/1443)
