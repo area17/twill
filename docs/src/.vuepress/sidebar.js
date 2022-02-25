@@ -291,6 +291,10 @@ module.exports = [
           {
             "title": "Adding fields to the create modal",
             "path": "/guides/adding-fields-to-the-create-modal.html",
+          },
+          {
+            "title": "Prefill block editor from template",
+            "path": "/guides/prefill-block-editor-from-template.html",
           }
         ],
       },
