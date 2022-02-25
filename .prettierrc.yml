@@ -7,13 +7,3 @@ requirePragma: false
 insertPragma: false
 semi: false
 vueIndentScriptAndStyle: true
-
-# php
-phpVersion: '7.4'
-trailingCommaPHP: true
-braceStyle: 'psr-2'
-
-overrides:
-  - files: '*.php'
-    options:
-      tabWidth: 4

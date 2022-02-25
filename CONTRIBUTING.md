@@ -34,6 +34,9 @@ Please send coherent history — make sure each individual commit in your pull r
 
 ## Visual Studio Code
 
+To make it easy to setup the correct configs when you are working in twill from a symlinked directory you can use the
+command `php artisan twill:setup-devtools` to copy the configurations to your Laravel installation.
+
 For JavaScript, Vue and SCSS formatting, the [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) extension can do it for you. Install and set it as the default formatter in your `settings.json`.
 
 ```
