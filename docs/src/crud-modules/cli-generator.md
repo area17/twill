@@ -47,7 +47,7 @@ With that in place, after migrating the database using `php artisan migrate`, yo
 
 If you provided the `hasBlocks` option, you will be able to use the `block_editor` form field in the form of that module.
 
-If you provided the `hasTranslation` option, and have multiple languages specified in your `translatable.php` configuration file, the UI will react automatically and allow publishers to translate content and manage publication at the language level. 
+If you provided the `hasTranslation` option, and have multiple languages specified in your `translatable.php` configuration file, the UI will react automatically and allow publishers to translate content and manage publication at the language level.
 
 If you provided the `hasSlug` option, slugs will automatically be generated from the title field.
 
@@ -96,3 +96,6 @@ return [
 
 If you receive an error when visiting the module, you might have forgotton to run the seeder that is mentioned when
 generating the singleton. `php artisan db:seed ModuleNameSeeder`
+
+If you want you can also set the config variable `twill.auto_seed_singletons` to true, when the singleton admin page
+is then visited and there is no content found it will be automatically seeded.
