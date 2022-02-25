@@ -14,8 +14,7 @@ Versions used at the time of writing:
 |            | Version |
 |:-----------|:-------:|
 | PHP        | 8.0     |
-| Laravel    | 8.61    |
-| Twill      | 2.5.2   |
+| Laravel    | 8.x     |
 
 ## Create the new module
 
