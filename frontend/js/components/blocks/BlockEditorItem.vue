@@ -34,7 +34,7 @@
         </a17-dropdown>
       </div>
     </div>
-    <div class="block__content" :aria-hidden="!visible ? true : null">
+    <div class="block__content" v-if="visible">
       <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes" :key="`form_${block.type}_${block.id}`">
         <!-- dynamic components -->
       </component>
@@ -70,7 +70,7 @@
     },
     data () {
       return {
-        visible: true,
+        visible: false,
         hover: false,
         withMoveDropdown: true,
         withAddDropdown: true
@@ -124,6 +124,11 @@
     watch: {
       opened () {
         this.visible = this.opened
+      }
+    },
+    created () {
+      if (this.isNew) {
+        this.toggleExpand()
       }
     },
     methods: {
