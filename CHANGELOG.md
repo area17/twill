@@ -2,7 +2,7 @@
 
 All notable changes to `twill` will be documented in this file.
 
-## 2.7.0 (2022-02-24)
+## 2.7.0 (2022-02-25)
 
 ### Added
 
