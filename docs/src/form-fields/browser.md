@@ -16,7 +16,7 @@ pageClass: twill-doc
 ```
 
 | Option      | Description                                                                     | Type    | Default value |
-| :---------- | :------------------------------------------------------------------------------ | :-------| :------------ |
+|:------------|:--------------------------------------------------------------------------------| :-------| :------------ |
 | name        | Name of the field                                                               | string  |               |
 | label       | Label of the field                                                              | string  |               |
 | moduleName  | Name of the module (single related module)                                      | string  |               |
@@ -31,6 +31,7 @@ pageClass: twill-doc
 | buttonOnTop | Displays the `Add` button above the items                                       | boolean | false         |
 | wide        | Expands the browser modal to fill the viewport                                  | boolean | false         |
 | sortable    | Allows manually sorting the attached items                                      | boolean | true          |
+| disabled    | Disables the field                                                              | boolean | false         | 
 
 <br/>
 
