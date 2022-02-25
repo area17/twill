@@ -17,7 +17,7 @@ return [
         'choose-password' => 'اختر كلمة مرور',
         'email' => 'البريد الالكتروني',
         'forgot-password' => 'هل نسيت كلمة السر',
-        'login' => ' تسجيل الدخول',
+        'login' => 'تسجيل الدخول',
         'login-title' => 'تسجيل الدخول',
         'oauth-link-title' => 'أعد إدخال كلمة المرور الخاصة بك لربط: مزود بحسابك',
         'otp' => 'كلمة المرور لمرة واحدة',
@@ -92,6 +92,7 @@ return [
             'open-in-editor' => 'فتح في المحرر',
             'preview' => 'معاينة',
             'add-item' => 'اضافة عنصر',
+            'clone-block' => 'استنساخ المجموعة',
         ],
         'browser' => [
             'add-label' => 'اضافة',
@@ -201,7 +202,7 @@ return [
         'bulk-selected-item' => 'عنصر محدد',
         'bulk-selected-items' => 'العناصر المحددة',
         'reorder' => [
-            'success' => ':modelTitle تم تغيير ترتيب! ',
+            'success' => ':modelTitle تم تغيير ترتيب!',
             'error' => ':modelTitle لم يتغير الطلب. حدث شيء خطأ!',
         ],
         'restore' => [
@@ -246,6 +247,11 @@ return [
             'unfeatured' => ':modelTitle عناصر غير مميزة!',
             'featured' => ':modelTitle العناصر المميزة!',
             'error' => ':modelTitle لم يتم عرض العناصر. حدث شيء خطأ!',
+        ],
+        'bulk-publish' => [
+            'unpublished' => ':modelTitle عناصر غير منشورة!',
+            'published' => ':modelTitle العناصر المنشورة!',
+            'error' => ':modelTitle لم يتم نشر من العناصر. حدث شيء خطأ!',
         ],
     ],
     'main' => [
