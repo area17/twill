@@ -13,7 +13,6 @@ publication controll in the create modal [`#1468`](https://github.com/area17/twi
 - You can now control the revision label from the revisionsArray method on the model [`#1467`](https://github.com/area17/twill/pull/1467)
 - Validations can now be created for repeaters [`#1156`](https://github.com/area17/twill/issues/1156)
 - Max amount of repeaters can now be set from the field rather than the repeater itself [`#1433`](https://github.com/area17/twill/issues/1433)
-- Added an option to automatically seed singletons [`#1456`](https://github.com/area17/twill/pull/1456)
 
 ### Fixed
 
@@ -30,9 +29,6 @@ publication controll in the create modal [`#1468`](https://github.com/area17/twi
 - When updated_at is empty, it now falls back to the created_at timestamp [`#766`](https://github.com/area17/twill/issues/766)
 - When cloning a block, the new block is dereferenced from the original [`#1410`](https://github.com/area17/twill/pull/1410)
 - Improved content scheduling [`#1307`](https://github.com/area17/twill/issues/1307)
-- Fixed 500 error if google analytics data is empty [`#1470`](https://github.com/area17/twill/pull/1470)
-- Fixed not all Translations were loaded within editInModal [`#1469`](https://github.com/area17/twill/pull/1469)
-- Improved missing "disabled" implementations for various fields [`#836`](https://github.com/area17/twill/issues/836)
 
 ### Documentation
 
