@@ -47,7 +47,7 @@ With that in place, after migrating the database using `php artisan migrate`, yo
 
 If you provided the `hasBlocks` option, you will be able to use the `block_editor` form field in the form of that module.
 
-If you provided the `hasTranslation` option, and have multiple languages specified in your `translatable.php` configuration file, the UI will react automatically and allow publishers to translate content and manage publication at the language level. 
+If you provided the `hasTranslation` option, and have multiple languages specified in your `translatable.php` configuration file, the UI will react automatically and allow publishers to translate content and manage publication at the language level.
 
 If you provided the `hasSlug` option, slugs will automatically be generated from the title field.
 
@@ -60,3 +60,42 @@ If you provided the `hasRevisions` option, each form submission will create a ne
 Depending on the depth of your module in your navigation, you'll need to wrap your route declaration in one or multiple nested route groups.
 
 You can setup your index options and columns in the generated controller if needed.
+
+## Singleton
+
+With the `twill:make:singleton` command you can generate a singleton module.
+
+A singleton is similar to a module, except that of a singleton only one model can exist in the database.
+
+A singleton can be used for a homepage or for example a contact page.
+
+The functionalities are exactly the same as that of regular modules. But they are registered a bit different.
+
+After generating your singleton via the command mentioned above:
+
+Add the route to your admin routes file(`routes/admin.php`).
+
+```php
+<?php
+
+Route::singleton('moduleName');
+```
+
+Setup a new CMS navigation item in `config/twill-navigation.php`.
+
+```php
+return [
+    ...
+    'moduleName' => [
+        'title'     => 'Module name',
+        'singleton' => true,
+    ]
+    ...
+]
+```
+
+If you receive an error when visiting the module, you might have forgotton to run the seeder that is mentioned when
+generating the singleton. `php artisan db:seed ModuleNameSeeder`
+
+If you want you can also set the config variable `twill.auto_seed_singletons` to true, when the singleton admin page
+is then visited and there is no content found it will be automatically seeded.

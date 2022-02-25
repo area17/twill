@@ -33,7 +33,7 @@ pageClass: twill-doc
 | :---------- | :------------------------------------------------------------------------------------------------------------------------| :------------------------------------------------- | :------------ |
 | name        | Name of the field                                                                                                        | string                                             |               |
 | label       | Label of the field                                                                                                       | string                                             |               |
-| type        | Type of input field                                                                                                      | text<br/>texarea<br/>email<br/>number<br/>password | text          |
+| type        | Type of input field                                                                                                      | text<br/>textarea<br/>email<br/>number<br/>password | text          |
 | translated  | Defines if the field is translatable                                                                                     | true<br/>false                                     | false         |
 | maxlength   | Max character count of the field                                                                                         | integer                                            |               |
 | note        | Hint message displayed above the field                                                                                   | string                                             |               |

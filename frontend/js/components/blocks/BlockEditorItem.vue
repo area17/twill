@@ -3,8 +3,7 @@
     <div class="block__header" @dblclick.prevent="toggleExpand()">
       <span class="block__handle"></span>
       <div class="block__toggle">
-        <a17-dropdown :ref="moveDropdown" class="f--small" position="bottom-left" v-if="withMoveDropdown"
-                      :maxHeight="270">
+        <a17-dropdown :ref="moveDropdown" class="f--small" position="bottom-left" v-if="withMoveDropdown" :maxHeight="270">
           <span class="block__counter f--tiny" @click="$refs[moveDropdown].toggle()">{{ index + 1 }}</span>
           <div slot="dropdown__content">
             <slot name="dropdown-numbers"/>
@@ -15,8 +14,7 @@
       </div>
       <div class="block__actions">
         <slot name="block-actions"/>
-        <a17-dropdown :ref="addDropdown" position="bottom-right" @open="hover = true" @close="hover = false"
-                      v-if="withAddDropdown">
+        <a17-dropdown :ref="addDropdown" position="bottom-right" @open="hover = true" @close="hover = false" v-if="withAddDropdown">
           <a17-button variant="icon" data-action @click="$refs[addDropdown].toggle()"><span v-svg symbol="add"></span>
           </a17-button>
           <div slot="dropdown__content">
@@ -37,8 +35,9 @@
       </div>
     </div>
     <div class="block__content" v-if="visible">
-      <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes"
-                 :key="`form_${block.type}_${block.id}`"><!-- dynamic components --></component>
+      <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes" :key="`form_${block.type}_${block.id}`">
+        <!-- dynamic components -->
+      </component>
       <!-- Block validation input frame, to display errors -->
       <a17-inputframe size="small" label="" :name="`block.${block.id}`"></a17-inputframe>
     </div>
@@ -135,7 +134,6 @@
     methods: {
       toggleExpand () {
         this.visible = !this.visible
-        this.$emit('expand', this.visible)
       },
       componentName (id) {
         return 'blocks[' + id + ']'

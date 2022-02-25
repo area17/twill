@@ -372,6 +372,8 @@ return [
         'last-edit' => 'Last edited',
         'preview' => 'Preview changes',
         'publish' => 'Publish',
+        'scheduled' => 'Scheduled',
+        'expired' => 'Expired',
         'publish-close' => 'Publish and close',
         'publish-new' => 'Publish and create new',
         'published-on' => 'Published on',
