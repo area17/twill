@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Capsules;
 
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 trait HasCapsules
@@ -19,15 +20,15 @@ trait HasCapsules
 
         $list = collect(config('twill.capsules.list'));
 
-        if (config('twill.capsules.loaded')) {
-            return $list;
+        if (!config('twill.capsules.loaded')) {
+            $list = $list
+                ->where('enabled', true)
+                ->map(function ($capsule) use ($path) {
+                    return $this->makeCapsule($capsule, $path);
+                });
         }
 
-        return $list
-            ->where('enabled', true)
-            ->map(function ($capsule) use ($path) {
-                return $this->makeCapsule($capsule, $path);
-            });
+        return $list;
     }
 
     public function getCapsuleByModel($model)
@@ -59,12 +60,10 @@ trait HasCapsules
      */
     public function getCapsulesSubdir()
     {
-        $subdir = config('twill.capsules.namespaces.subdir');
-
-        return $subdir;
+        return config('twill.capsules.namespaces.subdir');
     }
 
-    public function makeCapsule($capsule, $basePath = null)
+    public function makeCapsule($capsule, $basePath = null): array
     {
         $basePath = $basePath ?? $this->getCapsulesPath();
 
@@ -81,19 +80,13 @@ trait HasCapsules
 
         $capsule['base_namespace'] = config('twill.capsules.namespaces.base');
 
-        $capsule[
-            'namespace'
-        ] = $capsuleNamespace = $this->getManager()->capsuleNamespace(
+        $capsule['namespace'] = $capsuleNamespace = $this->getManager()->capsuleNamespace(
             $capsule['name']
         );
 
-        $capsule[
-            'database_namespace'
-        ] = "$capsuleNamespace\Database";
+        $capsule['database_namespace'] = "$capsuleNamespace\Database";
 
-        $capsule[
-            'seeds_namespace'
-        ] = "{$capsule['database_namespace']}\Seeds";
+        $capsule['seeds_namespace'] = "{$capsule['database_namespace']}\Seeds";
 
         $capsule['model'] = $capsule['models'] = $models =
             "{$capsuleNamespace}\\" .
@@ -108,7 +101,11 @@ trait HasCapsules
             "{$capsuleNamespace}\\" .
             config('twill.capsules.namespaces.requests');
 
-        $capsule['psr4_path'] = "$basePath/{$name}" . (filled($this->getCapsulesSubdir()) ? $this->getCapsulesSubdir().'/' : '');
+        $capsule['psr4_path'] =
+            "$basePath/{$name}" .
+            (filled($this->getCapsulesSubdir())
+                ? $this->getCapsulesSubdir() . '/'
+                : '');
 
         $capsule['base_path'] = $basePath;
 
@@ -118,9 +115,9 @@ trait HasCapsules
 
         $capsule['root_path'] = $root = $this->capsuleRootPath($capsule);
 
-        $capsule[
-            'migrations_dir'
-        ] = "{$capsule['root_path']}/database/migrations";
+        $capsule['migrations_dir'] = "{$capsule['root_path']}/database/migrations";
+
+        $capsule['lang_dir'] = "{$capsule['root_path']}/resources/lang";
 
         $capsule['views_dir'] = "{$capsule['root_path']}/resources/views";
 
@@ -156,9 +153,18 @@ trait HasCapsules
 
         $capsule['requests_dir'] = $this->namespaceToPath($capsule, $requests);
 
-        $this->registerPsr4Autoloader($capsule);
+        $capsule['config_file'] = "$basePath/{$name}/config.php";
+
+        $capsule['config'] = $this->loadCapsuleConfig($capsule);
 
         return $capsule;
+    }
+
+    public function bootstrapCapsule($capsule): void
+    {
+        $this->registerPsr4Autoloader($capsule);
+        $this->autoloadConfigFiles($capsule);
+        $this->registerServiceProvider($capsule);
     }
 
     public function registerPsr4Autoloader($capsule)
@@ -177,6 +183,18 @@ trait HasCapsules
             $capsule['database_namespace'] . '\\Seeds\\',
             $capsule['database_psr4_path'] . '/seeds'
         );
+    }
+
+    public function registerServiceProvider($capsule): void
+    {
+        $rootPath = $this->capsuleRootPath($capsule);
+        $capsuleName = $capsule['name'];
+
+        $serviceProviderName = $capsuleName . 'CapsuleServiceProvider';
+
+        if (File::exists($rootPath . '/' . $serviceProviderName . '.php')) {
+            $this->app->register($capsule['namespace'] . '\\' . $serviceProviderName);
+        }
     }
 
     public function capsuleRootPath($capsule)
@@ -211,9 +229,7 @@ trait HasCapsules
 
     public function getCapsuleViewPrefix($capsule)
     {
-        return $this->getCapsuleByModule(Str::studly($capsule))[
-            'view_prefix'
-        ] ?? null;
+        return $this->getCapsuleByModule(Str::studly($capsule))['view_prefix'] ?? null;
     }
 
     public function namespaceToPath($capsule, $namespace)
@@ -248,7 +264,10 @@ trait HasCapsules
     {
         $twillSeeder = app(CapsuleSeeder::class);
 
-        $this->getCapsuleList()->each(function ($capsule) use ($twillSeeder, $illuminateSeeder) {
+        $this->getCapsuleList()->each(function ($capsule) use (
+            $twillSeeder,
+            $illuminateSeeder
+        ) {
             if (filled($capsuleSeeder = $this->makeCapsuleSeeder($capsule))) {
                 $twillSeeder->setCommand($illuminateSeeder->command);
 
@@ -324,7 +343,42 @@ trait HasCapsules
         $name = "{$capsule['base_namespace']}\\$name";
 
         return $this->getCapsuleList()
-                    ->where('namespace', $name)
-                    ->first();
+            ->where('namespace', $name)
+            ->first();
+    }
+
+    public function loadCapsuleConfig($capsule)
+    {
+        $config = file_exists($file = $capsule['config_file'] ?? 'MISSING-CONFIG-FILE')
+            ? require $file
+            : [];
+
+        $key =
+            config('twill.capsules.capsule_config_prefix') .
+            ".{$capsule['module']}";
+
+        config([
+            $key => array_replace_recursive(
+                $config ?? [],
+                $capsule['config'] ?? []
+            ),
+        ]);
+
+        return $config;
+    }
+
+    public function autoloadConfigFiles($capsule)
+    {
+        $files = $capsule['config']['autoload']['files'] ?? null;
+
+        if (blank($files)) {
+            return;
+        }
+
+        collect($files)->each(function ($file) {
+            if (file_exists($file)) {
+                require_once $file;
+            }
+        });
     }
 }

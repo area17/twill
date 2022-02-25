@@ -39,7 +39,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     protected $defaultFilters = [
         'search' => 'search',
         'tag' => 'tag_id',
-        'unused' => 'unused'
+        'unused' => 'unused',
     ];
 
     /**
@@ -315,6 +315,6 @@ class FileLibraryController extends ModuleController implements SignUploadListen
      */
     private function shouldReplaceFile($id)
     {
-        return $this->repository->whereId($id)->exists();
+        return is_numeric($id) ? $this->repository->whereId($id)->exists() : false;
     }
 }

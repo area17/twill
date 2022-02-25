@@ -5,6 +5,7 @@ vendor/
 /node_modules
 assets/dist/*
 frontend/js/components/blocks/customs/*
+!frontend/js/components/blocks/customs/.keep
 frontend/js/components/customs/*
 !frontend/js/components/customs/.keep
 .DS_Store

@@ -10,6 +10,7 @@
     $bulkEdit = $bulkEdit ?? true;
     $create = $create ?? false;
     $skipCreateModal = $skipCreateModal ?? false;
+    $controlLanguagesPublication = $controlLanguagesPublication ?? true;
 
     $requestFilter = json_decode(request()->get('filter'), true) ?? [];
 @endphp
@@ -98,6 +99,22 @@
                             @endforeach
                         </div>
                     @endif
+
+                    @if(isset($additionalTableActions) && count($additionalTableActions))
+                        <div slot="additional-actions">
+                            @foreach($additionalTableActions as $additionalTableAction)
+                                <a17-button
+                                    variant="{{ $additionalTableAction['variant'] ?? 'primary' }}"
+                                    size="{{ $additionalTableAction['size'] ?? 'small' }}"
+                                    el="{{ $additionalTableAction['type'] ?? 'button' }}"
+                                    href="{{ $additionalTableAction['link'] ?? '#' }}"
+                                    target="{{ $additionalTableAction['target'] ?? '_self' }}"
+                                >
+                                    {{ $additionalTableAction['name'] }}
+                                </a17-button>
+                            @endforeach
+                        </div>
+                    @endif
                 </a17-filter>
             </div>
             @if($bulkEdit)
@@ -128,7 +145,9 @@
                 @if ($customPublishedLabel ?? false) published-label="{{ $customPublishedLabel }}" @endif
                 @if ($customDraftLabel ?? false) draft-label="{{ $customDraftLabel }}" @endif
             >
-                <a17-langmanager></a17-langmanager>
+                <a17-langmanager
+                    :control-publication="{{ json_encode($controlLanguagesPublication) }}"
+                ></a17-langmanager>
                 @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
             </a17-modal-create>
         @endif
@@ -171,11 +190,11 @@
         columns: {!! json_encode($tableColumns) !!},
         navigation: {!! json_encode($tableMainFilters) !!},
         filter: { status: '{{ $filters['status'] ?? $defaultFilterSlug ?? 'all' }}' },
-        page: {{ request('page') ?? 1 }},
-        maxPage: {{ $maxPage ?? 1 }},
-        defaultMaxPage: {{ $defaultMaxPage ?? 1 }},
-        offset: {{ request('offset') ?? $offset ?? 60 }},
-        defaultOffset: {{ $defaultOffset ?? 60 }},
+        page: '{{ request('page') ?? 1 }}',
+        maxPage: '{{ $maxPage ?? 1 }}',
+        defaultMaxPage: '{{ $defaultMaxPage ?? 1 }}',
+        offset: '{{ request('offset') ?? $offset ?? 60 }}',
+        defaultOffset: '{{ $defaultOffset ?? 60 }}',
         sortKey: '{{ $reorder ? (request('sortKey') ?? '') : (request('sortKey') ?? '') }}',
         sortDir: '{{ request('sortDir') ?? 'asc' }}',
         baseUrl: '{{ rtrim(config('app.url'), '/') . '/' }}',

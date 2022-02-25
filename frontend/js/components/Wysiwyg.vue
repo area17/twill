@@ -4,19 +4,23 @@
     <div class="wysiwyg__outer" :class="textfieldClasses">
       <input :name="name" type="hidden" v-model="value"/>
       <template v-if="editSource">
-        <div class="wysiwyg" :class="textfieldClasses" v-show="!activeSource">
-          <div class="wysiwyg__editor" :class="{ 'wysiwyg__editor--limitHeight' : limitHeight }" ref="editor"></div>
+        <div class="wysiwyg" :class="textfieldClasses" v-show="!activeSource" :dir="dirLocale">
+          <div class="wysiwyg__editor" :class="{ 'wysiwyg__editor--limitHeight' : limitHeight }" ref="editorcontainer">
+            <div class="wysiwyg__editor-inner" ref="editor"></div>
+          </div>
           <span v-if="shouldShowCounter" class="wysiwyg__limit f--tiny" :class="limitClasses">{{ counter }}</span>
         </div>
-        <div class="form__field form__field--textarea" v-show="activeSource">
-          <textarea :placeholder="placeholder" :autofocus="autofocus" v-model="value"
+        <div class="form__field form__field--textarea" v-show="activeSource" :dir="dirLocale">
+          <textarea :placeholder="placeholder" :autofocus="autofocus" v-model="value" @change="updateSourcecode"
                     :style="textareaHeight"></textarea>
         </div>
         <a17-button variant="ghost" @click="toggleSourcecode" class="wysiwyg__button">Source code</a17-button>
       </template>
       <template v-else>
-        <div class="wysiwyg" :class="textfieldClasses">
-          <div class="wysiwyg__editor" :class="{ 'wysiwyg__editor--limitHeight' : limitHeight }" ref="editor"></div>
+        <div class="wysiwyg" :class="textfieldClasses" :dir="dirLocale">
+          <div class="wysiwyg__editor" :class="{ 'wysiwyg__editor--limitHeight' : limitHeight }" ref="editorcontainer">
+            <div class="wysiwyg__editor-inner" ref="editor"></div>
+          </div>
           <span v-if="shouldShowCounter" class="wysiwyg__limit f--tiny" :class="limitClasses">{{ counter }}</span>
         </div>
       </template>
@@ -103,7 +107,7 @@
       },
       limitClasses: function () {
         return {
-          'wysiwyg__limit--red': this.counter < 10
+          'wysiwyg__limit--red': this.counter < (this.maxlength * 0.1)
         }
       },
       ...mapState({
@@ -202,6 +206,12 @@
           }
         }
 
+        // set Quill direction
+        if (this.dirLocale === 'rtl') {
+          this.quill.format('direction', 'rtl')
+          this.quill.format('align', 'right')
+        }
+
         // check text length
         if (this.hasMaxlength && this.showCounter) {
           this.updateCounter(this.getTextLength())
@@ -233,13 +243,21 @@
           this.updateEditor(newValue)
         }
       },
-      textUpdate: debounce(function () {
-        this.saveIntoStore() // see formStore mixin
+      textUpdate: function () {
+        this.preventSubmit()
+        this._textUpdateInternal()
+      },
+      _textUpdateInternal: debounce(function () {
+        this.saveIntoStore()
+        this.allowSubmit()
       }, 600),
       toggleSourcecode: function () {
         this.editorHeight = (Math.max(50, this.$refs.editor.clientHeight) + this.toolbarHeight - 1) + 'px'
         this.activeSource = !this.activeSource
 
+        this.updateSourcecode()
+      },
+      updateSourcecode: function () {
         // set editor content
         this.updateEditor(this.value)
         this.saveIntoStore() // see formStore mixin
@@ -271,7 +289,11 @@
       this.options.placeholder = this.options.placeholder || this.placeholder
       this.options.readOnly = this.options.readOnly !== undefined ? this.options.readOnly : this.readonly
       this.options.formats = QuillConfiguration.getFormats(this.options.modules.toolbar) // Formats are based on current toolbar configuration
-      this.options.scrollingContainer = null
+      this.options.bounds = this.$refs.editor
+
+      // Ensure pasting content do not make editor scroll to the top
+      // @see https://github.com/quilljs/quill/issues/1374#issuecomment-545112021
+      this.options.scrollingContainer = 'html'
 
       // register custom handlers
       // register anchor toolbar handler
@@ -304,6 +326,19 @@
   .wysiwyg__editor--limitHeight {
     max-height: calc(100vh - 250px);
     overflow-y: scroll;
+    min-height: 142px;
+    border: 1px solid $color__fborder;
+    border-top: none;
+    scroll-behavior: smooth;
+    margin-top: 32px;
+    .input--error & {
+      border-color: $color__error;
+      border-top: none;
+    }
+    .s--focus & {
+      border-color: $color__fborder--hover;
+      border-top: none;
+    }
   }
 </style>
 <style lang="scss">
@@ -324,6 +359,13 @@
   .wysiwyg__limit--red {
     color: red;
   }
+
+  /* RTL Direction */
+  .wysiwyg[dir='rtl'] .wysiwyg__limit {
+    left:15px;
+    right:auto;
+  }
+
 </style>
 <style lang="scss">
   /* Not scoped style here because we want to overwrite default style of the wysiwig */
@@ -333,6 +375,14 @@
       border-top-right-radius: 2px;
       background-color: $color__f--bg;
       font-family: inherit;
+    }
+
+    .wysiwyg__editor--limitHeight .ql-toolbar {
+      z-index: 1;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
     }
 
     .ql-editor.ql-blank::before {
@@ -351,11 +401,21 @@
       min-height: 15px * 6;
       caret-color: $color__action;
       color: $color__text--forms;
+      overflow: visible;
 
       &:hover,
       &:focus {
         background: $color__background;
       }
+    }
+
+    *[dir='rtl'] .ql-editor {
+      direction: rtl;
+      text-align: right;
+    }
+
+    .wysiwyg__editor--limitHeight .ql-editor {
+      min-height: 15px * 10;
     }
 
     /* Default content styling */
@@ -433,6 +493,13 @@
 
     .ql-container.ql-snow {
       border-color: $color__fborder;
+      .wysiwyg__editor--limitHeight {
+        border: none;
+      }
+    }
+
+    .wysiwyg__editor--limitHeight .ql-container.ql-snow {
+      border: none;
     }
 
     .input--error {
@@ -443,6 +510,10 @@
 
       .ql-container.ql-snow {
         border-color: $color__error;
+      }
+
+      .wysiwyg__editor--limitHeight .ql-container.ql-snow {
+        border: none;
       }
     }
 
@@ -455,6 +526,10 @@
       .ql-container.ql-snow {
         border-color: $color__fborder--hover;
       }
+
+      .wysiwyg__editor--limitHeight .ql-container.ql-snow {
+        border: none;
+      }
     }
 
     .ql-snow a {
@@ -463,6 +538,12 @@
 
     .ql-editor .ql-anchor {
       text-decoration: underline $color__link;
+    }
+
+    // Ensure pasting content do not make editor scroll to the top
+    // @see https://github.com/quilljs/quill/issues/1374#issuecomment-545112021
+    .ql-clipboard {
+      position: fixed;
     }
 
     .ql-snow.ql-toolbar {

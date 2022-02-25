@@ -13,21 +13,21 @@ trait HandleRepeaters
     /**
      * All repeaters used in the model, as an array of repeater names:
      * [
-     *  'article_repeater',
-     *  'page_repeater'
+     *     'article_repeater',
+     *     'page_repeater'
      * ].
      *
-     * When only the repeater name is given here, its model and relation will be inferred from the name.
-     * Each repeater's detail can also be override with an array
+     * When only the repeater name is given, the model and relation are inferred from the name.
+     * The parameters can also be overridden with an array:
      * [
-     *  'article_repeater',
-     *  'page_repeater' => [
-     *      'model' => 'Page',
-     *      'relation' => 'pages'
-     *  ]
+     *     'article_repeater',
+     *     'page_repeater' => [
+     *         'model' => 'Page',
+     *         'relation' => 'pages'
+     *     ]
      * ]
      *
-     * @var string|array(array)|array(mix(string|array))
+     * @var array
      */
     protected $repeaters = [];
 
@@ -57,6 +57,14 @@ trait HandleRepeaters
         return $fields;
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @param string $relation
+     * @param bool $keepExisting
+     * @param \A17\Twill\Models\Model|null $model
+     * @return void
+     */
     public function updateRepeaterMany($object, $fields, $relation, $keepExisting = true, $model = null)
     {
         $relationFields = $fields['repeaters'][$relation] ?? [];
@@ -74,6 +82,15 @@ trait HandleRepeaters
         }
     }
 
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @param string $relation
+     * @param string|null $morph
+     * @param \A17\Twill\Models\Model|null $model
+     * @param string|null $repeaterName
+     * @return void
+     */
     public function updateRepeaterMorphMany($object, $fields, $relation, $morph = null, $model = null, $repeaterName = null)
     {
         if (!$repeaterName) {
@@ -131,12 +148,11 @@ trait HandleRepeaters
     /**
      * Given relation, model and repeaterName, retrieve the repeater data from request and update the database record.
      *
-     * @param  object $object
-     * @param  array $fields
-     * @param  string $relation
-     * @param  string $model
-     * @param  string $repeaterName
-     *
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @param string $relation
+     * @param \A17\Twill\Models\Model|\A17\Twill\Repositories\ModuleRepository|null $modelOrRepository
+     * @param string|null $repeaterName
      * @return void
      */
     public function updateRepeater($object, $fields, $relation, $modelOrRepository = null, $repeaterName = null)
@@ -191,12 +207,11 @@ trait HandleRepeaters
     /**
      * Given relation, model and repeaterName, get the necessary fields for rendering a repeater
      *
-     * @param  object $object
-     * @param  array $fields
-     * @param  string $relation
-     * @param  string $modelOrRepository
-     * @param  string $repeaterName
-     *
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @param string $relation
+     * @param \A17\Twill\Models\Model|\A17\Twill\Repositories\ModuleRepository|null $modelOrRepository
+     * @param string|null $repeaterName
      * @return array
      */
     public function getFormFieldsForRepeater($object, $fields, $relation, $modelOrRepository = null, $repeaterName = null)
@@ -218,6 +233,8 @@ trait HandleRepeaters
                 'id' => $relation . '-' . $relationItem->id,
                 'type' => $repeatersList[$repeaterName]['component'],
                 'title' => $repeatersList[$repeaterName]['title'],
+                'titleField' => $repeatersList[$repeaterName]['titleField'],
+                'hideTitlePrefix' => $repeatersList[$repeaterName]['hideTitlePrefix'],
             ];
 
             $relatedItemFormFields = $relationRepository->getFormFields($relationItem);
@@ -307,7 +324,7 @@ trait HandleRepeaters
      * Get all repeaters' model and relation from the $repeaters attribute.
      * The missing information will be inferred by convention of Twill.
      *
-     * @return Illuminate\Support\Collection
+     * @return \Illuminate\Support\Collection
      */
     protected function getRepeaters()
     {
@@ -322,10 +339,9 @@ trait HandleRepeaters
     }
 
     /**
-     * The relation name shoud be lower camel case, ex. userGroup, contactOffice
+     * Guess the relation name (shoud be lower camel case, ex. userGroup, contactOffice).
      *
-     * @param  string $repeaterName
-     *
+     * @param string $repeaterName
      * @return string
      */
     protected function inferRelationFromRepeaterName(string $repeaterName): string
@@ -334,10 +350,9 @@ trait HandleRepeaters
     }
 
     /**
-     * The model name should be singular upper camel case, ex. User, ArticleType
+     * Guess the model name (should be singular upper camel case, ex. User, ArticleType).
      *
-     * @param  string $repeaterName
-     *
+     * @param string $repeaterName
      * @return string
      */
     protected function inferModelFromRepeaterName(string $repeaterName): string

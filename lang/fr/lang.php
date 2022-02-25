@@ -42,6 +42,27 @@ return [
         'my-drafts' => 'Mes brouillons',
         'search-placeholder' => 'Rechercher...',
         'statitics' => 'Statistiques',
+        'search' => [
+            'loading' => 'Chargement...',
+            'no-result' => 'Aucun résultat trouvé.',
+            'last-edit' => 'Edité le',
+        ],
+        'activities' => [
+            'created' => 'Créé',
+            'updated' => 'Mis à jour',
+            'unpublished' => 'Dépublié',
+            'published' => 'Publié',
+            'featured' => 'Mis en avant',
+            'unfeatured' => 'N\'est plus mis en avant',
+            'restored' => 'Restauré',
+            'deleted' => 'Supprimé',
+        ],
+        'activity-row' => [
+            'edit' => 'Editer',
+            'view-permalink' => 'Voir le permalien',
+            'by' => 'par',
+        ],
+        'unknown-author' => 'Inconnu',
     ],
     'dialog' => [
         'cancel' => 'Annuler',
@@ -70,6 +91,7 @@ return [
             'loading' => 'Chargement',
             'open-in-editor' => 'Ouvrir dans l\'éditeur',
             'preview' => 'Prévisualiser',
+            'add-item' => 'Ajouter',
         ],
         'browser' => [
             'add-label' => 'Ajouter des',
@@ -96,6 +118,9 @@ return [
             'edit-close' => 'Fermer infos',
             'edit-info' => 'Editer infos',
             'original-dimensions' => 'Original',
+            'alt-text' => 'Texte alternatif',
+            'caption' => 'Légende',
+            'video-url' => 'URL vidéo (optionnel)',
         ],
     ],
     'filter' => [
@@ -139,14 +164,14 @@ return [
         'dialogs' => [
             'delete' => [
                 'confirm' => 'Supprimer',
-                'disclaimer' => 'Ce contenu ne sera pas supprimé mais déplacé dans la corbeille',
+                'disclaimer' => 'Ce contenu ne sera pas supprimé mais déplacé dans la corbeille.',
                 'move-to-trash' => 'Mettre à la corbeille',
                 'title' => 'Supprimer',
             ],
             'destroy' => [
                 'confirm' => 'Supprimer définitivement',
                 'destroy-permanently' => 'Supprimer définitivement',
-                'disclaimer' => 'Ce contenu ne pourra pas être restauré',
+                'disclaimer' => 'Ce contenu ne pourra pas être restauré.',
                 'title' => 'Supprimer définitivement',
             ],
         ],
@@ -155,8 +180,8 @@ return [
             'destroy' => 'Supprimer définitivement',
             'duplicate' => 'Dupliquer',
             'edit' => 'Modifier',
-            'feature' => 'Mettre en avant',
             'publish' => 'Publier',
+            'feature' => 'Mettre en avant',
             'restore' => 'Restaurer',
             'unfeature' => 'Ne plus mettre en avant',
             'unpublish' => 'Dépublier',
@@ -172,6 +197,55 @@ return [
         'listing-empty-message' => 'Il n\'y a aucun contenu pour le moment.',
         'paginate' => [
             'rows-per-page' => 'Lignes par page:',
+        ],
+        'bulk-selected-item' => 'contenu sélectionné',
+        'bulk-selected-items' => 'contenus sélectionnés',
+        'reorder' => [
+            'success' => ':modelTitle: position mise a jour !',
+            'error' => ':modelTitle: position non mise a jour. Une erreur est servenue !',
+        ],
+        'restore' => [
+            'success' => ':modelTitle restauré !',
+            'error' => ':modelTitle non restauré. Une erreur est servenue !',
+        ],
+        'bulk-restore' => [
+            'success' => ':modelTitle: plusieurs contenus restaurés !',
+            'error' => ':modelTitle: plusieurs contenus non restaurés. Une erreur est servenue !',
+        ],
+        'force-delete' => [
+            'success' => ':modelTitle détruit !',
+            'error' => ':modelTitle non détruit. Une erreur est servenue !',
+        ],
+        'bulk-force-delete' => [
+            'success' => ':modelTitle: plusieurs contenus détruits !',
+            'error' => ':modelTitle: plusieurs contenus non détruits. Une erreur est servenue !',
+        ],
+        'delete' => [
+            'success' => ':modelTitle déplacé dans la corbeille !',
+            'error' => ':modelTitle non déplacé dans la corbeille. Une erreur est servenue !',
+        ],
+        'bulk-delete' => [
+            'success' => ':modelTitle: plusieurs contenus mis a la corbeille !',
+            'error' => ':modelTitle: plusieurs contenus non déplacé dans la corbeille. Une erreur est servenue !',
+        ],
+        'duplicate' => [
+            'success' => ':modelTitle dupliqué avec succès !',
+            'error' => ':modelTitle n\'a pas été dupliqué. Une erreur est servenue !',
+        ],
+        'publish' => [
+            'unpublished' => ':modelTitle dépublié !',
+            'published' => ':modelTitle publié !',
+            'error' => ':modelTitle n\'a pas été publié. Une erreur est servenue !',
+        ],
+        'featured' => [
+            'unfeatured' => ':modelTitle n\'est plus mis en avant !',
+            'featured' => ':modelTitle est mis en avant !',
+            'error' => ':modelTitle n\'est pas mis en avant. Une erreur est servenue !',
+        ],
+        'bulk-featured' => [
+            'unfeatured' => ':modelTitle: la sélection n\'est plus mise en avant !',
+            'featured' => ':modelTitle: la sélection est mise en avant !',
+            'error' => ':modelTitle: la sélection n\'a pas été mise en avant. Une erreur est servenue !',
         ],
     ],
     'main' => [
@@ -197,6 +271,37 @@ return [
         ],
         'title' => 'Galerie de médias',
         'update' => 'Mettre a jour',
+        'unused-filter-label' => 'Non utilisé seulement',
+        'no-tags-found' => 'Désolé, aucun tag trouvé.',
+        'dialogs' => [
+            'delete' => [
+                'delete-media-title' => 'Supprimer le média',
+                'delete-media-desc' => 'Êtes-vous sûr ?<br />Ce changement ne peut être annulé.',
+                'delete-media-confirm' => 'Supprimer',
+                'title' => 'Êtes-vous sûr ?',
+                'allow-delete-multiple-medias' => 'Certains fichiers sont utilisés par du contenu et ne peuvent pas etre supprimés. Voulez-vous supprimer les autres ?',
+                'allow-delete-one-media' => 'Ce fichier est utilisé par du contenu et ne peux pas etre supprimé. Voulez-vous supprimer les autres ?',
+                'dont-allow-delete-multiple-medias' => 'Ces fichiers sont utilisés par du contenu et ne peuvent pas etre supprimés.',
+                'dont-allow-delete-one-media' => 'Ce fichier est utilisé par du contenu et ne peux pas etre supprimé.',
+            ],
+            'replace' => [
+                'replace-media-title' => 'Remplacer le média',
+                'replace-media-desc' => 'Êtes-vous sûr ?<br />Ce changement ne peut être annulé.',
+                'replace-media-confirm' => 'Remplacer',
+            ],
+        ],
+        'types' => [
+            'single' => [
+                'image' => 'image',
+                'video' => 'vidéo',
+                'file' => 'fichier',
+            ],
+            'multiple' => [
+                'image' => 'images',
+                'video' => 'vidéos',
+                'file' => 'fichiers',
+            ],
+        ],
     ],
     'modal' => [
         'create' => [
@@ -226,11 +331,13 @@ return [
         'reset' => [
             'action' => 'Réinitialisation du mot de passe',
             'content' => 'Vous recevez cet e-mail car nous avons reçu une réinitialisation de mot de passe. Si vous n\'avez pas demandé de réinitialisation du mot de passe, aucune autre action n\'est requise.',
+            'subject' => ':appName | Mot de passe oublié',
         ],
         'welcome' => [
             'action' => 'Choisissez votre propre mot de passe',
             'content' => 'Vous recevez cet e-mail car un compte a été créé pour vous sur :nom.',
             'title' => 'Bienvenue',
+            'subject' => ':appName | Bienvenue',
         ],
     ],
     'overlay' => [
@@ -247,6 +354,7 @@ return [
         'single-view' => 'Prévisualiser les changements',
         'title' => 'Prévisualiser les changements',
         'unsaved' => 'Prévisualisation de vos changements non sauvegardés',
+        'drag-and-drop' => 'Glisser et déposer des blocs',
     ],
     'publisher' => [
         'cancel' => 'Annuler',
@@ -322,5 +430,10 @@ return [
         'update-disabled-user-and-create-new' => 'Mettre à jour l\'utilisateur désactivé et créer un nouveau',
         'user-image' => 'Image',
         'users' => 'Utilisateurs',
+    ],
+    'settings' => [
+        'update' => 'Mettre à jour',
+        'cancel' => 'Annuler',
+        'fieldset-label' => 'Editer paramètres',
     ],
 ];

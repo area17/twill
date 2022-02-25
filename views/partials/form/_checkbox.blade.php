@@ -1,9 +1,9 @@
 @php
     $note = $note ?? false;
-    $inline = $inline ?? false;
     $default = $default ?? false;
     $inModal = $fieldsInModal ?? false;
     $disabled = $disabled ?? false;
+    $border = $border ?? false;
     $confirmMessageText = $confirmMessageText ?? '';
     $confirmTitleText = $confirmTitleText ?? '';
     $requireConfirmation = $requireConfirmation ?? false;
@@ -15,6 +15,7 @@
     :initial-value="{{ $default ? 'true' : 'false' }}"
     @if ($note) note='{{ $note }}' @endif
     @if ($disabled) disabled @endif
+    @if ($border) :border="true" @endif
     @if ($requireConfirmation) :require-confirmation="true" @endif
     @if ($confirmMessageText) confirm-message-text="{{ $confirmMessageText }}"  @endif
     @if ($confirmTitleText) confirm-title-text="{{ $confirmTitleText }}"  @endif

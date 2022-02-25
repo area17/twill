@@ -17,10 +17,22 @@ class Block
 
     const TYPE_REPEATER = 'repeater';
 
+    const PREG_REPLACE_INNER = '(?:\'|")(.*)(?:\'|")';
+
     /**
      * @var string
      */
     public $title;
+
+    /**
+     * @var string
+     */
+    public $titleField;
+
+    /**
+     * @var boolean
+     */
+    public $hideTitlePrefix;
 
     /**
      * @var string
@@ -137,6 +149,8 @@ class Block
     {
         return collect([
             'title' => $this->title,
+            'titleField' => $this->titleField,
+            'hideTitlePrefix' => $this->hideTitlePrefix,
             'trigger' => $this->trigger,
             'name' => $this->name,
             'group' => $this->group,
@@ -192,15 +206,22 @@ class Block
         $this->isNewFormat = $this->isNewFormat($contents);
         $this->contents = $contents;
 
+        $this->parseMixedProperty('titleField', $contents, $this->name, function ($value, $options) {
+            $this->titleField = $value;
+            $this->hideTitlePrefix = (boolean) ($options['hidePrefix'] ?? false);
+        });
+
         return $this;
     }
 
     /**
-     * @param $property
-     * @param $block
-     * @param $blockName
-     * @param null $default
-     * @return array
+     * Parse a string property directive in the form of `@twillTypeProperty('value')`.
+     *
+     * @param string $property
+     * @param string $block
+     * @param string $blockName
+     * @param string|null $default
+     * @return string
      * @throws \Exception
      */
     public function parseProperty(
@@ -212,13 +233,70 @@ class Block
         $bladeProperty = ucfirst($property);
 
         foreach (['twillProp', 'twillBlock', 'twillRepeater'] as $pattern) {
-            preg_match("/@{$pattern}{$bladeProperty}\('(.*)'\)/", $block, $matches);
+            preg_match("/@{$pattern}{$bladeProperty}\(" . self::PREG_REPLACE_INNER . "\)/", $block, $matches);
 
             if (filled($matches)) {
                 return $matches[1];
             }
-        };
+        }
 
+        return $this->parsePropertyFallback($property, $blockName, $default);
+    }
+
+    /**
+     * Parse a mixed property directive in the form of `@twillTypeProperty('value', [...])`
+     * and pass the result to a given callback.
+     *
+     * @param string $property
+     * @param string $block
+     * @param string $blockName
+     * @param Callable $callback  Should have the following signature: `function ($value, $options)`
+     * @return mixed
+     * @throws \Exception
+     */
+    public function parseMixedProperty(
+        $property,
+        $block,
+        $blockName,
+        $callback
+    ) {
+        $bladeProperty = ucfirst($property);
+
+        foreach (['twillProp', 'twillBlock', 'twillRepeater'] as $pattern) {
+            // Regexp modifiers:
+            //   `s`  allows newlines as part of the `.*` match
+            //   `U`  stops the match at the first closing parenthesis
+            preg_match("/@{$pattern}{$bladeProperty}\((.*)\)/sU", $block, $matches);
+
+            if (filled($matches)) {
+                // Wrap the match in array notation and feed it to `eval` to get an actual array.
+                // In this context, we're only interested in the first two possible values.
+                $content = "[{$matches[1]}]";
+                $parsedContent = eval("return {$content};");
+                $value = $parsedContent[0] ?? null;
+                $options = $parsedContent[1] ?? null;
+
+                return $callback($value, $options);
+            }
+        }
+
+        $value = $this->parseProperty($property, $block, $blockName, null);
+
+        return $callback($value, null);
+    }
+
+    /**
+     * @param $property
+     * @param $blockName
+     * @param null $default
+     * @return array
+     * @throws \Exception
+     */
+    private function parsePropertyFallback(
+        $property,
+        $blockName,
+        $default = null
+    ) {
         if (
             $value = config(
                 "twill.block_editor.blocks.{$blockName}.{$property}"
@@ -283,7 +361,7 @@ class Block
 
     /**
      * @return string
-     * @throws \Symfony\Component\Debug\Exception\FatalThrowableError
+     * @throws \Throwable
      */
     public function render()
     {
@@ -302,9 +380,9 @@ class Block
     public static function removeSpecialBladeTags($contents)
     {
         return preg_replace([
-            "/@twillProp.*\('(.*)'\)/",
-            "/@twillBlock.*\('(.*)'\)/",
-            "/@twillRepeater.*\('(.*)'\)/",
+            "/@twillProp.*\(" . self::PREG_REPLACE_INNER . "\)/sU",
+            "/@twillBlock.*\(" . self::PREG_REPLACE_INNER . "\)/sU",
+            "/@twillRepeater.*\(" . self::PREG_REPLACE_INNER . "\)/sU",
         ], '', $contents);
     }
 }

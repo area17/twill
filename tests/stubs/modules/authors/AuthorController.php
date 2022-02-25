@@ -49,6 +49,12 @@ class AuthorController extends ModuleController
             'title' => 'Birth day',
             'sort' => true,
         ],
+
+        'categories' => [
+            'relationship' => 'categories',
+            'field' => 'title',
+            'title' => 'Categories',
+        ],
     ];
 
     protected $titleColumnKey = 'name';

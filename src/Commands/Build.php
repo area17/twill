@@ -12,7 +12,7 @@ class Build extends Command
      *
      * @var string
      */
-    protected $signature = 'twill:build {--noInstall} {--hot} {--watch}';
+    protected $signature = 'twill:build {--noInstall} {--hot} {--watch} {--copyOnly}';
 
     /**
      * The console command description.
@@ -42,6 +42,18 @@ class Build extends Command
      * @return mixed
      */
     public function handle()
+    {
+        if ($this->option("copyOnly")) {
+            return $this->copyCustoms();
+        }
+
+        return $this->fullBuild();
+    }
+
+    /*
+     * @return void
+     */
+    private function fullBuild()
     {
         $progressBar = $this->output->createProgressBar(5);
         $progressBar->setFormat("%current%/%max% [%bar%] %message%");
@@ -77,8 +89,10 @@ class Build extends Command
         $progressBar->advance();
 
         if ($this->option('hot')) {
-            $this->runProcessInTwill(['npm', 'run', 'serve'], true);
+            $this->startWatcher(resource_path('assets/js/**/*.vue'), 'php artisan twill:build --copyOnly');
+            $this->runProcessInTwill(['npm', 'run', 'serve', '--', "--port={$this->getDevPort()}"], true);
         } elseif ($this->option('watch')) {
+            $this->startWatcher(resource_path('assets/js/**/*.vue'), 'php artisan twill:build --copyOnly');
             $this->runProcessInTwill(['npm', 'run', 'watch'], true);
         } else {
             $this->runProcessInTwill(['npm', 'run', 'build']);
@@ -91,6 +105,46 @@ class Build extends Command
             $this->info('');
             $progressBar->setMessage("Done.");
             $progressBar->finish();
+        }
+    }
+
+    /**
+     * @return string
+     */
+    private function getDevPort()
+    {
+        preg_match('/^.*:(\d+)/', config('twill.dev_mode_url'), $matches);
+
+        return $matches[1] ?? '8080';
+    }
+
+    /**
+     * @return void
+     */
+    private function startWatcher($pattern, $command)
+    {
+        if (empty($this->filesystem->glob($pattern))) {
+            return;
+        }
+
+        $chokidarPath = base_path(config('twill.vendor_path')) . '/node_modules/.bin/chokidar';
+        $chokidarCommand = [$chokidarPath, $pattern, "-c", $command];
+
+        if ($this->filesystem->exists($chokidarPath)) {
+            $process = new Process($chokidarCommand, base_path());
+            $process->setTty(Process::isTtySupported());
+            $process->setTimeout(null);
+
+            try {
+                $process->start();
+            } catch(\Exception $e) {
+                $this->warn("Could not start the chokidar watcher ({$e->getMessage()})\n");
+            }
+        } else {
+            $this->warn("The `chokidar-cli` package was not found. It is required to watch custom blocks & components in development. You can install it by running:\n");
+            $this->warn("    php artisan twill:dev\n");
+            $this->warn("without the `--noInstall` option.\n");
+            sleep(2);
         }
     }
 
@@ -109,6 +163,17 @@ class Build extends Command
         }
 
         $process->mustRun();
+    }
+
+    /*
+     * @return void
+     */
+    private function copyCustoms()
+    {
+        $this->info("Copying custom blocks & components...");
+        $this->copyBlocks();
+        $this->copyComponents();
+        $this->info("Done.");
     }
 
     /**

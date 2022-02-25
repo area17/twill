@@ -17,6 +17,7 @@ class MakeCapsule extends ModuleMake
         {--F|hasFiles}
         {--P|hasPosition}
         {--R|hasRevisions}
+        {--N|hasNesting}
         {--all}
         {--force}';
 

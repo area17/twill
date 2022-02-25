@@ -10,7 +10,6 @@
     | 5. Run the command "php artisan twill:lang" to sync all lang files.
     */
 
-
 return [
     'auth' => [
         'email' => 'Email',
@@ -18,6 +17,14 @@ return [
         'login' => 'Login',
         'login-title' => 'Login',
         'password' => 'Password',
+        'back-to-login' => 'Vai su Login',
+        'choose-password' => 'Sciegli password',
+        'oauth-link-title' => 'Rientra il tuo password per connettere :provider sul tuo account',
+        'otp' => 'Una volta password',
+        'password-confirmation' => 'Conferma password',
+        'reset-password' => 'Risetta password',
+        'reset-send' => 'Mandi password reset link',
+        'verify-login' => 'Verifica password',
     ],
     'dashboard' => [
         'all-activity' => 'Tutte le attività',
@@ -27,6 +34,27 @@ return [
         'my-drafts' => 'Le mie bozze',
         'search-placeholder' => 'Ricerca in tutto il database...',
         'statitics' => 'Statistiche',
+        'search' => [
+            'loading' => 'Caricamento in corso...',
+            'no-result' => 'nessun risultato trovato.',
+            'last-edit' => 'Modificalo',
+        ],
+        'activities' => [
+            'created' => 'Creato',
+            'updated' => 'Aggiornato',
+            'unpublished' => 'Inedito',
+            'published' => 'Inserito',
+            'featured' => 'Mis en avant',
+            'unfeatured' => 'Evidenziato',
+            'restored' => 'restaurato',
+            'deleted' => 'Eliminato',
+        ],
+        'activity-row' => [
+            'edit' => 'Modificare',
+            'view-permalink' => 'Vedi il permalink',
+            'by' => 'da',
+        ],
+        'unknown-author' => 'Authore non identificato',
     ],
     'fields' => [
         'block-editor' => [
@@ -48,6 +76,25 @@ return [
         ],
         'medias' => [
             'btn-label' => 'Allega immagine',
+            'crop' => 'Ritaglia',
+            'crop-edit' => 'Modifica ritaglio immagine',
+            'crop-list' => 'Ritaglia',
+            'crop-save' => 'Aggiornare',
+            'delete' => 'Cancella',
+            'download' => 'Scarica',
+            'edit-close' => 'Chiudi informazioni',
+            'edit-info' => 'Modifica informazioni',
+            'original-dimensions' => 'Originale',
+            'alt-text' => 'Testo alternativo',
+            'caption' => 'didascalia',
+            'video-url' => 'URL del video (opzionale)',
+        ],
+        'generic' => [
+            'switch-language' => 'Cambia la lingua',
+        ],
+        'map' => [
+            'hide' => 'Nascondere',
+            'show' => 'Visualizza',
         ],
     ],
     'filter' => [
@@ -59,19 +106,30 @@ return [
     'footer' => [
         'version' => 'Versione',
     ],
-    'form' => [
-        'content' => 'Contenuto',
-        'editor' => 'Editor',
+    'editor' => [
+        'cancel' => 'Cancella',
+        'delete' => 'Elimina',
+        'done' => 'Fatto',
+        'title' => 'Titolo',
     ],
     'listing' => [
         'add-new-button' => 'Nuovo',
+        'bulk-actions' => 'Azioni raggruppate',
+        'bulk-clear' => 'Cancella',
+        'columns' => [
+            'featured' => 'Evidenziato',
+            'name' => 'Nome',
+            'published' => 'Publicato',
+            'show' => 'Mostra',
+            'thumbnail' => 'Miniatura',
+        ],
         'dropdown' => [
             'delete' => 'Elimina',
             'destroy' => 'Distruggi',
             'duplicate' => 'Duplica',
             'edit' => 'Modifica',
-            'feature' => 'Promuovi',
             'publish' => 'Pubblica',
+            'feature' => 'Promuovi',
             'restore' => 'Ripristina',
             'unfeature' => 'Non promuovere',
             'unpublish' => 'Spubblica',
@@ -85,6 +143,27 @@ return [
         ],
         'languages' => 'Lingue',
         'listing-empty-message' => 'Non è presente alcun elemento.',
+        'dialogs' => [
+            'cancel' => 'Cancella',
+            'delete' => [
+                'confirm' => 'Conferma',
+                'disclaimer' => 'Sostantivo',
+                'move-to-trash' => 'Elimina',
+                'title' => 'Titolo',
+            ],
+            'destroy' => [
+                'confirm' => 'Conferma',
+                'destroy-permanently' => 'Distruggi permanente',
+                'disclaimer' => 'Sostantivo.',
+                'title' => 'Muovi dalla spazzatura',
+                'cancel' => 'Cancella',
+            ],
+        ],
+    ],
+    'dialog' => [
+        'cancel' => 'Cancella',
+        'ok' => 'OK',
+        'title' => 'Sposta sulla spazzatura',
     ],
     'main' => [
         'create' => 'Crea',
@@ -102,8 +181,44 @@ return [
             'dimensions' => 'Dimensioni',
             'empty-text' => 'Nessun file selezionato',
             'files-selected' => 'file selezionati',
+            'alt-text' => 'Testo alternativo',
+            'caption' => 'Titolo',
+            'tags' => 'Tag',
         ],
         'title' => 'Libreria',
+        'unused-filter-label' => 'Mostra solo inutilizzati',
+        'insert' => 'Inserire',
+        'update' => 'Aggiornare',
+        'no-tags-found' => 'Spiacenti, nessun tag trovato.',
+        'dialogs' => [
+            'delete' => [
+                'delete-media-title' => 'Elimina',
+                'delete-media-desc' => 'Sei sicuro?<br />Questa modifica non può essere annullata dopo.',
+                'delete-media-confirm' => 'Eliminare',
+                'title' => 'Sei sicuro?',
+                'allow-delete-multiple-medias' => 'Alcuni file sono utilizzati e non possono essere eliminati. Vuoi eliminare gli altri?',
+                'allow-delete-one-media' => 'Questo file è utilizzato e non può essere eliminato. Vuoi eliminare gli altri?',
+                'dont-allow-delete-multiple-medias' => 'Questi file sono usati e non possono essere cancellati.',
+                'dont-allow-delete-one-media' => 'Questo file è utilizzato e non può essere cancellato.',
+            ],
+            'replace' => [
+                'replace-media-title' => 'Sostituisci media',
+                'replace-media-desc' => 'Sei sicuro?<br />Questa modifica non può essere annullata dopo.',
+                'replace-media-confirm' => 'Sostituire',
+            ],
+        ],
+        'types' => [
+            'single' => [
+                'image' => 'image',
+                'video' => 'video',
+                'file' => 'file',
+            ],
+            'multiple' => [
+                'image' => 'images',
+                'video' => 'videos',
+                'file' => 'files',
+            ],
+        ],
     ],
     'modal' => [
         'create' => [
@@ -129,6 +244,7 @@ return [
         'publish' => 'Pubblica',
         'publish-close' => 'Pubblica e chiudi',
         'publish-new' => 'Pubblica e crea nuovo',
+        'published-on' => 'Pubblicato al',
         'save' => 'Salva come Bozza',
         'save-close' => 'Salva come Bozza e chiudi',
         'save-new' => 'Salva come bozza e crea nuovo',
@@ -136,6 +252,21 @@ return [
         'update' => 'Aggiorna',
         'update-close' => 'Aggiorna e chiudi',
         'update-new' => 'Aggiorna e crea nuovo',
+        'revisions' => 'Revisioni',
+        'save-success' => 'Contenuto salvato. Va tutto bene!',
+        'start-date' => 'Data d\'inizio',
+        'parent-page' => 'pagina principale',
+        'review-status' => 'Stato revisione',
+        'visibility' => 'Visibilità',
+        'languages' => 'Linguaggi',
+        'languages-published' => 'in diretta',
+        'preview' => 'Anteprima modifiche',
+    ],
+    'overlay' => [
+        'close' => 'Chiudi',
+    ],
+    'lang-manager' => [
+        'published' => 'In diretta',
     ],
     'select' => [
         'empty-text' => '...nessuna opzione',
@@ -147,6 +278,7 @@ return [
     'user-management' => [
         'active' => 'Attivi',
         'cancel' => 'Annulla',
+        'title' => 'Titolo',
         'content-fieldset-label' => 'Impostazioni utente',
         'disabled' => 'Disabilitati',
         'edit-modal-title' => 'Modifica il nominativo',
@@ -166,5 +298,56 @@ return [
         'update-disabled-user-and-create-new' => 'Disabilita e crea nuovo',
         'user-image' => 'Immagine utente',
         'users' => 'Utenti',
+        'language' => 'Lingua',
+        'language-placeholder' => 'Seleziona lingua',
+    ],
+    'settings' => [
+        'update' => 'Aggiorna',
+        'cancel' => 'Cancella',
+        'fieldset-label' => 'Modifica Parametri',
+    ],
+    'previewer' => [
+        'compare-view' => 'Compara',
+        'current-revision' => 'Attivo',
+        'editor' => 'Editrice',
+        'last-edit' => 'Modifica',
+        'past-revision' => 'Antica',
+        'restore' => 'Ristabilire',
+        'revision-history' => 'Cronologia delle revisioni',
+        'single-view' => 'Anteprima delle modifiche',
+        'title' => 'Anteprima delle modifiche',
+        'unsaved' => 'Visualizza in anteprima le modifiche non salvate',
+        'drag-and-drop' => 'Trascina e rilascia i blocchi',
+    ],
+    'form' => [
+        'content' => 'Contenuto',
+        'dialogs' => [
+            'delete' => [
+                'confirm' => 'Cancella',
+                'confirmation' => 'Sei sicuro ?<br />Non si puo riprestinare.',
+                'delete-content' => 'Cancella contenuto',
+                'title' => 'Cancella contenuto',
+            ],
+        ],
+        'editor' => 'Editor',
+    ],
+    'notifications' => [
+        'reset' => [
+            'action' => 'Resetta la password',
+            'content' => 'Hai ricevuto questa email perché abbiamo ricevuto una reimpostazione della password. Se non hai richiesto la reimpostazione della password, non sono necessarie ulteriori azioni.',
+            'subject' => ':appName | Resetta la password',
+        ],
+        'welcome' => [
+            'action' => 'Scegli la tua password',
+            'content' => 'Hai ricevuto questa email perché è stato creato un account per te su :name.',
+            'title' => 'Benvenuto',
+            'subject' => ':appName | Benvenuto',
+        ],
+    ],
+    'emails' => [
+        'all-rights-reserved' => 'Tutti i diritti riservati.',
+        'hello' => 'Ciao!',
+        'problems' => 'Se hai problemi a fare clic sul pulsante ":actionText", copia e incolla l\'URL qui sotto nel tuo web browser: [:url](:url)',
+        'regards' => 'Saluti,',
     ],
 ];

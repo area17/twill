@@ -68,11 +68,12 @@ if (!function_exists('getFormFieldsValue')) {
     /**
      * @param array $formFields
      * @param string $name
+     * @param mixed $default
      * @return mixed
      */
-    function getFormFieldsValue($formFields, $name)
+    function getFormFieldsValue($formFields, $name, $default = null)
     {
-        return Arr::get($formFields, str_replace(']', '', str_replace('[', '.', $name)), '');
+        return Arr::get($formFields, str_replace(']', '', str_replace('[', '.', $name)), $default ?? '') ?? $default;
     }
 }
 
@@ -244,7 +245,6 @@ if (!function_exists('capsule_namespace')) {
         return capsules()->capsuleNamespace($capsuleName, $type);
     }
 }
-
 
 if (!function_exists('capsule_namespace_to_path')) {
     function capsule_namespace_to_path($namespace, $capsuleNamespace, $rootPath) {

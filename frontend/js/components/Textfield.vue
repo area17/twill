@@ -1,6 +1,6 @@
 <template>
   <a17-inputframe :error="error" :note="note" :label="label" :locale="locale" @localize="updateLocale" :size="size" :name="name" :label-for="uniqId" :required="required">
-    <div class="input__field" :class="textfieldClasses">
+    <div class="input__field" :class="textfieldClasses" :dir="dirLocale">
       <span class="input__prefix" v-if="hasPrefix">{{ prefix }}</span>
       <textarea v-if="type === 'textarea'" ref="clone" :rows="rows" class="input__clone" disabled="true" v-model="value"></textarea>
       <textarea v-if="type === 'textarea'"
@@ -153,7 +153,7 @@
       },
       limitClasses: function () {
         return {
-          'input__limit--red': this.counter < 10
+          'input__limit--red': this.counter < (this.maxlength * 0.1)
         }
       }
     },
@@ -204,11 +204,18 @@
         this.focused = false
         this.$emit('blur', newValue)
       },
-      onInput: debounce(function (event) {
+      onInput: function (event) {
+        this.preventSubmit()
+
+        this._onInputInternal(event)
+      },
+      _onInputInternal: debounce(function (event) {
         const newValue = event.target.value
         this.updateAndSaveValue(newValue)
 
         this.$emit('change', newValue)
+
+        this.allowSubmit()
       }, 250),
       resizeTextarea: function () {
         if (this.type !== 'textarea') return
@@ -364,5 +371,11 @@
       height:$height_input - 10px - 2px;
       line-height:$height_input - 10px - 2px;
     }
+  }
+
+  /* RTL Direction */
+  .input__field--textarea[dir='rtl'] .input__limit {
+    left:15px;
+    right:auto;
   }
 </style>

@@ -75,8 +75,11 @@
         if (Array.isArray(newValue)) newValue.sort()
 
         // update visiblity
-        if (this.isValueEqual) this.open = isEqual(newValue, newFieldValues)
-        else this.open = !isEqual(newValue, newFieldValues)
+        if (this.isValueEqual) {
+          this.open = (Array.isArray(newFieldValues)) ? newFieldValues.indexOf(newValue) !== -1 : isEqual(newValue, newFieldValues)
+        } else {
+          this.open = (Array.isArray(newFieldValues)) ? newFieldValues.indexOf(newValue) === -1 : !isEqual(newValue, newFieldValues)
+        }
       }
     },
     mounted: function () {

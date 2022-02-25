@@ -24,6 +24,7 @@ class ModuleMake extends Command
         {--F|hasFiles}
         {--P|hasPosition}
         {--R|hasRevisions}
+        {--N|hasNesting}
         {--all}';
 
     /**
@@ -96,12 +97,22 @@ class ModuleMake extends Command
     /**
      * @var bool
      */
+    protected $nestable;
+
+    /**
+     * @var bool
+     */
     protected $defaultsAnswserToNo;
 
     /**
      * @var bool
      */
     protected $isCapsule = false;
+
+    /**
+     * @var bool
+     */
+    protected $isSingleton = false;
 
     /**
      * @var string
@@ -133,11 +144,12 @@ class ModuleMake extends Command
         $this->fileable = false;
         $this->sortable = false;
         $this->revisionable = false;
+        $this->nestable = false;
 
         $this->defaultsAnswserToNo = false;
 
-        $this->modelTraits = ['HasBlocks', 'HasTranslation', 'HasSlug', 'HasMedias', 'HasFiles', 'HasRevisions', 'HasPosition'];
-        $this->repositoryTraits = ['HandleBlocks', 'HandleTranslations', 'HandleSlugs', 'HandleMedias', 'HandleFiles', 'HandleRevisions'];
+        $this->modelTraits = ['HasBlocks', 'HasTranslation', 'HasSlug', 'HasMedias', 'HasFiles', 'HasRevisions', 'HasPosition', 'HasNesting'];
+        $this->repositoryTraits = ['HandleBlocks', 'HandleTranslations', 'HandleSlugs', 'HandleMedias', 'HandleFiles', 'HandleRevisions', '', 'HandleNesting'];
     }
 
     protected function checkCapsuleDirectory($dir)
@@ -172,7 +184,17 @@ class ModuleMake extends Command
      */
     public function handle()
     {
+        // e.g. newsItems
         $moduleName = Str::camel(Str::plural(lcfirst($this->argument('moduleName'))));
+
+        // e.g. newsItem
+        $singularModuleName = Str::camel(lcfirst($this->argument('moduleName')));
+
+        // e.g. NewsItems
+        $moduleTitle = Str::studly($moduleName);
+
+        // e.g. NewsItem
+        $modelName = Str::studly(Str::singular($moduleName));
 
         $this->capsule = app('twill.capsules.manager')->makeCapsule(['name' => $moduleName], config("twill.capsules.path"));
 
@@ -184,6 +206,7 @@ class ModuleMake extends Command
             'hasFiles',
             'hasPosition',
             'hasRevisions',
+            'hasNesting',
         ])->filter(function ($enabled) {
             return $enabled;
         });
@@ -199,6 +222,11 @@ class ModuleMake extends Command
         $this->fileable = $this->checkOption('hasFiles');
         $this->sortable = $this->checkOption('hasPosition');
         $this->revisionable = $this->checkOption('hasRevisions');
+        $this->nestable = $this->checkOption('hasNesting');
+
+        if ($this->nestable) {
+            $this->sortable = true;
+        }
 
         $activeTraits = [
             $this->blockable,
@@ -208,13 +236,11 @@ class ModuleMake extends Command
             $this->fileable,
             $this->revisionable,
             $this->sortable,
+            $this->nestable,
         ];
 
-        $modelName = Str::studly(Str::singular($moduleName));
-
-        $this->createCapsuleNamespace(Str::studly($moduleName), $modelName);
-
-        $this->createCapsulePath(Str::studly($moduleName), $modelName);
+        $this->createCapsuleNamespace($moduleTitle, $modelName);
+        $this->createCapsulePath($moduleTitle, $modelName);
 
         $this->createMigration($moduleName);
         $this->createModels($modelName, $activeTraits);
@@ -224,43 +250,53 @@ class ModuleMake extends Command
         $this->createViews($moduleName);
 
         if ($this->isCapsule) {
-            $this->createRoutes($moduleName);
-            $this->createSeed($moduleName);
+            $this->createCapsuleRoutes($moduleName);
+            $this->createCapsuleSeed($moduleName);
+        } elseif ($this->isSingleton) {
+            $this->createSingletonSeed($modelName);
+            $this->info("\nAdd to routes/admin.php:\n");
+            $this->info("    Route::singleton('{$singularModuleName}');\n");
         } else {
-            $this->info("Add Route::module('{$moduleName}'); to your admin routes file.");
+            $this->info("\nAdd to routes/admin.php:\n");
+            $this->info("    Route::module('{$moduleName}');\n");
         }
 
-        $this->info("Setup a new CMS menu item in config/twill-navigation.php:");
+        $navModuleName = $this->isSingleton ? $singularModuleName : $moduleName;
+        $navTitle = $this->isSingleton ? $modelName : $moduleTitle;
+        $navType = $this->isSingleton ? 'singleton' : 'module';
 
-        $navTitle = Str::studly($moduleName);
-
-        $this->info("
-            '{$moduleName}' => [
-                'title' => '{$navTitle}',
-                'module' => true
-            ]
-        ");
+        $this->info("Setup a new CMS menu item in config/twill-navigation.php:\n");
+        $this->info("    '{$navModuleName}' => [");
+        $this->info("        'title' => '{$navTitle}',");
+        $this->info("        '{$navType}' => true,");
+        $this->info("    ],\n");
 
         if ($this->isCapsule) {
-            $this->info("Setup your new Capsule on config/twill.php:");
-
-            $navTitle = Str::studly($moduleName);
-
-            $this->info("
-                'capsules' => [
-                    'list' => [
-                        [
-                            'name' => '{$this->capsule['name']}',
-                            'enabled' => true
-                        ]
-                    ]
-                ]
-            ");
+            $this->info("Setup your new Capsule in config/twill.php:\n");
+            $this->info("    'capsules' => [");
+            $this->info("        'list' => [");
+            $this->info("            [");
+            $this->info("                'name' => '{$this->capsule['name']}',");
+            $this->info("                'enabled' => true,");
+            $this->info("            ],");
+            $this->info("        ],");
+            $this->info("    ],\n");
         }
 
-        $this->info("Migrate your database.\n");
+        if ($this->isSingleton) {
+            $this->info("Migrate your database & seed your singleton module:\n");
+            $this->info("    php artisan migrate\n");
+            $this->info("    php artisan db:seed {$modelName}Seeder\n");
+        } else {
+            $this->info("Migrate your database.\n");
+        }
 
         $this->info("Enjoy.");
+
+        if ($this->nestable && !class_exists('\Kalnoy\Nestedset\NestedSet')) {
+            $this->warn("\nTo support module nesting, you must install the `kalnoy/nestedset` package:");
+            $this->warn("\n    composer require kalnoy/nestedset\n");
+        }
 
         $this->composer->dumpAutoloads();
     }
@@ -307,6 +343,7 @@ class ModuleMake extends Command
             $stub = $this->renderStubForOption($stub, 'hasSlug', $this->sluggable);
             $stub = $this->renderStubForOption($stub, 'hasRevisions', $this->revisionable);
             $stub = $this->renderStubForOption($stub, 'hasPosition', $this->sortable);
+            $stub = $this->renderStubForOption($stub, 'hasNesting', $this->nestable);
 
             $stub = preg_replace('/\}\);[\s\S]+?Schema::create/', "});\n\n        Schema::create", $stub);
 
@@ -443,7 +480,7 @@ class ModuleMake extends Command
     {
         $modelsDir = $this->isCapsule ? $this->capsule['repositories_dir'] : 'Repositories';
 
-        $modelClass = $this->isCapsule ? $this->capsule['model'] : "App\Models\\{$this->capsule['singular']}";
+        $modelClass = $this->isCapsule ? $this->capsule['model'] : config('twill.namespace') . "\Models\\{$this->capsule['singular']}";
 
         $this->makeTwillDirectory($modelsDir);
 
@@ -456,6 +493,8 @@ class ModuleMake extends Command
                 !isset($this->repositoryTraits[$index]) ?: $activeRepositoryTraits[] = $this->repositoryTraits[$index];
             }
         }
+
+        $activeRepositoryTraits = array_filter($activeRepositoryTraits);
 
         $activeRepositoryTraitsString = empty($activeRepositoryTraits) ? '' : 'use ' . (empty($activeRepositoryTraits) ? "" : rtrim(implode(', ', $activeRepositoryTraits), ', ') . ';');
 
@@ -486,13 +525,45 @@ class ModuleMake extends Command
 
         $dir = $this->isCapsule ? $this->capsule['controllers_dir'] : 'Http/Controllers/Admin';
 
+        if ($this->isSingleton) {
+            $baseController = config('twill.base_singleton_controller');
+        } elseif ($this->nestable) {
+            $baseController = config('twill.base_nested_controller');
+        } else {
+            $baseController = config('twill.base_controller');
+        }
+
         $this->makeTwillDirectory($dir);
 
         $stub = str_replace(
             ['{{moduleName}}', '{{controllerClassName}}', '{{namespace}}', '{{baseController}}'],
-            [$moduleName, $controllerClassName, $this->namespace('controllers', 'Http\Controllers\Admin'), config('twill.base_controller')],
+            [$moduleName, $controllerClassName, $this->namespace('controllers', 'Http\Controllers\Admin'), $baseController],
             $this->files->get(__DIR__ . '/stubs/controller.stub')
         );
+
+        $permalinkOption = '';
+        $reorderOption = '';
+
+        if (!$this->sluggable) {
+            $permalinkOption = "'permalink' => false,";
+        }
+
+        if ($this->nestable) {
+            $reorderOption = "'reorder' => true,";
+
+            $stub = str_replace(['{{hasNesting}}', '{{/hasNesting}}'], '', $stub);
+        } else {
+            $stub = preg_replace('/{{hasNesting}}[\s\S]+?{{\/hasNesting}}/', '', $stub);
+        }
+
+        $stub = str_replace(
+            ['{{permalinkOption}}', '{{reorderOption}}'],
+            [$permalinkOption, $reorderOption],
+            $stub
+        );
+
+        // Remove lines including only whitespace, leave true empty lines untouched
+        $stub = preg_replace('/^[\s]+\n/m', '', $stub);
 
         twill_put_stub(twill_path("{$dir}/" . $controllerClassName . '.php'), $stub);
 
@@ -552,7 +623,7 @@ class ModuleMake extends Command
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function createRoutes()
+    public function createCapsuleRoutes()
     {
         $this->makeDir($this->capsule['routes_file']);
 
@@ -568,17 +639,17 @@ class ModuleMake extends Command
     }
 
     /**
-     * Creates a new module database seed file.
+     * Creates a new capsule database seed file.
      *
      * @param string $moduleName
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    private function createSeed($moduleName = 'items')
+    private function createCapsuleSeed($moduleName = 'items')
     {
         $this->makeTwillDirectory($this->capsule['seeds_psr4_path']);
 
-        $stub = $this->files->get(__DIR__ . '/stubs/database_seeder.stub');
+        $stub = $this->files->get(__DIR__ . '/stubs/database_seeder_capsule.stub');
 
         $stub = str_replace('{moduleName}', $this->capsule['plural'], $stub);
 
@@ -587,8 +658,48 @@ class ModuleMake extends Command
         $this->info("Seed created successfully!");
     }
 
+    /**
+     * Creates a new singleton module database seed file.
+     *
+     * @param string $modelName
+     * @return void
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    private function createSingletonSeed($modelName = 'Item')
+    {
+        $repositoryName = $modelName . 'Repository';
+        $seederName = $modelName . 'Seeder';
+
+        $dir = $this->databasePath('seeders');
+
+        $this->makeTwillDirectory($dir);
+
+        $stub = $this->files->get(__DIR__ . '/stubs/database_seeder_singleton.stub');
+
+        $stub = $this->replaceVariables([
+            'seederClassName' => $seederName,
+            'modelClassName' => $modelName,
+            'repositoryClassName' => $repositoryName,
+        ], $stub);
+
+        $stub = $this->replaceConditionals([
+            'hasTranslations' => $this->translatable,
+            '!hasTranslations' => !$this->translatable,
+        ], $stub);
+
+        $stub = $this->removeEmptyLinesWithOnlySpaces($stub);
+
+        $this->files->put("{$dir}/{$seederName}.php", $stub);
+
+        $this->info("Seed created successfully!");
+    }
+
     private function checkOption($option)
     {
+        if (!$this->hasOption($option)) {
+            return false;
+        }
+
         if ($this->option($option) || $this->option('all')) {
             return true;
         }
@@ -601,9 +712,16 @@ class ModuleMake extends Command
             'hasFiles' => 'Do you need to attach files on this module?',
             'hasPosition' => 'Do you need to manage the position of records on this module?',
             'hasRevisions' => 'Do you need to enable revisions on this module?',
+            'hasNesting' => 'Do you need to enable nesting on this module?',
         ];
 
-        return 'yes' === $this->choice($questions[$option], ['no', 'yes'], $this->defaultsAnswserToNo ? 0 : 1);
+        $defaultAnswers = [
+            'hasNesting' => 0,
+        ];
+
+        $currentDefaultAnswer = $this->defaultsAnswserToNo ? 0 : ($defaultAnswers[$option] ?? 1);
+
+        return 'yes' === $this->choice($questions[$option], ['no', 'yes'], $currentDefaultAnswer);
     }
 
     public function createCapsulePath($moduleName, $modelName)
@@ -678,5 +796,61 @@ class ModuleMake extends Command
         $this->makeDir($dir = "{$this->moduleBasePath}/resources/views/admin");
 
         return $dir;
+    }
+
+    /**
+     * @param array $variables
+     * @param string $stub
+     * @param array|null $delimiters
+     * @return string
+     */
+    public function replaceVariables($variables, $stub, $delimiters = null)
+    {
+        $delimiters = $delimiters ?: ['{{', '}}'];
+
+        foreach ($variables as $key => $value) {
+            $key = "{$delimiters[0]}{$key}{$delimiters[1]}";
+
+            $stub = str_replace($key, $value, $stub);
+        }
+
+        return $stub;
+    }
+
+    /**
+     * @param array $variables
+     * @param string $stub
+     * @param array|null $delimiters
+     * @return string
+     */
+    public function replaceConditionals($conditionals, $stub, $delimiters = null)
+    {
+        $delimiters = $delimiters ?: ['{{', '}}'];
+
+        foreach ($conditionals as $key => $value) {
+            $start = "{$delimiters[0]}{$key}{$delimiters[1]}";
+            $end = "{$delimiters[0]}\/{$key}{$delimiters[1]}";
+
+            if ((bool)$value) {
+                // replace delimiters only
+                $stub = preg_replace("/$start/", '', $stub);
+                $stub = preg_replace("/$end/", '', $stub);
+            } else {
+                // replace delimiters and everything between
+                $anything = '[\s\S]+?';
+                $stub = preg_replace("/{$start}{$anything}{$end}/", '', $stub);
+            }
+        }
+
+        return $stub;
+    }
+
+    /**
+     * @param string $stub
+     * @return string
+     */
+    public function removeEmptyLinesWithOnlySpaces($stub)
+    {
+        return preg_replace('/^ +\n/m', '', $stub);
     }
 }

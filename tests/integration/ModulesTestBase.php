@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use A17\Twill\Models\Model;
 use Illuminate\Support\Str;
 use App\Models\Translations\AuthorTranslation;
 use App\Models\Translations\CategoryTranslation;
@@ -19,6 +20,7 @@ abstract class ModulesTestBase extends TestCase
     public $bio_fr;
     public $birthday;
     public $block_id;
+    public $block_editor_name;
     public $block_quote;
     public $translation;
     public $author;
@@ -160,17 +162,30 @@ abstract class ModulesTestBase extends TestCase
             $this->getUpdateAuthorWithBlock()
         );
 
-        $this->assertEquals(1, $this->author->blocks->count());
+        $this->assertEquals(2, $this->author->blocks->count());
 
+        // Check default block content
         $this->assertEquals(
             $block_quote = ['quote' => $this->block_quote],
             $this->author->blocks->first()->content
+        );
+
+        // Check named block content
+        $this->assertEquals(
+            $block_quote = ['quote' => $this->block_quote],
+            $this->author->blocks()->editor($this->block_editor_name)->get()->first()->content
         );
 
         // Check if blocks are rendering
         $this->assertEquals(
             clean_file(json_encode($block_quote)),
             clean_file(trim($this->author->renderBlocks()))
+        );
+
+        // Check if named blocks are rendering
+        $this->assertEquals(
+            clean_file(json_encode($block_quote)),
+            clean_file(trim($this->author->renderNamedBlocks($this->block_editor_name)))
         );
 
         // Get browser data
@@ -188,7 +203,7 @@ abstract class ModulesTestBase extends TestCase
         $this->assertEquals($data['endpointType'], 'App\Models\Author');
     }
 
-    protected function createAuthor($count = 1)
+    protected function createAuthor($count = 1): Model
     {
         foreach (range(1, $count) as $c) {
             $this->httpRequestAssert(
@@ -207,6 +222,8 @@ abstract class ModulesTestBase extends TestCase
         $this->assertNotNull($this->translation);
 
         $this->assertCount(3, $this->author->slugs);
+
+        return $this->author;
     }
 
     protected function destroyAuthor()
@@ -367,21 +384,30 @@ abstract class ModulesTestBase extends TestCase
     {
         return $this->getUpdateAuthorData() + [
             'blocks' => [
-                [
-                    'id' => ($this->block_id = rand(
-                        1570000000000,
-                        1579999999999
-                    )),
-                    'type' => 'a17-block-quote',
-                    'content' => [
-                        'quote' => ($this->block_quote = $this->fakeText()),
-                    ],
-                    'medias' => [],
-                    'browsers' => [],
-                    'blocks' => [],
-                ],
+                $this->getAuthorBlock(),
+                $this->getAuthorBlock($this->block_editor_name = 'unique-name')
             ],
             'repeaters' => [],
+        ];
+    }
+
+    public function getAuthorBlock($name = 'default')
+    {
+        $this->block_quote = $this->block_quote ?? $this->fakeText();
+
+        return [
+            'id' => ($this->block_id = rand(
+                1570000000000,
+                1579999999999
+            )),
+            'type' => 'a17-block-quote',
+            'content' => [
+                'quote' => $this->block_quote,
+            ],
+            'medias' => [],
+            'browsers' => [],
+            'blocks' => [],
+            'editor_name' => $name,
         ];
     }
 

@@ -11,6 +11,7 @@
     $required = $required ?? false;
     $searchable = $searchable ?? false;
     $disabled = $disabled ?? false;
+    $columns = $columns ?? 0;
 
     // do not use for now, but this will allow you to create a new option directly from the form
     $addNew = $addNew ?? false;
@@ -24,6 +25,7 @@
         label="{{ $label }}"
         @include('twill::partials.form.utils._field_name')
         :options='{{ json_encode($options) }}'
+        :columns="{{ $columns }}"
         @if (isset($default)) selected="{{ $default }}" @endif
         @if ($required) :required="true" @endif
         @if ($inModal) :in-modal="true" @endif

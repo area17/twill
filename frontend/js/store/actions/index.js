@@ -1,5 +1,9 @@
 /* All the store actions are listed here */
 
+/* Blocks */
+export const MOVE_BLOCK_TO_EDITOR = 'moveBlockToEditor'
+export const DUPLICATE_BLOCK = 'duplicateBlock'
+
 /* Buckets */
 export const GET_BUCKETS = 'getBucketsData'
 export const SAVE_BUCKETS = 'saveBuckets'
@@ -35,7 +39,11 @@ export const GET_PREVIEW = 'getPreview'
 export const GET_REVISION = 'getRevisionContent'
 export const GET_CURRENT = 'getCurrentContent'
 
+/* Errors */
+export const HANDLE_ERRORS = 'handleErrors'
+
 export default {
+  HANDLE_ERRORS,
   GET_BUCKETS,
   SAVE_BUCKETS,
   GET_DATATABLE,
@@ -60,5 +68,7 @@ export default {
   GET_ALL_PREVIEWS,
   GET_PREVIEW,
   GET_REVISION,
-  GET_CURRENT
+  GET_CURRENT,
+  MOVE_BLOCK_TO_EDITOR,
+  DUPLICATE_BLOCK
 }

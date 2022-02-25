@@ -7,6 +7,7 @@ use A17\Twill\Models\Model;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
 use A17\Twill\Repositories\Behaviors\HandleDates;
 use A17\Twill\Repositories\Behaviors\HandleFieldsGroups;
+use A17\Twill\Repositories\Behaviors\HandleRelatedBrowsers;
 use A17\Twill\Repositories\Behaviors\HandleRepeaters;
 use A17\Twill\Services\Capsules\HasCapsules;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -21,7 +22,7 @@ use PDO;
 
 abstract class ModuleRepository
 {
-    use HandleDates, HandleBrowsers, HandleRepeaters, HandleFieldsGroups, HasCapsules;
+    use HandleDates, HandleBrowsers, HandleRelatedBrowsers, HandleRepeaters, HandleFieldsGroups, HasCapsules;
 
     /**
      * @var \A17\Twill\Models\Model
@@ -42,6 +43,16 @@ abstract class ModuleRepository
      * @var array
      */
     protected $fieldsGroups = [];
+
+    /**
+     * @var bool
+     */
+    public $fieldsGroupsFormFieldNamesAutoPrefix = false;
+
+    /**
+     * @var string|null
+     */
+    public $fieldsGroupsFormFieldNameSeparator = '_';
 
     /**
      * @param array $with
@@ -404,6 +415,9 @@ abstract class ModuleRepository
                 });
             } catch (\Exception $e) {
                 Log::error($e);
+                if (config('app.debug')) {
+                    throw $e;
+                }
                 return false;
             }
 
@@ -906,7 +920,7 @@ abstract class ModuleRepository
     /**
      * @return string
      */
-    private function getLikeOperator()
+    protected function getLikeOperator()
     {
         if (DB::connection()->getPDO()->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql') {
             return 'ILIKE';

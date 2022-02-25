@@ -1,0 +1,9 @@
+{
+  "require": {
+    "code-lts/doctum": "^5.4"
+  },
+  "scripts": {
+    "build": "php vendor/bin/doctum.php update --ignore-parse-errors -- config.php",
+    "serve": "php -S 0.0.0.0:8000 -t build"
+  }
+}

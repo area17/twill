@@ -22,7 +22,7 @@
               </div>
               <div class="search__cell">
                 <span class="search__title">{{ item.title }}</span>
-                <p class="f--note">
+                <p class="f--note" v-if="item.date">
                   {{ item.activity }} <timeago :auto-update="1" :datetime="new Date(item.date)"></timeago> by {{ item.author }}
                   <span class="search__type">{{ item.type }}</span>
                 </p>
@@ -30,10 +30,10 @@
             </a>
           </li>
           <li class="search__no-result" v-show="loading">
-            Loading…
+            {{ $trans('dashboard.search.loading', 'Loading…') }}
           </li>
           <li class="search__no-result" v-show="readyToShowResult && !searchResults.length && !loading">
-            No results found.
+            {{ $trans('dashboard.search.no-result', 'No results found.') }}
           </li>
         </ul>
       </div>

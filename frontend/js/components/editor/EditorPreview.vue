@@ -1,179 +1,225 @@
 <template>
-  <div class="editorPreview" :editorPreviewClass="editorPreviewClass" @mousedown="unselectBlock">
-    <div class="editorPreview__empty" v-if="!blocks.length">
-      <b>Drag and drop content from the left navigation</b>
-    </div>
-    <draggable class="editorPreview__content" v-model="blocks" :options="{ group: 'editorBlocks', handle: handle }" @add="onAdd" @update="onUpdate">
-      <div class="editorPreview__item" :class="{ 'editorPreview__item--active' : isBlockActive(block.id), 'editorPreview__item--hover' : activeItem === index }" v-for="(block, index) in blocks" :ref="block.id" :key="block.id" @mousedown.stop >
-        <div class="editorPreview__frame">
-          <a17-editor-iframe :block="block" @loaded="resizeIframe" />
-        </div>
-        <div class="editorPreview__protector editorPreview__dragger" @click.prevent="selectBlock(index)"></div>
-        <div class="editorPreview__header">
-          <a17-buttonbar variant="visible">
-            <a17-dropdown class="f--small" position="bottom-left" :ref="moveDropdown(index)" v-if="blocks.length > 1" @open="activeItem = index" @close="activeItem = -1" :maxHeight="270">
-              <button type="button" @click="toggleDropdown(index)"><span v-svg symbol="drag"></span></button>
-              <div slot="dropdown__content">
-                <button type="button"
-                        v-for="n in blocks.length"
-                        :key="n"
-                        @click="moveBlock(index, n - 1)">{{ n }}</button>
-              </div>
-            </a17-dropdown>
-            <button type="button" @click="deleteBlock(index)"><span v-svg symbol="trash"></span></button>
-          </a17-buttonbar>
-        </div>
+  <a17-blockeditor-model :editor-name="editorName" v-slot="{ add, edit, unEdit }">
+    <div class="editorPreview"
+         :class="previewClass"
+         :style="previewStyle"
+         @mousedown="_unselectBlock(unEdit)">
+      <div class="editorPreview__empty"
+           v-if="!blocks.length">
+        <b>{{ $trans('previewer.drag-and-drop', 'Drag and drop content from the left navigation') }}</b>
       </div>
-    </draggable>
-  </div>
+      <draggable class="editorPreview__content"
+                 ref="previewContent"
+                 :value="blocks"
+                 :options="{ group: 'editorBlocks', handle: handle }"
+                 @add="onAdd(add, edit, $event)"
+                 @update="onUpdate">
+        <template v-for="savedBlock in blocks">
+          <a17-blockeditor-model :block="savedBlock"
+                           :key="savedBlock.id"
+                           :editor-name="editorName"
+                           v-slot="{ block, isActive, blockIndex, move, remove, edit, unEdit }">
+            <a17-editor-block-preview :ref="block.id"
+                                      :block="block"
+                                      :blockIndex="blockIndex"
+                                      :blocksLength="blocks.length"
+                                      :isBlockActive="isActive"
+                                      :key="savedBlock.id"
+                                      @block:select="_selectBlock(edit, blockIndex)"
+                                      @block:unselect="_unselectBlock(unEdit, blockIndex)"
+                                      @block:move="move"
+                                      @block:delete="_deleteBlock(remove)"
+                                      @scroll-to="scrollToActive"/>
+          </a17-blockeditor-model>
+        </template>
+      </draggable>
+      <a17-spinner v-if="loading"
+                   :visible="true">{{ $trans('fields.block-editor.loading', 'Loading') }}&hellip;
+      </a17-spinner>
+    </div>
+  </a17-blockeditor-model>
 </template>
 
 <script>
-  import { mapState } from 'vuex'
-  import { CONTENT } from '@/store/mutations'
+  import { DraggableMixin, BlockEditorMixin } from '@/mixins'
 
-  import draggableMixin from '@/mixins/draggable'
-  import EditorIframe from './EditorIframe.vue'
+  import A17EditorBlockPreview from '@/components/editor/EditorPreviewBlockItem'
+  import A17BlockEditorModel from '@/components/blocks/BlockEditorModel'
+  import A17Spinner from '@/components/Spinner.vue'
+
+  import { PREVIEW } from '@/store/mutations/index'
+  import ACTIONS from '@/store/actions/index'
+
   import draggable from 'vuedraggable'
+  import tinyColor from 'tinycolor2'
 
   import debounce from 'lodash/debounce'
 
   export default {
     name: 'A17editorpreview',
+    props: {
+      bgColor: {
+        type: String,
+        default: '#FFFFFF'
+      },
+      hasBlockActive: {
+        props: {
+          type: Boolean,
+          default: false
+        }
+      }
+    },
+    mixins: [DraggableMixin, BlockEditorMixin],
     components: {
       draggable,
-      'a17-editor-iframe': EditorIframe
+      'a17-editor-block-preview': A17EditorBlockPreview,
+      'a17-blockeditor-model': A17BlockEditorModel,
+      'a17-spinner': A17Spinner
     },
-    mixins: [draggableMixin],
-    data: function () {
+    data () {
       return {
-        activeItem: -1,
-        blocksLoaded: 0,
+        loading: false,
+        blockSelectIndex: -1,
         handle: '.editorPreview__dragger' // Drag handle override
       }
     },
     computed: {
-      blocks: {
-        get () {
-          return this.savedBlocks
-        },
-        set (value) {
-        }
-      },
-      hasBlockActive: function () {
-        return Object.keys(this.activeBlock).length
-      },
-      editorPreviewClass () {
+      previewClass () {
+        const bgColorObj = tinyColor(this.bgColor)
         return {
+          'editorPreview--dark': bgColorObj.getBrightness() < 180,
           'editorPreview--loading': this.loading
         }
       },
-      ...mapState({
-        loading: state => state.content.loading,
-        activeBlock: state => state.content.active,
-        savedBlocks: state => state.content.blocks
-      })
+      previewStyle () {
+        return { 'background-color': this.bgColor }
+      }
     },
     methods: {
-      toggleDropdown: function (index) {
-        if (this.blocks.length > 1) {
-          const ddName = this.moveDropdown(index)
-          if (this.$refs[ddName].length) this.$refs[ddName][0].toggle()
-        }
-      },
-      moveDropdown: function (index) {
-        return `movePreview${index}Dropdown`
-      },
-      moveBlock: function (oldIndex, newIndex) {
-        if (oldIndex !== newIndex) {
-          this.$store.commit(CONTENT.MOVE_BLOCK, {
-            oldIndex: oldIndex,
-            newIndex: newIndex
-          })
-        }
-      },
-      onAdd: function (evt) {
-        const item = evt.item
+      // blocks management
+      onAdd (add, edit, evt) {
+        const { item } = evt
         const block = {}
 
         block.title = item.getAttribute('data-title')
         block.component = item.getAttribute('data-component')
         block.icon = item.getAttribute('data-icon')
 
-        this.addBlock(block, Math.max(0, evt.newIndex))
+        const index = Math.max(0, evt.newIndex)
+        this.addAndEditBlock(add, edit, {
+          block,
+          index: index
+        })
+
+        this._selectBlock(null, index)
       },
-      onUpdate: function (evt) {
-        this.$store.commit(CONTENT.MOVE_BLOCK, {
-          oldIndex: evt.oldIndex,
-          newIndex: evt.newIndex
+      onUpdate ({ oldIndex, newIndex }) {
+        this.$emit('blocks:move', {
+          oldIndex,
+          newIndex
         })
       },
-      isBlockActive: function (id) {
-        if (!this.hasBlockActive) return false
-
-        return id === this.activeBlock.id
-      },
-      addBlock: function (block, fromIndex) {
-        const newBlock = {
-          title: block.title,
-          type: block.component,
-          icon: block.icon,
-          attributes: block.attributes
+      _selectBlock (fn = null, index) {
+        if (fn) {
+          this.selectBlock(fn, index)
         }
 
-        this.$store.commit(CONTENT.ADD_BLOCK, {
-          block: newBlock,
-          index: fromIndex
+        if (this.blockSelectIndex !== index) {
+          this.unSubscribe()
+          this.blockSelectIndex = index
+          this._unSubscribeInternal = this.$store.subscribe((mutation) => {
+            // Don't trigger a refresh of the preview every single time, just when necessary
+            if (PREVIEW.REFRESH_BLOCK_PREVIEW.includes(mutation.type)) {
+              if (PREVIEW.REFRESH_BLOCK_PREVIEW_ALL.includes(mutation.type)) {
+                this.getAllPreviews()
+              } else {
+                this.getPreview(index)
+              }
+            }
+          })
+        }
+      },
+      _unselectBlock (fn, index = this.blockSelectIndex) {
+        this.unSubscribe()
+        this.getPreview(index)
+        this.unselectBlock(fn, index)
+        this.blockSelectIndex = -1
+      },
+      _deleteBlock (fn) {
+        this.unSubscribe()
+        this.deleteBlock(fn)
+      },
+      unSubscribe () {
+        if (!this._unSubscribeInternal) return
+
+        this._unSubscribeInternal()
+        this._unSubscribeInternal = null
+      },
+
+      // Previews management
+      getAllPreviews () {
+        this.loading = true
+        this.$store.dispatch(ACTIONS.GET_ALL_PREVIEWS, {
+          editorName: this.editorName
         })
-
-        this.$emit('add', fromIndex)
+          .then(() => {
+            this.$nextTick(() => {
+              this.loading = false
+            })
+          })
       },
-      deleteBlock: function (index) {
-        this.$emit('delete', index)
+      getPreview (index = -1) {
+        this.loading = true
+        this.$store.dispatch(ACTIONS.GET_PREVIEW, {
+          editorName: this.editorName,
+          index: index
+        })
+          .then(() => {
+            this.$nextTick(() => {
+              this.loading = false
+            })
+          })
       },
-      selectBlock: function (index) {
-        this.$emit('select', index)
+
+      // UI Management
+      scrollToActive (target) {
+        this.$refs.previewContent.$el.scrollTop = Math.max(0, target - 20)
       },
-      unselectBlock: function () {
-        this.$emit('unselect')
-      },
-      resizeIframe: function (iframe) {
-        const frameBody = iframe.contentWindow.document.body
-
-        // no scollbars
-        frameBody.style.overflow = 'hidden'
-
-        // get body extra margin
-        const bodyStyle = window.getComputedStyle(frameBody)
-        const bodyMarginTop = bodyStyle.getPropertyValue('margin-top')
-        const bodyMarginBottom = bodyStyle.getPropertyValue('margin-bottom')
-        const frameHeight = frameBody.scrollHeight + parseInt(bodyMarginTop) + parseInt(bodyMarginBottom)
-
-        iframe.height = frameHeight + 'px'
-      },
-      resizeAllIframes: function () {
-        const self = this
-        const iframes = this.$el.querySelectorAll('iframe')
-
-        iframes.forEach(function (iframe) {
-          self.resizeIframe(iframe)
+      resizeAllIframes () {
+        if (!this.$refs.blockPreview) return
+        this.$refs.blockPreview.forEach(preview => {
+          preview.$refs.blockIframe.resize()
         })
       },
       _resize: debounce(function () {
         this.resizeAllIframes()
       }, 200),
-      init: function () {
+      init () {
         window.addEventListener('resize', this._resize)
       },
-      dispose: function () {
+      dispose () {
         window.removeEventListener('resize', this._resize)
       }
     },
-    mounted: function () {
+    mounted () {
       this.init()
+      this.$nextTick(() => {
+        this.getAllPreviews()
+      })
     },
-    beforeDestroy: function () {
+    beforeDestroy () {
       this.dispose()
+    },
+    watch: {
+      editorName () {
+        this.unSubscribe()
+        this.getAllPreviews()
+      },
+      hasBlockActive (active) {
+        if (active) return
+        this.unSubscribe()
+        this.blockSelectIndex = -1
+      }
     }
   }
 </script>
@@ -181,53 +227,49 @@
 <style lang="scss" scoped>
 
   .editorPreview {
-    background-color:inherit;
-    color:inherit;
-
-    &.editorPreview--loading {
-      opacity: 0;
-    }
+    background-color: inherit;
+    color: inherit;
   }
 
   .editorPreview__content {
-    position:absolute;
-    top:0;
-    bottom:0;
-    right:0;
-    left:0;
-    padding:20px;
-    overflow-y: scroll;
-    background-color:inherit;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: inherit;
   }
 
   .editorPreview__empty {
-    position:absolute;
-    top:0;
-    bottom:0;
-    right:0;
-    left:0;
-    display:flex;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
     align-items: center;
     justify-content: center;
-    color:inherit;
-    background-color:inherit;
+    color: inherit;
+    background-color: inherit;
 
     &::after {
-      display:block;
-      content:'';
-      position:absolute;
-      top:20px;
-      bottom:20px;
-      right:20px;
-      left:20px;
-      border:1px dashed $color__fborder;
+      display: block;
+      content: '';
+      position: absolute;
+      top: 20px;
+      bottom: 20px;
+      right: 20px;
+      left: 20px;
+      border: 1px dashed $color__fborder;
     }
 
     > * {
-      padding:0 40px;
+      padding: 0 40px;
       @include font-medium;
-      line-height:1.35em;
-      text-align:center;
+      line-height: 1.35em;
+      text-align: center;
       font-weight: 400;
     }
   }
@@ -236,83 +278,14 @@
     background-color: transparent;
   }
 
-  .editorPreview__item {
-    min-height:80px;
-    position:relative;
-    margin-bottom:1px;
-    z-index:1;
-
-    &::after {
-      content:'';
-      border-radius:2px;
-      position:absolute;
-      top:0;
-      right:0;
-      left:0;
-      bottom:0;
-      border:1px solid $color__border;
-      z-index:0;
-      opacity:0;
-    }
-  }
-
-  .editorPreview__item:hover::after {
-    border-color:$color__border;
-    opacity:1;
-  }
-
-  .editorPreview__item--hover {
-    z-index:2;
-  }
-
-  .editorPreview__item--active::after,
-  .editorPreview__item--active:hover::after {
-    border-color:$color_editor--active;
-    opacity:1;
-  }
-
-  .editorPreview__protector {
-    position:absolute;
-    left:0;
-    right:0;
-    top:0;
-    bottom:0;
-    cursor:move;
-    z-index:1;
-  }
-
-  .editorPreview__header {
-    position:absolute;
-    top:20px;
-    right:20px;
-    padding:0;
-    display:none;
-    background-clip: padding-box;
-    z-index:2;
-  }
-
   .editorPreview__handle {
-    position:absolute;
-    height:10px;
-    width:40px;
-    left:50%;
-    top:50%;
-    margin-left:-20px;
-    margin-top:-5px;
+    position: absolute;
+    height: 10px;
+    width: 40px;
+    left: 50%;
+    top: 50%;
+    margin-left: -20px;
+    margin-top: -5px;
     @include dragGrid($color__drag, $color__block-bg);
-  }
-
-  .editorPreview__item:hover .editorPreview__header,
-  .editorPreview__item--active .editorPreview__header,
-  .editorPreview__item--hover .editorPreview__header {
-    display:flex;
-  }
-
-  /* Dragged item */
-  .editorPreview__item.sortable-chosen {
-    opacity:1;
-  }
-  .editorPreview__item.sortable-ghost {
-    opacity:0.25;
   }
 </style>

@@ -339,6 +339,6 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
      */
     private function shouldReplaceMedia($id)
     {
-        return $this->repository->whereId($id)->exists();
+        return is_numeric($id) ? $this->repository->whereId($id)->exists() : false;
     }
 }

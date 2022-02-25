@@ -21,6 +21,9 @@ return [
         // ['name' => 'Artists', 'enabled' => true],
         // ['name' => 'Posts', 'enabled' => true],
     ],
+
+    'capsule_config_prefix' => 'twill.capsule',
+    'capsule_repository_prefix' => env('CAPSULE_REPOSITORY_PREFIX', 'area17')
 ];
 
 /// To fully override this config:

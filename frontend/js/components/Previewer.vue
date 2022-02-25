@@ -18,9 +18,9 @@
                 </template>
               </a17-button>
               <div slot="dropdown__content">
-                <button type="button" class="previewerRevision" :class="{ 'previewerRevision--active' : currentRevision.id === revision.id }" @click="toggleRevision(revision.id)" v-for="(revision, index) in revisions"  :key="revision.id">
+                <button type="button" class="previewerRevision" :class="{ 'previewerRevision--active' : currentRevision.id === revision.id }" @click="toggleRevision(revision.id)" v-for="revision in revisions"  :key="revision.id">
                   <span class="previewerRevision__author">{{ revision.author }}</span>
-                  <span class="previewerRevision__datetime"><span class="tag" v-if="index === 0">{{ $trans('previewer.current-revision') }}</span> {{ revision.datetime | formatDate }}</span>
+                  <span class="previewerRevision__datetime"><span class="tag" v-if="revision.label">{{ revision.label }}</span> {{ revision.datetime | formatDate }}</span>
                 </button>
               </div>
             </a17-dropdown>
@@ -104,7 +104,7 @@
         return Object.keys(this.currentRevision).length
       },
       ...mapState({
-        editor: state => state.content.editor,
+        editor: state => state.blocks.editor,
         loading: state => state.revision.loading,
         currentRevision: state => state.revision.active,
         activeContent: state => state.revision.activeContent,
