@@ -152,7 +152,8 @@
         visibility: state => state.publication.visibility,
         visibilityOptions: state => state.publication.visibilityOptions,
         reviewProcess: state => state.publication.reviewProcess,
-        submitDisableMessage: state => state.publication.submitDisableMessage
+        submitDisableMessage: state => state.publication.submitDisableMessage,
+        hasUnsavedChanges: state => state.publication.hasUnsavedChanges
       }),
       ...mapGetters([
         'publishedLanguages',
@@ -229,6 +230,14 @@
 
   .revisionaccordion__list {
     padding: 20px;
+  }
+
+  .publisher__unsaved-changes {
+    height:$trigger_height;
+    line-height:$trigger_height;
+    color: $color__warningDark;
+    padding:0 20px;
+    display:block;
   }
 
   .publisher__link {
