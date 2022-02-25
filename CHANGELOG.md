@@ -29,6 +29,7 @@ publication controll in the create modal [`#1468`](https://github.com/area17/twi
 - Notes are now rendered in media fields [`#1443`](https://github.com/area17/twill/pull/1443)
 - When updated_at is empty, it now falls back to the created_at timestamp [`#766`](https://github.com/area17/twill/issues/766)
 - When cloning a block, the new block is dereferenced from the original [`#1410`](https://github.com/area17/twill/pull/1410)
+- Improved content scheduling [`#1307`](https://github.com/area17/twill/issues/1307)
 
 ### Documentation
 
