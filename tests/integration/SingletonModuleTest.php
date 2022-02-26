@@ -77,7 +77,7 @@ class SingletonModuleTest extends TestCase
     {
         $this->httpRequestAssert('/twill/contactPage', 'GET', [], 500);
 
-        $this->assertSee("ContactPage is missing");
+        $this->assertSee("ContactPage is not seeded");
     }
 
     public function testSingletonModuleHasNoIndex()
