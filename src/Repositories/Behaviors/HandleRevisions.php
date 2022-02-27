@@ -58,6 +58,7 @@ trait HandleRevisions
             ]);
         }
 
+        // Call job
         RevisionsKeepLimit::dispatch($this->model, $object->id)
             ->onQueue($this->revisionLimitJobQueue);
 
