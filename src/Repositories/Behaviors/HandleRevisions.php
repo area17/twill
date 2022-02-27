@@ -7,9 +7,19 @@ use A17\Twill\Models\RelatedItem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use A17\Twill\Jobs\RevisionsKeepLimit;
 
 trait HandleRevisions
 {
+
+    /**
+     * The Laravel queue name to be used for the reviosions limiting.
+     *
+     * @var string
+     */
+
+    protected $revisionLimitJobQueue = 'default';
+
     /**
      * @param \A17\Twill\Models\Model $object
      * @param array $fields
@@ -47,6 +57,10 @@ trait HandleRevisions
                 'user_id' => Auth::guard('twill_users')->user()->id ?? null,
             ]);
         }
+
+        RevisionsKeepLimit::dispatch($this->model, $object->id)
+            ->onQueue($this->revisionLimitJobQueue);
+
 
         return $fields;
     }

@@ -44,6 +44,19 @@ trait HasRevisions
         })->toArray();
     }
 
+    /**
+     * Deletes revisions from specific collection position
+     * Used to keep max revision on specific Twill's module
+     *
+     * @param [int] $id
+     * @param [int] $position
+     * @return void
+     */
+    public function deleteSpecificRevisions($id, $maxRevisions)
+    {
+        return $this->find($id)->revisions->slice($maxRevisions)->each->delete();
+    }
+
     protected function getRevisionModel()
     {
         $revision = config('twill.namespace') . "\Models\Revisions\\" . class_basename($this) . "Revision";
