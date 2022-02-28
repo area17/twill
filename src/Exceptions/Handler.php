@@ -13,22 +13,6 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 class Handler extends ExceptionHandler
 {
     /**
-     * Convert an authentication exception into a response.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Illuminate\Auth\AuthenticationException  $exception
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    protected function unauthenticated($request, AuthenticationException $exception)
-    {
-        if ($request->expectsJson()) {
-            return response()->json(['message' => $exception->getMessage()], 401);
-        }
-
-        return parent::unauthenticated($request, $exception);
-    }
-
-    /**
      * Get the view used to render HTTP exceptions.
      *
      * @param  \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface  $e
