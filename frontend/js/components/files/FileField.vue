@@ -134,9 +134,6 @@
           index: index
         })
       }
-    },
-    beforeDestroy: function () {
-      this.deleteAll()
     }
   }
 </script>

@@ -31,6 +31,7 @@ pageClass: twill-doc
 | fieldNote      | Hint message displayed above the field               | string         |               |
 | note           | Hint message displayed in the field                  | string         |               |
 | buttonOnTop    | Displays the `Attach images` button above the images | true<br/>false | false         |
+| disabled            | Disables the field                                      | boolean         | false         | 
 
 
 Right after declaring the `medias` formField in the blade template file, you still need to do a few things to make it work properly.

@@ -7,13 +7,13 @@
             <div class="media__imgCentered" :style="cropThumbnailStyle">
               <img v-if="cropSrc && showImg" :src="cropSrc" ref="mediaImg" :class="cropThumbnailClass"/>
             </div>
-            <div class="media__edit" @click="openMediaLibrary(1, mediaKey, index)">
+            <div class="media__edit" @click="openMediaLibrary(1, mediaKey, index)" v-if="!disabled">
               <span class="media__edit--button"><span v-svg symbol="edit"></span></span>
             </div>
           </div>
         </div>
 
-        <ul class="media__metadatas">
+        <ul class="media__metadatas" v-if="!disabled">
           <li class="media__name" @click="openMediaLibrary(1, mediaKey, index)"><strong :title="media.name">{{
             media.name }}</strong></li>
           <li class="f--small" v-if="media.size">File size: {{ media.size | uppercase }}</li>
@@ -33,7 +33,7 @@
         </ul>
 
         <!--Actions-->
-        <a17-buttonbar class="media__actions">
+        <a17-buttonbar class="media__actions" v-if="!disabled">
           <a :href="media.original" download><span v-svg symbol="download"></span></a>
           <button type="button" @click="openCropMedia" v-if="activeCrop"><span v-svg symbol="crop"></span></button>
           <button type="button" @click="deleteMediaClick"><span v-svg symbol="trash"></span></button>
@@ -523,10 +523,6 @@
       if (this.hasMediaChanged) {
         this.init()
       }
-    },
-    beforeDestroy: function () {
-      if (this.isSlide) return // for Slideshows : the medias are deleted when the slideshow component is destroyed (so no need to do it here)
-      if (!this.isDestroyed) this.deleteMedia()
     }
   }
 </script>

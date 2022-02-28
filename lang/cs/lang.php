@@ -24,7 +24,7 @@ return [
         'password' => 'Heslo',
         'password-confirmation' => 'Potvrzení hesla',
         'reset-password' => 'Obnovení hesla',
-        'reset-send' => 'Poslat odkaz na obnovu hesla',
+        'reset-send' => 'Odeslat odkaz pro obnovení hesla',
         'verify-login' => 'Ověřit přihlášení',
     ],
     'buckets' => [
@@ -42,6 +42,27 @@ return [
         'my-drafts' => 'Moje koncepty',
         'search-placeholder' => 'Hledat všude...',
         'statitics' => 'Statistiky',
+        'search' => [
+            'loading' => 'Načítání…',
+            'no-result' => 'Nebyly nalezeny žádné výsledky.',
+            'last-edit' => 'Poslední úprava',
+        ],
+        'activities' => [
+            'created' => 'Vytvořeno',
+            'updated' => 'Upraveno',
+            'unpublished' => 'Nepublikováno',
+            'published' => 'Publikováno',
+            'featured' => 'Doporučené',
+            'unfeatured' => 'Neoznačené',
+            'restored' => 'Obnoveno',
+            'deleted' => 'Smazáno',
+        ],
+        'activity-row' => [
+            'edit' => 'Upravit',
+            'view-permalink' => 'Zobrazit trvalý odkaz',
+            'by' => 'podle',
+        ],
+        'unknown-author' => 'Neznámý',
     ],
     'dialog' => [
         'cancel' => 'Zrušit',
@@ -70,6 +91,8 @@ return [
             'loading' => 'Načítání',
             'open-in-editor' => 'Otevřít v editoru',
             'preview' => 'Náhled',
+            'add-item' => 'Přidat obsah',
+            'clone-block' => 'Duplikovat obsah',
         ],
         'browser' => [
             'add-label' => 'Přidat',
@@ -96,6 +119,9 @@ return [
             'edit-close' => 'Zavřít podrobnosti',
             'edit-info' => 'Upravit podrobnosti',
             'original-dimensions' => 'Původní rozměry',
+            'alt-text' => 'Alternativní text',
+            'caption' => 'Popisek',
+            'video-url' => 'URL videa (volitelné)',
         ],
     ],
     'filter' => [
@@ -140,7 +166,7 @@ return [
             'delete' => [
                 'confirm' => 'Smazat',
                 'disclaimer' => 'Položka nebude odstraněna, ale přesunuta do koše.',
-                'move-to-trash' => 'Přesunout do koše.',
+                'move-to-trash' => 'Přesunutí do koše',
                 'title' => 'Smazat',
             ],
             'destroy' => [
@@ -148,7 +174,9 @@ return [
                 'destroy-permanently' => 'Zničit navždy',
                 'disclaimer' => 'Položku nebude možné znovu obnovit.',
                 'title' => 'Zničit položku',
+                'cancel' => 'Zavřít',
             ],
+            'cancel' => 'Zavřít',
         ],
         'dropdown' => [
             'delete' => 'Smazat',
@@ -173,6 +201,58 @@ return [
         'paginate' => [
             'rows-per-page' => 'Řádků na stránku:',
         ],
+        'reorder' => [
+            'success' => 'Pořadí upraveno.',
+            'error' => 'Pořadí nebylo upraveno. Něco se nepovedlo!',
+        ],
+        'restore' => [
+            'success' => 'Obnoveno.',
+            'error' => 'Položka nebyla obnovena. Něco se nepovedlo!',
+        ],
+        'bulk-restore' => [
+            'success' => 'Položky obnoveny!',
+            'error' => 'Položky nebyly obnoveny. Něco se nepovedlo!',
+        ],
+        'force-delete' => [
+            'success' => 'Položka odstraněna.',
+            'error' => 'Položku se nepodařilo odstranit. Něco se nepovedlo!',
+        ],
+        'bulk-force-delete' => [
+            'success' => 'Položky úspěšně smazány.',
+            'error' => 'Položky se nepodařilo odstranit. Něco se nepovedlo!',
+        ],
+        'delete' => [
+            'success' => 'Položka byla přesunuta do koše.',
+            'error' => 'Položku se nepodařilo přesunout do koše. Něco se nepovedlo!',
+        ],
+        'bulk-delete' => [
+            'success' => 'Položky byly přesunuty do koše.',
+            'error' => 'Položky se nepodařilo přesunout do koše. Něco se nepovedlo!',
+        ],
+        'duplicate' => [
+            'success' => 'Položka úspěšně duplikována!',
+            'error' => 'Položku se nepodařilo duplikovat. Něco se nepovedlo!',
+        ],
+        'publish' => [
+            'unpublished' => 'Publikování bylo zrušeno.',
+            'published' => 'Položka publikována.',
+            'error' => 'Položka nebyla publikována. Něco se nepovedlo!',
+        ],
+        'featured' => [
+            'unfeatured' => 'Položka odebrána z doporučených.',
+            'featured' => 'Položka přidána do doporučených.',
+            'error' => 'Položka se nepodařilo přidat do doporučených. Něco se nepovedlo!',
+        ],
+        'bulk-featured' => [
+            'unfeatured' => 'Položky odebrány z doporučených.',
+            'featured' => 'Položky přidány do doporučených.',
+            'error' => 'Položky se nepodařilo přidat do doporučených. Něco se nepovedlo!',
+        ],
+        'bulk-publish' => [
+            'unpublished' => 'Publikování položek bylo zrušeno.',
+            'published' => 'Položky byly publikovány.',
+            'error' => 'Položky se nepodařilo publikovat. Něco se nepovedlo!',
+        ],
     ],
     'main' => [
         'create' => 'Vytvořit',
@@ -183,7 +263,7 @@ return [
     ],
     'media-library' => [
         'files' => 'Soubory',
-        'filter-select-label' => 'Filtrovrat podle tagu',
+        'filter-select-label' => 'Filtrovat podle štítku',
         'images' => 'Obrázku',
         'insert' => 'Vložit',
         'sidebar' => [
@@ -193,11 +273,41 @@ return [
             'dimensions' => 'Rozměry',
             'empty-text' => 'Nebyl vybrán žádný soubor',
             'files-selected' => 'vybraných souborů',
-            'tags' => 'Tagy',
+            'tags' => 'Štítky',
         ],
         'title' => 'Knihovna médií',
         'update' => 'Aktualizovat',
         'unused-filter-label' => 'Ukázat jen nepoužité',
+        'no-tags-found' => 'Nebyly nalezeny žádné štítky.',
+        'dialogs' => [
+            'delete' => [
+                'delete-media-title' => 'Smazání souboru',
+                'delete-media-desc' => 'Jste si jistí?<br />Tuto změnu nelze vrátit zpět.',
+                'delete-media-confirm' => 'Smazat',
+                'title' => 'Jste si jistí?',
+                'allow-delete-multiple-medias' => 'Některé soubory se používají a nelze je odstranit. Chcete odstranit ostatní ?',
+                'allow-delete-one-media' => 'Tento soubor je používán a nelze jej odstranit. Chcete odstranit ostatní ?',
+                'dont-allow-delete-multiple-medias' => 'Tyto soubory se používají a nelze je odstranit.',
+                'dont-allow-delete-one-media' => 'Tento soubor je používán a nelze jej odstranit.',
+            ],
+            'replace' => [
+                'replace-media-title' => 'Nahrazení souboru',
+                'replace-media-desc' => 'Jste si jistí?<br />Tuto změnu nelze vrátit zpět.',
+                'replace-media-confirm' => 'Nahradit',
+            ],
+        ],
+        'types' => [
+            'single' => [
+                'image' => 'obrázek',
+                'video' => 'video',
+                'file' => 'soubor',
+            ],
+            'multiple' => [
+                'image' => 'obrázky',
+                'video' => 'videa',
+                'file' => 'soubory',
+            ],
+        ],
     ],
     'modal' => [
         'create' => [
@@ -226,12 +336,14 @@ return [
     'notifications' => [
         'reset' => [
             'action' => 'Obnovit heslo',
-            'content' => 'Obrželi jste tento e-mail, jelikož jsme zaznamenali žádost o obnovení hesla. Pokud jste o nic nežádali, není nutná žádná další akce.',
+            'content' => 'Tento e-mail jste obdrželi, jelikož jsme zaznamenali žádost o obnovení hesla. Pokud jste o obnovení hesla nepožádali, není nutná žádná další akce.',
+            'subject' => ':appName | Obnovení hesla',
         ],
         'welcome' => [
             'action' => 'Vytvořte si své vlastní heslo',
             'content' => 'Obdrželi jste tento e-mail, protože byl pro Vás vytvořen účet na jméno :name.',
             'title' => 'Vítejte',
+            'subject' => ':appName | Vítejte',
         ],
     ],
     'overlay' => [
@@ -239,7 +351,7 @@ return [
     ],
     'previewer' => [
         'compare-view' => 'Porovnat zobrazení',
-        'current-revision' => 'Stávající',
+        'current-revision' => 'Aktuální',
         'editor' => 'Editor',
         'last-edit' => 'Poslední úprava',
         'past-revision' => 'Minulé revize',
@@ -248,10 +360,11 @@ return [
         'single-view' => 'Jednoduché zobrazení',
         'title' => 'Náhled změn',
         'unsaved' => 'Náhled bez uložení',
+        'drag-and-drop' => 'Přetáhněte obsah z levého menu',
     ],
     'publisher' => [
         'cancel' => 'Zrušit',
-        'current' => 'Stávající',
+        'current' => 'Aktuální',
         'end-date' => 'Poslední datum',
         'immediate' => 'Okamžitý',
         'languages' => 'Jazyky',
@@ -293,8 +406,8 @@ return [
     ],
     'user-management' => [
         '2fa' => 'Dvoufázové ověření',
-        '2fa-description' => 'Prosím naskenujte tento QR kód s aplikací komptabilní s Google Authenticator a vložte své jednorázové heslo před uložením. Seznam kompatibilních aplikací <a href=":link" target="_blank" rel="noopener">můžete najít zde</a>.',
-        '2fa-disable' => 'Vložte své jednorázové heslo pro vypnutí dvoufaktorového ověření',
+        '2fa-description' => 'Před odesláním prosím naskenujte tento QR kód pomocí aplikace kompatibilní s Google Authenticator a zadejte níže uvedené jednorázové heslo. Seznam kompatibilních aplikací <a href=":link" target="_blank" rel="noopener">můžete najít zde</a>.',
+        '2fa-disable' => 'Zadejte své jednorázové heslo pro deaktivování dvoufaktorového ověření',
         'active' => 'Aktivní',
         'cancel' => 'Zrušit',
         'content-fieldset-label' => 'Uživatelské nastavení',
@@ -318,10 +431,15 @@ return [
         'update' => 'Aktualizovat',
         'update-and-close' => 'Aktualizovat a zavřít',
         'update-and-create-new' => 'Aktualizovat a vytvořit nového',
-        'update-disabled-and-close' => 'Aktualizovat deaktiovaného uživatele a zavřít',
-        'update-disabled-user' => 'Aktualizovat deaktiovaného uživatele',
+        'update-disabled-and-close' => 'Aktualizovat deaktivovaného uživatele a zavřít',
+        'update-disabled-user' => 'Aktualizovat deaktivovaného uživatele',
         'update-disabled-user-and-create-new' => 'Aktualizovat deaktivovaného uživatele a vytvořit nového',
         'user-image' => 'Obrázek',
         'users' => 'Uživatelé',
+    ],
+    'settings' => [
+        'update' => 'Aktualizovat',
+        'cancel' => 'Zrušit',
+        'fieldset-label' => 'Upravit nastavení',
     ],
 ];
