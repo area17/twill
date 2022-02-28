@@ -90,6 +90,8 @@ abstract class ModuleController extends Controller
         'bulkEdit' => true,
         'editInModal' => false,
         'skipCreateModal' => false,
+        // @todo(3.x): Default to true.
+        'includeScheduledInList' => false,
     ];
 
     /**
@@ -1133,43 +1135,43 @@ abstract class ModuleController extends Controller
         if (isset(Arr::first($this->indexColumns)['thumb'])
             && Arr::first($this->indexColumns)['thumb']
         ) {
-            array_push($tableColumns, [
+            $tableColumns[] = [
                 'name' => 'thumbnail',
                 'label' => twillTrans('twill::lang.listing.columns.thumbnail'),
                 'visible' => $visibleColumns ? in_array('thumbnail', $visibleColumns) : true,
                 'optional' => true,
                 'sortable' => false,
-            ]);
+            ];
             array_shift($this->indexColumns);
         }
 
         if ($this->getIndexOption('feature')) {
-            array_push($tableColumns, [
+            $tableColumns[] = [
                 'name' => 'featured',
                 'label' => twillTrans('twill::lang.listing.columns.featured'),
                 'visible' => true,
                 'optional' => false,
                 'sortable' => false,
-            ]);
+            ];
         }
 
         if ($this->getIndexOption('publish')) {
-            array_push($tableColumns, [
+            $tableColumns[] = [
                 'name' => 'published',
                 'label' => twillTrans('twill::lang.listing.columns.published'),
                 'visible' => true,
                 'optional' => false,
                 'sortable' => false,
-            ]);
+            ];
         }
 
-        array_push($tableColumns, [
+        $tableColumns[] = [
             'name' => 'name',
             'label' => $this->indexColumns[$this->titleColumnKey]['title'] ?? twillTrans('twill::lang.listing.columns.name'),
             'visible' => true,
             'optional' => false,
             'sortable' => $this->getIndexOption('reorder') ? false : ($this->indexColumns[$this->titleColumnKey]['sort'] ?? false),
-        ]);
+        ];
 
         unset($this->indexColumns[$this->titleColumnKey]);
 
@@ -1184,23 +1186,34 @@ abstract class ModuleController extends Controller
                 $columnName = $column['field'];
             }
 
-            array_push($tableColumns, [
+            $tableColumns[] = [
                 'name' => $columnName,
                 'label' => $column['title'],
                 'visible' => $visibleColumns ? in_array($columnName, $visibleColumns) : ($column['visible'] ?? true),
                 'optional' => $column['optional'] ?? true,
                 'sortable' => $this->getIndexOption('reorder') ? false : ($column['sort'] ?? false),
                 'html' => $column['html'] ?? false,
-            ]);
+            ];
         }
+
+        if ($this->getIndexOption('includeScheduledInList') && $this->repository->isFillable('publish_start_date')) {
+            $tableColumns[] = [
+                'name' => 'publish_start_date',
+                'label' => twillTrans('twill::lang.listing.columns.published'),
+                'visible' => true,
+                'optional' => true,
+                'sortable' => true,
+            ];
+        }
+
         if ($this->moduleHas('translations') && count(getLocales()) > 1) {
-            array_push($tableColumns, [
+            $tableColumns[] = [
                 'name' => 'languages',
                 'label' => twillTrans('twill::lang.listing.languages'),
                 'visible' => $visibleColumns ? in_array('languages', $visibleColumns) : true,
                 'optional' => true,
                 'sortable' => false,
-            ]);
+            ];
         }
 
         return $tableColumns;
@@ -1219,38 +1232,39 @@ abstract class ModuleController extends Controller
             $this->getParentModuleForeignKey() => $this->submoduleParentId,
         ] : []) + $scopes;
 
-        array_push($statusFilters, [
+        $statusFilters[] = [
             'name' => twillTrans('twill::lang.listing.filter.all-items'),
             'slug' => 'all',
             'number' => $this->repository->getCountByStatusSlug('all', $scope),
-        ]);
+        ];
 
         if ($this->moduleHas('revisions') && $this->getIndexOption('create')) {
-            array_push($statusFilters, [
+            $statusFilters[] = [
                 'name' => twillTrans('twill::lang.listing.filter.mine'),
                 'slug' => 'mine',
                 'number' => $this->repository->getCountByStatusSlug('mine', $scope),
-            ]);
+            ];
         }
 
         if ($this->getIndexOption('publish')) {
-            array_push($statusFilters, [
+            $statusFilters[] = [
                 'name' => twillTrans('twill::lang.listing.filter.published'),
                 'slug' => 'published',
                 'number' => $this->repository->getCountByStatusSlug('published', $scope),
-            ], [
+            ];
+            $statusFilters[] = [
                 'name' => twillTrans('twill::lang.listing.filter.draft'),
                 'slug' => 'draft',
                 'number' => $this->repository->getCountByStatusSlug('draft', $scope),
-            ]);
+            ];
         }
 
         if ($this->getIndexOption('restore')) {
-            array_push($statusFilters, [
+            $statusFilters[] = [
                 'name' => twillTrans('twill::lang.listing.filter.trash'),
                 'slug' => 'trash',
                 'number' => $this->repository->getCountByStatusSlug('trash', $scope),
-            ]);
+            ];
         }
 
         return $statusFilters;

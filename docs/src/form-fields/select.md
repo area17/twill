@@ -40,6 +40,7 @@ pageClass: twill-doc
 | placeholder | Text displayed as a placeholder in the field                 | string          |               |
 | required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false  | false         |
 | default     |	Sets a default value if empty	      	                       | string          |               |
+| disabled            | Disables the field                                      | boolean         | false         | 
 
 A migration to save a `select` field would be:
 
