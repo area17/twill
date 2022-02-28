@@ -2,7 +2,9 @@
 
 namespace A17\Twill;
 
+
 use A17\Twill\Commands\UpgradeCommand;
+use A17\Twill\Commands\SetupDevTools;
 use Exception;
 use A17\Twill\Commands\BlockMake;
 use A17\Twill\Commands\Build;
@@ -327,6 +329,7 @@ class TwillServiceProvider extends ServiceProvider
             Dev::class,
             SyncLang::class,
             CapsuleInstall::class,
+            SetupDevTools::class
         ]);
     }
 
