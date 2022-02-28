@@ -25,7 +25,7 @@
       <span>{{ currentItem.endpointType }}</span>
     </td>
     <td class="browserItem__cell browserItem__cell--icon" v-if="deletable">
-      <a17-button class="bucket__action" icon="close" @click="deleteItem()"><span v-svg symbol="close_icon"></span></a17-button>
+      <a17-button class="bucket__action" v-if="!disabled" icon="close" @click="deleteItem()"><span v-svg symbol="close_icon"></span></a17-button>
     </td>
   </tr>
 </template>
@@ -53,6 +53,10 @@
         default: 10
       },
       showType: {
+        type: Boolean,
+        default: false
+      },
+      disabled: {
         type: Boolean,
         default: false
       }

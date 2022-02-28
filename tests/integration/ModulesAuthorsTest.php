@@ -6,6 +6,7 @@ use App\Models\Author;
 use App\Models\Category;
 use App\Models\Revisions\AuthorRevision;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class ModulesAuthorsTest extends ModulesTestBase
 {
@@ -396,5 +397,36 @@ class ModulesAuthorsTest extends ModulesTestBase
         $this->assertSee(
             '<script*type="text/x-template"*id="a17-block-quote">'
         );
+    }
+
+    public function testCannotHaveDuplicateSlugs(): void
+    {
+        $dataItem1 = $this->getCreateAuthorData();
+        $dataItem1['languages'][1]['published'] = true;
+
+        $slugEn = Str::slug($dataItem1['name']['en']);
+        $slugFr = Str::slug($dataItem1['name']['fr']);
+
+        $this->httpRequestAssert(
+            '/twill/personnel/authors',
+            'POST',
+            $dataItem1
+        );
+
+        $this->httpRequestAssert(
+            '/twill/personnel/authors',
+            'POST',
+            $dataItem1
+        );
+
+        $item1 = Author::first();
+
+        $this->assertEquals($slugEn, $item1->slug);
+        $this->assertEquals($slugFr, $item1->getSlug('fr'));
+
+        $item2 = Author::orderBy('id', 'desc')->first();
+
+        $this->assertEquals($slugEn . '-2', $item2->slug);
+        $this->assertEquals($slugFr . '-2', $item2->getSlug('fr'));
     }
 }

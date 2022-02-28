@@ -57,6 +57,7 @@
                     name="{{ $titleFormKey }}"
                     thumbnail="{{ $titleThumbnail ?? '' }}"
                     :editable-title="{{ json_encode($editableTitle ?? true) }}"
+                    :control-languages-publication="{{ json_encode($controlLanguagesPublication) }}"
                     custom-title="{{ $customTitle ?? '' }}"
                     custom-permalink="{{ $customPermalink ?? '' }}"
                     localized-permalinkbase="{{ json_encode($localizedPermalinkBase ?? '') }}"
@@ -188,8 +189,10 @@
         published: {{ isset($item) && $item->published ? 'true' : 'false' }},
         createWithoutModal: {{ isset($createWithoutModal) && $createWithoutModal ? 'true' : 'false' }},
         withPublicationTimeframe: {{ json_encode(($schedule ?? true) && isset($item) && $item->isFillable('publish_start_date')) }},
-        publishedLabel: '{{ $publishedLabel ?? '' }}',
-        draftLabel: '{{ $draftLabel ?? '' }}',
+        publishedLabel: '{{ $publishedLabel ?? twillTrans('twill::lang.main.published') }}',
+        draftLabel: '{{ $draftLabel ?? twillTrans('twill::lang.main.draft') }}',
+        expiredLabel: '{{twillTrans('twill::lang.publisher.expired')}}',
+        scheduledLabel: '{{twillTrans('twill::lang.publisher.scheduled')}}',
         submitDisableMessage: '{{ $submitDisableMessage ?? '' }}',
         startDate: '{{ $item->publish_start_date ?? '' }}',
         endDate: '{{ $item->publish_end_date ?? '' }}',

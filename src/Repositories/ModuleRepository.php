@@ -426,6 +426,9 @@ abstract class ModuleRepository
                 });
             } catch (\Exception $e) {
                 Log::error($e);
+                if (config('app.debug')) {
+                    throw $e;
+                }
                 return false;
             }
 

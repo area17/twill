@@ -1,6 +1,9 @@
 <template>
   <div class="publisher__wrapper">
-      <a17-switcher :title="$trans('publisher.switcher-title', 'Status')" name="publish_state" v-if="withPublicationToggle" :textEnabled="textEnabled" :textDisabled="textDisabled"></a17-switcher>
+      <a17-switcher :title="$trans('publisher.switcher-title', 'Status')" name="publish_state" v-if="withPublicationToggle" :textEnabled="textEnabled" :textDisabled="textDisabled"
+                    :text-scheduled="textScheduled"
+                    :text-expired="textExpired"
+      ></a17-switcher>
       <slot></slot>
       <a17-userinfo v-if="userInfo" :userInfo="userInfo"></a17-userinfo>
       <a17-reviewaccordion  v-if="reviewProcess && reviewProcess.length" :options="reviewProcess" name="review_process" :value="reviewProcessCompleteValues" :open="openStates['A17Reviewaccordion']" @open="openCloseAccordion">{{ $trans('publisher.review-status') }}</a17-reviewaccordion>
@@ -120,11 +123,14 @@
         publishSubmit: state => state.publication.publishSubmit,
         textEnabled: state => state.publication.publishedLabel,
         textDisabled: state => state.publication.draftLabel,
+        textExpired: state => state.publication.expiredLabel,
+        textScheduled: state => state.publication.scheduledLabel,
         withPublicationToggle: state => state.publication.withPublicationToggle,
         withPublicationTimeframe: state => state.publication.withPublicationTimeframe,
         visibility: state => state.publication.visibility,
         visibilityOptions: state => state.publication.visibilityOptions,
         reviewProcess: state => state.publication.reviewProcess,
+        hasUnsavedChanges: state => state.publication.hasUnsavedChanges,
         submitDisableMessage: state => state.publication.submitDisableMessage,
         userInfo: state => state.publication.userInfo
       }),
@@ -163,36 +169,36 @@
 
 <style lang="scss" scoped>
 
-  $trigger_height:55px;
+  $trigger_height: 55px;
 
   .publisher {
   }
 
   .publisher__wrapper {
-    border-radius:2px;
-    border:1px solid $color__border;
-    background:$color__background;
-    margin-bottom:20px;
+    border-radius: 2px;
+    border: 1px solid $color__border;
+    background: $color__background;
+    margin-bottom: 20px;
   }
 
   .publisher__trash {
-    padding:0 10px;
-    margin-bottom:20px;
+    padding: 0 10px;
+    margin-bottom: 20px;
   }
 
   .publisher__item {
-    border-bottom:1px solid $color__border--light;
+    border-bottom: 1px solid $color__border--light;
 
     &:last-child {
-      border-bottom:0 none;
+      border-bottom: 0 none;
     }
   }
 
   .publisher__item {
-    color:$color__text--light;
+    color: $color__text--light;
 
     a {
-      color:$color__link;
+      color: $color__link;
       text-decoration: none;
 
       // &:hover {
@@ -202,22 +208,30 @@
   }
 
   .revisionaccordion__list {
-    padding:20px;
+    padding: 20px;
+  }
+
+  .publisher__unsaved-changes {
+    height:$trigger_height;
+    line-height:$trigger_height;
+    color: $color__warningDark;
+    padding:0 20px;
+    display:block;
   }
 
   .publisher__link {
-    height:$trigger_height;
-    line-height:$trigger_height;
-    padding:0 20px;
-    display:block;
+    height: $trigger_height;
+    line-height: $trigger_height;
+    padding: 0 20px;
+    display: block;
 
     .icon {
-      margin-right:10px;
-      color:$color__link;
+      margin-right: 10px;
+      color: $color__link;
     }
   }
 
   .publisher__item--btns {
-    padding:10px;
+    padding: 10px;
   }
 </style>

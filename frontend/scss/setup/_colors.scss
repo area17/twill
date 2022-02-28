@@ -2,6 +2,7 @@
 $color__red: #e61414;
 $color__yellow: #f2f034;
 $color__orange: #fffcb1;
+$color__orangeDark: #b39946;
 $color__green: #1d9f3c;
 $color__lightGreen: #D3ECD9;
 $color__green--hover: #1A8F36;
@@ -90,6 +91,7 @@ $color__error--hover: darken($color__red, 10%);
 $color__error--active: darken($color__red, 15%);
 
 $color__warning: $color__orange;
+$color__warningDark: $color__orangeDark;
 
 $color__action: $color__darkBlue;
 $color__action--hover: $color__darkBlue--hover;

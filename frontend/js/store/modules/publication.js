@@ -6,6 +6,8 @@ const state = {
   publishSubmit: (window[process.env.VUE_APP_NAME].STORE.publication.published || !window[process.env.VUE_APP_NAME].STORE.publication.withPublicationToggle) ? 'update' : 'live',
   publishedLabel: window[process.env.VUE_APP_NAME].STORE.publication.publishedLabel || 'Live',
   draftLabel: window[process.env.VUE_APP_NAME].STORE.publication.draftLabel || 'Draft',
+  expiredLabel: window[process.env.VUE_APP_NAME].STORE.publication.expiredLabel || 'Expired',
+  scheduledLabel: window[process.env.VUE_APP_NAME].STORE.publication.scheduledLabel || 'Scheduled',
   withPublicationTimeframe: window[process.env.VUE_APP_NAME].STORE.publication.withPublicationTimeframe || false,
   startDate: window[process.env.VUE_APP_NAME].STORE.publication.startDate || null,
   endDate: window[process.env.VUE_APP_NAME].STORE.publication.endDate || null,
@@ -13,6 +15,7 @@ const state = {
   reviewProcess: window[process.env.VUE_APP_NAME].STORE.publication.reviewProcess || [],
   userInfo: window[process.env.VUE_APP_NAME].STORE.publication.userInfo || null,
   createWithoutModal: window[process.env.VUE_APP_NAME].STORE.publication.createWithoutModal || false,
+  hasUnsavedChanges: false,
   saveType: undefined,
   visibilityOptions: [
     {
@@ -158,6 +161,9 @@ const mutations = {
   },
   [PUBLICATION.UPDATE_SAVE_TYPE] (state, newValue) {
     state.saveType = newValue
+  },
+  [PUBLICATION.UPDATE_HAS_UNSAVED_CHANGES] (state, newValue) {
+    state.hasUnsavedChanges = newValue
   }
 }
 

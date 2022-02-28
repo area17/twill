@@ -30,7 +30,7 @@
 
       <!-- Editing modal -->
       <a17-modal class="modal--form" ref="editModal" :title="modalTitle" :forceLock="disabled">
-        <a17-langmanager></a17-langmanager>
+        <a17-langmanager :control-publication="controlLanguagesPublication"></a17-langmanager>
         <form action="#" @submit.prevent="update" ref="modalForm">
           <slot name="modal-form"></slot>
           <a17-modal-validation :mode="mode" @disable="lockModal"></a17-modal-validation>
@@ -82,6 +82,10 @@
         default: 'title'
       },
       editableTitle: {
+        type: Boolean,
+        default: true
+      },
+      controlLanguagesPublication: {
         type: Boolean,
         default: true
       },
