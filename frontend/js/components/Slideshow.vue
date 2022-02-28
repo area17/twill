@@ -106,9 +106,6 @@
         // destroy all the medias of the slideshow
         this.$store.commit(MEDIA_LIBRARY.DESTROY_MEDIAS, this.name)
       }
-    },
-    beforeDestroy: function () {
-      this.deleteSlideshow()
     }
   }
 </script>

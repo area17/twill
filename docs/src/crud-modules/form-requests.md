@@ -48,3 +48,27 @@ $this->messagesForTranslatedFields([
 ```
 
 Once you defined the rules in this file, the UI will show the corresponding validation error state or message next to the corresponding form field.
+
+## Validating repeater fields
+
+To validate repeater fields added to your model you can reuse the same `rulesForCreate` and `rulesForUpdate` methods.
+
+If your repeater is named `accordion_item` and you want to add validation to the `headline` field you can use:
+
+```php
+public function rulesForCreate()
+{
+    return ['repeaters.accordion_item.*.header' => 'required'];
+}
+```
+
+Alternatively if your field is translatable you can use the helpers as defined above:
+
+```php
+public function rulesForUpdate()
+{
+    return $this->rulesForTranslatedFields([], [
+        'repeaters.accordion_item.*.header' => 'required'
+    ]);
+}
+```

@@ -206,7 +206,29 @@ const mutations = {
 }
 
 const actions = {
-  [ACTIONS.REPLACE_FORM] ({ commit, state, getters, rootState }, endpoint) {
+  [ACTIONS.HANDLE_ERRORS] ({ commit, state, getters, rootState }, errors) {
+    const repeaters = rootState.repeaters.repeaters
+    // Translate the errors to their respective fields.
+    Object.keys(errors).forEach((errorKey) => {
+      const splitted = errorKey.split('.')
+
+      if (splitted.length >= 4) {
+        const type = splitted[0]
+        const subType = splitted[1]
+        const index = splitted[2]
+        const field = splitted[3]
+
+        if (type === 'repeaters') {
+          const id = repeaters[subType][index].id
+          const newErrorKey = `blocks[${id}][${field}]`
+          errors[newErrorKey] = errors[errorKey]
+        }
+      }
+    })
+
+    commit(FORM.SET_FORM_ERRORS, errors)
+  },
+  [ACTIONS.REPLACE_FORM] ({ commit, state, getters, rootState, dispatch }, endpoint) {
     return new Promise((resolve, reject) => {
       commit(FORM.CLEAR_FORM_ERRORS)
       commit(NOTIFICATION.CLEAR_NOTIF, 'error')
@@ -230,7 +252,7 @@ const actions = {
         resolve()
       }, function (errorResponse) {
         commit(FORM.UPDATE_FORM_LOADING, false)
-        commit(FORM.SET_FORM_ERRORS, errorResponse.response.data)
+        dispatch(ACTIONS.HANDLE_ERRORS, errorResponse.response.data)
         reject(errorResponse)
       })
     })
@@ -290,7 +312,7 @@ const actions = {
       })
     })
   },
-  [ACTIONS.SAVE_FORM] ({ commit, state, getters, rootState }, saveType) {
+  [ACTIONS.SAVE_FORM] ({ commit, state, getters, rootState, dispatch }, saveType) {
     commit(FORM.CLEAR_FORM_ERRORS)
     commit(NOTIFICATION.CLEAR_NOTIF, 'error')
 
@@ -328,7 +350,7 @@ const actions = {
       if (errorResponse.response.data.hasOwnProperty('exception')) {
         commit(NOTIFICATION.SET_NOTIF, { message: 'Your submission could not be processed.', variant: 'error' })
       } else {
-        commit(FORM.SET_FORM_ERRORS, errorResponse.response.data)
+        dispatch(ACTIONS.HANDLE_ERRORS, errorResponse.response.data)
         commit(NOTIFICATION.SET_NOTIF, { message: 'Your submission could not be validated, please fix and retry', variant: 'error' })
       }
     })
