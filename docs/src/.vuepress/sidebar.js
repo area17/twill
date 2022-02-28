@@ -299,6 +299,14 @@ module.exports = [
           {
             "title": "Building a multilingual site with Twill and Laravel Localization",
             "path": "/guides/building_a_multilingual_site_with_twill_and_laravel_localization.html",
+          },
+          {
+            "title": "Adding custom user roles and permissions on Twill",
+            "path": "/guides/adding-custom-roles-and-permissions.html",
+          },
+          {
+            "title": "Manage frontend user profiles from Twill",
+            "path": "/guides/manage_frontend_user_profiles_from_twill.html",
           }
         ],
       },
