@@ -21,7 +21,7 @@ You can add other fields before or after your repeater, or even multiple repeate
 filename: ```views/twill/repeaters/accordion_item.blade.php```
 ```php
   @twillRepeaterTitle('Accordion item')
-  @twillRepeaterMax('10')
+  @twillRepeaterMax('10') // Optional
 
   @formField('input', [
       'name' => 'header',

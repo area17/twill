@@ -194,6 +194,10 @@ module.exports = [
           {
             "title": "Conditional Fields",
             "path": "/form-fields/conditional-fields.html",
+          },
+          {
+            "title": "Field grouping",
+            "path": "/form-fields/field-grouping.html",
           }
         ],
         "collapsable": true
@@ -279,6 +283,16 @@ module.exports = [
           }
         ],
         "collapsable": true
+      },
+      {
+        "title": "Guides",
+        "path": "/guides/",
+        "children": [
+          {
+            "title": "Adding fields to the create modal",
+            "path": "/guides/adding-fields-to-the-create-modal.html",
+          }
+        ],
       },
       {
         "title": "Artisan Commands",
