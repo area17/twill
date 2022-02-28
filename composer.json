@@ -66,7 +66,7 @@
   "scripts": {
     "test:phpunit": "vendor/bin/phpunit",
     "test:analyse": "php -d memory_limit=-1 vendor/bin/phpstan analyse",
-    "test:syntax": "vendor/bin/php-cs-fixer --dry-run --rules=-@PSR1 fix src",
+    "test:syntax": "vendor/bin/php-cs-fixer --dry-run fix src",
     "test": [
       "@test:syntax",
       "@test:phpunit"
