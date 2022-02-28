@@ -10,11 +10,12 @@ pageClass: twill-doc
 @formField('repeater', ['type' => 'video'])
 ```
 
-| Option       | Description                                   | Type    | Default value  |
-| :----------- | :-------------------------------------------- | :-------| :------------- |
-| type         | Type of repeater items                        | string  |                |
-| name         | Name of the field                             | string  | same as `type` |
-| buttonAsLink | Displays the `Add` button as a centered link  | boolean | false          |
+| Option       | Description                                  | Type    | Default value    |
+|:-------------|:---------------------------------------------|:--------|:-----------------|
+| type         | Type of repeater items                       | string  |                  |
+| name         | Name of the field                            | string  | same as `type`   |
+| max          | Maximum amount that can be created           | number  | null (unlimited) |
+| buttonAsLink | Displays the `Add` button as a centered link | boolean | false            |
 
 <br/>
 

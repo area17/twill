@@ -4,10 +4,13 @@
     <div slot="accordion__value">{{ $trans('publisher.last-edit') }} <timeago :auto-update="1" :datetime="new Date(revisions[0].datetime)"></timeago></div>
     <div class="revaccordion__scroller">
       <ul class="revaccordion__list">
-        <li class="revaccordion__item" v-for="(revision, index) in revisions" :key="revision.id">
+        <li class="revaccordion__item" v-for="revision in revisions" :key="revision.id">
           <a href="#" @click.prevent="openPreview(revision.id)">
             <span class="revaccordion__author">{{ revision.author }}</span>
-            <span class="revaccordion__datetime"><span class="tag" v-if="index === 0">{{ $trans('publisher.current') }}</span> {{ revision.datetime | formatDate }}</span>
+            <span class="revaccordion__datetime">
+              <span class="tag" v-if="revision.label">{{  revision.label }}</span>
+              {{ revision.datetime | formatDate }}
+            </span>
           </a>
         </li>
       </ul>

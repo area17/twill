@@ -51,7 +51,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    const VERSION = '2.6.0';
+    const VERSION = '2.7.0';
 
     /**
      * Service providers to be registered.
@@ -221,10 +221,10 @@ class TwillServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/frontend.php', 'twill.frontend');
         $this->mergeConfigFrom(__DIR__ . '/../config/debug.php', 'twill.debug');
         $this->mergeConfigFrom(__DIR__ . '/../config/seo.php', 'twill.seo');
-        $this->mergeConfigFrom(__DIR__ . '/../config/blocks.php', 'twill.block_editor');
+        $this->mergeConfigFrom(__DIR__ . '/../config/block_editor.php', 'twill.block_editor');
         $this->mergeConfigFrom(__DIR__ . '/../config/enabled.php', 'twill.enabled');
-        $this->mergeConfigFrom(__DIR__ . '/../config/file-library.php', 'twill.file_library');
-        $this->mergeConfigFrom(__DIR__ . '/../config/media-library.php', 'twill.media_library');
+        $this->mergeConfigFrom(__DIR__ . '/../config/file_library.php', 'twill.file_library');
+        $this->mergeConfigFrom(__DIR__ . '/../config/media_library.php', 'twill.media_library');
         $this->mergeConfigFrom(__DIR__ . '/../config/imgix.php', 'twill.imgix');
         $this->mergeConfigFrom(__DIR__ . '/../config/glide.php', 'twill.glide');
         $this->mergeConfigFrom(__DIR__ . '/../config/twicpics.php', 'twill.twicpics');

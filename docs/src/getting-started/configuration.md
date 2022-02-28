@@ -321,6 +321,10 @@ To render uploaded images, Twill's preferred service is [Imgix](https://imgix.co
 
 If you do not want or cannot use a third party service, or have very limited image rendering needs, Twill also provides a local image rendering service powered by [Glide](https://glide.thephpleague.com/). The following .env variables should get you up and running:
 
+::: warning
+If the media cropper is not working, it is adviced to add `img/*` to the `cors.php` exceptions.
+:::
+
 ```bash
 MEDIA_LIBRARY_ENDPOINT_TYPE=local
 MEDIA_LIBRARY_IMAGE_SERVICE=A17\Twill\Services\MediaLibrary\Glide
