@@ -18,12 +18,18 @@ abstract class Request extends FormRequest
         return true;
     }
 
-    public function rulesForCreate(): array
+    /**
+     * @return array
+     */
+    public function rulesForCreate()
     {
         return [];
     }
 
-    public function rulesForUpdate(): array
+    /**
+     * @return array
+     */
+    public function rulesForUpdate()
     {
         return [];
     }
