@@ -1,5 +1,5 @@
 @extends('twill::auth.layout', [
-    'route' => route('admin.login'),
+    'route' => route('twill.login'),
     'screenTitle' => twillTrans('twill::lang.auth.login-title')
 ])
 
@@ -11,7 +11,7 @@
 
     <fieldset class="login__fieldset">
         <label class="login__label" for="password">{{ twillTrans('twill::lang.auth.password') }}</label>
-        <a href="{{ route('admin.password.reset.link') }}" class="login__help f--small" tabindex="5"><span>{{ twillTrans('twill::lang.auth.forgot-password') }}</span></a>
+        <a href="{{ route('twill.password.reset.link') }}" class="login__help f--small" tabindex="5"><span>{{ twillTrans('twill::lang.auth.forgot-password') }}</span></a>
         <input type="password" name="password" id="password" class="login__input" required tabindex="2" />
     </fieldset>
 
@@ -19,7 +19,7 @@
 
     @if (config('twill.enabled.users-oauth', false))
         @foreach(config('twill.oauth.providers', []) as $index => $provider)
-            <a href="{!! route('admin.login.redirect', $provider) !!}" class="login__socialite login__{{$provider}}" tabindex="{{ 4 + $index }}">
+            <a href="{!! route('twill.login.redirect', $provider) !!}" class="login__socialite login__{{$provider}}" tabindex="{{ 4 + $index }}">
                 @includeIf('twill::auth.icons.' . $provider)
                 <span>Sign in with {{ ucfirst($provider)}}</span>
             </a>

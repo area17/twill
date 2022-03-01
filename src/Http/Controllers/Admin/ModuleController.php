@@ -1515,7 +1515,7 @@ abstract class ModuleController extends Controller
             $item = $this->repository->newInstance();
         }
 
-        $fullRoutePrefix = 'admin.' . ($this->routePrefix ? $this->routePrefix . '.' : '') . $this->moduleName . '.';
+        $fullRoutePrefix = 'twill.' . ($this->routePrefix ? $this->routePrefix . '.' : '') . $this->moduleName . '.';
         $previewRouteName = $fullRoutePrefix . 'preview';
         $restoreRouteName = $fullRoutePrefix . 'restoreRevision';
 
@@ -1543,7 +1543,7 @@ abstract class ModuleController extends Controller
             'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
             'saveUrl' => $itemId ? $this->getModuleRoute($itemId, 'update') : moduleRoute($this->moduleName, $this->routePrefix, 'store', [$this->submoduleParentId]),
             'editor' => Config::get('twill.enabled.block-editor') && $this->moduleHas('blocks') && !$this->disableEditor,
-            'blockPreviewUrl' => Route::has('admin.blocks.preview') ? URL::route('admin.blocks.preview') : '#',
+            'blockPreviewUrl' => Route::has('twill.blocks.preview') ? URL::route('twill.blocks.preview') : '#',
             'availableRepeaters' => $this->getRepeaterList()->toJson(),
             'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
         ] + (Route::has($previewRouteName) && $itemId ? [
@@ -1625,7 +1625,12 @@ abstract class ModuleController extends Controller
 
     public function getFormRequestClass()
     {
-        $request = "$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request";
+        $prefix = '\Admin';
+        if ($this->namespace !== 'A17\Twill') {
+            $prefix = "\Twill";
+        }
+
+        $request = "$this->namespace\Http\Requests$prefix\\" . $this->modelName . "Request";
 
         if (@class_exists($request)) {
             return $request;
@@ -1714,7 +1719,7 @@ abstract class ModuleController extends Controller
      */
     protected function getViewPrefix()
     {
-        $prefix = "admin.$this->moduleName";
+        $prefix = "twill.$this->moduleName";
 
         if (view()->exists("$prefix.form")) {
             return $prefix;

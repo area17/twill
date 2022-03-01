@@ -20,8 +20,8 @@
                         <a href="#" data-closenav-btn data-medialib-btn>{{ twillTrans('twill::lang.nav.media-library') }}</a><br />
                     @endif
                     @if(isset($currentUser))
-                        <a href="{{ route('admin.users.index') }}">{{ twillTrans('twill::lang.nav.cms-users') }}</a><br />
-                        <a href="{{ route('admin.users.edit', $currentUser->id) }}">{{ twillTrans('twill::lang.nav.settings') }}</a><br />
+                        <a href="{{ route('twill.users.index') }}">{{ twillTrans('twill::lang.nav.cms-users') }}</a><br />
+                        <a href="{{ route('twill.users.edit', $currentUser->id) }}">{{ twillTrans('twill::lang.nav.settings') }}</a><br />
                         <a href="#" data-logout-btn>{{ twillTrans('twill::lang.nav.logout') }}</a>
                     @endif
                 </div>

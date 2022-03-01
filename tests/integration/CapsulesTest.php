@@ -52,7 +52,7 @@ class CapsulesTest extends TestCase
             'twill.dashboard' => [
                 'modules' => [],
                 'analytics' => ['enabled' => false],
-                'search_endpoint' => 'admin.search',
+                'search_endpoint' => 'twill.search',
             ],
         ]);
 
