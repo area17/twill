@@ -97,5 +97,7 @@ return [
 If you receive an error when visiting the module, you might have forgotton to run the seeder that is mentioned when
 generating the singleton. `php artisan db:seed ModuleNameSeeder`
 
-If you want you can also set the config variable `twill.auto_seed_singletons` to true, when the singleton admin page
-is then visited and there is no content found it will be automatically seeded.
+If the singleton is not yet seeded when you visit the admin panel, by default Twill will automatically take care
+of the seeding.
+
+You can disable this behavior by setting `twill.auto_seed_singletons` to false.
