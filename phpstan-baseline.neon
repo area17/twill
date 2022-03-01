@@ -19,9 +19,3 @@ parameters:
 			message: "#^Variable \\$activeRepositoryTraits in empty\\(\\) always exists and is not falsy\\.$#"
 			count: 1
 			path: src/Commands/ModuleMake.php
-
-		-
-			message: "#^Instantiated class League\\\\Flysystem\\\\AwsS3v3\\\\AwsS3Adapter not found\\.$#"
-			count: 1
-			path: src/Services/Cloud/Aws.php
-
