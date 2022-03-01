@@ -3,10 +3,10 @@
 namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasMedias;
-use A17\Twill\Models\Behaviors\HasPresenter;
 use A17\Twill\Models\Behaviors\HasOauth;
-use A17\Twill\Models\Enums\UserRole;
+use A17\Twill\Models\Behaviors\HasPresenter;
 use A17\Twill\Models\Behaviors\IsTranslatable;
+use A17\Twill\Models\Enums\UserRole;
 use A17\Twill\Notifications\Reset as ResetNotification;
 use A17\Twill\Notifications\Welcome as WelcomeNotification;
 use Illuminate\Auth\Authenticatable;
@@ -14,12 +14,20 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Foundation\Auth\User as AuthenticatableContract;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Session;
 use PragmaRX\Google2FAQRCode\Google2FA;
 
 class User extends AuthenticatableContract
 {
-    use Authenticatable, Authorizable, HasMedias, Notifiable, HasPresenter, HasOauth, SoftDeletes, IsTranslatable;
+    use Authenticatable;
+    use Authorizable;
+    use HasMedias;
+    use Notifiable;
+    use HasPresenter;
+    use HasOauth;
+    use SoftDeletes;
+    use IsTranslatable;
 
     public $timestamps = true;
 
@@ -32,7 +40,7 @@ class User extends AuthenticatableContract
         'description',
         'google_2fa_enabled',
         'google_2fa_secret',
-        'language'
+        'language',
     ];
 
     protected $dates = [
@@ -40,6 +48,7 @@ class User extends AuthenticatableContract
     ];
 
     protected $hidden = ['password', 'remember_token', 'google_2fa_secret'];
+
     public $checkboxes = ['published'];
 
     public $mediasParams = [
@@ -69,9 +78,9 @@ class User extends AuthenticatableContract
 
     public function getRoleValueAttribute()
     {
-        if (!empty($this->role)) {
+        if (! empty($this->role)) {
             if ($this->role == 'SUPERADMIN') {
-                return "SUPERADMIN";
+                return 'SUPERADMIN';
             }
 
             return UserRole::{$this->role}()->getValue();
@@ -131,7 +140,6 @@ class User extends AuthenticatableContract
         config([
             'mail.markdown.paths' => $hostAppMailConfig,
         ]);
-
     }
 
     public function sendWelcomeNotification($token)
@@ -156,12 +164,12 @@ class User extends AuthenticatableContract
 
     public function setGoogle2faSecretAttribute($secret)
     {
-        $this->attributes['google_2fa_secret'] = filled($secret) ? \Crypt::encrypt($secret) : null;
+        $this->attributes['google_2fa_secret'] = filled($secret) ? Crypt::encrypt($secret) : null;
     }
 
     public function getGoogle2faSecretAttribute($secret)
     {
-        return filled($secret) ? \Crypt::decrypt($secret) : null;
+        return filled($secret) ? Crypt::decrypt($secret) : null;
     }
 
     public function generate2faSecretKey()

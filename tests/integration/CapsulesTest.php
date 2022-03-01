@@ -168,13 +168,13 @@ class CapsulesTest extends TestCase
         $this->assertSee('Language');
     }
 
-    protected function createCapsuleModel($count = 1)
+    protected function createCapsuleModel(int $count = 1)
     {
         $class = $this->capsuleModel;
 
         $this->assertEquals(0, $class::count());
 
-        foreach (range(1, $count) as $c) {
+        for ($i = 0; $i < $count; $i++) {
             $this->request(
                 "/twill/{$this->capsuleName}",
                 'POST',
@@ -186,7 +186,9 @@ class CapsulesTest extends TestCase
 
         $this->assertEquals($count, $class::count());
 
-        $this->assertEquals($firstModel->title, $data['title']['en']);
+        if (isset($data)) {
+            $this->assertEquals($firstModel->title, $data['title']['en']);
+        }
 
         return $firstModel;
     }

@@ -13,9 +13,16 @@ parameters:
   level: 1
 
   databaseMigrationsPath:
-    - migrations
+    - migrations/default
+    - migrations/optional
 
   ignoreErrors:
+    - '#Access to an undefined property A17\\Twill\\Models\\(\w*)::\$(\w*)#'
 
   excludePaths:
     - tests/*
+    # Fixed with new capsule manager.
+    - src/Services/Capsules/HasCapsules.php
+    # Fatal errors due to socialite and key missing.
+    - src/Http/Controllers/Admin/LoginController.php
+    - src/Models/User.php
