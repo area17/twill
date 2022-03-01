@@ -9,7 +9,8 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider;
 
 class CapsulesServiceProvider extends RouteServiceProvider
 {
-    use HasRoutes, HasCapsules;
+    use HasRoutes;
+    use HasCapsules;
 
     public static $capsulesBootstrapped = false;
 
@@ -56,7 +57,7 @@ class CapsulesServiceProvider extends RouteServiceProvider
      */
     public function bootCapsules()
     {
-        if (!self::$capsulesBootstrapped) {
+        if (! self::$capsulesBootstrapped) {
             $this->getCapsuleList()
                 ->where('enabled', true)
                 ->each(function ($capsule) {
@@ -92,30 +93,6 @@ class CapsulesServiceProvider extends RouteServiceProvider
         $this->app->instance(
             'twill.capsules.manager',
             $this->manager = new Manager()
-        );
-    }
-
-    public function testCanMakeCapsule()
-    {
-        $this->assertExitCodeIsGood(
-            $this->artisan('twill:make:capsule', [
-                'moduleName' => 'Cars',
-                '--hasBlocks' => true,
-                '--hasTranslation' => true,
-                '--hasSlug' => true,
-                '--hasMedias' => true,
-                '--hasFiles' => true,
-                '--hasPosition' => true,
-                '--hasRevisions' => true,
-            ])->run()
-        );
-
-        $this->assertFileExists(
-            twill_path('Twill/Capsules/Cars/app/Models/Car.php')
-        );
-
-        $this->assertIsObject(
-            $this->app->make('App\Twill\Capsules\Cars\Models\Car')
         );
     }
 }
