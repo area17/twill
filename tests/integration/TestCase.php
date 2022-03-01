@@ -23,10 +23,10 @@ abstract class TestCase extends OrchestraTestCase
 {
     use CopyBlocks;
 
-    const DATABASE_MEMORY = ':memory:';
-    const DEFAULT_PASSWORD = 'secret';
-    const DEFAULT_LOCALE = 'en_US';
-    const DB_CONNECTION = 'sqlite';
+    public const DATABASE_MEMORY = ':memory:';
+    public const DEFAULT_PASSWORD = 'secret';
+    public const DEFAULT_LOCALE = 'en_US';
+    public const DB_CONNECTION = 'sqlite';
 
     /**
      * @var \Faker\Generator
@@ -564,6 +564,10 @@ abstract class TestCase extends OrchestraTestCase
 
                 if (!$this->files->exists($directory = dirname($destination))) {
                     $this->files->makeDirectory($directory, 0755, true);
+                }
+
+                if ($this->files->exists($destination)) {
+                    $this->files->delete($destination);
                 }
 
                 $this->files->copy($source, $destination);

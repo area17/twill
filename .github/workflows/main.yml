@@ -58,4 +58,4 @@ jobs:
           composer install --prefer-dist --no-interaction -vvv
 
       - name: Execute tests
-        run: vendor/bin/phpunit
+        run: vendor/bin/testbench package:test
