@@ -154,13 +154,15 @@ pageClass: twill-doc
     protected $defaultFilters = ['search' => 'title|search'];
 ```
 
-You can also override all actions and internal functions, checkout the ModuleController source in `A17\Twill\Http\Controllers\Admin\ModuleController`.
+You can also override all actions and internal functions, checkout the ModuleController source
+in `A17\Twill\Http\Controllers\Admin\ModuleController`.
 
 #### Example: sorting by a relationship field
 
 Let's say we have a controller with certain fields displayed:
 
 File: `app/Http/Controllers/Admin/PlayController.php`
+
 ```php
     protected $indexColumns = [
         'image' => [
@@ -186,6 +188,7 @@ File: `app/Http/Controllers/Admin/PlayController.php`
 To order by the relationship we need to overwrite the order method in the module's repository.
 
 File: `app/Repositories/PlayRepository.php`
+
 ```php
   ...
   public function order($query, array $orders = []) {
@@ -205,6 +208,7 @@ File: `app/Repositories/PlayRepository.php`
 Then, add a custom `sort` scope to your model, it could be something like this:
 
 File: `app/Models/Play.php`
+
 ```php
     public function scopeOrderByFestival($query, $sort_method = 'ASC') {
         return $query
@@ -219,6 +223,7 @@ File: `app/Models/Play.php`
 You can override the `additionalTableActions()` method to add custom actions in your module's listing view:
 
 File: `app/Http/Controllers/Admin/NewsletterController.php`
+
 ```php
     public function additionalTableActions()
     {
@@ -234,3 +239,65 @@ File: `app/Http/Controllers/Admin/NewsletterController.php`
         ];
     }
 ```
+
+#### Localizing the permalink
+
+In a multilingual setup it might be interesting to define a localized permalink base.
+
+We saw before that we can customize the permalink using `$permalinkBase` but if we want to localize this we can use the
+controller method `getLocalizedPermalinkBase`.
+
+```php
+protected function getLocalizedPermalinkBase()
+{
+    return [
+        'en' => 'page',
+        'nl' => 'pagina',
+    ];
+}
+```
+
+If you need more control or want to change the full permalink you can use the `formData` method instead.
+
+The example below is a simple one and could be done as well with [customizing the permalink](#customizing-the-permalink)
+
+```php
+protected function formData($request)
+{
+    return [
+        'localizedCustomPermalink' => [
+            'en' => route('page', ['id' => $request->route('page')]),
+            'nl' => route('page', ['id' => $request->route('page')])
+        ]
+    ];
+}
+```
+
+#### Customizing the permalink
+
+If needed you can customize the permalink displayed in the admin interface when editing a model. This is especially
+useful if you are using Laravel for displaying your front-end as you do not need to keep your permalink and routes in
+sync.
+
+![screenshot](/docs/_media/custom-permalink.png)
+
+This can be done by setting the `customPermalink` via the `formData` method in the model controller.
+
+The example below will result in: `/page-route/3` for page with id 3.
+
+```php
+# Route definition
+Route::get('page-route/{id}', function() {...})->name('page.detail');
+
+# Method implementation
+protected function formData($request)
+{
+    if ($request->route('page')) {
+        return [
+            'customPermalink' => route('page.detail', ['id' => $request->route('page')]),
+        ];
+    }
+    return [];
+}
+```
+

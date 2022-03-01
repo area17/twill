@@ -20,6 +20,8 @@ class Block
 
     const TYPE_REPEATER = 'repeater';
 
+    const PREG_REPLACE_INNER = '(?:\'|")(.*)(?:\'|")';
+
     /**
      * @var string
      */
@@ -321,7 +323,7 @@ class Block
         $bladeProperty = ucfirst($property);
 
         foreach (['twillProp', 'twillBlock', 'twillRepeater'] as $pattern) {
-            preg_match("/@{$pattern}{$bladeProperty}\('(.*)'\)/", $block, $matches);
+            preg_match("/@{$pattern}{$bladeProperty}\(" . self::PREG_REPLACE_INNER . "\)/", $block, $matches);
 
             if (filled($matches)) {
                 return $matches[1];
@@ -388,7 +390,7 @@ class Block
 
                 return $callback($value, $options);
             }
-        };
+        }
 
         $value = $this->parseProperty($property, $block, $blockName, null);
 
@@ -490,9 +492,9 @@ class Block
     public static function removeSpecialBladeTags($contents)
     {
         return preg_replace([
-            "/@twillProp.*\((.*)\)/sU",
-            "/@twillBlock.*\((.*)\)/sU",
-            "/@twillRepeater.*\((.*)\)/sU",
+            "/@twillProp.*\(" . self::PREG_REPLACE_INNER . "\)/sU",
+            "/@twillBlock.*\(" . self::PREG_REPLACE_INNER . "\)/sU",
+            "/@twillRepeater.*\(" . self::PREG_REPLACE_INNER . "\)/sU",
         ], '', $contents);
     }
 

@@ -69,11 +69,12 @@ if (!function_exists('getFormFieldsValue')) {
     /**
      * @param array $formFields
      * @param string $name
+     * @param mixed $default
      * @return mixed
      */
-    function getFormFieldsValue($formFields, $name)
+    function getFormFieldsValue($formFields, $name, $default = null)
     {
-        return Arr::get($formFields, str_replace(']', '', str_replace('[', '.', $name)), '');
+        return Arr::get($formFields, str_replace(']', '', str_replace('[', '.', $name)), $default ?? '') ?? $default;
     }
 }
 

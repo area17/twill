@@ -57,16 +57,19 @@ class CreateSuperAdmin extends Command
         $password = $this->setPassword();
 
         $user = User::create([
-            'name' => "Admin",
+            'name' => 'Admin',
             'email' => $email,
             'role' => 'SUPERADMIN',
             'published' => true,
         ]);
 
         $user->password = Hash::make($password);
-        $user->save();
+        if ($user->save()) {
+            $this->info('Your account has been created');
+            return;
+        }
 
-        $this->info("Your account has been created");
+        $this->error('Failed creating user. Things you can check: Database permissions, run migrations');
     }
 
     /**

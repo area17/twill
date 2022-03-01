@@ -2,11 +2,10 @@
 
 namespace A17\Twill\Models;
 
-use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use ImageService;
+use A17\Twill\Services\MediaLibrary\ImageService;
 
 class Media extends Model
 {
@@ -143,7 +142,7 @@ class Media extends Model
         if ($this->update($fields) && $this->isReferenced())
         {
             DB::table(config('twill.mediables_table', 'twill_mediables'))->where('media_id', $this->id)->get()->each(function ($mediable) use ($prevWidth, $prevHeight) {
-                
+
                 if ($prevWidth != $this->width) {
                     $mediable->crop_x = 0;
                     $mediable->crop_w = $this->width;
@@ -157,6 +156,14 @@ class Media extends Model
                 DB::table(config('twill.mediables_table', 'twill_mediables'))->where('id', $mediable->id)->update((array)$mediable);
             });
         }
+    }
+
+    public function delete()
+    {
+        if ($this->canDeleteSafely()) {
+            return parent::delete();
+        }
+        return false;
     }
 
     public function getTable()
