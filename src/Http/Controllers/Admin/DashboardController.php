@@ -122,13 +122,20 @@ class DashboardController extends Controller
                     $author = 'Admin';
                 }
 
+                $date = null;
+                if ($item->updated_at) {
+                    $date = $item->updated_at->toIso8601String();
+                } elseif ($item->created_at) {
+                    $date = $item->created_at->toIso8601String();
+                }
+
                 return [
                     'id' => $item->id,
                     'href' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', $item->id),
                     'thumbnail' => method_exists($item, 'defaultCmsImage') ? $item->defaultCmsImage(['w' => 100, 'h' => 100]) : null,
                     'published' => $item->published,
                     'activity' => twillTrans('twill::lang.dashboard.search.last-edit'),
-                    'date' => $item->updated_at->toIso8601String(),
+                    'date' => $date,
                     'title' => $item->titleInDashboard ?? $item->title,
                     'author' => $author,
                     'type' => ucfirst($module['label_singular'] ?? Str::singular($module['name'])),
@@ -179,7 +186,7 @@ class DashboardController extends Controller
             'date' => $activity->created_at->toIso8601String(),
             'author' => $activity->causer->name ?? twillTrans('twill::lang.dashboard.unknown-author'),
             'name' => $activity->subject->titleInDashboard ?? $activity->subject->title,
-            'activity' => twillTrans('twill::lang.dashboard.activities.'.$activity->description),
+            'activity' => twillTrans('twill::lang.dashboard.activities.' . $activity->description),
         ] + (classHasTrait($activity->subject, HasMedias::class) ? [
             'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
         ] : []) + (!$activity->subject->trashed() ? [
@@ -215,12 +222,39 @@ class DashboardController extends Controller
             ];
         })->reverse()->values();
 
+        $dummyData = null;
+        if ($statsByDate->isEmpty()) {
+            $dummyData = [
+                [
+                    'label' => 'Users',
+                    'figure' => 0,
+                    'insight' => '0% Bounce rate',
+                    'trend' => __('None'),
+                    'data' => [0 => 0],
+                    'url' => 'https://analytics.google.com/analytics/web',
+                ],
+                [
+                    'label' => 'Pageviews',
+                    'figure' => 0,
+                    'insight' => '0 Pages / Session',
+                    'trend' => __('None'),
+                    'data' => [0 => 0],
+                    'url' => 'https://analytics.google.com/analytics/web',
+                ],
+            ];
+        }
+
         return Collection::make([
             'today',
             'yesterday',
             'week',
             'month',
-        ])->mapWithKeys(function ($period) use ($statsByDate) {
+        ])->mapWithKeys(function ($period) use ($statsByDate, $dummyData) {
+
+            if ($dummyData) {
+                return [$period => $dummyData];
+            }
+
             $stats = $this->getPeriodStats($period, $statsByDate);
             return [
                 $period => [
@@ -247,7 +281,7 @@ class DashboardController extends Controller
 
     /**
      * @param string $period
-     * @param \Illuminate\Database\Query\Builder $statsByDate
+     * @param \Illuminate\Support\Collection $statsByDate
      * @return array
      */
     private function getPeriodStats($period, $statsByDate)
@@ -366,7 +400,8 @@ class DashboardController extends Controller
                 'label' => ucfirst($moduleOptions['label']),
                 'singular' => ucfirst($moduleOptions['singular']),
                 'number' => $moduleOptions['count'] ? $repository->getCountByStatusSlug(
-                    'all', $module['countScope'] ?? []
+                    'all',
+                    $module['countScope'] ?? []
                 ) : null,
                 'url' => moduleRoute(
                     $module['name'],

@@ -10,17 +10,18 @@
     | 5. Run the command "php artisan twill:lang" to sync all lang files.
     */
 
+
 return [
     'auth' => [
+        'back-to-login' => 'Vai su Login',
+        'choose-password' => 'Sciegli password',
         'email' => 'Email',
         'forgot-password' => 'Password dimenticata?',
         'login' => 'Login',
         'login-title' => 'Login',
-        'password' => 'Password',
-        'back-to-login' => 'Vai su Login',
-        'choose-password' => 'Sciegli password',
         'oauth-link-title' => 'Rientra il tuo password per connettere :provider sul tuo account',
         'otp' => 'Una volta password',
+        'password' => 'Password',
         'password-confirmation' => 'Conferma password',
         'reset-password' => 'Risetta password',
         'reset-send' => 'Mandi password reset link',
@@ -56,6 +57,23 @@ return [
         ],
         'unknown-author' => 'Authore non identificato',
     ],
+    'dialog' => [
+        'cancel' => 'Cancella',
+        'ok' => 'OK',
+        'title' => 'Sposta sulla spazzatura',
+    ],
+    'editor' => [
+        'cancel' => 'Cancella',
+        'delete' => 'Elimina',
+        'done' => 'Fatto',
+        'title' => 'Titolo',
+    ],
+    'emails' => [
+        'all-rights-reserved' => 'Tutti i diritti riservati.',
+        'hello' => 'Ciao!',
+        'problems' => 'Se hai problemi a fare clic sul pulsante ":actionText", copia e incolla l\'URL qui sotto nel tuo web browser: [:url](:url)',
+        'regards' => 'Saluti,',
+    ],
     'fields' => [
         'block-editor' => [
             'add-content' => 'Aggiungi contenuto',
@@ -74,6 +92,13 @@ return [
         'files' => [
             'add-label' => 'Aggiungi',
         ],
+        'generic' => [
+            'switch-language' => 'Cambia la lingua',
+        ],
+        'map' => [
+            'hide' => 'Nascondere',
+            'show' => 'Visualizza',
+        ],
         'medias' => [
             'btn-label' => 'Allega immagine',
             'crop' => 'Ritaglia',
@@ -89,13 +114,6 @@ return [
             'caption' => 'didascalia',
             'video-url' => 'URL del video (opzionale)',
         ],
-        'generic' => [
-            'switch-language' => 'Cambia la lingua',
-        ],
-        'map' => [
-            'hide' => 'Nascondere',
-            'show' => 'Visualizza',
-        ],
     ],
     'filter' => [
         'apply-btn' => 'Applica',
@@ -106,11 +124,20 @@ return [
     'footer' => [
         'version' => 'Versione',
     ],
-    'editor' => [
-        'cancel' => 'Cancella',
-        'delete' => 'Elimina',
-        'done' => 'Fatto',
-        'title' => 'Titolo',
+    'form' => [
+        'content' => 'Contenuto',
+        'dialogs' => [
+            'delete' => [
+                'confirm' => 'Cancella',
+                'confirmation' => 'Sei sicuro ?<br />Non si puo riprestinare.',
+                'delete-content' => 'Cancella contenuto',
+                'title' => 'Cancella contenuto',
+            ],
+        ],
+        'editor' => 'Editor',
+    ],
+    'lang-manager' => [
+        'published' => 'In diretta',
     ],
     'listing' => [
         'add-new-button' => 'Nuovo',
@@ -122,6 +149,22 @@ return [
             'published' => 'Publicato',
             'show' => 'Mostra',
             'thumbnail' => 'Miniatura',
+        ],
+        'dialogs' => [
+            'delete' => [
+                'confirm' => 'Conferma',
+                'disclaimer' => 'Sostantivo',
+                'move-to-trash' => 'Elimina',
+                'title' => 'Titolo',
+            ],
+            'destroy' => [
+                'confirm' => 'Conferma',
+                'destroy-permanently' => 'Distruggi permanente',
+                'disclaimer' => 'Sostantivo.',
+                'title' => 'Muovi dalla spazzatura',
+                'cancel' => 'Cancella',
+            ],
+            'cancel' => 'Cancella',
         ],
         'dropdown' => [
             'delete' => 'Elimina',
@@ -143,27 +186,6 @@ return [
         ],
         'languages' => 'Lingue',
         'listing-empty-message' => 'Non è presente alcun elemento.',
-        'dialogs' => [
-            'cancel' => 'Cancella',
-            'delete' => [
-                'confirm' => 'Conferma',
-                'disclaimer' => 'Sostantivo',
-                'move-to-trash' => 'Elimina',
-                'title' => 'Titolo',
-            ],
-            'destroy' => [
-                'confirm' => 'Conferma',
-                'destroy-permanently' => 'Distruggi permanente',
-                'disclaimer' => 'Sostantivo.',
-                'title' => 'Muovi dalla spazzatura',
-                'cancel' => 'Cancella',
-            ],
-        ],
-    ],
-    'dialog' => [
-        'cancel' => 'Cancella',
-        'ok' => 'OK',
-        'title' => 'Sposta sulla spazzatura',
     ],
     'main' => [
         'create' => 'Crea',
@@ -176,19 +198,19 @@ return [
         'files' => 'Documenti',
         'filter-select-label' => 'Filtra per Tag',
         'images' => 'Immagini',
+        'insert' => 'Inserire',
         'sidebar' => [
+            'alt-text' => 'Testo alternativo',
+            'caption' => 'Titolo',
             'clear' => 'Cancella',
             'dimensions' => 'Dimensioni',
             'empty-text' => 'Nessun file selezionato',
             'files-selected' => 'file selezionati',
-            'alt-text' => 'Testo alternativo',
-            'caption' => 'Titolo',
             'tags' => 'Tag',
         ],
         'title' => 'Libreria',
-        'unused-filter-label' => 'Mostra solo inutilizzati',
-        'insert' => 'Inserire',
         'update' => 'Aggiornare',
+        'unused-filter-label' => 'Mostra solo inutilizzati',
         'no-tags-found' => 'Spiacenti, nessun tag trovato.',
         'dialogs' => [
             'delete' => [
@@ -239,72 +261,21 @@ return [
         'media-library' => 'Libreria',
         'settings' => 'Impostazioni',
     ],
-    'publisher' => [
-        'cancel' => 'Annulla',
-        'publish' => 'Pubblica',
-        'publish-close' => 'Pubblica e chiudi',
-        'publish-new' => 'Pubblica e crea nuovo',
-        'published-on' => 'Pubblicato al',
-        'save' => 'Salva come Bozza',
-        'save-close' => 'Salva come Bozza e chiudi',
-        'save-new' => 'Salva come bozza e crea nuovo',
-        'switcher-title' => 'Stato',
-        'update' => 'Aggiorna',
-        'update-close' => 'Aggiorna e chiudi',
-        'update-new' => 'Aggiorna e crea nuovo',
-        'revisions' => 'Revisioni',
-        'save-success' => 'Contenuto salvato. Va tutto bene!',
-        'start-date' => 'Data d\'inizio',
-        'parent-page' => 'pagina principale',
-        'review-status' => 'Stato revisione',
-        'visibility' => 'Visibilità',
-        'languages' => 'Linguaggi',
-        'languages-published' => 'in diretta',
-        'preview' => 'Anteprima modifiche',
+    'notifications' => [
+        'reset' => [
+            'action' => 'Resetta la password',
+            'content' => 'Hai ricevuto questa email perché abbiamo ricevuto una reimpostazione della password. Se non hai richiesto la reimpostazione della password, non sono necessarie ulteriori azioni.',
+            'subject' => ':appName | Resetta la password',
+        ],
+        'welcome' => [
+            'action' => 'Scegli la tua password',
+            'content' => 'Hai ricevuto questa email perché è stato creato un account per te su :name.',
+            'title' => 'Benvenuto',
+            'subject' => ':appName | Benvenuto',
+        ],
     ],
     'overlay' => [
         'close' => 'Chiudi',
-    ],
-    'lang-manager' => [
-        'published' => 'In diretta',
-    ],
-    'select' => [
-        'empty-text' => '...nessuna opzione',
-    ],
-    'uploader' => [
-        'dropzone-text' => 'o trascina i file qui',
-        'upload-btn-label' => 'Aggiungi',
-    ],
-    'user-management' => [
-        'active' => 'Attivi',
-        'cancel' => 'Annulla',
-        'title' => 'Titolo',
-        'content-fieldset-label' => 'Impostazioni utente',
-        'disabled' => 'Disabilitati',
-        'edit-modal-title' => 'Modifica il nominativo',
-        'email' => 'Email',
-        'enable-user' => 'Abilita',
-        'enable-user-and-close' => 'Abilita e chiudi',
-        'enable-user-and-create-new' => 'Abilita e crea nuovo',
-        'enabled' => 'Abilitati',
-        'name' => 'Nominativo',
-        'role' => 'Ruolo',
-        'trash' => 'Cestino',
-        'update' => 'Aggiorna',
-        'update-and-close' => 'Aggiorna e chiudi',
-        'update-and-create-new' => 'Aggiorna e crea nuovo',
-        'update-disabled-and-close' => 'Disabilita e chiudi',
-        'update-disabled-user' => 'Disabilita',
-        'update-disabled-user-and-create-new' => 'Disabilita e crea nuovo',
-        'user-image' => 'Immagine utente',
-        'users' => 'Utenti',
-        'language' => 'Lingua',
-        'language-placeholder' => 'Seleziona lingua',
-    ],
-    'settings' => [
-        'update' => 'Aggiorna',
-        'cancel' => 'Cancella',
-        'fieldset-label' => 'Modifica Parametri',
     ],
     'previewer' => [
         'compare-view' => 'Compara',
@@ -319,35 +290,65 @@ return [
         'unsaved' => 'Visualizza in anteprima le modifiche non salvate',
         'drag-and-drop' => 'Trascina e rilascia i blocchi',
     ],
-    'form' => [
-        'content' => 'Contenuto',
-        'dialogs' => [
-            'delete' => [
-                'confirm' => 'Cancella',
-                'confirmation' => 'Sei sicuro ?<br />Non si puo riprestinare.',
-                'delete-content' => 'Cancella contenuto',
-                'title' => 'Cancella contenuto',
-            ],
-        ],
-        'editor' => 'Editor',
+    'publisher' => [
+        'cancel' => 'Annulla',
+        'languages' => 'Linguaggi',
+        'languages-published' => 'in diretta',
+        'preview' => 'Anteprima modifiche',
+        'publish' => 'Pubblica',
+        'publish-close' => 'Pubblica e chiudi',
+        'publish-new' => 'Pubblica e crea nuovo',
+        'published-on' => 'Pubblicato al',
+        'revisions' => 'Revisioni',
+        'save' => 'Salva come Bozza',
+        'save-close' => 'Salva come Bozza e chiudi',
+        'save-new' => 'Salva come bozza e crea nuovo',
+        'save-success' => 'Contenuto salvato. Va tutto bene!',
+        'start-date' => 'Data d\'inizio',
+        'switcher-title' => 'Stato',
+        'update' => 'Aggiorna',
+        'update-close' => 'Aggiorna e chiudi',
+        'update-new' => 'Aggiorna e crea nuovo',
+        'parent-page' => 'pagina principale',
+        'review-status' => 'Stato revisione',
+        'visibility' => 'Visibilità',
     ],
-    'notifications' => [
-        'reset' => [
-            'action' => 'Resetta la password',
-            'content' => 'Hai ricevuto questa email perché abbiamo ricevuto una reimpostazione della password. Se non hai richiesto la reimpostazione della password, non sono necessarie ulteriori azioni.',
-            'subject' => ':appName | Resetta la password',
-        ],
-        'welcome' => [
-            'action' => 'Scegli la tua password',
-            'content' => 'Hai ricevuto questa email perché è stato creato un account per te su :name.',
-            'title' => 'Benvenuto',
-            'subject' => ':appName | Benvenuto',
-        ],
+    'select' => [
+        'empty-text' => '...nessuna opzione',
     ],
-    'emails' => [
-        'all-rights-reserved' => 'Tutti i diritti riservati.',
-        'hello' => 'Ciao!',
-        'problems' => 'Se hai problemi a fare clic sul pulsante ":actionText", copia e incolla l\'URL qui sotto nel tuo web browser: [:url](:url)',
-        'regards' => 'Saluti,',
+    'uploader' => [
+        'dropzone-text' => 'o trascina i file qui',
+        'upload-btn-label' => 'Aggiungi',
+    ],
+    'user-management' => [
+        'active' => 'Attivi',
+        'cancel' => 'Annulla',
+        'content-fieldset-label' => 'Impostazioni utente',
+        'disabled' => 'Disabilitati',
+        'edit-modal-title' => 'Modifica il nominativo',
+        'email' => 'Email',
+        'enable-user' => 'Abilita',
+        'enable-user-and-close' => 'Abilita e chiudi',
+        'enable-user-and-create-new' => 'Abilita e crea nuovo',
+        'enabled' => 'Abilitati',
+        'language' => 'Lingua',
+        'language-placeholder' => 'Seleziona lingua',
+        'name' => 'Nominativo',
+        'role' => 'Ruolo',
+        'title' => 'Titolo',
+        'trash' => 'Cestino',
+        'update' => 'Aggiorna',
+        'update-and-close' => 'Aggiorna e chiudi',
+        'update-and-create-new' => 'Aggiorna e crea nuovo',
+        'update-disabled-and-close' => 'Disabilita e chiudi',
+        'update-disabled-user' => 'Disabilita',
+        'update-disabled-user-and-create-new' => 'Disabilita e crea nuovo',
+        'user-image' => 'Immagine utente',
+        'users' => 'Utenti',
+    ],
+    'settings' => [
+        'update' => 'Aggiorna',
+        'cancel' => 'Cancella',
+        'fieldset-label' => 'Modifica Parametri',
     ],
 ];

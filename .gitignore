@@ -13,7 +13,7 @@ public/
 tests/coverage
 tests/storage
 .phpunit.result.cache
-.php_cs.cache
+.php-cs-fixer.cache
 .env.local
 .env.*.local
 composer.lock
