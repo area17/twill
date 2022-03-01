@@ -8,6 +8,7 @@ class SingletonModuleTest extends TestCase
 {
     protected $allFiles = [
         '{$stubs}/singleton/2021_09_30_202102_create_contact_pages_tables.php' => '{$database}/migrations/',
+        '{$stubs}/singleton/ContactPageSeeder.php' => '{$database}/seeders/ContactPageSeeder.php',
         '{$stubs}/singleton/ContactPage.php' => '{$app}/Models/',
         '{$stubs}/singleton/ContactPageController.php' => '{$app}/Http/Controllers/Admin/',
         '{$stubs}/singleton/ContactPageRepository.php' => '{$app}/Repositories/',
@@ -73,8 +74,17 @@ class SingletonModuleTest extends TestCase
         $this->assertSee('This is the ContactPage form');
     }
 
-    public function testSingletonRouteRequiresOneRecord()
+/** @todo: I cannot make testbench autoload the migration. */
+/*     public function testSingletonRouteAutoSeeds() */
+/*     { */
+/*         $this->httpRequestAssert('/twill/contactPage', 'GET', [], 200); */
+/*  */
+/*         $this->assertDontSee("ContactPage is not seeded"); */
+/*     } */
+
+    public function testSingletonRouteRequiresOneRecordIfNotAutoSeeded()
     {
+        $this->app->get('config')->set('twill.auto_seed_singletons', false);
         $this->httpRequestAssert('/twill/contactPage', 'GET', [], 500);
 
         $this->assertSee("ContactPage is not seeded");
