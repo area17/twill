@@ -51,7 +51,8 @@ This is true to all following configuration arrays.
 
 ## Global configuration
 
-By default, Twill uses Laravel default application namespace `App`. You  can provide your own using the `namespace` configuration in your `config/twill.php` file:
+By default, Twill uses Laravel default application namespace `App`. You  can provide your own using the `namespace`
+configuration in your `config/twill.php` file:
 
 ```php
 <?php
@@ -140,7 +141,7 @@ return [
 ];
 ```
 
-Since Twill 2.0, migrations are not published anymore but loaded automatically in Twill's service provider. 
+Since Twill 2.0, migrations are not published anymore but loaded automatically in Twill's service provider.
 Set to false to prevent this from happening if you need to customize Twill's tables.
 
 ```php
@@ -192,7 +193,7 @@ return [
 
 Enabling this allows adding top level keys to Twill's navigation and dashboard modules configuration, mapping to a subdomain.
 This is a very simple way to implement multi-tenant CMS/sites in Twill. A navigation array looking like the following would expose your CMS on
-the `admin.subdomain1.app-url.test` and `admin.subdomain2.app-url.test` urls, with its corresponding links: 
+the `admin.subdomain1.app-url.test` and `admin.subdomain2.app-url.test` urls, with its corresponding links:
 
 ```php
 <?php
@@ -236,25 +237,42 @@ The `media_library` configuration array in `config/twill.php` allows you to prov
 return [
     'media_library' => [
         'disk' => 'twill_media_library',
-        'endpoint_type' => env('MEDIA_LIBRARY_ENDPOINT_TYPE', 's3'),
+        'endpoint_type' => env('MEDIA_LIBRARY_ENDPOINT_TYPE', 'local'),
         'cascade_delete' => env('MEDIA_LIBRARY_CASCADE_DELETE', false),
         'local_path' => env('MEDIA_LIBRARY_LOCAL_PATH', 'uploads'),
-        'image_service' => env('MEDIA_LIBRARY_IMAGE_SERVICE', 'A17\Twill\Services\MediaLibrary\Imgix'),
+        'image_service' => env('MEDIA_LIBRARY_IMAGE_SERVICE', 'A17\Twill\Services\MediaLibrary\Glide'),
         'acl' => env('MEDIA_LIBRARY_ACL', 'private'),
         'filesize_limit' => env('MEDIA_LIBRARY_FILESIZE_LIMIT', 50),
         'allowed_extensions' => ['svg', 'jpg', 'gif', 'png', 'jpeg'],
         'init_alt_text_from_filename' => true,
         'prefix_uuid_with_local_path' => config('twill.file_library.prefix_uuid_with_local_path', false),
         'translated_form_fields' => false,
+        'show_file_name' => false,
     ],
 ];
 ```
 
-Twill's media library supports the following endpoint types: `s3`, `azure` and `local`. 
+Twill's media library supports the following endpoint types: `s3`, `azure` and `local`.
+
+#### Local endpoint
+
+By default Twill stores media and files in the local filesystem, if you want you can specify this using the following
+environment variables.
+
+```bash
+MEDIA_LIBRARY_ENDPOINT_TYPE=local
+MEDIA_LIBRARY_LOCAL_PATH=uploads
+```
+
+To avoid running into `too large` errors when uploading to your server, you can choose to limit uploads through Twill
+using the `MEDIA_LIBRARY_FILESIZE_LIMIT` environment variable or `filesize_limit` configuration option.
+It is set to 50mb by default. Make sure to setup your PHP and webserver (apache, nginx, ....) to allow for the upload size specified here.
+When using the `s3` endpoint type, uploads are not limited in size.
 
 #### S3 endpoint
 
-By default, Twill uses the `s3` endpoint type to store your uploads on an AWS S3 bucket. To authorize uploads to S3, provide your application with the following environment variables:
+As an alternative, Twill can use the `s3` endpoint type to store your uploads on an AWS S3 bucket.
+To authorize uploads to S3, provide your application with the following environment variables:
 
 ```bash
 S3_KEY=S3_KEY
@@ -273,12 +291,15 @@ S3_BUCKET=bucket-name
 S3_ENDPOINT=https://YOUR_S3_DOMAIN
 ```
 
-When uploading images to S3, Twill sets the `acl` parameter to `private`. This is because images in your bucket should not be publicly accessible when using a service like [Imgix](https://imgix.com) on top of it. Only Imgix should have read-only access to your bucket, while your application obviously needs to have write access. If you intend to access images uploaded to S3 directly, set the `MEDIA_LIBRARY_ACL` variable or `acl` configuration option to `public-read`.
+When uploading images to S3, Twill sets the `acl` parameter to `private`. This is because images in your bucket should
+not be publicly accessible when using a service like [Imgix](https://imgix.com) on top of it.
+Only Imgix should have read-only access to your bucket, while your application obviously needs to have write access.
+If you intend to access images uploaded to S3 directly, set the `MEDIA_LIBRARY_ACL` variable or `acl` configuration option to `public-read`.
 
 #### Azure endpoint
 
 Twill supports `azure` endpoint type to store your uploads on an Microsoft Azure container.
- 
+
 To authorize uploads to Azure, provide your application with the following environment variables:
 
 ```bash
@@ -288,18 +309,6 @@ AZURE_ACCOUNT_KEY=AZURE_ACCOUNT_KEY
 AZURE_ACCOUNT_NAME=AZURE_ACCOUNT_NAME
 AZURE_CONTAINER=AZURE_CONTAINER
 ```
-
-#### Local endpoint
-
-If you want your uploads to be stored on the server where your Laravel application is running, use the `local` endpoint type.  Define the `MEDIA_LIBRARY_LOCAL_PATH` environment variable or the `media_library.local_path` configuration option to provide Twill with your preferred upload path:
-
-```bash
-MEDIA_LIBRARY_ENDPOINT_TYPE=local
-MEDIA_LIBRARY_LOCAL_PATH=uploads
-```
-
-To avoid running into `too large` errors when uploading to your server, you can choose to limit uploads through Twill using the `MEDIA_LIBRARY_FILESIZE_LIMIT` environment variable or `filesize_limit` configuration option. It is set to 50mb by default. Make sure to setup your PHP and webserver (apache, nginx, ....) to allow for the upload size specified here.
-When using the `s3` endpoint type, uploads are not limited in size.
 
 #### Cascading uploads deletions
 
@@ -313,13 +322,16 @@ MEDIA_LIBRARY_CASCADE_DELETE=false
 
 #### Allowed extensions
 
-The `allowed_extensions` configuration option is an array of file extensions that Twill's media library's uploader will accept. By default, `svg`, `jpg`, `gif`, `png` and `jpeg` extensions are allowed.
+The `allowed_extensions` configuration option is an array of file extensions that Twill's media library's uploader will accept.
+By default, `svg`, `jpg`, `gif`, `png` and `jpeg` extensions are allowed.
 
 #### Images rendering
 
 To render uploaded images, Twill's preferred service is [Imgix](https://imgix.com).
 
-If you do not want or cannot use a third party service, or have very limited image rendering needs, Twill also provides a local image rendering service powered by [Glide](https://glide.thephpleague.com/). The following .env variables should get you up and running:
+If you do not want or cannot use a third party service, or have very limited image rendering needs,
+Twill also provides a (default) local image rendering service powered by [Glide](https://glide.thephpleague.com/).
+The following .env variables should get you up and running:
 
 ::: warning
 If the media cropper is not working, it is adviced to add `img/*` to the `cors.php` exceptions.
@@ -330,11 +342,14 @@ MEDIA_LIBRARY_ENDPOINT_TYPE=local
 MEDIA_LIBRARY_IMAGE_SERVICE=A17\Twill\Services\MediaLibrary\Glide
 ```
 
-If you want to add support for other image formats, which aren't covered by Glide, you can specify an array of extensions. For files matching the ending, the original media URL will be returned, instead of the modified one. For this, you can specify the following configuration key: `glide.original_media_for_extensions`
+If you want to add support for other image formats, which aren't covered by Glide, you can specify an array of extensions.
+For files matching the ending, the original media URL will be returned, instead of the modified one.
+For this, you can specify the following configuration key: `glide.original_media_for_extensions`
 
 ## Imgix
 
-As noted above, by default, Twill uses and recommends using [Imgix](https://imgix.com) to transform, optimize, and intelligently cache your uploaded images. 
+As noted above, Twill can use and recommends using [Imgix](https://imgix.com) to transform, optimize,
+and intelligently cache your uploaded images.
 
 Specify your Imgix source url using the `IMGIX_SOURCE_HOST` environment variable or `source_host` configuration option.
 
@@ -342,9 +357,14 @@ Specify your Imgix source url using the `IMGIX_SOURCE_HOST` environment variable
 IMGIX_SOURCE_HOST=source.imgix.net
 ```
 
-By default, Twill will render Imgix urls with the `https` scheme. We do not see any reason why you would do so nowadays, but you can decide to opt-out using the `IMGIX_USE_HTTPS` environment variable or `use_https` configuration option.
+By default, Twill will render Imgix urls with the `https` scheme.
+We do not see any reason why you would do so nowadays, but you can decide to opt-out using the `IMGIX_USE_HTTPS`
+environment variable or `use_https` configuration option.
 
-Imgix offers the ability to use signed urls to prevent users from accessing images without parameters or different parameters than the ones you choose to use in your own application. You can enable that feature in Twill using the `IMGIX_USE_SIGNED_URLS` environment variable or `use_signed_urls` configuration option. If you enable signed urls, Imgix provides you with a signature key. Provide it to Twill using the `IMGIX_SIGN_KEY` environment variable. 
+Imgix offers the ability to use signed urls to prevent users from accessing images without parameters or different parameters
+than the ones you choose to use in your own application. You can enable that feature in Twill using the `IMGIX_USE_SIGNED_URLS`
+environment variable or `use_signed_urls` configuration option. If you enable signed urls, Imgix provides you with a signature key.
+Provide it to Twill using the `IMGIX_SIGN_KEY` environment variable.
 
 ```bash
 IMGIX_USE_SIGNED_URLS=true
@@ -352,14 +372,15 @@ IMGIX_SIGN_KEY=xxxxxxxxxxxxxxxx
 ```
 
 :::danger
-You should never store any sort of credentials in source control (eg. Git). 
+You should never store any sort of credentials in source control (eg. Git).
 
 That's exactly why in the case of the Imgix signature key, we do not say that you could provide it to Twill using the sign_key configuration option of the Imgix configuration array.
 
 Always use environment variables for credentials.
 :::
 
-Finally, Twill's default Imgix configuration includes 4 different image transformation parameter sets that are used by helpers you will find in the [media library's documentation](/media-library/):
+Finally, Twill's default Imgix configuration includes 4 different image transformation parameter sets that are used by
+helpers you will find in the [media library's documentation](/media-library/):
 
 - `default_params`: used by all image url functions in `A17\Twill\Services\MediaLibrary\Imgix` but overridden by the following parameter sets
 - `lqip_default_params`: used by the Low Quality Image Placeholder url function
@@ -406,7 +427,9 @@ return [
 
 ## File library
 
-The `file_library` configuration array in `config/twill.php` allows you to provide Twill with your configuration for the file library disk, endpoint type and other options depending on your endpoint type. Most options can be controlled through environment variables, as you can see in the default configuration provided:
+The `file_library` configuration array in `config/twill.php` allows you to provide Twill with your configuration for the
+file library disk, endpoint type and other options depending on your endpoint type.
+Most options can be controlled through environment variables, as you can see in the default configuration provided:
 
 ```php
 <?php
@@ -414,7 +437,7 @@ The `file_library` configuration array in `config/twill.php` allows you to provi
 return [
     'file_library' => [
         'disk' => 'twill_file_library',
-        'endpoint_type' => env('FILE_LIBRARY_ENDPOINT_TYPE', 's3'),
+        'endpoint_type' => env('FILE_LIBRARY_ENDPOINT_TYPE', 'local'),
         'cascade_delete' => env('FILE_LIBRARY_CASCADE_DELETE', false),
         'local_path' => env('FILE_LIBRARY_LOCAL_PATH', 'uploads'),
         'file_service' => env('FILE_LIBRARY_FILE_SERVICE', 'A17\Twill\Services\FileLibrary\Disk'),
@@ -426,11 +449,28 @@ return [
 ];
 ```
 
-Twill's file library supports the following endpoint types: `s3` and `local`. 
+Twill's file library supports the following endpoint types: `s3` and `local`.
+
+#### Local endpoint
+
+This is the default configration in Twill.
+But you can still define the `FILE_LIBRARY_LOCAL_PATH` environment variable or the `file_library.local_path` configuration
+option to provide Twill with your preferred upload path. Always include a trailing slash like in the following example:
+
+```bash
+FILE_LIBRARY_ENDPOINT_TYPE=local
+FILE_LIBRARY_LOCAL_PATH=uploads/
+```
+
+To avoid running into `too large` errors when uploading to your server, you can choose to limit uploads through Twill
+using the `FILE_LIBRARY_FILESIZE_LIMIT` environment variable or `filesize_limit` configuration option.
+It is set to 50mb by default. Make sure to setup your PHP and webserver (apache, nginx, ....) to allow for the upload size specified here.
+When using the `s3` endpoint type, uploads are not limited in size.
 
 #### S3 endpoint
 
-By default, Twill uses the `s3` endpoint type to store your uploads on an AWS S3 bucket. To authorize uploads to S3, provide your application with the following environment variables:
+As alternative you can use the `s3` endpoint type to store your uploads on an AWS S3 bucket.
+To authorize uploads to S3, provide your application with the following environment variables:
 
 ```bash
 S3_KEY=S3_KEY
@@ -442,23 +482,12 @@ Optionally, you can use the `S3_REGION` variable to specify a region other than 
 
 When uploading files to S3, Twill sets the `acl` parameter to `public-read`. This is because Twill's default file service produces direct S3 urls. If you do not intend to access files uploaded to S3 directly, set the `FILE_LIBRARY_ACL` variable or `acl` configuration option to `public-read`.
 
-#### Local endpoint
-
-If you want your uploads to be stored on the server where your Laravel application is running, use the `local` endpoint type.  Define the `FILE_LIBRARY_LOCAL_PATH` environment variable or the `file_library.local_path` configuration option to provide Twill with your preferred upload path. Always include a trailing slash like in the following example:
-
-```bash
-FILE_LIBRARY_ENDPOINT_TYPE=local
-FILE_LIBRARY_LOCAL_PATH=uploads/
-```
-
-To avoid running into `too large` errors when uploading to your server, you can choose to limit uploads through Twill using the `FILE_LIBRARY_FILESIZE_LIMIT` environment variable or `filesize_limit` configuration option. It is set to 50mb by default. Make sure to setup your PHP and webserver (apache, nginx, ....) to allow for the upload size specified here.
-When using the `s3` endpoint type, uploads are not limited in size.
-
 #### Cascading uploads deletions
 
 By default, Twill will not delete files when deleting from Twill's file library's UI, wether it is on S3 or locally.
 
-You can decide to physically delete uploaded files using the `cascade_delete` option, which is also controlled through the `FILE_LIBRARY_CASCADE_DELETE` boolean environment variable:
+You can decide to physically delete uploaded files using the `cascade_delete` option, which is also controlled through the
+`FILE_LIBRARY_CASCADE_DELETE` boolean environment variable:
 
 ```bash
 FILE_LIBRARY_CASCADE_DELETE=false
@@ -466,11 +495,13 @@ FILE_LIBRARY_CASCADE_DELETE=false
 
 #### Files url service
 
-Twill's provided service for files creates direct urls to the disk they were uploaded to (ie. S3 urls or urls on your domain depending on your endpoint type). You can change the default service using the `FILE_LIBRARY_IMAGE_SERVICE` environment variable or the `file_library.image_service` configuration option.
+Twill's provided service for files creates direct urls to the disk they were uploaded to
+(ie. S3 urls or urls on your domain depending on your endpoint type). You can change the default service using the `FILE_LIBRARY_IMAGE_SERVICE`
+environment variable or the `file_library.image_service` configuration option.
 
 See the [file library's documentation](/media-library/file-library.html) for more information.
 
-
 #### Allowed extensions
 
-The `allowed_extensions` configuration option is an array of file extensions that Twill's file library uploader will accept. By default, it is empty, all extensions are allowed.
+The `allowed_extensions` configuration option is an array of file extensions that Twill's file library uploader will accept.
+By default, it is empty, all extensions are allowed.

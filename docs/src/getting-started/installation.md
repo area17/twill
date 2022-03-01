@@ -14,14 +14,14 @@ composer require area17/twill:"^2.0"
 
 ## Artisan
 
-Run the `install` Artisan command: 
+Run the `install` Artisan command:
 
 ```bash
 php artisan twill:install
 ```
 
 :::danger
-This command will migrate your database. 
+This command will migrate your database.
 
 Make sure to setup your .env file with your database credentials and to run it where your database is accessible (ie. inside Vagrant if you are using Laravel Homestead).
 :::
@@ -41,9 +41,9 @@ By default, Twill's admin console is available at `admin.domain.test`. This is a
 APP_URL=domain.test
 ```
 
-In development, make sure that the `admin` subdomain is available and pointing to your app's `public` directory. 
+In development, make sure that the `admin` subdomain is available and pointing to your app's `public` directory.
 
-If you are a Valet user, this is already done for you (any subdomain is linked to the same directory as the linked domain). 
+If you are a Valet user, this is already done for you (any subdomain is linked to the same directory as the linked domain).
 
 If you are a Homestead user, make sure to add the subdomain to your `/etc/hosts` file too:
 
@@ -79,7 +79,17 @@ At this point, you should be able to login at `admin.domain.test`, `manage.domai
 
 ## Setting up the media library
 
-From there, you might want to configure Twill's media library's storage provider and its rendering service. By default, Twill is configured to store uploads on `AWS S3` and to render images via [Imgix](https://imgix.com). Provide the following .env variables to get up and running:
+From there, you might want to configure Twill's media library's storage provider and its rendering service.
+
+By default Twill uses local storage and local image rendering using [Glide](https://glide.thephpleague.com/), if you have
+more advanced image storage needs you can setup AWS as instructed below.
+
+See the [media library's configuration documentation](/media-library/) for more information.
+
+### AWS
+
+Provide the following .env variables to get up and running to store uploads on `AWS S3` and to render
+images via [Imgix](https://imgix.com)
 
 ```bash
 S3_KEY=S3_KEY
@@ -88,15 +98,6 @@ S3_BUCKET=bucket-name
 
 IMGIX_SOURCE_HOST=source.imgix.net
 ```
-
-If you are not ready to use those third party services yet, can't use them, or have very limited image rendering needs, Twill also provides a local storage driver as well as a locale image rendering service powered by [Glide](https://glide.thephpleague.com/). The following .env variables should get you up and running:
-
-```bash
-MEDIA_LIBRARY_ENDPOINT_TYPE=local
-MEDIA_LIBRARY_IMAGE_SERVICE=A17\Twill\Services\MediaLibrary\Glide
-```
-
-See the [media library's configuration documentation](/media-library/) for more information.
 
 ## A note about the frontend
 

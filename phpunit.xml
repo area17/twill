@@ -66,10 +66,7 @@
     <env name="DB_CONNECTION" value="sqlite"/>
     <env name="DB_DATABASE" value=":memory:"/>
     <env name="LOG_CHANNEL" value="single"/>
-    <env name="MEDIA_LIBRARY_IMAGE_SERVICE" value="A17\Twill\Services\MediaLibrary\Glide"/>
     <env name="MEDIA_LIBRARY_LOCAL_PATH" value="media-library"/>
-    <env name="MEDIA_LIBRARY_ENDPOINT_TYPE" value="local"/>
-    <env name="FILE_LIBRARY_FILE_SERVICE" value="A17\Twill\Services\MediaLibrary\Glide"/>
     <env name="FILE_LIBRARY_LOCAL_PATH" value="file-library"/>
     <env name="FILE_LIBRARY_ENDPOINT_TYPE" value="local"/>
     <env name="IMGIX_SOURCE_HOST" value=""/>
