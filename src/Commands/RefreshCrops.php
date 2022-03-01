@@ -118,10 +118,6 @@ class RefreshCrops extends Command
 
         $this->crops = collect($mediasParams[$this->roleName]);
 
-        $mediables = $this->db
-            ->table(config('twill.mediables_table', 'twill_mediables'))
-            ->where(['mediable_type' => $this->modelName, 'role' => $this->roleName]);
-
         // If the model exists in the Morphmap, we loop for the morphed name instead.
         $mediableType = $this->modelName;
         if ($morphedModelName = array_search($this->modelName, Relation::morphMap())) {
