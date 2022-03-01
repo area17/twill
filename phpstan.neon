@@ -1,5 +1,6 @@
 includes:
   - ./vendor/nunomaduro/larastan/extension.neon
+  - phpstan-baseline.neon
 
 parameters:
 
@@ -10,6 +11,7 @@ parameters:
     - tests
 
   # 8 is the highest level
+  # Todo: Increment when feeling brave.
   level: 1
 
   databaseMigrationsPath:
@@ -17,6 +19,7 @@ parameters:
     - migrations/optional
 
   ignoreErrors:
+    # See: https://github.com/nunomaduro/larastan/issues/1080
     - '#Access to an undefined property A17\\Twill\\Models\\(\w*)::\$(\w*)#'
 
   excludePaths:
