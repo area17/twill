@@ -127,9 +127,9 @@ class FileLibraryController extends ModuleController implements SignUploadListen
                 return $tag->name;
             }),
             'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
-            'updateUrl' => $this->urlGenerator->route('admin.file-library.files.single-update'),
-            'updateBulkUrl' => $this->urlGenerator->route('admin.file-library.files.bulk-update'),
-            'deleteBulkUrl' => $this->urlGenerator->route('admin.file-library.files.bulk-delete'),
+            'updateUrl' => $this->urlGenerator->route('twill.file-library.files.single-update'),
+            'updateBulkUrl' => $this->urlGenerator->route('twill.file-library.files.bulk-update'),
+            'deleteBulkUrl' => $this->urlGenerator->route('twill.file-library.files.bulk-delete'),
         ];
     }
 

@@ -23,7 +23,7 @@ class Handler extends ExceptionHandler
     {
         return $request->expectsJson()
             ? response()->json(['message' => $exception->getMessage()], 401)
-            : redirect()->guest($exception->redirectTo() ?? route('admin.login', Route::current()->parameters()));
+            : redirect()->guest($exception->redirectTo() ?? route('twill.login', Route::current()->parameters()));
     }
 
     /**
@@ -57,7 +57,7 @@ class Handler extends ExceptionHandler
             return view()->exists($view)? $view : "errors::{$statusCode}";
         }
 
-        $view = "admin.errors.$statusCode";
+        $view = "twill.errors.$statusCode";
 
         return view()->exists($view) ? $view : "twill::errors.$statusCode";
     }

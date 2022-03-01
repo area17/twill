@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Twill;
 
 use A17\Twill\Http\Controllers\Admin\NestedModuleController as ModuleController;
 use Illuminate\Http\Request;

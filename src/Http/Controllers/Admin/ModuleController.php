@@ -1526,7 +1526,7 @@ abstract class ModuleController extends Controller
             $item = $this->repository->newInstance();
         }
 
-        $fullRoutePrefix = 'admin.' . ($this->routePrefix ? $this->routePrefix . '.' : '') . $this->moduleName . '.';
+        $fullRoutePrefix = 'twill.' . ($this->routePrefix ? $this->routePrefix . '.' : '') . $this->moduleName . '.';
         $previewRouteName = $fullRoutePrefix . 'preview';
         $restoreRouteName = $fullRoutePrefix . 'restoreRevision';
 
@@ -1636,7 +1636,12 @@ abstract class ModuleController extends Controller
 
     public function getFormRequestClass()
     {
-        $request = "$this->namespace\Http\Requests\Admin\\" . $this->modelName . 'Request';
+        $prefix = '\Admin';
+        if ($this->namespace !== 'A17\Twill') {
+            $prefix = "\Twill";
+        }
+
+        $request = "$this->namespace\Http\Requests$prefix\\" . $this->modelName . 'Request';
 
         if (@class_exists($request)) {
             return $request;
@@ -1726,7 +1731,7 @@ abstract class ModuleController extends Controller
      */
     protected function getViewPrefix()
     {
-        $prefix = "admin.$this->moduleName";
+        $prefix = "twill.$this->moduleName";
 
         if (view()->exists("$prefix.form")) {
             return $prefix;

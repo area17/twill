@@ -40,7 +40,7 @@ class IconsController extends Controller
 
                 return [
                     'name' => Str::before($file->getFilename(), '.svg'),
-                    'url' => route('admin.icons.show', [
+                    'url' => route('twill.icons.show', [
                         'file' => $file->getFilename(),
                     ]),
                 ];

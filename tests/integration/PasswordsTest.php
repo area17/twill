@@ -39,7 +39,7 @@ class PasswordsTest extends TestCase
         );
 
         $resetUrl = route(
-            'admin.password.reset.form',
+            'twill.password.reset.form',
             Notification::token(),
             false
         );

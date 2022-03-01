@@ -123,7 +123,7 @@ trait HasCapsules
 
         $capsule['view_prefix'] = "{$name}.resources.views.admin";
 
-        $capsule['routes_file'] = "{$capsule['root_path']}/routes/admin.php";
+        $capsule['routes_file'] = "{$capsule['root_path']}/routes/twill.php";
 
         $capsule['model'] = "{$models}\\{$singular}";
 

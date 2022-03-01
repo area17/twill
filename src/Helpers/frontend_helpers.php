@@ -61,7 +61,7 @@ if (!function_exists('icon')) {
 if (!function_exists('twillViewName')) {
     function twillViewName($module, $suffix)
     {
-        $view = "admin.{$module}.{$suffix}";
+        $view = "twill.{$module}.{$suffix}";
 
         if (view()->exists($view)) {
             return $view;
