@@ -2,7 +2,6 @@
 
 namespace A17\Twill;
 
-use Exception;
 use A17\Twill\Commands\BlockMake;
 use A17\Twill\Commands\Build;
 use A17\Twill\Commands\CapsuleInstall;
@@ -16,8 +15,8 @@ use A17\Twill\Commands\MakeCapsule;
 use A17\Twill\Commands\MakeSingleton;
 use A17\Twill\Commands\ModuleMake;
 use A17\Twill\Commands\ModuleMakeDeprecated;
-use A17\Twill\Commands\RefreshLQIP;
 use A17\Twill\Commands\RefreshCrops;
+use A17\Twill\Commands\RefreshLQIP;
 use A17\Twill\Commands\SyncLang;
 use A17\Twill\Commands\Update;
 use A17\Twill\Http\ViewComposers\ActiveNavigation;
@@ -34,13 +33,14 @@ use A17\Twill\Services\FileLibrary\FileService;
 use A17\Twill\Services\MediaLibrary\ImageService;
 use Astrotomic\Translatable\TranslatableServiceProvider;
 use Cartalyst\Tags\TagsServiceProvider;
+use Exception;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use Spatie\Activitylog\ActivitylogServiceProvider;
 use PragmaRX\Google2FAQRCode\Google2FA as Google2FAQRCode;
+use Spatie\Activitylog\ActivitylogServiceProvider;
 
 class TwillServiceProvider extends ServiceProvider
 {
@@ -51,7 +51,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    const VERSION = '2.7.0';
+    public const VERSION = '2.7.0';
 
     /**
      * Service providers to be registered.
@@ -128,8 +128,9 @@ class TwillServiceProvider extends ServiceProvider
         config(['twill.version' => $this->version()]);
     }
 
-    private function registerFacades(): void {
-        $this->app->bind('twill_util', function() {
+    private function registerFacades(): void
+    {
+        $this->app->bind('twill_util', function () {
             return new TwillUtil();
         });
     }
@@ -172,7 +173,6 @@ class TwillServiceProvider extends ServiceProvider
         if (config('twill.enabled.file-library')) {
             $loader->alias('FileService', FileService::class);
         }
-
     }
 
     /**
@@ -346,8 +346,8 @@ class TwillServiceProvider extends ServiceProvider
 
         $expression = explode(',', $expression);
         array_shift($expression);
-        $expression = "(" . implode(',', $expression) . ")";
-        if ($expression === "()") {
+        $expression = '(' . implode(',', $expression) . ')';
+        if ($expression === '()') {
             $expression = '([])';
         }
 
@@ -368,16 +368,23 @@ class TwillServiceProvider extends ServiceProvider
         });
 
         $blade->directive('dumpData', function ($data) {
-            return sprintf("<?php (new Symfony\Component\VarDumper\VarDumper)->dump(%s); exit; ?>",
-                null != $data ? $data : "get_defined_vars()");
+            return sprintf(
+                "<?php (new Symfony\Component\VarDumper\VarDumper)->dump(%s); exit; ?>",
+                null != $data ? $data : 'get_defined_vars()'
+            );
         });
 
         $blade->directive('formField', function ($expression) {
             return $this->includeView('partials.form._', $expression);
         });
 
-        $blade->directive('partialView', function ($expression) {
+        /*
+         * Register the validation rules as "null" directives, so they are automatically cleaned from the view.
+         */
+        $blade->directive('twillBlockValidationRules', fn () =>  null);
+        $blade->directive('twillBlockValidationRulesForTranslatedFields', fn () =>  null);
 
+        $blade->directive('partialView', function ($expression) {
             $expressionAsArray = str_getcsv($expression, ',', '\'');
 
             [$moduleName, $viewName] = $expressionAsArray;
@@ -386,16 +393,16 @@ class TwillServiceProvider extends ServiceProvider
             $viewModule = "twillViewName($moduleName, '{$viewName}')";
             $viewApplication = "'admin.partials.{$viewName}'";
             $viewModuleTwill = "'twill::'.$moduleName.'.{$viewName}'";
-            $view = $partialNamespace . "." . $viewName;
+            $view = $partialNamespace . '.' . $viewName;
 
-            if (!isset($moduleName) || is_null($moduleName)) {
+            if (! isset($moduleName) || is_null($moduleName)) {
                 $viewModule = $viewApplication;
             }
 
             $expression = explode(',', $expression);
             $expression = array_slice($expression, 2);
-            $expression = "(" . implode(',', $expression) . ")";
-            if ($expression === "()") {
+            $expression = '(' . implode(',', $expression) . ')';
+            if ($expression === '()') {
                 $expression = '([])';
             }
 
@@ -415,6 +422,7 @@ class TwillServiceProvider extends ServiceProvider
         $blade->directive('pushonce', function ($expression) {
             [$pushName, $pushSub] = explode(':', trim(substr($expression, 1, -1)));
             $key = '__pushonce_' . $pushName . '_' . str_replace('-', '_', $pushSub);
+
             return "<?php if(! isset(\$__env->{$key})): \$__env->{$key} = 1; \$__env->startPush('{$pushName}'); ?>";
         });
 
@@ -435,7 +443,6 @@ class TwillServiceProvider extends ServiceProvider
             $blade->aliasComponent('twill::partials.form.utils._connected_fields', 'formConnectedFields');
             $blade->aliasComponent('twill::partials.form.utils._inline_checkboxes', 'formInlineCheckboxes');
         }
-
     }
 
     /**
@@ -500,14 +507,13 @@ class TwillServiceProvider extends ServiceProvider
      */
     public function check2FA()
     {
-        if (!$this->app->runningInConsole() || !config('twill.enabled.users-2fa')) {
+        if (! $this->app->runningInConsole() || ! config('twill.enabled.users-2fa')) {
             return;
         }
 
-        if (blank((new Google2FAQRCode())->getQrCodeService()))
-        {
+        if (blank((new Google2FAQRCode())->getQrCodeService())) {
             throw new Exception(
-                "Twill ERROR: As you have 2FA enabled, you also need to install a QRCode service package, please check https://github.com/antonioribeiro/google2fa-qrcode#built-in-qrcode-rendering-services"
+                'Twill ERROR: As you have 2FA enabled, you also need to install a QRCode service package, please check https://github.com/antonioribeiro/google2fa-qrcode#built-in-qrcode-rendering-services'
             );
         }
     }
