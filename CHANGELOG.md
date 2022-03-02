@@ -2,6 +2,29 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.8.0-beta1
+
+### Added
+
+- Laravel 9 support [`#1243`](https://github.com/area17/twill/pull/1243)
+- Added Twill block classes to support block render data, validation and more [`#1421`](https://github.com/area17/twill/pull/1421)
+- Repeaters and blocks are now updated instead of recreated [`#1431`](https://github.com/area17/twill/pull/1431)
+- Improved translatable fields validations [`1411`](https://github.com/area17/twill/pull/1411)
+
+
+### Fixed
+
+- Update Refresh Crops command to take in consideration the MorphMap [`#1485`](https://github.com/area17/twill/pull/1485)
+- Get image size from uploaded file instead of stored file [`#1412`](https://github.com/area17/twill/pull/1412)
+- Fix unauthenticated user 500 error when using custom error handler [`#1449`](https://github.com/area17/twill/pull/1449)
+- Fix exception for missing repository in related browser [`#1405`](https://github.com/area17/twill/pull/1405)
+- Do not show changed dialog when content is identical [`#1359`](https://github.com/area17/twill/pull/1359)
+- Improved performance when many fields/languages are used [`#1350`](https://github.com/area17/twill/pull/1350)
+
+### Documentation
+
+- Added more guides [`#1473`](https://github.com/area17/twill/pull/1473)
+
 ## 2.7.0 (2022-02-25)
 
 ### Added
