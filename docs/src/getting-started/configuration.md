@@ -301,6 +301,15 @@ MEDIA_LIBRARY_LOCAL_PATH=uploads
 To avoid running into `too large` errors when uploading to your server, you can choose to limit uploads through Twill using the `MEDIA_LIBRARY_FILESIZE_LIMIT` environment variable or `filesize_limit` configuration option. It is set to 50mb by default. Make sure to setup your PHP and webserver (apache, nginx, ....) to allow for the upload size specified here.
 When using the `s3` endpoint type, uploads are not limited in size.
 
+::: warning
+Using a local endpoint requires `storage` symlink with the `public` directory.
+:::
+
+You can achieve that by running Laravel artisan command:
+```bash
+php artisan storage:link
+```
+
 #### Cascading uploads deletions
 
 By default, Twill will not delete images when deleting from Twill's media library UI, wether it is on S3 or locally.
