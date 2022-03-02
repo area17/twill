@@ -303,6 +303,26 @@ module.exports = [
           {
             "title": "Adding fields to the create modal",
             "path": "/guides/adding-fields-to-the-create-modal.html",
+          },
+          {
+            "title": "Prefill block editor from template",
+            "path": "/guides/prefill-block-editor-from-template.html",
+          },
+          {
+            "title": "Building a multilingual site with Twill and Laravel Localization",
+            "path": "/guides/building_a_multilingual_site_with_twill_and_laravel_localization.html",
+          },
+          {
+            "title": "Adding custom user roles and permissions on Twill",
+            "path": "/guides/adding-custom-roles-and-permissions.html",
+          },
+          {
+            "title": "Manage frontend user profiles from Twill",
+            "path": "/guides/manage_frontend_user_profiles_from_twill.html",
+          },
+          {
+            "title": "Vue.js Workflow - Creating custom components, form fields and blocks in Twill",
+            "path": "/guides/creating_custom_components_form_fields_and_blocks.html"
           }
         ],
       },

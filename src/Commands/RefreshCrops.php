@@ -8,6 +8,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use A17\Twill\Models\Media;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class RefreshCrops extends Command
 {
@@ -117,9 +118,15 @@ class RefreshCrops extends Command
 
         $this->crops = collect($mediasParams[$this->roleName]);
 
+        // If the model exists in the Morphmap, we loop for the morphed name instead.
+        $mediableType = $this->modelName;
+        if ($morphedModelName = array_search($this->modelName, Relation::morphMap())) {
+            $mediableType = $morphedModelName;
+        }
+
         $mediables = $this->db
             ->table(config('twill.mediables_table', 'twill_mediables'))
-            ->where(['mediable_type' => $this->modelName, 'role' => $this->roleName]);
+            ->where(['mediable_type' => $mediableType, 'role' => $this->roleName]);
 
         if ($mediables->count() === 0) {
             $this->warn("No mediables found for model `$this->modelName` and role `$this->roleName`");
