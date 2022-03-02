@@ -27,9 +27,6 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->registerMacros();
         $this->registerRouteMiddlewares($this->app->get('router'));
-        $this->callAfterResolving(Router::class, function ($router) {
-            $this->app->make(TwillRoutes::class);
-        });
         $this->app->bind(TwillRoutes::class);
         parent::boot();
     }
