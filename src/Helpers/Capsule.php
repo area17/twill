@@ -126,11 +126,13 @@ class Capsule
         }
     }
 
-    public function registerRoutes(): void {
+    public function registerRoutes(): void
+    {
         TwillRoutes::registerCapsuleRoutes(App::get('router'), $this);
     }
 
-    public function loadTranslations(): void {
+    public function loadTranslations(): void
+    {
         $callback = function (Translator $translator) {
             $translator->addNamespace($this->getLanguagesPath(), 'twill:capsules:' . $this->getModule());
         };
@@ -145,6 +147,7 @@ class Capsule
     public function getBasePath(string $path): string
     {
         $exploded = explode('/', $path);
+
         return implode('/', array_pop($exploded));
     }
 
@@ -171,6 +174,7 @@ class Capsule
     public function getBaseNamespace(): string
     {
         $explodedNamespace = explode('\\', $this->namespace);
+
         return implode('\\', array_pop($explodedNamespace));
     }
 
@@ -324,6 +328,7 @@ class Capsule
         if (file_exists($this->getConfigFile())) {
             return require $this->getConfigFile();
         }
+
         return [];
     }
 
@@ -336,8 +341,7 @@ class Capsule
                 'title' => $this->name,
                 'singleton' => true,
             ];
-        }
-        else {
+        } else {
             $config[$this->name] = [
                 'title' => $this->name,
                 'module' => true,
@@ -347,11 +351,13 @@ class Capsule
         Config::set('twill-navigation', $config);
     }
 
-    public function isSingleton(): bool {
+    public function isSingleton(): bool
+    {
         return is_subclass_of($this->getControllerClass(), SingletonModuleController::class);
     }
 
-    public function getType(): string {
+    public function getType(): string
+    {
         return '';
     }
 }

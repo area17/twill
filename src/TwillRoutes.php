@@ -3,6 +3,8 @@
 namespace A17\Twill;
 
 use A17\Twill\Helpers\Capsule;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Route;
 
 class TwillRoutes
 {
@@ -12,43 +14,54 @@ class TwillRoutes
         $middlewares,
         $supportSubdomainRouting,
         $namespace,
-        $routesFile
+        $routesFile,
+        $instant = false
     ): void {
-        if (file_exists($routesFile)) {
-            $hostRoutes = function ($router) use (
-                $middlewares,
-                $namespace,
-                $routesFile
-            ) {
-                $router->group(
-                    [
-                        'namespace' => $namespace,
-                        'middleware' => $middlewares,
-                    ],
-                    function ($router) use ($routesFile) {
-                        require $routesFile;
-                    }
-                );
-            };
+        $callback = function () use ($router, $groupOptions, $middlewares, $supportSubdomainRouting, $namespace, $routesFile) {
+            if (file_exists($routesFile)) {
+                $hostRoutes = function ($router) use (
+                    $middlewares,
+                    $namespace,
+                    $routesFile
+                ) {
+                    $router->group(
+                        [
+                            'namespace' => $namespace,
+                            'middleware' => $middlewares,
+                        ],
+                        function () use ($routesFile) {
+                            require $routesFile;
+                        }
+                    );
+                };
 
-            $router->group(
-                $groupOptions + [
-                    'domain' => config('twill.admin_app_url'),
-                ],
-                $hostRoutes
-            );
-
-            if ($supportSubdomainRouting) {
                 $router->group(
                     $groupOptions + [
-                        'domain' =>
-                            config('twill.admin_app_subdomain', 'admin') .
-                            '.{subdomain}.' .
-                            config('app.url'),
+                        'domain' => config('twill.admin_app_url'),
                     ],
                     $hostRoutes
                 );
+
+                if ($supportSubdomainRouting) {
+                    $router->group(
+                        $groupOptions + [
+                            'domain' => config('twill.admin_app_subdomain', 'admin') .
+                                '.{subdomain}.' .
+                                config('app.url'),
+                        ],
+                        $hostRoutes
+                    );
+                }
             }
+        };
+
+        if ($instant) {
+            // For some reasone the afterResolving does not work for the core routes.
+            // In other cases it is important to use the afterResolving because the routes are otherwise registered too
+            // early.
+            $callback();
+        } else {
+            App::afterResolving(TwillRoutes::class, $callback);
         }
     }
 

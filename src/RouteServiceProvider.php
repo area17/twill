@@ -25,8 +25,11 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerRouteMiddlewares($this->app->get('router'));
         $this->registerMacros();
+        $this->registerRouteMiddlewares($this->app->get('router'));
+        $this->callAfterResolving(Router::class, function ($router) {
+            $this->app->make(TwillRoutes::class);
+        });
         $this->app->bind(TwillRoutes::class);
         parent::boot();
     }
@@ -67,7 +70,8 @@ class RouteServiceProvider extends ServiceProvider
             $middlewares,
             $supportSubdomainRouting,
             config('twill.namespace', 'App') . '\Http\Controllers\Admin',
-            base_path('routes/admin.php')
+            base_path('routes/admin.php'),
+            true
         );
     }
 
@@ -123,8 +127,7 @@ class RouteServiceProvider extends ServiceProvider
                 if ($supportSubdomainRouting) {
                     $router->group(
                         [
-                            'domain' =>
-                            config('twill.admin_app_subdomain', 'admin') .
+                            'domain' => config('twill.admin_app_subdomain', 'admin') .
                             '.{subdomain}.' .
                             config('app.url'),
                         ],
@@ -390,9 +393,9 @@ class RouteServiceProvider extends ServiceProvider
 
     public static function shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)
     {
-        return !empty($groupPrefix) && (blank($lastRouteGroupName) ||
+        return ! empty($groupPrefix) && (blank($lastRouteGroupName) ||
             config('twill.allow_duplicates_on_route_names', true) ||
-            (!Str::endsWith($lastRouteGroupName, ".{$groupPrefix}.")));
+            (! Str::endsWith($lastRouteGroupName, ".{$groupPrefix}.")));
     }
 
     public static function getLastRouteGroupName()
@@ -411,7 +414,7 @@ class RouteServiceProvider extends ServiceProvider
             '.'
         );
 
-        if (!empty(config('twill.admin_app_path'))) {
+        if (! empty(config('twill.admin_app_path'))) {
             $groupPrefix = ltrim(
                 str_replace(
                     config('twill.admin_app_path'),

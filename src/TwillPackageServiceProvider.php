@@ -11,13 +11,15 @@ abstract class TwillPackageServiceProvider extends ServiceProvider
 {
     protected $autoRegisterCapsules = true;
 
-    public function boot(): void {
+    public function boot(): void
+    {
         if ($this->autoRegisterCapsules) {
             $this->registerCapsules('Twill/Capsules');
         }
     }
 
-    protected function registerCapsule(string $name): void {
+    protected function registerCapsule(string $name): void
+    {
         $namespace = $this->getCapsuleNamespace();
 
         $namespace .= '\\Twill\\Capsules\\' . $name;
@@ -27,7 +29,8 @@ abstract class TwillPackageServiceProvider extends ServiceProvider
         \A17\Twill\Facades\TwillCapsules::registerPackageCapsule($name, $namespace, $dir);
     }
 
-    protected function registerCapsules(string $directory): void {
+    protected function registerCapsules(string $directory): void
+    {
         $storage = Storage::build([
             'driver' => 'local',
             'root' => $this->getPackageDirectory() . '/src/' . $directory,
@@ -38,13 +41,15 @@ abstract class TwillPackageServiceProvider extends ServiceProvider
         }
     }
 
-    protected function getClassName(): string {
+    protected function getClassName(): string
+    {
         $provider = explode('\\', get_class($this));
 
         return array_pop($provider);
     }
 
-    protected function getCapsuleNamespace(): string {
+    protected function getCapsuleNamespace(): string
+    {
         $provider = explode('\\', get_class($this));
         array_pop($provider);
 
