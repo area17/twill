@@ -381,8 +381,12 @@ class TwillServiceProvider extends ServiceProvider
         /*
          * Register the validation rules as "null" directives, so they are automatically cleaned from the view.
          */
-        $blade->directive('twillBlockValidationRules', fn () =>  null);
-        $blade->directive('twillBlockValidationRulesForTranslatedFields', fn () =>  null);
+        $blade->directive('twillBlockValidationRules', function () {
+            return null;
+        });
+        $blade->directive('twillBlockValidationRulesForTranslatedFields', function () {
+            return null;
+        });
 
         $blade->directive('partialView', function ($expression) {
             $expressionAsArray = str_getcsv($expression, ',', '\'');
