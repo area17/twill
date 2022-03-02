@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
-use A17\Twill\Helpers\TwillBlock;
 use A17\Twill\Repositories\BlockRepository;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Foundation\Application;
@@ -12,7 +11,6 @@ use Illuminate\View\Factory as ViewFactory;
 
 class BlocksController extends Controller
 {
-
     /**
      * Render an HTML preview of a single block.
      * This is used by the full screen content editor.
@@ -77,6 +75,7 @@ class BlocksController extends Controller
                     $view = $this->getBlockView($blockToRender->type, $config);
 
                     $data = $block['instance']->getData($data, $blockToRender);
+                    $data['inEditor'] = true;
 
                     $error = '';
 
@@ -100,7 +99,7 @@ class BlocksController extends Controller
 
         $viewFactory->inject('content', $renderedBlocks);
 
-        return html_entity_decode($view);
+        return html_entity_decode($view->render());
     }
 
     protected function getChildrenBlock($block, $blockRepository)
@@ -111,12 +110,13 @@ class BlocksController extends Controller
                 $childBlock = $blockRepository->buildFromCmsArray($childBlock, true);
                 $childBlock['child_key'] = $childKey;
                 $childBlock['position'] = $index + 1;
-                if (!empty($childBlock['blocks'])) {
+                if (! empty($childBlock['blocks'])) {
                     $childBlock['children'] = $this->getChildrenBlock($childBlock, $blockRepository);
                 }
                 $childBlocksList->push($childBlock);
             }
         }
+
         return $childBlocksList;
     }
 
@@ -127,7 +127,7 @@ class BlocksController extends Controller
             $blockId++;
             $newChildBlock = $blockRepository->createForPreview($childBlock);
             $newChildBlock->id = $blockId;
-            if (!empty($childBlock['children'])) {
+            if (! empty($childBlock['children'])) {
                 $childrenCollection = Collection::make();
                 $this->getChildrenPreview(
                     $childBlock['children'],
