@@ -4,6 +4,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Helpers\FlashLevel;
 use A17\Twill\Models\Behaviors\HasSlug;
+use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Blocks\BlockCollection;
 use A17\Twill\Services\Capsules\HasCapsules;
 use Illuminate\Contracts\Foundation\Application;
@@ -1922,8 +1923,8 @@ abstract class ModuleController extends Controller
      */
     public function getRepeaterList()
     {
-        return app(BlockCollection::class)->getRepeaterList()->mapWithKeys(function ($repeater) {
-            return [$repeater['name'] => $repeater];
+        return app(BlockCollection::class)->getRepeaterList()->mapWithKeys(function (Block $repeater) {
+            return [$repeater->name => $repeater->toList()];
         });
     }
 }

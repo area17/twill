@@ -231,6 +231,18 @@ module.exports = [
             "path": "/block-editor/previewing-blocks.html",
           },
           {
+            "title": "Block classes",
+            "path": "/block-editor/block-classes.html",
+          },
+          {
+            "title": "Validating block fields",
+            "path": "/block-editor/validating-blocks.html",
+          },
+          {
+            "title": "Adding data to block forms",
+            "path": "/block-editor/adding-data-to-block-forms.html",
+          },
+          {
             "title": "Development Workflow",
             "path": "/block-editor/development-workflow.html",
           },

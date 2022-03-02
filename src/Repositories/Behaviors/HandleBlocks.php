@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Helpers\TwillBlock;
 use A17\Twill\Facades\TwillUtil;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Block;
@@ -9,6 +10,8 @@ use A17\Twill\Models\Model;
 use A17\Twill\Repositories\BlockRepository;
 use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Log;
 use Schema;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
@@ -22,8 +25,7 @@ trait HandleBlocks
      * @param int|null $parentId
      * @param \Illuminate\Support\Collection|null $blocksFromFields
      * @param \Illuminate\Support\Collection|null $mainCollection
-     * @param int|null $mainCollection |void
-     * @return \A17\Twill\Models\Model
+     * @return \A17\Twill\Models\Model|null
      */
     public function hydrateHandleBlocks(
         $object,
@@ -34,11 +36,10 @@ trait HandleBlocks
         $mainCollection = null
     ) {
         if ($this->shouldIgnoreFieldBeforeSave('blocks')) {
-            return;
+            return null;
         }
 
         $firstItem = false;
-        $blocksCollection = Collection::make();
         if ($mainCollection === null) {
             $firstItem = true;
             $mainCollection = Collection::make();
@@ -97,6 +98,33 @@ trait HandleBlocks
 
         $blockRepository = app(BlockRepository::class);
 
+        $validator = Validator::make([], []);
+
+        foreach ($fields['blocks'] ?? [] as $block) {
+            $blockCmsData = app(BlockRepository::class)->buildFromCmsArray($block);
+
+            /** @var \A17\Twill\Services\Blocks\Block $blockInstance */
+            $blockInstance = $blockCmsData['instance'];
+
+            // Figure out if the class has translations.
+            $handleTranslations = property_exists($object, 'translatedAttributes');
+
+            try {
+                $this->validate(
+                    $block['content'],
+                    $block['id'],
+                    $blockInstance->getRules(),
+                    $handleTranslations ? $blockInstance->getRulesForTranslatedFields() : []
+                );
+            } catch (ValidationException $e) {
+                $validator->errors()->merge($e->errors());
+            }
+        }
+
+        if ($validator->errors()->isNotEmpty()) {
+            throw new ValidationException($validator);
+        }
+
         $existingBlockIds = $object->blocks()->pluck('id')->toArray();
 
         $usedBlockIds = [];
@@ -153,6 +181,35 @@ trait HandleBlocks
         );
 
         return $blockCreated;
+    }
+
+    private function validate(array $formData, int $id, array $basicRules, array $translatedFieldRules): void
+    {
+        $finalValidator = Validator::make([], []);
+        foreach ($translatedFieldRules as $field => $rules) {
+            foreach (config('translatable.locales') as $locale) {
+                $data = $formData[$field][$locale] ?? null;
+                $validator = Validator::make([$field => $data], [$field => $rules]);
+                foreach ($validator->messages()->getMessages() as $key => $errors) {
+                    foreach ($errors as $error) {
+                        $finalValidator->getMessageBag()->add("blocks.$id" . "[$key][$locale]", $error);
+                        $finalValidator->getMessageBag()->add("blocks.$locale", 'Failed');
+                    }
+                }
+            }
+        }
+        foreach ($basicRules as $field => $rules) {
+            $validator = Validator::make([$field => $formData[$field] ?? null], [$field => $rules]);
+            foreach ($validator->messages()->getMessages() as $key => $errors) {
+                foreach ($errors as $error) {
+                    $finalValidator->getMessageBag()->add("blocks[$id][$key]", $error);
+                }
+            }
+        }
+
+        if ($finalValidator->errors()->isNotEmpty()) {
+            throw new ValidationException($finalValidator);
+        }
     }
 
     /**
@@ -265,7 +322,6 @@ trait HandleBlocks
 
             foreach ($object->blocks as $block) {
                 $isInRepeater = isset($block->parent_id);
-                $configKey = $isInRepeater ? 'repeaters' : 'blocks';
                 $blockTypeConfig = $blocksList[$block->type] ?? null;
 
                 if (is_null($blockTypeConfig)) {
