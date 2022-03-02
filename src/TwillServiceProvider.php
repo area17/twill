@@ -331,6 +331,8 @@ class TwillServiceProvider extends ServiceProvider
     }
 
     /**
+     * Resolve and include a given view expression in the project, Twill internals or a package.
+     *
      * @param string $view
      * @param string $expression
      * @return string
@@ -339,7 +341,13 @@ class TwillServiceProvider extends ServiceProvider
     {
         [$name] = str_getcsv($expression, ',', '\'');
 
-        $partialNamespace = view()->exists('admin.' . $view . $name) ? 'admin.' : 'twill::';
+        if (preg_match('/::/', $name)) {
+            // if there's a namespace separator, we'll assume it's a package
+            [$namespace, $name] = preg_split('/::/', $name);
+            $partialNamespace = "$namespace::admin.";
+        } else {
+            $partialNamespace = view()->exists('admin.' . $view . $name) ? 'admin.' : 'twill::';
+        }
 
         $view = $partialNamespace . $view . $name;
 
