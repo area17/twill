@@ -14,11 +14,10 @@ jobs:
           token: ${{ secrets.TWILL_PAT_TOKEN }}
           fetch-depth: 0
       - name: Build and deploy
-        working-directory: docs
         uses: jenkey2011/vuepress-deploy@master
         env:
           ACCESS_TOKEN: ${{ secrets.TWILL_PAT_TOKEN }}
           TARGET_REPO: area17/twill
           TARGET_BRANCH: gh_pages
-          BUILD_SCRIPT: npm ci && npm run build
-          BUILD_DIR: .vuepress/dist/
+          BUILD_SCRIPT: cd docs && npm ci && npm run build
+          BUILD_DIR: docs/.vuepress/dist/
