@@ -14,7 +14,7 @@ jobs:
           token: ${{ secrets.TWILL_PAT_TOKEN }}
           fetch-depth: 0
       - name: Build and deploy
-        working-directory: ./docs
+        working-directory: docs
         uses: jenkey2011/vuepress-deploy@master
         env:
           ACCESS_TOKEN: ${{ secrets.TWILL_PAT_TOKEN }}
