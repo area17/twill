@@ -1,0 +1,24 @@
+name: Documentation Build and Deploy
+on:
+  push:
+    branches:
+      - 2.x
+jobs:
+  build:
+    name: Build and deploy docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the latest code
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.TWILL_PAT_TOKEN }}
+          fetch-depth: 0
+      - name: Build and deploy
+        working_directory: ./docs
+        uses: jenkey2011/vuepress-deploy@master
+        env:
+          ACCESS_TOKEN: ${{ secrets.TWILL_PAT_TOKEN }}
+          TARGET_REPO: area17/twill
+          TARGET_BRANCH: gh_pages
+          BUILD_SCRIPT: npm ci && npm run build
+          BUILD_DIR: .vuepress/dist/
