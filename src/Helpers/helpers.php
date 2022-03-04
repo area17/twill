@@ -1,8 +1,8 @@
 <?php
 
 use A17\Twill\Facades\TwillCapsules;
+use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Blocks\BlockCollection;
-use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
@@ -87,7 +87,7 @@ if (!function_exists('fireCmsEvent')) {
      */
     function fireCmsEvent($eventName, $input = [])
     {
-        $method = method_exists(Dispatcher::class, 'dispatch') ? 'dispatch' : 'fire';
+        $method = method_exists(\Illuminate\Events\Dispatcher::class, 'dispatch') ? 'dispatch' : 'fire';
         Event::$method($eventName, [$eventName, $input]);
     }
 }
@@ -200,45 +200,44 @@ if (!function_exists('generate_list_of_allowed_blocks')) {
      * @param array $groups
      * @return array
      */
-    function generate_list_of_available_blocks($blocks, $groups)
+    function generate_list_of_available_blocks($blocks, $groups): array
     {
         $blockList = app(BlockCollection::class)->getBlockList();
 
-        $appBlocksList = $blockList->filter(function ($block) {
-            return $block['source'] !== A17\Twill\Services\Blocks\Block::SOURCE_TWILL;
+        $appBlocksList = $blockList->filter(function (Block $block) {
+            return $block->source !== A17\Twill\Services\Blocks\Block::SOURCE_TWILL;
         });
 
         $finalBlockList = $blockList->filter(
-            function ($block) use ($blocks, $groups, $appBlocksList) {
-                if ($block['group'] === A17\Twill\Services\Blocks\Block::SOURCE_TWILL) {
+            function (Block $block) use ($blocks, $groups, $appBlocksList) {
+                if ($block->group === A17\Twill\Services\Blocks\Block::SOURCE_TWILL) {
                     if (!collect(
                         config('twill.block_editor.use_twill_blocks')
-                    )->contains($block['name'])) {
+                    )->contains($block->name)) {
                         return false;
                     }
 
+                    /** @var \Illuminate\Support\Collection<Block> $appBlocksList */
                     if (count($appBlocksList) > 0 && $appBlocksList->contains(
                         function ($appBlock) use ($block) {
-                            return $appBlock['name'] === $block['name'];
+                            return $appBlock->name === $block->name;
                         })
                     ) {
                         return false;
                     }
                 }
 
-                return (filled($blocks) ? collect($blocks)->contains($block['name']) : true)
-                    && (filled($groups) ? collect($groups)->contains($block['group']) : true);
+                return (filled($blocks) ? collect($blocks)->contains($block->name) : true)
+                    && (filled($groups) ? collect($groups)->contains($block->group) : true);
             }
         );
 
         // Sort them by the original definition
-        $sorted = $finalBlockList->sortBy(function($b) use ($blocks) {
+        return $finalBlockList->sortBy(function(Block $b) use ($blocks) {
             return collect($blocks)->search(function($id, $key) use ($b) {
-                return $id == $b['name'];
+                return $id == $b->name;
             });
         })->values()->toArray();
-
-        return $sorted;
     }
 }
 

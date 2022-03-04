@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { mapState, mapGetters } from 'vuex'
 import store from '@/store'
-import { FORM } from '@/store/mutations'
+import { FORM, PUBLICATION } from '@/store/mutations'
 import ACTIONS from '@/store/actions'
 import { FORM_MUTATIONS_TO_SUBSCRIBE } from '@/store/mutations/subscribers'
 
@@ -58,6 +58,7 @@ import formatPermalink from '@/mixins/formatPermalink'
 import editorMixin from '@/mixins/editor.js'
 import BlockMixin from '@/mixins/block'
 import retrySubmitMixin from '@/mixins/retrySubmit'
+import _ from 'lodash'
 
 // configuration
 Vue.use(A17Config)
@@ -214,13 +215,61 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
           this.unSubscribe()
         }
       })
+    },
+    watchForFormUpdates (module, prop) {
+      const sortArrays = module === 'form' && (prop === 'fields' || prop === 'modalFields')
+      // Store the original form state, we will compare against this. It is important to sort it the same way as when
+      // we are comparing so that order changes in the fields dont matter.
+      const originalForm = this.sortObjectArraysDeep(_.cloneDeep(this.$store.state[module][prop]), sortArrays)
+      this.$store.watch((state) => {
+        return state[module][prop]
+      }, (newForm) => {
+        const compareTo = this.sortObjectArraysDeep(_.cloneDeep(newForm), sortArrays)
+        this.isFormUpdated = !_.isEqual(originalForm, compareTo)
+        this.$store.commit(PUBLICATION.UPDATE_HAS_UNSAVED_CHANGES, this.isFormUpdated)
+      }, {
+        deep: true
+      })
+    },
+    sortArrayByFirstKey (data) {
+      return _.sortBy(data, (o) => {
+        if (typeof o === 'object') {
+          const firstKey = Object.keys(o)[0]
+          return o[firstKey]
+        }
+        return o
+      })
+    },
+    sortObjectArraysDeep (data, sortArrays = false) {
+      if (Array.isArray(data) && sortArrays) {
+        data = this.sortArrayByFirstKey(data)
+      } else {
+        Object.keys(data).forEach(key => {
+          if (Array.isArray(data[key])) {
+            if (sortArrays) {
+              data[key] = this.sortArrayByFirstKey(data[key])
+            }
+          } else if (typeof data[key] === 'object') {
+            data[key] = this.sortObjectArraysDeep(data[key])
+          }
+        })
+      }
+
+      return data
     }
   },
   mounted: function () {
+    // Hook up the confirmation popup.
+    window.onbeforeunload = this.confirmExit
+
     // Form : confirm exit or lock panel if form is changed
     this.$nextTick(() => {
-      window.onbeforeunload = this.confirmExit
-      this.mutationsSubscribe()
+      this.watchForFormUpdates('mediaLibrary', 'selected')
+      this.watchForFormUpdates('form', 'fields')
+      this.watchForFormUpdates('form', 'modalFields')
+      this.watchForFormUpdates('blocks', 'blocks')
+      this.watchForFormUpdates('browser', 'selected')
+      this.watchForFormUpdates('repeaters', 'repeaters')
     })
   },
   beforeDestroy: function () {

@@ -5,6 +5,7 @@ namespace A17\Twill\Models\Behaviors;
 use A17\Twill\Facades\TwillCapsules;
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Query\JoinClause;
+use Illuminate\Support\Collection;
 
 trait HasTranslation
 {
@@ -131,16 +132,15 @@ trait HasTranslation
      */
     public function getActiveLanguages()
     {
-        return $this->translations->map(function ($translation) {
+        return Collection::make(getLocales())->map(function ($locale) {
+            $translation = $this->translations->firstWhere('locale', $locale);
+
             return [
-                'shortlabel' => strtoupper($translation->locale),
-                'label' => getLanguageLabelFromLocaleCode($translation->locale),
-                'value' => $translation->locale,
+                'shortlabel' => strtoupper($locale),
+                'label' => getLanguageLabelFromLocaleCode($locale),
+                'value' => $locale,
                 'published' => $translation->active ?? false,
             ];
-        })->sortBy(function ($translation) {
-            $localesOrdered = getLocales();
-            return array_search($translation['value'], $localesOrdered);
         })->values();
     }
 
