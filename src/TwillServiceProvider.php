@@ -2,20 +2,19 @@
 
 namespace A17\Twill;
 
-use A17\Twill\Commands\GeneratePackageCommand;
-use A17\Twill\Commands\MakeSingletonCapsule;
-use Exception;
 use A17\Twill\Commands\BlockMake;
 use A17\Twill\Commands\Build;
 use A17\Twill\Commands\CapsuleInstall;
 use A17\Twill\Commands\CreateSuperAdmin;
 use A17\Twill\Commands\Dev;
 use A17\Twill\Commands\GenerateBlocks;
+use A17\Twill\Commands\GeneratePackageCommand;
 use A17\Twill\Commands\Install;
 use A17\Twill\Commands\ListBlocks;
 use A17\Twill\Commands\ListIcons;
 use A17\Twill\Commands\MakeCapsule;
 use A17\Twill\Commands\MakeSingleton;
+use A17\Twill\Commands\MakeSingletonCapsule;
 use A17\Twill\Commands\ModuleMake;
 use A17\Twill\Commands\ModuleMakeDeprecated;
 use A17\Twill\Commands\RefreshCrops;
@@ -35,11 +34,11 @@ use A17\Twill\Services\FileLibrary\FileService;
 use A17\Twill\Services\MediaLibrary\ImageService;
 use Astrotomic\Translatable\TranslatableServiceProvider;
 use Cartalyst\Tags\TagsServiceProvider;
+use Exception;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 use PragmaRX\Google2FAQRCode\Google2FA as Google2FAQRCode;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 
@@ -66,8 +65,6 @@ class TwillServiceProvider extends ServiceProvider
         ActivitylogServiceProvider::class,
         CapsulesServiceProvider::class,
     ];
-
-    private $migrationsCounter = 0;
 
     /**
      * Bootstraps the package services.
@@ -330,7 +327,7 @@ class TwillServiceProvider extends ServiceProvider
             Dev::class,
             SyncLang::class,
             CapsuleInstall::class,
-            GeneratePackageCommand::class
+            GeneratePackageCommand::class,
         ]);
     }
 

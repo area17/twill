@@ -122,7 +122,9 @@ class TwillRoutes
                 $this->getRouteMiddleware(),
                 $this->supportSubdomainRouting(),
                 $capsule->getControllersNamespace(),
-                $capsule->getRoutesFile()
+                $capsule->getRoutesFile(),
+                // When it is not a package capsule we can register it immediately.
+                ! $capsule->packageCapsule
             );
         }
     }
