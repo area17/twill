@@ -70,8 +70,8 @@ class ListIcons extends Command
         return collect(
             config('twill.block_editor.directories.source.icons')
         )->reduce(function (Collection $keep, $path) {
-            if (!$this->files->exists($path)) {
-                $this->displayError("Directory not found: {$path}");
+            if (! $this->files->exists($path)) {
+                $this->error("Directory not found: $path");
 
                 return $keep;
             }
@@ -101,7 +101,7 @@ class ListIcons extends Command
         });
 
         $this->table(['Icon', 'Preview URL'], $icons->toArray());
-        $this->info("All icons viewable at: " . route('twill.icons.index'));
+        $this->info('All icons viewable at: ' . route('twill.icons.index'));
 
         return parent::handle();
     }

@@ -3,8 +3,8 @@
 namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasPresenter;
-use A17\Twill\Services\Capsules\HasCapsules;
 use A17\Twill\Models\Behaviors\IsTranslatable;
+use A17\Twill\Services\Capsules\HasCapsules;
 use Carbon\Carbon;
 use Cartalyst\Tags\TaggableInterface;
 use Cartalyst\Tags\TaggableTrait;
@@ -15,7 +15,11 @@ use Illuminate\Support\Str;
 
 abstract class Model extends BaseModel implements TaggableInterface
 {
-    use HasPresenter, SoftDeletes, TaggableTrait, IsTranslatable, HasCapsules;
+    use HasPresenter;
+    use SoftDeletes;
+    use TaggableTrait;
+    use IsTranslatable;
+    use HasCapsules;
 
     public $timestamps = true;
 
@@ -33,7 +37,6 @@ abstract class Model extends BaseModel implements TaggableInterface
     {
         if ($this->isFillable('public')) {
             $query->where("{$this->getTable()}.public", true);
-
         }
 
         return $query->published()->visible();
@@ -85,13 +88,13 @@ abstract class Model extends BaseModel implements TaggableInterface
             $this->isTranslationModel() &&
             property_exists($this, 'baseModuleModel')
         ) {
-            $fillable = (new $this->baseModuleModel)->getTranslatedAttributes();
+            $fillable = (new $this->baseModuleModel())->getTranslatedAttributes();
 
-            if (!collect($fillable)->contains('locale')) {
+            if (! collect($fillable)->contains('locale')) {
                 $fillable[] = 'locale';
             }
 
-            if (!collect($fillable)->contains('active')) {
+            if (! collect($fillable)->contains('active')) {
                 $fillable[] = 'active';
             }
         }
@@ -110,7 +113,7 @@ abstract class Model extends BaseModel implements TaggableInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function tags(): MorphToMany
     {

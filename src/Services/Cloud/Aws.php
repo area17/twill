@@ -4,8 +4,8 @@ namespace A17\Twill\Services\Cloud;
 
 use Aws\S3\S3Client;
 use Illuminate\Support\Str;
-use League\Flysystem\Filesystem;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
+use League\Flysystem\Filesystem;
 
 class Aws
 {
