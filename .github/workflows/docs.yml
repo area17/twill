@@ -20,4 +20,4 @@ jobs:
           TARGET_REPO: area17/twill
           TARGET_BRANCH: gh_pages
           BUILD_SCRIPT: cd docs && npm ci && npm run build
-          BUILD_DIR: docs/.vuepress/docs/
+          BUILD_DIR: docs/docs/
